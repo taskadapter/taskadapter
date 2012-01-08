@@ -1,5 +1,6 @@
 package com.taskadapter.connector.github;
 
+import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.model.GTaskDescriptor;
@@ -39,12 +40,11 @@ public class GithubConfig extends WebConfig {
     }
 
     @Override
-	protected Map<String, Integer> generateDefaultPrioritiesMapping() {
-		return new HashMap<String, Integer>() {
+	protected Priorities generateDefaultPriorities() {
+		return new Priorities(new HashMap<String, Integer>() {
 			private static final long serialVersionUID = 516389048716909610L;
 			{
 				// EMPTY! Github does not support priorities for issues
 			}
-		};
-
+		});
 	}}

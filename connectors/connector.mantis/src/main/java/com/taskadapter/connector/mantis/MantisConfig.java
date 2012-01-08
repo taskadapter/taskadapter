@@ -1,5 +1,6 @@
 package com.taskadapter.connector.mantis;
 
+import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.model.GTaskDescriptor;
@@ -30,8 +31,8 @@ public class MantisConfig extends WebConfig {
    	}
 
    	@Override
-   	protected Map<String, Integer> generateDefaultPrioritiesMapping() {
-   		return new HashMap<String, Integer>() {
+   	protected Priorities generateDefaultPriorities() {
+   		return new Priorities(new HashMap<String, Integer>() {
    			private static final long serialVersionUID = 516389048716909610L;
    			{
    				put("low", 100);
@@ -40,7 +41,6 @@ public class MantisConfig extends WebConfig {
    				put("urgent", 800);
    				put("immediate", 1000);
    			}
-   		};
-
+   		});
    	}
 }

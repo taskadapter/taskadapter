@@ -1,5 +1,6 @@
 package com.taskadapter.web.configeditor;
 
+import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.Descriptor.Feature;
 import com.taskadapter.connector.definition.ValidationException;
@@ -86,13 +87,13 @@ public class PriorityPanel extends FormLayout implements Validatable {
         });
     }
 
-    public void setPriorities(Map<String, Integer> priorities) {
-        for (String key : priorities.keySet()) {
+    public void setPriorities(Priorities priorities) {
+//        for (String key : priorities.get...()) {
 //			addPriorityOnTable(key, priorities.get(key).toString());
-        }
+//        }
     }
 
-    public Map<String, Integer> getPriorities() {
+    public Priorities getPriorities() {
            Map<String, Integer> priorities = new HashMap<String, Integer>();
 //           for (TableItem tableItem : prioritiesTable.getItems()) {
 //               String trackerText = tableItem.getText(0);
@@ -109,13 +110,12 @@ public class PriorityPanel extends FormLayout implements Validatable {
        }
 */
        private void reloadPriorityList() throws Exception {
-           LookupOperation loadPrioritiesOperation = new LoadPrioritiesOperation(                   configEditor, descriptor);
+           LookupOperation loadPrioritiesOperation = new LoadPrioritiesOperation(configEditor, descriptor);
            @SuppressWarnings("unchecked")
            List<NamedKeyedObjectImpl> list = (List<NamedKeyedObjectImpl>) loadPrioritiesOperation
                    .run();
 
-           Map<String, Integer> defaultPriorities = descriptor
-                   .createDefaultConfig().getPrioritiesMapping();
+           Priorities defaultPriorities = descriptor.createDefaultConfig().getPriorities();
 
 /*           prioritiesTable.removeAll();
            prioritiesTable.update();

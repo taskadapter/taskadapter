@@ -1,6 +1,7 @@
 package com.taskadapter.connector.definition;
 
 import com.google.common.base.Objects;
+import com.taskadapter.connector.Priorities;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
@@ -14,8 +15,6 @@ public abstract class ConnectorConfig implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
-    private static final int DEFAULT_PRIORITY_VALUE = 500;
-
 	protected Map<FIELD, Mapping> fieldsMapping;
 	
 	protected String label;
@@ -27,11 +26,7 @@ public abstract class ConnectorConfig implements Serializable {
 	 */
 	protected String defaultTaskType;
 
-    /**
-  	 * priority text -> priority number mappings.
-  	 * <P>e.g. "low"->100
-  	 */
-  	protected Map<String, Integer> prioritiesMapping;
+    protected Priorities priorities;
 
     public String getLabel() {
 		return label;
@@ -53,7 +48,7 @@ public abstract class ConnectorConfig implements Serializable {
 
 	public ConnectorConfig() {
 		fieldsMapping = generateDefaultFieldsMapping();
-        prioritiesMapping = generateDefaultPrioritiesMapping();
+        priorities = generateDefaultPriorities();
 	}
 
     public boolean getSaveIssueRelations() {
@@ -74,7 +69,7 @@ public abstract class ConnectorConfig implements Serializable {
 	}
 
 	abstract protected Map<GTaskDescriptor.FIELD, Mapping> generateDefaultFieldsMapping();
-    abstract protected Map<String, Integer> generateDefaultPrioritiesMapping();
+    abstract protected Priorities generateDefaultPriorities();
 	
 	public boolean isFieldSelected(FIELD field) {
 		Mapping mapping = fieldsMapping.get(field);
@@ -108,55 +103,6 @@ public abstract class ConnectorConfig implements Serializable {
 		this.defaultTaskType = defaultTaskType;
 	}
 
-    public Map<String, Integer> getPrioritiesMapping() {
-        return prioritiesMapping;
-    }
-
-    public void setPrioritiesMapping(Map<String, Integer> prioritiesMapping) {
-        this.prioritiesMapping = prioritiesMapping;
-    }
-
-    //get priority value for MSP based on the Tracker priority field
-    public Integer getPriorityByText(String priorityText) {
-        Integer priorityNumber = prioritiesMapping.get(priorityText);
-        if (priorityNumber == null) {
-            priorityNumber = DEFAULT_PRIORITY_VALUE;
-            System.out.println("unknown priority text: " + priorityText);
-        }
-        return priorityNumber;
-    }
-
-    /**
-     * @return the nearest priority value for Tracker based on the MSP integer value (priority field).
-     * Never NULL.
-     */
-    public String getPriorityByMSP(Integer mspValue) {
-        Integer minIntValue = 9999;
-        String minStringValue = "";
-
-        if (mspValue == null) {
-            mspValue = DEFAULT_PRIORITY_VALUE;
-        }
-
-        //for ex.
-        //Low: 100 : 0 - 100
-        //Trivial: 200 : 100-200
-        //Normal: 400 : 200-400
-        //High: 700 : 400-700
-        //Critical: 900 : 700-900
-        //Blocker: 1000 : 900-1000
-
-        for (Map.Entry<String, Integer> entry : prioritiesMapping.entrySet()) {
-            if (entry.getValue() >= mspValue && entry.getValue() < minIntValue) {
-                //check if mspValue in current interval and it's value smaller than minIntValue we should remember this key
-                minIntValue = entry.getValue();
-                minStringValue = entry.getKey();
-            }
-        }
-
-        return minStringValue;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hashCode(fieldsMapping, defaultTaskType, label);
@@ -187,4 +133,20 @@ public abstract class ConnectorConfig implements Serializable {
    	public void validateForLoad() throws ValidationException {
    		// nothing
    	}
+
+    public String getPriorityByMSP(Integer priority) {
+        return priorities.getPriorityByMSP(priority);
+    }
+
+    public Integer getPriorityByText(String priorityName) {
+        return priorities.getPriorityByText(priorityName);
+    }
+
+    public void setPriorities(Priorities priorities) {
+        this.priorities = priorities;
+    }
+
+    public Priorities getPriorities() {
+        return priorities;
+    }
 }

@@ -1,5 +1,6 @@
 package com.taskadapter.web.configeditor;
 
+import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.model.GTaskDescriptor;
 import com.vaadin.ui.*;
@@ -66,7 +67,7 @@ public abstract class ConfigEditor extends FormLayout {
         projectPanel.setProjectInfo(info);
     }
 
-    protected void addPriorityPanel(ConfigEditor editor, Descriptor descriptor, Map<String, Integer> priorities) {
+    protected void addPriorityPanel(ConfigEditor editor, Descriptor descriptor,Priorities priorities) {
         priorityPanel = new PriorityPanel(editor, descriptor);
         toValidate.add(priorityPanel);
         addComponent(priorityPanel);
@@ -108,8 +109,10 @@ public abstract class ConfigEditor extends FormLayout {
             ((WebConfig) config).setQueryId(projectInfo.getQueryId());
         }
         if (priorityPanel != null) {
-      		config.setPrioritiesMapping(priorityPanel.getPriorities());
+      		config.setPriorities(priorityPanel.getPriorities());
    		}
         return config;
     }
+
+
 }

@@ -79,7 +79,7 @@ public class JiraEditor extends ConfigEditor {
                 loadVersionsOperation, fixForVersion, true);
 
         addComponent(new CustomFieldsPanel());
-        addPriorityPanel(this, JiraDescriptor.instance, config.getPrioritiesMapping());
+        addPriorityPanel(this, JiraDescriptor.instance, config.getPriorities());
     }
 
     @Override

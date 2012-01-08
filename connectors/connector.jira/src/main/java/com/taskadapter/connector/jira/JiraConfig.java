@@ -1,6 +1,7 @@
 package com.taskadapter.connector.jira;
 
 import com.google.common.base.Objects;
+import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.model.GTaskDescriptor;
@@ -82,8 +83,8 @@ public class JiraConfig extends WebConfig {
 	}
 
 	@Override
-	protected Map<String, Integer> generateDefaultPrioritiesMapping() {
-		return new HashMap<String, Integer>() {
+	protected Priorities generateDefaultPriorities() {
+		return new Priorities(new HashMap<String, Integer>() {
 			private static final long serialVersionUID = 516389048716909610L;
 			{
 				put("Trivial", 100);
@@ -92,7 +93,7 @@ public class JiraConfig extends WebConfig {
 				put("Critical", 800);
 				put("Blocker", 1000);
 			}
-		};
+		});
 	}
 
 
@@ -171,5 +172,5 @@ public class JiraConfig extends WebConfig {
 		System.out.println(jira.getPriorityByTracker("High"));
 		System.out.println(jira.getPriorityByMSP(101));
 	}*/
-	
+
 }

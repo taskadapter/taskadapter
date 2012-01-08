@@ -1,5 +1,6 @@
 package com.taskadapter.connector.msp;
 
+import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.definition.ValidationException;
@@ -152,8 +153,8 @@ public class MSPConfig extends ConnectorConfig {
 	}
 
 	@Override
-	protected Map<String, Integer> generateDefaultPrioritiesMapping() {
-		return new HashMap<String, Integer>() {
+	protected Priorities generateDefaultPriorities() {
+		return new Priorities(new HashMap<String, Integer>() {
 			private static final long serialVersionUID = 516389048716909610L;
 			{
 				put("100", 100);
@@ -162,6 +163,5 @@ public class MSPConfig extends ConnectorConfig {
 				put("800", 800);
 				put("1000", 1000);
 			}
-		};
-
+		});
 	}}
