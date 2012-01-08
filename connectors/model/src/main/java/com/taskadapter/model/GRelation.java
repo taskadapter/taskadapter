@@ -89,11 +89,8 @@ public class GRelation {
 		} else if (!taskKey.equals(other.taskKey)) {
 			return false;
 		}
-		if (type != other.type) {
-			return false;
-		}
-		return true;
-	}
+        return type == other.type;
+    }
 
 
 }

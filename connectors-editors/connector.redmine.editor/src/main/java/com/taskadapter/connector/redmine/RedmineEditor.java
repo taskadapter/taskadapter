@@ -33,7 +33,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
     private TextField defaultTaskType;
     private TextField queryId;
 
-    private static final List<String> authOptions = Arrays.asList(new String[]{USE_API, USE_LOGIN});
+    private static final List<String> authOptions = Arrays.asList(USE_API, USE_LOGIN);
 
     private OptionGroup authOptionsGroup = new OptionGroup("Authorization", authOptions);
 

@@ -1,6 +1,7 @@
 package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rpc.soap.client.*;
+import com.google.common.base.Strings;
 import com.taskadapter.connector.common.TaskConverter;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
@@ -75,7 +76,7 @@ public class JiraTaskConverter implements TaskConverter<RemoteIssue> {
 
 		if (config.isFieldSelected(FIELD.PRIORITY)) {
 			String jiraPriorityName = config.getPriorityByMSP(task.getPriority());
-			if (jiraPriorityName != "") {
+			if (!jiraPriorityName.isEmpty()) {
 				issue.setPriority(priorities.get(jiraPriorityName));
 			}
 		}
@@ -169,7 +170,7 @@ public class JiraTaskConverter implements TaskConverter<RemoteIssue> {
 		// task.setDoneRatio(issue.getDoneRatio());
 		
 		String jiraPriorityName = prioritiesOtherWay.get(issue.getPriority());
-		if (jiraPriorityName != "" && jiraPriorityName != null) {
+		if (!Strings.isNullOrEmpty(jiraPriorityName)) {
 			Integer priorityValue =  config.getPriorityByText(jiraPriorityName);
 			task.setPriority(priorityValue);
 		}

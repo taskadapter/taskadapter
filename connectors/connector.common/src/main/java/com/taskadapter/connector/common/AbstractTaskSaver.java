@@ -120,12 +120,12 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
 	 * @return the newly created task's KEY
 	 */
 	protected String submitTask(GTask task, Object nativeTask) {
-		String newTaskKey = "";
+		String newTaskKey;
 		if (task.getRemoteId() == null) {
 			GTask newTask = createTask(nativeTask);
 
 			// Need this to be passed as the parentIssueId to the recursive call below
-			newTaskKey = newTask.getKey().toString();
+			newTaskKey = newTask.getKey();
 			syncResult.addCreatedTask(task.getId(), newTaskKey);
 		} else {
 			newTaskKey = task.getRemoteId();

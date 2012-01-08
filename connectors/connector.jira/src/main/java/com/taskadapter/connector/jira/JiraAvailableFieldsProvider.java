@@ -38,7 +38,7 @@ public class JiraAvailableFieldsProvider implements AvailableFieldsProvider {
 
 	@Override
 	public Collection<FIELD> getSupportedFields() {
-		return Arrays.asList(new FIELD[] {FIELD.SUMMARY, FIELD.DESCRIPTION, FIELD.TASK_TYPE, FIELD.ASSIGNEE, 
-				FIELD.DUE_DATE, FIELD.PRIORITY} );
+		return Arrays.asList(FIELD.SUMMARY, FIELD.DESCRIPTION, FIELD.TASK_TYPE, FIELD.ASSIGNEE,
+                FIELD.DUE_DATE, FIELD.PRIORITY);
 	}
 }

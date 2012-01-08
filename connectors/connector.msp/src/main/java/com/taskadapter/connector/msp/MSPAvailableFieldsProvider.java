@@ -67,8 +67,8 @@ public class MSPAvailableFieldsProvider implements AvailableFieldsProvider {
 
 	@Override
 	public Collection<FIELD> getSupportedFields() {
-		return Arrays.asList(new FIELD[] {FIELD.SUMMARY, FIELD.DESCRIPTION, FIELD.DONE_RATIO, 
-				FIELD.ASSIGNEE, FIELD.DUE_DATE, FIELD.START_DATE, FIELD.TASK_TYPE, FIELD.ESTIMATED_TIME, 
-				FIELD.REMOTE_ID /*, FIELD.PRIORITY*/} );
+		return Arrays.asList(FIELD.SUMMARY, FIELD.DESCRIPTION, FIELD.DONE_RATIO,
+                FIELD.ASSIGNEE, FIELD.DUE_DATE, FIELD.START_DATE, FIELD.TASK_TYPE, FIELD.ESTIMATED_TIME,
+                FIELD.REMOTE_ID);
 	}
 }

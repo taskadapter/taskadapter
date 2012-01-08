@@ -25,7 +25,7 @@ public class GithubFieldsProvider implements AvailableFieldsProvider {
     
 	@Override
 	public Collection<FIELD> getSupportedFields() {
-		return Arrays.asList(new FIELD[] {FIELD.SUMMARY, FIELD.DESCRIPTION, FIELD.ASSIGNEE, FIELD.START_DATE} );
+		return Arrays.asList(FIELD.SUMMARY, FIELD.DESCRIPTION, FIELD.ASSIGNEE, FIELD.START_DATE);
 	}
 
 }

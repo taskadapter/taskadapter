@@ -26,5 +26,5 @@ public class LoadProjectsOperation extends LookupOperation {
 
         return descriptor.getProjectLoader().getProjects(serverInfo);
     }
-};
+}
 

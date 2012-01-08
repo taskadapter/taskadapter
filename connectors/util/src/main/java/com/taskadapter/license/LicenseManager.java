@@ -58,7 +58,6 @@ public class LicenseManager {
 	 * @throws LicenseValidationException 
 	 */
 	public static License checkLicense(String licenseText) throws LicenseValidationException {
-		License license = null;
 		if (licenseText == null) {
 			throw new LicenseValidationException();
 		}
@@ -107,7 +106,8 @@ public class LicenseManager {
 			String decodedBase64Text = new String(Base64.decodeBase64(key
 					.getBytes()));
 			String xoredText = chiper(decodedBase64Text, PASSWORD);
-			String mergedStr = customerName + email + createdOn; 
+			String mergedStr = customerName + email + createdOn;
+        License license;
 			if (mergedStr.equals(xoredText)) {
 				// valid license
 //				StringTokenizer tok = new StringTokenizer(partBeforeKey,

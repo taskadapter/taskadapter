@@ -54,11 +54,9 @@ public class TestUtils {
 		return t;
 	}
 	
-	public static List<GTask> packTasksToList(GTask... taskGTasks) {
+	public static List<GTask> packTasksToList(GTask... taskArgs) {
 		List<GTask> tasks = new ArrayList<GTask>();
-		for (GTask t : taskGTasks) {
-			tasks.add(t);
-		}
+        Collections.addAll(tasks, taskArgs);
 		return tasks;
 	}
 	
@@ -117,8 +115,7 @@ public class TestUtils {
 
     public static List<GTask> saveAndLoadList(Connector connector, List<GTask> tasks) throws Exception {
     	connector.saveData(tasks, null);
-    	List<GTask> loadedTasks = connector.loadData(null);
-    	return loadedTasks;
+        return connector.loadData(null);
     }
 
 	public static  Calendar setTaskStartYearAgo(GTask task) {

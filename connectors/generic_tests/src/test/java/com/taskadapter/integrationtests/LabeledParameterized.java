@@ -75,9 +75,7 @@ public class LabeledParameterized extends Parameterized {
 				// use array type for varargs (equivalent (almost))
 				new Object[] { "invokeExplosively", Object.class, null,
 						Object[].class, new Object[] {} } };
-		Collection<Object[]> parameterArrays = invokeMethodChain(this,
-				methodCalls);
-		return parameterArrays;
+        return invokeMethodChain(this, methodCalls);
 	}
 
 	private <T> T invokeMethodChain(Object object, Object[][] methodCalls)
@@ -107,9 +105,7 @@ public class LabeledParameterized extends Parameterized {
 			Class<?>... parameterTypes) throws NoSuchMethodException {
 		do {
 			try {
-				Method method = cl
-						.getDeclaredMethod(methodName, parameterTypes);
-				return method;
+                return cl.getDeclaredMethod(methodName, parameterTypes);
 			} catch (NoSuchMethodException e) {
 				// do nothing - just fall through to the below
 			}

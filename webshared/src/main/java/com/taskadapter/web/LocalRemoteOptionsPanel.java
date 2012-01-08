@@ -14,8 +14,7 @@ public class LocalRemoteOptionsPanel extends VerticalLayout {
     public static final String LOCAL = "TA is running on my LOCAL machine. The file paths are on MY computer.";
     public static final String REMOTE = "TA is running on ANOTHER machine. The files are stored on the remote machine.";
 
-    private static final List<String> options = Arrays.asList(new String[]{
-            LOCAL, REMOTE});
+    private static final List<String> options = Arrays.asList(LOCAL, REMOTE);
     private OptionGroup group;
     private SettingsManager settingsManager;
 

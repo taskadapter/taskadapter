@@ -126,7 +126,10 @@ public abstract class ConnectorConfig implements Serializable {
         return priorityNumber;
     }
 
-    //get the nearest priority value for Tracker based on the MSP integer value (priority field)
+    /**
+     * @return the nearest priority value for Tracker based on the MSP integer value (priority field).
+     * Never NULL.
+     */
     public String getPriorityByMSP(Integer mspValue) {
         Integer minIntValue = 9999;
         String minStringValue = "";

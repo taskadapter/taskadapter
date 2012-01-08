@@ -14,7 +14,7 @@ public class JiraProjectLoader implements ProjectLoader {
 
 	@Override
 	public List<GProject> getProjects(WebServerInfo serverInfo) throws ValidationException {
-		List<GProject> gProjects = null;
+		List<GProject> gProjects;
 		try {
 			JiraConnection connection = JiraConnectionFactory.createConnection(serverInfo);
 			RemoteProject[] projects = connection.getProjects();
@@ -29,7 +29,7 @@ public class JiraProjectLoader implements ProjectLoader {
 	}
 
 	public GProject getProject(WebServerInfo serverInfo, String projectKey) {
-		GProject gProject = null;
+		GProject gProject;
 		try {
 			JiraConnection connection = JiraConnectionFactory.createConnection(serverInfo);
 			RemoteProject project = connection.getProject(projectKey);
