@@ -14,6 +14,16 @@ public class PrioritiesTest {
     }
 
     @Test
+    public void priorityTextFoundForMaxNumber() {
+        assertEquals("Immediate", getSamplePriorities().getPriorityByMSP(Priorities.MAX_PRIORITY_VALUE));
+    }
+
+    @Test
+    public void defaultPriorityTextForNULLNumber() {
+        assertEquals("Normal", getSamplePriorities().getPriorityByMSP(null));
+    }
+
+    @Test
     public void priorityTextFoundByExactNumber() {
         assertEquals("High", getSamplePriorities().getPriorityByMSP(700));
     }
@@ -40,7 +50,7 @@ public class PrioritiesTest {
                 put("Normal", 500);
                 put("High", 700);
                 put("Urgent", 800);
-                put("Immediate", 1000);
+                put("Immediate", Priorities.MAX_PRIORITY_VALUE);
             }
         });
     }

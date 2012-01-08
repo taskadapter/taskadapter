@@ -3,7 +3,8 @@ package com.taskadapter.connector;
 import java.util.Map;
 
 public class Priorities {
-    protected static final Integer DEFAULT_PRIORITY_VALUE = 500;
+    static final Integer DEFAULT_PRIORITY_VALUE = 500;
+    static final int MAX_PRIORITY_VALUE = 1000;
 
     /**
      * priority text -> priority number mappings.
@@ -27,15 +28,19 @@ public class Priorities {
     Blocker: 1000 : 900-1000
      */
     public String getPriorityByMSP(Integer mspValue) {
-        Integer minIntValue = 9999;
+        int minIntValue = MAX_PRIORITY_VALUE;
         String minStringValue = "";
 
         if (mspValue == null) {
             mspValue = DEFAULT_PRIORITY_VALUE;
         }
+        if (mspValue > MAX_PRIORITY_VALUE) {
+            mspValue = MAX_PRIORITY_VALUE;
+        }
 
         for (Map.Entry<String, Integer> entry : prioritiesMapping.entrySet()) {
-            if (entry.getValue() >= mspValue && entry.getValue() < minIntValue) {
+            if ((entry.getValue() >= mspValue)
+                    && (entry.getValue() <= minIntValue)) {
                 //check if mspValue in current interval and it's value smaller than minIntValue we should remember this key
                 minIntValue = entry.getValue();
                 minStringValue = entry.getKey();
