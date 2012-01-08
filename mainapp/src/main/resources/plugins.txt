@@ -1,0 +1,7 @@
+# list of connectors for Task Adapter
+com.taskadapter.connector.redmine.RedmineFactory
+com.taskadapter.connector.jira.JiraFactory
+com.taskadapter.connector.msp.MSPFactory
+com.taskadapter.connector.github.GithubFactory
+com.taskadapter.connector.mantis.MantisFactory
+

@@ -1,0 +1,26 @@
+@import "../reindeer/styles.css";
+
+.header_panel {
+    background-color: #388ddd;
+    color: #ffffff;
+}
+
+.navigation_panel {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.taskstable {
+    font-size: 14px;
+}
+.taskstable .v-table-header {
+    background-color: #B8DBFF;
+}
+
+.v-table-cell-content-centered {
+    text-align: center;
+}
+
+.bordered_panel {
+    border: 2px #65C5E6 solid;
+}
