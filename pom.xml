@@ -10,7 +10,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jettyVersion>8.1.0.RC2</jettyVersion>
+        <jetty.version>8.1.0.RC2</jetty.version>
     </properties>
 
     <modules>
@@ -20,7 +20,7 @@
         <module>webshared</module>
         <module>connectors-editors</module>
         <!-- The standalone launcher for the web-application (starts embedded Jetty) -->
-        <!-- <module>launcher</module> -->
+       <!-- <module>launcher</module> -->
     </modules>
 
     <dependencies>
@@ -48,7 +48,7 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>${jettyVersion}</version>
+            <version>${jetty.version}</version>
         </dependency>
     </dependencies>
 

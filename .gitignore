@@ -1,4 +1,5 @@
 /out
 target
 *.tmp
+*.war
 .idea

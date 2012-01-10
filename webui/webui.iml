@@ -5,6 +5,7 @@
       <configuration>
         <setting name="gwtSdkUrl" value="file://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.3.0/" />
         <setting name="gwtSdkType" value="maven" />
+        <setting name="webFacet" value="Web" />
       </configuration>
     </facet>
     <facet type="web" name="Web">

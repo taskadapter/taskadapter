@@ -15,6 +15,9 @@
 
     <properties>
         <ta.project.root>${project.basedir}/../..</ta.project.root>
+        <ta-connectors.project.root>${project.basedir}/../../connectors</ta-connectors.project.root>
+        <ta-connectors-editors.project.root>${project.basedir}/../../connectors-editors
+        </ta-connectors-editors.project.root>
     </properties>
     <build>
         <plugins>
@@ -46,43 +49,46 @@
                             <targetPath>WEB-INF/classes</targetPath>
                         </resource>
                         <resource>
-                            <directory>${ta.project.root}/util/target/classes</directory>
+                            <directory>${ta-connectors.project.root}/util/target/classes</directory>
                             <targetPath>WEB-INF/classes</targetPath>
                         </resource>
                         <resource>
-                            <directory>${ta.project.root}/model/target/classes</directory>
+                            <directory>${ta-connectors.project.root}/model/target/classes</directory>
                             <targetPath>WEB-INF/classes</targetPath>
                         </resource>
                         <resource>
-                            <directory>${ta.project.root}/core/target/classes</directory>
+                            <directory>${ta-connectors.project.root}/core/target/classes</directory>
                             <targetPath>WEB-INF/classes</targetPath>
                         </resource>
                         <resource>
-                            <directory>${ta.project.root}/connector.common/target/classes</directory>
+                            <directory>${ta-connectors.project.root}/connector.common/target/classes</directory>
                             <targetPath>WEB-INF/classes</targetPath>
                         </resource>
                         <resource>
-                            <directory>${ta.project.root}/connector.jira/target/classes</directory>
+                            <directory>${ta-connectors.project.root}/connector.jira/target/classes</directory>
                             <targetPath>WEB-INF/classes</targetPath>
                         </resource>
                         <resource>
-                            <directory>${ta.project.root}/connector.jira.editor/target/classes</directory>
+                            <directory>${ta-connectors-editors.project.root}/connector.jira.editor/target/classes
+                            </directory>
                             <targetPath>WEB-INF/classes</targetPath>
                         </resource>
                         <resource>
-                            <directory>${ta.project.root}/connector.msp/target/classes</directory>
+                            <directory>${ta-connectors.project.root}/connector.msp/target/classes</directory>
                             <targetPath>WEB-INF/classes</targetPath>
                         </resource>
                         <resource>
-                            <directory>${ta.project.root}/connector.msp.editor/target/classes</directory>
+                            <directory>${ta-connectors-editors.project.root}/connector.msp.editor/target/classes
+                            </directory>
                             <targetPath>WEB-INF/classes</targetPath>
                         </resource>
                         <resource>
-                            <directory>${ta.project.root}/connector.redmine/target/classes</directory>
+                            <directory>${ta-connectors.project.root}/connector.redmine/target/classes</directory>
                             <targetPath>WEB-INF/classes</targetPath>
                         </resource>
                         <resource>
-                            <directory>${ta.project.root}/connector.redmine.editor/target/classes</directory>
+                            <directory>${ta-connectors-editors.project.root}/connector.redmine.editor/target/classes
+                            </directory>
                             <targetPath>WEB-INF/classes</targetPath>
                         </resource>
                     </webResources>

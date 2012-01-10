@@ -3,11 +3,11 @@ package com.taskadapter;
 import java.io.File;
 import java.net.JarURLConnection;
 import java.net.URL;
-import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.plus.naming.Resource;
-import org.mortbay.jetty.nio.SelectChannelConnector;
-import org.mortbay.jetty.webapp.WebAppContext;
+
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.nio.SelectChannelConnector;
+import org.eclipse.jetty.webapp.WebAppContext;
 
 public class Launcher {
     public static void main(String[] args) throws Exception {
