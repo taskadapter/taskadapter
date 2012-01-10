@@ -1,4 +1,5 @@
 <assembly>
+    <id>taskadapter_assembly</id>
 	<formats>
 		<format>war</format>
 	</formats>
