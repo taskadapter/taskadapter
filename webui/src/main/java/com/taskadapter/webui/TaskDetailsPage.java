@@ -27,7 +27,6 @@ public class TaskDetailsPage extends Page {
     private Button updateMSPLink;
     private Button link1to2;
     private Button link2to1;
-    private Button cloneButton = new Button("Clone config");
     private VerticalLayout layout = new VerticalLayout();
 
     // TODO refactor this huge list of parameters!
@@ -46,44 +45,7 @@ public class TaskDetailsPage extends Page {
         layout.setSpacing(true);
         name = new Label();
         layout.addComponent(name);
-
-        Button configureButton = new Button("Configure");
-        configureButton.setStyleName(BaseTheme.BUTTON_LINK);
-        configureButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                showConfigurePage();
-            }
-        });
-        layout.addComponent(configureButton);
-
-        cloneButton.setStyleName(BaseTheme.BUTTON_LINK);
-        cloneButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                getWindow().addWindow(new MessageDialog("Confirm Clone", "Clone the selected config?",
-                        new MessageDialog.Callback() {
-                            public void onDialogResult(boolean yes) {
-                                if (yes) {
-                                    storage.cloneConfig(file);
-                                    pageManager.show(PageManager.TASKS);
-                                }
-                            }
-                        }
-                ));
-            }
-        });
-        layout.addComponent(cloneButton);
-
-        Button deleteButton = new Button("Delete config");
-        deleteButton.setStyleName(BaseTheme.BUTTON_LINK);
-        deleteButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                showDeletePage();
-            }
-        });
-        layout.addComponent(deleteButton);
+        layout.addComponent(new TaskToolbarPanel(pageManager, storage, file, editorManager, settingsManager));
 
         if (hasOneMSPConnector()) {
             updateMSPLink = new Button();
@@ -102,16 +64,6 @@ public class TaskDetailsPage extends Page {
         updateLinks();
         setCompositionRoot(layout);
         layout.addComponent(new TaskButtonsPanel(pluginManager, file));
-    }
-
-    private void showDeletePage() {
-        DeletePage page = new DeletePage(pageManager, storage, file);
-        pageManager.show(page);
-    }
-
-    private void showConfigurePage() {
-        ConfigureTaskPage page = new ConfigureTaskPage(file, editorManager, storage, settingsManager);
-        pageManager.show(page);
     }
 
     private void setTask() {
