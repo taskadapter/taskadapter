@@ -110,7 +110,7 @@ public class TaskDetailsPage extends Page {
     private void createBox(ConnectorDataHolder dataHolder) {
         Descriptor connector = getConnector(dataHolder);
         // TODO use the config
-        ConnectorConfig config = (ConnectorConfig) dataHolder.getData();
+        ConnectorConfig config = dataHolder.getData();
         NativeButton button = new NativeButton(connector.getLabel());
         button.setWidth("250px");
         button.setHeight("110px");
@@ -238,13 +238,13 @@ public class TaskDetailsPage extends Page {
 
     private Connector getRealConnector1() {
         final PluginFactory factory1 = pluginManager.getPluginFactory(file.getConnectorDataHolder1().getType());
-        final ConnectorConfig config1 = (ConnectorConfig) file.getConnectorDataHolder1().getData();
+        final ConnectorConfig config1 = file.getConnectorDataHolder1().getData();
         return factory1.createConnector(config1);
     }
 
     private Connector getRealConnector2() {
         final PluginFactory factory2 = pluginManager.getPluginFactory(file.getConnectorDataHolder2().getType());
-        final ConnectorConfig config2 = (ConnectorConfig) file.getConnectorDataHolder2().getData();
+        final ConnectorConfig config2 = file.getConnectorDataHolder2().getData();
         return factory2.createConnector(config2);
     }
 

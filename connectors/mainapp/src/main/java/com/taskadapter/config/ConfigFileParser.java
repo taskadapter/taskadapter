@@ -57,11 +57,11 @@ public class ConfigFileParser {
         String line0 = LINE0_PREFIX + file.getName();
 
         String line1 = LINE1_PREFIX + file.getConnectorDataHolder1().getType();
-        Object data1 = file.getConnectorDataHolder1().getData();
+        ConnectorConfig data1 = file.getConnectorDataHolder1().getData();
         String line2 = LINE2_PREFIX + gson.toJson(data1);
 
         String line3 = LINE3_PREFIX + file.getConnectorDataHolder2().getType();
-        Object data2 = file.getConnectorDataHolder2().getData();
+        ConnectorConfig data2 = file.getConnectorDataHolder2().getData();
         String line4 = LINE4_PREFIX + gson.toJson(data2);
 
         return line0 + "\n" + line1 + "\n" + line2 + "\n" + line3
