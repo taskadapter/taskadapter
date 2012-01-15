@@ -24,3 +24,20 @@
 .bordered_panel {
     border: 2px #65C5E6 solid;
 }
+
+.boxButton .v-nativebutton-caption {
+    font-size: 14px;
+}
+
+.v-nativebutton-boxButton {
+    background-color: #DAF1FF;
+    color: #222219;
+    border: 2px #65C5E6 solid;
+}
+
+.v-nativebutton-boxButton:hover {
+    background-color: #99CCFF;
+    /*color: #ffffff;*/
+    border: 2px #65C5E6 solid;
+}
+
