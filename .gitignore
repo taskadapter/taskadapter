@@ -1,4 +1,5 @@
 /out
+classes
 target
 *.tmp
 *.war
