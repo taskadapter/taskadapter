@@ -2,7 +2,7 @@ package com.taskadapter.webui;
 
 import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
-import com.taskadapter.config.TAConfig;
+import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
@@ -10,6 +10,7 @@ import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.web.SettingsManager;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
@@ -17,7 +18,7 @@ import com.vaadin.ui.themes.BaseTheme;
  * @author Alexey Skorokhodov
  */
 public class TaskDetailsPage extends Page {
-    private TAConfig config;
+    private TAFile file;
     private PageManager pageManager;
     private ConfigStorage storage;
     private PluginManager pluginManager;
@@ -28,10 +29,11 @@ public class TaskDetailsPage extends Page {
     private Button link1to2;
     private Button link2to1;
     private Button cloneButton = new Button("Clone config");
+    private VerticalLayout layout = new VerticalLayout();
 
     // TODO refactor this huge list of parameters!
-    public TaskDetailsPage(TAConfig config, PageManager pageManager, ConfigStorage storage, PluginManager pluginManager, EditorManager editorManager, SettingsManager settingsManager) {
-        this.config = config;
+    public TaskDetailsPage(TAFile file, PageManager pageManager, ConfigStorage storage, PluginManager pluginManager, EditorManager editorManager, SettingsManager settingsManager) {
+        this.file = file;
         this.pageManager = pageManager;
         this.storage = storage;
         this.pluginManager = pluginManager;
@@ -42,7 +44,6 @@ public class TaskDetailsPage extends Page {
     }
 
     private void buildUI() {
-        VerticalLayout layout = new VerticalLayout();
         layout.setSpacing(true);
         name = new Label();
         layout.addComponent(name);
@@ -65,7 +66,7 @@ public class TaskDetailsPage extends Page {
                         new MessageDialog.Callback() {
                             public void onDialogResult(boolean yes) {
                                 if (yes) {
-                                    storage.cloneConfig(config);
+                                    storage.cloneConfig(file);
                                     pageManager.show(PageManager.TASKS);
                                 }
                             }
@@ -101,20 +102,35 @@ public class TaskDetailsPage extends Page {
 
         updateLinks();
         setCompositionRoot(layout);
+        createBox("some demo text");
+    }
+
+    private void createBox(String label) {
+        NativeButton button = new NativeButton(label);
+        button.setWidth("250px");
+        button.setHeight("110px");
+        button.addStyleName("boxButton");
+        layout.addComponent(button);
+        button.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+            }
+        });
+
     }
 
     private void showDeletePage() {
-        DeletePage page = new DeletePage(pageManager, storage, config);
+        DeletePage page = new DeletePage(pageManager, storage, file);
         pageManager.show(page);
     }
 
     private void showConfigurePage() {
-        ConfigureTaskPage page = new ConfigureTaskPage(config, editorManager, storage, settingsManager);
+        ConfigureTaskPage page = new ConfigureTaskPage(file, editorManager, storage, settingsManager);
         pageManager.show(page);
     }
 
     private void setTask() {
-        name.setValue("Name : " + config.getName());
+        name.setValue("Name : " + file.getName());
     }
 
     private static String generateLinkText(String label, Descriptor connectorForDefaultLabel) {
@@ -170,8 +186,8 @@ public class TaskDetailsPage extends Page {
         // another option would be to add "isMSP" to the Connector Interface, which would be
         // even more weird.
         // See MSPDescriptorTest class: it has a test to verify the ID stays the same
-        String type1 = config.getConnector1().getType();
-        String type2 = config.getConnector2().getType();
+        String type1 = file.getConnector1().getType();
+        String type2 = file.getConnector2().getType();
         // only one of the connectors is MSP
         return (
                 (type1.equals(MSP_ID) && (!type2.equals(MSP_ID)))
@@ -204,27 +220,27 @@ public class TaskDetailsPage extends Page {
     }
 
     private Descriptor getConnector1() {
-        return pluginManager.getDescriptor(config.getConnector1().getType());
+        return pluginManager.getDescriptor(file.getConnector1().getType());
     }
 
     private Descriptor getConnector2() {
-        return pluginManager.getDescriptor(config.getConnector2().getType());
+        return pluginManager.getDescriptor(file.getConnector2().getType());
     }
 
     private Connector getRealConnector1() {
-        final PluginFactory factory1 = pluginManager.getPluginFactory(config.getConnector1().getType());
-        final ConnectorConfig config1 = (ConnectorConfig) config.getConnector1().getData();
+        final PluginFactory factory1 = pluginManager.getPluginFactory(file.getConnector1().getType());
+        final ConnectorConfig config1 = (ConnectorConfig) file.getConnector1().getData();
         return factory1.createConnector(config1);
     }
 
     private Connector getRealConnector2() {
-        final PluginFactory factory2 = pluginManager.getPluginFactory(config.getConnector2().getType());
-        final ConnectorConfig config2 = (ConnectorConfig) config.getConnector2().getData();
+        final PluginFactory factory2 = pluginManager.getPluginFactory(file.getConnector2().getType());
+        final ConnectorConfig config2 = (ConnectorConfig) file.getConnector2().getData();
         return factory2.createConnector(config2);
     }
 
     @Override
     public String getNavigationPanelTitle() {
-        return config.getName();
+        return file.getName();
     }
 }

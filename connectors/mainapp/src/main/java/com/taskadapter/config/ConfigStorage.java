@@ -44,22 +44,22 @@ public class ConfigStorage {
    		return saferName + "-config";
     }
 
-    public List<TAConfig> getAllConfigs() {
+    public List<TAFile> getAllConfigs() {
         File root = new File(getRootFolderName());
         String[] fileNames = root.list(new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 return name.endsWith(FILE_EXTENSION);
             }
         });
-        List<TAConfig> configs = new ArrayList<TAConfig>();
+        List<TAFile> files = new ArrayList<TAFile>();
         if (fileNames != null) {
             for (String name : fileNames) {
                 File file = new File(root, name);
                 try {
                     String fileBody = MyIOUtils.loadFile(file.getAbsolutePath());
                     ConfigFileParser parser = new ConfigFileParser(pluginManager);
-                    TAConfig taConfig = parser.parse(fileBody);
-                    configs.add(taConfig);
+                    TAFile taFile = parser.parse(fileBody);
+                    files.add(taFile);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -67,15 +67,15 @@ public class ConfigStorage {
             }
         }
 
-        return configs;
+        return files;
     }
 
-    public void saveConfig(TAConfig taConfig) {
-        String fileContents = new ConfigFileParser(pluginManager).convertToJSonString(taConfig);
+    public void saveConfig(TAFile taFile) {
+        String fileContents = new ConfigFileParser(pluginManager).convertToJSonString(taFile);
         try {
             File rootDir = new File(getRootFolderName());
             rootDir.mkdirs();
-            String fullFileName = getAbsoluteFilePath(taConfig);
+            String fullFileName = getAbsoluteFilePath(taFile);
             MyIOUtils.writeToFile(fullFileName, fileContents);
             if (this.listener != null) {
                 this.listener.notifySomethingChanged();
@@ -86,7 +86,7 @@ public class ConfigStorage {
 
     }
 
-    public void delete(TAConfig config) {
+    public void delete(TAFile config) {
         File file = new File(getAbsoluteFilePath(config));
         file.delete();
         if (this.listener != null) {
@@ -94,8 +94,8 @@ public class ConfigStorage {
         }
     }
 
-    private String getAbsoluteFilePath(TAConfig config) {
-        String fileName = buildFileName(config.getName());
+    private String getAbsoluteFilePath(TAFile file) {
+        String fileName = buildFileName(file.getName());
         return getRootFolderName() + "/" + fileName + "." + FILE_EXTENSION;
     }
 
@@ -104,8 +104,8 @@ public class ConfigStorage {
         return userHome + "/taskadapter";
     }
 
-    public void cloneConfig(TAConfig config) {
-        TAConfig cfg = new TAConfig("Copy of " + config.getName(), config.getConnector1(), config.getConnector2());
+    public void cloneConfig(TAFile file) {
+        TAFile cfg = new TAFile("Copy of " + file.getName(), file.getConnector1(), file.getConnector2());
         this.saveConfig(cfg);
 
         if (this.listener != null) {

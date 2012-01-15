@@ -3,7 +3,7 @@ package com.taskadapter.webui;
 import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.config.StorageListener;
-import com.taskadapter.config.TAConfig;
+import com.taskadapter.config.TAFile;
 import com.taskadapter.web.SettingsManager;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
@@ -54,26 +54,26 @@ public class TasksPage extends Page {
         // for some reasons items are not added to the table without
         // specifying index.
         int i = 0;
-        for (TAConfig config : configStorage.getAllConfigs()) {
-            addTask(config, i++);
+        for (TAFile file : configStorage.getAllConfigs()) {
+            addTask(file, i++);
         }
         table.setPageLength(table.size() + 1);
     }
 
-    private void addTask(final TAConfig config, int i) {
-        Button button = new Button(config.getName());
+    private void addTask(final TAFile file, int i) {
+        Button button = new Button(file.getName());
         button.setStyleName(BaseTheme.BUTTON_LINK);
         button.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                showTask(config);
+                showTask(file);
             }
         });
         table.addItem(new Object[]{button}, i);
     }
 
-    private void showTask(TAConfig config) {
-        TaskDetailsPage page = new TaskDetailsPage(config, pageManager, configStorage, pluginManager, editorManager, settingsManager);
+    private void showTask(TAFile file) {
+        TaskDetailsPage page = new TaskDetailsPage(file, pageManager, configStorage, pluginManager, editorManager, settingsManager);
         pageManager.show(page);
     }
 

@@ -16,10 +16,10 @@ public class ConfigFileParserTest {
     public void fileIsParsed() throws IOException {
         String contents = MyIOUtils.getResourceAsString("redmine.ta_conf");
         ConfigFileParser parser = new ConfigFileParser(new PluginManager());
-        TAConfig config = parser.parse(contents);
+        TAFile file = parser.parse(contents);
 
-        assertEquals("Redmine DEMO", config.getName());
-        assertEquals("Redmine REST", config.getConnector1().getType());
-        assertEquals("Microsoft Project", config.getConnector2().getType());
+        assertEquals("Redmine DEMO", file.getName());
+        assertEquals("Redmine REST", file.getConnector1().getType());
+        assertEquals("Microsoft Project", file.getConnector2().getType());
     }
 }
