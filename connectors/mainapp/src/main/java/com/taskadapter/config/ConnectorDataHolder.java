@@ -1,5 +1,7 @@
 package com.taskadapter.config;
 
+import com.taskadapter.connector.definition.ConnectorConfig;
+
 public class ConnectorDataHolder {
 	/**
 	 * this no-args constructor is required for GSon.
@@ -8,9 +10,9 @@ public class ConnectorDataHolder {
 	}
 
 	private String type;
-	private Object data;
+	private ConnectorConfig data;
 
-	public ConnectorDataHolder(String type2, Object data) {
+	public ConnectorDataHolder(String type2, ConnectorConfig data) {
 		this.type = type2;
 		this.data = data;
 	}
@@ -19,8 +21,7 @@ public class ConnectorDataHolder {
 		return type;
 	}
 
-	// TODO replace with ConnectorConfig, it keeps connectorConfig anyway!!!
-	public Object getData() {
+	public ConnectorConfig getData() {
 		return data;
 	}
 

@@ -109,6 +109,7 @@ public class TaskDetailsPage extends Page {
 
     private void createBox(ConnectorDataHolder dataHolder) {
         Descriptor connector = getConnector(dataHolder);
+        // TODO use the config
         ConnectorConfig config = (ConnectorConfig) dataHolder.getData();
         NativeButton button = new NativeButton(connector.getLabel());
         button.setWidth("250px");
