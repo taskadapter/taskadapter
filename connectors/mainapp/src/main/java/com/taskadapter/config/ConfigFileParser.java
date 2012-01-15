@@ -21,7 +21,7 @@ public class ConfigFileParser {
         this.pluginManager = pluginManager;
     }
 
-    public TAConfig parse(String fileContents) {
+    public TAFile parse(String fileContents) {
         String lines[] = fileContents.split("\\r?\\n");
 
         String name = lines[0].substring(LINE0_PREFIX.length());
@@ -33,12 +33,12 @@ public class ConfigFileParser {
         String connector2DataString = lines[4].substring(LINE4_PREFIX.length());
         ConnectorConfig config2 = createConfig(connector2ID, connector2DataString);
 
-        TAConnectorDescriptor desc1 = new TAConnectorDescriptor(connector1ID,
+        ConnectorDataHolder desc1 = new ConnectorDataHolder(connector1ID,
                 config1);
-        TAConnectorDescriptor desc2 = new TAConnectorDescriptor(connector2ID,
+        ConnectorDataHolder desc2 = new ConnectorDataHolder(connector2ID,
                 config2);
 
-        return new TAConfig(name, desc1, desc2);
+        return new TAFile(name, desc1, desc2);
     }
 
     private ConnectorConfig createConfig(String pluginId, String dataString) {
@@ -51,17 +51,17 @@ public class ConfigFileParser {
         return gson.fromJson(dataString, configClass);
     }
 
-    public String convertToJSonString(TAConfig config) {
+    public String convertToJSonString(TAFile file) {
         Gson gson = new Gson();
 
-        String line0 = LINE0_PREFIX + config.getName();
+        String line0 = LINE0_PREFIX + file.getName();
 
-        String line1 = LINE1_PREFIX + config.getConnector1().getType();
-        Object data1 = config.getConnector1().getData();
+        String line1 = LINE1_PREFIX + file.getConnectorDataHolder1().getType();
+        ConnectorConfig data1 = file.getConnectorDataHolder1().getData();
         String line2 = LINE2_PREFIX + gson.toJson(data1);
 
-        String line3 = LINE3_PREFIX + config.getConnector2().getType();
-        Object data2 = config.getConnector2().getData();
+        String line3 = LINE3_PREFIX + file.getConnectorDataHolder2().getType();
+        ConnectorConfig data2 = file.getConnectorDataHolder2().getData();
         String line4 = LINE4_PREFIX + gson.toJson(data2);
 
         return line0 + "\n" + line1 + "\n" + line2 + "\n" + line3

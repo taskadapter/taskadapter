@@ -2,8 +2,8 @@ package com.taskadapter.webui;
 
 import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
-import com.taskadapter.config.TAConfig;
-import com.taskadapter.config.TAConnectorDescriptor;
+import com.taskadapter.config.ConnectorDataHolder;
+import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.web.SettingsManager;
 import com.vaadin.data.Validator;
@@ -27,7 +27,7 @@ public class NewConfigPage extends Page {
     private SettingsManager settingsManager;
     private PageManager pageManager;
     private ConfigStorage storage;
-    private TAConfig newConfig;
+    private TAFile newFile;
 
     // TODO refactor all these mega-parameters into a factory
     public NewConfigPage(PageManager pageManager, ConfigStorage storage, PluginManager pluginManager, EditorManager editorManager, SettingsManager settingsManager) {
@@ -104,7 +104,7 @@ public class NewConfigPage extends Page {
 
     private void showTaskDetailsPage() {
 //        TaskDetailsPage page = new TaskDetailsPage(newConfig, pageManager, storage, pluginManager, editorManager);
-        ConfigureTaskPage page = new ConfigureTaskPage(newConfig, editorManager, storage, settingsManager);
+        ConfigureTaskPage page = new ConfigureTaskPage(newFile, editorManager, storage, settingsManager);
         pageManager.show(page);
     }
 
@@ -120,14 +120,14 @@ public class NewConfigPage extends Page {
         String id2 = (String) connector2.getValue();
 
         Descriptor descriptor1 = pluginManager.getDescriptor(id1);
-        TAConnectorDescriptor d1 = new TAConnectorDescriptor(id1,
+        ConnectorDataHolder d1 = new ConnectorDataHolder(id1,
                 // TODO replace with factory.createDefaultConfig()
                 descriptor1.createDefaultConfig());
         Descriptor descriptor2 = pluginManager.getDescriptor(id2);
-        TAConnectorDescriptor d2 = new TAConnectorDescriptor(id2,
+        ConnectorDataHolder d2 = new ConnectorDataHolder(id2,
                 descriptor2.createDefaultConfig());
-        this.newConfig = new TAConfig(nameStr, d1, d2);
-        storage.saveConfig(newConfig);
+        this.newFile = new TAFile(nameStr, d1, d2);
+        storage.saveConfig(newFile);
     }
 
     @Override

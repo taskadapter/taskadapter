@@ -1,7 +1,7 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.config.ConfigStorage;
-import com.taskadapter.config.TAConfig;
+import com.taskadapter.config.TAFile;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -12,23 +12,23 @@ import com.vaadin.ui.VerticalLayout;
 public class DeletePage extends Page {
     private PageManager pageManager;
     private ConfigStorage storage;
-    private TAConfig config;
+    private TAFile file;
 
-    public DeletePage(PageManager pageManager, ConfigStorage storage, TAConfig config) {
+    public DeletePage(PageManager pageManager, ConfigStorage storage, TAFile file) {
         this.pageManager = pageManager;
         this.storage = storage;
-        this.config = config;
+        this.file = file;
         buildUI();
     }
 
     private void buildUI() {
         VerticalLayout layout = new VerticalLayout();
-        layout.addComponent(new Label("Delete config '" + config.getName() + "' ?"));
+        layout.addComponent(new Label("Delete config '" + file.getName() + "' ?"));
         Button deleteButton = new Button("Yes");
         deleteButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                storage.delete(config);
+                storage.delete(file);
                 pageManager.show(PageManager.TASKS);
             }
         });
@@ -38,6 +38,6 @@ public class DeletePage extends Page {
 
     @Override
     public String getNavigationPanelTitle() {
-        return config.getName();
+        return file.getName();
     }
 }
