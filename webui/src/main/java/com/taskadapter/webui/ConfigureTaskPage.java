@@ -1,8 +1,8 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.config.ConfigStorage;
+import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
-import com.taskadapter.config.TAConnectorDescriptor;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.web.PluginEditorFactory;
@@ -63,8 +63,8 @@ public class ConfigureTaskPage extends Page {
             panel2.validateAll();
             ConnectorConfig c1 = panel1.getConfig();
             ConnectorConfig c2 = panel2.getConfig();
-            TAConnectorDescriptor d1 = new TAConnectorDescriptor(file.getConnector1().getType(), c1);
-            TAConnectorDescriptor d2 = new TAConnectorDescriptor(file.getConnector2().getType(), c2);
+            ConnectorDataHolder d1 = new ConnectorDataHolder(file.getConnector1().getType(), c1);
+            ConnectorDataHolder d2 = new ConnectorDataHolder(file.getConnector2().getType(), c2);
 
             TAFile newFile = new TAFile((String) name.getValue(), d1, d2);
             configStorage.saveConfig(newFile);
@@ -74,9 +74,9 @@ public class ConfigureTaskPage extends Page {
         }
     }
 
-    private ConfigEditor getPanel(TAConnectorDescriptor descriptor) {
-        ConnectorConfig configData = (ConnectorConfig) descriptor.getData();
-        PluginEditorFactory editorFactory = editorManager.getEditorFactory(descriptor.getType());
+    private ConfigEditor getPanel(ConnectorDataHolder dataHolder) {
+        ConnectorConfig configData = (ConnectorConfig) dataHolder.getData();
+        PluginEditorFactory editorFactory = editorManager.getEditorFactory(dataHolder.getType());
         return editorFactory.createEditor(configData, settingsManager);
     }
 

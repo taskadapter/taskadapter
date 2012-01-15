@@ -3,8 +3,8 @@ package com.taskadapter.config;
 
 public class TAFile {
 	private String name;
-	private TAConnectorDescriptor connector1;
-	private TAConnectorDescriptor connector2;
+	private ConnectorDataHolder connector1;
+	private ConnectorDataHolder connector2;
 
 	/**
 	 *  this no-args constructor is required for GSon.
@@ -12,7 +12,7 @@ public class TAFile {
 	public TAFile() {
 	}
 	
-  public TAFile(String name, TAConnectorDescriptor d1, TAConnectorDescriptor d2) {
+  public TAFile(String name, ConnectorDataHolder d1, ConnectorDataHolder d2) {
     this.name = name;
     this.connector1 = d1;
     this.connector2 = d2;
@@ -22,19 +22,19 @@ public class TAFile {
     this(source.getName(), source.getConnector1(), source.getConnector2());
   }
 
-	public TAConnectorDescriptor getConnector1() {
+	public ConnectorDataHolder getConnector1() {
 		return connector1;
 	}
 
-	public void setConnector1(TAConnectorDescriptor connector1) {
+	public void setConnector1(ConnectorDataHolder connector1) {
 		this.connector1 = connector1;
 	}
 
-	public TAConnectorDescriptor getConnector2() {
+	public ConnectorDataHolder getConnector2() {
 		return connector2;
 	}
 
-	public void setConnector2(TAConnectorDescriptor connector2) {
+	public void setConnector2(ConnectorDataHolder connector2) {
 		this.connector2 = connector2;
 	}
 

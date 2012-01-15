@@ -1,16 +1,16 @@
 package com.taskadapter.config;
 
-public class TAConnectorDescriptor {
+public class ConnectorDataHolder {
 	/**
 	 * this no-args constructor is required for GSon.
 	 */
-	public TAConnectorDescriptor() {
+	public ConnectorDataHolder() {
 	}
 
 	private String type;
 	private Object data;
 
-	public TAConnectorDescriptor(String type2, Object data) {
+	public ConnectorDataHolder(String type2, Object data) {
 		this.type = type2;
 		this.data = data;
 	}
@@ -45,7 +45,7 @@ public class TAConnectorDescriptor {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		TAConnectorDescriptor other = (TAConnectorDescriptor) obj;
+		ConnectorDataHolder other = (ConnectorDataHolder) obj;
 		if (data == null) {
 			if (other.data != null) {
 				return false;

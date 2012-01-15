@@ -33,9 +33,9 @@ public class ConfigFileParser {
         String connector2DataString = lines[4].substring(LINE4_PREFIX.length());
         ConnectorConfig config2 = createConfig(connector2ID, connector2DataString);
 
-        TAConnectorDescriptor desc1 = new TAConnectorDescriptor(connector1ID,
+        ConnectorDataHolder desc1 = new ConnectorDataHolder(connector1ID,
                 config1);
-        TAConnectorDescriptor desc2 = new TAConnectorDescriptor(connector2ID,
+        ConnectorDataHolder desc2 = new ConnectorDataHolder(connector2ID,
                 config2);
 
         return new TAFile(name, desc1, desc2);
