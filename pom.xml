@@ -16,7 +16,6 @@
     <modules>
         <module>connectors</module>
         <module>webui</module>
-        <module>mainapp</module>
         <module>webshared</module>
         <module>connectors-editors</module>
         <!-- The standalone launcher for the web-application (starts embedded Jetty) -->

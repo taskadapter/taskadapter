@@ -15,6 +15,7 @@
 
     <modules>
         <module>connector.common</module>
+        <module>mainapp</module>
         <module>model</module>
         <module>util</module>
         <module>core</module>
