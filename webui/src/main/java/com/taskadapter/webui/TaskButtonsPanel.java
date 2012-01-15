@@ -36,8 +36,6 @@ public class TaskButtonsPanel extends HorizontalLayout {
         // TODO use the config
         ConnectorConfig config = dataHolder.getData();
         NativeButton button = new NativeButton(connector.getLabel());
-        button.setWidth("250px");
-        button.setHeight("110px");
         button.addStyleName("boxButton");
         addComponent(button);
         button.addListener(new Button.ClickListener() {

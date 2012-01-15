@@ -33,6 +33,8 @@
     background-color: #DAF1FF;
     color: #222219;
     border: 2px #65C5E6 solid;
+    width: 250px;
+    height: 110px;
 }
 
 .v-nativebutton-boxButton:hover {
