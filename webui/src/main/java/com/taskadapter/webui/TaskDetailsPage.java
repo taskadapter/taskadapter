@@ -2,7 +2,6 @@ package com.taskadapter.webui;
 
 import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
-import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
@@ -11,7 +10,6 @@ import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.web.SettingsManager;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
@@ -103,29 +101,7 @@ public class TaskDetailsPage extends Page {
 
         updateLinks();
         setCompositionRoot(layout);
-        createBox(file.getConnectorDataHolder1());
-        createBox(file.getConnectorDataHolder2());
-    }
-
-    private void createBox(ConnectorDataHolder dataHolder) {
-        Descriptor connector = getConnector(dataHolder);
-        // TODO use the config
-        ConnectorConfig config = dataHolder.getData();
-        NativeButton button = new NativeButton(connector.getLabel());
-        button.setWidth("250px");
-        button.setHeight("110px");
-        button.addStyleName("boxButton");
-        layout.addComponent(button);
-        button.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-            }
-        });
-
-    }
-
-    private Descriptor getConnector(ConnectorDataHolder desc) {
-        return pluginManager.getDescriptor(desc.getType());
+        layout.addComponent(new TaskButtonsPanel(pluginManager, file));
     }
 
     private void showDeletePage() {
