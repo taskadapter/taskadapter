@@ -15,7 +15,6 @@ public class ConnectorDataHolder {
 		this.data = data;
 	}
 
-    // TO
 	public String getType() {
 		return type;
 	}

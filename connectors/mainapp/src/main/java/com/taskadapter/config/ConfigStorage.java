@@ -105,7 +105,7 @@ public class ConfigStorage {
     }
 
     public void cloneConfig(TAFile file) {
-        TAFile cfg = new TAFile("Copy of " + file.getName(), file.getConnector1(), file.getConnector2());
+        TAFile cfg = new TAFile("Copy of " + file.getName(), file.getConnectorDataHolder1(), file.getConnectorDataHolder2());
         this.saveConfig(cfg);
 
         if (this.listener != null) {

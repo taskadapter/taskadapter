@@ -40,11 +40,11 @@ public class ConfigureTaskPage extends Page {
         TabSheet tabSheet = new TabSheet();
         panel.addComponent(tabSheet);
 
-        panel1 = getPanel(file.getConnector1());
+        panel1 = getPanel(file.getConnectorDataHolder1());
 
         tabSheet.addTab(panel1, "panel 1");
 
-        panel2 = getPanel(file.getConnector2());
+        panel2 = getPanel(file.getConnectorDataHolder2());
         tabSheet.addTab(panel2, "panel 2");
 
         Button saveButton = new Button("Save");
@@ -63,8 +63,8 @@ public class ConfigureTaskPage extends Page {
             panel2.validateAll();
             ConnectorConfig c1 = panel1.getConfig();
             ConnectorConfig c2 = panel2.getConfig();
-            ConnectorDataHolder d1 = new ConnectorDataHolder(file.getConnector1().getType(), c1);
-            ConnectorDataHolder d2 = new ConnectorDataHolder(file.getConnector2().getType(), c2);
+            ConnectorDataHolder d1 = new ConnectorDataHolder(file.getConnectorDataHolder1().getType(), c1);
+            ConnectorDataHolder d2 = new ConnectorDataHolder(file.getConnectorDataHolder2().getType(), c2);
 
             TAFile newFile = new TAFile((String) name.getValue(), d1, d2);
             configStorage.saveConfig(newFile);

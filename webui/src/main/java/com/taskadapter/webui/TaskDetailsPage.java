@@ -2,6 +2,7 @@ package com.taskadapter.webui;
 
 import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
+import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
@@ -102,11 +103,14 @@ public class TaskDetailsPage extends Page {
 
         updateLinks();
         setCompositionRoot(layout);
-        createBox("some demo text");
+        createBox(file.getConnectorDataHolder1());
+        createBox(file.getConnectorDataHolder2());
     }
 
-    private void createBox(String label) {
-        NativeButton button = new NativeButton(label);
+    private void createBox(ConnectorDataHolder dataHolder) {
+        Descriptor connector = getConnector(dataHolder);
+        ConnectorConfig config = (ConnectorConfig) dataHolder.getData();
+        NativeButton button = new NativeButton(connector.getLabel());
         button.setWidth("250px");
         button.setHeight("110px");
         button.addStyleName("boxButton");
@@ -117,6 +121,10 @@ public class TaskDetailsPage extends Page {
             }
         });
 
+    }
+
+    private Descriptor getConnector(ConnectorDataHolder desc) {
+        return pluginManager.getDescriptor(desc.getType());
     }
 
     private void showDeletePage() {
@@ -186,8 +194,8 @@ public class TaskDetailsPage extends Page {
         // another option would be to add "isMSP" to the Connector Interface, which would be
         // even more weird.
         // See MSPDescriptorTest class: it has a test to verify the ID stays the same
-        String type1 = file.getConnector1().getType();
-        String type2 = file.getConnector2().getType();
+        String type1 = file.getConnectorDataHolder1().getType();
+        String type2 = file.getConnectorDataHolder2().getType();
         // only one of the connectors is MSP
         return (
                 (type1.equals(MSP_ID) && (!type2.equals(MSP_ID)))
@@ -220,22 +228,22 @@ public class TaskDetailsPage extends Page {
     }
 
     private Descriptor getConnector1() {
-        return pluginManager.getDescriptor(file.getConnector1().getType());
+        return pluginManager.getDescriptor(file.getConnectorDataHolder1().getType());
     }
 
     private Descriptor getConnector2() {
-        return pluginManager.getDescriptor(file.getConnector2().getType());
+        return pluginManager.getDescriptor(file.getConnectorDataHolder2().getType());
     }
 
     private Connector getRealConnector1() {
-        final PluginFactory factory1 = pluginManager.getPluginFactory(file.getConnector1().getType());
-        final ConnectorConfig config1 = (ConnectorConfig) file.getConnector1().getData();
+        final PluginFactory factory1 = pluginManager.getPluginFactory(file.getConnectorDataHolder1().getType());
+        final ConnectorConfig config1 = (ConnectorConfig) file.getConnectorDataHolder1().getData();
         return factory1.createConnector(config1);
     }
 
     private Connector getRealConnector2() {
-        final PluginFactory factory2 = pluginManager.getPluginFactory(file.getConnector2().getType());
-        final ConnectorConfig config2 = (ConnectorConfig) file.getConnector2().getData();
+        final PluginFactory factory2 = pluginManager.getPluginFactory(file.getConnectorDataHolder2().getType());
+        final ConnectorConfig config2 = (ConnectorConfig) file.getConnectorDataHolder2().getData();
         return factory2.createConnector(config2);
     }
 

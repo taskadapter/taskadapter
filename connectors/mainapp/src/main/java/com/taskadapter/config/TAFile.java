@@ -1,10 +1,9 @@
 package com.taskadapter.config;
 
-
 public class TAFile {
     private String name;
-    private ConnectorDataHolder connector1;
-    private ConnectorDataHolder connector2;
+    private ConnectorDataHolder connectorDataHolder1;
+    private ConnectorDataHolder connectorDataHolder2;
 
     /**
      * this no-args constructor is required for GSon.
@@ -14,28 +13,28 @@ public class TAFile {
 
     public TAFile(String name, ConnectorDataHolder d1, ConnectorDataHolder d2) {
         this.name = name;
-        this.connector1 = d1;
-        this.connector2 = d2;
+        this.connectorDataHolder1 = d1;
+        this.connectorDataHolder2 = d2;
     }
 
     public TAFile(TAFile source) {
-        this(source.getName(), source.getConnector1(), source.getConnector2());
+        this(source.getName(), source.getConnectorDataHolder1(), source.getConnectorDataHolder2());
     }
 
-    public ConnectorDataHolder getConnector1() {
-        return connector1;
+    public ConnectorDataHolder getConnectorDataHolder1() {
+        return connectorDataHolder1;
     }
 
-    public void setConnector1(ConnectorDataHolder connector1) {
-        this.connector1 = connector1;
+    public void setConnectorDataHolder1(ConnectorDataHolder connectorDataHolder1) {
+        this.connectorDataHolder1 = connectorDataHolder1;
     }
 
-    public ConnectorDataHolder getConnector2() {
-        return connector2;
+    public ConnectorDataHolder getConnectorDataHolder2() {
+        return connectorDataHolder2;
     }
 
-    public void setConnector2(ConnectorDataHolder connector2) {
-        this.connector2 = connector2;
+    public void setConnectorDataHolder2(ConnectorDataHolder connectorDataHolder2) {
+        this.connectorDataHolder2 = connectorDataHolder2;
     }
 
     public String getName() {
@@ -47,9 +46,9 @@ public class TAFile {
         final int prime = 31;
         int result = 1;
         result = prime * result
-                + ((connector1 == null) ? 0 : connector1.hashCode());
+                + ((connectorDataHolder1 == null) ? 0 : connectorDataHolder1.hashCode());
         result = prime * result
-                + ((connector2 == null) ? 0 : connector2.hashCode());
+                + ((connectorDataHolder2 == null) ? 0 : connectorDataHolder2.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
     }
@@ -66,18 +65,18 @@ public class TAFile {
             return false;
         }
         TAFile other = (TAFile) obj;
-        if (connector1 == null) {
-            if (other.connector1 != null) {
+        if (connectorDataHolder1 == null) {
+            if (other.connectorDataHolder1 != null) {
                 return false;
             }
-        } else if (!connector1.equals(other.connector1)) {
+        } else if (!connectorDataHolder1.equals(other.connectorDataHolder1)) {
             return false;
         }
-        if (connector2 == null) {
-            if (other.connector2 != null) {
+        if (connectorDataHolder2 == null) {
+            if (other.connectorDataHolder2 != null) {
                 return false;
             }
-        } else if (!connector2.equals(other.connector2)) {
+        } else if (!connectorDataHolder2.equals(other.connectorDataHolder2)) {
             return false;
         }
         if (name == null) {
