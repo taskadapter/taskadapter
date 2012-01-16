@@ -92,8 +92,6 @@ public class TaskDetailsPage extends Page {
         setLinkText(link1to2, labelFrom, labelTo);
         setLinkText(link2to1, labelTo, labelFrom);
 
-//        removeSelListeners(link1to2);
-//        removeSelListeners(link2to1);
         this.link1to2.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
