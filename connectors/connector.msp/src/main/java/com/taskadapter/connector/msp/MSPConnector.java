@@ -99,6 +99,11 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
     }
 
     @Override
+    public String getAbsoluteOutputFileName() {
+        return config.getOutputFileName();
+    }
+
+    @Override
     public void validateCanUpdate() throws ValidationException {
         if (config.getInputFileName().toLowerCase().endsWith(MSPFileReader.MPP_SUFFIX_LOWERCASE)) {
             throw new ValidationException("The Microsoft Project 'Input File Name' you provided ends with \"" +

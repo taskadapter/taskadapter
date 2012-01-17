@@ -7,6 +7,8 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
+import java.util.Arrays;
+
 public class TaskToolbarPanel extends HorizontalLayout {
     private Button cloneButton = new Button("Clone config");
     private final PageManager pageManager;
@@ -41,10 +43,13 @@ public class TaskToolbarPanel extends HorizontalLayout {
         cloneButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                getWindow().addWindow(new MessageDialog("Confirm Clone", "Clone the selected config?",
+                final String YES = "Yes";
+                String NO = "No";
+
+                getWindow().addWindow(new MessageDialog("Confirm Clone", "Clone the selected config?", Arrays.asList(YES, NO),
                         new MessageDialog.Callback() {
-                            public void onDialogResult(boolean yes) {
-                                if (yes) {
+                            public void onDialogResult(String answer) {
+                                if (answer.equals(YES)) {
                                     storage.cloneConfig(file);
                                     pageManager.show(PageManager.TASKS);
                                 }

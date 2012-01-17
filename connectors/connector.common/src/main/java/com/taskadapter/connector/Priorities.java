@@ -12,6 +12,12 @@ public class Priorities {
      */
     private Map<String, Integer> prioritiesMapping;
 
+    /**
+     * Empty constructor is required for GSon library
+     */
+    public Priorities() {
+    }
+
     public Priorities(Map<String, Integer> prioritiesMapping) {
         this.prioritiesMapping = prioritiesMapping;
     }
