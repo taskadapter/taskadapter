@@ -1,1 +1,0 @@
-mvn assembly:assembly -fexecwarpom.xml -DskipTests
