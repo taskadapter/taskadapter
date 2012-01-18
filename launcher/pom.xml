@@ -99,7 +99,7 @@
 							<outputDirectory>${basedir}/target/dist</outputDirectory>
 							<resources>
 								<resource>
-									<directory>${basedir}/src/main/script</directory>
+									<directory>${basedir}/src/main/scripts</directory>
 									<filtering>false</filtering>
 									<includes>
 										<include>ta-launcher.sh</include>
