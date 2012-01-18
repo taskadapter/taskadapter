@@ -102,8 +102,8 @@
 									<directory>${basedir}/src/main/scripts</directory>
 									<filtering>false</filtering>
 									<includes>
-										<include>ta-launcher.sh</include>
-										<include>ta-launcher.bat</include>
+										<include>start.sh</include>
+										<include>start.bat</include>
 									</includes>
 								</resource>
 							</resources>
@@ -124,7 +124,7 @@
 						<phase>package</phase>
 						<configuration>
 							<target>
-								<chmod file="target/dist/ta-launcher.sh" perm="755" />
+								<chmod file="target/dist/start.sh" perm="755" />
 							</target>
 						</configuration>
 						<goals>
