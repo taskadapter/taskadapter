@@ -5,8 +5,9 @@ import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.Descriptor.Feature;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.NamedKeyedObjectImpl;
+import com.vaadin.data.util.BeanContainer;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 
 import java.util.*;
@@ -14,29 +15,39 @@ import java.util.*;
 /**
  * @author Alexey Skorokhodov
  */
-public class PriorityPanel extends FormLayout implements Validatable {
+public class PriorityPanel extends Panel implements Validatable {
 
+    public static final String TEXT = "Priority Name";
+    public static final String VALUE = "Task Adapter Priority Value";
     private final ConfigEditor configEditor;
     private final Descriptor descriptor;
+
+    private BeanContainer data = new BeanContainer<String, Priority>(Priority.class);
 
     private Table prioritiesTable;
 
     /**
      * Config Editors should NOT create this object directly, use ConfigEditor.addPriorityPanel() method instead.
      *
-     * @see ConfigEditor#addPriorityPanel(ConfigEditor, com.taskadapter.connector.definition.Descriptor)
+     * @see ConfigEditor#addPriorityPanel(ConfigEditor, com.taskadapter.connector.definition.Descriptor, Priorities priorities)
      */
     PriorityPanel(ConfigEditor editor, Descriptor descriptor) {
         this.configEditor = editor;
         this.descriptor = descriptor;
-        init();
+        buildUI();
     }
 
-    private void init() {
+    private void buildUI() {
         Collection<Feature> features = descriptor.getSupportedFeatures();
 
-		prioritiesTable = new Table("Priorities");
-//        prioritiesTable.setColumnHeaders(new String[] { "Priority", "Task Adapter priority"});
+		prioritiesTable = new Table("Priorities", data);
+        data.setBeanIdProperty("text");
+        prioritiesTable.addStyleName("priorities_table");
+        prioritiesTable.setEditable(true);
+        prioritiesTable.setColumnHeader("text", TEXT);
+        prioritiesTable.setColumnHeader("value", VALUE);
+        prioritiesTable.setVisibleColumns(new Object[]{"text", "value"});
+
 //		prioritiesTable.addSelectionListener(new SelectionAdapter() {
 //			public void widgetSelected(SelecionEvent e) {
 //
@@ -69,6 +80,7 @@ public class PriorityPanel extends FormLayout implements Validatable {
 //				});
 //			}
 //		});
+        addComponent(prioritiesTable);
 
         Button reloadButton = new Button("Reload");
         reloadButton.setDescription("Reload priority list.");
@@ -76,7 +88,6 @@ public class PriorityPanel extends FormLayout implements Validatable {
         reloadButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                clearEditor();
                 try {
                     reloadPriorityList();
                 } catch (Exception e) {
@@ -85,12 +96,7 @@ public class PriorityPanel extends FormLayout implements Validatable {
                 }
             }
         });
-    }
-
-    public void setPriorities(Priorities priorities) {
-//        for (String key : priorities.get...()) {
-//			addPriorityOnTable(key, priorities.get(key).toString());
-//        }
+        addComponent(reloadButton);
     }
 
     public Priorities getPriorities() {
@@ -116,22 +122,18 @@ public class PriorityPanel extends FormLayout implements Validatable {
                    .run();
 
            Priorities defaultPriorities = descriptor.createDefaultConfig().getPriorities();
+           setPriorities(defaultPriorities);
 
-/*           prioritiesTable.removeAll();
-           prioritiesTable.update();
-
-           Integer defPriority;
-           for (int i = 0; i < list.size(); i++) {
-               defPriority = defaultPriorities.get(list.get(i).getKey());
-
-               if (defPriority == null) {
-                   defPriority = 0;
-               }
-
-               addPriorityOnTable(list.get(i).getKey(), defPriority.toString());
-           }*/
            System.out.println("reloadPriorityList: not implemented");
        }
+
+    public void setPriorities(Priorities items) {
+        data.removeAllItems();
+        for (final String priorityName : items.getAllNames()) {
+            data.addBean(new Priority(priorityName, items.getPriorityByText(priorityName)));
+        }
+        prioritiesTable.setPageLength(prioritiesTable.size() + 1);
+    }
 
     @Override
     public void validate() throws ValidationException {
@@ -151,17 +153,6 @@ public class PriorityPanel extends FormLayout implements Validatable {
     }
 
     /**
-     * Clear current editor in priorities table
-     */
-	private void clearEditor() {
-        System.out.println("clearEditor: not implemented");
-//		Control oldEditor = prioritiesEditor.getEditor();
-//		if (oldEditor != null) {
-//			oldEditor.dispose();
-//        }
-	}
-
-    /**
      * Make sure there are only digits in the text field.
      */
 //	private final class NumberVerifier implements VerifyListener {
@@ -170,4 +161,21 @@ public class PriorityPanel extends FormLayout implements Validatable {
 //		  }
 //	}
 
+    public class Priority {
+        String text;
+        int value;
+
+        private Priority(String text, int value) {
+            this.text = text;
+            this.value = value;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
 }

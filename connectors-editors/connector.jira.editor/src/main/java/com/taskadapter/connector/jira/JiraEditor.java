@@ -23,8 +23,6 @@ public class JiraEditor extends ConfigEditor {
     private TextField affectedVersion;
     private TextField fixForVersion;
     private CustomFieldsPanel customFieldsTable;
-    //    private TableEditor idEditor;
-//    private TableEditor nameEditor;
 
     public JiraEditor(ConnectorConfig config) {
         this.config = (JiraConfig) config;
@@ -32,6 +30,8 @@ public class JiraEditor extends ConfigEditor {
         addFieldsMappingPanel(JiraDescriptor.instance.getAvailableFieldsProvider(), config.getFieldsMapping());
 
         setDataToForm();
+        // TODO the parent class should do this! see the eclipse version. I put this call here just for experiments
+        setDataTMPMETHOD(config);
     }
 
     private void setDataToForm() {

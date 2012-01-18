@@ -1,5 +1,7 @@
 package com.taskadapter.connector;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
 public class Priorities {
@@ -63,5 +65,9 @@ public class Priorities {
             priorityNumber = DEFAULT_PRIORITY_VALUE;
         }
         return priorityNumber;
+    }
+
+    public Collection<String> getAllNames() {
+        return prioritiesMapping.keySet();
     }
 }

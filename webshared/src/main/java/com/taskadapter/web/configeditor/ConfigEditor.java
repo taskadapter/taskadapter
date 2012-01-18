@@ -21,6 +21,7 @@ public abstract class ConfigEditor extends FormLayout {
     protected ProjectPanel projectPanel;
     private PriorityPanel priorityPanel;
     private FieldsMappingPanel fieldsMappingPanel;
+    private ConnectorConfig config;
 
     protected ConfigEditor() {
         addStyleName("bordered_panel");
@@ -114,5 +115,24 @@ public abstract class ConfigEditor extends FormLayout {
         return config;
     }
 
+    public void setDataTMPMETHOD(ConnectorConfig config) {
+        this.config = config;
 
+        setCommonFields();
+    }
+
+    protected void setCommonFields() {
+        if (serverPanel != null) {
+            serverPanel.setServerInfo(((WebConfig) config).getServerInfo());
+        }
+        if (priorityPanel != null) {
+            priorityPanel.setPriorities(config.getPriorities());
+        }
+        if (projectPanel != null) {
+            projectPanel.setProjectInfo(((WebConfig) config).getProjectInfo());
+        }
+
+        // TODO add this
+//        EditorUtil.setNullSafe(this.labelText, config.getLabel());
+    }
 }

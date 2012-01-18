@@ -43,3 +43,7 @@
     border: 2px #65C5E6 solid;
 }
 
+.priorities_table {
+    width: 300px;
+    font-size: 14px;
+}
