@@ -28,9 +28,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
     private PasswordField redmineAPIKey;
     private TextField login;
     private PasswordField password;
-    private TextField projectKey;
     private TextField defaultTaskType;
-    private TextField queryId;
 
     private static final List<String> authOptions = Arrays.asList(USE_API, USE_LOGIN);
 
@@ -72,11 +70,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         password = new PasswordField("Password");
         addComponent(password);
 
-        projectKey = new TextField("Project Key");
-        addComponent(projectKey);
-
-        queryId = new TextField("Query ID");
-        addComponent(queryId);
+        addProjectPanel(this, new RedmineProjectProcessor(this));
 
         defaultTaskType = new TextField("Default task type");
         addComponent(defaultTaskType);
@@ -95,12 +89,8 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         authOptionsGroup.select(serverInfo.isUseAPIKeyInsteadOfLoginPassword());
         authOptionsGroup.select(!serverInfo.isUseAPIKeyInsteadOfLoginPassword());
 
-        setIfNotNull(projectKey, redmineConfig.getProjectKey());
         setIfNotNull(defaultTaskType, config.getDefaultTaskType());
         setIfNotNull(findUserByName, redmineConfig.getFindUserByName());
-        if (redmineConfig.getQueryId() != null) {
-            queryId.setValue(String.valueOf(redmineConfig.getQueryId()));
-        }
     }
 
     @Override
@@ -112,12 +102,8 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         serverInfo.setUseAPIKeyInsteadOfLoginPassword(isAPIOptionSelected());
         rmConfig.setServerInfo(serverInfo);
 
-        rmConfig.setProjectKey((String) projectKey.getValue());
         rmConfig.setDefaultTaskType((String) defaultTaskType.getValue());
         rmConfig.setFindUserByName((Boolean) findUserByName.getValue());
-        if (!((String) queryId.getValue()).isEmpty()) {
-            rmConfig.setQueryId(Integer.parseInt((String) queryId.getValue()));
-        }
         return rmConfig;
     }
 
