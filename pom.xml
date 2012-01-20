@@ -137,7 +137,7 @@
     
     <profiles>
     	<profile>
-    		<id>with-launcher</id>
+    		<id>dist</id>
     		<modules>
     			<module>launcher</module>
     		</modules>
