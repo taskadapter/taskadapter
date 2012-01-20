@@ -8,8 +8,6 @@ import com.vaadin.ui.TextField;
 
 public class GithubEditor extends ConfigEditor {
 
-    private GithubConfig config;
-
     private TextField userNameText;
 
     private PasswordField passwordText;
@@ -17,12 +15,11 @@ public class GithubEditor extends ConfigEditor {
     private TextField projectKey;
 
     public GithubEditor(ConnectorConfig config) {
-        this.config = (GithubConfig) config;
-
+        super(config);
         buildUI();
         addFieldsMappingPanel(GithubDescriptor.instance.getAvailableFieldsProvider(), config.getFieldsMapping());
 
-        setData();
+        setGitHubData();
     }
 
     @Override
@@ -47,11 +44,11 @@ public class GithubEditor extends ConfigEditor {
         addComponent(projectKey);
     }
 
-    private void setData() {
-
-        WebServerInfo serverInfo = config.getServerInfo();
+    private void setGitHubData() {
+        GithubConfig githubConfig = (GithubConfig) config;
+        WebServerInfo serverInfo = githubConfig.getServerInfo();
         setIfNotNull(userNameText, serverInfo.getUserName());
         setIfNotNull(passwordText, serverInfo.getPassword());
-        setIfNotNull(projectKey, config.getProjectKey());
+        setIfNotNull(projectKey, githubConfig.getProjectKey());
     }
 }

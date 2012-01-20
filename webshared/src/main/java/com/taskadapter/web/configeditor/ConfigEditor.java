@@ -21,14 +21,15 @@ public abstract class ConfigEditor extends FormLayout {
     protected ProjectPanel projectPanel;
     private PriorityPanel priorityPanel;
     private FieldsMappingPanel fieldsMappingPanel;
-    private ConnectorConfig config;
+    protected ConnectorConfig config;
 
-    protected ConfigEditor() {
+    protected ConfigEditor(ConnectorConfig config) {
+        this.config = config;
         addStyleName("bordered_panel");
         setImmediate(false);
-//        setWidth("100%");
         setMargin(true);
         setSpacing(true);
+        setData(config);
     }
 
     public abstract ConnectorConfig getPartialConfig();
@@ -54,18 +55,16 @@ public abstract class ConfigEditor extends FormLayout {
                 "Note: this operation usually requires 'Admin' permission in the system.");
     }
 
-    protected void addServerPanel(WebServerInfo info) {
+    protected void addServerPanel() {
         serverPanel = new ServerPanel();
         toValidate.add(serverPanel);
         addComponent(serverPanel);
-        serverPanel.setServerInfo(info);
     }
 
-    protected void addProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor, ProjectInfo info) {
+    protected void addProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor) {
         projectPanel = new ProjectPanel(editor, projectProcessor);
         toValidate.add(projectPanel);
         addComponent(projectPanel);
-        projectPanel.setProjectInfo(info);
     }
 
     protected void addPriorityPanel(ConfigEditor editor, Descriptor descriptor,Priorities priorities) {
@@ -115,7 +114,7 @@ public abstract class ConfigEditor extends FormLayout {
         return config;
     }
 
-    public void setDataTMPMETHOD(ConnectorConfig config) {
+    public void setData(ConnectorConfig config) {
         this.config = config;
 
         setCommonFields();

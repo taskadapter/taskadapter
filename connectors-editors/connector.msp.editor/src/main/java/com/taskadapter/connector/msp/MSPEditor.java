@@ -27,8 +27,6 @@ public class MSPEditor extends ConfigEditor {
 //    private static final String MAIN_GROUP_LABEL = "Configure MSProject settings";
 //    private static final String INTERNAL_GROUP_LABEL = "MSP Text Fields to use for some internal stuff";
 
-    private MSPConfig config;
-
     private TextField fileNameField;
     private TextField durationText;
     private TextField workText;
@@ -36,8 +34,8 @@ public class MSPEditor extends ConfigEditor {
     private static final String TEXT_WIDTH = "500px";
 
     public MSPEditor(ConnectorConfig config, SettingsManager settingsManager) {
+        super(config);
         this.settingsManager = settingsManager;
-        this.config = (MSPConfig) config;
         buildUI();
         addFieldsMappingPanel(MSPDescriptor.instance.getAvailableFieldsProvider(), config.getFieldsMapping());
         setDataToForm();
@@ -134,8 +132,9 @@ public class MSPEditor extends ConfigEditor {
         durationText.setValue(MSXMLFileWriter.FIELD_DURATION_UNDEFINED.toString());
         workText.setValue(MSXMLFileWriter.FIELD_WORK_UNDEFINED.toString());
 //		saveRemoteId.setSelection(mspConfig.isSaveRemoteId());
-        if (config.getInputFileName() != null) {
-            fileNameField.setValue(config.getInputFileName());
+        MSPConfig mspConfig = (MSPConfig) config;
+        if (mspConfig.getInputFileName() != null) {
+            fileNameField.setValue(mspConfig.getInputFileName());
         }
     }
 

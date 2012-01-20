@@ -1,17 +1,15 @@
 package com.taskadapter.connector.mantis.editor;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.mantis.MantisConfig;
 import com.taskadapter.web.configeditor.ConfigEditor;
 
 /**
  * @author Alexey Skorokhodov
  */
 public class MantisEditor extends ConfigEditor {
-    private MantisConfig config;
 
     public MantisEditor(ConnectorConfig config) {
-        this.config = (MantisConfig) config;
+        super(config);
     }
 
     // TODO implement the panel

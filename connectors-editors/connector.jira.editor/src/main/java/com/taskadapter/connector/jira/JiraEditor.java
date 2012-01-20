@@ -1,7 +1,6 @@
 package com.taskadapter.connector.jira;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.ProjectInfo;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.LookupOperation;
@@ -15,7 +14,6 @@ import java.util.TreeMap;
  * @author Alexey Skorokhodov
  */
 public class JiraEditor extends ConfigEditor {
-    private JiraConfig config;
 
     private static final String SAVE_GROUP_LABEL = "Set these fields when EXPORTING to Jira";
 
@@ -25,32 +23,27 @@ public class JiraEditor extends ConfigEditor {
     private CustomFieldsPanel customFieldsTable;
 
     public JiraEditor(ConnectorConfig config) {
-        this.config = (JiraConfig) config;
+        super(config);
         buildUI();
         addFieldsMappingPanel(JiraDescriptor.instance.getAvailableFieldsProvider(), config.getFieldsMapping());
 
         setDataToForm();
-        // TODO the parent class should do this! see the eclipse version. I put this call here just for experiments
-        setDataTMPMETHOD(config);
     }
 
     private void setDataToForm() {
-        setIfNotNull(affectedVersion, config.getAffectedVersion());
-        setIfNotNull(fixForVersion, config.getFixForVersion());
-        setIfNotNull(jiraComponent, config.getComponent());
-        Map<String, String> trackers = config.getCustomFields();
+        JiraConfig jiraConfig = (JiraConfig) config;
+        setIfNotNull(affectedVersion, jiraConfig.getAffectedVersion());
+        setIfNotNull(fixForVersion, jiraConfig.getFixForVersion());
+        setIfNotNull(jiraComponent, jiraConfig.getComponent());
+        Map<String, String> trackers = jiraConfig.getCustomFields();
         for (String key : trackers.keySet()) {
             addTrackerOnTable(key, trackers.get(key));
         }
-        ProjectInfo projectInfo = new ProjectInfo();
-        projectInfo.setProjectKey(config.getProjectKey());
-        projectInfo.setQueryId(config.getQueryId());
-        projectPanel.setProjectInfo(projectInfo);
     }
 
     private void buildUI() {
-        addServerPanel(config.getServerInfo());
-        addProjectPanel(this, new JiraProjectProcessor(this), config.getProjectInfo());
+        addServerPanel();
+        addProjectPanel(this, new JiraProjectProcessor(this));
 
         // SET THESE FIELDS WHEN EXPORTING
         FormLayout saveGroup = new FormLayout();
@@ -113,4 +106,5 @@ public class JiraEditor extends ConfigEditor {
 //        nameEditor.getEditor().dispose();
 //        customFieldsTable.update();
     }
+
 }

@@ -24,7 +24,6 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
     private static final String USE_LOGIN = "Use Login and Password";
     private static final String DEFAULT_USE = USE_LOGIN;
 
-    private RedmineConfig config;
     private TextField serverURL;
     private PasswordField redmineAPIKey;
     private TextField login;
@@ -38,7 +37,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
     private OptionGroup authOptionsGroup = new OptionGroup("Authorization", authOptions);
 
     public RedmineEditor(ConnectorConfig config) {
-        this.config = (RedmineConfig) config;
+        super(config);
 
         buildUI();
         addSaveRelationSection();
@@ -86,8 +85,9 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
     }
 
     private void setData() {
-        serverURL.setValue(config.getServerInfo().getHost());
-        WebServerInfo serverInfo = config.getServerInfo();
+        RedmineConfig redmineConfig = (RedmineConfig) config;
+        serverURL.setValue(redmineConfig.getServerInfo().getHost());
+        WebServerInfo serverInfo = redmineConfig.getServerInfo();
         setIfNotNull(serverURL, serverInfo.getHost());
         setIfNotNull(redmineAPIKey, serverInfo.getApiKey());
         setIfNotNull(login, serverInfo.getUserName());
@@ -95,11 +95,11 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         authOptionsGroup.select(serverInfo.isUseAPIKeyInsteadOfLoginPassword());
         authOptionsGroup.select(!serverInfo.isUseAPIKeyInsteadOfLoginPassword());
 
-        setIfNotNull(projectKey, config.getProjectKey());
+        setIfNotNull(projectKey, redmineConfig.getProjectKey());
         setIfNotNull(defaultTaskType, config.getDefaultTaskType());
-        setIfNotNull(findUserByName, config.getFindUserByName());
-        if (config.getQueryId() != null) {
-            queryId.setValue(String.valueOf(config.getQueryId()));
+        setIfNotNull(findUserByName, redmineConfig.getFindUserByName());
+        if (redmineConfig.getQueryId() != null) {
+            queryId.setValue(String.valueOf(redmineConfig.getQueryId()));
         }
     }
 
