@@ -33,6 +33,15 @@ public class ConfigureTaskPage extends Page {
     private void buildUI() {
         Panel panel = new Panel();
         setCompositionRoot(panel);
+        Button saveButton = new Button("Save");
+        saveButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                save();
+            }
+        });
+        panel.addComponent(saveButton);
+
         name = new TextField("Name");
         panel.addComponent(name);
         name.setValue(file.getName());
@@ -46,15 +55,6 @@ public class ConfigureTaskPage extends Page {
 
         panel2 = getPanel(file.getConnectorDataHolder2());
         tabSheet.addTab(panel2, "panel 2");
-
-        Button saveButton = new Button("Save");
-        saveButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                save();
-            }
-        });
-        panel.addComponent(saveButton);
     }
 
     private void save() {
