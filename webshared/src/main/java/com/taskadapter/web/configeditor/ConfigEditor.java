@@ -3,7 +3,10 @@ package com.taskadapter.web.configeditor;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.model.GTaskDescriptor;
-import com.vaadin.ui.*;
+import com.vaadin.ui.AbstractField;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.HorizontalLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,15 +42,6 @@ public abstract class ConfigEditor extends FormLayout {
         if (value != null) {
             field.setValue(value);
         }
-    }
-
-    protected TextField createLabeledText(AbstractLayout layout, String caption, String tooltip) {
-        Label label = new Label(caption);
-        layout.addComponent(label);
-        TextField field = new TextField();
-        field.setDescription(tooltip);
-        layout.addComponent(field);
-        return field;
     }
 
     protected void addFindUsersByNameElement() {

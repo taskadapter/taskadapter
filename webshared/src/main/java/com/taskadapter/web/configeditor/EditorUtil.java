@@ -2,10 +2,7 @@ package com.taskadapter.web.configeditor;
 
 import com.taskadapter.model.NamedKeyedObject;
 import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.AbstractTextField;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.Window;
+import com.vaadin.ui.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -82,6 +79,15 @@ public class EditorUtil {
             }
         });
         return button;
+    }
+
+    public static TextField addLabeledText(AbstractLayout layout, String caption, String tooltip) {
+        Label label = new Label(caption);
+        layout.addComponent(label);
+        TextField field = new TextField();
+        field.setDescription(tooltip);
+        layout.addComponent(field);
+        return field;
     }
 
     public static TextField createLabeledTextWidth(String label, String description, int width) {

@@ -84,7 +84,7 @@ public class MSPEditor extends ConfigEditor {
     }
 
     private TextField createFileName(String label, String tooltip) {
-        final TextField field = createLabeledText(this, label, tooltip);
+        final TextField field = EditorUtil.addLabeledText(this, label, tooltip);
         field.setWidth(TEXT_WIDTH);
         field.addListener(new FieldEvents.BlurListener() {
             public void blur(FieldEvents.BlurEvent event) {

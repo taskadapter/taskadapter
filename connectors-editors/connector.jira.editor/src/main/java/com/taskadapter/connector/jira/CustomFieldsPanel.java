@@ -3,12 +3,15 @@ package com.taskadapter.connector.jira;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 /**
  * @author Alexey Skorokhodov
  */
 public class CustomFieldsPanel extends CustomComponent {
 
-    private CustomField[] customFields;
+    private Collection<CustomField> customFields = new ArrayList<CustomField>();
 
     public CustomFieldsPanel() {
         buildUI();
@@ -117,7 +120,7 @@ public class CustomFieldsPanel extends CustomComponent {
 
     }
 
-    public CustomField[] getCustomFields() {
+    public Collection<CustomField> getCustomFields() {
         return customFields;
     }
 }
