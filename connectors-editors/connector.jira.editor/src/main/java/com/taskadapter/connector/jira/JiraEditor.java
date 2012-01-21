@@ -4,7 +4,7 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.LookupOperation;
-import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.TextField;
 
 import java.util.Map;
@@ -46,30 +46,31 @@ public class JiraEditor extends ConfigEditor {
         addProjectPanel(this, new JiraProjectProcessor(this));
 
         // SET THESE FIELDS WHEN EXPORTING
-        FormLayout saveGroup = new FormLayout();
+        GridLayout saveGroup = new GridLayout();
+        saveGroup.setColumns(3);
         saveGroup.setCaption(SAVE_GROUP_LABEL);
         addComponent(saveGroup);
 
         this.jiraComponent = createLabeledText(saveGroup, "Project Component", "Component inside the Jira project");
 
         LookupOperation loadComponentsOperation = new LoadComponentsOperation(this, JiraDescriptor.instance);
-        EditorUtil.createLookupButton(getWindow(),
+        saveGroup.addComponent(EditorUtil.createLookupButton(getWindow(),
                 "...",
                 "Show list of available components on the given server.",
-                loadComponentsOperation, jiraComponent, true);
+                loadComponentsOperation, jiraComponent, true));
 
         this.affectedVersion = createLabeledText(saveGroup, "Set 'Affected version' to:", "Set this 'affected version' value when submitting issues to Jira.");
         LoadVersionsOperation loadVersionsOperation = new LoadVersionsOperation(this, JiraDescriptor.instance);
-        EditorUtil.createLookupButton(getWindow(),
+        saveGroup.addComponent(EditorUtil.createLookupButton(getWindow(),
                 "...",
                 "Show list of available versions.",
-                loadVersionsOperation, affectedVersion, true);
+                loadVersionsOperation, affectedVersion, true));
 
         this.fixForVersion = createLabeledText(saveGroup, "Set 'Fix for version' to:", "Set this 'fix for version' value when submitting issues to Jira.");
-        EditorUtil.createLookupButton(getWindow(),
+        saveGroup.addComponent(EditorUtil.createLookupButton(getWindow(),
                 "...",
                 "Show list of available versions.",
-                loadVersionsOperation, fixForVersion, true);
+                loadVersionsOperation, fixForVersion, true));
 
         customFieldsPanel = new CustomFieldsPanel();
         addComponent(customFieldsPanel);

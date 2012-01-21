@@ -42,7 +42,9 @@ public abstract class ConfigEditor extends FormLayout {
     }
 
     protected TextField createLabeledText(AbstractLayout layout, String caption, String tooltip) {
-        TextField field = new TextField(caption);
+        Label label = new Label(caption);
+        layout.addComponent(label);
+        TextField field = new TextField();
         field.setDescription(tooltip);
         layout.addComponent(field);
         return field;
