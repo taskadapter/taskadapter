@@ -7,6 +7,7 @@ import com.taskadapter.web.LocalRemoteModeListener;
 import com.taskadapter.web.LocalRemoteOptionsPanel;
 import com.taskadapter.web.SettingsManager;
 import com.taskadapter.web.configeditor.ConfigEditor;
+import com.taskadapter.web.configeditor.EditorUtil;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Label;
@@ -20,14 +21,17 @@ public class MSPEditor extends ConfigEditor {
 
     private static final String XML_SUFFIX_LOWERCASE = ".xml";
 
-    private static final String TOOLTIP_FILE_NAME = "Microsoft Project XML file name (full or relative path)";
-
     private static final String LABEL_FILE_NAME = "Input File name:";
+    private static final String TOOLTIP_FILE_NAME = "Microsoft Project file name to load the data from (MPP or XML file)";
+
+    private static final String LABEL_OUTPUT_FILE_NAME = "Output file name:";
+    private static final String TOOLTIP_OUTPUT_FILE_NAME = "Microsoft Project file name to save the data to (only XML format is supported)";
 
 //    private static final String MAIN_GROUP_LABEL = "Configure MSProject settings";
 //    private static final String INTERNAL_GROUP_LABEL = "MSP Text Fields to use for some internal stuff";
 
-    private TextField fileNameField;
+    private TextField inputFileNameField;
+    private TextField outputFileNameField;
     private TextField durationText;
     private TextField workText;
     private SettingsManager settingsManager;
@@ -75,22 +79,28 @@ public class MSPEditor extends ConfigEditor {
         addComponent(localRemoteOptionsPanel);
         addComponent(filePanel);
 
-        fileNameField = createLabeledText(this, LABEL_FILE_NAME, TOOLTIP_FILE_NAME);
-        fileNameField.setWidth(TEXT_WIDTH);
-        fileNameField.addListener(new FieldEvents.BlurListener() {
+        inputFileNameField = createFileName(LABEL_FILE_NAME, TOOLTIP_FILE_NAME);
+        outputFileNameField = createFileName(LABEL_OUTPUT_FILE_NAME, TOOLTIP_OUTPUT_FILE_NAME);
+    }
+
+    private TextField createFileName(String label, String tooltip) {
+        final TextField field = createLabeledText(this, label, tooltip);
+        field.setWidth(TEXT_WIDTH);
+        field.addListener(new FieldEvents.BlurListener() {
             public void blur(FieldEvents.BlurEvent event) {
-                addXMLExtensionIfNeeded();
+                addXMLExtensionIfNeeded(field);
             }
         });
+        return field;
     }
 
     /**
    	 * Add ".xml" extension to the MSP file name if it's not there yet.
-   	 */
-    private void addXMLExtensionIfNeeded() {
-        String value = (String) fileNameField.getValue();
+     */
+    private void addXMLExtensionIfNeeded(TextField field) {
+        String value = (String) field.getValue();
         if (!value.toLowerCase().endsWith(XML_SUFFIX_LOWERCASE)) {
-            fileNameField.setValue(value + XML_SUFFIX_LOWERCASE);
+            field.setValue(value + XML_SUFFIX_LOWERCASE);
         }
     }
 
@@ -100,16 +110,16 @@ public class MSPEditor extends ConfigEditor {
 //        String[] filterExt = {"*.xml", "*.*"};
 //        dialog.setFilterExtensions(filterExt);
 //
-//        String oldFileName = fileNameField.getText();
+//        String oldFileName = inputFileNameField.getText();
 //        if (!oldFileName.trim().isEmpty()) {
-//            File oldFile = new File(fileNameField.getText());
+//            File oldFile = new File(inputFileNameField.getText());
 //            dialog.setFilterPath(oldFile.getParent());
 //            dialog.setFileName(oldFile.getName());
 //        }
 //
 //        String path = dialog.open();
 //        if (path != null) {
-//            fileNameField.setText(path);
+//            inputFileNameField.setText(path);
 //        }
 //    }
 
@@ -121,7 +131,7 @@ public class MSPEditor extends ConfigEditor {
         RemoteModePanel remoteModePanel = new RemoteModePanel(new UploadListener() {
             @Override
             public void fileUploaded(String file) {
-                fileNameField.setValue(new FileManager().getFullFileNameOnServer(file));
+                inputFileNameField.setValue(new FileManager().getFullFileNameOnServer(file));
             }
         });
 
@@ -131,24 +141,21 @@ public class MSPEditor extends ConfigEditor {
     private void setDataToForm() {
         durationText.setValue(MSXMLFileWriter.FIELD_DURATION_UNDEFINED.toString());
         workText.setValue(MSXMLFileWriter.FIELD_WORK_UNDEFINED.toString());
-//		saveRemoteId.setSelection(mspConfig.isSaveRemoteId());
         MSPConfig mspConfig = (MSPConfig) config;
-        if (mspConfig.getInputFileName() != null) {
-            fileNameField.setValue(mspConfig.getInputFileName());
-        }
+        EditorUtil.setNullSafe(inputFileNameField, mspConfig.getInputFileName());
+        EditorUtil.setNullSafe(outputFileNameField, mspConfig.getOutputFileName());
     }
 
 
     @Override
     public ConnectorConfig getPartialConfig() {
-        String fileNameToSave = getFileName();
-        MSPConfig c = new MSPConfig(fileNameToSave);
-//		c.setSaveRemoteId(saveRemoteId.getSelection());
-//        saveCommonFields(c);
-        return c;
+        MSPConfig mspConfig = new MSPConfig();
+        mspConfig.setInputFileName(getFileName(inputFileNameField));
+        mspConfig.setOutputFileName(getFileName(outputFileNameField));
+        return mspConfig;
     }
 
-    private String getFileName() {
+    private String getFileName(TextField fileNameField) {
         String enteredFileName = (String) fileNameField.getValue();
         if (settingsManager.isLocal()) {
             return enteredFileName;
@@ -158,7 +165,7 @@ public class MSPEditor extends ConfigEditor {
     }
 
     public void validate() throws ValidationException {
-        String fileNameString = (String) fileNameField.getValue();
+        String fileNameString = (String) inputFileNameField.getValue();
         if (fileNameString.isEmpty()) {
             throw new ValidationException("File name is required");
         }
