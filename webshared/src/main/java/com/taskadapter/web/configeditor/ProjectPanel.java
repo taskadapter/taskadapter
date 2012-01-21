@@ -4,7 +4,7 @@ import com.taskadapter.connector.definition.ProjectInfo;
 import com.taskadapter.connector.definition.ValidationException;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Panel;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 
 import java.util.Collection;
@@ -13,8 +13,9 @@ import java.util.Map;
 /**
  * @author Alexey Skorokhodov
  */
-public class ProjectPanel extends Panel implements LoadProjectsJobResultListener, Validatable {
+public class ProjectPanel extends GridLayout implements LoadProjectsJobResultListener, Validatable {
     private static final String GROUP_LABEL = "Project Info";
+    private static final int COLUMNS_NUMBER = 4;
 
     private final ConfigEditor editor;
     private TextField projectKey;
@@ -35,13 +36,13 @@ public class ProjectPanel extends Panel implements LoadProjectsJobResultListener
     }
 
     private void init() {
+        addStyleName("bordered_panel");
         setCaption(GROUP_LABEL);
-        setSizeUndefined();
-        this.projectKey = new TextField("Project key:");
+        setColumns(COLUMNS_NUMBER);
 
-        GridLayout layout = new GridLayout(3,2);
-        layout.setSizeUndefined();
-        layout.addComponent(projectKey);
+        addComponent(new Label("Project key:"));
+        this.projectKey = new TextField();
+        addComponent(projectKey);
 
         Collection<ProjectProcessor.EditorFeature> features = projectProcessor.getSupportedFeatures();
 
@@ -53,7 +54,7 @@ public class ProjectPanel extends Panel implements LoadProjectsJobResultListener
                     }
                 });
         button1.setEnabled(features.contains(ProjectProcessor.EditorFeature.LOAD_PROJECT_INFO));
-        layout.addComponent(button1);
+        addComponent(button1);
 
         LookupOperation loadProjectsOperation = new LoadProjectsOperation(
                 editor, projectProcessor.getDescriptor().getPluginFactory());
@@ -61,14 +62,13 @@ public class ProjectPanel extends Panel implements LoadProjectsJobResultListener
                 "Show list of available projects on the server.",
                 loadProjectsOperation, projectKey, false);
         button2.setEnabled(features.contains(ProjectProcessor.EditorFeature.LOAD_PROJECTS));
-        layout.addComponent(button2);
+        addComponent(button2);
 
-        this.queryID = EditorUtil.createLabeledTextWidth(
-                "Query ID:",
-                "Custom query/filter ID (number). You need to create a query on the server before accessing it from here."
-                        + "\nRead help for more details.",
-                EditorUtil.NARROW_WIDTH);
-        layout.addComponent(queryID);
+        addComponent(new Label("Query ID:"));
+        this.queryID = new TextField();
+        queryID.setDescription("Custom query/filter ID (number). You need to create a query on the server before accessing it from here."
+                        + "\nRead help for more details.");
+        addComponent(queryID);
         LookupOperation loadSavedQueriesOperation = projectProcessor
                 .getLoadSavedQueriesOperation(editor);
 
@@ -77,8 +77,7 @@ public class ProjectPanel extends Panel implements LoadProjectsJobResultListener
                 loadSavedQueriesOperation, queryID, false);
         showQueriesButton.setEnabled(features
                 .contains(ProjectProcessor.EditorFeature.LOAD_SAVED_QUERIES));
-        layout.addComponent(showQueriesButton);
-        setContent(layout);
+        addComponent(showQueriesButton);
     }
 
     private void loadProject() {
