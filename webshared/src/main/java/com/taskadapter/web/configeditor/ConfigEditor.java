@@ -5,7 +5,7 @@ import com.taskadapter.connector.definition.*;
 import com.taskadapter.model.GTaskDescriptor;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * @author Alexey Skorokhodov
  */
-public abstract class ConfigEditor extends FormLayout {
+public abstract class ConfigEditor extends GridLayout {
     protected CheckBox findUserByName;
     private List<Validatable> toValidate = new ArrayList<Validatable>();
 
