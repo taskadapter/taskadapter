@@ -47,3 +47,8 @@
     width: 300px;
     font-size: 14px;
 }
+
+.fields_mapping_panel {
+    border: 2px #65C5E6 solid;
+    width: 300px;
+}

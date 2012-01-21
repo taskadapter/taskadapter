@@ -24,7 +24,6 @@ public class FieldsMappingPanel extends GridLayout implements Validatable {
     private static final String COLUMN1_HEADER = "Task Adapter field";
 
     private static final String COLUMN2_HEADER = "Connector field or constraint";
-    private static final int PANEL_WIDTH = 300;
 
     private Map<GTaskDescriptor.FIELD, Mapping> fieldsMapping;
 
@@ -40,9 +39,9 @@ public class FieldsMappingPanel extends GridLayout implements Validatable {
      */
     FieldsMappingPanel(AvailableFieldsProvider availableFieldsProvider,
                               Map<GTaskDescriptor.FIELD, Mapping> fieldsMapping) {
+        addStyleName("fields_mapping_panel");
         this.availableFieldsProvider = availableFieldsProvider;
         this.fieldsMapping = fieldsMapping;
-        setWidth(PANEL_WIDTH, UNITS_PIXELS);
         setDescription("Select fields to export when SAVING data to this connector");
         setColumns(COLUMNS_NUMBER);
         addFields();
