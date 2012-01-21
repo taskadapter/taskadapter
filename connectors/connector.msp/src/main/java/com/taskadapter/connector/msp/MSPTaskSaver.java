@@ -13,19 +13,13 @@ import java.util.List;
 
 public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
 
-	MSXMLFileWriter writer;
+	private MSXMLFileWriter writer;
 	
 	public MSPTaskSaver(MSPConfig config) {
 		super(config);
 		this.writer = new MSXMLFileWriter(config);
 	}
 
-	@Override
-	public void beforeSave() {
-		boolean exists = (new File(config.getOutputFileName())).exists();
-		System.out.println("exists:" + exists);
-	}
-	
 	@Override
 	protected SyncResult save(String parentTaskKey, List<GTask> tasks) {
 		SyncResult result = saveData(tasks, false);
@@ -39,9 +33,7 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
 	 * This method allows saving data to MSP file while keeping tasks ids.
 	 */
 	private SyncResult saveData(List<GTask> tasks, boolean keepTaskId) {
-		
 		String result;
-
 		try {
 			String absoluteFilePath = writer.write(syncResult, tasks, keepTaskId);
 			result = "File absolute path: " + absoluteFilePath;
