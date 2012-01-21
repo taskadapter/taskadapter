@@ -7,15 +7,15 @@ import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.NamedKeyedObjectImpl;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
 
 import java.util.*;
 
 /**
  * @author Alexey Skorokhodov
  */
-public class PriorityPanel extends Panel implements Validatable {
+public class PriorityPanel extends VerticalLayout implements Validatable {
 
     public static final String TEXT = "Priority Name";
     public static final String VALUE = "Task Adapter Priority Value";
@@ -38,6 +38,8 @@ public class PriorityPanel extends Panel implements Validatable {
     }
 
     private void buildUI() {
+        addStyleName("bordered_panel");
+
         Collection<Feature> features = descriptor.getSupportedFeatures();
 
 		prioritiesTable = new Table("Priorities", data);
