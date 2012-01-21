@@ -29,6 +29,7 @@ public class ServerPanel extends GridLayout implements Validatable {
     }
 
     private void init() {
+        addStyleName("bordered_panel");
         setCaption(SERVER_GROUP_LABEL);
         setColumns(2);
 
