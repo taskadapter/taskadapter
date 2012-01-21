@@ -33,7 +33,6 @@ public abstract class ConfigEditor extends FormLayout {
         setImmediate(false);
         setMargin(true);
         setSpacing(true);
-        setData(config);
     }
 
     public abstract ConnectorConfig getPartialConfig();
@@ -123,11 +122,10 @@ public abstract class ConfigEditor extends FormLayout {
 
     public void setData(ConnectorConfig config) {
         this.config = config;
-
         setCommonFields();
     }
 
-    protected void setCommonFields() {
+    private void setCommonFields() {
         if (serverPanel != null) {
             serverPanel.setServerInfo(((WebConfig) config).getServerInfo());
         }

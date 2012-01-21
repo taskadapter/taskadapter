@@ -42,7 +42,8 @@ public class MSPEditor extends ConfigEditor {
         this.settingsManager = settingsManager;
         buildUI();
         addFieldsMappingPanel(MSPDescriptor.instance.getAvailableFieldsProvider(), config.getFieldsMapping());
-        setDataToForm();
+        setData(config);
+        setMSPDataToForm();
     }
 
     private void buildUI() {
@@ -138,7 +139,7 @@ public class MSPEditor extends ConfigEditor {
         return remoteModePanel;
     }
 
-    private void setDataToForm() {
+    private void setMSPDataToForm() {
         durationText.setValue(MSXMLFileWriter.FIELD_DURATION_UNDEFINED.toString());
         workText.setValue(MSXMLFileWriter.FIELD_WORK_UNDEFINED.toString());
         MSPConfig mspConfig = (MSPConfig) config;

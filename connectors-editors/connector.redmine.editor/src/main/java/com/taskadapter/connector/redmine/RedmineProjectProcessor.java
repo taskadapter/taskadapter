@@ -48,7 +48,7 @@ public class RedmineProjectProcessor implements ProjectProcessor {
 
 	@Override
 	public LookupOperation getLoadSavedQueriesOperation(ConfigEditor editor) {
-		return new LoadSavedQueriesOperation(editor, RedmineDescriptor.instance);
+		return new LoadSavedQueriesOperation(editor, new RedmineFactory());
 	}
 
 	@Override

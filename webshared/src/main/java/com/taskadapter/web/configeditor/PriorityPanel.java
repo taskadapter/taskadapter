@@ -116,7 +116,7 @@ public class PriorityPanel extends Panel implements Validatable {
        }
 */
        private void reloadPriorityList() throws Exception {
-           LookupOperation loadPrioritiesOperation = new LoadPrioritiesOperation(configEditor, descriptor);
+           LookupOperation loadPrioritiesOperation = new LoadPrioritiesOperation(configEditor, descriptor.getPluginFactory());
            @SuppressWarnings("unchecked")
            List<NamedKeyedObjectImpl> list = (List<NamedKeyedObjectImpl>) loadPrioritiesOperation
                    .run();

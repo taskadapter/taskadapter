@@ -54,7 +54,7 @@ public class JiraProjectProcessor implements ProjectProcessor {
 
     @Override
     public LookupOperation getLoadSavedQueriesOperation(ConfigEditor editor) {
-        return new LoadFiltersOperation(editor, JiraDescriptor.instance);
+        return new LoadFiltersOperation(editor, new JiraFactory());
     }
 
     @Override

@@ -44,9 +44,6 @@ public interface Descriptor {
 
 	public AvailableFieldsProvider getAvailableFieldsProvider();
 
-	// TODO maybe factory should create connectors only, not descriptors?
-    public Connector createConnector(ConnectorConfig config);
-	
 	public ProjectLoader getProjectLoader();
 	
 	public TaskSaver getTaskSaver(ConnectorConfig config);
@@ -54,4 +51,6 @@ public interface Descriptor {
 	public TaskLoader getTaskLoader();
 
 	public PriorityLoader getPriorityLoader();
+
+    PluginFactory getPluginFactory();
 }

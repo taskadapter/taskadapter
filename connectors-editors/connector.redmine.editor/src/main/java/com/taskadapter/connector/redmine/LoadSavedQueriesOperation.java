@@ -1,6 +1,6 @@
 package com.taskadapter.connector.redmine;
 
-import com.taskadapter.connector.definition.Descriptor;
+import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
 import com.taskadapter.web.configeditor.ConfigEditor;
@@ -18,8 +18,8 @@ import java.util.List;
  */
 public class LoadSavedQueriesOperation extends LookupOperation {
 
-	public LoadSavedQueriesOperation(ConfigEditor editor, Descriptor descriptor) {
-		super(editor, descriptor);
+	public LoadSavedQueriesOperation(ConfigEditor editor, PluginFactory factory) {
+		super(editor, factory);
 	}
 
 	@Override

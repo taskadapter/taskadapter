@@ -5,9 +5,9 @@ import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.common.TaskLoader;
 import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.AvailableFieldsProvider;
-import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
+import com.taskadapter.connector.definition.PluginFactory;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -59,11 +59,6 @@ public class RedmineDescriptor implements Descriptor {
 	}
 
 	@Override
-	public Connector<RedmineConfig> createConnector(ConnectorConfig config) {
-		return new RedmineConnector((RedmineConfig) config);
-	}
-
-	@Override
 	public ProjectLoader getProjectLoader() {
 		return new RedmineProjectLoader();
 	}
@@ -87,4 +82,9 @@ public class RedmineDescriptor implements Descriptor {
 	public PriorityLoader getPriorityLoader() {
 		throw new RuntimeException("NOT READY");
 	}
+
+    @Override
+    public PluginFactory getPluginFactory() {
+        return new RedmineFactory();
+    }
 }

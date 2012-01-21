@@ -5,9 +5,9 @@ import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.common.TaskLoader;
 import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.AvailableFieldsProvider;
-import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
+import com.taskadapter.connector.definition.PluginFactory;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -64,11 +64,6 @@ public class MantisDescriptor implements Descriptor {
 		return new MantisTaskLoader();
 	}
 
-	@Override
-	public Connector createConnector(ConnectorConfig config) {
-		return new MantisConnector((MantisConfig) config);
-	}
-
     @Override
 	public Collection<Feature> getSupportedFeatures() {
 		return Arrays.asList(Feature.LOAD_TASK, Feature.SAVE_TASK);
@@ -78,4 +73,9 @@ public class MantisDescriptor implements Descriptor {
 	public PriorityLoader getPriorityLoader() {
 		throw new RuntimeException("NOT READY");
 	}
+
+    @Override
+    public PluginFactory getPluginFactory() {
+        return new MantisFactory();
+    }
 }

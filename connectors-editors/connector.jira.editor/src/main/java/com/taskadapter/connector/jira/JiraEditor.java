@@ -21,6 +21,7 @@ public class JiraEditor extends ConfigEditor {
     public JiraEditor(ConnectorConfig config) {
         super(config);
         buildUI();
+        setData(config);
     }
 
     private void buildUI() {
@@ -67,14 +68,14 @@ public class JiraEditor extends ConfigEditor {
             setCaption(SAVE_GROUP_LABEL);
             this.jiraComponent = EditorUtil.addLabeledText(this, "Project Component", "Component inside the Jira project");
 
-            LookupOperation loadComponentsOperation = new LoadComponentsOperation(jiraEditor, JiraDescriptor.instance);
+            LookupOperation loadComponentsOperation = new LoadComponentsOperation(jiraEditor, JiraDescriptor.instance.getPluginFactory());
             addComponent(EditorUtil.createLookupButton(getWindow(),
                     "...",
                     "Show list of available components on the given server.",
                     loadComponentsOperation, jiraComponent, true));
 
             this.affectedVersion = EditorUtil.addLabeledText(this, "Set 'Affected version' to:", "Set this 'affected version' value when submitting issues to Jira.");
-            LoadVersionsOperation loadVersionsOperation = new LoadVersionsOperation(jiraEditor, JiraDescriptor.instance);
+            LoadVersionsOperation loadVersionsOperation = new LoadVersionsOperation(jiraEditor, new JiraFactory());
             addComponent(EditorUtil.createLookupButton(getWindow(),
                     "...",
                     "Show list of available versions.",

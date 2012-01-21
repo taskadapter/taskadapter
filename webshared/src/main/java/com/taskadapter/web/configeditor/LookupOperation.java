@@ -2,7 +2,7 @@ package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Descriptor;
+import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.model.NamedKeyedObject;
 
@@ -13,20 +13,20 @@ import java.util.List;
  */
 public abstract class LookupOperation {
     protected final ConfigEditor editor;
-    protected Descriptor descriptor;
+    protected PluginFactory factory;
     protected Connector connector;
     protected WebConfig config;
 
-    public LookupOperation(ConfigEditor editor, Descriptor descriptor) {
+    public LookupOperation(ConfigEditor editor, PluginFactory factory) {
         this.editor = editor;
-        this.descriptor = descriptor;
+        this.factory = factory;
     }
 
     protected void initOperation() {
         ConnectorConfig config;
 //			editor.validateServerInfo();
         config = editor.getConfig();
-        setConnector(descriptor.createConnector(config));
+        setConnector(factory.createConnector(config));
         // TODO casting is a hack.
         setConfig((WebConfig) config);
     }

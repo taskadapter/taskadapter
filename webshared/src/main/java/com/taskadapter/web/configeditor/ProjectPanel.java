@@ -2,7 +2,10 @@ package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.definition.ProjectInfo;
 import com.taskadapter.connector.definition.ValidationException;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.TextField;
 
 import java.util.Collection;
 import java.util.Map;
@@ -53,7 +56,7 @@ public class ProjectPanel extends Panel implements LoadProjectsJobResultListener
         layout.addComponent(button1);
 
         LookupOperation loadProjectsOperation = new LoadProjectsOperation(
-                editor, projectProcessor.getDescriptor());
+                editor, projectProcessor.getDescriptor().getPluginFactory());
         Button button2 = EditorUtil.createLookupButton(editor.getWindow(), "...",
                 "Show list of available projects on the server.",
                 loadProjectsOperation, projectKey, false);

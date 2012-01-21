@@ -1,6 +1,6 @@
 package com.taskadapter.connector.jira;
 
-import com.taskadapter.connector.definition.Descriptor;
+import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.configeditor.LookupOperation;
@@ -12,8 +12,8 @@ import java.util.List;
  */
 public class LoadFiltersOperation extends LookupOperation {
 
-    public LoadFiltersOperation(ConfigEditor editor, Descriptor descriptor) {
-        super(editor, descriptor);
+    public LoadFiltersOperation(ConfigEditor editor, PluginFactory factory) {
+        super(editor, factory);
     }
 
     @Override

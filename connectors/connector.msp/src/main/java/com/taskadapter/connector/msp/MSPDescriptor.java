@@ -5,9 +5,9 @@ import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.common.TaskLoader;
 import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.AvailableFieldsProvider;
-import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
+import com.taskadapter.connector.definition.PluginFactory;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -61,11 +61,6 @@ public class MSPDescriptor implements Descriptor {
 	}
 
 	@Override
-	public Connector<MSPConfig> createConnector(ConnectorConfig config) {
-		return new MSPConnector((MSPConfig) config);
-	}
-
-	@Override
 	public ProjectLoader getProjectLoader() {
 		throw new RuntimeException("Operation is not implemented for MSP");
 	}
@@ -89,4 +84,9 @@ public class MSPDescriptor implements Descriptor {
 	public PriorityLoader getPriorityLoader() {
 		throw new RuntimeException("NOT READY");
 	}
+
+    @Override
+    public PluginFactory getPluginFactory() {
+        return new MSPFactory();
+    }
 }
