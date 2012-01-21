@@ -44,7 +44,8 @@ public interface Descriptor {
 
 	public AvailableFieldsProvider getAvailableFieldsProvider();
 
-	public Connector createConnector(ConnectorConfig config);
+	// TODO maybe factory should create connectors only, not descriptors?
+    public Connector createConnector(ConnectorConfig config);
 	
 	public ProjectLoader getProjectLoader();
 	
