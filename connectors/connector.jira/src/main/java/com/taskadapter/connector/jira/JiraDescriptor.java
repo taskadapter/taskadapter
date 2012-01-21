@@ -20,7 +20,7 @@ public class JiraDescriptor implements Descriptor {
 	 * Keep it the same to enable backward compatibility with the existing
 	 * config files.
 	 */
-	public static final String ID = "Atlassian Jira";
+	private static final String ID = "Atlassian Jira";
 
 	private static final String INFO = "Atlassian Jira connector (supports Jira v. 3.1.12+)";
 
