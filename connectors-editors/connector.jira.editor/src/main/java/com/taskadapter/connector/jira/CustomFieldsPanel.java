@@ -8,6 +8,8 @@ import com.vaadin.ui.Label;
  */
 public class CustomFieldsPanel extends CustomComponent {
 
+    private CustomField[] customFields;
+
     public CustomFieldsPanel() {
         buildUI();
     }
@@ -109,5 +111,13 @@ public class CustomFieldsPanel extends CustomComponent {
 //                removeTrackerFromTable();
 //            }
 //        });
+    }
+
+    public void addTrackerOnTable(String key, String s) {
+
+    }
+
+    public CustomField[] getCustomFields() {
+        return customFields;
     }
 }

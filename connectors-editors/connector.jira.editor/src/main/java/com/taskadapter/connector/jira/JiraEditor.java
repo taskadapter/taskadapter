@@ -20,7 +20,7 @@ public class JiraEditor extends ConfigEditor {
     private TextField jiraComponent;
     private TextField affectedVersion;
     private TextField fixForVersion;
-    private CustomFieldsPanel customFieldsTable;
+    private CustomFieldsPanel customFieldsPanel;
 
     public JiraEditor(ConnectorConfig config) {
         super(config);
@@ -37,7 +37,7 @@ public class JiraEditor extends ConfigEditor {
         setIfNotNull(jiraComponent, jiraConfig.getComponent());
         Map<String, String> trackers = jiraConfig.getCustomFields();
         for (String key : trackers.keySet()) {
-            addTrackerOnTable(key, trackers.get(key));
+            customFieldsPanel.addTrackerOnTable(key, trackers.get(key));
         }
     }
 
@@ -71,7 +71,8 @@ public class JiraEditor extends ConfigEditor {
                 "Show list of available versions.",
                 loadVersionsOperation, fixForVersion, true);
 
-        addComponent(new CustomFieldsPanel());
+        customFieldsPanel = new CustomFieldsPanel();
+        addComponent(customFieldsPanel);
         addPriorityPanel(this, JiraDescriptor.instance, config.getPriorities());
     }
 
@@ -83,28 +84,10 @@ public class JiraEditor extends ConfigEditor {
         newConfig.setFixForVersion((String) fixForVersion.getValue());
         newConfig.setComponent((String) jiraComponent.getValue());
         Map<String, String> trackers = new TreeMap<String, String>();
-        // TODO fix this: custom fields are NOT saved
-//        for (TableItem tableItem : customFieldsTable.getItems()) {
-//            String idText = tableItem.getValue(0);
-//            String nameText = tableItem.getValue(1);
-//            trackers.put(idText, nameText);
-//        }
+        for (CustomField customField : customFieldsPanel.getCustomFields()) {
+            trackers.put(customField.getId(), customField.getValue());
+        }
         newConfig.setCustomFields(trackers);
         return newConfig;
     }
-
-    private void addTrackerOnTable(String id, String name) {
-//        TableItem tableItem = new TableItem(customFieldsTable, SWT.NONE);
-//        tableItem.setText(new String[]{id, name});
-    }
-
-    //
-    private void removeTrackerFromTable() {
-//        int[] selectionIndexes = customFieldsTable.getSelectionIndices();
-//        customFieldsTable.remove(selectionIndexes);
-//        idEditor.getEditor().dispose();
-//        nameEditor.getEditor().dispose();
-//        customFieldsTable.update();
-    }
-
 }

@@ -106,8 +106,8 @@ public class MSPEditor extends ConfigEditor {
 
 //    private void browseForMSPFile() {
 //        FilDialog dialog = new FieDialog(shell, SWT.NULL);
-//        dialog.setText("Select a Microsoft Project XML file");
-//        String[] filterExt = {"*.xml", "*.*"};
+//        dialog.setText("Select a Microsoft Project file (MPP or XML)");
+//        String[] filterExt = { "*.xml;*.mpp", "*.*" };
 //        dialog.setFilterExtensions(filterExt);
 //
 //        String oldFileName = inputFileNameField.getText();
