@@ -17,6 +17,7 @@ public abstract class ConfigEditor extends FormLayout {
     private List<Validatable> toValidate = new ArrayList<Validatable>();
 
     // TODO the parent editor class must save / load data itself instead of letting the children do this
+    private HorizontalLayout projectAndServerLayout;
     private ServerPanel serverPanel;
     protected ProjectPanel projectPanel;
     private PriorityPanel priorityPanel;
@@ -56,15 +57,25 @@ public abstract class ConfigEditor extends FormLayout {
     }
 
     protected void addServerPanel() {
+        createProjectServerPanelIfNeeded();
         serverPanel = new ServerPanel();
         toValidate.add(serverPanel);
-        addComponent(serverPanel);
+        projectAndServerLayout.addComponent(serverPanel);
+    }
+
+    private void createProjectServerPanelIfNeeded() {
+        if (projectAndServerLayout == null) {
+            projectAndServerLayout = new HorizontalLayout();
+            projectAndServerLayout.setSpacing(true);
+            addComponent(projectAndServerLayout);
+        }
     }
 
     protected void addProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor) {
+        createProjectServerPanelIfNeeded();
         projectPanel = new ProjectPanel(editor, projectProcessor);
         toValidate.add(projectPanel);
-        addComponent(projectPanel);
+        projectAndServerLayout.addComponent(projectPanel);
     }
 
     protected void addPriorityPanel(ConfigEditor editor, Descriptor descriptor,Priorities priorities) {
