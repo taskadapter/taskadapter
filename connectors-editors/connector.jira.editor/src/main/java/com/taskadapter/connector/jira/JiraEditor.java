@@ -45,6 +45,7 @@ public class JiraEditor extends ConfigEditor {
             trackers.put(customField.getId(), customField.getValue());
         }
         newConfig.setCustomFields(trackers);
+        newConfig.setDefaultTaskType(jiraFieldsPanel.getDefaultTaskType());
         return newConfig;
     }
 
@@ -54,6 +55,7 @@ public class JiraEditor extends ConfigEditor {
         private TextField jiraComponent;
         private TextField affectedVersion;
         private TextField fixForVersion;
+        private TextField defaultTaskType;
         private CustomFieldsPanel customFieldsPanel;
         private JiraEditor jiraEditor;
 
@@ -87,6 +89,12 @@ public class JiraEditor extends ConfigEditor {
                     "Show list of available versions.",
                     loadVersionsOperation, fixForVersion, true));
 
+            this.defaultTaskType = EditorUtil.addLabeledText(this, "Default issue type:", "New issues will be created with this 'issue type' (bug/improvement/task...)");
+            addComponent(EditorUtil.createLookupButton(getWindow(),
+                    "...",
+                    "Show list of available issue types on the Jira server",
+                    new LoadIssueTypesOperation(jiraEditor, new JiraFactory()), defaultTaskType, true));
+
             customFieldsPanel = new CustomFieldsPanel();
             addComponent(customFieldsPanel);
 
@@ -97,6 +105,7 @@ public class JiraEditor extends ConfigEditor {
             EditorUtil.setNullSafe(affectedVersion, jiraConfig.getAffectedVersion());
             EditorUtil.setNullSafe(fixForVersion, jiraConfig.getFixForVersion());
             EditorUtil.setNullSafe(jiraComponent, jiraConfig.getComponent());
+            EditorUtil.setNullSafe(defaultTaskType, config.getDefaultTaskType());
             Map<String, String> trackers = jiraConfig.getCustomFields();
             for (String key : trackers.keySet()) {
                 customFieldsPanel.addTrackerOnTable(key, trackers.get(key));
@@ -117,6 +126,10 @@ public class JiraEditor extends ConfigEditor {
 
         public Collection<CustomField> getCustomFields() {
             return customFieldsPanel.getCustomFields();
+        }
+        
+        public String getDefaultTaskType() {
+            return (String) defaultTaskType.getValue();
         }
     }
 
