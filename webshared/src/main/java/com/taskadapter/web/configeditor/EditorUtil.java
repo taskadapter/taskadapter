@@ -12,7 +12,6 @@ import java.util.Map;
  * @author Alexey Skorokhodov
  */
 public class EditorUtil {
-    public static final int NARROW_WIDTH = 150;
 
     public static void setNullSafe(AbstractTextField field, Object value) {
         if (value != null) {
