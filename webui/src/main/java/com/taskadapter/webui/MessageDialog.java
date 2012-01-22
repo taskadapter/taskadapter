@@ -1,6 +1,9 @@
 package com.taskadapter.webui;
 
-import com.vaadin.ui.*;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Window;
 
 import java.util.List;
 
@@ -22,8 +25,6 @@ public class MessageDialog extends Window implements Button.ClickListener {
 
         createButtons(answers);
         addComponent(layout);
-//        layout.setComponentAlignment(yes, Alignment.MIDDLE_CENTER);
-//        layout.setComponentAlignment(no, Alignment.MIDDLE_CENTER);
     }
 
     private void createButtons(List<String> answers) {
