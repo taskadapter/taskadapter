@@ -3,10 +3,7 @@ package com.taskadapter.web.configeditor;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.model.GTaskDescriptor;
-import com.vaadin.ui.AbstractField;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +23,9 @@ public abstract class ConfigEditor extends GridLayout {
     private PriorityPanel priorityPanel;
     private FieldsMappingPanel fieldsMappingPanel;
     protected ConnectorConfig config;
+    private TextField labelText;
+    private static final String LABEL_TEXT = "Label";
+    private static final String LABEL_TOOLTIP = "Text to show for this connector on 'Export' button. Enter any text.";
 
     protected ConfigEditor(ConnectorConfig config) {
         this.config = config;
@@ -33,6 +33,10 @@ public abstract class ConfigEditor extends GridLayout {
         setImmediate(false);
         setMargin(true);
         setSpacing(true);
+        
+        labelText = new TextField(LABEL_TEXT);
+        labelText.setDescription(LABEL_TOOLTIP);
+        addComponent(labelText);
     }
 
     public abstract ConnectorConfig getPartialConfig();
@@ -103,6 +107,7 @@ public abstract class ConfigEditor extends GridLayout {
 
     public ConnectorConfig getConfig() {
         ConnectorConfig config = getPartialConfig();
+        config.setLabel((String) labelText.getValue());
         if (serverPanel != null) {
             ((WebConfig)config).setServerInfo(serverPanel.getServerInfo());
         }
@@ -136,7 +141,6 @@ public abstract class ConfigEditor extends GridLayout {
             projectPanel.setProjectInfo(((WebConfig) config).getProjectInfo());
         }
 
-        // TODO add this
-//        EditorUtil.setNullSafe(this.labelText, config.getLabel());
+        EditorUtil.setNullSafe(this.labelText, config.getLabel());
     }
 }
