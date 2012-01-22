@@ -1,7 +1,6 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.web.FileManager;
 import com.taskadapter.web.LocalRemoteModeListener;
 import com.taskadapter.web.LocalRemoteOptionsPanel;
@@ -162,13 +161,6 @@ public class MSPEditor extends ConfigEditor {
             return enteredFileName;
         } else {
             return new FileManager().getFullFileNameOnServer(enteredFileName);
-        }
-    }
-
-    public void validate() throws ValidationException {
-        String fileNameString = (String) inputFileNameField.getValue();
-        if (fileNameString.isEmpty()) {
-            throw new ValidationException("File name is required");
         }
     }
 }
