@@ -70,7 +70,7 @@ public class JiraEditor extends ConfigEditor {
             setCaption(SAVE_GROUP_LABEL);
             this.jiraComponent = EditorUtil.addLabeledText(this, "Project Component", "Component inside the Jira project");
 
-            LookupOperation loadComponentsOperation = new LoadComponentsOperation(jiraEditor, JiraDescriptor.instance.getPluginFactory());
+            LookupOperation loadComponentsOperation = new LoadComponentsOperation(jiraEditor, new JiraFactory());
             addComponent(EditorUtil.createLookupButton(getWindow(),
                     "...",
                     "Show list of available components on the given server.",

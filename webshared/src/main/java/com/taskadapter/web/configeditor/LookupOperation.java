@@ -32,11 +32,7 @@ public abstract class LookupOperation {
     }
 
     public List<? extends NamedKeyedObject> run() throws Exception {
-//		Display.getDefault().syncExec(new Runnable() {
-//			public void run() {
         initOperation();
-//			}
-//		});
         return loadData();
     }
 
