@@ -3,6 +3,7 @@ package com.taskadapter.webui;
 import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.web.SettingsManager;
+import com.vaadin.ui.Window;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,10 +15,10 @@ public class PageManager {
     public static final String TASKS = "tasks_list";
 
     private Map<String, Page> pages = new HashMap<String, Page>();
-    private AppManager appManager;
+    private TAApplication application;
 
-    public PageManager(ConfigStorage configStorage, AppManager appManager, PluginManager pluginManager, EditorManager editorManager, SettingsManager settingsManager) {
-        this.appManager = appManager;
+    public PageManager(ConfigStorage configStorage, TAApplication application, PluginManager pluginManager, EditorManager editorManager, SettingsManager settingsManager) {
+        this.application = application;
         registerPage(TASKS, new TasksPage(this, configStorage, pluginManager, editorManager, settingsManager));
     }
 
@@ -30,10 +31,14 @@ public class PageManager {
     }
 
     public void show(String pageId) {
-        appManager.show(pages.get(pageId));
+        application.show(pages.get(pageId));
     }
 
     public void show(Page page) {
-        appManager.show(page);
+        application.show(page);
+    }
+
+    public Window getMainWindow() {
+        return application.getMainWindow();
     }
 }
