@@ -40,8 +40,8 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         buildUI();
         addSaveRelationSection();
         addFieldsMappingPanel(RedmineDescriptor.instance.getAvailableFieldsProvider(), config.getFieldsMapping());
-
-        setData();
+        setData(config);
+        setRedmineData();
     }
 
     private void buildUI() {
@@ -78,7 +78,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         addFindUsersByNameElement();
     }
 
-    private void setData() {
+    private void setRedmineData() {
         RedmineConfig redmineConfig = (RedmineConfig) config;
         serverURL.setValue(redmineConfig.getServerInfo().getHost());
         WebServerInfo serverInfo = redmineConfig.getServerInfo();
@@ -90,7 +90,6 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         authOptionsGroup.select(!serverInfo.isUseAPIKeyInsteadOfLoginPassword());
 
         setIfNotNull(defaultTaskType, config.getDefaultTaskType());
-        setIfNotNull(findUserByName, redmineConfig.getFindUserByName());
     }
 
     @Override
@@ -103,7 +102,6 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         rmConfig.setServerInfo(serverInfo);
 
         rmConfig.setDefaultTaskType((String) defaultTaskType.getValue());
-        rmConfig.setFindUserByName((Boolean) findUserByName.getValue());
         return rmConfig;
     }
 

@@ -53,6 +53,7 @@ public abstract class ConfigEditor extends GridLayout {
                 "Task Adapter can load the system's users by resource names specified in the MSP file\n" +
                 "and assign the new tasks to them.\n" +
                 "Note: this operation usually requires 'Admin' permission in the system.");
+        addComponent(findUserByName);
     }
 
     protected void addServerPanel() {
@@ -108,6 +109,7 @@ public abstract class ConfigEditor extends GridLayout {
     public ConnectorConfig getConfig() {
         ConnectorConfig config = getPartialConfig();
         config.setLabel((String) labelText.getValue());
+        // TODO this casting to WebConfig is not nice.
         if (serverPanel != null) {
             ((WebConfig)config).setServerInfo(serverPanel.getServerInfo());
         }
@@ -122,6 +124,9 @@ public abstract class ConfigEditor extends GridLayout {
         if (priorityPanel != null) {
       		config.setPriorities(priorityPanel.getPriorities());
    		}
+        if (findUserByName != null) {
+            ((WebConfig) config).setFindUserByName((Boolean) findUserByName.getValue());
+        }
         return config;
     }
 
@@ -139,6 +144,9 @@ public abstract class ConfigEditor extends GridLayout {
         }
         if (projectPanel != null) {
             projectPanel.setProjectInfo(((WebConfig) config).getProjectInfo());
+        }
+        if (findUserByName != null) {
+            findUserByName.setValue(((WebConfig) config).getFindUserByName());
         }
 
         EditorUtil.setNullSafe(this.labelText, config.getLabel());
