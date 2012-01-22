@@ -1,5 +1,6 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.web.SettingsManager;
@@ -14,14 +15,16 @@ public class TaskToolbarPanel extends HorizontalLayout {
     private final PageManager pageManager;
     private ConfigStorage storage;
     private final TAFile file;
+    private PluginManager pluginManager;
     private EditorManager editorManager;
     private SettingsManager settingsManager;
 
     // TODO refactor this huge list of parameters!
-    public TaskToolbarPanel(PageManager pageManager, ConfigStorage storage, TAFile file,  EditorManager editorManager, SettingsManager settingsManager) {
+    public TaskToolbarPanel(PageManager pageManager, ConfigStorage storage, TAFile file, PluginManager pluginManager, EditorManager editorManager, SettingsManager settingsManager) {
         this.pageManager = pageManager;
         this.storage = storage;
         this.file = file;
+        this.pluginManager = pluginManager;
         this.editorManager = editorManager;
         this.settingsManager = settingsManager;
         buildUI();
@@ -78,7 +81,7 @@ public class TaskToolbarPanel extends HorizontalLayout {
     }
 
     private void showConfigurePage() {
-        ConfigureTaskPage page = new ConfigureTaskPage(file, editorManager, storage, settingsManager);
+        ConfigureTaskPage page = new ConfigureTaskPage(file, editorManager, storage, pluginManager, settingsManager);
         pageManager.show(page);
     }
 }

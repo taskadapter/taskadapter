@@ -3,15 +3,9 @@ package com.taskadapter.webui;
 import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.config.TAFile;
-import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Descriptor;
-import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.web.SettingsManager;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.BaseTheme;
 
 /**
  * @author Alexey Skorokhodov
@@ -42,7 +36,7 @@ public class TaskDetailsPage extends Page {
         layout.setSpacing(true);
         name = new Label();
         layout.addComponent(name);
-        layout.addComponent(new TaskToolbarPanel(pageManager, storage, file, editorManager, settingsManager));
+        layout.addComponent(new TaskToolbarPanel(pageManager, storage, file, pluginManager, editorManager, settingsManager));
         layout.addComponent(new TaskButtonsPanel(pluginManager, pageManager, file));
         setCompositionRoot(layout);
     }

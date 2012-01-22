@@ -1,5 +1,6 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
@@ -8,7 +9,10 @@ import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.SettingsManager;
 import com.taskadapter.web.configeditor.ConfigEditor;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TextField;
 
 /**
  * @author Alexey Skorokhodov
@@ -17,15 +21,17 @@ public class ConfigureTaskPage extends Page {
     private TAFile file;
     private EditorManager editorManager;
     private ConfigStorage configStorage;
+    private PluginManager pluginManager;
     private SettingsManager settingsManager;
     private TextField name;
     private ConfigEditor panel1;
     private ConfigEditor panel2;
 
-    public ConfigureTaskPage(TAFile file, EditorManager editorManager, ConfigStorage configStorage, SettingsManager settingsManager) {
+    public ConfigureTaskPage(TAFile file, EditorManager editorManager, ConfigStorage configStorage, PluginManager pluginManager, SettingsManager settingsManager) {
         this.file = file;
         this.editorManager = editorManager;
         this.configStorage = configStorage;
+        this.pluginManager = pluginManager;
         this.settingsManager = settingsManager;
         buildUI();
     }
@@ -49,12 +55,18 @@ public class ConfigureTaskPage extends Page {
         TabSheet tabSheet = new TabSheet();
         panel.addComponent(tabSheet);
 
-        panel1 = getPanel(file.getConnectorDataHolder1());
 
-        tabSheet.addTab(panel1, "panel 1");
+        ConnectorDataHolder leftConnectorDataHolder = file.getConnectorDataHolder1();
+        panel1 = getPanel(leftConnectorDataHolder);
+        tabSheet.addTab(panel1, getPanelCaption(leftConnectorDataHolder));
 
-        panel2 = getPanel(file.getConnectorDataHolder2());
-        tabSheet.addTab(panel2, "panel 2");
+        ConnectorDataHolder rightConnectorDataHolder = file.getConnectorDataHolder2();
+        panel2 = getPanel(rightConnectorDataHolder);
+        tabSheet.addTab(panel2, getPanelCaption(rightConnectorDataHolder));
+    }
+
+    private String getPanelCaption(ConnectorDataHolder connectorDataHolder) {
+        return connectorDataHolder.getData().getLabel();
     }
 
     private void save() {

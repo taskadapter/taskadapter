@@ -104,7 +104,7 @@ public class NewConfigPage extends Page {
 
     private void showTaskDetailsPage() {
 //        TaskDetailsPage page = new TaskDetailsPage(newConfig, pageManager, storage, pluginManager, editorManager);
-        ConfigureTaskPage page = new ConfigureTaskPage(newFile, editorManager, storage, settingsManager);
+        ConfigureTaskPage page = new ConfigureTaskPage(newFile, editorManager, storage, pluginManager, settingsManager);
         pageManager.show(page);
     }
 
