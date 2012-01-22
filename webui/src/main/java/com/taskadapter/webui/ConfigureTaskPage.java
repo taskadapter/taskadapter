@@ -1,6 +1,5 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
@@ -21,17 +20,15 @@ public class ConfigureTaskPage extends Page {
     private TAFile file;
     private EditorManager editorManager;
     private ConfigStorage configStorage;
-    private PluginManager pluginManager;
     private SettingsManager settingsManager;
     private TextField name;
     private ConfigEditor panel1;
     private ConfigEditor panel2;
 
-    public ConfigureTaskPage(TAFile file, EditorManager editorManager, ConfigStorage configStorage, PluginManager pluginManager, SettingsManager settingsManager) {
+    public ConfigureTaskPage(TAFile file, EditorManager editorManager, ConfigStorage configStorage, SettingsManager settingsManager) {
         this.file = file;
         this.editorManager = editorManager;
         this.configStorage = configStorage;
-        this.pluginManager = pluginManager;
         this.settingsManager = settingsManager;
         buildUI();
     }

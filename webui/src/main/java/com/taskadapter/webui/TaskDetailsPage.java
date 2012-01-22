@@ -36,7 +36,7 @@ public class TaskDetailsPage extends Page {
         layout.setSpacing(true);
         name = new Label();
         layout.addComponent(name);
-        layout.addComponent(new TaskToolbarPanel(pageManager, storage, file, pluginManager, editorManager, settingsManager));
+        layout.addComponent(new TaskToolbarPanel(pageManager, storage, file, editorManager, settingsManager));
         layout.addComponent(new TaskButtonsPanel(pluginManager, pageManager, file));
         setCompositionRoot(layout);
     }
