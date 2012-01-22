@@ -13,7 +13,7 @@ import com.vaadin.ui.*;
  *
  * @author Alexey Skorokhodov
  */
-public class TAApplication extends Application implements AppManager {
+public class TAApplication extends Application {
 
     private HorizontalLayout navigationPanel;
     private Label updateMessage;
@@ -82,7 +82,6 @@ public class TAApplication extends Application implements AppManager {
         show(homePage);
     }
 
-    @Override
     public void show(Page page) {
         currentComponentArea.removeAllComponents();
         currentComponentArea.addComponent(page);
