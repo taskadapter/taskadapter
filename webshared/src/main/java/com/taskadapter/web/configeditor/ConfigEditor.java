@@ -3,6 +3,7 @@ package com.taskadapter.web.configeditor;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.model.GTaskDescriptor;
+import com.taskadapter.web.WindowProvider;
 import com.vaadin.ui.*;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.Map;
 /**
  * @author Alexey Skorokhodov
  */
-public abstract class ConfigEditor extends GridLayout {
+public abstract class ConfigEditor extends GridLayout implements WindowProvider {
     protected CheckBox findUserByName;
     private List<Validatable> toValidate = new ArrayList<Validatable>();
 

@@ -58,7 +58,7 @@ public class ProjectPanel extends GridLayout implements LoadProjectsJobResultLis
 
         LookupOperation loadProjectsOperation = new LoadProjectsOperation(
                 editor, projectProcessor.getDescriptor().getPluginFactory());
-        Button button2 = EditorUtil.createLookupButton(editor.getWindow(), "...",
+        Button button2 = EditorUtil.createLookupButton(editor, "...",
                 "Show list of available projects on the server.",
                 loadProjectsOperation, projectKey, false);
         button2.setEnabled(features.contains(ProjectProcessor.EditorFeature.LOAD_PROJECTS));
@@ -72,7 +72,7 @@ public class ProjectPanel extends GridLayout implements LoadProjectsJobResultLis
         LookupOperation loadSavedQueriesOperation = projectProcessor
                 .getLoadSavedQueriesOperation(editor);
 
-        Button showQueriesButton = EditorUtil.createLookupButton(editor.getWindow(),
+        Button showQueriesButton = EditorUtil.createLookupButton(editor,
                 "...", "Show available saved queries on the server.",
                 loadSavedQueriesOperation, queryID, false);
         showQueriesButton.setEnabled(features
@@ -147,9 +147,4 @@ public class ProjectPanel extends GridLayout implements LoadProjectsJobResultLis
             projectKey.setValue(key);
         }
     }
-
-    public void setProjectKeyRequired(boolean required) {
-        this.projectKeyRequired = required;
-    }
-
 }

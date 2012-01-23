@@ -71,26 +71,26 @@ public class JiraEditor extends ConfigEditor {
             this.jiraComponent = EditorUtil.addLabeledText(this, "Project Component", "Component inside the Jira project");
 
             LookupOperation loadComponentsOperation = new LoadComponentsOperation(jiraEditor, new JiraFactory());
-            addComponent(EditorUtil.createLookupButton(getWindow(),
+            addComponent(EditorUtil.createLookupButton(jiraEditor,
                     "...",
                     "Show list of available components on the given server.",
                     loadComponentsOperation, jiraComponent, true));
 
             this.affectedVersion = EditorUtil.addLabeledText(this, "Set 'Affected version' to:", "Set this 'affected version' value when submitting issues to Jira.");
             LoadVersionsOperation loadVersionsOperation = new LoadVersionsOperation(jiraEditor, new JiraFactory());
-            addComponent(EditorUtil.createLookupButton(getWindow(),
+            addComponent(EditorUtil.createLookupButton(jiraEditor,
                     "...",
                     "Show list of available versions.",
                     loadVersionsOperation, affectedVersion, true));
 
             this.fixForVersion = EditorUtil.addLabeledText(this, "Set 'Fix for version' to:", "Set this 'fix for version' value when submitting issues to Jira.");
-            addComponent(EditorUtil.createLookupButton(getWindow(),
+            addComponent(EditorUtil.createLookupButton(jiraEditor,
                     "...",
                     "Show list of available versions.",
                     loadVersionsOperation, fixForVersion, true));
 
             this.defaultTaskType = EditorUtil.addLabeledText(this, "Default issue type:", "New issues will be created with this 'issue type' (bug/improvement/task...)");
-            addComponent(EditorUtil.createLookupButton(getWindow(),
+            addComponent(EditorUtil.createLookupButton(jiraEditor,
                     "...",
                     "Show list of available issue types on the Jira server",
                     new LoadIssueTypesOperation(jiraEditor, new JiraFactory()), defaultTaskType, true));

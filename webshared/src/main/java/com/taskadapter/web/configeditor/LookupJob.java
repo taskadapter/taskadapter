@@ -2,7 +2,7 @@ package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.NamedKeyedObject;
-import com.vaadin.ui.Window;
+import com.taskadapter.web.WindowProvider;
 
 import java.util.List;
 
@@ -11,13 +11,13 @@ import java.util.List;
  */
 public class LookupJob extends Thread {
 
-    private Window window;
+    private WindowProvider windowProvider;
     private LookupResultListener resultsListener;
     private LookupOperation operation;
 
-    public LookupJob(Window window, LookupOperation operation,
+    public LookupJob(WindowProvider windowProvider, LookupOperation operation,
                      LookupResultListener resultsListener) {
-        this.window = window;
+        this.windowProvider = windowProvider;
         this.resultsListener = resultsListener;
         this.operation = operation;
     }
@@ -27,16 +27,16 @@ public class LookupJob extends Thread {
         try {
             final List<? extends NamedKeyedObject> objects = operation.run();
             if (objects.isEmpty()) {
-                EditorUtil.show(window, "No objects", "No objects have been found");
+                windowProvider.getWindow().showNotification("No objects", "No objects have been found");
             }
             // must synchronize changes over application
-            synchronized (window.getApplication()) {
+            synchronized (windowProvider.getWindow().getApplication()) {
                 resultsListener.notifyDone(objects);
             }
         } catch (ValidationException e) {
-            EditorUtil.show(window, "Validation failed", e);
+            EditorUtil.show(windowProvider.getWindow(), "Validation failed", e);
         } catch (Exception e) {
-            EditorUtil.show(window, "Operation failed", e);
+            EditorUtil.show(windowProvider.getWindow(), "Operation failed", e);
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.taskadapter.web.configeditor;
 
 import com.taskadapter.model.NamedKeyedObject;
+import com.taskadapter.web.WindowProvider;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
 
@@ -40,7 +41,7 @@ public class EditorUtil {
         return button;
     }
 
-    public static Button createLookupButton(final Window window, String label, String description, final LookupOperation operation, final TextField destinationForKey, final boolean useValue) {
+    public static Button createLookupButton(final WindowProvider windowProvider, String label, String description, final LookupOperation operation, final TextField destinationForKey, final boolean useValue) {
         Button button = new Button(label);
         button.setDescription(description);
         final LookupResultListener listener = new LookupResultListener() {
@@ -73,7 +74,7 @@ public class EditorUtil {
         button.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                LookupJob job = new LookupJob(window, operation, listener);
+                LookupJob job = new LookupJob(windowProvider, operation, listener);
                 job.start();
             }
         });
