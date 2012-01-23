@@ -8,12 +8,11 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * @author Alexey Skorokhodov
  */
-public class ProjectPanel extends GridLayout implements LoadProjectsJobResultListener, Validatable {
+public class ProjectPanel extends GridLayout implements Validatable {
     private static final String GROUP_LABEL = "Project Info";
     private static final int COLUMNS_NUMBER = 4;
 
@@ -23,6 +22,7 @@ public class ProjectPanel extends GridLayout implements LoadProjectsJobResultLis
 
     private final ProjectProcessor projectProcessor;
 
+    // TODO use or delete projectKeyRequired field
     private boolean projectKeyRequired;
 
     /**
@@ -137,14 +137,5 @@ public class ProjectPanel extends GridLayout implements LoadProjectsJobResultLis
 
     private boolean isQueryIdEmpty() {
         return (getQueryID() == null) || (getQueryID().trim().isEmpty());
-    }
-
-    @Override
-    public void notifyProjectsLoaded(Map<String, String> namesToKeysMap) {
-        String value = EditorUtil.showList(namesToKeysMap.keySet().toArray());
-        if (value != null) {
-            String key = namesToKeysMap.get(value);
-            projectKey.setValue(key);
-        }
     }
 }

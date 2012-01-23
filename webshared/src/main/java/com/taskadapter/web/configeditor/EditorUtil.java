@@ -5,6 +5,7 @@ import com.taskadapter.web.WindowProvider;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +21,9 @@ public class EditorUtil {
         }
     }
 
-    public static String showList(Object[] objects) {
-        System.out.println("SHOW list here");
-        return null;
+    public static void showList(WindowProvider windowProvider, String title, Collection<String> items, ValueListener valueListener) {
+        ListSelectionDialog newWindow = new ListSelectionDialog(title, items, valueListener);
+        windowProvider.getWindow().addWindow(newWindow);
     }
 
     public static void show(Window window, String caption, Exception e) {
@@ -41,7 +42,7 @@ public class EditorUtil {
         return button;
     }
 
-    public static Button createLookupButton(final WindowProvider windowProvider, String label, String description, final LookupOperation operation, final TextField destinationForKey, final boolean useValue) {
+    public static Button createLookupButton(final WindowProvider windowProvider, final String label, String description, final LookupOperation operation, final TextField destinationForKey, final boolean useValue) {
         Button button = new Button(label);
         button.setDescription(description);
         final LookupResultListener listener = new LookupResultListener() {
@@ -55,20 +56,23 @@ public class EditorUtil {
             private void showValues(final TextField destinationForKey,
                                     final boolean useValue,
                                     List<? extends NamedKeyedObject> objects) {
-                Map<String, String> map = new HashMap<String, String>();
+                final Map<String, String> map = new HashMap<String, String>();
                 for (NamedKeyedObject o : objects) {
                     map.put(o.getName(), o.getKey());
                 }
 
-                String selectedName = showList(map.keySet().toArray());
-                if (selectedName != null) {
-                    if (useValue) {
-                        destinationForKey.setValue(selectedName);
-                    } else {
-                        String key = map.get(selectedName);
-                        destinationForKey.setValue(key);
+                showList(windowProvider, label, map.keySet(), new ValueListener() {
+                    @Override
+                    public void setValue(String value) {
+                        if (useValue) {
+                            destinationForKey.setValue(value);
+                        } else {
+                            String key = map.get(value);
+                            destinationForKey.setValue(key);
+                        }
+
                     }
-                }
+                });
             }
         };
         button.addListener(new Button.ClickListener() {
@@ -81,6 +85,10 @@ public class EditorUtil {
         return button;
     }
 
+    public interface ValueListener {
+        void setValue(String value);
+    }
+    
     public static TextField addLabeledText(AbstractLayout layout, String caption, String tooltip) {
         Label label = new Label(caption);
         layout.addComponent(label);
