@@ -16,7 +16,7 @@ public class GithubConfig extends WebConfig {
     private String issueKeyword;
 
     public GithubConfig () {
-//        label = DEFAULT_LABEL;
+        label = DEFAULT_LABEL;
     }
 
     @Override
