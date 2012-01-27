@@ -3,6 +3,7 @@ package com.taskadapter.webui;
 import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.web.SettingsManager;
+import com.taskadapter.webui.license.LicensePage;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.VerticalLayout;

@@ -7,6 +7,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.prefs.Preferences;
 
@@ -17,8 +19,10 @@ public class LicenseManager {
 
 	public static final String LICENSE_DATE_FORMAT = "yyyy-MM-dd";
 
-	public enum PRODUCT {
-		TASK_ADAPTER, REDMINE_API
+    private static Collection<LicenseChangeListener> listeners = new HashSet<LicenseChangeListener>();
+
+    public enum PRODUCT {
+		TASK_ADAPTER
 	}
 
 	public static final int TRIAL_TASKS_NUMBER_LIMIT = 10;
@@ -81,8 +85,9 @@ public class LicenseManager {
 			PRODUCT product = null;
 			if (productName.equals(PRODUCT.TASK_ADAPTER.toString())) {
 				product = PRODUCT.TASK_ADAPTER;
-			} else if (productName.equals(PRODUCT.REDMINE_API.toString())) {
-				product = PRODUCT.REDMINE_API;
+			} else {
+                // we used to support Redmine API as a product with its own license. not anymore.
+				throw new RuntimeException("Unknown product: " + productName);
 			}
 			String nameLine = lines[LINE_CUSTOMER_NAME];
 			String customerName = nameLine.substring(PREFIX_REGISTERED_TO
@@ -163,14 +168,6 @@ public class LicenseManager {
 		} catch (LicenseValidationException e) {
 //			e.printStackTrace();
 		}
-
-		License licenseRedmine;
-		try {
-			licenseRedmine = loadLicense(PRODUCT.REDMINE_API);
-			licenses.add(licenseRedmine);
-		} catch (LicenseValidationException e) {
-//			e.printStackTrace();
-		}
 		return licenses;
 	}
 
@@ -186,7 +183,8 @@ public class LicenseManager {
 		}
 		String command = args[0];
 		if (command.equals(COMMAND_CLEAN)) {
-			cleanAllLicenses();
+			removeTaskAdapterLicenseFromThisComputer();
+            System.out.println("Deleted Task Adapter license from this computer.");
 		} else {
 			try {
 				installLicenseFile(command);
@@ -230,14 +228,19 @@ public class LicenseManager {
 		Preferences prefs = Preferences
 				.userNodeForPackage(LicenseManager.class);
 		prefs.put(product.toString(), fullLicenseText);
+        notifyListeners();
 	}
 
-	private static void cleanAllLicenses() {
-		Preferences prefs = Preferences
-				.userNodeForPackage(LicenseManager.class);
+    private static void notifyListeners() {
+        for (LicenseChangeListener listener : listeners) {
+            listener.licenseInfoUpdated();
+        }
+    }
+
+    public static void removeTaskAdapterLicenseFromThisComputer() {
+		Preferences prefs = Preferences.userNodeForPackage(LicenseManager.class);
 		prefs.remove(PRODUCT.TASK_ADAPTER.toString());
-		prefs.remove(PRODUCT.REDMINE_API.toString());
-		System.out.println("Deleted all licenses from this computer.");
+        notifyListeners();
 	}
 
 	/**
@@ -249,14 +252,6 @@ public class LicenseManager {
 				.userNodeForPackage(LicenseManager.class);
 		String licenseText = prefs.get(product.toString(), null);
         return LicenseManager.checkLicense(licenseText);
-	}
-
-	/**
-	 * @return NULL if the license is not found or is invalid
-	 * @throws LicenseValidationException the license does not exist or is invalid
-	 */
-	public static License getRedmineApiLicense() throws LicenseValidationException {
-		return loadLicense(PRODUCT.REDMINE_API);
 	}
 
 	/**
@@ -277,16 +272,8 @@ public class LicenseManager {
 		}
 		return result; 
 	}
-
-	public static boolean isRedmineAPILicenseOK() {
-		boolean result = false;
-		try {
-			getRedmineApiLicense();
-			result = true;
-		} catch (LicenseValidationException e) {
-			// ignore.
-		}
-		return result; 
-	}
-
+    
+    public static void addLicenseChangeListener(LicenseChangeListener listener) {
+        listeners.add(listener);
+    }
 }

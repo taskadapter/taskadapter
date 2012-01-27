@@ -1,4 +1,4 @@
-package com.taskadapter.webui;
+package com.taskadapter.webui.license;
 
 import com.taskadapter.license.License;
 import com.taskadapter.license.LicenseManager;
@@ -8,25 +8,20 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 
-/**
- * @author Alexey Skorokhodov
- */
-public class LicensePage extends Page {
+public class EnterLicensePanel extends VerticalLayout {
     private TextArea licenseArea;
-    private Label currentLicenseInfo;
 
-    public LicensePage() {
+    public EnterLicensePanel() {
         buildUI();
-        setDataToForm();
     }
 
     private void buildUI() {
-        VerticalLayout layout = new VerticalLayout();
-        currentLicenseInfo = new Label();
-        layout.addComponent(currentLicenseInfo);
+        addComponent(new Label("UNREGISTERED"));
+
         licenseArea = new TextArea("Paste the complete contents of the license file here");
 
-        layout.addComponent(licenseArea);
+        addComponent(licenseArea);
+
         Button saveButton = new Button("Save");
         saveButton.addListener(new Button.ClickListener() {
             @Override
@@ -34,10 +29,9 @@ public class LicensePage extends Page {
                 save();
             }
         });
-
-        layout.addComponent(saveButton);
-        setCompositionRoot(layout);
+        addComponent(saveButton);
     }
+
 
     private boolean save() {
         String licenseText = (String) licenseArea.getValue();
@@ -49,8 +43,7 @@ public class LicensePage extends Page {
             license = LicenseManager.checkLicense(licenseText);
             LicenseManager.installLicense(LicenseManager.PRODUCT.TASK_ADAPTER,
                     licenseText);
-            getWindow().showNotification("Successfully registered to: " + license.getCustomerName()
-                    + "\nPlease, RESTART the application.");
+            getWindow().showNotification("Successfully registered to: " + license.getCustomerName());
             allOK = true;
         } catch (LicenseValidationException e) {
             getWindow().showNotification("License validation error",
@@ -59,20 +52,4 @@ public class LicensePage extends Page {
         return allOK;
     }
 
-
-    private void setDataToForm() {
-        String currentLicense;
-        try {
-            License l = LicenseManager.getTaskAdapterLicense();
-            currentLicense = "Registered to: " + l.getCustomerName();
-        } catch (LicenseValidationException e) {
-            currentLicense = " UNREGISTERED";
-        }
-        currentLicenseInfo.setValue(currentLicense);
-    }
-
-    @Override
-    public String getNavigationPanelTitle() {
-        return "Info";
-    }
 }
