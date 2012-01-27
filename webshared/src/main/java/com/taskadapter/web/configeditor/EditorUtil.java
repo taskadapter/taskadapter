@@ -1,5 +1,6 @@
 package com.taskadapter.web.configeditor;
 
+import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.WindowProvider;
 import com.vaadin.terminal.Sizeable;
@@ -78,8 +79,19 @@ public class EditorUtil {
         button.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                LookupJob job = new LookupJob(windowProvider, operation, listener);
-                job.start();
+                final List<? extends NamedKeyedObject> objects;
+                try {
+                    objects = operation.run();
+
+                    if (objects.isEmpty()) {
+                        windowProvider.getWindow().showNotification("No objects", "No objects have been found");
+                    }
+                    listener.notifyDone(objects);
+                } catch (ValidationException e) {
+                    EditorUtil.show(windowProvider.getWindow(), "Validation failed", e);
+                } catch (Exception e) {
+                    EditorUtil.show(windowProvider.getWindow(), "Operation failed", e);
+                }
             }
         });
         return button;
