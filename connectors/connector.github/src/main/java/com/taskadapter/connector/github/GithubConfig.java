@@ -9,9 +9,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GithubConfig extends WebConfig {
+    private static final String DEFAULT_LABEL = "Github";
+
     private String issueState;
 
     private String issueKeyword;
+
+    public GithubConfig () {
+//        label = DEFAULT_LABEL;
+    }
 
     @Override
     protected Map<GTaskDescriptor.FIELD, Mapping> generateDefaultFieldsMapping() {
