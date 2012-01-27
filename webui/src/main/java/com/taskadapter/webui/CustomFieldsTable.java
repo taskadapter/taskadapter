@@ -61,15 +61,13 @@ public class CustomFieldsTable extends CustomComponent {
         return newCustomFields;
     }
 
-    public void setCustomFields (List<CustomField> customFields) {
-        if(customFields.size() > 0) {
-            table.removeAllItems();
-            for(CustomField customField : customFields) {
-                table.addItem(new Object[]{
-                        customField.getId(),
-                        customField.getValue()
-                }, null);
-            }
+    public void setCustomFields(List<CustomField> customFields) {
+        table.removeAllItems();
+        for (CustomField customField : customFields) {
+            table.addItem(new Object[]{
+                    customField.getId(),
+                    customField.getValue()
+            }, null);
         }
     }
 
