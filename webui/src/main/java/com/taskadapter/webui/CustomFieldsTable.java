@@ -1,5 +1,6 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.web.configeditor.CustomField;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.event.FieldEvents;

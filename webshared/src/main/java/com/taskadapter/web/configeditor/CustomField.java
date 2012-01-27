@@ -1,4 +1,4 @@
-package com.taskadapter.webui;
+package com.taskadapter.web.configeditor;
 
 /**
  * @author Igor Laishen

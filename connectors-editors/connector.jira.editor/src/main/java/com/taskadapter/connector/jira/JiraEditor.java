@@ -2,6 +2,7 @@ package com.taskadapter.connector.jira;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.web.configeditor.ConfigEditor;
+import com.taskadapter.web.configeditor.CustomField;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.LookupOperation;
 import com.vaadin.ui.GridLayout;

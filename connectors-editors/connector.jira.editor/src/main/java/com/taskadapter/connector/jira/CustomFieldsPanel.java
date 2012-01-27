@@ -1,5 +1,6 @@
 package com.taskadapter.connector.jira;
 
+import com.taskadapter.web.configeditor.CustomField;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
 
