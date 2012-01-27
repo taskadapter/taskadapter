@@ -1,11 +1,7 @@
 package com.taskadapter.webui;
 
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author Alexey Skorokhodov
