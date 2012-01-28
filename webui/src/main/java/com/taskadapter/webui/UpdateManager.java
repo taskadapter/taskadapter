@@ -16,6 +16,8 @@ public class UpdateManager {
   private String lastVersion;
 
   public UpdateManager() {
+// disabled for now to not generate a lot of useless "check version" requests to the server.
+// we'll enable before the release.
 //    loadLastVersion();
       setHardcodedLastVersionForTesting();
   }

@@ -37,14 +37,14 @@ public class TAApplication extends Application {
     @Override
     public void init() {
         setTheme("mytheme");
+
         SettingsManager settingsManager = new SettingsManager();
+
         PageManager pageManager = new PageManager(configStorage, this, pluginManager, editorManager, settingsManager);
         menuLinkBuilder = new MenuLinkBuilder(pageManager);
 
         VerticalLayout layout = new VerticalLayout();
-        layout.setSizeFull();
-
-        mainArea.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        layout.setWidth("100%");
 
         Header header = new Header();
         header.setHeight("50px");
@@ -61,16 +61,15 @@ public class TAApplication extends Application {
         layout.addComponent(updateMessage);
         layout.setComponentAlignment(updateMessage, Alignment.MIDDLE_CENTER);
 
-        currentComponentArea.setSizeFull();
-
         LeftMenu leftMenu = new LeftMenu(pageManager, configStorage, pluginManager, editorManager, settingsManager);
         leftMenu.setWidth("120px");
-
         mainArea.addComponent(leftMenu);
+
+        currentComponentArea.setSizeFull();
+
         mainArea.addComponent(currentComponentArea);
         mainArea.setExpandRatio(currentComponentArea, 1.0f);
         mainArea.setSizeFull();
-
         layout.addComponent(mainArea);
         layout.setComponentAlignment(mainArea, Alignment.TOP_LEFT);
         layout.setExpandRatio(mainArea, 1.0f);      // use all available space
@@ -95,9 +94,13 @@ public class TAApplication extends Application {
 
     private void checkLastAvailableVersion() {
         UpdateManager updateManager = new UpdateManager();
-        if (UpdateManager.isOutdated(updateManager.getCurrentVersion(), updateManager.getLatestAvailableVersion())) {
-            updateMessage.setCaption("There's a newer version of Task Adapter available for download. Your version: " + updateManager.getCurrentVersion() +
-                    ". Last available version: " + updateManager.getLatestAvailableVersion());
+
+        String currentVersion = updateManager.getCurrentVersion();
+        String latestVersion = updateManager.getLatestAvailableVersion();
+
+        if (UpdateManager.isOutdated(currentVersion, latestVersion)) {
+            updateMessage.setCaption("There's a newer version of Task Adapter available for download. Your version: "
+                    + currentVersion + ". Last available version: " + latestVersion);
         }
     }
 }

@@ -54,7 +54,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         authOptionsGroup.addListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                System.out.println("disable");
+                System.out.println("TODO: disable fields on the page (e.g. disable user name if API Auth method is used)");
             }
         });
         authOptionsGroup.select(DEFAULT_USE);

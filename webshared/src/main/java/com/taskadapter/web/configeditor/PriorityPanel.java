@@ -9,6 +9,7 @@ import com.vaadin.data.util.BeanContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 import java.util.*;
 
@@ -17,8 +18,9 @@ import java.util.*;
  */
 public class PriorityPanel extends VerticalLayout implements Validatable {
 
-    public static final String TEXT = "Priority Name";
-    public static final String VALUE = "Task Adapter Priority Value";
+    public static final String TEXT_HEADER = "Priority Name";
+    public static final String VALUE_HEADER = "Task Adapter Priority Value";
+
     private final ConfigEditor configEditor;
     private final Descriptor descriptor;
 
@@ -30,6 +32,8 @@ public class PriorityPanel extends VerticalLayout implements Validatable {
      * Config Editors should NOT create this object directly, use ConfigEditor.addPriorityPanel() method instead.
      *
      * @see ConfigEditor#addPriorityPanel(ConfigEditor, com.taskadapter.connector.definition.Descriptor, Priorities priorities)
+     * @param editor ConfigEditor
+     * @param descriptor Descriptor
      */
     PriorityPanel(ConfigEditor editor, Descriptor descriptor) {
         this.configEditor = editor;
@@ -39,16 +43,22 @@ public class PriorityPanel extends VerticalLayout implements Validatable {
 
     private void buildUI() {
         addStyleName("bordered_panel");
+        setSizeUndefined();
 
         Collection<Feature> features = descriptor.getSupportedFeatures();
 
-		prioritiesTable = new Table("Priorities", data);
         data.setBeanIdProperty("text");
+
+        prioritiesTable = new Table("Priorities", data);
         prioritiesTable.addStyleName("priorities_table");
         prioritiesTable.setEditable(true);
-        prioritiesTable.setColumnHeader("text", TEXT);
-        prioritiesTable.setColumnHeader("value", VALUE);
-        prioritiesTable.setVisibleColumns(new Object[]{"text", "value"});
+
+        prioritiesTable.setColumnHeader(Priority.TEXT, TEXT_HEADER);
+        prioritiesTable.setColumnHeader(Priority.VALUE, VALUE_HEADER);
+        prioritiesTable.setVisibleColumns(new Object[]{Priority.TEXT, Priority.VALUE});
+
+        prioritiesTable.setColumnWidth(Priority.TEXT, 80);
+        prioritiesTable.setWidth("300px");
 
 //		prioritiesTable.addSelectionListener(new SelectionAdapter() {
 //			public void widgetSelected(SelecionEvent e) {
@@ -95,6 +105,7 @@ public class PriorityPanel extends VerticalLayout implements Validatable {
                 } catch (Exception e) {
                     // TODO handle the exception
                     e.printStackTrace();
+                    getWindow().showNotification("Error!", e.getMessage(), Window.Notification.TYPE_ERROR_MESSAGE);
                 }
             }
         });
@@ -164,6 +175,9 @@ public class PriorityPanel extends VerticalLayout implements Validatable {
 //	}
 
     public class Priority {
+        public static final String TEXT = "text";
+        public static final String VALUE = "value";
+
         String text;
         int value;
 

@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * @author Alexey Skorokhodov
  */
-public abstract class ConfigEditor extends GridLayout implements WindowProvider {
+public abstract class ConfigEditor extends VerticalLayout implements WindowProvider {
     protected CheckBox findUserByName;
     private List<Validatable> toValidate = new ArrayList<Validatable>();
 
@@ -38,6 +38,7 @@ public abstract class ConfigEditor extends GridLayout implements WindowProvider 
         labelText = new TextField(LABEL_TEXT);
         labelText.setDescription(LABEL_TOOLTIP);
         addComponent(labelText);
+        setWidth("800px");
     }
 
     public abstract ConnectorConfig getPartialConfig();

@@ -8,22 +8,19 @@ import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.SettingsManager;
 import com.taskadapter.web.configeditor.ConfigEditor;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TextField;
+import com.vaadin.ui.*;
 
 /**
  * @author Alexey Skorokhodov
  */
 public class ConfigureTaskPage extends Page {
-    private TAFile file;
-    private EditorManager editorManager;
-    private ConfigStorage configStorage;
+    private TAFile          file;
+    private EditorManager   editorManager;
+    private ConfigStorage   configStorage;
     private SettingsManager settingsManager;
-    private TextField name;
-    private ConfigEditor panel1;
-    private ConfigEditor panel2;
+    private TextField       name;
+    private ConfigEditor    panel1;
+    private ConfigEditor    panel2;
 
     public ConfigureTaskPage(TAFile file, EditorManager editorManager, ConfigStorage configStorage, SettingsManager settingsManager) {
         this.file = file;
@@ -36,6 +33,7 @@ public class ConfigureTaskPage extends Page {
     private void buildUI() {
         Panel panel = new Panel();
         setCompositionRoot(panel);
+
         Button saveButton = new Button("Save");
         saveButton.addListener(new Button.ClickListener() {
             @Override
@@ -46,12 +44,11 @@ public class ConfigureTaskPage extends Page {
         panel.addComponent(saveButton);
 
         name = new TextField("Name");
-        panel.addComponent(name);
         name.setValue(file.getName());
+        panel.addComponent(name);
 
         TabSheet tabSheet = new TabSheet();
-        panel.addComponent(tabSheet);
-
+        tabSheet.setSizeUndefined();
 
         ConnectorDataHolder leftConnectorDataHolder = file.getConnectorDataHolder1();
         panel1 = getPanel(leftConnectorDataHolder);
@@ -60,6 +57,8 @@ public class ConfigureTaskPage extends Page {
         ConnectorDataHolder rightConnectorDataHolder = file.getConnectorDataHolder2();
         panel2 = getPanel(rightConnectorDataHolder);
         tabSheet.addTab(panel2, getPanelCaption(rightConnectorDataHolder));
+
+        panel.addComponent(tabSheet);
     }
 
     private String getPanelCaption(ConnectorDataHolder connectorDataHolder) {
@@ -79,7 +78,7 @@ public class ConfigureTaskPage extends Page {
             configStorage.saveConfig(newFile);
             getWindow().showNotification("Saved");
         } catch (ValidationException e) {
-            getWindow().showNotification("Validation", e.getMessage());
+            getWindow().showNotification("Validation", e.getMessage(), Window.Notification.TYPE_WARNING_MESSAGE);
         }
     }
 
