@@ -15,8 +15,8 @@ abstract public class WebConfig extends ConnectorConfig {
 	protected Map<String, String> customFields = new TreeMap<String, String>();
     protected Boolean findUserByName = Boolean.FALSE;
 
-	public WebConfig() {
-		super();
+	public WebConfig(String label) {
+		super(label);
 	}
 
 	public String getProjectKey() {

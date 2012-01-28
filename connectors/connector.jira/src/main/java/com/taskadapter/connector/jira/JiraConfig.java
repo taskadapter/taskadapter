@@ -32,7 +32,7 @@ public class JiraConfig extends WebConfig {
 	protected String fixForVersion = "";
 	
 	public JiraConfig() {
-		label = DEFAULT_LABEL;
+        super(DEFAULT_LABEL);
 	}
 
 	public String getComponent() {

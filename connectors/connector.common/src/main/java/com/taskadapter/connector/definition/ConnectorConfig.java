@@ -17,7 +17,7 @@ public abstract class ConnectorConfig implements Serializable {
 
 	protected Map<FIELD, Mapping> fieldsMapping;
 	
-	protected String label;
+	private String label;
 
     protected boolean saveIssueRelations = false;
 
@@ -46,7 +46,8 @@ public abstract class ConnectorConfig implements Serializable {
 
     public abstract String getTargetLocation();
 
-	public ConnectorConfig() {
+	public ConnectorConfig(String label) {
+        this.label = label;
 		fieldsMapping = generateDefaultFieldsMapping();
         priorities = generateDefaultPriorities();
 	}

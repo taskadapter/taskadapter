@@ -9,14 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GithubConfig extends WebConfig {
-    private static final String DEFAULT_LABEL = "Github";
+    static final String DEFAULT_LABEL = "Github";
 
     private String issueState;
-
     private String issueKeyword;
 
     public GithubConfig () {
-        label = DEFAULT_LABEL;
+        super(DEFAULT_LABEL);
     }
 
     @Override

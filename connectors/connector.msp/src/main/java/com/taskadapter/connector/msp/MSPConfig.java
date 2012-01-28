@@ -21,7 +21,7 @@ public class MSPConfig extends ConnectorConfig {
 	private String outputFileName = "";
 	
 	public MSPConfig(){
-		label = DEFAULT_LABEL; 
+        super(DEFAULT_LABEL);
 	}
 
 	/**
@@ -34,7 +34,7 @@ public class MSPConfig extends ConnectorConfig {
 	}
 
 	public MSPConfig(String fileName, Map<FIELD, Mapping> mapping){
-		super();
+		this();
 		this.fieldsMapping = mapping;
 		this.inputFileName = fileName;
 		this.outputFileName = fileName;

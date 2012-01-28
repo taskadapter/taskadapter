@@ -16,7 +16,7 @@ public class MantisConfig extends WebConfig {
 	private static final long serialVersionUID = 1L;
 
 	public MantisConfig() {
-		label = DEFAULT_LABEL;
+        super(DEFAULT_LABEL);
 	}
 
     @Override

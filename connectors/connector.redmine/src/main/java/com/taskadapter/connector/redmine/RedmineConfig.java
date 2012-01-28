@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class RedmineConfig extends WebConfig {
-	
-	static final String DEFAULT_LABEL = "Redmine";
+
+    static final String DEFAULT_LABEL = "Redmine";
 
 	private static final long serialVersionUID = 1L;
 
@@ -23,8 +23,7 @@ public class RedmineConfig extends WebConfig {
 	private String defaultTaskType = "Bug";
 	
 	public RedmineConfig() {
-		super();
-		label = DEFAULT_LABEL;
+		super(DEFAULT_LABEL);
 	}
 
 	public String getDefaultTaskType() {

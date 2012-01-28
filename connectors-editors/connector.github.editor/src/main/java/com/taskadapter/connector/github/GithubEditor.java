@@ -18,7 +18,7 @@ public class GithubEditor extends ConfigEditor {
         super(config);
         buildUI();
         addFieldsMappingPanel(GithubDescriptor.instance.getAvailableFieldsProvider(), config.getFieldsMapping());
-
+        setData(config);
         setGitHubData();
     }
 
