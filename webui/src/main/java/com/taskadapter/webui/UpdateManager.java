@@ -14,8 +14,12 @@ import java.util.Properties;
 public class UpdateManager {
 
     private String lastVersion;
+    private String currentVersion;
 
     public UpdateManager() {
+        // TODO hardcoded current version
+        currentVersion = "1.0.0";
+
 // disabled for now to not generate a lot of useless "check version" requests to the server.
 // we'll enable before the release.
 //    loadLastVersion();
@@ -23,6 +27,7 @@ public class UpdateManager {
     }
 
     private void setHardcodedLastVersionForTesting() {
+        // TODO hardcoded "last available" version
         lastVersion = "2.0.0_dev";
     }
 
@@ -46,22 +51,26 @@ public class UpdateManager {
     }
 
     public String getCurrentVersion() {
-        return "1.0.1";
+        return currentVersion;
     }
 
     /**
      * check the last TA version available for download on the website.
-     *
-     * @return
      */
     public String getLatestAvailableVersion() {
         return lastVersion;
     }
 
-    public static boolean isOutdated(String currentVersion, String lastAvailableVersion) {
-        int res = currentVersion.compareTo(lastAvailableVersion);
+    public boolean isCurrentVersionOutdated() {
+        int res = getCurrentVersion().compareTo(getLatestAvailableVersion());
         return res < 0;
     }
 
-
+    void setCurrentVersionForTesting(String currentVersion) {
+        this.currentVersion = currentVersion;
+    }
+    
+    void setLastVersion(String lastVersion) {
+        this.lastVersion = lastVersion;
+    }
 }

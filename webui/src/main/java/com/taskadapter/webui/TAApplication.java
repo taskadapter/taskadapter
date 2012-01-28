@@ -95,12 +95,9 @@ public class TAApplication extends Application {
     private void checkLastAvailableVersion() {
         UpdateManager updateManager = new UpdateManager();
 
-        String currentVersion = updateManager.getCurrentVersion();
-        String latestVersion = updateManager.getLatestAvailableVersion();
-
-        if (UpdateManager.isOutdated(currentVersion, latestVersion)) {
+        if (updateManager.isCurrentVersionOutdated()) {
             updateMessage.setCaption("There's a newer version of Task Adapter available for download. Your version: "
-                    + currentVersion + ". Last available version: " + latestVersion);
+                    + updateManager.getCurrentVersion() + ". Last available version: " + updateManager.getLatestAvailableVersion());
         }
     }
 }

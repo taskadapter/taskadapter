@@ -1,13 +1,23 @@
 package com.taskadapter.webui;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class UpdateManagerTest {
+
+    private UpdateManager updateManager;
+    private String lastAvailable = "1.4.3";
+
+    @Before
+    public void beforeEachMethod() {
+        updateManager = new UpdateManager();
+        updateManager.setLastVersion(lastAvailable);
+    }
+
     @Test
     public void somethingIsLoaded() {
-        UpdateManager updateManager = new UpdateManager();
         String version = updateManager.getLatestAvailableVersion();
         assertNotNull(version);
         System.out.println("Loaded the last available version number from the server: " + version);
@@ -17,14 +27,26 @@ public class UpdateManagerTest {
     }
 
     @Test
-    public void compareVersions() {
+    public void compareVersions1() {
+        updateManager.setCurrentVersionForTesting("1.0");
+        assertTrue(updateManager.isCurrentVersionOutdated());
+    }
 
-        String lastAvailable = "1.4.3";
+    @Test
+    public void compareVersions2() {
+        updateManager.setCurrentVersionForTesting("1.4.1");
+        assertTrue(updateManager.isCurrentVersionOutdated());
+    }
 
-        assertTrue(UpdateManager.isOutdated("1.0", lastAvailable));
-        assertTrue(UpdateManager.isOutdated("1.4.1", lastAvailable));
-        assertFalse(UpdateManager.isOutdated("1.4.3", lastAvailable));
-        assertFalse(UpdateManager.isOutdated("1.4.3", lastAvailable));
-        assertFalse(UpdateManager.isOutdated("2.0.0", lastAvailable));
+    @Test
+    public void compareVersions3() {
+        updateManager.setCurrentVersionForTesting("1.4.3");
+        assertFalse(updateManager.isCurrentVersionOutdated());
+    }
+
+    @Test
+    public void compareVersions4() {
+        updateManager.setCurrentVersionForTesting("2.0.0");
+        assertFalse(updateManager.isCurrentVersionOutdated());
     }
 }
