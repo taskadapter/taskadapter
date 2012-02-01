@@ -22,6 +22,7 @@ public class ServerPanel extends GridLayout implements Validatable {
 
     /**
      * Config Editors should NOT create this object directly, use ConfigEditor.addServerPanel() method instead.
+     *
      * @see ConfigEditor#addServerPanel()
      */
     ServerPanel() {
@@ -33,10 +34,10 @@ public class ServerPanel extends GridLayout implements Validatable {
         setCaption(SERVER_GROUP_LABEL);
         setColumns(2);
 
-		addComponent(new Label("Server URL:"));
-		hostURLText = new TextField();
+        addComponent(new Label("Server URL:"));
+        hostURLText = new TextField();
         hostURLText.setDescription(HOST_URL_TOOLTIP);
-		hostURLText.addListener(new FieldEvents.BlurListener() {
+        hostURLText.addListener(new FieldEvents.BlurListener() {
             @Override
             public void blur(FieldEvents.BlurEvent event) {
                 cleanup();
@@ -45,11 +46,11 @@ public class ServerPanel extends GridLayout implements Validatable {
         addComponent(hostURLText);
 
         addComponent(new Label("Login:"));
-		login = new TextField();
+        login = new TextField();
         addComponent(login);
-        
+
         addComponent(new Label("Password:"));
-		password = new PasswordField();
+        password = new PasswordField();
         addComponent(password);
     }
 

@@ -27,6 +27,7 @@ public class ProjectPanel extends GridLayout implements Validatable {
 
     /**
      * Config Editors should NOT create this object directly, use ConfigEditor.addProjectPanel() method instead.
+     *
      * @see ConfigEditor#addProjectPanel(ConfigEditor, ProjectProcessor)
      */
     ProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor) {
@@ -67,7 +68,7 @@ public class ProjectPanel extends GridLayout implements Validatable {
         addComponent(new Label("Query ID:"));
         this.queryID = new TextField();
         queryID.setDescription("Custom query/filter ID (number). You need to create a query on the server before accessing it from here."
-                        + "\nRead help for more details.");
+                + "\nRead help for more details.");
         addComponent(queryID);
         LookupOperation loadSavedQueriesOperation = projectProcessor
                 .getLoadSavedQueriesOperation(editor);

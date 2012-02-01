@@ -9,14 +9,17 @@ import java.util.Collection;
  */
 
 public interface ProjectProcessor {
-	public enum EditorFeature {
-		LOAD_PROJECT_INFO,
-		LOAD_PROJECTS,
-		LOAD_SAVED_QUERIES
-	}
+    public enum EditorFeature {
+        LOAD_PROJECT_INFO,
+        LOAD_PROJECTS,
+        LOAD_SAVED_QUERIES
+    }
 
-	void loadProject(String projectKey);
-	Descriptor getDescriptor();
-	LookupOperation getLoadSavedQueriesOperation(ConfigEditor editor);
-	Collection<EditorFeature> getSupportedFeatures();
+    void loadProject(String projectKey);
+
+    Descriptor getDescriptor();
+
+    LookupOperation getLoadSavedQueriesOperation(ConfigEditor editor);
+
+    Collection<EditorFeature> getSupportedFeatures();
 }

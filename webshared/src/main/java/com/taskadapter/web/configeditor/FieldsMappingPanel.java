@@ -35,10 +35,11 @@ public class FieldsMappingPanel extends GridLayout implements Validatable {
 
     /**
      * Config Editors should NOT create this object directly, use ConfigEditor.addFieldsMappingPanel() method instead.
+     *
      * @see ConfigEditor#addFieldsMappingPanel(com.taskadapter.connector.definition.AvailableFieldsProvider, java.util.Map)
      */
     FieldsMappingPanel(AvailableFieldsProvider availableFieldsProvider,
-                              Map<GTaskDescriptor.FIELD, Mapping> fieldsMapping) {
+                       Map<GTaskDescriptor.FIELD, Mapping> fieldsMapping) {
         addStyleName("fields_mapping_panel");
         this.availableFieldsProvider = availableFieldsProvider;
         this.fieldsMapping = fieldsMapping;
@@ -58,8 +59,8 @@ public class FieldsMappingPanel extends GridLayout implements Validatable {
 
             Mapping mapping = fieldsMapping.get(f);
             if (mapping == null) {
-				// means this config does not have a mapping for this field, which
-				// availableFieldsProvider reported as "supported": probably OLD config
+                // means this config does not have a mapping for this field, which
+                // availableFieldsProvider reported as "supported": probably OLD config
                 continue;
             }
 

@@ -6,6 +6,6 @@ import com.taskadapter.connector.definition.ValidationException;
  * @author Alexey Skorokhodov
  */
 public interface Validatable {
-	void validate() throws ValidationException;
+    void validate() throws ValidationException;
 }
 

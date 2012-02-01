@@ -100,7 +100,7 @@ public class EditorUtil {
     public interface ValueListener {
         void setValue(String value);
     }
-    
+
     public static TextField addLabeledText(AbstractLayout layout, String caption, String tooltip) {
         Label label = new Label(caption);
         layout.addComponent(label);
