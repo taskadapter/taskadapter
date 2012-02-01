@@ -31,9 +31,9 @@ public class PriorityPanel extends VerticalLayout implements Validatable {
     /**
      * Config Editors should NOT create this object directly, use ConfigEditor.addPriorityPanel() method instead.
      *
-     * @see ConfigEditor#addPriorityPanel(ConfigEditor, com.taskadapter.connector.definition.Descriptor, Priorities priorities)
-     * @param editor ConfigEditor
+     * @param editor     ConfigEditor
      * @param descriptor Descriptor
+     * @see ConfigEditor#addPriorityPanel(ConfigEditor, com.taskadapter.connector.definition.Descriptor, Priorities priorities)
      */
     PriorityPanel(ConfigEditor editor, Descriptor descriptor) {
         this.configEditor = editor;
@@ -113,32 +113,33 @@ public class PriorityPanel extends VerticalLayout implements Validatable {
     }
 
     public Priorities getPriorities() {
-           Map<String, Integer> priorities = new HashMap<String, Integer>();
+        Map<String, Integer> priorities = new HashMap<String, Integer>();
 //           for (TableItem tableItem : prioritiesTable.getItems()) {
 //               String trackerText = tableItem.getText(0);
 //               Integer mspValue = Integer.parseInt(tableItem.getText(1));
 //               priorities.put(trackerText, mspValue);
 //           }
 
-           return null;
-       }
-/*
-       private void addPriorityOnTable(String id, String name) {
-           TableItem tableItem = new TableItem(prioritiesTable, SWT.NONE);
-           tableItem.setText(new String[] { id, name });
-       }
-*/
-       private void reloadPriorityList() throws Exception {
-           LookupOperation loadPrioritiesOperation = new LoadPrioritiesOperation(configEditor, descriptor.getPluginFactory());
-           @SuppressWarnings("unchecked")
-           List<NamedKeyedObjectImpl> list = (List<NamedKeyedObjectImpl>) loadPrioritiesOperation
-                   .run();
+        return null;
+    }
 
-           Priorities defaultPriorities = descriptor.createDefaultConfig().getPriorities();
-           setPriorities(defaultPriorities);
+    /*
+           private void addPriorityOnTable(String id, String name) {
+               TableItem tableItem = new TableItem(prioritiesTable, SWT.NONE);
+               tableItem.setText(new String[] { id, name });
+           }
+    */
+    private void reloadPriorityList() throws Exception {
+        LookupOperation loadPrioritiesOperation = new LoadPrioritiesOperation(configEditor, descriptor.getPluginFactory());
+        @SuppressWarnings("unchecked")
+        List<NamedKeyedObjectImpl> list = (List<NamedKeyedObjectImpl>) loadPrioritiesOperation
+                .run();
 
-           System.out.println("reloadPriorityList: not implemented");
-       }
+        Priorities defaultPriorities = descriptor.createDefaultConfig().getPriorities();
+        setPriorities(defaultPriorities);
+
+        System.out.println("reloadPriorityList: not implemented");
+    }
 
     public void setPriorities(Priorities items) {
         data.removeAllItems();
