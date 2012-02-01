@@ -34,7 +34,7 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         setImmediate(false);
         setMargin(true);
         setSpacing(true);
-        
+
         labelText = new TextField(LABEL_TEXT);
         labelText.setDescription(LABEL_TOOLTIP);
         addComponent(labelText);
@@ -80,7 +80,7 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         projectAndServerLayout.addComponent(projectPanel);
     }
 
-    protected void addPriorityPanel(ConfigEditor editor, Descriptor descriptor,Priorities priorities) {
+    protected void addPriorityPanel(ConfigEditor editor, Descriptor descriptor, Priorities priorities) {
         priorityPanel = new PriorityPanel(editor, descriptor);
         toValidate.add(priorityPanel);
         addComponent(priorityPanel);
@@ -113,7 +113,7 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         config.setLabel((String) labelText.getValue());
         // TODO this casting to WebConfig is not nice.
         if (serverPanel != null) {
-            ((WebConfig)config).setServerInfo(serverPanel.getServerInfo());
+            ((WebConfig) config).setServerInfo(serverPanel.getServerInfo());
         }
         if (fieldsMappingPanel != null) {
             config.setFieldsMapping(fieldsMappingPanel.getResult());
@@ -124,8 +124,8 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
             ((WebConfig) config).setQueryId(projectInfo.getQueryId());
         }
         if (priorityPanel != null) {
-      		config.setPriorities(priorityPanel.getPriorities());
-   		}
+            config.setPriorities(priorityPanel.getPriorities());
+        }
         if (findUserByName != null) {
             ((WebConfig) config).setFindUserByName((Boolean) findUserByName.getValue());
         }
