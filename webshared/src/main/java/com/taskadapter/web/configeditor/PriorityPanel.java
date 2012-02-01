@@ -6,6 +6,7 @@ import com.taskadapter.connector.definition.Descriptor.Feature;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.NamedKeyedObjectImpl;
 import com.vaadin.data.util.BeanContainer;
+import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
@@ -31,9 +32,9 @@ public class PriorityPanel extends VerticalLayout implements Validatable {
     /**
      * Config Editors should NOT create this object directly, use ConfigEditor.addPriorityPanel() method instead.
      *
-     * @see ConfigEditor#addPriorityPanel(ConfigEditor, com.taskadapter.connector.definition.Descriptor, Priorities priorities)
-     * @param editor ConfigEditor
+     * @param editor     ConfigEditor
      * @param descriptor Descriptor
+     * @see ConfigEditor#addPriorityPanel(ConfigEditor, com.taskadapter.connector.definition.Descriptor, Priorities priorities)
      */
     PriorityPanel(ConfigEditor editor, Descriptor descriptor) {
         this.configEditor = editor;
@@ -113,32 +114,34 @@ public class PriorityPanel extends VerticalLayout implements Validatable {
     }
 
     public Priorities getPriorities() {
-           Map<String, Integer> priorities = new HashMap<String, Integer>();
-//           for (TableItem tableItem : prioritiesTable.getItems()) {
-//               String trackerText = tableItem.getText(0);
-//               Integer mspValue = Integer.parseInt(tableItem.getText(1));
-//               priorities.put(trackerText, mspValue);
-//           }
+        Map<String, Integer> priorities = new HashMap<String, Integer>();
+        for (Iterator i = data.getItemIds().iterator(); i.hasNext(); ) {
+            String sid = (String) i.next();
+            Item item = data.getItem(sid);
 
-           return null;
-       }
-/*
-       private void addPriorityOnTable(String id, String name) {
-           TableItem tableItem = new TableItem(prioritiesTable, SWT.NONE);
-           tableItem.setText(new String[] { id, name });
-       }
-*/
-       private void reloadPriorityList() throws Exception {
-           LookupOperation loadPrioritiesOperation = new LoadPrioritiesOperation(configEditor, descriptor.getPluginFactory());
-           @SuppressWarnings("unchecked")
-           List<NamedKeyedObjectImpl> list = (List<NamedKeyedObjectImpl>) loadPrioritiesOperation
-                   .run();
+            priorities.put((String) item.getItemProperty("text").getValue(), (Integer) item.getItemProperty("value").getValue());
+        }
 
-           Priorities defaultPriorities = descriptor.createDefaultConfig().getPriorities();
-           setPriorities(defaultPriorities);
+        return new Priorities(priorities);
+    }
 
-           System.out.println("reloadPriorityList: not implemented");
-       }
+    /*
+           private void addPriorityOnTable(String id, String name) {
+               TableItem tableItem = new TableItem(prioritiesTable, SWT.NONE);
+               tableItem.setText(new String[] { id, name });
+           }
+    */
+    private void reloadPriorityList() throws Exception {
+        LookupOperation loadPrioritiesOperation = new LoadPrioritiesOperation(configEditor, descriptor.getPluginFactory());
+        @SuppressWarnings("unchecked")
+        List<NamedKeyedObjectImpl> list = (List<NamedKeyedObjectImpl>) loadPrioritiesOperation
+                .run();
+
+        Priorities defaultPriorities = descriptor.createDefaultConfig().getPriorities();
+        setPriorities(defaultPriorities);
+
+        System.out.println("reloadPriorityList: not implemented");
+    }
 
     public void setPriorities(Priorities items) {
         data.removeAllItems();
@@ -192,6 +195,10 @@ public class PriorityPanel extends VerticalLayout implements Validatable {
 
         public int getValue() {
             return value;
+        }
+
+        public void setValue(final int value) {
+            this.value = value;
         }
     }
 }
