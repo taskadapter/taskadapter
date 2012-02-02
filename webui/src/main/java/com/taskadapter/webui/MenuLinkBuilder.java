@@ -14,11 +14,11 @@ public class MenuLinkBuilder {
         this.pageManager = pageManager;
     }
 
-    public Button render(String caption, final Page page) {
-        return render(caption, page, null);
+    public Button createButtonLink(String caption, final Page page) {
+        return createButtonLink(caption, page, null);
     }
 
-    public Button render(String caption, final Page page, Resource icon) {
+    public Button createButtonLink(String caption, final Page page, Resource icon) {
         Button button = new Button(caption);
         button.setStyleName(BaseTheme.BUTTON_LINK);
         button.setIcon(icon);
