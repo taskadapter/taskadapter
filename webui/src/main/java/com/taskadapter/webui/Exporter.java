@@ -5,20 +5,17 @@ import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.web.configeditor.EditorUtil;
-import com.vaadin.ui.Window;
 
 import java.util.Arrays;
 
 public class Exporter {
 
-    private Window window;
     private PageManager pageManager;
     private PluginManager pluginManager;
     private ConnectorDataHolder sourceDataHolder;
     private ConnectorDataHolder destinationDataHolder;
 
-    public Exporter(Window window, PageManager pageManager, PluginManager pluginManager, final ConnectorDataHolder sourceDataHolder, final ConnectorDataHolder destinationDataHolder) {
-        this.window = window;
+    public Exporter(PageManager pageManager, PluginManager pluginManager, final ConnectorDataHolder sourceDataHolder, final ConnectorDataHolder destinationDataHolder) {
         this.pageManager = pageManager;
         this.pluginManager = pluginManager;
         this.sourceDataHolder = sourceDataHolder;
@@ -31,7 +28,7 @@ public class Exporter {
             destinationDataHolder.getData().validateForSave();
             processBasedOnDestinationConnectorType();
         } catch (ValidationException e) {
-            EditorUtil.show(window, "Validation", e.getMessage());
+            EditorUtil.show(pageManager.getMainWindow(), "Validation", e.getMessage());
         }
     }
 
@@ -50,7 +47,7 @@ public class Exporter {
 
     private void processFile(FileBasedConnector connectorTo) {
         if (connectorTo.fileExists()) {
-            window.addWindow(new MessageDialog("Choose operation", "Destination file already exists:" +
+            pageManager.getMainWindow().addWindow(new MessageDialog("Choose operation", "Destination file already exists:" +
                     "\n" + connectorTo.getAbsoluteOutputFileName(), Arrays.asList(TEXT_UPDATE, OVERWRITE, CANCEL),
                     new MessageDialog.Callback() {
                         public void onDialogResult(String answer) {
