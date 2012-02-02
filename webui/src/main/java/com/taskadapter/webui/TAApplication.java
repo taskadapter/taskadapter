@@ -89,7 +89,7 @@ public class TAApplication extends Application {
         navigationPanel.removeAllComponents();
 
         navigationPanel.addComponent(menuLinkBuilder.render("Home", homePage));
-        navigationPanel.addComponent(new Label(page.getNavigationPanelTitle()));
+        navigationPanel.addComponent(new Label(page.getPageTitle()));
     }
 
     private void checkLastAvailableVersion() {

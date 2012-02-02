@@ -19,7 +19,7 @@ public class HomePage extends Page {
     }
 
     @Override
-    public String getNavigationPanelTitle() {
+    public String getPageTitle() {
         return "";
     }
 }

@@ -55,7 +55,7 @@ public class LicensePage extends Page implements LicenseChangeListener {
     }
 
     @Override
-    public String getNavigationPanelTitle() {
+    public String getPageTitle() {
         return "Info";
     }
 

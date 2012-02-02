@@ -16,7 +16,7 @@ public class ExportPage extends ActionPage {
     }
 
     @Override
-    public String getNavigationPanelTitle() {
+    public String getPageTitle() {
         return "Export confirmation: from " + connectorFrom.getConfig().getLabel() + " to " + connectorTo.getConfig().getLabel();
     }
 
