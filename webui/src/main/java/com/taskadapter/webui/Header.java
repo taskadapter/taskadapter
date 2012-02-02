@@ -17,6 +17,7 @@ public class Header extends HorizontalLayout {
         addStyleName("header_panel");
 
         Label label = new Label("Task Adapter");
+        label.setSizeUndefined();
         label.addStyleName("header_logo_label");
         addComponent(label);
     }
