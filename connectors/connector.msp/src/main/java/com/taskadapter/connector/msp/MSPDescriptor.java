@@ -13,77 +13,77 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public class MSPDescriptor implements Descriptor {
-	private static final String INFO = "Microsoft Project connector. Supports MPP and XML files (also known as MSPDI)";
+    private static final String INFO = "Microsoft Project connector. Supports MPP and XML files (also known as MSPDI)";
 
-	/**
-	 * Keep it the same to enable backward compatibility
-	 */
-	public static final String ID = "Microsoft Project";
+    /**
+     * Keep it the same to enable backward compatibility
+     */
+    public static final String ID = "Microsoft Project";
 
-	public static final Descriptor instance = new MSPDescriptor();
+    public static final Descriptor instance = new MSPDescriptor();
 
-	public MSPDescriptor() {
-	}
-	
-	@Override
-	public String getDescription() {
-		return INFO;
-	}
+    public MSPDescriptor() {
+    }
 
-	@Override
-	public MSPConfig createDefaultConfig() {
-		return new MSPConfig();
-	}
+    @Override
+    public String getDescription() {
+        return INFO;
+    }
 
-	@Override
-	public String getID() {
-		return ID;
-	}
+    @Override
+    public MSPConfig createDefaultConfig() {
+        return new MSPConfig();
+    }
 
-	@Override
-	public String toString() {
-		return getID();
-	}
+    @Override
+    public String getID() {
+        return ID;
+    }
 
-	@Override
-	public String getLabel() {
-		return MSPConfig.DEFAULT_LABEL;
-	}
+    @Override
+    public String toString() {
+        return getID();
+    }
 
-	@Override
-	public Class<MSPConfig> getConfigClass() {
-		return MSPConfig.class;
-	}
+    @Override
+    public String getLabel() {
+        return MSPConfig.DEFAULT_LABEL;
+    }
 
-	@Override
-	public AvailableFieldsProvider getAvailableFieldsProvider() {
-		return new MSPAvailableFieldsProvider();
-	}
+    @Override
+    public Class<MSPConfig> getConfigClass() {
+        return MSPConfig.class;
+    }
 
-	@Override
-	public ProjectLoader getProjectLoader() {
-		throw new RuntimeException("Operation is not implemented for MSP");
-	}
+    @Override
+    public AvailableFieldsProvider getAvailableFieldsProvider() {
+        return new MSPAvailableFieldsProvider();
+    }
 
-	@Override
-	public TaskLoader<MSPConfig> getTaskLoader() {
-		return new MSPTaskLoader();
-	}
+    @Override
+    public ProjectLoader getProjectLoader() {
+        throw new RuntimeException("Operation is not implemented for MSP");
+    }
 
-	@Override
-	public TaskSaver<MSPConfig> getTaskSaver(ConnectorConfig config) {
-		return new MSPTaskSaver((MSPConfig) config);
-	}
+    @Override
+    public TaskLoader<MSPConfig> getTaskLoader() {
+        return new MSPTaskLoader();
+    }
 
-	@Override
-	public Collection<Feature> getSupportedFeatures() {
-		return Arrays.asList(Feature.LOAD_TASK, Feature.SAVE_TASK);
-	}
-	
-	@Override
-	public PriorityLoader getPriorityLoader() {
-		throw new RuntimeException("NOT READY");
-	}
+    @Override
+    public TaskSaver<MSPConfig> getTaskSaver(ConnectorConfig config) {
+        return new MSPTaskSaver((MSPConfig) config);
+    }
+
+    @Override
+    public Collection<Feature> getSupportedFeatures() {
+        return Arrays.asList(Feature.LOAD_TASK, Feature.SAVE_TASK);
+    }
+
+    @Override
+    public PriorityLoader getPriorityLoader() {
+        throw new RuntimeException("NOT READY");
+    }
 
     @Override
     public PluginFactory getPluginFactory() {

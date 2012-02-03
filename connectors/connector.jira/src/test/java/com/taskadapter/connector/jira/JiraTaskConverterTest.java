@@ -10,34 +10,34 @@ import static org.junit.Assert.assertEquals;
 
 public class JiraTaskConverterTest {
 
-	@Test
-	public void convertToGenericTask(){
-		JiraConfig config = JiraDescriptor.instance.createDefaultConfig();
-		JiraTaskConverter taskConverter = new JiraTaskConverter(config);
+    @Test
+    public void convertToGenericTask() {
+        JiraConfig config = JiraDescriptor.instance.createDefaultConfig();
+        JiraTaskConverter taskConverter = new JiraTaskConverter(config);
 
-		String id = "123";
-		String key = "key";
-		String assignee = "assignee";
-		String summary = "some summary for task";
-		String description = "description";
-		Calendar dueDate = Calendar.getInstance();
-		dueDate.set(2012, 11, 23);
+        String id = "123";
+        String key = "key";
+        String assignee = "assignee";
+        String summary = "some summary for task";
+        String description = "description";
+        Calendar dueDate = Calendar.getInstance();
+        dueDate.set(2012, 11, 23);
 
-		RemoteIssue issue = new RemoteIssue();
-		issue.setId(id);
-		issue.setKey(key);
-		issue.setSummary(summary);
-		issue.setDescription(description);
-		issue.setDuedate(dueDate);
-		issue.setAssignee(assignee);
-		
-		GTask task = taskConverter.convertToGenericTask(issue);
+        RemoteIssue issue = new RemoteIssue();
+        issue.setId(id);
+        issue.setKey(key);
+        issue.setSummary(summary);
+        issue.setDescription(description);
+        issue.setDuedate(dueDate);
+        issue.setAssignee(assignee);
 
-		assertEquals(task.getId().intValue(), Integer.parseInt(id));
-		assertEquals(task.getKey(), key);
-		assertEquals(task.getAssignee().getLoginName(), assignee);
-		assertEquals(task.getSummary(), summary);
-		assertEquals(task.getDescription(), description);
-		assertEquals(task.getDueDate(), dueDate.getTime());
-	}
+        GTask task = taskConverter.convertToGenericTask(issue);
+
+        assertEquals(task.getId().intValue(), Integer.parseInt(id));
+        assertEquals(task.getKey(), key);
+        assertEquals(task.getAssignee().getLoginName(), assignee);
+        assertEquals(task.getSummary(), summary);
+        assertEquals(task.getDescription(), description);
+        assertEquals(task.getDueDate(), dueDate.getTime());
+    }
 }

@@ -6,7 +6,9 @@ import com.taskadapter.model.GTask;
 import java.util.List;
 
 public interface TaskLoader<T extends ConnectorConfig> {
-	List<GTask> loadTasks(T config) throws Exception;
-	GTask loadTask(T config, String taskKey);
+    List<GTask> loadTasks(T config) throws Exception;
+
+    GTask loadTask(T config, String taskKey);
+
     void beforeTasksLoad(T config);
 }

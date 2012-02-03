@@ -42,9 +42,11 @@ public class PrioritiesTest {
     public void highestPriorityFoundForLargeNumber() {
         assertEquals("Immediate", getSamplePriorities().getPriorityByMSP(99999));
     }
+
     private Priorities getSamplePriorities() {
         return new Priorities(new HashMap<String, Integer>() {
             private static final long serialVersionUID = 516389048716909610L;
+
             {
                 put("Low", 100);
                 put("Normal", 500);

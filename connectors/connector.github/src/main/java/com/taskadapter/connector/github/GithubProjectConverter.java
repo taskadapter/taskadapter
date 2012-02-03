@@ -1,4 +1,5 @@
 package com.taskadapter.connector.github;
+
 import com.taskadapter.connector.common.ProjectConverter;
 import com.taskadapter.model.GProject;
 import org.eclipse.egit.github.core.Repository;
@@ -33,8 +34,8 @@ public class GithubProjectConverter implements ProjectConverter<Repository> {
 
         if (repository.getName() != null && !"".equals(repository.getName())) {
             try {
-            	// TODO - think about String id's for GProject
-            	// (Github repositories doesn't have an integer ID, only string based user/repo name
+                // TODO - think about String id's for GProject
+                // (Github repositories doesn't have an integer ID, only string based user/repo name
                 project.setId(Integer.valueOf(repository.generateId().hashCode()));
             } catch (NumberFormatException e) {
                 throw new RuntimeException("should never happen", e);

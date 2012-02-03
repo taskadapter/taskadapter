@@ -13,145 +13,145 @@ import java.util.Iterator;
 import java.util.List;
 
 public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
-		TaskSaver<T> {
+        TaskSaver<T> {
 
-	protected SyncResult syncResult = new SyncResult();
+    protected SyncResult syncResult = new SyncResult();
 
-	protected boolean shouldStop;
+    protected boolean shouldStop;
 
-	protected T config;
+    protected T config;
 
-	protected ProgressMonitor monitor;
+    protected ProgressMonitor monitor;
 
-	public AbstractTaskSaver(T config) {
-		super();
-		this.config = config;
-	}
+    public AbstractTaskSaver(T config) {
+        super();
+        this.config = config;
+    }
 
-	abstract protected Object convertToNativeTask(GTask task);
+    abstract protected Object convertToNativeTask(GTask task);
 
-	abstract protected GTask createTask(Object nativeTask);
+    abstract protected GTask createTask(Object nativeTask);
 
-	abstract protected void updateTask(String taskId, Object nativeTask);
+    abstract protected void updateTask(String taskId, Object nativeTask);
 
-	/**
-	 * the default implementation does nothing.
-	 */
-	@Override
-	public void beforeSave() {
-		// nothing here
-	}
+    /**
+     * the default implementation does nothing.
+     */
+    @Override
+    public void beforeSave() {
+        // nothing here
+    }
 
-	@Override
-	public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) {
-		this.monitor = monitor;
-		this.shouldStop = false;
+    @Override
+    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) {
+        this.monitor = monitor;
+        this.shouldStop = false;
 
-		try {
-			beforeSave();
-			save(null, tasks);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+        try {
+            beforeSave();
+            save(null, tasks);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-		return syncResult;
-	}
+        return syncResult;
+    }
 
-	/**
-	 * this method will go through children itself.
-	 */
-	protected SyncResult save(String parentIssueKey, List<GTask> tasks) {
-		Iterator<GTask> it = tasks.iterator();
-		while (it.hasNext() && !shouldStop()) {
-			GTask task = it.next();
-			String newTaskKey = null;
-			try {
-				if (parentIssueKey != null) {
-					task.setParentKey(parentIssueKey);
-				}
-				Object nativeIssueToCreateOrUpdate = convertToNativeTask(task);
-				newTaskKey = submitTask(task, nativeIssueToCreateOrUpdate);
-			} catch (Exception e) {
-				syncResult.addError(new TaskError(task, Arrays.asList(e
-						.getMessage())));
-			}
-			reportProgress();
+    /**
+     * this method will go through children itself.
+     */
+    protected SyncResult save(String parentIssueKey, List<GTask> tasks) {
+        Iterator<GTask> it = tasks.iterator();
+        while (it.hasNext() && !shouldStop()) {
+            GTask task = it.next();
+            String newTaskKey = null;
+            try {
+                if (parentIssueKey != null) {
+                    task.setParentKey(parentIssueKey);
+                }
+                Object nativeIssueToCreateOrUpdate = convertToNativeTask(task);
+                newTaskKey = submitTask(task, nativeIssueToCreateOrUpdate);
+            } catch (Exception e) {
+                syncResult.addError(new TaskError(task, Arrays.asList(e
+                        .getMessage())));
+            }
+            reportProgress();
 
-			if (!task.getChildren().isEmpty()) {
-				save(newTaskKey, task.getChildren());
-			}
-		}
-		
-		if (config.getSaveIssueRelations()) {
-			List<GRelation> relations = buildNewRelations(tasks); 		
-			saveRelations(relations);
-		}
-		
-		return syncResult;
-	}
+            if (!task.getChildren().isEmpty()) {
+                save(newTaskKey, task.getChildren());
+            }
+        }
 
-	private void reportProgress() {
-		if (monitor != null) {
-			monitor.worked(1);
-		}
-	}
+        if (config.getSaveIssueRelations()) {
+            List<GRelation> relations = buildNewRelations(tasks);
+            saveRelations(relations);
+        }
 
-	protected List<GRelation> buildNewRelations(List<GTask> tasks) {
-		List<GRelation> newRelations = new ArrayList<GRelation>();
-		for (GTask task : tasks) {
-			String newSourceTaskKey = syncResult.getRemoteKey(task.getId());
-			for (GRelation oldRelation : task.getRelations()) {
-				// XXX get rid of the conversion, it won't work with Jira, 
-				// which has String Keys like "TEST-12"
-				Integer relatedTaskId = Integer.parseInt(oldRelation.getRelatedTaskKey());
-				String newRelatedKey = syncResult.getRemoteKey(relatedTaskId);
-				// #25443 Export from MSP fails when newRelatedKey is null (which is a valid case in MSP)
-				if (newSourceTaskKey != null && newRelatedKey != null) {
-				  newRelations.add(new GRelation(newSourceTaskKey, newRelatedKey, oldRelation.getType()));
-				}
-			}
-		}
-		return newRelations;
-	}
+        return syncResult;
+    }
 
-	abstract protected void saveRelations(List<GRelation> relations);
+    private void reportProgress() {
+        if (monitor != null) {
+            monitor.worked(1);
+        }
+    }
 
-	/**
-	 * @return the newly created task's KEY
-	 */
-	protected String submitTask(GTask task, Object nativeTask) {
-		String newTaskKey;
-		if (task.getRemoteId() == null) {
-			GTask newTask = createTask(nativeTask);
+    protected List<GRelation> buildNewRelations(List<GTask> tasks) {
+        List<GRelation> newRelations = new ArrayList<GRelation>();
+        for (GTask task : tasks) {
+            String newSourceTaskKey = syncResult.getRemoteKey(task.getId());
+            for (GRelation oldRelation : task.getRelations()) {
+                // XXX get rid of the conversion, it won't work with Jira,
+                // which has String Keys like "TEST-12"
+                Integer relatedTaskId = Integer.parseInt(oldRelation.getRelatedTaskKey());
+                String newRelatedKey = syncResult.getRemoteKey(relatedTaskId);
+                // #25443 Export from MSP fails when newRelatedKey is null (which is a valid case in MSP)
+                if (newSourceTaskKey != null && newRelatedKey != null) {
+                    newRelations.add(new GRelation(newSourceTaskKey, newRelatedKey, oldRelation.getType()));
+                }
+            }
+        }
+        return newRelations;
+    }
 
-			// Need this to be passed as the parentIssueId to the recursive call below
-			newTaskKey = newTask.getKey();
-			syncResult.addCreatedTask(task.getId(), newTaskKey);
-		} else {
-			newTaskKey = task.getRemoteId();
-			updateTask(newTaskKey, nativeTask);
-			syncResult.addUpdatedTask();
-		}
-		return newTaskKey;
-	}
+    abstract protected void saveRelations(List<GRelation> relations);
 
-	protected synchronized boolean shouldStop() {
-		return this.shouldStop;
-	}
+    /**
+     * @return the newly created task's KEY
+     */
+    protected String submitTask(GTask task, Object nativeTask) {
+        String newTaskKey;
+        if (task.getRemoteId() == null) {
+            GTask newTask = createTask(nativeTask);
 
-	public synchronized void stopSave() {
-		this.shouldStop = true;
-	}
+            // Need this to be passed as the parentIssueId to the recursive call below
+            newTaskKey = newTask.getKey();
+            syncResult.addCreatedTask(task.getId(), newTaskKey);
+        } else {
+            newTaskKey = task.getRemoteId();
+            updateTask(newTaskKey, nativeTask);
+            syncResult.addUpdatedTask();
+        }
+        return newTaskKey;
+    }
 
-	public T getConfig() {
-		return config;
-	}
-	
-	/**
-	 * The default implementation returns TRUE.
-	 */
-	@Override
-	public boolean isSaveStoppable() {
-		return true;
-	}
+    protected synchronized boolean shouldStop() {
+        return this.shouldStop;
+    }
+
+    public synchronized void stopSave() {
+        this.shouldStop = true;
+    }
+
+    public T getConfig() {
+        return config;
+    }
+
+    /**
+     * The default implementation returns TRUE.
+     */
+    @Override
+    public boolean isSaveStoppable() {
+        return true;
+    }
 }

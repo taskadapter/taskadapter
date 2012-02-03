@@ -12,34 +12,34 @@ import java.util.List;
 
 public class JiraProjectLoader implements ProjectLoader {
 
-	@Override
-	public List<GProject> getProjects(WebServerInfo serverInfo) throws ValidationException {
-		List<GProject> gProjects;
-		try {
-			JiraConnection connection = JiraConnectionFactory.createConnection(serverInfo);
-			RemoteProject[] projects = connection.getProjects();
-			gProjects = new JiraProjectConverter().toGProjects(Arrays.asList(projects));
-		} catch (RemoteAuthenticationException e) {
-			throw new JiraException(e);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		
-		return gProjects;
-	}
+    @Override
+    public List<GProject> getProjects(WebServerInfo serverInfo) throws ValidationException {
+        List<GProject> gProjects;
+        try {
+            JiraConnection connection = JiraConnectionFactory.createConnection(serverInfo);
+            RemoteProject[] projects = connection.getProjects();
+            gProjects = new JiraProjectConverter().toGProjects(Arrays.asList(projects));
+        } catch (RemoteAuthenticationException e) {
+            throw new JiraException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-	public GProject getProject(WebServerInfo serverInfo, String projectKey) {
-		GProject gProject;
-		try {
-			JiraConnection connection = JiraConnectionFactory.createConnection(serverInfo);
-			RemoteProject project = connection.getProject(projectKey);
-			gProject = new JiraProjectConverter().toGProject(project);
-		} catch (RemoteAuthenticationException e) {
-			throw new JiraException(e);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		return gProject;
+        return gProjects;
+    }
 
-	}
+    public GProject getProject(WebServerInfo serverInfo, String projectKey) {
+        GProject gProject;
+        try {
+            JiraConnection connection = JiraConnectionFactory.createConnection(serverInfo);
+            RemoteProject project = connection.getProject(projectKey);
+            gProject = new JiraProjectConverter().toGProject(project);
+        } catch (RemoteAuthenticationException e) {
+            throw new JiraException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return gProject;
+
+    }
 }

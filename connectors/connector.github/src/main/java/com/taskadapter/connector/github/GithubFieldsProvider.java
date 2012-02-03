@@ -22,10 +22,10 @@ public class GithubFieldsProvider implements AvailableFieldsProvider {
                 return new String[0];
         }
     }
-    
-	@Override
-	public Collection<FIELD> getSupportedFields() {
-		return Arrays.asList(FIELD.SUMMARY, FIELD.DESCRIPTION, FIELD.ASSIGNEE, FIELD.START_DATE);
-	}
+
+    @Override
+    public Collection<FIELD> getSupportedFields() {
+        return Arrays.asList(FIELD.SUMMARY, FIELD.DESCRIPTION, FIELD.ASSIGNEE, FIELD.START_DATE);
+    }
 
 }

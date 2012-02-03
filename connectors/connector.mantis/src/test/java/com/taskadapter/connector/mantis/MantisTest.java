@@ -32,14 +32,14 @@ public class MantisTest {
 
     private static Map<GTaskDescriptor.FIELD, Mapping> defaultFieldsMap;
 
-	@BeforeClass
-	public static void oneTimeSetUp() {
-		System.out.println("Running mantis tests using: " + Config.getURI());
-		mgr = new MantisManager(Config.getURI(), Config.getUserLogin(), Config.getPassword());
+    @BeforeClass
+    public static void oneTimeSetUp() {
+        System.out.println("Running mantis tests using: " + Config.getURI());
+        mgr = new MantisManager(Config.getURI(), Config.getUserLogin(), Config.getPassword());
 
-		ProjectData junitTestProject = new ProjectData();
-		junitTestProject.setName("test project" + Calendar.getInstance().getTimeInMillis());
-		junitTestProject.setDescription("test" + Calendar.getInstance().getTimeInMillis());
+        ProjectData junitTestProject = new ProjectData();
+        junitTestProject.setName("test project" + Calendar.getInstance().getTimeInMillis());
+        junitTestProject.setDescription("test" + Calendar.getInstance().getTimeInMillis());
 
         defaultFieldsMap = new HashMap<GTaskDescriptor.FIELD, Mapping>();
         defaultFieldsMap.put(GTaskDescriptor.FIELD.SUMMARY, new Mapping());
@@ -47,31 +47,31 @@ public class MantisTest {
         defaultFieldsMap.put(GTaskDescriptor.FIELD.ASSIGNEE, new Mapping());
         //defaultFieldsMap.put(GTaskDescriptor.FIELD.DUE_DATE, new Mapping());
 
-		try {
-			AccountData mantisUser = mgr.getCurrentUser();
-			currentUser = MantisDataConverter.convertToGUser(mantisUser);
+        try {
+            AccountData mantisUser = mgr.getCurrentUser();
+            currentUser = MantisDataConverter.convertToGUser(mantisUser);
 
-			BigInteger projectId = mgr.createProject(junitTestProject);
-			projectKey = projectId.toString();
-			config.setProjectKey(projectKey);
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.toString());
-		}
-	}
+            BigInteger projectId = mgr.createProject(junitTestProject);
+            projectKey = projectId.toString();
+            config.setProjectKey(projectKey);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.toString());
+        }
+    }
 
-	@AfterClass
-	public static void oneTimeTearDown() {
-		try {
-			if (mgr != null) {
-				mgr.deleteProject(new BigInteger(projectKey));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail("can't delete the test project '" + projectKey + ". reason: "
-              + e.getMessage());
-		}
-	}
+    @AfterClass
+    public static void oneTimeTearDown() {
+        try {
+            if (mgr != null) {
+                mgr.deleteProject(new BigInteger(projectKey));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail("can't delete the test project '" + projectKey + ". reason: "
+                    + e.getMessage());
+        }
+    }
 
 /*    @Test
     public void testStartDateNotExported() throws Exception {
@@ -134,17 +134,17 @@ public class MantisTest {
 		Assert.assertEquals(yearAgo.getTime(), loadedTask.getDueDate());
 	}*/
 
-	@Test
-	public void testAssigneeExported() throws Exception {
-		GTask task = generateTask();
-		task.setAssignee(currentUser);
-		testAssignee(defaultFieldsMap, task, currentUser.getId());
-	}
+    @Test
+    public void testAssigneeExported() throws Exception {
+        GTask task = generateTask();
+        task.setAssignee(currentUser);
+        testAssignee(defaultFieldsMap, task, currentUser.getId());
+    }
 
-	@Test
-	public void testAssigneeNotExported() throws Exception {
-		GTask task = generateTask();
-		task.setAssignee(currentUser);
+    @Test
+    public void testAssigneeNotExported() throws Exception {
+        GTask task = generateTask();
+        task.setAssignee(currentUser);
 
         Map<GTaskDescriptor.FIELD, Mapping> tempMap = new HashMap<GTaskDescriptor.FIELD, Mapping>();
         tempMap.put(GTaskDescriptor.FIELD.SUMMARY, new Mapping());
@@ -152,21 +152,21 @@ public class MantisTest {
         tempMap.put(GTaskDescriptor.FIELD.ASSIGNEE, new Mapping(false));
 
         GTask loadedTask = saveAndLoad(mantis, tempMap, task);
-		Assert.assertNull(loadedTask.getAssignee());
-	}
+        Assert.assertNull(loadedTask.getAssignee());
+    }
 
-	@Test
-	public void testAssigneeExportedByDefault() throws Exception {
-		GTask task = generateTask();
-		task.setAssignee(currentUser);
-		GTask loadedTask = saveAndLoad(mantis, defaultFieldsMap, task);
-		Assert.assertEquals(currentUser.getId(), loadedTask.getAssignee().getId());
-	}
+    @Test
+    public void testAssigneeExportedByDefault() throws Exception {
+        GTask task = generateTask();
+        task.setAssignee(currentUser);
+        GTask loadedTask = saveAndLoad(mantis, defaultFieldsMap, task);
+        Assert.assertEquals(currentUser.getId(), loadedTask.getAssignee().getId());
+    }
 
-	public void testAssignee(Map<GTaskDescriptor.FIELD, Mapping> map, GTask task, Integer id) throws Exception {
-		GTask loadedTask = saveAndLoad(mantis, map, task);
-		Assert.assertEquals(id, loadedTask.getAssignee().getId());
-	}
+    public void testAssignee(Map<GTaskDescriptor.FIELD, Mapping> map, GTask task, Integer id) throws Exception {
+        GTask loadedTask = saveAndLoad(mantis, map, task);
+        Assert.assertEquals(id, loadedTask.getAssignee().getId());
+    }
 
 /*	@Test
 	public void testEstimatedTimeNotExported() throws Exception {
@@ -229,8 +229,8 @@ public class MantisTest {
 		Assert.assertEquals(2, parent.getChildren().size());
 	}*/
 
-	// not used now but should be used in AllConnectorsTest
-	public ConnectorConfig getTestConfig() {
-		return config;
-	}
+    // not used now but should be used in AllConnectorsTest
+    public ConnectorConfig getTestConfig() {
+        return config;
+    }
 }

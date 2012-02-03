@@ -8,25 +8,25 @@ import java.util.Collection;
 
 public class MantisAvailableFieldsProvider implements AvailableFieldsProvider {
 
-	@Override
-	public String[] getAllowedValues(FIELD field) {
-		switch (field) {
-		case SUMMARY:
-			return new String[] { "Summary" };
-		case DESCRIPTION:
-			return new String[] { "Description" };
-		case ASSIGNEE:
-			return new String[] { "Assignee" };
-		case DUE_DATE:
-			return new String[] { "Due Date" };
-		default:
-			return new String[] {};
-		}
-	}
+    @Override
+    public String[] getAllowedValues(FIELD field) {
+        switch (field) {
+            case SUMMARY:
+                return new String[]{"Summary"};
+            case DESCRIPTION:
+                return new String[]{"Description"};
+            case ASSIGNEE:
+                return new String[]{"Assignee"};
+            case DUE_DATE:
+                return new String[]{"Due Date"};
+            default:
+                return new String[]{};
+        }
+    }
 
-	@Override
-	public Collection<FIELD> getSupportedFields() {
-		return Arrays.asList(FIELD.SUMMARY, FIELD.DESCRIPTION, FIELD.ASSIGNEE, FIELD.DUE_DATE);
-	}
+    @Override
+    public Collection<FIELD> getSupportedFields() {
+        return Arrays.asList(FIELD.SUMMARY, FIELD.DESCRIPTION, FIELD.ASSIGNEE, FIELD.DUE_DATE);
+    }
 
 }

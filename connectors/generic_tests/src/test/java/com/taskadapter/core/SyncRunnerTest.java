@@ -16,27 +16,27 @@ import static org.junit.Assert.assertEquals;
 
 public class SyncRunnerTest extends AbstractSyncRunnerTest {
 
-	@Test
-	/**
-	 * This test should grant that Tasks ARE read as a tree by the SyncRunner. The code that does that
-	 * was moved to save(), but it cannot be done because the tree is not shown to the user.
-	 */
-	public void testLoadAsTree() throws URISyntaxException, IOException {
+    @Test
+    /**
+     * This test should grant that Tasks ARE read as a tree by the SyncRunner. The code that does that
+     * was moved to save(), but it cannot be done because the tree is not shown to the user.
+     */
+    public void testLoadAsTree() throws URISyntaxException, IOException {
 
-		RedmineConfig redmineConfigTo = RedmineTestConfig.getRedmineTestConfig();
-		RedmineTaskSaver saver = new RedmineTaskSaver(redmineConfigTo);
+        RedmineConfig redmineConfigTo = RedmineTestConfig.getRedmineTestConfig();
+        RedmineTaskSaver saver = new RedmineTaskSaver(redmineConfigTo);
 
-		MSPConfig mspConfig = getConfig("ProjectWithTree.xml");
-		Connector<?> projectConnector = new MSPConnector(mspConfig);
+        MSPConfig mspConfig = getConfig("ProjectWithTree.xml");
+        Connector<?> projectConnector = new MSPConnector(mspConfig);
 
         SyncRunner runner = new SyncRunner();
-   		runner.setConnectorFrom(projectConnector);
-   		runner.setTaskSaver(saver);
-		// load from MSP
-		runner.load(null);
-		
-		assertEquals(1, runner.getTasks().size());
-		
-	}
+        runner.setConnectorFrom(projectConnector);
+        runner.setTaskSaver(saver);
+        // load from MSP
+        runner.load(null);
+
+        assertEquals(1, runner.getTasks().size());
+
+    }
 
 }

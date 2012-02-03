@@ -7,5 +7,5 @@ import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.GProject;
 
 public interface ProjectLoader {
-	List<GProject> getProjects(WebServerInfo serverInfo) throws ValidationException;
+    List<GProject> getProjects(WebServerInfo serverInfo) throws ValidationException;
 }
