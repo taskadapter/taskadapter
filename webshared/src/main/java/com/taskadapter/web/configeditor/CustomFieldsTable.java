@@ -1,4 +1,4 @@
-package com.taskadapter.webui;
+package com.taskadapter.web.configeditor;
 
 import com.taskadapter.web.configeditor.CustomField;
 import com.vaadin.data.Container;
@@ -15,13 +15,13 @@ import java.util.List;
  * @author Igor Laishen
  */
 public class CustomFieldsTable extends CustomComponent {
-    private static final String LABEL                      = "Custom fields:";
-    private static final String ADD_NEW_BUTTON             = "Add new";
+    private static final String LABEL = "Custom fields:";
+    private static final String ADD_NEW_BUTTON = "Add new";
     private static final String ADD_NEW_BUTTON_DESCRIPTION = "Add new custom field";
-    private static final String REMOVE_BUTTON              = "Remove";
-    private static final String REMOVE_BUTTON_DESCRIPTION  = "Remove selected custom field";
+    private static final String REMOVE_BUTTON = "Remove";
+    private static final String REMOVE_BUTTON_DESCRIPTION = "Remove selected custom field";
 
-    private static final String TABLE_HEADER_ID    = "Field ID";
+    private static final String TABLE_HEADER_ID = "Field ID";
     private static final String TABLE_HEADER_VALUE = "Value";
 
     private static final String CELL_DEFAULT_VALUE = "...";
@@ -31,22 +31,22 @@ public class CustomFieldsTable extends CustomComponent {
     private final Table table = new Table();
 
 
-    public CustomFieldsTable () {
+    public CustomFieldsTable() {
         this(new ArrayList<CustomField>());
     }
 
-    public CustomFieldsTable (List<CustomField> customFields) {
+    public CustomFieldsTable(List<CustomField> customFields) {
         buildUI();
         setCustomFields(customFields);
         setCompositionRoot(mainLayout);
     }
 
-    public List<CustomField> getCustomFields () {
+    public List<CustomField> getCustomFields() {
         Collection itemIds = table.getItemIds();
         List<CustomField> newCustomFields = new ArrayList<CustomField>(itemIds.size());
 
-        if(!itemIds.isEmpty()) {
-            for(Object itemId : itemIds) {
+        if (!itemIds.isEmpty()) {
+            for (Object itemId : itemIds) {
                 Item item = table.getItem(itemId);
 
                 String id = item.getItemProperty(TABLE_HEADER_ID).getValue().toString();
@@ -84,12 +84,12 @@ public class CustomFieldsTable extends CustomComponent {
         table.setWidth("350px");
         table.setHeight("110px");
 
-        table.addContainerProperty(TABLE_HEADER_ID,    String.class, CELL_DEFAULT_VALUE);
+        table.addContainerProperty(TABLE_HEADER_ID, String.class, CELL_DEFAULT_VALUE);
         table.addContainerProperty(TABLE_HEADER_VALUE, String.class, CELL_DEFAULT_VALUE);
 
         table.addListener(new ItemClickEvent.ItemClickListener() {
             @Override
-            public void itemClick (ItemClickEvent event) {
+            public void itemClick(ItemClickEvent event) {
                 if (event.getButton() == ItemClickEvent.BUTTON_LEFT && event.isDoubleClick()) {
                     final Object cellItemId = event.getItemId();
                     final Object cellPropertyId = event.getPropertyId();
@@ -97,7 +97,7 @@ public class CustomFieldsTable extends CustomComponent {
 
                     table.setTableFieldFactory(new TableFieldFactory() {
                         @Override
-                        public Field createField (Container container, Object itemId, Object propertyId, Component uiContext) {
+                        public Field createField(Container container, Object itemId, Object propertyId, Component uiContext) {
                             if (propertyId.toString().equalsIgnoreCase(cellPropertyId.toString())
                                     && itemId.toString().equalsIgnoreCase(cellItemId.toString())) {
 
@@ -108,7 +108,7 @@ public class CustomFieldsTable extends CustomComponent {
                                 textField.setTabIndex(0);
                                 textField.addListener(new FieldEvents.BlurListener() {
                                     @Override
-                                    public void blur (FieldEvents.BlurEvent event) {
+                                    public void blur(FieldEvents.BlurEvent event) {
                                         table.setEditable(false);
                                     }
                                 });
@@ -130,7 +130,7 @@ public class CustomFieldsTable extends CustomComponent {
         addNewBtn.setSizeFull();
         addNewBtn.addListener(new Button.ClickListener() {
             @Override
-            public void buttonClick (Button.ClickEvent event) {
+            public void buttonClick(Button.ClickEvent event) {
                 table.addItem(new Object[]{CELL_DEFAULT_VALUE, CELL_DEFAULT_VALUE}, null);
                 table.refreshRowCache();
             }
@@ -141,7 +141,7 @@ public class CustomFieldsTable extends CustomComponent {
         removeBtn.setSizeFull();
         removeBtn.addListener(new Button.ClickListener() {
             @Override
-            public void buttonClick (Button.ClickEvent event) {
+            public void buttonClick(Button.ClickEvent event) {
                 Object itemId = table.getValue();
                 if (itemId != null) {
                     table.removeItem(itemId);

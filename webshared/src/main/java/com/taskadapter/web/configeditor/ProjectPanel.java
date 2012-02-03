@@ -28,6 +28,8 @@ public class ProjectPanel extends GridLayout implements Validatable {
     /**
      * Config Editors should NOT create this object directly, use ConfigEditor.addProjectPanel() method instead.
      *
+     * @param editor           ConfigEditor
+     * @param projectProcessor ProjectProcessor
      * @see ConfigEditor#addProjectPanel(ConfigEditor, ProjectProcessor)
      */
     ProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor) {
@@ -40,6 +42,8 @@ public class ProjectPanel extends GridLayout implements Validatable {
         addStyleName("bordered_panel");
         setCaption(GROUP_LABEL);
         setColumns(COLUMNS_NUMBER);
+        setMargin(true);
+        setSpacing(true);
 
         addComponent(new Label("Project key:"));
         this.projectKey = new TextField();

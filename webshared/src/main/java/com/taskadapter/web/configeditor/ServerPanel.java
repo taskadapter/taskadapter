@@ -3,10 +3,7 @@ package com.taskadapter.web.configeditor;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.vaadin.event.FieldEvents;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.TextField;
+import com.vaadin.ui.*;
 
 /**
  * @author Alexey Skorokhodov
@@ -33,8 +30,14 @@ public class ServerPanel extends GridLayout implements Validatable {
         addStyleName("bordered_panel");
         setCaption(SERVER_GROUP_LABEL);
         setColumns(2);
+        setRows(3);
+        setMargin(true);
+        setSpacing(true);
 
-        addComponent(new Label("Server URL:"));
+        Label urlLabel = new Label("Server URL:");
+        addComponent(urlLabel, 0, 0);
+        setComponentAlignment(urlLabel, Alignment.MIDDLE_LEFT);
+
         hostURLText = new TextField();
         hostURLText.setDescription(HOST_URL_TOOLTIP);
         hostURLText.addListener(new FieldEvents.BlurListener() {
@@ -43,15 +46,27 @@ public class ServerPanel extends GridLayout implements Validatable {
                 cleanup();
             }
         });
-        addComponent(hostURLText);
+        hostURLText.setWidth("212px");
+        addComponent(hostURLText, 1, 0);
+        setComponentAlignment(hostURLText, Alignment.MIDDLE_RIGHT);
 
-        addComponent(new Label("Login:"));
+        Label logiLabel = new Label("Login:");
+        addComponent(logiLabel, 0, 1);
+        setComponentAlignment(logiLabel, Alignment.MIDDLE_LEFT);
+
         login = new TextField();
-        addComponent(login);
+        login.setWidth("212px");
+        addComponent(login, 1, 1);
+        setComponentAlignment(login, Alignment.MIDDLE_RIGHT);
 
-        addComponent(new Label("Password:"));
+        Label pswdLabel = new Label("Password:");
+        addComponent(pswdLabel, 0, 2);
+        setComponentAlignment(pswdLabel, Alignment.MIDDLE_LEFT);
+
         password = new PasswordField();
-        addComponent(password);
+        password.setWidth("212px");
+        addComponent(password, 1, 2);
+        setComponentAlignment(password, Alignment.MIDDLE_RIGHT);
     }
 
     private void cleanup() {

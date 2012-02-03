@@ -65,19 +65,20 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         projectAndServerLayout.addComponent(serverPanel);
     }
 
-    private void createProjectServerPanelIfNeeded() {
-        if (projectAndServerLayout == null) {
-            projectAndServerLayout = new HorizontalLayout();
-            projectAndServerLayout.setSpacing(true);
-            addComponent(projectAndServerLayout);
-        }
-    }
-
     protected void addProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor) {
         createProjectServerPanelIfNeeded();
         projectPanel = new ProjectPanel(editor, projectProcessor);
         toValidate.add(projectPanel);
         projectAndServerLayout.addComponent(projectPanel);
+    }
+
+    private void createProjectServerPanelIfNeeded() {
+        if (projectAndServerLayout == null) {
+            projectAndServerLayout = new HorizontalLayout();
+            projectAndServerLayout.setSpacing(true);
+            projectAndServerLayout.setWidth("100%");
+            addComponent(projectAndServerLayout);
+        }
     }
 
     protected void addPriorityPanel(ConfigEditor editor, Descriptor descriptor, Priorities priorities) {
