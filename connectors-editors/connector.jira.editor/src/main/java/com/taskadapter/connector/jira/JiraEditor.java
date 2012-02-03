@@ -1,7 +1,10 @@
 package com.taskadapter.connector.jira;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.web.configeditor.*;
+import com.taskadapter.web.configeditor.ConfigEditor;
+import com.taskadapter.web.configeditor.CustomField;
+import com.taskadapter.web.configeditor.CustomFieldsTable;
+import com.taskadapter.web.configeditor.EditorUtil;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.TextField;
@@ -76,13 +79,13 @@ public class JiraEditor extends ConfigEditor {
             jiraComponent = EditorUtil.addLabeledText(this, "Project Component", "Component inside the Jira project");
             jiraComponent.setStyleName("yellow");
 
-            Button jiraComponentLB = EditorUtil.createLookupButton(jiraEditor, "...",
+            Button showComponentsButton = EditorUtil.createLookupButton(jiraEditor, "...",
                     "Show list of available components on the given server.",
                     new LoadComponentsOperation(jiraEditor, new JiraFactory()), jiraComponent, true
             );
-            jiraComponentLB.setSizeUndefined();
-            jiraComponentLB.setStyleName("red");
-            addComponent(jiraComponentLB);
+            showComponentsButton.setSizeUndefined();
+            showComponentsButton.setStyleName("red");
+            addComponent(showComponentsButton);
 
 
             LoadVersionsOperation loadVersionsOperation = new LoadVersionsOperation(jiraEditor, new JiraFactory());
@@ -145,7 +148,6 @@ public class JiraEditor extends ConfigEditor {
         }
 
         public Collection<CustomField> getCustomFields() {
-//            return customFieldsPanel.getCustomFields();
             return customFieldsTable.getCustomFields();
         }
 
