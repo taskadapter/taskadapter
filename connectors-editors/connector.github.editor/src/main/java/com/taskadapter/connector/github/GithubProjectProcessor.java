@@ -14,32 +14,32 @@ import java.util.Collection;
 
 public class GithubProjectProcessor implements ProjectProcessor {
 
-	private final GithubEditor editor;
+    private final GithubEditor editor;
 
-	public GithubProjectProcessor(GithubEditor editor) {
-		this.editor = editor;
-	}
+    public GithubProjectProcessor(GithubEditor editor) {
+        this.editor = editor;
+    }
 
-	@Override
-	public void loadProject(String projectKey) {
-		// TODO Auto-generated method stub
+    @Override
+    public void loadProject(String projectKey) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public Descriptor getDescriptor() {
-		return GithubDescriptor.instance;
-	}
+    @Override
+    public Descriptor getDescriptor() {
+        return GithubDescriptor.instance;
+    }
 
-	@Override
-	public LookupOperation getLoadSavedQueriesOperation(ConfigEditor editor) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public LookupOperation getLoadSavedQueriesOperation(ConfigEditor editor) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public Collection<EditorFeature> getSupportedFeatures() {
-		return Arrays.asList(EditorFeature.LOAD_PROJECTS);
-	}
+    @Override
+    public Collection<EditorFeature> getSupportedFeatures() {
+        return Arrays.asList(EditorFeature.LOAD_PROJECTS);
+    }
 
 }
