@@ -28,8 +28,6 @@ public class ProjectPanel extends GridLayout implements Validatable {
     /**
      * Config Editors should NOT create this object directly, use ConfigEditor.addProjectPanel() method instead.
      *
-     * @param editor           ConfigEditor
-     * @param projectProcessor ProjectProcessor
      * @see ConfigEditor#addProjectPanel(ConfigEditor, ProjectProcessor)
      */
     ProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor) {
