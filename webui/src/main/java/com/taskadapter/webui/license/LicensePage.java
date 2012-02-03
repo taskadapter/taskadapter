@@ -27,7 +27,7 @@ public class LicensePage extends Page implements LicenseChangeListener {
         enterLicensePanel.setVisible(false);
         layout.addComponent(enterLicensePanel);
 
-        licenseInfoPanel =new LicenseInfoPanel();
+        licenseInfoPanel = new LicenseInfoPanel();
         licenseInfoPanel.setVisible(false);
         layout.addComponent(licenseInfoPanel);
 

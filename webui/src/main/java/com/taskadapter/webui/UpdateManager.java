@@ -69,7 +69,7 @@ public class UpdateManager {
     void setCurrentVersionForTesting(String currentVersion) {
         this.currentVersion = currentVersion;
     }
-    
+
     void setLastVersion(String lastVersion) {
         this.lastVersion = lastVersion;
     }

@@ -28,7 +28,7 @@ public class MessageDialog extends Window implements Button.ClickListener {
     }
 
     private void createButtons(List<String> answers) {
-        for (String answer : answers){
+        for (String answer : answers) {
             Button yes = new Button(answer, this);
             layout.addComponent(yes);
         }
