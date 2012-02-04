@@ -1,6 +1,5 @@
 package com.taskadapter.web.configeditor;
 
-import com.taskadapter.web.configeditor.CustomField;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.event.FieldEvents;
@@ -16,9 +15,9 @@ import java.util.List;
  */
 public class CustomFieldsTable extends CustomComponent {
     private static final String LABEL = "Custom fields:";
-    private static final String ADD_NEW_BUTTON = "Add new";
+    private static final String ADD_NEW_BUTTON = "+";
     private static final String ADD_NEW_BUTTON_DESCRIPTION = "Add new custom field";
-    private static final String REMOVE_BUTTON = "Remove";
+    private static final String REMOVE_BUTTON = "-";
     private static final String REMOVE_BUTTON_DESCRIPTION = "Remove selected custom field";
 
     private static final String TABLE_HEADER_ID = "Field ID";
@@ -27,7 +26,7 @@ public class CustomFieldsTable extends CustomComponent {
     private static final String CELL_DEFAULT_VALUE = "...";
 
 
-    private HorizontalLayout mainLayout = new HorizontalLayout();
+    private GridLayout mainLayout = new GridLayout(2, 1);
     private final Table table = new Table();
 
 
@@ -72,7 +71,7 @@ public class CustomFieldsTable extends CustomComponent {
     }
 
     private void buildUI() {
-        Label label = new Label(LABEL);
+//        Label label = new Label(LABEL);
 
         table.setSelectable(true);
         table.setMultiSelect(false);
@@ -81,10 +80,11 @@ public class CustomFieldsTable extends CustomComponent {
         table.setSortDisabled(true);
 
         table.setPageLength(5);
-        table.setWidth("350px");
-        table.setHeight("110px");
+        table.setWidth("320px");
+        table.setHeight("113px");
 
         table.addContainerProperty(TABLE_HEADER_ID, String.class, CELL_DEFAULT_VALUE);
+        table.setColumnWidth(TABLE_HEADER_ID, 90);
         table.addContainerProperty(TABLE_HEADER_VALUE, String.class, CELL_DEFAULT_VALUE);
 
         table.addListener(new ItemClickEvent.ItemClickListener() {
@@ -127,7 +127,6 @@ public class CustomFieldsTable extends CustomComponent {
 
         Button addNewBtn = new Button(ADD_NEW_BUTTON);
         addNewBtn.setDescription(ADD_NEW_BUTTON_DESCRIPTION);
-        addNewBtn.setSizeFull();
         addNewBtn.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -138,7 +137,7 @@ public class CustomFieldsTable extends CustomComponent {
 
         Button removeBtn = new Button(REMOVE_BUTTON);
         removeBtn.setDescription(REMOVE_BUTTON_DESCRIPTION);
-        removeBtn.setSizeFull();
+        removeBtn.setWidth("36px");
         removeBtn.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -154,16 +153,17 @@ public class CustomFieldsTable extends CustomComponent {
         buttonsVL.addComponent(removeBtn);
 
 
-        mainLayout.addComponent(label);
-        mainLayout.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
+//        mainLayout.addComponent(label, 0, 0, 1, 0);
+//        mainLayout.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
 
         mainLayout.addComponent(table);
-        mainLayout.setComponentAlignment(table, Alignment.MIDDLE_CENTER);
+        mainLayout.setComponentAlignment(table, Alignment.TOP_CENTER);
 
         mainLayout.addComponent(buttonsVL);
-        mainLayout.setComponentAlignment(buttonsVL, Alignment.MIDDLE_LEFT);
+        mainLayout.setComponentAlignment(buttonsVL, Alignment.TOP_LEFT);
 
         mainLayout.setMargin(true);
         mainLayout.setSpacing(true);
+        mainLayout.setStyleName("bordered_panel");
     }
 }

@@ -5,10 +5,7 @@ import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.configeditor.CustomField;
 import com.taskadapter.web.configeditor.CustomFieldsTable;
 import com.taskadapter.web.configeditor.EditorUtil;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextField;
+import com.vaadin.ui.*;
 
 import java.util.*;
 
@@ -75,6 +72,7 @@ public class JiraEditor extends ConfigEditor {
         private void buildUI() {
             setColumns(2);
             setCaption(SAVE_GROUP_LABEL);
+            setSpacing(true);
 
             Panel lookupButtonsPanel = new Panel();
             lookupButtonsPanel.setStyleName("bordered_panel");
@@ -120,6 +118,7 @@ public class JiraEditor extends ConfigEditor {
 
             customFieldsTable = new CustomFieldsTable();
             addComponent(customFieldsTable);
+            setComponentAlignment(customFieldsTable, Alignment.TOP_RIGHT);
         }
 
         private void setDataToForm() {
