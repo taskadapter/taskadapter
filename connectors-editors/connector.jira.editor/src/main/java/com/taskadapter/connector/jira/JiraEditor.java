@@ -7,6 +7,7 @@ import com.taskadapter.web.configeditor.CustomFieldsTable;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 
 import java.util.*;
@@ -72,46 +73,50 @@ public class JiraEditor extends ConfigEditor {
         }
 
         private void buildUI() {
-            setColumns(3);
+            setColumns(2);
             setCaption(SAVE_GROUP_LABEL);
 
+            Panel lookupButtonsPanel = new Panel();
+            lookupButtonsPanel.setStyleName("bordered_panel");
 
-            jiraComponent = EditorUtil.addLabeledText(this, "Project Component", "Component inside the Jira project");
-            jiraComponent.setStyleName("yellow");
+            GridLayout lookupButtonsLayout = new GridLayout(3, 4);
+            lookupButtonsLayout.setMargin(true);
+            lookupButtonsLayout.setSpacing(true);
 
+            jiraComponent = EditorUtil.addLabeledText(lookupButtonsLayout, "Project Component", "Component inside the Jira project");
             Button showComponentsButton = EditorUtil.createLookupButton(jiraEditor, "...",
                     "Show list of available components on the given server.",
                     new LoadComponentsOperation(jiraEditor, new JiraFactory()), jiraComponent, true
             );
-            showComponentsButton.setSizeUndefined();
-            showComponentsButton.setStyleName("red");
-            addComponent(showComponentsButton);
+            lookupButtonsLayout.addComponent(showComponentsButton);
 
 
             LoadVersionsOperation loadVersionsOperation = new LoadVersionsOperation(jiraEditor, new JiraFactory());
 
-            affectedVersion = EditorUtil.addLabeledText(this, "Set 'Affected version' to:", "Set this 'affected version' value when submitting issues to Jira.");
-
-            addComponent(EditorUtil.createLookupButton(jiraEditor, "...",
+            affectedVersion = EditorUtil.addLabeledText(lookupButtonsLayout, "Set 'Affected version' to:", "Set this 'affected version' value when submitting issues to Jira.");
+            Button showAffectedVersion = EditorUtil.createLookupButton(jiraEditor, "...",
                     "Show list of available versions.",
                     loadVersionsOperation, affectedVersion, true
-            ));
+            );
+            lookupButtonsLayout.addComponent(showAffectedVersion);
 
-            fixForVersion = EditorUtil.addLabeledText(this, "Set 'Fix for version' to:", "Set this 'fix for version' value when submitting issues to Jira.");
-
-            addComponent(EditorUtil.createLookupButton(jiraEditor, "...",
+            fixForVersion = EditorUtil.addLabeledText(lookupButtonsLayout, "Set 'Fix for version' to:", "Set this 'fix for version' value when submitting issues to Jira.");
+            Button showFixForVersion = EditorUtil.createLookupButton(jiraEditor, "...",
                     "Show list of available versions.",
                     loadVersionsOperation, fixForVersion, true
-            ));
+            );
+            lookupButtonsLayout.addComponent(showFixForVersion);
 
 
-            defaultTaskType = EditorUtil.addLabeledText(this, "Default issue type:", "New issues will be created with this 'issue type' (bug/improvement/task...)");
-
-            addComponent(EditorUtil.createLookupButton(jiraEditor, "...",
+            defaultTaskType = EditorUtil.addLabeledText(lookupButtonsLayout, "Default issue type:", "New issues will be created with this 'issue type' (bug/improvement/task...)");
+            Button showDefaultTaskType = EditorUtil.createLookupButton(jiraEditor, "...",
                     "Show list of available issue types on the Jira server",
                     new LoadIssueTypesOperation(jiraEditor, new JiraFactory()), defaultTaskType, true
-            ));
+            );
+            lookupButtonsLayout.addComponent(showDefaultTaskType);
 
+            lookupButtonsPanel.setContent(lookupButtonsLayout);
+            addComponent(lookupButtonsPanel);
 
             customFieldsTable = new CustomFieldsTable();
             addComponent(customFieldsTable);
