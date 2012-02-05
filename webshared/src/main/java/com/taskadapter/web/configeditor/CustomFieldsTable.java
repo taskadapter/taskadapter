@@ -25,7 +25,7 @@ public class CustomFieldsTable extends CustomComponent {
 
     private static final String CELL_DEFAULT_VALUE = "...";
 
-
+    private Panel panel = new Panel();
     private GridLayout mainLayout = new GridLayout(2, 1);
     private final Table table = new Table();
 
@@ -37,7 +37,7 @@ public class CustomFieldsTable extends CustomComponent {
     public CustomFieldsTable(List<CustomField> customFields) {
         buildUI();
         setCustomFields(customFields);
-        setCompositionRoot(mainLayout);
+        setCompositionRoot(panel);
     }
 
     public List<CustomField> getCustomFields() {
@@ -71,7 +71,7 @@ public class CustomFieldsTable extends CustomComponent {
     }
 
     private void buildUI() {
-//        Label label = new Label(LABEL);
+        panel.setCaption(LABEL);
 
         table.setSelectable(true);
         table.setMultiSelect(false);
@@ -81,7 +81,7 @@ public class CustomFieldsTable extends CustomComponent {
 
         table.setPageLength(5);
         table.setWidth("320px");
-        table.setHeight("113px");
+        table.setHeight("110px");
 
         table.addContainerProperty(TABLE_HEADER_ID, String.class, CELL_DEFAULT_VALUE);
         table.setColumnWidth(TABLE_HEADER_ID, 90);
@@ -152,10 +152,6 @@ public class CustomFieldsTable extends CustomComponent {
         buttonsVL.addComponent(addNewBtn);
         buttonsVL.addComponent(removeBtn);
 
-
-//        mainLayout.addComponent(label, 0, 0, 1, 0);
-//        mainLayout.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
-
         mainLayout.addComponent(table);
         mainLayout.setComponentAlignment(table, Alignment.TOP_CENTER);
 
@@ -165,5 +161,7 @@ public class CustomFieldsTable extends CustomComponent {
         mainLayout.setMargin(true);
         mainLayout.setSpacing(true);
         mainLayout.setStyleName("bordered_panel");
+
+        panel.setContent(mainLayout);
     }
 }
