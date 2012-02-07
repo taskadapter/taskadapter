@@ -27,7 +27,10 @@ public class TAApplication extends Application {
     private EditorManager editorManager = new EditorManager();
     private ConfigStorage configStorage = new ConfigStorage(pluginManager);
     private MenuLinkBuilder menuLinkBuilder;
-    private Page homePage = new HomePage();
+    private Page homePage;
+
+    private PageManager pageManager;
+    private Authenticator authenticator = new Authenticator();
 
     @Override
     public String getVersion() {
@@ -40,7 +43,7 @@ public class TAApplication extends Application {
 
         SettingsManager settingsManager = new SettingsManager();
 
-        PageManager pageManager = new PageManager(configStorage, this, pluginManager, editorManager, settingsManager);
+        pageManager = new PageManager(configStorage, this, pluginManager, editorManager, settingsManager);
         menuLinkBuilder = new MenuLinkBuilder(pageManager);
 
         VerticalLayout layout = new VerticalLayout();
@@ -78,6 +81,7 @@ public class TAApplication extends Application {
         setMainWindow(mainWindow);
 
         checkLastAvailableVersion();
+        homePage = new HomePage(authenticator);
         show(homePage);
     }
 
@@ -99,5 +103,9 @@ public class TAApplication extends Application {
             updateMessage.setCaption("There's a newer version of Task Adapter available for download. Your version: "
                     + updateManager.getCurrentVersion() + ". Last available version: " + updateManager.getLatestAvailableVersion());
         }
+    }
+
+    public Authenticator getAuthenticator() {
+        return authenticator;
     }
 }
