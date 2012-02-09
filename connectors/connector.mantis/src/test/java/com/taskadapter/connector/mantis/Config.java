@@ -10,6 +10,7 @@ public class Config {
     private static final String TEST_PROPERTIES = "mantis.properties";
 
     private static final Properties properties = new Properties();
+
     static {
         InputStream is = Config.class.getClassLoader().getResourceAsStream(
                 TEST_PROPERTIES);
@@ -36,7 +37,7 @@ public class Config {
     }
 
     public static MantisConfig getMantisTestConfig() {
-        WebServerInfo mntInfo = new WebServerInfo(Config.getURI(),	Config.getUserLogin(), Config.getPassword());
+        WebServerInfo mntInfo = new WebServerInfo(Config.getURI(), Config.getUserLogin(), Config.getPassword());
         MantisConfig mantisConfig = new MantisConfig();
         mantisConfig.setServerInfo(mntInfo);
         mantisConfig.setProjectKey(properties.getProperty("project.id"));

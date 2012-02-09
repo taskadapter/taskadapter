@@ -1,7 +1,6 @@
-package com.taskadapter.connector.mantis.editor;
+package com.taskadapter.connector.github;
 
 import com.taskadapter.connector.definition.Descriptor;
-import com.taskadapter.connector.mantis.MantisDescriptor;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.configeditor.LookupOperation;
 import com.taskadapter.web.configeditor.ProjectProcessor;
@@ -13,11 +12,11 @@ import java.util.Collection;
  * @author Alexey Skorokhodov
  */
 
-public class MantisProjectProcessor implements ProjectProcessor {
+public class GithubProjectProcessor implements ProjectProcessor {
 
-    private final MantisEditor editor;
+    private final GithubEditor editor;
 
-    public MantisProjectProcessor(MantisEditor editor) {
+    public GithubProjectProcessor(GithubEditor editor) {
         this.editor = editor;
     }
 
@@ -29,7 +28,7 @@ public class MantisProjectProcessor implements ProjectProcessor {
 
     @Override
     public Descriptor getDescriptor() {
-        return MantisDescriptor.instance;
+        return GithubDescriptor.instance;
     }
 
     @Override

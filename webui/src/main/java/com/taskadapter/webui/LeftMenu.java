@@ -21,7 +21,7 @@ public class LeftMenu extends VerticalLayout {
     private EditorManager editorManager;
     private SettingsManager settingsManager;
     private PageManager pageManager;
-    private MenuLinkBuilder builder;
+    private MenuLinkBuilder menuLinkBuilder;
 
     // TODO refactor this list of params!
     public LeftMenu(PageManager pageManager, ConfigStorage configStorage, PluginManager pluginManager, EditorManager editorManager, SettingsManager settingsManager) {
@@ -30,7 +30,7 @@ public class LeftMenu extends VerticalLayout {
         this.pluginManager = pluginManager;
         this.editorManager = editorManager;
         this.settingsManager = settingsManager;
-        builder = new MenuLinkBuilder(pageManager);
+        menuLinkBuilder = new MenuLinkBuilder(pageManager);
         buildUI();
     }
 
@@ -43,6 +43,6 @@ public class LeftMenu extends VerticalLayout {
     }
 
     private void addMenu(Resource icon, String caption, final Page page) {
-        addComponent(builder.render(caption, page, icon));
+        addComponent(menuLinkBuilder.createButtonLink(caption, page, icon));
     }
 }

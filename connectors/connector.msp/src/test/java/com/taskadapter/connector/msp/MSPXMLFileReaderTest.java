@@ -8,6 +8,6 @@ public class MSPXMLFileReaderTest {
 
     @Test
     public void readFile() throws Exception {
-         Assert.assertNotNull(MSPTestUtils.readTestProjectFile());
+        Assert.assertNotNull(MSPTestUtils.readTestProjectFile());
     }
 }

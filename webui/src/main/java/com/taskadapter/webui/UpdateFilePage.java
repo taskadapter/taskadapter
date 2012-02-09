@@ -39,7 +39,7 @@ public class UpdateFilePage extends ActionPage {
     }
 
     @Override
-    public String getNavigationPanelTitle() {
+    public String getPageTitle() {
         return "Update the file";  //To change body of implemented methods use File | Settings | File Templates.
     }
 

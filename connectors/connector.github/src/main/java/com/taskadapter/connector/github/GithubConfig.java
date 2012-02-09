@@ -14,18 +14,18 @@ public class GithubConfig extends WebConfig {
     private String issueState;
     private String issueKeyword;
 
-    public GithubConfig () {
+    public GithubConfig() {
         super(DEFAULT_LABEL);
     }
 
     @Override
     protected Map<GTaskDescriptor.FIELD, Mapping> generateDefaultFieldsMapping() {
-		Map<GTaskDescriptor.FIELD, Mapping> fieldsMapping = new HashMap<GTaskDescriptor.FIELD, Mapping>();
+        Map<GTaskDescriptor.FIELD, Mapping> fieldsMapping = new HashMap<GTaskDescriptor.FIELD, Mapping>();
         fieldsMapping.put(GTaskDescriptor.FIELD.START_DATE, new Mapping());
-		fieldsMapping.put(GTaskDescriptor.FIELD.SUMMARY, new Mapping());
-		fieldsMapping.put(GTaskDescriptor.FIELD.ASSIGNEE, new Mapping());
-		fieldsMapping.put(GTaskDescriptor.FIELD.DESCRIPTION, new Mapping());
-		return fieldsMapping;
+        fieldsMapping.put(GTaskDescriptor.FIELD.SUMMARY, new Mapping());
+        fieldsMapping.put(GTaskDescriptor.FIELD.ASSIGNEE, new Mapping());
+        fieldsMapping.put(GTaskDescriptor.FIELD.DESCRIPTION, new Mapping());
+        return fieldsMapping;
     }
 
     public String getIssueState() {
@@ -45,11 +45,13 @@ public class GithubConfig extends WebConfig {
     }
 
     @Override
-	protected Priorities generateDefaultPriorities() {
-		return new Priorities(new HashMap<String, Integer>() {
-			private static final long serialVersionUID = 516389048716909610L;
-			{
-				// EMPTY! Github does not support priorities for issues
-			}
-		});
-	}}
+    protected Priorities generateDefaultPriorities() {
+        return new Priorities(new HashMap<String, Integer>() {
+            private static final long serialVersionUID = 516389048716909610L;
+
+            {
+                // EMPTY! Github does not support priorities for issues
+            }
+        });
+    }
+}

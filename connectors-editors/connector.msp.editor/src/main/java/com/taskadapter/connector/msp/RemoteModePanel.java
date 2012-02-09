@@ -117,7 +117,7 @@ public class RemoteModePanel extends VerticalLayout {
         try {
             new FileManager().saveFileOnServer(fileName, bytes);
         } catch (IOException e) {
-            getWindow().showNotification("Error: "+ e.toString());
+            getWindow().showNotification("Error: " + e.toString());
         }
     }
 
@@ -145,8 +145,8 @@ public class RemoteModePanel extends VerticalLayout {
                             e.printStackTrace();
                         }
                     }
-                    if (total== MAX_FILE_SIZE) {
-                        throw new RuntimeException("Max file size reached: "  + MAX_FILE_SIZE + " bytes");
+                    if (total == MAX_FILE_SIZE) {
+                        throw new RuntimeException("Max file size reached: " + MAX_FILE_SIZE + " bytes");
                     }
                 }
             };

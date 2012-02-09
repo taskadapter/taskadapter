@@ -13,9 +13,9 @@ import java.util.List;
 
 public class MantisDataConverter {
 
-	private static final String DEFAULT_TASK_DESCRIPTION = "-";
+    private static final String DEFAULT_TASK_DESCRIPTION = "-";
 
-	private static HashMap<String, Integer> priorityNumbers = new HashMap<String, Integer>() {
+    private static HashMap<String, Integer> priorityNumbers = new HashMap<String, Integer>() {
         private static final long serialVersionUID = 516389048716909610L;
 
         {
@@ -31,12 +31,12 @@ public class MantisDataConverter {
     };
 
     private final MantisConfig config;
-	private List<AccountData> users;
+    private List<AccountData> users;
 
     public MantisDataConverter(MantisConfig config) {
-		this.config = config;
+        this.config = config;
     }
-    
+
     public static GUser convertToGUser(AccountData mantisUser) {
         GUser user = new GUser();
         user.setId(mantisUser.getId().intValue());
@@ -56,12 +56,12 @@ public class MantisDataConverter {
         }
 
         if (config.isFieldSelected(GTaskDescriptor.FIELD.DESCRIPTION)) {
-        	String description = task.getDescription();
-        	// empty description is not allowed by Mantis API.
-        	// see bug https://www.hostedredmine.com/issues/39248
-        	if (description.isEmpty()) {
-        		description = DEFAULT_TASK_DESCRIPTION;
-        	}
+            String description = task.getDescription();
+            // empty description is not allowed by Mantis API.
+            // see bug https://www.hostedredmine.com/issues/39248
+            if (description.isEmpty()) {
+                description = DEFAULT_TASK_DESCRIPTION;
+            }
             issue.setDescription(description);
         }
 
@@ -84,17 +84,17 @@ public class MantisDataConverter {
         if (config.isFieldSelected(GTaskDescriptor.FIELD.ASSIGNEE)) {
             GUser ass = task.getAssignee();
 
-			if (ass != null) {
-				AccountData mntUser;
-				if (ass.getId() != null) {
-					mntUser = new AccountData();
-					mntUser.setId(BigInteger.valueOf(ass.getId()));
-					mntUser.setName(ass.getLoginName());
-				} else {
-					mntUser = findUser(ass);
-				}
-				issue.setHandler(mntUser);
-			}
+            if (ass != null) {
+                AccountData mntUser;
+                if (ass.getId() != null) {
+                    mntUser = new AccountData();
+                    mntUser.setId(BigInteger.valueOf(ass.getId()));
+                    mntUser.setName(ass.getLoginName());
+                } else {
+                    mntUser = findUser(ass);
+                }
+                issue.setHandler(mntUser);
+            }
         }
 
         return issue;
@@ -153,27 +153,27 @@ public class MantisDataConverter {
         }
     }
 
-	public void setUsers(List<AccountData> users) {
-		this.users = users;
-	}
-	
-	/**
-	 * @return NULL if the user is not found or if "users" weren't previously set via setUsers() method
-	 */
-	private AccountData findUser(GUser ass) {
-		if (users == null) {
-			return null;
-		}
-		AccountData foundUser = null;
-		for (AccountData user : users) { 
-			if (ass.getLoginName().equalsIgnoreCase(user.getName())
-					|| ass.getLoginName().equalsIgnoreCase(
-							user.getReal_name())) {
-				foundUser = user;
-				break;
-			}
-		}
-		return foundUser;
-	}
+    public void setUsers(List<AccountData> users) {
+        this.users = users;
+    }
+
+    /**
+     * @return NULL if the user is not found or if "users" weren't previously set via setUsers() method
+     */
+    private AccountData findUser(GUser ass) {
+        if (users == null) {
+            return null;
+        }
+        AccountData foundUser = null;
+        for (AccountData user : users) {
+            if (ass.getLoginName().equalsIgnoreCase(user.getName())
+                    || ass.getLoginName().equalsIgnoreCase(
+                    user.getReal_name())) {
+                foundUser = user;
+                break;
+            }
+        }
+        return foundUser;
+    }
 
 }

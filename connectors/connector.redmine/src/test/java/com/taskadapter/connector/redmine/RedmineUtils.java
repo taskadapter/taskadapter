@@ -37,16 +37,16 @@ public class RedmineUtils {
 
 
     private static List<Issue> generateIssues(int issuesNumber) {
-		List<Issue> issues = new ArrayList<Issue>(issuesNumber);
-		Random r = new Random();
-		for (int i = 0; i < issuesNumber; i++) {
-			Issue issue = new Issue();
-			issue.setSubject("some issue " + i + " " + new Date());
-			issue.setEstimatedHours((float) r.nextInt(40));
-			issues.add(issue);
-		}
-		return issues;
-	}
+        List<Issue> issues = new ArrayList<Issue>(issuesNumber);
+        Random r = new Random();
+        for (int i = 0; i < issuesNumber; i++) {
+            Issue issue = new Issue();
+            issue.setSubject("some issue " + i + " " + new Date());
+            issue.setEstimatedHours((float) r.nextInt(40));
+            issues.add(issue);
+        }
+        return issues;
+    }
 
     public static GTask generateTaskWithPrecedesRelations(RedmineConnector redmine,
                                                           Integer childCount) throws Exception {

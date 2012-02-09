@@ -12,12 +12,12 @@ public class GithubConnector extends AbstractConnector<GithubConfig> {
         return GithubDescriptor.instance;
     }
 
-	public GithubConnector(GithubConfig config) {
-		super(config);
-	}
+    public GithubConnector(GithubConfig config) {
+        super(config);
+    }
 
     public void updateRemoteIDs(ConnectorConfig sourceConfig, SyncResult actualSaveResult, ProgressMonitor monitor) {
-		throw new RuntimeException("not implemented for this connector");
+        throw new RuntimeException("not implemented for this connector");
     }
 
 }

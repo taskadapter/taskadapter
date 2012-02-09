@@ -6,7 +6,7 @@ import com.taskadapter.model.GTask;
 
 public interface TaskConverter<T> {
 
-	List<GTask> convertToGenericTaskList(List<T> tasks);
+    List<GTask> convertToGenericTaskList(List<T> tasks);
 
-	GTask convertToGenericTask(T task);
+    GTask convertToGenericTask(T task);
 }

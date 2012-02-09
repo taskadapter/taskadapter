@@ -78,7 +78,7 @@ public class TasksPage extends Page {
     }
 
     @Override
-    public String getNavigationPanelTitle() {
+    public String getPageTitle() {
         return "Tasks";
     }
 }

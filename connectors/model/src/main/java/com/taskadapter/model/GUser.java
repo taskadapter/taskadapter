@@ -6,108 +6,108 @@ package com.taskadapter.model;
  * @author Alexey Skorokhodov
  */
 public class GUser {
-	
-	/**
-	 * Database ID.
-	 */
-	private Integer id;
-	
-	/**
-	 * String-based User Identifier (aka "login" in web-based systems)
-	 */
-	private String loginName;
-	
-	/**
-	 * Usually the Full Name of the User.
-	 */
-	private String displayName;
 
-	/**
-	 * @param loginName the string-based user identifier aka "login" in web-based systems
-	 */
-	public GUser(String loginName) {
-		this.loginName = loginName;
-	}
+    /**
+     * Database ID.
+     */
+    private Integer id;
 
-	/**
-	 * @param id database ID
-	 * @param loginName the string-based user identifier aka "login" in web-based systems
-	 */
-	public GUser(Integer id, String loginName) {
-		this.id = id;
-		this.loginName = loginName;
-	}
+    /**
+     * String-based User Identifier (aka "login" in web-based systems)
+     */
+    private String loginName;
 
-	public GUser() {
-	}
+    /**
+     * Usually the Full Name of the User.
+     */
+    private String displayName;
 
-	public Integer getId() {
-		return id;
-	}
+    /**
+     * @param loginName the string-based user identifier aka "login" in web-based systems
+     */
+    public GUser(String loginName) {
+        this.loginName = loginName;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    /**
+     * @param id        database ID
+     * @param loginName the string-based user identifier aka "login" in web-based systems
+     */
+    public GUser(Integer id, String loginName) {
+        this.id = id;
+        this.loginName = loginName;
+    }
 
-	public String getLoginName() {
-		return loginName;
-	}
+    public GUser() {
+    }
 
-	public void setLoginName(String loginName) {
-		this.loginName = loginName;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public String getDisplayName() {
-		return displayName;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
-	}
+    public String getLoginName() {
+        return loginName;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((displayName == null) ? 0 : displayName.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result
-				+ ((loginName == null) ? 0 : loginName.hashCode());
-		return result;
-	}
+    public void setLoginName(String loginName) {
+        this.loginName = loginName;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		GUser other = (GUser) obj;
-		if (displayName == null) {
-			if (other.displayName != null)
-				return false;
-		} else if (!displayName.equals(other.displayName))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (loginName == null) {
-			if (other.loginName != null)
-				return false;
-		} else if (!loginName.equals(other.loginName))
-			return false;
-		return true;
-	}
+    public String getDisplayName() {
+        return displayName;
+    }
 
-	@Override
-	public String toString() {
-		return "GUser [id=" + id + ", loginName=" + loginName
-				+ ", displayName=" + displayName + "]";
-	}
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((displayName == null) ? 0 : displayName.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result
+                + ((loginName == null) ? 0 : loginName.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        GUser other = (GUser) obj;
+        if (displayName == null) {
+            if (other.displayName != null)
+                return false;
+        } else if (!displayName.equals(other.displayName))
+            return false;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (loginName == null) {
+            if (other.loginName != null)
+                return false;
+        } else if (!loginName.equals(other.loginName))
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "GUser [id=" + id + ", loginName=" + loginName
+                + ", displayName=" + displayName + "]";
+    }
 
 }

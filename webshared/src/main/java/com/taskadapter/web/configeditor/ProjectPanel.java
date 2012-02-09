@@ -40,6 +40,8 @@ public class ProjectPanel extends GridLayout implements Validatable {
         addStyleName("bordered_panel");
         setCaption(GROUP_LABEL);
         setColumns(COLUMNS_NUMBER);
+        setMargin(true);
+        setSpacing(true);
 
         addComponent(new Label("Project key:"));
         this.projectKey = new TextField();

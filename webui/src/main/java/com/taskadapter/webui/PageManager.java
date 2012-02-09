@@ -13,13 +13,18 @@ import java.util.Map;
  */
 public class PageManager {
     public static final String TASKS = "tasks_list";
+    private static final String LOGIN_PAGE = "login_page";
 
     private Map<String, Page> pages = new HashMap<String, Page>();
     private TAApplication application;
+    private Authenticator authenticator;
 
     public PageManager(ConfigStorage configStorage, TAApplication application, PluginManager pluginManager, EditorManager editorManager, SettingsManager settingsManager) {
         this.application = application;
+        this.authenticator = application.getAuthenticator();
         registerPage(TASKS, new TasksPage(this, configStorage, pluginManager, editorManager, settingsManager));
+        // TODO refactor? maybe no need to pass "this"
+        registerPage(LOGIN_PAGE, new LoginPage(authenticator, this));
     }
 
     public void registerPage(String id, Page page) {
@@ -31,11 +36,15 @@ public class PageManager {
     }
 
     public void show(String pageId) {
-        application.show(pages.get(pageId));
+        show(pages.get(pageId));
     }
 
     public void show(Page page) {
-        application.show(page);
+        if (!authenticator.isLoggedIn()) {
+            application.show(pages.get(LOGIN_PAGE));
+        } else {
+            application.show(page);
+        }
     }
 
     public Window getMainWindow() {

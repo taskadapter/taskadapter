@@ -15,9 +15,9 @@ public class GithubProjectLoader implements ProjectLoader {
     public List<GProject> getProjects(WebServerInfo serverInfo) throws ValidationException {
         try {
             List<Repository> repositories = new ConnectionFactory(serverInfo).getRepositoryService().getRepositories(serverInfo.getUserName());
-        	return new GithubProjectConverter().toGProjects(repositories);
-		} catch (Exception e) {
-			throw new RuntimeException(e.toString(), e);
-		}
+            return new GithubProjectConverter().toGProjects(repositories);
+        } catch (Exception e) {
+            throw new RuntimeException(e.toString(), e);
+        }
     }
 }

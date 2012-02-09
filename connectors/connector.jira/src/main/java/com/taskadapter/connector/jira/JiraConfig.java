@@ -12,89 +12,89 @@ import java.util.Map;
 
 public class JiraConfig extends WebConfig {
 
-	static final String DEFAULT_LABEL = "Atlassian Jira";
+    static final String DEFAULT_LABEL = "Atlassian Jira";
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String defaultTaskType = "Bug";
-	
-	// TODO this can probably be moved to the super class
-	protected String component = "";
-	
-	/**
-	 * Version ("milestone") in the project.
-	 */
-	protected String affectedVersion = "";
+    private String defaultTaskType = "Bug";
 
-	/**
-	 * Version ("milestone") in the project.
-	 */
-	protected String fixForVersion = "";
-	
-	public JiraConfig() {
+    // TODO this can probably be moved to the super class
+    protected String component = "";
+
+    /**
+     * Version ("milestone") in the project.
+     */
+    protected String affectedVersion = "";
+
+    /**
+     * Version ("milestone") in the project.
+     */
+    protected String fixForVersion = "";
+
+    public JiraConfig() {
         super(DEFAULT_LABEL);
-	}
+    }
 
-	public String getComponent() {
-		return component;
-	}
+    public String getComponent() {
+        return component;
+    }
 
-	public void setComponent(String component) {
-		this.component = component;
-	}
+    public void setComponent(String component) {
+        this.component = component;
+    }
 
-	public String getFixForVersion() {
-		return fixForVersion;
-	}
+    public String getFixForVersion() {
+        return fixForVersion;
+    }
 
-	public void setFixForVersion(String fixForVersion) {
-		this.fixForVersion = fixForVersion;
-	}
+    public void setFixForVersion(String fixForVersion) {
+        this.fixForVersion = fixForVersion;
+    }
 
-	public String getAffectedVersion() {
-		return affectedVersion;
-	}
+    public String getAffectedVersion() {
+        return affectedVersion;
+    }
 
-	public void setAffectedVersion(String version) {
-		this.affectedVersion = version;
-	}
+    public void setAffectedVersion(String version) {
+        this.affectedVersion = version;
+    }
 
 
+    public String getDefaultTaskType() {
+        return defaultTaskType;
+    }
 
-	public String getDefaultTaskType() {
-		return defaultTaskType;
-	}
+    public void setDefaultTaskType(String defaultTaskType) {
+        this.defaultTaskType = defaultTaskType;
+    }
 
-	public void setDefaultTaskType(String defaultTaskType) {
-		this.defaultTaskType = defaultTaskType;
-	}
-	
-	@Override
-	protected Map<FIELD, Mapping> generateDefaultFieldsMapping() {
-		Map<FIELD, Mapping> fieldsMapping = new HashMap<FIELD, Mapping>();
-		fieldsMapping.put(GTaskDescriptor.FIELD.SUMMARY, new Mapping());
-		fieldsMapping.put(GTaskDescriptor.FIELD.TASK_TYPE, new Mapping());
-		fieldsMapping.put(GTaskDescriptor.FIELD.ESTIMATED_TIME, new Mapping());
-		fieldsMapping.put(GTaskDescriptor.FIELD.ASSIGNEE, new Mapping());
-		fieldsMapping.put(GTaskDescriptor.FIELD.DESCRIPTION, new Mapping());
-		fieldsMapping.put(GTaskDescriptor.FIELD.DUE_DATE, new Mapping());
-		fieldsMapping.put(GTaskDescriptor.FIELD.PRIORITY, new Mapping());		
-		return fieldsMapping;
-	}
+    @Override
+    protected Map<FIELD, Mapping> generateDefaultFieldsMapping() {
+        Map<FIELD, Mapping> fieldsMapping = new HashMap<FIELD, Mapping>();
+        fieldsMapping.put(GTaskDescriptor.FIELD.SUMMARY, new Mapping());
+        fieldsMapping.put(GTaskDescriptor.FIELD.TASK_TYPE, new Mapping());
+        fieldsMapping.put(GTaskDescriptor.FIELD.ESTIMATED_TIME, new Mapping());
+        fieldsMapping.put(GTaskDescriptor.FIELD.ASSIGNEE, new Mapping());
+        fieldsMapping.put(GTaskDescriptor.FIELD.DESCRIPTION, new Mapping());
+        fieldsMapping.put(GTaskDescriptor.FIELD.DUE_DATE, new Mapping());
+        fieldsMapping.put(GTaskDescriptor.FIELD.PRIORITY, new Mapping());
+        return fieldsMapping;
+    }
 
-	@Override
-	protected Priorities generateDefaultPriorities() {
-		return new Priorities(new HashMap<String, Integer>() {
-			private static final long serialVersionUID = 516389048716909610L;
-			{
-				put("Trivial", 100);
-				put("Minor", 300);
-				put("Major", 700);
-				put("Critical", 800);
-				put("Blocker", 1000);
-			}
-		});
-	}
+    @Override
+    protected Priorities generateDefaultPriorities() {
+        return new Priorities(new HashMap<String, Integer>() {
+            private static final long serialVersionUID = 516389048716909610L;
+
+            {
+                put("Trivial", 100);
+                put("Minor", 300);
+                put("Major", 700);
+                put("Critical", 800);
+                put("Blocker", 1000);
+            }
+        });
+    }
 
 
     @Override
@@ -104,36 +104,36 @@ public class JiraConfig extends WebConfig {
 
     }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (obj instanceof JiraConfig) {
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (obj instanceof JiraConfig) {
             JiraConfig other = (JiraConfig) obj;
-			return Objects.equal(affectedVersion, other.affectedVersion) &&
+            return Objects.equal(affectedVersion, other.affectedVersion) &&
                     Objects.equal(component, other.component) &&
                     Objects.equal(defaultTaskType, other.component) &&
                     Objects.equal(fixForVersion, other.fixForVersion);
 
-		}   else {
+        } else {
             return false;
         }
-	}
-	
-	/*@Override
-	protected void populatePrioritiesFromTracker(WebServerInfo info) throws MalformedURLException, RemoteException {
-		// TODO Auto-generated method stub
-		JiraConnection conn = JiraConnectionFactory.createConnection(info);
-		RemotePriority[] priorities = conn.getPriorities();
-		
-		for (int i = 0; i < priorities.length; i++) {
-			prioritiesMapping.put(priorities[i].getName(), 0);
-		}
-	}*/
+    }
+
+    /*@Override
+     protected void populatePrioritiesFromTracker(WebServerInfo info) throws MalformedURLException, RemoteException {
+         // TODO Auto-generated method stub
+         JiraConnection conn = JiraConnectionFactory.createConnection(info);
+         RemotePriority[] priorities = conn.getPriorities();
+
+         for (int i = 0; i < priorities.length; i++) {
+             prioritiesMapping.put(priorities[i].getName(), 0);
+         }
+     }*/
 
 /*	public static void main(String[] args) throws MalformedURLException, RemoteException {
 		WebServerInfo info = new WebServerInfo("http://ta-dev.dyndns.biz:8080", "admin", "zzz666");

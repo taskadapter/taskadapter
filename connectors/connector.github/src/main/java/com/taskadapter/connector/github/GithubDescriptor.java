@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public class GithubDescriptor implements Descriptor {
-	public static final GithubDescriptor instance = new GithubDescriptor();
+    public static final GithubDescriptor instance = new GithubDescriptor();
 
     private static final String ID = "GithubConnector v1";
     private static final String DESCRIPTION = "Github connector based on eddieringle's ghapi library";
@@ -61,18 +61,18 @@ public class GithubDescriptor implements Descriptor {
         return GithubConfig.class;
     }
 
-	public Collection<Feature> getSupportedFeatures() {
-		return Arrays.asList(Feature.LOAD_TASK, Feature.SAVE_TASK);
-	}
+    public Collection<Feature> getSupportedFeatures() {
+        return Arrays.asList(Feature.LOAD_TASK, Feature.SAVE_TASK);
+    }
 
-	public boolean isSupported(Feature feature) {
-		return getSupportedFeatures().contains(feature);
-	}
-	
-	@Override
-	public PriorityLoader getPriorityLoader() {
-		throw new RuntimeException("NOT READY");
-	}
+    public boolean isSupported(Feature feature) {
+        return getSupportedFeatures().contains(feature);
+    }
+
+    @Override
+    public PriorityLoader getPriorityLoader() {
+        throw new RuntimeException("NOT READY");
+    }
 
     @Override
     public PluginFactory getPluginFactory() {

@@ -6,6 +6,7 @@ import com.taskadapter.connector.definition.Descriptor.Feature;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.NamedKeyedObjectImpl;
 import com.vaadin.data.util.BeanContainer;
+import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
@@ -114,13 +115,14 @@ public class PriorityPanel extends VerticalLayout implements Validatable {
 
     public Priorities getPriorities() {
         Map<String, Integer> priorities = new HashMap<String, Integer>();
-//           for (TableItem tableItem : prioritiesTable.getItems()) {
-//               String trackerText = tableItem.getText(0);
-//               Integer mspValue = Integer.parseInt(tableItem.getText(1));
-//               priorities.put(trackerText, mspValue);
-//           }
+        for (Iterator i = data.getItemIds().iterator(); i.hasNext(); ) {
+            String sid = (String) i.next();
+            Item item = data.getItem(sid);
 
-        return null;
+            priorities.put((String) item.getItemProperty("text").getValue(), (Integer) item.getItemProperty("value").getValue());
+        }
+
+        return new Priorities(priorities);
     }
 
     /*
@@ -193,6 +195,10 @@ public class PriorityPanel extends VerticalLayout implements Validatable {
 
         public int getValue() {
             return value;
+        }
+
+        public void setValue(final int value) {
+            this.value = value;
         }
     }
 }

@@ -7,5 +7,5 @@ import com.taskadapter.model.NamedKeyedObjectImpl;
 import java.util.List;
 
 public interface PriorityLoader {
-	List<NamedKeyedObjectImpl> getPriorities(WebServerInfo serverInfo) throws ValidationException;
+    List<NamedKeyedObjectImpl> getPriorities(WebServerInfo serverInfo) throws ValidationException;
 }

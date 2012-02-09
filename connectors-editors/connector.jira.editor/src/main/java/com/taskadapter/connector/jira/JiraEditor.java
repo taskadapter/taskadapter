@@ -3,14 +3,11 @@ package com.taskadapter.connector.jira;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.configeditor.CustomField;
+import com.taskadapter.web.configeditor.CustomFieldsTable;
 import com.taskadapter.web.configeditor.EditorUtil;
-import com.taskadapter.web.configeditor.LookupOperation;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.TextField;
+import com.vaadin.ui.*;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * @author Alexey Skorokhodov
@@ -28,8 +25,10 @@ public class JiraEditor extends ConfigEditor {
     private void buildUI() {
         addServerPanel();
         addProjectPanel(this, new JiraProjectProcessor(this));
+
         jiraFieldsPanel = new OtherJiraFieldsPanel(this);
         addComponent(jiraFieldsPanel);
+
         addPriorityPanel(this, JiraDescriptor.instance, config.getPriorities());
         addFieldsMappingPanel(JiraDescriptor.instance.getAvailableFieldsProvider(), config.getFieldsMapping());
     }
@@ -41,12 +40,16 @@ public class JiraEditor extends ConfigEditor {
         newConfig.setAffectedVersion(jiraFieldsPanel.getAffectedVersion());
         newConfig.setFixForVersion(jiraFieldsPanel.getFixForVersion());
         newConfig.setComponent(jiraFieldsPanel.getComponent());
+
         Map<String, String> trackers = new TreeMap<String, String>();
+
         for (CustomField customField : jiraFieldsPanel.getCustomFields()) {
             trackers.put(customField.getId(), customField.getValue());
         }
+
         newConfig.setCustomFields(trackers);
         newConfig.setDefaultTaskType(jiraFieldsPanel.getDefaultTaskType());
+
         return newConfig;
     }
 
@@ -57,7 +60,7 @@ public class JiraEditor extends ConfigEditor {
         private TextField affectedVersion;
         private TextField fixForVersion;
         private TextField defaultTaskType;
-        private CustomFieldsPanel customFieldsPanel;
+        private CustomFieldsTable customFieldsTable;
         private JiraEditor jiraEditor;
 
         public OtherJiraFieldsPanel(JiraEditor jiraEditor) {
@@ -67,50 +70,72 @@ public class JiraEditor extends ConfigEditor {
         }
 
         private void buildUI() {
-            setColumns(3);
-            setCaption(SAVE_GROUP_LABEL);
-            this.jiraComponent = EditorUtil.addLabeledText(this, "Project Component", "Component inside the Jira project");
+            setColumns(2);
+            setSpacing(true);
 
-            LookupOperation loadComponentsOperation = new LoadComponentsOperation(jiraEditor, new JiraFactory());
-            addComponent(EditorUtil.createLookupButton(jiraEditor,
-                    "...",
+            Panel lookupButtonsPanel = new Panel(SAVE_GROUP_LABEL);
+
+            GridLayout lookupButtonsLayout = new GridLayout(3, 4);
+            lookupButtonsLayout.setMargin(true);
+            lookupButtonsLayout.setSpacing(true);
+            lookupButtonsLayout.setStyleName("bordered_panel");
+
+            jiraComponent = EditorUtil.addLabeledText(lookupButtonsLayout, "Project Component", "Component inside the Jira project");
+            Button showComponentsButton = EditorUtil.createLookupButton(jiraEditor, "...",
                     "Show list of available components on the given server.",
-                    loadComponentsOperation, jiraComponent, true));
+                    new LoadComponentsOperation(jiraEditor, new JiraFactory()), jiraComponent, true
+            );
+            lookupButtonsLayout.addComponent(showComponentsButton);
 
-            this.affectedVersion = EditorUtil.addLabeledText(this, "Set 'Affected version' to:", "Set this 'affected version' value when submitting issues to Jira.");
+
             LoadVersionsOperation loadVersionsOperation = new LoadVersionsOperation(jiraEditor, new JiraFactory());
-            addComponent(EditorUtil.createLookupButton(jiraEditor,
-                    "...",
-                    "Show list of available versions.",
-                    loadVersionsOperation, affectedVersion, true));
 
-            this.fixForVersion = EditorUtil.addLabeledText(this, "Set 'Fix for version' to:", "Set this 'fix for version' value when submitting issues to Jira.");
-            addComponent(EditorUtil.createLookupButton(jiraEditor,
-                    "...",
+            affectedVersion = EditorUtil.addLabeledText(lookupButtonsLayout, "Set 'Affected version' to:", "Set this 'affected version' value when submitting issues to Jira.");
+            Button showAffectedVersion = EditorUtil.createLookupButton(jiraEditor, "...",
                     "Show list of available versions.",
-                    loadVersionsOperation, fixForVersion, true));
+                    loadVersionsOperation, affectedVersion, true
+            );
+            lookupButtonsLayout.addComponent(showAffectedVersion);
 
-            this.defaultTaskType = EditorUtil.addLabeledText(this, "Default issue type:", "New issues will be created with this 'issue type' (bug/improvement/task...)");
-            addComponent(EditorUtil.createLookupButton(jiraEditor,
-                    "...",
+            fixForVersion = EditorUtil.addLabeledText(lookupButtonsLayout, "Set 'Fix for version' to:", "Set this 'fix for version' value when submitting issues to Jira.");
+            Button showFixForVersion = EditorUtil.createLookupButton(jiraEditor, "...",
+                    "Show list of available versions.",
+                    loadVersionsOperation, fixForVersion, true
+            );
+            lookupButtonsLayout.addComponent(showFixForVersion);
+
+
+            defaultTaskType = EditorUtil.addLabeledText(lookupButtonsLayout, "Default issue type:", "New issues will be created with this 'issue type' (bug/improvement/task...)");
+            Button showDefaultTaskType = EditorUtil.createLookupButton(jiraEditor, "...",
                     "Show list of available issue types on the Jira server",
-                    new LoadIssueTypesOperation(jiraEditor, new JiraFactory()), defaultTaskType, true));
+                    new LoadIssueTypesOperation(jiraEditor, new JiraFactory()), defaultTaskType, true
+            );
+            lookupButtonsLayout.addComponent(showDefaultTaskType);
 
-            customFieldsPanel = new CustomFieldsPanel();
-            addComponent(customFieldsPanel);
+            lookupButtonsPanel.setContent(lookupButtonsLayout);
+            addComponent(lookupButtonsPanel);
 
+            customFieldsTable = new CustomFieldsTable();
+            addComponent(customFieldsTable);
+            setComponentAlignment(customFieldsTable, Alignment.TOP_RIGHT);
         }
 
         private void setDataToForm() {
             JiraConfig jiraConfig = (JiraConfig) config;
+
             EditorUtil.setNullSafe(affectedVersion, jiraConfig.getAffectedVersion());
             EditorUtil.setNullSafe(fixForVersion, jiraConfig.getFixForVersion());
             EditorUtil.setNullSafe(jiraComponent, jiraConfig.getComponent());
             EditorUtil.setNullSafe(defaultTaskType, config.getDefaultTaskType());
+
             Map<String, String> trackers = jiraConfig.getCustomFields();
+            List<CustomField> customFieldsList = new ArrayList<CustomField>(trackers.size());
+
             for (String key : trackers.keySet()) {
-                customFieldsPanel.addTrackerOnTable(key, trackers.get(key));
+                customFieldsList.add(new CustomField(key, trackers.get(key)));
             }
+
+            customFieldsTable.setCustomFields(customFieldsList);
         }
 
         public String getAffectedVersion() {
@@ -126,12 +151,11 @@ public class JiraEditor extends ConfigEditor {
         }
 
         public Collection<CustomField> getCustomFields() {
-            return customFieldsPanel.getCustomFields();
+            return customFieldsTable.getCustomFields();
         }
-        
+
         public String getDefaultTaskType() {
             return (String) defaultTaskType.getValue();
         }
     }
-
 }

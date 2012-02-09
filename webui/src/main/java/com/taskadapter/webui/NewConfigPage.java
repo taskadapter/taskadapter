@@ -130,7 +130,7 @@ public class NewConfigPage extends Page {
     }
 
     @Override
-    public String getNavigationPanelTitle() {
+    public String getPageTitle() {
         return "New synchronization config";
     }
 }

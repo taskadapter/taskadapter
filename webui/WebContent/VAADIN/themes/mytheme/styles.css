@@ -59,3 +59,26 @@
     border: 2px #65C5E6 solid;
     width: 300px;
 }
+
+.v-gridlayout-margin-top {
+    padding-top: 3px;
+}
+.v-gridlayout-margin-bottom {
+    padding-bottom: 3px;
+}
+.v-gridlayout-margin-left {
+    padding-left: 3px;
+}
+.v-gridlayout-margin-right {
+    padding-right: 3px;
+}
+.v-gridlayout-spacing-on {
+    padding-left: 2px;
+    padding-top: 2px;
+    overflow: hidden;
+}
+.v-gridlayout-spacing,
+.v-gridlayout-spacing-off {
+    padding-left: 0;
+    padding-top: 0;
+}

@@ -5,7 +5,6 @@ import com.vaadin.ui.CustomComponent;
 /**
  * @author Alexey Skorokhodov
  */
-public abstract class Page extends  CustomComponent {
-
-    abstract public String getNavigationPanelTitle();
+public abstract class Page extends CustomComponent {
+    abstract public String getPageTitle();
 }

@@ -14,13 +14,13 @@ import com.vaadin.ui.*;
  * @author Alexey Skorokhodov
  */
 public class ConfigureTaskPage extends Page {
-    private TAFile          file;
-    private EditorManager   editorManager;
-    private ConfigStorage   configStorage;
+    private TAFile file;
+    private EditorManager editorManager;
+    private ConfigStorage configStorage;
     private SettingsManager settingsManager;
-    private TextField       name;
-    private ConfigEditor    panel1;
-    private ConfigEditor    panel2;
+    private TextField name;
+    private ConfigEditor panel1;
+    private ConfigEditor panel2;
 
     public ConfigureTaskPage(TAFile file, EditorManager editorManager, ConfigStorage configStorage, SettingsManager settingsManager) {
         this.file = file;
@@ -89,7 +89,7 @@ public class ConfigureTaskPage extends Page {
     }
 
     @Override
-    public String getNavigationPanelTitle() {
+    public String getPageTitle() {
         return file.getName();
     }
 }

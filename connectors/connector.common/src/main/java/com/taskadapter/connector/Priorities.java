@@ -26,14 +26,14 @@ public class Priorities {
 
     /**
      * @return the nearest priority value for Tracker based on the MSP integer value (priority field).
-     * Never NULL.
-    e.g.
-    Low: 100 : 0 - 100
-    Trivial: 200 : 100-200
-    Normal: 400 : 200-400
-    High: 700 : 400-700
-    Critical: 900 : 700-900
-    Blocker: 1000 : 900-1000
+     *         Never NULL.
+     *         e.g.
+     *         Low: 100 : 0 - 100
+     *         Trivial: 200 : 100-200
+     *         Normal: 400 : 200-400
+     *         High: 700 : 400-700
+     *         Critical: 900 : 700-900
+     *         Blocker: 1000 : 900-1000
      */
     public String getPriorityByMSP(Integer mspValue) {
         int minIntValue = MAX_PRIORITY_VALUE;

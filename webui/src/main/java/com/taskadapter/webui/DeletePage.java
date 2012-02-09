@@ -37,7 +37,7 @@ public class DeletePage extends Page {
     }
 
     @Override
-    public String getNavigationPanelTitle() {
+    public String getPageTitle() {
         return file.getName();
     }
 }

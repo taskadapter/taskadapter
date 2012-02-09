@@ -12,15 +12,15 @@ import static org.junit.Assert.assertEquals;
 
 public class TAFileTest {
 
-  @Test
-  public void cloneConstructor() throws IOException {
-    URL resource = Resources.getResource("redmine.ta_conf");
-    String configFileContents = Resources.toString(resource, Charsets.UTF_8);
-    ConfigFileParser parser = new ConfigFileParser(new PluginManager());
-    TAFile file = parser.parse(configFileContents);
+    @Test
+    public void cloneConstructor() throws IOException {
+        URL resource = Resources.getResource("redmine.ta_conf");
+        String configFileContents = Resources.toString(resource, Charsets.UTF_8);
+        ConfigFileParser parser = new ConfigFileParser(new PluginManager());
+        TAFile file = parser.parse(configFileContents);
 
-    TAFile cloned = new TAFile(file);
+        TAFile cloned = new TAFile(file);
 
-    assertEquals(file, cloned);
-  }
+        assertEquals(file, cloned);
+    }
 }

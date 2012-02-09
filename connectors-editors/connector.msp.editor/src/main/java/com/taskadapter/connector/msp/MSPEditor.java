@@ -95,7 +95,7 @@ public class MSPEditor extends ConfigEditor {
     }
 
     /**
-   	 * Add ".xml" extension to the MSP file name if it's not there yet.
+     * Add ".xml" extension to the MSP file name if it's not there yet.
      */
     private void addXMLExtensionIfNeeded(TextField field) {
         String value = (String) field.getValue();

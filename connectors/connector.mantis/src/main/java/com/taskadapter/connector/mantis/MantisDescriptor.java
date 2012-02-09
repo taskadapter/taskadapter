@@ -14,65 +14,66 @@ import java.util.Collection;
 
 public class MantisDescriptor implements Descriptor {
 
-	public static final MantisDescriptor instance = new MantisDescriptor();
-	
-	public static final String ID = "Mantis";
-	
-	private static final String INFO = "Mantis connector (supports Mantis v. 1.1.1+)";
+    public static final MantisDescriptor instance = new MantisDescriptor();
 
-	@Override
-	public String getID() {
-		return ID;
-	}
+    public static final String ID = "Mantis";
 
-	@Override
-	public String getLabel() {
-		return MantisConfig.DEFAULT_LABEL;
-	}
+    private static final String INFO = "Mantis connector (supports Mantis v. 1.1.1+)";
+
+    @Override
+    public String getID() {
+        return ID;
+    }
+
+    @Override
+    public String getLabel() {
+        return MantisConfig.DEFAULT_LABEL;
+    }
+
     @Override
     public String getDescription() {
         return INFO;
     }
 
-	@Override
-	public ConnectorConfig createDefaultConfig() {
-		return new MantisConfig();
-	}
-
-	@Override
-	public Class<MantisConfig> getConfigClass() {
-		return MantisConfig.class;
-	}
-
-	@Override
-	public AvailableFieldsProvider getAvailableFieldsProvider() {
-		return new MantisAvailableFieldsProvider();
-	}
-
-	@Override
-	public ProjectLoader getProjectLoader() {
-		return new MantisProjectLoader();
-	}
-
-	@Override
-	public TaskSaver<MantisConfig> getTaskSaver(ConnectorConfig config) {
-		return new MantisTaskSaver((MantisConfig) config);
-	}
-
-	@Override
-	public TaskLoader getTaskLoader() {
-		return new MantisTaskLoader();
-	}
+    @Override
+    public ConnectorConfig createDefaultConfig() {
+        return new MantisConfig();
+    }
 
     @Override
-	public Collection<Feature> getSupportedFeatures() {
-		return Arrays.asList(Feature.LOAD_TASK, Feature.SAVE_TASK);
-	}
-    
-	@Override
-	public PriorityLoader getPriorityLoader() {
-		throw new RuntimeException("NOT READY");
-	}
+    public Class<MantisConfig> getConfigClass() {
+        return MantisConfig.class;
+    }
+
+    @Override
+    public AvailableFieldsProvider getAvailableFieldsProvider() {
+        return new MantisAvailableFieldsProvider();
+    }
+
+    @Override
+    public ProjectLoader getProjectLoader() {
+        return new MantisProjectLoader();
+    }
+
+    @Override
+    public TaskSaver<MantisConfig> getTaskSaver(ConnectorConfig config) {
+        return new MantisTaskSaver((MantisConfig) config);
+    }
+
+    @Override
+    public TaskLoader getTaskLoader() {
+        return new MantisTaskLoader();
+    }
+
+    @Override
+    public Collection<Feature> getSupportedFeatures() {
+        return Arrays.asList(Feature.LOAD_TASK, Feature.SAVE_TASK);
+    }
+
+    @Override
+    public PriorityLoader getPriorityLoader() {
+        throw new RuntimeException("NOT READY");
+    }
 
     @Override
     public PluginFactory getPluginFactory() {

@@ -35,13 +35,13 @@ public class ConfigStorage {
         // validFileName = validFileName.replace('+', '_');
 
         String saferName = name.replaceAll("[+:\\\\/*?|<>]", "_");
-      		/* see http://www.hostedredmine.com/issues/38681
-      	 	   TA should not fail to create configs with names equal to standard Windows devices like "con"
-      	 	   config name is used as a file name, so it's impossible to create a config with name "con" on Windows.
+        /* see http://www.hostedredmine.com/issues/38681
+                    TA should not fail to create configs with names equal to standard Windows devices like "con"
+                    config name is used as a file name, so it's impossible to create a config with name "con" on Windows.
 
-      			instead of trying to keep all "forbidden names" we can just add "-config" to the file name.
-      		 */
-   		return saferName + "-config";
+                    instead of trying to keep all "forbidden names" we can just add "-config" to the file name.
+                 */
+        return saferName + "-config";
     }
 
     public List<TAFile> getAllConfigs() {

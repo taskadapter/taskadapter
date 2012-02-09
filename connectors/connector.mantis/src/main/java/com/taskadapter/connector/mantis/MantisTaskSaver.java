@@ -15,15 +15,15 @@ import java.util.List;
 public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig> {
 
     private MantisManager mgr;
-	private ProjectData mntProject;
-	private MantisDataConverter converter;
+    private ProjectData mntProject;
+    private MantisDataConverter converter;
 
-	public MantisTaskSaver(MantisConfig config) {
-		super(config);
-	}
+    public MantisTaskSaver(MantisConfig config) {
+        super(config);
+    }
 
-	@Override
-	public void beforeSave() {
+    @Override
+    public void beforeSave() {
         this.mgr = MantisManagerFactory.createMantisManager(config.getServerInfo());
         try {
             mntProject = mgr.getProjectById(new BigInteger(config.getProjectKey()));
@@ -32,7 +32,7 @@ public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig> {
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
-	}
+    }
 
     private List<AccountData> loadUsers() {
         List<AccountData> users;
@@ -49,24 +49,24 @@ public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig> {
     }
 
 
-	@Override
-	protected Object convertToNativeTask(GTask task) {
-		return converter.convertToMantisIssue(mntProject, task);
-	}
+    @Override
+    protected Object convertToNativeTask(GTask task) {
+        return converter.convertToMantisIssue(mntProject, task);
+    }
 
-	@Override
-	protected GTask createTask(Object nativeTask) {
-		try {
-			BigInteger issueId = mgr.createIssue((IssueData) nativeTask);
+    @Override
+    protected GTask createTask(Object nativeTask) {
+        try {
+            BigInteger issueId = mgr.createIssue((IssueData) nativeTask);
             IssueData createdIssue = mgr.getIssueById(issueId);
-			return MantisDataConverter.convertToGenericTask(createdIssue);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+            return MantisDataConverter.convertToGenericTask(createdIssue);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
-	@Override
-	protected void updateTask(String taskId, Object nativeTask) {
+    @Override
+    protected void updateTask(String taskId, Object nativeTask) {
         IssueData mntIssue = (IssueData) nativeTask;
 
         try {
@@ -74,10 +74,10 @@ public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig> {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-	}
+    }
 
-	@Override
-	protected void saveRelations(List<GRelation> relations) {
-		System.out.println("saveRelations: not implemented for Mantis");
-	}
+    @Override
+    protected void saveRelations(List<GRelation> relations) {
+        System.out.println("saveRelations: not implemented for Mantis");
+    }
 }

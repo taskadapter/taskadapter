@@ -19,8 +19,8 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
     }
 
     @Override
-    public void updateRemoteIDs(ConnectorConfig config,	SyncResult res, ProgressMonitor monitorIGNORED) {
-        if (res.getCreateTasksNumber()==0) {
+    public void updateRemoteIDs(ConnectorConfig config, SyncResult res, ProgressMonitor monitorIGNORED) {
+        if (res.getCreateTasksNumber() == 0) {
             return;
         }
         MSPConfig c = (MSPConfig) config;
