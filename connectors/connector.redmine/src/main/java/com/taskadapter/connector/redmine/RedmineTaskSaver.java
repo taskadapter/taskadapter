@@ -87,9 +87,9 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
             }
         } catch (Exception e) {
             syncResult
-                    .addGeneralError("Can't create Tasks Relations. Note: this feature requires Redmine NEWER than '1.2.1 release'. "
-                            + "\nUse the last Redmine code from \"1.2-devel\" SVN branch."
-                            + "\nThis Redmine feature will be a part of Redmine 1.3.0. See http://www.redmine.org/issues/7366");
+                    .addGeneralError("Can't create Tasks Relations. Note: this feature requires Redmine 1.3.0 or newer."
+                    + "\nSee http://www.redmine.org/issues/7366 ."
+                    +"\nThe error reported by server is: " + e.toString());
         }
     }
 
