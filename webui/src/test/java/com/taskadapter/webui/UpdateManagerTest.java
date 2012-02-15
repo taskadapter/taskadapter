@@ -8,11 +8,11 @@ import static org.junit.Assert.*;
 public class UpdateManagerTest {
 
     private UpdateManager updateManager;
-    private String lastAvailable = "1.4.3";
 
     @Before
     public void beforeEachMethod() {
         updateManager = new UpdateManager();
+        String lastAvailable = "1.4.3";
         updateManager.setLastVersion(lastAvailable);
     }
 

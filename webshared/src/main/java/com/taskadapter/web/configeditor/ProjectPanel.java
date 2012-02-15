@@ -125,7 +125,7 @@ public class ProjectPanel extends GridLayout implements Validatable {
 
     @Override
     public void validate() throws ValidationException {
-        if (!isQueryIdEmpty()) {
+        if (isQueryIdSet()) {
             try {
                 Integer.parseInt(getQueryID());
             } catch (NumberFormatException e) {
@@ -138,7 +138,7 @@ public class ProjectPanel extends GridLayout implements Validatable {
         }
     }
 
-    private boolean isQueryIdEmpty() {
-        return (getQueryID() == null) || (getQueryID().trim().isEmpty());
+    private boolean isQueryIdSet() {
+        return (getQueryID() != null) && (!getQueryID().trim().isEmpty());
     }
 }
