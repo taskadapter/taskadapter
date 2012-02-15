@@ -8,7 +8,7 @@ import com.taskadapter.connector.definition.PluginFactory;
 public class MantisFactory implements PluginFactory {
     @Override
     public Connector createConnector(ConnectorConfig config) {
-        return new MantisConnector((MantisConfig) config);
+        return new MantisConnector(config);
     }
 
     @Override

@@ -11,7 +11,7 @@ import com.taskadapter.connector.definition.PluginFactory;
 public class RedmineFactory implements PluginFactory {
     @Override
     public Connector createConnector(ConnectorConfig config) {
-        return new RedmineConnector((RedmineConfig) config);
+        return new RedmineConnector(config);
     }
 
     @Override
