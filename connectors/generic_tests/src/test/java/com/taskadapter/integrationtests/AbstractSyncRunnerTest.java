@@ -34,9 +34,7 @@ public class AbstractSyncRunnerTest {
         return mspConfig;
     }
 
-    private void copyFile(String fileName, File temp)
-            throws UnsupportedEncodingException, FileNotFoundException,
-            IOException {
+    private void copyFile(String fileName, File temp) throws IOException {
         BufferedWriter out = new BufferedWriter(new OutputStreamWriter
                 (new FileOutputStream(temp), "UTF8"));
 

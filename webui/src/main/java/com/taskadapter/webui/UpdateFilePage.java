@@ -30,12 +30,11 @@ public class UpdateFilePage extends ActionPage {
 
     @Override
     protected String getInitialText() {
-        String message = "Click \"Go\" to load file<BR><i>" +
+        return "Click \"Go\" to load file<BR><i>" +
                 connectorTo.getConfig().getTargetLocation() +
                 "</i><BR> and check which tasks have 'remote ids' associated with them." +
                 "<br>You can select which of those tasks to update with the data from the external system." +
                 "<br>No other tasks will be updated or created.";
-        return message;
     }
 
     @Override

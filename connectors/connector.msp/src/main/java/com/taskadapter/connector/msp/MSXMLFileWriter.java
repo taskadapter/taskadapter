@@ -281,9 +281,8 @@ public class MSXMLFileWriter {
 
     private Duration calculateTimeAlreadySpent(GTask gTask) {
         float doneRatio = gTask.getDoneRatio() / 100f;
-        Duration timeAlreadySpent = Duration.getInstance(doneRatio * gTask.getEstimatedHours(),
+        return Duration.getInstance(doneRatio * gTask.getEstimatedHours(),
                 TimeUnit.HOURS);
-        return timeAlreadySpent;
     }
 
     private Duration calculateRemainingTime(GTask gTask) {
@@ -293,9 +292,8 @@ public class MSXMLFileWriter {
         } else {
             doneRatio = 0;
         }
-        Duration remainingTime = Duration.getInstance((1 - doneRatio) * gTask.getEstimatedHours(),
+        return Duration.getInstance((1 - doneRatio) * gTask.getEstimatedHours(),
                 TimeUnit.HOURS);
-        return remainingTime;
     }
 
     private void setFieldIfSelected(FIELD field, Task mspTask, Object value) {

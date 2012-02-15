@@ -66,8 +66,6 @@ public class RedmineUtils {
 
         List<GTask> loadedList = TestUtils.saveAndLoadList(redmine, list);
 
-        GTask t = TestUtils.findTaskBySummary(loadedList, task.getSummary());
-
-        return t;
+        return TestUtils.findTaskBySummary(loadedList, task.getSummary());
     }
 }

@@ -206,8 +206,7 @@ public class RedmineTest {
         c2.setSummary("Child 2 of " + summary);
         t.getChildren().add(c2);
 
-        GTask task = t;
-        List<GTask> loadedTasks = TestUtils.saveAndLoadAll(connector, task);
+        List<GTask> loadedTasks = TestUtils.saveAndLoadAll(connector, t);
 
         for (Iterator<GTask> iterator = loadedTasks.iterator(); iterator.hasNext(); ) {
             GTask gTask = iterator.next();

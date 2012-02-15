@@ -44,9 +44,7 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
         }
     }
 
-    private RemoteIssueType[] checkDefaultIssueTypeExistsOnServer()
-            throws RemotePermissionException, RemoteAuthenticationException,
-            RemoteException, ValidationException {
+    private RemoteIssueType[] checkDefaultIssueTypeExistsOnServer() throws RemoteException, ValidationException {
         //check if default issue type exists in Jira
         boolean found = false;
         RemoteIssueType[] issueTypeList = connection.getIssueTypeList(config.getProjectKey());
