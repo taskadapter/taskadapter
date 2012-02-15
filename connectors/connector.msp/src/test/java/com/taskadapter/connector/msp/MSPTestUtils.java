@@ -67,7 +67,7 @@ public class MSPTestUtils {
         return taskLoader.loadTasks(config);
     }
 
-    static boolean deleteFile(String fileName) throws IOException {
+    static boolean deleteFile(String fileName) {
         File f = new File(fileName);
         return f.delete();
     }

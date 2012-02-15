@@ -40,8 +40,6 @@ public class AllConnectorsTest {
 
     private final Connector connector;
 
-    static Set<String> initializedConnectors = new HashSet<String>();
-
     public AllConnectorsTest(String label, Connector connector) throws Exception {
         this.connector = connector;
     }

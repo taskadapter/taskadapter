@@ -1,27 +1,14 @@
 package com.taskadapter.util;
 
-import static org.junit.Assert.assertEquals;
+import com.taskadapter.connector.common.TreeUtils;
+import com.taskadapter.model.GTask;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.taskadapter.connector.common.TreeUtils;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.taskadapter.model.GTask;
-
 public class TreeUtilsTest {
-
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    @After
-    public void tearDown() throws Exception {
-    }
 
     @Test
     public void testCloneTree() {

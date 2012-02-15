@@ -51,11 +51,6 @@ public class JiraTest {
         System.out.println("Running Jira tests using: " + properties.getProperty("host"));
     }
 
-    @AfterClass
-    public static void oneTimeTearDown() {
-
-    }
-
     // TODO this is identical to Redmine's test. maybe move to a common place?
     @Test
     public void testJiraDoesNotFailWithNULLMonitorAndEmptyList()

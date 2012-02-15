@@ -10,7 +10,7 @@ import java.util.List;
 
 public class CommonTests {
 
-    public void testLoadTasks(Connector connector) throws Exception {
+    public void testLoadTasks(Connector connector) {
         int tasksQty = 1;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
 
@@ -43,7 +43,7 @@ public class CommonTests {
         assertEquals(task.getDescription(), loadedTask.getDescription());
     }
 
-    public void testCreates2Tasks(Connector connector) throws Exception {
+    public void testCreates2Tasks(Connector connector) {
         int tasksQty = 2;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
         SyncResult result = connector.saveData(tasks, null);
