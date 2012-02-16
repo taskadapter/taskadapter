@@ -54,6 +54,8 @@ class MSTaskToGenericTaskConverter implements TaskConverter<Task> {
 
         genericTask.setPriority(task.getPriority().getValue());
 
+        genericTask.setStatus(extractStatus(task));
+
         genericTask.setEstimatedHours(extractEstimatedHours(task));
         if (task.getPercentageComplete() != null) {
             genericTask.setDoneRatio(task.getPercentageComplete().intValue());
@@ -187,6 +189,15 @@ class MSTaskToGenericTaskConverter implements TaskConverter<Task> {
     String extractType(Task mspTask) {
         // GTask TYPE: bug/task/feature/review/... (using custom field from MSP file)
         Object obj = getValue(mspTask, FIELD.TASK_TYPE);
+        if (obj != null) {
+            return obj.toString();
+        }
+        return null;
+    }
+
+    String extractStatus(Task mspTask) {
+        // GTask STATUS: new/assigned/resolved/... (using custom field from MSP file)
+        Object obj = getValue(mspTask, FIELD.TASK_STATUS);
         if (obj != null) {
             return obj.toString();
         }

@@ -22,6 +22,8 @@ public class RedmineConfig extends WebConfig {
      */
     private String defaultTaskType = "Bug";
 
+    private String defaultTaskStatus = "New";
+
     public RedmineConfig() {
         super(DEFAULT_LABEL);
     }
@@ -34,12 +36,21 @@ public class RedmineConfig extends WebConfig {
         this.defaultTaskType = defaultTaskType;
     }
 
+    public String getDefaultTaskStatus() {
+        return defaultTaskStatus;
+    }
+
+    public void setDefaultTaskStatus(String defaultTaskStatus) {
+        this.defaultTaskStatus = defaultTaskStatus;
+    }
+
     // TODO move to Descriptor?
     @Override
     public Map<GTaskDescriptor.FIELD, Mapping> generateDefaultFieldsMapping() {
         Map<GTaskDescriptor.FIELD, Mapping> fieldsMapping = new TreeMap<GTaskDescriptor.FIELD, Mapping>();
         fieldsMapping.put(GTaskDescriptor.FIELD.SUMMARY, new Mapping());
         fieldsMapping.put(GTaskDescriptor.FIELD.TASK_TYPE, new Mapping());
+        fieldsMapping.put(GTaskDescriptor.FIELD.TASK_STATUS, new Mapping());
         fieldsMapping.put(GTaskDescriptor.FIELD.ESTIMATED_TIME, new Mapping());
         fieldsMapping.put(GTaskDescriptor.FIELD.DONE_RATIO, new Mapping());
         fieldsMapping.put(GTaskDescriptor.FIELD.ASSIGNEE, new Mapping());
@@ -67,8 +78,7 @@ public class RedmineConfig extends WebConfig {
 
     @Override
     public int hashCode() {
-        return 31 * super.hashCode() +
-                Objects.hashCode(defaultTaskType);
+        return 31 * super.hashCode() + Objects.hashCode(defaultTaskType, defaultTaskStatus);
     }
 
     @Override
@@ -81,7 +91,8 @@ public class RedmineConfig extends WebConfig {
         }
         if (obj instanceof RedmineConfig) {
             RedmineConfig other = (RedmineConfig) obj;
-            return Objects.equal(defaultTaskType, other.defaultTaskType);
+            return Objects.equal(defaultTaskType, other.defaultTaskType)
+                    && Objects.equal(defaultTaskStatus, other.defaultTaskStatus);
         } else {
             return false;
         }

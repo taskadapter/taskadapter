@@ -18,6 +18,9 @@ public class MSXMLFileWriter {
     private static final String ALIAS_REMOTE_ID = "TA Remote ID";
 
     private static final String ALIAS_ISSUE_TYPE = "TA Task Type";
+
+    private static final String ALIAS_ISSUE_STATUS = "TA Task Status";
+
     /**
      * MPXJ can't set NULL/undefined time for "duration" or "work" fields so we have to use
      * these text fields to indicate that "duration" or "work" is UNDEFINED and not "0"
@@ -153,6 +156,7 @@ public class MSXMLFileWriter {
 
         setAliasIfMappingNotNULL(project, FIELD.REMOTE_ID, ALIAS_REMOTE_ID);
         setAliasIfMappingNotNULL(project, FIELD.TASK_TYPE, ALIAS_ISSUE_TYPE);
+        setAliasIfMappingNotNULL(project, FIELD.TASK_STATUS, ALIAS_ISSUE_STATUS);
     }
 
     private void setAliasIfMappingNotNULL(ProjectFile project, FIELD field, String aliasName) {
@@ -191,6 +195,7 @@ public class MSXMLFileWriter {
         }
 
         setFieldIfSelected(FIELD.TASK_TYPE, mspTask, gTask.getType());
+        setFieldIfSelected(FIELD.TASK_STATUS, mspTask, gTask.getStatus());
 
         Map<FIELD, Mapping> fieldsMapping = config.getFieldsMapping();
 

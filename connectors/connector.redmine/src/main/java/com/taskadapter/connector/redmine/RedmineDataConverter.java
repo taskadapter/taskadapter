@@ -6,6 +6,7 @@ import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
 import org.redmine.ta.beans.Issue;
 import org.redmine.ta.beans.IssueRelation;
+import org.redmine.ta.beans.IssueStatus;
 import org.redmine.ta.beans.Project;
 import org.redmine.ta.beans.User;
 
@@ -15,6 +16,7 @@ public class RedmineDataConverter {
 
     private final RedmineConfig config;
     private List<User> users;
+    private List<IssueStatus> statusList;
 
     public RedmineDataConverter(RedmineConfig config) {
         this.config = config;
@@ -61,6 +63,19 @@ public class RedmineDataConverter {
             issue.setTracker(rmProject.getTrackerByName(trackerName));
         }
 
+        if (config.isFieldSelected(FIELD.TASK_STATUS)) {
+            String statusName = task.getStatus();
+            if (statusName == null) {
+                statusName = config.getDefaultTaskStatus();
+            }
+
+            IssueStatus status = getStatusByName(statusName);
+            if (status != null) {
+                issue.setStatusId(status.getId());
+                issue.setStatusName(status.getName());
+            }
+        }
+
         if (config.isFieldSelected(FIELD.DESCRIPTION)) {
             issue.setDescription(task.getDescription());
         }
@@ -88,6 +103,10 @@ public class RedmineDataConverter {
     // TODO add test for users
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public void setStatusList(List<IssueStatus> statusList) {
+        this.statusList = statusList;
     }
 
     /**
@@ -120,6 +139,25 @@ public class RedmineDataConverter {
     }
 
     /**
+     * @return NULL if the status is not found or if "statusList" weren't previously set via setStatusList() method
+     */
+    private IssueStatus getStatusByName(String name) {
+        if (statusList == null || name == null) {
+            return null;
+        }
+
+        IssueStatus foundStatus = null;
+        for (IssueStatus status : statusList) {
+            if (status.getName().equalsIgnoreCase(name)) {
+                foundStatus = status;
+                break;
+            }
+        }
+
+        return foundStatus;
+    }
+
+    /**
      * convert Redmine issues to internal model representation required for
      * Task Adapter app.
      *
@@ -143,6 +181,7 @@ public class RedmineDataConverter {
         }
 
         task.setType(issue.getTracker().getName());
+        task.setStatus(issue.getStatusName());
         task.setSummary(issue.getSubject());
         task.setEstimatedHours(issue.getEstimatedHours());
         task.setDoneRatio(issue.getDoneRatio());

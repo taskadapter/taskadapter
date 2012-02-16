@@ -32,6 +32,7 @@ public class GTask {
     private Date startDate;
     private Date dueDate;
     private String type;
+    private String status;
     private List<GTask> children = new ArrayList<GTask>();
     private Date createdOn;
     private Date updatedOn;
@@ -54,6 +55,7 @@ public class GTask {
         this.startDate = taskFromItem.getStartDate();
         this.dueDate = taskFromItem.getDueDate();
         this.type = taskFromItem.getType();
+        this.status = taskFromItem.getStatus();
         this.createdOn = taskFromItem.getCreatedOn();
         this.updatedOn = taskFromItem.getUpdatedOn();
         this.relations = taskFromItem.getRelations();
@@ -194,6 +196,7 @@ public class GTask {
                 + ((startDate == null) ? 0 : startDate.hashCode());
         result = prime * result + ((summary == null) ? 0 : summary.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
+        result = prime * result + ((status == null) ? 0 : status.hashCode());
         result = prime * result
                 + ((updatedOn == null) ? 0 : updatedOn.hashCode());
         return result;
@@ -288,6 +291,13 @@ public class GTask {
                 return false;
         } else if (!type.equals(other.type))
             return false;
+
+        if (status == null) {
+            if (other.status != null)
+                return false;
+        } else if (!status.equals(other.status))
+            return false;
+
         if (updatedOn == null) {
             if (other.updatedOn != null)
                 return false;
@@ -302,6 +312,14 @@ public class GTask {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     /**

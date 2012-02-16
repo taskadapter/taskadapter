@@ -26,6 +26,8 @@ public class RedmineAvailableFieldsProvider implements AvailableFieldsProvider {
                 return new String[]{"Due date"};
             case START_DATE:
                 return new String[]{"Start date"};
+            case TASK_STATUS:
+                return new String[]{"Task status"};
             default:
                 return new String[]{};
         }
@@ -34,7 +36,7 @@ public class RedmineAvailableFieldsProvider implements AvailableFieldsProvider {
     @Override
     public Collection<FIELD> getSupportedFields() {
         return Arrays.asList(FIELD.SUMMARY, FIELD.DESCRIPTION, FIELD.TASK_TYPE, FIELD.ESTIMATED_TIME, FIELD.DONE_RATIO,
-                FIELD.ASSIGNEE, FIELD.DUE_DATE, FIELD.START_DATE);
+                FIELD.ASSIGNEE, FIELD.DUE_DATE, FIELD.START_DATE, FIELD.TASK_STATUS);
     }
 
 }
