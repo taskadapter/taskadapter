@@ -30,6 +30,7 @@ public class RedmineDataConverter {
         return user;
     }
 
+    // TODO refactor this into multiple tiny testable methods
     public Issue convertToRedmineIssue(Project rmProject, GTask task) {
         Issue issue = new Issue();
         if (task.getParentKey() != null) {
@@ -82,22 +83,42 @@ public class RedmineDataConverter {
         issue.setCreatedOn(task.getCreatedOn());
         issue.setUpdatedOn(task.getUpdatedOn());
 
+        processAssignee(task, issue);
+        processTaskStatus(task, issue);
+
+        return issue;
+    }
+
+    private void processAssignee(GTask genericTask, Issue redmineIssue) {
         if (config.isFieldSelected(FIELD.ASSIGNEE)) {
-            GUser ass = task.getAssignee();
+            GUser ass = genericTask.getAssignee();
             if ((ass != null) && (ass.getLoginName() != null || ass.getDisplayName() != null)) {
                 User rmAss;
-                if (ass.getId() != null) {
+                if (config.isFindUserByName() || ass.getId() == null) {
+                    rmAss = findRedmineUserInCache(ass);
+                } else {
                     rmAss = new User();
                     rmAss.setId(ass.getId());
                     rmAss.setLogin(ass.getLoginName());
-                } else {
-                    rmAss = findUser(ass);
                 }
-                issue.setAssignee(rmAss);
+                redmineIssue.setAssignee(rmAss);
             }
         }
+    }
 
-        return issue;
+    private void processTaskStatus(GTask task, Issue issue) {
+        if (config.isFieldSelected(FIELD.TASK_STATUS)) {
+            String statusName = task.getStatus();
+            if (statusName == null) {
+                statusName = config.getDefaultTaskStatus();
+            }
+
+            IssueStatus status = getStatusByName(statusName);
+            if (status != null) {
+                issue.setStatusId(status.getId());
+                issue.setStatusName(status.getName());
+            }
+        }
     }
 
     // TODO add test for users
@@ -112,11 +133,7 @@ public class RedmineDataConverter {
     /**
      * @return NULL if the user is not found or if "users" weren't previously set via setUsers() method
      */
-    private User findUser(GUser ass) {
-        if (users == null) {
-            return null;
-        }
-
+    private User findRedmineUserInCache(GUser ass) {
         // getting best name to search
         String nameToSearch = ass.getLoginName();
         if (nameToSearch == null || "".equals(nameToSearch)) {

@@ -62,7 +62,7 @@ abstract public class WebConfig extends ConnectorConfig {
         this.serverInfo = info;
     }
 
-    public Boolean getFindUserByName() {
+    public Boolean isFindUserByName() {
         return findUserByName;
     }
 
