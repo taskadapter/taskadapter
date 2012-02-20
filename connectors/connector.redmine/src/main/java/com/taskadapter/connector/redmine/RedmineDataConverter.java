@@ -173,11 +173,7 @@ public class RedmineDataConverter {
         }
         User rmAss = issue.getAssignee();
         if (rmAss != null) {
-            GUser ass = new GUser();
-            ass.setId(rmAss.getId());
-            ass.setLoginName(rmAss.getLogin());
-            ass.setDisplayName(rmAss.getFullName());
-            task.setAssignee(ass);
+            task.setAssignee(convertToGUser(rmAss));
         }
 
         task.setType(issue.getTracker().getName());
