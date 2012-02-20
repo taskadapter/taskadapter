@@ -131,7 +131,7 @@ public class RedmineDataConverter {
     /**
      * @return NULL if the user is not found or if "users" weren't previously set via setUsers() method
      */
-    private User findRedmineUserInCache(GUser ass) {
+    User findRedmineUserInCache(GUser ass) {
         // getting best name to search
         String nameToSearch = ass.getLoginName();
         if (nameToSearch == null || "".equals(nameToSearch)) {
