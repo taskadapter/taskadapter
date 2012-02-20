@@ -4,12 +4,9 @@ import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
-import org.redmine.ta.beans.Issue;
-import org.redmine.ta.beans.IssueRelation;
-import org.redmine.ta.beans.IssueStatus;
-import org.redmine.ta.beans.Project;
-import org.redmine.ta.beans.User;
+import org.redmine.ta.beans.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RedmineDataConverter {
@@ -20,6 +17,7 @@ public class RedmineDataConverter {
 
     public RedmineDataConverter(RedmineConfig config) {
         this.config = config;
+        this.users = new ArrayList<User>();
     }
 
     public static GUser convertToGUser(User redmineUser) {
@@ -91,7 +89,7 @@ public class RedmineDataConverter {
                     rmAss.setId(ass.getId());
                     rmAss.setLogin(ass.getLoginName());
                 } else {
-                    rmAss = findUser(ass);
+                    rmAss = findRedmineUserInCache(ass);
                 }
                 issue.setAssignee(rmAss);
             }
@@ -112,11 +110,7 @@ public class RedmineDataConverter {
     /**
      * @return NULL if the user is not found or if "users" weren't previously set via setUsers() method
      */
-    private User findUser(GUser ass) {
-        if (users == null) {
-            return null;
-        }
-
+    User findRedmineUserInCache(GUser ass) {
         // getting best name to search
         String nameToSearch = ass.getLoginName();
         if (nameToSearch == null || "".equals(nameToSearch)) {
