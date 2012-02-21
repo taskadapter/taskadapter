@@ -13,7 +13,7 @@ abstract public class WebConfig extends ConnectorConfig {
     protected Integer queryId;
     protected String projectKey;
     protected Map<String, String> customFields = new TreeMap<String, String>();
-    protected Boolean findUserByName = Boolean.FALSE;
+    protected boolean findUserByName;
 
     public WebConfig(String label) {
         super(label);
@@ -62,11 +62,11 @@ abstract public class WebConfig extends ConnectorConfig {
         this.serverInfo = info;
     }
 
-    public Boolean isFindUserByName() {
+    public boolean isFindUserByName() {
         return findUserByName;
     }
 
-    public void setFindUserByName(Boolean find) {
+    public void setFindUserByName(boolean find) {
         this.findUserByName = find;
     }
 
