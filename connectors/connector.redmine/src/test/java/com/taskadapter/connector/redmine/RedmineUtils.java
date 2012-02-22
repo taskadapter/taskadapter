@@ -60,7 +60,7 @@ public class RedmineUtils {
             GTask task1 = TestUtils.generateTask();
             task1.setId(i + 2);
 
-            task1.getRelations().add(new GRelation(task1.getId().toString(), task.getId().toString(), GRelation.TYPE.precedes));
+            task.getRelations().add(new GRelation(task.getId().toString(), task1.getId().toString(), GRelation.TYPE.precedes));
             list.add(task1);
         }
 

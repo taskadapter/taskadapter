@@ -38,7 +38,7 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
 
     private List<User> loadUsers() {
         List<User> users;
-        if (config.getFindUserByName()) {
+        if (config.isFindUserByName()) {
             try {
                 users = mgr.getUsers();
             } catch (Exception e1) {

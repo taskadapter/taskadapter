@@ -36,7 +36,7 @@ public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig> {
 
     private List<AccountData> loadUsers() {
         List<AccountData> users;
-        if (config.getFindUserByName()) {
+        if (config.isFindUserByName()) {
             try {
                 users = mgr.getUsers();
             } catch (Exception e) {
