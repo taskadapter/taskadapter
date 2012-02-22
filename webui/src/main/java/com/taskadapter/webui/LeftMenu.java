@@ -40,6 +40,7 @@ public class LeftMenu extends VerticalLayout {
         addMenu(ICON_ADD, "New Task", new NewConfigPage(pageManager, configStorage, pluginManager, editorManager, settingsManager));
         addMenu(ICON_TASKS, "Tasks", pageManager.getPage(PageManager.TASKS));
         addMenu(ICON_INFO, "Info", new LicensePage());
+        addMenu(ICON_INFO, "Feedback", new SupportPage());
     }
 
     private void addMenu(Resource icon, String caption, final Page page) {
