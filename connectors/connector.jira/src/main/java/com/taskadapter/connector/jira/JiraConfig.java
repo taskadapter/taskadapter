@@ -85,7 +85,7 @@ public class JiraConfig extends WebConfig {
     @Override
     public void validateForLoad() throws ValidationException {
         if (getQueryId() == null) {
-            throw new ValidationException("Please provide Query ID in Project Info section");
+            throw new ValidationException("Please provide Query ID in Project Info section of Jira connector");
         }
     }
 
