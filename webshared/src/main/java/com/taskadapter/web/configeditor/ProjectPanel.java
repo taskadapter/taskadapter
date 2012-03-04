@@ -18,7 +18,7 @@ public class ProjectPanel extends GridLayout implements Validatable {
 
     private final ConfigEditor editor;
     private TextField projectKey;
-    private TextField queryID;
+    private TextField queryId;
 
     private final ProjectProcessor projectProcessor;
 
@@ -49,37 +49,33 @@ public class ProjectPanel extends GridLayout implements Validatable {
 
         Collection<ProjectProcessor.EditorFeature> features = projectProcessor.getSupportedFeatures();
 
-        Button button1 = EditorUtil.createButton("Info", "View the project info",
+        Button infoButton = EditorUtil.createButton("Info", "View the project info",
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
                         loadProject();
                     }
-                });
-        button1.setEnabled(features.contains(ProjectProcessor.EditorFeature.LOAD_PROJECT_INFO));
-        addComponent(button1);
+                }
+        );
+        infoButton.setEnabled(features.contains(ProjectProcessor.EditorFeature.LOAD_PROJECT_INFO));
+        addComponent(infoButton);
 
-        LookupOperation loadProjectsOperation = new LoadProjectsOperation(
-                editor, projectProcessor.getDescriptor().getPluginFactory());
-        Button button2 = EditorUtil.createLookupButton(editor, "...",
-                "Show list of available projects on the server.",
+        LookupOperation loadProjectsOperation = new LoadProjectsOperation(editor, projectProcessor.getDescriptor().getPluginFactory());
+        Button projectKeyButton = EditorUtil.createLookupButton(editor, "...", "Show list of available projects on the server.",
                 loadProjectsOperation, projectKey, false);
-        button2.setEnabled(features.contains(ProjectProcessor.EditorFeature.LOAD_PROJECTS));
-        addComponent(button2);
+        projectKeyButton.setEnabled(features.contains(ProjectProcessor.EditorFeature.LOAD_PROJECTS));
+        addComponent(projectKeyButton);
 
         addComponent(new Label("Query ID:"));
-        this.queryID = new TextField();
-        queryID.setDescription("Custom query/filter ID (number). You need to create a query on the server before accessing it from here."
-                + "\nRead help for more details.");
-        addComponent(queryID);
-        LookupOperation loadSavedQueriesOperation = projectProcessor
-                .getLoadSavedQueriesOperation(editor);
+        this.queryId = new TextField();
+        queryId.setDescription("Custom query/filter ID (number). You need to create a query on the server before accessing it from here.\n"
+                + "Read help for more details.");
+        addComponent(queryId);
+        LookupOperation loadSavedQueriesOperation = projectProcessor.getLoadSavedQueriesOperation(editor);
 
-        Button showQueriesButton = EditorUtil.createLookupButton(editor,
-                "...", "Show available saved queries on the server.",
-                loadSavedQueriesOperation, queryID, false);
-        showQueriesButton.setEnabled(features
-                .contains(ProjectProcessor.EditorFeature.LOAD_SAVED_QUERIES));
+        Button showQueriesButton = EditorUtil.createLookupButton(editor, "...", "Show available saved queries on the server.",
+                loadSavedQueriesOperation, queryId, false);
+        showQueriesButton.setEnabled(features.contains(ProjectProcessor.EditorFeature.LOAD_SAVED_QUERIES));
         addComponent(showQueriesButton);
     }
 
@@ -89,11 +85,11 @@ public class ProjectPanel extends GridLayout implements Validatable {
                 // TODO need to use the field value and
                 // disable the button
                 // instead of this simple check
-                throw new ValidationException(
-                        "Please, provide the project key first");
+                throw new ValidationException("Please, provide the project key first");
             }
 
             projectProcessor.loadProject(getProjectKey());
+
         } catch (ValidationException e) {
             editor.getWindow().showNotification("Please, update the settings", e.getMessage());
         }
@@ -101,11 +97,12 @@ public class ProjectPanel extends GridLayout implements Validatable {
 
     public ProjectInfo getProjectInfo() {
         ProjectInfo info = new ProjectInfo();
-        String projectKeyValue = getProjectKey();
-        info.setProjectKey(projectKeyValue);
-        String queryIDString = getQueryID();
-        if (!queryIDString.isEmpty()) {
-            info.setQueryId(Integer.parseInt(queryIDString));
+        info.setProjectKey(getProjectKey());
+
+        String queryIdString = getQueryId();
+
+        if (!queryIdString.isEmpty()) {
+            info.setQueryId(Integer.parseInt(queryIdString));
         }
         return info;
     }
@@ -114,20 +111,20 @@ public class ProjectPanel extends GridLayout implements Validatable {
         return (String) projectKey.getValue();
     }
 
-    private String getQueryID() {
-        return (String) queryID.getValue();
+    private String getQueryId() {
+        return (String) queryId.getValue();
     }
 
     public void setProjectInfo(ProjectInfo info) {
         EditorUtil.setNullSafe(projectKey, info.getProjectKey());
-        EditorUtil.setNullSafe(queryID, info.getQueryId());
+        EditorUtil.setNullSafe(queryId, info.getQueryId());
     }
 
     @Override
     public void validate() throws ValidationException {
         if (isQueryIdSet()) {
             try {
-                Integer.parseInt(getQueryID());
+                Integer.parseInt(getQueryId());
             } catch (NumberFormatException e) {
                 throw new ValidationException("'Query Id' must be a number if provided");
             }
@@ -139,6 +136,6 @@ public class ProjectPanel extends GridLayout implements Validatable {
     }
 
     private boolean isQueryIdSet() {
-        return (getQueryID() != null) && (!getQueryID().trim().isEmpty());
+        return getQueryId() != null && !getQueryId().trim().isEmpty();
     }
 }
