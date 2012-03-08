@@ -13,6 +13,8 @@ import org.redmine.ta.beans.User;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertNull;
+
 public class RedmineDataConverterTest {
 
     @Test
@@ -99,5 +101,18 @@ public class RedmineDataConverterTest {
         users.add(user2);
 
         return users;
+    }
+
+
+    @Test
+    public void nullReturnedWhenNoUsersSet() {
+        RedmineDataConverter converter = createDefaultConverter();
+        // should not fail with NPE or anything
+        assertNull(converter.findRedmineUserInCache(new GUser("mylogin")));
+    }
+
+    private RedmineDataConverter createDefaultConverter() {
+        RedmineConfig config = new RedmineConfig();
+        return new RedmineDataConverter(config);
     }
 }

@@ -4,20 +4,20 @@ import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
-import org.redmine.ta.beans.Issue;
-import org.redmine.ta.beans.IssueRelation;
-import org.redmine.ta.beans.Project;
-import org.redmine.ta.beans.User;
+import org.redmine.ta.beans.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RedmineDataConverter {
 
     private final RedmineConfig config;
     private List<User> users;
+    private List<IssueStatus> statusList;
 
     public RedmineDataConverter(RedmineConfig config) {
         this.config = config;
+        this.users = new ArrayList<User>();
     }
 
     public static GUser convertToGUser(User redmineUser) {
@@ -28,6 +28,7 @@ public class RedmineDataConverter {
         return user;
     }
 
+    // TODO refactor this into multiple tiny testable methods
     public Issue convertToRedmineIssue(Project rmProject, GTask task) {
         Issue issue = new Issue();
         if (task.getParentKey() != null) {
@@ -61,28 +62,61 @@ public class RedmineDataConverter {
             issue.setTracker(rmProject.getTrackerByName(trackerName));
         }
 
+        if (config.isFieldSelected(FIELD.TASK_STATUS)) {
+            String statusName = task.getStatus();
+            if (statusName == null) {
+                statusName = config.getDefaultTaskStatus();
+            }
+
+            IssueStatus status = getStatusByName(statusName);
+            if (status != null) {
+                issue.setStatusId(status.getId());
+                issue.setStatusName(status.getName());
+            }
+        }
+
         if (config.isFieldSelected(FIELD.DESCRIPTION)) {
             issue.setDescription(task.getDescription());
         }
         issue.setCreatedOn(task.getCreatedOn());
         issue.setUpdatedOn(task.getUpdatedOn());
 
+        processAssignee(task, issue);
+        processTaskStatus(task, issue);
+
+        return issue;
+    }
+
+    private void processAssignee(GTask genericTask, Issue redmineIssue) {
         if (config.isFieldSelected(FIELD.ASSIGNEE)) {
-            GUser ass = task.getAssignee();
+            GUser ass = genericTask.getAssignee();
             if ((ass != null) && (ass.getLoginName() != null || ass.getDisplayName() != null)) {
                 User rmAss;
-                if (ass.getId() != null) {
+                if (config.isFindUserByName() || ass.getId() == null) {
+                    rmAss = findRedmineUserInCache(ass);
+                } else {
                     rmAss = new User();
                     rmAss.setId(ass.getId());
                     rmAss.setLogin(ass.getLoginName());
-                } else {
-                    rmAss = findUser(ass);
                 }
-                issue.setAssignee(rmAss);
+                redmineIssue.setAssignee(rmAss);
             }
         }
+    }
 
-        return issue;
+    private void processTaskStatus(GTask task, Issue issue) {
+        if (config.isFieldSelected(FIELD.TASK_STATUS)) {
+            String statusName = task.getStatus();
+            if (statusName == null) {
+                statusName = config.getDefaultTaskStatus();
+            }
+
+            IssueStatus status = getStatusByName(statusName);
+            if (status != null) {
+                issue.setStatusId(status.getId());
+                issue.setStatusName(status.getName());
+            }
+        }
     }
 
     // TODO add test for users
@@ -90,14 +124,14 @@ public class RedmineDataConverter {
         this.users = users;
     }
 
+    public void setStatusList(List<IssueStatus> statusList) {
+        this.statusList = statusList;
+    }
+
     /**
      * @return NULL if the user is not found or if "users" weren't previously set via setUsers() method
      */
-    private User findUser(GUser ass) {
-        if (users == null) {
-            return null;
-        }
-
+    User findRedmineUserInCache(GUser ass) {
         // getting best name to search
         String nameToSearch = ass.getLoginName();
         if (nameToSearch == null || "".equals(nameToSearch)) {
@@ -120,6 +154,25 @@ public class RedmineDataConverter {
     }
 
     /**
+     * @return NULL if the status is not found or if "statusList" weren't previously set via setStatusList() method
+     */
+    private IssueStatus getStatusByName(String name) {
+        if (statusList == null || name == null) {
+            return null;
+        }
+
+        IssueStatus foundStatus = null;
+        for (IssueStatus status : statusList) {
+            if (status.getName().equalsIgnoreCase(name)) {
+                foundStatus = status;
+                break;
+            }
+        }
+
+        return foundStatus;
+    }
+
+    /**
      * convert Redmine issues to internal model representation required for
      * Task Adapter app.
      *
@@ -135,14 +188,11 @@ public class RedmineDataConverter {
         }
         User rmAss = issue.getAssignee();
         if (rmAss != null) {
-            GUser ass = new GUser();
-            ass.setId(rmAss.getId());
-            ass.setLoginName(rmAss.getLogin());
-            ass.setDisplayName(rmAss.getFullName());
-            task.setAssignee(ass);
+            task.setAssignee(convertToGUser(rmAss));
         }
 
         task.setType(issue.getTracker().getName());
+        task.setStatus(issue.getStatusName());
         task.setSummary(issue.getSubject());
         task.setEstimatedHours(issue.getEstimatedHours());
         task.setDoneRatio(issue.getDoneRatio());

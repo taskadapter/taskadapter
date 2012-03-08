@@ -82,7 +82,7 @@ public class ServerPanel extends GridLayout implements Validatable {
     @Override
     public void validate() throws ValidationException {
         if (getHostString().isEmpty()) {
-            throw new ValidationException("'Redmine URL' is not set");
+            throw new ValidationException("'Server URL' is not set");
         }
     }
 

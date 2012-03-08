@@ -130,6 +130,7 @@ public class MSPConfig extends ConnectorConfig {
            *  it's better to have this option set to FALSE by default to avoid the confusion.
            */
         fieldsMapping.put(FIELD.REMOTE_ID, new Mapping(false, MSPAvailableFieldsProvider.getDefaultRemoteIdMapping()));
+        fieldsMapping.put(FIELD.TASK_STATUS, new Mapping(false, MSPAvailableFieldsProvider.getDefaultTaskStatus()));
 
         return fieldsMapping;
     }

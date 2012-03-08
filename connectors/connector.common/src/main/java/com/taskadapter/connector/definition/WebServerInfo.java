@@ -121,6 +121,6 @@ public class WebServerInfo {
     }
 
     public boolean isHostSet() {
-        return !(host == null || host.isEmpty());// || host.equals(DEFAULT_HOST_VALUE));
+        return !(host == null || host.isEmpty());
     }
 }

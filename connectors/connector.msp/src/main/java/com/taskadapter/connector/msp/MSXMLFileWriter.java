@@ -18,6 +18,9 @@ public class MSXMLFileWriter {
     private static final String ALIAS_REMOTE_ID = "TA Remote ID";
 
     private static final String ALIAS_ISSUE_TYPE = "TA Task Type";
+
+    private static final String ALIAS_ISSUE_STATUS = "TA Task Status";
+
     /**
      * MPXJ can't set NULL/undefined time for "duration" or "work" fields so we have to use
      * these text fields to indicate that "duration" or "work" is UNDEFINED and not "0"
@@ -153,6 +156,7 @@ public class MSXMLFileWriter {
 
         setAliasIfMappingNotNULL(project, FIELD.REMOTE_ID, ALIAS_REMOTE_ID);
         setAliasIfMappingNotNULL(project, FIELD.TASK_TYPE, ALIAS_ISSUE_TYPE);
+        setAliasIfMappingNotNULL(project, FIELD.TASK_STATUS, ALIAS_ISSUE_STATUS);
     }
 
     private void setAliasIfMappingNotNULL(ProjectFile project, FIELD field, String aliasName) {
@@ -191,6 +195,7 @@ public class MSXMLFileWriter {
         }
 
         setFieldIfSelected(FIELD.TASK_TYPE, mspTask, gTask.getType());
+        setFieldIfSelected(FIELD.TASK_STATUS, mspTask, gTask.getStatus());
 
         Map<FIELD, Mapping> fieldsMapping = config.getFieldsMapping();
 
@@ -281,9 +286,8 @@ public class MSXMLFileWriter {
 
     private Duration calculateTimeAlreadySpent(GTask gTask) {
         float doneRatio = gTask.getDoneRatio() / 100f;
-        Duration timeAlreadySpent = Duration.getInstance(doneRatio * gTask.getEstimatedHours(),
+        return Duration.getInstance(doneRatio * gTask.getEstimatedHours(),
                 TimeUnit.HOURS);
-        return timeAlreadySpent;
     }
 
     private Duration calculateRemainingTime(GTask gTask) {
@@ -293,9 +297,8 @@ public class MSXMLFileWriter {
         } else {
             doneRatio = 0;
         }
-        Duration remainingTime = Duration.getInstance((1 - doneRatio) * gTask.getEstimatedHours(),
+        return Duration.getInstance((1 - doneRatio) * gTask.getEstimatedHours(),
                 TimeUnit.HOURS);
-        return remainingTime;
     }
 
     private void setFieldIfSelected(FIELD field, Task mspTask, Object value) {

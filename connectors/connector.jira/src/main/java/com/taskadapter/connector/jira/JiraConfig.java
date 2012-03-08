@@ -3,6 +3,7 @@ package com.taskadapter.connector.jira;
 import com.google.common.base.Objects;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.Mapping;
+import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
@@ -79,6 +80,13 @@ public class JiraConfig extends WebConfig {
         fieldsMapping.put(GTaskDescriptor.FIELD.DUE_DATE, new Mapping());
         fieldsMapping.put(GTaskDescriptor.FIELD.PRIORITY, new Mapping());
         return fieldsMapping;
+    }
+
+    @Override
+    public void validateForLoad() throws ValidationException {
+        if (getQueryId() == null) {
+            throw new ValidationException("Please provide Query ID in Project Info section of Jira connector");
+        }
     }
 
     @Override

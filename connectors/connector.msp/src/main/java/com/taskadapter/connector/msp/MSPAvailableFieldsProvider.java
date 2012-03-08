@@ -33,6 +33,8 @@ public class MSPAvailableFieldsProvider implements AvailableFieldsProvider {
                 return getStartDateOptions();
             case REMOTE_ID:
                 return MSPUtils.getAllTextFieldNames();
+            case TASK_STATUS:
+                return MSPUtils.getAllTextFieldNames();
             default:
                 return new String[]{};
         }
@@ -65,10 +67,14 @@ public class MSPAvailableFieldsProvider implements AvailableFieldsProvider {
         return TaskField.TEXT23.toString();
     }
 
+    public static String getDefaultTaskStatus() {
+        return TaskField.TEXT24.toString();
+    }
+
     @Override
     public Collection<FIELD> getSupportedFields() {
         return Arrays.asList(FIELD.SUMMARY, FIELD.DESCRIPTION, FIELD.DONE_RATIO,
                 FIELD.ASSIGNEE, FIELD.DUE_DATE, FIELD.START_DATE, FIELD.TASK_TYPE, FIELD.ESTIMATED_TIME,
-                FIELD.REMOTE_ID);
+                FIELD.REMOTE_ID, FIELD.TASK_STATUS);
     }
 }

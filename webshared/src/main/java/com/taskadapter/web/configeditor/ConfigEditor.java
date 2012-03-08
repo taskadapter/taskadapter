@@ -149,7 +149,7 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
             projectPanel.setProjectInfo(((WebConfig) config).getProjectInfo());
         }
         if (findUserByName != null) {
-            findUserByName.setValue(((WebConfig) config).getFindUserByName());
+            findUserByName.setValue(((WebConfig) config).isFindUserByName());
         }
 
         EditorUtil.setNullSafe(this.labelText, config.getLabel());

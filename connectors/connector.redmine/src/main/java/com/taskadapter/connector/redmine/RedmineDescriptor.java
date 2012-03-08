@@ -34,8 +34,7 @@ public class RedmineDescriptor implements Descriptor {
 
     @Override
     public RedmineConfig createDefaultConfig() {
-        RedmineConfig c = new RedmineConfig();
-        return c;
+        return new RedmineConfig();
     }
 
     @Override

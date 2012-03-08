@@ -108,12 +108,12 @@ public class TestUtils {
         return findTaskBySummary(loadedTasks, task.getSummary());
     }
 
-    public static List<GTask> saveAndLoadAll(Connector connector, GTask task) throws Exception {
+    public static List<GTask> saveAndLoadAll(Connector connector, GTask task) {
         connector.saveData(packTasksToList(task), null);
         return connector.loadData(null);
     }
 
-    public static List<GTask> saveAndLoadList(Connector connector, List<GTask> tasks) throws Exception {
+    public static List<GTask> saveAndLoadList(Connector connector, List<GTask> tasks) {
         connector.saveData(tasks, null);
         return connector.loadData(null);
     }

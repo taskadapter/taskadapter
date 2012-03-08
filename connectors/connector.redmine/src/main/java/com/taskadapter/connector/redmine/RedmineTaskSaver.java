@@ -5,6 +5,7 @@ import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import org.redmine.ta.RedmineManager;
 import org.redmine.ta.beans.Issue;
+import org.redmine.ta.beans.IssueStatus;
 import org.redmine.ta.beans.Project;
 import org.redmine.ta.beans.User;
 
@@ -32,11 +33,12 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
             throw new RuntimeException(e.getMessage(), e);
         }
         converter.setUsers(loadUsers());
+        converter.setStatusList(loadStatusList());
     }
 
     private List<User> loadUsers() {
         List<User> users;
-        if (config.getFindUserByName()) {
+        if (config.isFindUserByName()) {
             try {
                 users = mgr.getUsers();
             } catch (Exception e1) {
@@ -46,6 +48,18 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
             users = new ArrayList<User>();
         }
         return users;
+    }
+
+    private List<IssueStatus> loadStatusList() {
+        List<IssueStatus> statusList;
+
+        try {
+            statusList = mgr.getStatuses();
+        } catch (Exception e1) {
+            throw new RuntimeException(e1);
+        }
+
+        return statusList;
     }
 
     @Override

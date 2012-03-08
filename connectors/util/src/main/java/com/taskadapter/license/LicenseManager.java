@@ -82,7 +82,7 @@ public class LicenseManager {
         String productLine = lines[LINE_PRODUCT];
         String productName = productLine.substring(PREFIX_PRODUCT
                 .length());
-        PRODUCT product = null;
+        PRODUCT product;
         if (productName.equals(PRODUCT.TASK_ADAPTER.toString())) {
             product = PRODUCT.TASK_ADAPTER;
         } else {

@@ -91,7 +91,7 @@ public class SyncRunner {
 
     }
 
-    private final List<GTask> applyTrialIfNeeded(List<GTask> flatTasksList) {
+    private List<GTask> applyTrialIfNeeded(List<GTask> flatTasksList) {
         if (!LicenseManager.isTaskAdapterLicenseOK()) {
             System.out.println(LicenseManager.TRIAL_MESSAGE);
             int tasksToLeave = Math.min(LicenseManager.TRIAL_TASKS_NUMBER_LIMIT, flatTasksList.size());
