@@ -1,5 +1,7 @@
 package com.taskadapter.connector.definition;
 
+import com.taskadapter.connector.common.XorUtils;
+
 public class WebServerInfo {
 //	private static final String DEFAULT_HOST_VALUE = "http://";
 
@@ -12,8 +14,9 @@ public class WebServerInfo {
     public WebServerInfo(String host, String userName, String password) {
         this.host = host;
         this.userName = userName;
-        this.password = password;
+        this.password = XorUtils.XORMark + XorUtils.stringXOR.encode (password, XorUtils.XORKey);
     }
+    
 
     public WebServerInfo() {
     }
@@ -43,7 +46,11 @@ public class WebServerInfo {
     }
 
     public String getPassword() {
-        return password;
+        if (password.startsWith(XorUtils.XORMark)) {
+            return XorUtils.stringXOR.decode (password.substring(1), XorUtils.XORKey);
+        }else{
+            return password;
+        }
     }
 
     public void setPassword(String password) {
