@@ -1,6 +1,7 @@
 package com.taskadapter.connector.definition;
 
-import com.taskadapter.connector.common.XorUtils;
+import com.taskadapter.connector.common.Encryptor;
+import com.taskadapter.connector.common.XorEncryptor;
 
 public class WebServerInfo {
 //	private static final String DEFAULT_HOST_VALUE = "http://";
@@ -10,13 +11,21 @@ public class WebServerInfo {
     private String password = "";
     private boolean useAPIKeyInsteadOfLoginPassword = false;
     private String apiKey = "";
+    private Encryptor encryptor = new XorEncryptor();
 
-    public WebServerInfo(String host, String userName, String password) {
+
+    public WebServerInfo(String host, String userName, String password) throws Exception {
         this.host = host;
         this.userName = userName;
-        this.password = XorUtils.XORMark + XorUtils.stringXOR.encode (password, XorUtils.XORKey);
+        this.password = encryptor.encrypt(password);
     }
-    
+
+    public WebServerInfo(String host, String userName, String password, Encryptor encryptor) throws Exception {
+        this.host = host;
+        this.userName = userName;
+        this.password = encryptor.encrypt(password);
+        this.encryptor = encryptor;
+    }
 
     public WebServerInfo() {
     }
@@ -45,16 +54,12 @@ public class WebServerInfo {
         this.userName = userName;
     }
 
-    public String getPassword() {
-        if (password.startsWith(XorUtils.XORMark)) {
-            return XorUtils.stringXOR.decode (password.substring(1), XorUtils.XORKey);
-        }else{
-            return password;
-        }
+    public String getPassword() throws Exception {
+        return encryptor.decrypt(password);
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPassword(String password) throws Exception {
+        this.password = encryptor.encrypt(password);
     }
 
     public boolean isUseAPIKeyInsteadOfLoginPassword() {
