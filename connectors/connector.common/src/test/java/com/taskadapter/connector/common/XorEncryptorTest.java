@@ -13,6 +13,20 @@ public class XorEncryptorTest {
     }
 
     @Test
+    public void shouldReturnSameIfEmptyStringOrKey() throws Exception {
+        Assert.assertEquals(null, new XorEncryptor().decrypt(null));
+        Assert.assertEquals("", new XorEncryptor().decrypt(""));
+        Assert.assertEquals("asd", new XorEncryptor().decrypt("asd", ""));
+        Assert.assertEquals("zxc", new XorEncryptor().decrypt("zxc", null));
+    }
+
+    @Test
+    public void shouldReturnSameIfEmptyOrNotEncrypted() throws Exception {
+        Assert.assertEquals("Aa 12#@_^~", new XorEncryptor().decrypt("Aa 12#@_^~"));    // default marker is '¶'
+        Assert.assertEquals("Xa 12#@_^~", new XorEncryptor(";").decrypt("Xa 12#@_^~")); // marker is ';'
+    }
+
+    @Test
     public void shouldDecryptWithDefaultMarker() throws Exception {
         Assert.assertEquals("Aa 12#@_^~", new XorEncryptor().decrypt("¶AUUNZXMOCxoHUw=="));
     }

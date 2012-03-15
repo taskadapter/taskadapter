@@ -29,12 +29,17 @@ public class XorEncryptor implements Encryptor {
 
     @Override
     public String encrypt(String string, String key) throws Exception {
-        return marker + Base64.encodeBase64String(xorWithKey(string.getBytes(), key.getBytes()));
+        return !Strings.isNullOrEmpty(string)
+                    && !Strings.isNullOrEmpty(key)
+                ? marker + Base64.encodeBase64String(xorWithKey(string.getBytes(), key.getBytes()))
+                : string;
     }
 
     @Override
     public String decrypt(String string, String key) throws Exception {
-        return string.startsWith(marker)
+        return !Strings.isNullOrEmpty(string)
+                    && !Strings.isNullOrEmpty(key)
+                    && string.startsWith(marker)
                 ? new String(xorWithKey(Base64.decodeBase64(string.substring(marker.length())), key.getBytes()))
                 : string;
     }
