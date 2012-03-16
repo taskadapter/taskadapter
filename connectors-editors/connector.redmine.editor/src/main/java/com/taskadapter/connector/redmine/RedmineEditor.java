@@ -34,7 +34,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
 
     private OptionGroup authOptionsGroup = new OptionGroup("Authorization", authOptions);
 
-    public RedmineEditor(ConnectorConfig config) {
+    public RedmineEditor(ConnectorConfig config) throws Exception {
         super(config);
 
         buildUI();
@@ -78,7 +78,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         addFindUsersByNameElement();
     }
 
-    private void setRedmineData() {
+    private void setRedmineData() throws Exception {
         RedmineConfig redmineConfig = (RedmineConfig) config;
         serverURL.setValue(redmineConfig.getServerInfo().getHost());
         WebServerInfo serverInfo = redmineConfig.getServerInfo();
@@ -93,7 +93,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
     }
 
     @Override
-    public ConnectorConfig getPartialConfig() {
+    public ConnectorConfig getPartialConfig() throws Exception {
         RedmineConfig rmConfig = new RedmineConfig();
         WebServerInfo serverInfo = new WebServerInfo((String) serverURL.getValue(),
                 (String) login.getValue(), (String) password.getValue());

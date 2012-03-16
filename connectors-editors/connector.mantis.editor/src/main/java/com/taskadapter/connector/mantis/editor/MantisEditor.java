@@ -1,10 +1,8 @@
 package com.taskadapter.connector.mantis.editor;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.mantis.MantisConfig;
 import com.taskadapter.connector.mantis.MantisDescriptor;
 import com.taskadapter.web.configeditor.ConfigEditor;
-import com.taskadapter.web.configeditor.EditorUtil;
 import com.vaadin.ui.CheckBox;
 
 /**
@@ -12,7 +10,7 @@ import com.vaadin.ui.CheckBox;
  */
 public class MantisEditor extends ConfigEditor {
 
-    public MantisEditor(ConnectorConfig config) {
+    public MantisEditor(ConnectorConfig config) throws Exception {
         super(config);
         buildUI();
         setData(config);

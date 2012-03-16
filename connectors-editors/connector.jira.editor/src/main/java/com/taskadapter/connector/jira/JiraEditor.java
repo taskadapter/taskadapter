@@ -16,7 +16,7 @@ public class JiraEditor extends ConfigEditor {
 
     private OtherJiraFieldsPanel jiraFieldsPanel;
 
-    public JiraEditor(ConnectorConfig config) {
+    public JiraEditor(ConnectorConfig config) throws Exception {
         super(config);
         buildUI();
         setData(config);

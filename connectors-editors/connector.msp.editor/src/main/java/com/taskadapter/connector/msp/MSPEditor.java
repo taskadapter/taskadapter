@@ -36,7 +36,7 @@ public class MSPEditor extends ConfigEditor {
     private SettingsManager settingsManager;
     private static final String TEXT_WIDTH = "500px";
 
-    public MSPEditor(ConnectorConfig config, SettingsManager settingsManager) {
+    public MSPEditor(ConnectorConfig config, SettingsManager settingsManager) throws Exception {
         super(config);
         this.settingsManager = settingsManager;
         buildUI();

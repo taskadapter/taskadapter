@@ -1,11 +1,10 @@
 package com.taskadapter.connector.common;
 
-import java.util.List;
-
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.GProject;
 
+import java.util.List;
+
 public interface ProjectLoader {
-    List<GProject> getProjects(WebServerInfo serverInfo) throws ValidationException;
+    List<GProject> getProjects(WebServerInfo serverInfo) throws Exception;
 }

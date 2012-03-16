@@ -29,7 +29,16 @@ public class RedmineTest {
     private static RedmineManager mgr;
 
     private static String projectKey;
-    private static RedmineConfig config = RedmineTestConfig.getRedmineTestConfig();
+    private static RedmineConfig config;
+
+    static {
+        try {
+            config = RedmineTestConfig.getRedmineTestConfig();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private RedmineConnector connector = new RedmineConnector(config);
     private static GUser currentUser;
 

@@ -41,7 +41,7 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         setWidth("800px");
     }
 
-    public abstract ConnectorConfig getPartialConfig();
+    public abstract ConnectorConfig getPartialConfig() throws Exception;
 
     protected void setIfNotNull(AbstractField field, Object value) {
         if (value != null) {
@@ -109,7 +109,7 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
     public void validate() throws ValidationException {
     }
 
-    public ConnectorConfig getConfig() {
+    public ConnectorConfig getConfig() throws Exception {
         ConnectorConfig config = getPartialConfig();
         config.setLabel((String) labelText.getValue());
         // TODO this casting to WebConfig is not nice.
@@ -133,12 +133,12 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         return config;
     }
 
-    public void setData(ConnectorConfig config) {
+    public void setData(ConnectorConfig config) throws Exception {
         this.config = config;
         setCommonFields();
     }
 
-    private void setCommonFields() {
+    private void setCommonFields() throws Exception {
         if (serverPanel != null) {
             serverPanel.setServerInfo(((WebConfig) config).getServerInfo());
         }

@@ -23,5 +23,5 @@ public interface TaskSaver<T extends ConnectorConfig> {
      * Is called right before the "save tasks" request.
      * Put the init code here, like pre-loading users or priorities from server.
      */
-    void beforeSave();
+    void beforeSave() throws Exception;
 }

@@ -47,7 +47,7 @@ public class RedmineTestConfig {
         return properties.getProperty(key);
     }
 
-    public static RedmineConfig getRedmineTestConfig() {
+    public static RedmineConfig getRedmineTestConfig() throws Exception {
         WebServerInfo rmInfo = new WebServerInfo(RedmineTestConfig.getURI(), RedmineTestConfig.getUserLogin(), RedmineTestConfig.getPassword());
         RedmineConfig redmineConfig = new RedmineConfig();
         redmineConfig.setServerInfo(rmInfo);

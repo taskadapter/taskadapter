@@ -29,7 +29,7 @@ public class RedmineTester implements IDataConnectorTester {
         getRedmineManager(config).deleteProject(projectKey);
     }
 
-    private static RedmineManager getRedmineManager(ConnectorConfig config) {
+    private static RedmineManager getRedmineManager(ConnectorConfig config) throws Exception {
         RedmineConfig rmConfig = (RedmineConfig) config;
         WebServerInfo info = rmConfig.getServerInfo();
         return new RedmineManager(info.getHost(), info.getUserName(), info.getPassword());

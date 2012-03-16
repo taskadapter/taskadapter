@@ -24,7 +24,7 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
     }
 
     @Override
-    public void beforeSave() {
+    public void beforeSave() throws Exception {
         this.mgr = RedmineManagerFactory.createRedmineManager(config
                 .getServerInfo());
         try {
