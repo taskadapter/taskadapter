@@ -12,15 +12,15 @@ public class ConnectionFactory {
     private RepositoryService repositoryService;
     private UserService userService;
 
-    public ConnectionFactory(WebServerInfo serverInfo) throws Exception {
+    public ConnectionFactory(WebServerInfo serverInfo) {
         initServices(serverInfo);
     }
 
-    public ConnectionFactory(WebConfig config) throws Exception {
+    public ConnectionFactory(WebConfig config) {
         initServices(config.getServerInfo());
     }
 
-    private void initServices(WebServerInfo serverInfo) throws Exception {
+    private void initServices(WebServerInfo serverInfo) {
         GitHubClient ghClient = new GitHubClient();
         if (serverInfo.getUserName() != null
                 && serverInfo.getUserName().trim().length() > 0

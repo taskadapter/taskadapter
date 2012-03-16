@@ -1,10 +1,11 @@
 package com.taskadapter.connector.redmine;
 
-import com.taskadapter.connector.definition.WebServerInfo;
 import org.redmine.ta.RedmineManager;
 
+import com.taskadapter.connector.definition.WebServerInfo;
+
 public class RedmineManagerFactory {
-    public static RedmineManager createRedmineManager(WebServerInfo serverInfo) throws Exception {
+    public static RedmineManager createRedmineManager(WebServerInfo serverInfo) {
         RedmineManager mgr;
         if (serverInfo.isUseAPIKeyInsteadOfLoginPassword()) {
             mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getApiKey());

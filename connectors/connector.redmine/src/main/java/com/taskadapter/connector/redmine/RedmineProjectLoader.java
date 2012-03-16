@@ -11,7 +11,7 @@ import java.util.List;
 public class RedmineProjectLoader implements ProjectLoader {
 
     @Override
-    public List<GProject> getProjects(WebServerInfo serverInfo) throws Exception {
+    public List<GProject> getProjects(WebServerInfo serverInfo) throws ValidationException {
         if ((serverInfo.getHost() == null)
                 || (serverInfo.getHost().isEmpty())) {
             throw new ValidationException("Host URL is not set");

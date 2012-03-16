@@ -38,7 +38,7 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
      * the default implementation does nothing.
      */
     @Override
-    public void beforeSave() throws Exception {
+    public void beforeSave() {
         // nothing here
     }
 

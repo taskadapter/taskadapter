@@ -86,11 +86,11 @@ public class ServerPanel extends GridLayout implements Validatable {
         }
     }
 
-    public WebServerInfo getServerInfo() throws Exception {
+    public WebServerInfo getServerInfo() {
         return new WebServerInfo(getHostString(), (String) login.getValue(), (String) password.getValue());
     }
 
-    public void setServerInfo(WebServerInfo info) throws Exception {
+    public void setServerInfo(WebServerInfo info) {
         EditorUtil.setNullSafe(hostURLText, info.getHost());
         EditorUtil.setNullSafe(login, info.getUserName());
         EditorUtil.setNullSafe(password, info.getPassword());

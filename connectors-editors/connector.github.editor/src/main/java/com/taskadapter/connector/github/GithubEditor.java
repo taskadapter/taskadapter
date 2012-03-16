@@ -1,6 +1,7 @@
 package com.taskadapter.connector.github;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.PasswordField;
@@ -14,7 +15,7 @@ public class GithubEditor extends ConfigEditor {
 
     private TextField projectKey;
 
-    public GithubEditor(ConnectorConfig config) throws Exception {
+    public GithubEditor(ConnectorConfig config) {
         super(config);
         buildUI();
         setData(config);
