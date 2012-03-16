@@ -40,10 +40,9 @@ public class XorEncryptor implements Encryptor {
      * @param string string to be encrypted
      * @param key key for XOR method
      * @return Encrypted string
-     * @throws Exception
      */
     @Override
-    public String encrypt(String string, String key) throws Exception {
+    public String encrypt(String string, String key) {
         return !Strings.isNullOrEmpty(string)
                     && !Strings.isNullOrEmpty(key)
                 ? marker + Base64.encodeBase64String(xorWithKey(string.getBytes(), key.getBytes()))
@@ -56,10 +55,9 @@ public class XorEncryptor implements Encryptor {
      * @param string string to be decrypted
      * @param key key used for XOR method
      * @return Decrypted string
-     * @throws Exception
      */
     @Override
-    public String decrypt(String string, String key) throws Exception {
+    public String decrypt(String string, String key) {
         return !Strings.isNullOrEmpty(string)
                     && !Strings.isNullOrEmpty(key)
                     && string.startsWith(marker)
@@ -72,10 +70,9 @@ public class XorEncryptor implements Encryptor {
      *
      * @param string string to be encrypted
      * @return Encrypted string
-     * @throws Exception
      */
     @Override
-    public String encrypt(String string) throws Exception {
+    public String encrypt(String string) {
         return encrypt(string, DEFAULT_KEY);
     }
 
@@ -84,10 +81,9 @@ public class XorEncryptor implements Encryptor {
      *
      * @param string string to be decrypted
      * @return Decrypted string
-     * @throws Exception
      */
     @Override
-    public String decrypt(String string) throws Exception {
+    public String decrypt(String string) {
         return decrypt(string, DEFAULT_KEY);
     }
 

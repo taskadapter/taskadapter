@@ -14,13 +14,13 @@ public class WebServerInfo {
     private Encryptor encryptor = new XorEncryptor();
 
 
-    public WebServerInfo(String host, String userName, String password) throws Exception {
+    public WebServerInfo(String host, String userName, String password) {
         this.host = host;
         this.userName = userName;
         this.password = encryptor.encrypt(password);
     }
 
-    public WebServerInfo(String host, String userName, String password, Encryptor encryptor) throws Exception {
+    public WebServerInfo(String host, String userName, String password, Encryptor encryptor) {
         this.host = host;
         this.userName = userName;
         this.password = encryptor.encrypt(password);
@@ -54,11 +54,11 @@ public class WebServerInfo {
         this.userName = userName;
     }
 
-    public String getPassword() throws Exception {
+    public String getPassword() {
         return encryptor.decrypt(password);
     }
 
-    public void setPassword(String password) throws Exception {
+    public void setPassword(String password) {
         this.password = encryptor.encrypt(password);
     }
 
