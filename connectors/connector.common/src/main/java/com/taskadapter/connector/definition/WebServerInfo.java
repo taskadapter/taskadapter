@@ -8,10 +8,12 @@ public class WebServerInfo {
 
     private String host = "";// = DEFAULT_HOST_VALUE;
     private String userName = "";
-    private String password = "";
+    protected String password = "";
+
     private boolean useAPIKeyInsteadOfLoginPassword = false;
     private String apiKey = "";
-    private Encryptor encryptor = new XorEncryptor();
+
+    private transient Encryptor encryptor = new XorEncryptor();
 
 
     public WebServerInfo(String host, String userName, String password) {
