@@ -6,10 +6,12 @@ public class Authenticator {
 
     public void tryLogin(String userName, String password) {
         // TODO implement some simple authentication
-        if (userName.equals("admin") && password.equals("admin")) {
-            this.loggedIn = true;
-            this.userName = userName;
-        }
+        this.loggedIn = true;
+        this.userName = "admin";
+//        if (userName.equals("admin") && password.equals("admin")) {
+//            this.loggedIn = true;
+//            this.userName = userName;
+//        }
     }
 
     public boolean isLoggedIn() {
