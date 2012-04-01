@@ -28,14 +28,14 @@ public class LicenseManager {
     public static final int TRIAL_TASKS_NUMBER_LIMIT = 10;
 
     // TODO this is not very secure, but should be OK for the prototype
-    private static final String PASSWORD = "z823nv_sz84";
-    private static final String LINE_DELIMITER = "\n";
-    private static final String KEY_STR = "-----Key-----" + LINE_DELIMITER;
+    static final String PASSWORD = "z823nv_sz84";
+    static final String LINE_DELIMITER = "\n";
+    static final String KEY_STR = "-----Key-----" + LINE_DELIMITER;
 
-    private static final String PREFIX_DATE = "Date: ";
-    private static final String PREFIX_EMAIL = "Email: ";
-    private static final String PREFIX_REGISTERED_TO = "Registered to: ";
-    private static final String PREFIX_PRODUCT = "Product: ";
+    static final String PREFIX_DATE = "Date: ";
+    static final String PREFIX_EMAIL = "Email: ";
+    static final String PREFIX_REGISTERED_TO = "Registered to: ";
+    static final String PREFIX_PRODUCT = "Product: ";
 
     public static final String TRIAL_MESSAGE = "=== TRIAL limit: will only process UP TO " + LicenseManager.TRIAL_TASKS_NUMBER_LIMIT +
             " tasks ===";
