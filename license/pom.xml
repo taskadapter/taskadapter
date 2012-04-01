@@ -11,7 +11,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.taskadapter</groupId>
-    <artifactId>licence</artifactId>
+    <artifactId>license</artifactId>
 
     <dependencies>
         <dependency>
