@@ -49,7 +49,6 @@ public class SupportPage extends Page {
 
         buttonsBar.addComponent(sendFeedBackBtn);
         buttonsBar.setComponentAlignment(sendFeedBackBtn, Alignment.TOP_RIGHT);
-        buttonsBar.addComponent(new Button("Reset", feedbackForm, "discard"));
         buttonsBar.addComponent(new Button("Cancel"));
 
 
@@ -61,6 +60,6 @@ public class SupportPage extends Page {
 
     @Override
     public String getPageTitle() {
-        return "FeedBack";
+        return "Feedback";
     }
 }
