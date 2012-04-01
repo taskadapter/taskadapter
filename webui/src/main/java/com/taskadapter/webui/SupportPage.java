@@ -5,7 +5,9 @@ import com.vaadin.ui.*;
 
 public class SupportPage extends Page {
 
-    private static String[] fields = {"Name", "E-mail", "Message"};
+    private static final String FIELD_NAME = "Your Name";
+    private static final String FIELD_EMAIL = "Your E-mail";
+    private static final String FIELD_MESSAGE = "Message";
 
     public SupportPage() {
         buildUI();
@@ -20,43 +22,39 @@ public class SupportPage extends Page {
         feedbackForm.setFooter(new VerticalLayout());
         feedbackForm.getFooter().addComponent(new Label("All fields are required"));
 
-        EmailValidator emailSenderValidator = new EmailValidator("Invalid e-mail address entered. Please correct it and try again");
+        EmailValidator emailSenderValidator = new EmailValidator("Invalid e-mail address entered.");
 
         HorizontalLayout buttonsBar = new HorizontalLayout();
         buttonsBar.setHeight("26px");
         feedbackForm.getFooter().addComponent(buttonsBar);
 
-        TextField nameSender = new TextField(fields[0]);
+        TextField nameSender = new TextField(FIELD_NAME);
         nameSender.setColumns(30);
         nameSender.setRequired(true);
         nameSender.setRequiredError("Name is missing");
-        TextField emailSender = new TextField(fields[1]);
+        TextField emailSender = new TextField(FIELD_EMAIL);
         emailSender.setColumns(30);
         emailSender.setRequired(true);
         emailSender.setRequiredError("E-mail address is missing");
         emailSender.addValidator(emailSenderValidator);
-        TextArea emailMessage = new TextArea(fields[2]);
+        TextArea emailMessage = new TextArea(FIELD_MESSAGE);
         emailMessage.setColumns(30);
         emailMessage.setRows(10);
         emailMessage.setRequired(true);
         emailMessage.setRequiredError("Message is missing");
 
-        feedbackForm.addField(fields[0], nameSender);
-        feedbackForm.addField(fields[1], emailSender);
-        feedbackForm.addField(fields[2], emailMessage);
+        feedbackForm.addField(FIELD_NAME, nameSender);
+        feedbackForm.addField(FIELD_EMAIL, emailSender);
+        feedbackForm.addField(FIELD_MESSAGE, emailMessage);
 
-        Button sendFeedBackBtn = new Button("Send", feedbackForm, "commit");
-
-        buttonsBar.addComponent(sendFeedBackBtn);
-        buttonsBar.setComponentAlignment(sendFeedBackBtn, Alignment.TOP_RIGHT);
+        Button sendButton = new Button("Send", feedbackForm, "commit");
+        buttonsBar.addComponent(sendButton);
+        buttonsBar.setComponentAlignment(sendButton, Alignment.TOP_RIGHT);
         buttonsBar.addComponent(new Button("Cancel"));
 
-
         layout.addComponent(feedbackForm);
-
         setCompositionRoot(layout);
     }
-
 
     @Override
     public String getPageTitle() {
