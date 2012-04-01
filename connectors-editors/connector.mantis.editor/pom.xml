@@ -20,7 +20,7 @@
         </dependency>
         <dependency>
             <groupId>com.taskadapter</groupId>
-            <artifactId>connector.mantis</artifactId>
+            <artifactId>connector-mantis</artifactId>
             <version>2.0.0</version>
         </dependency>
     </dependencies>
