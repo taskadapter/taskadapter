@@ -48,7 +48,8 @@ public class SyncResult {
         return createdTasksNumber;
     }
 
-    public void addUpdatedTask() {
+    public void addUpdatedTask(Integer originalId, String newId) {
+        idToRemoteKeyMap.put(originalId, newId);
         updatedTasksNumber++;
     }
 

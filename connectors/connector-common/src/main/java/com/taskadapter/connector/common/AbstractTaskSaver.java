@@ -1,5 +1,10 @@
 package com.taskadapter.connector.common;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.SyncResult;
@@ -7,15 +12,12 @@ import com.taskadapter.connector.definition.TaskError;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
 public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
         TaskSaver<T> {
 
     protected SyncResult syncResult = new SyncResult();
+
+    protected List<GTask> totalTaskList = new ArrayList<GTask>();
 
     protected boolean shouldStop;
 
@@ -64,6 +66,8 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
         Iterator<GTask> it = tasks.iterator();
         while (it.hasNext() && !shouldStop()) {
             GTask task = it.next();
+            totalTaskList.add(task);
+
             String newTaskKey = null;
             try {
                 if (parentIssueKey != null) {
@@ -82,9 +86,11 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
             }
         }
 
-        if (config.getSaveIssueRelations()) {
-            List<GRelation> relations = buildNewRelations(tasks);
-            saveRelations(relations);
+        if (parentIssueKey == null) {
+            if (config.getSaveIssueRelations()) {
+                List<GRelation> relations = buildNewRelations(totalTaskList);
+                saveRelations(relations);
+            }
         }
 
         return syncResult;
@@ -120,17 +126,17 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
      * @return the newly created task's KEY
      */
     protected String submitTask(GTask task, Object nativeTask) {
-        String newTaskKey;
+        String newTaskKey = "";
         if (task.getRemoteId() == null) {
             GTask newTask = createTask(nativeTask);
 
             // Need this to be passed as the parentIssueId to the recursive call below
-            newTaskKey = newTask.getKey();
+            newTaskKey = newTask.getKey().toString();
             syncResult.addCreatedTask(task.getId(), newTaskKey);
         } else {
             newTaskKey = task.getRemoteId();
             updateTask(newTaskKey, nativeTask);
-            syncResult.addUpdatedTask();
+            syncResult.addUpdatedTask(task.getId(), newTaskKey);
         }
         return newTaskKey;
     }
