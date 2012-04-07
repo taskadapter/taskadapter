@@ -84,7 +84,10 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
         rmIssue.setId(Integer.parseInt(taskId));
         try {
             mgr.updateIssue(rmIssue);
-            mgr.deleteIssueRelations(rmIssue);
+
+            if (config.getSaveIssueRelations()) {
+                mgr.deleteIssueRelationsByIssueId(rmIssue.getId());
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
