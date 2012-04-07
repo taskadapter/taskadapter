@@ -4,9 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import com.taskadapter.connector.definition.*;
-import net.sf.mpxj.ProjectFile;
-import net.sf.mpxj.Task;
-import net.sf.mpxj.TaskField;
+import net.sf.mpxj.*;
 
 import com.taskadapter.connector.common.AbstractConnector;
 import com.taskadapter.model.GTask;
@@ -28,7 +26,15 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
         try {
             ProjectFile projectFile = new MSPFileReader().readFile(fileName);
             List<Task> allTasks = projectFile.getAllTasks();
+            Duration maxDuration = Duration.getInstance(100, TimeUnit.YEARS);
+            Duration nullDuration = Duration.getInstance(0, TimeUnit.HOURS);
+
             for (Task mspTask : allTasks) {
+/*				if (mspTask.getActualDuration().compareTo(maxDuration) == 1) {//if ActualDuration is undefined
+					mspTask.setActualDuration(nullDuration);
+				}*/
+                Duration dur = Duration.getInstance(mspTask.getActualDuration().getDuration(), TimeUnit.HOURS);
+                System.out.println(mspTask.getActualDuration().getDuration() + " : " + dur + " : " + mspTask.getActualDuration().convertUnits(TimeUnit.HOURS, projectFile.getProjectHeader()));
                 String createdTaskKey = res.getRemoteKey(mspTask.getUniqueID());
                 if (createdTaskKey != null) {
                     setFieldIfNotNull(c, FIELD.REMOTE_ID, mspTask, createdTaskKey);

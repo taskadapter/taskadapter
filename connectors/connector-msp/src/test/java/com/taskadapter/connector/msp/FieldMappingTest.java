@@ -1,14 +1,10 @@
 package com.taskadapter.connector.msp;
 
-import com.taskadapter.connector.common.CommonTests;
-import com.taskadapter.connector.common.TestUtils;
-import com.taskadapter.connector.definition.Mapping;
-import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
-import com.taskadapter.model.GUser;
-import net.sf.mpxj.*;
-import org.junit.Before;
-import org.junit.Test;
+import static com.taskadapter.connector.common.TestUtils.packTasksToList;
+import static com.taskadapter.connector.msp.MSPTestUtils.deleteFile;
+import static com.taskadapter.connector.msp.MSPTestUtils.findMSPTaskBySummary;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -16,11 +12,21 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static com.taskadapter.connector.msp.MSPTestUtils.deleteFile;
-import static com.taskadapter.connector.msp.MSPTestUtils.findMSPTaskBySummary;
-import static com.taskadapter.connector.common.TestUtils.packTasksToList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import com.taskadapter.connector.common.CommonTests;
+import com.taskadapter.connector.common.TestUtils;
+import com.taskadapter.connector.definition.Mapping;
+import net.sf.mpxj.ConstraintType;
+import net.sf.mpxj.MPXJException;
+import net.sf.mpxj.ProjectFile;
+import net.sf.mpxj.Task;
+import net.sf.mpxj.TaskField;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import com.taskadapter.model.GTask;
+import com.taskadapter.model.GTaskDescriptor.FIELD;
+import com.taskadapter.model.GUser;
 
 public class FieldMappingTest {
     private MSPConfig config;
@@ -46,16 +52,16 @@ public class FieldMappingTest {
 
 
         // TODO use this for MPXJ 4.2.0+ :
-        /*
-           use this for MPXJ 4.2.0+ :
 
-           assertNull(loadedTask.getWork());
-           assertNull(loadedTask.getDuration());
+        //use this for MPXJ 4.2.0+ :
 
-           */
+        assertNull(loadedTask.getWork());
+        assertNull(loadedTask.getDuration());
 
-        assertEquals(0, loadedTask.getWork().getDuration(), 0);
-        assertEquals(0, loadedTask.getDuration().getDuration(), 0);
+
+
+//		assertEquals(0, loadedTask.getWork().getDuration(),0);
+//		assertEquals(0, loadedTask.getDuration().getDuration(), 0);		
     }
 
 //	@Test
@@ -79,10 +85,10 @@ public class FieldMappingTest {
         Task loadedTask = findMSPTaskBySummary(loadedTasks, task.getSummary());
         assertEquals(hours, loadedTask.getWork().getDuration(), 0);
 
-        /* use this for MPXJ 4.2.0 :
-          assertNull(loadedTask.getDuration());
-          */
-        assertEquals(0, loadedTask.getDuration().getDuration(), 0);
+        // use this for MPXJ 4.2.0 :
+        assertNull(loadedTask.getDuration());
+
+        //assertEquals(0, loadedTask.getDuration().getDuration(), 0);
     }
 
     @Test
@@ -94,10 +100,10 @@ public class FieldMappingTest {
         Task loadedTask = findMSPTaskBySummary(loadedTasks, task.getSummary());
         assertEquals(hours, loadedTask.getDuration().getDuration(), 0);
 
-        /*  use this for MPXJ 4.2.0 :
-            assertNull(loadedTask.getWork());
-          */
-        assertEquals(0, loadedTask.getWork().getDuration(), 0);
+        //  use this for MPXJ 4.2.0 :
+        assertNull(loadedTask.getWork());
+
+        //assertEquals(0, loadedTask.getWork().getDuration(),0);
     }
 
     @Test

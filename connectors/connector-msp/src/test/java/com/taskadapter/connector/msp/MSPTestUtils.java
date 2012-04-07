@@ -67,6 +67,15 @@ public class MSPTestUtils {
         return taskLoader.loadTasks(config);
     }
 
+    /**
+     * Load the file with DEFAULT field mappings into native task list
+     */
+    static List<Task> loadToMSPTaskList(String fileNameInClasspath) throws Exception {
+        String fileName = MSPTestUtils.getTestFileAbsolutePath(fileNameInClasspath);
+        ProjectFile projectFile = new MSPFileReader().readFile(fileName);
+        return projectFile.getAllTasks();
+    }
+
     static boolean deleteFile(String fileName) {
         File f = new File(fileName);
         return f.delete();
