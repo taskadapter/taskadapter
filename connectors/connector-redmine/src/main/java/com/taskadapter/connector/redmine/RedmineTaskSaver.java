@@ -83,7 +83,7 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
         Issue rmIssue = (Issue) nativeTask;
         rmIssue.setId(Integer.parseInt(taskId));
         try {
-            mgr.updateIssue(rmIssue);
+            mgr.update(rmIssue);
 
             if (config.getSaveIssueRelations()) {
                 mgr.deleteIssueRelationsByIssueId(rmIssue.getId());
@@ -100,8 +100,7 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
                 int taskKey = Integer.parseInt(gRelation.getTaskKey());
                 int relatedTaskKey = Integer.parseInt(gRelation
                         .getRelatedTaskKey());
-                mgr.createRelation(rmProject.getIdentifier(), taskKey,
-                        relatedTaskKey, gRelation.getType().toString());
+                mgr.createRelation(taskKey, relatedTaskKey, gRelation.getType().toString());
             }
         } catch (Exception e) {
             syncResult
