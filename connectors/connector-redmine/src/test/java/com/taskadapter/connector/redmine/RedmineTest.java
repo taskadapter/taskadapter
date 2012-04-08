@@ -396,7 +396,7 @@ public class RedmineTest {
 
 
     @Test
-    public void someTasksAreLoader() throws Exception {
+    public void someTasksAreLoaded() throws Exception {
         new CommonTests().testLoadTasks(connector);
     }
 
