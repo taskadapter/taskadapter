@@ -30,11 +30,6 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
             Duration nullDuration = Duration.getInstance(0, TimeUnit.HOURS);
 
             for (Task mspTask : allTasks) {
-/*				if (mspTask.getActualDuration().compareTo(maxDuration) == 1) {//if ActualDuration is undefined
-					mspTask.setActualDuration(nullDuration);
-				}*/
-                Duration dur = Duration.getInstance(mspTask.getActualDuration().getDuration(), TimeUnit.HOURS);
-                System.out.println(mspTask.getActualDuration().getDuration() + " : " + dur + " : " + mspTask.getActualDuration().convertUnits(TimeUnit.HOURS, projectFile.getProjectHeader()));
                 String createdTaskKey = res.getRemoteKey(mspTask.getUniqueID());
                 if (createdTaskKey != null) {
                     setFieldIfNotNull(c, FIELD.REMOTE_ID, mspTask, createdTaskKey);
