@@ -19,6 +19,7 @@ import com.vaadin.ui.VerticalLayout;
 public class MSPEditor extends ConfigEditor {
 
     private static final String XML_SUFFIX_LOWERCASE = ".xml";
+    private static final String MPP_SUFFIX_LOWERCASE = ".mpp";
 
     private static final String LABEL_FILE_NAME = "Input File name:";
     private static final String TOOLTIP_FILE_NAME = "Microsoft Project file name to load the data from (MPP or XML file)";
@@ -80,6 +81,12 @@ public class MSPEditor extends ConfigEditor {
         addComponent(filePanel);
 
         inputFileNameField = createFileName(LABEL_FILE_NAME, TOOLTIP_FILE_NAME);
+        inputFileNameField.addListener(new FieldEvents.BlurListener() {
+            public void blur(FieldEvents.BlurEvent event) {
+                showXMLFieldIfNeeded();
+            }
+        });
+
         outputFileNameField = createFileName(LABEL_OUTPUT_FILE_NAME, TOOLTIP_OUTPUT_FILE_NAME);
     }
 
@@ -99,9 +106,25 @@ public class MSPEditor extends ConfigEditor {
      */
     private void addXMLExtensionIfNeeded(TextField field) {
         String value = (String) field.getValue();
-        if (!value.toLowerCase().endsWith(XML_SUFFIX_LOWERCASE)) {
+        if (!value.toLowerCase().endsWith(MSPFileReader.XML_SUFFIX_LOWERCASE)
+                && (!value.toLowerCase().endsWith(MSPFileReader.MPP_SUFFIX_LOWERCASE))
+                && (!value.isEmpty())) {
             field.setValue(value + XML_SUFFIX_LOWERCASE);
         }
+    }
+
+    private void showXMLFieldIfNeeded() {
+        String outputFileNameString = (String) inputFileNameField.getValue();
+        String fileNameLowercase = ((String)inputFileNameField.getValue()).toLowerCase();
+        if (fileNameLowercase.endsWith(MSPFileReader.MPP_SUFFIX_LOWERCASE)) {
+            outputFileNameString = (String) createXMLFileNameForMPP((String) inputFileNameField.getValue());
+        }
+        outputFileNameField.setValue(outputFileNameString);
+    }
+
+    private String createXMLFileNameForMPP(String text) {
+        String fileNameWithoutMPPExtension = text.substring(0, text.length() - MSPFileReader.MPP_SUFFIX_LOWERCASE.length());
+        return fileNameWithoutMPPExtension + MSPFileReader.XML_SUFFIX_LOWERCASE;
     }
 
 //    private void browseForMSPFile() {
