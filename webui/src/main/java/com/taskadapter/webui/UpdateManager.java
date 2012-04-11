@@ -6,7 +6,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.redmine.ta.internal.HttpUtil;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -32,9 +31,9 @@ public class UpdateManager {
     }
 
     private void loadLastVersion() {
-        try {
+/*        try {
             Properties properties = new Properties();
-            properties.load(MyIOUtils.getResourceAsStream("bat.properties"));
+            properties.load(MyIOUtils.getResourceAsStream("taskadapter.properties"));
             String url = properties.getProperty("update_site_url");
             DefaultHttpClient httpclient = HttpUtil.getNewHttpClient();
 
@@ -47,7 +46,7 @@ public class UpdateManager {
         } catch (IOException e) {
             throw new RuntimeException(e.toString(), e);
         }
-
+  */
     }
 
     public String getCurrentVersion() {
