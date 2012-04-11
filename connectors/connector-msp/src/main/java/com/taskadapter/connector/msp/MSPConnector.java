@@ -26,8 +26,6 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
         try {
             ProjectFile projectFile = new MSPFileReader().readFile(fileName);
             List<Task> allTasks = projectFile.getAllTasks();
-            Duration maxDuration = Duration.getInstance(100, TimeUnit.YEARS);
-            Duration nullDuration = Duration.getInstance(0, TimeUnit.HOURS);
 
             for (Task mspTask : allTasks) {
                 String createdTaskKey = res.getRemoteKey(mspTask.getUniqueID());
