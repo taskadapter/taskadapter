@@ -15,6 +15,7 @@ import java.util.Map;
 import com.taskadapter.connector.common.CommonTests;
 import com.taskadapter.connector.common.TestUtils;
 import com.taskadapter.connector.definition.Mapping;
+import com.taskadapter.model.GTaskDescriptor;
 import net.sf.mpxj.ConstraintType;
 import net.sf.mpxj.MPXJException;
 import net.sf.mpxj.ProjectFile;
@@ -50,31 +51,20 @@ public class FieldMappingTest {
         List<Task> loadedTasks = saveAndLoad(config, FIELD.ESTIMATED_TIME, new Mapping(false), task);
         Task loadedTask = findMSPTaskBySummary(loadedTasks, task.getSummary());
 
-
-        // TODO use this for MPXJ 4.2.0+ :
-
-        //use this for MPXJ 4.2.0+ :
-
         assertNull(loadedTask.getWork());
         assertNull(loadedTask.getDuration());
-
-
-
-//		assertEquals(0, loadedTask.getWork().getDuration(),0);
-//		assertEquals(0, loadedTask.getDuration().getDuration(), 0);		
     }
 
-//	@Test
-//	public void testEstimatedTimeSaved() throws Exception {
-//		GTask task = TestUtils.generateTask();
-//		Float hours = 25f;
-//		task.setEstimatedHours(hours);
-//		List<Task> loadedTasks = saveAndLoad(
-//				TestUtils.getFieldMapped(GTaskDescriptor.ESTIMATED_TIME, true, TaskField.DURATION.toString()),
-//				task);
-//		Task loadedTask = findMSPTaskBySummary(loadedTasks, task.getSummary());
-//		assertEquals(hours, loadedTask.getDuration().getDuration(), 0);
-//	}
+	@Test
+	public void testEstimatedTimeSaved() throws Exception {
+		GTask task = TestUtils.generateTask();
+		Float hours = 25f;
+		task.setEstimatedHours(hours);
+		List<Task> loadedTasks = saveAndLoad(config, FIELD.ESTIMATED_TIME, new Mapping(true, TaskField.DURATION.toString()),
+				task);
+		Task loadedTask = findMSPTaskBySummary(loadedTasks, task.getSummary());
+		assertEquals(hours, loadedTask.getDuration().getDuration(), 0);
+	}
 
     @Test
     public void testEstimatedTimeSavedToWork() throws Exception {
@@ -83,12 +73,9 @@ public class FieldMappingTest {
         task.setEstimatedHours(hours);
         List<Task> loadedTasks = saveAndLoad(config, FIELD.ESTIMATED_TIME, new Mapping(true, TaskField.WORK.toString()), task);
         Task loadedTask = findMSPTaskBySummary(loadedTasks, task.getSummary());
+
         assertEquals(hours, loadedTask.getWork().getDuration(), 0);
-
-        // use this for MPXJ 4.2.0 :
         assertNull(loadedTask.getDuration());
-
-        //assertEquals(0, loadedTask.getDuration().getDuration(), 0);
     }
 
     @Test
@@ -98,12 +85,9 @@ public class FieldMappingTest {
         task.setEstimatedHours(hours);
         List<Task> loadedTasks = saveAndLoad(config, FIELD.ESTIMATED_TIME, new Mapping(true, TaskField.DURATION.toString()), task);
         Task loadedTask = findMSPTaskBySummary(loadedTasks, task.getSummary());
+
         assertEquals(hours, loadedTask.getDuration().getDuration(), 0);
-
-        //  use this for MPXJ 4.2.0 :
         assertNull(loadedTask.getWork());
-
-        //assertEquals(0, loadedTask.getWork().getDuration(),0);
     }
 
     @Test
