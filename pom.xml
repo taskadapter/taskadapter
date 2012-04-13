@@ -16,6 +16,7 @@
         <module>webui</module>
         <module>webshared</module>
         <module>connectors-editors</module>
+        <module>license</module>
     </modules>
 
     <dependencies>

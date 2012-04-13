@@ -14,16 +14,17 @@ public class TaskToolbarPanel extends HorizontalLayout {
     private final PageManager pageManager;
     private ConfigStorage storage;
     private final TAFile file;
-    private EditorManager editorManager;
-    private SettingsManager settingsManager;
+    private ConfigureTaskPage configureTaskPage;
 
     // TODO refactor this huge list of parameters!
     public TaskToolbarPanel(PageManager pageManager, ConfigStorage storage, TAFile file, EditorManager editorManager, SettingsManager settingsManager) {
         this.pageManager = pageManager;
         this.storage = storage;
         this.file = file;
-        this.editorManager = editorManager;
-        this.settingsManager = settingsManager;
+
+        configureTaskPage = new ConfigureTaskPage(file, editorManager, storage, settingsManager);
+        pageManager.registerPage(PageManager.CONFIGURE_TASK_PAGE_ID_PREFFIX + file.getName(), configureTaskPage);
+
         buildUI();
     }
 
@@ -78,7 +79,6 @@ public class TaskToolbarPanel extends HorizontalLayout {
     }
 
     private void showConfigurePage() {
-        ConfigureTaskPage page = new ConfigureTaskPage(file, editorManager, storage, settingsManager);
-        pageManager.show(page);
+        pageManager.show(configureTaskPage);
     }
 }

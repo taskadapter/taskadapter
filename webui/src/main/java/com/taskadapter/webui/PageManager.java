@@ -3,6 +3,7 @@ package com.taskadapter.webui;
 import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.web.SettingsManager;
+import com.taskadapter.web.configeditor.EditorUtil;
 import com.vaadin.ui.Window;
 
 import java.util.HashMap;
@@ -13,6 +14,8 @@ import java.util.Map;
  */
 public class PageManager {
     public static final String TASKS = "tasks_list";
+    public static final String CONFIGURE_TASK_PAGE_ID_PREFFIX = "configure_task_page_";
+
     private static final String LOGIN_PAGE = "login_page";
 
     private Map<String, Page> pages = new HashMap<String, Page>();
@@ -36,15 +39,24 @@ public class PageManager {
     }
 
     public void show(String pageId) {
-        show(pages.get(pageId));
+        Page page = pages.get(pageId);
+        if (page != null) {
+            show(page);
+        } else {
+            EditorUtil.showError(getMainWindow(), "Internal error!", "Page \"" + pageId + "\" is not registered");
+        }
     }
 
     public void show(Page page) {
+/*
+// TODO: uncomment for production
         if (!authenticator.isLoggedIn()) {
             application.show(pages.get(LOGIN_PAGE));
         } else {
             application.show(page);
         }
+*/
+        application.show(page);
     }
 
     public Window getMainWindow() {

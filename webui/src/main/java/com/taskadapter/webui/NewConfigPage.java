@@ -48,7 +48,6 @@ public class NewConfigPage extends Page {
         grid.setSpacing(true);
 
         name = new TextField("Config name");
-//        name.setValue(NAME_HINT);
         name.setRequired(true);
         name.setRequiredError("Please provide a config name");
         name.setInputPrompt(NAME_HINT);
@@ -97,6 +96,8 @@ public class NewConfigPage extends Page {
             form.setComponentError(null);
             save();
             showTaskDetailsPage();
+
+            name.setValue("");   //clear name for new config
         } catch (Validator.InvalidValueException e) {
             form.setComponentError(new UserError(e.getMessage()));
         }

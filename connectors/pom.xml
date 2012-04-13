@@ -29,17 +29,17 @@
     </build>
 
     <modules>
-        <module>connector.common</module>
+        <module>connector-common</module>
         <module>mainapp</module>
         <module>model</module>
         <module>util</module>
         <module>core</module>
-        <module>connector.jira</module>
-        <module>connector.mantis</module>
-        <module>connector.redmine</module>
-        <module>connector.msp</module>
-        <module>connector.github</module>
-        <module>generic_tests</module>
+        <module>connector-jira</module>
+        <module>connector-mantis</module>
+        <module>connector-redmine</module>
+        <module>connector-msp</module>
+        <module>connector-github</module>
+        <module>common-tests-for-all-connectors</module>
     </modules>
 
     <dependencies>
