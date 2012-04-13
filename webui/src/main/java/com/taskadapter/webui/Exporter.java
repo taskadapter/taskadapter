@@ -10,18 +10,22 @@ import java.util.Arrays;
 
 public class Exporter {
 
+    private static final String TEXT_UPDATE = "Only update tasks present in the file";
+    private static final String OVERWRITE = "Overwrite";
+    private static final String CANCEL = "Cancel";
+
     private PageManager pageManager;
     private PluginManager pluginManager;
     private ConnectorDataHolder sourceDataHolder;
     private ConnectorDataHolder destinationDataHolder;
-    private String fileName; // TAFile name
+    private String taFileName;
 
-    public Exporter(PageManager pageManager, PluginManager pluginManager, final ConnectorDataHolder sourceDataHolder, final ConnectorDataHolder destinationDataHolder, String fileName) {
+    public Exporter(PageManager pageManager, PluginManager pluginManager, final ConnectorDataHolder sourceDataHolder, final ConnectorDataHolder destinationDataHolder, String taFileName) {
         this.pageManager = pageManager;
         this.pluginManager = pluginManager;
         this.sourceDataHolder = sourceDataHolder;
         this.destinationDataHolder = destinationDataHolder;
-        this.fileName = fileName;
+        this.taFileName = taFileName;
     }
 
     public void export() {
@@ -31,7 +35,7 @@ public class Exporter {
             processBasedOnDestinationConnectorType();
         } catch (ValidationException e) {
             EditorUtil.showError(pageManager.getMainWindow(), "Failed validation!", e.getMessage());
-            pageManager.show(PageManager.CONFIGURE_TASK_PAGE_ID_PREFFIX + fileName);
+            pageManager.show(PageManager.CONFIGURE_TASK_PAGE_ID_PREFFIX + taFileName);
         }
     }
 
@@ -43,10 +47,6 @@ public class Exporter {
             startRegularExport();
         }
     }
-
-    final String TEXT_UPDATE = "Only update tasks present in the file";
-    final String OVERWRITE = "Overwrite";
-    final String CANCEL = "Cancel";
 
     private void processFile(FileBasedConnector connectorTo) {
         if (connectorTo.fileExists()) {
