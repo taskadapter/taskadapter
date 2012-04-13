@@ -14,12 +14,14 @@ public class Exporter {
     private PluginManager pluginManager;
     private ConnectorDataHolder sourceDataHolder;
     private ConnectorDataHolder destinationDataHolder;
+    private String fileName; // TAFile name
 
-    public Exporter(PageManager pageManager, PluginManager pluginManager, final ConnectorDataHolder sourceDataHolder, final ConnectorDataHolder destinationDataHolder) {
+    public Exporter(PageManager pageManager, PluginManager pluginManager, final ConnectorDataHolder sourceDataHolder, final ConnectorDataHolder destinationDataHolder, String fileName) {
         this.pageManager = pageManager;
         this.pluginManager = pluginManager;
         this.sourceDataHolder = sourceDataHolder;
         this.destinationDataHolder = destinationDataHolder;
+        this.fileName = fileName;
     }
 
     public void export() {
@@ -28,7 +30,8 @@ public class Exporter {
             destinationDataHolder.getData().validateForSave();
             processBasedOnDestinationConnectorType();
         } catch (ValidationException e) {
-            EditorUtil.show(pageManager.getMainWindow(), "Validation", e.getMessage());
+            EditorUtil.showError(pageManager.getMainWindow(), "Failed validation!", e.getMessage());
+            pageManager.show(PageManager.CONFIGURE_TASK_PAGE_ID_PREFFIX + fileName);
         }
     }
 
