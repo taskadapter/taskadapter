@@ -69,14 +69,16 @@ public class ConfigureTaskPage extends Page {
         try {
             panel1.validateAll();
             panel2.validateAll();
+
             ConnectorConfig c1 = panel1.getConfig();
             ConnectorConfig c2 = panel2.getConfig();
+
             ConnectorDataHolder d1 = new ConnectorDataHolder(file.getConnectorDataHolder1().getType(), c1);
             ConnectorDataHolder d2 = new ConnectorDataHolder(file.getConnectorDataHolder2().getType(), c2);
 
-            TAFile newFile = new TAFile((String) name.getValue(), d1, d2);
-            configStorage.saveConfig(newFile);
+            configStorage.saveConfig(new TAFile((String) name.getValue(), d1, d2));
             getWindow().showNotification("Saved");
+
         } catch (ValidationException e) {
             getWindow().showNotification("Validation", e.getMessage(), Window.Notification.TYPE_WARNING_MESSAGE);
         }
