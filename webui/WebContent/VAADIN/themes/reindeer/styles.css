@@ -1,5 +1,5 @@
-.v-theme-version:after {content:"6_7_4";}
-.v-theme-version-6_7_4 {display: none;}
+.v-theme-version:after {content:"6_7_7";}
+.v-theme-version-6_7_7 {display: none;}
 /* Automatically compiled css file from subdirectories. */
 
 .v-absolutelayout-wrapper {
@@ -1555,6 +1555,12 @@ div.v-progressindicator-indeterminate-disabled {
 	cursor: pointer;
 }
 
+.v-table.v-disabled .v-table-header-cell,
+.v-table.v-disabled .v-table-header-cell-asc,
+.v-table.v-disabled .v-table-header-cell-desc {
+	cursor: default;
+}
+
 .v-table-footer-wrap {
 	overflow: hidden;
 	border: 1px solid #aaa;
@@ -1590,6 +1596,9 @@ div.v-progressindicator-indeterminate-disabled {
 	cursor: col-resize;	
 	width: 1px;
 	overflow: hidden;
+}
+.v-table.v-disabled .v-table-resizer {
+	cursor: default;	
 }
 .v-table-caption-container {
 	overflow: hidden;
@@ -1683,6 +1692,9 @@ div.v-progressindicator-indeterminate-disabled {
 	width: 14px;
 	position: relative; /* hide this from IE, it works without it */
 	cursor: pointer;
+}
+.v-table.v-disabled .v-table-column-selector {
+	cursor: default;
 }
 .v-ie6 .v-table-column-selector,
 .v-ie7 .v-table-column-selector {
@@ -1877,7 +1889,11 @@ div.v-progressindicator-indeterminate-disabled {
 	padding: 0.2em 0.5em;
 }
 .v-tabsheet-tabitem .v-caption {
-	cursor: pointer;
+	cursor: inherit;
+}
+.v-tabsheet.v-disabled .v-tabsheet-tabitem,
+.v-tabsheet-tabitemcell-disabled .v-tabsheet-tabitem {
+	cursor: default;
 }
 .v-tabsheet-tabitem-selected {
 	cursor: default;
@@ -1914,6 +1930,7 @@ div.v-progressindicator-indeterminate-disabled {
 	text-align: left /* Force default alignment */
 }
 .v-textarea {
+	resize: none;
 }
 .v-textfield-focus,
 .v-textarea-focus {
@@ -2300,10 +2317,15 @@ div table.v-treetable-animation-clone tr.v-table-row-odd td.v-table-cell-content
 	background: #fff;
 }
 .v-window-outerheader {
-	cursor: move;
 	padding: 0.3em 1em;
 	height: 1em;
 }
+
+.v-window-outerheader,
+.v-window-draggingCurtain {
+ 	cursor: move;	
+}
+
 .v-window-header {
 	font-weight: bold;
 }
@@ -2338,16 +2360,22 @@ div.v-window-header {
 	zoom: 1;
 	height: 10px;
 	position: relative;
+	cursor: move;
 }
 .v-window-resizebox {
 	width: 10px;
 	height: 10px;
-	cursor: se-resize;
 	background: #ddd;
 	overflow: hidden;
 	position: absolute;
 	right: 0;
 }
+
+.v-window-resizebox,
+.v-window-resizingCurtain {
+	cursor: se-resize;
+}
+
 .v-window div.v-window-footer-noresize {
 	height: 0;
 }
@@ -3963,7 +3991,7 @@ td.v-datefield-calendarpanel-nextyear {
 	background: #e2e2e2;
 	overflow: hidden;
 }
-.v-wekit .v-panel-deco,
+.v-webkit .v-panel-deco,
 .v-gecko .v-panel-deco,
 .v-ie9 .v-panel-deco {
 	border-top-color: rgba(0,0,0,.1);
@@ -4672,6 +4700,7 @@ td.v-datefield-calendarpanel-nextyear {
 }
 .v-table-header-drag {
 	padding-left: 6px;
+	height: 16px;
 }
 .v-table-header-drag img {
 	height: 16px;
@@ -5065,7 +5094,6 @@ td.v-datefield-calendarpanel-nextyear {
 	width: 18px;
 	height: 17px;
 	overflow: hidden;
-	cursor: default;
 }
 .v-tabsheet-scroller button::-moz-focus-inner {
 	border: none;
