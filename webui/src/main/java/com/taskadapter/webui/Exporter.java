@@ -50,13 +50,18 @@ public class Exporter {
 
     private void processFile(FileBasedConnector connectorTo) {
         if (connectorTo.fileExists()) {
-            pageManager.getMainWindow().addWindow(new MessageDialog("Choose operation", "Destination file already exists:" +
-                    "\n" + connectorTo.getAbsoluteOutputFileName(), Arrays.asList(TEXT_UPDATE, OVERWRITE, CANCEL),
+            MessageDialog messageDialog = new MessageDialog(
+                    "Choose operation", "Destination file already exists:\n" + connectorTo.getAbsoluteOutputFileName(),
+                    Arrays.asList(TEXT_UPDATE, OVERWRITE, CANCEL),
                     new MessageDialog.Callback() {
                         public void onDialogResult(String answer) {
                             processFileAction(answer);
                         }
-                    }));
+                    }
+            );
+            messageDialog.setWidth("425px");
+
+            pageManager.getMainWindow().addWindow(messageDialog);
         } else {
             processFileAction(OVERWRITE);
         }
