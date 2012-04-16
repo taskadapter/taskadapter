@@ -22,7 +22,7 @@ public class TaskToolbarPanel extends HorizontalLayout {
         this.storage = storage;
         this.file = file;
 
-        configureTaskPage = new ConfigureTaskPage(file, editorManager, storage, settingsManager);
+        configureTaskPage = new ConfigureTaskPage(file, pageManager, editorManager, storage, settingsManager);
         pageManager.registerPage(PageManager.CONFIGURE_TASK_PAGE_ID_PREFFIX + file.getName(), configureTaskPage);
 
         buildUI();
