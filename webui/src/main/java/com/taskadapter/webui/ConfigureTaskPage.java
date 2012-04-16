@@ -121,6 +121,6 @@ public class ConfigureTaskPage extends Page {
     }
 
     private void goBack() {
-        pageManager.show(PageManager.TASKS_DETAILS_PAGE_ID_PREFFIX + file.getName());
+        pageManager.show(PageManager.TASK_DETAILS_PAGE_ID_PREFFIX + file.getName());
     }
 }
