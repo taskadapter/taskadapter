@@ -15,6 +15,7 @@ import com.vaadin.ui.*;
  */
 public class ConfigureTaskPage extends Page {
     private TAFile file;
+    private PageManager pageManager;
     private EditorManager editorManager;
     private ConfigStorage configStorage;
     private SettingsManager settingsManager;
@@ -22,8 +23,9 @@ public class ConfigureTaskPage extends Page {
     private ConfigEditor panel1;
     private ConfigEditor panel2;
 
-    public ConfigureTaskPage(TAFile file, EditorManager editorManager, ConfigStorage configStorage, SettingsManager settingsManager) {
+    public ConfigureTaskPage(TAFile file, PageManager pageManager, EditorManager editorManager, ConfigStorage configStorage, SettingsManager settingsManager) {
         this.file = file;
+        this.pageManager = pageManager;
         this.editorManager = editorManager;
         this.configStorage = configStorage;
         this.settingsManager = settingsManager;
@@ -34,14 +36,37 @@ public class ConfigureTaskPage extends Page {
         Panel panel = new Panel();
         setCompositionRoot(panel);
 
-        Button saveButton = new Button("Save");
-        saveButton.addListener(new Button.ClickListener() {
+        HorizontalLayout buttonsLayout = new HorizontalLayout();
+
+        Button applyButton = new Button("Apply");
+        applyButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 save();
             }
         });
-        panel.addComponent(saveButton);
+        buttonsLayout.addComponent(applyButton);
+
+        Button saveButton = new Button("Save");
+        saveButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                save();
+                goBack();
+            }
+        });
+        buttonsLayout.addComponent(saveButton);
+
+        Button cancelButton = new Button("Cancel");
+        cancelButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                goBack();
+            }
+        });
+        buttonsLayout.addComponent(cancelButton);
+
+        panel.addComponent(buttonsLayout);
 
         name = new TextField("Name");
         name.setValue(file.getName());
@@ -93,5 +118,9 @@ public class ConfigureTaskPage extends Page {
     @Override
     public String getPageTitle() {
         return file.getName();
+    }
+
+    private void goBack() {
+        pageManager.show(PageManager.TASKS_DETAILS_PAGE_ID_PREFFIX + file.getName());
     }
 }

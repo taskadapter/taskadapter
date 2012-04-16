@@ -15,6 +15,7 @@ import java.util.Map;
 public class PageManager {
     public static final String TASKS = "tasks_list";
     public static final String CONFIGURE_TASK_PAGE_ID_PREFFIX = "configure_task_page_";
+    public static final String TASKS_DETAILS_PAGE_ID_PREFFIX = "tasks_details_page_";
 
     private static final String LOGIN_PAGE = "login_page";
 

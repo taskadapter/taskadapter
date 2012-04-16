@@ -74,6 +74,7 @@ public class TasksPage extends Page {
 
     private void showTask(TAFile file) {
         TaskDetailsPage page = new TaskDetailsPage(file, pageManager, configStorage, pluginManager, editorManager, settingsManager);
+        pageManager.registerPage(PageManager.TASKS_DETAILS_PAGE_ID_PREFFIX + file.getName(), page);
         pageManager.show(page);
     }
 
