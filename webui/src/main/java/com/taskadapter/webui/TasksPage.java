@@ -61,21 +61,18 @@ public class TasksPage extends Page {
     }
 
     private void addTask(final TAFile file, int i) {
+        final TaskDetailsPage page = new TaskDetailsPage(file, pageManager, configStorage, pluginManager, editorManager, settingsManager);
+        pageManager.registerPage(PageManager.TASK_DETAILS_PAGE_ID_PREFFIX + file.getName(), page);
+
         Button button = new Button(file.getName());
         button.setStyleName(BaseTheme.BUTTON_LINK);
         button.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                showTask(file);
+                pageManager.show(page);
             }
         });
         table.addItem(new Object[]{button}, i);
-    }
-
-    private void showTask(TAFile file) {
-        TaskDetailsPage page = new TaskDetailsPage(file, pageManager, configStorage, pluginManager, editorManager, settingsManager);
-        pageManager.registerPage(PageManager.TASK_DETAILS_PAGE_ID_PREFFIX + file.getName(), page);
-        pageManager.show(page);
     }
 
     @Override

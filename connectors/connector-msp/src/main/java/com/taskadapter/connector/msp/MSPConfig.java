@@ -143,14 +143,14 @@ public class MSPConfig extends ConnectorConfig {
     @Override
     public void validateForLoad() throws ValidationException {
         if (inputFileName.isEmpty()) {
-            throw new ValidationException("Please provide the input file name");
+            throw new ValidationException("Please provide the input file name in MSP config");
         }
     }
 
     @Override
     public void validateForSave() throws ValidationException {
         if (outputFileName.isEmpty()) {
-            throw new ValidationException("Please provide the output file name");
+            throw new ValidationException("Please provide the output file name in MSP config");
         }
     }
 
