@@ -15,8 +15,6 @@ import java.util.Map;
 public class Navigator {
     public static final String TASKS = "tasks_list";
     public static final String HOME = "home";
-    public static final String CONFIGURE_TASK_PAGE_ID_PREFFIX = "configure_task_page_";
-    public static final String TASK_DETAILS_PAGE_ID_PREFFIX = "task_details_page_";
     public static final String LICENSE_PAGE = "license";
     public static final String FEEDBACK_PAGE = "feedback";
     public static final String NEW_CONFIG_PAGE = "new_config_page";

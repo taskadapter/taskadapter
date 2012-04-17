@@ -3,6 +3,7 @@ package com.taskadapter.webui;
 
 import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConnectorDataHolder;
+import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.web.configeditor.EditorUtil;
 
@@ -18,14 +19,14 @@ public class Exporter {
     private PluginManager pluginManager;
     private ConnectorDataHolder sourceDataHolder;
     private ConnectorDataHolder destinationDataHolder;
-    private String taFileName;
+    private TAFile taFile;
 
-    public Exporter(Navigator navigator, PluginManager pluginManager, final ConnectorDataHolder sourceDataHolder, final ConnectorDataHolder destinationDataHolder, String taFileName) {
+    public Exporter(Navigator navigator, PluginManager pluginManager, final ConnectorDataHolder sourceDataHolder, final ConnectorDataHolder destinationDataHolder, TAFile taFile) {
         this.navigator = navigator;
         this.pluginManager = pluginManager;
         this.sourceDataHolder = sourceDataHolder;
         this.destinationDataHolder = destinationDataHolder;
-        this.taFileName = taFileName;
+        this.taFile = taFile;
     }
 
     public void export() {
@@ -35,7 +36,7 @@ public class Exporter {
             processBasedOnDestinationConnectorType();
         } catch (ValidationException e) {
             navigator.showError("Failed validation!", e.getMessage());
-            navigator.show(Navigator.CONFIGURE_TASK_PAGE_ID_PREFFIX + taFileName);
+            navigator.showConfigureTaskPage(taFile);
         }
     }
 

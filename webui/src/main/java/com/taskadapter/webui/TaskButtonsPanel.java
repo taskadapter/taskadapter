@@ -58,7 +58,7 @@ public class TaskButtonsPanel extends HorizontalLayout {
         Button button = new NativeButton();
         button.setHeight(ARROW_BUTTON_HEIGHT, UNITS_PIXELS);
         button.setIcon(icon);
-        final Exporter exporter = new Exporter(navigator, services.getPluginManager(), sourceDataHolder, destinationDataHolder, file.getName());
+        final Exporter exporter = new Exporter(navigator, services.getPluginManager(), sourceDataHolder, destinationDataHolder, file);
         button.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
