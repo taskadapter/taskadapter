@@ -17,6 +17,7 @@ public class TAFile {
         this.connectorDataHolder2 = d2;
     }
 
+    // TODO document this semi-deep-clone constructor or better yet - delete it!
     public TAFile(TAFile source) {
         this(source.getName(), source.getConnectorDataHolder1(), source.getConnectorDataHolder2());
     }

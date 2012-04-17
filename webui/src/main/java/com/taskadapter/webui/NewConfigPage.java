@@ -1,11 +1,8 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.PluginManager;
-import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Descriptor;
-import com.taskadapter.web.SettingsManager;
 import com.vaadin.data.Validator;
 import com.vaadin.terminal.UserError;
 import com.vaadin.ui.*;
@@ -22,27 +19,15 @@ public class NewConfigPage extends Page {
     private ListSelect connector1;
     private ListSelect connector2;
     private Form form;
-    private PluginManager pluginManager;
-    private EditorManager editorManager;
-    private SettingsManager settingsManager;
-    private PageManager pageManager;
-    private ConfigStorage storage;
     private TAFile newFile;
 
-    // TODO refactor all these mega-parameters into a factory
-    public NewConfigPage(PageManager pageManager, ConfigStorage storage, PluginManager pluginManager, EditorManager editorManager, SettingsManager settingsManager) {
-        this.pageManager = pageManager;
-        this.storage = storage;
-        this.pluginManager = pluginManager;
-        this.editorManager = editorManager;
-        this.settingsManager = settingsManager;
+    public NewConfigPage() {
         buildUI();
-        loadDataConnectors();
     }
 
     private void buildUI() {
-        setSizeFull();
         form = new Form();
+        form.setSizeFull();
 
         GridLayout grid = new GridLayout(2, 2);
         grid.setSpacing(true);
@@ -77,12 +62,10 @@ public class NewConfigPage extends Page {
         });
         form.setLayout(grid);
         form.getFooter().addComponent(saveButton);
-
-        setCompositionRoot(form);
     }
 
     private void loadDataConnectors() {
-        Iterator<Descriptor> connectors = pluginManager.getPluginDescriptors();
+        Iterator<Descriptor> connectors = services.getPluginManager().getPluginDescriptors();
         while (connectors.hasNext()) {
             Descriptor connector = connectors.next();
             connector1.addItem(connector.getID());
@@ -104,8 +87,7 @@ public class NewConfigPage extends Page {
     }
 
     private void showTaskDetailsPage() {
-        TaskDetailsPage page = new TaskDetailsPage(newFile, pageManager, storage, pluginManager, editorManager, settingsManager);
-        pageManager.show(page);
+        navigator.showTaskDetailsPage(newFile);
     }
 
     private void validate() {
@@ -119,19 +101,25 @@ public class NewConfigPage extends Page {
         String id1 = (String) connector1.getValue();
         String id2 = (String) connector2.getValue();
 
-        Descriptor descriptor1 = pluginManager.getDescriptor(id1);
+        Descriptor descriptor1 = services.getPluginManager().getDescriptor(id1);
         ConnectorDataHolder d1 = new ConnectorDataHolder(id1,
                 // TODO replace with factory.createDefaultConfig()
                 descriptor1.createDefaultConfig());
-        Descriptor descriptor2 = pluginManager.getDescriptor(id2);
+        Descriptor descriptor2 = services.getPluginManager().getDescriptor(id2);
         ConnectorDataHolder d2 = new ConnectorDataHolder(id2,
                 descriptor2.createDefaultConfig());
         this.newFile = new TAFile(nameStr, d1, d2);
-        storage.saveConfig(newFile);
+        services.getConfigStorage().saveConfig(newFile);
     }
 
     @Override
     public String getPageTitle() {
         return "New synchronization config";
+    }
+
+    @Override
+    public Component getUI() {
+        loadDataConnectors();
+        return form;
     }
 }

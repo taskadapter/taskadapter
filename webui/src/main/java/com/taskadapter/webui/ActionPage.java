@@ -3,10 +3,7 @@ package com.taskadapter.webui;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.model.GTask;
 import com.taskadapter.webui.action.ConfirmationPage;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.ProgressIndicator;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 
 import java.util.List;
 
@@ -27,7 +24,6 @@ public abstract class ActionPage extends Page {
         this.connectorFrom = connectorFrom;
         this.connectorTo = connectorTo;
         mainPanel = new VerticalLayout();
-        setCompositionRoot(mainPanel);
         buildInitialPage();
     }
 
@@ -44,7 +40,7 @@ public abstract class ActionPage extends Page {
         goButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                synchronized (getApplication()) {
+                synchronized (navigator.getApplication()) {
                     buildLoadingPage();
                 }
                 new LoadWorker().start();
@@ -81,7 +77,7 @@ public abstract class ActionPage extends Page {
         public void run() {
             loadData();
             // must synchronize changes over application
-            synchronized (getApplication()) {
+            synchronized (navigator.getApplication()) {
                 showAfterDataLoaded();
             }
         }
@@ -92,7 +88,7 @@ public abstract class ActionPage extends Page {
         public void run() {
             saveData();
             // must synchronize changes over application
-            synchronized (getApplication()) {
+            synchronized (navigator.getApplication()) {
                 showAfterExport();
             }
         }
@@ -129,4 +125,8 @@ public abstract class ActionPage extends Page {
         }
     }
 
+    @Override
+    public Component getUI() {
+        return mainPanel;
+    }
 }

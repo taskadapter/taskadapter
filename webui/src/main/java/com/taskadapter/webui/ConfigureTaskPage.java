@@ -1,12 +1,10 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.web.PluginEditorFactory;
-import com.taskadapter.web.SettingsManager;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.vaadin.ui.*;
 
@@ -14,58 +12,29 @@ import com.vaadin.ui.*;
  * @author Alexey Skorokhodov
  */
 public class ConfigureTaskPage extends Page {
+
+    private Panel panel = new Panel();
     private TAFile file;
-    private PageManager pageManager;
-    private EditorManager editorManager;
-    private ConfigStorage configStorage;
-    private SettingsManager settingsManager;
     private TextField name;
     private ConfigEditor panel1;
     private ConfigEditor panel2;
 
-    public ConfigureTaskPage(TAFile file, PageManager pageManager, EditorManager editorManager, ConfigStorage configStorage, SettingsManager settingsManager) {
-        this.file = file;
-        this.pageManager = pageManager;
-        this.editorManager = editorManager;
-        this.configStorage = configStorage;
-        this.settingsManager = settingsManager;
-        buildUI();
+    public ConfigureTaskPage() {
     }
 
     private void buildUI() {
-        Panel panel = new Panel();
-        setCompositionRoot(panel);
-
+        panel.removeAllComponents();
         HorizontalLayout buttonsLayout = new HorizontalLayout();
-
-        Button applyButton = new Button("Apply");
-        applyButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                save();
-            }
-        });
-        buttonsLayout.addComponent(applyButton);
 
         Button saveButton = new Button("Save");
         saveButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 save();
-                goBack();
+                navigator.showTaskDetailsPage(file);
             }
         });
         buttonsLayout.addComponent(saveButton);
-
-        Button cancelButton = new Button("Cancel");
-        cancelButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                goBack();
-            }
-        });
-        buttonsLayout.addComponent(cancelButton);
-
         panel.addComponent(buttonsLayout);
 
         name = new TextField("Name");
@@ -90,29 +59,39 @@ public class ConfigureTaskPage extends Page {
         return connectorDataHolder.getData().getLabel();
     }
 
+    public void setFile(TAFile file) {
+        this.file = file;
+    }
+
     private void save() {
         try {
             panel1.validateAll();
             panel2.validateAll();
 
-            ConnectorConfig c1 = panel1.getConfig();
-            ConnectorConfig c2 = panel2.getConfig();
-
-            ConnectorDataHolder d1 = new ConnectorDataHolder(file.getConnectorDataHolder1().getType(), c1);
-            ConnectorDataHolder d2 = new ConnectorDataHolder(file.getConnectorDataHolder2().getType(), c2);
-
-            configStorage.saveConfig(new TAFile((String) name.getValue(), d1, d2));
-            getWindow().showNotification("Saved");
+            TAFile newFile = loadFromForm();
+            // TODO bug here: a new config file is created if the name is changed so we have both old and new files.
+            services.getConfigStorage().saveConfig(newFile);
+            navigator.showNotification("Saved", "All saved OK");
 
         } catch (ValidationException e) {
-            getWindow().showNotification("Validation", e.getMessage(), Window.Notification.TYPE_WARNING_MESSAGE);
+            navigator.showError("Validation", e.getMessage());
         }
+    }
+
+    private TAFile  loadFromForm() {
+        ConnectorConfig c1 = panel1.getConfig();
+        ConnectorConfig c2 = panel2.getConfig();
+
+        ConnectorDataHolder d1 = new ConnectorDataHolder(file.getConnectorDataHolder1().getType(), c1);
+        ConnectorDataHolder d2 = new ConnectorDataHolder(file.getConnectorDataHolder2().getType(), c2);
+
+        return new TAFile((String) name.getValue(), d1, d2);
     }
 
     private ConfigEditor getPanel(ConnectorDataHolder dataHolder) {
         ConnectorConfig configData = dataHolder.getData();
-        PluginEditorFactory editorFactory = editorManager.getEditorFactory(dataHolder.getType());
-        return editorFactory.createEditor(configData, settingsManager);
+        PluginEditorFactory editorFactory = services.getEditorManager().getEditorFactory(dataHolder.getType());
+        return editorFactory.createEditor(configData, services.getSettingsManager());
     }
 
     @Override
@@ -120,7 +99,9 @@ public class ConfigureTaskPage extends Page {
         return file.getName();
     }
 
-    private void goBack() {
-        pageManager.show(PageManager.TASK_DETAILS_PAGE_ID_PREFFIX + file.getName());
+    @Override
+    public Component getUI() {
+        buildUI();
+        return panel;
     }
 }

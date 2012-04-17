@@ -1,8 +1,6 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.config.TAFile;
-import com.taskadapter.web.SettingsManager;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.themes.BaseTheme;
@@ -11,19 +9,15 @@ import java.util.Arrays;
 
 public class TaskToolbarPanel extends HorizontalLayout {
     private Button cloneButton = new Button("Clone config");
-    private final PageManager pageManager;
-    private ConfigStorage storage;
+    private final Navigator navigator;
     private final TAFile file;
-    private ConfigureTaskPage configureTaskPage;
+    private Services services;
 
-    // TODO refactor this huge list of parameters!
-    public TaskToolbarPanel(PageManager pageManager, ConfigStorage storage, TAFile file, EditorManager editorManager, SettingsManager settingsManager) {
-        this.pageManager = pageManager;
-        this.storage = storage;
+    public TaskToolbarPanel(Navigator navigator, TAFile file, Services services) {
+        this.navigator = navigator;
         this.file = file;
+        this.services = services;
 
-        configureTaskPage = new ConfigureTaskPage(file, pageManager, editorManager, storage, settingsManager);
-        pageManager.registerPage(PageManager.CONFIGURE_TASK_PAGE_ID_PREFFIX + file.getName(), configureTaskPage);
 
         buildUI();
     }
@@ -35,7 +29,7 @@ public class TaskToolbarPanel extends HorizontalLayout {
         configureButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
-                showConfigurePage();
+                navigator.showConfigureTaskPage(file);
             }
         });
         addComponent(configureButton);
@@ -51,8 +45,8 @@ public class TaskToolbarPanel extends HorizontalLayout {
                         new MessageDialog.Callback() {
                             public void onDialogResult(String answer) {
                                 if (answer.equals(YES)) {
-                                    storage.cloneConfig(file);
-                                    pageManager.show(PageManager.TASKS);
+                                    services.getConfigStorage().cloneConfig(file);
+                                    navigator.show(Navigator.TASKS);
                                 }
                             }
                         }
@@ -74,11 +68,6 @@ public class TaskToolbarPanel extends HorizontalLayout {
     }
 
     private void showDeletePage() {
-        DeletePage page = new DeletePage(pageManager, storage, file);
-        pageManager.show(page);
-    }
-
-    private void showConfigurePage() {
-        pageManager.show(configureTaskPage);
+        navigator.showDeleteFilePage(file);
     }
 }

@@ -4,6 +4,7 @@ import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.ui.*;
 
 public class SupportPage extends Page {
+    private VerticalLayout layout = new VerticalLayout();
 
     private static final String FIELD_NAME = "Your Name";
     private static final String FIELD_EMAIL = "Your E-mail";
@@ -14,7 +15,6 @@ public class SupportPage extends Page {
     }
 
     private void buildUI() {
-        VerticalLayout layout = new VerticalLayout();
 
         Form feedbackForm = new Form();
         feedbackForm.setDescription("You can send your comments to Task Adapter developers using this form");
@@ -53,11 +53,15 @@ public class SupportPage extends Page {
         buttonsBar.addComponent(new Button("Cancel"));
 
         layout.addComponent(feedbackForm);
-        setCompositionRoot(layout);
     }
 
     @Override
     public String getPageTitle() {
         return "Feedback";
+    }
+
+    @Override
+    public Component getUI() {
+        return layout;
     }
 }

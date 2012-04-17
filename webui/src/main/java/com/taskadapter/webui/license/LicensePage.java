@@ -5,6 +5,7 @@ import com.taskadapter.license.LicenseChangeListener;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.license.LicenseValidationException;
 import com.taskadapter.webui.Page;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -30,8 +31,6 @@ public class LicensePage extends Page implements LicenseChangeListener {
         licenseInfoPanel = new LicenseInfoPanel();
         licenseInfoPanel.setVisible(false);
         layout.addComponent(licenseInfoPanel);
-
-        setCompositionRoot(layout);
     }
 
     private void updateFormBasingOnLicense() {
@@ -57,6 +56,11 @@ public class LicensePage extends Page implements LicenseChangeListener {
     @Override
     public String getPageTitle() {
         return "Info";
+    }
+
+    @Override
+    public Component getUI() {
+        return layout;
     }
 
     @Override

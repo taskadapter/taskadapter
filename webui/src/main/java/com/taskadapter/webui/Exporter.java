@@ -14,14 +14,14 @@ public class Exporter {
     private static final String OVERWRITE = "Overwrite";
     private static final String CANCEL = "Cancel";
 
-    private PageManager pageManager;
+    private Navigator navigator;
     private PluginManager pluginManager;
     private ConnectorDataHolder sourceDataHolder;
     private ConnectorDataHolder destinationDataHolder;
     private String taFileName;
 
-    public Exporter(PageManager pageManager, PluginManager pluginManager, final ConnectorDataHolder sourceDataHolder, final ConnectorDataHolder destinationDataHolder, String taFileName) {
-        this.pageManager = pageManager;
+    public Exporter(Navigator navigator, PluginManager pluginManager, final ConnectorDataHolder sourceDataHolder, final ConnectorDataHolder destinationDataHolder, String taFileName) {
+        this.navigator = navigator;
         this.pluginManager = pluginManager;
         this.sourceDataHolder = sourceDataHolder;
         this.destinationDataHolder = destinationDataHolder;
@@ -34,8 +34,8 @@ public class Exporter {
             destinationDataHolder.getData().validateForSave();
             processBasedOnDestinationConnectorType();
         } catch (ValidationException e) {
-            EditorUtil.showError(pageManager.getMainWindow(), "Failed validation!", e.getMessage());
-            pageManager.show(PageManager.CONFIGURE_TASK_PAGE_ID_PREFFIX + taFileName);
+            navigator.showError("Failed validation!", e.getMessage());
+            navigator.show(Navigator.CONFIGURE_TASK_PAGE_ID_PREFFIX + taFileName);
         }
     }
 
@@ -61,7 +61,7 @@ public class Exporter {
             );
             messageDialog.setWidth("425px");
 
-            pageManager.getMainWindow().addWindow(messageDialog);
+            navigator.addWindow(messageDialog);
         } else {
             processFileAction(OVERWRITE);
         }
@@ -79,12 +79,12 @@ public class Exporter {
 
     private void startUpdateFile() {
         UpdateFilePage page = new UpdateFilePage(getConnector(sourceDataHolder), getConnector(destinationDataHolder));
-        pageManager.show(page);
+        navigator.show(page);
     }
 
     private void startRegularExport() {
         ExportPage page = new ExportPage(getConnector(sourceDataHolder), getConnector(destinationDataHolder));
-        pageManager.show(page);
+        navigator.show(page);
     }
 
 

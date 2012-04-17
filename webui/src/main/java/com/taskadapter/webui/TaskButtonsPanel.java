@@ -14,14 +14,14 @@ public class TaskButtonsPanel extends HorizontalLayout {
     private static Resource ICON_LEFT = new ThemeResource("../../icons/left.png");
     private static Resource ICON_RIGHT = new ThemeResource("../../icons/right.png");
 
-    private PluginManager pluginManager;
-    private PageManager pageManager;
+    private Navigator navigator;
     private TAFile file;
+    private Services services;
 
-    public TaskButtonsPanel(PluginManager pluginManager, PageManager pageManager, TAFile file) {
-        this.pluginManager = pluginManager;
-        this.pageManager = pageManager;
+    public TaskButtonsPanel(Navigator navigator, TAFile file, Services services) {
+        this.navigator = navigator;
         this.file = file;
+        this.services = services;
         buildUI();
     }
 
@@ -58,7 +58,7 @@ public class TaskButtonsPanel extends HorizontalLayout {
         Button button = new NativeButton();
         button.setHeight(ARROW_BUTTON_HEIGHT, UNITS_PIXELS);
         button.setIcon(icon);
-        final Exporter exporter = new Exporter(pageManager, pluginManager, sourceDataHolder, destinationDataHolder, file.getName());
+        final Exporter exporter = new Exporter(navigator, services.getPluginManager(), sourceDataHolder, destinationDataHolder, file.getName());
         button.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
@@ -69,7 +69,7 @@ public class TaskButtonsPanel extends HorizontalLayout {
     }
 
     private Descriptor getDescriptor(ConnectorDataHolder desc) {
-        return pluginManager.getDescriptor(desc.getType());
+        return services.getPluginManager().getDescriptor(desc.getType());
     }
 //    private ExportAction createExportAction(ConnectorDataHolder holder1, ConnectorDataHolder holder2) {
 //        ConfigSaver sourceConfigSaver = new MyConfigSaver(holder1);
