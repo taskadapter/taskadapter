@@ -13,7 +13,7 @@ import java.util.List;
 public class MyTree extends CustomComponent {
     private static final int MAX_ROWS_BEFORE_SCROLLBAR = 15;
 
-    private TreeTable tr;
+    private TreeTable tree;
     private List<GTask> rootLevelTasks;
 
     public MyTree() {
@@ -21,11 +21,11 @@ public class MyTree extends CustomComponent {
     }
 
     private void buildUI() {
-        tr = new TreeTable();
-        tr.setSizeFull();
-        tr.addContainerProperty("Action", CheckBox.class, null);
-        tr.addContainerProperty("ID", String.class, null);
-        tr.addContainerProperty("Summary", String.class, null);
+        tree = new TreeTable();
+        tree.setSizeFull();
+        tree.addContainerProperty("Action", CheckBox.class, null);
+        tree.addContainerProperty("ID", String.class, null);
+        tree.addContainerProperty("Summary", String.class, null);
 
 //        Object basics = tr.addItem(new Object[]{"Basics", null}, "basics");
 //        Object name = tr.addItem(new Object[]{"Name", new TextField()}, "name");
@@ -35,7 +35,7 @@ public class MyTree extends CustomComponent {
 //        tr.setParent(name, basics);
 //        tr.setParent(type, basics);
 //        tr.setParent(enabled, basics);
-        setCompositionRoot(tr);
+        setCompositionRoot(tree);
     }
 
 //    public int countAllTasks() {
@@ -50,16 +50,27 @@ public class MyTree extends CustomComponent {
 
     public void setTasks(List<GTask> rootLevelTasks) {
         this.rootLevelTasks = rootLevelTasks;
+        addTasksToTree(null, rootLevelTasks);
+
+        int rowsNumber = Math.min(tree.size() + 1, MAX_ROWS_BEFORE_SCROLLBAR);
+        tree.setPageLength(rowsNumber);
+    }
+
+    private void addTasksToTree(Object parentId, List<GTask> tasks) {
         // TODO this will add the ROOT level only
-        int i = 0;
-        for (GTask t : rootLevelTasks) {
-            String actionText = (t.getRemoteId() == null) ? "Create" : "Update";
+//        int i = 0;
+        for (GTask task : tasks) {
+            String actionText = (task.getRemoteId() == null) ? "Create" : "Update";
             CheckBox checkBox = new CheckBox(actionText);
             checkBox.setValue(true);
-            tr.addItem(new Object[]{checkBox, t.getId() + "", t.getSummary()}, i++);
+            Object newItemId = tree.addItem(new Object[]{checkBox, task.getId() + "", task.getSummary()}, task.getId());
+            if (parentId != null) {
+                tree.setParent(newItemId, parentId);
+            }
+            if (task.hasChildren()) {
+                addTasksToTree(newItemId, task.getChildren());
+                tree.setCollapsed(newItemId, false);
+            }
         }
-
-        int rowsNumber = Math.min(tr.size() + 1, MAX_ROWS_BEFORE_SCROLLBAR);
-        tr.setPageLength(rowsNumber);
     }
 }

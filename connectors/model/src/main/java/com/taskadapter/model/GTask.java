@@ -157,12 +157,20 @@ public class GTask {
         this.dueDate = dueDate;
     }
 
+    /**
+     *
+     * @return the list of children of an empty list when no children. never NULL.
+     */
     public List<GTask> getChildren() {
         return children;
     }
 
     public void setChildren(List<GTask> children) {
         this.children = children;
+    }
+
+    public boolean hasChildren() {
+        return ! children.isEmpty();
     }
 
     @Override
