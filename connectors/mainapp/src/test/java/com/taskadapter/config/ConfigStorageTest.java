@@ -47,7 +47,7 @@ public class ConfigStorageTest {
         assertEquals("Password is corrupted", ENCRYPTED_PASSWORD, serverInfo.getPassword());
 
         //cleanup
-        configStorage.delete(encryptedPasswordConfig);
+        configStorage.delete(testConfigFile);
     }
 
     @Test
@@ -82,7 +82,7 @@ public class ConfigStorageTest {
         assertEquals("Password is corrupted", PLAIN_PASSWORD, webServerInfo.getPassword());
 
         //cleanup
-        configStorage.delete(plainPasswordConfig);
+        configStorage.delete(testConfigFile);
     }
 
     private TAFile findTestConfig(String taFileName) {
