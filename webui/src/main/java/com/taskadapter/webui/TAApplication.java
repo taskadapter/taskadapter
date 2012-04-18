@@ -30,7 +30,7 @@ public class TAApplication extends Application {
 
         VerticalLayout layout = new VerticalLayout();
         layout.setWidth("100%");
-        navigator = new Navigator(this, layout, services);
+        navigator = new Navigator(layout, services);
 
         mainWindow.setContent(layout);
         setMainWindow(mainWindow);

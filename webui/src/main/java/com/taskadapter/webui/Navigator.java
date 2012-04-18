@@ -32,13 +32,11 @@ public class Navigator {
     private HorizontalLayout navigationPanel;
     private HorizontalLayout currentComponentArea = new HorizontalLayout();
     private HorizontalLayout mainArea = new HorizontalLayout();
-    private Application application;
     private VerticalLayout layout;
     private Services services;
     private Label updateMessage;
 
-    public Navigator(Application application, VerticalLayout layout, Services services) {
-        this.application = application;
+    public Navigator(VerticalLayout layout, Services services) {
         this.layout = layout;
         this.services = services;
         menuLinkBuilder = new MenuLinkBuilder(this);
@@ -165,10 +163,10 @@ public class Navigator {
     }
 
     public void addWindow(MessageDialog messageDialog) {
-        application.getMainWindow().addWindow(messageDialog);
+        layout.getApplication().getMainWindow().addWindow(messageDialog);
     }
 
     public Application getApplication() {
-        return application;
+        return layout.getApplication();
     }
 }
