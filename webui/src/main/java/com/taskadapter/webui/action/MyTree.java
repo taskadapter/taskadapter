@@ -57,8 +57,6 @@ public class MyTree extends CustomComponent {
     }
 
     private void addTasksToTree(Object parentId, List<GTask> tasks) {
-        // TODO this will add the ROOT level only
-//        int i = 0;
         for (GTask task : tasks) {
             String actionText = (task.getRemoteId() == null) ? "Create" : "Update";
             CheckBox checkBox = new CheckBox(actionText);
