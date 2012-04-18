@@ -13,14 +13,9 @@ public class ConfigStorage {
     private static final String FILE_EXTENSION = "ta_conf";
 
     private PluginManager pluginManager;
-    private StorageListener listener;
 
     public ConfigStorage(PluginManager pluginManager) {
         this.pluginManager = pluginManager;
-    }
-
-    public void setListener(StorageListener l) {
-        this.listener = l;
     }
 
     private static String buildFileName(String name) {
@@ -82,9 +77,6 @@ public class ConfigStorage {
                 fullFileName = taFile.getAbsoluteFilePath();
             }
             MyIOUtils.writeToFile(fullFileName, fileContents);
-            if (this.listener != null) {
-                this.listener.notifySomethingChanged();
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -93,9 +85,6 @@ public class ConfigStorage {
     public void delete(TAFile config) {
         File file = new File(config.getAbsoluteFilePath());
         file.delete();
-        if (this.listener != null) {
-            this.listener.notifySomethingChanged();
-        }
     }
 
     private String createAbsoluteFilePathForNewConfig(TAFile file) {
@@ -111,9 +100,5 @@ public class ConfigStorage {
     public void cloneConfig(TAFile file) {
         TAFile cfg = new TAFile("Copy of " + file.getConfigLabel(), file.getConnectorDataHolder1(), file.getConnectorDataHolder2());
         this.saveConfig(cfg);
-
-        if (this.listener != null) {
-            this.listener.notifySomethingChanged();
-        }
     }
 }
