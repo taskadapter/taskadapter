@@ -5,6 +5,7 @@ import com.taskadapter.connector.definition.FileBasedConnector;
 import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
+import com.taskadapter.web.configeditor.FieldsMappingPanel;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
@@ -17,7 +18,7 @@ public class ConfirmationPage extends CustomComponent {
     private List<GTask> rootLevelTasks;
     private Connector connectorTo;
     private Button.ClickListener goListener;
-    //	private FieldsMappingPanel fieldMappingPanel;
+    private FieldsMappingPanel fieldMappingPanel;
     private Map<FIELD, Mapping> mapping;
     MyTree connectorTree;
 
@@ -45,10 +46,8 @@ public class ConfirmationPage extends CustomComponent {
         go.addListener(goListener);
         layout.addComponent(go);
         setCompositionRoot(layout);
-//		Panel section = MyUtils.createExpandableSection(composite, "Configure fields to export");
-//
-//		this.fieldMappingPanel = new FieldsMappingPanel(section,
-//				connectorTo.getDescriptor().getAvailableFieldsProvider(), connectorTo.getPartialConfig().getFieldsMapping());
+		this.fieldMappingPanel = new FieldsMappingPanel(connectorTo.getDescriptor().getAvailableFieldsProvider(), connectorTo.getConfig().getFieldsMapping());
+        layout.addComponent(fieldMappingPanel);
     }
 
     protected void okPressed() {

@@ -38,8 +38,8 @@ public class FieldsMappingPanel extends GridLayout implements Validatable {
      *
      * @see ConfigEditor#addFieldsMappingPanel(com.taskadapter.connector.definition.AvailableFieldsProvider, java.util.Map)
      */
-    FieldsMappingPanel(AvailableFieldsProvider availableFieldsProvider,
-                       Map<GTaskDescriptor.FIELD, Mapping> fieldsMapping) {
+    public FieldsMappingPanel(AvailableFieldsProvider availableFieldsProvider,
+                              Map<GTaskDescriptor.FIELD, Mapping> fieldsMapping) {
         addStyleName("fields_mapping_panel");
         this.availableFieldsProvider = availableFieldsProvider;
         this.fieldsMapping = fieldsMapping;
