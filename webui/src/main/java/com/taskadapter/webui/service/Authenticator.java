@@ -1,4 +1,4 @@
-package com.taskadapter.webui;
+package com.taskadapter.webui.service;
 
 public class Authenticator {
     private boolean loggedIn;

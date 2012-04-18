@@ -1,5 +1,6 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.webui.service.Services;
 import com.vaadin.ui.Component;
 
 /**

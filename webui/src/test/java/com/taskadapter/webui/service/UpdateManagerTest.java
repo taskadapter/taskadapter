@@ -1,5 +1,6 @@
-package com.taskadapter.webui;
+package com.taskadapter.webui.service;
 
+import com.taskadapter.webui.service.UpdateManager;
 import org.junit.Before;
 import org.junit.Test;
 

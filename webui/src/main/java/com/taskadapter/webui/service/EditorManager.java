@@ -1,4 +1,4 @@
-package com.taskadapter.webui;
+package com.taskadapter.webui.service;
 
 import com.taskadapter.PluginManager;
 import com.taskadapter.PluginsFileParser;

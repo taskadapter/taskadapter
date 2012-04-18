@@ -1,5 +1,6 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.webui.service.Services;
 import com.vaadin.Application;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;

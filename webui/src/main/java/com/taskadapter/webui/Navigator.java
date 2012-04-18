@@ -2,6 +2,8 @@ package com.taskadapter.webui;
 
 import com.taskadapter.config.TAFile;
 import com.taskadapter.webui.license.LicensePage;
+import com.taskadapter.webui.service.Services;
+import com.taskadapter.webui.service.UpdateManager;
 import com.vaadin.Application;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
