@@ -15,7 +15,7 @@ public class DeletePage extends Page {
 
     private void buildUI() {
         layout.removeAllComponents();
-        layout.addComponent(new Label("Delete config '" + file.getName() + "' ?"));
+        layout.addComponent(new Label("Delete config '" + file.getConfigLabel() + "' ?"));
         Button deleteButton = new Button("Yes");
         deleteButton.addListener(new Button.ClickListener() {
             @Override
@@ -33,7 +33,7 @@ public class DeletePage extends Page {
 
     @Override
     public String getPageTitle() {
-        return file.getName();
+        return file.getConfigLabel();
     }
 
     @Override

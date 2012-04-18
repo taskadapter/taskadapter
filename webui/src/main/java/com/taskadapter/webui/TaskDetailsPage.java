@@ -26,7 +26,7 @@ public class TaskDetailsPage extends Page {
     }
 
     private void setTask() {
-        name.setValue("Name : " + file.getName());
+        name.setValue("Name : " + file.getConfigLabel());
     }
 
     public void setFile(TAFile file) {
@@ -35,7 +35,7 @@ public class TaskDetailsPage extends Page {
 
     @Override
     public String getPageTitle() {
-        return file.getName();
+        return file.getConfigLabel();
     }
 
     @Override

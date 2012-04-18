@@ -59,6 +59,7 @@ public class ConfigStorage {
                     String fileBody = MyIOUtils.loadFile(file.getAbsolutePath());
                     ConfigFileParser parser = new ConfigFileParser(pluginManager);
                     TAFile taFile = parser.parse(fileBody);
+                    taFile.setAbsoluteFilePath(file.getAbsolutePath());
                     files.add(taFile);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -66,7 +67,6 @@ public class ConfigStorage {
 
             }
         }
-
         return files;
     }
 
@@ -75,7 +75,12 @@ public class ConfigStorage {
         try {
             File rootDir = new File(getRootFolderName());
             rootDir.mkdirs();
-            String fullFileName = getAbsoluteFilePath(taFile);
+            String fullFileName;
+            if (taFile.getAbsoluteFilePath() ==null) {
+                fullFileName = createAbsoluteFilePathForNewConfig(taFile);
+            } else {
+                fullFileName = taFile.getAbsoluteFilePath();
+            }
             MyIOUtils.writeToFile(fullFileName, fileContents);
             if (this.listener != null) {
                 this.listener.notifySomethingChanged();
@@ -83,19 +88,18 @@ public class ConfigStorage {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public void delete(TAFile config) {
-        File file = new File(getAbsoluteFilePath(config));
+        File file = new File(config.getAbsoluteFilePath());
         file.delete();
         if (this.listener != null) {
             this.listener.notifySomethingChanged();
         }
     }
 
-    private String getAbsoluteFilePath(TAFile file) {
-        String fileName = buildFileName(file.getName());
+    private String createAbsoluteFilePathForNewConfig(TAFile file) {
+        String fileName = buildFileName(file.getConfigLabel());
         return getRootFolderName() + "/" + fileName + "." + FILE_EXTENSION;
     }
 
@@ -105,7 +109,7 @@ public class ConfigStorage {
     }
 
     public void cloneConfig(TAFile file) {
-        TAFile cfg = new TAFile("Copy of " + file.getName(), file.getConnectorDataHolder1(), file.getConnectorDataHolder2());
+        TAFile cfg = new TAFile("Copy of " + file.getConfigLabel(), file.getConnectorDataHolder1(), file.getConnectorDataHolder2());
         this.saveConfig(cfg);
 
         if (this.listener != null) {

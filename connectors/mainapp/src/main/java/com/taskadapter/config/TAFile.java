@@ -1,7 +1,8 @@
 package com.taskadapter.config;
 
 public class TAFile {
-    private String name;
+    private String absoluteFilePath;
+    private String configLabel;
     private ConnectorDataHolder connectorDataHolder1;
     private ConnectorDataHolder connectorDataHolder2;
 
@@ -11,15 +12,24 @@ public class TAFile {
     public TAFile() {
     }
 
-    public TAFile(String name, ConnectorDataHolder d1, ConnectorDataHolder d2) {
-        this.name = name;
+    public TAFile(String configLabel, ConnectorDataHolder d1, ConnectorDataHolder d2) {
+        this.configLabel = configLabel;
         this.connectorDataHolder1 = d1;
         this.connectorDataHolder2 = d2;
     }
 
     // TODO document this semi-deep-clone constructor or better yet - delete it!
     public TAFile(TAFile source) {
-        this(source.getName(), source.getConnectorDataHolder1(), source.getConnectorDataHolder2());
+        this(source.getConfigLabel(), source.getConnectorDataHolder1(), source.getConnectorDataHolder2());
+        this.absoluteFilePath = source.getAbsoluteFilePath();
+    }
+
+    public void setConfigLabel(String configLabel) {
+        this.configLabel = configLabel;
+    }
+
+    public void setAbsoluteFilePath(String absoluteFilePath) {
+        this.absoluteFilePath = absoluteFilePath;
     }
 
     public ConnectorDataHolder getConnectorDataHolder1() {
@@ -38,61 +48,44 @@ public class TAFile {
         this.connectorDataHolder2 = connectorDataHolder2;
     }
 
-    public String getName() {
-        return name;
+    public String getConfigLabel() {
+        return configLabel;
+    }
+
+    public String getAbsoluteFilePath() {
+        return absoluteFilePath;
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result
-                + ((connectorDataHolder1 == null) ? 0 : connectorDataHolder1.hashCode());
-        result = prime * result
-                + ((connectorDataHolder2 == null) ? 0 : connectorDataHolder2.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
-    }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+        TAFile taFile = (TAFile) o;
+
+        if (absoluteFilePath != null ? !absoluteFilePath.equals(taFile.absoluteFilePath) : taFile.absoluteFilePath != null)
             return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (configLabel != null ? !configLabel.equals(taFile.configLabel) : taFile.configLabel != null) return false;
+        if (connectorDataHolder1 != null ? !connectorDataHolder1.equals(taFile.connectorDataHolder1) : taFile.connectorDataHolder1 != null)
             return false;
-        }
-        TAFile other = (TAFile) obj;
-        if (connectorDataHolder1 == null) {
-            if (other.connectorDataHolder1 != null) {
-                return false;
-            }
-        } else if (!connectorDataHolder1.equals(other.connectorDataHolder1)) {
+        if (connectorDataHolder2 != null ? !connectorDataHolder2.equals(taFile.connectorDataHolder2) : taFile.connectorDataHolder2 != null)
             return false;
-        }
-        if (connectorDataHolder2 == null) {
-            if (other.connectorDataHolder2 != null) {
-                return false;
-            }
-        } else if (!connectorDataHolder2.equals(other.connectorDataHolder2)) {
-            return false;
-        }
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
-            return false;
-        }
+
         return true;
     }
 
     @Override
+    public int hashCode() {
+        int result = absoluteFilePath != null ? absoluteFilePath.hashCode() : 0;
+        result = 31 * result + (configLabel != null ? configLabel.hashCode() : 0);
+        result = 31 * result + (connectorDataHolder1 != null ? connectorDataHolder1.hashCode() : 0);
+        result = 31 * result + (connectorDataHolder2 != null ? connectorDataHolder2.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
-        return name;
+        return configLabel;
     }
 
 }

@@ -92,8 +92,8 @@ public class ConfigStorageTest {
         TAFile testConfigFile = null;
 
         //find test config
-        for(TAFile taFile : taFilesList) {
-            if(taFile.getName().equals(taFileName)) {
+        for (TAFile taFile : taFilesList) {
+            if (taFile.getConfigLabel().equals(taFileName)) {
                 testConfigFile = taFile;
                 break;
             }

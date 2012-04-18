@@ -46,7 +46,7 @@ public class TasksPage extends Page {
     }
 
     private void addTaskToTable(final TAFile file, int i) {
-        Button button = new Button(file.getName());
+        Button button = new Button(file.getConfigLabel());
         button.setStyleName(BaseTheme.BUTTON_LINK);
         button.addListener(new Button.ClickListener() {
             @Override

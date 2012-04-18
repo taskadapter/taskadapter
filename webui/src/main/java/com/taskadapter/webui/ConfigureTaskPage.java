@@ -38,7 +38,7 @@ public class ConfigureTaskPage extends Page {
         panel.addComponent(buttonsLayout);
 
         name = new TextField("Name");
-        name.setValue(file.getName());
+        name.setValue(file.getConfigLabel());
         panel.addComponent(name);
 
         TabSheet tabSheet = new TabSheet();
@@ -68,9 +68,8 @@ public class ConfigureTaskPage extends Page {
             panel1.validateAll();
             panel2.validateAll();
 
-            TAFile newFile = loadFromForm();
-            // TODO bug here: a new config file is created if the name is changed so we have both old and new files.
-            services.getConfigStorage().saveConfig(newFile);
+            updateFileWithDataInForm();
+            services.getConfigStorage().saveConfig(file);
             navigator.showNotification("Saved", "All saved OK");
 
         } catch (ValidationException e) {
@@ -78,14 +77,15 @@ public class ConfigureTaskPage extends Page {
         }
     }
 
-    private TAFile  loadFromForm() {
+    private void updateFileWithDataInForm() {
         ConnectorConfig c1 = panel1.getConfig();
         ConnectorConfig c2 = panel2.getConfig();
-
         ConnectorDataHolder d1 = new ConnectorDataHolder(file.getConnectorDataHolder1().getType(), c1);
         ConnectorDataHolder d2 = new ConnectorDataHolder(file.getConnectorDataHolder2().getType(), c2);
 
-        return new TAFile((String) name.getValue(), d1, d2);
+        file.setConfigLabel((String) name.getValue());
+        file.setConnectorDataHolder1(d1);
+        file.setConnectorDataHolder2(d2);
     }
 
     private ConfigEditor getPanel(ConnectorDataHolder dataHolder) {
@@ -96,7 +96,7 @@ public class ConfigureTaskPage extends Page {
 
     @Override
     public String getPageTitle() {
-        return file.getName();
+        return file.getConfigLabel();
     }
 
     @Override

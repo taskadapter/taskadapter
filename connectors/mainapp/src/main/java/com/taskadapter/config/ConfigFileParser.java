@@ -54,7 +54,7 @@ public class ConfigFileParser {
     public String convertToJSonString(TAFile file) {
         Gson gson = new Gson();
 
-        String line0 = LINE0_PREFIX + file.getName();
+        String line0 = LINE0_PREFIX + file.getConfigLabel();
 
         String line1 = LINE1_PREFIX + file.getConnectorDataHolder1().getType();
         ConnectorConfig data1 = file.getConnectorDataHolder1().getData();

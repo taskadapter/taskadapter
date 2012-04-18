@@ -18,7 +18,7 @@ public class ConfigFileParserTest {
         ConfigFileParser parser = new ConfigFileParser(new PluginManager());
         TAFile file = parser.parse(contents);
 
-        assertEquals("Redmine DEMO", file.getName());
+        assertEquals("Redmine DEMO", file.getConfigLabel());
         assertEquals("Redmine REST", file.getConnectorDataHolder1().getType());
         assertEquals("Microsoft Project", file.getConnectorDataHolder2().getType());
     }
