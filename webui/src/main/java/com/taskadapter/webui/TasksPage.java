@@ -18,13 +18,6 @@ public class TasksPage extends Page {
     private Table table;
 
     public TasksPage() {
-        // TODO init
-//        services.getConfigStorage().setListener(new StorageListener() {
-//            @Override
-//            public void notifySomethingChanged() {
-//                reloadConfigs();
-//            }
-//        });
         buildUI();
     }
 
