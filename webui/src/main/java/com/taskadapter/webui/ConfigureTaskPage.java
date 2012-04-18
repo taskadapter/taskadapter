@@ -7,13 +7,14 @@ import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.vaadin.ui.*;
+import com.vaadin.ui.themes.BaseTheme;
 
 /**
  * @author Alexey Skorokhodov
  */
 public class ConfigureTaskPage extends Page {
 
-    private Panel panel = new Panel();
+    private VerticalLayout layout = new VerticalLayout();
     private TAFile file;
     private TextField name;
     private ConfigEditor panel1;
@@ -23,7 +24,9 @@ public class ConfigureTaskPage extends Page {
     }
 
     private void buildUI() {
-        panel.removeAllComponents();
+        layout.removeAllComponents();
+        layout.setSpacing(true);
+        addLinkToTaskOverviewPage();
         HorizontalLayout buttonsLayout = new HorizontalLayout();
 
         Button saveButton = new Button("Save");
@@ -35,11 +38,11 @@ public class ConfigureTaskPage extends Page {
             }
         });
         buttonsLayout.addComponent(saveButton);
-        panel.addComponent(buttonsLayout);
+        layout.addComponent(buttonsLayout);
 
         name = new TextField("Name");
         name.setValue(file.getConfigLabel());
-        panel.addComponent(name);
+        layout.addComponent(name);
 
         TabSheet tabSheet = new TabSheet();
         tabSheet.setSizeUndefined();
@@ -52,7 +55,19 @@ public class ConfigureTaskPage extends Page {
         panel2 = getPanel(rightConnectorDataHolder);
         tabSheet.addTab(panel2, getPanelCaption(rightConnectorDataHolder));
 
-        panel.addComponent(tabSheet);
+        layout.addComponent(tabSheet);
+    }
+
+    private void addLinkToTaskOverviewPage() {
+        Button button = new Button(file.getConfigLabel());
+        button.setStyleName(BaseTheme.BUTTON_LINK);
+        button.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                navigator.showTaskDetailsPage(file);
+            }
+        });
+        layout.addComponent(button);
     }
 
     private String getPanelCaption(ConnectorDataHolder connectorDataHolder) {
@@ -96,12 +111,12 @@ public class ConfigureTaskPage extends Page {
 
     @Override
     public String getPageTitle() {
-        return file.getConfigLabel();
+        return "Configure \"" + file.getConfigLabel() + "\"";
     }
 
     @Override
     public Component getUI() {
         buildUI();
-        return panel;
+        return layout;
     }
 }
