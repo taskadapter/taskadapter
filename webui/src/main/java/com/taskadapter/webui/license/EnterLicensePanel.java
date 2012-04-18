@@ -19,7 +19,7 @@ public class EnterLicensePanel extends VerticalLayout {
         addComponent(new Label("UNREGISTERED"));
 
         licenseArea = new TextArea("Paste the complete contents of the license file here");
-        licenseArea.setWidth("275px");
+        licenseArea.setStyleName("licenseArea");
 
         addComponent(licenseArea);
 
