@@ -13,7 +13,7 @@ import java.util.List;
 public class MyTree extends CustomComponent {
     private static final int MAX_ROWS_BEFORE_SCROLLBAR = 15;
 
-    TreeTable tr;
+    private TreeTable tr;
     private List<GTask> rootLevelTasks;
 
     public MyTree() {
@@ -26,19 +26,6 @@ public class MyTree extends CustomComponent {
         tr.addContainerProperty("Action", CheckBox.class, null);
         tr.addContainerProperty("ID", String.class, null);
         tr.addContainerProperty("Summary", String.class, null);
-//        tr.setCellStyleGenerator(new Table.CellStyleGenerator() {
-//            public String getStyle(Object itemId, Object propertyId) {
-//                if (propertyId == null) {
-//                    return "";
-//                }
-//                String id = (String) propertyId;
-//                if (id.equals("Back out") || id.equals("Details")) {
-//                    return "centered";
-//                }
-//                return "";
-//            }
-//        });
-
 
 //        Object basics = tr.addItem(new Object[]{"Basics", null}, "basics");
 //        Object name = tr.addItem(new Object[]{"Name", new TextField()}, "name");
