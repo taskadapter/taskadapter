@@ -87,8 +87,6 @@ public class Navigator {
     }
 
     public void registerPage(String id, Page page) {
-        page.setNavigator(this);
-        page.setServices(services);
         pages.put(id, page);
     }
 
@@ -102,6 +100,7 @@ public class Navigator {
     }
 
     public void show(Page page) {
+        setServicesToPage(page);
         /* // TODO: uncomment for production
             if (!authenticator.isLoggedIn()) {
                 show(pages.get(LOGIN_PAGE));
@@ -118,6 +117,11 @@ public class Navigator {
 
         navigationPanel.addComponent(menuLinkBuilder.createButtonLink("Home", HOME));
         navigationPanel.addComponent(new Label(page.getPageTitle()));
+    }
+
+    private void setServicesToPage(Page page) {
+        page.setNavigator(this);
+        page.setServices(services);
     }
 
     // TODO these 3 showXX methods are not in line with the other show(). refactor!
