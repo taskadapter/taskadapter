@@ -1,7 +1,10 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.core.Updater;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * @author Alexey Skorokhodov
@@ -12,8 +15,8 @@ public class UpdateFilePage extends ActionPage {
     private final Updater updater;
 //    private final String mspLocation;
 
-    public UpdateFilePage(Connector connectorFrom, Connector connectorTo) {
-        super(connectorFrom, connectorTo);
+    public UpdateFilePage(Connector connectorFrom, Connector connectorTo, TAFile taFile) {
+        super(connectorFrom, connectorTo, taFile);
         updater = new Updater(connectorTo, connectorFrom);
 //        mspLocation = connectorTo.getPartialConfig().getDataLocation();
     }
@@ -49,6 +52,15 @@ public class UpdateFilePage extends ActionPage {
                 + "\ndoes not have any tasks previously exported to (or loaded from) another system "
                 + "\nusing \"Save Remote IDs\" option.";
 
+    }
+
+    @Override
+    protected VerticalLayout getDoneInfoPanel() {
+        VerticalLayout donePanel = new VerticalLayout();
+        donePanel.addComponent(new Label(updater.getNumberOfUpdatedTasks() + " tasks were updated in file "
+                + updater.getFilePath() + " with the data from " + updater.getRemoteSystemURI()));
+
+        return donePanel;
     }
 
     @Override
