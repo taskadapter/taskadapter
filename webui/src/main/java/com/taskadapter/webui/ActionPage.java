@@ -1,9 +1,11 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.model.GTask;
 import com.taskadapter.webui.action.ConfirmationPage;
 import com.vaadin.ui.*;
+import com.vaadin.ui.themes.BaseTheme;
 
 import java.util.List;
 
@@ -14,15 +16,17 @@ public abstract class ActionPage extends Page {
     protected final VerticalLayout mainPanel;
     protected final Connector connectorFrom;
     protected final Connector connectorTo;
+    protected final TAFile taFile;
 
     protected ProgressIndicator loadProgress = new ProgressIndicator();
     protected ProgressIndicator saveProgress = new ProgressIndicator();
     protected List<GTask> loadedTasks;
     private ConfirmationPage confirmationPage;
 
-    public ActionPage(Connector connectorFrom, Connector connectorTo) {
+    public ActionPage(Connector connectorFrom, Connector connectorTo, TAFile file) {
         this.connectorFrom = connectorFrom;
         this.connectorTo = connectorTo;
+        this.taFile = file;
         mainPanel = new VerticalLayout();
         buildInitialPage();
     }
@@ -52,6 +56,8 @@ public abstract class ActionPage extends Page {
     protected abstract String getInitialText();
 
     protected abstract String getNoDataLoadedText();
+
+    protected abstract VerticalLayout getDoneInfoPanel();
 
     protected void buildLoadingPage() {
         mainPanel.removeAllComponents();
@@ -96,7 +102,19 @@ public abstract class ActionPage extends Page {
 
     private void showAfterExport() {
         mainPanel.removeAllComponents();
-        mainPanel.addComponent(new Label("DONE"));
+        mainPanel.addComponent(getDoneInfoPanel());
+
+        Button button = new Button("Connector config page");
+        button.setStyleName(BaseTheme.BUTTON_LINK);
+        button.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+
+                navigator.showTaskDetailsPage(taFile);
+            }
+        });
+
+        mainPanel.addComponent(button);
     }
 
     protected void buildConfirmationUI() {

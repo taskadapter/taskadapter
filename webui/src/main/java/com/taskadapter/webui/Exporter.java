@@ -79,15 +79,14 @@ public class Exporter {
     }
 
     private void startUpdateFile() {
-        UpdateFilePage page = new UpdateFilePage(getConnector(sourceDataHolder), getConnector(destinationDataHolder));
+        UpdateFilePage page = new UpdateFilePage(getConnector(sourceDataHolder), getConnector(destinationDataHolder), taFile);
         navigator.show(page);
     }
 
     private void startRegularExport() {
-        ExportPage page = new ExportPage(getConnector(sourceDataHolder), getConnector(destinationDataHolder));
+        ExportPage page = new ExportPage(getConnector(sourceDataHolder), getConnector(destinationDataHolder), taFile);
         navigator.show(page);
     }
-
 
     private Connector getConnector(ConnectorDataHolder connectorDataHolder) {
         final PluginFactory factory = pluginManager.getPluginFactory(connectorDataHolder.getType());
