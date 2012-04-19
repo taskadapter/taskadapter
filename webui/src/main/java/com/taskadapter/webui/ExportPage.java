@@ -30,11 +30,8 @@ public class ExportPage extends ActionPage {
 
     @Override
     protected void loadData() {
-        final TaskSaver taskSaver = connectorTo.getDescriptor()
-                .getTaskSaver(connectorTo.getConfig());
         runner = new SyncRunner();
         runner.setConnectorFrom(connectorFrom);
-        runner.setTaskSaver(taskSaver);
         try {
             this.loadedTasks = runner.load(null);
         } catch (RuntimeException e) {
@@ -97,8 +94,10 @@ public class ExportPage extends ActionPage {
     @Override
     protected void saveData() {
         saveProgress.setValue(0);
-        runner.setTasks(loadedTasks);
         MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
+        final TaskSaver taskSaver = connectorTo.getDescriptor()
+                .getTaskSaver(connectorTo.getConfig());
+        runner.setTaskSaver(taskSaver);
         result = runner.save(wrapper);
     }
 
