@@ -11,14 +11,11 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class UpdateFilePage extends ActionPage {
 
-    //private List<GTask> existingTasksInFile;
     private final Updater updater;
-//    private final String mspLocation;
 
     public UpdateFilePage(Connector connectorFrom, Connector connectorTo, TAFile taFile) {
         super(connectorFrom, connectorTo, taFile);
         updater = new Updater(connectorTo, connectorFrom);
-//        mspLocation = connectorTo.getPartialConfig().getDataLocation();
     }
 
     @Override
@@ -42,7 +39,7 @@ public class UpdateFilePage extends ActionPage {
 
     @Override
     public String getPageTitle() {
-        return "Update the file";  //To change body of implemented methods use File | Settings | File Templates.
+        return "Update the file";
     }
 
     @Override
