@@ -54,18 +54,19 @@ public class ExportPage extends ActionPage {
         return "No data was loaded using the given criteria";
     }
 
+    // TODO Alexey: maybe move this "done" thing into a separate "Page" class?
     @Override
     protected VerticalLayout getDoneInfoPanel() {
         VerticalLayout donePanel = new VerticalLayout();
 
         String LOG_DATE_FORMAT = "d/MMM HH:mm";
         SimpleDateFormat dateFormatter = new SimpleDateFormat(LOG_DATE_FORMAT);
-        String msg = "";
 
         String time = dateFormatter.format(Calendar.getInstance().getTime());
         donePanel.addComponent(new Label(time + ": Completed export from " + connectorFrom.getConfig().getSourceLocation() +
                 " to " + connectorTo.getConfig().getTargetLocation() + "."));
 
+        String msg = "";
         if (result.getMessage() != null) {
             msg += " " + result.getMessage();
         }
@@ -86,7 +87,7 @@ public class ExportPage extends ActionPage {
             donePanel.addComponent(new Label(msg));
         }
 
-        return donePanel;  //To change body of implemented methods use File | Settings | File Templates.
+        return donePanel;
     }
 
     private String getMessageForTask(TaskError e) {
