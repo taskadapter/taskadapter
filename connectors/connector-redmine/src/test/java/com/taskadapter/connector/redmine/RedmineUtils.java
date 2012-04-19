@@ -14,8 +14,9 @@ import java.util.Random;
 public class RedmineUtils {
     public static List<GTask> createIssues(RedmineConfig redmineConfig, String projectKey, int issuesNumber) {
         List<GTask> issues = new ArrayList<GTask>(issuesNumber);
-        RedmineManager mgr = new RedmineManager(RedmineTestConfig.getURI(),
-                RedmineTestConfig.getUserLogin(), RedmineTestConfig.getPassword());
+        RedmineManager mgr = new RedmineManager(RedmineTestConfig.getURI());
+        mgr.setLogin(RedmineTestConfig.getUserLogin());
+        mgr.setPassword(RedmineTestConfig.getPassword());
 
         List<Issue> issuesToCreate = generateIssues(issuesNumber);
 

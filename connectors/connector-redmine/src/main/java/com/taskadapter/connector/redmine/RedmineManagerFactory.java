@@ -10,7 +10,9 @@ public class RedmineManagerFactory {
         if (serverInfo.isUseAPIKeyInsteadOfLoginPassword()) {
             mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getApiKey());
         } else {
-            mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getUserName(), serverInfo.getPassword());
+            mgr = new RedmineManager(serverInfo.getHost());
+            mgr.setLogin(serverInfo.getUserName());
+            mgr.setPassword(serverInfo.getPassword());
         }
         return mgr;
     }

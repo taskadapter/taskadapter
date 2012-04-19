@@ -32,7 +32,10 @@ public class RedmineTester implements IDataConnectorTester {
     private static RedmineManager getRedmineManager(ConnectorConfig config) {
         RedmineConfig rmConfig = (RedmineConfig) config;
         WebServerInfo info = rmConfig.getServerInfo();
-        return new RedmineManager(info.getHost(), info.getUserName(), info.getPassword());
+        RedmineManager manager = new RedmineManager(info.getHost());
+        manager.setLogin(info.getUserName());
+        manager.setPassword(info.getPassword());
+        return manager;
 
     }
 }

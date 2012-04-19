@@ -119,8 +119,9 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         if (isAPIOptionSelected()) {
             mgr = new RedmineManager((String) serverURL.getValue(), (String) redmineAPIKey.getValue());
         } else {
-            mgr = new RedmineManager((String) serverURL.getValue(),
-                    (String) login.getValue(), (String) password.getValue());
+            mgr = new RedmineManager((String) serverURL.getValue());
+            mgr.setLogin((String) login.getValue());
+            mgr.setPassword((String) password.getValue());
         }
         return mgr;
     }
