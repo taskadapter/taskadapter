@@ -34,8 +34,7 @@ public class RedmineProjectProcessor implements ProjectProcessor {
 
             RedmineManager mgr = editor.getRedmineManager();
             LoadProjectJob job = new LoadProjectJob(editor, mgr, projectKey);
-            // TODO implement this
-            System.out.println("execute the JOB here");
+            job.run();
         } catch (ValidationException e) {
             EditorUtil.show(editor.getWindow(), "Can't load project", e);
         }

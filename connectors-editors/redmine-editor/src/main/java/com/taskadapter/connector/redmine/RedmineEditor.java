@@ -128,12 +128,17 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
 
     @Override
     public void notifyProjectLoaded(Project project) {
-        String msg = "Key:  " + project.getIdentifier()
-                + "\nName: " + project.getName()
-                + "\nCreated: " + project.getCreatedOn()
-                + "\nUpdated: " + project.getUpdatedOn();
-        msg += addNullSafe("Homepage", project.getHomepage());
-        msg += addNullSafe("Description", project.getDescription());
+        String msg;
+        if (project == null) {
+            msg = "<br>Project with the given key is not found";
+        } else {
+            msg = "<br>Key:  " + project.getIdentifier()
+                    + "<br>Name: " + project.getName()
+                    + "<br>Created: " + project.getCreatedOn()
+                    + "<br>Updated: " + project.getUpdatedOn();
+            msg += addNullSafe("<br>Homepage", project.getHomepage());
+            msg += addNullSafe("<br>Description", project.getDescription());
+        }
         EditorUtil.show(getWindow(), "Project Info", msg);
     }
 
