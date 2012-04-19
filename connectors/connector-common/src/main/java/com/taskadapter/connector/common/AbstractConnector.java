@@ -61,9 +61,4 @@ public abstract class AbstractConnector<T extends ConnectorConfig> implements Co
         return config;
     }
 
-    @Override
-    public void setConfig(T config) {
-        this.config = config;
-    }
-
 }

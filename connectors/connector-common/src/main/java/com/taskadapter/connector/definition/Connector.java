@@ -33,7 +33,5 @@ public interface Connector<T extends ConnectorConfig> {
 
     public T getConfig();
 
-    public void setConfig(T c);
-
     public Descriptor getDescriptor();
 }
