@@ -123,7 +123,7 @@ public abstract class ActionPage extends Page {
             public void buttonClick(Button.ClickEvent event) {
                 save();
             }
-        });
+        }, services);
         mainPanel.addComponent(confirmationPage);
         mainPanel.setExpandRatio(confirmationPage, 1f); // use all available space
     }
