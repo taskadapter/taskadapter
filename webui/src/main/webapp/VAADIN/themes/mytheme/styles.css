@@ -14,11 +14,11 @@
 }
 
 .trial_mode_area {
-    background-color: red;
+    background-color: #f0ff1a;
     width: 150px;
 }
 .trial_mode_label {
-    color: #ffffff;
+    color: #3215ff;
     font-weight: bolder;
 }
 
