@@ -13,6 +13,15 @@
     margin: 15px 0 13px 13px;
 }
 
+.trial_mode_area {
+    background-color: red;
+    width: 150px;
+}
+.trial_mode_label {
+    color: #ffffff;
+    font-weight: bolder;
+}
+
 .navigation_panel {
     font-size: 16px;
     font-weight: bold;
