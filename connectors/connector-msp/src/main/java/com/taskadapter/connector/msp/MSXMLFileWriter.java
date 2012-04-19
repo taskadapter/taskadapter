@@ -57,7 +57,7 @@ public class MSXMLFileWriter {
         project.setAutoOutlineLevel(true);
         project.setAutoOutlineNumber(true);
 
-        setAliases(this.config, project);
+        setAliases(project);
         addTasks(syncResult, project, null, rows, keepTaskId);
 
         ProjectHeader header = project.getProjectHeader();
@@ -150,7 +150,7 @@ public class MSXMLFileWriter {
         return realFile.getAbsolutePath();
     }
 
-    void setAliases(MSPConfig c, ProjectFile project) {
+    void setAliases(ProjectFile project) {
         project.setTaskFieldAlias(FIELD_DURATION_UNDEFINED, ALIAS_IS_DURATION_UNDEFINED);
         project.setTaskFieldAlias(FIELD_WORK_UNDEFINED, ALIAS_IS_WORK_UNDEFINED);
 
