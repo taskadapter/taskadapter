@@ -5,10 +5,7 @@ import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.vaadin.data.Property;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.OptionGroup;
-import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.TextField;
+import com.vaadin.ui.*;
 import org.redmine.ta.RedmineManager;
 import org.redmine.ta.beans.Project;
 
@@ -72,8 +69,28 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
 
         addProjectPanel(this, new RedmineProjectProcessor(this));
 
-        defaultTaskType = new TextField("Default task type");
-        addComponent(defaultTaskType);
+
+        HorizontalLayout taskTypeLayout = new HorizontalLayout();
+        taskTypeLayout.setSizeUndefined();
+        taskTypeLayout.setSpacing(true);
+        taskTypeLayout.addStyleName("task_type_layout");
+
+        defaultTaskType = EditorUtil.addLabeledText(taskTypeLayout, "Default task type:",
+                "New tasks will be created with this 'tracker' (bug/task/support/feature/...)");
+
+        Button showDefaultTaskType = EditorUtil.createLookupButton(
+                this,
+                "...",
+                "Show list of available tracker types on the Redmine server",
+                "Select task type",
+                "List of available task types on the Redmine server",
+                new LoadTrackersOperation(this, new RedmineFactory()),
+                defaultTaskType,
+                true
+        );
+        taskTypeLayout.addComponent(showDefaultTaskType);
+        addComponent(taskTypeLayout);
+
 
         addFindUsersByNameElement();
     }

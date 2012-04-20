@@ -104,3 +104,9 @@
 .list_select {
     width: 300px;
 }
+
+.task_type_layout {
+    padding-left: 1px;
+    padding-top: 1px;
+    overflow: hidden;
+}
