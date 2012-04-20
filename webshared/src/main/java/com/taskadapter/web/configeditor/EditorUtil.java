@@ -113,9 +113,17 @@ public class EditorUtil {
     public static TextField addLabeledText(AbstractLayout layout, String caption, String tooltip) {
         Label label = new Label(caption);
         layout.addComponent(label);
+
+        if(layout instanceof GridLayout) {
+            ((GridLayout) layout).setComponentAlignment(label, Alignment.MIDDLE_LEFT);
+        } else if(layout instanceof AbstractOrderedLayout) {
+            ((AbstractOrderedLayout) layout).setComponentAlignment(label, Alignment.MIDDLE_LEFT);
+        }
+
         TextField field = new TextField();
         field.setDescription(tooltip);
         layout.addComponent(field);
+
         return field;
     }
 
