@@ -61,8 +61,16 @@ public class ProjectPanel extends GridLayout implements Validatable {
         addComponent(infoButton);
 
         LookupOperation loadProjectsOperation = new LoadProjectsOperation(editor, projectProcessor.getDescriptor().getPluginFactory());
-        Button projectKeyButton = EditorUtil.createLookupButton(editor, "...", "Show list of available projects on the server.",
-                loadProjectsOperation, projectKey, false);
+        Button projectKeyButton = EditorUtil.createLookupButton(
+                editor,
+                "...",
+                "Show list of available projects on the server.",
+                "Select project",
+                "List of projects on the server",
+                loadProjectsOperation,
+                projectKey,
+                false
+        );
         projectKeyButton.setEnabled(features.contains(ProjectProcessor.EditorFeature.LOAD_PROJECTS));
         addComponent(projectKeyButton);
 
@@ -73,8 +81,16 @@ public class ProjectPanel extends GridLayout implements Validatable {
         addComponent(queryId);
         LookupOperation loadSavedQueriesOperation = projectProcessor.getLoadSavedQueriesOperation(editor);
 
-        Button showQueriesButton = EditorUtil.createLookupButton(editor, "...", "Show available saved queries on the server.",
-                loadSavedQueriesOperation, queryId, false);
+        Button showQueriesButton = EditorUtil.createLookupButton(
+                editor,
+                "...",
+                "Show available saved queries on the server.",
+                "Select Query",
+                "List of saved queries on the server",
+                loadSavedQueriesOperation,
+                queryId,
+                false
+        );
         showQueriesButton.setEnabled(features.contains(ProjectProcessor.EditorFeature.LOAD_SAVED_QUERIES));
         addComponent(showQueriesButton);
     }

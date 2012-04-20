@@ -22,8 +22,12 @@ public class EditorUtil {
         }
     }
 
-    public static void showList(WindowProvider windowProvider, String title, Collection<String> items, ValueListener valueListener) {
-        ListSelectionDialog newWindow = new ListSelectionDialog(title, items, valueListener);
+    public static void showList(WindowProvider windowProvider, String windowTitle, String listTitle, Collection<String> items, ValueListener valueListener) {
+        ListSelectionDialog newWindow = new ListSelectionDialog(windowTitle, listTitle, items, valueListener);
+        newWindow.addStyleName("list_window");
+        newWindow.center();
+        newWindow.setModal(true);
+
         windowProvider.getWindow().addWindow(newWindow);
     }
 
@@ -47,8 +51,10 @@ public class EditorUtil {
         return button;
     }
 
-    public static Button createLookupButton(final WindowProvider windowProvider, final String label, String description, final LookupOperation operation, final TextField destinationForKey, final boolean useValue) {
-        Button button = new Button(label);
+    public static Button createLookupButton(final WindowProvider windowProvider, final String buttonLabel, String description,
+                                            final String windowTitle, final String listTitle,
+                                            final LookupOperation operation, final TextField destinationForKey, final boolean useValue) {
+        Button button = new Button(buttonLabel);
         button.setDescription(description);
         final LookupResultListener listener = new LookupResultListener() {
             @Override
@@ -58,15 +64,14 @@ public class EditorUtil {
                 }
             }
 
-            private void showValues(final TextField destinationForKey,
-                                    final boolean useValue,
+            private void showValues(final TextField destinationForKey, final boolean useValue,
                                     List<? extends NamedKeyedObject> objects) {
                 final Map<String, String> map = new HashMap<String, String>();
                 for (NamedKeyedObject o : objects) {
                     map.put(o.getName(), o.getKey());
                 }
 
-                showList(windowProvider, label, map.keySet(), new ValueListener() {
+                showList(windowProvider, windowTitle, listTitle, map.keySet(), new ValueListener() {
                     @Override
                     public void setValue(String value) {
                         if (useValue) {

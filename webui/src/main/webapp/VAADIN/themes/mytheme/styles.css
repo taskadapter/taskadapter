@@ -95,3 +95,12 @@
 .licenseArea {
     width: 275px;
 }
+
+.list_window {
+    width: 350px;
+    height: 500px;
+}
+
+.list_select {
+    width: 300px;
+}

@@ -81,9 +81,15 @@ public class JiraEditor extends ConfigEditor {
             lookupButtonsLayout.setStyleName("bordered_panel");
 
             jiraComponent = EditorUtil.addLabeledText(lookupButtonsLayout, "Project Component", "Component inside the Jira project");
-            Button showComponentsButton = EditorUtil.createLookupButton(jiraEditor, "...",
+            Button showComponentsButton = EditorUtil.createLookupButton(
+                    jiraEditor,
+                    "...",
                     "Show list of available components on the given server.",
-                    new LoadComponentsOperation(jiraEditor, new JiraFactory()), jiraComponent, true
+                    "Select component",
+                    "List of available components on the server",
+                    new LoadComponentsOperation(jiraEditor, new JiraFactory()),
+                    jiraComponent,
+                    true
             );
             lookupButtonsLayout.addComponent(showComponentsButton);
 
@@ -91,24 +97,42 @@ public class JiraEditor extends ConfigEditor {
             LoadVersionsOperation loadVersionsOperation = new LoadVersionsOperation(jiraEditor, new JiraFactory());
 
             affectedVersion = EditorUtil.addLabeledText(lookupButtonsLayout, "Set 'Affected version' to:", "Set this 'affected version' value when submitting issues to Jira.");
-            Button showAffectedVersion = EditorUtil.createLookupButton(jiraEditor, "...",
-                    "Show list of available versions.",
-                    loadVersionsOperation, affectedVersion, true
+            Button showAffectedVersion = EditorUtil.createLookupButton(
+                    jiraEditor,
+                    "...",
+                    "Show list of available versions",
+                    "Select version",
+                    "List of available versions",
+                    loadVersionsOperation,
+                    affectedVersion,
+                    true
             );
             lookupButtonsLayout.addComponent(showAffectedVersion);
 
             fixForVersion = EditorUtil.addLabeledText(lookupButtonsLayout, "Set 'Fix for version' to:", "Set this 'fix for version' value when submitting issues to Jira.");
-            Button showFixForVersion = EditorUtil.createLookupButton(jiraEditor, "...",
-                    "Show list of available versions.",
-                    loadVersionsOperation, fixForVersion, true
+            Button showFixForVersion = EditorUtil.createLookupButton(
+                    jiraEditor,
+                    "...",
+                    "Show list of available versions",
+                    "Select version",
+                    "List of available versions",
+                    loadVersionsOperation,
+                    fixForVersion,
+                    true
             );
             lookupButtonsLayout.addComponent(showFixForVersion);
 
 
             defaultTaskType = EditorUtil.addLabeledText(lookupButtonsLayout, "Default issue type:", "New issues will be created with this 'issue type' (bug/improvement/task...)");
-            Button showDefaultTaskType = EditorUtil.createLookupButton(jiraEditor, "...",
+            Button showDefaultTaskType = EditorUtil.createLookupButton(
+                    jiraEditor,
+                    "...",
                     "Show list of available issue types on the Jira server",
-                    new LoadIssueTypesOperation(jiraEditor, new JiraFactory()), defaultTaskType, true
+                    "Select issue type",
+                    "List of available issue types on the Jira server",
+                    new LoadIssueTypesOperation(jiraEditor, new JiraFactory()),
+                    defaultTaskType,
+                    true
             );
             lookupButtonsLayout.addComponent(showDefaultTaskType);
 

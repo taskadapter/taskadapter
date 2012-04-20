@@ -7,20 +7,24 @@ import com.vaadin.ui.Window;
 import java.util.Collection;
 
 public class ListSelectionDialog extends Window {
-    private String title;
+    private String windowTitle;
+    private String listTitle;
     private Collection<String> items;
     private EditorUtil.ValueListener valueListener;
 
-    public ListSelectionDialog(String title, Collection<String> items, EditorUtil.ValueListener valueListener) {
-        this.title = title;
+    public ListSelectionDialog(String windowTitle, String listTitle, Collection<String> items, EditorUtil.ValueListener valueListener) {
+        this.listTitle = listTitle;
         this.items = items;
         this.valueListener = valueListener;
         buildUI();
+        setCaption(windowTitle);
     }
 
     private void buildUI() {
-        final ListSelect listSelect = new ListSelect(title, items);
+        final ListSelect listSelect = new ListSelect(listTitle, items);
         listSelect.setNullSelectionAllowed(false);
+        listSelect.addStyleName("list_select");
+        listSelect.setWidth("300px");
         addComponent(listSelect);
 
         Button closeButton = new Button("Select");
