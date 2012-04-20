@@ -2,10 +2,7 @@ package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.definition.ProjectInfo;
 import com.taskadapter.connector.definition.ValidationException;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
+import com.vaadin.ui.*;
 
 import java.util.Collection;
 
@@ -43,8 +40,11 @@ public class ProjectPanel extends GridLayout implements Validatable {
         setMargin(true);
         setSpacing(true);
 
-        addComponent(new Label("Project key:"));
-        this.projectKey = new TextField();
+        Label projectKeyLabel = new Label("Project key:");
+        addComponent(projectKeyLabel);
+        setComponentAlignment(projectKeyLabel, Alignment.MIDDLE_LEFT);
+
+        projectKey = new TextField();
         addComponent(projectKey);
 
         Collection<ProjectProcessor.EditorFeature> features = projectProcessor.getSupportedFeatures();
@@ -74,11 +74,15 @@ public class ProjectPanel extends GridLayout implements Validatable {
         projectKeyButton.setEnabled(features.contains(ProjectProcessor.EditorFeature.LOAD_PROJECTS));
         addComponent(projectKeyButton);
 
-        addComponent(new Label("Query ID:"));
-        this.queryId = new TextField();
+        Label queryIdLabel = new Label("Query ID:");
+        addComponent(queryIdLabel);
+        setComponentAlignment(queryIdLabel, Alignment.MIDDLE_LEFT);
+
+        queryId = new TextField();
         queryId.setDescription("Custom query/filter ID (number). You need to create a query on the server before accessing it from here.\n"
                 + "Read help for more details.");
         addComponent(queryId);
+
         LookupOperation loadSavedQueriesOperation = projectProcessor.getLoadSavedQueriesOperation(editor);
 
         Button showQueriesButton = EditorUtil.createLookupButton(
