@@ -114,23 +114,14 @@ public class EditorUtil {
         Label label = new Label(caption);
         layout.addComponent(label);
 
-        if(layout instanceof GridLayout) {
-            ((GridLayout) layout).setComponentAlignment(label, Alignment.MIDDLE_LEFT);
-        } else if(layout instanceof AbstractOrderedLayout) {
-            ((AbstractOrderedLayout) layout).setComponentAlignment(label, Alignment.MIDDLE_LEFT);
+        if(layout instanceof Layout.AlignmentHandler) {
+            ((Layout.AlignmentHandler) layout).setComponentAlignment(label, Alignment.MIDDLE_LEFT);
         }
 
         TextField field = new TextField();
         field.setDescription(tooltip);
         layout.addComponent(field);
 
-        return field;
-    }
-
-    public static TextField createLabeledTextWidth(String label, String description, int width) {
-        TextField field = new TextField(label);
-        field.setDescription(description);
-        field.setWidth(width, Sizeable.UNITS_PIXELS);
         return field;
     }
 
