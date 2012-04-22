@@ -16,9 +16,9 @@ import java.util.List;
 /**
  * @author Alexey Skorokhodov
  */
-public class LoadSavedQueriesOperation extends LookupOperation {
+public class RedmineLoadSavedQueriesOperation extends LookupOperation {
 
-    public LoadSavedQueriesOperation(ConfigEditor editor, PluginFactory factory) {
+    public RedmineLoadSavedQueriesOperation(ConfigEditor editor, PluginFactory factory) {
         super(editor, factory);
     }
 
