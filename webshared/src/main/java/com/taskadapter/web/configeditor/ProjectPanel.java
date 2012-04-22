@@ -7,6 +7,8 @@ import com.vaadin.ui.*;
 import java.util.Collection;
 
 /**
+ * "Project info" panel with Project Key, Query Id.
+ *
  * @author Alexey Skorokhodov
  */
 public class ProjectPanel extends GridLayout implements Validatable {
