@@ -60,6 +60,9 @@ public class MyTree extends CustomComponent {
         for (GTask task : tasks) {
             String actionText = (task.getRemoteId() == null) ? "Create" : "Update";
             CheckBox checkBox = new CheckBox(actionText);
+            // TODO disabled because of http://www.hostedredmine.com/issues/64169
+            // ("checkboxes in the tree on "export these tasks" page are ignored")
+            checkBox.setEnabled(false);
             checkBox.setValue(true);
             Object newItemId = tree.addItem(new Object[]{checkBox, task.getId() + "", task.getSummary()}, task.getId());
             if (parentId != null) {
