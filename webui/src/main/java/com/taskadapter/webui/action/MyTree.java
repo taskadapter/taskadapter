@@ -26,25 +26,10 @@ public class MyTree extends CustomComponent {
         tree.addContainerProperty("Action", CheckBox.class, null);
         tree.addContainerProperty("ID", String.class, null);
         tree.addContainerProperty("Summary", String.class, null);
-
-//        Object basics = tr.addItem(new Object[]{"Basics", null}, "basics");
-//        Object name = tr.addItem(new Object[]{"Name", new TextField()}, "name");
-//        Object type = tr.addItem(new Object[]{"Type", new ComboBox()}, "type");
-//        Object enabled = tr.addItem(new Object[]{"Enabled", new CheckBox()}, "enabled");
-
-//        tr.setParent(name, basics);
-//        tr.setParent(type, basics);
-//        tr.setParent(enabled, basics);
         setCompositionRoot(tree);
     }
 
-//    public int countAllTasks() {
-//        // TODO
-//        return -1;
-//    }
-
     public List<GTask> getSelectedRootLevelTasks() {
-        // TODO
         return rootLevelTasks;
     }
 
