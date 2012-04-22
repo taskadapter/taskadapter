@@ -95,6 +95,8 @@ public class ProjectPanel extends GridLayout implements Validatable {
                 queryId,
                 false
         );
+        // TODO maybe set "enabled" basing on whether or not loadSavedQueriesOperation is NULL?
+        // then can delete the whole "features" mechanism
         showQueriesButton.setEnabled(features.contains(ProjectProcessor.EditorFeature.LOAD_SAVED_QUERIES));
         addComponent(showQueriesButton);
     }
