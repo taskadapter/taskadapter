@@ -21,7 +21,7 @@ public class TaskDetailsPage extends Page {
         layout.setSpacing(true);
         name = new Label();
         layout.addComponent(name);
-        layout.addComponent(new TaskToolbarPanel(navigator, file, services));
+        layout.addComponent(new TaskToolbarPanel(navigator, file));
         layout.addComponent(new TaskButtonsPanel(navigator, file, services));
     }
 

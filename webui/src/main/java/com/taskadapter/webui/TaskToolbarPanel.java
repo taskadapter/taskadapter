@@ -12,14 +12,10 @@ public class TaskToolbarPanel extends HorizontalLayout {
     private Button cloneButton = new Button("Clone config");
     private final Navigator navigator;
     private final TAFile file;
-    private Services services;
 
-    public TaskToolbarPanel(Navigator navigator, TAFile file, Services services) {
+    public TaskToolbarPanel(Navigator navigator, TAFile file) {
         this.navigator = navigator;
         this.file = file;
-        this.services = services;
-
-
         buildUI();
     }
 
@@ -39,19 +35,7 @@ public class TaskToolbarPanel extends HorizontalLayout {
         cloneButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                final String YES = "Yes";
-                String NO = "No";
-
-                getWindow().addWindow(new MessageDialog("Confirm Clone", "Clone the selected config?", Arrays.asList(YES, NO),
-                        new MessageDialog.Callback() {
-                            public void onDialogResult(String answer) {
-                                if (answer.equals(YES)) {
-                                    services.getConfigStorage().cloneConfig(file);
-                                    navigator.show(Navigator.TASKS);
-                                }
-                            }
-                        }
-                ));
+                navigator.showConfirmClonePage(file);
             }
         });
         addComponent(cloneButton);
@@ -61,14 +45,10 @@ public class TaskToolbarPanel extends HorizontalLayout {
         deleteButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
-                showDeletePage();
+                navigator.showDeleteFilePage(file);
             }
         });
         addComponent(deleteButton);
 
-    }
-
-    private void showDeletePage() {
-        navigator.showDeleteFilePage(file);
     }
 }

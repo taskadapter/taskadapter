@@ -9,21 +9,17 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * @author Alexey Skorokhodov
  */
-public class DeletePage extends Page {
+public class ConfirmationPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
     private TAFile file;
+    private String questionText;
+    private Button.ClickListener actionListener;
 
     private void buildUI() {
         layout.removeAllComponents();
-        layout.addComponent(new Label("Delete config '" + file.getConfigLabel() + "' ?"));
+        layout.addComponent(new Label(questionText));
         Button deleteButton = new Button("Yes");
-        deleteButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                services.getConfigStorage().delete(file);
-                navigator.show(Navigator.TASKS);
-            }
-        });
+        deleteButton.addListener(actionListener);
         layout.addComponent(deleteButton);
     }
 
@@ -40,5 +36,13 @@ public class DeletePage extends Page {
     public Component getUI() {
         buildUI();
         return layout;
+    }
+
+    public void setQuestionText(String questionText) {
+        this.questionText = questionText;
+    }
+
+    public void setActionListener(Button.ClickListener actionListener) {
+        this.actionListener = actionListener;
     }
 }

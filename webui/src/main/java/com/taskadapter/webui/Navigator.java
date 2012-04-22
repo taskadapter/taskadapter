@@ -8,6 +8,7 @@ import com.vaadin.Application;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,7 +55,7 @@ public class Navigator {
         registerPage(NEW_CONFIG_PAGE, new NewConfigPage());
         registerPage(CONFIGURE_TASK_PAGE, new ConfigureTaskPage());
         registerPage(TASK_DETAILS_PAGE, new TaskDetailsPage());
-        registerPage(DELETE_PAGE, new DeletePage());
+        registerPage(DELETE_PAGE, new ConfirmationPage());
     }
 
     private void buildUI() {
@@ -126,7 +127,7 @@ public class Navigator {
         page.setServices(services);
     }
 
-    // TODO these 3 showXX methods are not in line with the other show(). refactor!
+    // TODO these 4 showXX methods are not in line with the other show(). refactor!
     public void showConfigureTaskPage(TAFile file) {
         ConfigureTaskPage page = (ConfigureTaskPage) pages.get(CONFIGURE_TASK_PAGE);
         page.setFile(file);
@@ -139,9 +140,31 @@ public class Navigator {
         show(page);
     }
 
-    public void showDeleteFilePage(TAFile file) {
-        DeletePage page = (DeletePage) pages.get(DELETE_PAGE);
+    public void showDeleteFilePage(final TAFile file) {
+        ConfirmationPage page = (ConfirmationPage) pages.get(DELETE_PAGE);
         page.setFile(file);
+        page.setQuestionText("Delete config '" + file.getConfigLabel() + "' ?");
+        page.setActionListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                services.getConfigStorage().delete(file);
+                show(Navigator.TASKS);
+            }
+        });
+        show(page);
+    }
+
+    public void showConfirmClonePage(final TAFile file) {
+        ConfirmationPage page = (ConfirmationPage) pages.get(DELETE_PAGE);
+        page.setFile(file);
+        page.setQuestionText("Clone config '" + file.getConfigLabel() + "' ?");
+        page.setActionListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                services.getConfigStorage().cloneConfig(file);
+                show(Navigator.TASKS);
+            }
+        });
         show(page);
     }
 
