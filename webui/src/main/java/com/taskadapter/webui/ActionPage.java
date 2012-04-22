@@ -3,7 +3,7 @@ package com.taskadapter.webui;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.model.GTask;
-import com.taskadapter.webui.action.ConfirmationPage;
+import com.taskadapter.webui.action.ConfirmExportPage;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.BaseTheme;
 
@@ -21,7 +21,7 @@ public abstract class ActionPage extends Page {
     protected ProgressIndicator loadProgress = new ProgressIndicator();
     protected ProgressIndicator saveProgress = new ProgressIndicator();
     protected List<GTask> loadedTasks;
-    private ConfirmationPage confirmationPage;
+    private ConfirmExportPage confirmExportPage;
 
     public ActionPage(Connector connectorFrom, Connector connectorTo, TAFile file) {
         this.connectorFrom = connectorFrom;
@@ -118,18 +118,18 @@ public abstract class ActionPage extends Page {
     }
 
     protected void buildConfirmationUI() {
-        confirmationPage = new ConfirmationPage(loadedTasks, connectorTo, new Button.ClickListener() {
+        confirmExportPage = new ConfirmExportPage(loadedTasks, connectorTo, new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 save();
             }
         }, services);
-        mainPanel.addComponent(confirmationPage);
-        mainPanel.setExpandRatio(confirmationPage, 1f); // use all available space
+        mainPanel.addComponent(confirmExportPage);
+        mainPanel.setExpandRatio(confirmExportPage, 1f); // use all available space
     }
 
     protected void save() {
-        loadedTasks = confirmationPage.getSelectedRootLevelTasks();
+        loadedTasks = confirmExportPage.getSelectedRootLevelTasks();
 
         if (!loadedTasks.isEmpty()) {
             saveProgress = new ProgressIndicator();

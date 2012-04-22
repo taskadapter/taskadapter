@@ -17,7 +17,7 @@ import com.vaadin.ui.VerticalLayout;
 import java.util.List;
 import java.util.Map;
 
-public class ConfirmationPage extends CustomComponent {
+public class ConfirmExportPage extends CustomComponent {
     private List<GTask> rootLevelTasks;
     private Connector connectorTo;
     private Button.ClickListener goListener;
@@ -25,7 +25,7 @@ public class ConfirmationPage extends CustomComponent {
     private FieldsMappingPanel fieldMappingPanel;
     private MyTree connectorTree;
 
-    public ConfirmationPage(List<GTask> rootLevelTasks, Connector destinationConnector, Button.ClickListener goListener, Services services) {
+    public ConfirmExportPage(List<GTask> rootLevelTasks, Connector destinationConnector, Button.ClickListener goListener, Services services) {
         this.rootLevelTasks = rootLevelTasks;
         this.connectorTo = destinationConnector;
         this.goListener = goListener;
