@@ -35,7 +35,6 @@ public class MSPEditor extends ConfigEditor {
     private TextField durationText;
     private TextField workText;
     private SettingsManager settingsManager;
-    private static final String TEXT_WIDTH = "500px";
 
     public MSPEditor(ConnectorConfig config, SettingsManager settingsManager) {
         super(config);
@@ -50,13 +49,14 @@ public class MSPEditor extends ConfigEditor {
         VerticalLayout internalStuffGroup = new VerticalLayout();
         internalStuffGroup.setCaption("MSP Text Fields to use for some internal stuff");
 
-        this.durationText = new TextField("Store 'Duration undefined' flag as:");
+        durationText = new TextField("Store 'Duration undefined' flag as:");
+        durationText.addStyleName("msp-editor-textfield");
+        durationText.setEnabled(false);
         internalStuffGroup.addComponent(durationText);
 
-        durationText.setEnabled(false);
-        this.workText = new TextField("Store 'Work undefined' flag as:");
+        workText = new TextField("Store 'Work undefined' flag as:");
+        workText.addStyleName("msp-editor-textfield");
         workText.setEnabled(false);
-
         internalStuffGroup.addComponent(workText);
 
         addComponent(internalStuffGroup);
@@ -92,7 +92,7 @@ public class MSPEditor extends ConfigEditor {
 
     private TextField createFileName(String label, String tooltip) {
         final TextField field = EditorUtil.addLabeledText(this, label, tooltip);
-        field.setWidth(TEXT_WIDTH);
+        field.addStyleName("msp-file-name-textfield");
         field.addListener(new FieldEvents.BlurListener() {
             public void blur(FieldEvents.BlurEvent event) {
                 addXMLExtensionIfNeeded(field);

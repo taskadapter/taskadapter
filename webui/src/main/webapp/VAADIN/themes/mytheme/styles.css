@@ -114,3 +114,15 @@
 .server-panel-textfield {
     width: 218px;
 }
+
+.redmine-editor-textfield {
+    width: 297px;
+}
+
+.msp-editor-textfield {
+    width: 240px;
+}
+
+.msp-file-name-textfield {
+    width: 450px;
+}

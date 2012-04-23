@@ -44,6 +44,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
     private void buildUI() {
         serverURL = new TextField("Redmine URL:");
         serverURL.setInputPrompt("http://myserver:3000/myredminelocation");
+        serverURL.addStyleName("redmine-editor-textfield");
         addComponent(serverURL);
 
         authOptionsGroup.setNullSelectionAllowed(false);
@@ -58,13 +59,15 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         addComponent(authOptionsGroup);
 
         redmineAPIKey = new PasswordField("API access key:");
+        redmineAPIKey.addStyleName("redmine-editor-textfield");
         addComponent(redmineAPIKey);
 
-        login = new TextField();
-        login.setCaption("Login");
+        login = new TextField("Login");
+        login.addStyleName("redmine-editor-textfield");
         addComponent(login);
 
         password = new PasswordField("Password");
+        password.addStyleName("redmine-editor-textfield");
         addComponent(password);
 
         addProjectPanel(this, new RedmineProjectProcessor(this));
