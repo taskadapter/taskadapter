@@ -20,10 +20,10 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
         LicenseManager.addLicenseChangeListener(this);
 
         setSpacing(true);
-        addStyleName("header_panel");
+        addStyleName("header-panel");
 
         Label label = new Label("Task Adapter");
-        label.addStyleName("header_logo_label");
+        label.addStyleName("header-logo-label");
         addComponent(label);
         setExpandRatio(label, 2f);
 
@@ -33,11 +33,11 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
 
 
         trialLayout.setSizeFull();
-        trialLayout.addStyleName("trial_mode_area");
+        trialLayout.addStyleName("trial-mode-area");
 
         Label trialLabel = new Label(" --- TRIAL MODE --- ");
         trialLabel.setSizeUndefined();
-        trialLabel.addStyleName("trial_mode_label");
+        trialLabel.addStyleName("trial-mode-label");
         trialLayout.addComponent(trialLabel);
         trialLayout.setComponentAlignment(trialLabel, Alignment.MIDDLE_CENTER);
 

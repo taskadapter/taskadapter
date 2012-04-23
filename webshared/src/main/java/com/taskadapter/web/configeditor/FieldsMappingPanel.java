@@ -40,7 +40,7 @@ public class FieldsMappingPanel extends GridLayout implements Validatable {
      */
     public FieldsMappingPanel(AvailableFieldsProvider availableFieldsProvider,
                               Map<GTaskDescriptor.FIELD, Mapping> fieldsMapping) {
-        addStyleName("fields_mapping_panel");
+        addStyleName("fields-mapping-panel");
         this.availableFieldsProvider = availableFieldsProvider;
         this.fieldsMapping = fieldsMapping;
         setDescription("Select fields to export when SAVING data to this connector");

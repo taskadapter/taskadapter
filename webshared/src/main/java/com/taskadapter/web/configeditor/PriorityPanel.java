@@ -5,8 +5,8 @@ import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.Descriptor.Feature;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.NamedKeyedObjectImpl;
-import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.Item;
+import com.vaadin.data.util.BeanContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
@@ -51,7 +51,7 @@ public class PriorityPanel extends VerticalLayout implements Validatable {
         data.setBeanIdProperty("text");
 
         prioritiesTable = new Table("Priorities", data);
-        prioritiesTable.addStyleName("priorities_table");
+        prioritiesTable.addStyleName("priorities-table");
         prioritiesTable.setEditable(true);
 
         prioritiesTable.setColumnHeader(Priority.TEXT, TEXT_HEADER);

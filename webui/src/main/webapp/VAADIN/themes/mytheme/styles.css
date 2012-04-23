@@ -1,11 +1,11 @@
 @import "../reindeer/styles.css";
 
-.header_panel {
+.header-panel {
     background-color: #388ddd;
     color: #ffffff;
 }
 
-.header_logo_label {
+.header-logo-label {
     font-size: 33px;
     font-weight: bold;
     font-style: italic;
@@ -13,16 +13,16 @@
     margin: 15px 0 13px 13px;
 }
 
-.trial_mode_area {
+.trial-mode-area {
     background-color: #f0ff1a;
     width: 150px;
 }
-.trial_mode_label {
+.trial-mode-label {
     color: #3215ff;
     font-weight: bolder;
 }
 
-.navigation_panel {
+.navigation-panel {
     font-size: 16px;
     font-weight: bold;
 }
@@ -60,11 +60,11 @@
     border: 2px #65C5E6 solid;
 }
 
-.priorities_table {
+.priorities-table {
     font-size: 14px;
 }
 
-.fields_mapping_panel {
+.fields-mapping-panel {
     border: 2px #65C5E6 solid;
     width: 300px;
 }
@@ -92,20 +92,20 @@
     padding-top: 0;
 }
 
-.licenseArea {
+.license-area {
     width: 275px;
 }
 
-.list_window {
+.list-window {
     width: 350px;
     height: 500px;
 }
 
-.list_select {
+.list-select {
     width: 300px;
 }
 
-.task_type_layout {
+.task-type-layout {
     padding-left: 1px;
     padding-top: 1px;
     overflow: hidden;

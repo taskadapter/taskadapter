@@ -23,7 +23,7 @@ public class ListSelectionDialog extends Window {
     private void buildUI() {
         final ListSelect listSelect = new ListSelect(listTitle, items);
         listSelect.setNullSelectionAllowed(false);
-        listSelect.addStyleName("list_select");
+        listSelect.addStyleName("list-select");
         listSelect.setWidth("300px");
         addComponent(listSelect);
 

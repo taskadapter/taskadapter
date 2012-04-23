@@ -3,7 +3,6 @@ package com.taskadapter.web.configeditor;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.WindowProvider;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
 
 import java.util.Collection;
@@ -24,7 +23,7 @@ public class EditorUtil {
 
     public static void showList(WindowProvider windowProvider, String windowTitle, String listTitle, Collection<String> items, ValueListener valueListener) {
         ListSelectionDialog newWindow = new ListSelectionDialog(windowTitle, listTitle, items, valueListener);
-        newWindow.addStyleName("list_window");
+        newWindow.addStyleName("list-window");
         newWindow.center();
         newWindow.setModal(true);
 

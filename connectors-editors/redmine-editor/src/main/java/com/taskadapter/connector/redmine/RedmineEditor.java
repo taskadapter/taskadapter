@@ -73,7 +73,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         HorizontalLayout taskTypeLayout = new HorizontalLayout();
         taskTypeLayout.setSizeUndefined();
         taskTypeLayout.setSpacing(true);
-        taskTypeLayout.addStyleName("task_type_layout");
+        taskTypeLayout.addStyleName("task-type-layout");
 
         defaultTaskType = EditorUtil.addLabeledText(taskTypeLayout, "Default task type:",
                 "New tasks will be created with this 'tracker' (bug/task/support/feature/...)");
