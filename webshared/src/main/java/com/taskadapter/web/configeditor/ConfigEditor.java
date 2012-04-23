@@ -30,7 +30,7 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
 
     protected ConfigEditor(ConnectorConfig config) {
         this.config = config;
-        addStyleName("bordered_panel");
+        addStyleName("bordered-panel");
         setImmediate(false);
         setMargin(true);
         setSpacing(true);

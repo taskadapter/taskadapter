@@ -43,7 +43,7 @@ public class PriorityPanel extends VerticalLayout implements Validatable {
     }
 
     private void buildUI() {
-        addStyleName("bordered_panel");
+        addStyleName("bordered-panel");
         setSizeUndefined();
 
         Collection<Feature> features = descriptor.getSupportedFeatures();
@@ -62,7 +62,7 @@ public class PriorityPanel extends VerticalLayout implements Validatable {
         prioritiesTable.setWidth("300px");
 
 //		prioritiesTable.addSelectionListener(new SelectionAdapter() {
-//			public void widgetSelected(SelecionEvent e) {
+//			public void widgetSelected(SelectionEvent e) {
 //
 //				clearEditor();
 //

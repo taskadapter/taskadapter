@@ -36,7 +36,7 @@ public class ProjectPanel extends GridLayout implements Validatable {
     }
 
     private void init() {
-        addStyleName("bordered_panel");
+        addStyleName("bordered-panel");
         setCaption(GROUP_LABEL);
         setColumns(COLUMNS_NUMBER);
         setMargin(true);
