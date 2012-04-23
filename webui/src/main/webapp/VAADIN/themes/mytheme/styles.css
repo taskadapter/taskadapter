@@ -110,3 +110,7 @@
     padding-top: 1px;
     overflow: hidden;
 }
+
+.server-panel-textfield {
+    width: 218px;
+}

@@ -46,7 +46,7 @@ public class ServerPanel extends GridLayout implements Validatable {
                 cleanup();
             }
         });
-        hostURLText.setWidth("212px");
+        hostURLText.addStyleName("server-panel-textfield");
         addComponent(hostURLText, 1, 0);
         setComponentAlignment(hostURLText, Alignment.MIDDLE_RIGHT);
 
@@ -55,7 +55,7 @@ public class ServerPanel extends GridLayout implements Validatable {
         setComponentAlignment(logiLabel, Alignment.MIDDLE_LEFT);
 
         login = new TextField();
-        login.setWidth("212px");
+        login.addStyleName("server-panel-textfield");
         addComponent(login, 1, 1);
         setComponentAlignment(login, Alignment.MIDDLE_RIGHT);
 
@@ -64,7 +64,7 @@ public class ServerPanel extends GridLayout implements Validatable {
         setComponentAlignment(pswdLabel, Alignment.MIDDLE_LEFT);
 
         password = new PasswordField();
-        password.setWidth("212px");
+        password.addStyleName("server-panel-textfield");
         addComponent(password, 1, 2);
         setComponentAlignment(password, Alignment.MIDDLE_RIGHT);
     }
