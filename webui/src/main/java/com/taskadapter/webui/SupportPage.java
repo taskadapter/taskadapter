@@ -1,22 +1,34 @@
 package com.taskadapter.webui;
 
-import com.vaadin.data.validator.EmailValidator;
-import com.vaadin.ui.*;
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
+import com.vaadin.ui.VerticalLayout;
 
 public class SupportPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
 
+/*
     private static final String FIELD_NAME = "Your Name";
     private static final String FIELD_EMAIL = "Your E-mail";
     private static final String FIELD_MESSAGE = "Message";
+*/
 
     public SupportPage() {
         buildUI();
     }
 
     private void buildUI() {
+        layout.setSpacing(true);
+        layout.addComponent(new Label("We'll be happy to hear your comments, suggestions or bug reports!"));
+        Link emailLink = new Link();
+        emailLink.setResource(new ExternalResource("mailto:support@taskadapter.com"));
+        emailLink.setCaption("Click here to send us an email");
+        emailLink.setTargetName("_new");
+        layout.addComponent(emailLink);
 
-        Form feedbackForm = new Form();
+/*        Form feedbackForm = new Form();
         feedbackForm.setDescription("You can send your comments to Task Adapter developers using this form");
         feedbackForm.setImmediate(true);
         feedbackForm.setFooter(new VerticalLayout());
@@ -52,7 +64,7 @@ public class SupportPage extends Page {
         buttonsBar.setComponentAlignment(sendButton, Alignment.TOP_RIGHT);
         buttonsBar.addComponent(new Button("Cancel"));
 
-        layout.addComponent(feedbackForm);
+        layout.addComponent(feedbackForm);*/
     }
 
     @Override
