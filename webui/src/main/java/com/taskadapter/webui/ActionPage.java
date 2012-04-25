@@ -1,5 +1,6 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.model.GTask;
@@ -117,18 +118,30 @@ public abstract class ActionPage extends Page {
         mainPanel.addComponent(button);
     }
 
+    private void saveConfigIfChanged() {
+        if (confirmExportPage.needToSaveConfig()) {
+            connectorTo.getConfig().setFieldsMapping(confirmExportPage.getConnectorToFieldMappings());
+
+            taFile.setConnectorDataHolder1(new ConnectorDataHolder(taFile.getConnectorDataHolder1().getType(), connectorFrom.getConfig()));
+            taFile.setConnectorDataHolder2(new ConnectorDataHolder(taFile.getConnectorDataHolder2().getType(), connectorTo.getConfig()));
+
+            services.getConfigStorage().saveConfig(taFile);
+        }
+    }
+
     protected void buildConfirmationUI() {
         confirmExportPage = new ConfirmExportPage(loadedTasks, connectorTo, new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                save();
+                saveConfigIfChanged();
+                startSaveTasksProcess();
             }
-        }, services);
+        });
         mainPanel.addComponent(confirmExportPage);
         mainPanel.setExpandRatio(confirmExportPage, 1f); // use all available space
     }
 
-    protected void save() {
+    protected void startSaveTasksProcess() {
         loadedTasks = confirmExportPage.getSelectedRootLevelTasks();
 
         if (!loadedTasks.isEmpty()) {
