@@ -105,7 +105,7 @@ public class MSPEditor extends ConfigEditor {
         String outputFileNameString = (String) inputFileNameField.getValue();
         String fileNameLowercase = ((String) inputFileNameField.getValue()).toLowerCase();
         if (fileNameLowercase.endsWith(MSPFileReader.MPP_SUFFIX_LOWERCASE)) {
-            outputFileNameString = (String) createXMLFileNameForMPP((String) inputFileNameField.getValue());
+            outputFileNameString = createXMLFileNameForMPP((String) inputFileNameField.getValue());
         }
         outputFileNameField.setValue(outputFileNameString);
     }
