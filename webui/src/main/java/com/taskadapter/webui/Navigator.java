@@ -1,14 +1,13 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.config.TAFile;
-import com.taskadapter.webui.license.LicensePage;
+import com.taskadapter.webui.license.ConfigureSystemPage;
 import com.taskadapter.webui.service.Services;
 import com.taskadapter.webui.service.UpdateManager;
 import com.vaadin.Application;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +17,7 @@ import java.util.Map;
 public class Navigator {
     public static final String TASKS = "tasks_list";
     public static final String HOME = "home";
-    public static final String LICENSE_PAGE = "license";
+    public static final String CONFIGURE_SYSTEM_PAGE = "configure_page";
     public static final String FEEDBACK_PAGE = "feedback";
     public static final String NEW_CONFIG_PAGE = "new_config_page";
     public static final String CONFIGURE_TASK_PAGE = "configure_task";
@@ -50,7 +49,7 @@ public class Navigator {
         registerPage(TASKS, new TasksPage());
         registerPage(LOGIN_PAGE, new LoginPage());
         registerPage(HOME, new HomePage());
-        registerPage(LICENSE_PAGE, new LicensePage());
+        registerPage(CONFIGURE_SYSTEM_PAGE, new ConfigureSystemPage());
         registerPage(FEEDBACK_PAGE, new SupportPage());
         registerPage(NEW_CONFIG_PAGE, new NewConfigPage());
         registerPage(CONFIGURE_TASK_PAGE, new ConfigureTaskPage());

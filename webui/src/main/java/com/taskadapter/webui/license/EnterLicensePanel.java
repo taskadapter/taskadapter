@@ -23,7 +23,7 @@ public class EnterLicensePanel extends VerticalLayout {
 
         addComponent(licenseArea);
 
-        Button saveButton = new Button("Save");
+        Button saveButton = new Button("Save license");
         saveButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {

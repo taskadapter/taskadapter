@@ -4,25 +4,41 @@ import com.taskadapter.license.License;
 import com.taskadapter.license.LicenseChangeListener;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.license.LicenseValidationException;
+import com.taskadapter.web.LocalRemoteOptionsPanel;
 import com.taskadapter.webui.Page;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
 
 /**
  * @author Alexey Skorokhodov
  */
-public class LicensePage extends Page implements LicenseChangeListener {
+public class ConfigureSystemPage extends Page implements LicenseChangeListener {
     private VerticalLayout layout = new VerticalLayout();
 
     private EnterLicensePanel enterLicensePanel;
     private LicenseInfoPanel licenseInfoPanel;
 
-    public LicensePage() {
-        buildUI();
-        updateFormBasingOnLicense();
+    public ConfigureSystemPage() {
     }
 
-    private void buildUI() {
+    private void createLocalRemoteSection() {
+        layout.addComponent(new LocalRemoteOptionsPanel(services.getSettingsManager()));
+        Button saveButton = new Button("Save settings");
+        saveButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                saveSettings();
+            }
+        });
+        layout.addComponent(saveButton);
+    }
+
+    private void saveSettings() {
+        navigator.showNotification("TODO", "TODO: Save settings to DISK!");
+    }
+
+    private void createLicenseSection() {
         LicenseManager.addLicenseChangeListener(this);
         enterLicensePanel = new EnterLicensePanel();
         enterLicensePanel.setVisible(false);
@@ -60,6 +76,12 @@ public class LicensePage extends Page implements LicenseChangeListener {
 
     @Override
     public Component getUI() {
+        layout.removeAllComponents();
+        layout.setSpacing(true);
+
+        createLocalRemoteSection();
+        createLicenseSection();
+        updateFormBasingOnLicense();
         return layout;
     }
 
