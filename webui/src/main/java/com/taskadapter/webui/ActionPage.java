@@ -1,5 +1,6 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.model.GTask;
@@ -117,10 +118,23 @@ public abstract class ActionPage extends Page {
         mainPanel.addComponent(button);
     }
 
+    private void saveConfigIfChanged() {
+        //check if the config was changed
+        if (confirmExportPage.needToSaveConfig()) {
+            taFile.setConnectorDataHolder1(new ConnectorDataHolder(taFile.getConnectorDataHolder1().getType(), connectorFrom.getConfig()));
+            taFile.setConnectorDataHolder1(new ConnectorDataHolder(taFile.getConnectorDataHolder1().getType(), connectorTo.getConfig()));
+
+            //save config
+            services.getConfigStorage().saveConfig(taFile);
+
+        }
+    }
+
     protected void buildConfirmationUI() {
         confirmExportPage = new ConfirmExportPage(loadedTasks, connectorTo, new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
+                saveConfigIfChanged();
                 save();
             }
         }, services);
