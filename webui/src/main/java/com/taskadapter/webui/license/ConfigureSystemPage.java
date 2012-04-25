@@ -8,6 +8,7 @@ import com.taskadapter.web.LocalRemoteOptionsPanel;
 import com.taskadapter.webui.Page;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -24,18 +25,7 @@ public class ConfigureSystemPage extends Page implements LicenseChangeListener {
 
     private void createLocalRemoteSection() {
         layout.addComponent(new LocalRemoteOptionsPanel(services.getSettingsManager()));
-        Button saveButton = new Button("Save settings");
-        saveButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                saveSettings();
-            }
-        });
-        layout.addComponent(saveButton);
-    }
-
-    private void saveSettings() {
-        navigator.showNotification("TODO", "TODO: Save settings to DISK!");
+        layout.addComponent(new Label("(Changes are saved automatically)"));
     }
 
     private void createLicenseSection() {
