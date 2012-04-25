@@ -119,14 +119,13 @@ public abstract class ActionPage extends Page {
     }
 
     private void saveConfigIfChanged() {
-        //check if the config was changed
         if (confirmExportPage.needToSaveConfig()) {
+            connectorTo.getConfig().setFieldsMapping(confirmExportPage.getConnectorToFieldMappings());
+
             taFile.setConnectorDataHolder1(new ConnectorDataHolder(taFile.getConnectorDataHolder1().getType(), connectorFrom.getConfig()));
-            taFile.setConnectorDataHolder1(new ConnectorDataHolder(taFile.getConnectorDataHolder1().getType(), connectorTo.getConfig()));
+            taFile.setConnectorDataHolder2(new ConnectorDataHolder(taFile.getConnectorDataHolder2().getType(), connectorTo.getConfig()));
 
-            //save config
             services.getConfigStorage().saveConfig(taFile);
-
         }
     }
 
@@ -135,14 +134,14 @@ public abstract class ActionPage extends Page {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 saveConfigIfChanged();
-                save();
+                startSaveTasksProcess();
             }
-        }, services);
+        });
         mainPanel.addComponent(confirmExportPage);
         mainPanel.setExpandRatio(confirmExportPage, 1f); // use all available space
     }
 
-    protected void save() {
+    protected void startSaveTasksProcess() {
         loadedTasks = confirmExportPage.getSelectedRootLevelTasks();
 
         if (!loadedTasks.isEmpty()) {

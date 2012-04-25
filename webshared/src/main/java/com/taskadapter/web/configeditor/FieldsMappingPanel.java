@@ -85,7 +85,6 @@ public class FieldsMappingPanel extends GridLayout implements Validatable {
         }
     }
 
-    // TODO use this!
     public Map<GTaskDescriptor.FIELD, Mapping> getResult() {
         Map<GTaskDescriptor.FIELD, Mapping> map = new TreeMap<GTaskDescriptor.FIELD, Mapping>();
         for (GTaskDescriptor.FIELD f : availableFieldsProvider.getSupportedFields()) {

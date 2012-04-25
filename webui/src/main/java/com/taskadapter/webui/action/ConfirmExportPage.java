@@ -21,16 +21,14 @@ public class ConfirmExportPage extends CustomComponent {
     private List<GTask> rootLevelTasks;
     private Connector connectorTo;
     private Button.ClickListener goListener;
-    private Services services;
     private FieldsMappingPanel fieldMappingPanel;
     private Map<FIELD, Mapping> oldFieldsMapping;
     private MyTree connectorTree;
 
-    public ConfirmExportPage(List<GTask> rootLevelTasks, Connector destinationConnector, Button.ClickListener goListener, Services services) {
+    public ConfirmExportPage(List<GTask> rootLevelTasks, Connector destinationConnector, Button.ClickListener goListener) {
         this.rootLevelTasks = rootLevelTasks;
         this.connectorTo = destinationConnector;
         this.goListener = goListener;
-        this.services = services;
         buildUI();
     }
 
@@ -50,21 +48,6 @@ public class ConfirmExportPage extends CustomComponent {
         oldFieldsMapping = connectorTo.getConfig().getFieldsMapping();
 
         Button go = new Button("Go");
-        // save the mapping before calling the main button listener.
-        // TODO auto-save the mapping fields to disk as soon as user changes something
-        go.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                // TODO validate
-//                fieldMappingPanel.validate();
-                Map<FIELD, Mapping> newMappings = fieldMappingPanel.getResult();
-                if (!newMappings.equals(oldFieldsMapping)) {
-                    connectorTo.getConfig().setFieldsMapping(newMappings);
-                    // TODO http://www.hostedredmine.com/issues/64437
-//                    services.getConfigStorage().saveConfig(file);
-                }
-            }
-        });
         go.addListener(goListener);
         layout.addComponent(go);
         setCompositionRoot(layout);
@@ -73,18 +56,14 @@ public class ConfirmExportPage extends CustomComponent {
     }
 
     public boolean needToSaveConfig() {
-        Map<FIELD, Mapping> newMappings = fieldMappingPanel.getResult();
-
-        if (!newMappings.equals(oldFieldsMapping)) {
-            connectorTo.getConfig().setFieldsMapping(newMappings);
-            return true;
-        }
-        else {
-            return false;
-        }
+        return !oldFieldsMapping.equals(fieldMappingPanel.getResult());
     }
 
     public List<GTask> getSelectedRootLevelTasks() {
         return connectorTree.getSelectedRootLevelTasks();
+    }
+
+    public Map<FIELD, Mapping> getConnectorToFieldMappings() {
+        return fieldMappingPanel.getResult();
     }
 }
