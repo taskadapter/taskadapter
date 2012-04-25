@@ -2,8 +2,6 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.web.FileManager;
-import com.taskadapter.web.LocalRemoteModeListener;
-import com.taskadapter.web.LocalRemoteOptionsPanel;
 import com.taskadapter.web.SettingsManager;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.configeditor.EditorUtil;
@@ -60,25 +58,7 @@ public class MSPEditor extends ConfigEditor {
         internalStuffGroup.addComponent(workText);
 
         addComponent(internalStuffGroup);
-
-        final VerticalLayout filePanel = new VerticalLayout();
-
-        settingsManager.setLocalRemoteListener(new LocalRemoteModeListener() {
-            @Override
-            public void modeChanged(boolean isLocal) {
-                filePanel.removeAllComponents();
-                if (isLocal) {
-                    filePanel.addComponent(createLocalModeFilePanel());
-                } else {
-                    filePanel.addComponent(createRemoteModeFilePanel());
-                }
-            }
-        });
-
-        LocalRemoteOptionsPanel localRemoteOptionsPanel = new LocalRemoteOptionsPanel(settingsManager);
-
-        addComponent(localRemoteOptionsPanel);
-        addComponent(filePanel);
+        createFilePanel();
 
         inputFileNameField = createFileName(LABEL_FILE_NAME, TOOLTIP_FILE_NAME);
         inputFileNameField.addListener(new FieldEvents.BlurListener() {
@@ -88,6 +68,14 @@ public class MSPEditor extends ConfigEditor {
         });
 
         outputFileNameField = createFileName(LABEL_OUTPUT_FILE_NAME, TOOLTIP_OUTPUT_FILE_NAME);
+    }
+
+    private void createFilePanel() {
+        if (settingsManager.isLocal()) {
+            addComponent(createLocalModeFilePanel());
+        } else {
+            addComponent(createRemoteModeFilePanel());
+        }
     }
 
     private TextField createFileName(String label, String tooltip) {
@@ -115,7 +103,7 @@ public class MSPEditor extends ConfigEditor {
 
     private void showXMLFieldIfNeeded() {
         String outputFileNameString = (String) inputFileNameField.getValue();
-        String fileNameLowercase = ((String)inputFileNameField.getValue()).toLowerCase();
+        String fileNameLowercase = ((String) inputFileNameField.getValue()).toLowerCase();
         if (fileNameLowercase.endsWith(MSPFileReader.MPP_SUFFIX_LOWERCASE)) {
             outputFileNameString = (String) createXMLFileNameForMPP((String) inputFileNameField.getValue());
         }
