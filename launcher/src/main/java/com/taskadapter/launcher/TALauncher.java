@@ -3,26 +3,21 @@ package com.taskadapter.launcher;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 
-
 public class TALauncher {
-	
 
-	private static final int SERVER_PORT = 8080;
-	private static String CONTEXT = "ta";
-	private static String WAR_FILE = "ta.war";
+	private static final int DEFAULT_HTTP_SERVER_PORT = 8080;
+	private static final String WEB_APPLICATION_ROOT_CONTEXT = "ta";
+	private static final String WAR_FILE = "files/ta.war";
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
-		
-		String caminhoApp = "files/" + WAR_FILE ;
-		
-		final Server server = new Server(SERVER_PORT);
-		server.setHandler(new WebAppContext(caminhoApp, "/" + CONTEXT ));
+
+        int portNumber = findPortNumberInArgs(args);
+        System.out.println("Starting HTTP server on port " + portNumber);
+
+		final Server server = new Server(portNumber);
+		server.setHandler(new WebAppContext(WAR_FILE, "/" + WEB_APPLICATION_ROOT_CONTEXT));
 
 		try {
-			//logger.info("Iniciando container...");
 			server.start();
 			while (!server.isStarted() || !server.getHandler().isStarted()) {
 				try {
@@ -32,10 +27,19 @@ public class TALauncher {
 				}
 			}
 		} catch (Exception e) {
-			//logger.fatal("Erro ao iniciar aplicação web.", e);
+            System.out.println("Error starting server: " + e.toString());
 		}
-		
-
 	}
+
+    static int findPortNumberInArgs(String[] args) {
+        for (String arg : args) {
+            String prefix = "--port=";
+            if (arg.startsWith(prefix)) {
+                String portString = arg.substring(prefix.length());
+                return Integer.parseInt(portString);
+            }
+        }
+        return DEFAULT_HTTP_SERVER_PORT;
+    }
 
 }

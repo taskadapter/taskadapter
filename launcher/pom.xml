@@ -185,5 +185,10 @@
             <artifactId>jetty-webapp</artifactId>
             <version>8.1.0.RC2</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+        </dependency>
     </dependencies>
 </project>
