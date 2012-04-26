@@ -20,6 +20,7 @@
         <module>webshared</module>
         <module>connectors-editors</module>
         <module>license</module>
+        <module>launcher</module>
     </modules>
 
     <dependencies>
@@ -143,14 +144,4 @@
             </plugins>
         </pluginManagement>
     </build>
-
-    <profiles>
-        <profile>
-            <id>dist</id>
-            <modules>
-                <module>launcher</module>
-            </modules>
-        </profile>
-    </profiles>
-
 </project>
