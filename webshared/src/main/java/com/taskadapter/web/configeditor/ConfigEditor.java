@@ -49,20 +49,39 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         }
     }
 
-    protected void addFindUsersByNameElement() {
+    protected CheckBox createFindUsersElementIfNeeded() {
+        if (findUserByName == null) {
         findUserByName = new CheckBox("Find users based on assignee's name (usually requires 'Admin' permission)");
         findUserByName.setDescription("This option can be useful when you need to export a new MSP project file to Redmine/Jira/Mantis/....\n" +
                 "Task Adapter can load the system's users by resource names specified in the MSP file\n" +
                 "and assign the new tasks to them.\n" +
                 "Note: this operation usually requires 'Admin' permission in the system.");
+        }
+
+        return findUserByName;
+    }
+
+    protected void addFindUsersByNameElement() {
+        createFindUsersElementIfNeeded();
         addComponent(findUserByName);
     }
 
+    //add default server panel
     protected void addServerPanel() {
         createProjectServerPanelIfNeeded();
         serverPanel = new ServerPanel();
         toValidate.add(serverPanel);
         projectAndServerLayout.addComponent(serverPanel);
+    }
+
+    //add custom panel
+    protected void addPanelToPrjSrvPanel(Layout layout) {
+        createProjectServerPanelIfNeeded();
+        //if layout supports Validatable interface add it to validation list
+        if (layout instanceof Validatable) {
+            toValidate.add((Validatable) layout);
+        }
+        projectAndServerLayout.addComponent(layout);
     }
 
     protected void addProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor) {
