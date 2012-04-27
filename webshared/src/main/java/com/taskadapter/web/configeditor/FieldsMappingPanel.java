@@ -5,15 +5,9 @@ import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.GTaskDescriptor;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.*;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * @author Alexey Skorokhodov
@@ -40,24 +34,35 @@ public class FieldsMappingPanel extends GridLayout implements Validatable {
      */
     public FieldsMappingPanel(AvailableFieldsProvider availableFieldsProvider,
                               Map<GTaskDescriptor.FIELD, Mapping> fieldsMapping) {
-        addStyleName("fields-mapping-panel");
         this.availableFieldsProvider = availableFieldsProvider;
         this.fieldsMapping = fieldsMapping;
+
         setDescription("Select fields to export when SAVING data to this connector");
-        setColumns(COLUMNS_NUMBER);
         addFields();
+
+        addStyleName("fields-mapping-panel");
+        setMargin(true);
+        setSpacing(true);
+        setWidth("463px");
     }
 
     private void addFields() {
-        addComponent(new Label(COLUMN1_HEADER));
-        addComponent(new Label(COLUMN2_HEADER));
+        Collection<GTaskDescriptor.FIELD> supportedFields = availableFieldsProvider.getSupportedFields();
 
-        for (GTaskDescriptor.FIELD f : availableFieldsProvider.getSupportedFields()) {
-            CheckBox checkbox = new CheckBox(GTaskDescriptor.getDisplayValue(f));
-            addComponent(checkbox);
-            fieldToButtonMap.put(f, checkbox);
+        setRows(supportedFields.size() + 1);
+        setColumns(COLUMNS_NUMBER);
 
-            Mapping mapping = fieldsMapping.get(f);
+        addComponent(new Label(COLUMN1_HEADER), 0, 0);
+        addComponent(new Label(COLUMN2_HEADER), 1, 0);
+
+        int row = 0;
+        for (GTaskDescriptor.FIELD field : supportedFields) {
+            CheckBox checkbox = new CheckBox(GTaskDescriptor.getDisplayValue(field));
+            addComponent(checkbox, 0, ++row);
+            setComponentAlignment(checkbox, Alignment.MIDDLE_LEFT);
+            fieldToButtonMap.put(field, checkbox);
+
+            Mapping mapping = fieldsMapping.get(field);
             if (mapping == null) {
                 // means this config does not have a mapping for this field, which
                 // availableFieldsProvider reported as "supported": probably OLD config
@@ -65,18 +70,24 @@ public class FieldsMappingPanel extends GridLayout implements Validatable {
             }
 
             checkbox.setValue(mapping.isSelected());
-            String[] allowedValues = availableFieldsProvider.getAllowedValues(f);
+
+            String[] allowedValues = availableFieldsProvider.getAllowedValues(field);
             BeanItemContainer<String> container = new BeanItemContainer<String>(String.class);
+
             if (allowedValues.length > 1) {
                 container.addAll(Arrays.asList(allowedValues));
-                ComboBox combo = new ComboBox("", container);
-                fieldToValueMap.put(f, combo);
+                ComboBox combo = new ComboBox(null, container);
+                combo.setWidth("220px");
+                fieldToValueMap.put(field, combo);
 //                combo.setItems(allowedValues);
-                addComponent(combo);
+                addComponent(combo, 1, row);
+                setComponentAlignment(combo, Alignment.MIDDLE_LEFT);
 //                selectItem(combo, mapping.getCurrentValue());
                 combo.select(mapping.getCurrentValue());
             } else if (allowedValues.length == 1) {
-                addComponent(new Label(allowedValues[0]));
+                Label label = new Label(allowedValues[0]);
+                addComponent(label, 1, row);
+                setComponentAlignment(label, Alignment.MIDDLE_LEFT);
             } else {
                 // field not supported by this connector
                 checkbox.setEnabled(false);

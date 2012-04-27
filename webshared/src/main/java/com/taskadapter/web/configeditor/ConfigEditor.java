@@ -37,6 +37,7 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
 
         labelText = new TextField(LABEL_TEXT);
         labelText.setDescription(LABEL_TOOLTIP);
+        labelText.addStyleName("label-textfield");
         addComponent(labelText);
         setWidth("800px");
     }

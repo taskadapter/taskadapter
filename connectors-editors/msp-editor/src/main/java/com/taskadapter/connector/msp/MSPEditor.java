@@ -7,9 +7,9 @@ import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 
 /**
  * @author Alexey Skorokhodov
@@ -44,8 +44,11 @@ public class MSPEditor extends ConfigEditor {
     }
 
     private void buildUI() {
-        VerticalLayout internalStuffGroup = new VerticalLayout();
+        GridLayout internalStuffGroup = new GridLayout();
         internalStuffGroup.setCaption("MSP Text Fields to use for some internal stuff");
+        internalStuffGroup.addStyleName("bordered-panel");
+        internalStuffGroup.setMargin(true);
+        internalStuffGroup.setSpacing(true);
 
         durationText = new TextField("Store 'Duration undefined' flag as:");
         durationText.addStyleName("msp-editor-textfield");
@@ -60,26 +63,31 @@ public class MSPEditor extends ConfigEditor {
         addComponent(internalStuffGroup);
         createFilePanel();
 
+        GridLayout fileNamesPanel = new GridLayout();
+        fileNamesPanel.addStyleName("bordered-panel");
+        fileNamesPanel.setMargin(true);
+        fileNamesPanel.setSpacing(true);
+
         inputFileNameField = createFileName(LABEL_FILE_NAME, TOOLTIP_FILE_NAME);
         inputFileNameField.addListener(new FieldEvents.BlurListener() {
             public void blur(FieldEvents.BlurEvent event) {
                 showXMLFieldIfNeeded();
             }
         });
-
         outputFileNameField = createFileName(LABEL_OUTPUT_FILE_NAME, TOOLTIP_OUTPUT_FILE_NAME);
+
+        fileNamesPanel.addComponent(inputFileNameField);
+        fileNamesPanel.addComponent(outputFileNameField);
+        addComponent(fileNamesPanel);
     }
 
     private void createFilePanel() {
-        if (settingsManager.isLocal()) {
-            addComponent(createLocalModeFilePanel());
-        } else {
-            addComponent(createRemoteModeFilePanel());
-        }
+        addComponent(settingsManager.isLocal() ? createLocalModeFilePanel() : createRemoteModeFilePanel());
     }
 
     private TextField createFileName(String label, String tooltip) {
-        final TextField field = EditorUtil.addLabeledText(this, label, tooltip);
+        final TextField field = new TextField(label);
+        field.setDescription(tooltip);
         field.addStyleName("msp-file-name-textfield");
         field.addListener(new FieldEvents.BlurListener() {
             public void blur(FieldEvents.BlurEvent event) {
