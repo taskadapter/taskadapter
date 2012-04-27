@@ -25,7 +25,8 @@ elif [ "${MAJ}" -eq 1 ]; then
 fi
 
 if [ "$FOUND_REQUIRED_JAVA" -eq 0 ]; then
-  echo "Task Adapter requires Java Runtime Environment 1.6 installed and available in PATH. Please install JRE 1.6 or newer."
+  echo "Task Adapter requires Java Runtime Environment 1.6 or newer installed and available in PATH."
+  echo "Please install JRE 1.6 or newer: http://www.java.com/en/download/index.jsp"
   echo "http://www.java.com/en/download/index.jsp"
   exit 1
 fi
