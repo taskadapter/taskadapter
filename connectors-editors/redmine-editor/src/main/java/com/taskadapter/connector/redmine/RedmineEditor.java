@@ -51,6 +51,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         rmConfig.setServerInfo(serverInfo);
 
         rmConfig.setDefaultTaskType(otherPanel.getDefaultTaskType());
+        rmConfig.setSaveIssueRelations(otherPanel.getSaveRelation());
         return rmConfig;
     }
 
@@ -100,7 +101,6 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         private PasswordField redmineAPIKey;
         private TextField login;
         private PasswordField password;
-        private TextField defaultTaskType;
 
         private final List<String> authOptions = Arrays.asList(USE_API, USE_LOGIN);
         private OptionGroup authOptionsGroup = new OptionGroup("Authorization", authOptions);
@@ -114,12 +114,10 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         private void buildUI() {
             addStyleName("bordered-panel");
             setCaption(SERVER_INFO_LABEL);
-            setSizeUndefined();
             setSpacing(true);
             setMargin(true);
             setColumns(2);
             setRows(5);
-//            setWidth("350px");
 
             Label urlLabel = new Label("Redmine URL:");
             addComponent(urlLabel, 0, 0);
@@ -220,6 +218,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         private ConfigEditor configEditor;
 
         private TextField defaultTaskType;
+        private CheckBox saveRelations;
 
         public OtherRedmineFieldsPanel(ConfigEditor configEditor) {
             this.configEditor = configEditor;
@@ -239,7 +238,6 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
             taskTypeLayout.addStyleName("bordered-panel");
             taskTypeLayout.setSizeUndefined();
             taskTypeLayout.setSpacing(true);
-            //taskTypeLayout.addStyleName("task-type-layout");
 
             defaultTaskType = EditorUtil.addLabeledText(taskTypeLayout, "Default task type:",
                     "New tasks will be created with this 'tracker' (bug/task/support/feature/...)");
@@ -259,7 +257,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
 
             addComponent(createFindUsersElementIfNeeded());
 
-            CheckBox saveRelations = new CheckBox(SAVE_ISSUE_LABEL);
+            saveRelations = new CheckBox(SAVE_ISSUE_LABEL);
             addComponent(saveRelations);
 
         }
@@ -267,10 +265,15 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         private void setDataToForm() {
             RedmineConfig redmineConfig = (RedmineConfig) config;
             setIfNotNull(defaultTaskType, redmineConfig.getDefaultTaskType());
+            setIfNotNull(saveRelations, redmineConfig.getSaveIssueRelations());
         }
 
         public String getDefaultTaskType() {
             return (String) defaultTaskType.getValue();
+        }
+
+        public Boolean getSaveRelation() {
+            return (Boolean) saveRelations.getValue();
         }
     }
 }

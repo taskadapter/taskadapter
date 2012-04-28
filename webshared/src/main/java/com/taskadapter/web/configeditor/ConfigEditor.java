@@ -51,7 +51,7 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
 
     protected CheckBox createFindUsersElementIfNeeded() {
         if (findUserByName == null) {
-        findUserByName = new CheckBox("Find users based on assignee's name (usually requires 'Admin' permission)");
+        findUserByName = new CheckBox("Find users based on assignee's name");
         findUserByName.setDescription("This option can be useful when you need to export a new MSP project file to Redmine/Jira/Mantis/....\n" +
                 "Task Adapter can load the system's users by resource names specified in the MSP file\n" +
                 "and assign the new tasks to them.\n" +
