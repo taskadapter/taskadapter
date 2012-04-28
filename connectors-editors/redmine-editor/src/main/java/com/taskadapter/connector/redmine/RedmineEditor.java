@@ -31,7 +31,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
 
     private void buildUI() {
         serverPanel = new RedmineServerPanel();
-        addPanelToPrjSrvPanel(serverPanel);
+        addCustomPanelToProjectServerPanel(serverPanel);
 
         addProjectPanel(this, new RedmineProjectProcessor(this));
 

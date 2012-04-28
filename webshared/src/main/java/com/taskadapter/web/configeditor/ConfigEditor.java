@@ -75,8 +75,7 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         projectAndServerLayout.addComponent(serverPanel);
     }
 
-    //add custom panel
-    protected void addPanelToPrjSrvPanel(Layout layout) {
+    protected void addCustomPanelToProjectServerPanel(Layout layout) {
         createProjectServerPanelIfNeeded();
         //if layout supports Validatable interface add it to validation list
         if (layout instanceof Validatable) {
