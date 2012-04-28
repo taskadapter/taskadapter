@@ -15,7 +15,7 @@ import java.util.Map;
  * @author Alexey Skorokhodov
  */
 public class Navigator {
-    public static final String TASKS = "tasks_list";
+    public static final String CONFIGS = "configs_list";
     public static final String HOME = "home";
     public static final String CONFIGURE_SYSTEM_PAGE = "configure_page";
     public static final String FEEDBACK_PAGE = "feedback";
@@ -46,7 +46,7 @@ public class Navigator {
     }
 
     private void registerPages() {
-        registerPage(TASKS, new TasksPage());
+        registerPage(CONFIGS, new ConfigsPage());
         registerPage(LOGIN_PAGE, new LoginPage());
         registerPage(HOME, new HomePage());
         registerPage(CONFIGURE_SYSTEM_PAGE, new ConfigureSystemPage());
@@ -147,7 +147,7 @@ public class Navigator {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 services.getConfigStorage().delete(file);
-                show(Navigator.TASKS);
+                show(Navigator.CONFIGS);
             }
         });
         show(page);
@@ -161,7 +161,7 @@ public class Navigator {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 services.getConfigStorage().cloneConfig(file);
-                show(Navigator.TASKS);
+                show(Navigator.CONFIGS);
             }
         });
         show(page);

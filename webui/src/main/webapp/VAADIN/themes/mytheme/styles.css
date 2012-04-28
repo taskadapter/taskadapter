@@ -27,10 +27,10 @@
     font-weight: bold;
 }
 
-.taskstable {
+.configsTable {
     font-size: 14px;
 }
-.taskstable .v-table-header {
+.configsTable .v-table-header {
     background-color: #B8DBFF;
 }
 

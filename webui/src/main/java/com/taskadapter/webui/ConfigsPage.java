@@ -10,20 +10,18 @@ import com.vaadin.ui.themes.BaseTheme;
 /**
  * @author Alexey Skorokhodov
  */
-public class TasksPage extends Page {
-    public static final String ID = "tasks_list";
-
+public class ConfigsPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
 
     private Table table;
 
-    public TasksPage() {
+    public ConfigsPage() {
         buildUI();
     }
 
     private void buildUI() {
         table = new Table();
-        table.addStyleName("taskstable");
+        table.addStyleName("configsTable");
         table.addContainerProperty("Name", Button.class, null);
         layout.addComponent(table);
     }
@@ -52,7 +50,7 @@ public class TasksPage extends Page {
 
     @Override
     public String getPageTitle() {
-        return "Tasks";
+        return "Configs";
     }
 
     @Override
