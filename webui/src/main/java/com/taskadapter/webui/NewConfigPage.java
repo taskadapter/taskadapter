@@ -3,6 +3,7 @@ package com.taskadapter.webui;
 import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Descriptor;
+import com.taskadapter.connector.definition.ValidationException;
 import com.vaadin.data.Validator;
 import com.vaadin.terminal.UserError;
 import com.vaadin.ui.*;
@@ -20,6 +21,7 @@ public class NewConfigPage extends Page {
     private ListSelect connector2;
     private Form form;
     private TAFile newFile;
+    private Label errorMessageLabel;
 
     public NewConfigPage() {
         buildUI();
@@ -34,7 +36,6 @@ public class NewConfigPage extends Page {
 
         name = new TextField("Config name");
         name.setRequired(true);
-        name.setRequiredError("Please provide a config name");
         name.setInputPrompt(NAME_HINT);
         name.setWidth("100%");
 
@@ -43,13 +44,11 @@ public class NewConfigPage extends Page {
 
         connector1 = new ListSelect("Connector 1");
         connector1.setRequired(true);
-        connector1.setRequiredError("Connector 1 is not selected");
         connector1.setNullSelectionAllowed(false);
         grid.addComponent(connector1, 0, 1);
 
         connector2 = new ListSelect("Connector 2");
         connector2.setRequired(true);
-        connector2.setRequiredError("Connector 2 is not selected");
         connector2.setNullSelectionAllowed(false);
         grid.addComponent(connector2, 1, 1);
 
@@ -61,7 +60,12 @@ public class NewConfigPage extends Page {
             }
         });
         form.setLayout(grid);
-        form.getFooter().addComponent(saveButton);
+        // empty label by default
+        errorMessageLabel = new Label();
+        VerticalLayout bottomPanel = new VerticalLayout();
+        bottomPanel.addComponent(errorMessageLabel);
+        bottomPanel.addComponent(saveButton);
+        form.getFooter().addComponent(bottomPanel);
     }
 
     private void loadDataConnectors() {
@@ -76,13 +80,13 @@ public class NewConfigPage extends Page {
     private void saveClicked() {
         try {
             validate();
-            form.setComponentError(null);
+            errorMessageLabel.setValue("");
             save();
             showTaskDetailsPage();
 
             name.setValue("");   //clear name for new config
-        } catch (Validator.InvalidValueException e) {
-            form.setComponentError(new UserError(e.getMessage()));
+        } catch (ValidationException e) {
+            errorMessageLabel.setValue(e.getMessage());
         }
     }
 
@@ -90,10 +94,13 @@ public class NewConfigPage extends Page {
         navigator.showTaskDetailsPage(newFile);
     }
 
-    private void validate() {
-        name.validate();
-        connector1.validate();
-        connector2.validate();
+    private void validate() throws ValidationException {
+        if (name.getValue().equals("")) {
+            throw new ValidationException("Please provide the config name");
+        }
+        if ((connector1.getValue() == null) || (connector2.getValue()==null)){
+            throw new ValidationException("Please select two connectors to transfer data between");
+        }
     }
 
     private void save() {
