@@ -170,6 +170,12 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
             setComponentAlignment(password, Alignment.MIDDLE_LEFT);
         }
 
+        private void setAuthOptionsState(boolean useAPIKey) {
+            redmineAPIKey.setEnabled(useAPIKey);
+            login.setEnabled(!useAPIKey);
+            password.setEnabled(!useAPIKey);
+        }
+
         private void setDataToForm() {
             RedmineConfig redmineConfig = (RedmineConfig) config;
 
@@ -181,6 +187,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
             setIfNotNull(password, serverInfo.getPassword());
             authOptionsGroup.select(serverInfo.isUseAPIKeyInsteadOfLoginPassword());
             authOptionsGroup.select(!serverInfo.isUseAPIKeyInsteadOfLoginPassword());
+            setAuthOptionsState(serverInfo.isUseAPIKeyInsteadOfLoginPassword());
         }
 
         public String getServerURL() {
