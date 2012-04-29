@@ -47,7 +47,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         WebServerInfo serverInfo = new WebServerInfo(serverPanel.getServerURL(), serverPanel.getLogin(),
                 serverPanel.getPassword());
         serverInfo.setApiKey(serverPanel.getRedmineAPIKey());
-        serverInfo.setUseAPIKeyInsteadOfLoginPassword(serverPanel.getAuthOption());
+        serverInfo.setUseAPIKeyInsteadOfLoginPassword(serverPanel.isUseAPIOptionSelected());
         rmConfig.setServerInfo(serverInfo);
 
         rmConfig.setDefaultTaskType(otherPanel.getDefaultTaskType());
@@ -57,7 +57,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
 
     RedmineManager getRedmineManager() {
         RedmineManager mgr;
-        if (serverPanel.getAuthOption()) {
+        if (serverPanel.isUseAPIOptionSelected()) {
             mgr = new RedmineManager(serverPanel.getServerURL(), serverPanel.getRedmineAPIKey());
         } else {
             mgr = new RedmineManager(serverPanel.getServerURL());
@@ -108,6 +108,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
 
         public RedmineServerPanel() {
             buildUI();
+            addListener();
             setDataToForm();
         }
 
@@ -132,12 +133,6 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
             authOptionsGroup.setSizeFull();
             authOptionsGroup.setNullSelectionAllowed(false);
             authOptionsGroup.setImmediate(true);
-            authOptionsGroup.addListener(new Property.ValueChangeListener() {
-                @Override
-                public void valueChange(Property.ValueChangeEvent event) {
-                    System.out.println("TODO: disable fields on the page (e.g. disable user name if API Auth method is used)");
-                }
-            });
             authOptionsGroup.select(DEFAULT_USE);
             addComponent(authOptionsGroup, 0, 1, 1, 1);
             setComponentAlignment(authOptionsGroup, Alignment.MIDDLE_LEFT);
@@ -170,6 +165,15 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
             setComponentAlignment(password, Alignment.MIDDLE_LEFT);
         }
 
+        private void addListener() {
+            authOptionsGroup.addListener(new Property.ValueChangeListener() {
+                @Override
+                public void valueChange(Property.ValueChangeEvent event) {
+                    setAuthOptionsState(isUseAPIOptionSelected());
+                }
+            });
+        }
+
         private void setAuthOptionsState(boolean useAPIKey) {
             redmineAPIKey.setEnabled(useAPIKey);
             login.setEnabled(!useAPIKey);
@@ -185,8 +189,11 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
             setIfNotNull(redmineAPIKey, serverInfo.getApiKey());
             setIfNotNull(login, serverInfo.getUserName());
             setIfNotNull(password, serverInfo.getPassword());
-            authOptionsGroup.select(serverInfo.isUseAPIKeyInsteadOfLoginPassword());
-            authOptionsGroup.select(!serverInfo.isUseAPIKeyInsteadOfLoginPassword());
+            if (serverInfo.isUseAPIKeyInsteadOfLoginPassword()) {
+                authOptionsGroup.select(USE_API);
+            } else {
+                authOptionsGroup.select(USE_LOGIN);
+            }
             setAuthOptionsState(serverInfo.isUseAPIKeyInsteadOfLoginPassword());
         }
 
@@ -206,7 +213,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
             return (String) password.getValue();
         }
 
-        public boolean getAuthOption() {
+        public boolean isUseAPIOptionSelected() {
             return authOptionsGroup.getValue().equals(USE_API);
         }
 
