@@ -4,8 +4,6 @@ import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.ValidationException;
-import com.vaadin.data.Validator;
-import com.vaadin.terminal.UserError;
 import com.vaadin.ui.*;
 
 import java.util.Iterator;
@@ -72,8 +70,13 @@ public class NewConfigPage extends Page {
         Iterator<Descriptor> connectors = services.getPluginManager().getPluginDescriptors();
         while (connectors.hasNext()) {
             Descriptor connector = connectors.next();
-            connector1.addItem(connector.getLabel());
-            connector2.addItem(connector.getLabel());
+            String id = connector.getID();
+            String label = connector.getLabel();
+            connector1.addItem(id);
+            connector1.setItemCaption(id, label);
+
+            connector2.addItem(id);
+            connector2.setItemCaption(id, label);
         }
     }
 
@@ -98,7 +101,7 @@ public class NewConfigPage extends Page {
         if (name.getValue().equals("")) {
             throw new ValidationException("Please provide the config name");
         }
-        if ((connector1.getValue() == null) || (connector2.getValue()==null)){
+        if ((connector1.getValue() == null) || (connector2.getValue() == null)) {
             throw new ValidationException("Please select two connectors to transfer data between");
         }
     }
