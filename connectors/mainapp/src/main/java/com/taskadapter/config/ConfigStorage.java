@@ -70,13 +70,10 @@ public class ConfigStorage {
         try {
             File rootDir = new File(getRootFolderName());
             rootDir.mkdirs();
-            String fullFileName;
-            if (taFile.getAbsoluteFilePath() ==null) {
-                fullFileName = createAbsoluteFilePathForNewConfig(taFile);
-            } else {
-                fullFileName = taFile.getAbsoluteFilePath();
+            if (taFile.getAbsoluteFilePath() == null) {
+                taFile.setAbsoluteFilePath(createAbsoluteFilePathForNewConfig(taFile));
             }
-            MyIOUtils.writeToFile(fullFileName, fileContents);
+            MyIOUtils.writeToFile(taFile.getAbsoluteFilePath(), fileContents);
         } catch (IOException e) {
             e.printStackTrace();
         }
