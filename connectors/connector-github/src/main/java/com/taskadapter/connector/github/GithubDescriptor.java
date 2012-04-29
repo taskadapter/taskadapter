@@ -13,8 +13,8 @@ public class GithubDescriptor implements Descriptor {
     public static final GithubDescriptor instance = new GithubDescriptor();
 
     private static final String ID = "GithubConnector v1";
-    private static final String DESCRIPTION = "Github connector based on eddieringle's ghapi library";
-    private static final String LABEL = "Github";
+    private static final String DESCRIPTION = "Github connector";
+    private static final String LABEL = "Github.com";
 
     public ConnectorConfig createDefaultConfig() {
         return new GithubConfig();
