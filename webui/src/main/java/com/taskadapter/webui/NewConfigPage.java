@@ -68,8 +68,8 @@ public class NewConfigPage extends Page {
         Iterator<Descriptor> connectors = services.getPluginManager().getPluginDescriptors();
         while (connectors.hasNext()) {
             Descriptor connector = connectors.next();
-            connector1.addItem(connector.getID());
-            connector2.addItem(connector.getID());
+            connector1.addItem(connector.getLabel());
+            connector2.addItem(connector.getLabel());
         }
     }
 
