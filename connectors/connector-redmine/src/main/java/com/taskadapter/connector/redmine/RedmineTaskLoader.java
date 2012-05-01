@@ -3,9 +3,9 @@ package com.taskadapter.connector.redmine;
 import com.taskadapter.connector.common.AbstractTaskLoader;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.GTask;
-import org.redmine.ta.AuthenticationException;
 import org.redmine.ta.RedmineManager;
 import org.redmine.ta.RedmineManager.INCLUDE;
+import org.redmine.ta.RedmineSecurityException;
 import org.redmine.ta.beans.Issue;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class RedmineTaskLoader extends AbstractTaskLoader<RedmineConfig> {
             List<Issue> issues = mgr.getIssues(config.getProjectKey(),
                     config.getQueryId(), INCLUDE.relations);
             rows = convertToGenericTasks(config, issues);
-        } catch (AuthenticationException e) {
+        } catch (RedmineSecurityException e) {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
