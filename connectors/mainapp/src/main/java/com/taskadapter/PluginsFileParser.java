@@ -21,12 +21,11 @@ public class PluginsFileParser {
         }
     }
 
-    // TODO add unit test
-    private Collection<String> parsePluginsFile(String fileContents) {
+    Collection<String> parsePluginsFile(String fileContents) {
         String[] strings = fileContents.split("\r\n|\r|\n");
         Collection<String> items = new ArrayList<String>();
         for (String s : strings) {
-            if (s.startsWith(COMMENT_SYMBOL)) {
+            if (s.startsWith(COMMENT_SYMBOL) || s.isEmpty()) {
                 continue;
             }
             items.add(s);
