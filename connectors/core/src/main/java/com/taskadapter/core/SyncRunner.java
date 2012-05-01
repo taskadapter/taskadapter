@@ -48,8 +48,9 @@ public class SyncRunner {
         return this.tasks;
     }
 
+    // TODO this is not used now because we ignore checkboxes shown for tasks in the confirmation dialog
     /**
-     * is called after the confirmation dialog
+     * Should be called after the confirmation dialog.
      *
      * @param tasks the confirmed tasks
      */
@@ -103,10 +104,6 @@ public class SyncRunner {
 
     public List<GTask> getTasks() {
         return tasks;
-    }
-
-    public TaskSaver getTaskSaver() {
-        return taskSaver;
     }
 
     // TODO add a test to verify "load" can be done without setting taskSaver
