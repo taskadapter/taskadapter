@@ -94,8 +94,8 @@ public class ConfigStorage {
         return userHome + "/taskadapter";
     }
 
-    public void cloneConfig(TAFile file) {
-        TAFile cfg = new TAFile("Copy of " + file.getConfigLabel(), file.getConnectorDataHolder1(), file.getConnectorDataHolder2());
+    public void cloneConfig(TAFile file, String clonedConfigLabel) {
+        TAFile cfg = new TAFile(clonedConfigLabel, file.getConnectorDataHolder1(), file.getConnectorDataHolder2());
         this.saveConfig(cfg);
     }
 }

@@ -160,7 +160,8 @@ public class Navigator {
         page.setActionListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                services.getConfigStorage().cloneConfig(file);
+                String clonedConfigLabel = "Copy of " + file.getConfigLabel();
+                services.getConfigStorage().cloneConfig(file, clonedConfigLabel);
                 show(Navigator.CONFIGS);
             }
         });
