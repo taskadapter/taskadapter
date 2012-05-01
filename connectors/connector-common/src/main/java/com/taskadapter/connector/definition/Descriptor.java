@@ -34,7 +34,7 @@ public interface Descriptor {
     public String getLabel();
 
     /**
-     * Any serverInfo the connector wishes to tell about itself, like some limitations or requirements.
+     * Any text the connector wants to tell about itself, like some limitations or requirements.
      */
     public String getDescription();
 
