@@ -130,3 +130,7 @@
 .msp-file-name-textfield {
     width: 450px;
 }
+
+.error-message-label {
+    color: #ff6347;
+}

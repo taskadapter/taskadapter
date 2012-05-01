@@ -12,7 +12,10 @@ import java.util.Iterator;
  * @author Alexey Skorokhodov
  */
 public class NewConfigPage extends Page {
-    private static final String NAME_HINT = "My tasks";
+    private static final String NAME_HINT = "Enter config name";
+    private static final String NAME_REQUIRED_MESSAGE = "Please provide the config name";
+    private static final String SELECT_CONNECTOR_1_MESSAGE = "Please select Connector 1";
+    private static final String SELECT_CONNECTOR_2_MESSAGE = "Please select Connector 2";
 
     private TextField name;
     private ListSelect connector1;
@@ -60,6 +63,7 @@ public class NewConfigPage extends Page {
         form.setLayout(grid);
         // empty label by default
         errorMessageLabel = new Label();
+        errorMessageLabel.addStyleName("error-message-label");
         VerticalLayout bottomPanel = new VerticalLayout();
         bottomPanel.addComponent(errorMessageLabel);
         bottomPanel.addComponent(saveButton);
@@ -94,15 +98,29 @@ public class NewConfigPage extends Page {
     }
 
     private void showTaskDetailsPage() {
-        navigator.showTaskDetailsPage(newFile);
+        navigator.showConfigureTaskPage(newFile);
     }
 
     private void validate() throws ValidationException {
         if (name.getValue().equals("")) {
-            throw new ValidationException("Please provide the config name");
+            name.setRequiredError(NAME_REQUIRED_MESSAGE);
+            throw new ValidationException(NAME_REQUIRED_MESSAGE);
+        } else {
+            name.setRequiredError("");
         }
-        if ((connector1.getValue() == null) || (connector2.getValue() == null)) {
-            throw new ValidationException("Please select two connectors to transfer data between");
+
+        if (connector1.getValue() == null) {
+            connector1.setRequiredError(SELECT_CONNECTOR_1_MESSAGE);
+            throw new ValidationException(SELECT_CONNECTOR_1_MESSAGE);
+        } else {
+            connector1.setRequiredError("");
+        }
+
+        if (connector2.getValue() == null) {
+            connector1.setRequiredError(SELECT_CONNECTOR_2_MESSAGE);
+            throw new ValidationException(SELECT_CONNECTOR_2_MESSAGE);
+        } else {
+            connector2.setRequiredError("");
         }
     }
 
