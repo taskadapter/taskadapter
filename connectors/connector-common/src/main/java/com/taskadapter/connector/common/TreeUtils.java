@@ -45,30 +45,6 @@ public class TreeUtils {
         return clonedTree;
     }
 
-//	private static void parseTreeToLists(List<GTask> tasksTree,
-//			List<GTask> tasksWithRemoteID, List<GTask> tasksWithoutRemoteID) {
-//
-//		for (Iterator<GTask> iterator = tasksTree.iterator(); iterator.hasNext();) {
-//			GTask task = iterator.next();
-//
-//			// to avoid having "flat lists with tasks", where each element is
-//			// actually a node with a whole subtree
-//			GTask cloned = new GTask(task);
-//
-//			cloned.getChildren().clear();
-//
-//			if (task.getRemoteId() == null) {
-//				tasksWithoutRemoteID.add(cloned);
-//			} else {
-//				tasksWithRemoteID.add(cloned);
-//			}
-//			if (!task.getChildren().isEmpty()) {
-//				parseTreeToLists(task.getChildren(), tasksWithRemoteID,
-//						tasksWithoutRemoteID);
-//			}
-//		}
-//	}
-
     public static List<GTask> buildTreeFromFlatList(List<GTask> tasksFlatList) {
         TreeUtilsMap map = new TreeUtilsMap(tasksFlatList);
         GTask root = new GTask();
@@ -85,46 +61,20 @@ public class TreeUtils {
 
     /**
      * Utility class to help convert flat list of Tasks to a tree structure.
-     *
-     * @author Alexey Skorokhodov
      */
     static class TreeUtilsMap {
-        /**
-         * map: key -> GTask
-         */
-        private HashMap<String, GTask> tasksMap = new HashMap<String, GTask>();
+        private HashMap<String, GTask> keyToGTaskMap = new HashMap<String, GTask>();
 
         public TreeUtilsMap(List<GTask> list) {
             Iterator<GTask> it = list.iterator();
             while (it.hasNext()) {
                 GTask task = it.next();
-                tasksMap.put(task.getKey(), task);
+                keyToGTaskMap.put(task.getKey(), task);
             }
         }
 
         public GTask getByKey(String key) {
-            return tasksMap.get(key);
+            return keyToGTaskMap.get(key);
         }
-    }
-
-    public static class CreateUpdateWrapper {
-        List<GTask> toCreate;
-        List<GTask> toUpdate;
-
-        public CreateUpdateWrapper(List<GTask> toCreate,
-                                   List<GTask> toUpdate) {
-            super();
-            this.toCreate = toCreate;
-            this.toUpdate = toUpdate;
-        }
-
-        public List<GTask> getToCreate() {
-            return toCreate;
-        }
-
-        public List<GTask> getToUpdate() {
-            return toUpdate;
-        }
-
     }
 }
