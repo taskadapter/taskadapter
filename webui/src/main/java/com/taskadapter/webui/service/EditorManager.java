@@ -1,5 +1,6 @@
 package com.taskadapter.webui.service;
 
+import com.taskadapter.LegacyConnectorsSupport;
 import com.taskadapter.PluginManager;
 import com.taskadapter.PluginsFileParser;
 import com.taskadapter.connector.definition.Descriptor;
@@ -37,11 +38,7 @@ public class EditorManager {
     }
 
     public PluginEditorFactory getEditorFactory(String pluginId) {
-        String realId = pluginId;
-        // TODO add test, refactor. see the duplicate code in PluginManager
-        if (pluginId.equals(PluginManager.MSP_ID_LEGACY)) {
-            realId = PluginManager.MSP_ID;
-        }
+        String realId = LegacyConnectorsSupport.getRealId(pluginId);
         return editorFactories.get(realId);
     }
 

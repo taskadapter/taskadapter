@@ -10,10 +10,6 @@ import java.util.Map;
 
 public class PluginManager {
 
-    public static final String MSP_ID_LEGACY = "Microsoft Project (XML)";
-    public static final String MSP_ID = "Microsoft Project";
-
-
     private Map<String, Descriptor> pluginDescriptors = new HashMap<String, Descriptor>();
     private Map<String, PluginFactory> pluginFactories = new HashMap<String, PluginFactory>();
 
@@ -42,22 +38,13 @@ public class PluginManager {
     }
 
     public Descriptor getDescriptor(String pluginId) {
-        String realId = getRealId(pluginId);
+        String realId = LegacyConnectorsSupport.getRealId(pluginId);
         return pluginDescriptors.get(realId);
     }
 
     public PluginFactory getPluginFactory(String pluginId) {
-        String realId = getRealId(pluginId);
+        String realId = LegacyConnectorsSupport.getRealId(pluginId);
         return pluginFactories.get(realId);
-    }
-
-    private String getRealId(String pluginId) {
-        String realId = pluginId;
-        // TODO add test
-        if (pluginId.equals(MSP_ID_LEGACY)) {
-            realId = MSP_ID;
-        }
-        return realId;
     }
 
 }
