@@ -6,7 +6,6 @@ public class LegacyConnectorsSupport {
 
     public static String getRealId(String pluginId) {
         String realId = pluginId;
-        // TODO add test
         if (pluginId.equals(MSP_ID_LEGACY)) {
             realId = MSP_ID;
         }
