@@ -42,20 +42,22 @@ public class PluginManager {
     }
 
     public Descriptor getDescriptor(String pluginId) {
+        String realId = getRealId(pluginId);
+        return pluginDescriptors.get(realId);
+    }
+
+    public PluginFactory getPluginFactory(String pluginId) {
+        String realId = getRealId(pluginId);
+        return pluginFactories.get(realId);
+    }
+
+    private String getRealId(String pluginId) {
         String realId = pluginId;
         // TODO add test
         if (pluginId.equals(MSP_ID_LEGACY)) {
             realId = MSP_ID;
         }
-        return pluginDescriptors.get(realId);
+        return realId;
     }
 
-    public PluginFactory getPluginFactory(String pluginId) {
-        String realId = pluginId;
-        // TODO add test, refactor to remove duplication
-        if (pluginId.equals(MSP_ID_LEGACY)) {
-            realId = MSP_ID;
-        }
-        return pluginFactories.get(realId);
-    }
 }
