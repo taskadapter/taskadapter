@@ -60,13 +60,16 @@ public class NewConfigPage extends Page {
                 saveClicked();
             }
         });
+
         form.setLayout(grid);
+
         // empty label by default
         errorMessageLabel = new Label();
         errorMessageLabel.addStyleName("error-message-label");
+
         VerticalLayout bottomPanel = new VerticalLayout();
-        bottomPanel.addComponent(errorMessageLabel);
         bottomPanel.addComponent(saveButton);
+        bottomPanel.addComponent(errorMessageLabel);
         form.getFooter().addComponent(bottomPanel);
     }
 
