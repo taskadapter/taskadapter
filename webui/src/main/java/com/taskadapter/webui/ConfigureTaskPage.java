@@ -1,5 +1,6 @@
 package com.taskadapter.webui;
 
+import com.google.common.base.Strings;
 import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.ConnectorConfig;
@@ -13,12 +14,14 @@ import com.vaadin.ui.themes.BaseTheme;
  * @author Alexey Skorokhodov
  */
 public class ConfigureTaskPage extends Page {
-
     private VerticalLayout layout = new VerticalLayout();
     private TAFile file;
     private TextField name;
     private ConfigEditor panel1;
     private ConfigEditor panel2;
+    private TabSheet tabSheet;
+    private Label errorMessageLabel = new Label();
+    private String activeTabLabel;
 
     public ConfigureTaskPage() {
     }
@@ -34,17 +37,18 @@ public class ConfigureTaskPage extends Page {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 save();
-                navigator.showTaskDetailsPage(file);
             }
         });
         buttonsLayout.addComponent(saveButton);
+        errorMessageLabel.addStyleName("error-message-label");
+        buttonsLayout.addComponent(errorMessageLabel);
         layout.addComponent(buttonsLayout);
 
         name = new TextField("Name");
         name.setValue(file.getConfigLabel());
         layout.addComponent(name);
 
-        TabSheet tabSheet = new TabSheet();
+        tabSheet = new TabSheet();
         tabSheet.setSizeUndefined();
 
         ConnectorDataHolder leftConnectorDataHolder = file.getConnectorDataHolder1();
@@ -54,6 +58,15 @@ public class ConfigureTaskPage extends Page {
         ConnectorDataHolder rightConnectorDataHolder = file.getConnectorDataHolder2();
         panel2 = getPanel(rightConnectorDataHolder);
         tabSheet.addTab(panel2, getPanelCaption(rightConnectorDataHolder));
+
+        if (!Strings.isNullOrEmpty(activeTabLabel)) {
+            tabSheet.setSelectedTab(
+                    activeTabLabel.equals(leftConnectorDataHolder.getData().getLabel())
+                            ? panel1
+                            : activeTabLabel.equals(rightConnectorDataHolder.getData().getLabel())
+                                    ? panel2 : panel1
+            );
+        }
 
         layout.addComponent(tabSheet);
     }
@@ -79,16 +92,33 @@ public class ConfigureTaskPage extends Page {
     }
 
     private void save() {
+        boolean valid = true;
+
         try {
             panel1.validateAll();
-            panel2.validateAll();
+        } catch (ValidationException e) {
+            errorMessageLabel.setValue(e.getMessage());
+            tabSheet.setSelectedTab(panel1);
+            valid = false;
+        }
 
+        if (valid) {
+            try {
+                panel2.validateAll();
+            } catch (ValidationException e) {
+                errorMessageLabel.setValue(e.getMessage());
+                tabSheet.setSelectedTab(panel2);
+                valid = false;
+            }
+        }
+
+        if (valid) {
             updateFileWithDataInForm();
             services.getConfigStorage().saveConfig(file);
             navigator.showNotification("Saved", "All saved OK");
 
-        } catch (ValidationException e) {
-            navigator.showError("Validation", e.getMessage());
+            errorMessageLabel.setValue("");
+            navigator.showTaskDetailsPage(file);
         }
     }
 
@@ -118,5 +148,13 @@ public class ConfigureTaskPage extends Page {
     public Component getUI() {
         buildUI();
         return layout;
+    }
+
+    public void setActiveTabLabel(String dataHolderLabel) {
+        activeTabLabel = dataHolderLabel;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        errorMessageLabel.setValue(errorMessage);
     }
 }

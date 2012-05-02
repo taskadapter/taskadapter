@@ -84,6 +84,8 @@ public class JiraConfig extends WebConfig {
 
     @Override
     public void validateForLoad() throws ValidationException {
+        super.validateForLoad();
+
         if (getQueryId() == null) {
             throw new ValidationException("The current Task Adapter version supports loading data from Jira\n" +
                     "only using saved \"Query ID\".\n" +
@@ -93,6 +95,8 @@ public class JiraConfig extends WebConfig {
 
     @Override
     public void validateForSave() throws ValidationException {
+        super.validateForSave();
+
         if (getProjectKey().isEmpty()) {
             throw new ValidationException("Please specify the Jira project name\n" +
                     "where you want your tasks to be created.");

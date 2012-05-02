@@ -5,7 +5,6 @@ import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.*;
-import com.taskadapter.web.configeditor.EditorUtil;
 
 import java.util.Arrays;
 
@@ -30,13 +29,32 @@ public class Exporter {
     }
 
     public void export() {
+        String dataHolderLabel = null;
+        String errorMessage = null;
+        boolean valid = true;
+
         try {
             sourceDataHolder.getData().validateForLoad();
-            destinationDataHolder.getData().validateForSave();
-            processBasedOnDestinationConnectorType();
         } catch (ValidationException e) {
-            navigator.showError("Failed validation!", e.getMessage());
-            navigator.showConfigureTaskPage(taFile);
+            dataHolderLabel = sourceDataHolder.getData().getLabel();
+            errorMessage = e.getMessage();
+            valid = false;
+        }
+
+        if (valid) {
+            try {
+                destinationDataHolder.getData().validateForSave();
+            } catch (ValidationException e) {
+                dataHolderLabel = destinationDataHolder.getData().getLabel();
+                errorMessage = e.getMessage();
+                valid = false;
+            }
+        }
+
+        if (valid) {
+            processBasedOnDestinationConnectorType();
+        } else {
+            navigator.showConfigureTaskPage(taFile, dataHolderLabel, errorMessage);
         }
     }
 

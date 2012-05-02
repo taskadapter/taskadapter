@@ -78,6 +78,20 @@ abstract public class WebConfig extends ConnectorConfig {
     }
 
     @Override
+    public void validateForSave() throws ValidationException {
+        if(!serverInfo.isHostSet()) {
+            throw new ValidationException("Server URL is not set");
+        }
+    }
+
+    @Override
+    public void validateForLoad() throws ValidationException {
+        if(!serverInfo.isHostSet()) {
+            throw new ValidationException("Server URL is not set");
+        }
+    }
+
+    @Override
     public int hashCode() {
         return 31 * super.hashCode() +
                 Objects.hashCode(customFields, projectKey, queryId, serverInfo, findUserByName);

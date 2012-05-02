@@ -133,5 +133,6 @@
 
 .error-message-label {
     color: #ff6347;
-    padding-top: 5px;
+    padding-top: 3px;
+    padding-left: 3px;
 }

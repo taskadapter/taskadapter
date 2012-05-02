@@ -220,7 +220,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         @Override
         public void validate() throws ValidationException {
             if (getServerURL().isEmpty()) {
-                throw new ValidationException("'Server URL' is not set");
+                throw new ValidationException("Server URL is not set");
             }
         }
     }

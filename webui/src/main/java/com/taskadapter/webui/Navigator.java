@@ -128,8 +128,15 @@ public class Navigator {
 
     // TODO these 4 showXX methods are not in line with the other show(). refactor!
     public void showConfigureTaskPage(TAFile file) {
+        showConfigureTaskPage(file, null, null);
+    }
+
+    public void showConfigureTaskPage(TAFile file, String dataHolderLabel, String errorMessage) {
         ConfigureTaskPage page = (ConfigureTaskPage) pages.get(CONFIGURE_TASK_PAGE);
         page.setFile(file);
+        page.setActiveTabLabel(dataHolderLabel);
+        page.setErrorMessage(errorMessage);
+
         show(page);
     }
 
@@ -178,7 +185,8 @@ public class Navigator {
     }
 
     public void showError(String caption, String message) {
-        layout.getWindow().showNotification(caption, "<pre>" + message + "</pre>", Window.Notification.TYPE_ERROR_MESSAGE);
+//        layout.getWindow().showNotification(caption, "<pre>" + message + "</pre>", Window.Notification.TYPE_ERROR_MESSAGE);
+        showNotification(caption, message);
     }
 
     public void showNotification(String caption, String message) {

@@ -1,5 +1,6 @@
 package com.taskadapter.web.configeditor;
 
+import com.google.common.base.Strings;
 import com.taskadapter.connector.definition.ProjectInfo;
 import com.taskadapter.connector.definition.ValidationException;
 import com.vaadin.ui.*;
@@ -20,9 +21,6 @@ public class ProjectPanel extends GridLayout implements Validatable {
     private TextField queryId;
 
     private final ProjectProcessor projectProcessor;
-
-    // TODO use or delete projectKeyRequired field
-    private boolean projectKeyRequired;
 
     /**
      * Config Editors should NOT create this object directly, use ConfigEditor.addProjectPanel() method instead.
@@ -146,20 +144,16 @@ public class ProjectPanel extends GridLayout implements Validatable {
 
     @Override
     public void validate() throws ValidationException {
-        if (isQueryIdSet()) {
+        if (!Strings.isNullOrEmpty(getQueryId())) {
             try {
                 Integer.parseInt(getQueryId());
             } catch (NumberFormatException e) {
-                throw new ValidationException("'Query Id' must be a number if provided");
+                throw new ValidationException("Query Id must be a number");
             }
         }
 
-        if (projectKeyRequired && getProjectKey().trim().isEmpty()) {
+        if (getProjectKey().trim().isEmpty()) {
             throw new ValidationException("Project Key is required");
         }
-    }
-
-    private boolean isQueryIdSet() {
-        return getQueryId() != null && !getQueryId().trim().isEmpty();
     }
 }
