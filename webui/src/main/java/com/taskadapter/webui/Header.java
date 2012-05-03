@@ -18,6 +18,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
         this.navigator = navigator;
         buildMainLayout();
         checkLicense();
+        LicenseManager.addLicenseChangeListener(this);
     }
 
     private void buildMainLayout() {
@@ -25,23 +26,18 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
         addComponent(internalLayout);
         setComponentAlignment(internalLayout, Alignment.MIDDLE_CENTER);
 
-        LicenseManager.addLicenseChangeListener(this);
 
         setSpacing(true);
         addStyleName("header-panel");
 
-        Button logo = createButtonLink("Task Adapter", Navigator.HOME, "logo");
-        internalLayout.addComponent(logo);
-        internalLayout.setExpandRatio(logo, 2f);
-
-        Label spaceLabel = new Label(" ");
-        internalLayout.addComponent(spaceLabel);
-
+        addLogo();
         addMenuItems();
+        addTrialSection();
+    }
 
+    private void addTrialSection() {
         trialLayout.setSizeFull();
         trialLayout.addStyleName("trial-mode-area");
-
         Label trialLabel = new Label(" --- TRIAL MODE --- ");
         trialLabel.setSizeUndefined();
         trialLabel.addStyleName("trial-mode-label");
@@ -59,6 +55,12 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
         trialLayout.setVisible(false);
     }
 
+    private void addLogo() {
+        Button logo = createButtonLink("Task Adapter", Navigator.HOME, "logo");
+        internalLayout.addComponent(logo);
+        internalLayout.setExpandRatio(logo, 2f);
+    }
+
     private void addMenuItems() {
         HorizontalLayout menu = new HorizontalLayout();
         menu.setSpacing(true);
@@ -66,6 +68,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
         menu.addComponent(createButtonLink("Support", Navigator.FEEDBACK_PAGE, "menu"));
         internalLayout.addComponent(menu);
         internalLayout.setExpandRatio(menu, 1f);
+        internalLayout.setComponentAlignment(menu, Alignment.MIDDLE_CENTER);
     }
 
     private Button createButtonLink(String caption, final String pageId, String additionalStyle) {
