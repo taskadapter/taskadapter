@@ -20,9 +20,6 @@ public class ConfigureSystemPage extends Page implements LicenseChangeListener {
     private EnterLicensePanel enterLicensePanel;
     private LicenseInfoPanel licenseInfoPanel;
 
-    public ConfigureSystemPage() {
-    }
-
     private void createLocalRemoteSection() {
         layout.addComponent(new LocalRemoteOptionsPanel(services.getSettingsManager()));
         layout.addComponent(new Label("(Changes are saved automatically)"));
@@ -61,7 +58,7 @@ public class ConfigureSystemPage extends Page implements LicenseChangeListener {
 
     @Override
     public String getPageTitle() {
-        return "Info";
+        return "System configuration";
     }
 
     @Override
