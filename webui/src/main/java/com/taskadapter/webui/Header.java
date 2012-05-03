@@ -10,6 +10,7 @@ import com.vaadin.ui.themes.BaseTheme;
  * @author Alexey Skorokhodov
  */
 public class Header extends HorizontalLayout implements LicenseChangeListener {
+    private HorizontalLayout internalLayout = new HorizontalLayout();
     private VerticalLayout trialLayout = new VerticalLayout();
     private Navigator navigator;
 
@@ -20,17 +21,21 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
     }
 
     private void buildMainLayout() {
+        internalLayout.setWidth(800, UNITS_PIXELS);
+        addComponent(internalLayout);
+        setComponentAlignment(internalLayout, Alignment.MIDDLE_CENTER);
+
         LicenseManager.addLicenseChangeListener(this);
 
         setSpacing(true);
         addStyleName("header-panel");
 
         Button logo = createButtonLink("Task Adapter", Navigator.HOME, "logo");
-        addComponent(logo);
-        setExpandRatio(logo, 2f);
+        internalLayout.addComponent(logo);
+        internalLayout.setExpandRatio(logo, 2f);
 
         Label spaceLabel = new Label(" ");
-        addComponent(spaceLabel);
+        internalLayout.addComponent(spaceLabel);
 
         addMenuItems();
 
@@ -49,11 +54,9 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
         trialLayout.addComponent(buyLink);
         trialLayout.setComponentAlignment(buyLink, Alignment.MIDDLE_CENTER);
 
-        addComponent(trialLayout);
-        setExpandRatio(trialLayout, 1f);
+        internalLayout.addComponent(trialLayout);
+        internalLayout.setExpandRatio(trialLayout, 1f);
         trialLayout.setVisible(false);
-
-        setSizeFull();
     }
 
     private void addMenuItems() {
@@ -61,8 +64,8 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
         menu.setSpacing(true);
         menu.addComponent(createButtonLink("Configure", Navigator.CONFIGURE_SYSTEM_PAGE, "menu"));
         menu.addComponent(createButtonLink("Support", Navigator.FEEDBACK_PAGE, "menu"));
-        addComponent(menu);
-        setExpandRatio(menu, 1f);
+        internalLayout.addComponent(menu);
+        internalLayout.setExpandRatio(menu, 1f);
     }
 
     private Button createButtonLink(String caption, final String pageId, String additionalStyle) {
