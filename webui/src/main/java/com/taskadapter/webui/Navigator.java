@@ -46,9 +46,10 @@ public class Navigator {
     }
 
     private void registerPages() {
-        registerPage(CONFIGS, new ConfigsPage());
+        ConfigsPage configsPage = new ConfigsPage();
+        registerPage(CONFIGS, configsPage);
         registerPage(LOGIN_PAGE, new LoginPage());
-        registerPage(HOME, new HomePage());
+        registerPage(HOME, configsPage);
         registerPage(CONFIGURE_SYSTEM_PAGE, new ConfigureSystemPage());
         registerPage(FEEDBACK_PAGE, new SupportPage());
         registerPage(NEW_CONFIG_PAGE, new NewConfigPage());
