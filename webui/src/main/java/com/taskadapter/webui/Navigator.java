@@ -62,15 +62,15 @@ public class Navigator {
         header.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         layout.addComponent(header);
 
+        updateMessage = new Label();
+        layout.addComponent(updateMessage);
+        layout.setComponentAlignment(updateMessage, Alignment.MIDDLE_CENTER);
+
         navigationPanel = new HorizontalLayout();
         navigationPanel.setHeight("30px");
         navigationPanel.setWidth("100%");
         navigationPanel.setSpacing(true);
         layout.addComponent(navigationPanel);
-
-        updateMessage = new Label();
-        layout.addComponent(updateMessage);
-        layout.setComponentAlignment(updateMessage, Alignment.MIDDLE_CENTER);
 
         currentComponentArea.setSizeFull();
 
