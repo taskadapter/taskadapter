@@ -29,12 +29,13 @@ public class TAApplication extends Application {
         setTheme("mytheme");
 
         VerticalLayout layout = new VerticalLayout();
-        layout.setWidth("100%");
-        navigator = new Navigator(layout, services);
+        layout.setWidth("1020px");
+        layout.setHeight("600px");
 
         mainWindow.setContent(layout);
         setMainWindow(mainWindow);
 
+        navigator = new Navigator(layout, services);
         navigator.show(Navigator.HOME);
     }
 }
