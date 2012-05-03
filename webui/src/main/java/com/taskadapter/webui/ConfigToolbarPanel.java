@@ -22,7 +22,6 @@ public class ConfigToolbarPanel extends HorizontalLayout {
     private void buildUI() {
         setSpacing(true);
         Button configureButton = new Button("Configure");
-        configureButton.setStyleName(BaseTheme.BUTTON_LINK);
         configureButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
@@ -31,7 +30,6 @@ public class ConfigToolbarPanel extends HorizontalLayout {
         });
         addComponent(configureButton);
 
-        cloneButton.setStyleName(BaseTheme.BUTTON_LINK);
         cloneButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -41,7 +39,6 @@ public class ConfigToolbarPanel extends HorizontalLayout {
         addComponent(cloneButton);
 
         Button deleteButton = new Button("Delete config");
-        deleteButton.setStyleName(BaseTheme.BUTTON_LINK);
         deleteButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
@@ -49,6 +46,5 @@ public class ConfigToolbarPanel extends HorizontalLayout {
             }
         });
         addComponent(deleteButton);
-
     }
 }
