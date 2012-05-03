@@ -22,7 +22,6 @@ public class LeftMenu extends VerticalLayout {
     private void buildUI() {
         setSpacing(true);
 
-        addMenu(ICON_ADD, "New Config", Navigator.NEW_CONFIG_PAGE);
         addMenu(ICON_TASKS, "Configs", Navigator.CONFIGS);
         addMenu(ICON_INFO, "Configure", Navigator.CONFIGURE_SYSTEM_PAGE);
         addMenu(ICON_INFO, "Feedback", Navigator.FEEDBACK_PAGE);

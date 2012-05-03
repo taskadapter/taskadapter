@@ -20,10 +20,23 @@ public class ConfigsPage extends Page {
     }
 
     private void buildUI() {
+        createAddButton();
+
         table = new Table();
         table.addStyleName("configsTable");
         table.addContainerProperty("Name", Button.class, null);
         layout.addComponent(table);
+    }
+
+    private void createAddButton() {
+        Button addButton = new Button("New config");
+        addButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                navigator.show(Navigator.NEW_CONFIG_PAGE);
+            }
+        });
+        layout.addComponent(addButton);
     }
 
     private void reloadConfigs() {
