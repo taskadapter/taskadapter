@@ -4,6 +4,7 @@ import com.taskadapter.license.LicenseChangeListener;
 import com.taskadapter.license.LicenseManager;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.*;
+import com.vaadin.ui.themes.BaseTheme;
 
 /**
  * @author Alexey Skorokhodov
@@ -24,14 +25,12 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
         setSpacing(true);
         addStyleName("header-panel");
 
-        Label label = new Label("Task Adapter");
-        label.addStyleName("header-logo-label");
-        addComponent(label);
-        setExpandRatio(label, 2f);
+        Button logo = createButtonLink("Task Adapter", Navigator.HOME, "logo");
+        addComponent(logo);
+        setExpandRatio(logo, 2f);
 
         Label spaceLabel = new Label(" ");
         addComponent(spaceLabel);
-//        setExpandRatio(spaceLabel, 3f);
 
         addMenuItems();
 
@@ -60,21 +59,27 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
     private void addMenuItems() {
         HorizontalLayout menu = new HorizontalLayout();
         menu.setSpacing(true);
-        menu.addComponent(createMenu("Configure", Navigator.CONFIGURE_SYSTEM_PAGE));
-        menu.addComponent(createMenu("Support", Navigator.FEEDBACK_PAGE));
+        menu.addComponent(createButtonLink("Configure", Navigator.CONFIGURE_SYSTEM_PAGE, "menu"));
+        menu.addComponent(createButtonLink("Support", Navigator.FEEDBACK_PAGE, "menu"));
         addComponent(menu);
         setExpandRatio(menu, 1f);
     }
 
-    private Component createMenu(String label, String pageId) {
-        MenuLinkBuilder menuLinkBuilder = new MenuLinkBuilder(navigator);
-        Button buttonLink = menuLinkBuilder.createButtonLink(label, pageId);
-        buttonLink.addStyleName("menu");
-        return buttonLink;
+    private Button createButtonLink(String caption, final String pageId, String additionalStyle) {
+        Button button = new Button(caption);
+        button.setStyleName(BaseTheme.BUTTON_LINK);
+        button.addStyleName(additionalStyle);
+        button.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                navigator.show(pageId);
+            }
+        });
+        return button;
     }
 
     private void checkLicense() {
-        if(!LicenseManager.isTaskAdapterLicenseOK()) {
+        if (!LicenseManager.isTaskAdapterLicenseOK()) {
             trialLayout.setVisible(true);
         } else {
             trialLayout.setVisible(false);

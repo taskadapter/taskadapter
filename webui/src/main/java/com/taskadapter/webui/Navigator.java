@@ -27,7 +27,6 @@ public class Navigator {
     private static final String DELETE_PAGE = "delete_task";
 
     private Map<String, Page> pages = new HashMap<String, Page>();
-    private MenuLinkBuilder menuLinkBuilder;
 
     private HorizontalLayout navigationPanel;
     private HorizontalLayout currentComponentArea = new HorizontalLayout();
@@ -39,7 +38,6 @@ public class Navigator {
     public Navigator(VerticalLayout layout, Services services) {
         this.layout = layout;
         this.services = services;
-        menuLinkBuilder = new MenuLinkBuilder(this);
         registerPages();
         buildUI();
         checkLastAvailableVersion();
@@ -113,7 +111,6 @@ public class Navigator {
 
         navigationPanel.removeAllComponents();
 
-        navigationPanel.addComponent(menuLinkBuilder.createButtonLink("Home", HOME));
         navigationPanel.addComponent(new Label(page.getPageTitle()));
     }
 

@@ -5,11 +5,16 @@
     color: black;
 }
 
-.header-logo-label {
+.logo .v-button-caption {
     font-size: 33px;
     font-weight: bold;
     text-align: left;
     margin: 15px 0 13px 13px;
+    text-decoration: none;
+}
+
+.logo .v-button-caption:hover {
+    color: #3370a2;
 }
 
 .menu .v-button-caption {
@@ -19,7 +24,7 @@
 }
 
 .menu .v-button-caption:hover {
-    color: #2c7bff;
+    color: #3370a2;
 }
 
 .trial-mode-area {
