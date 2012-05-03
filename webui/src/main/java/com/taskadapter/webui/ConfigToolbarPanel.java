@@ -8,12 +8,12 @@ import com.vaadin.ui.themes.BaseTheme;
 
 import java.util.Arrays;
 
-public class TaskToolbarPanel extends HorizontalLayout {
+public class ConfigToolbarPanel extends HorizontalLayout {
     private Button cloneButton = new Button("Clone config");
     private final Navigator navigator;
     private final TAFile file;
 
-    public TaskToolbarPanel(Navigator navigator, TAFile file) {
+    public ConfigToolbarPanel(Navigator navigator, TAFile file) {
         this.navigator = navigator;
         this.file = file;
         buildUI();

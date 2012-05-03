@@ -9,7 +9,7 @@ import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 
-public class TaskButtonsPanel extends HorizontalLayout {
+public class ConfigButtonsPanel extends HorizontalLayout {
     private static final int ARROW_BUTTON_HEIGHT = 55;
     private static Resource ICON_LEFT = new ThemeResource("../../icons/left.png");
     private static Resource ICON_RIGHT = new ThemeResource("../../icons/right.png");
@@ -18,7 +18,7 @@ public class TaskButtonsPanel extends HorizontalLayout {
     private TAFile file;
     private Services services;
 
-    public TaskButtonsPanel(Navigator navigator, TAFile file, Services services) {
+    public ConfigButtonsPanel(Navigator navigator, TAFile file, Services services) {
         this.navigator = navigator;
         this.file = file;
         this.services = services;

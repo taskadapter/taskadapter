@@ -8,12 +8,12 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * @author Alexey Skorokhodov
  */
-public class TaskDetailsPage extends Page {
+public class ConfigDetailsPage extends Page {
     private TAFile file;
     private Label name;
     private VerticalLayout layout = new VerticalLayout();
 
-    public TaskDetailsPage() {
+    public ConfigDetailsPage() {
     }
 
     private void buildUI() {
@@ -21,8 +21,8 @@ public class TaskDetailsPage extends Page {
         layout.setSpacing(true);
         name = new Label();
         layout.addComponent(name);
-        layout.addComponent(new TaskToolbarPanel(navigator, file));
-        layout.addComponent(new TaskButtonsPanel(navigator, file, services));
+        layout.addComponent(new ConfigToolbarPanel(navigator, file));
+        layout.addComponent(new ConfigButtonsPanel(navigator, file, services));
     }
 
     private void setTask() {
