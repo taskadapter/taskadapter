@@ -172,8 +172,8 @@ public class Navigator {
         UpdateManager updateManager = new UpdateManager();
 
         if (updateManager.isCurrentVersionOutdated()) {
-            updateMessage.setCaption("There's a newer version of Task Adapter available for download. Your version: "
-                    + updateManager.getCurrentVersion() + ". Last available version: " + updateManager.getLatestAvailableVersion());
+            updateMessage.setCaption("There's a newer version of Task Adapter available for download: " + updateManager.getLatestAvailableVersion()
+                    + ". Your version:" + updateManager.getCurrentVersion());
         }
     }
 
