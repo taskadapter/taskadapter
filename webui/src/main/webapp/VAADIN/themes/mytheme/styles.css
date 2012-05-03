@@ -7,33 +7,36 @@
 
 .logo .v-button-caption {
     font-size: 33px;
-    font-weight: bold;
     text-align: left;
     margin: 15px 0 13px 13px;
-    text-decoration: none;
-}
-
-.logo .v-button-caption:hover {
-    color: #4181c1;
 }
 
 .menu .v-button-caption {
     font-size: 18px;
+}
+
+.logo .v-button-caption,
+.menu .v-button-caption {
     font-weight: bold;
     text-decoration: none;
 }
 
-.menu .v-button-caption:hover {
+.menu .v-button-caption:hover,
+.logo .v-button-caption:hover {
     color: #4181c1;
 }
 
 .trial-mode-area {
     background-color: #f0ff1a;
-    width: 150px;
+    border-radius: 20px;
 }
 .trial-mode-label {
     color: #3215ff;
     font-weight: bolder;
+    font-style: italic;
+}
+.trial-mode-link a:hover {
+    color: red;
 }
 
 .navigation-panel {

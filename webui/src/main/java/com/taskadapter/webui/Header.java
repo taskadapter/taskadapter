@@ -38,13 +38,14 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
     private void addTrialSection() {
         trialLayout.setSizeFull();
         trialLayout.addStyleName("trial-mode-area");
-        Label trialLabel = new Label(" --- TRIAL MODE --- ");
+        Label trialLabel = new Label("TRIAL MODE");
         trialLabel.setSizeUndefined();
         trialLabel.addStyleName("trial-mode-label");
         trialLayout.addComponent(trialLabel);
         trialLayout.setComponentAlignment(trialLabel, Alignment.MIDDLE_CENTER);
 
         Link buyLink = new Link("Buy it!", new ExternalResource("http://www.taskadapter.com/buy"));
+        buyLink.addStyleName("trial-mode-link");
         buyLink.setTargetName("_blank");
 
         trialLayout.addComponent(buyLink);
