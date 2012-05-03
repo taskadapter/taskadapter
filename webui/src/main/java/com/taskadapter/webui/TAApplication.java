@@ -2,6 +2,7 @@ package com.taskadapter.webui;
 
 import com.taskadapter.webui.service.Services;
 import com.vaadin.Application;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -29,9 +30,7 @@ public class TAApplication extends Application {
         setTheme("mytheme");
 
         VerticalLayout layout = new VerticalLayout();
-        layout.setWidth("1020px");
-        layout.setHeight("600px");
-
+        layout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         mainWindow.setContent(layout);
         setMainWindow(mainWindow);
 

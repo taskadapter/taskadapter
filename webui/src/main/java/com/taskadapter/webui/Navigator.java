@@ -62,24 +62,27 @@ public class Navigator {
         header.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         layout.addComponent(header);
 
+        addUpdatePanel();
+        addNavigationPanel();
+
+        mainArea.addComponent(currentComponentArea);
+        mainArea.setWidth("1020px");
+        mainArea.setComponentAlignment(currentComponentArea, Alignment.MIDDLE_CENTER);
+        layout.addComponent(mainArea);
+    }
+
+    private void addUpdatePanel() {
         updateMessage = new Label();
         layout.addComponent(updateMessage);
         layout.setComponentAlignment(updateMessage, Alignment.MIDDLE_CENTER);
+    }
 
+    private void addNavigationPanel() {
         navigationPanel = new HorizontalLayout();
         navigationPanel.setHeight("30px");
-        navigationPanel.setWidth("100%");
         navigationPanel.setSpacing(true);
         layout.addComponent(navigationPanel);
-
-        currentComponentArea.setSizeFull();
-
-        mainArea.addComponent(currentComponentArea);
-        mainArea.setExpandRatio(currentComponentArea, 1.0f);
-        mainArea.setSizeFull();
-        layout.addComponent(mainArea);
-        layout.setComponentAlignment(mainArea, Alignment.TOP_LEFT);
-        layout.setExpandRatio(mainArea, 1.0f);      // use all available space
+        layout.setComponentAlignment(navigationPanel, Alignment.MIDDLE_CENTER);
     }
 
     public void registerPage(String id, Page page) {
