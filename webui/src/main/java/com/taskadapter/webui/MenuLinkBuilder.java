@@ -7,6 +7,7 @@ import com.vaadin.ui.themes.BaseTheme;
 /**
  * @author Alexey Skorokhodov
  */
+// TODO delete this class
 public class MenuLinkBuilder {
     private Navigator navigator;
 

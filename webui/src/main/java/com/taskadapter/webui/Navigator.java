@@ -59,7 +59,7 @@ public class Navigator {
     }
 
     private void buildUI() {
-        Header header = new Header();
+        Header header = new Header(this);
         header.setHeight("50px");
         header.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         layout.addComponent(header);
@@ -73,11 +73,6 @@ public class Navigator {
         updateMessage = new Label();
         layout.addComponent(updateMessage);
         layout.setComponentAlignment(updateMessage, Alignment.MIDDLE_CENTER);
-
-
-        LeftMenu leftMenu = new LeftMenu(this);
-        leftMenu.setWidth("120px");
-        mainArea.addComponent(leftMenu);
 
         currentComponentArea.setSizeFull();
 

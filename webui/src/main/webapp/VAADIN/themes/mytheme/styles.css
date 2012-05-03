@@ -1,16 +1,25 @@
 @import "../runo/styles.css";
 
 .header-panel {
-    background-color: #388ddd;
-    color: #ffffff;
+    background-color: #e6e6e6;
+    color: black;
 }
 
 .header-logo-label {
     font-size: 33px;
     font-weight: bold;
-    font-style: italic;
     text-align: left;
     margin: 15px 0 13px 13px;
+}
+
+.menu .v-button-caption {
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.menu .v-button-caption:hover {
+    color: #2c7bff;
 }
 
 .trial-mode-area {

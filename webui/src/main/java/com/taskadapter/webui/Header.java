@@ -10,8 +10,10 @@ import com.vaadin.ui.*;
  */
 public class Header extends HorizontalLayout implements LicenseChangeListener {
     private VerticalLayout trialLayout = new VerticalLayout();
+    private Navigator navigator;
 
-    public Header() {
+    public Header(Navigator navigator) {
+        this.navigator = navigator;
         buildMainLayout();
         checkLicense();
     }
@@ -29,8 +31,9 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
 
         Label spaceLabel = new Label(" ");
         addComponent(spaceLabel);
-        setExpandRatio(spaceLabel, 3f);
+//        setExpandRatio(spaceLabel, 3f);
 
+        addMenuItems();
 
         trialLayout.setSizeFull();
         trialLayout.addStyleName("trial-mode-area");
@@ -52,6 +55,22 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
         trialLayout.setVisible(false);
 
         setSizeFull();
+    }
+
+    private void addMenuItems() {
+        HorizontalLayout menu = new HorizontalLayout();
+        menu.setSpacing(true);
+        menu.addComponent(createMenu("Configure", Navigator.CONFIGURE_SYSTEM_PAGE));
+        menu.addComponent(createMenu("Support", Navigator.FEEDBACK_PAGE));
+        addComponent(menu);
+        setExpandRatio(menu, 1f);
+    }
+
+    private Component createMenu(String label, String pageId) {
+        MenuLinkBuilder menuLinkBuilder = new MenuLinkBuilder(navigator);
+        Button buttonLink = menuLinkBuilder.createButtonLink(label, pageId);
+        buttonLink.addStyleName("menu");
+        return buttonLink;
     }
 
     private void checkLicense() {
