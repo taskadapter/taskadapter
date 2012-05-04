@@ -114,7 +114,9 @@ public class Navigator {
 
         navigationPanel.removeAllComponents();
 
-        navigationPanel.addComponent(new Label(page.getPageTitle()));
+        Label titleLabel = new Label(page.getPageTitle());
+        titleLabel.setSizeUndefined();
+        navigationPanel.addComponent(titleLabel);
     }
 
     private void setServicesToPage(Page page) {
