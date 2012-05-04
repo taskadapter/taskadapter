@@ -109,6 +109,7 @@ public class Navigator {
         */
         currentComponentArea.removeAllComponents();
         Component ui = page.getUI();
+        ui.setSizeUndefined();
         currentComponentArea.addComponent(ui);
         currentComponentArea.setComponentAlignment(ui, Alignment.TOP_LEFT);
 
