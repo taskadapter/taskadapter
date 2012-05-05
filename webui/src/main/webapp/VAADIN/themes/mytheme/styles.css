@@ -71,7 +71,7 @@
 .v-nativebutton-connectorBoxButton {
     background-color: #DAF1FF;
     color: #222219;
-    border: 2px #65C5E6 solid;
+    border: 1px black solid;
     width: 220px;
     height: 110px;
 }
@@ -80,7 +80,6 @@
     /* we don't have any action associated with this box panel, so let's not show any effects
      on mouse over event to not confuse people*/
     /*background-color: #99CCFF;*/
-    border: 2px #65C5E6 solid;
 }
 
 .priorities-table {

@@ -5,8 +5,6 @@ import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.webui.service.Services;
-import com.vaadin.terminal.Resource;
-import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 
 public class ConfigButtonsPanel extends HorizontalLayout {
@@ -36,7 +34,7 @@ public class ConfigButtonsPanel extends HorizontalLayout {
         // TODO use the config
         ConnectorConfig config = dataHolder.getData();
         NativeButton button = new NativeButton(descriptor.getLabel());
-        button.addStyleName("boxButton");
+        button.addStyleName("connectorBoxButton");
         addComponent(button);
         button.addListener(new Button.ClickListener() {
             @Override
