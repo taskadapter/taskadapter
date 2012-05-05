@@ -27,16 +27,15 @@
 }
 
 .trial-mode-area {
-    background-color: #f0ff1a;
-    border-radius: 20px;
+    background-color: #f6ff90;
+    border-radius: 5px;
 }
 .trial-mode-label {
-    color: #3215ff;
-    font-weight: bolder;
-    font-style: italic;
+    font-weight: bold;
+    text-decoration: none;
 }
 .trial-mode-link a:hover {
-    color: red;
+    color: #4181c1;
 }
 
 .navigation-panel {

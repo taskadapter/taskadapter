@@ -44,7 +44,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
         trialLayout.addComponent(trialLabel);
         trialLayout.setComponentAlignment(trialLabel, Alignment.MIDDLE_CENTER);
 
-        Link buyLink = new Link("Buy it!", new ExternalResource("http://www.taskadapter.com/buy"));
+        Link buyLink = new Link("Buy now", new ExternalResource("http://www.taskadapter.com/buy"));
         buyLink.addStyleName("trial-mode-link");
         buyLink.setTargetName("_blank");
 
