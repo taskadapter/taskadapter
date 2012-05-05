@@ -8,13 +8,17 @@ import com.taskadapter.connector.msp.MSPTaskLoader;
 import com.taskadapter.connector.msp.MSPTaskSaver;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
+import com.taskadapter.connector.redmine.RedmineDataConverter;
 import com.taskadapter.integrationtests.AbstractSyncRunnerTest;
 import com.taskadapter.integrationtests.RedmineTestConfig;
 import com.taskadapter.model.GTask;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.redmine.ta.RedmineManager;
+import org.redmine.ta.beans.Issue;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -25,7 +29,6 @@ public class UpdaterIntegrationTest extends AbstractSyncRunnerTest {
     private static final int TASKS_NUMBER = 1;
 
     private List<GTask> rmIssues;
-    private List<GTask> mspTasks;
 
     private Connector<?> redmineConnector;
     private String projectKey;
@@ -42,13 +45,9 @@ public class UpdaterIntegrationTest extends AbstractSyncRunnerTest {
         projectConnector = new MSPConnector(mspConfig);
     }
 
-    // TODO fix after the code can be compiled OK.
-    // RedmineUtils can't be accessed from this context (merged from Eclipse branch)
-    @Ignore
     @Test
     public void testMSPFileIsUpdated() throws Exception {
-        // fix this
-//		createTasksInRedmine();
+		createTasksInRedmine();
         saveToMSP();
         modifyRedmineData();
         updateMSPFile();
@@ -60,10 +59,10 @@ public class UpdaterIntegrationTest extends AbstractSyncRunnerTest {
         updater.start();
     }
 
-//	private void createTasksInRedmine() {
-//		this.rmIssues = RedmineUtils.createIssues(redmineConfig, projectKey, TASKS_NUMBER);
-//		TaskUtil.setRemoteIdField(rmIssues);
-//	}
+	private void createTasksInRedmine() {
+		this.rmIssues = createRedmineIssues(redmineConfig, projectKey, TASKS_NUMBER);
+		TaskUtil.setRemoteIdField(rmIssues);
+	}
 
     private void saveToMSP() {
         new MSPTaskSaver(mspConfig).saveData(rmIssues, null);
@@ -85,13 +84,48 @@ public class UpdaterIntegrationTest extends AbstractSyncRunnerTest {
 
     private void verifyMSPData() throws Exception {
         MSPTaskLoader mspLoader = new MSPTaskLoader();
-        mspTasks = mspLoader.loadTasks(mspConfig);
+        List<GTask> mspTasks = mspLoader.loadTasks(mspConfig);
         assertEquals(TASKS_NUMBER, mspTasks.size());
         for (GTask task : mspTasks) {
             GTask rmTask = TestUtils.findTaskByKey(rmIssues, task.getRemoteId());
             assertEquals(rmTask.getSummary(), task.getSummary());
             assertEquals(rmTask.getEstimatedHours(), task.getEstimatedHours());
         }
+    }
+
+    private List<GTask> createRedmineIssues(RedmineConfig redmineConfig, String projectKey, int issuesNumber) {
+        List<GTask> issues = new ArrayList<GTask>(issuesNumber);
+        RedmineManager mgr = new RedmineManager(RedmineTestConfig.getURI());
+        mgr.setLogin(RedmineTestConfig.getUserLogin());
+        mgr.setPassword(RedmineTestConfig.getPassword());
+
+        List<Issue> issuesToCreate = generateRedmineIssues(issuesNumber);
+
+        RedmineDataConverter converter = new RedmineDataConverter(redmineConfig);
+        for (int i = 0; i < issuesToCreate.size(); i++) {
+            Issue issue;
+            try {
+                issue = mgr.createIssue(projectKey, issuesToCreate.get(i));
+            } catch (Exception e) {
+                throw new RuntimeException(e.toString(), e);
+            }
+            GTask task = converter.convertToGenericTask(issue);
+            issues.add(task);
+        }
+
+        return issues;
+
+    }
+
+    private List<Issue> generateRedmineIssues(int issuesNumber) {
+        List<Issue> issues = new ArrayList<Issue>(issuesNumber);
+        for (int i = 0; i < issuesNumber; i++) {
+            Issue issue = new Issue();
+            issue.setSubject("some issue " + i + " " + new Date());
+            issue.setEstimatedHours((float) i);
+            issues.add(issue);
+        }
+        return issues;
     }
 
 }
