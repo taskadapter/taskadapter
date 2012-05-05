@@ -64,19 +64,19 @@
     border: 2px solid #65C5E6;
 }
 
-.boxButton .v-nativebutton-caption {
+.connectorBoxButton .v-nativebutton-caption {
     font-size: 14px;
 }
 
-.v-nativebutton-boxButton {
+.v-nativebutton-connectorBoxButton {
     background-color: #DAF1FF;
     color: #222219;
     border: 2px #65C5E6 solid;
-    width: 250px;
+    width: 220px;
     height: 110px;
 }
 
-.v-nativebutton-boxButton:hover {
+.v-nativebutton-connectorBoxButton:hover {
     /* we don't have any action associated with this box panel, so let's not show any effects
      on mouse over event to not confuse people*/
     /*background-color: #99CCFF;*/
