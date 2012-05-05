@@ -11,8 +11,8 @@ import com.vaadin.ui.*;
 
 public class ConfigButtonsPanel extends HorizontalLayout {
     private static final int ARROW_BUTTON_HEIGHT = 55;
-    private static Resource ICON_LEFT = new ThemeResource("../../icons/left.png");
-    private static Resource ICON_RIGHT = new ThemeResource("../../icons/right.png");
+    private static final String ARROW_RIGHT = "\u21e8";
+    private static final String ARROW_LEFT = "\u21e6";
 
     private Navigator navigator;
     private TAFile file;
@@ -49,15 +49,15 @@ public class ConfigButtonsPanel extends HorizontalLayout {
 
     private void createActionButtons() {
         Layout buttonsLayout = new VerticalLayout();
-        buttonsLayout.addComponent(createButton(ICON_RIGHT, file.getConnectorDataHolder1(), file.getConnectorDataHolder2()));
-        buttonsLayout.addComponent(createButton(ICON_LEFT, file.getConnectorDataHolder2(), file.getConnectorDataHolder1()));
+        buttonsLayout.addComponent(createButton(ARROW_RIGHT, file.getConnectorDataHolder1(), file.getConnectorDataHolder2()));
+        buttonsLayout.addComponent(createButton(ARROW_LEFT, file.getConnectorDataHolder2(), file.getConnectorDataHolder1()));
         addComponent(buttonsLayout);
     }
 
-    private Button createButton(Resource icon, final ConnectorDataHolder sourceDataHolder, final ConnectorDataHolder destinationDataHolder) {
-        Button button = new NativeButton();
+    private Button createButton(String label, final ConnectorDataHolder sourceDataHolder, final ConnectorDataHolder destinationDataHolder) {
+        Button button = new NativeButton(label);
         button.setHeight(ARROW_BUTTON_HEIGHT, UNITS_PIXELS);
-        button.setIcon(icon);
+        button.addStyleName("button_arrow");
         final Exporter exporter = new Exporter(navigator, services.getPluginManager(), sourceDataHolder, destinationDataHolder, file);
         button.addListener(new Button.ClickListener() {
             @Override

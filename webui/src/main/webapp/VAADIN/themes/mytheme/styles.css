@@ -51,6 +51,11 @@
     background-color: #B8DBFF;
 }
 
+.button_arrow .v-nativebutton-caption {
+    font-size: 48px;
+    font-weight: bold;
+}
+
 .v-table-cell-content-centered {
     text-align: center;
 }
