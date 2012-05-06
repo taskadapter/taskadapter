@@ -42,7 +42,7 @@ public class EnterLicensePanel extends VerticalLayout {
         boolean allOK = false;
         try {
             license = LicenseManager.checkLicense(licenseText);
-            LicenseManager.installLicense(LicenseManager.PRODUCT.TASK_ADAPTER,
+            LicenseManager.installLicense(LicenseManager.Product.TASK_ADAPTER,
                     licenseText);
             getWindow().showNotification("Successfully registered to: " + license.getCustomerName());
             allOK = true;

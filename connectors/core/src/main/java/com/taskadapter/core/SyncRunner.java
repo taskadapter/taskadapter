@@ -7,12 +7,13 @@ import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.SyncResult;
-import com.taskadapter.license.LicenseManager;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.taskadapter.license.LicenseManager.*;
 
 public class SyncRunner {
     private Connector connectorFrom;
@@ -93,9 +94,10 @@ public class SyncRunner {
     }
 
     private List<GTask> applyTrialIfNeeded(List<GTask> flatTasksList) {
-        if (!LicenseManager.isTaskAdapterLicenseOK()) {
-            System.out.println(LicenseManager.TRIAL_MESSAGE);
-            int tasksToLeave = Math.min(LicenseManager.TRIAL_TASKS_NUMBER_LIMIT, flatTasksList.size());
+        if (!isTaskAdapterLicenseOk()) {
+            System.out.println(TRIAL_MESSAGE);
+            int tasksToLeave = Math.min(TRIAL_TASKS_NUMBER_LIMIT, flatTasksList.size());
+
             return flatTasksList.subList(0, tasksToLeave);
         } else {
             return flatTasksList;

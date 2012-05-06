@@ -2,14 +2,15 @@ package com.taskadapter.webui.license;
 
 import com.taskadapter.license.License;
 import com.taskadapter.license.LicenseChangeListener;
-import com.taskadapter.license.LicenseManager;
 import com.taskadapter.license.LicenseValidationException;
 import com.taskadapter.web.LocalRemoteOptionsPanel;
 import com.taskadapter.webui.Page;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+
+import static com.taskadapter.license.LicenseManager.addLicenseChangeListener;
+import static com.taskadapter.license.LicenseManager.getTaskAdapterLicense;
 
 /**
  * @author Alexey Skorokhodov
@@ -26,7 +27,8 @@ public class ConfigureSystemPage extends Page implements LicenseChangeListener {
     }
 
     private void createLicenseSection() {
-        LicenseManager.addLicenseChangeListener(this);
+        addLicenseChangeListener(this);
+
         enterLicensePanel = new EnterLicensePanel();
         enterLicensePanel.setVisible(false);
         layout.addComponent(enterLicensePanel);
@@ -38,22 +40,22 @@ public class ConfigureSystemPage extends Page implements LicenseChangeListener {
 
     private void updateFormBasingOnLicense() {
         try {
-            License license = LicenseManager.getTaskAdapterLicense();
+            License license = getTaskAdapterLicense();
             showRegisteredMode(license);
         } catch (LicenseValidationException e) {
             showUnregisteredMode();
         }
     }
 
-    private void showUnregisteredMode() {
-        enterLicensePanel.setVisible(true);
-        licenseInfoPanel.setVisible(false);
-    }
-
     private void showRegisteredMode(License license) {
         licenseInfoPanel.setLicense(license);
         licenseInfoPanel.setVisible(true);
         enterLicensePanel.setVisible(false);
+    }
+
+    private void showUnregisteredMode() {
+        enterLicensePanel.setVisible(true);
+        licenseInfoPanel.setVisible(false);
     }
 
     @Override

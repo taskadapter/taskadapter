@@ -1,13 +1,17 @@
 package com.taskadapter.license;
 
-import com.taskadapter.license.LicenseManager.PRODUCT;
+import com.taskadapter.license.LicenseManager.Product;
 
 public class License {
+    private Product product;
     private String customerName;
     private String email;
     private String createdOn;
     private String completeText;
-    private PRODUCT product;
+
+    public Product getProduct() {
+        return product;
+    }
 
     public String getCustomerName() {
         return customerName;
@@ -25,12 +29,7 @@ public class License {
         return completeText;
     }
 
-    public PRODUCT getProduct() {
-        return product;
-    }
-
-    public License(PRODUCT product, String customerName, String email,
-                   String createdOn, String completeText) {
+    public License(Product product, String customerName, String email, String createdOn, String completeText) {
         super();
         this.customerName = customerName;
         this.email = email;
@@ -41,8 +40,11 @@ public class License {
 
     @Override
     public String toString() {
-        return "License [product=" + product + ", customerName=" + customerName + ", email=" + email
-                + ", createdOn=" + createdOn + "]";
+        return "License{" +
+                "product='" + product + '\'' +
+                ", customerName='" + customerName + '\'' +
+                ", email='" + email + '\'' +
+                ", createdOn='" + createdOn +
+                "'}";
     }
-
 }
