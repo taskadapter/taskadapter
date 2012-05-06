@@ -1,7 +1,5 @@
 package com.taskadapter.integrationtests;
 
-import com.taskadapter.connector.common.TestUtils;
-import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.util.MyIOUtils;
@@ -9,14 +7,12 @@ import net.sf.mpxj.TaskField;
 
 import java.io.*;
 import java.net.URL;
-import java.util.Map;
 
-// XXX Alexey: I don't see a need in "inheritance" here , this should be a utility method, not abstract class 
 public class AbstractSyncRunnerTest {
 
     /**
      * Generate a temporary MSP file using the contents of the provided file.
-     * This is useful when a test needs to overwrite the file. We don't want to destroy the
+     * This is useful when a test needs to overwrite a file. We don't want to destroy the
      * original test data.
      */
     protected MSPConfig getConfig(String fileName) throws IOException {
@@ -28,9 +24,9 @@ public class AbstractSyncRunnerTest {
         // Write to temp file
         copyFile(fileName, temp);
 
-        Map<FIELD, Mapping> fieldMapped = TestUtils.getFieldMapped(FIELD.REMOTE_ID, true, TaskField.TEXT22.toString());
         MSPConfig mspConfig = new MSPConfig(temp.getAbsolutePath());
-        mspConfig.getFieldsMapping().putAll(fieldMapped);
+        mspConfig.selectField(FIELD.REMOTE_ID);
+        mspConfig.setFieldMappedValue(FIELD.REMOTE_ID, TaskField.TEXT22.toString());
         return mspConfig;
     }
 
@@ -56,11 +52,11 @@ public class AbstractSyncRunnerTest {
         }
         temp.deleteOnExit();
 
-        Map<FIELD, Mapping> fieldMapped = TestUtils.getFieldMapped(FIELD.REMOTE_ID, true, TaskField.TEXT22.toString());
         MSPConfig mspConfig = new MSPConfig();
         mspConfig.setInputFileName(temp.getAbsolutePath());
         mspConfig.setOutputFileName(temp.getAbsolutePath());
-        mspConfig.getFieldsMapping().putAll(fieldMapped);
+        mspConfig.selectField(FIELD.REMOTE_ID);
+        mspConfig.setFieldMappedValue(FIELD.REMOTE_ID, TaskField.TEXT22.toString());
         return mspConfig;
     }
 

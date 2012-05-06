@@ -6,6 +6,8 @@ import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -61,7 +63,7 @@ public abstract class ConnectorConfig implements Serializable {
     }
 
     /**
-      TODO replace the MAP with a concrete class holding the mapping
+     * TODO replace the MAP with a concrete class holding the mapping
      */
     @Deprecated
     public Map<FIELD, Mapping> getFieldsMapping() {
@@ -90,6 +92,37 @@ public abstract class ConnectorConfig implements Serializable {
             return mapping.getCurrentValue();
         }
         return null;
+    }
+
+    public void selectField(FIELD field) {
+        Mapping mapping = fieldsMapping.get(field);
+        if (mapping != null) {
+            mapping.setSelected(true);
+        } else {
+            throw new RuntimeException("unknown field: " + field);
+        }
+    }
+
+    protected void unselectField(FIELD field) {
+        Mapping mapping = fieldsMapping.get(field);
+        if (mapping != null) {
+            mapping.setSelected(false);
+        } else {
+            throw new RuntimeException("unknown field: " + field);
+        }
+    }
+
+    public void setFieldMappedValue(FIELD field, String value) {
+        Mapping mapping = fieldsMapping.get(field);
+        if (mapping != null) {
+            mapping.setValue(value);
+        } else {
+            throw new RuntimeException("unknown field: " + field);
+        }
+    }
+
+    public Collection<FIELD> getFields() {
+        return fieldsMapping.keySet();
     }
 
     /**

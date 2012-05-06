@@ -1,33 +1,25 @@
 package com.taskadapter.connector.msp;
 
-import static com.taskadapter.connector.common.TestUtils.packTasksToList;
-import static com.taskadapter.connector.msp.MSPTestUtils.deleteFile;
-import static com.taskadapter.connector.msp.MSPTestUtils.findMSPTaskBySummary;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import com.taskadapter.connector.common.CommonTests;
+import com.taskadapter.connector.common.TestUtils;
+import com.taskadapter.connector.definition.Mapping;
+import com.taskadapter.model.GTask;
+import com.taskadapter.model.GTaskDescriptor.FIELD;
+import com.taskadapter.model.GUser;
+import net.sf.mpxj.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import com.taskadapter.connector.common.CommonTests;
-import com.taskadapter.connector.common.TestUtils;
-import com.taskadapter.connector.definition.Mapping;
-import com.taskadapter.model.GTaskDescriptor;
-import net.sf.mpxj.ConstraintType;
-import net.sf.mpxj.MPXJException;
-import net.sf.mpxj.ProjectFile;
-import net.sf.mpxj.Task;
-import net.sf.mpxj.TaskField;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
-import com.taskadapter.model.GUser;
+import static com.taskadapter.connector.common.TestUtils.packTasksToList;
+import static com.taskadapter.connector.msp.MSPTestUtils.deleteFile;
+import static com.taskadapter.connector.msp.MSPTestUtils.findMSPTaskBySummary;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class FieldMappingTest {
     private MSPConfig config;
@@ -202,34 +194,33 @@ public class FieldMappingTest {
         assertEquals(assignee.getId(), loadedTask.getAssignee().getId());
     }
 
-    private static List<Task> saveAndLoad(Map<FIELD, Mapping> map,
-                                          GTask... tasks) throws IOException, MPXJException {
-        String fileName = "testdata.tmp";
-        MSPConfig config = new MSPConfig();
-        config.setInputFileName(fileName);
-        config.setOutputFileName(fileName);
-        config.setFieldsMapping(map);
-        MSPConnector connector = new MSPConnector(config);
-
-        connector.saveData(packTasksToList(tasks), null);
-
-        MSPFileReader fileReader = new MSPFileReader();
-        ProjectFile projectFile = fileReader.readFile(config.getInputFileName());
-        List<Task> mspTasks = projectFile.getAllTasks();
-
-        deleteFile(fileName);
-        return mspTasks;
-    }
-
     private static List<Task> saveAndLoad(MSPConfig config, FIELD field, Mapping mapping, GTask... tasks)
             throws Exception {
         Mapping savedMapping = config.getFieldMapping(field);
         config.setFieldMapping(field, mapping); // ugly, but ...
 
-        List<Task> loadedTasks = saveAndLoad(config.getFieldsMapping(), tasks);
+        List<Task> loadedTasks = saveAndLoad(config, tasks);
         config.setFieldMapping(field, savedMapping);
 
         return loadedTasks;
+    }
+
+    private static List<Task> saveAndLoad(MSPConfig oldConfig,
+                                          GTask... tasks) throws IOException, MPXJException {
+        String fileName = "testdata.tmp";
+        MSPConfig temporaryClonedconfig = new MSPConfig(oldConfig);
+        temporaryClonedconfig.setInputFileName(fileName);
+        temporaryClonedconfig.setOutputFileName(fileName);
+        MSPConnector connector = new MSPConnector(temporaryClonedconfig);
+
+        connector.saveData(packTasksToList(tasks), null);
+
+        MSPFileReader fileReader = new MSPFileReader();
+        ProjectFile projectFile = fileReader.readFile(temporaryClonedconfig.getInputFileName());
+        List<Task> mspTasks = projectFile.getAllTasks();
+
+        deleteFile(fileName);
+        return mspTasks;
     }
 
     private static Date getDateRoundedToMinutes() {

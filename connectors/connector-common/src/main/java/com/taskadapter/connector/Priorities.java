@@ -1,7 +1,7 @@
 package com.taskadapter.connector;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Priorities {
@@ -22,6 +22,19 @@ public class Priorities {
 
     public Priorities(Map<String, Integer> prioritiesMapping) {
         this.prioritiesMapping = prioritiesMapping;
+    }
+
+    /**
+     * Performs DEEP cloning.
+     * @param toClone the object to clone
+     */
+    // TODO Add unit test
+    public Priorities(Priorities toClone) {
+        prioritiesMapping = new HashMap<String, Integer>();
+        Collection<String> allNames = toClone.getAllNames();
+        for (String priorityName : allNames) {
+            prioritiesMapping.put(priorityName, toClone.getPriorityByText(priorityName));
+        }
     }
 
     /**

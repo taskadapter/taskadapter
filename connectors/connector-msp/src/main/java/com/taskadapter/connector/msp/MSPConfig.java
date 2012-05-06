@@ -6,6 +6,7 @@ import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -39,6 +40,30 @@ public class MSPConfig extends ConnectorConfig {
         this.fieldsMapping = mapping;
         this.inputFileName = fileName;
         this.outputFileName = fileName;
+    }
+
+    // TODO add unit tests
+    public MSPConfig(MSPConfig configToDeepClone) {
+        this();
+        this.inputFileName = configToDeepClone.getInputFileName();
+        this.outputFileName = configToDeepClone.getOutputFileName();
+
+        Collection<FIELD> oldFields = configToDeepClone.getFields();
+        for (FIELD oldField : oldFields) {
+            boolean oldSelected = configToDeepClone.isFieldSelected(oldField);
+            if (oldSelected) {
+                selectField(oldField);
+            } else {
+                unselectField(oldField);
+            }
+            String oldValue = configToDeepClone.getFieldMappedValue(oldField);
+            setFieldMappedValue(oldField, oldValue);
+        }
+
+        setLabel(configToDeepClone.getLabel());
+        saveIssueRelations = configToDeepClone.getSaveIssueRelations();
+        defaultTaskType = configToDeepClone.getDefaultTaskType();
+        this.priorities = new Priorities(configToDeepClone.getPriorities());
     }
 
     public String getInputFileName() {

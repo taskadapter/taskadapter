@@ -25,6 +25,14 @@ public class Mapping {
         return selected;
     }
 
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public void setValue(String value) {
+        this.currentValue = value;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
