@@ -3,6 +3,7 @@ package com.taskadapter.connector.msp;
 import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.model.GTask;
+import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
 import net.sf.mpxj.*;
@@ -197,8 +198,6 @@ public class MSXMLFileWriter {
         setFieldIfSelected(FIELD.TASK_TYPE, mspTask, gTask.getType());
         setFieldIfSelected(FIELD.TASK_STATUS, mspTask, gTask.getStatus());
 
-        Map<FIELD, Mapping> fieldsMapping = config.getFieldsMapping();
-
         // ESTIMATED TIME and DONE RATIO
         if (gTask.getEstimatedHours() != null && config.isFieldSelected(FIELD.ESTIMATED_TIME)) {
             Duration estimatedValue = Duration.getInstance(
@@ -270,11 +269,11 @@ public class MSXMLFileWriter {
         }
 
         // DUE DATE
-        Mapping mappingDueDate = fieldsMapping.get(FIELD.DUE_DATE);
-        if (gTask.getDueDate() != null && mappingDueDate.isSelected()) {
-            if (mappingDueDate.getCurrentValue().equals(TaskField.FINISH.toString())) {
+        if (gTask.getDueDate() != null && config.isFieldSelected(FIELD.DUE_DATE)) {
+            String dueDateValue = config.getFieldMappedValue(FIELD.DUE_DATE);
+            if (dueDateValue.equals(TaskField.FINISH.toString())) {
                 mspTask.set(TaskField.FINISH, gTask.getDueDate());
-            } else if (mappingDueDate.getCurrentValue().equals(TaskField.DEADLINE.toString())) {
+            } else if (dueDateValue.equals(TaskField.DEADLINE.toString())) {
                 mspTask.set(TaskField.DEADLINE, gTask.getDueDate());
             }
         }

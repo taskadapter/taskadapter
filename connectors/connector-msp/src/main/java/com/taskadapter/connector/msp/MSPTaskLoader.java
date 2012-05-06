@@ -59,8 +59,7 @@ public class MSPTaskLoader extends AbstractTaskLoader<MSPConfig> {
     List<GTask> loadTasks(ProjectFile project, MSPConfig config, List<Task> mspTasks) {
         converter.setConfig(config);
         converter.setHeader(project.getProjectHeader());
-        converter.setMappings(config.getFieldsMapping());
-        // XXX add fieldMappings to the params!
+        // TODO add fieldMappings to the params!
         return converter.convertToGenericTaskList(mspTasks);
     }
 

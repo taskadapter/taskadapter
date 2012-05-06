@@ -25,7 +25,7 @@ public class GithubEditor extends ConfigEditor {
         addServerPanel();
         addProjectPanel(this, new GithubProjectProcessor(this));
         addSaveRelationSection();
-        addFieldsMappingPanel(GithubDescriptor.instance.getAvailableFieldsProvider(), config.getFieldsMapping());
+        addFieldsMappingPanel(GithubDescriptor.instance.getAvailableFieldsProvider());
     }
 
     @Override

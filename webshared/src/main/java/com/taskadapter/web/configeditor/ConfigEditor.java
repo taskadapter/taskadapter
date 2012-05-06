@@ -107,8 +107,8 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         priorityPanel.setPriorities(priorities);
     }
 
-    protected void addFieldsMappingPanel(AvailableFieldsProvider fieldsProvider, Map<GTaskDescriptor.FIELD, Mapping> mapping) {
-        fieldsMappingPanel = new FieldsMappingPanel(fieldsProvider, mapping);
+    protected void addFieldsMappingPanel(AvailableFieldsProvider fieldsProvider) {
+        fieldsMappingPanel = new FieldsMappingPanel(fieldsProvider, config);
         toValidate.add(fieldsMappingPanel);
         addComponent(fieldsMappingPanel);
     }

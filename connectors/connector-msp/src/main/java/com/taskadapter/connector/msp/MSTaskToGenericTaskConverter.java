@@ -14,8 +14,6 @@ import java.util.*;
 class MSTaskToGenericTaskConverter implements TaskConverter<Task> {
 
     private ProjectHeader header;
-
-    private Map<GTaskDescriptor.FIELD, Mapping> fieldMappings = new HashMap<GTaskDescriptor.FIELD, Mapping>();
     private MSPConfig config;
 
     public void setHeader(ProjectHeader header) {
@@ -72,7 +70,7 @@ class MSTaskToGenericTaskConverter implements TaskConverter<Task> {
         }
 
         // DUE DATE
-        Mapping dueDateField = fieldMappings.get(GTaskDescriptor.FIELD.DUE_DATE);
+        Mapping dueDateField = config.getFieldMapping(GTaskDescriptor.FIELD.DUE_DATE);
         if (dueDateField != null) {
             Date mspDueDate = null;
             if (dueDateField.getCurrentValue().equals(TaskField.FINISH.toString())) {
@@ -202,10 +200,6 @@ class MSTaskToGenericTaskConverter implements TaskConverter<Task> {
             return obj.toString();
         }
         return null;
-    }
-
-    public void setMappings(Map<FIELD, Mapping> map) {
-        this.fieldMappings = map;
     }
 
     public void setConfig(MSPConfig config) {

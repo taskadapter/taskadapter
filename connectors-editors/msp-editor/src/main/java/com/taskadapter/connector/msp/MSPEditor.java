@@ -38,7 +38,7 @@ public class MSPEditor extends ConfigEditor {
         super(config);
         this.settingsManager = settingsManager;
         buildUI();
-        addFieldsMappingPanel(MSPDescriptor.instance.getAvailableFieldsProvider(), config.getFieldsMapping());
+        addFieldsMappingPanel(MSPDescriptor.instance.getAvailableFieldsProvider());
         setData(config);
         setMSPDataToForm();
     }

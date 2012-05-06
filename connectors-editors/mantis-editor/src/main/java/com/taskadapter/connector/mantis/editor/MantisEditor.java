@@ -23,7 +23,7 @@ public class MantisEditor extends ConfigEditor {
         addProjectPanel(this, new MantisProjectProcessor(this));
         addFindUsersByNameElement();
         addSaveRelationSection();
-        addFieldsMappingPanel(MantisDescriptor.instance.getAvailableFieldsProvider(), config.getFieldsMapping());
+        addFieldsMappingPanel(MantisDescriptor.instance.getAvailableFieldsProvider());
     }
 
     @Override

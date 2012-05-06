@@ -38,7 +38,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         otherPanel = new OtherRedmineFieldsPanel(this);
         addComponent(otherPanel);
 
-        addFieldsMappingPanel(RedmineDescriptor.instance.getAvailableFieldsProvider(), config.getFieldsMapping());
+        addFieldsMappingPanel(RedmineDescriptor.instance.getAvailableFieldsProvider());
     }
 
     @Override

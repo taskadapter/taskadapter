@@ -30,7 +30,7 @@ public class JiraEditor extends ConfigEditor {
         addComponent(jiraFieldsPanel);
 
         addPriorityPanel(this, JiraDescriptor.instance, config.getPriorities());
-        addFieldsMappingPanel(JiraDescriptor.instance.getAvailableFieldsProvider(), config.getFieldsMapping());
+        addFieldsMappingPanel(JiraDescriptor.instance.getAvailableFieldsProvider());
     }
 
     @Override

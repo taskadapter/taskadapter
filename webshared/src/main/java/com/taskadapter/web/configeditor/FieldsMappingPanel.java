@@ -1,6 +1,7 @@
 package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.definition.AvailableFieldsProvider;
+import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.GTaskDescriptor;
@@ -19,12 +20,11 @@ public class FieldsMappingPanel extends GridLayout implements Validatable {
 
     private static final String COLUMN2_HEADER = "Connector field or constraint";
 
-    private Map<GTaskDescriptor.FIELD, Mapping> fieldsMapping;
-
     private Map<GTaskDescriptor.FIELD, CheckBox> fieldToButtonMap = new HashMap<GTaskDescriptor.FIELD, CheckBox>();
     private Map<GTaskDescriptor.FIELD, ComboBox> fieldToValueMap = new HashMap<GTaskDescriptor.FIELD, ComboBox>();
 
     private final AvailableFieldsProvider availableFieldsProvider;
+    private ConnectorConfig config;
     private static final int COLUMNS_NUMBER = 2;
 
     /**
@@ -32,10 +32,9 @@ public class FieldsMappingPanel extends GridLayout implements Validatable {
      *
      * @see ConfigEditor#addFieldsMappingPanel(com.taskadapter.connector.definition.AvailableFieldsProvider, java.util.Map)
      */
-    public FieldsMappingPanel(AvailableFieldsProvider availableFieldsProvider,
-                              Map<GTaskDescriptor.FIELD, Mapping> fieldsMapping) {
+    public FieldsMappingPanel(AvailableFieldsProvider availableFieldsProvider, ConnectorConfig config) {
         this.availableFieldsProvider = availableFieldsProvider;
-        this.fieldsMapping = fieldsMapping;
+        this.config = config;
 
         setDescription("Select fields to export when SAVING data to this connector");
         addFields();
@@ -62,7 +61,7 @@ public class FieldsMappingPanel extends GridLayout implements Validatable {
             setComponentAlignment(checkbox, Alignment.MIDDLE_LEFT);
             fieldToButtonMap.put(field, checkbox);
 
-            Mapping mapping = fieldsMapping.get(field);
+            Mapping mapping = config.getFieldMapping(field);
             if (mapping == null) {
                 // means this config does not have a mapping for this field, which
                 // availableFieldsProvider reported as "supported": probably OLD config
