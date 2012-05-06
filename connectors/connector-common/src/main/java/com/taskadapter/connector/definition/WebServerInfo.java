@@ -4,9 +4,8 @@ import com.taskadapter.connector.common.Encryptor;
 import com.taskadapter.connector.common.XorEncryptor;
 
 public class WebServerInfo {
-//	private static final String DEFAULT_HOST_VALUE = "http://";
 
-    private String host = "";// = DEFAULT_HOST_VALUE;
+    private String host = "";
     private String userName = "";
     protected String password = "";
 
@@ -14,7 +13,6 @@ public class WebServerInfo {
     private String apiKey = "";
 
     private transient Encryptor encryptor = new XorEncryptor();
-
 
     public WebServerInfo(String host, String userName, String password) {
         this.host = host;
