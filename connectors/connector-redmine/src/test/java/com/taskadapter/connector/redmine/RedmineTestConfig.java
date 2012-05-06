@@ -21,34 +21,14 @@ public class RedmineTestConfig {
                             + " in classpath. Please create it using one of the templates");
         }
         try {
-            properties.load(is);//MyIOUtils.getResourceAsStream(TEST_PROPERTIES));
+            properties.load(is);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Can't load properties file: " + e, e);
         }
     }
 
-    public static String getURI() {
-        return properties.getProperty("uri");
-    }
-
-    public static String getUserLogin() {
-        return properties.getProperty("user");
-    }
-
-    public static String getPassword() {
-        return properties.getProperty("password");
-    }
-
-    public static String getApiKey() {
-        return properties.getProperty("apikey");
-    }
-
-    public static String getParam(String key) {
-        return properties.getProperty(key);
-    }
-
     public static RedmineConfig getRedmineTestConfig() {
-        WebServerInfo rmInfo = new WebServerInfo(RedmineTestConfig.getURI(), RedmineTestConfig.getUserLogin(), RedmineTestConfig.getPassword());
+        WebServerInfo rmInfo = new WebServerInfo(properties.getProperty("uri"), properties.getProperty("user"), properties.getProperty("password"));
         RedmineConfig redmineConfig = new RedmineConfig();
         redmineConfig.setServerInfo(rmInfo);
         redmineConfig.setProjectKey(properties.getProperty("project.key"));

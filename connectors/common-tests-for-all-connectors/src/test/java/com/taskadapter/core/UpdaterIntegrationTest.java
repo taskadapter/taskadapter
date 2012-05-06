@@ -60,7 +60,7 @@ public class UpdaterIntegrationTest extends AbstractSyncRunnerTest {
     }
 
 	private void createTasksInRedmine() {
-		this.rmIssues = createRedmineIssues(redmineConfig, projectKey, TASKS_NUMBER);
+		this.rmIssues = createRedmineIssues(projectKey, TASKS_NUMBER);
 		TaskUtil.setRemoteIdField(rmIssues);
 	}
 
@@ -93,11 +93,11 @@ public class UpdaterIntegrationTest extends AbstractSyncRunnerTest {
         }
     }
 
-    private List<GTask> createRedmineIssues(RedmineConfig redmineConfig, String projectKey, int issuesNumber) {
+    private List<GTask> createRedmineIssues(String projectKey, int issuesNumber) {
         List<GTask> issues = new ArrayList<GTask>(issuesNumber);
-        RedmineManager mgr = new RedmineManager(RedmineTestConfig.getURI());
-        mgr.setLogin(RedmineTestConfig.getUserLogin());
-        mgr.setPassword(RedmineTestConfig.getPassword());
+        RedmineManager mgr = new RedmineManager(redmineConfig.getServerInfo().getHost());
+        mgr.setLogin(redmineConfig.getServerInfo().getUserName());
+        mgr.setPassword(redmineConfig.getServerInfo().getPassword());
 
         List<Issue> issuesToCreate = generateRedmineIssues(issuesNumber);
 

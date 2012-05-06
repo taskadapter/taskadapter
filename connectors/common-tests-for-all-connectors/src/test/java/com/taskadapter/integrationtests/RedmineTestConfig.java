@@ -8,8 +8,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 // TODO Alexey: this file was copied from Redmine Connector / tests / Config class
-// during Eclipse -> web UI & Maven migration.
-// refactor this later, remove duplication
+// during Eclipse -> web UI & Maven migration. refactor this later, remove duplication
 public class RedmineTestConfig {
     private static final String TEST_PROPERTIES = "redmine_test_data.properties";
 
@@ -25,34 +24,14 @@ public class RedmineTestConfig {
                             + " in classpath. Please create it using one of the templates");
         }
         try {
-            properties.load(is);//MyIOUtils.getResourceAsStream(TEST_PROPERTIES));
+            properties.load(is);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Can't load properties file: " + e, e);
         }
     }
 
-    public static String getURI() {
-        return properties.getProperty("uri");
-    }
-
-    public static String getUserLogin() {
-        return properties.getProperty("user");
-    }
-
-    public static String getPassword() {
-        return properties.getProperty("password");
-    }
-
-    private static String getApiKey() {
-        return properties.getProperty("apikey");
-    }
-
-    private static String getParam(String key) {
-        return properties.getProperty(key);
-    }
-
     public static RedmineConfig getRedmineTestConfig() {
-        WebServerInfo rmInfo = new WebServerInfo(getURI(), getUserLogin(), getPassword());
+        WebServerInfo rmInfo = new WebServerInfo(properties.getProperty("uri"), properties.getProperty("user"), properties.getProperty("password"));
         RedmineConfig redmineConfig = new RedmineConfig();
         redmineConfig.setServerInfo(rmInfo);
         redmineConfig.setProjectKey(properties.getProperty("project.key"));

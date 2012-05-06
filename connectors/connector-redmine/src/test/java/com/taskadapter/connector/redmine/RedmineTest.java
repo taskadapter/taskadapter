@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import com.taskadapter.connector.definition.WebServerInfo;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -44,11 +45,11 @@ public class RedmineTest {
     private RedmineConnector connector = new RedmineConnector(config);
     private static GUser currentUser;
 
-    @SuppressWarnings("deprecation")
     @BeforeClass
     public static void oneTimeSetUp() {
-        System.out.println("Running redmine tests using: " + RedmineTestConfig.getURI());
-        mgr = new RedmineManager(RedmineTestConfig.getURI(), RedmineTestConfig.getUserLogin(), RedmineTestConfig.getPassword());
+        WebServerInfo serverInfo = config.getServerInfo();
+        System.out.println("Running redmine tests using: " + serverInfo);
+        mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getUserName(), serverInfo.getPassword());
 
         Project junitTestProject = new Project();
         junitTestProject.setName("zmd test project");
