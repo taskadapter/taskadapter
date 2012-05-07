@@ -1,13 +1,12 @@
 package com.taskadapter.license;
 
-import com.taskadapter.license.LicenseManager.*;
 import com.taskadapter.util.MyIOUtils;
 import org.apache.commons.codec.binary.Base64;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import static com.taskadapter.license.LicenseManager.Product.TASK_ADAPTER;
+import static com.taskadapter.license.LicenseManager.*;
 
 public class LicenseGenerator {
 	private static final String FILE_NAME_TA = "taskadapter.license";
@@ -25,7 +24,7 @@ public class LicenseGenerator {
 		System.out.println("Customer: " + customerName);
 		System.out.println("Email:    " + email);
 
-		String licenseTAText = generateLicenseText(TASK_ADAPTER, customerName, email);
+		String licenseTAText = generateLicenseText(Product.TASK_ADAPTER, customerName, email);
 
 		try {
 			MyIOUtils.writeToFile(FILE_NAME_TA, licenseTAText);
