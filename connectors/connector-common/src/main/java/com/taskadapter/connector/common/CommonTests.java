@@ -36,7 +36,7 @@ public class CommonTests {
         assertEquals(task.getDescription(), loadedTask.getDescription());
     }
 
-    public void descriptionMapped(Connector connector) throws Exception {
+    public void descriptionMapped(Connector connector) {
         GTask task = TestUtils.generateTask();
         GTask loadedTask = new TestSaver(connector).selectField(FIELD.DESCRIPTION).saveAndLoad(task);
         assertEquals(task.getDescription(), loadedTask.getDescription());

@@ -16,7 +16,7 @@ public class MantisDescriptor implements Descriptor {
 
     public static final MantisDescriptor instance = new MantisDescriptor();
 
-    public static final String ID = "Mantis";
+    private static final String ID = "Mantis";
 
     private static final String INFO = "Mantis connector (supports Mantis v. 1.1.1+)";
 

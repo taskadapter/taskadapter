@@ -14,7 +14,7 @@ import java.io.Writer;
 
 public class MyIOUtils {
 
-    public static InputStream getResourceAsStream(String resource)
+    private static InputStream getResourceAsStream(String resource)
             throws IOException {
         ClassLoader cl = MyIOUtils.class.getClassLoader();
         InputStream in = cl.getResourceAsStream(resource);

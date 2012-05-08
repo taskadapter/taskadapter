@@ -4,7 +4,6 @@ import com.vaadin.ui.*;
 
 public class ProgressElement extends GridLayout {
     private ProgressIndicator indicator;
-    private ProgressItemThread progressThread;
     private Label finishLabel;
     private boolean isStarted;
 
@@ -35,7 +34,7 @@ public class ProgressElement extends GridLayout {
             addComponent(indicator, 0, 0);
             setComponentAlignment(indicator, Alignment.MIDDLE_CENTER);
 
-            progressThread = new ProgressItemThread();
+            ProgressItemThread progressThread = new ProgressItemThread();
             progressThread.start();
             indicator.setEnabled(true);
             indicator.setVisible(true);
