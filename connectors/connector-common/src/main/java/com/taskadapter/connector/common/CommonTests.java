@@ -39,7 +39,7 @@ public class CommonTests {
 
     public void descriptionMapped(Connector connector) throws Exception {
         GTask task = TestUtils.generateTask();
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.DESCRIPTION, new Mapping(true), task);
+        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.DESCRIPTION, true, task);
         assertEquals(task.getDescription(), loadedTask.getDescription());
     }
 
