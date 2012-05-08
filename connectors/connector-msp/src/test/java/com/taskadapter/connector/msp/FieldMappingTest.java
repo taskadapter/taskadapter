@@ -1,6 +1,7 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.common.CommonTests;
+import com.taskadapter.connector.common.TestSaver;
 import com.taskadapter.connector.common.TestUtils;
 import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.model.GTask;
@@ -11,11 +12,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static com.taskadapter.connector.common.TestUtils.packTasksToList;
 import static com.taskadapter.connector.msp.MSPTestUtils.deleteFile;
 import static com.taskadapter.connector.msp.MSPTestUtils.findMSPTaskBySummary;
 import static org.junit.Assert.assertEquals;
@@ -122,14 +123,14 @@ public class FieldMappingTest {
     @Test
     public void testDescriptionNotExported() throws Exception {
         GTask task = TestUtils.generateTask();
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.DESCRIPTION, false, task);
+        GTask loadedTask = new TestSaver(connector).unselectField(FIELD.DESCRIPTION).saveAndLoad(task);
         assertEquals("", loadedTask.getDescription());
     }
 
     @Test
     public void testDescriptionExported() throws Exception {
         GTask task = TestUtils.generateTask();
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.DESCRIPTION, true, task);
+        GTask loadedTask = new TestSaver(connector).selectField(FIELD.DESCRIPTION).saveAndLoad(task);
         assertEquals(task.getDescription(), loadedTask.getDescription());
     }
 
@@ -173,7 +174,7 @@ public class FieldMappingTest {
         GTask task = TestUtils.generateTask();
         GUser assignee = new GUser(123, "some user");
         task.setAssignee(assignee);
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.ASSIGNEE, false, task);
+        GTask loadedTask = new TestSaver(connector).unselectField(FIELD.ASSIGNEE).saveAndLoad(task);
         assertNull(loadedTask.getAssignee());
     }
 
@@ -182,7 +183,7 @@ public class FieldMappingTest {
         GTask task = TestUtils.generateTask();
         GUser assignee = new GUser(123, "some user");
         task.setAssignee(assignee);
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.ASSIGNEE, true, task);
+        GTask loadedTask = new TestSaver(connector).selectField(FIELD.ASSIGNEE).saveAndLoad(task);
         assertEquals(assignee.getId(), loadedTask.getAssignee().getId());
     }
 
@@ -204,7 +205,7 @@ public class FieldMappingTest {
         temporaryClonedconfig.setOutputFileName(fileName);
         MSPConnector connector = new MSPConnector(temporaryClonedconfig);
 
-        connector.saveData(packTasksToList(tasks), null);
+        connector.saveData(Arrays.asList(tasks), null);
 
         MSPFileReader fileReader = new MSPFileReader();
         ProjectFile projectFile = fileReader.readFile(temporaryClonedconfig.getInputFileName());
@@ -224,7 +225,7 @@ public class FieldMappingTest {
     @Test
     public void notMappedDescriptionIsSetToEmpty() throws Exception {
         GTask task = TestUtils.generateTask();
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.DESCRIPTION, false, task);
+        GTask loadedTask = new TestSaver(connector).unselectField(FIELD.DESCRIPTION).saveAndLoad(task);
         assertEquals("", loadedTask.getDescription());
     }
 

@@ -86,7 +86,7 @@ public class RedmineTest {
     public void startDateNotExported() throws Exception {
         GTask task = TestUtils.generateTask();
         TestUtils.setTaskStartYearAgo(task);
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.START_DATE, false, task);
+        GTask loadedTask = new TestSaver(connector).unselectField(FIELD.START_DATE).saveAndLoad(task);
         assertNull(loadedTask.getStartDate());
     }
 
@@ -94,7 +94,7 @@ public class RedmineTest {
     public void startDateExported() throws Exception {
         GTask task = TestUtils.generateTask();
         Calendar yearAgo = TestUtils.setTaskStartYearAgo(task);
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.START_DATE, true, task);
+        GTask loadedTask = new TestSaver(connector).selectField(FIELD.START_DATE).saveAndLoad(task);
         assertEquals(yearAgo.getTime(), loadedTask.getStartDate());
     }
 
@@ -110,7 +110,7 @@ public class RedmineTest {
     public void dueDateNotExported() throws Exception {
         GTask task = TestUtils.generateTask();
         TestUtils.setTaskDueDateNextYear(task);
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.DUE_DATE, false, task);
+        GTask loadedTask = new TestSaver(connector).unselectField(FIELD.DUE_DATE).saveAndLoad(task);
         assertNull(loadedTask.getDueDate());
     }
 
@@ -118,7 +118,7 @@ public class RedmineTest {
     public void dueDateExported() throws Exception {
         GTask task = TestUtils.generateTask();
         Calendar yearAgo = TestUtils.setTaskDueDateNextYear(task);
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.DUE_DATE, true, task);
+        GTask loadedTask = new TestSaver(connector).selectField(FIELD.DUE_DATE).saveAndLoad(task);
         assertEquals(yearAgo.getTime(), loadedTask.getDueDate());
     }
 
@@ -134,7 +134,7 @@ public class RedmineTest {
     public void assigneeExported() throws Exception {
         GTask task = TestUtils.generateTask();
         task.setAssignee(currentUser);
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.ASSIGNEE, true, task);
+        GTask loadedTask = new TestSaver(connector).selectField(FIELD.ASSIGNEE).saveAndLoad(task);
         assertEquals(currentUser.getId(), loadedTask.getAssignee().getId());
         // only the ID and Display Name are set, so we can't check login name
         assertEquals(currentUser.getDisplayName(), loadedTask.getAssignee().getDisplayName());
@@ -144,7 +144,7 @@ public class RedmineTest {
     public void assigneeNotExported() throws Exception {
         GTask task = TestUtils.generateTask();
         task.setAssignee(currentUser);
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.ASSIGNEE, false, task);
+        GTask loadedTask = new TestSaver(connector).unselectField(FIELD.ASSIGNEE).saveAndLoad(task);
         assertNull(loadedTask.getAssignee());
     }
 
@@ -162,7 +162,7 @@ public class RedmineTest {
         GTask task = TestUtils.generateTask();
         task.setAssignee(currentUser);
         config.setFindUserByName(true);
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.ASSIGNEE, true, task);
+        GTask loadedTask = new TestSaver(connector).selectField(FIELD.ASSIGNEE).saveAndLoad(task);
         assertEquals(currentUser.getId(), loadedTask.getAssignee().getId());
         // only the ID and Display Name are set, so we can't check login name
         assertEquals(currentUser.getDisplayName(), loadedTask.getAssignee().getDisplayName());
@@ -171,7 +171,7 @@ public class RedmineTest {
     @Test
     public void estimatedTimeNotExported() throws Exception {
         GTask task = TestUtils.generateTask();
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.ESTIMATED_TIME, false, task);
+        GTask loadedTask = new TestSaver(connector).unselectField(FIELD.ESTIMATED_TIME).saveAndLoad(task);
         assertNull(loadedTask.getEstimatedHours());
     }
 

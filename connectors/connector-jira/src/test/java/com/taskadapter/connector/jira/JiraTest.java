@@ -9,7 +9,6 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
 import junit.framework.Assert;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -102,7 +101,7 @@ public class JiraTest {
 
         // CREATE
         JiraConnector connector = new JiraConnector(config);
-        SyncResult result = connector.saveData(TestUtils.packTasksToList(task), null);
+        SyncResult result = connector.saveData(Arrays.asList(task), null);
         assertTrue(result.getErrors().isEmpty());
         assertEquals(tasksQty, result.getCreateTasksNumber());
         String remoteKey = result.getRemoteKey(id);
@@ -113,7 +112,7 @@ public class JiraTest {
         String NEW_SUMMARY = "new summary here";
         loaded.setSummary(NEW_SUMMARY);
         loaded.setRemoteId(remoteKey);
-        SyncResult result2 = connector.saveData(TestUtils.packTasksToList(loaded), null);
+        SyncResult result2 = connector.saveData(Arrays.asList(loaded), null);
         assertTrue("some errors while updating the data: " + result2.getErrors(), result2.getErrors().isEmpty());
         assertEquals(1, result2.getUpdatedTasksNumber());
 

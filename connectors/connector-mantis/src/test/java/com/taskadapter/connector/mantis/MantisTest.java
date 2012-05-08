@@ -1,13 +1,11 @@
 package com.taskadapter.connector.mantis;
 
+import com.taskadapter.connector.common.TestSaver;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.mantis.ta.MantisManager;
 import org.mantis.ta.beans.AccountData;
 import org.mantis.ta.beans.ProjectData;
@@ -16,7 +14,6 @@ import java.math.BigInteger;
 import java.util.Calendar;
 
 import static com.taskadapter.connector.common.TestUtils.generateTask;
-import static com.taskadapter.connector.common.TestUtils.saveAndLoad;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -25,8 +22,8 @@ public class MantisTest {
     private static MantisManager mgr;
 
     private static String projectKey;
-    private static MantisConfig config = Config.getMantisTestConfig();
-    private MantisConnector mantis = new MantisConnector(config);
+    private MantisConfig config;
+    private MantisConnector mantis;
     private static GUser currentUser;
 
     @BeforeClass
@@ -44,11 +41,17 @@ public class MantisTest {
 
             BigInteger projectId = mgr.createProject(junitTestProject);
             projectKey = projectId.toString();
-            config.setProjectKey(projectKey);
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.toString());
         }
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        config = Config.getMantisTestConfig();
+        config.setProjectKey(projectKey);
+        mantis = new MantisConnector(config);
     }
 
     @AfterClass
@@ -129,7 +132,7 @@ public class MantisTest {
     public void assigneeExported() throws Exception {
         GTask task = generateTask();
         task.setAssignee(currentUser);
-        GTask loadedTask = saveAndLoad(mantis, FIELD.ASSIGNEE, true, task);
+        GTask loadedTask = new TestSaver(mantis).selectField(FIELD.ASSIGNEE).saveAndLoad(task);
         assertEquals(currentUser.getId(), loadedTask.getAssignee().getId());
     }
 
@@ -137,7 +140,7 @@ public class MantisTest {
     public void assigneeNotExported() throws Exception {
         GTask task = generateTask();
         task.setAssignee(currentUser);
-        GTask loadedTask = saveAndLoad(mantis, FIELD.ASSIGNEE, false, task);
+        GTask loadedTask = new TestSaver(mantis).unselectField(FIELD.ASSIGNEE).saveAndLoad(task);
         assertNull(loadedTask.getAssignee());
     }
 
@@ -145,7 +148,7 @@ public class MantisTest {
     public void assigneeExportedByDefault() throws Exception {
         GTask task = generateTask();
         task.setAssignee(currentUser);
-        GTask loadedTask = saveAndLoad(mantis, task);
+        GTask loadedTask = new TestSaver(mantis).saveAndLoad(task);
         assertEquals(currentUser.getId(), loadedTask.getAssignee().getId());
     }
 
@@ -209,9 +212,4 @@ public class MantisTest {
 
 		Assert.assertEquals(2, parent.getChildren().size());
 	}*/
-
-    // not used now but should be used in AllConnectorsTest
-    public ConnectorConfig getTestConfig() {
-        return config;
-    }
 }

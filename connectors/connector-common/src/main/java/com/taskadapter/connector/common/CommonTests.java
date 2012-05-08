@@ -1,7 +1,6 @@
 package com.taskadapter.connector.common;
 
 import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
@@ -39,7 +38,7 @@ public class CommonTests {
 
     public void descriptionMapped(Connector connector) throws Exception {
         GTask task = TestUtils.generateTask();
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.DESCRIPTION, true, task);
+        GTask loadedTask = new TestSaver(connector).selectField(FIELD.DESCRIPTION).saveAndLoad(task);
         assertEquals(task.getDescription(), loadedTask.getDescription());
     }
 

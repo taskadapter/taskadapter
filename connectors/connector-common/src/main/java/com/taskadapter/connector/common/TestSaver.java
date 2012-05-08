@@ -4,8 +4,7 @@ import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 public class TestSaver {
@@ -25,21 +24,9 @@ public class TestSaver {
         return this;
     }
 
-    public TestSaver setField(GTaskDescriptor.FIELD field, String value) {
-        connector.getConfig().setFieldMappedValue(field, value);
-        return this;
-    }
-
     public GTask saveAndLoad(GTask task) {
-        connector.saveData(packTasksToList(task), null);
+        connector.saveData(Arrays.asList(task), null);
         List<GTask> loadedTasks = connector.loadData(null);
         return TestUtils.findTaskBySummary(loadedTasks, task.getSummary());
     }
-
-    private static List<GTask> packTasksToList(GTask... taskArgs) {
-        List<GTask> tasks = new ArrayList<GTask>();
-        Collections.addAll(tasks, taskArgs);
-        return tasks;
-    }
-
 }

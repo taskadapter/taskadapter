@@ -54,12 +54,6 @@ public class TestUtils {
         return t;
     }
 
-    public static List<GTask> packTasksToList(GTask... taskArgs) {
-        List<GTask> tasks = new ArrayList<GTask>();
-        Collections.addAll(tasks, taskArgs);
-        return tasks;
-    }
-
     public static Calendar getDateRoundedToDay() {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.SECOND, 0);
@@ -67,12 +61,6 @@ public class TestUtils {
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.HOUR_OF_DAY, 0);
         return cal;
-    }
-
-    public static Map<FIELD, Mapping> getFieldMapped(FIELD field, boolean f) {
-        Map<FIELD, Mapping> fieldsMapping = new HashMap<FIELD, Mapping>();
-        fieldsMapping.put(field, new Mapping(f));
-        return fieldsMapping;
     }
 
     public static GTask saveAndLoad(Connector connector, FIELD field, Mapping mapping, GTask task)
@@ -86,30 +74,13 @@ public class TestUtils {
         return loadedTask;
     }
 
-    // TODO switch tests to TestSaver class, which does not use static methods.
-    /**
-     * Use
-     * new TestSaver(connector).unselectField(FIELD...).saveAndLoad(task);
-     */
-    @Deprecated
-    public static GTask saveAndLoad(Connector connector, FIELD field, boolean fieldSelected, GTask task)
-            throws Exception {
-        ConnectorConfig config = connector.getConfig();
-        Mapping savedMapping = config.getFieldMapping(field);
-        config.setFieldMapping(field, new Mapping(fieldSelected)); // ugly, but ...
-        GTask loadedTask = saveAndLoad(connector, task);
-        config.setFieldMapping(field, savedMapping);
-
-        return loadedTask;
-    }
-
     public static GTask saveAndLoad(Connector connector, GTask task) throws Exception {
         List<GTask> loadedTasks = saveAndLoadAll(connector, task);
         return findTaskBySummary(loadedTasks, task.getSummary());
     }
 
     public static List<GTask> saveAndLoadAll(Connector connector, GTask task) {
-        connector.saveData(packTasksToList(task), null);
+        connector.saveData(Arrays.asList(task), null);
         return connector.loadData(null);
     }
 
