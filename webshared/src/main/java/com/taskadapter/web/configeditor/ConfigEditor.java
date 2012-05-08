@@ -14,13 +14,13 @@ import java.util.Map;
  * @author Alexey Skorokhodov
  */
 public abstract class ConfigEditor extends VerticalLayout implements WindowProvider {
-    protected CheckBox findUserByName;
+    private CheckBox findUserByName;
     private List<Validatable> toValidate = new ArrayList<Validatable>();
 
     // TODO the parent editor class must save / load data itself instead of letting the children do this
     private HorizontalLayout projectAndServerLayout;
     private ServerPanel serverPanel;
-    protected ProjectPanel projectPanel;
+    private ProjectPanel projectPanel;
     private PriorityPanel priorityPanel;
     private FieldsMappingPanel fieldsMappingPanel;
     protected ConnectorConfig config;

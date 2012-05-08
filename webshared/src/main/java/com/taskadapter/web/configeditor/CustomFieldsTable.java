@@ -31,12 +31,8 @@ public class CustomFieldsTable extends CustomComponent {
 
 
     public CustomFieldsTable() {
-        this(new ArrayList<CustomField>());
-    }
-
-    public CustomFieldsTable(List<CustomField> customFields) {
         buildUI();
-        setCustomFields(customFields);
+        setCustomFields(new ArrayList<CustomField>());
         setCompositionRoot(panel);
     }
 

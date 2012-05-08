@@ -17,7 +17,7 @@ public abstract class ActionPage extends Page {
     protected final VerticalLayout mainPanel;
     protected final Connector connectorFrom;
     protected final Connector connectorTo;
-    protected final TAFile taFile;
+    private final TAFile taFile;
 
     protected ProgressIndicator loadProgress = new ProgressIndicator();
     protected ProgressIndicator saveProgress = new ProgressIndicator();

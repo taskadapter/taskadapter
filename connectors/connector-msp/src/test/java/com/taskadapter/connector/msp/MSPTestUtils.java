@@ -22,11 +22,11 @@ public class MSPTestUtils {
         }
     }
 
-    public static String getTestFileAbsolutePath() {
+    private static String getTestFileAbsolutePath() {
         return getTestFileAbsolutePath(FILE_TO_READ);
     }
 
-    public static String getTestFileAbsolutePath(String name) {
+    private static String getTestFileAbsolutePath(String name) {
         URL url = MSPTestUtils.class.getClassLoader().getResource(name);
         String path = null;
         try {

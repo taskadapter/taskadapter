@@ -21,7 +21,7 @@ public class EditorUtil {
         }
     }
 
-    public static void showList(WindowProvider windowProvider, String windowTitle, String listTitle, Collection<String> items, ValueListener valueListener) {
+    private static void showList(WindowProvider windowProvider, String windowTitle, String listTitle, Collection<String> items, ValueListener valueListener) {
         ListSelectionDialog newWindow = new ListSelectionDialog(windowTitle, listTitle, items, valueListener);
         newWindow.addStyleName("list-window");
         newWindow.center();
@@ -124,7 +124,7 @@ public class EditorUtil {
         return field;
     }
 
-    public static Throwable getRoot(Throwable t) {
+    private static Throwable getRoot(Throwable t) {
         Throwable result = t;
         while (result.getCause() != null) {
             result = result.getCause();

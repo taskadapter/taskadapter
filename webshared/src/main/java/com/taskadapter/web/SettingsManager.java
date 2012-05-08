@@ -6,7 +6,7 @@ import java.util.prefs.Preferences;
  * @author Alexey Skorokhodov
  */
 public class SettingsManager {
-    public static final boolean DEFAULT_LOCAL = true;
+    private static final boolean DEFAULT_LOCAL = true;
 
     private LocalRemoteModeListener listener;
 

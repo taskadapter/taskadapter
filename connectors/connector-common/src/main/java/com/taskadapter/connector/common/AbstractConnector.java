@@ -14,7 +14,7 @@ public abstract class AbstractConnector<T extends ConnectorConfig> implements Co
 
     protected T config;
 
-    public AbstractConnector(T config) {
+    protected AbstractConnector(T config) {
         super();
         this.config = config;
     }

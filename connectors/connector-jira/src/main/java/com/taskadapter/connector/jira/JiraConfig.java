@@ -20,17 +20,17 @@ public class JiraConfig extends WebConfig {
     private String defaultTaskType = "Bug";
 
     // TODO this can probably be moved to the super class
-    protected String component = "";
+    private String component = "";
 
     /**
      * Version ("milestone") in the project.
      */
-    protected String affectedVersion = "";
+    private String affectedVersion = "";
 
     /**
      * Version ("milestone") in the project.
      */
-    protected String fixForVersion = "";
+    private String fixForVersion = "";
 
     public JiraConfig() {
         super(DEFAULT_LABEL);

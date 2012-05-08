@@ -9,8 +9,8 @@ import java.util.List;
 
 public class MessageDialog extends Window implements Button.ClickListener {
 
-    HorizontalLayout layout = new HorizontalLayout();
-    Callback callback;
+    private HorizontalLayout layout = new HorizontalLayout();
+    private Callback callback;
 
     public MessageDialog(String caption, String question, List<String> answers, Callback callback) {
         super(caption);

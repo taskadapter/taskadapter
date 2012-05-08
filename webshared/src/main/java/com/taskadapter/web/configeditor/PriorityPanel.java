@@ -19,8 +19,8 @@ import java.util.*;
  */
 public class PriorityPanel extends VerticalLayout implements Validatable {
 
-    public static final String TEXT_HEADER = "Priority Name";
-    public static final String VALUE_HEADER = "Task Adapter Priority Value";
+    private static final String TEXT_HEADER = "Priority Name";
+    private static final String VALUE_HEADER = "Task Adapter Priority Value";
 
     private final ConfigEditor configEditor;
     private final Descriptor descriptor;

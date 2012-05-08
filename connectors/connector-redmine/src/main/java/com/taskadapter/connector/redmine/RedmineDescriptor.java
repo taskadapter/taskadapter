@@ -18,7 +18,7 @@ public class RedmineDescriptor implements Descriptor {
     /**
      * Keep it the same to enable backward compatibility for previously created config files.
      */
-    public static final String ID = "Redmine REST";
+    private static final String ID = "Redmine REST";
 
     public static final RedmineDescriptor instance = new RedmineDescriptor();
 

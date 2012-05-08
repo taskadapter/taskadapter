@@ -22,9 +22,6 @@ public class MSPDescriptor implements Descriptor {
 
     public static final Descriptor instance = new MSPDescriptor();
 
-    public MSPDescriptor() {
-    }
-
     @Override
     public String getDescription() {
         return INFO;

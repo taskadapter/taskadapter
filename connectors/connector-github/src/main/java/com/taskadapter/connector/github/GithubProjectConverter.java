@@ -25,7 +25,7 @@ public class GithubProjectConverter implements ProjectConverter<Repository> {
         return projects;
     }
 
-    public static GProject toGProject(Repository repository) {
+    private static GProject toGProject(Repository repository) {
         GProject project = new GProject();
         project.setName(repository.getName());
         project.setKey(repository.getName());

@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class Config {
+class Config {
     private static final String TEST_PROPERTIES = "mantis.properties";
 
     private static final Properties properties = new Properties();
