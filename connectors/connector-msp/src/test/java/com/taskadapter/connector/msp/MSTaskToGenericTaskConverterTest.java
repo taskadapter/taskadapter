@@ -8,10 +8,13 @@ import junit.framework.Assert;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Task;
 import net.sf.mpxj.TaskField;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 public class MSTaskToGenericTaskConverterTest {
 
@@ -30,7 +33,8 @@ public class MSTaskToGenericTaskConverterTest {
     private Task task2;
     private Task task3;
 
-    {
+    @Before
+    public void setUp() throws Exception {
         MSPConfig config = new MSPConfig();
         converter.setConfig(config);
         converter.setHeader(projectFile.getProjectHeader());
@@ -39,7 +43,6 @@ public class MSTaskToGenericTaskConverterTest {
         task2 = allTasks.get(3);
         task3 = allTasks.get(4);
     }
-
 
     @Test
     public void extractAssignee1() {
@@ -67,26 +70,26 @@ public class MSTaskToGenericTaskConverterTest {
 
 
     @Test
-    public void extractEstimatesHours1() {
-        Map<FIELD, Mapping> fieldMapped = TestUtils.getFieldMapped(FIELD.ESTIMATED_TIME, true, TaskField.WORK.toString());
-        MSPConfig config = new MSPConfig("", fieldMapped);
+    public void estimatedTimeFoundThroughWork() {
+        MSPConfig config = new MSPConfig("");
+        config.setFieldMappedValue(FIELD.ESTIMATED_TIME, TaskField.WORK.toString());
+        config.selectField(FIELD.ESTIMATED_TIME);
         converter.setConfig(config);
-        Assert.assertEquals(2.0f, converter.extractEstimatedHours(task1), 0.001f);
+        assertEquals(Float.valueOf(2), converter.extractEstimatedHours(task1));
     }
 
     @Test
-    public void extractEstimatesHours2() {
-        Map<FIELD, Mapping> fieldMapped = TestUtils.getFieldMapped(FIELD.ESTIMATED_TIME, true, TaskField.DURATION.toString());
-        MSPConfig config = new MSPConfig("", fieldMapped);
+    public void estimatedTimeFoundThroughDuration() {
+        MSPConfig config = new MSPConfig("");
+        config.setFieldMappedValue(FIELD.ESTIMATED_TIME, TaskField.DURATION.toString());
+        config.selectField(FIELD.ESTIMATED_TIME);
         converter.setConfig(config);
         Assert.assertEquals(0.5f, converter.extractEstimatedHours(task2), 0.001f);
     }
 
-
     @Test
-    public void extractEstimatesHours3() {
-        Map<FIELD, Mapping> fieldMapped = TestUtils.getFieldMapped(FIELD.ESTIMATED_TIME, true, TaskField.WORK.toString());
-        MSPConfig config = new MSPConfig("", fieldMapped);
+    public void estimatedTimeFoundWithDefaultMapping() {
+        MSPConfig config = new MSPConfig("");
         converter.setConfig(config);
         Assert.assertEquals(8.0f, converter.extractEstimatedHours(task3), 0.001f);
     }
@@ -94,7 +97,6 @@ public class MSTaskToGenericTaskConverterTest {
 
     @Test
     public void extractRemoteId() {
-
         Assert.assertEquals(REMOTE_ID1, converter.extractRemoteId(task1));
         Assert.assertEquals(REMOTE_ID2, converter.extractRemoteId(task2));
         Assert.assertEquals(REMOTE_ID3, converter.extractRemoteId(task3));

@@ -26,7 +26,6 @@ public class MSPConfig extends ConnectorConfig {
         setLabel(DEFAULT_LABEL);
     }
 
-    // TODO delete all the old constructors
     /**
      * @param absoluteFilePath absolute path to the MSP file name
      */
@@ -36,18 +35,6 @@ public class MSPConfig extends ConnectorConfig {
         setLabel(DEFAULT_LABEL);
     }
 
-    /**
-     * Use setFieldMappedValue() method instead
-     */
-    @Deprecated
-    public MSPConfig(String fileName, Map<FIELD, Mapping> mapping) {
-        this.fieldsMapping = mapping;
-        this.inputFileName = fileName;
-        this.outputFileName = fileName;
-        setLabel(DEFAULT_LABEL);
-    }
-
-    // TODO add unit tests
     public MSPConfig(MSPConfig configToDeepClone) {
         super(configToDeepClone);
         setLabel(configToDeepClone.getLabel());
