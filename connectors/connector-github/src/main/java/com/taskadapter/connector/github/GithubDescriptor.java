@@ -24,10 +24,6 @@ public class GithubDescriptor implements Descriptor {
         return new GithubFieldsProvider();
     }
 
-    public Connector createConnector(ConnectorConfig config) {
-        return new GithubConnector((GithubConfig) config);
-    }
-
     public ProjectLoader getProjectLoader() {
         return new GithubProjectLoader();
     }
