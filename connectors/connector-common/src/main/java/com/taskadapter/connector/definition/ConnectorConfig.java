@@ -82,7 +82,7 @@ public abstract class ConnectorConfig implements Serializable {
     }
 
     /**
-     * TODO replace the MAP with a concrete class holding the mapping
+     * Exposing internal implementation details is bad. delete this method.
      */
     @Deprecated
     public Map<FIELD, Mapping> getFieldsMapping() {
@@ -147,7 +147,7 @@ public abstract class ConnectorConfig implements Serializable {
     }
 
     /**
-     * Deprecated: ise getFieldMappedValue(FIELD) instead
+     * Use getFieldMappedValue(FIELD) instead
      */
     @Deprecated
     public Mapping getFieldMapping(FIELD field) {
