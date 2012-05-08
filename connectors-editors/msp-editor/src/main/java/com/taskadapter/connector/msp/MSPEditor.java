@@ -17,16 +17,13 @@ import com.vaadin.ui.TextField;
 public class MSPEditor extends ConfigEditor {
 
     private static final String XML_SUFFIX_LOWERCASE = ".xml";
-    private static final String MPP_SUFFIX_LOWERCASE = ".mpp";
+//    private static final String MPP_SUFFIX_LOWERCASE = ".mpp";
 
     private static final String LABEL_FILE_NAME = "Input File name:";
     private static final String TOOLTIP_FILE_NAME = "Microsoft Project file name to load the data from (MPP or XML file)";
 
     private static final String LABEL_OUTPUT_FILE_NAME = "Output file name:";
     private static final String TOOLTIP_OUTPUT_FILE_NAME = "Microsoft Project file name to save the data to (only XML format is supported)";
-
-//    private static final String MAIN_GROUP_LABEL = "Configure MSProject settings";
-//    private static final String INTERNAL_GROUP_LABEL = "MSP Text Fields to use for some internal stuff";
 
     private TextField inputFileNameField;
     private TextField outputFileNameField;
@@ -147,14 +144,12 @@ public class MSPEditor extends ConfigEditor {
     }
 
     private AbstractComponent createRemoteModeFilePanel() {
-        RemoteModePanel remoteModePanel = new RemoteModePanel(new UploadListener() {
+        return new RemoteModePanel(new UploadListener() {
             @Override
             public void fileUploaded(String file) {
                 inputFileNameField.setValue(new FileManager().getFullFileNameOnServer(file));
             }
         });
-
-        return remoteModePanel;
     }
 
     private void setMSPDataToForm() {
