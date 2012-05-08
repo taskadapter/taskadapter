@@ -12,10 +12,7 @@ import java.util.Map;
 import java.util.Random;
 
 import com.taskadapter.connector.definition.WebServerInfo;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.redmine.ta.RedmineManager;
 import org.redmine.ta.beans.IssueStatus;
 import org.redmine.ta.beans.Project;
@@ -41,13 +38,13 @@ public class RedmineTest {
     private static RedmineManager mgr;
 
     private static String projectKey;
-    private static RedmineConfig config = RedmineTestConfig.getRedmineTestConfig();
-    private RedmineConnector connector = new RedmineConnector(config);
+    private RedmineConfig config;
+    private RedmineConnector connector;
     private static GUser currentUser;
 
     @BeforeClass
     public static void oneTimeSetUp() {
-        WebServerInfo serverInfo = config.getServerInfo();
+        WebServerInfo serverInfo = RedmineTestConfig.getRedmineTestConfig().getServerInfo();
         System.out.println("Running redmine tests using: " + serverInfo);
         mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getUserName(), serverInfo.getPassword());
 
@@ -61,11 +58,17 @@ public class RedmineTest {
 
             Project createdProject = mgr.createProject(junitTestProject);
             projectKey = createdProject.getIdentifier();
-            config.setProjectKey(projectKey);
+
         } catch (Exception e) {
-            e.printStackTrace();
-            fail(e.toString());
+            throw new RuntimeException(e);
         }
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        config = RedmineTestConfig.getRedmineTestConfig();
+        config.setProjectKey(projectKey);
+        connector = new RedmineConnector(config);
     }
 
     @AfterClass
@@ -285,9 +288,9 @@ public class RedmineTest {
         t.setId(1);
         String summary = "generic task " + Calendar.getInstance().getTimeInMillis();
         t.setSummary(summary);
-        t.setDescription("some descr" + Calendar.getInstance().getTimeInMillis()+ "1");
+        t.setDescription("some descr" + Calendar.getInstance().getTimeInMillis() + "1");
         Random r = new Random();
-        int hours = r.nextInt(50)+1;
+        int hours = r.nextInt(50) + 1;
         t.setEstimatedHours((float) hours);
         t.setChildren(new ArrayList<GTask>());
 
@@ -305,9 +308,9 @@ public class RedmineTest {
 
         List<GTask> loadedTasks = TestUtils.saveAndLoadAll(connector, t);
 
-        for (Iterator<GTask> iterator = loadedTasks.iterator(); iterator.hasNext();) {
+        for (Iterator<GTask> iterator = loadedTasks.iterator(); iterator.hasNext(); ) {
             GTask gTask = iterator.next();
-            if (! gTask.getSummary().endsWith(summary)) iterator.remove();
+            if (!gTask.getSummary().endsWith(summary)) iterator.remove();
         }
 
         List<GTask> tree = TreeUtils.buildTreeFromFlatList(loadedTasks);
