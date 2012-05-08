@@ -122,14 +122,14 @@ public class FieldMappingTest {
     @Test
     public void testDescriptionNotExported() throws Exception {
         GTask task = TestUtils.generateTask();
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.DESCRIPTION, new Mapping(false), task);
+        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.DESCRIPTION, false, task);
         assertEquals("", loadedTask.getDescription());
     }
 
     @Test
     public void testDescriptionExported() throws Exception {
         GTask task = TestUtils.generateTask();
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.DESCRIPTION, new Mapping(true), task);
+        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.DESCRIPTION, true, task);
         assertEquals(task.getDescription(), loadedTask.getDescription());
     }
 
@@ -173,7 +173,7 @@ public class FieldMappingTest {
         GTask task = TestUtils.generateTask();
         GUser assignee = new GUser(123, "some user");
         task.setAssignee(assignee);
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.ASSIGNEE, new Mapping(false), task);
+        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.ASSIGNEE, false, task);
         assertNull(loadedTask.getAssignee());
     }
 
@@ -182,7 +182,7 @@ public class FieldMappingTest {
         GTask task = TestUtils.generateTask();
         GUser assignee = new GUser(123, "some user");
         task.setAssignee(assignee);
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.ASSIGNEE, new Mapping(true), task);
+        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.ASSIGNEE, true, task);
         assertEquals(assignee.getId(), loadedTask.getAssignee().getId());
     }
 
@@ -224,7 +224,7 @@ public class FieldMappingTest {
     @Test
     public void notMappedDescriptionIsSetToEmpty() throws Exception {
         GTask task = TestUtils.generateTask();
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.DESCRIPTION, new Mapping(false), task);
+        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.DESCRIPTION, false, task);
         assertEquals("", loadedTask.getDescription());
     }
 

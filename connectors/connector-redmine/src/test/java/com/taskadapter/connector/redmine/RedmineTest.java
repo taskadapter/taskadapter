@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
+import com.taskadapter.connector.common.TestSaver;
 import com.taskadapter.connector.definition.WebServerInfo;
 import org.junit.*;
 import org.redmine.ta.RedmineManager;
@@ -20,9 +20,7 @@ import org.redmine.ta.beans.User;
 
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
-import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.model.GUser;
 import com.taskadapter.connector.common.CommonTests;
 import com.taskadapter.connector.common.TestUtils;
@@ -180,7 +178,7 @@ public class RedmineTest {
     @Test
     public void estimatedTimeExported() throws Exception {
         GTask task = TestUtils.generateTask();
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.ESTIMATED_TIME, true, task);
+        GTask loadedTask = new TestSaver(connector).selectField(FIELD.ESTIMATED_TIME).saveAndLoad(task);
         assertEquals(task.getEstimatedHours(), loadedTask.getEstimatedHours(), 0);
     }
 
@@ -225,7 +223,8 @@ public class RedmineTest {
 
         if (defaultStatus != null) {
             GTask task = TestUtils.generateTask();
-            GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.TASK_STATUS, false, task);
+            task.setStatus("Resolved");
+            GTask loadedTask = new TestSaver(connector).unselectField(FIELD.TASK_STATUS).saveAndLoad(task);
             assertEquals(defaultStatus, loadedTask.getStatus());
         }
     }
@@ -239,7 +238,7 @@ public class RedmineTest {
         if (otherStatus != null) {
             GTask task = TestUtils.generateTask();
             task.setStatus(otherStatus);
-            GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.TASK_STATUS, true, task);
+            GTask loadedTask = new TestSaver(connector).selectField(FIELD.TASK_STATUS).saveAndLoad(task);
             assertEquals(otherStatus, loadedTask.getStatus());
         }
     }
@@ -315,7 +314,7 @@ public class RedmineTest {
     @Test
     public void notMappedDescriptionIsSetToEmpty() throws Exception {
         GTask task = TestUtils.generateTask();
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.DESCRIPTION, new Mapping(false), task);
+        GTask loadedTask = new TestSaver(connector).unselectField(FIELD.DESCRIPTION).saveAndLoad(task);
         assertEquals("", loadedTask.getDescription());
     }
 

@@ -1,6 +1,5 @@
 package com.taskadapter.connector.redmine;
 
-import com.taskadapter.connector.common.TestUtils;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
@@ -21,7 +20,9 @@ public class RedmineDataConverterTest {
     public void unmappedSummaryIsIgnored() {
         GTask gtask = new GTask();
         gtask.setSummary("Should be ignored");
-        Issue task = getConverterWithAssigneeSkipped().convertToRedmineIssue(new Project(), gtask);
+        RedmineConfig config = new RedmineConfig();
+        config.unselectField(FIELD.SUMMARY);
+        Issue task = new RedmineDataConverter(config).convertToRedmineIssue(new Project(), gtask);
         Assert.assertNull(task.getSubject());
     }
 
@@ -79,7 +80,11 @@ public class RedmineDataConverterTest {
 
     private RedmineDataConverter getConverterWithAssignee(boolean assigneeIsMapped) {
         RedmineConfig config = new RedmineConfig();
-        config.setFieldsMapping(TestUtils.getFieldMapped(FIELD.ASSIGNEE, assigneeIsMapped));
+        if (assigneeIsMapped) {
+            config.selectField(FIELD.ASSIGNEE);
+        } else {
+            config.unselectField(FIELD.ASSIGNEE);
+        }
         RedmineDataConverter converter = new RedmineDataConverter(config);
         converter.setUsers(createUsers());
         return converter;

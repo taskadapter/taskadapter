@@ -86,6 +86,12 @@ public class TestUtils {
         return loadedTask;
     }
 
+    // TODO switch tests to TestSaver class, which does not use static methods.
+    /**
+     * Use
+     * new TestSaver(connector).unselectField(FIELD...).saveAndLoad(task);
+     */
+    @Deprecated
     public static GTask saveAndLoad(Connector connector, FIELD field, boolean fieldSelected, GTask task)
             throws Exception {
         ConnectorConfig config = connector.getConfig();

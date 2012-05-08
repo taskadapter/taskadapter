@@ -81,14 +81,6 @@ public abstract class ConnectorConfig implements Serializable {
         this.saveIssueRelations = saveIssueRelations;
     }
 
-    /**
-     * TODO replace the MAP with a concrete class holding the mapping
-     */
-    @Deprecated
-    public Map<FIELD, Mapping> getFieldsMapping() {
-        return fieldsMapping;
-    }
-
     public void setFieldsMapping(Map<FIELD, Mapping> fieldsMapping) {
         this.fieldsMapping = fieldsMapping;
     }
@@ -123,7 +115,7 @@ public abstract class ConnectorConfig implements Serializable {
         }
     }
 
-    protected void unselectField(FIELD field) {
+    public void unselectField(FIELD field) {
         Mapping mapping = fieldsMapping.get(field);
         if (mapping == null) {
             mapping = new Mapping(false);
