@@ -48,8 +48,7 @@ public abstract class ConnectorConfig implements Serializable {
 
     public abstract String getTargetLocation();
 
-    public ConnectorConfig(String label) {
-        this.label = label;
+    public ConnectorConfig() {
         fieldsMapping = generateDefaultFieldsMapping();
         priorities = generateDefaultPriorities();
     }

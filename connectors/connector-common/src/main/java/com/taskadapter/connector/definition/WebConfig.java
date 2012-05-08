@@ -16,7 +16,8 @@ abstract public class WebConfig extends ConnectorConfig {
     protected boolean findUserByName;
 
     public WebConfig(String label) {
-        super(label);
+        super();
+        setLabel(label);
     }
 
     public String getProjectKey() {

@@ -23,7 +23,8 @@ public class MSPConfig extends ConnectorConfig {
     private String outputFileName = "";
 
     public MSPConfig() {
-        super(DEFAULT_LABEL);
+        super();
+        setLabel(DEFAULT_LABEL);
     }
 
     /**
