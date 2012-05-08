@@ -75,12 +75,6 @@ public class TestUtils {
         return fieldsMapping;
     }
 
-    public static Map<FIELD, Mapping> getFieldMapped(FIELD field, boolean f, String value) {
-        Map<FIELD, Mapping> fieldsMapping = new HashMap<FIELD, Mapping>();
-        fieldsMapping.put(field, new Mapping(f, value));
-        return fieldsMapping;
-    }
-
     public static GTask saveAndLoad(Connector connector, FIELD field, Mapping mapping, GTask task)
             throws Exception {
         ConnectorConfig config = connector.getConfig();
