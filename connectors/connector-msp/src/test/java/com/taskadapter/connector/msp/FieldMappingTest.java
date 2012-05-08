@@ -40,23 +40,23 @@ public class FieldMappingTest {
     public void testEstimatedTimeNotSaved() throws Exception {
         GTask task = TestUtils.generateTask();
         task.setEstimatedHours((float) 25);
-        List<Task> loadedTasks = saveAndLoad(config, FIELD.ESTIMATED_TIME, new Mapping(false), task);
+        List<Task> loadedTasks = saveAndLoad(config, FIELD.ESTIMATED_TIME, new Mapping(false, TaskField.DURATION.toString()), task);
         Task loadedTask = findMSPTaskBySummary(loadedTasks, task.getSummary());
 
         assertNull(loadedTask.getWork());
         assertNull(loadedTask.getDuration());
     }
 
-	@Test
-	public void testEstimatedTimeSaved() throws Exception {
-		GTask task = TestUtils.generateTask();
-		Float hours = 25f;
-		task.setEstimatedHours(hours);
-		List<Task> loadedTasks = saveAndLoad(config, FIELD.ESTIMATED_TIME, new Mapping(true, TaskField.DURATION.toString()),
-				task);
-		Task loadedTask = findMSPTaskBySummary(loadedTasks, task.getSummary());
-		assertEquals(hours, loadedTask.getDuration().getDuration(), 0);
-	}
+    @Test
+    public void testEstimatedTimeSaved() throws Exception {
+        GTask task = TestUtils.generateTask();
+        Float hours = 25f;
+        task.setEstimatedHours(hours);
+        List<Task> loadedTasks = saveAndLoad(config, FIELD.ESTIMATED_TIME, new Mapping(true, TaskField.DURATION.toString()),
+                task);
+        Task loadedTask = findMSPTaskBySummary(loadedTasks, task.getSummary());
+        assertEquals(hours, loadedTask.getDuration().getDuration(), 0);
+    }
 
     @Test
     public void testEstimatedTimeSavedToWork() throws Exception {
@@ -112,7 +112,8 @@ public class FieldMappingTest {
         Date dueDate = getDateRoundedToMinutes();
         task.setDueDate(dueDate);
 
-        List<Task> loadedTasks = saveAndLoad(config, FIELD.DUE_DATE, new Mapping(false), task);
+        Mapping mapping = new Mapping(false, "some value");
+        List<Task> loadedTasks = saveAndLoad(config, FIELD.DUE_DATE, mapping, task);
         Task loadedTask = findMSPTaskBySummary(loadedTasks, task.getSummary());
         assertEquals(null, loadedTask.getDeadline());
         assertEquals(null, loadedTask.getFinish());
@@ -143,7 +144,7 @@ public class FieldMappingTest {
     public void testStartDateNotMapped() throws Exception {
         GTask task = TestUtils.generateTask();
         TestUtils.setTaskStartYearAgo(task);
-        List<Task> loadedTasks = saveAndLoad(config, FIELD.START_DATE, new Mapping(false), task);
+        List<Task> loadedTasks = saveAndLoad(config, FIELD.START_DATE, new Mapping(false, TaskField.DURATION.toString()), task);
         assertNull(loadedTasks.get(0).getStart());
     }
 
@@ -194,21 +195,11 @@ public class FieldMappingTest {
         assertEquals(assignee.getId(), loadedTask.getAssignee().getId());
     }
 
-    private static List<Task> saveAndLoad(MSPConfig config, FIELD field, Mapping mapping, GTask... tasks)
-            throws Exception {
-        Mapping savedMapping = config.getFieldMapping(field);
-        config.setFieldMapping(field, mapping); // ugly, but ...
+    private static List<Task> saveAndLoad(MSPConfig config, FIELD field, Mapping mapping, GTask... tasks) throws IOException, MPXJException {
+        MSPConfig temporaryClonedconfig = new MSPConfig(config);
+        temporaryClonedconfig.setFieldMapping(field, mapping);
 
-        List<Task> loadedTasks = saveAndLoad(config, tasks);
-        config.setFieldMapping(field, savedMapping);
-
-        return loadedTasks;
-    }
-
-    private static List<Task> saveAndLoad(MSPConfig oldConfig,
-                                          GTask... tasks) throws IOException, MPXJException {
         String fileName = "testdata.tmp";
-        MSPConfig temporaryClonedconfig = new MSPConfig(oldConfig);
         temporaryClonedconfig.setInputFileName(fileName);
         temporaryClonedconfig.setOutputFileName(fileName);
         MSPConnector connector = new MSPConnector(temporaryClonedconfig);
@@ -217,10 +208,10 @@ public class FieldMappingTest {
 
         MSPFileReader fileReader = new MSPFileReader();
         ProjectFile projectFile = fileReader.readFile(temporaryClonedconfig.getInputFileName());
-        List<Task> mspTasks = projectFile.getAllTasks();
+        List<Task> loadedTasks = projectFile.getAllTasks();
 
         deleteFile(fileName);
-        return mspTasks;
+        return loadedTasks;
     }
 
     private static Date getDateRoundedToMinutes() {

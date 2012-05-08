@@ -53,6 +53,26 @@ public abstract class ConnectorConfig implements Serializable {
         priorities = generateDefaultPriorities();
     }
 
+    public ConnectorConfig(ConnectorConfig configToDeepClone) {
+        this.fieldsMapping = new HashMap<FIELD, Mapping>();
+
+        Collection<FIELD> oldFields = configToDeepClone.getFields();
+        for (FIELD oldField : oldFields) {
+            boolean oldSelected = configToDeepClone.isFieldSelected(oldField);
+            if (oldSelected) {
+                selectField(oldField);
+            } else {
+                unselectField(oldField);
+            }
+            String oldValue = configToDeepClone.getFieldMappedValue(oldField);
+            setFieldMappedValue(oldField, oldValue);
+        }
+
+        saveIssueRelations = configToDeepClone.getSaveIssueRelations();
+        defaultTaskType = configToDeepClone.getDefaultTaskType();
+        this.priorities = new Priorities(configToDeepClone.getPriorities());
+    }
+
     public boolean getSaveIssueRelations() {
         return saveIssueRelations;
     }
@@ -95,19 +115,21 @@ public abstract class ConnectorConfig implements Serializable {
 
     public void selectField(FIELD field) {
         Mapping mapping = fieldsMapping.get(field);
-        if (mapping != null) {
-            mapping.setSelected(true);
+        if (mapping == null) {
+            mapping = new Mapping(true);
+            fieldsMapping.put(field, mapping);
         } else {
-            throw new RuntimeException("unknown field: " + field);
+            mapping.setSelected(true);
         }
     }
 
     protected void unselectField(FIELD field) {
         Mapping mapping = fieldsMapping.get(field);
-        if (mapping != null) {
-            mapping.setSelected(false);
+        if (mapping == null) {
+            mapping = new Mapping(false);
+            fieldsMapping.put(field, mapping);
         } else {
-            throw new RuntimeException("unknown field: " + field);
+            mapping.setSelected(false);
         }
     }
 

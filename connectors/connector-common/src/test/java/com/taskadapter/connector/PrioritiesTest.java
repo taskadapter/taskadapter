@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class PrioritiesTest {
     @Test
@@ -55,5 +56,13 @@ public class PrioritiesTest {
                 put("Immediate", Priorities.MAX_PRIORITY_VALUE);
             }
         });
+    }
+
+    @Test
+    public void copyConstructorCopiesFields() {
+        Priorities samplePriorities = getSamplePriorities();
+        Priorities cloned = new Priorities(samplePriorities);
+        assertEquals(Integer.valueOf(700), cloned.getPriorityByText("High"));
+        assertEquals(Integer.valueOf(Priorities.MAX_PRIORITY_VALUE), cloned.getPriorityByText("Immediate"));
     }
 }
