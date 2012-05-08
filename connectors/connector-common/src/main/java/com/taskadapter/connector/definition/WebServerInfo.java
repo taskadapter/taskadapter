@@ -20,13 +20,6 @@ public class WebServerInfo {
         this.password = encryptor.encrypt(password);
     }
 
-    public WebServerInfo(String host, String userName, String password, Encryptor encryptor) {
-        this.host = host;
-        this.userName = userName;
-        this.password = encryptor.encrypt(password);
-        this.encryptor = encryptor;
-    }
-
     public WebServerInfo() {
     }
 
@@ -42,10 +35,6 @@ public class WebServerInfo {
         return host;
     }
 
-    public void setHost(String host) {
-        this.host = host;
-    }
-
     public String getUserName() {
         return userName;
     }
@@ -56,10 +45,6 @@ public class WebServerInfo {
 
     public String getPassword() {
         return encryptor.decrypt(password);
-    }
-
-    public void setPassword(String password) {
-        this.password = encryptor.encrypt(password);
     }
 
     public boolean isUseAPIKeyInsteadOfLoginPassword() {
