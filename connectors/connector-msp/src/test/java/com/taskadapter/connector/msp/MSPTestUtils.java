@@ -1,13 +1,10 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.model.GTask;
-import net.sf.mpxj.MPXJException;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Task;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
@@ -71,7 +68,7 @@ public class MSPTestUtils {
      * Load the file with DEFAULT field mappings into native task list
      */
     static List<Task> loadToMSPTaskList(String fileNameInClasspath) throws Exception {
-        String fileName = MSPTestUtils.getTestFileAbsolutePath(fileNameInClasspath);
+        String fileName = getTestFileAbsolutePath(fileNameInClasspath);
         ProjectFile projectFile = new MSPFileReader().readFile(fileName);
         return projectFile.getAllTasks();
     }
@@ -79,21 +76,5 @@ public class MSPTestUtils {
     static boolean deleteFile(String fileName) {
         File f = new File(fileName);
         return f.delete();
-    }
-
-    static List<Task> loadMSPTasks(String fileName) throws MPXJException {
-        String path = getTestFileAbsolutePath(fileName);
-        MSPXMLFileReader fileReader = new MSPXMLFileReader();
-        MSPTaskLoader loader = new MSPTaskLoader();
-        ProjectFile projectFile;
-
-        try {
-            projectFile = fileReader.readFile(path);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("MSP: Can't find file:\n" + fileName);
-        }
-
-        List<Task> mspTasks = projectFile.getAllTasks();
-        return loader.skipRootNodeIfPresent(mspTasks);
     }
 }

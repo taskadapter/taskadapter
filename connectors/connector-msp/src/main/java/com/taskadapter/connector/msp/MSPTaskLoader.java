@@ -18,11 +18,6 @@ public class MSPTaskLoader extends AbstractTaskLoader<MSPConfig> {
         fileReader = new MSPFileReader();
     }
 
-    public MSPTaskLoader(MSPFileReader fileReader, MSTaskToGenericTaskConverter converter) {
-        this.fileReader = fileReader;
-        this.converter = converter;
-    }
-
     @Override
     public List<GTask> loadTasks(MSPConfig config) throws Exception {
         ProjectFile projectFile;
