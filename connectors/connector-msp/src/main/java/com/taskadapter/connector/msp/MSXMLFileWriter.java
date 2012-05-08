@@ -3,7 +3,6 @@ package com.taskadapter.connector.msp;
 import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
 import net.sf.mpxj.*;
@@ -186,7 +185,7 @@ public class MSXMLFileWriter {
         }
 
         if (config.isFieldSelected(FIELD.PRIORITY)) {
-            Priority mspPriority = Priority.getInstance(gTask.getPriority().intValue());
+            Priority mspPriority = Priority.getInstance(gTask.getPriority());
             mspTask.setPriority(mspPriority);
         }
 

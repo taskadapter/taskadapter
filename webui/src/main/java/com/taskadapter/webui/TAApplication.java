@@ -18,8 +18,6 @@ public class TAApplication extends Application {
 
     private final Services services = new Services();
 
-    private Navigator navigator;
-
     @Override
     public String getVersion() {
         return services.getUpdateManager().getCurrentVersion();
@@ -34,7 +32,7 @@ public class TAApplication extends Application {
         mainWindow.setContent(layout);
         setMainWindow(mainWindow);
 
-        navigator = new Navigator(layout, services);
+        Navigator navigator = new Navigator(layout, services);
         navigator.show(Navigator.HOME);
     }
 }

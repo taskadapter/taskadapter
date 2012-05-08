@@ -14,10 +14,7 @@ import java.util.Collection;
 
 public class GithubProjectProcessor implements ProjectProcessor {
 
-    private final GithubEditor editor;
-
     public GithubProjectProcessor(GithubEditor editor) {
-        this.editor = editor;
     }
 
     @Override

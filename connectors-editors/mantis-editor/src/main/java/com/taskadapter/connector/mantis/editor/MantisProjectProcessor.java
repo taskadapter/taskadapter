@@ -15,10 +15,7 @@ import java.util.Collection;
 
 public class MantisProjectProcessor implements ProjectProcessor {
 
-    private final MantisEditor editor;
-
     public MantisProjectProcessor(MantisEditor editor) {
-        this.editor = editor;
     }
 
     @Override

@@ -22,7 +22,6 @@ public class MantisTest {
     private static MantisManager mgr;
 
     private static String projectKey;
-    private MantisConfig config;
     private MantisConnector mantis;
     private static GUser currentUser;
 
@@ -49,7 +48,7 @@ public class MantisTest {
 
     @Before
     public void setUp() throws Exception {
-        config = Config.getMantisTestConfig();
+        MantisConfig config = Config.getMantisTestConfig();
         config.setProjectKey(projectKey);
         mantis = new MantisConnector(config);
     }
