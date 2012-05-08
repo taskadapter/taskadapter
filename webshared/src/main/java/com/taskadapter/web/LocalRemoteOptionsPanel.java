@@ -1,6 +1,8 @@
 package com.taskadapter.web;
 
 import com.vaadin.data.Property;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.VerticalLayout;
 
@@ -17,26 +19,27 @@ public class LocalRemoteOptionsPanel extends VerticalLayout {
     private static final List<String> options = Arrays.asList(LOCAL, REMOTE);
     private OptionGroup group;
     private SettingsManager settingsManager;
+    private ProgressElement progressElement;
 
     public LocalRemoteOptionsPanel(SettingsManager settingsManager) {
         this.settingsManager = settingsManager;
         buildUI();
         selectCurrentSetting();
+        setupListener();
     }
 
     private void buildUI() {
         group = new OptionGroup("Local/remote mode", options);
+        HorizontalLayout configGroupLayout = new HorizontalLayout();
+        progressElement = new ProgressElement();
 
         group.setNullSelectionAllowed(false); // user can not 'unselect'
         group.setImmediate(true); // send the change to the server at once
-        group.addListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                boolean isLocal = event.getProperty().toString().equals(LOCAL);
-                settingsManager.setLocal(isLocal);
-            }
-        }); // react when the user selects something
-        addComponent(group);
+        configGroupLayout.addComponent(group);
+        configGroupLayout.addComponent(progressElement);
+        configGroupLayout.setComponentAlignment(progressElement, Alignment.MIDDLE_CENTER);
+
+        addComponent(configGroupLayout);
     }
 
     private void selectCurrentSetting() {
@@ -46,6 +49,17 @@ public class LocalRemoteOptionsPanel extends VerticalLayout {
         } else {
             group.select(REMOTE);
         }
+    }
+
+    private void setupListener() {
+        group.addListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                boolean isLocal = event.getProperty().toString().equals(LOCAL);
+                settingsManager.setLocal(isLocal);
+                progressElement.start();
+            }
+        });
     }
 
 }
