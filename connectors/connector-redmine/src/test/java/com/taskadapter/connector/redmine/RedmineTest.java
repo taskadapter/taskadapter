@@ -88,7 +88,7 @@ public class RedmineTest {
     public void startDateNotExported() throws Exception {
         GTask task = TestUtils.generateTask();
         TestUtils.setTaskStartYearAgo(task);
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.START_DATE, new Mapping(false), task);
+        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.START_DATE, false, task);
         assertNull(loadedTask.getStartDate());
     }
 
@@ -96,7 +96,7 @@ public class RedmineTest {
     public void startDateExported() throws Exception {
         GTask task = TestUtils.generateTask();
         Calendar yearAgo = TestUtils.setTaskStartYearAgo(task);
-        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.START_DATE, new Mapping(true), task);
+        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.START_DATE, true, task);
         assertEquals(yearAgo.getTime(), loadedTask.getStartDate());
     }
 
@@ -112,10 +112,7 @@ public class RedmineTest {
     public void dueDateNotExported() throws Exception {
         GTask task = TestUtils.generateTask();
         TestUtils.setTaskDueDateNextYear(task);
-        Map<GTaskDescriptor.FIELD, Mapping> mapping = config.generateDefaultFieldsMapping();
-        mapping.put(FIELD.DUE_DATE, new Mapping(false));
-
-        GTask loadedTask = TestUtils.saveAndLoad(connector, mapping, task);
+        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.DUE_DATE, false, task);
         assertNull(loadedTask.getDueDate());
     }
 
@@ -123,10 +120,7 @@ public class RedmineTest {
     public void dueDateExported() throws Exception {
         GTask task = TestUtils.generateTask();
         Calendar yearAgo = TestUtils.setTaskDueDateNextYear(task);
-        Map<GTaskDescriptor.FIELD, Mapping> mapping = config.generateDefaultFieldsMapping();
-        mapping.put(FIELD.DUE_DATE, new Mapping(true));
-
-        GTask loadedTask = TestUtils.saveAndLoad(connector, mapping, task);
+        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.DUE_DATE, true, task);
         assertEquals(yearAgo.getTime(), loadedTask.getDueDate());
     }
 
@@ -142,9 +136,7 @@ public class RedmineTest {
     public void assigneeExported() throws Exception {
         GTask task = TestUtils.generateTask();
         task.setAssignee(currentUser);
-        Map<GTaskDescriptor.FIELD, Mapping> mapping = config.generateDefaultFieldsMapping();
-        mapping.put(FIELD.ASSIGNEE, new Mapping(true));
-        GTask loadedTask = TestUtils.saveAndLoad(connector, mapping, task);
+        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.ASSIGNEE, true, task);
         assertEquals(currentUser.getId(), loadedTask.getAssignee().getId());
         // only the ID and Display Name are set, so we can't check login name
         assertEquals(currentUser.getDisplayName(), loadedTask.getAssignee().getDisplayName());
@@ -154,9 +146,7 @@ public class RedmineTest {
     public void assigneeNotExported() throws Exception {
         GTask task = TestUtils.generateTask();
         task.setAssignee(currentUser);
-        Map<GTaskDescriptor.FIELD, Mapping> mapping = config.generateDefaultFieldsMapping();
-        mapping.put(FIELD.ASSIGNEE, new Mapping(false));
-        GTask loadedTask = TestUtils.saveAndLoad(connector, mapping, task);
+        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.ASSIGNEE, false, task);
         assertNull(loadedTask.getAssignee());
     }
 
@@ -164,21 +154,17 @@ public class RedmineTest {
     public void assigneeExportedByDefault() throws Exception {
         GTask task = TestUtils.generateTask();
         task.setAssignee(currentUser);
-        Map<GTaskDescriptor.FIELD, Mapping> mapping = config.generateDefaultFieldsMapping();
-        mapping.put(FIELD.ASSIGNEE, new Mapping(true));
-
-        GTask loadedTask = TestUtils.saveAndLoad(connector, mapping, task);
+        GTask loadedTask = TestUtils.saveAndLoad(connector, task);
         assertEquals(currentUser.getId(), loadedTask.getAssignee().getId());
     }
 
+    // TODO what does it test?? how is findByName related to Assignee export?
     @Test
     public void assigneeExportedByName() throws Exception {
         GTask task = TestUtils.generateTask();
         task.setAssignee(currentUser);
-        Map<GTaskDescriptor.FIELD, Mapping> mapping = config.generateDefaultFieldsMapping();
-        mapping.put(FIELD.ASSIGNEE, new Mapping(true));
         config.setFindUserByName(true);
-        GTask loadedTask = TestUtils.saveAndLoad(connector, mapping, task);
+        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.ASSIGNEE, true, task);
         assertEquals(currentUser.getId(), loadedTask.getAssignee().getId());
         // only the ID and Display Name are set, so we can't check login name
         assertEquals(currentUser.getDisplayName(), loadedTask.getAssignee().getDisplayName());
@@ -187,20 +173,14 @@ public class RedmineTest {
     @Test
     public void estimatedTimeNotExported() throws Exception {
         GTask task = TestUtils.generateTask();
-        Map<GTaskDescriptor.FIELD, Mapping> mapping = config.generateDefaultFieldsMapping();
-        mapping.put(FIELD.ESTIMATED_TIME, new Mapping(false));
-
-        GTask loadedTask = TestUtils.saveAndLoad(connector, mapping, task);
+        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.ESTIMATED_TIME, false, task);
         assertNull(loadedTask.getEstimatedHours());
     }
 
     @Test
     public void estimatedTimeExported() throws Exception {
         GTask task = TestUtils.generateTask();
-        Map<GTaskDescriptor.FIELD, Mapping> mapping = config.generateDefaultFieldsMapping();
-        mapping.put(FIELD.ESTIMATED_TIME, new Mapping(true));
-
-        GTask loadedTask = TestUtils.saveAndLoad(connector, mapping, task);
+        GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.ESTIMATED_TIME, true, task);
         assertEquals(task.getEstimatedHours(), loadedTask.getEstimatedHours(), 0);
     }
 
@@ -245,10 +225,7 @@ public class RedmineTest {
 
         if (defaultStatus != null) {
             GTask task = TestUtils.generateTask();
-            Map<GTaskDescriptor.FIELD, Mapping> mapping = config.generateDefaultFieldsMapping();
-            mapping.put(FIELD.TASK_STATUS, new Mapping(false));
-
-            GTask loadedTask = TestUtils.saveAndLoad(connector, mapping, task);
+            GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.TASK_STATUS, false, task);
             assertEquals(defaultStatus, loadedTask.getStatus());
         }
     }
@@ -262,10 +239,7 @@ public class RedmineTest {
         if (otherStatus != null) {
             GTask task = TestUtils.generateTask();
             task.setStatus(otherStatus);
-            Map<GTaskDescriptor.FIELD, Mapping> mapping = config.generateDefaultFieldsMapping();
-            mapping.put(FIELD.TASK_STATUS, new Mapping(true));
-
-            GTask loadedTask = TestUtils.saveAndLoad(connector, mapping, task);
+            GTask loadedTask = TestUtils.saveAndLoad(connector, FIELD.TASK_STATUS, true, task);
             assertEquals(otherStatus, loadedTask.getStatus());
         }
     }

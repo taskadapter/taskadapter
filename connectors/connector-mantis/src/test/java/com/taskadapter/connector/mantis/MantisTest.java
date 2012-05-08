@@ -1,9 +1,8 @@
 package com.taskadapter.connector.mantis;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor;
+import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -15,11 +14,11 @@ import org.mantis.ta.beans.ProjectData;
 
 import java.math.BigInteger;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.taskadapter.connector.common.TestUtils.generateTask;
 import static com.taskadapter.connector.common.TestUtils.saveAndLoad;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class MantisTest {
 
@@ -30,22 +29,14 @@ public class MantisTest {
     private MantisConnector mantis = new MantisConnector(config);
     private static GUser currentUser;
 
-    private static Map<GTaskDescriptor.FIELD, Mapping> defaultFieldsMap;
-
     @BeforeClass
     public static void oneTimeSetUp() {
-        System.out.println("Running mantis tests using: " + Config.getURI());
+        System.out.println("Running Mantis BT tests using: " + Config.getURI());
         mgr = new MantisManager(Config.getURI(), Config.getUserLogin(), Config.getPassword());
 
         ProjectData junitTestProject = new ProjectData();
         junitTestProject.setName("test project" + Calendar.getInstance().getTimeInMillis());
         junitTestProject.setDescription("test" + Calendar.getInstance().getTimeInMillis());
-
-        defaultFieldsMap = new HashMap<GTaskDescriptor.FIELD, Mapping>();
-        defaultFieldsMap.put(GTaskDescriptor.FIELD.SUMMARY, new Mapping());
-        defaultFieldsMap.put(GTaskDescriptor.FIELD.DESCRIPTION, new Mapping());
-        defaultFieldsMap.put(GTaskDescriptor.FIELD.ASSIGNEE, new Mapping());
-        //defaultFieldsMap.put(GTaskDescriptor.FIELD.DUE_DATE, new Mapping());
 
         try {
             AccountData mantisUser = mgr.getCurrentUser();
@@ -135,37 +126,27 @@ public class MantisTest {
 	}*/
 
     @Test
-    public void testAssigneeExported() throws Exception {
+    public void assigneeExported() throws Exception {
         GTask task = generateTask();
         task.setAssignee(currentUser);
-        testAssignee(defaultFieldsMap, task, currentUser.getId());
+        GTask loadedTask = saveAndLoad(mantis, FIELD.ASSIGNEE, true, task);
+        assertEquals(currentUser.getId(), loadedTask.getAssignee().getId());
     }
 
     @Test
-    public void testAssigneeNotExported() throws Exception {
+    public void assigneeNotExported() throws Exception {
         GTask task = generateTask();
         task.setAssignee(currentUser);
-
-        Map<GTaskDescriptor.FIELD, Mapping> tempMap = new HashMap<GTaskDescriptor.FIELD, Mapping>();
-        tempMap.put(GTaskDescriptor.FIELD.SUMMARY, new Mapping());
-        tempMap.put(GTaskDescriptor.FIELD.DESCRIPTION, new Mapping());
-        tempMap.put(GTaskDescriptor.FIELD.ASSIGNEE, new Mapping(false));
-
-        GTask loadedTask = saveAndLoad(mantis, tempMap, task);
-        Assert.assertNull(loadedTask.getAssignee());
+        GTask loadedTask = saveAndLoad(mantis, FIELD.ASSIGNEE, false, task);
+        assertNull(loadedTask.getAssignee());
     }
 
     @Test
-    public void testAssigneeExportedByDefault() throws Exception {
+    public void assigneeExportedByDefault() throws Exception {
         GTask task = generateTask();
         task.setAssignee(currentUser);
-        GTask loadedTask = saveAndLoad(mantis, defaultFieldsMap, task);
-        Assert.assertEquals(currentUser.getId(), loadedTask.getAssignee().getId());
-    }
-
-    public void testAssignee(Map<GTaskDescriptor.FIELD, Mapping> map, GTask task, Integer id) throws Exception {
-        GTask loadedTask = saveAndLoad(mantis, map, task);
-        Assert.assertEquals(id, loadedTask.getAssignee().getId());
+        GTask loadedTask = saveAndLoad(mantis, task);
+        assertEquals(currentUser.getId(), loadedTask.getAssignee().getId());
     }
 
 /*	@Test

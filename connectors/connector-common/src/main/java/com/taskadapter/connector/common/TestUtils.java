@@ -86,13 +86,13 @@ public class TestUtils {
         return loadedTask;
     }
 
-    public static GTask saveAndLoad(Connector connector, Map<FIELD, Mapping> map, GTask task)
+    public static GTask saveAndLoad(Connector connector, FIELD field, boolean fieldSelected, GTask task)
             throws Exception {
         ConnectorConfig config = connector.getConfig();
-        Map<FIELD, Mapping> savedMapping = config.getFieldsMapping();
-        config.setFieldsMapping(map); // ugly, but ...
+        Mapping savedMapping = config.getFieldMapping(field);
+        config.setFieldMapping(field, new Mapping(fieldSelected)); // ugly, but ...
         GTask loadedTask = saveAndLoad(connector, task);
-        config.setFieldsMapping(savedMapping);
+        config.setFieldMapping(field, savedMapping);
 
         return loadedTask;
     }
