@@ -68,10 +68,6 @@ public class MSPUtils {
         }
     }
 
-    static Collection<TaskField> getAllTextFields() {
-        return TEXT_FIELDS_MAP.values();
-    }
-
     static String[] getAllTextFieldNames() {
         Set<String> keys = TEXT_FIELDS_MAP.keySet();
         return keys.toArray(new String[keys.size()]);
