@@ -31,8 +31,6 @@ public class ConfigButtonsPanel extends HorizontalLayout {
 
     private void createBox(ConnectorDataHolder dataHolder) {
         Descriptor descriptor = getDescriptor(dataHolder);
-        // TODO use the config
-        ConnectorConfig config = dataHolder.getData();
         NativeButton button = new NativeButton(descriptor.getLabel());
         button.addStyleName("connectorBoxButton");
         addComponent(button);
