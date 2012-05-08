@@ -15,9 +15,7 @@ import java.util.*;
  */
 public class FieldsMappingPanel extends GridLayout implements Validatable {
     private static final String PANEL_TITLE = "Task fields";
-
     private static final String COLUMN1_HEADER = "Task Adapter field";
-
     private static final String COLUMN2_HEADER = "Connector field or constraint";
 
     private Map<GTaskDescriptor.FIELD, CheckBox> fieldToButtonMap = new HashMap<GTaskDescriptor.FIELD, CheckBox>();
@@ -30,7 +28,7 @@ public class FieldsMappingPanel extends GridLayout implements Validatable {
     /**
      * Config Editors should NOT create this object directly, use ConfigEditor.addFieldsMappingPanel() method instead.
      *
-     * @see ConfigEditor#addFieldsMappingPanel(com.taskadapter.connector.definition.AvailableFieldsProvider, java.util.Map)
+     * @see ConfigEditor#addFieldsMappingPanel(com.taskadapter.connector.definition.AvailableFieldsProvider)
      */
     public FieldsMappingPanel(AvailableFieldsProvider availableFieldsProvider, ConnectorConfig config) {
         this.availableFieldsProvider = availableFieldsProvider;
@@ -78,21 +76,22 @@ public class FieldsMappingPanel extends GridLayout implements Validatable {
                 ComboBox combo = new ComboBox(null, container);
                 combo.setWidth("220px");
                 fieldToValueMap.put(field, combo);
-//                combo.setItems(allowedValues);
                 addComponent(combo, 1, row);
                 setComponentAlignment(combo, Alignment.MIDDLE_LEFT);
-//                selectItem(combo, mapping.getCurrentValue());
                 combo.select(mapping.getCurrentValue());
             } else if (allowedValues.length == 1) {
                 Label label = new Label(allowedValues[0]);
                 addComponent(label, 1, row);
                 setComponentAlignment(label, Alignment.MIDDLE_LEFT);
             } else {
-                // field not supported by this connector
-                checkbox.setEnabled(false);
-                checkbox.setValue(false);
+                markFieldNotSupportedByThisConnector(checkbox);
             }
         }
+    }
+
+    private void markFieldNotSupportedByThisConnector(CheckBox checkbox) {
+        checkbox.setEnabled(false);
+        checkbox.setValue(false);
     }
 
     public Map<GTaskDescriptor.FIELD, Mapping> getResult() {
