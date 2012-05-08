@@ -63,7 +63,8 @@ public class MSPUtils {
         } else if (value.equals(TaskField.DURATION.toString())) {
             return false;
         } else {
-            throw new RuntimeException("Invalid value for EstimatedTime in the config: " + value);
+            throw new RuntimeException("Invalid value for EstimatedTime in the config: " + value + ". Allowed values: " +
+                    TaskField.WORK.toString() + ", " + TaskField.DURATION.toString());
         }
     }
 
