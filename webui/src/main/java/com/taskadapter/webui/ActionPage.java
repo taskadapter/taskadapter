@@ -105,7 +105,7 @@ public abstract class ActionPage extends Page {
         mainPanel.removeAllComponents();
         mainPanel.addComponent(getDoneInfoPanel());
 
-        Button button = new Button("Connector config page");
+        Button button = new Button("System config page");
         button.setStyleName(BaseTheme.BUTTON_LINK);
         button.addListener(new Button.ClickListener() {
             @Override

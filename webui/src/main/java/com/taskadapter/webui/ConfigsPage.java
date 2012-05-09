@@ -12,6 +12,8 @@ import com.vaadin.ui.themes.BaseTheme;
  */
 public class ConfigsPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
+    public static final String SYSTEM_1_TITLE = "System 1";
+    public static final String SYSTEM_2_TITLE = "System 2";
 
     private Table table;
 
@@ -20,11 +22,14 @@ public class ConfigsPage extends Page {
     }
 
     private void buildUI() {
+        layout.setSpacing(true);
         createAddButton();
 
         table = new Table();
         table.addStyleName("configsTable");
-        table.addContainerProperty("Name", Button.class, null);
+        table.addContainerProperty("Name", Button.class, "");
+        table.addContainerProperty(SYSTEM_1_TITLE, String.class, "");
+        table.addContainerProperty(SYSTEM_2_TITLE, String.class, "");
         layout.addComponent(table);
     }
 
@@ -46,7 +51,7 @@ public class ConfigsPage extends Page {
         for (TAFile file : services.getConfigStorage().getAllConfigs()) {
             addTaskToTable(file, i++);
         }
-        table.setPageLength(table.size() + 1);
+        table.setPageLength(table.size());
     }
 
     private void addTaskToTable(final TAFile file, int i) {
@@ -58,7 +63,8 @@ public class ConfigsPage extends Page {
                 navigator.showTaskDetailsPage(file);
             }
         });
-        table.addItem(new Object[]{button}, i);
+        table.addItem(new Object[]{button, file.getConnectorDataHolder1().getData().getLabel(),
+                file.getConnectorDataHolder2().getData().getLabel()}, i);
     }
 
     @Override

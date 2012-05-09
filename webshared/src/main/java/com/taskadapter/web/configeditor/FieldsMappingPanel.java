@@ -16,7 +16,7 @@ import java.util.*;
 public class FieldsMappingPanel extends GridLayout implements Validatable {
     private static final String PANEL_TITLE = "Task fields";
     private static final String COLUMN1_HEADER = "Task Adapter field";
-    private static final String COLUMN2_HEADER = "Connector field or constraint";
+    private static final String COLUMN2_HEADER = "System field or constraint";
 
     private Map<GTaskDescriptor.FIELD, CheckBox> fieldToButtonMap = new HashMap<GTaskDescriptor.FIELD, CheckBox>();
     private Map<GTaskDescriptor.FIELD, ComboBox> fieldToValueMap = new HashMap<GTaskDescriptor.FIELD, ComboBox>();
@@ -34,7 +34,7 @@ public class FieldsMappingPanel extends GridLayout implements Validatable {
         this.availableFieldsProvider = availableFieldsProvider;
         this.config = config;
 
-        setDescription("Select fields to export when SAVING data to this connector");
+        setDescription("Select fields to export when SAVING data to this system");
         addFields();
 
         addStyleName("fields-mapping-panel");
