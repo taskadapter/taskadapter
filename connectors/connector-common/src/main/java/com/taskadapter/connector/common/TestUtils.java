@@ -74,7 +74,7 @@ public class TestUtils {
         return loadedTask;
     }
 
-    public static GTask saveAndLoad(Connector connector, GTask task) throws Exception {
+    public static GTask saveAndLoad(Connector connector, GTask task) {
         List<GTask> loadedTasks = saveAndLoadAll(connector, task);
         return findTaskBySummary(loadedTasks, task.getSummary());
     }

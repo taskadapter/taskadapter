@@ -10,10 +10,10 @@ abstract public class WebConfig extends ConnectorConfig {
     private static final long serialVersionUID = 1L;
 
     private WebServerInfo serverInfo = new WebServerInfo();
-    protected Integer queryId;
-    protected String projectKey;
-    protected Map<String, String> customFields = new TreeMap<String, String>();
-    protected boolean findUserByName;
+    private Integer queryId;
+    private String projectKey;
+    private Map<String, String> customFields = new TreeMap<String, String>();
+    private boolean findUserByName;
 
     public WebConfig(String label) {
         super();

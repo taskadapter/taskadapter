@@ -13,8 +13,7 @@ import java.util.Random;
 
 public class RedmineUtils {
 
-    public static GTask generateTaskWithPrecedesRelations(RedmineConnector redmine,
-                                                          Integer childCount) throws Exception {
+    public static GTask generateTaskWithPrecedesRelations(RedmineConnector redmine, Integer childCount) {
         List<GTask> list = new ArrayList<GTask>();
 
         GTask task = TestUtils.generateTask();

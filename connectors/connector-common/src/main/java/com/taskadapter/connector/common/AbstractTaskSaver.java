@@ -15,15 +15,15 @@ import com.taskadapter.model.GTask;
 public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
         TaskSaver<T> {
 
-    protected SyncResult syncResult = new SyncResult();
+    protected final SyncResult syncResult = new SyncResult();
 
-    protected List<GTask> totalTaskList = new ArrayList<GTask>();
+    private final List<GTask> totalTaskList = new ArrayList<GTask>();
 
-    protected boolean shouldStop;
+    private boolean shouldStop;
 
-    protected T config;
+    protected final T config;
 
-    protected ProgressMonitor monitor;
+    private ProgressMonitor monitor;
 
     public AbstractTaskSaver(T config) {
         super();

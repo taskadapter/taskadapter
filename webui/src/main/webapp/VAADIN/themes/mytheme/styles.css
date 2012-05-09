@@ -30,10 +30,12 @@
     background-color: #f6ff90;
     border-radius: 5px;
 }
+
 .trial-mode-label {
     font-weight: bold;
     text-decoration: none;
 }
+
 .trial-mode-link a:hover {
     color: #4181c1;
 }
@@ -46,6 +48,7 @@
 .configsTable {
     font-size: 14px;
 }
+
 .configsTable .v-table-header {
     background-color: #B8DBFF;
 }
@@ -93,20 +96,25 @@
 .v-gridlayout-margin-top {
     padding-top: 3px;
 }
+
 .v-gridlayout-margin-bottom {
     padding-bottom: 3px;
 }
+
 .v-gridlayout-margin-left {
     padding-left: 3px;
 }
+
 .v-gridlayout-margin-right {
     padding-right: 3px;
 }
+
 .v-gridlayout-spacing-on {
     padding-left: 2px;
     padding-top: 2px;
     overflow: hidden;
 }
+
 .v-gridlayout-spacing,
 .v-gridlayout-spacing-off {
     padding-left: 0;
@@ -135,6 +143,7 @@
 .label-textfield {
     width: 250px;
 }
+
 .server-panel-textfield {
     width: 218px;
 }
@@ -155,4 +164,10 @@
     color: #ff6347;
     padding-top: 3px;
     padding-left: 3px;
+}
+
+.progress-label {
+    color: #51bd51;
+    font-weight: bold;
+    font-size: 20px;
 }

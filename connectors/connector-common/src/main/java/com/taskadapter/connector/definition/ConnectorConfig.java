@@ -17,18 +17,18 @@ public abstract class ConnectorConfig implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    protected Map<FIELD, Mapping> fieldsMapping;
+    private Map<FIELD, Mapping> fieldsMapping;
 
     private String label;
 
-    protected boolean saveIssueRelations = false;
+    private boolean saveIssueRelations = false;
 
     /**
      * Samples: "Bug", "Task", "Feature", "Support"
      */
-    protected String defaultTaskType;
+    private String defaultTaskType;
 
-    protected Priorities priorities;
+    private Priorities priorities;
 
     public String getLabel() {
         return label;
