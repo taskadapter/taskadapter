@@ -39,10 +39,6 @@ public class EditorUtil {
         window.showNotification(caption, message);
     }
 
-    public static void showError(Window window, String caption, String message) {
-        window.showNotification(caption, "<pre>" + message + "</pre>", Window.Notification.TYPE_ERROR_MESSAGE);
-    }
-
     public static Button createButton(String label, String description, Button.ClickListener clickListener) {
         Button button = new Button(label);
         button.setDescription(description);
