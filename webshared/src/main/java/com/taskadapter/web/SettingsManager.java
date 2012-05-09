@@ -8,8 +8,6 @@ import java.util.prefs.Preferences;
 public class SettingsManager {
     private static final boolean DEFAULT_LOCAL = true;
 
-    private LocalRemoteModeListener listener;
-
     private Preferences prefs = Preferences.userNodeForPackage(SettingsManager.class);
 
     /**
@@ -21,12 +19,5 @@ public class SettingsManager {
 
     public void setLocal(boolean local) {
         prefs.putBoolean("TALocal", local);
-        if (listener != null) {
-            listener.modeChanged(local);
-        }
-    }
-
-    public void setLocalRemoteListener(LocalRemoteModeListener listener) {
-        this.listener = listener;
     }
 }
