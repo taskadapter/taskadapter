@@ -120,27 +120,8 @@ public class MSPEditor extends ConfigEditor {
         return fileNameWithoutMPPExtension + MSPFileReader.XML_SUFFIX_LOWERCASE;
     }
 
-//    private void browseForMSPFile() {
-//        FilDialog dialog = new FieDialog(shell, SWT.NULL);
-//        dialog.setText("Select a Microsoft Project file (MPP or XML)");
-//        String[] filterExt = { "*.xml;*.mpp", "*.*" };
-//        dialog.setFilterExtensions(filterExt);
-//
-//        String oldFileName = inputFileNameField.getText();
-//        if (!oldFileName.trim().isEmpty()) {
-//            File oldFile = new File(inputFileNameField.getText());
-//            dialog.setFilterPath(oldFile.getParent());
-//            dialog.setFileName(oldFile.getName());
-//        }
-//
-//        String path = dialog.open();
-//        if (path != null) {
-//            inputFileNameField.setText(path);
-//        }
-//    }
-
     private AbstractComponent createLocalModeFilePanel() {
-        return new Label("Some LOCAL text here");
+        return new Label("Input and output file names (on your local machine)");
     }
 
     private AbstractComponent createRemoteModeFilePanel() {
