@@ -39,18 +39,20 @@ public class EnterLicensePanel extends VerticalLayout {
         licenseText = licenseText.trim();
 
         License license;
-        boolean allOK = false;
+        boolean success = true;
+
         try {
             license = LicenseManager.checkLicense(licenseText);
-            LicenseManager.installLicense(LicenseManager.Product.TASK_ADAPTER,
-                    licenseText);
+            LicenseManager.installLicense(LicenseManager.Product.TASK_ADAPTER, licenseText);
+
             getWindow().showNotification("Successfully registered to: " + license.getCustomerName());
-            allOK = true;
+
         } catch (LicenseValidationException e) {
-            getWindow().showNotification("License validation error",
-                    "The license text is invalid");
+            success = false;
+            getWindow().showNotification("License validation error", "The license text is invalid");
         }
-        return allOK;
+
+        return success;
     }
 
 }
