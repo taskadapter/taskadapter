@@ -14,8 +14,8 @@ import java.util.Iterator;
 public class NewConfigPage extends Page {
     private static final String NAME_HINT = "Enter config name";
     private static final String NAME_REQUIRED_MESSAGE = "Please provide the config name";
-    private static final String SELECT_CONNECTOR_1_MESSAGE = "Please select Connector 1";
-    private static final String SELECT_CONNECTOR_2_MESSAGE = "Please select Connector 2";
+    private static final String SELECT_CONNECTOR_1_MESSAGE = "Please select " + ConfigsPage.SYSTEM_1_TITLE;
+    private static final String SELECT_CONNECTOR_2_MESSAGE = "Please select " + ConfigsPage.SYSTEM_2_TITLE;
 
     private TextField name;
     private ListSelect connector1;
@@ -43,12 +43,12 @@ public class NewConfigPage extends Page {
         grid.addComponent(name, 0, 0, 1, 0);
         grid.setComponentAlignment(name, Alignment.MIDDLE_CENTER);
 
-        connector1 = new ListSelect("Connector 1");
+        connector1 = new ListSelect(ConfigsPage.SYSTEM_1_TITLE);
         connector1.setRequired(true);
         connector1.setNullSelectionAllowed(false);
         grid.addComponent(connector1, 0, 1);
 
-        connector2 = new ListSelect("Connector 2");
+        connector2 = new ListSelect(ConfigsPage.SYSTEM_2_TITLE);
         connector2.setRequired(true);
         connector2.setNullSelectionAllowed(false);
         grid.addComponent(connector2, 1, 1);
