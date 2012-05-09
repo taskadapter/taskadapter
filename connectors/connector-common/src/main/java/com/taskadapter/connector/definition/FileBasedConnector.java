@@ -7,7 +7,6 @@ import com.taskadapter.model.GTask;
 public interface FileBasedConnector {
     void updateTasksByRemoteIds(List<GTask> tasks);
 
-    // TODO use it. see how it's done in Eclipse branch
     boolean fileExists();
 
     // TODO use it. see how it's done in Eclipse branch
