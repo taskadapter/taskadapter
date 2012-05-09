@@ -10,13 +10,12 @@ import static com.taskadapter.license.LicenseManager.Product.TASK_ADAPTER;
 import static com.taskadapter.license.LicenseManager.checkLicense;
 
 public class TestLicenseManager {
-
     @Test
     public void testValidTALicense() {
         try {
             License license = checkLicense(MyIOUtils.getResourceAsString("taskadapter.license.valid"));
 
-            Assert.assertNotNull("license must be not null", license);
+            Assert.assertNotNull("license must not be null", license);
             Assert.assertEquals("product type must be " + TASK_ADAPTER, TASK_ADAPTER, license.getProduct());
 
         } catch (Exception e) {
@@ -39,22 +38,4 @@ public class TestLicenseManager {
             System.out.println("Got expected LicenseValidationException");
         }
     }
-
-
-    @Test
-    public void testValidTALicenseNewDateFormat() {
-        // the new Task Adapter license date format was introduced
-        // on June 30, 2011. Version 1.1.1.
-        try {
-            License license = checkLicense(MyIOUtils.getResourceAsString("ta_new_date_format.valid"));
-
-            Assert.assertNotNull("license must be not null", license);
-            Assert.assertEquals("product type must be " + TASK_ADAPTER, TASK_ADAPTER, license.getProduct());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
-        }
-    }
-
 }
