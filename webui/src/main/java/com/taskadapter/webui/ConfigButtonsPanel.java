@@ -4,13 +4,10 @@ import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.web.service.Services;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 
 public class ConfigButtonsPanel extends HorizontalLayout {
-    private static final int ARROW_BUTTON_HEIGHT = 55;
-    private static final String ARROW_RIGHT = "\u21e8";
-    private static final String ARROW_LEFT = "\u21e6";
-
     private Navigator navigator;
     private TAFile file;
     private Services services;
@@ -30,29 +27,23 @@ public class ConfigButtonsPanel extends HorizontalLayout {
 
     private void createBox(ConnectorDataHolder dataHolder) {
         Descriptor descriptor = getDescriptor(dataHolder);
-        NativeButton button = new NativeButton(descriptor.getLabel());
-        button.addStyleName("connectorBoxButton");
-        addComponent(button);
-        button.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                // TODO implement this
-            }
-        });
-
+        Label label = new Label(descriptor.getLabel());
+        label.addStyleName("connectorBoxLabel");
+        addComponent(label);
     }
 
     private void createActionButtons() {
-        Layout buttonsLayout = new VerticalLayout();
-        buttonsLayout.addComponent(createButton(ARROW_RIGHT, file.getConnectorDataHolder1(), file.getConnectorDataHolder2()));
-        buttonsLayout.addComponent(createButton(ARROW_LEFT, file.getConnectorDataHolder2(), file.getConnectorDataHolder1()));
+        VerticalLayout buttonsLayout = new VerticalLayout();
+        buttonsLayout.setMargin(new MarginInfo(true, false, true, false));
+        buttonsLayout.addComponent(createButton("img/arrow_right.png", file.getConnectorDataHolder1(), file.getConnectorDataHolder2()));
+        buttonsLayout.addComponent(createButton("img/arrow_left.png", file.getConnectorDataHolder2(), file.getConnectorDataHolder1()));
         addComponent(buttonsLayout);
     }
 
     private Button createButton(String label, final ConnectorDataHolder sourceDataHolder, final ConnectorDataHolder destinationDataHolder) {
-        Button button = new NativeButton(label);
-        button.setHeight(ARROW_BUTTON_HEIGHT, UNITS_PIXELS);
-        button.addStyleName("button_arrow");
+        Button button = new NativeButton();
+        button.setIcon(new ThemeResource(label));
+
         final Exporter exporter = new Exporter(navigator, services.getPluginManager(), sourceDataHolder, destinationDataHolder, file);
         button.addListener(new Button.ClickListener() {
             @Override

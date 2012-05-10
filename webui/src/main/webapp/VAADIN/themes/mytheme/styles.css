@@ -53,11 +53,6 @@
     background-color: #B8DBFF;
 }
 
-.button_arrow .v-nativebutton-caption {
-    font-size: 36px;
-    font-weight: bold;
-}
-
 .v-table-cell-content-centered {
     text-align: center;
 }
@@ -70,6 +65,7 @@
     font-size: 14px;
 }
 
+/*  // button is not used now
 .v-nativebutton-connectorBoxButton {
     background-color: #DAF1FF;
     color: #222219;
@@ -77,11 +73,25 @@
     width: 220px;
     height: 110px;
 }
+  */
+
+.connectorBoxLabel {
+    font-size: 18px;
+    background-color: #DAF1FF;
+    color: #222219;
+    border: 1px gray solid;
+    border-radius: 3px;
+    width: 200px;
+    height: 110px;
+    vertical-align: middle;
+    text-align: center;
+    line-height: 100px;
+}
 
 .v-nativebutton-connectorBoxButton:hover {
     /* we don't have any action associated with this box panel, so let's not show any effects
      on mouse over event to not confuse people*/
-    /*background-color: #99CCFF;*/
+    /*background-color: #99CCFF;
 }
 
 .priorities-table {
