@@ -1,5 +1,6 @@
 package com.taskadapter.web.configeditor.file;
 
+import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.web.FileManager;
 import com.taskadapter.web.service.Authenticator;
 import com.vaadin.data.Item;
@@ -22,8 +23,9 @@ import java.util.List;
 /**
  * @author Alexey Skorokhodov
  */
-public class ServerModeFilePanel extends VerticalLayout {
-    public static final int MAX_FILE_SIZE = 1000000;  // 1 mb max
+public class ServerModeFilePanel extends FilePanel {
+    // TODO show this limit on the webpage
+    public static final int MAX_FILE_SIZE_BYTES = 1000000;
 
     private Label status = new Label("Please select a file to upload");
     private ProgressIndicator pi = new ProgressIndicator();
@@ -36,6 +38,8 @@ public class ServerModeFilePanel extends VerticalLayout {
     private Button downloadButton;
     private Label lastModifiedLabel;
     private Authenticator authenticator;
+
+    private MSPConfig config;
 
     public ServerModeFilePanel(Authenticator authenticator) {
         this.authenticator = authenticator;
@@ -205,6 +209,20 @@ public class ServerModeFilePanel extends VerticalLayout {
             getWindow().showNotification("Error: " + e.toString());
         }
     }
+    @Override
+    public void refreshConfig(MSPConfig config) {
+        System.out.println("TODO");
+    }
+
+    @Override
+    public String getInputFileName() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getOutputFileName() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 
     public static class MyReceiver implements Upload.Receiver {
 
@@ -212,7 +230,7 @@ public class ServerModeFilePanel extends VerticalLayout {
         private String mtype;
         private boolean sleep;
         private int total;
-        private byte[] bytes = new byte[MAX_FILE_SIZE];
+        private byte[] bytes = new byte[MAX_FILE_SIZE_BYTES];
 
         public OutputStream receiveUpload(String filename, String mimetype) {
             total = 0;
@@ -230,8 +248,8 @@ public class ServerModeFilePanel extends VerticalLayout {
                             e.printStackTrace();
                         }
                     }
-                    if (total == MAX_FILE_SIZE) {
-                        throw new RuntimeException("Max file size reached: " + MAX_FILE_SIZE + " bytes");
+                    if (total == MAX_FILE_SIZE_BYTES) {
+                        throw new RuntimeException("Max file size reached: " + MAX_FILE_SIZE_BYTES + " bytes");
                     }
                 }
             };
