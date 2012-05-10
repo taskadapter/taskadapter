@@ -13,7 +13,7 @@ public class FileManager {
 
     public File getServerDirectoryForTAFiles() {
         String rootFolderName = ConfigStorage.getRootFolderName();
-        return new File(rootFolderName + "/allusers");
+        return new File(rootFolderName + "/files");
     }
 
     /**
