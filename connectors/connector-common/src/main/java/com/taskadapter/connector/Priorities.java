@@ -1,12 +1,17 @@
 package com.taskadapter.connector;
 
+import com.taskadapter.model.NamedKeyedObject;
+import com.taskadapter.model.NamedKeyedObjectImpl;
+
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Priorities {
     static final Integer DEFAULT_PRIORITY_VALUE = 500;
     static final int MAX_PRIORITY_VALUE = 1000;
+    static final int MIN_PRIORITY_VALUE = 0;
 
     /**
      * priority text -> priority number mappings.
@@ -22,6 +27,20 @@ public class Priorities {
 
     public Priorities(Map<String, Integer> prioritiesMapping) {
         this.prioritiesMapping = prioritiesMapping;
+    }
+
+    public Priorities(Priorities defaultPriorities, List<NamedKeyedObjectImpl> priorityList) {
+        prioritiesMapping = new HashMap<String, Integer>();
+        Integer defPriority;
+        for (NamedKeyedObject priority : priorityList) {
+            defPriority = defaultPriorities.prioritiesMapping.get(priority.getKey());
+
+            if (defPriority == null) {
+                defPriority = MIN_PRIORITY_VALUE;
+            }
+
+            prioritiesMapping.put(priority.getKey(), defPriority);
+        }
     }
 
     /**

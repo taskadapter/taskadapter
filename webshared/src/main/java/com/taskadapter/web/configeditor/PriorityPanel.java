@@ -125,12 +125,6 @@ public class PriorityPanel extends VerticalLayout implements Validatable {
         return new Priorities(priorities);
     }
 
-    /*
-           private void addPriorityOnTable(String id, String name) {
-               TableItem tableItem = new TableItem(prioritiesTable, SWT.NONE);
-               tableItem.setText(new String[] { id, name });
-           }
-    */
     private void reloadPriorityList() throws Exception {
         LookupOperation loadPrioritiesOperation = new LoadPrioritiesOperation(configEditor, descriptor.getPluginFactory());
         @SuppressWarnings("unchecked")
@@ -138,9 +132,8 @@ public class PriorityPanel extends VerticalLayout implements Validatable {
                 .run();
 
         Priorities defaultPriorities = descriptor.createDefaultConfig().getPriorities();
-        setPriorities(defaultPriorities);
 
-        System.out.println("reloadPriorityList: not implemented");
+        setPriorities(new Priorities(defaultPriorities, list));
     }
 
     public void setPriorities(Priorities items) {
