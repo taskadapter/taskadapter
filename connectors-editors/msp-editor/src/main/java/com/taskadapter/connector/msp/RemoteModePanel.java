@@ -1,6 +1,9 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.web.FileManager;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Upload.FailedEvent;
@@ -8,9 +11,10 @@ import com.vaadin.ui.Upload.FinishedEvent;
 import com.vaadin.ui.Upload.StartedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * @author Alexey Skorokhodov
@@ -25,6 +29,8 @@ public class RemoteModePanel extends VerticalLayout {
     private Upload upload = new Upload("", receiver);
     private HorizontalLayout progressLayout = new HorizontalLayout();
     private UploadListener uploadListener;
+    private Button downloadButton;
+    private Label lastModifiedLabel;
 
     public RemoteModePanel(UploadListener uploadListener) {
         this.uploadListener = uploadListener;
@@ -110,7 +116,65 @@ public class RemoteModePanel extends VerticalLayout {
             }
         });
 
+        createUploadOrSelectSection();
+        createDownloadSection();
+    }
 
+    private void createUploadOrSelectSection() {
+        ComboBox l = new ComboBox("Please select your country", getContainer());
+        // Sets the combobox to show a certain property as the item caption
+        l.setItemCaptionPropertyId("name");
+        l.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
+        l.setFilteringMode(AbstractSelect.Filtering.FILTERINGMODE_STARTSWITH);
+        l.setImmediate(true);
+        l.addListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                Property selected = getContainer().getContainerProperty(event.getProperty().toString(), "name");
+                getWindow().showNotification("Selected: " + selected);
+            }
+        });
+    }
+
+    public IndexedContainer getContainer() {
+        IndexedContainer container = new IndexedContainer();
+        fillContainer(container);
+        return container;
+    }
+
+    private List<String> getUserFiles() {
+        return Arrays.asList("file1", "file1");
+    }
+
+    private  void fillContainer(IndexedContainer container) {
+        container.addContainerProperty("id", String.class, null);
+        container.addContainerProperty("name", String.class, null);
+        List<String> files = getUserFiles();
+        for (String file : files) {
+            String name = file;
+            String id = file;
+            Item item = container.addItem(id);
+            item.getItemProperty("name").setValue(name);
+            item.getItemProperty("id").setValue(id);
+        }
+        container.sort(new Object[]{"name"},
+                new boolean[]{true});
+    }
+
+    void setAvailableForDownload(File file) {
+        downloadButton.setEnabled(true);
+        lastModifiedLabel.setValue(new Date(file.lastModified()));
+    }
+
+    private void createDownloadSection() {
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        addComponent(horizontalLayout);
+
+        downloadButton = new Button("Download file...");
+        horizontalLayout.addComponent(downloadButton);
+        downloadButton.setEnabled(false);
+        lastModifiedLabel = new Label("Nothing to download yet");
+        horizontalLayout.addComponent(lastModifiedLabel);
     }
 
     private void saveFile(String fileName, byte[] bytes) {
