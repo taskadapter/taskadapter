@@ -1,14 +1,10 @@
 package com.taskadapter.webui.action;
 
 import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.FileBasedConnector;
 import com.taskadapter.connector.definition.Mapping;
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.web.configeditor.FieldsMappingPanel;
-import com.taskadapter.webui.service.Services;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;

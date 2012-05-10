@@ -1,14 +1,4 @@
-package com.taskadapter.webui.service;
-
-import com.taskadapter.util.MyIOUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-
-import java.io.IOException;
-import java.util.Properties;
+package com.taskadapter.web.service;
 
 public class UpdateManager {
 

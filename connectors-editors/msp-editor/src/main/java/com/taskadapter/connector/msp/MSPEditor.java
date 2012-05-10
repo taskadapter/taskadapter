@@ -2,10 +2,10 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.web.FileManager;
-import com.taskadapter.web.SettingsManager;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.file.RemoteModePanel;
+import com.taskadapter.web.service.Services;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.GridLayout;
@@ -30,11 +30,9 @@ public class MSPEditor extends ConfigEditor {
     private TextField outputFileNameField;
     private TextField durationText;
     private TextField workText;
-    private SettingsManager settingsManager;
 
-    public MSPEditor(ConnectorConfig config, SettingsManager settingsManager) {
-        super(config);
-        this.settingsManager = settingsManager;
+    public MSPEditor(ConnectorConfig config, Services services) {
+        super(config, services);
         buildUI();
         addFieldsMappingPanel(MSPDescriptor.instance.getAvailableFieldsProvider());
         setData(config);
@@ -80,7 +78,7 @@ public class MSPEditor extends ConfigEditor {
     }
 
     private void createFilePanel() {
-        addComponent(settingsManager.isLocal() ? createLocalModeFilePanel() : createRemoteModeFilePanel());
+        addComponent(services.getSettingsManager().isLocal() ? createLocalModeFilePanel() : createRemoteModeFilePanel());
     }
 
     private TextField createFileName(String label, String tooltip) {
@@ -127,12 +125,13 @@ public class MSPEditor extends ConfigEditor {
 
     private AbstractComponent createRemoteModeFilePanel() {
         // TODO fix or delete
-        return new RemoteModePanel(/*new UploadListener() {
+        return new RemoteModePanel(services.getAuthenticator());
+        /*new UploadListener() {
             @Override
             public void fileUploaded(String file) {
                 inputFileNameField.setValue(new FileManager().getFullFileNameOnServer(file));
             }
-        }*/);
+        }*/
     }
 
     private void setMSPDataToForm() {
@@ -154,7 +153,7 @@ public class MSPEditor extends ConfigEditor {
 
     private String getFileName(TextField fileNameField) {
         String enteredFileName = (String) fileNameField.getValue();
-        if (settingsManager.isLocal()) {
+        if (services.getSettingsManager().isLocal()) {
             return enteredFileName;
         } else {
             return new FileManager().getFullFileNameOnServer(enteredFileName);

@@ -2,9 +2,8 @@ package com.taskadapter.webui;
 
 import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
-import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
-import com.taskadapter.webui.service.Services;
+import com.taskadapter.web.service.Services;
 import com.vaadin.ui.*;
 
 public class ConfigButtonsPanel extends HorizontalLayout {

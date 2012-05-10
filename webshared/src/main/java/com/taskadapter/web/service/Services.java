@@ -1,4 +1,4 @@
-package com.taskadapter.webui.service;
+package com.taskadapter.web.service;
 
 import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
@@ -14,6 +14,8 @@ public class Services {
 
     public Services() {
         configStorage = new ConfigStorage(pluginManager);
+        // TODO remove before the release
+        authenticator.tryLogin("admin", "");
     }
 
     public UpdateManager getUpdateManager() {
@@ -39,4 +41,5 @@ public class Services {
     public SettingsManager getSettingsManager() {
         return settingsManager;
     }
+
 }

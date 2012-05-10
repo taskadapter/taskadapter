@@ -1,4 +1,4 @@
-package com.taskadapter.webui.service;
+package com.taskadapter.web.service;
 
 public class Authenticator {
     private boolean loggedIn;
@@ -7,7 +7,7 @@ public class Authenticator {
     public void tryLogin(String userName, String password) {
         // TODO implement some simple authentication
         this.loggedIn = true;
-        this.userName = "admin";
+        this.userName = userName;
 //        if (userName.equals("admin") && password.equals("admin")) {
 //            this.loggedIn = true;
 //            this.userName = userName;

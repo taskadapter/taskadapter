@@ -1,7 +1,6 @@
-package com.taskadapter.webui.service;
+package com.taskadapter.web.service;
 
 import com.taskadapter.LegacyConnectorsSupport;
-import com.taskadapter.PluginManager;
 import com.taskadapter.PluginsFileParser;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.web.PluginEditorFactory;

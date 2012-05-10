@@ -1,6 +1,7 @@
 package com.taskadapter.web.configeditor.file;
 
 import com.taskadapter.web.FileManager;
+import com.taskadapter.web.service.Authenticator;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
@@ -30,11 +31,14 @@ public class RemoteModePanel extends VerticalLayout {
     private MyReceiver receiver = new MyReceiver();
     private Upload upload = new Upload("", receiver);
     private HorizontalLayout progressLayout = new HorizontalLayout();
+    // TODO use or delete
     private UploadListener uploadListener;
     private Button downloadButton;
     private Label lastModifiedLabel;
+    private Authenticator authenticator;
 
-    public RemoteModePanel() {
+    public RemoteModePanel(Authenticator authenticator) {
+        this.authenticator = authenticator;
         buildUI();
     }
 
@@ -145,17 +149,19 @@ public class RemoteModePanel extends VerticalLayout {
         return container;
     }
 
-    private List<String> getUserFiles() {
-        return Arrays.asList("file1", "file1");
+    private List<File> getUserFiles() {
+        String currentUser = authenticator.getUserName();
+        FileManager fileManager = new FileManager();
+        return fileManager.getUserFiles(currentUser);
     }
 
-    private  void fillContainer(IndexedContainer container) {
+    private void fillContainer(IndexedContainer container) {
         container.addContainerProperty("id", String.class, null);
         container.addContainerProperty("name", String.class, null);
-        List<String> files = getUserFiles();
-        for (String file : files) {
-            String name = file;
-            String id = file;
+        List<File> files = getUserFiles();
+        for (File file : files) {
+            String name = file.getName();
+            String id = file.getName();
             Item item = container.addItem(id);
             item.getItemProperty("name").setValue(name);
             item.getItemProperty("id").setValue(id);

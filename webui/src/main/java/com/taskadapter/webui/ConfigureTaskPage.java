@@ -136,7 +136,7 @@ public class ConfigureTaskPage extends Page {
     private ConfigEditor getPanel(ConnectorDataHolder dataHolder) {
         ConnectorConfig configData = dataHolder.getData();
         PluginEditorFactory editorFactory = services.getEditorManager().getEditorFactory(dataHolder.getType());
-        return editorFactory.createEditor(configData, services.getSettingsManager());
+        return editorFactory.createEditor(configData, services);
     }
 
     @Override

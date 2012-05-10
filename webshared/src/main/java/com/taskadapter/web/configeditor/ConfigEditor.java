@@ -2,13 +2,12 @@ package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.*;
-import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.web.WindowProvider;
+import com.taskadapter.web.service.Services;
 import com.vaadin.ui.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Alexey Skorokhodov
@@ -24,12 +23,18 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
     private PriorityPanel priorityPanel;
     private FieldsMappingPanel fieldsMappingPanel;
     protected ConnectorConfig config;
+    protected Services services;
     private TextField labelText;
     private static final String LABEL_TEXT = "Label";
     private static final String LABEL_TOOLTIP = "Text to show for this connector on 'Export' button. Enter any text.";
 
     protected ConfigEditor(ConnectorConfig config) {
+        this(config, null);
+    }
+
+    protected ConfigEditor(ConnectorConfig config, Services services) {
         this.config = config;
+        this.services = services;
         addStyleName("bordered-panel");
         setImmediate(false);
         setMargin(true);
