@@ -96,4 +96,12 @@ public class Priorities {
     public Collection<String> getAllNames() {
         return prioritiesMapping.keySet();
     }
+
+    public void addPriority(String priorityText, Integer priorityValue) {
+        if (prioritiesMapping == null) {
+            prioritiesMapping = new HashMap<String, Integer>();
+        }
+
+        prioritiesMapping.put(priorityText, priorityValue);
+    }
 }

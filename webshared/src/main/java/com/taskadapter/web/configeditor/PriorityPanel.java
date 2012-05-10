@@ -4,6 +4,7 @@ import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.Descriptor.Feature;
 import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanContainer;
@@ -132,9 +133,12 @@ public class PriorityPanel extends VerticalLayout implements Validatable {
 
         Priorities defaultPriorities = descriptor.createDefaultConfig().getPriorities();
 
-        Priorities priorities = new Priorities(defaultPriorities);
-        priorities.setValues(list);
-        setPriorities(priorities);
+        Priorities newPriorities = new Priorities();
+        for (NamedKeyedObject priority : list) {
+            newPriorities.addPriority(priority.getKey(), defaultPriorities.getPriorityByText(priority.getKey()));
+        }
+
+        setPriorities(newPriorities);
     }
 
     public void setPriorities(Priorities items) {
