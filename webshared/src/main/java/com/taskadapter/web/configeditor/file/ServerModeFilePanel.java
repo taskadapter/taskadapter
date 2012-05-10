@@ -15,6 +15,7 @@ import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.FinishedEvent;
 import com.vaadin.ui.Upload.StartedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
+import com.vaadin.ui.themes.Runo;
 
 import java.io.*;
 import java.util.Arrays;
@@ -30,11 +31,11 @@ public class ServerModeFilePanel extends FilePanel {
     public static final int MAX_FILE_SIZE_BYTES = 1000000;
     public static final String NOTHING_TO_DOWNLOAD = "Nothing to download";
 
-    private Label status = new Label("Please select a file to upload");
+    private Label status = new Label(/*"Please select a file to upload"*/);
     private ProgressIndicator pi = new ProgressIndicator();
 
     private MyReceiver receiver = new MyReceiver();
-    private Upload upload = new Upload("", receiver);
+    private Upload upload = new Upload();
     private HorizontalLayout progressLayout = new HorizontalLayout();
     // TODO use or delete
     private UploadListener uploadListener;
@@ -56,16 +57,24 @@ public class ServerModeFilePanel extends FilePanel {
 
     private void createUploadOrSelectSection() {
         HorizontalLayout layout = new HorizontalLayout();
-        createSelectFilePanel(layout);
-        createUploadPanel(layout);
+        //layout.setHeight("26px");
+        layout.setSpacing(true);
+
+        addSelectFileComboBox(layout);
+        addUploadControls(layout);
+
+        addComponent(layout);
     }
 
-    private void createSelectFilePanel(HorizontalLayout layout) {
-        addComponent(layout);
-
-        ComboBox comboBox = new ComboBox("Select an existing file", getContainer());
+    private ComboBox addSelectFileComboBox(HorizontalLayout layout) {
+        ComboBox comboBox = new ComboBox();//"Select an existing file", getContainer());
         // Sets the combobox to show a certain property as the item caption
         comboBox.setItemCaptionPropertyId("name");
+
+        comboBox.setNewItemsAllowed(false);
+        comboBox.setContainerDataSource(getContainer());
+        comboBox.setInputPrompt("Select an existing file");
+
         comboBox.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
         comboBox.setFilteringMode(AbstractSelect.Filtering.FILTERINGMODE_STARTSWITH);
         comboBox.setImmediate(true);
@@ -81,24 +90,29 @@ public class ServerModeFilePanel extends FilePanel {
             }
         });
         layout.addComponent(comboBox);
+       // layout.setComponentAlignment(comboBox, Alignment.MIDDLE_LEFT);
+        return comboBox;
     }
 
-    private void createUploadPanel(HorizontalLayout layout) {
+    private void addUploadControls(HorizontalLayout layout) {
         // Slow down the upload
         receiver.setSlow(true);
 
-        layout.addComponent(status);
         layout.addComponent(upload);
+       // layout.setComponentAlignment(upload, Alignment.BOTTOM_LEFT);
+        layout.addComponent(status);
         layout.addComponent(progressLayout);
 
         // Make uploading start immediately when file is selected
+        upload.setReceiver(receiver);
         upload.setImmediate(true);
-        upload.setButtonCaption("Upload");
+        upload.setButtonCaption("Upload...");
+        upload.setStyleName(Runo.BUTTON_BIG);
 
         progressLayout.setSpacing(true);
         progressLayout.setVisible(false);
         progressLayout.addComponent(pi);
-        progressLayout.setComponentAlignment(pi, Alignment.MIDDLE_LEFT);
+        progressLayout.setComponentAlignment(pi, Alignment.BOTTOM_LEFT);
 
         final Button cancelProcessing = new Button("Cancel");
         cancelProcessing.addListener(new Button.ClickListener() {
@@ -106,7 +120,7 @@ public class ServerModeFilePanel extends FilePanel {
                 upload.interruptUpload();
             }
         });
-        cancelProcessing.setStyleName("small");
+        //cancelProcessing.setStyleName("small");
         progressLayout.addComponent(cancelProcessing);
 
         /**
@@ -117,12 +131,11 @@ public class ServerModeFilePanel extends FilePanel {
         upload.addListener(new Upload.StartedListener() {
             public void uploadStarted(StartedEvent event) {
                 // This method gets called immediately after upload is started
-                upload.setVisible(false);
+                upload.setEnabled(false);
                 progressLayout.setVisible(true);
                 pi.setValue(0f);
                 pi.setPollingInterval(500);
-                status.setValue("Uploading file \"" + event.getFilename()
-                        + "\"");
+                setStatusMessage("Uploading...", StatusMessageType.Normal);
             }
         });
 
@@ -137,8 +150,8 @@ public class ServerModeFilePanel extends FilePanel {
         upload.addListener(new Upload.SucceededListener() {
             public void uploadSucceeded(SucceededEvent event) {
                 // This method gets called when the upload finished successfully
-                status.setValue("Uploading file \"" + event.getFilename()
-                        + "\" succeeded");
+                setStatusMessage("Success", StatusMessageType.Success);
+
                 MyReceiver receiver1 = (MyReceiver) event.getUpload().getReceiver();
                 saveFile(receiver.getFileName(), receiver1.getBytes());
                 if (uploadListener != null) {
@@ -150,7 +163,7 @@ public class ServerModeFilePanel extends FilePanel {
         upload.addListener(new Upload.FailedListener() {
             public void uploadFailed(FailedEvent event) {
                 // This method gets called when the upload failed
-                status.setValue("Uploading interrupted");
+                setStatusMessage("Interrupted", StatusMessageType.Error);
             }
         });
 
@@ -159,11 +172,15 @@ public class ServerModeFilePanel extends FilePanel {
                 // This method gets called always when the upload finished,
                 // either succeeding or failing
                 progressLayout.setVisible(false);
-                upload.setVisible(true);
-                upload.setCaption("Select another file");
+                upload.setEnabled(true);
+                //setStatusMessage("Select or upload a file", StatusMessageType.Normal);
             }
         });
 
+    }
+
+    private void setStatusMessage(String message, StatusMessageType normal) {
+        status.setValue(message);
     }
 
     public IndexedContainer getContainer() {
