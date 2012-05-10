@@ -1,12 +1,17 @@
 package com.taskadapter.connector;
 
+import com.taskadapter.model.NamedKeyedObject;
+import com.taskadapter.model.NamedKeyedObjectImpl;
+
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Priorities {
     static final Integer DEFAULT_PRIORITY_VALUE = 500;
     static final int MAX_PRIORITY_VALUE = 1000;
+    static final int MIN_PRIORITY_VALUE = 0;
 
     /**
      * priority text -> priority number mappings.
@@ -26,6 +31,7 @@ public class Priorities {
 
     /**
      * Performs DEEP cloning.
+     *
      * @param toClone the object to clone
      */
     // TODO Add unit test
@@ -34,6 +40,13 @@ public class Priorities {
         Collection<String> allNames = toClone.getAllNames();
         for (String priorityName : allNames) {
             prioritiesMapping.put(priorityName, toClone.getPriorityByText(priorityName));
+        }
+    }
+
+    public void setValues(List<NamedKeyedObjectImpl> priorityList) {
+        prioritiesMapping = new HashMap<String, Integer>();
+        for (NamedKeyedObject priority : priorityList) {
+            prioritiesMapping.put(priority.getKey(), Integer.valueOf(priority.getName()));
         }
     }
 
