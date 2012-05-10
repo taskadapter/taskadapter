@@ -1,4 +1,4 @@
-package com.taskadapter.connector.msp;
+package com.taskadapter.web.configeditor.file;
 
 /**
  * @author Alexey Skorokhodov

@@ -1,4 +1,4 @@
-package com.taskadapter.connector.msp;
+package com.taskadapter.web.configeditor.file;
 
 import com.taskadapter.web.FileManager;
 import com.vaadin.data.Item;
@@ -14,7 +14,9 @@ import com.vaadin.ui.Upload.SucceededEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Alexey Skorokhodov
@@ -32,8 +34,7 @@ public class RemoteModePanel extends VerticalLayout {
     private Button downloadButton;
     private Label lastModifiedLabel;
 
-    public RemoteModePanel(UploadListener uploadListener) {
-        this.uploadListener = uploadListener;
+    public RemoteModePanel() {
         buildUI();
     }
 
@@ -95,7 +96,9 @@ public class RemoteModePanel extends VerticalLayout {
                         + "\" succeeded");
                 MyReceiver receiver1 = (MyReceiver) event.getUpload().getReceiver();
                 saveFile(receiver.getFileName(), receiver1.getBytes());
-                uploadListener.fileUploaded(receiver.getFileName());
+                if (uploadListener != null) {
+                    uploadListener.fileUploaded(receiver.getFileName());
+                }
             }
         });
 
