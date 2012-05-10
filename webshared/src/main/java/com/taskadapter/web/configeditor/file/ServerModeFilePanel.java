@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * @author Alexey Skorokhodov
  */
-public class RemoteModePanel extends VerticalLayout {
+public class ServerModeFilePanel extends VerticalLayout {
     public static final int MAX_FILE_SIZE = 1000000;  // 1 mb max
 
     private Label status = new Label("Please select a file to upload");
@@ -37,18 +37,48 @@ public class RemoteModePanel extends VerticalLayout {
     private Label lastModifiedLabel;
     private Authenticator authenticator;
 
-    public RemoteModePanel(Authenticator authenticator) {
+    public ServerModeFilePanel(Authenticator authenticator) {
         this.authenticator = authenticator;
         buildUI();
     }
 
     private void buildUI() {
+        createUploadOrSelectSection();
+        createDownloadSection();
+    }
+
+    private void createUploadOrSelectSection() {
+        HorizontalLayout layout = new HorizontalLayout();
+        createSelectFilePanel(layout);
+        createUploadPanel(layout);
+    }
+
+    private void createSelectFilePanel(HorizontalLayout layout) {
+        addComponent(layout);
+
+        ComboBox comboBox = new ComboBox("Select an existing file", getContainer());
+        // Sets the combobox to show a certain property as the item caption
+        comboBox.setItemCaptionPropertyId("name");
+        comboBox.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
+        comboBox.setFilteringMode(AbstractSelect.Filtering.FILTERINGMODE_STARTSWITH);
+        comboBox.setImmediate(true);
+        comboBox.addListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                Property selected = getContainer().getContainerProperty(event.getProperty().toString(), "name");
+                getWindow().showNotification("Selected: " + selected);
+            }
+        });
+        layout.addComponent(comboBox);
+    }
+
+    private void createUploadPanel(HorizontalLayout layout) {
         // Slow down the upload
         receiver.setSlow(true);
 
-        addComponent(status);
-        addComponent(upload);
-        addComponent(progressLayout);
+        layout.addComponent(status);
+        layout.addComponent(upload);
+        layout.addComponent(progressLayout);
 
         // Make uploading start immediately when file is selected
         upload.setImmediate(true);
@@ -123,24 +153,6 @@ public class RemoteModePanel extends VerticalLayout {
             }
         });
 
-        createUploadOrSelectSection();
-        createDownloadSection();
-    }
-
-    private void createUploadOrSelectSection() {
-        ComboBox l = new ComboBox("Please select your country", getContainer());
-        // Sets the combobox to show a certain property as the item caption
-        l.setItemCaptionPropertyId("name");
-        l.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
-        l.setFilteringMode(AbstractSelect.Filtering.FILTERINGMODE_STARTSWITH);
-        l.setImmediate(true);
-        l.addListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                Property selected = getContainer().getContainerProperty(event.getProperty().toString(), "name");
-                getWindow().showNotification("Selected: " + selected);
-            }
-        });
     }
 
     public IndexedContainer getContainer() {

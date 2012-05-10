@@ -4,7 +4,7 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.web.FileManager;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.configeditor.EditorUtil;
-import com.taskadapter.web.configeditor.file.RemoteModePanel;
+import com.taskadapter.web.configeditor.file.ServerModeFilePanel;
 import com.taskadapter.web.service.Services;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.AbstractComponent;
@@ -125,7 +125,7 @@ public class MSPEditor extends ConfigEditor {
 
     private AbstractComponent createRemoteModeFilePanel() {
         // TODO fix or delete
-        return new RemoteModePanel(services.getAuthenticator());
+        return new ServerModeFilePanel(services.getAuthenticator());
         /*new UploadListener() {
             @Override
             public void fileUploaded(String file) {
