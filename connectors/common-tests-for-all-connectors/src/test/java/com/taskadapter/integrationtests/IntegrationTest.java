@@ -6,6 +6,7 @@ import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineTaskSaver;
 import com.taskadapter.core.SyncRunner;
+import com.taskadapter.license.LicenseManager;
 import com.taskadapter.model.GTask;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -52,7 +53,7 @@ public class IntegrationTest extends AbstractSyncRunnerTest {
         MSPConfig mspConfig = getConfig("non-linear-uuid.xml");
         Connector<?> msProjectConnector = new MSPConnector(mspConfig);
 
-        SyncRunner runner = new SyncRunner();
+        SyncRunner runner = new SyncRunner(new LicenseManager()); //LicenseManager with license of some type can be set
         runner.setConnectorFrom(msProjectConnector);
         runner.load(null);
 
@@ -78,7 +79,7 @@ public class IntegrationTest extends AbstractSyncRunnerTest {
         MSPConfig mspConfig = getConfig("ProjectWithOneSideDisconnectedRelationships.xml");
         Connector<?> projectConnector = new MSPConnector(mspConfig);
 
-        SyncRunner runner = new SyncRunner();
+        SyncRunner runner = new SyncRunner(new LicenseManager()); //LicenseManager with license of some type can be set
         runner.setConnectorFrom(projectConnector);
         runner.setTaskSaver(saver);
         // load from MSP

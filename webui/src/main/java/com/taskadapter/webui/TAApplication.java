@@ -25,6 +25,15 @@ public class TAApplication extends Application {
 
     @Override
     public void init() {
+//        if(services.getLicenseManager().isTaskAdapterLicenseOk()) {
+//            String host = getURL().getHost();
+//
+//            if(License.Type.SINGLE.equals(services.getLicenseManager().getLicense().getType())
+//                    && !("localhost".equals(host) || "127.0.0.1".equals(host))) {
+//                return;  // TODO: some warning page should be implemented
+//            }
+//        }
+
         setTheme("mytheme");
 
         VerticalLayout layout = new VerticalLayout();

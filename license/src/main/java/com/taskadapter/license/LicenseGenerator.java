@@ -9,7 +9,7 @@ import java.util.Calendar;
 import static com.taskadapter.license.LicenseManager.*;
 
 public class LicenseGenerator {
-	private static final String FILE_NAME_TA = "taskadapter.license";
+	private static final String FILE_NAME_TA_WEB = "taskadapterweb.license";
 
 	public static void main(String[] args) {
 		if (args.length < 3) {
@@ -42,11 +42,11 @@ public class LicenseGenerator {
 		System.out.println("Customer: " + customerName);
 		System.out.println("Email:    " + email);
 
-        String licenseText = generateLicenseText(Product.TASK_ADAPTER, licenseTypeStr, customerName, email);
+        String licenseText = generateLicenseText(Product.TASK_ADAPTER_WEB, licenseTypeStr, customerName, email);
 
 		try {
-			MyIOUtils.writeToFile(FILE_NAME_TA, licenseText);
-			System.out.println("\nSaved to " + FILE_NAME_TA);
+			MyIOUtils.writeToFile(FILE_NAME_TA_WEB, licenseText);
+			System.out.println("\nSaved to " + FILE_NAME_TA_WEB);
 
 		} catch (Exception e) {
 			e.printStackTrace();

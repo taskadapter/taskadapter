@@ -1,7 +1,7 @@
 package com.taskadapter.webui.license;
 
 import com.taskadapter.license.License;
-import com.taskadapter.license.LicenseManager;
+import com.taskadapter.web.service.Services;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -9,8 +9,10 @@ import com.vaadin.ui.VerticalLayout;
 public class LicenseInfoPanel extends VerticalLayout {
     private Label registeredTo;
     private Label licenseCreatedOn;
+    private Services services;
 
-    public LicenseInfoPanel() {
+    public LicenseInfoPanel(Services services) {
+        this.services = services;
         buildUI();
     }
 
@@ -37,7 +39,7 @@ public class LicenseInfoPanel extends VerticalLayout {
     }
 
     private void clearLicenseInfo() {
-        LicenseManager.removeTaskAdapterLicenseFromThisComputer();
+        services.getLicenseManager().removeTaskAdapterLicenseFromThisComputer();
         getWindow().showNotification("Removed the license info");
     }
 }

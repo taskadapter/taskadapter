@@ -57,7 +57,7 @@ public class Navigator {
     }
 
     private void buildUI() {
-        Header header = new Header(this);
+        Header header = new Header(this, services);
         header.setHeight(50, Sizeable.UNITS_PIXELS);
         header.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         layout.addComponent(header);

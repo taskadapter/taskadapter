@@ -1,8 +1,7 @@
 package com.taskadapter.webui.license;
 
-import com.taskadapter.license.License;
 import com.taskadapter.license.LicenseManager;
-import com.taskadapter.license.LicenseValidationException;
+import com.taskadapter.web.service.Services;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextArea;
@@ -10,8 +9,10 @@ import com.vaadin.ui.VerticalLayout;
 
 public class EnterLicensePanel extends VerticalLayout {
     private TextArea licenseArea;
+    private Services services;
 
-    public EnterLicensePanel() {
+    public EnterLicensePanel(Services services) {
+        this.services = services;
         buildUI();
     }
 
@@ -33,26 +34,20 @@ public class EnterLicensePanel extends VerticalLayout {
         addComponent(saveButton);
     }
 
-
     private boolean save() {
         String licenseText = (String) licenseArea.getValue();
-        licenseText = licenseText.trim();
 
-        License license;
-        boolean success = true;
+        LicenseManager licenseManager = services.getLicenseManager();
+        licenseManager.setNewLicense(licenseText.trim());
 
-        try {
-            license = LicenseManager.checkLicense(licenseText);
-            LicenseManager.installLicense(LicenseManager.Product.TASK_ADAPTER, licenseText);
+        if(licenseManager.isTaskAdapterLicenseOk()) {
+            licenseManager.installLicense();
+            getWindow().showNotification("Successfully registered to: " + licenseManager.getLicense().getCustomerName());
 
-            getWindow().showNotification("Successfully registered to: " + license.getCustomerName());
-
-        } catch (LicenseValidationException e) {
-            success = false;
+        } else {
             getWindow().showNotification("License validation error", "The license text is invalid");
         }
 
-        return success;
+        return licenseManager.isTaskAdapterLicenseOk();
     }
-
 }
