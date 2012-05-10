@@ -1,5 +1,6 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -28,8 +29,8 @@ public class ConfigsPage extends Page {
         table = new Table();
         table.addStyleName("configsTable");
         table.addContainerProperty("Name", Button.class, "");
-        table.addContainerProperty(SYSTEM_1_TITLE, String.class, "");
-        table.addContainerProperty(SYSTEM_2_TITLE, String.class, "");
+        table.addContainerProperty(SYSTEM_1_TITLE, Button.class, "");
+        table.addContainerProperty(SYSTEM_2_TITLE, Button.class, "");
         layout.addComponent(table);
     }
 
@@ -55,16 +56,43 @@ public class ConfigsPage extends Page {
     }
 
     private void addTaskToTable(final TAFile file, int i) {
+        // config title link-button
         Button button = new Button(file.getConfigLabel());
         button.setStyleName(BaseTheme.BUTTON_LINK);
+        button.addStyleName("configsTableButton");
         button.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 navigator.showTaskDetailsPage(file);
             }
         });
-        table.addItem(new Object[]{button, file.getConnectorDataHolder1().getData().getLabel(),
-                file.getConnectorDataHolder2().getData().getLabel()}, i);
+
+        // buttons of concrete system config page
+        ConnectorDataHolder dh1 = file.getConnectorDataHolder1();
+        ConnectorDataHolder dh2 = file.getConnectorDataHolder2();
+        Button b1 = addDataHolderButton(dh1.getData().getLabel(), new Exporter(navigator, services.getPluginManager(), dh1, dh2, file));
+        Button b2 = addDataHolderButton(dh2.getData().getLabel(), new Exporter(navigator, services.getPluginManager(), dh2, dh1, file));
+        
+        table.addItem(new Object[]{button, b1, b2}, i);
+    }
+
+    /**
+     * this button opens config page for given System
+     * @param label button text
+     * @param exporter Exporter instance
+     * @return button instance
+     */
+    private Button addDataHolderButton(String label, final Exporter exporter) {
+        Button button = new Button(label);
+        button.setStyleName(BaseTheme.BUTTON_LINK);
+        button.addStyleName("configsTableButton");
+        button.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                exporter.export();
+            }
+        });
+        return button;
     }
 
     @Override

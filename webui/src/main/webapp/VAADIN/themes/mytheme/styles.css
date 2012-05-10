@@ -45,12 +45,25 @@
     font-weight: bold;
 }
 
-.configsTable {
+.configsTableButton .v-button-caption {
     font-size: 14px;
+    margin: 20px 10px ;
+    text-decoration: none;
+}
+.configsTableButton .v-button-caption:hover {
+    font-size: 14px;
+    margin: 20px 10px ;
+    text-decoration: underline;
 }
 
 .configsTable .v-table-header {
     background-color: #B8DBFF;
+    font-weight: bold;
+    text-shadow: none;
+}
+
+.configsTable .v-table-cell-content {
+    height: 28px;
 }
 
 .v-table-cell-content-centered {
