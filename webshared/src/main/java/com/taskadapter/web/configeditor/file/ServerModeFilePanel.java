@@ -26,6 +26,7 @@ import java.util.List;
 public class ServerModeFilePanel extends FilePanel {
     // TODO show this limit on the webpage
     public static final int MAX_FILE_SIZE_BYTES = 1000000;
+    public static final String NOTHING_TO_DOWNLOAD = "Nothing to download";
 
     private Label status = new Label("Please select a file to upload");
     private ProgressIndicator pi = new ProgressIndicator();
@@ -70,7 +71,11 @@ public class ServerModeFilePanel extends FilePanel {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
                 Property selected = getContainer().getContainerProperty(event.getProperty().toString(), "name");
-                getWindow().showNotification("Selected: " + selected);
+                if (selected != null) {
+                    fileIsSelected(selected.toString());
+                } else {
+                    disableDownload();
+                }
             }
         });
         layout.addComponent(comboBox);
@@ -186,6 +191,18 @@ public class ServerModeFilePanel extends FilePanel {
                 new boolean[]{true});
     }
 
+    private void fileIsSelected(String fileName) {
+        String currentUser = authenticator.getUserName();
+        FileManager fileManager = new FileManager();
+        File file = fileManager.getFileForUser(currentUser, fileName);
+        setAvailableForDownload(file);
+    }
+
+    private void disableDownload() {
+        downloadButton.setEnabled(false);
+        lastModifiedLabel.setValue(NOTHING_TO_DOWNLOAD);
+    }
+
     void setAvailableForDownload(File file) {
         downloadButton.setEnabled(true);
         lastModifiedLabel.setValue(new Date(file.lastModified()));
@@ -198,7 +215,7 @@ public class ServerModeFilePanel extends FilePanel {
         downloadButton = new Button("Download file...");
         horizontalLayout.addComponent(downloadButton);
         downloadButton.setEnabled(false);
-        lastModifiedLabel = new Label("Nothing to download yet");
+        lastModifiedLabel = new Label(NOTHING_TO_DOWNLOAD);
         horizontalLayout.addComponent(lastModifiedLabel);
     }
 
@@ -209,6 +226,7 @@ public class ServerModeFilePanel extends FilePanel {
             getWindow().showNotification("Error: " + e.toString());
         }
     }
+
     @Override
     public void refreshConfig(MSPConfig config) {
         System.out.println("TODO");

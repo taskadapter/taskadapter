@@ -28,15 +28,28 @@ public class FileManager {
         Files.write(bytes, file);
     }
 
-
+    // TODO use this in server mode
     public String getFullFileNameOnServer(String fileName) {
         File file = new File(getServerDirectoryForTAFiles(), fileName);
         return file.getAbsolutePath();
     }
 
     public List<File> getUserFiles(String userLoginName) {
-        File serverDirectoryForTAFiles = getServerDirectoryForTAFiles();
-        File userDirectory = new File(serverDirectoryForTAFiles, userLoginName);
+        File userDirectory = getUserFolder(userLoginName);
         return userDirectory.exists() ? Arrays.asList(userDirectory.listFiles()) : new ArrayList<File>();
+    }
+
+    private File getUserFolder(String userLoginName) {
+        File serverDirectoryForTAFiles = getServerDirectoryForTAFiles();
+        return new File(serverDirectoryForTAFiles, userLoginName);
+    }
+
+    public File getFileForUser(String userLoginName, String fileName) {
+        File userDirectory = getUserFolder(userLoginName);
+        File file = new File(userDirectory, fileName);
+        if (!file.exists()) {
+            throw new RuntimeException("File does not exist: " + fileName + " in " + userDirectory + "folder");
+        }
+        return file;
     }
 }
