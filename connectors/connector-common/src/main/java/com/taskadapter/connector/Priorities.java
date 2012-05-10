@@ -29,22 +29,9 @@ public class Priorities {
         this.prioritiesMapping = prioritiesMapping;
     }
 
-    public Priorities(Priorities defaultPriorities, List<NamedKeyedObjectImpl> priorityList) {
-        prioritiesMapping = new HashMap<String, Integer>();
-        Integer defPriority;
-        for (NamedKeyedObject priority : priorityList) {
-            defPriority = defaultPriorities.prioritiesMapping.get(priority.getKey());
-
-            if (defPriority == null) {
-                defPriority = MIN_PRIORITY_VALUE;
-            }
-
-            prioritiesMapping.put(priority.getKey(), defPriority);
-        }
-    }
-
     /**
      * Performs DEEP cloning.
+     *
      * @param toClone the object to clone
      */
     // TODO Add unit test
@@ -53,6 +40,13 @@ public class Priorities {
         Collection<String> allNames = toClone.getAllNames();
         for (String priorityName : allNames) {
             prioritiesMapping.put(priorityName, toClone.getPriorityByText(priorityName));
+        }
+    }
+
+    public void setValues(List<NamedKeyedObjectImpl> priorityList) {
+        prioritiesMapping = new HashMap<String, Integer>();
+        for (NamedKeyedObject priority : priorityList) {
+            prioritiesMapping.put(priority.getKey(), Integer.valueOf(priority.getName()));
         }
     }
 

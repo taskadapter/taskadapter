@@ -128,12 +128,13 @@ public class PriorityPanel extends VerticalLayout implements Validatable {
     private void reloadPriorityList() throws Exception {
         LookupOperation loadPrioritiesOperation = new LoadPrioritiesOperation(configEditor, descriptor.getPluginFactory());
         @SuppressWarnings("unchecked")
-        List<NamedKeyedObjectImpl> list = (List<NamedKeyedObjectImpl>) loadPrioritiesOperation
-                .run();
+        List<NamedKeyedObjectImpl> list = (List<NamedKeyedObjectImpl>) loadPrioritiesOperation.run();
 
         Priorities defaultPriorities = descriptor.createDefaultConfig().getPriorities();
 
-        setPriorities(new Priorities(defaultPriorities, list));
+        Priorities priorities = new Priorities(defaultPriorities);
+        priorities.setValues(list);
+        setPriorities(priorities);
     }
 
     public void setPriorities(Priorities items) {
