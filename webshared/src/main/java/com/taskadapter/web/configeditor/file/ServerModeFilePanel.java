@@ -3,9 +3,12 @@ package com.taskadapter.web.configeditor.file;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.web.FileManager;
 import com.taskadapter.web.service.Authenticator;
+import com.vaadin.Application;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.FileResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Upload.FailedEvent;
@@ -13,10 +16,9 @@ import com.vaadin.ui.Upload.FinishedEvent;
 import com.vaadin.ui.Upload.StartedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -200,12 +202,60 @@ public class ServerModeFilePanel extends FilePanel {
 
     private void disableDownload() {
         downloadButton.setEnabled(false);
+        deleteOldDownloadButtonListeners();
         lastModifiedLabel.setValue(NOTHING_TO_DOWNLOAD);
     }
 
-    void setAvailableForDownload(File file) {
+    void setAvailableForDownload(final File file) {
         downloadButton.setEnabled(true);
+        recreateDownloadButtonListeners(file);
         lastModifiedLabel.setValue(new Date(file.lastModified()));
+    }
+
+    private void recreateDownloadButtonListeners(final File file) {
+        deleteOldDownloadButtonListeners();
+        addDownloadButtonListener(file);
+    }
+
+    private void addDownloadButtonListener(final File file) {
+        downloadButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                FileDownloadResource resource = new FileDownloadResource(file, getApplication());
+                getWindow().open(resource);
+            }
+        });
+    }
+
+    private void deleteOldDownloadButtonListeners() {
+        Collection<Button.ClickListener> clickListeners = (Collection<Button.ClickListener>) downloadButton.getListeners(ClickEvent.class);
+        for (Button.ClickListener clickListener : clickListeners) {
+            downloadButton.removeListener(clickListener);
+        }
+    }
+
+    /**
+     * Some sample class I found online. Don't know if an easier solution is available.
+     */
+    class FileDownloadResource extends FileResource {
+
+        public FileDownloadResource(File sourceFile, Application application) {
+            super(sourceFile, application);
+        }
+
+        public DownloadStream getStream() {
+            try {
+                final DownloadStream ds = new DownloadStream(
+                        new FileInputStream(getSourceFile()), getMIMEType(),
+                        getFilename());
+                ds.setParameter("Content-Disposition", "attachment; filename=" + getFilename());
+                ds.setCacheTime(getCacheTime());
+                return ds;
+            } catch (final FileNotFoundException e) {
+                // No logging for non-existing files at this level.
+                return null;
+            }
+        }
     }
 
     private void createDownloadSection() {
