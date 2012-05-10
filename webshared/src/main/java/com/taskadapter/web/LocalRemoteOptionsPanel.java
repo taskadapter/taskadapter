@@ -43,7 +43,6 @@ public class LocalRemoteOptionsPanel extends VerticalLayout {
     }
 
     private void selectCurrentSetting() {
-        SettingsManager settingsManager = new SettingsManager();
         if (settingsManager.isLocal()) {
             group.select(LOCAL);
         } else {
