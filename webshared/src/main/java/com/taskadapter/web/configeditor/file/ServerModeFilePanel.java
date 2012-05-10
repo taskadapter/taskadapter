@@ -271,10 +271,14 @@ public class ServerModeFilePanel extends FilePanel {
 
     private void saveFile(String fileName, byte[] bytes) {
         try {
-            new FileManager().saveFileOnServer(fileName, bytes);
+            new FileManager().saveFileOnServer(getCurrentUserLoginName(), fileName, bytes);
         } catch (IOException e) {
             getWindow().showNotification("Error: " + e.toString());
         }
+    }
+
+    private String getCurrentUserLoginName() {
+        return authenticator.getUserName();
     }
 
     @Override

@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class FileManager {
 
-    public File getServerDirectoryForTAFiles() {
+    private File getServerDirectoryForTAFiles() {
         String rootFolderName = ConfigStorage.getRootFolderName();
         return new File(rootFolderName + "/files");
     }
@@ -22,16 +22,10 @@ public class FileManager {
     /**
      * saves the file into a special folder like home/user1/file
      */
-    public void saveFileOnServer(String fileName, byte[] bytes) throws IOException {
-        File file = new File(getServerDirectoryForTAFiles(), fileName);
+    public void saveFileOnServer(String userLoginName, String fileName, byte[] bytes) throws IOException {
+        File file = new File(getUserFolder(userLoginName), fileName);
         Files.createParentDirs(file);
         Files.write(bytes, file);
-    }
-
-    // TODO use this in server mode
-    public String getFullFileNameOnServer(String fileName) {
-        File file = new File(getServerDirectoryForTAFiles(), fileName);
-        return file.getAbsolutePath();
     }
 
     public List<File> getUserFiles(String userLoginName) {
