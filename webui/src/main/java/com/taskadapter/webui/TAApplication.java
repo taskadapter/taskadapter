@@ -40,6 +40,7 @@ public class TAApplication extends Application {
         layout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         mainWindow.setContent(layout);
         setMainWindow(mainWindow);
+        mainWindow.addComponent(services.getCookiesManager().getCookiesComponent());
 
         Navigator navigator = new Navigator(layout, services);
         navigator.show(Navigator.HOME);

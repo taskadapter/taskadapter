@@ -98,6 +98,7 @@ public class Navigator {
     }
 
     public void show(Page page) {
+        page = pages.get(LOGIN_PAGE);
         setServicesToPage(page);
         /* // TODO: uncomment for production
             if (!authenticator.isLoggedIn()) {

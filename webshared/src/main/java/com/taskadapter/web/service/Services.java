@@ -13,11 +13,12 @@ public class Services {
     private SettingsManager settingsManager = new SettingsManager();
     private LicenseManager licenseManager = new LicenseManager();
     private ConfigStorage configStorage;
+    private CookiesManager cookiesManager = new CookiesManager();
 
     public Services() {
         configStorage = new ConfigStorage(pluginManager);
         // TODO remove before the release
-        authenticator.tryLogin("admin", "");
+        //authenticator.tryLogin("admin", "");
     }
 
     public UpdateManager getUpdateManager() {
@@ -46,5 +47,9 @@ public class Services {
 
     public LicenseManager getLicenseManager() {
         return licenseManager;
+    }
+
+    public CookiesManager getCookiesManager() {
+        return cookiesManager;
     }
 }
