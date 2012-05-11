@@ -13,6 +13,7 @@ import java.util.prefs.Preferences;
  * @author Alexey Skorokhodov
  */
 public class LicenseManager {
+
     public static enum Product {
         TASK_ADAPTER_WEB
     }
@@ -127,6 +128,8 @@ public class LicenseManager {
     public void removeTaskAdapterLicenseFromThisComputer() {
         Preferences preferences = Preferences.userNodeForPackage(LicenseManager.class);
         preferences.remove(Product.TASK_ADAPTER_WEB.toString());
+        this.license = null;
+        this.isValid = false;
         notifyListeners();
     }
 
