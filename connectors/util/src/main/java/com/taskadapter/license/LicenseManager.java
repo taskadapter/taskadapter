@@ -73,6 +73,7 @@ public class LicenseManager {
     public void setNewLicense(String licenseText) {
         try {
             license = checkLicense(licenseText);
+            isValid = true;
         } catch (LicenseValidationException e) {
             isValid = false;
         }
