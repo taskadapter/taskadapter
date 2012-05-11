@@ -23,9 +23,9 @@ public class LicenseManager {
 
     private static final String USAGE_TEXT =
             "Usage:\n" +
-            "  ./licenses [license_file_to_install] [-clean]\n\n" +
-            "  [license_file_to_install]     Install license from this file (full or relative path)\n" +
-            "  -clean                        Clean all installed licenses from this computer.";
+                    "  ./licenses [license_file_to_install] [-clean]\n\n" +
+                    "  [license_file_to_install]     Install license from this file (full or relative path)\n" +
+                    "  -clean                        Clean all installed licenses from this computer.";
 
 
     private static final String DASHES = "\n------------------------------\n";
@@ -92,6 +92,10 @@ public class LicenseManager {
 
     public boolean isTaskAdapterLicenseOk() {
         return isValid;
+    }
+
+    public boolean isSingleUserLicenseInstalled() {
+        return isValid && license.getType().equals(License.Type.SINGLE);
     }
 
     public void addLicenseChangeListener(LicenseChangeListener listener) {

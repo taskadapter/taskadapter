@@ -1,12 +1,8 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.license.License;
-import com.taskadapter.license.LicenseChangeListener;
 import com.taskadapter.web.LocalRemoteOptionsPanel;
-import com.taskadapter.webui.Page;
 import com.taskadapter.webui.license.LicensePanel;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -16,7 +12,7 @@ public class ConfigureSystemPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
 
     private void createLocalRemoteSection() {
-        layout.addComponent(new LocalRemoteOptionsPanel(services.getSettingsManager()));
+        layout.addComponent(new LocalRemoteOptionsPanel(services));
     }
 
     private void createLicenseSection() {
