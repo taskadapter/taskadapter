@@ -17,6 +17,7 @@ public class CookiesManager {
         });
     }
 
+    //need to add this component to main layout
     public BrowserCookies getCookiesComponent() {
         return cookies;
     }

@@ -6,7 +6,7 @@ import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.SettingsManager;
 
 public class Services {
-    private Authenticator authenticator = new Authenticator();
+    private Authenticator authenticator;
     private UpdateManager updateManager = new UpdateManager();
     private EditorManager editorManager = new EditorManager();
     private PluginManager pluginManager = new PluginManager();
@@ -17,6 +17,7 @@ public class Services {
 
     public Services() {
         configStorage = new ConfigStorage(pluginManager);
+        authenticator = new Authenticator(cookiesManager);
         // TODO remove before the release
         //authenticator.tryLogin("admin", "");
     }

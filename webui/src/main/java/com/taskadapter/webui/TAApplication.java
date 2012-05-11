@@ -41,6 +41,7 @@ public class TAApplication extends Application {
         mainWindow.setContent(layout);
         setMainWindow(mainWindow);
         mainWindow.addComponent(services.getCookiesManager().getCookiesComponent());
+        services.getAuthenticator().init();
 
         Navigator navigator = new Navigator(layout, services);
         navigator.show(Navigator.HOME);
