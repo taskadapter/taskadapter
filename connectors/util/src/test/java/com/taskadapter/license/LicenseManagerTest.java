@@ -58,8 +58,10 @@ public class LicenseManagerTest {
             licenseManager.removeTaskAdapterLicenseFromThisComputer();
             assertFalse("License must be INVALID after removal", licenseManager.isTaskAdapterLicenseOk());
         } finally {
-            licenseManager.setNewLicense(oldLicense.getCompleteText());
-            licenseManager.installLicense();
+            if (oldLicense != null) {
+                licenseManager.setNewLicense(oldLicense.getCompleteText());
+                licenseManager.installLicense();
+            }
         }
 
     }
