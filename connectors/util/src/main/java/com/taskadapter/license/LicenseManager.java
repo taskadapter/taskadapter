@@ -13,7 +13,7 @@ import java.util.prefs.Preferences;
  * @author Alexey Skorokhodov
  */
 public class LicenseManager {
-    public enum Product {
+    public static enum Product {
         TASK_ADAPTER_WEB
     }
 
@@ -53,10 +53,10 @@ public class LicenseManager {
     private static final int LINE_DATE = 4;
     private static final int LINE_KEY = 6;
 
-    private static Collection<LicenseChangeListener> listeners = new HashSet<LicenseChangeListener>();
+    private Collection<LicenseChangeListener> listeners = new HashSet<LicenseChangeListener>();
 
     private License license;
-    private boolean isValid = true;
+    private boolean isValid = false;
 
     public LicenseManager() {
         try {
@@ -64,10 +64,6 @@ public class LicenseManager {
         } catch (LicenseValidationException e) {
             isValid = false;
         }
-    }
-
-    public LicenseManager(String licenseText) {
-        setNewLicense(licenseText);
     }
 
     public void setNewLicense(String licenseText) {
@@ -251,7 +247,8 @@ public class LicenseManager {
 
             System.out.println("Installing license: " + DASHES + licenseFileText + DASHES);
 
-            LicenseManager licenseManager = new LicenseManager(licenseFileText);
+            LicenseManager licenseManager = new LicenseManager();
+            licenseManager.setNewLicense(licenseFileText);
 
             if (licenseManager.isTaskAdapterLicenseOk()) {
                 licenseManager.installLicense();

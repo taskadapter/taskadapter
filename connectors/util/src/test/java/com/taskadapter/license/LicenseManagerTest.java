@@ -11,7 +11,9 @@ public class LicenseManagerTest {
     @Test
     public void testValidSingleLicense() {
         try {
-            LicenseManager licenseManager = new LicenseManager(MyIOUtils.getResourceAsString("taskadapterweb.license.single"));
+            String validSingleUserLicense = MyIOUtils.getResourceAsString("taskadapterweb.license.single");
+            LicenseManager licenseManager = new LicenseManager();
+            licenseManager.setNewLicense(validSingleUserLicense);
             Assert.assertTrue("License is expected to be valid", licenseManager.isTaskAdapterLicenseOk());
 
             License license = licenseManager.getLicense();
@@ -28,7 +30,9 @@ public class LicenseManagerTest {
     @Test
     public void testValidMultiLicense() {
         try {
-            LicenseManager licenseManager = new LicenseManager(MyIOUtils.getResourceAsString("taskadapterweb.license.multi"));
+            String validMultiUserLicense = MyIOUtils.getResourceAsString("taskadapterweb.license.multi");
+            LicenseManager licenseManager = new LicenseManager();
+            licenseManager.setNewLicense(validMultiUserLicense);
             Assert.assertTrue("License is expected to be valid", licenseManager.isTaskAdapterLicenseOk());
 
             License license = licenseManager.getLicense();
@@ -45,7 +49,9 @@ public class LicenseManagerTest {
     @Test
     public void testInvalidLicense() {
         try {
-            LicenseManager licenseManager = new LicenseManager(MyIOUtils.getResourceAsString("taskadapter.license.invalid"));
+            String invalidLicense = MyIOUtils.getResourceAsString("taskadapter.license.invalid");
+            LicenseManager licenseManager = new LicenseManager();
+            licenseManager.setNewLicense(invalidLicense);
             Assert.assertFalse("License is expected to be invalid", licenseManager.isTaskAdapterLicenseOk());
 
         } catch (IOException e) {
