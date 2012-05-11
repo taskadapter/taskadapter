@@ -78,7 +78,6 @@ public class JiraEditor extends ConfigEditor {
             GridLayout lookupButtonsLayout = new GridLayout(3, 4);
             lookupButtonsLayout.setMargin(true);
             lookupButtonsLayout.setSpacing(true);
-            lookupButtonsLayout.setStyleName("bordered-panel");
 
             jiraComponent = EditorUtil.addLabeledText(lookupButtonsLayout, "Project Component", "Component inside the Jira project");
             Button showComponentsButton = EditorUtil.createLookupButton(

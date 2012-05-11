@@ -156,7 +156,6 @@ public class CustomFieldsTable extends CustomComponent {
 
         mainLayout.setMargin(true);
         mainLayout.setSpacing(true);
-        mainLayout.setStyleName("bordered-panel");
 
         panel.setContent(mainLayout);
     }
