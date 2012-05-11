@@ -32,6 +32,43 @@ public class EnterLicensePanel extends VerticalLayout {
             }
         });
         addComponent(saveButton);
+
+        addDebugButtons();
+    }
+
+    // TODO delete before the release!
+    private void addDebugButtons() {
+        Button saveSingleUserLicenseButton = new Button("DEBUG: 1-user license");
+        saveSingleUserLicenseButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                licenseArea.setValue("Product: TASK_ADAPTER_WEB\n" +
+                        "License type: local / single user\n" +
+                        "Registered to: TA-testing\n" +
+                        "Email: nomail@nodomain.com\n" +
+                        "Date: 2012-05-10\n" +
+                        "-------------- Key --------------\n" +
+                        "SBVbU19OeX8AE01fWEFaTUFWHAIeXg5GS0BNFF9cXAM3Nh86TVdQSxdZW11ANTAeSBMJBglKDR8CXg==");
+                save();
+            }
+        });
+        addComponent(saveSingleUserLicenseButton);
+
+        Button saveServerLicenseButton = new Button("DEBUG: server license");
+        saveServerLicenseButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                licenseArea.setValue("Product: TASK_ADAPTER_WEB\n" +
+                        "License type: server / many users\n" +
+                        "Registered to: Alex\n" +
+                        "Email: my@mail\n" +
+                        "Date: 2012-05-10\n" +
+                        "-------------- Key --------------\n" +
+                        "Vx9KRFYcdnBTF0JWTQQPS1dBHRczFgJOQXRJG1FeAV5nbV5KFhUFFA==");
+                save();
+            }
+        });
+        addComponent(saveServerLicenseButton);
     }
 
     private boolean save() {
