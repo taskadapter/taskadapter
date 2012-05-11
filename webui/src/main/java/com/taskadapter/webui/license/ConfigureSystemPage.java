@@ -11,46 +11,15 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * @author Alexey Skorokhodov
  */
-public class ConfigureSystemPage extends Page implements LicenseChangeListener {
+public class ConfigureSystemPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
-
-    private EnterLicensePanel enterLicensePanel;
-    private LicenseInfoPanel licenseInfoPanel;
 
     private void createLocalRemoteSection() {
         layout.addComponent(new LocalRemoteOptionsPanel(services.getSettingsManager()));
-        layout.addComponent(new Label("(Changes are saved automatically)"));
     }
 
     private void createLicenseSection() {
-        services.getLicenseManager().addLicenseChangeListener(this);
-
-        enterLicensePanel = new EnterLicensePanel(services);
-        enterLicensePanel.setVisible(false);
-        layout.addComponent(enterLicensePanel);
-
-        licenseInfoPanel = new LicenseInfoPanel(services);
-        licenseInfoPanel.setVisible(false);
-        layout.addComponent(licenseInfoPanel);
-    }
-
-    private void updateFormBasingOnLicense() {
-        if(services.getLicenseManager().isTaskAdapterLicenseOk()) {
-            showRegisteredMode(services.getLicenseManager().getLicense());
-        } else {
-            showUnregisteredMode();
-        }
-    }
-
-    private void showRegisteredMode(License license) {
-        licenseInfoPanel.setLicense(license);
-        licenseInfoPanel.setVisible(true);
-        enterLicensePanel.setVisible(false);
-    }
-
-    private void showUnregisteredMode() {
-        enterLicensePanel.setVisible(true);
-        licenseInfoPanel.setVisible(false);
+        layout.addComponent(new LicensePanel(services));
     }
 
     @Override
@@ -65,12 +34,6 @@ public class ConfigureSystemPage extends Page implements LicenseChangeListener {
 
         createLocalRemoteSection();
         createLicenseSection();
-        updateFormBasingOnLicense();
         return layout;
-    }
-
-    @Override
-    public void licenseInfoUpdated() {
-        updateFormBasingOnLicense();
     }
 }

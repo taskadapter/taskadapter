@@ -5,9 +5,8 @@ import com.taskadapter.web.service.Services;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
 
-public class LicenseInfoPanel extends Panel {
+public class LicenseInfoPanel extends GridLayout {
     private Label registeredTo;
     private Label licenseType;
     private Label licenseCreatedOn;
@@ -15,35 +14,30 @@ public class LicenseInfoPanel extends Panel {
     private Services services;
 
     public LicenseInfoPanel(Services services) {
-        super("License Information");
         this.services = services;
         buildUI();
     }
 
     private void buildUI() {
-        addStyleName("panelexample");
+        setColumns(2);
+        setSpacing(true);
+        setWidth(350, UNITS_PIXELS);
 
-        GridLayout layout = new GridLayout();
-        layout.setColumns(2);
-        layout.setSpacing(true);
-        layout.setWidth(350, UNITS_PIXELS);
-
-        layout.addComponent(new Label("Registered to:"));
+        addComponent(new Label("Registered to:"));
         registeredTo = new Label();
-        layout.addComponent(registeredTo);
+        addComponent(registeredTo);
 
-        layout.addComponent(new Label("Type:"));
+        addComponent(new Label("Type:"));
         licenseType = new Label();
-        layout.addComponent(licenseType);
+        addComponent(licenseType);
 
-        layout.addComponent(new Label("License created on:"));
+        addComponent(new Label("License created on:"));
         licenseCreatedOn = new Label();
-        layout.addComponent(licenseCreatedOn);
+        addComponent(licenseCreatedOn);
 
-        layout.addComponent(new Label("License expires on: "));
+        addComponent(new Label("License expires on: "));
         licenseExpiresOn = new Label();
-        layout.addComponent(licenseExpiresOn);
-        addComponent(layout);
+        addComponent(licenseExpiresOn);
 
         Button clearLicenseButton = new Button("Remove license info");
         clearLicenseButton.addListener(new Button.ClickListener() {
