@@ -53,6 +53,7 @@ public class MSPEditor extends ConfigEditor {
         } else {
             filePanel = createRemoteModeFilePanel();
         }
+        filePanel.setWidth("450px");
         addComponent(filePanel);
     }
 

@@ -12,6 +12,7 @@ public class LocalModeFilePanel extends FilePanel {
     private static final String TOOLTIP_OUTPUT_FILE_NAME = "Microsoft Project file name to save the data to (only XML format is supported)";
 
     public LocalModeFilePanel() {
+        super("Microsoft project files");
         buildUI();
     }
 
@@ -19,10 +20,6 @@ public class LocalModeFilePanel extends FilePanel {
     private TextField outputFileNameField;
 
     private void buildUI() {
-        addStyleName("bordered-panel");
-        setMargin(true);
-        setSpacing(true);
-
         inputFileNameField = createFileName(LABEL_FILE_NAME, TOOLTIP_FILE_NAME);
         outputFileNameField = createFileName(LABEL_OUTPUT_FILE_NAME, TOOLTIP_OUTPUT_FILE_NAME);
         addComponent(inputFileNameField);
