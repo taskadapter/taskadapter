@@ -13,7 +13,7 @@ import java.util.*;
 /**
  * @author Alexey Skorokhodov
  */
-public class FieldsMappingPanel extends GridLayout implements Validatable {
+public class FieldsMappingPanel extends Panel implements Validatable {
     private static final String PANEL_TITLE = "Task fields";
     private static final String COLUMN1_HEADER = "Task Adapter field";
     private static final String COLUMN2_HEADER = "System field or constraint";
@@ -31,32 +31,36 @@ public class FieldsMappingPanel extends GridLayout implements Validatable {
      * @see ConfigEditor#addFieldsMappingPanel(com.taskadapter.connector.definition.AvailableFieldsProvider)
      */
     public FieldsMappingPanel(AvailableFieldsProvider availableFieldsProvider, ConnectorConfig config) {
+        super("Task fields mapping");
         this.availableFieldsProvider = availableFieldsProvider;
         this.config = config;
 
         setDescription("Select fields to export when SAVING data to this system");
         addFields();
 
-        addStyleName("fields-mapping-panel");
-        setMargin(true);
-        setSpacing(true);
+        addStyleName("panelexample");
         setWidth("463px");
     }
 
     private void addFields() {
         Collection<GTaskDescriptor.FIELD> supportedFields = availableFieldsProvider.getSupportedFields();
 
-        setRows(supportedFields.size() + 1);
-        setColumns(COLUMNS_NUMBER);
+        GridLayout layout = new GridLayout();
+        addComponent(layout);
+        layout.setMargin(true);
+        layout.setSpacing(true);
 
-        addComponent(new Label(COLUMN1_HEADER), 0, 0);
-        addComponent(new Label(COLUMN2_HEADER), 1, 0);
+        layout.setRows(supportedFields.size() + 1);
+        layout.setColumns(COLUMNS_NUMBER);
+
+        layout.addComponent(new Label(COLUMN1_HEADER), 0, 0);
+        layout.addComponent(new Label(COLUMN2_HEADER), 1, 0);
 
         int row = 0;
         for (GTaskDescriptor.FIELD field : supportedFields) {
             CheckBox checkbox = new CheckBox(GTaskDescriptor.getDisplayValue(field));
-            addComponent(checkbox, 0, ++row);
-            setComponentAlignment(checkbox, Alignment.MIDDLE_LEFT);
+            layout.addComponent(checkbox, 0, ++row);
+            layout.setComponentAlignment(checkbox, Alignment.MIDDLE_LEFT);
             fieldToButtonMap.put(field, checkbox);
 
             Mapping mapping = config.getFieldMapping(field);
@@ -76,13 +80,13 @@ public class FieldsMappingPanel extends GridLayout implements Validatable {
                 ComboBox combo = new ComboBox(null, container);
                 combo.setWidth("220px");
                 fieldToValueMap.put(field, combo);
-                addComponent(combo, 1, row);
-                setComponentAlignment(combo, Alignment.MIDDLE_LEFT);
+                layout.addComponent(combo, 1, row);
+                layout.setComponentAlignment(combo, Alignment.MIDDLE_LEFT);
                 combo.select(mapping.getCurrentValue());
             } else if (allowedValues.length == 1) {
                 Label label = new Label(allowedValues[0]);
-                addComponent(label, 1, row);
-                setComponentAlignment(label, Alignment.MIDDLE_LEFT);
+                layout.addComponent(label, 1, row);
+                layout.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
             } else {
                 markFieldNotSupportedByThisConnector(checkbox);
             }
@@ -131,5 +135,5 @@ public class FieldsMappingPanel extends GridLayout implements Validatable {
                 "\" is selected for export." +
                 "\nPlease set the *destination* field or constraint in " + PANEL_TITLE + " section.";
     }
-
 }
+
