@@ -1,9 +1,7 @@
 package com.taskadapter.license;
 
 import com.taskadapter.util.MyIOUtils;
-import org.apache.commons.codec.binary.Base64;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
@@ -40,7 +38,8 @@ public class LicenseManager {
 
     public LicenseManager() {
         try {
-            license = getTaskAdapterLicense();
+            license = getValidTaskAdapterLicense();
+            isValid = true;
         } catch (LicenseValidationException e) {
             isValid = false;
         }
@@ -75,7 +74,7 @@ public class LicenseManager {
      * @return NULL if the license is not found or is invalid
      * @throws LicenseValidationException the license does not exist or is invalid
      */
-    private static License getTaskAdapterLicense() throws LicenseValidationException {
+    private static License getValidTaskAdapterLicense() throws LicenseValidationException {
         return loadLicense(Product.TASK_ADAPTER_WEB);
     }
 
