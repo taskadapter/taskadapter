@@ -56,7 +56,12 @@ public class LicenseGenerator {
     }
 
     private static String generateLicenseText(LicenseManager.Product productType, String licenseTypeStr, String customerName, String email) {
-        String createdOn = new SimpleDateFormat(LICENSE_DATE_FORMAT).format(Calendar.getInstance().getTime());
+        Calendar calendar = Calendar.getInstance();
+        String createdOn = new SimpleDateFormat(LICENSE_DATE_FORMAT).format(calendar.getTime());
+
+        calendar.add(Calendar.MONTH, 1);
+        String expiresOn = new SimpleDateFormat(LICENSE_DATE_FORMAT).format(calendar.getTime());
+
         String key = new LicenseEncryptor(PASSWORD).chiper(licenseTypeStr + customerName + email + createdOn);
         String base64EncodedKey = new String(Base64.encodeBase64(key.getBytes()));
 
@@ -65,7 +70,8 @@ public class LicenseGenerator {
                 .append(LINE_DELIMITER).append(PREFIX_LICENSE_TYPE).append(licenseTypeStr)
                 .append(LINE_DELIMITER).append(PREFIX_REGISTERED_TO).append(customerName)
                 .append(LINE_DELIMITER).append(PREFIX_EMAIL).append(email)
-                .append(LINE_DELIMITER).append(PREFIX_DATE).append(createdOn)
+                .append(LINE_DELIMITER).append(PREFIX_CREATED_ON).append(createdOn)
+                .append(LINE_DELIMITER).append(PREFIX_EXPIRES_ON).append(expiresOn)
                 .append(LINE_DELIMITER).append(KEY_STR).append(base64EncodedKey);
 
         return license.toString();

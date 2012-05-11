@@ -46,7 +46,8 @@ final class LicenseParser {
         String licenseTypeStr = lines[LINE_LICENSE_TYPE].substring(PREFIX_LICENSE_TYPE.length());
         String customerName = lines[LINE_CUSTOMER_NAME].substring(PREFIX_REGISTERED_TO.length());
         String email = lines[LINE_EMAIL].substring(PREFIX_EMAIL.length());
-        String createdOn = lines[LINE_DATE].substring(PREFIX_DATE.length());
+        String createdOn = lines[LINE_CREATED_ON_DATE].substring(PREFIX_CREATED_ON.length());
+        String expiresOn = lines[LINE_EXPIRES_ON_DATE].substring(PREFIX_EXPIRES_ON.length());
         String key = lines[LINE_KEY];
 
         String decodedBase64Text = new String(Base64.decodeBase64(key.getBytes()));
@@ -56,7 +57,7 @@ final class LicenseParser {
         License license;
 
         if (mergedStr.equals(xoredText)) {
-            license = new License(product, License.Type.getByText(licenseTypeStr), customerName, email, createdOn, licenseText);
+            license = new License(product, License.Type.getByText(licenseTypeStr), customerName, email, createdOn, expiresOn, licenseText);
         } else {
             throw new LicenseValidationException();
         }

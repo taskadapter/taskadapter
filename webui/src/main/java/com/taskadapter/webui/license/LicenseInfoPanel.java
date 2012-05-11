@@ -7,6 +7,8 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 
 public class LicenseInfoPanel extends GridLayout {
+    private static final String LICENSE_DATE_FORMAT_DESCRIPTION_FOR_GUI = "(year-month-day)";
+
     private Label registeredTo;
     private Label licenseType;
     private Label licenseCreatedOn;
@@ -31,11 +33,11 @@ public class LicenseInfoPanel extends GridLayout {
         licenseType = new Label();
         addComponent(licenseType);
 
-        addComponent(new Label("License created on:"));
+        addComponent(new Label("License created " + LICENSE_DATE_FORMAT_DESCRIPTION_FOR_GUI));
         licenseCreatedOn = new Label();
         addComponent(licenseCreatedOn);
 
-        addComponent(new Label("License expires on: "));
+        addComponent(new Label("License expires " + LICENSE_DATE_FORMAT_DESCRIPTION_FOR_GUI));
         licenseExpiresOn = new Label();
         addComponent(licenseExpiresOn);
 
@@ -53,7 +55,7 @@ public class LicenseInfoPanel extends GridLayout {
         registeredTo.setValue(license.getCustomerName());
         licenseType.setValue(license.getType().getText());
         licenseCreatedOn.setValue(license.getCreatedOn());
-        licenseExpiresOn.setValue("NEVER");
+        licenseExpiresOn.setValue(license.getExpiresOn());
     }
 
     private void clearLicenseInfo() {

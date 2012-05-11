@@ -46,7 +46,8 @@ public class EnterLicensePanel extends VerticalLayout {
                         "License type: local / single user\n" +
                         "Registered to: TA-testing\n" +
                         "Email: nomail@nodomain.com\n" +
-                        "Date: 2012-05-10\n" +
+                        "Created on: 2012-05-10\n" +
+                        "Expires on: 2012-06-10\n" +
                         "-------------- Key --------------\n" +
                         "SBVbU19OeX8AE01fWEFaTUFWHAIeXg5GS0BNFF9cXAM3Nh86TVdQSxdZW11ANTAeSBMJBglKDR8CXg==");
                 save();
@@ -60,11 +61,12 @@ public class EnterLicensePanel extends VerticalLayout {
             public void buttonClick(Button.ClickEvent event) {
                 licenseArea.setValue("Product: TASK_ADAPTER_WEB\n" +
                         "License type: server / many users\n" +
-                        "Registered to: Alex\n" +
-                        "Email: my@mail\n" +
-                        "Date: 2012-05-10\n" +
+                        "Registered to: TA-testing\n" +
+                        "Email: nomail@nodomain.com\n" +
+                        "Created on: 2012-05-10\n" +
+                        "Expires on: 2012-06-10\n" +
                         "-------------- Key --------------\n" +
-                        "Vx9KRFYcdnBTF0JWTQQPS1dBHRczFgJOQXRJG1FeAV5nbV5KFhUFFA==");
+                        "Vx9KRFYcdnBTF0JWTQQPS1dBHQIeXg5GS0BNFF9cXAM3Nh86TVdQSxdZW11ANTAeSBMJBglKDR8CXg==");
                 save();
             }
         });

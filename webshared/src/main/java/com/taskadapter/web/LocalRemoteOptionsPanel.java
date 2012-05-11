@@ -1,10 +1,7 @@
 package com.taskadapter.web;
 
 import com.vaadin.data.Property;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.OptionGroup;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +9,7 @@ import java.util.List;
 /**
  * @author Alexey Skorokhodov
  */
-public class LocalRemoteOptionsPanel extends VerticalLayout {
+public class LocalRemoteOptionsPanel extends Panel {
     private static final String LOCAL = "TA is running on my LOCAL machine. The file paths are on MY computer.";
     private static final String REMOTE = "TA is running on some shared machine (SERVER). The files are stored on the remote machine.";
 
@@ -22,6 +19,7 @@ public class LocalRemoteOptionsPanel extends VerticalLayout {
     private ProgressElement progressElement;
 
     public LocalRemoteOptionsPanel(SettingsManager settingsManager) {
+        super("Local / server mode");
         this.settingsManager = settingsManager;
         buildUI();
         selectCurrentSetting();
@@ -29,6 +27,7 @@ public class LocalRemoteOptionsPanel extends VerticalLayout {
     }
 
     private void buildUI() {
+        addStyleName("panelexample");
         group = new OptionGroup("Local/remote mode", options);
         HorizontalLayout configGroupLayout = new HorizontalLayout();
         progressElement = new ProgressElement();
