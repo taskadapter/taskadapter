@@ -46,6 +46,7 @@ public class ServerModeFilePanel extends FilePanel {
     private MSPConfig config;
 
     public ServerModeFilePanel(Authenticator authenticator) {
+        super("Microsoft Project file");
         this.authenticator = authenticator;
         buildUI();
     }

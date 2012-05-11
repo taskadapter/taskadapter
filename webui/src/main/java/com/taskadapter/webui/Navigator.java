@@ -3,7 +3,6 @@ package com.taskadapter.webui;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.web.service.Services;
 import com.taskadapter.web.service.UpdateManager;
-import com.taskadapter.webui.license.ConfigureSystemPage;
 import com.vaadin.Application;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
@@ -57,7 +56,7 @@ public class Navigator {
     }
 
     private void buildUI() {
-        Header header = new Header(this);
+        Header header = new Header(this, services);
         header.setHeight(50, Sizeable.UNITS_PIXELS);
         header.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         layout.addComponent(header);

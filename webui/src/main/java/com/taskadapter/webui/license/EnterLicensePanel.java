@@ -1,8 +1,7 @@
 package com.taskadapter.webui.license;
 
-import com.taskadapter.license.License;
 import com.taskadapter.license.LicenseManager;
-import com.taskadapter.license.LicenseValidationException;
+import com.taskadapter.web.service.Services;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextArea;
@@ -10,8 +9,10 @@ import com.vaadin.ui.VerticalLayout;
 
 public class EnterLicensePanel extends VerticalLayout {
     private TextArea licenseArea;
+    private Services services;
 
-    public EnterLicensePanel() {
+    public EnterLicensePanel(Services services) {
+        this.services = services;
         buildUI();
     }
 
@@ -31,28 +32,65 @@ public class EnterLicensePanel extends VerticalLayout {
             }
         });
         addComponent(saveButton);
+
+        addDebugButtons();
     }
 
+    // TODO delete before the release!
+    private void addDebugButtons() {
+        Button saveSingleUserLicenseButton = new Button("DEBUG: 1-user license");
+        saveSingleUserLicenseButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                licenseArea.setValue("Product: TASK_ADAPTER_WEB\n" +
+                        "License type: local / single user\n" +
+                        "Registered to: TA-testing\n" +
+                        "Email: nomail@nodomain.com\n" +
+                        "Created on: 2012-05-10\n" +
+                        "Expires on: 2012-06-10\n" +
+                        "-------------- Key --------------\n" +
+                        "SBVbU19OeX8AE01fWEFaTUFWHAIeXg5GS0BNFF9cXAM3Nh86TVdQSxdZW11ANTAeSBMJBglKDR8CXg==");
+                save();
+            }
+        });
+        addComponent(saveSingleUserLicenseButton);
+
+        Button saveServerLicenseButton = new Button("DEBUG: server license");
+        saveServerLicenseButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                licenseArea.setValue("Product: TASK_ADAPTER_WEB\n" +
+                        "License type: server / many users\n" +
+                        "Registered to: TA-testing\n" +
+                        "Email: nomail@nodomain.com\n" +
+                        "Created on: 2012-05-10\n" +
+                        "Expires on: 2012-06-10\n" +
+                        "-------------- Key --------------\n" +
+                        "Vx9KRFYcdnBTF0JWTQQPS1dBHQIeXg5GS0BNFF9cXAM3Nh86TVdQSxdZW11ANTAeSBMJBglKDR8CXg==");
+                save();
+            }
+        });
+        addComponent(saveServerLicenseButton);
+    }
 
     private boolean save() {
         String licenseText = (String) licenseArea.getValue();
-        licenseText = licenseText.trim();
 
-        License license;
-        boolean success = true;
+        LicenseManager licenseManager = services.getLicenseManager();
+        licenseManager.setNewLicense(licenseText.trim());
 
-        try {
-            license = LicenseManager.checkLicense(licenseText);
-            LicenseManager.installLicense(LicenseManager.Product.TASK_ADAPTER, licenseText);
+        if(licenseManager.isTaskAdapterLicenseOk()) {
+            licenseManager.installLicense();
+            getWindow().showNotification("Successfully registered to: " + licenseManager.getLicense().getCustomerName());
 
-            getWindow().showNotification("Successfully registered to: " + license.getCustomerName());
-
-        } catch (LicenseValidationException e) {
-            success = false;
+        } else {
             getWindow().showNotification("License validation error", "The license text is invalid");
         }
 
-        return success;
+        return licenseManager.isTaskAdapterLicenseOk();
     }
 
+    public void clearLicenseTextArea() {
+        licenseArea.setValue("");
+    }
 }

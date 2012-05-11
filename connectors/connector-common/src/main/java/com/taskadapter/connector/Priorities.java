@@ -43,13 +43,6 @@ public class Priorities {
         }
     }
 
-    public void setValues(List<NamedKeyedObjectImpl> priorityList) {
-        prioritiesMapping = new HashMap<String, Integer>();
-        for (NamedKeyedObject priority : priorityList) {
-            prioritiesMapping.put(priority.getKey(), Integer.valueOf(priority.getName()));
-        }
-    }
-
     /**
      * @return the nearest priority value for Tracker based on the MSP integer value (priority field).
      *         Never NULL.
@@ -95,5 +88,13 @@ public class Priorities {
 
     public Collection<String> getAllNames() {
         return prioritiesMapping.keySet();
+    }
+
+    public void addPriority(String priorityText, Integer priorityValue) {
+        if (prioritiesMapping == null) {
+            prioritiesMapping = new HashMap<String, Integer>();
+        }
+
+        prioritiesMapping.put(priorityText, priorityValue);
     }
 }

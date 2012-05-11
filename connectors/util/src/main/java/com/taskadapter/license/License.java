@@ -11,6 +11,7 @@ public class License {
     private String customerName;
     private String email;
     private String createdOn;
+    private String expiresOn;
     private String completeText;
 
     private static final String SINGLE_TEXT = "local / single user";
@@ -73,17 +74,23 @@ public class License {
         return createdOn;
     }
 
+    public String getExpiresOn() {
+        return expiresOn;
+    }
+
     public String getCompleteText() {
         return completeText;
     }
 
-    public License(Product product, Type type, String customerName, String email, String createdOn, String completeText) {
+    // TODO maybe refactor this parameters list
+    public License(Product product, Type type, String customerName, String email, String createdOn, String expiresOn, String completeText) {
         super();
         this.product = product;
         this.type = type;
         this.customerName = customerName;
         this.email = email;
         this.createdOn = createdOn;
+        this.expiresOn = expiresOn;
         this.completeText = completeText;
     }
 
@@ -95,6 +102,7 @@ public class License {
                 ", customerName='" + customerName + '\'' +
                 ", email='" + email + '\'' +
                 ", createdOn='" + createdOn +
+                ", expiresOn='" + expiresOn +
                 "'}";
     }
 }

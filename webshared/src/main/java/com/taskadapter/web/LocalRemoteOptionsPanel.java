@@ -1,10 +1,12 @@
 package com.taskadapter.web;
 
+import com.taskadapter.license.LicenseChangeListener;
+import com.taskadapter.web.service.Services;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.OptionGroup;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Panel;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,24 +14,27 @@ import java.util.List;
 /**
  * @author Alexey Skorokhodov
  */
-public class LocalRemoteOptionsPanel extends VerticalLayout {
+public class LocalRemoteOptionsPanel extends Panel {
     private static final String LOCAL = "TA is running on my LOCAL machine. The file paths are on MY computer.";
-    private static final String REMOTE = "TA is running on some shared machine (SERVER). The files are stored on the remote machine.";
+    private static final String REMOTE = "TA is running on some shared machine (SERVER).";
 
     private static final List<String> options = Arrays.asList(LOCAL, REMOTE);
     private OptionGroup group;
-    private SettingsManager settingsManager;
     private ProgressElement progressElement;
+    private Services services;
 
-    public LocalRemoteOptionsPanel(SettingsManager settingsManager) {
-        this.settingsManager = settingsManager;
+    public LocalRemoteOptionsPanel(Services services) {
+        super("Local / server mode");
+        this.services = services;
         buildUI();
-        selectCurrentSetting();
-        setupListener();
+        selectLocalOrRemoteMode();
+        setupLocalRemoteModeListener();
+        setupLicenseListener();
     }
 
     private void buildUI() {
-        group = new OptionGroup("Local/remote mode", options);
+        addStyleName("panelexample");
+        group = new OptionGroup("", options);
         HorizontalLayout configGroupLayout = new HorizontalLayout();
         progressElement = new ProgressElement();
 
@@ -42,21 +47,43 @@ public class LocalRemoteOptionsPanel extends VerticalLayout {
         addComponent(configGroupLayout);
     }
 
-    private void selectCurrentSetting() {
-        if (settingsManager.isLocal()) {
+    private void selectLocalOrRemoteMode() {
+        if (services.getSettingsManager().isLocal()) {
             group.select(LOCAL);
         } else {
             group.select(REMOTE);
         }
+        forceLocalModeIfSingleUserLicenseInstalled();
     }
 
-    private void setupListener() {
+    private void forceLocalModeIfSingleUserLicenseInstalled() {
+        if (services.getLicenseManager().isSingleUserLicenseInstalled()) {
+            group.select(LOCAL);
+            group.setEnabled(false);
+        } else {
+            group.setEnabled(true);
+        }
+    }
+
+    private void setupLocalRemoteModeListener() {
         group.addListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                boolean isLocal = event.getProperty().toString().equals(LOCAL);
-                settingsManager.setLocal(isLocal);
+                boolean localModeRequested = event.getProperty().toString().equals(LOCAL);
+                if (services.getLicenseManager().isSingleUserLicenseInstalled()) {
+                    throw new RuntimeException("Illegal state: can't change local/server mode when a single-user license is installed");
+                }
+                services.getSettingsManager().setLocal(localModeRequested);
                 progressElement.start();
+            }
+        });
+    }
+
+    private void setupLicenseListener() {
+        services.getLicenseManager().addLicenseChangeListener(new LicenseChangeListener() {
+            @Override
+            public void licenseInfoUpdated() {
+                forceLocalModeIfSingleUserLicenseInstalled();
             }
         });
     }

@@ -30,7 +30,7 @@ public class ExportPage extends ActionPage {
 
     @Override
     protected void loadData() {
-        runner = new SyncRunner();
+        runner = new SyncRunner(services.getLicenseManager());
         runner.setConnectorFrom(connectorFrom);
         try {
             this.loadedTasks = runner.load(null);

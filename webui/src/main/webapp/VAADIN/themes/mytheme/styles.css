@@ -47,12 +47,13 @@
 
 .configsTableButton .v-button-caption {
     font-size: 14px;
-    margin: 20px 10px ;
+    margin: 20px 10px;
     text-decoration: none;
 }
+
 .configsTableButton .v-button-caption:hover {
     font-size: 14px;
-    margin: 20px 10px ;
+    margin: 20px 10px;
     text-decoration: underline;
 }
 
@@ -73,10 +74,6 @@
 
 .v-table-cell-content-centered {
     text-align: center;
-}
-
-.bordered-panel {
-    border: 2px solid #65C5E6;
 }
 
 .connectorBoxButton .v-nativebutton-caption {
@@ -109,16 +106,11 @@
 .v-nativebutton-connectorBoxButton:hover {
     /* we don't have any action associated with this box panel, so let's not show any effects
      on mouse over event to not confuse people*/
-    /*background-color: #99CCFF;
+    /*background-color: #99CCFF;*/
 }
 
 .priorities-table {
     font-size: 14px;
-}
-
-.fields-mapping-panel {
-    border: 2px #65C5E6 solid;
-    /*width: 463px;*/
 }
 
 .v-gridlayout-margin-top {
@@ -185,7 +177,7 @@
 }
 
 .msp-file-name-textfield {
-    width: 450px;
+    width: 280px;
 }
 
 .error-message-label {

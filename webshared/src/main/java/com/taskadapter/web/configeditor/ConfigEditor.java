@@ -35,7 +35,6 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
     protected ConfigEditor(ConnectorConfig config, Services services) {
         this.config = config;
         this.services = services;
-        addStyleName("bordered-panel");
         setImmediate(false);
         setMargin(true);
         setSpacing(true);
@@ -80,13 +79,13 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         projectAndServerLayout.addComponent(serverPanel);
     }
 
-    protected void addCustomPanelToProjectServerPanel(Layout layout) {
+    protected void addCustomPanelToProjectServerPanel(Panel component) {
         createProjectServerPanelIfNeeded();
         //if layout supports Validatable interface add it to validation list
-        if (layout instanceof Validatable) {
-            toValidate.add((Validatable) layout);
+        if (component instanceof Validatable) {
+            toValidate.add((Validatable) component);
         }
-        projectAndServerLayout.addComponent(layout);
+        projectAndServerLayout.addComponent(component);
     }
 
     protected void addProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor) {

@@ -7,6 +7,7 @@ import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineTaskSaver;
 import com.taskadapter.integrationtests.AbstractSyncRunnerTest;
 import com.taskadapter.integrationtests.RedmineTestConfig;
+import com.taskadapter.license.LicenseManager;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class SyncRunnerTest extends AbstractSyncRunnerTest {
         MSPConfig mspConfig = getConfig("ProjectWithTree.xml");
         Connector<?> projectConnector = new MSPConnector(mspConfig);
 
-        SyncRunner runner = new SyncRunner();
+        SyncRunner runner = new SyncRunner(new LicenseManager()); //LicenseManager with license of some type can be set
         runner.setConnectorFrom(projectConnector);
         runner.setTaskSaver(saver);
         // load from MSP

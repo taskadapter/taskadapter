@@ -2,6 +2,7 @@ package com.taskadapter.web.service;
 
 import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
+import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.SettingsManager;
 
 public class Services {
@@ -9,8 +10,9 @@ public class Services {
     private UpdateManager updateManager = new UpdateManager();
     private EditorManager editorManager = new EditorManager();
     private PluginManager pluginManager = new PluginManager();
-    private ConfigStorage configStorage;
     private SettingsManager settingsManager = new SettingsManager();
+    private LicenseManager licenseManager = new LicenseManager();
+    private ConfigStorage configStorage;
 
     public Services() {
         configStorage = new ConfigStorage(pluginManager);
@@ -42,4 +44,7 @@ public class Services {
         return settingsManager;
     }
 
+    public LicenseManager getLicenseManager() {
+        return licenseManager;
+    }
 }

@@ -1,12 +1,11 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.license.LicenseChangeListener;
+import com.taskadapter.web.service.Services;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.BaseTheme;
 
-import static com.taskadapter.license.LicenseManager.addLicenseChangeListener;
-import static com.taskadapter.license.LicenseManager.isTaskAdapterLicenseOk;
 
 /**
  * @author Alexey Skorokhodov
@@ -15,12 +14,14 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
     private HorizontalLayout internalLayout = new HorizontalLayout();
     private VerticalLayout trialLayout = new VerticalLayout();
     private Navigator navigator;
+    private Services services;
 
-    public Header(Navigator navigator) {
+    public Header(Navigator navigator, Services services) {
         this.navigator = navigator;
+        this.services = services;
         buildMainLayout();
         checkLicense();
-        addLicenseChangeListener(this);
+        services.getLicenseManager().addLicenseChangeListener(this);
     }
 
     private void buildMainLayout() {
@@ -87,7 +88,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
     }
 
     private void checkLicense() {
-        if (!isTaskAdapterLicenseOk()) {
+        if (!services.getLicenseManager().isTaskAdapterLicenseOk()) {
             trialLayout.setVisible(true);
         } else {
             trialLayout.setVisible(false);

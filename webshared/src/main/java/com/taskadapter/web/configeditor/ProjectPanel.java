@@ -12,8 +12,8 @@ import java.util.Collection;
  *
  * @author Alexey Skorokhodov
  */
-public class ProjectPanel extends GridLayout implements Validatable {
-    private static final String GROUP_LABEL = "Project Info";
+public class ProjectPanel extends Panel implements Validatable {
+    private static final String PANEL_CAPTION = "Project Info";
     private static final int COLUMNS_NUMBER = 4;
 
     private final ConfigEditor editor;
@@ -28,24 +28,27 @@ public class ProjectPanel extends GridLayout implements Validatable {
      * @see ConfigEditor#addProjectPanel(ConfigEditor, ProjectProcessor)
      */
     ProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor) {
+        super(PANEL_CAPTION);
         this.editor = editor;
         this.projectProcessor = projectProcessor;
         init();
     }
 
     private void init() {
-        addStyleName("bordered-panel");
-        setCaption(GROUP_LABEL);
-        setColumns(COLUMNS_NUMBER);
-        setMargin(true);
-        setSpacing(true);
+        addStyleName("panelexample");
+        setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
+        GridLayout layout = new GridLayout();
+        addComponent(layout);
+        layout.setColumns(COLUMNS_NUMBER);
+        layout.setMargin(true);
+        layout.setSpacing(true);
 
         Label projectKeyLabel = new Label("Project key:");
-        addComponent(projectKeyLabel);
-        setComponentAlignment(projectKeyLabel, Alignment.MIDDLE_LEFT);
+        layout.addComponent(projectKeyLabel);
+        layout.setComponentAlignment(projectKeyLabel, Alignment.MIDDLE_LEFT);
 
         projectKey = new TextField();
-        addComponent(projectKey);
+        layout.addComponent(projectKey);
 
         Collection<ProjectProcessor.EditorFeature> features = projectProcessor.getSupportedFeatures();
 
@@ -58,7 +61,7 @@ public class ProjectPanel extends GridLayout implements Validatable {
                 }
         );
         infoButton.setEnabled(features.contains(ProjectProcessor.EditorFeature.LOAD_PROJECT_INFO));
-        addComponent(infoButton);
+        layout.addComponent(infoButton);
 
         LookupOperation loadProjectsOperation = new LoadProjectsOperation(editor, projectProcessor.getDescriptor().getPluginFactory());
         Button projectKeyButton = EditorUtil.createLookupButton(
@@ -72,16 +75,16 @@ public class ProjectPanel extends GridLayout implements Validatable {
                 false
         );
         projectKeyButton.setEnabled(features.contains(ProjectProcessor.EditorFeature.LOAD_PROJECTS));
-        addComponent(projectKeyButton);
+        layout.addComponent(projectKeyButton);
 
         Label queryIdLabel = new Label("Query ID:");
-        addComponent(queryIdLabel);
-        setComponentAlignment(queryIdLabel, Alignment.MIDDLE_LEFT);
+        layout.addComponent(queryIdLabel);
+        layout.setComponentAlignment(queryIdLabel, Alignment.MIDDLE_LEFT);
 
         queryId = new TextField();
         queryId.setDescription("Custom query/filter ID (number). You need to create a query on the server before accessing it from here.\n"
                 + "Read help for more details.");
-        addComponent(queryId);
+        layout.addComponent(queryId);
 
         LookupOperation loadSavedQueriesOperation = projectProcessor.getLoadSavedQueriesOperation(editor);
 
@@ -98,7 +101,7 @@ public class ProjectPanel extends GridLayout implements Validatable {
         // TODO maybe set "enabled" basing on whether or not loadSavedQueriesOperation is NULL?
         // then can delete the whole "features" mechanism
         showQueriesButton.setEnabled(features.contains(ProjectProcessor.EditorFeature.LOAD_SAVED_QUERIES));
-        addComponent(showQueriesButton);
+        layout.addComponent(showQueriesButton);
     }
 
     private void loadProject() {

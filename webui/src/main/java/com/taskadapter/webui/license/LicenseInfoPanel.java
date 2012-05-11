@@ -1,25 +1,45 @@
 package com.taskadapter.webui.license;
 
 import com.taskadapter.license.License;
-import com.taskadapter.license.LicenseManager;
+import com.taskadapter.web.service.Services;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
 
-public class LicenseInfoPanel extends VerticalLayout {
+public class LicenseInfoPanel extends GridLayout {
+    private static final String LICENSE_DATE_FORMAT_DESCRIPTION_FOR_GUI = "(year-month-day)";
+
     private Label registeredTo;
+    private Label licenseType;
     private Label licenseCreatedOn;
+    private Label licenseExpiresOn;
+    private Services services;
 
-    public LicenseInfoPanel() {
+    public LicenseInfoPanel(Services services) {
+        this.services = services;
         buildUI();
     }
 
     private void buildUI() {
+        setColumns(2);
+        setSpacing(true);
+        setWidth(350, UNITS_PIXELS);
+
+        addComponent(new Label("Registered to:"));
         registeredTo = new Label();
         addComponent(registeredTo);
 
+        addComponent(new Label("Type:"));
+        licenseType = new Label();
+        addComponent(licenseType);
+
+        addComponent(new Label("License created " + LICENSE_DATE_FORMAT_DESCRIPTION_FOR_GUI));
         licenseCreatedOn = new Label();
         addComponent(licenseCreatedOn);
+
+        addComponent(new Label("License expires " + LICENSE_DATE_FORMAT_DESCRIPTION_FOR_GUI));
+        licenseExpiresOn = new Label();
+        addComponent(licenseExpiresOn);
 
         Button clearLicenseButton = new Button("Remove license info");
         clearLicenseButton.addListener(new Button.ClickListener() {
@@ -32,12 +52,14 @@ public class LicenseInfoPanel extends VerticalLayout {
     }
 
     public void setLicense(License license) {
-        registeredTo.setValue("Registered to: " + license.getCustomerName());
-        licenseCreatedOn.setValue("License created on: " + license.getCreatedOn());
+        registeredTo.setValue(license.getCustomerName());
+        licenseType.setValue(license.getType().getText());
+        licenseCreatedOn.setValue(license.getCreatedOn());
+        licenseExpiresOn.setValue(license.getExpiresOn());
     }
 
     private void clearLicenseInfo() {
-        LicenseManager.removeTaskAdapterLicenseFromThisComputer();
+        services.getLicenseManager().removeTaskAdapterLicenseFromThisComputer();
         getWindow().showNotification("Removed the license info");
     }
 }

@@ -8,7 +8,7 @@ import com.vaadin.ui.*;
 /**
  * @author Alexey Skorokhodov
  */
-public class ServerPanel extends GridLayout implements Validatable {
+public class ServerPanel extends Panel implements Validatable {
     private static final String HOST_URL_TOOLTIP = "Host URL, including protocol prefix and port number. E.g. http://demo.site.com:3000";
 
     private static final String SERVER_GROUP_LABEL = "Server info";
@@ -23,20 +23,23 @@ public class ServerPanel extends GridLayout implements Validatable {
      * @see ConfigEditor#addServerPanel()
      */
     ServerPanel() {
-        init();
+        buildUI();
     }
 
-    private void init() {
-        addStyleName("bordered-panel");
+    private void buildUI() {
+        addStyleName("panelexample");
+        setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
+        GridLayout layout = new GridLayout();
+        addComponent(layout);
         setCaption(SERVER_GROUP_LABEL);
-        setColumns(2);
-        setRows(3);
-        setMargin(true);
-        setSpacing(true);
+        layout.setColumns(2);
+        layout.setRows(3);
+        layout.setMargin(true);
+        layout.setSpacing(true);
 
         Label urlLabel = new Label("Server URL:");
-        addComponent(urlLabel, 0, 0);
-        setComponentAlignment(urlLabel, Alignment.MIDDLE_LEFT);
+        layout.addComponent(urlLabel, 0, 0);
+        layout.setComponentAlignment(urlLabel, Alignment.MIDDLE_LEFT);
 
         hostURLText = new TextField();
         hostURLText.setDescription(HOST_URL_TOOLTIP);
@@ -47,26 +50,26 @@ public class ServerPanel extends GridLayout implements Validatable {
             }
         });
         hostURLText.addStyleName("server-panel-textfield");
-        addComponent(hostURLText, 1, 0);
-        setComponentAlignment(hostURLText, Alignment.MIDDLE_RIGHT);
+        layout.addComponent(hostURLText, 1, 0);
+        layout.setComponentAlignment(hostURLText, Alignment.MIDDLE_RIGHT);
 
-        Label logiLabel = new Label("Login:");
-        addComponent(logiLabel, 0, 1);
-        setComponentAlignment(logiLabel, Alignment.MIDDLE_LEFT);
+        Label loginLabel = new Label("Login:");
+        layout.addComponent(loginLabel, 0, 1);
+        layout.setComponentAlignment(loginLabel, Alignment.MIDDLE_LEFT);
 
         login = new TextField();
         login.addStyleName("server-panel-textfield");
-        addComponent(login, 1, 1);
-        setComponentAlignment(login, Alignment.MIDDLE_RIGHT);
+        layout.addComponent(login, 1, 1);
+        layout.setComponentAlignment(login, Alignment.MIDDLE_RIGHT);
 
         Label pswdLabel = new Label("Password:");
-        addComponent(pswdLabel, 0, 2);
-        setComponentAlignment(pswdLabel, Alignment.MIDDLE_LEFT);
+        layout.addComponent(pswdLabel, 0, 2);
+        layout.setComponentAlignment(pswdLabel, Alignment.MIDDLE_LEFT);
 
         password = new PasswordField();
         password.addStyleName("server-panel-textfield");
-        addComponent(password, 1, 2);
-        setComponentAlignment(password, Alignment.MIDDLE_RIGHT);
+        layout.addComponent(password, 1, 2);
+        layout.setComponentAlignment(password, Alignment.MIDDLE_RIGHT);
     }
 
     private void cleanup() {
