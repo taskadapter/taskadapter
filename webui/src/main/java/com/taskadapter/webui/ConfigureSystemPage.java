@@ -1,9 +1,10 @@
-package com.taskadapter.webui.license;
+package com.taskadapter.webui;
 
 import com.taskadapter.license.License;
 import com.taskadapter.license.LicenseChangeListener;
 import com.taskadapter.web.LocalRemoteOptionsPanel;
 import com.taskadapter.webui.Page;
+import com.taskadapter.webui.license.LicensePanel;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
