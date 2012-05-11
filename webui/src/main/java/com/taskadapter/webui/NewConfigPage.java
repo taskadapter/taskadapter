@@ -20,6 +20,7 @@ public class NewConfigPage extends Page {
     private TextField name;
     private ListSelect connector1;
     private ListSelect connector2;
+    private Panel panel;
     private Form form;
     private TAFile newFile;
     private Label errorMessageLabel;
@@ -29,7 +30,10 @@ public class NewConfigPage extends Page {
     }
 
     private void buildUI() {
+        panel = new Panel("Create new config");
+        panel.addStyleName("panelexample");
         form = new Form();
+        panel.addComponent(form);
         form.setSizeFull();
 
         GridLayout grid = new GridLayout(2, 2);
@@ -85,6 +89,8 @@ public class NewConfigPage extends Page {
             connector2.addItem(id);
             connector2.setItemCaption(id, label);
         }
+        connector1.setRows(connector1.size());
+        connector2.setRows(connector2.size());
     }
 
     private void saveClicked() {
@@ -145,12 +151,12 @@ public class NewConfigPage extends Page {
 
     @Override
     public String getPageTitle() {
-        return "New synchronization config";
+        return "";
     }
 
     @Override
     public Component getUI() {
         loadDataConnectors();
-        return form;
+        return panel;
     }
 }
