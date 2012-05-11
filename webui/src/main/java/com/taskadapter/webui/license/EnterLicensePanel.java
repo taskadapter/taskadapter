@@ -89,4 +89,8 @@ public class EnterLicensePanel extends VerticalLayout {
 
         return licenseManager.isTaskAdapterLicenseOk();
     }
+
+    public void clearLicenseTextArea() {
+        licenseArea.setValue("");
+    }
 }

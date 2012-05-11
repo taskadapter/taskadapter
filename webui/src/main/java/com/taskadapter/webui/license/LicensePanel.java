@@ -51,6 +51,7 @@ public class LicensePanel extends Panel implements LicenseChangeListener {
 
     private void showUnregisteredMode() {
         enterLicensePanel.setVisible(true);
+        enterLicensePanel.clearLicenseTextArea();
         licenseInfoPanel.setVisible(false);
     }
 
