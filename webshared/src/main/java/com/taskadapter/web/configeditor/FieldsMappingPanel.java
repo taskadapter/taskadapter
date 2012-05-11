@@ -39,7 +39,7 @@ public class FieldsMappingPanel extends Panel implements Validatable {
         addFields();
 
         addStyleName("panelexample");
-        setWidth("450px");
+        setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
     }
 
     private void addFields() {

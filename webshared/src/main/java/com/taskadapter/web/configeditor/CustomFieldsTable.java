@@ -76,7 +76,7 @@ public class CustomFieldsTable extends CustomComponent {
         table.setSortDisabled(true);
 
         table.setPageLength(5);
-        table.setWidth("320px");
+        table.setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
         table.setHeight("110px");
 
         table.addContainerProperty(TABLE_HEADER_ID, String.class, CELL_DEFAULT_VALUE);

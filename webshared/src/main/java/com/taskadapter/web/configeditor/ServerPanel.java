@@ -28,7 +28,7 @@ public class ServerPanel extends Panel implements Validatable {
 
     private void buildUI() {
         addStyleName("panelexample");
-        setWidth("350px");
+        setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
         GridLayout layout = new GridLayout();
         addComponent(layout);
         setCaption(SERVER_GROUP_LABEL);

@@ -9,8 +9,8 @@ import com.taskadapter.model.NamedKeyedObjectImpl;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import java.util.*;
@@ -18,9 +18,9 @@ import java.util.*;
 /**
  * @author Alexey Skorokhodov
  */
-public class PriorityPanel extends VerticalLayout implements Validatable {
+public class PriorityPanel extends Panel implements Validatable {
 
-    private static final String TEXT_HEADER = "Priority Name";
+    private static final String NAME_HEADER = "Name";
     private static final String VALUE_HEADER = "Task Adapter Priority Value";
 
     private final ConfigEditor configEditor;
@@ -38,14 +38,15 @@ public class PriorityPanel extends VerticalLayout implements Validatable {
      * @see ConfigEditor#addPriorityPanel(ConfigEditor, com.taskadapter.connector.definition.Descriptor, Priorities priorities)
      */
     PriorityPanel(ConfigEditor editor, Descriptor descriptor) {
+        super("Priorities");
         this.configEditor = editor;
         this.descriptor = descriptor;
         buildUI();
     }
 
     private void buildUI() {
-        addStyleName("bordered-panel");
-        setSizeUndefined();
+        addStyleName("panelexample");
+        setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
 
         Collection<Feature> features = descriptor.getSupportedFeatures();
 
@@ -55,7 +56,7 @@ public class PriorityPanel extends VerticalLayout implements Validatable {
         prioritiesTable.addStyleName("priorities-table");
         prioritiesTable.setEditable(true);
 
-        prioritiesTable.setColumnHeader(Priority.TEXT, TEXT_HEADER);
+        prioritiesTable.setColumnHeader(Priority.TEXT, NAME_HEADER);
         prioritiesTable.setColumnHeader(Priority.VALUE, VALUE_HEADER);
         prioritiesTable.setVisibleColumns(new Object[]{Priority.TEXT, Priority.VALUE});
 

@@ -36,7 +36,7 @@ public class ProjectPanel extends Panel implements Validatable {
 
     private void init() {
         addStyleName("panelexample");
-        setWidth("350px");
+        setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
         GridLayout layout = new GridLayout();
         addComponent(layout);
         layout.setColumns(COLUMNS_NUMBER);

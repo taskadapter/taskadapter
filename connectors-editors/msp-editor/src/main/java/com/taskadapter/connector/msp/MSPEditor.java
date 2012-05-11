@@ -2,6 +2,7 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.web.configeditor.ConfigEditor;
+import com.taskadapter.web.configeditor.DefaultPanel;
 import com.taskadapter.web.configeditor.file.FilePanel;
 import com.taskadapter.web.configeditor.file.LocalModeFilePanel;
 import com.taskadapter.web.configeditor.file.ServerModeFilePanel;
@@ -12,7 +13,6 @@ import com.taskadapter.web.service.Services;
  */
 public class MSPEditor extends ConfigEditor {
 
-    public static final String INTERNAL_PANEL_WIDTH = "450px";
     private FilePanel filePanel;
     private MSPInfoPanel infoPanel;
 
@@ -31,7 +31,7 @@ public class MSPEditor extends ConfigEditor {
 
     private void createInfoReadOnlyPanel() {
         infoPanel = new MSPInfoPanel();
-        infoPanel.setWidth(INTERNAL_PANEL_WIDTH);
+        infoPanel.setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
         addComponent(infoPanel);
     }
 
@@ -41,7 +41,7 @@ public class MSPEditor extends ConfigEditor {
         } else {
             filePanel = createRemoteModeFilePanel();
         }
-        filePanel.setWidth(INTERNAL_PANEL_WIDTH);
+        filePanel.setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
         addComponent(filePanel);
     }
 
