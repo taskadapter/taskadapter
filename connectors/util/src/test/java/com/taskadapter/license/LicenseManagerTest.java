@@ -7,7 +7,7 @@ import org.junit.Test;
 import java.io.IOException;
 
 
-public class TestLicenseManager {
+public class LicenseManagerTest {
     @Test
     public void testValidSingleLicense() {
         try {
