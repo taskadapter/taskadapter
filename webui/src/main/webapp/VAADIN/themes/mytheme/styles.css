@@ -103,6 +103,21 @@
     line-height: 100px;
 }
 
+.smallUploadButton .v-button {
+    height: auto;
+}
+
+.smallUploadButton .v-button .v-button-wrap {
+    padding: 1px 10px
+}
+
+.smallUploadButton .v-button .v-button-wrap .v-button-caption {
+    height: auto;
+    padding: 2px;
+    font-size: 11px;
+}
+
+
 .v-nativebutton-connectorBoxButton:hover {
     /* we don't have any action associated with this box panel, so let's not show any effects
      on mouse over event to not confuse people*/
