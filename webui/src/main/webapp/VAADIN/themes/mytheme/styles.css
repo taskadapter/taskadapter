@@ -75,10 +75,6 @@
     text-align: center;
 }
 
-.bordered-panel {
-    border: 2px solid #65C5E6;
-}
-
 .connectorBoxButton .v-nativebutton-caption {
     font-size: 14px;
 }

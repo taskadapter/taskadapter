@@ -4,6 +4,7 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.web.configeditor.ConfigEditor;
+import com.taskadapter.web.configeditor.DefaultPanel;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.Validatable;
 import com.vaadin.data.Property;
@@ -91,8 +92,8 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         return msg;
     }
 
-    class RedmineServerPanel extends GridLayout implements Validatable {
-        private static final String SERVER_INFO_LABEL = "Redmine Server Info";
+    class RedmineServerPanel extends Panel implements Validatable {
+        private static final String PANEL_CAPTION = "Redmine Server Info";
         private static final String USE_API = "Use API Access Key";
         private static final String USE_LOGIN = "Use Login and Password";
         private static final String DEFAULT_USE = USE_LOGIN;
@@ -107,62 +108,66 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
 
 
         public RedmineServerPanel() {
+            super(PANEL_CAPTION);
             buildUI();
             addListener();
             setDataToForm();
         }
 
         private void buildUI() {
-            addStyleName("bordered-panel");
-            setCaption(SERVER_INFO_LABEL);
-            setSpacing(true);
-            setMargin(true);
-            setColumns(2);
-            setRows(5);
+            addStyleName("panelexample");
+            setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
+
+            GridLayout layout = new GridLayout();
+            addComponent(layout);
+            layout.setSpacing(true);
+            layout.setMargin(true);
+            layout.setColumns(2);
+            layout.setRows(5);
 
             Label urlLabel = new Label("Redmine URL:");
-            addComponent(urlLabel, 0, 0);
-            setComponentAlignment(urlLabel, Alignment.MIDDLE_LEFT);
+            layout.addComponent(urlLabel, 0, 0);
+            layout.setComponentAlignment(urlLabel, Alignment.MIDDLE_LEFT);
 
             serverURL = new TextField();
             serverURL.addStyleName("server-panel-textfield");
             serverURL.setInputPrompt("http://myserver:3000/myredminelocation");
-            addComponent(serverURL, 1, 0);
-            setComponentAlignment(serverURL, Alignment.MIDDLE_LEFT);
+            layout.addComponent(serverURL, 1, 0);
+            layout.setComponentAlignment(serverURL, Alignment.MIDDLE_LEFT);
 
             authOptionsGroup.setSizeFull();
             authOptionsGroup.setNullSelectionAllowed(false);
             authOptionsGroup.setImmediate(true);
             authOptionsGroup.select(DEFAULT_USE);
-            addComponent(authOptionsGroup, 0, 1, 1, 1);
-            setComponentAlignment(authOptionsGroup, Alignment.MIDDLE_LEFT);
+            layout.addComponent(authOptionsGroup, 0, 1, 1, 1);
+            layout.setComponentAlignment(authOptionsGroup, Alignment.MIDDLE_LEFT);
 
             Label apiKeyLabel = new Label("API access key:");
-            addComponent(apiKeyLabel, 0, 2);
-            setComponentAlignment(apiKeyLabel, Alignment.MIDDLE_LEFT);
+            layout.addComponent(apiKeyLabel, 0, 2);
+            layout.setComponentAlignment(apiKeyLabel, Alignment.MIDDLE_LEFT);
 
             redmineAPIKey = new PasswordField();
             redmineAPIKey.addStyleName("server-panel-textfield");
-            addComponent(redmineAPIKey, 1, 2);
-            setComponentAlignment(redmineAPIKey, Alignment.MIDDLE_LEFT);
+            layout.addComponent(redmineAPIKey, 1, 2);
+            layout.setComponentAlignment(redmineAPIKey, Alignment.MIDDLE_LEFT);
 
             Label loginLabel = new Label("Login:");
-            addComponent(loginLabel, 0, 3);
-            setComponentAlignment(loginLabel, Alignment.MIDDLE_LEFT);
+            layout.addComponent(loginLabel, 0, 3);
+            layout.setComponentAlignment(loginLabel, Alignment.MIDDLE_LEFT);
 
             login = new TextField();
             login.addStyleName("server-panel-textfield");
-            addComponent(login, 1, 3);
-            setComponentAlignment(login, Alignment.MIDDLE_LEFT);
+            layout.addComponent(login, 1, 3);
+            layout.setComponentAlignment(login, Alignment.MIDDLE_LEFT);
 
             Label passwordLabel = new Label("Password:");
-            addComponent(passwordLabel, 0, 4);
-            setComponentAlignment(loginLabel, Alignment.MIDDLE_LEFT);
+            layout.addComponent(passwordLabel, 0, 4);
+            layout.setComponentAlignment(loginLabel, Alignment.MIDDLE_LEFT);
 
             password = new PasswordField();
             password.addStyleName("server-panel-textfield");
-            addComponent(password, 1, 4);
-            setComponentAlignment(password, Alignment.MIDDLE_LEFT);
+            layout.addComponent(password, 1, 4);
+            layout.setComponentAlignment(password, Alignment.MIDDLE_LEFT);
         }
 
         private void addListener() {
@@ -225,8 +230,8 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         }
     }
 
-    class OtherRedmineFieldsPanel extends VerticalLayout {
-        private static final String OTHER_PANEL_LABEL = "Additional Info";
+    class OtherRedmineFieldsPanel extends Panel {
+        private static final String OTHER_PANEL_CAPTION = "Additional Info";
         private static final String SAVE_ISSUE_LABEL = "Save issue relations (follows/precedes)";
 
         private ConfigEditor configEditor;
@@ -235,6 +240,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         private CheckBox saveRelations;
 
         public OtherRedmineFieldsPanel(ConfigEditor configEditor) {
+            super(OTHER_PANEL_CAPTION);
             this.configEditor = configEditor;
 
             buildUI();
@@ -242,14 +248,12 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         }
 
         private void buildUI() {
-            addStyleName("bordered-panel");
-            setWidth("350px");
-            setCaption(OTHER_PANEL_LABEL);
+            addStyleName("panelexample");
+            setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
             setSpacing(true);
             setMargin(true);
 
             HorizontalLayout taskTypeLayout = new HorizontalLayout();
-            taskTypeLayout.addStyleName("bordered-panel");
             taskTypeLayout.setSizeUndefined();
             taskTypeLayout.setSpacing(true);
 
