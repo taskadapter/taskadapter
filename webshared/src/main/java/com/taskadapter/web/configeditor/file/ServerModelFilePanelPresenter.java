@@ -15,7 +15,6 @@ import java.util.Locale;
 
 /**
  * Author: Alexander Kulik
- * Date: 10.05.12 23:51
  */
 public class ServerModelFilePanelPresenter {
     public static final int MAX_FILE_SIZE_BYTES = 1000000;
@@ -130,7 +129,7 @@ public class ServerModelFilePanelPresenter {
             boolean isMpp = fileName.toLowerCase().endsWith(MSPFileReader.MPP_SUFFIX_LOWERCASE);
             if (isMpp) {
                 File f = fileManager.getFileForUser(userName, fileName);
-                String newFilePath = MSPUtils.moveMppProjectFileToXml(f.getAbsolutePath());
+                String newFilePath = MSPUtils.convertMppProjectFileToXml(f.getAbsolutePath());
                 if (newFilePath == null) {
                     // move error
                     view.setStatusLabelText(ServerModeFilePanel.SAVE_FILE_FAILED);

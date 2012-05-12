@@ -138,7 +138,6 @@ public class MSXMLFileWriter {
      * @return absolute file path
      * @throws java.io.IOException exception
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     public String writeProject(ProjectFile project)
             throws IOException {
         String mspFileName = config.getOutputFileName();

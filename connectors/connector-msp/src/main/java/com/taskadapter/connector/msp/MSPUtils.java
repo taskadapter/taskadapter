@@ -86,7 +86,7 @@ public class MSPUtils {
      * @param mppFilePath absolute path to *.mpp file
      * @return new absolute path to .xml
      */
-    public static String moveMppProjectFileToXml(String mppFilePath) {
+    public static String convertMppProjectFileToXml(String mppFilePath) {
         try {
             ProjectFile projectFile = new MSPFileReader().readFile(mppFilePath);
             MSPConfig config = new MSPConfig();
