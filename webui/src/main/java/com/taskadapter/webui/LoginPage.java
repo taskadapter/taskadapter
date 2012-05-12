@@ -27,7 +27,8 @@ public class LoginPage extends Page {
         layout.addComponent(loginForm);
 
 
-        staySignedIn = new com.vaadin.ui.CheckBox("Stay signed in");
+        staySignedIn = new CheckBox("Stay signed in");
+        staySignedIn.setImmediate(true);
         layout.addComponent(staySignedIn);
 
         Button btn = new Button("DEBUG");
