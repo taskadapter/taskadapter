@@ -53,6 +53,9 @@ public class ServerModelFilePanelPresenter {
         item.getItemProperty(ServerModeFilePanel.COMBOBOX_ITEM_PROPERTY).setValue(fileName);
     }
 
+    private static void removeFileFromContainer(IndexedContainer container, String fileName) {
+        container.removeItem(fileName);
+    }
 
     public IndexedContainer getFileList() {
         return fileList;
@@ -68,13 +71,13 @@ public class ServerModelFilePanelPresenter {
         selectedFile = new FileManager().getFileForUser(userName, fileName);
         File file = getSelectedFile();
         SimpleDateFormat sdf = new SimpleDateFormat(ServerModeFilePanel.DATE_FORMAT, Locale.US);
-        view.setDateLabelText(sdf.format(file.lastModified()));
+        view.setStatusLabelText(sdf.format(file.lastModified()));
         view.setDownloadEnabled(true);
     }
 
     public void onNoFileSelected() {
         this.selectedFile = null;
-        view.setDateLabelText("");
+        view.setStatusLabelText("");
         view.setDownloadEnabled(false);
     }
 
@@ -99,7 +102,7 @@ public class ServerModelFilePanelPresenter {
      * This method gets called immediately after upload is started
      */
     public void uploadStarted(Upload.StartedEvent event) {
-        view.setUploadStatusText(ServerModeFilePanel.UPLOADING);
+        view.setStatusLabelText(ServerModeFilePanel.UPLOADING);
         view.setUploadEnabled(false);
     }
 
@@ -113,9 +116,9 @@ public class ServerModelFilePanelPresenter {
                 view.setComboBoxItems(fileList);
             }
             view.selectFileInCombobox(uploadReceiver.getFileName());
-            view.setUploadStatusText(ServerModeFilePanel.UPLOAD_SUCCESS);
+            view.setStatusLabelText(ServerModeFilePanel.UPLOAD_SUCCESS);
         } else {
-            view.setUploadStatusText(ServerModeFilePanel.SAVE_FILE_FAILED);
+            view.setStatusLabelText(ServerModeFilePanel.SAVE_FILE_FAILED);
         }
 
         view.setUploadEnabled(true);
@@ -126,6 +129,17 @@ public class ServerModelFilePanelPresenter {
      */
     public void uploadFailed(Upload.FailedEvent event) {
         view.setUploadEnabled(true);
-        view.setUploadStatusText(ServerModeFilePanel.UPLOAD_FAILED);
+        view.setStatusLabelText(ServerModeFilePanel.UPLOAD_FAILED);
+    }
+
+    public void deleteSelectedFile() {
+        if (selectedFile.delete()) {
+            removeFileFromContainer(fileList, selectedFile.getName());
+            view.setComboBoxItems(fileList);
+            view.selectFileInCombobox(null);
+            view.setStatusLabelText(ServerModeFilePanel.FILE_DELETED_SUCCESS);
+        } else {
+            view.setStatusLabelText(ServerModeFilePanel.FILE_DELETED_FAILED);
+        }
     }
 }
