@@ -3,7 +3,10 @@ package com.taskadapter.connector.msp;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.configeditor.DefaultPanel;
-import com.taskadapter.web.configeditor.file.*;
+import com.taskadapter.web.configeditor.file.FilePanel;
+import com.taskadapter.web.configeditor.file.LocalModeFilePanel;
+import com.taskadapter.web.configeditor.file.ServerModeFilePanel2;
+import com.taskadapter.web.configeditor.file.ServerModelFilePanelPresenter;
 import com.taskadapter.web.service.Services;
 
 /**
@@ -44,15 +47,7 @@ public class MSPEditor extends ConfigEditor {
     }
 
     private ServerModeFilePanel2 createRemoteModeFilePanel() {
-        // TODO fix or delete
-        //return new ServerModeFilePanel(services.getAuthenticator());
         return new ServerModeFilePanel2(new ServerModelFilePanelPresenter(services.getAuthenticator().getUserName()));
-        /*new UploadListener() {
-            @Override
-            public void fileUploaded(String file) {
-                inputFileNameField.setValue(new FileManager().getFullFileNameOnServer(file));
-            }
-        }*/
     }
 
     private void setMSPDataToForm() {

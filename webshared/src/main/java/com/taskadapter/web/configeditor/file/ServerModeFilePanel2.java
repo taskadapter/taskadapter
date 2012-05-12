@@ -11,6 +11,9 @@ import com.vaadin.ui.themes.Runo;
  */
 public class ServerModeFilePanel2 extends FilePanel {
 
+    // TODO show this limit on the webpage
+    static final int MAX_FILE_SIZE_BYTES = 5000000;
+
     private static final String TITLE = "Microsoft Project file";
     private static final String COMBOBOX_INPUT_PROMPT = "Select an existing file";
     public static final String COMBOBOX_ITEM_PROPERTY = "name";
