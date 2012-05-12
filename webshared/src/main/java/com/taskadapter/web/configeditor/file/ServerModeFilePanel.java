@@ -9,7 +9,7 @@ import com.vaadin.ui.themes.Runo;
 /**
  * @author Alexander Kulik
  */
-public class ServerModeFilePanel2 extends FilePanel {
+public class ServerModeFilePanel extends FilePanel {
 
     // TODO show this limit on the webpage
     static final int MAX_FILE_SIZE_BYTES = 5000000;
@@ -34,7 +34,7 @@ public class ServerModeFilePanel2 extends FilePanel {
     private ComboBox comboBox;
     private Label uploadStatusLabel;
 
-    public ServerModeFilePanel2(ServerModelFilePanelPresenter presenter) {
+    public ServerModeFilePanel(ServerModelFilePanelPresenter presenter) {
         super(TITLE);
         this.presenter = presenter;
         buildUI();

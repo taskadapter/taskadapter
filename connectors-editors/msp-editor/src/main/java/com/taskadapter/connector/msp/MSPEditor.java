@@ -5,7 +5,7 @@ import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.configeditor.DefaultPanel;
 import com.taskadapter.web.configeditor.file.FilePanel;
 import com.taskadapter.web.configeditor.file.LocalModeFilePanel;
-import com.taskadapter.web.configeditor.file.ServerModeFilePanel2;
+import com.taskadapter.web.configeditor.file.ServerModeFilePanel;
 import com.taskadapter.web.configeditor.file.ServerModelFilePanelPresenter;
 import com.taskadapter.web.service.Services;
 
@@ -46,8 +46,8 @@ public class MSPEditor extends ConfigEditor {
         addComponent(filePanel);
     }
 
-    private ServerModeFilePanel2 createRemoteModeFilePanel() {
-        return new ServerModeFilePanel2(new ServerModelFilePanelPresenter(services.getAuthenticator().getUserName()));
+    private ServerModeFilePanel createRemoteModeFilePanel() {
+        return new ServerModeFilePanel(new ServerModelFilePanelPresenter(services.getAuthenticator().getUserName()));
     }
 
     private void setMSPDataToForm() {

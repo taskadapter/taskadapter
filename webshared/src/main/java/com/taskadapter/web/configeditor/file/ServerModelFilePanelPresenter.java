@@ -19,7 +19,7 @@ public class ServerModelFilePanelPresenter {
     private final String userName;
 
     private IndexedContainer fileList;
-    private ServerModeFilePanel2 view;
+    private ServerModeFilePanel view;
     private File selectedFile;
     private final UploadReceiver uploadReceiver;
 
@@ -37,12 +37,12 @@ public class ServerModelFilePanelPresenter {
      */
     private IndexedContainer buildFileList() {
         IndexedContainer container = new IndexedContainer();
-        container.addContainerProperty(ServerModeFilePanel2.COMBOBOX_ITEM_PROPERTY, String.class, null);
+        container.addContainerProperty(ServerModeFilePanel.COMBOBOX_ITEM_PROPERTY, String.class, null);
         List<File> files = new FileManager().getUserFiles(userName);
         for (File file : files) {
             addFileToContainer(container, file.getName());
         }
-        container.sort(new Object[]{ServerModeFilePanel2.COMBOBOX_ITEM_PROPERTY},
+        container.sort(new Object[]{ServerModeFilePanel.COMBOBOX_ITEM_PROPERTY},
                 new boolean[]{true});
 
         return container;
@@ -50,7 +50,7 @@ public class ServerModelFilePanelPresenter {
 
     private static void addFileToContainer(IndexedContainer container, String fileName) {
         Item item = container.addItem(fileName);
-        item.getItemProperty(ServerModeFilePanel2.COMBOBOX_ITEM_PROPERTY).setValue(fileName);
+        item.getItemProperty(ServerModeFilePanel.COMBOBOX_ITEM_PROPERTY).setValue(fileName);
     }
 
 
@@ -58,7 +58,7 @@ public class ServerModelFilePanelPresenter {
         return fileList;
     }
 
-    public void setView(ServerModeFilePanel2 view) {
+    public void setView(ServerModeFilePanel view) {
         this.view = view;
         view.setComboBoxItems(fileList);
         onNoFileSelected();
@@ -67,7 +67,7 @@ public class ServerModelFilePanelPresenter {
     public void onFileSelected(String fileName) {
         selectedFile = new FileManager().getFileForUser(userName, fileName);
         File file = getSelectedFile();
-        SimpleDateFormat sdf = new SimpleDateFormat(ServerModeFilePanel2.DATE_FORMAT, Locale.US);
+        SimpleDateFormat sdf = new SimpleDateFormat(ServerModeFilePanel.DATE_FORMAT, Locale.US);
         view.setDateLabelText(sdf.format(file.lastModified()));
         view.setDownloadEnabled(true);
     }
@@ -84,7 +84,7 @@ public class ServerModelFilePanelPresenter {
 
     public void downloadSelectedFile() {
         if (selectedFile == null) {
-            view.showNotification(ServerModeFilePanel2.DOWNLOAD_FILE_ERROR);
+            view.showNotification(ServerModeFilePanel.DOWNLOAD_FILE_ERROR);
             return;
         }
         FileDownloadResource resource = new FileDownloadResource(getSelectedFile(), view.getApplication());
@@ -99,7 +99,7 @@ public class ServerModelFilePanelPresenter {
      * This method gets called immediately after upload is started
      */
     public void uploadStarted(Upload.StartedEvent event) {
-        view.setUploadStatusText(ServerModeFilePanel2.UPLOADING);
+        view.setUploadStatusText(ServerModeFilePanel.UPLOADING);
         view.setUploadEnabled(false);
     }
 
@@ -113,9 +113,9 @@ public class ServerModelFilePanelPresenter {
                 view.setComboBoxItems(fileList);
             }
             view.selectFileInCombobox(uploadReceiver.getFileName());
-            view.setUploadStatusText(ServerModeFilePanel2.UPLOAD_SUCCESS);
+            view.setUploadStatusText(ServerModeFilePanel.UPLOAD_SUCCESS);
         } else {
-            view.setUploadStatusText(ServerModeFilePanel2.SAVE_FILE_FAILED);
+            view.setUploadStatusText(ServerModeFilePanel.SAVE_FILE_FAILED);
         }
 
         view.setUploadEnabled(true);
@@ -126,6 +126,6 @@ public class ServerModelFilePanelPresenter {
      */
     public void uploadFailed(Upload.FailedEvent event) {
         view.setUploadEnabled(true);
-        view.setUploadStatusText(ServerModeFilePanel2.UPLOAD_FAILED);
+        view.setUploadStatusText(ServerModeFilePanel.UPLOAD_FAILED);
     }
 }

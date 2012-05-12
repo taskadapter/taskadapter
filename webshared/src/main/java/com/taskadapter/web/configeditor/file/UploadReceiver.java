@@ -15,7 +15,7 @@ public class UploadReceiver implements Upload.Receiver {
     private String fileName;
     private boolean sleep;
     private int total;
-    private byte[] bytes = new byte[ServerModeFilePanel2.MAX_FILE_SIZE_BYTES];
+    private byte[] bytes = new byte[ServerModeFilePanel.MAX_FILE_SIZE_BYTES];
 
     public OutputStream receiveUpload(String filename, String mimeType) {
         total = 0;
@@ -33,7 +33,7 @@ public class UploadReceiver implements Upload.Receiver {
                     }
                 }
                 if (total == ServerModelFilePanelPresenter.MAX_FILE_SIZE_BYTES) {
-                    throw new RuntimeException("Max file size reached: " + ServerModeFilePanel2.MAX_FILE_SIZE_BYTES + " bytes");
+                    throw new RuntimeException("Max file size reached: " + ServerModeFilePanel.MAX_FILE_SIZE_BYTES + " bytes");
                 }
             }
         };
