@@ -40,7 +40,7 @@ public class MSXMLFileWriter {
 
     private MSPConfig config;
 
-    MSXMLFileWriter(MSPConfig config) {
+    public MSXMLFileWriter(MSPConfig config) {
         this.config = config;
     }
 
@@ -134,9 +134,12 @@ public class MSXMLFileWriter {
     }
 
     /**
+     * @param project project
      * @return absolute file path
+     * @throws java.io.IOException exception
      */
-    String writeProject(ProjectFile project)
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public String writeProject(ProjectFile project)
             throws IOException {
         String mspFileName = config.getOutputFileName();
         File folder = new File(mspFileName).getParentFile();

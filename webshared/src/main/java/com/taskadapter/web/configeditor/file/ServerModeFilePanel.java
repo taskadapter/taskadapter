@@ -49,6 +49,8 @@ public class ServerModeFilePanel extends FilePanel {
     private ComboBox comboBox;
     private ProgressIndicator progressIndicator;
     private Button deleteButton;
+    public static final String UPLOAD_MPP_SUCCESS = "File uploaded and successfully converted to XML";
+    public static final String CANNOT_DELETE_MPP_FILE = "Cannot delete .mpp file";
 
     public ServerModeFilePanel(ServerModelFilePanelPresenter presenter) {
         super(TITLE);
@@ -193,8 +195,7 @@ public class ServerModeFilePanel extends FilePanel {
 
     @Override
     public void refreshConfig(MSPConfig config) {
-        String fileName = config.getInputFileName();
-        selectFileInCombobox(fileName);
+        presenter.setConfig(config);
     }
 
     @Override

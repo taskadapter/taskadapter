@@ -1,5 +1,8 @@
 package com.taskadapter.web.configeditor.file;
 
+import com.taskadapter.connector.msp.MSPConfig;
+import com.taskadapter.connector.msp.MSPFileReader;
+import com.taskadapter.connector.msp.MSPUtils;
 import com.taskadapter.web.FileManager;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
@@ -22,6 +25,7 @@ public class ServerModelFilePanelPresenter {
     private ServerModeFilePanel view;
     private File selectedFile;
     private final UploadReceiver uploadReceiver;
+    private FileManager fileManager = new FileManager();
 
     public ServerModelFilePanelPresenter(String userName) {
         this.userName = userName;
@@ -73,7 +77,7 @@ public class ServerModelFilePanelPresenter {
             return;
         }
 
-        selectedFile = new FileManager().getFileForUser(userName, fileName);
+        selectedFile = fileManager.getFileForUser(userName, fileName);
         File file = getSelectedFile();
         SimpleDateFormat sdf = new SimpleDateFormat(ServerModeFilePanel.DATE_FORMAT, Locale.US);
         view.setStatusLabelText(sdf.format(file.lastModified()));
@@ -105,7 +109,9 @@ public class ServerModelFilePanelPresenter {
 
     /**
      * This method gets called immediately after upload is started
+     * @param event event
      */
+    @SuppressWarnings("UnusedDeclaration")
     public void uploadStarted(Upload.StartedEvent event) {
         view.setStatusLabelText(ServerModeFilePanel.UPLOADING);
         view.setUploadEnabled(false);
@@ -113,15 +119,39 @@ public class ServerModelFilePanelPresenter {
 
     /**
      * This method gets called when the upload finished successfully
+     * @param event event
      */
+    @SuppressWarnings("UnusedDeclaration")
     public void uploadSucceeded(Upload.SucceededEvent event) {
         if (uploadReceiver.saveFile(userName)) {
-            if (fileList.getItem(uploadReceiver.getFileName()) == null) {
-                addFileToContainer(fileList, uploadReceiver.getFileName());
+            String fileName = uploadReceiver.getFileName();
+            
+            // check if MPP file
+            boolean isMpp = fileName.toLowerCase().endsWith(MSPFileReader.MPP_SUFFIX_LOWERCASE);
+            if (isMpp) {
+                File f = fileManager.getFileForUser(userName, fileName);
+                String newFilePath = MSPUtils.moveMppProjectFileToXml(f.getAbsolutePath());
+                if (newFilePath == null) {
+                    // move error
+                    view.setStatusLabelText(ServerModeFilePanel.SAVE_FILE_FAILED);
+                    view.setUploadEnabled(true);
+                    return;
+                }
+
+                if (!f.delete()) {
+                    view.showNotification(ServerModeFilePanel.CANNOT_DELETE_MPP_FILE);
+                }
+                fileName = new File(newFilePath).getName();
+            }
+           
+            // add to ComboBox
+            if (fileList.getItem(fileName) == null) {
+                addFileToContainer(fileList, fileName);
                 view.setComboBoxItems(fileList);
             }
-            view.selectFileInCombobox(uploadReceiver.getFileName());
-            view.setStatusLabelText(ServerModeFilePanel.UPLOAD_SUCCESS);
+
+            view.selectFileInCombobox(fileName);
+            view.setStatusLabelText(isMpp? ServerModeFilePanel.UPLOAD_MPP_SUCCESS : ServerModeFilePanel.UPLOAD_SUCCESS);
         } else {
             view.setStatusLabelText(ServerModeFilePanel.SAVE_FILE_FAILED);
         }
@@ -131,7 +161,9 @@ public class ServerModelFilePanelPresenter {
 
     /**
      * This method gets called when the upload failed
+     * @param event event
      */
+    @SuppressWarnings("UnusedDeclaration")
     public void uploadFailed(Upload.FailedEvent event) {
         view.setUploadEnabled(true);
         view.setStatusLabelText(ServerModeFilePanel.UPLOAD_FAILED);
@@ -150,5 +182,10 @@ public class ServerModelFilePanelPresenter {
 
     public String getSelectedFileNameOrNull() {
         return selectedFile != null ? selectedFile.getName() : null;
+    }
+
+    public void setConfig(MSPConfig config) {
+        String fileName = config.getInputFileName();
+        view.selectFileInCombobox(fileName);
     }
 }
