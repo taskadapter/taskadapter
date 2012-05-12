@@ -1,6 +1,7 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.config.TAFile;
+import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.service.Services;
 import com.taskadapter.web.service.UpdateManager;
 import com.vaadin.Application;
