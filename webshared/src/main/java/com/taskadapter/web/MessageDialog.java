@@ -1,4 +1,4 @@
-package com.taskadapter.webui;
+package com.taskadapter.web;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
@@ -16,11 +16,13 @@ public class MessageDialog extends Window implements Button.ClickListener {
         super(caption);
 
         setModal(true);
+        layout.setSpacing(true);
 
         this.callback = callback;
 
         if (question != null) {
             addComponent(new Label(question));
+            addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
         }
 
         createButtons(answers);
