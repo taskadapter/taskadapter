@@ -3,6 +3,8 @@ package com.taskadapter.web.service;
 import java.util.Calendar;
 
 public class Authenticator {
+    private static final String LOGGED_IN_COOKIE_NAME = "loggedIn";
+    private static final String USER_NAME_COOKIE_NAME = "userName";
     private boolean loggedIn;
     private String userName;
 
@@ -13,8 +15,8 @@ public class Authenticator {
     }
 
     public void init() {
-        this.loggedIn = Boolean.parseBoolean(cookiesManager.getCookie("loggedIn"));
-        this.userName = cookiesManager.getCookie("userName");
+        this.loggedIn = Boolean.parseBoolean(cookiesManager.getCookie(LOGGED_IN_COOKIE_NAME));
+        this.userName = cookiesManager.getCookie(USER_NAME_COOKIE_NAME);
     }
 
     public void tryLogin(String userName, String password, boolean staySigned) {
@@ -32,8 +34,8 @@ public class Authenticator {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, 1);
 
-        cookiesManager.setCookie("loggedIn", "true", cal.getTime());
-        cookiesManager.setCookie("userName", userName, cal.getTime());
+        cookiesManager.setCookie(LOGGED_IN_COOKIE_NAME, "true", cal.getTime());
+        cookiesManager.setCookie(USER_NAME_COOKIE_NAME, userName, cal.getTime());
     }
 
     public void logout() {
@@ -43,8 +45,8 @@ public class Authenticator {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, -1);
 
-        cookiesManager.setCookie("loggedIn", "", cal.getTime());
-        cookiesManager.setCookie("userName", "", cal.getTime());
+        cookiesManager.setCookie(LOGGED_IN_COOKIE_NAME, "", cal.getTime());
+        cookiesManager.setCookie(USER_NAME_COOKIE_NAME, "", cal.getTime());
     }
 
     public boolean isLoggedIn() {

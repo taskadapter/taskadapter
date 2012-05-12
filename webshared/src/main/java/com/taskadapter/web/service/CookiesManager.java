@@ -11,8 +11,8 @@ public class CookiesManager {
         cookies = new BrowserCookies();
 
         cookies.addListener(new BrowserCookies.UpdateListener() {
-            public void cookiesUpdated(BrowserCookies bc) {
-                cookies.setData(bc);
+            public void cookiesUpdated(BrowserCookies cookiesParameter) {
+                cookies.setData(cookiesParameter);
             }
         });
     }

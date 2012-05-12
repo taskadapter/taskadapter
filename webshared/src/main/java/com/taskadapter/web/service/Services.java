@@ -18,8 +18,6 @@ public class Services {
     public Services() {
         configStorage = new ConfigStorage(pluginManager);
         authenticator = new Authenticator(cookiesManager);
-        // TODO remove before the release
-        //authenticator.tryLogin("admin", "");
     }
 
     public UpdateManager getUpdateManager() {
