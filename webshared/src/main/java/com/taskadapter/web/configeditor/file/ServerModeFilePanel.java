@@ -28,7 +28,7 @@ public class ServerModeFilePanel extends FilePanel {
     public static final String UPLOAD_SUCCESS = "Upload success";
     public static final String SAVE_FILE_FAILED = "Save file error"; // error of saving after upload
     public static final String UPLOADING = "Uploading";
-    private static final String DELETE_BUTTON_CAPTION = "Delete selected file";
+    private static final String DELETE_BUTTON_CAPTION = "Delete";
     private static final String QUESTION_DELETE_FILE = "Delete selected file?";
     private static final String CONFIRMATION_DIALOG_TITLE = "Deleting";
     private static final String CONFIRMATION_DIALOG_DELETE_BUTTON = "Delete";
@@ -37,7 +37,7 @@ public class ServerModeFilePanel extends FilePanel {
     public static final String FILE_DELETED_FAILED = "File deletion error";
 
     private static final int DELETE_FILE_ACTION = 1;
-    private static final String COMBOBOX_WIDTH = "250px";
+    private static final String COMBOBOX_WIDTH = "175px";
     private static final String CONFIRMATION_DIALOG_WIDTH = "200px";
 
 
@@ -70,6 +70,7 @@ public class ServerModeFilePanel extends FilePanel {
         layout.setSpacing(true);
         layout.addComponent(createComboBox());
         layout.addComponent(createDownloadButton());
+        layout.addComponent(createDeleteButton());
         return layout;
     }
 
@@ -100,8 +101,7 @@ public class ServerModeFilePanel extends FilePanel {
 
         Layout bottomToolLayout = new HorizontalLayout();
         bottomToolLayout.addComponent(createUploadButton());
-        bottomToolLayout.addComponent(createDeleteButton());
-        
+
         layout.addComponent(bottomToolLayout);
         
         return layout;
@@ -193,21 +193,21 @@ public class ServerModeFilePanel extends FilePanel {
 
     @Override
     public void refreshConfig(MSPConfig config) {
-
+        String fileName = config.getInputFileName();
+        selectFileInCombobox(fileName);
     }
 
     @Override
     public String getInputFileName() {
-        return null;
+        return presenter.getSelectedFileNameOrNull();
     }
 
     @Override
     public String getOutputFileName() {
-        return null;
+        return presenter.getSelectedFileNameOrNull();
     }
 
     public void setUploadEnabled(boolean flag) {
-
         // upload disabled in case of uploading process
         progressIndicator.setVisible(!flag);
         if (flag) {

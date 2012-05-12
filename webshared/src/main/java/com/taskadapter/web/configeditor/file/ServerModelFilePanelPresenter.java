@@ -68,6 +68,11 @@ public class ServerModelFilePanelPresenter {
     }
 
     public void onFileSelected(String fileName) {
+        if (fileName.isEmpty()) {
+            onNoFileSelected();
+            return;
+        }
+
         selectedFile = new FileManager().getFileForUser(userName, fileName);
         File file = getSelectedFile();
         SimpleDateFormat sdf = new SimpleDateFormat(ServerModeFilePanel.DATE_FORMAT, Locale.US);
@@ -141,5 +146,9 @@ public class ServerModelFilePanelPresenter {
         } else {
             view.setStatusLabelText(ServerModeFilePanel.FILE_DELETED_FAILED);
         }
+    }
+
+    public String getSelectedFileNameOrNull() {
+        return selectedFile != null ? selectedFile.getName() : null;
     }
 }

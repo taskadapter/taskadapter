@@ -47,7 +47,9 @@ public class MSPEditor extends ConfigEditor {
     }
 
     private ServerModeFilePanel createRemoteModeFilePanel() {
-        return new ServerModeFilePanel(new ServerModelFilePanelPresenter(services.getAuthenticator().getUserName()));
+        ServerModelFilePanelPresenter presenter =
+                new ServerModelFilePanelPresenter(services.getAuthenticator().getUserName());
+        return new ServerModeFilePanel(presenter);
     }
 
     private void setMSPDataToForm() {
