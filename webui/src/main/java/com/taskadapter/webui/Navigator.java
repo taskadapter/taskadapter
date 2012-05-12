@@ -97,25 +97,22 @@ public class Navigator {
         }
     }
 
-    public void show(Page page) {
-        page = pages.get(LOGIN_PAGE);
-        setServicesToPage(page);
-        /* // TODO: uncomment for production
-            if (!authenticator.isLoggedIn()) {
-                show(pages.get(LOGIN_PAGE));
-            } else {
-                show(page);
-            }
-        */
+    public void show(final Page page) {
+        Page actualPageToShow = page;
+        if (!services.getAuthenticator().isLoggedIn()) {
+            actualPageToShow = pages.get(LOGIN_PAGE);
+        }
+        setServicesToPage(actualPageToShow);
+
         currentComponentArea.removeAllComponents();
-        Component ui = page.getUI();
+        Component ui = actualPageToShow.getUI();
         ui.setSizeUndefined();
         currentComponentArea.addComponent(ui);
         currentComponentArea.setComponentAlignment(ui, Alignment.TOP_LEFT);
 
         navigationPanel.removeAllComponents();
 
-        Label titleLabel = new Label(page.getPageTitle());
+        Label titleLabel = new Label(actualPageToShow.getPageTitle());
         titleLabel.setSizeUndefined();
         navigationPanel.addComponent(titleLabel);
     }

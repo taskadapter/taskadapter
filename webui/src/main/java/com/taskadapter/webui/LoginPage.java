@@ -1,19 +1,11 @@
 package com.taskadapter.webui;
 
 import com.vaadin.ui.*;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.CheckBox;
-
-import javax.swing.plaf.ButtonUI;
-import java.util.Calendar;
-import java.util.Date;
 
 public class LoginPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
-    private com.vaadin.ui.CheckBox staySigned;
-    private Label lbl = new Label("[cookies not read]", Label.CONTENT_XHTML);
+    private CheckBox staySignedIn;
+    private Label debugCookiesLabel = new Label("", Label.CONTENT_XHTML);
 
     public LoginPage() {
         buildUI();
@@ -26,7 +18,7 @@ public class LoginPage extends Page {
             public void onLogin(LoginForm.LoginEvent event) {
                 String username = event.getLoginParameter("username");
                 String password = event.getLoginParameter("password");
-                services.getAuthenticator().tryLogin(username, password, staySigned.booleanValue());
+                services.getAuthenticator().tryLogin(username, password, staySignedIn.booleanValue());
                 if (services.getAuthenticator().isLoggedIn()) {
                     navigator.show(Navigator.HOME);
                 }
@@ -34,10 +26,11 @@ public class LoginPage extends Page {
         });
         layout.addComponent(loginForm);
 
-        staySigned = new com.vaadin.ui.CheckBox("Stay signed");
-        layout.addComponent(staySigned);
 
-        Button btn = new Button("Show");
+        staySignedIn = new com.vaadin.ui.CheckBox("Stay signed in");
+        layout.addComponent(staySignedIn);
+
+        Button btn = new Button("DEBUG");
         btn.addListener(new Button.ClickListener() {
             public void buttonClick(Button.ClickEvent event) {
                 String txt = "";
@@ -45,12 +38,11 @@ public class LoginPage extends Page {
                     txt += name + " = '" + services.getCookiesManager().getCookiesComponent().getCookie(name) + "'<br />";
                 }
 
-                lbl.setCaption(txt);
+                debugCookiesLabel.setCaption(txt);
             }
         });
         layout.addComponent(btn);
-
-        layout.addComponent(lbl);
+        layout.addComponent(debugCookiesLabel);
     }
 
     @Override

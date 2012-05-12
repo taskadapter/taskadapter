@@ -18,21 +18,22 @@ public class Authenticator {
     }
 
     public void tryLogin(String userName, String password, boolean staySigned) {
-        // TODO implement some simple authentication
-        this.loggedIn = true;
-        this.userName = userName;
         if (userName.equals("admin") && password.equals("admin")) {
             this.loggedIn = true;
             this.userName = userName;
 
             if (staySigned) {
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.MONTH, 1);
-
-                cookiesManager.setCookie("loggedIn", "true", cal.getTime());
-                cookiesManager.setCookie("userName", userName, cal.getTime());
+                setLoggedInCookieFor1Month(userName);
             }
         }
+    }
+
+    private void setLoggedInCookieFor1Month(String userName) {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, 1);
+
+        cookiesManager.setCookie("loggedIn", "true", cal.getTime());
+        cookiesManager.setCookie("userName", userName, cal.getTime());
     }
 
     public void logout() {
