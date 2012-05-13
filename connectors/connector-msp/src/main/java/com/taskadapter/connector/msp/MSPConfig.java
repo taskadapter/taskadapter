@@ -43,18 +43,30 @@ public class MSPConfig extends ConnectorConfig {
         this.outputFileName = configToDeepClone.getOutputFileName();
     }
 
+    /**
+     * @return absolute path to the MSP file name
+     */
     public String getInputFileName() {
         return inputFileName;
     }
 
+    /**
+     * @param fileName absolute path to the MSP file name
+     */
     public void setInputFileName(String fileName) {
         this.inputFileName = fileName;
     }
 
+    /**
+     * @return absolute path to the MSP file name
+     */
     public String getOutputFileName() {
         return outputFileName;
     }
 
+    /**
+     * @param outputFileName absolute path to the MSP file name
+     */
     public void setOutputFileName(String outputFileName) {
         this.outputFileName = outputFileName;
     }

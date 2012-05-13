@@ -180,11 +180,14 @@ public class ServerModelFilePanelPresenter {
     }
 
     public String getSelectedFileNameOrNull() {
-        return selectedFile != null ? selectedFile.getName() : null;
+        return selectedFile != null ? selectedFile.getAbsolutePath() : null;
     }
 
     public void setConfig(MSPConfig config) {
-        String fileName = config.getInputFileName();
-        view.selectFileInCombobox(fileName);
+        String absolutePath = config.getInputFileName();
+        if (absolutePath != null && absolutePath.isEmpty()) {
+            File f = new File(absolutePath);
+            view.selectFileInCombobox(f.getName());
+        }
     }
 }
