@@ -1,6 +1,6 @@
 package com.taskadapter.webui.license;
 
-import com.taskadapter.license.LicenseManager;
+import com.taskadapter.license.*;
 import com.taskadapter.web.service.Services;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
@@ -38,6 +38,15 @@ public class EnterLicensePanel extends VerticalLayout {
 
     // TODO delete before the release!
     private void addDebugButtons() {
+        Button forceInstallButton = new Button("DEBUG: force save license");
+        forceInstallButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                forceSave();
+            }
+        });
+        addComponent(forceInstallButton);
+
         Button saveSingleUserLicenseButton = new Button("DEBUG: 1-user license");
         saveSingleUserLicenseButton.addListener(new Button.ClickListener() {
             @Override
@@ -73,21 +82,38 @@ public class EnterLicensePanel extends VerticalLayout {
         addComponent(saveServerLicenseButton);
     }
 
+    // TODO remove before the release
+    private void forceSave() {
+        String licenseText = (String) licenseArea.getValue();
+
+        LicenseManager licenseManager = services.getLicenseManager();
+        License license = null;
+        try {
+            license = new LicenseParser().parseLicense(licenseText);
+//            licenseManager.setNewLicense(licenseText.trim());
+//            getWindow().showNotification("Successfully registered to: " + licenseManager.getLicense().getCustomerName());
+        } catch (LicenseException e) {
+            // this is for DEBUG: ignore validation exception and force install any invalid license
+//            licenseManager.installLicense();
+        }
+        licenseManager.forceInstallLicense(license);
+    }
+
     private boolean save() {
         String licenseText = (String) licenseArea.getValue();
 
         LicenseManager licenseManager = services.getLicenseManager();
-        licenseManager.setNewLicense(licenseText.trim());
-
-        if(licenseManager.isTaskAdapterLicenseOk()) {
+        try {
+            licenseManager.setNewLicense(licenseText.trim());
             licenseManager.installLicense();
             getWindow().showNotification("Successfully registered to: " + licenseManager.getLicense().getCustomerName());
-
-        } else {
-            getWindow().showNotification("License validation error", "The license text is invalid");
+        } catch (LicenseExpiredException e) {
+            getWindow().showNotification("License not accepted", e.getMessage());
+        } catch (LicenseException e) {
+            getWindow().showNotification("License not accepted", "The license is invalid");
         }
 
-        return licenseManager.isTaskAdapterLicenseOk();
+        return licenseManager.isSomeValidLicenseInstalled();
     }
 
     public void clearLicenseTextArea() {

@@ -1,5 +1,8 @@
 package com.taskadapter.web.configeditor.file;
 
+import com.taskadapter.connector.msp.MSPConfig;
+import com.taskadapter.connector.msp.MSPFileReader;
+import com.taskadapter.connector.msp.MSPUtils;
 import com.taskadapter.web.FileManager;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
@@ -12,7 +15,6 @@ import java.util.Locale;
 
 /**
  * Author: Alexander Kulik
- * Date: 10.05.12 23:51
  */
 public class ServerModelFilePanelPresenter {
     public static final int MAX_FILE_SIZE_BYTES = 1000000;
@@ -22,6 +24,7 @@ public class ServerModelFilePanelPresenter {
     private ServerModeFilePanel view;
     private File selectedFile;
     private final UploadReceiver uploadReceiver;
+    private FileManager fileManager = new FileManager();
 
     public ServerModelFilePanelPresenter(String userName) {
         this.userName = userName;
@@ -53,6 +56,9 @@ public class ServerModelFilePanelPresenter {
         item.getItemProperty(ServerModeFilePanel.COMBOBOX_ITEM_PROPERTY).setValue(fileName);
     }
 
+    private static void removeFileFromContainer(IndexedContainer container, String fileName) {
+        container.removeItem(fileName);
+    }
 
     public IndexedContainer getFileList() {
         return fileList;
@@ -65,16 +71,21 @@ public class ServerModelFilePanelPresenter {
     }
 
     public void onFileSelected(String fileName) {
-        selectedFile = new FileManager().getFileForUser(userName, fileName);
+        if (fileName.isEmpty()) {
+            onNoFileSelected();
+            return;
+        }
+
+        selectedFile = fileManager.getFileForUser(userName, fileName);
         File file = getSelectedFile();
         SimpleDateFormat sdf = new SimpleDateFormat(ServerModeFilePanel.DATE_FORMAT, Locale.US);
-        view.setDateLabelText(sdf.format(file.lastModified()));
+        view.setStatusLabelText(sdf.format(file.lastModified()));
         view.setDownloadEnabled(true);
     }
 
     public void onNoFileSelected() {
         this.selectedFile = null;
-        view.setDateLabelText("");
+        view.setStatusLabelText("");
         view.setDownloadEnabled(false);
     }
 
@@ -97,25 +108,51 @@ public class ServerModelFilePanelPresenter {
 
     /**
      * This method gets called immediately after upload is started
+     * @param event event
      */
+    @SuppressWarnings("UnusedDeclaration")
     public void uploadStarted(Upload.StartedEvent event) {
-        view.setUploadStatusText(ServerModeFilePanel.UPLOADING);
+        view.setStatusLabelText(ServerModeFilePanel.UPLOADING);
         view.setUploadEnabled(false);
     }
 
     /**
      * This method gets called when the upload finished successfully
+     * @param event event
      */
+    @SuppressWarnings("UnusedDeclaration")
     public void uploadSucceeded(Upload.SucceededEvent event) {
         if (uploadReceiver.saveFile(userName)) {
-            if (fileList.getItem(uploadReceiver.getFileName()) == null) {
-                addFileToContainer(fileList, uploadReceiver.getFileName());
+            String fileName = uploadReceiver.getFileName();
+            
+            // check if MPP file
+            boolean isMpp = fileName.toLowerCase().endsWith(MSPFileReader.MPP_SUFFIX_LOWERCASE);
+            if (isMpp) {
+                File f = fileManager.getFileForUser(userName, fileName);
+                String newFilePath = MSPUtils.convertMppProjectFileToXml(f.getAbsolutePath());
+                if (newFilePath == null) {
+                    // move error
+                    view.setStatusLabelText(ServerModeFilePanel.SAVE_FILE_FAILED);
+                    view.setUploadEnabled(true);
+                    return;
+                }
+
+                if (!f.delete()) {
+                    view.showNotification(ServerModeFilePanel.CANNOT_DELETE_MPP_FILE);
+                }
+                fileName = new File(newFilePath).getName();
+            }
+           
+            // add to ComboBox
+            if (fileList.getItem(fileName) == null) {
+                addFileToContainer(fileList, fileName);
                 view.setComboBoxItems(fileList);
             }
-            view.selectFileInCombobox(uploadReceiver.getFileName());
-            view.setUploadStatusText(ServerModeFilePanel.UPLOAD_SUCCESS);
+
+            view.selectFileInCombobox(fileName);
+            view.setStatusLabelText(isMpp? ServerModeFilePanel.UPLOAD_MPP_SUCCESS : ServerModeFilePanel.UPLOAD_SUCCESS);
         } else {
-            view.setUploadStatusText(ServerModeFilePanel.SAVE_FILE_FAILED);
+            view.setStatusLabelText(ServerModeFilePanel.SAVE_FILE_FAILED);
         }
 
         view.setUploadEnabled(true);
@@ -123,9 +160,34 @@ public class ServerModelFilePanelPresenter {
 
     /**
      * This method gets called when the upload failed
+     * @param event event
      */
+    @SuppressWarnings("UnusedDeclaration")
     public void uploadFailed(Upload.FailedEvent event) {
         view.setUploadEnabled(true);
-        view.setUploadStatusText(ServerModeFilePanel.UPLOAD_FAILED);
+        view.setStatusLabelText(ServerModeFilePanel.UPLOAD_FAILED);
+    }
+
+    public void deleteSelectedFile() {
+        if (selectedFile.delete()) {
+            removeFileFromContainer(fileList, selectedFile.getName());
+            view.setComboBoxItems(fileList);
+            view.selectFileInCombobox(null);
+            view.setStatusLabelText(ServerModeFilePanel.FILE_DELETED_SUCCESS);
+        } else {
+            view.setStatusLabelText(ServerModeFilePanel.FILE_DELETED_FAILED);
+        }
+    }
+
+    public String getSelectedFileNameOrNull() {
+        return selectedFile != null ? selectedFile.getAbsolutePath() : null;
+    }
+
+    public void setConfig(MSPConfig config) {
+        String absolutePath = config.getInputFileName();
+        if (absolutePath != null && absolutePath.isEmpty()) {
+            File f = new File(absolutePath);
+            view.selectFileInCombobox(f.getName());
+        }
     }
 }

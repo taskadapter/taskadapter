@@ -16,6 +16,7 @@ public class UploadReceiver implements Upload.Receiver {
     private boolean sleep;
     private int total;
     private byte[] bytes = new byte[ServerModeFilePanel.MAX_FILE_SIZE_BYTES];
+    private FileManager fileManager = new FileManager();
 
     public OutputStream receiveUpload(String filename, String mimeType) {
         total = 0;
@@ -53,7 +54,7 @@ public class UploadReceiver implements Upload.Receiver {
 
     public boolean saveFile(String userName) {
         try {
-            new FileManager().saveFileOnServer(userName, getFileName(), getBytes());
+            fileManager.saveFileOnServer(userName, getFileName(), getBytes());
         } catch (IOException e) {
             e.printStackTrace();
             return false;

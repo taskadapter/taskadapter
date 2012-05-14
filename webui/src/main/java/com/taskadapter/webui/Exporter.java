@@ -5,6 +5,7 @@ import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.*;
+import com.taskadapter.web.MessageDialog;
 
 import java.util.Arrays;
 

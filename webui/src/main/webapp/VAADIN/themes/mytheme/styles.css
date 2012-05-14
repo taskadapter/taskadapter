@@ -80,16 +80,6 @@
     font-size: 14px;
 }
 
-/*  // button is not used now
-.v-nativebutton-connectorBoxButton {
-    background-color: #DAF1FF;
-    color: #222219;
-    border: 1px black solid;
-    width: 220px;
-    height: 110px;
-}
-  */
-
 .connectorBoxLabel {
     font-size: 18px;
     background-color: #DAF1FF;
@@ -97,7 +87,7 @@
     border: 1px gray solid;
     border-radius: 3px;
     width: 200px;
-    height: 110px;
+    height: 100px;
     vertical-align: middle;
     text-align: center;
     line-height: 100px;
@@ -205,4 +195,8 @@
     color: #51bd51;
     font-weight: bold;
     font-size: 20px;
+}
+
+.expiredLicenseLabel {
+    color: red;
 }

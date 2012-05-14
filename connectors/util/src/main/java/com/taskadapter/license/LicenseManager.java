@@ -34,24 +34,20 @@ public class LicenseManager {
     private Collection<LicenseChangeListener> listeners = new HashSet<LicenseChangeListener>();
 
     private License license;
-    private boolean isValid = false;
 
     public LicenseManager() {
-        try {
-            license = getValidTaskAdapterLicense();
-            isValid = true;
-        } catch (LicenseValidationException e) {
-            isValid = false;
-        }
+        license = getInstalledTaskAdapterLicense();
     }
 
-    public void setNewLicense(String licenseText) {
-        try {
-            license = new LicenseParser().checkLicense(licenseText);
-            isValid = true;
-        } catch (LicenseValidationException e) {
-            isValid = false;
-        }
+    // TODO this all needs to be refactored!!
+    public void setNewLicense(String licenseText) throws LicenseException {
+        license = new LicenseParser().parseLicense(licenseText);
+        license.validate();
+    }
+
+    public void applyLicense(License newLicense) throws LicenseException {
+        newLicense.validate();
+        this.license = newLicense;
     }
 
     public License getLicense() {
@@ -60,7 +56,17 @@ public class LicenseManager {
 
     public void installLicense() {
         Preferences preferences = Preferences.userNodeForPackage(LicenseManager.class);
-        preferences.put(license.getProduct().toString(), license.getCompleteText());
+        String licenseText = new LicenseTextGenerator(license).generateLicenseText();
+        preferences.put(license.getProduct().toString(), licenseText);
+        notifyListeners();
+    }
+
+    // TODO this is for debug only
+    public void forceInstallLicense(License anyInvalidLicense) {
+        Preferences preferences = Preferences.userNodeForPackage(LicenseManager.class);
+        String licenseText = new LicenseTextGenerator(anyInvalidLicense).generateLicenseText();
+        preferences.put(anyInvalidLicense.getProduct().toString(), licenseText);
+        this.license = anyInvalidLicense;
         notifyListeners();
     }
 
@@ -74,28 +80,45 @@ public class LicenseManager {
      * @return NULL if the license is not found or is invalid
      * @throws LicenseValidationException the license does not exist or is invalid
      */
-    private static License getValidTaskAdapterLicense() throws LicenseValidationException {
+    private static License getInstalledTaskAdapterLicense() {
         return loadLicense(Product.TASK_ADAPTER_WEB);
     }
 
     /**
      * @param product Product type
-     * @return NULL if the license is not found or is invalid
-     * @throws LicenseValidationException the license does not exist or is invalid
+     * @return NULL if the license is not found
      */
-    private static License loadLicense(Product product) throws LicenseValidationException {
+    private static License loadLicense(Product product) {
         Preferences preferences = Preferences.userNodeForPackage(LicenseManager.class);
         String licenseText = preferences.get(product.toString(), null);
 
-        return new LicenseParser().checkLicense(licenseText);
+        License loadedLicense = null;
+        try {
+            loadedLicense = new LicenseParser().parseLicense(licenseText);
+        } catch (LicenseParseException e) {
+            System.out.println("can't parse license previously installed on this machine." + e);
+        }
+        return loadedLicense;
     }
 
-    public boolean isTaskAdapterLicenseOk() {
-        return isValid;
+    public boolean isSomeValidLicenseInstalled() {
+        if (license != null) {
+            try {
+                license.validate();
+                return true;
+            } catch (LicenseException e) {
+                // ignore
+            }
+        }
+        return false;
+    }
+
+    public boolean isSomeLicenseInstalled() {
+        return license != null;
     }
 
     public boolean isSingleUserLicenseInstalled() {
-        return isValid && license.getType().equals(License.Type.SINGLE);
+        return isSomeValidLicenseInstalled() && license.getType().equals(License.Type.SINGLE);
     }
 
     public void addLicenseChangeListener(LicenseChangeListener listener) {
@@ -120,7 +143,11 @@ public class LicenseManager {
             System.out.println("TaskAdapter license was removed from this computer.");
 
         } else {
-            installLicenseFromFile(command);
+            try {
+                installLicenseFromFile(command);
+            } catch (IOException e) {
+                System.out.println("Cannot find file: " + command + "\n\n" + USAGE_TEXT);
+            }
         }
     }
 
@@ -132,30 +159,24 @@ public class LicenseManager {
         Preferences preferences = Preferences.userNodeForPackage(LicenseManager.class);
         preferences.remove(Product.TASK_ADAPTER_WEB.toString());
         this.license = null;
-        this.isValid = false;
         notifyListeners();
     }
 
-    private static void installLicenseFromFile(String fileName) {
+    private static void installLicenseFromFile(String fileName) throws IOException {
+        String licenseFileText = MyIOUtils.loadFile(fileName);
+        System.out.println("Loaded file: " + fileName);
+        System.out.println("Installing license: " + DASHES + licenseFileText + DASHES);
+
+        LicenseManager licenseManager = new LicenseManager();
+
         try {
-            String licenseFileText = MyIOUtils.loadFile(fileName);
-            System.out.println("Loaded file: " + fileName);
-
-            System.out.println("Installing license: " + DASHES + licenseFileText + DASHES);
-
-            LicenseManager licenseManager = new LicenseManager();
             licenseManager.setNewLicense(licenseFileText);
+            licenseManager.installLicense();
+            System.out.println("The license was successfully installed to this computer.");
 
-            if (licenseManager.isTaskAdapterLicenseOk()) {
-                licenseManager.installLicense();
-                System.out.println("The license was successfully installed to this computer.");
-
-            } else {
-                System.out.println("Invalid license file:\n" + fileName);
-            }
-
-        } catch (IOException e) {
-            System.out.println("Cannot find file: " + fileName + "\n\n" + USAGE_TEXT);
+        } catch (LicenseException e) {
+            System.out.println("Invalid license file:\n" + fileName);
         }
+
     }
 }

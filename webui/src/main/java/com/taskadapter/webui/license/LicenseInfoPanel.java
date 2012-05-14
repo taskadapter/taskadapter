@@ -6,7 +6,12 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 
+import java.text.SimpleDateFormat;
+
+import static com.taskadapter.license.LicenseFormatDescriptor.LICENSE_DATE_FORMAT;
+
 public class LicenseInfoPanel extends GridLayout {
+    private SimpleDateFormat licenseDateFormatter = new SimpleDateFormat(LICENSE_DATE_FORMAT);
     private static final String LICENSE_DATE_FORMAT_DESCRIPTION_FOR_GUI = "(year-month-day)";
 
     private Label registeredTo;
@@ -53,9 +58,15 @@ public class LicenseInfoPanel extends GridLayout {
 
     public void setLicense(License license) {
         registeredTo.setValue(license.getCustomerName());
-        licenseType.setValue(license.getType().getText());
+        licenseType.setValue(license.getType());
         licenseCreatedOn.setValue(license.getCreatedOn());
-        licenseExpiresOn.setValue(license.getExpiresOn());
+        if (license.isExpired()) {
+            licenseExpiresOn.setValue(licenseDateFormatter.format(license.getExpiresOn()) + " - EXPIRED");
+            licenseExpiresOn.addStyleName("expiredLicenseLabel");
+        } else {
+            licenseExpiresOn.removeStyleName("expiredLicenseLabel");
+            licenseExpiresOn.setValue(license.getExpiresOn());
+        }
     }
 
     private void clearLicenseInfo() {

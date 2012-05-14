@@ -1,10 +1,14 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.model.GTaskDescriptor.FIELD;
+import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Resource;
 import net.sf.mpxj.TaskField;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 public class MSPUtils {
 
@@ -75,5 +79,37 @@ public class MSPUtils {
 
     static TaskField getTaskFieldByName(String name) {
         return TEXT_FIELDS_MAP.get(name);
+    }
+
+    /**
+     * Take absolute path to *.mpp file, convert it to *.xml and save to the same folder
+     * @param mppFilePath absolute path to *.mpp file
+     * @return new absolute path to .xml
+     */
+    public static String convertMppProjectFileToXml(String mppFilePath) {
+        try {
+            ProjectFile projectFile = new MSPFileReader().readFile(mppFilePath);
+            MSPConfig config = new MSPConfig();
+            config.setOutputFileName(changeExtension(mppFilePath, ".xml"));
+            return new MSXMLFileWriter(config).writeProject(projectFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * change extension in file name
+     * @param originalName Full name of file
+     * @param newExtension New extenstion like ".xml"
+     * @return new file name
+     */
+    public static String changeExtension(String originalName, String newExtension) {
+        int lastDot = originalName.lastIndexOf(".");
+        if (lastDot != -1) {
+            return originalName.substring(0, lastDot) + newExtension;
+        } else {
+            return originalName + newExtension;
+        }
     }
 }

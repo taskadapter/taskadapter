@@ -12,7 +12,7 @@ import java.io.FileNotFoundException;
 /**
  * @author Alexey Skorokhodov
  */
-class MSPFileReader {
+public class MSPFileReader {
     public static final String XML_SUFFIX_LOWERCASE = ".xml";
     public static final String MPP_SUFFIX_LOWERCASE = ".mpp";
 

@@ -6,16 +6,19 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 public class LicenseManagerTest {
     @Test
     public void testValidSingleLicense() throws IOException {
         LicenseManager licenseManager = new LicenseManager();
-        licenseManager.setNewLicense(getValidSingleUserLicense());
-        Assert.assertTrue("License is expected to be valid", licenseManager.isTaskAdapterLicenseOk());
+        try {
+            licenseManager.setNewLicense(getValidSingleUserLicense());
+        } catch (LicenseException e) {
+            fail("License is expected to be valid");
+        }
+        Assert.assertTrue("License is expected to be valid", licenseManager.isSomeValidLicenseInstalled());
 
         License license = licenseManager.getLicense();
         Assert.assertNotNull("License must not be null", license);
@@ -31,8 +34,12 @@ public class LicenseManagerTest {
     public void testValidMultiLicense() throws IOException {
         String validMultiUserLicense = MyIOUtils.getResourceAsString("taskadapterweb.license.multi");
         LicenseManager licenseManager = new LicenseManager();
-        licenseManager.setNewLicense(validMultiUserLicense);
-        Assert.assertTrue("License is expected to be valid", licenseManager.isTaskAdapterLicenseOk());
+        try {
+            licenseManager.setNewLicense(validMultiUserLicense);
+        } catch (LicenseException e) {
+            fail("License is expected to be valid");
+        }
+        Assert.assertTrue("License is expected to be valid", licenseManager.isSomeValidLicenseInstalled());
 
         License license = licenseManager.getLicense();
         Assert.assertNotNull("License must not be null", license);
@@ -41,25 +48,25 @@ public class LicenseManagerTest {
     }
 
     @Test
-    public void testInvalidLicense() throws IOException {
-        String invalidLicense = MyIOUtils.getResourceAsString("taskadapter.license.invalid");
-        LicenseManager licenseManager = new LicenseManager();
-        licenseManager.setNewLicense(invalidLicense);
-        assertFalse("License is expected to be invalid", licenseManager.isTaskAdapterLicenseOk());
-    }
-
-    @Test
     public void licenseBecomesInvalidAfterRemoval() throws IOException {
         LicenseManager licenseManager = new LicenseManager();
         License oldLicense = licenseManager.getLicense();
-        licenseManager.setNewLicense(getValidSingleUserLicense());
-        assertTrue("License is expected to be valid", licenseManager.isTaskAdapterLicenseOk());
+        try {
+            licenseManager.setNewLicense(getValidSingleUserLicense());
+        } catch (LicenseException e) {
+            fail("License is expected to be valid");
+        }
+        assertTrue("License is expected to be valid", licenseManager.isSomeValidLicenseInstalled());
         try {
             licenseManager.removeTaskAdapterLicenseFromThisComputer();
-            assertFalse("License must be INVALID after removal", licenseManager.isTaskAdapterLicenseOk());
+            assertFalse("License must be INVALID after removal", licenseManager.isSomeValidLicenseInstalled());
         } finally {
             if (oldLicense != null) {
-                licenseManager.setNewLicense(oldLicense.getCompleteText());
+                try {
+                    licenseManager.applyLicense(oldLicense);
+                } catch (LicenseException e) {
+                    fail("License must be valid at this point");
+                }
                 licenseManager.installLicense();
             }
         }

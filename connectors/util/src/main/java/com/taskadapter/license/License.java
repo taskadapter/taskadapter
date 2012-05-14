@@ -2,17 +2,23 @@ package com.taskadapter.license;
 
 import com.taskadapter.license.LicenseManager.Product;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.taskadapter.license.LicenseFormatDescriptor.LICENSE_DATE_FORMAT;
+
 public class License {
+    private SimpleDateFormat licenseDateFormatter = new SimpleDateFormat(LICENSE_DATE_FORMAT);
+
     private Product product;
     private Type type;
     private String customerName;
     private String email;
     private String createdOn;
-    private String expiresOn;
-    private String completeText;
+    private Date expiresOn;
 
     private static final String SINGLE_TEXT = "local / single user";
     private static final String MULTI_TEXT = "server / many users";
@@ -23,11 +29,11 @@ public class License {
 
         private String code;
         private String text;
-        private static Map<String, Type> lookupCode = new HashMap<String, Type>(2){{
+        private static Map<String, Type> lookupCode = new HashMap<String, Type>(2) {{
             put("s", SINGLE);
             put("m", MULTI);
         }};
-        private static Map<String, Type> lookupText = new HashMap<String, Type>(2){{
+        private static Map<String, Type> lookupText = new HashMap<String, Type>(2) {{
             put(SINGLE_TEXT, SINGLE);
             put(MULTI_TEXT, MULTI);
         }};
@@ -74,16 +80,12 @@ public class License {
         return createdOn;
     }
 
-    public String getExpiresOn() {
+    public Date getExpiresOn() {
         return expiresOn;
     }
 
-    public String getCompleteText() {
-        return completeText;
-    }
-
-    // TODO maybe refactor this parameters list
-    public License(Product product, Type type, String customerName, String email, String createdOn, String expiresOn, String completeText) {
+    // TODO refactor this parameters list!!
+    public License(Product product, Type type, String customerName, String email, String createdOn, Date expiresOn) {
         super();
         this.product = product;
         this.type = type;
@@ -91,7 +93,6 @@ public class License {
         this.email = email;
         this.createdOn = createdOn;
         this.expiresOn = expiresOn;
-        this.completeText = completeText;
     }
 
     @Override
@@ -104,5 +105,20 @@ public class License {
                 ", createdOn='" + createdOn +
                 ", expiresOn='" + expiresOn +
                 "'}";
+    }
+
+    public void validate() throws LicenseException {
+        if (isExpired()) {
+            throw new LicenseExpiredException("This license has expired. Today is " + licenseDateFormatter.format(new Date())
+                    + " and the license expiration date is " + licenseDateFormatter.format(expiresOn)
+                    + " (Date format is " + LICENSE_DATE_FORMAT + ")");
+        }
+    }
+
+    public boolean isExpired() {
+        Calendar expirationDateCalendar = Calendar.getInstance();
+        expirationDateCalendar.setTime(expiresOn);
+        Calendar now = Calendar.getInstance();
+        return now.after(expirationDateCalendar);
     }
 }

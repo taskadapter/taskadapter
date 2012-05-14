@@ -116,7 +116,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
     }
 
     private void checkLicense() {
-        if (!services.getLicenseManager().isTaskAdapterLicenseOk()) {
+        if (!services.getLicenseManager().isSomeValidLicenseInstalled()) {
             trialLayout.setVisible(true);
         } else {
             trialLayout.setVisible(false);

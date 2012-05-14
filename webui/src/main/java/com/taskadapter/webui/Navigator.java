@@ -1,6 +1,7 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.config.TAFile;
+import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.service.Services;
 import com.taskadapter.web.service.UpdateManager;
 import com.vaadin.Application;
@@ -21,7 +22,6 @@ public class Navigator {
     public static final String NEW_CONFIG_PAGE = "new_config_page";
     public static final String CONFIGURE_TASK_PAGE = "configure_task";
 
-    private static final String TASK_DETAILS_PAGE = "task_details";
     private static final String LOGIN_PAGE = "login_page";
     private static final String DELETE_PAGE = "delete_task";
 
@@ -52,7 +52,6 @@ public class Navigator {
         registerPage(FEEDBACK_PAGE, new SupportPage());
         registerPage(NEW_CONFIG_PAGE, new NewConfigPage());
         registerPage(CONFIGURE_TASK_PAGE, new ConfigureTaskPage());
-        registerPage(TASK_DETAILS_PAGE, new ConfigDetailsPage());
         registerPage(DELETE_PAGE, new ConfirmationPage());
     }
 
@@ -134,12 +133,6 @@ public class Navigator {
         page.setActiveTabLabel(dataHolderLabel);
         page.setErrorMessage(errorMessage);
 
-        show(page);
-    }
-
-    public void showTaskDetailsPage(TAFile file) {
-        ConfigDetailsPage page = (ConfigDetailsPage) pages.get(TASK_DETAILS_PAGE);
-        page.setFile(file);
         show(page);
     }
 
