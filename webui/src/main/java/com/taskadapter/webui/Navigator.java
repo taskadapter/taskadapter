@@ -22,7 +22,6 @@ public class Navigator {
     public static final String NEW_CONFIG_PAGE = "new_config_page";
     public static final String CONFIGURE_TASK_PAGE = "configure_task";
 
-    private static final String TASK_DETAILS_PAGE = "task_details";
     private static final String LOGIN_PAGE = "login_page";
     private static final String DELETE_PAGE = "delete_task";
 
