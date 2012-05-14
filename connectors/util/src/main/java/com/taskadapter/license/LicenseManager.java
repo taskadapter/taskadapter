@@ -34,28 +34,20 @@ public class LicenseManager {
     private Collection<LicenseChangeListener> listeners = new HashSet<LicenseChangeListener>();
 
     private License license;
-    private boolean isValid = false;
 
     public LicenseManager() {
-        try {
-            license = getValidTaskAdapterLicense();
-            isValid = true;
-        } catch (LicenseException e) {
-            isValid = false;
-        }
+        license = getInstalledTaskAdapterLicense();
     }
 
     // TODO this all needs to be refactored!!
     public void setNewLicense(String licenseText) throws LicenseException {
         license = new LicenseParser().parseLicense(licenseText);
         license.validate();
-        isValid = true;
     }
 
     public void applyLicense(License newLicense) throws LicenseException {
         newLicense.validate();
         this.license = newLicense;
-        isValid = true;
     }
 
     public License getLicense() {
@@ -74,6 +66,7 @@ public class LicenseManager {
         Preferences preferences = Preferences.userNodeForPackage(LicenseManager.class);
         String licenseText = new LicenseTextGenerator(anyInvalidLicense).generateLicenseText();
         preferences.put(anyInvalidLicense.getProduct().toString(), licenseText);
+        this.license = anyInvalidLicense;
         notifyListeners();
     }
 
@@ -87,30 +80,45 @@ public class LicenseManager {
      * @return NULL if the license is not found or is invalid
      * @throws LicenseValidationException the license does not exist or is invalid
      */
-    private static License getValidTaskAdapterLicense() throws LicenseException {
+    private static License getInstalledTaskAdapterLicense() {
         return loadLicense(Product.TASK_ADAPTER_WEB);
     }
 
     /**
      * @param product Product type
-     * @return NULL if the license is not found or is invalid
-     * @throws LicenseValidationException the license does not exist or is invalid
+     * @return NULL if the license is not found
      */
-    private static License loadLicense(Product product) throws LicenseException {
+    private static License loadLicense(Product product) {
         Preferences preferences = Preferences.userNodeForPackage(LicenseManager.class);
         String licenseText = preferences.get(product.toString(), null);
 
-        License loadedLicense = new LicenseParser().parseLicense(licenseText);
-        loadedLicense.validate();
+        License loadedLicense = null;
+        try {
+            loadedLicense = new LicenseParser().parseLicense(licenseText);
+        } catch (LicenseParseException e) {
+            System.out.println("can't parse license previously installed on this machine." + e);
+        }
         return loadedLicense;
     }
 
     public boolean isSomeValidLicenseInstalled() {
-        return isValid;
+        if (license != null) {
+            try {
+                license.validate();
+                return true;
+            } catch (LicenseException e) {
+                // ignore
+            }
+        }
+        return false;
+    }
+
+    public boolean isSomeLicenseInstalled() {
+        return license != null;
     }
 
     public boolean isSingleUserLicenseInstalled() {
-        return isValid && license.getType().equals(License.Type.SINGLE);
+        return isSomeValidLicenseInstalled() && license.getType().equals(License.Type.SINGLE);
     }
 
     public void addLicenseChangeListener(LicenseChangeListener listener) {
@@ -151,7 +159,6 @@ public class LicenseManager {
         Preferences preferences = Preferences.userNodeForPackage(LicenseManager.class);
         preferences.remove(Product.TASK_ADAPTER_WEB.toString());
         this.license = null;
-        this.isValid = false;
         notifyListeners();
     }
 

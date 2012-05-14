@@ -36,7 +36,7 @@ public class LicensePanel extends Panel implements LicenseChangeListener {
     }
 
     private void updateFormBasingOnLicense() {
-        if (services.getLicenseManager().isSomeValidLicenseInstalled()) {
+        if (services.getLicenseManager().isSomeLicenseInstalled()) {
             showRegisteredMode(services.getLicenseManager().getLicense());
         } else {
             showUnregisteredMode();

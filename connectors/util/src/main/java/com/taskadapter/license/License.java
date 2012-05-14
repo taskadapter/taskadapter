@@ -108,13 +108,17 @@ public class License {
     }
 
     public void validate() throws LicenseException {
-        Calendar expirationDateCalendar = Calendar.getInstance();
-        expirationDateCalendar.setTime(expiresOn);
-        Calendar now = Calendar.getInstance();
-        if (now.after(expirationDateCalendar)) {
-            throw new LicenseExpiredException("This license has expired. Today is " + licenseDateFormatter.format(now.getTime())
+        if (isExpired()) {
+            throw new LicenseExpiredException("This license has expired. Today is " + licenseDateFormatter.format(new Date())
                     + " and the license expiration date is " + licenseDateFormatter.format(expiresOn)
                     + " (Date format is " + LICENSE_DATE_FORMAT + ")");
         }
+    }
+
+    public boolean isExpired() {
+        Calendar expirationDateCalendar = Calendar.getInstance();
+        expirationDateCalendar.setTime(expiresOn);
+        Calendar now = Calendar.getInstance();
+        return now.after(expirationDateCalendar);
     }
 }

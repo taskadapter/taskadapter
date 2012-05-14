@@ -1,6 +1,6 @@
 package com.taskadapter.license;
 
-abstract class LicenseFormatDescriptor {
+public abstract class LicenseFormatDescriptor {
     static final String PREFIX_PRODUCT = "Product: ";
     static final String PREFIX_LICENSE_TYPE = "License type: ";
     static final String PREFIX_REGISTERED_TO = "Registered to: ";
@@ -16,7 +16,7 @@ abstract class LicenseFormatDescriptor {
     static final int LINE_EXPIRES_ON_DATE = 5;
     static final int LINE_KEY = 7;
 
-    static final String LICENSE_DATE_FORMAT = "yyyy-MM-dd";
+    public static final String LICENSE_DATE_FORMAT = "yyyy-MM-dd";
     // TODO this is not very secure, but should be OK for the prototype
     static final String PASSWORD = "$z823nV_sz#84";
 }

@@ -206,3 +206,7 @@
     font-weight: bold;
     font-size: 20px;
 }
+
+.expiredLicenseLabel {
+    color: red;
+}
