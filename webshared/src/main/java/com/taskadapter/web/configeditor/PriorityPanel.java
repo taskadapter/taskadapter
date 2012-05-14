@@ -6,12 +6,13 @@ import com.taskadapter.connector.definition.Descriptor.Feature;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
+import com.vaadin.data.Container;
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Window;
+import com.vaadin.data.validator.IntegerValidator;
+import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.ui.*;
 
 import java.util.*;
 
@@ -52,7 +53,8 @@ public class PriorityPanel extends Panel implements Validatable {
 
         data.setBeanIdProperty("text");
 
-        prioritiesTable = new Table("Priorities", data);
+        prioritiesTable = new Table("Priorities");
+        prioritiesTable.setContainerDataSource(data);
         prioritiesTable.addStyleName("priorities-table");
         prioritiesTable.setEditable(true);
 
@@ -63,38 +65,17 @@ public class PriorityPanel extends Panel implements Validatable {
         prioritiesTable.setColumnWidth(Priority.TEXT, 80);
         prioritiesTable.setWidth("300px");
 
-//		prioritiesTable.addSelectionListener(new SelectionAdapter() {
-//			public void widgetSelected(SelectionEvent e) {
-//
-//				clearEditor();
-//
-//				// Identify the selected row
-//				TableItem tableItem = (TableItem) e.item;
-//				if (tableItem == null)
-//					return;
-//
-//				// The editor must have the same size as the cell and must
-//				// not be any smaller than 50 pixels.
-//				prioritiesEditor.horizontalAlignment = SWT.LEFT;
-//				prioritiesEditor.grabHorizontal = true;
-//				prioritiesEditor.minimumWidth = 50;
-//
-//				ext mspText = new ext(prioritiesTable, SWT.NONE);
-//				mspText.setText(tableItem.getText(1));
-//				prioritiesEditor.setEditor(mspText, tableItem, 1);
-//				mspText.setFocus();
-//				mspText.selectAll();
-//
-//				mspText.addVerifyListener(new NumberVerifier());
-//
-//				mspText.addModifyListener(new ModifyListener() {
-//					public void modifyText(ModifyEvent me) {
-//						ext text = (Txt) prioritiesEditor.getEditor();
-//						prioritiesEditor.getItem().setText(1, text.getText());
-//					}
-//				});
-//			}
-//		});
+/*        prioritiesTable.setTableFieldFactory(new DefaultFieldFactory() {
+            @Override
+            public Field createField(Container container, Object itemId, Object propertyId, Component uiContext) {
+                Field field = super.createField(container, itemId, propertyId, uiContext);
+                if ("value".equals(propertyId)) {
+                    field.addValidator(new IntegerValidator("error"));
+                }
+                return field;
+            }
+        });*/
+
         addComponent(prioritiesTable);
 
         Button reloadButton = new Button("Reload");
