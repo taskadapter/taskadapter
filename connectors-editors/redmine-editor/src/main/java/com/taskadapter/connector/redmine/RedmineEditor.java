@@ -3,10 +3,7 @@ package com.taskadapter.connector.redmine;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
-import com.taskadapter.web.configeditor.ConfigEditor;
-import com.taskadapter.web.configeditor.DefaultPanel;
-import com.taskadapter.web.configeditor.EditorUtil;
-import com.taskadapter.web.configeditor.Validatable;
+import com.taskadapter.web.configeditor.*;
 import com.vaadin.data.Property;
 import com.vaadin.ui.*;
 import org.redmine.ta.RedmineManager;
@@ -31,16 +28,43 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
     }
 
     private void buildUI() {
-        serverPanel = new RedmineServerPanel();
-        addCustomPanelToProjectServerPanel(serverPanel);
 
-        addProjectPanel(this, new RedmineProjectProcessor(this));
+        HorizontalLayout root = new HorizontalLayout();
+        root.setSpacing(true);
+
+        VerticalLayout leftVerticalLayout = new VerticalLayout();
+        leftVerticalLayout.setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
+        leftVerticalLayout.setSpacing(true);
+
+        serverPanel = new RedmineServerPanel();
+        //addCustomPanelToProjectServerPanel(serverPanel);
+        addPanelToCustomComponent(leftVerticalLayout, serverPanel);
 
         otherPanel = new OtherRedmineFieldsPanel(this);
-        addComponent(otherPanel);
+        addPanelToCustomComponent(leftVerticalLayout, otherPanel);
 
-        addFieldsMappingPanel(RedmineDescriptor.instance.getAvailableFieldsProvider());
+        //addProjectPanel(this, new RedmineProjectProcessor(this));
+        //addFieldsMappingPanelToProjectPanel(RedmineDescriptor.instance.getAvailableFieldsProvider());
+
+        VerticalLayout rightVerticalLayout = new VerticalLayout();
+        rightVerticalLayout.setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
+        rightVerticalLayout.setSpacing(true);
+
+        ProjectPanel projectPanel = new ProjectPanel(this, new RedmineProjectProcessor(this));
+        //addCustomComponentToProjectServerPanel(rightVerticalLayout);
+        addPanelToCustomComponent(rightVerticalLayout, projectPanel);
+
+        FieldsMappingPanel fieldsMappingPanel = new FieldsMappingPanel(RedmineDescriptor.instance.getAvailableFieldsProvider(), config);
+        addPanelToCustomComponent(rightVerticalLayout, fieldsMappingPanel);
+        fieldsMappingPanel.setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
+
+        //addFieldsMappingPanel(RedmineDescriptor.instance.getAvailableFieldsProvider());
+        root.addComponent(leftVerticalLayout);
+        root.addComponent(rightVerticalLayout);
+        addComponent(root);
+
     }
+
 
     @Override
     public ConnectorConfig getPartialConfig() {
@@ -123,52 +147,74 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
             layout.setSpacing(true);
             layout.setMargin(true);
             layout.setColumns(2);
-            layout.setRows(5);
+            layout.setRows(8);
+
+            int currentRow = 0;
 
             Label urlLabel = new Label("Redmine URL:");
-            layout.addComponent(urlLabel, 0, 0);
+            layout.addComponent(urlLabel, 0, currentRow);
             layout.setComponentAlignment(urlLabel, Alignment.MIDDLE_LEFT);
-
             serverURL = new TextField();
             serverURL.addStyleName("server-panel-textfield");
             serverURL.setInputPrompt("http://myserver:3000/myredminelocation");
             layout.addComponent(serverURL, 1, 0);
-            layout.setComponentAlignment(serverURL, Alignment.MIDDLE_LEFT);
+            
+            String emptyLabelHeight = "15px";
 
+            currentRow++;
+
+            layout.setComponentAlignment(serverURL, Alignment.MIDDLE_LEFT);
+            layout.addComponent(createEmptyLabel(emptyLabelHeight), 0, currentRow++);
             authOptionsGroup.setSizeFull();
             authOptionsGroup.setNullSelectionAllowed(false);
             authOptionsGroup.setImmediate(true);
             authOptionsGroup.select(DEFAULT_USE);
-            layout.addComponent(authOptionsGroup, 0, 1, 1, 1);
+            layout.addComponent(authOptionsGroup, 0, currentRow, 1, currentRow);
             layout.setComponentAlignment(authOptionsGroup, Alignment.MIDDLE_LEFT);
 
+            currentRow++;
+            layout.addComponent(createEmptyLabel(emptyLabelHeight), 0, currentRow++);
+
+
+
             Label apiKeyLabel = new Label("API access key:");
-            layout.addComponent(apiKeyLabel, 0, 2);
+            layout.addComponent(apiKeyLabel, 0, currentRow);
             layout.setComponentAlignment(apiKeyLabel, Alignment.MIDDLE_LEFT);
 
             redmineAPIKey = new PasswordField();
             redmineAPIKey.addStyleName("server-panel-textfield");
-            layout.addComponent(redmineAPIKey, 1, 2);
+            layout.addComponent(redmineAPIKey, 1, currentRow);
             layout.setComponentAlignment(redmineAPIKey, Alignment.MIDDLE_LEFT);
+            currentRow++;
 
             Label loginLabel = new Label("Login:");
-            layout.addComponent(loginLabel, 0, 3);
+            layout.addComponent(loginLabel, 0, currentRow);
             layout.setComponentAlignment(loginLabel, Alignment.MIDDLE_LEFT);
 
             login = new TextField();
             login.addStyleName("server-panel-textfield");
-            layout.addComponent(login, 1, 3);
+            layout.addComponent(login, 1, currentRow);
             layout.setComponentAlignment(login, Alignment.MIDDLE_LEFT);
+            currentRow++;
 
             Label passwordLabel = new Label("Password:");
-            layout.addComponent(passwordLabel, 0, 4);
+            layout.addComponent(passwordLabel, 0, currentRow);
             layout.setComponentAlignment(loginLabel, Alignment.MIDDLE_LEFT);
 
             password = new PasswordField();
             password.addStyleName("server-panel-textfield");
-            layout.addComponent(password, 1, 4);
+            layout.addComponent(password, 1, currentRow++);
             layout.setComponentAlignment(password, Alignment.MIDDLE_LEFT);
+            layout.addComponent(createEmptyLabel("15px"), 0, currentRow++);
+
         }
+
+        private Label createEmptyLabel(String height) {
+            Label label = new Label("&nbsp;", Label.CONTENT_XHTML);
+            label.setHeight(height);
+            return label;
+        }
+
 
         private void addListener() {
             authOptionsGroup.addListener(new Property.ValueChangeListener() {
@@ -249,16 +295,18 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
 
         private void buildUI() {
             addStyleName("panelexample");
-            setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
+            setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
+
             setSpacing(true);
             setMargin(true);
 
             HorizontalLayout taskTypeLayout = new HorizontalLayout();
-            taskTypeLayout.setSizeUndefined();
+            //taskTypeLayout.setSizeUndefined();
             taskTypeLayout.setSpacing(true);
 
             defaultTaskType = EditorUtil.addLabeledText(taskTypeLayout, "Default task type:",
                     "New tasks will be created with this 'tracker' (bug/task/support/feature/...)");
+            defaultTaskType.setWidth("200px");
 
             Button showDefaultTaskType = EditorUtil.createLookupButton(
                     configEditor,
@@ -277,9 +325,8 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
 
             saveRelations = new CheckBox(SAVE_ISSUE_LABEL);
             addComponent(saveRelations);
-
         }
-
+        
         private void setDataToForm() {
             RedmineConfig redmineConfig = (RedmineConfig) config;
             setIfNotNull(defaultTaskType, redmineConfig.getDefaultTaskType());
