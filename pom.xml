@@ -45,11 +45,6 @@
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
         </dependency>
-				<dependency>
-					 <groupId>org.vaadin.addons</groupId>
-					 <artifactId>browsercookies</artifactId>
-					 <version>1.0.4</version>
-				</dependency>		
 		</dependencies>
 
     <repositories>
