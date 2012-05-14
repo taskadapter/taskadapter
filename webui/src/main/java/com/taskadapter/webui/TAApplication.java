@@ -25,7 +25,7 @@ public class TAApplication extends Application {
 
     @Override
     public void init() {
-//        if(services.getLicenseManager().isTaskAdapterLicenseOk()) {
+//        if(services.getLicenseManager().isSomeValidLicenseInstalled()) {
 //            String host = getURL().getHost();
 //
 //            if(License.Type.SINGLE.equals(services.getLicenseManager().getLicense().getType())

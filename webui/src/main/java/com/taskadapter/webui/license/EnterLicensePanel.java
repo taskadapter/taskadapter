@@ -1,6 +1,8 @@
 package com.taskadapter.webui.license;
 
+import com.taskadapter.license.LicenseExpiredException;
 import com.taskadapter.license.LicenseManager;
+import com.taskadapter.license.LicenseValidationException;
 import com.taskadapter.web.service.Services;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
@@ -77,17 +79,17 @@ public class EnterLicensePanel extends VerticalLayout {
         String licenseText = (String) licenseArea.getValue();
 
         LicenseManager licenseManager = services.getLicenseManager();
-        licenseManager.setNewLicense(licenseText.trim());
-
-        if(licenseManager.isTaskAdapterLicenseOk()) {
+        try {
+            licenseManager.setNewLicense(licenseText.trim());
             licenseManager.installLicense();
             getWindow().showNotification("Successfully registered to: " + licenseManager.getLicense().getCustomerName());
-
-        } else {
-            getWindow().showNotification("License validation error", "The license text is invalid");
+        } catch (LicenseExpiredException e) {
+            getWindow().showNotification("License not accepted", e.getMessage());
+        } catch (LicenseValidationException e) {
+            getWindow().showNotification("License not accepted", "The license text is invalid");
         }
 
-        return licenseManager.isTaskAdapterLicenseOk();
+        return licenseManager.isSomeValidLicenseInstalled();
     }
 
     public void clearLicenseTextArea() {

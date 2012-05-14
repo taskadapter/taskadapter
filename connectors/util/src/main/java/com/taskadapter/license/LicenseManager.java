@@ -45,13 +45,10 @@ public class LicenseManager {
         }
     }
 
-    public void setNewLicense(String licenseText) {
-        try {
-            license = new LicenseParser().checkLicense(licenseText);
-            isValid = true;
-        } catch (LicenseValidationException e) {
-            isValid = false;
-        }
+    // TODO this all needs to be refactored!!
+    public void setNewLicense(String licenseText) throws LicenseValidationException {
+        license = new LicenseParser().checkLicense(licenseText);
+        isValid = true;
     }
 
     public License getLicense() {
@@ -90,7 +87,7 @@ public class LicenseManager {
         return new LicenseParser().checkLicense(licenseText);
     }
 
-    public boolean isTaskAdapterLicenseOk() {
+    public boolean isSomeValidLicenseInstalled() {
         return isValid;
     }
 
@@ -120,7 +117,11 @@ public class LicenseManager {
             System.out.println("TaskAdapter license was removed from this computer.");
 
         } else {
-            installLicenseFromFile(command);
+            try {
+                installLicenseFromFile(command);
+            } catch (IOException e) {
+                System.out.println("Cannot find file: " + command + "\n\n" + USAGE_TEXT);
+            }
         }
     }
 
@@ -136,26 +137,21 @@ public class LicenseManager {
         notifyListeners();
     }
 
-    private static void installLicenseFromFile(String fileName) {
+    private static void installLicenseFromFile(String fileName) throws IOException {
+        String licenseFileText = MyIOUtils.loadFile(fileName);
+        System.out.println("Loaded file: " + fileName);
+        System.out.println("Installing license: " + DASHES + licenseFileText + DASHES);
+
+        LicenseManager licenseManager = new LicenseManager();
+
         try {
-            String licenseFileText = MyIOUtils.loadFile(fileName);
-            System.out.println("Loaded file: " + fileName);
-
-            System.out.println("Installing license: " + DASHES + licenseFileText + DASHES);
-
-            LicenseManager licenseManager = new LicenseManager();
             licenseManager.setNewLicense(licenseFileText);
+            licenseManager.installLicense();
+            System.out.println("The license was successfully installed to this computer.");
 
-            if (licenseManager.isTaskAdapterLicenseOk()) {
-                licenseManager.installLicense();
-                System.out.println("The license was successfully installed to this computer.");
-
-            } else {
-                System.out.println("Invalid license file:\n" + fileName);
-            }
-
-        } catch (IOException e) {
-            System.out.println("Cannot find file: " + fileName + "\n\n" + USAGE_TEXT);
+        } catch (LicenseValidationException e) {
+            System.out.println("Invalid license file:\n" + fileName);
         }
+
     }
 }

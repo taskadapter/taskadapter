@@ -101,7 +101,7 @@ public class SyncRunner {
     }
 
     private List<GTask> applyTrialIfNeeded(List<GTask> flatTasksList) {
-        if (licenseManager.isTaskAdapterLicenseOk()) {
+        if (licenseManager.isSomeValidLicenseInstalled()) {
             return flatTasksList;
 
         } else {
