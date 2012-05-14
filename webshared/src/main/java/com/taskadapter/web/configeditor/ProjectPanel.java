@@ -27,7 +27,7 @@ public class ProjectPanel extends Panel implements Validatable {
      *
      * @see ConfigEditor#addProjectPanel(ConfigEditor, ProjectProcessor)
      */
-    ProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor) {
+    public ProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor) {
         super(PANEL_CAPTION);
         this.editor = editor;
         this.projectProcessor = projectProcessor;

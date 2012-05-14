@@ -88,6 +88,20 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         projectAndServerLayout.addComponent(component);
     }
 
+    protected void addCustomComponentToProjectServerPanel(Component component) {
+        projectAndServerLayout.addComponent(component);
+    }
+
+    protected void addPanelToCustomComponent(Layout component, Panel panel) {
+        //if layout supports Validatable interface add it to validation list
+        if (panel instanceof Validatable) {
+            toValidate.add((Validatable) panel);
+        }
+        component.addComponent(panel);
+    }
+
+
+
     protected void addProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor) {
         createProjectServerPanelIfNeeded();
         projectPanel = new ProjectPanel(editor, projectProcessor);
@@ -109,6 +123,12 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         toValidate.add(priorityPanel);
         addComponent(priorityPanel);
         priorityPanel.setPriorities(priorities);
+    }
+
+    protected void addFieldsMappingPanelToProjectPanel(AvailableFieldsProvider fieldsProvider) {
+        fieldsMappingPanel = new FieldsMappingPanel(fieldsProvider, config);
+        toValidate.add(fieldsMappingPanel);
+        addCustomPanelToProjectServerPanel(fieldsMappingPanel);
     }
 
     protected void addFieldsMappingPanel(AvailableFieldsProvider fieldsProvider) {
