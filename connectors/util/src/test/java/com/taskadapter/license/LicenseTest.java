@@ -12,7 +12,7 @@ public class LicenseTest {
         Calendar calendar = Calendar.getInstance();
         // 1 month in the past
         calendar.add(Calendar.MONTH, -1);
-        License expiredLicense = new License(LicenseManager.Product.TASK_ADAPTER_WEB, License.Type.SINGLE, "some name", "mail@gmail.com", "2012-05-10", calendar.getTime(), "some text");
+        License expiredLicense = new License(LicenseManager.Product.TASK_ADAPTER_WEB, License.Type.SINGLE, "some name", "mail@gmail.com", "2012-05-10", calendar.getTime());
         expiredLicense.validate();
     }
 

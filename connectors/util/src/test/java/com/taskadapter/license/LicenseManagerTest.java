@@ -63,7 +63,7 @@ public class LicenseManagerTest {
         } finally {
             if (oldLicense != null) {
                 try {
-                    licenseManager.setNewLicense(oldLicense.getCompleteText());
+                    licenseManager.applyLicense(oldLicense);
                 } catch (LicenseException e) {
                     fail("License must be valid at this point");
                 }

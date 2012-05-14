@@ -52,20 +52,28 @@ public class LicenseManager {
         isValid = true;
     }
 
+    public void applyLicense(License newLicense) throws LicenseException {
+        newLicense.validate();
+        this.license = newLicense;
+        isValid = true;
+    }
+
     public License getLicense() {
         return license;
     }
 
     public void installLicense() {
         Preferences preferences = Preferences.userNodeForPackage(LicenseManager.class);
-        preferences.put(license.getProduct().toString(), license.getCompleteText());
+        String licenseText = new LicenseTextGenerator(license).generateLicenseText();
+        preferences.put(license.getProduct().toString(), licenseText);
         notifyListeners();
     }
 
     // TODO this is for debug only
     public void forceInstallLicense(License anyInvalidLicense) {
         Preferences preferences = Preferences.userNodeForPackage(LicenseManager.class);
-        preferences.put(anyInvalidLicense.getProduct().toString(), anyInvalidLicense.getCompleteText());
+        String licenseText = new LicenseTextGenerator(anyInvalidLicense).generateLicenseText();
+        preferences.put(anyInvalidLicense.getProduct().toString(), licenseText);
         notifyListeners();
     }
 

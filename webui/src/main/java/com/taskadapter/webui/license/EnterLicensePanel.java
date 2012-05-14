@@ -1,8 +1,6 @@
 package com.taskadapter.webui.license;
 
-import com.taskadapter.license.LicenseException;
-import com.taskadapter.license.LicenseExpiredException;
-import com.taskadapter.license.LicenseManager;
+import com.taskadapter.license.*;
 import com.taskadapter.web.service.Services;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
@@ -89,13 +87,16 @@ public class EnterLicensePanel extends VerticalLayout {
         String licenseText = (String) licenseArea.getValue();
 
         LicenseManager licenseManager = services.getLicenseManager();
+        License license = null;
         try {
-            licenseManager.setNewLicense(licenseText.trim());
-            getWindow().showNotification("Successfully registered to: " + licenseManager.getLicense().getCustomerName());
+            license = new LicenseParser().parseLicense(licenseText);
+//            licenseManager.setNewLicense(licenseText.trim());
+//            getWindow().showNotification("Successfully registered to: " + licenseManager.getLicense().getCustomerName());
         } catch (LicenseException e) {
             // this is for DEBUG: ignore validation exception and force install any invalid license
-            licenseManager.installLicense();
+//            licenseManager.installLicense();
         }
+        licenseManager.forceInstallLicense(license);
     }
 
     private boolean save() {

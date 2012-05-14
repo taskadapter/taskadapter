@@ -19,7 +19,6 @@ public class License {
     private String email;
     private String createdOn;
     private Date expiresOn;
-    private String completeText;
 
     private static final String SINGLE_TEXT = "local / single user";
     private static final String MULTI_TEXT = "server / many users";
@@ -85,12 +84,8 @@ public class License {
         return expiresOn;
     }
 
-    public String getCompleteText() {
-        return completeText;
-    }
-
     // TODO refactor this parameters list!!
-    public License(Product product, Type type, String customerName, String email, String createdOn, Date expiresOn, String completeText) {
+    public License(Product product, Type type, String customerName, String email, String createdOn, Date expiresOn) {
         super();
         this.product = product;
         this.type = type;
@@ -98,7 +93,6 @@ public class License {
         this.email = email;
         this.createdOn = createdOn;
         this.expiresOn = expiresOn;
-        this.completeText = completeText;
     }
 
     @Override

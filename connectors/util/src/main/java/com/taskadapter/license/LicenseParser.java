@@ -8,7 +8,7 @@ import java.util.Date;
 
 import static com.taskadapter.license.LicenseFormatDescriptor.*;
 
-final class LicenseParser {
+public final class LicenseParser {
 
     private static final int LICENSE_BODY_LINES_NUMBER = 7;
     private SimpleDateFormat licenseDateFormatter = new SimpleDateFormat(LICENSE_DATE_FORMAT);
@@ -16,7 +16,7 @@ final class LicenseParser {
     /**
      * @param licenseText license as text
      * @return the valid License object
-     * @throws LicenseValidationException if license can't be parsed. we don't check whether or not the license is expired here
+     * @throws LicenseParseException if license can't be parsed. we don't check whether or not the license is expired here
      */
     public License parseLicense(String licenseText) throws LicenseParseException {
         if (licenseText == null) {
@@ -70,7 +70,7 @@ final class LicenseParser {
             } catch (ParseException e) {
                 throw new LicenseParseException("Invalid license expiration date: " + expiresOnString + ". Valid format: " + LICENSE_DATE_FORMAT);
             }
-            license = new License(product, License.Type.getByText(licenseTypeStr), customerName, email, createdOn, expiresOn, licenseText);
+            license = new License(product, License.Type.getByText(licenseTypeStr), customerName, email, createdOn, expiresOn);
         } else {
             throw new LicenseParseException("License is not recognized");
         }
