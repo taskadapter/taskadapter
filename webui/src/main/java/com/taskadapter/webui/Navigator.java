@@ -52,7 +52,6 @@ public class Navigator {
         registerPage(FEEDBACK_PAGE, new SupportPage());
         registerPage(NEW_CONFIG_PAGE, new NewConfigPage());
         registerPage(CONFIGURE_TASK_PAGE, new ConfigureTaskPage());
-        registerPage(TASK_DETAILS_PAGE, new ConfigDetailsPage());
         registerPage(DELETE_PAGE, new ConfirmationPage());
     }
 
@@ -136,12 +135,6 @@ public class Navigator {
         page.setActiveTabLabel(dataHolderLabel);
         page.setErrorMessage(errorMessage);
 
-        show(page);
-    }
-
-    public void showTaskDetailsPage(TAFile file) {
-        ConfigDetailsPage page = (ConfigDetailsPage) pages.get(TASK_DETAILS_PAGE);
-        page.setFile(file);
         show(page);
     }
 

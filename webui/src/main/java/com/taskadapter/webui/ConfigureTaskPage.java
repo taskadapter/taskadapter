@@ -8,7 +8,6 @@ import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.vaadin.ui.*;
-import com.vaadin.ui.themes.BaseTheme;
 
 /**
  * @author Alexey Skorokhodov
@@ -29,7 +28,7 @@ public class ConfigureTaskPage extends Page {
     private void buildUI() {
         layout.removeAllComponents();
         layout.setSpacing(true);
-        addLinkToTaskOverviewPage();
+//        addLinkToTaskOverviewPage();
         HorizontalLayout buttonsLayout = new HorizontalLayout();
 
         Button saveButton = new Button("Save");
@@ -71,17 +70,17 @@ public class ConfigureTaskPage extends Page {
         layout.addComponent(tabSheet);
     }
 
-    private void addLinkToTaskOverviewPage() {
-        Button button = new Button(file.getConfigLabel());
-        button.setStyleName(BaseTheme.BUTTON_LINK);
-        button.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                navigator.showTaskDetailsPage(file);
-            }
-        });
-        layout.addComponent(button);
-    }
+//    private void addLinkToTaskOverviewPage() {
+//        Button button = new Button(file.getConfigLabel());
+//        button.setStyleName(BaseTheme.BUTTON_LINK);
+//        button.addListener(new Button.ClickListener() {
+//            @Override
+//            public void buttonClick(Button.ClickEvent event) {
+//                navigator.showTaskDetailsPage(file);
+//            }
+//        });
+//        layout.addComponent(button);
+//    }
 
     private String getPanelCaption(ConnectorDataHolder connectorDataHolder) {
         return connectorDataHolder.getData().getLabel();
@@ -118,7 +117,7 @@ public class ConfigureTaskPage extends Page {
             navigator.showNotification("Saved", "All saved OK");
 
             errorMessageLabel.setValue("");
-            navigator.showTaskDetailsPage(file);
+            navigator.show(Navigator.HOME);
         }
     }
 
