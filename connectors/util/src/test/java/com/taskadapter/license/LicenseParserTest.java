@@ -6,10 +6,9 @@ import org.junit.Test;
 import java.io.IOException;
 
 public class LicenseParserTest {
-    @Test (expected = LicenseExpiredException.class)
-    public void testCheckLicense() throws IOException, LicenseValidationException {
+    @Test
+    public void expiredLicenseParsedOK() throws IOException, LicenseParseException {
         String expiredLicenseText = MyIOUtils.getResourceAsString("taskadapterweb.license.expired");
-
-        new LicenseParser().checkLicense(expiredLicenseText);
+        new LicenseParser().parseLicense(expiredLicenseText);
     }
 }

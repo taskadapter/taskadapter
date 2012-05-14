@@ -57,10 +57,8 @@ public class LicenseGenerator {
 
     private static String generateLicenseText(LicenseManager.Product productType, String licenseTypeStr, String customerName, String email) {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, -1);
         String createdOn = new SimpleDateFormat(LICENSE_DATE_FORMAT).format(calendar.getTime());
-
-        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        calendar.add(Calendar.MONDAY, 1);
         String expiresOn = new SimpleDateFormat(LICENSE_DATE_FORMAT).format(calendar.getTime());
 
         String key = new LicenseEncryptor(PASSWORD).chiper(licenseTypeStr + customerName + email + createdOn + expiresOn);

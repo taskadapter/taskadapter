@@ -4,24 +4,23 @@ import org.apache.commons.codec.binary.Base64;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import static com.taskadapter.license.LicenseFormatDescriptor.*;
 
 final class LicenseParser {
 
-    public static final int LICENSE_BODY_LINES_NUMBER = 7;
+    private static final int LICENSE_BODY_LINES_NUMBER = 7;
     private SimpleDateFormat licenseDateFormatter = new SimpleDateFormat(LICENSE_DATE_FORMAT);
 
     /**
      * @param licenseText license as text
      * @return the valid License object
-     * @throws LicenseValidationException if license is not valid
+     * @throws LicenseValidationException if license can't be parsed. we don't check whether or not the license is expired here
      */
-    public License checkLicense(String licenseText) throws LicenseValidationException {
+    public License parseLicense(String licenseText) throws LicenseParseException {
         if (licenseText == null) {
-            throw new LicenseValidationException("license body is NULL");
+            throw new LicenseParseException("license body is NULL");
         }
 
         //---FORMAT START-----------
@@ -37,7 +36,7 @@ final class LicenseParser {
         String lines[] = licenseText.split("\\r?\\n");
 
         if (lines.length < LICENSE_BODY_LINES_NUMBER) {
-            throw new LicenseValidationException("Please provide the complete license text. License body must have " + LICENSE_BODY_LINES_NUMBER + " lines.");
+            throw new LicenseParseException("Please provide the complete license text. License body must have " + LICENSE_BODY_LINES_NUMBER + " lines.");
         }
 
         String productName = lines[LINE_PRODUCT].substring(PREFIX_PRODUCT.length());
@@ -64,26 +63,16 @@ final class LicenseParser {
 
         License license;
 
-        Date expiresOn;
-        try {
-            expiresOn = licenseDateFormatter.parse(expiresOnString);
-        } catch (ParseException e) {
-            throw new LicenseValidationException("Invalid license expiration date: " + expiresOnString + ". Valid format: " + LICENSE_DATE_FORMAT);
-        }
-
-        Calendar expirationDateCalendar = Calendar.getInstance();
-        expirationDateCalendar.setTime(expiresOn);
-
         if (mergedStr.equals(xoredText)) {
-            license = new License(product, License.Type.getByText(licenseTypeStr), customerName, email, createdOn, expiresOnString, licenseText);
+            Date expiresOn;
+            try {
+                expiresOn = licenseDateFormatter.parse(expiresOnString);
+            } catch (ParseException e) {
+                throw new LicenseParseException("Invalid license expiration date: " + expiresOnString + ". Valid format: " + LICENSE_DATE_FORMAT);
+            }
+            license = new License(product, License.Type.getByText(licenseTypeStr), customerName, email, createdOn, expiresOn, licenseText);
         } else {
-            throw new LicenseValidationException("License is not recognized");
-        }
-        Calendar now = Calendar.getInstance();
-        if (now.after(expirationDateCalendar)) {
-            throw new LicenseExpiredException("This license has expired. Today is " + licenseDateFormatter.format(now.getTime())
-                    + " and the license expiration date is " + licenseDateFormatter.format(expiresOn)
-                    + " (Date format is " + LICENSE_DATE_FORMAT + ")");
+            throw new LicenseParseException("License is not recognized");
         }
 
         return license;

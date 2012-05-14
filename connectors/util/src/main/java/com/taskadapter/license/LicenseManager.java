@@ -40,14 +40,15 @@ public class LicenseManager {
         try {
             license = getValidTaskAdapterLicense();
             isValid = true;
-        } catch (LicenseValidationException e) {
+        } catch (LicenseException e) {
             isValid = false;
         }
     }
 
     // TODO this all needs to be refactored!!
-    public void setNewLicense(String licenseText) throws LicenseValidationException {
-        license = new LicenseParser().checkLicense(licenseText);
+    public void setNewLicense(String licenseText) throws LicenseException {
+        license = new LicenseParser().parseLicense(licenseText);
+        license.validate();
         isValid = true;
     }
 
@@ -61,6 +62,13 @@ public class LicenseManager {
         notifyListeners();
     }
 
+    // TODO this is for debug only
+    public void forceInstallLicense(License anyInvalidLicense) {
+        Preferences preferences = Preferences.userNodeForPackage(LicenseManager.class);
+        preferences.put(anyInvalidLicense.getProduct().toString(), anyInvalidLicense.getCompleteText());
+        notifyListeners();
+    }
+
     private void notifyListeners() {
         for (LicenseChangeListener listener : listeners) {
             listener.licenseInfoUpdated();
@@ -71,7 +79,7 @@ public class LicenseManager {
      * @return NULL if the license is not found or is invalid
      * @throws LicenseValidationException the license does not exist or is invalid
      */
-    private static License getValidTaskAdapterLicense() throws LicenseValidationException {
+    private static License getValidTaskAdapterLicense() throws LicenseException {
         return loadLicense(Product.TASK_ADAPTER_WEB);
     }
 
@@ -80,11 +88,13 @@ public class LicenseManager {
      * @return NULL if the license is not found or is invalid
      * @throws LicenseValidationException the license does not exist or is invalid
      */
-    private static License loadLicense(Product product) throws LicenseValidationException {
+    private static License loadLicense(Product product) throws LicenseException {
         Preferences preferences = Preferences.userNodeForPackage(LicenseManager.class);
         String licenseText = preferences.get(product.toString(), null);
 
-        return new LicenseParser().checkLicense(licenseText);
+        License loadedLicense = new LicenseParser().parseLicense(licenseText);
+        loadedLicense.validate();
+        return loadedLicense;
     }
 
     public boolean isSomeValidLicenseInstalled() {
@@ -149,7 +159,7 @@ public class LicenseManager {
             licenseManager.installLicense();
             System.out.println("The license was successfully installed to this computer.");
 
-        } catch (LicenseValidationException e) {
+        } catch (LicenseException e) {
             System.out.println("Invalid license file:\n" + fileName);
         }
 

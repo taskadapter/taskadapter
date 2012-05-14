@@ -15,7 +15,7 @@ public class LicenseManagerTest {
         LicenseManager licenseManager = new LicenseManager();
         try {
             licenseManager.setNewLicense(getValidSingleUserLicense());
-        } catch (LicenseValidationException e) {
+        } catch (LicenseException e) {
             fail("License is expected to be valid");
         }
         Assert.assertTrue("License is expected to be valid", licenseManager.isSomeValidLicenseInstalled());
@@ -36,7 +36,7 @@ public class LicenseManagerTest {
         LicenseManager licenseManager = new LicenseManager();
         try {
             licenseManager.setNewLicense(validMultiUserLicense);
-        } catch (LicenseValidationException e) {
+        } catch (LicenseException e) {
             fail("License is expected to be valid");
         }
         Assert.assertTrue("License is expected to be valid", licenseManager.isSomeValidLicenseInstalled());
@@ -47,21 +47,13 @@ public class LicenseManagerTest {
         Assert.assertEquals("License type is expected to be " + License.Type.MULTI.getText(), License.Type.MULTI, license.getType());
     }
 
-    @Test (expected = LicenseValidationException.class)
-    public void testInvalidLicense() throws IOException, LicenseValidationException {
-        String invalidLicense = MyIOUtils.getResourceAsString("taskadapter.license.invalid");
-        LicenseManager licenseManager = new LicenseManager();
-        licenseManager.setNewLicense(invalidLicense);
-        assertFalse("License is expected to be invalid", licenseManager.isSomeValidLicenseInstalled());
-    }
-
     @Test
     public void licenseBecomesInvalidAfterRemoval() throws IOException {
         LicenseManager licenseManager = new LicenseManager();
         License oldLicense = licenseManager.getLicense();
         try {
             licenseManager.setNewLicense(getValidSingleUserLicense());
-        } catch (LicenseValidationException e) {
+        } catch (LicenseException e) {
             fail("License is expected to be valid");
         }
         assertTrue("License is expected to be valid", licenseManager.isSomeValidLicenseInstalled());
@@ -72,7 +64,7 @@ public class LicenseManagerTest {
             if (oldLicense != null) {
                 try {
                     licenseManager.setNewLicense(oldLicense.getCompleteText());
-                } catch (LicenseValidationException e) {
+                } catch (LicenseException e) {
                     fail("License must be valid at this point");
                 }
                 licenseManager.installLicense();
