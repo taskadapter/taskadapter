@@ -137,11 +137,11 @@ public class PriorityPanel extends Panel implements Validatable {
 
         Set<Integer> set = new HashSet<Integer>();
         int i = 0;
-//        for (TableItem tableItem : prioritiesTable.getItems()) {
-//            i++;
-//            mspValue = Integer.parseInt(tableItem.getText(1));
-//            set.add(mspValue);
-//        }
+        for (Object id : data.getItemIds()) {
+            i++;
+            mspValue = new Integer(((Priority) data.getItem(id).getBean()).getValue());
+            set.add(mspValue);
+        }
 
         if (i != set.size()) {
             throw new ValidationException("TaskAdapter priorities duplication found. Please make all priority values unique in the table.");
