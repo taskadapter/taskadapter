@@ -18,8 +18,4 @@
      webkit based browsers including Google Chrome.
     -->
     <set-property name="user.agent" value="safari"/>
-
-
-
-    <inherits name="org.vaadin.browsercookies.widgetset.BrowserCookiesApplicationWidgetset" />
 </module>

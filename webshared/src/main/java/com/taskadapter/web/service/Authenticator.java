@@ -34,8 +34,8 @@ public class Authenticator {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, 1);
 
-        cookiesManager.setCookie(LOGGED_IN_COOKIE_NAME, "true", cal.getTime());
-        cookiesManager.setCookie(USER_NAME_COOKIE_NAME, userName, cal.getTime());
+        cookiesManager.setCookie(LOGGED_IN_COOKIE_NAME, "true");
+        cookiesManager.setCookie(USER_NAME_COOKIE_NAME, userName);
     }
 
     public void logout() {
@@ -45,8 +45,8 @@ public class Authenticator {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, -1);
 
-        cookiesManager.setCookie(LOGGED_IN_COOKIE_NAME, "", cal.getTime());
-        cookiesManager.setCookie(USER_NAME_COOKIE_NAME, "", cal.getTime());
+        cookiesManager.expireCookie(LOGGED_IN_COOKIE_NAME);
+        cookiesManager.expireCookie(USER_NAME_COOKIE_NAME);
     }
 
     public boolean isLoggedIn() {

@@ -3,8 +3,12 @@ package com.taskadapter.webui;
 import com.taskadapter.web.service.Services;
 import com.vaadin.Application;
 import com.vaadin.terminal.Sizeable;
+import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -12,7 +16,7 @@ import com.vaadin.ui.Window;
  *
  * @author Alexey Skorokhodov
  */
-public class TAApplication extends Application {
+public class TAApplication extends Application implements HttpServletRequestListener {
 
     private final Window mainWindow = new Window("Task Adapter");
 
@@ -40,10 +44,21 @@ public class TAApplication extends Application {
         layout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         mainWindow.setContent(layout);
         setMainWindow(mainWindow);
-        mainWindow.addComponent(services.getCookiesManager().getCookiesComponent());
+//        mainWindow.addComponent(services.getCookiesManager().getCookiesComponent());
         services.getAuthenticator().init();
 
         Navigator navigator = new Navigator(layout, services);
         navigator.show(Navigator.HOME);
+    }
+
+    @Override
+    public void onRequestStart(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        services.getCookiesManager().setResponse(httpServletResponse);
+        services.getCookiesManager().setRequest(httpServletRequest);
+    }
+
+    @Override
+    public void onRequestEnd(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        services.getCookiesManager().setRequest(httpServletRequest);
     }
 }
