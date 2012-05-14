@@ -31,9 +31,6 @@ public class Authenticator {
     }
 
     private void setLoggedInCookieFor1Month(String userName) {
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MONTH, 1);
-
         cookiesManager.setCookie(LOGGED_IN_COOKIE_NAME, "true");
         cookiesManager.setCookie(USER_NAME_COOKIE_NAME, userName);
     }
@@ -41,9 +38,6 @@ public class Authenticator {
     public void logout() {
         this.loggedIn = false;
         this.userName = "";
-
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MONTH, -1);
 
         cookiesManager.expireCookie(LOGGED_IN_COOKIE_NAME);
         cookiesManager.expireCookie(USER_NAME_COOKIE_NAME);

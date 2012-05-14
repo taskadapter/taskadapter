@@ -1,6 +1,5 @@
 package com.taskadapter.webui;
 
-import com.google.gwt.editor.client.Editor;
 import com.vaadin.ui.*;
 
 public class LoginPage extends Page {
@@ -15,21 +14,13 @@ public class LoginPage extends Page {
         buildUI();
     }
 
-    private void buildUI() {
-/*        LoginForm loginForm = new LoginForm();
-        loginForm.addListener(new LoginForm.LoginListener() {
-            @Override
-            public void onLogin(LoginForm.LoginEvent event) {
-                String username = event.getLoginParameter("username");
-                String password = event.getLoginParameter("password");
-                services.getAuthenticator().tryLogin(username, password, staySignedIn.booleanValue());
-                if (services.getAuthenticator().isLoggedIn()) {
-                    navigator.show(Navigator.HOME);
-                }
-            }
-        });
-        layout.addComponent(loginForm);*/
+    private void clearLoginFields() {
+        loginEdit.setValue("");
+        passwordEdit.setValue("");
+        staySignedIn.setValue(false);
+    }
 
+    private void buildUI() {
         loginEdit = new TextField();
         loginEdit.setInputPrompt("Username");
         loginEdit.setCaption("Username");
@@ -43,37 +34,22 @@ public class LoginPage extends Page {
         staySignedIn = new CheckBox("Stay signed in");
         layout.addComponent(staySignedIn);
 
-        Button btn = new Button("DEBUG");
-        btn.addListener(new Button.ClickListener() {
-            public void buttonClick(Button.ClickEvent event) {
-                debugCookiesLabel.setCaption(services.getCookiesManager().getCookies());
-            }
-        });
-        layout.addComponent(btn);
-
-        btn = new Button("LOGIN");
-        btn.addListener(new Button.ClickListener() {
+        Button loginButton = new Button("Login");
+        loginButton.addListener(new Button.ClickListener() {
             public void buttonClick(Button.ClickEvent event) {
                 String username = (String) loginEdit.getValue();
                 String password = (String) passwordEdit.getValue();
                 services.getAuthenticator().tryLogin(username, password, staySignedIn.booleanValue());
+                clearLoginFields();
                 if (services.getAuthenticator().isLoggedIn()) {
+                    navigator.updateLogoutButtonState();
                     navigator.show(Navigator.HOME);
                 }
             }
         });
-        layout.addComponent(btn);
+        layout.addComponent(loginButton);
 
-        btn = new Button("LOGOUT");
-        btn.addListener(new Button.ClickListener() {
-            public void buttonClick(Button.ClickEvent event) {
-                services.getAuthenticator().logout();
-                navigator.show(Navigator.HOME);
-            }
-        });
-        layout.addComponent(btn);
-
-        layout.addComponent(debugCookiesLabel);
+        clearLoginFields();
     }
 
     @Override

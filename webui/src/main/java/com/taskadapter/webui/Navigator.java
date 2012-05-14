@@ -33,6 +33,7 @@ public class Navigator {
     private VerticalLayout layout;
     private Services services;
     private Label updateMessage;
+    Header header;
 
     public Navigator(VerticalLayout layout, Services services) {
         this.layout = layout;
@@ -56,7 +57,7 @@ public class Navigator {
     }
 
     private void buildUI() {
-        Header header = new Header(this, services);
+        header = new Header(this, services);
         header.setHeight(50, Sizeable.UNITS_PIXELS);
         header.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         layout.addComponent(header);
@@ -195,5 +196,9 @@ public class Navigator {
 
     public Application getApplication() {
         return layout.getApplication();
+    }
+
+    public void updateLogoutButtonState() {
+        header.updateLogoutButtonState();
     }
 }

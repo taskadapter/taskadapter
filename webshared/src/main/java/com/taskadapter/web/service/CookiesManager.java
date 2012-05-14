@@ -10,17 +10,14 @@ public class CookiesManager {
     HttpServletResponse response;
 
 
-    public void setRequest(HttpServletRequest request) {
+    public void init(HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
-    }
-
-    public void setResponse(HttpServletResponse response) {
         this.response = response;
     }
 
     public void setCookie(String cookieName, String cookieValue) {
         Cookie cookie = new Cookie(cookieName, cookieValue);
-        cookie.setMaxAge(3600);
+        cookie.setMaxAge(2592000);//one month
         response.addCookie(cookie);
     }
 
@@ -42,13 +39,5 @@ public class CookiesManager {
         } else {
             return request.getCookies()[foundCookieIndex].getValue();
         }
-    }
-
-    public String getCookies() {
-        String txt = "";
-        for (int i = 0; i < request.getCookies().length; i++) {
-            txt = txt + request.getCookies()[i].getName() + "=" + request.getCookies()[i].getValue() + "; ";
-        }
-        return txt;
     }
 }

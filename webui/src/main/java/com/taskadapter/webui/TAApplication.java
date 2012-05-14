@@ -44,7 +44,6 @@ public class TAApplication extends Application implements HttpServletRequestList
         layout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         mainWindow.setContent(layout);
         setMainWindow(mainWindow);
-//        mainWindow.addComponent(services.getCookiesManager().getCookiesComponent());
         services.getAuthenticator().init();
 
         Navigator navigator = new Navigator(layout, services);
@@ -53,12 +52,10 @@ public class TAApplication extends Application implements HttpServletRequestList
 
     @Override
     public void onRequestStart(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        services.getCookiesManager().setResponse(httpServletResponse);
-        services.getCookiesManager().setRequest(httpServletRequest);
+        services.getCookiesManager().init(httpServletRequest, httpServletResponse);
     }
 
     @Override
     public void onRequestEnd(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        services.getCookiesManager().setRequest(httpServletRequest);
     }
 }
