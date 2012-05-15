@@ -35,7 +35,7 @@ public class ConfigStorageTest {
         );
 
         //save test config with encrypted password
-        configStorage.saveConfig(encryptedPasswordConfig);
+        configStorage.createNewConfig(encryptedPasswordConfig);
 
         //find test config
         TAFile testConfigFile = findTestConfig(ENCRYPTED);
@@ -70,7 +70,7 @@ public class ConfigStorageTest {
         );
 
         //save test config with plain password
-        configStorage.saveConfig(plainPasswordConfig);
+        configStorage.createNewConfig(plainPasswordConfig);
 
         //find test config
         TAFile testConfigFile = findTestConfig(PLAIN);
