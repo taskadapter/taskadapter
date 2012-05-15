@@ -199,3 +199,7 @@
 .expiredLicenseLabel {
     color: red;
 }
+
+.configEditorDescriptionLabel {
+    width: 250px;
+}

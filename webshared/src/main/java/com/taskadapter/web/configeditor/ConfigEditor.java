@@ -25,7 +25,8 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
     protected ConnectorConfig config;
     protected Services services;
     private TextField labelText;
-    private static final String LABEL_TEXT = "Label";
+
+    private static final String LABEL_DESCRIPTION_TEXT = "Description:";
     private static final String LABEL_TOOLTIP = "Text to show for this connector on 'Export' button. Enter any text.";
 
     protected ConfigEditor(ConnectorConfig config) {
@@ -39,10 +40,14 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         setMargin(true);
         setSpacing(true);
 
-        labelText = new TextField(LABEL_TEXT);
+        HorizontalLayout descriptionLayout = new HorizontalLayout();
+        descriptionLayout.setSpacing(true);
+        addComponent(descriptionLayout);
+        descriptionLayout.addComponent(new Label(LABEL_DESCRIPTION_TEXT));
+        labelText = new TextField();
         labelText.setDescription(LABEL_TOOLTIP);
         labelText.addStyleName("label-textfield");
-        addComponent(labelText);
+        descriptionLayout.addComponent(labelText);
         setWidth("800px");
     }
 

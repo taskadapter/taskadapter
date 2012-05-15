@@ -16,7 +16,7 @@ import com.vaadin.ui.*;
 public class ConfigureTaskPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
     private TAFile file;
-    private TextField name;
+    private TextField configDescription;
     private ConfigEditor panel1;
     private ConfigEditor panel2;
     private TabSheet tabSheet;
@@ -49,9 +49,14 @@ public class ConfigureTaskPage extends Page {
         buttonsLayout.addComponent(errorMessageLabel);
         layout.addComponent(buttonsLayout);
 
-        name = new TextField("Name");
-        name.setValue(file.getConfigLabel());
-        layout.addComponent(name);
+        HorizontalLayout descriptionLayout = new HorizontalLayout();
+        descriptionLayout.setSpacing(true);
+        layout.addComponent(descriptionLayout);
+        descriptionLayout.addComponent(new Label("Description:"));
+        configDescription = new TextField();
+        configDescription.addStyleName("configEditorDescriptionLabel");
+        configDescription.setValue(file.getConfigLabel());
+        descriptionLayout.addComponent(configDescription);
 
         tabSheet = new TabSheet();
         tabSheet.setSizeUndefined();
@@ -121,7 +126,7 @@ public class ConfigureTaskPage extends Page {
         ConnectorDataHolder d1 = new ConnectorDataHolder(file.getConnectorDataHolder1().getType(), c1);
         ConnectorDataHolder d2 = new ConnectorDataHolder(file.getConnectorDataHolder2().getType(), c2);
 
-        file.setConfigLabel((String) name.getValue());
+        file.setConfigLabel((String) configDescription.getValue());
         file.setConnectorDataHolder1(d1);
         file.setConnectorDataHolder2(d2);
     }
