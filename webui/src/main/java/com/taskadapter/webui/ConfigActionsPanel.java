@@ -4,17 +4,15 @@ import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.web.service.Services;
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.NativeButton;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 
-public class ConfigButtonsPanel extends HorizontalLayout {
+public class ConfigActionsPanel extends VerticalLayout {
     private Navigator navigator;
     private TAFile file;
     private Services services;
+    private HorizontalLayout horizontalLayout;
 
-    public ConfigButtonsPanel(Navigator navigator, TAFile file, Services services) {
+    public ConfigActionsPanel(Navigator navigator, TAFile file, Services services) {
         this.navigator = navigator;
         this.file = file;
         this.services = services;
@@ -22,9 +20,22 @@ public class ConfigButtonsPanel extends HorizontalLayout {
     }
 
     private void buildUI() {
+        setSpacing(true);
+
+        addDescription();
+
+        horizontalLayout = new HorizontalLayout();
+        addComponent(horizontalLayout);
+
         createBox(file.getConnectorDataHolder1());
         createActionButtons();
         createBox(file.getConnectorDataHolder2());
+    }
+
+    private void addDescription() {
+        Label description = new Label(file.getConfigLabel());
+        addComponent(description);
+        setComponentAlignment(description, Alignment.MIDDLE_CENTER);
     }
 
     private void createBox(final ConnectorDataHolder dataHolder) {
@@ -37,7 +48,7 @@ public class ConfigButtonsPanel extends HorizontalLayout {
                 navigator.showConfigureTaskPage(file, label);
             }
         });
-        addComponent(configBoxButton);
+        horizontalLayout.addComponent(configBoxButton);
     }
 
     private void createActionButtons() {
@@ -45,7 +56,7 @@ public class ConfigButtonsPanel extends HorizontalLayout {
         buttonsLayout.setMargin(new MarginInfo(true, false, true, false));
         buttonsLayout.addComponent(createButton("img/arrow_right.png", file.getConnectorDataHolder1(), file.getConnectorDataHolder2()));
         buttonsLayout.addComponent(createButton("img/arrow_left.png", file.getConnectorDataHolder2(), file.getConnectorDataHolder1()));
-        addComponent(buttonsLayout);
+        horizontalLayout.addComponent(buttonsLayout);
     }
 
     private Button createButton(String label, final ConnectorDataHolder sourceDataHolder, final ConnectorDataHolder destinationDataHolder) {

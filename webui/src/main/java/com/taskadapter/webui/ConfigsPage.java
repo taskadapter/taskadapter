@@ -1,13 +1,16 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.config.TAFile;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * @author Alexey Skorokhodov
  */
 public class ConfigsPage extends Page {
-    public static final int COLUMNS_NUMBER = 3;
+    private static final int COLUMNS_NUMBER = 2;
     private VerticalLayout layout = new VerticalLayout();
     private GridLayout configsLayout = new GridLayout();
     public static final String SYSTEM_1_TITLE = "System 1";
@@ -46,9 +49,8 @@ public class ConfigsPage extends Page {
     }
 
     private void addTask(final TAFile file) {
-        configsLayout.addComponent(new Label(file.getConfigLabel()));
         configsLayout.addComponent(new ConfigToolbarPanel(navigator, file));
-        configsLayout.addComponent(new ConfigButtonsPanel(navigator, file, services));
+        configsLayout.addComponent(new ConfigActionsPanel(navigator, file, services));
     }
 
     @Override
