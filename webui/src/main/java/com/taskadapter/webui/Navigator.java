@@ -143,7 +143,7 @@ public class Navigator {
     public void showDeleteFilePage(final TAFile file) {
         ConfirmationPage page = (ConfirmationPage) pages.get(DELETE_PAGE);
         page.setFile(file);
-        page.setQuestionText("Delete config '" + file.getConfigLabel() + "' ?");
+        page.setQuestionText("Delete this config?");
         page.setActionListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -157,12 +157,11 @@ public class Navigator {
     public void showConfirmClonePage(final TAFile file) {
         ConfirmationPage page = (ConfirmationPage) pages.get(DELETE_PAGE);
         page.setFile(file);
-        page.setQuestionText("Clone config '" + file.getConfigLabel() + "' ?");
+        page.setQuestionText("Clone this config?");
         page.setActionListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                String clonedConfigLabel = "Copy of " + file.getConfigLabel();
-                services.getConfigStorage().cloneConfig(file, clonedConfigLabel);
+                services.getConfigStorage().cloneConfig(file);
                 show(Navigator.CONFIGS);
             }
         });
