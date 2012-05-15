@@ -5,7 +5,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 
 public class ConfigToolbarPanel extends HorizontalLayout {
-    private Button cloneButton = new Button("Clone config");
     private final Navigator navigator;
     private final TAFile file;
 
@@ -17,6 +16,8 @@ public class ConfigToolbarPanel extends HorizontalLayout {
 
     private void buildUI() {
         setSpacing(true);
+        Button cloneButton = new Button("Clone");
+        cloneButton.setDescription("Clone this config");
         cloneButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -25,7 +26,8 @@ public class ConfigToolbarPanel extends HorizontalLayout {
         });
         addComponent(cloneButton);
 
-        Button deleteButton = new Button("Delete config");
+        Button deleteButton = new Button("Delete");
+        deleteButton.setDescription("Delete this config from Task Adapter");
         deleteButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {

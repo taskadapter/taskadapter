@@ -7,6 +7,7 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.ConfigEditor;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
 
 /**
@@ -29,8 +30,7 @@ public class ConfigureTaskPage extends Page {
         layout.removeAllComponents();
         layout.setSpacing(true);
         HorizontalLayout buttonsLayout = new HorizontalLayout();
-
-        layout.addComponent(new ConfigToolbarPanel(navigator, file));
+        buttonsLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
 
         Button saveButton = new Button("Save");
         saveButton.addListener(new Button.ClickListener() {
@@ -40,6 +40,11 @@ public class ConfigureTaskPage extends Page {
             }
         });
         buttonsLayout.addComponent(saveButton);
+
+        ConfigToolbarPanel configToolbarPanel = new ConfigToolbarPanel(navigator, file);
+        buttonsLayout.addComponent(configToolbarPanel);
+        buttonsLayout.setComponentAlignment(configToolbarPanel, Alignment.MIDDLE_RIGHT);
+
         errorMessageLabel.addStyleName("error-message-label");
         buttonsLayout.addComponent(errorMessageLabel);
         layout.addComponent(buttonsLayout);
