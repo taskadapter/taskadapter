@@ -2,9 +2,9 @@ package com.taskadapter.webui;
 
 import com.taskadapter.config.TAFile;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.HorizontalLayout;
 
-public class ConfigToolbarPanel extends VerticalLayout {
+public class ConfigToolbarPanel extends HorizontalLayout {
     private Button cloneButton = new Button("Clone config");
     private final Navigator navigator;
     private final TAFile file;

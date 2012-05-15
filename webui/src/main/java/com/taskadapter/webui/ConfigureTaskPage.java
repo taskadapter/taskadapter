@@ -30,6 +30,8 @@ public class ConfigureTaskPage extends Page {
         layout.setSpacing(true);
         HorizontalLayout buttonsLayout = new HorizontalLayout();
 
+        layout.addComponent(new ConfigToolbarPanel(navigator, file));
+
         Button saveButton = new Button("Save");
         saveButton.addListener(new Button.ClickListener() {
             @Override

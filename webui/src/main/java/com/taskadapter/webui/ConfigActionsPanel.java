@@ -25,6 +25,7 @@ public class ConfigActionsPanel extends VerticalLayout {
         addDescription();
 
         horizontalLayout = new HorizontalLayout();
+        horizontalLayout.setSpacing(true);
         addComponent(horizontalLayout);
 
         createBox(file.getConnectorDataHolder1());
@@ -53,7 +54,7 @@ public class ConfigActionsPanel extends VerticalLayout {
 
     private void createActionButtons() {
         VerticalLayout buttonsLayout = new VerticalLayout();
-        buttonsLayout.setMargin(new MarginInfo(true, false, true, false));
+        buttonsLayout.setSpacing(true);
         buttonsLayout.addComponent(createButton("img/arrow_right.png", file.getConnectorDataHolder1(), file.getConnectorDataHolder2()));
         buttonsLayout.addComponent(createButton("img/arrow_left.png", file.getConnectorDataHolder2(), file.getConnectorDataHolder1()));
         horizontalLayout.addComponent(buttonsLayout);

@@ -103,10 +103,10 @@
     color: #222219;
     border: 1px gray solid;
     width: 200px;
-    height: 100px;
+    height: 85px;
     vertical-align: middle;
     text-align: center;
-    line-height: 100px;
+    /*line-height: 100px;*/
 }
 
 .v-nativebutton-boxButton:hover {
