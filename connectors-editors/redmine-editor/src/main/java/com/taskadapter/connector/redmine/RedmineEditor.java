@@ -36,19 +36,22 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         leftVerticalLayout.setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
         leftVerticalLayout.setSpacing(true);
 
+        VerticalLayout rightVerticalLayout = new VerticalLayout();
+        rightVerticalLayout.setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
+        rightVerticalLayout.setSpacing(true);
+
+
         serverPanel = new RedmineServerPanel();
         //addCustomPanelToProjectServerPanel(serverPanel);
         addPanelToCustomComponent(leftVerticalLayout, serverPanel);
+        Label label = new Label("&nbsp;", Label.CONTENT_XHTML);
+        leftVerticalLayout.addComponent(label);
 
         otherPanel = new OtherRedmineFieldsPanel(this);
         addPanelToCustomComponent(leftVerticalLayout, otherPanel);
 
         //addProjectPanel(this, new RedmineProjectProcessor(this));
         //addFieldsMappingPanelToProjectPanel(RedmineDescriptor.instance.getAvailableFieldsProvider());
-
-        VerticalLayout rightVerticalLayout = new VerticalLayout();
-        rightVerticalLayout.setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
-        rightVerticalLayout.setSpacing(true);
 
         ProjectPanel projectPanel = new ProjectPanel(this, new RedmineProjectProcessor(this));
         //addCustomComponentToProjectServerPanel(rightVerticalLayout);
@@ -159,7 +162,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
             serverURL.setInputPrompt("http://myserver:3000/myredminelocation");
             layout.addComponent(serverURL, 1, 0);
             
-            String emptyLabelHeight = "15px";
+            String emptyLabelHeight = "10px";
 
             currentRow++;
 
@@ -205,8 +208,6 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
             password.addStyleName("server-panel-textfield");
             layout.addComponent(password, 1, currentRow++);
             layout.setComponentAlignment(password, Alignment.MIDDLE_LEFT);
-            layout.addComponent(createEmptyLabel("15px"), 0, currentRow++);
-
         }
 
         private Label createEmptyLabel(String height) {
@@ -296,6 +297,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         private void buildUI() {
             addStyleName("panelexample");
             setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
+            setHeight("157px");
 
             setSpacing(true);
             setMargin(true);

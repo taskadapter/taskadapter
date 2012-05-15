@@ -50,13 +50,18 @@ public class FieldsMappingPanel extends Panel implements Validatable {
         layout.setMargin(true);
         layout.setSpacing(true);
 
-        layout.setRows(supportedFields.size() + 1);
+        layout.setRows(supportedFields.size() + 2);
         layout.setColumns(COLUMNS_NUMBER);
 
-        layout.addComponent(new Label(COLUMN1_HEADER), 0, 0);
-        layout.addComponent(new Label(COLUMN2_HEADER), 1, 0);
+        Label label1 = new Label(COLUMN1_HEADER);
+        layout.addComponent(label1, 0, 0);
+        label1.addStyleName("trial-mode-label");
+        Label label2 = new Label(COLUMN2_HEADER);
+        layout.addComponent(label2, 1, 0);
+        label2.addStyleName("trial-mode-label");
+        layout.addComponent(new Label("<hr>", Label.CONTENT_XHTML), 0, 1, 1, 1);
 
-        int row = 0;
+        int row = 1;
         for (GTaskDescriptor.FIELD field : supportedFields) {
             CheckBox checkbox = new CheckBox(GTaskDescriptor.getDisplayValue(field));
             layout.addComponent(checkbox, 0, ++row);
@@ -78,7 +83,7 @@ public class FieldsMappingPanel extends Panel implements Validatable {
             if (allowedValues.length > 1) {
                 container.addAll(Arrays.asList(allowedValues));
                 ComboBox combo = new ComboBox(null, container);
-                combo.setWidth("220px");
+                combo.setWidth("160px");
                 fieldToValueMap.put(field, combo);
                 layout.addComponent(combo, 1, row);
                 layout.setComponentAlignment(combo, Alignment.MIDDLE_LEFT);
