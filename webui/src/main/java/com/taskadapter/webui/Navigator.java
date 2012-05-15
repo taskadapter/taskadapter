@@ -122,9 +122,13 @@ public class Navigator {
         page.setServices(services);
     }
 
-    // TODO these 4 showXX methods are not in line with the other show(). refactor!
+    // TODO these 5 showXX methods are not in line with the other show(). refactor!
     public void showConfigureTaskPage(TAFile file) {
         showConfigureTaskPage(file, null, null);
+    }
+
+    public void showConfigureTaskPage(TAFile file, String configLabelEqualsTabName) {
+        showConfigureTaskPage(file, configLabelEqualsTabName, null);
     }
 
     public void showConfigureTaskPage(TAFile file, String dataHolderLabel, String errorMessage) {

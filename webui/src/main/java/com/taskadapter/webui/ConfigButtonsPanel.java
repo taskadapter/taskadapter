@@ -27,13 +27,14 @@ public class ConfigButtonsPanel extends HorizontalLayout {
         createBox(file.getConnectorDataHolder2());
     }
 
-    private void createBox(ConnectorDataHolder dataHolder) {
-        NativeButton configBoxButton = new NativeButton(dataHolder.getData().getLabel());
+    private void createBox(final ConnectorDataHolder dataHolder) {
+        final String label = dataHolder.getData().getLabel();
+        NativeButton configBoxButton = new NativeButton(label);
         configBoxButton.addStyleName("boxButton");
         configBoxButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
-                navigator.showConfigureTaskPage(file);
+                navigator.showConfigureTaskPage(file, label);
             }
         });
         addComponent(configBoxButton);
