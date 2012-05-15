@@ -17,15 +17,6 @@ public class ConfigToolbarPanel extends VerticalLayout {
 
     private void buildUI() {
         setSpacing(true);
-        Button configureButton = new Button("Configure");
-        configureButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                navigator.showConfigureTaskPage(file);
-            }
-        });
-        addComponent(configureButton);
-
         cloneButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
