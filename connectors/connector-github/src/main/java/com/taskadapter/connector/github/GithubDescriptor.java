@@ -4,7 +4,10 @@ import com.taskadapter.connector.common.PriorityLoader;
 import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.common.TaskLoader;
 import com.taskadapter.connector.common.TaskSaver;
-import com.taskadapter.connector.definition.*;
+import com.taskadapter.connector.definition.AvailableFieldsProvider;
+import com.taskadapter.connector.definition.ConnectorConfig;
+import com.taskadapter.connector.definition.Descriptor;
+import com.taskadapter.connector.definition.PluginFactory;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -12,9 +15,13 @@ import java.util.Collection;
 public class GithubDescriptor implements Descriptor {
     public static final GithubDescriptor instance = new GithubDescriptor();
 
-    private static final String ID = "GithubConnector v1";
+    /**
+     * Keep it the same to enable backward compatibility with the existing
+     * config files.
+     */
+    private static final String ID = "Github";
     private static final String DESCRIPTION = "Github connector";
-    private static final String LABEL = "Github.com";
+    private static final String LABEL = "Github";
 
     public ConnectorConfig createDefaultConfig() {
         return new GithubConfig();
