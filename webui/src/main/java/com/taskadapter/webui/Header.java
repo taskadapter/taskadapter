@@ -5,6 +5,7 @@ import com.taskadapter.web.service.Services;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.BaseTheme;
+import sun.management.HotspotMemoryMBean;
 
 
 /**
@@ -13,6 +14,7 @@ import com.vaadin.ui.themes.BaseTheme;
 public class Header extends HorizontalLayout implements LicenseChangeListener {
     private HorizontalLayout internalLayout = new HorizontalLayout();
     private VerticalLayout trialLayout = new VerticalLayout();
+    private Button logoutButton;
     private Navigator navigator;
     private Services services;
 
@@ -22,6 +24,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
         buildMainLayout();
         checkLicense();
         services.getLicenseManager().addLicenseChangeListener(this);
+        updateLogoutButtonState();
     }
 
     private void buildMainLayout() {
@@ -34,7 +37,23 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
 
         addLogo();
         addMenuItems();
+        addLogoutButton();
         addTrialSection();
+    }
+
+    private void addLogoutButton() {
+        logoutButton = new Button("Logout");
+        logoutButton.setStyleName(BaseTheme.BUTTON_LINK);
+        logoutButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                services.getAuthenticator().logout();
+                updateLogoutButtonState();
+                navigator.show(Navigator.HOME);
+            }
+        });
+        logoutButton.setVisible(false);
+        internalLayout.addComponent(logoutButton);
     }
 
     private void addTrialSection() {
@@ -56,6 +75,15 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
         internalLayout.addComponent(trialLayout);
         internalLayout.setExpandRatio(trialLayout, 1f);
         trialLayout.setVisible(false);
+    }
+
+    public void updateLogoutButtonState() {
+        if (services.getAuthenticator().isLoggedIn()) {
+            logoutButton.setVisible(true);
+        } else {
+            logoutButton.setVisible(false);
+        }
+
     }
 
     private void addLogo() {

@@ -33,6 +33,7 @@ public class Navigator {
     private VerticalLayout layout;
     private Services services;
     private Label updateMessage;
+    Header header;
 
     public Navigator(VerticalLayout layout, Services services) {
         this.layout = layout;
@@ -55,7 +56,7 @@ public class Navigator {
     }
 
     private void buildUI() {
-        Header header = new Header(this, services);
+        header = new Header(this, services);
         header.setHeight(50, Sizeable.UNITS_PIXELS);
         header.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         layout.addComponent(header);
@@ -96,24 +97,22 @@ public class Navigator {
         }
     }
 
-    public void show(Page page) {
-        setServicesToPage(page);
-        /* // TODO: uncomment for production
-            if (!authenticator.isLoggedIn()) {
-                show(pages.get(LOGIN_PAGE));
-            } else {
-                show(page);
-            }
-        */
+    public void show(final Page page) {
+        Page actualPageToShow = page;
+        if (!services.getAuthenticator().isLoggedIn()) {
+            actualPageToShow = pages.get(LOGIN_PAGE);
+        }
+        setServicesToPage(actualPageToShow);
+
         currentComponentArea.removeAllComponents();
-        Component ui = page.getUI();
+        Component ui = actualPageToShow.getUI();
         ui.setSizeUndefined();
         currentComponentArea.addComponent(ui);
         currentComponentArea.setComponentAlignment(ui, Alignment.TOP_LEFT);
 
         navigationPanel.removeAllComponents();
 
-        Label titleLabel = new Label(page.getPageTitle());
+        Label titleLabel = new Label(actualPageToShow.getPageTitle());
         titleLabel.setSizeUndefined();
         navigationPanel.addComponent(titleLabel);
     }
@@ -190,5 +189,9 @@ public class Navigator {
 
     public Application getApplication() {
         return layout.getApplication();
+    }
+
+    public void updateLogoutButtonState() {
+        header.updateLogoutButtonState();
     }
 }
