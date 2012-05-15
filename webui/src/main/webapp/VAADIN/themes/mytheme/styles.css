@@ -80,19 +80,6 @@
     font-size: 14px;
 }
 
-.connectorBoxLabel {
-    font-size: 18px;
-    background-color: #DAF1FF;
-    color: #222219;
-    border: 1px gray solid;
-    border-radius: 3px;
-    width: 200px;
-    height: 100px;
-    vertical-align: middle;
-    text-align: center;
-    line-height: 100px;
-}
-
 .smallUploadButton .v-button {
     height: auto;
 }
@@ -107,11 +94,23 @@
     font-size: 11px;
 }
 
+.boxButton .v-nativebutton-caption {
+    font-size: 18px;
+}
 
-.v-nativebutton-connectorBoxButton:hover {
-    /* we don't have any action associated with this box panel, so let's not show any effects
-     on mouse over event to not confuse people*/
-    /*background-color: #99CCFF;*/
+.v-nativebutton-boxButton {
+    background-color: #DAF1FF;
+    color: #222219;
+    border: 1px gray solid;
+    width: 200px;
+    height: 100px;
+    vertical-align: middle;
+    text-align: center;
+    line-height: 100px;
+}
+
+.v-nativebutton-boxButton:hover {
+    background-color: #d0e8f6;
 }
 
 .priorities-table {

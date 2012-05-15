@@ -4,7 +4,10 @@ import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.web.service.Services;
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.NativeButton;
+import com.vaadin.ui.VerticalLayout;
 
 public class ConfigButtonsPanel extends HorizontalLayout {
     private Navigator navigator;
@@ -25,9 +28,15 @@ public class ConfigButtonsPanel extends HorizontalLayout {
     }
 
     private void createBox(ConnectorDataHolder dataHolder) {
-        Label label = new Label(dataHolder.getData().getLabel());
-        label.addStyleName("connectorBoxLabel");
-        addComponent(label);
+        NativeButton configBoxButton = new NativeButton(dataHolder.getData().getLabel());
+        configBoxButton.addStyleName("boxButton");
+        configBoxButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                navigator.showConfigureTaskPage(file);
+            }
+        });
+        addComponent(configBoxButton);
     }
 
     private void createActionButtons() {
