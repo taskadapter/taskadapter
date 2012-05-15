@@ -11,32 +11,12 @@ import java.util.List;
 
 public class ConfigStorage {
     private static final String FILE_EXTENSION = "ta_conf";
+    private static final String NUMBER_SEPARATOR = "_";
 
     private PluginManager pluginManager;
 
     public ConfigStorage(PluginManager pluginManager) {
         this.pluginManager = pluginManager;
-    }
-
-    private static String buildFileName(String name) {
-        // this will NOT work for reserved names like "con" (under Windows), ...
-        // XXX see
-        // http://eng-przemelek.blogspot.com/2009/07/how-to-create-valid-file-name.html
-        // ?
-        // this solution is temporary until we get rid of the Project Explorer
-        // completely
-        // see https://www.hostedredmine.com/issues/9491
-        // validFileName = URLEncoder.encode( name , "UTF-8");
-        // validFileName = validFileName.replace('+', '_');
-
-        String saferName = name.replaceAll("[+:\\\\/*?|<>]", "_");
-        /* see http://www.hostedredmine.com/issues/38681
-                    TA should not fail to create configs with names equal to standard Windows devices like "con"
-                    config name is used as a file name, so it's impossible to create a config with name "con" on Windows.
-
-                    instead of trying to keep all "forbidden names" we can just add "-config" to the file name.
-                 */
-        return saferName + "-config";
     }
 
     public List<TAFile> getAllConfigs() {
@@ -70,23 +50,51 @@ public class ConfigStorage {
         try {
             File rootDir = new File(getRootFolderName());
             rootDir.mkdirs();
-            if (taFile.getAbsoluteFilePath() == null) {
-                taFile.setAbsoluteFilePath(createAbsoluteFilePathForNewConfig(taFile));
-            }
             MyIOUtils.writeToFile(taFile.getAbsoluteFilePath(), fileContents);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
+    }
+
+    public void createNewConfig(TAFile taFile) {
+        String fileContents = new ConfigFileParser(pluginManager).convertToJSonString(taFile);
+        try {
+            File rootDir = new File(getRootFolderName());
+            rootDir.mkdirs();
+            String absoluteFilePathForNewConfig = findUnusedAbsoluteFilePath(taFile);
+            // TODO do not set it, delete
+            taFile.setAbsoluteFilePath(absoluteFilePathForNewConfig);
+            MyIOUtils.writeToFile(absoluteFilePathForNewConfig, fileContents);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // TODO add unit tests
+    private String findUnusedAbsoluteFilePath(TAFile taFile) {
+        String relativeFileNameForNewConfig = createFileNameForNewConfig(taFile);
+        File file = new File(getRootFolderName(), relativeFileNameForNewConfig + "." + FILE_EXTENSION);
+        while (file.exists()) {
+            int i = relativeFileNameForNewConfig.lastIndexOf(NUMBER_SEPARATOR);
+            String numberStringWithExtension = relativeFileNameForNewConfig.substring(i + 1);
+            int configFileNumber = Integer.parseInt(numberStringWithExtension);
+            configFileNumber++;
+            relativeFileNameForNewConfig = relativeFileNameForNewConfig.substring(0, i + 1) + configFileNumber;
+            file = new File(getRootFolderName(), relativeFileNameForNewConfig + "." + FILE_EXTENSION);
+        }
+        return file.getAbsolutePath();
+    }
+
+    // TODO add unit tests
+    private String createFileNameForNewConfig(TAFile file) {
+        String fileName = file.getConnectorDataHolder1().getType() + "_" + file.getConnectorDataHolder2().getType() + NUMBER_SEPARATOR + "1";
+        fileName = fileName.replaceAll(" ", "-");
+        return fileName;
     }
 
     public void delete(TAFile config) {
         File file = new File(config.getAbsoluteFilePath());
         file.delete();
-    }
-
-    private String createAbsoluteFilePathForNewConfig(TAFile file) {
-        String fileName = buildFileName(file.getConfigLabel());
-        return getRootFolderName() + "/" + fileName + "." + FILE_EXTENSION;
     }
 
     public static String getRootFolderName() {
