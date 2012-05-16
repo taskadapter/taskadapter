@@ -95,6 +95,7 @@ public class EnterLicensePanel extends VerticalLayout {
         } catch (LicenseException e) {
             // this is for DEBUG: ignore validation exception and force install any invalid license
 //            licenseManager.installLicense();
+            System.out.println("License error (IGNORED):" + e);
         }
         licenseManager.forceInstallLicense(license);
     }
