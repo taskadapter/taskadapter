@@ -33,7 +33,7 @@ public class FileManager {
         return userDirectory.exists() ? Arrays.asList(userDirectory.listFiles()) : new ArrayList<File>();
     }
 
-    private File getUserFolder(String userLoginName) {
+    public File getUserFolder(String userLoginName) {
         File serverDirectoryForTAFiles = getServerDirectoryForTAFiles();
         return new File(serverDirectoryForTAFiles, userLoginName);
     }

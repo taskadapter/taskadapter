@@ -93,8 +93,8 @@ public class MSPEditor extends ConfigEditor {
     @Override
     public ConnectorConfig getPartialConfig() {
         MSPConfig mspConfig = new MSPConfig();
-        mspConfig.setInputFileName(filePanel.getInputFileName());
-        mspConfig.setOutputFileName(filePanel.getOutputFileName());
+        mspConfig.setInputAbsoluteFilePath(filePanel.getInputFileName());
+        mspConfig.setOutputAbsoluteFilePath(filePanel.getOutputFileName());
         return mspConfig;
     }
 

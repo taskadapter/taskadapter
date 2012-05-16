@@ -140,7 +140,7 @@ public class MSXMLFileWriter {
      */
     public String writeProject(ProjectFile project)
             throws IOException {
-        String mspFileName = config.getOutputFileName();
+        String mspFileName = config.getOutputAbsoluteFilePath();
         File folder = new File(mspFileName).getParentFile();
         if (folder != null) {
             folder.mkdirs();

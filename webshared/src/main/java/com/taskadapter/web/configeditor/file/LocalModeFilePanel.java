@@ -46,8 +46,8 @@ public class LocalModeFilePanel extends FilePanel {
 
     @Override
     public void refreshConfig(MSPConfig config) {
-        EditorUtil.setNullSafe(inputFileNameField, config.getInputFileName());
-        EditorUtil.setNullSafe(outputFileNameField, config.getOutputFileName());
+        EditorUtil.setNullSafe(inputFileNameField, config.getInputAbsoluteFilePath());
+        EditorUtil.setNullSafe(outputFileNameField, config.getOutputAbsoluteFilePath());
     }
 
     @Override

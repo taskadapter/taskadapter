@@ -25,6 +25,7 @@ public class ServerModelFilePanelPresenter {
     private File selectedFile;
     private final UploadReceiver uploadReceiver;
     private FileManager fileManager = new FileManager();
+    private MSPConfig config;
 
     public ServerModelFilePanelPresenter(String userName) {
         this.userName = userName;
@@ -179,13 +180,14 @@ public class ServerModelFilePanelPresenter {
         }
     }
 
-    public String getSelectedFileNameOrNull() {
-        return selectedFile != null ? selectedFile.getAbsolutePath() : null;
+    public String getSelectedFileNameOrEmpty() {
+        return selectedFile != null ? selectedFile.getAbsolutePath() : "";//String.format("%s/%s.xml", fileManager.getUserFolder(userName).getAbsolutePath(), config.toString()) ;
     }
 
     public void setConfig(MSPConfig config) {
-        String absolutePath = config.getInputFileName();
-        if (absolutePath != null && absolutePath.isEmpty()) {
+        this.config = config;
+        String absolutePath = config.getInputAbsoluteFilePath();
+        if (absolutePath != null && !absolutePath.isEmpty()) {
             File f = new File(absolutePath);
             view.selectFileInCombobox(f.getName());
         }

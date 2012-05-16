@@ -90,7 +90,7 @@ public class MSPUtils {
         try {
             ProjectFile projectFile = new MSPFileReader().readFile(mppFilePath);
             MSPConfig config = new MSPConfig();
-            config.setOutputFileName(changeExtension(mppFilePath, ".xml"));
+            config.setOutputAbsoluteFilePath(changeExtension(mppFilePath, ".xml"));
             return new MSXMLFileWriter(config).writeProject(projectFile);
         } catch (Exception e) {
             e.printStackTrace();

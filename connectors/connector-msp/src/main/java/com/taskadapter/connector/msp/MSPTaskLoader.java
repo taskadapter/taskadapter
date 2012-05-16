@@ -22,9 +22,9 @@ public class MSPTaskLoader extends AbstractTaskLoader<MSPConfig> {
     public List<GTask> loadTasks(MSPConfig config) throws Exception {
         ProjectFile projectFile;
         try {
-            projectFile = fileReader.readFile(config.getInputFileName());
+            projectFile = fileReader.readFile(config.getInputAbsoluteFilePath());
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("MSP: Can't find file with name \"" + config.getInputFileName() + "\".");
+            throw new RuntimeException("MSP: Can't find file with name \"" + config.getInputAbsoluteFilePath() + "\".");
         }
 
         List<Task> mspTasks = projectFile.getAllTasks();

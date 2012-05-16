@@ -197,12 +197,12 @@ public class ServerModeFilePanel extends FilePanel {
 
     @Override
     public String getInputFileName() {
-        return presenter.getSelectedFileNameOrNull();
+        return presenter.getSelectedFileNameOrEmpty();
     }
 
     @Override
     public String getOutputFileName() {
-        return presenter.getSelectedFileNameOrNull();
+        return presenter.getSelectedFileNameOrEmpty();
     }
 
     public void setUploadEnabled(boolean flag) {

@@ -18,8 +18,8 @@ public class MSPConfig extends ConnectorConfig {
 
     static final String DEFAULT_LABEL = "Microsoft Project";
 
-    private String inputFileName = "";
-    private String outputFileName = "";
+    private String inputAbsoluteFilePath = "";
+    private String outputAbsoluteFilePath = "";
 
     public MSPConfig() {
         super();
@@ -30,8 +30,8 @@ public class MSPConfig extends ConnectorConfig {
      * @param absoluteFilePath absolute path to the MSP file name
      */
     public MSPConfig(String absoluteFilePath) {
-        this.inputFileName = absoluteFilePath;
-        this.outputFileName = absoluteFilePath;
+        this.inputAbsoluteFilePath = absoluteFilePath;
+        this.outputAbsoluteFilePath = absoluteFilePath;
         setLabel(DEFAULT_LABEL);
     }
 
@@ -39,46 +39,46 @@ public class MSPConfig extends ConnectorConfig {
         super(configToDeepClone);
         setLabel(configToDeepClone.getLabel());
 
-        this.inputFileName = configToDeepClone.getInputFileName();
-        this.outputFileName = configToDeepClone.getOutputFileName();
+        this.inputAbsoluteFilePath = configToDeepClone.getInputAbsoluteFilePath();
+        this.outputAbsoluteFilePath = configToDeepClone.getOutputAbsoluteFilePath();
     }
 
     /**
      * @return absolute path to the MSP file name
      */
-    public String getInputFileName() {
-        return inputFileName;
+    public String getInputAbsoluteFilePath() {
+        return inputAbsoluteFilePath;
     }
 
     /**
      * @param fileName absolute path to the MSP file name
      */
-    public void setInputFileName(String fileName) {
-        this.inputFileName = fileName;
+    public void setInputAbsoluteFilePath(String fileName) {
+        this.inputAbsoluteFilePath = fileName;
     }
 
     /**
      * @return absolute path to the MSP file name
      */
-    public String getOutputFileName() {
-        return outputFileName;
+    public String getOutputAbsoluteFilePath() {
+        return outputAbsoluteFilePath;
     }
 
     /**
-     * @param outputFileName absolute path to the MSP file name
+     * @param outputAbsoluteFilePath absolute path to the MSP file name
      */
-    public void setOutputFileName(String outputFileName) {
-        this.outputFileName = outputFileName;
+    public void setOutputAbsoluteFilePath(String outputAbsoluteFilePath) {
+        this.outputAbsoluteFilePath = outputAbsoluteFilePath;
     }
 
     @Override
     public String getSourceLocation() {
-        return inputFileName;
+        return inputAbsoluteFilePath;
     }
 
     @Override
     public String getTargetLocation() {
-        return outputFileName;
+        return outputAbsoluteFilePath;
     }
 
     @Override
@@ -86,9 +86,9 @@ public class MSPConfig extends ConnectorConfig {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result
-                + ((inputFileName == null) ? 0 : inputFileName.hashCode());
+                + ((inputAbsoluteFilePath == null) ? 0 : inputAbsoluteFilePath.hashCode());
         result = prime * result
-                + ((outputFileName == null) ? 0 : outputFileName.hashCode());
+                + ((outputAbsoluteFilePath == null) ? 0 : outputAbsoluteFilePath.hashCode());
         return result;
     }
 
@@ -101,15 +101,15 @@ public class MSPConfig extends ConnectorConfig {
         if (getClass() != obj.getClass())
             return false;
         MSPConfig other = (MSPConfig) obj;
-        if (inputFileName == null) {
-            if (other.inputFileName != null)
+        if (inputAbsoluteFilePath == null) {
+            if (other.inputAbsoluteFilePath != null)
                 return false;
-        } else if (!inputFileName.equals(other.inputFileName))
+        } else if (!inputAbsoluteFilePath.equals(other.inputAbsoluteFilePath))
             return false;
-        if (outputFileName == null) {
-            if (other.outputFileName != null)
+        if (outputAbsoluteFilePath == null) {
+            if (other.outputAbsoluteFilePath != null)
                 return false;
-        } else if (!outputFileName.equals(other.outputFileName))
+        } else if (!outputAbsoluteFilePath.equals(other.outputAbsoluteFilePath))
             return false;
         return true;
     }
@@ -151,20 +151,21 @@ public class MSPConfig extends ConnectorConfig {
 
     @Override
     public String toString() {
-        return "MSPConfig [inputFileName=" + inputFileName + ", outputFileName=" + outputFileName + "]";
+        return "MSPConfig [inputAbsoluteFilePath=" + inputAbsoluteFilePath + ", outputAbsoluteFilePath=" + outputAbsoluteFilePath + "]";
     }
 
     @Override
     public void validateForLoad() throws ValidationException {
-        if (inputFileName.isEmpty()) {
+        if (inputAbsoluteFilePath.isEmpty()) {
             throw new ValidationException("Please provide the input file name in MSP config");
         }
     }
 
     @Override
     public void validateForSave() throws ValidationException {
-        if (outputFileName.isEmpty()) {
-            throw new ValidationException("Please provide the output file name in MSP config");
+        if (outputAbsoluteFilePath.isEmpty()) {
+
+            //throw new ValidationException("Please provide the output file name in MSP config");
         }
     }
 

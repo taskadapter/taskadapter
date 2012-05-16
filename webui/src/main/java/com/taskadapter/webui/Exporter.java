@@ -5,6 +5,8 @@ import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.*;
+import com.taskadapter.connector.msp.MSPConfig;
+import com.taskadapter.web.FileManager;
 import com.taskadapter.web.MessageDialog;
 
 import java.io.File;
@@ -45,7 +47,24 @@ public class Exporter {
 
         if (valid) {
             try {
-                destinationDataHolder.getData().validateForSave();
+
+                if (destinationDataHolder.getData() instanceof MSPConfig) {
+                    // implementation of http://www.hostedredmine.com/issues/68820
+                    // quite ugly
+                    // TODO check for XSS attack with wrong paths...
+                    MSPConfig config = (MSPConfig) destinationDataHolder.getData();
+                    if (config.getOutputAbsoluteFilePath().isEmpty()) {
+                        String userName = navigator.getServices().getAuthenticator().getUserName();
+                        FileManager fm = new FileManager();
+                        File f = fm.getUserFolder(userName);
+                        String newPath = String.format("%s/%s-%s.xml", f.getAbsolutePath(), sourceDataHolder.getType(), destinationDataHolder.getType());
+                        config.setOutputAbsoluteFilePath(newPath);
+                        config.setInputAbsoluteFilePath(newPath);
+                    }
+                } else {
+                    destinationDataHolder.getData().validateForSave();
+                }
+
             } catch (ValidationException e) {
                 dataHolderLabel = destinationDataHolder.getData().getLabel();
                 errorMessage = e.getMessage();
@@ -73,7 +92,7 @@ public class Exporter {
         if (connectorTo.fileExists()) {
             String fileName = new File(connectorTo.getAbsoluteOutputFileName()).getName();
             MessageDialog messageDialog = new MessageDialog(
-                    "Choose operation", "Destination file already exists:<br>" + fileName,
+                    "Choose operation", "Destination file already exists:<br><b>" + fileName + "</b>",
                     Arrays.asList(TEXT_UPDATE, OVERWRITE, CANCEL),
                     new MessageDialog.Callback() {
                         public void onDialogResult(String answer) {

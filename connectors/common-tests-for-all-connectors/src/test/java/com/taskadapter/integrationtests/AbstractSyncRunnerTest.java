@@ -53,8 +53,8 @@ public class AbstractSyncRunnerTest {
         temp.deleteOnExit();
 
         MSPConfig mspConfig = new MSPConfig();
-        mspConfig.setInputFileName(temp.getAbsolutePath());
-        mspConfig.setOutputFileName(temp.getAbsolutePath());
+        mspConfig.setInputAbsoluteFilePath(temp.getAbsolutePath());
+        mspConfig.setOutputAbsoluteFilePath(temp.getAbsolutePath());
         mspConfig.selectField(FIELD.REMOTE_ID);
         mspConfig.setFieldMappedValue(FIELD.REMOTE_ID, TaskField.TEXT22.toString());
         return mspConfig;

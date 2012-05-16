@@ -31,8 +31,8 @@ public class FieldMappingTest {
         config = new MSPConfig();
         // TODO need to generate a random file here to avoid possible collisions
         // when this test class runs in multiple threads
-        config.setInputFileName("msp_test_data.tmp");
-        config.setOutputFileName("msp_test_data.tmp");
+        config.setInputAbsoluteFilePath("msp_test_data.tmp");
+        config.setOutputAbsoluteFilePath("msp_test_data.tmp");
 
         connector = new MSPConnector(config);
     }
@@ -201,14 +201,14 @@ public class FieldMappingTest {
         temporaryClonedconfig.setFieldMapping(field, mapping);
 
         String fileName = "testdata.tmp";
-        temporaryClonedconfig.setInputFileName(fileName);
-        temporaryClonedconfig.setOutputFileName(fileName);
+        temporaryClonedconfig.setInputAbsoluteFilePath(fileName);
+        temporaryClonedconfig.setOutputAbsoluteFilePath(fileName);
         MSPConnector connector = new MSPConnector(temporaryClonedconfig);
 
         connector.saveData(Arrays.asList(tasks), null);
 
         MSPFileReader fileReader = new MSPFileReader();
-        ProjectFile projectFile = fileReader.readFile(temporaryClonedconfig.getInputFileName());
+        ProjectFile projectFile = fileReader.readFile(temporaryClonedconfig.getInputAbsoluteFilePath());
         List<Task> loadedTasks = projectFile.getAllTasks();
 
         deleteFile(fileName);

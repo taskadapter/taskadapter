@@ -25,7 +25,7 @@ public class MessageDialog extends Window implements Button.ClickListener {
         this.callback = callback;
 
         if (question != null) {
-            addComponent(new Label(question));
+            addComponent(new Label(question, Label.CONTENT_XHTML));
             addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
         }
 

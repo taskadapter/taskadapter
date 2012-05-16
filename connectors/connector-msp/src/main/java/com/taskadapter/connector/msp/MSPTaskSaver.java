@@ -7,7 +7,6 @@ import com.taskadapter.model.GRelation.TYPE;
 import com.taskadapter.model.GTask;
 import net.sf.mpxj.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -84,7 +83,7 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
     protected void saveRelations(List<GRelation> relations) {
         MSPFileReader fileReader = new MSPFileReader();
         try {
-            ProjectFile projectFile = fileReader.readFile(config.getOutputFileName());
+            ProjectFile projectFile = fileReader.readFile(config.getOutputAbsoluteFilePath());
             for (GRelation relation : relations) {
                 if (relation.getType().equals(TYPE.precedes)) {
                     Integer intKey = Integer.parseInt(relation

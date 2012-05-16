@@ -1,14 +1,15 @@
 package com.taskadapter.connector.msp;
 
-import java.io.File;
-import java.util.List;
-
-import com.taskadapter.connector.definition.*;
-import net.sf.mpxj.*;
-
 import com.taskadapter.connector.common.AbstractConnector;
+import com.taskadapter.connector.definition.*;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
+import net.sf.mpxj.ProjectFile;
+import net.sf.mpxj.Task;
+import net.sf.mpxj.TaskField;
+
+import java.io.File;
+import java.util.List;
 
 public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBasedConnector {
 
@@ -22,7 +23,7 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
             return;
         }
         MSPConfig c = (MSPConfig) config;
-        String fileName = c.getInputFileName();
+        String fileName = c.getInputAbsoluteFilePath();
         try {
             ProjectFile projectFile = new MSPFileReader().readFile(fileName);
             List<Task> allTasks = projectFile.getAllTasks();
@@ -59,7 +60,7 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
 
     @Override
     public void updateTasksByRemoteIds(List<GTask> tasksFromExternalSystem) {
-        String fileName = config.getInputFileName();
+        String fileName = config.getInputAbsoluteFilePath();
         MSXMLFileWriter writer = new MSXMLFileWriter(config);
         try {
             ProjectFile projectFile = new MSPFileReader().readFile(fileName);
@@ -94,17 +95,17 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
 
     @Override
     public boolean fileExists() {
-        return (new File(config.getOutputFileName())).exists();
+        return (new File(config.getOutputAbsoluteFilePath())).exists();
     }
 
     @Override
     public String getAbsoluteOutputFileName() {
-        return config.getOutputFileName();
+        return config.getOutputAbsoluteFilePath();
     }
 
     @Override
     public void validateCanUpdate() throws ValidationException {
-        if (config.getInputFileName().toLowerCase().endsWith(MSPFileReader.MPP_SUFFIX_LOWERCASE)) {
+        if (config.getInputAbsoluteFilePath().toLowerCase().endsWith(MSPFileReader.MPP_SUFFIX_LOWERCASE)) {
             throw new ValidationException("The Microsoft Project 'Input File Name' you provided ends with \"" +
                     MSPFileReader.MPP_SUFFIX_LOWERCASE + "\"."
                     + "\nTask Adapter can't write MPP files."

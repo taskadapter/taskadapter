@@ -221,4 +221,8 @@ public class Navigator {
         if (previousPage != null)
             show(previousPage);
     }
+
+    public Services getServices() {
+        return services;
+    }
 }
