@@ -35,6 +35,8 @@ public class Navigator {
     private Services services;
     private Label updateMessage;
     Header header;
+    private Page previousPage;
+    private Page currentPage;
 
     public Navigator(VerticalLayout layout, Services services) {
         this.layout = layout;
@@ -99,32 +101,34 @@ public class Navigator {
     }
 
     public void show(final Page page) {
-        Page actualPageToShow = page;
+        previousPage = currentPage;
+
+        currentPage = page;
         if (!services.getAuthenticator().isLoggedIn()) {
-            actualPageToShow = pages.get(LOGIN_PAGE);
+            currentPage = pages.get(LOGIN_PAGE);
         }
 
 
         boolean singleUserMode = services.getSettingsManager().isLocalSingleUserMode();
         boolean requestCameFromLocalhost = services.getSessionInfo().isRequestCameFromLocalhost();
         if (singleUserMode && !requestCameFromLocalhost) {
-            actualPageToShow = pages.get(CONFIGURE_SYSTEM_PAGE);
-            ((ConfigureSystemPage) actualPageToShow).setError("Access from remote machine is forbidden in LOCAL (single user) mode.<BR>Please change to Server mode if you have a Server License.");
+            currentPage = pages.get(CONFIGURE_SYSTEM_PAGE);
+            ((ConfigureSystemPage) currentPage).setError("Access from remote machine is forbidden in LOCAL (single user) mode.<BR>Please change to Server mode if you have a Server License.");
         } else {
             ConfigureSystemPage tmpPage = (ConfigureSystemPage) pages.get(CONFIGURE_SYSTEM_PAGE);
             tmpPage.clearError();
         }
-        setServicesToPage(actualPageToShow);
+        setServicesToPage(currentPage);
 
         currentComponentArea.removeAllComponents();
-        Component ui = actualPageToShow.getUI();
+        Component ui = currentPage.getUI();
         ui.setSizeUndefined();
         currentComponentArea.addComponent(ui);
         currentComponentArea.setComponentAlignment(ui, Alignment.TOP_LEFT);
 
         navigationPanel.removeAllComponents();
 
-        Label titleLabel = new Label(actualPageToShow.getPageTitle());
+        Label titleLabel = new Label(currentPage.getPageTitle());
         titleLabel.setSizeUndefined();
         navigationPanel.addComponent(titleLabel);
     }
@@ -208,5 +212,13 @@ public class Navigator {
 
     public void updateLogoutButtonState() {
         header.updateLogoutButtonState();
+    }
+
+    /**
+     * return to previous page
+     */
+    public void back() {
+        if (previousPage != null)
+            show(previousPage);
     }
 }

@@ -1,10 +1,8 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.config.TAFile;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.taskadapter.web.configeditor.DefaultPanel;
+import com.vaadin.ui.*;
 
 /**
  * @author Alexey Skorokhodov
@@ -17,10 +15,29 @@ public class ConfirmationPage extends Page {
 
     private void buildUI() {
         layout.removeAllComponents();
-        layout.addComponent(new Label(questionText));
+        layout.setSpacing(true);
+        layout.setMargin(true);
+
+        Label label = new Label(questionText);
+        label.setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
         Button deleteButton = new Button("Yes");
         deleteButton.addListener(actionListener);
-        layout.addComponent(deleteButton);
+
+        Button cancelButton = new Button("Cancel");
+        cancelButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                navigator.back();
+            }
+        });
+
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.setSpacing(true);
+        horizontalLayout.addComponent(deleteButton);
+        horizontalLayout.addComponent(cancelButton);
+
+        layout.addComponent(label);
+        layout.addComponent(horizontalLayout);
     }
 
     public void setFile(TAFile file) {
