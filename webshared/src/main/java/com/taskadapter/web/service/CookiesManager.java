@@ -29,9 +29,11 @@ public class CookiesManager {
 
     public String getCookie(String cookieName) {
         int foundCookieIndex = -1;
-        for (int i = 0; i < request.getCookies().length; i++) {
-            if (request.getCookies()[i].getName().equals(cookieName))
-                foundCookieIndex = i;
+        if (request != null) {
+            for (int i = 0; i < request.getCookies().length; i++) {
+                if (request.getCookies()[i].getName().equals(cookieName))
+                    foundCookieIndex = i;
+            }
         }
 
         if (foundCookieIndex == -1) {
