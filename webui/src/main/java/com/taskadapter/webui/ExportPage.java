@@ -36,6 +36,7 @@ public class ExportPage extends ActionPage {
             this.loadedTasks = runner.load(null);
         } catch (RuntimeException e) {
             mainPanel.addComponent(new Label("Can't load data. " + e.toString()));
+            mainPanel.addComponent(createBackButton("Back"));
             // TODO log properly
             e.printStackTrace();
         }

@@ -23,18 +23,10 @@ public class ConfirmationPage extends Page {
         Button deleteButton = new Button("Yes");
         deleteButton.addListener(actionListener);
 
-        Button cancelButton = new Button("Cancel");
-        cancelButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                navigator.back();
-            }
-        });
-
         HorizontalLayout horizontalLayout = new HorizontalLayout();
         horizontalLayout.setSpacing(true);
         horizontalLayout.addComponent(deleteButton);
-        horizontalLayout.addComponent(cancelButton);
+        horizontalLayout.addComponent(createBackButton("Cancel"));
 
         layout.addComponent(label);
         layout.addComponent(horizontalLayout);
