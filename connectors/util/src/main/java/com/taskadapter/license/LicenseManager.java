@@ -91,12 +91,13 @@ public class LicenseManager {
     private static License loadLicense(Product product) {
         Preferences preferences = Preferences.userNodeForPackage(LicenseManager.class);
         String licenseText = preferences.get(product.toString(), null);
-
         License loadedLicense = null;
-        try {
-            loadedLicense = new LicenseParser().parseLicense(licenseText);
-        } catch (LicenseParseException e) {
-            System.out.println("can't parse license previously installed on this machine." + e);
+        if (licenseText != null) {
+            try {
+                loadedLicense = new LicenseParser().parseLicense(licenseText);
+            } catch (LicenseParseException e) {
+                System.out.println("can't parse license previously installed on this machine." + e);
+            }
         }
         return loadedLicense;
     }
@@ -118,7 +119,7 @@ public class LicenseManager {
     }
 
     public boolean isSingleUserLicenseInstalled() {
-        return isSomeValidLicenseInstalled() && license.getType().equals(License.Type.SINGLE);
+        return isSomeValidLicenseInstalled() && License.Type.SINGLE.equals(license.getType());
     }
 
     public void addLicenseChangeListener(LicenseChangeListener listener) {
