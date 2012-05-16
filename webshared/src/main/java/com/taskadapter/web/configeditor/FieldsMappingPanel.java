@@ -6,6 +6,8 @@ import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.GTaskDescriptor;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.terminal.Resource;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 
 import java.util.*;
@@ -74,8 +76,30 @@ public class FieldsMappingPanel extends Panel implements Validatable {
         int row = 1;
         for (GTaskDescriptor.FIELD field : supportedFields) {
             CheckBox checkbox = new CheckBox(GTaskDescriptor.getDisplayValue(field));
-            gridLayout.addComponent(checkbox, 0, ++row);
-            gridLayout.setComponentAlignment(checkbox, Alignment.MIDDLE_LEFT);
+
+            if (field == GTaskDescriptor.FIELD.REMOTE_ID) {
+                Resource res = new ThemeResource("../runo/icons/16/help.png");
+                Embedded helpIcon = new Embedded(null, res);
+                helpIcon.setDescription("<p>When you load an MSP file into Task Adapter and then export the "
+                        + "tasks into Redmine / Atlassian Jira / Chiliproject/etc.. , Task Adapter can save "
+                        + "the IDs of the tasks it creates in those task managment systems. These remote IDs "
+                        + "are stored in the MSP file itself (assuming that the option is <em>selected</em>). <br />"
+                        + "This way you can later edit the MSP file (say, using MS Project), load it to Task Adapter "
+                        + "again and re-export tasks to the same Redmine/Jira/..., so that the tasks without 'remote IDs'"
+                        + "will be <strong>created</strong> and the old ones (which have been previously created in "
+                        + "Redmine/jira/...) will be <strong>updated</strong>.</p>"
+                        + "More information about <a target='_blank' href='http://taskadapter.com/microsoft_project#save_remote_ids'>Remote ID</a>");
+
+                HorizontalLayout remoteLayout = new HorizontalLayout();
+                remoteLayout.addComponent(checkbox);
+                remoteLayout.addComponent(helpIcon);
+                gridLayout.addComponent(remoteLayout, 0, ++row);
+                gridLayout.setComponentAlignment(remoteLayout, Alignment.MIDDLE_LEFT);
+            } else {
+                gridLayout.addComponent(checkbox, 0, ++row);
+                gridLayout.setComponentAlignment(checkbox, Alignment.MIDDLE_LEFT);
+            }
+
             fieldToButtonMap.put(field, checkbox);
             Mapping mapping = config.getFieldMapping(field);
             if (mapping == null) {
