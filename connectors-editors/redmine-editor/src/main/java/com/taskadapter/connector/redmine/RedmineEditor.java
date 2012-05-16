@@ -53,7 +53,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         //addProjectPanel(this, new RedmineProjectProcessor(this));
         //addFieldsMappingPanelToProjectPanel(RedmineDescriptor.instance.getAvailableFieldsProvider());
 
-        ProjectPanel projectPanel = new ProjectPanel(this, new RedmineProjectProcessor(this));
+        ProjectPanel projectPanel = createProjectPanel(this, new RedmineProjectProcessor(this));
         //addCustomComponentToProjectServerPanel(rightVerticalLayout);
         addPanelToCustomComponent(rightVerticalLayout, projectPanel);
 

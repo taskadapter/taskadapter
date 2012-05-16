@@ -105,12 +105,17 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         component.addComponent(panel);
     }
 
-
-
-    protected void addProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor) {
+    protected ProjectPanel createProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor) {
         createProjectServerPanelIfNeeded();
         projectPanel = new ProjectPanel(editor, projectProcessor);
         toValidate.add(projectPanel);
+
+        return projectPanel;
+    }
+
+
+    protected void addProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor) {
+        createProjectPanel(editor, projectProcessor);
         projectAndServerLayout.addComponent(projectPanel);
     }
 
