@@ -13,6 +13,7 @@ public class ConfigActionsPanel extends VerticalLayout {
     private HorizontalLayout horizontalLayout;
 
     public ConfigActionsPanel(Navigator navigator, TAFile file, Services services) {
+        addStyleName("configs-single-panel");
         this.navigator = navigator;
         this.file = file;
         this.services = services;
@@ -25,6 +26,7 @@ public class ConfigActionsPanel extends VerticalLayout {
         addDescription();
 
         horizontalLayout = new HorizontalLayout();
+        horizontalLayout.addStyleName("configs-single-panel-inner");
         horizontalLayout.setSpacing(true);
         addComponent(horizontalLayout);
 
