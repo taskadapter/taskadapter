@@ -15,9 +15,12 @@ public class JiraUserConverter {
         this.connection = connection;
     }
 
+    // TODO implement a mock JiraConnection and test with a task with NULL assignee.
     public List<GTask> convertAssignees(List<GTask> tasks) throws RemoteException {
         for (GTask task : tasks) {
-            setAssigneeDisplayName(task);
+            if (task.getAssignee() != null) {
+                setAssigneeDisplayName(task);
+            }
         }
         return tasks;
     }
