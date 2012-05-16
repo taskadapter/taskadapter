@@ -57,6 +57,7 @@ public class SyncRunner {
     }
 
     // TODO this is not used now because we ignore checkboxes shown for tasks in the confirmation dialog
+
     /**
      * Should be called after the confirmation dialog.
      *
@@ -82,7 +83,17 @@ public class SyncRunner {
         } else {
             treeToSave = this.tasks;
         }
-        SyncResult result = taskSaver.saveData(treeToSave, monitor);
+
+        SyncResult result = null;
+        try {
+            result = taskSaver.saveData(treeToSave, monitor);
+        } catch (Exception e) {
+            if (result == null) {
+                result = new SyncResult();
+            }
+            result.addGeneralError(e.getMessage());
+        }
+
         if (monitor != null) {
             monitor.done();
         }
