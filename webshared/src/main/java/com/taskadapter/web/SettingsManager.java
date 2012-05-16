@@ -13,7 +13,7 @@ public class SettingsManager {
     /**
      * Is TA working on the local machine?
      */
-    public boolean isLocal() {
+    public boolean isLocalSingleUserMode() {
         return prefs.getBoolean("TALocal", DEFAULT_LOCAL);
     }
 

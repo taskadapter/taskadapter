@@ -24,6 +24,7 @@ public class Navigator {
 
     private static final String LOGIN_PAGE = "login_page";
     private static final String DELETE_PAGE = "delete_task";
+//    private static final String CANT_USE_TA_FROM_REMOTE_MACHINE_IN_SINGLE_USER_LICENSE_PAGE = "no_access_from_remote_in_single_user_mode_page";
 
     private Map<String, Page> pages = new HashMap<String, Page>();
 
@@ -101,6 +102,17 @@ public class Navigator {
         Page actualPageToShow = page;
         if (!services.getAuthenticator().isLoggedIn()) {
             actualPageToShow = pages.get(LOGIN_PAGE);
+        }
+
+
+        boolean singleUserMode = services.getSettingsManager().isLocalSingleUserMode();
+        boolean requestCameFromLocalhost = services.getSessionInfo().isRequestCameFromLocalhost();
+        if (singleUserMode && !requestCameFromLocalhost) {
+            actualPageToShow = pages.get(CONFIGURE_SYSTEM_PAGE);
+            ((ConfigureSystemPage) actualPageToShow).setError("Access from remote machine is forbidden in LOCAL (single user) mode.<BR>Please change to Server mode if you have a Server License.");
+        } else {
+            ConfigureSystemPage tmpPage = (ConfigureSystemPage) pages.get(CONFIGURE_SYSTEM_PAGE);
+            tmpPage.clearError();
         }
         setServicesToPage(actualPageToShow);
 

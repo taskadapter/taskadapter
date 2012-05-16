@@ -53,9 +53,14 @@ public class TAApplication extends Application implements HttpServletRequestList
     @Override
     public void onRequestStart(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         services.getCookiesManager().init(httpServletRequest, httpServletResponse);
+        services.getSessionInfo().setRequestCameFromLocalhost(isRequestFromLocalhost(httpServletRequest));
     }
 
     @Override
     public void onRequestEnd(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    }
+
+    private boolean isRequestFromLocalhost(HttpServletRequest request) {
+        return ("127.0.0.1".equals(request.getRemoteHost())) || ("localhost".equals(request.getServerName()));
     }
 }

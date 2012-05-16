@@ -14,6 +14,7 @@ public class Services {
     private LicenseManager licenseManager = new LicenseManager();
     private ConfigStorage configStorage;
     private CookiesManager cookiesManager = new CookiesManager();
+    private SessionInfo sessionInfo = new SessionInfo();
 
     public Services() {
         configStorage = new ConfigStorage(pluginManager);
@@ -50,5 +51,9 @@ public class Services {
 
     public CookiesManager getCookiesManager() {
         return cookiesManager;
+    }
+
+    public SessionInfo getSessionInfo() {
+        return sessionInfo;
     }
 }

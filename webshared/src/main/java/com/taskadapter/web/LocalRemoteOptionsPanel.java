@@ -48,7 +48,7 @@ public class LocalRemoteOptionsPanel extends Panel {
     }
 
     private void selectLocalOrRemoteMode() {
-        if (services.getSettingsManager().isLocal()) {
+        if (services.getSettingsManager().isLocalSingleUserMode()) {
             group.select(LOCAL);
         } else {
             group.select(REMOTE);

@@ -99,6 +99,6 @@ public class MSPEditor extends ConfigEditor {
     }
 
     private boolean isLocalMode() {
-        return services.getSettingsManager().isLocal();
+        return services.getSettingsManager().isLocalSingleUserMode();
     }
 }
