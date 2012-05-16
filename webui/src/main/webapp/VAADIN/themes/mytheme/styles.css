@@ -208,3 +208,11 @@
     font-size: 20px;
     color: red;
 }
+
+.configs-single-panel {
+		border-bottom: 3px solid #AAAAAA;
+}
+
+.configs-single-panel-inner {
+		margin-bottom: 10px;
+}
