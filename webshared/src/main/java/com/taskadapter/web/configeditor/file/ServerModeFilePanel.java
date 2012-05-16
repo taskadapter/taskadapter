@@ -32,7 +32,6 @@ public class ServerModeFilePanel extends FilePanel {
     private static final String QUESTION_DELETE_FILE = "Delete selected file?";
     private static final String CONFIRMATION_DIALOG_TITLE = "Deleting";
     private static final String CONFIRMATION_DIALOG_DELETE_BUTTON = "Delete";
-    private static final String CONFIRMATION_DIALOG_CANCEL_BUTTON = "Cancel";
     static final String FILE_DELETED_SUCCESS = "File deleted";
     static final String FILE_DELETED_FAILED = "File deletion error";
 
@@ -140,10 +139,10 @@ public class ServerModeFilePanel extends FilePanel {
     private void showConfirmationDialog(String question, final int action) {
         MessageDialog messageDialog = new MessageDialog(
                 CONFIRMATION_DIALOG_TITLE, question,
-                Arrays.asList(CONFIRMATION_DIALOG_DELETE_BUTTON, CONFIRMATION_DIALOG_CANCEL_BUTTON),
+                Arrays.asList(CONFIRMATION_DIALOG_DELETE_BUTTON, MessageDialog.CANCEL_BUTTON_LABEL),
                 new MessageDialog.Callback() {
                     public void onDialogResult(String answer) {
-                        if (!answer.equals(CONFIRMATION_DIALOG_CANCEL_BUTTON)) {
+                        if (!answer.equals(MessageDialog.CANCEL_BUTTON_LABEL)) {
                             if (action == DELETE_FILE_ACTION) {
                                 presenter.deleteSelectedFile();
                             }

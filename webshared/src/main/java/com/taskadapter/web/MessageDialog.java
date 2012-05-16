@@ -1,5 +1,6 @@
 package com.taskadapter.web;
 
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -9,6 +10,8 @@ import java.util.List;
 
 public class MessageDialog extends Window implements Button.ClickListener {
 
+    public static final String CANCEL_BUTTON_LABEL = "Cancel";
+
     private HorizontalLayout layout = new HorizontalLayout();
     private Callback callback;
 
@@ -16,6 +19,7 @@ public class MessageDialog extends Window implements Button.ClickListener {
         super(caption);
 
         setModal(true);
+        setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
         layout.setSpacing(true);
 
         this.callback = callback;
@@ -31,8 +35,10 @@ public class MessageDialog extends Window implements Button.ClickListener {
 
     private void createButtons(List<String> answers) {
         for (String answer : answers) {
-            Button yes = new Button(answer, this);
-            layout.addComponent(yes);
+            Button button = new Button(answer, this);
+            layout.addComponent(button);
+            // focus on something in this window so that the window can be closed with ESC
+            button.focus();
         }
     }
 
