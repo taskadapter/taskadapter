@@ -60,12 +60,13 @@ public class LicenseInfoPanel extends GridLayout {
         registeredTo.setValue(license.getCustomerName());
         licenseType.setValue(license.getType());
         licenseCreatedOn.setValue(license.getCreatedOn());
+        String formattedExpirationDateString = licenseDateFormatter.format(license.getExpiresOn());
         if (license.isExpired()) {
-            licenseExpiresOn.setValue(licenseDateFormatter.format(license.getExpiresOn()) + " - EXPIRED");
+            licenseExpiresOn.setValue(formattedExpirationDateString + " - EXPIRED");
             licenseExpiresOn.addStyleName("expiredLicenseLabel");
         } else {
             licenseExpiresOn.removeStyleName("expiredLicenseLabel");
-            licenseExpiresOn.setValue(license.getExpiresOn());
+            licenseExpiresOn.setValue(formattedExpirationDateString);
         }
     }
 
