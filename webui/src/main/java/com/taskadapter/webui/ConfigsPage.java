@@ -6,6 +6,10 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.VerticalLayout;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 /**
  * @author Alexey Skorokhodov
  */
@@ -43,7 +47,9 @@ public class ConfigsPage extends Page {
 
     private void reloadConfigs() {
         configsLayout.removeAllComponents();
-        for (TAFile file : services.getConfigStorage().getAllConfigs()) {
+        List<TAFile> allConfigs = services.getConfigStorage().getAllConfigs();
+        Collections.sort(allConfigs, new DescriptionComparator());
+        for (TAFile file : allConfigs) {
             addTask(file);
         }
     }
@@ -61,5 +67,13 @@ public class ConfigsPage extends Page {
     public Component getUI() {
         reloadConfigs();
         return layout;
+    }
+
+    class DescriptionComparator implements Comparator<TAFile> {
+
+        @Override
+        public int compare(TAFile o1, TAFile o2) {
+            return o1.getConfigLabel().compareToIgnoreCase(o2.getConfigLabel());
+        }
     }
 }
