@@ -24,6 +24,7 @@ public class FieldsMappingPanel extends Panel implements Validatable {
     private final AvailableFieldsProvider availableFieldsProvider;
     private ConnectorConfig config;
     private static final int COLUMNS_NUMBER = 2;
+    private GridLayout gridLayout;
 
     /**
      * Config Editors should NOT create this object directly, use ConfigEditor.addFieldsMappingPanel() method instead.
@@ -43,31 +44,39 @@ public class FieldsMappingPanel extends Panel implements Validatable {
     }
 
     private void addFields() {
+        createGridLayout();
+        addTableHeaders();
+        addSupportedFields();
+    }
+
+    private void createGridLayout() {
+        gridLayout = new GridLayout();
+        addComponent(gridLayout);
+        gridLayout.setMargin(true);
+        gridLayout.setSpacing(true);
         Collection<GTaskDescriptor.FIELD> supportedFields = availableFieldsProvider.getSupportedFields();
+        gridLayout.setRows(supportedFields.size() + 2);
+        gridLayout.setColumns(COLUMNS_NUMBER);
+    }
 
-        GridLayout layout = new GridLayout();
-        addComponent(layout);
-        layout.setMargin(true);
-        layout.setSpacing(true);
-
-        layout.setRows(supportedFields.size() + 2);
-        layout.setColumns(COLUMNS_NUMBER);
-
+    private void addTableHeaders() {
         Label label1 = new Label(COLUMN1_HEADER);
-        layout.addComponent(label1, 0, 0);
+        gridLayout.addComponent(label1, 0, 0);
         label1.addStyleName("trial-mode-label");
         Label label2 = new Label(COLUMN2_HEADER);
-        layout.addComponent(label2, 1, 0);
+        gridLayout.addComponent(label2, 1, 0);
         label2.addStyleName("trial-mode-label");
-        layout.addComponent(new Label("<hr>", Label.CONTENT_XHTML), 0, 1, 1, 1);
+        gridLayout.addComponent(new Label("<hr>", Label.CONTENT_XHTML), 0, 1, 1, 1);
+    }
 
+    private void addSupportedFields() {
+        Collection<GTaskDescriptor.FIELD> supportedFields = availableFieldsProvider.getSupportedFields();
         int row = 1;
         for (GTaskDescriptor.FIELD field : supportedFields) {
             CheckBox checkbox = new CheckBox(GTaskDescriptor.getDisplayValue(field));
-            layout.addComponent(checkbox, 0, ++row);
-            layout.setComponentAlignment(checkbox, Alignment.MIDDLE_LEFT);
+            gridLayout.addComponent(checkbox, 0, ++row);
+            gridLayout.setComponentAlignment(checkbox, Alignment.MIDDLE_LEFT);
             fieldToButtonMap.put(field, checkbox);
-
             Mapping mapping = config.getFieldMapping(field);
             if (mapping == null) {
                 // means this config does not have a mapping for this field, which
@@ -85,13 +94,13 @@ public class FieldsMappingPanel extends Panel implements Validatable {
                 ComboBox combo = new ComboBox(null, container);
                 combo.setWidth("160px");
                 fieldToValueMap.put(field, combo);
-                layout.addComponent(combo, 1, row);
-                layout.setComponentAlignment(combo, Alignment.MIDDLE_LEFT);
+                gridLayout.addComponent(combo, 1, row);
+                gridLayout.setComponentAlignment(combo, Alignment.MIDDLE_LEFT);
                 combo.select(mapping.getCurrentValue());
             } else if (allowedValues.length == 1) {
                 Label label = new Label(allowedValues[0]);
-                layout.addComponent(label, 1, row);
-                layout.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
+                gridLayout.addComponent(label, 1, row);
+                gridLayout.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
             } else {
                 markFieldNotSupportedByThisConnector(checkbox);
             }
