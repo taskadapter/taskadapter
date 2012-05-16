@@ -78,23 +78,7 @@ public class FieldsMappingPanel extends Panel implements Validatable {
             CheckBox checkbox = new CheckBox(GTaskDescriptor.getDisplayValue(field));
 
             if (field == GTaskDescriptor.FIELD.REMOTE_ID) {
-                Resource res = new ThemeResource("../runo/icons/16/help.png");
-                Embedded helpIcon = new Embedded(null, res);
-                helpIcon.setDescription("<p>When you load an MSP file into Task Adapter and then export the "
-                        + "tasks into Redmine / Atlassian Jira / Chiliproject/etc.. , Task Adapter can save "
-                        + "the IDs of the tasks it creates in those task managment systems. These remote IDs "
-                        + "are stored in the MSP file itself (assuming that the option is <em>selected</em>). <br />"
-                        + "This way you can later edit the MSP file (say, using MS Project), load it to Task Adapter "
-                        + "again and re-export tasks to the same Redmine/Jira/..., so that the tasks without 'remote IDs'"
-                        + "will be <strong>created</strong> and the old ones (which have been previously created in "
-                        + "Redmine/jira/...) will be <strong>updated</strong>.</p>"
-                        + "More information about <a target='_blank' href='http://taskadapter.com/microsoft_project#save_remote_ids'>Remote ID</a>");
-
-                HorizontalLayout remoteLayout = new HorizontalLayout();
-                remoteLayout.addComponent(checkbox);
-                remoteLayout.addComponent(helpIcon);
-                gridLayout.addComponent(remoteLayout, 0, ++row);
-                gridLayout.setComponentAlignment(remoteLayout, Alignment.MIDDLE_LEFT);
+                row = addRemoteIdHelpTip(row, checkbox);
             } else {
                 gridLayout.addComponent(checkbox, 0, ++row);
                 gridLayout.setComponentAlignment(checkbox, Alignment.MIDDLE_LEFT);
@@ -129,6 +113,27 @@ public class FieldsMappingPanel extends Panel implements Validatable {
                 markFieldNotSupportedByThisConnector(checkbox);
             }
         }
+    }
+
+    private int addRemoteIdHelpTip(int row, CheckBox checkbox) {
+        Resource res = new ThemeResource("../runo/icons/16/help.png");
+        Embedded helpIcon = new Embedded(null, res);
+        helpIcon.setDescription("<p>When you load an MSP file into Task Adapter and then export the "
+                + "tasks into Redmine / Atlassian Jira / Chiliproject/etc.. , Task Adapter can save "
+                + "the IDs of the tasks it creates in those task managment systems. These remote IDs "
+                + "are stored in the MSP file itself (assuming that the option is <em>selected</em>). <br />"
+                + "This way you can later edit the MSP file (say, using MS Project), load it to Task Adapter "
+                + "again and re-export tasks to the same Redmine/Jira/..., so that the tasks without 'remote IDs'"
+                + "will be <strong>created</strong> and the old ones (which have been previously created in "
+                + "Redmine/jira/...) will be <strong>updated</strong>.</p>"
+                + "More information about <a target='_blank' href='http://taskadapter.com/microsoft_project#save_remote_ids'>Remote ID</a>");
+
+        HorizontalLayout remoteLayout = new HorizontalLayout();
+        remoteLayout.addComponent(checkbox);
+        remoteLayout.addComponent(helpIcon);
+        gridLayout.addComponent(remoteLayout, 0, ++row);
+        gridLayout.setComponentAlignment(remoteLayout, Alignment.MIDDLE_LEFT);
+        return row;
     }
 
     private void markFieldNotSupportedByThisConnector(CheckBox checkbox) {
