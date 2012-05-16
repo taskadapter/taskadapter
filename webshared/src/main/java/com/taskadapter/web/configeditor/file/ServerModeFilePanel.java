@@ -19,28 +19,26 @@ public class ServerModeFilePanel extends FilePanel {
 
     private static final String TITLE = "Microsoft Project file";
     private static final String COMBOBOX_INPUT_PROMPT = "Select an existing file";
-    public static final String COMBOBOX_ITEM_PROPERTY = "name";
-    public static final String DATE_FORMAT = "d MMM yyyy h:mm:ss a z";
-    private static final String DOWNLOAD_BUTTON_CAPTION = "Download file";
+    static final String COMBOBOX_ITEM_PROPERTY = "name";
+    static final String DATE_FORMAT = "d MMM yyyy h:mm:ss a z";
+    static final String DOWNLOAD_BUTTON_CAPTION = "Download file";
     private static final String UPLOAD_BUTTON_CAPTION = "Upload new";
-    public static final String DOWNLOAD_FILE_ERROR = "Download file error";
-    public static final String UPLOAD_FAILED = "Upload failed";
-    public static final String UPLOAD_SUCCESS = "Upload success";
-    public static final String SAVE_FILE_FAILED = "Save file error"; // error of saving after upload
-    public static final String UPLOADING = "Uploading";
+    static final String DOWNLOAD_FILE_ERROR = "Download file error";
+    static final String UPLOAD_FAILED = "Upload failed";
+    static final String UPLOAD_SUCCESS = "Upload success";
+    static final String SAVE_FILE_FAILED = "Save file error"; // error of saving after upload
+    static final String UPLOADING = "Uploading";
     private static final String DELETE_BUTTON_CAPTION = "Delete";
     private static final String QUESTION_DELETE_FILE = "Delete selected file?";
     private static final String CONFIRMATION_DIALOG_TITLE = "Deleting";
     private static final String CONFIRMATION_DIALOG_DELETE_BUTTON = "Delete";
     private static final String CONFIRMATION_DIALOG_CANCEL_BUTTON = "Cancel";
-    public static final String FILE_DELETED_SUCCESS = "File deleted";
-    public static final String FILE_DELETED_FAILED = "File deletion error";
+    static final String FILE_DELETED_SUCCESS = "File deleted";
+    static final String FILE_DELETED_FAILED = "File deletion error";
 
     private static final int DELETE_FILE_ACTION = 1;
     private static final String COMBOBOX_WIDTH = "175px";
     private static final String CONFIRMATION_DIALOG_WIDTH = "200px";
-
-
 
     private Label statusLabel;
     private final ServerModelFilePanelPresenter presenter;
@@ -105,7 +103,7 @@ public class ServerModeFilePanel extends FilePanel {
         bottomToolLayout.addComponent(createUploadButton());
 
         layout.addComponent(bottomToolLayout);
-        
+
         return layout;
     }
 
@@ -145,11 +143,11 @@ public class ServerModeFilePanel extends FilePanel {
                 Arrays.asList(CONFIRMATION_DIALOG_DELETE_BUTTON, CONFIRMATION_DIALOG_CANCEL_BUTTON),
                 new MessageDialog.Callback() {
                     public void onDialogResult(String answer) {
-                            if (!answer.equals(CONFIRMATION_DIALOG_CANCEL_BUTTON)){
-                                if (action == DELETE_FILE_ACTION) {
-                                    presenter.deleteSelectedFile();
-                                }
+                        if (!answer.equals(CONFIRMATION_DIALOG_CANCEL_BUTTON)) {
+                            if (action == DELETE_FILE_ACTION) {
+                                presenter.deleteSelectedFile();
                             }
+                        }
                     }
                 }
         );
