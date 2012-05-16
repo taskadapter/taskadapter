@@ -78,6 +78,7 @@ public abstract class ActionPage extends Page {
         loadProgress.setEnabled(false);
         if (loadedTasks == null || loadedTasks.isEmpty()) {
             mainPanel.addComponent(createLabel(getNoDataLoadedText()));
+            mainPanel.addComponent(createBackButton("Back"));
         } else {
             buildConfirmationUI();
         }
