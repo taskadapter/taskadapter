@@ -5,6 +5,7 @@ import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.web.configeditor.*;
 import com.vaadin.data.Property;
+import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.*;
 import org.redmine.ta.RedmineManager;
 import org.redmine.ta.beans.Project;
@@ -124,6 +125,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         private static final String USE_API = "Use API Access Key";
         private static final String USE_LOGIN = "Use Login and Password";
         private static final String DEFAULT_USE = USE_LOGIN;
+        private static final String DEFAULT_HOST_VALUE = "http://";
 
         private TextField serverURL;
         private PasswordField redmineAPIKey;
@@ -160,6 +162,14 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
             serverURL = new TextField();
             serverURL.addStyleName("server-panel-textfield");
             serverURL.setInputPrompt("http://myserver:3000/myredminelocation");
+            serverURL.addListener(new FieldEvents.BlurListener() {
+                @Override
+                public void blur(FieldEvents.BlurEvent event) {
+                    //TODO refactor these methods (common in ServerPanel and RedmineServerPanel
+                    checkProtocol();
+                }
+            });
+
             layout.addComponent(serverURL, 1, 0);
             
             String emptyLabelHeight = "10px";
@@ -273,6 +283,12 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         public void validate() throws ValidationException {
             if (getServerURL().isEmpty()) {
                 throw new ValidationException("Server URL is not set");
+            }
+        }
+
+        private void checkProtocol() {
+            if (!((String) serverURL.getValue()).startsWith("http")) {
+                serverURL.setValue(DEFAULT_HOST_VALUE + serverURL.getValue());
             }
         }
     }

@@ -10,7 +10,7 @@ import com.vaadin.ui.*;
  */
 public class ServerPanel extends Panel implements Validatable {
     private static final String HOST_URL_TOOLTIP = "Host URL, including protocol prefix and port number. E.g. http://demo.site.com:3000";
-
+    private static final String DEFAULT_HOST_VALUE = "http://";
     private static final String SERVER_GROUP_LABEL = "Server info";
 
     private TextField hostURLText;
@@ -46,6 +46,8 @@ public class ServerPanel extends Panel implements Validatable {
         hostURLText.addListener(new FieldEvents.BlurListener() {
             @Override
             public void blur(FieldEvents.BlurEvent event) {
+                //TODO refactor these methods (common in ServerPanel and RedmineServerPanel
+                checkProtocol();
                 cleanup();
             }
         });
@@ -80,6 +82,12 @@ public class ServerPanel extends Panel implements Validatable {
 
     private String getHostString() {
         return (String) hostURLText.getValue();
+    }
+
+    private void checkProtocol() {
+        if (!getHostString().startsWith("http")) {
+            hostURLText.setValue(DEFAULT_HOST_VALUE + hostURLText.getValue());
+        }
     }
 
     @Override
