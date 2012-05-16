@@ -53,12 +53,12 @@ public class EnterLicensePanel extends VerticalLayout {
             public void buttonClick(Button.ClickEvent event) {
                 licenseArea.setValue("Product: TASK_ADAPTER_WEB\n" +
                         "License type: local / single user\n" +
-                        "Registered to: TA-testing\n" +
-                        "Email: nomail@nodomain.com\n" +
-                        "Created on: 2012-05-10\n" +
-                        "Expires on: 2012-06-10\n" +
+                        "Registered to: TATesting\n" +
+                        "Email: nomail@a.b\n" +
+                        "Created on: 2012-05-13\n" +
+                        "Expires on: 2012-06-13\n" +
                         "-------------- Key --------------\n" +
-                        "SBVbU19OeX8AE01fWEFaTUFWHAIeXg5GS0BNFF9cXAM3Nh86TVdQSxdZW11ANTAeSBMJBglKDR8CXg==");
+                        "SBVbU19OeX8AE01fWEFaTUFWHAIeJx9QTF1KHVZdXg8/MzMbDVoGFEsKHwNbe25ASBMJBglKDh8CXQ==");
                 save();
             }
         });
@@ -70,12 +70,12 @@ public class EnterLicensePanel extends VerticalLayout {
             public void buttonClick(Button.ClickEvent event) {
                 licenseArea.setValue("Product: TASK_ADAPTER_WEB\n" +
                         "License type: server / many users\n" +
-                        "Registered to: TA-testing\n" +
-                        "Email: nomail@nodomain.com\n" +
-                        "Created on: 2012-05-10\n" +
-                        "Expires on: 2012-06-10\n" +
+                        "Registered to: TATesting\n" +
+                        "Email: nomail@a.b\n" +
+                        "Created on: 2012-05-13\n" +
+                        "Expires on: 2012-06-13\n" +
                         "-------------- Key --------------\n" +
-                        "Vx9KRFYcdnBTF0JWTQQPS1dBHQIeXg5GS0BNFF9cXAM3Nh86TVdQSxdZW11ANTAeSBMJBglKDR8CXg==");
+                        "Vx9KRFYcdnBTF0JWTQQPS1dBHQIeJx9QTF1KHVZdXg8/MzMbDVoGFEsKHwNbe25ASBMJBglKDh8CXQ==");
                 save();
             }
         });
