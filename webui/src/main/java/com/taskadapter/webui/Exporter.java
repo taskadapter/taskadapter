@@ -7,6 +7,7 @@ import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.web.MessageDialog;
 
+import java.io.File;
 import java.util.Arrays;
 
 public class Exporter {
@@ -70,8 +71,9 @@ public class Exporter {
 
     private void processFile(FileBasedConnector connectorTo) {
         if (connectorTo.fileExists()) {
+            String fileName = new File(connectorTo.getAbsoluteOutputFileName()).getName();
             MessageDialog messageDialog = new MessageDialog(
-                    "Choose operation", "Destination file already exists:\n" + connectorTo.getAbsoluteOutputFileName(),
+                    "Choose operation", "Destination file already exists:<br>" + fileName,
                     Arrays.asList(TEXT_UPDATE, OVERWRITE, CANCEL),
                     new MessageDialog.Callback() {
                         public void onDialogResult(String answer) {
@@ -79,7 +81,7 @@ public class Exporter {
                         }
                     }
             );
-            messageDialog.setWidth("425px");
+            messageDialog.setWidth("465px");
 
             navigator.addWindow(messageDialog);
         } else {

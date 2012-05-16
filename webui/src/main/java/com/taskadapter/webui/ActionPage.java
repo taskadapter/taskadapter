@@ -4,6 +4,7 @@ import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.model.GTask;
+import com.taskadapter.web.configeditor.DefaultPanel;
 import com.taskadapter.webui.action.ConfirmExportPage;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.BaseTheme;
@@ -29,6 +30,9 @@ public abstract class ActionPage extends Page {
         this.connectorTo = connectorTo;
         this.taFile = file;
         mainPanel = new VerticalLayout();
+        mainPanel.setSpacing(true);
+        mainPanel.setMargin(true);
+
         buildInitialPage();
     }
 
@@ -37,10 +41,10 @@ public abstract class ActionPage extends Page {
     protected abstract void loadData();
 
     private void buildInitialPage() {
-        String text = getInitialText();
-        Label label = new Label(text);
+        Label label = createLabel(getInitialText());
         label.setContentMode(Label.CONTENT_XHTML);
         mainPanel.addComponent(label);
+
         Button goButton = new Button("Go");
         goButton.addListener(new Button.ClickListener() {
             @Override
@@ -67,16 +71,23 @@ public abstract class ActionPage extends Page {
         loadProgress.setPollingInterval(200);
         mainPanel.addComponent(loadProgress);
         String labelText = "loading data from " + connectorFrom.getConfig().getSourceLocation() + " (" + connectorFrom.getDescriptor().getLabel() + ")";
-        mainPanel.addComponent(new Label(labelText));
+        mainPanel.addComponent(createLabel(labelText));
     }
 
     protected void showAfterDataLoaded() {
         loadProgress.setEnabled(false);
         if (loadedTasks == null || loadedTasks.isEmpty()) {
-            mainPanel.addComponent(new Label(getNoDataLoadedText()));
+            mainPanel.addComponent(createLabel(getNoDataLoadedText()));
+            mainPanel.addComponent(createBackButton("Back"));
         } else {
             buildConfirmationUI();
         }
+    }
+
+    private Label createLabel(String text) {
+        Label label = new Label(text);
+        label.setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
+        return label;
     }
 
     private class LoadWorker extends Thread {
