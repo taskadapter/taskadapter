@@ -20,7 +20,7 @@ public class ConfigureTaskPage extends Page {
     private ConfigEditor panel1;
     private ConfigEditor panel2;
     private TabSheet tabSheet;
-    private Label errorMessageLabel = new Label();
+    private Label errorMessageLabel = new Label("Test");
     private String activeTabLabel;
 
     public ConfigureTaskPage() {
@@ -41,12 +41,15 @@ public class ConfigureTaskPage extends Page {
         });
         buttonsLayout.addComponent(saveButton);
 
+        errorMessageLabel.addStyleName("error-message-label");
+        errorMessageLabel.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        buttonsLayout.addComponent(errorMessageLabel);
+        buttonsLayout.setExpandRatio(errorMessageLabel, 1.0f);
+        //buttonsLayout.setComponentAlignment(errorMessageLabel, Alignment.MIDDLE_LEFT);
+
         ConfigToolbarPanel configToolbarPanel = new ConfigToolbarPanel(navigator, file);
         buttonsLayout.addComponent(configToolbarPanel);
         buttonsLayout.setComponentAlignment(configToolbarPanel, Alignment.MIDDLE_RIGHT);
-
-        errorMessageLabel.addStyleName("error-message-label");
-        buttonsLayout.addComponent(errorMessageLabel);
         layout.addComponent(buttonsLayout);
 
         HorizontalLayout descriptionLayout = new HorizontalLayout();
