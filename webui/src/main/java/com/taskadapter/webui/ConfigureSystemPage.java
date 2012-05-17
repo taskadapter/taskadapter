@@ -2,6 +2,7 @@ package com.taskadapter.webui;
 
 import com.taskadapter.web.LocalRemoteOptionsPanel;
 import com.taskadapter.webui.license.LicensePanel;
+import com.taskadapter.webui.user.UsersPanel;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -39,7 +40,12 @@ public class ConfigureSystemPage extends Page {
         }
         createLocalRemoteSection();
         createLicenseSection();
+        createUsersSection();
         return layout;
+    }
+
+    private void createUsersSection() {
+        layout.addComponent(new UsersPanel(services));
     }
 
     public void setError(String message) {

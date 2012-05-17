@@ -10,10 +10,7 @@ public class SettingsManager {
 
     private Preferences prefs = Preferences.userNodeForPackage(SettingsManager.class);
 
-    /**
-     * Is TA working on the local machine?
-     */
-    public boolean isLocalSingleUserMode() {
+    public boolean isTAWorkingOnLocalMachine() {
         return prefs.getBoolean("TALocal", DEFAULT_LOCAL);
     }
 

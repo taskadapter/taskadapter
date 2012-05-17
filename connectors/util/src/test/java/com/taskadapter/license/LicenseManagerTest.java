@@ -23,16 +23,16 @@ public class LicenseManagerTest {
         License license = licenseManager.getLicense();
         Assert.assertNotNull("License must not be null", license);
         Assert.assertEquals("Product type is expected to be " + LicenseManager.Product.TASK_ADAPTER_WEB, LicenseManager.Product.TASK_ADAPTER_WEB, license.getProduct());
-        Assert.assertEquals("License type is expected to be " + License.Type.SINGLE.getText(), License.Type.SINGLE, license.getType());
+        Assert.assertEquals("Users number is expected to be " + 1, 1, license.getUsersNumber());
     }
 
     private String getValidSingleUserLicense() throws IOException {
-        return MyIOUtils.getResourceAsString("taskadapterweb.license.single");
+        return MyIOUtils.getResourceAsString("taskadapterweb.1-user.license");
     }
 
     @Test
     public void testValidMultiLicense() throws IOException {
-        String validMultiUserLicense = MyIOUtils.getResourceAsString("taskadapterweb.license.multi");
+        String validMultiUserLicense = MyIOUtils.getResourceAsString("taskadapterweb.5-users.license");
         LicenseManager licenseManager = new LicenseManager();
         try {
             licenseManager.setNewLicense(validMultiUserLicense);
@@ -44,7 +44,7 @@ public class LicenseManagerTest {
         License license = licenseManager.getLicense();
         Assert.assertNotNull("License must not be null", license);
         Assert.assertEquals("Product type is expected to be " + LicenseManager.Product.TASK_ADAPTER_WEB, LicenseManager.Product.TASK_ADAPTER_WEB, license.getProduct());
-        Assert.assertEquals("License type is expected to be " + License.Type.MULTI.getText(), License.Type.MULTI, license.getType());
+        Assert.assertEquals("License type is expected to be " + 5, 5, license.getUsersNumber());
     }
 
     @Test

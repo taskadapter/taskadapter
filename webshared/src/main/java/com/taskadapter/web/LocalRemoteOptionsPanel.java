@@ -1,6 +1,5 @@
 package com.taskadapter.web;
 
-import com.taskadapter.license.LicenseChangeListener;
 import com.taskadapter.web.service.Services;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Alignment;
@@ -29,7 +28,6 @@ public class LocalRemoteOptionsPanel extends Panel {
         buildUI();
         selectLocalOrRemoteMode();
         setupLocalRemoteModeListener();
-        setupLicenseListener();
     }
 
     private void buildUI() {
@@ -48,20 +46,10 @@ public class LocalRemoteOptionsPanel extends Panel {
     }
 
     private void selectLocalOrRemoteMode() {
-        if (services.getSettingsManager().isLocalSingleUserMode()) {
+        if (services.getSettingsManager().isTAWorkingOnLocalMachine()) {
             group.select(LOCAL);
         } else {
             group.select(REMOTE);
-        }
-        forceLocalModeIfSingleUserLicenseInstalled();
-    }
-
-    private void forceLocalModeIfSingleUserLicenseInstalled() {
-        if (services.getLicenseManager().isSingleUserLicenseInstalled()) {
-            group.select(LOCAL);
-            group.setEnabled(false);
-        } else {
-            group.setEnabled(true);
         }
     }
 
@@ -70,22 +58,9 @@ public class LocalRemoteOptionsPanel extends Panel {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
                 boolean localModeRequested = event.getProperty().toString().equals(LOCAL);
-                if (services.getLicenseManager().isSingleUserLicenseInstalled()) {
-                    throw new RuntimeException("Illegal state: can't change local/server mode when a single-user license is installed");
-                }
                 services.getSettingsManager().setLocal(localModeRequested);
                 progressElement.start();
             }
         });
     }
-
-    private void setupLicenseListener() {
-        services.getLicenseManager().addLicenseChangeListener(new LicenseChangeListener() {
-            @Override
-            public void licenseInfoUpdated() {
-                forceLocalModeIfSingleUserLicenseInstalled();
-            }
-        });
-    }
-
 }

@@ -52,30 +52,30 @@ public class EnterLicensePanel extends VerticalLayout {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 licenseArea.setValue("Product: TASK_ADAPTER_WEB\n" +
-                        "License type: local / single user\n" +
-                        "Registered to: TATesting\n" +
-                        "Email: nomail@a.b\n" +
-                        "Created on: 2012-05-13\n" +
-                        "Expires on: 2012-06-13\n" +
+                        "Users number: 1\n" +
+                        "Registered to: TA Testing\n" +
+                        "Email: mail@domain.net\n" +
+                        "Created on: 2012-05-16\n" +
+                        "Expires on: 2013-05-16\n" +
                         "-------------- Key --------------\n" +
-                        "SBVbU19OeX8AE01fWEFaTUFWHAIeJx9QTF1KHVZdXg8/MzMbDVoGFEsKHwNbe25ASBMJBglKDh8CXQ==");
+                        "FS55EmcLJSsaFERVVU0WeFZcAzc2HVRNXUAWSgkAHl5jckJMEQgFF1cIBx5fYA==");
                 save();
             }
         });
         addComponent(saveSingleUserLicenseButton);
 
-        Button saveServerLicenseButton = new Button("DEBUG: server license");
+        Button saveServerLicenseButton = new Button("DEBUG: 5-user license");
         saveServerLicenseButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 licenseArea.setValue("Product: TASK_ADAPTER_WEB\n" +
-                        "License type: server / many users\n" +
-                        "Registered to: TATesting\n" +
-                        "Email: nomail@a.b\n" +
-                        "Created on: 2012-05-13\n" +
-                        "Expires on: 2012-06-13\n" +
+                        "Users number: 5\n" +
+                        "Registered to: TA Testing\n" +
+                        "Email: mail@domain.net\n" +
+                        "Created on: 2012-05-16\n" +
+                        "Expires on: 2013-05-16\n" +
                         "-------------- Key --------------\n" +
-                        "Vx9KRFYcdnBTF0JWTQQPS1dBHQIeJx9QTF1KHVZdXg8/MzMbDVoGFEsKHwNbe25ASBMJBglKDh8CXQ==");
+                        "ES55EmcLJSsaFERVVU0WeFZcAzc2HVRNXUAWSgkAHl5jckJMEQgFF1cIBx5fYA==");
                 save();
             }
         });

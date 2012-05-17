@@ -101,6 +101,6 @@ public class MSPEditor extends ConfigEditor {
     }
 
     private boolean isLocalMode() {
-        return services.getSettingsManager().isLocalSingleUserMode();
+        return services.getSettingsManager().isTAWorkingOnLocalMachine();
     }
 }
