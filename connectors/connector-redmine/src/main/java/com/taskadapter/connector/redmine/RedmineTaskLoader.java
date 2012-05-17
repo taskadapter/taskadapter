@@ -3,6 +3,7 @@ package com.taskadapter.connector.redmine;
 import com.taskadapter.connector.common.AbstractTaskLoader;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.GTask;
+import org.redmine.ta.RedmineException;
 import org.redmine.ta.RedmineManager;
 import org.redmine.ta.RedmineManager.INCLUDE;
 import org.redmine.ta.RedmineSecurityException;
@@ -42,7 +43,7 @@ public class RedmineTaskLoader extends AbstractTaskLoader<RedmineConfig> {
             Issue issue = mgr.getIssueById(intKey, INCLUDE.relations);
             RedmineDataConverter converter = new RedmineDataConverter(config);
             return converter.convertToGenericTask(issue);
-        } catch (Exception e) {
+        } catch (RedmineException e) {
             throw new RuntimeException(e);
         }
     }
