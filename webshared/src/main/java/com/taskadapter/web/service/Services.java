@@ -15,6 +15,7 @@ public class Services {
     private ConfigStorage configStorage;
     private CookiesManager cookiesManager = new CookiesManager();
     private SessionInfo sessionInfo = new SessionInfo();
+    private UserManager userManager = new UserManager();
 
     public Services() {
         configStorage = new ConfigStorage(pluginManager);
@@ -55,5 +56,9 @@ public class Services {
 
     public SessionInfo getSessionInfo() {
         return sessionInfo;
+    }
+
+    public UserManager getUserManager() {
+        return userManager;
     }
 }

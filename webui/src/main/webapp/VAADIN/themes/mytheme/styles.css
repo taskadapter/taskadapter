@@ -216,3 +216,8 @@
 .configs-single-panel-inner {
 		margin-bottom: 10px;
 }
+
+.userLoginLabelInUsersPanel {
+    font-size: 14px;
+    font-weight: bold;
+}
