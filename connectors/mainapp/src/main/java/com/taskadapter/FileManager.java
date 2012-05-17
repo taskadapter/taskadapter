@@ -28,24 +28,28 @@ public class FileManager {
     }
 
     /**
-     * saves the file into a special folder like home/user1/file
+     * saves the file into <home>/<ta_login_name>/files/<filename>
      */
     public void saveFileOnServer(String userLoginName, String fileName, byte[] bytes) throws IOException {
-        File file = new File(getUserFolder(userLoginName), fileName);
+        File file = new File(getUserFilesFolder(userLoginName), fileName);
         Files.createParentDirs(file);
         Files.write(bytes, file);
     }
 
     public List<File> getUserFiles(String userLoginName) {
-        File userDirectory = getUserFolder(userLoginName);
-        return userDirectory.exists() ? Arrays.asList(userDirectory.listFiles()) : new ArrayList<File>();
+        File userFilesFolder = getUserFilesFolder(userLoginName);
+        return userFilesFolder.exists() ? Arrays.asList(userFilesFolder.listFiles()) : new ArrayList<File>();
+    }
+
+    public File getUserFilesFolder(String userLoginName) {
+        return new File(getUserFolderName(userLoginName) + "/files");
     }
 
     public File getFileForUser(String userLoginName, String fileName) {
-        File userDirectory = getUserFolder(userLoginName);
-        File file = new File(userDirectory, fileName);
+        File userFilesFolder = getUserFilesFolder(userLoginName);
+        File file = new File(userFilesFolder, fileName);
         if (!file.exists()) {
-            throw new RuntimeException("File does not exist: " + fileName + " in " + userDirectory + "folder");
+            throw new RuntimeException("File does not exist: " + fileName + " in " + userFilesFolder + "folder");
         }
         return file;
     }

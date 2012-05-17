@@ -197,7 +197,7 @@ public class ServerModelFilePanelPresenter {
             File f = new File(absolutePath);
             view.selectFileInCombobox(f.getName());
         } else {
-            File newFile = createDefaultFile(fileManager.getUserFolder(userName));
+            File newFile = createDefaultFile(fileManager.getUserFilesFolder(userName));
             if (newFile == null) {
                 view.showNotification(ServerModeFilePanel.CANNOT_GENERATE_A_FILE);
             } else {
