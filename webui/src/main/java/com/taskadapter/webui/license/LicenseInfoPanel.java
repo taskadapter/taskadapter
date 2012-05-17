@@ -15,7 +15,7 @@ public class LicenseInfoPanel extends GridLayout {
     private static final String LICENSE_DATE_FORMAT_DESCRIPTION_FOR_GUI = "(year-month-day)";
 
     private Label registeredTo;
-    private Label licenseType;
+    private Label usersNumberLabel;
     private Label licenseCreatedOn;
     private Label licenseExpiresOn;
     private Services services;
@@ -34,9 +34,9 @@ public class LicenseInfoPanel extends GridLayout {
         registeredTo = new Label();
         addComponent(registeredTo);
 
-        addComponent(new Label("Type:"));
-        licenseType = new Label();
-        addComponent(licenseType);
+        addComponent(new Label("Users number:"));
+        usersNumberLabel = new Label();
+        addComponent(usersNumberLabel);
 
         addComponent(new Label("License created " + LICENSE_DATE_FORMAT_DESCRIPTION_FOR_GUI));
         licenseCreatedOn = new Label();
@@ -58,7 +58,7 @@ public class LicenseInfoPanel extends GridLayout {
 
     public void setLicense(License license) {
         registeredTo.setValue(license.getCustomerName());
-        licenseType.setValue(license.getType());
+        usersNumberLabel.setValue(license.getUsersNumber());
         licenseCreatedOn.setValue(license.getCreatedOn());
         String formattedExpirationDateString = licenseDateFormatter.format(license.getExpiresOn());
         if (license.isExpired()) {

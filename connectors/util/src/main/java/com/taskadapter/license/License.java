@@ -5,67 +5,21 @@ import com.taskadapter.license.LicenseManager.Product;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.taskadapter.license.LicenseFormatDescriptor.LICENSE_DATE_FORMAT;
 
 public class License {
-    private SimpleDateFormat licenseDateFormatter = new SimpleDateFormat(LICENSE_DATE_FORMAT);
+    private final SimpleDateFormat licenseDateFormatter = new SimpleDateFormat(LICENSE_DATE_FORMAT);
 
     private Product product;
-    private Type type;
     private String customerName;
     private String email;
+    private int usersNumber;
     private String createdOn;
     private Date expiresOn;
 
-    private static final String SINGLE_TEXT = "local / single user";
-    private static final String MULTI_TEXT = "server / many users";
-
-    public enum Type {
-        SINGLE("s", SINGLE_TEXT),
-        MULTI("m", MULTI_TEXT);
-
-        private String code;
-        private String text;
-        private static Map<String, Type> lookupCode = new HashMap<String, Type>(2) {{
-            put("s", SINGLE);
-            put("m", MULTI);
-        }};
-        private static Map<String, Type> lookupText = new HashMap<String, Type>(2) {{
-            put(SINGLE_TEXT, SINGLE);
-            put(MULTI_TEXT, MULTI);
-        }};
-
-        Type(String code, String text) {
-            this.code = code;
-            this.text = text;
-        }
-
-        public String getCode() {
-            return code;
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        public static Type getByCode(String code) {
-            return lookupCode.get(code);
-        }
-
-        public static Type getByText(String str) {
-            return lookupText.get(str);
-        }
-    }
-
     public Product getProduct() {
         return product;
-    }
-
-    public Type getType() {
-        return type;
     }
 
     public String getCustomerName() {
@@ -84,14 +38,31 @@ public class License {
         return expiresOn;
     }
 
-    // TODO refactor this parameters list!!
-    public License(Product product, Type type, String customerName, String email, String createdOn, Date expiresOn) {
-        super();
+    public int getUsersNumber() {
+        return usersNumber;
+    }
+
+    public void setProduct(Product product) {
         this.product = product;
-        this.type = type;
+    }
+
+    public void setCustomerName(String customerName) {
         this.customerName = customerName;
+    }
+
+    public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setUsersNumber(int usersNumber) {
+        this.usersNumber = usersNumber;
+    }
+
+    public void setCreatedOn(String createdOn) {
         this.createdOn = createdOn;
+    }
+
+    public void setExpiresOn(Date expiresOn) {
         this.expiresOn = expiresOn;
     }
 
@@ -99,9 +70,9 @@ public class License {
     public String toString() {
         return "License{" +
                 "product='" + product + '\'' +
-                ", license type='" + type.getText() + '\'' +
                 ", customerName='" + customerName + '\'' +
                 ", email='" + email + '\'' +
+                ", usersNumber='" + usersNumber + '\'' +
                 ", createdOn='" + createdOn +
                 ", expiresOn='" + expiresOn +
                 "'}";

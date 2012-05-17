@@ -109,7 +109,7 @@ public class Navigator {
         }
 
 
-        boolean singleUserMode = services.getSettingsManager().isLocalSingleUserMode();
+        boolean singleUserMode = services.getSettingsManager().isTAWorkingOnLocalMachine();
         boolean requestCameFromLocalhost = services.getSessionInfo().isRequestCameFromLocalhost();
         if (singleUserMode && !requestCameFromLocalhost) {
             currentPage = pages.get(CONFIGURE_SYSTEM_PAGE);

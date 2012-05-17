@@ -119,7 +119,7 @@ public class LicenseManager {
     }
 
     public boolean isSingleUserLicenseInstalled() {
-        return isSomeValidLicenseInstalled() && License.Type.SINGLE.equals(license.getType());
+        return isSomeValidLicenseInstalled() && (license.getUsersNumber() == 1);
     }
 
     public void addLicenseChangeListener(LicenseChangeListener listener) {

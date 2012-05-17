@@ -25,10 +25,11 @@ public final class LicenseParser {
 
         //---FORMAT START-----------
         //0: Product: TASK_ADAPTER_WEB
-        //1: License type: local / single user
+        //1: Users number: 5
         //2: Registered to: Alexey Skorokhodov
         //3: Email: mail@server.com
         //4: Date: 2010-07-25
+        // .. expiration
         //5: -----Key-----
         //6: 12313123..........
         //---FORMAT END-------------
@@ -50,7 +51,14 @@ public final class LicenseParser {
             throw new RuntimeException("Unknown product: " + productName);
         }
 
-        String licenseTypeStr = lines[LINE_LICENSE_TYPE].substring(PREFIX_LICENSE_TYPE.length());
+        String usersNumberStr = lines[LINE_USERS_NUMBER].substring(PREFIX_USERS_NUMBER.length());
+
+        int usersNumber;
+        try {
+            usersNumber = Integer.parseInt(usersNumberStr);
+        } catch (NumberFormatException e) {
+            throw new LicenseParseException("Invalid users number in the license : " + usersNumberStr);
+        }
         String customerName = lines[LINE_CUSTOMER_NAME].substring(PREFIX_REGISTERED_TO.length());
         String email = lines[LINE_EMAIL].substring(PREFIX_EMAIL.length());
         String createdOn = lines[LINE_CREATED_ON_DATE].substring(PREFIX_CREATED_ON.length());
@@ -59,7 +67,7 @@ public final class LicenseParser {
 
         String decodedBase64Text = new String(Base64.decodeBase64(key.getBytes()));
         String xoredText = new LicenseEncryptor(PASSWORD).chiper(decodedBase64Text);
-        String mergedStr = licenseTypeStr + customerName + email + createdOn + expiresOnString;
+        String mergedStr = usersNumber + customerName + email + createdOn + expiresOnString;
 
         License license;
 
@@ -70,7 +78,13 @@ public final class LicenseParser {
             } catch (ParseException e) {
                 throw new LicenseParseException("Invalid license expiration date: " + expiresOnString + ". Valid format: " + LICENSE_DATE_FORMAT);
             }
-            license = new License(product, License.Type.getByText(licenseTypeStr), customerName, email, createdOn, expiresOn);
+            license = new License();
+            license.setProduct(product);
+            license.setCustomerName(customerName);
+            license.setEmail(email);
+            license.setUsersNumber(usersNumber);
+            license.setCreatedOn(createdOn);
+            license.setExpiresOn(expiresOn);
         } else {
             throw new LicenseParseException("License is not recognized");
         }

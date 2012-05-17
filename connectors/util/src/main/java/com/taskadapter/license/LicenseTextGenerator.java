@@ -19,13 +19,13 @@ public class LicenseTextGenerator {
 
     public String generateLicenseText() {
         String expirationDateFormattedString = licenseDateFormatter.format(license.getExpiresOn());
-        String text = license.getType().toString() + license.getCustomerName() + license.getEmail() + license.getCreatedOn() + expirationDateFormattedString;
+        String text = license.getUsersNumber() + license.getCustomerName() + license.getEmail() + license.getCreatedOn() + expirationDateFormattedString;
         String key = new LicenseEncryptor(PASSWORD).chiper(text);
         String base64EncodedKey = new String(Base64.encodeBase64(key.getBytes()));
 
         StringBuilder licenseText = new StringBuilder()
                 .append(PREFIX_PRODUCT).append(license.getProduct().toString())
-                .append(LINE_DELIMITER).append(PREFIX_LICENSE_TYPE).append(license.getType().toString())
+                .append(LINE_DELIMITER).append(PREFIX_USERS_NUMBER).append(license.getUsersNumber())
                 .append(LINE_DELIMITER).append(PREFIX_REGISTERED_TO).append(license.getCustomerName())
                 .append(LINE_DELIMITER).append(PREFIX_EMAIL).append(license.getEmail())
                 .append(LINE_DELIMITER).append(PREFIX_CREATED_ON).append(license.getCreatedOn())
