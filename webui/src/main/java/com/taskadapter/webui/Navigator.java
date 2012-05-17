@@ -7,6 +7,7 @@ import com.taskadapter.web.service.UpdateManager;
 import com.vaadin.Application;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
+import com.vaadin.ui.themes.Runo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,13 +25,15 @@ public class Navigator {
 
     private static final String LOGIN_PAGE = "login_page";
     private static final String DELETE_PAGE = "delete_task";
+    public static final String MAIN_WIDTH = "920px";// like GitHub
+
 //    private static final String CANT_USE_TA_FROM_REMOTE_MACHINE_IN_SINGLE_USER_LICENSE_PAGE = "no_access_from_remote_in_single_user_mode_page";
 
     private Map<String, Page> pages = new HashMap<String, Page>();
 
     private HorizontalLayout navigationPanel;
     private HorizontalLayout currentComponentArea = new HorizontalLayout();
-    private HorizontalLayout mainArea = new HorizontalLayout();
+    private Layout mainArea = new CssLayout();
     private VerticalLayout layout;
     private Services services;
     private Label updateMessage;
@@ -67,10 +70,21 @@ public class Navigator {
         addUpdatePanel();
         addNavigationPanel();
 
-        mainArea.addComponent(currentComponentArea);
-        mainArea.setWidth("1020px");
-        mainArea.setComponentAlignment(currentComponentArea, Alignment.MIDDLE_CENTER);
+        // the big shadowed page on middle
+        mainArea.setStyleName(Runo.CSSLAYOUT_SHADOW);
+        mainArea.setWidth(MAIN_WIDTH);
+
+        // container for currentComponentArea to be aligned in mainArea correctly
+        VerticalLayout verticalLayout = new VerticalLayout();
+        verticalLayout.setMargin(true);
+        verticalLayout.setSpacing(true);
+        verticalLayout.addComponent(currentComponentArea);
+
+        mainArea.addComponent(verticalLayout);
+        verticalLayout.setComponentAlignment(currentComponentArea, Alignment.MIDDLE_CENTER);
+
         layout.addComponent(mainArea);
+        layout.setComponentAlignment(mainArea, Alignment.MIDDLE_CENTER);
     }
 
     private void addUpdatePanel() {
