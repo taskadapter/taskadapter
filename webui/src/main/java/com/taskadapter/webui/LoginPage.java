@@ -1,6 +1,7 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.web.service.LoginException;
+import com.taskadapter.web.service.UserNotFoundException;
+import com.taskadapter.web.service.WrongPasswordException;
 import com.vaadin.ui.*;
 
 public class LoginPage extends Page {
@@ -48,8 +49,10 @@ public class LoginPage extends Page {
                         navigator.updateLogoutButtonState();
                         navigator.show(Navigator.HOME);
                     }
-                } catch (LoginException e) {
-                    errorLabel.setValue(e.getMessage());
+                } catch (WrongPasswordException e) {
+                    errorLabel.setValue("Wrong password.");
+                } catch (UserNotFoundException e) {
+                    errorLabel.setValue("User " + username + " not found.");
                 }
             }
         });

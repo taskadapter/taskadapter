@@ -21,15 +21,10 @@ public class Authenticator {
         this.userName = cookiesManager.getCookie(USER_NAME_COOKIE_NAME);
     }
 
-    public void tryLogin(String userName, String password, boolean staySigned) throws LoginException {
-        User actualUser = null;
-        try {
-            actualUser = userManager.getUser(userName);
-        } catch (UserNotFoundException e) {
-            throw new LoginException("User with name " + userName + " is not registered");
-        }
+    public void tryLogin(String userName, String password, boolean staySigned) throws UserNotFoundException, WrongPasswordException {
+        User actualUser = userManager.getUser(userName);
         if (!password.equals(actualUser.getPassword())) {
-            throw new LoginException("Wrong password");
+            throw new WrongPasswordException();
         }
 
         this.loggedIn = true;
