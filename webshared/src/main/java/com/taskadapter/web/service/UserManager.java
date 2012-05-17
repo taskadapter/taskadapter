@@ -12,6 +12,7 @@ import java.util.Collection;
 
 public class UserManager {
 
+    public static final String ADMIN_LOGIN_NAME = "admin";
     private static final String PASSWORD_FILE_NAME = "password.txt";
 
     public UserManager() {
@@ -21,7 +22,11 @@ public class UserManager {
     }
 
     private void createFirstAdminUserIfNeeded() {
-        saveUser("admin", "admin");
+        try {
+            getUser(ADMIN_LOGIN_NAME);
+        } catch (UserNotFoundException e) {
+            saveUser(ADMIN_LOGIN_NAME, "admin");
+        }
     }
 
     public Collection<User> getUsers() {
@@ -33,7 +38,8 @@ public class UserManager {
             try {
                 users.add(getUser(fileName));
             } catch (UserNotFoundException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                // TODO fix
+                e.printStackTrace();
             }
         }
         return users;

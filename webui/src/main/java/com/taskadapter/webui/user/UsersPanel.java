@@ -4,6 +4,7 @@ import com.taskadapter.config.User;
 import com.taskadapter.web.InputDialog;
 import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.service.Services;
+import com.taskadapter.web.service.UserManager;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
@@ -17,7 +18,6 @@ public class UsersPanel extends Panel {
     private Services services;
     private GridLayout usersLayout;
     private static final String DELETE_BUTTON = "Delete";
-    private static final String ADMIN_LOGIN_NAME = "admin";
 
     public UsersPanel(Services services) {
         super("Users");
@@ -71,7 +71,7 @@ public class UsersPanel extends Panel {
     }
 
     private void addDeleteButtonUnlessUserIsAdmin(final User user) {
-        if (!user.getLoginName().equals(ADMIN_LOGIN_NAME)) {
+        if (!user.getLoginName().equals(UserManager.ADMIN_LOGIN_NAME)) {
             addDeleteButton(user);
         }
     }
