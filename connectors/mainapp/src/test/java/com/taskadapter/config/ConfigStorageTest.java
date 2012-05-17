@@ -88,7 +88,7 @@ public class ConfigStorageTest {
 
     private TAFile findTestConfig(String taFileName) {
         //get all configs
-        List<TAFile> taFilesList = configStorage.getAllConfigs();
+        List<TAFile> taFilesList = configStorage.getConfigs(TEST_USER_LOGIN_NAME);
 
         TAFile testConfigFile = null;
 

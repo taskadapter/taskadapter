@@ -19,14 +19,8 @@ public class ConfigStorage {
         this.pluginManager = pluginManager;
     }
 
-    public List<TAFile> getAllConfigs() {
-        File root = new File(getDataRootFolderName());
-        return getConfigsInFolder(root);
-    }
-
     public List<TAFile> getConfigs(String userLoginName) {
-        File root = new File(getDataRootFolderName() + "/" + userLoginName);
-        return getConfigsInFolder(root);
+        return getConfigsInFolder(getUserFolder(userLoginName));
     }
 
     private List<TAFile> getConfigsInFolder(File root) {
@@ -54,11 +48,15 @@ public class ConfigStorage {
         return files;
     }
 
+    private File getUserFolder(String userLoginName) {
+        return new File(getDataRootFolderName() + "/" + userLoginName);
+    }
+
     public void saveConfig(String userLoginName, TAFile taFile) {
         String fileContents = new ConfigFileParser(pluginManager).convertToJSonString(taFile);
         try {
-            File rootDir = new File(getDataRootFolderName());
-            rootDir.mkdirs();
+            File folder = getUserFolder(userLoginName);
+            folder.mkdirs();
             MyIOUtils.writeToFile(taFile.getAbsoluteFilePath(), fileContents);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -68,9 +66,9 @@ public class ConfigStorage {
     public void createNewConfig(String userLoginName, TAFile taFile) {
         String fileContents = new ConfigFileParser(pluginManager).convertToJSonString(taFile);
         try {
-            File rootDir = new File(getDataRootFolderName());
-            rootDir.mkdirs();
-            String absoluteFilePathForNewConfig = findUnusedAbsoluteFilePath(taFile);
+            File userFolder = getUserFolder(userLoginName);
+            userFolder.mkdirs();
+            String absoluteFilePathForNewConfig = findUnusedAbsoluteFilePath(userFolder, taFile);
             // TODO do not set it, delete
             taFile.setAbsoluteFilePath(absoluteFilePathForNewConfig);
             MyIOUtils.writeToFile(absoluteFilePathForNewConfig, fileContents);
@@ -80,16 +78,16 @@ public class ConfigStorage {
     }
 
     // TODO add unit tests
-    private String findUnusedAbsoluteFilePath(TAFile taFile) {
+    private String findUnusedAbsoluteFilePath(File userFolder, TAFile taFile) {
         String relativeFileNameForNewConfig = createFileNameForNewConfig(taFile);
-        File file = new File(getDataRootFolderName(), relativeFileNameForNewConfig + "." + FILE_EXTENSION);
+        File file = new File(userFolder, relativeFileNameForNewConfig + "." + FILE_EXTENSION);
         while (file.exists()) {
             int i = relativeFileNameForNewConfig.lastIndexOf(NUMBER_SEPARATOR);
             String numberStringWithExtension = relativeFileNameForNewConfig.substring(i + 1);
             int configFileNumber = Integer.parseInt(numberStringWithExtension);
             configFileNumber++;
             relativeFileNameForNewConfig = relativeFileNameForNewConfig.substring(0, i + 1) + configFileNumber;
-            file = new File(getDataRootFolderName(), relativeFileNameForNewConfig + "." + FILE_EXTENSION);
+            file = new File(userFolder, relativeFileNameForNewConfig + "." + FILE_EXTENSION);
         }
         return file.getAbsolutePath();
     }
