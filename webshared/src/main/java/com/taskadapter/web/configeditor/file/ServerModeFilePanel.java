@@ -1,7 +1,9 @@
 package com.taskadapter.web.configeditor.file;
 
+import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.web.MessageDialog;
+import com.taskadapter.web.configeditor.Validatable;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.*;
@@ -12,13 +14,15 @@ import java.util.Arrays;
 /**
  * @author Alexander Kulik
  */
-public class ServerModeFilePanel extends FilePanel {
+public class ServerModeFilePanel extends FilePanel implements Validatable {
 
     // TODO show this limit on the webpage
     static final int MAX_FILE_SIZE_BYTES = 5000000;
 
     private static final String TITLE = "Microsoft Project file";
     private static final String COMBOBOX_INPUT_PROMPT = "Select an existing file";
+    public static final String GENERATED_FILE_HINT = "File auto-created for export";
+
     static final String COMBOBOX_ITEM_PROPERTY = "name";
     static final String DATE_FORMAT = "d MMM yyyy h:mm:ss a z";
     static final String DOWNLOAD_BUTTON_CAPTION = "Download file";
@@ -39,6 +43,10 @@ public class ServerModeFilePanel extends FilePanel {
     private static final String COMBOBOX_WIDTH = "175px";
     private static final String CONFIRMATION_DIALOG_WIDTH = "200px";
 
+    public static final String UPLOAD_MPP_SUCCESS = "File uploaded and successfully converted to XML";
+    public static final String CANNOT_DELETE_MPP_FILE = "Cannot delete .mpp file";
+    public static final String CANNOT_GENERATE_A_FILE = "Can't generate the export file";
+
     private Label statusLabel;
     private final ServerModelFilePanelPresenter presenter;
     private Upload uploadButton;
@@ -46,8 +54,6 @@ public class ServerModeFilePanel extends FilePanel {
     private ComboBox comboBox;
     private ProgressIndicator progressIndicator;
     private Button deleteButton;
-    public static final String UPLOAD_MPP_SUCCESS = "File uploaded and successfully converted to XML";
-    public static final String CANNOT_DELETE_MPP_FILE = "Cannot delete .mpp file";
 
     public ServerModeFilePanel(ServerModelFilePanelPresenter presenter) {
         super(TITLE);
@@ -190,6 +196,10 @@ public class ServerModeFilePanel extends FilePanel {
         return downloadButton;
     }
 
+    /**
+     * Called after UI was built to update control content based on given config
+     * @param config current config to display
+     */
     @Override
     public void refreshConfig(MSPConfig config) {
         presenter.setConfig(config);
@@ -234,6 +244,13 @@ public class ServerModeFilePanel extends FilePanel {
 
     public void showNotification(String message) {
         getWindow().showNotification(message);
+    }
+
+    @Override
+    public void validate() throws ValidationException {
+        if (presenter.getSelectedFileNameOrEmpty().isEmpty()) {
+            throw new ValidationException(COMBOBOX_INPUT_PROMPT);
+        }
     }
 }
 

@@ -9,6 +9,7 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Upload;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
@@ -25,7 +26,6 @@ public class ServerModelFilePanelPresenter {
     private File selectedFile;
     private final UploadReceiver uploadReceiver;
     private FileManager fileManager = new FileManager();
-    private MSPConfig config;
 
     public ServerModelFilePanelPresenter(String userName) {
         this.userName = userName;
@@ -109,6 +109,7 @@ public class ServerModelFilePanelPresenter {
 
     /**
      * This method gets called immediately after upload is started
+     *
      * @param event event
      */
     @SuppressWarnings("UnusedDeclaration")
@@ -119,13 +120,14 @@ public class ServerModelFilePanelPresenter {
 
     /**
      * This method gets called when the upload finished successfully
+     *
      * @param event event
      */
     @SuppressWarnings("UnusedDeclaration")
     public void uploadSucceeded(Upload.SucceededEvent event) {
         if (uploadReceiver.saveFile(userName)) {
             String fileName = uploadReceiver.getFileName();
-            
+
             // check if MPP file
             boolean isMpp = fileName.toLowerCase().endsWith(MSPFileReader.MPP_SUFFIX_LOWERCASE);
             if (isMpp) {
@@ -143,15 +145,11 @@ public class ServerModelFilePanelPresenter {
                 }
                 fileName = new File(newFilePath).getName();
             }
-           
-            // add to ComboBox
-            if (fileList.getItem(fileName) == null) {
-                addFileToContainer(fileList, fileName);
-                view.setComboBoxItems(fileList);
-            }
 
-            view.selectFileInCombobox(fileName);
-            view.setStatusLabelText(isMpp? ServerModeFilePanel.UPLOAD_MPP_SUCCESS : ServerModeFilePanel.UPLOAD_SUCCESS);
+            // add to ComboBox
+            addFileToComboBoxAndSelect(fileName);
+
+            view.setStatusLabelText(isMpp ? ServerModeFilePanel.UPLOAD_MPP_SUCCESS : ServerModeFilePanel.UPLOAD_SUCCESS);
         } else {
             view.setStatusLabelText(ServerModeFilePanel.SAVE_FILE_FAILED);
         }
@@ -159,8 +157,17 @@ public class ServerModelFilePanelPresenter {
         view.setUploadEnabled(true);
     }
 
+    private void addFileToComboBoxAndSelect(String fileName) {
+        if (fileList.getItem(fileName) == null) {
+            addFileToContainer(fileList, fileName);
+            view.setComboBoxItems(fileList);
+        }
+        view.selectFileInCombobox(fileName);
+    }
+
     /**
      * This method gets called when the upload failed
+     *
      * @param event event
      */
     @SuppressWarnings("UnusedDeclaration")
@@ -185,11 +192,47 @@ public class ServerModelFilePanelPresenter {
     }
 
     public void setConfig(MSPConfig config) {
-        this.config = config;
         String absolutePath = config.getInputAbsoluteFilePath();
         if (absolutePath != null && !absolutePath.isEmpty()) {
             File f = new File(absolutePath);
             view.selectFileInCombobox(f.getName());
+        } else {
+            File newFile = createDefaultFile(fileManager.getUserFolder(userName));
+            if (newFile == null) {
+                view.showNotification(ServerModeFilePanel.CANNOT_GENERATE_A_FILE);
+            } else {
+                addFileToComboBoxAndSelect(newFile.getName());
+                selectedFile = newFile;
+                view.setStatusLabelText(ServerModeFilePanel.GENERATED_FILE_HINT);
+            }
+
         }
+    }
+
+    /**
+     * Search for unused file name in user folder starting from postfix 1
+     * TODO think about performance and optimization
+     *
+     * @param userFolder root folder of user
+     * @return File instance (not existent on disc)
+     */
+    private File createDefaultFile(File userFolder) {
+        String baseNameFormat = "MSP_export_%d.xml";
+        int number = 1;
+        while (number < 100000) {// give a chance to exit
+            File file = new File(userFolder, String.format(baseNameFormat, number++));
+            if (!file.exists()) {
+                try {
+                    if (!file.createNewFile()) {
+                        continue;// file luckely created by somebody
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;// it will show error in UI
+                }
+                return file;
+            }
+        }
+        return null;
     }
 }

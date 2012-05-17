@@ -61,11 +61,11 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
 
     protected CheckBox createFindUsersElementIfNeeded() {
         if (findUserByName == null) {
-        findUserByName = new CheckBox("Find users based on assignee's name");
-        findUserByName.setDescription("This option can be useful when you need to export a new MSP project file to Redmine/Jira/Mantis/....\n" +
-                "Task Adapter can load the system's users by resource names specified in the MSP file\n" +
-                "and assign the new tasks to them.\n" +
-                "Note: this operation usually requires 'Admin' permission in the system.");
+            findUserByName = new CheckBox("Find users based on assignee's name");
+            findUserByName.setDescription("This option can be useful when you need to export a new MSP project file to Redmine/Jira/Mantis/....\n" +
+                    "Task Adapter can load the system's users by resource names specified in the MSP file\n" +
+                    "and assign the new tasks to them.\n" +
+                    "Note: this operation usually requires 'Admin' permission in the system.");
         }
 
         return findUserByName;
@@ -88,9 +88,13 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         createProjectServerPanelIfNeeded();
         //if layout supports Validatable interface add it to validation list
         if (component instanceof Validatable) {
-            toValidate.add((Validatable) component);
+            addToValidate((Validatable) component);
         }
         projectAndServerLayout.addComponent(component);
+    }
+
+    public void addToValidate(Validatable component) {
+        toValidate.add(component);
     }
 
     protected void addCustomComponentToProjectServerPanel(Component component) {
