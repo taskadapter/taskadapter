@@ -115,7 +115,8 @@ public class ConfigureTaskPage extends Page {
 
         if (valid) {
             updateFileWithDataInForm();
-            services.getConfigStorage().saveConfig(file);
+            String userLoginName = services.getAuthenticator().getUserName();
+            services.getConfigStorage().saveConfig(userLoginName, file);
             navigator.showNotification("Saved", "All saved OK");
 
             errorMessageLabel.setValue("");

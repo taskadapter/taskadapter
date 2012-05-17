@@ -15,7 +15,7 @@ import java.util.List;
 public class FileManager {
 
     private File getServerDirectoryForTAFiles() {
-        String rootFolderName = ConfigStorage.getRootFolderName();
+        String rootFolderName = ConfigStorage.getDataRootFolderName();
         return new File(rootFolderName + "/files");
     }
 

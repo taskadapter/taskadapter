@@ -191,7 +191,8 @@ public class Navigator {
         page.setActionListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                services.getConfigStorage().cloneConfig(file);
+                String userLoginName = services.getAuthenticator().getUserName();
+                services.getConfigStorage().cloneConfig(userLoginName, file);
                 show(Navigator.CONFIGS);
             }
         });

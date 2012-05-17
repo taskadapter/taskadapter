@@ -3,7 +3,7 @@ package com.taskadapter.webui.user;
 import com.taskadapter.web.InputDialog;
 import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.service.Services;
-import com.taskadapter.web.service.User;
+import com.taskadapter.config.User;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;

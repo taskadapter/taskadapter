@@ -1,4 +1,4 @@
-package com.taskadapter.web.service;
+package com.taskadapter.config;
 
 public class User {
     private String loginName;

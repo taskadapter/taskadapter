@@ -135,7 +135,8 @@ public abstract class ActionPage extends Page {
             taFile.setConnectorDataHolder1(new ConnectorDataHolder(taFile.getConnectorDataHolder1().getType(), connectorFrom.getConfig()));
             taFile.setConnectorDataHolder2(new ConnectorDataHolder(taFile.getConnectorDataHolder2().getType(), connectorTo.getConfig()));
 
-            services.getConfigStorage().saveConfig(taFile);
+            String userLoginName = services.getAuthenticator().getUserName();
+            services.getConfigStorage().saveConfig(userLoginName, taFile);
         }
     }
 

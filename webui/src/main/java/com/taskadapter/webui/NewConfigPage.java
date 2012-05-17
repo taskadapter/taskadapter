@@ -137,7 +137,8 @@ public class NewConfigPage extends Page {
         ConnectorDataHolder d2 = new ConnectorDataHolder(id2,
                 descriptor2.createDefaultConfig());
         this.newFile = new TAFile(descriptionString, d1, d2);
-        services.getConfigStorage().createNewConfig(newFile);
+        String currentUserLoginName = services.getAuthenticator().getUserName();
+        services.getConfigStorage().createNewConfig(currentUserLoginName, newFile);
     }
 
     @Override

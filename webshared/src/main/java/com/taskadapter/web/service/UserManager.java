@@ -1,5 +1,7 @@
 package com.taskadapter.web.service;
 
+import com.taskadapter.config.User;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;

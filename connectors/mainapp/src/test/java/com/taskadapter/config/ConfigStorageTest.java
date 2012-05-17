@@ -21,6 +21,7 @@ public class ConfigStorageTest {
     private static final String ENCRYPTED_PASSWORD = "eNcrYpTedPaSsW0rd";
 
     private ConfigStorage configStorage = new ConfigStorage(new PluginManager());
+    private static final String TEST_USER_LOGIN_NAME = "autotest";
 
 
     @Test
@@ -35,7 +36,7 @@ public class ConfigStorageTest {
         );
 
         //save test config with encrypted password
-        configStorage.createNewConfig(encryptedPasswordConfig);
+        configStorage.createNewConfig(TEST_USER_LOGIN_NAME, encryptedPasswordConfig);
 
         //find test config
         TAFile testConfigFile = findTestConfig(ENCRYPTED);
@@ -70,7 +71,7 @@ public class ConfigStorageTest {
         );
 
         //save test config with plain password
-        configStorage.createNewConfig(plainPasswordConfig);
+        configStorage.createNewConfig(TEST_USER_LOGIN_NAME, plainPasswordConfig);
 
         //find test config
         TAFile testConfigFile = findTestConfig(PLAIN);

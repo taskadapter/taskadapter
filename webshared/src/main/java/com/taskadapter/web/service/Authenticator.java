@@ -1,6 +1,6 @@
 package com.taskadapter.web.service;
 
-import java.util.Calendar;
+import com.taskadapter.config.User;
 
 public class Authenticator {
     private static final String LOGGED_IN_COOKIE_NAME = "loggedIn";

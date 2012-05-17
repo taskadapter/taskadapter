@@ -47,7 +47,9 @@ public class ConfigsPage extends Page {
 
     private void reloadConfigs() {
         configsLayout.removeAllComponents();
-        List<TAFile> allConfigs = services.getConfigStorage().getAllConfigs();
+
+        String userLoginName = services.getAuthenticator().getUserName();
+        List<TAFile> allConfigs = services.getConfigStorage().getConfigs(userLoginName);
         Collections.sort(allConfigs, new DescriptionComparator());
         for (TAFile file : allConfigs) {
             addTask(file);

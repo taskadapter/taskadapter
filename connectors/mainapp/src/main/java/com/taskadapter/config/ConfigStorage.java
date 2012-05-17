@@ -20,7 +20,16 @@ public class ConfigStorage {
     }
 
     public List<TAFile> getAllConfigs() {
-        File root = new File(getRootFolderName());
+        File root = new File(getDataRootFolderName());
+        return getConfigsInFolder(root);
+    }
+
+    public List<TAFile> getConfigs(String userLoginName) {
+        File root = new File(getDataRootFolderName() + "/" + userLoginName);
+        return getConfigsInFolder(root);
+    }
+
+    private List<TAFile> getConfigsInFolder(File root) {
         String[] fileNames = root.list(new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 return name.endsWith(FILE_EXTENSION);
@@ -45,10 +54,10 @@ public class ConfigStorage {
         return files;
     }
 
-    public void saveConfig(TAFile taFile) {
+    public void saveConfig(String userLoginName, TAFile taFile) {
         String fileContents = new ConfigFileParser(pluginManager).convertToJSonString(taFile);
         try {
-            File rootDir = new File(getRootFolderName());
+            File rootDir = new File(getDataRootFolderName());
             rootDir.mkdirs();
             MyIOUtils.writeToFile(taFile.getAbsoluteFilePath(), fileContents);
         } catch (IOException e) {
@@ -56,10 +65,10 @@ public class ConfigStorage {
         }
     }
 
-    public void createNewConfig(TAFile taFile) {
+    public void createNewConfig(String userLoginName, TAFile taFile) {
         String fileContents = new ConfigFileParser(pluginManager).convertToJSonString(taFile);
         try {
-            File rootDir = new File(getRootFolderName());
+            File rootDir = new File(getDataRootFolderName());
             rootDir.mkdirs();
             String absoluteFilePathForNewConfig = findUnusedAbsoluteFilePath(taFile);
             // TODO do not set it, delete
@@ -73,14 +82,14 @@ public class ConfigStorage {
     // TODO add unit tests
     private String findUnusedAbsoluteFilePath(TAFile taFile) {
         String relativeFileNameForNewConfig = createFileNameForNewConfig(taFile);
-        File file = new File(getRootFolderName(), relativeFileNameForNewConfig + "." + FILE_EXTENSION);
+        File file = new File(getDataRootFolderName(), relativeFileNameForNewConfig + "." + FILE_EXTENSION);
         while (file.exists()) {
             int i = relativeFileNameForNewConfig.lastIndexOf(NUMBER_SEPARATOR);
             String numberStringWithExtension = relativeFileNameForNewConfig.substring(i + 1);
             int configFileNumber = Integer.parseInt(numberStringWithExtension);
             configFileNumber++;
             relativeFileNameForNewConfig = relativeFileNameForNewConfig.substring(0, i + 1) + configFileNumber;
-            file = new File(getRootFolderName(), relativeFileNameForNewConfig + "." + FILE_EXTENSION);
+            file = new File(getDataRootFolderName(), relativeFileNameForNewConfig + "." + FILE_EXTENSION);
         }
         return file.getAbsolutePath();
     }
@@ -97,13 +106,13 @@ public class ConfigStorage {
         file.delete();
     }
 
-    public static String getRootFolderName() {
+    public static String getDataRootFolderName() {
         String userHome = System.getProperty("user.home");
         return userHome + "/taskadapter";
     }
 
-    public void cloneConfig(TAFile file) {
+    public void cloneConfig(String userLoginName, TAFile file) {
         TAFile cfg = new TAFile(file.getConfigLabel(), file.getConnectorDataHolder1(), file.getConnectorDataHolder2());
-        this.createNewConfig(cfg);
+        this.createNewConfig(userLoginName, cfg);
     }
 }
