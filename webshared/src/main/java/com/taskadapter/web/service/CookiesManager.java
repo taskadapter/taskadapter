@@ -3,7 +3,6 @@ package com.taskadapter.web.service;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
 
 public class CookiesManager {
     HttpServletRequest request;
@@ -28,18 +27,19 @@ public class CookiesManager {
     }
 
     public String getCookie(String cookieName) {
-        int foundCookieIndex = -1;
-        if (request != null) {
-            for (int i = 0; i < request.getCookies().length; i++) {
-                if (request.getCookies()[i].getName().equals(cookieName))
-                    foundCookieIndex = i;
-            }
+        if (request == null) {
+            return null;
         }
 
-        if (foundCookieIndex == -1) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
             return null;
-        } else {
-            return request.getCookies()[foundCookieIndex].getValue();
         }
+
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals(cookieName))
+                return cookie.getValue();
+        }
+        return null;
     }
 }
