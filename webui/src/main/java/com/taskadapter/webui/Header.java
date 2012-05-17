@@ -5,7 +5,6 @@ import com.taskadapter.web.service.Services;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.BaseTheme;
-import sun.management.HotspotMemoryMBean;
 
 
 /**
@@ -28,7 +27,8 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
     }
 
     private void buildMainLayout() {
-        internalLayout.setWidth(800, UNITS_PIXELS);
+        //internalLayout.setWidth(, UNITS_PIXELS);
+        internalLayout.setWidth(Navigator.MAIN_WIDTH);
         addComponent(internalLayout);
         setComponentAlignment(internalLayout, Alignment.MIDDLE_CENTER);
 
