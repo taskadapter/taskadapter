@@ -3,6 +3,7 @@ package com.taskadapter.connector.redmine;
 import com.taskadapter.connector.common.AbstractTaskSaver;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
+import org.redmine.ta.RedmineException;
 import org.redmine.ta.RedmineManager;
 import org.redmine.ta.beans.Issue;
 import org.redmine.ta.beans.IssueStatus;
@@ -29,7 +30,7 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
                 .getServerInfo());
         try {
             rmProject = mgr.getProjectByKey(config.getProjectKey());
-        } catch (Exception e) {
+        } catch (RedmineException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
         converter.setUsers(loadUsers());
@@ -41,8 +42,8 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
         if (config.isFindUserByName()) {
             try {
                 users = mgr.getUsers();
-            } catch (Exception e1) {
-                throw new RuntimeException(e1);
+            } catch (RedmineException e) {
+                throw new RuntimeException(e);
             }
         } else {
             users = new ArrayList<User>();
@@ -55,8 +56,8 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
 
         try {
             statusList = mgr.getStatuses();
-        } catch (Exception e1) {
-            throw new RuntimeException(e1);
+        } catch (RedmineException e) {
+            throw new RuntimeException(e);
         }
 
         return statusList;
@@ -73,7 +74,7 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
             Issue newIssue = mgr.createIssue(rmProject.getIdentifier(),
                     (Issue) nativeTask);
             return converter.convertToGenericTask(newIssue);
-        } catch (Exception e) {
+        } catch (RedmineException e) {
             throw new RuntimeException(e);
         }
     }
@@ -88,7 +89,7 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
             if (config.getSaveIssueRelations()) {
                 mgr.deleteIssueRelationsByIssueId(rmIssue.getId());
             }
-        } catch (Exception e) {
+        } catch (RedmineException e) {
             throw new RuntimeException(e);
         }
     }
@@ -102,7 +103,7 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
                         .getRelatedTaskKey());
                 mgr.createRelation(taskKey, relatedTaskKey, gRelation.getType().toString());
             }
-        } catch (Exception e) {
+        } catch (RedmineException e) {
             syncResult
                     .addGeneralError("Can't create Tasks Relations. Note: this feature requires Redmine 1.3.0 or newer."
                     + "\nSee http://www.redmine.org/issues/7366 ."
