@@ -1,6 +1,6 @@
 package com.taskadapter.web.configeditor.file;
 
-import com.taskadapter.web.FileManager;
+import com.taskadapter.FileManager;
 import com.vaadin.ui.Upload;
 
 import java.io.IOException;

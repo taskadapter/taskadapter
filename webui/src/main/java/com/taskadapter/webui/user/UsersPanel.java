@@ -1,9 +1,9 @@
 package com.taskadapter.webui.user;
 
+import com.taskadapter.config.User;
 import com.taskadapter.web.InputDialog;
 import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.service.Services;
-import com.taskadapter.config.User;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
@@ -119,7 +119,7 @@ public class UsersPanel extends Panel {
     }
 
     private void setPassword(String loginName, String newPassword) {
-        services.getUserManager().setPassword(loginName, newPassword);
+        services.getUserManager().saveUser(loginName, newPassword);
     }
 
     private void addCreateUserSection() {
@@ -143,7 +143,7 @@ public class UsersPanel extends Panel {
     }
 
     private void createUser(String loginName) {
-        services.getUserManager().createUser(loginName);
+        services.getUserManager().saveUser(loginName, "");
         refreshUsers();
     }
 }

@@ -15,11 +15,12 @@ public class Services {
     private ConfigStorage configStorage;
     private CookiesManager cookiesManager = new CookiesManager();
     private SessionInfo sessionInfo = new SessionInfo();
-    private UserManager userManager = new UserManager();
+    private UserManager userManager;
 
     public Services() {
+        userManager = new UserManager();
         configStorage = new ConfigStorage(pluginManager);
-        authenticator = new Authenticator(cookiesManager);
+        authenticator = new Authenticator(userManager, cookiesManager);
     }
 
     public UpdateManager getUpdateManager() {

@@ -1,9 +1,9 @@
 package com.taskadapter.web.configeditor.file;
 
+import com.taskadapter.FileManager;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPFileReader;
 import com.taskadapter.connector.msp.MSPUtils;
-import com.taskadapter.web.FileManager;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Upload;

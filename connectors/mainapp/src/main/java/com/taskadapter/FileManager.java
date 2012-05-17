@@ -1,7 +1,6 @@
-package com.taskadapter.web;
+package com.taskadapter;
 
 import com.google.common.io.Files;
-import com.taskadapter.config.ConfigStorage;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,9 +13,18 @@ import java.util.List;
  */
 public class FileManager {
 
-    private File getServerDirectoryForTAFiles() {
-        String rootFolderName = ConfigStorage.getDataRootFolderName();
-        return new File(rootFolderName + "/files");
+    // TODO maybe return File?
+    public static String getDataRootFolderName() {
+        String userHome = System.getProperty("user.home");
+        return userHome + "/taskadapter";
+    }
+
+    public static File getUserFolder(String userLoginName) {
+        return new File(getDataRootFolderName() + "/" + userLoginName);
+    }
+
+    public static String getUserFolderName(String userLoginName) {
+        return getDataRootFolderName() + "/" + userLoginName;
     }
 
     /**
@@ -31,11 +39,6 @@ public class FileManager {
     public List<File> getUserFiles(String userLoginName) {
         File userDirectory = getUserFolder(userLoginName);
         return userDirectory.exists() ? Arrays.asList(userDirectory.listFiles()) : new ArrayList<File>();
-    }
-
-    public File getUserFolder(String userLoginName) {
-        File serverDirectoryForTAFiles = getServerDirectoryForTAFiles();
-        return new File(serverDirectoryForTAFiles, userLoginName);
     }
 
     public File getFileForUser(String userLoginName, String fileName) {

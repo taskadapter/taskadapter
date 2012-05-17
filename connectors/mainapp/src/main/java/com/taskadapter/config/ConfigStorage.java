@@ -1,5 +1,6 @@
 package com.taskadapter.config;
 
+import com.taskadapter.FileManager;
 import com.taskadapter.PluginManager;
 import com.taskadapter.util.MyIOUtils;
 
@@ -20,11 +21,17 @@ public class ConfigStorage {
     }
 
     public List<TAFile> getConfigs(String userLoginName) {
-        return getConfigsInFolder(getUserFolder(userLoginName));
+        File userFolder = getUserConfigsFolder(userLoginName);
+        return getConfigsInFolder(userFolder);
     }
 
-    private List<TAFile> getConfigsInFolder(File root) {
-        String[] fileNames = root.list(new FilenameFilter() {
+    private File getUserConfigsFolder(String userLoginName) {
+        String userFolderName = FileManager.getUserFolderName(userLoginName);
+        return new File(userFolderName + "/configs");
+    }
+
+    private List<TAFile> getConfigsInFolder(File folder) {
+        String[] fileNames = folder.list(new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 return name.endsWith(FILE_EXTENSION);
             }
@@ -32,7 +39,7 @@ public class ConfigStorage {
         List<TAFile> files = new ArrayList<TAFile>();
         if (fileNames != null) {
             for (String name : fileNames) {
-                File file = new File(root, name);
+                File file = new File(folder, name);
                 try {
                     String fileBody = MyIOUtils.loadFile(file.getAbsolutePath());
                     ConfigFileParser parser = new ConfigFileParser(pluginManager);
@@ -48,14 +55,10 @@ public class ConfigStorage {
         return files;
     }
 
-    private File getUserFolder(String userLoginName) {
-        return new File(getDataRootFolderName() + "/" + userLoginName);
-    }
-
     public void saveConfig(String userLoginName, TAFile taFile) {
         String fileContents = new ConfigFileParser(pluginManager).convertToJSonString(taFile);
         try {
-            File folder = getUserFolder(userLoginName);
+            File folder = getUserConfigsFolder(userLoginName);
             folder.mkdirs();
             MyIOUtils.writeToFile(taFile.getAbsoluteFilePath(), fileContents);
         } catch (IOException e) {
@@ -66,7 +69,7 @@ public class ConfigStorage {
     public void createNewConfig(String userLoginName, TAFile taFile) {
         String fileContents = new ConfigFileParser(pluginManager).convertToJSonString(taFile);
         try {
-            File userFolder = getUserFolder(userLoginName);
+            File userFolder = getUserConfigsFolder(userLoginName);
             userFolder.mkdirs();
             String absoluteFilePathForNewConfig = findUnusedAbsoluteFilePath(userFolder, taFile);
             // TODO do not set it, delete
@@ -102,11 +105,6 @@ public class ConfigStorage {
     public void delete(TAFile config) {
         File file = new File(config.getAbsoluteFilePath());
         file.delete();
-    }
-
-    public static String getDataRootFolderName() {
-        String userHome = System.getProperty("user.home");
-        return userHome + "/taskadapter";
     }
 
     public void cloneConfig(String userLoginName, TAFile file) {

@@ -1,14 +1,15 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.web.service.LoginException;
 import com.vaadin.ui.*;
 
 public class LoginPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
     private TextField loginEdit;
     private PasswordField passwordEdit;
+    private Label errorLabel;
 
     private CheckBox staySignedIn;
-    private Label debugCookiesLabel = new Label("", Label.CONTENT_XHTML);
 
     public LoginPage() {
         buildUI();
@@ -39,15 +40,24 @@ public class LoginPage extends Page {
             public void buttonClick(Button.ClickEvent event) {
                 String username = (String) loginEdit.getValue();
                 String password = (String) passwordEdit.getValue();
-                services.getAuthenticator().tryLogin(username, password, staySignedIn.booleanValue());
-                clearLoginFields();
-                if (services.getAuthenticator().isLoggedIn()) {
-                    navigator.updateLogoutButtonState();
-                    navigator.show(Navigator.HOME);
+                try {
+                    services.getAuthenticator().tryLogin(username, password, staySignedIn.booleanValue());
+                    clearLoginFields();
+                    errorLabel.setValue("");
+                    if (services.getAuthenticator().isLoggedIn()) {
+                        navigator.updateLogoutButtonState();
+                        navigator.show(Navigator.HOME);
+                    }
+                } catch (LoginException e) {
+                    errorLabel.setValue(e.getMessage());
                 }
             }
         });
         layout.addComponent(loginButton);
+
+        errorLabel = new Label();
+        errorLabel.addStyleName("errorMessage");
+        layout.addComponent(errorLabel);
 
         clearLoginFields();
     }
