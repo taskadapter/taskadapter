@@ -4,7 +4,6 @@ import com.taskadapter.web.LocalRemoteOptionsPanel;
 import com.taskadapter.webui.license.LicensePanel;
 import com.taskadapter.webui.user.UsersPanel;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -12,7 +11,6 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class ConfigureSystemPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
-    private String message;
 
     private void createLocalRemoteSection() {
         layout.addComponent(new LocalRemoteOptionsPanel(services));
@@ -32,12 +30,6 @@ public class ConfigureSystemPage extends Page {
         layout.removeAllComponents();
         layout.setSpacing(true);
 
-        if (message != null) {
-            Label label = new Label(message);
-            label.setContentMode(Label.CONTENT_XHTML);
-            label.addStyleName("errorMessage");
-            layout.addComponent(label);
-        }
         createLocalRemoteSection();
         createLicenseSection();
         createUsersSection();
@@ -46,13 +38,5 @@ public class ConfigureSystemPage extends Page {
 
     private void createUsersSection() {
         layout.addComponent(new UsersPanel(services));
-    }
-
-    public void setError(String message) {
-        this.message = message;
-    }
-
-    public void clearError() {
-        this.message = null;
     }
 }

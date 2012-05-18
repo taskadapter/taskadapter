@@ -131,15 +131,6 @@ public class Navigator {
             currentPage = pages.get(LOGIN_PAGE);
         }
 
-        boolean singleUserMode = services.getSettingsManager().isTAWorkingOnLocalMachine();
-        boolean requestCameFromLocalhost = services.getSessionInfo().isRequestCameFromLocalhost();
-        if (singleUserMode && !requestCameFromLocalhost) {
-            currentPage = pages.get(CONFIGURE_SYSTEM_PAGE);
-            ((ConfigureSystemPage) currentPage).setError("Access from remote machine is forbidden in LOCAL (single user) mode.<BR>Please change to Server mode if you have a Server License.");
-        } else {
-            ConfigureSystemPage tmpPage = (ConfigureSystemPage) pages.get(CONFIGURE_SYSTEM_PAGE);
-            tmpPage.clearError();
-        }
         setServicesToPage(currentPage);
 
         currentComponentArea.removeAllComponents();
