@@ -55,40 +55,49 @@ public class ExportPage extends ActionPage {
     @Override
     protected VerticalLayout getDoneInfoPanel() {
         VerticalLayout donePanel = new VerticalLayout();
+        donePanel.setWidth("600px");
 
         String LOG_DATE_FORMAT = "d/MMM HH:mm";
         SimpleDateFormat dateFormatter = new SimpleDateFormat(LOG_DATE_FORMAT);
 
         String time = dateFormatter.format(Calendar.getInstance().getTime());
-        donePanel.addComponent(new Label(time + ": Completed export from " + connectorFrom.getConfig().getSourceLocation() +
-                " to " + connectorTo.getConfig().getTargetLocation() + "."));
+        donePanel.addComponent(new Label("Completed export at " + time));
 
-        String msg = "";
+        Label infoLabel = new Label("From: " + connectorFrom.getConfig().getSourceLocation()
+                + "<br>To: " + connectorTo.getConfig().getTargetLocation());
+        infoLabel.addStyleName("export-result");
+        infoLabel.setContentMode(Label.CONTENT_XHTML);
+        donePanel.addComponent(infoLabel);
+
         if (result.getMessage() != null) {
-            msg += " " + result.getMessage();
+            donePanel.addComponent(new Label(result.getMessage()));
         }
-        msg += "\nCreated tasks: " + result.getCreateTasksNumber()
-                + "  Updated tasks: " + result.getUpdatedTasksNumber();
 
-        donePanel.addComponent(new Label(msg));
+        infoLabel = new Label("Created tasks: " + result.getCreateTasksNumber()
+                + "<br>Updated tasks: " + result.getUpdatedTasksNumber() + "<br><br>");
+        infoLabel.addStyleName("export-result");
+        infoLabel.setContentMode(Label.CONTENT_XHTML);
+        donePanel.addComponent(infoLabel);
 
         if (result.hasErrors()) {
-            msg = "Server reported some errors:";
+            donePanel.addComponent(new Label("There were some problems during export:"));
+            String errorText = "";
             for (String e : result.getGeneralErrors()) {
-                msg += "\n  " + e;
+                errorText += e + "<br>";
             }
             for (TaskError e : result.getErrors()) {
-                msg += getMessageForTask(e);
+                errorText += getMessageForTask(e) + "<br>";
             }
-
-            donePanel.addComponent(new Label(msg));
+            Label errorTextLabel = new Label(errorText);
+            errorTextLabel.addStyleName("errorMessage");
+            errorTextLabel.setContentMode(Label.CONTENT_XHTML);
+            donePanel.addComponent(errorTextLabel);
         }
-
         return donePanel;
     }
 
     private String getMessageForTask(TaskError e) {
-        return "\n Task " + e.getTask().getId() + " (\"" + e.getTask().getSummary() + "\"): " + e.getErrors();
+        return "Task " + e.getTask().getId() + " (\"" + e.getTask().getSummary() + "\"): " + e.getErrors();
     }
 
     @Override

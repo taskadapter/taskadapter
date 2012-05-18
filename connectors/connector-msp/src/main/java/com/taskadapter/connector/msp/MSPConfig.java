@@ -6,6 +6,7 @@ import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -73,12 +74,12 @@ public class MSPConfig extends ConnectorConfig {
 
     @Override
     public String getSourceLocation() {
-        return inputAbsoluteFilePath;
+        return new File(inputAbsoluteFilePath).getName();
     }
 
     @Override
     public String getTargetLocation() {
-        return outputAbsoluteFilePath;
+        return new File(outputAbsoluteFilePath).getName();
     }
 
     @Override
