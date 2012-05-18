@@ -1,10 +1,18 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.config.TAFile;
+import com.taskadapter.web.MessageDialog;
+import com.taskadapter.web.service.Services;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 
+import java.util.Arrays;
+
 public class ConfigToolbarPanel extends HorizontalLayout {
+    // TODO i18n
+    private static final String YES = "Yes";
+    private static final String CANCEL = "Cancel";
+
     private final Navigator navigator;
     private final TAFile file;
 
@@ -21,7 +29,7 @@ public class ConfigToolbarPanel extends HorizontalLayout {
         cloneButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                navigator.showConfirmClonePage(file);
+                showConfirmClonePage(file);
             }
         });
         addComponent(cloneButton);
@@ -31,9 +39,46 @@ public class ConfigToolbarPanel extends HorizontalLayout {
         deleteButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
-                navigator.showDeleteFilePage(file);
+                showDeleteFilePage(file);
             }
         });
         addComponent(deleteButton);
     }
+
+    private void showDeleteFilePage(final TAFile file) {
+        MessageDialog messageDialog = new MessageDialog(
+                "Confirmation", "Delete this config?",
+                Arrays.asList(YES, CANCEL),
+                new MessageDialog.Callback() {
+                    public void onDialogResult(String answer) {
+                        if (YES.equals(answer)) {
+                            navigator.getServices().getConfigStorage().delete(file);
+                            navigator.show(Navigator.CONFIGS);
+                        }
+                    }
+                }
+        );
+        messageDialog.setWidth("175px");
+        getWindow().addWindow(messageDialog);
+    }
+
+    public void showConfirmClonePage(final TAFile file) {
+        MessageDialog messageDialog = new MessageDialog(
+                "Confirmation", "Clone this config?",
+                Arrays.asList(YES, CANCEL),
+                new MessageDialog.Callback() {
+                    public void onDialogResult(String answer) {
+                        if (YES.equals(answer)) {
+                            Services services = navigator.getServices();
+                            String userLoginName = services.getAuthenticator().getUserName();
+                            services.getConfigStorage().cloneConfig(userLoginName, file);
+                            navigator.show(Navigator.CONFIGS);
+                        }
+                    }
+                }
+        );
+        messageDialog.setWidth("175px");
+        getWindow().addWindow(messageDialog);
+    }
+
 }
