@@ -197,7 +197,9 @@ public class ServerModelFilePanelPresenter {
             File f = new File(absolutePath);
             view.selectFileInCombobox(f.getName());
         } else {
-            File newFile = createDefaultFile(fileManager.getUserFilesFolder(userName));
+            File userFilesFolder = fileManager.getUserFilesFolder(userName);
+            userFilesFolder.mkdirs();
+            File newFile = createDefaultFile(userFilesFolder);
             if (newFile == null) {
                 view.showNotification(ServerModeFilePanel.CANNOT_GENERATE_A_FILE);
             } else {
@@ -213,18 +215,18 @@ public class ServerModelFilePanelPresenter {
      * Search for unused file name in user folder starting from postfix 1
      * TODO think about performance and optimization
      *
-     * @param userFolder root folder of user
+     * @param userFilesFolder "files" folder inside the user's root folder
      * @return File instance (not existent on disc)
      */
-    private File createDefaultFile(File userFolder) {
+    private File createDefaultFile(File userFilesFolder) {
         String baseNameFormat = "MSP_export_%d.xml";
         int number = 1;
-        while (number < 100000) {// give a chance to exit
-            File file = new File(userFolder, String.format(baseNameFormat, number++));
+        while (number < 10000) {// give a chance to exit
+            File file = new File(userFilesFolder, String.format(baseNameFormat, number++));
             if (!file.exists()) {
                 try {
                     if (!file.createNewFile()) {
-                        continue;// file luckely created by somebody
+                        continue;// file luckily created by somebody
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
