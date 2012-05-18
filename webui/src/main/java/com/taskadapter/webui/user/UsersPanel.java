@@ -35,9 +35,10 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     private void refreshPage() {
         removeAllComponents();
         addErrorLabel();
-        addCreateUserSectionIfAllowedByLicense();
+        Collection<User> users = services.getUserManager().getUsers();
+        addCreateUserSectionIfAllowedByLicense(users.size());
         addUsersListPanel();
-        refreshUsers();
+        refreshUsers(users);
     }
 
     private void addErrorLabel() {
@@ -52,16 +53,16 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
         addComponent(usersLayout);
     }
 
-    private void refreshUsers() {
+    private void refreshUsers(final Collection<User> users) {
         usersLayout.removeAllComponents();
-        List<User> users = new ArrayList<User>(services.getUserManager().getUsers());
-        Collections.sort(users, new Comparator<User>() {
+        List<User> usersList = new ArrayList<User>(users);
+        Collections.sort(usersList, new Comparator<User>() {
             @Override
             public int compare(User o1, User o2) {
                 return o1.getLoginName().compareTo(o2.getLoginName());
             }
         });
-        for (User user : users) {
+        for (User user : usersList) {
             addUserToPanel(user.getLoginName());
         }
     }
@@ -138,12 +139,11 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
         refreshPage();
     }
 
-    private void addCreateUserSectionIfAllowedByLicense() {
+    private void addCreateUserSectionIfAllowedByLicense(int numberOfRegisteredUsers) {
         License currentlyInstalledLicense = services.getLicenseManager().getLicense();
         if (currentlyInstalledLicense != null) {
             int maxUsersNumber = currentlyInstalledLicense.getUsersNumber();
-            int currentUsersNumber = services.getUserManager().getUsers().size();
-            if (currentUsersNumber < maxUsersNumber) {
+            if (numberOfRegisteredUsers < maxUsersNumber) {
                 addCreateUserSection();
             } else {
                 addComponent(new Label("Maximum users number allowed by your license is reached."));
