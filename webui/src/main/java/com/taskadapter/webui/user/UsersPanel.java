@@ -71,6 +71,18 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
         userLoginLabel.addStyleName("userLoginLabelInUsersPanel");
         usersLayout.addComponent(userLoginLabel);
 
+        if (services.getUserManager().isAdmin(services.getAuthenticator().getUserName())) {
+            addSetPasswordButton(userLoginName);
+            addDeleteButtonUnlessUserIsHardcodedAdminUser(userLoginName);
+        } else {
+            // fillers for gridlayout
+            usersLayout.addComponent(new Label(""));
+            usersLayout.addComponent(new Label(""));
+        }
+
+    }
+
+    private void addSetPasswordButton(final String userLoginName) {
         Button setPasswordButton = new Button("Set password");
         setPasswordButton.addListener(new Button.ClickListener() {
             @Override
@@ -79,13 +91,14 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
             }
         });
         usersLayout.addComponent(setPasswordButton);
-
-        addDeleteButtonUnlessUserIsAdmin(userLoginName);
     }
 
-    private void addDeleteButtonUnlessUserIsAdmin(final String userLoginName) {
+    private void addDeleteButtonUnlessUserIsHardcodedAdminUser(final String userLoginName) {
         if (!userLoginName.equals(UserManager.ADMIN_LOGIN_NAME)) {
             addDeleteButton(userLoginName);
+        } else {
+            // filler for gridlayout
+            usersLayout.addComponent(new Label(""));
         }
     }
 

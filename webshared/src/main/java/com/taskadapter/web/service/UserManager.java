@@ -79,4 +79,8 @@ public class UserManager {
             throw new RuntimeException("can't read password.txt file: " + e);
         }
     }
+
+    public boolean isAdmin(String userLoginName) {
+        return ADMIN_LOGIN_NAME.equals(userLoginName);
+    }
 }
