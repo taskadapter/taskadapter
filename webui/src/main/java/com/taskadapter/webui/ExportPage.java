@@ -79,22 +79,20 @@ public class ExportPage extends ActionPage {
         infoLabel.setContentMode(Label.CONTENT_XHTML);
         donePanel.addComponent(infoLabel);
 
-        String msg = "";
         if (result.hasErrors()) {
-            donePanel.addComponent(new Label("Server reported some errors:"));
+            donePanel.addComponent(new Label("There were some problems during export:"));
+            String errorText = "";
             for (String e : result.getGeneralErrors()) {
-                msg += e + "<br>";
+                errorText += e + "<br>";
             }
             for (TaskError e : result.getErrors()) {
-                msg += getMessageForTask(e) + "<br>";
+                errorText += getMessageForTask(e) + "<br>";
             }
+            Label errorTextLabel = new Label(errorText);
+            errorTextLabel.addStyleName("errorMessage");
+            errorTextLabel.setContentMode(Label.CONTENT_XHTML);
+            donePanel.addComponent(errorTextLabel);
         }
-
-        infoLabel = new Label(msg);
-        infoLabel.addStyleName("export-result");
-        infoLabel.setContentMode(Label.CONTENT_XHTML);
-        donePanel.addComponent(infoLabel);
-
         return donePanel;
     }
 
