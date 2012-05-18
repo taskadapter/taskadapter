@@ -51,6 +51,7 @@ public class LoginPage extends Page {
                     }
                 } catch (WrongPasswordException e) {
                     errorLabel.setValue("Wrong password.");
+                    passwordEdit.setValue("");
                 } catch (UserNotFoundException e) {
                     errorLabel.setValue("User " + username + " not found.");
                 }
