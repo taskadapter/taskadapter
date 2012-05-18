@@ -10,6 +10,7 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Runo;
 import org.vaadin.googleanalytics.tracking.GoogleAnalyticsTracker;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +29,9 @@ public class Navigator {
     private static final String EDIT_CONFIG_PAGE = "configure_task";
     private static final String LOGIN_PAGE = "login";
     private static final String CONFIRMATION_PAGE = "confirm_delete_or_clone_config";
+
+    private static final String YES = "Yes";
+    private static final String CANCEL = "Cancel";
 
     private Map<String, Page> pages = new HashMap<String, Page>();
     private HorizontalLayout navigationPanel;
@@ -165,30 +169,38 @@ public class Navigator {
     }
 
     public void showDeleteFilePage(final TAFile file) {
-        ConfirmationPage page = (ConfirmationPage) pages.get(CONFIRMATION_PAGE);
-        page.setQuestionText("Delete this config?");
-        page.setActionListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                services.getConfigStorage().delete(file);
-                show(Navigator.CONFIGS);
-            }
-        });
-        show(page);
+        MessageDialog messageDialog = new MessageDialog(
+                "Confirmation", "Delete this config?",
+                Arrays.asList(YES, CANCEL),
+                new MessageDialog.Callback() {
+                    public void onDialogResult(String answer) {
+                        if (answer == YES) {
+                            services.getConfigStorage().delete(file);
+                            show(Navigator.CONFIGS);
+                        }
+                    }
+                }
+        );
+        messageDialog.setWidth("175px");
+        addWindow(messageDialog);
     }
 
     public void showConfirmClonePage(final TAFile file) {
-        ConfirmationPage page = (ConfirmationPage) pages.get(CONFIRMATION_PAGE);
-        page.setQuestionText("Clone this config?");
-        page.setActionListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                String userLoginName = services.getAuthenticator().getUserName();
-                services.getConfigStorage().cloneConfig(userLoginName, file);
-                show(Navigator.CONFIGS);
-            }
-        });
-        show(page);
+        MessageDialog messageDialog = new MessageDialog(
+                "Confirmation", "Clone this config?",
+                Arrays.asList(YES, CANCEL),
+                new MessageDialog.Callback() {
+                    public void onDialogResult(String answer) {
+                        if (answer == YES) {
+                            String userLoginName = services.getAuthenticator().getUserName();
+                            services.getConfigStorage().cloneConfig(userLoginName, file);
+                            show(Navigator.CONFIGS);
+                        }
+                    }
+                }
+        );
+        messageDialog.setWidth("175px");
+        addWindow(messageDialog);
     }
 
     private void checkLastAvailableVersion() {
