@@ -50,6 +50,7 @@ public class LicenseManager {
         this.license = newLicense;
     }
 
+    // TODO Add tests to fix what is returned when no license is installed
     public License getLicense() {
         return license;
     }
