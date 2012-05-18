@@ -8,6 +8,7 @@ import com.vaadin.Application;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Runo;
+import org.vaadin.googleanalytics.tracking.GoogleAnalyticsTracker;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,13 +41,21 @@ public class Navigator {
     Header header;
     private Page previousPage;
     private Page currentPage;
+    private GoogleAnalyticsTracker tracker;
 
     public Navigator(VerticalLayout layout, Services services) {
         this.layout = layout;
         this.services = services;
         registerPages();
+        addGoogleAnalytics();
         buildUI();
         checkLastAvailableVersion();
+    }
+
+    private void addGoogleAnalytics() {
+        tracker = new GoogleAnalyticsTracker("UA-3768502-12", "none");
+        // Add ONLY ONE tracker per window
+        layout.getWindow().addComponent(tracker);
     }
 
     private void registerPages() {
@@ -122,7 +131,6 @@ public class Navigator {
             currentPage = pages.get(LOGIN_PAGE);
         }
 
-
         boolean singleUserMode = services.getSettingsManager().isTAWorkingOnLocalMachine();
         boolean requestCameFromLocalhost = services.getSessionInfo().isRequestCameFromLocalhost();
         if (singleUserMode && !requestCameFromLocalhost) {
@@ -145,6 +153,7 @@ public class Navigator {
         Label titleLabel = new Label(currentPage.getPageTitle());
         titleLabel.setSizeUndefined();
         navigationPanel.addComponent(titleLabel);
+        tracker.trackPageview("/" + currentPage.getPageTitle());
     }
 
     private void setServicesToPage(Page page) {

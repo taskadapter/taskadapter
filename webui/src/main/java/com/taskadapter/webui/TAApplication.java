@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * This is the web application entry point.
+ * Vaadin web application entry point.
  *
  * @author Alexey Skorokhodov
  */
@@ -29,15 +29,6 @@ public class TAApplication extends Application implements HttpServletRequestList
 
     @Override
     public void init() {
-//        if(services.getLicenseManager().isSomeValidLicenseInstalled()) {
-//            String host = getURL().getHost();
-//
-//            if(License.Type.SINGLE.equals(services.getLicenseManager().getLicense().getType())
-//                    && !("localhost".equals(host) || "127.0.0.1".equals(host))) {
-//                return;  // TODO: some warning page should be implemented
-//            }
-//        }
-
         setTheme("mytheme");
 
         VerticalLayout layout = new VerticalLayout();
@@ -53,6 +44,7 @@ public class TAApplication extends Application implements HttpServletRequestList
     @Override
     public void onRequestStart(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         services.getCookiesManager().init(httpServletRequest, httpServletResponse);
+        // TODO delete - unused
         services.getSessionInfo().setRequestCameFromLocalhost(isRequestFromLocalhost(httpServletRequest));
     }
 

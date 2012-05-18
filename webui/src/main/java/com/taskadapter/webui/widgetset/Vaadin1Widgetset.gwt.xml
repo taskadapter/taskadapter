@@ -18,4 +18,6 @@
      webkit based browsers including Google Chrome.
     -->
     <set-property name="user.agent" value="safari"/>
+
+    <inherits name="org.vaadin.googleanalytics.tracking.GoogleAnalyticsWidgetset" />
 </module>
