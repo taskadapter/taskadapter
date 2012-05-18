@@ -138,9 +138,6 @@ public class Navigator {
 
         navigationPanel.removeAllComponents();
 
-//        Label titleLabel = new Label(currentPage.getPageTitle());
-//        titleLabel.setSizeUndefined();
-//        navigationPanel.addComponent(titleLabel);
         tracker.trackPageview("/" + currentPage.getPageGoogleAnalyticsID());
     }
 
