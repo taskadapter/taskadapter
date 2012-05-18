@@ -5,6 +5,7 @@ import com.taskadapter.license.License;
 import com.taskadapter.license.LicenseChangeListener;
 import com.taskadapter.web.InputDialog;
 import com.taskadapter.web.MessageDialog;
+import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.service.Services;
 import com.taskadapter.web.service.UserManager;
 import com.vaadin.ui.Button;
@@ -61,12 +62,12 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
             }
         });
         for (User user : users) {
-            addUserToPanel(user);
+            addUserToPanel(user.getLoginName());
         }
     }
 
-    private void addUserToPanel(final User user) {
-        Label userLoginLabel = new Label(user.getLoginName());
+    private void addUserToPanel(final String userLoginName) {
+        Label userLoginLabel = new Label(userLoginName);
         userLoginLabel.addStyleName("userLoginLabelInUsersPanel");
         usersLayout.addComponent(userLoginLabel);
 
@@ -74,39 +75,39 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
         setPasswordButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                startSetPasswordProcess(user);
+                EditorUtil.startSetPasswordProcess(getWindow(), services.getUserManager(), userLoginName);
             }
         });
         usersLayout.addComponent(setPasswordButton);
 
-        addDeleteButtonUnlessUserIsAdmin(user);
+        addDeleteButtonUnlessUserIsAdmin(userLoginName);
     }
 
-    private void addDeleteButtonUnlessUserIsAdmin(final User user) {
-        if (!user.getLoginName().equals(UserManager.ADMIN_LOGIN_NAME)) {
-            addDeleteButton(user);
+    private void addDeleteButtonUnlessUserIsAdmin(final String userLoginName) {
+        if (!userLoginName.equals(UserManager.ADMIN_LOGIN_NAME)) {
+            addDeleteButton(userLoginName);
         }
     }
 
-    private void addDeleteButton(final User user) {
+    private void addDeleteButton(final String userLoginName) {
         Button deleteButton = new Button(DELETE_BUTTON);
         deleteButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                startDeleteProcess(user);
+                startDeleteProcess(userLoginName);
             }
         });
         usersLayout.addComponent(deleteButton);
     }
 
-    private void startDeleteProcess(final User user) {
+    private void startDeleteProcess(final String userLoginName) {
         MessageDialog messageDialog = new MessageDialog(
-                "Please confirm", "Delete user " + user.getLoginName(),
+                "Please confirm", "Delete user " + userLoginName,
                 Arrays.asList(DELETE_BUTTON, MessageDialog.CANCEL_BUTTON_LABEL),
                 new MessageDialog.Callback() {
                     public void onDialogResult(String answer) {
                         if (answer.equals(DELETE_BUTTON)) {
-                            deleteUser(user);
+                            deleteUser(userLoginName);
                         }
                     }
                 }
@@ -115,28 +116,13 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
         getApplication().getMainWindow().addWindow(messageDialog);
     }
 
-    private void deleteUser(User user) {
+    private void deleteUser(String userLoginName) {
         try {
-            services.getUserManager().deleteUser(user.getLoginName());
+            services.getUserManager().deleteUser(userLoginName);
         } catch (IOException e) {
             errorLabel.setValue("Can't delete user. " + e.getMessage());
         }
         refreshPage();
-    }
-
-    private void startSetPasswordProcess(final User user) {
-        InputDialog inputDialog = new InputDialog("Set the new password", "New password: ",
-                new InputDialog.Recipient() {
-                    public void gotInput(String newPassword) {
-                        setPassword(user.getLoginName(), newPassword);
-                    }
-                });
-        inputDialog.setPasswordMode();
-        getWindow().addWindow(inputDialog);
-    }
-
-    private void setPassword(String loginName, String newPassword) {
-        services.getUserManager().saveUser(loginName, newPassword);
     }
 
     private void addCreateUserSectionIfAllowedByLicense() {

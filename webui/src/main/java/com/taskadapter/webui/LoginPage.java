@@ -45,13 +45,11 @@ public class LoginPage extends Page {
                     services.getAuthenticator().tryLogin(username, password, staySignedIn.booleanValue());
                     clearLoginFields();
                     errorLabel.setValue("");
-                    if (services.getAuthenticator().isLoggedIn()) {
-                        navigator.updateLogoutButtonState();
-                        navigator.show(Navigator.HOME);
-                    }
+                    navigator.show(Navigator.HOME);
                 } catch (WrongPasswordException e) {
                     errorLabel.setValue("Wrong password.");
                     passwordEdit.setValue("");
+                    passwordEdit.focus();
                 } catch (UserNotFoundException e) {
                     errorLabel.setValue("User " + username + " not found.");
                 }
@@ -64,6 +62,7 @@ public class LoginPage extends Page {
         layout.addComponent(errorLabel);
 
         clearLoginFields();
+        loginEdit.focus();
     }
 
     @Override

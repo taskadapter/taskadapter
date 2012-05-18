@@ -209,7 +209,6 @@ public class Navigator {
     }
 
     public void showError(String caption, String message) {
-//        layout.getWindow().showNotification(caption, "<pre>" + message + "</pre>", Window.Notification.TYPE_ERROR_MESSAGE);
         showNotification(caption, message);
     }
 
@@ -225,19 +224,12 @@ public class Navigator {
         return layout.getApplication();
     }
 
-    public void updateLogoutButtonState() {
-        header.updateLogoutButtonState();
-    }
-
     /**
      * return to previous page
      */
     public void back() {
-        if (previousPage != null)
+        if (previousPage != null) {
             show(previousPage);
-    }
-
-    public Services getServices() {
-        return services;
+        }
     }
 }

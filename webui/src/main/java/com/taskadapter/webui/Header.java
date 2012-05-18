@@ -1,19 +1,23 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.license.LicenseChangeListener;
+import com.taskadapter.web.configeditor.EditorUtil;
+import com.taskadapter.web.service.LoginEventListener;
 import com.taskadapter.web.service.Services;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.BaseTheme;
 
-
 /**
+ * Top-level header shown in the web UI.
+ * Includes logo, "configure", "logout" and other buttons.
+ *
  * @author Alexey Skorokhodov
  */
-public class Header extends HorizontalLayout implements LicenseChangeListener {
+public class Header extends HorizontalLayout implements LicenseChangeListener, LoginEventListener {
     private HorizontalLayout internalLayout = new HorizontalLayout();
+    private HorizontalLayout panelForLoggedInUsers;
     private VerticalLayout trialLayout = new VerticalLayout();
-    private Button logoutButton;
     private Navigator navigator;
     private Services services;
 
@@ -23,11 +27,11 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
         buildMainLayout();
         checkLicense();
         services.getLicenseManager().addLicenseChangeListener(this);
-        updateLogoutButtonState();
+        services.getAuthenticator().addLoginEventListener(this);
+        userLoginInfoChanged(services.getAuthenticator().isLoggedIn());
     }
 
     private void buildMainLayout() {
-        //internalLayout.setWidth(, UNITS_PIXELS);
         internalLayout.setWidth(Navigator.MAIN_WIDTH);
         addComponent(internalLayout);
         setComponentAlignment(internalLayout, Alignment.MIDDLE_CENTER);
@@ -37,23 +41,41 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
 
         addLogo();
         addMenuItems();
-        addLogoutButton();
+        addPanelForLoggedInUsers();
         addTrialSection();
     }
 
+    private void addPanelForLoggedInUsers() {
+        panelForLoggedInUsers = new HorizontalLayout();
+        panelForLoggedInUsers.setSpacing(true);
+        internalLayout.addComponent(panelForLoggedInUsers);
+        addLogoutButton();
+        addSetPasswordButton();
+    }
+
     private void addLogoutButton() {
-        logoutButton = new Button("Logout");
+        Button logoutButton = new Button("Logout");
         logoutButton.setStyleName(BaseTheme.BUTTON_LINK);
         logoutButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 services.getAuthenticator().logout();
-                updateLogoutButtonState();
                 navigator.show(Navigator.HOME);
             }
         });
-        logoutButton.setVisible(false);
-        internalLayout.addComponent(logoutButton);
+        panelForLoggedInUsers.addComponent(logoutButton);
+    }
+
+    private void addSetPasswordButton() {
+        Button setPasswordButton = new Button("Change password");
+        setPasswordButton.setStyleName(BaseTheme.BUTTON_LINK);
+        setPasswordButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                EditorUtil.startSetPasswordProcess(getWindow(), services.getUserManager(), services.getAuthenticator().getUserName());
+            }
+        });
+        panelForLoggedInUsers.addComponent(setPasswordButton);
     }
 
     private void addTrialSection() {
@@ -75,15 +97,6 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
         internalLayout.addComponent(trialLayout);
         internalLayout.setExpandRatio(trialLayout, 1f);
         trialLayout.setVisible(false);
-    }
-
-    public void updateLogoutButtonState() {
-        if (services.getAuthenticator().isLoggedIn()) {
-            logoutButton.setVisible(true);
-        } else {
-            logoutButton.setVisible(false);
-        }
-
     }
 
     private void addLogo() {
@@ -126,5 +139,10 @@ public class Header extends HorizontalLayout implements LicenseChangeListener {
     @Override
     public void licenseInfoUpdated() {
         checkLicense();
+    }
+
+    @Override
+    public void userLoginInfoChanged(boolean userLoggedIn) {
+        panelForLoggedInUsers.setVisible(userLoggedIn);
     }
 }

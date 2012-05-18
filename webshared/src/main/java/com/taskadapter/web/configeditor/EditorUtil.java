@@ -2,7 +2,9 @@ package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.NamedKeyedObject;
+import com.taskadapter.web.InputDialog;
 import com.taskadapter.web.WindowProvider;
+import com.taskadapter.web.service.UserManager;
 import com.vaadin.ui.*;
 
 import java.util.Collection;
@@ -109,7 +111,7 @@ public class EditorUtil {
         Label label = new Label(caption);
         layout.addComponent(label);
 
-        if(layout instanceof Layout.AlignmentHandler) {
+        if (layout instanceof Layout.AlignmentHandler) {
             ((Layout.AlignmentHandler) layout).setComponentAlignment(label, Alignment.MIDDLE_LEFT);
         }
 
@@ -126,6 +128,17 @@ public class EditorUtil {
             result = result.getCause();
         }
         return result;
+    }
+
+    public static void startSetPasswordProcess(Window parentWindow, final UserManager userManager, final String userLoginName) {
+        InputDialog inputDialog = new InputDialog("Change password for " + userLoginName, "New password: ",
+                new InputDialog.Recipient() {
+                    public void gotInput(String newPassword) {
+                        userManager.saveUser(userLoginName, newPassword);
+                    }
+                });
+        inputDialog.setPasswordMode();
+        parentWindow.addWindow(inputDialog);
     }
 
 }
