@@ -38,8 +38,8 @@ public class UserManager {
             try {
                 users.add(getUser(fileName));
             } catch (UserNotFoundException e) {
-                // TODO fix
-                e.printStackTrace();
+                // TODO log properly
+                System.out.println("User not found: " + fileName + ". This indicates incorrect folders structure in your data directory.");
             }
         }
         return users;
@@ -76,7 +76,9 @@ public class UserManager {
             passwordString = Files.readFirstLine(passwordFile, Charset.forName("UTF-8"));
             return new User(loginName, passwordString);
         } catch (IOException e) {
-            throw new RuntimeException("can't read password.txt file: " + e);
+            // TODO log this properly
+            System.out.println("Can't read password.txt file for user " + loginName + ". The reason is:" + e.getMessage());
+            throw new UserNotFoundException();
         }
     }
 
