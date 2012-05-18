@@ -17,28 +17,25 @@ import java.util.Map;
  * @author Alexey Skorokhodov
  */
 public class Navigator {
-    public static final String CONFIGS = "configs_list";
-    public static final String HOME = "home";
-    public static final String CONFIGURE_SYSTEM_PAGE = "configure_page";
-    public static final String FEEDBACK_PAGE = "feedback";
-    public static final String NEW_CONFIG_PAGE = "new_config_page";
-    public static final String CONFIGURE_TASK_PAGE = "configure_task";
-
-    private static final String LOGIN_PAGE = "login_page";
-    private static final String DELETE_PAGE = "delete_task";
     public static final String MAIN_WIDTH = "920px";// like GitHub
 
-//    private static final String CANT_USE_TA_FROM_REMOTE_MACHINE_IN_SINGLE_USER_LICENSE_PAGE = "no_access_from_remote_in_single_user_mode_page";
+    public static final String HOME = "home";
+    public static final String CONFIGURE_SYSTEM_PAGE = "configure_system";
+    public static final String FEEDBACK_PAGE = "feedback";
+    public static final String NEW_CONFIG_PAGE = "new_config";
+
+    private static final String CONFIGS = "configs_list";
+    private static final String CONFIGURE_TASK_PAGE = "configure_task";
+    private static final String LOGIN_PAGE = "login";
+    private static final String CONFIRMATION_PAGE = "confirm_delete_or_clone_config";
 
     private Map<String, Page> pages = new HashMap<String, Page>();
-
     private HorizontalLayout navigationPanel;
     private HorizontalLayout currentComponentArea = new HorizontalLayout();
     private Layout mainArea = new CssLayout();
     private VerticalLayout layout;
     private Services services;
     private Label updateMessage;
-    Header header;
     private Page previousPage;
     private Page currentPage;
     private GoogleAnalyticsTracker tracker;
@@ -67,11 +64,11 @@ public class Navigator {
         registerPage(FEEDBACK_PAGE, new SupportPage());
         registerPage(NEW_CONFIG_PAGE, new NewConfigPage());
         registerPage(CONFIGURE_TASK_PAGE, new ConfigureTaskPage());
-        registerPage(DELETE_PAGE, new ConfirmationPage());
+        registerPage(CONFIRMATION_PAGE, new ConfirmationPage());
     }
 
     private void buildUI() {
-        header = new Header(this, services);
+        Header header = new Header(this, services);
         header.setHeight(50, Sizeable.UNITS_PIXELS);
         header.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         layout.addComponent(header);
@@ -171,7 +168,7 @@ public class Navigator {
     }
 
     public void showDeleteFilePage(final TAFile file) {
-        ConfirmationPage page = (ConfirmationPage) pages.get(DELETE_PAGE);
+        ConfirmationPage page = (ConfirmationPage) pages.get(CONFIRMATION_PAGE);
         page.setFile(file);
         page.setQuestionText("Delete this config?");
         page.setActionListener(new Button.ClickListener() {
@@ -185,7 +182,7 @@ public class Navigator {
     }
 
     public void showConfirmClonePage(final TAFile file) {
-        ConfirmationPage page = (ConfirmationPage) pages.get(DELETE_PAGE);
+        ConfirmationPage page = (ConfirmationPage) pages.get(CONFIRMATION_PAGE);
         page.setFile(file);
         page.setQuestionText("Clone this config?");
         page.setActionListener(new Button.ClickListener() {
