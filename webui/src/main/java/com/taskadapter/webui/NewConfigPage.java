@@ -142,8 +142,8 @@ public class NewConfigPage extends Page {
     }
 
     @Override
-    public String getPageTitle() {
-        return "";
+    public String getPageGoogleAnalyticsID() {
+        return "create_config";
     }
 
     @Override

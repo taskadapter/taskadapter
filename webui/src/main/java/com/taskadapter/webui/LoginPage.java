@@ -66,8 +66,8 @@ public class LoginPage extends Page {
     }
 
     @Override
-    public String getPageTitle() {
-        return "Login";
+    public String getPageGoogleAnalyticsID() {
+        return "login";
     }
 
     @Override

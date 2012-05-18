@@ -38,8 +38,8 @@ public class UpdateFilePage extends ActionPage {
     }
 
     @Override
-    public String getPageTitle() {
-        return "Update the file";
+    public String getPageGoogleAnalyticsID() {
+        return "update_file";
     }
 
     @Override

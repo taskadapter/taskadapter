@@ -61,8 +61,8 @@ public class ConfigsPage extends Page {
     }
 
     @Override
-    public String getPageTitle() {
-        return "Configs";
+    public String getPageGoogleAnalyticsID() {
+        return "configs";
     }
 
     @Override

@@ -25,7 +25,7 @@ public class Navigator {
     public static final String NEW_CONFIG_PAGE = "new_config";
 
     private static final String CONFIGS = "configs_list";
-    private static final String CONFIGURE_TASK_PAGE = "configure_task";
+    private static final String EDIT_CONFIG_PAGE = "configure_task";
     private static final String LOGIN_PAGE = "login";
     private static final String CONFIRMATION_PAGE = "confirm_delete_or_clone_config";
 
@@ -63,7 +63,7 @@ public class Navigator {
         registerPage(CONFIGURE_SYSTEM_PAGE, new ConfigureSystemPage());
         registerPage(FEEDBACK_PAGE, new SupportPage());
         registerPage(NEW_CONFIG_PAGE, new NewConfigPage());
-        registerPage(CONFIGURE_TASK_PAGE, new ConfigureTaskPage());
+        registerPage(EDIT_CONFIG_PAGE, new EditConfigPage());
         registerPage(CONFIRMATION_PAGE, new ConfirmationPage());
     }
 
@@ -138,10 +138,10 @@ public class Navigator {
 
         navigationPanel.removeAllComponents();
 
-        Label titleLabel = new Label(currentPage.getPageTitle());
-        titleLabel.setSizeUndefined();
-        navigationPanel.addComponent(titleLabel);
-        tracker.trackPageview("/" + currentPage.getPageTitle());
+//        Label titleLabel = new Label(currentPage.getPageTitle());
+//        titleLabel.setSizeUndefined();
+//        navigationPanel.addComponent(titleLabel);
+        tracker.trackPageview("/" + currentPage.getPageGoogleAnalyticsID());
     }
 
     private void setServicesToPage(Page page) {
@@ -159,7 +159,7 @@ public class Navigator {
     }
 
     public void showConfigureTaskPage(TAFile file, String dataHolderLabel, String errorMessage) {
-        ConfigureTaskPage page = (ConfigureTaskPage) pages.get(CONFIGURE_TASK_PAGE);
+        EditConfigPage page = (EditConfigPage) pages.get(EDIT_CONFIG_PAGE);
         page.setFile(file);
         page.setActiveTabLabel(dataHolderLabel);
         page.setErrorMessage(errorMessage);
@@ -169,7 +169,6 @@ public class Navigator {
 
     public void showDeleteFilePage(final TAFile file) {
         ConfirmationPage page = (ConfirmationPage) pages.get(CONFIRMATION_PAGE);
-        page.setFile(file);
         page.setQuestionText("Delete this config?");
         page.setActionListener(new Button.ClickListener() {
             @Override
@@ -183,7 +182,6 @@ public class Navigator {
 
     public void showConfirmClonePage(final TAFile file) {
         ConfirmationPage page = (ConfirmationPage) pages.get(CONFIRMATION_PAGE);
-        page.setFile(file);
         page.setQuestionText("Clone this config?");
         page.setActionListener(new Button.ClickListener() {
             @Override

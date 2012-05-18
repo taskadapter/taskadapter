@@ -21,8 +21,8 @@ public class ConfigureSystemPage extends Page {
     }
 
     @Override
-    public String getPageTitle() {
-        return "System configuration";
+    public String getPageGoogleAnalyticsID() {
+        return "system_configuration";
     }
 
     @Override

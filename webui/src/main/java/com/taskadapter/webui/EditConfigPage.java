@@ -13,7 +13,7 @@ import com.vaadin.ui.*;
 /**
  * @author Alexey Skorokhodov
  */
-public class ConfigureTaskPage extends Page {
+public class EditConfigPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
     private TAFile file;
     private TextField configDescription;
@@ -23,7 +23,7 @@ public class ConfigureTaskPage extends Page {
     private Label errorMessageLabel = new Label("Test");
     private String activeTabLabel;
 
-    public ConfigureTaskPage() {
+    public EditConfigPage() {
     }
 
     private void buildUI() {
@@ -45,7 +45,6 @@ public class ConfigureTaskPage extends Page {
         errorMessageLabel.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         buttonsLayout.addComponent(errorMessageLabel);
         buttonsLayout.setExpandRatio(errorMessageLabel, 1.0f);
-        //buttonsLayout.setComponentAlignment(errorMessageLabel, Alignment.MIDDLE_LEFT);
 
         ConfigToolbarPanel configToolbarPanel = new ConfigToolbarPanel(navigator, file);
         buttonsLayout.addComponent(configToolbarPanel);
@@ -142,8 +141,8 @@ public class ConfigureTaskPage extends Page {
     }
 
     @Override
-    public String getPageTitle() {
-        return "Configure \"" + file.getConfigLabel() + "\"";
+    public String getPageGoogleAnalyticsID() {
+        return "edit_config";
     }
 
     @Override

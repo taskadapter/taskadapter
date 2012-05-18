@@ -24,8 +24,8 @@ public class ExportPage extends ActionPage {
     }
 
     @Override
-    public String getPageTitle() {
-        return "Export confirmation: from " + connectorFrom.getConfig().getLabel() + " to " + connectorTo.getConfig().getLabel();
+    public String getPageGoogleAnalyticsID() {
+        return "export_confirmation";
     }
 
     @Override

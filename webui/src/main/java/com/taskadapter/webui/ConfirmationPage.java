@@ -1,6 +1,5 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.config.TAFile;
 import com.taskadapter.web.configeditor.DefaultPanel;
 import com.vaadin.ui.*;
 
@@ -9,7 +8,6 @@ import com.vaadin.ui.*;
  */
 public class ConfirmationPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
-    private TAFile file;
     private String questionText;
     private Button.ClickListener actionListener;
 
@@ -32,13 +30,9 @@ public class ConfirmationPage extends Page {
         layout.addComponent(horizontalLayout);
     }
 
-    public void setFile(TAFile file) {
-        this.file = file;
-    }
-
     @Override
-    public String getPageTitle() {
-        return file.getConfigLabel();
+    public String getPageGoogleAnalyticsID() {
+        return "confirmation";
     }
 
     @Override

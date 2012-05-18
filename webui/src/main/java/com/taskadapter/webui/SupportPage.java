@@ -9,12 +9,6 @@ import com.vaadin.ui.VerticalLayout;
 public class SupportPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
 
-/*
-    private static final String FIELD_NAME = "Your Name";
-    private static final String FIELD_EMAIL = "Your E-mail";
-    private static final String FIELD_MESSAGE = "Message";
-*/
-
     public SupportPage() {
         buildUI();
     }
@@ -68,8 +62,8 @@ public class SupportPage extends Page {
     }
 
     @Override
-    public String getPageTitle() {
-        return "Feedback";
+    public String getPageGoogleAnalyticsID() {
+        return "support";
     }
 
     @Override
