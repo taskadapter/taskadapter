@@ -70,7 +70,7 @@ public abstract class ActionPage extends Page {
         loadProgress.setIndeterminate(true);
         loadProgress.setPollingInterval(200);
         mainPanel.addComponent(loadProgress);
-        String labelText = "loading data from " + connectorFrom.getConfig().getSourceLocation() + " (" + connectorFrom.getDescriptor().getLabel() + ")";
+        String labelText = "Loading data from " + connectorFrom.getConfig().getSourceLocation() + " (" + connectorFrom.getDescriptor().getLabel() + ") ...";
         mainPanel.addComponent(createLabel(labelText));
     }
 

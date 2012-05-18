@@ -2,6 +2,7 @@ package com.taskadapter.core;
 
 import com.taskadapter.connector.common.DataConnectorUtil;
 import com.taskadapter.connector.common.TaskSaver;
+import com.taskadapter.connector.common.TransportException;
 import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
@@ -30,7 +31,6 @@ public class SyncRunner {
 
     /**
      * @param monitor can be NULL (ignored in this case)
-     * @return
      */
     public List<GTask> load(ProgressMonitor monitor) {
         if (monitor != null) {
@@ -46,8 +46,10 @@ public class SyncRunner {
             if (flatTasksList != null) {
                 this.tasks = TreeUtils.buildTreeFromFlatList(flatTasksList);
             }
+        } catch (TransportException e) {
+            throw e;
         } catch (Exception e1) {
-            throw new RuntimeException("Can't load data.\n" + e1.getMessage(), e1);
+            throw new RuntimeException(e1);
         }
         if (monitor != null) {
             monitor.done();

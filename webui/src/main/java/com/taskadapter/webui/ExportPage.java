@@ -2,6 +2,7 @@ package com.taskadapter.webui;
 
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.common.TaskSaver;
+import com.taskadapter.connector.common.TransportException;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.definition.TaskError;
@@ -16,6 +17,10 @@ import java.util.Calendar;
  * @author Alexey Skorokhodov
  */
 public class ExportPage extends ActionPage {
+    // TODO i18n
+    private static final String TRANSPORT_ERROR = "There was a problem communicating with the server. " +
+            "Please check that the server name is valid and the server is accessible.";
+
     private SyncRunner runner;
     private SyncResult result;
 
@@ -34,11 +39,19 @@ public class ExportPage extends ActionPage {
         runner.setConnectorFrom(connectorFrom);
         try {
             this.loadedTasks = runner.load(null);
+        } catch (TransportException e) {
+            showErrorMessageOnPage(TRANSPORT_ERROR);
+            e.printStackTrace();
         } catch (RuntimeException e) {
-            mainPanel.addComponent(new Label("Can't load data. " + e.toString()));
-            // TODO log properly
+            showErrorMessageOnPage(e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private void showErrorMessageOnPage(String errorMessage) {
+        Label errorLabel = new Label(errorMessage);
+        errorLabel.addStyleName("errorMessage");
+        mainPanel.addComponent(errorLabel);
     }
 
     @Override

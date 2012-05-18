@@ -1,12 +1,14 @@
 package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.common.AbstractTaskLoader;
+import com.taskadapter.connector.common.TransportException;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.GTask;
 import org.redmine.ta.RedmineException;
 import org.redmine.ta.RedmineManager;
 import org.redmine.ta.RedmineManager.INCLUDE;
 import org.redmine.ta.RedmineSecurityException;
+import org.redmine.ta.RedmineTransportException;
 import org.redmine.ta.beans.Issue;
 
 import java.util.ArrayList;
@@ -26,8 +28,8 @@ public class RedmineTaskLoader extends AbstractTaskLoader<RedmineConfig> {
             rows = convertToGenericTasks(config, issues);
         } catch (RedmineSecurityException e) {
             throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (RedmineTransportException e) {
+            throw new TransportException("There was a problem communicating with Redmine server: " + e.getMessage());
         }
         return rows;
     }

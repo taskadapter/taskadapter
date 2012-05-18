@@ -1,14 +1,14 @@
 package com.taskadapter.connector.common;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.model.GTask;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public abstract class AbstractConnector<T extends ConnectorConfig> implements Connector<T> {
 
@@ -34,6 +34,8 @@ public abstract class AbstractConnector<T extends ConnectorConfig> implements Co
                 }
             });
             return tasks;
+        } catch (TransportException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
