@@ -6,15 +6,11 @@ import com.vaadin.ui.*;
 public class InputDialog extends Window {
 
     private HorizontalLayout layout = new HorizontalLayout();
-    private TextField textField;
-    private Recipient recipient;
+    private HorizontalLayout textFieldLayout = new HorizontalLayout();
+    private AbstractTextField textField;
 
-    // TODO this is inconsistent with MessageDialog class, where we don't keep Parent Window inside
-    // - the calling code adds the subwindow to main window instead.
-    // this sample code was taken from Vaadin.com
-    public InputDialog(final Window parent, String caption, String question, final Recipient recipient) {
+    public InputDialog(String caption, String question, final Recipient recipient) {
         super(caption);
-        this.recipient = recipient;
 
         setModal(true);
         setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
@@ -22,23 +18,36 @@ public class InputDialog extends Window {
 
         addComponent(new Label(question, Label.CONTENT_XHTML));
         addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
-        textField = new TextField();
-        addComponent(textField);
-        textField.focus();
+        addComponent(textFieldLayout);
 
         final Window dialog = this;
         addComponent(new Button("Ok", new Button.ClickListener() {
             public void buttonClick(Button.ClickEvent event) {
                 recipient.gotInput(textField.toString());
-                parent.removeWindow(dialog);
+                getParent().removeWindow(dialog);
             }
         }));
         addComponent(layout);
-        parent.addWindow(this);
+        setPlainTextMode();
     }
 
     public interface Recipient {
         public void gotInput(String input);
     }
+
+    public void setPasswordMode() {
+        textFieldLayout.removeAllComponents();
+        textField = new PasswordField();
+        textFieldLayout.addComponent(textField);
+        textField.focus();
+    }
+
+    private void setPlainTextMode() {
+        textFieldLayout.removeAllComponents();
+        textField = new TextField();
+        textFieldLayout.addComponent(textField);
+        textField.focus();
+    }
+
 }
 

@@ -109,13 +109,14 @@ public class UsersPanel extends Panel {
     }
 
     private void startSetPasswordProcess(final User user) {
-        new InputDialog(getWindow(), "Set the new password", "New password: ",
+        InputDialog inputDialog = new InputDialog("Set the new password", "New password: ",
                 new InputDialog.Recipient() {
                     public void gotInput(String newPassword) {
                         setPassword(user.getLoginName(), newPassword);
                     }
                 });
-
+        inputDialog.setPasswordMode();
+        getWindow().addWindow(inputDialog);
     }
 
     private void setPassword(String loginName, String newPassword) {
@@ -134,12 +135,13 @@ public class UsersPanel extends Panel {
     }
 
     private void startCreateUserProcess() {
-        new InputDialog(getWindow(), "Create a new user", "Login name: ",
+        InputDialog inputDialog = new InputDialog("Create a new user", "Login name: ",
                 new InputDialog.Recipient() {
                     public void gotInput(String loginName) {
                         createUser(loginName);
                     }
                 });
+        getWindow().addWindow(inputDialog);
     }
 
     private void createUser(String loginName) {
