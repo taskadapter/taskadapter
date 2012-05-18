@@ -45,9 +45,9 @@ public class UserManager {
         return users;
     }
 
-    public void deleteUser(String loginName) {
+    public void deleteUser(String loginName) throws IOException {
         File userFolder = FileManager.getUserFolder(loginName);
-        userFolder.delete();
+        FileManager.deleteRecursively(userFolder);
     }
 
     public void saveUser(String loginName, String newPassword) {

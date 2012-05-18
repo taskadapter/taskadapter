@@ -3,6 +3,7 @@ package com.taskadapter;
 import com.google.common.io.Files;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,5 +53,16 @@ public class FileManager {
             throw new RuntimeException("File does not exist: " + fileName + " in " + userFilesFolder + "folder");
         }
         return file;
+    }
+
+    public static void deleteRecursively(File file) throws IOException {
+        if (file.isDirectory()) {
+            for (File c : file.listFiles()) {
+                deleteRecursively(c);
+            }
+        }
+        if (!file.delete()) {
+            throw new FileNotFoundException("Failed to delete file: " + file);
+        }
     }
 }
