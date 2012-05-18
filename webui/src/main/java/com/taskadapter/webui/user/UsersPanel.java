@@ -1,6 +1,8 @@
 package com.taskadapter.webui.user;
 
 import com.taskadapter.config.User;
+import com.taskadapter.license.License;
+import com.taskadapter.license.LicenseChangeListener;
 import com.taskadapter.web.InputDialog;
 import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.service.Services;
@@ -10,26 +12,36 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 
+import java.io.IOException;
 import java.util.*;
 
-public class UsersPanel extends Panel {
+public class UsersPanel extends Panel implements LicenseChangeListener {
     private static final int COLUMNS_NUMBER = 3;
 
     private Services services;
     private GridLayout usersLayout;
     private static final String DELETE_BUTTON = "Delete";
+    private Label errorLabel;
 
     public UsersPanel(Services services) {
         super("Users");
         this.services = services;
-        buildUI();
+        addStyleName("panelexample");
+        services.getLicenseManager().addLicenseChangeListener(this);
+        refreshPage();
     }
 
-    private void buildUI() {
-        addStyleName("panelexample");
-        addCreateUserSection();
+    private void refreshPage() {
+        removeAllComponents();
+        addErrorLabel();
+        addCreateUserSectionIfAllowedByLicense();
         addUsersListPanel();
         refreshUsers();
+    }
+
+    private void addErrorLabel() {
+        errorLabel = new Label();
+        errorLabel.addStyleName("errorMessage");
     }
 
     private void addUsersListPanel() {
@@ -104,8 +116,12 @@ public class UsersPanel extends Panel {
     }
 
     private void deleteUser(User user) {
-        services.getUserManager().deleteUser(user.getLoginName());
-        refreshUsers();
+        try {
+            services.getUserManager().deleteUser(user.getLoginName());
+        } catch (IOException e) {
+            errorLabel.setValue("Can't delete user. " + e.getMessage());
+        }
+        refreshPage();
     }
 
     private void startSetPasswordProcess(final User user) {
@@ -121,6 +137,21 @@ public class UsersPanel extends Panel {
 
     private void setPassword(String loginName, String newPassword) {
         services.getUserManager().saveUser(loginName, newPassword);
+    }
+
+    private void addCreateUserSectionIfAllowedByLicense() {
+        License currentlyInstalledLicense = services.getLicenseManager().getLicense();
+        if (currentlyInstalledLicense != null) {
+            int maxUsersNumber = currentlyInstalledLicense.getUsersNumber();
+            int currentUsersNumber = services.getUserManager().getUsers().size();
+            if (currentUsersNumber < maxUsersNumber) {
+                addCreateUserSection();
+            } else {
+                addComponent(new Label("Maximum users number allowed by your license is reached."));
+            }
+        } else {
+            addComponent(new Label("Can't add users until a license is installed."));
+        }
     }
 
     private void addCreateUserSection() {
@@ -146,6 +177,11 @@ public class UsersPanel extends Panel {
 
     private void createUser(String loginName) {
         services.getUserManager().saveUser(loginName, "");
-        refreshUsers();
+        refreshPage();
+    }
+
+    @Override
+    public void licenseInfoUpdated() {
+        refreshPage();
     }
 }
