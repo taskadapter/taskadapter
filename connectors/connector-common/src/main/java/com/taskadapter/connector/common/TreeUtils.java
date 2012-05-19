@@ -12,8 +12,7 @@ public class TreeUtils {
     static public List<GTask> cloneTree(List<GTask> tree) {
         List<GTask> clonedTree = new ArrayList<GTask>();
 
-        for (Iterator<GTask> iterator = tree.iterator(); iterator.hasNext(); ) {
-            GTask task = iterator.next();
+        for (GTask task : tree) {
             GTask cloned = new GTask(task);
             cloned.getChildren().clear();
             clonedTree.add(cloned);
@@ -29,8 +28,7 @@ public class TreeUtils {
     public static List<GTask> cloneTreeSkipEmptyRemoteIds(List<GTask> tree) {
         List<GTask> clonedTree = new ArrayList<GTask>();
 
-        for (Iterator<GTask> iterator = tree.iterator(); iterator.hasNext(); ) {
-            GTask task = iterator.next();
+        for (GTask task : tree) {
             GTask cloned = new GTask(task);
             cloned.getChildren().clear();
             if (task.getRemoteId() != null) {

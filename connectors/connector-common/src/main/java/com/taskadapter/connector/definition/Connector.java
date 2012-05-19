@@ -1,13 +1,12 @@
 package com.taskadapter.connector.definition;
 
-import java.util.List;
-
 import com.taskadapter.model.GTask;
+
+import java.util.List;
 
 public interface Connector<T extends ConnectorConfig> {
 
     /**
-     * @throws ValidationException if the configuration object is invalid
      * @throws Exception           some other exceptions the connector might throw
      */
     public List<GTask> loadData(ProgressMonitor monitor);

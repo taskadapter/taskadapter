@@ -6,13 +6,12 @@ import com.taskadapter.connector.definition.Descriptor.Feature;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
-import com.vaadin.data.Container;
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
-import com.vaadin.data.validator.IntegerValidator;
-import com.vaadin.data.validator.StringLengthValidator;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Window;
 
 import java.util.*;
 
@@ -98,8 +97,8 @@ public class PriorityPanel extends Panel implements Validatable {
 
     public Priorities getPriorities() {
         Map<String, Integer> priorities = new HashMap<String, Integer>();
-        for (Iterator i = data.getItemIds().iterator(); i.hasNext(); ) {
-            String sid = (String) i.next();
+        for (Object o : data.getItemIds()) {
+            String sid = (String) o;
             Item item = data.getItem(sid);
 
             priorities.put((String) item.getItemProperty("text").getValue(), (Integer) item.getItemProperty("value").getValue());

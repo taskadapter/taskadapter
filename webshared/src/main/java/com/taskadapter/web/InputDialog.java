@@ -5,7 +5,6 @@ import com.vaadin.ui.*;
 
 public class InputDialog extends Window {
 
-    private HorizontalLayout layout = new HorizontalLayout();
     private HorizontalLayout textFieldLayout = new HorizontalLayout();
     private AbstractTextField textField;
 
@@ -14,6 +13,7 @@ public class InputDialog extends Window {
 
         setModal(true);
         setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
+        HorizontalLayout layout = new HorizontalLayout();
         layout.setSpacing(true);
 
         addComponent(new Label(question, Label.CONTENT_XHTML));

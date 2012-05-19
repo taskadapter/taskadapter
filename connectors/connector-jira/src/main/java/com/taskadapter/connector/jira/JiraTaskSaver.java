@@ -48,8 +48,8 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
         //check if default issue type exists in Jira
         boolean found = false;
         RemoteIssueType[] issueTypeList = connection.getIssueTypeList(config.getProjectKey());
-        for (int i = 0; i < issueTypeList.length; i++) {
-            if (issueTypeList[i].getName().equals(config.getDefaultTaskType())) {
+        for (RemoteIssueType anIssueTypeList : issueTypeList) {
+            if (anIssueTypeList.getName().equals(config.getDefaultTaskType())) {
                 found = true;
                 break;
             }

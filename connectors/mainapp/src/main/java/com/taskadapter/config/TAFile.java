@@ -62,10 +62,8 @@ public class TAFile {
         if (configLabel != null ? !configLabel.equals(taFile.configLabel) : taFile.configLabel != null) return false;
         if (connectorDataHolder1 != null ? !connectorDataHolder1.equals(taFile.connectorDataHolder1) : taFile.connectorDataHolder1 != null)
             return false;
-        if (connectorDataHolder2 != null ? !connectorDataHolder2.equals(taFile.connectorDataHolder2) : taFile.connectorDataHolder2 != null)
-            return false;
+        return !(connectorDataHolder2 != null ? !connectorDataHolder2.equals(taFile.connectorDataHolder2) : taFile.connectorDataHolder2 != null);
 
-        return true;
     }
 
     @Override

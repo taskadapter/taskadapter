@@ -14,7 +14,6 @@ import java.util.Map;
  */
 public class EditorManager {
 
-    private Map<String, Descriptor> editorDescriptors = new HashMap<String, Descriptor>();
     private Map<String, PluginEditorFactory> editorFactories = new HashMap<String, PluginEditorFactory>();
 
     public EditorManager() {
@@ -28,7 +27,6 @@ public class EditorManager {
                 Class<PluginEditorFactory> factoryClass = (Class<PluginEditorFactory>) Class.forName(factoryClassName);
                 PluginEditorFactory pluginFactory = factoryClass.newInstance();
                 Descriptor descriptor = pluginFactory.getDescriptor();
-                editorDescriptors.put(descriptor.getID(), descriptor);
                 editorFactories.put(descriptor.getID(), pluginFactory);
             }
         } catch (Exception e) {

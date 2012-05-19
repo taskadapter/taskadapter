@@ -72,7 +72,6 @@ public class ConfigStorage {
             File userFolder = getUserConfigsFolder(userLoginName);
             userFolder.mkdirs();
             String absoluteFilePathForNewConfig = findUnusedAbsoluteFilePath(userFolder, taFile);
-            // TODO do not set it, delete
             taFile.setAbsoluteFilePath(absoluteFilePathForNewConfig);
             MyIOUtils.writeToFile(absoluteFilePathForNewConfig, fileContents);
         } catch (IOException e) {

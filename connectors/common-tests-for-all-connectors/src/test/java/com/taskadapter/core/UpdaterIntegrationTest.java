@@ -102,10 +102,10 @@ public class UpdaterIntegrationTest extends AbstractSyncRunnerTest {
         List<Issue> issuesToCreate = generateRedmineIssues(issuesNumber);
 
         RedmineDataConverter converter = new RedmineDataConverter(redmineConfig);
-        for (int i = 0; i < issuesToCreate.size(); i++) {
+        for (Issue anIssuesToCreate : issuesToCreate) {
             Issue issue;
             try {
-                issue = mgr.createIssue(projectKey, issuesToCreate.get(i));
+                issue = mgr.createIssue(projectKey, anIssuesToCreate);
             } catch (Exception e) {
                 throw new RuntimeException(e.toString(), e);
             }

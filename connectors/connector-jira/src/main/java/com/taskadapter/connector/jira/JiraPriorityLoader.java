@@ -24,8 +24,8 @@ public class JiraPriorityLoader implements PriorityLoader {
             JiraConnection connection = JiraConnectionFactory.createConnection(serverInfo);
             RemotePriority[] priorities = connection.getPriorities();
 
-            for (int i = 0; i < priorities.length; i++) {
-                priorityList.add(new NamedKeyedObjectImpl(priorities[i].getName(), "0"));
+            for (RemotePriority priority : priorities) {
+                priorityList.add(new NamedKeyedObjectImpl(priority.getName(), "0"));
             }
         } catch (RemoteAuthenticationException e) {
             throw new RuntimeException(e.getFaultString());

@@ -85,8 +85,8 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
             RemoteIssueType[] issueTypeList = connection.getIssueTypeList(config.getProjectKey());
             List<NamedKeyedObject> list = new ArrayList<NamedKeyedObject>(issueTypeList.length);
 
-            for (int i = 0; i < issueTypeList.length; i++) {
-                list.add(new NamedKeyedObjectImpl(issueTypeList[i].getId(), issueTypeList[i].getName()));
+            for (RemoteIssueType issueType : issueTypeList) {
+                list.add(new NamedKeyedObjectImpl(issueType.getId(), issueType.getName()));
             }
 
             return list;

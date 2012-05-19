@@ -86,13 +86,11 @@ public class SyncRunner {
             treeToSave = this.tasks;
         }
 
-        SyncResult result = null;
+        SyncResult result;
         try {
             result = taskSaver.saveData(treeToSave, monitor);
         } catch (Exception e) {
-            if (result == null) {
-                result = new SyncResult();
-            }
+            result = new SyncResult();
             result.addGeneralError(e.getMessage());
         }
 

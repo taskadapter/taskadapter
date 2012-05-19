@@ -62,9 +62,6 @@ public class Mapping {
         } else if (!currentValue.equals(other.currentValue)) {
             return false;
         }
-        if (selected != other.selected) {
-            return false;
-        }
-        return true;
+        return selected == other.selected;
     }
 }

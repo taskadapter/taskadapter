@@ -9,7 +9,9 @@ import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
 import net.sf.mpxj.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 class MSTaskToGenericTaskConverter implements TaskConverter<Task> {
 
@@ -122,7 +124,6 @@ class MSTaskToGenericTaskConverter implements TaskConverter<Task> {
     }
 
     /**
-     * @param task
      * @return NULL if there's no assignee
      */
     private static Resource getAssignee(Task task) {

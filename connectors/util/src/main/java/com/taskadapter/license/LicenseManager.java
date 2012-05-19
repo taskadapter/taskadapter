@@ -79,7 +79,6 @@ public class LicenseManager {
 
     /**
      * @return NULL if the license is not found or is invalid
-     * @throws LicenseValidationException the license does not exist or is invalid
      */
     private static License getInstalledTaskAdapterLicense() {
         return loadLicense(Product.TASK_ADAPTER_WEB);

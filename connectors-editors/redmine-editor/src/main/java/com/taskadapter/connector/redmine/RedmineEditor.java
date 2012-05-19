@@ -216,7 +216,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
 
             password = new PasswordField();
             password.addStyleName("server-panel-textfield");
-            layout.addComponent(password, 1, currentRow++);
+            layout.addComponent(password, 1, currentRow);
             layout.setComponentAlignment(password, Alignment.MIDDLE_LEFT);
         }
 

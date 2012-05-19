@@ -1,7 +1,5 @@
 package com.taskadapter.core;
 
-import java.util.Iterator;
-
 import com.taskadapter.model.GTask;
 
 public class TaskUtil {
@@ -10,8 +8,7 @@ public class TaskUtil {
      * set remoteId = key.
      */
     public static void setRemoteIdField(java.util.List<GTask> tasks) {
-        for (Iterator<GTask> iterator = tasks.iterator(); iterator.hasNext(); ) {
-            GTask task = iterator.next();
+        for (GTask task : tasks) {
             task.setRemoteId(task.getKey());
 
             if (!task.getChildren().isEmpty()) {
