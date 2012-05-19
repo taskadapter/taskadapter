@@ -23,7 +23,6 @@ public class Navigator {
 
     private static final String EDIT_CONFIG_PAGE = "configure_task";
     private static final String LOGIN_PAGE = "login";
-    private static final String CONFIRMATION_PAGE = "confirm_delete_or_clone_config";
 
     private Map<String, Page> pages = new HashMap<String, Page>();
     private HorizontalLayout navigationPanel;
@@ -59,7 +58,6 @@ public class Navigator {
         registerPage(FEEDBACK_PAGE, new SupportPage());
         registerPage(NEW_CONFIG_PAGE, new NewConfigPage());
         registerPage(EDIT_CONFIG_PAGE, new EditConfigPage());
-        registerPage(CONFIRMATION_PAGE, new ConfirmationPage());
     }
 
     private void buildUI() {

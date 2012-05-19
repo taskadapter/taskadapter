@@ -17,8 +17,6 @@ public class ConfigsPage extends Page {
     private static final int COLUMNS_NUMBER = 1;
     private VerticalLayout layout = new VerticalLayout();
     private GridLayout configsLayout = new GridLayout();
-    public static final String SYSTEM_1_TITLE = "System 1";
-    public static final String SYSTEM_2_TITLE = "System 2";
 
     public ConfigsPage() {
         buildUI();
@@ -62,7 +60,7 @@ public class ConfigsPage extends Page {
 
     @Override
     public String getPageGoogleAnalyticsID() {
-        return "configs";
+        return "home";
     }
 
     @Override

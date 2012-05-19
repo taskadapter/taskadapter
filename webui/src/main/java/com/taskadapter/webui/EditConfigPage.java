@@ -10,9 +10,6 @@ import com.taskadapter.web.configeditor.ConfigEditor;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class EditConfigPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
     private TAFile file;
@@ -22,9 +19,6 @@ public class EditConfigPage extends Page {
     private TabSheet tabSheet;
     private Label errorMessageLabel = new Label("Test");
     private String activeTabLabel;
-
-    public EditConfigPage() {
-    }
 
     private void buildUI() {
         layout.removeAllComponents();
