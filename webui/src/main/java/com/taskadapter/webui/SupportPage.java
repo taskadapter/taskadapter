@@ -21,6 +21,7 @@ public class SupportPage extends Page {
         layout.setSpacing(true);
         addCurrentVersion();
         addCheckForUpdateLink();
+        addBuyLicenseLink();
         addEmailLink();
 
 /*        Form feedbackForm = new Form();
@@ -60,6 +61,13 @@ public class SupportPage extends Page {
         buttonsBar.addComponent(new Button("Cancel"));
 
         layout.addComponent(feedbackForm);*/
+    }
+
+    private void addBuyLicenseLink() {
+        Link buyLink = new Link("Buy license", new ExternalResource("http://www.taskadapter.com/buy"));
+        buyLink.addStyleName("trialMode");
+        buyLink.setTargetName("_blank");
+        layout.addComponent(buyLink);
     }
 
     private void addCurrentVersion() {

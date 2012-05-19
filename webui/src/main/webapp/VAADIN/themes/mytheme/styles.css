@@ -26,19 +26,22 @@
     color: #4181c1;
 }
 
-.trial-mode-area {
-    background-color: #f6ff90;
-    border-radius: 5px;
+.trial-mode-label {
+    font-size: 18px;
+    font-weight: bold;
+    color: red;
 }
 
-.trial-mode-label {
+/*.trialMode a span {
+    font-size: 18px;
     font-weight: bold;
+    color: red;
     text-decoration: none;
 }
 
-.trial-mode-link a:hover {
+.trialMode a:hover {
     color: #4181c1;
-}
+}*/
 
 .navigation-panel {
     font-size: 16px;

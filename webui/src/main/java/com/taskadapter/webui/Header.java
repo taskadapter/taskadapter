@@ -4,15 +4,12 @@ import com.taskadapter.license.LicenseChangeListener;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.service.LoginEventListener;
 import com.taskadapter.web.service.Services;
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.BaseTheme;
 
 /**
  * Top-level header shown in the web UI.
  * Includes logo, "configure", "logout" and other buttons.
- *
- * @author Alexey Skorokhodov
  */
 public class Header extends HorizontalLayout implements LicenseChangeListener, LoginEventListener {
     private HorizontalLayout internalLayout = new HorizontalLayout();
@@ -33,6 +30,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
 
     private void buildMainLayout() {
         internalLayout.setWidth(Navigator.MAIN_WIDTH);
+        internalLayout.setSpacing(true);
         addComponent(internalLayout);
         setComponentAlignment(internalLayout, Alignment.MIDDLE_CENTER);
 
@@ -49,6 +47,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
         panelForLoggedInUsers = new HorizontalLayout();
         panelForLoggedInUsers.setSpacing(true);
         internalLayout.addComponent(panelForLoggedInUsers);
+        internalLayout.setComponentAlignment(panelForLoggedInUsers, Alignment.MIDDLE_RIGHT);
         addLogoutButton();
         addSetPasswordButton();
     }
@@ -80,20 +79,11 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
 
     private void addTrialSection() {
         trialLayout.setSizeFull();
-        trialLayout.addStyleName("trial-mode-area");
-        Label trialLabel = new Label("TRIAL MODE");
+        Label trialLabel = new Label("Trial mode");
         trialLabel.setSizeUndefined();
         trialLabel.addStyleName("trial-mode-label");
         trialLayout.addComponent(trialLabel);
         trialLayout.setComponentAlignment(trialLabel, Alignment.MIDDLE_CENTER);
-
-        Link buyLink = new Link("Buy now", new ExternalResource("http://www.taskadapter.com/buy"));
-        buyLink.addStyleName("trial-mode-link");
-        buyLink.setTargetName("_blank");
-
-        trialLayout.addComponent(buyLink);
-        trialLayout.setComponentAlignment(buyLink, Alignment.MIDDLE_CENTER);
-
         internalLayout.addComponent(trialLayout);
         internalLayout.setExpandRatio(trialLayout, 1f);
         trialLayout.setVisible(false);
