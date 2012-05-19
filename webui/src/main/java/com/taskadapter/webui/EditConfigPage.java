@@ -94,6 +94,7 @@ public class EditConfigPage extends Page {
     private void save() {
         boolean valid = true;
 
+        // TODO refactor these if (valid), if (valid) checks
         try {
             panel1.validateAll();
         } catch (ValidationException e) {

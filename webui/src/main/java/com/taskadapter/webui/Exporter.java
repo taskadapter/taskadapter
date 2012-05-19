@@ -43,6 +43,7 @@ public class Exporter {
             valid = false;
         }
 
+        // TODO refactor these if (valid), if (valid) checks
         if (valid) {
             try {
                 destinationDataHolder.getData().validateForSave();
