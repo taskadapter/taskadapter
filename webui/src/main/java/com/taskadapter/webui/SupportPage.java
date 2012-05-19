@@ -63,13 +63,6 @@ public class SupportPage extends Page {
         layout.addComponent(feedbackForm);*/
     }
 
-    private void addBuyLicenseLink() {
-        Link buyLink = new Link("Buy license", new ExternalResource("http://www.taskadapter.com/buy"));
-        buyLink.addStyleName("trialMode");
-        buyLink.setTargetName("_blank");
-        layout.addComponent(buyLink);
-    }
-
     private void addCurrentVersion() {
         Label currentVersionLabel = new Label("Task Adapter version " + updateManager.getCurrentVersion());
         currentVersionLabel.setWidth(400, Sizeable.UNITS_PIXELS);
@@ -82,6 +75,12 @@ public class SupportPage extends Page {
         link.setCaption("Check for update (sorry, manually for now)");
         link.setTargetName("_new");
         layout.addComponent(link);
+    }
+
+    private void addBuyLicenseLink() {
+        Link buyLink = new Link("Buy license", new ExternalResource("http://www.taskadapter.com/buy"));
+        buyLink.setTargetName("_blank");
+        layout.addComponent(buyLink);
     }
 
     private void addEmailLink() {

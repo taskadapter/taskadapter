@@ -22,6 +22,7 @@
 }
 
 .menu .v-button-caption:hover,
+.personalMenuItem .v-button-caption:hover,
 .logo .v-button-caption:hover {
     color: #4181c1;
 }
@@ -31,17 +32,6 @@
     font-weight: bold;
     color: red;
 }
-
-/*.trialMode a span {
-    font-size: 18px;
-    font-weight: bold;
-    color: red;
-    text-decoration: none;
-}
-
-.trialMode a:hover {
-    color: #4181c1;
-}*/
 
 .navigation-panel {
     font-size: 16px;
@@ -214,11 +204,11 @@
 }
 
 .configs-single-panel {
-		border-bottom: 3px solid #AAAAAA;
+    border-bottom: 3px solid #AAAAAA;
 }
 
 .configs-single-panel-inner {
-		margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 .userLoginLabelInUsersPanel {
@@ -227,5 +217,5 @@
 }
 
 .export-result {
-		margin-left: 15px;
+    margin-left: 15px;
 }

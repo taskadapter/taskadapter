@@ -55,6 +55,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
     private void addLogoutButton() {
         Button logoutButton = new Button("Logout");
         logoutButton.setStyleName(BaseTheme.BUTTON_LINK);
+        logoutButton.addStyleName("personalMenuItem");
         logoutButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -68,6 +69,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
     private void addSetPasswordButton() {
         Button setPasswordButton = new Button("Change password");
         setPasswordButton.setStyleName(BaseTheme.BUTTON_LINK);
+        setPasswordButton.addStyleName("personalMenuItem");
         setPasswordButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
