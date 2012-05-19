@@ -1,9 +1,12 @@
 package com.taskadapter.web.configeditor.file;
 
 import com.taskadapter.FileManager;
+import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPFileReader;
 import com.taskadapter.connector.msp.MSPUtils;
+import com.taskadapter.connector.msp.MSXMLFileWriter;
+import com.taskadapter.model.GTask;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Upload;
@@ -11,6 +14,7 @@ import com.vaadin.ui.Upload;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -225,9 +229,9 @@ public class ServerModelFilePanelPresenter {
             File file = new File(userFilesFolder, String.format(baseNameFormat, number++));
             if (!file.exists()) {
                 try {
-                    if (!file.createNewFile()) {
-                        continue;// file luckily created by somebody
-                    }
+                    MSPConfig config = new MSPConfig(file.getAbsolutePath());
+                    List<GTask> rows = new ArrayList<GTask>();
+                    new MSXMLFileWriter(config).write(new SyncResult(), rows, false);
                 } catch (IOException e) {
                     e.printStackTrace();
                     return null;// it will show error in UI
