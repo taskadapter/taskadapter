@@ -163,14 +163,6 @@ public class MSPConfig extends ConnectorConfig {
     }
 
     @Override
-    public void validateForSave() throws ValidationException {
-        if (outputAbsoluteFilePath.isEmpty()) {
-
-            //throw new ValidationException("Please provide the output file name in MSP config");
-        }
-    }
-
-    @Override
     protected Priorities generateDefaultPriorities() {
         return new Priorities(new HashMap<String, Integer>() {
             private static final long serialVersionUID = 516389048716909610L;

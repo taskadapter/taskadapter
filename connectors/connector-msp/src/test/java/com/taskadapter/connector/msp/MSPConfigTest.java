@@ -14,12 +14,6 @@ import static org.junit.Assert.*;
 public class MSPConfigTest {
 
     @Test(expected = ValidationException.class)
-    public void noOutputFileNameFailsSaveValidation() throws ValidationException {
-        MSPConfig config = new MSPConfig();
-        config.validateForSave();
-    }
-
-    @Test(expected = ValidationException.class)
     public void noInputFileNameFailsValidation() throws ValidationException {
         MSPConfig config = new MSPConfig();
         config.validateForLoad();
