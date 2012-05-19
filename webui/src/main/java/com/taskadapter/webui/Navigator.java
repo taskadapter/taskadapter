@@ -17,7 +17,7 @@ public class Navigator {
     public static final String MAIN_WIDTH = "920px";// like GitHub
 
     public static final String HOME = "home";
-    public static final String SETTINGS_PAGE = "settings";
+    public static final String CONFIGURE_SYSTEM_PAGE = "configure_system";
     public static final String FEEDBACK_PAGE = "feedback";
     public static final String NEW_CONFIG_PAGE = "new_config";
 
@@ -54,7 +54,7 @@ public class Navigator {
         ConfigsPage configsPage = new ConfigsPage();
         registerPage(LOGIN_PAGE, new LoginPage());
         registerPage(HOME, configsPage);
-        registerPage(SETTINGS_PAGE, new SettingsPage());
+        registerPage(CONFIGURE_SYSTEM_PAGE, new ConfigureSystemPage());
         registerPage(FEEDBACK_PAGE, new SupportPage());
         registerPage(NEW_CONFIG_PAGE, new NewConfigPage());
         registerPage(EDIT_CONFIG_PAGE, new EditConfigPage());

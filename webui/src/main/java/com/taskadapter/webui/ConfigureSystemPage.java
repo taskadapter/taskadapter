@@ -11,7 +11,7 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * @author Alexey Skorokhodov
  */
-public class SettingsPage extends Page {
+public class ConfigureSystemPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
 
     private void createLocalRemoteSection() {
