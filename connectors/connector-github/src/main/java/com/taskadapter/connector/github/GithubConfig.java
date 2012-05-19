@@ -17,6 +17,7 @@ public class GithubConfig extends WebConfig {
 
     public GithubConfig() {
         super(DEFAULT_LABEL);
+        getServerInfo().setHost("http://github.com");
     }
 
     @Override

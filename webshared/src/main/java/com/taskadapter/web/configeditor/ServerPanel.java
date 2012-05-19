@@ -106,4 +106,8 @@ public class ServerPanel extends Panel implements Validatable {
         EditorUtil.setNullSafe(login, info.getUserName());
         EditorUtil.setNullSafe(password, info.getPassword());
     }
+
+    public void disableServerURLField() {
+        hostURLText.setEnabled(false);
+    }
 }

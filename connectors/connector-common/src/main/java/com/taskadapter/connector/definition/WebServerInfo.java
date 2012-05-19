@@ -31,6 +31,10 @@ public class WebServerInfo {
         this.apiKey = apiKey;
     }
 
+    public void setHost(String host) {
+        this.host = host;
+    }
+
     public String getHost() {
         return host;
     }

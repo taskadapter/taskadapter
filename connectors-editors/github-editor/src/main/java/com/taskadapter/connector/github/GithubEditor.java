@@ -1,19 +1,10 @@
 package com.taskadapter.connector.github;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.TextField;
 
 public class GithubEditor extends ConfigEditor {
-
-    private TextField userNameText;
-
-    private PasswordField passwordText;
-
-    private TextField projectKey;
 
     public GithubEditor(ConnectorConfig config) {
         super(config);
@@ -23,7 +14,10 @@ public class GithubEditor extends ConfigEditor {
 
     private void buildUI() {
         addServerPanel();
+        serverPanel.disableServerURLField();
         addProjectPanel(this, new GithubProjectProcessor(this));
+        projectPanel.setProjectKeyLabel("Repository ID");
+        projectPanel.hideQueryId();
         addSaveRelationSection();
         addFieldsMappingPanel(GithubDescriptor.instance.getAvailableFieldsProvider());
     }

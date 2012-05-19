@@ -13,7 +13,7 @@ import java.util.Collection;
  * @author Alexey Skorokhodov
  */
 public class ProjectPanel extends Panel implements Validatable {
-    private static final String PANEL_CAPTION = "Project Info";
+    private static final String DEFAULT_PANEL_CAPTION = "Project Info";
     private static final int COLUMNS_NUMBER = 4;
 
     private final ConfigEditor editor;
@@ -21,6 +21,9 @@ public class ProjectPanel extends Panel implements Validatable {
     private TextField queryId;
 
     private final ProjectProcessor projectProcessor;
+    private Label projectKeyLabel;
+    private Label queryIdLabel;
+    private Button showQueriesButton;
 
     /**
      * Config Editors should NOT create this object directly, use ConfigEditor.addProjectPanel() method instead.
@@ -28,7 +31,7 @@ public class ProjectPanel extends Panel implements Validatable {
      * @see ConfigEditor#addProjectPanel(ConfigEditor, ProjectProcessor)
      */
     public ProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor) {
-        super(PANEL_CAPTION);
+        super(DEFAULT_PANEL_CAPTION);
         this.editor = editor;
         this.projectProcessor = projectProcessor;
         init();
@@ -43,7 +46,7 @@ public class ProjectPanel extends Panel implements Validatable {
         layout.setMargin(true);
         layout.setSpacing(true);
 
-        Label projectKeyLabel = new Label("Project key:");
+        projectKeyLabel = new Label("Project key:");
         layout.addComponent(projectKeyLabel);
         layout.setComponentAlignment(projectKeyLabel, Alignment.MIDDLE_LEFT);
 
@@ -77,7 +80,7 @@ public class ProjectPanel extends Panel implements Validatable {
         projectKeyButton.setEnabled(features.contains(ProjectProcessor.EditorFeature.LOAD_PROJECTS));
         layout.addComponent(projectKeyButton);
 
-        Label queryIdLabel = new Label("Query ID:");
+        queryIdLabel = new Label("Query ID:");
         layout.addComponent(queryIdLabel);
         layout.setComponentAlignment(queryIdLabel, Alignment.MIDDLE_LEFT);
 
@@ -88,7 +91,7 @@ public class ProjectPanel extends Panel implements Validatable {
 
         LookupOperation loadSavedQueriesOperation = projectProcessor.getLoadSavedQueriesOperation(editor);
 
-        Button showQueriesButton = EditorUtil.createLookupButton(
+        showQueriesButton = EditorUtil.createLookupButton(
                 editor,
                 "...",
                 "Show available saved queries on the server.",
@@ -143,6 +146,16 @@ public class ProjectPanel extends Panel implements Validatable {
     public void setProjectInfo(ProjectInfo info) {
         EditorUtil.setNullSafe(projectKey, info.getProjectKey());
         EditorUtil.setNullSafe(queryId, info.getQueryId());
+    }
+
+    public void setProjectKeyLabel(String text) {
+        projectKeyLabel.setValue(text);
+    }
+
+    public void hideQueryId() {
+        queryId.setVisible(false);
+        queryIdLabel.setVisible(false);
+        showQueriesButton.setVisible(false);
     }
 
     @Override
