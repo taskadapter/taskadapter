@@ -1,6 +1,7 @@
 package com.taskadapter.webui;
 
 import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
@@ -15,10 +16,12 @@ public class SupportPage extends Page {
 
     private void buildUI() {
         layout.setSpacing(true);
-        layout.addComponent(new Label("We'll be happy to hear your comments, suggestions or bug reports!"));
+        Label textLabel = new Label("We will be happy to hear your comments or suggestions!");
+        textLabel.setWidth(400, Sizeable.UNITS_PIXELS);
+        layout.addComponent(textLabel);
         Link emailLink = new Link();
         emailLink.setResource(new ExternalResource("mailto:support@taskadapter.com"));
-        emailLink.setCaption("Click here to send us an email");
+        emailLink.setCaption("Send us an email");
         emailLink.setTargetName("_new");
         layout.addComponent(emailLink);
 

@@ -17,7 +17,7 @@ public class Navigator {
     public static final String MAIN_WIDTH = "920px";// like GitHub
 
     public static final String HOME = "home";
-    public static final String CONFIGURE_SYSTEM_PAGE = "configure_system";
+    public static final String SETTINGS_PAGE = "settings";
     public static final String FEEDBACK_PAGE = "feedback";
     public static final String NEW_CONFIG_PAGE = "new_config";
 
@@ -54,7 +54,7 @@ public class Navigator {
         ConfigsPage configsPage = new ConfigsPage();
         registerPage(LOGIN_PAGE, new LoginPage());
         registerPage(HOME, configsPage);
-        registerPage(CONFIGURE_SYSTEM_PAGE, new ConfigureSystemPage());
+        registerPage(SETTINGS_PAGE, new SettingsPage());
         registerPage(FEEDBACK_PAGE, new SupportPage());
         registerPage(NEW_CONFIG_PAGE, new NewConfigPage());
         registerPage(EDIT_CONFIG_PAGE, new EditConfigPage());
@@ -161,7 +161,7 @@ public class Navigator {
         UpdateManager updateManager = new UpdateManager();
 
         if (updateManager.isCurrentVersionOutdated()) {
-            updateMessage.setCaption("There's a newer version of Task Adapter available for download: " + updateManager.getLatestAvailableVersion()
+            updateMessage.setCaption("There's a newer Task Adapter version available: " + updateManager.getLatestAvailableVersion()
                     + ". Your version:" + updateManager.getCurrentVersion());
         }
     }

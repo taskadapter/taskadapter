@@ -108,7 +108,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
     private void addMenuItems() {
         HorizontalLayout menu = new HorizontalLayout();
         menu.setSpacing(true);
-        menu.addComponent(createButtonLink("Configure", Navigator.CONFIGURE_SYSTEM_PAGE, "menu"));
+        menu.addComponent(createButtonLink("Settings", Navigator.SETTINGS_PAGE, "menu"));
         menu.addComponent(createButtonLink("Support", Navigator.FEEDBACK_PAGE, "menu"));
         internalLayout.addComponent(menu);
         internalLayout.setExpandRatio(menu, 1f);

@@ -3,21 +3,31 @@ package com.taskadapter.webui;
 import com.taskadapter.web.LocalRemoteOptionsPanel;
 import com.taskadapter.webui.license.LicensePanel;
 import com.taskadapter.webui.user.UsersPanel;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 /**
  * @author Alexey Skorokhodov
  */
-public class ConfigureSystemPage extends Page {
+public class SettingsPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
 
     private void createLocalRemoteSection() {
-        layout.addComponent(new LocalRemoteOptionsPanel(services));
+        LocalRemoteOptionsPanel panel = new LocalRemoteOptionsPanel(services);
+        setPanelWidth(panel);
+        layout.addComponent(panel);
     }
 
     private void createLicenseSection() {
-        layout.addComponent(new LicensePanel(services));
+        LicensePanel panel = new LicensePanel(services);
+        setPanelWidth(panel);
+        layout.addComponent(panel);
+    }
+
+    private void setPanelWidth(Panel panel) {
+        panel.setWidth(500, Sizeable.UNITS_PIXELS);
     }
 
     @Override
