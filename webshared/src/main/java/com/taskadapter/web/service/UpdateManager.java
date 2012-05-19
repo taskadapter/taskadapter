@@ -7,16 +7,16 @@ public class UpdateManager {
 
     public UpdateManager() {
         // TODO hardcoded current version
-        currentVersion = "1.0.0";
+        currentVersion = "2.0.0";
 
 // disabled for now to not generate a lot of useless "check version" requests to the server.
 // we'll enable before the release.
 //    loadLastVersion();
-        setHardcodedLastVersionForTesting();
+//        setHardcodedLastVersionForTesting();
     }
 
+    // TODO http://www.hostedredmine.com/issues/67021
     private void setHardcodedLastVersionForTesting() {
-        // TODO hardcoded "last available" version
         lastVersion = "2.0.0_dev";
     }
 

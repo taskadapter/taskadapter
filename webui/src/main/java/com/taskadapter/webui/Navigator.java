@@ -3,7 +3,6 @@ package com.taskadapter.webui;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.service.Services;
-import com.taskadapter.web.service.UpdateManager;
 import com.vaadin.Application;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
@@ -30,7 +29,6 @@ public class Navigator {
     private Layout mainArea = new CssLayout();
     private VerticalLayout layout;
     private Services services;
-    private Label updateMessage;
     private Page previousPage;
     private Page currentPage;
     private GoogleAnalyticsTracker tracker;
@@ -41,7 +39,6 @@ public class Navigator {
         registerPages();
         addGoogleAnalytics();
         buildUI();
-        checkLastAvailableVersion();
     }
 
     private void addGoogleAnalytics() {
@@ -55,7 +52,7 @@ public class Navigator {
         registerPage(LOGIN_PAGE, new LoginPage());
         registerPage(HOME, configsPage);
         registerPage(CONFIGURE_SYSTEM_PAGE, new ConfigureSystemPage());
-        registerPage(FEEDBACK_PAGE, new SupportPage());
+        registerPage(FEEDBACK_PAGE, new SupportPage(services.getUpdateManager()));
         registerPage(NEW_CONFIG_PAGE, new NewConfigPage());
         registerPage(EDIT_CONFIG_PAGE, new EditConfigPage());
     }
@@ -66,7 +63,6 @@ public class Navigator {
         header.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         layout.addComponent(header);
 
-        addUpdatePanel();
         addNavigationPanel();
 
         // the big shadowed page on middle
@@ -84,12 +80,6 @@ public class Navigator {
 
         layout.addComponent(mainArea);
         layout.setComponentAlignment(mainArea, Alignment.MIDDLE_CENTER);
-    }
-
-    private void addUpdatePanel() {
-        updateMessage = new Label();
-        layout.addComponent(updateMessage);
-        layout.setComponentAlignment(updateMessage, Alignment.MIDDLE_CENTER);
     }
 
     private void addNavigationPanel() {
@@ -155,15 +145,6 @@ public class Navigator {
         page.setErrorMessage(errorMessage);
 
         show(page);
-    }
-
-    private void checkLastAvailableVersion() {
-        UpdateManager updateManager = new UpdateManager();
-
-        if (updateManager.isCurrentVersionOutdated()) {
-            updateMessage.setCaption("There's a newer Task Adapter version available: " + updateManager.getLatestAvailableVersion()
-                    + ". Your version:" + updateManager.getCurrentVersion());
-        }
     }
 
     public void showError(String caption, String message) {

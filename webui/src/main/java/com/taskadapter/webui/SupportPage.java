@@ -1,5 +1,6 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.web.service.UpdateManager;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;
@@ -9,21 +10,18 @@ import com.vaadin.ui.VerticalLayout;
 
 public class SupportPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
+    private UpdateManager updateManager;
 
-    public SupportPage() {
+    public SupportPage(UpdateManager updateManager) {
+        this.updateManager = updateManager;
         buildUI();
     }
 
     private void buildUI() {
         layout.setSpacing(true);
-        Label textLabel = new Label("We will be happy to hear your comments or suggestions!");
-        textLabel.setWidth(400, Sizeable.UNITS_PIXELS);
-        layout.addComponent(textLabel);
-        Link emailLink = new Link();
-        emailLink.setResource(new ExternalResource("mailto:support@taskadapter.com"));
-        emailLink.setCaption("Send us an email");
-        emailLink.setTargetName("_new");
-        layout.addComponent(emailLink);
+        addCurrentVersion();
+        addCheckForUpdateLink();
+        addEmailLink();
 
 /*        Form feedbackForm = new Form();
         feedbackForm.setDescription("You can send your comments to Task Adapter developers using this form");
@@ -62,6 +60,28 @@ public class SupportPage extends Page {
         buttonsBar.addComponent(new Button("Cancel"));
 
         layout.addComponent(feedbackForm);*/
+    }
+
+    private void addCurrentVersion() {
+        Label currentVersionLabel = new Label("Task Adapter version " + updateManager.getCurrentVersion());
+        currentVersionLabel.setWidth(400, Sizeable.UNITS_PIXELS);
+        layout.addComponent(currentVersionLabel);
+    }
+
+    private void addCheckForUpdateLink() {
+        Link link = new Link();
+        link.setResource(new ExternalResource("http://www.taskadapter.com/download"));
+        link.setCaption("Check for update (sorry, manually for now)");
+        link.setTargetName("_new");
+        layout.addComponent(link);
+    }
+
+    private void addEmailLink() {
+        Link emailLink = new Link();
+        emailLink.setResource(new ExternalResource("mailto:support@taskadapter.com"));
+        emailLink.setCaption("Send us an email");
+        emailLink.setTargetName("_new");
+        layout.addComponent(emailLink);
     }
 
     @Override
