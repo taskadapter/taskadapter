@@ -7,9 +7,11 @@ import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.definition.TaskError;
 import com.taskadapter.core.SyncRunner;
+import com.taskadapter.web.configeditor.EditorUtil;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -40,11 +42,20 @@ public class ExportPage extends ActionPage {
         try {
             this.loadedTasks = runner.load(null);
         } catch (TransportException e) {
-            showErrorMessageOnPage(TRANSPORT_ERROR);
+            String message = getErrorMessageForException(e);
+            showErrorMessageOnPage(message);
             e.printStackTrace();
         } catch (RuntimeException e) {
             showErrorMessageOnPage(e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    private String getErrorMessageForException(TransportException e) {
+        if (EditorUtil.getRoot(e) instanceof UnknownHostException) {
+            return "Unknown host";
+        } else {
+            return TRANSPORT_ERROR;
         }
     }
 

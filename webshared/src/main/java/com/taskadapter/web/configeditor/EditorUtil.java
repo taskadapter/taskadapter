@@ -122,7 +122,7 @@ public class EditorUtil {
         return field;
     }
 
-    private static Throwable getRoot(Throwable t) {
+    public static Throwable getRoot(Throwable t) {
         Throwable result = t;
         while (result.getCause() != null) {
             result = result.getCause();

@@ -26,7 +26,7 @@ public class RedmineTaskLoader extends AbstractTaskLoader<RedmineConfig> {
                     config.getQueryId(), INCLUDE.relations);
             rows = convertToGenericTasks(config, issues);
         } catch (RedmineTransportException e) {
-            throw new TransportException("There was a problem communicating with Redmine server: " + e.getMessage());
+            throw new TransportException("There was a problem communicating with Redmine server", e);
         }
         return rows;
     }
