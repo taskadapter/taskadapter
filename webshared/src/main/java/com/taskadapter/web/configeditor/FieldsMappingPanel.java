@@ -118,6 +118,7 @@ public class FieldsMappingPanel extends Panel implements Validatable {
     private int addRemoteIdHelpTip(int row, CheckBox checkbox) {
         Resource res = new ThemeResource("../runo/icons/16/help.png");
         Embedded helpIcon = new Embedded(null, res);
+        // TODO move to some resource file
         helpIcon.setDescription("<p>When you load an MSP file into Task Adapter and then export the "
                 + "tasks into Redmine / Atlassian Jira / Chiliproject/etc.. , Task Adapter can save "
                 + "the IDs of the tasks it creates in those task managment systems. These remote IDs "
