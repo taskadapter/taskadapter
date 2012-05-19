@@ -13,9 +13,6 @@ import org.vaadin.googleanalytics.tracking.GoogleAnalyticsTracker;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class Navigator {
     public static final String MAIN_WIDTH = "920px";// like GitHub
 
@@ -24,7 +21,6 @@ public class Navigator {
     public static final String FEEDBACK_PAGE = "feedback";
     public static final String NEW_CONFIG_PAGE = "new_config";
 
-    static final String CONFIGS = "configs_list";
     private static final String EDIT_CONFIG_PAGE = "configure_task";
     private static final String LOGIN_PAGE = "login";
     private static final String CONFIRMATION_PAGE = "confirm_delete_or_clone_config";
@@ -57,7 +53,6 @@ public class Navigator {
 
     private void registerPages() {
         ConfigsPage configsPage = new ConfigsPage();
-        registerPage(CONFIGS, configsPage);
         registerPage(LOGIN_PAGE, new LoginPage());
         registerPage(HOME, configsPage);
         registerPage(CONFIGURE_SYSTEM_PAGE, new ConfigureSystemPage());

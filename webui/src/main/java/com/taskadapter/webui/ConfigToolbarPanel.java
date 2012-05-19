@@ -53,7 +53,7 @@ public class ConfigToolbarPanel extends HorizontalLayout {
                     public void onDialogResult(String answer) {
                         if (YES.equals(answer)) {
                             navigator.getServices().getConfigStorage().delete(file);
-                            navigator.show(Navigator.CONFIGS);
+                            navigator.show(Navigator.HOME);
                         }
                     }
                 }
@@ -72,7 +72,7 @@ public class ConfigToolbarPanel extends HorizontalLayout {
                             Services services = navigator.getServices();
                             String userLoginName = services.getAuthenticator().getUserName();
                             services.getConfigStorage().cloneConfig(userLoginName, file);
-                            navigator.show(Navigator.CONFIGS);
+                            navigator.show(Navigator.HOME);
                         }
                     }
                 }
