@@ -2,6 +2,7 @@ package com.taskadapter.connector.github;
 
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.Mapping;
+import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.model.GTaskDescriptor;
 
@@ -54,4 +55,13 @@ public class GithubConfig extends WebConfig {
             }
         });
     }
+
+    @Override
+    public void validateForLoad() throws ValidationException {
+        super.validateForLoad();
+        if(getServerInfo().getUserName().isEmpty()) {
+            throw new ValidationException("User login name is required.");
+        }
+    }
+
 }
