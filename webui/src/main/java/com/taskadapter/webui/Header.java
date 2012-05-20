@@ -17,6 +17,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
     private VerticalLayout trialLayout = new VerticalLayout();
     private Navigator navigator;
     private Services services;
+    private Button configureButton;
 
     public Header(Navigator navigator, Services services) {
         this.navigator = navigator;
@@ -100,8 +101,10 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
     private void addMenuItems() {
         HorizontalLayout menu = new HorizontalLayout();
         menu.setSpacing(true);
-        menu.addComponent(createButtonLink("Configure", Navigator.CONFIGURE_SYSTEM_PAGE, "menu"));
-        menu.addComponent(createButtonLink("Support", Navigator.FEEDBACK_PAGE, "menu"));
+        configureButton = createButtonLink("Configure", Navigator.CONFIGURE_SYSTEM_PAGE, "menu");
+        menu.addComponent(configureButton);
+        Button supportButton = createButtonLink("Support", Navigator.FEEDBACK_PAGE, "menu");
+        menu.addComponent(supportButton);
         internalLayout.addComponent(menu);
         internalLayout.setExpandRatio(menu, 1f);
         internalLayout.setComponentAlignment(menu, Alignment.MIDDLE_CENTER);
@@ -136,5 +139,6 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
     @Override
     public void userLoginInfoChanged(boolean userLoggedIn) {
         panelForLoggedInUsers.setVisible(userLoggedIn);
+        configureButton.setVisible(userLoggedIn);
     }
 }

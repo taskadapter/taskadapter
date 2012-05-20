@@ -107,7 +107,7 @@ public class Navigator {
         previousPage = currentPage;
 
         currentPage = page;
-        if (!services.getAuthenticator().isLoggedIn()) {
+        if (!services.getAuthenticator().isLoggedIn() && requiresLogin(page)) {
             currentPage = pages.get(LOGIN_PAGE);
         }
 
@@ -122,6 +122,11 @@ public class Navigator {
         navigationPanel.removeAllComponents();
 
         tracker.trackPageview("/" + currentPage.getPageGoogleAnalyticsID());
+    }
+
+    private boolean requiresLogin(Page page) {
+        // TODO refactor!
+        return ! page.getPageGoogleAnalyticsID().equals("support");
     }
 
     private void setServicesToPage(Page page) {
