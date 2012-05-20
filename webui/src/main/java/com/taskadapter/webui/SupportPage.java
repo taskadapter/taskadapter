@@ -72,7 +72,7 @@ public class SupportPage extends Page {
     private void addCheckForUpdateLink() {
         Link link = new Link();
         link.setResource(new ExternalResource("http://www.taskadapter.com/download"));
-        link.setCaption("Check for update (sorry, manually for now)");
+        link.setCaption("Check for update");
         link.setTargetName("_new");
         layout.addComponent(link);
     }
