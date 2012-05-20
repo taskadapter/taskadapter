@@ -5,6 +5,7 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.GTaskDescriptor;
+import com.taskadapter.web.Messages;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.ThemeResource;
@@ -27,6 +28,8 @@ public class FieldsMappingPanel extends Panel implements Validatable {
     private ConnectorConfig config;
     private static final int COLUMNS_NUMBER = 2;
     private GridLayout gridLayout;
+    private Resource res = new ThemeResource("../runo/icons/16/help.png");
+    private Embedded helpIcon = new Embedded(null, res);
 
     /**
      * Config Editors should NOT create this object directly, use ConfigEditor.addFieldsMappingPanel() method instead.
@@ -114,18 +117,7 @@ public class FieldsMappingPanel extends Panel implements Validatable {
     }
 
     private int addRemoteIdHelpTip(int row, CheckBox checkbox) {
-        Resource res = new ThemeResource("../runo/icons/16/help.png");
-        Embedded helpIcon = new Embedded(null, res);
-        // TODO move to some resource file
-        helpIcon.setDescription("<p>When you load an MSP file into Task Adapter and then export the "
-                + "tasks into Redmine / Atlassian Jira / Chiliproject/etc.. , Task Adapter can save "
-                + "the IDs of the tasks it creates in those task managment systems. These remote IDs "
-                + "are stored in the MSP file itself (assuming that the option is <em>selected</em>). <br />"
-                + "This way you can later edit the MSP file (say, using MS Project), load it to Task Adapter "
-                + "again and re-export tasks to the same Redmine/Jira/..., so that the tasks without 'remote IDs'"
-                + "will be <strong>created</strong> and the old ones (which have been previously created in "
-                + "Redmine/jira/...) will be <strong>updated</strong>.</p>"
-                + "More information about <a target='_blank' href='http://taskadapter.com/microsoft_project#save_remote_ids'>Remote ID</a>");
+        helpIcon.setDescription(Messages.getMessageDefaultLocale("help.remoteId"));
 
         HorizontalLayout remoteLayout = new HorizontalLayout();
         remoteLayout.addComponent(checkbox);
