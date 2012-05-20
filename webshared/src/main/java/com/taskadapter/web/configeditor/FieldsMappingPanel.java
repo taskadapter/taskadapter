@@ -28,8 +28,7 @@ public class FieldsMappingPanel extends Panel implements Validatable {
     private ConnectorConfig config;
     private static final int COLUMNS_NUMBER = 2;
     private GridLayout gridLayout;
-    private Resource res = new ThemeResource("../runo/icons/16/help.png");
-    private Embedded helpIcon = new Embedded(null, res);
+    private Resource helpIconResource = new ThemeResource("../runo/icons/16/help.png");
 
     /**
      * Config Editors should NOT create this object directly, use ConfigEditor.addFieldsMappingPanel() method instead.
@@ -74,57 +73,72 @@ public class FieldsMappingPanel extends Panel implements Validatable {
 
     private void addSupportedFields() {
         Collection<GTaskDescriptor.FIELD> supportedFields = availableFieldsProvider.getSupportedFields();
-        int row = 1;
         for (GTaskDescriptor.FIELD field : supportedFields) {
-            CheckBox checkbox = new CheckBox(GTaskDescriptor.getDisplayValue(field));
-
-            if (field == GTaskDescriptor.FIELD.REMOTE_ID) {
-                row = addRemoteIdHelpTip(row, checkbox);
-            } else {
-                gridLayout.addComponent(checkbox, 0, ++row);
-                gridLayout.setComponentAlignment(checkbox, Alignment.MIDDLE_LEFT);
-            }
-
-            fieldToButtonMap.put(field, checkbox);
-            Mapping mapping = config.getFieldMapping(field);
-            if (mapping == null) {
-                // means this config does not have a mapping for this field, which
-                // availableFieldsProvider reported as "supported": probably OLD config
-                continue;
-            }
-
-            checkbox.setValue(mapping.isSelected());
-
-            String[] allowedValues = availableFieldsProvider.getAllowedValues(field);
-            BeanItemContainer<String> container = new BeanItemContainer<String>(String.class);
-
-            if (allowedValues.length > 1) {
-                container.addAll(Arrays.asList(allowedValues));
-                ComboBox combo = new ComboBox(null, container);
-                combo.setWidth("160px");
-                fieldToValueMap.put(field, combo);
-                gridLayout.addComponent(combo, 1, row);
-                gridLayout.setComponentAlignment(combo, Alignment.MIDDLE_LEFT);
-                combo.select(mapping.getCurrentValue());
-            } else if (allowedValues.length == 1) {
-                Label label = new Label(allowedValues[0]);
-                gridLayout.addComponent(label, 1, row);
-                gridLayout.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
-            } else {
-                markFieldNotSupportedByThisConnector(checkbox);
-            }
+            addField(field);
         }
     }
 
-    private int addRemoteIdHelpTip(int row, CheckBox checkbox) {
-        helpIcon.setDescription(Messages.getMessageDefaultLocale("help.remoteId"));
+    // TODO refactor this complex method
+    private void addField(GTaskDescriptor.FIELD field) {
+        CheckBox checkbox = addCheckbox(field);
 
-        HorizontalLayout remoteLayout = new HorizontalLayout();
-        remoteLayout.addComponent(checkbox);
-        remoteLayout.addComponent(helpIcon);
-        gridLayout.addComponent(remoteLayout, 0, ++row);
-        gridLayout.setComponentAlignment(remoteLayout, Alignment.MIDDLE_LEFT);
-        return row;
+        Mapping mapping = config.getFieldMapping(field);
+        if (mapping == null) {
+            // means this config does not have a mapping for this field, which
+            // availableFieldsProvider reported as "supported": probably OLD config
+            return;
+        }
+
+        checkbox.setValue(mapping.isSelected());
+
+        String[] allowedValues = availableFieldsProvider.getAllowedValues(field);
+        BeanItemContainer<String> container = new BeanItemContainer<String>(String.class);
+
+        if (allowedValues.length > 1) {
+            container.addAll(Arrays.asList(allowedValues));
+            ComboBox combo = new ComboBox(null, container);
+            combo.setWidth("160px");
+            fieldToValueMap.put(field, combo);
+            gridLayout.addComponent(combo);
+            gridLayout.setComponentAlignment(combo, Alignment.MIDDLE_LEFT);
+            combo.select(mapping.getCurrentValue());
+        } else if (allowedValues.length == 1) {
+            Label label = new Label(allowedValues[0]);
+            gridLayout.addComponent(label);
+            gridLayout.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
+        } else {
+            markFieldNotSupportedByThisConnector(checkbox);
+        }
+    }
+
+    private CheckBox addCheckbox(GTaskDescriptor.FIELD field) {
+        CheckBox checkbox = new CheckBox(GTaskDescriptor.getDisplayValue(field));
+
+        String helpForField = getHelpForField(field);
+        if (helpForField != null) {
+            HorizontalLayout layout = addHelpTipToCheckbox(checkbox, helpForField);
+            gridLayout.addComponent(layout);
+            gridLayout.setComponentAlignment(layout, Alignment.MIDDLE_LEFT);
+        } else {
+            gridLayout.addComponent(checkbox);
+            gridLayout.setComponentAlignment(checkbox, Alignment.MIDDLE_LEFT);
+        }
+        fieldToButtonMap.put(field, checkbox);
+
+        return checkbox;
+    }
+
+    private String getHelpForField(GTaskDescriptor.FIELD field) {
+        return Messages.getMessageDefaultLocale(field.toString());
+    }
+
+    private HorizontalLayout addHelpTipToCheckbox(CheckBox checkbox, String helpForField) {
+        Embedded helpIcon = new Embedded(null, helpIconResource);
+        helpIcon.setDescription(helpForField);
+        HorizontalLayout layout = new HorizontalLayout();
+        layout.addComponent(checkbox);
+        layout.addComponent(helpIcon);
+        return layout;
     }
 
     private void markFieldNotSupportedByThisConnector(CheckBox checkbox) {
