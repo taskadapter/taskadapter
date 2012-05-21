@@ -155,7 +155,7 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
 
             int currentRow = 0;
 
-            Label urlLabel = new Label("Redmine URL:");
+            Label urlLabel = new Label("Server URL:");
             layout.addComponent(urlLabel, 0, currentRow);
             layout.setComponentAlignment(urlLabel, Alignment.MIDDLE_LEFT);
             serverURL = new TextField();
