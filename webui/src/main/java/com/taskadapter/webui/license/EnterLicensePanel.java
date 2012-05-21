@@ -33,11 +33,10 @@ public class EnterLicensePanel extends VerticalLayout {
         });
         addComponent(saveButton);
 
-        addDebugButtons();
+//        addDebugButtons();
     }
 
-    // TODO delete before the release!
-    private void addDebugButtons() {
+/*    private void addDebugButtons() {
         Button forceInstallButton = new Button("DEBUG: force save license");
         forceInstallButton.addListener(new Button.ClickListener() {
             @Override
@@ -46,23 +45,6 @@ public class EnterLicensePanel extends VerticalLayout {
             }
         });
         addComponent(forceInstallButton);
-
-        Button saveSingleUserLicenseButton = new Button("DEBUG: 1-user license");
-        saveSingleUserLicenseButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                licenseArea.setValue("Product: TASK_ADAPTER_WEB\n" +
-                        "Users number: 1\n" +
-                        "Registered to: TA Testing\n" +
-                        "Email: mail@domain.net\n" +
-                        "Created on: 2012-05-16\n" +
-                        "Expires on: 2013-05-16\n" +
-                        "-------------- Key --------------\n" +
-                        "FS55EmcLJSsaFERVVU0WeFZcAzc2HVRNXUAWSgkAHl5jckJMEQgFF1cIBx5fYA==");
-                save();
-            }
-        });
-        addComponent(saveSingleUserLicenseButton);
 
         Button saveServerLicenseButton = new Button("DEBUG: 5-user license");
         saveServerLicenseButton.addListener(new Button.ClickListener() {
@@ -80,7 +62,7 @@ public class EnterLicensePanel extends VerticalLayout {
             }
         });
         addComponent(saveServerLicenseButton);
-    }
+    } */
 
     // TODO remove before the release
     private void forceSave() {
