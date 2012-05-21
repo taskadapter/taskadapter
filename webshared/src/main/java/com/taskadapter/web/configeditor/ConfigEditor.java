@@ -18,10 +18,13 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
 
     // TODO the parent editor class must save / load data itself instead of letting the children do this
     private HorizontalLayout projectAndServerLayout;
+
+    // Panels
     protected ServerPanel serverPanel;
     protected ProjectPanel projectPanel;
-    private PriorityPanel priorityPanel;
-    private FieldsMappingPanel fieldsMappingPanel;
+    protected PriorityPanel priorityPanel;
+    protected FieldsMappingPanel fieldsMappingPanel;
+
     protected ConnectorConfig config;
     protected Services services;
     private TextField labelText;

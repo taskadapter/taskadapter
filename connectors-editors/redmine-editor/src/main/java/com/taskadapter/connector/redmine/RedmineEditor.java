@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * @author Alexey Skorokhodov
  */
-public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultListener {
+public class RedmineEditor extends TwoColumnsConfigEditor implements LoadProjectJobResultListener {
 
     private RedmineServerPanel serverPanel;
     private OtherRedmineFieldsPanel otherPanel;
@@ -30,45 +30,20 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
 
     private void buildUI() {
 
-        HorizontalLayout root = new HorizontalLayout();
-        root.setSpacing(true);
-
-        VerticalLayout leftVerticalLayout = new VerticalLayout();
-        leftVerticalLayout.setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
-        leftVerticalLayout.setSpacing(true);
-
-        VerticalLayout rightVerticalLayout = new VerticalLayout();
-        rightVerticalLayout.setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
-        rightVerticalLayout.setSpacing(true);
-
-
         serverPanel = new RedmineServerPanel();
-        //addCustomPanelToProjectServerPanel(serverPanel);
-        addPanelToCustomComponent(leftVerticalLayout, serverPanel);
-        Label label = new Label("&nbsp;", Label.CONTENT_XHTML);
-        leftVerticalLayout.addComponent(label);
+        addToLeftColumn(serverPanel);
+
+        addToLeftColumn(createEmptyLabel("15px"));
 
         otherPanel = new OtherRedmineFieldsPanel(this);
-        addPanelToCustomComponent(leftVerticalLayout, otherPanel);
+        addToLeftColumn(otherPanel);
 
-        //addProjectPanel(this, new RedmineProjectProcessor(this));
-        //addFieldsMappingPanelToProjectPanel(RedmineDescriptor.instance.getAvailableFieldsProvider());
+        projectPanel = new ProjectPanel(this, new RedmineProjectProcessor(this));
+        addToRightColumn(projectPanel);
 
-        ProjectPanel projectPanel = createProjectPanel(this, new RedmineProjectProcessor(this));
-        //addCustomComponentToProjectServerPanel(rightVerticalLayout);
-        addPanelToCustomComponent(rightVerticalLayout, projectPanel);
-
-        FieldsMappingPanel fieldsMappingPanel = new FieldsMappingPanel(RedmineDescriptor.instance.getAvailableFieldsProvider(), config);
-        addPanelToCustomComponent(rightVerticalLayout, fieldsMappingPanel);
-        fieldsMappingPanel.setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
-
-        //addFieldsMappingPanel(RedmineDescriptor.instance.getAvailableFieldsProvider());
-        root.addComponent(leftVerticalLayout);
-        root.addComponent(rightVerticalLayout);
-        addComponent(root);
-
+        fieldsMappingPanel = new FieldsMappingPanel(RedmineDescriptor.instance.getAvailableFieldsProvider(), config);
+        addToRightColumn(fieldsMappingPanel);
     }
-
 
     @Override
     public ConnectorConfig getPartialConfig() {
