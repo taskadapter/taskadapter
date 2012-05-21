@@ -1,6 +1,10 @@
 package com.taskadapter;
 
 import com.google.common.io.Files;
+import com.taskadapter.connector.definition.SyncResult;
+import com.taskadapter.connector.msp.MSPConfig;
+import com.taskadapter.connector.msp.MSXMLFileWriter;
+import com.taskadapter.model.GTask;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -64,5 +68,33 @@ public class FileManager {
         if (!file.delete()) {
             throw new FileNotFoundException("Failed to delete file: " + file);
         }
+    }
+
+    /**
+     * Search for unused file name in user folder starting from postfix 1
+     * TODO think about performance and optimization
+     *
+     * @return the new File instance
+     */
+    public File createDefaultMSPFile(String userLoginName) {
+        String baseNameFormat = "MSP_export_%d.xml";
+        int number = 1;
+        while (number < 10000) {// give a chance to exit
+            File userFilesFolder = getUserFilesFolder(userLoginName);
+            userFilesFolder.mkdirs();
+            File file = new File(userFilesFolder, String.format(baseNameFormat, number++));
+            if (!file.exists()) {
+                try {
+                    MSPConfig config = new MSPConfig(file.getAbsolutePath());
+                    List<GTask> rows = new ArrayList<GTask>();
+                    new MSXMLFileWriter(config).write(new SyncResult(), rows, false);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;// it will show error in UI
+                }
+                return file;
+            }
+        }
+        return null;
     }
 }

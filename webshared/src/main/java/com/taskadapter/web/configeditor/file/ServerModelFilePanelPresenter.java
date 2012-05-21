@@ -1,20 +1,15 @@
 package com.taskadapter.web.configeditor.file;
 
 import com.taskadapter.FileManager;
-import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPFileReader;
 import com.taskadapter.connector.msp.MSPUtils;
-import com.taskadapter.connector.msp.MSXMLFileWriter;
-import com.taskadapter.model.GTask;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Upload;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -22,7 +17,7 @@ import java.util.Locale;
  * Author: Alexander Kulik
  */
 public class ServerModelFilePanelPresenter {
-    public static final int MAX_FILE_SIZE_BYTES = 1000000;
+    public static final int MAX_FILE_SIZE_BYTES = 5000000;
     private final String userName;
 
     private IndexedContainer fileList;
@@ -192,7 +187,7 @@ public class ServerModelFilePanelPresenter {
     }
 
     public String getSelectedFileNameOrEmpty() {
-        return selectedFile != null ? selectedFile.getAbsolutePath() : "";//String.format("%s/%s.xml", fileManager.getUserFolder(userName).getAbsolutePath(), config.toString()) ;
+        return selectedFile != null ? selectedFile.getAbsolutePath() : "";
     }
 
     public void setConfig(MSPConfig config) {
@@ -201,9 +196,7 @@ public class ServerModelFilePanelPresenter {
             File f = new File(absolutePath);
             view.selectFileInCombobox(f.getName());
         } else {
-            File userFilesFolder = fileManager.getUserFilesFolder(userName);
-            userFilesFolder.mkdirs();
-            File newFile = createDefaultFile(userFilesFolder);
+            File newFile = fileManager.createDefaultMSPFile(userName);
             if (newFile == null) {
                 view.showNotification(ServerModeFilePanel.CANNOT_GENERATE_A_FILE);
             } else {
@@ -213,32 +206,5 @@ public class ServerModelFilePanelPresenter {
             }
 
         }
-    }
-
-    /**
-     * Search for unused file name in user folder starting from postfix 1
-     * TODO think about performance and optimization
-     *
-     * @param userFilesFolder "files" folder inside the user's root folder
-     * @return File instance (not existent on disc)
-     */
-    private File createDefaultFile(File userFilesFolder) {
-        String baseNameFormat = "MSP_export_%d.xml";
-        int number = 1;
-        while (number < 10000) {// give a chance to exit
-            File file = new File(userFilesFolder, String.format(baseNameFormat, number++));
-            if (!file.exists()) {
-                try {
-                    MSPConfig config = new MSPConfig(file.getAbsolutePath());
-                    List<GTask> rows = new ArrayList<GTask>();
-                    new MSXMLFileWriter(config).write(new SyncResult(), rows, false);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;// it will show error in UI
-                }
-                return file;
-            }
-        }
-        return null;
     }
 }
