@@ -6,6 +6,9 @@ import com.taskadapter.web.service.Services;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 
+/**
+ * UI panel like:  [system1] <-> [system2]
+ */
 public class ConfigActionsPanel extends VerticalLayout {
     private Navigator navigator;
     private TAFile file;
@@ -13,7 +16,7 @@ public class ConfigActionsPanel extends VerticalLayout {
     private HorizontalLayout horizontalLayout;
 
     public ConfigActionsPanel(Navigator navigator, TAFile file, Services services) {
-        addStyleName("configs-single-panel");
+        //addStyleName("configs-single-panel");
         this.navigator = navigator;
         this.file = file;
         this.services = services;
@@ -21,7 +24,7 @@ public class ConfigActionsPanel extends VerticalLayout {
     }
 
     private void buildUI() {
-        setSpacing(true);
+        //setSpacing(true);
 
         addDescription();
 
@@ -36,7 +39,9 @@ public class ConfigActionsPanel extends VerticalLayout {
     }
 
     private void addDescription() {
-        Label description = new Label(file.getConfigLabel());
+        final String labelText = file.getConfigLabel();
+        Label description = new Label(labelText.isEmpty() ? "&nbsp;" : labelText, Label.CONTENT_XHTML);
+        description.setStyleName("configs-description-label");
         addComponent(description);
         setComponentAlignment(description, Alignment.MIDDLE_CENTER);
     }

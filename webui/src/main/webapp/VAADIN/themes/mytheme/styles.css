@@ -87,21 +87,6 @@
     font-size: 11px;
 }
 
-.boxButton .v-nativebutton-caption {
-    font-size: 18px;
-}
-
-.v-nativebutton-boxButton {
-    background-color: #DAF1FF;
-    color: #222219;
-    border: 1px gray solid;
-    width: 200px;
-    height: 85px;
-    vertical-align: middle;
-    text-align: center;
-    /*line-height: 100px;*/
-}
-
 .v-nativebutton-boxButton:hover {
     background-color: #d0e8f6;
 }
@@ -209,6 +194,33 @@
 
 .configs-single-panel-inner {
     margin-bottom: 10px;
+}
+.configs-description-label {
+    background-color: #e3e3e3;
+    color: #222219;
+    border: 1px #d3d3d3 solid;
+    border-radius: 4px;
+    vertical-align: middle;
+    text-align: center;
+    width: 471px; /*473*/
+    margin-bottom: 1px;
+    /*line-height: 100px;*/
+}
+
+.boxButton .v-nativebutton-caption {
+    font-size: 18px;
+}
+
+.v-nativebutton-boxButton {
+    background-color: #DAF1FF;
+    color: #222219;
+    border: 1px gray solid;
+    border-radius: 4px;
+    width: 200px;
+    height: 88px;
+    vertical-align: middle;
+    text-align: center;
+    /*line-height: 100px;*/
 }
 
 .userLoginLabelInUsersPanel {
