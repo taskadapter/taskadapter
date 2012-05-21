@@ -1,6 +1,7 @@
 package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
+import com.taskadapter.web.service.Services;
 import com.vaadin.ui.*;
 
 /**
@@ -13,6 +14,11 @@ public abstract class TwoColumnsConfigEditor extends ConfigEditor {
 
     protected TwoColumnsConfigEditor(ConnectorConfig config) {
         super(config);
+        buildUI();
+    }
+
+    public TwoColumnsConfigEditor(ConnectorConfig config, Services services) {
+        super(config, services);
         buildUI();
     }
 
