@@ -60,5 +60,19 @@ public abstract class TwoColumnsConfigEditor extends ConfigEditor {
         return label;
     }
 
+    /**
+     * Create [Server Panel] [Project Panel]
+     */
+    protected void createServerAndProjectPanelOnTopDefault(ProjectProcessor projectProcessor) {
+        // left column
+        serverPanel = new ServerPanel();
+        addToLeftColumn(serverPanel);
+
+        // right column
+        projectPanel = new ProjectPanel(this, projectProcessor);
+        addToRightColumn(projectPanel);
+        addToRightColumn(createEmptyLabel("10px"));
+    }
+
 
 }

@@ -23,22 +23,19 @@ public class JiraEditor extends TwoColumnsConfigEditor {
     }
 
     private void buildUI() {
-        serverPanel = new ServerPanel();
-        addToLeftColumn(serverPanel);
+        // top left and right columns
+        createServerAndProjectPanelOnTopDefault(new JiraProjectProcessor(this));
 
-        projectPanel = new ProjectPanel(this, new JiraProjectProcessor(this));
-        addToRightColumn(projectPanel);
-
-        addToRightColumn(createEmptyLabel("10px"));
-
-        addToRightColumn(createCustomOtherFieldsPanel());
-
+        // left column
         jiraFieldsPanel = new OtherJiraFieldsPanel(this);
         addToLeftColumn(jiraFieldsPanel);
 
         priorityPanel = new PriorityPanel(this, JiraDescriptor.instance);
         priorityPanel.setPriorities(config.getPriorities());
         addToLeftColumn(priorityPanel);
+
+        // right column
+        addToRightColumn(createCustomOtherFieldsPanel());
 
         fieldsMappingPanel = new FieldsMappingPanel(JiraDescriptor.instance.getAvailableFieldsProvider(),
                 config);

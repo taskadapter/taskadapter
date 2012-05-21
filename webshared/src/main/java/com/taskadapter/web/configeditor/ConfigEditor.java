@@ -13,7 +13,7 @@ import java.util.List;
  * @author Alexey Skorokhodov
  */
 public abstract class ConfigEditor extends VerticalLayout implements WindowProvider {
-    private CheckBox findUserByName;
+    protected CheckBox findUserByName;
     private List<Validatable> toValidate = new ArrayList<Validatable>();
 
     // TODO the parent editor class must save / load data itself instead of letting the children do this
@@ -62,23 +62,6 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         }
     }
 
-    protected CheckBox createFindUsersElementIfNeeded() {
-        if (findUserByName == null) {
-            findUserByName = new CheckBox("Find users based on assignee's name");
-            findUserByName.setDescription("This option can be useful when you need to export a new MSP project file to Redmine/Jira/Mantis/....\n" +
-                    "Task Adapter can load the system's users by resource names specified in the MSP file\n" +
-                    "and assign the new tasks to them.\n" +
-                    "Note: this operation usually requires 'Admin' permission in the system.");
-        }
-
-        return findUserByName;
-    }
-
-    protected void addFindUsersByNameElement() {
-        createFindUsersElementIfNeeded();
-        addComponent(findUserByName);
-    }
-
     protected void addServerPanel() {
         createProjectServerPanelIfNeeded();
         serverPanel = new ServerPanel();
@@ -113,6 +96,17 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
     }
 
 
+    public CheckBox createFindUsersElementIfNeeded() {
+        if (findUserByName == null) {
+            findUserByName = new CheckBox("Find users based on assignee's name");
+            findUserByName.setDescription("This option can be useful when you need to export a new MSP project file to Redmine/Jira/Mantis/....\n" +
+                    "Task Adapter can load the system's users by resource names specified in the MSP file\n" +
+                    "and assign the new tasks to them.\n" +
+                    "Note: this operation usually requires 'Admin' permission in the system.");
+        }
+
+        return findUserByName;
+    }
 
     private void createProjectServerPanelIfNeeded() {
         if (projectAndServerLayout == null) {
