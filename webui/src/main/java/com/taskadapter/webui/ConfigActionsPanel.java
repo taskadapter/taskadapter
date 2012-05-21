@@ -5,6 +5,7 @@ import com.taskadapter.config.TAFile;
 import com.taskadapter.web.service.Services;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
+import com.vaadin.ui.themes.Runo;
 
 /**
  * UI panel like:  [system1] <-> [system2]
@@ -14,9 +15,9 @@ public class ConfigActionsPanel extends VerticalLayout {
     private TAFile file;
     private Services services;
     private HorizontalLayout horizontalLayout;
+    private static final String NO_DESCRIPTION_TEXT = "<i>No description</i>"; //&nbsp;
 
     public ConfigActionsPanel(Navigator navigator, TAFile file, Services services) {
-        //addStyleName("configs-single-panel");
         this.navigator = navigator;
         this.file = file;
         this.services = services;
@@ -24,8 +25,6 @@ public class ConfigActionsPanel extends VerticalLayout {
     }
 
     private void buildUI() {
-        //setSpacing(true);
-
         addDescription();
 
         horizontalLayout = new HorizontalLayout();
@@ -40,7 +39,7 @@ public class ConfigActionsPanel extends VerticalLayout {
 
     private void addDescription() {
         final String labelText = file.getConfigLabel();
-        Label description = new Label(labelText.isEmpty() ? "&nbsp;" : labelText, Label.CONTENT_XHTML);
+        Label description = new Label(labelText.isEmpty() ? NO_DESCRIPTION_TEXT : labelText, Label.CONTENT_XHTML);
         description.setStyleName("configs-description-label");
         addComponent(description);
         setComponentAlignment(description, Alignment.MIDDLE_CENTER);
@@ -68,8 +67,9 @@ public class ConfigActionsPanel extends VerticalLayout {
     }
 
     private Button createButton(String label, final ConnectorDataHolder sourceDataHolder, final ConnectorDataHolder destinationDataHolder) {
-        Button button = new NativeButton();
+        Button button = new Button();
         button.setIcon(new ThemeResource(label));
+        button.setStyleName(Runo.BUTTON_SMALL);
 
         final Exporter exporter = new Exporter(navigator, services.getPluginManager(), sourceDataHolder, destinationDataHolder, file);
         button.addListener(new Button.ClickListener() {

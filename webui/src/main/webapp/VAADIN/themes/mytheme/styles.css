@@ -202,8 +202,9 @@
     border-radius: 4px;
     vertical-align: middle;
     text-align: center;
-    width: 471px; /*473*/
     margin-bottom: 1px;
+    width:  477px;
+
     /*line-height: 100px;*/
 }
 
@@ -217,7 +218,7 @@
     border: 1px gray solid;
     border-radius: 4px;
     width: 200px;
-    height: 88px;
+    height: 85px;
     vertical-align: middle;
     text-align: center;
     /*line-height: 100px;*/
