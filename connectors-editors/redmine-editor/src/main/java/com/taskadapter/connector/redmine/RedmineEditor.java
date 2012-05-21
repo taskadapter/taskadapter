@@ -125,7 +125,6 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
         private static final String USE_API = "Use API Access Key";
         private static final String USE_LOGIN = "Use Login and Password";
         private static final String DEFAULT_USE = USE_LOGIN;
-        private static final String DEFAULT_HOST_VALUE = "http://";
 
         private TextField serverURL;
         private PasswordField redmineAPIKey;
@@ -281,14 +280,15 @@ public class RedmineEditor extends ConfigEditor implements LoadProjectJobResultL
 
         @Override
         public void validate() throws ValidationException {
-            if (getServerURL().isEmpty()) {
+            String host = getServerURL();
+            if (host == null || host.isEmpty() || host.equalsIgnoreCase(WebServerInfo.DEFAULT_URL_PREFIX)) {
                 throw new ValidationException("Server URL is not set");
             }
         }
 
         private void checkProtocol() {
             if (!((String) serverURL.getValue()).startsWith("http")) {
-                serverURL.setValue(DEFAULT_HOST_VALUE + serverURL.getValue());
+                serverURL.setValue(WebServerInfo.DEFAULT_URL_PREFIX + serverURL.getValue());
             }
         }
     }

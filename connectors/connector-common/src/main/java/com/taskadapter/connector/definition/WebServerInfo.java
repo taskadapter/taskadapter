@@ -5,6 +5,8 @@ import com.taskadapter.connector.common.XorEncryptor;
 
 public class WebServerInfo {
 
+    public static final String DEFAULT_URL_PREFIX = "http://";
+
     private String host = "";
     private String userName = "";
     protected String password = "";
@@ -122,6 +124,6 @@ public class WebServerInfo {
     }
 
     public boolean isHostSet() {
-        return !(host == null || host.isEmpty());
+        return (host != null && (!host.isEmpty()) && !host.equalsIgnoreCase(DEFAULT_URL_PREFIX));
     }
 }
