@@ -72,7 +72,7 @@ public class ExportPage extends ActionPage {
 
     @Override
     protected String getNoDataLoadedText() {
-        return "No data was loaded using the given criteria";
+        return "No data was loaded using the given criteria.";
     }
 
     // TODO Alexey: maybe move this "done" thing into a separate "Page" class?
