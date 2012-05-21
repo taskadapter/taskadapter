@@ -84,17 +84,22 @@ public class FileManager {
             userFilesFolder.mkdirs();
             File file = new File(userFilesFolder, String.format(baseNameFormat, number++));
             if (!file.exists()) {
-                try {
-                    MSPConfig config = new MSPConfig(file.getAbsolutePath());
-                    List<GTask> rows = new ArrayList<GTask>();
-                    new MSXMLFileWriter(config).write(new SyncResult(), rows, false);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;// it will show error in UI
-                }
-                return file;
+                return createMSPXmlFile(file);
             }
         }
         return null;
+    }
+
+    private File createMSPXmlFile(File file) {
+        try {
+            MSPConfig config = new MSPConfig(file.getAbsolutePath());
+            List<GTask> rows = new ArrayList<GTask>();
+            new MSXMLFileWriter(config).write(new SyncResult(), rows, false);
+        } catch (IOException e) {
+            e.printStackTrace();
+            // TODO do not print stack trace. do not return null.
+            return null;
+        }
+        return file;
     }
 }
