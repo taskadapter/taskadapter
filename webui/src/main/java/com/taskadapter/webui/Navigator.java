@@ -126,7 +126,7 @@ public class Navigator {
 
     private boolean requiresLogin(Page page) {
         // TODO refactor!
-        return ! page.getPageGoogleAnalyticsID().equals("support");
+        return ! "support".equals(page.getPageGoogleAnalyticsID());
     }
 
     private void setServicesToPage(Page page) {
