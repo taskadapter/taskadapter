@@ -29,7 +29,14 @@ public class InputDialog extends Window {
         });
         okButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
         okButton.addStyleName("primary");
-        addComponent(okButton);
+        layout.addComponent(okButton);
+
+        Button cancelButton = new Button("Cancel", new Button.ClickListener() {
+            public void buttonClick(Button.ClickEvent event) {
+                getParent().removeWindow(dialog);
+            }
+        });
+        layout.addComponent(cancelButton);
         addComponent(layout);
         setPlainTextMode();
     }
