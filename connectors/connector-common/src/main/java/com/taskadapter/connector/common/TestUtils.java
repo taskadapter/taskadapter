@@ -63,8 +63,7 @@ public class TestUtils {
         return cal;
     }
 
-    public static GTask saveAndLoad(Connector connector, FIELD field, Mapping mapping, GTask task)
-            throws Exception {
+    public static GTask saveAndLoad(Connector connector, FIELD field, Mapping mapping, GTask task) {
         ConnectorConfig config = connector.getConfig();
         Mapping savedMapping = config.getFieldMapping(field);
         config.setFieldMapping(field, mapping); // ugly, but ...

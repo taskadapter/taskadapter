@@ -30,7 +30,7 @@ public class CommonTests {
         assertEquals(expectedSummaryTask1, foundTask.getSummary());
     }
 
-    public void testDefaultDescriptionMapping(Connector connector) throws Exception {
+    public void testDefaultDescriptionMapping(Connector connector) {
         GTask task = TestUtils.generateTask();
         GTask loadedTask = TestUtils.saveAndLoad(connector, task);
         assertEquals(task.getDescription(), loadedTask.getDescription());
