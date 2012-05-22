@@ -23,7 +23,6 @@ public class ConfigToolbarPanel extends HorizontalLayout {
     }
 
     private void buildUI() {
-        setSpacing(true);
         Button cloneButton = new Button("Clone");
         cloneButton.setDescription("Clone this config");
         cloneButton.addListener(new Button.ClickListener() {

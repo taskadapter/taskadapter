@@ -31,9 +31,10 @@ public class NewConfigPage extends Page {
 
     private void buildUI() {
         panel = new Panel("Create new config");
+        panel.setWidth("600px");
         Form form = new Form();
         panel.addComponent(form);
-        form.setSizeFull();
+        //form.setSizeFull();
 
         GridLayout grid = new GridLayout(2, 2);
         grid.setSpacing(true);
