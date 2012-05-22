@@ -38,7 +38,7 @@ public class InputDialog extends Window {
             }
         });
         okButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
-        okButton.addStyleName("primary");
+        okButton.addStyleName("v-button-default");
         layout.addComponent(okButton);
 
         Button cancelButton = new Button("Cancel", new Button.ClickListener() {
