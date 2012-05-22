@@ -74,7 +74,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
         setPasswordButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                EditorUtil.startSetPasswordProcess(getWindow(), services.getUserManager(), services.getAuthenticator().getUserName());
+                EditorUtil.startChangePasswordProcess(getWindow(), services.getUserManager(), services.getAuthenticator());
             }
         });
         panelForLoggedInUsers.addComponent(setPasswordButton);

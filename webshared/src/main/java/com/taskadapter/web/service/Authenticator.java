@@ -41,6 +41,13 @@ public class Authenticator {
         notifyListeners();
     }
 
+    public void checkUserPassword(String userName, String password) throws UserNotFoundException, WrongPasswordException {
+        User actualUser = userManager.getUser(userName);
+        if (!password.equals(actualUser.getPassword())) {
+            throw new WrongPasswordException();
+        }
+    }
+
     private void setLoggedInCookieFor1Month(String userName) {
         cookiesManager.setCookie(LOGGED_IN_COOKIE_NAME, "true");
         cookiesManager.setCookie(USER_NAME_COOKIE_NAME, userName);
