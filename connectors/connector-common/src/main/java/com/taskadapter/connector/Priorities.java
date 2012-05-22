@@ -1,11 +1,7 @@
 package com.taskadapter.connector;
 
-import com.taskadapter.model.NamedKeyedObject;
-import com.taskadapter.model.NamedKeyedObjectImpl;
-
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Priorities {
@@ -34,7 +30,6 @@ public class Priorities {
      *
      * @param toClone the object to clone
      */
-    // TODO Add unit test
     public Priorities(Priorities toClone) {
         prioritiesMapping = new HashMap<String, Integer>();
         Collection<String> allNames = toClone.getAllNames();
@@ -90,7 +85,7 @@ public class Priorities {
         return prioritiesMapping.keySet();
     }
 
-    public void addPriority(String priorityText, Integer priorityValue) {
+    public void setPriority(String priorityText, Integer priorityValue) {
         if (prioritiesMapping == null) {
             prioritiesMapping = new HashMap<String, Integer>();
         }

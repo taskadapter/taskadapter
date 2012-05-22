@@ -20,7 +20,7 @@ public class MSPConfigTest {
     }
 
     @Test
-    public void unselectedMappingCopiedPropertyByCopyConstructor() {
+    public void unselectedMappingCopiedProperlyByCopyConstructor() {
         MSPConfig config = new MSPConfig();
         config.setFieldMapping(FIELD.ESTIMATED_TIME, new Mapping(false, TaskField.DURATION.toString()));
         MSPConfig cloned = new MSPConfig(config);

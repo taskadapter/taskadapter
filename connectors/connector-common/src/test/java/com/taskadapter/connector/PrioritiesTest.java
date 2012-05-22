@@ -5,8 +5,6 @@ import org.junit.Test;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class PrioritiesTest {
     @Test
@@ -64,5 +62,16 @@ public class PrioritiesTest {
         Priorities cloned = new Priorities(samplePriorities);
         assertEquals(Integer.valueOf(700), cloned.getPriorityByText("High"));
         assertEquals(Integer.valueOf(Priorities.MAX_PRIORITY_VALUE), cloned.getPriorityByText("Immediate"));
+    }
+
+    @Test
+    public void copyConstructorIsDeepIndeed() {
+        Priorities samplePriorities = getSamplePriorities();
+        Priorities cloned = new Priorities(samplePriorities);
+        assertEquals(Integer.valueOf(700), cloned.getPriorityByText("High"));
+        samplePriorities.setPriority("High", 950);
+
+        assertEquals(Integer.valueOf(950), samplePriorities.getPriorityByText("High"));
+        assertEquals(Integer.valueOf(700), cloned.getPriorityByText("High"));
     }
 }

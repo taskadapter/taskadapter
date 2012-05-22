@@ -12,6 +12,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Runo;
 
 import java.util.*;
 
@@ -37,7 +38,7 @@ public class PriorityPanel extends Panel implements Validatable {
      * @param descriptor Descriptor
      * @see ConfigEditor#addPriorityPanel(ConfigEditor, com.taskadapter.connector.definition.Descriptor, Priorities priorities)
      */
-    PriorityPanel(ConfigEditor editor, Descriptor descriptor) {
+    public PriorityPanel(ConfigEditor editor, Descriptor descriptor) {
         super("Priorities");
         this.configEditor = editor;
         this.descriptor = descriptor;
@@ -45,7 +46,6 @@ public class PriorityPanel extends Panel implements Validatable {
     }
 
     private void buildUI() {
-        addStyleName("panelexample");
         setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
 
         Collection<Feature> features = descriptor.getSupportedFeatures();
@@ -54,6 +54,7 @@ public class PriorityPanel extends Panel implements Validatable {
 
         prioritiesTable = new Table("Priorities");
         prioritiesTable.setContainerDataSource(data);
+        prioritiesTable.setStyleName(Runo.TABLE_SMALL);
         prioritiesTable.addStyleName("priorities-table");
         prioritiesTable.setEditable(true);
 
@@ -61,8 +62,8 @@ public class PriorityPanel extends Panel implements Validatable {
         prioritiesTable.setColumnHeader(Priority.VALUE, VALUE_HEADER);
         prioritiesTable.setVisibleColumns(new Object[]{Priority.TEXT, Priority.VALUE});
 
-        prioritiesTable.setColumnWidth(Priority.TEXT, 80);
-        prioritiesTable.setWidth("300px");
+        //prioritiesTable.setColumnWidth(Priority.TEXT, );
+        prioritiesTable.setWidth("100%");
 
 /*        prioritiesTable.setTableFieldFactory(new DefaultFieldFactory() {
             @Override
@@ -116,7 +117,7 @@ public class PriorityPanel extends Panel implements Validatable {
 
         Priorities newPriorities = new Priorities();
         for (NamedKeyedObject priority : list) {
-            newPriorities.addPriority(priority.getKey(), defaultPriorities.getPriorityByText(priority.getKey()));
+            newPriorities.setPriority(priority.getKey(), defaultPriorities.getPriorityByText(priority.getKey()));
         }
 
         setPriorities(newPriorities);
