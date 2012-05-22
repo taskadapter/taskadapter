@@ -18,7 +18,7 @@ public class ChangePasswordDialog extends Window {
         super("Change password for " + authenticator.getUserName());
 
         VerticalLayout windowLayout = (VerticalLayout) this.getContent();
-        windowLayout.setSizeUndefined();
+        //windowLayout.setSizeUndefined();
 
         setModal(true);
         setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
