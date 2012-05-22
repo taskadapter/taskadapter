@@ -6,21 +6,31 @@ import com.vaadin.ui.*;
 public class InputDialog extends Window {
 
     private HorizontalLayout textFieldLayout = new HorizontalLayout();
+    private AbstractTextField textFieldOld;
     private AbstractTextField textField;
 
     public InputDialog(String caption, String question, final Recipient recipient) {
         super(caption);
 
+        VerticalLayout windowLayout = (VerticalLayout) this.getContent();
+        windowLayout.setSizeUndefined();
+
         setModal(true);
         setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
-        HorizontalLayout layout = new HorizontalLayout();
-        layout.setSpacing(true);
 
-        addComponent(new Label(question, Label.CONTENT_XHTML));
-        addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
-        addComponent(textFieldLayout);
+        HorizontalLayout textLayout = new HorizontalLayout();
+        textLayout.setSpacing(true);
+        textLayout.addComponent(new Label(question, Label.CONTENT_XHTML));
+        textLayout.addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
+        textLayout.addComponent(textFieldLayout);
+        windowLayout.addComponent(textLayout);
 
         final Window dialog = this;
+
+        HorizontalLayout layout = new HorizontalLayout();
+        layout.setSpacing(true);
+        layout.setMargin(true, false, false, false);
+
         Button okButton = new Button("Ok", new Button.ClickListener() {
             public void buttonClick(Button.ClickEvent event) {
                 recipient.gotInput(textField.toString());
@@ -37,7 +47,8 @@ public class InputDialog extends Window {
             }
         });
         layout.addComponent(cancelButton);
-        addComponent(layout);
+        windowLayout.addComponent(layout);
+        windowLayout.setComponentAlignment(layout, Alignment.BOTTOM_CENTER);
         setPlainTextMode();
     }
 
