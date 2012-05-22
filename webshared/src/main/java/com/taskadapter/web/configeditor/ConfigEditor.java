@@ -17,7 +17,6 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
     private List<Validatable> toValidate = new ArrayList<Validatable>();
 
     // TODO the parent editor class must save / load data itself instead of letting the children do this
-    private HorizontalLayout projectAndServerLayout;
 
     // Panels
     protected ServerPanel serverPanel;
@@ -62,39 +61,13 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         }
     }
 
-    protected void addServerPanel() {
-        createProjectServerPanelIfNeeded();
-        serverPanel = new ServerPanel();
-        toValidate.add(serverPanel);
-        projectAndServerLayout.addComponent(serverPanel);
-    }
-
-    public void addToValidate(Validatable component) {
-        toValidate.add(component);
-    }
-
-    protected void addPanelToCustomComponent(Layout component, Panel panel) {
+    protected void addPanelToLayout(Layout component, Panel panel) {
         //if layout supports Validatable interface add it to validation list
         if (panel instanceof Validatable) {
-            toValidate.add((Validatable) panel);
+            toValidate.add((Validatable)panel);
         }
         component.addComponent(panel);
     }
-
-    protected ProjectPanel createProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor) {
-        createProjectServerPanelIfNeeded();
-        projectPanel = new ProjectPanel(editor, projectProcessor);
-        toValidate.add(projectPanel);
-
-        return projectPanel;
-    }
-
-
-    protected void addProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor) {
-        createProjectPanel(editor, projectProcessor);
-        projectAndServerLayout.addComponent(projectPanel);
-    }
-
 
     public CheckBox createFindUsersElementIfNeeded() {
         if (findUserByName == null) {
@@ -106,15 +79,6 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         }
 
         return findUserByName;
-    }
-
-    private void createProjectServerPanelIfNeeded() {
-        if (projectAndServerLayout == null) {
-            projectAndServerLayout = new HorizontalLayout();
-            projectAndServerLayout.setSpacing(true);
-            projectAndServerLayout.setWidth("100%");
-            addComponent(projectAndServerLayout);
-        }
     }
 
     protected void addPriorityPanel(ConfigEditor editor, Descriptor descriptor, Priorities priorities) {
@@ -140,7 +104,7 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
     /**
      * the default implementation does nothing.
      *
-     * @throws ValidationException
+     * @throws ValidationException instance
      */
     public void validate() throws ValidationException {
     }

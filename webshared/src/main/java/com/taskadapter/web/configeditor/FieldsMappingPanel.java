@@ -42,8 +42,6 @@ public class FieldsMappingPanel extends Panel implements Validatable {
 
         setDescription("Select fields to export when SAVING data to this system");
         addFields();
-
-        addStyleName("panelexample");
         setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
     }
 

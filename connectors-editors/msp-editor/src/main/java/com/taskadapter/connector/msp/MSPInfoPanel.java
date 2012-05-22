@@ -14,7 +14,6 @@ public class MSPInfoPanel extends Panel {
     }
 
     private void buildUI() {
-        addStyleName("panelexample");
         GridLayout layout = new GridLayout();
         //layout.setColumnExpandRatio(0, 0.7f);
         layout.setWidth(100, UNITS_PERCENTAGE);

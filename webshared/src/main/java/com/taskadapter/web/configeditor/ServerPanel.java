@@ -17,20 +17,11 @@ public class ServerPanel extends Panel implements Validatable {
     private TextField login;
     private PasswordField password;
 
-    /**
-     * Config Editors should NOT create this object directly, use ConfigEditor.addServerPanel() method instead.
-     *
-     * ASK: Presently this panel is not used in all editors(eg Redmine, MSP),
-     *      so handling code should be removed from ServerPanel
-     *
-     * @see ConfigEditor#addServerPanel()
-     */
     public ServerPanel() {
         buildUI();
     }
 
     private void buildUI() {
-        addStyleName("panelexample");
         setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
         GridLayout layout = new GridLayout();
         addComponent(layout);

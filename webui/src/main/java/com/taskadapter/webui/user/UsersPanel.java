@@ -27,7 +27,6 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     public UsersPanel(Services services) {
         super("Users");
         this.services = services;
-        addStyleName("panelexample");
         services.getLicenseManager().addLicenseChangeListener(this);
         refreshPage();
     }

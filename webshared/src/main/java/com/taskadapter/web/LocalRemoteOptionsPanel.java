@@ -31,7 +31,6 @@ public class LocalRemoteOptionsPanel extends Panel {
     }
 
     private void buildUI() {
-        addStyleName("panelexample");
         group = new OptionGroup("", options);
         HorizontalLayout configGroupLayout = new HorizontalLayout();
         progressElement = new ProgressElement();

@@ -118,7 +118,6 @@ public class RedmineEditor extends TwoColumnsConfigEditor implements LoadProject
         }
 
         private void buildUI() {
-            addStyleName("panelexample");
             setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
 
             GridLayout layout = new GridLayout();
@@ -286,7 +285,6 @@ public class RedmineEditor extends TwoColumnsConfigEditor implements LoadProject
         }
 
         private void buildUI() {
-            addStyleName("panelexample");
             setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
             setHeight("157px");
 

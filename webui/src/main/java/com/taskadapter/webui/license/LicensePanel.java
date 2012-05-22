@@ -20,7 +20,6 @@ public class LicensePanel extends Panel implements LicenseChangeListener {
     }
 
     private void buildUI() {
-        addStyleName("panelexample");
         enterLicensePanel = new EnterLicensePanel(services);
         enterLicensePanel.setVisible(false);
         addComponent(enterLicensePanel);

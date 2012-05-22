@@ -31,7 +31,6 @@ public class NewConfigPage extends Page {
 
     private void buildUI() {
         panel = new Panel("Create new config");
-        panel.addStyleName("panelexample");
         Form form = new Form();
         panel.addComponent(form);
         form.setSizeFull();

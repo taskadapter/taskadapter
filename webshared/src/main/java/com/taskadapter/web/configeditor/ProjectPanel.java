@@ -26,11 +26,6 @@ public class ProjectPanel extends Panel implements Validatable {
     private Button showQueriesButton;
     private static final String TEXT_AREA_WIDTH = "120px";
 
-    /**
-     * Config Editors should NOT create this object directly, use ConfigEditor.addProjectPanel() method instead.
-     *
-     * @see ConfigEditor#addProjectPanel(ConfigEditor, ProjectProcessor)
-     */
     public ProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor) {
         super(DEFAULT_PANEL_CAPTION);
         this.editor = editor;
@@ -45,7 +40,6 @@ public class ProjectPanel extends Panel implements Validatable {
         gridLayout.setColumns(COLUMNS_NUMBER);
         gridLayout.setMargin(true);
         gridLayout.setSpacing(true);
-        //gridLayout.setWidth("100%");
 
         projectKeyLabel = new Label("Project key:");
         gridLayout.addComponent(projectKeyLabel);

@@ -40,7 +40,7 @@ public abstract class TwoColumnsConfigEditor extends ConfigEditor {
     }
 
     private void addToColumn(Layout column, Panel panel, String width) {
-        addPanelToCustomComponent(column, panel);
+        addPanelToLayout(column, panel);
         panel.setWidth(width);
     }
     
