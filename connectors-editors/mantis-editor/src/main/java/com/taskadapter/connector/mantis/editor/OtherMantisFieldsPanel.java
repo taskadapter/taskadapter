@@ -25,6 +25,7 @@ public class OtherMantisFieldsPanel extends Panel {
 
         verticalLayout.addComponent(editor.createFindUsersElementIfNeeded());
         final CheckBox checkBox = new CheckBox("Save issue relations (follows/precedes)"); //TODO check because unused
+        checkBox.setEnabled(false);
         verticalLayout.addComponent(checkBox);
     }
 }
