@@ -12,6 +12,7 @@ public class LoginPage extends Page {
     private Label errorLabel;
 
     private CheckBox staySignedIn;
+    private static final boolean DEFAULT_STAY_SIGNED_IN_CHECKBOX_STATE = true;
 
     public LoginPage() {
         buildUI();
@@ -20,7 +21,7 @@ public class LoginPage extends Page {
     private void clearLoginFields() {
         loginEdit.setValue("");
         passwordEdit.setValue("");
-        staySignedIn.setValue(false);
+        staySignedIn.setValue(DEFAULT_STAY_SIGNED_IN_CHECKBOX_STATE);
     }
 
     private void buildUI() {
