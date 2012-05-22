@@ -117,7 +117,7 @@ public class PriorityPanel extends Panel implements Validatable {
 
         Priorities newPriorities = new Priorities();
         for (NamedKeyedObject priority : list) {
-            newPriorities.addPriority(priority.getKey(), defaultPriorities.getPriorityByText(priority.getKey()));
+            newPriorities.setPriority(priority.getKey(), defaultPriorities.getPriorityByText(priority.getKey()));
         }
 
         setPriorities(newPriorities);
