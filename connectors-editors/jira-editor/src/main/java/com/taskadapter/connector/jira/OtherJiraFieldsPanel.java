@@ -36,7 +36,7 @@ class OtherJiraFieldsPanel extends Panel {
     }
 
     private void addLookupButtonsAndTextEdit(GridLayout lookupButtonsLayout) {
-        jiraComponent = EditorUtil.addLabeledText(lookupButtonsLayout, "Project Component", "Component inside the Jira project");
+        jiraComponent = EditorUtil.addLabeledText(lookupButtonsLayout, "Project Component:", "Component inside the Jira project");
         Button showComponentsButton = EditorUtil.createLookupButton(
                 jiraEditor,
                 "...",
