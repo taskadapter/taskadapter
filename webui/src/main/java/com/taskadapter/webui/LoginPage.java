@@ -2,6 +2,7 @@ package com.taskadapter.webui;
 
 import com.taskadapter.web.service.UserNotFoundException;
 import com.taskadapter.web.service.WrongPasswordException;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;
 
 public class LoginPage extends Page {
@@ -37,6 +38,9 @@ public class LoginPage extends Page {
         layout.addComponent(staySignedIn);
 
         Button loginButton = new Button("Login");
+        loginButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
+        loginButton.addStyleName("v-button-default");
+
         loginButton.addListener(new Button.ClickListener() {
             public void buttonClick(Button.ClickEvent event) {
                 String username = (String) loginEdit.getValue();
