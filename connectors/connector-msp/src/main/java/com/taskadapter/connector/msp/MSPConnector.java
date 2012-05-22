@@ -67,10 +67,7 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
             List<Task> allTasks = projectFile.getAllTasks();
             for (GTask gTask : tasksFromExternalSystem) {
                 Task mspTask = findTaskByRemoteId(allTasks, gTask.getKey());
-                System.out
-                        .println("external " + gTask + " for task " + mspTask);
                 writer.setTaskFields(projectFile, mspTask, gTask, true);
-
             }
             writer.writeProject(projectFile);
         } catch (Exception e) {
