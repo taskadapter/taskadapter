@@ -21,12 +21,15 @@ public class InputDialog extends Window {
         addComponent(textFieldLayout);
 
         final Window dialog = this;
-        addComponent(new Button("Ok", new Button.ClickListener() {
+        Button okButton = new Button("Ok", new Button.ClickListener() {
             public void buttonClick(Button.ClickEvent event) {
                 recipient.gotInput(textField.toString());
                 getParent().removeWindow(dialog);
             }
-        }));
+        });
+        okButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
+        okButton.addStyleName("primary");
+        addComponent(okButton);
         addComponent(layout);
         setPlainTextMode();
     }
