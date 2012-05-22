@@ -38,6 +38,10 @@
     font-weight: bold;
 }
 
+.fieldsTitle {
+    font-weight: bold;
+}
+
 .configsTableButton .v-button-caption {
     font-size: 14px;
     margin: 20px 10px;

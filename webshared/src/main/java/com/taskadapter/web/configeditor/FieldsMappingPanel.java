@@ -63,8 +63,11 @@ public class FieldsMappingPanel extends Panel implements Validatable {
 
     private void addTableHeaders() {
         Label label1 = new Label(COLUMN1_HEADER);
+        label1.addStyleName("fieldsTitle");
+        label1.setWidth("135px");
         gridLayout.addComponent(label1, 0, 0);
         Label label2 = new Label(COLUMN2_HEADER);
+        label2.addStyleName("fieldsTitle");
         gridLayout.addComponent(label2, 1, 0);
         gridLayout.addComponent(new Label("<hr>", Label.CONTENT_XHTML), 0, 1, 1, 1);
     }
