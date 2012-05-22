@@ -2,8 +2,10 @@ package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.NamedKeyedObject;
+import com.taskadapter.web.ChangePasswordDialog;
 import com.taskadapter.web.InputDialog;
 import com.taskadapter.web.WindowProvider;
+import com.taskadapter.web.service.Authenticator;
 import com.taskadapter.web.service.UserManager;
 import com.vaadin.ui.*;
 
@@ -139,6 +141,11 @@ public class EditorUtil {
                 });
         inputDialog.setPasswordMode();
         parentWindow.addWindow(inputDialog);
+    }
+
+    public static void startChangePasswordProcess(Window parentWindow, final UserManager userManager, final Authenticator authenticator) {
+        ChangePasswordDialog passwordDialog = new ChangePasswordDialog(userManager, authenticator);
+        parentWindow.addWindow(passwordDialog);
     }
 
 }

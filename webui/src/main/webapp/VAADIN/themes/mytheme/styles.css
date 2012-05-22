@@ -57,6 +57,11 @@
     text-align: center;
 }
 
+.configsTableArrowButton .v-button {
+    width: 60px;
+    height: 37px;
+}
+
 .configsTable .v-table-caption-container {
     text-shadow: none;
 }

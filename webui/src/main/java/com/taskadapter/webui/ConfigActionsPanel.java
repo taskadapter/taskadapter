@@ -70,6 +70,7 @@ public class ConfigActionsPanel extends VerticalLayout {
         Button button = new Button();
         button.setIcon(new ThemeResource(label));
         button.setStyleName(Runo.BUTTON_SMALL);
+        button.addStyleName("configsTableArrowButton");
 
         final Exporter exporter = new Exporter(navigator, services.getPluginManager(), sourceDataHolder, destinationDataHolder, file);
         button.addListener(new Button.ClickListener() {
