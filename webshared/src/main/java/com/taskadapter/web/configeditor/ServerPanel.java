@@ -20,9 +20,12 @@ public class ServerPanel extends Panel implements Validatable {
     /**
      * Config Editors should NOT create this object directly, use ConfigEditor.addServerPanel() method instead.
      *
+     * ASK: Presently this panel is not used in all editors(eg Redmine, MSP),
+     *      so handling code should be removed from ServerPanel
+     *
      * @see ConfigEditor#addServerPanel()
      */
-    ServerPanel() {
+    public ServerPanel() {
         buildUI();
     }
 

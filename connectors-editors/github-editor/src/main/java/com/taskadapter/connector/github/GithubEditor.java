@@ -1,10 +1,10 @@
 package com.taskadapter.connector.github;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.web.configeditor.ConfigEditor;
-import com.vaadin.ui.CheckBox;
+import com.taskadapter.web.configeditor.FieldsMappingPanel;
+import com.taskadapter.web.configeditor.TwoColumnsConfigEditor;
 
-public class GithubEditor extends ConfigEditor {
+public class GithubEditor extends TwoColumnsConfigEditor {
 
     public GithubEditor(ConnectorConfig config) {
         super(config);
@@ -13,22 +13,23 @@ public class GithubEditor extends ConfigEditor {
     }
 
     private void buildUI() {
-        addServerPanel();
+        // top left and right
+        createServerAndProjectPanelOnTopDefault(new GithubProjectProcessor(this));
         serverPanel.disableServerURLField();
-        addProjectPanel(this, new GithubProjectProcessor(this));
         projectPanel.setProjectKeyLabel("Repository ID");
         projectPanel.hideQueryId();
-        addSaveRelationSection();
-        addFieldsMappingPanel(GithubDescriptor.instance.getAvailableFieldsProvider());
+
+        // left
+        addToLeftColumn(new OtherGithubFieldsPanel(this));
+
+        //right
+        fieldsMappingPanel = new FieldsMappingPanel(GithubDescriptor.instance.getAvailableFieldsProvider(),
+                config);
+        addToRightColumn(fieldsMappingPanel);
     }
 
     @Override
     public ConnectorConfig getPartialConfig() {
         return config;
-    }
-
-    private void addSaveRelationSection() {
-        CheckBox saveRelations = new CheckBox("Save issue relations (follows/precedes)");
-        addComponent(saveRelations);
     }
 }

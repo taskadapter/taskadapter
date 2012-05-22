@@ -5,6 +5,7 @@ import com.vaadin.data.Item;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.*;
+import com.vaadin.ui.themes.Runo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,12 +13,13 @@ import java.util.List;
 
 /**
  * @author Igor Laishen
+ * @author Alexander Kulik
  */
-public class CustomFieldsTable extends CustomComponent {
+public class CustomFieldsTablePanel extends Panel {
     private static final String LABEL = "Custom fields:";
-    private static final String ADD_NEW_BUTTON = "+";
+    private static final String ADD_NEW_BUTTON = "Add";
     private static final String ADD_NEW_BUTTON_DESCRIPTION = "Add new custom field";
-    private static final String REMOVE_BUTTON = "-";
+    private static final String REMOVE_BUTTON = "Remove";
     private static final String REMOVE_BUTTON_DESCRIPTION = "Remove selected custom field";
 
     private static final String TABLE_HEADER_ID = "Field ID";
@@ -25,15 +27,14 @@ public class CustomFieldsTable extends CustomComponent {
 
     private static final String CELL_DEFAULT_VALUE = "...";
 
-    private Panel panel = new Panel();
-    private GridLayout mainLayout = new GridLayout(2, 1);
+    private VerticalLayout  mainLayout = new VerticalLayout();
     private final Table table = new Table();
+    private static final String TABLE_HEIGHT = "113px";
 
 
-    public CustomFieldsTable() {
+    public CustomFieldsTablePanel() {
         buildUI();
         setCustomFields(new ArrayList<CustomField>());
-        setCompositionRoot(panel);
     }
 
     public List<CustomField> getCustomFields() {
@@ -67,17 +68,16 @@ public class CustomFieldsTable extends CustomComponent {
     }
 
     private void buildUI() {
-        panel.setCaption(LABEL);
-
+        setCaption(LABEL);
+        table.setStyleName(Runo.TABLE_SMALL);
         table.setSelectable(true);
         table.setMultiSelect(false);
         table.setNullSelectionAllowed(false);
         table.setImmediate(true);
         table.setSortDisabled(true);
-
         table.setPageLength(5);
-        table.setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
-        table.setHeight("110px");
+        table.setWidth("100%");
+        table.setHeight(TABLE_HEIGHT);
 
         table.addContainerProperty(TABLE_HEADER_ID, String.class, CELL_DEFAULT_VALUE);
         table.setColumnWidth(TABLE_HEADER_ID, 90);
@@ -133,7 +133,6 @@ public class CustomFieldsTable extends CustomComponent {
 
         Button removeBtn = new Button(REMOVE_BUTTON);
         removeBtn.setDescription(REMOVE_BUTTON_DESCRIPTION);
-        removeBtn.setWidth("36px");
         removeBtn.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -144,19 +143,19 @@ public class CustomFieldsTable extends CustomComponent {
             }
         });
 
-        VerticalLayout buttonsVL = new VerticalLayout();
-        buttonsVL.addComponent(addNewBtn);
-        buttonsVL.addComponent(removeBtn);
+        HorizontalLayout buttonsLayout = new HorizontalLayout();
+        buttonsLayout.addComponent(addNewBtn);
+        buttonsLayout.addComponent(removeBtn);
 
         mainLayout.addComponent(table);
         mainLayout.setComponentAlignment(table, Alignment.TOP_CENTER);
 
-        mainLayout.addComponent(buttonsVL);
-        mainLayout.setComponentAlignment(buttonsVL, Alignment.TOP_LEFT);
+        mainLayout.addComponent(buttonsLayout);
+        mainLayout.setComponentAlignment(buttonsLayout, Alignment.TOP_LEFT);
 
         mainLayout.setMargin(true);
         mainLayout.setSpacing(true);
 
-        panel.setContent(mainLayout);
+        setContent(mainLayout);
     }
 }

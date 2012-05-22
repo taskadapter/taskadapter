@@ -1,16 +1,14 @@
 package com.taskadapter.connector.mantis.editor;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.mantis.MantisConfig;
 import com.taskadapter.connector.mantis.MantisDescriptor;
-import com.taskadapter.web.configeditor.ConfigEditor;
-import com.taskadapter.web.configeditor.EditorUtil;
-import com.vaadin.ui.CheckBox;
+import com.taskadapter.web.configeditor.FieldsMappingPanel;
+import com.taskadapter.web.configeditor.TwoColumnsConfigEditor;
 
 /**
  * @author Alexey Skorokhodov
  */
-public class MantisEditor extends ConfigEditor {
+public class MantisEditor extends TwoColumnsConfigEditor {
 
     public MantisEditor(ConnectorConfig config) {
         super(config);
@@ -19,21 +17,20 @@ public class MantisEditor extends ConfigEditor {
     }
 
     private void buildUI() {
-        addServerPanel();
-        addProjectPanel(this, new MantisProjectProcessor(this));
-        addFindUsersByNameElement();
-        addSaveRelationSection();
-        addFieldsMappingPanel(MantisDescriptor.instance.getAvailableFieldsProvider());
+        // top left and right
+        createServerAndProjectPanelOnTopDefault(new MantisProjectProcessor(this));
+
+        // left
+        addToLeftColumn(new OtherMantisFieldsPanel(this));
+
+        //right
+        fieldsMappingPanel = new FieldsMappingPanel(MantisDescriptor.instance.getAvailableFieldsProvider(),
+                config);
+        addToRightColumn(fieldsMappingPanel);
     }
 
     @Override
     public ConnectorConfig getPartialConfig() {
         return config;
     }
-
-    private void addSaveRelationSection() {
-        CheckBox saveRelations = new CheckBox("Save issue relations (follows/precedes)");
-        addComponent(saveRelations);
-    }
-
 }
