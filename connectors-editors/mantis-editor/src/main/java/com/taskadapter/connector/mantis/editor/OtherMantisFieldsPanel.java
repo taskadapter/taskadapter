@@ -21,7 +21,6 @@ public class OtherMantisFieldsPanel extends Panel {
     private void buildUI() {
         setCaption(DEFAULT_PANEL_CAPTION);
         addComponent(verticalLayout);
-        verticalLayout.setMargin(true);
         verticalLayout.setSpacing(true);
 
         verticalLayout.addComponent(editor.createFindUsersElementIfNeeded());

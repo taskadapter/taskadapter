@@ -19,7 +19,6 @@ public class OtherGithubFieldsPanel extends Panel {
     private void buildUI() {
         setCaption(DEFAULT_PANEL_CAPTION);
         addComponent(verticalLayout);
-        verticalLayout.setMargin(true);
         verticalLayout.setSpacing(true);
 
         final CheckBox checkBox = new CheckBox("Save issue relations (follows/precedes)"); //TODO check because unused
