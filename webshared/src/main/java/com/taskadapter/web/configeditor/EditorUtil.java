@@ -27,7 +27,6 @@ public class EditorUtil {
 
     private static void showList(WindowProvider windowProvider, String windowTitle, String listTitle, Collection<String> items, ValueListener valueListener) {
         ListSelectionDialog newWindow = new ListSelectionDialog(windowTitle, listTitle, items, valueListener);
-        newWindow.addStyleName("list-window");
         newWindow.center();
         newWindow.setModal(true);
 
