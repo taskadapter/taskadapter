@@ -22,6 +22,7 @@ public class OtherGithubFieldsPanel extends Panel {
         verticalLayout.setSpacing(true);
 
         final CheckBox checkBox = new CheckBox("Save issue relations (follows/precedes)"); //TODO check because unused
+        checkBox.setEnabled(false);
         verticalLayout.addComponent(checkBox);
     }
 }
