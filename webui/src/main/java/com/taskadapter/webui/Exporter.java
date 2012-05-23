@@ -111,7 +111,7 @@ public class Exporter {
     private void processFileAction(String action) {
         if (action.equals(UPDATE)) {
             startUpdateFile();
-        } else if (action.equals(OVERWRITE)) {
+        } else if (action.equals(OVERWRITE) || action.equals(CREATE)) {
             startRegularExport();
         } else {
             System.out.println("canceled");
