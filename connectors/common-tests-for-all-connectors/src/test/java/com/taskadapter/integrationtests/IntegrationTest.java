@@ -41,7 +41,6 @@ public class IntegrationTest extends AbstractSyncRunnerTest {
 //			assertNotNull(gTask.getRemoteId());
 //			assertFalse(gTask.getRemoteId().isEmpty());
 //		}
-//		System.out.println(load);
     }
 
     @Test

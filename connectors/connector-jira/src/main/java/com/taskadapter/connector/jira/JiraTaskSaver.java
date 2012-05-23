@@ -88,6 +88,7 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
 
     @Override
     protected void saveRelations(List<GRelation> relations) {
+        // TODO throw exception instead
         System.out.println("not implemented");
         /* SEE this text in AbstractTaskSaver:
 
