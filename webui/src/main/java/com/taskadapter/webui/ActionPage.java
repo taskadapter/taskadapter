@@ -1,8 +1,8 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.model.GTask;
 import com.taskadapter.web.configeditor.DefaultPanel;
 import com.taskadapter.webui.action.ConfirmExportPage;
@@ -130,11 +130,8 @@ public abstract class ActionPage extends Page {
 
     private void saveConfigIfChanged() {
         if (confirmExportPage.needToSaveConfig()) {
-            connectorTo.getConfig().setFieldsMapping(confirmExportPage.getConnectorToFieldMappings());
-
-            taFile.setConnectorDataHolder1(new ConnectorDataHolder(taFile.getConnectorDataHolder1().getType(), connectorFrom.getConfig()));
-            taFile.setConnectorDataHolder2(new ConnectorDataHolder(taFile.getConnectorDataHolder2().getType(), connectorTo.getConfig()));
-
+            ConnectorConfig toConfig = connectorTo.getConfig();
+            toConfig.setFieldsMapping(confirmExportPage.getConnectorToFieldMappings());
             String userLoginName = services.getAuthenticator().getUserName();
             services.getConfigStorage().saveConfig(userLoginName, taFile);
         }
