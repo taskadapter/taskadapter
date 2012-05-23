@@ -70,13 +70,17 @@ public class FileManager {
         }
     }
 
+    public File createDefaultMSPFile(String userLoginName) {
+        return createMSPXmlFile(new File(createDefaultMSPFileName(userLoginName)));
+    }
+
     /**
      * Search for unused file name in user folder starting from postfix 1
      * TODO think about performance and optimization
      *
-     * @return the new File instance
+     * @return the new file name
      */
-    public File createDefaultMSPFile(String userLoginName) {
+    public String createDefaultMSPFileName(String userLoginName) {
         String baseNameFormat = "MSP_export_%d.xml";
         int number = 1;
         while (number < 10000) {// give a chance to exit
@@ -84,7 +88,7 @@ public class FileManager {
             userFilesFolder.mkdirs();
             File file = new File(userFilesFolder, String.format(baseNameFormat, number++));
             if (!file.exists()) {
-                return createMSPXmlFile(file);
+                return file.getAbsolutePath();
             }
         }
         return null;

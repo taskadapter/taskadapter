@@ -12,9 +12,7 @@ import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.service.Services;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 
 public class Exporter {
 
@@ -54,17 +52,16 @@ public class Exporter {
         if (valid) {
             try {
                 destinationDataHolder.getData().validateForSave();
+
             } catch (MSPOutputFileNameNotSetException e) {
                 // auto generate output file name (for MSP local mode)
-                String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-                String relativeFilePath = MSPConfig.DEFAULT_OUTPUT_FILE_NAME + timestamp + MSPConfig.DEFAULT_OUTPUT_SUFFIX;
-                FileManager fileManager = new FileManager();
                 Services services = navigator.getServices();
-                String userLoginName = services.getAuthenticator().getUserName();
-                File userFilesFolder = fileManager.getUserFilesFolder(userLoginName);
-                File absoluteFile = new File(userFilesFolder, relativeFilePath);
-                ((MSPConfig) destinationDataHolder.getData()).setOutputAbsoluteFilePath(absoluteFile.getAbsolutePath());
-                services.getConfigStorage().saveConfig(userLoginName, taFile);
+                String userName = services.getAuthenticator().getUserName();
+                String absoluteFileName = new FileManager().createDefaultMSPFileName(userName);
+
+                ((MSPConfig) destinationDataHolder.getData()).setOutputAbsoluteFilePath(absoluteFileName);
+                services.getConfigStorage().saveConfig(userName, taFile);
+
             } catch (ValidationException e) {
                 dataHolderLabel = destinationDataHolder.getData().getLabel();
                 errorMessage = e.getMessage();
