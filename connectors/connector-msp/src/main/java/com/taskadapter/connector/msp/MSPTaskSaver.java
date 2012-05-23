@@ -22,7 +22,7 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
     @Override
     protected SyncResult save(String parentTaskKey, List<GTask> tasks) {
         SyncResult result = saveData(tasks, false);
-        List<GRelation> relations = buildNewRelations(tasks);
+        buildNewRelations(tasks);
         saveRelations(relations);
         return result;
     }
@@ -110,7 +110,6 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
         } catch (Exception e) {
             syncResult.addGeneralError("Can't create Tasks Relations");
         }
-
     }
 
 }
