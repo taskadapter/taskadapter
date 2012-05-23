@@ -47,14 +47,13 @@ public class LicenseManager {
         license.validate();
     }
 
-    public void applyLicense(License newLicense) throws LicenseException {
-        newLicense.validate();
-        this.license = newLicense;
-    }
-
     // TODO Add tests to fix what is returned when no license is installed
     public License getLicense() {
         return license;
+    }
+
+    public String getLicenseText() {
+        return licenseText;
     }
 
     public void installLicense() {

@@ -1,5 +1,6 @@
 package com.taskadapter.connector.msp;
 
+import com.taskadapter.connector.MSPOutputFileNameNotSetException;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Mapping;
@@ -7,8 +8,6 @@ import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -24,8 +23,8 @@ public class MSPConfig extends ConnectorConfig {
     private String inputAbsoluteFilePath = "";
     private String outputAbsoluteFilePath = "";
 
-    private static final String DEFAULT_OUTPUT_FILE_NAME = "MSP_export_(auto)_";
-    private static final String DEFAULT_OUTPUT_SUFFIX = ".xml";
+    public static final String DEFAULT_OUTPUT_FILE_NAME = "MSP_export_";
+    public static final String DEFAULT_OUTPUT_SUFFIX = ".xml";
 
 
     public MSPConfig() {
@@ -171,9 +170,7 @@ public class MSPConfig extends ConnectorConfig {
     @Override
     public void validateForSave() throws ValidationException {
         if (outputAbsoluteFilePath.isEmpty()) {
-            // auto generate output file name (for MSP local mode)
-            String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-            outputAbsoluteFilePath = DEFAULT_OUTPUT_FILE_NAME + timestamp + DEFAULT_OUTPUT_SUFFIX;
+            throw new MSPOutputFileNameNotSetException();
         }
     }
 

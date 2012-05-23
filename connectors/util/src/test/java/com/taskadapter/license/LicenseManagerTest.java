@@ -50,7 +50,7 @@ public class LicenseManagerTest {
     @Test
     public void licenseBecomesInvalidAfterRemoval() throws IOException {
         LicenseManager licenseManager = new LicenseManager();
-        License oldLicense = licenseManager.getLicense();
+        String oldLicenseText = licenseManager.getLicenseText();
         try {
             licenseManager.setNewLicense(getValidSingleUserLicense());
         } catch (LicenseException e) {
@@ -61,9 +61,9 @@ public class LicenseManagerTest {
             licenseManager.removeTaskAdapterLicenseFromThisComputer();
             assertFalse("License must be INVALID after removal", licenseManager.isSomeValidLicenseInstalled());
         } finally {
-            if (oldLicense != null) {
+            if (oldLicenseText != null) {
                 try {
-                    licenseManager.applyLicense(oldLicense);
+                    licenseManager.setNewLicense(oldLicenseText);
                 } catch (LicenseException e) {
                     fail("License must be valid at this point");
                 }
