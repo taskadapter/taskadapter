@@ -12,8 +12,8 @@ import java.util.Arrays;
 
 public class Exporter {
 
-    private static final String TEXT_UPDATE = "Only update tasks present in the file";
-    private static final String OVERWRITE = "Overwrite";
+    private static final String UPDATE = "Only update tasks present in the file";
+    private static final String CREATE = "Create";
     private static final String CANCEL = "Cancel";
 
     private Navigator navigator;
@@ -75,7 +75,7 @@ public class Exporter {
             String fileName = new File(connectorTo.getAbsoluteOutputFileName()).getName();
             MessageDialog messageDialog = new MessageDialog(
                     "Choose operation", "Destination file already exists:<br><b>" + fileName + "</b>",
-                    Arrays.asList(TEXT_UPDATE, OVERWRITE, CANCEL),
+                    Arrays.asList(UPDATE, CREATE, CANCEL),
                     new MessageDialog.Callback() {
                         public void onDialogResult(String answer) {
                             processFileAction(answer);
@@ -86,14 +86,14 @@ public class Exporter {
 
             navigator.addWindow(messageDialog);
         } else {
-            processFileAction(OVERWRITE);
+            processFileAction(CREATE);
         }
     }
 
     private void processFileAction(String action) {
-        if (action.equals(TEXT_UPDATE)) {
+        if (action.equals(UPDATE)) {
             startUpdateFile();
-        } else if (action.equals(OVERWRITE)) {
+        } else if (action.equals(CREATE)) {
             startRegularExport();
         } else {
             System.out.println("canceled");
