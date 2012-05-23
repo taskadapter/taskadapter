@@ -6,18 +6,18 @@ import java.text.SimpleDateFormat;
 
 import static com.taskadapter.license.LicenseFormatDescriptor.*;
 
-public class LicenseTextGenerator {
+class LicenseTextGenerator {
     private SimpleDateFormat licenseDateFormatter = new SimpleDateFormat(LICENSE_DATE_FORMAT);
 
     private static final String LINE_DELIMITER = "\n";
     private static final String KEY_STR = "-------------- Key --------------" + LINE_DELIMITER;
     private License license;
 
-    public LicenseTextGenerator(License license) {
+    LicenseTextGenerator(License license) {
         this.license = license;
     }
 
-    public String generateLicenseText() {
+    String generateLicenseText() {
         String expirationDateFormattedString = licenseDateFormatter.format(license.getExpiresOn());
         String text = license.getUsersNumber() + license.getCustomerName() + license.getEmail() + license.getCreatedOn() + expirationDateFormattedString;
         String key = new LicenseEncryptor(PASSWORD).chiper(text);

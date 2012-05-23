@@ -2,31 +2,23 @@ package com.taskadapter.license;
 
 import org.junit.Test;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+import static com.taskadapter.license.LicenseFormatDescriptor.LICENSE_DATE_FORMAT;
 import static org.junit.Assert.assertEquals;
 
 public class LicenseGeneratorTest {
-    @Test
-    public void defaultNumberOfUsersIsSetWhenNotProvidedInArgs() {
-        RequestedLicense requestedLicense = LicenseGenerator.parseArgs("De Smedt Johannes J.Desmedt@televic.com".split(" "));
-        assertEquals(LicenseGenerator.DEFAULT_USERS_NUMBER, requestedLicense.getUsersNumber());
-    }
+    private SimpleDateFormat licenseDateFormatter = new SimpleDateFormat(LICENSE_DATE_FORMAT);
 
     @Test
-    public void fullNameIsParsedWithoutQuotes() {
-        RequestedLicense requestedLicense = LicenseGenerator.parseArgs("De Smedt Johannes J.Desmedt@televic.com".split(" "));
-        assertEquals("De Smedt Johannes", requestedLicense.getCustomerName());
-    }
-
-    @Test
-    public void emailIsParsed() {
-        RequestedLicense requestedLicense = LicenseGenerator.parseArgs("De Smedt Johannes J.Desmedt@televic.com".split(" "));
-        assertEquals("J.Desmedt@televic.com", requestedLicense.getEmail());
-    }
-
-    @Test
-    public void numberOfUsersParsed() {
-        RequestedLicense requestedLicense = LicenseGenerator.parseArgs("De Smedt Johannes J.Desmedt@televic.com 4".split(" "));
-        assertEquals(4, requestedLicense.getUsersNumber());
+    public void monthsValidParameterIsAppliedOK() {
+        RequestedLicense requestedLicense = new RequestedLicense("my name", "my.mail@domain-something.com");
+        requestedLicense.setMonthsValid(3);
+        License license = LicenseGenerator.createLicenseObject(requestedLicense);
+        Calendar shouldBeTime = Calendar.getInstance();
+        shouldBeTime.add(Calendar.MONTH, 3);
+        assertEquals(licenseDateFormatter.format(shouldBeTime.getTime()), licenseDateFormatter.format(license.getExpiresOn()));
     }
 
 

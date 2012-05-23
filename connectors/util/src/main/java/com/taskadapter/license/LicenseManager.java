@@ -12,6 +12,8 @@ import java.util.prefs.Preferences;
  */
 public class LicenseManager {
 
+    private String licenseText;
+
     public static enum Product {
         TASK_ADAPTER_WEB
     }
@@ -39,8 +41,8 @@ public class LicenseManager {
         license = getInstalledTaskAdapterLicense();
     }
 
-    // TODO this all needs to be refactored!!
     public void setNewLicense(String licenseText) throws LicenseException {
+        this.licenseText = licenseText;
         license = new LicenseParser().parseLicense(licenseText);
         license.validate();
     }
@@ -57,17 +59,7 @@ public class LicenseManager {
 
     public void installLicense() {
         Preferences preferences = Preferences.userNodeForPackage(LicenseManager.class);
-        String licenseText = new LicenseTextGenerator(license).generateLicenseText();
         preferences.put(license.getProduct().toString(), licenseText);
-        notifyListeners();
-    }
-
-    // TODO this is for debug only
-    public void forceInstallLicense(License anyInvalidLicense) {
-        Preferences preferences = Preferences.userNodeForPackage(LicenseManager.class);
-        String licenseText = new LicenseTextGenerator(anyInvalidLicense).generateLicenseText();
-        preferences.put(anyInvalidLicense.getProduct().toString(), licenseText);
-        this.license = anyInvalidLicense;
         notifyListeners();
     }
 

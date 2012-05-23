@@ -9,17 +9,18 @@ import static com.taskadapter.license.LicenseFormatDescriptor.LICENSE_DATE_FORMA
 
 public class LicenseGenerator {
     private static final String FILE_NAME_TA_WEB = "taskadapterweb.license";
-    static final int DEFAULT_USERS_NUMBER = 1;
 
     public static void main(String[] args) {
         if (args.length < 2) {
             System.err.println("LicenseGenerator:" +
-                    "\nExpected args: customer_name email [users_number]" +
-                    "\n[users_number] can be omitted, 1 will be used by default");
+                    "\nExpected args: customer_name email [users_number number_of_months_valid]" +
+                    "\nIf users_number and months are not provided, " + RequestedLicense.DEFAULT_USERS_NUMBER +
+                    " and " + RequestedLicense.DEFAULT_NUMBER_OF_MONTHS_VALID +
+                    " will be used.");
             return;
         }
 
-        RequestedLicense requestedLicense = parseArgs(args);
+        RequestedLicense requestedLicense = new ArgumentsParser().parseArgs(args);
 
         printInfoToConsole(requestedLicense);
 
@@ -36,15 +37,16 @@ public class LicenseGenerator {
 
     private static void printInfoToConsole(RequestedLicense requestedLicense) {
         System.out.println("Generating license for:");
-        System.out.println("Customer: " + requestedLicense.getCustomerName());
-        System.out.println("Email:    " + requestedLicense.getEmail());
-        System.out.println("Users:    " + requestedLicense.getUsersNumber());
+        System.out.println("Customer:      " + requestedLicense.getCustomerName());
+        System.out.println("Email:         " + requestedLicense.getEmail());
+        System.out.println("Users:         " + requestedLicense.getUsersNumber());
+        System.out.println("Months valid : " + requestedLicense.getMonthsValid());
     }
 
-    private static License createLicenseObject(RequestedLicense requestedLicense) {
+    static License createLicenseObject(RequestedLicense requestedLicense) {
         Calendar calendar = Calendar.getInstance();
         String createdOn = new SimpleDateFormat(LICENSE_DATE_FORMAT).format(calendar.getTime());
-        calendar.add(Calendar.YEAR, 1);
+        calendar.add(Calendar.MONTH, requestedLicense.getMonthsValid());
 
         License license = new License();
         license.setProduct(LicenseManager.Product.TASK_ADAPTER_WEB);
@@ -54,29 +56,6 @@ public class LicenseGenerator {
         license.setCreatedOn(createdOn);
         license.setExpiresOn(calendar.getTime());
         return license;
-    }
-
-    // TODO add unit tests
-    static RequestedLicense parseArgs(String[] args) {
-        String customerName = "";
-        String email = "";
-        int usersNumber = DEFAULT_USERS_NUMBER;
-
-        int i;
-        for (i = 0; i < args.length; i++) {
-            if (!args[i].contains("@")) {
-                customerName += args[i] + " ";
-            } else {
-                email = args[i];
-                break;
-            }
-        }
-        if (i < args.length-1) {
-            usersNumber = Integer.parseInt(args[args.length-1]);
-        }
-
-        customerName = customerName.trim();
-        return new RequestedLicense(customerName, email, usersNumber);
     }
 
 }
