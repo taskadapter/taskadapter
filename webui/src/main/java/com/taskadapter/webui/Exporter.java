@@ -110,8 +110,6 @@ public class Exporter {
             startUpdateFile();
         } else if (action.equals(OVERWRITE) || action.equals(CREATE)) {
             startRegularExport();
-        } else {
-            System.out.println("canceled");
         }
     }
 

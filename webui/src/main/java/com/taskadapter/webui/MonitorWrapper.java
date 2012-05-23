@@ -24,7 +24,6 @@ public class MonitorWrapper implements ProgressMonitor {
     @Override
     public void worked(int work) {
         this.current += work;
-        System.out.println(current / total);
         vaadinProgressMonitor.setValue(current / total);
     }
 
