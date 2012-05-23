@@ -4,15 +4,23 @@ import com.taskadapter.web.service.UserNotFoundException;
 import com.taskadapter.web.service.WrongPasswordException;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;
+import com.vaadin.ui.themes.Runo;
 
 public class LoginPage extends Page {
-    private VerticalLayout layout = new VerticalLayout();
     private TextField loginEdit;
     private PasswordField passwordEdit;
     private Label errorLabel;
+    private static final String LOG_IN_TITLE = "Log in";
+    private static final String LOGIN_PROMPT = "Login";
+    private static final String PASSWORD_PROMPT = "Password";
+    private static final String STAY_SIGNED_IN = "Stay signed in";
+    private static final String HINT_LABEL = "<i>Default login/password: admin/admin</i>";
+    private static final String FORM_WIDTH = "300px";
+    private static final String EDIT_WIDTH = "260px";
 
     private CheckBox staySignedIn;
     private static final boolean DEFAULT_STAY_SIGNED_IN_CHECKBOX_STATE = true;
+    private Panel panel = new Panel(LOG_IN_TITLE);
 
     public LoginPage() {
         buildUI();
@@ -25,22 +33,33 @@ public class LoginPage extends Page {
     }
 
     private void buildUI() {
+        final VerticalLayout layout = new VerticalLayout();
+        panel.addComponent(layout);
+        layout.setWidth(FORM_WIDTH);
+
+        layout.setMargin(false, true, false, true);
+        layout.setSpacing(true);
+        final Label label = new Label(HINT_LABEL, Label.CONTENT_XHTML);
+        label.setStyleName(Runo.LABEL_SMALL);
+        layout.addComponent(label);
+
         loginEdit = new TextField();
-        loginEdit.setInputPrompt("Username");
-        loginEdit.setCaption("Username");
+        loginEdit.setCaption(LOGIN_PROMPT);
+        loginEdit.setWidth(EDIT_WIDTH);
         layout.addComponent(loginEdit);
 
         passwordEdit = new PasswordField();
-        passwordEdit.setInputPrompt("*********");
-        passwordEdit.setCaption("Password");
+        passwordEdit.setCaption(PASSWORD_PROMPT);
+        passwordEdit.setWidth(EDIT_WIDTH);
         layout.addComponent(passwordEdit);
 
-        staySignedIn = new CheckBox("Stay signed in");
+        staySignedIn = new CheckBox(STAY_SIGNED_IN);
         layout.addComponent(staySignedIn);
 
-        Button loginButton = new Button("Login");
+        Button loginButton = new Button(LOG_IN_TITLE);
         loginButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
-        loginButton.addStyleName("v-button-default");
+        loginButton.addStyleName(Runo.BUTTON_DEFAULT);
+        loginButton.addStyleName(Runo.BUTTON_BIG);
 
         loginButton.addListener(new Button.ClickListener() {
             public void buttonClick(Button.ClickEvent event) {
@@ -77,6 +96,6 @@ public class LoginPage extends Page {
 
     @Override
     public Component getUI() {
-        return layout;
+        return panel;
     }
 }
