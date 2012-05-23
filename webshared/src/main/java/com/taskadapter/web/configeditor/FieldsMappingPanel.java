@@ -30,11 +30,6 @@ public class FieldsMappingPanel extends Panel implements Validatable {
     private GridLayout gridLayout;
     private Resource helpIconResource = new ThemeResource("../runo/icons/16/help.png");
 
-    /**
-     * Config Editors should NOT create this object directly, use ConfigEditor.addFieldsMappingPanel() method instead.
-     *
-     * @see ConfigEditor#addFieldsMappingPanel(com.taskadapter.connector.definition.AvailableFieldsProvider)
-     */
     public FieldsMappingPanel(AvailableFieldsProvider availableFieldsProvider, ConnectorConfig config) {
         super("Task fields mapping");
         this.availableFieldsProvider = availableFieldsProvider;

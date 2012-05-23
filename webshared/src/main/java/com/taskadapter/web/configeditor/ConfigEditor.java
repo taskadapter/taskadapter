@@ -88,12 +88,6 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         priorityPanel.setPriorities(priorities);
     }
 
-    protected void addFieldsMappingPanel(AvailableFieldsProvider fieldsProvider) {
-        fieldsMappingPanel = new FieldsMappingPanel(fieldsProvider, config);
-        toValidate.add(fieldsMappingPanel);
-        addComponent(fieldsMappingPanel);
-    }
-
     public void validateAll() throws ValidationException {
         for (Validatable v : toValidate) {
             v.validate();
