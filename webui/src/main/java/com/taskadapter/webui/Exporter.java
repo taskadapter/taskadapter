@@ -13,6 +13,7 @@ import java.util.Arrays;
 public class Exporter {
 
     private static final String UPDATE = "Only update tasks present in the file";
+    private static final String OVERWRITE = "Overwrite";
     private static final String CREATE = "Create";
     private static final String CANCEL = "Cancel";
 
@@ -75,7 +76,7 @@ public class Exporter {
             String fileName = new File(connectorTo.getAbsoluteOutputFileName()).getName();
             MessageDialog messageDialog = new MessageDialog(
                     "Choose operation", "Destination file already exists:<br><b>" + fileName + "</b>",
-                    Arrays.asList(UPDATE, CREATE, CANCEL),
+                    Arrays.asList(UPDATE, OVERWRITE, CANCEL),
                     new MessageDialog.Callback() {
                         public void onDialogResult(String answer) {
                             processFileAction(answer);
