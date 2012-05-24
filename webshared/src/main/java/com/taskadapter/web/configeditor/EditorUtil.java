@@ -9,10 +9,7 @@ import com.taskadapter.web.service.Authenticator;
 import com.taskadapter.web.service.UserManager;
 import com.vaadin.ui.*;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Alexey Skorokhodov
@@ -49,6 +46,7 @@ public class EditorUtil {
         return button;
     }
 
+    // TODO review and refactor this. this method is too complex
     public static Button createLookupButton(final WindowProvider windowProvider, final String buttonLabel, String description,
                                             final String windowTitle, final String listTitle,
                                             final LookupOperation operation, final TextField destinationForKey, final boolean useValue) {
@@ -64,7 +62,7 @@ public class EditorUtil {
 
             private void showValues(final TextField destinationForKey, final boolean useValue,
                                     List<? extends NamedKeyedObject> objects) {
-                final Map<String, String> map = new HashMap<String, String>();
+                final Map<String, String> map = new TreeMap<String, String>();
                 for (NamedKeyedObject o : objects) {
                     map.put(o.getName(), o.getKey());
                 }
