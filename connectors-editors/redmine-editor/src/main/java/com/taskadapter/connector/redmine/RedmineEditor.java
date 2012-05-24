@@ -261,8 +261,9 @@ public class RedmineEditor extends TwoColumnsConfigEditor implements LoadProject
         }
 
         private void checkProtocol() {
-            if (!((String) serverURL.getValue()).startsWith("http")) {
-                serverURL.setValue(WebServerInfo.DEFAULT_URL_PREFIX + serverURL.getValue());
+            String serverURLValue = (String) serverURL.getValue();
+            if (!serverURLValue.trim().isEmpty() && !serverURLValue.startsWith("http")) {
+                serverURL.setValue(WebServerInfo.DEFAULT_URL_PREFIX + serverURLValue);
             }
         }
     }
