@@ -5,15 +5,15 @@ import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.web.configeditor.FieldsMappingPanel;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.taskadapter.webui.Navigator;
+import com.taskadapter.webui.PageUtil;
+import com.vaadin.ui.*;
 
 import java.util.List;
 import java.util.Map;
 
 public class ConfirmExportPage extends CustomComponent {
+    private final Navigator navigator;
     private List<GTask> rootLevelTasks;
     private Connector connectorTo;
     private Button.ClickListener goListener;
@@ -21,7 +21,8 @@ public class ConfirmExportPage extends CustomComponent {
     private Map<FIELD, Mapping> oldFieldsMapping;
     private MyTree connectorTree;
 
-    public ConfirmExportPage(List<GTask> rootLevelTasks, Connector destinationConnector, Button.ClickListener goListener) {
+    public ConfirmExportPage(Navigator navigator, List<GTask> rootLevelTasks, Connector destinationConnector, Button.ClickListener goListener) {
+        this.navigator = navigator;
         this.rootLevelTasks = rootLevelTasks;
         this.connectorTo = destinationConnector;
         this.goListener = goListener;
@@ -43,9 +44,13 @@ public class ConfirmExportPage extends CustomComponent {
 
         oldFieldsMapping = connectorTo.getConfig().getFieldsMapping();
 
-        Button go = new Button("Go");
-        go.addListener(goListener);
-        layout.addComponent(go);
+        HorizontalLayout buttonsLayout = new HorizontalLayout();
+        Button goButton = new Button("Go");
+        goButton.addListener(goListener);
+        buttonsLayout.addComponent(goButton);
+        buttonsLayout.addComponent(PageUtil.createButton(navigator, "Cancel", Navigator.HOME));
+        layout.addComponent(buttonsLayout);
+
         setCompositionRoot(layout);
         this.fieldMappingPanel = new FieldsMappingPanel(connectorTo.getDescriptor().getAvailableFieldsProvider(), connectorTo.getConfig());
         layout.addComponent(fieldMappingPanel);

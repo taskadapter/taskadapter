@@ -35,14 +35,7 @@ public class EditConfigPage extends Page {
         });
         buttonsLayout.addComponent(saveButton);
 
-        Button cancelButton = new Button("Cancel");
-        cancelButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                navigator.show(Navigator.HOME);
-            }
-        });
-        buttonsLayout.addComponent(cancelButton);
+        buttonsLayout.addComponent(PageUtil.createButton(navigator, "Cancel", Navigator.HOME));
 
         errorMessageLabel.addStyleName("error-message-label");
         errorMessageLabel.setWidth(100, Sizeable.UNITS_PERCENTAGE);
