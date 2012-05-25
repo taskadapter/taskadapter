@@ -7,21 +7,16 @@ public class UpdateManager {
 
     public UpdateManager() {
         // TODO hardcoded current version
-        currentVersion = "2.0.0-RC2";
+        currentVersion = "2.0.0";
 
 // disabled for now to not generate a lot of useless "check version" requests to the server.
 // we'll enable before the release.
 //    loadLastVersion();
-//        setHardcodedLastVersionForTesting();
     }
 
-    // TODO http://www.hostedredmine.com/issues/67021
-    private void setHardcodedLastVersionForTesting() {
-        lastVersion = "2.0.0_dev";
-    }
 
-    private void loadLastVersion() {
-/*        try {
+/*    private void loadLastVersion() {
+        try {
             Properties properties = new Properties();
             properties.load(MyIOUtils.getResourceAsStream("taskadapter.properties"));
             String url = properties.getProperty("update_site_url");
@@ -36,8 +31,8 @@ public class UpdateManager {
         } catch (IOException e) {
             throw new RuntimeException(e.toString(), e);
         }
-  */
     }
+  */
 
     public String getCurrentVersion() {
         return currentVersion;
