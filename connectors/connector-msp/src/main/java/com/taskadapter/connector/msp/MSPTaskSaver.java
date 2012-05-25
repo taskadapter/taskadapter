@@ -1,6 +1,7 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.common.AbstractTaskSaver;
+import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GRelation.TYPE;
@@ -22,7 +23,8 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
     @Override
     protected SyncResult save(String parentTaskKey, List<GTask> tasks) {
         SyncResult result = saveData(tasks, false);
-        buildNewRelations(tasks);
+        List<GTask> newTaskList = TreeUtils.buildFlatListFromTree(tasks);
+        List<GRelation> relations = buildNewRelations(newTaskList);
         saveRelations(relations);
         return result;
     }
