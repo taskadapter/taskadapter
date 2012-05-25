@@ -57,6 +57,16 @@ public class TreeUtils {
         return root.getChildren();
     }
 
+    public static List<GTask> buildFlatListFromTree(List<GTask> treeList) {
+        List<GTask> flatList = new ArrayList<GTask>();
+        for (GTask task : treeList) {
+            flatList.add(task);
+            flatList.addAll(buildFlatListFromTree(task.getChildren()));
+        }
+
+        return flatList;
+    }
+
     /**
      * Utility class to help convert flat list of Tasks to a tree structure.
      */

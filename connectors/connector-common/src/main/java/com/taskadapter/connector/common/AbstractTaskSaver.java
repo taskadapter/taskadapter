@@ -25,8 +25,6 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
 
     private ProgressMonitor monitor;
 
-    protected List<GRelation> relations = new ArrayList<GRelation>();
-
     public AbstractTaskSaver(T config) {
         super();
         this.config = config;
@@ -90,8 +88,7 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
 
         if (parentIssueKey == null) {
             if (config.getSaveIssueRelations()) {
-                relations.clear();
-                buildNewRelations(totalTaskList);
+                List<GRelation> relations = buildNewRelations(totalTaskList);
                 saveRelations(relations);
             }
         }
@@ -105,7 +102,7 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
         }
     }
 
-    protected void buildNewRelations(List<GTask> tasks) {
+    protected List<GRelation> buildNewRelations(List<GTask> tasks) {
         List<GRelation> newRelations = new ArrayList<GRelation>();
         for (GTask task : tasks) {
             String newSourceTaskKey = syncResult.getRemoteKey(task.getId());
@@ -116,13 +113,11 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
                 String newRelatedKey = syncResult.getRemoteKey(relatedTaskId);
                 // #25443 Export from MSP fails when newRelatedKey is null (which is a valid case in MSP)
                 if (newSourceTaskKey != null && newRelatedKey != null) {
-                    relations.add(new GRelation(newSourceTaskKey, newRelatedKey, oldRelation.getType()));
+                    newRelations.add(new GRelation(newSourceTaskKey, newRelatedKey, oldRelation.getType()));
                 }
             }
-            if (!task.getChildren().isEmpty()) {
-                buildNewRelations(task.getChildren());
-            }
         }
+        return newRelations;
     }
 
     abstract protected void saveRelations(List<GRelation> relations);
