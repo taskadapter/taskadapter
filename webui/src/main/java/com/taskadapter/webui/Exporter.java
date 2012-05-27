@@ -60,6 +60,7 @@ public class Exporter {
                 String absoluteFileName = new FileManager().createDefaultMSPFileName(userName);
 
                 ((MSPConfig) destinationDataHolder.getData()).setOutputAbsoluteFilePath(absoluteFileName);
+                ((MSPConfig) destinationDataHolder.getData()).setInputAbsoluteFilePath(absoluteFileName);
                 services.getConfigStorage().saveConfig(userName, taFile);
 
             } catch (ValidationException e) {
