@@ -83,6 +83,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
     private void addTrialSection() {
         trialLayout.setSizeFull();
         Label trialLabel = new Label("Trial mode");
+        trialLabel.setDescription("Trial version will only transfer up to 10 tasks.<BR>It cannot be used in production environment.<BR>Please buy the software.");
         trialLabel.setSizeUndefined();
         trialLabel.addStyleName("trial-mode-label");
         trialLayout.addComponent(trialLabel);
