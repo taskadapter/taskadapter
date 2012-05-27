@@ -1,9 +1,7 @@
 package com.taskadapter.web.configeditor.file;
 
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.web.MessageDialog;
-import com.taskadapter.web.configeditor.Validatable;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.*;
@@ -14,14 +12,14 @@ import java.util.Arrays;
 /**
  * @author Alexander Kulik
  */
-public class ServerModeFilePanel extends FilePanel implements Validatable {
+public class ServerModeFilePanel extends FilePanel{
 
     // TODO show this limit on the webpage
     static final int MAX_FILE_SIZE_BYTES = 5000000;
 
     private static final String TITLE = "Microsoft Project file";
     private static final String COMBOBOX_INPUT_PROMPT = "Select an existing file";
-    public static final String GENERATED_FILE_HINT = "File auto-created for export";
+    public static final String FILE_WILL_GENERATED_HINT = "File will be auto-created on export";
 
     static final String COMBOBOX_ITEM_PROPERTY = "name";
     static final String DATE_FORMAT = "d MMM yyyy h:mm:ss a z";
@@ -45,7 +43,6 @@ public class ServerModeFilePanel extends FilePanel implements Validatable {
 
     public static final String UPLOAD_MPP_SUCCESS = "File uploaded and successfully converted to XML";
     public static final String CANNOT_DELETE_MPP_FILE = "Cannot delete .mpp file";
-    public static final String CANNOT_GENERATE_A_FILE = "Can't generate the export file";
 
     private Label statusLabel;
     private final ServerModelFilePanelPresenter presenter;
@@ -244,13 +241,6 @@ public class ServerModeFilePanel extends FilePanel implements Validatable {
 
     public void showNotification(String message) {
         getWindow().showNotification(message);
-    }
-
-    @Override
-    public void validate() throws ValidationException {
-        if (presenter.getSelectedFileNameOrEmpty().isEmpty()) {
-            throw new ValidationException(COMBOBOX_INPUT_PROMPT);
-        }
     }
 }
 

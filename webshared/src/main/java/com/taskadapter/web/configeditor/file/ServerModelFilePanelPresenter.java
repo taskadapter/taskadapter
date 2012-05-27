@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Author: Alexander Kulik
+ * Logic tier for ServerModelFilePanel
  */
 public class ServerModelFilePanelPresenter {
     public static final int MAX_FILE_SIZE_BYTES = 5000000;
@@ -85,7 +85,7 @@ public class ServerModelFilePanelPresenter {
 
     public void onNoFileSelected() {
         this.selectedFile = null;
-        view.setStatusLabelText("");
+        view.setStatusLabelText(ServerModeFilePanel.FILE_WILL_GENERATED_HINT);
         view.setDownloadEnabled(false);
     }
 
@@ -192,19 +192,14 @@ public class ServerModelFilePanelPresenter {
 
     public void setConfig(MSPConfig config) {
         String absolutePath = config.getInputAbsoluteFilePath();
+        if (absolutePath == null || absolutePath.isEmpty()) {
+            absolutePath = config.getOutputAbsoluteFilePath();
+        }
         if (absolutePath != null && !absolutePath.isEmpty()) {
             File f = new File(absolutePath);
             view.selectFileInCombobox(f.getName());
         } else {
-            File newFile = fileManager.createDefaultMSPFile(userName);
-            if (newFile == null) {
-                view.showNotification(ServerModeFilePanel.CANNOT_GENERATE_A_FILE);
-            } else {
-                addFileToComboBoxAndSelect(newFile.getName());
-                selectedFile = newFile;
-                view.setStatusLabelText(ServerModeFilePanel.GENERATED_FILE_HINT);
-            }
-
+            onNoFileSelected();
         }
     }
 }
