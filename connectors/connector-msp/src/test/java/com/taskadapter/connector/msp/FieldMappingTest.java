@@ -156,7 +156,7 @@ public class FieldMappingTest {
         yearAgo.add(Calendar.YEAR, -1);
         task.setStartDate(yearAgo.getTime());
         GTask loadedTask = TestUtils.saveAndLoad(connector,
-                FIELD.START_DATE, new Mapping(true, MSPAvailableFieldsProvider.NO_CONSTRAINT), task);
+                FIELD.START_DATE, new Mapping(true, MSPUtils.NO_CONSTRAINT), task);
         assertEquals(yearAgo.getTime(), loadedTask.getStartDate());
     }
 

@@ -4,10 +4,12 @@ import com.taskadapter.connector.common.PriorityLoader;
 import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.common.TaskLoader;
 import com.taskadapter.connector.common.TaskSaver;
-import com.taskadapter.connector.definition.AvailableFieldsProvider;
+import com.taskadapter.connector.definition.AvailableFields;
+import com.taskadapter.connector.definition.AvailableFieldsBuilder;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.PluginFactory;
+import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -20,6 +22,20 @@ public class MantisDescriptor implements Descriptor {
 
     private static final String INFO = "Mantis connector (supports Mantis v. 1.1.1+)";
 
+    /**
+     * Supported fields.
+     */
+    private static final AvailableFields SUPPORTED_FIELDS;
+    
+    static {
+    	final AvailableFieldsBuilder builder = AvailableFieldsBuilder.start();
+    	builder.addField(FIELD.SUMMARY, "Summary");
+    	builder.addField(FIELD.DESCRIPTION, "Description");
+    	builder.addField(FIELD.ASSIGNEE, "Assignee");
+    	builder.addField(FIELD.DUE_DATE, "Due Date");
+    	SUPPORTED_FIELDS = builder.end();
+    }
+    
     @Override
     public String getID() {
         return ID;
@@ -46,8 +62,8 @@ public class MantisDescriptor implements Descriptor {
     }
 
     @Override
-    public AvailableFieldsProvider getAvailableFieldsProvider() {
-        return new MantisAvailableFieldsProvider();
+    public AvailableFields getAvailableFieldsProvider() {
+        return SUPPORTED_FIELDS;
     }
 
     @Override

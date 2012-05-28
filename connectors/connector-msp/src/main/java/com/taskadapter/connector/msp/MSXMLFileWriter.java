@@ -260,7 +260,7 @@ public class MSXMLFileWriter {
         // START DATE
         if (config.isFieldSelected(FIELD.START_DATE)) {
             String constraint = config.getFieldMappedValue(FIELD.START_DATE);
-            if (constraint == null || MSPAvailableFieldsProvider.NO_CONSTRAINT.equals(constraint)) {
+            if (constraint == null || MSPUtils.NO_CONSTRAINT.equals(constraint)) {
                 mspTask.setStart(gTask.getStartDate());
             } else {
                 ConstraintType constraintType = ConstraintType.valueOf(constraint);

@@ -1,6 +1,6 @@
 package com.taskadapter.web.configeditor;
 
-import com.taskadapter.connector.definition.AvailableFieldsProvider;
+import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.definition.ValidationException;
@@ -24,13 +24,13 @@ public class FieldsMappingPanel extends Panel implements Validatable {
     private Map<GTaskDescriptor.FIELD, CheckBox> fieldToButtonMap = new HashMap<GTaskDescriptor.FIELD, CheckBox>();
     private Map<GTaskDescriptor.FIELD, ComboBox> fieldToValueMap = new HashMap<GTaskDescriptor.FIELD, ComboBox>();
 
-    private final AvailableFieldsProvider availableFieldsProvider;
+    private final AvailableFields availableFieldsProvider;
     private ConnectorConfig config;
     private static final int COLUMNS_NUMBER = 2;
     private GridLayout gridLayout;
     private Resource helpIconResource = new ThemeResource("../runo/icons/16/help.png");
 
-    public FieldsMappingPanel(AvailableFieldsProvider availableFieldsProvider, ConnectorConfig config) {
+    public FieldsMappingPanel(AvailableFields availableFieldsProvider, ConnectorConfig config) {
         super("Task fields mapping");
         this.availableFieldsProvider = availableFieldsProvider;
         this.config = config;

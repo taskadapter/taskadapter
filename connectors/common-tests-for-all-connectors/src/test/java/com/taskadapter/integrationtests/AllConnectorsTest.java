@@ -1,6 +1,6 @@
 package com.taskadapter.integrationtests;
 
-import com.taskadapter.connector.definition.AvailableFieldsProvider;
+import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
@@ -52,7 +52,7 @@ public class AllConnectorsTest {
 
     @Test
     public void allSupportedFieldsReportedAsAvailable() {
-        AvailableFieldsProvider availableFieldsProvider = connector.getDescriptor().getAvailableFieldsProvider();
+        AvailableFields availableFieldsProvider = connector.getDescriptor().getAvailableFieldsProvider();
         Collection<FIELD> supportedFields = availableFieldsProvider.getSupportedFields();
         for (FIELD field : supportedFields) {
             String[] allowedValues = availableFieldsProvider.getAllowedValues(field);

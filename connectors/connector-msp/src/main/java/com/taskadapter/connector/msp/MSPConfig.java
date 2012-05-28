@@ -127,19 +127,19 @@ public class MSPConfig extends ConnectorConfig {
     protected Map<FIELD, Mapping> generateDefaultFieldsMapping() {
         Map<FIELD, Mapping> fieldsMapping = new TreeMap<FIELD, Mapping>();
         fieldsMapping.put(FIELD.SUMMARY, new Mapping());
-        fieldsMapping.put(FIELD.TASK_TYPE, new Mapping(true, MSPAvailableFieldsProvider.getDefaultTaskType()));
+        fieldsMapping.put(FIELD.TASK_TYPE, new Mapping(true, MSPUtils.getDefaultTaskType()));
 
         // TODO set default values in MSP..Provider instead of using [0]
-        String defaultEstimatedTimeOption = MSPAvailableFieldsProvider.getEstimatedTimeOptions()[0];
+        String defaultEstimatedTimeOption = MSPUtils.getEstimatedTimeOptions()[0];
         fieldsMapping.put(FIELD.ESTIMATED_TIME, new Mapping(true, defaultEstimatedTimeOption));
         fieldsMapping.put(FIELD.DONE_RATIO, new Mapping());
         fieldsMapping.put(FIELD.ASSIGNEE, new Mapping());
         fieldsMapping.put(FIELD.DESCRIPTION, new Mapping());
 
-        String defaultStartDateOption = MSPAvailableFieldsProvider.getStartDateOptions()[0];
+        String defaultStartDateOption = MSPUtils.getStartDateOptions()[0];
         fieldsMapping.put(FIELD.START_DATE, new Mapping(false, defaultStartDateOption));
 
-        String defaultDueDateOption = MSPAvailableFieldsProvider.getDueDateOptions()[0];
+        String defaultDueDateOption = MSPUtils.getDueDateOptions()[0];
         fieldsMapping.put(FIELD.DUE_DATE, new Mapping(false, defaultDueDateOption));
 
         /*
@@ -149,8 +149,8 @@ public class MSPConfig extends ConnectorConfig {
            *  and got "issue with id... not found".
            *  it's better to have this option set to FALSE by default to avoid the confusion.
            */
-        fieldsMapping.put(FIELD.REMOTE_ID, new Mapping(false, MSPAvailableFieldsProvider.getDefaultRemoteIdMapping()));
-        fieldsMapping.put(FIELD.TASK_STATUS, new Mapping(false, MSPAvailableFieldsProvider.getDefaultTaskStatus()));
+        fieldsMapping.put(FIELD.REMOTE_ID, new Mapping(false, MSPUtils.getDefaultRemoteIdMapping()));
+        fieldsMapping.put(FIELD.TASK_STATUS, new Mapping(false, MSPUtils.getDefaultTaskStatus()));
 
         return fieldsMapping;
     }

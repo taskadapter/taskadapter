@@ -4,10 +4,12 @@ import com.taskadapter.connector.common.PriorityLoader;
 import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.common.TaskLoader;
 import com.taskadapter.connector.common.TaskSaver;
-import com.taskadapter.connector.definition.AvailableFieldsProvider;
+import com.taskadapter.connector.definition.AvailableFields;
+import com.taskadapter.connector.definition.AvailableFieldsBuilder;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.PluginFactory;
+import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,13 +24,27 @@ public class GithubDescriptor implements Descriptor {
     private static final String ID = "Github";
     private static final String DESCRIPTION = "Github connector";
     private static final String LABEL = "Github";
+    
+    /**
+     * List of supported fields.
+     */
+    private static final AvailableFields SUPPORTED_FIELDS;
+    
+    static {
+    	final AvailableFieldsBuilder builder = AvailableFieldsBuilder.start();
+    	builder.addField(FIELD.SUMMARY, "Summary");
+    	builder.addField(FIELD.DESCRIPTION, "Description");
+    	builder.addField(FIELD.ASSIGNEE, "Assignee");
+    	builder.addField(FIELD.START_DATE, "Start date");
+    	SUPPORTED_FIELDS = builder.end();
+    }
 
     public ConnectorConfig createDefaultConfig() {
         return new GithubConfig();
     }
 
-    public AvailableFieldsProvider getAvailableFieldsProvider() {
-        return new GithubFieldsProvider();
+    public AvailableFields getAvailableFieldsProvider() {
+        return SUPPORTED_FIELDS;
     }
 
     public ProjectLoader getProjectLoader() {

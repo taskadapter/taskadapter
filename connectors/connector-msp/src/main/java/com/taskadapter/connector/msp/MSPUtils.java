@@ -1,6 +1,8 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.model.GTaskDescriptor.FIELD;
+
+import net.sf.mpxj.ConstraintType;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Resource;
 import net.sf.mpxj.TaskField;
@@ -112,4 +114,37 @@ public class MSPUtils {
             return originalName + newExtension;
         }
     }
+
+	public static String[] getEstimatedTimeOptions() {
+	    return new String[]{TaskField.DURATION.toString(), TaskField.WORK.toString()};
+	}
+
+	public static String[] getDueDateOptions() {
+	    return new String[]{TaskField.FINISH.toString(),
+	            TaskField.DEADLINE.toString()};
+	}
+
+	public static String[] getStartDateOptions() {
+	    String[] options = new String[ConstraintType.values().length + 1];
+	    options[0] = MSPUtils.NO_CONSTRAINT;
+	    int i = 1;
+	    for (ConstraintType type : ConstraintType.values()) {
+	        options[i++] = type.name();
+	    }
+	    return options;
+	}
+
+	public static String getDefaultRemoteIdMapping() {
+	    return TaskField.TEXT22.toString();
+	}
+
+	public static String getDefaultTaskType() {
+	    return TaskField.TEXT23.toString();
+	}
+
+	public static String getDefaultTaskStatus() {
+	    return TaskField.TEXT24.toString();
+	}
+
+	public static final String NO_CONSTRAINT = "<no constraint>";
 }

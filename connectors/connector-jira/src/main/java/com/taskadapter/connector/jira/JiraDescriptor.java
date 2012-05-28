@@ -4,10 +4,12 @@ import com.taskadapter.connector.common.PriorityLoader;
 import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.common.TaskLoader;
 import com.taskadapter.connector.common.TaskSaver;
-import com.taskadapter.connector.definition.AvailableFieldsProvider;
+import com.taskadapter.connector.definition.AvailableFields;
+import com.taskadapter.connector.definition.AvailableFieldsBuilder;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.PluginFactory;
+import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,6 +25,22 @@ public class JiraDescriptor implements Descriptor {
     private static final String ID = "Atlassian Jira";
 
     private static final String INFO = "Atlassian Jira connector (supports Jira v. 3.1.12+)";
+    
+    /**
+     * Supported fields.
+     */
+    private static final AvailableFields SUPPORTED_FIELDS;
+    
+    static {
+    	final AvailableFieldsBuilder builder = AvailableFieldsBuilder.start();
+    	builder.addField(FIELD.SUMMARY, "Summary");
+    	builder.addField(FIELD.DESCRIPTION, "Description");
+    	builder.addField(FIELD.TASK_TYPE, "Issue type");
+    	builder.addField(FIELD.ASSIGNEE, "Assignee");
+    	builder.addField(FIELD.DUE_DATE, "Due Date");
+    	builder.addField(FIELD.PRIORITY, "Priority");
+    	SUPPORTED_FIELDS = builder.end();
+    }
 
     public String getID() {
         return ID;
@@ -49,8 +67,8 @@ public class JiraDescriptor implements Descriptor {
     }
 
     @Override
-    public AvailableFieldsProvider getAvailableFieldsProvider() {
-        return new JiraAvailableFieldsProvider();
+    public AvailableFields getAvailableFieldsProvider() {
+        return SUPPORTED_FIELDS;
     }
 
     @Override
