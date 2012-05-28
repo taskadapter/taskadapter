@@ -19,6 +19,7 @@ public class Navigator {
     public static final String CONFIGURE_SYSTEM_PAGE = "configure_system";
     public static final String FEEDBACK_PAGE = "feedback";
     public static final String NEW_CONFIG_PAGE = "new_config";
+    public static final String LICENSE_AGREEMENT_PAGE = "license_agreement";
 
     private static final String EDIT_CONFIG_PAGE = "configure_task";
     private static final String LOGIN_PAGE = "login";
@@ -55,6 +56,7 @@ public class Navigator {
         registerPage(FEEDBACK_PAGE, new SupportPage(services.getUpdateManager()));
         registerPage(NEW_CONFIG_PAGE, new NewConfigPage());
         registerPage(EDIT_CONFIG_PAGE, new EditConfigPage());
+        registerPage(LICENSE_AGREEMENT_PAGE, new LicenseAgreementPage());
     }
 
     private void buildUI() {
@@ -109,6 +111,11 @@ public class Navigator {
         currentPage = page;
         if (!services.getAuthenticator().isLoggedIn() && requiresLogin(page)) {
             currentPage = pages.get(LOGIN_PAGE);
+        }
+
+        if (services.getAuthenticator().isLoggedIn() && services.getAuthenticator().getUserName().equals("admin")
+                && !services.getSettingsManager().isAgreementWasRead()) {
+            currentPage = pages.get(LICENSE_AGREEMENT_PAGE);
         }
 
         setServicesToPage(currentPage);

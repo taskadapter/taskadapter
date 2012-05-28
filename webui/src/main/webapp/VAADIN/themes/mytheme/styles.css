@@ -232,3 +232,7 @@
 .export-result {
     margin-left: 15px;
 }
+
+.v-label-agreement {
+    white-space: pre-wrap;
+}
