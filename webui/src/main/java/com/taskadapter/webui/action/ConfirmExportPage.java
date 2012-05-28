@@ -52,7 +52,7 @@ public class ConfirmExportPage extends CustomComponent {
         layout.addComponent(buttonsLayout);
 
         setCompositionRoot(layout);
-        this.fieldMappingPanel = new FieldsMappingPanel(connectorTo.getDescriptor().getAvailableFieldsProvider(), connectorTo.getConfig());
+        this.fieldMappingPanel = new FieldsMappingPanel(connectorTo.getDescriptor().getAvailableFields(), connectorTo.getConfig());
         layout.addComponent(fieldMappingPanel);
     }
 

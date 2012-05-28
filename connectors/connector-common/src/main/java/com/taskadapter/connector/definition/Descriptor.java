@@ -42,7 +42,7 @@ public interface Descriptor {
 
     public Class<? extends ConnectorConfig> getConfigClass();
 
-    public AvailableFields getAvailableFieldsProvider();
+    public AvailableFields getAvailableFields();
 
     public ProjectLoader getProjectLoader();
 

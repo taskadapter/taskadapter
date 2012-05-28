@@ -43,7 +43,7 @@ public class GithubDescriptor implements Descriptor {
         return new GithubConfig();
     }
 
-    public AvailableFields getAvailableFieldsProvider() {
+    public AvailableFields getAvailableFields() {
         return SUPPORTED_FIELDS;
     }
 

@@ -52,7 +52,7 @@ public class AllConnectorsTest {
 
     @Test
     public void allSupportedFieldsReportedAsAvailable() {
-        AvailableFields availableFieldsProvider = connector.getDescriptor().getAvailableFieldsProvider();
+        AvailableFields availableFieldsProvider = connector.getDescriptor().getAvailableFields();
         Collection<FIELD> supportedFields = availableFieldsProvider.getSupportedFields();
         for (FIELD field : supportedFields) {
             String[] allowedValues = availableFieldsProvider.getAllowedValues(field);

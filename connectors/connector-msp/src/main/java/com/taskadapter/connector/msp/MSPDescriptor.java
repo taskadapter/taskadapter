@@ -75,7 +75,7 @@ public class MSPDescriptor implements Descriptor {
     }
 
     @Override
-    public AvailableFields getAvailableFieldsProvider() {
+    public AvailableFields getAvailableFields() {
         return SUPPORTED_FIELDS;
     }
 

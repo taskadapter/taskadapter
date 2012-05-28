@@ -23,7 +23,7 @@ public class GithubEditor extends TwoColumnsConfigEditor {
         addToLeftColumn(new OtherGithubFieldsPanel(this));
 
         //right
-        fieldsMappingPanel = new FieldsMappingPanel(GithubDescriptor.instance.getAvailableFieldsProvider(), config);
+        fieldsMappingPanel = new FieldsMappingPanel(GithubDescriptor.instance.getAvailableFields(), config);
         addToRightColumn(fieldsMappingPanel);
     }
 

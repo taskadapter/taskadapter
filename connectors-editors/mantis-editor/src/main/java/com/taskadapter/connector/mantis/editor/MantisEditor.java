@@ -24,7 +24,7 @@ public class MantisEditor extends TwoColumnsConfigEditor {
         addToLeftColumn(new OtherMantisFieldsPanel(this));
 
         //right
-        fieldsMappingPanel = new FieldsMappingPanel(MantisDescriptor.instance.getAvailableFieldsProvider(), config);
+        fieldsMappingPanel = new FieldsMappingPanel(MantisDescriptor.instance.getAvailableFields(), config);
         addToRightColumn(fieldsMappingPanel);
     }
 

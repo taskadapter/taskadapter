@@ -62,7 +62,7 @@ public class MantisDescriptor implements Descriptor {
     }
 
     @Override
-    public AvailableFields getAvailableFieldsProvider() {
+    public AvailableFields getAvailableFields() {
         return SUPPORTED_FIELDS;
     }
 
