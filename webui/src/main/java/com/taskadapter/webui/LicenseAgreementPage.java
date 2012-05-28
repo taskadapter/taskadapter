@@ -9,7 +9,7 @@ import java.io.IOException;
 public class LicenseAgreementPage extends Page {
 
     private static final String AGREEMENT_TITLE = "License Agreement";
-    private static final String AGREEMENT_FILE_NAME = "license.txt";
+    private static final String AGREEMENT_FILE_NAME = "license.html";
     private static final String AGREEMENT_FILE_NOT_FOUND = "License agreement not found.";
     private static final String ACCEPT_CHECKBOX = "I have read the license agreement and I accept it.";
     private static final String ACCEPT_BUTTON = "Accept";
@@ -32,8 +32,7 @@ public class LicenseAgreementPage extends Page {
         Label agreementContent;
         try {
             String licenseAgreementText = MyIOUtils.convertStreamToString(MyIOUtils.getResourceAsStream(AGREEMENT_FILE_NAME));
-            String textToShow = "<pre>" + licenseAgreementText + "</pre>";
-            agreementContent = new Label(textToShow);
+            agreementContent = new Label(licenseAgreementText);
         } catch (IOException e) {
             agreementContent = new Label(AGREEMENT_FILE_NOT_FOUND);
         }
