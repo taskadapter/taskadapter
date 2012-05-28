@@ -46,7 +46,7 @@ public class ConfigFileParser {
         if (descriptor == null) {
             throw new RuntimeException("Connector with ID " + pluginId + " is not found.");
         }
-        Class<ConnectorConfig> configClass = (Class<ConnectorConfig>) descriptor.getConfigClass();
+        Class<? extends ConnectorConfig> configClass = descriptor.getConfigClass();
         Gson gson = new Gson();
         return gson.fromJson(dataString, configClass);
     }
