@@ -44,8 +44,6 @@ public interface Descriptor {
 
     public AvailableFields getAvailableFields();
 
-    public ProjectLoader getProjectLoader();
-
     public TaskSaver getTaskSaver(ConnectorConfig config);
 
     public TaskLoader getTaskLoader();

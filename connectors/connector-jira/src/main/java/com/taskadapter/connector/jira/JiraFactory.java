@@ -1,5 +1,6 @@
 package com.taskadapter.connector.jira;
 
+import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
@@ -17,5 +18,10 @@ public class JiraFactory implements PluginFactory {
     @Override
     public Descriptor getDescriptor() {
         return JiraDescriptor.instance;
+    }
+    
+    @Override
+    public ProjectLoader getProjectLoader() {
+        return new JiraProjectLoader();
     }
 }

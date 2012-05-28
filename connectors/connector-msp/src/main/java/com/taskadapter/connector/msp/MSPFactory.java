@@ -1,5 +1,6 @@
 package com.taskadapter.connector.msp;
 
+import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
@@ -18,4 +19,12 @@ public class MSPFactory implements PluginFactory {
     public Descriptor getDescriptor() {
         return MSPDescriptor.instance;
     }
+    
+    @Override
+    public ProjectLoader getProjectLoader() {
+    	//TODO: why? I think, improper configs?
+        throw new RuntimeException("Operation is not implemented for MSP");
+    }
+
+
 }

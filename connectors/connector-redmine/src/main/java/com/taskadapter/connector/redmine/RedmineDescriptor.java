@@ -79,11 +79,6 @@ public class RedmineDescriptor implements Descriptor {
     }
 
     @Override
-    public ProjectLoader getProjectLoader() {
-        return new RedmineProjectLoader();
-    }
-
-    @Override
     public TaskLoader<RedmineConfig> getTaskLoader() {
         return new RedmineTaskLoader();
     }

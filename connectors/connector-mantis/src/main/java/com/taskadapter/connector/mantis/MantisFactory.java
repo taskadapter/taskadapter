@@ -1,5 +1,6 @@
 package com.taskadapter.connector.mantis;
 
+import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
@@ -15,4 +16,10 @@ public class MantisFactory implements PluginFactory {
     public Descriptor getDescriptor() {
         return MantisDescriptor.instance;
     }
+    
+    @Override
+    public ProjectLoader getProjectLoader() {
+        return new MantisProjectLoader();
+    }
+
 }

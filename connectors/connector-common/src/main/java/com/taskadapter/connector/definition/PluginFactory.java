@@ -1,5 +1,7 @@
 package com.taskadapter.connector.definition;
 
+import com.taskadapter.connector.common.ProjectLoader;
+
 /**
  * @author Alexey Skorokhodov
  */
@@ -13,4 +15,8 @@ public interface PluginFactory {
 
     //TODO delete method with the same name from Connector class.
     public Descriptor getDescriptor();
+
+    // TODO: move it to connector, but it must have proper configs (at least - partial).
+    public ProjectLoader getProjectLoader();
+
 }

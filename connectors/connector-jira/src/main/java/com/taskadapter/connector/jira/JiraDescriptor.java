@@ -72,11 +72,6 @@ public class JiraDescriptor implements Descriptor {
     }
 
     @Override
-    public ProjectLoader getProjectLoader() {
-        return new JiraProjectLoader();
-    }
-
-    @Override
     public TaskLoader<JiraConfig> getTaskLoader() {
         return new JiraTaskLoader();
     }

@@ -1,14 +1,12 @@
 package com.taskadapter.connector.github;
 
 import com.taskadapter.connector.common.PriorityLoader;
-import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.common.TaskLoader;
 import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.AvailableFieldsBuilder;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
-import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 import java.util.Arrays;
@@ -45,10 +43,6 @@ public class GithubDescriptor implements Descriptor {
 
     public AvailableFields getAvailableFields() {
         return SUPPORTED_FIELDS;
-    }
-
-    public ProjectLoader getProjectLoader() {
-        return new GithubProjectLoader();
     }
 
     public TaskSaver getTaskSaver(ConnectorConfig config) {

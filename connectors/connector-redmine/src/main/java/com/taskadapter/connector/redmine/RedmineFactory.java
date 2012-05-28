@@ -1,5 +1,6 @@
 package com.taskadapter.connector.redmine;
 
+import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
@@ -19,4 +20,8 @@ public class RedmineFactory implements PluginFactory {
         return RedmineDescriptor.instance;
     }
 
+    @Override
+    public ProjectLoader getProjectLoader() {
+        return new RedmineProjectLoader();
+    }
 }

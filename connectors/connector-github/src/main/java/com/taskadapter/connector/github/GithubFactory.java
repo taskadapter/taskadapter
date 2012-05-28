@@ -1,5 +1,6 @@
 package com.taskadapter.connector.github;
 
+import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
@@ -15,5 +16,9 @@ public class GithubFactory implements PluginFactory {
     public Descriptor getDescriptor() {
         return GithubDescriptor.instance;
     }
-
+    
+    @Override
+    public ProjectLoader getProjectLoader() {
+        return new GithubProjectLoader();
+    }
 }

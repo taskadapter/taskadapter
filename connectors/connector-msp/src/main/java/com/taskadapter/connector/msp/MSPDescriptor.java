@@ -1,14 +1,12 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.common.PriorityLoader;
-import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.common.TaskLoader;
 import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.AvailableFieldsBuilder;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
-import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 import java.util.Arrays;
@@ -77,11 +75,6 @@ public class MSPDescriptor implements Descriptor {
     @Override
     public AvailableFields getAvailableFields() {
         return SUPPORTED_FIELDS;
-    }
-
-    @Override
-    public ProjectLoader getProjectLoader() {
-        throw new RuntimeException("Operation is not implemented for MSP");
     }
 
     @Override

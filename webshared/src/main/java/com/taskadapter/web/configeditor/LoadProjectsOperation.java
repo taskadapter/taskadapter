@@ -24,7 +24,7 @@ public class LoadProjectsOperation extends LookupOperation {
             throw new ValidationException("Host URL is not set");
         }
 
-        return factory.getDescriptor().getProjectLoader().getProjects(serverInfo);
+        return factory.getProjectLoader().getProjects(serverInfo);
     }
 }
 
