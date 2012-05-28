@@ -2,6 +2,7 @@ package com.taskadapter;
 
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.PluginFactory;
+import com.taskadapter.util.InternalError;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,17 +22,17 @@ public class PluginManager {
         try {
             Collection<String> classNames = new PluginsFileParser().parseResource("plugins.txt");
             for (String factoryClassName : classNames) {
-                Class<PluginFactory> factoryClass = (Class<PluginFactory>) Class.forName(factoryClassName);
+                @SuppressWarnings("unchecked")
+				Class<PluginFactory> factoryClass = (Class<PluginFactory>) Class.forName(factoryClassName);
                 PluginFactory pluginFactory = factoryClass.newInstance();
                 Descriptor descriptor = pluginFactory.getDescriptor();
                 pluginDescriptors.put(descriptor.getID(), descriptor);
                 pluginFactories.put(descriptor.getID(), pluginFactory);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new InternalError(e);
         }
     }
-
 
     public Iterator<Descriptor> getPluginDescriptors() {
         return pluginDescriptors.values().iterator();
