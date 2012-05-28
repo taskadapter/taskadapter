@@ -42,7 +42,14 @@ public class EditConfigPage extends Page {
         buttonsLayout.addComponent(errorMessageLabel);
         buttonsLayout.setExpandRatio(errorMessageLabel, 1.0f);
 
-        ConfigToolbarPanel configToolbarPanel = new ConfigToolbarPanel(navigator, file);
+        ConfigToolbarPanel configToolbarPanel = new ConfigToolbarPanel(navigator, file,
+                new ConfigToolbarPanel.Callback() {
+
+                    @Override
+                    public boolean onCloneConfig() {
+                        return validateEditor();
+                    }
+                });
         buttonsLayout.addComponent(configToolbarPanel);
         buttonsLayout.setComponentAlignment(configToolbarPanel, Alignment.MIDDLE_RIGHT);
         layout.addComponent(buttonsLayout);
@@ -72,7 +79,7 @@ public class EditConfigPage extends Page {
                     activeTabLabel.equals(leftConnectorDataHolder.getData().getLabel())
                             ? panel1
                             : activeTabLabel.equals(rightConnectorDataHolder.getData().getLabel())
-                                    ? panel2 : panel1
+                            ? panel2 : panel1
             );
         }
 
@@ -88,28 +95,7 @@ public class EditConfigPage extends Page {
     }
 
     private void save() {
-        boolean valid = true;
-
-        // TODO refactor these if (valid), if (valid) checks
-        try {
-            panel1.validateAll();
-        } catch (ValidationException e) {
-            errorMessageLabel.setValue(e.getMessage());
-            tabSheet.setSelectedTab(panel1);
-            valid = false;
-        }
-
-        if (valid) {
-            try {
-                panel2.validateAll();
-            } catch (ValidationException e) {
-                errorMessageLabel.setValue(e.getMessage());
-                tabSheet.setSelectedTab(panel2);
-                valid = false;
-            }
-        }
-
-        if (valid) {
+        if (validateEditor()) {
             updateFileWithDataInForm();
             String userLoginName = services.getAuthenticator().getUserName();
             services.getConfigStorage().saveConfig(userLoginName, file);
@@ -118,6 +104,27 @@ public class EditConfigPage extends Page {
             errorMessageLabel.setValue("");
             navigator.show(Navigator.HOME);
         }
+    }
+
+    private boolean validateEditor() {
+        // TODO refactor these if (valid), if (valid) checks
+        try {
+            panel1.validateAll();
+        } catch (ValidationException e) {
+            errorMessageLabel.setValue(e.getMessage());
+            tabSheet.setSelectedTab(panel1);
+            return false;
+        }
+
+        try {
+            panel2.validateAll();
+        } catch (ValidationException e) {
+            errorMessageLabel.setValue(e.getMessage());
+            tabSheet.setSelectedTab(panel2);
+            return false;
+        }
+
+        return true;
     }
 
     private void updateFileWithDataInForm() {

@@ -15,10 +15,13 @@ public class ConfigToolbarPanel extends HorizontalLayout {
 
     private final Navigator navigator;
     private final TAFile file;
+    private Callback callback;
 
-    public ConfigToolbarPanel(Navigator navigator, TAFile file) {
+    public ConfigToolbarPanel(Navigator navigator, TAFile file, Callback callback) {
         this.navigator = navigator;
         this.file = file;
+        this.callback = callback;
+
         buildUI();
     }
 
@@ -28,7 +31,9 @@ public class ConfigToolbarPanel extends HorizontalLayout {
         cloneButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                showConfirmClonePage(file);
+                if (callback.onCloneConfig()) {
+                    showConfirmClonePage(file);
+                }
             }
         });
         addComponent(cloneButton);
@@ -80,4 +85,7 @@ public class ConfigToolbarPanel extends HorizontalLayout {
         getWindow().addWindow(messageDialog);
     }
 
+    public interface Callback {
+        public boolean onCloneConfig();
+    }
 }
