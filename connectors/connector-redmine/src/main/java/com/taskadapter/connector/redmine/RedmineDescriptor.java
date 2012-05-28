@@ -1,6 +1,5 @@
 package com.taskadapter.connector.redmine;
 
-import com.taskadapter.connector.common.TaskLoader;
 import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.AvailableFieldsBuilder;
@@ -73,11 +72,6 @@ public class RedmineDescriptor implements Descriptor {
     @Override
     public AvailableFields getAvailableFields() {
         return SUPPORTED_FIELDS;
-    }
-
-    @Override
-    public TaskLoader<RedmineConfig> getTaskLoader() {
-        return new RedmineTaskLoader();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.common.AbstractConnector;
+import com.taskadapter.connector.common.TaskLoader;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
@@ -111,4 +112,10 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
         }
 
     }
+    
+    @Override
+    public TaskLoader<MSPConfig> getTaskLoader() {
+        return new MSPTaskLoader();
+    }
+
 }

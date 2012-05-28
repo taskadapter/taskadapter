@@ -1,6 +1,7 @@
 package com.taskadapter.connector.mantis;
 
 import com.taskadapter.connector.common.AbstractConnector;
+import com.taskadapter.connector.common.TaskLoader;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.ProgressMonitor;
@@ -22,6 +23,11 @@ public class MantisConnector extends AbstractConnector<MantisConfig> {
     @Override
     public Descriptor getDescriptor() {
         return MantisDescriptor.instance;
+    }
+
+    @Override
+    public TaskLoader<MantisConfig> getTaskLoader() {
+        return new MantisTaskLoader();
     }
 
 }

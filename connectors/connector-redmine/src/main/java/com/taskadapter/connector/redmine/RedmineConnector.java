@@ -1,6 +1,7 @@
 package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.common.AbstractConnector;
+import com.taskadapter.connector.common.TaskLoader;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.ProgressMonitor;
@@ -24,6 +25,11 @@ public class RedmineConnector extends AbstractConnector<RedmineConfig> {
     @Override
     public Descriptor getDescriptor() {
         return RedmineDescriptor.instance;
+    }
+
+    @Override
+    public TaskLoader<RedmineConfig> getTaskLoader() {
+        return new RedmineTaskLoader();
     }
 
 }

@@ -1,8 +1,5 @@
 package com.taskadapter.connector.definition;
 
-import com.taskadapter.connector.common.PriorityLoader;
-import com.taskadapter.connector.common.ProjectLoader;
-import com.taskadapter.connector.common.TaskLoader;
 import com.taskadapter.connector.common.TaskSaver;
 
 import java.util.Collection;
@@ -49,6 +46,4 @@ public interface Descriptor {
     public AvailableFields getAvailableFields();
 
     public TaskSaver getTaskSaver(ConnectorConfig config);
-
-    public TaskLoader getTaskLoader();
 }

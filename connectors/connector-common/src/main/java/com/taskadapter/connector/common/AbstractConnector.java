@@ -19,12 +19,10 @@ public abstract class AbstractConnector<T extends ConnectorConfig> implements Co
         this.config = config;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<GTask> loadData(ProgressMonitor monitorIGNORED) {
         try {
-            TaskLoader<ConnectorConfig> taskLoader = getDescriptor()
-                    .getTaskLoader();
+            TaskLoader<T> taskLoader = getTaskLoader();
             taskLoader.beforeTasksLoad(config);
             List<GTask> tasks = taskLoader.loadTasks(config);
             Collections.sort(tasks, new Comparator<GTask>() {
@@ -40,11 +38,12 @@ public abstract class AbstractConnector<T extends ConnectorConfig> implements Co
             throw new RuntimeException(e);
         }
     }
+    
+    protected abstract TaskLoader<T> getTaskLoader();
 
-    @SuppressWarnings("unchecked")
     @Override
     public GTask loadTaskByKey(String key) {
-        TaskLoader<ConnectorConfig> taskLoader = getDescriptor().getTaskLoader();
+        TaskLoader<T> taskLoader = getTaskLoader();
         taskLoader.beforeTasksLoad(config);
         return taskLoader.loadTask(config, key);
     }

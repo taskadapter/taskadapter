@@ -2,6 +2,7 @@ package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rpc.soap.client.*;
 import com.taskadapter.connector.common.AbstractConnector;
+import com.taskadapter.connector.common.TaskLoader;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.NamedKeyedObject;
@@ -99,5 +100,11 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
     public Descriptor getDescriptor() {
         return JiraDescriptor.instance;
     }
+
+    @Override
+    protected TaskLoader<JiraConfig> getTaskLoader() {
+        return new JiraTaskLoader();
+    }
+
 
 }

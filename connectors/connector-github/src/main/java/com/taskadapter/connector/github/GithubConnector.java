@@ -1,6 +1,7 @@
 package com.taskadapter.connector.github;
 
 import com.taskadapter.connector.common.AbstractConnector;
+import com.taskadapter.connector.common.TaskLoader;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.ProgressMonitor;
@@ -19,5 +20,9 @@ public class GithubConnector extends AbstractConnector<GithubConfig> {
     public void updateRemoteIDs(ConnectorConfig sourceConfig, SyncResult actualSaveResult, ProgressMonitor monitor) {
         throw new RuntimeException("not implemented for this connector");
     }
-
+    
+    @Override
+    protected TaskLoader<GithubConfig> getTaskLoader() {
+        return new GithubTaskLoader();
+    }
 }
