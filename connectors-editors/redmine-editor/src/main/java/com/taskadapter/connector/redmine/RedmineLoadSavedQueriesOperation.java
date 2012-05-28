@@ -8,6 +8,7 @@ import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.LookupOperation;
 import org.redmine.ta.NotFoundException;
 import org.redmine.ta.RedmineManager;
+import org.redmine.ta.beans.Project;
 import org.redmine.ta.beans.SavedQuery;
 
 import java.util.ArrayList;
@@ -29,10 +30,23 @@ public class RedmineLoadSavedQueriesOperation extends LookupOperation {
         RedmineManager mgr = RedmineManagerFactory.createRedmineManager(config.getServerInfo());
         List<NamedKeyedObject> result = new ArrayList<NamedKeyedObject>();
         try {
+            //get project id to filter saved queries
+            Integer projectId = null;
+            if (config.getProjectKey() != null && config.getProjectKey().length() > 0) {
+                Project project = mgr.getProjectByKey(config.getProjectKey());
+                if (project != null) {
+                    projectId = project.getId();
+                }
+            }
+
             List<SavedQuery> savedQueries = mgr.getSavedQueries();
             // XXX refactor: we don't even need these IDs
-            for (SavedQuery q : savedQueries) {
-                result.add(new NamedKeyedObjectImpl(Integer.toString(q.getId()), q.getName()));
+            for (SavedQuery savedQuery : savedQueries) {
+                Integer projectIdFromQuery = savedQuery.getProjectId();
+                //we should add only common queries and queries which belongs to selected project
+                if (projectIdFromQuery == null || projectIdFromQuery == 0 || projectIdFromQuery.equals(projectId)) {
+                    result.add(new NamedKeyedObjectImpl(Integer.toString(savedQuery.getId()), savedQuery.getName()));
+                }
             }
         } catch (NotFoundException e) {
             EditorUtil.show(editor.getWindow(), "Can't load Saved Queries", "The server did not return any saved queries.\n" +
