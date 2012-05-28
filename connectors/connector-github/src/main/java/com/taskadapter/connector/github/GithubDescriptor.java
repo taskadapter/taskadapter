@@ -60,7 +60,7 @@ public class GithubDescriptor implements Descriptor {
         return getID();
     }
 
-    public Class<?> getConfigClass() {
+    public Class<GithubConfig> getConfigClass() {
         return GithubConfig.class;
     }
 

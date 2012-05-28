@@ -40,7 +40,7 @@ public interface Descriptor {
 
     public ConnectorConfig createDefaultConfig();
 
-    public Class<?> getConfigClass();
+    public Class<? extends ConnectorConfig> getConfigClass();
 
     public AvailableFieldsProvider getAvailableFieldsProvider();
 
