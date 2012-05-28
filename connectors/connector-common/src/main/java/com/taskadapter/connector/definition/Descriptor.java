@@ -51,6 +51,4 @@ public interface Descriptor {
     public TaskLoader getTaskLoader();
 
     public PriorityLoader getPriorityLoader();
-
-    PluginFactory getPluginFactory();
 }

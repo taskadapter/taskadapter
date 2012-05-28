@@ -30,7 +30,8 @@ public class JiraEditor extends TwoColumnsConfigEditor {
         jiraFieldsPanel = new OtherJiraFieldsPanel(this);
         addToLeftColumn(jiraFieldsPanel);
 
-        priorityPanel = new PriorityPanel(this, JiraDescriptor.instance);
+		priorityPanel = new PriorityPanel(this, JiraDescriptor.instance,
+				services.getPluginManager());
         priorityPanel.setPriorities(config.getPriorities());
         addToLeftColumn(priorityPanel);
 

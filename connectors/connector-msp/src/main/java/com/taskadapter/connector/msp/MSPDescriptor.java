@@ -103,9 +103,4 @@ public class MSPDescriptor implements Descriptor {
     public PriorityLoader getPriorityLoader() {
         throw new RuntimeException("NOT READY");
     }
-
-    @Override
-    public PluginFactory getPluginFactory() {
-        return new MSPFactory();
-    }
 }

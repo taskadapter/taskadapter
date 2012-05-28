@@ -102,9 +102,4 @@ public class RedmineDescriptor implements Descriptor {
     public PriorityLoader getPriorityLoader() {
         throw new RuntimeException("NOT READY");
     }
-
-    @Override
-    public PluginFactory getPluginFactory() {
-        return new RedmineFactory();
-    }
 }

@@ -82,7 +82,8 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
     }
 
     protected void addPriorityPanel(ConfigEditor editor, Descriptor descriptor, Priorities priorities) {
-        priorityPanel = new PriorityPanel(editor, descriptor);
+		priorityPanel = new PriorityPanel(editor, descriptor,
+				services.getPluginManager());
         toValidate.add(priorityPanel);
         addComponent(priorityPanel);
         priorityPanel.setPriorities(priorities);

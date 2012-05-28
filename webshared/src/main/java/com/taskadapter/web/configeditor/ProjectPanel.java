@@ -1,6 +1,7 @@
 package com.taskadapter.web.configeditor;
 
 import com.google.common.base.Strings;
+import com.taskadapter.PluginManager;
 import com.taskadapter.connector.definition.ProjectInfo;
 import com.taskadapter.connector.definition.ValidationException;
 import com.vaadin.ui.*;
@@ -21,15 +22,18 @@ public class ProjectPanel extends Panel implements Validatable {
     private TextField queryId;
 
     private final ProjectProcessor projectProcessor;
+    private final PluginManager pluginManager;
     private Label projectKeyLabel;
     private Label queryIdLabel;
     private Button showQueriesButton;
     private static final String TEXT_AREA_WIDTH = "120px";
 
-    public ProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor) {
+	public ProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor,
+			PluginManager pluginManager) {
         super(DEFAULT_PANEL_CAPTION);
         this.editor = editor;
         this.projectProcessor = projectProcessor;
+        this.pluginManager = pluginManager;
         buildUI();
     }
 
@@ -66,7 +70,9 @@ public class ProjectPanel extends Panel implements Validatable {
         infoButton.setEnabled(features.contains(ProjectProcessor.EditorFeature.LOAD_PROJECT_INFO));
         keyHorizontalLayout.addComponent(infoButton);
 
-        LookupOperation loadProjectsOperation = new LoadProjectsOperation(editor, projectProcessor.getDescriptor().getPluginFactory());
+		LookupOperation loadProjectsOperation = new LoadProjectsOperation(
+				editor, pluginManager.getPluginFactory(projectProcessor
+						.getDescriptor().getID()));
         Button projectKeyButton = EditorUtil.createLookupButton(
                 editor,
                 "...",

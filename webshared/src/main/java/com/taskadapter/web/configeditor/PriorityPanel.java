@@ -1,5 +1,6 @@
 package com.taskadapter.web.configeditor;
 
+import com.taskadapter.PluginManager;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.Descriptor.Feature;
@@ -30,6 +31,7 @@ public class PriorityPanel extends Panel implements Validatable {
     private BeanContainer data = new BeanContainer<String, Priority>(Priority.class);
 
     private Table prioritiesTable;
+    private final PluginManager pluginManager;
 
     /**
      * Config Editors should NOT create this object directly, use ConfigEditor.addPriorityPanel() method instead.
@@ -38,10 +40,11 @@ public class PriorityPanel extends Panel implements Validatable {
      * @param descriptor Descriptor
      * @see ConfigEditor#addPriorityPanel(ConfigEditor, com.taskadapter.connector.definition.Descriptor, Priorities priorities)
      */
-    public PriorityPanel(ConfigEditor editor, Descriptor descriptor) {
+    public PriorityPanel(ConfigEditor editor, Descriptor descriptor, PluginManager pluginManager) {
         super("Priorities");
         this.configEditor = editor;
         this.descriptor = descriptor;
+        this.pluginManager = pluginManager;
         buildUI();
     }
 
@@ -109,7 +112,8 @@ public class PriorityPanel extends Panel implements Validatable {
     }
 
     private void reloadPriorityList() throws Exception {
-        LookupOperation loadPrioritiesOperation = new LoadPrioritiesOperation(configEditor, descriptor.getPluginFactory());
+        LookupOperation loadPrioritiesOperation = new LoadPrioritiesOperation(configEditor,
+        		pluginManager.getPluginFactory(descriptor.getID()));
         @SuppressWarnings("unchecked")
         List<NamedKeyedObjectImpl> list = (List<NamedKeyedObjectImpl>) loadPrioritiesOperation.run();
 

@@ -75,7 +75,8 @@ public abstract class TwoColumnsConfigEditor extends ConfigEditor {
         addToLeftColumn(serverPanel);
 
         // right column
-        projectPanel = new ProjectPanel(this, projectProcessor);
+		projectPanel = new ProjectPanel(this, projectProcessor,
+				services.getPluginManager());
         addToRightColumn(projectPanel);
         addToRightColumn(createEmptyLabel("10px"));
     }

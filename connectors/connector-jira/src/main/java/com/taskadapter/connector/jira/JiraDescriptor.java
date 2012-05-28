@@ -96,9 +96,4 @@ public class JiraDescriptor implements Descriptor {
     public PriorityLoader getPriorityLoader() {
         return new JiraPriorityLoader();
     }
-
-    @Override
-    public PluginFactory getPluginFactory() {
-        return new JiraFactory();
-    }
 }
