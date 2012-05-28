@@ -38,7 +38,6 @@ public class LicenseAgreementPage extends Page {
             agreementContent = new Label(AGREEMENT_FILE_NOT_FOUND);
         }
         agreementContent.setContentMode(Label.CONTENT_XHTML);
-        agreementContent.addStyleName("agreement");
         agreementPanel.addComponent(agreementContent);
         panel.addComponent(agreementPanel);
 

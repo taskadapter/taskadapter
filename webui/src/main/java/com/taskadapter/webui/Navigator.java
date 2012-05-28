@@ -113,7 +113,8 @@ public class Navigator {
             currentPage = pages.get(LOGIN_PAGE);
         }
 
-        if (services.getAuthenticator().isLoggedIn() && services.getAuthenticator().getUserName().equals("admin")
+        if (services.getAuthenticator().isLoggedIn()
+                && services.getAuthenticator().getUserName().equals("admin")
                 && !services.getSettingsManager().isLicenseAgreementAccepted()) {
             currentPage = pages.get(LICENSE_AGREEMENT_PAGE);
         }
