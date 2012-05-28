@@ -88,8 +88,9 @@ public class ExportPage extends ActionPage {
 
         addDateTimeInfo();
         addFromToPanel();
+        addDownloadButtonIfServerMode(result.getTargetFileAbsolutePath());
         addExportNumbersStats();
-        addFileInfoIfDestinationIsFile();
+        addFileInfoIfNeeded();
 
         if (result.hasErrors()) {
             addErrors();
@@ -136,10 +137,9 @@ public class ExportPage extends ActionPage {
         donePanel.addComponent(errorTextLabel);
     }
 
-    private void addFileInfoIfDestinationIsFile() {
-        if (result.getTargetFileAbsolutePath() != null) {
+    private void addFileInfoIfNeeded() {
+        if (result.getTargetFileAbsolutePath() != null && (services.getSettingsManager().isTAWorkingOnLocalMachine())) {
             donePanel.addComponent(new Label("File absolute path: " + result.getTargetFileAbsolutePath()));
-            addDownloadButtonIfServerMode(result.getTargetFileAbsolutePath());
         }
     }
 
