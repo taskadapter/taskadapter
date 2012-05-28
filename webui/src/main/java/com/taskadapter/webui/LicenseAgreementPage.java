@@ -18,8 +18,6 @@ public class LicenseAgreementPage extends Page {
     private static final String AGREEMENT_PANEL_HEIGHT = "500px";
 
     private Panel panel = new Panel(AGREEMENT_TITLE);
-    private Label agreementContent;
-    private CheckBox acceptCheckbox;
     private Button acceptButton;
 
     public LicenseAgreementPage() {
@@ -31,12 +29,15 @@ public class LicenseAgreementPage extends Page {
         agreementPanel.setWidth(FORM_WIDTH);
         agreementPanel.setHeight(AGREEMENT_PANEL_HEIGHT);
 
+        Label agreementContent;
         try {
-            agreementContent = new Label(MyIOUtils.convertStreamToString(MyIOUtils.getResourceAsStream(AGREEMENT_FILE_NAME)));
+            String licenseAgreementText = MyIOUtils.convertStreamToString(MyIOUtils.getResourceAsStream(AGREEMENT_FILE_NAME));
+            String textToShow = "<pre>" + licenseAgreementText + "</pre>";
+            agreementContent = new Label(textToShow);
         } catch (IOException e) {
             agreementContent = new Label(AGREEMENT_FILE_NOT_FOUND);
         }
-        agreementContent.setContentMode(Label.CONTENT_RAW);
+        agreementContent.setContentMode(Label.CONTENT_XHTML);
         agreementContent.addStyleName("agreement");
         agreementPanel.addComponent(agreementContent);
         panel.addComponent(agreementPanel);
@@ -45,7 +46,7 @@ public class LicenseAgreementPage extends Page {
         actionLayout.setWidth(FORM_WIDTH);
         actionLayout.setMargin(true, false, false, false);
 
-        acceptCheckbox = new CheckBox(ACCEPT_CHECKBOX);
+        CheckBox acceptCheckbox = new CheckBox(ACCEPT_CHECKBOX);
         acceptCheckbox.setValue(false);
         acceptCheckbox.setImmediate(true);
         acceptCheckbox.addListener(new CheckBox.ValueChangeListener() {
