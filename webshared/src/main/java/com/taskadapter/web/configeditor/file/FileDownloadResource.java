@@ -10,9 +10,8 @@ import java.io.FileNotFoundException;
 
 /**
  * Author: Alexander Kulik
- * Date: 11.05.12 20:38
  */
-class FileDownloadResource extends FileResource {
+public class FileDownloadResource extends FileResource {
 
     public FileDownloadResource(File sourceFile, Application application) {
         super(sourceFile, application);

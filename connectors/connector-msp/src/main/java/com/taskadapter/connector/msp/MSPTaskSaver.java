@@ -35,16 +35,13 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
      * This method allows saving data to MSP file while keeping tasks ids.
      */
     private SyncResult saveData(List<GTask> tasks, boolean keepTaskId) {
-        String result;
         try {
-            String absoluteFilePath = writer.write(syncResult, tasks, keepTaskId);
-            result = "File absolute path: " + absoluteFilePath;
-
+            String result = writer.write(syncResult, tasks, keepTaskId);
+            syncResult.setTargetFileAbsolutePath(result);
+            return syncResult;
         } catch (IOException e) {
             throw new RuntimeException("Can't save data:\n" + e.toString(), e);
         }
-        syncResult.setMessage(result);
-        return syncResult;
     }
 
     // TODO implement "cancel save" functionality for MSP files.

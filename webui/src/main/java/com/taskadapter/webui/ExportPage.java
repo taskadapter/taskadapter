@@ -8,9 +8,13 @@ import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.definition.TaskError;
 import com.taskadapter.core.SyncRunner;
 import com.taskadapter.web.configeditor.EditorUtil;
+import com.taskadapter.web.configeditor.file.FileDownloadResource;
+import com.vaadin.Application;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
+import java.io.File;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -19,6 +23,8 @@ import java.util.Calendar;
  * @author Alexey Skorokhodov
  */
 public class ExportPage extends ActionPage {
+    private VerticalLayout donePanel = new VerticalLayout();
+
     // TODO i18n
     private static final String TRANSPORT_ERROR = "There was a problem communicating with the server. " +
             "Please check that the server name is valid and the server is accessible.";
@@ -75,49 +81,86 @@ public class ExportPage extends ActionPage {
         return "No data was loaded using the given criteria.";
     }
 
-    // TODO Alexey: maybe move this "done" thing into a separate "Page" class?
+    // TODO Alexey: move this "done" thing into a separate Page class
     @Override
     protected VerticalLayout getDoneInfoPanel() {
-        VerticalLayout donePanel = new VerticalLayout();
         donePanel.setWidth("600px");
 
+        addDateTimeInfo();
+        addFromToPanel();
+        addExportNumbersStats();
+        addFileInfoIfDestinationIsFile();
+
+        if (result.hasErrors()) {
+            addErrors();
+        }
+        return donePanel;
+    }
+
+    private void addDateTimeInfo() {
         String LOG_DATE_FORMAT = "d/MMM HH:mm";
         SimpleDateFormat dateFormatter = new SimpleDateFormat(LOG_DATE_FORMAT);
 
         String time = dateFormatter.format(Calendar.getInstance().getTime());
-        donePanel.addComponent(new Label("Completed export at " + time));
+        donePanel.addComponent(new Label("Export completed on " + time));
+    }
 
+    private void addFromToPanel() {
         Label infoLabel = new Label("From: " + connectorFrom.getConfig().getSourceLocation()
                 + "<br>To: " + connectorTo.getConfig().getTargetLocation());
         infoLabel.addStyleName("export-result");
         infoLabel.setContentMode(Label.CONTENT_XHTML);
         donePanel.addComponent(infoLabel);
+    }
 
-        if (result.getMessage() != null) {
-            donePanel.addComponent(new Label(result.getMessage()));
-        }
-
-        infoLabel = new Label("Created tasks: " + result.getCreateTasksNumber()
+    private void addExportNumbersStats() {
+        Label infoLabel = new Label("Created tasks: " + result.getCreateTasksNumber()
                 + "<br>Updated tasks: " + result.getUpdatedTasksNumber() + "<br><br>");
         infoLabel.addStyleName("export-result");
         infoLabel.setContentMode(Label.CONTENT_XHTML);
         donePanel.addComponent(infoLabel);
+    }
 
-        if (result.hasErrors()) {
-            donePanel.addComponent(new Label("There were some problems during export:"));
-            String errorText = "";
-            for (String e : result.getGeneralErrors()) {
-                errorText += e + "<br>";
-            }
-            for (TaskError e : result.getErrors()) {
-                errorText += getMessageForTask(e) + "<br>";
-            }
-            Label errorTextLabel = new Label(errorText);
-            errorTextLabel.addStyleName("errorMessage");
-            errorTextLabel.setContentMode(Label.CONTENT_XHTML);
-            donePanel.addComponent(errorTextLabel);
+    private void addErrors() {
+        donePanel.addComponent(new Label("There were some problems during export:"));
+        String errorText = "";
+        for (String e : result.getGeneralErrors()) {
+            errorText += e + "<br>";
         }
-        return donePanel;
+        for (TaskError e : result.getErrors()) {
+            errorText += getMessageForTask(e) + "<br>";
+        }
+        Label errorTextLabel = new Label(errorText);
+        errorTextLabel.addStyleName("errorMessage");
+        errorTextLabel.setContentMode(Label.CONTENT_XHTML);
+        donePanel.addComponent(errorTextLabel);
+    }
+
+    private void addFileInfoIfDestinationIsFile() {
+        if (result.getTargetFileAbsolutePath() != null) {
+            donePanel.addComponent(new Label("File absolute path: " + result.getTargetFileAbsolutePath()));
+            addDownloadButtonIfServerMode(result.getTargetFileAbsolutePath());
+        }
+    }
+
+    private void addDownloadButtonIfServerMode(String targetFileAbsolutePath) {
+        if (!services.getSettingsManager().isTAWorkingOnLocalMachine()) {
+            addDownloadButton(targetFileAbsolutePath);
+        }
+    }
+
+    private void addDownloadButton(final String targetFileAbsolutePath) {
+        Button downloadButton = new Button("Download");
+        downloadButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                File file = new File(targetFileAbsolutePath);
+                Application application = navigator.getApplication();
+                FileDownloadResource resource = new FileDownloadResource(file, application);
+                application.getMainWindow().open(resource);
+            }
+        });
+        donePanel.addComponent(downloadButton);
     }
 
     private String getMessageForTask(TaskError e) {

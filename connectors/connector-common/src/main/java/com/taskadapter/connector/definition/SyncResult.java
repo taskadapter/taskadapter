@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 public class SyncResult {
-    private String message;
+    // TODO this is a temporary solution to enable "download" link after exporting to MSP in server mode. refactor!
+    private String targetFileAbsolutePath;
 
     private int updatedTasksNumber;
     private int createdTasksNumber;
@@ -16,12 +17,12 @@ public class SyncResult {
     private List<TaskError> errors = new ArrayList<TaskError>();
     private List<String> generalErrors = new ArrayList<String>();
 
-    public void setMessage(String message) {
-        this.message = message;
+    public String getTargetFileAbsolutePath() {
+        return targetFileAbsolutePath;
     }
 
-    public String getMessage() {
-        return message;
+    public void setTargetFileAbsolutePath(String targetFileAbsolutePath) {
+        this.targetFileAbsolutePath = targetFileAbsolutePath;
     }
 
     public void addError(TaskError e) {
