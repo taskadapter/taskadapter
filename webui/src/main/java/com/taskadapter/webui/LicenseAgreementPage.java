@@ -3,9 +3,6 @@ package com.taskadapter.webui;
 import com.taskadapter.util.MyIOUtils;
 import com.vaadin.data.Property;
 import com.vaadin.ui.*;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
 
 import java.io.IOException;
 
@@ -67,7 +64,7 @@ public class LicenseAgreementPage extends Page {
 
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
-                services.getSettingsManager().setAgreementWasRead(true);
+                services.getSettingsManager().markLicenseAgreementAsAccepted();
                 navigator.show(Navigator.HOME);
             }
         });

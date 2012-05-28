@@ -114,7 +114,7 @@ public class Navigator {
         }
 
         if (services.getAuthenticator().isLoggedIn() && services.getAuthenticator().getUserName().equals("admin")
-                && !services.getSettingsManager().isAgreementWasRead()) {
+                && !services.getSettingsManager().isLicenseAgreementAccepted()) {
             currentPage = pages.get(LICENSE_AGREEMENT_PAGE);
         }
 

@@ -2,12 +2,10 @@ package com.taskadapter.web;
 
 import java.util.prefs.Preferences;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class SettingsManager {
     private static final boolean DEFAULT_LOCAL = true;
-    private static final boolean DEFAULT_AGREEMENT_WAS_READ = false;
+    private static final boolean DEFAULT_LICENSE_AGREEMENT_ACCEPTED = false;
+    public static final String LICENSE_AGREEMENT_FLAG = "AgreementWasRead";
 
     private Preferences prefs = Preferences.userNodeForPackage(SettingsManager.class);
 
@@ -19,11 +17,11 @@ public class SettingsManager {
         prefs.putBoolean("TALocal", local);
     }
 
-    public boolean isAgreementWasRead() {
-        return prefs.getBoolean("AgreementWasRead", DEFAULT_AGREEMENT_WAS_READ);
+    public boolean isLicenseAgreementAccepted() {
+        return prefs.getBoolean(LICENSE_AGREEMENT_FLAG, DEFAULT_LICENSE_AGREEMENT_ACCEPTED);
     }
 
-    public void setAgreementWasRead(boolean wasRead) {
-        prefs.putBoolean("AgreementWasRead", wasRead);
+    public void markLicenseAgreementAsAccepted() {
+        prefs.putBoolean(LICENSE_AGREEMENT_FLAG, true);
     }
 }
