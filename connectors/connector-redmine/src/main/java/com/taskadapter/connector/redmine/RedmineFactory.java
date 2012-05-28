@@ -1,5 +1,6 @@
 package com.taskadapter.connector.redmine;
 
+import com.taskadapter.connector.common.PriorityLoader;
 import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
@@ -23,5 +24,10 @@ public class RedmineFactory implements PluginFactory {
     @Override
     public ProjectLoader getProjectLoader() {
         return new RedmineProjectLoader();
+    }
+    
+    @Override
+    public PriorityLoader getPriorityLoader() {
+        throw new RuntimeException("NOT READY");
     }
 }

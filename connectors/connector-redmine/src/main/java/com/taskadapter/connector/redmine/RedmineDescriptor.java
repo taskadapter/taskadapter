@@ -1,14 +1,11 @@
 package com.taskadapter.connector.redmine;
 
-import com.taskadapter.connector.common.PriorityLoader;
-import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.common.TaskLoader;
 import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.AvailableFieldsBuilder;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
-import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 import java.util.Arrays;
@@ -91,10 +88,5 @@ public class RedmineDescriptor implements Descriptor {
     @Override
     public Collection<Feature> getSupportedFeatures() {
         return Arrays.asList(Feature.LOAD_TASK, Feature.SAVE_TASK, Feature.UPDATE_TASK, Feature.TASK_TYPE);
-    }
-
-    @Override
-    public PriorityLoader getPriorityLoader() {
-        throw new RuntimeException("NOT READY");
     }
 }

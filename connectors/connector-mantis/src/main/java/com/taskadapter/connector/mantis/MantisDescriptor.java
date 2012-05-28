@@ -1,6 +1,5 @@
 package com.taskadapter.connector.mantis;
 
-import com.taskadapter.connector.common.PriorityLoader;
 import com.taskadapter.connector.common.TaskLoader;
 import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.AvailableFields;
@@ -77,10 +76,5 @@ public class MantisDescriptor implements Descriptor {
     @Override
     public Collection<Feature> getSupportedFeatures() {
         return Arrays.asList(Feature.LOAD_TASK, Feature.SAVE_TASK);
-    }
-
-    @Override
-    public PriorityLoader getPriorityLoader() {
-        throw new RuntimeException("NOT READY");
     }
 }

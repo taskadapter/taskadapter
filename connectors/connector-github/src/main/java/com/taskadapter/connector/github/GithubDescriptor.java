@@ -1,6 +1,5 @@
 package com.taskadapter.connector.github;
 
-import com.taskadapter.connector.common.PriorityLoader;
 import com.taskadapter.connector.common.TaskLoader;
 import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.AvailableFields;
@@ -80,10 +79,5 @@ public class GithubDescriptor implements Descriptor {
 
     public boolean isSupported(Feature feature) {
         return getSupportedFeatures().contains(feature);
-    }
-
-    @Override
-    public PriorityLoader getPriorityLoader() {
-        throw new RuntimeException("NOT READY");
     }
 }

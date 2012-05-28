@@ -13,6 +13,10 @@ import java.util.Collection;
  *
  * @author Alexey Skorokhodov
  */
+/*
+ * TODO: Get rid of "implementation" interfaces, use a "plain data" class.
+ * Maybe use properties for this task?
+ */
 public interface Descriptor {
 
     public enum Feature {
@@ -47,6 +51,4 @@ public interface Descriptor {
     public TaskSaver getTaskSaver(ConnectorConfig config);
 
     public TaskLoader getTaskLoader();
-
-    public PriorityLoader getPriorityLoader();
 }

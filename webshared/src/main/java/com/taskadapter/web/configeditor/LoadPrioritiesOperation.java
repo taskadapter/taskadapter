@@ -17,6 +17,6 @@ public class LoadPrioritiesOperation extends LookupOperation {
 
     @Override
     protected List<? extends NamedKeyedObject> loadData() throws Exception {
-        return factory.getDescriptor().getPriorityLoader().getPriorities(config.getServerInfo());
+        return factory.getPriorityLoader().getPriorities(config.getServerInfo());
     }
 }

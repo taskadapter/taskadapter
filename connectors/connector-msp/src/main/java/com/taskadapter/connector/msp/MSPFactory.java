@@ -1,5 +1,6 @@
 package com.taskadapter.connector.msp;
 
+import com.taskadapter.connector.common.PriorityLoader;
 import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
@@ -26,5 +27,9 @@ public class MSPFactory implements PluginFactory {
         throw new RuntimeException("Operation is not implemented for MSP");
     }
 
+    @Override
+    public PriorityLoader getPriorityLoader() {
+        throw new RuntimeException("NOT READY");
+    }
 
 }

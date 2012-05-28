@@ -1,5 +1,6 @@
 package com.taskadapter.connector.github;
 
+import com.taskadapter.connector.common.PriorityLoader;
 import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
@@ -20,5 +21,10 @@ public class GithubFactory implements PluginFactory {
     @Override
     public ProjectLoader getProjectLoader() {
         return new GithubProjectLoader();
+    }
+    
+    @Override
+    public PriorityLoader getPriorityLoader() {
+        throw new RuntimeException("NOT READY");
     }
 }

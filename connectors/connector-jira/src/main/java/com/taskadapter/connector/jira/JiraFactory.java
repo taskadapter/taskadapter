@@ -1,5 +1,6 @@
 package com.taskadapter.connector.jira;
 
+import com.taskadapter.connector.common.PriorityLoader;
 import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
@@ -24,4 +25,10 @@ public class JiraFactory implements PluginFactory {
     public ProjectLoader getProjectLoader() {
         return new JiraProjectLoader();
     }
+    
+    @Override
+    public PriorityLoader getPriorityLoader() {
+        return new JiraPriorityLoader();
+    }
+
 }
