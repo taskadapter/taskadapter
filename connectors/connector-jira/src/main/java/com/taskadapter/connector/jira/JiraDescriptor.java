@@ -1,9 +1,7 @@
 package com.taskadapter.connector.jira;
 
-import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.AvailableFieldsBuilder;
-import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
@@ -65,11 +63,6 @@ public class JiraDescriptor implements Descriptor {
     @Override
     public AvailableFields getAvailableFields() {
         return SUPPORTED_FIELDS;
-    }
-
-    @Override
-    public TaskSaver<JiraConfig> getTaskSaver(ConnectorConfig config) {
-        return new JiraTaskSaver((JiraConfig) config);
     }
 
     @Override

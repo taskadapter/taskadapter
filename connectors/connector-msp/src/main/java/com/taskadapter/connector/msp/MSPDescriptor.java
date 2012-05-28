@@ -1,9 +1,7 @@
 package com.taskadapter.connector.msp;
 
-import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.AvailableFieldsBuilder;
-import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
@@ -73,11 +71,6 @@ public class MSPDescriptor implements Descriptor {
     @Override
     public AvailableFields getAvailableFields() {
         return SUPPORTED_FIELDS;
-    }
-
-    @Override
-    public TaskSaver<MSPConfig> getTaskSaver(ConnectorConfig config) {
-        return new MSPTaskSaver((MSPConfig) config);
     }
 
     @Override

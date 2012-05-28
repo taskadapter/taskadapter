@@ -1,6 +1,5 @@
 package com.taskadapter.connector.mantis;
 
-import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.AvailableFieldsBuilder;
 import com.taskadapter.connector.definition.ConnectorConfig;
@@ -60,11 +59,6 @@ public class MantisDescriptor implements Descriptor {
     @Override
     public AvailableFields getAvailableFields() {
         return SUPPORTED_FIELDS;
-    }
-
-    @Override
-    public TaskSaver<MantisConfig> getTaskSaver(ConnectorConfig config) {
-        return new MantisTaskSaver((MantisConfig) config);
     }
 
     @Override

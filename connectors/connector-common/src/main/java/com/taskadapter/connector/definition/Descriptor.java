@@ -1,7 +1,5 @@
 package com.taskadapter.connector.definition;
 
-import com.taskadapter.connector.common.TaskSaver;
-
 import java.util.Collection;
 
 
@@ -44,6 +42,4 @@ public interface Descriptor {
     public Class<? extends ConnectorConfig> getConfigClass();
 
     public AvailableFields getAvailableFields();
-
-    public TaskSaver getTaskSaver(ConnectorConfig config);
 }

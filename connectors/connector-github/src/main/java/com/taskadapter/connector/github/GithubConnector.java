@@ -2,6 +2,7 @@ package com.taskadapter.connector.github;
 
 import com.taskadapter.connector.common.AbstractConnector;
 import com.taskadapter.connector.common.TaskLoader;
+import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.ProgressMonitor;
@@ -25,4 +26,10 @@ public class GithubConnector extends AbstractConnector<GithubConfig> {
     protected TaskLoader<GithubConfig> getTaskLoader() {
         return new GithubTaskLoader();
     }
+    
+    public TaskSaver<GithubConfig> getTaskSaver(ConnectorConfig config) {
+        return new GithubTaskSaver((GithubConfig) config);
+    }
+
+
 }

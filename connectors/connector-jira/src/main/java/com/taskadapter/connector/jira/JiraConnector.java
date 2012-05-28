@@ -3,6 +3,7 @@ package com.taskadapter.connector.jira;
 import com.atlassian.jira.rpc.soap.client.*;
 import com.taskadapter.connector.common.AbstractConnector;
 import com.taskadapter.connector.common.TaskLoader;
+import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.NamedKeyedObject;
@@ -106,5 +107,8 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
         return new JiraTaskLoader();
     }
 
-
+    @Override
+    public TaskSaver<JiraConfig> getTaskSaver(ConnectorConfig config) {
+        return new JiraTaskSaver((JiraConfig) config);
+    }
 }

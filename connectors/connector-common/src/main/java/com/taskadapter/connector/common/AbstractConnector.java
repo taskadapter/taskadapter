@@ -51,7 +51,7 @@ public abstract class AbstractConnector<T extends ConnectorConfig> implements Co
     @Override
     public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) {
         try {
-            return getDescriptor().getTaskSaver(config).saveData(tasks, monitor);
+            return getTaskSaver(config).saveData(tasks, monitor);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

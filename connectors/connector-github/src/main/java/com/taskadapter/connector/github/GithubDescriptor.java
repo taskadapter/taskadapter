@@ -1,6 +1,5 @@
 package com.taskadapter.connector.github;
 
-import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.AvailableFieldsBuilder;
 import com.taskadapter.connector.definition.ConnectorConfig;
@@ -41,10 +40,6 @@ public class GithubDescriptor implements Descriptor {
 
     public AvailableFields getAvailableFields() {
         return SUPPORTED_FIELDS;
-    }
-
-    public TaskSaver getTaskSaver(ConnectorConfig config) {
-        return new GithubTaskSaver((GithubConfig) config);
     }
 
     public String getLabel() {
