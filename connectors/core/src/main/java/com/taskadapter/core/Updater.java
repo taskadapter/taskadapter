@@ -3,6 +3,8 @@ package com.taskadapter.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.taskadapter.connector.common.ConnectorUtils;
+import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.FileBasedConnector;
@@ -24,14 +26,15 @@ public class Updater {
     }
 
     public void start() {
-        loadTasksFromFile(null);
+        loadTasksFromFile(ProgressMonitorUtils.getDummyMonitor());
         removeTasksWithoutRemoteIds();
         loadExternalTasks();
         saveFile();
     }
 
     public void loadTasksFromFile(ProgressMonitor monitor) {
-        this.existingTasks = fileConnector.loadData(monitor);
+		this.existingTasks = ConnectorUtils.loadDataOrderedById(fileConnector,
+				monitor);
     }
 
     public void loadExternalTasks() {

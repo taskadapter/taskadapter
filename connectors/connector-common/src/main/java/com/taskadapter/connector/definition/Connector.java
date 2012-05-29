@@ -1,5 +1,7 @@
 package com.taskadapter.connector.definition;
 
+import com.taskadapter.connector.common.ConnectorUtils;
+import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.model.GTask;
 
@@ -7,9 +9,18 @@ import java.util.List;
 
 public interface Connector<T extends ConnectorConfig> {
 
-    /**
-     * @throws Exception           some other exceptions the connector might throw
-     */
+	/**
+	 * Loads a list of tasks. Order of loaded tasks is not specified and may
+	 * depend on implementation. To get tasks in a specific order, use
+	 * {@link ConnectorUtils} methods.
+	 * 
+	 * @param monitor
+	 *            can't be null. See
+	 *            {@link ProgressMonitorUtils#getDummyMonitor()} if you don't
+	 *            want any monitoring.
+	 * @throws Exception
+	 *             some other exceptions the connector might throw
+	 */
     public List<GTask> loadData(ProgressMonitor monitor);
 
     public GTask loadTaskByKey(String key);

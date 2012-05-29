@@ -1,5 +1,6 @@
 package com.taskadapter.integrationtests;
 
+import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
@@ -54,7 +55,7 @@ public class IntegrationTest extends AbstractSyncRunnerTest {
 
         SyncRunner runner = new SyncRunner(new LicenseManager()); //LicenseManager with license of some type can be set
         runner.setConnectorFrom(msProjectConnector);
-        runner.load(null);
+        runner.load(ProgressMonitorUtils.getDummyMonitor());
 
         runner.setTaskSaver(redmineTaskSaver);
         runner.save(null);
@@ -82,7 +83,7 @@ public class IntegrationTest extends AbstractSyncRunnerTest {
         runner.setConnectorFrom(projectConnector);
         runner.setTaskSaver(saver);
         // load from MSP
-        runner.load(null);
+        runner.load(ProgressMonitorUtils.getDummyMonitor());
         try {
             // save to Redmine
             runner.save(null);

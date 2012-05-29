@@ -1,5 +1,6 @@
 package com.taskadapter.connector.msp;
 
+import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.model.GTask;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Task;
@@ -60,8 +61,8 @@ public class MSPTestUtils {
     static List<GTask> load(String fileNameInClasspath) throws Exception {
         String fileName = getTestFileAbsolutePath(fileNameInClasspath);
         MSPConfig config = new MSPConfig(fileName);
-        MSPTaskLoader taskLoader = new MSPTaskLoader();
-        return taskLoader.loadTasks(config);
+        final MSPConnector connector = new MSPConnector(config);
+        return ConnectorUtils.loadDataOrderedById(connector);
     }
 
     /**

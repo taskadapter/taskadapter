@@ -1,5 +1,6 @@
 package com.taskadapter.core;
 
+import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
 import org.junit.Before;
@@ -23,7 +24,7 @@ public class UpdaterUnitTest {
     @Test
     public void tasksWithoutRemoteIdsAreFiltered() {
         Updater updater = new Updater(projectConnector, null);
-        updater.loadTasksFromFile(null);
+        updater.loadTasksFromFile(ProgressMonitorUtils.getDummyMonitor());
         assertEquals(9, updater.getExistingTasks().size());
         updater.removeTasksWithoutRemoteIds();
         // only 7 tasks have remote IDs

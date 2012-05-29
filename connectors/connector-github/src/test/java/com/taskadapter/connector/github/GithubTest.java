@@ -1,5 +1,6 @@
 package com.taskadapter.connector.github;
 
+import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.GProject;
 import org.junit.AfterClass;
@@ -25,16 +26,19 @@ public class GithubTest {
     @Test
     public void testProjectImport() throws Exception {
         GithubProjectLoader projectLoader = new GithubProjectLoader();
-        GithubTaskLoader taskLoader = new GithubTaskLoader();
-
         GithubConfig config = getTestConfig();
+        
+        final GithubConnector connector = new GithubConnector(config);
+
         List<GProject> projects = projectLoader.getProjects(config.getServerInfo());
         assertNotNull(projects);
         System.out.println("projects.size() = " + projects.size());
         for (GProject project : projects) {
             System.out.println("project.getName() = " + project.getName());
             config.setProjectKey(project.getKey());
-            System.out.println("project.getTasks() = " + taskLoader.loadTasks(config));
+			System.out
+					.println("project.getTasks() = "
+							+ ConnectorUtils.loadDataOrderedById(connector));
             System.out.println("---");
         }
     }

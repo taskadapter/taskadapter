@@ -6,8 +6,6 @@ import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.model.GTask;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public abstract class AbstractConnector<T extends ConnectorConfig> implements Connector<T> {
@@ -17,35 +15,6 @@ public abstract class AbstractConnector<T extends ConnectorConfig> implements Co
     protected AbstractConnector(T config) {
         super();
         this.config = config;
-    }
-
-    @Override
-    public List<GTask> loadData(ProgressMonitor monitorIGNORED) {
-        try {
-            TaskLoader<T> taskLoader = getTaskLoader();
-            taskLoader.beforeTasksLoad(config);
-            List<GTask> tasks = taskLoader.loadTasks(config);
-            Collections.sort(tasks, new Comparator<GTask>() {
-                @Override
-                public int compare(GTask o1, GTask o2) {
-                    return o1.getId() - o2.getId();
-                }
-            });
-            return tasks;
-        } catch (TransportException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-    
-    protected abstract TaskLoader<T> getTaskLoader();
-
-    @Override
-    public GTask loadTaskByKey(String key) {
-        TaskLoader<T> taskLoader = getTaskLoader();
-        taskLoader.beforeTasksLoad(config);
-        return taskLoader.loadTask(config, key);
     }
 
     @Override

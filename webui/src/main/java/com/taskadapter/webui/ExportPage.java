@@ -1,6 +1,7 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.config.TAFile;
+import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.common.TransportException;
 import com.taskadapter.connector.definition.Connector;
@@ -46,7 +47,7 @@ public class ExportPage extends ActionPage {
         runner = new SyncRunner(services.getLicenseManager());
         runner.setConnectorFrom(connectorFrom);
         try {
-            this.loadedTasks = runner.load(null);
+            this.loadedTasks = runner.load(ProgressMonitorUtils.getDummyMonitor());
         } catch (TransportException e) {
             String message = getErrorMessageForException(e);
             showErrorMessageOnPage(message);
