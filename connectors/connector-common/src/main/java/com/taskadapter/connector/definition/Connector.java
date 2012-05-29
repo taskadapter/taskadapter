@@ -11,7 +11,7 @@ public interface Connector<T extends ConnectorConfig> {
 
 	/**
 	 * Loads a list of tasks. Order of loaded tasks is not specified and may
-	 * depedn on implementation. To get tasks in a specific order, use
+	 * depend on implementation. To get tasks in a specific order, use
 	 * {@link ConnectorUtils} methods.
 	 * 
 	 * @param monitor
