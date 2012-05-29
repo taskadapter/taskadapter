@@ -1,5 +1,6 @@
 package com.taskadapter.core;
 
+import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
@@ -34,7 +35,7 @@ public class SyncRunnerTest extends AbstractSyncRunnerTest {
         runner.setConnectorFrom(projectConnector);
         runner.setTaskSaver(saver);
         // load from MSP
-        runner.load(null);
+        runner.load(ProgressMonitorUtils.getDummyMonitor());
 
         assertEquals(1, runner.getTasks().size());
 

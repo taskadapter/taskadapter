@@ -26,7 +26,7 @@ public class TestSaver {
 
     public GTask saveAndLoad(GTask task) {
         connector.saveData(Arrays.asList(task), null);
-        List<GTask> loadedTasks = connector.loadData(null);
+		List<GTask> loadedTasks = ConnectorUtils.loadDataOrderedById(connector);
         return TestUtils.findTaskBySummary(loadedTasks, task.getSummary());
     }
 }

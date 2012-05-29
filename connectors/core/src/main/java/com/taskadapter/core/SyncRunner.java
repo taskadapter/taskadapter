@@ -1,5 +1,6 @@
 package com.taskadapter.core;
 
+import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.common.DataConnectorUtil;
 import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.common.TransportException;
@@ -39,7 +40,8 @@ public class SyncRunner {
                     100);
         }
         try {
-            List<GTask> flatTasksList = connectorFrom.loadData(monitor);
+			List<GTask> flatTasksList = ConnectorUtils.loadDataOrderedById(
+					connectorFrom, monitor);
             flatTasksList = applyTrialIfNeeded(flatTasksList);
 
             // can be NULL if there was an exception

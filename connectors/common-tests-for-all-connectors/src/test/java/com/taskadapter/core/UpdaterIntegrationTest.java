@@ -1,10 +1,10 @@
 package com.taskadapter.core;
 
+import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.common.TestUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
-import com.taskadapter.connector.msp.MSPTaskLoader;
 import com.taskadapter.connector.msp.MSPTaskSaver;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
@@ -83,8 +83,8 @@ public class UpdaterIntegrationTest extends AbstractSyncRunnerTest {
     }
 
     private void verifyMSPData() throws Exception {
-        MSPTaskLoader mspLoader = new MSPTaskLoader();
-        List<GTask> mspTasks = mspLoader.loadTasks(mspConfig);
+    	final MSPConnector connector = new MSPConnector(mspConfig);
+        List<GTask> mspTasks = ConnectorUtils.loadDataOrderedById(connector);
         assertEquals(TASKS_NUMBER, mspTasks.size());
         for (GTask task : mspTasks) {
             GTask rmTask = TestUtils.findTaskByKey(rmIssues, task.getRemoteId());

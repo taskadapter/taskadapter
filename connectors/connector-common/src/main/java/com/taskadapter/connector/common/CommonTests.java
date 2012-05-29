@@ -21,7 +21,7 @@ public class CommonTests {
 
         Integer createdTask1Id = Integer.valueOf(result.getRemoteKey(expectedID));
 
-        List<GTask> loadedTasks = connector.loadData(null);
+        List<GTask> loadedTasks = ConnectorUtils.loadDataOrderedById(connector);
         // there could be some other previously created tasks
         assertTrue(loadedTasks.size() >= tasksQty);
 

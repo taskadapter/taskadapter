@@ -80,12 +80,12 @@ public class TestUtils {
 
     public static List<GTask> saveAndLoadAll(Connector connector, GTask task) {
         connector.saveData(Arrays.asList(task), null);
-        return connector.loadData(null);
+        return ConnectorUtils.loadDataOrderedById(connector);
     }
 
     public static List<GTask> saveAndLoadList(Connector connector, List<GTask> tasks) {
         connector.saveData(tasks, null);
-        return connector.loadData(null);
+        return ConnectorUtils.loadDataOrderedById(connector);
     }
 
     public static Calendar setTaskStartYearAgo(GTask task) {

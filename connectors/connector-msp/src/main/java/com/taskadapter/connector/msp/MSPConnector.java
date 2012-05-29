@@ -1,7 +1,6 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.common.AbstractConnector;
-import com.taskadapter.connector.common.TaskLoader;
 import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.model.GTask;
@@ -11,6 +10,7 @@ import net.sf.mpxj.Task;
 import net.sf.mpxj.TaskField;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBasedConnector {
@@ -115,13 +115,56 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
     }
     
     @Override
-    public TaskLoader<MSPConfig> getTaskLoader() {
-        return new MSPTaskLoader();
-    }
-
-    @Override
     public TaskSaver<MSPConfig> getTaskSaver(ConnectorConfig config) {
         return new MSPTaskSaver((MSPConfig) config);
     }
+    
+    @Override
+    public GTask loadTaskByKey(String key) {
+        throw new RuntimeException("not implemented");
+    }
+    
+    @Override
+    public List<GTask> loadData(ProgressMonitor monitorIGNORED) {
+        ProjectFile projectFile;
+        final MSPFileReader fileReader = new MSPFileReader();
+        try {
+            projectFile = fileReader.readFile(config.getInputAbsoluteFilePath());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("MSP: Can't find file with name \"" + config.getInputAbsoluteFilePath() + "\".");
+        } catch (Exception e) {
+        	throw new RuntimeException(e);
+        }
+
+        List<Task> mspTasks = projectFile.getAllTasks();
+        mspTasks = skipRootNodeIfPresent(mspTasks);
+        return loadTasks(projectFile, config, mspTasks);
+    }
+    /**
+     * MSP XML file can have a root-level task with outline=0 - this is
+     * a grouping task for everything (like "project root"), which should not be included in the tasks
+     * list.
+     *
+     * @return flat list of tasks (not a tree!)
+     */
+    private List<Task> skipRootNodeIfPresent(List<Task> mspTasks) {
+//        if (mspTasks.get(0).getParentTask() == null){
+//            return mspTasks.subList(1, mspTasks.size());
+//        }
+        if ((mspTasks != null) && (!mspTasks.isEmpty())
+                && mspTasks.get(0).getOutlineLevel().equals(0)) {
+            mspTasks = mspTasks.subList(1, mspTasks.size());
+        }
+        return mspTasks;
+    }
+    
+    private List<GTask> loadTasks(ProjectFile project, MSPConfig config, List<Task> mspTasks) {
+        final MSTaskToGenericTaskConverter converter = new MSTaskToGenericTaskConverter();
+        converter.setConfig(config);
+        converter.setHeader(project.getProjectHeader());
+        // TODO add fieldMappings to the params!
+        return converter.convertToGenericTaskList(mspTasks);
+    }
+
 
 }
