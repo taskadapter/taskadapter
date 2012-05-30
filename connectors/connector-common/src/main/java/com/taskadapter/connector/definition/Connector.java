@@ -2,7 +2,6 @@ package com.taskadapter.connector.definition;
 
 import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
-import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.model.GTask;
 
 import java.util.List;
@@ -45,6 +44,4 @@ public interface Connector<T extends ConnectorConfig> {
     public T getConfig();
 
     public Descriptor getDescriptor();
-
-    public TaskSaver<T> getTaskSaver(ConnectorConfig config);
 }

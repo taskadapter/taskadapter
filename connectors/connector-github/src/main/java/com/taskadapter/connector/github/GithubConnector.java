@@ -30,10 +30,6 @@ public class GithubConnector extends AbstractConnector<GithubConfig> {
         throw new RuntimeException("not implemented for this connector");
     }
     
-    public TaskSaver<GithubConfig> getTaskSaver(ConnectorConfig config) {
-        return new GithubTaskSaver((GithubConfig) config);
-    }
-
     @Override
     public GTask loadTaskByKey(String key) {
         try {
@@ -78,4 +74,8 @@ public class GithubConnector extends AbstractConnector<GithubConfig> {
     }
     
 
+    @Override
+    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) {
+    	return new GithubTaskSaver(config).saveData(tasks, monitor);
+    }
 }

@@ -115,11 +115,6 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
     }
     
     @Override
-    public TaskSaver<MSPConfig> getTaskSaver(ConnectorConfig config) {
-        return new MSPTaskSaver((MSPConfig) config);
-    }
-    
-    @Override
     public GTask loadTaskByKey(String key) {
         throw new RuntimeException("not implemented");
     }
@@ -167,4 +162,8 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
     }
 
 
+    @Override
+    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) {
+    	return new MSPTaskSaver(config).saveData(tasks, monitor);
+    }
 }

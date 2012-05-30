@@ -2,7 +2,6 @@ package com.taskadapter.webui;
 
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
-import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.common.TransportException;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.SyncResult;
@@ -172,10 +171,7 @@ public class ExportPage extends ActionPage {
     protected void saveData() {
         saveProgress.setValue(0);
         MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
-        final TaskSaver<?> taskSaver = connectorTo.getTaskSaver(connectorTo.getConfig());
-		runner.setDestination(taskSaver, connectorTo.getConfig()
-				.getTargetLocation());
-		runner.setTaskOptions(connectorTo.getConfig());
+		runner.setDestination(connectorTo);
         result = runner.save(wrapper);
     }
 

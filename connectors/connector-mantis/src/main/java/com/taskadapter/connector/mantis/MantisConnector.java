@@ -34,11 +34,6 @@ public class MantisConnector extends AbstractConnector<MantisConfig> {
     }
 
     @Override
-    public TaskSaver<MantisConfig> getTaskSaver(ConnectorConfig config) {
-        return new MantisTaskSaver((MantisConfig) config);
-    }
-
-    @Override
     public GTask loadTaskByKey(String key) {
         try {
             MantisManager mgr = MantisManagerFactory.createMantisManager(config.getServerInfo());
@@ -71,4 +66,9 @@ public class MantisConnector extends AbstractConnector<MantisConfig> {
         return result;
     }
 
+    
+    @Override
+    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) {
+    	return new MantisTaskSaver(config).saveData(tasks, monitor);
+    }
 }

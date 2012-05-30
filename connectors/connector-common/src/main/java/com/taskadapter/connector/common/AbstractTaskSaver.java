@@ -33,12 +33,11 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
     abstract protected GTask createTask(Object nativeTask);
 
     abstract protected void updateTask(String taskId, Object nativeTask);
-
+    
     /**
      * the default implementation does nothing.
      */
-    @Override
-    public void beforeSave() {
+    protected void beforeSave() {
         // nothing here
     }
 

@@ -5,7 +5,7 @@ import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.redmine.RedmineConfig;
-import com.taskadapter.connector.redmine.RedmineTaskSaver;
+import com.taskadapter.connector.redmine.RedmineConnector;
 import com.taskadapter.core.SyncRunner;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.model.GTask;
@@ -48,7 +48,6 @@ public class IntegrationTest extends AbstractSyncRunnerTest {
     public void testSaveRemoteIdWithNonLinearUUID() throws URISyntaxException, IOException {
 
         RedmineConfig redmineConfigTo = RedmineTestConfig.getRedmineTestConfig();
-        RedmineTaskSaver redmineTaskSaver = new RedmineTaskSaver(redmineConfigTo);
 
         MSPConfig mspConfig = getConfig("non-linear-uuid.xml");
         Connector<?> msProjectConnector = new MSPConnector(mspConfig);
@@ -57,8 +56,7 @@ public class IntegrationTest extends AbstractSyncRunnerTest {
         runner.setConnectorFrom(msProjectConnector);
         runner.load(ProgressMonitorUtils.getDummyMonitor());
 
-        runner.setDestination(redmineTaskSaver, redmineConfigTo.getTargetLocation());
-        runner.setTaskOptions(redmineConfigTo);
+        runner.setDestination(new RedmineConnector(redmineConfigTo));
         runner.save(null);
 
         //reload from MSP file
@@ -75,15 +73,13 @@ public class IntegrationTest extends AbstractSyncRunnerTest {
     @Test
     public void testOneSideDisconnectedRelationships() throws IOException {
         RedmineConfig redmineConfigTo = RedmineTestConfig.getRedmineTestConfig();
-        RedmineTaskSaver saver = new RedmineTaskSaver(redmineConfigTo);
 
         MSPConfig mspConfig = getConfig("ProjectWithOneSideDisconnectedRelationships.xml");
         Connector<?> projectConnector = new MSPConnector(mspConfig);
 
         SyncRunner runner = new SyncRunner(new LicenseManager()); //LicenseManager with license of some type can be set
         runner.setConnectorFrom(projectConnector);
-        runner.setDestination(saver, redmineConfigTo.getTargetLocation());
-        runner.setTaskOptions(redmineConfigTo);
+        runner.setDestination(new RedmineConnector(redmineConfigTo));
         // load from MSP
         runner.load(ProgressMonitorUtils.getDummyMonitor());
         try {

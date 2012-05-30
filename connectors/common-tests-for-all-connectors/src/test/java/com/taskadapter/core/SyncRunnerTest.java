@@ -5,7 +5,7 @@ import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.redmine.RedmineConfig;
-import com.taskadapter.connector.redmine.RedmineTaskSaver;
+import com.taskadapter.connector.redmine.RedmineConnector;
 import com.taskadapter.integrationtests.AbstractSyncRunnerTest;
 import com.taskadapter.integrationtests.RedmineTestConfig;
 import com.taskadapter.license.LicenseManager;
@@ -26,15 +26,13 @@ public class SyncRunnerTest extends AbstractSyncRunnerTest {
     public void testLoadAsTree() throws URISyntaxException, IOException {
 
         RedmineConfig redmineConfigTo = RedmineTestConfig.getRedmineTestConfig();
-        RedmineTaskSaver saver = new RedmineTaskSaver(redmineConfigTo);
 
         MSPConfig mspConfig = getConfig("ProjectWithTree.xml");
         Connector<?> projectConnector = new MSPConnector(mspConfig);
 
         SyncRunner runner = new SyncRunner(new LicenseManager()); //LicenseManager with license of some type can be set
         runner.setConnectorFrom(projectConnector);
-        runner.setDestination(saver, redmineConfigTo.getTargetLocation());
-        runner.setTaskOptions(redmineConfigTo);
+        runner.setDestination(new RedmineConnector(redmineConfigTo));
         // load from MSP
         runner.load(ProgressMonitorUtils.getDummyMonitor());
 
