@@ -34,11 +34,8 @@ public class PriorityPanel extends Panel implements Validatable {
     private final PluginManager pluginManager;
 
     /**
-     * Config Editors should NOT create this object directly, use ConfigEditor.addPriorityPanel() method instead.
-     *
      * @param editor     ConfigEditor
      * @param descriptor Descriptor
-     * @see ConfigEditor#addPriorityPanel(ConfigEditor, com.taskadapter.connector.definition.Descriptor, Priorities priorities)
      */
     public PriorityPanel(ConfigEditor editor, Descriptor descriptor, PluginManager pluginManager) {
         super("Priorities");

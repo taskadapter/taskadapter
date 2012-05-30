@@ -31,16 +31,13 @@ public class JiraEditor extends TwoColumnsConfigEditor {
         jiraFieldsPanel = new OtherJiraFieldsPanel(this);
         addToLeftColumn(jiraFieldsPanel);
 
-		priorityPanel = new PriorityPanel(this, JiraDescriptor.instance,
-				services.getPluginManager());
+		PriorityPanel priorityPanel = new PriorityPanel(this, JiraDescriptor.instance, services.getPluginManager());
         priorityPanel.setPriorities(config.getPriorities());
         addToLeftColumn(priorityPanel);
 
         // right column
         addToRightColumn(createCustomOtherFieldsPanel());
-
-        fieldsMappingPanel = new FieldsMappingPanel(JiraDescriptor.instance.getAvailableFields(), config);
-        addToRightColumn(fieldsMappingPanel);
+        addToRightColumn(new FieldsMappingPanel(JiraDescriptor.instance.getAvailableFields(), config));
     }
 
     private CustomFieldsTablePanel createCustomOtherFieldsPanel() {

@@ -31,8 +31,7 @@ public class MSPEditor extends TwoColumnsConfigEditor {
         addToLeftColumn(createInfoReadOnlyPanel());
 
         // right
-        fieldsMappingPanel = new FieldsMappingPanel(MSPDescriptor.instance.getAvailableFields(), config);
-        addToRightColumn(fieldsMappingPanel);
+        addToRightColumn(new FieldsMappingPanel(MSPDescriptor.instance.getAvailableFields(), config));
     }
 
     private MSPInfoPanel createInfoReadOnlyPanel() {
