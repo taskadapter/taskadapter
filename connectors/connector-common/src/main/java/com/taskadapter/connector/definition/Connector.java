@@ -22,6 +22,11 @@ public interface Connector<T extends ConnectorConfig> {
 	 */
     public List<GTask> loadData(ProgressMonitor monitor);
 
+    /**
+     * Loads one task by it's key.
+     * @param key task key.
+     * @return loaded task.
+     */
     public GTask loadTaskByKey(String key);
 
     /**
