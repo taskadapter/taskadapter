@@ -137,8 +137,4 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
         }
         return newTaskKey;
     }
-
-    public T getConfig() {
-        return config;
-    }
 }

@@ -20,9 +20,19 @@ import static com.taskadapter.license.LicenseManager.TRIAL_MESSAGE;
 import static com.taskadapter.license.LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
 
 public class SyncRunner {
-    private Connector connectorFrom;
-    private TaskSaver taskSaver;
+    // TODO: refactor!!!
+    private Connector<?> connectorFrom;
+    
+    // TODO: refactor!!!
+    private TaskSaver<?> taskSaver;
+    
     private LicenseManager licenseManager;
+    
+    // TODO: refactor!!!
+    private String destinationName;
+    
+    // TODO: refactor!!!
+    private ConnectorConfig config;
 
     private List<GTask> tasks = new ArrayList<GTask>();
 
@@ -76,11 +86,11 @@ public class SyncRunner {
                 .calculateNumberOfTasks(tasks);
         if (monitor != null) {
             monitor.beginTask(
-                    "Saving " + totalNumberOfTasks + " tasks to " + taskSaver.getConfig().getTargetLocation(),
+                    "Saving " + totalNumberOfTasks + " tasks to " + destinationName,
                     totalNumberOfTasks);
         }
         List<GTask> treeToSave;
-        if (taskSaver.getConfig().isFieldSelected(FIELD.REMOTE_ID)) {
+        if (config.isFieldSelected(FIELD.REMOTE_ID)) {
             List<GTask> clonedTree = TreeUtils.cloneTree(tasks);
             TaskUtil.setRemoteIdField(clonedTree);
             treeToSave = clonedTree;
@@ -130,11 +140,20 @@ public class SyncRunner {
     }
 
     // TODO add a test to verify "load" can be done without setting taskSaver
-    public void setTaskSaver(TaskSaver taskSaver) {
+    public void setDestination(TaskSaver<?> taskSaver, String targetName) {
         this.taskSaver = taskSaver;
+        this.destinationName = targetName;
     }
 
-    public void setConnectorFrom(Connector connectorFrom) {
+    public void setConnectorFrom(Connector<?> connectorFrom) {
         this.connectorFrom = connectorFrom;
+    }
+    
+    /**
+     * Sets a task options.
+     * @param config config to use.
+     */
+    public void setTaskOptions(ConnectorConfig config) {
+    	this.config = config;
     }
 }

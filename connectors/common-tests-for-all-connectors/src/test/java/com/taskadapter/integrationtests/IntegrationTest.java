@@ -57,7 +57,8 @@ public class IntegrationTest extends AbstractSyncRunnerTest {
         runner.setConnectorFrom(msProjectConnector);
         runner.load(ProgressMonitorUtils.getDummyMonitor());
 
-        runner.setTaskSaver(redmineTaskSaver);
+        runner.setDestination(redmineTaskSaver, redmineConfigTo.getTargetLocation());
+        runner.setTaskOptions(redmineConfigTo);
         runner.save(null);
 
         //reload from MSP file
@@ -81,7 +82,8 @@ public class IntegrationTest extends AbstractSyncRunnerTest {
 
         SyncRunner runner = new SyncRunner(new LicenseManager()); //LicenseManager with license of some type can be set
         runner.setConnectorFrom(projectConnector);
-        runner.setTaskSaver(saver);
+        runner.setDestination(saver, redmineConfigTo.getTargetLocation());
+        runner.setTaskOptions(redmineConfigTo);
         // load from MSP
         runner.load(ProgressMonitorUtils.getDummyMonitor());
         try {

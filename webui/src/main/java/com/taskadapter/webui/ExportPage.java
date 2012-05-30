@@ -173,7 +173,9 @@ public class ExportPage extends ActionPage {
         saveProgress.setValue(0);
         MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
         final TaskSaver<?> taskSaver = connectorTo.getTaskSaver(connectorTo.getConfig());
-        runner.setTaskSaver(taskSaver);
+		runner.setDestination(taskSaver, connectorTo.getConfig()
+				.getTargetLocation());
+		runner.setTaskOptions(connectorTo.getConfig());
         result = runner.save(wrapper);
     }
 

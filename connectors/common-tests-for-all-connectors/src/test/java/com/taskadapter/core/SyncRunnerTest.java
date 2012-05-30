@@ -33,7 +33,8 @@ public class SyncRunnerTest extends AbstractSyncRunnerTest {
 
         SyncRunner runner = new SyncRunner(new LicenseManager()); //LicenseManager with license of some type can be set
         runner.setConnectorFrom(projectConnector);
-        runner.setTaskSaver(saver);
+        runner.setDestination(saver, redmineConfigTo.getTargetLocation());
+        runner.setTaskOptions(redmineConfigTo);
         // load from MSP
         runner.load(ProgressMonitorUtils.getDummyMonitor());
 
