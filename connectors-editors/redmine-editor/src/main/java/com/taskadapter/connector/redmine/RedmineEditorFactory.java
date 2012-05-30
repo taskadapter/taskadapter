@@ -16,7 +16,7 @@ public class RedmineEditorFactory implements PluginEditorFactory {
     }
 
     @Override
-    public ConfigEditor createEditor(ConnectorConfig config, Services servicesIGNORE) {
-        return new RedmineEditor(config);
+    public ConfigEditor createEditor(ConnectorConfig config, Services services) {
+        return new RedmineEditor(config, services);
     }
 }

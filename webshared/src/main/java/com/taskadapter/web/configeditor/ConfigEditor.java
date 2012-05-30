@@ -31,10 +31,6 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
     private static final String LABEL_DESCRIPTION_TEXT = "Description:";
     private static final String LABEL_TOOLTIP = "Text to show for this connector on 'Export' button. Enter any text.";
 
-    protected ConfigEditor(ConnectorConfig config) {
-        this(config, null);
-    }
-
     protected ConfigEditor(ConnectorConfig config, Services services) {
         this.config = config;
         this.services = services;

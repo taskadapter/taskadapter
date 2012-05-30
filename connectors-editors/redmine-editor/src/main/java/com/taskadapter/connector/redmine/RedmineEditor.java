@@ -4,6 +4,7 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.web.configeditor.*;
+import com.taskadapter.web.service.Services;
 import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.*;
@@ -21,8 +22,8 @@ public class RedmineEditor extends TwoColumnsConfigEditor implements LoadProject
     private RedmineServerPanel serverPanel;
     private OtherRedmineFieldsPanel otherPanel;
 
-    public RedmineEditor(ConnectorConfig config) {
-        super(config);
+    public RedmineEditor(ConnectorConfig config, Services services) {
+        super(config, services);
 
         buildUI();
         setData(config);

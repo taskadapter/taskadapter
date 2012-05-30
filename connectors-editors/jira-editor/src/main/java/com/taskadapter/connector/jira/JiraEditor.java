@@ -2,6 +2,7 @@ package com.taskadapter.connector.jira;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.web.configeditor.*;
+import com.taskadapter.web.service.Services;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +17,8 @@ public class JiraEditor extends TwoColumnsConfigEditor {
     private OtherJiraFieldsPanel jiraFieldsPanel;
     private CustomFieldsTablePanel customFieldsTablePanel;
 
-    public JiraEditor(ConnectorConfig config) {
-        super(config);
+    public JiraEditor(ConnectorConfig config, Services services) {
+        super(config, services);
         buildUI();
         setData(config);
     }
