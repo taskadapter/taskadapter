@@ -2,7 +2,6 @@ package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rpc.soap.client.*;
 import com.taskadapter.connector.common.AbstractConnector;
-import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.NamedKeyedObject;

@@ -1,7 +1,6 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.common.AbstractConnector;
-import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;

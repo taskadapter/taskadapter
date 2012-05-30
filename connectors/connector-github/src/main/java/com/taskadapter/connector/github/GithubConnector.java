@@ -9,7 +9,6 @@ import org.eclipse.egit.github.core.service.IssueService;
 
 import com.taskadapter.connector.common.AbstractConnector;
 import com.taskadapter.connector.common.TaskConverter;
-import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.ProgressMonitor;

@@ -8,7 +8,6 @@ import org.mantis.ta.MantisManager;
 import org.mantis.ta.beans.IssueData;
 
 import com.taskadapter.connector.common.AbstractConnector;
-import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.ProgressMonitor;

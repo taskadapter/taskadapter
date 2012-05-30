@@ -12,8 +12,7 @@ import com.taskadapter.connector.definition.TaskError;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 
-public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
-        TaskSaver<T> {
+public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
 
     protected final SyncResult syncResult = new SyncResult();
 
@@ -41,7 +40,6 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
         // nothing here
     }
 
-    @Override
     public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) {
         this.monitor = monitor;
 
