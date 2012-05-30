@@ -14,6 +14,6 @@ public class GithubEditorFactory implements PluginEditorFactory {
 
     @Override
     public ConfigEditor createEditor(ConnectorConfig config, Services services) {
-        return new GithubEditor(config);
+        return new GithubEditor(config, services);
     }
 }

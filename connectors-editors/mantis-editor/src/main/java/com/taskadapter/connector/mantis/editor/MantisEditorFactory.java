@@ -18,7 +18,7 @@ public class MantisEditorFactory implements PluginEditorFactory {
 
     @Override
     public ConfigEditor createEditor(ConnectorConfig config, Services services) {
-        return new MantisEditor(config);
+        return new MantisEditor(config, services);
     }
 
 }

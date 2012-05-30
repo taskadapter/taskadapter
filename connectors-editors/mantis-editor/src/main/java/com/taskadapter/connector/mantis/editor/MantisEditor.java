@@ -4,14 +4,15 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.mantis.MantisDescriptor;
 import com.taskadapter.web.configeditor.FieldsMappingPanel;
 import com.taskadapter.web.configeditor.TwoColumnsConfigEditor;
+import com.taskadapter.web.service.Services;
 
 /**
  * @author Alexey Skorokhodov
  */
 public class MantisEditor extends TwoColumnsConfigEditor {
 
-    public MantisEditor(ConnectorConfig config) {
-        super(config);
+    public MantisEditor(ConnectorConfig config, Services services) {
+        super(config, services);
         buildUI();
         setData(config);
     }

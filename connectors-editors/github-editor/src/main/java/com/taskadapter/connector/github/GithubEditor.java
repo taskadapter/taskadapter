@@ -3,11 +3,12 @@ package com.taskadapter.connector.github;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.web.configeditor.FieldsMappingPanel;
 import com.taskadapter.web.configeditor.TwoColumnsConfigEditor;
+import com.taskadapter.web.service.Services;
 
 public class GithubEditor extends TwoColumnsConfigEditor {
 
-    public GithubEditor(ConnectorConfig config) {
-        super(config);
+    public GithubEditor(ConnectorConfig config, Services services) {
+        super(config, services);
         buildUI();
         setData(config);
     }

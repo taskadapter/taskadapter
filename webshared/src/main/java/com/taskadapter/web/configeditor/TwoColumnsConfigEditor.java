@@ -12,11 +12,6 @@ public abstract class TwoColumnsConfigEditor extends ConfigEditor {
     private VerticalLayout leftVerticalLayout;
     private VerticalLayout rightVerticalLayout;
 
-    protected TwoColumnsConfigEditor(ConnectorConfig config) {
-        super(config);
-        buildUI();
-    }
-
     public TwoColumnsConfigEditor(ConnectorConfig config, Services services) {
         super(config, services);
         buildUI();

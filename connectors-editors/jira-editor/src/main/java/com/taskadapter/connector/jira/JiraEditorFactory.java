@@ -17,7 +17,7 @@ public class JiraEditorFactory implements PluginEditorFactory {
 
     @Override
     public ConfigEditor createEditor(ConnectorConfig config, Services services) {
-        return new JiraEditor(config);
+        return new JiraEditor(config, services);
     }
 
 }
