@@ -8,13 +8,6 @@ import com.taskadapter.model.GTask;
 import java.util.List;
 
 public interface TaskSaver<T extends ConnectorConfig> {
-    /**
-     * Returns true if the connector supports stop save operations.
-     */
-    public boolean isSaveStoppable();
-
-    public void stopSave();
-
     public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor);
 
     public T getConfig();

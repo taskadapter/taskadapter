@@ -19,8 +19,6 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
 
     private final List<GTask> totalTaskList = new ArrayList<GTask>();
 
-    private boolean shouldStop;
-
     protected final T config;
 
     private ProgressMonitor monitor;
@@ -47,7 +45,6 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
     @Override
     public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) {
         this.monitor = monitor;
-        this.shouldStop = false;
 
         try {
             beforeSave();
@@ -64,7 +61,7 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
      */
     protected SyncResult save(String parentIssueKey, List<GTask> tasks) {
         Iterator<GTask> it = tasks.iterator();
-        while (it.hasNext() && !shouldStop()) {
+        while (it.hasNext()) {
             GTask task = it.next();
             totalTaskList.add(task);
 
@@ -141,23 +138,7 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
         return newTaskKey;
     }
 
-    protected synchronized boolean shouldStop() {
-        return this.shouldStop;
-    }
-
-    public synchronized void stopSave() {
-        this.shouldStop = true;
-    }
-
     public T getConfig() {
         return config;
-    }
-
-    /**
-     * The default implementation returns TRUE.
-     */
-    @Override
-    public boolean isSaveStoppable() {
-        return true;
     }
 }
