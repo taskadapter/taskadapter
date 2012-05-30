@@ -119,12 +119,12 @@ public class JiraTaskConverter {
         RemoteCustomFieldValue[] values = new RemoteCustomFieldValue[configCustomFields.size()];
 
         int i = 0;
-        for (String key : configCustomFields.keySet()) {
+        for (Map.Entry<String, String> entry : configCustomFields.entrySet()) {
             // RemoteField field = getField(possibleCustomFields, key);
             // parentKey : Used for multidimensional custom fields such as
             // Cascading select lists. Null in other cases
             String parentKey = null;
-            values[i++] = new RemoteCustomFieldValue(key, parentKey, new String[]{configCustomFields.get(key)});
+            values[i++] = new RemoteCustomFieldValue(entry.getKey(), parentKey, new String[]{entry.getValue()});
         }
         return values;
     }
