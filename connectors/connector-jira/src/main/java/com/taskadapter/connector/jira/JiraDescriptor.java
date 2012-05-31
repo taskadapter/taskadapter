@@ -56,11 +56,6 @@ public class JiraDescriptor implements Descriptor {
     }
 
     @Override
-    public Class<JiraConfig> getConfigClass() {
-        return JiraConfig.class;
-    }
-
-    @Override
     public AvailableFields getAvailableFields() {
         return SUPPORTED_FIELDS;
     }

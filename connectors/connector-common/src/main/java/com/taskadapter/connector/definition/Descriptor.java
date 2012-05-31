@@ -39,7 +39,5 @@ public interface Descriptor {
 
     public ConnectorConfig createDefaultConfig();
 
-    public Class<? extends ConnectorConfig> getConfigClass();
-
     public AvailableFields getAvailableFields();
 }

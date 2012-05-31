@@ -63,11 +63,6 @@ public class RedmineDescriptor implements Descriptor {
     }
 
     @Override
-    public Class<RedmineConfig> getConfigClass() {
-        return RedmineConfig.class;
-    }
-
-    @Override
     public AvailableFields getAvailableFields() {
         return SUPPORTED_FIELDS;
     }

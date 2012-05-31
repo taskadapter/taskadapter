@@ -20,8 +20,8 @@ import com.taskadapter.model.GTask;
 
 public class RedmineConnector extends AbstractConnector<RedmineConfig> {
 
-    public RedmineConnector(ConnectorConfig config) {
-        super((RedmineConfig) config);
+    public RedmineConnector(RedmineConfig config) {
+        super(config);
     }
 
     // TODO check if should change this to a flat list,

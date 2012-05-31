@@ -1,9 +1,9 @@
 package com.taskadapter.config;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import com.taskadapter.PluginManager;
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Descriptor;
+import com.taskadapter.connector.definition.PluginFactory;
 
 /**
  * @author Alexey Skorokhodov
@@ -42,27 +42,26 @@ public class ConfigFileParser {
     }
 
     private ConnectorConfig createConfig(String pluginId, String dataString) {
-        Descriptor descriptor = pluginManager.getDescriptor(pluginId);
-        if (descriptor == null) {
+    	final PluginFactory<?> factory = pluginManager.getPluginFactory(pluginId);
+        if (factory == null) {
             throw new RuntimeException("Connector with ID " + pluginId + " is not found.");
         }
-        Class<? extends ConnectorConfig> configClass = descriptor.getConfigClass();
-        Gson gson = new Gson();
-        return gson.fromJson(dataString, configClass);
+		return factory.readConfig(new JsonParser().parse(dataString));
     }
 
-    public String convertToJSonString(TAFile file) {
-        Gson gson = new Gson();
-
+    @SuppressWarnings("unchecked")
+	public String convertToJSonString(TAFile file) {
         String line0 = LINE0_PREFIX + file.getConfigLabel();
 
-        String line1 = LINE1_PREFIX + file.getConnectorDataHolder1().getType();
+        String plugin1Type = file.getConnectorDataHolder1().getType();
+		String line1 = LINE1_PREFIX + plugin1Type;
         ConnectorConfig data1 = file.getConnectorDataHolder1().getData();
-        String line2 = LINE2_PREFIX + gson.toJson(data1);
+        String line2 = LINE2_PREFIX + pluginManager.getPluginFactory(plugin1Type).writeConfig(data1);
 
-        String line3 = LINE3_PREFIX + file.getConnectorDataHolder2().getType();
+        String pluginType2 = file.getConnectorDataHolder2().getType();
+		String line3 = LINE3_PREFIX + pluginType2;
         ConnectorConfig data2 = file.getConnectorDataHolder2().getData();
-        String line4 = LINE4_PREFIX + gson.toJson(data2);
+        String line4 = LINE4_PREFIX + pluginManager.getPluginFactory(pluginType2).writeConfig(data2);
 
         return line0 + "\n" + line1 + "\n" + line2 + "\n" + line3
                 + "\n" + line4;

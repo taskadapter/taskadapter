@@ -59,10 +59,6 @@ public class GithubDescriptor implements Descriptor {
         return getID();
     }
 
-    public Class<GithubConfig> getConfigClass() {
-        return GithubConfig.class;
-    }
-
     public Collection<Feature> getSupportedFeatures() {
         return Arrays.asList(Feature.LOAD_TASK, Feature.SAVE_TASK);
     }

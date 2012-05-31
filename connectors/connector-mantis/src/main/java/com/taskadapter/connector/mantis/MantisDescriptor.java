@@ -52,11 +52,6 @@ public class MantisDescriptor implements Descriptor {
     }
 
     @Override
-    public Class<MantisConfig> getConfigClass() {
-        return MantisConfig.class;
-    }
-
-    @Override
     public AvailableFields getAvailableFields() {
         return SUPPORTED_FIELDS;
     }

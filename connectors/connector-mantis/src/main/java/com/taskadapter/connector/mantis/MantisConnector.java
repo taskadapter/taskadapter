@@ -16,8 +16,8 @@ import com.taskadapter.model.GTask;
 
 public class MantisConnector extends AbstractConnector<MantisConfig> {
 
-    public MantisConnector(ConnectorConfig config) {
-        super((MantisConfig) config);
+    public MantisConnector(MantisConfig config) {
+        super(config);
     }
 
     @Override

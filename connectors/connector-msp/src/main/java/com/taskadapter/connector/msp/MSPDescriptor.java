@@ -64,11 +64,6 @@ public class MSPDescriptor implements Descriptor {
     }
 
     @Override
-    public Class<MSPConfig> getConfigClass() {
-        return MSPConfig.class;
-    }
-
-    @Override
     public AvailableFields getAvailableFields() {
         return SUPPORTED_FIELDS;
     }

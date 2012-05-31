@@ -12,8 +12,8 @@ import java.util.List;
 
 public class JiraConnector extends AbstractConnector<JiraConfig> {
 
-    public JiraConnector(ConnectorConfig config) {
-        super((JiraConfig) config);
+    public JiraConnector(JiraConfig config) {
+        super(config);
     }
 
     @Override
