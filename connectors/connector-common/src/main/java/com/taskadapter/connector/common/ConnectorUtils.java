@@ -25,6 +25,7 @@ public final class ConnectorUtils {
 	 *            monitor to use.
 	 * @return loaded tasks list, sorted by task ID.
 	 */
+	@Deprecated
 	public static List<GTask> loadDataOrderedById(Connector<?> connector,
 			ProgressMonitor monitor) {
 		try {
@@ -44,6 +45,7 @@ public final class ConnectorUtils {
 	 *            connector to fetch data from.
 	 * @return loaded tasks list, sorted by task ID.
 	 */
+	@Deprecated
 	public static List<GTask> loadDataOrderedById(Connector<?> connector) {
 		return loadDataOrderedById(connector, ProgressMonitorUtils.getDummyMonitor());
 	}

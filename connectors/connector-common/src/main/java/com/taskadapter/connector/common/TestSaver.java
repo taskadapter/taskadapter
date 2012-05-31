@@ -8,9 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestSaver {
-    private Connector connector;
+    private Connector<?> connector;
 
-    public TestSaver(Connector connector) {
+    public TestSaver(Connector<?> connector) {
         this.connector = connector;
     }
 

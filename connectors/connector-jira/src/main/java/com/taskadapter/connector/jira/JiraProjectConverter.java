@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.atlassian.jira.rpc.soap.client.RemoteProject;
-import com.taskadapter.connector.common.ProjectConverter;
 import com.taskadapter.model.GProject;
 
-public class JiraProjectConverter implements ProjectConverter<RemoteProject> {
+public class JiraProjectConverter {
 
-    @Override
     public List<GProject> toGProjects(List<RemoteProject> objects) {
         List<GProject> projects = new ArrayList<GProject>();
         for (RemoteProject rmProject : objects) {

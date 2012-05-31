@@ -2,7 +2,6 @@ package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rpc.soap.client.*;
 import com.taskadapter.connector.common.AbstractConnector;
-import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.NamedKeyedObject;
@@ -102,11 +101,6 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
     }
 
     @Override
-    public TaskSaver<JiraConfig> getTaskSaver(ConnectorConfig config) {
-        return new JiraTaskSaver((JiraConfig) config);
-    }
-    
-    @Override
     public GTask loadTaskByKey(String key) {
     	final JiraTaskLoader loader = new JiraTaskLoader(config);
     	return loader.loadTask(config, key);
@@ -116,5 +110,10 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
     public List<GTask> loadData(ProgressMonitor monitorIGNORED) {
     	final JiraTaskLoader loader = new JiraTaskLoader(config);
     	return loader.loadTasks(config);
+    }
+    
+    @Override
+    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) {
+    	return new JiraTaskSaver(config).saveData(tasks, monitor);
     }
 }

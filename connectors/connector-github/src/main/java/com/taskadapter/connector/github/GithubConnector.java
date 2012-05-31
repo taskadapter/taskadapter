@@ -8,8 +8,6 @@ import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.service.IssueService;
 
 import com.taskadapter.connector.common.AbstractConnector;
-import com.taskadapter.connector.common.TaskConverter;
-import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.ProgressMonitor;
@@ -30,10 +28,6 @@ public class GithubConnector extends AbstractConnector<GithubConfig> {
         throw new RuntimeException("not implemented for this connector");
     }
     
-    public TaskSaver<GithubConfig> getTaskSaver(ConnectorConfig config) {
-        return new GithubTaskSaver((GithubConfig) config);
-    }
-
     @Override
     public GTask loadTaskByKey(String key) {
         try {
@@ -49,7 +43,7 @@ public class GithubConnector extends AbstractConnector<GithubConfig> {
         }
     }
     
-    private TaskConverter<Issue> getTaskConverter() {
+    private GithubTaskConverter getTaskConverter() {
         ConnectionFactory cf = new ConnectionFactory(config);
         return new GithubTaskConverter(cf.getUserService());
     }
@@ -78,4 +72,8 @@ public class GithubConnector extends AbstractConnector<GithubConfig> {
     }
     
 
+    @Override
+    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) {
+    	return new GithubTaskSaver(config).saveData(tasks, monitor);
+    }
 }

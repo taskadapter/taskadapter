@@ -1,15 +1,13 @@
 package com.taskadapter.connector.mantis;
 
-import com.taskadapter.connector.common.ProjectConverter;
 import com.taskadapter.model.GProject;
 import org.mantis.ta.beans.ProjectData;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MantisProjectConverter implements ProjectConverter<ProjectData> {
+public class MantisProjectConverter {
 
-    @Override
     public List<GProject> toGProjects(List<ProjectData> objects) {
         List<GProject> projects = new ArrayList<GProject>();
         for (ProjectData rmProject : objects) {

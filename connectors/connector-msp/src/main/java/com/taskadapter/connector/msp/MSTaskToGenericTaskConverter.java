@@ -1,6 +1,5 @@
 package com.taskadapter.connector.msp;
 
-import com.taskadapter.connector.common.TaskConverter;
 import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
@@ -13,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-class MSTaskToGenericTaskConverter implements TaskConverter<Task> {
+class MSTaskToGenericTaskConverter {
 
     private ProjectHeader header;
     private MSPConfig config;
