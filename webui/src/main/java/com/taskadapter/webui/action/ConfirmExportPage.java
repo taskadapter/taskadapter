@@ -2,6 +2,7 @@ package com.taskadapter.webui.action;
 
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mapping;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.web.configeditor.FieldsMappingPanel;
@@ -18,7 +19,7 @@ public class ConfirmExportPage extends CustomComponent {
     private Connector connectorTo;
     private Button.ClickListener goListener;
     private FieldsMappingPanel fieldMappingPanel;
-    private Map<FIELD, Mapping> oldFieldsMapping;
+    private Mappings oldFieldsMapping;
     private MyTree connectorTree;
 
     public ConfirmExportPage(Navigator navigator, List<GTask> rootLevelTasks, Connector destinationConnector, Button.ClickListener goListener) {
@@ -52,7 +53,9 @@ public class ConfirmExportPage extends CustomComponent {
         layout.addComponent(buttonsLayout);
 
         setCompositionRoot(layout);
-        this.fieldMappingPanel = new FieldsMappingPanel(connectorTo.getDescriptor().getAvailableFields(), connectorTo.getConfig());
+		this.fieldMappingPanel = new FieldsMappingPanel(connectorTo
+				.getDescriptor().getAvailableFields(), connectorTo.getConfig()
+				.getFieldMappings());
         layout.addComponent(fieldMappingPanel);
     }
 
@@ -64,7 +67,7 @@ public class ConfirmExportPage extends CustomComponent {
         return connectorTree.getSelectedRootLevelTasks();
     }
 
-    public Map<FIELD, Mapping> getConnectorToFieldMappings() {
+    public Mappings getConnectorToFieldMappings() {
         return fieldMappingPanel.getResult();
     }
 }

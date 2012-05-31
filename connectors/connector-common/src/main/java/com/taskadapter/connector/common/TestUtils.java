@@ -3,12 +3,47 @@ package com.taskadapter.connector.common;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Mapping;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 import java.util.*;
 
 public class TestUtils {
+    private static class MappingStore {
+    	final boolean checked;
+    	final String mappedTo;
+    	
+		MappingStore(boolean checked, String mappedTo) {
+			super();
+			this.checked = checked;
+			this.mappedTo = mappedTo;
+		}
+    }
+
+	private static MappingStore getStore(ConnectorConfig config, FIELD field) {
+		Mappings mappings = config.getFieldMappings();
+		if (!mappings.haveMappingFor(field))
+			return null;
+		return new MappingStore(mappings.isFieldSelected(field), config
+				.getFieldsMapping().getMappedTo(field));
+	}
+	
+	/**
+	 * Applies a mapping store.
+	 * @param config used config.
+	 * @param field used field.
+	 * @param store new mapping store.
+	 */
+	private static void applyStore(ConnectorConfig config, FIELD field, MappingStore store) {
+		Mappings mappings = config.getFieldMappings();
+		if (store == null)
+			mappings.deleteMappingFor(field);
+		else
+			mappings.setMapping(field, store.checked, store.mappedTo);
+	}
+
+	
     public static List<GTask> generateTasks(int quantity) {
         List<GTask> tasks = new ArrayList<GTask>(quantity);
         for (int i = 0; i < quantity; i++) {
@@ -65,10 +100,11 @@ public class TestUtils {
 
     public static GTask saveAndLoad(Connector<?> connector, FIELD field, Mapping mapping, GTask task) {
         ConnectorConfig config = connector.getConfig();
-        Mapping savedMapping = config.getFieldMapping(field);
-        config.setFieldMapping(field, mapping); // ugly, but ...
+        final MappingStore savedMapping = getStore(config, field);
+		config.setFieldMapping(field, mapping.isSelected(),
+				mapping.getCurrentValue()); // ugly, but ...
         GTask loadedTask = saveAndLoad(connector, task);
-        config.setFieldMapping(field, savedMapping);
+        applyStore(config, field, savedMapping);
 
         return loadedTask;
     }

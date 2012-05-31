@@ -2,7 +2,7 @@ package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rpc.soap.client.*;
 import com.taskadapter.connector.common.TestUtils;
-import com.taskadapter.connector.definition.Mapping;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.GTask;
@@ -25,6 +25,17 @@ public class JiraTest {
     private static JiraConfig config = new JiraConfig();
     private static WebServerInfo serverInfo;
     private static Properties properties = new Properties();
+    
+    private static class MappingStore {
+    	final boolean checked;
+    	final String mappedTo;
+    	
+		MappingStore(boolean checked, String mappedTo) {
+			super();
+			this.checked = checked;
+			this.mappedTo = mappedTo;
+		}
+    }
 
     static {
         InputStream is = JiraTest.class.getClassLoader().getResourceAsStream(
@@ -144,8 +155,8 @@ public class JiraTest {
         task.setPriority(null);
 
         //save old mapping object for priority field
-        Mapping mapping = config.getFieldMapping(FIELD.PRIORITY);
-        config.setFieldMapping(FIELD.PRIORITY, new Mapping(false));
+        MappingStore mapping = getStore(config, FIELD.PRIORITY);
+        config.setFieldMapping(FIELD.PRIORITY, false, null);
 
         RemoteVersion[] versions = {};
         RemoteComponent[] components = {};
@@ -155,7 +166,7 @@ public class JiraTest {
         Assert.assertNull(issue.getPriority());
 
         //restore old mapping object for priority field
-        config.setFieldMapping(FIELD.PRIORITY, mapping);
+        applyStore(config, FIELD.PRIORITY, mapping);
     }
 
     @Test
@@ -177,15 +188,15 @@ public class JiraTest {
             issue.setPriority(priorities[0].getId());
 
             //save old mapping object for priority field
-            Mapping mapping = config.getFieldMapping(FIELD.PRIORITY);
-            config.setFieldMapping(FIELD.PRIORITY, new Mapping(true));
+            MappingStore mapping = getStore(config, FIELD.PRIORITY);
+            config.setFieldMapping(FIELD.PRIORITY, true, null);
 
             GTask task = converter.convertToGenericTask(issue);
             RemoteIssue newIssue = converter.convertToJiraIssue(versions, components, task);
             Assert.assertEquals(issue.getPriority(), newIssue.getPriority());
 
             //restore old mapping object for priority field
-            config.setFieldMapping(FIELD.PRIORITY, mapping);
+            applyStore(config, FIELD.PRIORITY, mapping);
         }
     }
 
@@ -205,6 +216,28 @@ public class JiraTest {
             return true;
         }
     }
+    
+	private MappingStore getStore(JiraConfig config, FIELD field) {
+		Mappings mappings = config.getFieldMappings();
+		if (!mappings.haveMappingFor(field))
+			return null;
+		return new MappingStore(mappings.isFieldSelected(field), config
+				.getFieldsMapping().getMappedTo(field));
+	}
+	
+	/**
+	 * Applies a mapping store.
+	 * @param config used config.
+	 * @param field used field.
+	 * @param store new mapping store.
+	 */
+	private void applyStore(JiraConfig config, FIELD field, MappingStore store) {
+		Mappings mappings = config.getFieldMappings();
+		if (store == null)
+			mappings.deleteMappingFor(field);
+		else
+			mappings.setMapping(field, store.checked, store.mappedTo);
+	}
 
     @Test
     public void issueTypeDefaultValue() throws MalformedURLException, RemoteException {
@@ -215,8 +248,8 @@ public class JiraTest {
             task.setType(null);
 
             //save old mapping object for issue type field
-            Mapping mapping = config.getFieldMapping(FIELD.TASK_TYPE);
-            config.setFieldMapping(FIELD.TASK_TYPE, new Mapping(true));
+            MappingStore mapping = getStore(config, FIELD.TASK_TYPE);
+            config.setFieldMapping(FIELD.TASK_TYPE, true, null);
 
             RemoteVersion[] versions = {};
             RemoteComponent[] components = {};
@@ -225,7 +258,7 @@ public class JiraTest {
             Assert.assertEquals(config.getDefaultTaskType(), converter.getIssueTypeNameById(issue.getType()));
 
             //restore old mapping object for issue type field
-            config.setFieldMapping(FIELD.TASK_TYPE, mapping);
+            applyStore(config, FIELD.TASK_TYPE, mapping);
         }
     }
 
@@ -238,8 +271,8 @@ public class JiraTest {
             task.setType(converter.getIssueTypeList()[0].getName());
 
             //save old mapping object for issue type field
-            Mapping mapping = config.getFieldMapping(FIELD.TASK_TYPE);
-            config.setFieldMapping(FIELD.TASK_TYPE, new Mapping(true));
+            MappingStore mapping = getStore(config, FIELD.TASK_TYPE);
+            config.setFieldMapping(FIELD.TASK_TYPE, true, null);
 
             RemoteVersion[] versions = {};
             RemoteComponent[] components = {};
@@ -248,7 +281,7 @@ public class JiraTest {
             Assert.assertEquals(task.getType(), converter.getIssueTypeNameById(issue.getType()));
 
             //restore old mapping object for issue type field
-            config.setFieldMapping(FIELD.TASK_TYPE, mapping);
+            applyStore(config, FIELD.TASK_TYPE, mapping);
         }
     }
 

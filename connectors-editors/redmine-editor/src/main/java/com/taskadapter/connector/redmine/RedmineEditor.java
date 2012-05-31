@@ -43,7 +43,9 @@ public class RedmineEditor extends TwoColumnsConfigEditor implements LoadProject
 				new RedmineProjectProcessor(this), services.getPluginManager());
         addToRightColumn(projectPanel);
 
-        fieldsMappingPanel = new FieldsMappingPanel(RedmineDescriptor.instance.getAvailableFields(), config);
+		fieldsMappingPanel = new FieldsMappingPanel(
+				RedmineDescriptor.instance.getAvailableFields(),
+				config.getFieldMappings());
         addToRightColumn(fieldsMappingPanel);
     }
 

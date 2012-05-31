@@ -198,7 +198,8 @@ public class FieldMappingTest {
 
     private static List<Task> saveAndLoad(MSPConfig config, FIELD field, Mapping mapping, GTask... tasks) throws IOException, MPXJException {
         MSPConfig temporaryClonedconfig = new MSPConfig(config);
-        temporaryClonedconfig.setFieldMapping(field, mapping);
+		temporaryClonedconfig.setFieldMapping(field, mapping.isSelected(),
+				mapping.getCurrentValue());
 
         String fileName = "testdata.tmp";
         temporaryClonedconfig.setInputAbsoluteFilePath(fileName);

@@ -1,6 +1,5 @@
 package com.taskadapter.connector.msp;
 
-import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
@@ -71,12 +70,13 @@ class MSTaskToGenericTaskConverter {
         }
 
         // DUE DATE
-        Mapping dueDateField = config.getFieldMapping(GTaskDescriptor.FIELD.DUE_DATE);
+		final String dueDateField = config.getFieldMappings().getMappedTo(
+				GTaskDescriptor.FIELD.DUE_DATE);
         if (dueDateField != null) {
             Date mspDueDate = null;
-            if (dueDateField.getCurrentValue().equals(TaskField.FINISH.toString())) {
+            if (dueDateField.equals(TaskField.FINISH.toString())) {
                 mspDueDate = task.getFinish();
-            } else if (dueDateField.getCurrentValue().equals(TaskField.DEADLINE.toString())) {
+            } else if (dueDateField.equals(TaskField.DEADLINE.toString())) {
                 mspDueDate = task.getDeadline();
             }
             genericTask.setDueDate(mspDueDate);

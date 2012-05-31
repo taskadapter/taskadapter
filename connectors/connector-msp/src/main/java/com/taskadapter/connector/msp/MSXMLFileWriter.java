@@ -1,6 +1,5 @@
 package com.taskadapter.connector.msp;
 
-import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
@@ -162,8 +161,7 @@ public class MSXMLFileWriter {
     }
 
     private void setAliasIfMappingNotNULL(ProjectFile project, FIELD field, String aliasName) {
-        Mapping mapping = config.getFieldMapping(field);
-        String mspFileFieldName = mapping.getCurrentValue();
+        String mspFileFieldName = config.getFieldMappings().getMappedTo(field);
         if (mspFileFieldName != null) {
             /* it is NULL if the old Task Adapter config does not have a mapping for this field.
                 * E.g. we added "task type" field in the new TA version and then we try running

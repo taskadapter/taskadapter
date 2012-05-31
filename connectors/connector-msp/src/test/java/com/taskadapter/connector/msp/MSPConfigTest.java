@@ -1,7 +1,6 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.Priorities;
-import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.definition.ValidationException;
 import net.sf.mpxj.TaskField;
 import org.junit.Test;
@@ -22,7 +21,8 @@ public class MSPConfigTest {
     @Test
     public void unselectedMappingCopiedProperlyByCopyConstructor() {
         MSPConfig config = new MSPConfig();
-        config.setFieldMapping(FIELD.ESTIMATED_TIME, new Mapping(false, TaskField.DURATION.toString()));
+		config.setFieldMapping(FIELD.ESTIMATED_TIME, false,
+				TaskField.DURATION.toString());
         MSPConfig cloned = new MSPConfig(config);
         assertFalse(cloned.isFieldSelected(FIELD.ESTIMATED_TIME));
     }
@@ -78,7 +78,7 @@ public class MSPConfigTest {
 
     private static MSPConfig createAndCloneConfig(FIELD field, boolean selected, String value) {
         MSPConfig config = new MSPConfig();
-        config.setFieldMapping(field, new Mapping(selected, value));
+        config.setFieldMapping(field, selected, value);
         return new MSPConfig(config);
     }
 

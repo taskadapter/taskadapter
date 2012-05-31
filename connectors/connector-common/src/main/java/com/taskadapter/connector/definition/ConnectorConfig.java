@@ -6,8 +6,6 @@ import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -17,7 +15,10 @@ public abstract class ConnectorConfig implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Map<FIELD, Mapping> fieldsMapping;
+    /**
+     * Mappings for a connector.
+     */
+    private Mappings mappings;
 
     private String label;
 
@@ -49,24 +50,12 @@ public abstract class ConnectorConfig implements Serializable {
     public abstract String getTargetLocation();
 
     public ConnectorConfig() {
-        fieldsMapping = generateDefaultFieldsMapping();
+        mappings = new Mappings(generateDefaultFieldsMapping());
         priorities = generateDefaultPriorities();
     }
 
     public ConnectorConfig(ConnectorConfig configToDeepClone) {
-        this.fieldsMapping = new HashMap<FIELD, Mapping>();
-
-        Collection<FIELD> oldFields = configToDeepClone.getFields();
-        for (FIELD oldField : oldFields) {
-            boolean oldSelected = configToDeepClone.isFieldSelected(oldField);
-            if (oldSelected) {
-                selectField(oldField);
-            } else {
-                unselectField(oldField);
-            }
-            String oldValue = configToDeepClone.getFieldMappedValue(oldField);
-            setFieldMappedValue(oldField, oldValue);
-        }
+        this.mappings = new Mappings(configToDeepClone.mappings);
 
         saveIssueRelations = configToDeepClone.getSaveIssueRelations();
         defaultTaskType = configToDeepClone.getDefaultTaskType();
@@ -84,13 +73,12 @@ public abstract class ConnectorConfig implements Serializable {
     /**
      * Exposing internal implementation details is bad. delete this method.
      */
-    @Deprecated
-    public Map<FIELD, Mapping> getFieldsMapping() {
-        return fieldsMapping;
+    public Mappings getFieldsMapping() {
+        return mappings;
     }
 
-    public void setFieldsMapping(Map<FIELD, Mapping> fieldsMapping) {
-        this.fieldsMapping = fieldsMapping;
+    public void setFieldsMapping(Mappings mappings) {
+    	this.mappings = mappings;
     }
 
     abstract protected Map<GTaskDescriptor.FIELD, Mapping> generateDefaultFieldsMapping();
@@ -98,64 +86,38 @@ public abstract class ConnectorConfig implements Serializable {
     abstract protected Priorities generateDefaultPriorities();
 
     public boolean isFieldSelected(FIELD field) {
-        Mapping mapping = fieldsMapping.get(field);
-        return (mapping != null && mapping.isSelected());
+    	return mappings.isFieldSelected(field);
     }
 
     /**
      * returns the current value or NULL if the mapping does not exist / unknown
      */
     public String getFieldMappedValue(FIELD field) {
-        Mapping mapping = fieldsMapping.get(field);
-        if (mapping != null) {
-            return mapping.getCurrentValue();
-        }
-        return null;
+    	return mappings.getMappedTo(field);
     }
 
     public void selectField(FIELD field) {
-        Mapping mapping = fieldsMapping.get(field);
-        if (mapping == null) {
-            mapping = new Mapping(true);
-            fieldsMapping.put(field, mapping);
-        } else {
-            mapping.setSelected(true);
-        }
+    	mappings.selectField(field);
     }
 
     public void unselectField(FIELD field) {
-        Mapping mapping = fieldsMapping.get(field);
-        if (mapping == null) {
-            mapping = new Mapping(false);
-            fieldsMapping.put(field, mapping);
-        } else {
-            mapping.setSelected(false);
-        }
+    	mappings.deselectField(field);
     }
 
     public void setFieldMappedValue(FIELD field, String value) {
-        Mapping mapping = fieldsMapping.get(field);
-        if (mapping != null) {
-            mapping.setValue(value);
-        } else {
-            throw new RuntimeException("unknown field: " + field);
-        }
+    	mappings.setMaping(field, value);
     }
 
-    public Collection<FIELD> getFields() {
-        return fieldsMapping.keySet();
+    public void setFieldMapping(FIELD field, boolean selected, String target) {
+    	mappings.setMapping(field, selected, target);
     }
-
+    
     /**
-     * Use getFieldMappedValue(FIELD) instead
+     * Returns fields mappings.
+     * @return fields mappings.
      */
-    @Deprecated
-    public Mapping getFieldMapping(FIELD field) {
-        return fieldsMapping.get(field);
-    }
-
-    public void setFieldMapping(FIELD field, Mapping mapping) {
-        fieldsMapping.put(field, mapping);
+    public Mappings getFieldMappings() {
+    	return mappings;
     }
 
     public String getDefaultTaskType() {
@@ -168,14 +130,14 @@ public abstract class ConnectorConfig implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(fieldsMapping, defaultTaskType, label);
+        return Objects.hashCode(mappings, defaultTaskType, label);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof ConnectorConfig) {
             ConnectorConfig other = (ConnectorConfig) obj;
-            return Objects.equal(fieldsMapping, other.fieldsMapping) &&
+            return Objects.equal(mappings, other.mappings) &&
                     Objects.equal(defaultTaskType, other.defaultTaskType) &&
                     Objects.equal(label, other.label);
         } else {

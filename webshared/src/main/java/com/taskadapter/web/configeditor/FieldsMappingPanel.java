@@ -1,8 +1,8 @@
 package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.definition.AvailableFields;
-import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Mapping;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.web.Messages;
@@ -25,15 +25,20 @@ public class FieldsMappingPanel extends Panel implements Validatable {
     private Map<GTaskDescriptor.FIELD, ComboBox> fieldToValueMap = new HashMap<GTaskDescriptor.FIELD, ComboBox>();
 
     private final AvailableFields availableFieldsProvider;
-    private ConnectorConfig config;
+    
+    /**
+     * Mappings to edit.
+     */
+    private final Mappings mappings;
+    
     private static final int COLUMNS_NUMBER = 2;
     private GridLayout gridLayout;
     private Resource helpIconResource = new ThemeResource("../runo/icons/16/help.png");
 
-    public FieldsMappingPanel(AvailableFields availableFieldsProvider, ConnectorConfig config) {
+    public FieldsMappingPanel(AvailableFields availableFieldsProvider, Mappings mappings) {
         super("Task fields mapping");
         this.availableFieldsProvider = availableFieldsProvider;
-        this.config = config;
+        this.mappings = mappings;
 
         setDescription("Select fields to export when SAVING data to this system");
         addFields();
@@ -78,14 +83,13 @@ public class FieldsMappingPanel extends Panel implements Validatable {
     private void addField(GTaskDescriptor.FIELD field) {
         CheckBox checkbox = addCheckbox(field);
 
-        Mapping mapping = config.getFieldMapping(field);
-        if (mapping == null) {
+        if (!mappings.haveMappingFor(field)) {
             // means this config does not have a mapping for this field, which
             // availableFieldsProvider reported as "supported": probably OLD config
             return;
         }
 
-        checkbox.setValue(mapping.isSelected());
+        checkbox.setValue(mappings.isFieldSelected(field));
 
         String[] allowedValues = availableFieldsProvider.getAllowedValues(field);
         BeanItemContainer<String> container = new BeanItemContainer<String>(String.class);
@@ -97,7 +101,7 @@ public class FieldsMappingPanel extends Panel implements Validatable {
             fieldToValueMap.put(field, combo);
             gridLayout.addComponent(combo);
             gridLayout.setComponentAlignment(combo, Alignment.MIDDLE_LEFT);
-            combo.select(mapping.getCurrentValue());
+            combo.select(mappings.getMappedTo(field));
         } else if (allowedValues.length == 1) {
             Label label = new Label(allowedValues[0]);
             gridLayout.addComponent(label);
@@ -142,8 +146,8 @@ public class FieldsMappingPanel extends Panel implements Validatable {
         checkbox.setValue(false);
     }
 
-    public Map<GTaskDescriptor.FIELD, Mapping> getResult() {
-        Map<GTaskDescriptor.FIELD, Mapping> map = new TreeMap<GTaskDescriptor.FIELD, Mapping>();
+    public Mappings getResult() {
+    	final Mappings result = new Mappings();
         for (GTaskDescriptor.FIELD f : availableFieldsProvider.getSupportedFields()) {
             boolean selected = fieldToButtonMap.get(f).booleanValue();
             String value = null;
@@ -151,10 +155,9 @@ public class FieldsMappingPanel extends Panel implements Validatable {
             if (combo != null) {
                 value = (String) combo.getValue();
             }
-            Mapping mapping = new Mapping(selected, value);
-            map.put(f, mapping);
+            mappings.setMapping(f, selected, value);
         }
-        return map;
+        return result;
     }
 
     @Override
