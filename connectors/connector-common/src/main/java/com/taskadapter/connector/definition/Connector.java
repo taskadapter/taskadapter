@@ -2,7 +2,6 @@ package com.taskadapter.connector.definition;
 
 import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
-import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.model.GTask;
 
 import java.util.List;
@@ -23,6 +22,11 @@ public interface Connector<T extends ConnectorConfig> {
 	 */
     public List<GTask> loadData(ProgressMonitor monitor);
 
+    /**
+     * Loads one task by its key.
+     * @param key task key.
+     * @return loaded task.
+     */
     public GTask loadTaskByKey(String key);
 
     /**
@@ -45,6 +49,4 @@ public interface Connector<T extends ConnectorConfig> {
     public T getConfig();
 
     public Descriptor getDescriptor();
-
-    public TaskSaver<T> getTaskSaver(ConnectorConfig config);
 }

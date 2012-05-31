@@ -2,14 +2,13 @@ package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rpc.soap.client.*;
 import com.google.common.base.Strings;
-import com.taskadapter.connector.common.TaskConverter;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
 
 import java.util.*;
 
-public class JiraTaskConverter implements TaskConverter<RemoteIssue> {
+public class JiraTaskConverter {
 
     // XXX this is hardcoded!! https://www.hostedredmine.com/issues/18074
     private static final String ISSUE_TYPE_ID = "1";
@@ -120,17 +119,16 @@ public class JiraTaskConverter implements TaskConverter<RemoteIssue> {
         RemoteCustomFieldValue[] values = new RemoteCustomFieldValue[configCustomFields.size()];
 
         int i = 0;
-        for (String key : configCustomFields.keySet()) {
+        for (Map.Entry<String, String> entry : configCustomFields.entrySet()) {
             // RemoteField field = getField(possibleCustomFields, key);
             // parentKey : Used for multidimensional custom fields such as
             // Cascading select lists. Null in other cases
             String parentKey = null;
-            values[i++] = new RemoteCustomFieldValue(key, parentKey, new String[]{configCustomFields.get(key)});
+            values[i++] = new RemoteCustomFieldValue(entry.getKey(), parentKey, new String[]{entry.getValue()});
         }
         return values;
     }
 
-    @Override
     public List<GTask> convertToGenericTaskList(List<RemoteIssue> tasks) {
 
         // TODO see http://jira.atlassian.com/browse/JRA-6896

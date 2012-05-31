@@ -10,7 +10,6 @@ import org.redmine.ta.RedmineManager.INCLUDE;
 import org.redmine.ta.beans.Issue;
 
 import com.taskadapter.connector.common.AbstractConnector;
-import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.common.TransportException;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
@@ -39,11 +38,6 @@ public class RedmineConnector extends AbstractConnector<RedmineConfig> {
         return RedmineDescriptor.instance;
     }
 
-    @Override
-    public TaskSaver<RedmineConfig> getTaskSaver(ConnectorConfig config) {
-        return new RedmineTaskSaver((RedmineConfig) config);
-    }
-    
     @Override
     public GTask loadTaskByKey(String key) {
         try {
@@ -87,4 +81,8 @@ public class RedmineConnector extends AbstractConnector<RedmineConfig> {
 		return result;
 	}
     
+	@Override
+	public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) {
+		return new RedmineTaskSaver(config).saveData(tasks, monitor);
+	}
 }

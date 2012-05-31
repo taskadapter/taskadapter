@@ -2,7 +2,6 @@ package com.taskadapter.core;
 
 import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.common.DataConnectorUtil;
-import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.common.TransportException;
 import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.Connector;
@@ -20,10 +19,16 @@ import static com.taskadapter.license.LicenseManager.TRIAL_MESSAGE;
 import static com.taskadapter.license.LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
 
 public class SyncRunner {
-    private Connector connectorFrom;
-    private TaskSaver taskSaver;
+    // TODO: refactor!!!
+    private Connector<?> connectorFrom;
+    
+    /**
+     * Target connector.
+     */
+    private Connector<?> connectorTo;
+    
     private LicenseManager licenseManager;
-
+    
     private List<GTask> tasks = new ArrayList<GTask>();
 
     public SyncRunner(LicenseManager licenseManager) {
@@ -75,12 +80,12 @@ public class SyncRunner {
         int totalNumberOfTasks = DataConnectorUtil
                 .calculateNumberOfTasks(tasks);
         if (monitor != null) {
-            monitor.beginTask(
-                    "Saving " + totalNumberOfTasks + " tasks to " + taskSaver.getConfig().getTargetLocation(),
-                    totalNumberOfTasks);
+			monitor.beginTask("Saving " + totalNumberOfTasks + " tasks to "
+					+ connectorTo.getConfig().getTargetLocation(),
+					totalNumberOfTasks);
         }
         List<GTask> treeToSave;
-        if (taskSaver.getConfig().isFieldSelected(FIELD.REMOTE_ID)) {
+        if (connectorTo.getConfig().isFieldSelected(FIELD.REMOTE_ID)) {
             List<GTask> clonedTree = TreeUtils.cloneTree(tasks);
             TaskUtil.setRemoteIdField(clonedTree);
             treeToSave = clonedTree;
@@ -90,7 +95,7 @@ public class SyncRunner {
 
         SyncResult result;
         try {
-            result = taskSaver.saveData(treeToSave, monitor);
+            result = connectorTo.saveData(treeToSave, monitor);
         } catch (Exception e) {
             result = new SyncResult();
             result.addGeneralError(e.getMessage());
@@ -130,11 +135,11 @@ public class SyncRunner {
     }
 
     // TODO add a test to verify "load" can be done without setting taskSaver
-    public void setTaskSaver(TaskSaver taskSaver) {
-        this.taskSaver = taskSaver;
+    public void setDestination(Connector<?> destination) {
+        this.connectorTo = destination;
     }
 
-    public void setConnectorFrom(Connector connectorFrom) {
+    public void setConnectorFrom(Connector<?> connectorFrom) {
         this.connectorFrom = connectorFrom;
     }
 }

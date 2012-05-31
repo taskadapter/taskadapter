@@ -44,12 +44,6 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
         }
     }
 
-    // TODO implement "cancel save" functionality for MSP files.
-    @Override
-    public boolean isSaveStoppable() {
-        return false;
-    }
-
     @Override
     protected Object convertToNativeTask(GTask task) {
         // TODO Auto-generated method stub
