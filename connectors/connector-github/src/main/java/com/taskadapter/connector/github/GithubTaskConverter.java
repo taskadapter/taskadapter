@@ -1,6 +1,5 @@
 package com.taskadapter.connector.github;
 
-import com.taskadapter.connector.common.TaskConverter;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GUser;
 import org.eclipse.egit.github.core.Issue;
@@ -14,14 +13,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GithubTaskConverter implements TaskConverter<Issue> {
+public class GithubTaskConverter {
     private final UserService userService;
 
     public GithubTaskConverter(UserService userService) {
         this.userService = userService;
     }
 
-    @Override
     public List<GTask> convertToGenericTaskList(List<Issue> issues) {
         List<GTask> tasks = new ArrayList<GTask>();
         for (Issue issue : issues) {
@@ -31,7 +29,6 @@ public class GithubTaskConverter implements TaskConverter<Issue> {
         return tasks;
     }
 
-    @Override
     public GTask convertToGenericTask(Issue issue) {
         return issueToGtask(issue);
     }

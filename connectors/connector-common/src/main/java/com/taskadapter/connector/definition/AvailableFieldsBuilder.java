@@ -23,7 +23,7 @@ public final class AvailableFieldsBuilder {
 	/**
 	 * We don't need public constructor, bunch of "start" methods is better.
 	 */
-	private AvailableFieldsBuilder() {
+	public AvailableFieldsBuilder() {
 		// Just an access controller.
 	}
 

@@ -5,12 +5,10 @@ import java.util.List;
 
 import org.redmine.ta.beans.Project;
 
-import com.taskadapter.connector.common.ProjectConverter;
 import com.taskadapter.model.GProject;
 
-public class RedmineProjectConverter implements ProjectConverter<Project> {
+public class RedmineProjectConverter {
 
-    @Override
     public List<GProject> toGProjects(List<Project> objects) {
         List<GProject> projects = new ArrayList<GProject>();
         for (Project rmProject : objects) {

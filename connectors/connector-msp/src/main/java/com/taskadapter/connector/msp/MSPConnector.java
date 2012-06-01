@@ -1,7 +1,6 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.common.AbstractConnector;
-import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
@@ -115,11 +114,6 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
     }
     
     @Override
-    public TaskSaver<MSPConfig> getTaskSaver(ConnectorConfig config) {
-        return new MSPTaskSaver((MSPConfig) config);
-    }
-    
-    @Override
     public GTask loadTaskByKey(String key) {
         throw new RuntimeException("not implemented");
     }
@@ -167,4 +161,8 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
     }
 
 
+    @Override
+    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) {
+    	return new MSPTaskSaver(config).saveData(tasks, monitor);
+    }
 }

@@ -12,14 +12,11 @@ import com.taskadapter.connector.definition.TaskError;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 
-public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
-        TaskSaver<T> {
+public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
 
     protected final SyncResult syncResult = new SyncResult();
 
     private final List<GTask> totalTaskList = new ArrayList<GTask>();
-
-    private boolean shouldStop;
 
     protected final T config;
 
@@ -35,19 +32,16 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
     abstract protected GTask createTask(Object nativeTask);
 
     abstract protected void updateTask(String taskId, Object nativeTask);
-
+    
     /**
      * the default implementation does nothing.
      */
-    @Override
-    public void beforeSave() {
+    protected void beforeSave() {
         // nothing here
     }
 
-    @Override
     public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) {
         this.monitor = monitor;
-        this.shouldStop = false;
 
         try {
             beforeSave();
@@ -64,7 +58,7 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
      */
     protected SyncResult save(String parentIssueKey, List<GTask> tasks) {
         Iterator<GTask> it = tasks.iterator();
-        while (it.hasNext() && !shouldStop()) {
+        while (it.hasNext()) {
             GTask task = it.next();
             totalTaskList.add(task);
 
@@ -139,25 +133,5 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> implements
             syncResult.addUpdatedTask(task.getId(), newTaskKey);
         }
         return newTaskKey;
-    }
-
-    protected synchronized boolean shouldStop() {
-        return this.shouldStop;
-    }
-
-    public synchronized void stopSave() {
-        this.shouldStop = true;
-    }
-
-    public T getConfig() {
-        return config;
-    }
-
-    /**
-     * The default implementation returns TRUE.
-     */
-    @Override
-    public boolean isSaveStoppable() {
-        return true;
     }
 }

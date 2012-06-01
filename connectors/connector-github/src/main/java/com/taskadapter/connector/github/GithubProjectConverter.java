@@ -1,6 +1,5 @@
 package com.taskadapter.connector.github;
 
-import com.taskadapter.connector.common.ProjectConverter;
 import com.taskadapter.model.GProject;
 import org.eclipse.egit.github.core.Repository;
 
@@ -11,9 +10,8 @@ import java.util.List;
  * Converts Github projects to "Generic" projects and back.
  * User: KhodyrevDS
  */
-public class GithubProjectConverter implements ProjectConverter<Repository> {
+public class GithubProjectConverter {
 
-    @Override
     public List<GProject> toGProjects(List<Repository> repositories) {
         List<GProject> projects = new ArrayList<GProject>(repositories.size());
 

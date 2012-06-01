@@ -8,7 +8,6 @@ import org.mantis.ta.MantisManager;
 import org.mantis.ta.beans.IssueData;
 
 import com.taskadapter.connector.common.AbstractConnector;
-import com.taskadapter.connector.common.TaskSaver;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.ProgressMonitor;
@@ -31,11 +30,6 @@ public class MantisConnector extends AbstractConnector<MantisConfig> {
     @Override
     public Descriptor getDescriptor() {
         return MantisDescriptor.instance;
-    }
-
-    @Override
-    public TaskSaver<MantisConfig> getTaskSaver(ConnectorConfig config) {
-        return new MantisTaskSaver((MantisConfig) config);
     }
 
     @Override
@@ -71,4 +65,9 @@ public class MantisConnector extends AbstractConnector<MantisConfig> {
         return result;
     }
 
+    
+    @Override
+    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) {
+    	return new MantisTaskSaver(config).saveData(tasks, monitor);
+    }
 }

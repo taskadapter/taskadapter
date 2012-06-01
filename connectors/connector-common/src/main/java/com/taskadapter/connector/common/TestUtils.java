@@ -63,7 +63,7 @@ public class TestUtils {
         return cal;
     }
 
-    public static GTask saveAndLoad(Connector connector, FIELD field, Mapping mapping, GTask task) {
+    public static GTask saveAndLoad(Connector<?> connector, FIELD field, Mapping mapping, GTask task) {
         ConnectorConfig config = connector.getConfig();
         Mapping savedMapping = config.getFieldMapping(field);
         config.setFieldMapping(field, mapping); // ugly, but ...
@@ -73,17 +73,17 @@ public class TestUtils {
         return loadedTask;
     }
 
-    public static GTask saveAndLoad(Connector connector, GTask task) {
+    public static GTask saveAndLoad(Connector<?> connector, GTask task) {
         List<GTask> loadedTasks = saveAndLoadAll(connector, task);
         return findTaskBySummary(loadedTasks, task.getSummary());
     }
 
-    public static List<GTask> saveAndLoadAll(Connector connector, GTask task) {
+    public static List<GTask> saveAndLoadAll(Connector<?> connector, GTask task) {
         connector.saveData(Arrays.asList(task), null);
         return ConnectorUtils.loadDataOrderedById(connector);
     }
 
-    public static List<GTask> saveAndLoadList(Connector connector, List<GTask> tasks) {
+    public static List<GTask> saveAndLoadList(Connector<?> connector, List<GTask> tasks) {
         connector.saveData(tasks, null);
         return ConnectorUtils.loadDataOrderedById(connector);
     }
