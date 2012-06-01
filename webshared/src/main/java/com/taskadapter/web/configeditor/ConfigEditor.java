@@ -1,7 +1,8 @@
 package com.taskadapter.web.configeditor;
 
-import com.taskadapter.connector.Priorities;
-import com.taskadapter.connector.definition.*;
+import com.taskadapter.connector.definition.ConnectorConfig;
+import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.service.Services;
 import com.vaadin.ui.*;
@@ -13,16 +14,12 @@ import java.util.List;
  * @author Alexey Skorokhodov
  */
 public abstract class ConfigEditor extends VerticalLayout implements WindowProvider {
-    protected CheckBox findUserByName;
+    private CheckBox findUserByName;
     private List<Validatable> toValidate = new ArrayList<Validatable>();
 
     // TODO the parent editor class must save / load data itself instead of letting the children do this
 
-    // Panels
-    protected ServerPanel serverPanel;
-    protected ProjectPanel projectPanel;
-    protected PriorityPanel priorityPanel;
-    protected FieldsMappingPanel fieldsMappingPanel;
+    private final ConfigPanelContainer panelContainer = new ConfigPanelContainer();
 
     protected ConnectorConfig config;
     protected Services services;
@@ -63,6 +60,7 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
             toValidate.add((Validatable)panel);
         }
         component.addComponent(panel);
+        panelContainer.add(panel);
     }
 
     public CheckBox createFindUsersElementIfNeeded() {
@@ -75,14 +73,6 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         }
 
         return findUserByName;
-    }
-
-    protected void addPriorityPanel(ConfigEditor editor, Descriptor descriptor, Priorities priorities) {
-		priorityPanel = new PriorityPanel(editor, descriptor,
-				services.getPluginManager());
-        toValidate.add(priorityPanel);
-        addComponent(priorityPanel);
-        priorityPanel.setPriorities(priorities);
     }
 
     public void validateAll() throws ValidationException {
@@ -103,21 +93,9 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
     public ConnectorConfig getConfig() {
         ConnectorConfig config = getPartialConfig();
         config.setLabel((String) labelText.getValue());
-        // TODO this casting to WebConfig is not nice.
-        if (serverPanel != null) {
-            ((WebConfig) config).setServerInfo(serverPanel.getServerInfo());
-        }
-        if (fieldsMappingPanel != null) {
-            config.setFieldsMapping(fieldsMappingPanel.getResult());
-        }
-        if (projectPanel != null) {
-            ProjectInfo projectInfo = projectPanel.getProjectInfo();
-            ((WebConfig) config).setProjectKey(projectInfo.getProjectKey());
-            ((WebConfig) config).setQueryId(projectInfo.getQueryId());
-        }
-        if (priorityPanel != null) {
-            config.setPriorities(priorityPanel.getPriorities());
-        }
+
+        panelContainer.setPanelsDataToConfig(config);
+
         if (findUserByName != null) {
             ((WebConfig) config).setFindUserByName((Boolean) findUserByName.getValue());
         }
@@ -126,23 +104,18 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
 
     public void setData(ConnectorConfig config) {
         this.config = config;
-        setCommonFields();
-    }
 
-    private void setCommonFields() {
-        if (serverPanel != null) {
-            serverPanel.setServerInfo(((WebConfig) config).getServerInfo());
-        }
-        if (priorityPanel != null) {
-            priorityPanel.setPriorities(config.getPriorities());
-        }
-        if (projectPanel != null) {
-            projectPanel.setProjectInfo(((WebConfig) config).getProjectInfo());
-        }
+        panelContainer.initPanelsDataByConfig(config);
+
+        // TODO refactor this like done for Panels
         if (findUserByName != null) {
             findUserByName.setValue(((WebConfig) config).isFindUserByName());
         }
 
         EditorUtil.setNullSafe(this.labelText, config.getLabel());
+    }
+
+    public ConfigPanelContainer getPanelContainer() {
+        return panelContainer;
     }
 }

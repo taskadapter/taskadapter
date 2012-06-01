@@ -2,8 +2,10 @@ package com.taskadapter.web.configeditor;
 
 import com.google.common.base.Strings;
 import com.taskadapter.PluginManager;
+import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ProjectInfo;
 import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.connector.definition.WebConfig;
 import com.vaadin.ui.*;
 
 import java.util.Collection;
@@ -13,7 +15,7 @@ import java.util.Collection;
  *
  * @author Alexey Skorokhodov
  */
-public class ProjectPanel extends Panel implements Validatable {
+public class ProjectPanel extends Panel implements Validatable, ConfigPanel {
     private static final String DEFAULT_PANEL_CAPTION = "Project Info";
     private static final int COLUMNS_NUMBER = 2;
 
@@ -181,5 +183,20 @@ public class ProjectPanel extends Panel implements Validatable {
         if (getProjectKey().trim().isEmpty()) {
             throw new ValidationException("Project Key is required");
         }
+    }
+
+    @Override
+    public void setDataToConfig(ConnectorConfig config) {
+        ProjectInfo projectInfo = getProjectInfo();
+        WebConfig webConfig = (WebConfig)config;
+
+        webConfig.setProjectKey(projectInfo.getProjectKey());
+        webConfig.setQueryId(projectInfo.getQueryId());
+    }
+
+    @Override
+    public void initDataByConfig(ConnectorConfig config) {
+        WebConfig webConfig = (WebConfig)config;
+        setProjectInfo(webConfig.getProjectInfo());
     }
 }

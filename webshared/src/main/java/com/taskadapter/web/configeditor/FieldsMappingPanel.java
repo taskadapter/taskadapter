@@ -1,6 +1,7 @@
 package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.definition.AvailableFields;
+import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ValidationException;
@@ -16,7 +17,7 @@ import java.util.*;
 /**
  * @author Alexey Skorokhodov
  */
-public class FieldsMappingPanel extends Panel implements Validatable {
+public class FieldsMappingPanel extends Panel implements Validatable, ConfigPanel {
     private static final String PANEL_TITLE = "Task fields";
     private static final String COLUMN1_HEADER = "Task Adapter field";
     private static final String COLUMN2_HEADER = "System field or constraint";
@@ -181,6 +182,16 @@ public class FieldsMappingPanel extends Panel implements Validatable {
                 GTaskDescriptor.getDisplayValue(f) +
                 "\" is selected for export." +
                 "\nPlease set the *destination* field or constraint in " + PANEL_TITLE + " section.";
+    }
+
+    @Override
+    public void setDataToConfig(ConnectorConfig config) {
+        config.setFieldsMapping(getResult());
+    }
+
+    @Override
+    public void initDataByConfig(ConnectorConfig config) {
+
     }
 }
 
