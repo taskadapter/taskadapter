@@ -101,7 +101,7 @@ public final class Mappings {
 	 * @param target
 	 *            target field.
 	 */
-	public void setMaping(FIELD field, String target) {
+	public void setMapping(FIELD field, String target) {
 		summon(field).setValue(target);
 	}
 
