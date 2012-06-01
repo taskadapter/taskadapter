@@ -1,8 +1,6 @@
 package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.definition.AvailableFields;
-import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.GTaskDescriptor;
@@ -32,6 +30,11 @@ public class FieldsMappingPanel extends Panel implements Validatable, FormPartHa
      */
     private final Mappings mappings;
     
+    /**
+     * Source (original) mappings.
+     */
+    private final Mappings originalMappings;
+    
     private static final int COLUMNS_NUMBER = 2;
     private GridLayout gridLayout;
     private Resource helpIconResource = new ThemeResource("../runo/icons/16/help.png");
@@ -40,6 +43,7 @@ public class FieldsMappingPanel extends Panel implements Validatable, FormPartHa
         super("Task fields mapping");
         this.availableFieldsProvider = availableFieldsProvider;
         this.mappings = mappings;
+        this.originalMappings = new Mappings(mappings);
 
         setDescription("Select fields to export when SAVING data to this system");
         addFields();
@@ -147,8 +151,7 @@ public class FieldsMappingPanel extends Panel implements Validatable, FormPartHa
         checkbox.setValue(false);
     }
 
-    public Mappings getResult() {
-    	final Mappings result = new Mappings();
+    private void updateMapping() {
         for (GTaskDescriptor.FIELD f : availableFieldsProvider.getSupportedFields()) {
             boolean selected = fieldToButtonMap.get(f).booleanValue();
             String value = null;
@@ -157,9 +160,7 @@ public class FieldsMappingPanel extends Panel implements Validatable, FormPartHa
                 value = (String) combo.getValue();
             }
             mappings.setMapping(f, selected, value);
-            result.setMapping(f, selected, value);
         }
-        return result;
     }
 
     @Override
@@ -184,10 +185,18 @@ public class FieldsMappingPanel extends Panel implements Validatable, FormPartHa
                 "\" is selected for export." +
                 "\nPlease set the *destination* field or constraint in " + PANEL_TITLE + " section.";
     }
+    
+    /**
+     * Checks, if there are any changes to perform.
+     * @return <code>true</code> iff there are changes since panel creation.
+     */
+    public boolean haveChanges() {
+    	return originalMappings.equals(mappings);
+    }
 
     @Override
 	public void pageUpdated() {
-		getResult();
+		updateMapping();
 	}
 }
 

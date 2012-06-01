@@ -19,7 +19,6 @@ public class ConfirmExportPage extends CustomComponent {
     private Connector connectorTo;
     private Button.ClickListener goListener;
     private FieldsMappingPanel fieldMappingPanel;
-    private Mappings oldFieldsMapping;
     private MyTree connectorTree;
 
     public ConfirmExportPage(Navigator navigator, List<GTask> rootLevelTasks, Connector destinationConnector, Button.ClickListener goListener) {
@@ -43,8 +42,6 @@ public class ConfirmExportPage extends CustomComponent {
         connectorTree.setTasks(rootLevelTasks);
         layout.addComponent(connectorTree);
 
-        oldFieldsMapping = connectorTo.getConfig().getFieldsMapping();
-
         HorizontalLayout buttonsLayout = new HorizontalLayout();
         Button goButton = new Button("Go");
         goButton.addListener(goListener);
@@ -60,14 +57,17 @@ public class ConfirmExportPage extends CustomComponent {
     }
 
     public boolean needToSaveConfig() {
-        return !oldFieldsMapping.equals(fieldMappingPanel.getResult());
+        return fieldMappingPanel.haveChanges(); 
     }
 
     public List<GTask> getSelectedRootLevelTasks() {
         return connectorTree.getSelectedRootLevelTasks();
     }
 
-    public Mappings getConnectorToFieldMappings() {
-        return fieldMappingPanel.getResult();
-    }
+    /**
+     * Handles page update.
+     */
+	public void pageUpdated() {
+		fieldMappingPanel.pageUpdated();
+	}
 }
