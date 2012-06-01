@@ -151,7 +151,7 @@ public final class Mappings {
 			return guess;
 		final Mapping created = new Mapping();
 		fieldsMapping.put(field, created);
-		return guess;
+		return created;
 	}
 
 	@Override

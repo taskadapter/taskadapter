@@ -157,6 +157,7 @@ public class FieldsMappingPanel extends Panel implements Validatable, ConfigPane
                 value = (String) combo.getValue();
             }
             mappings.setMapping(f, selected, value);
+            result.setMapping(f, selected, value);
         }
         return result;
     }
