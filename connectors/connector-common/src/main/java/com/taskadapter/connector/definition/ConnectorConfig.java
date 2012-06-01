@@ -3,7 +3,6 @@ package com.taskadapter.connector.definition;
 import com.google.common.base.Objects;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.model.GTaskDescriptor;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -70,48 +69,10 @@ public abstract class ConnectorConfig implements Serializable {
         this.saveIssueRelations = saveIssueRelations;
     }
 
-    /**
-     * Exposing internal implementation details is bad. delete this method.
-     */
-    public Mappings getFieldsMapping() {
-        return mappings;
-    }
-
-    public void setFieldsMapping(Mappings mappings) {
-    	this.mappings = mappings;
-    }
-
     abstract protected Map<GTaskDescriptor.FIELD, Mapping> generateDefaultFieldsMapping();
 
     abstract protected Priorities generateDefaultPriorities();
 
-    public boolean isFieldSelected(FIELD field) {
-    	return mappings.isFieldSelected(field);
-    }
-
-    /**
-     * returns the current value or NULL if the mapping does not exist / unknown
-     */
-    public String getFieldMappedValue(FIELD field) {
-    	return mappings.getMappedTo(field);
-    }
-
-    public void selectField(FIELD field) {
-    	mappings.selectField(field);
-    }
-
-    public void unselectField(FIELD field) {
-    	mappings.deselectField(field);
-    }
-
-    public void setFieldMappedValue(FIELD field, String value) {
-    	mappings.setMaping(field, value);
-    }
-
-    public void setFieldMapping(FIELD field, boolean selected, String target) {
-    	mappings.setMapping(field, selected, target);
-    }
-    
     /**
      * Returns fields mappings.
      * @return fields mappings.

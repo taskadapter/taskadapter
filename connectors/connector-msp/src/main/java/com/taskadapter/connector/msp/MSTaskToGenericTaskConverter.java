@@ -175,7 +175,7 @@ class MSTaskToGenericTaskConverter {
     }
 
     Object getValue(Task mspTask, FIELD field) {
-        String v = config.getFieldMappedValue(field);
+        String v = config.getFieldMappings().getMappedTo(field);
         if (v != null) {
             TaskField f = MSPUtils.getTaskFieldByName(v);
 

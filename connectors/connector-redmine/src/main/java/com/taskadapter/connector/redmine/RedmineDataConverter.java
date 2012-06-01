@@ -1,5 +1,6 @@
 package com.taskadapter.connector.redmine;
 
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
@@ -30,31 +31,32 @@ public class RedmineDataConverter {
 
     // TODO refactor this into multiple tiny testable methods
     public Issue convertToRedmineIssue(Project rmProject, GTask task) {
+    	final Mappings mapping = config.getFieldMappings();
         Issue issue = new Issue();
         if (task.getParentKey() != null) {
             issue.setParentId(Integer.parseInt(task.getParentKey()));
         }
         issue.setProject(rmProject);
 
-        if (config.isFieldSelected(FIELD.SUMMARY)) {
+        if (mapping.isFieldSelected(FIELD.SUMMARY)) {
             issue.setSubject(task.getSummary());
         }
-        if (config.isFieldSelected(FIELD.START_DATE)) {
+        if (mapping.isFieldSelected(FIELD.START_DATE)) {
             issue.setStartDate(task.getStartDate());
         }
-        if (config.isFieldSelected(FIELD.DUE_DATE)) {
+        if (mapping.isFieldSelected(FIELD.DUE_DATE)) {
             issue.setDueDate(task.getDueDate());
         }
 
-        if (config.isFieldSelected(FIELD.ESTIMATED_TIME)) {
+        if (mapping.isFieldSelected(FIELD.ESTIMATED_TIME)) {
             issue.setEstimatedHours(task.getEstimatedHours());
         }
 
-        if (config.isFieldSelected(FIELD.DONE_RATIO)) {
+        if (mapping.isFieldSelected(FIELD.DONE_RATIO)) {
             issue.setDoneRatio(task.getDoneRatio());
         }
 
-        if (config.isFieldSelected(FIELD.TASK_TYPE)) {
+        if (mapping.isFieldSelected(FIELD.TASK_TYPE)) {
             String trackerName = task.getType();
             if (trackerName == null) {
                 trackerName = config.getDefaultTaskType();
@@ -62,7 +64,7 @@ public class RedmineDataConverter {
             issue.setTracker(rmProject.getTrackerByName(trackerName));
         }
 
-        if (config.isFieldSelected(FIELD.TASK_STATUS)) {
+        if (mapping.isFieldSelected(FIELD.TASK_STATUS)) {
             String statusName = task.getStatus();
             if (statusName == null) {
                 statusName = config.getDefaultTaskStatus();
@@ -75,7 +77,7 @@ public class RedmineDataConverter {
             }
         }
 
-        if (config.isFieldSelected(FIELD.DESCRIPTION)) {
+        if (mapping.isFieldSelected(FIELD.DESCRIPTION)) {
             issue.setDescription(task.getDescription());
         }
         issue.setCreatedOn(task.getCreatedOn());
@@ -88,7 +90,7 @@ public class RedmineDataConverter {
     }
 
     private void processAssignee(GTask genericTask, Issue redmineIssue) {
-        if (config.isFieldSelected(FIELD.ASSIGNEE)) {
+        if (config.getFieldMappings().isFieldSelected(FIELD.ASSIGNEE)) {
             GUser ass = genericTask.getAssignee();
             if ((ass != null) && (ass.getLoginName() != null || ass.getDisplayName() != null)) {
                 User rmAss;
@@ -105,7 +107,7 @@ public class RedmineDataConverter {
     }
 
     private void processTaskStatus(GTask task, Issue issue) {
-        if (config.isFieldSelected(FIELD.TASK_STATUS)) {
+        if (config.getFieldMappings().isFieldSelected(FIELD.TASK_STATUS)) {
             String statusName = task.getStatus();
             if (statusName == null) {
                 statusName = config.getDefaultTaskStatus();

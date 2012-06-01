@@ -1,5 +1,6 @@
 package com.taskadapter.connector.mantis;
 
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
@@ -46,16 +47,17 @@ public class MantisDataConverter {
     }
 
     public IssueData convertToMantisIssue(ProjectData mntProject, GTask task) {
+    	final Mappings mappings = config.getFieldMappings();
         IssueData issue = new IssueData();
 
         ObjectRef mntProjectRef = new ObjectRef(mntProject.getId(), mntProject.getName());
         issue.setProject(mntProjectRef);
 
-        if (config.isFieldSelected(GTaskDescriptor.FIELD.SUMMARY)) {
+        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.SUMMARY)) {
             issue.setSummary(task.getSummary());
         }
 
-        if (config.isFieldSelected(GTaskDescriptor.FIELD.DESCRIPTION)) {
+        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.DESCRIPTION)) {
             String description = task.getDescription();
             // empty description is not allowed by Mantis API.
             // see bug https://www.hostedredmine.com/issues/39248
@@ -65,7 +67,7 @@ public class MantisDataConverter {
             issue.setDescription(description);
         }
 
-        if (config.isFieldSelected(GTaskDescriptor.FIELD.DUE_DATE)) {
+        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.DUE_DATE)) {
             if (task.getDueDate() != null) {
                 Calendar dueDate = Calendar.getInstance();
                 dueDate.setTime(task.getDueDate());
@@ -81,7 +83,7 @@ public class MantisDataConverter {
 		updated.setTime(task.getUpdatedOn());
 		issue.setLast_updated(updated);*/
 
-        if (config.isFieldSelected(GTaskDescriptor.FIELD.ASSIGNEE)) {
+        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.ASSIGNEE)) {
             GUser ass = task.getAssignee();
 
             if (ass != null) {

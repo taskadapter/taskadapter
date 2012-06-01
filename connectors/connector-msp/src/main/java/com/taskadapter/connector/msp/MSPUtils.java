@@ -60,7 +60,7 @@ public class MSPUtils {
     }
 
     public static boolean useWork(MSPConfig config) {
-        String value = config.getFieldMappedValue(FIELD.ESTIMATED_TIME);
+        String value = config.getFieldMappings().getMappedTo(FIELD.ESTIMATED_TIME);
         if (value == null) {
             throw new RuntimeException("Invalid MSP Config. Estimated time must be mapped to something.");
         }

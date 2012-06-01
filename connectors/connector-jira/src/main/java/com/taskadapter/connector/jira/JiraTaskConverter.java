@@ -2,6 +2,7 @@ package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rpc.soap.client.*;
 import com.google.common.base.Strings;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
@@ -24,15 +25,16 @@ public class JiraTaskConverter {
     }
 
     public RemoteIssue convertToJiraIssue(RemoteVersion[] versions, RemoteComponent[] components, GTask task) {
+    	final Mappings mappings = config.getFieldMappings();
         RemoteIssue issue = new RemoteIssue();
-        if (config.isFieldSelected(FIELD.SUMMARY)) {
+        if (mappings.isFieldSelected(FIELD.SUMMARY)) {
             issue.setSummary(task.getSummary());
         }
         // issue.setParentId(parentIssueId);
         issue.setProject(config.getProjectKey());
         issue.setType(ISSUE_TYPE_ID);
 
-        if (config.isFieldSelected(FIELD.DESCRIPTION)) {
+        if (mappings.isFieldSelected(FIELD.DESCRIPTION)) {
             issue.setDescription(task.getDescription());
         }
 
@@ -53,7 +55,7 @@ public class JiraTaskConverter {
             issue.setCustomFieldValues(customValues);
         }
 
-        if (config.isFieldSelected(FIELD.TASK_TYPE)) {
+        if (mappings.isFieldSelected(FIELD.TASK_TYPE)) {
             String issueType = getIssueTypeIdByName(task.getType());
 
             if (issueType == null) {
@@ -63,17 +65,17 @@ public class JiraTaskConverter {
             issue.setType(issueType);
         }
 
-        if (config.isFieldSelected(FIELD.DUE_DATE) && task.getDueDate() != null) {
+        if (mappings.isFieldSelected(FIELD.DUE_DATE) && task.getDueDate() != null) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(task.getDueDate());
             issue.setDuedate(cal);
         }
 
-        if (config.isFieldSelected(FIELD.ASSIGNEE)) {
+        if (mappings.isFieldSelected(FIELD.ASSIGNEE)) {
             setAssignee(task, issue);
         }
 
-        if (config.isFieldSelected(FIELD.PRIORITY)) {
+        if (mappings.isFieldSelected(FIELD.PRIORITY)) {
             String jiraPriorityName = config.getPriorityByMSP(task.getPriority());
 
             if (!jiraPriorityName.isEmpty()) {

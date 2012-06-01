@@ -72,8 +72,8 @@ public class MSTaskToGenericTaskConverterTest {
     @Test
     public void estimatedTimeFoundThroughWork() {
         MSPConfig config = new MSPConfig("");
-        config.setFieldMappedValue(FIELD.ESTIMATED_TIME, TaskField.WORK.toString());
-        config.selectField(FIELD.ESTIMATED_TIME);
+        config.getFieldMappings().setMaping(FIELD.ESTIMATED_TIME, TaskField.WORK.toString());
+        config.getFieldMappings().selectField(FIELD.ESTIMATED_TIME);
         converter.setConfig(config);
         assertEquals(Float.valueOf(2), converter.extractEstimatedHours(task1));
     }
@@ -81,8 +81,8 @@ public class MSTaskToGenericTaskConverterTest {
     @Test
     public void estimatedTimeFoundThroughDuration() {
         MSPConfig config = new MSPConfig("");
-        config.setFieldMappedValue(FIELD.ESTIMATED_TIME, TaskField.DURATION.toString());
-        config.selectField(FIELD.ESTIMATED_TIME);
+        config.getFieldMappings().setMaping(FIELD.ESTIMATED_TIME, TaskField.DURATION.toString());
+        config.getFieldMappings().selectField(FIELD.ESTIMATED_TIME);
         converter.setConfig(config);
         Assert.assertEquals(0.5f, converter.extractEstimatedHours(task2), 0.001f);
     }

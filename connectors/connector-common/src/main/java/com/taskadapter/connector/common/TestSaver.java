@@ -15,12 +15,12 @@ public class TestSaver {
     }
 
     public TestSaver selectField(GTaskDescriptor.FIELD field) {
-        connector.getConfig().selectField(field);
+        connector.getConfig().getFieldMappings().selectField(field);
         return this;
     }
 
     public TestSaver unselectField(GTaskDescriptor.FIELD field) {
-        connector.getConfig().unselectField(field);
+        connector.getConfig().getFieldMappings().deselectField(field);
         return this;
     }
 

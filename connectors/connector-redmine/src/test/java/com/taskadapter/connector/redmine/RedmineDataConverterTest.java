@@ -21,7 +21,7 @@ public class RedmineDataConverterTest {
         GTask gtask = new GTask();
         gtask.setSummary("Should be ignored");
         RedmineConfig config = new RedmineConfig();
-        config.unselectField(FIELD.SUMMARY);
+        config.getFieldMappings().deselectField(FIELD.SUMMARY);
         Issue task = new RedmineDataConverter(config).convertToRedmineIssue(new Project(), gtask);
         Assert.assertNull(task.getSubject());
     }
@@ -81,9 +81,9 @@ public class RedmineDataConverterTest {
     private RedmineDataConverter getConverterWithAssignee(boolean assigneeIsMapped) {
         RedmineConfig config = new RedmineConfig();
         if (assigneeIsMapped) {
-            config.selectField(FIELD.ASSIGNEE);
+            config.getFieldMappings().selectField(FIELD.ASSIGNEE);
         } else {
-            config.unselectField(FIELD.ASSIGNEE);
+            config.getFieldMappings().deselectField(FIELD.ASSIGNEE);
         }
         RedmineDataConverter converter = new RedmineDataConverter(config);
         converter.setUsers(createUsers());

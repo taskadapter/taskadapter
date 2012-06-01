@@ -156,7 +156,7 @@ public class JiraTest {
 
         //save old mapping object for priority field
         MappingStore mapping = getStore(config, FIELD.PRIORITY);
-        config.setFieldMapping(FIELD.PRIORITY, false, null);
+        config.getFieldMappings().setMapping(FIELD.PRIORITY, false, null);
 
         RemoteVersion[] versions = {};
         RemoteComponent[] components = {};
@@ -189,7 +189,7 @@ public class JiraTest {
 
             //save old mapping object for priority field
             MappingStore mapping = getStore(config, FIELD.PRIORITY);
-            config.setFieldMapping(FIELD.PRIORITY, true, null);
+            config.getFieldMappings().setMapping(FIELD.PRIORITY, true, null);
 
             GTask task = converter.convertToGenericTask(issue);
             RemoteIssue newIssue = converter.convertToJiraIssue(versions, components, task);
@@ -221,8 +221,7 @@ public class JiraTest {
 		Mappings mappings = config.getFieldMappings();
 		if (!mappings.haveMappingFor(field))
 			return null;
-		return new MappingStore(mappings.isFieldSelected(field), config
-				.getFieldsMapping().getMappedTo(field));
+		return new MappingStore(mappings.isFieldSelected(field), config.getFieldMappings().getMappedTo(field));
 	}
 	
 	/**
@@ -249,7 +248,7 @@ public class JiraTest {
 
             //save old mapping object for issue type field
             MappingStore mapping = getStore(config, FIELD.TASK_TYPE);
-            config.setFieldMapping(FIELD.TASK_TYPE, true, null);
+            config.getFieldMappings().setMapping(FIELD.TASK_TYPE, true, null);
 
             RemoteVersion[] versions = {};
             RemoteComponent[] components = {};
@@ -272,7 +271,7 @@ public class JiraTest {
 
             //save old mapping object for issue type field
             MappingStore mapping = getStore(config, FIELD.TASK_TYPE);
-            config.setFieldMapping(FIELD.TASK_TYPE, true, null);
+            config.getFieldMappings().setMapping(FIELD.TASK_TYPE, true, null);
 
             RemoteVersion[] versions = {};
             RemoteComponent[] components = {};

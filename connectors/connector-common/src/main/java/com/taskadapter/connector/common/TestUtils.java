@@ -25,8 +25,7 @@ public class TestUtils {
 		Mappings mappings = config.getFieldMappings();
 		if (!mappings.haveMappingFor(field))
 			return null;
-		return new MappingStore(mappings.isFieldSelected(field), config
-				.getFieldsMapping().getMappedTo(field));
+		return new MappingStore(mappings.isFieldSelected(field), config.getFieldMappings().getMappedTo(field));
 	}
 	
 	/**
@@ -101,7 +100,7 @@ public class TestUtils {
     public static GTask saveAndLoad(Connector<?> connector, FIELD field, Mapping mapping, GTask task) {
         ConnectorConfig config = connector.getConfig();
         final MappingStore savedMapping = getStore(config, field);
-		config.setFieldMapping(field, mapping.isSelected(),
+		config.getFieldMappings().setMapping(field, mapping.isSelected(),
 				mapping.getCurrentValue()); // ugly, but ...
         GTask loadedTask = saveAndLoad(connector, task);
         applyStore(config, field, savedMapping);

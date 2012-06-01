@@ -21,22 +21,22 @@ public class MSPConfigTest {
     @Test
     public void unselectedMappingCopiedProperlyByCopyConstructor() {
         MSPConfig config = new MSPConfig();
-		config.setFieldMapping(FIELD.ESTIMATED_TIME, false,
+		config.getFieldMappings().setMapping(FIELD.ESTIMATED_TIME, false,
 				TaskField.DURATION.toString());
         MSPConfig cloned = new MSPConfig(config);
-        assertFalse(cloned.isFieldSelected(FIELD.ESTIMATED_TIME));
+        assertFalse(cloned.getFieldMappings().isFieldSelected(FIELD.ESTIMATED_TIME));
     }
 
     @Test
     public void mappingCopiedProperlyByCopyConstructor() {
         MSPConfig cloned = createAndCloneConfig(FIELD.ESTIMATED_TIME, true, TaskField.DURATION.toString());
-        assertTrue(cloned.isFieldSelected(FIELD.ESTIMATED_TIME));
-        assertEquals(TaskField.DURATION.toString(), cloned.getFieldMappedValue(FIELD.ESTIMATED_TIME));
+        assertTrue(cloned.getFieldMappings().isFieldSelected(FIELD.ESTIMATED_TIME));
+        assertEquals(TaskField.DURATION.toString(), cloned.getFieldMappings().getMappedTo(FIELD.ESTIMATED_TIME));
     }
 
     @Test
     public void summaryFieldSelectedByDefault() {
-        assertTrue(new MSPConfig().isFieldSelected(FIELD.SUMMARY));
+        assertTrue(new MSPConfig().getFieldMappings().isFieldSelected(FIELD.SUMMARY));
     }
 
     @Test
@@ -78,7 +78,7 @@ public class MSPConfigTest {
 
     private static MSPConfig createAndCloneConfig(FIELD field, boolean selected, String value) {
         MSPConfig config = new MSPConfig();
-        config.setFieldMapping(field, selected, value);
+        config.getFieldMappings().setMapping(field, selected, value);
         return new MSPConfig(config);
     }
 

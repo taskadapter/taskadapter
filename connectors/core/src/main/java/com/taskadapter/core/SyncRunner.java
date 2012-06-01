@@ -85,7 +85,7 @@ public class SyncRunner {
 					totalNumberOfTasks);
         }
         List<GTask> treeToSave;
-        if (connectorTo.getConfig().isFieldSelected(FIELD.REMOTE_ID)) {
+        if (connectorTo.getConfig().getFieldMappings().isFieldSelected(FIELD.REMOTE_ID)) {
             List<GTask> clonedTree = TreeUtils.cloneTree(tasks);
             TaskUtil.setRemoteIdField(clonedTree);
             treeToSave = clonedTree;
@@ -109,7 +109,7 @@ public class SyncRunner {
         // the target systems.
 
         ConnectorConfig configFrom = connectorFrom.getConfig();
-        if (configFrom.isFieldSelected(FIELD.REMOTE_ID)) {
+        if (configFrom.getFieldMappings().isFieldSelected(FIELD.REMOTE_ID)) {
             connectorFrom.updateRemoteIDs(configFrom,
                     result, null);
         }

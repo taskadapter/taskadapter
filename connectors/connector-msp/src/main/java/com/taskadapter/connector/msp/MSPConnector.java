@@ -43,13 +43,13 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
     }
 
     private void setFieldIfNotNull(MSPConfig config, FIELD field, Task mspTask, String value) {
-        String v = config.getFieldMappedValue(field);
+        String v = config.getFieldMappings().getMappedTo(field);
         TaskField f = MSPUtils.getTaskFieldByName(v);
         mspTask.set(f, value);
     }
 
     private Object getField(MSPConfig config, FIELD field, Task mspTask) {
-        String v = config.getFieldMappedValue(field);
+        String v = config.getFieldMappings().getMappedTo(field);
         TaskField f = MSPUtils.getTaskFieldByName(v);
         return mspTask.getCurrentValue(f);
     }
