@@ -17,7 +17,7 @@ import java.util.*;
 /**
  * @author Alexey Skorokhodov
  */
-public class FieldsMappingPanel extends Panel implements Validatable, ConfigPanel {
+public class FieldsMappingPanel extends Panel implements Validatable, FormPartHandler {
     private static final String PANEL_TITLE = "Task fields";
     private static final String COLUMN1_HEADER = "Task Adapter field";
     private static final String COLUMN2_HEADER = "System field or constraint";
@@ -186,13 +186,8 @@ public class FieldsMappingPanel extends Panel implements Validatable, ConfigPane
     }
 
     @Override
-    public void setDataToConfig(ConnectorConfig config) {
-        config.setFieldsMapping(getResult());
-    }
-
-    @Override
-    public void initDataByConfig(ConnectorConfig config) {
-
-    }
+	public void pageUpdated() {
+		getResult();
+	}
 }
 
