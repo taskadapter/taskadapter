@@ -1,6 +1,6 @@
 package com.taskadapter.connector.definition;
 
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.taskadapter.model.GTaskDescriptor.FIELD;
@@ -17,32 +17,32 @@ import com.taskadapter.model.GTaskDescriptor.FIELD;
 public final class Mappings {
 
 	/**
-	 * Fields mapping.
+	 * Selected fields.
 	 */
-	private Map<FIELD, Mapping> fieldsMapping;
+	private final Map<FIELD, Boolean> selected;
+
+	/**
+	 * "Map item to" setting.
+	 */
+	private final Map<FIELD, String> mapTo;
 
 	/**
 	 * Creates empty mappings.
 	 */
 	public Mappings() {
-		this.fieldsMapping = new EnumMap<FIELD, Mapping>(FIELD.class);
+		this.selected = new HashMap<FIELD, Boolean>();
+		this.mapTo = new HashMap<FIELD, String>();
 	}
 
 	/**
-	 * Creates a new mapping with default values.
+	 * Copy constructor for mapping.
 	 * 
 	 * @param mapping
-	 *            mapping with default value.
+	 *            new mapping.
 	 */
-	public Mappings(Map<FIELD, Mapping> mapping) {
-		this.fieldsMapping = new EnumMap<FIELD, Mapping>(FIELD.class);
-		for (Map.Entry<FIELD, Mapping> entry : mapping.entrySet())
-			this.fieldsMapping.put(entry.getKey(), new Mapping(entry.getValue()
-					.isSelected(), entry.getValue().getCurrentValue()));
-	}
-
 	public Mappings(Mappings mapping) {
-		this(mapping.fieldsMapping);
+		this.selected = new HashMap<FIELD, Boolean>(mapping.selected);
+		this.mapTo = new HashMap<FIELD, String>(mapping.mapTo);
 	}
 
 	/**
@@ -53,8 +53,8 @@ public final class Mappings {
 	 * @return <code>true</code> iff field is selected for conversion.
 	 */
 	public boolean isFieldSelected(FIELD field) {
-		Mapping mapping = fieldsMapping.get(field);
-		return (mapping != null && mapping.isSelected());
+		final Boolean result = selected.get(field);
+		return result != null && result.booleanValue();
 	}
 
 	/**
@@ -66,11 +66,7 @@ public final class Mappings {
 	 * @return field, to which source is mapped.
 	 */
 	public String getMappedTo(FIELD field) {
-		Mapping mapping = fieldsMapping.get(field);
-		if (mapping != null) {
-			return mapping.getCurrentValue();
-		}
-		return null;
+		return mapTo.get(field);
 	}
 
 	/**
@@ -80,7 +76,7 @@ public final class Mappings {
 	 *            field to select.
 	 */
 	public void selectField(FIELD field) {
-		summon(field).setSelected(true);
+		selected.put(field, Boolean.TRUE);
 	}
 
 	/**
@@ -90,7 +86,7 @@ public final class Mappings {
 	 *            field to deselect.
 	 */
 	public void deselectField(FIELD field) {
-		summon(field).setSelected(false);
+		selected.put(field, Boolean.FALSE);
 	}
 
 	/**
@@ -102,7 +98,7 @@ public final class Mappings {
 	 *            target field.
 	 */
 	public void setMapping(FIELD field, String target) {
-		summon(field).setValue(target);
+		mapTo.put(field, target);
 	}
 
 	/**
@@ -116,50 +112,50 @@ public final class Mappings {
 	 *            mapping target.
 	 */
 	public void setMapping(FIELD field, boolean selected, String target) {
-		final Mapping map = summon(field);
-		map.setSelected(selected);
-		map.setValue(target);
+		this.selected.put(field, Boolean.valueOf(selected));
+		mapTo.put(field, target);
 	}
-	
+
 	/**
 	 * Checks presence of a mapping for a specified key.
-	 * @param field field to use.
+	 * 
+	 * @param field
+	 *            field to use.
 	 * @return mapped field.
 	 */
 	public boolean haveMappingFor(FIELD field) {
-		return fieldsMapping.containsKey(field);
+		return selected.containsKey(field) || mapTo.containsKey(field);
 	}
 
 	/**
 	 * Deletes a mapping for a field.
-	 * @param field field to delete a mapping for.
+	 * 
+	 * @param field
+	 *            field to delete a mapping for.
 	 */
 	public void deleteMappingFor(FIELD field) {
-		fieldsMapping.remove(field);
+		selected.remove(field);
+		mapTo.remove(field);
 	}
 	
 	/**
-	 * Summons (fetches or creates) mapping for a field.
-	 * 
-	 * @param field
-	 *            field to get a mapping for.
-	 * @return field mapping.
+	 * Adds a field if it does not exists. Field is unselected and have not
+	 * "map to" value.
+	 * @param field field to add.
 	 */
-	private Mapping summon(FIELD field) {
-		final Mapping guess = fieldsMapping.get(field);
-		if (guess != null)
-			return guess;
-		final Mapping created = new Mapping();
-		fieldsMapping.put(field, created);
-		return created;
+	public void addField(FIELD field) {
+		if (haveMappingFor(field))
+			return;
+		selected.put(field, false);
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((mapTo == null) ? 0 : mapTo.hashCode());
 		result = prime * result
-				+ ((fieldsMapping == null) ? 0 : fieldsMapping.hashCode());
+				+ ((selected == null) ? 0 : selected.hashCode());
 		return result;
 	}
 
@@ -172,12 +168,16 @@ public final class Mappings {
 		if (getClass() != obj.getClass())
 			return false;
 		Mappings other = (Mappings) obj;
-		if (fieldsMapping == null) {
-			if (other.fieldsMapping != null)
+		if (mapTo == null) {
+			if (other.mapTo != null)
 				return false;
-		} else if (!fieldsMapping.equals(other.fieldsMapping))
+		} else if (!mapTo.equals(other.mapTo))
+			return false;
+		if (selected == null) {
+			if (other.selected != null)
+				return false;
+		} else if (!selected.equals(other.selected))
 			return false;
 		return true;
 	}
-
 }

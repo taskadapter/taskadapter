@@ -1,13 +1,12 @@
 package com.taskadapter.connector.github;
 
 import com.taskadapter.connector.Priorities;
-import com.taskadapter.connector.definition.Mapping;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.model.GTaskDescriptor;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class GithubConfig extends WebConfig {
     static final String DEFAULT_LABEL = "Github";
@@ -21,13 +20,14 @@ public class GithubConfig extends WebConfig {
     }
 
     @Override
-    protected Map<GTaskDescriptor.FIELD, Mapping> generateDefaultFieldsMapping() {
-        Map<GTaskDescriptor.FIELD, Mapping> fieldsMapping = new HashMap<GTaskDescriptor.FIELD, Mapping>();
-        fieldsMapping.put(GTaskDescriptor.FIELD.START_DATE, new Mapping());
-        fieldsMapping.put(GTaskDescriptor.FIELD.SUMMARY, new Mapping());
-        fieldsMapping.put(GTaskDescriptor.FIELD.ASSIGNEE, new Mapping());
-        fieldsMapping.put(GTaskDescriptor.FIELD.DESCRIPTION, new Mapping());
-        return fieldsMapping;
+    protected Mappings generateDefaultFieldsMapping() {
+    	final Mappings result = new Mappings();
+    	result.addField(GTaskDescriptor.FIELD.START_DATE);
+    	result.addField(GTaskDescriptor.FIELD.START_DATE);
+    	result.addField(GTaskDescriptor.FIELD.SUMMARY);
+    	result.addField(GTaskDescriptor.FIELD.ASSIGNEE);
+    	result.addField(GTaskDescriptor.FIELD.DESCRIPTION);
+        return result;
     }
 
     public String getIssueState() {

@@ -1,7 +1,6 @@
 package com.taskadapter.webui.action;
 
 import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;

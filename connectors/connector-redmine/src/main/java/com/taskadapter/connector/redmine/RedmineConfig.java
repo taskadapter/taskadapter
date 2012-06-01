@@ -2,13 +2,11 @@ package com.taskadapter.connector.redmine;
 
 import com.google.common.base.Objects;
 import com.taskadapter.connector.Priorities;
-import com.taskadapter.connector.definition.Mapping;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.model.GTaskDescriptor;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class RedmineConfig extends WebConfig {
 
@@ -46,18 +44,18 @@ public class RedmineConfig extends WebConfig {
 
     // TODO move to Descriptor?
     @Override
-    public Map<GTaskDescriptor.FIELD, Mapping> generateDefaultFieldsMapping() {
-        Map<GTaskDescriptor.FIELD, Mapping> fieldsMapping = new TreeMap<GTaskDescriptor.FIELD, Mapping>();
-        fieldsMapping.put(GTaskDescriptor.FIELD.SUMMARY, new Mapping());
-        fieldsMapping.put(GTaskDescriptor.FIELD.TASK_TYPE, new Mapping());
-        fieldsMapping.put(GTaskDescriptor.FIELD.TASK_STATUS, new Mapping());
-        fieldsMapping.put(GTaskDescriptor.FIELD.ESTIMATED_TIME, new Mapping());
-        fieldsMapping.put(GTaskDescriptor.FIELD.DONE_RATIO, new Mapping());
-        fieldsMapping.put(GTaskDescriptor.FIELD.ASSIGNEE, new Mapping());
-        fieldsMapping.put(GTaskDescriptor.FIELD.DESCRIPTION, new Mapping());
-        fieldsMapping.put(GTaskDescriptor.FIELD.START_DATE, new Mapping());
-        fieldsMapping.put(GTaskDescriptor.FIELD.DUE_DATE, new Mapping());
-        return fieldsMapping;
+    public Mappings generateDefaultFieldsMapping() {
+    	final Mappings result = new Mappings();
+        result.addField(GTaskDescriptor.FIELD.SUMMARY);
+        result.addField(GTaskDescriptor.FIELD.TASK_TYPE);
+        result.addField(GTaskDescriptor.FIELD.TASK_STATUS);
+        result.addField(GTaskDescriptor.FIELD.ESTIMATED_TIME);
+        result.addField(GTaskDescriptor.FIELD.DONE_RATIO);
+        result.addField(GTaskDescriptor.FIELD.ASSIGNEE);
+        result.addField(GTaskDescriptor.FIELD.DESCRIPTION);
+        result.addField(GTaskDescriptor.FIELD.START_DATE);
+        result.addField(GTaskDescriptor.FIELD.DUE_DATE);
+        return result;
     }
 
     @Override

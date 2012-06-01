@@ -2,14 +2,12 @@ package com.taskadapter.connector.jira;
 
 import com.google.common.base.Objects;
 import com.taskadapter.connector.Priorities;
-import com.taskadapter.connector.definition.Mapping;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.model.GTaskDescriptor;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class JiraConfig extends WebConfig {
 
@@ -70,16 +68,16 @@ public class JiraConfig extends WebConfig {
     }
 
     @Override
-    protected Map<FIELD, Mapping> generateDefaultFieldsMapping() {
-        Map<FIELD, Mapping> fieldsMapping = new HashMap<FIELD, Mapping>();
-        fieldsMapping.put(GTaskDescriptor.FIELD.SUMMARY, new Mapping());
-        fieldsMapping.put(GTaskDescriptor.FIELD.TASK_TYPE, new Mapping());
-        fieldsMapping.put(GTaskDescriptor.FIELD.ESTIMATED_TIME, new Mapping());
-        fieldsMapping.put(GTaskDescriptor.FIELD.ASSIGNEE, new Mapping());
-        fieldsMapping.put(GTaskDescriptor.FIELD.DESCRIPTION, new Mapping());
-        fieldsMapping.put(GTaskDescriptor.FIELD.DUE_DATE, new Mapping());
-        fieldsMapping.put(GTaskDescriptor.FIELD.PRIORITY, new Mapping());
-        return fieldsMapping;
+    protected Mappings generateDefaultFieldsMapping() {
+    	final Mappings result = new Mappings();
+        result.addField(GTaskDescriptor.FIELD.SUMMARY);
+        result.addField(GTaskDescriptor.FIELD.TASK_TYPE);
+        result.addField(GTaskDescriptor.FIELD.ESTIMATED_TIME);
+        result.addField(GTaskDescriptor.FIELD.ASSIGNEE);
+        result.addField(GTaskDescriptor.FIELD.DESCRIPTION);
+        result.addField(GTaskDescriptor.FIELD.DUE_DATE);
+        result.addField(GTaskDescriptor.FIELD.PRIORITY);
+        return result;
     }
 
     @Override

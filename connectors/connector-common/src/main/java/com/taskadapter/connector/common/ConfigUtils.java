@@ -13,8 +13,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.google.gson.reflect.TypeToken;
-import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
@@ -25,12 +23,6 @@ import com.taskadapter.model.GTaskDescriptor.FIELD;
  * 
  */
 public class ConfigUtils {
-
-	/**
-	 * Mapping type token.
-	 */
-	private static final TypeToken<Map<FIELD, Mapping>> MAPPING_MAP_TOKEN = new TypeToken<Map<FIELD, Mapping>>() {
-	};
 
 	/**
 	 * Mappings serializer
@@ -86,18 +78,37 @@ public class ConfigUtils {
 	 *            active context.
 	 * @return parsed mappings.
 	 */
-	@SuppressWarnings("unchecked")
 	static Mappings parseMapping(JsonElement json, Type typeOfT,
 			JsonDeserializationContext context) {
 		int version = getVersion(json);
 		switch (version) {
 		case 0:
-			return new Mappings((Map<FIELD, Mapping>) context.deserialize(json,
-					MAPPING_MAP_TOKEN.getType()));
+			return readMappings0(json);
 		case 1:
 			return RAW_GSON.fromJson(json, Mappings.class);
 		}
 		throw new JsonParseException("Unsupported version " + version);
+	}
+
+	/**
+	 * Reads mapping from a default version.
+	 * @param json json to parse.
+	 * @return parsed mapping.
+	 */
+	private static Mappings readMappings0(JsonElement json) {
+		final Mappings result = new Mappings();
+		final JsonObject obj = json.getAsJsonObject();
+		
+		for (Map.Entry<String, JsonElement> elem : obj.entrySet()) {
+			final FIELD field = FIELD.valueOf(elem.getKey());
+			final JsonObject fmapping = elem.getValue().getAsJsonObject();
+			final boolean useMapping = fmapping.get("selected")
+					.getAsJsonPrimitive().getAsBoolean();
+			final String mapTo = fmapping.has("currentValue") ? fmapping.get(
+					"currentValue").getAsString() : null;
+			result.setMapping(field, useMapping, mapTo);
+		}
+		return result;
 	}
 
 	/**

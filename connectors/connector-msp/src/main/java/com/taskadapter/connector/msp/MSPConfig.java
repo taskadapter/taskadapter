@@ -3,14 +3,12 @@ package com.taskadapter.connector.msp;
 import com.taskadapter.connector.MSPOutputFileNameNotSetException;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Mapping;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * @author Alexey Skorokhodov
@@ -124,35 +122,36 @@ public class MSPConfig extends ConnectorConfig {
      * @return map: field name --> Mapping object.
      */
     @Override
-    protected Map<FIELD, Mapping> generateDefaultFieldsMapping() {
-        Map<FIELD, Mapping> fieldsMapping = new TreeMap<FIELD, Mapping>();
-        fieldsMapping.put(FIELD.SUMMARY, new Mapping());
-        fieldsMapping.put(FIELD.TASK_TYPE, new Mapping(true, MSPUtils.getDefaultTaskType()));
+    protected Mappings generateDefaultFieldsMapping() {
+    	final Mappings result = new Mappings();
+    	result.setMapping(FIELD.SUMMARY, false, null);
 
         // TODO set default values in MSP..Provider instead of using [0]
         String defaultEstimatedTimeOption = MSPUtils.getEstimatedTimeOptions()[0];
-        fieldsMapping.put(FIELD.ESTIMATED_TIME, new Mapping(true, defaultEstimatedTimeOption));
-        fieldsMapping.put(FIELD.DONE_RATIO, new Mapping());
-        fieldsMapping.put(FIELD.ASSIGNEE, new Mapping());
-        fieldsMapping.put(FIELD.DESCRIPTION, new Mapping());
-
+    	result.setMapping(FIELD.ESTIMATED_TIME, true, defaultEstimatedTimeOption);
+    	result.setMapping(FIELD.TASK_TYPE, true, MSPUtils.getDefaultTaskType());
+    	result.setMapping(FIELD.DONE_RATIO, false, null);
+    	result.setMapping(FIELD.ASSIGNEE, false, null);
+    	result.setMapping(FIELD.DESCRIPTION, false, null);
+    	
         String defaultStartDateOption = MSPUtils.getStartDateOptions()[0];
-        fieldsMapping.put(FIELD.START_DATE, new Mapping(false, defaultStartDateOption));
-
+    	result.setMapping(FIELD.START_DATE, false, defaultStartDateOption);
+    	
         String defaultDueDateOption = MSPUtils.getDueDateOptions()[0];
-        fieldsMapping.put(FIELD.DUE_DATE, new Mapping(false, defaultDueDateOption));
+    	result.setMapping(FIELD.DUE_DATE, false, defaultDueDateOption);
 
         /*
-           *  when "saveRemoteId" was by default TRUE for new configs,
-           *  many users have complained that they exported tasks from an MSP file
-           *  to Redmine, then deleted them in the Redmine and tried to re-export
-           *  and got "issue with id... not found".
-           *  it's better to have this option set to FALSE by default to avoid the confusion.
-           */
-        fieldsMapping.put(FIELD.REMOTE_ID, new Mapping(false, MSPUtils.getDefaultRemoteIdMapping()));
-        fieldsMapping.put(FIELD.TASK_STATUS, new Mapping(false, MSPUtils.getDefaultTaskStatus()));
+         *  when "saveRemoteId" was by default TRUE for new configs,
+         *  many users have complained that they exported tasks from an MSP file
+         *  to Redmine, then deleted them in the Redmine and tried to re-export
+         *  and got "issue with id... not found".
+         *  it's better to have this option set to FALSE by default to avoid the confusion.
+         */
+    	result.setMapping(FIELD.SUMMARY, false, MSPUtils.getDefaultRemoteIdMapping());
+    	result.setMapping(FIELD.SUMMARY, false, MSPUtils.getDefaultTaskStatus());
 
-        return fieldsMapping;
+
+        return result;
     }
 
     @Override

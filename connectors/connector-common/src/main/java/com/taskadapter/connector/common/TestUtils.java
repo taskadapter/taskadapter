@@ -2,7 +2,6 @@ package com.taskadapter.connector.common;
 
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
@@ -97,11 +96,10 @@ public class TestUtils {
         return cal;
     }
 
-    public static GTask saveAndLoad(Connector<?> connector, FIELD field, Mapping mapping, GTask task) {
+    public static GTask saveAndLoad(Connector<?> connector, FIELD field, boolean selected, String mappingValue, GTask task) {
         ConnectorConfig config = connector.getConfig();
         final MappingStore savedMapping = getStore(config, field);
-		config.getFieldMappings().setMapping(field, mapping.isSelected(),
-				mapping.getCurrentValue()); // ugly, but ...
+		config.getFieldMappings().setMapping(field, selected, mappingValue); // ugly, but ...
         GTask loadedTask = saveAndLoad(connector, task);
         applyStore(config, field, savedMapping);
 

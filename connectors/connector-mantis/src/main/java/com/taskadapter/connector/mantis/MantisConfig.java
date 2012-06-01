@@ -1,13 +1,11 @@
 package com.taskadapter.connector.mantis;
 
 import com.taskadapter.connector.Priorities;
-import com.taskadapter.connector.definition.Mapping;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.model.GTaskDescriptor;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class MantisConfig extends WebConfig {
 
@@ -20,13 +18,13 @@ public class MantisConfig extends WebConfig {
     }
 
     @Override
-    protected Map<FIELD, Mapping> generateDefaultFieldsMapping() {
-        Map<FIELD, Mapping> fieldsMapping = new HashMap<FIELD, Mapping>();
-        fieldsMapping.put(GTaskDescriptor.FIELD.SUMMARY, new Mapping());
-        fieldsMapping.put(GTaskDescriptor.FIELD.DESCRIPTION, new Mapping());
-        fieldsMapping.put(GTaskDescriptor.FIELD.ASSIGNEE, new Mapping());
-        fieldsMapping.put(GTaskDescriptor.FIELD.DUE_DATE, new Mapping());
-        return fieldsMapping;
+    protected Mappings generateDefaultFieldsMapping() {
+    	final Mappings result = new Mappings();
+        result.addField(GTaskDescriptor.FIELD.SUMMARY);
+        result.addField(GTaskDescriptor.FIELD.DESCRIPTION);
+        result.addField(GTaskDescriptor.FIELD.ASSIGNEE);
+        result.addField(GTaskDescriptor.FIELD.DUE_DATE);
+        return result;
 
     }
 

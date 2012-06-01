@@ -2,10 +2,8 @@ package com.taskadapter.connector.definition;
 
 import com.google.common.base.Objects;
 import com.taskadapter.connector.Priorities;
-import com.taskadapter.model.GTaskDescriptor;
 
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * @author Alexey Skorokhodov
@@ -69,7 +67,7 @@ public abstract class ConnectorConfig implements Serializable {
         this.saveIssueRelations = saveIssueRelations;
     }
 
-    abstract protected Map<GTaskDescriptor.FIELD, Mapping> generateDefaultFieldsMapping();
+    abstract protected Mappings generateDefaultFieldsMapping();
 
     abstract protected Priorities generateDefaultPriorities();
 

@@ -3,7 +3,6 @@ package com.taskadapter.connector.msp;
 import com.taskadapter.connector.common.CommonTests;
 import com.taskadapter.connector.common.TestSaver;
 import com.taskadapter.connector.common.TestUtils;
-import com.taskadapter.connector.definition.Mapping;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
@@ -41,7 +40,7 @@ public class FieldMappingTest {
     public void testEstimatedTimeNotSaved() throws Exception {
         GTask task = TestUtils.generateTask();
         task.setEstimatedHours((float) 25);
-        List<Task> loadedTasks = saveAndLoad(config, FIELD.ESTIMATED_TIME, new Mapping(false, TaskField.DURATION.toString()), task);
+        List<Task> loadedTasks = saveAndLoad(config, FIELD.ESTIMATED_TIME, false, TaskField.DURATION.toString(), task);
         Task loadedTask = findMSPTaskBySummary(loadedTasks, task.getSummary());
 
         assertNull(loadedTask.getWork());
@@ -53,7 +52,7 @@ public class FieldMappingTest {
         GTask task = TestUtils.generateTask();
         Float hours = 25f;
         task.setEstimatedHours(hours);
-        List<Task> loadedTasks = saveAndLoad(config, FIELD.ESTIMATED_TIME, new Mapping(true, TaskField.DURATION.toString()),
+        List<Task> loadedTasks = saveAndLoad(config, FIELD.ESTIMATED_TIME, true, TaskField.DURATION.toString(),
                 task);
         Task loadedTask = findMSPTaskBySummary(loadedTasks, task.getSummary());
         assertEquals(hours, loadedTask.getDuration().getDuration(), 0);
@@ -64,7 +63,7 @@ public class FieldMappingTest {
         GTask task = TestUtils.generateTask();
         Float hours = 25f;
         task.setEstimatedHours(hours);
-        List<Task> loadedTasks = saveAndLoad(config, FIELD.ESTIMATED_TIME, new Mapping(true, TaskField.WORK.toString()), task);
+        List<Task> loadedTasks = saveAndLoad(config, FIELD.ESTIMATED_TIME, true, TaskField.WORK.toString(), task);
         Task loadedTask = findMSPTaskBySummary(loadedTasks, task.getSummary());
 
         assertEquals(hours, loadedTask.getWork().getDuration(), 0);
@@ -76,7 +75,7 @@ public class FieldMappingTest {
         GTask task = TestUtils.generateTask();
         Float hours = 25f;
         task.setEstimatedHours(hours);
-        List<Task> loadedTasks = saveAndLoad(config, FIELD.ESTIMATED_TIME, new Mapping(true, TaskField.DURATION.toString()), task);
+        List<Task> loadedTasks = saveAndLoad(config, FIELD.ESTIMATED_TIME, true, TaskField.DURATION.toString(), task);
         Task loadedTask = findMSPTaskBySummary(loadedTasks, task.getSummary());
 
         assertEquals(hours, loadedTask.getDuration().getDuration(), 0);
@@ -89,7 +88,7 @@ public class FieldMappingTest {
         Date dueDate = getDateRoundedToMinutes();
         task.setDueDate(dueDate);
 
-        List<Task> loadedTasks = saveAndLoad(config, FIELD.DUE_DATE, new Mapping(true, TaskField.FINISH.toString()), task);
+        List<Task> loadedTasks = saveAndLoad(config, FIELD.DUE_DATE, true, TaskField.FINISH.toString(), task);
         Task loadedTask = findMSPTaskBySummary(loadedTasks, task.getSummary());
         assertEquals(dueDate, loadedTask.getFinish());
         assertEquals(null, loadedTask.getDeadline());
@@ -101,7 +100,7 @@ public class FieldMappingTest {
         Date dueDate = getDateRoundedToMinutes();
         task.setDueDate(dueDate);
 
-        List<Task> loadedTasks = saveAndLoad(config, FIELD.DUE_DATE, new Mapping(true, TaskField.DEADLINE.toString()), task);
+        List<Task> loadedTasks = saveAndLoad(config, FIELD.DUE_DATE, true, TaskField.DEADLINE.toString(), task);
         Task loadedTask = findMSPTaskBySummary(loadedTasks, task.getSummary());
         assertEquals(dueDate, loadedTask.getDeadline());
         assertEquals(null, loadedTask.getFinish());
@@ -113,8 +112,7 @@ public class FieldMappingTest {
         Date dueDate = getDateRoundedToMinutes();
         task.setDueDate(dueDate);
 
-        Mapping mapping = new Mapping(false, "some value");
-        List<Task> loadedTasks = saveAndLoad(config, FIELD.DUE_DATE, mapping, task);
+        List<Task> loadedTasks = saveAndLoad(config, FIELD.DUE_DATE, false, "some value", task);
         Task loadedTask = findMSPTaskBySummary(loadedTasks, task.getSummary());
         assertEquals(null, loadedTask.getDeadline());
         assertEquals(null, loadedTask.getFinish());
@@ -145,7 +143,7 @@ public class FieldMappingTest {
     public void testStartDateNotMapped() throws Exception {
         GTask task = TestUtils.generateTask();
         TestUtils.setTaskStartYearAgo(task);
-        List<Task> loadedTasks = saveAndLoad(config, FIELD.START_DATE, new Mapping(false, TaskField.DURATION.toString()), task);
+        List<Task> loadedTasks = saveAndLoad(config, FIELD.START_DATE, false, TaskField.DURATION.toString(), task);
         assertNull(loadedTasks.get(0).getStart());
     }
 
@@ -156,7 +154,7 @@ public class FieldMappingTest {
         yearAgo.add(Calendar.YEAR, -1);
         task.setStartDate(yearAgo.getTime());
         GTask loadedTask = TestUtils.saveAndLoad(connector,
-                FIELD.START_DATE, new Mapping(true, MSPUtils.NO_CONSTRAINT), task);
+                FIELD.START_DATE, true, MSPUtils.NO_CONSTRAINT, task);
         assertEquals(yearAgo.getTime(), loadedTask.getStartDate());
     }
 
@@ -165,7 +163,7 @@ public class FieldMappingTest {
         GTask task = TestUtils.generateTask();
         Calendar cal = TestUtils.setTaskStartYearAgo(task);
         GTask loadedTask = TestUtils.saveAndLoad(connector,
-                FIELD.START_DATE, new Mapping(true, ConstraintType.MUST_START_ON.name()), task);
+                FIELD.START_DATE, true, ConstraintType.MUST_START_ON.name(), task);
         assertEquals(cal.getTime(), loadedTask.getStartDate());
     }
 
@@ -196,10 +194,9 @@ public class FieldMappingTest {
         assertEquals(assignee.getId(), loadedTask.getAssignee().getId());
     }
 
-    private static List<Task> saveAndLoad(MSPConfig config, FIELD field, Mapping mapping, GTask... tasks) throws IOException, MPXJException {
+    private static List<Task> saveAndLoad(MSPConfig config, FIELD field, boolean useMap, String mapTo, GTask... tasks) throws IOException, MPXJException {
         MSPConfig temporaryClonedconfig = new MSPConfig(config);
-		temporaryClonedconfig.getFieldMappings().setMapping(field, mapping.isSelected(),
-				mapping.getCurrentValue());
+		temporaryClonedconfig.getFieldMappings().setMapping(field, useMap, mapTo);
 
         String fileName = "testdata.tmp";
         temporaryClonedconfig.setInputAbsoluteFilePath(fileName);
