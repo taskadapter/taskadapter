@@ -1,7 +1,6 @@
 package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.ProjectInfo;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.web.WindowProvider;
@@ -94,21 +93,9 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
     public ConnectorConfig getConfig() {
         ConnectorConfig config = getPartialConfig();
         config.setLabel((String) labelText.getValue());
-        // TODO this casting to WebConfig is not nice.
-        if (panelContainer.contains(ServerPanel.class)) {
-            ((WebConfig) config).setServerInfo(panelContainer.<ServerPanel>get(ServerPanel.class).getServerInfo());
-        }
-        if (panelContainer.contains(FieldsMappingPanel.class)) {
-            config.setFieldsMapping(panelContainer.<FieldsMappingPanel>get(FieldsMappingPanel.class).getResult());
-        }
-        if (panelContainer.contains(ProjectPanel.class)) {
-            ProjectInfo projectInfo = panelContainer.<ProjectPanel>get(ProjectPanel.class).getProjectInfo();
-            ((WebConfig) config).setProjectKey(projectInfo.getProjectKey());
-            ((WebConfig) config).setQueryId(projectInfo.getQueryId());
-        }
-        if (panelContainer.contains(PriorityPanel.class)) {
-            config.setPriorities(panelContainer.<PriorityPanel>get(PriorityPanel.class).getPriorities());
-        }
+
+        panelContainer.setPanelsDataToConfig(config);
+
         if (findUserByName != null) {
             ((WebConfig) config).setFindUserByName((Boolean) findUserByName.getValue());
         }
@@ -117,19 +104,10 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
 
     public void setData(ConnectorConfig config) {
         this.config = config;
-        setCommonFields();
-    }
 
-    private void setCommonFields() {
-        if (panelContainer.contains(ServerPanel.class)) {
-            panelContainer.<ServerPanel>get(ServerPanel.class).setServerInfo(((WebConfig) config).getServerInfo());
-        }
-        if (panelContainer.contains(PriorityPanel.class)) {
-            panelContainer.<PriorityPanel>get(PriorityPanel.class).setPriorities(config.getPriorities());
-        }
-        if (panelContainer.contains(ProjectPanel.class)) {
-            panelContainer.<ProjectPanel>get(ProjectPanel.class).setProjectInfo(((WebConfig) config).getProjectInfo());
-        }
+        panelContainer.initPanelsDataByConfig(config);
+
+        // TODO refactor this like done for Panels
         if (findUserByName != null) {
             findUserByName.setValue(((WebConfig) config).isFindUserByName());
         }

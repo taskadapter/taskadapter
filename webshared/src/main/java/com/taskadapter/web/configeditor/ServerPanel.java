@@ -1,6 +1,8 @@
 package com.taskadapter.web.configeditor;
 
+import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.*;
@@ -8,7 +10,7 @@ import com.vaadin.ui.*;
 /**
  * @author Alexey Skorokhodov
  */
-public class ServerPanel extends Panel implements Validatable {
+public class ServerPanel extends Panel implements Validatable, ConfigPanel {
     private static final String HOST_URL_TOOLTIP = "Host URL, including protocol prefix and port number. E.g. http://demo.site.com:3000";
     private static final String DEFAULT_HOST_VALUE = "http://";
     private static final String SERVER_GROUP_LABEL = "Server info";
@@ -103,5 +105,17 @@ public class ServerPanel extends Panel implements Validatable {
 
     public void disableServerURLField() {
         hostURLText.setEnabled(false);
+    }
+
+    @Override
+    public void setDataToConfig(ConnectorConfig config) {
+        WebConfig webConfig = (WebConfig)config;
+        webConfig.setServerInfo(getServerInfo());
+    }
+
+    @Override
+    public void initDataByConfig(ConnectorConfig config) {
+        WebConfig webConfig = (WebConfig)config;
+        setServerInfo(webConfig.getServerInfo());
     }
 }

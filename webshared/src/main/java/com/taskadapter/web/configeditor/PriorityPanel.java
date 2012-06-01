@@ -2,6 +2,7 @@ package com.taskadapter.web.configeditor;
 
 import com.taskadapter.PluginManager;
 import com.taskadapter.connector.Priorities;
+import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.Descriptor.Feature;
 import com.taskadapter.connector.definition.ValidationException;
@@ -20,7 +21,7 @@ import java.util.*;
 /**
  * @author Alexey Skorokhodov
  */
-public class PriorityPanel extends Panel implements Validatable {
+public class PriorityPanel extends Panel implements Validatable, ConfigPanel {
 
     private static final String NAME_HEADER = "Name";
     private static final String VALUE_HEADER = "Task Adapter Priority Value";
@@ -147,6 +148,16 @@ public class PriorityPanel extends Panel implements Validatable {
         if (i != set.size()) {
             throw new ValidationException("TaskAdapter priorities duplication found. Please make all priority values unique in the table.");
         }
+    }
+
+    @Override
+    public void setDataToConfig(ConnectorConfig config) {
+       config.setPriorities(getPriorities());
+    }
+
+    @Override
+    public void initDataByConfig(ConnectorConfig config) {
+        setPriorities(config.getPriorities());
     }
 
     /**

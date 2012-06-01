@@ -18,10 +18,11 @@ public class GithubEditor extends TwoColumnsConfigEditor {
     private void buildUI() {
         // top left and right
         createServerAndProjectPanelOnTopDefault(new GithubProjectProcessor(this));
-        getPanelContainer().<ServerPanel>get(ServerPanel.class).disableServerURLField();
 
-        ProjectPanel projectPanel =  getPanelContainer().get(ProjectPanel.class);
+        final ServerPanel serverPanel = getPanelContainer().get(ServerPanel.class);
+        serverPanel.disableServerURLField();
 
+        final ProjectPanel projectPanel =  getPanelContainer().get(ProjectPanel.class);
         projectPanel.setProjectKeyLabel("Repository ID");
         projectPanel.hideQueryId();
 
