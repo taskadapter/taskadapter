@@ -15,7 +15,10 @@ public abstract class ConnectorConfig implements Serializable {
     /**
      * Mappings for a connector.
      */
-    private Mappings mappings;
+    /* 
+     * Name selected to use default Json serialization.
+     */
+    private Mappings fieldsMapping;
 
     private String label;
 
@@ -47,12 +50,12 @@ public abstract class ConnectorConfig implements Serializable {
     public abstract String getTargetLocation();
 
     public ConnectorConfig() {
-        mappings = new Mappings(generateDefaultFieldsMapping());
+        fieldsMapping = new Mappings(generateDefaultFieldsMapping());
         priorities = generateDefaultPriorities();
     }
 
     public ConnectorConfig(ConnectorConfig configToDeepClone) {
-        this.mappings = new Mappings(configToDeepClone.mappings);
+        this.fieldsMapping = new Mappings(configToDeepClone.fieldsMapping);
 
         saveIssueRelations = configToDeepClone.getSaveIssueRelations();
         defaultTaskType = configToDeepClone.getDefaultTaskType();
@@ -76,7 +79,7 @@ public abstract class ConnectorConfig implements Serializable {
      * @return fields mappings.
      */
     public Mappings getFieldMappings() {
-    	return mappings;
+    	return fieldsMapping;
     }
 
     public String getDefaultTaskType() {
@@ -89,14 +92,14 @@ public abstract class ConnectorConfig implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(mappings, defaultTaskType, label);
+        return Objects.hashCode(fieldsMapping, defaultTaskType, label);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof ConnectorConfig) {
             ConnectorConfig other = (ConnectorConfig) obj;
-            return Objects.equal(mappings, other.mappings) &&
+            return Objects.equal(fieldsMapping, other.fieldsMapping) &&
                     Objects.equal(defaultTaskType, other.defaultTaskType) &&
                     Objects.equal(label, other.label);
         } else {
