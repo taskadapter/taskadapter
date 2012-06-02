@@ -17,11 +17,6 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
     private CheckBox findUserByName;
     private List<Validatable> toValidate = new ArrayList<Validatable>();
     
-    /**
-     * Page update handlers.
-     */
-    private final List<FormPartHandler> pageHandlers = new ArrayList<FormPartHandler>();
-
     // TODO the parent editor class must save / load data itself instead of letting the children do this
 
     private final ConfigPanelContainer panelContainer = new ConfigPanelContainer();
@@ -63,10 +58,8 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         //if layout supports Validatable interface add it to validation list
         if (panel instanceof Validatable) {
             toValidate.add((Validatable)panel);
-        } 
-        if (panel instanceof FormPartHandler) {
-        	pageHandlers.add((FormPartHandler) panel);
         }
+        
         component.addComponent(panel);
         panelContainer.add(panel);
     }
@@ -101,10 +94,6 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
     public ConnectorConfig getConfig() {
         config.setLabel((String) labelText.getValue());
 
-        for (FormPartHandler handler : pageHandlers) {
-        	handler.pageUpdated();
-        }
-        
         panelContainer.setPanelsDataToConfig(config);
 
         if (findUserByName != null) {

@@ -1,9 +1,7 @@
 package com.taskadapter.webui.action;
 
 import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.web.configeditor.FieldsMappingPanel;
 import com.taskadapter.webui.Navigator;
 import com.taskadapter.webui.PageUtil;
@@ -62,11 +60,4 @@ public class ConfirmExportPage extends CustomComponent {
     public List<GTask> getSelectedRootLevelTasks() {
         return connectorTree.getSelectedRootLevelTasks();
     }
-
-    /**
-     * Handles page update.
-     */
-	public void pageUpdated() {
-		fieldMappingPanel.pageUpdated();
-	}
 }

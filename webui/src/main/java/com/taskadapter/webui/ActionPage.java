@@ -129,7 +129,6 @@ public abstract class ActionPage extends Page {
 
     private void saveConfigIfChanged() {
         if (confirmExportPage.needToSaveConfig()) {
-            confirmExportPage.pageUpdated();
             String userLoginName = services.getAuthenticator().getUserName();
             services.getConfigStorage().saveConfig(userLoginName, taFile);
         }

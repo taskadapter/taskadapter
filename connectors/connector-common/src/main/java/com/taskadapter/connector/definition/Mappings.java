@@ -76,7 +76,7 @@ public final class Mappings {
 	 *            field to select.
 	 */
 	public void selectField(FIELD field) {
-		selected.put(field, Boolean.TRUE);
+		setFieldSelected(field, true);
 	}
 
 	/**
@@ -86,7 +86,19 @@ public final class Mappings {
 	 *            field to deselect.
 	 */
 	public void deselectField(FIELD field) {
-		selected.put(field, Boolean.FALSE);
+		setFieldSelected(field, false);
+	}
+
+	/**
+	 * Sets a "selected" value for a field.
+	 * 
+	 * @param filed
+	 *            field to set value to.
+	 * @param selected
+	 *            field "selected" value.
+	 */
+	public void setFieldSelected(FIELD filed, boolean selected) {
+		this.selected.put(filed, Boolean.valueOf(selected));
 	}
 
 	/**
@@ -137,11 +149,13 @@ public final class Mappings {
 		selected.remove(field);
 		mapTo.remove(field);
 	}
-	
+
 	/**
 	 * Adds a field if it does not exists. Field is unselected and have not
 	 * "map to" value.
-	 * @param field field to add.
+	 * 
+	 * @param field
+	 *            field to add.
 	 */
 	public void addField(FIELD field) {
 		if (haveMappingFor(field))
