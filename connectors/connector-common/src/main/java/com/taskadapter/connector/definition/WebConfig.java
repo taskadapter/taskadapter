@@ -71,13 +71,6 @@ abstract public class WebConfig extends ConnectorConfig {
         this.findUserByName = find;
     }
 
-    public ProjectInfo getProjectInfo() {
-        ProjectInfo projectInfo = new ProjectInfo();
-        projectInfo.setProjectKey(projectKey);
-        projectInfo.setQueryId(queryId);
-        return projectInfo;
-    }
-
     @Override
     public void validateForSave() throws ValidationException {
         if(!serverInfo.isHostSet()) {

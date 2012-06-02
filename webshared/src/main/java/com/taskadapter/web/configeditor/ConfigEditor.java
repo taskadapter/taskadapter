@@ -90,6 +90,14 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
      */
     public void validate() throws ValidationException {
     }
+    
+    /**
+     * Returns original config.
+     * @return original config.
+     */
+    public ConnectorConfig getOrigConfig() {
+    	return config;
+    }
 
     public ConnectorConfig getConfig() {
         config.setLabel((String) labelText.getValue());

@@ -2,10 +2,10 @@ package com.taskadapter.web.configeditor;
 
 import com.google.common.base.Strings;
 import com.taskadapter.PluginManager;
-import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.ProjectInfo;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebConfig;
+import com.vaadin.data.util.AbstractProperty;
+import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.*;
 
 import java.util.Collection;
@@ -15,7 +15,7 @@ import java.util.Collection;
  *
  * @author Alexey Skorokhodov
  */
-public class ProjectPanel extends Panel implements Validatable, ConfigPanel {
+public class ProjectPanel extends Panel implements Validatable {
     private static final String DEFAULT_PANEL_CAPTION = "Project Info";
     private static final int COLUMNS_NUMBER = 2;
 
@@ -55,6 +55,9 @@ public class ProjectPanel extends Panel implements Validatable, ConfigPanel {
         gridLayout.addComponent(keyHorizontalLayout);
 
         projectKey = new TextField();
+		final WebConfig config = (WebConfig) editor.getOrigConfig();
+		projectKey.setPropertyDataSource(new MethodProperty<String>(config,
+				"projectKey"));
         keyHorizontalLayout.addComponent(projectKey);
         projectKey.setWidth(TEXT_AREA_WIDTH);
 
@@ -100,6 +103,35 @@ public class ProjectPanel extends Panel implements Validatable, ConfigPanel {
                 + "Read help for more details.");
         idHorizontalLayout.addComponent(queryId);
         queryId.setWidth(TEXT_AREA_WIDTH);
+		queryId.setPropertyDataSource(new AbstractProperty() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void setValue(Object newValue) throws ReadOnlyException,
+					ConversionException {
+				final String strValue = newValue.toString();
+				if (strValue.isEmpty()) {
+					config.setQueryId(null);
+				} else {
+					try {
+						config.setQueryId(Integer.valueOf(strValue));
+					} catch (NumberFormatException e) {
+						throw new ConversionException(e);
+					}
+					fireValueChange();
+				}
+			}
+			
+			@Override
+			public Object getValue() {
+				return config.getQueryId() == null ? "" : config.getQueryId();
+			}
+			
+			@Override
+			public Class<?> getType() {
+				return String.class;
+			}
+		});
 
         LookupOperation loadSavedQueriesOperation = projectProcessor.getLoadSavedQueriesOperation(editor);
 
@@ -135,29 +167,12 @@ public class ProjectPanel extends Panel implements Validatable, ConfigPanel {
         }
     }
 
-    public ProjectInfo getProjectInfo() {
-        ProjectInfo info = new ProjectInfo();
-        info.setProjectKey(getProjectKey());
-
-        String queryIdString = getQueryId();
-
-        if (!queryIdString.isEmpty()) {
-            info.setQueryId(Integer.parseInt(queryIdString));
-        }
-        return info;
-    }
-
     private String getProjectKey() {
         return (String) projectKey.getValue();
     }
 
     private String getQueryId() {
         return (String) queryId.getValue();
-    }
-
-    public void setProjectInfo(ProjectInfo info) {
-        EditorUtil.setNullSafe(projectKey, info.getProjectKey());
-        EditorUtil.setNullSafe(queryId, info.getQueryId());
     }
 
     public void setProjectKeyLabel(String text) {
@@ -183,20 +198,5 @@ public class ProjectPanel extends Panel implements Validatable, ConfigPanel {
         if (getProjectKey().trim().isEmpty()) {
             throw new ValidationException("Project Key is required");
         }
-    }
-
-    @Override
-    public void setDataToConfig(ConnectorConfig config) {
-        ProjectInfo projectInfo = getProjectInfo();
-        WebConfig webConfig = (WebConfig)config;
-
-        webConfig.setProjectKey(projectInfo.getProjectKey());
-        webConfig.setQueryId(projectInfo.getQueryId());
-    }
-
-    @Override
-    public void initDataByConfig(ConnectorConfig config) {
-        WebConfig webConfig = (WebConfig)config;
-        setProjectInfo(webConfig.getProjectInfo());
     }
 }
