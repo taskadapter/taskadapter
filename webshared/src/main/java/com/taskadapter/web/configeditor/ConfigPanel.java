@@ -8,6 +8,7 @@ import com.taskadapter.connector.definition.ConnectorConfig;
  * @Author: Alexander Kulik
  * @Date: 01.06.12 12:11
  */
+@Deprecated
 public interface ConfigPanel {
     void setDataToConfig(ConnectorConfig config);
     void initDataByConfig(ConnectorConfig config);

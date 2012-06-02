@@ -1,16 +1,15 @@
 package com.taskadapter.web.configeditor;
 
-import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ValidationException;
-import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.connector.definition.WebServerInfo;
+import com.vaadin.data.util.MethodProperty;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.*;
 
 /**
  * @author Alexey Skorokhodov
  */
-public class ServerPanel extends Panel implements Validatable, ConfigPanel {
+public class ServerPanel extends Panel implements Validatable {
     private static final String HOST_URL_TOOLTIP = "Host URL, including protocol prefix and port number. E.g. http://demo.site.com:3000";
     private static final String DEFAULT_HOST_VALUE = "http://";
     private static final String SERVER_GROUP_LABEL = "Server info";
@@ -18,8 +17,10 @@ public class ServerPanel extends Panel implements Validatable, ConfigPanel {
     private TextField hostURLText;
     private TextField login;
     private PasswordField password;
+    private final WebServerInfo config;
 
-    public ServerPanel() {
+    public ServerPanel(WebServerInfo config) {
+    	this.config = config;
         buildUI();
     }
 
@@ -48,6 +49,9 @@ public class ServerPanel extends Panel implements Validatable, ConfigPanel {
             }
         });
         hostURLText.addStyleName("server-panel-textfield");
+		hostURLText.setPropertyDataSource(new MethodProperty<String>(config,
+				"host"));
+        
         layout.addComponent(hostURLText, 1, 0);
         layout.setComponentAlignment(hostURLText, Alignment.MIDDLE_RIGHT);
 
@@ -57,6 +61,8 @@ public class ServerPanel extends Panel implements Validatable, ConfigPanel {
 
         login = new TextField();
         login.addStyleName("server-panel-textfield");
+		login.setPropertyDataSource(new MethodProperty<String>(config,
+				"userName"));
         layout.addComponent(login, 1, 1);
         layout.setComponentAlignment(login, Alignment.MIDDLE_RIGHT);
 
@@ -66,6 +72,8 @@ public class ServerPanel extends Panel implements Validatable, ConfigPanel {
 
         password = new PasswordField();
         password.addStyleName("server-panel-textfield");
+		password.setPropertyDataSource(new MethodProperty<String>(config,
+				"password"));
         layout.addComponent(password, 1, 2);
         layout.setComponentAlignment(password, Alignment.MIDDLE_RIGHT);
     }
@@ -77,7 +85,7 @@ public class ServerPanel extends Panel implements Validatable, ConfigPanel {
     }
 
     private String getHostString() {
-        return (String) hostURLText.getValue();
+        return config.getHost();
     }
 
     private void checkProtocol() {
@@ -97,25 +105,8 @@ public class ServerPanel extends Panel implements Validatable, ConfigPanel {
         return new WebServerInfo(getHostString(), (String) login.getValue(), (String) password.getValue());
     }
 
-    public void setServerInfo(WebServerInfo info) {
-        EditorUtil.setNullSafe(hostURLText, info.getHost());
-        EditorUtil.setNullSafe(login, info.getUserName());
-        EditorUtil.setNullSafe(password, info.getPassword());
-    }
-
     public void disableServerURLField() {
         hostURLText.setEnabled(false);
     }
 
-    @Override
-    public void setDataToConfig(ConnectorConfig config) {
-        WebConfig webConfig = (WebConfig)config;
-        webConfig.setServerInfo(getServerInfo());
-    }
-
-    @Override
-    public void initDataByConfig(ConnectorConfig config) {
-        WebConfig webConfig = (WebConfig)config;
-        setServerInfo(webConfig.getServerInfo());
-    }
 }

@@ -1,6 +1,7 @@
 package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
+import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.web.service.Services;
 import com.vaadin.ui.*;
 
@@ -66,7 +67,7 @@ public abstract class TwoColumnsConfigEditor extends ConfigEditor {
      */
     protected void createServerAndProjectPanelOnTopDefault(ProjectProcessor projectProcessor) {
         // left column
-        addToLeftColumn(new ServerPanel());
+        addToLeftColumn(new ServerPanel(((WebConfig) config).getServerInfo()));
 
         // right column
         addToRightColumn(new ProjectPanel(this, projectProcessor, services.getPluginManager()));
