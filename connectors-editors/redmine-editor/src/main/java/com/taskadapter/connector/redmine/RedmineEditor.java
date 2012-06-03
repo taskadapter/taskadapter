@@ -26,7 +26,6 @@ public class RedmineEditor extends TwoColumnsConfigEditor implements LoadProject
         super(config, services);
 
         buildUI();
-        setData(config);
     }
 
     private void buildUI() {

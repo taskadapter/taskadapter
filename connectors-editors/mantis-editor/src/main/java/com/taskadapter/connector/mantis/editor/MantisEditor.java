@@ -14,7 +14,6 @@ public class MantisEditor extends TwoColumnsConfigEditor {
     public MantisEditor(ConnectorConfig config, Services services) {
         super(config, services);
         buildUI();
-        setData(config);
     }
 
     private void buildUI() {

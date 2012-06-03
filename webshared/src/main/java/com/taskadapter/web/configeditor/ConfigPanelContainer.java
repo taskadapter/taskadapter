@@ -1,6 +1,5 @@
 package com.taskadapter.web.configeditor;
 
-import com.taskadapter.connector.definition.ConnectorConfig;
 import com.vaadin.ui.Panel;
 
 import java.util.HashMap;
@@ -10,7 +9,7 @@ import java.util.HashMap;
  *
  * @author Alexander Kulik
  */
-public class ConfigPanelContainer {
+final class ConfigPanelContainer {
     private HashMap<Class, Panel> map = new HashMap<Class, Panel>();
 
     public void add(Panel panel) {
@@ -38,24 +37,6 @@ public class ConfigPanelContainer {
             return null;
         }
         return (T) map.get(type);
-    }
-
-    public void setPanelsDataToConfig(ConnectorConfig config) {
-        for (Panel panel : map.values()) {
-            if (panel instanceof ConfigPanel) {
-                ConfigPanel configPanel = (ConfigPanel) panel;
-                configPanel.setDataToConfig(config);
-            }
-        }
-    }
-
-    public void initPanelsDataByConfig(ConnectorConfig config) {
-        for (Panel panel : map.values()) {
-            if (panel instanceof ConfigPanel) {
-                ConfigPanel configPanel = (ConfigPanel) panel;
-                configPanel.initDataByConfig(config);
-            }
-        }
     }
 
 }

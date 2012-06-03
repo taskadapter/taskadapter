@@ -20,7 +20,6 @@ public class MSPEditor extends TwoColumnsConfigEditor {
     public MSPEditor(ConnectorConfig config, Services services) {
         super(config, services);
         buildUI();
-        setData(config);
         setMSPDataToForm();
     }
 

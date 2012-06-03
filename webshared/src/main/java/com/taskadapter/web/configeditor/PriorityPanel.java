@@ -47,7 +47,7 @@ public class PriorityPanel extends Panel implements Validatable {
         this.configEditor = editor;
         this.descriptor = descriptor;
         this.pluginManager = pluginManager;
-        this.data = new PrioritiesModel(editor.getOrigConfig().getPriorities());
+        this.data = new PrioritiesModel(editor.getConfig().getPriorities());
         buildUI();
     }
 
@@ -142,7 +142,7 @@ public class PriorityPanel extends Panel implements Validatable {
         int i = 0;
         for (Object id : data.getItemIds()) {
             i++;
-			mspValue = configEditor.getOrigConfig().getPriorities()
+			mspValue = configEditor.getConfig().getPriorities()
 					.getPriorityByText((String) id);
             set.add(mspValue);
         }

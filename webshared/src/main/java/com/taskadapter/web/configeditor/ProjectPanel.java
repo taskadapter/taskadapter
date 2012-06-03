@@ -55,7 +55,7 @@ public class ProjectPanel extends Panel implements Validatable {
         gridLayout.addComponent(keyHorizontalLayout);
 
         projectKey = new TextField();
-		final WebConfig config = (WebConfig) editor.getOrigConfig();
+		final WebConfig config = (WebConfig) editor.getConfig();
 		projectKey.setPropertyDataSource(new MethodProperty<String>(config,
 				"projectKey"));
         keyHorizontalLayout.addComponent(projectKey);

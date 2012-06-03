@@ -20,7 +20,6 @@ public class JiraEditor extends TwoColumnsConfigEditor {
     public JiraEditor(ConnectorConfig config, Services services) {
         super(config, services);
         buildUI();
-        setData(config);
     }
 
     private void buildUI() {

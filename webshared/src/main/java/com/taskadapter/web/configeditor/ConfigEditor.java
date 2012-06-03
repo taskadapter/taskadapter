@@ -2,9 +2,9 @@ package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ValidationException;
-import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.service.Services;
+import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.*;
 
 import java.util.ArrayList;
@@ -42,6 +42,8 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         labelText = new TextField();
         labelText.setDescription(LABEL_TOOLTIP);
         labelText.addStyleName("label-textfield");
+		labelText.setPropertyDataSource(new MethodProperty<String>(config,
+				"label"));
         descriptionLayout.addComponent(labelText);
         setWidth("800px");
     }
@@ -71,6 +73,8 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
                     "Task Adapter can load the system's users by resource names specified in the MSP file\n" +
                     "and assign the new tasks to them.\n" +
                     "Note: this operation usually requires 'Admin' permission in the system.");
+			findUserByName.setPropertyDataSource(new MethodProperty<Boolean>(
+					config, "findUserByName"));
         }
 
         return findUserByName;
@@ -91,39 +95,11 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
     public void validate() throws ValidationException {
     }
     
-    /**
-     * Returns original config.
-     * @return original config.
-     */
-    public ConnectorConfig getOrigConfig() {
-    	return config;
-    }
-
     public ConnectorConfig getConfig() {
-        config.setLabel((String) labelText.getValue());
-
-        panelContainer.setPanelsDataToConfig(config);
-
-        if (findUserByName != null) {
-            ((WebConfig) config).setFindUserByName((Boolean) findUserByName.getValue());
-        }
         return config;
     }
 
-    public void setData(ConnectorConfig config) {
-        this.config = config;
-
-        panelContainer.initPanelsDataByConfig(config);
-
-        // TODO refactor this like done for Panels
-        if (findUserByName != null) {
-            findUserByName.setValue(((WebConfig) config).isFindUserByName());
-        }
-
-        EditorUtil.setNullSafe(this.labelText, config.getLabel());
-    }
-
-    public ConfigPanelContainer getPanelContainer() {
-        return panelContainer;
+    public <T> T getPanel(Class<T> clazz) {
+    	return panelContainer.get(clazz);
     }
 }
