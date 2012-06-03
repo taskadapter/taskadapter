@@ -19,6 +19,7 @@ public class Priorities {
      * Empty constructor is required for GSon library
      */
     public Priorities() {
+    	prioritiesMapping = new HashMap<String, Integer>();
     }
 
     public Priorities(Map<String, Integer> prioritiesMapping) {
@@ -31,11 +32,8 @@ public class Priorities {
      * @param toClone the object to clone
      */
     public Priorities(Priorities toClone) {
-        prioritiesMapping = new HashMap<String, Integer>();
-        Collection<String> allNames = toClone.getAllNames();
-        for (String priorityName : allNames) {
-            prioritiesMapping.put(priorityName, toClone.getPriorityByText(priorityName));
-        }
+		prioritiesMapping = new HashMap<String, Integer>(
+				toClone.prioritiesMapping);
     }
 
     /**
@@ -84,12 +82,15 @@ public class Priorities {
     public Collection<String> getAllNames() {
         return prioritiesMapping.keySet();
     }
+    
+    /**
+     * Clears priorities.
+     */
+    public void clear() {
+    	prioritiesMapping.clear();
+    }
 
     public void setPriority(String priorityText, Integer priorityValue) {
-        if (prioritiesMapping == null) {
-            prioritiesMapping = new HashMap<String, Integer>();
-        }
-
         prioritiesMapping.put(priorityText, priorityValue);
     }
 }

@@ -32,7 +32,6 @@ public class JiraEditor extends TwoColumnsConfigEditor {
         addToLeftColumn(jiraFieldsPanel);
 
 		PriorityPanel priorityPanel = new PriorityPanel(this, JiraDescriptor.instance, services.getPluginManager());
-        priorityPanel.setPriorities(config.getPriorities());
         addToLeftColumn(priorityPanel);
 
         // right column

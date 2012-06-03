@@ -2,14 +2,13 @@ package com.taskadapter.web.configeditor;
 
 import com.taskadapter.PluginManager;
 import com.taskadapter.connector.Priorities;
-import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.Descriptor.Feature;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
-import com.vaadin.data.Item;
-import com.vaadin.data.util.BeanContainer;
+import com.vaadin.data.Container.ItemSetChangeEvent;
+import com.vaadin.data.Container.ItemSetChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
@@ -21,18 +20,23 @@ import java.util.*;
 /**
  * @author Alexey Skorokhodov
  */
-public class PriorityPanel extends Panel implements Validatable, ConfigPanel {
+public class PriorityPanel extends Panel implements Validatable {
 
     private static final String NAME_HEADER = "Name";
     private static final String VALUE_HEADER = "Task Adapter Priority Value";
 
     private final ConfigEditor configEditor;
     private final Descriptor descriptor;
-
-    private BeanContainer data = new BeanContainer<String, Priority>(Priority.class);
+    
+    /**
+     * Priorities model.
+     */
+    private final PrioritiesModel data;
 
     private Table prioritiesTable;
     private final PluginManager pluginManager;
+	public static final String VALUE = "value";
+	public static final String TEXT = "text";
 
     /**
      * @param editor     ConfigEditor
@@ -43,6 +47,7 @@ public class PriorityPanel extends Panel implements Validatable, ConfigPanel {
         this.configEditor = editor;
         this.descriptor = descriptor;
         this.pluginManager = pluginManager;
+        this.data = new PrioritiesModel(editor.getOrigConfig().getPriorities());
         buildUI();
     }
 
@@ -51,17 +56,15 @@ public class PriorityPanel extends Panel implements Validatable, ConfigPanel {
 
         Collection<Feature> features = descriptor.getSupportedFeatures();
 
-        data.setBeanIdProperty("text");
-
         prioritiesTable = new Table("Priorities");
         prioritiesTable.setContainerDataSource(data);
         prioritiesTable.setStyleName(Runo.TABLE_SMALL);
         prioritiesTable.addStyleName("priorities-table");
         prioritiesTable.setEditable(true);
 
-        prioritiesTable.setColumnHeader(Priority.TEXT, NAME_HEADER);
-        prioritiesTable.setColumnHeader(Priority.VALUE, VALUE_HEADER);
-        prioritiesTable.setVisibleColumns(new Object[]{Priority.TEXT, Priority.VALUE});
+        prioritiesTable.setColumnHeader(PriorityPanel.TEXT, NAME_HEADER);
+        prioritiesTable.setColumnHeader(PriorityPanel.VALUE, VALUE_HEADER);
+        prioritiesTable.setVisibleColumns(new Object[]{PriorityPanel.TEXT, PriorityPanel.VALUE});
 
         //prioritiesTable.setColumnWidth(Priority.TEXT, );
         prioritiesTable.setWidth("100%");
@@ -78,6 +81,20 @@ public class PriorityPanel extends Panel implements Validatable, ConfigPanel {
         });*/
 
         addComponent(prioritiesTable);
+        
+		prioritiesTable.setContainerDataSource(data);
+		
+		final ItemSetChangeListener listener = new ItemSetChangeListener() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void containerItemSetChange(ItemSetChangeEvent event) {
+		        prioritiesTable.setPageLength(prioritiesTable.size() + 1);
+			}
+		};
+		
+		data.addListener(listener);
+		listener.containerItemSetChange(null);
 
         Button reloadButton = new Button("Reload");
         reloadButton.setDescription("Reload priority list.");
@@ -97,18 +114,6 @@ public class PriorityPanel extends Panel implements Validatable, ConfigPanel {
         addComponent(reloadButton);
     }
 
-    public Priorities getPriorities() {
-        Map<String, Integer> priorities = new HashMap<String, Integer>();
-        for (Object o : data.getItemIds()) {
-            String sid = (String) o;
-            Item item = data.getItem(sid);
-
-            priorities.put((String) item.getItemProperty("text").getValue(), (Integer) item.getItemProperty("value").getValue());
-        }
-
-        return new Priorities(priorities);
-    }
-
     private void reloadPriorityList() throws Exception {
         LookupOperation loadPrioritiesOperation = new LoadPrioritiesOperation(configEditor,
         		pluginManager.getPluginFactory(descriptor.getID()));
@@ -126,11 +131,7 @@ public class PriorityPanel extends Panel implements Validatable, ConfigPanel {
     }
 
     public void setPriorities(Priorities items) {
-        data.removeAllItems();
-        for (final String priorityName : items.getAllNames()) {
-            data.addBean(new Priority(priorityName, items.getPriorityByText(priorityName)));
-        }
-        prioritiesTable.setPageLength(prioritiesTable.size() + 1);
+    	data.updateContent(items);
     }
 
     @Override
@@ -141,56 +142,13 @@ public class PriorityPanel extends Panel implements Validatable, ConfigPanel {
         int i = 0;
         for (Object id : data.getItemIds()) {
             i++;
-            mspValue = new Integer(((Priority) data.getItem(id).getBean()).getValue());
+			mspValue = configEditor.getOrigConfig().getPriorities()
+					.getPriorityByText((String) id);
             set.add(mspValue);
         }
 
         if (i != set.size()) {
             throw new ValidationException("TaskAdapter priorities duplication found. Please make all priority values unique in the table.");
-        }
-    }
-
-    @Override
-    public void setDataToConfig(ConnectorConfig config) {
-       config.setPriorities(getPriorities());
-    }
-
-    @Override
-    public void initDataByConfig(ConnectorConfig config) {
-        setPriorities(config.getPriorities());
-    }
-
-    /**
-     * Make sure there are only digits in the text field.
-     */
-//	private final class NumberVerifier implements VerifyListener {
-//		public void verifyText(VerifyEvent e) {
-//		      e.doit = "0123456789".indexOf(e.text) >= 0;
-//		  }
-//	}
-
-    public class Priority {
-        public static final String TEXT = "text";
-        public static final String VALUE = "value";
-
-        String text;
-        int value;
-
-        private Priority(String text, int value) {
-            this.text = text;
-            this.value = value;
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        public int getValue() {
-            return value;
-        }
-
-        public void setValue(final int value) {
-            this.value = value;
         }
     }
 }
