@@ -8,13 +8,13 @@ import com.taskadapter.web.configeditor.file.LocalModeFilePanel;
 import com.taskadapter.web.configeditor.file.ServerModeFilePanel;
 import com.taskadapter.web.configeditor.file.ServerModelFilePanelPresenter;
 import com.taskadapter.web.service.Services;
+import com.vaadin.ui.Panel;
 
 /**
  * @author Alexey Skorokhodov
  */
 public class MSPEditor extends TwoColumnsConfigEditor {
 
-    private FilePanel filePanel;
     private MSPInfoPanel infoPanel;
 
     public MSPEditor(ConnectorConfig config, Services services) {
@@ -39,26 +39,23 @@ public class MSPEditor extends TwoColumnsConfigEditor {
         return infoPanel;
     }
 
-    private FilePanel createFilePanel() {
+    private Panel createFilePanel() {
         if (isLocalMode()) {
-            filePanel = new LocalModeFilePanel();
+            return new LocalModeFilePanel((MSPConfig) config);
         } else {
-            filePanel = createRemoteModeFilePanel();
+            return createRemoteModeFilePanel();
         }
-        return filePanel;
     }
 
     private ServerModeFilePanel createRemoteModeFilePanel() {
         ServerModelFilePanelPresenter presenter =
                 new ServerModelFilePanelPresenter(services.getAuthenticator().getUserName());
-        return new ServerModeFilePanel(presenter);
+        return new ServerModeFilePanel(presenter, (MSPConfig) config);
     }
 
     private void setMSPDataToForm() {
         infoPanel.setDurationValue(MSXMLFileWriter.FIELD_DURATION_UNDEFINED.toString());
         infoPanel.setWorkValue(MSXMLFileWriter.FIELD_WORK_UNDEFINED.toString());
-        MSPConfig mspConfig = (MSPConfig) config;
-        filePanel.refreshConfig(mspConfig);
     }
 
     private boolean isLocalMode() {

@@ -12,7 +12,7 @@ import java.util.Arrays;
 /**
  * @author Alexander Kulik
  */
-public class ServerModeFilePanel extends FilePanel{
+public class ServerModeFilePanel extends Panel{
 
     // TODO show this limit on the webpage
     static final int MAX_FILE_SIZE_BYTES = 5000000;
@@ -51,12 +51,16 @@ public class ServerModeFilePanel extends FilePanel{
     private ComboBox comboBox;
     private ProgressIndicator progressIndicator;
     private Button deleteButton;
+    
+    private final MSPConfig config;
 
-    public ServerModeFilePanel(ServerModelFilePanelPresenter presenter) {
+    public ServerModeFilePanel(ServerModelFilePanelPresenter presenter, MSPConfig config) {
         super(TITLE);
         this.presenter = presenter;
+        this.config = config;
         buildUI();
         presenter.setView(this);
+        presenter.setConfig(config);
     }
 
     private void buildUI() {
@@ -177,6 +181,8 @@ public class ServerModeFilePanel extends FilePanel{
                 } else {
                     presenter.onNoFileSelected();
                 }
+                config.setInputAbsoluteFilePath(presenter.getSelectedFileNameOrEmpty());
+                config.setOutputAbsoluteFilePath(presenter.getSelectedFileNameOrEmpty());
             }
         });
         return comboBox;
@@ -191,25 +197,6 @@ public class ServerModeFilePanel extends FilePanel{
             }
         });
         return downloadButton;
-    }
-
-    /**
-     * Called after UI was built to update control content based on given config
-     * @param config current config to display
-     */
-    @Override
-    public void refreshConfig(MSPConfig config) {
-        presenter.setConfig(config);
-    }
-
-    @Override
-    public String getInputFileName() {
-        return presenter.getSelectedFileNameOrEmpty();
-    }
-
-    @Override
-    public String getOutputFileName() {
-        return presenter.getSelectedFileNameOrEmpty();
     }
 
     public void setUploadEnabled(boolean flag) {
