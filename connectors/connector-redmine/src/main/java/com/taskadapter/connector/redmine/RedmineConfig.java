@@ -14,24 +14,11 @@ public class RedmineConfig extends WebConfig {
 
     private static final long serialVersionUID = 1L;
 
-    // TODO hardcoded "Bug" value
-    /**
-     * Samples: "Bug", "Task", "Feature", "Support"
-     */
-    private String defaultTaskType = "Bug";
-
     private String defaultTaskStatus = "New";
 
     public RedmineConfig() {
         super(DEFAULT_LABEL);
-    }
-
-    public String getDefaultTaskType() {
-        return defaultTaskType;
-    }
-
-    public void setDefaultTaskType(String defaultTaskType) {
-        this.defaultTaskType = defaultTaskType;
+        setDefaultTaskStatus("Bug");
     }
 
     public String getDefaultTaskStatus() {
@@ -76,7 +63,7 @@ public class RedmineConfig extends WebConfig {
 
     @Override
     public int hashCode() {
-        return 31 * super.hashCode() + Objects.hashCode(defaultTaskType, defaultTaskStatus);
+        return 31 * super.hashCode() + Objects.hashCode(getDefaultTaskType(), defaultTaskStatus);
     }
 
     @Override
@@ -89,7 +76,7 @@ public class RedmineConfig extends WebConfig {
         }
         if (obj instanceof RedmineConfig) {
             RedmineConfig other = (RedmineConfig) obj;
-            return Objects.equal(defaultTaskType, other.defaultTaskType)
+            return Objects.equal(getDefaultTaskType(), other.getDefaultTaskType())
                     && Objects.equal(defaultTaskStatus, other.defaultTaskStatus);
         } else {
             return false;

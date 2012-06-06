@@ -30,6 +30,7 @@ public class JiraConfig extends WebConfig {
 
     public JiraConfig() {
         super(DEFAULT_LABEL);
+        setDefaultTaskType("Bug");
     }
 
     public String getComponent() {

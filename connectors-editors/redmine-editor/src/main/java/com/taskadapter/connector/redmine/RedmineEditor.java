@@ -6,6 +6,7 @@ import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.web.configeditor.*;
 import com.taskadapter.web.service.Services;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.MethodProperty;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.*;
 import org.redmine.ta.RedmineManager;
@@ -35,7 +36,7 @@ public class RedmineEditor extends TwoColumnsConfigEditor implements LoadProject
 
         addToLeftColumn(createEmptyLabel("15px"));
 
-        otherPanel = new OtherRedmineFieldsPanel(this);
+        otherPanel = new OtherRedmineFieldsPanel(this, (RedmineConfig) config);
         addToLeftColumn(otherPanel);
 
         addToRightColumn(new ProjectPanel(this, new RedmineProjectProcessor(this), services.getPluginManager()));
@@ -257,18 +258,14 @@ public class RedmineEditor extends TwoColumnsConfigEditor implements LoadProject
 
         private ConfigEditor configEditor;
 
-        private TextField defaultTaskType;
-        private CheckBox saveRelations;
-
-        public OtherRedmineFieldsPanel(ConfigEditor configEditor) {
+        public OtherRedmineFieldsPanel(ConfigEditor configEditor, RedmineConfig config) {
             super(OTHER_PANEL_CAPTION);
             this.configEditor = configEditor;
 
-            buildUI();
-            setDataToForm();
+            buildUI(config);
         }
 
-        private void buildUI() {
+        private void buildUI(RedmineConfig config) {
             setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
             setHeight("157px");
 
@@ -279,9 +276,11 @@ public class RedmineEditor extends TwoColumnsConfigEditor implements LoadProject
             //taskTypeLayout.setSizeUndefined();
             taskTypeLayout.setSpacing(true);
 
-            defaultTaskType = EditorUtil.addLabeledText(taskTypeLayout, "Default task type:",
+            final TextField defaultTaskType = EditorUtil.addLabeledText(taskTypeLayout, "Default task type:",
                     "New tasks will be created with this 'tracker' (bug/task/support/feature/...)");
             defaultTaskType.setWidth("200px");
+			defaultTaskType.setPropertyDataSource(new MethodProperty<String>(
+					config, "defaultTaskType"));
 
             Button showDefaultTaskType = EditorUtil.createLookupButton(
                     configEditor,
@@ -298,22 +297,10 @@ public class RedmineEditor extends TwoColumnsConfigEditor implements LoadProject
 
             addComponent(createFindUsersElementIfNeeded());
 
-            saveRelations = new CheckBox(SAVE_ISSUE_LABEL);
+            final CheckBox saveRelations = new CheckBox(SAVE_ISSUE_LABEL);
+			saveRelations.setPropertyDataSource(new MethodProperty<Boolean>(
+					config, "saveIssueRelations"));
             addComponent(saveRelations);
-        }
-        
-        private void setDataToForm() {
-            RedmineConfig redmineConfig = (RedmineConfig) config;
-            setIfNotNull(defaultTaskType, redmineConfig.getDefaultTaskType());
-            setIfNotNull(saveRelations, redmineConfig.getSaveIssueRelations());
-        }
-
-        public String getDefaultTaskType() {
-            return (String) defaultTaskType.getValue();
-        }
-
-        public Boolean getSaveRelation() {
-            return (Boolean) saveRelations.getValue();
         }
     }
 }
