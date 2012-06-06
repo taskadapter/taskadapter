@@ -15,8 +15,6 @@ public class JiraConfig extends WebConfig {
 
     private static final long serialVersionUID = 1L;
 
-    private String defaultTaskType = "Bug";
-
     // TODO this can probably be moved to the super class
     private String component = "";
 
@@ -58,14 +56,6 @@ public class JiraConfig extends WebConfig {
         this.affectedVersion = version;
     }
 
-
-    public String getDefaultTaskType() {
-        return defaultTaskType;
-    }
-
-    public void setDefaultTaskType(String defaultTaskType) {
-        this.defaultTaskType = defaultTaskType;
-    }
 
     @Override
     protected Mappings generateDefaultFieldsMapping() {
@@ -120,7 +110,7 @@ public class JiraConfig extends WebConfig {
     @Override
     public int hashCode() {
         return 31 * super.hashCode() +
-                Objects.hashCode(affectedVersion, component, defaultTaskType, fixForVersion);
+                Objects.hashCode(affectedVersion, component, getDefaultTaskType(), fixForVersion);
 
     }
 
@@ -136,7 +126,7 @@ public class JiraConfig extends WebConfig {
             JiraConfig other = (JiraConfig) obj;
             return Objects.equal(affectedVersion, other.affectedVersion) &&
                     Objects.equal(component, other.component) &&
-                    Objects.equal(defaultTaskType, other.component) &&
+                    Objects.equal(getDefaultTaskType(), other.component) &&
                     Objects.equal(fixForVersion, other.fixForVersion);
 
         } else {
