@@ -22,7 +22,7 @@ public class JiraEditor extends TwoColumnsConfigEditor {
         createServerAndProjectPanelOnTopDefault(new JiraProjectProcessor(this));
 
         // left column
-        jiraFieldsPanel = new OtherJiraFieldsPanel(this);
+        jiraFieldsPanel = new OtherJiraFieldsPanel(this, getJiraConfig());
         addToLeftColumn(jiraFieldsPanel);
 
 		PriorityPanel priorityPanel = new PriorityPanel(this, JiraDescriptor.instance, services.getPluginManager());

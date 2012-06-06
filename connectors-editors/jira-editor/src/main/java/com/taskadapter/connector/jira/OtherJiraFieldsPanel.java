@@ -1,6 +1,7 @@
 package com.taskadapter.connector.jira;
 
 import com.taskadapter.web.configeditor.EditorUtil;
+import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Panel;
@@ -12,16 +13,14 @@ import com.vaadin.ui.TextField;
 class OtherJiraFieldsPanel extends Panel {
     private static final String SAVE_GROUP_LABEL = "Set these fields when EXPORTING to Jira";
 
-    private TextField jiraComponent;
-    private TextField affectedVersion;
-    private TextField fixForVersion;
-    private TextField defaultTaskType;
     private JiraEditor jiraEditor;
+    
+    private JiraConfig config;
 
-    public OtherJiraFieldsPanel(JiraEditor jiraEditor) {
+    public OtherJiraFieldsPanel(JiraEditor jiraEditor, JiraConfig config) {
         this.jiraEditor = jiraEditor;
+        this.config = config;
         buildUI();
-        setDataToForm();
     }
 
     private void buildUI() {
@@ -36,7 +35,10 @@ class OtherJiraFieldsPanel extends Panel {
     }
 
     private void addLookupButtonsAndTextEdit(GridLayout lookupButtonsLayout) {
-        jiraComponent = EditorUtil.addLabeledText(lookupButtonsLayout, "Project Component:", "Component inside the Jira project");
+		final TextField jiraComponent = EditorUtil.addLabeledText(
+				lookupButtonsLayout, "Project Component:",
+				"Component inside the Jira project");
+        jiraComponent.setPropertyDataSource(new MethodProperty<String>(config, "component"));
         Button showComponentsButton = EditorUtil.createLookupButton(
                 jiraEditor,
                 "...",
@@ -52,7 +54,11 @@ class OtherJiraFieldsPanel extends Panel {
 
         LoadVersionsOperation loadVersionsOperation = new LoadVersionsOperation(jiraEditor, new JiraFactory());
 
-        affectedVersion = EditorUtil.addLabeledText(lookupButtonsLayout, "Set 'Affected version' to:", "Set this 'affected version' value when submitting issues to Jira.");
+		final TextField affectedVersion = EditorUtil
+				.addLabeledText(lookupButtonsLayout,
+						"Set 'Affected version' to:",
+						"Set this 'affected version' value when submitting issues to Jira.");
+        affectedVersion.setPropertyDataSource(new MethodProperty<String>(config, "affectedVersion"));
         Button showAffectedVersion = EditorUtil.createLookupButton(
                 jiraEditor,
                 "...",
@@ -65,7 +71,11 @@ class OtherJiraFieldsPanel extends Panel {
         );
         lookupButtonsLayout.addComponent(showAffectedVersion);
 
-        fixForVersion = EditorUtil.addLabeledText(lookupButtonsLayout, "Set 'Fix for version' to:", "Set this 'fix for version' value when submitting issues to Jira.");
+		final TextField fixForVersion = EditorUtil
+				.addLabeledText(lookupButtonsLayout,
+						"Set 'Fix for version' to:",
+						"Set this 'fix for version' value when submitting issues to Jira.");
+        fixForVersion.setPropertyDataSource(new MethodProperty<String>(config, "fixForVersion"));
         Button showFixForVersion = EditorUtil.createLookupButton(
                 jiraEditor,
                 "...",
@@ -79,7 +89,10 @@ class OtherJiraFieldsPanel extends Panel {
         lookupButtonsLayout.addComponent(showFixForVersion);
 
 
-        defaultTaskType = EditorUtil.addLabeledText(lookupButtonsLayout, "Default issue type:", "New issues will be created with this 'issue type' (bug/improvement/task...)");
+		final TextField defaultTaskType = EditorUtil
+				.addLabeledText(lookupButtonsLayout, "Default issue type:",
+						"New issues will be created with this 'issue type' (bug/improvement/task...)");
+        defaultTaskType.setPropertyDataSource(new MethodProperty<String>(config, "defaultTaskType"));
         Button showDefaultTaskType = EditorUtil.createLookupButton(
                 jiraEditor,
                 "...",
@@ -91,30 +104,5 @@ class OtherJiraFieldsPanel extends Panel {
                 true
         );
         lookupButtonsLayout.addComponent(showDefaultTaskType);
-    }
-
-    private void setDataToForm() {
-        JiraConfig jiraConfig = jiraEditor.getJiraConfig();
-
-        EditorUtil.setNullSafe(affectedVersion, jiraConfig.getAffectedVersion());
-        EditorUtil.setNullSafe(fixForVersion, jiraConfig.getFixForVersion());
-        EditorUtil.setNullSafe(jiraComponent, jiraConfig.getComponent());
-        EditorUtil.setNullSafe(defaultTaskType, jiraConfig.getDefaultTaskType());
-    }
-
-    public String getAffectedVersion() {
-        return (String) affectedVersion.getValue();
-    }
-
-    public String getFixForVersion() {
-        return (String) fixForVersion.getValue();
-    }
-
-    public String getComponent() {
-        return (String) jiraComponent.getValue();
-    }
-
-    public String getDefaultTaskType() {
-        return (String) defaultTaskType.getValue();
     }
 }
