@@ -42,20 +42,6 @@ public class RedmineEditor extends TwoColumnsConfigEditor implements LoadProject
         addToRightColumn(new FieldsMappingPanel(RedmineDescriptor.instance.getAvailableFields(), config.getFieldMappings()));
     }
 
-    @Override
-    public ConnectorConfig getPartialConfig() {
-        RedmineConfig rmConfig = new RedmineConfig();
-        WebServerInfo serverInfo = new WebServerInfo(serverPanel.getServerURL(), serverPanel.getLogin(),
-                serverPanel.getPassword());
-        serverInfo.setApiKey(serverPanel.getRedmineAPIKey());
-        serverInfo.setUseAPIKeyInsteadOfLoginPassword(serverPanel.isUseAPIOptionSelected());
-        rmConfig.setServerInfo(serverInfo);
-
-        rmConfig.setDefaultTaskType(otherPanel.getDefaultTaskType());
-        rmConfig.setSaveIssueRelations(otherPanel.getSaveRelation());
-        return rmConfig;
-    }
-
     RedmineManager getRedmineManager() {
         RedmineManager mgr;
         if (serverPanel.isUseAPIOptionSelected()) {

@@ -61,14 +61,6 @@ public class MSPEditor extends TwoColumnsConfigEditor {
         filePanel.refreshConfig(mspConfig);
     }
 
-    @Override
-    public ConnectorConfig getPartialConfig() {
-        MSPConfig mspConfig = new MSPConfig();
-        mspConfig.setInputAbsoluteFilePath(filePanel.getInputFileName());
-        mspConfig.setOutputAbsoluteFilePath(filePanel.getOutputFileName());
-        return mspConfig;
-    }
-
     private boolean isLocalMode() {
         return services.getSettingsManager().isTAWorkingOnLocalMachine();
     }

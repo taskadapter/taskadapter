@@ -55,26 +55,6 @@ public class JiraEditor extends TwoColumnsConfigEditor {
         return this.customFieldsTablePanel;
     }
 
-    @Override
-    public ConnectorConfig getPartialConfig() {
-        JiraConfig newConfig = new JiraConfig();
-
-        newConfig.setAffectedVersion(jiraFieldsPanel.getAffectedVersion());
-        newConfig.setFixForVersion(jiraFieldsPanel.getFixForVersion());
-        newConfig.setComponent(jiraFieldsPanel.getComponent());
-
-        Map<String, String> trackers = new TreeMap<String, String>();
-
-        for (CustomField customField : customFieldsTablePanel.getCustomFields()) {
-            trackers.put(customField.getId(), customField.getValue());
-        }
-
-        newConfig.setCustomFields(trackers);
-        newConfig.setDefaultTaskType(jiraFieldsPanel.getDefaultTaskType());
-
-        return newConfig;
-    }
-
     /**
      * To be used in child panel
      * @return pure config instance

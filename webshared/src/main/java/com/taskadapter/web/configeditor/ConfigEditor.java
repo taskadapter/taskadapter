@@ -48,8 +48,6 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         setWidth("800px");
     }
 
-    public abstract ConnectorConfig getPartialConfig();
-
     protected void setIfNotNull(AbstractField field, Object value) {
         if (value != null) {
             field.setValue(value);

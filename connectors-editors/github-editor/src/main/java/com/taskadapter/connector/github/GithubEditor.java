@@ -31,9 +31,4 @@ public class GithubEditor extends TwoColumnsConfigEditor {
         //right
         addToRightColumn(new FieldsMappingPanel(GithubDescriptor.instance.getAvailableFields(), config.getFieldMappings()));
     }
-
-    @Override
-    public ConnectorConfig getPartialConfig() {
-        return config;
-    }
 }

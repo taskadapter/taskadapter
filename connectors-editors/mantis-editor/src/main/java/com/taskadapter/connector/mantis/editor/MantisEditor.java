@@ -26,9 +26,4 @@ public class MantisEditor extends TwoColumnsConfigEditor {
         //right
         addToRightColumn(new FieldsMappingPanel(MantisDescriptor.instance.getAvailableFields(), config.getFieldMappings()));
     }
-
-    @Override
-    public ConnectorConfig getPartialConfig() {
-        return config;
-    }
 }
