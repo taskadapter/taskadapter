@@ -5,15 +5,14 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 
 public class MSPInfoPanel extends Panel {
-    private Label durationText;
-    private Label workText;
+	private static final long serialVersionUID = 1L;
 
-    public MSPInfoPanel() {
+	public MSPInfoPanel(MSPConfig config) {
         super("MSP Text Fields to store some internal stuff");
-        buildUI();
+        buildUI(config);
     }
 
-    private void buildUI() {
+    private void buildUI(MSPConfig config) {
         GridLayout layout = new GridLayout();
         //layout.setColumnExpandRatio(0, 0.7f);
         layout.setWidth(100, UNITS_PERCENTAGE);
@@ -25,23 +24,17 @@ public class MSPInfoPanel extends Panel {
         Label label = new Label("Store 'Duration undefined' flag as:");
         label.setWidth("200px");
         layout.addComponent(label, 0, 0);
-        durationText = new Label();
+        final Label durationText = new Label();
+        durationText.setValue(MSXMLFileWriter.FIELD_DURATION_UNDEFINED.toString());
         layout.addComponent(durationText, 1, 0);
         //layout.setComponentAlignment(durationText, Alignment.MIDDLE_RIGHT);
 
         label = new Label("Store 'Work undefined' flag as:");
         label.setWidth("200px");
         layout.addComponent(label, 0, 1);
-        workText = new Label();
+        final Label workText = new Label();
+        workText.setValue(MSXMLFileWriter.FIELD_WORK_UNDEFINED.toString());
         layout.addComponent(workText, 1, 1);
         addComponent(layout);
-    }
-
-    public void setDurationValue(String value) {
-        durationText.setValue(value);
-    }
-
-    public void setWorkValue(String value) {
-        workText.setValue(value);
     }
 }

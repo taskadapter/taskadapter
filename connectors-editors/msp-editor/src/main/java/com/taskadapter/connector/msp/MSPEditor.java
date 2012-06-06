@@ -3,7 +3,6 @@ package com.taskadapter.connector.msp;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.web.configeditor.FieldsMappingPanel;
 import com.taskadapter.web.configeditor.TwoColumnsConfigEditor;
-import com.taskadapter.web.configeditor.file.FilePanel;
 import com.taskadapter.web.configeditor.file.LocalModeFilePanel;
 import com.taskadapter.web.configeditor.file.ServerModeFilePanel;
 import com.taskadapter.web.configeditor.file.ServerModelFilePanelPresenter;
@@ -20,7 +19,6 @@ public class MSPEditor extends TwoColumnsConfigEditor {
     public MSPEditor(ConnectorConfig config, Services services) {
         super(config, services);
         buildUI();
-        setMSPDataToForm();
     }
 
     private void buildUI() {
@@ -34,7 +32,7 @@ public class MSPEditor extends TwoColumnsConfigEditor {
     }
 
     private MSPInfoPanel createInfoReadOnlyPanel() {
-        infoPanel = new MSPInfoPanel();
+        infoPanel = new MSPInfoPanel((MSPConfig) config);
         infoPanel.setHeight("152px");
         return infoPanel;
     }
@@ -51,11 +49,6 @@ public class MSPEditor extends TwoColumnsConfigEditor {
         ServerModelFilePanelPresenter presenter =
                 new ServerModelFilePanelPresenter(services.getAuthenticator().getUserName());
         return new ServerModeFilePanel(presenter, (MSPConfig) config);
-    }
-
-    private void setMSPDataToForm() {
-        infoPanel.setDurationValue(MSXMLFileWriter.FIELD_DURATION_UNDEFINED.toString());
-        infoPanel.setWorkValue(MSXMLFileWriter.FIELD_WORK_UNDEFINED.toString());
     }
 
     private boolean isLocalMode() {
