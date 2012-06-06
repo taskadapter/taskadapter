@@ -1,15 +1,13 @@
 package com.taskadapter.web.configeditor;
 
+import com.taskadapter.web.configeditor.map.MapEditorModel;
 import com.vaadin.data.Container;
-import com.vaadin.data.Item;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Runo;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author Igor Laishen
@@ -31,40 +29,14 @@ public class CustomFieldsTablePanel extends Panel {
     private final Table table = new Table();
     private static final String TABLE_HEIGHT = "113px";
 
+    /**
+     * Used model.
+     */
+    private final MapEditorModel model;
 
-    public CustomFieldsTablePanel() {
+    public CustomFieldsTablePanel(Map<String, String> map) {
+    	this.model = new MapEditorModel(map);
         buildUI();
-        setCustomFields(new ArrayList<CustomField>());
-    }
-
-    public List<CustomField> getCustomFields() {
-        Collection itemIds = table.getItemIds();
-        List<CustomField> newCustomFields = new ArrayList<CustomField>(itemIds.size());
-
-        if (!itemIds.isEmpty()) {
-            for (Object itemId : itemIds) {
-                Item item = table.getItem(itemId);
-
-                String id = item.getItemProperty(TABLE_HEADER_ID).getValue().toString();
-                String value = item.getItemProperty(TABLE_HEADER_VALUE).getValue().toString();
-
-                if (!"".equals(id) && !CELL_DEFAULT_VALUE.equals(id)) {
-                    newCustomFields.add(new CustomField(id, value));
-                }
-            }
-        }
-
-        return newCustomFields;
-    }
-
-    public void setCustomFields(List<CustomField> customFields) {
-        table.removeAllItems();
-        for (CustomField customField : customFields) {
-            table.addItem(new Object[]{
-                    customField.getId(),
-                    customField.getValue()
-            }, null);
-        }
     }
 
     private void buildUI() {
@@ -82,6 +54,8 @@ public class CustomFieldsTablePanel extends Panel {
         table.addContainerProperty(TABLE_HEADER_ID, String.class, CELL_DEFAULT_VALUE);
         table.setColumnWidth(TABLE_HEADER_ID, 90);
         table.addContainerProperty(TABLE_HEADER_VALUE, String.class, CELL_DEFAULT_VALUE);
+        
+        table.setContainerDataSource(model);
 
         table.addListener(new ItemClickEvent.ItemClickListener() {
             @Override
@@ -126,8 +100,7 @@ public class CustomFieldsTablePanel extends Panel {
         addNewBtn.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                table.addItem(new Object[]{CELL_DEFAULT_VALUE, CELL_DEFAULT_VALUE}, null);
-                table.refreshRowCache();
+            	model.append(CELL_DEFAULT_VALUE, CELL_DEFAULT_VALUE);
             }
         });
 
@@ -138,7 +111,7 @@ public class CustomFieldsTablePanel extends Panel {
             public void buttonClick(Button.ClickEvent event) {
                 Object itemId = table.getValue();
                 if (itemId != null) {
-                    table.removeItem(itemId);
+                    model.removeItem(itemId);
                 }
             }
         });
