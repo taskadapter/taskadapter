@@ -13,6 +13,9 @@ import com.vaadin.data.Property;
  * 
  */
 public final class ConstItem implements Item, Item.PropertySetChangeNotifier {
+	
+	private static final long serialVersionUID = 1L;
+	
 	/**
 	 * Properties of the item.
 	 */
