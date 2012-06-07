@@ -3,7 +3,6 @@ package com.taskadapter.connector.github;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.taskadapter.connector.common.ConfigUtils;
-import com.taskadapter.connector.common.PriorityLoader;
 import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Descriptor;
@@ -25,11 +24,6 @@ public class GithubFactory implements PluginFactory<GithubConfig> {
         return new GithubProjectLoader();
     }
     
-    @Override
-    public PriorityLoader getPriorityLoader() {
-        throw new RuntimeException("NOT READY");
-    }
-
 	@Override
 	public JsonElement writeConfig(GithubConfig config) {
 		return ConfigUtils.createDefaultGson().toJsonTree(config);

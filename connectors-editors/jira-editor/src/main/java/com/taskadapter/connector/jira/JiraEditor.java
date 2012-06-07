@@ -1,6 +1,9 @@
 package com.taskadapter.connector.jira;
 
+import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ConnectorConfig;
+import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.*;
 import com.taskadapter.web.service.Services;
 
@@ -25,7 +28,12 @@ public class JiraEditor extends TwoColumnsConfigEditor {
         jiraFieldsPanel = new OtherJiraFieldsPanel(this, getJiraConfig());
         addToLeftColumn(jiraFieldsPanel);
 
-		PriorityPanel priorityPanel = new PriorityPanel(this, JiraDescriptor.instance, services.getPluginManager());
+		PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(), new DataProvider<Priorities>() {
+			@Override
+			public Priorities loadData() throws ValidationException {
+				return loadJiraPriorities();
+			}
+		});
         addToLeftColumn(priorityPanel);
 
         // right column
@@ -33,7 +41,19 @@ public class JiraEditor extends TwoColumnsConfigEditor {
         addToRightColumn(new FieldsMappingPanel(JiraDescriptor.instance.getAvailableFields(), config.getFieldMappings()));
     }
 
-    private CustomFieldsTablePanel createCustomOtherFieldsPanel() {
+    /**
+     * Loads jira priorities.
+     * @return priorities from server.
+     */
+    Priorities loadJiraPriorities() throws ValidationException {
+        if (!getJiraConfig().getServerInfo().isHostSet()) {
+            throw new ValidationException("Host URL is not set");
+        }
+		return JiraLoaders.loadPriorities(getJiraConfig()
+				.getServerInfo());
+	}
+
+	private CustomFieldsTablePanel createCustomOtherFieldsPanel() {
         this.customFieldsTablePanel = new CustomFieldsTablePanel(getJiraConfig().getCustomFields());
         return this.customFieldsTablePanel;
     }

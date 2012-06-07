@@ -2,7 +2,6 @@ package com.taskadapter.connector.definition;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.taskadapter.connector.common.PriorityLoader;
 import com.taskadapter.connector.common.ProjectLoader;
 
 /**
@@ -21,9 +20,6 @@ public interface PluginFactory<C extends ConnectorConfig> {
 
     // TODO: move it to connector, but it must have proper configs (at least - partial).
     public ProjectLoader getProjectLoader();
-    
-    // TODO: maybe move it to connector, but it must have proper configs (at least - partial).
-    public PriorityLoader getPriorityLoader();
     
     /**
      * Serializes a config to a Json Element.

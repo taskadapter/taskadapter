@@ -1,12 +1,8 @@
 package com.taskadapter.web.configeditor;
 
-import com.taskadapter.PluginManager;
 import com.taskadapter.connector.Priorities;
-import com.taskadapter.connector.definition.Descriptor;
-import com.taskadapter.connector.definition.Descriptor.Feature;
 import com.taskadapter.connector.definition.ValidationException;
-import com.taskadapter.model.NamedKeyedObject;
-import com.taskadapter.model.NamedKeyedObjectImpl;
+import com.taskadapter.web.callbacks.DataProvider;
 import com.vaadin.data.Container.ItemSetChangeEvent;
 import com.vaadin.data.Container.ItemSetChangeListener;
 import com.vaadin.ui.Button;
@@ -25,36 +21,44 @@ public class PriorityPanel extends Panel implements Validatable {
     private static final String NAME_HEADER = "Name";
     private static final String VALUE_HEADER = "Task Adapter Priority Value";
 
-    private final ConfigEditor configEditor;
-    private final Descriptor descriptor;
-    
     /**
      * Priorities model.
      */
     private final PrioritiesModel data;
 
+    /**
+     * Used priorities.
+     */
+    private final Priorities priorities;
+
     private Table prioritiesTable;
-    private final PluginManager pluginManager;
 	public static final String VALUE = "value";
 	public static final String TEXT = "text";
+	
+	/**
+	 * Priority loader.
+	 */
+	private final DataProvider<Priorities> priorityLoader;
 
     /**
-     * @param editor     ConfigEditor
-     * @param descriptor Descriptor
-     */
-    public PriorityPanel(ConfigEditor editor, Descriptor descriptor, PluginManager pluginManager) {
-        super("Priorities");
-        this.configEditor = editor;
-        this.descriptor = descriptor;
-        this.pluginManager = pluginManager;
-        this.data = new PrioritiesModel(editor.getConfig().getPriorities());
+	 * @param editor
+	 *            ConfigEditor
+	 * @param priorities
+	 *            priorities to edit.
+	 * @param priorityLoader
+	 *            "load priorities" data provider. Optional (may be
+	 *            <code>null</code>).
+	 */
+	public PriorityPanel(Priorities priorities,	DataProvider<Priorities> priorityLoader) {
+		super("Priorities");
+		this.priorities = priorities;
+        this.priorityLoader = priorityLoader;
+        this.data = new PrioritiesModel(priorities);
         buildUI();
     }
 
     private void buildUI() {
         setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
-
-        Collection<Feature> features = descriptor.getSupportedFeatures();
 
         prioritiesTable = new Table("Priorities");
         prioritiesTable.setContainerDataSource(data);
@@ -87,7 +91,7 @@ public class PriorityPanel extends Panel implements Validatable {
 
         Button reloadButton = new Button("Reload");
         reloadButton.setDescription("Reload priority list.");
-        reloadButton.setEnabled(features.contains(Feature.LOAD_PRIORITIES));
+        reloadButton.setEnabled(priorityLoader != null);
         reloadButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -104,18 +108,7 @@ public class PriorityPanel extends Panel implements Validatable {
     }
 
     private void reloadPriorityList() throws Exception {
-        LookupOperation loadPrioritiesOperation = new LoadPrioritiesOperation(configEditor,
-        		pluginManager.getPluginFactory(descriptor.getID()));
-        @SuppressWarnings("unchecked")
-        List<NamedKeyedObjectImpl> list = (List<NamedKeyedObjectImpl>) loadPrioritiesOperation.run();
-
-        Priorities defaultPriorities = descriptor.createDefaultConfig().getPriorities();
-
-        Priorities newPriorities = new Priorities();
-        for (NamedKeyedObject priority : list) {
-            newPriorities.setPriority(priority.getKey(), defaultPriorities.getPriorityByText(priority.getKey()));
-        }
-
+        final Priorities newPriorities = priorityLoader.loadData();
         setPriorities(newPriorities);
     }
 
@@ -131,8 +124,7 @@ public class PriorityPanel extends Panel implements Validatable {
         int i = 0;
         for (Object id : data.getItemIds()) {
             i++;
-			mspValue = configEditor.getConfig().getPriorities()
-					.getPriorityByText((String) id);
+			mspValue = priorities.getPriorityByText((String) id);
             set.add(mspValue);
         }
 

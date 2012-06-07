@@ -94,7 +94,15 @@ public class JiraConfig extends WebConfig {
 
     @Override
     protected Priorities generateDefaultPriorities() {
-        return new Priorities(new HashMap<String, Integer>() {
+        return createDefaultPriorities();
+    }
+
+    /**
+     * Creates a default priorities.
+     * @return default priorities.
+     */
+	public static Priorities createDefaultPriorities() {
+		return new Priorities(new HashMap<String, Integer>() {
             private static final long serialVersionUID = 516389048716909610L;
 
             {
@@ -105,7 +113,7 @@ public class JiraConfig extends WebConfig {
                 put("Blocker", 1000);
             }
         });
-    }
+	}
 
 
     @Override

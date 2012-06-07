@@ -3,7 +3,6 @@ package com.taskadapter.connector.mantis;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.taskadapter.connector.common.ConfigUtils;
-import com.taskadapter.connector.common.PriorityLoader;
 import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.PluginFactory;
@@ -24,11 +23,6 @@ public class MantisFactory implements PluginFactory<MantisConfig> {
         return new MantisProjectLoader();
     }
     
-    @Override
-    public PriorityLoader getPriorityLoader() {
-        throw new RuntimeException("NOT READY");
-    }
-
 	@Override
 	public JsonElement writeConfig(MantisConfig config) {
 		return ConfigUtils.createDefaultGson().toJsonTree(config);
