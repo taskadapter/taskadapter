@@ -52,6 +52,10 @@ public class WebServerInfo {
     public String getPassword() {
         return encryptor.decrypt(password);
     }
+    
+    public void setPassword(String newPassword) {
+        this.password = encryptor.encrypt(newPassword);
+    }
 
     public boolean isUseAPIKeyInsteadOfLoginPassword() {
         return useAPIKeyInsteadOfLoginPassword;

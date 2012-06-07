@@ -69,17 +69,6 @@ public class PriorityPanel extends Panel implements Validatable {
         //prioritiesTable.setColumnWidth(Priority.TEXT, );
         prioritiesTable.setWidth("100%");
 
-/*        prioritiesTable.setTableFieldFactory(new DefaultFieldFactory() {
-            @Override
-            public Field createField(Container container, Object itemId, Object propertyId, Component uiContext) {
-                Field field = super.createField(container, itemId, propertyId, uiContext);
-                if ("value".equals(propertyId)) {
-                    field.addValidator(new IntegerValidator("error"));
-                }
-                return field;
-            }
-        });*/
-
         addComponent(prioritiesTable);
         
 		prioritiesTable.setContainerDataSource(data);

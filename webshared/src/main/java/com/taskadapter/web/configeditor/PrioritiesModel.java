@@ -152,6 +152,7 @@ final class PrioritiesModel implements Container,
 		this.priorities.clear();
 		for (String key : props.getAllNames())
 			priorities.setPriority(key, props.getPriorityByText(key));
+		fillItems(props);
 	}
 
 	/**
