@@ -1,7 +1,12 @@
 package com.taskadapter.web.configeditor;
 
+import java.util.List;
+
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.WebConfig;
+import com.taskadapter.model.NamedKeyedObject;
+import com.taskadapter.web.callbacks.DataProvider;
+import com.taskadapter.web.callbacks.SimpleCallback;
 import com.taskadapter.web.service.Services;
 import com.vaadin.ui.*;
 
@@ -62,17 +67,20 @@ public abstract class TwoColumnsConfigEditor extends ConfigEditor {
         return label;
     }
 
-    /**
-     * Create [Server Panel] [Project Panel]
-     */
-    protected void createServerAndProjectPanelOnTopDefault(ProjectProcessor projectProcessor) {
-        // left column
-        addToLeftColumn(new ServerPanel(((WebConfig) config).getServerInfo()));
+	/**
+	 * Create [Server Panel] [Project Panel]
+	 */
+	protected void createServerAndProjectPanelOnTopDefault(
+			DataProvider<List<? extends NamedKeyedObject>> projectProvider, 
+			SimpleCallback projectInfoCallback,
+			DataProvider<List<? extends NamedKeyedObject>> queryProvider) {
+		// left column
+		addToLeftColumn(new ServerPanel(((WebConfig) config).getServerInfo()));
 
-        // right column
-        addToRightColumn(new ProjectPanel(this, projectProcessor, services.getPluginManager()));
-        addToRightColumn(createEmptyLabel("10px"));
-    }
-
+		// right column
+		addToRightColumn(new ProjectPanel(this, 
+				projectProvider, projectInfoCallback, queryProvider));
+		addToRightColumn(createEmptyLabel("10px"));
+	}
 
 }

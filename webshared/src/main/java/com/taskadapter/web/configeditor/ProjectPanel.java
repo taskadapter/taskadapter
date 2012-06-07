@@ -1,14 +1,17 @@
 package com.taskadapter.web.configeditor;
 
 import com.google.common.base.Strings;
-import com.taskadapter.PluginManager;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebConfig;
+import com.taskadapter.model.NamedKeyedObject;
+import com.taskadapter.web.callbacks.DataProvider;
+import com.taskadapter.web.callbacks.SimpleCallback;
 import com.vaadin.data.util.AbstractProperty;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.*;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * "Project info" panel with Project Key, Query Id.
@@ -23,19 +26,35 @@ public class ProjectPanel extends Panel implements Validatable {
     private TextField projectKey;
     private TextField queryId;
 
-    private final ProjectProcessor projectProcessor;
-    private final PluginManager pluginManager;
     private Label projectKeyLabel;
     private Label queryIdLabel;
     private Button showQueriesButton;
     private static final String TEXT_AREA_WIDTH = "120px";
+    
+    /**
+     * Project provider.
+     */
+    private final DataProvider<List<? extends NamedKeyedObject>> projectProvider;
+    
+    /**
+     * "Show project info" callback.
+     */
+    private final SimpleCallback projectInfoCallback;
+    
+    /**
+     * Query provider.
+     */
+    private final DataProvider<List<? extends NamedKeyedObject>> queryProvider;
 
-	public ProjectPanel(ConfigEditor editor, ProjectProcessor projectProcessor,
-			PluginManager pluginManager) {
+	public ProjectPanel(ConfigEditor editor, 
+			DataProvider<List<? extends NamedKeyedObject>> projectProvider,
+			SimpleCallback projectInfoCallback,
+			DataProvider<List<? extends NamedKeyedObject>> queryProvider) {
         super(DEFAULT_PANEL_CAPTION);
         this.editor = editor;
-        this.projectProcessor = projectProcessor;
-        this.pluginManager = pluginManager;
+		this.projectProvider = projectProvider;
+		this.projectInfoCallback = projectInfoCallback;
+		this.queryProvider = queryProvider;
         buildUI();
     }
 
@@ -56,13 +75,12 @@ public class ProjectPanel extends Panel implements Validatable {
 
         projectKey = new TextField();
 		final WebConfig config = (WebConfig) editor.getConfig();
-		projectKey.setPropertyDataSource(new MethodProperty<String>(config,
-				"projectKey"));
+		final MethodProperty<String> projectKeyProperty = new MethodProperty<String>(
+				config, "projectKey");
+		projectKey.setPropertyDataSource(projectKeyProperty);
         keyHorizontalLayout.addComponent(projectKey);
         projectKey.setWidth(TEXT_AREA_WIDTH);
 
-
-        Collection<ProjectProcessor.EditorFeature> features = projectProcessor.getSupportedFeatures();
 
         Button infoButton = EditorUtil.createButton("Info", "View the project info",
                 new Button.ClickListener() {
@@ -72,23 +90,20 @@ public class ProjectPanel extends Panel implements Validatable {
                     }
                 }
         );
-        infoButton.setEnabled(features.contains(ProjectProcessor.EditorFeature.LOAD_PROJECT_INFO));
+        infoButton.setEnabled(projectInfoCallback != null);
         keyHorizontalLayout.addComponent(infoButton);
 
-		LookupOperation loadProjectsOperation = new LoadProjectsOperation(
-				editor, pluginManager.getPluginFactory(projectProcessor
-						.getDescriptor().getID()));
         Button projectKeyButton = EditorUtil.createLookupButton(
                 editor,
                 "...",
                 "Show list of available projects on the server.",
                 "Select project",
                 "List of projects on the server",
-                loadProjectsOperation,
-                projectKey,
+                projectProvider,
+                projectKeyProperty,
                 false
         );
-        projectKeyButton.setEnabled(features.contains(ProjectProcessor.EditorFeature.LOAD_PROJECTS));
+        projectKeyButton.setEnabled(projectProvider != null);
         keyHorizontalLayout.addComponent(projectKeyButton);
 
         queryIdLabel = new Label("Query ID:");
@@ -103,7 +118,7 @@ public class ProjectPanel extends Panel implements Validatable {
                 + "Read help for more details.");
         idHorizontalLayout.addComponent(queryId);
         queryId.setWidth(TEXT_AREA_WIDTH);
-		queryId.setPropertyDataSource(new AbstractProperty() {
+		final AbstractProperty queryIdProperty = new AbstractProperty() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -131,9 +146,8 @@ public class ProjectPanel extends Panel implements Validatable {
 			public Class<?> getType() {
 				return String.class;
 			}
-		});
-
-        LookupOperation loadSavedQueriesOperation = projectProcessor.getLoadSavedQueriesOperation(editor);
+		};
+		queryId.setPropertyDataSource(queryIdProperty);
 
         showQueriesButton = EditorUtil.createLookupButton(
                 editor,
@@ -141,27 +155,19 @@ public class ProjectPanel extends Panel implements Validatable {
                 "Show available saved queries on the server.",
                 "Select Query",
                 "List of saved queries on the server",
-                loadSavedQueriesOperation,
-                queryId,
+                queryProvider,
+                queryIdProperty,
                 false
         );
         // TODO maybe set "enabled" basing on whether or not loadSavedQueriesOperation is NULL?
         // then can delete the whole "features" mechanism
-        showQueriesButton.setEnabled(features.contains(ProjectProcessor.EditorFeature.LOAD_SAVED_QUERIES));
+        showQueriesButton.setEnabled(queryProvider != null);
         idHorizontalLayout.addComponent(showQueriesButton);
     }
 
     private void loadProject() {
         try {
-            if (getProjectKey().isEmpty()) {
-                // TODO need to use the field value and
-                // disable the button
-                // instead of this simple check
-                throw new ValidationException("Please, provide the project key first");
-            }
-
-            projectProcessor.loadProject(getProjectKey());
-
+        	projectInfoCallback.callBack();
         } catch (ValidationException e) {
             editor.getWindow().showNotification("Please, update the settings", e.getMessage());
         }

@@ -25,12 +25,11 @@ public class GithubTest {
 
     @Test
     public void testProjectImport() throws Exception {
-        GithubProjectLoader projectLoader = new GithubProjectLoader();
         GithubConfig config = getTestConfig();
         
         final GithubConnector connector = new GithubConnector(config);
 
-        List<GProject> projects = projectLoader.getProjects(config.getServerInfo());
+        List<GProject> projects = GithubLoaders.getProjects(config.getServerInfo());
         assertNotNull(projects);
         System.out.println("projects.size() = " + projects.size());
         for (GProject project : projects) {

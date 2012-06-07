@@ -2,7 +2,6 @@ package com.taskadapter.connector.definition;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.taskadapter.connector.common.ProjectLoader;
 
 /**
  * @author Alexey Skorokhodov
@@ -18,9 +17,6 @@ public interface PluginFactory<C extends ConnectorConfig> {
     //TODO delete method with the same name from Connector class.
     public Descriptor getDescriptor();
 
-    // TODO: move it to connector, but it must have proper configs (at least - partial).
-    public ProjectLoader getProjectLoader();
-    
     /**
      * Serializes a config to a Json Element.
      * @param config config to serialize.

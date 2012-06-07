@@ -3,7 +3,6 @@ package com.taskadapter.connector.redmine;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.taskadapter.connector.common.ConfigUtils;
-import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.PluginFactory;
 
@@ -21,11 +20,6 @@ public class RedmineFactory implements PluginFactory<RedmineConfig> {
         return RedmineDescriptor.instance;
     }
 
-    @Override
-    public ProjectLoader getProjectLoader() {
-        return new RedmineProjectLoader();
-    }
-    
 	@Override
 	public JsonElement writeConfig(RedmineConfig config) {
 		return ConfigUtils.createDefaultGson().toJsonTree(config);

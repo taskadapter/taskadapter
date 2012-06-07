@@ -2,13 +2,19 @@ package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.model.NamedKeyedObject;
+import com.taskadapter.web.callbacks.DataProvider;
+import com.taskadapter.web.callbacks.SimpleCallback;
 import com.taskadapter.web.configeditor.*;
 import com.taskadapter.web.service.Services;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.*;
+
+import org.redmine.ta.NotFoundException;
 import org.redmine.ta.RedmineManager;
 import org.redmine.ta.beans.Project;
 
@@ -18,7 +24,7 @@ import java.util.List;
 /**
  * @author Alexey Skorokhodov
  */
-public class RedmineEditor extends TwoColumnsConfigEditor implements LoadProjectJobResultListener {
+public class RedmineEditor extends TwoColumnsConfigEditor {
 
     private RedmineServerPanel serverPanel;
     private OtherRedmineFieldsPanel otherPanel;
@@ -39,24 +45,77 @@ public class RedmineEditor extends TwoColumnsConfigEditor implements LoadProject
         otherPanel = new OtherRedmineFieldsPanel(this, (RedmineConfig) config);
         addToLeftColumn(otherPanel);
 
-        addToRightColumn(new ProjectPanel(this, new RedmineProjectProcessor(this), services.getPluginManager()));
+		addToRightColumn(new ProjectPanel(this,
+				new DataProvider<List<? extends NamedKeyedObject>>() {
+					@Override
+					public List<? extends NamedKeyedObject> loadData()
+							throws ValidationException {
+						return RedmineLoaders
+								.getProjects(((RedmineConfig) config)
+										.getServerInfo());
+					}
+				}, new SimpleCallback() {
+					@Override
+					public void callBack() throws ValidationException {
+						showProjectInfo();
+					}
+				}, new DataProvider<List<? extends NamedKeyedObject>>() {
+					@Override
+					public List<? extends NamedKeyedObject> loadData()
+							throws ValidationException {
+						return loadQueries();
+					}
+				}));
         addToRightColumn(new FieldsMappingPanel(RedmineDescriptor.instance.getAvailableFields(), config.getFieldMappings()));
     }
+    
+    /**
+     * Loads queries.
+     * @return queries to load.
+     * @throws ValidationException 
+     */
+    List<? extends NamedKeyedObject> loadQueries() throws ValidationException {
+    	final RedmineConfig config = (RedmineConfig) this.config;
+    	try {
+    		return RedmineLoaders.loadData(config.getServerInfo(), config.getProjectKey());
+    	} catch (NotFoundException e) {
+            EditorUtil.show(getWindow(), "Can't load Saved Queries", "The server did not return any saved queries.\n" +
+                    "NOTE: This operation is only supported by Redmine 1.3.0+");
+            return null;
+    	} catch (ValidationException e) {
+    		throw e;
+        } catch (Exception e) {
+        	throw new RuntimeException(e);
+		}
+	}
 
-    RedmineManager getRedmineManager() {
+	void showProjectInfo() throws ValidationException {
+        WebConfig webConfig = (WebConfig) config;
+        if (!webConfig.getServerInfo().isHostSet()) {
+            throw new ValidationException("Host URL is not set");
+        }
+        if (webConfig.getProjectKey() == null || webConfig.getProjectKey().isEmpty()) {
+            throw new ValidationException("Please, provide the project key first");
+        }
+		notifyProjectLoaded(RedmineLoaders.loadProject(getRedmineManager(),
+				webConfig.getProjectKey()));
+	}
+
+	RedmineManager getRedmineManager() {
         RedmineManager mgr;
-        if (serverPanel.isUseAPIOptionSelected()) {
-            mgr = new RedmineManager(serverPanel.getServerURL(), serverPanel.getRedmineAPIKey());
+        final WebConfig wc = (WebConfig) config;
+        final WebServerInfo serverInfo = wc.getServerInfo();
+		if (serverInfo.isUseAPIKeyInsteadOfLoginPassword()) {
+            mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getApiKey());
         } else {
-            mgr = new RedmineManager(serverPanel.getServerURL());
-            mgr.setLogin(serverPanel.getLogin());
-            mgr.setPassword(serverPanel.getPassword());
+            mgr = new RedmineManager(serverInfo.getHost());
+            mgr.setLogin(serverInfo.getUserName());
+            mgr.setPassword(serverInfo.getPassword());
         }
         return mgr;
     }
 
-    @Override
-    public void notifyProjectLoaded(Project project) {
+    private void notifyProjectLoaded(Project project) {
         String msg;
         if (project == null) {
             msg = "<br>Project with the given key is not found";

@@ -3,7 +3,6 @@ package com.taskadapter.connector.jira;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.taskadapter.connector.common.ConfigUtils;
-import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.PluginFactory;
 
@@ -19,11 +18,6 @@ public class JiraFactory implements PluginFactory<JiraConfig> {
     @Override
     public Descriptor getDescriptor() {
         return JiraDescriptor.instance;
-    }
-    
-    @Override
-    public ProjectLoader getProjectLoader() {
-        return new JiraProjectLoader();
     }
     
 	@Override

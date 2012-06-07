@@ -5,8 +5,10 @@ import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.ChangePasswordDialog;
 import com.taskadapter.web.InputDialog;
 import com.taskadapter.web.WindowProvider;
+import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.service.Authenticator;
 import com.taskadapter.web.service.UserManager;
+import com.vaadin.data.Property;
 import com.vaadin.ui.*;
 
 import java.util.*;
@@ -102,6 +104,65 @@ public class EditorUtil {
         return button;
     }
 
+    // TODO review and refactor this. this method is too complex
+	public static Button createLookupButton(
+			final WindowProvider windowProvider, final String buttonLabel,
+			String description, final String windowTitle,
+			final String listTitle,
+			final DataProvider<List<? extends NamedKeyedObject>> operation,
+			final Property destination, final boolean useValue) {
+        Button button = new Button(buttonLabel);
+        button.setDescription(description);
+        final LookupResultListener listener = new LookupResultListener() {
+            @Override
+            public void notifyDone(List<? extends NamedKeyedObject> objects) {
+                if (!objects.isEmpty()) {
+                    showValues(destination, useValue, objects);
+                }
+            }
+
+            private void showValues(final Property destination, final boolean useValue,
+                                    List<? extends NamedKeyedObject> objects) {
+                final Map<String, String> map = new TreeMap<String, String>();
+                for (NamedKeyedObject o : objects) {
+                    map.put(o.getName(), o.getKey());
+                }
+
+                showList(windowProvider, windowTitle, listTitle, map.keySet(), new ValueListener() {
+                    @Override
+                    public void setValue(String value) {
+                        if (useValue) {
+                            destination.setValue(value);
+                        } else {
+                            String key = map.get(value);
+                            destination.setValue(key);
+                        }
+
+                    }
+                });
+            }
+        };
+        button.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                final List<? extends NamedKeyedObject> objects;
+                try {
+                    objects = operation.loadData();
+
+                    if (objects.isEmpty()) {
+                        windowProvider.getWindow().showNotification("No objects", "No objects have been found");
+                    }
+                    listener.notifyDone(objects);
+                } catch (ValidationException e) {
+                    EditorUtil.show(windowProvider.getWindow(), "Validation failed", e);
+                } catch (Exception e) {
+                    EditorUtil.show(windowProvider.getWindow(), "Operation failed", e);
+                }
+            }
+        });
+        return button;
+    }
+	
     public interface ValueListener {
         void setValue(String value);
     }

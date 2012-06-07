@@ -1,6 +1,12 @@
 package com.taskadapter.connector.github;
 
+import java.util.List;
+
 import com.taskadapter.connector.definition.ConnectorConfig;
+import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.connector.definition.WebConfig;
+import com.taskadapter.model.NamedKeyedObject;
+import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.FieldsMappingPanel;
 import com.taskadapter.web.configeditor.ProjectPanel;
 import com.taskadapter.web.configeditor.ServerPanel;
@@ -16,7 +22,14 @@ public class GithubEditor extends TwoColumnsConfigEditor {
 
     private void buildUI() {
         // top left and right
-        createServerAndProjectPanelOnTopDefault(new GithubProjectProcessor(this));
+        createServerAndProjectPanelOnTopDefault(new DataProvider<List<? extends NamedKeyedObject>>() {
+			@Override
+			public List<? extends NamedKeyedObject> loadData()
+					throws ValidationException {
+						return GithubLoaders.getProjects(((WebConfig) config)
+								.getServerInfo());
+			}
+		}, null, null);
 
         final ServerPanel serverPanel = getPanel(ServerPanel.class);
         serverPanel.disableServerURLField();

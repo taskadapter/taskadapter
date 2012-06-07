@@ -3,7 +3,6 @@ package com.taskadapter.connector.msp;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.taskadapter.connector.common.ConfigUtils;
-import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.PluginFactory;
 
@@ -21,12 +20,6 @@ public class MSPFactory implements PluginFactory<MSPConfig> {
         return MSPDescriptor.instance;
     }
     
-    @Override
-    public ProjectLoader getProjectLoader() {
-    	//TODO: why? I think, improper configs?
-        throw new RuntimeException("Operation is not implemented for MSP");
-    }
-
 	@Override
 	public JsonElement writeConfig(MSPConfig config) {
 		return ConfigUtils.createDefaultGson().toJsonTree(config);
