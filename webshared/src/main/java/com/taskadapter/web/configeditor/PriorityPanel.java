@@ -112,7 +112,7 @@ public class PriorityPanel extends Panel implements Validatable {
         setPriorities(newPriorities);
     }
 
-    public void setPriorities(Priorities items) {
+    private void setPriorities(Priorities items) {
     	data.updateContent(items);
     }
 
