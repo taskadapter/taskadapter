@@ -10,13 +10,13 @@ import java.util.HashMap;
  * @author Alexander Kulik
  */
 final class ConfigPanelContainer {
-    private HashMap<Class, Panel> map = new HashMap<Class, Panel>();
+    private HashMap<Class<?>, Panel> map = new HashMap<Class<?>, Panel>();
 
     public void add(Panel panel) {
         if (panel == null)
             throw new IllegalArgumentException("Panel cannot be null");
 
-        Class type = panel.getClass();
+        Class<?> type = panel.getClass();
         if (map.containsKey(type)) {
             // to prevent adding same panel twice
             throw new IllegalArgumentException("Panel with this Type was already added: " + type.getName());
@@ -24,11 +24,6 @@ final class ConfigPanelContainer {
         map.put(type, panel);
     }
 
-    public boolean contains(Class type) {
-        return map.containsKey(type);
-    }
-
-    @SuppressWarnings("unchecked")
     /**
      * return Panel instance of given Class or null if not exists
      */
@@ -36,7 +31,7 @@ final class ConfigPanelContainer {
         if (!map.containsKey(type)) {
             return null;
         }
-        return (T) map.get(type);
+        return type.cast(map.get(type));
     }
 
 }
