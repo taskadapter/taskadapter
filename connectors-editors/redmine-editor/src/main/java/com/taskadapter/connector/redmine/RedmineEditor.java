@@ -324,7 +324,7 @@ public class RedmineEditor extends TwoColumnsConfigEditor {
             buildUI(config);
         }
 
-        private void buildUI(RedmineConfig config) {
+        private void buildUI(final RedmineConfig config) {
             setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
             setHeight("157px");
 
@@ -338,8 +338,9 @@ public class RedmineEditor extends TwoColumnsConfigEditor {
             final TextField defaultTaskType = EditorUtil.addLabeledText(taskTypeLayout, "Default task type:",
                     "New tasks will be created with this 'tracker' (bug/task/support/feature/...)");
             defaultTaskType.setWidth("200px");
-			defaultTaskType.setPropertyDataSource(new MethodProperty<String>(
-					config, "defaultTaskType"));
+			final MethodProperty<String> taskTypeProperty = new MethodProperty<String>(
+					config, "defaultTaskType");
+			defaultTaskType.setPropertyDataSource(taskTypeProperty);
 
             Button showDefaultTaskType = EditorUtil.createLookupButton(
                     configEditor,
@@ -347,8 +348,18 @@ public class RedmineEditor extends TwoColumnsConfigEditor {
                     "Show list of available tracker types on the Redmine server",
                     "Select task type",
                     "List of available task types on the Redmine server",
-                    new LoadTrackersOperation(configEditor, new RedmineFactory()),
-                    defaultTaskType,
+                    new DataProvider<List<? extends NamedKeyedObject>>() {
+						@Override
+						public List<? extends NamedKeyedObject> loadData()
+								throws ValidationException {
+							try {
+								return RedmineLoaders.loadTrackers(config);
+							} catch (Exception e) {
+								throw new RuntimeException(e);
+							}
+						}
+					},
+                    taskTypeProperty,
                     true
             );
             taskTypeLayout.addComponent(showDefaultTaskType);

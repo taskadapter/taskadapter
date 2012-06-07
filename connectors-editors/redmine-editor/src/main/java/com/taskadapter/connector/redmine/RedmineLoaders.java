@@ -7,6 +7,7 @@ import org.redmine.ta.RedmineException;
 import org.redmine.ta.RedmineManager;
 import org.redmine.ta.beans.Project;
 import org.redmine.ta.beans.SavedQuery;
+import org.redmine.ta.beans.Tracker;
 
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
@@ -89,6 +90,25 @@ public class RedmineLoaders {
 				result.add(new NamedKeyedObjectImpl(Integer.toString(savedQuery
 						.getId()), savedQuery.getName()));
 			}
+		}
+		return result;
+	}
+	
+	public static List<? extends NamedKeyedObject> loadTrackers(
+			RedmineConfig config) throws Exception {
+		RedmineManager redmineManager = RedmineManagerFactory
+				.createRedmineManager(config.getServerInfo());
+		Project project = redmineManager
+				.getProjectByKey(config.getProjectKey());
+
+		List<Tracker> trackers = project.getTrackers();
+		List<NamedKeyedObject> result = new ArrayList<NamedKeyedObject>(
+				trackers.size());
+
+		// XXX refactor: we don't even need these IDs
+		for (Tracker tracker : trackers) {
+			result.add(new NamedKeyedObjectImpl(Integer.toString(tracker
+					.getId()), tracker.getName()));
 		}
 		return result;
 	}

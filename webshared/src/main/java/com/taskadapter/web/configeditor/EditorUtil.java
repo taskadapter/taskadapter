@@ -49,61 +49,6 @@ public class EditorUtil {
     }
 
     // TODO review and refactor this. this method is too complex
-    public static Button createLookupButton(final WindowProvider windowProvider, final String buttonLabel, String description,
-                                            final String windowTitle, final String listTitle,
-                                            final LookupOperation operation, final TextField destinationForKey, final boolean useValue) {
-        Button button = new Button(buttonLabel);
-        button.setDescription(description);
-        final LookupResultListener listener = new LookupResultListener() {
-            @Override
-            public void notifyDone(List<? extends NamedKeyedObject> objects) {
-                if (!objects.isEmpty()) {
-                    showValues(destinationForKey, useValue, objects);
-                }
-            }
-
-            private void showValues(final TextField destinationForKey, final boolean useValue,
-                                    List<? extends NamedKeyedObject> objects) {
-                final Map<String, String> map = new TreeMap<String, String>();
-                for (NamedKeyedObject o : objects) {
-                    map.put(o.getName(), o.getKey());
-                }
-
-                showList(windowProvider, windowTitle, listTitle, map.keySet(), new ValueListener() {
-                    @Override
-                    public void setValue(String value) {
-                        if (useValue) {
-                            destinationForKey.setValue(value);
-                        } else {
-                            String key = map.get(value);
-                            destinationForKey.setValue(key);
-                        }
-
-                    }
-                });
-            }
-        };
-        button.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                final List<? extends NamedKeyedObject> objects;
-                try {
-                    objects = operation.run();
-
-                    if (objects.isEmpty()) {
-                        windowProvider.getWindow().showNotification("No objects", "No objects have been found");
-                    }
-                    listener.notifyDone(objects);
-                } catch (ValidationException e) {
-                    EditorUtil.show(windowProvider.getWindow(), "Validation failed", e);
-                } catch (Exception e) {
-                    EditorUtil.show(windowProvider.getWindow(), "Operation failed", e);
-                }
-            }
-        });
-        return button;
-    }
-
     // TODO review and refactor this. this method is too complex
 	public static Button createLookupButton(
 			final WindowProvider windowProvider, final String buttonLabel,
