@@ -7,7 +7,6 @@ import com.vaadin.ui.Window;
 import java.util.Collection;
 
 public class ListSelectionDialog extends Window {
-    private String windowTitle;
     private String listTitle;
     private Collection<String> items;
     private EditorUtil.ValueListener valueListener;

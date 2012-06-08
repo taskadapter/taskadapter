@@ -8,6 +8,6 @@ import com.taskadapter.model.NamedKeyedObject;
 
 import java.util.List;
 
-public interface LookupResultListener {
+interface LookupResultListener {
     public void notifyDone(List<? extends NamedKeyedObject> objects);
 }

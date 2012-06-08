@@ -10,7 +10,6 @@ import com.vaadin.data.util.AbstractProperty;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.*;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
