@@ -124,14 +124,14 @@ public class MSPConfig extends ConnectorConfig {
     @Override
     protected Mappings generateDefaultFieldsMapping() {
     	final Mappings result = new Mappings();
-    	result.setMapping(FIELD.SUMMARY, false, null);
+    	result.setMapping(FIELD.SUMMARY, true, null);
 
         // TODO set default values in MSP..Provider instead of using [0]
         String defaultEstimatedTimeOption = MSPUtils.getEstimatedTimeOptions()[0];
     	result.setMapping(FIELD.ESTIMATED_TIME, true, defaultEstimatedTimeOption);
-    	result.setMapping(FIELD.DONE_RATIO, false, null);
-    	result.setMapping(FIELD.ASSIGNEE, false, null);
-    	result.setMapping(FIELD.DESCRIPTION, false, null);
+    	result.setMapping(FIELD.DONE_RATIO, true, null);
+    	result.setMapping(FIELD.ASSIGNEE, true, null);
+    	result.setMapping(FIELD.DESCRIPTION, true, null);
     	
         String defaultStartDateOption = MSPUtils.getStartDateOptions()[0];
     	result.setMapping(FIELD.START_DATE, false, defaultStartDateOption);
