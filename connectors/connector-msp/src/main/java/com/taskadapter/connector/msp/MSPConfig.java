@@ -125,6 +125,7 @@ public class MSPConfig extends ConnectorConfig {
     protected Mappings generateDefaultFieldsMapping() {
     	final Mappings result = new Mappings();
     	result.setMapping(FIELD.SUMMARY, true, null);
+        result.setMapping(FIELD.TASK_TYPE, true, MSPUtils.getDefaultTaskType());
 
         // TODO set default values in MSP..Provider instead of using [0]
         String defaultEstimatedTimeOption = MSPUtils.getEstimatedTimeOptions()[0];
