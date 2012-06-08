@@ -5,9 +5,11 @@ import java.util.List;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.model.NamedKeyedObject;
+import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
 import com.taskadapter.web.service.Services;
+import com.vaadin.data.Property;
 import com.vaadin.ui.*;
 
 /**
@@ -71,6 +73,8 @@ public abstract class TwoColumnsConfigEditor extends ConfigEditor {
 	 * Create [Server Panel] [Project Panel]
 	 */
 	protected void createServerAndProjectPanelOnTopDefault(
+			Property projectKey,
+			Property queryId,
 			DataProvider<List<? extends NamedKeyedObject>> projectProvider, 
 			SimpleCallback projectInfoCallback,
 			DataProvider<List<? extends NamedKeyedObject>> queryProvider) {
@@ -78,7 +82,7 @@ public abstract class TwoColumnsConfigEditor extends ConfigEditor {
 		addToLeftColumn(new ServerPanel(((WebConfig) config).getServerInfo()));
 
 		// right column
-		addToRightColumn(new ProjectPanel(this, 
+		addToRightColumn(new ProjectPanel(this, projectKey, queryId, 
 				projectProvider, projectInfoCallback, queryProvider));
 		addToRightColumn(createEmptyLabel("10px"));
 	}

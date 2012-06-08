@@ -9,6 +9,9 @@ import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.service.Authenticator;
 import com.taskadapter.web.service.UserManager;
 import com.vaadin.data.Property;
+import com.vaadin.data.Property.ConversionException;
+import com.vaadin.data.Property.ReadOnlyException;
+import com.vaadin.data.util.AbstractProperty;
 import com.vaadin.ui.*;
 
 import java.util.*;
@@ -151,4 +154,52 @@ public class EditorUtil {
         parentWindow.addWindow(passwordDialog);
     }
 
+    /**
+     * Wraps a nulls to an empty string.
+     * @param property property to wrap.
+     * @return wrapped property.
+     */
+    public static Property wrapNulls(final AbstractProperty property) {
+    	return new AbstractProperty() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void setValue(Object newValue) throws ReadOnlyException,
+					ConversionException {
+				if (newValue instanceof String && ((String) newValue).isEmpty())
+					property.setValue(null);
+				else
+					property.setValue(newValue);
+				fireValueChange();
+			}
+			
+			@Override
+			public void setReadOnly(boolean newStatus) {
+				property.setReadOnly(newStatus);
+				fireReadOnlyStatusChange();
+			}
+			
+			@Override
+			public boolean isReadOnly() {
+				return property.isReadOnly();
+			}
+			
+			@Override
+			public Object getValue() {
+				return property.getValue();
+			}
+			
+			@Override
+			public Class<?> getType() {
+				return property.getType();
+			}
+			
+			@Override
+			public String toString() {
+				final Object value = property.getValue();
+				return value == null ? "" : property.toString();
+			}
+		};
+    	
+    }
 }

@@ -1,16 +1,16 @@
 package com.taskadapter.connector.mantis.editor;
 
-import java.util.List;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.mantis.MantisConfig;
 import com.taskadapter.connector.mantis.MantisDescriptor;
-import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.callbacks.DataProvider;
+import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.FieldsMappingPanel;
 import com.taskadapter.web.configeditor.TwoColumnsConfigEditor;
+import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Services;
+import com.vaadin.data.util.MethodProperty;
 
 /**
  * @author Alexey Skorokhodov
@@ -22,17 +22,15 @@ public class MantisEditor extends TwoColumnsConfigEditor {
         buildUI();
     }
 
-    private void buildUI() {
+    @SuppressWarnings("unchecked")
+	private void buildUI() {
         // top left and right
-        createServerAndProjectPanelOnTopDefault(new DataProvider<List<? extends NamedKeyedObject>>() {
-			@Override
-			public List<? extends NamedKeyedObject> loadData()
-					throws ValidationException {
-						return MantisLoaders
-								.getProjects(((MantisConfig) config)
-										.getServerInfo());
-			}
-		}, null, null);
+        createServerAndProjectPanelOnTopDefault(
+        		EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
+        		EditorUtil.wrapNulls(new MethodProperty<String>(config, "queryId")),
+        		Interfaces.fromMethod(DataProvider.class, MantisLoaders.class, 
+        				 "getProjects", ((MantisConfig) config).getServerInfo())
+				, null, null);
 
         // left
         addToLeftColumn(new OtherMantisFieldsPanel((MantisConfig) config));

@@ -1,17 +1,17 @@
 package com.taskadapter.connector.github;
 
-import java.util.List;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebConfig;
-import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.callbacks.DataProvider;
+import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.FieldsMappingPanel;
 import com.taskadapter.web.configeditor.ProjectPanel;
 import com.taskadapter.web.configeditor.ServerPanel;
 import com.taskadapter.web.configeditor.TwoColumnsConfigEditor;
+import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Services;
+import com.vaadin.data.util.MethodProperty;
 
 public class GithubEditor extends TwoColumnsConfigEditor {
 
@@ -20,23 +20,20 @@ public class GithubEditor extends TwoColumnsConfigEditor {
         buildUI();
     }
 
-    private void buildUI() {
+    @SuppressWarnings("unchecked")
+	private void buildUI() {
         // top left and right
-        createServerAndProjectPanelOnTopDefault(new DataProvider<List<? extends NamedKeyedObject>>() {
-			@Override
-			public List<? extends NamedKeyedObject> loadData()
-					throws ValidationException {
-						return GithubLoaders.getProjects(((WebConfig) config)
-								.getServerInfo());
-			}
-		}, null, null);
+        createServerAndProjectPanelOnTopDefault(
+        		EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")), null,
+        		Interfaces.fromMethod(DataProvider.class, GithubLoaders.class, 
+        				  "getProjects", ((WebConfig) config).getServerInfo())
+        		, null, null);
 
         final ServerPanel serverPanel = getPanel(ServerPanel.class);
         serverPanel.disableServerURLField();
 
         final ProjectPanel projectPanel =  getPanel(ProjectPanel.class);
         projectPanel.setProjectKeyLabel("Repository ID");
-        projectPanel.hideQueryId();
 
         // left
         addToLeftColumn(new OtherGithubFieldsPanel(this));

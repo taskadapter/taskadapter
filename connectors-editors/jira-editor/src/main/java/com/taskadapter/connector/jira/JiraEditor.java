@@ -11,7 +11,9 @@ import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
 import com.taskadapter.web.configeditor.*;
+import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Services;
+import com.vaadin.data.util.MethodProperty;
 
 /**
  * @author Alexey Skorokhodov
@@ -26,37 +28,23 @@ public class JiraEditor extends TwoColumnsConfigEditor {
         buildUI();
     }
 
-    private void buildUI() {
+    @SuppressWarnings("unchecked")
+	private void buildUI() {
         // top left and right columns
-        createServerAndProjectPanelOnTopDefault(new DataProvider<List<? extends NamedKeyedObject>>() {
-			@Override
-			public List<? extends NamedKeyedObject> loadData()
-					throws ValidationException {
-				return JiraLoaders.loadProjects(getJiraConfig().getServerInfo());
-			}
-		}, new SimpleCallback() {
-			@Override
-			public void callBack() throws ValidationException {
-				showProjectInfo();
-			}
-		}, new DataProvider<List<? extends NamedKeyedObject>>() {
-			@Override
-			public List<? extends NamedKeyedObject> loadData()
-					throws ValidationException {
-				return loadQueries();
-			}
-		});
+        createServerAndProjectPanelOnTopDefault(
+        		EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
+        		EditorUtil.wrapNulls(new MethodProperty<Integer>(config, "queryId")),
+        		Interfaces.fromMethod(DataProvider.class, JiraLoaders.class, 
+        				"loadProjects", getJiraConfig().getServerInfo()),
+        		Interfaces.fromMethod(SimpleCallback.class, this, "loadProjectInfo"),
+        		Interfaces.fromMethod(DataProvider.class, this, "loadQueries"));
 
         // left column
         jiraFieldsPanel = new OtherJiraFieldsPanel(this, getJiraConfig());
         addToLeftColumn(jiraFieldsPanel);
 
-		PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(), new DataProvider<Priorities>() {
-			@Override
-			public Priorities loadData() throws ValidationException {
-				return loadJiraPriorities();
-			}
-		});
+		PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(),
+				Interfaces.fromMethod(DataProvider.class, this, "loadJiraPriorities"));
         addToLeftColumn(priorityPanel);
 
         // right column
@@ -80,7 +68,7 @@ public class JiraEditor extends TwoColumnsConfigEditor {
      * Shows a project info.
      * @throws ValidationException 
      */
-    void showProjectInfo() throws ValidationException {
+    void loadProjectInfo() throws ValidationException {
         WebConfig webConfig = (WebConfig) config;
         if (!webConfig.getServerInfo().isHostSet()) {
             throw new ValidationException("Host URL is not set");

@@ -2,12 +2,11 @@ package com.taskadapter.web.configeditor;
 
 import com.google.common.base.Strings;
 import com.taskadapter.connector.definition.ValidationException;
-import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.model.NamedKeyedObject;
+import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
-import com.vaadin.data.util.AbstractProperty;
-import com.vaadin.data.util.MethodProperty;
+import com.vaadin.data.Property;
 import com.vaadin.ui.*;
 
 import java.util.List;
@@ -21,7 +20,6 @@ public class ProjectPanel extends Panel implements Validatable {
     private static final String DEFAULT_PANEL_CAPTION = "Project Info";
     private static final int COLUMNS_NUMBER = 2;
 
-    private final ConfigEditor editor;
     private TextField projectKey;
     private TextField queryId;
 
@@ -44,13 +42,41 @@ public class ProjectPanel extends Panel implements Validatable {
      * Query provider.
      */
     private final DataProvider<List<? extends NamedKeyedObject>> queryProvider;
+    
+    /**
+     * Project key property.
+     */
+    private final Property projectKeyProperty;
+    
+    /**
+     * Query id property.
+     */
+    private final Property queryIdProperty;
+    
+    /**
+     * Window provider.
+     */
+    private final WindowProvider windowProvider;
 
-	public ProjectPanel(ConfigEditor editor, 
+    /**
+     * Creates a new project panel.
+     * @param windowProvider window provider.
+     * @param projectKey project key, required.
+     * @param queryId query id, optional. 
+     * @param projectProvider project provider, optional.
+     * @param projectInfoCallback project info callback, optional.
+     * @param queryProvider query provider, optional.
+     */
+	public ProjectPanel(WindowProvider windowProvider,
+			Property projectKey,
+			Property queryId,
 			DataProvider<List<? extends NamedKeyedObject>> projectProvider,
 			SimpleCallback projectInfoCallback,
 			DataProvider<List<? extends NamedKeyedObject>> queryProvider) {
         super(DEFAULT_PANEL_CAPTION);
-        this.editor = editor;
+        this.windowProvider = windowProvider;
+		this.projectKeyProperty = projectKey;
+		this.queryIdProperty = queryId;
 		this.projectProvider = projectProvider;
 		this.projectInfoCallback = projectInfoCallback;
 		this.queryProvider = queryProvider;
@@ -73,9 +99,6 @@ public class ProjectPanel extends Panel implements Validatable {
         gridLayout.addComponent(keyHorizontalLayout);
 
         projectKey = new TextField();
-		final WebConfig config = (WebConfig) editor.getConfig();
-		final MethodProperty<String> projectKeyProperty = new MethodProperty<String>(
-				config, "projectKey");
 		projectKey.setPropertyDataSource(projectKeyProperty);
         keyHorizontalLayout.addComponent(projectKey);
         projectKey.setWidth(TEXT_AREA_WIDTH);
@@ -93,7 +116,7 @@ public class ProjectPanel extends Panel implements Validatable {
         keyHorizontalLayout.addComponent(infoButton);
 
         Button projectKeyButton = EditorUtil.createLookupButton(
-                editor,
+                windowProvider,
                 "...",
                 "Show list of available projects on the server.",
                 "Select project",
@@ -105,70 +128,44 @@ public class ProjectPanel extends Panel implements Validatable {
         projectKeyButton.setEnabled(projectProvider != null);
         keyHorizontalLayout.addComponent(projectKeyButton);
 
-        queryIdLabel = new Label("Query ID:");
-        gridLayout.addComponent(queryIdLabel);
-        gridLayout.setComponentAlignment(queryIdLabel, Alignment.MIDDLE_LEFT);
 
-        final HorizontalLayout idHorizontalLayout = new HorizontalLayout();
-        gridLayout.addComponent(idHorizontalLayout);
+        if (queryIdProperty != null) {
+            queryIdLabel = new Label("Query ID:");
+            gridLayout.addComponent(queryIdLabel);
+            gridLayout.setComponentAlignment(queryIdLabel, Alignment.MIDDLE_LEFT);
 
-        queryId = new TextField();
-        queryId.setDescription("Custom query/filter ID (number). You need to create a query on the server before accessing it from here.\n"
-                + "Read help for more details.");
-        idHorizontalLayout.addComponent(queryId);
-        queryId.setWidth(TEXT_AREA_WIDTH);
-		final AbstractProperty queryIdProperty = new AbstractProperty() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void setValue(Object newValue) throws ReadOnlyException,
-					ConversionException {
-				final String strValue = newValue.toString();
-				if (strValue.isEmpty()) {
-					config.setQueryId(null);
-				} else {
-					try {
-						config.setQueryId(Integer.valueOf(strValue));
-					} catch (NumberFormatException e) {
-						throw new ConversionException(e);
-					}
-					fireValueChange();
-				}
-			}
-			
-			@Override
-			public Object getValue() {
-				return config.getQueryId() == null ? "" : config.getQueryId();
-			}
-			
-			@Override
-			public Class<?> getType() {
-				return String.class;
-			}
-		};
-		queryId.setPropertyDataSource(queryIdProperty);
-
-        showQueriesButton = EditorUtil.createLookupButton(
-                editor,
-                "...",
-                "Show available saved queries on the server.",
-                "Select Query",
-                "List of saved queries on the server",
-                queryProvider,
-                queryIdProperty,
-                false
-        );
-        // TODO maybe set "enabled" basing on whether or not loadSavedQueriesOperation is NULL?
-        // then can delete the whole "features" mechanism
-        showQueriesButton.setEnabled(queryProvider != null);
-        idHorizontalLayout.addComponent(showQueriesButton);
+            final HorizontalLayout idHorizontalLayout = new HorizontalLayout();
+            gridLayout.addComponent(idHorizontalLayout);
+	        queryId = new TextField();
+	        queryId.setDescription("Custom query/filter ID (number). You need to create a query on the server before accessing it from here.\n"
+	                + "Read help for more details.");
+	        idHorizontalLayout.addComponent(queryId);
+	        queryId.setWidth(TEXT_AREA_WIDTH);
+			queryId.setPropertyDataSource(queryIdProperty);
+	
+	        showQueriesButton = EditorUtil.createLookupButton(
+	                windowProvider,
+	                "...",
+	                "Show available saved queries on the server.",
+	                "Select Query",
+	                "List of saved queries on the server",
+	                queryProvider,
+	                queryIdProperty,
+	                false
+	        );
+	        // TODO maybe set "enabled" basing on whether or not loadSavedQueriesOperation is NULL?
+	        // then can delete the whole "features" mechanism
+	        showQueriesButton.setEnabled(queryProvider != null);
+	        idHorizontalLayout.addComponent(showQueriesButton);
+        }
     }
 
     private void loadProject() {
         try {
         	projectInfoCallback.callBack();
         } catch (ValidationException e) {
-            editor.getWindow().showNotification("Please, update the settings", e.getMessage());
+			windowProvider.getWindow().showNotification(
+					"Please, update the settings", e.getMessage());
         }
     }
 
@@ -177,17 +174,11 @@ public class ProjectPanel extends Panel implements Validatable {
     }
 
     private String getQueryId() {
-        return (String) queryId.getValue();
+		return queryId == null ? null : (String) queryId.getValue();
     }
 
     public void setProjectKeyLabel(String text) {
         projectKeyLabel.setValue(text);
-    }
-
-    public void hideQueryId() {
-        queryId.setVisible(false);
-        queryIdLabel.setVisible(false);
-        showQueriesButton.setVisible(false);
     }
 
     @Override

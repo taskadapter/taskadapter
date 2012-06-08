@@ -8,6 +8,7 @@ import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
 import com.taskadapter.web.configeditor.*;
+import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Services;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.MethodProperty;
@@ -35,7 +36,8 @@ public class RedmineEditor extends TwoColumnsConfigEditor {
         buildUI();
     }
 
-    private void buildUI() {
+    @SuppressWarnings("unchecked")
+	private void buildUI() {
 
         serverPanel = new RedmineServerPanel();
         addToLeftColumn(serverPanel);
@@ -46,26 +48,11 @@ public class RedmineEditor extends TwoColumnsConfigEditor {
         addToLeftColumn(otherPanel);
 
 		addToRightColumn(new ProjectPanel(this,
-				new DataProvider<List<? extends NamedKeyedObject>>() {
-					@Override
-					public List<? extends NamedKeyedObject> loadData()
-							throws ValidationException {
-						return RedmineLoaders
-								.getProjects(((RedmineConfig) config)
-										.getServerInfo());
-					}
-				}, new SimpleCallback() {
-					@Override
-					public void callBack() throws ValidationException {
-						showProjectInfo();
-					}
-				}, new DataProvider<List<? extends NamedKeyedObject>>() {
-					@Override
-					public List<? extends NamedKeyedObject> loadData()
-							throws ValidationException {
-						return loadQueries();
-					}
-				}));
+				EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
+				EditorUtil.wrapNulls(new MethodProperty<Integer>(config, "queryId")),
+				Interfaces.fromMethod(DataProvider.class, RedmineLoaders.class, "getProjects", ((RedmineConfig) config).getServerInfo()),
+				Interfaces.fromMethod(SimpleCallback.class, this, "showProjectInfo"), 
+				Interfaces.fromMethod(DataProvider.class, this, "loadQueries")));
         addToRightColumn(new FieldsMappingPanel(RedmineDescriptor.instance.getAvailableFields(), config.getFieldMappings()));
     }
     
