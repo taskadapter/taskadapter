@@ -365,7 +365,9 @@ public class RedmineEditor extends TwoColumnsConfigEditor {
             taskTypeLayout.addComponent(showDefaultTaskType);
             addComponent(taskTypeLayout);
 
-            addComponent(createFindUsersElementIfNeeded());
+			addComponent(Editors
+					.createFindUsersElement(new MethodProperty<Boolean>(config,
+							"findUserByName")));
 
             final CheckBox saveRelations = new CheckBox(SAVE_ISSUE_LABEL);
 			saveRelations.setPropertyDataSource(new MethodProperty<Boolean>(

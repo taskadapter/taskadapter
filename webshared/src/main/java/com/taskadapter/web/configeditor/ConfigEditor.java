@@ -14,7 +14,6 @@ import java.util.List;
  * @author Alexey Skorokhodov
  */
 public abstract class ConfigEditor extends VerticalLayout implements WindowProvider {
-    private CheckBox findUserByName;
     private List<Validatable> toValidate = new ArrayList<Validatable>();
     
     // TODO the parent editor class must save / load data itself instead of letting the children do this
@@ -62,20 +61,6 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         
         component.addComponent(panel);
         panelContainer.add(panel);
-    }
-
-    public CheckBox createFindUsersElementIfNeeded() {
-        if (findUserByName == null) {
-            findUserByName = new CheckBox("Find users based on assignee's name");
-            findUserByName.setDescription("This option can be useful when you need to export a new MSP project file to Redmine/Jira/Mantis/....\n" +
-                    "Task Adapter can load the system's users by resource names specified in the MSP file\n" +
-                    "and assign the new tasks to them.\n" +
-                    "Note: this operation usually requires 'Admin' permission in the system.");
-			findUserByName.setPropertyDataSource(new MethodProperty<Boolean>(
-					config, "findUserByName"));
-        }
-
-        return findUserByName;
     }
 
     public void validateAll() throws ValidationException {
