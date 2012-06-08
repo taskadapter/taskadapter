@@ -13,6 +13,7 @@
         <!-- this will be the root folder in the packaged ZIP file -->
         <distributive.root.folder>taskadapter</distributive.root.folder>
         <target.folder>target/${distributive.root.folder}</target.folder>
+        <jetty.version>8.1.4.v20120524</jetty.version>
     </properties>
 
     <build>
@@ -178,17 +179,17 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>8.1.0.RC2</version>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
-            <version>8.1.0.RC2</version>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.2</version>
+            <version>4.10</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
