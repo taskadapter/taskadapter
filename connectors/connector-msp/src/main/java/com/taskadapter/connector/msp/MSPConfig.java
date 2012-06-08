@@ -129,7 +129,6 @@ public class MSPConfig extends ConnectorConfig {
         // TODO set default values in MSP..Provider instead of using [0]
         String defaultEstimatedTimeOption = MSPUtils.getEstimatedTimeOptions()[0];
     	result.setMapping(FIELD.ESTIMATED_TIME, true, defaultEstimatedTimeOption);
-    	result.setMapping(FIELD.TASK_TYPE, true, MSPUtils.getDefaultTaskType());
     	result.setMapping(FIELD.DONE_RATIO, false, null);
     	result.setMapping(FIELD.ASSIGNEE, false, null);
     	result.setMapping(FIELD.DESCRIPTION, false, null);
@@ -147,8 +146,8 @@ public class MSPConfig extends ConnectorConfig {
          *  and got "issue with id... not found".
          *  it's better to have this option set to FALSE by default to avoid the confusion.
          */
-    	result.setMapping(FIELD.SUMMARY, false, MSPUtils.getDefaultRemoteIdMapping());
-    	result.setMapping(FIELD.SUMMARY, false, MSPUtils.getDefaultTaskStatus());
+    	result.setMapping(FIELD.REMOTE_ID, false, MSPUtils.getDefaultRemoteIdMapping());
+    	result.setMapping(FIELD.TASK_STATUS, false, MSPUtils.getDefaultTaskStatus());
 
 
         return result;
