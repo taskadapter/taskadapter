@@ -160,7 +160,7 @@ public final class Mappings {
 	public void addField(FIELD field) {
 		if (haveMappingFor(field))
 			return;
-		selected.put(field, false);
+		selected.put(field, true);
 	}
 
 	@Override
