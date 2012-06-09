@@ -47,6 +47,14 @@ public class GithubConfig extends WebConfig {
         this.issueKeyword = issueKeyword;
     }
 
+    public String getQueryString() {
+        return queryString;
+    }
+
+    public void setQueryString(String queryString) {
+        this.queryString = queryString;
+    }
+
     @Override
     protected Priorities generateDefaultPriorities() {
         return new Priorities(new HashMap<String, Integer>() {

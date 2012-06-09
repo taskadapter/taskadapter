@@ -26,7 +26,8 @@ public class GithubEditor extends TwoColumnsConfigEditor {
         // top left and right
         final WebServerInfo serverInfo = ((WebConfig) config).getServerInfo();
 		createServerAndProjectPanelOnTopDefault(
-        		EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")), null,
+        		EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
+                EditorUtil.wrapNulls(new MethodProperty<String>(config, "queryString")),
         		Interfaces.fromMethod(DataProvider.class, GithubLoaders.class, 
         				  "getProjects", serverInfo)
         		, null, null);

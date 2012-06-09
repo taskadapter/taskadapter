@@ -155,6 +155,7 @@ public class ProjectPanel extends Panel implements Validatable {
                     false
             );
 
+            setQueryLabels();
             // TODO maybe set "enabled" basing on whether or not loadSavedQueriesOperation is NULL?
             // then can delete the whole "features" mechanism
             showQueriesButton.setEnabled(queryProvider != null);
@@ -163,7 +164,7 @@ public class ProjectPanel extends Panel implements Validatable {
     }
 
     private boolean isQueryInteger() {
-        return queryValueProperty.getClass().equals(Integer.class);
+        return queryValueProperty.getType().equals(Integer.class);
     }
 
     private void setQueryLabels() {
@@ -201,7 +202,7 @@ public class ProjectPanel extends Panel implements Validatable {
 
     @Override
     public void validate() throws ValidationException {
-        if (!Strings.isNullOrEmpty(getQueryValue())) {
+        if (!Strings.isNullOrEmpty(getQueryValue()) && isQueryInteger()) {
             try {
                 Integer.parseInt(getQueryValue());
             } catch (NumberFormatException e) {
