@@ -89,12 +89,17 @@ public final class Interfaces {
 			public Object invoke(Object proxy, Method method, Object[] args)
 					throws Throwable {
 				try {
-					final Object[] newArgs = new Object[extraArgs.length
-							+ args.length];
-					System.arraycopy(extraArgs, 0, newArgs, 0, extraArgs.length);
-					System.arraycopy(args, 0, newArgs, extraArgs.length,
-							args.length);
-					return sourceMethod.invoke(target, args);
+					final Object[] newArgs;
+					if (args != null) {
+						newArgs = new Object[extraArgs.length + args.length];
+						System.arraycopy(extraArgs, 0, newArgs, 0,
+								extraArgs.length);
+						System.arraycopy(args, 0, newArgs, extraArgs.length,
+								args.length);
+					} else {
+						newArgs = extraArgs;
+					}
+					return sourceMethod.invoke(target, newArgs);
 				} catch (InvocationTargetException e) {
 					throw e.getTargetException();
 				}

@@ -144,11 +144,13 @@ public class RedmineEditor extends TwoColumnsConfigEditor {
             super(PANEL_CAPTION);
             buildUI();
             addListener();
-            setDataToForm();
         }
 
         private void buildUI() {
             setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
+            
+			final WebServerInfo serverInfo = ((RedmineConfig) config)
+					.getServerInfo();
 
             GridLayout layout = new GridLayout();
             addComponent(layout);
@@ -172,6 +174,8 @@ public class RedmineEditor extends TwoColumnsConfigEditor {
                     checkProtocol();
                 }
             });
+			serverURL.setPropertyDataSource(new MethodProperty<String>(
+					serverInfo, "host"));            
 
             layout.addComponent(serverURL, 1, 0);
             
@@ -202,6 +206,8 @@ public class RedmineEditor extends TwoColumnsConfigEditor {
             layout.addComponent(redmineAPIKey, 1, currentRow);
             layout.setComponentAlignment(redmineAPIKey, Alignment.MIDDLE_LEFT);
             currentRow++;
+			redmineAPIKey.setPropertyDataSource(new MethodProperty<String>(
+					serverInfo, "apiKey"));
 
             Label loginLabel = new Label("Login:");
             layout.addComponent(loginLabel, 0, currentRow);
@@ -209,6 +215,8 @@ public class RedmineEditor extends TwoColumnsConfigEditor {
 
             login = new TextField();
             login.addStyleName("server-panel-textfield");
+			login.setPropertyDataSource(new MethodProperty<String>(serverInfo,
+					"userName"));
             layout.addComponent(login, 1, currentRow);
             layout.setComponentAlignment(login, Alignment.MIDDLE_LEFT);
             currentRow++;
@@ -219,8 +227,17 @@ public class RedmineEditor extends TwoColumnsConfigEditor {
 
             password = new PasswordField();
             password.addStyleName("server-panel-textfield");
+			password.setPropertyDataSource(new MethodProperty<String>(serverInfo,
+					"password"));
             layout.addComponent(password, 1, currentRow);
             layout.setComponentAlignment(password, Alignment.MIDDLE_LEFT);
+
+            if (serverInfo.isUseAPIKeyInsteadOfLoginPassword()) {
+                authOptionsGroup.select(USE_API);
+            } else {
+                authOptionsGroup.select(USE_LOGIN);
+            }
+            setAuthOptionsState(serverInfo.isUseAPIKeyInsteadOfLoginPassword());
         }
 
         private Label createEmptyLabel(String height) {
@@ -234,7 +251,9 @@ public class RedmineEditor extends TwoColumnsConfigEditor {
             authOptionsGroup.addListener(new Property.ValueChangeListener() {
                 @Override
                 public void valueChange(Property.ValueChangeEvent event) {
-                    setAuthOptionsState(isUseAPIOptionSelected());
+                    final boolean useAPIOptionSelected = isUseAPIOptionSelected();
+					setAuthOptionsState(useAPIOptionSelected);
+                    ((RedmineConfig) config).getServerInfo().setUseAPIKeyInsteadOfLoginPassword(useAPIOptionSelected);
                 }
             });
         }
@@ -243,23 +262,6 @@ public class RedmineEditor extends TwoColumnsConfigEditor {
             redmineAPIKey.setEnabled(useAPIKey);
             login.setEnabled(!useAPIKey);
             password.setEnabled(!useAPIKey);
-        }
-
-        private void setDataToForm() {
-            RedmineConfig redmineConfig = (RedmineConfig) config;
-
-            serverURL.setValue(redmineConfig.getServerInfo().getHost());
-            WebServerInfo serverInfo = redmineConfig.getServerInfo();
-            setIfNotNull(serverURL, serverInfo.getHost());
-            setIfNotNull(redmineAPIKey, serverInfo.getApiKey());
-            setIfNotNull(login, serverInfo.getUserName());
-            setIfNotNull(password, serverInfo.getPassword());
-            if (serverInfo.isUseAPIKeyInsteadOfLoginPassword()) {
-                authOptionsGroup.select(USE_API);
-            } else {
-                authOptionsGroup.select(USE_LOGIN);
-            }
-            setAuthOptionsState(serverInfo.isUseAPIKeyInsteadOfLoginPassword());
         }
 
         public String getServerURL() {
