@@ -21,38 +21,38 @@ public class ProjectPanel extends Panel implements Validatable {
     private static final int COLUMNS_NUMBER = 2;
 
     private TextField projectKey;
-    private TextField queryId;
+    private TextField queryValue;
 
     private Label projectKeyLabel;
-    private Label queryIdLabel;
+    private Label queryValueLabel;
     private Button showQueriesButton;
     private static final String TEXT_AREA_WIDTH = "120px";
-    
+
     /**
      * Project provider.
      */
     private final DataProvider<List<? extends NamedKeyedObject>> projectProvider;
-    
+
     /**
      * "Show project info" callback.
      */
     private final SimpleCallback projectInfoCallback;
-    
+
     /**
      * Query provider.
      */
     private final DataProvider<List<? extends NamedKeyedObject>> queryProvider;
-    
+
     /**
      * Project key property.
      */
     private final Property projectKeyProperty;
-    
+
     /**
      * Query id property.
      */
-    private final Property queryIdProperty;
-    
+    private final Property queryValueProperty;
+
     /**
      * Window provider.
      */
@@ -60,26 +60,27 @@ public class ProjectPanel extends Panel implements Validatable {
 
     /**
      * Creates a new project panel.
-     * @param windowProvider window provider.
-     * @param projectKey project key, required.
-     * @param queryId query id, optional. 
-     * @param projectProvider project provider, optional.
+     *
+     * @param windowProvider      window provider.
+     * @param projectKey          project key, required.
+     * @param queryValue          query id, optional.
+     * @param projectProvider     project provider, optional.
      * @param projectInfoCallback project info callback, optional.
-     * @param queryProvider query provider, optional.
+     * @param queryProvider       query provider, optional.
      */
-	public ProjectPanel(WindowProvider windowProvider,
-			Property projectKey,
-			Property queryId,
-			DataProvider<List<? extends NamedKeyedObject>> projectProvider,
-			SimpleCallback projectInfoCallback,
-			DataProvider<List<? extends NamedKeyedObject>> queryProvider) {
+    public ProjectPanel(WindowProvider windowProvider,
+                        Property projectKey,
+                        Property queryValue,
+                        DataProvider<List<? extends NamedKeyedObject>> projectProvider,
+                        SimpleCallback projectInfoCallback,
+                        DataProvider<List<? extends NamedKeyedObject>> queryProvider) {
         super(DEFAULT_PANEL_CAPTION);
         this.windowProvider = windowProvider;
-		this.projectKeyProperty = projectKey;
-		this.queryIdProperty = queryId;
-		this.projectProvider = projectProvider;
-		this.projectInfoCallback = projectInfoCallback;
-		this.queryProvider = queryProvider;
+        this.projectKeyProperty = projectKey;
+        this.queryValueProperty = queryValue;
+        this.projectProvider = projectProvider;
+        this.projectInfoCallback = projectInfoCallback;
+        this.queryProvider = queryProvider;
         buildUI();
     }
 
@@ -99,7 +100,7 @@ public class ProjectPanel extends Panel implements Validatable {
         gridLayout.addComponent(keyHorizontalLayout);
 
         projectKey = new TextField();
-		projectKey.setPropertyDataSource(projectKeyProperty);
+        projectKey.setPropertyDataSource(projectKeyProperty);
         keyHorizontalLayout.addComponent(projectKey);
         projectKey.setWidth(TEXT_AREA_WIDTH);
 
@@ -129,43 +130,60 @@ public class ProjectPanel extends Panel implements Validatable {
         keyHorizontalLayout.addComponent(projectKeyButton);
 
 
-        if (queryIdProperty != null) {
-            queryIdLabel = new Label("Query ID:");
-            gridLayout.addComponent(queryIdLabel);
-            gridLayout.setComponentAlignment(queryIdLabel, Alignment.MIDDLE_LEFT);
+        if (queryValueProperty != null) {
+            queryValueLabel = new Label("Query ID:");
+            gridLayout.addComponent(queryValueLabel);
+            gridLayout.setComponentAlignment(queryValueLabel, Alignment.MIDDLE_LEFT);
 
-            final HorizontalLayout idHorizontalLayout = new HorizontalLayout();
-            gridLayout.addComponent(idHorizontalLayout);
-	        queryId = new TextField();
-	        queryId.setDescription("Custom query/filter ID (number). You need to create a query on the server before accessing it from here.\n"
-	                + "Read help for more details.");
-	        idHorizontalLayout.addComponent(queryId);
-	        queryId.setWidth(TEXT_AREA_WIDTH);
-			queryId.setPropertyDataSource(queryIdProperty);
-	
-	        showQueriesButton = EditorUtil.createLookupButton(
-	                windowProvider,
-	                "...",
-	                "Show available saved queries on the server.",
-	                "Select Query",
-	                "List of saved queries on the server",
-	                queryProvider,
-	                queryIdProperty,
-	                false
-	        );
-	        // TODO maybe set "enabled" basing on whether or not loadSavedQueriesOperation is NULL?
-	        // then can delete the whole "features" mechanism
-	        showQueriesButton.setEnabled(queryProvider != null);
-	        idHorizontalLayout.addComponent(showQueriesButton);
+            final HorizontalLayout queryHorizontalLayout = new HorizontalLayout();
+            gridLayout.addComponent(queryHorizontalLayout);
+            queryValue = new TextField();
+            queryValue.setDescription("Custom query/filter ID (number). You need to create a query on the server before accessing it from here.\n"
+                    + "Read help for more details.");
+            queryHorizontalLayout.addComponent(queryValue);
+            queryValue.setWidth(TEXT_AREA_WIDTH);
+            queryValue.setPropertyDataSource(queryValueProperty);
+
+            showQueriesButton = EditorUtil.createLookupButton(
+                    windowProvider,
+                    "...",
+                    "Show available saved queries on the server.",
+                    "Select Query",
+                    "List of saved queries on the server",
+                    queryProvider,
+                    queryValueProperty,
+                    false
+            );
+
+            // TODO maybe set "enabled" basing on whether or not loadSavedQueriesOperation is NULL?
+            // then can delete the whole "features" mechanism
+            showQueriesButton.setEnabled(queryProvider != null);
+            queryHorizontalLayout.addComponent(showQueriesButton);
+        }
+    }
+
+    private boolean isQueryInteger() {
+        return queryValueProperty.getClass().equals(Integer.class);
+    }
+
+    private void setQueryLabels() {
+        if (isQueryInteger()) {
+            queryValueLabel.setValue("Query ID:");
+            queryValue.setDescription("Custom query/filter ID (number). You need to create a query on the server before accessing it from here.\n"
+                    + "Read help for more details.");
+        } else {
+            queryValueLabel.setValue("Query:");
+            queryValue.setDescription("You can set query string to filter issues.\n"
+                    + "Read help for more details.");
         }
     }
 
     private void loadProject() {
         try {
-        	projectInfoCallback.callBack();
+            projectInfoCallback.callBack();
         } catch (ValidationException e) {
-			windowProvider.getWindow().showNotification(
-					"Please, update the settings", e.getMessage());
+            windowProvider.getWindow().showNotification(
+                    "Please, update the settings", e.getMessage());
         }
     }
 
@@ -173,8 +191,8 @@ public class ProjectPanel extends Panel implements Validatable {
         return (String) projectKey.getValue();
     }
 
-    private String getQueryId() {
-		return queryId == null ? null : (String) queryId.getValue();
+    private String getQueryValue() {
+        return queryValue == null ? null : (String) queryValue.getValue();
     }
 
     public void setProjectKeyLabel(String text) {
@@ -183,9 +201,9 @@ public class ProjectPanel extends Panel implements Validatable {
 
     @Override
     public void validate() throws ValidationException {
-        if (!Strings.isNullOrEmpty(getQueryId())) {
+        if (!Strings.isNullOrEmpty(getQueryValue())) {
             try {
-                Integer.parseInt(getQueryId());
+                Integer.parseInt(getQueryValue());
             } catch (NumberFormatException e) {
                 throw new ValidationException("Query Id must be a number");
             }
