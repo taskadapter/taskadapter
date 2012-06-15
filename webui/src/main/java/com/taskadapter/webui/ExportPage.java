@@ -1,5 +1,6 @@
 package com.taskadapter.webui;
 
+import com.google.common.base.Strings;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.common.TransportException;
@@ -13,6 +14,7 @@ import com.vaadin.Application;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import org.apache.commons.codec.binary.StringUtils;
 
 import java.io.File;
 import java.net.UnknownHostException;
@@ -144,7 +146,7 @@ public class ExportPage extends ActionPage {
     }
 
     private void addDownloadButtonIfServerMode(String targetFileAbsolutePath) {
-        if (!services.getSettingsManager().isTAWorkingOnLocalMachine()) {
+        if (!services.getSettingsManager().isTAWorkingOnLocalMachine() && !Strings.isNullOrEmpty(targetFileAbsolutePath)) {
             addDownloadButton(targetFileAbsolutePath);
         }
     }
