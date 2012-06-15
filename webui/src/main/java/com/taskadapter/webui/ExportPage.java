@@ -14,16 +14,12 @@ import com.vaadin.Application;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import org.apache.commons.codec.binary.StringUtils;
 
 import java.io.File;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class ExportPage extends ActionPage {
     private VerticalLayout donePanel = new VerticalLayout();
 
