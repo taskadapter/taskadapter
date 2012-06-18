@@ -13,6 +13,7 @@ public class GithubConfig extends WebConfig {
 
     private String issueState;
     private String issueKeyword;
+    private String queryString;
 
     public GithubConfig() {
         super(DEFAULT_LABEL);
@@ -44,6 +45,14 @@ public class GithubConfig extends WebConfig {
 
     public void setIssueKeyword(String issueKeyword) {
         this.issueKeyword = issueKeyword;
+    }
+
+    public String getQueryString() {
+        return queryString;
+    }
+
+    public void setQueryString(String queryString) {
+        this.queryString = queryString;
     }
 
     @Override
