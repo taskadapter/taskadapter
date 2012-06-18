@@ -45,7 +45,16 @@
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
         </dependency>
-		</dependencies>
+	</dependencies>
+
+    <scm>
+        <connection>scm:git:git@git.assembla.com:taskadapter.2.git</connection>
+        <!-- "developerConnection" is required for Maven Release plugin. -->
+        <developerConnection>scm:git:git@git.assembla.com:taskadapter.2.git</developerConnection>
+        <tag>HEAD</tag>
+        <!-- A publicly browsable repository. For example, via ViewCVS -->
+        <url>https://www.assembla.com/code/taskadapter/git-2/nodes</url>
+    </scm>
 
     <repositories>
         <repository>
