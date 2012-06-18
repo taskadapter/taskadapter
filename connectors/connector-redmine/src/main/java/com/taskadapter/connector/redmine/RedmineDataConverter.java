@@ -5,7 +5,7 @@ import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
-import org.redmine.ta.beans.*;
+import com.taskadapter.redmineapi.bean.*;
 
 import java.util.ArrayList;
 import java.util.List;

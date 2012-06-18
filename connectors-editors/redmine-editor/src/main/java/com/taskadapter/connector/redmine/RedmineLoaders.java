@@ -1,19 +1,18 @@
 package com.taskadapter.connector.redmine;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.redmine.ta.RedmineException;
-import org.redmine.ta.RedmineManager;
-import org.redmine.ta.beans.Project;
-import org.redmine.ta.beans.SavedQuery;
-import org.redmine.ta.beans.Tracker;
-
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.GProject;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
+import com.taskadapter.redmineapi.RedmineException;
+import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.bean.Project;
+import com.taskadapter.redmineapi.bean.SavedQuery;
+import com.taskadapter.redmineapi.bean.Tracker;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Redmine data loaders.
@@ -28,7 +27,7 @@ public class RedmineLoaders {
 
 		RedmineManager mgr = RedmineManagerFactory
 				.createRedmineManager(serverInfo);
-		List<org.redmine.ta.beans.Project> rmProjects;
+		List<com.taskadapter.redmineapi.bean.Project> rmProjects;
 		try {
 			rmProjects = mgr.getProjects();
 		} catch (Exception e) {

@@ -1,22 +1,17 @@
 package com.taskadapter.connector.redmine;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.redmine.ta.RedmineException;
-import org.redmine.ta.RedmineManager;
-import org.redmine.ta.RedmineTransportException;
-import org.redmine.ta.RedmineManager.INCLUDE;
-import org.redmine.ta.beans.Issue;
-
 import com.taskadapter.connector.common.AbstractConnector;
 import com.taskadapter.connector.common.TransportException;
-import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Descriptor;
-import com.taskadapter.connector.definition.ProgressMonitor;
-import com.taskadapter.connector.definition.SyncResult;
-import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.*;
 import com.taskadapter.model.GTask;
+import com.taskadapter.redmineapi.RedmineException;
+import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.RedmineManager.INCLUDE;
+import com.taskadapter.redmineapi.RedmineTransportException;
+import com.taskadapter.redmineapi.bean.Issue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RedmineConnector extends AbstractConnector<RedmineConfig> {
 

@@ -3,13 +3,9 @@ package com.taskadapter.connector.redmine;
 import com.taskadapter.connector.common.TestUtils;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
-import org.redmine.ta.RedmineManager;
-import org.redmine.ta.beans.Issue;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 public class RedmineUtils {
 

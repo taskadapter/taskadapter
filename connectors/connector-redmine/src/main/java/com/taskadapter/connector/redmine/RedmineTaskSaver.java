@@ -3,12 +3,12 @@ package com.taskadapter.connector.redmine;
 import com.taskadapter.connector.common.AbstractTaskSaver;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
-import org.redmine.ta.RedmineException;
-import org.redmine.ta.RedmineManager;
-import org.redmine.ta.beans.Issue;
-import org.redmine.ta.beans.IssueStatus;
-import org.redmine.ta.beans.Project;
-import org.redmine.ta.beans.User;
+import com.taskadapter.redmineapi.RedmineException;
+import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.bean.Issue;
+import com.taskadapter.redmineapi.bean.IssueStatus;
+import com.taskadapter.redmineapi.bean.Project;
+import com.taskadapter.redmineapi.bean.User;
 
 import java.util.ArrayList;
 import java.util.List;

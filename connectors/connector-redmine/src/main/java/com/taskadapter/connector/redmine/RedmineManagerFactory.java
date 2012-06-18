@@ -1,8 +1,7 @@
 package com.taskadapter.connector.redmine;
 
-import org.redmine.ta.RedmineManager;
-
 import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.redmineapi.RedmineManager;
 
 public class RedmineManagerFactory {
     public static RedmineManager createRedmineManager(WebServerInfo serverInfo) {

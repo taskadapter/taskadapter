@@ -5,6 +5,9 @@ import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.NamedKeyedObject;
+import com.taskadapter.redmineapi.NotFoundException;
+import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
 import com.taskadapter.web.configeditor.*;
@@ -15,16 +18,9 @@ import com.vaadin.data.util.MethodProperty;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.*;
 
-import org.redmine.ta.NotFoundException;
-import org.redmine.ta.RedmineManager;
-import org.redmine.ta.beans.Project;
-
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class RedmineEditor extends TwoColumnsConfigEditor {
 
     private RedmineServerPanel serverPanel;
@@ -207,7 +203,7 @@ public class RedmineEditor extends TwoColumnsConfigEditor {
             layout.setComponentAlignment(redmineAPIKey, Alignment.MIDDLE_LEFT);
             currentRow++;
 			redmineAPIKey.setPropertyDataSource(new MethodProperty<String>(
-					serverInfo, "apiKey"));
+                    serverInfo, "apiKey"));
 
             Label loginLabel = new Label("Login:");
             layout.addComponent(loginLabel, 0, currentRow);
@@ -252,7 +248,7 @@ public class RedmineEditor extends TwoColumnsConfigEditor {
                 @Override
                 public void valueChange(Property.ValueChangeEvent event) {
                     final boolean useAPIOptionSelected = isUseAPIOptionSelected();
-					setAuthOptionsState(useAPIOptionSelected);
+                    setAuthOptionsState(useAPIOptionSelected);
                     ((RedmineConfig) config).getServerInfo().setUseAPIKeyInsteadOfLoginPassword(useAPIOptionSelected);
                 }
             });

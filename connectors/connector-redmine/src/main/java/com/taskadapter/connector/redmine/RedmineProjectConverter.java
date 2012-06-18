@@ -1,11 +1,10 @@
 package com.taskadapter.connector.redmine;
 
+import com.taskadapter.model.GProject;
+import com.taskadapter.redmineapi.bean.Project;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.redmine.ta.beans.Project;
-
-import com.taskadapter.model.GProject;
 
 public class RedmineProjectConverter {
 
