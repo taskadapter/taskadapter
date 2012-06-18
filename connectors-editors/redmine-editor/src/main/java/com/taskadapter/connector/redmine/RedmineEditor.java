@@ -3,19 +3,16 @@ package com.taskadapter.connector.redmine;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.web.configeditor.*;
 import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.*;
-import org.redmine.ta.RedmineManager;
-import org.redmine.ta.beans.Project;
 
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class RedmineEditor extends TwoColumnsConfigEditor implements LoadProjectJobResultListener {
 
     private RedmineServerPanel serverPanel;

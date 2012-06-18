@@ -4,7 +4,8 @@ import com.taskadapter.connector.common.ProjectLoader;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.GProject;
-import org.redmine.ta.RedmineManager;
+import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.bean.Project;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class RedmineProjectLoader implements ProjectLoader {
         }
 
         RedmineManager mgr = RedmineManagerFactory.createRedmineManager(serverInfo);
-        List<org.redmine.ta.beans.Project> rmProjects;
+        List<Project> rmProjects;
         try {
             rmProjects = mgr.getProjects();
         } catch (Exception e) {

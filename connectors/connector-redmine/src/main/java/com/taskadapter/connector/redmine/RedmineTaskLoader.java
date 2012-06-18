@@ -4,11 +4,10 @@ import com.taskadapter.connector.common.AbstractTaskLoader;
 import com.taskadapter.connector.common.TransportException;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.GTask;
-import org.redmine.ta.RedmineException;
-import org.redmine.ta.RedmineManager;
-import org.redmine.ta.RedmineManager.INCLUDE;
-import org.redmine.ta.RedmineTransportException;
-import org.redmine.ta.beans.Issue;
+import com.taskadapter.redmineapi.RedmineException;
+import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.RedmineTransportException;
+import com.taskadapter.redmineapi.bean.Issue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,7 @@ public class RedmineTaskLoader extends AbstractTaskLoader<RedmineConfig> {
                     .createRedmineManager(config.getServerInfo());
 
             List<Issue> issues = mgr.getIssues(config.getProjectKey(),
-                    config.getQueryId(), INCLUDE.relations);
+                    config.getQueryId(), RedmineManager.INCLUDE.relations);
             rows = convertToGenericTasks(config, issues);
         } catch (RedmineTransportException e) {
             throw new TransportException("There was a problem communicating with Redmine server", e);
@@ -39,7 +38,7 @@ public class RedmineTaskLoader extends AbstractTaskLoader<RedmineConfig> {
                     .createRedmineManager(serverInfo);
 
             Integer intKey = Integer.parseInt(taskKey);
-            Issue issue = mgr.getIssueById(intKey, INCLUDE.relations);
+            Issue issue = mgr.getIssueById(intKey, RedmineManager.INCLUDE.relations);
             RedmineDataConverter converter = new RedmineDataConverter(config);
             return converter.convertToGenericTask(issue);
         } catch (RedmineException e) {

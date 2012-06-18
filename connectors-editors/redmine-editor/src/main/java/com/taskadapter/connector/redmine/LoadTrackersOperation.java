@@ -3,11 +3,11 @@ package com.taskadapter.connector.redmine;
 import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
+import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.bean.Project;
+import com.taskadapter.redmineapi.bean.Tracker;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.configeditor.LookupOperation;
-import org.redmine.ta.RedmineManager;
-import org.redmine.ta.beans.Project;
-import org.redmine.ta.beans.Tracker;
 
 import java.util.ArrayList;
 import java.util.List;

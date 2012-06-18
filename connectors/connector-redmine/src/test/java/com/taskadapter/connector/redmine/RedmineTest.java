@@ -1,35 +1,26 @@
 package com.taskadapter.connector.redmine;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-
+import com.taskadapter.connector.common.CommonTests;
 import com.taskadapter.connector.common.TestSaver;
+import com.taskadapter.connector.common.TestUtils;
+import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.WebServerInfo;
-import org.junit.*;
-import org.redmine.ta.RedmineManager;
-import org.redmine.ta.beans.IssueStatus;
-import org.redmine.ta.beans.Project;
-import org.redmine.ta.beans.User;
-
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
-import com.taskadapter.connector.common.CommonTests;
-import com.taskadapter.connector.common.TestUtils;
-import com.taskadapter.connector.common.TreeUtils;
+import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.bean.IssueStatus;
+import com.taskadapter.redmineapi.bean.Project;
+import com.taskadapter.redmineapi.bean.User;
+import org.junit.*;
+
+import java.util.*;
+
+import static org.junit.Assert.*;
 
 /**
  * Integration tests for Redmine Connector.
- *
- * @author Alexey Skorokhodov
  */
 public class RedmineTest {
 

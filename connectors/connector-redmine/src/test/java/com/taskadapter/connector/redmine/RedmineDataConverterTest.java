@@ -3,11 +3,11 @@ package com.taskadapter.connector.redmine;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
+import com.taskadapter.redmineapi.bean.Issue;
+import com.taskadapter.redmineapi.bean.Project;
+import com.taskadapter.redmineapi.bean.User;
 import org.junit.Assert;
 import org.junit.Test;
-import org.redmine.ta.beans.Issue;
-import org.redmine.ta.beans.Project;
-import org.redmine.ta.beans.User;
 
 import java.util.ArrayList;
 import java.util.List;

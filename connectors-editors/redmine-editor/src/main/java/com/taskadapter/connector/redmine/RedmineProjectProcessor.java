@@ -3,18 +3,15 @@ package com.taskadapter.connector.redmine;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebConfig;
+import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.LookupOperation;
 import com.taskadapter.web.configeditor.ProjectProcessor;
-import org.redmine.ta.RedmineManager;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class RedmineProjectProcessor implements ProjectProcessor {
 
     private final RedmineEditor editor;

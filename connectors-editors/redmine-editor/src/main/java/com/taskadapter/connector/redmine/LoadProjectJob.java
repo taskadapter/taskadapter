@@ -1,11 +1,8 @@
 package com.taskadapter.connector.redmine;
 
-import org.redmine.ta.RedmineManager;
-import org.redmine.ta.beans.Project;
+import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.bean.Project;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class LoadProjectJob {
 
     private LoadProjectJobResultListener resultsListener;

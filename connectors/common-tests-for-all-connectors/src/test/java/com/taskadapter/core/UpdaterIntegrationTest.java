@@ -12,10 +12,10 @@ import com.taskadapter.connector.redmine.RedmineDataConverter;
 import com.taskadapter.integrationtests.AbstractSyncRunnerTest;
 import com.taskadapter.integrationtests.RedmineTestConfig;
 import com.taskadapter.model.GTask;
+import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.bean.Issue;
 import org.junit.Before;
 import org.junit.Test;
-import org.redmine.ta.RedmineManager;
-import org.redmine.ta.beans.Issue;
 
 import java.util.ArrayList;
 import java.util.Date;
