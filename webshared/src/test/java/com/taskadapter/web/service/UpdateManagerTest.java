@@ -46,7 +46,7 @@ public class UpdateManagerTest {
 
     @Test
     public void compareVersions4() {
-        updateManager.setCurrentVersionForTesting("2.0.0");
+        updateManager.setCurrentVersionForTesting("2.0.1");
         assertFalse(updateManager.isCurrentVersionOutdated());
     }
 }
