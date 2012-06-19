@@ -11,6 +11,8 @@ import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,8 @@ import static com.taskadapter.license.LicenseManager.TRIAL_MESSAGE;
 import static com.taskadapter.license.LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
 
 public class SyncRunner {
+    private final Logger logger = LoggerFactory.getLogger(SyncRunner.class);
+
     // TODO: refactor!!!
     private Connector<?> connectorFrom;
     
@@ -123,7 +127,7 @@ public class SyncRunner {
             return flatTasksList;
 
         } else {
-            System.out.println(TRIAL_MESSAGE);
+            logger.info(TRIAL_MESSAGE);
             int tasksToLeave = Math.min(TRIAL_TASKS_NUMBER_LIMIT, flatTasksList.size());
 
             return flatTasksList.subList(0, tasksToLeave);

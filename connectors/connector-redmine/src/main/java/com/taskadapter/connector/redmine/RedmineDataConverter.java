@@ -6,11 +6,15 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
 import com.taskadapter.redmineapi.bean.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RedmineDataConverter {
+
+    private static final Logger logger = LoggerFactory.getLogger(RedmineDataConverter.class);
 
     private final RedmineConfig config;
     private List<User> users;
@@ -222,8 +226,7 @@ public class RedmineDataConverter {
                     genericTask.getRelations().add(r);
                 }
             } else {
-                System.out.println("relation type is not supported: "
-                        + relation.getType());
+                logger.error("relation type is not supported: " + relation.getType());
             }
         }
     }

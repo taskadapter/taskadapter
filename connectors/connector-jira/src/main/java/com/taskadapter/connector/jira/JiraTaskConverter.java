@@ -6,10 +6,14 @@ import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class JiraTaskConverter {
+
+    private final Logger logger = LoggerFactory.getLogger(JiraTaskConverter.class);
 
     // XXX this is hardcoded!! https://www.hostedredmine.com/issues/18074
     private static final String ISSUE_TYPE_ID = "1";
@@ -134,7 +138,7 @@ public class JiraTaskConverter {
     public List<GTask> convertToGenericTaskList(List<RemoteIssue> tasks) {
 
         // TODO see http://jira.atlassian.com/browse/JRA-6896
-        System.err.println("Jira: no tasks hierarchy is supported");
+        logger.info("Jira: no tasks hierarchy is supported");
 
         List<GTask> rootLevelTasks = new ArrayList<GTask>();
 

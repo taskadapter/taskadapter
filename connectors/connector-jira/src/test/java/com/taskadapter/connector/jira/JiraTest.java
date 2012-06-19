@@ -11,6 +11,8 @@ import com.taskadapter.model.GUser;
 import junit.framework.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +23,8 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 public class JiraTest {
+    private static final Logger logger = LoggerFactory.getLogger(JiraTest.class);
+
     private static final String TEST_PROPERTIES = "jira.properties";
     private static JiraConfig config = new JiraConfig();
     private static WebServerInfo serverInfo;
@@ -58,7 +62,7 @@ public class JiraTest {
 
     @BeforeClass
     public static void oneTimeSetUp() {
-        System.out.println("Running Jira tests using: " + properties.getProperty("host"));
+        logger.info("Running Jira tests using: " + properties.getProperty("host"));
     }
 
     // TODO this is identical to Redmine's test. maybe move to a common place?
@@ -174,7 +178,7 @@ public class JiraTest {
         JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
         RemotePriority[] priorities = connection.getPriorities();
         if (priorities.length == 0) {
-            System.out.println("Can't test priority field export - priority list is empty.");
+            logger.info("Can't test priority field export - priority list is empty.");
         } else {
             RemoteVersion[] versions = {};
             RemoteComponent[] components = {};
@@ -204,7 +208,7 @@ public class JiraTest {
         JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
         RemoteIssueType[] issueTypeList = connection.getIssueTypeList(config.getProjectKey());
         if (issueTypeList.length == 0) {
-            System.out.println("Can't test issue type field export - issue type list is empty.");
+            logger.info("Can't test issue type field export - issue type list is empty.");
             return false;
         } else {
             converter.setIssueTypeList(issueTypeList);

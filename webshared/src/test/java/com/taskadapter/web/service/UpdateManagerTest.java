@@ -20,7 +20,6 @@ public class UpdateManagerTest {
     public void somethingIsLoaded() {
         String version = updateManager.getLatestAvailableVersion();
         assertNotNull(version);
-        System.out.println("Loaded the last available version number from the server: " + version);
         String[] strings = version.split("\r\n|\r|\n");
         // must be 1 line only
         assertEquals(1, strings.length);

@@ -3,6 +3,8 @@ package com.taskadapter.web.service;
 import com.google.common.io.Files;
 import com.taskadapter.FileManager;
 import com.taskadapter.config.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class UserManager {
+
+    private final Logger logger = LoggerFactory.getLogger(UserManager.class);
 
     public static final String ADMIN_LOGIN_NAME = "admin";
     private static final String PASSWORD_FILE_NAME = "password.txt";
@@ -38,8 +42,7 @@ public class UserManager {
             try {
                 users.add(getUser(fileName));
             } catch (UserNotFoundException e) {
-                // TODO log properly
-                System.out.println("User not found: " + fileName + ". This indicates incorrect folders structure in your data directory.");
+                logger.error("User not found: " + fileName + ". This indicates incorrect folders structure in your data directory.");
             }
         }
         return users;
@@ -76,8 +79,7 @@ public class UserManager {
             passwordString = Files.readFirstLine(passwordFile, Charset.forName("UTF-8"));
             return new User(loginName, passwordString);
         } catch (IOException e) {
-            // TODO log this properly
-            System.out.println("Can't read password.txt file for user " + loginName + ". The reason is:" + e.getMessage());
+            logger.error("Can't read password.txt file for user " + loginName + ". The reason is:" + e.getMessage(), e);
             throw new UserNotFoundException();
         }
     }

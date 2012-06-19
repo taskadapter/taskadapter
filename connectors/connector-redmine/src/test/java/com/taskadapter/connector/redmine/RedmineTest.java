@@ -14,6 +14,8 @@ import com.taskadapter.redmineapi.bean.IssueStatus;
 import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.redmineapi.bean.User;
 import org.junit.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -26,6 +28,8 @@ import static org.junit.Assert.*;
  */
 public class RedmineTest {
 
+    private static final Logger logger = LoggerFactory.getLogger(RedmineTest.class);
+
     private static RedmineManager mgr;
 
     private static String projectKey;
@@ -36,7 +40,7 @@ public class RedmineTest {
     @BeforeClass
     public static void oneTimeSetUp() {
         WebServerInfo serverInfo = RedmineTestConfig.getRedmineTestConfig().getServerInfo();
-        System.out.println("Running redmine tests using: " + serverInfo);
+        logger.info("Running redmine tests using: " + serverInfo);
         mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getUserName(), serverInfo.getPassword());
 
         Project junitTestProject = new Project();

@@ -1,7 +1,6 @@
 package com.taskadapter.connector.mantis;
 
 import com.taskadapter.connector.common.TestSaver;
-import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
@@ -9,6 +8,8 @@ import org.junit.*;
 import org.mantis.ta.MantisManager;
 import org.mantis.ta.beans.AccountData;
 import org.mantis.ta.beans.ProjectData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 import java.util.Calendar;
@@ -19,6 +20,8 @@ import static org.junit.Assert.assertNull;
 
 public class MantisTest {
 
+    private static final Logger logger = LoggerFactory.getLogger(MantisTest.class);
+
     private static MantisManager mgr;
 
     private static String projectKey;
@@ -27,7 +30,7 @@ public class MantisTest {
 
     @BeforeClass
     public static void oneTimeSetUp() {
-        System.out.println("Running Mantis BT tests using: " + Config.getURI());
+        logger.info("Running Mantis BT tests using: " + Config.getURI());
         mgr = new MantisManager(Config.getURI(), Config.getUserLogin(), Config.getPassword());
 
         ProjectData junitTestProject = new ProjectData();

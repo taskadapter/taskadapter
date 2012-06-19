@@ -6,6 +6,8 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GUser;
 import org.mantis.ta.beans.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 import java.util.Calendar;
@@ -13,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class MantisDataConverter {
+    private static final Logger logger = LoggerFactory.getLogger(MantisDataConverter.class);
 
     private static final String DEFAULT_TASK_DESCRIPTION = "-";
 
@@ -148,8 +151,7 @@ public class MantisDataConverter {
                             GRelation.TYPE.precedes);
                     genericTask.getRelations().add(r);
                 } else {
-                    System.out.println("relation type is not supported: "
-                            + relation.getType());
+                    logger.info("relation type is not supported: " + relation.getType());
                 }
             }
         }

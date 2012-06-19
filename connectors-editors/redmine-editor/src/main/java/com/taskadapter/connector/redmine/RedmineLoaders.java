@@ -10,18 +10,20 @@ import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.redmineapi.bean.SavedQuery;
 import com.taskadapter.redmineapi.bean.Tracker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Redmine data loaders.
- * 
- * @author maxkar
- * 
  */
 public class RedmineLoaders {
-	public static List<GProject> getProjects(WebServerInfo serverInfo)
+
+    private static final Logger logger = LoggerFactory.getLogger(RedmineLoaders.class);
+
+    public static List<GProject> getProjects(WebServerInfo serverInfo)
 			throws ValidationException {
 		validate(serverInfo);
 
@@ -57,8 +59,7 @@ public class RedmineLoaders {
 		try {
 			return manager.getProjectByKey(projectKey);
 		} catch (RedmineException e) {
-			e.printStackTrace();
-			System.out.println(e);
+            logger.error("Error loading redmine project with key '" + projectKey + "'. " + e.getMessage(), e);
 		}
 		return null;
 	}

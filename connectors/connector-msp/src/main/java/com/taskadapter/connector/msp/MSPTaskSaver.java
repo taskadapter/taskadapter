@@ -7,11 +7,15 @@ import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GRelation.TYPE;
 import com.taskadapter.model.GTask;
 import net.sf.mpxj.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
 
 public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
+
+    private static final Logger logger = LoggerFactory.getLogger(MSPTaskSaver.class);
 
     private MSXMLFileWriter writer;
 
@@ -95,7 +99,7 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
                     relatedTask.addPredecessor(sourceTask,
                             RelationType.FINISH_START, delay);
                 } else {
-                    System.out.println("unknown type: " + relation.getType());
+                    logger.error("save relations for MSP: unknown type: " + relation.getType());
                 }
             }
 
