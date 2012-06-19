@@ -2,15 +2,15 @@ package com.taskadapter.web.configeditor.file;
 
 import com.taskadapter.FileManager;
 import com.vaadin.ui.Upload;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-/**
-* Author: Alexander Kulik
-*/
 public class UploadReceiver implements Upload.Receiver {
+    private final Logger logger = LoggerFactory.getLogger(UploadReceiver.class);
 
     private String fileName;
     private boolean sleep;
@@ -29,8 +29,7 @@ public class UploadReceiver implements Upload.Receiver {
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        logger.error("interrupted while peacefully sleeping. so rude!" + e.getMessage(), e);
                     }
                 }
                 if (total == ServerModelFilePanelPresenter.MAX_FILE_SIZE_BYTES) {
@@ -56,7 +55,7 @@ public class UploadReceiver implements Upload.Receiver {
         try {
             fileManager.saveFileOnServer(userName, getFileName(), getBytes());
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("IO Error when saving file on the server. file name: " + getFileName() + ", error: " + e.getMessage(), e);
             return false;
         }
         return true;

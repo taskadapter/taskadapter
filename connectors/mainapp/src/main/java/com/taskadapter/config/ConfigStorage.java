@@ -3,6 +3,8 @@ package com.taskadapter.config;
 import com.taskadapter.FileManager;
 import com.taskadapter.PluginManager;
 import com.taskadapter.util.MyIOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -11,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigStorage {
+    private final Logger logger = LoggerFactory.getLogger(ConfigStorage.class);
+
     private static final String FILE_EXTENSION = "ta_conf";
     private static final String NUMBER_SEPARATOR = "_";
 
@@ -47,7 +51,7 @@ public class ConfigStorage {
                     taFile.setAbsoluteFilePath(file.getAbsolutePath());
                     files.add(taFile);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error("Error loading file " + file.getAbsolutePath() + ": " + e.getMessage(), e);
                 }
 
             }

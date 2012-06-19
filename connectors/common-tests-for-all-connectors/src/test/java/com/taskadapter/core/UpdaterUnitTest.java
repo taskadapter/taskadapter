@@ -31,6 +31,7 @@ public class UpdaterUnitTest {
         assertEquals(7, updater.getExistingTasks().size());
     }
 
+    // TODO we don't need OSGI stuff in Task Adapter project anymore.
     public String getFileAbsolutePath(String name) {
         URL url = this.getClass().getClassLoader().getResource(name);
         String path = null;

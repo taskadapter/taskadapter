@@ -1,11 +1,12 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.model.GTaskDescriptor.FIELD;
-
 import net.sf.mpxj.ConstraintType;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Resource;
 import net.sf.mpxj.TaskField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.Map;
@@ -13,6 +14,8 @@ import java.util.Set;
 import java.util.TreeMap;
 
 public class MSPUtils {
+
+    private static final Logger logger = LoggerFactory.getLogger(MSPUtils.class);
 
     private static final String TA_TAG = "created_by_task_adapter";
 
@@ -95,7 +98,7 @@ public class MSPUtils {
             config.setOutputAbsoluteFilePath(changeExtension(mppFilePath, ".xml"));
             return new MSXMLFileWriter(config).writeProject(projectFile);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("error converting MPP file to XML: " + e.getMessage(), e);
         }
         return null;
     }

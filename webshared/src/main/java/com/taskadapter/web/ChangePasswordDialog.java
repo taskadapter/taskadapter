@@ -4,13 +4,16 @@ import com.taskadapter.web.service.Authenticator;
 import com.taskadapter.web.service.UserManager;
 import com.taskadapter.web.service.UserNotFoundException;
 import com.taskadapter.web.service.WrongPasswordException;
-import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.terminal.UserError;
 import com.vaadin.ui.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ChangePasswordDialog extends Window {
+    private final Logger logger = LoggerFactory.getLogger(ChangePasswordDialog.class);
+
     private PasswordField oldPasswordField;
     private PasswordField newPasswordField;
 
@@ -69,9 +72,10 @@ public class ChangePasswordDialog extends Window {
                     userManager.saveUser(authenticator.getUserName(), newPasswordField.toString());
                     getParent().removeWindow(dialog);
                 } catch (UserNotFoundException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.error("User not found: " + authenticator.getUserName());
                 } catch (WrongPasswordException e) {
                     oldPasswordField.setComponentError(new UserError("Old password is incorrect."));
+                    logger.error("SECURITY: wrong password for user " + authenticator.getUserName());
                 }
             }
         });

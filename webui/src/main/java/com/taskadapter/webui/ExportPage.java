@@ -14,6 +14,8 @@ import com.vaadin.Application;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.UnknownHostException;
@@ -21,6 +23,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class ExportPage extends ActionPage {
+
+    private final Logger logger = LoggerFactory.getLogger(ExportPage.class);
+
     private VerticalLayout donePanel = new VerticalLayout();
 
     // TODO i18n
@@ -48,10 +53,10 @@ public class ExportPage extends ActionPage {
         } catch (TransportException e) {
             String message = getErrorMessageForException(e);
             showErrorMessageOnPage(message);
-            e.printStackTrace();
+            logger.error("transport error: " + message, e);
         } catch (RuntimeException e) {
             showErrorMessageOnPage(e.getMessage());
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 

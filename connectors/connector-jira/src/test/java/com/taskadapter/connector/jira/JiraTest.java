@@ -56,7 +56,7 @@ public class JiraTest {
             config.setServerInfo(serverInfo);
             config.setProjectKey(properties.getProperty("project.key"));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("error loading jira test properties. " + e.getMessage(), e);
         }
     }
 

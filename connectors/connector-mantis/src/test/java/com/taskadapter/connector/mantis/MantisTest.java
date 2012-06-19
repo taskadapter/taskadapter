@@ -44,7 +44,7 @@ public class MantisTest {
             BigInteger projectId = mgr.createProject(junitTestProject);
             projectKey = projectId.toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error loading Mantis BT test properties. " + e.getMessage(), e);
             Assert.fail(e.toString());
         }
     }

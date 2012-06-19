@@ -5,6 +5,8 @@ import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSXMLFileWriter;
 import com.taskadapter.model.GTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,10 +15,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class FileManager {
+
+    private final Logger logger = LoggerFactory.getLogger(FileManager.class);
 
     // TODO maybe return File?
     public static String getDataRootFolderName() {
@@ -100,8 +101,8 @@ public class FileManager {
             List<GTask> rows = new ArrayList<GTask>();
             new MSXMLFileWriter(config).write(new SyncResult(), rows, false);
         } catch (IOException e) {
-            e.printStackTrace();
-            // TODO do not print stack trace. do not return null.
+            logger.error("IO Exception when creating MSP file: " + e.getMessage(), e);
+            // TODO do not return null.
             return null;
         }
         return file;

@@ -10,13 +10,15 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Runo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class PriorityPanel extends Panel implements Validatable {
+
+    private final Logger logger = LoggerFactory.getLogger(PriorityPanel.class);
 
     private static final String NAME_HEADER = "Name";
     private static final String VALUE_HEADER = "Task Adapter Priority Value";
@@ -35,14 +37,9 @@ public class PriorityPanel extends Panel implements Validatable {
 	public static final String VALUE = "value";
 	public static final String TEXT = "text";
 	
-	/**
-	 * Priority loader.
-	 */
 	private final DataProvider<Priorities> priorityLoader;
 
     /**
-	 * @param editor
-	 *            ConfigEditor
 	 * @param priorities
 	 *            priorities to edit.
 	 * @param priorityLoader
@@ -98,8 +95,7 @@ public class PriorityPanel extends Panel implements Validatable {
                 try {
                     reloadPriorityList();
                 } catch (Exception e) {
-                    // TODO handle the exception
-                    e.printStackTrace();
+                    logger.error("Error loading priorities: " + e.getMessage(), e);
                     getWindow().showNotification("Error!", e.getMessage(), Window.Notification.TYPE_ERROR_MESSAGE);
                 }
             }

@@ -1,8 +1,15 @@
 package com.taskadapter.web;
 
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.ProgressIndicator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ProgressElement extends GridLayout {
+    private final Logger logger = LoggerFactory.getLogger(ProgressElement.class);
+
     private ProgressIndicator indicator;
     private Label finishLabel;
     private boolean isStarted;
@@ -55,7 +62,7 @@ public class ProgressElement extends GridLayout {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error("interrupted while sleeping... " + e.getMessage(), e);
             }
 
             synchronized (getApplication()) {
