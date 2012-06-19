@@ -78,6 +78,6 @@ public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig> {
 
     @Override
     protected void saveRelations(List<GRelation> relations) {
-        System.out.println("saveRelations: not implemented for Mantis");
+        throw new RuntimeException("not implemented");
     }
 }
