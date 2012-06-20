@@ -6,8 +6,6 @@ import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 public class MSPDescriptor {
-    private static final String INFO = "Microsoft Project connector. Supports MPP and XML files (also known as MSPDI)";
-
     /**
      * Keep it the same to enable backward compatibility
      */
@@ -33,5 +31,5 @@ public class MSPDescriptor {
     	SUPPORTED_FIELDS = builder.end();
     }
 
-    public static final Descriptor instance = new Descriptor(ID, MSPConfig.DEFAULT_LABEL, INFO, SUPPORTED_FIELDS);
+    public static final Descriptor instance = new Descriptor(ID, MSPConfig.DEFAULT_LABEL, SUPPORTED_FIELDS);
 }

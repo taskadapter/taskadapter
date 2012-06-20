@@ -11,8 +11,6 @@ public class MantisDescriptor {
 
     private static final String ID = "Mantis";
 
-    private static final String INFO = "Mantis connector (supports Mantis v. 1.1.1+)";
-
     /**
      * Supported fields.
      */
@@ -27,6 +25,6 @@ public class MantisDescriptor {
     	SUPPORTED_FIELDS = builder.end();
     }
     
-    public static final Descriptor instance = new Descriptor(ID, MantisConfig.DEFAULT_LABEL, INFO, SUPPORTED_FIELDS);
+    public static final Descriptor instance = new Descriptor(ID, MantisConfig.DEFAULT_LABEL, SUPPORTED_FIELDS);
     
 }

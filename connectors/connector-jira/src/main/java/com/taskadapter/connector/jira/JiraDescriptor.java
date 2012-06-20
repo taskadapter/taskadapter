@@ -14,8 +14,6 @@ public class JiraDescriptor {
      */
     private static final String ID = "Atlassian Jira";
 
-    private static final String INFO = "Atlassian Jira connector (supports Jira v. 3.1.12+)";
-    
     /**
      * Supported fields.
      */
@@ -32,5 +30,5 @@ public class JiraDescriptor {
     	SUPPORTED_FIELDS = builder.end();
     }
 
-    public static final Descriptor instance = new Descriptor(ID, JiraConfig.DEFAULT_LABEL, INFO, SUPPORTED_FIELDS);
+    public static final Descriptor instance = new Descriptor(ID, JiraConfig.DEFAULT_LABEL, SUPPORTED_FIELDS);
 }

@@ -12,7 +12,6 @@ public class GithubDescriptor {
      * config files.
      */
     private static final String ID = "Github";
-    private static final String DESCRIPTION = "Github connector";
     private static final String LABEL = "Github";
 
     /**
@@ -29,6 +28,6 @@ public class GithubDescriptor {
         SUPPORTED_FIELDS = builder.end();
     }
 
-    public static final Descriptor instance = new Descriptor(ID, LABEL, DESCRIPTION, SUPPORTED_FIELDS);
+    public static final Descriptor instance = new Descriptor(ID, LABEL, SUPPORTED_FIELDS);
 
 }

@@ -6,8 +6,6 @@ import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 public class RedmineDescriptor {
-    private static final String INFO_TEXT = "Redmine/Chiliproject connector. Connects to Redmine servers via REST API. Supports Redmine v. 1.1+";
-
     /**
      * Keep it the same to enable backward compatibility for previously created config files.
      */
@@ -33,5 +31,5 @@ public class RedmineDescriptor {
     	SUPPORTED_FIELDS = builder.end();
     }
     
-    public static final Descriptor instance = new Descriptor(ID, RedmineConfig.DEFAULT_LABEL, INFO_TEXT, SUPPORTED_FIELDS);    
+    public static final Descriptor instance = new Descriptor(ID, RedmineConfig.DEFAULT_LABEL, SUPPORTED_FIELDS);    
 }

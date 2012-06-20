@@ -21,11 +21,6 @@ public final class Descriptor {
     private final String label;
 
     /**
-     * Description.
-     */
-    private final String description;
-
-    /**
      * Supported (available) fields.
      */
     private final AvailableFields fields;
@@ -42,14 +37,12 @@ public final class Descriptor {
      * @param fields
      *            descriptor fields.
      */
-    public Descriptor(String id, String label, String description,
+    public Descriptor(String id, String label, 
             AvailableFields fields) {
         this.id = id;
         this.label = label;
-        this.description = description;
         this.fields = fields;
     }
-
 
     /**
      * get the Connector ID. Once defined, the ID should not be changed in the connectors to avoid breaking compatibility.
@@ -60,10 +53,6 @@ public final class Descriptor {
 
     public String getLabel() {
         return label;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public AvailableFields getAvailableFields() {
