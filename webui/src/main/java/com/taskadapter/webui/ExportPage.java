@@ -76,7 +76,7 @@ public class ExportPage extends ActionPage {
 
     @Override
     protected String getInitialText() {
-        return "Will load data from " + connectorFrom.getConfig().getSourceLocation() + " (" + connectorFrom.getDescriptor().getLabel() + ")";
+        return "Will load data from " + connectorFrom.getConfig().getSourceLocation() + " (" + connectorFrom.getConfig().getLabel() + ")";
     }
 
     @Override

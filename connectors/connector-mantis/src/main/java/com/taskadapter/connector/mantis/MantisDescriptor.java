@@ -2,16 +2,13 @@ package com.taskadapter.connector.mantis;
 
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.AvailableFieldsBuilder;
-import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
+import com.taskadapter.connector.definition.Descriptors;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
-import java.util.Arrays;
-import java.util.Collection;
 
-public class MantisDescriptor implements Descriptor {
+public class MantisDescriptor {
 
-    public static final MantisDescriptor instance = new MantisDescriptor();
 
     private static final String ID = "Mantis";
 
@@ -31,24 +28,8 @@ public class MantisDescriptor implements Descriptor {
     	SUPPORTED_FIELDS = builder.end();
     }
     
-    @Override
-    public String getID() {
-        return ID;
-    }
-
-    @Override
-    public String getLabel() {
-        return MantisConfig.DEFAULT_LABEL;
-    }
-
-    @Override
-    public String getDescription() {
-        return INFO;
-    }
-
-    @Override
-    public AvailableFields getAvailableFields() {
-        return SUPPORTED_FIELDS;
-    }
-
+    public static final Descriptor instance = Descriptors
+            .createPluginDescriptor(ID, MantisConfig.DEFAULT_LABEL, INFO,
+                    SUPPORTED_FIELDS);
+    
 }

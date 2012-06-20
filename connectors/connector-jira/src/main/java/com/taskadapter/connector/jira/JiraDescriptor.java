@@ -3,14 +3,11 @@ package com.taskadapter.connector.jira;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.AvailableFieldsBuilder;
 import com.taskadapter.connector.definition.Descriptor;
+import com.taskadapter.connector.definition.Descriptors;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
-import java.util.Arrays;
-import java.util.Collection;
+public class JiraDescriptor {
 
-public class JiraDescriptor implements Descriptor {
-
-    public static final JiraDescriptor instance = new JiraDescriptor();
 
     /**
      * Keep it the same to enable backward compatibility with the existing
@@ -36,22 +33,7 @@ public class JiraDescriptor implements Descriptor {
     	SUPPORTED_FIELDS = builder.end();
     }
 
-    public String getID() {
-        return ID;
-    }
-
-    @Override
-    public String getDescription() {
-        return INFO;
-    }
-
-    @Override
-    public String getLabel() {
-        return JiraConfig.DEFAULT_LABEL;
-    }
-
-    @Override
-    public AvailableFields getAvailableFields() {
-        return SUPPORTED_FIELDS;
-    }
+    public static final Descriptor instance = Descriptors
+            .createPluginDescriptor(ID, JiraConfig.DEFAULT_LABEL, INFO,
+                    SUPPORTED_FIELDS);
 }

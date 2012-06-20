@@ -45,7 +45,7 @@ public class SyncRunner {
     public List<GTask> load(ProgressMonitor monitor) {
         if (monitor != null) {
             monitor.beginTask(
-                    "Loading data from " + connectorFrom.getDescriptor().getLabel(),
+                    "Loading data from " + connectorFrom.getConfig().getLabel(),
                     100);
         }
         try {
