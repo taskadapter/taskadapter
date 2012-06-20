@@ -31,4 +31,9 @@ public class RedmineFactory implements PluginFactory<RedmineConfig> {
 		return ConfigUtils.createDefaultGson().fromJson(config,
 				RedmineConfig.class);
 	}
+
+    @Override
+    public RedmineConfig createDefaultConfig() {
+        return new RedmineConfig();
+    }
 }

@@ -29,4 +29,9 @@ public class GithubFactory implements PluginFactory<GithubConfig> {
 		return ConfigUtils.createDefaultGson().fromJson(config,
 				GithubConfig.class);
 	}
+	
+    @Override
+    public GithubConfig createDefaultConfig() {
+        return new GithubConfig();
+    }
 }

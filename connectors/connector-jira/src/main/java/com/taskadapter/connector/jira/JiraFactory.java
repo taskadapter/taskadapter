@@ -31,4 +31,8 @@ public class JiraFactory implements PluginFactory<JiraConfig> {
 				JiraConfig.class);
 	}
 
+    @Override
+    public JiraConfig createDefaultConfig() {
+        return new JiraConfig();
+    }
 }

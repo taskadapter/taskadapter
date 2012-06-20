@@ -12,7 +12,7 @@ public class JiraTaskConverterTest {
 
     @Test
     public void convertToGenericTask() {
-        JiraConfig config = JiraDescriptor.instance.createDefaultConfig();
+        JiraConfig config = new JiraConfig();
         JiraTaskConverter taskConverter = new JiraTaskConverter(config);
 
         String id = "123";

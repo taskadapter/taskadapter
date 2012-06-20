@@ -31,4 +31,10 @@ public interface PluginFactory<C extends ConnectorConfig> {
      * @throws JsonParseException if config is in invalid format.
      */
     public C readConfig(JsonElement config) throws JsonParseException;
+    
+    /**
+     * Creates a default ("almost empty") connector config.
+     * @return new connector config.
+     */
+    public C createDefaultConfig();
 }

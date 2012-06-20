@@ -29,4 +29,8 @@ public class MantisFactory implements PluginFactory<MantisConfig> {
 				MantisConfig.class);
 	}
 
+    @Override
+    public MantisConfig createDefaultConfig() {
+        return new MantisConfig();
+    }
 }

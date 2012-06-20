@@ -47,17 +47,8 @@ public class MantisDescriptor implements Descriptor {
     }
 
     @Override
-    public ConnectorConfig createDefaultConfig() {
-        return new MantisConfig();
-    }
-
-    @Override
     public AvailableFields getAvailableFields() {
         return SUPPORTED_FIELDS;
     }
 
-    @Override
-    public Collection<Feature> getSupportedFeatures() {
-        return Arrays.asList(Feature.LOAD_TASK, Feature.SAVE_TASK);
-    }
 }

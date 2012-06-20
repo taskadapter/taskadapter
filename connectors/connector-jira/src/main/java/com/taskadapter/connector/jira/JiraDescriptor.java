@@ -46,11 +46,6 @@ public class JiraDescriptor implements Descriptor {
     }
 
     @Override
-    public JiraConfig createDefaultConfig() {
-        return new JiraConfig();
-    }
-
-    @Override
     public String getLabel() {
         return JiraConfig.DEFAULT_LABEL;
     }
@@ -58,11 +53,5 @@ public class JiraDescriptor implements Descriptor {
     @Override
     public AvailableFields getAvailableFields() {
         return SUPPORTED_FIELDS;
-    }
-
-    @Override
-    public Collection<Feature> getSupportedFeatures() {
-        return Arrays.asList(Feature.LOAD_TASK, Feature.SAVE_TASK,
-                Feature.TASK_TYPE, Feature.LOAD_PRIORITIES);
     }
 }

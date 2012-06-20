@@ -2,7 +2,6 @@ package com.taskadapter.connector.github;
 
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.AvailableFieldsBuilder;
-import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
@@ -34,10 +33,6 @@ public class GithubDescriptor implements Descriptor {
     	SUPPORTED_FIELDS = builder.end();
     }
 
-    public ConnectorConfig createDefaultConfig() {
-        return new GithubConfig();
-    }
-
     public AvailableFields getAvailableFields() {
         return SUPPORTED_FIELDS;
     }
@@ -57,13 +52,5 @@ public class GithubDescriptor implements Descriptor {
     @Override
     public String toString() {
         return getID();
-    }
-
-    public Collection<Feature> getSupportedFeatures() {
-        return Arrays.asList(Feature.LOAD_TASK, Feature.SAVE_TASK);
-    }
-
-    public boolean isSupported(Feature feature) {
-        return getSupportedFeatures().contains(feature);
     }
 }

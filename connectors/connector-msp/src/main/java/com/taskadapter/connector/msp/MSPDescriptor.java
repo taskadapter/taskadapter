@@ -44,11 +44,6 @@ public class MSPDescriptor implements Descriptor {
     }
 
     @Override
-    public MSPConfig createDefaultConfig() {
-        return new MSPConfig();
-    }
-
-    @Override
     public String getID() {
         return ID;
     }
@@ -66,10 +61,5 @@ public class MSPDescriptor implements Descriptor {
     @Override
     public AvailableFields getAvailableFields() {
         return SUPPORTED_FIELDS;
-    }
-
-    @Override
-    public Collection<Feature> getSupportedFeatures() {
-        return Arrays.asList(Feature.LOAD_TASK, Feature.SAVE_TASK);
     }
 }

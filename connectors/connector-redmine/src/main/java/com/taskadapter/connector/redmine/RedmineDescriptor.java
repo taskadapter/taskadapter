@@ -48,11 +48,6 @@ public class RedmineDescriptor implements Descriptor {
     }
 
     @Override
-    public RedmineConfig createDefaultConfig() {
-        return new RedmineConfig();
-    }
-
-    @Override
     public String getDescription() {
         return INFO_TEXT;
     }
@@ -65,10 +60,5 @@ public class RedmineDescriptor implements Descriptor {
     @Override
     public AvailableFields getAvailableFields() {
         return SUPPORTED_FIELDS;
-    }
-
-    @Override
-    public Collection<Feature> getSupportedFeatures() {
-        return Arrays.asList(Feature.LOAD_TASK, Feature.SAVE_TASK, Feature.UPDATE_TASK, Feature.TASK_TYPE);
     }
 }
