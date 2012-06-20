@@ -3,7 +3,6 @@ package com.taskadapter.connector.mantis;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.AvailableFieldsBuilder;
 import com.taskadapter.connector.definition.Descriptor;
-import com.taskadapter.connector.definition.Descriptors;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 
@@ -28,8 +27,6 @@ public class MantisDescriptor {
     	SUPPORTED_FIELDS = builder.end();
     }
     
-    public static final Descriptor instance = Descriptors
-            .createPluginDescriptor(ID, MantisConfig.DEFAULT_LABEL, INFO,
-                    SUPPORTED_FIELDS);
+    public static final Descriptor instance = new Descriptor(ID, MantisConfig.DEFAULT_LABEL, INFO, SUPPORTED_FIELDS);
     
 }

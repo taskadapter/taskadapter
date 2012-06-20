@@ -3,7 +3,6 @@ package com.taskadapter.connector.github;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.AvailableFieldsBuilder;
 import com.taskadapter.connector.definition.Descriptor;
-import com.taskadapter.connector.definition.Descriptors;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 public class GithubDescriptor {
@@ -30,7 +29,6 @@ public class GithubDescriptor {
         SUPPORTED_FIELDS = builder.end();
     }
 
-    public static final Descriptor instance = Descriptors
-            .createPluginDescriptor(ID, LABEL, DESCRIPTION, SUPPORTED_FIELDS);
+    public static final Descriptor instance = new Descriptor(ID, LABEL, DESCRIPTION, SUPPORTED_FIELDS);
 
 }

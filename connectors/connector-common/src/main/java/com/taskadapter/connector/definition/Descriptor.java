@@ -9,19 +9,64 @@ package com.taskadapter.connector.definition;
  * TODO: Get rid of "implementation" interfaces, use a "plain data" class.
  * Maybe use properties for this task?
  */
-public interface Descriptor {
+public final class Descriptor {
+    /**
+     * Descriptor id.
+     */
+    private final String id;
+
+    /**
+     * Descriptor label.
+     */
+    private final String label;
+
+    /**
+     * Description.
+     */
+    private final String description;
+
+    /**
+     * Supported (available) fields.
+     */
+    private final AvailableFields fields;
+    
+    /**
+     * Creates a new descriptor.
+     * 
+     * @param id
+     *            descriptor id.
+     * @param label
+     *            descriptor label.
+     * @param description
+     *            descriptor description.
+     * @param fields
+     *            descriptor fields.
+     */
+    public Descriptor(String id, String label, String description,
+            AvailableFields fields) {
+        this.id = id;
+        this.label = label;
+        this.description = description;
+        this.fields = fields;
+    }
+
 
     /**
      * get the Connector ID. Once defined, the ID should not be changed in the connectors to avoid breaking compatibility.
      */
-    public String getID();
+    public String getID() {
+        return id;
+    }
 
-    public String getLabel();
+    public String getLabel() {
+        return label;
+    }
 
-    /**
-     * Any text the connector wants to tell about itself, like some limitations or requirements.
-     */
-    public String getDescription();
+    public String getDescription() {
+        return description;
+    }
 
-    public AvailableFields getAvailableFields();
+    public AvailableFields getAvailableFields() {
+        return fields;
+    }
 }

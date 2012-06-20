@@ -3,7 +3,6 @@ package com.taskadapter.connector.jira;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.AvailableFieldsBuilder;
 import com.taskadapter.connector.definition.Descriptor;
-import com.taskadapter.connector.definition.Descriptors;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 public class JiraDescriptor {
@@ -33,7 +32,5 @@ public class JiraDescriptor {
     	SUPPORTED_FIELDS = builder.end();
     }
 
-    public static final Descriptor instance = Descriptors
-            .createPluginDescriptor(ID, JiraConfig.DEFAULT_LABEL, INFO,
-                    SUPPORTED_FIELDS);
+    public static final Descriptor instance = new Descriptor(ID, JiraConfig.DEFAULT_LABEL, INFO, SUPPORTED_FIELDS);
 }
