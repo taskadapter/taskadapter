@@ -1,5 +1,6 @@
 package com.taskadapter.web.configeditor;
 
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Window;
@@ -17,6 +18,7 @@ public class ListSelectionDialog extends Window {
         this.valueListener = valueListener;
         buildUI();
         setCaption(windowTitle);
+        setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
     }
 
     private void buildUI() {
