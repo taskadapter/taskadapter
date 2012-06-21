@@ -7,7 +7,7 @@ public class UpdateManager {
 
     public UpdateManager() {
         // TODO hardcoded current version
-        currentVersion = "2.0.1";
+        currentVersion = "2.0.2";
 
 // disabled for now to not generate a lot of useless "check version" requests to the server.
 // we'll enable before the release.
