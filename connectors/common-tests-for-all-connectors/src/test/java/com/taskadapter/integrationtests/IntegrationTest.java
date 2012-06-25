@@ -72,7 +72,7 @@ public class IntegrationTest extends AbstractSyncRunnerTest {
     }
 
     @Test
-    public void testOneSideDisconnectedRelationships() throws IOException {
+    public void testOneSideDisconnectedRelationships() throws IOException, ConnectorException {
         RedmineConfig redmineConfigTo = RedmineTestConfig.getRedmineTestConfig();
 
         MSPConfig mspConfig = getConfig("ProjectWithOneSideDisconnectedRelationships.xml");

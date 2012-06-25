@@ -7,6 +7,7 @@ import com.taskadapter.connector.common.TransportException;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.definition.TaskError;
+import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.SyncRunner;
 import com.taskadapter.web.configeditor.EditorUtil;
@@ -51,17 +52,20 @@ public class ExportPage extends ActionPage {
         runner.setConnectorFrom(connectorFrom);
         try {
             this.loadedTasks = runner.load(ProgressMonitorUtils.getDummyMonitor());
-        } catch (TransportException e) {
+        } catch (CommunicationException e) {
             String message = getErrorMessageForException(e);
             showErrorMessageOnPage(message);
             logger.error("transport error: " + message, e);
-        } catch (RuntimeException e) {
+        } catch (ConnectorException e) {
             showErrorMessageOnPage(e.getMessage());
+            logger.error(e.getMessage(), e);
+        } catch (RuntimeException e) {
+            showErrorMessageOnPage("Internal error: " + e.getMessage());
             logger.error(e.getMessage(), e);
         }
     }
 
-    private String getErrorMessageForException(TransportException e) {
+    private String getErrorMessageForException(CommunicationException e) {
         if (EditorUtil.getRoot(e) instanceof UnknownHostException) {
             return "Unknown host";
         } else {

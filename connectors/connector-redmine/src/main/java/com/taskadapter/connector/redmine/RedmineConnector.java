@@ -1,14 +1,13 @@
 package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.common.AbstractConnector;
-import com.taskadapter.connector.common.TransportException;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.RedmineManager.INCLUDE;
-import com.taskadapter.redmineapi.RedmineTransportException;
 import com.taskadapter.redmineapi.bean.Issue;
 
 import java.util.ArrayList;
@@ -25,8 +24,8 @@ public class RedmineConnector extends AbstractConnector<RedmineConfig> {
 
     @Override
     public void updateRemoteIDs(ConnectorConfig configuration,
-                                SyncResult res, ProgressMonitor monitor) {
-        throw new RuntimeException("not implemented for this connector");
+                                SyncResult res, ProgressMonitor monitor) throws UnsupportedConnectorOperation {
+        throw new UnsupportedConnectorOperation("update Remote Ids not implemented for redmine connector");
     }
 
     @Override
@@ -35,7 +34,7 @@ public class RedmineConnector extends AbstractConnector<RedmineConfig> {
     }
 
     @Override
-    public GTask loadTaskByKey(String key) {
+    public GTask loadTaskByKey(String key) throws ConnectorException {
         try {
             WebServerInfo serverInfo = config.getServerInfo();
             RedmineManager mgr = RedmineManagerFactory
@@ -46,12 +45,12 @@ public class RedmineConnector extends AbstractConnector<RedmineConfig> {
             RedmineDataConverter converter = new RedmineDataConverter(config);
             return converter.convertToGenericTask(issue);
         } catch (RedmineException e) {
-            throw new RuntimeException(e);
+            throw RedmineExceptions.convertException(e);
         }
     }
     
     @Override
-    public List<GTask> loadData(ProgressMonitor monitorIGNORED) {
+    public List<GTask> loadData(ProgressMonitor monitorIGNORED) throws ConnectorException {
         try {
             RedmineManager mgr = RedmineManagerFactory
                     .createRedmineManager(config.getServerInfo());
@@ -59,11 +58,9 @@ public class RedmineConnector extends AbstractConnector<RedmineConfig> {
             List<Issue> issues = mgr.getIssues(config.getProjectKey(),
                     config.getQueryId(), INCLUDE.relations);
             return convertToGenericTasks(config, issues);
-        } catch (RedmineTransportException e) {
-            throw new TransportException("There was a problem communicating with Redmine server", e);
         } catch (RedmineException e) {
-        	throw new RuntimeException(e);
-		}
+            throw RedmineExceptions.convertException(e);
+        }
     }
     
 	private List<GTask> convertToGenericTasks(RedmineConfig config,

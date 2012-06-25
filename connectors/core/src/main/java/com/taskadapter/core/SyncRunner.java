@@ -2,7 +2,6 @@ package com.taskadapter.core;
 
 import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.common.DataConnectorUtil;
-import com.taskadapter.connector.common.TransportException;
 import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
@@ -42,27 +41,23 @@ public class SyncRunner {
 
     /**
      * @param monitor can be NULL (ignored in this case)
+     * @throws ConnectorException 
      */
-    public List<GTask> load(ProgressMonitor monitor) {
+    public List<GTask> load(ProgressMonitor monitor) throws ConnectorException {
         if (monitor != null) {
             monitor.beginTask(
                     "Loading data from " + connectorFrom.getConfig().getLabel(),
                     100);
         }
-        try {
-			List<GTask> flatTasksList = ConnectorUtils.loadDataOrderedById(
-					connectorFrom, monitor);
-            flatTasksList = applyTrialIfNeeded(flatTasksList);
+		List<GTask> flatTasksList = ConnectorUtils.loadDataOrderedById(
+				connectorFrom, monitor);
+        flatTasksList = applyTrialIfNeeded(flatTasksList);
 
-            // can be NULL if there was an exception
-            if (flatTasksList != null) {
-                this.tasks = TreeUtils.buildTreeFromFlatList(flatTasksList);
-            }
-        } catch (TransportException e) {
-            throw e;
-        } catch (Exception e1) {
-            throw new RuntimeException(e1);
+        // can be NULL if there was an exception
+        if (flatTasksList != null) {
+            this.tasks = TreeUtils.buildTreeFromFlatList(flatTasksList);
         }
+        
         if (monitor != null) {
             monitor.done();
         }
