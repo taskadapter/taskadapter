@@ -2,6 +2,7 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.common.AbstractConnector;
 import com.taskadapter.connector.definition.*;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import net.sf.mpxj.ProjectFile;
@@ -162,7 +163,7 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
 
 
     @Override
-    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) {
+    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
     	return new MSPTaskSaver(config).saveData(tasks, monitor);
     }
 }

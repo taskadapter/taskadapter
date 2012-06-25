@@ -9,6 +9,7 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.definition.TaskError;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 
@@ -27,28 +28,24 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
         this.config = config;
     }
 
-    abstract protected Object convertToNativeTask(GTask task);
+    abstract protected Object convertToNativeTask(GTask task) throws ConnectorException ;
 
-    abstract protected GTask createTask(Object nativeTask);
+    abstract protected GTask createTask(Object nativeTask) throws ConnectorException;
 
-    abstract protected void updateTask(String taskId, Object nativeTask);
+    abstract protected void updateTask(String taskId, Object nativeTask) throws ConnectorException;
     
     /**
      * the default implementation does nothing.
      */
-    protected void beforeSave() {
+    protected void beforeSave() throws ConnectorException {
         // nothing here
     }
 
-    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) {
+    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
         this.monitor = monitor;
 
-        try {
-            beforeSave();
-            save(null, tasks);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        beforeSave();
+        save(null, tasks);
 
         return syncResult;
     }
@@ -56,7 +53,7 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
     /**
      * this method will go through children itself.
      */
-    protected SyncResult save(String parentIssueKey, List<GTask> tasks) {
+    protected SyncResult save(String parentIssueKey, List<GTask> tasks) throws ConnectorException {
         Iterator<GTask> it = tasks.iterator();
         while (it.hasNext()) {
             GTask task = it.next();
@@ -69,9 +66,13 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
                 }
                 Object nativeIssueToCreateOrUpdate = convertToNativeTask(task);
                 newTaskKey = submitTask(task, nativeIssueToCreateOrUpdate);
-            } catch (Exception e) {
+            } catch (ConnectorException e) {
                 syncResult.addError(new TaskError(task, Arrays.asList(e
                         .getMessage())));
+            } catch (Throwable t) {
+                syncResult.addError(new TaskError(task, Arrays.asList(t
+                        .getMessage())));
+               
             }
             reportProgress();
 
@@ -114,12 +115,13 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
         return newRelations;
     }
 
-    abstract protected void saveRelations(List<GRelation> relations);
+    abstract protected void saveRelations(List<GRelation> relations) throws ConnectorException;
 
     /**
      * @return the newly created task's KEY
+     * @throws ConnectorException 
      */
-    protected String submitTask(GTask task, Object nativeTask) {
+    protected String submitTask(GTask task, Object nativeTask) throws ConnectorException {
         String newTaskKey;
         if (task.getRemoteId() == null) {
             GTask newTask = createTask(nativeTask);

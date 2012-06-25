@@ -3,6 +3,7 @@ package com.taskadapter.connector.redmine;
 import com.taskadapter.connector.common.AbstractConnector;
 import com.taskadapter.connector.common.TransportException;
 import com.taskadapter.connector.definition.*;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
@@ -77,7 +78,7 @@ public class RedmineConnector extends AbstractConnector<RedmineConfig> {
 	}
     
 	@Override
-	public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) {
+	public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
 		return new RedmineTaskSaver(config).saveData(tasks, monitor);
 	}
 }

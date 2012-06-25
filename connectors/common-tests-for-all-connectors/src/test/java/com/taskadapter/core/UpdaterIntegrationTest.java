@@ -65,7 +65,7 @@ public class UpdaterIntegrationTest extends AbstractSyncRunnerTest {
 		TaskUtil.setRemoteIdField(rmIssues);
 	}
 
-    private void saveToMSP() {
+    private void saveToMSP() throws ConnectorException {
         new MSPTaskSaver(mspConfig).saveData(rmIssues, null);
     }
 

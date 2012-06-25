@@ -10,6 +10,7 @@ import java.rmi.RemoteException;
  * @author Alexey Skorokhodov
  */
 @SuppressWarnings("serial")
+@Deprecated
 public class JiraException extends RuntimeException {
     private final static String[] PREFIXES_TO_DELETE = new String[]{
             "com.atlassian.jira.rpc.exception.RemoteAuthenticationException: ",

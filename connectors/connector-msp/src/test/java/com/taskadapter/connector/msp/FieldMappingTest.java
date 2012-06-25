@@ -3,6 +3,7 @@ package com.taskadapter.connector.msp;
 import com.taskadapter.connector.common.CommonTests;
 import com.taskadapter.connector.common.TestSaver;
 import com.taskadapter.connector.common.TestUtils;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
@@ -194,7 +195,7 @@ public class FieldMappingTest {
         assertEquals(assignee.getId(), loadedTask.getAssignee().getId());
     }
 
-    private static List<Task> saveAndLoad(MSPConfig config, FIELD field, boolean useMap, String mapTo, GTask... tasks) throws IOException, MPXJException {
+    private static List<Task> saveAndLoad(MSPConfig config, FIELD field, boolean useMap, String mapTo, GTask... tasks) throws IOException, MPXJException, ConnectorException {
         MSPConfig temporaryClonedconfig = new MSPConfig(config);
 		temporaryClonedconfig.getFieldMappings().setMapping(field, useMap, mapTo);
 

@@ -3,6 +3,7 @@ package com.taskadapter.connector.jira;
 import com.atlassian.jira.rpc.soap.client.*;
 import com.taskadapter.connector.common.AbstractConnector;
 import com.taskadapter.connector.definition.*;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
@@ -113,7 +114,7 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
     }
     
     @Override
-    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) {
+    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
     	return new JiraTaskSaver(config).saveData(tasks, monitor);
     }
 }
