@@ -1,12 +1,6 @@
 package com.taskadapter;
 
 import com.google.common.io.Files;
-import com.taskadapter.connector.definition.SyncResult;
-import com.taskadapter.connector.msp.MSPConfig;
-import com.taskadapter.connector.msp.MSXMLFileWriter;
-import com.taskadapter.model.GTask;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,8 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FileManager {
-
-    private final Logger logger = LoggerFactory.getLogger(FileManager.class);
 
     // TODO maybe return File?
     public static String getDataRootFolderName() {
@@ -71,10 +63,6 @@ public class FileManager {
         }
     }
 
-    public File createDefaultMSPFile(String userLoginName) {
-        return createMSPXmlFile(new File(createDefaultMSPFileName(userLoginName)));
-    }
-
     /**
      * Search for unused file name in user folder starting from postfix 1
      * TODO think about performance and optimization
@@ -93,18 +81,5 @@ public class FileManager {
             }
         }
         return null;
-    }
-
-    private File createMSPXmlFile(File file) {
-        try {
-            MSPConfig config = new MSPConfig(file.getAbsolutePath());
-            List<GTask> rows = new ArrayList<GTask>();
-            new MSXMLFileWriter(config).write(new SyncResult(), rows, false);
-        } catch (IOException e) {
-            logger.error("IO Exception when creating MSP file: " + e.getMessage(), e);
-            // TODO do not return null.
-            return null;
-        }
-        return file;
     }
 }

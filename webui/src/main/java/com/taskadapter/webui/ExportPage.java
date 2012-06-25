@@ -3,7 +3,6 @@ package com.taskadapter.webui;
 import com.google.common.base.Strings;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
-import com.taskadapter.connector.common.TransportException;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.definition.TaskError;

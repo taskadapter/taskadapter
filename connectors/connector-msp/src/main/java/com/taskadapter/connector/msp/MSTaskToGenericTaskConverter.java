@@ -1,5 +1,6 @@
 package com.taskadapter.connector.msp;
 
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
@@ -20,7 +21,7 @@ class MSTaskToGenericTaskConverter {
         this.header = header;
     }
 
-    public List<GTask> convertToGenericTaskList(List<Task> tasks) {
+    public List<GTask> convertToGenericTaskList(List<Task> tasks) throws BadConfigException {
         List<GTask> genericTasks = new ArrayList<GTask>();
 
         for (Task task : tasks) {
@@ -34,7 +35,7 @@ class MSTaskToGenericTaskConverter {
         return genericTasks;
     }
 
-    public GTask convertToGenericTask(Task task) {
+    public GTask convertToGenericTask(Task task) throws BadConfigException {
         GTask genericTask = new GTask();
         genericTask.setType(extractType(task));
 
@@ -136,7 +137,7 @@ class MSTaskToGenericTaskConverter {
         return null;
     }
 
-    Float extractEstimatedHours(Task task) {
+    Float extractEstimatedHours(Task task) throws BadConfigException {
         Duration useAsEstimatedTime = null;
 
         if (MSPUtils.useWork(config)) {

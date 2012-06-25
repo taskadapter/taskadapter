@@ -61,7 +61,7 @@ public class Updater {
 
     }
 
-    public void saveFile() {
+    public void saveFile() throws ConnectorException {
         // TODO remove the casting!
         ((FileBasedConnector) fileConnector).updateTasksByRemoteIds(tasksInExternalSystem);
     }

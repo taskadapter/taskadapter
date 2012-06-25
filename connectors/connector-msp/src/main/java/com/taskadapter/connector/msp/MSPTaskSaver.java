@@ -3,10 +3,12 @@ package com.taskadapter.connector.msp;
 import com.taskadapter.connector.common.AbstractTaskSaver;
 import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.SyncResult;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GRelation.TYPE;
 import com.taskadapter.model.GTask;
 import net.sf.mpxj.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +27,7 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
     }
 
     @Override
-    protected SyncResult save(String parentTaskKey, List<GTask> tasks) {
+    protected SyncResult save(String parentTaskKey, List<GTask> tasks) throws ConnectorException {
         SyncResult result = saveData(tasks, false);
         List<GTask> newTaskList = TreeUtils.buildFlatListFromTree(tasks);
         List<GRelation> relations = buildNewRelations(newTaskList);
@@ -37,14 +39,15 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
 
     /**
      * This method allows saving data to MSP file while keeping tasks ids.
+     * @throws ConnectorException 
      */
-    private SyncResult saveData(List<GTask> tasks, boolean keepTaskId) {
+    private SyncResult saveData(List<GTask> tasks, boolean keepTaskId) throws ConnectorException {
         try {
             String result = writer.write(syncResult, tasks, keepTaskId);
             syncResult.setTargetFileAbsolutePath(result);
             return syncResult;
         } catch (IOException e) {
-            throw new RuntimeException("Can't save data:\n" + e.toString(), e);
+            throw MSPExceptions.convertException(e);
         }
     }
 
@@ -104,7 +107,11 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
             }
 
             writer.writeProject(projectFile);
-        } catch (Exception e) {
+        } catch (MPXJException e) {
+            syncResult.addGeneralError("Can't create Tasks Relations");
+        } catch (IOException e) {
+            syncResult.addGeneralError("Can't create Tasks Relations");
+        } catch (Throwable e) {
             syncResult.addGeneralError("Can't create Tasks Relations");
         }
     }

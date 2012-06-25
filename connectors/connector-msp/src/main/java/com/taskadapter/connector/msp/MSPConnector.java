@@ -2,15 +2,19 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.common.AbstractConnector;
 import com.taskadapter.connector.definition.*;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
+
+import net.sf.mpxj.MPXJException;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Task;
 import net.sf.mpxj.TaskField;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBasedConnector {
@@ -20,7 +24,7 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
     }
 
     @Override
-    public void updateRemoteIDs(ConnectorConfig config, SyncResult res, ProgressMonitor monitorIGNORED) {
+    public void updateRemoteIDs(ConnectorConfig config, SyncResult res, ProgressMonitor monitorIGNORED) throws ConnectorException {
         if (res.getCreateTasksNumber() == 0) {
             return;
         }
@@ -38,8 +42,10 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
             }
 
             new MSXMLFileWriter(c).writeProject(projectFile);
-        } catch (Exception e) {
-            throw new RuntimeException(e.toString(), e);
+        } catch (MPXJException e) {
+            throw MSPExceptions.convertException(e);
+        } catch (IOException e) {
+            throw MSPExceptions.convertException(e);
         }
     }
 
@@ -61,7 +67,7 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
     }
 
     @Override
-    public void updateTasksByRemoteIds(List<GTask> tasksFromExternalSystem) {
+    public void updateTasksByRemoteIds(List<GTask> tasksFromExternalSystem) throws ConnectorException {
         String fileName = config.getInputAbsoluteFilePath();
         MSXMLFileWriter writer = new MSXMLFileWriter(config);
         try {
@@ -72,8 +78,10 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
                 writer.setTaskFields(projectFile, mspTask, gTask, true);
             }
             writer.writeProject(projectFile);
-        } catch (Exception e) {
-            throw new RuntimeException(e.toString(), e);
+        } catch (MPXJException e) {
+            throw MSPExceptions.convertException(e);
+        } catch (IOException e) {
+            throw MSPExceptions.convertException(e);
         }
     }
 
@@ -120,15 +128,15 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
     }
     
     @Override
-    public List<GTask> loadData(ProgressMonitor monitorIGNORED) {
+    public List<GTask> loadData(ProgressMonitor monitorIGNORED) throws ConnectorException {
         ProjectFile projectFile;
         final MSPFileReader fileReader = new MSPFileReader();
         try {
             projectFile = fileReader.readFile(config.getInputAbsoluteFilePath());
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("MSP: Can't find file with name \"" + config.getInputAbsoluteFilePath() + "\".");
-        } catch (Exception e) {
-        	throw new RuntimeException(e);
+            throw new BadConfigException("MSP: Can't find file with name \"" + config.getInputAbsoluteFilePath() + "\".");
+        } catch (MPXJException e) {
+            throw MSPExceptions.convertException(e);
         }
 
         List<Task> mspTasks = projectFile.getAllTasks();
@@ -153,7 +161,7 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
         return mspTasks;
     }
     
-    private List<GTask> loadTasks(ProjectFile project, MSPConfig config, List<Task> mspTasks) {
+    private List<GTask> loadTasks(ProjectFile project, MSPConfig config, List<Task> mspTasks) throws BadConfigException {
         final MSTaskToGenericTaskConverter converter = new MSTaskToGenericTaskConverter();
         converter.setConfig(config);
         converter.setHeader(project.getProjectHeader());
