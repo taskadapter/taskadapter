@@ -6,6 +6,7 @@ import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebConfig;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GProject;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.callbacks.DataProvider;
@@ -67,8 +68,9 @@ public class JiraEditor extends TwoColumnsConfigEditor {
 	/**
      * Shows a project info.
      * @throws ValidationException 
+	 * @throws ConnectorException 
      */
-    void loadProjectInfo() throws ValidationException {
+    void loadProjectInfo() throws ValidationException, ConnectorException {
         WebConfig webConfig = (WebConfig) config;
         if (!webConfig.getServerInfo().isHostSet()) {
             throw new ValidationException("Host URL is not set");
@@ -107,8 +109,9 @@ public class JiraEditor extends TwoColumnsConfigEditor {
 	/**
      * Loads jira priorities.
      * @return priorities from server.
+	 * @throws ConnectorException 
      */
-    Priorities loadJiraPriorities() throws ValidationException {
+    Priorities loadJiraPriorities() throws ValidationException, ConnectorException {
         if (!getJiraConfig().getServerInfo().isHostSet()) {
             throw new ValidationException("Host URL is not set");
         }

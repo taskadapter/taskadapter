@@ -6,6 +6,7 @@ import java.rmi.RemoteException;
 
 import org.apache.axis.AxisFault;
 
+import com.atlassian.jira.rpc.soap.client.RemoteAuthenticationException;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.jira.exceptions.BadHostException;
@@ -23,6 +24,10 @@ public final class JiraUtils {
     private final static String SUFFIX_EMPTY_BRACES = " : []";
 
     public static ConnectorException convertException(RemoteException e) {
+        if (e instanceof RemoteAuthenticationException) {
+            return new ConnectorException(((RemoteAuthenticationException) e).getFaultString());
+        }
+        
         if (!(e instanceof AxisFault))
             return new CommunicationException(e);
         

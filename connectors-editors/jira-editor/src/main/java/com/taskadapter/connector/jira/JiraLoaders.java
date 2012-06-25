@@ -1,20 +1,22 @@
 package com.taskadapter.connector.jira;
 
+import java.net.MalformedURLException;
+import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.List;
 
-import com.atlassian.jira.rpc.soap.client.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.soap.client.RemotePriority;
 import com.atlassian.jira.rpc.soap.client.RemoteProject;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GProject;
 
 public class JiraLoaders {
 
 	public static Priorities loadPriorities(WebServerInfo serverInfo)
-			throws ValidationException {
+			throws ValidationException, ConnectorException {
 		validate(serverInfo);
 		final Priorities defaultPriorities = JiraConfig
 				.createDefaultPriorities();
@@ -29,17 +31,17 @@ public class JiraLoaders {
 				result.setPriority(priority.getName(),
 						defaultPriorities.getPriorityByText(priority.getName()));
 			}
-		} catch (RemoteAuthenticationException e) {
-			throw new RuntimeException(e.getFaultString());
-		} catch (Exception e) {
-			throw new RuntimeException(e.toString());
-		}
+        } catch (RemoteException e) {
+            throw JiraUtils.convertException(e);
+        } catch (MalformedURLException e) {
+            throw JiraUtils.convertException(e);
+        }
 
 		return result;
 	}
 
 	public static List<GProject> loadProjects(WebServerInfo serverInfo)
-			throws ValidationException {
+			throws ValidationException, ConnectorException {
 		validate(serverInfo);
 		List<GProject> gProjects;
 		try {
@@ -48,17 +50,17 @@ public class JiraLoaders {
 			RemoteProject[] projects = connection.getProjects();
 			gProjects = new JiraProjectConverter().toGProjects(Arrays
 					.asList(projects));
-		} catch (RemoteAuthenticationException e) {
-			throw new JiraException(e);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+        } catch (RemoteException e) {
+            throw JiraUtils.convertException(e);
+        } catch (MalformedURLException e) {
+            throw JiraUtils.convertException(e);
+        }
 
 		return gProjects;
 	}
 
 	public static GProject loadProject(WebServerInfo serverInfo,
-			String projectKey) throws ValidationException {
+			String projectKey) throws ValidationException, ConnectorException {
 		GProject gProject;
 		validate(serverInfo);
 		try {
@@ -66,11 +68,11 @@ public class JiraLoaders {
 					.createConnection(serverInfo);
 			RemoteProject project = connection.getProject(projectKey);
 			gProject = new JiraProjectConverter().toGProject(project);
-		} catch (RemoteAuthenticationException e) {
-			throw new JiraException(e);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+        } catch (RemoteException e) {
+            throw JiraUtils.convertException(e);
+        } catch (MalformedURLException e) {
+            throw JiraUtils.convertException(e);
+        }
 		return gProject;
 
 	}

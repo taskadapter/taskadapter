@@ -3,8 +3,10 @@ package com.taskadapter.connector.jira;
 import com.atlassian.jira.rpc.soap.client.RemoteIssue;
 import com.atlassian.jira.rpc.soap.client.RemoteIssueType;
 import com.atlassian.jira.rpc.soap.client.RemotePriority;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 
+import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +15,7 @@ public class JiraTaskLoader {
     private JiraTaskConverter converter;
     private JiraConnection connection;
     
-    public JiraTaskLoader(JiraConfig config) {
+    public JiraTaskLoader(JiraConfig config) throws ConnectorException {
     	try {
 		    connection = JiraConnectionFactory.createConnection(config.getServerInfo());
 		
@@ -25,16 +27,15 @@ public class JiraTaskLoader {
 		
 		    converter = new JiraTaskConverter(config);
 		    converter.setPriorities(jiraPriorities);
-		    converter.setIssueTypeList(issueTypeList);
-		
-		} catch (RemoteException e) {
-		    throw new JiraException(e);
-		} catch (Exception e) {
-		    throw new RuntimeException(e);
-		}
+		    converter.setIssueTypeList(issueTypeList);		
+        } catch (RemoteException e) {
+            throw JiraUtils.convertException(e);
+        } catch (MalformedURLException e) {
+            throw JiraUtils.convertException(e);
+        }
 	}
 
-    List<GTask> loadTasks(JiraConfig config) {
+    List<GTask> loadTasks(JiraConfig config) throws ConnectorException {
         List<GTask> rows;
         try {
             List<RemoteIssue> issues = Arrays.asList(connection.getIssuesFromFilter(extractQueryId(config)));
@@ -43,7 +44,7 @@ public class JiraTaskLoader {
             JiraUserConverter userConverter = new JiraUserConverter(connection);
             rows = userConverter.convertAssignees(rows);
         } catch (RemoteException e) {
-            throw new JiraException(e);
+            throw JiraUtils.convertException(e);
         }
         return rows;
     }
@@ -52,12 +53,12 @@ public class JiraTaskLoader {
         return String.valueOf(connectorConfig.getQueryId());
     }
 
-    GTask loadTask(JiraConfig config, String taskKey) {
+    GTask loadTask(JiraConfig config, String taskKey) throws ConnectorException {
         try {
             RemoteIssue issue = connection.getIssueByKey(taskKey);
             return converter.convertToGenericTask(issue);
         } catch (RemoteException e) {
-            throw new JiraException(e);
+            throw JiraUtils.convertException(e);
         }
     }
 }

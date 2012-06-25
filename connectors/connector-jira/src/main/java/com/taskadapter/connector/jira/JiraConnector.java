@@ -8,6 +8,8 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
 
+import java.net.MalformedURLException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,35 +25,39 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
         throw new RuntimeException("not implemented for this connector");
     }
 
-    public GTask loadTaskByKey(WebServerInfo info, String key) {
-
+    public GTask loadTaskByKey(WebServerInfo info, String key) throws ConnectorException {
         try {
             JiraConnection connection = JiraConnectionFactory.createConnection(info);
-            RemoteIssue issue = connection.getIssueByKey(key);
+            RemoteIssue issue;
+                issue = connection.getIssueByKey(key);
             JiraTaskConverter converter = new JiraTaskConverter(config);
             JiraUserConverter userConverter = new JiraUserConverter(connection);
             return userConverter.setAssigneeDisplayName(converter.convertToGenericTask(issue));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (RemoteException e) {
+            throw JiraUtils.convertException(e);
+        } catch (MalformedURLException e) {
+            throw JiraUtils.convertException(e);
         }
     }
 
     // XXX refactor this. we don't even need the IDs!
-    public List<NamedKeyedObject> getFilters() throws Exception {
-        try {
-            JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
-            RemoteFilter[] objects = connection.getSavedFilters();
-            List<NamedKeyedObject> list = new ArrayList<NamedKeyedObject>();
-            for (RemoteFilter o : objects) {
-                list.add(new NamedKeyedObjectImpl(o.getId(), o.getName()));
+    public List<NamedKeyedObject> getFilters() throws ConnectorException {
+            try {
+                JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
+                RemoteFilter[] objects = connection.getSavedFilters();
+                List<NamedKeyedObject> list = new ArrayList<NamedKeyedObject>();
+                for (RemoteFilter o : objects) {
+                    list.add(new NamedKeyedObjectImpl(o.getId(), o.getName()));
+                }
+                return list;
+            } catch (RemoteException e) {
+                throw JiraUtils.convertException(e);
+            } catch (MalformedURLException e) {
+                throw JiraUtils.convertException(e);
             }
-            return list;
-        } catch (RemoteAuthenticationException e) {
-            throw new JiraException(e);
-        }
     }
 
-    public List<NamedKeyedObject> getComponents() throws Exception {
+    public List<NamedKeyedObject> getComponents() throws ConnectorException {
         try {
             JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
             RemoteComponent[] components = connection.getComponents(config.getProjectKey());
@@ -60,13 +66,15 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
                 list.add(new NamedKeyedObjectImpl(c.getId(), c.getName()));
             }
             return list;
-        } catch (RemoteAuthenticationException e) {
-            throw new JiraException(e);
+        } catch (RemoteException e) {
+            throw JiraUtils.convertException(e);
+        } catch (MalformedURLException e) {
+            throw JiraUtils.convertException(e);
         }
     }
 
     // XXX refactor this. we don't even need the IDs!
-    public List<NamedKeyedObject> getVersions() throws Exception {
+    public List<NamedKeyedObject> getVersions() throws ConnectorException {
         try {
             JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
             RemoteVersion[] objects = connection.getVersions(config.getProjectKey());
@@ -75,12 +83,14 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
                 list.add(new NamedKeyedObjectImpl(o.getId(), o.getName()));
             }
             return list;
-        } catch (RemoteAuthenticationException e) {
-            throw new JiraException(e);
+        } catch (RemoteException e) {
+            throw JiraUtils.convertException(e);
+        } catch (MalformedURLException e) {
+            throw JiraUtils.convertException(e);
         }
     }
 
-    public List<NamedKeyedObject> getIssueTypes() throws Exception {
+    public List<NamedKeyedObject> getIssueTypes() throws ConnectorException {
         try {
             JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
             RemoteIssueType[] issueTypeList = connection.getIssueTypeList(config.getProjectKey());
@@ -91,8 +101,10 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
             }
 
             return list;
-        } catch (RemoteAuthenticationException e) {
-            throw new JiraException(e);
+        } catch (RemoteException e) {
+            throw JiraUtils.convertException(e);
+        } catch (MalformedURLException e) {
+            throw JiraUtils.convertException(e);
         }
     }
 
@@ -102,13 +114,13 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
     }
 
     @Override
-    public GTask loadTaskByKey(String key) {
+    public GTask loadTaskByKey(String key) throws ConnectorException {
     	final JiraTaskLoader loader = new JiraTaskLoader(config);
     	return loader.loadTask(config, key);
     }
     
     @Override
-    public List<GTask> loadData(ProgressMonitor monitorIGNORED) {
+    public List<GTask> loadData(ProgressMonitor monitorIGNORED) throws ConnectorException {
     	final JiraTaskLoader loader = new JiraTaskLoader(config);
     	return loader.loadTasks(config);
     }

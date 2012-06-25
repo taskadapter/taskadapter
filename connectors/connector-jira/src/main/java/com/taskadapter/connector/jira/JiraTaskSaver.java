@@ -2,10 +2,13 @@ package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rpc.soap.client.*;
 import com.taskadapter.connector.common.AbstractTaskSaver;
-import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 
+import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.util.List;
 
@@ -22,7 +25,7 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
     }
 
     @Override
-    public void beforeSave() {
+    public void beforeSave() throws ConnectorException {
         try {
             connection = JiraConnectionFactory.createConnection(config.getServerInfo());
 
@@ -38,13 +41,13 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
             RemotePriority[] jiraPriorities = connection.getPriorities();
             converter.setPriorities(jiraPriorities);
         } catch (RemoteException e) {
-            throw new JiraException(e);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(), e);
+            throw JiraUtils.convertException(e);
+        } catch (MalformedURLException e) {
+            throw JiraUtils.convertException(e);
         }
     }
 
-    private RemoteIssueType[] checkDefaultIssueTypeExistsOnServer() throws RemoteException, ValidationException {
+    private RemoteIssueType[] checkDefaultIssueTypeExistsOnServer() throws RemoteException, BadConfigException {
         //check if default issue type exists in Jira
         boolean found = false;
         RemoteIssueType[] issueTypeList = connection.getIssueTypeList(config.getProjectKey());
@@ -56,7 +59,7 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
         }
 
         if (!found) {
-            throw new ValidationException("Default issue type " + config.getDefaultTaskType() + " does not exist in Jira");
+            throw new BadConfigException("Default issue type " + config.getDefaultTaskType() + " does not exist in Jira");
         }
         return issueTypeList;
     }
@@ -68,27 +71,27 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
     }
 
     @Override
-    protected GTask createTask(Object nativeTask) {
+    protected GTask createTask(Object nativeTask) throws ConnectorException {
         try {
             RemoteIssue createdIssue = connection.createIssue((RemoteIssue) nativeTask);
             return converter.convertToGenericTask(createdIssue);
         } catch (RemoteException e) {
-            throw new JiraException(e);
+            throw JiraUtils.convertException(e);
         }
     }
 
     @Override
-    protected void updateTask(String taskId, Object nativeTask) {
+    protected void updateTask(String taskId, Object nativeTask) throws ConnectorException {
         try {
             connection.updateIssue(taskId, (RemoteIssue) nativeTask);
         } catch (RemoteException e) {
-            throw new JiraException(e);
+            throw JiraUtils.convertException(e);
         }
     }
 
     @Override
-    protected void saveRelations(List<GRelation> relations) {
-        throw new RuntimeException("not implemented");
+    protected void saveRelations(List<GRelation> relations) throws UnsupportedConnectorOperation {
+        throw new UnsupportedConnectorOperation("not implemented");
         /* SEE this text in AbstractTaskSaver:
 
           // XXX get rid of the conversion, it won't work with Jira,
