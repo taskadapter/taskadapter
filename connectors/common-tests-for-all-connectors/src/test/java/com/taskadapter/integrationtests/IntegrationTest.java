@@ -2,6 +2,7 @@ package com.taskadapter.integrationtests;
 
 import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.redmine.RedmineConfig;
@@ -45,7 +46,7 @@ public class IntegrationTest extends AbstractSyncRunnerTest {
     }
 
     @Test
-    public void testSaveRemoteIdWithNonLinearUUID() throws URISyntaxException, IOException {
+    public void testSaveRemoteIdWithNonLinearUUID() throws URISyntaxException, IOException, ConnectorException {
 
         RedmineConfig redmineConfigTo = RedmineTestConfig.getRedmineTestConfig();
 

@@ -55,7 +55,7 @@ public class UpdaterIntegrationTest extends AbstractSyncRunnerTest {
         verifyMSPData();
     }
 
-    private void updateMSPFile() {
+    private void updateMSPFile() throws ConnectorException {
         Updater updater = new Updater(projectConnector, redmineConnector);
         updater.start();
     }
