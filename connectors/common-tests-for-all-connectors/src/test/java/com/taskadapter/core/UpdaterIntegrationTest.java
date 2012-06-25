@@ -3,6 +3,7 @@ package com.taskadapter.core;
 import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.common.TestUtils;
 import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.msp.MSPTaskSaver;
@@ -68,7 +69,7 @@ public class UpdaterIntegrationTest extends AbstractSyncRunnerTest {
         new MSPTaskSaver(mspConfig).saveData(rmIssues, null);
     }
 
-    private void modifyRedmineData() {
+    private void modifyRedmineData() throws ConnectorException {
         Random r = new Random();
         for (GTask task : rmIssues) {
             String updatedSummary = "updated" + r.nextInt();

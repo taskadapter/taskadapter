@@ -8,6 +8,7 @@ import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.SyncResult;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
@@ -80,7 +81,7 @@ public class SyncRunner {
         this.tasks = tasks;
     }
 
-    public SyncResult save(ProgressMonitor monitor) {
+    public SyncResult save(ProgressMonitor monitor) throws ConnectorException {
         int totalNumberOfTasks = DataConnectorUtil
                 .calculateNumberOfTasks(tasks);
         if (monitor != null) {
@@ -100,7 +101,7 @@ public class SyncRunner {
         SyncResult result;
         try {
             result = connectorTo.saveData(treeToSave, monitor);
-        } catch (Exception e) {
+        } catch (ConnectorException e) {
             result = new SyncResult();
             result.addGeneralError(e.getMessage());
         }

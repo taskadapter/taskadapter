@@ -2,6 +2,7 @@ package com.taskadapter.webui;
 
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.web.configeditor.DefaultPanel;
 import com.taskadapter.webui.action.ConfirmExportPage;
@@ -35,7 +36,7 @@ public abstract class ActionPage extends Page {
         buildInitialPage();
     }
 
-    protected abstract void saveData();
+    protected abstract void saveData() throws ConnectorException;
 
     protected abstract void loadData();
 
@@ -103,7 +104,13 @@ public abstract class ActionPage extends Page {
     private class SaveWorker extends Thread {
         @Override
         public void run() {
-            saveData();
+            try {
+                saveData();
+            } catch (ConnectorException e) {
+                // FIXME: add "connector error" dialog
+            } catch (Throwable t) {
+                // FIXME: Show "internal error" dialog
+            }
             // must synchronize changes over application
             synchronized (navigator.getApplication()) {
                 showAfterExport();

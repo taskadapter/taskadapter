@@ -2,6 +2,7 @@ package com.taskadapter.connector.common;
 
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.SyncResult;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
@@ -9,7 +10,7 @@ import java.util.List;
 
 public class CommonTests {
 
-    public void testLoadTasks(Connector<?> connector) {
+    public void testLoadTasks(Connector<?> connector) throws ConnectorException {
         int tasksQty = 1;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
 
@@ -30,19 +31,19 @@ public class CommonTests {
         assertEquals(expectedSummaryTask1, foundTask.getSummary());
     }
 
-    public void testDefaultDescriptionMapping(Connector<?> connector) {
+    public void testDefaultDescriptionMapping(Connector<?> connector) throws ConnectorException {
         GTask task = TestUtils.generateTask();
         GTask loadedTask = TestUtils.saveAndLoad(connector, task);
         assertEquals(task.getDescription(), loadedTask.getDescription());
     }
 
-    public void descriptionMapped(Connector<?> connector) {
+    public void descriptionMapped(Connector<?> connector) throws ConnectorException {
         GTask task = TestUtils.generateTask();
         GTask loadedTask = new TestSaver(connector).selectField(FIELD.DESCRIPTION).saveAndLoad(task);
         assertEquals(task.getDescription(), loadedTask.getDescription());
     }
 
-    public void testCreates2Tasks(Connector<?> connector) {
+    public void testCreates2Tasks(Connector<?> connector) throws ConnectorException {
         int tasksQty = 2;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
         SyncResult result = connector.saveData(tasks, null);

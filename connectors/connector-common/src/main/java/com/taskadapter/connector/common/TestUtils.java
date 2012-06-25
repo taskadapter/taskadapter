@@ -3,6 +3,7 @@ package com.taskadapter.connector.common;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
@@ -96,7 +97,7 @@ public class TestUtils {
         return cal;
     }
 
-    public static GTask saveAndLoad(Connector<?> connector, FIELD field, boolean selected, String mappingValue, GTask task) {
+    public static GTask saveAndLoad(Connector<?> connector, FIELD field, boolean selected, String mappingValue, GTask task) throws ConnectorException {
         ConnectorConfig config = connector.getConfig();
         final MappingStore savedMapping = getStore(config, field);
 		config.getFieldMappings().setMapping(field, selected, mappingValue); // ugly, but ...
@@ -106,17 +107,17 @@ public class TestUtils {
         return loadedTask;
     }
 
-    public static GTask saveAndLoad(Connector<?> connector, GTask task) {
+    public static GTask saveAndLoad(Connector<?> connector, GTask task) throws ConnectorException {
         List<GTask> loadedTasks = saveAndLoadAll(connector, task);
         return findTaskBySummary(loadedTasks, task.getSummary());
     }
 
-    public static List<GTask> saveAndLoadAll(Connector<?> connector, GTask task) {
+    public static List<GTask> saveAndLoadAll(Connector<?> connector, GTask task) throws ConnectorException {
         connector.saveData(Arrays.asList(task), null);
         return ConnectorUtils.loadDataOrderedById(connector);
     }
 
-    public static List<GTask> saveAndLoadList(Connector<?> connector, List<GTask> tasks) {
+    public static List<GTask> saveAndLoadList(Connector<?> connector, List<GTask> tasks) throws ConnectorException {
         connector.saveData(tasks, null);
         return ConnectorUtils.loadDataOrderedById(connector);
     }
