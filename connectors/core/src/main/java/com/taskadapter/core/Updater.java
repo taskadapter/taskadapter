@@ -33,7 +33,7 @@ public class Updater {
         saveFile();
     }
 
-    public void loadTasksFromFile(ProgressMonitor monitor) {
+    public void loadTasksFromFile(ProgressMonitor monitor) throws ConnectorException {
 		this.existingTasks = ConnectorUtils.loadDataOrderedById(fileConnector,
 				monitor);
     }

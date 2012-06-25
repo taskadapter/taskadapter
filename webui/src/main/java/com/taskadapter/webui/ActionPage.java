@@ -38,7 +38,7 @@ public abstract class ActionPage extends Page {
 
     protected abstract void saveData() throws ConnectorException;
 
-    protected abstract void loadData();
+    protected abstract void loadData() throws ConnectorException;
 
     private void buildInitialPage() {
         Label label = createLabel(getInitialText());
@@ -93,7 +93,13 @@ public abstract class ActionPage extends Page {
     private class LoadWorker extends Thread {
         @Override
         public void run() {
-            loadData();
+            try {
+                loadData();
+            } catch (ConnectorException e) {
+                // FIXME: add "connector error" dialog
+            } catch (Throwable t) {
+                // FIXME: Show "internal error" dialog
+            }
             // must synchronize changes over application
             synchronized (navigator.getApplication()) {
                 showAfterDataLoaded();

@@ -2,6 +2,7 @@ package com.taskadapter.connector.common;
 
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ProgressMonitor;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskUtils;
 
@@ -24,18 +25,14 @@ public final class ConnectorUtils {
 	 * @param monitor
 	 *            monitor to use.
 	 * @return loaded tasks list, sorted by task ID.
+	 * @throws ConnectorException 
 	 */
 	@Deprecated
 	public static List<GTask> loadDataOrderedById(Connector<?> connector,
-			ProgressMonitor monitor) {
-		try {
-			final List<GTask> tasks = connector.loadData(monitor);
-			Collections.sort(tasks, GTaskUtils.ID_COMPARATOR);
-			return tasks;
-		} catch (Exception e) {
-			// FIXME: we should use proper exceptions!
-			throw new RuntimeException(e);
-		}
+			ProgressMonitor monitor) throws ConnectorException {
+		final List<GTask> tasks = connector.loadData(monitor);
+		Collections.sort(tasks, GTaskUtils.ID_COMPARATOR);
+		return tasks;
 	}
 
 	/**
@@ -44,9 +41,10 @@ public final class ConnectorUtils {
 	 * @param connector
 	 *            connector to fetch data from.
 	 * @return loaded tasks list, sorted by task ID.
+	 * @throws ConnectorException 
 	 */
 	@Deprecated
-	public static List<GTask> loadDataOrderedById(Connector<?> connector) {
+	public static List<GTask> loadDataOrderedById(Connector<?> connector) throws ConnectorException {
 		return loadDataOrderedById(connector, ProgressMonitorUtils.getDummyMonitor());
 	}
 }

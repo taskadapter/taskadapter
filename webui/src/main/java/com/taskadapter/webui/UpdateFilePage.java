@@ -62,7 +62,7 @@ public class UpdateFilePage extends ActionPage {
     }
 
     @Override
-    public void loadData() {
+    public void loadData() throws ConnectorException {
         MonitorWrapper wrapper = new MonitorWrapper(loadProgress);
         updater.loadTasksFromFile(wrapper);
         updater.removeTasksWithoutRemoteIds();
