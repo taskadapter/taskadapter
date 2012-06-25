@@ -31,13 +31,9 @@ public class GithubProjectConverter {
         project.setHomepage(repository.getHomepage());
 
         if (repository.getName() != null && !"".equals(repository.getName())) {
-            try {
-                // TODO - think about String id's for GProject
-                // (Github repositories do not have integer IDs, only string based user/repo name
-                project.setId(repository.generateId().hashCode());
-            } catch (NumberFormatException e) {
-                throw new RuntimeException("should never happen", e);
-            }
+            // TODO - think about String id's for GProject
+            // (Github repositories do not have integer IDs, only string based user/repo name
+            project.setId(repository.generateId().hashCode());
         }
         return project;
     }
