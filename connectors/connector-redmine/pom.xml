@@ -31,7 +31,7 @@
         <dependency>
             <groupId>com.taskadapter</groupId>
             <artifactId>redmine-java-api</artifactId>
-            <version>1.13.0-SNAPSHOT</version>
+            <version>1.14-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

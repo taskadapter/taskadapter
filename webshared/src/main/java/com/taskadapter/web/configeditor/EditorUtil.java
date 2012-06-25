@@ -33,6 +33,7 @@ public class EditorUtil {
         newWindow.setModal(true);
 
         windowProvider.getWindow().addWindow(newWindow);
+        newWindow.focus();
     }
 
     public static void show(Window window, String caption, Exception e) {
