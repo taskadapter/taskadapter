@@ -23,6 +23,7 @@ import java.io.File;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 public class ExportPage extends ActionPage {
 
@@ -136,7 +137,7 @@ public class ExportPage extends ActionPage {
         for (String e : result.getGeneralErrors()) {
             errorText += e + "<br>";
         }
-        for (TaskError e : result.getErrors()) {
+        for (TaskError<List<String>> e : result.getErrors()) {
             errorText += getMessageForTask(e) + "<br>";
         }
         Label errorTextLabel = new Label(errorText);
@@ -171,7 +172,7 @@ public class ExportPage extends ActionPage {
         donePanel.addComponent(downloadButton);
     }
 
-    private String getMessageForTask(TaskError e) {
+    private String getMessageForTask(TaskError<List<String>> e) {
         return "Task " + e.getTask().getId() + " (\"" + e.getTask().getSummary() + "\"): " + e.getErrors();
     }
 

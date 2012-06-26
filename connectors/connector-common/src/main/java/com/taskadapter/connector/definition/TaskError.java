@@ -1,14 +1,17 @@
 package com.taskadapter.connector.definition;
 
-import java.util.List;
-
 import com.taskadapter.model.GTask;
 
-public class TaskError {
+/**
+ * Defines a task error. 
+ *
+ * @param <T> error definition type.
+ */
+public class TaskError<T> {
     private GTask task;
-    private List<String> errors;
+    private T errors;
 
-    public TaskError(GTask task, List<String> errors) {
+    public TaskError(GTask task, T errors) {
         super();
         this.task = task;
         this.errors = errors;
@@ -18,7 +21,7 @@ public class TaskError {
         return task;
     }
 
-    public List<String> getErrors() {
+    public T getErrors() {
         return errors;
     }
 
