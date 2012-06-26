@@ -7,6 +7,7 @@ import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.SyncResult;
+import com.taskadapter.connector.definition.TaskError;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.model.GTask;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static com.taskadapter.license.LicenseManager.TRIAL_MESSAGE;
@@ -76,7 +78,7 @@ public class SyncRunner {
         this.tasks = tasks;
     }
 
-    public SyncResult<Throwable> save(ProgressMonitor monitor) throws RemoteIdUpdateFailedException {
+    public SyncResult<ConnectorError<Throwable>> save(ProgressMonitor monitor) {
         int totalNumberOfTasks = DataConnectorUtil
                 .calculateNumberOfTasks(tasks);
         if (monitor != null) {
@@ -92,14 +94,25 @@ public class SyncRunner {
         } else {
             treeToSave = this.tasks;
         }
+        
+        SyncResult<ConnectorError<Throwable>> result;
+        SyncResult<Throwable> saveResult;
 
-        SyncResult<Throwable> result;
         try {
-            result = connectorTo.saveData(treeToSave, monitor);
+            saveResult = connectorTo.saveData(treeToSave, monitor);
+            result = saveResult.withoutErrors();
+            result.addErrors(connectorizeTasks(saveResult.getErrors(),
+                    connectorTo.getDescriptor().getID()));
+            result.addGeneralErrors(connectorize(saveResult.getGeneralErrors(),
+                    connectorTo.getDescriptor().getID()));
         } catch (ConnectorException e) {
-            result = new SyncResult<Throwable>();
-            result.addGeneralError(e);
+            saveResult = null;
+            result = new SyncResult<ConnectorError<Throwable>>();
+            result.addGeneralError(new ConnectorError<Throwable>(e,
+                    connectorFrom.getDescriptor().getID()));
         }
+        
+        
 
         if (monitor != null) {
             monitor.done();
@@ -109,17 +122,34 @@ public class SyncRunner {
         // the target systems.
 
         ConnectorConfig configFrom = connectorFrom.getConfig();
-        if (configFrom.getFieldMappings().isFieldSelected(FIELD.REMOTE_ID)) {
+        if (saveResult != null
+                && configFrom.getFieldMappings().isFieldSelected(
+                        FIELD.REMOTE_ID) && saveResult.getUpdatedTasksNumber() > 0) {
             try {
                 connectorFrom.updateRemoteIDs(configFrom,
-                        result, null);
+                        saveResult.getRemoteKeys(), null);
             } catch (ConnectorException e) {
-                throw new RemoteIdUpdateFailedException(e);
+                result.addGeneralError(new ConnectorError<Throwable>(e,
+                        connectorTo.getDescriptor().getID()));
             }
         }
 
         return result;
 
+    }
+
+    private static <T> List<TaskError<ConnectorError<T>>> connectorizeTasks(Collection<TaskError<T>> errors, String connectorId) {
+        final List<TaskError<ConnectorError<T>>> result = new ArrayList<TaskError<ConnectorError<T>>>(errors.size());
+        for (TaskError<T> error : errors)
+            result.add(new TaskError<ConnectorError<T>>(error.getTask(), new ConnectorError<T>(error.getErrors(), connectorId)));
+        return result;
+    }
+    
+    private static <T> List<ConnectorError<T>> connectorize(Collection<T> errors, String connectorId) {
+        final List<ConnectorError<T>> result = new ArrayList<ConnectorError<T>>(errors.size());
+        for (T error : errors)
+            result.add(new ConnectorError<T>(error, connectorId));
+        return result;
     }
 
     private List<GTask> applyTrialIfNeeded(List<GTask> flatTasksList) {

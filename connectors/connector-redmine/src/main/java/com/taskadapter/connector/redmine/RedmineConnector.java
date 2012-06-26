@@ -12,6 +12,7 @@ import com.taskadapter.redmineapi.bean.Issue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class RedmineConnector extends AbstractConnector<RedmineConfig> {
 
@@ -24,7 +25,7 @@ public class RedmineConnector extends AbstractConnector<RedmineConfig> {
 
     @Override
     public void updateRemoteIDs(ConnectorConfig configuration,
-                                SyncResult<Throwable> res, ProgressMonitor monitor) throws UnsupportedConnectorOperation {
+                                Map<Integer, String> res, ProgressMonitor monitor) throws UnsupportedConnectorOperation {
         throw new UnsupportedConnectorOperation("update Remote Ids not implemented for redmine connector");
     }
 

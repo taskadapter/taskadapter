@@ -1,6 +1,7 @@
 package com.taskadapter.connector.definition;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,10 +19,22 @@ public class SyncResult<E> {
     private int createdTasksNumber;
 
     // maps ID --> remote KEY when new tasks are created
-    private Map<Integer, String> idToRemoteKeyMap = new HashMap<Integer, String>();
+    private Map<Integer, String> idToRemoteKeyMap;
     private List<TaskError<E>> errors = new ArrayList<TaskError<E>>();
     private List<E> generalErrors = new ArrayList<E>();
 
+    public SyncResult(String targetFileAbsolutePath, int updatedTasksNumber,
+            int createdTasksNumber, Map<Integer, String> idToRemoteKeyMap) {
+        this.targetFileAbsolutePath = targetFileAbsolutePath;
+        this.updatedTasksNumber = updatedTasksNumber;
+        this.createdTasksNumber = createdTasksNumber;
+        this.idToRemoteKeyMap = idToRemoteKeyMap;
+    }
+
+    public SyncResult() {
+        this(null, 0, 0, new HashMap<Integer, String>());
+    }
+    
     public String getTargetFileAbsolutePath() {
         return targetFileAbsolutePath;
     }
@@ -33,11 +46,19 @@ public class SyncResult<E> {
     public void addError(TaskError<E> e) {
         errors.add(e);
     }
+    
+    public void addErrors(Collection<TaskError<E>> e) {
+        errors.addAll(e);
+    }
 
     public void addGeneralError(E e) {
         generalErrors.add(e);
     }
 
+    public void addGeneralErrors(Collection<E> e) {
+        generalErrors.addAll(e);
+    }
+    
     /**
      * @return errors list, never NULL
      */
@@ -66,6 +87,10 @@ public class SyncResult<E> {
     public String getRemoteKey(Integer id) {
         return idToRemoteKeyMap.get(id);
     }
+    
+    public Map<Integer, String> getRemoteKeys() {
+        return idToRemoteKeyMap;
+    }
 
     public boolean hasErrors() {
         return ((!generalErrors.isEmpty()) || (!errors.isEmpty()));
@@ -73,5 +98,11 @@ public class SyncResult<E> {
 
     public List<E> getGeneralErrors() {
         return generalErrors;
+    }
+    
+    public <E1> SyncResult<E1> withoutErrors() {
+        return new SyncResult<E1>(targetFileAbsolutePath, updatedTasksNumber,
+                createdTasksNumber, new HashMap<Integer, String>(
+                        idToRemoteKeyMap));
     }
 }

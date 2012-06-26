@@ -4,6 +4,7 @@ import com.atlassian.jira.rpc.soap.client.*;
 import com.taskadapter.connector.common.AbstractConnector;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
@@ -12,6 +13,7 @@ import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class JiraConnector extends AbstractConnector<JiraConfig> {
 
@@ -21,8 +23,9 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
 
     @Override
     public void updateRemoteIDs(ConnectorConfig configuration,
-                                SyncResult<Throwable> res, ProgressMonitor monitor) {
-        throw new RuntimeException("not implemented for this connector");
+            Map<Integer, String> res, ProgressMonitor monitor)
+            throws UnsupportedConnectorOperation {
+        throw new UnsupportedConnectorOperation("updateRemoteIDs not implemented for JIRA connector");
     }
 
     public GTask loadTaskByKey(WebServerInfo info, String key) throws ConnectorException {

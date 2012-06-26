@@ -28,7 +28,7 @@ public class GithubConnector extends AbstractConnector<GithubConfig> {
     }
 
     public void updateRemoteIDs(ConnectorConfig sourceConfig,
-            SyncResult<Throwable> actualSaveResult, ProgressMonitor monitor)
+            Map<Integer, String> remoteIds, ProgressMonitor monitor)
             throws UnsupportedConnectorOperation {
         throw new UnsupportedConnectorOperation(
                 "update remote IDS not implemented for this connector");

@@ -6,6 +6,7 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 
 import java.util.List;
+import java.util.Map;
 
 public interface Connector<T extends ConnectorConfig> {
 
@@ -45,7 +46,7 @@ public interface Connector<T extends ConnectorConfig> {
      * @param monitor ProgressMonitor, can be NULL
      */
     public void updateRemoteIDs(ConnectorConfig sourceConfig,
-                                SyncResult<Throwable> actualSaveResult, com.taskadapter.connector.definition.ProgressMonitor monitor) throws ConnectorException;
+                                Map<Integer, String> remoteIds, com.taskadapter.connector.definition.ProgressMonitor monitor) throws ConnectorException;
 
     public T getConfig();
 

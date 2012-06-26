@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBasedConnector {
 
@@ -24,10 +25,7 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
     }
 
     @Override
-    public void updateRemoteIDs(ConnectorConfig config, SyncResult<Throwable> res, ProgressMonitor monitorIGNORED) throws ConnectorException {
-        if (res.getCreateTasksNumber() == 0) {
-            return;
-        }
+    public void updateRemoteIDs(ConnectorConfig config, Map<Integer, String> remoteKeys, ProgressMonitor monitorIGNORED) throws ConnectorException {
         MSPConfig c = (MSPConfig) config;
         String fileName = c.getInputAbsoluteFilePath();
         try {
@@ -35,7 +33,7 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
             List<Task> allTasks = projectFile.getAllTasks();
 
             for (Task mspTask : allTasks) {
-                String createdTaskKey = res.getRemoteKey(mspTask.getUniqueID());
+                String createdTaskKey = remoteKeys.get(mspTask.getUniqueID());
                 if (createdTaskKey != null) {
                     setFieldIfNotNull(c, FIELD.REMOTE_ID, mspTask, createdTaskKey);
                 }

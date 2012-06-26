@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.rpc.ServiceException;
 
@@ -27,7 +28,7 @@ public class MantisConnector extends AbstractConnector<MantisConfig> {
 
     @Override
     public void updateRemoteIDs(ConnectorConfig configuration,
-                                SyncResult<Throwable> res, ProgressMonitor monitor) throws UnsupportedConnectorOperation {
+                                Map<Integer, String> res, ProgressMonitor monitor) throws UnsupportedConnectorOperation {
         throw new UnsupportedConnectorOperation(
                 "updateRemotedIDs not implemented for matnis connector");
     }

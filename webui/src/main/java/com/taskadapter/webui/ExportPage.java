@@ -8,7 +8,7 @@ import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.definition.TaskError;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.core.RemoteIdUpdateFailedException;
+import com.taskadapter.core.ConnectorError;
 import com.taskadapter.core.SyncRunner;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.file.FileDownloadResource;
@@ -35,7 +35,7 @@ public class ExportPage extends ActionPage {
             "Please check that the server name is valid and the server is accessible.";
 
     private SyncRunner runner;
-    private SyncResult<Throwable> result;
+    private SyncResult<ConnectorError<Throwable>> result;
 
     public ExportPage(Connector connectorFrom, Connector connectorTo, TAFile taFile) {
         super(connectorFrom, connectorTo, taFile);
@@ -133,10 +133,10 @@ public class ExportPage extends ActionPage {
     private void addErrors() {
         donePanel.addComponent(new Label("There were some problems during export:"));
         String errorText = "";
-        for (Throwable e : result.getGeneralErrors()) {
+        for (ConnectorError<Throwable> e : result.getGeneralErrors()) {
             errorText += quot(decodeException(e)) + "<br>";
         }
-        for (TaskError<Throwable> e : result.getErrors()) {
+        for (TaskError<ConnectorError<Throwable>> e : result.getErrors()) {
             errorText += quot(getMessageForTask(e)) + "<br>";
         }
         Label errorTextLabel = new Label(errorText);
@@ -176,19 +176,20 @@ public class ExportPage extends ActionPage {
         donePanel.addComponent(downloadButton);
     }
 
-    private String getMessageForTask(TaskError<Throwable> e) {
+    private String getMessageForTask(TaskError<ConnectorError<Throwable>> e) {
         return "Task " + e.getTask().getId() + " (\"" + e.getTask().getSummary() + "\"): " + decodeException(e.getErrors());
     }
     
-    private String decodeException(Throwable e) {
-        if (!(e instanceof ConnectorException))
-            return "Internal error : " + e.getMessage();
+    private String decodeException(ConnectorError<Throwable> e) {
+        final Throwable exn = e.getError();
+        if (!(exn instanceof ConnectorException))
+            return "Internal error : " + exn.getMessage();
         // TODO: localization/plugin management goes here.
-        return e.getMessage();
+        return exn.getMessage();
     }
 
     @Override
-    protected void saveData() throws ConnectorException, RemoteIdUpdateFailedException {
+    protected void saveData() throws ConnectorException {
         saveProgress.setValue(0);
         MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
 		runner.setDestination(connectorTo);

@@ -1,4 +1,4 @@
-package com.taskadapter.connector.definition;
+package com.taskadapter.core;
 
 /**
  * Connector error definition.
