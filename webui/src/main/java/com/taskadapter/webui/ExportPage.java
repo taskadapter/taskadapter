@@ -8,6 +8,7 @@ import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.definition.TaskError;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.core.RemoteIdUpdateFailedException;
 import com.taskadapter.core.SyncRunner;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.file.FileDownloadResource;
@@ -175,7 +176,7 @@ public class ExportPage extends ActionPage {
     }
 
     @Override
-    protected void saveData() throws ConnectorException {
+    protected void saveData() throws ConnectorException, RemoteIdUpdateFailedException {
         saveProgress.setValue(0);
         MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
 		runner.setDestination(connectorTo);

@@ -3,6 +3,7 @@ package com.taskadapter.webui;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.core.RemoteIdUpdateFailedException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.web.configeditor.DefaultPanel;
 import com.taskadapter.webui.action.ConfirmExportPage;
@@ -36,7 +37,7 @@ public abstract class ActionPage extends Page {
         buildInitialPage();
     }
 
-    protected abstract void saveData() throws ConnectorException;
+    protected abstract void saveData() throws ConnectorException, RemoteIdUpdateFailedException;
 
     protected abstract void loadData() throws ConnectorException;
 
@@ -112,6 +113,8 @@ public abstract class ActionPage extends Page {
         public void run() {
             try {
                 saveData();
+            } catch (RemoteIdUpdateFailedException e) {
+                // FIXME: add "connector error" dialog
             } catch (ConnectorException e) {
                 // FIXME: add "connector error" dialog
             } catch (Throwable t) {

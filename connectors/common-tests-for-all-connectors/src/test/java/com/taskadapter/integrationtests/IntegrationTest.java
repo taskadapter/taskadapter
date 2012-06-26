@@ -7,6 +7,7 @@ import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
+import com.taskadapter.core.RemoteIdUpdateFailedException;
 import com.taskadapter.core.SyncRunner;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.model.GTask;
@@ -46,7 +47,7 @@ public class IntegrationTest extends AbstractSyncRunnerTest {
     }
 
     @Test
-    public void testSaveRemoteIdWithNonLinearUUID() throws URISyntaxException, IOException, ConnectorException {
+    public void testSaveRemoteIdWithNonLinearUUID() throws URISyntaxException, IOException, ConnectorException, RemoteIdUpdateFailedException {
 
         RedmineConfig redmineConfigTo = RedmineTestConfig.getRedmineTestConfig();
 

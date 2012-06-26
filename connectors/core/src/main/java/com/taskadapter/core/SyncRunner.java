@@ -76,7 +76,7 @@ public class SyncRunner {
         this.tasks = tasks;
     }
 
-    public SyncResult save(ProgressMonitor monitor) throws ConnectorException {
+    public SyncResult save(ProgressMonitor monitor) throws RemoteIdUpdateFailedException {
         int totalNumberOfTasks = DataConnectorUtil
                 .calculateNumberOfTasks(tasks);
         if (monitor != null) {
@@ -110,8 +110,12 @@ public class SyncRunner {
 
         ConnectorConfig configFrom = connectorFrom.getConfig();
         if (configFrom.getFieldMappings().isFieldSelected(FIELD.REMOTE_ID)) {
-            connectorFrom.updateRemoteIDs(configFrom,
-                    result, null);
+            try {
+                connectorFrom.updateRemoteIDs(configFrom,
+                        result, null);
+            } catch (ConnectorException e) {
+                throw new RemoteIdUpdateFailedException(e);
+            }
         }
 
         return result;
