@@ -4,6 +4,8 @@ import com.atlassian.jira.rpc.soap.client.*;
 import com.taskadapter.connector.common.TestUtils;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.SyncResult;
+import com.taskadapter.connector.definition.TaskErrors;
+import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
@@ -78,8 +80,8 @@ public class JiraTest {
         int tasksQty = 2;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
         JiraConnector connector = new JiraConnector(config);
-        SyncResult<Throwable> result = connector.saveData(tasks, null);
-        assertEquals(tasksQty, result.getCreateTasksNumber());
+        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(tasks, null);
+        assertEquals(tasksQty, result.getResult().getCreatedTasksNumber());
     }
 
     @Test
@@ -91,12 +93,12 @@ public class JiraTest {
         List<GTask> tasks = TestUtils.generateTasks(1);
         tasks.get(0).setAssignee(new GUser(jiraUser.getName()));
 
-        SyncResult<Throwable> result = connector.saveData(tasks, null);
-        assertFalse("Task creation failed", result.hasErrors());
+        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(tasks, null);
+        assertFalse("Task creation failed", result.getErrors().hasErrors());
 
         Map<Integer, String> remoteKeyById = new HashMap<Integer, String>();
         for (GTask task : tasks) {
-            remoteKeyById.put(task.getId(), result.getRemoteKey(task.getId()));
+            remoteKeyById.put(task.getId(), result.getResult().getIdToRemoteKeyMap().get(task.getId()));
         }
 
         for (Map.Entry<Integer, String> entry : remoteKeyById.entrySet()) {
@@ -116,10 +118,10 @@ public class JiraTest {
 
         // CREATE
         JiraConnector connector = new JiraConnector(config);
-        SyncResult<Throwable> result = connector.saveData(Arrays.asList(task), null);
-        assertTrue(result.getErrors().isEmpty());
-        assertEquals(tasksQty, result.getCreateTasksNumber());
-        String remoteKey = result.getRemoteKey(id);
+        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(Arrays.asList(task), null);
+        assertTrue(result.getErrors().getErrors().isEmpty());
+        assertEquals(tasksQty, result.getResult().getCreatedTasksNumber());
+        String remoteKey = result.getResult().getRemoteKey(id);
 
         GTask loaded = connector.loadTaskByKey(serverInfo, remoteKey);
 
@@ -127,9 +129,9 @@ public class JiraTest {
         String NEW_SUMMARY = "new summary here";
         loaded.setSummary(NEW_SUMMARY);
         loaded.setRemoteId(remoteKey);
-        SyncResult<Throwable> result2 = connector.saveData(Arrays.asList(loaded), null);
-        assertTrue("some errors while updating the data: " + result2.getErrors(), result2.getErrors().isEmpty());
-        assertEquals(1, result2.getUpdatedTasksNumber());
+        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result2 = connector.saveData(Arrays.asList(loaded), null);
+        assertTrue("some errors while updating the data: " + result2.getErrors(), result2.getErrors().getErrors().isEmpty());
+        assertEquals(1, result2.getResult().getUpdatedTasksNumber());
 
         GTask loadedAgain = connector.loadTaskByKey(serverInfo, remoteKey);
         assertEquals(NEW_SUMMARY, loadedAgain.getSummary());

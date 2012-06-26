@@ -6,6 +6,8 @@ import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.definition.TaskError;
+import com.taskadapter.connector.definition.TaskErrors;
+import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.ConnectorError;
@@ -35,7 +37,7 @@ public class ExportPage extends ActionPage {
             "Please check that the server name is valid and the server is accessible.";
 
     private SyncRunner runner;
-    private SyncResult<ConnectorError<Throwable>> result;
+    private SyncResult<TaskSaveResult, TaskErrors<ConnectorError<Throwable>>> result;
 
     public ExportPage(Connector connectorFrom, Connector connectorTo, TAFile taFile) {
         super(connectorFrom, connectorTo, taFile);
@@ -96,12 +98,15 @@ public class ExportPage extends ActionPage {
 
         addDateTimeInfo();
         addFromToPanel();
-        addDownloadButtonIfServerMode(result.getTargetFileAbsolutePath());
-        addExportNumbersStats();
-        addFileInfoIfNeeded();
+        final TaskSaveResult saveResult = result.getResult();
+        if (saveResult != null) {
+            addDownloadButtonIfServerMode(saveResult.getTargetFileAbsolutePath());
+            addExportNumbersStats(saveResult);
+            addFileInfoIfNeeded(saveResult);
+        }
 
-        if (result.hasErrors()) {
-            addErrors();
+        if (result.getErrors().hasErrors()) {
+            addErrors(result.getErrors());
         }
         return donePanel;
     }
@@ -122,15 +127,15 @@ public class ExportPage extends ActionPage {
         donePanel.addComponent(infoLabel);
     }
 
-    private void addExportNumbersStats() {
-        Label infoLabel = new Label("Created tasks: " + result.getCreateTasksNumber()
+    private void addExportNumbersStats(TaskSaveResult result) {
+        Label infoLabel = new Label("Created tasks: " + result.getCreatedTasksNumber()
                 + "<br>Updated tasks: " + result.getUpdatedTasksNumber() + "<br><br>");
         infoLabel.addStyleName("export-result");
         infoLabel.setContentMode(Label.CONTENT_XHTML);
         donePanel.addComponent(infoLabel);
     }
 
-    private void addErrors() {
+    private void addErrors(TaskErrors<ConnectorError<Throwable>> result) {
         donePanel.addComponent(new Label("There were some problems during export:"));
         String errorText = "";
         for (ConnectorError<Throwable> e : result.getGeneralErrors()) {
@@ -150,7 +155,7 @@ public class ExportPage extends ActionPage {
                 .replace("<", "&lt;").replace(">", "&gt;");
     }
 
-    private void addFileInfoIfNeeded() {
+    private void addFileInfoIfNeeded(TaskSaveResult result) {
         if (result.getTargetFileAbsolutePath() != null && (services.getSettingsManager().isTAWorkingOnLocalMachine())) {
             donePanel.addComponent(new Label("File absolute path: " + result.getTargetFileAbsolutePath()));
         }

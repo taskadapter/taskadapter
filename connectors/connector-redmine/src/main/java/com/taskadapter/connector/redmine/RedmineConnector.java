@@ -76,7 +76,7 @@ public class RedmineConnector extends AbstractConnector<RedmineConfig> {
 	}
     
 	@Override
-	public SyncResult<Throwable> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
+	public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
 		return new RedmineTaskSaver(config).saveData(tasks, monitor);
 	}
 }

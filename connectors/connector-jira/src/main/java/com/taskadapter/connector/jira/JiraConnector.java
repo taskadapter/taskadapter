@@ -129,7 +129,7 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
     }
     
     @Override
-    public SyncResult<Throwable> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
+    public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
     	return new JiraTaskSaver(config).saveData(tasks, monitor);
     }
 }

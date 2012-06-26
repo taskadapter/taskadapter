@@ -2,7 +2,6 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.common.AbstractTaskSaver;
 import com.taskadapter.connector.common.TreeUtils;
-import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.EntityPersistenseException;
 import com.taskadapter.model.GRelation;
@@ -28,12 +27,11 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
     }
 
     @Override
-    protected SyncResult<Throwable> save(String parentTaskKey, List<GTask> tasks) throws ConnectorException {
-        SyncResult<Throwable> result = saveData(tasks, false);
+    protected void save(String parentTaskKey, List<GTask> tasks) throws ConnectorException {
+        saveData(tasks, false);
         List<GTask> newTaskList = TreeUtils.buildFlatListFromTree(tasks);
         List<GRelation> relations = buildNewRelations(newTaskList);
         saveRelations(relations);
-        return result;
     }
 
     // TODO this method is always called with "false" ONLY
@@ -42,11 +40,10 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
      * This method allows saving data to MSP file while keeping tasks ids.
      * @throws ConnectorException 
      */
-    private SyncResult<Throwable> saveData(List<GTask> tasks, boolean keepTaskId) throws ConnectorException {
+    private void saveData(List<GTask> tasks, boolean keepTaskId) throws ConnectorException {
         try {
-            String result = writer.write(syncResult, tasks, keepTaskId);
-            syncResult.setTargetFileAbsolutePath(result);
-            return syncResult;
+            String resultFile = writer.write(result, tasks, keepTaskId);
+            result.setTargetFileAbsolutePath(resultFile);
         } catch (IOException e) {
             throw MSPExceptions.convertException(e);
         }
@@ -109,11 +106,11 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
 
             writer.writeProject(projectFile);
         } catch (MPXJException e) {
-            syncResult.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations"));
+            errors.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations"));
         } catch (IOException e) {
-            syncResult.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations"));
+            errors.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations"));
         } catch (Throwable e) {
-            syncResult.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations"));
+            errors.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations"));
         }
     }
 

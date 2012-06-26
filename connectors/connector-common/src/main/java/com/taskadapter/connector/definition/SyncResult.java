@@ -1,108 +1,62 @@
 package com.taskadapter.connector.definition;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
+ * Synchronous operation result. Contains both possible result and operation
+ * warnings/errors.
  * 
- *
- * @param <E> error result type.
+ * @param <R>
+ *            result type.
+ * @param <E>
+ *            error result type.
  */
-public class SyncResult<E> {
-    // TODO this is a temporary solution to enable "download" link after exporting to MSP in server mode. refactor!
-    private String targetFileAbsolutePath;
+public class SyncResult<R, E> {
+    private final R result;
+    private final E errors;
 
-    private int updatedTasksNumber;
-    private int createdTasksNumber;
-
-    // maps ID --> remote KEY when new tasks are created
-    private Map<Integer, String> idToRemoteKeyMap;
-    private List<TaskError<E>> errors = new ArrayList<TaskError<E>>();
-    private List<E> generalErrors = new ArrayList<E>();
-
-    public SyncResult(String targetFileAbsolutePath, int updatedTasksNumber,
-            int createdTasksNumber, Map<Integer, String> idToRemoteKeyMap) {
-        this.targetFileAbsolutePath = targetFileAbsolutePath;
-        this.updatedTasksNumber = updatedTasksNumber;
-        this.createdTasksNumber = createdTasksNumber;
-        this.idToRemoteKeyMap = idToRemoteKeyMap;
+    public SyncResult(R result, E errors) {
+        super();
+        this.result = result;
+        this.errors = errors;
     }
 
-    public SyncResult() {
-        this(null, 0, 0, new HashMap<Integer, String>());
-    }
-    
-    public String getTargetFileAbsolutePath() {
-        return targetFileAbsolutePath;
+    public R getResult() {
+        return result;
     }
 
-    public void setTargetFileAbsolutePath(String targetFileAbsolutePath) {
-        this.targetFileAbsolutePath = targetFileAbsolutePath;
-    }
-
-    public void addError(TaskError<E> e) {
-        errors.add(e);
-    }
-    
-    public void addErrors(Collection<TaskError<E>> e) {
-        errors.addAll(e);
-    }
-
-    public void addGeneralError(E e) {
-        generalErrors.add(e);
-    }
-
-    public void addGeneralErrors(Collection<E> e) {
-        generalErrors.addAll(e);
-    }
-    
-    /**
-     * @return errors list, never NULL
-     */
-    public List<TaskError<E>> getErrors() {
+    public E getErrors() {
         return errors;
     }
 
-    public void addCreatedTask(Integer originalId, String newId) {
-        idToRemoteKeyMap.put(originalId, newId);
-        createdTasksNumber++;
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((errors == null) ? 0 : errors.hashCode());
+        result = prime * result
+                + ((this.result == null) ? 0 : this.result.hashCode());
+        return result;
     }
 
-    public int getCreateTasksNumber() {
-        return createdTasksNumber;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        SyncResult<?, ?> other = (SyncResult<?, ?>) obj;
+        if (errors == null) {
+            if (other.errors != null)
+                return false;
+        } else if (!errors.equals(other.errors))
+            return false;
+        if (result == null) {
+            if (other.result != null)
+                return false;
+        } else if (!result.equals(other.result))
+            return false;
+        return true;
     }
 
-    public void addUpdatedTask(Integer originalId, String newId) {
-        idToRemoteKeyMap.put(originalId, newId);
-        updatedTasksNumber++;
-    }
-
-    public int getUpdatedTasksNumber() {
-        return updatedTasksNumber;
-    }
-
-    public String getRemoteKey(Integer id) {
-        return idToRemoteKeyMap.get(id);
-    }
-    
-    public Map<Integer, String> getRemoteKeys() {
-        return idToRemoteKeyMap;
-    }
-
-    public boolean hasErrors() {
-        return ((!generalErrors.isEmpty()) || (!errors.isEmpty()));
-    }
-
-    public List<E> getGeneralErrors() {
-        return generalErrors;
-    }
-    
-    public <E1> SyncResult<E1> withoutErrors() {
-        return new SyncResult<E1>(targetFileAbsolutePath, updatedTasksNumber,
-                createdTasksNumber, new HashMap<Integer, String>(
-                        idToRemoteKeyMap));
-    }
 }

@@ -8,14 +8,19 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.definition.TaskError;
+import com.taskadapter.connector.definition.TaskErrors;
+import com.taskadapter.connector.definition.TaskErrorsBuilder;
+import com.taskadapter.connector.definition.TaskSaveResult;
+import com.taskadapter.connector.definition.TaskSaveResultBuilder;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 
 public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
 
-    protected final SyncResult<Throwable> syncResult = new SyncResult<Throwable>();
-
+    protected final TaskSaveResultBuilder result = new TaskSaveResultBuilder();
+    protected final TaskErrorsBuilder<Throwable> errors = new TaskErrorsBuilder<Throwable>();
+    
     private final List<GTask> totalTaskList = new ArrayList<GTask>();
 
     protected final T config;
@@ -40,19 +45,20 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
         // nothing here
     }
 
-    public SyncResult<Throwable> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
+    public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
         this.monitor = monitor;
 
         beforeSave();
         save(null, tasks);
 
-        return syncResult;
+        return new SyncResult<TaskSaveResult, TaskErrors<Throwable>>(
+                result.getResult(), errors.getResult());
     }
 
     /**
      * this method will go through children itself.
      */
-    protected SyncResult<Throwable> save(String parentIssueKey, List<GTask> tasks) throws ConnectorException {
+    protected void save(String parentIssueKey, List<GTask> tasks) throws ConnectorException {
         Iterator<GTask> it = tasks.iterator();
         while (it.hasNext()) {
             GTask task = it.next();
@@ -66,9 +72,9 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
                 Object nativeIssueToCreateOrUpdate = convertToNativeTask(task);
                 newTaskKey = submitTask(task, nativeIssueToCreateOrUpdate);
             } catch (ConnectorException e) {
-                syncResult.addError(new TaskError<Throwable>(task, e));
+                errors.addError(new TaskError<Throwable>(task, e));
             } catch (Throwable t) {
-                syncResult.addError(new TaskError<Throwable>(task, t));               
+                errors.addError(new TaskError<Throwable>(task, t));               
             }
             reportProgress();
 
@@ -83,8 +89,6 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
                 saveRelations(relations);
             }
         }
-
-        return syncResult;
     }
 
     private void reportProgress() {
@@ -96,12 +100,12 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
     protected List<GRelation> buildNewRelations(List<GTask> tasks) {
         List<GRelation> newRelations = new ArrayList<GRelation>();
         for (GTask task : tasks) {
-            String newSourceTaskKey = syncResult.getRemoteKey(task.getId());
+            String newSourceTaskKey = result.getRemoteKey(task.getId());
             for (GRelation oldRelation : task.getRelations()) {
                 // XXX get rid of the conversion, it won't work with Jira,
                 // which has String Keys like "TEST-12"
                 Integer relatedTaskId = Integer.parseInt(oldRelation.getRelatedTaskKey());
-                String newRelatedKey = syncResult.getRemoteKey(relatedTaskId);
+                String newRelatedKey = result.getRemoteKey(relatedTaskId);
                 // #25443 Export from MSP fails when newRelatedKey is null (which is a valid case in MSP)
                 if (newSourceTaskKey != null && newRelatedKey != null) {
                     newRelations.add(new GRelation(newSourceTaskKey, newRelatedKey, oldRelation.getType()));
@@ -124,11 +128,11 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
 
             // Need this to be passed as the parentIssueId to the recursive call below
             newTaskKey = newTask.getKey();
-            syncResult.addCreatedTask(task.getId(), newTaskKey);
+            result.addCreatedTask(task.getId(), newTaskKey);
         } else {
             newTaskKey = task.getRemoteId();
             updateTask(newTaskKey, nativeTask);
-            syncResult.addUpdatedTask(task.getId(), newTaskKey);
+            result.addUpdatedTask(task.getId(), newTaskKey);
         }
         return newTaskKey;
     }

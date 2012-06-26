@@ -2,6 +2,7 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.SyncResult;
+import com.taskadapter.connector.definition.TaskSaveResultBuilder;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
@@ -45,7 +46,7 @@ public class MSXMLFileWriter {
         this.config = config;
     }
 
-    public String write(SyncResult<Throwable> syncResult, List<GTask> rows,
+    public String write(TaskSaveResultBuilder syncResult, List<GTask> rows,
                         boolean keepTaskId) throws IOException, BadConfigException {
 
         // XXX load resources from existing MS file to cache here
@@ -94,7 +95,7 @@ public class MSXMLFileWriter {
         return null;
     }
 
-    private void addTasks(SyncResult<Throwable> syncResult, ProjectFile project,
+    private void addTasks(TaskSaveResultBuilder syncResult, ProjectFile project,
                           Task parentMSPTask,
                           List<GTask> gTasks,
                           boolean keepTaskId) throws BadConfigException {

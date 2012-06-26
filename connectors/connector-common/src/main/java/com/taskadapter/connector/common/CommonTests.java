@@ -2,6 +2,8 @@ package com.taskadapter.connector.common;
 
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.SyncResult;
+import com.taskadapter.connector.definition.TaskErrors;
+import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
@@ -17,10 +19,10 @@ public class CommonTests {
         String expectedSummaryTask1 = tasks.get(0).getSummary();
         Integer expectedID = tasks.get(0).getId();
 
-        SyncResult<Throwable> result = connector.saveData(tasks, null);
-        assertEquals(tasksQty, result.getCreateTasksNumber());
+        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(tasks, null);
+        assertEquals(tasksQty, result.getResult().getCreatedTasksNumber());
 
-        Integer createdTask1Id = Integer.valueOf(result.getRemoteKey(expectedID));
+        Integer createdTask1Id = Integer.valueOf(result.getResult().getIdToRemoteKeyMap().get(expectedID));
 
         List<GTask> loadedTasks = ConnectorUtils.loadDataOrderedById(connector);
         // there could be some other previously created tasks
@@ -46,9 +48,9 @@ public class CommonTests {
     public void testCreates2Tasks(Connector<?> connector) throws ConnectorException {
         int tasksQty = 2;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
-        SyncResult<Throwable> result = connector.saveData(tasks, null);
-        assertFalse("Errors: " + result.getErrors().toString(), result.hasErrors());
-        assertEquals(tasksQty, result.getCreateTasksNumber());
+        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(tasks, null);
+        assertFalse("Errors: " + result.getErrors().toString(), result.getErrors().hasErrors());
+        assertEquals(tasksQty, result.getResult().getCreatedTasksNumber());
     }
 
     private void assertNotNull(GTask foundTask) {

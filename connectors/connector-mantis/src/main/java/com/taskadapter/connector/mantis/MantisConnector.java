@@ -16,6 +16,8 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.SyncResult;
+import com.taskadapter.connector.definition.TaskErrors;
+import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.model.GTask;
@@ -78,7 +80,7 @@ public class MantisConnector extends AbstractConnector<MantisConfig> {
 
     
     @Override
-    public SyncResult<Throwable> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
+    public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
     	return new MantisTaskSaver(config).saveData(tasks, monitor);
     }
 }

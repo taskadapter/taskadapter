@@ -8,6 +8,10 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.definition.TaskError;
+import com.taskadapter.connector.definition.TaskErrors;
+import com.taskadapter.connector.definition.TaskErrorsBuilder;
+import com.taskadapter.connector.definition.TaskSaveResult;
+import com.taskadapter.connector.definition.TaskSaveResultBuilder;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.model.GTask;
@@ -78,7 +82,8 @@ public class SyncRunner {
         this.tasks = tasks;
     }
 
-    public SyncResult<ConnectorError<Throwable>> save(ProgressMonitor monitor) {
+    public SyncResult<TaskSaveResult, TaskErrors<ConnectorError<Throwable>>> save(
+            ProgressMonitor monitor) {
         int totalNumberOfTasks = DataConnectorUtil
                 .calculateNumberOfTasks(tasks);
         if (monitor != null) {
@@ -94,21 +99,21 @@ public class SyncRunner {
         } else {
             treeToSave = this.tasks;
         }
-        
-        SyncResult<ConnectorError<Throwable>> result;
-        SyncResult<Throwable> saveResult;
+
+        TaskSaveResult saveResult;
+        final TaskErrorsBuilder<ConnectorError<Throwable>> errors = new TaskErrorsBuilder<ConnectorError<Throwable>>();
 
         try {
-            saveResult = connectorTo.saveData(treeToSave, monitor);
-            result = saveResult.withoutErrors();
-            result.addErrors(connectorizeTasks(saveResult.getErrors(),
-                    connectorTo.getDescriptor().getID()));
-            result.addGeneralErrors(connectorize(saveResult.getGeneralErrors(),
-                    connectorTo.getDescriptor().getID()));
+            final SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveTaskResult = connectorTo
+                    .saveData(treeToSave, monitor);
+            saveResult = saveTaskResult.getResult();
+            errors.addErrors(connectorizeTasks(saveTaskResult.getErrors()
+                    .getErrors(), connectorTo.getDescriptor().getID()));
+            errors.addGeneralErrors(connectorize(saveTaskResult.getErrors()
+                    .getGeneralErrors(), connectorTo.getDescriptor().getID()));
         } catch (ConnectorException e) {
             saveResult = null;
-            result = new SyncResult<ConnectorError<Throwable>>();
-            result.addGeneralError(new ConnectorError<Throwable>(e,
+            errors.addGeneralError(new ConnectorError<Throwable>(e,
                     connectorFrom.getDescriptor().getID()));
         }
         
@@ -127,14 +132,15 @@ public class SyncRunner {
                         FIELD.REMOTE_ID) && saveResult.getUpdatedTasksNumber() > 0) {
             try {
                 connectorFrom.updateRemoteIDs(configFrom,
-                        saveResult.getRemoteKeys(), null);
+                        saveResult.getIdToRemoteKeyMap(), null);
             } catch (ConnectorException e) {
-                result.addGeneralError(new ConnectorError<Throwable>(e,
+                errors.addGeneralError(new ConnectorError<Throwable>(e,
                         connectorTo.getDescriptor().getID()));
             }
         }
 
-        return result;
+        return new SyncResult<TaskSaveResult, TaskErrors<ConnectorError<Throwable>>>(
+                saveResult, errors.getResult());
 
     }
 
