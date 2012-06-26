@@ -67,12 +67,9 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
                 Object nativeIssueToCreateOrUpdate = convertToNativeTask(task);
                 newTaskKey = submitTask(task, nativeIssueToCreateOrUpdate);
             } catch (ConnectorException e) {
-                syncResult.addError(new TaskError<List<String>>(task, Arrays.asList(e
-                        .getMessage())));
+                syncResult.addError(new TaskError<Throwable>(task, e));
             } catch (Throwable t) {
-                syncResult.addError(new TaskError<List<String>>(task, Arrays.asList(t
-                        .getMessage())));
-               
+                syncResult.addError(new TaskError<Throwable>(task, t));               
             }
             reportProgress();
 

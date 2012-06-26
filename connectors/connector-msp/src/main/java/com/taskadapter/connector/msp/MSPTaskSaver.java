@@ -4,6 +4,7 @@ import com.taskadapter.connector.common.AbstractTaskSaver;
 import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.definition.exceptions.EntityPersistenseException;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GRelation.TYPE;
 import com.taskadapter.model.GTask;
@@ -108,11 +109,11 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
 
             writer.writeProject(projectFile);
         } catch (MPXJException e) {
-            syncResult.addGeneralError("Can't create Tasks Relations");
+            syncResult.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations"));
         } catch (IOException e) {
-            syncResult.addGeneralError("Can't create Tasks Relations");
+            syncResult.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations"));
         } catch (Throwable e) {
-            syncResult.addGeneralError("Can't create Tasks Relations");
+            syncResult.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations"));
         }
     }
 

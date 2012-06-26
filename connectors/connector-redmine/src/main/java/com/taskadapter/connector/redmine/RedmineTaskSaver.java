@@ -1,11 +1,13 @@
 package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.common.AbstractTaskSaver;
+import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.RedmineProcessingException;
 import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.IssueStatus;
 import com.taskadapter.redmineapi.bean.Project;
@@ -104,11 +106,10 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
                         .getRelatedTaskKey());
                 mgr.createRelation(taskKey, relatedTaskKey, gRelation.getType().toString());
             }
+        } catch (RedmineProcessingException e) {
+            syncResult.addGeneralError(new RelationCreationException(e));
         } catch (RedmineException e) {
-            syncResult
-                    .addGeneralError("Can't create Tasks Relations. Note: this feature requires Redmine 1.3.0 or newer."
-                    + "\nSee http://www.redmine.org/issues/7366 ."
-                    +"\nThe error reported by server is: " + e.toString());
+            syncResult.addGeneralError(new CommunicationException(e));
         }
     }
 

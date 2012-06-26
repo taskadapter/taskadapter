@@ -14,8 +14,8 @@ public class SyncResult {
 
     // maps ID --> remote KEY when new tasks are created
     private Map<Integer, String> idToRemoteKeyMap = new HashMap<Integer, String>();
-    private List<TaskError<List<String>>> errors = new ArrayList<TaskError<List<String>>>();
-    private List<String> generalErrors = new ArrayList<String>();
+    private List<TaskError<Throwable>> errors = new ArrayList<TaskError<Throwable>>();
+    private List<Throwable> generalErrors = new ArrayList<Throwable>();
 
     public String getTargetFileAbsolutePath() {
         return targetFileAbsolutePath;
@@ -25,18 +25,18 @@ public class SyncResult {
         this.targetFileAbsolutePath = targetFileAbsolutePath;
     }
 
-    public void addError(TaskError<List<String>> e) {
+    public void addError(TaskError<Throwable> e) {
         errors.add(e);
     }
 
-    public void addGeneralError(String e) {
+    public void addGeneralError(Throwable e) {
         generalErrors.add(e);
     }
 
     /**
      * @return errors list, never NULL
      */
-    public List<TaskError<List<String>>> getErrors() {
+    public List<TaskError<Throwable>> getErrors() {
         return errors;
     }
 
@@ -66,7 +66,7 @@ public class SyncResult {
         return ((!generalErrors.isEmpty()) || (!errors.isEmpty()));
     }
 
-    public List<String> getGeneralErrors() {
+    public List<Throwable> getGeneralErrors() {
         return generalErrors;
     }
 }

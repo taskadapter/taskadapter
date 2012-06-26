@@ -23,7 +23,6 @@ import java.io.File;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 
 public class ExportPage extends ActionPage {
 
@@ -134,16 +133,21 @@ public class ExportPage extends ActionPage {
     private void addErrors() {
         donePanel.addComponent(new Label("There were some problems during export:"));
         String errorText = "";
-        for (String e : result.getGeneralErrors()) {
-            errorText += e + "<br>";
+        for (Throwable e : result.getGeneralErrors()) {
+            errorText += quot(decodeException(e)) + "<br>";
         }
-        for (TaskError<List<String>> e : result.getErrors()) {
-            errorText += getMessageForTask(e) + "<br>";
+        for (TaskError<Throwable> e : result.getErrors()) {
+            errorText += quot(getMessageForTask(e)) + "<br>";
         }
         Label errorTextLabel = new Label(errorText);
         errorTextLabel.addStyleName("errorMessage");
         errorTextLabel.setContentMode(Label.CONTENT_XHTML);
         donePanel.addComponent(errorTextLabel);
+    }
+    
+    private static String quot(String str) {
+        return str.replace("&", "&amp;").replace("\"", "&quot;")
+                .replace("<", "&lt;").replace(">", "&gt;");
     }
 
     private void addFileInfoIfNeeded() {
@@ -172,8 +176,15 @@ public class ExportPage extends ActionPage {
         donePanel.addComponent(downloadButton);
     }
 
-    private String getMessageForTask(TaskError<List<String>> e) {
-        return "Task " + e.getTask().getId() + " (\"" + e.getTask().getSummary() + "\"): " + e.getErrors();
+    private String getMessageForTask(TaskError<Throwable> e) {
+        return "Task " + e.getTask().getId() + " (\"" + e.getTask().getSummary() + "\"): " + decodeException(e.getErrors());
+    }
+    
+    private String decodeException(Throwable e) {
+        if (!(e instanceof ConnectorException))
+            return "Internal error : " + e.getMessage();
+        // TODO: localization/plugin management goes here.
+        return e.getMessage();
     }
 
     @Override

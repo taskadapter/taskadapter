@@ -98,7 +98,7 @@ public class SyncRunner {
             result = connectorTo.saveData(treeToSave, monitor);
         } catch (ConnectorException e) {
             result = new SyncResult();
-            result.addGeneralError(e.getMessage());
+            result.addGeneralError(e);
         }
 
         if (monitor != null) {
