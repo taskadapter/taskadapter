@@ -28,8 +28,8 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
     }
 
     @Override
-    protected SyncResult save(String parentTaskKey, List<GTask> tasks) throws ConnectorException {
-        SyncResult result = saveData(tasks, false);
+    protected SyncResult<Throwable> save(String parentTaskKey, List<GTask> tasks) throws ConnectorException {
+        SyncResult<Throwable> result = saveData(tasks, false);
         List<GTask> newTaskList = TreeUtils.buildFlatListFromTree(tasks);
         List<GRelation> relations = buildNewRelations(newTaskList);
         saveRelations(relations);
@@ -42,7 +42,7 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
      * This method allows saving data to MSP file while keeping tasks ids.
      * @throws ConnectorException 
      */
-    private SyncResult saveData(List<GTask> tasks, boolean keepTaskId) throws ConnectorException {
+    private SyncResult<Throwable> saveData(List<GTask> tasks, boolean keepTaskId) throws ConnectorException {
         try {
             String result = writer.write(syncResult, tasks, keepTaskId);
             syncResult.setTargetFileAbsolutePath(result);

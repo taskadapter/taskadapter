@@ -78,7 +78,7 @@ public class JiraTest {
         int tasksQty = 2;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
         JiraConnector connector = new JiraConnector(config);
-        SyncResult result = connector.saveData(tasks, null);
+        SyncResult<Throwable> result = connector.saveData(tasks, null);
         assertEquals(tasksQty, result.getCreateTasksNumber());
     }
 
@@ -91,7 +91,7 @@ public class JiraTest {
         List<GTask> tasks = TestUtils.generateTasks(1);
         tasks.get(0).setAssignee(new GUser(jiraUser.getName()));
 
-        SyncResult result = connector.saveData(tasks, null);
+        SyncResult<Throwable> result = connector.saveData(tasks, null);
         assertFalse("Task creation failed", result.hasErrors());
 
         Map<Integer, String> remoteKeyById = new HashMap<Integer, String>();
@@ -116,7 +116,7 @@ public class JiraTest {
 
         // CREATE
         JiraConnector connector = new JiraConnector(config);
-        SyncResult result = connector.saveData(Arrays.asList(task), null);
+        SyncResult<Throwable> result = connector.saveData(Arrays.asList(task), null);
         assertTrue(result.getErrors().isEmpty());
         assertEquals(tasksQty, result.getCreateTasksNumber());
         String remoteKey = result.getRemoteKey(id);
@@ -127,7 +127,7 @@ public class JiraTest {
         String NEW_SUMMARY = "new summary here";
         loaded.setSummary(NEW_SUMMARY);
         loaded.setRemoteId(remoteKey);
-        SyncResult result2 = connector.saveData(Arrays.asList(loaded), null);
+        SyncResult<Throwable> result2 = connector.saveData(Arrays.asList(loaded), null);
         assertTrue("some errors while updating the data: " + result2.getErrors(), result2.getErrors().isEmpty());
         assertEquals(1, result2.getUpdatedTasksNumber());
 

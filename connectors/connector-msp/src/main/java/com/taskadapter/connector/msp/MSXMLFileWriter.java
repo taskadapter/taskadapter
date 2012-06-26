@@ -45,7 +45,7 @@ public class MSXMLFileWriter {
         this.config = config;
     }
 
-    public String write(SyncResult syncResult, List<GTask> rows,
+    public String write(SyncResult<Throwable> syncResult, List<GTask> rows,
                         boolean keepTaskId) throws IOException, BadConfigException {
 
         // XXX load resources from existing MS file to cache here
@@ -94,7 +94,7 @@ public class MSXMLFileWriter {
         return null;
     }
 
-    private void addTasks(SyncResult syncResult, ProjectFile project,
+    private void addTasks(SyncResult<Throwable> syncResult, ProjectFile project,
                           Task parentMSPTask,
                           List<GTask> gTasks,
                           boolean keepTaskId) throws BadConfigException {

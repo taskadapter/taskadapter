@@ -24,7 +24,7 @@ public class RedmineConnector extends AbstractConnector<RedmineConfig> {
 
     @Override
     public void updateRemoteIDs(ConnectorConfig configuration,
-                                SyncResult res, ProgressMonitor monitor) throws UnsupportedConnectorOperation {
+                                SyncResult<Throwable> res, ProgressMonitor monitor) throws UnsupportedConnectorOperation {
         throw new UnsupportedConnectorOperation("update Remote Ids not implemented for redmine connector");
     }
 
@@ -75,7 +75,7 @@ public class RedmineConnector extends AbstractConnector<RedmineConfig> {
 	}
     
 	@Override
-	public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
+	public SyncResult<Throwable> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
 		return new RedmineTaskSaver(config).saveData(tasks, monitor);
 	}
 }

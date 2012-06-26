@@ -28,7 +28,7 @@ public class GithubConnector extends AbstractConnector<GithubConfig> {
     }
 
     public void updateRemoteIDs(ConnectorConfig sourceConfig,
-            SyncResult actualSaveResult, ProgressMonitor monitor)
+            SyncResult<Throwable> actualSaveResult, ProgressMonitor monitor)
             throws UnsupportedConnectorOperation {
         throw new UnsupportedConnectorOperation(
                 "update remote IDS not implemented for this connector");
@@ -81,7 +81,7 @@ public class GithubConnector extends AbstractConnector<GithubConfig> {
     
 
     @Override
-    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor)
+    public SyncResult<Throwable> saveData(List<GTask> tasks, ProgressMonitor monitor)
             throws ConnectorException {
         return new GithubTaskSaver(config).saveData(tasks, monitor);
     }

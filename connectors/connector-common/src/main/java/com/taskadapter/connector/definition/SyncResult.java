@@ -5,7 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SyncResult {
+/**
+ * 
+ *
+ * @param <E> error result type.
+ */
+public class SyncResult<E> {
     // TODO this is a temporary solution to enable "download" link after exporting to MSP in server mode. refactor!
     private String targetFileAbsolutePath;
 
@@ -14,8 +19,8 @@ public class SyncResult {
 
     // maps ID --> remote KEY when new tasks are created
     private Map<Integer, String> idToRemoteKeyMap = new HashMap<Integer, String>();
-    private List<TaskError<Throwable>> errors = new ArrayList<TaskError<Throwable>>();
-    private List<Throwable> generalErrors = new ArrayList<Throwable>();
+    private List<TaskError<E>> errors = new ArrayList<TaskError<E>>();
+    private List<E> generalErrors = new ArrayList<E>();
 
     public String getTargetFileAbsolutePath() {
         return targetFileAbsolutePath;
@@ -25,18 +30,18 @@ public class SyncResult {
         this.targetFileAbsolutePath = targetFileAbsolutePath;
     }
 
-    public void addError(TaskError<Throwable> e) {
+    public void addError(TaskError<E> e) {
         errors.add(e);
     }
 
-    public void addGeneralError(Throwable e) {
+    public void addGeneralError(E e) {
         generalErrors.add(e);
     }
 
     /**
      * @return errors list, never NULL
      */
-    public List<TaskError<Throwable>> getErrors() {
+    public List<TaskError<E>> getErrors() {
         return errors;
     }
 
@@ -66,7 +71,7 @@ public class SyncResult {
         return ((!generalErrors.isEmpty()) || (!errors.isEmpty()));
     }
 
-    public List<Throwable> getGeneralErrors() {
+    public List<E> getGeneralErrors() {
         return generalErrors;
     }
 }

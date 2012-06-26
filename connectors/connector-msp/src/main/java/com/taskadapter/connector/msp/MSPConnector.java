@@ -24,7 +24,7 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
     }
 
     @Override
-    public void updateRemoteIDs(ConnectorConfig config, SyncResult res, ProgressMonitor monitorIGNORED) throws ConnectorException {
+    public void updateRemoteIDs(ConnectorConfig config, SyncResult<Throwable> res, ProgressMonitor monitorIGNORED) throws ConnectorException {
         if (res.getCreateTasksNumber() == 0) {
             return;
         }
@@ -171,7 +171,7 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
 
 
     @Override
-    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
+    public SyncResult<Throwable> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
     	return new MSPTaskSaver(config).saveData(tasks, monitor);
     }
 }

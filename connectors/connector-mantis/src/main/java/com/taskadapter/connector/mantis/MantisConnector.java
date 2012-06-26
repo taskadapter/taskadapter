@@ -27,7 +27,7 @@ public class MantisConnector extends AbstractConnector<MantisConfig> {
 
     @Override
     public void updateRemoteIDs(ConnectorConfig configuration,
-                                SyncResult res, ProgressMonitor monitor) throws UnsupportedConnectorOperation {
+                                SyncResult<Throwable> res, ProgressMonitor monitor) throws UnsupportedConnectorOperation {
         throw new UnsupportedConnectorOperation(
                 "updateRemotedIDs not implemented for matnis connector");
     }
@@ -77,7 +77,7 @@ public class MantisConnector extends AbstractConnector<MantisConfig> {
 
     
     @Override
-    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
+    public SyncResult<Throwable> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
     	return new MantisTaskSaver(config).saveData(tasks, monitor);
     }
 }

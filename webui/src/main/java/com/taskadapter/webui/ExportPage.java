@@ -35,7 +35,7 @@ public class ExportPage extends ActionPage {
             "Please check that the server name is valid and the server is accessible.";
 
     private SyncRunner runner;
-    private SyncResult result;
+    private SyncResult<Throwable> result;
 
     public ExportPage(Connector connectorFrom, Connector connectorTo, TAFile taFile) {
         super(connectorFrom, connectorTo, taFile);

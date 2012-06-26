@@ -1,7 +1,6 @@
 package com.taskadapter.connector.common;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,7 +14,7 @@ import com.taskadapter.model.GTask;
 
 public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
 
-    protected final SyncResult syncResult = new SyncResult();
+    protected final SyncResult<Throwable> syncResult = new SyncResult<Throwable>();
 
     private final List<GTask> totalTaskList = new ArrayList<GTask>();
 
@@ -41,7 +40,7 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
         // nothing here
     }
 
-    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
+    public SyncResult<Throwable> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
         this.monitor = monitor;
 
         beforeSave();
@@ -53,7 +52,7 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
     /**
      * this method will go through children itself.
      */
-    protected SyncResult save(String parentIssueKey, List<GTask> tasks) throws ConnectorException {
+    protected SyncResult<Throwable> save(String parentIssueKey, List<GTask> tasks) throws ConnectorException {
         Iterator<GTask> it = tasks.iterator();
         while (it.hasNext()) {
             GTask task = it.next();

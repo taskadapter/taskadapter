@@ -21,7 +21,7 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
 
     @Override
     public void updateRemoteIDs(ConnectorConfig configuration,
-                                SyncResult res, ProgressMonitor monitor) {
+                                SyncResult<Throwable> res, ProgressMonitor monitor) {
         throw new RuntimeException("not implemented for this connector");
     }
 
@@ -126,7 +126,7 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
     }
     
     @Override
-    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
+    public SyncResult<Throwable> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
     	return new JiraTaskSaver(config).saveData(tasks, monitor);
     }
 }

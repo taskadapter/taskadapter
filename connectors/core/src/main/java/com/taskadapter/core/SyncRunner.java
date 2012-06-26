@@ -76,7 +76,7 @@ public class SyncRunner {
         this.tasks = tasks;
     }
 
-    public SyncResult save(ProgressMonitor monitor) throws RemoteIdUpdateFailedException {
+    public SyncResult<Throwable> save(ProgressMonitor monitor) throws RemoteIdUpdateFailedException {
         int totalNumberOfTasks = DataConnectorUtil
                 .calculateNumberOfTasks(tasks);
         if (monitor != null) {
@@ -93,11 +93,11 @@ public class SyncRunner {
             treeToSave = this.tasks;
         }
 
-        SyncResult result;
+        SyncResult<Throwable> result;
         try {
             result = connectorTo.saveData(treeToSave, monitor);
         } catch (ConnectorException e) {
-            result = new SyncResult();
+            result = new SyncResult<Throwable>();
             result.addGeneralError(e);
         }
 

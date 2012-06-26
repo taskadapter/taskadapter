@@ -17,7 +17,7 @@ public class CommonTests {
         String expectedSummaryTask1 = tasks.get(0).getSummary();
         Integer expectedID = tasks.get(0).getId();
 
-        SyncResult result = connector.saveData(tasks, null);
+        SyncResult<Throwable> result = connector.saveData(tasks, null);
         assertEquals(tasksQty, result.getCreateTasksNumber());
 
         Integer createdTask1Id = Integer.valueOf(result.getRemoteKey(expectedID));
@@ -46,7 +46,7 @@ public class CommonTests {
     public void testCreates2Tasks(Connector<?> connector) throws ConnectorException {
         int tasksQty = 2;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
-        SyncResult result = connector.saveData(tasks, null);
+        SyncResult<Throwable> result = connector.saveData(tasks, null);
         assertFalse("Errors: " + result.getErrors().toString(), result.hasErrors());
         assertEquals(tasksQty, result.getCreateTasksNumber());
     }

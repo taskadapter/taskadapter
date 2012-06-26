@@ -36,7 +36,7 @@ public interface Connector<T extends ConnectorConfig> {
      *                connectors only need to invoke monitor.worked(1) when a task is processed.
      * @return
      */
-    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException;
+    public SyncResult<Throwable> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException;
 
     /**
      * is called after data was exported from this connector and we got some new "remote IDs", which need to
@@ -45,7 +45,7 @@ public interface Connector<T extends ConnectorConfig> {
      * @param monitor ProgressMonitor, can be NULL
      */
     public void updateRemoteIDs(ConnectorConfig sourceConfig,
-                                SyncResult actualSaveResult, com.taskadapter.connector.definition.ProgressMonitor monitor) throws ConnectorException;
+                                SyncResult<Throwable> actualSaveResult, com.taskadapter.connector.definition.ProgressMonitor monitor) throws ConnectorException;
 
     public T getConfig();
 
