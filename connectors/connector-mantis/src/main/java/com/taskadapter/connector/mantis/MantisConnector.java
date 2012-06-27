@@ -32,7 +32,7 @@ public class MantisConnector extends AbstractConnector<MantisConfig> {
     public void updateRemoteIDs(ConnectorConfig configuration,
                                 Map<Integer, String> res, ProgressMonitor monitor) throws UnsupportedConnectorOperation {
         throw new UnsupportedConnectorOperation(
-                "updateRemotedIDs not implemented for matnis connector");
+                "updateRemoteIDs");
     }
 
     @Override

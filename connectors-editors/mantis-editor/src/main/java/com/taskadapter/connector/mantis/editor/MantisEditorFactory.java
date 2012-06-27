@@ -21,4 +21,15 @@ public class MantisEditorFactory implements PluginEditorFactory {
         return new MantisEditor(config, services);
     }
 
+    @Override
+    public String formatError(Throwable e) {
+        if (e instanceof UnsupportedOperationException) {
+            final UnsupportedOperationException uop = (UnsupportedOperationException) e;
+            if ("updateRemoteIDs".equals(uop.getMessage()))
+                return "Remoted IDs are not supported by Mantis";
+            else if ("saveRelations".equals(uop.getMessage()))
+                return "Issue relations are not supported by Mantis";
+        }
+        return null;    }
+
 }

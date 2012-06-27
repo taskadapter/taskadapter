@@ -12,4 +12,12 @@ public interface PluginEditorFactory {
     Descriptor getDescriptor();
 
     ConfigEditor createEditor(ConnectorConfig config, Services services);
+    
+    /**
+     * Requests to format a plugin error. If error is not supported (not a 
+     * custom error), this method may safelly return <code>null</code>.
+     * @param e error to format.
+     * @return formatted error.
+     */
+    public String formatError(Throwable e);
 }

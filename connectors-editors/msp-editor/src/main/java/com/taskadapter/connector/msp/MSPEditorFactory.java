@@ -19,4 +19,14 @@ public class MSPEditorFactory implements PluginEditorFactory {
     public ConfigEditor createEditor(ConnectorConfig config, Services services) {
         return new MSPEditor(config, services);
     }
+
+    @Override
+    public String formatError(Throwable e) {
+        if (e instanceof UnsupportedRelationType) {
+            return "Relation type "
+                    + ((UnsupportedRelationType) e).getRelationType()
+                            .toString() + " is not supported by MSP";
+        }
+        return null;
+    }
 }

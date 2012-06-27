@@ -93,6 +93,6 @@ public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig> {
 
     @Override
     protected void saveRelations(List<GRelation> relations) throws UnsupportedConnectorOperation {
-        throw new UnsupportedConnectorOperation("save not implemented for mantis");
+        throw new UnsupportedConnectorOperation("saveRelations");
     }
 }

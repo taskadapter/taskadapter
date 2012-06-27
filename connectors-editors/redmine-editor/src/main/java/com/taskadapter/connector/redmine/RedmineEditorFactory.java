@@ -19,4 +19,17 @@ public class RedmineEditorFactory implements PluginEditorFactory {
     public ConfigEditor createEditor(ConnectorConfig config, Services services) {
         return new RedmineEditor(config, services);
     }
+
+    @Override
+    public String formatError(Throwable e) {
+        if (e instanceof RelationCreationException) {
+            return "Failed to update issue relations : "
+                    + e.getCause().getMessage();
+        } else if (e instanceof UnsupportedOperationException) {
+            final UnsupportedOperationException uop = (UnsupportedOperationException) e;
+            if ("updateRemoteIDs".equals(uop.getMessage()))
+                return "Remoted IDs are not supported by Redmine";
+        }
+        return null;
+    }
 }

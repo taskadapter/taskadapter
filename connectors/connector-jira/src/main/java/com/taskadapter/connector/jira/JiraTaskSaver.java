@@ -91,7 +91,7 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
 
     @Override
     protected void saveRelations(List<GRelation> relations) throws UnsupportedConnectorOperation {
-        throw new UnsupportedConnectorOperation("not implemented");
+        throw new UnsupportedConnectorOperation("saveRelations");
         /* SEE this text in AbstractTaskSaver:
 
           // XXX get rid of the conversion, it won't work with Jira,

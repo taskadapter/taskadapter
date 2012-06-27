@@ -12,6 +12,7 @@ import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.ConnectorError;
 import com.taskadapter.core.SyncRunner;
+import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.file.FileDownloadResource;
 import com.taskadapter.webui.data.ExceptionFormatter;
@@ -187,7 +188,12 @@ public class ExportPage extends ActionPage {
     }
     
     private String decodeException(ConnectorError<Throwable> e) {
-        return "Connector " + e.getTypeId() + " error : "
+        final String connectorID = e.getTypeId();
+        
+        final PluginEditorFactory factory = services.getEditorManager()
+                .getEditorFactory(connectorID);
+        
+        return "Connector " + connectorID + " error : "
                 + ExceptionFormatter.format(e.getError());
     }
 

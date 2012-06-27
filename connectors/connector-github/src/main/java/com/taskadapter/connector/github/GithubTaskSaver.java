@@ -57,7 +57,7 @@ public class GithubTaskSaver extends AbstractTaskSaver<GithubConfig> {
     protected void saveRelations(List<GRelation> relations)
             throws UnsupportedConnectorOperation {
         throw new UnsupportedConnectorOperation(
-                "save relations is not supported in github task saver");
+                "saveRelations");
     }
 
 }

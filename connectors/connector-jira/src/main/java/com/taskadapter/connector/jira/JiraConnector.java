@@ -25,7 +25,7 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
     public void updateRemoteIDs(ConnectorConfig configuration,
             Map<Integer, String> res, ProgressMonitor monitor)
             throws UnsupportedConnectorOperation {
-        throw new UnsupportedConnectorOperation("updateRemoteIDs not implemented for JIRA connector");
+        throw new UnsupportedConnectorOperation("updateRemoteIDs");
     }
 
     public GTask loadTaskByKey(WebServerInfo info, String key) throws ConnectorException {

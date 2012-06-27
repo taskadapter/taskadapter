@@ -22,9 +22,6 @@ public final class ExceptionFormatter {
             .<Throwable> build()
             .add(UnsupportedConnectorOperation.class,
                     "Required operation is not supported by a selected conntector")
-            .addMethod(RelationCreationException.class,
-                    ExceptionFormatter.class, "formatException",
-                    "Failed to create issue relations")
             .addMethod(EntityPersistenseException.class,
                     ExceptionFormatter.class, "formatException",
                     "Failed to store entity in a persistent storage")
@@ -52,7 +49,11 @@ public final class ExceptionFormatter {
      * @return fomatted message.
      */
     public static final String formatException(String prefix, Throwable e) {
-        return prefix + " : " + e.getMessage();
+        final Throwable cause = e.getCause();
+        if (cause == null) {
+            return prefix + " : " + e.getMessage();
+        }
+        return prefix + " : " + e.getMessage() + " : " + cause.getMessage();
     }
 
     /**

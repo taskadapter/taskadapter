@@ -101,6 +101,7 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
                             RelationType.FINISH_START, delay);
                 } else {
                     logger.error("save relations for MSP: unknown type: " + relation.getType());
+                    errors.addGeneralError(new UnsupportedRelationType(relation.getType()));
                 }
             }
 

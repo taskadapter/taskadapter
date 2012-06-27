@@ -26,7 +26,7 @@ public class RedmineConnector extends AbstractConnector<RedmineConfig> {
     @Override
     public void updateRemoteIDs(ConnectorConfig configuration,
                                 Map<Integer, String> res, ProgressMonitor monitor) throws UnsupportedConnectorOperation {
-        throw new UnsupportedConnectorOperation("update Remote Ids not implemented for redmine connector");
+        throw new UnsupportedConnectorOperation("updateRemoteIDs");
     }
 
     @Override
