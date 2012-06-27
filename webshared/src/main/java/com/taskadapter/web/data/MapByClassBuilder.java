@@ -39,7 +39,7 @@ public final class MapByClassBuilder<T> {
     @SuppressWarnings("unchecked")
     public MapByClassBuilder<T> add(Class<? extends T> clazz,
             DataFormatter<? extends T> formatter) {
-        if (formatters.containsKey(formatter)) {
+        if (formatters.containsKey(clazz)) {
             throw new IllegalArgumentException("Mapping for class " + clazz
                     + " is already present in this builder");
         }
