@@ -14,6 +14,7 @@ import com.taskadapter.core.ConnectorError;
 import com.taskadapter.core.SyncRunner;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.file.FileDownloadResource;
+import com.taskadapter.webui.data.ExceptionFormatter;
 import com.vaadin.Application;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
@@ -186,11 +187,8 @@ public class ExportPage extends ActionPage {
     }
     
     private String decodeException(ConnectorError<Throwable> e) {
-        final Throwable exn = e.getError();
-        if (!(exn instanceof ConnectorException))
-            return "Internal error : " + exn.getMessage();
-        // TODO: localization/plugin management goes here.
-        return exn.getMessage();
+        return "Connector " + e.getTypeId() + " error : "
+                + ExceptionFormatter.format(e.getError());
     }
 
     @Override
