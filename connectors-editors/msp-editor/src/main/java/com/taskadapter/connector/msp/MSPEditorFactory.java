@@ -4,12 +4,20 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.ConfigEditor;
+import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
 
 /*
  * @author Alexey Skorokhodov
  */
 public class MSPEditorFactory implements PluginEditorFactory {
+    /**
+     * Bundle name.
+     */
+    private static final String BUNDLE_NAME = "com.taskadapter.connector.msp.messages";
+
+    private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
+
     @Override
     public Descriptor getDescriptor() {
         return MSPDescriptor.instance;
@@ -23,9 +31,10 @@ public class MSPEditorFactory implements PluginEditorFactory {
     @Override
     public String formatError(Throwable e) {
         if (e instanceof UnsupportedRelationType) {
-            return "Relation type "
-                    + ((UnsupportedRelationType) e).getRelationType()
-                            .toString() + " is not supported by MSP";
+            return MESSAGES.format(
+                    "errors.unsupportedRelation",
+                    MESSAGES.get("relations."
+                            + ((UnsupportedRelationType) e).getRelationType()));
         }
         return null;
     }

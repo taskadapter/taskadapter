@@ -5,12 +5,19 @@ import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.jira.exceptions.BadHostException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.ConfigEditor;
+import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
 
 /**
  * @author Alexey Skorokhodov
  */
 public class JiraEditorFactory implements PluginEditorFactory {
+    /**
+     * Bundle name.
+     */
+    private static final String BUNDLE_NAME = "com.taskadapter.connector.github.messages";
+
+    private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
 
     @Override
     public Descriptor getDescriptor() {
@@ -25,13 +32,14 @@ public class JiraEditorFactory implements PluginEditorFactory {
     @Override
     public String formatError(Throwable e) {
         if (e instanceof BadHostException) {
-            return "Illegal jira host name : " + e.getCause();
+            return MESSAGES.format("errors.unsupported.illegalHostName", e
+                    .getCause().toString());
         } else if (e instanceof UnsupportedOperationException) {
             final UnsupportedOperationException uop = (UnsupportedOperationException) e;
             if ("updateRemoteIDs".equals(uop.getMessage()))
-                return "Remoted IDs are not supported by Jira";
+                return MESSAGES.get("errors.unsupported.remoteId");
             else if ("saveRelations".equals(uop.getMessage()))
-                return "Issue relations are not supported by Jira";
+                return MESSAGES.get("errors.unsupported.relations");
         }
         return null;
     }
