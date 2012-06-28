@@ -193,8 +193,12 @@ public class ExportPage extends ActionPage {
         final PluginEditorFactory factory = services.getEditorManager()
                 .getEditorFactory(connectorID);
         
-        return "Connector " + connectorID + " error : "
-                + ExceptionFormatter.format(e.getError());
+        String errorText = factory.formatError(e.getError());
+        if (errorText == null) {
+            errorText = ExceptionFormatter.format(e.getError());
+        }
+        
+        return "Connector " + connectorID + " error : " + errorText;
     }
 
     @Override
