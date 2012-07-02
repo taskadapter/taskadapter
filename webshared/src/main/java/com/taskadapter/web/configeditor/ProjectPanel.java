@@ -2,6 +2,7 @@ package com.taskadapter.web.configeditor;
 
 import com.google.common.base.Strings;
 import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
@@ -185,6 +186,10 @@ public class ProjectPanel extends Panel implements Validatable {
         } catch (ValidationException e) {
             windowProvider.getWindow().showNotification(
                     "Please, update the settings", e.getMessage());
+        } catch (ConnectorException e) {
+            // TODO: format exceptions.
+            windowProvider.getWindow().showNotification(
+                    "Failed to load data", e.getMessage());
         }
     }
 

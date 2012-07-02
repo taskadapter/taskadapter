@@ -61,7 +61,7 @@ public class ExportPage extends ActionPage {
             showErrorMessageOnPage(message);
             logger.error("transport error: " + message, e);
         } catch (ConnectorException e) {
-            showErrorMessageOnPage(e.getMessage());
+            showErrorMessageOnPage(ExceptionFormatter.format(e));
             logger.error(e.getMessage(), e);
         } catch (RuntimeException e) {
             showErrorMessageOnPage("Internal error: " + e.getMessage());
