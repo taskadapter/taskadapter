@@ -129,7 +129,7 @@ public class SyncRunner {
         ConnectorConfig configFrom = connectorFrom.getConfig();
         if (saveResult != null
                 && configFrom.getFieldMappings().isFieldSelected(
-                        FIELD.REMOTE_ID) && saveResult.getUpdatedTasksNumber() > 0) {
+                        FIELD.REMOTE_ID) && (saveResult.getUpdatedTasksNumber() + saveResult.getCreatedTasksNumber()) > 0) {
             try {
                 connectorFrom.updateRemoteIDs(configFrom,
                         saveResult.getIdToRemoteKeyMap(), null);
