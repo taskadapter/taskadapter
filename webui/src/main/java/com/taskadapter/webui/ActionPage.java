@@ -4,7 +4,6 @@ import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
-import com.taskadapter.web.configeditor.DefaultPanel;
 import com.taskadapter.webui.action.ConfirmExportPage;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.BaseTheme;
@@ -86,7 +85,7 @@ public abstract class ActionPage extends Page {
 
     private Label createLabel(String text) {
         Label label = new Label(text);
-        label.setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
+        label.setWidth("800px");
         return label;
     }
 

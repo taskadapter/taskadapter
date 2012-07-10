@@ -198,7 +198,7 @@
 .configs-description-label {
     background-color: #e3e3e3;
     color: #222219;
-    border: 1px #d3d3d3 solid;
+    border: 1px solid #d3d3d3;
     border-radius: 4px;
     vertical-align: middle;
     text-align: center;
@@ -215,7 +215,7 @@
 .v-nativebutton-boxButton {
     background-color: #DAF1FF;
     color: #222219;
-    border: 1px gray solid;
+    border: 1px solid gray;
     border-radius: 4px;
     width: 200px;
     height: 85px;
@@ -231,4 +231,10 @@
 
 .export-result {
     margin-left: 15px;
+}
+
+.no-shadow {
+    background-color: #ececec;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
 }

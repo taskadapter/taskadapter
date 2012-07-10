@@ -11,7 +11,7 @@ import java.util.List;
  * @author Alexey Skorokhodov
  */
 public class MyTree extends CustomComponent {
-    private static final int MAX_ROWS_BEFORE_SCROLLBAR = 15;
+    private static final int MAX_ROWS_BEFORE_SCROLLBAR = 4;
 
     private TreeTable tree;
     private List<GTask> rootLevelTasks;
@@ -22,7 +22,7 @@ public class MyTree extends CustomComponent {
 
     private void buildUI() {
         tree = new TreeTable();
-        tree.setSizeFull();
+        tree.setWidth("800px");
         tree.addContainerProperty("Action", CheckBox.class, null);
         tree.addContainerProperty("ID", String.class, null);
         tree.addContainerProperty("Summary", String.class, null);

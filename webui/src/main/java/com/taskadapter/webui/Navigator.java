@@ -6,7 +6,6 @@ import com.taskadapter.web.service.Services;
 import com.vaadin.Application;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
-import com.vaadin.ui.themes.Runo;
 import org.vaadin.googleanalytics.tracking.GoogleAnalyticsTracker;
 
 import java.util.HashMap;
@@ -68,7 +67,8 @@ public class Navigator {
         addNavigationPanel();
 
         // the big shadowed page on middle
-        mainArea.setStyleName(Runo.CSSLAYOUT_SHADOW);
+        //mainArea.setStyleName(Runo.CSSLAYOUT_SHADOW);
+        mainArea.setStyleName("no-shadow");
         mainArea.setWidth(MAIN_WIDTH);
 
         // container for currentComponentArea to be aligned in mainArea correctly
