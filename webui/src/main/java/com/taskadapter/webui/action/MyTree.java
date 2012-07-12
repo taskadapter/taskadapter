@@ -11,7 +11,7 @@ import java.util.List;
  * @author Alexey Skorokhodov
  */
 public class MyTree extends CustomComponent {
-    private static final int MAX_ROWS_BEFORE_SCROLLBAR = 4;
+    private static final int MAX_ROWS_BEFORE_SCROLLBAR = 10;
 
     private TreeTable tree;
     private List<GTask> rootLevelTasks;
