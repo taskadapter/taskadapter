@@ -3,6 +3,8 @@ package com.taskadapter.connector.jira;
 import java.util.Arrays;
 import java.util.List;
 
+import com.atlassian.jira.rest.client.domain.BasicProject;
+import com.atlassian.jira.rest.client.domain.Project;
 import com.atlassian.jira.rpc.soap.client.RemoteAuthenticationException;
 import com.atlassian.jira.rpc.soap.client.RemotePriority;
 import com.atlassian.jira.rpc.soap.client.RemoteProject;
@@ -45,9 +47,13 @@ public class JiraLoaders {
 		try {
 			JiraConnection connection = JiraConnectionFactory
 					.createConnection(serverInfo);
-			RemoteProject[] projects = connection.getProjects();
-			gProjects = new JiraProjectConverter().toGProjects(Arrays
-					.asList(projects));
+			//RemoteProject[] projects = connection.getProjects();
+            //gProjects = new JiraProjectConverter().toGProjects(Arrays
+                    //.asList(projects));
+
+            Iterable<BasicProject> projects = connection.getProjects();
+            gProjects = new JiraProjectConverter().toGProjects(projects);
+
 		} catch (RemoteAuthenticationException e) {
 			throw new JiraException(e);
 		} catch (Exception e) {
@@ -64,7 +70,8 @@ public class JiraLoaders {
 		try {
 			JiraConnection connection = JiraConnectionFactory
 					.createConnection(serverInfo);
-			RemoteProject project = connection.getProject(projectKey);
+			//RemoteProject project = connection.getProject(projectKey);
+            Project project = connection.getProject(projectKey);
 			gProject = new JiraProjectConverter().toGProject(project);
 		} catch (RemoteAuthenticationException e) {
 			throw new JiraException(e);

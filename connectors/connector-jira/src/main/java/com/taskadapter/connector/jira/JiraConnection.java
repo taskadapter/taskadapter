@@ -1,15 +1,30 @@
 package com.taskadapter.connector.jira;
 
+import com.atlassian.jira.rest.client.JiraRestClient;
+import com.atlassian.jira.rest.client.domain.BasicProject;
+import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.Project;
+import com.atlassian.jira.rest.client.domain.SearchResult;
+import com.atlassian.jira.rest.client.internal.json.CommonIssueJsonParser;
+import com.atlassian.jira.rest.client.internal.json.IssueJsonParser;
+import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.atlassian.jira.rpc.soap.client.*;
+import com.google.common.collect.Lists;
 
+import javax.naming.directory.SearchControls;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.List;
 
 public class JiraConnection {
     private static final String JIRA_DUE_DATE_FORMAT = "d/MMM/yy";
     private JiraSoapService jiraSoapService;
     private String authToken;
+
+    private JiraRestClient restClient;
 
 
     JiraConnection(JiraSoapService jiraSoapService, String authToken) {
@@ -17,16 +32,39 @@ public class JiraConnection {
         this.authToken = authToken;
     }
 
-    public RemoteIssue[] getIssuesFromFilter(String queryId) throws RemoteException {
-        return jiraSoapService.getIssuesFromFilter(authToken, queryId);
+    JiraConnection(JiraRestClient restClient) {
+        this.restClient = restClient;
     }
 
-    public RemoteIssue getIssueByKey(String issueKey) throws RemoteException {
+/*    public RemoteIssue[] getIssuesFromFilter(String queryId) throws RemoteException {
+        return jiraSoapService.getIssuesFromFilter(authToken, queryId);
+    }*/
+
+    public List<Issue> getIssuesFromFilter(String filterString) {
+        SearchResult<Issue> result = restClient.getSearchClient().searchJql(filterString, "\u002A"+"all", null, new CommonIssueJsonParser());
+        return Lists.newArrayList(result.getIssues());
+    }
+
+/*    public List<Issue> getIssuesByProject(String projectKey) {
+        SearchResult result = restClient.getSearchClient().searchJql("project=" + projectKey, null);
+
+        Collection issueList = new ArrayList<Issue>();
+        for (BasicIssue issue : result.getIssues()) {
+            issueList.add(restClient.getIssueClient().getIssue(issue.getKey(), null));
+        }
+        return issueList;
+    }*/
+
+/*    public RemoteIssue getIssueByKey(String issueKey) throws RemoteException {
         RemoteIssue[] issuesFromJqlSearch = jiraSoapService.getIssuesFromJqlSearch(authToken, "key=\"" + issueKey + "\"", 1);
         if (issuesFromJqlSearch.length == 0) {
             throw new RemoteException("Issue with ID not found");
         }
         return issuesFromJqlSearch[0];
+    }*/
+
+    public Issue getIssueByKey(String issueKey) {
+        return restClient.getIssueClient().getIssue(issueKey, null);
     }
 
     public RemotePriority[] getPriorities() throws RemoteException {
@@ -34,7 +72,7 @@ public class JiraConnection {
     }
 
     public RemoteIssueType[] getIssueTypeList(String projectName) throws RemoteException {
-        return jiraSoapService.getIssueTypesForProject(authToken, getProject(projectName).getId());
+        return jiraSoapService.getIssueTypesForProject(authToken, getProjectOld(projectName).getId());
     }
 
     public RemoteIssue[] get1IssueFromJqlSearch(String searchQuery) throws RemoteException {
@@ -73,12 +111,20 @@ public class JiraConnection {
         return formatter.format(c.getTime());
     }
 
-    public RemoteProject[] getProjects() throws RemoteException {
+    public RemoteProject[] getProjectsOld() throws RemoteException {
         return jiraSoapService.getProjectsNoSchemes(authToken);
     }
 
-    public RemoteProject getProject(String key) throws RemoteException {
+    public Iterable<BasicProject> getProjects() {
+        return restClient.getProjectClient().getAllProjects(null);
+    }
+
+    public RemoteProject getProjectOld(String key) throws RemoteException {
         return jiraSoapService.getProjectByKey(authToken, key);
+    }
+
+    public Project getProject(String key) {
+        return restClient.getProjectClient().getProject(key, null);
     }
 
     public RemoteVersion[] getVersions(String projectKey) throws RemoteException {

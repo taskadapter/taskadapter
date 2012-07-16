@@ -1,5 +1,6 @@
 package com.taskadapter.connector.jira;
 
+import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rpc.soap.client.RemoteIssue;
 import com.atlassian.jira.rpc.soap.client.RemoteIssueType;
 import com.atlassian.jira.rpc.soap.client.RemotePriority;
@@ -35,9 +36,9 @@ public class JiraTaskLoader {
 	}
 
     List<GTask> loadTasks(JiraConfig config) {
-        List<GTask> rows;
+        List<GTask> rows = null;
         try {
-            List<RemoteIssue> issues = Arrays.asList(connection.getIssuesFromFilter(extractQueryId(config)));
+            List<Issue> issues = (List<Issue>) connection.getIssuesFromFilter(config.getQueryString());
 
             rows = converter.convertToGenericTaskList(issues);
             JiraUserConverter userConverter = new JiraUserConverter(connection);
@@ -53,11 +54,7 @@ public class JiraTaskLoader {
     }
 
     GTask loadTask(JiraConfig config, String taskKey) {
-        try {
-            RemoteIssue issue = connection.getIssueByKey(taskKey);
-            return converter.convertToGenericTask(issue);
-        } catch (RemoteException e) {
-            throw new JiraException(e);
-        }
+        Issue issue = connection.getIssueByKey(taskKey);
+        return converter.convertToGenericTask(issue);
     }
 }

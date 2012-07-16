@@ -1,5 +1,16 @@
 package com.taskadapter.connector.jira;
 
+import com.atlassian.jira.rest.client.IssueRestClient;
+import com.atlassian.jira.rest.client.JiraRestClient;
+import com.atlassian.jira.rest.client.NullProgressMonitor;
+import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.Project;
+import com.atlassian.jira.rest.client.domain.SearchResult;
+import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClient;
+import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClientFactory;
+import com.atlassian.jira.rest.client.internal.json.CommonIssueJsonParser;
+import com.atlassian.jira.rest.client.internal.json.IssueJsonParser;
+import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.atlassian.jira.rpc.soap.client.*;
 import com.taskadapter.connector.common.TestUtils;
 import com.taskadapter.connector.definition.Mappings;
@@ -17,6 +28,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import java.util.*;
 
@@ -29,16 +42,16 @@ public class JiraTest {
     private static JiraConfig config = new JiraConfig();
     private static WebServerInfo serverInfo;
     private static Properties properties = new Properties();
-    
+
     private static class MappingStore {
-    	final boolean checked;
-    	final String mappedTo;
-    	
-		MappingStore(boolean checked, String mappedTo) {
-			super();
-			this.checked = checked;
-			this.mappedTo = mappedTo;
-		}
+        final boolean checked;
+        final String mappedTo;
+
+        MappingStore(boolean checked, String mappedTo) {
+            super();
+            this.checked = checked;
+            this.mappedTo = mappedTo;
+        }
     }
 
     static {
@@ -174,7 +187,7 @@ public class JiraTest {
     }
 
     @Test
-    public void priorityExported() throws MalformedURLException, RemoteException {
+    public void priorityExported() throws MalformedURLException, RemoteException, URISyntaxException {
         JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
         RemotePriority[] priorities = connection.getPriorities();
         if (priorities.length == 0) {
@@ -204,7 +217,7 @@ public class JiraTest {
         }
     }
 
-    private boolean beforeIssueTypeTest(GTask task, JiraTaskConverter converter) throws MalformedURLException, RemoteException {
+    private boolean beforeIssueTypeTest(GTask task, JiraTaskConverter converter) throws MalformedURLException, RemoteException, URISyntaxException {
         JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
         RemoteIssueType[] issueTypeList = connection.getIssueTypeList(config.getProjectKey());
         if (issueTypeList.length == 0) {
@@ -220,30 +233,31 @@ public class JiraTest {
             return true;
         }
     }
-    
-	private MappingStore getStore(JiraConfig config, FIELD field) {
-		Mappings mappings = config.getFieldMappings();
-		if (!mappings.haveMappingFor(field))
-			return null;
-		return new MappingStore(mappings.isFieldSelected(field), config.getFieldMappings().getMappedTo(field));
-	}
-	
-	/**
-	 * Applies a mapping store.
-	 * @param config used config.
-	 * @param field used field.
-	 * @param store new mapping store.
-	 */
-	private void applyStore(JiraConfig config, FIELD field, MappingStore store) {
-		Mappings mappings = config.getFieldMappings();
-		if (store == null)
-			mappings.deleteMappingFor(field);
-		else
-			mappings.setMapping(field, store.checked, store.mappedTo);
-	}
+
+    private MappingStore getStore(JiraConfig config, FIELD field) {
+        Mappings mappings = config.getFieldMappings();
+        if (!mappings.haveMappingFor(field))
+            return null;
+        return new MappingStore(mappings.isFieldSelected(field), config.getFieldMappings().getMappedTo(field));
+    }
+
+    /**
+     * Applies a mapping store.
+     *
+     * @param config used config.
+     * @param field  used field.
+     * @param store  new mapping store.
+     */
+    private void applyStore(JiraConfig config, FIELD field, MappingStore store) {
+        Mappings mappings = config.getFieldMappings();
+        if (store == null)
+            mappings.deleteMappingFor(field);
+        else
+            mappings.setMapping(field, store.checked, store.mappedTo);
+    }
 
     @Test
-    public void issueTypeDefaultValue() throws MalformedURLException, RemoteException {
+    public void issueTypeDefaultValue() throws MalformedURLException, RemoteException, URISyntaxException {
         GTask task = new GTask();
         JiraTaskConverter converter = new JiraTaskConverter(config);
 
@@ -266,7 +280,7 @@ public class JiraTest {
     }
 
     @Test
-    public void issueTypeExported() throws MalformedURLException, RemoteException {
+    public void issueTypeExported() throws MalformedURLException, RemoteException, URISyntaxException {
         GTask task = new GTask();
         JiraTaskConverter converter = new JiraTaskConverter(config);
 
@@ -290,6 +304,37 @@ public class JiraTest {
 
     public JiraConfig getTestConfig() {
         return config;
+    }
+
+    @Test
+    public void connectViaREST() throws URISyntaxException {
+        JerseyJiraRestClientFactory factory = new JerseyJiraRestClientFactory();
+        URI jiraServerUri = new URI("http://localhost:8080");
+        JiraRestClient restClient = factory.createWithBasicHttpAuthentication(jiraServerUri, "zmd", "zmdpasswd");
+        final NullProgressMonitor pm = new NullProgressMonitor();
+
+/*        final Project prj = restClient.getProjectClient().getProject("TEST", pm);
+        System.out.println(prj);
+
+        final Issue issue = restClient.getIssueClient().getIssue("TEST-1", pm);
+        System.out.println(issue);*/
+
+        final SearchResult<Issue> result = restClient.getSearchClient().searchJql("project=zmdprj", 2, 0, "\u002A"+"all", pm, new CommonIssueJsonParser());
+        for (Issue iss : result.getIssues()) {
+            System.out.println(iss);
+        }
+    }
+
+    @Test
+    public void testGetIssuesByProject() throws Exception {
+        JiraConnector connector = new JiraConnector(config);
+        JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
+/*        Iterable<Issue> issues = connection.getIssuesByProject(config.getProjectKey());
+
+        for (Issue issue : issues) {
+            System.out.println(issue);
+        }*/
+
     }
 
 }

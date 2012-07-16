@@ -28,6 +28,8 @@ public class JiraConfig extends WebConfig {
      */
     private String fixForVersion = "";
 
+    private String queryString;
+
     public JiraConfig() {
         super(DEFAULT_LABEL);
         setDefaultTaskType("Bug");
@@ -57,6 +59,13 @@ public class JiraConfig extends WebConfig {
         this.affectedVersion = version;
     }
 
+    public String getQueryString() {
+        return queryString;
+    }
+
+    public void setQueryString(String queryString) {
+        this.queryString = queryString;
+    }
 
     @Override
     protected Mappings generateDefaultFieldsMapping() {

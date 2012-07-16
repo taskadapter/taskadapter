@@ -1,11 +1,13 @@
 package com.taskadapter.connector.jira;
 
+import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rpc.soap.client.*;
 import com.google.common.base.Strings;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,27 +137,27 @@ public class JiraTaskConverter {
         return values;
     }
 
-    public List<GTask> convertToGenericTaskList(List<RemoteIssue> tasks) {
+    public List<GTask> convertToGenericTaskList(List<Issue> tasks) {
 
         // TODO see http://jira.atlassian.com/browse/JRA-6896
         logger.info("Jira: no tasks hierarchy is supported");
 
         List<GTask> rootLevelTasks = new ArrayList<GTask>();
 
-        for (RemoteIssue issue : tasks) {
+        for (Issue issue : tasks) {
             GTask genericTask = convertToGenericTask(issue);
             rootLevelTasks.add(genericTask);
         }
         return rootLevelTasks;
     }
 
-    public GTask convertToGenericTask(RemoteIssue issue) {
+    public GTask convertToGenericTask(Issue issue) {
         GTask task = new GTask();
         Integer intId = Integer.parseInt(issue.getId());
         task.setId(intId);
         task.setKey(issue.getKey());
 
-        String jiraUserLogin = issue.getAssignee();
+        String jiraUserLogin = issue.getAssignee().getName();
 
         if (jiraUserLogin != null) {
             GUser genericUser = new GUser();
@@ -166,20 +168,20 @@ public class JiraTaskConverter {
             task.setAssignee(genericUser);
         }
 
-        task.setType(getIssueTypeNameById(issue.getType()));
+        task.setType(issue.getIssueType().getName());
         task.setSummary(issue.getSummary());
         task.setDescription(issue.getDescription());
 
-        Calendar dueDate = issue.getDuedate();
+        DateTime dueDate = issue.getDueDate();
         if (dueDate != null) {
-            task.setDueDate(dueDate.getTime());
+            task.setDueDate(dueDate.toDate());
         }
 
         // TODO set these fields as well
         // task.setEstimatedHours(issue.getEstimatedHours());
         // task.setDoneRatio(issue.getDoneRatio());
 
-        String jiraPriorityName = prioritiesOtherWay.get(issue.getPriority());
+        String jiraPriorityName = issue.getPriority().getName();
 
         if (!Strings.isNullOrEmpty(jiraPriorityName)) {
             Integer priorityValue = config.getPriorityByText(jiraPriorityName);
