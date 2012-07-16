@@ -1,5 +1,6 @@
 package com.taskadapter.connector.jira;
 
+import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rpc.soap.client.*;
 import com.taskadapter.connector.common.AbstractTaskSaver;
 import com.taskadapter.connector.definition.ValidationException;
@@ -70,7 +71,7 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
     @Override
     protected GTask createTask(Object nativeTask) {
         try {
-            RemoteIssue createdIssue = connection.createIssue((RemoteIssue) nativeTask);
+            Issue createdIssue = connection.createIssue((Issue) nativeTask);
             return converter.convertToGenericTask(createdIssue);
         } catch (RemoteException e) {
             throw new JiraException(e);

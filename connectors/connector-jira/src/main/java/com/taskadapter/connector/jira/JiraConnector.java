@@ -1,5 +1,6 @@
 package com.taskadapter.connector.jira;
 
+import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rpc.soap.client.*;
 import com.taskadapter.connector.common.AbstractConnector;
 import com.taskadapter.connector.definition.*;
@@ -26,7 +27,7 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
 
         try {
             JiraConnection connection = JiraConnectionFactory.createConnection(info);
-            RemoteIssue issue = connection.getIssueByKey(key);
+            Issue issue = connection.getIssueByKey(key);
             JiraTaskConverter converter = new JiraTaskConverter(config);
             JiraUserConverter userConverter = new JiraUserConverter(connection);
             return userConverter.setAssigneeDisplayName(converter.convertToGenericTask(issue));

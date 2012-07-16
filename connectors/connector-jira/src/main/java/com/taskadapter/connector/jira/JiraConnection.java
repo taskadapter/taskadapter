@@ -1,6 +1,7 @@
 package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rest.client.JiraRestClient;
+import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Project;
@@ -79,8 +80,9 @@ public class JiraConnection {
         return jiraSoapService.getIssuesFromJqlSearch(authToken, searchQuery, 1);
     }
 
-    public RemoteIssue createIssue(RemoteIssue rmIssueToCreate) throws RemoteException {
-        return jiraSoapService.createIssue(authToken, rmIssueToCreate);
+    public Issue createIssue(Issue rmIssueToCreate) throws RemoteException {
+        return null;
+//        return jiraSoapService.createIssue(authToken, null);
     }
 
     public RemoteIssue updateIssue(String issueKey, RemoteIssue rmIssueToUpdate) throws RemoteException {

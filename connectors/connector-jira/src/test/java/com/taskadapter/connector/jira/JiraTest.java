@@ -158,7 +158,7 @@ public class JiraTest {
         issue.setPriority(null);
 
         JiraTaskConverter converter = new JiraTaskConverter(config);
-        GTask task = converter.convertToGenericTask(issue);
+        GTask task = null;//converter.convertToGenericTask(issue);
         //priority must be null cause we need to save original issue priority value
         Assert.assertNull(task.getPriority());
     }
@@ -208,7 +208,7 @@ public class JiraTest {
             MappingStore mapping = getStore(config, FIELD.PRIORITY);
             config.getFieldMappings().setMapping(FIELD.PRIORITY, true, null);
 
-            GTask task = converter.convertToGenericTask(issue);
+            GTask task = null;//converter.convertToGenericTask(issue);
             RemoteIssue newIssue = converter.convertToJiraIssue(versions, components, task);
             Assert.assertEquals(issue.getPriority(), newIssue.getPriority());
 
@@ -307,10 +307,10 @@ public class JiraTest {
     }
 
     @Test
-    public void connectViaREST() throws URISyntaxException {
+    public void connectViaREST() throws URISyntaxException, MalformedURLException, RemoteException {
         JerseyJiraRestClientFactory factory = new JerseyJiraRestClientFactory();
-        URI jiraServerUri = new URI("http://localhost:8080");
-        JiraRestClient restClient = factory.createWithBasicHttpAuthentication(jiraServerUri, "zmd", "zmdpasswd");
+        URI jiraServerUri = new URI("http://ta-dev.dyndns.biz:9980");
+        JiraRestClient restClient = factory.createWithBasicHttpAuthentication(jiraServerUri, "admin", "zzz666");
         final NullProgressMonitor pm = new NullProgressMonitor();
 
 /*        final Project prj = restClient.getProjectClient().getProject("TEST", pm);
@@ -319,9 +319,23 @@ public class JiraTest {
         final Issue issue = restClient.getIssueClient().getIssue("TEST-1", pm);
         System.out.println(issue);*/
 
-        final SearchResult<Issue> result = restClient.getSearchClient().searchJql("project=zmdprj", 2, 0, "\u002A"+"all", pm, new CommonIssueJsonParser());
+/*        final SearchResult<Issue> result = restClient.getSearchClient().searchJql("project=test", "\u002A" + "all", pm, new CommonIssueJsonParser());
         for (Issue iss : result.getIssues()) {
             System.out.println(iss);
+        }*/
+
+        WebServerInfo serverInfo = new WebServerInfo("http://ta-dev.dyndns.biz:9980", "admin", "zzz666");
+        JiraConnection connection = JiraConnectionFactory.createConnection(serverInfo);
+
+        List<Issue> issueList = connection.getIssuesFromFilter("project=test");
+        JiraConfig config = new JiraConfig();
+        config.setServerInfo(serverInfo);
+        config.setProjectKey("TEST");
+        JiraTaskConverter converter = new JiraTaskConverter(config);
+        List<GTask> tasks = converter.convertToGenericTaskList(issueList);
+
+        for (GTask issue : tasks) {
+            System.out.println(issue);
         }
     }
 
