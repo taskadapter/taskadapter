@@ -6,7 +6,6 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.webui.action.ConfirmExportPage;
 import com.vaadin.ui.*;
-import com.vaadin.ui.themes.BaseTheme;
 
 import java.util.List;
 
@@ -127,8 +126,8 @@ public abstract class ActionPage extends Page {
         mainPanel.removeAllComponents();
         mainPanel.addComponent(getDoneInfoPanel());
 
-        Button button = new Button("Open home page");
-        button.setStyleName(BaseTheme.BUTTON_LINK);
+        Button button = new Button("Back to home page");
+        //button.setStyleName(BaseTheme.BUTTON_LINK);
         button.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {

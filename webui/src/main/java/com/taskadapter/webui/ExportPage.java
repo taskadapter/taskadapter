@@ -3,11 +3,7 @@ package com.taskadapter.webui;
 import com.google.common.base.Strings;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
-import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.SyncResult;
-import com.taskadapter.connector.definition.TaskError;
-import com.taskadapter.connector.definition.TaskErrors;
-import com.taskadapter.connector.definition.TaskSaveResult;
+import com.taskadapter.connector.definition.*;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.ConnectorError;
@@ -18,6 +14,7 @@ import com.taskadapter.web.configeditor.file.FileDownloadResource;
 import com.taskadapter.webui.data.ExceptionFormatter;
 import com.vaadin.Application;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import org.slf4j.Logger;
@@ -97,6 +94,7 @@ public class ExportPage extends ActionPage {
     @Override
     protected VerticalLayout getDoneInfoPanel() {
         donePanel.setWidth("600px");
+        donePanel.setStyleName("export-panel");
 
         addDateTimeInfo();
         addFromToPanel();
@@ -114,37 +112,46 @@ public class ExportPage extends ActionPage {
     }
 
     private void addDateTimeInfo() {
-        String LOG_DATE_FORMAT = "d/MMM HH:mm";
-        SimpleDateFormat dateFormatter = new SimpleDateFormat(LOG_DATE_FORMAT);
+        String time = new SimpleDateFormat("MMMM dd, yyyy  HH:mm").format(Calendar.getInstance().getTime());
+        Label label = new Label("<strong>Export completed on</strong> <em>" + time + "</em>");
+        label.setContentMode(Label.CONTENT_XHTML);
 
-        String time = dateFormatter.format(Calendar.getInstance().getTime());
-        donePanel.addComponent(new Label("Export completed on " + time));
+        donePanel.addComponent(label);
     }
 
     private void addFromToPanel() {
-        Label infoLabel = new Label("From: " + connectorFrom.getConfig().getSourceLocation()
-                + "<br>To: " + connectorTo.getConfig().getTargetLocation());
-        infoLabel.addStyleName("export-result");
-        infoLabel.setContentMode(Label.CONTENT_XHTML);
-        donePanel.addComponent(infoLabel);
+        donePanel.addComponent(createdExportResultLabel("From", connectorFrom.getConfig().getSourceLocation()));
     }
 
     private void addExportNumbersStats(TaskSaveResult result) {
-        Label infoLabel = new Label("Created tasks: " + result.getCreatedTasksNumber()
-                + "<br>Updated tasks: " + result.getUpdatedTasksNumber() + "<br><br>");
-        infoLabel.addStyleName("export-result");
-        infoLabel.setContentMode(Label.CONTENT_XHTML);
-        donePanel.addComponent(infoLabel);
+        donePanel.addComponent(createdExportResultLabel("Created tasks", String.valueOf(result.getCreatedTasksNumber())));
+        donePanel.addComponent(createdExportResultLabel("Updated tasks", String.valueOf(result.getUpdatedTasksNumber()) + "<br/><br/>"));
+    }
+
+    private HorizontalLayout createdExportResultLabel(String labelName, String labelValue) {
+        Label lName = new Label("<strong>" + labelName + ":</strong>");
+        lName.setContentMode(Label.CONTENT_XHTML);
+        lName.setWidth("98px");
+
+        Label lValue = new Label("<em>" + labelValue + "</em>");
+        lValue.setContentMode(Label.CONTENT_XHTML);
+
+        HorizontalLayout hl = new HorizontalLayout();
+        hl.addComponent(lName);
+        hl.addComponent(lValue);
+        hl.addStyleName("export-result");
+
+        return hl;
     }
 
     private void addErrors(TaskErrors<ConnectorError<Throwable>> result) {
         donePanel.addComponent(new Label("There were some problems during export:"));
         String errorText = "";
         for (ConnectorError<Throwable> e : result.getGeneralErrors()) {
-            errorText += quot(decodeException(e)) + "<br>";
+            errorText += quot(decodeException(e)) + "<br/>";
         }
         for (TaskError<ConnectorError<Throwable>> e : result.getErrors()) {
-            errorText += quot(getMessageForTask(e)) + "<br>";
+            errorText += quot(getMessageForTask(e)) + "<br/>";
         }
         Label errorTextLabel = new Label(errorText);
         errorTextLabel.addStyleName("errorMessage");
@@ -153,13 +160,18 @@ public class ExportPage extends ActionPage {
     }
     
     private static String quot(String str) {
-        return str.replace("&", "&amp;").replace("\"", "&quot;")
-                .replace("<", "&lt;").replace(">", "&gt;");
+        return str.replace("&", "&amp;")
+                .replace("\"", "&quot;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;");
     }
 
     private void addFileInfoIfNeeded(TaskSaveResult result) {
         if (result.getTargetFileAbsolutePath() != null && (services.getSettingsManager().isTAWorkingOnLocalMachine())) {
-            donePanel.addComponent(new Label("File absolute path: " + result.getTargetFileAbsolutePath()));
+            Label label = new Label("<strong>Path to export file:</strong> <em>" + result.getTargetFileAbsolutePath() + "</em>");
+            label.setContentMode(Label.CONTENT_XHTML);
+
+            donePanel.addComponent(label);
         }
     }
 

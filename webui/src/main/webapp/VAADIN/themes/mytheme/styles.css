@@ -233,6 +233,12 @@
     margin-left: 15px;
 }
 
+.export-panel {
+    background-color: #dcdcdc;
+    padding: 15px 15px 15px 15px;
+    border-radius: 4px;
+}
+
 .no-shadow {
     background-color: #ececec;
     border: 1px solid #e0e0e0;
