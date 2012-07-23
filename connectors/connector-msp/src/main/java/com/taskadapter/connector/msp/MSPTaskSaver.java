@@ -8,7 +8,6 @@ import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GRelation.TYPE;
 import com.taskadapter.model.GTask;
 import net.sf.mpxj.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,11 +106,14 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
 
             writer.writeProject(projectFile);
         } catch (MPXJException e) {
-            errors.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations"));
+            errors.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations (" + e.toString() + ")"));
+            e.printStackTrace();
         } catch (IOException e) {
-            errors.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations"));
+            errors.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations (" + e.toString() + ")"));
+            e.printStackTrace();
         } catch (Throwable e) {
-            errors.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations"));
+            errors.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations (" + e.toString() + ")"));
+            e.printStackTrace();
         }
     }
 
