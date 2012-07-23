@@ -28,6 +28,14 @@ public class MSPFileReader {
         } else {
             projectReader = new MSPDIReader();
         }
-        return projectReader.read(file);
+
+        ProjectFile projectFile;
+        try {
+            projectFile = projectReader.read(file);
+        } catch (MPXJException e) {
+            projectFile = new MSPDIReader().read(file); //last try to fix user's mistake
+        }
+
+        return projectFile;
     }
 }

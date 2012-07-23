@@ -2,6 +2,7 @@ package com.taskadapter.web.configeditor.file;
 
 import com.taskadapter.connector.msp.MSPConfig;
 import com.vaadin.data.util.MethodProperty;
+import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
@@ -44,6 +45,15 @@ public class LocalModeFilePanel extends Panel {
         outputFileNameField = createFileName(TOOLTIP_OUTPUT_FILE_NAME);
 		outputFileNameField.setPropertyDataSource(new MethodProperty<String>(
 				config, "outputAbsoluteFilePath"));
+        outputFileNameField.addListener(new FieldEvents.BlurListener() {
+            @Override
+            public void blur(FieldEvents.BlurEvent event) {
+                String val = outputFileNameField.getValue().toString();
+                if(!(val.endsWith(".xml") || val.endsWith(".XML"))) {
+                    outputFileNameField.setValue(val + ".xml");
+                }
+            }
+        });
         layout.addComponent(outputFileNameField);
     }
 
