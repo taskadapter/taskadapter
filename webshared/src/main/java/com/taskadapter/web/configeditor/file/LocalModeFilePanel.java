@@ -15,9 +15,6 @@ public class LocalModeFilePanel extends Panel {
     private static final String LABEL_OUTPUT_FILE_NAME = "Output file:";
     private static final String TOOLTIP_OUTPUT_FILE_NAME = "Microsoft Project file name to save the data to (only XML format is supported)";
     
-    /**
-     * Used config.
-     */
     private final MSPConfig config;
 
     public LocalModeFilePanel(MSPConfig config) {

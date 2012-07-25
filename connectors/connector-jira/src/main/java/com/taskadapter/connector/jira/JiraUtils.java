@@ -11,12 +11,6 @@ import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.jira.exceptions.BadHostException;
 
-/**
- * Jira utilities.
- * 
- * @author maxkar
- * 
- */
 public final class JiraUtils {
     private final static String[] PREFIXES_TO_DELETE = new String[] {
             "com.atlassian.jira.rpc.exception.RemoteAuthenticationException: ",

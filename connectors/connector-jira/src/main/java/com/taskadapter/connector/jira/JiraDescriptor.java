@@ -7,16 +7,12 @@ import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 public class JiraDescriptor {
 
-
     /**
      * Keep it the same to enable backward compatibility with the existing
      * config files.
      */
     private static final String ID = "Atlassian Jira";
 
-    /**
-     * Supported fields.
-     */
     private static final AvailableFields SUPPORTED_FIELDS;
     
     static {
