@@ -28,7 +28,7 @@ public class SyncRunnerTest extends AbstractSyncRunnerTest {
 
         RedmineConfig redmineConfigTo = RedmineTestConfig.getRedmineTestConfig();
 
-        MSPConfig mspConfig = getConfig("ProjectWithTree.xml");
+        MSPConfig mspConfig = getConfig("com/taskadapter/integrationtests/ProjectWithTree.xml");
         Connector<?> projectConnector = new MSPConnector(mspConfig);
 
         SyncRunner runner = new SyncRunner(new LicenseManager()); //LicenseManager with license of some type can be set

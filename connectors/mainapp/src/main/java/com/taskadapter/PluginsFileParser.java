@@ -1,20 +1,18 @@
 package com.taskadapter;
 
-import com.taskadapter.util.MyIOUtils;
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class PluginsFileParser {
     private static final String COMMENT_SYMBOL = "#";
 
     public Collection<String> parseResource(String resourceName) {
         try {
-            String fileContents = MyIOUtils.getResourceAsString(resourceName);
+            String fileContents = Resources.toString(Resources.getResource(resourceName), Charsets.UTF_8);
             return parsePluginsFile(fileContents);
         } catch (IOException e) {
             throw new RuntimeException("can't load " + resourceName + " from classpath." + e.toString());

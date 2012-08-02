@@ -1,12 +1,14 @@
 package com.taskadapter.integrationtests;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
+import com.google.common.io.Resources;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
-import com.taskadapter.util.MyIOUtils;
 import net.sf.mpxj.TaskField;
 
-import java.io.*;
-import java.net.URL;
+import java.io.File;
+import java.io.IOException;
 
 public class AbstractSyncRunnerTest {
 
@@ -15,31 +17,19 @@ public class AbstractSyncRunnerTest {
      * This is useful when a test needs to overwrite a file. We don't want to destroy the
      * original test data.
      */
-    protected MSPConfig getConfig(String fileName) throws IOException {
+    protected MSPConfig getConfig(String fileNameInClasspath) throws IOException {
 
         File temp = File.createTempFile("pattern", ".suffix");
         // Delete temp file when program exits.
         temp.deleteOnExit();
 
-        // Write to temp file
-        copyFile(fileName, temp);
+        String fileContents = Resources.toString(Resources.getResource(fileNameInClasspath), Charsets.UTF_8);
+        Files.write(fileContents, temp, Charsets.UTF_8);
 
         MSPConfig mspConfig = new MSPConfig(temp.getAbsolutePath());
         mspConfig.getFieldMappings().selectField(FIELD.REMOTE_ID);
         mspConfig.getFieldMappings().setMapping(FIELD.REMOTE_ID, TaskField.TEXT22.toString());
         return mspConfig;
-    }
-
-    private void copyFile(String fileName, File temp) throws IOException {
-        BufferedWriter out = new BufferedWriter(new OutputStreamWriter
-                (new FileOutputStream(temp), "UTF8"));
-
-        URL resource = AbstractSyncRunnerTest.class.getResource(fileName);
-        InputStream stream = resource.openStream();
-
-        String oldFileStr = MyIOUtils.convertStreamToString(stream);
-        out.write(oldFileStr);
-        out.close();
     }
 
     protected MSPConfig createTempMSPConfig() {

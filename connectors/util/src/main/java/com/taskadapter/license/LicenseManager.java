@@ -2,11 +2,9 @@ package com.taskadapter.license;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-import com.taskadapter.util.MyIOUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.prefs.Preferences;

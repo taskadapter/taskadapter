@@ -4,7 +4,6 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.taskadapter.FileManager;
 import com.taskadapter.PluginManager;
-import com.taskadapter.util.MyIOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,6 +1,7 @@
 package com.taskadapter.license;
 
-import com.taskadapter.util.MyIOUtils;
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -27,12 +28,12 @@ public class LicenseManagerTest {
     }
 
     private String getValidSingleUserLicense() throws IOException {
-        return MyIOUtils.getResourceAsString("taskadapterweb.1-user.license");
+        return Resources.toString(Resources.getResource("taskadapterweb.1-user.license"), Charsets.UTF_8);
     }
 
     @Test
     public void testValidMultiLicense() throws IOException {
-        String validMultiUserLicense = MyIOUtils.getResourceAsString("taskadapterweb.5-users.license");
+        String validMultiUserLicense = Resources.toString(Resources.getResource("taskadapterweb.5-users.license"), Charsets.UTF_8);
         LicenseManager licenseManager = new LicenseManager();
         try {
             licenseManager.setNewLicense(validMultiUserLicense);

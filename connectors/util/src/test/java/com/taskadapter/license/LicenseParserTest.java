@@ -1,6 +1,7 @@
 package com.taskadapter.license;
 
-import com.taskadapter.util.MyIOUtils;
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -8,7 +9,7 @@ import java.io.IOException;
 public class LicenseParserTest {
     @Test
     public void expiredLicenseParsedOK() throws IOException, LicenseParseException {
-        String expiredLicenseText = MyIOUtils.getResourceAsString("taskadapterweb.license.expired");
+        String expiredLicenseText = Resources.toString(Resources.getResource("taskadapterweb.license.expired"), Charsets.UTF_8);
         new LicenseParser().parseLicense(expiredLicenseText);
     }
 }

@@ -2,7 +2,6 @@ package com.taskadapter.license;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-import com.taskadapter.util.MyIOUtils;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
