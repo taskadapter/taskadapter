@@ -50,7 +50,7 @@ public class IntegrationTest extends AbstractSyncRunnerTest {
 
         RedmineConfig redmineConfigTo = RedmineTestConfig.getRedmineTestConfig();
 
-        MSPConfig mspConfig = getConfig("non-linear-uuid.xml");
+        MSPConfig mspConfig = getConfig("com/taskadapter/integrationtests/non-linear-uuid.xml");
         Connector<?> msProjectConnector = new MSPConnector(mspConfig);
 
         SyncRunner runner = new SyncRunner(new LicenseManager()); //LicenseManager with license of some type can be set
@@ -75,7 +75,7 @@ public class IntegrationTest extends AbstractSyncRunnerTest {
     public void testOneSideDisconnectedRelationships() throws IOException, ConnectorException {
         RedmineConfig redmineConfigTo = RedmineTestConfig.getRedmineTestConfig();
 
-        MSPConfig mspConfig = getConfig("ProjectWithOneSideDisconnectedRelationships.xml");
+        MSPConfig mspConfig = getConfig("com/taskadapter/integrationtests/ProjectWithOneSideDisconnectedRelationships.xml");
         Connector<?> projectConnector = new MSPConnector(mspConfig);
 
         SyncRunner runner = new SyncRunner(new LicenseManager()); //LicenseManager with license of some type can be set
