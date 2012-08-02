@@ -1,5 +1,7 @@
 package com.taskadapter.config;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 import com.taskadapter.FileManager;
 import com.taskadapter.PluginManager;
 import com.taskadapter.util.MyIOUtils;
@@ -45,7 +47,7 @@ public class ConfigStorage {
             for (String name : fileNames) {
                 File file = new File(folder, name);
                 try {
-                    String fileBody = MyIOUtils.loadFile(file.getAbsolutePath());
+                    String fileBody = Files.toString(new File(file.getAbsolutePath()), Charsets.UTF_8);
                     ConfigFileParser parser = new ConfigFileParser(pluginManager);
                     TAFile taFile = parser.parse(fileBody);
                     taFile.setAbsoluteFilePath(file.getAbsolutePath());
@@ -64,7 +66,7 @@ public class ConfigStorage {
         try {
             File folder = getUserConfigsFolder(userLoginName);
             folder.mkdirs();
-            MyIOUtils.writeToFile(taFile.getAbsoluteFilePath(), fileContents);
+            Files.write(fileContents, new File(taFile.getAbsoluteFilePath()), Charsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -77,7 +79,7 @@ public class ConfigStorage {
             userFolder.mkdirs();
             String absoluteFilePathForNewConfig = findUnusedAbsoluteFilePath(userFolder, taFile);
             taFile.setAbsoluteFilePath(absoluteFilePathForNewConfig);
-            MyIOUtils.writeToFile(absoluteFilePathForNewConfig, fileContents);
+            Files.write(fileContents, new File(absoluteFilePathForNewConfig), Charsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

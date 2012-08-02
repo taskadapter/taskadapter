@@ -52,34 +52,4 @@ public class MyIOUtils {
             return "";
         }
     }
-
-    public static void writeToFile(String fileName, String text)
-            throws IOException {
-        BufferedWriter out = null;
-        try {
-            // XXX is it UTF8 or UTF-8 ???
-            out = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(fileName), "UTF8"));
-
-            out.write(text);
-            out.close();
-        } finally {
-            if (out != null) {
-                out.close();
-            }
-        }
-    }
-
-    public static String loadFile(String fileName) throws IOException {
-        StringBuffer buffer = new StringBuffer();
-        FileInputStream fis = new FileInputStream(fileName);
-        InputStreamReader isr = new InputStreamReader(fis, "UTF8");
-        Reader in = new BufferedReader(isr);
-        int ch;
-        while ((ch = in.read()) > -1) {
-            buffer.append((char) ch);
-        }
-        in.close();
-        return buffer.toString();
-    }
 }
