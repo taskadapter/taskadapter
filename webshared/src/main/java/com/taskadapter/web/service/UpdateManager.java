@@ -31,7 +31,7 @@ public class UpdateManager {
             logger.error("Error loading " + VERSION_PROPERTIES_FILE_NAME + ": " + e.getMessage(), e);
         }
         appInfo.setVersion(properties.getProperty("version"));
-        appInfo.setBuildDate(properties.getProperty("buildDate"));
+//        appInfo.setBuildDate(properties.getProperty("buildDate"));
     }
 
 /*    private void loadLastVersion() {

@@ -14,7 +14,7 @@ public class ArgumentsParserTest {
     @Test
     public void defaultNumberOfUsersIsSetWhenNotProvidedInArgs() {
         RequestedLicense requestedLicense = new ArgumentsParser().parseArgs("De Smedt Johannes J.Desmedt@televic.com".split(" "));
-        assertEquals(requestedLicense.DEFAULT_USERS_NUMBER, requestedLicense.getUsersNumber());
+        assertEquals(RequestedLicense.DEFAULT_USERS_NUMBER, requestedLicense.getUsersNumber());
     }
 
     @Test

@@ -16,6 +16,6 @@ public class ExceptionForamtterTests {
     @Test
     public void testBasicFormat() {
         Assert.assertEquals("Internal error : Test error", ExceptionFormatter
-                .getForamtter().format(new Error("Test error")));
+                .getFormatter().format(new Error("Test error")));
     }
 }

@@ -5,18 +5,15 @@ import java.io.IOException;
 
 final class LicenseEncryptor {
 
-    private String password;
-
-    LicenseEncryptor(String password) {
-        this.password = password;
-    }
+    // TODO this is not very secure, but should be OK for the prototype
+    private static final String PASSWORD = "$z823nV_sz#84";
 
     // secret description:
     // proksorit i vsego delov
-    public String chiper(String text) {
+    public static String chiper(String text) {
         String result = null;
         byte[] strBuf = text.getBytes();
-        byte[] keyBuf = password.getBytes();
+        byte[] keyBuf = PASSWORD.getBytes();
         int c = 0;
         int z = keyBuf.length;
         ByteArrayOutputStream baos = new ByteArrayOutputStream(strBuf.length);

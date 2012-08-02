@@ -6,18 +6,14 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 /**
  * Data provider.
  * 
- * @author maxkar
- * 
- * @param <T>
- *            type of data.
+ * @param <T> type of data.
  */
 public interface DataProvider<T> {
     /**
-     * Loads a data.
+     * Loads data.
      * 
      * @return loaded data.
-     * @throws ValidationException
-     *             if current state is invalid.
+     * @throws ValidationException if current state is invalid.
      */
     public T loadData() throws ValidationException, ConnectorException;
 }

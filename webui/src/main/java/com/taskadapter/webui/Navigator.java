@@ -101,7 +101,7 @@ public class Navigator {
         if (page != null) {
             show(page);
         } else {
-            showError("Internal error!", "Page \"" + pageId + "\" is not registered");
+            showError("Page \"" + pageId + "\" is not registered");
         }
     }
 
@@ -160,8 +160,8 @@ public class Navigator {
         show(page);
     }
 
-    public void showError(String caption, String message) {
-        showNotification(caption, message);
+    public void showError(String message) {
+        showNotification("Internal error!", message);
     }
 
     public void showNotification(String caption, String message) {

@@ -9,12 +9,7 @@ import com.taskadapter.web.configeditor.file.ServerModelFilePanelPresenter;
 import com.taskadapter.web.service.Services;
 import com.vaadin.ui.Panel;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class MSPEditor extends TwoColumnsConfigEditor {
-
-    private MSPInfoPanel infoPanel;
 
     public MSPEditor(ConnectorConfig config, Services services) {
         super(config, services);
@@ -32,7 +27,7 @@ public class MSPEditor extends TwoColumnsConfigEditor {
     }
 
     private MSPInfoPanel createInfoReadOnlyPanel() {
-        infoPanel = new MSPInfoPanel((MSPConfig) config);
+        MSPInfoPanel infoPanel = new MSPInfoPanel((MSPConfig) config);
         infoPanel.setHeight("152px");
         return infoPanel;
     }

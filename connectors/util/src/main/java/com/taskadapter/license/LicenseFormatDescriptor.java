@@ -17,6 +17,4 @@ public abstract class LicenseFormatDescriptor {
     static final int LINE_KEY = 7;
 
     public static final String LICENSE_DATE_FORMAT = "yyyy-MM-dd";
-    // TODO this is not very secure, but should be OK for the prototype
-    static final String PASSWORD = "$z823nV_sz#84";
 }

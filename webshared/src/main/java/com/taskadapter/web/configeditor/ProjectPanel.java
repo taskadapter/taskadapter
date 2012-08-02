@@ -14,8 +14,6 @@ import java.util.List;
 
 /**
  * "Project info" panel with Project Key, Query Id.
- *
- * @author Alexey Skorokhodov
  */
 public class ProjectPanel extends Panel implements Validatable {
     private static final String DEFAULT_PANEL_CAPTION = "Project Info";
@@ -26,12 +24,8 @@ public class ProjectPanel extends Panel implements Validatable {
 
     private Label projectKeyLabel;
     private Label queryValueLabel;
-    private Button showQueriesButton;
     private static final String TEXT_AREA_WIDTH = "120px";
 
-    /**
-     * Project provider.
-     */
     private final DataProvider<List<? extends NamedKeyedObject>> projectProvider;
 
     /**
@@ -39,24 +33,12 @@ public class ProjectPanel extends Panel implements Validatable {
      */
     private final SimpleCallback projectInfoCallback;
 
-    /**
-     * Query provider.
-     */
     private final DataProvider<List<? extends NamedKeyedObject>> queryProvider;
 
-    /**
-     * Project key property.
-     */
     private final Property projectKeyProperty;
 
-    /**
-     * Query id property.
-     */
     private final Property queryValueProperty;
 
-    /**
-     * Window provider.
-     */
     private final WindowProvider windowProvider;
 
     /**
@@ -145,7 +127,7 @@ public class ProjectPanel extends Panel implements Validatable {
             queryValue.setWidth(TEXT_AREA_WIDTH);
             queryValue.setPropertyDataSource(queryValueProperty);
 
-            showQueriesButton = EditorUtil.createLookupButton(
+            Button showQueriesButton = EditorUtil.createLookupButton(
                     windowProvider,
                     "...",
                     "Show available saved queries on the server.",

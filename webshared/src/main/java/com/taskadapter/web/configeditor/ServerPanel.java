@@ -7,18 +7,13 @@ import com.vaadin.data.util.MethodProperty;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.*;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class ServerPanel extends Panel implements Validatable {
     private static final String HOST_URL_TOOLTIP = "Host URL, including protocol prefix and port number. E.g. http://demo.site.com:3000";
     private static final String DEFAULT_HOST_VALUE = "http://";
     private static final String SERVER_GROUP_LABEL = "Server info";
 
     private TextField hostURLText;
-    private TextField login;
-    private PasswordField password;
-    
+
     private Property hostProperty;
 
     public ServerPanel(Property hostUrlProp, Property loginProp, Property passwordProp) {
@@ -64,7 +59,7 @@ public class ServerPanel extends Panel implements Validatable {
         layout.addComponent(loginLabel, 0, 1);
         layout.setComponentAlignment(loginLabel, Alignment.MIDDLE_LEFT);
 
-        login = new TextField();
+        TextField login = new TextField();
         login.addStyleName("server-panel-textfield");
 		login.setPropertyDataSource(loginProp);
         layout.addComponent(login, 1, 1);
@@ -74,7 +69,7 @@ public class ServerPanel extends Panel implements Validatable {
         layout.addComponent(pswdLabel, 0, 2);
         layout.setComponentAlignment(pswdLabel, Alignment.MIDDLE_LEFT);
 
-        password = new PasswordField();
+        PasswordField password = new PasswordField();
         password.addStyleName("server-panel-textfield");
 		password.setPropertyDataSource(passwordProp);
         layout.addComponent(password, 1, 2);

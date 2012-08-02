@@ -12,14 +12,8 @@ import com.taskadapter.web.data.Messages;
 
 /**
  * Exception converter.
- * 
- * @author maxkar
- * 
  */
 public final class ExceptionFormatter {
-    /**
-     * Bundle name.
-     */
     private static final String BUNDLE_NAME = "com.taskadapter.webui.data.messages";
 
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
@@ -50,9 +44,9 @@ public final class ExceptionFormatter {
      *            prefix key.
      * @param e
      *            throwable handler.
-     * @return fomatted message.
+     * @return formatted message.
      */
-    public static final String formatException(String key, Throwable e) {
+    public static String formatException(String key, Throwable e) {
         final Throwable cause = e.getCause();
         final String prefix = MESSAGES.get(key);
         if (cause == null) {
@@ -67,7 +61,7 @@ public final class ExceptionFormatter {
      * 
      * @return exception formatter.
      */
-    public static DataFormatter<Throwable> getForamtter() {
+    public static DataFormatter<Throwable> getFormatter() {
         return FORMATTERS;
     }
 
@@ -75,6 +69,6 @@ public final class ExceptionFormatter {
      * Formats an exception.
      */
     public static String format(Throwable t) {
-        return getForamtter().format(t);
+        return getFormatter().format(t);
     }
 }

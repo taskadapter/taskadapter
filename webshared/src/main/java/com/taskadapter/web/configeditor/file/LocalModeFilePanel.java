@@ -23,7 +23,6 @@ public class LocalModeFilePanel extends Panel {
         buildUI();
     }
 
-    private TextField inputFileNameField;
     private TextField outputFileNameField;
 
     private void buildUI() {
@@ -33,9 +32,9 @@ public class LocalModeFilePanel extends Panel {
         layout.setSpacing(true);
 
         layout.addComponent(new Label(LABEL_FILE_NAME));
-        inputFileNameField = createFileName(TOOLTIP_FILE_NAME);
+        TextField inputFileNameField = createFileName(TOOLTIP_FILE_NAME);
 		inputFileNameField.setPropertyDataSource(new MethodProperty<String>(
-				config, "inputAbsoluteFilePath"));
+                config, "inputAbsoluteFilePath"));
         layout.addComponent(inputFileNameField);
 
         layout.addComponent(new Label(LABEL_OUTPUT_FILE_NAME));

@@ -27,7 +27,7 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
 
     private ProgressMonitor monitor;
 
-    public AbstractTaskSaver(T config) {
+    protected AbstractTaskSaver(T config) {
         super();
         this.config = config;
     }
