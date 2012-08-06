@@ -99,7 +99,7 @@ public class EditConfigPage extends Page {
             updateFileWithDataInForm();
             String userLoginName = services.getAuthenticator().getUserName();
             services.getConfigStorage().saveConfig(userLoginName, file);
-            navigator.showNotification("Saved", "All saved OK");
+            navigator.showNotification("Saved", "All is saved OK");
 
             errorMessageLabel.setValue("");
             navigator.show(Navigator.HOME);
