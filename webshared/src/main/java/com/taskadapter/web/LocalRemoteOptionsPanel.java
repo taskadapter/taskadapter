@@ -2,7 +2,6 @@ package com.taskadapter.web;
 
 import com.taskadapter.web.service.Services;
 import com.vaadin.data.Property;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
@@ -19,7 +18,7 @@ public class LocalRemoteOptionsPanel extends Panel {
 
     private static final List<String> options = Arrays.asList(LOCAL, REMOTE);
     private OptionGroup group;
-    private ProgressElement progressElement;
+    //private ProgressElement progressElement;
     private Services services;
 
     public LocalRemoteOptionsPanel(Services services) {
@@ -33,13 +32,13 @@ public class LocalRemoteOptionsPanel extends Panel {
     private void buildUI() {
         group = new OptionGroup("", options);
         HorizontalLayout configGroupLayout = new HorizontalLayout();
-        progressElement = new ProgressElement();
+        //progressElement = new ProgressElement();
 
-        group.setNullSelectionAllowed(false); // user can not 'unselect'
-        group.setImmediate(true); // send the change to the server at once
+        group.setNullSelectionAllowed(false);   // user can not deselect
+        group.setImmediate(true);               // send the change to the server at once
         configGroupLayout.addComponent(group);
-        configGroupLayout.addComponent(progressElement);
-        configGroupLayout.setComponentAlignment(progressElement, Alignment.MIDDLE_CENTER);
+        //configGroupLayout.addComponent(progressElement);
+        //configGroupLayout.setComponentAlignment(progressElement, Alignment.MIDDLE_CENTER);
 
         addComponent(configGroupLayout);
     }
@@ -58,7 +57,8 @@ public class LocalRemoteOptionsPanel extends Panel {
             public void valueChange(Property.ValueChangeEvent event) {
                 boolean localModeRequested = event.getProperty().toString().equals(LOCAL);
                 services.getSettingsManager().setLocal(localModeRequested);
-                progressElement.start();
+                //progressElement.start();
+                getWindow().showNotification("Saved");
             }
         });
     }
