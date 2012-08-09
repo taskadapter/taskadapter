@@ -9,7 +9,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <vaadin.version>6.7.8</vaadin.version>
+        <vaadin.version>6.8.2</vaadin.version>
         <gwt.version>2.3.0</gwt.version>
         <guava.version>12.0</guava.version>
     </properties>
