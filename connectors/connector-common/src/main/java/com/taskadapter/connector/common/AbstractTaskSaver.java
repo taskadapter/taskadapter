@@ -59,9 +59,7 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
      * this method will go through children itself.
      */
     protected void save(String parentIssueKey, List<GTask> tasks) throws ConnectorException {
-        Iterator<GTask> it = tasks.iterator();
-        while (it.hasNext()) {
-            GTask task = it.next();
+        for (GTask task : tasks) {
             totalTaskList.add(task);
 
             String newTaskKey = null;
@@ -74,7 +72,7 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
             } catch (ConnectorException e) {
                 errors.addError(new TaskError<Throwable>(task, e));
             } catch (Throwable t) {
-                errors.addError(new TaskError<Throwable>(task, t));               
+                errors.addError(new TaskError<Throwable>(task, t));
             }
             reportProgress();
 
