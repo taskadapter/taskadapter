@@ -2,10 +2,8 @@ package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
-import com.atlassian.jira.rest.client.domain.BasicProject;
-import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rest.client.domain.Project;
-import com.atlassian.jira.rest.client.domain.SearchResult;
+import com.atlassian.jira.rest.client.domain.*;
+import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.internal.json.CommonIssueJsonParser;
 import com.atlassian.jira.rest.client.internal.json.IssueJsonParser;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
@@ -68,26 +66,45 @@ public class JiraConnection {
         return restClient.getIssueClient().getIssue(issueKey, null);
     }
 
-    public RemotePriority[] getPriorities() throws RemoteException {
+/*    public RemotePriority[] getPriorities() throws RemoteException {
         return jiraSoapService.getPriorities(authToken);
+    }*/
+
+    public Iterable<Priority> getPriorities() {
+        return restClient.getMetadataClient().getPriorities(null);
     }
 
-    public RemoteIssueType[] getIssueTypeList(String projectName) throws RemoteException {
+/*    public RemoteIssueType[] getIssueTypeList(String projectName) throws RemoteException {
         return jiraSoapService.getIssueTypesForProject(authToken, getProjectOld(projectName).getId());
+    }*/
+
+    public Iterable<IssueType> getIssueTypeList() {
+        return restClient.getMetadataClient().getIssueTypes(null);
     }
 
-    public RemoteIssue[] get1IssueFromJqlSearch(String searchQuery) throws RemoteException {
+/*    public RemoteIssue[] get1IssueFromJqlSearch(String searchQuery) throws RemoteException {
         return jiraSoapService.getIssuesFromJqlSearch(authToken, searchQuery, 1);
+    }*/
+
+/*    public Issue createIssue(Issue rmIssueToCreate) throws RemoteException {
+        return jiraSoapService.createIssue(authToken, null);
+    }*/
+
+    public void createIssue(IssueInput issueToCreate) {
+        restClient.getIssueClient().createIssue(issueToCreate, null);
     }
 
-    public Issue createIssue(Issue rmIssueToCreate) throws RemoteException {
-        return null;
-//        return jiraSoapService.createIssue(authToken, null);
-    }
-
-    public RemoteIssue updateIssue(String issueKey, RemoteIssue rmIssueToUpdate) throws RemoteException {
+/*    public RemoteIssue updateIssue(String issueKey, RemoteIssue rmIssueToUpdate) throws RemoteException {
         RemoteFieldValue[] fields = getFields(rmIssueToUpdate);
         return jiraSoapService.updateIssue(authToken, issueKey, fields);
+    }*/
+
+    public void updateIssue(Issue issueToUpdate) {
+        //restClient.getIssueClient().updateIssue(issueToUpdate);
+    }
+
+    public void deleteIssue(Issue issueToDelete, boolean deleteSubtasks) {
+        //restClient.getIssueClient().deleteIssue(issueToDelete, deleteSubtasks);
     }
 
     // XXX maybe there could a method in the API for this?
@@ -113,17 +130,17 @@ public class JiraConnection {
         return formatter.format(c.getTime());
     }
 
-    public RemoteProject[] getProjectsOld() throws RemoteException {
+/*    public RemoteProject[] getProjectsOld() throws RemoteException {
         return jiraSoapService.getProjectsNoSchemes(authToken);
-    }
+    }*/
 
     public Iterable<BasicProject> getProjects() {
         return restClient.getProjectClient().getAllProjects(null);
     }
 
-    public RemoteProject getProjectOld(String key) throws RemoteException {
+/*    public RemoteProject getProjectOld(String key) throws RemoteException {
         return jiraSoapService.getProjectByKey(authToken, key);
-    }
+    }*/
 
     public Project getProject(String key) {
         return restClient.getProjectClient().getProject(key, null);
