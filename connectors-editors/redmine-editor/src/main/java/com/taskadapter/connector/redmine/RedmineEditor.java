@@ -23,9 +23,6 @@ import java.util.List;
 
 public class RedmineEditor extends TwoColumnsConfigEditor {
 
-    private RedmineServerPanel serverPanel;
-    private OtherRedmineFieldsPanel otherPanel;
-
     public RedmineEditor(ConnectorConfig config, Services services) {
         super(config, services);
 
@@ -35,12 +32,12 @@ public class RedmineEditor extends TwoColumnsConfigEditor {
     @SuppressWarnings("unchecked")
 	private void buildUI() {
 
-        serverPanel = new RedmineServerPanel();
+        RedmineServerPanel serverPanel = new RedmineServerPanel();
         addToLeftColumn(serverPanel);
 
         addToLeftColumn(createEmptyLabel("15px"));
 
-        otherPanel = new OtherRedmineFieldsPanel(this, (RedmineConfig) config);
+        OtherRedmineFieldsPanel otherPanel = new OtherRedmineFieldsPanel(this, (RedmineConfig) config);
         addToLeftColumn(otherPanel);
 
 		addToRightColumn(new ProjectPanel(this,

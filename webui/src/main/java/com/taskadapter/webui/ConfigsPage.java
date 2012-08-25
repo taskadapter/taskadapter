@@ -69,7 +69,7 @@ public class ConfigsPage extends Page {
         return layout;
     }
 
-    class DescriptionComparator implements Comparator<TAFile> {
+    private class DescriptionComparator implements Comparator<TAFile> {
 
         @Override
         public int compare(TAFile o1, TAFile o2) {

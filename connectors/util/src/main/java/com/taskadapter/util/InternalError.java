@@ -7,8 +7,6 @@ package com.taskadapter.util;
  * There is only one expected application user reaction - send report to our
  * team about broken application. He can't deal with a problem herself.
  * 
- * @author maxkar
- * 
  */
 public class InternalError extends RuntimeException {
 
@@ -16,14 +14,6 @@ public class InternalError extends RuntimeException {
 	 * Serialization protocol version.
 	 */
 	private static final long serialVersionUID = 1L;
-
-	public InternalError() {
-		super();
-	}
-
-	public InternalError(String message, Throwable cause) {
-		super(message, cause);
-	}
 
 	public InternalError(String message) {
 		super(message);

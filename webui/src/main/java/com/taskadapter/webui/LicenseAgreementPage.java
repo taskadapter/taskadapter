@@ -1,6 +1,7 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.util.MyIOUtils;
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 import com.vaadin.data.Property;
 import com.vaadin.ui.*;
 
@@ -31,7 +32,7 @@ public class LicenseAgreementPage extends Page {
 
         Label agreementContent;
         try {
-            String licenseAgreementText = MyIOUtils.convertStreamToString(MyIOUtils.getResourceAsStream(AGREEMENT_FILE_NAME));
+            String licenseAgreementText = Resources.toString(Resources.getResource(AGREEMENT_FILE_NAME), Charsets.UTF_8);
             agreementContent = new Label(licenseAgreementText);
         } catch (IOException e) {
             agreementContent = new Label(AGREEMENT_FILE_NOT_FOUND);

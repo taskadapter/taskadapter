@@ -1,6 +1,6 @@
 package com.taskadapter.connector.msp;
 
-import com.taskadapter.connector.common.TestUtils;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
 import junit.framework.Assert;
@@ -11,7 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -69,7 +68,7 @@ public class MSTaskToGenericTaskConverterTest {
 
 
     @Test
-    public void estimatedTimeFoundThroughWork() {
+    public void estimatedTimeFoundThroughWork() throws BadConfigException {
         MSPConfig config = new MSPConfig("");
         config.getFieldMappings().setMapping(FIELD.ESTIMATED_TIME, TaskField.WORK.toString());
         config.getFieldMappings().selectField(FIELD.ESTIMATED_TIME);
@@ -78,7 +77,7 @@ public class MSTaskToGenericTaskConverterTest {
     }
 
     @Test
-    public void estimatedTimeFoundThroughDuration() {
+    public void estimatedTimeFoundThroughDuration() throws BadConfigException {
         MSPConfig config = new MSPConfig("");
         config.getFieldMappings().setMapping(FIELD.ESTIMATED_TIME, TaskField.DURATION.toString());
         config.getFieldMappings().selectField(FIELD.ESTIMATED_TIME);
@@ -87,7 +86,7 @@ public class MSTaskToGenericTaskConverterTest {
     }
 
     @Test
-    public void estimatedTimeFoundWithDefaultMapping() {
+    public void estimatedTimeFoundWithDefaultMapping() throws BadConfigException {
         MSPConfig config = new MSPConfig("");
         converter.setConfig(config);
         Assert.assertEquals(8.0f, converter.extractEstimatedHours(task3), 0.001f);

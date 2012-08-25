@@ -9,6 +9,7 @@ import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.FileBasedConnector;
 import com.taskadapter.connector.definition.ProgressMonitor;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 
 public class Updater {
@@ -25,19 +26,19 @@ public class Updater {
         this.remoteConnector = remoteConnector;
     }
 
-    public void start() {
+    public void start() throws ConnectorException {
         loadTasksFromFile(ProgressMonitorUtils.getDummyMonitor());
         removeTasksWithoutRemoteIds();
         loadExternalTasks();
         saveFile();
     }
 
-    public void loadTasksFromFile(ProgressMonitor monitor) {
+    public void loadTasksFromFile(ProgressMonitor monitor) throws ConnectorException {
 		this.existingTasks = ConnectorUtils.loadDataOrderedById(fileConnector,
 				monitor);
     }
 
-    public void loadExternalTasks() {
+    public void loadExternalTasks() throws ConnectorException {
         this.tasksInExternalSystem = new ArrayList<GTask>(existingTasks.size());
         if (monitor != null) {
             monitor.beginTask("Loading " + existingTasks.size()
@@ -60,7 +61,7 @@ public class Updater {
 
     }
 
-    public void saveFile() {
+    public void saveFile() throws ConnectorException {
         // TODO remove the casting!
         ((FileBasedConnector) fileConnector).updateTasksByRemoteIds(tasksInExternalSystem);
     }

@@ -5,12 +5,7 @@ import com.taskadapter.connector.definition.AvailableFieldsBuilder;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-public class MSPDescriptor implements Descriptor {
-    private static final String INFO = "Microsoft Project connector. Supports MPP and XML files (also known as MSPDI)";
-
+public class MSPDescriptor {
     /**
      * Keep it the same to enable backward compatibility
      */
@@ -36,40 +31,5 @@ public class MSPDescriptor implements Descriptor {
     	SUPPORTED_FIELDS = builder.end();
     }
 
-    public static final Descriptor instance = new MSPDescriptor();
-
-    @Override
-    public String getDescription() {
-        return INFO;
-    }
-
-    @Override
-    public MSPConfig createDefaultConfig() {
-        return new MSPConfig();
-    }
-
-    @Override
-    public String getID() {
-        return ID;
-    }
-
-    @Override
-    public String toString() {
-        return getID();
-    }
-
-    @Override
-    public String getLabel() {
-        return MSPConfig.DEFAULT_LABEL;
-    }
-
-    @Override
-    public AvailableFields getAvailableFields() {
-        return SUPPORTED_FIELDS;
-    }
-
-    @Override
-    public Collection<Feature> getSupportedFeatures() {
-        return Arrays.asList(Feature.LOAD_TASK, Feature.SAVE_TASK);
-    }
+    public static final Descriptor instance = new Descriptor(ID, MSPConfig.DEFAULT_LABEL, SUPPORTED_FIELDS);
 }

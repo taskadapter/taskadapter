@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 public class JiraTaskConverterTest {
 
     public void convertToGenericTask() {
-        JiraConfig config = JiraDescriptor.instance.createDefaultConfig();
+        JiraConfig config = new JiraConfig();
         JiraTaskConverter taskConverter = new JiraTaskConverter(config);
 
         String id = "123";
@@ -21,7 +21,7 @@ public class JiraTaskConverterTest {
         String summary = "some summary for task";
         String description = "description";
         Calendar dueDate = Calendar.getInstance();
-        dueDate.set(2012, 11, 23);
+        dueDate.set(2012, Calendar.NOVEMBER, 23);
 
         RemoteIssue issue = new RemoteIssue();
         issue.setId(id);

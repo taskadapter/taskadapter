@@ -74,9 +74,7 @@ public class TreeUtils {
         private HashMap<String, GTask> keyToGTaskMap = new HashMap<String, GTask>();
 
         public TreeUtilsMap(List<GTask> list) {
-            Iterator<GTask> it = list.iterator();
-            while (it.hasNext()) {
-                GTask task = it.next();
+            for (GTask task : list) {
                 keyToGTaskMap.put(task.getKey(), task);
             }
         }

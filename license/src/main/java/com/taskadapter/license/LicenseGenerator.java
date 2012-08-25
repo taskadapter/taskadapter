@@ -1,7 +1,9 @@
 package com.taskadapter.license;
 
-import com.taskadapter.util.MyIOUtils;
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -27,9 +29,9 @@ public class LicenseGenerator {
         License license = createLicenseObject(requestedLicense);
 
         try {
-            MyIOUtils.writeToFile(FILE_NAME_TA_WEB, new LicenseTextGenerator(license).generateLicenseText());
+            String licenseText = new LicenseTextGenerator(license).generateLicenseText();
+            Files.write(licenseText, new File(FILE_NAME_TA_WEB), Charsets.UTF_8);
             System.out.println("\nSaved to " + FILE_NAME_TA_WEB);
-
         } catch (Exception e) {
             e.printStackTrace();
         }

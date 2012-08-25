@@ -1,72 +1,62 @@
 package com.taskadapter.connector.definition;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+/**
+ * Synchronous operation result. Contains both possible result and operation
+ * warnings/errors.
+ * 
+ * @param <R>
+ *            result type.
+ * @param <E>
+ *            error result type.
+ */
+public class SyncResult<R, E> {
+    private final R result;
+    private final E errors;
 
-public class SyncResult {
-    // TODO this is a temporary solution to enable "download" link after exporting to MSP in server mode. refactor!
-    private String targetFileAbsolutePath;
-
-    private int updatedTasksNumber;
-    private int createdTasksNumber;
-
-    // maps ID --> remote KEY when new tasks are created
-    private Map<Integer, String> idToRemoteKeyMap = new HashMap<Integer, String>();
-    private List<TaskError> errors = new ArrayList<TaskError>();
-    private List<String> generalErrors = new ArrayList<String>();
-
-    public String getTargetFileAbsolutePath() {
-        return targetFileAbsolutePath;
+    public SyncResult(R result, E errors) {
+        super();
+        this.result = result;
+        this.errors = errors;
     }
 
-    public void setTargetFileAbsolutePath(String targetFileAbsolutePath) {
-        this.targetFileAbsolutePath = targetFileAbsolutePath;
+    public R getResult() {
+        return result;
     }
 
-    public void addError(TaskError e) {
-        errors.add(e);
-    }
-
-    public void addGeneralError(String e) {
-        generalErrors.add(e);
-    }
-
-    /**
-     * @return errors list, never NULL
-     */
-    public List<TaskError> getErrors() {
+    public E getErrors() {
         return errors;
     }
 
-    public void addCreatedTask(Integer originalId, String newId) {
-        idToRemoteKeyMap.put(originalId, newId);
-        createdTasksNumber++;
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((errors == null) ? 0 : errors.hashCode());
+        result = prime * result
+                + ((this.result == null) ? 0 : this.result.hashCode());
+        return result;
     }
 
-    public int getCreateTasksNumber() {
-        return createdTasksNumber;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        SyncResult<?, ?> other = (SyncResult<?, ?>) obj;
+        if (errors == null) {
+            if (other.errors != null)
+                return false;
+        } else if (!errors.equals(other.errors))
+            return false;
+        if (result == null) {
+            if (other.result != null)
+                return false;
+        } else if (!result.equals(other.result))
+            return false;
+        return true;
     }
 
-    public void addUpdatedTask(Integer originalId, String newId) {
-        idToRemoteKeyMap.put(originalId, newId);
-        updatedTasksNumber++;
-    }
-
-    public int getUpdatedTasksNumber() {
-        return updatedTasksNumber;
-    }
-
-    public String getRemoteKey(Integer id) {
-        return idToRemoteKeyMap.get(id);
-    }
-
-    public boolean hasErrors() {
-        return ((!generalErrors.isEmpty()) || (!errors.isEmpty()));
-    }
-
-    public List<String> getGeneralErrors() {
-        return generalErrors;
-    }
 }

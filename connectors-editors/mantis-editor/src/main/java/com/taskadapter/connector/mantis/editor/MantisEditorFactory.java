@@ -5,12 +5,20 @@ import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.mantis.MantisDescriptor;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.ConfigEditor;
+import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
 
 /**
  * @author Alexey Skorokhodov
  */
 public class MantisEditorFactory implements PluginEditorFactory {
+    /**
+     * Bundle name.
+     */
+    private static final String BUNDLE_NAME = "com.taskadapter.connector.mantis.editor.messages";
+
+    private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
+    
     @Override
     public Descriptor getDescriptor() {
         return MantisDescriptor.instance;
@@ -20,5 +28,16 @@ public class MantisEditorFactory implements PluginEditorFactory {
     public ConfigEditor createEditor(ConnectorConfig config, Services services) {
         return new MantisEditor(config, services);
     }
+
+    @Override
+    public String formatError(Throwable e) {
+        if (e instanceof UnsupportedOperationException) {
+            final UnsupportedOperationException uop = (UnsupportedOperationException) e;
+            if ("updateRemoteIDs".equals(uop.getMessage()))
+                return MESSAGES.get("errors.unsupported.remoteId");
+            else if ("saveRelations".equals(uop.getMessage()))
+                return MESSAGES.get("errors.unsupported.relations");
+        }
+        return null;    }
 
 }

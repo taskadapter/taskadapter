@@ -61,7 +61,7 @@ public class UserManager {
         try {
             Files.write(newPassword, passwordFile, Charset.forName("UTF-8"));
         } catch (IOException e) {
-            throw new RuntimeException("can't read password.txt file: " + e);
+            throw new RuntimeException("can't read file " + passwordFile.getAbsolutePath() + ": " + e.getMessage());
         }
     }
 
@@ -71,7 +71,7 @@ public class UserManager {
             throw new UserNotFoundException();
         }
         File passwordFile = new File(userFolder, PASSWORD_FILE_NAME);
-        if (!userFolder.exists()) {
+        if (!passwordFile.exists()) {
             throw new UserNotFoundException();
         }
         String passwordString;
@@ -79,7 +79,7 @@ public class UserManager {
             passwordString = Files.readFirstLine(passwordFile, Charset.forName("UTF-8"));
             return new User(loginName, passwordString);
         } catch (IOException e) {
-            logger.error("Can't read password.txt file for user " + loginName + ". The reason is:" + e.getMessage(), e);
+            logger.error("Can't read " + passwordFile.getAbsolutePath() +" file for user " + loginName + ". The reason is:" + e.getMessage(), e);
             throw new UserNotFoundException();
         }
     }

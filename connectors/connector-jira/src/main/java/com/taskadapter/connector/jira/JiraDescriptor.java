@@ -5,12 +5,7 @@ import com.taskadapter.connector.definition.AvailableFieldsBuilder;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-public class JiraDescriptor implements Descriptor {
-
-    public static final JiraDescriptor instance = new JiraDescriptor();
+public class JiraDescriptor {
 
     /**
      * Keep it the same to enable backward compatibility with the existing
@@ -18,11 +13,6 @@ public class JiraDescriptor implements Descriptor {
      */
     private static final String ID = "Atlassian Jira";
 
-    private static final String INFO = "Atlassian Jira connector (supports Jira v. 3.1.12+)";
-    
-    /**
-     * Supported fields.
-     */
     private static final AvailableFields SUPPORTED_FIELDS;
     
     static {
@@ -36,33 +26,5 @@ public class JiraDescriptor implements Descriptor {
     	SUPPORTED_FIELDS = builder.end();
     }
 
-    public String getID() {
-        return ID;
-    }
-
-    @Override
-    public String getDescription() {
-        return INFO;
-    }
-
-    @Override
-    public JiraConfig createDefaultConfig() {
-        return new JiraConfig();
-    }
-
-    @Override
-    public String getLabel() {
-        return JiraConfig.DEFAULT_LABEL;
-    }
-
-    @Override
-    public AvailableFields getAvailableFields() {
-        return SUPPORTED_FIELDS;
-    }
-
-    @Override
-    public Collection<Feature> getSupportedFeatures() {
-        return Arrays.asList(Feature.LOAD_TASK, Feature.SAVE_TASK,
-                Feature.TASK_TYPE, Feature.LOAD_PRIORITIES);
-    }
+    public static final Descriptor instance = new Descriptor(ID, JiraConfig.DEFAULT_LABEL, SUPPORTED_FIELDS);
 }

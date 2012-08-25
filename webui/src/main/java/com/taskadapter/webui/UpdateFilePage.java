@@ -2,6 +2,7 @@ package com.taskadapter.webui;
 
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.Updater;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -19,7 +20,7 @@ public class UpdateFilePage extends ActionPage {
     }
 
     @Override
-    protected void saveData() {
+    protected void saveData() throws ConnectorException {
         updater.setConfirmedTasks(loadedTasks);
 
         MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
@@ -61,7 +62,7 @@ public class UpdateFilePage extends ActionPage {
     }
 
     @Override
-    public void loadData() {
+    public void loadData() throws ConnectorException {
         MonitorWrapper wrapper = new MonitorWrapper(loadProgress);
         updater.loadTasksFromFile(wrapper);
         updater.removeTasksWithoutRemoteIds();

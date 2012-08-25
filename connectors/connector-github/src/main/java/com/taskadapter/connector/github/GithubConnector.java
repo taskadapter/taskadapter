@@ -1,5 +1,6 @@
 package com.taskadapter.connector.github;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,10 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.SyncResult;
+import com.taskadapter.connector.definition.TaskErrors;
+import com.taskadapter.connector.definition.TaskSaveResult;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.model.GTask;
 
 public class GithubConnector extends AbstractConnector<GithubConfig> {
@@ -24,23 +29,26 @@ public class GithubConnector extends AbstractConnector<GithubConfig> {
         super(config);
     }
 
-    public void updateRemoteIDs(ConnectorConfig sourceConfig, SyncResult actualSaveResult, ProgressMonitor monitor) {
-        throw new RuntimeException("not implemented for this connector");
+    public void updateRemoteIDs(ConnectorConfig sourceConfig,
+            Map<Integer, String> remoteIds, ProgressMonitor monitor)
+            throws UnsupportedConnectorOperation {
+        throw new UnsupportedConnectorOperation("updateRemoteIDs");
     }
     
     @Override
-    public GTask loadTaskByKey(String key) {
-        try {
-            IssueService issueService = new ConnectionFactory(config)
-                    .getIssueService();
+    public GTask loadTaskByKey(String key) throws ConnectorException {
+        IssueService issueService = new ConnectionFactory(config)
+                .getIssueService();
 
-            Integer id = Integer.valueOf(key);
-            Issue issue = issueService.getIssue(config.getServerInfo()
+        Integer id = Integer.valueOf(key);
+        Issue issue;
+        try {
+            issue = issueService.getIssue(config.getServerInfo()
                     .getUserName(), config.getProjectKey(), id);
-            return getTaskConverter().convertToGenericTask(issue);
-        } catch (Exception e) {
-            throw new RuntimeException(e.toString(), e);
+        } catch (IOException e) {
+            throw GithubUtils.convertException(e);
         }
+        return getTaskConverter().convertToGenericTask(issue);
     }
     
     private GithubTaskConverter getTaskConverter() {
@@ -54,26 +62,28 @@ public class GithubConnector extends AbstractConnector<GithubConfig> {
     }
 
     @Override
-    public List<GTask> loadData(ProgressMonitor monitorIGNORED) {
+    public List<GTask> loadData(ProgressMonitor monitorIGNORED) throws ConnectorException {
+        Map<String, String> issuesFilter = new HashMap<String, String>();
+        issuesFilter.put(IssueService.FILTER_STATE,
+                config.getIssueState() == null ? IssueService.STATE_OPEN
+                        : config.getIssueState());
+
+        IssueService issueService = getIssueService();
+        List<Issue> issues;
         try {
-            Map<String, String> issuesFilter = new HashMap<String, String>();
-            issuesFilter.put(IssueService.FILTER_STATE,
-                    config.getIssueState() == null ? IssueService.STATE_OPEN
-                            : config.getIssueState());
-
-            IssueService issueService = getIssueService();
-            List<Issue> issues = issueService.getIssues(config.getServerInfo()
+            issues = issueService.getIssues(config.getServerInfo()
                     .getUserName(), config.getProjectKey(), issuesFilter);
-
-            return getTaskConverter().convertToGenericTaskList(issues);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw GithubUtils.convertException(e);
         }
+
+        return getTaskConverter().convertToGenericTaskList(issues);
     }
     
 
     @Override
-    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) {
-    	return new GithubTaskSaver(config).saveData(tasks, monitor);
+    public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor)
+            throws ConnectorException {
+        return new GithubTaskSaver(config).saveData(tasks, monitor);
     }
 }

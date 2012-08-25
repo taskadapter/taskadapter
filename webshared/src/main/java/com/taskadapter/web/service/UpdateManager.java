@@ -1,19 +1,38 @@
 package com.taskadapter.web.service;
 
+import com.taskadapter.web.AppInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.Properties;
+
 public class UpdateManager {
 
+    private static final String VERSION_PROPERTIES_FILE_NAME = "/version.properties";
+    private final Logger logger = LoggerFactory.getLogger(UpdateManager.class);
+
     private String lastVersion;
-    private String currentVersion;
+    private AppInfo appInfo = new AppInfo();
 
     public UpdateManager() {
-        // TODO hardcoded current version
-        currentVersion = "2.1.0";
+        loadAppInfo();
 
 // disabled for now to not generate a lot of useless "check version" requests to the server.
 // we'll enable before the release.
 //    loadLastVersion();
     }
 
+    private void loadAppInfo() {
+        Properties properties = new Properties();
+        try {
+            properties.load(UpdateManager.class.getResourceAsStream(VERSION_PROPERTIES_FILE_NAME));
+        } catch (IOException e) {
+            logger.error("Error loading " + VERSION_PROPERTIES_FILE_NAME + ": " + e.getMessage(), e);
+        }
+        appInfo.setVersion(properties.getProperty("version"));
+//        appInfo.setBuildDate(properties.getProperty("buildDate"));
+    }
 
 /*    private void loadLastVersion() {
         try {
@@ -35,7 +54,7 @@ public class UpdateManager {
   */
 
     public String getCurrentVersion() {
-        return currentVersion;
+        return appInfo.getVersion();
     }
 
     /**
@@ -51,7 +70,7 @@ public class UpdateManager {
     }
 
     void setCurrentVersionForTesting(String currentVersion) {
-        this.currentVersion = currentVersion;
+        this.appInfo.setVersion(currentVersion);
     }
 
     void setLastVersion(String lastVersion) {

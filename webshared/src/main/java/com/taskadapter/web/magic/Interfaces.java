@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -143,7 +144,7 @@ public final class Interfaces {
 	 */
 	private static void ensureMatches(Method method, Method sourceMethod,
 			Object[] args) {
-		final Class<?>[] targetArgs = method.getParameterTypes();
+		final Type[] targetArgs = method.getGenericParameterTypes();
 		final Class<?>[] sourceArgs = sourceMethod.getParameterTypes();
 		if (targetArgs.length + args.length != sourceArgs.length) {
 			throw new IllegalArgumentException(
@@ -160,8 +161,12 @@ public final class Interfaces {
 						+ " is not assignable from actual value");
 		}
 
-		for (Class<?> targetArg : targetArgs) {
-			if (!sourceArgs[sptr++].isAssignableFrom(targetArg))
+		for (Type targetArg : targetArgs) {
+		    if (!(targetArg instanceof Class<?>)) {
+		        continue;
+		    }
+		    final Class<?> targetClass = targetArg.getClass();
+			if (!sourceArgs[sptr++].isAssignableFrom(targetClass))
 				throw new IllegalArgumentException("Argument " + sptr
 						+ " is not assignable from interface parameter type "
 						+ targetArg);

@@ -1,8 +1,12 @@
 package com.taskadapter.connector.mantis;
 
 import java.math.BigInteger;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import javax.xml.rpc.ServiceException;
 
 import org.mantis.ta.MantisManager;
 import org.mantis.ta.beans.IssueData;
@@ -12,6 +16,10 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.SyncResult;
+import com.taskadapter.connector.definition.TaskErrors;
+import com.taskadapter.connector.definition.TaskSaveResult;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.model.GTask;
 
 public class MantisConnector extends AbstractConnector<MantisConfig> {
@@ -22,9 +30,9 @@ public class MantisConnector extends AbstractConnector<MantisConfig> {
 
     @Override
     public void updateRemoteIDs(ConnectorConfig configuration,
-                                SyncResult res, ProgressMonitor monitor) {
-        throw new RuntimeException("not implemented for this connector");
-
+                                Map<Integer, String> res, ProgressMonitor monitor) throws UnsupportedConnectorOperation {
+        throw new UnsupportedConnectorOperation(
+                "updateRemoteIDs");
     }
 
     @Override
@@ -33,26 +41,31 @@ public class MantisConnector extends AbstractConnector<MantisConfig> {
     }
 
     @Override
-    public GTask loadTaskByKey(String key) {
-        try {
+    public GTask loadTaskByKey(String key) throws ConnectorException {
             MantisManager mgr = MantisManagerFactory.createMantisManager(config.getServerInfo());
 
-            IssueData issue = mgr.getIssueById(new BigInteger(key));
+            IssueData issue;
+            try {
+                issue = mgr.getIssueById(new BigInteger(key));
+            } catch (RemoteException e) {
+                throw MantisUtils.convertException(e);
+            } catch (ServiceException e) {
+                throw MantisUtils.convertException(e);
+            }
             return MantisDataConverter.convertToGenericTask(issue);
-        } catch (Exception e) {
-            throw new RuntimeException(e.toString(), e);
-        }
     } 
     
     @Override
-    public List<GTask> loadData(ProgressMonitor monitorIGNORED) {
+    public List<GTask> loadData(ProgressMonitor monitorIGNORED) throws ConnectorException {
         try {
             MantisManager mgr = MantisManagerFactory.createMantisManager(config.getServerInfo());
 
             List<IssueData> issues = mgr.getIssuesByProject(new BigInteger(config.getProjectKey()));
             return convertToGenericTasks(issues);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (RemoteException e) {
+            throw MantisUtils.convertException(e);
+        } catch (ServiceException e) {
+            throw MantisUtils.convertException(e);
         }
     }
     
@@ -67,7 +80,7 @@ public class MantisConnector extends AbstractConnector<MantisConfig> {
 
     
     @Override
-    public SyncResult saveData(List<GTask> tasks, ProgressMonitor monitor) {
+    public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
     	return new MantisTaskSaver(config).saveData(tasks, monitor);
     }
 }

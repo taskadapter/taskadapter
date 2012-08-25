@@ -6,6 +6,7 @@ import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebConfig;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GProject;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.callbacks.DataProvider;
@@ -15,13 +16,7 @@ import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Services;
 import com.vaadin.data.util.MethodProperty;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class JiraEditor extends TwoColumnsConfigEditor {
-
-    private OtherJiraFieldsPanel jiraFieldsPanel;
-    private CustomFieldsTablePanel customFieldsTablePanel;
 
     public JiraEditor(ConnectorConfig config, Services services) {
         super(config, services);
@@ -40,7 +35,7 @@ public class JiraEditor extends TwoColumnsConfigEditor {
         		Interfaces.fromMethod(DataProvider.class, this, "loadQueries"));
 
         // left column
-        jiraFieldsPanel = new OtherJiraFieldsPanel(this, getJiraConfig());
+        OtherJiraFieldsPanel jiraFieldsPanel = new OtherJiraFieldsPanel(this, getJiraConfig());
         addToLeftColumn(jiraFieldsPanel);
 
 		PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(),
@@ -67,8 +62,9 @@ public class JiraEditor extends TwoColumnsConfigEditor {
 	/**
      * Shows a project info.
      * @throws ValidationException 
+	 * @throws ConnectorException 
      */
-    void loadProjectInfo() throws ValidationException {
+    void loadProjectInfo() throws ValidationException, ConnectorException {
         WebConfig webConfig = (WebConfig) config;
         if (!webConfig.getServerInfo().isHostSet()) {
             throw new ValidationException("Host URL is not set");
@@ -107,8 +103,9 @@ public class JiraEditor extends TwoColumnsConfigEditor {
 	/**
      * Loads jira priorities.
      * @return priorities from server.
+	 * @throws ConnectorException 
      */
-    Priorities loadJiraPriorities() throws ValidationException {
+    Priorities loadJiraPriorities() throws ValidationException, ConnectorException {
         if (!getJiraConfig().getServerInfo().isHostSet()) {
             throw new ValidationException("Host URL is not set");
         }
@@ -117,8 +114,8 @@ public class JiraEditor extends TwoColumnsConfigEditor {
 	}
 
 	private CustomFieldsTablePanel createCustomOtherFieldsPanel() {
-        this.customFieldsTablePanel = new CustomFieldsTablePanel(getJiraConfig().getCustomFields());
-        return this.customFieldsTablePanel;
+        CustomFieldsTablePanel customFieldsTablePanel = new CustomFieldsTablePanel(getJiraConfig().getCustomFields());
+        return customFieldsTablePanel;
     }
 
     /**

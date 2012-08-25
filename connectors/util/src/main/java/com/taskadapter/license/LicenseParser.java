@@ -66,7 +66,7 @@ public final class LicenseParser {
         String key = lines[LINE_KEY];
 
         String decodedBase64Text = new String(Base64.decodeBase64(key.getBytes()));
-        String xoredText = new LicenseEncryptor(PASSWORD).chiper(decodedBase64Text);
+        String xoredText = LicenseEncryptor.chiper(decodedBase64Text);
         String mergedStr = usersNumber + customerName + email + createdOn + expiresOnString;
 
         License license;

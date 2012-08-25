@@ -2,20 +2,14 @@ package com.taskadapter.connector.mantis;
 
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.AvailableFieldsBuilder;
-import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
-import java.util.Arrays;
-import java.util.Collection;
 
-public class MantisDescriptor implements Descriptor {
+public class MantisDescriptor {
 
-    public static final MantisDescriptor instance = new MantisDescriptor();
 
     private static final String ID = "Mantis";
-
-    private static final String INFO = "Mantis connector (supports Mantis v. 1.1.1+)";
 
     /**
      * Supported fields.
@@ -31,33 +25,6 @@ public class MantisDescriptor implements Descriptor {
     	SUPPORTED_FIELDS = builder.end();
     }
     
-    @Override
-    public String getID() {
-        return ID;
-    }
-
-    @Override
-    public String getLabel() {
-        return MantisConfig.DEFAULT_LABEL;
-    }
-
-    @Override
-    public String getDescription() {
-        return INFO;
-    }
-
-    @Override
-    public ConnectorConfig createDefaultConfig() {
-        return new MantisConfig();
-    }
-
-    @Override
-    public AvailableFields getAvailableFields() {
-        return SUPPORTED_FIELDS;
-    }
-
-    @Override
-    public Collection<Feature> getSupportedFeatures() {
-        return Arrays.asList(Feature.LOAD_TASK, Feature.SAVE_TASK);
-    }
+    public static final Descriptor instance = new Descriptor(ID, MantisConfig.DEFAULT_LABEL, SUPPORTED_FIELDS);
+    
 }

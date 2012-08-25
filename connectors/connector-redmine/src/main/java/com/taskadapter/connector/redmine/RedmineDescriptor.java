@@ -5,18 +5,12 @@ import com.taskadapter.connector.definition.AvailableFieldsBuilder;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-public class RedmineDescriptor implements Descriptor {
-    private static final String INFO_TEXT = "Redmine/Chiliproject connector. Connects to Redmine servers via REST API. Supports Redmine v. 1.1+";
-
+public class RedmineDescriptor {
     /**
      * Keep it the same to enable backward compatibility for previously created config files.
      */
     private static final String ID = "Redmine REST";
 
-    public static final RedmineDescriptor instance = new RedmineDescriptor();
 
     /**
      * Supported fields.
@@ -37,38 +31,5 @@ public class RedmineDescriptor implements Descriptor {
     	SUPPORTED_FIELDS = builder.end();
     }
     
-    @Override
-    public String getID() {
-        return ID;
-    }
-
-    @Override
-    public String toString() {
-        return getID();
-    }
-
-    @Override
-    public RedmineConfig createDefaultConfig() {
-        return new RedmineConfig();
-    }
-
-    @Override
-    public String getDescription() {
-        return INFO_TEXT;
-    }
-
-    @Override
-    public String getLabel() {
-        return RedmineConfig.DEFAULT_LABEL;
-    }
-
-    @Override
-    public AvailableFields getAvailableFields() {
-        return SUPPORTED_FIELDS;
-    }
-
-    @Override
-    public Collection<Feature> getSupportedFeatures() {
-        return Arrays.asList(Feature.LOAD_TASK, Feature.SAVE_TASK, Feature.UPDATE_TASK, Feature.TASK_TYPE);
-    }
+    public static final Descriptor instance = new Descriptor(ID, RedmineConfig.DEFAULT_LABEL, SUPPORTED_FIELDS);    
 }

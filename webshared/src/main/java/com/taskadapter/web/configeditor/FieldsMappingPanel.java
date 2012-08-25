@@ -12,7 +12,8 @@ import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * @author Alexey Skorokhodov
@@ -34,7 +35,7 @@ public class FieldsMappingPanel extends Panel implements Validatable {
 	 */
 	private final Mappings originalMappings;
 
-	private static final int COLUMNS_NUMBER = 2;
+	private static final int COLUMNS_NUMBER = 3;
 	private GridLayout gridLayout;
 	private Resource helpIconResource = new ThemeResource(
 			"../runo/icons/16/help.png");
@@ -48,7 +49,7 @@ public class FieldsMappingPanel extends Panel implements Validatable {
 
 		setDescription("Select fields to export when SAVING data to this system");
 		addFields();
-		setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
+		setWidth("800px");
 	}
 
 	private void addFields() {
@@ -59,13 +60,11 @@ public class FieldsMappingPanel extends Panel implements Validatable {
 
 	private void createGridLayout() {
 		gridLayout = new GridLayout();
-		addComponent(gridLayout);
 		gridLayout.setMargin(true);
 		gridLayout.setSpacing(true);
-		Collection<GTaskDescriptor.FIELD> supportedFields = availableFields
-				.getSupportedFields();
-		gridLayout.setRows(supportedFields.size() + 2);
-		gridLayout.setColumns(COLUMNS_NUMBER);
+        gridLayout.setRows(availableFields.getSupportedFields().size() + 2);
+        gridLayout.setColumns(COLUMNS_NUMBER);
+        addComponent(gridLayout);
 	}
 
 	private void addTableHeaders() {
@@ -73,11 +72,17 @@ public class FieldsMappingPanel extends Panel implements Validatable {
 		label1.addStyleName("fieldsTitle");
 		label1.setWidth("135px");
 		gridLayout.addComponent(label1, 0, 0);
-		Label label2 = new Label(COLUMN2_HEADER);
+
+		Label label2 = new Label(" ");
 		label2.addStyleName("fieldsTitle");
+        label2.setWidth("30px");
 		gridLayout.addComponent(label2, 1, 0);
-		gridLayout.addComponent(new Label("<hr>", Label.CONTENT_XHTML), 0, 1,
-				1, 1);
+
+		Label label3 = new Label(COLUMN2_HEADER);
+		label3.addStyleName("fieldsTitle");
+		gridLayout.addComponent(label3, 2, 0);
+
+        gridLayout.addComponent(new Label("<hr>", Label.CONTENT_XHTML), 0, 1, 2, 1);
 	}
 
 	private void addSupportedFields() {
@@ -90,10 +95,17 @@ public class FieldsMappingPanel extends Panel implements Validatable {
 
 	private void addField(GTaskDescriptor.FIELD field) {
 		addCheckbox(field);
+        addEmptyCell();
 		addComboBox(field);
 	}
 
-	/**
+    private void addEmptyCell() {
+        Label emptyLabel = new Label(" ");
+        gridLayout.addComponent(emptyLabel);
+        gridLayout.setComponentAlignment(emptyLabel, Alignment.MIDDLE_LEFT);
+    }
+
+    /**
 	 * Adds a combo box.
 	 * @param field field to add a combo for.
 	 */

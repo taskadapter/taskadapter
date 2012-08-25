@@ -133,11 +133,14 @@ public class NewConfigPage extends Page {
 
         Descriptor descriptor1 = services.getPluginManager().getDescriptor(id1);
         ConnectorDataHolder d1 = new ConnectorDataHolder(id1,
-                // TODO replace with factory.createDefaultConfig()
-                descriptor1.createDefaultConfig());
+        // TODO replace with factory.createDefaultConfig()
+                services.getPluginManager()
+                        .getPluginFactory(descriptor1.getID())
+                        .createDefaultConfig());
         Descriptor descriptor2 = services.getPluginManager().getDescriptor(id2);
-        ConnectorDataHolder d2 = new ConnectorDataHolder(id2,
-                descriptor2.createDefaultConfig());
+        ConnectorDataHolder d2 = new ConnectorDataHolder(id2, services
+                .getPluginManager().getPluginFactory(descriptor2.getID())
+                .createDefaultConfig());
         this.newFile = new TAFile(descriptionString, d1, d2);
         String currentUserLoginName = services.getAuthenticator().getUserName();
         services.getConfigStorage().createNewConfig(currentUserLoginName, newFile);

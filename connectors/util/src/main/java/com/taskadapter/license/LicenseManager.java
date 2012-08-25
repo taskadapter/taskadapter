@@ -1,7 +1,9 @@
 package com.taskadapter.license;
 
-import com.taskadapter.util.MyIOUtils;
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
@@ -155,7 +157,7 @@ public class LicenseManager {
     }
 
     private static void installLicenseFromFile(String fileName) throws IOException {
-        String licenseFileText = MyIOUtils.loadFile(fileName);
+        String licenseFileText = Files.toString(new File(fileName), Charsets.UTF_8);
         System.out.println("Loaded file: " + fileName);
         System.out.println("Installing license: " + DASHES + licenseFileText + DASHES);
 

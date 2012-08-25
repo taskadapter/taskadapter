@@ -30,4 +30,8 @@ public class MSPFactory implements PluginFactory<MSPConfig> {
 		return ConfigUtils.createDefaultGson().fromJson(config, MSPConfig.class);
 	}
 
+    @Override
+    public MSPConfig createDefaultConfig() {
+        return new MSPConfig();
+    }
 }

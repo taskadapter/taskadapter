@@ -2,11 +2,10 @@ package com.taskadapter.webui;
 
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
-import com.taskadapter.web.configeditor.DefaultPanel;
 import com.taskadapter.webui.action.ConfirmExportPage;
 import com.vaadin.ui.*;
-import com.vaadin.ui.themes.BaseTheme;
 
 import java.util.List;
 
@@ -35,9 +34,9 @@ public abstract class ActionPage extends Page {
         buildInitialPage();
     }
 
-    protected abstract void saveData();
+    protected abstract void saveData() throws ConnectorException;
 
-    protected abstract void loadData();
+    protected abstract void loadData() throws ConnectorException;
 
     private void buildInitialPage() {
         Label label = createLabel(getInitialText());
@@ -69,7 +68,7 @@ public abstract class ActionPage extends Page {
         loadProgress.setIndeterminate(true);
         loadProgress.setPollingInterval(200);
         mainPanel.addComponent(loadProgress);
-        String labelText = "Loading data from " + connectorFrom.getConfig().getSourceLocation() + " (" + connectorFrom.getDescriptor().getLabel() + ") ...";
+        String labelText = "Loading data from " + connectorFrom.getConfig().getSourceLocation() + " (" + connectorFrom.getConfig().getLabel() + ") ...";
         mainPanel.addComponent(createLabel(labelText));
     }
 
@@ -85,14 +84,20 @@ public abstract class ActionPage extends Page {
 
     private Label createLabel(String text) {
         Label label = new Label(text);
-        label.setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
+        label.setWidth("800px");
         return label;
     }
 
     private class LoadWorker extends Thread {
         @Override
         public void run() {
-            loadData();
+            try {
+                loadData();
+            } catch (ConnectorException e) {
+                // FIXME: add "connector error" dialog
+            } catch (Throwable t) {
+                // FIXME: Show "internal error" dialog
+            }
             // must synchronize changes over application
             synchronized (navigator.getApplication()) {
                 showAfterDataLoaded();
@@ -103,7 +108,13 @@ public abstract class ActionPage extends Page {
     private class SaveWorker extends Thread {
         @Override
         public void run() {
-            saveData();
+            try {
+                saveData();
+            } catch (ConnectorException e) {
+                // FIXME: add "connector error" dialog
+            } catch (Throwable t) {
+                // FIXME: Show "internal error" dialog
+            }
             // must synchronize changes over application
             synchronized (navigator.getApplication()) {
                 showAfterExport();
@@ -115,8 +126,8 @@ public abstract class ActionPage extends Page {
         mainPanel.removeAllComponents();
         mainPanel.addComponent(getDoneInfoPanel());
 
-        Button button = new Button("Open home page");
-        button.setStyleName(BaseTheme.BUTTON_LINK);
+        Button button = new Button("Back to home page");
+        //button.setStyleName(BaseTheme.BUTTON_LINK);
         button.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {

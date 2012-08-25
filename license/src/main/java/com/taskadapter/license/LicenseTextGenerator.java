@@ -20,7 +20,7 @@ class LicenseTextGenerator {
     String generateLicenseText() {
         String expirationDateFormattedString = licenseDateFormatter.format(license.getExpiresOn());
         String text = license.getUsersNumber() + license.getCustomerName() + license.getEmail() + license.getCreatedOn() + expirationDateFormattedString;
-        String key = new LicenseEncryptor(PASSWORD).chiper(text);
+        String key = LicenseEncryptor.chiper(text);
         String base64EncodedKey = new String(Base64.encodeBase64(key.getBytes()));
 
         StringBuilder licenseText = new StringBuilder()

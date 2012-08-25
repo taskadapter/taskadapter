@@ -16,11 +16,10 @@ public class JiraConnectionFactory {
         JerseyJiraRestClientFactory factory = new JerseyJiraRestClientFactory();
         URI jiraServerUri = new URI(info.getHost());
         JiraRestClient restClient = factory.createWithBasicHttpAuthentication(jiraServerUri, info.getUserName(), info.getPassword());
-        return new JiraConnection(restClient);
 
-/*        String baseUrl = info.getHost() + "/rpc/soap/jirasoapservice-v2";
+        String baseUrl = info.getHost() + "/rpc/soap/jirasoapservice-v2";
         SOAPSession soapSession = new SOAPSession(new URL(baseUrl));
         soapSession.connect(info.getUserName(), info.getPassword());
-        return new JiraConnection(soapSession.getJiraSoapService(), soapSession.getAuthenticationToken());*/
+        return new JiraConnection(soapSession.getJiraSoapService(), soapSession.getAuthenticationToken(), restClient);
     }
 }

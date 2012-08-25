@@ -1,5 +1,6 @@
 package com.taskadapter.connector.github;
 
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GUser;
 import org.eclipse.egit.github.core.Issue;
@@ -56,7 +57,7 @@ public class GithubTaskConverter {
 
     private Map<String, User> ghUsers = new HashMap<String, User>();
 
-    protected Issue gtaskToIssue(GTask task) {
+    protected Issue gtaskToIssue(GTask task) throws ConnectorException {
         Issue issue = new Issue();
         issue.setTitle(task.getSummary());
         issue.setBody(task.getDescription());
@@ -82,7 +83,7 @@ public class GithubTaskConverter {
                     issue.setAssignee(ghUsers.get(userLogin));
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw GithubUtils.convertException(e);
             }
         }
 

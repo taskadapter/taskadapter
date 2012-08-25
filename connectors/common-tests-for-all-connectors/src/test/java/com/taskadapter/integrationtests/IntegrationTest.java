@@ -2,6 +2,7 @@ package com.taskadapter.integrationtests;
 
 import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.redmine.RedmineConfig;
@@ -45,11 +46,11 @@ public class IntegrationTest extends AbstractSyncRunnerTest {
     }
 
     @Test
-    public void testSaveRemoteIdWithNonLinearUUID() throws URISyntaxException, IOException {
+    public void testSaveRemoteIdWithNonLinearUUID() throws URISyntaxException, IOException, ConnectorException {
 
         RedmineConfig redmineConfigTo = RedmineTestConfig.getRedmineTestConfig();
 
-        MSPConfig mspConfig = getConfig("non-linear-uuid.xml");
+        MSPConfig mspConfig = getConfig("com/taskadapter/integrationtests/non-linear-uuid.xml");
         Connector<?> msProjectConnector = new MSPConnector(mspConfig);
 
         SyncRunner runner = new SyncRunner(new LicenseManager()); //LicenseManager with license of some type can be set
@@ -71,10 +72,10 @@ public class IntegrationTest extends AbstractSyncRunnerTest {
     }
 
     @Test
-    public void testOneSideDisconnectedRelationships() throws IOException {
+    public void testOneSideDisconnectedRelationships() throws IOException, ConnectorException {
         RedmineConfig redmineConfigTo = RedmineTestConfig.getRedmineTestConfig();
 
-        MSPConfig mspConfig = getConfig("ProjectWithOneSideDisconnectedRelationships.xml");
+        MSPConfig mspConfig = getConfig("com/taskadapter/integrationtests/ProjectWithOneSideDisconnectedRelationships.xml");
         Connector<?> projectConnector = new MSPConnector(mspConfig);
 
         SyncRunner runner = new SyncRunner(new LicenseManager()); //LicenseManager with license of some type can be set

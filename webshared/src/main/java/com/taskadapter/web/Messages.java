@@ -1,8 +1,10 @@
 package com.taskadapter.web;
 
-import com.taskadapter.util.MyIOUtils;
+import com.google.common.io.InputSupplier;
+import com.google.common.io.Resources;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class Messages {
@@ -17,7 +19,8 @@ public class Messages {
     private static void loadMessagesFromClasspath() {
         properties = new Properties();
         try {
-            properties.load(MyIOUtils.getResourceAsStream(HELP_EN_FILE_PROPERTIES));
+            InputSupplier<InputStream> inputSupplier = Resources.newInputStreamSupplier(Resources.getResource(HELP_EN_FILE_PROPERTIES));
+            properties.load(inputSupplier.getInput());
         } catch (IOException e) {
             throw new RuntimeException("Can't load file " + HELP_EN_FILE_PROPERTIES);
         }

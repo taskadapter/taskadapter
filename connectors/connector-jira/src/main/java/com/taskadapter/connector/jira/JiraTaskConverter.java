@@ -1,6 +1,9 @@
 package com.taskadapter.connector.jira;
 
+import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.IssueType;
+import com.atlassian.jira.rest.client.domain.Priority;
 import com.atlassian.jira.rpc.soap.client.*;
 import com.google.common.base.Strings;
 import com.taskadapter.connector.definition.Mappings;
@@ -24,7 +27,7 @@ public class JiraTaskConverter {
 
     private final Map<String, String> priorities = new HashMap<String, String>();
     private final Map<String, String> prioritiesOtherWay = new HashMap<String, String>();
-    private RemoteIssueType[] issueTypeList;
+    private Iterable<IssueType> issueTypeList;
 
     public JiraTaskConverter(JiraConfig config) {
         this.config = config;
@@ -191,18 +194,31 @@ public class JiraTaskConverter {
         return task;
     }
 
-    public void setPriorities(RemotePriority[] jiraPriorities) {
-        for (RemotePriority jiraPriority : jiraPriorities) {
-            priorities.put(jiraPriority.getName(), jiraPriority.getId());
-            prioritiesOtherWay.put(jiraPriority.getId(), jiraPriority.getName());
+    public GTask convertToGenericTask(BasicIssue issue) {
+        GTask task = new GTask();
+        Integer intId = Integer.parseInt(issue.getId());
+        task.setId(intId);
+        task.setKey(issue.getKey());
+
+        // TODO set these fields as well
+        // task.setEstimatedHours(issue.getEstimatedHours());
+        // task.setDoneRatio(issue.getDoneRatio());
+
+        return task;
+    }
+
+    public void setPriorities(Iterable<Priority> jiraPriorities) {
+        for (Priority jiraPriority : jiraPriorities) {
+            priorities.put(jiraPriority.getName(), String.valueOf(jiraPriority.getId()));
+            prioritiesOtherWay.put(String.valueOf(jiraPriority.getId()), jiraPriority.getName());
         }
     }
 
-    public void setIssueTypeList(RemoteIssueType[] issueTypeList) {
+    public void setIssueTypeList(Iterable<IssueType> issueTypeList) {
         this.issueTypeList = issueTypeList;
     }
 
-    public RemoteIssueType[] getIssueTypeList() {
+    public Iterable<IssueType> getIssueTypeList() {
         return this.issueTypeList;
     }
 
@@ -210,9 +226,9 @@ public class JiraTaskConverter {
         String resTypeId = null;
 
         if (issueTypeName != null && issueTypeList != null) {
-            for (RemoteIssueType anIssueTypeList : issueTypeList) {
+            for (IssueType anIssueTypeList : issueTypeList) {
                 if (anIssueTypeList.getName().equals(issueTypeName)) {
-                    resTypeId = anIssueTypeList.getId();
+                    resTypeId = String.valueOf(anIssueTypeList.getId());
                     break;
                 }
             }
@@ -225,7 +241,7 @@ public class JiraTaskConverter {
         String resTypeName = null;
 
         if (issueTypeList != null) {
-            for (RemoteIssueType anIssueTypeList : issueTypeList) {
+            for (IssueType anIssueTypeList : issueTypeList) {
                 if (anIssueTypeList.getId().equals(issueTypeId)) {
                     resTypeName = anIssueTypeList.getName();
                     break;

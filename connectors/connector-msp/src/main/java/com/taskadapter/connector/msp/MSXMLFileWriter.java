@@ -2,6 +2,8 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.SyncResult;
+import com.taskadapter.connector.definition.TaskSaveResultBuilder;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
@@ -44,8 +46,8 @@ public class MSXMLFileWriter {
         this.config = config;
     }
 
-    public String write(SyncResult syncResult, List<GTask> rows,
-                        boolean keepTaskId) throws IOException {
+    public String write(TaskSaveResultBuilder syncResult, List<GTask> rows,
+                        boolean keepTaskId) throws IOException, BadConfigException {
 
         // XXX load resources from existing MS file to cache here
 
@@ -93,10 +95,10 @@ public class MSXMLFileWriter {
         return null;
     }
 
-    private void addTasks(SyncResult syncResult, ProjectFile project,
+    private void addTasks(TaskSaveResultBuilder syncResult, ProjectFile project,
                           Task parentMSPTask,
                           List<GTask> gTasks,
-                          boolean keepTaskId) {
+                          boolean keepTaskId) throws BadConfigException {
         for (GTask gTask : gTasks) {
             Task newMspTask;
 
@@ -176,9 +178,10 @@ public class MSXMLFileWriter {
      * "% done" field is used to calculate "actual work". this is more like a
      * hack used until Redmine REST API provides "time spent" serverInfo in
      * "issues list" response (see task http://www.redmine.org/issues/5303 )
+     * @throws BadConfigException 
      */
     protected void setTaskFields(ProjectFile project, Task mspTask,
-                                 GTask gTask, boolean keepTaskId) {
+                                 GTask gTask, boolean keepTaskId) throws BadConfigException {
     	final Mappings mapping = config.getFieldMappings();
         mspTask.setMilestone(false);
 

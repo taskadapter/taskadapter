@@ -39,7 +39,8 @@
                                     <version>${version}</version>
                                     <type>war</type>
                                     <overWrite>true</overWrite>
-                                    <outputDirectory>${project.build.directory}/${distributive.root.folder}/files</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/${distributive.root.folder}/files
+                                    </outputDirectory>
                                     <destFileName>ta.war</destFileName>
                                 </artifactItem>
                             </artifactItems>
@@ -66,6 +67,21 @@
                                     <mainClass>com.taskadapter.launcher.TALauncher</mainClass>
                                 </transformer>
                             </transformers>
+                            <!-- must have these filters to avoid
+                            "java.lang.SecurityException: Invalid signature file digest for Manifest main attributes" error.
+                            This is the solution from
+                            http://stackoverflow.com/a/6743609/477655
+                            -->
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>

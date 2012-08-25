@@ -8,7 +8,6 @@ import com.taskadapter.webui.PageUtil;
 import com.vaadin.ui.*;
 
 import java.util.List;
-import java.util.Map;
 
 public class ConfirmExportPage extends CustomComponent {
     private final Navigator navigator;
@@ -29,7 +28,6 @@ public class ConfirmExportPage extends CustomComponent {
     private void buildUI() {
         VerticalLayout layout = new VerticalLayout();
         layout.setSpacing(true);
-        layout.setSizeFull();
 
         Label text1 = new Label("Please confirm export to " + connectorTo.getConfig().getTargetLocation());
         layout.addComponent(text1);
@@ -47,9 +45,9 @@ public class ConfirmExportPage extends CustomComponent {
         layout.addComponent(buttonsLayout);
 
         setCompositionRoot(layout);
-		this.fieldMappingPanel = new FieldsMappingPanel(connectorTo
-				.getDescriptor().getAvailableFields(), connectorTo.getConfig()
-				.getFieldMappings());
+		this.fieldMappingPanel = new FieldsMappingPanel(
+                connectorTo.getDescriptor().getAvailableFields(),
+                connectorTo.getConfig().getFieldMappings());
         layout.addComponent(fieldMappingPanel);
     }
 

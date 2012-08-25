@@ -3,6 +3,7 @@ package com.taskadapter.core;
 import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.common.TestUtils;
 import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.msp.MSPTaskSaver;
@@ -54,7 +55,7 @@ public class UpdaterIntegrationTest extends AbstractSyncRunnerTest {
         verifyMSPData();
     }
 
-    private void updateMSPFile() {
+    private void updateMSPFile() throws ConnectorException {
         Updater updater = new Updater(projectConnector, redmineConnector);
         updater.start();
     }
@@ -64,11 +65,11 @@ public class UpdaterIntegrationTest extends AbstractSyncRunnerTest {
 		TaskUtil.setRemoteIdField(rmIssues);
 	}
 
-    private void saveToMSP() {
+    private void saveToMSP() throws ConnectorException {
         new MSPTaskSaver(mspConfig).saveData(rmIssues, null);
     }
 
-    private void modifyRedmineData() {
+    private void modifyRedmineData() throws ConnectorException {
         Random r = new Random();
         for (GTask task : rmIssues) {
             String updatedSummary = "updated" + r.nextInt();

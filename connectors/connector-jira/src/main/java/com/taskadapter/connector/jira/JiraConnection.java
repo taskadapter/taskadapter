@@ -26,12 +26,9 @@ public class JiraConnection {
     private JiraRestClient restClient;
 
 
-    JiraConnection(JiraSoapService jiraSoapService, String authToken) {
+    JiraConnection(JiraSoapService jiraSoapService, String authToken, JiraRestClient restClient) {
         this.jiraSoapService = jiraSoapService;
         this.authToken = authToken;
-    }
-
-    JiraConnection(JiraRestClient restClient) {
         this.restClient = restClient;
     }
 
@@ -90,18 +87,18 @@ public class JiraConnection {
         return jiraSoapService.createIssue(authToken, null);
     }*/
 
-    public void createIssue(IssueInput issueToCreate) {
-        restClient.getIssueClient().createIssue(issueToCreate, null);
+    public BasicIssue createIssue(IssueInput issueToCreate) {
+        return restClient.getIssueClient().createIssue(issueToCreate, null);
     }
 
-/*    public RemoteIssue updateIssue(String issueKey, RemoteIssue rmIssueToUpdate) throws RemoteException {
+    public RemoteIssue updateIssue(String issueKey, RemoteIssue rmIssueToUpdate) throws RemoteException {
         RemoteFieldValue[] fields = getFields(rmIssueToUpdate);
         return jiraSoapService.updateIssue(authToken, issueKey, fields);
-    }*/
-
-    public void updateIssue(Issue issueToUpdate) {
-        //restClient.getIssueClient().updateIssue(issueToUpdate);
     }
+
+/*    public void updateIssue(Issue issueToUpdate) {
+        //restClient.getIssueClient().updateIssue(issueToUpdate);
+    }*/
 
     public void deleteIssue(Issue issueToDelete, boolean deleteSubtasks) {
         //restClient.getIssueClient().deleteIssue(issueToDelete, deleteSubtasks);

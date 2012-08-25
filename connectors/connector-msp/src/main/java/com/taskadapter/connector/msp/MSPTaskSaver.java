@@ -2,7 +2,8 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.common.AbstractTaskSaver;
 import com.taskadapter.connector.common.TreeUtils;
-import com.taskadapter.connector.definition.SyncResult;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.definition.exceptions.EntityPersistenseException;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GRelation.TYPE;
 import com.taskadapter.model.GTask;
@@ -25,26 +26,25 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
     }
 
     @Override
-    protected SyncResult save(String parentTaskKey, List<GTask> tasks) {
-        SyncResult result = saveData(tasks, false);
+    protected void save(String parentTaskKey, List<GTask> tasks) throws ConnectorException {
+        saveData(tasks, false);
         List<GTask> newTaskList = TreeUtils.buildFlatListFromTree(tasks);
         List<GRelation> relations = buildNewRelations(newTaskList);
         saveRelations(relations);
-        return result;
     }
 
     // TODO this method is always called with "false" ONLY
 
     /**
      * This method allows saving data to MSP file while keeping tasks ids.
+     * @throws ConnectorException 
      */
-    private SyncResult saveData(List<GTask> tasks, boolean keepTaskId) {
+    private void saveData(List<GTask> tasks, boolean keepTaskId) throws ConnectorException {
         try {
-            String result = writer.write(syncResult, tasks, keepTaskId);
-            syncResult.setTargetFileAbsolutePath(result);
-            return syncResult;
+            String resultFile = writer.write(result, tasks, keepTaskId);
+            result.setTargetFileAbsolutePath(resultFile);
         } catch (IOException e) {
-            throw new RuntimeException("Can't save data:\n" + e.toString(), e);
+            throw MSPExceptions.convertException(e);
         }
     }
 
@@ -100,12 +100,20 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
                             RelationType.FINISH_START, delay);
                 } else {
                     logger.error("save relations for MSP: unknown type: " + relation.getType());
+                    errors.addGeneralError(new UnsupportedRelationType(relation.getType()));
                 }
             }
 
             writer.writeProject(projectFile);
-        } catch (Exception e) {
-            syncResult.addGeneralError("Can't create Tasks Relations");
+        } catch (MPXJException e) {
+            errors.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations (" + e.toString() + ")"));
+            e.printStackTrace();
+        } catch (IOException e) {
+            errors.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations (" + e.toString() + ")"));
+            e.printStackTrace();
+        } catch (Throwable e) {
+            errors.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations (" + e.toString() + ")"));
+            e.printStackTrace();
         }
     }
 

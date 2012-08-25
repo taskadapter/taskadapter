@@ -3,18 +3,19 @@ package com.taskadapter.connector.jira;
 import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
-import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rest.client.domain.Project;
-import com.atlassian.jira.rest.client.domain.SearchResult;
+import com.atlassian.jira.rest.client.domain.*;
 import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClient;
 import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClientFactory;
 import com.atlassian.jira.rest.client.internal.json.CommonIssueJsonParser;
 import com.atlassian.jira.rest.client.internal.json.IssueJsonParser;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.atlassian.jira.rpc.soap.client.*;
+import com.google.common.collect.Iterables;
 import com.taskadapter.connector.common.TestUtils;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.SyncResult;
+import com.taskadapter.connector.definition.TaskErrors;
+import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
@@ -91,8 +92,8 @@ public class JiraTest {
         int tasksQty = 2;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
         JiraConnector connector = new JiraConnector(config);
-        SyncResult result = connector.saveData(tasks, null);
-        assertEquals(tasksQty, result.getCreateTasksNumber());
+        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(tasks, null);
+        assertEquals(tasksQty, result.getResult().getCreatedTasksNumber());
     }
 
     @Test
@@ -104,12 +105,12 @@ public class JiraTest {
         List<GTask> tasks = TestUtils.generateTasks(1);
         tasks.get(0).setAssignee(new GUser(jiraUser.getName()));
 
-        SyncResult result = connector.saveData(tasks, null);
-        assertFalse("Task creation failed", result.hasErrors());
+        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(tasks, null);
+        assertFalse("Task creation failed", result.getErrors().hasErrors());
 
         Map<Integer, String> remoteKeyById = new HashMap<Integer, String>();
         for (GTask task : tasks) {
-            remoteKeyById.put(task.getId(), result.getRemoteKey(task.getId()));
+            remoteKeyById.put(task.getId(), result.getResult().getIdToRemoteKeyMap().get(task.getId()));
         }
 
         for (Map.Entry<Integer, String> entry : remoteKeyById.entrySet()) {
@@ -129,10 +130,10 @@ public class JiraTest {
 
         // CREATE
         JiraConnector connector = new JiraConnector(config);
-        SyncResult result = connector.saveData(Arrays.asList(task), null);
-        assertTrue(result.getErrors().isEmpty());
-        assertEquals(tasksQty, result.getCreateTasksNumber());
-        String remoteKey = result.getRemoteKey(id);
+        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(Arrays.asList(task), null);
+        assertTrue(result.getErrors().getErrors().isEmpty());
+        assertEquals(tasksQty, result.getResult().getCreatedTasksNumber());
+        String remoteKey = result.getResult().getRemoteKey(id);
 
         GTask loaded = connector.loadTaskByKey(serverInfo, remoteKey);
 
@@ -140,9 +141,9 @@ public class JiraTest {
         String NEW_SUMMARY = "new summary here";
         loaded.setSummary(NEW_SUMMARY);
         loaded.setRemoteId(remoteKey);
-        SyncResult result2 = connector.saveData(Arrays.asList(loaded), null);
-        assertTrue("some errors while updating the data: " + result2.getErrors(), result2.getErrors().isEmpty());
-        assertEquals(1, result2.getUpdatedTasksNumber());
+        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result2 = connector.saveData(Arrays.asList(loaded), null);
+        assertTrue("some errors while updating the data: " + result2.getErrors(), result2.getErrors().getErrors().isEmpty());
+        assertEquals(1, result2.getResult().getUpdatedTasksNumber());
 
         GTask loadedAgain = connector.loadTaskByKey(serverInfo, remoteKey);
         assertEquals(NEW_SUMMARY, loadedAgain.getSummary());
@@ -189,8 +190,8 @@ public class JiraTest {
     @Test
     public void priorityExported() throws MalformedURLException, RemoteException, URISyntaxException {
         JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
-        RemotePriority[] priorities = connection.getPriorities();
-        if (priorities.length == 0) {
+        Iterable<Priority> priorities = connection.getPriorities();
+        if (Iterables.size(priorities) == 0) {
             logger.info("Can't test priority field export - priority list is empty.");
         } else {
             RemoteVersion[] versions = {};
@@ -202,7 +203,7 @@ public class JiraTest {
             issue.setId("123");
             issue.setKey("key");
             issue.setSummary("summary text");
-            issue.setPriority(priorities[0].getId());
+            issue.setPriority(String.valueOf(Iterables.get(priorities, 0).getId()));
 
             //save old mapping object for priority field
             MappingStore mapping = getStore(config, FIELD.PRIORITY);
@@ -219,8 +220,8 @@ public class JiraTest {
 
     private boolean beforeIssueTypeTest(GTask task, JiraTaskConverter converter) throws MalformedURLException, RemoteException, URISyntaxException {
         JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
-        RemoteIssueType[] issueTypeList = connection.getIssueTypeList(config.getProjectKey());
-        if (issueTypeList.length == 0) {
+        Iterable<IssueType> issueTypeList = connection.getIssueTypeList();
+        if (Iterables.size(issueTypeList) == 0) {
             logger.info("Can't test issue type field export - issue type list is empty.");
             return false;
         } else {
@@ -285,7 +286,7 @@ public class JiraTest {
         JiraTaskConverter converter = new JiraTaskConverter(config);
 
         if (beforeIssueTypeTest(task, converter)) {
-            task.setType(converter.getIssueTypeList()[0].getName());
+            task.setType(Iterables.get(converter.getIssueTypeList(), 0).getName());
 
             //save old mapping object for issue type field
             MappingStore mapping = getStore(config, FIELD.TASK_TYPE);

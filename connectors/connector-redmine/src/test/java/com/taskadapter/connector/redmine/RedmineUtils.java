@@ -1,6 +1,7 @@
 package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.common.TestUtils;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 
@@ -9,7 +10,7 @@ import java.util.List;
 
 public class RedmineUtils {
 
-    public static GTask generateTaskWithPrecedesRelations(RedmineConnector redmine, Integer childCount) {
+    public static GTask generateTaskWithPrecedesRelations(RedmineConnector redmine, Integer childCount) throws ConnectorException {
         List<GTask> list = new ArrayList<GTask>();
 
         GTask task = TestUtils.generateTask();
