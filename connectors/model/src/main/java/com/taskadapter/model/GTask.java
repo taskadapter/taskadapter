@@ -6,8 +6,6 @@ import java.util.List;
 
 /**
  * Generic "Task" object. Internal representation for all "tasks" loaded from various external systems.
- *
- * @author Alexey Skorokhodov
  */
 public class GTask {
 
@@ -62,15 +60,6 @@ public class GTask {
     }
 
     public GTask() {
-    }
-
-    public GTask(Integer id) {
-        this.id = id;
-    }
-
-    public GTask(Integer id, List<GTask> children) {
-        this.id = id;
-        this.children = children;
     }
 
     /**

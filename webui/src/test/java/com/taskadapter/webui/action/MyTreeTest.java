@@ -9,36 +9,38 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author Igor Laishen
- */
 public class MyTreeTest {
     private MyTree myTree;
     private GTask[] rootLevelTasks;
 
     @Before
     public void init() {
-        GTask gTask0 = new GTask();
-        gTask0.setId(0);
-        gTask0.setChildren(Arrays.asList(
-                new GTask(1),
-                new GTask(2),
-                new GTask(3, Arrays.asList(
-                        new GTask(4),
-                        new GTask(5, Arrays.asList(
-                                new GTask(6)
-                        ))
-                )),
-                new GTask(7),
-                new GTask(8, Arrays.asList(
-                        new GTask(9)
-                ))
-        ));
+        GTask gTask0 = createTestTask(0,
+                createTestTask(1),
+                createTestTask(2),
+                createTestTask(3,
+                        createTestTask(4),
+                        createTestTask(5,
+                                createTestTask(6)
+                        )
+                ),
+                createTestTask(7),
+                createTestTask(8,
+                        createTestTask(9)
+                )
+        );
 
         rootLevelTasks = new GTask[]{gTask0};
 
         myTree = new MyTree();
         myTree.setTasks(Arrays.asList(rootLevelTasks));
+    }
+
+    private GTask createTestTask(int id, GTask... children) {
+        GTask task = new GTask();
+        task.setId(id);
+        task.setChildren(Arrays.asList(children));
+        return task;
     }
 
     @Test
@@ -61,16 +63,14 @@ public class MyTreeTest {
     }
 
     private GTask[] expectedRootLevelTasks1() {
-        GTask gTask0 = new GTask();
-        gTask0.setId(0);
-        gTask0.setChildren(Arrays.asList(
-                new GTask(1),
-                new GTask(2),
-                new GTask(7),
-                new GTask(8, Arrays.asList(
-                        new GTask(9)
-                ))
-        ));
+        GTask gTask0 = createTestTask(0,
+                createTestTask(1),
+                createTestTask(2),
+                createTestTask(7),
+                createTestTask(8,
+                        createTestTask(9)
+                )
+        );
 
         return new GTask[]{gTask0};
     }
@@ -91,15 +91,13 @@ public class MyTreeTest {
     }
 
     private GTask[] expectedRootLevelTasks2() {
-        GTask gTask0 = new GTask();
-        gTask0.setId(0);
-        gTask0.setChildren(Arrays.asList(
-                new GTask(3, Arrays.asList(
-                        new GTask(5, Arrays.asList(
-                                new GTask(6)
-                        ))
-                ))
-        ));
+        GTask gTask0 = createTestTask(0,
+                createTestTask(3,
+                        createTestTask(5,
+                                createTestTask(6)
+                        )
+                )
+        );
 
         return new GTask[]{gTask0};
     }
