@@ -4,7 +4,6 @@ import com.taskadapter.model.GTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 public class TreeUtils {
@@ -13,7 +12,7 @@ public class TreeUtils {
         List<GTask> clonedTree = new ArrayList<GTask>();
 
         for (GTask task : tree) {
-            GTask cloned = new GTask(task);
+            GTask cloned = createShallowCopyWithoutChildren(task);
             cloned.getChildren().clear();
             clonedTree.add(cloned);
 
@@ -29,7 +28,7 @@ public class TreeUtils {
         List<GTask> clonedTree = new ArrayList<GTask>();
 
         for (GTask task : tree) {
-            GTask cloned = new GTask(task);
+            GTask cloned = createShallowCopyWithoutChildren(task);
             cloned.getChildren().clear();
             if (task.getRemoteId() != null) {
                 // only skip the tasks with no Remote IDs
@@ -83,4 +82,27 @@ public class TreeUtils {
             return keyToGTaskMap.get(key);
         }
     }
+
+    static GTask createShallowCopyWithoutChildren(GTask task) {
+        GTask newTask = new GTask();
+        newTask.setId(task.getId());
+        newTask.setKey(task.getKey());
+        newTask.setParentKey(task.getParentKey());
+        newTask.setRemoteId(task.getRemoteId());
+        newTask.setPriority(task.getPriority());
+        newTask.setAssignee(task.getAssignee());
+        newTask.setSummary(task.getSummary());
+        newTask.setDescription(task.getDescription());
+        newTask.setEstimatedHours(task.getEstimatedHours());
+        newTask.setDoneRatio(task.getDoneRatio());
+        newTask.setStartDate(task.getStartDate());
+        newTask.setDueDate(task.getDueDate());
+        newTask.setType(task.getType());
+        newTask.setStatus(task.getStatus());
+        newTask.setCreatedOn(task.getCreatedOn());
+        newTask.setUpdatedOn(task.getUpdatedOn());
+        newTask.setRelations(task.getRelations());
+        return newTask;
+    }
+
 }

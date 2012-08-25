@@ -37,32 +37,6 @@ public class GTask {
     private List<GRelation> relations = new ArrayList<GRelation>();
 
     /**
-     * this constructor does NOT copy children!
-     */
-    public GTask(GTask taskFromItem) {
-        this.id = taskFromItem.getId();
-        this.key = taskFromItem.getKey();
-        this.parentKey = taskFromItem.getParentKey();
-        this.remoteId = taskFromItem.getRemoteId();
-        this.priority = taskFromItem.getPriority();
-        this.assignee = taskFromItem.getAssignee();
-        this.summary = taskFromItem.getSummary();
-        this.description = taskFromItem.getDescription();
-        this.estimatedHours = taskFromItem.getEstimatedHours();
-        this.doneRatio = taskFromItem.getDoneRatio();
-        this.startDate = taskFromItem.getStartDate();
-        this.dueDate = taskFromItem.getDueDate();
-        this.type = taskFromItem.getType();
-        this.status = taskFromItem.getStatus();
-        this.createdOn = taskFromItem.getCreatedOn();
-        this.updatedOn = taskFromItem.getUpdatedOn();
-        this.relations = taskFromItem.getRelations();
-    }
-
-    public GTask() {
-    }
-
-    /**
      * This is database ID for Redmine and Jira and Unique ID (row number) for MSP.
      */
     public Integer getId() {
@@ -362,6 +336,10 @@ public class GTask {
 
     public List<GRelation> getRelations() {
         return relations;
+    }
+
+    public void setRelations(List<GRelation> relations) {
+        this.relations = relations;
     }
 
     @Override
