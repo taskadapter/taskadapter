@@ -64,6 +64,15 @@ public class GTask {
     public GTask() {
     }
 
+    public GTask(Integer id) {
+        this.id = id;
+    }
+
+    public GTask(Integer id, List<GTask> children) {
+        this.id = id;
+        this.children = children;
+    }
+
     /**
      * This is database ID for Redmine and Jira and Unique ID (row number) for MSP.
      */
@@ -170,7 +179,7 @@ public class GTask {
     }
 
     public boolean hasChildren() {
-        return ! children.isEmpty();
+        return children == null || !children.isEmpty();
     }
 
     @Override

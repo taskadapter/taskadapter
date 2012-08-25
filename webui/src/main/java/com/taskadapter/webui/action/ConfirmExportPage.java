@@ -37,18 +37,21 @@ public class ConfirmExportPage extends CustomComponent {
         connectorTree.setTasks(rootLevelTasks);
         layout.addComponent(connectorTree);
 
-        HorizontalLayout buttonsLayout = new HorizontalLayout();
         Button goButton = new Button("Go");
         goButton.addListener(goListener);
+
+        HorizontalLayout buttonsLayout = new HorizontalLayout();
         buttonsLayout.addComponent(goButton);
         buttonsLayout.addComponent(PageUtil.createButton(navigator, "Cancel", Navigator.HOME));
         layout.addComponent(buttonsLayout);
 
-        setCompositionRoot(layout);
 		this.fieldMappingPanel = new FieldsMappingPanel(
                 connectorTo.getDescriptor().getAvailableFields(),
-                connectorTo.getConfig().getFieldMappings());
+                connectorTo.getConfig().getFieldMappings()
+        );
         layout.addComponent(fieldMappingPanel);
+
+        setCompositionRoot(layout);
     }
 
     public boolean needToSaveConfig() {

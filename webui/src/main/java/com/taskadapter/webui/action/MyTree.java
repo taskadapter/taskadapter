@@ -1,11 +1,12 @@
 package com.taskadapter.webui.action;
 
 import com.taskadapter.model.GTask;
+import com.vaadin.data.Property;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.TreeTable;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Alexey Skorokhodov
@@ -13,7 +14,14 @@ import java.util.List;
 public class MyTree extends CustomComponent {
     private static final int MAX_ROWS_BEFORE_SCROLLBAR = 10;
 
-    private TreeTable tree;
+    private static final String CREATE = "Create";
+    private static final String UPDATE = "Update";
+
+    public static final  String ACTION_PROPERTY  = "Action";
+    private static final String ID_PROPERTY      = "ID";
+    private static final String SUMMARY_PROPERTY = "Summary";
+
+    TreeTable tree;
     private List<GTask> rootLevelTasks;
 
     public MyTree() {
@@ -23,14 +31,43 @@ public class MyTree extends CustomComponent {
     private void buildUI() {
         tree = new TreeTable();
         tree.setWidth("800px");
-        tree.addContainerProperty("Action", CheckBox.class, null);
-        tree.addContainerProperty("ID", String.class, null);
-        tree.addContainerProperty("Summary", String.class, null);
+        tree.addContainerProperty(ACTION_PROPERTY, CheckBox.class, null);
+        tree.addContainerProperty(ID_PROPERTY, String.class, null);
+        tree.addContainerProperty(SUMMARY_PROPERTY, String.class, null);
         setCompositionRoot(tree);
     }
 
     public List<GTask> getSelectedRootLevelTasks() {
-        return rootLevelTasks;
+        Set<Integer> idSet = new HashSet<Integer>();
+
+        Collection itemIds = tree.getItemIds();
+
+        if (itemIds != null) {
+            for (Object itemId : itemIds) {
+                boolean checked = ((CheckBox) tree.getContainerProperty(itemId, ACTION_PROPERTY).getValue()).booleanValue();
+
+                if (checked) {
+                    idSet.add((Integer) itemId);
+                }
+            }
+        }
+
+        return getSelectedTasks(rootLevelTasks, idSet);
+    }
+
+    private List<GTask> getSelectedTasks(List<GTask> gTaskList, Set<Integer> idSet) {
+        List<GTask> selectedTasks = new ArrayList<GTask>();
+
+        for (GTask gTask : gTaskList) {
+            if(idSet.contains(gTask.getId())) {
+                if(gTask.hasChildren()) {
+                    gTask.setChildren(getSelectedTasks(gTask.getChildren(), idSet));
+                }
+                selectedTasks.add(gTask);
+            }
+        }
+
+        return selectedTasks;
     }
 
     public void setTasks(List<GTask> rootLevelTasks) {
@@ -43,19 +80,49 @@ public class MyTree extends CustomComponent {
 
     private void addTasksToTree(Object parentId, List<GTask> tasks) {
         for (GTask task : tasks) {
-            String actionText = (task.getRemoteId() == null) ? "Create" : "Update";
-            CheckBox checkBox = new CheckBox(actionText);
-            // TODO disabled because of http://www.hostedredmine.com/issues/64169
-            // ("checkboxes in the tree on "export these tasks" page are ignored")
-            checkBox.setEnabled(false);
+            final Integer taskId = task.getId();
+
+            final CheckBox checkBox = new CheckBox((task.getRemoteId() == null) ? CREATE : UPDATE);
             checkBox.setValue(true);
-            Object newItemId = tree.addItem(new Object[]{checkBox, task.getId() + "", task.getSummary()}, task.getId());
+            checkBox.setData(parentId);
+            checkBox.addListener(new Property.ValueChangeListener() {
+                @Override
+                public void valueChange(Property.ValueChangeEvent event) {
+                    if (checkBox.booleanValue()) {
+                        Integer parentId = (Integer) checkBox.getData();
+
+                        if (parentId != null) {
+                            // if some child is selected then also select his parent
+                            ((CheckBox) tree.getContainerProperty(parentId, ACTION_PROPERTY).getValue()).setValue(true);
+                        }
+                    } else {
+                        // if parent is deselected then deselect all his children
+                        if (tree.hasChildren(taskId)) {
+                            for (Object itemId : tree.getChildren(taskId)) {
+                                ((CheckBox) tree.getContainerProperty(itemId, ACTION_PROPERTY).getValue()).setValue(false);
+                            }
+                        }
+                    }
+                }
+            });
+            checkBox.setImmediate(true);
+
+            tree.addItem(
+                    new Object[]{
+                            checkBox,                  // ACTION
+                            String.valueOf(taskId),    // ID
+                            task.getSummary()          // SUMMARY
+                    },
+                    taskId
+            );
+
             if (parentId != null) {
-                tree.setParent(newItemId, parentId);
+                tree.setParent(taskId, parentId);
             }
+
             if (task.hasChildren()) {
-                addTasksToTree(newItemId, task.getChildren());
-                tree.setCollapsed(newItemId, false);
+                addTasksToTree(taskId, task.getChildren());
+                tree.setCollapsed(taskId, false);
             }
         }
     }
