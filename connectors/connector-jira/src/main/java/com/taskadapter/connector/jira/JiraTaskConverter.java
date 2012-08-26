@@ -10,7 +10,6 @@ import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -175,10 +174,10 @@ public class JiraTaskConverter {
         task.setSummary(issue.getSummary());
         task.setDescription(issue.getDescription());
 
-        DateTime dueDate = issue.getDueDate();
+/*        DateTime dueDate = issue.getDueDate();
         if (dueDate != null) {
             task.setDueDate(dueDate.toDate());
-        }
+        }*/
 
         // TODO set these fields as well
         // task.setEstimatedHours(issue.getEstimatedHours());
