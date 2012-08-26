@@ -1,23 +1,18 @@
 package com.taskadapter.connector.jira;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.rmi.RemoteException;
-import java.util.Arrays;
-import java.util.List;
-
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.Priority;
 import com.atlassian.jira.rest.client.domain.Project;
-import com.atlassian.jira.rpc.soap.client.RemoteAuthenticationException;
-import com.atlassian.jira.rpc.soap.client.RemotePriority;
-import com.atlassian.jira.rpc.soap.client.RemoteProject;
-import com.sun.xml.internal.bind.v2.TODO;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GProject;
+
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.rmi.RemoteException;
+import java.util.List;
 
 public class JiraLoaders {
 
