@@ -6,8 +6,6 @@ import java.util.List;
 
 /**
  * Generic "Task" object. Internal representation for all "tasks" loaded from various external systems.
- *
- * @author Alexey Skorokhodov
  */
 public class GTask {
 
@@ -37,32 +35,6 @@ public class GTask {
     private Date createdOn;
     private Date updatedOn;
     private List<GRelation> relations = new ArrayList<GRelation>();
-
-    /**
-     * this constructor does NOT copy children!
-     */
-    public GTask(GTask taskFromItem) {
-        this.id = taskFromItem.getId();
-        this.key = taskFromItem.getKey();
-        this.parentKey = taskFromItem.getParentKey();
-        this.remoteId = taskFromItem.getRemoteId();
-        this.priority = taskFromItem.getPriority();
-        this.assignee = taskFromItem.getAssignee();
-        this.summary = taskFromItem.getSummary();
-        this.description = taskFromItem.getDescription();
-        this.estimatedHours = taskFromItem.getEstimatedHours();
-        this.doneRatio = taskFromItem.getDoneRatio();
-        this.startDate = taskFromItem.getStartDate();
-        this.dueDate = taskFromItem.getDueDate();
-        this.type = taskFromItem.getType();
-        this.status = taskFromItem.getStatus();
-        this.createdOn = taskFromItem.getCreatedOn();
-        this.updatedOn = taskFromItem.getUpdatedOn();
-        this.relations = taskFromItem.getRelations();
-    }
-
-    public GTask() {
-    }
 
     /**
      * This is database ID for Redmine and Jira and Unique ID (row number) for MSP.
@@ -170,7 +142,7 @@ public class GTask {
     }
 
     public boolean hasChildren() {
-        return ! children.isEmpty();
+        return children == null || !children.isEmpty();
     }
 
     @Override
@@ -364,6 +336,10 @@ public class GTask {
 
     public List<GRelation> getRelations() {
         return relations;
+    }
+
+    public void setRelations(List<GRelation> relations) {
+        this.relations = relations;
     }
 
     @Override

@@ -9,7 +9,7 @@ import org.junit.Test;
  * @author maxkar
  * 
  */
-public class ExceptionForamtterTests {
+public class ExceptionFormatterTests {
     /**
      * Tests a basic exception.
      */
