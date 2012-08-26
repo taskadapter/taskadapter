@@ -3,7 +3,8 @@ package com.taskadapter.model;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
+import java.util.Collections;
+
 import org.junit.Test;
 
 public class GTaskTest {
@@ -17,6 +18,10 @@ public class GTaskTest {
     @Test
     public void hasChildrenReturnsFalseWhenNoChildren() {
         GTask task = new GTask();
+        assertFalse(task.hasChildren());
+        task.setChildren(null);
+        assertFalse(task.hasChildren());
+        task.setChildren(Collections.<GTask>emptyList());
         assertFalse(task.hasChildren());
     }
 

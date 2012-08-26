@@ -142,7 +142,7 @@ public class GTask {
     }
 
     public boolean hasChildren() {
-        return children == null || !children.isEmpty();
+        return children != null && !children.isEmpty();
     }
 
     @Override
