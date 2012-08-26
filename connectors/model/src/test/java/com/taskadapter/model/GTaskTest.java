@@ -10,17 +10,22 @@ import org.junit.Test;
 public class GTaskTest {
 
     @Test
-    public void emptyChildrenListReturnedWhenNoChildren() {
+    public void newTaskHasNoChildren() {
         GTask task = new GTask();
-        assertTrue("an empty collection must be returned when the task has no children", task.getChildren().isEmpty());
+        assertTrue("a new task must have no children", task.getChildren().isEmpty());
+        assertFalse("a new task must have no children", task.hasChildren());
     }
 
     @Test
-    public void hasChildrenReturnsFalseWhenNoChildren() {
+    public void nullChildrenReturnsFalse() {
         GTask task = new GTask();
-        assertFalse(task.hasChildren());
         task.setChildren(null);
         assertFalse(task.hasChildren());
+    }
+
+    @Test
+    public void emptyChildrenListReturnsFalse() {
+        GTask task = new GTask();
         task.setChildren(Collections.<GTask>emptyList());
         assertFalse(task.hasChildren());
     }
