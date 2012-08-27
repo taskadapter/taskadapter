@@ -74,7 +74,7 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
 
     // TODO move this method to JiraTaskConverter class
     @Override
-    protected RemoteIssue convertToNativeTask(GTask task) {
+    protected IssueInput convertToNativeTask(GTask task) {
         return converter.convertToJiraIssue(versions, components, task);
     }
 

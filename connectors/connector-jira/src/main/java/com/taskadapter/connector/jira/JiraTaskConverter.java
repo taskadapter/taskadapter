@@ -1,15 +1,15 @@
 package com.taskadapter.connector.jira;
 
-import com.atlassian.jira.rest.client.domain.BasicIssue;
-import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rest.client.domain.IssueType;
-import com.atlassian.jira.rest.client.domain.Priority;
+import com.atlassian.jira.rest.client.domain.*;
+import com.atlassian.jira.rest.client.domain.input.IssueInput;
+import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
 import com.atlassian.jira.rpc.soap.client.*;
 import com.google.common.base.Strings;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,29 +24,37 @@ public class JiraTaskConverter {
 
     private final JiraConfig config;
 
-    private final Map<String, String> priorities = new HashMap<String, String>();
-    private final Map<String, String> prioritiesOtherWay = new HashMap<String, String>();
+    private final Map<String, BasicPriority> priorities = new HashMap<String, BasicPriority>();
+    private final Map<String, BasicPriority> prioritiesOtherWay = new HashMap<String, BasicPriority>();
     private Iterable<IssueType> issueTypeList;
 
     public JiraTaskConverter(JiraConfig config) {
         this.config = config;
     }
 
-    public RemoteIssue convertToJiraIssue(RemoteVersion[] versions, RemoteComponent[] components, GTask task) {
+    public IssueInput convertToJiraIssue(RemoteVersion[] versions, RemoteComponent[] components, GTask task) {
     	final Mappings mappings = config.getFieldMappings();
-        RemoteIssue issue = new RemoteIssue();
-        if (mappings.isFieldSelected(FIELD.SUMMARY)) {
-            issue.setSummary(task.getSummary());
+
+        String issueType = ISSUE_TYPE_ID;
+        if (mappings.isFieldSelected(FIELD.TASK_TYPE)) {
+            issueType = getIssueTypeIdByName(task.getType());
+
+            if (issueType == null) {
+                issueType = getIssueTypeIdByName(config.getDefaultTaskType());
+            }
         }
-        // issue.setParentId(parentIssueId);
-        issue.setProject(config.getProjectKey());
-        issue.setType(ISSUE_TYPE_ID);
+
+        IssueInputBuilder issueInputBuilder = new IssueInputBuilder(config.getProjectKey(), Long.valueOf(issueType));
+
+        if (mappings.isFieldSelected(FIELD.SUMMARY)) {
+            issueInputBuilder.setSummary(task.getSummary());
+        }
 
         if (mappings.isFieldSelected(FIELD.DESCRIPTION)) {
-            issue.setDescription(task.getDescription());
+            issueInputBuilder.setDescription(task.getDescription());
         }
 
-        RemoteVersion affectedVersion = getVersion(versions, config.getAffectedVersion());
+/*        RemoteVersion affectedVersion = getVersion(versions, config.getAffectedVersion());
         RemoteVersion fixForVersion = getVersion(versions, config.getFixForVersion());
         RemoteCustomFieldValue[] customValues = getCustomFieldsForIssue(config.getCustomFields());
         RemoteComponent component = getComponent(components, config.getComponent());
@@ -61,48 +69,38 @@ public class JiraTaskConverter {
 
         if (customValues.length != 0) {
             issue.setCustomFieldValues(customValues);
-        }
+        }*/
 
-        if (mappings.isFieldSelected(FIELD.TASK_TYPE)) {
-            String issueType = getIssueTypeIdByName(task.getType());
-
-            if (issueType == null) {
-                issueType = getIssueTypeIdByName(config.getDefaultTaskType());
-            }
-
-            issue.setType(issueType);
-        }
 
         if (mappings.isFieldSelected(FIELD.DUE_DATE) && task.getDueDate() != null) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(task.getDueDate());
-            issue.setDuedate(cal);
+            DateTime dueDateTime = new DateTime(task.getDueDate());
+            issueInputBuilder.setDueDate(dueDateTime);
         }
 
         if (mappings.isFieldSelected(FIELD.ASSIGNEE)) {
-            setAssignee(task, issue);
+            setAssignee(task, issueInputBuilder);
         }
 
         if (mappings.isFieldSelected(FIELD.PRIORITY)) {
             String jiraPriorityName = config.getPriorityByMSP(task.getPriority());
 
             if (!jiraPriorityName.isEmpty()) {
-                issue.setPriority(priorities.get(jiraPriorityName));
+                issueInputBuilder.setPriority(priorities.get(jiraPriorityName));
             }
         }
 
-        if (component != null) {
+/*        if (component != null) {
             issue.setComponents(new RemoteComponent[]{component});
-        }
+        }*/
 
-        return issue;
+        return issueInputBuilder.build();
     }
 
-    private void setAssignee(GTask task, RemoteIssue issue) {
+    private void setAssignee(GTask task, IssueInputBuilder issue) {
         GUser ass = task.getAssignee();
 
         if ((ass != null) && (ass.getLoginName() != null)) {
-            issue.setAssignee(ass.getLoginName());
+            issue.setAssigneeName(ass.getLoginName());
         }
     }
 
@@ -208,8 +206,8 @@ public class JiraTaskConverter {
 
     public void setPriorities(Iterable<Priority> jiraPriorities) {
         for (Priority jiraPriority : jiraPriorities) {
-            priorities.put(jiraPriority.getName(), String.valueOf(jiraPriority.getId()));
-            prioritiesOtherWay.put(String.valueOf(jiraPriority.getId()), jiraPriority.getName());
+            priorities.put(jiraPriority.getName(), jiraPriority);
+            prioritiesOtherWay.put(String.valueOf(jiraPriority.getId()), jiraPriority);
         }
     }
 

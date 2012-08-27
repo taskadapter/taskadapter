@@ -4,6 +4,7 @@ import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.domain.*;
+import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClient;
 import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClientFactory;
 import com.atlassian.jira.rest.client.internal.json.CommonIssueJsonParser;
@@ -179,9 +180,9 @@ public class JiraTest {
         RemoteVersion[] versions = {};
         RemoteComponent[] components = {};
         JiraTaskConverter converter = new JiraTaskConverter(config);
-        RemoteIssue issue = converter.convertToJiraIssue(versions, components, task);
+        IssueInput issue = converter.convertToJiraIssue(versions, components, task);
         //priority must be null if we don't convert priority field
-        Assert.assertNull(issue.getPriority());
+        Assert.assertNull(issue.getField("priority").getValue());
 
         //restore old mapping object for priority field
         applyStore(config, FIELD.PRIORITY, mapping);
@@ -210,8 +211,8 @@ public class JiraTest {
             config.getFieldMappings().setMapping(FIELD.PRIORITY, true, null);
 
             GTask task = null;//converter.convertToGenericTask(issue);
-            RemoteIssue newIssue = converter.convertToJiraIssue(versions, components, task);
-            Assert.assertEquals(issue.getPriority(), newIssue.getPriority());
+            IssueInput newIssue = converter.convertToJiraIssue(versions, components, task);
+            Assert.assertEquals(issue.getPriority(), newIssue.getField("priority").getValue());
 
             //restore old mapping object for priority field
             applyStore(config, FIELD.PRIORITY, mapping);
@@ -271,9 +272,9 @@ public class JiraTest {
 
             RemoteVersion[] versions = {};
             RemoteComponent[] components = {};
-            RemoteIssue issue = converter.convertToJiraIssue(versions, components, task);
+            IssueInput issue = converter.convertToJiraIssue(versions, components, task);
             //priority must be default issue type if we set the field to null
-            Assert.assertEquals(config.getDefaultTaskType(), converter.getIssueTypeNameById(issue.getType()));
+            Assert.assertEquals(config.getDefaultTaskType(), converter.getIssueTypeNameById(issue.getField("issueType").getId()));
 
             //restore old mapping object for issue type field
             applyStore(config, FIELD.TASK_TYPE, mapping);
@@ -294,9 +295,9 @@ public class JiraTest {
 
             RemoteVersion[] versions = {};
             RemoteComponent[] components = {};
-            RemoteIssue issue = converter.convertToJiraIssue(versions, components, task);
+            IssueInput issue = converter.convertToJiraIssue(versions, components, task);
             //priority must be default issue type if we set the field to null
-            Assert.assertEquals(task.getType(), converter.getIssueTypeNameById(issue.getType()));
+            Assert.assertEquals(task.getType(), converter.getIssueTypeNameById(issue.getField("issueType").getId()));
 
             //restore old mapping object for issue type field
             applyStore(config, FIELD.TASK_TYPE, mapping);
