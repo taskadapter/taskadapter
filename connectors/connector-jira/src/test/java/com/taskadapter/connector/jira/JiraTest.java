@@ -50,6 +50,7 @@ public class JiraTest {
     private static JiraConfig config = new JiraConfig();
     private static WebServerInfo serverInfo;
     private static Properties properties = new Properties();
+    private static JiraConnection connection;
 
     private static class MappingStore {
         final boolean checked;
@@ -76,8 +77,12 @@ public class JiraTest {
                     properties.getProperty("password"));
             config.setServerInfo(serverInfo);
             config.setProjectKey(properties.getProperty("project.key"));
+
+            connection = JiraConnectionFactory.createConnection(config.getServerInfo());
         } catch (IOException e) {
             logger.error("error loading jira test properties. " + e.getMessage(), e);
+        } catch (URISyntaxException e) {
+            logger.error("error creating jira connector. " + e.getMessage(), e);
         }
     }
 
@@ -174,7 +179,6 @@ public class JiraTest {
         assertEquals(tasksQty, result.getResult().getCreatedTasksNumber());
         String remoteKey = result.getResult().getRemoteKey(id);
 
-        JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
         Issue loaded = connection.getIssueByKey(remoteKey);
         connection.deleteIssue(loaded.getKey(), false);
 
