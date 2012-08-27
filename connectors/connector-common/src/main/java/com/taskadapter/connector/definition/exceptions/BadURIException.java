@@ -8,7 +8,7 @@ import java.net.URISyntaxException;
  *
  */
 
-public class BadURIException  extends ConnectorException {
+public class BadURIException  extends BadConfigException {
     public BadURIException(URISyntaxException e) {
         super(e);
     }
