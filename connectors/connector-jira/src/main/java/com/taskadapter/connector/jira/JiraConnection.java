@@ -100,9 +100,9 @@ public class JiraConnection {
         //restClient.getIssueClient().updateIssue(issueToUpdate);
     }*/
 
-    public void deleteIssue(Issue issueToDelete, boolean deleteSubtasks) {
+//    public void deleteIssue(Issue issueToDelete, boolean deleteSubtasks) {
         //restClient.getIssueClient().deleteIssue(issueToDelete, deleteSubtasks);
-    }
+//    }
 
     // XXX maybe there could a method in the API for this?
     // need to build and check the latest API from here:
