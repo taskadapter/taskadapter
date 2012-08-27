@@ -1,6 +1,8 @@
-package com.taskadapter.connector.definition.exceptions;
+package com.taskadapter.connector.jira.exceptions;
 
 import java.net.URISyntaxException;
+
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 
 /**
  * Bad URI jira exception (REST protocol).
@@ -8,7 +10,7 @@ import java.net.URISyntaxException;
  *
  */
 
-public class BadURIException  extends BadConfigException {
+public class BadURIException  extends ConnectorException {
     public BadURIException(URISyntaxException e) {
         super(e);
     }

@@ -5,13 +5,13 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 
-import com.taskadapter.connector.definition.exceptions.BadURIException;
 import org.apache.axis.AxisFault;
 
 import com.atlassian.jira.rpc.soap.client.RemoteAuthenticationException;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.jira.exceptions.BadHostException;
+import com.taskadapter.connector.jira.exceptions.BadURIException;
 
 public final class JiraUtils {
     private final static String[] PREFIXES_TO_DELETE = new String[] {
