@@ -3,6 +3,7 @@ package com.taskadapter.connector.jira;
 import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
+import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.domain.*;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
@@ -19,13 +20,16 @@ import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.definition.TaskErrors;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
 import junit.framework.Assert;
 import org.joda.time.DateTime;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,6 +85,9 @@ public class JiraTest {
     public static void oneTimeSetUp() {
         logger.info("Running Jira tests using: " + properties.getProperty("host"));
     }
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     // TODO this is identical to Redmine's test. maybe move to a common place?
     @Test
@@ -151,6 +158,30 @@ public class JiraTest {
         GTask loadedAgain = connector.loadTaskByKey(serverInfo, remoteKey);
         assertEquals(NEW_SUMMARY, loadedAgain.getSummary());
 
+    }
+
+    @Test
+    public void testDeleteIssue() throws ConnectorException, MalformedURLException, URISyntaxException, RemoteException {
+        int tasksQty = 1;
+        GTask task = TestUtils.generateTask();
+
+        Integer id = task.getId();
+
+        // CREATE
+        JiraConnector connector = new JiraConnector(config);
+        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(Arrays.asList(task), null);
+        assertTrue(result.getErrors().getErrors().isEmpty());
+        assertEquals(tasksQty, result.getResult().getCreatedTasksNumber());
+        String remoteKey = result.getResult().getRemoteKey(id);
+
+        JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
+        Issue loaded = connection.getIssueByKey(remoteKey);
+        connection.deleteIssue(loaded.getKey(), false);
+
+        thrown.expect(RestClientException.class);
+        thrown.expectMessage("Issue Does Not Exist");
+
+        Issue loadedAgain = connection.getIssueByKey(remoteKey);
     }
 
     @Test

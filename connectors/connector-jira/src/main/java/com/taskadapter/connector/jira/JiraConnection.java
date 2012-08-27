@@ -25,7 +25,6 @@ public class JiraConnection {
 
     private JiraRestClient restClient;
 
-
     JiraConnection(JiraSoapService jiraSoapService, String authToken, JiraRestClient restClient) {
         this.jiraSoapService = jiraSoapService;
         this.authToken = authToken;
@@ -99,9 +98,13 @@ public class JiraConnection {
         //restClient.getIssueClient().updateIssue(issueToUpdate);
     }*/
 
-//    public void deleteIssue(Issue issueToDelete, boolean deleteSubtasks) {
-        //restClient.getIssueClient().deleteIssue(issueToDelete, deleteSubtasks);
-//    }
+    public void deleteIssue(String issueKey, boolean deleteSubtasks) {
+        restClient.getIssueClient().deleteIssue(issueKey, deleteSubtasks);
+    }
+
+    public void deleteIssue(Issue issueToDelete, boolean deleteSubtasks) {
+        restClient.getIssueClient().deleteIssue(issueToDelete, deleteSubtasks);
+    }
 
     // XXX maybe there could a method in the API for this?
     // need to build and check the latest API from here:
