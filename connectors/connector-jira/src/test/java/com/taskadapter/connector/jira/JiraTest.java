@@ -345,14 +345,13 @@ public class JiraTest {
 
     @Test
     public void testGetIssuesByProject() throws Exception {
+        int tasksQty = 2;
+        List<GTask> tasks = TestUtils.generateTasks(tasksQty);
         JiraConnector connector = new JiraConnector(config);
-        JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
-/*        Iterable<Issue> issues = connection.getIssuesByProject(config.getProjectKey());
+        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(tasks, null);
 
-        for (Issue issue : issues) {
-            System.out.println(issue);
-        }*/
-
+        Iterable<Issue> issues = connection.getIssuesByProject(config.getProjectKey());
+        Assert.assertNotSame(0, Iterables.size(issues));
     }
 
 }

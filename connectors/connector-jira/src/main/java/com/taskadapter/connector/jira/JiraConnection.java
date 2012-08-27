@@ -8,6 +8,7 @@ import com.atlassian.jira.rest.client.internal.json.CommonIssueJsonParser;
 import com.atlassian.jira.rest.client.internal.json.IssueJsonParser;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.atlassian.jira.rpc.soap.client.*;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import javax.naming.directory.SearchControls;
@@ -40,15 +41,11 @@ public class JiraConnection {
         return Lists.newArrayList(result.getIssues());
     }
 
-/*    public List<Issue> getIssuesByProject(String projectKey) {
-        SearchResult result = restClient.getSearchClient().searchJql("project=" + projectKey, null);
+    public Iterable<Issue> getIssuesByProject(String projectKey) {
+        SearchResult<Issue> result = restClient.getSearchClient().searchJql("project = " + projectKey, "\u002A"+"all", null, new CommonIssueJsonParser());
 
-        Collection issueList = new ArrayList<Issue>();
-        for (BasicIssue issue : result.getIssues()) {
-            issueList.add(restClient.getIssueClient().getIssue(issue.getKey(), null));
-        }
-        return issueList;
-    }*/
+        return result.getIssues();
+    }
 
 /*    public RemoteIssue getIssueByKey(String issueKey) throws RemoteException {
         RemoteIssue[] issuesFromJqlSearch = jiraSoapService.getIssuesFromJqlSearch(authToken, "key=\"" + issueKey + "\"", 1);
