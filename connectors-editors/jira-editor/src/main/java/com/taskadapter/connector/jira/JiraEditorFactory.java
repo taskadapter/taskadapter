@@ -3,6 +3,7 @@ package com.taskadapter.connector.jira;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.jira.exceptions.BadHostException;
+import com.taskadapter.connector.jira.exceptions.BadURIException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.data.Messages;
@@ -40,6 +41,8 @@ public class JiraEditorFactory implements PluginEditorFactory {
                 return MESSAGES.get("errors.unsupported.remoteId");
             else if ("saveRelations".equals(uop.getMessage()))
                 return MESSAGES.get("errors.unsupported.relations");
+        } else if (e instanceof BadURIException) {
+            return MESSAGES.get("errors.badURI");
         }
         return null;
     }
