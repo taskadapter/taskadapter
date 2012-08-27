@@ -37,8 +37,7 @@ public class JiraLoaders {
         } catch (MalformedURLException e) {
             throw JiraUtils.convertException(e);
         } catch (URISyntaxException e) {
-            //TODO modify exception processing
-            //throw JiraUtils.convertException(e);
+            throw JiraUtils.convertException(e);
         }
 
         return result;
@@ -80,7 +79,7 @@ public class JiraLoaders {
         } catch (MalformedURLException e) {
             throw JiraUtils.convertException(e);
         } catch (URISyntaxException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            throw JiraUtils.convertException(e);
         }
         return gProject;
 
