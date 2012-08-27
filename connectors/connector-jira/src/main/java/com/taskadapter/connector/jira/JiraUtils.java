@@ -47,6 +47,4 @@ public final class JiraUtils {
     public static ConnectorException convertException(URISyntaxException e) {
         return new BadURIException(e);
     }
-
-
 }

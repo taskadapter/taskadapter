@@ -5,6 +5,7 @@ import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.domain.*;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
+import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
 import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClient;
 import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClientFactory;
 import com.atlassian.jira.rest.client.internal.json.CommonIssueJsonParser;
@@ -22,6 +23,7 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
 import junit.framework.Assert;
+import org.joda.time.DateTime;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -153,14 +155,12 @@ public class JiraTest {
 
     @Test
     public void nullPriorityStaysNullAfterConversion() throws MalformedURLException, RemoteException {
-        RemoteIssue issue = new RemoteIssue();
-        issue.setId("123");
-        issue.setKey("key");
-        issue.setSummary("summary text");
-        issue.setPriority(null);
+        IssueInputBuilder issueInputBuilder = new IssueInputBuilder(config.getProjectKey(), new Long(1));
+        issueInputBuilder.setSummary("summary text");
+        issueInputBuilder.setPriority(null);
 
         JiraTaskConverter converter = new JiraTaskConverter(config);
-        GTask task = null;//converter.convertToGenericTask(issue);
+        GTask task = null;//converter.convertToGenericTask(issueInputBuilder.build());
         //priority must be null cause we need to save original issue priority value
         Assert.assertNull(task.getPriority());
     }

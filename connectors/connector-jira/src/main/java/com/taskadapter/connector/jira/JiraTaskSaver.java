@@ -86,11 +86,7 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
 
     @Override
     protected void updateTask(String taskId, Object nativeTask) throws ConnectorException {
-        try {
-            connection.updateIssue(taskId, (RemoteIssue) nativeTask);
-        } catch (RemoteException e) {
-            throw JiraUtils.convertException(e);
-        }
+        connection.updateIssue(taskId, (IssueInput) nativeTask);
     }
 
     @Override

@@ -91,9 +91,8 @@ public class JiraConnection {
         return restClient.getIssueClient().createIssue(issueToCreate, null);
     }
 
-    public RemoteIssue updateIssue(String issueKey, RemoteIssue rmIssueToUpdate) throws RemoteException {
-        RemoteFieldValue[] fields = getFields(rmIssueToUpdate);
-        return jiraSoapService.updateIssue(authToken, issueKey, fields);
+    public void updateIssue(String issueKey, IssueInput issueToUpdate) {
+        restClient.getIssueClient().updateIssue(issueKey, issueToUpdate, null);
     }
 
 /*    public void updateIssue(Issue issueToUpdate) {

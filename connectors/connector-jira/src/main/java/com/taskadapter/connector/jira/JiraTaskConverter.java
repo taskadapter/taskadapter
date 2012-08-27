@@ -172,10 +172,10 @@ public class JiraTaskConverter {
         task.setSummary(issue.getSummary());
         task.setDescription(issue.getDescription());
 
-/*        DateTime dueDate = issue.getDueDate();
+        DateTime dueDate = issue.getDueDate();
         if (dueDate != null) {
             task.setDueDate(dueDate.toDate());
-        }*/
+        }
 
         // TODO set these fields as well
         // task.setEstimatedHours(issue.getEstimatedHours());
