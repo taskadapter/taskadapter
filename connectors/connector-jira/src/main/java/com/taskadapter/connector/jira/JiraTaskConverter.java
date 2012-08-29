@@ -19,7 +19,7 @@ public class JiraTaskConverter {
 
     private final Logger logger = LoggerFactory.getLogger(JiraTaskConverter.class);
 
-    // XXX this is hardcoded!! https://www.hostedredmine.com/issues/18074
+    // TODO this is hardcoded!! https://www.hostedredmine.com/issues/18074
     private static final String ISSUE_TYPE_ID = "1";
 
     private final JiraConfig config;

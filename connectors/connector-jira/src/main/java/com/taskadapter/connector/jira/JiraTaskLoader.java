@@ -45,7 +45,7 @@ public class JiraTaskLoader {
         List<GTask> rows;
 
         try {
-            List<Issue> issues = (List<Issue>) connection.getIssuesFromFilter(config.getQueryString());
+            List<Issue> issues = connection.getIssuesFromFilter(config.getQueryString());
 
             rows = converter.convertToGenericTaskList(issues);
             JiraUserConverter userConverter = new JiraUserConverter(connection);
@@ -54,10 +54,6 @@ public class JiraTaskLoader {
             throw JiraUtils.convertException(e);
         }
         return rows;
-    }
-
-    private String extractQueryId(JiraConfig connectorConfig) {
-        return String.valueOf(connectorConfig.getQueryId());
     }
 
     GTask loadTask(JiraConfig config, String taskKey) {

@@ -185,7 +185,7 @@ public class JiraTest {
         thrown.expect(RestClientException.class);
         thrown.expectMessage("Issue Does Not Exist");
 
-        Issue loadedAgain = connection.getIssueByKey(remoteKey);
+        connection.getIssueByKey(remoteKey);
     }
 
     @Test
