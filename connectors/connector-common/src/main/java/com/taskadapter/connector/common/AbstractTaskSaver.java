@@ -117,7 +117,6 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
 
     /**
      * @return the newly created task's KEY
-     * @throws ConnectorException 
      */
     protected String submitTask(GTask task, Object nativeTask) throws ConnectorException {
         String newTaskKey;
