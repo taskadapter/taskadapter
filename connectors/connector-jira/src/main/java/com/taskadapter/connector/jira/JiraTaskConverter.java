@@ -6,6 +6,7 @@ import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
 import com.atlassian.jira.rpc.soap.client.*;
 import com.google.common.base.Strings;
 import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
@@ -17,7 +18,7 @@ import java.util.*;
 
 public class JiraTaskConverter {
 
-    private final Logger logger = LoggerFactory.getLogger(JiraTaskConverter.class);
+    private static final Logger logger = LoggerFactory.getLogger(JiraTaskConverter.class);
 
     // TODO this is hardcoded!! https://www.hostedredmine.com/issues/18074
     private static final String ISSUE_TYPE_ID = "1";
@@ -188,6 +189,8 @@ public class JiraTaskConverter {
             task.setPriority(priorityValue);
         }
 
+        processRelations(issue, task);
+
         return task;
     }
 
@@ -248,4 +251,18 @@ public class JiraTaskConverter {
 
         return resTypeName;
     }
+
+    private static void processRelations(Issue issue, GTask genericTask) {
+        Iterable<IssueLink> links = issue.getIssueLinks();
+        for (IssueLink link : links) {
+            if (link.getIssueLinkType().getName().toUpperCase().equals("BLOCKS") &&
+                    link.getIssueLinkType().getDirection().name().toUpperCase().equals("OUTBOUND")) {
+                    GRelation r = new GRelation(issue.getKey(), link.getTargetIssueKey(),GRelation.TYPE.precedes);
+                    genericTask.getRelations().add(r);
+            } else {
+                logger.error("relation type is not supported: " + link.getIssueLinkType());
+            }
+        }
+    }
+
 }

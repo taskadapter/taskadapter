@@ -21,6 +21,7 @@ import com.taskadapter.connector.definition.TaskErrors;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
@@ -352,6 +353,30 @@ public class JiraTest {
 
         Iterable<Issue> issues = connection.getIssuesByProject(config.getProjectKey());
         Assert.assertNotSame(0, Iterables.size(issues));
+    }
+
+    @Test
+    public void testLinkIssue() throws ConnectorException {
+        config.setSaveIssueRelations(true);
+        JiraConnector connector = new JiraConnector(config);
+        List<GTask> list = new ArrayList<GTask>();
+
+        GTask task1 = TestUtils.generateTask();
+        task1.setId(1);
+        task1.setSummary("generictask" + Calendar.getInstance().getTimeInMillis());
+
+        GTask task2 = TestUtils.generateTask();
+        task2.setId(2);
+
+        task1.getRelations().add(new GRelation(task1.getId().toString(), task2.getId().toString(), GRelation.TYPE.precedes));
+
+        list.add(task1);
+        list.add(task2);
+
+        List<GTask> loadedList = TestUtils.saveAndLoadList(connector, list);
+        List<Issue> issues = connection.getIssuesBySummary(task1.getSummary());
+
+        Assert.assertEquals(1, Iterables.size(issues.get(0).getIssueLinks()));
     }
 
 }

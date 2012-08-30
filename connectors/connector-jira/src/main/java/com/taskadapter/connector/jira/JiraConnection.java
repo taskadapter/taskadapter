@@ -4,6 +4,7 @@ import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.domain.*;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
+import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.internal.json.CommonIssueJsonParser;
 import com.atlassian.jira.rest.client.internal.json.IssueJsonParser;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
@@ -39,6 +40,10 @@ public class JiraConnection {
     public List<Issue> getIssuesFromFilter(String filterString) {
         SearchResult<Issue> result = restClient.getSearchClient().searchJql(filterString, "\u002A"+"all", null, new CommonIssueJsonParser());
         return Lists.newArrayList(result.getIssues());
+    }
+
+    public List<Issue> getIssuesBySummary(String summary) {
+        return getIssuesFromFilter("summary~\"" + summary + "\"");
     }
 
     public Iterable<Issue> getIssuesByProject(String projectKey) {
@@ -140,6 +145,17 @@ public class JiraConnection {
 
     public Project getProject(String key) {
         return restClient.getProjectClient().getProject(key, null);
+    }
+
+    public void linkIssue(String issueKey, String targetIssueKey, String linkType) {
+        String linkTypeName = null;
+        if (linkType.toUpperCase().equals("PRECEDES")) {
+            linkTypeName = "Blocks";
+        }
+
+        if (linkTypeName != null) {
+            restClient.getIssueClient().linkIssue(new LinkIssuesInput(issueKey, targetIssueKey, linkTypeName), null);
+        }
     }
 
     public RemoteVersion[] getVersions(String projectKey) throws RemoteException {

@@ -91,13 +91,12 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
 
     @Override
     protected void saveRelations(List<GRelation> relations) throws UnsupportedConnectorOperation {
-        throw new UnsupportedConnectorOperation("saveRelations");
-        /* SEE this text in AbstractTaskSaver:
-
-          // XXX get rid of the conversion, it won't work with Jira,
-          // which has String Keys like "TEST-12"
-          Integer relatedTaskId = Integer.parseInt(oldRelation.getRelatedTaskKey());
-          */
+        for (GRelation gRelation : relations) {
+            String taskKey = gRelation.getTaskKey();
+            String relatedTaskKey = gRelation.getRelatedTaskKey();
+            connection.linkIssue(taskKey, relatedTaskKey, gRelation.getType().toString());
+        }
+//        throw new UnsupportedConnectorOperation("saveRelations");
     }
 
 }
