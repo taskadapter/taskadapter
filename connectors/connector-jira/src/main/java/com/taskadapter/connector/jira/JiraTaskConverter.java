@@ -5,6 +5,8 @@ import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
 import com.atlassian.jira.rpc.soap.client.*;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
@@ -55,20 +57,24 @@ public class JiraTaskConverter {
             issueInputBuilder.setDescription(task.getDescription());
         }
 
-/*        RemoteVersion affectedVersion = getVersion(versions, config.getAffectedVersion());
-        RemoteVersion fixForVersion = getVersion(versions, config.getFixForVersion());
-        RemoteCustomFieldValue[] customValues = getCustomFieldsForIssue(config.getCustomFields());
-        RemoteComponent component = getComponent(components, config.getComponent());
+        Version affectedVersion = getVersion(versions, config.getAffectedVersion());
+        Version fixForVersion = getVersion(versions, config.getFixForVersion());
+        //RemoteCustomFieldValue[] customValues = getCustomFieldsForIssue(config.getCustomFields());
+        BasicComponent component = getComponent(components, config.getComponent());
 
         if (affectedVersion != null) {
-            issue.setAffectsVersions(new RemoteVersion[]{affectedVersion});
+            issueInputBuilder.setAffectedVersions(ImmutableList.of(affectedVersion));
         }
 
         if (fixForVersion != null) {
-            issue.setFixVersions(new RemoteVersion[]{fixForVersion});
+            issueInputBuilder.setFixVersions(ImmutableList.of(fixForVersion));
         }
 
-        if (customValues.length != 0) {
+        if (component != null) {
+            issueInputBuilder.setComponents(ImmutableList.of(component));
+        }
+
+/*        if (customValues.length != 0) {
             issue.setCustomFieldValues(customValues);
         }*/
 
@@ -90,10 +96,6 @@ public class JiraTaskConverter {
             }
         }
 
-/*        if (component != null) {
-            issue.setComponents(new RemoteComponent[]{component});
-        }*/
-
         return issueInputBuilder.build();
     }
 
@@ -105,8 +107,8 @@ public class JiraTaskConverter {
         }
     }
 
-    private static RemoteVersion getVersion(RemoteVersion[] versions, String versionName) {
-        for (RemoteVersion v : versions) {
+    private static Version getVersion(Iterable<Version> versions, String versionName) {
+        for (Version v : versions) {
             if (v.getName().equals(versionName)) {
                 return v;
             }
@@ -114,8 +116,8 @@ public class JiraTaskConverter {
         return null;
     }
 
-    private static RemoteComponent getComponent(RemoteComponent[] objects, String name) {
-        for (RemoteComponent o : objects) {
+    private static BasicComponent getComponent(Iterable<BasicComponent> objects, String name) {
+        for (BasicComponent o : objects) {
             if (o.getName().equals(name)) {
                 return o;
             }
