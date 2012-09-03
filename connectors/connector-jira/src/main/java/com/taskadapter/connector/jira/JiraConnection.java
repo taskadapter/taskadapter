@@ -158,12 +158,24 @@ public class JiraConnection {
         }
     }
 
-    public RemoteVersion[] getVersions(String projectKey) throws RemoteException {
-        return jiraSoapService.getVersions(authToken, projectKey);
+    public Iterable<Version> getVersions(String projectKey) throws RemoteException {
+        Project project = getProject(projectKey);
+        if (project != null) {
+            return project.getVersions();
+        }
+        else {
+            return null;
+        }
     }
 
-    public RemoteComponent[] getComponents(String projectKey) throws RemoteException {
-        return jiraSoapService.getComponents(authToken, projectKey);
+    public Iterable<BasicComponent> getComponents(String projectKey) throws RemoteException {
+        Project project = getProject(projectKey);
+        if (project != null) {
+            return project.getComponents();
+        }
+        else {
+            return null;
+        }
     }
 
     // This requires Admin privileges.
