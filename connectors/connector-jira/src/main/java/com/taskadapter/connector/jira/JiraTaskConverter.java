@@ -33,7 +33,7 @@ public class JiraTaskConverter {
         this.config = config;
     }
 
-    public IssueInput convertToJiraIssue(RemoteVersion[] versions, RemoteComponent[] components, GTask task) {
+    public IssueInput convertToJiraIssue(Iterable<Version> versions, Iterable<BasicComponent> components, GTask task) {
     	final Mappings mappings = config.getFieldMappings();
 
         String issueType = ISSUE_TYPE_ID;

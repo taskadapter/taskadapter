@@ -1,7 +1,9 @@
 package com.taskadapter.connector.jira;
 
+import com.atlassian.jira.rest.client.domain.BasicComponent;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueType;
+import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rpc.soap.client.*;
 import com.google.common.collect.Iterables;
 import com.taskadapter.connector.common.AbstractConnector;
@@ -70,10 +72,10 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
     public List<NamedKeyedObject> getComponents() throws ConnectorException {
         try {
             JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
-            RemoteComponent[] components = connection.getComponents(config.getProjectKey());
+            Iterable<BasicComponent> components = connection.getComponents(config.getProjectKey());
             List<NamedKeyedObject> list = new ArrayList<NamedKeyedObject>();
-            for (RemoteComponent c : components) {
-                list.add(new NamedKeyedObjectImpl(c.getId(), c.getName()));
+            for (BasicComponent c : components) {
+                list.add(new NamedKeyedObjectImpl(String.valueOf(c.getId()), c.getName()));
             }
             return list;
         } catch (RemoteException e) {
@@ -89,10 +91,10 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
     public List<NamedKeyedObject> getVersions() throws ConnectorException {
         try {
             JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
-            RemoteVersion[] objects = connection.getVersions(config.getProjectKey());
+            Iterable<Version> objects = connection.getVersions(config.getProjectKey());
             List<NamedKeyedObject> list = new ArrayList<NamedKeyedObject>();
-            for (RemoteVersion o : objects) {
-                list.add(new NamedKeyedObjectImpl(o.getId(), o.getName()));
+            for (Version o : objects) {
+                list.add(new NamedKeyedObjectImpl(String.valueOf(o.getId()), o.getName()));
             }
             return list;
         } catch (RemoteException e) {

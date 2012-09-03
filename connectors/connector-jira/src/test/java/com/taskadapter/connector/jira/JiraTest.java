@@ -213,8 +213,8 @@ public class JiraTest {
         MappingStore mapping = getStore(config, FIELD.PRIORITY);
         config.getFieldMappings().setMapping(FIELD.PRIORITY, false, null);
 
-        RemoteVersion[] versions = {};
-        RemoteComponent[] components = {};
+        Iterable<Version> versions = null;
+        Iterable<BasicComponent> components = null;
         JiraTaskConverter converter = new JiraTaskConverter(config);
         IssueInput issue = converter.convertToJiraIssue(versions, components, task);
         //priority must be null if we don't convert priority field
@@ -231,8 +231,8 @@ public class JiraTest {
         if (Iterables.size(priorities) == 0) {
             logger.info("Can't test priority field export - priority list is empty.");
         } else {
-            RemoteVersion[] versions = {};
-            RemoteComponent[] components = {};
+            Iterable<Version> versions = null;
+            Iterable<BasicComponent> components = null;
             JiraTaskConverter converter = new JiraTaskConverter(config);
 
             converter.setPriorities(priorities);
@@ -306,8 +306,8 @@ public class JiraTest {
             MappingStore mapping = getStore(config, FIELD.TASK_TYPE);
             config.getFieldMappings().setMapping(FIELD.TASK_TYPE, true, null);
 
-            RemoteVersion[] versions = {};
-            RemoteComponent[] components = {};
+            Iterable<Version> versions = null;
+            Iterable<BasicComponent> components = null;
             IssueInput issue = converter.convertToJiraIssue(versions, components, task);
             //priority must be default issue type if we set the field to null
             Assert.assertEquals(config.getDefaultTaskType(), converter.getIssueTypeNameById(issue.getField("issueType").getId()));
@@ -329,8 +329,8 @@ public class JiraTest {
             MappingStore mapping = getStore(config, FIELD.TASK_TYPE);
             config.getFieldMappings().setMapping(FIELD.TASK_TYPE, true, null);
 
-            RemoteVersion[] versions = {};
-            RemoteComponent[] components = {};
+            Iterable<Version> versions = null;
+            Iterable<BasicComponent> components = null;
             IssueInput issue = converter.convertToJiraIssue(versions, components, task);
             //priority must be default issue type if we set the field to null
             Assert.assertEquals(task.getType(), converter.getIssueTypeNameById(issue.getField("issueType").getId()));

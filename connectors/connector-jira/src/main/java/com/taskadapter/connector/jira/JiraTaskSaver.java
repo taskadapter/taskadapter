@@ -1,9 +1,6 @@
 package com.taskadapter.connector.jira;
 
-import com.atlassian.jira.rest.client.domain.BasicIssue;
-import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rest.client.domain.IssueType;
-import com.atlassian.jira.rest.client.domain.Priority;
+import com.atlassian.jira.rest.client.domain.*;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.atlassian.jira.rpc.soap.client.*;
 import com.taskadapter.connector.common.AbstractTaskSaver;
@@ -21,8 +18,8 @@ import java.util.List;
 public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
 
     private JiraConnection connection;
-    private RemoteVersion[] versions;
-    private RemoteComponent[] components;
+    private Iterable<Version> versions;
+    private Iterable<BasicComponent> components;
     private final JiraTaskConverter converter;
 
     public JiraTaskSaver(JiraConfig config) {
