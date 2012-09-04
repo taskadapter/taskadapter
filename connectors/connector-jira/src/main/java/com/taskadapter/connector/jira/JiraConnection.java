@@ -148,6 +148,7 @@ public class JiraConnection {
 
     // this is not available in Jira REST API at this moment (Sep 3, 2012).
     // see http://docs.atlassian.com/jira/REST/latest/#id127412
+    // feature request for Jira REST API: https://jira.atlassian.com/browse/JRA-22306
     public RemoteFilter[] getSavedFilters() throws RemoteException {
         return jiraSoapService.getSavedFilters(authToken);
     }
