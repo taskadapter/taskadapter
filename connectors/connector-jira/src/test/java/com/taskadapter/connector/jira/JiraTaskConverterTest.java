@@ -7,12 +7,10 @@ import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
-import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
 import com.google.common.collect.Iterables;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
-import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -76,9 +74,7 @@ public class JiraTaskConverterTest {
         JiraTaskConverter converter = getConverter(config);
 
         IssueInput newIssue = converter.convertToJiraIssue(versions, components, task);
-        FieldInput actualPriorityField = newIssue.getField("priority");
-        ComplexIssueInputFieldValue value = (ComplexIssueInputFieldValue) actualPriorityField.getValue();
-        String actualPriorityId = (String) value.getValuesMap().get("id");
+        String actualPriorityId = getId(newIssue, "priority");
         assertEquals(priorityCritical.getId().toString(), actualPriorityId);
     }
 
@@ -91,6 +87,54 @@ public class JiraTaskConverterTest {
         JiraTaskConverter converter = getConverter(config);
         IssueInput issue = converter.convertToJiraIssue(versions, components, task);
         assertNull(issue.getField("priority"));
+    }
+
+    @Test
+    public void issueTypeExported() throws MalformedURLException, RemoteException, URISyntaxException {
+        GTask task = new GTask();
+        task.setSummary("checking issueType");
+
+        JiraTaskConverter converter = getConverter(config);
+        IssueType requiredIssueType = findIssueType(issueTypeList, "Task");
+        task.setType("Task");
+
+        config.getFieldMappings().setMapping(GTaskDescriptor.FIELD.TASK_TYPE, true, null);
+
+        IssueInput issue = converter.convertToJiraIssue(versions, components, task);
+        assertEquals(requiredIssueType.getId().toString(), getId(issue, "issuetype"));
+    }
+
+    @Test
+    public void defaultIssueTypeSetWhenNoneProvided() throws MalformedURLException, RemoteException, URISyntaxException {
+        GTask task = new GTask();
+        task.setType(null);
+        config.getFieldMappings().setMapping(GTaskDescriptor.FIELD.TASK_TYPE, true, null);
+        JiraTaskConverter converter = getConverter(config);
+
+        IssueInput issue = converter.convertToJiraIssue(versions, components, task);
+        // must be default issue type if we set the field to null
+        assertEquals(findDefaultIssueTypeId(), getId(issue, "issuetype"));
+    }
+
+    private String getId(IssueInput issue, String fieldName) {
+        FieldInput actualPriorityField = issue.getField(fieldName);
+        ComplexIssueInputFieldValue value = (ComplexIssueInputFieldValue) actualPriorityField.getValue();
+        return (String) value.getValuesMap().get("id");
+    }
+
+    private String findDefaultIssueTypeId() {
+        String defaultTaskTypeName = config.getDefaultTaskType();
+        IssueType issueType = findIssueType(issueTypeList, defaultTaskTypeName);
+        return issueType.getId().toString();
+    }
+
+    private IssueType findIssueType(Iterable<IssueType> issueTypes, String type) {
+        for (IssueType issueType : issueTypes) {
+            if (issueType.getName().equals(type)) {
+                return issueType;
+            }
+        }
+        throw new RuntimeException("Not found: " + type);
     }
 
     private JiraTaskConverter getConverter(JiraConfig config) {
