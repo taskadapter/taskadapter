@@ -30,7 +30,7 @@ public class JiraUserConverter {
         String loginName = task.getAssignee().getLoginName();
         String assigneeFullname = cachedJiraUsers.get(loginName);
         if (assigneeFullname == null || assigneeFullname.length() == 0) {
-            assigneeFullname = connection.getUser(loginName).getFullname();
+            assigneeFullname = connection.getUser(loginName).getDisplayName();
             cachedJiraUsers.put(loginName, assigneeFullname);
         }
         task.getAssignee().setDisplayName(assigneeFullname);

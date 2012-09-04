@@ -35,10 +35,6 @@ public class JiraConnection {
         this.restClient = restClient;
     }
 
-/*    public RemoteIssue[] getIssuesFromFilter(String queryId) throws RemoteException {
-        return jiraSoapService.getIssuesFromFilter(authToken, queryId);
-    }*/
-
     public List<Issue> getIssuesFromFilter(String filterString) {
         SearchResult<Issue> result = restClient.getSearchClient().searchJql(filterString, "\u002A"+"all", null, new CommonIssueJsonParser());
         return Lists.newArrayList(result.getIssues());
@@ -54,41 +50,17 @@ public class JiraConnection {
         return result.getIssues();
     }
 
-/*    public RemoteIssue getIssueByKey(String issueKey) throws RemoteException {
-        RemoteIssue[] issuesFromJqlSearch = jiraSoapService.getIssuesFromJqlSearch(authToken, "key=\"" + issueKey + "\"", 1);
-        if (issuesFromJqlSearch.length == 0) {
-            throw new RemoteException("Issue with ID not found");
-        }
-        return issuesFromJqlSearch[0];
-    }*/
-
     public Issue getIssueByKey(String issueKey) {
         return restClient.getIssueClient().getIssue(issueKey, null);
     }
-
-/*    public RemotePriority[] getPriorities() throws RemoteException {
-        return jiraSoapService.getPriorities(authToken);
-    }*/
 
     public Iterable<Priority> getPriorities() {
         return restClient.getMetadataClient().getPriorities(null);
     }
 
-/*    public RemoteIssueType[] getIssueTypeList(String projectName) throws RemoteException {
-        return jiraSoapService.getIssueTypesForProject(authToken, getProjectOld(projectName).getId());
-    }*/
-
     public Iterable<IssueType> getIssueTypeList() {
         return restClient.getMetadataClient().getIssueTypes(null);
     }
-
-/*    public RemoteIssue[] get1IssueFromJqlSearch(String searchQuery) throws RemoteException {
-        return jiraSoapService.getIssuesFromJqlSearch(authToken, searchQuery, 1);
-    }*/
-
-/*    public Issue createIssue(Issue rmIssueToCreate) throws RemoteException {
-        return jiraSoapService.createIssue(authToken, null);
-    }*/
 
     public BasicIssue createIssue(IssueInput issueToCreate) {
         return restClient.getIssueClient().createIssue(issueToCreate, null);
@@ -97,10 +69,6 @@ public class JiraConnection {
     public void updateIssue(String issueKey, IssueInput issueToUpdate) {
         restClient.getIssueClient().updateIssue(issueKey, issueToUpdate, null);
     }
-
-/*    public void updateIssue(Issue issueToUpdate) {
-        //restClient.getIssueClient().updateIssue(issueToUpdate);
-    }*/
 
     public void deleteIssue(String issueKey, boolean deleteSubtasks) {
         restClient.getIssueClient().deleteIssue(issueKey, deleteSubtasks);
@@ -133,17 +101,9 @@ public class JiraConnection {
         return formatter.format(c.getTime());
     }
 
-/*    public RemoteProject[] getProjectsOld() throws RemoteException {
-        return jiraSoapService.getProjectsNoSchemes(authToken);
-    }*/
-
     public Iterable<BasicProject> getProjects() {
         return restClient.getProjectClient().getAllProjects(null);
     }
-
-/*    public RemoteProject getProjectOld(String key) throws RemoteException {
-        return jiraSoapService.getProjectByKey(authToken, key);
-    }*/
 
     public Project getProject(String key) {
         return restClient.getProjectClient().getProject(key, null);
@@ -175,8 +135,7 @@ public class JiraConnection {
         Project project = getProject(projectKey);
         if (project != null) {
             return project.getComponents();
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -191,7 +150,7 @@ public class JiraConnection {
         return jiraSoapService.getSavedFilters(authToken);
     }
 
-    public RemoteUser getUser(String userName) throws RemoteException {
-        return jiraSoapService.getUser(authToken, userName);
+    public User getUser(String userName) throws RemoteException {
+        return restClient.getUserClient().getUser(userName, null);
     }
 }

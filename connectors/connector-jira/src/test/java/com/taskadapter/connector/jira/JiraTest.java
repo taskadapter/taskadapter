@@ -3,6 +3,7 @@ package com.taskadapter.connector.jira;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueLink;
+import com.atlassian.jira.rest.client.domain.User;
 import com.atlassian.jira.rpc.soap.client.RemoteUser;
 import com.google.common.collect.Iterables;
 import com.taskadapter.connector.common.TestUtils;
@@ -77,7 +78,7 @@ public class JiraTest {
     public void assigneeHasFullName() throws Exception {
         JiraConnector connector = new JiraConnector(config);
         JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
-        RemoteUser jiraUser = connection.getUser(config.getServerInfo().getUserName());
+        User jiraUser = connection.getUser(config.getServerInfo().getUserName());
 
         List<GTask> tasks = TestUtils.generateTasks(1);
         tasks.get(0).setAssignee(new GUser(jiraUser.getName()));
@@ -93,7 +94,7 @@ public class JiraTest {
         for (Map.Entry<Integer, String> entry : remoteKeyById.entrySet()) {
             GTask loaded = connector.loadTaskByKey(serverInfo, entry.getValue());
             assertEquals(jiraUser.getName(), loaded.getAssignee().getLoginName());
-            assertEquals(jiraUser.getFullname(), loaded.getAssignee().getDisplayName());
+            assertEquals(jiraUser.getDisplayName(), loaded.getAssignee().getDisplayName());
         }
     }
 
