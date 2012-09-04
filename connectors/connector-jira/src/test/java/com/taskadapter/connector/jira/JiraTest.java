@@ -2,6 +2,7 @@ package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.IssueLink;
 import com.atlassian.jira.rpc.soap.client.RemoteUser;
 import com.google.common.collect.Iterables;
 import com.taskadapter.connector.common.TestUtils;
@@ -161,17 +162,18 @@ public class JiraTest {
     }
 
     @Test
-    public void testLinkIssue() throws ConnectorException {
+    public void twoIssuesLinked() throws ConnectorException {
         config.setSaveIssueRelations(true);
         JiraConnector connector = new JiraConnector(config);
         List<GTask> list = new ArrayList<GTask>();
 
         GTask task1 = TestUtils.generateTask();
         task1.setId(1);
-        task1.setSummary("generictask" + Calendar.getInstance().getTimeInMillis());
+        task1.setSummary("task 1 " + Calendar.getInstance().getTimeInMillis());
 
         GTask task2 = TestUtils.generateTask();
         task2.setId(2);
+        task2.setSummary("task 2 " + Calendar.getInstance().getTimeInMillis());
 
         task1.getRelations().add(new GRelation(task1.getId().toString(), task2.getId().toString(), GRelation.TYPE.precedes));
 
@@ -180,8 +182,13 @@ public class JiraTest {
 
         List<GTask> loadedList = TestUtils.saveAndLoadList(connector, list);
         List<Issue> issues = connection.getIssuesBySummary(task1.getSummary());
+        Issue issue2 = connection.getIssuesBySummary(task2.getSummary()).get(0);
 
-        Assert.assertEquals(1, Iterables.size(issues.get(0).getIssueLinks()));
+        Iterable<IssueLink> links = issues.get(0).getIssueLinks();
+        assertEquals(1, Iterables.size(links));
+        IssueLink link = links.iterator().next();
+        String targetIssueKey = link.getTargetIssueKey();
+        assertEquals(issue2.getKey(), targetIssueKey);
     }
 
 }

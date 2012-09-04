@@ -36,7 +36,7 @@ public class JiraTaskConverter {
     }
 
     public IssueInput convertToJiraIssue(Iterable<Version> versions, Iterable<BasicComponent> components, GTask task) {
-    	final Mappings mappings = config.getFieldMappings();
+        final Mappings mappings = config.getFieldMappings();
 
         String issueType = ISSUE_TYPE_ID;
         if (mappings.isFieldSelected(FIELD.TASK_TYPE)) {
@@ -239,32 +239,24 @@ public class JiraTaskConverter {
         return resTypeId;
     }
 
-    public String getIssueTypeNameById(String issueTypeId) {
-        String resTypeName = null;
-
-        if (issueTypeList != null) {
-            for (IssueType anIssueTypeList : issueTypeList) {
-                if (anIssueTypeList.getId().equals(issueTypeId)) {
-                    resTypeName = anIssueTypeList.getName();
-                    break;
-                }
-            }
-        }
-
-        return resTypeName;
-    }
-
     private static void processRelations(Issue issue, GTask genericTask) {
         Iterable<IssueLink> links = issue.getIssueLinks();
         for (IssueLink link : links) {
-            if (link.getIssueLinkType().getName().toUpperCase().equals("BLOCKS") &&
-                    link.getIssueLinkType().getDirection().name().toUpperCase().equals("OUTBOUND")) {
-                    GRelation r = new GRelation(issue.getKey(), link.getTargetIssueKey(),GRelation.TYPE.precedes);
+            if (isOutbound(link)) {
+                String name = link.getIssueLinkType().getName();
+                if (name.equals(JiraConstants.getJiraLinkNameForPrecedes())) {
+                    GRelation r = new GRelation(issue.getKey(), link.getTargetIssueKey(), GRelation.TYPE.precedes);
                     genericTask.getRelations().add(r);
-            } else {
-                logger.error("relation type is not supported: " + link.getIssueLinkType());
+                } else {
+                    logger.error("relation type is not supported: " + link.getIssueLinkType());
+                }
             }
         }
+    }
+
+    // TODO use the Jira API methods I just added: isInbound, isOutbound
+    private static boolean isOutbound(IssueLink link) {
+        return link.getIssueLinkType().getDirection().name().toUpperCase().equals(IssueLinkType.Direction.OUTBOUND);
     }
 
 }

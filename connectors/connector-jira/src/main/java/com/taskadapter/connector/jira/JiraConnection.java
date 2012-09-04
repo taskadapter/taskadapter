@@ -11,6 +11,7 @@ import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.atlassian.jira.rpc.soap.client.*;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.taskadapter.model.GRelation;
 
 import javax.naming.directory.SearchControls;
 import java.rmi.RemoteException;
@@ -22,6 +23,7 @@ import java.util.List;
 
 public class JiraConnection {
     private static final String JIRA_DUE_DATE_FORMAT = "d/MMM/yy";
+
     private JiraSoapService jiraSoapService;
     private String authToken;
 
@@ -147,10 +149,11 @@ public class JiraConnection {
         return restClient.getProjectClient().getProject(key, null);
     }
 
-    public void linkIssue(String issueKey, String targetIssueKey, String linkType) {
+    public void linkIssue(String issueKey, String targetIssueKey, GRelation.TYPE linkType) {
         String linkTypeName = null;
-        if (linkType.toUpperCase().equals("PRECEDES")) {
-            linkTypeName = "Blocks";
+        // TODO http://www.hostedredmine.com/issues/99397
+        if (linkType.equals(GRelation.TYPE.precedes)) {
+            linkTypeName = JiraConstants.getJiraLinkNameForPrecedes();
         }
 
         if (linkTypeName != null) {

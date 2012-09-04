@@ -91,9 +91,7 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
         for (GRelation gRelation : relations) {
             String taskKey = gRelation.getTaskKey();
             String relatedTaskKey = gRelation.getRelatedTaskKey();
-            connection.linkIssue(taskKey, relatedTaskKey, gRelation.getType().toString());
+            connection.linkIssue(taskKey, relatedTaskKey, gRelation.getType());
         }
-//        throw new UnsupportedConnectorOperation("saveRelations");
     }
-
 }
