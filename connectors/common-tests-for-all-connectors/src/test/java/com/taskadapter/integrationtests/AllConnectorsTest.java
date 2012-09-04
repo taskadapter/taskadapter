@@ -30,11 +30,11 @@ public class AllConnectorsTest {
                 {"MSPConnector", new MSPConnector(new MSPConfig("mspxmlfile.tmp"))}
                 , {"RedmineConnector", new RedmineConnector(RedmineTestConfig.getRedmineTestConfig()),}
                 // TODO bring these connectors back!
-//				, { "JiraConnector", new JiraConnector(new JiraTest().getTestConfig() )}
-//				, { "GithubConnector", new GithubConnector(new GithubTest().getTestConfig() )}
+//				, { "JiraConnector", new JiraConnector(new JiraTest().createTestConfig() )}
+//				, { "GithubConnector", new GithubConnector(new GithubTest().createTestConfig() )}
 
                 // See bug http://www.hostedredmine.com/issues/39264
-//				, { "MantisConnector", new MantisConnector(new MantisTest().getTestConfig() ), new MantisTester()	}
+//				, { "MantisConnector", new MantisConnector(new MantisTest().createTestConfig() ), new MantisTester()	}
         });
     }
 

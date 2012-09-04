@@ -1,32 +1,19 @@
 package com.taskadapter.connector.jira;
 
-import com.atlassian.jira.rest.client.IssueRestClient;
-import com.atlassian.jira.rest.client.JiraRestClient;
-import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.domain.*;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
-import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClient;
-import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClientFactory;
-import com.atlassian.jira.rest.client.internal.json.CommonIssueJsonParser;
-import com.atlassian.jira.rest.client.internal.json.IssueJsonParser;
-import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
-import com.atlassian.jira.rpc.soap.client.*;
+import com.atlassian.jira.rpc.soap.client.RemoteUser;
 import com.google.common.collect.Iterables;
 import com.taskadapter.connector.common.TestUtils;
-import com.taskadapter.connector.definition.Mappings;
-import com.taskadapter.connector.definition.SyncResult;
-import com.taskadapter.connector.definition.TaskErrors;
-import com.taskadapter.connector.definition.TaskSaveResult;
-import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.*;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
 import junit.framework.Assert;
-import org.joda.time.DateTime;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,10 +21,7 @@ import org.junit.rules.ExpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import java.util.*;
@@ -47,10 +31,8 @@ import static org.junit.Assert.*;
 public class JiraTest {
     private static final Logger logger = LoggerFactory.getLogger(JiraTest.class);
 
-    private static final String TEST_PROPERTIES = "jira.properties";
-    private static JiraConfig config = new JiraConfig();
+    private static JiraConfig config;
     private static WebServerInfo serverInfo;
-    private static Properties properties = new Properties();
     private static JiraConnection connection;
 
     private static class MappingStore {
@@ -64,32 +46,16 @@ public class JiraTest {
         }
     }
 
-    static {
-        InputStream is = JiraTest.class.getClassLoader().getResourceAsStream(
-                TEST_PROPERTIES);
-        if (is == null) {
-            throw new RuntimeException("Can't find file " + TEST_PROPERTIES
-                    + " in classpath.");
-        }
-        try {
-            properties.load(is);
-            serverInfo = new WebServerInfo(properties.getProperty("host"),
-                    properties.getProperty("login"),
-                    properties.getProperty("password"));
-            config.setServerInfo(serverInfo);
-            config.setProjectKey(properties.getProperty("project.key"));
-
-            connection = JiraConnectionFactory.createConnection(config.getServerInfo());
-        } catch (IOException e) {
-            logger.error("error loading jira test properties. " + e.getMessage(), e);
-        } catch (URISyntaxException e) {
-            logger.error("error creating jira connector. " + e.getMessage(), e);
-        }
-    }
-
     @BeforeClass
     public static void oneTimeSetUp() {
-        logger.info("Running Jira tests using: " + properties.getProperty("host"));
+        config = new JiraTestData().createTestConfig();
+        serverInfo = config.getServerInfo();
+        logger.info("Running Jira tests using: " + config.getServerInfo().getHost());
+        try {
+            connection = JiraConnectionFactory.createConnection(serverInfo);
+        } catch (Exception e) {
+            fail("Can't init Jira tests: " + e.toString());
+        }
     }
 
     @Rule
@@ -187,72 +153,6 @@ public class JiraTest {
         thrown.expectMessage("Issue Does Not Exist");
 
         connection.getIssueByKey(remoteKey);
-    }
-
-    @Test
-    public void nullPriorityStaysNullAfterConversion() throws MalformedURLException, RemoteException {
-        IssueInputBuilder issueInputBuilder = new IssueInputBuilder(config.getProjectKey(), new Long(1));
-        issueInputBuilder.setSummary("summary text");
-        issueInputBuilder.setPriority(null);
-
-        JiraTaskConverter converter = new JiraTaskConverter(config);
-        GTask task = null;//converter.convertToGenericTask(issueInputBuilder.build());
-        //priority must be null cause we need to save original issue priority value
-        Assert.assertNull(task.getPriority());
-    }
-
-    @Test
-    public void priorityNotExported() throws MalformedURLException, RemoteException {
-        GTask task = new GTask();
-        task.setId(1);
-        task.setKey("1");
-        task.setSummary("summary text");
-        task.setPriority(null);
-
-        //save old mapping object for priority field
-        MappingStore mapping = getStore(config, FIELD.PRIORITY);
-        config.getFieldMappings().setMapping(FIELD.PRIORITY, false, null);
-
-        Iterable<Version> versions = null;
-        Iterable<BasicComponent> components = null;
-        JiraTaskConverter converter = new JiraTaskConverter(config);
-        IssueInput issue = converter.convertToJiraIssue(versions, components, task);
-        //priority must be null if we don't convert priority field
-        Assert.assertNull(issue.getField("priority").getValue());
-
-        //restore old mapping object for priority field
-        applyStore(config, FIELD.PRIORITY, mapping);
-    }
-
-    @Test
-    public void priorityExported() throws MalformedURLException, RemoteException, URISyntaxException {
-        JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
-        Iterable<Priority> priorities = connection.getPriorities();
-        if (Iterables.size(priorities) == 0) {
-            logger.info("Can't test priority field export - priority list is empty.");
-        } else {
-            Iterable<Version> versions = null;
-            Iterable<BasicComponent> components = null;
-            JiraTaskConverter converter = new JiraTaskConverter(config);
-
-            converter.setPriorities(priorities);
-            RemoteIssue issue = new RemoteIssue();
-            issue.setId("123");
-            issue.setKey("key");
-            issue.setSummary("summary text");
-            issue.setPriority(String.valueOf(Iterables.get(priorities, 0).getId()));
-
-            //save old mapping object for priority field
-            MappingStore mapping = getStore(config, FIELD.PRIORITY);
-            config.getFieldMappings().setMapping(FIELD.PRIORITY, true, null);
-
-            GTask task = null;//converter.convertToGenericTask(issue);
-            IssueInput newIssue = converter.convertToJiraIssue(versions, components, task);
-            Assert.assertEquals(issue.getPriority(), newIssue.getField("priority").getValue());
-
-            //restore old mapping object for priority field
-            applyStore(config, FIELD.PRIORITY, mapping);
-        }
     }
 
     private boolean beforeIssueTypeTest(GTask task, JiraTaskConverter converter) throws MalformedURLException, RemoteException, URISyntaxException {
