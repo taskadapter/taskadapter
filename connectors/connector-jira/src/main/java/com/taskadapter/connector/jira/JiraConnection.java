@@ -146,6 +146,8 @@ public class JiraConnection {
         return jiraSoapService.getCustomFields(authToken);
     }
 
+    // this is not available in Jira REST API at this moment (Sep 3, 2012).
+    // see http://docs.atlassian.com/jira/REST/latest/#id127412
     public RemoteFilter[] getSavedFilters() throws RemoteException {
         return jiraSoapService.getSavedFilters(authToken);
     }
