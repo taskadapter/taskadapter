@@ -3,16 +3,12 @@ package com.taskadapter.connector.jira;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueType;
 import com.atlassian.jira.rest.client.domain.Priority;
-import com.atlassian.jira.rpc.soap.client.RemoteIssue;
-import com.atlassian.jira.rpc.soap.client.RemoteIssueType;
-import com.atlassian.jira.rpc.soap.client.RemotePriority;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.rmi.RemoteException;
-import java.util.Arrays;
 import java.util.List;
 
 public class JiraTaskLoader {
@@ -56,7 +52,7 @@ public class JiraTaskLoader {
         return rows;
     }
 
-    GTask loadTask(JiraConfig config, String taskKey) {
+    GTask loadTask(String taskKey) {
         Issue issue = connection.getIssueByKey(taskKey);
         return converter.convertToGenericTask(issue);
     }

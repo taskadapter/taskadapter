@@ -1,8 +1,6 @@
 package com.taskadapter.connector.common;
 
-import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.definition.*;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
@@ -120,6 +118,14 @@ public class TestUtils {
     public static List<GTask> saveAndLoadList(Connector<?> connector, List<GTask> tasks) throws ConnectorException {
         connector.saveData(tasks, null);
         return ConnectorUtils.loadDataOrderedById(connector);
+    }
+
+    public static String saveAndLoad1Task(Connector<?> connector, GTask task) throws ConnectorException {
+        SyncResult<TaskSaveResult,TaskErrors<Throwable>> syncResult = connector.saveData(Arrays.asList(task), null);
+        TaskSaveResult result = syncResult.getResult();
+        Collection<String> remoteKeys = result.getIdToRemoteKeyMap().values();
+        String theRemoteKey = remoteKeys.iterator().next();
+        return theRemoteKey;
     }
 
     public static Calendar setTaskStartYearAgo(GTask task) {

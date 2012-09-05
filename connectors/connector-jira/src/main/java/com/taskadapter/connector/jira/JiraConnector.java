@@ -134,7 +134,7 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
     @Override
     public GTask loadTaskByKey(String key) throws ConnectorException {
     	final JiraTaskLoader loader = new JiraTaskLoader(config);
-    	return loader.loadTask(config, key);
+    	return loader.loadTask(key);
     }
     
     @Override
