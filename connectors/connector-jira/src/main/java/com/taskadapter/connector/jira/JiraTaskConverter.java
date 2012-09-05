@@ -6,7 +6,6 @@ import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
 import com.atlassian.jira.rpc.soap.client.RemoteCustomFieldValue;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
@@ -225,7 +224,7 @@ public class JiraTaskConverter {
         this.issueTypeList = issueTypeList;
     }
 
-    public Long getIssueTypeIdByName(String issueTypeName) {
+    private Long getIssueTypeIdByName(String issueTypeName) {
         if (issueTypeList == null) {
             throw new IllegalStateException("Issue Type list is not set in JiraTaskConverter. Please set it before converting tasks.");
         }

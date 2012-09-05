@@ -5,10 +5,10 @@ import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.google.common.collect.Iterables;
-import com.taskadapter.connector.common.CommonTests;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
+import com.taskadapter.model.GUser;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -184,15 +184,39 @@ public class JiraTaskConverterTest {
         assertNull(issue.getField(IssueFieldId.DUE_DATE_FIELD.id));
     }
 
+    @Test
+    public void assigneeNotConvertedWhenNotSelected() {
+        JiraTaskConverter converter = createConverterWithUnselectedField(GTaskDescriptor.FIELD.ASSIGNEE);
+        GTask task = new GTask();
+        task.setAssignee(new GUser("mylogin"));
+        IssueInput issue = converter.convertToJiraIssue(task);
+        assertNull(issue.getField(IssueFieldId.ASSIGNEE_FIELD.id));
+    }
+
+    @Test
+    public void assigneeConvertedIfSelected() {
+        JiraTaskConverter converter = createConverterWithSelectedField(GTaskDescriptor.FIELD.ASSIGNEE);
+        GTask task = new GTask();
+        task.setAssignee(new GUser("mylogin"));
+        IssueInput issue = converter.convertToJiraIssue(task);
+        assertEquals("mylogin", getComplexValue(issue, IssueFieldId.ASSIGNEE_FIELD.id, "name"));
+    }
+
     private String getId(IssueInput issue, String fieldName) {
-        FieldInput actualPriorityField = issue.getField(fieldName);
-        ComplexIssueInputFieldValue value = (ComplexIssueInputFieldValue) actualPriorityField.getValue();
+        FieldInput field = issue.getField(fieldName);
+        ComplexIssueInputFieldValue value = (ComplexIssueInputFieldValue) field.getValue();
         return (String) value.getValuesMap().get("id");
     }
 
     private String getValue(IssueInput issue, String fieldName) {
-        FieldInput actualPriorityField = issue.getField(fieldName);
-        return (String) actualPriorityField.getValue();
+        FieldInput field = issue.getField(fieldName);
+        return (String) field.getValue();
+    }
+
+    private String getComplexValue(IssueInput issue, String fieldName, String subFieldName) {
+        FieldInput field = issue.getField(fieldName);
+        ComplexIssueInputFieldValue value = (ComplexIssueInputFieldValue) field.getValue();
+        return (String) value.getValuesMap().get(subFieldName);
     }
 
     private String findDefaultIssueTypeId() {
@@ -219,9 +243,17 @@ public class JiraTaskConverterTest {
         return converter;
     }
 
+    private JiraTaskConverter createConverterWithSelectedField(GTaskDescriptor.FIELD field) {
+        return createConverterWithField(field, true);
+    }
+
     private JiraTaskConverter createConverterWithUnselectedField(GTaskDescriptor.FIELD field) {
+        return createConverterWithField(field, false);
+    }
+
+    private JiraTaskConverter createConverterWithField(GTaskDescriptor.FIELD field, boolean selected) {
         JiraConfig config = new JiraTestData().createTestConfig();
-        config.getFieldMappings().setMapping(field, false, null);
+        config.getFieldMappings().setMapping(field, selected, null);
         JiraTaskConverter converter = new JiraTaskConverter(config);
         converter.setPriorities(priorities);
         converter.setIssueTypeList(issueTypeList);
