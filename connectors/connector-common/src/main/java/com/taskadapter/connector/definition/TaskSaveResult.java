@@ -1,5 +1,6 @@
 package com.taskadapter.connector.definition;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -54,6 +55,10 @@ public final class TaskSaveResult {
     
     public String getRemoteKey(Integer id) {
         return idToRemoteKeyMap.get(id);
+    }
+
+    public Collection<String> getRemoteKeys() {
+        return idToRemoteKeyMap.values();
     }
 
     @Override

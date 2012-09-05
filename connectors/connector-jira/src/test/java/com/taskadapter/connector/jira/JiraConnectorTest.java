@@ -14,7 +14,7 @@ public class JiraConnectorTest {
         String summary = "load by key";
         task.setSummary(summary);
         task.setType("Bug");
-        String key = TestUtils.saveAndLoad1Task(connector, task);
+        String key = TestUtils.save(connector, task);
         GTask loadedTask = connector.loadTaskByKey(key);
         assertEquals(summary, loadedTask.getSummary());
     }

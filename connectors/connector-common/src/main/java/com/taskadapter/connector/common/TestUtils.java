@@ -105,11 +105,6 @@ public class TestUtils {
         return loadedTask;
     }
 
-    public static GTask saveAndLoad(Connector<?> connector, GTask task) throws ConnectorException {
-        List<GTask> loadedTasks = saveAndLoadAll(connector, task);
-        return findTaskBySummary(loadedTasks, task.getSummary());
-    }
-
     public static List<GTask> saveAndLoadAll(Connector<?> connector, GTask task) throws ConnectorException {
         connector.saveData(Arrays.asList(task), null);
         return ConnectorUtils.loadDataOrderedById(connector);
@@ -120,12 +115,22 @@ public class TestUtils {
         return ConnectorUtils.loadDataOrderedById(connector);
     }
 
-    public static String saveAndLoad1Task(Connector<?> connector, GTask task) throws ConnectorException {
+    public static GTask saveAndLoad(Connector<?> connector, GTask task) throws ConnectorException {
         SyncResult<TaskSaveResult,TaskErrors<Throwable>> syncResult = connector.saveData(Arrays.asList(task), null);
         TaskSaveResult result = syncResult.getResult();
-        Collection<String> remoteKeys = result.getIdToRemoteKeyMap().values();
-        String theRemoteKey = remoteKeys.iterator().next();
-        return theRemoteKey;
+        Collection<String> remoteKeys = result.getRemoteKeys();
+        String remoteKey = remoteKeys.iterator().next();
+        return connector.loadTaskByKey(remoteKey);
+    }
+
+    /**
+     * @return the new task Key
+     */
+    public static String save(Connector<?> connector, GTask task) throws ConnectorException {
+        SyncResult<TaskSaveResult,TaskErrors<Throwable>> syncResult = connector.saveData(Arrays.asList(task), null);
+        TaskSaveResult result = syncResult.getResult();
+        Collection<String> remoteKeys = result.getRemoteKeys();
+        return remoteKeys.iterator().next();
     }
 
     public static Calendar setTaskStartYearAgo(GTask task) {
