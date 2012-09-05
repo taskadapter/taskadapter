@@ -15,6 +15,7 @@ import org.junit.Test;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.rmi.RemoteException;
+import java.util.Calendar;
 
 import static org.junit.Assert.*;
 
@@ -36,6 +37,8 @@ public class JiraTaskConverterTest {
         }
     }
 
+    // TODO provide dummy implementations of priorities, versions, etc - instead of loading them
+    // from server every time.
     private static void loadDataFromServer() throws RemoteException, MalformedURLException, URISyntaxException {
         JiraTestData jiraTestData = new JiraTestData();
         String projectKey = jiraTestData.getProjectKey();
@@ -59,7 +62,7 @@ public class JiraTaskConverterTest {
         config = new JiraTestData().createTestConfig();
     }
 
-    @Test (expected = IllegalStateException.class)
+    @Test(expected = IllegalStateException.class)
     public void noIssueTypesSetGeneratesIllegalStateException() {
         JiraTaskConverter converter = new JiraTaskConverter(config);
         GTask task = new GTask();
@@ -84,12 +87,11 @@ public class JiraTaskConverterTest {
     }
 
     @Test
-    public void priorityNotExported() throws MalformedURLException, RemoteException {
+    public void priorityNotExportedWhenNotSelected() throws MalformedURLException, RemoteException {
         GTask task = new GTask();
         task.setSummary("something");
         task.setPriority(700);
-        config.getFieldMappings().setMapping(GTaskDescriptor.FIELD.PRIORITY, false, null);
-        JiraTaskConverter converter = getConverter();
+        JiraTaskConverter converter = createConverterWithUnselectedField(GTaskDescriptor.FIELD.PRIORITY);
         IssueInput issue = converter.convertToJiraIssue(task);
         assertNull(issue.getField(IssueFieldId.PRIORITY_FIELD.id));
     }
@@ -132,14 +134,53 @@ public class JiraTaskConverterTest {
     }
 
     @Test
-    public void summaryIsNotConvertedWhenNotselected() {
-        config.getFieldMappings().setMapping(GTaskDescriptor.FIELD.SUMMARY, false, null);
-        JiraTaskConverter converter = getConverter();
+    public void summaryIsNotConvertedWhenNotSelected() {
+        JiraTaskConverter converter = createConverterWithUnselectedField(GTaskDescriptor.FIELD.SUMMARY);
         GTask task = new GTask();
         String summary = "summary here";
         task.setSummary(summary);
         IssueInput issue = converter.convertToJiraIssue(task);
         assertNull(issue.getField(IssueFieldId.SUMMARY_FIELD.id));
+    }
+
+    @Test
+    public void descriptionIsConvertedByDefault() {
+        JiraTaskConverter converter = getConverter();
+        GTask task = new GTask();
+        task.setDescription("description here");
+        IssueInput issueInput = converter.convertToJiraIssue(task);
+        assertEquals("description here", getValue(issueInput, IssueFieldId.DESCRIPTION_FIELD.id));
+    }
+
+    @Test
+    public void descriptionIsNOTConvertedWhenNotSelected() {
+        JiraTaskConverter converter = createConverterWithUnselectedField(GTaskDescriptor.FIELD.DESCRIPTION);
+        GTask task = new GTask();
+        task.setDescription("description here");
+        IssueInput issueInput = converter.convertToJiraIssue(task);
+        assertNull(issueInput.getField(IssueFieldId.DESCRIPTION_FIELD.id));
+    }
+
+    @Test
+    public void dueDateConvertedByDefault() {
+        JiraTaskConverter converter = getConverter();
+        GTask task = new GTask();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2014, 3, 28, 0, 0, 0);
+        task.setDueDate(calendar.getTime());
+        IssueInput issueInput = converter.convertToJiraIssue(task);
+        assertEquals("2014-04-28", getValue(issueInput, IssueFieldId.DUE_DATE_FIELD.id));
+    }
+
+    @Test
+    public void dueDateNotConvertedWhenNotSelected() {
+        JiraTaskConverter converter = createConverterWithUnselectedField(GTaskDescriptor.FIELD.DUE_DATE);
+        GTask task = new GTask();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2014, 3, 28, 0, 0, 0);
+        task.setDueDate(calendar.getTime());
+        IssueInput issue = converter.convertToJiraIssue(task);
+        assertNull(issue.getField(IssueFieldId.DUE_DATE_FIELD.id));
     }
 
     private String getId(IssueInput issue, String fieldName) {
@@ -169,6 +210,17 @@ public class JiraTaskConverterTest {
     }
 
     private JiraTaskConverter getConverter() {
+        JiraTaskConverter converter = new JiraTaskConverter(config);
+        converter.setPriorities(priorities);
+        converter.setIssueTypeList(issueTypeList);
+        converter.setVersions(versions);
+        converter.setComponents(components);
+        return converter;
+    }
+
+    private JiraTaskConverter createConverterWithUnselectedField(GTaskDescriptor.FIELD field) {
+        JiraConfig config = new JiraTestData().createTestConfig();
+        config.getFieldMappings().setMapping(field, false, null);
         JiraTaskConverter converter = new JiraTaskConverter(config);
         converter.setPriorities(priorities);
         converter.setIssueTypeList(issueTypeList);
