@@ -1,9 +1,6 @@
 package com.taskadapter.connector.jira;
 
-import com.atlassian.jira.rest.client.domain.BasicComponent;
-import com.atlassian.jira.rest.client.domain.IssueType;
-import com.atlassian.jira.rest.client.domain.Priority;
-import com.atlassian.jira.rest.client.domain.Version;
+import com.atlassian.jira.rest.client.domain.*;
 import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
@@ -63,7 +60,7 @@ public class JiraTaskConverterTest {
     }
 
     @Test (expected = IllegalStateException.class)
-    public void defaultCo() {
+    public void noIssueTypesSetGeneratesIllegalStateException() {
         JiraTaskConverter converter = new JiraTaskConverter(config);
         GTask task = new GTask();
         task.setSummary("some task");
@@ -79,10 +76,10 @@ public class JiraTaskConverterTest {
         task.setPriority(750);
 
         config.getFieldMappings().setMapping(GTaskDescriptor.FIELD.PRIORITY, true, null);
-        JiraTaskConverter converter = getConverter(config);
+        JiraTaskConverter converter = getConverter();
 
         IssueInput newIssue = converter.convertToJiraIssue(task);
-        String actualPriorityId = getId(newIssue, "priority");
+        String actualPriorityId = getId(newIssue, IssueFieldId.PRIORITY_FIELD.id);
         assertEquals(priorityCritical.getId().toString(), actualPriorityId);
     }
 
@@ -92,9 +89,9 @@ public class JiraTaskConverterTest {
         task.setSummary("something");
         task.setPriority(700);
         config.getFieldMappings().setMapping(GTaskDescriptor.FIELD.PRIORITY, false, null);
-        JiraTaskConverter converter = getConverter(config);
+        JiraTaskConverter converter = getConverter();
         IssueInput issue = converter.convertToJiraIssue(task);
-        assertNull(issue.getField("priority"));
+        assertNull(issue.getField(IssueFieldId.PRIORITY_FIELD.id));
     }
 
     @Test
@@ -102,14 +99,14 @@ public class JiraTaskConverterTest {
         GTask task = new GTask();
         task.setSummary("checking issueType");
 
-        JiraTaskConverter converter = getConverter(config);
+        JiraTaskConverter converter = getConverter();
         IssueType requiredIssueType = findIssueType(issueTypeList, "Task");
         task.setType("Task");
 
         config.getFieldMappings().setMapping(GTaskDescriptor.FIELD.TASK_TYPE, true, null);
 
         IssueInput issue = converter.convertToJiraIssue(task);
-        assertEquals(requiredIssueType.getId().toString(), getId(issue, "issuetype"));
+        assertEquals(requiredIssueType.getId().toString(), getId(issue, IssueFieldId.ISSUE_TYPE_FIELD.id));
     }
 
     @Test
@@ -117,17 +114,43 @@ public class JiraTaskConverterTest {
         GTask task = new GTask();
         task.setType(null);
         config.getFieldMappings().setMapping(GTaskDescriptor.FIELD.TASK_TYPE, true, null);
-        JiraTaskConverter converter = getConverter(config);
+        JiraTaskConverter converter = getConverter();
 
         IssueInput issue = converter.convertToJiraIssue(task);
         // must be default issue type if we set the field to null
-        assertEquals(findDefaultIssueTypeId(), getId(issue, "issuetype"));
+        assertEquals(findDefaultIssueTypeId(), getId(issue, IssueFieldId.ISSUE_TYPE_FIELD.id));
+    }
+
+    @Test
+    public void summaryIsConvertedByDefault() {
+        JiraTaskConverter converter = getConverter();
+        GTask task = new GTask();
+        String summary = "summary here";
+        task.setSummary(summary);
+        IssueInput issueInput = converter.convertToJiraIssue(task);
+        assertEquals(summary, getValue(issueInput, IssueFieldId.SUMMARY_FIELD.id));
+    }
+
+    @Test
+    public void summaryIsNotConvertedWhenNotselected() {
+        config.getFieldMappings().setMapping(GTaskDescriptor.FIELD.SUMMARY, false, null);
+        JiraTaskConverter converter = getConverter();
+        GTask task = new GTask();
+        String summary = "summary here";
+        task.setSummary(summary);
+        IssueInput issue = converter.convertToJiraIssue(task);
+        assertNull(issue.getField(IssueFieldId.SUMMARY_FIELD.id));
     }
 
     private String getId(IssueInput issue, String fieldName) {
         FieldInput actualPriorityField = issue.getField(fieldName);
         ComplexIssueInputFieldValue value = (ComplexIssueInputFieldValue) actualPriorityField.getValue();
         return (String) value.getValuesMap().get("id");
+    }
+
+    private String getValue(IssueInput issue, String fieldName) {
+        FieldInput actualPriorityField = issue.getField(fieldName);
+        return (String) actualPriorityField.getValue();
     }
 
     private String findDefaultIssueTypeId() {
@@ -145,7 +168,7 @@ public class JiraTaskConverterTest {
         throw new RuntimeException("Not found: " + type);
     }
 
-    private JiraTaskConverter getConverter(JiraConfig config) {
+    private JiraTaskConverter getConverter() {
         JiraTaskConverter converter = new JiraTaskConverter(config);
         converter.setPriorities(priorities);
         converter.setIssueTypeList(issueTypeList);
