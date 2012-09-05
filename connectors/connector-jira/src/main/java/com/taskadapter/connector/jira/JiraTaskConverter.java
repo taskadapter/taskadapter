@@ -237,10 +237,6 @@ public class JiraTaskConverter {
                 break;
             }
         }
-        if (issueTypeId == null) {
-            throw new RuntimeException("Issue Type ID can't be found for name '" + issueTypeName +
-                    "'. Known issue types: " + Iterables.toString(issueTypeList));
-        }
         return issueTypeId;
     }
 
