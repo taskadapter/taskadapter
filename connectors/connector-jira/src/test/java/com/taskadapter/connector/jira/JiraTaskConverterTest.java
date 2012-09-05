@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.rmi.RemoteException;
@@ -40,12 +41,13 @@ public class JiraTaskConverterTest {
 
     // TODO provide dummy implementations of priorities, versions, etc - instead of loading them
     // from server every time.
-    private static void loadDataFromServer() throws RemoteException, MalformedURLException, URISyntaxException {
+    private static void loadDataFromServer() throws IOException, URISyntaxException {
         JiraTestData jiraTestData = new JiraTestData();
         String projectKey = jiraTestData.getProjectKey();
         WebServerInfo serverInfo = jiraTestData.getTestServerInfo();
         JiraConnection connection = JiraConnectionFactory.createConnection(serverInfo);
-        priorities = connection.getPriorities();
+
+        priorities = SavedPriorities.load();
         if (Iterables.isEmpty(priorities)) {
             fail("Can't test priority field export - priority list is empty.");
         }

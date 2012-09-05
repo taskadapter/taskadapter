@@ -1,0 +1,42 @@
+[
+    {
+        "statusColor":"#cc0000",
+        "description":"Blocks development and/or testing work, production could not run.",
+        "iconUrl":"http://ta-dev.dyndns.biz:9980/images/icons/priority_blocker.gif",
+        "id":1,
+        "self":"http://ta-dev.dyndns.biz:9980/rest/api/2/priority/1",
+        "name":"Blocker"
+    },
+    {
+        "statusColor":"#ff0000",
+        "description":"Crashes, loss of data, severe memory leak.",
+        "iconUrl":"http://ta-dev.dyndns.biz:9980/images/icons/priority_critical.gif",
+        "id":2,
+        "self":"http://ta-dev.dyndns.biz:9980/rest/api/2/priority/2",
+        "name":"Critical"
+    },
+    {
+        "statusColor":"#009900",
+        "description":"Major loss of function.",
+        "iconUrl":"http://ta-dev.dyndns.biz:9980/images/icons/priority_major.gif",
+        "id":3,
+        "self":"http://ta-dev.dyndns.biz:9980/rest/api/2/priority/3",
+        "name":"Major"
+    },
+    {
+        "statusColor":"#006600",
+        "description":"Minor loss of function, or other problem where easy workaround is present.",
+        "iconUrl":"http://ta-dev.dyndns.biz:9980/images/icons/priority_minor.gif",
+        "id":4,
+        "self":"http://ta-dev.dyndns.biz:9980/rest/api/2/priority/4",
+        "name":"Minor"
+    },
+    {
+        "statusColor":"#003300",
+        "description":"Cosmetic problem like misspelled words or  misaligned text",
+        "iconUrl":"http://ta-dev.dyndns.biz:9980/images/icons/priority_trivial.gif",
+        "id":5,
+        "self":"http://ta-dev.dyndns.biz:9980/rest/api/2/priority/5",
+        "name":"Trivial"
+    }
+]
