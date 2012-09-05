@@ -27,7 +27,7 @@ public class FieldMappingTest {
     private MSPConnector connector;
 
     @Before
-    public void setup() {
+    public void beforeEachTest() {
         config = new MSPConfig();
         // TODO need to generate a random file here to avoid possible collisions
         // when this test class runs in multiple threads
@@ -134,14 +134,14 @@ public class FieldMappingTest {
     }
 
     @Test
-    public void testDescriptionExportedByDefault() throws Exception {
+    public void descriptionExportedByDefault() throws Exception {
         GTask task = TestUtils.generateTask();
-        GTask loadedTask = TestUtils.saveAndLoad(connector, task);
+        GTask loadedTask = TestUtils.saveAndLoadViaSummary(connector, task);
         assertEquals(task.getDescription(), loadedTask.getDescription());
     }
 
     @Test
-    public void testStartDateNotMapped() throws Exception {
+    public void startDateNotMapped() throws Exception {
         GTask task = TestUtils.generateTask();
         TestUtils.setTaskStartYearAgo(task);
         List<Task> loadedTasks = saveAndLoad(config, FIELD.START_DATE, false, TaskField.DURATION.toString(), task);
@@ -149,27 +149,27 @@ public class FieldMappingTest {
     }
 
     @Test
-    public void testStartDateExportedNoConstraint() throws Exception {
+    public void startDateExportedNoConstraint() throws Exception {
         GTask task = TestUtils.generateTask();
         Calendar yearAgo = TestUtils.getDateRoundedToDay();
         yearAgo.add(Calendar.YEAR, -1);
         task.setStartDate(yearAgo.getTime());
-        GTask loadedTask = TestUtils.saveAndLoad(connector,
-                FIELD.START_DATE, true, MSPUtils.NO_CONSTRAINT, task);
+        config.getFieldMappings().setMapping(FIELD.START_DATE, true, MSPUtils.NO_CONSTRAINT);
+        GTask loadedTask = TestUtils.saveAndLoadViaSummary(connector, task);
         assertEquals(yearAgo.getTime(), loadedTask.getStartDate());
     }
 
     @Test
-    public void testStartDateMustStartOn() throws Exception {
+    public void startDateMustStartOn() throws Exception {
         GTask task = TestUtils.generateTask();
         Calendar cal = TestUtils.setTaskStartYearAgo(task);
-        GTask loadedTask = TestUtils.saveAndLoad(connector,
-                FIELD.START_DATE, true, ConstraintType.MUST_START_ON.name(), task);
+        config.getFieldMappings().setMapping(FIELD.START_DATE, true, ConstraintType.MUST_START_ON.name());
+        GTask loadedTask = TestUtils.saveAndLoadViaSummary(connector, task);
         assertEquals(cal.getTime(), loadedTask.getStartDate());
     }
 
     @Test
-    public void testAssigneeNotExported() throws Exception {
+    public void assigneeNotExported() throws Exception {
         GTask task = TestUtils.generateTask();
         GUser assignee = new GUser(123, "some user");
         task.setAssignee(assignee);
@@ -191,7 +191,7 @@ public class FieldMappingTest {
         GTask task = TestUtils.generateTask();
         GUser assignee = new GUser(123, "some user");
         task.setAssignee(assignee);
-        GTask loadedTask = TestUtils.saveAndLoad(connector, task);
+        GTask loadedTask = TestUtils.saveAndLoadViaSummary(connector, task);
         assertEquals(assignee.getId(), loadedTask.getAssignee().getId());
     }
 
@@ -235,12 +235,12 @@ public class FieldMappingTest {
 
     @Test
     public void testDefaultDescriptionMapping() throws Exception {
-        new CommonTests().testDefaultDescriptionMapping(connector);
+        new CommonTests().descriptionSavedByDefault(connector);
     }
 
     @Test
-    public void descriptionMapped() throws Exception {
-        new CommonTests().descriptionMapped(connector);
+    public void descriptionSavedIfSelected() throws Exception {
+        new CommonTests().descriptionSavedIfSelected(connector);
     }
 
     @Test

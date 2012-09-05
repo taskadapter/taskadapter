@@ -376,12 +376,12 @@ public class RedmineTest {
 
     @Test
     public void defaultDescriptionIsMapped() throws Exception {
-        new CommonTests().testDefaultDescriptionMapping(connector);
+        new CommonTests().descriptionSavedByDefault(connector);
     }
 
     @Test
     public void descriptionMapped() throws Exception {
-        new CommonTests().descriptionMapped(connector);
+        new CommonTests().descriptionSavedIfSelected(connector);
     }
 
     @Test

@@ -33,13 +33,13 @@ public class CommonTests {
         assertEquals(expectedSummaryTask1, foundTask.getSummary());
     }
 
-    public void testDefaultDescriptionMapping(Connector<?> connector) throws ConnectorException {
+    public void descriptionSavedByDefault(Connector<?> connector) throws ConnectorException {
         GTask task = TestUtils.generateTask();
-        GTask loadedTask = TestUtils.saveAndLoad(connector, task);
+        GTask loadedTask = TestUtils.saveAndLoadViaSummary(connector, task);
         assertEquals(task.getDescription(), loadedTask.getDescription());
     }
 
-    public void descriptionMapped(Connector<?> connector) throws ConnectorException {
+    public void descriptionSavedIfSelected(Connector<?> connector) throws ConnectorException {
         GTask task = TestUtils.generateTask();
         GTask loadedTask = new TestSaver(connector).selectField(FIELD.DESCRIPTION).saveAndLoad(task);
         assertEquals(task.getDescription(), loadedTask.getDescription());
