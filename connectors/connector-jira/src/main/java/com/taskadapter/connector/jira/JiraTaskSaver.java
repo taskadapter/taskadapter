@@ -2,7 +2,6 @@ package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rest.client.domain.*;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
-import com.atlassian.jira.rpc.soap.client.*;
 import com.taskadapter.connector.common.AbstractTaskSaver;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
@@ -18,8 +17,6 @@ import java.util.List;
 public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
 
     private JiraConnection connection;
-    private Iterable<Version> versions;
-    private Iterable<BasicComponent> components;
     private final JiraTaskConverter converter;
 
     public JiraTaskSaver(JiraConfig config) {
@@ -36,8 +33,11 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
 
             converter.setIssueTypeList(issueTypeList);
 
-            versions = connection.getVersions(config.getProjectKey());
-            components = connection.getComponents(config.getProjectKey());
+            Iterable<Version> versions = connection.getVersions(config.getProjectKey());
+            converter.setVersions(versions);
+
+            Iterable<BasicComponent> components = connection.getComponents(config.getProjectKey());
+            converter.setComponents(components);
 
             /* Need to load Jira server priorities because what we store in the config files is a
                 * priority name (string), while Jira returns the number value of the issue priority */
@@ -72,7 +72,7 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
     // TODO move this method to JiraTaskConverter class
     @Override
     protected IssueInput convertToNativeTask(GTask task) {
-        return converter.convertToJiraIssue(versions, components, task);
+        return converter.convertToJiraIssue(task);
     }
 
     @Override

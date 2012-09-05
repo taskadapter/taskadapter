@@ -62,6 +62,14 @@ public class JiraTaskConverterTest {
         config = new JiraTestData().createTestConfig();
     }
 
+    @Test (expected = IllegalStateException.class)
+    public void defaultCo() {
+        JiraTaskConverter converter = new JiraTaskConverter(config);
+        GTask task = new GTask();
+        task.setSummary("some task");
+        converter.convertToJiraIssue(task);
+    }
+
     @Test
     public void priorityConvertedToCritical() throws MalformedURLException, RemoteException, URISyntaxException {
         Priority priorityCritical = find(priorities, "Critical");
@@ -73,7 +81,7 @@ public class JiraTaskConverterTest {
         config.getFieldMappings().setMapping(GTaskDescriptor.FIELD.PRIORITY, true, null);
         JiraTaskConverter converter = getConverter(config);
 
-        IssueInput newIssue = converter.convertToJiraIssue(versions, components, task);
+        IssueInput newIssue = converter.convertToJiraIssue(task);
         String actualPriorityId = getId(newIssue, "priority");
         assertEquals(priorityCritical.getId().toString(), actualPriorityId);
     }
@@ -85,7 +93,7 @@ public class JiraTaskConverterTest {
         task.setPriority(700);
         config.getFieldMappings().setMapping(GTaskDescriptor.FIELD.PRIORITY, false, null);
         JiraTaskConverter converter = getConverter(config);
-        IssueInput issue = converter.convertToJiraIssue(versions, components, task);
+        IssueInput issue = converter.convertToJiraIssue(task);
         assertNull(issue.getField("priority"));
     }
 
@@ -100,7 +108,7 @@ public class JiraTaskConverterTest {
 
         config.getFieldMappings().setMapping(GTaskDescriptor.FIELD.TASK_TYPE, true, null);
 
-        IssueInput issue = converter.convertToJiraIssue(versions, components, task);
+        IssueInput issue = converter.convertToJiraIssue(task);
         assertEquals(requiredIssueType.getId().toString(), getId(issue, "issuetype"));
     }
 
@@ -111,7 +119,7 @@ public class JiraTaskConverterTest {
         config.getFieldMappings().setMapping(GTaskDescriptor.FIELD.TASK_TYPE, true, null);
         JiraTaskConverter converter = getConverter(config);
 
-        IssueInput issue = converter.convertToJiraIssue(versions, components, task);
+        IssueInput issue = converter.convertToJiraIssue(task);
         // must be default issue type if we set the field to null
         assertEquals(findDefaultIssueTypeId(), getId(issue, "issuetype"));
     }
@@ -141,6 +149,8 @@ public class JiraTaskConverterTest {
         JiraTaskConverter converter = new JiraTaskConverter(config);
         converter.setPriorities(priorities);
         converter.setIssueTypeList(issueTypeList);
+        converter.setVersions(versions);
+        converter.setComponents(components);
         return converter;
     }
 

@@ -3,7 +3,7 @@ package com.taskadapter.connector.jira;
 import com.atlassian.jira.rest.client.domain.*;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
-import com.atlassian.jira.rpc.soap.client.*;
+import com.atlassian.jira.rpc.soap.client.RemoteCustomFieldValue;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -16,38 +16,43 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class JiraTaskConverter {
 
     private static final Logger logger = LoggerFactory.getLogger(JiraTaskConverter.class);
 
     // TODO this is hardcoded!! https://www.hostedredmine.com/issues/18074
-    private static final String ISSUE_TYPE_ID = "1";
+    private static final Long ISSUE_TYPE_ID = 1l;
 
     private final JiraConfig config;
 
     private final Map<String, BasicPriority> priorities = new HashMap<String, BasicPriority>();
     private final Map<String, BasicPriority> prioritiesOtherWay = new HashMap<String, BasicPriority>();
     private Iterable<IssueType> issueTypeList;
+    private Iterable<Version> versions;
+    private Iterable<BasicComponent> components;
 
     public JiraTaskConverter(JiraConfig config) {
         this.config = config;
     }
 
-    public IssueInput convertToJiraIssue(Iterable<Version> versions, Iterable<BasicComponent> components, GTask task) {
+    public IssueInput convertToJiraIssue(GTask task) {
         final Mappings mappings = config.getFieldMappings();
 
-        String issueType = ISSUE_TYPE_ID;
+        Long issueTypeId = ISSUE_TYPE_ID;
         if (mappings.isFieldSelected(FIELD.TASK_TYPE)) {
-            issueType = getIssueTypeIdByName(task.getType());
+            issueTypeId = getIssueTypeIdByName(task.getType());
 
-            if (issueType == null) {
-                issueType = getIssueTypeIdByName(config.getDefaultTaskType());
+            if (issueTypeId == null) {
+                issueTypeId = getIssueTypeIdByName(config.getDefaultTaskType());
             }
         }
 
-        IssueInputBuilder issueInputBuilder = new IssueInputBuilder(config.getProjectKey(), Long.valueOf(issueType));
+        IssueInputBuilder issueInputBuilder = new IssueInputBuilder(config.getProjectKey(), issueTypeId);
 
         if (mappings.isFieldSelected(FIELD.SUMMARY)) {
             issueInputBuilder.setSummary(task.getSummary());
@@ -220,19 +225,23 @@ public class JiraTaskConverter {
         this.issueTypeList = issueTypeList;
     }
 
-    public String getIssueTypeIdByName(String issueTypeName) {
-        String resTypeId = null;
+    public Long getIssueTypeIdByName(String issueTypeName) {
+        if (issueTypeList == null) {
+            throw new IllegalStateException("Issue Type list is not set in JiraTaskConverter. Please set it before converting tasks.");
+        }
+        Long issueTypeId = null;
 
-        if (issueTypeName != null && issueTypeList != null) {
-            for (IssueType anIssueTypeList : issueTypeList) {
-                if (anIssueTypeList.getName().equals(issueTypeName)) {
-                    resTypeId = String.valueOf(anIssueTypeList.getId());
-                    break;
-                }
+        for (IssueType anIssueTypeList : issueTypeList) {
+            if (anIssueTypeList.getName().equals(issueTypeName)) {
+                issueTypeId = anIssueTypeList.getId();
+                break;
             }
         }
-
-        return resTypeId;
+        if (issueTypeId == null) {
+            throw new RuntimeException("Issue Type ID can't be found for name '" + issueTypeName +
+                    "'. Known issue types: " + Iterables.toString(issueTypeList));
+        }
+        return issueTypeId;
     }
 
     private static void processRelations(Issue issue, GTask genericTask) {
@@ -248,5 +257,13 @@ public class JiraTaskConverter {
                 }
             }
         }
+    }
+
+    public void setVersions(Iterable<Version> versions) {
+        this.versions = versions;
+    }
+
+    public void setComponents(Iterable<BasicComponent> components) {
+        this.components = components;
     }
 }
