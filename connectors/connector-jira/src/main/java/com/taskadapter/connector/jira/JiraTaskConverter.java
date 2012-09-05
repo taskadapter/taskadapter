@@ -220,10 +220,6 @@ public class JiraTaskConverter {
         this.issueTypeList = issueTypeList;
     }
 
-    public Iterable<IssueType> getIssueTypeList() {
-        return this.issueTypeList;
-    }
-
     public String getIssueTypeIdByName(String issueTypeName) {
         String resTypeId = null;
 
@@ -242,7 +238,7 @@ public class JiraTaskConverter {
     private static void processRelations(Issue issue, GTask genericTask) {
         Iterable<IssueLink> links = issue.getIssueLinks();
         for (IssueLink link : links) {
-            if (isOutbound(link)) {
+            if (link.isOutbound()) {
                 String name = link.getIssueLinkType().getName();
                 if (name.equals(JiraConstants.getJiraLinkNameForPrecedes())) {
                     GRelation r = new GRelation(issue.getKey(), link.getTargetIssueKey(), GRelation.TYPE.precedes);
@@ -253,10 +249,4 @@ public class JiraTaskConverter {
             }
         }
     }
-
-    // TODO use the Jira API methods I just added: isInbound, isOutbound
-    private static boolean isOutbound(IssueLink link) {
-        return link.getIssueLinkType().getDirection().name().toUpperCase().equals(IssueLinkType.Direction.OUTBOUND);
-    }
-
 }
