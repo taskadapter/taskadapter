@@ -44,10 +44,10 @@ public class JiraConnection {
         return getIssuesFromFilter("summary~\"" + summary + "\"");
     }
 
-    public Iterable<Issue> getIssuesByProject(String projectKey) {
+    public List<Issue> getIssuesByProject(String projectKey) {
         SearchResult<Issue> result = restClient.getSearchClient().searchJql("project = " + projectKey, "\u002A"+"all", null, new CommonIssueJsonParser());
 
-        return result.getIssues();
+        return Lists.newArrayList(result.getIssues());
     }
 
     public Issue getIssueByKey(String issueKey) {

@@ -30,7 +30,7 @@ public class JiraTaskLoader {
         List<GTask> rows;
 
         try {
-            List<Issue> issues = connection.getIssuesFromFilter(config.getQueryString());
+            List<Issue> issues = connection.getIssuesByProject(config.getProjectKey());
 
             rows = jiraToGTask.convertToGenericTaskList(issues);
             JiraUserConverter userConverter = new JiraUserConverter(connection);
