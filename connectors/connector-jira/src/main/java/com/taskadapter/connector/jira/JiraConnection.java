@@ -121,7 +121,7 @@ public class JiraConnection {
         }
     }
 
-    public Iterable<Version> getVersions(String projectKey) throws RemoteException {
+    public Iterable<Version> getVersions(String projectKey) {
         Project project = getProject(projectKey);
         if (project != null) {
             return project.getVersions();
@@ -131,7 +131,7 @@ public class JiraConnection {
         }
     }
 
-    public Iterable<BasicComponent> getComponents(String projectKey) throws RemoteException {
+    public Iterable<BasicComponent> getComponents(String projectKey) {
         Project project = getProject(projectKey);
         if (project != null) {
             return project.getComponents();
@@ -153,7 +153,7 @@ public class JiraConnection {
         return jiraSoapService.getSavedFilters(authToken);
     }
 
-    public User getUser(String userName) throws RemoteException {
+    public User getUser(String userName) {
         return restClient.getUserClient().getUser(userName, null);
     }
 }

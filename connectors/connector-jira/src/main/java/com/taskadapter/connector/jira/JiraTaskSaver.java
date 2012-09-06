@@ -52,7 +52,7 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
         }
     }
 
-    private Iterable<IssueType> checkDefaultIssueTypeExistsOnServer() throws RemoteException, BadConfigException {
+    private Iterable<IssueType> checkDefaultIssueTypeExistsOnServer() throws BadConfigException {
         //check if default issue type exists in Jira
         boolean found = false;
         Iterable<IssueType> issueTypeList = connection.getIssueTypeList();

@@ -23,7 +23,7 @@ public class MockData {
         return load("issuetypes_jira5.0.6.json", new TypeToken<ArrayList<IssueTypeMock>>() {}.getType());
     }
 
-    public static Iterable<Version> loadVersions() throws IOException {
+    public static Iterable<Version> loadVersions() {
         /* I deleted "release date" attribute from the versions file to fix
          * "Unable to invoke no-args constructor for class org.joda.time.Chronology" problem.
          * See the original file "versions_jira5.0.6.json"

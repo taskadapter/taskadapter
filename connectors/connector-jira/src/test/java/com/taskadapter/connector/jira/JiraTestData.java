@@ -32,10 +32,9 @@ public class JiraTestData {
     }
 
     public WebServerInfo getTestServerInfo() {
-        WebServerInfo serverInfo = new WebServerInfo(properties.getProperty("host"),
+        return new WebServerInfo(properties.getProperty("host"),
                 properties.getProperty("login"),
                 properties.getProperty("password"));
-        return serverInfo;
     }
 
     public String getProjectKey() {

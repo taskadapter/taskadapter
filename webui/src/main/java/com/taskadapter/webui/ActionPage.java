@@ -91,9 +91,11 @@ public abstract class ActionPage extends Page {
             try {
                 loadData();
             } catch (ConnectorException e) {
-                // FIXME: add "connector error" dialog
+                e.printStackTrace();
+                // TODO add "connector error" dialog
             } catch (Throwable t) {
-                // FIXME: Show "internal error" dialog
+                t.printStackTrace();
+                // TODO Show "internal error" dialog
             }
             // must synchronize changes over application
             synchronized (navigator.getApplication()) {

@@ -46,7 +46,7 @@ public class JiraLoaders {
     public static List<GProject> loadProjects(WebServerInfo serverInfo)
             throws ValidationException, ConnectorException {
         validate(serverInfo);
-        List<GProject> gProjects = null;
+        List<GProject> gProjects;
         try {
             JiraConnection connection = JiraConnectionFactory
                     .createConnection(serverInfo);
@@ -66,7 +66,7 @@ public class JiraLoaders {
 
     public static GProject loadProject(WebServerInfo serverInfo,
                                        String projectKey) throws ValidationException, ConnectorException {
-        GProject gProject = null;
+        GProject gProject;
         validate(serverInfo);
         try {
             JiraConnection connection = JiraConnectionFactory

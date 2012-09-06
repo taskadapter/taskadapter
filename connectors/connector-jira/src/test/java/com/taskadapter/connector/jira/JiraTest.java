@@ -156,7 +156,7 @@ public class JiraTest {
         int tasksQty = 2;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
         JiraConnector connector = new JiraConnector(config);
-        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(tasks, null);
+        connector.saveData(tasks, null);
 
         Iterable<Issue> issues = connection.getIssuesByProject(config.getProjectKey());
         Assert.assertNotSame(0, Iterables.size(issues));
@@ -181,7 +181,7 @@ public class JiraTest {
         list.add(task1);
         list.add(task2);
 
-        List<GTask> loadedList = TestUtils.saveAndLoadList(connector, list);
+        TestUtils.saveAndLoadList(connector, list);
         List<Issue> issues = connection.getIssuesBySummary(task1.getSummary());
         Issue issue2 = connection.getIssuesBySummary(task2.getSummary()).get(0);
 

@@ -63,7 +63,7 @@ public class ConfigUtils {
 	 * @return object with updated version.
 	 */
 	public static JsonObject addVersion(JsonObject object, int version) {
-		object.add("version", new JsonPrimitive(Integer.valueOf(version)));
+		object.add("version", new JsonPrimitive(version));
 		return object;
 	}
 

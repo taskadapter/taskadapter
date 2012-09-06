@@ -98,7 +98,7 @@ public final class Mappings {
 	 *            field "selected" value.
 	 */
 	public void setFieldSelected(FIELD filed, boolean selected) {
-		this.selected.put(filed, Boolean.valueOf(selected));
+		this.selected.put(filed, selected);
 	}
 
 	/**
@@ -124,7 +124,7 @@ public final class Mappings {
 	 *            mapping target.
 	 */
 	public void setMapping(FIELD field, boolean selected, String target) {
-		this.selected.put(field, Boolean.valueOf(selected));
+		this.selected.put(field, selected);
 		mapTo.put(field, target);
 	}
 

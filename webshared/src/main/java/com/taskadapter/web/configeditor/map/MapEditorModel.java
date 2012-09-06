@@ -97,7 +97,7 @@ public final class MapEditorModel implements Container,
 
 	@Override
 	public Item getItem(Object itemId) {
-		final int id = ((Integer) itemId).intValue();
+		final int id = (Integer) itemId;
 
 		for (ItemHolder holder : items) {
 			if (holder.id == id)
@@ -115,7 +115,7 @@ public final class MapEditorModel implements Container,
 	public Collection<?> getItemIds() {
 		final List<Integer> ids = new ArrayList<Integer>(items.size());
 		for (ItemHolder holder : items)
-			ids.add(Integer.valueOf(holder.id));
+			ids.add(holder.id);
 		return ids;
 	}
 
@@ -139,7 +139,7 @@ public final class MapEditorModel implements Container,
 
 	@Override
 	public boolean containsId(Object itemId) {
-		final int id = ((Integer) itemId).intValue();
+		final int id = (Integer) itemId;
 
 		for (ItemHolder holder : items) {
 			if (holder.id == id)
@@ -161,7 +161,7 @@ public final class MapEditorModel implements Container,
 	@Override
 	public boolean removeItem(Object itemId)
 			throws UnsupportedOperationException {
-		final int id = ((Integer) itemId).intValue();
+		final int id = (Integer) itemId;
 		final Iterator<ItemHolder> holder = items.iterator();
 		while (holder.hasNext()) {
 			final ItemHolder item = holder.next();

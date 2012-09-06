@@ -39,7 +39,7 @@ public class JiraTaskConverterTest {
         }
     }
 
-    private static void loadDataFromServer() throws IOException, URISyntaxException {
+    private static void loadDataFromServer() throws IOException {
         priorities = MockData.loadPriorities();
         if (Iterables.isEmpty(priorities)) {
             fail("Can't test priority field export - priority list is empty.");
