@@ -1,0 +1,23 @@
+[
+    {
+        "self":"http://ta-dev.dyndns.biz:9980/rest/api/latest/version/10000",
+        "id":10000,
+        "name":"v 1.1",
+        "isArchived":false,
+        "isReleased":false
+    },
+    {
+        "self":"http://ta-dev.dyndns.biz:9980/rest/api/latest/version/10001",
+        "id":10001,
+        "name":"v 1.2",
+        "isArchived":false,
+        "isReleased":false
+    },
+    {
+        "self":"http://ta-dev.dyndns.biz:9980/rest/api/latest/version/10002",
+        "id":10002,
+        "name":"v 1.3",
+        "isArchived":false,
+        "isReleased":false
+    }
+]

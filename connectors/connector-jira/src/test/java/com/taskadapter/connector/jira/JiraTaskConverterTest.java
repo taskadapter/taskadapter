@@ -5,7 +5,6 @@ import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.google.common.collect.Iterables;
-import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GUser;
@@ -41,11 +40,6 @@ public class JiraTaskConverterTest {
     }
 
     private static void loadDataFromServer() throws IOException, URISyntaxException {
-        JiraTestData jiraTestData = new JiraTestData();
-        String projectKey = jiraTestData.getProjectKey();
-        WebServerInfo serverInfo = jiraTestData.getTestServerInfo();
-        JiraConnection connection = JiraConnectionFactory.createConnection(serverInfo);
-
         priorities = MockData.loadPriorities();
         if (Iterables.isEmpty(priorities)) {
             fail("Can't test priority field export - priority list is empty.");
@@ -55,10 +49,7 @@ public class JiraTaskConverterTest {
         if (Iterables.isEmpty(issueTypeList)) {
             fail("can't find any issue types.");
         }
-        // reading Version objects fails with
-        // "Failed to invoke public org.joda.time.Chronology() with no args"
-//        versions = MockData.loadVersions();
-        versions = connection.getVersions(projectKey);
+        versions = MockData.loadVersions();
         components = MockData.loadComponents();
     }
 
