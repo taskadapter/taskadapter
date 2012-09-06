@@ -20,7 +20,7 @@ import java.util.Calendar;
 
 import static org.junit.Assert.*;
 
-public class JiraTaskConverterTest {
+public class GTaskToJiraTest {
 
     private static Iterable<Priority> priorities;
     private static Iterable<IssueType> issueTypeList;
@@ -32,14 +32,14 @@ public class JiraTaskConverterTest {
     @BeforeClass
     public static void oneTimeSetUp() {
         try {
-            loadDataFromServer();
+            loadMockData();
         } catch (Exception e) {
             e.printStackTrace();
             fail("Can't init Jira tests: " + e.toString());
         }
     }
 
-    private static void loadDataFromServer() throws IOException {
+    private static void loadMockData() throws IOException {
         priorities = MockData.loadPriorities();
         if (Iterables.isEmpty(priorities)) {
             fail("Can't test priority field export - priority list is empty.");
@@ -60,7 +60,7 @@ public class JiraTaskConverterTest {
 
     @Test(expected = IllegalStateException.class)
     public void noIssueTypesSetGeneratesIllegalStateException() {
-        JiraTaskConverter converter = new JiraTaskConverter(config);
+        GTaskToJira converter = new GTaskToJira(config);
         GTask task = new GTask();
         task.setSummary("some task");
         converter.convertToJiraIssue(task);
@@ -75,7 +75,7 @@ public class JiraTaskConverterTest {
         task.setPriority(750);
 
         config.getFieldMappings().setMapping(GTaskDescriptor.FIELD.PRIORITY, true, null);
-        JiraTaskConverter converter = getConverter();
+        GTaskToJira converter = getConverter();
 
         IssueInput newIssue = converter.convertToJiraIssue(task);
         String actualPriorityId = getId(newIssue, IssueFieldId.PRIORITY_FIELD.id);
@@ -87,7 +87,7 @@ public class JiraTaskConverterTest {
         GTask task = new GTask();
         task.setSummary("something");
         task.setPriority(700);
-        JiraTaskConverter converter = createConverterWithUnselectedField(GTaskDescriptor.FIELD.PRIORITY);
+        GTaskToJira converter = createConverterWithUnselectedField(GTaskDescriptor.FIELD.PRIORITY);
         IssueInput issue = converter.convertToJiraIssue(task);
         assertNull(issue.getField(IssueFieldId.PRIORITY_FIELD.id));
     }
@@ -97,7 +97,7 @@ public class JiraTaskConverterTest {
         GTask task = new GTask();
         task.setSummary("checking issueType");
 
-        JiraTaskConverter converter = getConverter();
+        GTaskToJira converter = getConverter();
         IssueType requiredIssueType = findIssueType(issueTypeList, "Task");
         task.setType("Task");
 
@@ -112,7 +112,7 @@ public class JiraTaskConverterTest {
         GTask task = new GTask();
         task.setType(null);
         config.getFieldMappings().setMapping(GTaskDescriptor.FIELD.TASK_TYPE, true, null);
-        JiraTaskConverter converter = getConverter();
+        GTaskToJira converter = getConverter();
 
         IssueInput issue = converter.convertToJiraIssue(task);
         // must be default issue type if we set the field to null
@@ -121,7 +121,7 @@ public class JiraTaskConverterTest {
 
     @Test
     public void summaryIsConvertedByDefault() {
-        JiraTaskConverter converter = getConverter();
+        GTaskToJira converter = getConverter();
         GTask task = new GTask();
         String summary = "summary here";
         task.setSummary(summary);
@@ -131,7 +131,7 @@ public class JiraTaskConverterTest {
 
     @Test
     public void summaryIsNotConvertedWhenNotSelected() {
-        JiraTaskConverter converter = createConverterWithUnselectedField(GTaskDescriptor.FIELD.SUMMARY);
+        GTaskToJira converter = createConverterWithUnselectedField(GTaskDescriptor.FIELD.SUMMARY);
         GTask task = new GTask();
         String summary = "summary here";
         task.setSummary(summary);
@@ -141,7 +141,7 @@ public class JiraTaskConverterTest {
 
     @Test
     public void descriptionIsConvertedByDefault() {
-        JiraTaskConverter converter = getConverter();
+        GTaskToJira converter = getConverter();
         GTask task = new GTask();
         task.setDescription("description here");
         IssueInput issueInput = converter.convertToJiraIssue(task);
@@ -150,7 +150,7 @@ public class JiraTaskConverterTest {
 
     @Test
     public void descriptionIsNOTConvertedWhenNotSelected() {
-        JiraTaskConverter converter = createConverterWithUnselectedField(GTaskDescriptor.FIELD.DESCRIPTION);
+        GTaskToJira converter = createConverterWithUnselectedField(GTaskDescriptor.FIELD.DESCRIPTION);
         GTask task = new GTask();
         task.setDescription("description here");
         IssueInput issueInput = converter.convertToJiraIssue(task);
@@ -159,7 +159,7 @@ public class JiraTaskConverterTest {
 
     @Test
     public void dueDateConvertedByDefault() {
-        JiraTaskConverter converter = getConverter();
+        GTaskToJira converter = getConverter();
         GTask task = new GTask();
         Calendar calendar = Calendar.getInstance();
         calendar.set(2014, 3, 28, 0, 0, 0);
@@ -170,7 +170,7 @@ public class JiraTaskConverterTest {
 
     @Test
     public void dueDateNotConvertedWhenNotSelected() {
-        JiraTaskConverter converter = createConverterWithUnselectedField(GTaskDescriptor.FIELD.DUE_DATE);
+        GTaskToJira converter = createConverterWithUnselectedField(GTaskDescriptor.FIELD.DUE_DATE);
         GTask task = new GTask();
         Calendar calendar = Calendar.getInstance();
         calendar.set(2014, 3, 28, 0, 0, 0);
@@ -181,7 +181,7 @@ public class JiraTaskConverterTest {
 
     @Test
     public void assigneeNotConvertedWhenNotSelected() {
-        JiraTaskConverter converter = createConverterWithUnselectedField(GTaskDescriptor.FIELD.ASSIGNEE);
+        GTaskToJira converter = createConverterWithUnselectedField(GTaskDescriptor.FIELD.ASSIGNEE);
         GTask task = new GTask();
         task.setAssignee(new GUser("mylogin"));
         IssueInput issue = converter.convertToJiraIssue(task);
@@ -190,7 +190,7 @@ public class JiraTaskConverterTest {
 
     @Test
     public void assigneeConvertedIfSelected() {
-        JiraTaskConverter converter = createConverterWithSelectedField(GTaskDescriptor.FIELD.ASSIGNEE);
+        GTaskToJira converter = createConverterWithSelectedField(GTaskDescriptor.FIELD.ASSIGNEE);
         GTask task = new GTask();
         task.setAssignee(new GUser("mylogin"));
         IssueInput issue = converter.convertToJiraIssue(task);
@@ -229,8 +229,8 @@ public class JiraTaskConverterTest {
         throw new RuntimeException("Not found: " + type);
     }
 
-    private JiraTaskConverter getConverter() {
-        JiraTaskConverter converter = new JiraTaskConverter(config);
+    private GTaskToJira getConverter() {
+        GTaskToJira converter = new GTaskToJira(config);
         converter.setPriorities(priorities);
         converter.setIssueTypeList(issueTypeList);
         converter.setVersions(versions);
@@ -238,18 +238,18 @@ public class JiraTaskConverterTest {
         return converter;
     }
 
-    private JiraTaskConverter createConverterWithSelectedField(GTaskDescriptor.FIELD field) {
+    private GTaskToJira createConverterWithSelectedField(GTaskDescriptor.FIELD field) {
         return createConverterWithField(field, true);
     }
 
-    private JiraTaskConverter createConverterWithUnselectedField(GTaskDescriptor.FIELD field) {
+    private GTaskToJira createConverterWithUnselectedField(GTaskDescriptor.FIELD field) {
         return createConverterWithField(field, false);
     }
 
-    private JiraTaskConverter createConverterWithField(GTaskDescriptor.FIELD field, boolean selected) {
+    private GTaskToJira createConverterWithField(GTaskDescriptor.FIELD field, boolean selected) {
         JiraConfig config = new JiraTestData().createTestConfig();
         config.getFieldMappings().setMapping(field, selected, null);
-        JiraTaskConverter converter = new JiraTaskConverter(config);
+        GTaskToJira converter = new GTaskToJira(config);
         converter.setPriorities(priorities);
         converter.setIssueTypeList(issueTypeList);
         converter.setVersions(versions);

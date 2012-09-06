@@ -20,9 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JiraTaskConverter {
-
-    private static final Logger logger = LoggerFactory.getLogger(JiraTaskConverter.class);
+public class GTaskToJira {
 
     // TODO this is hardcoded!! https://www.hostedredmine.com/issues/18074
     private static final Long ISSUE_TYPE_ID = 1l;
@@ -35,7 +33,7 @@ public class JiraTaskConverter {
     private Iterable<Version> versions;
     private Iterable<BasicComponent> components;
 
-    public JiraTaskConverter(JiraConfig config) {
+    public GTaskToJira(JiraConfig config) {
         this.config = config;
     }
 
@@ -147,75 +145,6 @@ public class JiraTaskConverter {
         return values;
     }
 
-    public List<GTask> convertToGenericTaskList(List<Issue> tasks) {
-
-        // TODO see http://jira.atlassian.com/browse/JRA-6896
-        logger.info("Jira: no tasks hierarchy is supported");
-
-        List<GTask> rootLevelTasks = new ArrayList<GTask>();
-
-        for (Issue issue : tasks) {
-            GTask genericTask = convertToGenericTask(issue);
-            rootLevelTasks.add(genericTask);
-        }
-        return rootLevelTasks;
-    }
-
-    public GTask convertToGenericTask(Issue issue) {
-        GTask task = new GTask();
-        Integer intId = Integer.parseInt(issue.getId());
-        task.setId(intId);
-        task.setKey(issue.getKey());
-
-        String jiraUserLogin = issue.getAssignee().getName();
-
-        if (jiraUserLogin != null) {
-            GUser genericUser = new GUser();
-
-            // TODO note: user ID is not set here. should we use a newer Jira API library?
-            genericUser.setLoginName(jiraUserLogin);
-
-            task.setAssignee(genericUser);
-        }
-
-        task.setType(issue.getIssueType().getName());
-        task.setSummary(issue.getSummary());
-        task.setDescription(issue.getDescription());
-
-        DateTime dueDate = issue.getDueDate();
-        if (dueDate != null) {
-            task.setDueDate(dueDate.toDate());
-        }
-
-        // TODO set these fields as well
-        // task.setEstimatedHours(issue.getEstimatedHours());
-        // task.setDoneRatio(issue.getDoneRatio());
-
-        String jiraPriorityName = issue.getPriority().getName();
-
-        if (!Strings.isNullOrEmpty(jiraPriorityName)) {
-            Integer priorityValue = config.getPriorityByText(jiraPriorityName);
-            task.setPriority(priorityValue);
-        }
-
-        processRelations(issue, task);
-
-        return task;
-    }
-
-    public GTask convertToGenericTask(BasicIssue issue) {
-        GTask task = new GTask();
-        Integer intId = Integer.parseInt(issue.getId());
-        task.setId(intId);
-        task.setKey(issue.getKey());
-
-        // TODO set these fields as well
-        // task.setEstimatedHours(issue.getEstimatedHours());
-        // task.setDoneRatio(issue.getDoneRatio());
-
-        return task;
-    }
-
     public void setPriorities(Iterable<Priority> jiraPriorities) {
         for (Priority jiraPriority : jiraPriorities) {
             priorities.put(jiraPriority.getName(), jiraPriority);
@@ -229,7 +158,7 @@ public class JiraTaskConverter {
 
     private Long getIssueTypeIdByName(String issueTypeName) {
         if (issueTypeList == null) {
-            throw new IllegalStateException("Issue Type list is not set in JiraTaskConverter. Please set it before converting tasks.");
+            throw new IllegalStateException("Issue Type list is not set in GTaskToJira. Please set it before converting tasks.");
         }
         Long issueTypeId = null;
 
@@ -240,21 +169,6 @@ public class JiraTaskConverter {
             }
         }
         return issueTypeId;
-    }
-
-    private static void processRelations(Issue issue, GTask genericTask) {
-        Iterable<IssueLink> links = issue.getIssueLinks();
-        for (IssueLink link : links) {
-            if (link.isOutbound()) {
-                String name = link.getIssueLinkType().getName();
-                if (name.equals(JiraConstants.getJiraLinkNameForPrecedes())) {
-                    GRelation r = new GRelation(issue.getKey(), link.getTargetIssueKey(), GRelation.TYPE.precedes);
-                    genericTask.getRelations().add(r);
-                } else {
-                    logger.error("relation type is not supported: " + link.getIssueLinkType());
-                }
-            }
-        }
     }
 
     public void setVersions(Iterable<Version> versions) {

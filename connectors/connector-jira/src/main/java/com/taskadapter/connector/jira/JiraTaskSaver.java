@@ -17,11 +17,13 @@ import java.util.List;
 public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
 
     private JiraConnection connection;
-    private final JiraTaskConverter converter;
+    private final GTaskToJira converter;
+    private final JiraToGTask jiraToGTask;
 
     public JiraTaskSaver(JiraConfig config) {
         super(config);
-        converter = new JiraTaskConverter(config);
+        converter = new GTaskToJira(config);
+        jiraToGTask = new JiraToGTask(config);
     }
 
     @Override
@@ -69,7 +71,7 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
         return issueTypeList;
     }
 
-    // TODO move this method to JiraTaskConverter class
+    // TODO move this method to GTaskToJira class
     @Override
     protected IssueInput convertToNativeTask(GTask task) {
         return converter.convertToJiraIssue(task);
@@ -78,7 +80,7 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
     @Override
     protected GTask createTask(Object nativeTask) throws ConnectorException {
         BasicIssue createdIssue = connection.createIssue((IssueInput) nativeTask);
-        return converter.convertToGenericTask(createdIssue);
+        return jiraToGTask.convertToGenericTask(createdIssue);
     }
 
     @Override

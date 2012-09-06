@@ -206,7 +206,7 @@ public class RedmineDataConverter {
         task.setDueDate(issue.getDueDate());
         task.setCreatedOn(issue.getCreatedOn());
         task.setUpdatedOn(issue.getUpdatedOn());
-        Integer priorityValue = config.getPriorityByText(issue.getPriorityText());//priorityNumbers.get(issue.getPriorityText());
+        Integer priorityValue = config.getPriorityNumberByName(issue.getPriorityText());
         task.setPriority(priorityValue);
         task.setDescription(issue.getDescription());
 

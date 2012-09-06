@@ -38,9 +38,9 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
         try {
             JiraConnection connection = JiraConnectionFactory.createConnection(info);
             Issue issue = connection.getIssueByKey(key);
-            JiraTaskConverter converter = new JiraTaskConverter(config);
             JiraUserConverter userConverter = new JiraUserConverter(connection);
-            return userConverter.setAssigneeDisplayName(converter.convertToGenericTask(issue));
+            JiraToGTask jiraToGTask = new JiraToGTask(config);
+            return userConverter.setAssigneeDisplayName(jiraToGTask.convertToGenericTask(issue));
         } catch (RemoteException e) {
             throw JiraUtils.convertException(e);
         } catch (MalformedURLException e) {

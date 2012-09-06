@@ -5,10 +5,7 @@ import com.taskadapter.connector.Priorities;
 
 import java.io.Serializable;
 
-/**
- * @author Alexey Skorokhodov
- */
-public abstract class ConnectorConfig implements Serializable {
+public abstract class ConnectorConfig implements Serializable, PriorityResolver {
 
     private static final long serialVersionUID = 1L;
 
@@ -125,7 +122,7 @@ public abstract class ConnectorConfig implements Serializable {
         return priorities.getPriorityByMSP(priority);
     }
 
-    public Integer getPriorityByText(String priorityName) {
+    public Integer getPriorityNumberByName(String priorityName) {
         return priorities.getPriorityByText(priorityName);
     }
 
