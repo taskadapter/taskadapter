@@ -105,7 +105,7 @@ public class JiraToGTask {
                 if (link.isOutbound()) {
                     String name = link.getIssueLinkType().getName();
                     if (name.equals(JiraConstants.getJiraLinkNameForPrecedes())) {
-                        GRelation r = new GRelation(issue.getKey(), link.getTargetIssueKey(), GRelation.TYPE.precedes);
+                        GRelation r = new GRelation(issue.getId(), JiraUtils.getIdFromURI(link.getTargetIssueUri()), GRelation.TYPE.precedes);
                         genericTask.getRelations().add(r);
                     } else {
                         logger.error("relation type is not supported: " + link.getIssueLinkType());

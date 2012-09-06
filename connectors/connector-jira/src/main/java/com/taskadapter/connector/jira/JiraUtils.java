@@ -2,6 +2,7 @@ package com.taskadapter.connector.jira;
 
 import java.net.MalformedURLException;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 
@@ -47,4 +48,13 @@ public final class JiraUtils {
     public static ConnectorException convertException(URISyntaxException e) {
         return new BadURIException(e);
     }
+
+    public static String getIdFromURI(URI self) {
+        if (self != null) {
+            String path = self.getPath();
+            return path.substring(path.lastIndexOf('/') + 1);
+        }
+        return null;
+    }
+
 }
