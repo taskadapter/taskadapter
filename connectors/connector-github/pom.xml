@@ -21,17 +21,14 @@
             <artifactId>connector-common</artifactId>
             <version>2.0.0</version>
         </dependency>
-
         <dependency>
             <groupId>org.eclipse.mylyn.github</groupId>
             <artifactId>org.eclipse.egit.github.core</artifactId>
             <version>1.1.2</version>
         </dependency>
-
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>1.6</version>
         </dependency>
     </dependencies>
 </project>
