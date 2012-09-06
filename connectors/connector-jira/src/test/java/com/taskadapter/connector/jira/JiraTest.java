@@ -129,29 +129,6 @@ public class JiraTest {
     }
 
     @Test
-    public void testDeleteIssue() throws ConnectorException, MalformedURLException, URISyntaxException, RemoteException {
-        int tasksQty = 1;
-        GTask task = TestUtils.generateTask();
-
-        Integer id = task.getId();
-
-        // CREATE
-        JiraConnector connector = new JiraConnector(config);
-        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(Arrays.asList(task), null);
-        assertTrue(result.getErrors().getErrors().isEmpty());
-        assertEquals(tasksQty, result.getResult().getCreatedTasksNumber());
-        String remoteKey = result.getResult().getRemoteKey(id);
-
-        Issue loaded = connection.getIssueByKey(remoteKey);
-        connection.deleteIssue(loaded.getKey(), false);
-
-        thrown.expect(RestClientException.class);
-        thrown.expectMessage("Issue Does Not Exist");
-
-        connection.getIssueByKey(remoteKey);
-    }
-
-    @Test
     public void testGetIssuesByProject() throws Exception {
         int tasksQty = 2;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
