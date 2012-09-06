@@ -100,7 +100,7 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
         for (GTask task : tasks) {
             String newSourceTaskKey = result.getRemoteKey(task.getId());
             for (GRelation oldRelation : task.getRelations()) {
-                // XXX get rid of the conversion, it won't work with Jira,
+                // TODO get rid of the conversion, it won't work with Jira,
                 // which has String Keys like "TEST-12"
                 Integer relatedTaskId = Integer.parseInt(oldRelation.getRelatedTaskKey());
                 String newRelatedKey = result.getRemoteKey(relatedTaskId);

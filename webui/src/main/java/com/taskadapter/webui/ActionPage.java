@@ -9,9 +9,6 @@ import com.vaadin.ui.*;
 
 import java.util.List;
 
-/**
- * @author Alexey Skorokhodov
- */
 public abstract class ActionPage extends Page {
     protected final VerticalLayout mainPanel;
     protected final Connector connectorFrom;
@@ -111,9 +108,9 @@ public abstract class ActionPage extends Page {
             try {
                 saveData();
             } catch (ConnectorException e) {
-                // FIXME: add "connector error" dialog
+                e.printStackTrace();
             } catch (Throwable t) {
-                // FIXME: Show "internal error" dialog
+                t.printStackTrace();
             }
             // must synchronize changes over application
             synchronized (navigator.getApplication()) {

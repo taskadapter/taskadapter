@@ -113,6 +113,7 @@ public class ExportPage extends ActionPage {
 
     private void addDateTimeInfo() {
         String time = new SimpleDateFormat("MMMM dd, yyyy  HH:mm").format(Calendar.getInstance().getTime());
+        // TODO externalize, i18n
         Label label = new Label("<strong>Export completed on</strong> <em>" + time + "</em>");
         label.setContentMode(Label.CONTENT_XHTML);
 
