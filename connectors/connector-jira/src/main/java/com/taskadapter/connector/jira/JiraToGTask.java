@@ -24,14 +24,13 @@ public class JiraToGTask {
         this.priorityResolver = priorityResolver;
     }
 
-    public List<GTask> convertToGenericTaskList(List<Issue> tasks) {
-
+    public List<GTask> convertToGenericTaskList(List<Issue> issues) {
         // TODO see http://jira.atlassian.com/browse/JRA-6896
 //        logger.info("Jira: no tasks hierarchy is supported");
 
         List<GTask> rootLevelTasks = new ArrayList<GTask>();
 
-        for (Issue issue : tasks) {
+        for (Issue issue : issues) {
             GTask genericTask = convertToGenericTask(issue);
             rootLevelTasks.add(genericTask);
         }
@@ -44,7 +43,10 @@ public class JiraToGTask {
         task.setId(intId);
         task.setKey(issue.getKey());
 
-        String jiraUserLogin = issue.getAssignee().getName();
+        String jiraUserLogin = null;
+        if (issue.getAssignee() != null) {
+            jiraUserLogin = issue.getAssignee().getName();
+        }
 
         if (jiraUserLogin != null) {
             GUser genericUser = new GUser();
@@ -68,7 +70,10 @@ public class JiraToGTask {
         // task.setEstimatedHours(issue.getEstimatedHours());
         // task.setDoneRatio(issue.getDoneRatio());
 
-        String jiraPriorityName = issue.getPriority().getName();
+        String jiraPriorityName = null;
+        if (issue.getPriority() != null) {
+            jiraPriorityName = issue.getPriority().getName();
+        }
 
         if (!Strings.isNullOrEmpty(jiraPriorityName)) {
             Integer priorityValue = priorityResolver.getPriorityNumberByName(jiraPriorityName);
@@ -95,14 +100,16 @@ public class JiraToGTask {
 
     private static void processRelations(Issue issue, GTask genericTask) {
         Iterable<IssueLink> links = issue.getIssueLinks();
-        for (IssueLink link : links) {
-            if (link.isOutbound()) {
-                String name = link.getIssueLinkType().getName();
-                if (name.equals(JiraConstants.getJiraLinkNameForPrecedes())) {
-                    GRelation r = new GRelation(issue.getKey(), link.getTargetIssueKey(), GRelation.TYPE.precedes);
-                    genericTask.getRelations().add(r);
-                } else {
-                    logger.error("relation type is not supported: " + link.getIssueLinkType());
+        if (links != null) {
+            for (IssueLink link : links) {
+                if (link.isOutbound()) {
+                    String name = link.getIssueLinkType().getName();
+                    if (name.equals(JiraConstants.getJiraLinkNameForPrecedes())) {
+                        GRelation r = new GRelation(issue.getKey(), link.getTargetIssueKey(), GRelation.TYPE.precedes);
+                        genericTask.getRelations().add(r);
+                    } else {
+                        logger.error("relation type is not supported: " + link.getIssueLinkType());
+                    }
                 }
             }
         }
