@@ -35,29 +35,31 @@ public class JiraTaskConverterTest {
         try {
             loadDataFromServer();
         } catch (Exception e) {
+            e.printStackTrace();
             fail("Can't init Jira tests: " + e.toString());
         }
     }
 
-    // TODO provide dummy implementations of priorities, versions, etc - instead of loading them
-    // from server every time.
     private static void loadDataFromServer() throws IOException, URISyntaxException {
         JiraTestData jiraTestData = new JiraTestData();
         String projectKey = jiraTestData.getProjectKey();
         WebServerInfo serverInfo = jiraTestData.getTestServerInfo();
         JiraConnection connection = JiraConnectionFactory.createConnection(serverInfo);
 
-        priorities = SavedPriorities.load();
+        priorities = MockData.loadPriorities();
         if (Iterables.isEmpty(priorities)) {
             fail("Can't test priority field export - priority list is empty.");
         }
 
-        issueTypeList = connection.getIssueTypeList();
+        issueTypeList = MockData.loadIssueTypes();
         if (Iterables.isEmpty(issueTypeList)) {
             fail("can't find any issue types.");
         }
+        // reading Version objects fails with
+        // "Failed to invoke public org.joda.time.Chronology() with no args"
+//        versions = MockData.loadVersions();
         versions = connection.getVersions(projectKey);
-        components = connection.getComponents(projectKey);
+        components = MockData.loadComponents();
     }
 
     @Before

@@ -1,0 +1,42 @@
+[
+    {
+        "description":"The sub-task of the issue",
+        "iconUri":"http://ta-dev.dyndns.biz:9980/images/icons/issue_subtask.gif",
+        "self":"http://ta-dev.dyndns.biz:9980/rest/api/latest/issuetype/5",
+        "id":5,
+        "name":"Sub-task",
+        "isSubtask":true
+    },
+    {
+        "description":"An improvement or enhancement to an existing feature or task.",
+        "iconUri":"http://ta-dev.dyndns.biz:9980/images/icons/improvement.gif",
+        "self":"http://ta-dev.dyndns.biz:9980/rest/api/latest/issuetype/4",
+        "id":4,
+        "name":"Improvement",
+        "isSubtask":false
+    },
+    {
+        "description":"A task that needs to be done.",
+        "iconUri":"http://ta-dev.dyndns.biz:9980/images/icons/task.gif",
+        "self":"http://ta-dev.dyndns.biz:9980/rest/api/latest/issuetype/3",
+        "id":3,
+        "name":"Task",
+        "isSubtask":false
+    },
+    {
+        "description":"A problem which impairs or prevents the functions of the product.",
+        "iconUri":"http://ta-dev.dyndns.biz:9980/images/icons/bug.gif",
+        "self":"http://ta-dev.dyndns.biz:9980/rest/api/latest/issuetype/1",
+        "id":1,
+        "name":"Bug",
+        "isSubtask":false
+    },
+    {
+        "description":"A new feature of the product, which has yet to be developed.",
+        "iconUri":"http://ta-dev.dyndns.biz:9980/images/icons/newfeature.gif",
+        "self":"http://ta-dev.dyndns.biz:9980/rest/api/latest/issuetype/2",
+        "id":2,
+        "name":"New Feature",
+        "isSubtask":false
+    }
+]

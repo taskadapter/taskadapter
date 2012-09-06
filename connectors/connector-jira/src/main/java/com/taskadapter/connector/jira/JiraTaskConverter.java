@@ -112,6 +112,9 @@ public class JiraTaskConverter {
     }
 
     private static Version getVersion(Iterable<Version> versions, String versionName) {
+        if (versionName.isEmpty()) {
+            return null;
+        }
         for (Version v : versions) {
             if (v.getName().equals(versionName)) {
                 return v;

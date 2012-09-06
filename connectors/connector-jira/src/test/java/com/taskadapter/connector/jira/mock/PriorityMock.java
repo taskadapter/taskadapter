@@ -1,4 +1,4 @@
-package com.taskadapter.connector.jira;
+package com.taskadapter.connector.jira.mock;
 
 import com.atlassian.jira.rest.client.domain.Priority;
 
