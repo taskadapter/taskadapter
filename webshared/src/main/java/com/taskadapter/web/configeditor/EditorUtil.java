@@ -53,7 +53,6 @@ public class EditorUtil {
     }
 
     // TODO review and refactor this. this method is too complex
-    // TODO review and refactor this. this method is too complex
 	public static Button createLookupButton(
 			final WindowProvider windowProvider, final String buttonLabel,
 			String description, final String windowTitle,
