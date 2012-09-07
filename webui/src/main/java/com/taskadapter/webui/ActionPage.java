@@ -168,6 +168,9 @@ public abstract class ActionPage extends Page {
             mainPanel.addComponent(saveProgress);
 
             new SaveWorker().start();
+        } else {
+            // TODO i18n
+            mainPanel.getWindow().showNotification("Please select some tasks first.");
         }
     }
 
