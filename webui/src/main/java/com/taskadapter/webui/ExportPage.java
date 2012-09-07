@@ -8,6 +8,7 @@ import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.ConnectorError;
 import com.taskadapter.core.SyncRunner;
+import com.taskadapter.model.GTask;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.file.FileDownloadResource;
@@ -24,6 +25,7 @@ import java.io.File;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 public class ExportPage extends ActionPage {
 
@@ -215,10 +217,11 @@ public class ExportPage extends ActionPage {
     }
 
     @Override
-    protected void saveData() throws ConnectorException {
+    protected void saveData(List<GTask> tasks) throws ConnectorException {
         saveProgress.setValue(0);
         MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
 		runner.setDestination(connectorTo);
+        runner.setTasks(tasks);
         result = runner.save(wrapper);
     }
 

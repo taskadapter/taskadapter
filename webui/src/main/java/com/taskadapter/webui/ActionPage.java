@@ -31,7 +31,7 @@ public abstract class ActionPage extends Page {
         buildInitialPage();
     }
 
-    protected abstract void saveData() throws ConnectorException;
+    protected abstract void saveData(List<GTask> tasks) throws ConnectorException;
 
     protected abstract void loadData() throws ConnectorException;
 
@@ -105,10 +105,16 @@ public abstract class ActionPage extends Page {
     }
 
     private class SaveWorker extends Thread {
+        private List<GTask> tasks;
+
+        private SaveWorker(List<GTask> tasks) {
+            this.tasks = tasks;
+        }
+
         @Override
         public void run() {
             try {
-                saveData();
+                saveData(tasks);
             } catch (ConnectorException e) {
                 e.printStackTrace();
             } catch (Throwable t) {
@@ -157,7 +163,7 @@ public abstract class ActionPage extends Page {
     }
 
     protected void startSaveTasksProcess() {
-        loadedTasks = confirmExportPage.getSelectedRootLevelTasks();
+        List<GTask> selectedRootLevelTasks = confirmExportPage.getSelectedRootLevelTasks();
 
         if (!loadedTasks.isEmpty()) {
             saveProgress = new ProgressIndicator();
@@ -167,9 +173,8 @@ public abstract class ActionPage extends Page {
             mainPanel.removeAllComponents();
             mainPanel.addComponent(saveProgress);
 
-            new SaveWorker().start();
+            new SaveWorker(selectedRootLevelTasks).start();
         } else {
-            // TODO i18n
             mainPanel.getWindow().showNotification("Please select some tasks first.");
         }
     }

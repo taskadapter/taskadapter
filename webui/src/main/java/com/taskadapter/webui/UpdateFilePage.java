@@ -4,12 +4,12 @@ import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.Updater;
+import com.taskadapter.model.GTask;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
-/**
- * @author Alexey Skorokhodov
- */
+import java.util.List;
+
 public class UpdateFilePage extends ActionPage {
 
     private final Updater updater;
@@ -20,8 +20,8 @@ public class UpdateFilePage extends ActionPage {
     }
 
     @Override
-    protected void saveData() throws ConnectorException {
-        updater.setConfirmedTasks(loadedTasks);
+    protected void saveData(List<GTask> tasks) throws ConnectorException {
+        updater.setConfirmedTasks(tasks);
 
         MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
         updater.setMonitor(wrapper);
