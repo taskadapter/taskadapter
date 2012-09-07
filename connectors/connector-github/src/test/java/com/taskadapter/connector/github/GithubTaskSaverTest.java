@@ -12,7 +12,7 @@ public class GithubTaskSaverTest {
         GithubConfig invalidCredentialsConfig = new GithubConfig();
         invalidCredentialsConfig.getServerInfo().setUserName("invalidUser");
         invalidCredentialsConfig.setProjectKey("invalidRepo");
-        invalidCredentialsConfig.getServerInfo().setPassword("");
+        invalidCredentialsConfig.getServerInfo().setPassword("invalidpassword");
         GithubTaskSaver saver = new GithubTaskSaver(invalidCredentialsConfig);
         GTask task = new GTask();
         task.setSummary("api66");
