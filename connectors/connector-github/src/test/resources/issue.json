@@ -1,0 +1,27 @@
+{"id":6705012, "createdAt":"Sep 6, 2012 7:34:07 PM", "updatedAt":"Sep 6, 2012 7:34:07 PM", "comments":0, "number":6, "labels":[], "pullRequest":{
+    "mergeable":false,
+    "merged":false,
+    "id":0,
+    "additions":0,
+    "changedFiles":0,
+    "comments":0,
+    "commits":0,
+    "deletions":0,
+    "number":0
+}, "body":"", "htmlUrl":"https://github.com/alexeyOnGitHub/test/issues/6", "state":"open", "title":"task 1", "url":"https://api.github.com/repos/alexeyOnGitHub/test/issues/6", "user":{
+    "hireable":false,
+    "collaborators":0,
+    "diskUsage":0,
+    "followers":0,
+    "following":0,
+    "id":239741,
+    "ownedPrivateRepos":0,
+    "privateGists":0,
+    "publicGists":0,
+    "publicRepos":0,
+    "totalPrivateRepos":0,
+    "avatarUrl":"https://secure.gravatar.com/avatar/2cb6b6446d377dd4bc02acd1508d29b7?d\u003dhttps://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+    "gravatarId":"2cb6b6446d377dd4bc02acd1508d29b7",
+    "login":"alexeyOnGitHub",
+    "url":"https://api.github.com/users/alexeyOnGitHub"
+}}

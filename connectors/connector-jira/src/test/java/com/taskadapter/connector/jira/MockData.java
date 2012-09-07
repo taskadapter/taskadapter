@@ -6,6 +6,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import com.taskadapter.connector.TestDataLoader;
 import com.taskadapter.connector.jira.mock.*;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -24,11 +25,13 @@ public class MockData {
     }
 
     public static Iterable<Priority> loadPriorities() {
-        return load("priorities_jira5.0.6.json", new TypeToken<ArrayList<PriorityMock>>() {}.getType());
+        return (Iterable<Priority>) TestDataLoader.load("priorities_jira5.0.6.json", new TypeToken<ArrayList<PriorityMock>>() {
+        }.getType());
     }
 
     public static Iterable<IssueType> loadIssueTypes() {
-        return load("issuetypes_jira5.0.6.json", new TypeToken<ArrayList<IssueTypeMock>>() {}.getType());
+        return (Iterable<IssueType>) TestDataLoader.load("issuetypes_jira5.0.6.json", new TypeToken<ArrayList<IssueTypeMock>>() {
+        }.getType());
     }
 
     public static Iterable<Version> loadVersions() {
@@ -36,19 +39,12 @@ public class MockData {
          * "Unable to invoke no-args constructor for class org.joda.time.Chronology" problem.
          * See the original file "versions_jira5.0.6.json"
          */
-        return load("versions_without_release_date_jira5.0.6.json", new TypeToken<ArrayList<VersionMock>>() {}.getType());
+        return (Iterable<Version>) TestDataLoader.load("versions_without_release_date_jira5.0.6.json", new TypeToken<ArrayList<VersionMock>>() {
+        }.getType());
     }
 
     public static Iterable<BasicComponent> loadComponents() {
-        return load("components_jira5.0.6.json", new TypeToken<ArrayList<BasicComponentMock>>() {}.getType());
-    }
-
-    public static Iterable load(String fileName, Type fooType) {
-        try {
-            String fileContents = Resources.toString(Resources.getResource(fileName), Charsets.UTF_8);
-            return new Gson().fromJson(fileContents, fooType);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return (Iterable<BasicComponent>) TestDataLoader.load("components_jira5.0.6.json", new TypeToken<ArrayList<BasicComponentMock>>() {
+        }.getType());
     }
 }

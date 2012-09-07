@@ -16,7 +16,7 @@ public class GithubTaskSaver extends AbstractTaskSaver<GithubConfig> {
 
     private IssueService issueService;
 
-    private GithubTaskConverter taskConverter;
+    private GithubToGTask taskConverter;
     private final UserService userService;
 
     public GithubTaskSaver(GithubConfig config) {
@@ -24,7 +24,7 @@ public class GithubTaskSaver extends AbstractTaskSaver<GithubConfig> {
         ConnectionFactory ghConnector = new ConnectionFactory(config);
         issueService = ghConnector.getIssueService();
         userService = ghConnector.getUserService();
-        taskConverter = new GithubTaskConverter();
+        taskConverter = new GithubToGTask();
     }
 
 
@@ -40,7 +40,7 @@ public class GithubTaskSaver extends AbstractTaskSaver<GithubConfig> {
         String repositoryName = config.getProjectKey();
         try {
             Issue createdIssue = issueService.createIssue(userName, repositoryName, issue);
-            return taskConverter.issueToGtask(createdIssue);
+            return taskConverter.toGtask(createdIssue);
         } catch (IOException e) {
             throw GithubUtils.convertException(e); 
         }
