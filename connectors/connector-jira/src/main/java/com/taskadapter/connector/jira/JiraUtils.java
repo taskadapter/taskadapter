@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 
+import com.taskadapter.connector.definition.exceptions.NotAuthorizedException;
 import org.apache.axis.AxisFault;
 
 import com.atlassian.jira.rpc.soap.client.RemoteAuthenticationException;
@@ -22,7 +23,7 @@ public final class JiraUtils {
 
     public static ConnectorException convertException(RemoteException e) {
         if (e instanceof RemoteAuthenticationException) {
-            return new ConnectorException(((RemoteAuthenticationException) e).getFaultString());
+            return new NotAuthorizedException(((RemoteAuthenticationException) e).getFaultString());
         }
         
         if (!(e instanceof AxisFault))

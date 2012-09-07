@@ -6,6 +6,7 @@ import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.definition.exceptions.NotAuthorizedException;
 import com.taskadapter.core.ConnectorError;
 import com.taskadapter.core.SyncRunner;
 import com.taskadapter.model.GTask;
@@ -161,7 +162,7 @@ public class ExportPage extends ActionPage {
         errorTextLabel.setContentMode(Label.CONTENT_XHTML);
         donePanel.addComponent(errorTextLabel);
     }
-    
+
     private static String quot(String str) {
         return str.replace("&", "&amp;")
                 .replace("\"", "&quot;")
@@ -201,18 +202,18 @@ public class ExportPage extends ActionPage {
     private String getMessageForTask(TaskError<ConnectorError<Throwable>> e) {
         return "Task " + e.getTask().getId() + " (\"" + e.getTask().getSummary() + "\"): " + decodeException(e.getErrors());
     }
-    
+
     private String decodeException(ConnectorError<Throwable> e) {
         final String connectorID = e.getTypeId();
-        
+
         final PluginEditorFactory factory = services.getEditorManager()
                 .getEditorFactory(connectorID);
-        
+
         String errorText = factory.formatError(e.getError());
         if (errorText == null) {
             errorText = ExceptionFormatter.format(e.getError());
         }
-        
+
         return "Connector " + connectorID + " error : " + errorText;
     }
 
@@ -220,9 +221,14 @@ public class ExportPage extends ActionPage {
     protected void saveData(List<GTask> tasks) throws ConnectorException {
         saveProgress.setValue(0);
         MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
-		runner.setDestination(connectorTo);
+        runner.setDestination(connectorTo);
         runner.setTasks(tasks);
-        result = runner.save(wrapper);
+        try {
+            result = runner.save(wrapper);
+        } catch (NotAuthorizedException e) {
+            showErrorMessageOnPage(ExceptionFormatter.format(e));
+            logger.error(e.getMessage(), e);
+        }
     }
 
 }

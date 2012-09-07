@@ -1,11 +1,6 @@
 package com.taskadapter.webui.data;
 
-import com.taskadapter.connector.definition.exceptions.BadConfigException;
-import com.taskadapter.connector.definition.exceptions.CommunicationException;
-import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.connector.definition.exceptions.EntityPersistenseException;
-import com.taskadapter.connector.definition.exceptions.EntityProcessingException;
-import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
+import com.taskadapter.connector.definition.exceptions.*;
 import com.taskadapter.web.data.DataFormatter;
 import com.taskadapter.web.data.MapByClassBuilder;
 import com.taskadapter.web.data.Messages;
@@ -20,11 +15,15 @@ public final class ExceptionFormatter {
 
     private static final DataFormatter<Throwable> FORMATTERS = MapByClassBuilder
             .<Throwable> build()
+
             .add(UnsupportedConnectorOperation.class,
                     MESSAGES.get("errors.notSupported"))
             .addMethod(EntityPersistenseException.class,
                     ExceptionFormatter.class, "formatException",
                     "errors.persistence")
+            .addMethod(NotAuthorizedException.class,
+                    ExceptionFormatter.class, "formatException",
+                    "errors.notAuthorized")
             .addMethod(EntityProcessingException.class,
                     ExceptionFormatter.class, "formatException",
                     "General error processing entity")

@@ -81,7 +81,7 @@ public class SyncRunner {
     }
 
     public SyncResult<TaskSaveResult, TaskErrors<ConnectorError<Throwable>>> save(
-            ProgressMonitor monitor) {
+            ProgressMonitor monitor) throws ConnectorException {
         int totalNumberOfTasks = DataConnectorUtil
                 .calculateNumberOfTasks(tasks);
         if (monitor != null) {
