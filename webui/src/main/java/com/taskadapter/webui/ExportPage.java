@@ -225,7 +225,7 @@ public class ExportPage extends ActionPage {
         runner.setTasks(tasks);
         try {
             result = runner.save(wrapper);
-        } catch (NotAuthorizedException e) {
+        } catch (ConnectorException e) {
             showErrorMessageOnPage(ExceptionFormatter.format(e));
             logger.error(e.getMessage(), e);
         }
