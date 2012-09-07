@@ -7,6 +7,7 @@ import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.service.IssueService;
+import org.eclipse.egit.github.core.service.UserService;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,18 +17,20 @@ public class GithubTaskSaver extends AbstractTaskSaver<GithubConfig> {
     private IssueService issueService;
 
     private GithubTaskConverter taskConverter;
+    private final UserService userService;
 
     public GithubTaskSaver(GithubConfig config) {
         super(config);
         ConnectionFactory ghConnector = new ConnectionFactory(config);
         issueService = ghConnector.getIssueService();
-        taskConverter = new GithubTaskConverter(ghConnector.getUserService());
+        userService = ghConnector.getUserService();
+        taskConverter = new GithubTaskConverter();
     }
 
 
     @Override
     protected Issue convertToNativeTask(GTask task) throws ConnectorException {
-        return taskConverter.gtaskToIssue(task);
+        return new GTaskToGithub(userService).toIssue(task);
     }
 
     @Override

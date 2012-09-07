@@ -48,12 +48,7 @@ public class GithubConnector extends AbstractConnector<GithubConfig> {
         } catch (IOException e) {
             throw GithubUtils.convertException(e);
         }
-        return getTaskConverter().convertToGenericTask(issue);
-    }
-    
-    private GithubTaskConverter getTaskConverter() {
-        ConnectionFactory cf = new ConnectionFactory(config);
-        return new GithubTaskConverter(cf.getUserService());
+        return new GithubTaskConverter().convertToGenericTask(issue);
     }
     
     private IssueService getIssueService() {
@@ -77,7 +72,7 @@ public class GithubConnector extends AbstractConnector<GithubConfig> {
             throw GithubUtils.convertException(e);
         }
 
-        return getTaskConverter().convertToGenericTaskList(issues);
+        return new GithubTaskConverter().convertToGenericTaskList(issues);
     }
     
 
