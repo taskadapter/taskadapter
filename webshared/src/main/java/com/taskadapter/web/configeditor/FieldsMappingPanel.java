@@ -49,7 +49,7 @@ public class FieldsMappingPanel extends Panel implements Validatable {
 
 		setDescription("Select fields to export when SAVING data to this system");
 		addFields();
-		setWidth("800px");
+		setWidth("900px");
 	}
 
 	private void addFields() {

@@ -40,7 +40,7 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         labelText.setPropertyDataSource(new MethodProperty<String>(config,
                 "label"));
         descriptionLayout.addComponent(labelText);
-        setWidth("800px");
+        setWidth("840px");
     }
 
     protected void addPanelToLayout(Layout component, Panel panel) {
