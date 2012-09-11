@@ -131,6 +131,11 @@ public class JiraConnection {
             return null;
         }
     }
+    
+    public RemoteIssue[] getByQuery(Integer queryId) throws RemoteException {
+        return jiraSoapService.getIssuesFromFilter(authToken,
+                queryId.toString());
+    }
 
     // This requires Admin privileges.
     // see Jira bug https://jira.atlassian.com/browse/JRA-6857

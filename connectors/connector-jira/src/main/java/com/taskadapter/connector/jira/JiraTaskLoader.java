@@ -1,12 +1,14 @@
 package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rpc.soap.client.RemoteIssue;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class JiraTaskLoader {
@@ -30,7 +32,16 @@ public class JiraTaskLoader {
         List<GTask> rows;
 
         try {
-            List<Issue> issues = connection.getIssuesByProject(config.getProjectKey());
+            final List<Issue> issues;
+            if (config.getQueryId() != null) {
+                final RemoteIssue[] remoteIssues = connection.getByQuery(config.getQueryId());
+                issues = new ArrayList<Issue>(remoteIssues.length);
+                for (RemoteIssue issue : remoteIssues) {
+                    issues.add(connection.getIssueByKey(issue.getKey()));
+                }
+            } else {
+                issues = connection.getIssuesByProject(config.getProjectKey());
+            }
 
             rows = jiraToGTask.convertToGenericTaskList(issues);
             JiraUserConverter userConverter = new JiraUserConverter(connection);
