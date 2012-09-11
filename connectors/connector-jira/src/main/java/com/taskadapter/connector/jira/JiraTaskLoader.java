@@ -34,11 +34,8 @@ public class JiraTaskLoader {
         try {
             final List<Issue> issues;
             if (config.getQueryId() != null) {
-                final RemoteIssue[] remoteIssues = connection.getByQuery(config.getQueryId());
-                issues = new ArrayList<Issue>(remoteIssues.length);
-                for (RemoteIssue issue : remoteIssues) {
-                    issues.add(connection.getIssueByKey(issue.getKey()));
-                }
+                issues = connection.getIssuesByQueryId(config.getProjectKey(),
+                        config.getQueryId().toString());
             } else {
                 issues = connection.getIssuesByProject(config.getProjectKey());
             }

@@ -1,24 +1,17 @@
 package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rest.client.JiraRestClient;
-import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.domain.*;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.internal.json.CommonIssueJsonParser;
-import com.atlassian.jira.rest.client.internal.json.IssueJsonParser;
-import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.atlassian.jira.rpc.soap.client.*;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.taskadapter.model.GRelation;
 
-import javax.naming.directory.SearchControls;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.List;
 
 public class JiraConnection {
@@ -42,6 +35,16 @@ public class JiraConnection {
 
     public List<Issue> getIssuesBySummary(String summary) {
         return getIssuesFromFilter("summary~\"" + summary + "\"");
+    }
+    
+    public List<Issue> getIssuesByQueryId(String projectKey, String queryId) {
+        final SearchResult<Issue> result = restClient.getSearchClient()
+                .searchJql(
+                        "project = " + projectKey + " AND filter = " + queryId,
+                        "\u002A" + "all", null, new CommonIssueJsonParser());
+
+        return Lists.newArrayList(result.getIssues());
+
     }
 
     public List<Issue> getIssuesByProject(String projectKey) {
@@ -132,11 +135,6 @@ public class JiraConnection {
         }
     }
     
-    public RemoteIssue[] getByQuery(Integer queryId) throws RemoteException {
-        return jiraSoapService.getIssuesFromFilter(authToken,
-                queryId.toString());
-    }
-
     // This requires Admin privileges.
     // see Jira bug https://jira.atlassian.com/browse/JRA-6857
     public RemoteField[] getCustomFields(String projectKey) throws RemoteException {
