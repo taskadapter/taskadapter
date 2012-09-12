@@ -3,6 +3,7 @@ package com.taskadapter.web.configeditor;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.web.callbacks.DataProvider;
+import com.taskadapter.web.data.Messages;
 import com.vaadin.data.Container.ItemSetChangeEvent;
 import com.vaadin.data.Container.ItemSetChangeListener;
 import com.vaadin.ui.Button;
@@ -14,9 +15,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class PriorityPanel extends Panel implements Validatable {
+    private static final long serialVersionUID = 2702903968099614416L;
+
+    private static final String BUNDLE_NAME = "com.taskadapter.web.configeditor.priorities";
+
+    private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
 
     private final Logger logger = LoggerFactory.getLogger(PriorityPanel.class);
 
@@ -115,6 +122,15 @@ public class PriorityPanel extends Panel implements Validatable {
     @Override
     public void validate() throws ValidationException {
         Integer mspValue;
+        
+        final Map<String, String> badValues = data.getInvalidValues();
+        
+        final StringBuilder message = new StringBuilder();
+        for (Map.Entry<String, String> badMessage : badValues.entrySet()) {
+            message.append(MESSAGES.format("badMappingValue",
+                    badMessage.getKey(), badMessage.getValue()));
+            message.append(' ');
+        }
 
         Set<Integer> set = new HashSet<Integer>();
         int i = 0;
@@ -125,7 +141,11 @@ public class PriorityPanel extends Panel implements Validatable {
         }
 
         if (i != set.size()) {
-            throw new ValidationException("TaskAdapter priorities duplication found. Please make all priority values unique in the table.");
+            message.append(MESSAGES.get("duplicateMappingValue"));
+        }
+        
+        if (message.length() > 0) {
+            throw new ValidationException(message.toString());
         }
     }
 }
