@@ -1,5 +1,6 @@
 package com.taskadapter.connector.jira;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,10 @@ public class JiraProjectConverter {
         gProject.setKey(jiraProject.getKey());
         gProject.setName(jiraProject.getName());
         gProject.setDescription(jiraProject.getDescription());
-        gProject.setHomepage(jiraProject.getUri().toString());
+        final URI projectURI = jiraProject.getUri();
+        if (projectURI != null) {
+            gProject.setHomepage(projectURI.toString());
+        }
         // we know that getId returns a string, which in fact holds an integer,
         // so conversion to Integer is OK here.
         //gProject.setId(Integer.valueOf(jiraProject.getId()));
