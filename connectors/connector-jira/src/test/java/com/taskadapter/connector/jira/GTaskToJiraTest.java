@@ -121,80 +121,93 @@ public class GTaskToJiraTest {
 
     @Test
     public void summaryIsConvertedByDefault() {
-        GTaskToJira converter = getConverter();
-        GTask task = new GTask();
-        String summary = "summary here";
-        task.setSummary(summary);
-        IssueInput issueInput = converter.convertToJiraIssue(task);
-        assertEquals(summary, getValue(issueInput, IssueFieldId.SUMMARY_FIELD.id));
+        checkSummary(getConverter(), "summary here");
     }
 
     @Test
     public void summaryIsNotConvertedWhenNotSelected() {
-        GTaskToJira converter = createConverterWithUnselectedField(GTaskDescriptor.FIELD.SUMMARY);
+        checkSummary(createConverterWithUnselectedField(GTaskDescriptor.FIELD.SUMMARY), null);
+    }
+
+    @Test
+    public void summaryIsConvertedWhenSelected() {
+        checkSummary(createConverterWithSelectedField(GTaskDescriptor.FIELD.SUMMARY), "summary here");
+    }
+
+    private void checkSummary(GTaskToJira converter, String expectedValue) {
         GTask task = new GTask();
         String summary = "summary here";
         task.setSummary(summary);
-        IssueInput issue = converter.convertToJiraIssue(task);
-        assertNull(issue.getField(IssueFieldId.SUMMARY_FIELD.id));
+        IssueInput issueInput = converter.convertToJiraIssue(task);
+        assertEquals(expectedValue, getValue(issueInput, IssueFieldId.SUMMARY_FIELD.id));
     }
 
     @Test
     public void descriptionIsConvertedByDefault() {
-        GTaskToJira converter = getConverter();
-        GTask task = new GTask();
-        task.setDescription("description here");
-        IssueInput issueInput = converter.convertToJiraIssue(task);
-        assertEquals("description here", getValue(issueInput, IssueFieldId.DESCRIPTION_FIELD.id));
+        checkDescription(getConverter(), "description here");
+    }
+
+    @Test
+    public void descriptionIsConvertedWhenSelected() {
+        checkDescription(createConverterWithSelectedField(GTaskDescriptor.FIELD.DESCRIPTION), "description here");
     }
 
     @Test
     public void descriptionIsNOTConvertedWhenNotSelected() {
-        GTaskToJira converter = createConverterWithUnselectedField(GTaskDescriptor.FIELD.DESCRIPTION);
+        checkDescription(createConverterWithUnselectedField(GTaskDescriptor.FIELD.DESCRIPTION), null);
+    }
+
+    private void checkDescription(GTaskToJira converter, String expectedValue) {
         GTask task = new GTask();
         task.setDescription("description here");
         IssueInput issueInput = converter.convertToJiraIssue(task);
-        assertNull(issueInput.getField(IssueFieldId.DESCRIPTION_FIELD.id));
+        assertEquals(expectedValue, getValue(issueInput, IssueFieldId.DESCRIPTION_FIELD.id));
     }
 
     @Test
     public void dueDateConvertedByDefault() {
-        GTaskToJira converter = getConverter();
+        checkDueDate(getConverter(), "2014-04-28");
+    }
+
+    @Test
+    public void dueDateConvertedWhenSelected() {
+        checkDueDate(createConverterWithSelectedField(GTaskDescriptor.FIELD.DUE_DATE), "2014-04-28");
+    }
+
+    @Test
+    public void dueDateNotConvertedWhenNotSelected() {
+        checkDueDate(createConverterWithUnselectedField(GTaskDescriptor.FIELD.DUE_DATE), null);
+    }
+
+    private void checkDueDate(GTaskToJira converter, String expected) {
         GTask task = new GTask();
         Calendar calendar = Calendar.getInstance();
         calendar.set(2014, 3, 28, 0, 0, 0);
         task.setDueDate(calendar.getTime());
         IssueInput issueInput = converter.convertToJiraIssue(task);
-        assertEquals("2014-04-28", getValue(issueInput, IssueFieldId.DUE_DATE_FIELD.id));
+        assertEquals(expected, getValue(issueInput, IssueFieldId.DUE_DATE_FIELD.id));
     }
 
     @Test
-    public void dueDateNotConvertedWhenNotSelected() {
-        GTaskToJira converter = createConverterWithUnselectedField(GTaskDescriptor.FIELD.DUE_DATE);
-        GTask task = new GTask();
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2014, 3, 28, 0, 0, 0);
-        task.setDueDate(calendar.getTime());
-        IssueInput issue = converter.convertToJiraIssue(task);
-        assertNull(issue.getField(IssueFieldId.DUE_DATE_FIELD.id));
+    public void assigneeConvertedByDefault() {
+        checkAssignee(getConverter(), "mylogin");
     }
 
     @Test
     public void assigneeNotConvertedWhenNotSelected() {
-        GTaskToJira converter = createConverterWithUnselectedField(GTaskDescriptor.FIELD.ASSIGNEE);
-        GTask task = new GTask();
-        task.setAssignee(new GUser("mylogin"));
-        IssueInput issue = converter.convertToJiraIssue(task);
-        assertNull(issue.getField(IssueFieldId.ASSIGNEE_FIELD.id));
+        checkAssignee(createConverterWithUnselectedField(GTaskDescriptor.FIELD.ASSIGNEE), null);
     }
 
     @Test
     public void assigneeConvertedIfSelected() {
-        GTaskToJira converter = createConverterWithSelectedField(GTaskDescriptor.FIELD.ASSIGNEE);
+        checkAssignee(createConverterWithSelectedField(GTaskDescriptor.FIELD.ASSIGNEE), "mylogin");
+    }
+
+    private void checkAssignee(GTaskToJira converter, String expected) {
         GTask task = new GTask();
         task.setAssignee(new GUser("mylogin"));
         IssueInput issue = converter.convertToJiraIssue(task);
-        assertEquals("mylogin", getComplexValue(issue, IssueFieldId.ASSIGNEE_FIELD.id, "name"));
+        assertEquals(expected, getComplexValue(issue, IssueFieldId.ASSIGNEE_FIELD.id, "name"));
     }
 
     @Test
@@ -227,6 +240,9 @@ public class GTaskToJiraTest {
 
     private String getValue(IssueInput issue, String fieldName) {
         FieldInput field = issue.getField(fieldName);
+        if (field == null) {
+            return null;
+        }
         return (String) field.getValue();
     }
 
