@@ -92,8 +92,9 @@ public class GTaskToJira {
             }
         }
 
-        if (mappings.isFieldSelected(FIELD.ESTIMATED_TIME)) {
-            TimeTracking timeTracking = new TimeTracking(Math.round(task.getEstimatedHours() * 60), null, null);
+        Float estimatedHours = task.getEstimatedHours();
+        if (mappings.isFieldSelected(FIELD.ESTIMATED_TIME) && (estimatedHours != null)) {
+            TimeTracking timeTracking = new TimeTracking(Math.round(estimatedHours * 60), null, null);
             issueInputBuilder.setFieldValue(IssueFieldId.TIMETRACKING_FIELD.id, timeTracking);
         }
 
