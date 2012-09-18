@@ -17,9 +17,9 @@ import java.util.ArrayList;
 
 public class MockData {
 
-    public static Issue loadIssue() throws IOException, JSONException {
+    public static Issue loadIssue(String fileName) throws IOException, JSONException {
         final IssueJsonParser issueParser = new IssueJsonParser();
-        String fileContents = Resources.toString(Resources.getResource("issue_jira_5.0.1.json"), Charsets.UTF_8);
+        String fileContents = Resources.toString(Resources.getResource(fileName), Charsets.UTF_8);
         JSONObject obj = new JSONObject(fileContents);
         return issueParser.parse(obj);
     }
