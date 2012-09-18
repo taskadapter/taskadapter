@@ -197,6 +197,28 @@ public class GTaskToJiraTest {
         assertEquals("mylogin", getComplexValue(issue, IssueFieldId.ASSIGNEE_FIELD.id, "name"));
     }
 
+    @Test
+    public void estimatedTimeConvertedByDefault() {
+        checkEstimatedTime(getConverter(), "180m");
+    }
+
+    @Test
+    public void estimatedTimeConvertedIfSelected() {
+        checkEstimatedTime(createConverterWithSelectedField(GTaskDescriptor.FIELD.ESTIMATED_TIME), "180m");
+    }
+
+    @Test
+    public void estimatedTimeNotConvertedIfNotSelected() {
+        checkEstimatedTime(createConverterWithUnselectedField(GTaskDescriptor.FIELD.ESTIMATED_TIME), null);
+    }
+
+    private void checkEstimatedTime(GTaskToJira converter, String expectedTime) {
+        GTask task = new GTask();
+        task.setEstimatedHours(3f);
+        IssueInput issue = converter.convertToJiraIssue(task);
+        assertEquals(expectedTime, getComplexValue(issue, "timetracking", "originalEstimate"));
+    }
+
     private String getId(IssueInput issue, String fieldName) {
         FieldInput field = issue.getField(fieldName);
         ComplexIssueInputFieldValue value = (ComplexIssueInputFieldValue) field.getValue();
@@ -210,6 +232,9 @@ public class GTaskToJiraTest {
 
     private String getComplexValue(IssueInput issue, String fieldName, String subFieldName) {
         FieldInput field = issue.getField(fieldName);
+        if (field == null) {
+            return null;
+        }
         ComplexIssueInputFieldValue value = (ComplexIssueInputFieldValue) field.getValue();
         return (String) value.getValuesMap().get(subFieldName);
     }
