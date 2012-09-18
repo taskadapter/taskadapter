@@ -19,7 +19,7 @@ import java.util.List;
 public class JiraToGTask {
     private static final Logger logger = LoggerFactory.getLogger(JiraToGTask.class);
 
-    private PriorityResolver priorityResolver;
+    private final PriorityResolver priorityResolver;
 
     public JiraToGTask(PriorityResolver priorityResolver) {
         this.priorityResolver = priorityResolver;
@@ -67,8 +67,7 @@ public class JiraToGTask {
             task.setDueDate(dueDate.toDate());
         }
 
-        // TODO set these fields as well
-        // task.setEstimatedHours(issue.getEstimatedHours());
+        // TODO set Done Ratio
         // task.setDoneRatio(issue.getDoneRatio());
 
         String jiraPriorityName = null;
@@ -82,9 +81,10 @@ public class JiraToGTask {
         }
 
         TimeTracking timeTracking = issue.getTimeTracking();
-        if (timeTracking.getOriginalEstimateMinutes() != null
-                && !timeTracking.getOriginalEstimateMinutes().equals(0)) {
-            task.setEstimatedHours(new Float(timeTracking.getOriginalEstimateMinutes() / 60));
+        Integer originalEstimateMinutes = timeTracking.getOriginalEstimateMinutes();
+        if (originalEstimateMinutes != null
+                && !originalEstimateMinutes.equals(0)) {
+            task.setEstimatedHours((float) (originalEstimateMinutes / 60));
         }
 
         processRelations(issue, task);
@@ -97,11 +97,6 @@ public class JiraToGTask {
         Integer intId = Integer.parseInt(issue.getId());
         task.setId(intId);
         task.setKey(issue.getKey());
-
-        // TODO set these fields as well
-        // task.setEstimatedHours(issue.getEstimatedHours());
-        // task.setDoneRatio(issue.getDoneRatio());
-
         return task;
     }
 
