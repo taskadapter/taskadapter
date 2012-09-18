@@ -1,9 +1,8 @@
 package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rest.client.RestClientException;
-import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rest.client.domain.IssueLink;
-import com.atlassian.jira.rest.client.domain.User;
+import com.atlassian.jira.rest.client.domain.*;
+import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
 import com.atlassian.jira.rpc.soap.client.RemoteUser;
 import com.google.common.collect.Iterables;
 import com.taskadapter.connector.common.TestUtils;

@@ -3,6 +3,7 @@ package com.taskadapter.connector.jira;
 import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueLink;
+import com.atlassian.jira.rest.client.domain.TimeTracking;
 import com.google.common.base.Strings;
 import com.taskadapter.connector.definition.PriorityResolver;
 import com.taskadapter.model.GRelation;
@@ -78,6 +79,12 @@ public class JiraToGTask {
         if (!Strings.isNullOrEmpty(jiraPriorityName)) {
             Integer priorityValue = priorityResolver.getPriorityNumberByName(jiraPriorityName);
             task.setPriority(priorityValue);
+        }
+
+        TimeTracking timeTracking = issue.getTimeTracking();
+        if (timeTracking.getOriginalEstimateMinutes() != null
+                && !timeTracking.getOriginalEstimateMinutes().equals(0)) {
+            task.setEstimatedHours(new Float(timeTracking.getOriginalEstimateMinutes() / 60));
         }
 
         processRelations(issue, task);
