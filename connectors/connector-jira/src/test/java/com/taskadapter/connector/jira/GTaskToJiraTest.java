@@ -182,7 +182,7 @@ public class GTaskToJiraTest {
     private void checkDueDate(GTaskToJira converter, String expected) {
         GTask task = new GTask();
         Calendar calendar = Calendar.getInstance();
-        calendar.set(2014, 3, 28, 0, 0, 0);
+        calendar.set(2014, Calendar.APRIL, 28, 0, 0, 0);
         task.setDueDate(calendar.getTime());
         IssueInput issueInput = converter.convertToJiraIssue(task);
         assertEquals(expected, getValue(issueInput, IssueFieldId.DUE_DATE_FIELD.id));

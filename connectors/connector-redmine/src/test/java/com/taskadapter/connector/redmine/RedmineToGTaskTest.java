@@ -19,10 +19,18 @@ public class RedmineToGTaskTest {
     }
 
     @Test
-    public void summaryIsConvertedByDefault() {
+    public void summaryIsConverted() {
         Issue redmineIssue = new Issue();
         redmineIssue.setSubject("text 1");
         GTask task = toGTask.convertToGenericTask(redmineIssue);
         assertEquals("text 1", task.getSummary());
+    }
+
+    @Test
+    public void descriptionIsConverted() {
+        Issue redmineIssue = new Issue();
+        redmineIssue.setDescription("description 1");
+        GTask task = toGTask.convertToGenericTask(redmineIssue);
+        assertEquals("description 1", task.getDescription());
     }
 }

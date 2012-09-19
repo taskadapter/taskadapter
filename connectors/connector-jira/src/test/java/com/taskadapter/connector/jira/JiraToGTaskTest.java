@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 public class JiraToGTaskTest {
 
     @Test
-    public void sampleIssueConverted() throws Exception {
+    public void summaryIsConverted() throws Exception {
         Issue issue = MockData.loadIssue("issue_jira_5.0.1.json");
         JiraToGTask jiraToGTask = new JiraToGTask(getPriorityResolver());
         GTask task = jiraToGTask.convertToGenericTask(issue);
