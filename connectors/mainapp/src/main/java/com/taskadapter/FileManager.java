@@ -11,18 +11,13 @@ import java.util.List;
 
 public class FileManager {
 
-    // TODO maybe return File?
-    public static String getDataRootFolderName() {
+    public static File getDataRoot() {
         String userHome = System.getProperty("user.home");
-        return userHome + "/taskadapter";
+        return new File(userHome, "taskadapter");
     }
 
     public static File getUserFolder(String userLoginName) {
-        return new File(getDataRootFolderName() + "/" + userLoginName);
-    }
-
-    public static String getUserFolderName(String userLoginName) {
-        return getDataRootFolderName() + "/" + userLoginName;
+        return new File(getDataRoot(), userLoginName);
     }
 
     /**
@@ -40,7 +35,7 @@ public class FileManager {
     }
 
     public File getUserFilesFolder(String userLoginName) {
-        return new File(getUserFolderName(userLoginName) + "/files");
+        return new File(getUserFolder(userLoginName), "files");
     }
 
     public File getFileForUser(String userLoginName, String fileName) {

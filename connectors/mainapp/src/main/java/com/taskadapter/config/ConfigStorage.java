@@ -31,8 +31,7 @@ public class ConfigStorage {
     }
 
     private File getUserConfigsFolder(String userLoginName) {
-        String userFolderName = FileManager.getUserFolderName(userLoginName);
-        return new File(userFolderName + "/configs");
+        return new File(FileManager.getUserFolder(userLoginName), "configs");
     }
 
     private List<TAFile> getConfigsInFolder(File folder) {

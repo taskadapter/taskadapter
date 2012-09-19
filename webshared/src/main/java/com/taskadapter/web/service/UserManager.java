@@ -34,8 +34,7 @@ public class UserManager {
     }
 
     public Collection<User> getUsers() {
-        String dataRootFolderName = FileManager.getDataRootFolderName();
-        File dataRootFolder = new File(dataRootFolderName);
+        File dataRootFolder = FileManager.getDataRoot();
         String[] fileNames = dataRootFolder.list();
         Collection<User> users = new ArrayList<User>(fileNames.length);
         for (String fileName : fileNames) {
