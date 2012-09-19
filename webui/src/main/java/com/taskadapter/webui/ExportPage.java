@@ -6,7 +6,6 @@ import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.connector.definition.exceptions.NotAuthorizedException;
 import com.taskadapter.core.ConnectorError;
 import com.taskadapter.core.SyncRunner;
 import com.taskadapter.model.GTask;
@@ -204,7 +203,7 @@ public class ExportPage extends ActionPage {
     }
 
     private String decodeException(ConnectorError<Throwable> e) {
-        final String connectorID = e.getTypeId();
+        final String connectorID = e.getConnectorId();
 
         final PluginEditorFactory factory = services.getEditorManager()
                 .getEditorFactory(connectorID);

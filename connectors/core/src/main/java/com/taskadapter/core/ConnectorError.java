@@ -1,12 +1,7 @@
 package com.taskadapter.core;
 
 /**
- * Connector error definition.
- * 
- * @author maxkar
- * 
- * @param <T>
- *            error type.
+ * @param <T> error type.
  */
 public final class ConnectorError<T> {
     /**
@@ -14,14 +9,11 @@ public final class ConnectorError<T> {
      */
     private final T error;
 
-    /**
-     * Connector type id.
-     */
-    private final String typeId;
+    private final String connectorId;
 
-    public ConnectorError(T error, String typeId) {
+    public ConnectorError(T error, String connectorId) {
         this.error = error;
-        this.typeId = typeId;
+        this.connectorId = connectorId;
     }
 
     @Override
@@ -29,7 +21,7 @@ public final class ConnectorError<T> {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((error == null) ? 0 : error.hashCode());
-        result = prime * result + ((typeId == null) ? 0 : typeId.hashCode());
+        result = prime * result + ((connectorId == null) ? 0 : connectorId.hashCode());
         return result;
     }
 
@@ -47,10 +39,10 @@ public final class ConnectorError<T> {
                 return false;
         } else if (!error.equals(other.error))
             return false;
-        if (typeId == null) {
-            if (other.typeId != null)
+        if (connectorId == null) {
+            if (other.connectorId != null)
                 return false;
-        } else if (!typeId.equals(other.typeId))
+        } else if (!connectorId.equals(other.connectorId))
             return false;
         return true;
     }
@@ -59,8 +51,8 @@ public final class ConnectorError<T> {
         return error;
     }
 
-    public String getTypeId() {
-        return typeId;
+    public String getConnectorId() {
+        return connectorId;
     }
 
 }
