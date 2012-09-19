@@ -43,7 +43,7 @@ public class RedmineConnector extends AbstractConnector<RedmineConfig> {
 
             Integer intKey = Integer.parseInt(key);
             Issue issue = mgr.getIssueById(intKey, INCLUDE.relations);
-            RedmineDataConverter converter = new RedmineDataConverter(config);
+            RedmineToGTask converter = new RedmineToGTask(config);
             return converter.convertToGenericTask(issue);
         } catch (RedmineException e) {
             throw RedmineExceptions.convertException(e);
@@ -67,7 +67,7 @@ public class RedmineConnector extends AbstractConnector<RedmineConfig> {
 	private List<GTask> convertToGenericTasks(RedmineConfig config,
 			List<Issue> issues) {
 		List<GTask> result = new ArrayList<GTask>(issues.size());
-		RedmineDataConverter converter = new RedmineDataConverter(config);
+        RedmineToGTask converter = new RedmineToGTask(config);
 		for (Issue issue : issues) {
 			GTask task = converter.convertToGenericTask(issue);
 			result.add(task);

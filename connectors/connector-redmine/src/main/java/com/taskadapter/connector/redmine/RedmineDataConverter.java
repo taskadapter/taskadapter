@@ -1,20 +1,18 @@
 package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.definition.Mappings;
-import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
-import com.taskadapter.redmineapi.bean.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.taskadapter.redmineapi.bean.Issue;
+import com.taskadapter.redmineapi.bean.IssueStatus;
+import com.taskadapter.redmineapi.bean.Project;
+import com.taskadapter.redmineapi.bean.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RedmineDataConverter {
-
-    private static final Logger logger = LoggerFactory.getLogger(RedmineDataConverter.class);
 
     private final RedmineConfig config;
     private List<User> users;
@@ -25,17 +23,9 @@ public class RedmineDataConverter {
         this.users = new ArrayList<User>();
     }
 
-    public static GUser convertToGUser(User redmineUser) {
-        GUser user = new GUser();
-        user.setId(redmineUser.getId());
-        user.setLoginName(redmineUser.getLogin());
-        user.setDisplayName(redmineUser.getFullName());
-        return user;
-    }
-
     // TODO refactor this into multiple tiny testable methods
     public Issue convertToRedmineIssue(Project rmProject, GTask task) {
-    	final Mappings mapping = config.getFieldMappings();
+        final Mappings mapping = config.getFieldMappings();
         Issue issue = new Issue();
         if (task.getParentKey() != null) {
             issue.setParentId(Integer.parseInt(task.getParentKey()));
@@ -176,59 +166,6 @@ public class RedmineDataConverter {
         }
 
         return foundStatus;
-    }
-
-    /**
-     * convert Redmine issues to internal model representation required for
-     * Task Adapter app.
-     *
-     * @param issue Redmine issue
-     */
-    public GTask convertToGenericTask(Issue issue) {
-        GTask task = new GTask();
-
-        task.setId(issue.getId());
-        task.setKey(Integer.toString(issue.getId()));
-        if (issue.getParentId() != null) {
-            task.setParentKey(issue.getParentId() + "");
-        }
-        User rmAss = issue.getAssignee();
-        if (rmAss != null) {
-            task.setAssignee(convertToGUser(rmAss));
-        }
-
-        task.setType(issue.getTracker().getName());
-        task.setStatus(issue.getStatusName());
-        task.setSummary(issue.getSubject());
-        task.setEstimatedHours(issue.getEstimatedHours());
-        task.setDoneRatio(issue.getDoneRatio());
-        task.setStartDate(issue.getStartDate());
-        task.setDueDate(issue.getDueDate());
-        task.setCreatedOn(issue.getCreatedOn());
-        task.setUpdatedOn(issue.getUpdatedOn());
-        Integer priorityValue = config.getPriorityNumberByName(issue.getPriorityText());
-        task.setPriority(priorityValue);
-        task.setDescription(issue.getDescription());
-
-        processRelations(issue, task);
-        return task;
-    }
-
-    private static void processRelations(Issue rmIssue, GTask genericTask) {
-        List<IssueRelation> relations = rmIssue.getRelations();
-        for (IssueRelation relation : relations) {
-            if (relation.getType().equals("precedes")) {
-                // if NOT equal to self!
-                // See http://www.redmine.org/issues/7366#note-11
-                if (!relation.getIssueToId().equals(rmIssue.getId())) {
-                    GRelation r = new GRelation(Integer.toString(rmIssue.getId()), Integer.toString(relation
-                            .getIssueToId()), GRelation.TYPE.precedes);
-                    genericTask.getRelations().add(r);
-                }
-            } else {
-                logger.error("relation type is not supported: " + relation.getType());
-            }
-        }
     }
 
 }

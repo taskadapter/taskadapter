@@ -9,7 +9,7 @@ import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.msp.MSPTaskSaver;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
-import com.taskadapter.connector.redmine.RedmineDataConverter;
+import com.taskadapter.connector.redmine.RedmineToGTask;
 import com.taskadapter.integrationtests.AbstractSyncRunnerTest;
 import com.taskadapter.integrationtests.RedmineTestConfig;
 import com.taskadapter.model.GTask;
@@ -102,7 +102,7 @@ public class UpdaterIntegrationTest extends AbstractSyncRunnerTest {
 
         List<Issue> issuesToCreate = generateRedmineIssues(issuesNumber);
 
-        RedmineDataConverter converter = new RedmineDataConverter(redmineConfig);
+        RedmineToGTask converter = new RedmineToGTask(redmineConfig);
         for (Issue anIssuesToCreate : issuesToCreate) {
             Issue issue;
             try {

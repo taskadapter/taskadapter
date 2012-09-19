@@ -21,10 +21,12 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
     private RedmineManager mgr;
     private Project rmProject;
     private RedmineDataConverter converter;
+    private RedmineToGTask toGTask;
 
     public RedmineTaskSaver(RedmineConfig config) {
         super(config);
         converter = new RedmineDataConverter(config);
+        toGTask = new RedmineToGTask(config);
     }
 
     @Override
@@ -76,7 +78,7 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
         try {
             Issue newIssue = mgr.createIssue(rmProject.getIdentifier(),
                     (Issue) nativeTask);
-            return converter.convertToGenericTask(newIssue);
+            return toGTask.convertToGenericTask(newIssue);
         } catch (RedmineException e) {
             throw RedmineExceptions.convertException(e);
         }

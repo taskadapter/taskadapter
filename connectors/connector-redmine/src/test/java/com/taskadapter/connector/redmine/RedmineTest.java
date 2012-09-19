@@ -49,7 +49,7 @@ public class RedmineTest {
                 + Calendar.getInstance().getTimeInMillis());
         try {
             User redmineUser = mgr.getCurrentUser();
-            currentUser = RedmineDataConverter.convertToGUser(redmineUser);
+            currentUser = RedmineToGUser.convertToGUser(redmineUser);
 
             Project createdProject = mgr.createProject(junitTestProject);
             projectKey = createdProject.getIdentifier();
