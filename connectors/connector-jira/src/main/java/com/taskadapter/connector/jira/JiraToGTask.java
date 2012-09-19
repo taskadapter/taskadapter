@@ -44,17 +44,13 @@ public class JiraToGTask {
         task.setId(intId);
         task.setKey(issue.getKey());
 
-        String jiraUserLogin = null;
         if (issue.getAssignee() != null) {
-            jiraUserLogin = issue.getAssignee().getName();
-        }
+            String jiraUserLogin = issue.getAssignee().getName();
+            String jiraDisplayName = issue.getAssignee().getDisplayName();
 
-        if (jiraUserLogin != null) {
             GUser genericUser = new GUser();
-
-            // TODO note: user ID is not set here. should we use a newer Jira API library?
             genericUser.setLoginName(jiraUserLogin);
-
+            genericUser.setDisplayName(jiraDisplayName);
             task.setAssignee(genericUser);
         }
 
@@ -81,10 +77,12 @@ public class JiraToGTask {
         }
 
         TimeTracking timeTracking = issue.getTimeTracking();
-        Integer originalEstimateMinutes = timeTracking.getOriginalEstimateMinutes();
-        if (originalEstimateMinutes != null
-                && !originalEstimateMinutes.equals(0)) {
-            task.setEstimatedHours((float) (originalEstimateMinutes / 60));
+        if (timeTracking != null) {
+            Integer originalEstimateMinutes = timeTracking.getOriginalEstimateMinutes();
+            if (originalEstimateMinutes != null
+                    && !originalEstimateMinutes.equals(0)) {
+                task.setEstimatedHours((float) (originalEstimateMinutes / 60));
+            }
         }
 
         processRelations(issue, task);

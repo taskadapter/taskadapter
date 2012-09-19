@@ -25,6 +25,14 @@ public class JiraToGTaskTest {
         assertEquals((Float) 45.0f, task.getEstimatedHours());
     }
 
+    @Test
+    public void assigneeIsConverted() throws Exception {
+        Issue issue = MockData.loadIssue("issue_with_assignee_5.0.json");
+        JiraToGTask jiraToGTask = new JiraToGTask(getPriorityResolver());
+        GTask task = jiraToGTask.convertToGenericTask(issue);
+        assertEquals("admin", task.getAssignee().getLoginName());
+        assertEquals("Administrator", task.getAssignee().getDisplayName());
+    }
 
     private PriorityResolver getPriorityResolver() {
         return new PriorityResolver() {
