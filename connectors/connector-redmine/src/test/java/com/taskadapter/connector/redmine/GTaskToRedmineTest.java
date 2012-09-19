@@ -1,6 +1,7 @@
 package com.taskadapter.connector.redmine;
 
 import com.taskadapter.model.GTask;
+import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
 import com.taskadapter.redmineapi.bean.Issue;
@@ -17,20 +18,34 @@ import static org.junit.Assert.assertNull;
 
 public class GTaskToRedmineTest {
 
+    private Project project = new Project();
+
     @Test
-    public void unmappedSummaryIsIgnored() {
-        GTask gtask = new GTask();
-        gtask.setSummary("Should be ignored");
-        RedmineConfig config = new RedmineConfig();
-        config.getFieldMappings().deselectField(FIELD.SUMMARY);
-        Issue task = new GTaskToRedmine(config).convertToRedmineIssue(new Project(), gtask);
-        assertNull(task.getSubject());
+    public void summaryIsConvertedByDefault() {
+        checkSummary(createDefaultConverter(), "summary 1");
+    }
+
+    @Test
+    public void summaryIsConvertedWhenSelected() {
+        checkSummary(createConverterWithSelectedField(FIELD.SUMMARY), "summary 1");
+    }
+
+    @Test
+    public void summaryIsIgnoredWhenUnselected() {
+        checkSummary(createConverterWithUnselectedField(FIELD.SUMMARY), null);
+    }
+
+    private void checkSummary(GTaskToRedmine converter, String expected) {
+        GTask task = new GTask();
+        task.setSummary("summary 1");
+        Issue redmineIssue = converter.convertToRedmineIssue(project, task);
+        assertEquals(expected, redmineIssue.getSubject());
     }
 
     @Test
     public void gUserWithRedmineLoginOnLoginName() {
         GTask gtask = createDummyTaskForUser("diogo.nascimento");
-        Issue task = getConverterWithAssigneeMapped().convertToRedmineIssue(new Project(), gtask);
+        Issue task = getConverterWithAssigneeMapped().convertToRedmineIssue(project, gtask);
         assertNotNull(task.getAssignee());
         assertEquals("diogo.nascimento", task.getAssignee().getLogin());
     }
@@ -38,7 +53,7 @@ public class GTaskToRedmineTest {
     @Test
     public void gUserWithRedmineFullNameOnLoginName() {
         GTask gtask = createDummyTaskForUser("Felipe Castro");
-        Issue task = getConverterWithAssigneeMapped().convertToRedmineIssue(new Project(), gtask);
+        Issue task = getConverterWithAssigneeMapped().convertToRedmineIssue(project, gtask);
         assertNotNull(task.getAssignee());
         assertEquals("felipe.castro", task.getAssignee().getLogin());
     }
@@ -47,7 +62,7 @@ public class GTaskToRedmineTest {
     public void gUserWithRedmineLoginOnDisplayName() {
         GTask gtask = createDummyTaskForUser("diogo.nascimento");
 
-        Issue task = getConverterWithAssigneeMapped().convertToRedmineIssue(new Project(), gtask);
+        Issue task = getConverterWithAssigneeMapped().convertToRedmineIssue(project, gtask);
 
         assertNotNull(task.getAssignee());
         assertEquals("diogo.nascimento", task.getAssignee().getLogin());
@@ -56,7 +71,7 @@ public class GTaskToRedmineTest {
     @Test
     public void gUserWithRedmineFullNameOnDisplayName() {
         GTask gtask = createDummyTaskForUser("Felipe Castro");
-        Issue task = getConverterWithAssigneeMapped().convertToRedmineIssue(new Project(), gtask);
+        Issue task = getConverterWithAssigneeMapped().convertToRedmineIssue(project, gtask);
         assertNotNull(task.getAssignee());
         assertEquals("felipe.castro", task.getAssignee().getLogin());
     }
@@ -72,21 +87,7 @@ public class GTaskToRedmineTest {
     }
 
     private GTaskToRedmine getConverterWithAssigneeMapped() {
-        return getConverterWithAssignee(true);
-    }
-
-    private GTaskToRedmine getConverterWithAssigneeSkipped() {
-        return getConverterWithAssignee(false);
-    }
-
-    private GTaskToRedmine getConverterWithAssignee(boolean assigneeIsMapped) {
-        RedmineConfig config = new RedmineConfig();
-        if (assigneeIsMapped) {
-            config.getFieldMappings().selectField(FIELD.ASSIGNEE);
-        } else {
-            config.getFieldMappings().deselectField(FIELD.ASSIGNEE);
-        }
-        GTaskToRedmine converter = new GTaskToRedmine(config);
+        GTaskToRedmine converter = createConverterWithSelectedField(FIELD.ASSIGNEE);
         converter.setUsers(createUsers());
         return converter;
     }
@@ -119,6 +120,20 @@ public class GTaskToRedmineTest {
 
     private GTaskToRedmine createDefaultConverter() {
         RedmineConfig config = new RedmineConfig();
+        return new GTaskToRedmine(config);
+    }
+
+    private GTaskToRedmine createConverterWithSelectedField(GTaskDescriptor.FIELD field) {
+        return createConverterWithField(field, true);
+    }
+
+    private GTaskToRedmine createConverterWithUnselectedField(GTaskDescriptor.FIELD field) {
+        return createConverterWithField(field, false);
+    }
+
+    private GTaskToRedmine createConverterWithField(GTaskDescriptor.FIELD field, boolean selected) {
+        RedmineConfig config = new RedmineConfig();
+        config.getFieldMappings().setMapping(field, selected, null);
         return new GTaskToRedmine(config);
     }
 }
