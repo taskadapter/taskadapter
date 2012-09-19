@@ -1,9 +1,11 @@
 package com.taskadapter.connector.common;
 
-import com.taskadapter.connector.definition.*;
+import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.SyncResult;
+import com.taskadapter.connector.definition.TaskErrors;
+import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 import java.util.*;
 
@@ -100,6 +102,12 @@ public class TestUtils {
         yearAgo.add(Calendar.YEAR, -1);
         task.setStartDate(yearAgo.getTime());
         return yearAgo;
+    }
+
+    public static Date getYearAgo() {
+        Calendar yearAgo = getDateRoundedToDay();
+        yearAgo.add(Calendar.YEAR, -1);
+        return yearAgo.getTime();
     }
 
     public static Calendar setTaskDueDateNextYear(GTask task) {

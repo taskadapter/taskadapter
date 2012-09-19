@@ -1,4 +1,4 @@
-package com.taskadapter.connector.redmine;
+package com.taskadapter.connector.redmine.converter;
 
 import com.taskadapter.model.GProject;
 import com.taskadapter.redmineapi.bean.Project;

@@ -5,10 +5,12 @@ import com.taskadapter.connector.common.TestSaver;
 import com.taskadapter.connector.common.TestUtils;
 import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
+import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.IssueStatus;
 import com.taskadapter.redmineapi.bean.Project;
@@ -21,14 +23,9 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 
-/**
- * Integration tests for Redmine Connector.
- *
- * @author Alexey Skorokhodov
- */
-public class RedmineTest {
+public class RedmineIntegrationTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(RedmineTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(RedmineIntegrationTest.class);
 
     private static RedmineManager mgr;
 
@@ -40,7 +37,7 @@ public class RedmineTest {
     @BeforeClass
     public static void oneTimeSetUp() {
         WebServerInfo serverInfo = RedmineTestConfig.getRedmineTestConfig().getServerInfo();
-        logger.info("Running redmine tests using: " + serverInfo);
+        logger.info("Running Redmine tests with: " + serverInfo);
         mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getUserName(), serverInfo.getPassword());
 
         Project junitTestProject = new Project();
@@ -52,6 +49,7 @@ public class RedmineTest {
             currentUser = RedmineToGUser.convertToGUser(redmineUser);
 
             Project createdProject = mgr.createProject(junitTestProject);
+            logger.info("Created temporary Redmine project with ID " + junitTestProject.getIdentifier());
             projectKey = createdProject.getIdentifier();
 
         } catch (Exception e) {
@@ -60,7 +58,7 @@ public class RedmineTest {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void beforeEachTest() throws Exception {
         config = RedmineTestConfig.getRedmineTestConfig();
         config.setProjectKey(projectKey);
         connector = new RedmineConnector(config);
@@ -71,6 +69,7 @@ public class RedmineTest {
         try {
             if (mgr != null) {
                 mgr.deleteProject(projectKey);
+                logger.info("Deleted temporary Redmine project with ID " + projectKey);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,31 +79,30 @@ public class RedmineTest {
     }
 
     @Test
-    public void startDateNotExported() throws Exception {
-        GTask task = TestUtils.generateTask();
-        TestUtils.setTaskStartYearAgo(task);
-        GTask loadedTask = new TestSaver(connector).unselectField(FIELD.START_DATE).saveAndLoad(task);
-        assertNull(loadedTask.getStartDate());
+    public void startDateNotExported() throws ConnectorException {
+        checkStartDate(new TestSaver(connector).unselectField(FIELD.START_DATE), null);
     }
 
     @Test
-    public void startDateExported() throws Exception {
-        GTask task = TestUtils.generateTask();
-        Calendar yearAgo = TestUtils.setTaskStartYearAgo(task);
-        GTask loadedTask = new TestSaver(connector).selectField(FIELD.START_DATE).saveAndLoad(task);
-        assertEquals(yearAgo.getTime(), loadedTask.getStartDate());
+    public void startDateExported() throws ConnectorException {
+        checkStartDate(new TestSaver(connector).selectField(FIELD.START_DATE), TestUtils.getYearAgo());
     }
 
     @Test
-    public void startDateExportedByDefault() throws Exception {
+    public void startDateExportedByDefault() throws ConnectorException {
+        checkStartDate(new TestSaver(connector), TestUtils.getYearAgo());
+    }
+
+    private void checkStartDate(TestSaver testSaver, Date expected) throws ConnectorException {
         GTask task = TestUtils.generateTask();
-        Calendar yearAgo = TestUtils.setTaskStartYearAgo(task);
-        GTask loadedTask = TestUtils.saveAndLoad(connector, task);
-        assertEquals(yearAgo.getTime(), loadedTask.getStartDate());
+        Date yearAgo = TestUtils.getYearAgo();
+        task.setStartDate(yearAgo);
+        GTask loadedTask = testSaver.saveAndLoad(task);
+        assertEquals(expected, loadedTask.getStartDate());
     }
 
     @Test
-    public void dueDateNotExported() throws Exception {
+    public void dueDateNotExported() throws ConnectorException {
         GTask task = TestUtils.generateTask();
         TestUtils.setTaskDueDateNextYear(task);
         GTask loadedTask = new TestSaver(connector).unselectField(FIELD.DUE_DATE).saveAndLoad(task);
@@ -112,7 +110,7 @@ public class RedmineTest {
     }
 
     @Test
-    public void dueDateExported() throws Exception {
+    public void dueDateExported() throws ConnectorException {
         GTask task = TestUtils.generateTask();
         Calendar yearAgo = TestUtils.setTaskDueDateNextYear(task);
         GTask loadedTask = new TestSaver(connector).selectField(FIELD.DUE_DATE).saveAndLoad(task);
@@ -120,7 +118,7 @@ public class RedmineTest {
     }
 
     @Test
-    public void dueDateExportedByDefault() throws Exception {
+    public void dueDateExportedByDefault() throws ConnectorException {
         GTask task = TestUtils.generateTask();
         Calendar yearAgo = TestUtils.setTaskDueDateNextYear(task);
         GTask loadedTask = TestUtils.saveAndLoad(connector, task);
@@ -128,7 +126,7 @@ public class RedmineTest {
     }
 
     @Test
-    public void assigneeExported() throws Exception {
+    public void assigneeExported() throws ConnectorException {
         GTask task = TestUtils.generateTask();
         task.setAssignee(currentUser);
         GTask loadedTask = new TestSaver(connector).selectField(FIELD.ASSIGNEE).saveAndLoad(task);
@@ -138,7 +136,7 @@ public class RedmineTest {
     }
 
     @Test
-    public void assigneeNotExported() throws Exception {
+    public void assigneeNotExported() throws ConnectorException {
         GTask task = TestUtils.generateTask();
         task.setAssignee(currentUser);
         GTask loadedTask = new TestSaver(connector).unselectField(FIELD.ASSIGNEE).saveAndLoad(task);
@@ -146,7 +144,7 @@ public class RedmineTest {
     }
 
     @Test
-    public void assigneeExportedByDefault() throws Exception {
+    public void assigneeExportedByDefault() throws ConnectorException {
         GTask task = TestUtils.generateTask();
         task.setAssignee(currentUser);
         GTask loadedTask = TestUtils.saveAndLoad(connector, task);
@@ -155,7 +153,7 @@ public class RedmineTest {
 
     // TODO what does it test?? how is findByName related to Assignee export?
     @Test
-    public void assigneeExportedByName() throws Exception {
+    public void assigneeExportedByName() throws ConnectorException {
         GTask task = TestUtils.generateTask();
         task.setAssignee(currentUser);
         config.setFindUserByName(true);
@@ -166,27 +164,27 @@ public class RedmineTest {
     }
 
     @Test
-    public void estimatedTimeNotExported() throws Exception {
+    public void estimatedTimeNotExported() throws ConnectorException {
         GTask task = TestUtils.generateTask();
         GTask loadedTask = new TestSaver(connector).unselectField(FIELD.ESTIMATED_TIME).saveAndLoad(task);
         assertNull(loadedTask.getEstimatedHours());
     }
 
     @Test
-    public void estimatedTimeExported() throws Exception {
+    public void estimatedTimeExported() throws ConnectorException {
         GTask task = TestUtils.generateTask();
         GTask loadedTask = new TestSaver(connector).selectField(FIELD.ESTIMATED_TIME).saveAndLoad(task);
         assertEquals(task.getEstimatedHours(), loadedTask.getEstimatedHours(), 0);
     }
 
     @Test
-    public void estimatedTimeExportedByDefault() throws Exception {
+    public void estimatedTimeExportedByDefault() throws ConnectorException {
         GTask task = TestUtils.generateTask();
         GTask loadedTask = TestUtils.saveAndLoad(connector, task);
         assertEquals(task.getEstimatedHours(), loadedTask.getEstimatedHours(), 0);
     }
 
-    public String getDefaultTaskStatus() throws Exception {
+    public String getDefaultTaskStatus() throws RedmineException {
         String statusName = null;
 
         List<IssueStatus> list = mgr.getStatuses();
@@ -200,7 +198,7 @@ public class RedmineTest {
         return statusName;
     }
 
-    public String getOtherTaskStatus() throws Exception {
+    public String getOtherTaskStatus() throws RedmineException {
         String statusName = null;
 
         List<IssueStatus> list = mgr.getStatuses();
@@ -215,7 +213,7 @@ public class RedmineTest {
     }
 
     @Test
-    public void taskStatusNotExported() throws Exception {
+    public void taskStatusNotExported() throws RedmineException, ConnectorException {
         String defaultStatus = getDefaultTaskStatus();
 
         if (defaultStatus != null) {

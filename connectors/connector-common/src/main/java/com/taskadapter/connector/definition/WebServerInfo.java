@@ -130,4 +130,12 @@ public class WebServerInfo {
     public boolean isHostSet() {
         return (host != null && (!host.isEmpty()) && !host.equalsIgnoreCase(DEFAULT_URL_PREFIX));
     }
+
+    @Override
+    public String toString() {
+        return "WebServerInfo{" +
+                "host='" + host + '\'' +
+                ", userName='" + userName + '\'' +
+                '}';
+    }
 }
