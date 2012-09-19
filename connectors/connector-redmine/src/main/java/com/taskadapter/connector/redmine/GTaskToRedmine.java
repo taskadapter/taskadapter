@@ -12,13 +12,13 @@ import com.taskadapter.redmineapi.bean.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RedmineDataConverter {
+class GTaskToRedmine {
 
     private final RedmineConfig config;
     private List<User> users;
     private List<IssueStatus> statusList;
 
-    public RedmineDataConverter(RedmineConfig config) {
+    GTaskToRedmine(RedmineConfig config) {
         this.config = config;
         this.users = new ArrayList<User>();
     }

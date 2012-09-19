@@ -6,15 +6,16 @@ import com.taskadapter.model.GUser;
 import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.redmineapi.bean.User;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-public class RedmineDataConverterTest {
+public class GTaskToRedmineTest {
 
     @Test
     public void unmappedSummaryIsIgnored() {
@@ -22,24 +23,24 @@ public class RedmineDataConverterTest {
         gtask.setSummary("Should be ignored");
         RedmineConfig config = new RedmineConfig();
         config.getFieldMappings().deselectField(FIELD.SUMMARY);
-        Issue task = new RedmineDataConverter(config).convertToRedmineIssue(new Project(), gtask);
-        Assert.assertNull(task.getSubject());
+        Issue task = new GTaskToRedmine(config).convertToRedmineIssue(new Project(), gtask);
+        assertNull(task.getSubject());
     }
 
     @Test
     public void gUserWithRedmineLoginOnLoginName() {
         GTask gtask = createDummyTaskForUser("diogo.nascimento");
         Issue task = getConverterWithAssigneeMapped().convertToRedmineIssue(new Project(), gtask);
-        Assert.assertNotNull(task.getAssignee());
-        Assert.assertEquals("diogo.nascimento", task.getAssignee().getLogin());
+        assertNotNull(task.getAssignee());
+        assertEquals("diogo.nascimento", task.getAssignee().getLogin());
     }
 
     @Test
     public void gUserWithRedmineFullNameOnLoginName() {
         GTask gtask = createDummyTaskForUser("Felipe Castro");
         Issue task = getConverterWithAssigneeMapped().convertToRedmineIssue(new Project(), gtask);
-        Assert.assertNotNull(task.getAssignee());
-        Assert.assertEquals("felipe.castro", task.getAssignee().getLogin());
+        assertNotNull(task.getAssignee());
+        assertEquals("felipe.castro", task.getAssignee().getLogin());
     }
 
     @Test
@@ -48,16 +49,16 @@ public class RedmineDataConverterTest {
 
         Issue task = getConverterWithAssigneeMapped().convertToRedmineIssue(new Project(), gtask);
 
-        Assert.assertNotNull(task.getAssignee());
-        Assert.assertEquals("diogo.nascimento", task.getAssignee().getLogin());
+        assertNotNull(task.getAssignee());
+        assertEquals("diogo.nascimento", task.getAssignee().getLogin());
     }
 
     @Test
     public void gUserWithRedmineFullNameOnDisplayName() {
         GTask gtask = createDummyTaskForUser("Felipe Castro");
         Issue task = getConverterWithAssigneeMapped().convertToRedmineIssue(new Project(), gtask);
-        Assert.assertNotNull(task.getAssignee());
-        Assert.assertEquals("felipe.castro", task.getAssignee().getLogin());
+        assertNotNull(task.getAssignee());
+        assertEquals("felipe.castro", task.getAssignee().getLogin());
     }
 
     private GTask createDummyTaskForUser(String userDisplayName) {
@@ -70,22 +71,22 @@ public class RedmineDataConverterTest {
         return gtask;
     }
 
-    private RedmineDataConverter getConverterWithAssigneeMapped() {
+    private GTaskToRedmine getConverterWithAssigneeMapped() {
         return getConverterWithAssignee(true);
     }
 
-    private RedmineDataConverter getConverterWithAssigneeSkipped() {
+    private GTaskToRedmine getConverterWithAssigneeSkipped() {
         return getConverterWithAssignee(false);
     }
 
-    private RedmineDataConverter getConverterWithAssignee(boolean assigneeIsMapped) {
+    private GTaskToRedmine getConverterWithAssignee(boolean assigneeIsMapped) {
         RedmineConfig config = new RedmineConfig();
         if (assigneeIsMapped) {
             config.getFieldMappings().selectField(FIELD.ASSIGNEE);
         } else {
             config.getFieldMappings().deselectField(FIELD.ASSIGNEE);
         }
-        RedmineDataConverter converter = new RedmineDataConverter(config);
+        GTaskToRedmine converter = new GTaskToRedmine(config);
         converter.setUsers(createUsers());
         return converter;
     }
@@ -111,13 +112,13 @@ public class RedmineDataConverterTest {
 
     @Test
     public void nullReturnedWhenNoUsersSet() {
-        RedmineDataConverter converter = createDefaultConverter();
+        GTaskToRedmine converter = createDefaultConverter();
         // should not fail with NPE or anything
         assertNull(converter.findRedmineUserInCache(new GUser("mylogin")));
     }
 
-    private RedmineDataConverter createDefaultConverter() {
+    private GTaskToRedmine createDefaultConverter() {
         RedmineConfig config = new RedmineConfig();
-        return new RedmineDataConverter(config);
+        return new GTaskToRedmine(config);
     }
 }
