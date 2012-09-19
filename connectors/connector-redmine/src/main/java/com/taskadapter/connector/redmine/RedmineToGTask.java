@@ -65,7 +65,7 @@ public class RedmineToGTask {
     private static void processRelations(Issue rmIssue, GTask genericTask) {
         List<IssueRelation> relations = rmIssue.getRelations();
         for (IssueRelation relation : relations) {
-            if (relation.getType().equals("precedes")) {
+            if (relation.getType().equals(IssueRelation.TYPE.precedes.toString())) {
                 // if NOT equal to self!
                 // See http://www.redmine.org/issues/7366#note-11
                 if (!relation.getIssueToId().equals(rmIssue.getId())) {

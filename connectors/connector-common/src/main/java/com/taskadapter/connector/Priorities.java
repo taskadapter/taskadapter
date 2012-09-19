@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Priorities {
-    static final Integer DEFAULT_PRIORITY_VALUE = 500;
+    public static final Integer DEFAULT_PRIORITY_VALUE = 500;
     static final int MAX_PRIORITY_VALUE = 1000;
     static final int MIN_PRIORITY_VALUE = 0;
 
