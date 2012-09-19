@@ -1,5 +1,6 @@
 package com.taskadapter.core;
 
+import com.google.common.io.Resources;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.msp.MSPConfig;
@@ -7,6 +8,7 @@ import com.taskadapter.connector.msp.MSPConnector;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
@@ -16,9 +18,9 @@ public class UpdaterUnitTest {
     private MSPConnector projectConnector;
 
     @Before
-    public void init() {
-        String testFileLocation = getFileAbsolutePath("com/taskadapter/core/9tasks.xml");
-        MSPConfig mspConfig = new MSPConfig(testFileLocation);
+    public void beforeEachTest() throws URISyntaxException {
+        URL resource = Resources.getResource("com/taskadapter/core/9tasks.xml");
+        MSPConfig mspConfig = new MSPConfig(resource.toURI().getPath());
         projectConnector = new MSPConnector(mspConfig);
     }
 
@@ -31,25 +33,4 @@ public class UpdaterUnitTest {
         // only 7 tasks have remote IDs
         assertEquals(7, updater.getExistingTasks().size());
     }
-
-    // TODO we don't need OSGI stuff in Task Adapter project anymore.
-    public String getFileAbsolutePath(String name) {
-        URL url = this.getClass().getClassLoader().getResource(name);
-        String path = null;
-        try {
-            if (url.getProtocol().startsWith("bundleresource")) {
-                // for running inside OSGI via Maven
-//				URL nativeURL = FileLocator.resolve(url);
-//				path = nativeURL.toURI().getPath();
-                throw new RuntimeException("OSGI : not implemented");
-            } else {
-                // for running tests in IDE
-                path = url.toURI().getPath();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return path;
-    }
-
 }
