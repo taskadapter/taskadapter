@@ -9,7 +9,6 @@ import com.vaadin.ui.HorizontalLayout;
 import java.util.Arrays;
 
 public class ConfigToolbarPanel extends HorizontalLayout {
-    // TODO i18n
     private static final String YES = "Yes";
     private static final String CANCEL = "Cancel";
 

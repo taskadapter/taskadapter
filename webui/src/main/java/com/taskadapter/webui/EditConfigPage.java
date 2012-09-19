@@ -107,7 +107,6 @@ public class EditConfigPage extends Page {
     }
 
     private boolean validateEditor() {
-        // TODO refactor these if (valid), if (valid) checks
         try {
             panel1.validateAll();
         } catch (ValidationException e) {
