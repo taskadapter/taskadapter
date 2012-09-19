@@ -20,9 +20,6 @@ public class RedmineConnector extends AbstractConnector<RedmineConfig> {
         super(config);
     }
 
-    // TODO check if should change this to a flat list,
-    // like it's already done for loadData() operation
-
     @Override
     public void updateRemoteIDs(ConnectorConfig configuration,
                                 Map<Integer, String> res, ProgressMonitor monitor) throws UnsupportedConnectorOperation {
