@@ -20,7 +20,7 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
 
     protected final TaskSaveResultBuilder result = new TaskSaveResultBuilder();
     protected final TaskErrorsBuilder<Throwable> errors = new TaskErrorsBuilder<Throwable>();
-    
+
     private final List<GTask> totalTaskList = new ArrayList<GTask>();
 
     protected final T config;
@@ -32,12 +32,12 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
         this.config = config;
     }
 
-    abstract protected Object convertToNativeTask(GTask task) throws ConnectorException ;
+    abstract protected Object convertToNativeTask(GTask task) throws ConnectorException;
 
     abstract protected GTask createTask(Object nativeTask) throws ConnectorException;
 
     abstract protected void updateTask(String taskId, Object nativeTask) throws ConnectorException;
-    
+
     /**
      * the default implementation does nothing.
      */
@@ -48,8 +48,10 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
     public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
         this.monitor = monitor;
 
-        beforeSave();
-        save(null, tasks);
+        if (!tasks.isEmpty()) {
+            beforeSave();
+            save(null, tasks);
+        }
 
         return new SyncResult<TaskSaveResult, TaskErrors<Throwable>>(
                 result.getResult(), errors.getResult());
