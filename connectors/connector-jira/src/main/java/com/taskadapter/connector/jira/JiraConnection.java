@@ -106,7 +106,7 @@ public class JiraConnection {
 
     public void linkIssue(String issueKey, String targetIssueKey, GRelation.TYPE linkType) {
         String linkTypeName = null;
-        // TODO http://www.hostedredmine.com/issues/99397
+        // TODO http://www.hostedredmine.com/issues/99397 support localized issue link names in Jira
         if (linkType.equals(GRelation.TYPE.precedes)) {
             linkTypeName = JiraConstants.getJiraLinkNameForPrecedes();
         }

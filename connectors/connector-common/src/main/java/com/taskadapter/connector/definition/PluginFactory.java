@@ -4,9 +4,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 /**
- * @author Alexey Skorokhodov
- */
-/*
  * TODO: Maybe get rid of this class? Configure binding between descriptor
  * and service in a config file? Or, at least, remove descriptor from this
  * plugin factory and leave this as a "connector factory" item.

@@ -21,7 +21,7 @@ public class FileManager {
     }
 
     /**
-     * saves the file into <home>/<ta_login_name>/files/<filename>
+     * saves the file into &lt;home>/&lt;ta_login_name>/files/&lt;filename>
      */
     public void saveFileOnServer(String userLoginName, String fileName, byte[] bytes) throws IOException {
         File file = new File(getUserFilesFolder(userLoginName), fileName);

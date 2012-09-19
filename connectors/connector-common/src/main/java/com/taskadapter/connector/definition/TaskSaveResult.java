@@ -3,25 +3,13 @@ package com.taskadapter.connector.definition;
 import java.util.Collection;
 import java.util.Map;
 
-/**
- * Task save result.
- * 
- * @author maxkar
- * 
- */
 public final class TaskSaveResult {
     // TODO this is a temporary solution to enable "download" link after
     // exporting to MSP in server mode. refactor!
     private final String targetFileAbsolutePath;
 
-    /**
-     * Number of updated tasks.
-     */
     private final int updatedTasksNumber;
 
-    /**
-     * Number of created tasks.
-     */
     private final int createdTasksNumber;
 
     // maps ID --> remote KEY when new tasks are created
