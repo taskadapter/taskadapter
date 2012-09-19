@@ -15,7 +15,6 @@ import java.util.Calendar;
 import java.util.List;
 
 public class JiraConnection {
-    private static final String JIRA_DUE_DATE_FORMAT = "d/MMM/yy";
 
     private JiraSoapService jiraSoapService;
     private String authToken;
@@ -71,29 +70,6 @@ public class JiraConnection {
 
     public void updateIssue(String issueKey, IssueInput issueToUpdate) {
         restClient.getIssueClient().updateIssue(issueKey, issueToUpdate, null);
-    }
-
-    // XXX maybe there could a method in the API for this?
-    // need to build and check the latest API from here:
-    // https://svn.atlassian.com/svn/public/atlassian/rpc-jira-plugin/tags/atlassian_jira_4_2_2/jira-soapclient/
-    // the old one (which I used to generate Jira API) is here:
-    // https://svn.atlassian.com/svn/public/atlassian/rpc-jira-plugin/tags/atlassian_jira_4_1_1_1/jira-soapclient
-    private RemoteFieldValue[] getFields(RemoteIssue rmIssueToUpdate) {
-        RemoteFieldValue[] fields = new RemoteFieldValue[4];
-        fields[0] = new RemoteFieldValue("summary", new String[]{rmIssueToUpdate.getSummary()});
-        fields[1] = new RemoteFieldValue("description", new String[]{rmIssueToUpdate.getDescription()});
-        fields[2] = new RemoteFieldValue("assignee", new String[]{rmIssueToUpdate.getAssignee()});
-        String dueDateString = getDateString(rmIssueToUpdate.getDuedate());
-        fields[3] = new RemoteFieldValue("duedate", new String[]{dueDateString});
-        return fields;
-    }
-
-    private static String getDateString(Calendar c) {
-        if (c == null) {
-            return "";
-        }
-        SimpleDateFormat formatter = new SimpleDateFormat(JIRA_DUE_DATE_FORMAT);
-        return formatter.format(c.getTime());
     }
 
     public Iterable<BasicProject> getProjects() {
