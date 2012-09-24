@@ -52,11 +52,9 @@ public class RedmineConnector extends AbstractConnector<RedmineConfig> {
     @Override
     public List<GTask> loadData(ProgressMonitor monitorIGNORED) throws ConnectorException {
         try {
-            RedmineManager mgr = RedmineManagerFactory
-                    .createRedmineManager(config.getServerInfo());
+            RedmineManager mgr = RedmineManagerFactory.createRedmineManager(config.getServerInfo());
 
-            List<Issue> issues = mgr.getIssues(config.getProjectKey(),
-                    config.getQueryId(), INCLUDE.relations);
+            List<Issue> issues = mgr.getIssues(config.getProjectKey(), config.getQueryId(), INCLUDE.relations);
             addFullUsers(issues, mgr);
             return convertToGenericTasks(config, issues);
         } catch (RedmineException e) {
