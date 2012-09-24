@@ -12,6 +12,7 @@ import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,34 +54,37 @@ public class RedmineConnector extends AbstractConnector<RedmineConfig> {
         try {
             RedmineManager mgr = RedmineManagerFactory
                     .createRedmineManager(config.getServerInfo());
-            final List<User> users = mgr.getUsers();
 
             List<Issue> issues = mgr.getIssues(config.getProjectKey(),
                     config.getQueryId(), INCLUDE.relations);
-            addFullUsers(issues, users);
+            addFullUsers(issues, mgr);
             return convertToGenericTasks(config, issues);
         } catch (RedmineException e) {
             throw RedmineExceptions.convertException(e);
         }
     }
     
-	private void addFullUsers(List<Issue> issues, List<User> users) {
+	private void addFullUsers(List<Issue> issues, RedmineManager mgr) throws RedmineException {
+	    final Map<Integer, User> users = new HashMap<Integer, User>(); 
 	    for (Issue issue : issues) {
-	        issue.setAssignee(patchAssignee(issue.getAssignee(), users));
-            issue.setAuthor(patchAssignee(issue.getAuthor(), users));
+	        issue.setAssignee(patchAssignee(issue.getAssignee(), users, mgr));
+            issue.setAuthor(patchAssignee(issue.getAuthor(), users, mgr));
 	    }
     }
 
-    private User patchAssignee(User user, List<User> users) {
+    private User patchAssignee(User user, Map<Integer, User> users, RedmineManager mgr) throws RedmineException {
         if (user == null) {
             return null;
         }
-        for (User newUser : users) {
-            if (newUser.getId() == user.getId()) {
-                return newUser;
-            }
+        final User guess = users.get(user.getId());
+        if (guess != null) {
+            return guess;
         }
-        return user;
+        
+        final User loaded = mgr.getUserById(user.getId());
+        users.put(user.getId(), loaded);
+        
+        return loaded;
     }
 
     private List<GTask> convertToGenericTasks(RedmineConfig config,
