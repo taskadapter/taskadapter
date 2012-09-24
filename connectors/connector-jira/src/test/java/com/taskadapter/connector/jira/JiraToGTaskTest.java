@@ -22,7 +22,7 @@ public class JiraToGTaskTest {
         Issue issue = MockData.loadIssue("issue_with_time_tracking_5.0.json");
         JiraToGTask jiraToGTask = new JiraToGTask(getPriorityResolver());
         GTask task = jiraToGTask.convertToGenericTask(issue);
-        assertEquals((Float) 45.0f, task.getEstimatedHours());
+        assertEquals((Float) 45.5f, task.getEstimatedHours());
     }
 
     @Test

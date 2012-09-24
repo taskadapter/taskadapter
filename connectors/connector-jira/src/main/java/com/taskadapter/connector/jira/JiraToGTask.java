@@ -81,7 +81,7 @@ public class JiraToGTask {
             Integer originalEstimateMinutes = timeTracking.getOriginalEstimateMinutes();
             if (originalEstimateMinutes != null
                     && !originalEstimateMinutes.equals(0)) {
-                task.setEstimatedHours((float) (originalEstimateMinutes / 60));
+                task.setEstimatedHours((float) (originalEstimateMinutes / 60.0));
             }
         }
 

@@ -12,10 +12,10 @@
             "percent":100
         },
         "timetracking": {
-            "originalEstimate": "1w 5h",
+            "originalEstimate": "1w 5h 30m",
             "remainingEstimate": "4d 5h",
             "timeSpent": "3h",
-            "originalEstimateSeconds": 162000,
+            "originalEstimateSeconds": 163800,
             "remainingEstimateSeconds": 133200,
             "timeSpentSeconds": 10800
         },
