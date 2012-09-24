@@ -9,6 +9,7 @@ import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.RedmineManager.INCLUDE;
 import com.taskadapter.redmineapi.bean.Issue;
+import com.taskadapter.redmineapi.bean.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,16 +53,37 @@ public class RedmineConnector extends AbstractConnector<RedmineConfig> {
         try {
             RedmineManager mgr = RedmineManagerFactory
                     .createRedmineManager(config.getServerInfo());
+            final List<User> users = mgr.getUsers();
 
             List<Issue> issues = mgr.getIssues(config.getProjectKey(),
                     config.getQueryId(), INCLUDE.relations);
+            addFullUsers(issues, users);
             return convertToGenericTasks(config, issues);
         } catch (RedmineException e) {
             throw RedmineExceptions.convertException(e);
         }
     }
     
-	private List<GTask> convertToGenericTasks(RedmineConfig config,
+	private void addFullUsers(List<Issue> issues, List<User> users) {
+	    for (Issue issue : issues) {
+	        issue.setAssignee(patchAssignee(issue.getAssignee(), users));
+            issue.setAuthor(patchAssignee(issue.getAuthor(), users));
+	    }
+    }
+
+    private User patchAssignee(User user, List<User> users) {
+        if (user == null) {
+            return null;
+        }
+        for (User newUser : users) {
+            if (newUser.getId() == user.getId()) {
+                return newUser;
+            }
+        }
+        return user;
+    }
+
+    private List<GTask> convertToGenericTasks(RedmineConfig config,
 			List<Issue> issues) {
 		List<GTask> result = new ArrayList<GTask>(issues.size());
         RedmineToGTask converter = new RedmineToGTask(config);
