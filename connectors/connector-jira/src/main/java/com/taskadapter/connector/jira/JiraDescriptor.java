@@ -17,12 +17,13 @@ public class JiraDescriptor {
     
     static {
     	final AvailableFieldsBuilder builder = AvailableFieldsBuilder.start();
-    	builder.addField(FIELD.SUMMARY, "Summary");
-    	builder.addField(FIELD.DESCRIPTION, "Description");
-    	builder.addField(FIELD.TASK_TYPE, "Issue type");
-    	builder.addField(FIELD.ASSIGNEE, "Assignee");
-    	builder.addField(FIELD.DUE_DATE, "Due Date");
-    	builder.addField(FIELD.PRIORITY, "Priority");
+    	builder.addField(FIELD.SUMMARY);
+    	builder.addField(FIELD.DESCRIPTION);
+    	builder.addField(FIELD.TASK_TYPE);
+        builder.addField(FIELD.ESTIMATED_TIME);
+        builder.addField(FIELD.ASSIGNEE);
+    	builder.addField(FIELD.DUE_DATE);
+    	builder.addField(FIELD.PRIORITY);
     	SUPPORTED_FIELDS = builder.end();
     }
 

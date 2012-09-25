@@ -40,10 +40,10 @@ public class FieldsMappingPanel extends Panel implements Validatable {
 	private Resource helpIconResource = new ThemeResource(
 			"../runo/icons/16/help.png");
 
-	public FieldsMappingPanel(AvailableFields availableFieldsProvider,
+	public FieldsMappingPanel(AvailableFields availableFields,
 			Mappings mappings) {
 		super("Task fields mapping");
-		this.availableFields = availableFieldsProvider;
+		this.availableFields = availableFields;
 		this.mappings = mappings;
 		this.originalMappings = new Mappings(mappings);
 
@@ -126,19 +126,21 @@ public class FieldsMappingPanel extends Panel implements Validatable {
 			gridLayout.setComponentAlignment(combo, Alignment.MIDDLE_LEFT);
 			combo.select(mappings.getMappedTo(field));
 		} else if (allowedValues.length == 1) {
-			mappings.setMapping(field, allowedValues[0]);
-			Label label = new Label(allowedValues[0]);
-			gridLayout.addComponent(label);
-			gridLayout.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
+            createMappingForSingleValue(field, allowedValues[0]);
 		} else {
-			throw new InternalError(
-					"Mapping for "
-							+ field
-							+ " defined by a task provider but no mapping values are provided");
+            String displayValue = GTaskDescriptor.getDisplayValue(field);
+            createMappingForSingleValue(field, displayValue);
 		}
 	}
 
-	private CheckBox addCheckbox(GTaskDescriptor.FIELD field) {
+    private void createMappingForSingleValue(GTaskDescriptor.FIELD field, String displayValue) {
+        mappings.setMapping(field, displayValue);
+        Label label = new Label(displayValue);
+        gridLayout.addComponent(label);
+        gridLayout.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
+    }
+
+    private CheckBox addCheckbox(GTaskDescriptor.FIELD field) {
 		CheckBox checkbox = new CheckBox(GTaskDescriptor.getDisplayValue(field));
 		final MethodProperty<Boolean> selected = new MethodProperty<Boolean>(
 				boolean.class, mappings, "isFieldSelected", "setFieldSelected",
