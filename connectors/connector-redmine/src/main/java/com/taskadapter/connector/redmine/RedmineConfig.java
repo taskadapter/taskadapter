@@ -18,7 +18,7 @@ public class RedmineConfig extends WebConfig {
 
     public RedmineConfig() {
         super(DEFAULT_LABEL);
-        setDefaultTaskStatus("Bug");
+        setDefaultTaskType("Bug");
     }
 
     public String getDefaultTaskStatus() {
