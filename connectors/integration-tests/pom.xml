@@ -8,7 +8,7 @@
         <groupId>com.taskadapter</groupId>
         <version>1</version>
     </parent>
-    <artifactId>common-tests-for-all-connectors</artifactId>
+    <artifactId>integration-tests</artifactId>
     <version>2.0.0</version>
 
     <dependencies>

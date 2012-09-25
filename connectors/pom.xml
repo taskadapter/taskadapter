@@ -40,7 +40,7 @@
         <module>connector-redmine</module>
         <module>connector-msp</module>
         <module>connector-github</module>
-        <module>common-tests-for-all-connectors</module>
+        <module>integration-tests</module>
     </modules>
 
     <dependencyManagement>
