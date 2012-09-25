@@ -14,7 +14,7 @@ public class JiraToGTaskTest {
         Issue issue = MockData.loadIssue("issue_jira_5.0.1.json");
         JiraToGTask jiraToGTask = new JiraToGTask(getPriorityResolver());
         GTask task = jiraToGTask.convertToGenericTask(issue);
-        assertEquals("Placeholder for imported time tracking data", task.getSummary());
+        assertEquals(issue.getSummary(), task.getSummary());
     }
 
     @Test
