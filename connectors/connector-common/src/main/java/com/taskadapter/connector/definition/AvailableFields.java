@@ -9,11 +9,7 @@ import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 /**
  * Available fields settings. Provides information about "supported" fields and
- * supported field values. To create instances of this class use
- * {@link AvailableFieldsBuilder}.
- * 
- * @author maxkar
- * 
+ * supported field values. Use {@link AvailableFieldsBuilder} to create instances of this class.
  */
 public final class AvailableFields {
 	

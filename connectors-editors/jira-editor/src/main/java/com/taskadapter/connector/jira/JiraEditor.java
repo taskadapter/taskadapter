@@ -3,6 +3,7 @@ package com.taskadapter.connector.jira;
 import java.util.List;
 
 import com.taskadapter.connector.Priorities;
+import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebConfig;
@@ -44,7 +45,8 @@ public class JiraEditor extends TwoColumnsConfigEditor {
 
         // right column
         addToRightColumn(createCustomOtherFieldsPanel());
-        addToRightColumn(new FieldsMappingPanel(JiraDescriptor.instance.getAvailableFields(), config.getFieldMappings()));
+        AvailableFields supportedFields = JiraDescriptor.instance.getAvailableFields();
+        addToRightColumn(new FieldsMappingPanel(supportedFields, config.getFieldMappings()));
     }
 
     /**
