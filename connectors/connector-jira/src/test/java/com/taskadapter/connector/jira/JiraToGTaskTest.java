@@ -18,6 +18,14 @@ public class JiraToGTaskTest {
     }
 
     @Test
+    public void descriptionIsConverted() throws Exception {
+        Issue issue = MockData.loadIssue("issue_jira_5.0.1.json");
+        JiraToGTask jiraToGTask = new JiraToGTask(getPriorityResolver());
+        GTask task = jiraToGTask.convertToGenericTask(issue);
+        assertEquals(issue.getDescription(), task.getDescription());
+    }
+
+    @Test
     public void estimatedTimeConvertedByDefault() throws Exception {
         Issue issue = MockData.loadIssue("issue_with_time_tracking_5.0.json");
         JiraToGTask jiraToGTask = new JiraToGTask(getPriorityResolver());
