@@ -9,6 +9,8 @@ import java.util.TreeMap;
 abstract public class WebConfig extends ConnectorConfig {
     private static final long serialVersionUID = 1L;
 
+    protected static final String TASK_TYPE_BUG = "Bug";
+
     private WebServerInfo serverInfo = new WebServerInfo();
     private Integer queryId;
     private String projectKey;
