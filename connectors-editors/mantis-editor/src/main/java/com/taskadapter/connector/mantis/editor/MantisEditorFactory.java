@@ -1,5 +1,6 @@
 package com.taskadapter.connector.mantis.editor;
 
+import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.mantis.MantisDescriptor;
@@ -8,9 +9,6 @@ import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class MantisEditorFactory implements PluginEditorFactory {
     /**
      * Bundle name.
@@ -39,5 +37,10 @@ public class MantisEditorFactory implements PluginEditorFactory {
                 return MESSAGES.get("errors.unsupported.relations");
         }
         return null;    }
+
+    @Override
+    public AvailableFields getAvailableFields() {
+        return MantisSupportedFields.SUPPORTED_FIELDS;
+    }
 
 }

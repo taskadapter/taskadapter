@@ -19,6 +19,10 @@ import java.util.List;
 import java.util.Map;
 
 public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBasedConnector {
+    /**
+     * Keep it the same to enable backward compatibility
+     */
+    public static final String ID = "Microsoft Project";
 
     public MSPConnector(MSPConfig config) {
         super(config);
@@ -57,11 +61,6 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
         String v = config.getFieldMappings().getMappedTo(field);
         TaskField f = MSPUtils.getTaskFieldByName(v);
         return mspTask.getCurrentValue(f);
-    }
-
-    @Override
-    public Descriptor getDescriptor() {
-        return MSPDescriptor.instance;
     }
 
     @Override

@@ -115,12 +115,13 @@ public class Exporter {
     }
 
     private void startUpdateFile() {
-        UpdateFilePage page = new UpdateFilePage(getConnector(sourceDataHolder), getConnector(destinationDataHolder), taFile);
+        UpdateFilePage page = new UpdateFilePage(getConnector(sourceDataHolder), getConnector(destinationDataHolder), destinationDataHolder.getType(), taFile);
         navigator.show(page);
     }
 
     private void startRegularExport() {
-        ExportPage page = new ExportPage(getConnector(sourceDataHolder), getConnector(destinationDataHolder), taFile);
+        ExportPage page = new ExportPage(getConnector(sourceDataHolder), sourceDataHolder.getType(),
+                getConnector(destinationDataHolder), destinationDataHolder.getType(), taFile);
         navigator.show(page);
     }
 

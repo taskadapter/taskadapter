@@ -1,5 +1,6 @@
 package com.taskadapter.connector.redmine;
 
+import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.web.PluginEditorFactory;
@@ -7,9 +8,6 @@ import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class RedmineEditorFactory implements PluginEditorFactory {
     /**
      * Bundle name.
@@ -39,5 +37,10 @@ public class RedmineEditorFactory implements PluginEditorFactory {
                 return MESSAGES.get("errors.unsupported.remoteId");
         }
         return null;
+    }
+
+    @Override
+    public AvailableFields getAvailableFields() {
+        return RedmineSupportedFields.SUPPORTED_FIELDS;
     }
 }

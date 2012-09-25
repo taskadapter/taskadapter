@@ -1,5 +1,6 @@
 package com.taskadapter.connector.github;
 
+import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
@@ -39,5 +40,10 @@ public class GithubEditorFactory implements PluginEditorFactory {
             return MESSAGES.get("errors.unsupported.relations");
         else
             return null;
+    }
+
+    @Override
+    public AvailableFields getAvailableFields() {
+        return GithubSupportedFields.SUPPORTED_FIELDS;
     }
 }

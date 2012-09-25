@@ -3,12 +3,10 @@ package com.taskadapter.connector.redmine;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.taskadapter.connector.common.ConfigUtils;
+import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.PluginFactory;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class RedmineFactory implements PluginFactory<RedmineConfig> {
     @Override
     public RedmineConnector createConnector(RedmineConfig config) {

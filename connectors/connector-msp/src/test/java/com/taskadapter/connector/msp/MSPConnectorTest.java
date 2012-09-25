@@ -3,7 +3,7 @@ package com.taskadapter.connector.msp;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class MSPDescriptorText {
+public class MSPConnectorTest {
 
     @Test
     public void testIDIsUnchanged() {
@@ -11,6 +11,6 @@ public class MSPDescriptorText {
         // see SyncEditor class: hasMSPConnector()
         // another option would be to add "isMSP" to the Connector Interface, which would be
         // even more weird.
-        Assert.assertEquals("Microsoft Project", MSPDescriptor.ID);
+        Assert.assertEquals("Microsoft Project", MSPConnector.ID);
     }
 }

@@ -23,7 +23,7 @@ public class MSPEditor extends TwoColumnsConfigEditor {
         addToLeftColumn(createInfoReadOnlyPanel());
 
         // right
-        addToRightColumn(new FieldsMappingPanel(MSPDescriptor.instance.getAvailableFields(), config.getFieldMappings()));
+        addToRightColumn(new FieldsMappingPanel(MSPSupportedFields.SUPPORTED_FIELDS, config.getFieldMappings()));
     }
 
     private MSPInfoPanel createInfoReadOnlyPanel() {

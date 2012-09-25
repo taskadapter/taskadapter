@@ -33,5 +33,6 @@ public interface PluginFactory<C extends ConnectorConfig> {
      * Creates a default ("almost empty") connector config.
      * @return new connector config.
      */
-    public C createDefaultConfig();
+    C createDefaultConfig();
+
 }

@@ -3,15 +3,7 @@ package com.taskadapter.core;
 import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.common.DataConnectorUtil;
 import com.taskadapter.connector.common.TreeUtils;
-import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.ProgressMonitor;
-import com.taskadapter.connector.definition.SyncResult;
-import com.taskadapter.connector.definition.TaskError;
-import com.taskadapter.connector.definition.TaskErrors;
-import com.taskadapter.connector.definition.TaskErrorsBuilder;
-import com.taskadapter.connector.definition.TaskSaveResult;
-import com.taskadapter.connector.definition.TaskSaveResultBuilder;
+import com.taskadapter.connector.definition.*;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.model.GTask;
@@ -31,14 +23,16 @@ public class SyncRunner {
 
     // TODO: refactor!!!
     private Connector<?> connectorFrom;
-    
+    private String sourceConnectorId;
+
     /**
      * Target connector.
      */
     private Connector<?> connectorTo;
-    
+    private String destinationConnectorId;
+
     private LicenseManager licenseManager;
-    
+
     private List<GTask> tasks = new ArrayList<GTask>();
 
     public SyncRunner(LicenseManager licenseManager) {
@@ -47,7 +41,7 @@ public class SyncRunner {
 
     /**
      * @param monitor can be NULL (ignored in this case)
-     * @throws ConnectorException 
+     * @throws ConnectorException
      */
     public List<GTask> load(ProgressMonitor monitor) throws ConnectorException {
         if (monitor != null) {
@@ -55,15 +49,15 @@ public class SyncRunner {
                     "Loading data from " + connectorFrom.getConfig().getLabel(),
                     100);
         }
-		List<GTask> flatTasksList = ConnectorUtils.loadDataOrderedById(
-				connectorFrom, monitor);
+        List<GTask> flatTasksList = ConnectorUtils.loadDataOrderedById(
+                connectorFrom, monitor);
         flatTasksList = applyTrialIfNeeded(flatTasksList);
 
         // can be NULL if there was an exception
         if (flatTasksList != null) {
             this.tasks = TreeUtils.buildTreeFromFlatList(flatTasksList);
         }
-        
+
         if (monitor != null) {
             monitor.done();
         }
@@ -85,9 +79,9 @@ public class SyncRunner {
         int totalNumberOfTasks = DataConnectorUtil
                 .calculateNumberOfTasks(tasks);
         if (monitor != null) {
-			monitor.beginTask("Saving " + totalNumberOfTasks + " tasks to "
-					+ connectorTo.getConfig().getTargetLocation(),
-					totalNumberOfTasks);
+            monitor.beginTask("Saving " + totalNumberOfTasks + " tasks to "
+                    + connectorTo.getConfig().getTargetLocation(),
+                    totalNumberOfTasks);
         }
         List<GTask> treeToSave;
         if (connectorTo.getConfig().getFieldMappings().isFieldSelected(FIELD.REMOTE_ID)) {
@@ -106,16 +100,13 @@ public class SyncRunner {
                     .saveData(treeToSave, monitor);
             saveResult = saveTaskResult.getResult();
             errors.addErrors(connectorizeTasks(saveTaskResult.getErrors()
-                    .getErrors(), connectorTo.getDescriptor().getID()));
+                    .getErrors(), destinationConnectorId));
             errors.addGeneralErrors(connectorize(saveTaskResult.getErrors()
-                    .getGeneralErrors(), connectorTo.getDescriptor().getID()));
+                    .getGeneralErrors(), destinationConnectorId));
         } catch (ConnectorException e) {
             saveResult = null;
-            errors.addGeneralError(new ConnectorError<Throwable>(e,
-                    connectorFrom.getDescriptor().getID()));
+            errors.addGeneralError(new ConnectorError<Throwable>(e, sourceConnectorId));
         }
-        
-        
 
         if (monitor != null) {
             monitor.done();
@@ -127,13 +118,13 @@ public class SyncRunner {
         ConnectorConfig configFrom = connectorFrom.getConfig();
         if (saveResult != null
                 && configFrom.getFieldMappings().isFieldSelected(
-                        FIELD.REMOTE_ID) && (saveResult.getUpdatedTasksNumber() + saveResult.getCreatedTasksNumber()) > 0) {
+                FIELD.REMOTE_ID) && (saveResult.getUpdatedTasksNumber() + saveResult.getCreatedTasksNumber()) > 0) {
             try {
                 connectorFrom.updateRemoteIDs(configFrom,
                         saveResult.getIdToRemoteKeyMap(), null);
             } catch (ConnectorException e) {
                 errors.addGeneralError(new ConnectorError<Throwable>(e,
-                        connectorTo.getDescriptor().getID()));
+                        destinationConnectorId));
             }
         }
 
@@ -148,7 +139,7 @@ public class SyncRunner {
             result.add(new TaskError<ConnectorError<T>>(error.getTask(), new ConnectorError<T>(error.getErrors(), connectorId)));
         return result;
     }
-    
+
     private static <T> List<ConnectorError<T>> connectorize(Collection<T> errors, String connectorId) {
         final List<ConnectorError<T>> result = new ArrayList<ConnectorError<T>>(errors.size());
         for (T error : errors)
@@ -173,11 +164,15 @@ public class SyncRunner {
     }
 
     // TODO add a test to verify "load" can be done without setting taskSaver
-    public void setDestination(Connector<?> destination) {
+    // TODO zzzzz delete the first parameter
+    public void setDestination(Connector<?> destination, String destinationConnectorId) {
         this.connectorTo = destination;
+        this.destinationConnectorId = destinationConnectorId;
     }
 
-    public void setConnectorFrom(Connector<?> connectorFrom) {
+    // TODO zzzzz delete the first parameter
+    public void setConnectorFrom(Connector<?> connectorFrom, String sourceConnectorId) {
         this.connectorFrom = connectorFrom;
+        this.sourceConnectorId = sourceConnectorId;
     }
 }

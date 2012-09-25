@@ -1,6 +1,7 @@
 package com.taskadapter.webui.action;
 
-import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.AvailableFields;
+import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.model.GTask;
 import com.taskadapter.web.configeditor.FieldsMappingPanel;
 import com.taskadapter.webui.Navigator;
@@ -11,16 +12,19 @@ import java.util.List;
 
 public class ConfirmExportPage extends CustomComponent {
     private final Navigator navigator;
-    private List<GTask> rootLevelTasks;
-    private Connector connectorTo;
-    private Button.ClickListener goListener;
+    private final List<GTask> rootLevelTasks;
+    private final ConnectorConfig destinationConfig;
+    private final AvailableFields fieldsSupportedByDestination;
+    private final Button.ClickListener goListener;
     private FieldsMappingPanel fieldMappingPanel;
     private MyTree connectorTree;
 
-    public ConfirmExportPage(Navigator navigator, List<GTask> rootLevelTasks, Connector destinationConnector, Button.ClickListener goListener) {
+    public ConfirmExportPage(Navigator navigator, List<GTask> rootLevelTasks, ConnectorConfig destinationConfig,
+                             AvailableFields fieldsSupportedByDestination, Button.ClickListener goListener) {
         this.navigator = navigator;
         this.rootLevelTasks = rootLevelTasks;
-        this.connectorTo = destinationConnector;
+        this.destinationConfig = destinationConfig;
+        this.fieldsSupportedByDestination = fieldsSupportedByDestination;
         this.goListener = goListener;
         buildUI();
     }
@@ -29,7 +33,7 @@ public class ConfirmExportPage extends CustomComponent {
         VerticalLayout layout = new VerticalLayout();
         layout.setSpacing(true);
 
-        Label text1 = new Label("Please confirm export to " + connectorTo.getConfig().getTargetLocation());
+        Label text1 = new Label("Please confirm export to " + destinationConfig.getTargetLocation());
         layout.addComponent(text1);
 
         connectorTree = new MyTree();
@@ -45,17 +49,14 @@ public class ConfirmExportPage extends CustomComponent {
         buttonsLayout.addComponent(PageUtil.createButton(navigator, "Cancel", Navigator.HOME));
         layout.addComponent(buttonsLayout);
 
-		this.fieldMappingPanel = new FieldsMappingPanel(
-                connectorTo.getDescriptor().getAvailableFields(),
-                connectorTo.getConfig().getFieldMappings()
-        );
+        this.fieldMappingPanel = new FieldsMappingPanel(fieldsSupportedByDestination, destinationConfig.getFieldMappings());
         layout.addComponent(fieldMappingPanel);
 
         setCompositionRoot(layout);
     }
 
     public boolean needToSaveConfig() {
-        return fieldMappingPanel.haveChanges(); 
+        return fieldMappingPanel.haveChanges();
     }
 
     public List<GTask> getSelectedRootLevelTasks() {

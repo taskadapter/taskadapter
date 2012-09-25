@@ -1,27 +1,14 @@
 package com.taskadapter.connector.definition;
 
-/**
- * All Task Adapter Data Connectors must implement this interface.
- *
- * TODO: Get rid of "implementation" interfaces, use a "plain data" class.
- * Maybe use properties for this task?
- */
 public final class Descriptor {
 
     private final String id;
 
     private final String label;
 
-    /**
-     * Supported (available) fields.
-     */
-    private final AvailableFields fields;
-    
-    public Descriptor(String id, String label,
-            AvailableFields fields) {
+    public Descriptor(String id, String label) {
         this.id = id;
         this.label = label;
-        this.fields = fields;
     }
 
     /**
@@ -33,9 +20,5 @@ public final class Descriptor {
 
     public String getLabel() {
         return label;
-    }
-
-    public AvailableFields getAvailableFields() {
-        return fields;
     }
 }

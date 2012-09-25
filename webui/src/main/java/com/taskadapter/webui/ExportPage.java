@@ -39,9 +39,13 @@ public class ExportPage extends ActionPage {
 
     private SyncRunner runner;
     private SyncResult<TaskSaveResult, TaskErrors<ConnectorError<Throwable>>> result;
+    private final String sourceConnectorId;
+    private final String destinationConnectorId;
 
-    public ExportPage(Connector connectorFrom, Connector connectorTo, TAFile taFile) {
-        super(connectorFrom, connectorTo, taFile);
+    public ExportPage(Connector connectorFrom, String sourceConnectorId, Connector connectorTo, String destinationConnectorId, TAFile taFile) {
+        super(connectorFrom, connectorTo, destinationConnectorId, taFile);
+        this.sourceConnectorId = sourceConnectorId;
+        this.destinationConnectorId = destinationConnectorId;
     }
 
     @Override
@@ -52,7 +56,7 @@ public class ExportPage extends ActionPage {
     @Override
     protected void loadData() {
         runner = new SyncRunner(services.getLicenseManager());
-        runner.setConnectorFrom(connectorFrom);
+        runner.setConnectorFrom(connectorFrom, sourceConnectorId);
         try {
             this.loadedTasks = runner.load(ProgressMonitorUtils.getDummyMonitor());
         } catch (CommunicationException e) {
@@ -220,7 +224,7 @@ public class ExportPage extends ActionPage {
     protected void saveData(List<GTask> tasks) throws ConnectorException {
         saveProgress.setValue(0);
         MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
-        runner.setDestination(connectorTo);
+        runner.setDestination(connectorTo, destinationConnectorId);
         runner.setTasks(tasks);
         try {
             result = runner.save(wrapper);

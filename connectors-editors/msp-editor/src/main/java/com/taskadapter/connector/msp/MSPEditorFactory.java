@@ -1,5 +1,6 @@
 package com.taskadapter.connector.msp;
 
+import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.web.PluginEditorFactory;
@@ -7,9 +8,6 @@ import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
 
-/*
- * @author Alexey Skorokhodov
- */
 public class MSPEditorFactory implements PluginEditorFactory {
     /**
      * Bundle name.
@@ -37,5 +35,10 @@ public class MSPEditorFactory implements PluginEditorFactory {
                             + ((UnsupportedRelationType) e).getRelationType()));
         }
         return null;
+    }
+
+    @Override
+    public AvailableFields getAvailableFields() {
+        return MSPSupportedFields.SUPPORTED_FIELDS;
     }
 }

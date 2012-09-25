@@ -5,8 +5,10 @@ import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
+import com.taskadapter.connector.msp.MSPDescriptor;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
+import com.taskadapter.connector.redmine.RedmineDescriptor;
 import com.taskadapter.integrationtests.AbstractSyncRunnerTest;
 import com.taskadapter.integrationtests.RedmineTestConfig;
 import com.taskadapter.license.LicenseManager;
@@ -32,8 +34,8 @@ public class SyncRunnerTest extends AbstractSyncRunnerTest {
         Connector<?> projectConnector = new MSPConnector(mspConfig);
 
         SyncRunner runner = new SyncRunner(new LicenseManager()); //LicenseManager with license of some type can be set
-        runner.setConnectorFrom(projectConnector);
-        runner.setDestination(new RedmineConnector(redmineConfigTo));
+        runner.setConnectorFrom(projectConnector, MSPConnector.ID);
+        runner.setDestination(new RedmineConnector(redmineConfigTo), RedmineConnector.ID);
         // load from MSP
         runner.load(ProgressMonitorUtils.getDummyMonitor());
 

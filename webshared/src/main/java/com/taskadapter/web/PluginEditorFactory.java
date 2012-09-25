@@ -1,13 +1,11 @@
 package com.taskadapter.web;
 
+import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.service.Services;
 
-/**
- * @author Alexey Skorokhodov
- */
 public interface PluginEditorFactory {
     Descriptor getDescriptor();
 
@@ -19,5 +17,7 @@ public interface PluginEditorFactory {
      * @param e error to format.
      * @return formatted error.
      */
-    public String formatError(Throwable e);
+    String formatError(Throwable e);
+
+    AvailableFields getAvailableFields();
 }

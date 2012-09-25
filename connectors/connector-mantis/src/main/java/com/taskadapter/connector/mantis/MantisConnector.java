@@ -1,28 +1,23 @@
 package com.taskadapter.connector.mantis;
 
+import com.taskadapter.connector.common.AbstractConnector;
+import com.taskadapter.connector.definition.*;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
+import com.taskadapter.model.GTask;
+import org.mantis.ta.MantisManager;
+import org.mantis.ta.beans.IssueData;
+
+import javax.xml.rpc.ServiceException;
 import java.math.BigInteger;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.rpc.ServiceException;
-
-import org.mantis.ta.MantisManager;
-import org.mantis.ta.beans.IssueData;
-
-import com.taskadapter.connector.common.AbstractConnector;
-import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Descriptor;
-import com.taskadapter.connector.definition.ProgressMonitor;
-import com.taskadapter.connector.definition.SyncResult;
-import com.taskadapter.connector.definition.TaskErrors;
-import com.taskadapter.connector.definition.TaskSaveResult;
-import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
-import com.taskadapter.model.GTask;
-
 public class MantisConnector extends AbstractConnector<MantisConfig> {
+
+    public static final String ID = "Mantis";
 
     public MantisConnector(MantisConfig config) {
         super(config);
@@ -33,11 +28,6 @@ public class MantisConnector extends AbstractConnector<MantisConfig> {
                                 Map<Integer, String> res, ProgressMonitor monitor) throws UnsupportedConnectorOperation {
         throw new UnsupportedConnectorOperation(
                 "updateRemoteIDs");
-    }
-
-    @Override
-    public Descriptor getDescriptor() {
-        return MantisDescriptor.instance;
     }
 
     @Override

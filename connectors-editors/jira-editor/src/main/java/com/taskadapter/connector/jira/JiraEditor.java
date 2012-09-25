@@ -45,7 +45,7 @@ public class JiraEditor extends TwoColumnsConfigEditor {
 
         // right column
         addToRightColumn(createCustomOtherFieldsPanel());
-        AvailableFields supportedFields = JiraDescriptor.instance.getAvailableFields();
+        AvailableFields supportedFields = JiraSupportedFields.SUPPORTED_FIELDS;
         addToRightColumn(new FieldsMappingPanel(supportedFields, config.getFieldMappings()));
     }
 

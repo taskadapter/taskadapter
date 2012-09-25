@@ -21,6 +21,12 @@ import com.taskadapter.model.GTask;
 
 public class GithubConnector extends AbstractConnector<GithubConfig> {
 
+    /**
+     * Keep it the same to enable backward compatibility with the existing
+     * config files.
+     */
+    public static final String ID = "Github";
+
     public Descriptor getDescriptor() {
         return GithubDescriptor.instance;
     }

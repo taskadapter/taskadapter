@@ -14,8 +14,8 @@ public class UpdateFilePage extends ActionPage {
 
     private final Updater updater;
 
-    public UpdateFilePage(Connector connectorFrom, Connector connectorTo, TAFile taFile) {
-        super(connectorFrom, connectorTo, taFile);
+    public UpdateFilePage(Connector connectorFrom, Connector connectorTo, String destinationConnectorId, TAFile taFile) {
+        super(connectorFrom, connectorTo, destinationConnectorId, taFile);
         updater = new Updater(connectorTo, connectorFrom);
     }
 

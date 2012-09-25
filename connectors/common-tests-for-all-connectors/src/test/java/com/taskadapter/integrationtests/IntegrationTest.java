@@ -54,10 +54,10 @@ public class IntegrationTest extends AbstractSyncRunnerTest {
         Connector<?> msProjectConnector = new MSPConnector(mspConfig);
 
         SyncRunner runner = new SyncRunner(new LicenseManager()); //LicenseManager with license of some type can be set
-        runner.setConnectorFrom(msProjectConnector);
+        runner.setConnectorFrom(msProjectConnector, MSPConnector.ID);
         runner.load(ProgressMonitorUtils.getDummyMonitor());
 
-        runner.setDestination(new RedmineConnector(redmineConfigTo));
+        runner.setDestination(new RedmineConnector(redmineConfigTo), RedmineConnector.ID);
         runner.save(null);
 
         //reload from MSP file
@@ -79,8 +79,8 @@ public class IntegrationTest extends AbstractSyncRunnerTest {
         Connector<?> projectConnector = new MSPConnector(mspConfig);
 
         SyncRunner runner = new SyncRunner(new LicenseManager()); //LicenseManager with license of some type can be set
-        runner.setConnectorFrom(projectConnector);
-        runner.setDestination(new RedmineConnector(redmineConfigTo));
+        runner.setConnectorFrom(projectConnector, MSPConnector.ID);
+        runner.setDestination(new RedmineConnector(redmineConfigTo), RedmineConnector.ID);
         // load from MSP
         runner.load(ProgressMonitorUtils.getDummyMonitor());
         try {

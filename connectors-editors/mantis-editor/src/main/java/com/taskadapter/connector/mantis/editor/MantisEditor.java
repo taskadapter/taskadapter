@@ -12,9 +12,6 @@ import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Services;
 import com.vaadin.data.util.MethodProperty;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class MantisEditor extends TwoColumnsConfigEditor {
 
     public MantisEditor(ConnectorConfig config, Services services) {
@@ -32,10 +29,7 @@ public class MantisEditor extends TwoColumnsConfigEditor {
         				 "getProjects", ((MantisConfig) config).getServerInfo())
 				, null, null);
 
-        // left
         addToLeftColumn(new OtherMantisFieldsPanel((MantisConfig) config));
-
-        //right
-        addToRightColumn(new FieldsMappingPanel(MantisDescriptor.instance.getAvailableFields(), config.getFieldMappings()));
+        addToRightColumn(new FieldsMappingPanel(MantisSupportedFields.SUPPORTED_FIELDS, config.getFieldMappings()));
     }
 }

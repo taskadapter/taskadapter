@@ -1,9 +1,12 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.config.TAFile;
+import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
+import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.webui.action.ConfirmExportPage;
 import com.vaadin.ui.*;
 
@@ -13,6 +16,7 @@ public abstract class ActionPage extends Page {
     protected final VerticalLayout mainPanel;
     protected final Connector connectorFrom;
     protected final Connector connectorTo;
+    private final String destinationConnectorId;
     private final TAFile taFile;
 
     protected ProgressIndicator loadProgress = new ProgressIndicator();
@@ -20,9 +24,10 @@ public abstract class ActionPage extends Page {
     protected List<GTask> loadedTasks;
     private ConfirmExportPage confirmExportPage;
 
-    public ActionPage(Connector connectorFrom, Connector connectorTo, TAFile file) {
+    public ActionPage(Connector connectorFrom, Connector connectorTo, String destinationConnectorId, TAFile file) {
         this.connectorFrom = connectorFrom;
         this.connectorTo = connectorTo;
+        this.destinationConnectorId = destinationConnectorId;
         this.taFile = file;
         mainPanel = new VerticalLayout();
         mainPanel.setSpacing(true);
@@ -151,7 +156,10 @@ public abstract class ActionPage extends Page {
     }
 
     protected void buildConfirmationUI() {
-        confirmExportPage = new ConfirmExportPage(navigator, loadedTasks, connectorTo, new Button.ClickListener() {
+        PluginEditorFactory editorFactory = services.getEditorManager().getEditorFactory(destinationConnectorId);
+        AvailableFields fieldsSupportedByDestination = editorFactory.getAvailableFields();
+        confirmExportPage = new ConfirmExportPage(navigator, loadedTasks, connectorTo.getConfig(),
+                fieldsSupportedByDestination, new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 saveConfigIfChanged();

@@ -38,10 +38,7 @@ public class GithubEditor extends TwoColumnsConfigEditor {
         final ProjectPanel projectPanel =  getPanel(ProjectPanel.class);
         projectPanel.setProjectKeyLabel("Repository ID");
 
-        // left
         addToLeftColumn(new OtherGithubFieldsPanel(this));
-
-        //right
-        addToRightColumn(new FieldsMappingPanel(GithubDescriptor.instance.getAvailableFields(), config.getFieldMappings()));
+        addToRightColumn(new FieldsMappingPanel(GithubSupportedFields.SUPPORTED_FIELDS, config.getFieldMappings()));
     }
 }

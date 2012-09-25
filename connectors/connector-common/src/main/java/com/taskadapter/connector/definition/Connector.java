@@ -22,14 +22,14 @@ public interface Connector<T extends ConnectorConfig> {
 	 * @throws Exception
 	 *             some other exceptions the connector might throw
 	 */
-    public List<GTask> loadData(ProgressMonitor monitor) throws ConnectorException;
+    List<GTask> loadData(ProgressMonitor monitor) throws ConnectorException;
 
     /**
      * Loads one task by its key.
      * @param key task key.
      * @return loaded task.
      */
-    public GTask loadTaskByKey(String key) throws ConnectorException;
+    GTask loadTaskByKey(String key) throws ConnectorException;
 
     /**
      * @param tasks
@@ -37,7 +37,7 @@ public interface Connector<T extends ConnectorConfig> {
      *                connectors only need to invoke monitor.worked(1) when a task is processed.
      * @return
      */
-    public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException;
+    SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException;
 
     /**
      * is called after data was exported from this connector and we got some new "remote IDs", which need to
@@ -45,10 +45,8 @@ public interface Connector<T extends ConnectorConfig> {
      *
      * @param monitor ProgressMonitor, can be NULL
      */
-    public void updateRemoteIDs(ConnectorConfig sourceConfig,
+    void updateRemoteIDs(ConnectorConfig sourceConfig,
                                 Map<Integer, String> remoteIds, com.taskadapter.connector.definition.ProgressMonitor monitor) throws ConnectorException;
 
-    public T getConfig();
-
-    public Descriptor getDescriptor();
+    T getConfig();
 }

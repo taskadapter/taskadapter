@@ -17,6 +17,10 @@ import java.util.List;
 import java.util.Map;
 
 public class RedmineConnector extends AbstractConnector<RedmineConfig> {
+    /**
+     * Keep it the same to enable backward compatibility for previously created config files.
+     */
+    public static final String ID = "Redmine REST";
 
     public RedmineConnector(RedmineConfig config) {
         super(config);
@@ -26,11 +30,6 @@ public class RedmineConnector extends AbstractConnector<RedmineConfig> {
     public void updateRemoteIDs(ConnectorConfig configuration,
                                 Map<Integer, String> res, ProgressMonitor monitor) throws UnsupportedConnectorOperation {
         throw new UnsupportedConnectorOperation("updateRemoteIDs");
-    }
-
-    @Override
-    public Descriptor getDescriptor() {
-        return RedmineDescriptor.instance;
     }
 
     @Override

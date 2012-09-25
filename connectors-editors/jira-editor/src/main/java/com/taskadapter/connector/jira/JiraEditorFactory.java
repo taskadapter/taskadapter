@@ -1,5 +1,6 @@
 package com.taskadapter.connector.jira;
 
+import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.jira.exceptions.BadHostException;
@@ -9,9 +10,6 @@ import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class JiraEditorFactory implements PluginEditorFactory {
     /**
      * Bundle name.
@@ -45,6 +43,11 @@ public class JiraEditorFactory implements PluginEditorFactory {
             return MESSAGES.get("errors.badURI");
         }
         return null;
+    }
+
+    @Override
+    public AvailableFields getAvailableFields() {
+        return JiraSupportedFields.SUPPORTED_FIELDS;
     }
 
 }

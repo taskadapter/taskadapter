@@ -4,7 +4,7 @@ import com.atlassian.jira.rest.client.domain.BasicComponent;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueType;
 import com.atlassian.jira.rest.client.domain.Version;
-import com.atlassian.jira.rpc.soap.client.*;
+import com.atlassian.jira.rpc.soap.client.RemoteFilter;
 import com.google.common.collect.Iterables;
 import com.taskadapter.connector.common.AbstractConnector;
 import com.taskadapter.connector.definition.*;
@@ -22,6 +22,13 @@ import java.util.List;
 import java.util.Map;
 
 public class JiraConnector extends AbstractConnector<JiraConfig> {
+
+    /**
+     * Keep it the same to enable backward compatibility with the existing
+     * config files.
+     */
+    public static final String ID = "Atlassian Jira";
+
 
     public JiraConnector(JiraConfig config) {
         super(config);
@@ -124,11 +131,6 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
         } catch (URISyntaxException e) {
                 throw JiraUtils.convertException(e);
         }
-    }
-
-    @Override
-    public Descriptor getDescriptor() {
-        return JiraDescriptor.instance;
     }
 
     @Override
