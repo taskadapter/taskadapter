@@ -12,32 +12,28 @@ public class JiraToGTaskTest {
     @Test
     public void summaryIsConverted() throws Exception {
         Issue issue = MockData.loadIssue("issue_jira_5.0.1.json");
-        JiraToGTask jiraToGTask = new JiraToGTask(getPriorityResolver());
-        GTask task = jiraToGTask.convertToGenericTask(issue);
+        GTask task = convertIssue(issue);
         assertEquals(issue.getSummary(), task.getSummary());
     }
 
     @Test
     public void descriptionIsConverted() throws Exception {
         Issue issue = MockData.loadIssue("issue_jira_5.0.1.json");
-        JiraToGTask jiraToGTask = new JiraToGTask(getPriorityResolver());
-        GTask task = jiraToGTask.convertToGenericTask(issue);
+        GTask task = convertIssue(issue);
         assertEquals(issue.getDescription(), task.getDescription());
     }
 
     @Test
     public void estimatedTimeConvertedByDefault() throws Exception {
         Issue issue = MockData.loadIssue("issue_with_time_tracking_5.0.json");
-        JiraToGTask jiraToGTask = new JiraToGTask(getPriorityResolver());
-        GTask task = jiraToGTask.convertToGenericTask(issue);
+        GTask task = convertIssue(issue);
         assertEquals((Float) 45.5f, task.getEstimatedHours());
     }
 
     @Test
     public void assigneeIsConverted() throws Exception {
         Issue issue = MockData.loadIssue("issue_with_assignee_5.0.json");
-        JiraToGTask jiraToGTask = new JiraToGTask(getPriorityResolver());
-        GTask task = jiraToGTask.convertToGenericTask(issue);
+        GTask task = convertIssue(issue);
         assertEquals(issue.getAssignee().getName(), task.getAssignee().getLoginName());
         assertEquals(issue.getAssignee().getDisplayName(), task.getAssignee().getDisplayName());
     }
@@ -45,13 +41,11 @@ public class JiraToGTaskTest {
     @Test
     public void issueTypeIsConverted() throws Exception {
         Issue issue = MockData.loadIssue("issue_with_assignee_5.0.json");
-        JiraToGTask jiraToGTask = new JiraToGTask(getPriorityResolver());
-        GTask task = jiraToGTask.convertToGenericTask(issue);
+        GTask task = convertIssue(issue);
         assertEquals(issue.getIssueType().getName(), task.getType());
     }
 
-    private GTask loadAndConvertIssue() throws Exception {
-        Issue issue = MockData.loadIssue("issue_with_assignee_5.0.json");
+    private GTask convertIssue(final Issue issue) throws Exception {
         JiraToGTask jiraToGTask = new JiraToGTask(getPriorityResolver());
         return jiraToGTask.convertToGenericTask(issue);
     }
