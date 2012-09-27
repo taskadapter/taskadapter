@@ -38,8 +38,8 @@ public class JiraToGTaskTest {
         Issue issue = MockData.loadIssue("issue_with_assignee_5.0.json");
         JiraToGTask jiraToGTask = new JiraToGTask(getPriorityResolver());
         GTask task = jiraToGTask.convertToGenericTask(issue);
-        assertEquals("admin", task.getAssignee().getLoginName());
-        assertEquals("Administrator", task.getAssignee().getDisplayName());
+        assertEquals(issue.getAssignee().getName(), task.getAssignee().getLoginName());
+        assertEquals(issue.getAssignee().getDisplayName(), task.getAssignee().getDisplayName());
     }
 
     @Test
@@ -50,6 +50,12 @@ public class JiraToGTaskTest {
         assertEquals(issue.getIssueType().getName(), task.getType());
     }
 
+    private GTask loadAndConvertIssue() throws Exception {
+        Issue issue = MockData.loadIssue("issue_with_assignee_5.0.json");
+        JiraToGTask jiraToGTask = new JiraToGTask(getPriorityResolver());
+        return jiraToGTask.convertToGenericTask(issue);
+    }
+    
     private PriorityResolver getPriorityResolver() {
         return new PriorityResolver() {
             @Override
