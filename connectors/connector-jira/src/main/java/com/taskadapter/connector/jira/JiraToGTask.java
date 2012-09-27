@@ -70,11 +70,8 @@ public class JiraToGTask {
         if (issue.getPriority() != null) {
             jiraPriorityName = issue.getPriority().getName();
         }
-
-        if (!Strings.isNullOrEmpty(jiraPriorityName)) {
-            Integer priorityValue = priorityResolver.getPriorityNumberByName(jiraPriorityName);
-            task.setPriority(priorityValue);
-        }
+        Integer priorityValue = priorityResolver.getPriorityNumberByName(jiraPriorityName);
+        task.setPriority(priorityValue);
 
         TimeTracking timeTracking = issue.getTimeTracking();
         if (timeTracking != null) {

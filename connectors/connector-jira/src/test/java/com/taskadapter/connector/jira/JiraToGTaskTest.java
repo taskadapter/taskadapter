@@ -1,14 +1,28 @@
 package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rest.client.domain.Issue;
+import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.PriorityResolver;
 import com.taskadapter.model.GTask;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 public class JiraToGTaskTest {
+    private static Priorities priorities;
+
+    @BeforeClass
+    public static void oneTimeSetUp() {
+        try {
+            priorities = JiraConfig.createDefaultPriorities();
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Can't init Jira tests: " + e.toString());
+        }
+    }
 
     @Test
     public void summaryIsConverted() throws Exception {
@@ -60,6 +74,13 @@ public class JiraToGTaskTest {
         assertEquals(issue.getDueDate().toDate().getTime(), task.getDueDate().getTime());
     }
 
+    @Test
+    public void setDefaultPriorityWhenIsNull() throws Exception {
+        Issue issue = MockData.loadIssue("issue_jira_5.0.1.json");
+        GTask task = convertIssue(issue);
+        assertEquals(Priorities.DEFAULT_PRIORITY_VALUE, task.getPriority());
+    }
+
     private GTask convertIssue(final Issue issue) throws Exception {
         JiraToGTask jiraToGTask = new JiraToGTask(getPriorityResolver());
         return jiraToGTask.convertToGenericTask(issue);
@@ -69,7 +90,7 @@ public class JiraToGTaskTest {
         return new PriorityResolver() {
             @Override
             public Integer getPriorityNumberByName(String priorityName) {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
+                return priorities.getPriorityByText(priorityName);
             }
         };
     }
