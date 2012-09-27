@@ -6,6 +6,7 @@ import com.taskadapter.model.GTask;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class JiraToGTaskTest {
 
@@ -43,6 +44,20 @@ public class JiraToGTaskTest {
         Issue issue = MockData.loadIssue("issue_jira_5.0.1.json");
         GTask task = convertIssue(issue);
         assertEquals(issue.getIssueType().getName(), task.getType());
+    }
+
+    @Test
+    public void dueDateNullValueIsConverted() throws Exception {
+        Issue issue = MockData.loadIssue("issue_jira_5.0.1.json");
+        GTask task = convertIssue(issue);
+        assertNull(task.getDueDate());
+    }
+
+    @Test
+    public void dueDateIsConverted() throws Exception {
+        Issue issue = MockData.loadIssue("issue_jira_duedate_5.0.1.json");
+        GTask task = convertIssue(issue);
+        assertEquals(issue.getDueDate().toDate().getTime(), task.getDueDate().getTime());
     }
 
     private GTask convertIssue(final Issue issue) throws Exception {
