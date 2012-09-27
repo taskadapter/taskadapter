@@ -40,7 +40,7 @@ public class JiraToGTaskTest {
 
     @Test
     public void issueTypeIsConverted() throws Exception {
-        Issue issue = MockData.loadIssue("issue_with_assignee_5.0.json");
+        Issue issue = MockData.loadIssue("issue_jira_5.0.1.json");
         GTask task = convertIssue(issue);
         assertEquals(issue.getIssueType().getName(), task.getType());
     }
