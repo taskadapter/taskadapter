@@ -1,7 +1,6 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.definition.Mappings;
-import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.definition.TaskSaveResultBuilder;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.model.GTask;
@@ -37,8 +36,6 @@ public class MSXMLFileWriter {
 
     public static final TaskField FIELD_DURATION_UNDEFINED = TaskField.TEXT20;
     public static final TaskField FIELD_WORK_UNDEFINED = TaskField.TEXT21;
-
-    private Map<GUser, Resource> resourceNameToObjectMap = new HashMap<GUser, Resource>();
 
     private MSPConfig config;
 
@@ -119,7 +116,7 @@ public class MSXMLFileWriter {
 
     private Resource getOrCreateResource(ProjectFile project,
                                          GUser assignee) {
-        Resource resource = resourceNameToObjectMap.get(assignee);
+        Resource resource = project.getResourceByUniqueID(assignee.getId());
         if (resource == null) {
             // we assume all resources are already in the 'cache' (map)
             resource = project.addResource();
@@ -130,7 +127,6 @@ public class MSXMLFileWriter {
                 resource.setUniqueID(assignee.getId());
             }
             MSPUtils.markResourceAsOurs(resource);
-            resourceNameToObjectMap.put(assignee, resource);
         }
         return resource;
     }
