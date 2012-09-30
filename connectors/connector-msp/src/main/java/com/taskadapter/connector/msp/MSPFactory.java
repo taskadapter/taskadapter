@@ -6,10 +6,9 @@ import com.taskadapter.connector.common.ConfigUtils;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.PluginFactory;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class MSPFactory implements PluginFactory<MSPConfig> {
+    private static final Descriptor DESCRIPTOR = new Descriptor(MSPConnector.ID, MSPConfig.DEFAULT_LABEL);
+
     @Override
     public MSPConnector createConnector(MSPConfig config) {
         return new MSPConnector(config);
@@ -17,7 +16,7 @@ public class MSPFactory implements PluginFactory<MSPConfig> {
 
     @Override
     public Descriptor getDescriptor() {
-        return MSPDescriptor.instance;
+        return DESCRIPTOR;
     }
     
 	@Override

@@ -6,10 +6,9 @@ import com.taskadapter.connector.common.ConfigUtils;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.PluginFactory;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class JiraFactory implements PluginFactory<JiraConfig> {
+    private static final Descriptor instance = new Descriptor(JiraConnector.ID, JiraConfig.DEFAULT_LABEL);
+
     @Override
     public JiraConnector createConnector(JiraConfig config) {
         return new JiraConnector(config);
@@ -17,9 +16,9 @@ public class JiraFactory implements PluginFactory<JiraConfig> {
 
     @Override
     public Descriptor getDescriptor() {
-        return JiraDescriptor.instance;
+        return instance;
     }
-    
+
 	@Override
 	public JsonElement writeConfig(JiraConfig config) {
 		return ConfigUtils.createDefaultGson().toJsonTree(config);

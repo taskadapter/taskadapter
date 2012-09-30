@@ -7,6 +7,8 @@ import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.PluginFactory;
 
 public class MantisFactory implements PluginFactory<MantisConfig> {
+    private static final Descriptor DESCRIPTOR = new Descriptor(MantisConnector.ID, MantisConfig.DEFAULT_LABEL);
+
     @Override
     public MantisConnector createConnector(MantisConfig config) {
         return new MantisConnector(config);
@@ -14,7 +16,7 @@ public class MantisFactory implements PluginFactory<MantisConfig> {
 
     @Override
     public Descriptor getDescriptor() {
-        return MantisDescriptor.instance;
+        return DESCRIPTOR;
     }
     
 	@Override

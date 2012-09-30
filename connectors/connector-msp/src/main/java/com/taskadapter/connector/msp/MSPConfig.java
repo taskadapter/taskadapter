@@ -10,12 +10,10 @@ import com.taskadapter.model.GTaskDescriptor.FIELD;
 import java.io.File;
 import java.util.HashMap;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class MSPConfig extends ConnectorConfig {
     private static final long serialVersionUID = 1L;
 
+    // TODO this is a UI element. move it to UI layer
     static final String DEFAULT_LABEL = "Microsoft Project";
 
     private String inputAbsoluteFilePath = "";

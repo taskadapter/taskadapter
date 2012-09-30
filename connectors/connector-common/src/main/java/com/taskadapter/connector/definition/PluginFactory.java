@@ -9,6 +9,7 @@ import com.google.gson.JsonParseException;
  * plugin factory and leave this as a "connector factory" item.
  */
 public interface PluginFactory<C extends ConnectorConfig> {
+
     Connector<? extends C> createConnector(C config);
 
     Descriptor getDescriptor();

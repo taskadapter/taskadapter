@@ -18,8 +18,8 @@ public class GithubEditorFactory implements PluginEditorFactory {
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
 
     @Override
-    public Descriptor getDescriptor() {
-        return GithubDescriptor.instance;
+    public String getId() {
+        return GithubConnector.ID;
     }
 
     @Override

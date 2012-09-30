@@ -7,7 +7,7 @@ import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.service.Services;
 
 public interface PluginEditorFactory {
-    Descriptor getDescriptor();
+    String getId();
 
     ConfigEditor createEditor(ConnectorConfig config, Services services);
     

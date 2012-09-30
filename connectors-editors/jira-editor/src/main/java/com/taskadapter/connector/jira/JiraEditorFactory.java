@@ -2,7 +2,6 @@ package com.taskadapter.connector.jira;
 
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.jira.exceptions.BadHostException;
 import com.taskadapter.connector.jira.exceptions.BadURIException;
 import com.taskadapter.web.PluginEditorFactory;
@@ -11,16 +10,13 @@ import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
 
 public class JiraEditorFactory implements PluginEditorFactory {
-    /**
-     * Bundle name.
-     */
     private static final String BUNDLE_NAME = "com.taskadapter.connector.github.messages";
 
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
 
     @Override
-    public Descriptor getDescriptor() {
-        return JiraDescriptor.instance;
+    public String getId() {
+        return JiraConnector.ID;
     }
 
     @Override

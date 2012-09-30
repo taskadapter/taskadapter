@@ -1,23 +1,17 @@
 package com.taskadapter.connector.github;
 
+import com.taskadapter.connector.common.AbstractConnector;
+import com.taskadapter.connector.definition.*;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
+import com.taskadapter.model.GTask;
+import org.eclipse.egit.github.core.Issue;
+import org.eclipse.egit.github.core.service.IssueService;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.eclipse.egit.github.core.Issue;
-import org.eclipse.egit.github.core.service.IssueService;
-
-import com.taskadapter.connector.common.AbstractConnector;
-import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Descriptor;
-import com.taskadapter.connector.definition.ProgressMonitor;
-import com.taskadapter.connector.definition.SyncResult;
-import com.taskadapter.connector.definition.TaskErrors;
-import com.taskadapter.connector.definition.TaskSaveResult;
-import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
-import com.taskadapter.model.GTask;
 
 public class GithubConnector extends AbstractConnector<GithubConfig> {
 
@@ -26,10 +20,6 @@ public class GithubConnector extends AbstractConnector<GithubConfig> {
      * config files.
      */
     public static final String ID = "Github";
-
-    public Descriptor getDescriptor() {
-        return GithubDescriptor.instance;
-    }
 
     public GithubConnector(GithubConfig config) {
         super(config);

@@ -3,7 +3,6 @@ package com.taskadapter.connector.mantis.editor;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.mantis.MantisConfig;
-import com.taskadapter.connector.mantis.MantisDescriptor;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.FieldsMappingPanel;

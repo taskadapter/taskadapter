@@ -29,7 +29,6 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
      */
     public static final String ID = "Atlassian Jira";
 
-
     public JiraConnector(JiraConfig config) {
         super(config);
     }

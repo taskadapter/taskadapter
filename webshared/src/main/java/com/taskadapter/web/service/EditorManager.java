@@ -11,9 +11,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class EditorManager {
     private final Logger logger = LoggerFactory.getLogger(EditorManager.class);
 
@@ -29,16 +26,16 @@ public class EditorManager {
             for (String factoryClassName : classNames) {
                 Class<PluginEditorFactory> factoryClass = (Class<PluginEditorFactory>) Class.forName(factoryClassName);
                 PluginEditorFactory pluginFactory = factoryClass.newInstance();
-                Descriptor descriptor = pluginFactory.getDescriptor();
-                editorFactories.put(descriptor.getID(), pluginFactory);
+                String connectorId = pluginFactory.getId();
+                editorFactories.put(connectorId, pluginFactory);
             }
         } catch (Exception e) {
             logger.error("Loading editors: " + e.getMessage(), e);
         }
     }
 
-    public PluginEditorFactory getEditorFactory(String pluginId) {
-        String realId = LegacyConnectorsSupport.getRealId(pluginId);
+    public PluginEditorFactory getEditorFactory(String connectorId) {
+        String realId = LegacyConnectorsSupport.getRealId(connectorId);
         return editorFactories.get(realId);
     }
 

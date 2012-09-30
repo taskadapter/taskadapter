@@ -2,7 +2,6 @@ package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.data.Messages;
@@ -17,8 +16,8 @@ public class RedmineEditorFactory implements PluginEditorFactory {
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
 
     @Override
-    public Descriptor getDescriptor() {
-        return RedmineDescriptor.instance;
+    public String getId() {
+        return RedmineConnector.ID;
     }
 
     @Override

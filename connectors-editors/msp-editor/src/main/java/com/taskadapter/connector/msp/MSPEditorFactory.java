@@ -2,7 +2,6 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.data.Messages;
@@ -17,8 +16,8 @@ public class MSPEditorFactory implements PluginEditorFactory {
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
 
     @Override
-    public Descriptor getDescriptor() {
-        return MSPDescriptor.instance;
+    public String getId() {
+        return MSPConnector.ID;
     }
 
     @Override
