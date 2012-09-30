@@ -4,6 +4,7 @@ import com.taskadapter.connector.common.AbstractConnector;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.msp.write.MSXMLFileWriter;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 

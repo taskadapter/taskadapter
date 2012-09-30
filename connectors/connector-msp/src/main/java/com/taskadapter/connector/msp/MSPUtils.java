@@ -1,6 +1,7 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.connector.msp.write.MSXMLFileWriter;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import net.sf.mpxj.ConstraintType;
 import net.sf.mpxj.ProjectFile;
@@ -83,7 +84,7 @@ public class MSPUtils {
         return keys.toArray(new String[keys.size()]);
     }
 
-    static TaskField getTaskFieldByName(String name) {
+    public static TaskField getTaskFieldByName(String name) {
         return TEXT_FIELDS_MAP.get(name);
     }
 

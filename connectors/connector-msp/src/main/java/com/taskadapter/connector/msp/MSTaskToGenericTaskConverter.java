@@ -1,6 +1,7 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.connector.msp.write.MSXMLFileWriter;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;

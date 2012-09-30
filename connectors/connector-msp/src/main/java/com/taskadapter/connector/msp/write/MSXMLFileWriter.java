@@ -1,8 +1,10 @@
-package com.taskadapter.connector.msp;
+package com.taskadapter.connector.msp.write;
 
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.TaskSaveResultBuilder;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.connector.msp.MSPConfig;
+import com.taskadapter.connector.msp.MSPUtils;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
@@ -12,7 +14,8 @@ import net.sf.mpxj.writer.ProjectWriter;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 public class MSXMLFileWriter {
 
@@ -61,7 +64,7 @@ public class MSXMLFileWriter {
 
         ProjectHeader header = project.getProjectHeader();
         project.addDefaultBaseCalendar();
-        Date earliestTaskDate = findEarliestStartDate(rows);
+        Date earliestTaskDate = DateFinder.findEarliestStartDate(rows);
         if (earliestTaskDate != null) {
             header.setStartDate(earliestTaskDate);
         }
@@ -73,23 +76,6 @@ public class MSXMLFileWriter {
         header.setSubject(taTag);
 
         return writeProject(project);
-    }
-
-    private static Date findEarliestStartDate(List<GTask> tasks) {
-        Calendar maxCal = Calendar.getInstance();
-        maxCal.add(Calendar.YEAR, 9999);
-        Date earliestDate = maxCal.getTime();
-        boolean atLeast1StartDateSet = false;
-        for (GTask gTask : tasks) {
-            if (gTask.getStartDate() != null && earliestDate.after(gTask.getStartDate())) {
-                earliestDate = gTask.getStartDate();
-                atLeast1StartDateSet = true;
-            }
-        }
-        if (atLeast1StartDateSet) {
-            return earliestDate;
-        }
-        return null;
     }
 
     private void addTasks(TaskSaveResultBuilder syncResult, ProjectFile project,
@@ -106,9 +92,6 @@ public class MSXMLFileWriter {
             }
             setTaskFields(project, newMspTask, gTask, keepTaskId);
             syncResult.addCreatedTask(gTask.getId(), newMspTask.getID() + "");
-
-//            gTask.setId(newMspTask.getID()); // TODO not needed anymore?
-
             addTasks(syncResult, project, newMspTask, gTask.getChildren(), keepTaskId);
         }
 
@@ -176,7 +159,7 @@ public class MSXMLFileWriter {
      * "issues list" response (see task http://www.redmine.org/issues/5303 )
      * @throws BadConfigException 
      */
-    protected void setTaskFields(ProjectFile project, Task mspTask,
+    public void setTaskFields(ProjectFile project, Task mspTask,
                                  GTask gTask, boolean keepTaskId) throws BadConfigException {
     	final Mappings mapping = config.getFieldMappings();
         mspTask.setMilestone(false);
@@ -215,7 +198,7 @@ public class MSXMLFileWriter {
             }
 
             if (gTask.getDoneRatio() != null && mapping.isFieldSelected(FIELD.DONE_RATIO)) {
-                Duration timeAlreadySpent = calculateTimeAlreadySpent(gTask);
+                Duration timeAlreadySpent = TimeCalculator.calculateTimeAlreadySpent(gTask);
                 // time already spent
                 if (MSPUtils.useWork(config)) {
                     mspTask.setActualWork(timeAlreadySpent);
@@ -239,11 +222,11 @@ public class MSXMLFileWriter {
             * http://www.hostedredmine.com/issues/7780 "Duration" field is ignored when "Assignee" is set
             */
             if (gTask.getEstimatedHours() != null) {
-                ass.setRemainingWork(calculateRemainingTime(gTask));
+                ass.setRemainingWork(TimeCalculator.calculateRemainingTime(gTask));
 
                 // the same "IF" as above, now for the resource assignment. this might need refactoring...
                 if (gTask.getDoneRatio() != null && mapping.isFieldSelected(FIELD.DONE_RATIO)) {
-                    Duration timeAlreadySpent = calculateTimeAlreadySpent(gTask);
+                    Duration timeAlreadySpent = TimeCalculator.calculateTimeAlreadySpent(gTask);
                     ass.setActualWork(timeAlreadySpent);
                 }
             }
@@ -281,23 +264,6 @@ public class MSXMLFileWriter {
         if (mapping.isFieldSelected(FIELD.DESCRIPTION)) {
             mspTask.setNotes(gTask.getDescription());
         }
-    }
-
-    private Duration calculateTimeAlreadySpent(GTask gTask) {
-        float doneRatio = gTask.getDoneRatio() / 100f;
-        return Duration.getInstance(doneRatio * gTask.getEstimatedHours(),
-                TimeUnit.HOURS);
-    }
-
-    private Duration calculateRemainingTime(GTask gTask) {
-        float doneRatio;
-        if (gTask.getDoneRatio() != null) {
-            doneRatio = gTask.getDoneRatio() / 100f;
-        } else {
-            doneRatio = 0;
-        }
-        return Duration.getInstance((1 - doneRatio) * gTask.getEstimatedHours(),
-                TimeUnit.HOURS);
     }
 
     private void setFieldIfSelected(FIELD field, Task mspTask, Object value) {
