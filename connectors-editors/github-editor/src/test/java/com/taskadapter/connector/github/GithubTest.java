@@ -2,6 +2,7 @@ package com.taskadapter.connector.github;
 
 import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.github.editor.GithubLoaders;
 import com.taskadapter.model.GProject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

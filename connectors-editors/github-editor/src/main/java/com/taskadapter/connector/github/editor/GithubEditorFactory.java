@@ -1,9 +1,9 @@
-package com.taskadapter.connector.github;
+package com.taskadapter.connector.github.editor;
 
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
+import com.taskadapter.connector.github.GithubConnector;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.ConfigEditor;

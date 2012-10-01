@@ -1,8 +1,9 @@
-package com.taskadapter.connector.github;
+package com.taskadapter.connector.github.editor;
 
 
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.github.GithubConfig;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.FieldsMappingPanel;

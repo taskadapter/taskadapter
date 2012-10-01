@@ -1,4 +1,4 @@
-package com.taskadapter.connector.github;
+package com.taskadapter.connector.github.editor;
 
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Panel;

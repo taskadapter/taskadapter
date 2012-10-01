@@ -1,4 +1,4 @@
-package com.taskadapter.connector.github;
+package com.taskadapter.connector.github.editor;
 
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.AvailableFieldsBuilder;

@@ -2,6 +2,6 @@
 com.taskadapter.connector.redmine.RedmineEditorFactory
 com.taskadapter.connector.jira.JiraEditorFactory
 com.taskadapter.connector.msp.MSPEditorFactory
-com.taskadapter.connector.github.GithubEditorFactory
+com.taskadapter.connector.github.editor.GithubEditorFactory
 com.taskadapter.connector.mantis.editor.MantisEditorFactory
 

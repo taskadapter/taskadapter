@@ -1,7 +1,9 @@
-package com.taskadapter.connector.github;
+package com.taskadapter.connector.github.editor;
 
 import java.util.List;
 
+import com.taskadapter.connector.github.ConnectionFactory;
+import com.taskadapter.connector.github.GithubProjectConverter;
 import org.eclipse.egit.github.core.Repository;
 
 import com.taskadapter.connector.definition.ValidationException;
