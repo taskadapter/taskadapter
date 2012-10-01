@@ -20,9 +20,11 @@ public class ConfigStorage {
     private static final String NUMBER_SEPARATOR = "_";
 
     private PluginManager pluginManager;
+    private File dataRootFolder;
 
-    public ConfigStorage(PluginManager pluginManager) {
+    public ConfigStorage(PluginManager pluginManager, File dataRootFolder) {
         this.pluginManager = pluginManager;
+        this.dataRootFolder = dataRootFolder;
     }
 
     public List<TAFile> getConfigs(String userLoginName) {
@@ -31,7 +33,8 @@ public class ConfigStorage {
     }
 
     private File getUserConfigsFolder(String userLoginName) {
-        return new File(FileManager.getUserFolder(userLoginName), "configs");
+        File userFolder = new FileManager(dataRootFolder).getUserFolder(userLoginName);
+        return new File(userFolder, "configs");
     }
 
     private List<TAFile> getConfigsInFolder(File folder) {

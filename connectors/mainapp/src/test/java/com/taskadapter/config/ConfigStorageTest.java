@@ -5,14 +5,12 @@ import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.jira.JiraConfig;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class ConfigStorageTest {
     private static final String PLAIN = "test_plain";
     private static final String ENCRYPTED = "test_encrypted";
@@ -20,7 +18,7 @@ public class ConfigStorageTest {
     private static final String PLAIN_PASSWORD = "pLainPaSsW0rd";
     private static final String ENCRYPTED_PASSWORD = "eNcrYpTedPaSsW0rd";
 
-    private ConfigStorage configStorage = new ConfigStorage(new PluginManager());
+    private ConfigStorage configStorage = new ConfigStorage(new PluginManager(), new File("tmp"));
     private static final String TEST_USER_LOGIN_NAME = "autotest";
 
 

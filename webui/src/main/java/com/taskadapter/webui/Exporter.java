@@ -1,12 +1,15 @@
 package com.taskadapter.webui;
 
 
-import com.taskadapter.FileManager;
 import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.MSPOutputFileNameNotSetException;
-import com.taskadapter.connector.definition.*;
+import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.ConnectorConfig;
+import com.taskadapter.connector.definition.FileBasedConnector;
+import com.taskadapter.connector.definition.PluginFactory;
+import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.service.Services;
@@ -57,7 +60,7 @@ public class Exporter {
                 // auto generate output file name (for MSP local mode)
                 Services services = navigator.getServices();
                 String userName = services.getAuthenticator().getUserName();
-                String absoluteFileName = new FileManager().createDefaultMSPFileName(userName);
+                String absoluteFileName = services.getFileManager().createDefaultMSPFileName(userName);
 
                 ((MSPConfig) destinationDataHolder.getData()).setOutputAbsoluteFilePath(absoluteFileName);
                 ((MSPConfig) destinationDataHolder.getData()).setInputAbsoluteFilePath(absoluteFileName);

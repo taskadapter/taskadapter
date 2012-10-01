@@ -16,7 +16,11 @@ public class UploadReceiver implements Upload.Receiver {
     private boolean sleep;
     private int total;
     private byte[] bytes = new byte[ServerModeFilePanel.MAX_FILE_SIZE_BYTES];
-    private FileManager fileManager = new FileManager();
+    private FileManager fileManager;
+
+    public UploadReceiver(FileManager fileManager) {
+        this.fileManager = fileManager;
+    }
 
     public OutputStream receiveUpload(String filename, String mimeType) {
         total = 0;

@@ -11,13 +11,14 @@ import java.util.List;
 
 public class FileManager {
 
-    public static File getDataRoot() {
-        String userHome = System.getProperty("user.home");
-        return new File(userHome, "taskadapter");
+    private final File dataRootFolder;
+
+    public FileManager(File dataRootFolder) {
+        this.dataRootFolder = dataRootFolder;
     }
 
-    public static File getUserFolder(String userLoginName) {
-        return new File(getDataRoot(), userLoginName);
+    public File getUserFolder(String userLoginName) {
+        return new File(dataRootFolder, userLoginName);
     }
 
     /**
@@ -58,6 +59,7 @@ public class FileManager {
         }
     }
 
+    // TODO move to MSP Connector
     /**
      * Search for unused file name in user folder starting from postfix 1
      * TODO think about performance and optimization

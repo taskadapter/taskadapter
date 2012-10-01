@@ -1,9 +1,12 @@
 package com.taskadapter.web.service;
 
+import com.taskadapter.FileManager;
 import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.SettingsManager;
+
+import java.io.File;
 
 public class Services {
     private Authenticator authenticator;
@@ -15,11 +18,16 @@ public class Services {
     private ConfigStorage configStorage;
     private CookiesManager cookiesManager = new CookiesManager();
     private UserManager userManager;
+    private FileManager fileManager;
 
     public Services() {
-        userManager = new UserManager();
-        configStorage = new ConfigStorage(pluginManager);
+        String userHome = System.getProperty("user.home");
+        File dataRootFolder = new File(userHome, "taskadapter");
+
+        userManager = new UserManager(dataRootFolder);
+        configStorage = new ConfigStorage(pluginManager, dataRootFolder);
         authenticator = new Authenticator(userManager, cookiesManager);
+        fileManager = new FileManager(dataRootFolder);
     }
 
     public UpdateManager getUpdateManager() {
@@ -60,5 +68,9 @@ public class Services {
 
     public UserManager getUserManager() {
         return userManager;
+    }
+
+    public FileManager getFileManager() {
+        return fileManager;
     }
 }

@@ -64,7 +64,7 @@ public class MSPEditor extends TwoColumnsConfigEditor {
 
     private ServerModeFilePanel createRemoteModeFilePanel() {
         ServerModelFilePanelPresenter presenter =
-                new ServerModelFilePanelPresenter(services.getAuthenticator().getUserName());
+                new ServerModelFilePanelPresenter(services.getFileManager(), services.getAuthenticator().getUserName());
         return new ServerModeFilePanel(presenter, (MSPConfig) config);
     }
 

@@ -13,9 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Logic tier for ServerModelFilePanel
- */
 public class ServerModelFilePanelPresenter {
     public static final int MAX_FILE_SIZE_BYTES = 5000000;
     private final String userName;
@@ -24,24 +21,23 @@ public class ServerModelFilePanelPresenter {
     private ServerModeFilePanel view;
     private File selectedFile;
     private final UploadReceiver uploadReceiver;
-    private FileManager fileManager = new FileManager();
+    private FileManager fileManager;
 
-    public ServerModelFilePanelPresenter(String userName) {
+    public ServerModelFilePanelPresenter(FileManager fileManager, String userName) {
+        this.fileManager = fileManager;
         this.userName = userName;
         fileList = buildFileList();
-        uploadReceiver = new UploadReceiver();
+        uploadReceiver = new UploadReceiver(fileManager);
         uploadReceiver.setSlow(true);
     }
 
     /**
      * Create sorted list of uploaded and exported files for current user
-     *
-     * @return list
      */
     private IndexedContainer buildFileList() {
         IndexedContainer container = new IndexedContainer();
         container.addContainerProperty(ServerModeFilePanel.COMBOBOX_ITEM_PROPERTY, String.class, null);
-        List<File> files = new FileManager().getUserFiles(userName);
+        List<File> files = fileManager.getUserFiles(userName);
         for (File file : files) {
             addFileToContainer(container, file.getName());
         }
