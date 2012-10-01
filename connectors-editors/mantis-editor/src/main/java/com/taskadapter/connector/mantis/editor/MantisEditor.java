@@ -30,7 +30,7 @@ public class MantisEditor extends TwoColumnsConfigEditor {
         // top left and right
         createServerAndProjectPanelOnTopDefault(
         		EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
-        		EditorUtil.wrapNulls(new MethodProperty<String>(config, "queryId")),
+                null,
         		Interfaces.fromMethod(DataProvider.class, MantisLoaders.class, 
         				 "getProjects", ((MantisConfig) config).getServerInfo())
 				, NULL_PROJECT_INFO_CALLBACK, NULL_QUERY_PROVIDER,
