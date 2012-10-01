@@ -1,5 +1,6 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.web.service.EditorManager;
 import com.taskadapter.web.service.Services;
 import com.vaadin.Application;
 import com.vaadin.terminal.Sizeable;
@@ -20,7 +21,7 @@ public class TAApplication extends Application implements HttpServletRequestList
 
     private final Window mainWindow = new Window("Task Adapter");
 
-    private final Services services = new Services();
+    private Services services;
 
     @Override
     public String getVersion() {
@@ -30,6 +31,8 @@ public class TAApplication extends Application implements HttpServletRequestList
     @Override
     public void init() {
         setTheme("mytheme");
+        services = new Services();
+        services.setEditorManager(new EditorManager());
 
         VerticalLayout layout = new VerticalLayout();
         layout.setWidth(100, Sizeable.UNITS_PERCENTAGE);

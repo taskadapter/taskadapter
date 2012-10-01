@@ -8,7 +8,7 @@ import com.taskadapter.web.SettingsManager;
 public class Services {
     private Authenticator authenticator;
     private UpdateManager updateManager = new UpdateManager();
-    private EditorManager editorManager = new EditorManager();
+    private EditorManager editorManager;
     private PluginManager pluginManager = new PluginManager();
     private SettingsManager settingsManager = new SettingsManager();
     private LicenseManager licenseManager = new LicenseManager();
@@ -28,6 +28,10 @@ public class Services {
 
     public EditorManager getEditorManager() {
         return editorManager;
+    }
+
+    public void setEditorManager(EditorManager editorManager) {
+        this.editorManager = editorManager;
     }
 
     public PluginManager getPluginManager() {
