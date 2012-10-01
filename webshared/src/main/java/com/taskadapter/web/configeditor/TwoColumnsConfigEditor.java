@@ -5,17 +5,12 @@ import java.util.List;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.model.NamedKeyedObject;
-import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
 import com.taskadapter.web.service.Services;
 import com.vaadin.data.Property;
 import com.vaadin.ui.*;
 
-/**
- * Author: Alexander Kulik
- * Date: 21.05.12 15:25
- */
 public abstract class TwoColumnsConfigEditor extends ConfigEditor {
     private VerticalLayout leftVerticalLayout;
     private VerticalLayout rightVerticalLayout;

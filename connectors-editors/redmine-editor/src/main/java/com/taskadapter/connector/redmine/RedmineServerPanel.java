@@ -16,12 +16,12 @@ import com.vaadin.ui.*;
 import java.util.Arrays;
 import java.util.List;
 
-class RedmineServerPanel extends Panel implements Validatable {
-    private static final String PANEL_CAPTION = "Redmine Server Info";
+class RedmineServerPanel extends VerticalLayout implements Validatable {
     private static final String USE_API = "Use API Access Key";
     private static final String USE_LOGIN = "Use Login and Password";
     private static final String DEFAULT_USE = USE_LOGIN;
 
+    private TextField descriptionField;
     private TextField serverURL;
     private PasswordField redmineAPIKey;
     private TextField login;
@@ -33,7 +33,6 @@ class RedmineServerPanel extends Panel implements Validatable {
     private RedmineConfig config;
 
     public RedmineServerPanel(final WindowProvider windowProvider, RedmineConfig config) {
-        super(PANEL_CAPTION);
         this.windowProvider = windowProvider;
         this.config = config;
         buildUI();
@@ -42,6 +41,8 @@ class RedmineServerPanel extends Panel implements Validatable {
 
     private void buildUI() {
         setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
+        // set spacing around the layout (not between components in the layout!)
+        setMargin(true);
 
         GridLayout layout = new GridLayout();
         addComponent(layout);
@@ -52,6 +53,15 @@ class RedmineServerPanel extends Panel implements Validatable {
 
         int currentRow = 0;
 
+        Label descriptionLabel = new Label("Description:");
+        layout.addComponent(descriptionLabel, 0, currentRow);
+        layout.setComponentAlignment(descriptionLabel, Alignment.MIDDLE_LEFT);
+        descriptionField = new TextField();
+        descriptionField.addStyleName("server-panel-textfield");
+        descriptionField.setPropertyDataSource(new MethodProperty<String>(config, "label"));
+        layout.addComponent(descriptionField, 1, currentRow);
+
+        currentRow++;
         Label urlLabel = new Label("Server URL:");
         layout.addComponent(urlLabel, 0, currentRow);
         layout.setComponentAlignment(urlLabel, Alignment.MIDDLE_LEFT);
@@ -68,7 +78,7 @@ class RedmineServerPanel extends Panel implements Validatable {
         WebServerInfo serverInfo = config.getServerInfo();
         serverURL.setPropertyDataSource(new MethodProperty<String>(serverInfo, "host"));
 
-        layout.addComponent(serverURL, 1, 0);
+        layout.addComponent(serverURL, 1, currentRow);
 
         String emptyLabelHeight = "10px";
 

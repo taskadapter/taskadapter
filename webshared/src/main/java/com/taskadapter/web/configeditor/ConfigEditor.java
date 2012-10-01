@@ -22,6 +22,7 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
 
     private static final String LABEL_DESCRIPTION_TEXT = "Description:";
     private static final String LABEL_TOOLTIP = "Text to show for this connector on 'Export' button. Enter any text.";
+    private final HorizontalLayout descriptionLayout;
 
     ConfigEditor(ConnectorConfig config, Services services) {
         this.config = config;
@@ -30,7 +31,7 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
         setMargin(true);
         setSpacing(true);
 
-        HorizontalLayout descriptionLayout = new HorizontalLayout();
+        descriptionLayout = new HorizontalLayout();
         descriptionLayout.setSpacing(true);
         addComponent(descriptionLayout);
         descriptionLayout.addComponent(new Label(LABEL_DESCRIPTION_TEXT));
@@ -72,5 +73,13 @@ public abstract class ConfigEditor extends VerticalLayout implements WindowProvi
 
     public <T> T getPanel(Class<T> clazz) {
         return panelContainer.get(clazz);
+    }
+
+    // TODO this is an intermediate step in editors refactoring:
+    // Description field is migrating into "Server Panel". Redmine Editor already has this field
+    // in RedmineServerPanel and needs to hide this generic field.
+    // we will delete Description field from here when all editors have this field in some Server Panel.
+    protected void hideDescription() {
+        descriptionLayout.setVisible(false);
     }
 }
