@@ -57,7 +57,6 @@ public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig> {
         return users;
     }
 
-
     @Override
     protected Object convertToNativeTask(GTask task) {
         return converter.convertToMantisIssue(mntProject, task);

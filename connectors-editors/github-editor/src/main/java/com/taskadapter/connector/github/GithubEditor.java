@@ -2,7 +2,6 @@ package com.taskadapter.connector.github;
 
 
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
@@ -24,13 +23,14 @@ public class GithubEditor extends TwoColumnsConfigEditor {
     @SuppressWarnings("unchecked")
 	private void buildUI() {
         // top left and right
-        final WebServerInfo serverInfo = ((WebConfig) config).getServerInfo();
+        final WebServerInfo serverInfo = ((GithubConfig) config).getServerInfo();
 		createServerAndProjectPanelOnTopDefault(
         		EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
                 EditorUtil.wrapNulls(new MethodProperty<String>(config, "queryString")),
         		Interfaces.fromMethod(DataProvider.class, GithubLoaders.class, 
         				  "getProjects", serverInfo)
-        		, null, null);
+        		, null, null,
+                ((GithubConfig) config).getServerInfo());
 
         final ServerPanel serverPanel = getPanel(ServerPanel.class);
         serverPanel.disableServerURLField();

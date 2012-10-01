@@ -1,22 +1,25 @@
 package com.taskadapter.connector.github;
 
 import com.taskadapter.connector.Priorities;
+import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ValidationException;
-import com.taskadapter.connector.definition.WebConfig;
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.GTaskDescriptor;
 
 import java.util.HashMap;
 
-public class GithubConfig extends WebConfig {
+public class GithubConfig extends ConnectorConfig {
     static final String DEFAULT_LABEL = "Github";
 
     private String issueState;
     private String issueKeyword;
     private String queryString;
+    private WebServerInfo serverInfo = new WebServerInfo();
+    private String projectKey;
 
     public GithubConfig() {
-        super(DEFAULT_LABEL);
+        setLabel(DEFAULT_LABEL);
         getServerInfo().setHost("http://github.com");
     }
 
@@ -68,10 +71,35 @@ public class GithubConfig extends WebConfig {
 
     @Override
     public void validateForLoad() throws ValidationException {
-        super.validateForLoad();
-        if(getServerInfo().getUserName().isEmpty()) {
+        if (!serverInfo.isHostSet()) {
+            throw new ValidationException("Server URL is not set");
+        }
+
+        if(serverInfo.getUserName().isEmpty()) {
             throw new ValidationException("User login name is required.");
         }
     }
 
+    public WebServerInfo getServerInfo() {
+        return serverInfo;
+    }
+
+    @Override
+    public String getSourceLocation() {
+        return serverInfo.getHost();
+    }
+
+    @Override
+    public String getTargetLocation() {
+        // target is the same as source for web-based configs
+        return getSourceLocation();
+    }
+
+    public String getProjectKey() {
+        return projectKey;
+    }
+
+    public void setProjectKey(String projectKey) {
+        this.projectKey = projectKey;
+    }
 }

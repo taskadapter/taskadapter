@@ -1,15 +1,21 @@
 package com.taskadapter.web.configeditor;
 
-import java.util.List;
-
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.WebConfig;
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
 import com.taskadapter.web.service.Services;
 import com.vaadin.data.Property;
-import com.vaadin.ui.*;
+import com.vaadin.data.util.MethodProperty;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
+
+import java.util.List;
 
 public abstract class TwoColumnsConfigEditor extends ConfigEditor {
     private VerticalLayout leftVerticalLayout;
@@ -72,9 +78,13 @@ public abstract class TwoColumnsConfigEditor extends ConfigEditor {
 			Property queryId,
 			DataProvider<List<? extends NamedKeyedObject>> projectProvider, 
 			SimpleCallback projectInfoCallback,
-			DataProvider<List<? extends NamedKeyedObject>> queryProvider) {
+			DataProvider<List<? extends NamedKeyedObject>> queryProvider, WebServerInfo serverInfo) {
 		// left column
-		addToLeftColumn(new ServerPanel(((WebConfig) config)));
+        ServerPanel serverPanel = new ServerPanel(new MethodProperty<String>(config, "label"),
+                new MethodProperty<String>(serverInfo, "host"),
+                new MethodProperty<String>(serverInfo, "userName"),
+                new MethodProperty<String>(serverInfo, "password"));
+        addToLeftColumn(serverPanel);
 
 		// right column
 		addToRightColumn(new ProjectPanel(this, projectKey, queryId, 

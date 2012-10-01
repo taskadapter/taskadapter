@@ -1,6 +1,5 @@
 package com.taskadapter.connector.github;
 
-import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.connector.definition.WebServerInfo;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.IssueService;
@@ -14,10 +13,6 @@ public class ConnectionFactory {
 
     public ConnectionFactory(WebServerInfo serverInfo) {
         initServices(serverInfo);
-    }
-
-    public ConnectionFactory(WebConfig config) {
-        initServices(config.getServerInfo());
     }
 
     private void initServices(WebServerInfo serverInfo) {

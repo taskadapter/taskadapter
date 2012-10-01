@@ -33,8 +33,7 @@ public class GithubConnector extends AbstractConnector<GithubConfig> {
     
     @Override
     public GTask loadTaskByKey(String key) throws ConnectorException {
-        IssueService issueService = new ConnectionFactory(config)
-                .getIssueService();
+        IssueService issueService = new ConnectionFactory(config.getServerInfo()).getIssueService();
 
         Integer id = Integer.valueOf(key);
         Issue issue;
@@ -48,7 +47,7 @@ public class GithubConnector extends AbstractConnector<GithubConfig> {
     }
     
     private IssueService getIssueService() {
-        ConnectionFactory cf = new ConnectionFactory(config);
+        ConnectionFactory cf = new ConnectionFactory(config.getServerInfo());
         return cf.getIssueService();
     }
 

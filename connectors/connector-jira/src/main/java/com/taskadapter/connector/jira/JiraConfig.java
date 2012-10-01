@@ -2,18 +2,24 @@ package com.taskadapter.connector.jira;
 
 import com.google.common.base.Objects;
 import com.taskadapter.connector.Priorities;
+import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ValidationException;
-import com.taskadapter.connector.definition.WebConfig;
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.GTaskDescriptor;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
-public class JiraConfig extends WebConfig {
+public class JiraConfig extends ConnectorConfig {
 
     static final String DEFAULT_LABEL = "Atlassian Jira";
 
     private static final long serialVersionUID = 1L;
+    private static final String TASK_TYPE_BUG = "Bug";
+
+    private WebServerInfo serverInfo = new WebServerInfo();
 
     // TODO this can probably be moved to the super class
     private String component = "";
@@ -27,11 +33,13 @@ public class JiraConfig extends WebConfig {
      * Version ("milestone") in the project.
      */
     private String fixForVersion = "";
-
     private String queryString;
+    private Integer queryId;
+    private String projectKey;
+    private Map<String, String> customFields = new TreeMap<String, String>();
 
     public JiraConfig() {
-        super(DEFAULT_LABEL);
+        setLabel(DEFAULT_LABEL);
         setDefaultTaskType(TASK_TYPE_BUG);
     }
 
@@ -69,7 +77,7 @@ public class JiraConfig extends WebConfig {
 
     @Override
     protected Mappings generateDefaultFieldsMapping() {
-    	final Mappings result = new Mappings();
+        final Mappings result = new Mappings();
         result.addField(GTaskDescriptor.FIELD.SUMMARY);
         result.addField(GTaskDescriptor.FIELD.TASK_TYPE);
         result.addField(GTaskDescriptor.FIELD.ESTIMATED_TIME);
@@ -82,9 +90,11 @@ public class JiraConfig extends WebConfig {
 
     @Override
     public void validateForLoad() throws ValidationException {
-        super.validateForLoad();
+        if (!serverInfo.isHostSet()) {
+            throw new ValidationException("Server URL is not set");
+        }
 
-        if (getQueryId() == null) {
+        if (queryId == null) {
             throw new ValidationException("The current Task Adapter version supports loading data from Jira\n" +
                     "only using saved \"Query ID\".\n" +
                     "Please specify it in the Jira configuration dialog");
@@ -93,9 +103,11 @@ public class JiraConfig extends WebConfig {
 
     @Override
     public void validateForSave() throws ValidationException {
-        super.validateForSave();
+        if (!serverInfo.isHostSet()) {
+            throw new ValidationException("Server URL is not set");
+        }
 
-        if (getProjectKey().isEmpty()) {
+        if (projectKey.isEmpty()) {
             throw new ValidationException("Please specify the Jira project name\n" +
                     "where you want your tasks to be created.");
         }
@@ -108,10 +120,11 @@ public class JiraConfig extends WebConfig {
 
     /**
      * Creates a default priorities.
+     *
      * @return default priorities.
      */
-	public static Priorities createDefaultPriorities() {
-		return new Priorities(new HashMap<String, Integer>() {
+    public static Priorities createDefaultPriorities() {
+        return new Priorities(new HashMap<String, Integer>() {
             private static final long serialVersionUID = 516389048716909610L;
 
             {
@@ -122,7 +135,7 @@ public class JiraConfig extends WebConfig {
                 put("Blocker", 1000);
             }
         });
-	}
+    }
 
 
     @Override
@@ -150,5 +163,48 @@ public class JiraConfig extends WebConfig {
         } else {
             return false;
         }
+    }
+
+    public WebServerInfo getServerInfo() {
+        return serverInfo;
+    }
+
+    @Override
+    public String getSourceLocation() {
+        return serverInfo.getHost();
+    }
+
+    @Override
+    public String getTargetLocation() {
+        // target is the same as source for web-based configs
+        return getSourceLocation();
+    }
+
+    public void setServerInfo(WebServerInfo serverInfo) {
+        this.serverInfo = serverInfo;
+    }
+
+    public Integer getQueryId() {
+        return queryId;
+    }
+
+    public void setQueryId(Integer queryId) {
+        this.queryId = queryId;
+    }
+
+    public String getProjectKey() {
+        return projectKey;
+    }
+
+    public void setProjectKey(String projectKey) {
+        this.projectKey = projectKey;
+    }
+
+    public Map<String, String> getCustomFields() {
+        return customFields;
+    }
+
+    public void setCustomFields(Map<String, String> customFields) {
+        this.customFields = customFields;
     }
 }

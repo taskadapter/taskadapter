@@ -1,10 +1,12 @@
 package com.taskadapter.web.configeditor;
 
-import com.taskadapter.connector.definition.WebConfig;
-import com.taskadapter.connector.definition.WebServerInfo;
-import com.vaadin.data.util.MethodProperty;
+import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.PasswordField;
+import com.vaadin.ui.TextField;
 
 public class ServerContainer extends GridLayout {
     private static final String HOST_URL_TOOLTIP = "Host URL, including protocol prefix and port number. E.g. http://demo.site.com:3000";
@@ -13,11 +15,12 @@ public class ServerContainer extends GridLayout {
     private TextField descriptionField;
     private TextField hostURLText;
 
-    public ServerContainer(WebConfig config) {
-        buildUI(config);
+    public ServerContainer(Property labelProperty, Property serverURLProperty, Property userLoginNameProperty,
+                           Property passwordProperty) {
+        buildUI(labelProperty, serverURLProperty, userLoginNameProperty, passwordProperty);
     }
 
-    private void buildUI(WebConfig config) {
+    private void buildUI(Property labelProperty, Property serverURLProperty, Property userLoginNameProperty, Property passwordProperty) {
         setColumns(2);
         setRows(4);
         setMargin(true);
@@ -29,7 +32,7 @@ public class ServerContainer extends GridLayout {
         setComponentAlignment(descriptionLabel, Alignment.MIDDLE_LEFT);
         descriptionField = new TextField();
         descriptionField.addStyleName("server-panel-textfield");
-        descriptionField.setPropertyDataSource(new MethodProperty<String>(config, "label"));
+        descriptionField.setPropertyDataSource(labelProperty);
         addComponent(descriptionField, 1, currentRow);
 
         currentRow++;
@@ -49,9 +52,7 @@ public class ServerContainer extends GridLayout {
             }
         });
         hostURLText.addStyleName("server-panel-textfield");
-
-        WebServerInfo webServerInfo = config.getServerInfo();
-        hostURLText.setPropertyDataSource(new MethodProperty<String>(webServerInfo, "host"));
+        hostURLText.setPropertyDataSource(serverURLProperty);
 
         addComponent(hostURLText, 1, currentRow);
         setComponentAlignment(hostURLText, Alignment.MIDDLE_RIGHT);
@@ -64,7 +65,7 @@ public class ServerContainer extends GridLayout {
 
         TextField login = new TextField();
         login.addStyleName("server-panel-textfield");
-        login.setPropertyDataSource(new MethodProperty<String>(webServerInfo, "userName"));
+        login.setPropertyDataSource(userLoginNameProperty);
         addComponent(login, 1, currentRow);
         setComponentAlignment(login, Alignment.MIDDLE_RIGHT);
 
@@ -76,7 +77,7 @@ public class ServerContainer extends GridLayout {
 
         PasswordField password = new PasswordField();
         password.addStyleName("server-panel-textfield");
-        password.setPropertyDataSource(new MethodProperty<String>(webServerInfo, "password"));
+        password.setPropertyDataSource(passwordProperty);
         addComponent(password, 1, currentRow);
         setComponentAlignment(password, Alignment.MIDDLE_RIGHT);
     }

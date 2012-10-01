@@ -1,20 +1,24 @@
 package com.taskadapter.connector.mantis;
 
 import com.taskadapter.connector.Priorities;
+import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Mappings;
-import com.taskadapter.connector.definition.WebConfig;
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.GTaskDescriptor;
 
 import java.util.HashMap;
 
-public class MantisConfig extends WebConfig {
+public class MantisConfig extends ConnectorConfig {
 
     static final String DEFAULT_LABEL = "Mantis";
 
     private static final long serialVersionUID = 1L;
+    private WebServerInfo serverInfo = new WebServerInfo();
+    private String projectKey;
+    private boolean findUserByName;
 
     public MantisConfig() {
-        super(DEFAULT_LABEL);
+        setLabel(DEFAULT_LABEL);
     }
 
     @Override
@@ -41,5 +45,40 @@ public class MantisConfig extends WebConfig {
                 put("immediate", 1000);
             }
         });
+    }
+
+    public WebServerInfo getServerInfo() {
+        return serverInfo;
+    }
+
+    @Override
+    public String getSourceLocation() {
+        return serverInfo.getHost();
+    }
+
+    @Override
+    public String getTargetLocation() {
+        // target is the same as source for web-based configs
+        return getSourceLocation();
+    }
+
+    public void setServerInfo(WebServerInfo serverInfo) {
+        this.serverInfo = serverInfo;
+    }
+
+    public String getProjectKey() {
+        return projectKey;
+    }
+
+    public void setProjectKey(String projectKey) {
+        this.projectKey = projectKey;
+    }
+
+    public boolean isFindUserByName() {
+        return findUserByName;
+    }
+
+    public void setFindUserByName(boolean findUserByName) {
+        this.findUserByName = findUserByName;
     }
 }

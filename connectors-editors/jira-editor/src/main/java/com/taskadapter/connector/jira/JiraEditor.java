@@ -1,9 +1,7 @@
 package com.taskadapter.connector.jira;
 
 import com.taskadapter.connector.Priorities;
-import com.taskadapter.connector.definition.AvailableFields;
-import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.connector.definition.*;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GProject;
 import com.taskadapter.model.NamedKeyedObject;
@@ -29,7 +27,12 @@ public class JiraEditor extends TwoColumnsConfigEditor {
     @SuppressWarnings("unchecked")
     private void buildUI() {
         MiniServerPanel miniServerPanel = new MiniServerPanel(this, CONNECTOR_TYPE_LABEL, config);
-        ServerContainer serverPanel = new ServerContainer((JiraConfig) config);
+        WebServerInfo serverInfo = ((JiraConfig)config).getServerInfo();
+        ServerContainer serverPanel = new ServerContainer(new MethodProperty<String>(config, "label"),
+                new MethodProperty<String>(serverInfo, "host"),
+                new MethodProperty<String>(serverInfo, "userName"),
+                new MethodProperty<String>(serverInfo, "password"));
+
         miniServerPanel.setServerPanel(serverPanel);
         Panel panel = new Panel(miniServerPanel);
         panel.setCaption(CONNECTOR_TYPE_LABEL);
@@ -117,8 +120,7 @@ public class JiraEditor extends TwoColumnsConfigEditor {
         if (!getJiraConfig().getServerInfo().isHostSet()) {
             throw new ValidationException("Host URL is not set");
         }
-        return JiraLoaders.loadPriorities(getJiraConfig()
-                .getServerInfo());
+        return JiraLoaders.loadPriorities(getJiraConfig().getServerInfo());
     }
 
     private CustomFieldsTablePanel createCustomOtherFieldsPanel() {
@@ -126,12 +128,7 @@ public class JiraEditor extends TwoColumnsConfigEditor {
         return customFieldsTablePanel;
     }
 
-    /**
-     * To be used in child panel
-     *
-     * @return pure config instance
-     */
-    public JiraConfig getJiraConfig() {
+    private JiraConfig getJiraConfig() {
         return (JiraConfig) config;
     }
 }

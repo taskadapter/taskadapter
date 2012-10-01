@@ -2,22 +2,29 @@ package com.taskadapter.connector.redmine;
 
 import com.google.common.base.Objects;
 import com.taskadapter.connector.Priorities;
+import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Mappings;
-import com.taskadapter.connector.definition.WebConfig;
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.GTaskDescriptor;
 
 import java.util.HashMap;
 
-public class RedmineConfig extends WebConfig {
+public class RedmineConfig extends ConnectorConfig {
 
     static final String DEFAULT_LABEL = "Redmine";
 
     private static final long serialVersionUID = 1L;
+    private static final String TASK_TYPE_BUG = "Bug";
+
+    private WebServerInfo serverInfo = new WebServerInfo();
 
     private String defaultTaskStatus = "New";
+    private boolean findUserByName;
+    private Integer queryId;
+    private String projectKey;
 
     public RedmineConfig() {
-        super(DEFAULT_LABEL);
+        setLabel(DEFAULT_LABEL);
         setDefaultTaskType(TASK_TYPE_BUG);
     }
 
@@ -81,5 +88,48 @@ public class RedmineConfig extends WebConfig {
         } else {
             return false;
         }
+    }
+
+    public WebServerInfo getServerInfo() {
+        return serverInfo;
+    }
+
+    public void setServerInfo(WebServerInfo serverInfo) {
+        this.serverInfo = serverInfo;
+    }
+
+    @Override
+    public String getSourceLocation() {
+        return serverInfo.getHost();
+    }
+
+    @Override
+    public String getTargetLocation() {
+        // target is the same as source for web-based configs
+        return getSourceLocation();
+    }
+
+    public boolean isFindUserByName() {
+        return findUserByName;
+    }
+
+    public void setFindUserByName(boolean findUserByName) {
+        this.findUserByName = findUserByName;
+    }
+
+    public Integer getQueryId() {
+        return queryId;
+    }
+
+    public void setQueryId(Integer queryId) {
+        this.queryId = queryId;
+    }
+
+    public String getProjectKey() {
+        return projectKey;
+    }
+
+    public void setProjectKey(String projectKey) {
+        this.projectKey = projectKey;
     }
 }

@@ -21,12 +21,11 @@ public class GithubTaskSaver extends AbstractTaskSaver<GithubConfig> {
 
     public GithubTaskSaver(GithubConfig config) {
         super(config);
-        ConnectionFactory ghConnector = new ConnectionFactory(config);
+        ConnectionFactory ghConnector = new ConnectionFactory(config.getServerInfo());
         issueService = ghConnector.getIssueService();
         userService = ghConnector.getUserService();
         taskConverter = new GithubToGTask();
     }
-
 
     @Override
     protected Issue convertToNativeTask(GTask task) throws ConnectorException {
