@@ -20,10 +20,7 @@ public class Services {
     private UserManager userManager;
     private FileManager fileManager;
 
-    public Services() {
-        String userHome = System.getProperty("user.home");
-        File dataRootFolder = new File(userHome, "taskadapter");
-
+    public Services(File dataRootFolder) {
         userManager = new UserManager(dataRootFolder);
         configStorage = new ConfigStorage(pluginManager, dataRootFolder);
         authenticator = new Authenticator(userManager, cookiesManager);

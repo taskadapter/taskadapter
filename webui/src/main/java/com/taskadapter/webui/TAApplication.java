@@ -10,6 +10,7 @@ import com.vaadin.ui.Window;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 
 
 /**
@@ -31,7 +32,11 @@ public class TAApplication extends Application implements HttpServletRequestList
     @Override
     public void init() {
         setTheme("mytheme");
-        services = new Services();
+
+        String userHome = System.getProperty("user.home");
+        File dataRootFolder = new File(userHome, "taskadapter");
+
+        services = new Services(dataRootFolder);
         services.setEditorManager(new EditorManager());
 
         VerticalLayout layout = new VerticalLayout();
