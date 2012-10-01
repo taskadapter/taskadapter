@@ -79,7 +79,7 @@ public class MSPUtils {
         }
     }
 
-    static String[] getAllTextFieldNames() {
+    public static String[] getAllTextFieldNames() {
         Set<String> keys = TEXT_FIELDS_MAP.keySet();
         return keys.toArray(new String[keys.size()]);
     }

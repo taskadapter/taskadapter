@@ -1,6 +1,7 @@
-package com.taskadapter.connector.msp;
+package com.taskadapter.connector.msp.editor;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
+import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.web.configeditor.FieldsMappingPanel;
 import com.taskadapter.web.configeditor.TwoColumnsConfigEditor;
 import com.taskadapter.web.configeditor.file.LocalModeFilePanel;

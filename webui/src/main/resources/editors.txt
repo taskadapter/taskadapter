@@ -1,7 +1,7 @@
 # list of EDITORS for Task Adapter
 com.taskadapter.connector.redmine.editor.RedmineEditorFactory
 com.taskadapter.connector.jira.JiraEditorFactory
-com.taskadapter.connector.msp.MSPEditorFactory
+com.taskadapter.connector.msp.editor.MSPEditorFactory
 com.taskadapter.connector.github.editor.GithubEditorFactory
 com.taskadapter.connector.mantis.editor.MantisEditorFactory
 

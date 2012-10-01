@@ -1,7 +1,8 @@
-package com.taskadapter.connector.msp;
+package com.taskadapter.connector.msp.editor;
 
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.AvailableFieldsBuilder;
+import com.taskadapter.connector.msp.MSPUtils;
 import com.taskadapter.model.GTaskDescriptor;
 
 public class MSPSupportedFields {

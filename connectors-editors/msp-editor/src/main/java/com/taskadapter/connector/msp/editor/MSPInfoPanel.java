@@ -1,5 +1,6 @@
-package com.taskadapter.connector.msp;
+package com.taskadapter.connector.msp.editor;
 
+import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.write.MSXMLFileWriter;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
