@@ -74,7 +74,7 @@ public abstract class TwoColumnsConfigEditor extends ConfigEditor {
 			SimpleCallback projectInfoCallback,
 			DataProvider<List<? extends NamedKeyedObject>> queryProvider) {
 		// left column
-		addToLeftColumn(new ServerPanel(((WebConfig) config).getServerInfo()));
+		addToLeftColumn(new ServerPanel(((WebConfig) config)));
 
 		// right column
 		addToRightColumn(new ProjectPanel(this, projectKey, queryId, 

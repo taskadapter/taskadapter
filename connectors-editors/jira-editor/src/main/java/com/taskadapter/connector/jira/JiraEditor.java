@@ -1,7 +1,5 @@
 package com.taskadapter.connector.jira;
 
-import java.util.List;
-
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
@@ -16,8 +14,13 @@ import com.taskadapter.web.configeditor.*;
 import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Services;
 import com.vaadin.data.util.MethodProperty;
+import com.vaadin.ui.Panel;
+
+import java.util.List;
 
 public class JiraEditor extends TwoColumnsConfigEditor {
+
+    private static final String CONNECTOR_TYPE_LABEL = "Atlassian Jira";
 
     public JiraEditor(ConnectorConfig config, Services services) {
         super(config, services);
@@ -25,46 +28,51 @@ public class JiraEditor extends TwoColumnsConfigEditor {
     }
 
     @SuppressWarnings("unchecked")
-	private void buildUI() {
-        // top left and right columns
-        createServerAndProjectPanelOnTopDefault(
-        		EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
-        		EditorUtil.wrapNulls(new MethodProperty<Integer>(config, "queryId")),
-        		Interfaces.fromMethod(DataProvider.class, JiraLoaders.class, 
-        				"loadProjects", getJiraConfig().getServerInfo()),
-        		Interfaces.fromMethod(SimpleCallback.class, this, "loadProjectInfo"),
-        		Interfaces.fromMethod(DataProvider.class, this, "loadQueries"));
+    private void buildUI() {
+        MiniServerPanel miniServerPanel = new MiniServerPanel(this, CONNECTOR_TYPE_LABEL, config);
+        ServerContainer serverPanel = new ServerContainer((WebConfig) config);
+        miniServerPanel.setServerPanel(serverPanel);
+        Panel panel = new Panel(miniServerPanel);
+        panel.setCaption(CONNECTOR_TYPE_LABEL);
+        addToLeftColumn(panel);
+
+        // right column
+        addToRightColumn(new ProjectPanel(this,
+                EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
+                EditorUtil.wrapNulls(new MethodProperty<Integer>(config, "queryId")),
+                Interfaces.fromMethod(DataProvider.class, JiraLoaders.class,
+                        "loadProjects", getJiraConfig().getServerInfo()),
+                Interfaces.fromMethod(SimpleCallback.class, this, "loadProjectInfo"),
+                Interfaces.fromMethod(DataProvider.class, this, "loadQueries")));
 
         // left column
         OtherJiraFieldsPanel jiraFieldsPanel = new OtherJiraFieldsPanel(this, getJiraConfig());
         addToLeftColumn(jiraFieldsPanel);
 
-		PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(),
-				Interfaces.fromMethod(DataProvider.class, this, "loadJiraPriorities"));
+        PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(),
+                Interfaces.fromMethod(DataProvider.class, this, "loadJiraPriorities"));
         addToLeftColumn(priorityPanel);
 
         // right column
         addToRightColumn(createCustomOtherFieldsPanel());
         AvailableFields supportedFields = JiraSupportedFields.SUPPORTED_FIELDS;
         addToRightColumn(new FieldsMappingPanel(supportedFields, config.getFieldMappings()));
+        hideDescription();
+    }
+
+    List<? extends NamedKeyedObject> loadQueries() {
+        try {
+            return new JiraConnector(getJiraConfig()).getFilters();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
-     * Loads queries.
-     * @return queries to load.
-     */
-    List<? extends NamedKeyedObject> loadQueries() {
-		try {
-			return new JiraConnector(getJiraConfig()).getFilters();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	/**
      * Shows a project info.
-     * @throws ValidationException 
-	 * @throws ConnectorException 
+     *
+     * @throws ValidationException
+     * @throws ConnectorException
      */
     void loadProjectInfo() throws ValidationException, ConnectorException {
         WebConfig webConfig = (WebConfig) config;
@@ -77,9 +85,8 @@ public class JiraEditor extends TwoColumnsConfigEditor {
         GProject project = JiraLoaders.loadProject(
                 webConfig.getServerInfo(), webConfig.getProjectKey());
         showProjectInfo(project);
-		
-	}
-    
+    }
+
     private void showProjectInfo(GProject project) {
         String msg = "Id: " + project.getId() + "\nKey:  "
                 + project.getKey() + "\nName: "
@@ -91,7 +98,7 @@ public class JiraEditor extends TwoColumnsConfigEditor {
 
         EditorUtil.show(getWindow(), "Project Info", msg);
     }
-    
+
     private String addNullSafe(String label, String fieldValue) {
         String msg = "\n" + label + ": ";
         if (fieldValue != null) {
@@ -101,27 +108,28 @@ public class JiraEditor extends TwoColumnsConfigEditor {
     }
 
 
-
-	/**
+    /**
      * Loads jira priorities.
+     *
      * @return priorities from server.
-	 * @throws ConnectorException 
+     * @throws ConnectorException
      */
     Priorities loadJiraPriorities() throws ValidationException, ConnectorException {
         if (!getJiraConfig().getServerInfo().isHostSet()) {
             throw new ValidationException("Host URL is not set");
         }
-		return JiraLoaders.loadPriorities(getJiraConfig()
-				.getServerInfo());
-	}
+        return JiraLoaders.loadPriorities(getJiraConfig()
+                .getServerInfo());
+    }
 
-	private CustomFieldsTablePanel createCustomOtherFieldsPanel() {
+    private CustomFieldsTablePanel createCustomOtherFieldsPanel() {
         CustomFieldsTablePanel customFieldsTablePanel = new CustomFieldsTablePanel(getJiraConfig().getCustomFields());
         return customFieldsTablePanel;
     }
 
     /**
      * To be used in child panel
+     *
      * @return pure config instance
      */
     public JiraConfig getJiraConfig() {
