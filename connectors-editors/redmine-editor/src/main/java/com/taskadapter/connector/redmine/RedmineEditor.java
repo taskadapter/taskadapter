@@ -49,7 +49,6 @@ public class RedmineEditor extends TwoColumnsConfigEditor {
                 Interfaces.fromMethod(SimpleCallback.class, this, "showProjectInfo"),
                 Interfaces.fromMethod(DataProvider.class, this, "loadQueries")));
         addToRightColumn(new FieldsMappingPanel(RedmineSupportedFields.SUPPORTED_FIELDS, config.getFieldMappings()));
-        hideDescription();
     }
 
     List<? extends NamedKeyedObject> loadQueries() throws ValidationException {

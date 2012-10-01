@@ -59,7 +59,6 @@ public class JiraEditor extends TwoColumnsConfigEditor {
         addToRightColumn(createCustomOtherFieldsPanel());
         AvailableFields supportedFields = JiraSupportedFields.SUPPORTED_FIELDS;
         addToRightColumn(new FieldsMappingPanel(supportedFields, config.getFieldMappings()));
-        hideDescription();
     }
 
     List<? extends NamedKeyedObject> loadQueries() {
