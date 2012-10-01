@@ -4,7 +4,6 @@ import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ValidationException;
-import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GProject;
 import com.taskadapter.model.NamedKeyedObject;
@@ -30,7 +29,7 @@ public class JiraEditor extends TwoColumnsConfigEditor {
     @SuppressWarnings("unchecked")
     private void buildUI() {
         MiniServerPanel miniServerPanel = new MiniServerPanel(this, CONNECTOR_TYPE_LABEL, config);
-        ServerContainer serverPanel = new ServerContainer((WebConfig) config);
+        ServerContainer serverPanel = new ServerContainer((JiraConfig) config);
         miniServerPanel.setServerPanel(serverPanel);
         Panel panel = new Panel(miniServerPanel);
         panel.setCaption(CONNECTOR_TYPE_LABEL);
@@ -75,7 +74,7 @@ public class JiraEditor extends TwoColumnsConfigEditor {
      * @throws ConnectorException
      */
     void loadProjectInfo() throws ValidationException, ConnectorException {
-        WebConfig webConfig = (WebConfig) config;
+        JiraConfig webConfig = (JiraConfig) config;
         if (!webConfig.getServerInfo().isHostSet()) {
             throw new ValidationException("Host URL is not set");
         }

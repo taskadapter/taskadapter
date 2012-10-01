@@ -2,7 +2,6 @@ package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ValidationException;
-import com.taskadapter.connector.definition.WebConfig;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.redmineapi.NotFoundException;
@@ -14,8 +13,8 @@ import com.taskadapter.web.configeditor.*;
 import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Services;
 import com.vaadin.data.util.MethodProperty;
-import com.vaadin.ui.*;
-import com.vaadin.ui.themes.Runo;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Panel;
 
 import java.util.List;
 
@@ -69,21 +68,21 @@ public class RedmineEditor extends TwoColumnsConfigEditor {
     }
 
     void showProjectInfo() throws ValidationException {
-        WebConfig webConfig = (WebConfig) config;
-        if (!webConfig.getServerInfo().isHostSet()) {
+        RedmineConfig redmineConfig = (RedmineConfig) config;
+        if (!redmineConfig.getServerInfo().isHostSet()) {
             throw new ValidationException("Host URL is not set");
         }
-        if (webConfig.getProjectKey() == null || webConfig.getProjectKey().isEmpty()) {
+        if (redmineConfig.getProjectKey() == null || redmineConfig.getProjectKey().isEmpty()) {
             throw new ValidationException("Please, provide the project key first");
         }
         notifyProjectLoaded(RedmineLoaders.loadProject(getRedmineManager(),
-                webConfig.getProjectKey()));
+                redmineConfig.getProjectKey()));
     }
 
     RedmineManager getRedmineManager() {
         RedmineManager mgr;
-        final WebConfig wc = (WebConfig) config;
-        final WebServerInfo serverInfo = wc.getServerInfo();
+        final RedmineConfig redmineConfig = (RedmineConfig) config;
+        final WebServerInfo serverInfo = redmineConfig.getServerInfo();
         if (serverInfo.isUseAPIKeyInsteadOfLoginPassword()) {
             mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getApiKey());
         } else {
