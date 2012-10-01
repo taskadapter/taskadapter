@@ -1,4 +1,4 @@
-package com.taskadapter.connector.redmine;
+package com.taskadapter.connector.redmine.editor;
 
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.AvailableFieldsBuilder;

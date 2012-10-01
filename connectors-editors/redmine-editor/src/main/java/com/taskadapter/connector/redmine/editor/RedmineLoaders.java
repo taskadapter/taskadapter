@@ -1,7 +1,9 @@
-package com.taskadapter.connector.redmine;
+package com.taskadapter.connector.redmine.editor;
 
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.redmine.RedmineConfig;
+import com.taskadapter.connector.redmine.RedmineManagerFactory;
 import com.taskadapter.connector.redmine.converter.RedmineProjectConverter;
 import com.taskadapter.model.GProject;
 import com.taskadapter.model.NamedKeyedObject;

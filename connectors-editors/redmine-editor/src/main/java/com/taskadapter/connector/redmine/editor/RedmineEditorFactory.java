@@ -1,7 +1,9 @@
-package com.taskadapter.connector.redmine;
+package com.taskadapter.connector.redmine.editor;
 
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
+import com.taskadapter.connector.redmine.RedmineConnector;
+import com.taskadapter.connector.redmine.RelationCreationException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.data.Messages;
