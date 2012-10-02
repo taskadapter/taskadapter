@@ -18,6 +18,9 @@ public class FileManager {
     }
 
     public File getUserFolder(String userLoginName) {
+        if (userLoginName == null) {
+            throw new IllegalArgumentException("User name is null");
+        }
         return new File(dataRootFolder, userLoginName);
     }
 

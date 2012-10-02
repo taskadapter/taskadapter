@@ -70,4 +70,8 @@ public class Services {
     public FileManager getFileManager() {
         return fileManager;
     }
+
+    public void setAuthenticator(Authenticator authenticator) {
+        this.authenticator = authenticator;
+    }
 }
