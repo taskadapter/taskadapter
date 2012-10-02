@@ -12,11 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 
-
 /**
  * Vaadin web application entry point.
- *
- * @author Alexey Skorokhodov
  */
 public class TAApplication extends Application implements HttpServletRequestListener {
 
@@ -26,24 +23,19 @@ public class TAApplication extends Application implements HttpServletRequestList
 
     @Override
     public String getVersion() {
-        return services.getUpdateManager().getCurrentVersion();
+        return getServices().getUpdateManager().getCurrentVersion();
     }
 
     @Override
     public void init() {
         setTheme("mytheme");
 
-        String userHome = System.getProperty("user.home");
-        File dataRootFolder = new File(userHome, "taskadapter");
-
-        services = new Services(dataRootFolder);
-        services.setEditorManager(new EditorManager());
-
         VerticalLayout layout = new VerticalLayout();
         layout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         mainWindow.setContent(layout);
         setMainWindow(mainWindow);
-        services.getAuthenticator().init();
+
+        getServices().getAuthenticator().init();
 
         Navigator navigator = new Navigator(layout, services);
         navigator.show(Navigator.HOME);
@@ -51,10 +43,21 @@ public class TAApplication extends Application implements HttpServletRequestList
 
     @Override
     public void onRequestStart(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        services.getCookiesManager().init(httpServletRequest, httpServletResponse);
+        getServices().getCookiesManager().init(httpServletRequest, httpServletResponse);
     }
 
     @Override
     public void onRequestEnd(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    }
+
+    private Services getServices() {
+        if (services == null) {
+            String userHome = System.getProperty("user.home");
+            File dataRootFolder = new File(userHome, "taskadapter");
+
+            services = new Services(dataRootFolder);
+            services.setEditorManager(new EditorManager());
+        }
+        return services;
     }
 }
