@@ -46,4 +46,7 @@ public final class AvailableFields {
 		return Collections.unmodifiableCollection(fieldValues.keySet());
 	}
 
+    public boolean isFieldSupported(FIELD field) {
+        return fieldValues.containsKey(field);
+    }
 }

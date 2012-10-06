@@ -6,7 +6,6 @@ import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.github.GithubConfig;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
-import com.taskadapter.web.configeditor.FieldsMappingPanel;
 import com.taskadapter.web.configeditor.ProjectPanel;
 import com.taskadapter.web.configeditor.ServerPanel;
 import com.taskadapter.web.configeditor.TwoColumnsConfigEditor;
@@ -40,6 +39,5 @@ public class GithubEditor extends TwoColumnsConfigEditor {
         projectPanel.setProjectKeyLabel("Repository ID");
 
         addToLeftColumn(new OtherGithubFieldsPanel(this));
-        addToRightColumn(new FieldsMappingPanel(GithubSupportedFields.SUPPORTED_FIELDS, config.getFieldMappings()));
     }
 }

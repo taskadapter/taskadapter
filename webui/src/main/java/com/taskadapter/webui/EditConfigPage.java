@@ -16,6 +16,8 @@ public class EditConfigPage extends Page {
     private TextField configDescription;
     private ConfigEditor panel1;
     private ConfigEditor panel2;
+    private OnePageEditor onePageEditor;
+
     private TabSheet tabSheet;
     private Label errorMessageLabel = new Label("Test");
     private String activeTabLabel;
@@ -67,10 +69,15 @@ public class EditConfigPage extends Page {
         tabSheet.setSizeUndefined();
 
         ConnectorDataHolder leftConnectorDataHolder = file.getConnectorDataHolder1();
+        ConnectorDataHolder rightConnectorDataHolder = file.getConnectorDataHolder2();
+
+        onePageEditor = new OnePageEditor(services, leftConnectorDataHolder, rightConnectorDataHolder);
+
+        tabSheet.addTab(onePageEditor, "One-page editor");
+
         panel1 = getPanel(leftConnectorDataHolder);
         tabSheet.addTab(panel1, getPanelCaption(leftConnectorDataHolder));
 
-        ConnectorDataHolder rightConnectorDataHolder = file.getConnectorDataHolder2();
         panel2 = getPanel(rightConnectorDataHolder);
         tabSheet.addTab(panel2, getPanelCaption(rightConnectorDataHolder));
 

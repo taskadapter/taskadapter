@@ -5,9 +5,12 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.msp.UnsupportedRelationType;
 import com.taskadapter.web.PluginEditorFactory;
+import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.VerticalLayout;
 
 public class MSPEditorFactory implements PluginEditorFactory {
     /**
@@ -41,5 +44,11 @@ public class MSPEditorFactory implements PluginEditorFactory {
     @Override
     public AvailableFields getAvailableFields() {
         return MSPSupportedFields.SUPPORTED_FIELDS;
+    }
+
+    @Override
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, ConnectorConfig config) {
+        // TODO !!!
+        return new VerticalLayout();
     }
 }

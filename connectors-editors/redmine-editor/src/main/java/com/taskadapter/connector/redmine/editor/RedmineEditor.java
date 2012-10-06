@@ -21,8 +21,6 @@ import java.util.List;
 
 public class RedmineEditor extends TwoColumnsConfigEditor {
 
-    private static final String CONNECTOR_TYPE_LABEL = "Redmine";
-
     public RedmineEditor(ConnectorConfig config, Services services) {
         super(config, services);
 
@@ -31,89 +29,8 @@ public class RedmineEditor extends TwoColumnsConfigEditor {
 
     @SuppressWarnings("unchecked")
     private void buildUI() {
-        MiniServerPanel miniServerPanel = new MiniServerPanel(this, CONNECTOR_TYPE_LABEL, config);
-        RedmineServerPanel redmineServerPanel = new RedmineServerPanel(this, (RedmineConfig) config);
-        miniServerPanel.setServerPanel(redmineServerPanel);
-        Panel panel = new Panel(miniServerPanel);
-        panel.setCaption(CONNECTOR_TYPE_LABEL);
-        addToLeftColumn(panel);
-
-        addToLeftColumn(createEmptyLabel("15px"));
-
         OtherRedmineFieldsPanel otherPanel = new OtherRedmineFieldsPanel((RedmineConfig) config);
         addToLeftColumn(otherPanel);
-
-        addToRightColumn(new ProjectPanel(this,
-                EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
-                EditorUtil.wrapNulls(new MethodProperty<Integer>(config, "queryId")),
-                Interfaces.fromMethod(DataProvider.class, RedmineLoaders.class, "getProjects", ((RedmineConfig) config).getServerInfo()),
-                Interfaces.fromMethod(SimpleCallback.class, this, "showProjectInfo"),
-                Interfaces.fromMethod(DataProvider.class, this, "loadQueries")));
-        addToRightColumn(new FieldsMappingPanel(RedmineSupportedFields.SUPPORTED_FIELDS, config.getFieldMappings()));
-    }
-
-    List<? extends NamedKeyedObject> loadQueries() throws ValidationException {
-        final RedmineConfig config = (RedmineConfig) this.config;
-        try {
-            return RedmineLoaders.loadData(config.getServerInfo(), config.getProjectKey());
-        } catch (NotFoundException e) {
-            EditorUtil.show(getWindow(), "Can't load Saved Queries", "The server did not return any saved queries.\n" +
-                    "NOTE: This operation is only supported by Redmine 1.3.0+");
-            return null;
-        } catch (ValidationException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    void showProjectInfo() throws ValidationException {
-        RedmineConfig redmineConfig = (RedmineConfig) config;
-        if (!redmineConfig.getServerInfo().isHostSet()) {
-            throw new ValidationException("Host URL is not set");
-        }
-        if (redmineConfig.getProjectKey() == null || redmineConfig.getProjectKey().isEmpty()) {
-            throw new ValidationException("Please, provide the project key first");
-        }
-        notifyProjectLoaded(RedmineLoaders.loadProject(getRedmineManager(),
-                redmineConfig.getProjectKey()));
-    }
-
-    RedmineManager getRedmineManager() {
-        RedmineManager mgr;
-        final RedmineConfig redmineConfig = (RedmineConfig) config;
-        final WebServerInfo serverInfo = redmineConfig.getServerInfo();
-        if (serverInfo.isUseAPIKeyInsteadOfLoginPassword()) {
-            mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getApiKey());
-        } else {
-            mgr = new RedmineManager(serverInfo.getHost());
-            mgr.setLogin(serverInfo.getUserName());
-            mgr.setPassword(serverInfo.getPassword());
-        }
-        return mgr;
-    }
-
-    private void notifyProjectLoaded(Project project) {
-        String msg;
-        if (project == null) {
-            msg = "<br>Project with the given key is not found";
-        } else {
-            msg = "<br>Key:  " + project.getIdentifier()
-                    + "<br>Name: " + project.getName()
-                    + "<br>Created: " + project.getCreatedOn()
-                    + "<br>Updated: " + project.getUpdatedOn();
-            msg += addNullSafe("<br>Homepage", project.getHomepage());
-            msg += addNullSafe("<br>Description", project.getDescription());
-        }
-        EditorUtil.show(getWindow(), "Project Info", msg);
-    }
-
-    private String addNullSafe(String label, String fieldValue) {
-        String msg = "\n" + label + ": ";
-        if (fieldValue != null) {
-            msg += fieldValue;
-        }
-        return msg;
     }
 
     class OtherRedmineFieldsPanel extends Panel {

@@ -4,9 +4,12 @@ import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.mantis.MantisConnector;
 import com.taskadapter.web.PluginEditorFactory;
+import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.VerticalLayout;
 
 public class MantisEditorFactory implements PluginEditorFactory {
     /**
@@ -40,6 +43,12 @@ public class MantisEditorFactory implements PluginEditorFactory {
     @Override
     public AvailableFields getAvailableFields() {
         return MantisSupportedFields.SUPPORTED_FIELDS;
+    }
+
+    @Override
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, ConnectorConfig config) {
+        // TODO !!!
+        return new VerticalLayout();
     }
 
 }

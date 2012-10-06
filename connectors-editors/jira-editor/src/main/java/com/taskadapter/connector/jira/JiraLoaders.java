@@ -8,6 +8,7 @@ import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GProject;
+import com.taskadapter.model.NamedKeyedObject;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;

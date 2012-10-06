@@ -30,9 +30,6 @@ public class MSPEditor extends TwoColumnsConfigEditor {
         addToLeftColumn(createFilePanel());
         addToLeftColumn(createEmptyLabel("24px"));
         addToLeftColumn(createInfoReadOnlyPanel());
-
-        // right
-        addToRightColumn(new FieldsMappingPanel(MSPSupportedFields.SUPPORTED_FIELDS, config.getFieldMappings()));
     }
 
     private HorizontalLayout createDescriptionElement() {

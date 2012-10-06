@@ -7,7 +7,7 @@ import com.vaadin.data.util.MethodProperty;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;
 
-public class MiniServerPanel extends GridLayout {
+public class MiniPanel extends GridLayout {
     private static final int COLUMNS_NUMBER = 3;
 
     private WindowProvider windowProvider;
@@ -16,7 +16,7 @@ public class MiniServerPanel extends GridLayout {
     private Window newWindow;
     private Label dataLocationLabel;
 
-    public MiniServerPanel(WindowProvider windowProvider, String connectorType, ConnectorConfig config) {
+    public MiniPanel(WindowProvider windowProvider, String connectorType, ConnectorConfig config) {
         this.windowProvider = windowProvider;
         this.connectorType = connectorType;
         this.config = config;
@@ -70,7 +70,7 @@ public class MiniServerPanel extends GridLayout {
         newWindow.focus();
     }
 
-    public void setServerPanel(ComponentContainer serverPanel) {
+    public void setPanelContents(ComponentContainer serverPanel) {
         newWindow.setContent(serverPanel);
     }
 }

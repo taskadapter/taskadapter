@@ -2,12 +2,22 @@ package com.taskadapter.connector.redmine.editor;
 
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
+import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
 import com.taskadapter.connector.redmine.RelationCreationException;
 import com.taskadapter.web.PluginEditorFactory;
+import com.taskadapter.web.WindowProvider;
+import com.taskadapter.web.callbacks.DataProvider;
+import com.taskadapter.web.callbacks.SimpleCallback;
 import com.taskadapter.web.configeditor.ConfigEditor;
+import com.taskadapter.web.configeditor.EditorUtil;
+import com.taskadapter.web.configeditor.ProjectPanel;
 import com.taskadapter.web.data.Messages;
+import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Services;
+import com.vaadin.data.util.MethodProperty;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.VerticalLayout;
 
 public class RedmineEditorFactory implements PluginEditorFactory {
     /**
@@ -43,5 +53,22 @@ public class RedmineEditorFactory implements PluginEditorFactory {
     @Override
     public AvailableFields getAvailableFields() {
         return RedmineSupportedFields.SUPPORTED_FIELDS;
+    }
+
+    @Override
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, ConnectorConfig config) {
+        RedmineServerPanel redmineServerPanel = new RedmineServerPanel(windowProvider, (RedmineConfig) config);
+        ShowProjectElement showProjectElement = new ShowProjectElement(windowProvider, (RedmineConfig) config);
+        LoadQueriesElement loadQueriesElement = new LoadQueriesElement(windowProvider, (RedmineConfig) config);
+        ProjectPanel projectPanel = new ProjectPanel(windowProvider,
+                EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
+                EditorUtil.wrapNulls(new MethodProperty<Integer>(config, "queryId")),
+                Interfaces.fromMethod(DataProvider.class, RedmineLoaders.class, "getProjects", ((RedmineConfig) config).getServerInfo()),
+                Interfaces.fromMethod(SimpleCallback.class, showProjectElement, "showProjectInfo"),
+                Interfaces.fromMethod(DataProvider.class, loadQueriesElement, "loadQueries"));
+        VerticalLayout layout = new VerticalLayout();
+        layout.addComponent(redmineServerPanel);
+        layout.addComponent(projectPanel);
+        return layout;
     }
 }
