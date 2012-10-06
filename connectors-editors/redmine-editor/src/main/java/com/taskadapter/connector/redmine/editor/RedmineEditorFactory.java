@@ -9,7 +9,6 @@ import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
-import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.ProjectPanel;
 import com.taskadapter.web.data.Messages;
@@ -20,9 +19,6 @@ import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.VerticalLayout;
 
 public class RedmineEditorFactory implements PluginEditorFactory {
-    /**
-     * Bundle name.
-     */
     private static final String BUNDLE_NAME = "com.taskadapter.connector.redmine.messages";
 
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
@@ -30,11 +26,6 @@ public class RedmineEditorFactory implements PluginEditorFactory {
     @Override
     public String getId() {
         return RedmineConnector.ID;
-    }
-
-    @Override
-    public ConfigEditor createEditor(ConnectorConfig config, Services services) {
-        return new RedmineEditor(config, services);
     }
 
     @Override
@@ -56,19 +47,21 @@ public class RedmineEditorFactory implements PluginEditorFactory {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, ConnectorConfig config) {
-        RedmineServerPanel redmineServerPanel = new RedmineServerPanel(windowProvider, (RedmineConfig) config);
-        ShowProjectElement showProjectElement = new ShowProjectElement(windowProvider, (RedmineConfig) config);
-        LoadQueriesElement loadQueriesElement = new LoadQueriesElement(windowProvider, (RedmineConfig) config);
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, ConnectorConfig someConfig) {
+        RedmineConfig config = (RedmineConfig) someConfig;
+        RedmineServerPanel redmineServerPanel = new RedmineServerPanel(windowProvider, config);
+        ShowProjectElement showProjectElement = new ShowProjectElement(windowProvider, config);
+        LoadQueriesElement loadQueriesElement = new LoadQueriesElement(windowProvider, config);
         ProjectPanel projectPanel = new ProjectPanel(windowProvider,
-                EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
-                EditorUtil.wrapNulls(new MethodProperty<Integer>(config, "queryId")),
-                Interfaces.fromMethod(DataProvider.class, RedmineLoaders.class, "getProjects", ((RedmineConfig) config).getServerInfo()),
+                EditorUtil.wrapNulls(new MethodProperty<String>(someConfig, "projectKey")),
+                EditorUtil.wrapNulls(new MethodProperty<Integer>(someConfig, "queryId")),
+                Interfaces.fromMethod(DataProvider.class, RedmineLoaders.class, "getProjects", config.getServerInfo()),
                 Interfaces.fromMethod(SimpleCallback.class, showProjectElement, "showProjectInfo"),
                 Interfaces.fromMethod(DataProvider.class, loadQueriesElement, "loadQueries"));
         VerticalLayout layout = new VerticalLayout();
         layout.addComponent(redmineServerPanel);
         layout.addComponent(projectPanel);
+        layout.addComponent(new OtherRedmineFieldsContainer(config));
         return layout;
     }
 }

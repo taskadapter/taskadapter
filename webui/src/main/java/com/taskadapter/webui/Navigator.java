@@ -144,17 +144,12 @@ public class Navigator {
 
     // TODO these 5 showXX methods are not in line with the other show(). refactor!
     public void showConfigureTaskPage(TAFile file) {
-        showConfigureTaskPage(file, null, null);
+        showConfigureTaskPage(file, null);
     }
 
-    public void showConfigureTaskPage(TAFile file, String configLabelEqualsTabName) {
-        showConfigureTaskPage(file, configLabelEqualsTabName, null);
-    }
-
-    public void showConfigureTaskPage(TAFile file, String dataHolderLabel, String errorMessage) {
+    public void showConfigureTaskPage(TAFile file, String errorMessage) {
         EditConfigPage page = (EditConfigPage) pages.get(EDIT_CONFIG_PAGE);
         page.setFile(file);
-        page.setActiveTabLabel(dataHolderLabel);
         page.setErrorMessage(errorMessage);
 
         show(page);

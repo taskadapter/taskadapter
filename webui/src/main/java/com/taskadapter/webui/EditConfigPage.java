@@ -1,12 +1,7 @@
 package com.taskadapter.webui;
 
-import com.google.common.base.Strings;
 import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
-import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.ValidationException;
-import com.taskadapter.web.PluginEditorFactory;
-import com.taskadapter.web.configeditor.ConfigEditor;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
 
@@ -14,13 +9,9 @@ public class EditConfigPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
     private TAFile file;
     private TextField configDescription;
-    private ConfigEditor panel1;
-    private ConfigEditor panel2;
     private OnePageEditor onePageEditor;
 
-    private TabSheet tabSheet;
     private Label errorMessageLabel = new Label("Test");
-    private String activeTabLabel;
 
     private void buildUI() {
         layout.removeAllComponents();
@@ -65,36 +56,11 @@ public class EditConfigPage extends Page {
         configDescription.setValue(file.getConfigLabel());
         descriptionLayout.addComponent(configDescription);
 
-        tabSheet = new TabSheet();
-        tabSheet.setSizeUndefined();
-
         ConnectorDataHolder leftConnectorDataHolder = file.getConnectorDataHolder1();
         ConnectorDataHolder rightConnectorDataHolder = file.getConnectorDataHolder2();
 
         onePageEditor = new OnePageEditor(services, leftConnectorDataHolder, rightConnectorDataHolder);
-
-        tabSheet.addTab(onePageEditor, "One-page editor");
-
-        panel1 = getPanel(leftConnectorDataHolder);
-        tabSheet.addTab(panel1, getPanelCaption(leftConnectorDataHolder));
-
-        panel2 = getPanel(rightConnectorDataHolder);
-        tabSheet.addTab(panel2, getPanelCaption(rightConnectorDataHolder));
-
-        if (!Strings.isNullOrEmpty(activeTabLabel)) {
-            tabSheet.setSelectedTab(
-                    activeTabLabel.equals(leftConnectorDataHolder.getData().getLabel())
-                            ? panel1
-                            : activeTabLabel.equals(rightConnectorDataHolder.getData().getLabel())
-                            ? panel2 : panel1
-            );
-        }
-
-        layout.addComponent(tabSheet);
-    }
-
-    private String getPanelCaption(ConnectorDataHolder connectorDataHolder) {
-        return connectorDataHolder.getData().getLabel();
+        layout.addComponent(onePageEditor);
     }
 
     public void setFile(TAFile file) {
@@ -103,7 +69,7 @@ public class EditConfigPage extends Page {
 
     private void save() {
         if (validateEditor()) {
-            updateFileWithDataInForm();
+//            updateFileWithDataInForm();
             String userLoginName = services.getAuthenticator().getUserName();
             services.getConfigStorage().saveConfig(userLoginName, file);
             navigator.showNotification("Saved", "All is saved OK");
@@ -114,7 +80,8 @@ public class EditConfigPage extends Page {
     }
 
     private boolean validateEditor() {
-        try {
+        // TODO !!! delete
+/*        try {
             panel1.validateAll();
         } catch (ValidationException e) {
             errorMessageLabel.setValue(e.getMessage());
@@ -129,26 +96,20 @@ public class EditConfigPage extends Page {
             tabSheet.setSelectedTab(panel2);
             return false;
         }
-
+*/
         return true;
     }
 
-    private void updateFileWithDataInForm() {
-        ConnectorConfig c1 = panel1.getConfig();
-        ConnectorConfig c2 = panel2.getConfig();
-        ConnectorDataHolder d1 = new ConnectorDataHolder(file.getConnectorDataHolder1().getType(), c1);
-        ConnectorDataHolder d2 = new ConnectorDataHolder(file.getConnectorDataHolder2().getType(), c2);
+//    private void updateFileWithDataInForm() {
+//        ConnectorConfig c1 = panel1.getConfig();
+//        ConnectorConfig c2 = panel2.getConfig();
+//        ConnectorDataHolder d1 = new ConnectorDataHolder(file.getConnectorDataHolder1().getType(), c1);
+//        ConnectorDataHolder d2 = new ConnectorDataHolder(file.getConnectorDataHolder2().getType(), c2);
 
-        file.setConfigLabel((String) configDescription.getValue());
-        file.setConnectorDataHolder1(d1);
-        file.setConnectorDataHolder2(d2);
-    }
-
-    private ConfigEditor getPanel(ConnectorDataHolder dataHolder) {
-        ConnectorConfig configData = dataHolder.getData();
-        PluginEditorFactory editorFactory = services.getEditorManager().getEditorFactory(dataHolder.getType());
-        return editorFactory.createEditor(configData, services);
-    }
+//        file.setConfigLabel((String) configDescription.getValue());
+//        file.setConnectorDataHolder1(d1);
+//        file.setConnectorDataHolder2(d2);
+//    }
 
     @Override
     public String getPageGoogleAnalyticsID() {
@@ -159,10 +120,6 @@ public class EditConfigPage extends Page {
     public Component getUI() {
         buildUI();
         return layout;
-    }
-
-    public void setActiveTabLabel(String dataHolderLabel) {
-        activeTabLabel = dataHolderLabel;
     }
 
     public void setErrorMessage(String errorMessage) {

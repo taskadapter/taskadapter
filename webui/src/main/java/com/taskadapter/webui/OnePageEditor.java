@@ -40,7 +40,8 @@ public class OnePageEditor extends GridLayout implements WindowProvider {
     private Panel createMiniPanel(String connectorId, ConnectorConfig connectorConfig) {
         MiniPanel miniPanel = new MiniPanel(this, connectorId, connectorConfig);
         PluginEditorFactory editorFactory = services.getEditorManager().getEditorFactory(connectorId);
-        ComponentContainer container = editorFactory.getMiniPanelContents(this, connectorConfig);
+        // "services" instance is only used by MSP Editor Factory
+        ComponentContainer container = editorFactory.getMiniPanelContents(this, services, connectorConfig);
         miniPanel.setPanelContents(container);
 
         Panel panel = new Panel(miniPanel);

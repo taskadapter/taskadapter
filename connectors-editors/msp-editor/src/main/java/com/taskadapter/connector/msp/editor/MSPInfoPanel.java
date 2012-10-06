@@ -1,6 +1,5 @@
 package com.taskadapter.connector.msp.editor;
 
-import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.write.MSXMLFileWriter;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
@@ -9,12 +8,12 @@ import com.vaadin.ui.Panel;
 public class MSPInfoPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 
-	public MSPInfoPanel(MSPConfig config) {
+	public MSPInfoPanel() {
         super("MSP Text Fields to store some internal stuff");
-        buildUI(config);
+        buildUI();
     }
 
-    private void buildUI(MSPConfig config) {
+    private void buildUI() {
         GridLayout layout = new GridLayout();
         //layout.setColumnExpandRatio(0, 0.7f);
         layout.setWidth(100, UNITS_PERCENTAGE);

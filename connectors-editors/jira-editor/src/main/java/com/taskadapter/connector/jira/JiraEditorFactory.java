@@ -9,10 +9,7 @@ import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
-import com.taskadapter.web.configeditor.ConfigEditor;
-import com.taskadapter.web.configeditor.EditorUtil;
-import com.taskadapter.web.configeditor.ProjectPanel;
-import com.taskadapter.web.configeditor.ServerContainer;
+import com.taskadapter.web.configeditor.*;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Services;
@@ -21,18 +18,12 @@ import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.VerticalLayout;
 
 public class JiraEditorFactory implements PluginEditorFactory {
-    private static final String BUNDLE_NAME = "com.taskadapter.connector.github.messages";
-
+    private static final String BUNDLE_NAME = "com.taskadapter.connector.jira.messages";
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
 
     @Override
     public String getId() {
         return JiraConnector.ID;
-    }
-
-    @Override
-    public ConfigEditor createEditor(ConnectorConfig config, Services services) {
-        return new JiraEditor(config, services);
     }
 
     @Override
@@ -58,7 +49,7 @@ public class JiraEditorFactory implements PluginEditorFactory {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, ConnectorConfig genericConfig) {
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, ConnectorConfig genericConfig) {
         JiraConfig config = (JiraConfig) genericConfig;
         WebServerInfo serverInfo = config.getServerInfo();
         ServerContainer serverPanel = new ServerContainer(new MethodProperty<String>(config, "label"),
@@ -78,7 +69,19 @@ public class JiraEditorFactory implements PluginEditorFactory {
         VerticalLayout layout = new VerticalLayout();
         layout.addComponent(serverPanel);
         layout.addComponent(projectPanel);
+
+        layout.addComponent(new OtherJiraFieldsPanel(windowProvider, config));
+
+        PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(),
+                Interfaces.fromMethod(DataProvider.class, new PrioritiesLoader(config), "loadJiraPriorities"));
+        layout.addComponent(priorityPanel);
+        layout.addComponent(createCustomOtherFieldsPanel(config));
         return layout;
+    }
+
+    private CustomFieldsTablePanel createCustomOtherFieldsPanel(JiraConfig config) {
+        CustomFieldsTablePanel customFieldsTablePanel = new CustomFieldsTablePanel(config.getCustomFields());
+        return customFieldsTablePanel;
     }
 
 }

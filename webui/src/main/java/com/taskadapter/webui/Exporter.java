@@ -76,7 +76,7 @@ public class Exporter {
         if (valid) {
             processBasedOnDestinationConnectorType();
         } else {
-            navigator.showConfigureTaskPage(taFile, dataHolderLabel, errorMessage);
+            navigator.showConfigureTaskPage(taFile, errorMessage);
         }
     }
 

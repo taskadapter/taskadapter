@@ -2,16 +2,12 @@ package com.taskadapter.web;
 
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Descriptor;
-import com.taskadapter.web.configeditor.ConfigEditor;
 import com.taskadapter.web.service.Services;
 import com.vaadin.ui.ComponentContainer;
 
 public interface PluginEditorFactory {
     String getId();
 
-    ConfigEditor createEditor(ConnectorConfig config, Services services);
-    
     /**
      * Requests to format a plugin error. If error is not supported (not a 
      * custom error), this method may safelly return <code>null</code>.
@@ -22,5 +18,5 @@ public interface PluginEditorFactory {
 
     AvailableFields getAvailableFields();
 
-    ComponentContainer getMiniPanelContents(WindowProvider windowProvider, ConnectorConfig config);
+    ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, ConnectorConfig config);
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.NamedKeyedObject;
+import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.vaadin.data.util.MethodProperty;
@@ -18,12 +19,11 @@ import com.vaadin.ui.TextField;
 class OtherJiraFieldsPanel extends Panel {
     private static final String SAVE_GROUP_LABEL = "Set these fields when EXPORTING to Jira";
 
-    private JiraEditor jiraEditor;
-    
     private JiraConfig config;
+    private WindowProvider windowProvider;
 
-    public OtherJiraFieldsPanel(JiraEditor jiraEditor, JiraConfig config) {
-        this.jiraEditor = jiraEditor;
+    public OtherJiraFieldsPanel(WindowProvider windowProvider, JiraConfig config) {
+        this.windowProvider = windowProvider;
         this.config = config;
         buildUI();
     }
@@ -47,7 +47,7 @@ class OtherJiraFieldsPanel extends Panel {
 				config, "component");
 		jiraComponent.setPropertyDataSource(componentProperty);
         Button showComponentsButton = EditorUtil.createLookupButton(
-                jiraEditor,
+                windowProvider,
                 "...",
                 "Show list of available components on the given server.",
                 "Select component",
@@ -87,7 +87,7 @@ class OtherJiraFieldsPanel extends Panel {
 			}
 		};
 		Button showAffectedVersion = EditorUtil.createLookupButton(
-                jiraEditor,
+                windowProvider,
                 "...",
                 "Show list of available versions",
                 "Select version",
@@ -105,7 +105,7 @@ class OtherJiraFieldsPanel extends Panel {
         final MethodProperty<String> fixForProperty = new MethodProperty<String>(config, "fixForVersion");
 		fixForVersion.setPropertyDataSource(fixForProperty);
         Button showFixForVersion = EditorUtil.createLookupButton(
-                jiraEditor,
+                windowProvider,
                 "...",
                 "Show list of available versions",
                 "Select version",
@@ -123,7 +123,7 @@ class OtherJiraFieldsPanel extends Panel {
         final MethodProperty<String> defaultTaskTypeProperty = new MethodProperty<String>(config, "defaultTaskType");
 		defaultTaskType.setPropertyDataSource(defaultTaskTypeProperty);
         Button showDefaultTaskType = EditorUtil.createLookupButton(
-                jiraEditor,
+                windowProvider,
                 "...",
                 "Show list of available issue types on the Jira server",
                 "Select issue type",

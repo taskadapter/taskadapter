@@ -2,20 +2,24 @@ package com.taskadapter.connector.github.editor;
 
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
+import com.taskadapter.connector.github.GithubConfig;
 import com.taskadapter.connector.github.GithubConnector;
-import com.taskadapter.web.WindowProvider;
-import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.PluginEditorFactory;
-import com.taskadapter.web.configeditor.ConfigEditor;
+import com.taskadapter.web.WindowProvider;
+import com.taskadapter.web.callbacks.DataProvider;
+import com.taskadapter.web.configeditor.EditorUtil;
+import com.taskadapter.web.configeditor.ProjectPanel;
+import com.taskadapter.web.configeditor.ServerPanel;
+import com.taskadapter.web.data.Messages;
+import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Services;
+import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.VerticalLayout;
 
 public class GithubEditorFactory implements PluginEditorFactory {
-    /**
-     * Bundle name.
-     */
     private static final String BUNDLE_NAME = "com.taskadapter.connector.github.messages";
 
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
@@ -23,11 +27,6 @@ public class GithubEditorFactory implements PluginEditorFactory {
     @Override
     public String getId() {
         return GithubConnector.ID;
-    }
-
-    @Override
-    public ConfigEditor createEditor(ConnectorConfig config, Services services) {
-        return new GithubEditor(config, services);
     }
 
     @Override
@@ -51,8 +50,22 @@ public class GithubEditorFactory implements PluginEditorFactory {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, ConnectorConfig config) {
-        // TODO !!!
-        return new VerticalLayout();
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, ConnectorConfig config) {
+        VerticalLayout layout = new VerticalLayout();
+        final WebServerInfo serverInfo = ((GithubConfig) config).getServerInfo();
+        ServerPanel serverPanel = new ServerPanel(new MethodProperty<String>(config, "label"),
+                new MethodProperty<String>(serverInfo, "host"),
+                new MethodProperty<String>(serverInfo, "userName"),
+                new MethodProperty<String>(serverInfo, "password"));
+        serverPanel.disableServerURLField();
+        layout.addComponent(serverPanel);
+
+        ProjectPanel projectPanel = new ProjectPanel(windowProvider, EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
+                EditorUtil.wrapNulls(new MethodProperty<String>(config, "queryString")),
+                Interfaces.fromMethod(DataProvider.class, GithubLoaders.class, "getProjects", serverInfo)
+                , null, null);
+        projectPanel.setProjectKeyLabel("Repository ID");
+        layout.addComponent(projectPanel);
+        return layout;
     }
 }
