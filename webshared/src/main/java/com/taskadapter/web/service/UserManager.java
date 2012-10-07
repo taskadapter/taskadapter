@@ -18,10 +18,10 @@ public class UserManager {
 
     public static final String ADMIN_LOGIN_NAME = "admin";
     private static final String PASSWORD_FILE_NAME = "password.txt";
-    private File dataRootFolder;
+    private final FileManager fileManager;
 
-    public UserManager(File dataRootFolder) {
-        this.dataRootFolder = dataRootFolder;
+    public UserManager(FileManager fileManager) {
+        this.fileManager = fileManager;
         // TODO race condition here: what if two sessions will be started at the same time?
         // completely unlikely, but still not nice!
         createFirstAdminUserIfNeeded();
@@ -36,9 +36,9 @@ public class UserManager {
     }
 
     public Collection<User> getUsers() {
-        String[] fileNames = dataRootFolder.list();
-        Collection<User> users = new ArrayList<User>(fileNames.length);
-        for (String fileName : fileNames) {
+        String[] possibleUserNames = fileManager.listUsers();
+        Collection<User> users = new ArrayList<User>(possibleUserNames.length);
+        for (String fileName : possibleUserNames) {
             try {
                 users.add(getUser(fileName));
             } catch (UserNotFoundException e) {
@@ -49,13 +49,12 @@ public class UserManager {
     }
 
     public void deleteUser(String loginName) throws IOException {
-        File userFolder = new FileManager(dataRootFolder).getUserFolder(loginName);
-        FileManager.deleteRecursively(userFolder);
+        fileManager.deleteUserFolder(loginName);
     }
 
     public void saveUser(String loginName, String newPassword) {
         // TODO encrypt password
-        File userFolder = new FileManager(dataRootFolder).getUserFolder(loginName);
+        File userFolder = fileManager.getUserFolder(loginName);
         userFolder.mkdirs();
         File passwordFile = new File(userFolder, PASSWORD_FILE_NAME);
         try {
@@ -66,7 +65,7 @@ public class UserManager {
     }
 
     public User getUser(String loginName) throws UserNotFoundException {
-        File userFolder = new FileManager(dataRootFolder).getUserFolder(loginName);
+        File userFolder = fileManager.getUserFolder(loginName);
         if (!userFolder.exists()) {
             throw new UserNotFoundException();
         }

@@ -23,6 +23,10 @@ public class FileManager {
         }
         return new File(dataRootFolder, userLoginName);
     }
+    
+    public String[] listUsers() {
+        return dataRootFolder.list();
+    }
 
     /**
      * saves the file into &lt;home>/&lt;ta_login_name>/files/&lt;filename>
@@ -50,8 +54,15 @@ public class FileManager {
         }
         return file;
     }
+    
+    public void deleteUserFolder(String userLoginName) throws IOException {
+        deleteRecursively(getUserFolder(userLoginName));
+    }
 
-    public static void deleteRecursively(File file) throws IOException {
+    /* This method can be public, but when public it should be in a more a
+     * appropriate place such as Files/FileUtils/etc...
+     */
+    private static void deleteRecursively(File file) throws IOException {
         if (file.isDirectory()) {
             for (File c : file.listFiles()) {
                 deleteRecursively(c);
