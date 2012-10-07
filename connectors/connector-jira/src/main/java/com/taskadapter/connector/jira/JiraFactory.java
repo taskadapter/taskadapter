@@ -7,7 +7,7 @@ import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.PluginFactory;
 
 public class JiraFactory implements PluginFactory<JiraConfig> {
-    private static final Descriptor instance = new Descriptor(JiraConnector.ID, JiraConfig.DEFAULT_LABEL);
+    private static final Descriptor DESCRIPTOR = new Descriptor(JiraConnector.ID, JiraConfig.DEFAULT_LABEL);
 
     @Override
     public JiraConnector createConnector(JiraConfig config) {
@@ -16,7 +16,7 @@ public class JiraFactory implements PluginFactory<JiraConfig> {
 
     @Override
     public Descriptor getDescriptor() {
-        return instance;
+        return DESCRIPTOR;
     }
 
 	@Override
