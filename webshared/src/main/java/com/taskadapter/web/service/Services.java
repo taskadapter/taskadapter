@@ -21,10 +21,10 @@ public class Services {
     private FileManager fileManager;
 
     public Services(File dataRootFolder) {
-        userManager = new UserManager(dataRootFolder);
+        fileManager = new FileManager(dataRootFolder);
+        userManager = new UserManager(fileManager);
         configStorage = new ConfigStorage(pluginManager, dataRootFolder);
         authenticator = new Authenticator(userManager, cookiesManager);
-        fileManager = new FileManager(dataRootFolder);
     }
 
     public UpdateManager getUpdateManager() {

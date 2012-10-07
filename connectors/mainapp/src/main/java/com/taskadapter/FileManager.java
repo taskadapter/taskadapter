@@ -23,6 +23,10 @@ public class FileManager {
         }
         return new File(dataRootFolder, userLoginName);
     }
+    
+    public String[] listUsers() {
+        return dataRootFolder.list();
+    }
 
     /**
      * saves the file into &lt;home>/&lt;ta_login_name>/files/&lt;filename>
