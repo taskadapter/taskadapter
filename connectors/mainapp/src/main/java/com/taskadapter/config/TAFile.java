@@ -1,10 +1,13 @@
 package com.taskadapter.config;
 
+import com.taskadapter.connector.definition.NewMappings;
+
 public class TAFile {
     private String absoluteFilePath;
     private String configLabel;
     private ConnectorDataHolder connectorDataHolder1;
     private ConnectorDataHolder connectorDataHolder2;
+    private NewMappings mappings = new NewMappings();
 
     /**
      * this no-args constructor is required for GSon.
@@ -50,6 +53,10 @@ public class TAFile {
         return absoluteFilePath;
     }
 
+    public NewMappings getMappings() {
+        return mappings;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -80,4 +87,7 @@ public class TAFile {
         return configLabel;
     }
 
+    public void setMappings(NewMappings mappings) {
+        this.mappings = mappings;
+    }
 }

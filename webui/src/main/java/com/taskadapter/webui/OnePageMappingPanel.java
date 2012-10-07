@@ -1,6 +1,8 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.connector.definition.NewMappings;
 import com.taskadapter.connector.definition.AvailableFields;
+import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.GTaskDescriptor;
@@ -32,9 +34,12 @@ public class OnePageMappingPanel extends Panel implements Validatable {
     private String connector2Label;
     private AvailableFields connector2Fields;
     private Mappings connector2Mappings;
+    private NewMappings mappings;
 
+    // TODO !!! delete "connector*mappings". use "mappings"
     public OnePageMappingPanel(String connector1Label, AvailableFields connector1Fields, Mappings connector1mappings,
-                               String connector2Label, AvailableFields connector2Fields, Mappings connector2Mappings) {
+                               String connector2Label, AvailableFields connector2Fields, Mappings connector2Mappings,
+                               NewMappings mappings) {
         super("Task fields mapping");
         this.connector1Label = connector1Label;
         this.connector1Fields = connector1Fields;
@@ -42,6 +47,7 @@ public class OnePageMappingPanel extends Panel implements Validatable {
         this.connector2Label = connector2Label;
         this.connector2Fields = connector2Fields;
         this.connector2Mappings = connector2Mappings;
+        this.mappings = mappings;
 
         setDescription("Select fields to export when SAVING data to this system");
         addFields();
@@ -97,11 +103,17 @@ public class OnePageMappingPanel extends Panel implements Validatable {
 
     private CheckBox addCheckbox(GTaskDescriptor.FIELD field) {
         CheckBox checkbox = new CheckBox(GTaskDescriptor.getDisplayValue(field));
+        FieldMapping fieldMapping = mappings.getMapping(field);
+        if (fieldMapping == null) {
+            fieldMapping = new FieldMapping(field, "", "", true);
+            mappings.put(fieldMapping);
+        }
         // TODO !!!
 //        final MethodProperty<Boolean> selected = new MethodProperty<Boolean>(
-//                boolean.class, nullMappings, "isFieldSelected", "setFieldSelected",
+//                boolean.class, fieldMapping, "isSelected", "setSelected",
 //                new Object[]{field}, new Object[]{field, null}, 1);
-//        checkbox.setPropertyDataSource(selected);
+        final MethodProperty<Boolean> selected = new MethodProperty<Boolean>(fieldMapping, "selected");
+        checkbox.setPropertyDataSource(selected);
 
         String helpForField = getHelpForField(field);
         if (helpForField != null) {

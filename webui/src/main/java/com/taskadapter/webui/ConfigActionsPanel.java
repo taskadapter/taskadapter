@@ -52,7 +52,7 @@ public class ConfigActionsPanel extends VerticalLayout {
         configBoxButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
-                navigator.showConfigureTaskPage(file, label);
+                navigator.showConfigureTaskPage(file);
             }
         });
         horizontalLayout.addComponent(configBoxButton);

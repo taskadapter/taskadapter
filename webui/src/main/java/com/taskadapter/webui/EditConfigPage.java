@@ -35,16 +35,16 @@ public class EditConfigPage extends Page {
         buttonsLayout.addComponent(errorMessageLabel);
         buttonsLayout.setExpandRatio(errorMessageLabel, 1.0f);
 
-        ConfigToolbarPanel configToolbarPanel = new ConfigToolbarPanel(navigator, file,
-                new ConfigToolbarPanel.Callback() {
+        CloneDeletePanel cloneDeletePanel = new CloneDeletePanel(navigator, file,
+                new CloneDeletePanel.Callback() {
 
                     @Override
                     public boolean onCloneConfig() {
                         return validateEditor();
                     }
                 });
-        buttonsLayout.addComponent(configToolbarPanel);
-        buttonsLayout.setComponentAlignment(configToolbarPanel, Alignment.MIDDLE_RIGHT);
+        buttonsLayout.addComponent(cloneDeletePanel);
+        buttonsLayout.setComponentAlignment(cloneDeletePanel, Alignment.MIDDLE_RIGHT);
         layout.addComponent(buttonsLayout);
 
         HorizontalLayout descriptionLayout = new HorizontalLayout();
@@ -59,7 +59,7 @@ public class EditConfigPage extends Page {
         ConnectorDataHolder leftConnectorDataHolder = file.getConnectorDataHolder1();
         ConnectorDataHolder rightConnectorDataHolder = file.getConnectorDataHolder2();
 
-        onePageEditor = new OnePageEditor(services, leftConnectorDataHolder, rightConnectorDataHolder);
+        onePageEditor = new OnePageEditor(services, leftConnectorDataHolder, rightConnectorDataHolder, file.getMappings());
         layout.addComponent(onePageEditor);
     }
 

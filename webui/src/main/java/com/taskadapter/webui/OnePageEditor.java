@@ -1,6 +1,7 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.config.ConnectorDataHolder;
+import com.taskadapter.connector.definition.NewMappings;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.WindowProvider;
@@ -18,9 +19,11 @@ public class OnePageEditor extends GridLayout implements WindowProvider {
     private String connector2Id;
     private ConnectorConfig connector2Config;
     private Services services;
+    private NewMappings mappings;
 
-    public OnePageEditor(Services services, ConnectorDataHolder leftConnectorDataHolder, ConnectorDataHolder rightConnectorDataHolder) {
+    public OnePageEditor(Services services, ConnectorDataHolder leftConnectorDataHolder, ConnectorDataHolder rightConnectorDataHolder, NewMappings mappings) {
         this.services = services;
+        this.mappings = mappings;
         this.connector1Id = leftConnectorDataHolder.getType();
         this.connector1Config = leftConnectorDataHolder.getData();
         this.connector2Id = rightConnectorDataHolder.getType();
@@ -54,6 +57,6 @@ public class OnePageEditor extends GridLayout implements WindowProvider {
         PluginEditorFactory editor2Factory = services.getEditorManager().getEditorFactory(connector2Id);
 
         return new OnePageMappingPanel(connector1Id, editor1Factory.getAvailableFields(), connector1Config.getFieldMappings(),
-                connector2Id, editor2Factory.getAvailableFields(), connector2Config.getFieldMappings());
+                connector2Id, editor2Factory.getAvailableFields(), connector2Config.getFieldMappings(), mappings);
     }
 }

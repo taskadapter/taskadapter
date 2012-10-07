@@ -8,7 +8,7 @@ import com.vaadin.ui.HorizontalLayout;
 
 import java.util.Arrays;
 
-public class ConfigToolbarPanel extends HorizontalLayout {
+public class CloneDeletePanel extends HorizontalLayout {
     private static final String YES = "Yes";
     private static final String CANCEL = "Cancel";
 
@@ -16,7 +16,7 @@ public class ConfigToolbarPanel extends HorizontalLayout {
     private final TAFile file;
     private Callback callback;
 
-    public ConfigToolbarPanel(Navigator navigator, TAFile file, Callback callback) {
+    public CloneDeletePanel(Navigator navigator, TAFile file, Callback callback) {
         this.navigator = navigator;
         this.file = file;
         this.callback = callback;
@@ -85,6 +85,6 @@ public class ConfigToolbarPanel extends HorizontalLayout {
     }
 
     public interface Callback {
-        public boolean onCloneConfig();
+        boolean onCloneConfig();
     }
 }
