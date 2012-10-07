@@ -6,6 +6,10 @@ import java.util.Date;
 import java.util.List;
 
 public class DateFinder {
+    /**
+     * @param tasks
+     * @return NULL if no tasks have start dates set
+     */
     static Date findEarliestStartDate(List<GTask> tasks) {
         Date earliestDate = null;
         for (GTask gTask : tasks) {
