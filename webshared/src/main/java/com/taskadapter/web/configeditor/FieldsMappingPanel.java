@@ -15,6 +15,7 @@ import com.vaadin.ui.*;
 import java.util.Arrays;
 import java.util.Collection;
 
+// TODO delete
 /**
  * @author Alexey Skorokhodov
  */

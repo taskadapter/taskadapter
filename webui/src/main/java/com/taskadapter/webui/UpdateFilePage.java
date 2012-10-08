@@ -15,12 +15,11 @@ public class UpdateFilePage extends ActionPage {
 
     private final Updater updater;
 
-    public UpdateFilePage(Connector connectorFrom, Connector connectorTo, String destinationConnectorId, TAFile taFile, Mappings destinationMappings) {
-        super(connectorFrom, connectorTo, destinationConnectorId, taFile, destinationMappings);
+    public UpdateFilePage(String sourceConnectorId, Connector connectorFrom, Connector connectorTo, String destinationConnectorId, TAFile taFile, Mappings destinationMappings) {
+        super(sourceConnectorId, connectorFrom, connectorTo, destinationConnectorId, taFile, destinationMappings);
         updater = new Updater(connectorTo, connectorFrom);
     }
 
-    // TODO !!! unused destinationMappings!
     @Override
     protected void saveData(List<GTask> tasks, Mappings destinationMappings) throws ConnectorException {
         updater.setConfirmedTasks(tasks);
@@ -28,7 +27,7 @@ public class UpdateFilePage extends ActionPage {
         MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
         updater.setMonitor(wrapper);
         updater.loadExternalTasks();
-        updater.saveFile();
+        updater.saveFile(destinationMappings);
     }
 
     @Override

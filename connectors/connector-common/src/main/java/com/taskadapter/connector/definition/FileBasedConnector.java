@@ -6,7 +6,7 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 
 public interface FileBasedConnector {
-    void updateTasksByRemoteIds(List<GTask> tasks) throws ConnectorException;
+    void updateTasksByRemoteIds(List<GTask> tasks, Mappings mappings) throws ConnectorException;
 
     boolean fileExists();
 

@@ -26,9 +26,8 @@ public class MantisConnector implements Connector<MantisConfig> {
 
     @Override
     public void updateRemoteIDs(ConnectorConfig configuration,
-                                Map<Integer, String> res, ProgressMonitor monitor) throws UnsupportedConnectorOperation {
-        throw new UnsupportedConnectorOperation(
-                "updateRemoteIDs");
+                                Map<Integer, String> res, ProgressMonitor monitor, Mappings mappings) throws UnsupportedConnectorOperation {
+        throw new UnsupportedConnectorOperation("updateRemoteIDs");
     }
 
     @Override

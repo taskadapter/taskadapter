@@ -18,6 +18,7 @@ import java.util.List;
 
 public abstract class ActionPage extends Page {
     protected final VerticalLayout mainPanel;
+    private String sourceConnectorId;
     protected final Connector connectorFrom;
     protected final Connector connectorTo;
     private final String destinationConnectorId;
@@ -29,7 +30,8 @@ public abstract class ActionPage extends Page {
     protected List<GTask> loadedTasks;
     private ConfirmExportPage confirmExportPage;
 
-    public ActionPage(Connector connectorFrom, Connector connectorTo, String destinationConnectorId, TAFile file, Mappings destinationMappings) {
+    public ActionPage(String sourceConnectorId, Connector connectorFrom, Connector connectorTo, String destinationConnectorId, TAFile file, Mappings destinationMappings) {
+        this.sourceConnectorId = sourceConnectorId;
         this.connectorFrom = connectorFrom;
         this.connectorTo = connectorTo;
         this.destinationConnectorId = destinationConnectorId;
@@ -157,23 +159,31 @@ public abstract class ActionPage extends Page {
     }
 
     private void saveConfigIfChanged() {
-        if (confirmExportPage.needToSaveConfig()) {
+        // TODO !!! config not saved
+        /*if (confirmExportPage.needToSaveConfig()) {
             String userLoginName = services.getAuthenticator().getUserName();
             services.getConfigStorage().saveConfig(userLoginName, taFile);
-        }
+        }*/
     }
 
     protected void buildConfirmationUI() {
         PluginEditorFactory editorFactory = services.getEditorManager().getEditorFactory(destinationConnectorId);
         AvailableFields fieldsSupportedByDestination = editorFactory.getAvailableFields();
-        confirmExportPage = new ConfirmExportPage(navigator, loadedTasks, connectorTo.getConfig(),
+        PluginEditorFactory sourceFactory = services.getEditorManager().getEditorFactory(sourceConnectorId);
+        AvailableFields fieldsSupportedBySource = sourceFactory.getAvailableFields();
+
+        confirmExportPage = new ConfirmExportPage(navigator, loadedTasks,
+                sourceConnectorId,
+                fieldsSupportedBySource,
+                destinationConnectorId,
+                connectorTo.getConfig(),
                 fieldsSupportedByDestination, new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 saveConfigIfChanged();
                 startSaveTasksProcess();
             }
-        });
+        }, taFile.getMappings());
         mainPanel.addComponent(confirmExportPage);
         mainPanel.setExpandRatio(confirmExportPage, 1f); // use all available space
     }

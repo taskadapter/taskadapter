@@ -36,7 +36,7 @@ public class RedmineConnector implements Connector<RedmineConfig> {
 
     @Override
     public void updateRemoteIDs(ConnectorConfig configuration,
-                                Map<Integer, String> res, ProgressMonitor monitor) throws UnsupportedConnectorOperation {
+                                Map<Integer, String> res, ProgressMonitor monitor, Mappings mappings) throws UnsupportedConnectorOperation {
         throw new UnsupportedConnectorOperation("updateRemoteIDs");
     }
 

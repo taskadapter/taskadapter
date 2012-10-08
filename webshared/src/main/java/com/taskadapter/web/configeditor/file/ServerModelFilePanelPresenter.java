@@ -127,7 +127,8 @@ public class ServerModelFilePanelPresenter {
             boolean isMpp = fileName.toLowerCase().endsWith(MSPFileReader.MPP_SUFFIX_LOWERCASE);
             if (isMpp) {
                 File f = fileManager.getFileForUser(userName, fileName);
-                String newFilePath = MSPUtils.convertMppProjectFileToXml(f.getAbsolutePath());
+                // TODO !!! this will result in NPE. need to get Mappings somewhere
+                String newFilePath = MSPUtils.convertMppProjectFileToXml(f.getAbsolutePath(), null);
                 if (newFilePath == null) {
                     // move error
                     view.setStatusLabelText(ServerModeFilePanel.SAVE_FILE_FAILED);

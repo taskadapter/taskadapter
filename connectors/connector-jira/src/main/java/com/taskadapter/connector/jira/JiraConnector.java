@@ -42,7 +42,7 @@ public class JiraConnector implements Connector<JiraConfig> {
 
     @Override
     public void updateRemoteIDs(ConnectorConfig configuration,
-            Map<Integer, String> res, ProgressMonitor monitor)
+            Map<Integer, String> res, ProgressMonitor monitor, Mappings mappings)
             throws UnsupportedConnectorOperation {
         throw new UnsupportedConnectorOperation("updateRemoteIDs");
     }

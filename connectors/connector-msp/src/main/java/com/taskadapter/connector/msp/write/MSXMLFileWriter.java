@@ -41,9 +41,11 @@ public class MSXMLFileWriter {
     public static final TaskField FIELD_WORK_UNDEFINED = TaskField.TEXT21;
 
     private MSPConfig config;
+    private Mappings mappings;
 
-    public MSXMLFileWriter(MSPConfig config) {
+    public MSXMLFileWriter(MSPConfig config, Mappings mappings) {
         this.config = config;
+        this.mappings = mappings;
     }
 
     public String write(TaskSaveResultBuilder syncResult, List<GTask> rows,
@@ -143,7 +145,7 @@ public class MSXMLFileWriter {
     }
 
     private void setAliasIfMappingNotNULL(ProjectFile project, FIELD field, String aliasName) {
-        String mspFileFieldName = config.getFieldMappings().getMappedTo(field);
+        String mspFileFieldName = mappings.getMappedTo(field);
         if (mspFileFieldName != null) {
             /* it is NULL if the old Task Adapter config does not have a mapping for this field.
                 * E.g. we added "task type" field in the new TA version and then we try running
@@ -161,14 +163,13 @@ public class MSXMLFileWriter {
      */
     public void setTaskFields(ProjectFile project, Task mspTask,
                                  GTask gTask, boolean keepTaskId) throws BadConfigException {
-    	final Mappings mapping = config.getFieldMappings();
         mspTask.setMilestone(false);
 
-        if (mapping.isFieldSelected(FIELD.SUMMARY)) {
+        if (mappings.isFieldSelected(FIELD.SUMMARY)) {
             mspTask.setName(gTask.getSummary());
         }
 
-        if (mapping.isFieldSelected(FIELD.PRIORITY)) {
+        if (mappings.isFieldSelected(FIELD.PRIORITY)) {
             Priority mspPriority = Priority.getInstance(gTask.getPriority());
             mspTask.setPriority(mspPriority);
         }
@@ -182,10 +183,10 @@ public class MSXMLFileWriter {
         setFieldIfSelected(FIELD.TASK_STATUS, mspTask, gTask.getStatus());
 
         // ESTIMATED TIME and DONE RATIO
-        if (gTask.getEstimatedHours() != null && mapping.isFieldSelected(FIELD.ESTIMATED_TIME)) {
+        if (gTask.getEstimatedHours() != null && mappings.isFieldSelected(FIELD.ESTIMATED_TIME)) {
             Duration estimatedValue = Duration.getInstance(
                     gTask.getEstimatedHours(), TimeUnit.HOURS);
-            if (MSPUtils.useWork(config)) {
+            if (MSPUtils.useWork(mappings)) {
                 mspTask.setWork(estimatedValue);
                 // need to explicitly clear it because we can have previously created
                 // tasks with this field set to TRUE
@@ -197,10 +198,10 @@ public class MSXMLFileWriter {
                 mspTask.set(FIELD_DURATION_UNDEFINED, "false");
             }
 
-            if (gTask.getDoneRatio() != null && mapping.isFieldSelected(FIELD.DONE_RATIO)) {
+            if (gTask.getDoneRatio() != null && mappings.isFieldSelected(FIELD.DONE_RATIO)) {
                 Duration timeAlreadySpent = TimeCalculator.calculateTimeAlreadySpent(gTask);
                 // time already spent
-                if (MSPUtils.useWork(config)) {
+                if (MSPUtils.useWork(mappings)) {
                     mspTask.setActualWork(timeAlreadySpent);
                     mspTask.setPercentageWorkComplete(gTask.getDoneRatio());
                 } else {
@@ -214,7 +215,7 @@ public class MSXMLFileWriter {
         }
 
         // ASSIGNEE
-        if (mapping.isFieldSelected(FIELD.ASSIGNEE) && gTask.getAssignee() != null) {
+        if (mappings.isFieldSelected(FIELD.ASSIGNEE) && gTask.getAssignee() != null) {
             Resource resource = getOrCreateResource(project, gTask.getAssignee());
             ResourceAssignment ass = mspTask.addResourceAssignment(resource);
             ass.setUnits(100);
@@ -225,7 +226,7 @@ public class MSXMLFileWriter {
                 ass.setRemainingWork(TimeCalculator.calculateRemainingTime(gTask));
 
                 // the same "IF" as above, now for the resource assignment. this might need refactoring...
-                if (gTask.getDoneRatio() != null && mapping.isFieldSelected(FIELD.DONE_RATIO)) {
+                if (gTask.getDoneRatio() != null && mappings.isFieldSelected(FIELD.DONE_RATIO)) {
                     Duration timeAlreadySpent = TimeCalculator.calculateTimeAlreadySpent(gTask);
                     ass.setActualWork(timeAlreadySpent);
                 }
@@ -240,8 +241,8 @@ public class MSXMLFileWriter {
         setFieldIfSelected(FIELD.REMOTE_ID, mspTask, gTask.getRemoteId());
 
         // START DATE
-        if (mapping.isFieldSelected(FIELD.START_DATE)) {
-            String constraint = mapping.getMappedTo(FIELD.START_DATE);
+        if (mappings.isFieldSelected(FIELD.START_DATE)) {
+            String constraint = mappings.getMappedTo(FIELD.START_DATE);
             if (constraint == null || MSPUtils.NO_CONSTRAINT.equals(constraint)) {
                 mspTask.setStart(gTask.getStartDate());
             } else {
@@ -252,8 +253,8 @@ public class MSXMLFileWriter {
         }
 
         // DUE DATE
-        if (gTask.getDueDate() != null && mapping.isFieldSelected(FIELD.DUE_DATE)) {
-            String dueDateValue = mapping.getMappedTo(FIELD.DUE_DATE);
+        if (gTask.getDueDate() != null && mappings.isFieldSelected(FIELD.DUE_DATE)) {
+            String dueDateValue = mappings.getMappedTo(FIELD.DUE_DATE);
             if (dueDateValue.equals(TaskField.FINISH.toString())) {
                 mspTask.set(TaskField.FINISH, gTask.getDueDate());
             } else if (dueDateValue.equals(TaskField.DEADLINE.toString())) {
@@ -261,15 +262,14 @@ public class MSXMLFileWriter {
             }
         }
 
-        if (mapping.isFieldSelected(FIELD.DESCRIPTION)) {
+        if (mappings.isFieldSelected(FIELD.DESCRIPTION)) {
             mspTask.setNotes(gTask.getDescription());
         }
     }
 
     private void setFieldIfSelected(FIELD field, Task mspTask, Object value) {
-        final Mappings mapping = config.getFieldMappings();
-		if (mapping.isFieldSelected(field)) {
-            String v = mapping.getMappedTo(field);
+		if (mappings.isFieldSelected(field)) {
+            String v = mappings.getMappedTo(field);
             TaskField f = MSPUtils.getTaskFieldByName(v);
             mspTask.set(f, value);
         }

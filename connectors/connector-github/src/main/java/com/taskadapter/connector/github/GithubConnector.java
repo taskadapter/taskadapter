@@ -33,7 +33,7 @@ public class GithubConnector implements Connector<GithubConfig> {
     }
 
     public void updateRemoteIDs(ConnectorConfig sourceConfig,
-            Map<Integer, String> remoteIds, ProgressMonitor monitor)
+            Map<Integer, String> remoteIds, ProgressMonitor monitor, Mappings mappings)
             throws UnsupportedConnectorOperation {
         throw new UnsupportedConnectorOperation("updateRemoteIDs");
     }

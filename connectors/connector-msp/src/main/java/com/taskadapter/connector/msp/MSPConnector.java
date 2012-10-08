@@ -31,7 +31,7 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
     }
 
     @Override
-    public void updateRemoteIDs(ConnectorConfig config, Map<Integer, String> remoteKeys, ProgressMonitor monitorIGNORED) throws ConnectorException {
+    public void updateRemoteIDs(ConnectorConfig config, Map<Integer, String> remoteKeys, ProgressMonitor monitorIGNORED, Mappings mappings) throws ConnectorException {
         MSPConfig c = (MSPConfig) config;
         String fileName = c.getInputAbsoluteFilePath();
         try {
@@ -41,11 +41,11 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
             for (Task mspTask : allTasks) {
                 String createdTaskKey = remoteKeys.get(mspTask.getUniqueID());
                 if (createdTaskKey != null) {
-                    setFieldIfNotNull(c, FIELD.REMOTE_ID, mspTask, createdTaskKey);
+                    setFieldIfNotNull(mappings, FIELD.REMOTE_ID, mspTask, createdTaskKey);
                 }
             }
 
-            new MSXMLFileWriter(c).writeProject(projectFile);
+            new MSXMLFileWriter(c, mappings).writeProject(projectFile);
         } catch (MPXJException e) {
             throw MSPExceptions.convertException(e);
         } catch (IOException e) {
@@ -58,27 +58,27 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
         return config;
     }
 
-    private void setFieldIfNotNull(MSPConfig config, FIELD field, Task mspTask, String value) {
-        String v = config.getFieldMappings().getMappedTo(field);
+    private void setFieldIfNotNull(Mappings mappings, FIELD field, Task mspTask, String value) {
+        String v = mappings.getMappedTo(field);
         TaskField f = MSPUtils.getTaskFieldByName(v);
         mspTask.set(f, value);
     }
 
-    private Object getField(MSPConfig config, FIELD field, Task mspTask) {
-        String v = config.getFieldMappings().getMappedTo(field);
+    private Object getField(Mappings mappings, FIELD field, Task mspTask) {
+        String v = mappings.getMappedTo(field);
         TaskField f = MSPUtils.getTaskFieldByName(v);
         return mspTask.getCurrentValue(f);
     }
 
     @Override
-    public void updateTasksByRemoteIds(List<GTask> tasksFromExternalSystem) throws ConnectorException {
+    public void updateTasksByRemoteIds(List<GTask> tasksFromExternalSystem, Mappings mappings) throws ConnectorException {
         String fileName = config.getInputAbsoluteFilePath();
-        MSXMLFileWriter writer = new MSXMLFileWriter(config);
+        MSXMLFileWriter writer = new MSXMLFileWriter(config, mappings);
         try {
             ProjectFile projectFile = new MSPFileReader().readFile(fileName);
             List<Task> allTasks = projectFile.getAllTasks();
             for (GTask gTask : tasksFromExternalSystem) {
-                Task mspTask = findTaskByRemoteId(allTasks, gTask.getKey());
+                Task mspTask = findTaskByRemoteId(mappings, allTasks, gTask.getKey());
                 writer.setTaskFields(projectFile, mspTask, gTask, true);
             }
             writer.writeProject(projectFile);
@@ -89,10 +89,9 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
         }
     }
 
-    private Task findTaskByRemoteId(List<Task> mspTasks,
-                                    String requiredRemoteId) {
+    private Task findTaskByRemoteId(Mappings mappings, List<Task> mspTasks,String requiredRemoteId) {
         for (Task gTask : mspTasks) {
-            String taskRemoteId = (String) getField(config, FIELD.REMOTE_ID, gTask);
+            String taskRemoteId = (String) getField(mappings, FIELD.REMOTE_ID, gTask);
             if (taskRemoteId == null) {
                 // not all tasks will have remote IDs
                 continue;

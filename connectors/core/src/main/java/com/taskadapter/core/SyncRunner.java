@@ -120,7 +120,7 @@ public class SyncRunner {
                 FIELD.REMOTE_ID) && (saveResult.getUpdatedTasksNumber() + saveResult.getCreatedTasksNumber()) > 0) {
             try {
                 connectorFrom.updateRemoteIDs(configFrom,
-                        saveResult.getIdToRemoteKeyMap(), null);
+                        saveResult.getIdToRemoteKeyMap(), null, mappings);
             } catch (ConnectorException e) {
                 errors.addGeneralError(new ConnectorError<Throwable>(e,
                         destinationConnectorId));

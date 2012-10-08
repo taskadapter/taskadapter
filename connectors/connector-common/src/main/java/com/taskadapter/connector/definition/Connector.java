@@ -46,7 +46,7 @@ public interface Connector<T extends ConnectorConfig> {
      * @param monitor ProgressMonitor, can be NULL
      */
     void updateRemoteIDs(ConnectorConfig sourceConfig,
-                                Map<Integer, String> remoteIds, com.taskadapter.connector.definition.ProgressMonitor monitor) throws ConnectorException;
+                                Map<Integer, String> remoteIds, com.taskadapter.connector.definition.ProgressMonitor monitor, Mappings mappings) throws ConnectorException;
 
     T getConfig();
 }

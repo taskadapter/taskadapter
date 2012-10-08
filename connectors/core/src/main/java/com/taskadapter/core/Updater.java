@@ -8,6 +8,7 @@ import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.FileBasedConnector;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
@@ -26,12 +27,13 @@ public class Updater {
         this.remoteConnector = remoteConnector;
     }
 
-    public void start() throws ConnectorException {
-        loadTasksFromFile(ProgressMonitorUtils.getDummyMonitor());
-        removeTasksWithoutRemoteIds();
-        loadExternalTasks();
-        saveFile();
-    }
+    // TODO !!! I commented this method out because it was unused. why aren't we using it?
+//    public void start() throws ConnectorException {
+//        loadTasksFromFile(ProgressMonitorUtils.getDummyMonitor());
+//        removeTasksWithoutRemoteIds();
+//        loadExternalTasks();
+//        saveFile();
+//    }
 
     public void loadTasksFromFile(ProgressMonitor monitor) throws ConnectorException {
 		this.existingTasks = ConnectorUtils.loadDataOrderedById(fileConnector,
@@ -61,9 +63,9 @@ public class Updater {
 
     }
 
-    public void saveFile() throws ConnectorException {
+    public void saveFile(Mappings mappings) throws ConnectorException {
         // TODO remove the casting!
-        ((FileBasedConnector) fileConnector).updateTasksByRemoteIds(tasksInExternalSystem);
+        ((FileBasedConnector) fileConnector).updateTasksByRemoteIds(tasksInExternalSystem, mappings);
     }
 
     public int getNumberOfUpdatedTasks() {

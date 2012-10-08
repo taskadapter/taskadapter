@@ -141,7 +141,9 @@ class MSTaskToGenericTaskConverter {
     Float extractEstimatedHours(Task task) throws BadConfigException {
         Duration useAsEstimatedTime = null;
 
-        if (MSPUtils.useWork(config)) {
+        // TODO !!! we need Mappings here.
+//        if (MSPUtils.useWork(config)) {
+        if (true) {
             String isUndefinedString = (String) task.getCurrentValue(MSXMLFileWriter.FIELD_WORK_UNDEFINED);
             boolean isUndefined = Boolean.parseBoolean(isUndefinedString);
             // this is to differentiate "0" and "undefined". unfortunately, MPXJ does not do this for us.

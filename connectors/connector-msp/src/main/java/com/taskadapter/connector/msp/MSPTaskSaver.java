@@ -22,10 +22,9 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
 
     private MSXMLFileWriter writer;
 
-    // TODO !!! unused param
     public MSPTaskSaver(MSPConfig config, Mappings mappings) {
         super(config);
-        this.writer = new MSXMLFileWriter(config);
+        this.writer = new MSXMLFileWriter(config, mappings);
     }
 
     @Override

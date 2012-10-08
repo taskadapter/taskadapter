@@ -45,7 +45,7 @@ public class ExportPage extends ActionPage {
     public ExportPage(Connector connectorFrom, String sourceConnectorId,
                       Connector connectorTo, String destinationConnectorId,
                       TAFile taFile, Mappings destinationMappings) {
-        super(connectorFrom, connectorTo, destinationConnectorId, taFile, destinationMappings);
+        super(sourceConnectorId, connectorFrom, connectorTo, destinationConnectorId, taFile, destinationMappings);
         this.sourceConnectorId = sourceConnectorId;
         this.destinationConnectorId = destinationConnectorId;
     }
