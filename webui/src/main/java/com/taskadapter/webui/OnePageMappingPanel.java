@@ -3,7 +3,6 @@ package com.taskadapter.webui;
 import com.taskadapter.connector.definition.NewMappings;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.FieldMapping;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.web.Messages;
@@ -30,28 +29,22 @@ public class OnePageMappingPanel extends Panel implements Validatable {
 
     private String connector1Label;
     private AvailableFields connector1Fields;
-    private Mappings connector1mappings;
     private String connector2Label;
     private AvailableFields connector2Fields;
-    private Mappings connector2Mappings;
     private NewMappings mappings;
 
-    // TODO !!! delete "connector*mappings". use "mappings"
-    public OnePageMappingPanel(String connector1Label, AvailableFields connector1Fields, Mappings connector1mappings,
-                               String connector2Label, AvailableFields connector2Fields, Mappings connector2Mappings,
+    public OnePageMappingPanel(String connector1Label, AvailableFields connector1Fields,
+                               String connector2Label, AvailableFields connector2Fields,
                                NewMappings mappings) {
         super("Task fields mapping");
         this.connector1Label = connector1Label;
         this.connector1Fields = connector1Fields;
-        this.connector1mappings = connector1mappings;
         this.connector2Label = connector2Label;
         this.connector2Fields = connector2Fields;
-        this.connector2Mappings = connector2Mappings;
         this.mappings = mappings;
 
         setDescription("Select fields to export when SAVING data to this system");
         addFields();
-//        setWidth("900px");
     }
 
     private void addFields() {
@@ -97,8 +90,8 @@ public class OnePageMappingPanel extends Panel implements Validatable {
     private void addField(GTaskDescriptor.FIELD field) {
         addCheckbox(field);
 //        addEmptyCell();
-        addConnectorField(field, connector1Fields, connector1mappings);
-        addConnectorField(field, connector2Fields, connector2Mappings);
+        addConnectorField(field, connector1Fields, mappings.getMapping(field), "left");
+        addConnectorField(field, connector2Fields, mappings.getMapping(field), "right");
     }
 
     private CheckBox addCheckbox(GTaskDescriptor.FIELD field) {
@@ -108,10 +101,6 @@ public class OnePageMappingPanel extends Panel implements Validatable {
             fieldMapping = new FieldMapping(field, "", "", true);
             mappings.put(fieldMapping);
         }
-        // TODO !!!
-//        final MethodProperty<Boolean> selected = new MethodProperty<Boolean>(
-//                boolean.class, fieldMapping, "isSelected", "setSelected",
-//                new Object[]{field}, new Object[]{field, null}, 1);
         final MethodProperty<Boolean> selected = new MethodProperty<Boolean>(fieldMapping, "selected");
         checkbox.setPropertyDataSource(selected);
 
@@ -135,13 +124,10 @@ public class OnePageMappingPanel extends Panel implements Validatable {
         gridLayout.setComponentAlignment(emptyLabel, Alignment.MIDDLE_LEFT);
     }
 
-    private void addConnectorField(GTaskDescriptor.FIELD field, AvailableFields connectorFields, Mappings mappings) {
+    private void addConnectorField(GTaskDescriptor.FIELD field, AvailableFields connectorFields, FieldMapping fieldMapping, String leftRightField) {
         String[] allowedValues = connectorFields.getAllowedValues(field);
-        BeanItemContainer<String> container = new BeanItemContainer<String>(
-                String.class);
-        final MethodProperty<String> mappedTo = new MethodProperty<String>(
-                String.class, mappings, "getMappedTo", "setMapping",
-                new Object[]{field}, new Object[]{field, null}, 1);
+        BeanItemContainer<String> container = new BeanItemContainer<String>(String.class);
+        final MethodProperty<String> mappedTo = new MethodProperty<String>(fieldMapping, leftRightField);
 
         if (connectorFields.isFieldSupported(field)) {
             if (allowedValues.length > 1) {
@@ -151,20 +137,28 @@ public class OnePageMappingPanel extends Panel implements Validatable {
                 combo.setWidth("160px");
                 gridLayout.addComponent(combo);
                 gridLayout.setComponentAlignment(combo, Alignment.MIDDLE_LEFT);
-                combo.select(mappings.getMappedTo(field));
+                Object currentValue = mappedTo.getValue();
+                combo.select(currentValue);
             } else if (allowedValues.length == 1) {
-                createMappingForSingleValue(field, allowedValues[0], mappings);
+                createMappingForSingleValue(allowedValues[0], fieldMapping, leftRightField);
             } else {
                 String displayValue = GTaskDescriptor.getDisplayValue(field);
-                createMappingForSingleValue(field, displayValue, mappings);
+                createMappingForSingleValue(displayValue, fieldMapping, leftRightField);
             }
         } else {
             addEmptyCell();
         }
     }
 
-    private void createMappingForSingleValue(GTaskDescriptor.FIELD field, String displayValue, Mappings mappings) {
-        mappings.setMapping(field, displayValue);
+    private void createMappingForSingleValue(String displayValue, FieldMapping mapping, String leftRight) {
+        // TODO !!! refactor
+        if (leftRight.equals("left")) {
+            mapping.setLeft(displayValue);
+        } else if (leftRight.equals("right")) {
+            mapping.setRight(displayValue);
+        } else {
+            throw new IllegalArgumentException();
+        }
         Label label = new Label(displayValue);
         gridLayout.addComponent(label);
         gridLayout.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
@@ -207,7 +201,7 @@ public class OnePageMappingPanel extends Panel implements Validatable {
      *
      * @return <code>true</code> iff there are changes since panel creation.
      */
- /*   public boolean haveChanges() {
+ /*   public boolean hasChanges() {
         return originalMappings.equals(mappings);
     }*/
 }

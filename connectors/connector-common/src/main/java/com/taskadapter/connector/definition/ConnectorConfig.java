@@ -71,10 +71,6 @@ public abstract class ConnectorConfig implements Serializable, PriorityResolver 
 
     abstract protected Priorities generateDefaultPriorities();
 
-    /**
-     * Returns fields mappings.
-     * @return fields mappings.
-     */
     public Mappings getFieldMappings() {
     	return fieldsMapping;
     }

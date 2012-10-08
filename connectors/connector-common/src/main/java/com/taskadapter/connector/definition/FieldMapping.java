@@ -25,6 +25,14 @@ public final class FieldMapping {
         return field;
     }
 
+    public void setLeft(String left) {
+        this.left = left;
+    }
+
+    public void setRight(String right) {
+        this.right = right;
+    }
+
     public String getLeft() {
         return left;
     }

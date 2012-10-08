@@ -56,7 +56,6 @@ public class OnePageEditor extends GridLayout implements WindowProvider {
         PluginEditorFactory editor1Factory = services.getEditorManager().getEditorFactory(connector1Id);
         PluginEditorFactory editor2Factory = services.getEditorManager().getEditorFactory(connector2Id);
 
-        return new OnePageMappingPanel(connector1Id, editor1Factory.getAvailableFields(), connector1Config.getFieldMappings(),
-                connector2Id, editor2Factory.getAvailableFields(), connector2Config.getFieldMappings(), mappings);
+        return new OnePageMappingPanel(connector1Id, editor1Factory.getAvailableFields(), connector2Id, editor2Factory.getAvailableFields(), mappings);
     }
 }
