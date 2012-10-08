@@ -163,6 +163,11 @@ public final class Mappings {
 		selected.put(field, true);
 	}
 
+    public void addField(FIELD field, String mappedTo) {
+        setMapping(field, mappedTo);
+        selected.put(field, true);
+    }
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

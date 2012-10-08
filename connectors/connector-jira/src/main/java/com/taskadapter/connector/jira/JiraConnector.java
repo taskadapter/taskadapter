@@ -6,8 +6,14 @@ import com.atlassian.jira.rest.client.domain.IssueType;
 import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rpc.soap.client.RemoteFilter;
 import com.google.common.collect.Iterables;
-import com.taskadapter.connector.common.AbstractConnector;
-import com.taskadapter.connector.definition.*;
+import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.ConnectorConfig;
+import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.definition.ProgressMonitor;
+import com.taskadapter.connector.definition.SyncResult;
+import com.taskadapter.connector.definition.TaskErrors;
+import com.taskadapter.connector.definition.TaskSaveResult;
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.model.GTask;
@@ -21,16 +27,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class JiraConnector extends AbstractConnector<JiraConfig> {
+public class JiraConnector implements Connector<JiraConfig> {
 
     /**
      * Keep it the same to enable backward compatibility with the existing
      * config files.
      */
     public static final String ID = "Atlassian Jira";
+    private JiraConfig config;
 
     public JiraConnector(JiraConfig config) {
-        super(config);
+        this.config = config;
     }
 
     @Override
@@ -38,6 +45,11 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
             Map<Integer, String> res, ProgressMonitor monitor)
             throws UnsupportedConnectorOperation {
         throw new UnsupportedConnectorOperation("updateRemoteIDs");
+    }
+
+    @Override
+    public JiraConfig getConfig() {
+        return config;
     }
 
     public GTask loadTaskByKey(WebServerInfo info, String key) throws ConnectorException {
@@ -145,7 +157,7 @@ public class JiraConnector extends AbstractConnector<JiraConfig> {
     }
     
     @Override
-    public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
-    	return new JiraTaskSaver(config).saveData(tasks, monitor);
+    public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
+    	return new JiraTaskSaver(config, mappings).saveData(tasks, monitor);
     }
 }

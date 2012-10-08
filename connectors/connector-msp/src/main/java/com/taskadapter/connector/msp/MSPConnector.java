@@ -1,6 +1,5 @@
 package com.taskadapter.connector.msp;
 
-import com.taskadapter.connector.common.AbstractConnector;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
@@ -19,14 +18,16 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBasedConnector {
+public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
     /**
      * Keep it the same to enable backward compatibility
      */
     public static final String ID = "Microsoft Project";
 
+    private MSPConfig config;
+
     public MSPConnector(MSPConfig config) {
-        super(config);
+        this.config = config;
     }
 
     @Override
@@ -50,6 +51,11 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
         } catch (IOException e) {
             throw MSPExceptions.convertException(e);
         }
+    }
+
+    @Override
+    public MSPConfig getConfig() {
+        return config;
     }
 
     private void setFieldIfNotNull(MSPConfig config, FIELD field, Task mspTask, String value) {
@@ -169,7 +175,7 @@ public class MSPConnector extends AbstractConnector<MSPConfig> implements FileBa
 
 
     @Override
-    public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
-    	return new MSPTaskSaver(config).saveData(tasks, monitor);
+    public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
+    	return new MSPTaskSaver(config, mappings).saveData(tasks, monitor);
     }
 }

@@ -1,7 +1,12 @@
 package com.taskadapter.connector.github;
 
-import com.taskadapter.connector.common.AbstractConnector;
-import com.taskadapter.connector.definition.*;
+import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.ConnectorConfig;
+import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.definition.ProgressMonitor;
+import com.taskadapter.connector.definition.SyncResult;
+import com.taskadapter.connector.definition.TaskErrors;
+import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.model.GTask;
@@ -13,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GithubConnector extends AbstractConnector<GithubConfig> {
+public class GithubConnector implements Connector<GithubConfig> {
 
     /**
      * Keep it the same to enable backward compatibility with the existing
@@ -21,8 +26,10 @@ public class GithubConnector extends AbstractConnector<GithubConfig> {
      */
     public static final String ID = "Github";
 
+    private GithubConfig config;
+
     public GithubConnector(GithubConfig config) {
-        super(config);
+        this.config = config;
     }
 
     public void updateRemoteIDs(ConnectorConfig sourceConfig,
@@ -30,7 +37,12 @@ public class GithubConnector extends AbstractConnector<GithubConfig> {
             throws UnsupportedConnectorOperation {
         throw new UnsupportedConnectorOperation("updateRemoteIDs");
     }
-    
+
+    @Override
+    public GithubConfig getConfig() {
+        return config;
+    }
+
     @Override
     public GTask loadTaskByKey(String key) throws ConnectorException {
         IssueService issueService = new ConnectionFactory(config.getServerInfo()).getIssueService();
@@ -72,8 +84,8 @@ public class GithubConnector extends AbstractConnector<GithubConfig> {
     
 
     @Override
-    public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor)
+    public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings)
             throws ConnectorException {
-        return new GithubTaskSaver(config).saveData(tasks, monitor);
+        return new GithubTaskSaver(config, mappings).saveData(tasks, monitor);
     }
 }

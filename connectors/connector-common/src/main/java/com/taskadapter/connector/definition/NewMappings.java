@@ -23,4 +23,8 @@ public class NewMappings {
     public void put(FieldMapping fieldMapping) {
         mappings.add(fieldMapping);
     }
+
+    public Collection<FieldMapping> getMappings() {
+        return mappings;
+    }
 }

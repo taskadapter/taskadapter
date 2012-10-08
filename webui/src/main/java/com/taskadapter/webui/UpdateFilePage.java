@@ -2,6 +2,7 @@ package com.taskadapter.webui;
 
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.Updater;
 import com.taskadapter.model.GTask;
@@ -14,13 +15,14 @@ public class UpdateFilePage extends ActionPage {
 
     private final Updater updater;
 
-    public UpdateFilePage(Connector connectorFrom, Connector connectorTo, String destinationConnectorId, TAFile taFile) {
-        super(connectorFrom, connectorTo, destinationConnectorId, taFile);
+    public UpdateFilePage(Connector connectorFrom, Connector connectorTo, String destinationConnectorId, TAFile taFile, Mappings destinationMappings) {
+        super(connectorFrom, connectorTo, destinationConnectorId, taFile, destinationMappings);
         updater = new Updater(connectorTo, connectorFrom);
     }
 
+    // TODO !!! unused destinationMappings!
     @Override
-    protected void saveData(List<GTask> tasks) throws ConnectorException {
+    protected void saveData(List<GTask> tasks, Mappings destinationMappings) throws ConnectorException {
         updater.setConfirmedTasks(tasks);
 
         MonitorWrapper wrapper = new MonitorWrapper(saveProgress);

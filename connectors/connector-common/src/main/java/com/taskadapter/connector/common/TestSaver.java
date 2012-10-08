@@ -1,6 +1,7 @@
 package com.taskadapter.connector.common;
 
 import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
@@ -25,8 +26,8 @@ public class TestSaver {
         return this;
     }
 
-    public GTask saveAndLoad(GTask task) throws ConnectorException {
-        connector.saveData(Arrays.asList(task), null);
+    public GTask saveAndLoad(GTask task, Mappings mappings) throws ConnectorException {
+        connector.saveData(Arrays.asList(task), null, mappings);
 		List<GTask> loadedTasks = ConnectorUtils.loadDataOrderedById(connector);
         return TestUtils.findTaskBySummary(loadedTasks, task.getSummary());
     }

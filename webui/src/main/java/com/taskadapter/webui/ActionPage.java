@@ -3,12 +3,16 @@ package com.taskadapter.webui;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.PluginFactory;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.webui.action.ConfirmExportPage;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.ProgressIndicator;
+import com.vaadin.ui.VerticalLayout;
 
 import java.util.List;
 
@@ -18,17 +22,19 @@ public abstract class ActionPage extends Page {
     protected final Connector connectorTo;
     private final String destinationConnectorId;
     private final TAFile taFile;
+    private Mappings destinationMappings;
 
     protected ProgressIndicator loadProgress = new ProgressIndicator();
     protected ProgressIndicator saveProgress = new ProgressIndicator();
     protected List<GTask> loadedTasks;
     private ConfirmExportPage confirmExportPage;
 
-    public ActionPage(Connector connectorFrom, Connector connectorTo, String destinationConnectorId, TAFile file) {
+    public ActionPage(Connector connectorFrom, Connector connectorTo, String destinationConnectorId, TAFile file, Mappings destinationMappings) {
         this.connectorFrom = connectorFrom;
         this.connectorTo = connectorTo;
         this.destinationConnectorId = destinationConnectorId;
         this.taFile = file;
+        this.destinationMappings = destinationMappings;
         mainPanel = new VerticalLayout();
         mainPanel.setSpacing(true);
         mainPanel.setMargin(true);
@@ -36,7 +42,7 @@ public abstract class ActionPage extends Page {
         buildInitialPage();
     }
 
-    protected abstract void saveData(List<GTask> tasks) throws ConnectorException;
+    protected abstract void saveData(List<GTask> tasks, Mappings mappings) throws ConnectorException;
 
     protected abstract void loadData() throws ConnectorException;
 
@@ -111,15 +117,17 @@ public abstract class ActionPage extends Page {
 
     private class SaveWorker extends Thread {
         private List<GTask> tasks;
+        private Mappings mappings;
 
-        private SaveWorker(List<GTask> tasks) {
+        private SaveWorker(List<GTask> tasks, Mappings mappings) {
             this.tasks = tasks;
+            this.mappings = mappings;
         }
 
         @Override
         public void run() {
             try {
-                saveData(tasks);
+                saveData(tasks, mappings);
             } catch (ConnectorException e) {
                 e.printStackTrace();
             } catch (Throwable t) {
@@ -181,7 +189,7 @@ public abstract class ActionPage extends Page {
             mainPanel.removeAllComponents();
             mainPanel.addComponent(saveProgress);
 
-            new SaveWorker(selectedRootLevelTasks).start();
+            new SaveWorker(selectedRootLevelTasks, destinationMappings).start();
         } else {
             mainPanel.getWindow().showNotification("Please select some tasks first.");
         }

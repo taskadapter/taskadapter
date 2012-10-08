@@ -2,6 +2,7 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.common.AbstractTaskSaver;
 import com.taskadapter.connector.common.TreeUtils;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.EntityPersistenseException;
 import com.taskadapter.connector.msp.write.MSXMLFileWriter;
@@ -21,7 +22,8 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
 
     private MSXMLFileWriter writer;
 
-    public MSPTaskSaver(MSPConfig config) {
+    // TODO !!! unused param
+    public MSPTaskSaver(MSPConfig config, Mappings mappings) {
         super(config);
         this.writer = new MSXMLFileWriter(config);
     }

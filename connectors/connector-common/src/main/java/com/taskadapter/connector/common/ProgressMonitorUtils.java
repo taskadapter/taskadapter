@@ -2,17 +2,8 @@ package com.taskadapter.connector.common;
 
 import com.taskadapter.connector.definition.ProgressMonitor;
 
-/**
- * Utilities for {@link ProgressMonitor}.
- * 
- * @author maxkar
- * 
- */
 public class ProgressMonitorUtils {
 
-	/**
-	 * "Dummy" connector monitor.
-	 */
 	private static final ProgressMonitor DUMMY_MONITOR = new ProgressMonitor() {
 		@Override
 		public void worked(int work) {

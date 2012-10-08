@@ -5,9 +5,11 @@ import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.MSPOutputFileNameNotSetException;
+import com.taskadapter.connector.MappingBuilder;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.FileBasedConnector;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.msp.MSPConfig;
@@ -29,13 +31,17 @@ public class Exporter {
     private ConnectorDataHolder sourceDataHolder;
     private ConnectorDataHolder destinationDataHolder;
     private TAFile taFile;
+    private Mappings destinationMappings;
 
-    public Exporter(Navigator navigator, PluginManager pluginManager, final ConnectorDataHolder sourceDataHolder, final ConnectorDataHolder destinationDataHolder, TAFile taFile) {
+    public Exporter(Navigator navigator, PluginManager pluginManager,
+                    final ConnectorDataHolder sourceDataHolder, final ConnectorDataHolder destinationDataHolder,
+                    TAFile taFile, Mappings destinationMappings) {
         this.navigator = navigator;
         this.pluginManager = pluginManager;
         this.sourceDataHolder = sourceDataHolder;
         this.destinationDataHolder = destinationDataHolder;
         this.taFile = taFile;
+        this.destinationMappings = destinationMappings;
     }
 
     public void export() {
@@ -118,13 +124,14 @@ public class Exporter {
     }
 
     private void startUpdateFile() {
-        UpdateFilePage page = new UpdateFilePage(getConnector(sourceDataHolder), getConnector(destinationDataHolder), destinationDataHolder.getType(), taFile);
+        UpdateFilePage page = new UpdateFilePage(getConnector(sourceDataHolder), getConnector(destinationDataHolder), destinationDataHolder.getType(),
+                taFile, destinationMappings);
         navigator.show(page);
     }
 
     private void startRegularExport() {
         ExportPage page = new ExportPage(getConnector(sourceDataHolder), sourceDataHolder.getType(),
-                getConnector(destinationDataHolder), destinationDataHolder.getType(), taFile);
+                getConnector(destinationDataHolder), destinationDataHolder.getType(), taFile, destinationMappings);
         navigator.show(page);
     }
 

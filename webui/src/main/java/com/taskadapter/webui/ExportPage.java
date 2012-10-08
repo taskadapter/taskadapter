@@ -42,8 +42,10 @@ public class ExportPage extends ActionPage {
     private final String sourceConnectorId;
     private final String destinationConnectorId;
 
-    public ExportPage(Connector connectorFrom, String sourceConnectorId, Connector connectorTo, String destinationConnectorId, TAFile taFile) {
-        super(connectorFrom, connectorTo, destinationConnectorId, taFile);
+    public ExportPage(Connector connectorFrom, String sourceConnectorId,
+                      Connector connectorTo, String destinationConnectorId,
+                      TAFile taFile, Mappings destinationMappings) {
+        super(connectorFrom, connectorTo, destinationConnectorId, taFile, destinationMappings);
         this.sourceConnectorId = sourceConnectorId;
         this.destinationConnectorId = destinationConnectorId;
     }
@@ -221,13 +223,13 @@ public class ExportPage extends ActionPage {
     }
 
     @Override
-    protected void saveData(List<GTask> tasks) throws ConnectorException {
+    protected void saveData(List<GTask> tasks, Mappings destinationMappings) throws ConnectorException {
         saveProgress.setValue(0);
         MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
         runner.setDestination(connectorTo, destinationConnectorId);
         runner.setTasks(tasks);
         try {
-            result = runner.save(wrapper);
+            result = runner.save(wrapper, destinationMappings);
         } catch (ConnectorException e) {
             showErrorMessageOnPage(ExceptionFormatter.format(e));
             logger.error(e.getMessage(), e);

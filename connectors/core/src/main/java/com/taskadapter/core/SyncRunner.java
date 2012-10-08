@@ -74,8 +74,7 @@ public class SyncRunner {
         this.tasks = tasks;
     }
 
-    public SyncResult<TaskSaveResult, TaskErrors<ConnectorError<Throwable>>> save(
-            ProgressMonitor monitor) throws ConnectorException {
+    public SyncResult<TaskSaveResult, TaskErrors<ConnectorError<Throwable>>> save(ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
         int totalNumberOfTasks = DataConnectorUtil
                 .calculateNumberOfTasks(tasks);
         if (monitor != null) {
@@ -97,7 +96,7 @@ public class SyncRunner {
 
         try {
             final SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveTaskResult = connectorTo
-                    .saveData(treeToSave, monitor);
+                    .saveData(treeToSave, monitor, mappings);
             saveResult = saveTaskResult.getResult();
             errors.addErrors(connectorizeTasks(saveTaskResult.getErrors()
                     .getErrors(), destinationConnectorId));

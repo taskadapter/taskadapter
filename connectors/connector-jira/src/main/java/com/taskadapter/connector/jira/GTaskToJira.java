@@ -1,6 +1,12 @@
 package com.taskadapter.connector.jira;
 
-import com.atlassian.jira.rest.client.domain.*;
+import com.atlassian.jira.rest.client.domain.BasicComponent;
+import com.atlassian.jira.rest.client.domain.BasicPriority;
+import com.atlassian.jira.rest.client.domain.IssueFieldId;
+import com.atlassian.jira.rest.client.domain.IssueType;
+import com.atlassian.jira.rest.client.domain.Priority;
+import com.atlassian.jira.rest.client.domain.TimeTracking;
+import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
 import com.atlassian.jira.rpc.soap.client.RemoteCustomFieldValue;
@@ -20,6 +26,7 @@ public class GTaskToJira {
     private static final Long ISSUE_TYPE_ID = 1l;
 
     private final JiraConfig config;
+    private Mappings mappings;
 
     private final Map<String, BasicPriority> priorities = new HashMap<String, BasicPriority>();
     private final Map<String, BasicPriority> prioritiesOtherWay = new HashMap<String, BasicPriority>();
@@ -27,13 +34,12 @@ public class GTaskToJira {
     private Iterable<Version> versions;
     private Iterable<BasicComponent> components;
 
-    public GTaskToJira(JiraConfig config) {
+    public GTaskToJira(JiraConfig config, Mappings mappings) {
         this.config = config;
+        this.mappings = mappings;
     }
 
     public IssueInput convertToJiraIssue(GTask task) {
-        final Mappings mappings = config.getFieldMappings();
-
         Long issueTypeId = ISSUE_TYPE_ID;
         if (mappings.isFieldSelected(FIELD.TASK_TYPE)) {
             issueTypeId = getIssueTypeIdByName(task.getType());

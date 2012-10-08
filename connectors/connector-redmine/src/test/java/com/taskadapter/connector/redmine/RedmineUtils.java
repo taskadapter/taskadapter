@@ -24,9 +24,10 @@ public class RedmineUtils {
             task.getRelations().add(new GRelation(task.getId().toString(), task1.getId().toString(), GRelation.TYPE.precedes));
             list.add(task1);
         }
-
-        List<GTask> loadedList = TestUtils.saveAndLoadList(redmine, list);
-
-        return TestUtils.findTaskBySummary(loadedList, task.getSummary());
+        // TODO !!! fix test
+        throw new RuntimeException();
+//        List<GTask> loadedList = TestUtils.saveAndLoadList(redmine, list);
+//
+//        return TestUtils.findTaskBySummary(loadedList, task.getSummary());
     }
 }

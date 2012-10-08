@@ -71,8 +71,12 @@ public abstract class ConnectorConfig implements Serializable, PriorityResolver 
 
     abstract protected Priorities generateDefaultPriorities();
 
+    /**
+     * use taFile.getMappings()
+     */
+    @Deprecated
     public Mappings getFieldMappings() {
-    	return fieldsMapping;
+        return fieldsMapping;
     }
 
     public String getDefaultTaskType() {

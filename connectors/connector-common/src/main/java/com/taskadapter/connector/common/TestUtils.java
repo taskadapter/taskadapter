@@ -1,6 +1,7 @@
 package com.taskadapter.connector.common;
 
 import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.definition.TaskErrors;
 import com.taskadapter.connector.definition.TaskSaveResult;
@@ -64,34 +65,34 @@ public class TestUtils {
         return cal;
     }
 
-    public static List<GTask> saveAndLoadAll(Connector<?> connector, GTask task) throws ConnectorException {
-        connector.saveData(Arrays.asList(task), null);
+    public static List<GTask> saveAndLoadAll(Connector<?> connector, GTask task, Mappings mappings) throws ConnectorException {
+        connector.saveData(Arrays.asList(task), null, mappings);
         return ConnectorUtils.loadDataOrderedById(connector);
     }
 
-    public static List<GTask> saveAndLoadList(Connector<?> connector, List<GTask> tasks) throws ConnectorException {
-        connector.saveData(tasks, null);
+    public static List<GTask> saveAndLoadList(Connector<?> connector, List<GTask> tasks, Mappings mappings) throws ConnectorException {
+        connector.saveData(tasks, null, mappings);
         return ConnectorUtils.loadDataOrderedById(connector);
     }
 
-    public static GTask saveAndLoad(Connector<?> connector, GTask task) throws ConnectorException {
-        SyncResult<TaskSaveResult,TaskErrors<Throwable>> syncResult = connector.saveData(Arrays.asList(task), null);
+    public static GTask saveAndLoad(Connector<?> connector, GTask task, Mappings mappings) throws ConnectorException {
+        SyncResult<TaskSaveResult,TaskErrors<Throwable>> syncResult = connector.saveData(Arrays.asList(task), null, mappings);
         TaskSaveResult result = syncResult.getResult();
         Collection<String> remoteKeys = result.getRemoteKeys();
         String remoteKey = remoteKeys.iterator().next();
         return connector.loadTaskByKey(remoteKey);
     }
 
-    public static GTask saveAndLoadViaSummary(Connector<?> connector, GTask task) throws ConnectorException {
-        List<GTask> loadedTasks = saveAndLoadAll(connector, task);
+    public static GTask saveAndLoadViaSummary(Connector<?> connector, GTask task, Mappings mappings) throws ConnectorException {
+        List<GTask> loadedTasks = saveAndLoadAll(connector, task, mappings);
         return findTaskBySummary(loadedTasks, task.getSummary());
     }
 
     /**
      * @return the new task Key
      */
-    public static String save(Connector<?> connector, GTask task) throws ConnectorException {
-        SyncResult<TaskSaveResult,TaskErrors<Throwable>> syncResult = connector.saveData(Arrays.asList(task), null);
+    public static String save(Connector<?> connector, GTask task, Mappings mappings) throws ConnectorException {
+        SyncResult<TaskSaveResult,TaskErrors<Throwable>> syncResult = connector.saveData(Arrays.asList(task), null, mappings);
         TaskSaveResult result = syncResult.getResult();
         Collection<String> remoteKeys = result.getRemoteKeys();
         return remoteKeys.iterator().next();

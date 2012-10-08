@@ -1,6 +1,7 @@
 package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.common.AbstractTaskSaver;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GRelation;
@@ -22,9 +23,11 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
     private Project rmProject;
     private GTaskToRedmine converter;
     private RedmineToGTask toGTask;
+    private Mappings mappings;
 
-    public RedmineTaskSaver(RedmineConfig config) {
+    public RedmineTaskSaver(RedmineConfig config, Mappings mappings) {
         super(config);
+        this.mappings = mappings;
         converter = new GTaskToRedmine(config);
         toGTask = new RedmineToGTask(config);
     }

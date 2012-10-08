@@ -1,7 +1,13 @@
 package com.taskadapter.connector.redmine;
 
-import com.taskadapter.connector.common.AbstractConnector;
-import com.taskadapter.connector.definition.*;
+import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.ConnectorConfig;
+import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.definition.ProgressMonitor;
+import com.taskadapter.connector.definition.SyncResult;
+import com.taskadapter.connector.definition.TaskErrors;
+import com.taskadapter.connector.definition.TaskSaveResult;
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.model.GTask;
@@ -16,20 +22,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RedmineConnector extends AbstractConnector<RedmineConfig> {
+public class RedmineConnector implements Connector<RedmineConfig> {
     /**
      * Keep it the same to enable backward compatibility for previously created config files.
      */
     public static final String ID = "Redmine REST";
 
+    private RedmineConfig config;
+
     public RedmineConnector(RedmineConfig config) {
-        super(config);
+        this.config = config;
     }
 
     @Override
     public void updateRemoteIDs(ConnectorConfig configuration,
                                 Map<Integer, String> res, ProgressMonitor monitor) throws UnsupportedConnectorOperation {
         throw new UnsupportedConnectorOperation("updateRemoteIDs");
+    }
+
+    @Override
+    public RedmineConfig getConfig() {
+        return config;
     }
 
     @Override
@@ -96,7 +109,7 @@ public class RedmineConnector extends AbstractConnector<RedmineConfig> {
 	}
     
 	@Override
-	public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
-		return new RedmineTaskSaver(config).saveData(tasks, monitor);
+	public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
+		return new RedmineTaskSaver(config, mappings).saveData(tasks, monitor);
 	}
 }

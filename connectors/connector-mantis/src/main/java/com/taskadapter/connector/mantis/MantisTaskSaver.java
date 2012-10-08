@@ -1,6 +1,7 @@
 package com.taskadapter.connector.mantis;
 
 import com.taskadapter.connector.common.AbstractTaskSaver;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.EntityProcessingException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
@@ -25,7 +26,8 @@ public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig> {
     private ProjectData mntProject;
     private MantisDataConverter converter;
 
-    public MantisTaskSaver(MantisConfig config) {
+    // TODO !!! unused param
+    public MantisTaskSaver(MantisConfig config, Mappings mappings) {
         super(config);
     }
 

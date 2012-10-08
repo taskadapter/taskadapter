@@ -2,13 +2,21 @@ package com.taskadapter.webui;
 
 import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
+import com.taskadapter.connector.MappingBuilder;
+import com.taskadapter.connector.definition.MappingSide;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.web.service.Services;
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeButton;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Runo;
 
 /**
- * UI panel like:  [system1] <-> [system2]
+ * Buttons panel with left/right arrows.
  */
 public class ConfigActionsPanel extends VerticalLayout {
     private Navigator navigator;
@@ -61,18 +69,38 @@ public class ConfigActionsPanel extends VerticalLayout {
     private void createActionButtons() {
         VerticalLayout buttonsLayout = new VerticalLayout();
         buttonsLayout.setSpacing(true);
-        buttonsLayout.addComponent(createButton("img/arrow_right.png", file.getConnectorDataHolder1(), file.getConnectorDataHolder2()));
-        buttonsLayout.addComponent(createButton("img/arrow_left.png", file.getConnectorDataHolder2(), file.getConnectorDataHolder1()));
+        buttonsLayout.addComponent(createButton(MappingSide.RIGHT));
+        buttonsLayout.addComponent(createButton(MappingSide.LEFT));
         horizontalLayout.addComponent(buttonsLayout);
     }
 
-    private Button createButton(String label, final ConnectorDataHolder sourceDataHolder, final ConnectorDataHolder destinationDataHolder) {
+    private Button createButton(MappingSide exportDirection) {
+        ConnectorDataHolder sourceDataHolder;
+        ConnectorDataHolder destinationDataHolder;
+        String imageFile;
+        switch (exportDirection) {
+            case RIGHT:
+                imageFile = "img/arrow_right.png";
+                sourceDataHolder = file.getConnectorDataHolder1();
+                destinationDataHolder = file.getConnectorDataHolder2();
+                break;
+            case LEFT:
+                imageFile = "img/arrow_left.png";
+                sourceDataHolder = file.getConnectorDataHolder2();
+                destinationDataHolder = file.getConnectorDataHolder1();
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+
         Button button = new Button();
-        button.setIcon(new ThemeResource(label));
+        button.setIcon(new ThemeResource(imageFile));
         button.setStyleName(Runo.BUTTON_SMALL);
         button.addStyleName("configsTableArrowButton");
 
-        final Exporter exporter = new Exporter(navigator, services.getPluginManager(), sourceDataHolder, destinationDataHolder, file);
+        Mappings destinationMappings = MappingBuilder.build(file.getMappings(), exportDirection);
+
+        final Exporter exporter = new Exporter(navigator, services.getPluginManager(), sourceDataHolder, destinationDataHolder, file, destinationMappings);
         button.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {

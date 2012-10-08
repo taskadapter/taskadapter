@@ -1,6 +1,5 @@
 package com.taskadapter.connector.mantis;
 
-import com.taskadapter.connector.common.AbstractConnector;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
@@ -15,12 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MantisConnector extends AbstractConnector<MantisConfig> {
+public class MantisConnector implements Connector<MantisConfig> {
 
     public static final String ID = "Mantis";
 
+    private MantisConfig config;
+
     public MantisConnector(MantisConfig config) {
-        super(config);
+        this.config = config;
     }
 
     @Override
@@ -28,6 +29,11 @@ public class MantisConnector extends AbstractConnector<MantisConfig> {
                                 Map<Integer, String> res, ProgressMonitor monitor) throws UnsupportedConnectorOperation {
         throw new UnsupportedConnectorOperation(
                 "updateRemoteIDs");
+    }
+
+    @Override
+    public MantisConfig getConfig() {
+        return config;
     }
 
     @Override
@@ -70,7 +76,7 @@ public class MantisConnector extends AbstractConnector<MantisConfig> {
 
     
     @Override
-    public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
-    	return new MantisTaskSaver(config).saveData(tasks, monitor);
+    public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
+    	return new MantisTaskSaver(config, mappings).saveData(tasks, monitor);
     }
 }
