@@ -131,7 +131,7 @@ public class Exporter {
         UpdateFilePage page = new UpdateFilePage(sourceDataHolder.getType(),
                 getConnector(sourceDataHolder), getConnector(destinationDataHolder),
                 destinationDataHolder.getType(),
-                taFile, destinationMappings);
+                taFile, sourceMappings, destinationMappings);
         navigator.show(page);
     }
 
