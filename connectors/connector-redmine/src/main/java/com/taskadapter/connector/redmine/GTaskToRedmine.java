@@ -15,17 +15,18 @@ import java.util.List;
 class GTaskToRedmine {
 
     private final RedmineConfig config;
+    private Mappings mapping;
     private List<User> users;
     private List<IssueStatus> statusList;
 
-    GTaskToRedmine(RedmineConfig config) {
+    GTaskToRedmine(RedmineConfig config, Mappings mapping) {
         this.config = config;
+        this.mapping = mapping;
         this.users = new ArrayList<User>();
     }
 
     // TODO refactor this into multiple tiny testable methods
     public Issue convertToRedmineIssue(Project rmProject, GTask task) {
-        final Mappings mapping = config.getFieldMappings();
         Issue issue = new Issue();
         if (task.getParentKey() != null) {
             issue.setParentId(Integer.parseInt(task.getParentKey()));
@@ -84,7 +85,7 @@ class GTaskToRedmine {
     }
 
     private void processAssignee(GTask genericTask, Issue redmineIssue) {
-        if (config.getFieldMappings().isFieldSelected(FIELD.ASSIGNEE)) {
+        if (mapping.isFieldSelected(FIELD.ASSIGNEE)) {
             GUser ass = genericTask.getAssignee();
             if ((ass != null) && (ass.getLoginName() != null || ass.getDisplayName() != null)) {
                 User rmAss;
@@ -101,7 +102,7 @@ class GTaskToRedmine {
     }
 
     private void processTaskStatus(GTask task, Issue issue) {
-        if (config.getFieldMappings().isFieldSelected(FIELD.TASK_STATUS)) {
+        if (mapping.isFieldSelected(FIELD.TASK_STATUS)) {
             String statusName = task.getStatus();
             if (statusName == null) {
                 statusName = config.getDefaultTaskStatus();

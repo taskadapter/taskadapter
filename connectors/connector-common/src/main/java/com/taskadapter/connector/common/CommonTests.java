@@ -1,6 +1,7 @@
 package com.taskadapter.connector.common;
 
 import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.definition.TaskErrors;
 import com.taskadapter.connector.definition.TaskSaveResult;
@@ -36,13 +37,10 @@ public class CommonTests {
 */
     }
 
-    public void descriptionSavedByDefault(Connector<?> connector) throws ConnectorException {
-    // TODO !!!
-    /*
+    public void descriptionSavedByDefault(Connector<?> connector, Mappings mappings) throws ConnectorException {
         GTask task = TestUtils.generateTask();
         GTask loadedTask = TestUtils.saveAndLoadViaSummary(connector, task, mappings);
         assertEquals(task.getDescription(), loadedTask.getDescription());
-*/
     }
 
     public void descriptionSavedIfSelected(Connector<?> connector) throws ConnectorException {

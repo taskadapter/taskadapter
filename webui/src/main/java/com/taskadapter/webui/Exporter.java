@@ -32,15 +32,19 @@ public class Exporter {
     private ConnectorDataHolder destinationDataHolder;
     private TAFile taFile;
     private Mappings destinationMappings;
+    private Mappings sourceMappings;
 
     public Exporter(Navigator navigator, PluginManager pluginManager,
                     final ConnectorDataHolder sourceDataHolder, final ConnectorDataHolder destinationDataHolder,
-                    TAFile taFile, Mappings destinationMappings) {
+                    TAFile taFile,
+                    Mappings sourceMappings,
+                    Mappings destinationMappings) {
         this.navigator = navigator;
         this.pluginManager = pluginManager;
         this.sourceDataHolder = sourceDataHolder;
         this.destinationDataHolder = destinationDataHolder;
         this.taFile = taFile;
+        this.sourceMappings = sourceMappings;
         this.destinationMappings = destinationMappings;
     }
 
@@ -133,7 +137,7 @@ public class Exporter {
 
     private void startRegularExport() {
         ExportPage page = new ExportPage(getConnector(sourceDataHolder), sourceDataHolder.getType(),
-                getConnector(destinationDataHolder), destinationDataHolder.getType(), taFile, destinationMappings);
+                getConnector(destinationDataHolder), destinationDataHolder.getType(), taFile, sourceMappings, destinationMappings);
         navigator.show(page);
     }
 

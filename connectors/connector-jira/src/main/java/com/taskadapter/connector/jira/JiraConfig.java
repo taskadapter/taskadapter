@@ -6,7 +6,6 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
-import com.taskadapter.model.GTaskDescriptor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -73,19 +72,6 @@ public class JiraConfig extends ConnectorConfig {
 
     public void setQueryString(String queryString) {
         this.queryString = queryString;
-    }
-
-    @Override
-    protected Mappings generateDefaultFieldsMapping() {
-        final Mappings result = new Mappings();
-        result.addField(GTaskDescriptor.FIELD.SUMMARY);
-        result.addField(GTaskDescriptor.FIELD.TASK_TYPE);
-        result.addField(GTaskDescriptor.FIELD.ESTIMATED_TIME);
-        result.addField(GTaskDescriptor.FIELD.ASSIGNEE);
-        result.addField(GTaskDescriptor.FIELD.DESCRIPTION);
-        result.addField(GTaskDescriptor.FIELD.DUE_DATE);
-        result.addField(GTaskDescriptor.FIELD.PRIORITY);
-        return result;
     }
 
     @Override

@@ -5,3 +5,6 @@ target
 *.war
 .idea
 *.iml
+.settings
+.project
+.classpath

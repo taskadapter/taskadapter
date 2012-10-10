@@ -25,10 +25,11 @@ public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig> {
     private MantisManager mgr;
     private ProjectData mntProject;
     private MantisDataConverter converter;
+	private Mappings mappings;
 
-    // TODO !!! unused param
     public MantisTaskSaver(MantisConfig config, Mappings mappings) {
         super(config);
+		this.mappings = mappings;
     }
 
     @Override
@@ -61,7 +62,7 @@ public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig> {
 
     @Override
     protected Object convertToNativeTask(GTask task) {
-        return converter.convertToMantisIssue(mntProject, task);
+        return converter.convertToMantisIssue(mntProject, task, mappings);
     }
 
     @Override

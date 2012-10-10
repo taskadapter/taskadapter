@@ -4,7 +4,6 @@ import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.WebServerInfo;
-import com.taskadapter.model.GTaskDescriptor;
 
 import java.util.HashMap;
 
@@ -19,17 +18,6 @@ public class MantisConfig extends ConnectorConfig {
 
     public MantisConfig() {
         setLabel(DEFAULT_LABEL);
-    }
-
-    @Override
-    protected Mappings generateDefaultFieldsMapping() {
-    	final Mappings result = new Mappings();
-        result.addField(GTaskDescriptor.FIELD.SUMMARY);
-        result.addField(GTaskDescriptor.FIELD.DESCRIPTION);
-        result.addField(GTaskDescriptor.FIELD.ASSIGNEE);
-        result.addField(GTaskDescriptor.FIELD.DUE_DATE);
-        return result;
-
     }
 
     @Override

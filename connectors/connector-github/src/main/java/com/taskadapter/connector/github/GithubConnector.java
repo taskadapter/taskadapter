@@ -64,7 +64,7 @@ public class GithubConnector implements Connector<GithubConfig> {
     }
 
     @Override
-    public List<GTask> loadData(ProgressMonitor monitorIGNORED) throws ConnectorException {
+    public List<GTask> loadData(Mappings mappings, ProgressMonitor monitorIGNORED) throws ConnectorException {
         Map<String, String> issuesFilter = new HashMap<String, String>();
         issuesFilter.put(IssueService.FILTER_STATE,
                 config.getIssueState() == null ? IssueService.STATE_OPEN

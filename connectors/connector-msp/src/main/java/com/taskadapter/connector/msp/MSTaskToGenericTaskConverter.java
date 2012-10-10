@@ -1,5 +1,6 @@
 package com.taskadapter.connector.msp;
 
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.msp.write.MSXMLFileWriter;
 import com.taskadapter.model.GRelation;
@@ -16,7 +17,11 @@ import java.util.List;
 class MSTaskToGenericTaskConverter {
 
     private ProjectHeader header;
-    private MSPConfig config;
+    private Mappings mappings;
+
+    MSTaskToGenericTaskConverter(Mappings mappings) {
+        this.mappings = mappings;
+    }
 
     public void setHeader(ProjectHeader header) {
         this.header = header;
@@ -72,8 +77,7 @@ class MSTaskToGenericTaskConverter {
         }
 
         // DUE DATE
-		final String dueDateField = config.getFieldMappings().getMappedTo(
-				GTaskDescriptor.FIELD.DUE_DATE);
+		final String dueDateField = mappings.getMappedTo(GTaskDescriptor.FIELD.DUE_DATE);
         if (dueDateField != null) {
             Date mspDueDate = null;
             if (dueDateField.equals(TaskField.FINISH.toString())) {
@@ -179,7 +183,7 @@ class MSTaskToGenericTaskConverter {
     }
 
     Object getValue(Task mspTask, FIELD field) {
-        String v = config.getFieldMappings().getMappedTo(field);
+        String v = mappings.getMappedTo(field);
         if (v != null) {
             TaskField f = MSPUtils.getTaskFieldByName(v);
 
@@ -204,9 +208,5 @@ class MSTaskToGenericTaskConverter {
             return obj.toString();
         }
         return null;
-    }
-
-    public void setConfig(MSPConfig config) {
-        this.config = config;
     }
 }

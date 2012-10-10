@@ -3,9 +3,7 @@ package com.taskadapter.connector.msp;
 import com.taskadapter.connector.MSPOutputFileNameNotSetException;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ValidationException;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 import java.io.File;
 import java.util.HashMap;
@@ -19,6 +17,7 @@ public class MSPConfig extends ConnectorConfig {
     private String inputAbsoluteFilePath = "";
     private String outputAbsoluteFilePath = "";
 
+    // TODO these seem unused. delete them?
     public static final String DEFAULT_OUTPUT_FILE_NAME = "MSP_export_";
     public static final String DEFAULT_OUTPUT_SUFFIX = ".xml";
 
@@ -114,42 +113,6 @@ public class MSPConfig extends ConnectorConfig {
         } else if (!outputAbsoluteFilePath.equals(other.outputAbsoluteFilePath))
             return false;
         return true;
-    }
-
-    /**
-     * @return map: field name --> Mapping object.
-     */
-    @Override
-    protected Mappings generateDefaultFieldsMapping() {
-    	final Mappings result = new Mappings();
-    	result.setMapping(FIELD.SUMMARY, true, null);
-        result.setMapping(FIELD.TASK_TYPE, true, MSPUtils.getDefaultTaskType());
-
-        // TODO set default values in MSP..Provider instead of using [0]
-        String defaultEstimatedTimeOption = MSPUtils.getEstimatedTimeOptions()[0];
-    	result.setMapping(FIELD.ESTIMATED_TIME, true, defaultEstimatedTimeOption);
-    	result.setMapping(FIELD.DONE_RATIO, true, null);
-    	result.setMapping(FIELD.ASSIGNEE, true, null);
-    	result.setMapping(FIELD.DESCRIPTION, true, null);
-    	
-        String defaultStartDateOption = MSPUtils.getStartDateOptions()[0];
-    	result.setMapping(FIELD.START_DATE, false, defaultStartDateOption);
-    	
-        String defaultDueDateOption = MSPUtils.getDueDateOptions()[0];
-    	result.setMapping(FIELD.DUE_DATE, false, defaultDueDateOption);
-
-        /*
-         *  when "saveRemoteId" was by default TRUE for new configs,
-         *  many users have complained that they exported tasks from an MSP file
-         *  to Redmine, then deleted them in the Redmine and tried to re-export
-         *  and got "issue with id... not found".
-         *  it's better to have this option set to FALSE by default to avoid the confusion.
-         */
-    	result.setMapping(FIELD.REMOTE_ID, false, MSPUtils.getDefaultRemoteIdMapping());
-    	result.setMapping(FIELD.TASK_STATUS, false, MSPUtils.getDefaultTaskStatus());
-
-
-        return result;
     }
 
     @Override

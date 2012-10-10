@@ -14,7 +14,7 @@ public interface Connector<T extends ConnectorConfig> {
 	 * Loads a list of tasks. Order of loaded tasks is not specified and may
 	 * depend on implementation. To get tasks in a specific order, use
 	 * {@link ConnectorUtils} methods.
-	 * 
+	 *
 	 * @param monitor
 	 *            can't be null. See
 	 *            {@link ProgressMonitorUtils#getDummyMonitor()} if you don't
@@ -22,7 +22,7 @@ public interface Connector<T extends ConnectorConfig> {
 	 * @throws Exception
 	 *             some other exceptions the connector might throw
 	 */
-    List<GTask> loadData(ProgressMonitor monitor) throws ConnectorException;
+    List<GTask> loadData(Mappings mappings, ProgressMonitor monitor) throws ConnectorException;
 
     /**
      * Loads one task by its key.

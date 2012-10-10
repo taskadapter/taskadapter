@@ -49,8 +49,7 @@ public class MantisDataConverter {
         return user;
     }
 
-    public IssueData convertToMantisIssue(ProjectData mntProject, GTask task) {
-    	final Mappings mappings = config.getFieldMappings();
+    public IssueData convertToMantisIssue(ProjectData mntProject, GTask task, Mappings mappings) {
         IssueData issue = new IssueData();
 
         ObjectRef mntProjectRef = new ObjectRef(mntProject.getId(), mntProject.getName());

@@ -25,9 +25,6 @@ public class SyncRunner {
     private Connector<?> connectorFrom;
     private String sourceConnectorId;
 
-    /**
-     * Target connector.
-     */
     private Connector<?> connectorTo;
     private String destinationConnectorId;
 
@@ -41,16 +38,14 @@ public class SyncRunner {
 
     /**
      * @param monitor can be NULL (ignored in this case)
-     * @throws ConnectorException
      */
-    public List<GTask> load(ProgressMonitor monitor) throws ConnectorException {
+    public List<GTask> load(Mappings sourceMappings, ProgressMonitor monitor) throws ConnectorException {
         if (monitor != null) {
             monitor.beginTask(
                     "Loading data from " + connectorFrom.getConfig().getLabel(),
                     100);
         }
-        List<GTask> flatTasksList = ConnectorUtils.loadDataOrderedById(
-                connectorFrom, monitor);
+        List<GTask> flatTasksList = ConnectorUtils.loadDataOrderedById(connectorFrom, sourceMappings, monitor);
         flatTasksList = applyTrialIfNeeded(flatTasksList);
 
         // can be NULL if there was an exception
@@ -74,7 +69,7 @@ public class SyncRunner {
         this.tasks = tasks;
     }
 
-    public SyncResult<TaskSaveResult, TaskErrors<ConnectorError<Throwable>>> save(ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
+    public SyncResult<TaskSaveResult, TaskErrors<ConnectorError<Throwable>>> save(ProgressMonitor monitor, Mappings destinationMappings) throws ConnectorException {
         int totalNumberOfTasks = DataConnectorUtil
                 .calculateNumberOfTasks(tasks);
         if (monitor != null) {
@@ -83,7 +78,7 @@ public class SyncRunner {
                     totalNumberOfTasks);
         }
         List<GTask> treeToSave;
-        if (connectorTo.getConfig().getFieldMappings().isFieldSelected(FIELD.REMOTE_ID)) {
+        if (destinationMappings.isFieldSelected(FIELD.REMOTE_ID)) {
             List<GTask> clonedTree = TreeUtils.cloneTree(tasks);
             TaskUtil.setRemoteIdField(clonedTree);
             treeToSave = clonedTree;
@@ -96,7 +91,7 @@ public class SyncRunner {
 
         try {
             final SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveTaskResult = connectorTo
-                    .saveData(treeToSave, monitor, mappings);
+                    .saveData(treeToSave, monitor, destinationMappings);
             saveResult = saveTaskResult.getResult();
             errors.addErrors(connectorizeTasks(saveTaskResult.getErrors()
                     .getErrors(), destinationConnectorId));
@@ -115,17 +110,23 @@ public class SyncRunner {
         // the target systems.
 
         ConnectorConfig configFrom = connectorFrom.getConfig();
+
+
+        // TODO !!! fix remote IDs
+        System.err.println("FIX REMOTE IDs!");
+/*
         if (saveResult != null
                 && configFrom.getFieldMappings().isFieldSelected(
                 FIELD.REMOTE_ID) && (saveResult.getUpdatedTasksNumber() + saveResult.getCreatedTasksNumber()) > 0) {
             try {
                 connectorFrom.updateRemoteIDs(configFrom,
-                        saveResult.getIdToRemoteKeyMap(), null, mappings);
+                        saveResult.getIdToRemoteKeyMap(), null, destinationMappings);
             } catch (ConnectorException e) {
                 errors.addGeneralError(new ConnectorError<Throwable>(e,
                         destinationConnectorId));
             }
         }
+*/
 
         return new SyncResult<TaskSaveResult, TaskErrors<ConnectorError<Throwable>>>(
                 saveResult, errors.getResult());

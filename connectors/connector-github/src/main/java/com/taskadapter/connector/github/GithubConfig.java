@@ -5,7 +5,6 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
-import com.taskadapter.model.GTaskDescriptor;
 
 import java.util.HashMap;
 
@@ -21,17 +20,6 @@ public class GithubConfig extends ConnectorConfig {
     public GithubConfig() {
         setLabel(DEFAULT_LABEL);
         getServerInfo().setHost("http://github.com");
-    }
-
-    @Override
-    protected Mappings generateDefaultFieldsMapping() {
-    	final Mappings result = new Mappings();
-    	result.addField(GTaskDescriptor.FIELD.START_DATE);
-    	result.addField(GTaskDescriptor.FIELD.START_DATE);
-    	result.addField(GTaskDescriptor.FIELD.SUMMARY);
-    	result.addField(GTaskDescriptor.FIELD.ASSIGNEE);
-    	result.addField(GTaskDescriptor.FIELD.DESCRIPTION);
-        return result;
     }
 
     public String getIssueState() {

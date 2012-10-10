@@ -35,9 +35,8 @@ public class Updater {
 //        saveFile();
 //    }
 
-    public void loadTasksFromFile(ProgressMonitor monitor) throws ConnectorException {
-		this.existingTasks = ConnectorUtils.loadDataOrderedById(fileConnector,
-				monitor);
+    public void loadTasksFromFile(Mappings sourceMappings, ProgressMonitor monitor) throws ConnectorException {
+        this.existingTasks = ConnectorUtils.loadDataOrderedById(fileConnector, sourceMappings, monitor);
     }
 
     public void loadExternalTasks() throws ConnectorException {

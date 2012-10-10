@@ -4,6 +4,7 @@ import com.taskadapter.connector.common.CommonTests;
 import com.taskadapter.connector.common.TestSaver;
 import com.taskadapter.connector.common.TestUtils;
 import com.taskadapter.connector.common.TreeUtils;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GRelation;
@@ -15,13 +16,24 @@ import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.IssueStatus;
 import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.redmineapi.bean.User;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 public class RedmineIntegrationTest {
 
@@ -34,9 +46,6 @@ public class RedmineIntegrationTest {
     private RedmineConnector connector;
     private static GUser currentUser;
 
-    // TODO !!! fix test
-
-    /*
     @BeforeClass
     public static void oneTimeSetUp() {
         WebServerInfo serverInfo = RedmineTestConfig.getRedmineTestConfig().getServerInfo();
@@ -83,17 +92,21 @@ public class RedmineIntegrationTest {
 
     @Test
     public void startDateNotExported() throws ConnectorException {
-        checkStartDate(new TestSaver(connector).unselectField(FIELD.START_DATE), null);
+        checkStartDate(getTestSaver().unselectField(FIELD.START_DATE), null);
     }
 
     @Test
     public void startDateExported() throws ConnectorException {
-        checkStartDate(new TestSaver(connector).selectField(FIELD.START_DATE), TestUtils.getYearAgo());
+        checkStartDate(getTestSaver().selectField(FIELD.START_DATE), TestUtils.getYearAgo());
     }
 
     @Test
     public void startDateExportedByDefault() throws ConnectorException {
-        checkStartDate(new TestSaver(connector), TestUtils.getYearAgo());
+        checkStartDate(getTestSaver(), TestUtils.getYearAgo());
+    }
+
+    private TestSaver getTestSaver() {
+        return new TestSaver(connector, DefaultRedmineMappings.generate());
     }
 
     private void checkStartDate(TestSaver testSaver, Date expected) throws ConnectorException {
@@ -108,7 +121,7 @@ public class RedmineIntegrationTest {
     public void dueDateNotExported() throws ConnectorException {
         GTask task = TestUtils.generateTask();
         TestUtils.setTaskDueDateNextYear(task);
-        GTask loadedTask = new TestSaver(connector).unselectField(FIELD.DUE_DATE).saveAndLoad(task);
+        GTask loadedTask = getTestSaver().unselectField(FIELD.DUE_DATE).saveAndLoad(task);
         assertNull(loadedTask.getDueDate());
     }
 
@@ -116,7 +129,7 @@ public class RedmineIntegrationTest {
     public void dueDateExported() throws ConnectorException {
         GTask task = TestUtils.generateTask();
         Calendar yearAgo = TestUtils.setTaskDueDateNextYear(task);
-        GTask loadedTask = new TestSaver(connector).selectField(FIELD.DUE_DATE).saveAndLoad(task);
+        GTask loadedTask = getTestSaver().selectField(FIELD.DUE_DATE).saveAndLoad(task);
         assertEquals(yearAgo.getTime(), loadedTask.getDueDate());
     }
 
@@ -124,7 +137,7 @@ public class RedmineIntegrationTest {
     public void dueDateExportedByDefault() throws ConnectorException {
         GTask task = TestUtils.generateTask();
         Calendar yearAgo = TestUtils.setTaskDueDateNextYear(task);
-        GTask loadedTask = TestUtils.saveAndLoad(connector, task);
+        GTask loadedTask = TestUtils.saveAndLoad(connector, task, DefaultRedmineMappings.generate());
         assertEquals(yearAgo.getTime(), loadedTask.getDueDate());
     }
 
@@ -132,7 +145,7 @@ public class RedmineIntegrationTest {
     public void assigneeExported() throws ConnectorException {
         GTask task = TestUtils.generateTask();
         task.setAssignee(currentUser);
-        GTask loadedTask = new TestSaver(connector).selectField(FIELD.ASSIGNEE).saveAndLoad(task);
+        GTask loadedTask = getTestSaver().selectField(FIELD.ASSIGNEE).saveAndLoad(task);
         assertEquals(currentUser.getId(), loadedTask.getAssignee().getId());
         // only the ID and Display Name are set, so we can't check login name
         assertEquals(currentUser.getDisplayName(), loadedTask.getAssignee().getDisplayName());
@@ -142,7 +155,7 @@ public class RedmineIntegrationTest {
     public void assigneeNotExported() throws ConnectorException {
         GTask task = TestUtils.generateTask();
         task.setAssignee(currentUser);
-        GTask loadedTask = new TestSaver(connector).unselectField(FIELD.ASSIGNEE).saveAndLoad(task);
+        GTask loadedTask = getTestSaver().unselectField(FIELD.ASSIGNEE).saveAndLoad(task);
         assertNull(loadedTask.getAssignee());
     }
 
@@ -150,7 +163,7 @@ public class RedmineIntegrationTest {
     public void assigneeExportedByDefault() throws ConnectorException {
         GTask task = TestUtils.generateTask();
         task.setAssignee(currentUser);
-        GTask loadedTask = TestUtils.saveAndLoad(connector, task);
+        GTask loadedTask = TestUtils.saveAndLoad(connector, task, DefaultRedmineMappings.generate());
         assertEquals(currentUser.getId(), loadedTask.getAssignee().getId());
     }
 
@@ -160,7 +173,7 @@ public class RedmineIntegrationTest {
         GTask task = TestUtils.generateTask();
         task.setAssignee(currentUser);
         config.setFindUserByName(true);
-        GTask loadedTask = new TestSaver(connector).selectField(FIELD.ASSIGNEE).saveAndLoad(task);
+        GTask loadedTask = getTestSaver().selectField(FIELD.ASSIGNEE).saveAndLoad(task);
         assertEquals(currentUser.getId(), loadedTask.getAssignee().getId());
         // only the ID and Display Name are set, so we can't check login name
         assertEquals(currentUser.getDisplayName(), loadedTask.getAssignee().getDisplayName());
@@ -169,21 +182,21 @@ public class RedmineIntegrationTest {
     @Test
     public void estimatedTimeNotExported() throws ConnectorException {
         GTask task = TestUtils.generateTask();
-        GTask loadedTask = new TestSaver(connector).unselectField(FIELD.ESTIMATED_TIME).saveAndLoad(task);
+        GTask loadedTask = getTestSaver().unselectField(FIELD.ESTIMATED_TIME).saveAndLoad(task);
         assertNull(loadedTask.getEstimatedHours());
     }
 
     @Test
     public void estimatedTimeExported() throws ConnectorException {
         GTask task = TestUtils.generateTask();
-        GTask loadedTask = new TestSaver(connector).selectField(FIELD.ESTIMATED_TIME).saveAndLoad(task);
+        GTask loadedTask = getTestSaver().selectField(FIELD.ESTIMATED_TIME).saveAndLoad(task);
         assertEquals(task.getEstimatedHours(), loadedTask.getEstimatedHours(), 0);
     }
 
     @Test
     public void estimatedTimeExportedByDefault() throws ConnectorException {
         GTask task = TestUtils.generateTask();
-        GTask loadedTask = TestUtils.saveAndLoad(connector, task);
+        GTask loadedTask = TestUtils.saveAndLoad(connector, task, DefaultRedmineMappings.generate());
         assertEquals(task.getEstimatedHours(), loadedTask.getEstimatedHours(), 0);
     }
 
@@ -222,7 +235,7 @@ public class RedmineIntegrationTest {
         if (defaultStatus != null) {
             GTask task = TestUtils.generateTask();
             task.setStatus("Resolved");
-            GTask loadedTask = new TestSaver(connector).unselectField(FIELD.TASK_STATUS).saveAndLoad(task);
+            GTask loadedTask = getTestSaver().unselectField(FIELD.TASK_STATUS).saveAndLoad(task);
             assertEquals(defaultStatus, loadedTask.getStatus());
         }
     }
@@ -236,7 +249,7 @@ public class RedmineIntegrationTest {
         if (otherStatus != null) {
             GTask task = TestUtils.generateTask();
             task.setStatus(otherStatus);
-            GTask loadedTask = new TestSaver(connector).selectField(FIELD.TASK_STATUS).saveAndLoad(task);
+            GTask loadedTask = getTestSaver().selectField(FIELD.TASK_STATUS).saveAndLoad(task);
             assertEquals(otherStatus, loadedTask.getStatus());
         }
     }
@@ -248,7 +261,7 @@ public class RedmineIntegrationTest {
         if (defaultStatus != null) {
             GTask task = TestUtils.generateTask();
             task.setStatus(null);
-            GTask loadedTask = TestUtils.saveAndLoad(connector, task);
+            GTask loadedTask = TestUtils.saveAndLoad(connector, task, DefaultRedmineMappings.generate());
             assertEquals(defaultStatus, loadedTask.getStatus());
         }
     }
@@ -277,7 +290,7 @@ public class RedmineIntegrationTest {
         c2.setSummary("Child 2 of " + summary);
         t.getChildren().add(c2);
 
-        List<GTask> loadedTasks = TestUtils.saveAndLoadAll(connector, t);
+        List<GTask> loadedTasks = TestUtils.saveAndLoadAll(connector, t, DefaultRedmineMappings.generate());
 
         for (Iterator<GTask> iterator = loadedTasks.iterator(); iterator.hasNext(); ) {
             GTask gTask = iterator.next();
@@ -296,7 +309,7 @@ public class RedmineIntegrationTest {
     @Test
     public void taskExportedWithoutRelations() throws Exception {
         connector.getConfig().setSaveIssueRelations(false);
-        GTask loadedTask = RedmineUtils.generateTaskWithPrecedesRelations(connector, 2);
+        GTask loadedTask = RedmineUtils.createTaskWithPrecedesRelations(connector, 2, DefaultRedmineMappings.generate());
 
         assertEquals(0, loadedTask.getRelations().size());
     }
@@ -304,7 +317,7 @@ public class RedmineIntegrationTest {
     @Test
     public void taskExportedWithRelations() throws Exception {
         connector.getConfig().setSaveIssueRelations(true);
-        GTask loadedTask = RedmineUtils.generateTaskWithPrecedesRelations(connector, 2);
+        GTask loadedTask = RedmineUtils.createTaskWithPrecedesRelations(connector, 2, DefaultRedmineMappings.generate());
 
         assertEquals(2, loadedTask.getRelations().size());
     }
@@ -312,14 +325,15 @@ public class RedmineIntegrationTest {
     @Test
     public void notMappedDescriptionIsSetToEmpty() throws Exception {
         GTask task = TestUtils.generateTask();
-        GTask loadedTask = new TestSaver(connector).unselectField(FIELD.DESCRIPTION).saveAndLoad(task);
+        GTask loadedTask = getTestSaver().unselectField(FIELD.DESCRIPTION).saveAndLoad(task);
         assertEquals("", loadedTask.getDescription());
     }
 
     @Test
     public void taskUpdateTaskWithDeletedRelation() throws Exception {
         connector.getConfig().setSaveIssueRelations(true);
-        GTask loadedTask = RedmineUtils.generateTaskWithPrecedesRelations(connector, 2);
+        Mappings mapping = DefaultRedmineMappings.generate();
+        GTask loadedTask = RedmineUtils.createTaskWithPrecedesRelations(connector, 2, mapping);
 
         ArrayList<GTask> taskList = new ArrayList<GTask>(3);
         loadedTask.setRemoteId(loadedTask.getKey());
@@ -334,7 +348,7 @@ public class RedmineIntegrationTest {
         taskList.add(task);
 
         loadedTask.getRelations().remove(0);
-        TestUtils.saveAndLoadList(connector, taskList);
+        TestUtils.saveAndLoadList(connector, taskList, mapping);
         GTask newTask = connector.loadTaskByKey(loadedTask.getKey());
 
         assertEquals(1, newTask.getRelations().size());
@@ -343,7 +357,8 @@ public class RedmineIntegrationTest {
     @Test
     public void taskUpdateTaskWithCreatedRelation() throws Exception {
         connector.getConfig().setSaveIssueRelations(true);
-        GTask loadedTask = RedmineUtils.generateTaskWithPrecedesRelations(connector, 2);
+        Mappings mapping = DefaultRedmineMappings.generate();
+        GTask loadedTask = RedmineUtils.createTaskWithPrecedesRelations(connector, 2, mapping);
 
         ArrayList<GTask> taskList = new ArrayList<GTask>(3);
         loadedTask.setRemoteId(loadedTask.getKey());
@@ -358,12 +373,12 @@ public class RedmineIntegrationTest {
         taskList.add(task);
 
         GTask t = TestUtils.generateTask();
-        GTask newTask = TestUtils.saveAndLoad(connector, t);
+        GTask newTask = TestUtils.saveAndLoad(connector, t, mapping);
         newTask.setRemoteId(newTask.getKey());
         taskList.add(newTask);
 
         loadedTask.getRelations().add(new GRelation(loadedTask.getRemoteId(), newTask.getKey(), GRelation.TYPE.precedes));
-        TestUtils.saveAndLoadList(connector, taskList);
+        TestUtils.saveAndLoadList(connector, taskList, mapping);
         newTask = connector.loadTaskByKey(loadedTask.getKey());
 
         assertEquals(3, newTask.getRelations().size());
@@ -377,7 +392,7 @@ public class RedmineIntegrationTest {
 
     @Test
     public void defaultDescriptionIsMapped() throws Exception {
-        new CommonTests().descriptionSavedByDefault(connector);
+        new CommonTests().descriptionSavedByDefault(connector, DefaultRedmineMappings.generate());
     }
 
     @Test
@@ -389,6 +404,4 @@ public class RedmineIntegrationTest {
     public void twoTasksAreCreated() throws Exception {
         new CommonTests().testCreates2Tasks(connector);
     }
-
-    */
 }

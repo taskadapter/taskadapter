@@ -62,7 +62,7 @@ public class RedmineConnector implements Connector<RedmineConfig> {
     }
     
     @Override
-    public List<GTask> loadData(ProgressMonitor monitorIGNORED) throws ConnectorException {
+    public List<GTask> loadData(Mappings mappings, ProgressMonitor monitorIGNORED) throws ConnectorException {
         try {
             RedmineManager mgr = RedmineManagerFactory.createRedmineManager(config.getServerInfo());
 

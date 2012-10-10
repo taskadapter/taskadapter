@@ -11,24 +11,26 @@ import java.util.List;
 
 public class TestSaver {
     private Connector<?> connector;
+    private Mappings mappings;
 
-    public TestSaver(Connector<?> connector) {
+    public TestSaver(Connector<?> connector, Mappings mappings) {
         this.connector = connector;
+        this.mappings = mappings;
     }
 
     public TestSaver selectField(GTaskDescriptor.FIELD field) {
-        connector.getConfig().getFieldMappings().selectField(field);
+        mappings.selectField(field);
         return this;
     }
 
     public TestSaver unselectField(GTaskDescriptor.FIELD field) {
-        connector.getConfig().getFieldMappings().deselectField(field);
+        mappings.deselectField(field);
         return this;
     }
 
-    public GTask saveAndLoad(GTask task, Mappings mappings) throws ConnectorException {
+    public GTask saveAndLoad(GTask task) throws ConnectorException {
         connector.saveData(Arrays.asList(task), null, mappings);
-		List<GTask> loadedTasks = ConnectorUtils.loadDataOrderedById(connector);
+		List<GTask> loadedTasks = ConnectorUtils.loadDataOrderedById(connector, mappings);
         return TestUtils.findTaskBySummary(loadedTasks, task.getSummary());
     }
 }

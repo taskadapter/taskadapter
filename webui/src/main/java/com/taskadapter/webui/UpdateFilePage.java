@@ -14,9 +14,13 @@ import java.util.List;
 public class UpdateFilePage extends ActionPage {
 
     private final Updater updater;
+    private final Mappings sourceMappings;
 
-    public UpdateFilePage(String sourceConnectorId, Connector connectorFrom, Connector connectorTo, String destinationConnectorId, TAFile taFile, Mappings destinationMappings) {
+    public UpdateFilePage(String sourceConnectorId, Connector connectorFrom, Connector connectorTo, String destinationConnectorId, TAFile taFile,
+                          Mappings sourceMappings,
+                          Mappings destinationMappings) {
         super(sourceConnectorId, connectorFrom, connectorTo, destinationConnectorId, taFile, destinationMappings);
+        this.sourceMappings = sourceMappings;
         updater = new Updater(connectorTo, connectorFrom);
     }
 
@@ -65,7 +69,7 @@ public class UpdateFilePage extends ActionPage {
     @Override
     public void loadData() throws ConnectorException {
         MonitorWrapper wrapper = new MonitorWrapper(loadProgress);
-        updater.loadTasksFromFile(wrapper);
+        updater.loadTasksFromFile(sourceMappings, wrapper);
         updater.removeTasksWithoutRemoteIds();
         loadedTasks = updater.getExistingTasks();
     }

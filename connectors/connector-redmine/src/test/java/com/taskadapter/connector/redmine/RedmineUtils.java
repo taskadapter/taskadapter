@@ -1,6 +1,7 @@
 package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.common.TestUtils;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public class RedmineUtils {
 
-    public static GTask generateTaskWithPrecedesRelations(RedmineConnector redmine, Integer childCount) throws ConnectorException {
+    public static GTask createTaskWithPrecedesRelations(RedmineConnector redmine, Integer childCount, Mappings mapping) throws ConnectorException {
         List<GTask> list = new ArrayList<GTask>();
 
         GTask task = TestUtils.generateTask();
@@ -24,10 +25,7 @@ public class RedmineUtils {
             task.getRelations().add(new GRelation(task.getId().toString(), task1.getId().toString(), GRelation.TYPE.precedes));
             list.add(task1);
         }
-        // TODO !!! fix test
-        throw new RuntimeException();
-//        List<GTask> loadedList = TestUtils.saveAndLoadList(redmine, list);
-//
-//        return TestUtils.findTaskBySummary(loadedList, task.getSummary());
+        List<GTask> loadedList = TestUtils.saveAndLoadList(redmine, list, mapping);
+        return TestUtils.findTaskBySummary(loadedList, task.getSummary());
     }
 }

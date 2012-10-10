@@ -11,10 +11,10 @@ public class MappingBuilder {
         for (FieldMapping fieldMapping : newMappings.getMappings()) {
             switch (leftRight) {
                 case LEFT:
-                    mappings.addField(fieldMapping.getField(), fieldMapping.getLeft());
+                    mappings.addField(fieldMapping.getField(), fieldMapping.getLeft(), fieldMapping.isSelected());
                     break;
                 case RIGHT:
-                    mappings.addField(fieldMapping.getField(), fieldMapping.getRight());
+                    mappings.addField(fieldMapping.getField(), fieldMapping.getRight(), fieldMapping.isSelected());
                     break;
                 default:
                     throw new IllegalArgumentException();

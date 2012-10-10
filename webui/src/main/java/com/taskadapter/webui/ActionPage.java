@@ -23,14 +23,15 @@ public abstract class ActionPage extends Page {
     protected final Connector connectorTo;
     private final String destinationConnectorId;
     private final TAFile taFile;
-    private Mappings destinationMappings;
+    protected Mappings destinationMappings;
 
     protected ProgressIndicator loadProgress = new ProgressIndicator();
     protected ProgressIndicator saveProgress = new ProgressIndicator();
     protected List<GTask> loadedTasks;
     private ConfirmExportPage confirmExportPage;
 
-    public ActionPage(String sourceConnectorId, Connector connectorFrom, Connector connectorTo, String destinationConnectorId, TAFile file, Mappings destinationMappings) {
+    public ActionPage(String sourceConnectorId, Connector connectorFrom, Connector connectorTo, String destinationConnectorId, TAFile file,
+                      Mappings destinationMappings) {
         this.sourceConnectorId = sourceConnectorId;
         this.connectorFrom = connectorFrom;
         this.connectorTo = connectorTo;

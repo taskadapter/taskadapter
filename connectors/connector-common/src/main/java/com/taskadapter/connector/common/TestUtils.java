@@ -67,12 +67,12 @@ public class TestUtils {
 
     public static List<GTask> saveAndLoadAll(Connector<?> connector, GTask task, Mappings mappings) throws ConnectorException {
         connector.saveData(Arrays.asList(task), null, mappings);
-        return ConnectorUtils.loadDataOrderedById(connector);
+        return ConnectorUtils.loadDataOrderedById(connector, mappings);
     }
 
     public static List<GTask> saveAndLoadList(Connector<?> connector, List<GTask> tasks, Mappings mappings) throws ConnectorException {
         connector.saveData(tasks, null, mappings);
-        return ConnectorUtils.loadDataOrderedById(connector);
+        return ConnectorUtils.loadDataOrderedById(connector, mappings);
     }
 
     public static GTask saveAndLoad(Connector<?> connector, GTask task, Mappings mappings) throws ConnectorException {

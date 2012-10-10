@@ -51,7 +51,7 @@ public class MantisConnector implements Connector<MantisConfig> {
     } 
     
     @Override
-    public List<GTask> loadData(ProgressMonitor monitorIGNORED) throws ConnectorException {
+    public List<GTask> loadData(Mappings mappings, ProgressMonitor monitorIGNORED) throws ConnectorException {
         try {
             MantisManager mgr = MantisManagerFactory.createMantisManager(config.getServerInfo());
 

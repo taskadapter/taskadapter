@@ -89,7 +89,7 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
         }
     }
 
-    private Task findTaskByRemoteId(Mappings mappings, List<Task> mspTasks,String requiredRemoteId) {
+    private Task findTaskByRemoteId(Mappings mappings, List<Task> mspTasks, String requiredRemoteId) {
         for (Task gTask : mspTasks) {
             String taskRemoteId = (String) getField(mappings, FIELD.REMOTE_ID, gTask);
             if (taskRemoteId == null) {
@@ -124,14 +124,14 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
         }
 
     }
-    
+
     @Override
     public GTask loadTaskByKey(String key) {
         throw new RuntimeException("not implemented");
     }
-    
+
     @Override
-    public List<GTask> loadData(ProgressMonitor monitorIGNORED) throws ConnectorException {
+    public List<GTask> loadData(Mappings sourceMappings, ProgressMonitor monitorIGNORED) throws ConnectorException {
         ProjectFile projectFile;
         final MSPFileReader fileReader = new MSPFileReader();
         try {
@@ -144,8 +144,9 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
 
         List<Task> mspTasks = projectFile.getAllTasks();
         mspTasks = skipRootNodeIfPresent(mspTasks);
-        return loadTasks(projectFile, config, mspTasks);
+        return loadTasks(projectFile, mspTasks, sourceMappings);
     }
+
     /**
      * MSP XML file can have a root-level task with outline=0 - this is
      * a grouping task for everything (like "project root"), which should not be included in the tasks
@@ -163,18 +164,16 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
         }
         return mspTasks;
     }
-    
-    private List<GTask> loadTasks(ProjectFile project, MSPConfig config, List<Task> mspTasks) throws BadConfigException {
-        final MSTaskToGenericTaskConverter converter = new MSTaskToGenericTaskConverter();
-        converter.setConfig(config);
+
+    private List<GTask> loadTasks(ProjectFile project, List<Task> mspTasks, Mappings sourceMappings) throws BadConfigException {
+        final MSTaskToGenericTaskConverter converter = new MSTaskToGenericTaskConverter(sourceMappings);
         converter.setHeader(project.getProjectHeader());
         // TODO add fieldMappings to the params!
         return converter.convertToGenericTaskList(mspTasks);
     }
 
-
     @Override
     public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
-    	return new MSPTaskSaver(config, mappings).saveData(tasks, monitor);
+        return new MSPTaskSaver(config, mappings).saveData(tasks, monitor);
     }
 }

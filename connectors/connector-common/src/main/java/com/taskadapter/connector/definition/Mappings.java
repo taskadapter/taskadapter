@@ -163,9 +163,9 @@ public final class Mappings {
 		selected.put(field, true);
 	}
 
-    public void addField(FIELD field, String mappedTo) {
+    public void addField(FIELD field, String mappedTo, boolean selectedFlag) {
         setMapping(field, mappedTo);
-        selected.put(field, true);
+        selected.put(field, selectedFlag);
     }
 
 	@Override

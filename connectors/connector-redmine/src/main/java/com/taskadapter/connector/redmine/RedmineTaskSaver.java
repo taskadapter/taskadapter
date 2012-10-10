@@ -23,12 +23,10 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
     private Project rmProject;
     private GTaskToRedmine converter;
     private RedmineToGTask toGTask;
-    private Mappings mappings;
 
     public RedmineTaskSaver(RedmineConfig config, Mappings mappings) {
         super(config);
-        this.mappings = mappings;
-        converter = new GTaskToRedmine(config);
+        converter = new GTaskToRedmine(config, mappings);
         toGTask = new RedmineToGTask(config);
     }
 

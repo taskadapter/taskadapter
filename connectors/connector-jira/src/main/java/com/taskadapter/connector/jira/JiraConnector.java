@@ -151,7 +151,7 @@ public class JiraConnector implements Connector<JiraConfig> {
     }
     
     @Override
-    public List<GTask> loadData(ProgressMonitor monitorIGNORED) throws ConnectorException {
+    public List<GTask> loadData(Mappings mappings, ProgressMonitor monitorIGNORED) throws ConnectorException {
     	final JiraTaskLoader loader = new JiraTaskLoader(config);
     	return loader.loadTasks(config);
     }

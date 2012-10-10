@@ -58,12 +58,12 @@ public class MSPTestUtils {
     /**
      * Load the file with DEFAULT field mappings
      */
-    static List<GTask> load(String fileNameInClasspath) throws Exception {
-        String fileName = getTestFileAbsolutePath(fileNameInClasspath);
-        MSPConfig config = new MSPConfig(fileName);
-        final MSPConnector connector = new MSPConnector(config);
-        return ConnectorUtils.loadDataOrderedById(connector);
-    }
+//    static List<GTask> load(String fileNameInClasspath) throws Exception {
+//        String fileName = getTestFileAbsolutePath(fileNameInClasspath);
+//        MSPConfig config = new MSPConfig(fileName);
+//        final MSPConnector connector = new MSPConnector(config);
+//        return ConnectorUtils.loadDataOrderedById(connector);
+//    }
 
     /**
      * Load the file with DEFAULT field mappings into native task list

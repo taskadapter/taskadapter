@@ -1,9 +1,8 @@
 package com.taskadapter.connector.jira;
 
-import com.atlassian.jira.rest.client.RestClientException;
-import com.atlassian.jira.rest.client.domain.*;
-import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
-import com.atlassian.jira.rpc.soap.client.RemoteUser;
+import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.IssueLink;
+import com.atlassian.jira.rest.client.domain.User;
 import com.google.common.collect.Iterables;
 import com.taskadapter.connector.common.TestUtils;
 import com.taskadapter.connector.definition.SyncResult;
@@ -23,12 +22,17 @@ import org.junit.rules.ExpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.rmi.RemoteException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class JiraTest {
     private static final Logger logger = LoggerFactory.getLogger(JiraTest.class);
@@ -53,22 +57,15 @@ public class JiraTest {
         config = new JiraTestData().createTestConfig();
     }
 
-    // TODO !!! fix all tests
-
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-/*
     // TODO this is identical to Redmine's test. maybe move to a common place?
     @Test
     public void testJiraDoesNotFailWithNULLMonitorAndEmptyList()
             throws Exception {
-        // TODO !!! fix test
-
-
         JiraConnector connector = new JiraConnector(config);
-        connector.saveData(new ArrayList<GTask>(), null);
-
+        connector.saveData(new ArrayList<GTask>(), null, DefaultJiraMappings.generate());
     }
 
     @Test
@@ -76,7 +73,7 @@ public class JiraTest {
         int tasksQty = 2;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
         JiraConnector connector = new JiraConnector(config);
-        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(tasks, null);
+        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(tasks, null, DefaultJiraMappings.generate());
         assertEquals(tasksQty, result.getResult().getCreatedTasksNumber());
     }
 
@@ -89,7 +86,7 @@ public class JiraTest {
         List<GTask> tasks = TestUtils.generateTasks(1);
         tasks.get(0).setAssignee(new GUser(jiraUser.getName()));
 
-        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(tasks, null);
+        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(tasks, null, DefaultJiraMappings.generate());
         assertFalse("Task creation failed", result.getErrors().hasErrors());
 
         Map<Integer, String> remoteKeyById = new HashMap<Integer, String>();
@@ -114,7 +111,7 @@ public class JiraTest {
 
         // CREATE
         JiraConnector connector = new JiraConnector(config);
-        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(Arrays.asList(task), null);
+        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(Arrays.asList(task), null, DefaultJiraMappings.generate());
         assertTrue(result.getErrors().getErrors().isEmpty());
         assertEquals(tasksQty, result.getResult().getCreatedTasksNumber());
         String remoteKey = result.getResult().getRemoteKey(id);
@@ -125,7 +122,7 @@ public class JiraTest {
         String NEW_SUMMARY = "new summary here";
         loaded.setSummary(NEW_SUMMARY);
         loaded.setRemoteId(remoteKey);
-        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result2 = connector.saveData(Arrays.asList(loaded), null);
+        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result2 = connector.saveData(Arrays.asList(loaded), null, DefaultJiraMappings.generate());
         assertTrue("some errors while updating the data: " + result2.getErrors(), result2.getErrors().getErrors().isEmpty());
         assertEquals(1, result2.getResult().getUpdatedTasksNumber());
 
@@ -139,7 +136,7 @@ public class JiraTest {
         int tasksQty = 2;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
         JiraConnector connector = new JiraConnector(config);
-        connector.saveData(tasks, null);
+        connector.saveData(tasks, null, DefaultJiraMappings.generate());
 
         Iterable<Issue> issues = connection.getIssuesByProject(config.getProjectKey());
         Assert.assertNotSame(0, Iterables.size(issues));
@@ -164,7 +161,7 @@ public class JiraTest {
         list.add(task1);
         list.add(task2);
 
-        TestUtils.saveAndLoadList(connector, list);
+        TestUtils.saveAndLoadList(connector, list, DefaultJiraMappings.generate());
         List<Issue> issues = connection.getIssuesBySummary(task1.getSummary());
         Issue issue2 = connection.getIssuesBySummary(task2.getSummary()).get(0);
 
@@ -174,5 +171,4 @@ public class JiraTest {
         String targetIssueKey = link.getTargetIssueKey();
         assertEquals(issue2.getKey(), targetIssueKey);
     }
-*/
 }

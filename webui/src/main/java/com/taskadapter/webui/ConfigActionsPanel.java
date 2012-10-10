@@ -98,9 +98,10 @@ public class ConfigActionsPanel extends VerticalLayout {
         button.setStyleName(Runo.BUTTON_SMALL);
         button.addStyleName("configsTableArrowButton");
 
+        Mappings sourceMappings = MappingBuilder.build(file.getMappings(), getOppositeSide(exportDirection));
         Mappings destinationMappings = MappingBuilder.build(file.getMappings(), exportDirection);
 
-        final Exporter exporter = new Exporter(navigator, services.getPluginManager(), sourceDataHolder, destinationDataHolder, file, destinationMappings);
+        final Exporter exporter = new Exporter(navigator, services.getPluginManager(), sourceDataHolder, destinationDataHolder, file, sourceMappings, destinationMappings);
         button.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
@@ -109,4 +110,15 @@ public class ConfigActionsPanel extends VerticalLayout {
         });
         return button;
     }
+    
+	private MappingSide getOppositeSide(MappingSide side) {
+		switch (side) {
+		case LEFT:
+			return MappingSide.RIGHT;
+		case RIGHT:
+			return MappingSide.LEFT;
+		default:
+			throw new IllegalArgumentException();
+		}
+	}
 }

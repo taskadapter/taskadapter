@@ -42,12 +42,17 @@ public class ExportPage extends ActionPage {
     private final String sourceConnectorId;
     private final String destinationConnectorId;
 
+    private Mappings sourceMappings;
+
     public ExportPage(Connector connectorFrom, String sourceConnectorId,
                       Connector connectorTo, String destinationConnectorId,
-                      TAFile taFile, Mappings destinationMappings) {
+                      TAFile taFile,
+                      Mappings sourceMappings,
+                      Mappings destinationMappings) {
         super(sourceConnectorId, connectorFrom, connectorTo, destinationConnectorId, taFile, destinationMappings);
         this.sourceConnectorId = sourceConnectorId;
         this.destinationConnectorId = destinationConnectorId;
+        this.sourceMappings = sourceMappings;
     }
 
     @Override
@@ -60,7 +65,7 @@ public class ExportPage extends ActionPage {
         runner = new SyncRunner(services.getLicenseManager());
         runner.setConnectorFrom(connectorFrom, sourceConnectorId);
         try {
-            this.loadedTasks = runner.load(ProgressMonitorUtils.getDummyMonitor());
+            this.loadedTasks = runner.load(sourceMappings, ProgressMonitorUtils.getDummyMonitor());
         } catch (CommunicationException e) {
             String message = getErrorMessageForException(e);
             showErrorMessageOnPage(message);
