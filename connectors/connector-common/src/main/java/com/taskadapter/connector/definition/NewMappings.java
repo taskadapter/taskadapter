@@ -8,15 +8,23 @@ import java.util.Collection;
 public class NewMappings {
     private Collection<FieldMapping> mappings = new ArrayList<FieldMapping>();
 
+    /**
+     * Finds and returns a mapping specification for a GTask field. If no
+     * mapping is found, returns <code>null</code>.
+     * @param field field to find.
+     * @return field mapping or <code>null</code> if no mapping was defined for
+     * a <code>field</code>.
+     */
     public FieldMapping getMapping(GTaskDescriptor.FIELD field) {
+        if (field == null) {
+            return null;
+        }
         // TODO !!! very inefficient, but ok for the prototype. fix before merging into master.
         for (FieldMapping mapping : mappings) {
             if (mapping.getField().equals(field)) {
                 return mapping;
             }
         }
-        // TODO !!! return some "NO_MAPPING" instead of null.
-        // maybe http://code.google.com/p/guava-libraries/wiki/UsingAndAvoidingNullExplained#Optional
         return null;
     }
 
