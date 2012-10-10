@@ -27,9 +27,10 @@ public interface Connector<T extends ConnectorConfig> {
     /**
      * Loads one task by its key.
      * @param key task key.
+     * @param mappings TODO
      * @return loaded task.
      */
-    GTask loadTaskByKey(String key) throws ConnectorException;
+    GTask loadTaskByKey(String key, Mappings mappings) throws ConnectorException;
 
     /**
      * @param tasks

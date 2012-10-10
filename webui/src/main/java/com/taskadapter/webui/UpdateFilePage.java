@@ -19,18 +19,18 @@ public class UpdateFilePage extends ActionPage {
     public UpdateFilePage(String sourceConnectorId, Connector connectorFrom, Connector connectorTo, String destinationConnectorId, TAFile taFile,
                           Mappings sourceMappings,
                           Mappings destinationMappings) {
-        super(sourceConnectorId, connectorFrom, connectorTo, destinationConnectorId, taFile, destinationMappings);
+        super(sourceConnectorId, connectorFrom, connectorTo, destinationConnectorId, taFile, sourceMappings, destinationMappings);
         this.sourceMappings = sourceMappings;
         updater = new Updater(connectorTo, connectorFrom);
     }
 
     @Override
-    protected void saveData(List<GTask> tasks, Mappings destinationMappings) throws ConnectorException {
+    protected void saveData(List<GTask> tasks, Mappings sourceMappings, Mappings destinationMappings) throws ConnectorException {
         updater.setConfirmedTasks(tasks);
 
         MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
         updater.setMonitor(wrapper);
-        updater.loadExternalTasks();
+        updater.loadExternalTasks(sourceMappings);
         updater.saveFile(destinationMappings);
     }
 

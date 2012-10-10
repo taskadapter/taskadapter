@@ -80,7 +80,7 @@ public class TestUtils {
         TaskSaveResult result = syncResult.getResult();
         Collection<String> remoteKeys = result.getRemoteKeys();
         String remoteKey = remoteKeys.iterator().next();
-        return connector.loadTaskByKey(remoteKey);
+        return connector.loadTaskByKey(remoteKey, mappings);
     }
 
     public static GTask saveAndLoadViaSummary(Connector<?> connector, GTask task, Mappings mappings) throws ConnectorException {

@@ -46,7 +46,7 @@ public class RedmineConnector implements Connector<RedmineConfig> {
     }
 
     @Override
-    public GTask loadTaskByKey(String key) throws ConnectorException {
+    public GTask loadTaskByKey(String key, Mappings mappings) throws ConnectorException {
         try {
             WebServerInfo serverInfo = config.getServerInfo();
             RedmineManager mgr = RedmineManagerFactory

@@ -36,7 +36,7 @@ public class MantisConnector implements Connector<MantisConfig> {
     }
 
     @Override
-    public GTask loadTaskByKey(String key) throws ConnectorException {
+    public GTask loadTaskByKey(String key, Mappings mappings) throws ConnectorException {
             MantisManager mgr = MantisManagerFactory.createMantisManager(config.getServerInfo());
 
             IssueData issue;

@@ -126,7 +126,7 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
     }
 
     @Override
-    public GTask loadTaskByKey(String key) {
+    public GTask loadTaskByKey(String key, Mappings mappings) {
         throw new RuntimeException("not implemented");
     }
 

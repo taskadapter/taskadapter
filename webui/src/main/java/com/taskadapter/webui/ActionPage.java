@@ -23,6 +23,7 @@ public abstract class ActionPage extends Page {
     protected final Connector connectorTo;
     private final String destinationConnectorId;
     private final TAFile taFile;
+    protected Mappings sourceMappings;
     protected Mappings destinationMappings;
 
     protected ProgressIndicator loadProgress = new ProgressIndicator();
@@ -31,12 +32,13 @@ public abstract class ActionPage extends Page {
     private ConfirmExportPage confirmExportPage;
 
     public ActionPage(String sourceConnectorId, Connector connectorFrom, Connector connectorTo, String destinationConnectorId, TAFile file,
-                      Mappings destinationMappings) {
+                      Mappings sourceMappings, Mappings destinationMappings) {
         this.sourceConnectorId = sourceConnectorId;
         this.connectorFrom = connectorFrom;
         this.connectorTo = connectorTo;
         this.destinationConnectorId = destinationConnectorId;
         this.taFile = file;
+        this.sourceMappings = sourceMappings;
         this.destinationMappings = destinationMappings;
         mainPanel = new VerticalLayout();
         mainPanel.setSpacing(true);
@@ -45,7 +47,7 @@ public abstract class ActionPage extends Page {
         buildInitialPage();
     }
 
-    protected abstract void saveData(List<GTask> tasks, Mappings mappings) throws ConnectorException;
+    protected abstract void saveData(List<GTask> tasks, Mappings sourceMappings, Mappings mappings) throws ConnectorException;
 
     protected abstract void loadData() throws ConnectorException;
 
@@ -120,17 +122,19 @@ public abstract class ActionPage extends Page {
 
     private class SaveWorker extends Thread {
         private List<GTask> tasks;
-        private Mappings mappings;
+        private Mappings destinationMappings;
+        private Mappings sourceMappings;
 
-        private SaveWorker(List<GTask> tasks, Mappings mappings) {
+        private SaveWorker(List<GTask> tasks, Mappings sourceMappings, Mappings destinationMappings) {
             this.tasks = tasks;
-            this.mappings = mappings;
+            this.sourceMappings = sourceMappings;
+            this.destinationMappings = destinationMappings;
         }
 
         @Override
         public void run() {
             try {
-                saveData(tasks, mappings);
+                saveData(tasks, sourceMappings, destinationMappings);
             } catch (ConnectorException e) {
                 e.printStackTrace();
             } catch (Throwable t) {
@@ -200,7 +204,8 @@ public abstract class ActionPage extends Page {
             mainPanel.removeAllComponents();
             mainPanel.addComponent(saveProgress);
 
-            new SaveWorker(selectedRootLevelTasks, destinationMappings).start();
+            new SaveWorker(selectedRootLevelTasks, sourceMappings,
+                    destinationMappings).start();
         } else {
             mainPanel.getWindow().showNotification("Please select some tasks first.");
         }

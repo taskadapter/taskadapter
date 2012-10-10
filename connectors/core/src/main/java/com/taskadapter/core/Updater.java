@@ -39,7 +39,7 @@ public class Updater {
         this.existingTasks = ConnectorUtils.loadDataOrderedById(fileConnector, sourceMappings, monitor);
     }
 
-    public void loadExternalTasks() throws ConnectorException {
+    public void loadExternalTasks(Mappings sourceMappings) throws ConnectorException {
         this.tasksInExternalSystem = new ArrayList<GTask>(existingTasks.size());
         if (monitor != null) {
             monitor.beginTask("Loading " + existingTasks.size()
@@ -48,7 +48,7 @@ public class Updater {
         }
         for (GTask gTask : existingTasks) {
             if (gTask.getRemoteId() != null) {
-                GTask task = remoteConnector.loadTaskByKey(gTask.getRemoteId());
+                GTask task = remoteConnector.loadTaskByKey(gTask.getRemoteId(), sourceMappings);
                 task.setRemoteId(gTask.getRemoteId());
                 tasksInExternalSystem.add(task);
             }

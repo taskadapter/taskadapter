@@ -339,17 +339,17 @@ public class RedmineIntegrationTest {
         loadedTask.setRemoteId(loadedTask.getKey());
         taskList.add(loadedTask);
 
-        GTask task = connector.loadTaskByKey(loadedTask.getRelations().get(0).getRelatedTaskKey());
+        GTask task = connector.loadTaskByKey(loadedTask.getRelations().get(0).getRelatedTaskKey(), mapping);
         task.setRemoteId(task.getKey());
         taskList.add(task);
 
-        task = connector.loadTaskByKey(loadedTask.getRelations().get(1).getRelatedTaskKey());
+        task = connector.loadTaskByKey(loadedTask.getRelations().get(1).getRelatedTaskKey(), mapping);
         task.setRemoteId(task.getKey());
         taskList.add(task);
 
         loadedTask.getRelations().remove(0);
         TestUtils.saveAndLoadList(connector, taskList, mapping);
-        GTask newTask = connector.loadTaskByKey(loadedTask.getKey());
+        GTask newTask = connector.loadTaskByKey(loadedTask.getKey(), mapping);
 
         assertEquals(1, newTask.getRelations().size());
     }
@@ -364,11 +364,11 @@ public class RedmineIntegrationTest {
         loadedTask.setRemoteId(loadedTask.getKey());
         taskList.add(loadedTask);
 
-        GTask task = connector.loadTaskByKey(loadedTask.getRelations().get(0).getRelatedTaskKey());
+        GTask task = connector.loadTaskByKey(loadedTask.getRelations().get(0).getRelatedTaskKey(), mapping);
         task.setRemoteId(task.getKey());
         taskList.add(task);
 
-        task = connector.loadTaskByKey(loadedTask.getRelations().get(1).getRelatedTaskKey());
+        task = connector.loadTaskByKey(loadedTask.getRelations().get(1).getRelatedTaskKey(), mapping);
         task.setRemoteId(task.getKey());
         taskList.add(task);
 
@@ -379,7 +379,7 @@ public class RedmineIntegrationTest {
 
         loadedTask.getRelations().add(new GRelation(loadedTask.getRemoteId(), newTask.getKey(), GRelation.TYPE.precedes));
         TestUtils.saveAndLoadList(connector, taskList, mapping);
-        newTask = connector.loadTaskByKey(loadedTask.getKey());
+        newTask = connector.loadTaskByKey(loadedTask.getKey(), mapping);
 
         assertEquals(3, newTask.getRelations().size());
     }

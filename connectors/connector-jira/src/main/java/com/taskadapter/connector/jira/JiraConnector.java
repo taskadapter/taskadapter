@@ -145,7 +145,7 @@ public class JiraConnector implements Connector<JiraConfig> {
     }
 
     @Override
-    public GTask loadTaskByKey(String key) throws ConnectorException {
+    public GTask loadTaskByKey(String key, Mappings mappings) throws ConnectorException {
     	final JiraTaskLoader loader = new JiraTaskLoader(config);
     	return loader.loadTask(key);
     }
