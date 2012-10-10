@@ -21,7 +21,7 @@ public class UpdateFilePage extends ActionPage {
                           Mappings destinationMappings) {
         super(sourceConnectorId, connectorFrom, connectorTo, destinationConnectorId, taFile, sourceMappings, destinationMappings);
         this.sourceMappings = sourceMappings;
-        updater = new Updater(connectorTo, connectorFrom);
+        updater = new Updater(connectorTo, destinationMappings, connectorFrom, sourceMappings);
     }
 
     @Override
@@ -30,8 +30,8 @@ public class UpdateFilePage extends ActionPage {
 
         MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
         updater.setMonitor(wrapper);
-        updater.loadExternalTasks(sourceMappings);
-        updater.saveFile(destinationMappings);
+        updater.loadExternalTasks();
+        updater.saveFile();
     }
 
     @Override
@@ -69,7 +69,7 @@ public class UpdateFilePage extends ActionPage {
     @Override
     public void loadData() throws ConnectorException {
         MonitorWrapper wrapper = new MonitorWrapper(loadProgress);
-        updater.loadTasksFromFile(sourceMappings, wrapper);
+        updater.loadTasksFromFile(wrapper);
         updater.removeTasksWithoutRemoteIds();
         loadedTasks = updater.getExistingTasks();
     }

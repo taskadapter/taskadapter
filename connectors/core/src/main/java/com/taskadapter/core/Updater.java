@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.taskadapter.connector.common.ConnectorUtils;
-import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.FileBasedConnector;
@@ -17,11 +16,14 @@ public class Updater {
 
     private List<GTask> existingTasks;
     private List<GTask> tasksInExternalSystem;
-    private Connector fileConnector;
-    private Connector remoteConnector;
+    private Connector<?> fileConnector;
+    private Mappings fileMappings;
+    private Connector<?> remoteConnector;
+    private Mappings remoteMappings;
     private ProgressMonitor monitor;
 
-    public Updater(Connector fileConnector, Connector remoteConnector) {
+    public Updater(Connector<?> fileConnector, Mappings fileMappings,
+            Connector<?> remoteConnector, Mappings remoteMappings) {
         super();
         this.fileConnector = fileConnector;
         this.remoteConnector = remoteConnector;
@@ -35,11 +37,11 @@ public class Updater {
 //        saveFile();
 //    }
 
-    public void loadTasksFromFile(Mappings sourceMappings, ProgressMonitor monitor) throws ConnectorException {
-        this.existingTasks = ConnectorUtils.loadDataOrderedById(fileConnector, sourceMappings, monitor);
+    public void loadTasksFromFile(ProgressMonitor monitor) throws ConnectorException {
+        this.existingTasks = ConnectorUtils.loadDataOrderedById(fileConnector, fileMappings, monitor);
     }
 
-    public void loadExternalTasks(Mappings sourceMappings) throws ConnectorException {
+    public void loadExternalTasks() throws ConnectorException {
         this.tasksInExternalSystem = new ArrayList<GTask>(existingTasks.size());
         if (monitor != null) {
             monitor.beginTask("Loading " + existingTasks.size()
@@ -48,7 +50,7 @@ public class Updater {
         }
         for (GTask gTask : existingTasks) {
             if (gTask.getRemoteId() != null) {
-                GTask task = remoteConnector.loadTaskByKey(gTask.getRemoteId(), sourceMappings);
+                GTask task = remoteConnector.loadTaskByKey(gTask.getRemoteId(), remoteMappings);
                 task.setRemoteId(gTask.getRemoteId());
                 tasksInExternalSystem.add(task);
             }
@@ -62,9 +64,9 @@ public class Updater {
 
     }
 
-    public void saveFile(Mappings mappings) throws ConnectorException {
+    public void saveFile() throws ConnectorException {
         // TODO remove the casting!
-        ((FileBasedConnector) fileConnector).updateTasksByRemoteIds(tasksInExternalSystem, mappings);
+        ((FileBasedConnector) fileConnector).updateTasksByRemoteIds(tasksInExternalSystem, fileMappings);
     }
 
     public int getNumberOfUpdatedTasks() {
