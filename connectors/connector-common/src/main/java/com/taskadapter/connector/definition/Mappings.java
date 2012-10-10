@@ -150,25 +150,23 @@ public final class Mappings {
 		mapTo.remove(field);
 	}
 
-	/**
-	 * Adds a field if it does not exists. Field is unselected and have not
-	 * "map to" value.
-	 * 
-	 * @param field
-	 *            field to add.
-	 */
+    /**
+     * Adds a field if it does not exists. Field is unselected and have not
+     * "map to" value.
+     * 
+     * @param field
+     *            field to add.
+     * @deprecated Functionality for this method is strange. It should be
+     *             removed in later revisions. Use set* methods.
+     */
+	@Deprecated
 	public void addField(FIELD field) {
 		if (haveMappingFor(field))
 			return;
 		selected.put(field, true);
 	}
 
-    public void addField(FIELD field, String mappedTo, boolean selectedFlag) {
-        setMapping(field, mappedTo);
-        selected.put(field, selectedFlag);
-    }
-
-	@Override
+    @Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

@@ -9,7 +9,7 @@ public class MappingBuilder {
     public static Mappings build(NewMappings newMappings, MappingSide leftRight) {
         Mappings mappings = new Mappings();
         for (FieldMapping fieldMapping : newMappings.getMappings()) {
-            mappings.addField(fieldMapping.getField(), getSideMappedTo(fieldMapping, leftRight),fieldMapping.isSelected());
+            mappings.setMapping(fieldMapping.getField(), fieldMapping.isSelected(), getSideMappedTo(fieldMapping, leftRight));
         }
         return mappings;
     }
