@@ -9,17 +9,18 @@ public class MappingBuilder {
     public static Mappings build(NewMappings newMappings, MappingSide leftRight) {
         Mappings mappings = new Mappings();
         for (FieldMapping fieldMapping : newMappings.getMappings()) {
-            switch (leftRight) {
-                case LEFT:
-                    mappings.addField(fieldMapping.getField(), fieldMapping.getLeft(), fieldMapping.isSelected());
-                    break;
-                case RIGHT:
-                    mappings.addField(fieldMapping.getField(), fieldMapping.getRight(), fieldMapping.isSelected());
-                    break;
-                default:
-                    throw new IllegalArgumentException();
-            }
+            mappings.addField(fieldMapping.getField(), getSideMappedTo(fieldMapping, leftRight),fieldMapping.isSelected());
         }
         return mappings;
+    }
+    
+    public static String getSideMappedTo(FieldMapping fieldMapping, MappingSide side) {
+        switch (side) {
+            case LEFT:
+                return fieldMapping.getLeft();
+            case RIGHT:
+                return fieldMapping.getRight();
+        }
+        throw new IllegalArgumentException("Unsupported mapping direction : " + side);
     }
 }
