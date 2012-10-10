@@ -14,8 +14,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class GithubTest {
 
-	// TODO !!! fix tests
-/*    @BeforeClass
+    @BeforeClass
     public static void beforeClass() {
         System.out.println("--- Github tests started ---");
     }
@@ -26,9 +25,9 @@ public class GithubTest {
     }
 
     @Test
-    public void testProjectImport() throws Exception {
+    public void projectsAreLoaded() throws Exception {
         GithubConfig config = getTestConfig();
-        
+
         final GithubConnector connector = new GithubConnector(config);
 
         List<GProject> projects = GithubLoaders.getProjects(config.getServerInfo());
@@ -37,9 +36,7 @@ public class GithubTest {
         for (GProject project : projects) {
             System.out.println("project.getName() = " + project.getName());
             config.setProjectKey(project.getKey());
-			System.out
-					.println("project.getTasks() = "
-							+ ConnectorUtils.loadDataOrderedById(connector));
+            System.out.println("project.getTasks() = " + ConnectorUtils.loadDataOrderedById(connector, DefaultGithubMappings.generate()));
             System.out.println("---");
         }
     }
@@ -51,5 +48,4 @@ public class GithubTest {
         config.getServerInfo().setUserName(wsi.getUserName());
         return config;
     }
-*/
 }

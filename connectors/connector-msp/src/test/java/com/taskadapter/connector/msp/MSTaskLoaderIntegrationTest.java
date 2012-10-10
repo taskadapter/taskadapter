@@ -5,18 +5,21 @@ import com.taskadapter.model.GTask;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.List;
+
+import static com.taskadapter.connector.msp.MSPTestUtils.loadWithDefaultMappings;
+
 public class MSTaskLoaderIntegrationTest {
-	// TODO !!! fix tests
-/*
+
     @Test
     public void testLoadFileCreatedByMSPWith1Task() throws Exception {
-        List<GTask> tasks = load("created_by_msp_1task.xml");
+        List<GTask> tasks = loadWithDefaultMappings("created_by_msp_1task.xml");
         Assert.assertEquals(1, tasks.size());
     }
 
     @Test
     public void testFind1Task() throws Exception {
-        List<GTask> tasks = load("created_by_msp_1task.xml");
+        List<GTask> tasks = loadWithDefaultMappings("created_by_msp_1task.xml");
         GTask myTaskAddedFromMSP = TestUtils.findTaskBySummary(tasks, "task1");
         if (myTaskAddedFromMSP == null) {
             Assert.fail("required task not found in the tasks list");
@@ -25,7 +28,7 @@ public class MSTaskLoaderIntegrationTest {
 
     @Test
     public void testLoadFileCreatedByMSPWithManyTasks() throws Exception {
-        List<GTask> tasks = load("created_by_msp_tasks.xml");
+        List<GTask> tasks = loadWithDefaultMappings("created_by_msp_tasks.xml");
         Assert.assertEquals(4, tasks.size());
 
         GTask t1 = TestUtils.findTaskBySummary(tasks, "task1");
@@ -40,7 +43,7 @@ public class MSTaskLoaderIntegrationTest {
 
     @Test
     public void testLoadFileCreatedByTA() throws Exception {
-        List<GTask> tasks = load("created_by_ta_27.xml");
+        List<GTask> tasks = loadWithDefaultMappings("created_by_ta_27.xml");
         Assert.assertEquals(27, tasks.size());
 
         GTask t1 = TestUtils.findTaskBySummary(tasks, "improve components");
@@ -53,7 +56,7 @@ public class MSTaskLoaderIntegrationTest {
 
     @Test
     public void testLoadFileCreatedByTA1Task() throws Exception {
-        List<GTask> tasks = load("created_by_ta_1.xml");
+        List<GTask> tasks = loadWithDefaultMappings("created_by_ta_1.xml");
         Assert.assertEquals(1, tasks.size());
 
         GTask t1 = TestUtils.findTaskBySummary(tasks, "support me!");
@@ -63,8 +66,7 @@ public class MSTaskLoaderIntegrationTest {
     @Test
     public void testEmptyLinesAreSkipped() throws Exception {
         // total number of lines is 170 with 163 non-empty ones
-        List<GTask> tasks = load("IT_Department_Project_Master.xml");
+        List<GTask> tasks = loadWithDefaultMappings("IT_Department_Project_Master.xml");
         Assert.assertEquals(163, tasks.size());
     }
-*/
 }

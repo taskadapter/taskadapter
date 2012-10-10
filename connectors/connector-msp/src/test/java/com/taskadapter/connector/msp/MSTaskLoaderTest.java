@@ -8,11 +8,9 @@ import org.junit.Test;
 import java.util.List;
 
 public class MSTaskLoaderTest {
-	// TODO !!! fix tests
-	/*
     @Test
     public void testLoadTaskType() throws Exception {
-        List<GTask> loadedTasks = MSPTestUtils.load("Projeto1.xml");
+        List<GTask> loadedTasks = MSPTestUtils.loadWithDefaultMappings("Projeto1.xml");
         Assert.assertEquals(3, loadedTasks.size());
         GTask firstGTask = loadedTasks.get(0);
         Assert.assertNotNull(firstGTask);
@@ -21,10 +19,10 @@ public class MSTaskLoaderTest {
 
     @Test
     public void testLoadTree() throws Exception {
-        List<GTask> loadedTasks = MSPTestUtils.load("Projeto1.xml");
+        List<GTask> loadedTasks = MSPTestUtils.loadWithDefaultMappings("Projeto1.xml");
         Assert.assertEquals(3, loadedTasks.size());
         List<GTask> tree = TreeUtils.buildTreeFromFlatList(loadedTasks);
         Assert.assertEquals(1, tree.size());
         Assert.assertEquals(2, tree.get(0).getChildren().size());
-    }*/
+    }
 }

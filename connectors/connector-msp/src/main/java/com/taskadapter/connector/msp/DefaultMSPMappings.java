@@ -3,8 +3,8 @@ package com.taskadapter.connector.msp;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.model.GTaskDescriptor;
 
-class DefaultMSPMappings {
-    static Mappings generate() {
+public class DefaultMSPMappings {
+    public static Mappings generate() {
         final Mappings result = new Mappings();
         result.setMapping(GTaskDescriptor.FIELD.SUMMARY, true, null);
         result.setMapping(GTaskDescriptor.FIELD.TASK_TYPE, true, MSPUtils.getDefaultTaskType());
