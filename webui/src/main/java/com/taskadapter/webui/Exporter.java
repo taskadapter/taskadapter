@@ -4,7 +4,6 @@ package com.taskadapter.webui;
 import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
-import com.taskadapter.connector.MSPOutputFileNameNotSetException;
 import com.taskadapter.connector.MappingBuilder;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
@@ -13,6 +12,7 @@ import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.msp.MSPConfig;
+import com.taskadapter.connector.msp.MSPOutputFileNameNotSetException;
 import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.service.Services;
 

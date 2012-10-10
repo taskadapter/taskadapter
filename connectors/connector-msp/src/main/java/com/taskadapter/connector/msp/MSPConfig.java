@@ -1,6 +1,5 @@
 package com.taskadapter.connector.msp;
 
-import com.taskadapter.connector.MSPOutputFileNameNotSetException;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ValidationException;

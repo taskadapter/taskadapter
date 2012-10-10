@@ -1,4 +1,4 @@
-package com.taskadapter.connector;
+package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.definition.ValidationException;
 
