@@ -7,7 +7,8 @@ import com.taskadapter.connector.definition.*;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.ConnectorError;
-import com.taskadapter.core.SyncRunner;
+import com.taskadapter.core.TaskLoader;
+import com.taskadapter.core.TaskSaver;
 import com.taskadapter.model.GTask;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.EditorUtil;
@@ -37,13 +38,12 @@ public class ExportPage extends ActionPage {
     private static final String TRANSPORT_ERROR = "There was a problem communicating with the server. " +
             "Please check that the server name is valid and the server is accessible.";
 
-    private SyncRunner runner;
     private SyncResult<TaskSaveResult, TaskErrors<ConnectorError<Throwable>>> result;
     private final String sourceConnectorId;
     private final String destinationConnectorId;
 
-    public ExportPage(Connector connectorFrom, String sourceConnectorId,
-                      Connector connectorTo, String destinationConnectorId,
+    public ExportPage(Connector<?> connectorFrom, String sourceConnectorId,
+                      Connector<?> connectorTo, String destinationConnectorId,
                       TAFile taFile,
                       Mappings sourceMappings,
                       Mappings destinationMappings) {
@@ -61,10 +61,10 @@ public class ExportPage extends ActionPage {
 
     @Override
     protected void loadData() {
-        runner = new SyncRunner(services.getLicenseManager());
-        runner.setConnectorFrom(connectorFrom, sourceConnectorId, sourceMappings);
         try {
-            this.loadedTasks = runner.load(ProgressMonitorUtils.getDummyMonitor());
+            this.loadedTasks = TaskLoader.loadTasks(
+                    services.getLicenseManager(), connectorFrom,
+                    sourceMappings, ProgressMonitorUtils.getDummyMonitor());
         } catch (CommunicationException e) {
             String message = getErrorMessageForException(e);
             showErrorMessageOnPage(message);
@@ -229,12 +229,11 @@ public class ExportPage extends ActionPage {
     @Override
     protected void saveData(List<GTask> tasks) throws ConnectorException {
         saveProgress.setValue(0);
-        MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
-        runner.setDestination(connectorTo, destinationConnectorId,
-                destinationMappings);
-        runner.setTasks(tasks);
+        final MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
         try {
-            result = runner.save(wrapper);
+            result = TaskSaver.save(connectorFrom, sourceConnectorId,
+                    sourceMappings, connectorTo, destinationConnectorId,
+                    destinationMappings, tasks, wrapper);
         } catch (ConnectorException e) {
             showErrorMessageOnPage(ExceptionFormatter.format(e));
             logger.error(e.getMessage(), e);

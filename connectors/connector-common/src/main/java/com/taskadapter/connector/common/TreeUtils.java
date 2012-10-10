@@ -3,12 +3,13 @@ package com.taskadapter.connector.common;
 import com.taskadapter.model.GTask;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
 public class TreeUtils {
 
-    static public List<GTask> cloneTree(List<GTask> tree) {
+    static public List<GTask> cloneTree(Collection<GTask> tree) {
         List<GTask> clonedTree = new ArrayList<GTask>();
 
         for (GTask task : tree) {
