@@ -396,8 +396,8 @@ public class RedmineIntegrationTest {
     }
 
     @Test
-    public void descriptionMapped() throws Exception {
-        new CommonTests().descriptionSavedIfSelected(connector);
+    public void descriptionSavedIfSelected() throws Exception {
+        new CommonTests().descriptionSavedIfSelected(connector, DefaultRedmineMappings.generate());
     }
 
     @Test

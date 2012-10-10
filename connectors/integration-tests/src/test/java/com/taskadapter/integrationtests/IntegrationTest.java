@@ -32,7 +32,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class IntegrationTest {
 
-    public static final ProgressMonitor DUMMY_MONITOR = ProgressMonitorUtils.getDummyMonitor();
+    private static final ProgressMonitor DUMMY_MONITOR = ProgressMonitorUtils.getDummyMonitor();
 
     // this test is ignored because "load" operation does not set remote id anymore,
     // it's now done as a part of "save" (as it should have been from the beginning!)
@@ -92,15 +92,8 @@ public class IntegrationTest {
         MSPConfig mspConfig = generateTemporaryConfig("com/taskadapter/integrationtests/ProjectWithOneSideDisconnectedRelationships.xml");
         Connector<?> projectConnector = new MSPConnector(mspConfig);
 
-//        SyncRunner runner = new SyncRunner(new LicenseManager()); //LicenseManager with license of some type can be set
-//        runner.setConnectorFrom(projectConnector, MSPConnector.ID);
-//        runner.setDestination(, RedmineConnector.ID);
-//        // load from MSP
-//        runner.load(ProgressMonitorUtils.getDummyMonitor());
-//
         Mappings mspMappings = DefaultMSPMappings.generate();
         List<GTask> loadedTasks = TaskLoader.loadTasks(new LicenseManager(), projectConnector, mspMappings, DUMMY_MONITOR);
-
         try {
             // save to Redmine
             Mappings redmineMappings = DefaultRedmineMappings.generate();

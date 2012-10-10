@@ -244,7 +244,7 @@ public class FieldMappingTest {
 
     @Test
     public void descriptionSavedIfSelected() throws Exception {
-        new CommonTests().descriptionSavedIfSelected(connector);
+        new CommonTests().descriptionSavedIfSelected(connector, DefaultMSPMappings.generate());
     }
 
     @Test

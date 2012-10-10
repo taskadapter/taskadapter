@@ -6,7 +6,7 @@ import com.taskadapter.model.GProject;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
 
-// TODO !!! unify with the same class in Redmine editor module?
+// TODO unify with the same class in Redmine editor module?
 public class ShowProjectElement {
     private WindowProvider windowProvider;
     private JiraConfig jiraConfig;

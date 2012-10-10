@@ -40,13 +40,11 @@ public class CommonTests {
         assertEquals(task.getDescription(), loadedTask.getDescription());
     }
 
-    public void descriptionSavedIfSelected(Connector<?> connector) throws ConnectorException {
-        // TODO !!!
-/*
+    public void descriptionSavedIfSelected(Connector<?> connector, Mappings mappings) throws ConnectorException {
         GTask task = TestUtils.generateTask();
-        GTask loadedTask = new TestSaver(connector).selectField(FIELD.DESCRIPTION).saveAndLoad(task, mappings);
+        Mappings clonedMappings = new Mappings(mappings);
+        GTask loadedTask = new TestSaver(connector, clonedMappings).selectField(FIELD.DESCRIPTION).saveAndLoad(task);
         assertEquals(task.getDescription(), loadedTask.getDescription());
-*/
     }
 
     public void testCreates2Tasks(Connector<?> connector, Mappings mappings) throws ConnectorException {
