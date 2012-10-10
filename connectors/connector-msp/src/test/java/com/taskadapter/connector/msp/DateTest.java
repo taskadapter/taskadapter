@@ -9,15 +9,15 @@ import java.util.Date;
 import java.util.List;
 
 import static com.taskadapter.connector.common.TestUtils.findTaskBySummary;
+import static com.taskadapter.connector.msp.MSPTestUtils.load;
 import static org.junit.Assert.assertEquals;
 
 public class DateTest {
-	// TODO !!! fix tests
-/*    private List<GTask> gtasks;
+    private List<GTask> gtasks;
 
     @Before
     public void init() throws Exception {
-        gtasks = load("start_date_by_constraint.xml");
+        gtasks = load("start_date_by_constraint.xml", DefaultMSPMappings.generate());
     }
 
     @Test
@@ -43,5 +43,5 @@ public class DateTest {
         calendar.clear();
         calendar.set(year, month - 1, day, hour, 0);
         return calendar.getTime();
-    }*/
+    }
 }

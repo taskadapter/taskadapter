@@ -13,9 +13,7 @@ import java.util.List;
 
 public class CommonTests {
 
-    public void testLoadTasks(Connector<?> connector) throws ConnectorException {
-        // TODO !!!
-/*
+    public void testLoadTasks(Connector<?> connector, Mappings mappings) throws ConnectorException {
         int tasksQty = 1;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
 
@@ -27,14 +25,13 @@ public class CommonTests {
 
         Integer createdTask1Id = Integer.valueOf(result.getResult().getIdToRemoteKeyMap().get(expectedID));
 
-        List<GTask> loadedTasks = ConnectorUtils.loadDataOrderedById(connector);
+        List<GTask> loadedTasks = ConnectorUtils.loadDataOrderedById(connector, mappings);
         // there could be some other previously created tasks
         assertTrue(loadedTasks.size() >= tasksQty);
 
         GTask foundTask = TestUtils.findTaskInList(loadedTasks, createdTask1Id);
         assertNotNull(foundTask);
         assertEquals(expectedSummaryTask1, foundTask.getSummary());
-*/
     }
 
     public void descriptionSavedByDefault(Connector<?> connector, Mappings mappings) throws ConnectorException {
@@ -52,15 +49,12 @@ public class CommonTests {
 */
     }
 
-    public void testCreates2Tasks(Connector<?> connector) throws ConnectorException {
-        // TODO !!!
-/*
+    public void testCreates2Tasks(Connector<?> connector, Mappings mappings) throws ConnectorException {
         int tasksQty = 2;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
         SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(tasks, null, mappings);
         assertFalse("Errors: " + result.getErrors().toString(), result.getErrors().hasErrors());
         assertEquals(tasksQty, result.getResult().getCreatedTasksNumber());
-*/
     }
 
     private void assertNotNull(GTask foundTask) {

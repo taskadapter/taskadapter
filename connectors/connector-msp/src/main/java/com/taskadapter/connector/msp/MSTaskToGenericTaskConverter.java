@@ -163,10 +163,8 @@ class MSTaskToGenericTaskConverter {
         }
 
         if (useAsEstimatedTime != null) {
-            Duration convertedToHoursDuration = useAsEstimatedTime
-                    .convertUnits(TimeUnit.HOURS, header);
+            Duration convertedToHoursDuration = useAsEstimatedTime.convertUnits(TimeUnit.HOURS, header);
             return (float) convertedToHoursDuration.getDuration();
-
         }
 
         return null;

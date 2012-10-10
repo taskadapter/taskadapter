@@ -8,7 +8,7 @@ public class DefaultMantisMappings {
     private static final FIELD[] DEFAULT_FIELDS = { FIELD.SUMMARY,
             FIELD.DESCRIPTION, FIELD.ASSIGNEE, FIELD.DUE_DATE };
     
-	static Mappings generateFieldsMapping() {
+	static Mappings generate() {
 	    return MappingFactory.createWithEnabled(DEFAULT_FIELDS);
 	}
 

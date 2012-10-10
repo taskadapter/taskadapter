@@ -1,5 +1,6 @@
 package com.taskadapter.connector.msp;
 
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
@@ -16,8 +17,6 @@ import static org.junit.Assert.assertEquals;
 
 public class MSTaskToGenericTaskConverterTest {
 
-	// TODO !!! fix tests
-/*    private MSTaskToGenericTaskConverter converter = new MSTaskToGenericTaskConverter();
     private ProjectFile projectFile = MSPTestUtils.readTestProjectFile();
 
     private static final String FEATURE = "new feature";
@@ -34,9 +33,6 @@ public class MSTaskToGenericTaskConverterTest {
 
     @Before
     public void setUp() throws Exception {
-        MSPConfig config = new MSPConfig();
-        converter.setConfig(config);
-        converter.setHeader(projectFile.getProjectHeader());
         List<Task> allTasks = projectFile.getAllTasks();
         task1 = allTasks.get(2);
         task2 = allTasks.get(3);
@@ -45,66 +41,73 @@ public class MSTaskToGenericTaskConverterTest {
 
     @Test
     public void extractAssignee1() {
+        MSTaskToGenericTaskConverter converter = getConverter();
         GUser assignee = converter.extractAssignee(task1);
-        Assert.assertEquals("Assignee ID must be NULL because this file was created by an old Task Adapter version",
+        assertEquals("Assignee ID must be NULL because this file was created by an old Task Adapter version",
                 null, assignee.getId());
-        Assert.assertEquals("wax", converter.extractAssignee(task1).getDisplayName());
+        assertEquals("wax", converter.extractAssignee(task1).getDisplayName());
     }
 
     @Test
     public void extractAssignee2() {
+        MSTaskToGenericTaskConverter converter = getConverter();
         GUser assignee = converter.extractAssignee(task1);
-        Assert.assertEquals("Assignee ID must be NULL because this file was created by an old Task Adapter version",
+        assertEquals("Assignee ID must be NULL because this file was created by an old Task Adapter version",
                 null, assignee.getId());
-        Assert.assertEquals("Alex", converter.extractAssignee(task2).getDisplayName());
+        assertEquals("Alex", converter.extractAssignee(task2).getDisplayName());
     }
 
     @Test
     public void extractAssignee3() {
+        MSTaskToGenericTaskConverter converter = getConverter();
         GUser assignee = converter.extractAssignee(task1);
-        Assert.assertEquals("Assignee ID must be NULL because this file was created by an old Task Adapter version",
+        assertEquals("Assignee ID must be NULL because this file was created by an old Task Adapter version",
                 null, assignee.getId());
-        Assert.assertEquals("im", converter.extractAssignee(task3).getDisplayName());
+        assertEquals("im", converter.extractAssignee(task3).getDisplayName());
     }
-
 
     @Test
     public void estimatedTimeFoundThroughWork() throws BadConfigException {
-        MSPConfig config = new MSPConfig("");
-        config.getFieldMappings().setMapping(FIELD.ESTIMATED_TIME, TaskField.WORK.toString());
-        config.getFieldMappings().selectField(FIELD.ESTIMATED_TIME);
-        converter.setConfig(config);
-        assertEquals(Float.valueOf(2), converter.extractEstimatedHours(task1));
+        Mappings mappings = DefaultMSPMappings.generate();
+        mappings.setMapping(FIELD.ESTIMATED_TIME, true, TaskField.WORK.toString());
+        assertEquals(Float.valueOf(2), getConverter(mappings).extractEstimatedHours(task1));
     }
 
     @Test
     public void estimatedTimeFoundThroughDuration() throws BadConfigException {
-        MSPConfig config = new MSPConfig("");
-        config.getFieldMappings().setMapping(FIELD.ESTIMATED_TIME, TaskField.DURATION.toString());
-        config.getFieldMappings().selectField(FIELD.ESTIMATED_TIME);
-        converter.setConfig(config);
-        Assert.assertEquals(0.5f, converter.extractEstimatedHours(task2), 0.001f);
+        Mappings mappings = DefaultMSPMappings.generate();
+        mappings.setMapping(FIELD.ESTIMATED_TIME, true, TaskField.DURATION.toString());
+        Assert.assertEquals(0.5f, getConverter(mappings).extractEstimatedHours(task2), 0.001f);
     }
 
     @Test
     public void estimatedTimeFoundWithDefaultMapping() throws BadConfigException {
-        MSPConfig config = new MSPConfig("");
-        converter.setConfig(config);
-        Assert.assertEquals(8.0f, converter.extractEstimatedHours(task3), 0.001f);
+        assertEquals(8.0f, getConverter().extractEstimatedHours(task3), 0.001f);
     }
-
 
     @Test
     public void extractRemoteId() {
-        Assert.assertEquals(REMOTE_ID1, converter.extractRemoteId(task1));
-        Assert.assertEquals(REMOTE_ID2, converter.extractRemoteId(task2));
-        Assert.assertEquals(REMOTE_ID3, converter.extractRemoteId(task3));
+        MSTaskToGenericTaskConverter converter = getConverter();
+        assertEquals(REMOTE_ID1, converter.extractRemoteId(task1));
+        assertEquals(REMOTE_ID2, converter.extractRemoteId(task2));
+        assertEquals(REMOTE_ID3, converter.extractRemoteId(task3));
     }
 
     @Test
-    public void extractType() {
-        Assert.assertEquals(FEATURE, converter.extractType(task1));
-        Assert.assertEquals(DEV_TASK, converter.extractType(task2));
-        Assert.assertEquals(BUG, converter.extractType(task3));
-    }*/
+    public void taskTypeIsExtracted() {
+        MSTaskToGenericTaskConverter converter = getConverter();
+        assertEquals(FEATURE, converter.extractType(task1));
+        assertEquals(DEV_TASK, converter.extractType(task2));
+        assertEquals(BUG, converter.extractType(task3));
+    }
+
+    private MSTaskToGenericTaskConverter getConverter() {
+        return getConverter(DefaultMSPMappings.generate());
+    }
+
+    private MSTaskToGenericTaskConverter getConverter(Mappings mappings) {
+        MSTaskToGenericTaskConverter converter = new MSTaskToGenericTaskConverter(mappings);
+        converter.setHeader(projectFile.getProjectHeader());
+        return converter;
+    }
 }

@@ -17,6 +17,7 @@ public class GTaskToGithub {
 
     private final UserService userService;
 
+    // TODO see http://www.hostedredmine.com/issues/111002
     GTaskToGithub(UserService userService) {
         this.userService = userService;
     }

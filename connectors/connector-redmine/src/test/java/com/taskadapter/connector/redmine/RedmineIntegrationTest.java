@@ -387,7 +387,7 @@ public class RedmineIntegrationTest {
 
     @Test
     public void someTasksAreLoaded() throws Exception {
-        new CommonTests().testLoadTasks(connector);
+        new CommonTests().testLoadTasks(connector, DefaultRedmineMappings.generate());
     }
 
     @Test
@@ -402,6 +402,6 @@ public class RedmineIntegrationTest {
 
     @Test
     public void twoTasksAreCreated() throws Exception {
-        new CommonTests().testCreates2Tasks(connector);
+        new CommonTests().testCreates2Tasks(connector, DefaultRedmineMappings.generate());
     }
 }

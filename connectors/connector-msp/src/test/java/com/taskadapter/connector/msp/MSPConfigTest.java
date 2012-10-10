@@ -2,42 +2,19 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ValidationException;
-import net.sf.mpxj.TaskField;
 import org.junit.Test;
 
 import java.util.HashMap;
 
-import static com.taskadapter.model.GTaskDescriptor.FIELD;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class MSPConfigTest {
-	// TODO !!! fix tests 
-/*
     @Test(expected = ValidationException.class)
     public void noInputFileNameFailsValidation() throws ValidationException {
         MSPConfig config = new MSPConfig();
         config.validateForLoad();
-    }
-
-    @Test
-    public void unselectedMappingCopiedProperlyByCopyConstructor() {
-        MSPConfig config = new MSPConfig();
-		config.getFieldMappings().setMapping(FIELD.ESTIMATED_TIME, false,
-				TaskField.DURATION.toString());
-        MSPConfig cloned = new MSPConfig(config);
-        assertFalse(cloned.getFieldMappings().isFieldSelected(FIELD.ESTIMATED_TIME));
-    }
-
-    @Test
-    public void mappingCopiedProperlyByCopyConstructor() {
-        MSPConfig cloned = createAndCloneConfig(FIELD.ESTIMATED_TIME, true, TaskField.DURATION.toString());
-        assertTrue(cloned.getFieldMappings().isFieldSelected(FIELD.ESTIMATED_TIME));
-        assertEquals(TaskField.DURATION.toString(), cloned.getFieldMappings().getMappedTo(FIELD.ESTIMATED_TIME));
-    }
-
-    @Test
-    public void summaryFieldSelectedByDefault() {
-        assertTrue(new MSPConfig().getFieldMappings().isFieldSelected(FIELD.SUMMARY));
     }
 
     @Test
@@ -77,12 +54,6 @@ public class MSPConfigTest {
         assertEquals(Integer.valueOf(700), clonedPriorities.getPriorityByText("High"));
     }
 
-    private static MSPConfig createAndCloneConfig(FIELD field, boolean selected, String value) {
-        MSPConfig config = new MSPConfig();
-        config.getFieldMappings().setMapping(field, selected, value);
-        return new MSPConfig(config);
-    }
-
     private Priorities getSamplePriorities() {
         return new Priorities(new HashMap<String, Integer>() {
             {
@@ -93,6 +64,4 @@ public class MSPConfigTest {
             }
         });
     }
-
-*/
 }

@@ -1,6 +1,7 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.common.ConnectorUtils;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.model.GTask;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Task;
@@ -58,12 +59,12 @@ public class MSPTestUtils {
     /**
      * Load the file with DEFAULT field mappings
      */
-//    static List<GTask> load(String fileNameInClasspath) throws Exception {
-//        String fileName = getTestFileAbsolutePath(fileNameInClasspath);
-//        MSPConfig config = new MSPConfig(fileName);
-//        final MSPConnector connector = new MSPConnector(config);
-//        return ConnectorUtils.loadDataOrderedById(connector);
-//    }
+    static List<GTask> load(String fileNameInClasspath, Mappings mappings) throws Exception {
+        String fileName = getTestFileAbsolutePath(fileNameInClasspath);
+        MSPConfig config = new MSPConfig(fileName);
+        final MSPConnector connector = new MSPConnector(config);
+        return ConnectorUtils.loadDataOrderedById(connector, mappings);
+    }
 
     /**
      * Load the file with DEFAULT field mappings into native task list
