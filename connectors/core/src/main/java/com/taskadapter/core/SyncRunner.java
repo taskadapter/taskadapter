@@ -24,9 +24,11 @@ public class SyncRunner {
     // TODO: refactor!!!
     private Connector<?> connectorFrom;
     private String sourceConnectorId;
+    private Mappings sourceMappings;
 
     private Connector<?> connectorTo;
     private String destinationConnectorId;
+    private Mappings destinationMappings;
 
     private LicenseManager licenseManager;
 
@@ -39,7 +41,7 @@ public class SyncRunner {
     /**
      * @param monitor can be NULL (ignored in this case)
      */
-    public List<GTask> load(Mappings sourceMappings, ProgressMonitor monitor) throws ConnectorException {
+    public List<GTask> load(ProgressMonitor monitor) throws ConnectorException {
         if (monitor != null) {
             monitor.beginTask(
                     "Loading data from " + connectorFrom.getConfig().getLabel(),
@@ -69,7 +71,7 @@ public class SyncRunner {
         this.tasks = tasks;
     }
 
-    public SyncResult<TaskSaveResult, TaskErrors<ConnectorError<Throwable>>> save(ProgressMonitor monitor, Mappings destinationMappings) throws ConnectorException {
+    public SyncResult<TaskSaveResult, TaskErrors<ConnectorError<Throwable>>> save(ProgressMonitor monitor) throws ConnectorException {
         int totalNumberOfTasks = DataConnectorUtil
                 .calculateNumberOfTasks(tasks);
         if (monitor != null) {
@@ -165,14 +167,16 @@ public class SyncRunner {
 
     // TODO add a test to verify "load" can be done without setting taskSaver
     // TODO zzzzz delete the first parameter
-    public void setDestination(Connector<?> destination, String destinationConnectorId) {
+    public void setDestination(Connector<?> destination, String destinationConnectorId, Mappings destinationMappings) {
         this.connectorTo = destination;
         this.destinationConnectorId = destinationConnectorId;
+        this.destinationMappings = destinationMappings;
     }
 
     // TODO zzzzz delete the first parameter
-    public void setConnectorFrom(Connector<?> connectorFrom, String sourceConnectorId) {
+    public void setConnectorFrom(Connector<?> connectorFrom, String sourceConnectorId, Mappings sourceMappigns) {
         this.connectorFrom = connectorFrom;
         this.sourceConnectorId = sourceConnectorId;
+        this.sourceMappings = sourceMappigns;
     }
 }

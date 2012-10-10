@@ -65,9 +65,9 @@ public class ExportPage extends ActionPage {
     @Override
     protected void loadData() {
         runner = new SyncRunner(services.getLicenseManager());
-        runner.setConnectorFrom(connectorFrom, sourceConnectorId);
+        runner.setConnectorFrom(connectorFrom, sourceConnectorId, sourceMappings);
         try {
-            this.loadedTasks = runner.load(sourceMappings, ProgressMonitorUtils.getDummyMonitor());
+            this.loadedTasks = runner.load(ProgressMonitorUtils.getDummyMonitor());
         } catch (CommunicationException e) {
             String message = getErrorMessageForException(e);
             showErrorMessageOnPage(message);
@@ -233,10 +233,11 @@ public class ExportPage extends ActionPage {
     protected void saveData(List<GTask> tasks, Mappings sourceMappings, Mappings destinationMappings) throws ConnectorException {
         saveProgress.setValue(0);
         MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
-        runner.setDestination(connectorTo, destinationConnectorId);
+        runner.setDestination(connectorTo, destinationConnectorId,
+                destinationMappings);
         runner.setTasks(tasks);
         try {
-            result = runner.save(wrapper, destinationMappings);
+            result = runner.save(wrapper);
         } catch (ConnectorException e) {
             showErrorMessageOnPage(ExceptionFormatter.format(e));
             logger.error(e.getMessage(), e);
