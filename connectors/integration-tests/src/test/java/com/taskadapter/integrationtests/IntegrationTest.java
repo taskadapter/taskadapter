@@ -7,7 +7,6 @@ import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
-import com.taskadapter.core.SyncRunner;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.model.GTask;
 import org.junit.Ignore;
