@@ -1,20 +1,17 @@
 package com.taskadapter.connector.jira;
 
+import com.taskadapter.connector.definition.MappingFactory;
 import com.taskadapter.connector.definition.Mappings;
-import com.taskadapter.model.GTaskDescriptor;
+import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 public class DefaultJiraMappings {
+    
+    private static final FIELD[] DEFAULT_FIELDS = { FIELD.SUMMARY,
+            FIELD.TASK_TYPE, FIELD.ESTIMATED_TIME, FIELD.ASSIGNEE,
+            FIELD.DESCRIPTION, FIELD.DUE_DATE, FIELD.PRIORITY };
 
     static Mappings generate() {
-        final Mappings result = new Mappings();
-        result.addField(GTaskDescriptor.FIELD.SUMMARY);
-        result.addField(GTaskDescriptor.FIELD.TASK_TYPE);
-        result.addField(GTaskDescriptor.FIELD.ESTIMATED_TIME);
-        result.addField(GTaskDescriptor.FIELD.ASSIGNEE);
-        result.addField(GTaskDescriptor.FIELD.DESCRIPTION);
-        result.addField(GTaskDescriptor.FIELD.DUE_DATE);
-        result.addField(GTaskDescriptor.FIELD.PRIORITY);
-        return result;
+        return MappingFactory.createWithEnabled(DEFAULT_FIELDS);
     }
 
 }
