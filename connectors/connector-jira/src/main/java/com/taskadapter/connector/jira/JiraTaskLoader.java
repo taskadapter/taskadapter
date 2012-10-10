@@ -1,14 +1,12 @@
 package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rpc.soap.client.RemoteIssue;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class JiraTaskLoader {
@@ -17,7 +15,7 @@ public class JiraTaskLoader {
     
     public JiraTaskLoader(JiraConfig config) throws ConnectorException {
     	try {
-            jiraToGTask = new JiraToGTask(config);
+            jiraToGTask = new JiraToGTask(config.getPriorities());
 		    connection = JiraConnectionFactory.createConnection(config.getServerInfo());
         } catch (RemoteException e) {
             throw JiraUtils.convertException(e);

@@ -57,7 +57,7 @@ public class JiraConnector implements Connector<JiraConfig> {
             JiraConnection connection = JiraConnectionFactory.createConnection(info);
             Issue issue = connection.getIssueByKey(key);
             JiraUserConverter userConverter = new JiraUserConverter(connection);
-            JiraToGTask jiraToGTask = new JiraToGTask(config);
+            JiraToGTask jiraToGTask = new JiraToGTask(config.getPriorities());
             return userConverter.setAssigneeDisplayName(jiraToGTask.convertToGenericTask(issue));
         } catch (RemoteException e) {
             throw JiraUtils.convertException(e);

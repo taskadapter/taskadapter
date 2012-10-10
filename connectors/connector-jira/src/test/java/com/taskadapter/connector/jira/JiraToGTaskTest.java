@@ -2,7 +2,6 @@ package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.taskadapter.connector.Priorities;
-import com.taskadapter.connector.definition.PriorityResolver;
 import com.taskadapter.model.GTask;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -82,16 +81,7 @@ public class JiraToGTaskTest {
     }
 
     private GTask convertIssue(final Issue issue) throws Exception {
-        JiraToGTask jiraToGTask = new JiraToGTask(getPriorityResolver());
+        JiraToGTask jiraToGTask = new JiraToGTask(priorities);
         return jiraToGTask.convertToGenericTask(issue);
-    }
-    
-    private PriorityResolver getPriorityResolver() {
-        return new PriorityResolver() {
-            @Override
-            public Integer getPriorityNumberByName(String priorityName) {
-                return priorities.getPriorityByText(priorityName);
-            }
-        };
     }
 }

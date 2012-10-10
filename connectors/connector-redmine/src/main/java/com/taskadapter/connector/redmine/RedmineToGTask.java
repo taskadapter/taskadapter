@@ -54,7 +54,7 @@ public class RedmineToGTask {
         task.setDueDate(issue.getDueDate());
         task.setCreatedOn(issue.getCreatedOn());
         task.setUpdatedOn(issue.getUpdatedOn());
-        Integer priorityValue = config.getPriorityNumberByName(issue.getPriorityText());
+        Integer priorityValue = config.getPriorities().getPriorityByText(issue.getPriorityText());
         task.setPriority(priorityValue);
         task.setDescription(issue.getDescription());
 

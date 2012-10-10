@@ -4,8 +4,7 @@ import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueLink;
 import com.atlassian.jira.rest.client.domain.TimeTracking;
-import com.google.common.base.Strings;
-import com.taskadapter.connector.definition.PriorityResolver;
+import com.taskadapter.connector.Priorities;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GUser;
@@ -19,10 +18,10 @@ import java.util.List;
 public class JiraToGTask {
     private static final Logger logger = LoggerFactory.getLogger(JiraToGTask.class);
 
-    private final PriorityResolver priorityResolver;
+    private final Priorities priorities;
 
-    public JiraToGTask(PriorityResolver priorityResolver) {
-        this.priorityResolver = priorityResolver;
+    public JiraToGTask(Priorities priorities) {
+        this.priorities = priorities;
     }
 
     public List<GTask> convertToGenericTaskList(List<Issue> issues) {
@@ -70,7 +69,7 @@ public class JiraToGTask {
         if (issue.getPriority() != null) {
             jiraPriorityName = issue.getPriority().getName();
         }
-        Integer priorityValue = priorityResolver.getPriorityNumberByName(jiraPriorityName);
+        Integer priorityValue = priorities.getPriorityByText(jiraPriorityName);
         task.setPriority(priorityValue);
 
         TimeTracking timeTracking = issue.getTimeTracking();

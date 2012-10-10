@@ -24,7 +24,7 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
     public JiraTaskSaver(JiraConfig config, Mappings mappings) {
         super(config);
         converter = new GTaskToJira(config, mappings);
-        jiraToGTask = new JiraToGTask(config);
+        jiraToGTask = new JiraToGTask(config.getPriorities());
     }
 
     @Override

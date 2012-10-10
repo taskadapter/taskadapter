@@ -91,7 +91,7 @@ public class GTaskToJira {
         }
 
         if (mappings.isFieldSelected(FIELD.PRIORITY)) {
-            String jiraPriorityName = config.getPriorityByMSP(task.getPriority());
+            String jiraPriorityName = config.getPriorities().getPriorityByMSP(task.getPriority());
 
             if (!jiraPriorityName.isEmpty()) {
                 issueInputBuilder.setPriority(priorities.get(jiraPriorityName));
