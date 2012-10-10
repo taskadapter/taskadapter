@@ -14,18 +14,16 @@ import java.util.List;
 public class UpdateFilePage extends ActionPage {
 
     private final Updater updater;
-    private final Mappings sourceMappings;
 
-    public UpdateFilePage(String sourceConnectorId, Connector connectorFrom, Connector connectorTo, String destinationConnectorId, TAFile taFile,
+    public UpdateFilePage(String sourceConnectorId, Connector<?> connectorFrom, Connector<?> connectorTo, String destinationConnectorId, TAFile taFile,
                           Mappings sourceMappings,
                           Mappings destinationMappings) {
         super(sourceConnectorId, connectorFrom, connectorTo, destinationConnectorId, taFile, sourceMappings, destinationMappings);
-        this.sourceMappings = sourceMappings;
         updater = new Updater(connectorTo, destinationMappings, connectorFrom, sourceMappings);
     }
 
     @Override
-    protected void saveData(List<GTask> tasks, Mappings sourceMappings, Mappings destinationMappings) throws ConnectorException {
+    protected void saveData(List<GTask> tasks) throws ConnectorException {
         updater.setConfirmedTasks(tasks);
 
         MonitorWrapper wrapper = new MonitorWrapper(saveProgress);

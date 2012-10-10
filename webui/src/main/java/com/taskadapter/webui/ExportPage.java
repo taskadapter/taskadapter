@@ -42,8 +42,6 @@ public class ExportPage extends ActionPage {
     private final String sourceConnectorId;
     private final String destinationConnectorId;
 
-    private Mappings sourceMappings;
-
     public ExportPage(Connector connectorFrom, String sourceConnectorId,
                       Connector connectorTo, String destinationConnectorId,
                       TAFile taFile,
@@ -54,7 +52,6 @@ public class ExportPage extends ActionPage {
                 destinationMappings);
         this.sourceConnectorId = sourceConnectorId;
         this.destinationConnectorId = destinationConnectorId;
-        this.sourceMappings = sourceMappings;
     }
 
     @Override
@@ -230,7 +227,7 @@ public class ExportPage extends ActionPage {
     }
 
     @Override
-    protected void saveData(List<GTask> tasks, Mappings sourceMappings, Mappings destinationMappings) throws ConnectorException {
+    protected void saveData(List<GTask> tasks) throws ConnectorException {
         saveProgress.setValue(0);
         MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
         runner.setDestination(connectorTo, destinationConnectorId,

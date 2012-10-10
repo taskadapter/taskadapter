@@ -19,8 +19,8 @@ import java.util.List;
 public abstract class ActionPage extends Page {
     protected final VerticalLayout mainPanel;
     private String sourceConnectorId;
-    protected final Connector connectorFrom;
-    protected final Connector connectorTo;
+    protected final Connector<?> connectorFrom;
+    protected final Connector<?> connectorTo;
     private final String destinationConnectorId;
     private final TAFile taFile;
     protected Mappings sourceMappings;
@@ -31,7 +31,7 @@ public abstract class ActionPage extends Page {
     protected List<GTask> loadedTasks;
     private ConfirmExportPage confirmExportPage;
 
-    public ActionPage(String sourceConnectorId, Connector connectorFrom, Connector connectorTo, String destinationConnectorId, TAFile file,
+    public ActionPage(String sourceConnectorId, Connector<?> connectorFrom, Connector<?> connectorTo, String destinationConnectorId, TAFile file,
                       Mappings sourceMappings, Mappings destinationMappings) {
         this.sourceConnectorId = sourceConnectorId;
         this.connectorFrom = connectorFrom;
@@ -47,7 +47,7 @@ public abstract class ActionPage extends Page {
         buildInitialPage();
     }
 
-    protected abstract void saveData(List<GTask> tasks, Mappings sourceMappings, Mappings mappings) throws ConnectorException;
+    protected abstract void saveData(List<GTask> tasks) throws ConnectorException;
 
     protected abstract void loadData() throws ConnectorException;
 
@@ -122,19 +122,15 @@ public abstract class ActionPage extends Page {
 
     private class SaveWorker extends Thread {
         private List<GTask> tasks;
-        private Mappings destinationMappings;
-        private Mappings sourceMappings;
 
-        private SaveWorker(List<GTask> tasks, Mappings sourceMappings, Mappings destinationMappings) {
+        private SaveWorker(List<GTask> tasks) {
             this.tasks = tasks;
-            this.sourceMappings = sourceMappings;
-            this.destinationMappings = destinationMappings;
         }
 
         @Override
         public void run() {
             try {
-                saveData(tasks, sourceMappings, destinationMappings);
+                saveData(tasks);
             } catch (ConnectorException e) {
                 e.printStackTrace();
             } catch (Throwable t) {
@@ -204,8 +200,7 @@ public abstract class ActionPage extends Page {
             mainPanel.removeAllComponents();
             mainPanel.addComponent(saveProgress);
 
-            new SaveWorker(selectedRootLevelTasks, sourceMappings,
-                    destinationMappings).start();
+            new SaveWorker(selectedRootLevelTasks).start();
         } else {
             mainPanel.getWindow().showNotification("Please select some tasks first.");
         }
