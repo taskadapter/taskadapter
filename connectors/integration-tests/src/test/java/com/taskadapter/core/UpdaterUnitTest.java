@@ -3,8 +3,10 @@ package com.taskadapter.core;
 import com.google.common.io.Resources;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.msp.DefaultMSPMappings;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
+import com.taskadapter.connector.redmine.DefaultRedmineMappings;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,16 +26,14 @@ public class UpdaterUnitTest {
         projectConnector = new MSPConnector(mspConfig);
     }
 
-	// TODO !!! fix tests
-    /*
-     
-     @Test
+    @Test
     public void tasksWithoutRemoteIdsAreFiltered() throws ConnectorException {
-        Updater updater = new Updater(projectConnector, null);
+        // TODO refactor: DefaultRedmineMappings.generate() is not even used in Updater in this case.
+        Updater updater = new Updater(projectConnector, DefaultMSPMappings.generate(), null, DefaultRedmineMappings.generate());
         updater.loadTasksFromFile(ProgressMonitorUtils.getDummyMonitor());
         assertEquals(9, updater.getExistingTasks().size());
         updater.removeTasksWithoutRemoteIds();
         // only 7 tasks have remote IDs
         assertEquals(7, updater.getExistingTasks().size());
-    }*/
+    }
 }

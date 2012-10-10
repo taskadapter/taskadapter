@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.taskadapter.connector.common.ConnectorUtils;
+import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.FileBasedConnector;
@@ -26,16 +27,10 @@ public class Updater {
             Connector<?> remoteConnector, Mappings remoteMappings) {
         super();
         this.fileConnector = fileConnector;
+        this.fileMappings = fileMappings;
         this.remoteConnector = remoteConnector;
+        this.remoteMappings = remoteMappings;
     }
-
-    // TODO !!! I commented this method out because it was unused. why aren't we using it?
-//    public void start() throws ConnectorException {
-//        loadTasksFromFile(ProgressMonitorUtils.getDummyMonitor());
-//        removeTasksWithoutRemoteIds();
-//        loadExternalTasks();
-//        saveFile();
-//    }
 
     public void loadTasksFromFile(ProgressMonitor monitor) throws ConnectorException {
         this.existingTasks = ConnectorUtils.loadDataOrderedById(fileConnector, fileMappings, monitor);

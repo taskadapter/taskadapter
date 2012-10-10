@@ -7,11 +7,7 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.msp.DefaultMSPMappings;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
-import com.taskadapter.connector.redmine.RedmineConfig;
-import com.taskadapter.connector.redmine.RedmineConnector;
-import com.taskadapter.integrationtests.AbstractSyncRunnerTest;
 import com.taskadapter.integrationtests.MSPConfigLoader;
-import com.taskadapter.integrationtests.RedmineTestConfig;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
@@ -24,7 +20,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class TaskLoaderTest extends AbstractSyncRunnerTest {
+public class TaskLoaderTest {
 
     @Test
     /**

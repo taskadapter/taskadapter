@@ -231,8 +231,8 @@ public class ExportPage extends ActionPage {
         saveProgress.setValue(0);
         final MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
         try {
-            result = TaskSaver.save(connectorFrom, sourceConnectorId,
-                    sourceMappings, connectorTo, destinationConnectorId,
+            result = TaskSaver.save(sourceConnectorId,
+                    connectorTo, destinationConnectorId,
                     destinationMappings, tasks, wrapper);
         } catch (ConnectorException e) {
             showErrorMessageOnPage(ExceptionFormatter.format(e));

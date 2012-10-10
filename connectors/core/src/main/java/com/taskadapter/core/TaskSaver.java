@@ -24,7 +24,7 @@ public final class TaskSaver {
     }
 
     public static SyncResult<TaskSaveResult, TaskErrors<ConnectorError<Throwable>>> save(
-            Connector<?> connectorFrom, String sourceConnectorId, Mappings sourceMappings,
+            String sourceConnectorId,
             Connector<?> connectorTo, String destinationConnectorId, Mappings destinationMappings,
             List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
         if (monitor == null) {

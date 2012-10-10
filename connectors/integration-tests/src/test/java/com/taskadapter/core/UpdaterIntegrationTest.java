@@ -1,23 +1,30 @@
 package com.taskadapter.core;
 
 import com.taskadapter.connector.common.ConnectorUtils;
+import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.common.TestUtils;
 import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.msp.DefaultMSPMappings;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.msp.MSPTaskSaver;
+import com.taskadapter.connector.redmine.DefaultRedmineMappings;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
 import com.taskadapter.connector.redmine.RedmineToGTask;
-import com.taskadapter.integrationtests.AbstractSyncRunnerTest;
 import com.taskadapter.integrationtests.RedmineTestConfig;
 import com.taskadapter.model.GTask;
+import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Issue;
+import net.sf.mpxj.TaskField;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,7 +32,7 @@ import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 
-public class UpdaterIntegrationTest extends AbstractSyncRunnerTest {
+public class UpdaterIntegrationTest {
 
     private static final int TASKS_NUMBER = 1;
 
@@ -36,8 +43,7 @@ public class UpdaterIntegrationTest extends AbstractSyncRunnerTest {
     private RedmineConfig redmineConfig;
     private MSPConfig mspConfig;
     private Connector<?> projectConnector;
-    // TODO !!! fix test
-/*
+
     @Before
     public void init() {
         redmineConfig = RedmineTestConfig.getRedmineTestConfig();
@@ -49,28 +55,35 @@ public class UpdaterIntegrationTest extends AbstractSyncRunnerTest {
 
     @Test
     public void testMSPFileIsUpdated() throws Exception {
-		createTasksInRedmine();
-        saveToMSP();
-        modifyRedmineData();
-        updateMSPFile();
-        verifyMSPData();
+        createTasksInRedmine();
+        Mappings mspMappingsWithRemoteIdSet = getMSPMappingsWithRemoteIdSet();
+        saveToMSP(mspMappingsWithRemoteIdSet);
+
+        Mappings redmineMappings = DefaultRedmineMappings.generate();
+        modifyRedmineData(redmineMappings);
+
+        updateMSPFile(mspMappingsWithRemoteIdSet, redmineMappings);
+        verifyMSPData(mspMappingsWithRemoteIdSet);
     }
 
-    private void updateMSPFile() throws ConnectorException {
-        Updater updater = new Updater(projectConnector, redmineConnector);
-        updater.start();
+    private void updateMSPFile(Mappings mspMappingsWithRemoteIdSet, Mappings redmineMappings) throws ConnectorException {
+        Updater updater = new Updater(projectConnector, mspMappingsWithRemoteIdSet, redmineConnector, redmineMappings);
+        updater.loadTasksFromFile(ProgressMonitorUtils.getDummyMonitor());
+        updater.removeTasksWithoutRemoteIds();
+        updater.loadExternalTasks();
+        updater.saveFile();
     }
 
-	private void createTasksInRedmine() {
-		this.rmIssues = createRedmineIssues(projectKey, TASKS_NUMBER);
-		TaskUtil.setRemoteIdField(rmIssues);
-	}
-
-    private void saveToMSP() throws ConnectorException {
-        new MSPTaskSaver(mspConfig).saveData(rmIssues, null);
+    private void createTasksInRedmine() {
+        this.rmIssues = createRedmineIssues(projectKey, TASKS_NUMBER);
+        TaskUtil.setRemoteIdField(rmIssues);
     }
 
-    private void modifyRedmineData() throws ConnectorException {
+    private void saveToMSP(Mappings mappings) throws ConnectorException {
+        new MSPTaskSaver(mspConfig, mappings).saveData(rmIssues, null);
+    }
+
+    private void modifyRedmineData(Mappings mappings) throws ConnectorException {
         Random r = new Random();
         for (GTask task : rmIssues) {
             String updatedSummary = "updated" + r.nextInt();
@@ -81,12 +94,12 @@ public class UpdaterIntegrationTest extends AbstractSyncRunnerTest {
             }
             task.setEstimatedHours(oldGoodTime + 5);
         }
-        redmineConnector.saveData(rmIssues, null);
+        redmineConnector.saveData(rmIssues, null, mappings);
     }
 
-    private void verifyMSPData() throws Exception {
-    	final MSPConnector connector = new MSPConnector(mspConfig);
-        List<GTask> mspTasks = ConnectorUtils.loadDataOrderedById(connector);
+    private void verifyMSPData(Mappings mappings) throws Exception {
+        final MSPConnector connector = new MSPConnector(mspConfig);
+        List<GTask> mspTasks = ConnectorUtils.loadDataOrderedById(connector, mappings);
         assertEquals(TASKS_NUMBER, mspTasks.size());
         for (GTask task : mspTasks) {
             GTask rmTask = TestUtils.findTaskByKey(rmIssues, task.getRemoteId());
@@ -129,5 +142,26 @@ public class UpdaterIntegrationTest extends AbstractSyncRunnerTest {
         }
         return issues;
     }
-  */
+
+    private MSPConfig createTempMSPConfig() {
+
+        File temp;
+        try {
+            temp = File.createTempFile("pattern", ".suffix");
+        } catch (IOException e) {
+            throw new RuntimeException(e.toString(), e);
+        }
+        temp.deleteOnExit();
+
+        MSPConfig mspConfig = new MSPConfig();
+        mspConfig.setInputAbsoluteFilePath(temp.getAbsolutePath());
+        mspConfig.setOutputAbsoluteFilePath(temp.getAbsolutePath());
+        return mspConfig;
+    }
+
+    private Mappings getMSPMappingsWithRemoteIdSet() {
+        Mappings mappings = DefaultMSPMappings.generate();
+        mappings.setMapping(GTaskDescriptor.FIELD.REMOTE_ID, true, TaskField.TEXT22.toString());
+        return mappings;
+    }
 }
