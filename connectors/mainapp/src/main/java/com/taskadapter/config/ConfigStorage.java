@@ -42,12 +42,6 @@ public class ConfigStorage {
         return getNewConfigsInFolder(getUserConfigsFolder(userLoginName));
     }
 
-    @Deprecated
-    public List<TAFile> getConfigs(String userLoginName) {
-        File userFolder = getUserConfigsFolder(userLoginName);
-        return getConfigsInFolder(userFolder);
-    }
-
     private File getUserConfigsFolder(String userLoginName) {
         File userFolder = fileManager.getUserFolder(userLoginName);
         return new File(userFolder, "configs");
@@ -66,27 +60,6 @@ public class ConfigStorage {
                 files.add(NewConfigParser.parse(file.getAbsolutePath(), fileBody));
             } catch (Exception e) {
                 logger.error("Error loading file " + file.getAbsolutePath() + ": " + e.getMessage(), e);
-            }
-        }
-        return files;
-    }
-    
-    private List<TAFile> getConfigsInFolder(File folder) {
-        String[] fileNames = folder.list(CONFIG_FILE_FILTER);
-        List<TAFile> files = new ArrayList<TAFile>();
-        if (fileNames != null) {
-            for (String name : fileNames) {
-                File file = new File(folder, name);
-                try {
-                    String fileBody = Files.toString(new File(file.getAbsolutePath()), Charsets.UTF_8);
-                    ConfigFileParser parser = new ConfigFileParser(pluginManager);
-                    TAFile taFile = parser.parse(fileBody);
-                    taFile.setAbsoluteFilePath(file.getAbsolutePath());
-                    files.add(taFile);
-                } catch (Exception e) {
-                    logger.error("Error loading file " + file.getAbsolutePath() + ": " + e.getMessage(), e);
-                }
-
             }
         }
         return files;
