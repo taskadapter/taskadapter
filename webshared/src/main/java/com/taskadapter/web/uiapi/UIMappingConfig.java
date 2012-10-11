@@ -1,5 +1,6 @@
 package com.taskadapter.web.uiapi;
 
+import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.NewMappings;
 
 /**
@@ -68,6 +69,11 @@ public final class UIMappingConfig {
 
     void setIdentity(String identity) {
         this.identity = identity;
+    }
+
+    @Deprecated
+    public TAFile tafileize() {
+        return new TAFile(label, connector1.holderize(), connector2.holderize());
     }
 
 }

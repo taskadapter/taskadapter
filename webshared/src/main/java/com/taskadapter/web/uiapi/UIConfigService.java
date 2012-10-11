@@ -41,4 +41,22 @@ public final class UIConfigService {
         return new UIConnectorConfigImpl<T>(connectorFactory, editorFactory,
                 config, connectorTypeId);
     }
+
+    /**
+     * Creates a new UI connector configuration.
+     * 
+     * @param connectorTypeId
+     *            connector type identifier.
+     * @return new connector config with default settings.
+     */
+    public <T extends ConnectorConfig> UIConnectorConfig createDefaultConfig(
+            String connectorTypeId) {
+        final PluginFactory<T> connectorFactory = pluginManager
+                .getPluginFactory(connectorTypeId);
+        final PluginEditorFactory<T> editorFactory = editorManager
+                .getEditorFactory(connectorTypeId);
+        final T config = connectorFactory.createDefaultConfig();
+        return new UIConnectorConfigImpl<T>(connectorFactory, editorFactory,
+                config, connectorTypeId);
+    }
 }

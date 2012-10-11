@@ -1,5 +1,7 @@
 package com.taskadapter.web.uiapi;
 
+import com.taskadapter.config.ConnectorDataHolder;
+
 /**
  * Rich connector configuration item. Provides usefull utility methods to create
  * UI elements, deserialize configs, etc... Simplifies PluginEditorFactory acces
@@ -16,4 +18,17 @@ public abstract class UIConnectorConfig {
      * @return connector type id.
      */
     public abstract String getConnectorTypeId();
+
+    /**
+     * Returns a connector configuration in a "string" format. This
+     * configuration along with {@link #getConnectorTypeId()} may be passed into
+     * {@link UIConfigService#createRichConfig(String, String)} to create a
+     * clone of this config.
+     * 
+     * @return string representation of UI connector config.
+     */
+    public abstract String getConfigString();
+    
+    @Deprecated
+    abstract ConnectorDataHolder holderize();
 }

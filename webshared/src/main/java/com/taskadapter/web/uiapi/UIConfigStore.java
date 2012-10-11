@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.taskadapter.config.ConfigStorage;
+import com.taskadapter.config.StorageException;
 import com.taskadapter.config.StoredConnectorConfig;
 import com.taskadapter.config.StoredExportConfig;
 import com.taskadapter.connector.definition.NewMappings;
@@ -35,6 +36,13 @@ public final class UIConfigStore {
         this.configStorage = configStorage;
     }
 
+    /**
+     * Lists all user-created configs.
+     * 
+     * @param userLoginName
+     *            login name to load items for.
+     * @return collection of user config in no particular order.
+     */
     public List<UIMappingConfig> getUserConfigs(String userLoginName) {
         final List<StoredExportConfig> storedConfigs = configStorage
                 .getUserConfigs(userLoginName);
@@ -44,6 +52,36 @@ public final class UIConfigStore {
             result.add(uize(storedConfig));
         }
         return result;
+    }
+
+    /**
+     * Creates a new (fresh) config.
+     * 
+     * @param userName
+     *            user login name (for whom config will be created).
+     * @param label
+     *            config label (name).
+     * @param connector1id
+     *            first connector id.
+     * @param connector2id
+     *            second connector id.
+     * @return newly created (and saved) UI mapping config.
+     * @throws StorageException
+     *             if config storage fails.
+     */
+    public UIMappingConfig createNewConfig(String userName, String label,
+            String connector1id, String connector2id) throws StorageException {
+        final UIConnectorConfig config1 = uiConfigService
+                .createDefaultConfig(connector1id);
+        final UIConnectorConfig config2 = uiConfigService
+                .createDefaultConfig(connector2id);
+        final NewMappings mappings = new NewMappings();
+        final String mappingsString = new Gson().toJson(mappings);
+        final String identity = configStorage.createNewConfig(userName, label,
+                config1.getConnectorTypeId(), config1.getConfigString(),
+                config2.getConnectorTypeId(), config2.getConfigString(),
+                mappingsString);
+        return new UIMappingConfig(identity, label, config1, config2, mappings);
     }
 
     /**

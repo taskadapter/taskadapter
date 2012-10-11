@@ -2,6 +2,7 @@ package com.taskadapter.config;
 
 import com.taskadapter.connector.definition.NewMappings;
 
+@Deprecated
 public class TAFile {
     private String absoluteFilePath;
     private String configLabel;

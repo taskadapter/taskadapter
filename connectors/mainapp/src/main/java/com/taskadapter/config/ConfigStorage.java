@@ -204,4 +204,31 @@ public class ConfigStorage {
         TAFile cfg = new TAFile(file.getConfigLabel(), file.getConnectorDataHolder1(), file.getConnectorDataHolder2());
         this.createNewConfig(userLoginName, cfg);
     }
+    
+    public StoredExportConfig getConfig(String userLoginName, String configId)
+            throws StorageException {
+        final File file = new File(configId);
+        try {
+            final String fileBody = Files.toString(file, Charsets.UTF_8);
+            return NewConfigParser.parse(file.getAbsolutePath(), fileBody);
+        } catch (Exception e) {
+            logger.error("Error loading file " + file.getAbsolutePath() + ": " + e.getMessage(), e);
+            throw new StorageException("Failed to load file " + configId, e);
+        }
+    }
+    
+    @Deprecated
+    public TAFile getLegacyConfig(String userLoginName, String configId) {
+        final File file = new File(configId);
+        String fileBody;
+        try {
+            fileBody = Files.toString(new File(file.getAbsolutePath()), Charsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load file", e);
+        }
+        ConfigFileParser parser = new ConfigFileParser(pluginManager);
+        TAFile taFile = parser.parse(fileBody);
+        taFile.setAbsoluteFilePath(file.getAbsolutePath());
+        return taFile;
+   }
 }

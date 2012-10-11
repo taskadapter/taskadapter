@@ -1,9 +1,9 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.config.ConnectorDataHolder;
-import com.taskadapter.config.TAFile;
+import com.taskadapter.config.StorageException;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.web.uiapi.UIMappingConfig;
 import com.vaadin.ui.*;
 
 import java.util.Iterator;
@@ -22,7 +22,6 @@ public class NewConfigPage extends Page {
     private ListSelect connector1;
     private ListSelect connector2;
     private Panel panel;
-    private TAFile newFile;
     private Label errorMessageLabel;
 
     public NewConfigPage() {
@@ -96,18 +95,21 @@ public class NewConfigPage extends Page {
         try {
             validate();
             errorMessageLabel.setValue("");
-            save();
-            showTaskDetailsPage();
+            final UIMappingConfig saveResult = save();
+            showTaskDetailsPage(saveResult);
 
             //clear for new config
             descriptionTextField.setValue("");
         } catch (ValidationException e) {
             errorMessageLabel.setValue(e.getMessage());
+        } catch (StorageException e) {
+            errorMessageLabel
+                    .setValue("Failed to save config in persistent store");
         }
     }
 
-    private void showTaskDetailsPage() {
-        navigator.showConfigureTaskPage(newFile);
+    private void showTaskDetailsPage(UIMappingConfig file) {
+        navigator.showConfigureTaskPage(file.tafileize());
     }
 
     private void validate() throws ValidationException {
@@ -126,24 +128,17 @@ public class NewConfigPage extends Page {
         }
     }
 
-    private void save() {
-        String descriptionString = (String) descriptionTextField.getValue();
-        String id1 = (String) connector1.getValue();
-        String id2 = (String) connector2.getValue();
-
-        Descriptor descriptor1 = services.getPluginManager().getDescriptor(id1);
-        ConnectorDataHolder d1 = new ConnectorDataHolder(id1,
-        // TODO replace with factory.createDefaultConfig()
-                services.getPluginManager()
-                        .getPluginFactory(descriptor1.getID())
-                        .createDefaultConfig());
-        Descriptor descriptor2 = services.getPluginManager().getDescriptor(id2);
-        ConnectorDataHolder d2 = new ConnectorDataHolder(id2, services
-                .getPluginManager().getPluginFactory(descriptor2.getID())
-                .createDefaultConfig());
-        this.newFile = new TAFile(descriptionString, d1, d2);
-        String currentUserLoginName = services.getAuthenticator().getUserName();
-        services.getConfigStorage().createNewConfig(currentUserLoginName, newFile);
+    private UIMappingConfig save() throws StorageException {
+        
+        final String descriptionString = (String) descriptionTextField.getValue();
+        final String id1 = (String) connector1.getValue();
+        final String id2 = (String) connector2.getValue();
+        final String currentUserLoginName = services.getAuthenticator().getUserName();
+        
+        final UIMappingConfig config = services.getUIConfigStore()
+                .createNewConfig(currentUserLoginName, descriptionString, id1,
+                        id2);
+        return config;
     }
 
     @Override
