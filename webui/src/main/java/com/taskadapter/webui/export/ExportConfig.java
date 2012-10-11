@@ -18,6 +18,7 @@ import com.taskadapter.connector.definition.NewMappings;
  * @param <T>
  *            target connector config type.
  */
+@Deprecated
 public final class ExportConfig<S extends ConnectorConfig, T extends ConnectorConfig> {
     private final ConnectorDataHolder<S> sourceConfig;
     private final ConnectorDataHolder<T> targetConfig;

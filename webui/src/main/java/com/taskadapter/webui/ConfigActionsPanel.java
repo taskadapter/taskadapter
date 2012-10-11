@@ -91,8 +91,7 @@ public class ConfigActionsPanel extends VerticalLayout {
         button.addStyleName("configsTableArrowButton");
 
         final Exporter exporter = new Exporter(navigator,
-                services.getPluginManager(), syncConfig.tafileize(),
-                exportDirection);
+                services.getPluginManager(), syncConfig, exportDirection);
         button.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {

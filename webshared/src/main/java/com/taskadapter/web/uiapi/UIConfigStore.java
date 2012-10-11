@@ -81,7 +81,30 @@ public final class UIConfigStore {
                 config1.getConnectorTypeId(), config1.getConfigString(),
                 config2.getConnectorTypeId(), config2.getConfigString(),
                 mappingsString);
-        return new UISyncConfig(identity, label, config1, config2, mappings);
+        return new UISyncConfig(identity, label, config1, config2, mappings,
+                false);
+    }
+
+    /**
+     * Saves a config.
+     * 
+     * @param syncConfig
+     *            config to save.
+     * @throws StorageException
+     *             if config cannot be saved.
+     */
+    public void saveConfig(String userLoginName, UISyncConfig syncConfig)
+            throws StorageException {
+        syncConfig = syncConfig.normalized();
+        final String label = syncConfig.getLabel();
+        final UIConnectorConfig config1 = syncConfig.getConnector1();
+        final UIConnectorConfig config2 = syncConfig.getConnector2();
+        final NewMappings mappings = syncConfig.getNewMappings();
+        final String mappingsStr = new Gson().toJson(mappings);
+        configStorage.saveConfig(userLoginName, syncConfig.getIdentity(),
+                label, config1.getConnectorTypeId(), config1.getConfigString(),
+                config2.getConnectorTypeId(), config2.getConnectorTypeId(),
+                mappingsStr);
     }
 
     /**
@@ -103,8 +126,8 @@ public final class UIConfigStore {
                 conn2Config.getSerializedConfig());
         final NewMappings mappings = new Gson().fromJson(
                 storedConfig.getMappings(), NewMappings.class);
-        return new UISyncConfig(storedConfig.getId(), label, config1,
-                config2, mappings);
+        return new UISyncConfig(storedConfig.getId(), label, config1, config2,
+                mappings, false);
     }
 
 }

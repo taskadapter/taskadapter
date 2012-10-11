@@ -1,6 +1,9 @@
 package com.taskadapter.web.uiapi;
 
 import com.taskadapter.config.ConnectorDataHolder;
+import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.ConnectorConfig;
+import com.taskadapter.connector.definition.ValidationException;
 
 /**
  * Rich connector configuration item. Provides usefull utility methods to create
@@ -38,5 +41,28 @@ public abstract class UIConnectorConfig {
     
     @Deprecated
     abstract ConnectorDataHolder holderize();
+
+    /**
+     * Validates config for load.
+     * @throws ValidationException if config is invalid.
+     */
+    public abstract void validateForLoad() throws ValidationException;
+
+    /**
+     * Validates current config for load.
+     * @throws ValidationException if config is invalid.
+     */
+    public abstract void validateForSave() throws ValidationException ;
+
+    @Deprecated
+    public abstract ConnectorConfig getRawConfig();
+
+    /**
+     * Creates a new connector instance with a current config. Note, that 
+     * current config will be shared among all created connectors.
+     * @return new connector instance, which shares config with this UIConfig
+     * and all other connectors created via this method.
+     */
+    public abstract Connector<?> createConnectorInstance();
 
 }

@@ -1,8 +1,10 @@
 package com.taskadapter.web.uiapi;
 
 import com.taskadapter.config.ConnectorDataHolder;
+import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.PluginFactory;
+import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.web.PluginEditorFactory;
 
 /**
@@ -47,6 +49,27 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends
     @Override
     public String getLabel() {
         return config.getLabel();
+    }
+
+    @Override
+    public void validateForLoad() throws ValidationException {
+        config.validateForLoad();
+    }
+
+    @Override
+    public void validateForSave() throws ValidationException {
+        config.validateForSave();
+    }
+    
+    @Override
+    @Deprecated
+    public ConnectorConfig getRawConfig() {
+        return config;
+    }
+
+    @Override
+    public Connector<?> createConnectorInstance() {
+        return connectorFactory.createConnector(config);
     }
 
 }

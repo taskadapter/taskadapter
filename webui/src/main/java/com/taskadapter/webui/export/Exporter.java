@@ -2,7 +2,7 @@ package com.taskadapter.webui.export;
 
 
 import com.taskadapter.PluginManager;
-import com.taskadapter.config.TAFile;
+import com.taskadapter.config.StorageException;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.FileBasedConnector;
@@ -12,11 +12,16 @@ import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPOutputFileNameNotSetException;
 import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.service.Services;
+import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.Navigator;
 
 import java.io.File;
 import java.util.Arrays;
 
+/**
+ * Data exporter. Always exports from connector1 to connector2.
+ *
+ */
 public class Exporter {
 
     private static final String UPDATE = "Only update tasks present in the file";
@@ -26,17 +31,15 @@ public class Exporter {
 
     private final Navigator navigator;
     private final PluginManager pluginManager;
-    private final TAFile file;
+    private final UISyncConfig syncConfig;
     private final MappingSide exportDirection;
-    private final ExportConfig<?, ?> exportConfig;
 
     public Exporter(Navigator navigator, PluginManager pluginManager,
-                    TAFile taFile, MappingSide exportDirection) {
+                    UISyncConfig syncConfig, MappingSide exportDirection) {
         this.navigator = navigator;
         this.pluginManager = pluginManager;
-        this.file = taFile;
+        this.syncConfig = syncConfig;
         this.exportDirection = exportDirection;
-        this.exportConfig = ExportConfig.createExportOrder(taFile, exportDirection);
     }
 
     public void export() {
@@ -45,7 +48,7 @@ public class Exporter {
         boolean valid = true;
 
         try {
-            exportConfig.getSourceConfig().getData().validateForLoad();
+            syncConfig.getConnector1().validateForLoad();
         } catch (ValidationException e) {
 //            dataHolderLabel = resolver.getSourceConfig().getLabel();
             errorMessage = e.getMessage();
@@ -55,20 +58,25 @@ public class Exporter {
         // TODO refactor these if (valid), if (valid) checks
         if (valid) {
             try {
-                exportConfig.getTargetConfig().getData().validateForSave();
+                syncConfig.getConnector2().validateForSave();
 
             } catch (MSPOutputFileNameNotSetException e) {
                 // auto generate output file name (for MSP local mode)
-                Services services = navigator.getServices();
-                String userName = services.getAuthenticator().getUserName();
+                final Services services = navigator.getServices();
+                final String userName = services.getAuthenticator().getUserName();
                 String absoluteFileName = services.getFileManager().createDefaultMSPFileName(userName);
 
-                ((MSPConfig) exportConfig.getTargetConfig().getData()).setOutputAbsoluteFilePath(absoluteFileName);
-                ((MSPConfig) exportConfig.getTargetConfig().getData()).setInputAbsoluteFilePath(absoluteFileName);
-                services.getConfigStorage().saveConfig(userName, file);
+                ((MSPConfig) syncConfig.getConnector2().getRawConfig()).setOutputAbsoluteFilePath(absoluteFileName);
+                ((MSPConfig) syncConfig.getConnector2().getRawConfig()).setInputAbsoluteFilePath(absoluteFileName);
+                try {
+                    services.getUIConfigStore().saveConfig(userName, syncConfig);
+                } catch (StorageException e1) {
+                    // FIXME:
+                    // TODO !!!
+                    e1.printStackTrace();
+                }
 
             } catch (ValidationException e) {
-//                dataHolderLabel = destinationDataHolder.getData().getLabel();
                 errorMessage = e.getMessage();
                 valid = false;
             }
@@ -77,12 +85,12 @@ public class Exporter {
         if (valid) {
             processBasedOnDestinationConnectorType();
         } else {
-            navigator.showConfigureTaskPage(file, errorMessage);
+            navigator.showConfigureTaskPage(syncConfig.tafileize(), errorMessage);
         }
     }
 
     private void processBasedOnDestinationConnectorType() {
-        Connector<ConnectorConfig> destinationConnector = new ConnectorFactory(pluginManager).getConnector(exportConfig.getTargetConfig());
+        Connector<?> destinationConnector = syncConfig.getConnector2().createConnectorInstance();
         if (destinationConnector instanceof FileBasedConnector) {
             processFile((FileBasedConnector) destinationConnector);
         } else {
@@ -119,12 +127,12 @@ public class Exporter {
     }
 
     private void startUpdateFile() {
-        UpdateFilePage page = new UpdateFilePage(pluginManager, file, exportDirection);
+        UpdateFilePage page = new UpdateFilePage(pluginManager, syncConfig.tafileize(), exportDirection);
         navigator.show(page);
     }
 
     private void startRegularExport() {
-        ExportPage page = new ExportPage(pluginManager, file, exportDirection);
+        ExportPage page = new ExportPage(pluginManager, syncConfig.tafileize(), exportDirection);
         navigator.show(page);
     }
 }
