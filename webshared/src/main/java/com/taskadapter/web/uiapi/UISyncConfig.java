@@ -1,6 +1,5 @@
 package com.taskadapter.web.uiapi;
 
-import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.MappingBuilder;
 import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.MappingSide;
@@ -80,14 +79,6 @@ public final class UISyncConfig {
         return identity;
     }
 
-    @Deprecated
-    public TAFile tafileize() {
-        final TAFile result = new TAFile(label, connector1.holderize(), connector2.holderize());
-        result.setMappings(newMappings);
-        result.setAbsoluteFilePath(identity);
-        return result;
-    }
-    
     /**
      * Creates a "reversed" version of a config. Reversed version shares 
      * connector configurations and config identity with this config, 

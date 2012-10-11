@@ -3,7 +3,6 @@ package com.taskadapter.config;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.taskadapter.FileManager;
-import com.taskadapter.PluginManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,16 +24,9 @@ public class ConfigStorage {
         }
     }; 
 
-    /**
-     * @deprecated plugin manager should be used "one layer up". It is a simple
-     * data store.
-     */
-    @Deprecated
-    private final PluginManager pluginManager;
     private final FileManager fileManager;
 
-    public ConfigStorage(PluginManager pluginManager, FileManager fileManager) {
-        this.pluginManager = pluginManager;
+    public ConfigStorage(FileManager fileManager) {
         this.fileManager = fileManager;
     }
     
@@ -80,18 +72,6 @@ public class ConfigStorage {
         }
     }
 
-    @Deprecated
-    public void saveConfig(String userLoginName, TAFile taFile) {
-        String fileContents = new ConfigFileParser(pluginManager).convertToJSonString(taFile);
-        try {
-            File folder = getUserConfigsFolder(userLoginName);
-            folder.mkdirs();
-            Files.write(fileContents, new File(taFile.getAbsoluteFilePath()), Charsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public String createNewConfig(String userLoginName, 
             String configName, String connector1Id, String connector1Data,
             String connector2Id, String connector2Data, String mappings) throws StorageException {
@@ -109,35 +89,6 @@ public class ConfigStorage {
         }
     }
 
-    @Deprecated
-    public void createNewConfig(String userLoginName, TAFile taFile) {
-        String fileContents = new ConfigFileParser(pluginManager).convertToJSonString(taFile);
-        try {
-            File userFolder = getUserConfigsFolder(userLoginName);
-            userFolder.mkdirs();
-            String absoluteFilePathForNewConfig = findUnusedAbsoluteFilePath(userFolder, taFile);
-            taFile.setAbsoluteFilePath(absoluteFilePathForNewConfig);
-            Files.write(fileContents, new File(absoluteFilePathForNewConfig), Charsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    // TODO add unit tests
-    private String findUnusedAbsoluteFilePath(File userFolder, TAFile taFile) {
-        String relativeFileNameForNewConfig = createFileNameForNewConfig(taFile);
-        File file = new File(userFolder, relativeFileNameForNewConfig + "." + FILE_EXTENSION);
-        while (file.exists()) {
-            int i = relativeFileNameForNewConfig.lastIndexOf(NUMBER_SEPARATOR);
-            String numberStringWithExtension = relativeFileNameForNewConfig.substring(i + 1);
-            int configFileNumber = Integer.parseInt(numberStringWithExtension);
-            configFileNumber++;
-            relativeFileNameForNewConfig = relativeFileNameForNewConfig.substring(0, i + 1) + configFileNumber;
-            file = new File(userFolder, relativeFileNameForNewConfig + "." + FILE_EXTENSION);
-        }
-        return file.getAbsolutePath();
-    }
-
     private File findUnusedConfigFile(File userFolder, String type1, String type2) {
         final String namePrefix = createFileNamePrefix(type1, type2);
         int fileOrdinal = 1;
@@ -150,13 +101,6 @@ public class ConfigStorage {
         return file;
     }
     
-    // TODO add unit tests
-    private String createFileNameForNewConfig(TAFile file) {
-        String fileName = file.getConnectorDataHolder1().getType() + "_" + file.getConnectorDataHolder2().getType() + NUMBER_SEPARATOR + "1";
-        fileName = fileName.replaceAll(" ", "-");
-        return fileName;
-    }
-
     private String createFileNamePrefix(String type1, String type2) {
         String fileName = type1 + "_" + type2 + NUMBER_SEPARATOR;
         fileName = fileName.replaceAll(" ", "-");
@@ -165,17 +109,6 @@ public class ConfigStorage {
     
     public void delete(String configId) {
         new File(configId).delete();
-    }
-    
-    @Deprecated
-    public void delete(TAFile config) {
-        File file = new File(config.getAbsoluteFilePath());
-        file.delete();
-    }
-
-    public void cloneConfig(String userLoginName, TAFile file) {
-        TAFile cfg = new TAFile(file.getConfigLabel(), file.getConnectorDataHolder1(), file.getConnectorDataHolder2());
-        this.createNewConfig(userLoginName, cfg);
     }
     
     public StoredExportConfig getConfig(String userLoginName, String configId)
@@ -189,19 +122,4 @@ public class ConfigStorage {
             throw new StorageException("Failed to load file " + configId, e);
         }
     }
-    
-    @Deprecated
-    public TAFile getLegacyConfig(String userLoginName, String configId) {
-        final File file = new File(configId);
-        String fileBody;
-        try {
-            fileBody = Files.toString(new File(file.getAbsolutePath()), Charsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to load file", e);
-        }
-        ConfigFileParser parser = new ConfigFileParser(pluginManager);
-        TAFile taFile = parser.parse(fileBody);
-        taFile.setAbsoluteFilePath(file.getAbsolutePath());
-        return taFile;
-   }
 }

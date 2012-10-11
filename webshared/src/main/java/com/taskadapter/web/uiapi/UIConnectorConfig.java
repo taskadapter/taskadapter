@@ -1,6 +1,5 @@
 package com.taskadapter.web.uiapi;
 
-import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
@@ -43,9 +42,6 @@ public abstract class UIConnectorConfig {
      * @return connector user-friendly label.
      */
     public abstract String getLabel();
-
-    @Deprecated
-    abstract ConnectorDataHolder holderize();
 
     /**
      * Validates config for load.

@@ -1,6 +1,5 @@
 package com.taskadapter.web.uiapi;
 
-import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
@@ -42,12 +41,6 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends
     @Override
     public String getConfigString() {
         return connectorFactory.writeConfig(config).toString();
-    }
-
-    @Override
-    @Deprecated
-    ConnectorDataHolder holderize() {
-        return new ConnectorDataHolder<ConnectorConfig>(connectorTypeId, config);
     }
 
     @Override

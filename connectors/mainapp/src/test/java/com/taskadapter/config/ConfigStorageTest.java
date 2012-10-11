@@ -1,7 +1,6 @@
 package com.taskadapter.config;
 
 import com.taskadapter.FileManager;
-import com.taskadapter.PluginManager;
 import org.junit.Test;
 
 import java.io.File;
@@ -12,8 +11,8 @@ import static org.junit.Assert.assertNotNull;
 public class ConfigStorageTest {
     private static final String ENCRYPTED = "test_encrypted";
 
-    private ConfigStorage configStorage = new ConfigStorage(
-            new PluginManager(), new FileManager(new File("tmp")));
+    private ConfigStorage configStorage = new ConfigStorage(new FileManager(
+            new File("tmp")));
     private static final String TEST_USER_LOGIN_NAME = "autotest";
 
 

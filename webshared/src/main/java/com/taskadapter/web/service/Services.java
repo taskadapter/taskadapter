@@ -17,7 +17,6 @@ public class Services {
     private PluginManager pluginManager = new PluginManager();
     private SettingsManager settingsManager = new SettingsManager();
     private LicenseManager licenseManager = new LicenseManager();
-    private ConfigStorage configStorage;
     private CookiesManager cookiesManager = new CookiesManager();
     private UserManager userManager;
     private FileManager fileManager;
@@ -26,7 +25,7 @@ public class Services {
     public Services(File dataRootFolder) {
         fileManager = new FileManager(dataRootFolder);
         userManager = new UserManager(fileManager);
-        configStorage = new ConfigStorage(pluginManager, fileManager);
+        final ConfigStorage configStorage = new ConfigStorage(fileManager);
         authenticator = new Authenticator(userManager, cookiesManager);
         
         this.uiConfigStore = new UIConfigStore(new UIConfigService(
@@ -43,11 +42,6 @@ public class Services {
 
     public PluginManager getPluginManager() {
         return pluginManager;
-    }
-
-    @Deprecated
-    public ConfigStorage getConfigStorage() {
-        return configStorage;
     }
 
     public Authenticator getAuthenticator() {
@@ -76,9 +70,5 @@ public class Services {
     
     public UIConfigStore getUIConfigStore() {
         return uiConfigStore;
-    }
-
-    public void setAuthenticator(Authenticator authenticator) {
-        this.authenticator = authenticator;
     }
 }
