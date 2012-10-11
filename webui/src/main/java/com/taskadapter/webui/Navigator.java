@@ -180,6 +180,7 @@ public class Navigator {
         }
     }
 
+    @Deprecated
     public Services getServices() {
         return services;
     }

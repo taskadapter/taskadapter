@@ -131,4 +131,30 @@ public final class UIConfigStore {
                 mappings, false);
     }
 
+    /**
+     * Deletes a config.
+     * @param config config to delete.
+     */
+    public void deleteConfig(UISyncConfig config) {
+        configStorage.delete(config.getIdentity());
+    }
+
+    /**
+     * Clones a config.
+     * @param userLoginName user login name.
+     * @param syncConfig config to clone.
+     * @throws StorageException if an error occured.
+     */
+    public void cloneConfig(String userLoginName, UISyncConfig syncConfig) throws StorageException {
+        final String label = syncConfig.getLabel();
+        final UIConnectorConfig config1 = syncConfig.getConnector1();
+        final UIConnectorConfig config2 = syncConfig.getConnector2();
+        final NewMappings mappings = syncConfig.getNewMappings();
+        final String mappingsStr = new Gson().toJson(mappings);
+        configStorage.createNewConfig(userLoginName, label,
+                config1.getConnectorTypeId(), config1.getConfigString(),
+                config2.getConnectorTypeId(), config2.getConfigString(),
+                mappingsStr);
+    }
+
 }

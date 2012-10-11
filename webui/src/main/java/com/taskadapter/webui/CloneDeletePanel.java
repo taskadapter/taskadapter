@@ -1,8 +1,9 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.config.TAFile;
+import com.taskadapter.config.StorageException;
 import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.service.Services;
+import com.taskadapter.web.uiapi.UISyncConfig;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 
@@ -13,12 +14,13 @@ public class CloneDeletePanel extends HorizontalLayout {
     private static final String CANCEL = "Cancel";
 
     private final Navigator navigator;
-    private final TAFile file;
+    private final UISyncConfig config;
     private Callback callback;
 
-    public CloneDeletePanel(Navigator navigator, TAFile file, Callback callback) {
+    public CloneDeletePanel(Navigator navigator, UISyncConfig config,
+            Callback callback) {
         this.navigator = navigator;
-        this.file = file;
+        this.config = config;
         this.callback = callback;
 
         buildUI();
@@ -31,7 +33,7 @@ public class CloneDeletePanel extends HorizontalLayout {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 if (callback.onCloneConfig()) {
-                    showConfirmClonePage(file);
+                    showConfirmClonePage();
                 }
             }
         });
@@ -42,20 +44,21 @@ public class CloneDeletePanel extends HorizontalLayout {
         deleteButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
-                showDeleteFilePage(file);
+                showDeleteFilePage();
             }
         });
         addComponent(deleteButton);
     }
 
-    private void showDeleteFilePage(final TAFile file) {
+    private void showDeleteFilePage() {
         MessageDialog messageDialog = new MessageDialog(
                 "Confirmation", "Delete this config?",
                 Arrays.asList(YES, CANCEL),
                 new MessageDialog.Callback() {
                     public void onDialogResult(String answer) {
                         if (YES.equals(answer)) {
-                            navigator.getServices().getConfigStorage().delete(file);
+                            navigator.getServices().getUIConfigStore()
+                                    .deleteConfig(config);
                             navigator.show(Navigator.HOME);
                         }
                     }
@@ -65,16 +68,22 @@ public class CloneDeletePanel extends HorizontalLayout {
         getWindow().addWindow(messageDialog);
     }
 
-    public void showConfirmClonePage(final TAFile file) {
+    public void showConfirmClonePage() {
         MessageDialog messageDialog = new MessageDialog(
                 "Confirmation", "Clone this config?",
                 Arrays.asList(YES, CANCEL),
                 new MessageDialog.Callback() {
                     public void onDialogResult(String answer) {
                         if (YES.equals(answer)) {
-                            Services services = navigator.getServices();
-                            String userLoginName = services.getAuthenticator().getUserName();
-                            services.getConfigStorage().cloneConfig(userLoginName, file);
+                            final Services services = navigator.getServices();
+                            final String userLoginName = services.getAuthenticator().getUserName();
+                            try {
+                                services.getUIConfigStore().cloneConfig(userLoginName, config);
+                            } catch (StorageException e) {
+                                //FIXME:
+                                //TODO !!!
+                                // Add an error handler.
+                            }
                             navigator.show(Navigator.HOME);
                         }
                     }

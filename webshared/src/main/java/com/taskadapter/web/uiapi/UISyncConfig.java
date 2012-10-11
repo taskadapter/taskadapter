@@ -23,7 +23,7 @@ public final class UISyncConfig {
      * Config identity. Unique "config-storage" id to distinguish between
      * configs. May be <code>null</code> for a new (non-saved) config.
      */
-    private String identity;
+    private final String identity;
 
     /**
      * Config label
@@ -76,10 +76,6 @@ public final class UISyncConfig {
         return newMappings;
     }
 
-    void setIdentity(String identity) {
-        this.identity = identity;
-    }
-    
     String getIdentity() {
         return identity;
     }

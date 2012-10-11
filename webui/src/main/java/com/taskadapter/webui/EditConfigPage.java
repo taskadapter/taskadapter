@@ -36,8 +36,7 @@ public class EditConfigPage extends Page {
         buttonsLayout.setExpandRatio(errorMessageLabel, 1.0f);
 
         CloneDeletePanel cloneDeletePanel = new CloneDeletePanel(navigator,
-                config.tafileize(), new CloneDeletePanel.Callback() {
-
+                config, new CloneDeletePanel.Callback() {
                     @Override
                     public boolean onCloneConfig() {
                         return validateEditor();
