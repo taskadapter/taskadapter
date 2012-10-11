@@ -23,7 +23,7 @@ public class Services {
     public Services(File dataRootFolder) {
         fileManager = new FileManager(dataRootFolder);
         userManager = new UserManager(fileManager);
-        configStorage = new ConfigStorage(pluginManager, dataRootFolder);
+        configStorage = new ConfigStorage(pluginManager, fileManager);
         authenticator = new Authenticator(userManager, cookiesManager);
     }
 

@@ -1,5 +1,6 @@
 package com.taskadapter.config;
 
+import com.taskadapter.FileManager;
 import com.taskadapter.PluginManager;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.jira.JiraConfig;
@@ -18,7 +19,8 @@ public class ConfigStorageTest {
     private static final String PLAIN_PASSWORD = "pLainPaSsW0rd";
     private static final String ENCRYPTED_PASSWORD = "eNcrYpTedPaSsW0rd";
 
-    private ConfigStorage configStorage = new ConfigStorage(new PluginManager(), new File("tmp"));
+    private ConfigStorage configStorage = new ConfigStorage(
+            new PluginManager(), new FileManager(new File("tmp")));
     private static final String TEST_USER_LOGIN_NAME = "autotest";
 
 
