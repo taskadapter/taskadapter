@@ -75,33 +75,23 @@ public class ConfigActionsPanel extends VerticalLayout {
     }
 
     private Button createButton(MappingSide exportDirection) {
-        ConnectorDataHolder sourceDataHolder;
-        ConnectorDataHolder destinationDataHolder;
         String imageFile;
         switch (exportDirection) {
             case RIGHT:
                 imageFile = "img/arrow_right.png";
-                sourceDataHolder = file.getConnectorDataHolder1();
-                destinationDataHolder = file.getConnectorDataHolder2();
                 break;
             case LEFT:
                 imageFile = "img/arrow_left.png";
-                sourceDataHolder = file.getConnectorDataHolder2();
-                destinationDataHolder = file.getConnectorDataHolder1();
                 break;
             default:
                 throw new IllegalArgumentException();
         }
-
         Button button = new Button();
         button.setIcon(new ThemeResource(imageFile));
         button.setStyleName(Runo.BUTTON_SMALL);
         button.addStyleName("configsTableArrowButton");
 
-        Mappings sourceMappings = MappingBuilder.build(file.getMappings(), getOppositeSide(exportDirection));
-        Mappings destinationMappings = MappingBuilder.build(file.getMappings(), exportDirection);
-
-        final Exporter exporter = new Exporter(navigator, services.getPluginManager(), sourceDataHolder, destinationDataHolder, file, sourceMappings, destinationMappings);
+        final Exporter exporter = new Exporter(navigator, services.getPluginManager(), file, exportDirection);
         button.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
@@ -110,15 +100,4 @@ public class ConfigActionsPanel extends VerticalLayout {
         });
         return button;
     }
-    
-	private MappingSide getOppositeSide(MappingSide side) {
-		switch (side) {
-		case LEFT:
-			return MappingSide.RIGHT;
-		case RIGHT:
-			return MappingSide.LEFT;
-		default:
-			throw new IllegalArgumentException();
-		}
-	}
 }

@@ -8,6 +8,7 @@ import com.taskadapter.connector.MappingBuilder;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.FileBasedConnector;
+import com.taskadapter.connector.definition.MappingSide;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.connector.definition.ValidationException;
@@ -26,27 +27,53 @@ public class Exporter {
     private static final String CREATE = "Create";
     private static final String CANCEL = "Cancel";
 
-    private Navigator navigator;
-    private PluginManager pluginManager;
+    private final Navigator navigator;
+    private final PluginManager pluginManager;
+    private final TAFile file;
+
     private ConnectorDataHolder sourceDataHolder;
     private ConnectorDataHolder destinationDataHolder;
-    private TAFile taFile;
     private Mappings destinationMappings;
     private Mappings sourceMappings;
 
     public Exporter(Navigator navigator, PluginManager pluginManager,
-                    final ConnectorDataHolder sourceDataHolder, final ConnectorDataHolder destinationDataHolder,
-                    TAFile taFile,
-                    Mappings sourceMappings,
-                    Mappings destinationMappings) {
+                    TAFile taFile, MappingSide exportDirection) {
         this.navigator = navigator;
         this.pluginManager = pluginManager;
-        this.sourceDataHolder = sourceDataHolder;
-        this.destinationDataHolder = destinationDataHolder;
-        this.taFile = taFile;
-        this.sourceMappings = sourceMappings;
-        this.destinationMappings = destinationMappings;
+        this.file = taFile;
+
+        prepare(exportDirection);
     }
+
+    private void prepare(MappingSide exportDirection) {
+        switch (exportDirection) {
+            case RIGHT:
+                sourceDataHolder = file.getConnectorDataHolder1();
+                destinationDataHolder = file.getConnectorDataHolder2();
+                break;
+            case LEFT:
+                sourceDataHolder = file.getConnectorDataHolder2();
+                destinationDataHolder = file.getConnectorDataHolder1();
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+        sourceMappings = MappingBuilder.build(file.getMappings(), getOppositeSide(exportDirection));
+        destinationMappings = MappingBuilder.build(file.getMappings(), exportDirection);
+    }
+
+
+    private MappingSide getOppositeSide(MappingSide side) {
+        switch (side) {
+            case LEFT:
+                return MappingSide.RIGHT;
+            case RIGHT:
+                return MappingSide.LEFT;
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
 
     public void export() {
         String dataHolderLabel = null;
@@ -74,7 +101,7 @@ public class Exporter {
 
                 ((MSPConfig) destinationDataHolder.getData()).setOutputAbsoluteFilePath(absoluteFileName);
                 ((MSPConfig) destinationDataHolder.getData()).setInputAbsoluteFilePath(absoluteFileName);
-                services.getConfigStorage().saveConfig(userName, taFile);
+                services.getConfigStorage().saveConfig(userName, file);
 
             } catch (ValidationException e) {
                 dataHolderLabel = destinationDataHolder.getData().getLabel();
@@ -86,7 +113,7 @@ public class Exporter {
         if (valid) {
             processBasedOnDestinationConnectorType();
         } else {
-            navigator.showConfigureTaskPage(taFile, errorMessage);
+            navigator.showConfigureTaskPage(file, errorMessage);
         }
     }
 
@@ -131,13 +158,13 @@ public class Exporter {
         UpdateFilePage page = new UpdateFilePage(sourceDataHolder.getType(),
                 getConnector(sourceDataHolder), getConnector(destinationDataHolder),
                 destinationDataHolder.getType(),
-                taFile, sourceMappings, destinationMappings);
+                file, sourceMappings, destinationMappings);
         navigator.show(page);
     }
 
     private void startRegularExport() {
         ExportPage page = new ExportPage(getConnector(sourceDataHolder), sourceDataHolder.getType(),
-                getConnector(destinationDataHolder), destinationDataHolder.getType(), taFile, sourceMappings, destinationMappings);
+                getConnector(destinationDataHolder), destinationDataHolder.getType(), file, sourceMappings, destinationMappings);
         navigator.show(page);
     }
 

@@ -151,7 +151,8 @@ public class OnePageMappingPanel extends Panel implements Validatable {
     }
 
     private void createMappingForSingleValue(String displayValue, FieldMapping mapping, String leftRight) {
-        // TODO !!! refactor
+/*
+        // TODO !!! bug? why did we set this?
         if (leftRight.equals("left")) {
             mapping.setLeft(displayValue);
         } else if (leftRight.equals("right")) {
@@ -159,6 +160,7 @@ public class OnePageMappingPanel extends Panel implements Validatable {
         } else {
             throw new IllegalArgumentException();
         }
+*/
         Label label = new Label(displayValue);
         gridLayout.addComponent(label);
         gridLayout.setComponentAlignment(label, Alignment.MIDDLE_LEFT);

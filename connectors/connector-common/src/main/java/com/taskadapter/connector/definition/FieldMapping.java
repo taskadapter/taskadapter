@@ -48,4 +48,14 @@ public final class FieldMapping {
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
+
+    @Override
+    public String toString() {
+        return "FieldMapping{" +
+                "field=" + field +
+                ", left='" + left + '\'' +
+                ", right='" + right + '\'' +
+                ", selected=" + selected +
+                '}';
+    }
 }

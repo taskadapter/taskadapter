@@ -42,7 +42,7 @@ public class IntegrationTest {
     public void testSaveRemoteId() throws IOException {
 //		RedmineConfig config = RedmineTestConfig.getRedmineTestConfig();
 //		config.setProjectKey("test");
-        // XXX query id is hardcoded!!!
+        // XXX query id is hardcoded
 //		config.setQueryId(1);
 
 //		RedmineConnector redmine = new RedmineConnector(config);

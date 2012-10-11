@@ -19,7 +19,7 @@ public class NewMappings {
         if (field == null) {
             return null;
         }
-        // TODO !!! very inefficient, but ok for the prototype. fix before merging into master.
+        // TODO !! very inefficient, but ok for the prototype. fix before merging into master.
         for (FieldMapping mapping : mappings) {
             if (mapping.getField().equals(field)) {
                 return mapping;

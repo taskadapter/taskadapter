@@ -7,20 +7,17 @@ import org.junit.Test;
 
 public class GithubTaskSaverTest {
 
-//    @Test(expected = NotAuthorizedException.class)
+    @Test(expected = NotAuthorizedException.class)
     public void testCreateTask() throws Exception {
-        // TODO !!! fix test
-/*
         GithubConfig invalidCredentialsConfig = new GithubConfig();
         invalidCredentialsConfig.getServerInfo().setUserName("invalidUser");
         invalidCredentialsConfig.setProjectKey("invalidRepo");
         invalidCredentialsConfig.getServerInfo().setPassword("invalidpassword");
-        GithubTaskSaver saver = new GithubTaskSaver(invalidCredentialsConfig);
+        GithubTaskSaver saver = new GithubTaskSaver(invalidCredentialsConfig, DefaultGithubMappings.generate());
         GTask task = new GTask();
         task.setSummary("api66");
         Issue issue = saver.convertToNativeTask(task);
         GTask savedTask = saver.createTask(issue);
         System.out.println(savedTask);
-*/
     }
 }

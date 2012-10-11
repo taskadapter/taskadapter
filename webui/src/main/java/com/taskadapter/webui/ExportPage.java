@@ -30,15 +30,16 @@ import java.util.List;
 
 public class ExportPage extends ActionPage {
 
+    private static final String TRANSPORT_ERROR = "There was a problem communicating with the server. " +
+            "Please check that the server name is valid and the server is accessible.";
+
     private final Logger logger = LoggerFactory.getLogger(ExportPage.class);
 
     private VerticalLayout donePanel = new VerticalLayout();
 
-    // TODO i18n
-    private static final String TRANSPORT_ERROR = "There was a problem communicating with the server. " +
-            "Please check that the server name is valid and the server is accessible.";
-
     private SyncResult<TaskSaveResult, TaskErrors<ConnectorError<Throwable>>> result;
+
+    // TODO these ids are already set in the super class
     private final String sourceConnectorId;
     private final String destinationConnectorId;
 
