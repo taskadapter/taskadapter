@@ -1,6 +1,5 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.web.service.EditorManager;
 import com.taskadapter.web.service.Services;
 import com.vaadin.Application;
 import com.vaadin.terminal.Sizeable;
@@ -56,7 +55,6 @@ public class TAApplication extends Application implements HttpServletRequestList
             File dataRootFolder = new File(userHome, "taskadapter");
 
             services = new Services(dataRootFolder);
-            services.setEditorManager(new EditorManager());
         }
         return services;
     }

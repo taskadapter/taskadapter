@@ -1,4 +1,4 @@
-package com.taskadapter.web.richapi;
+package com.taskadapter.web.uiapi;
 
 /**
  * Rich connector configuration item. Provides usefull utility methods to create
@@ -9,7 +9,7 @@ package com.taskadapter.web.richapi;
  * java-specific way to implement "existential types").
  * 
  */
-public abstract class RichConnectorConfig {
+public abstract class UIConnectorConfig {
     /**
      * Returns a "connector type" id.
      * 

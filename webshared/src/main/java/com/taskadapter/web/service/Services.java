@@ -5,13 +5,15 @@ import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.SettingsManager;
+import com.taskadapter.web.uiapi.UIConfigService;
+import com.taskadapter.web.uiapi.UIConfigStore;
 
 import java.io.File;
 
 public class Services {
     private Authenticator authenticator;
     private UpdateManager updateManager = new UpdateManager();
-    private EditorManager editorManager;
+    private EditorManager editorManager = new EditorManager();
     private PluginManager pluginManager = new PluginManager();
     private SettingsManager settingsManager = new SettingsManager();
     private LicenseManager licenseManager = new LicenseManager();
@@ -19,12 +21,16 @@ public class Services {
     private CookiesManager cookiesManager = new CookiesManager();
     private UserManager userManager;
     private FileManager fileManager;
+    private UIConfigStore uiConfigStore;
 
     public Services(File dataRootFolder) {
         fileManager = new FileManager(dataRootFolder);
         userManager = new UserManager(fileManager);
         configStorage = new ConfigStorage(pluginManager, fileManager);
         authenticator = new Authenticator(userManager, cookiesManager);
+        
+        this.uiConfigStore = new UIConfigStore(new UIConfigService(
+                pluginManager, editorManager), configStorage);
     }
 
     public UpdateManager getUpdateManager() {
@@ -35,14 +41,11 @@ public class Services {
         return editorManager;
     }
 
-    public void setEditorManager(EditorManager editorManager) {
-        this.editorManager = editorManager;
-    }
-
     public PluginManager getPluginManager() {
         return pluginManager;
     }
 
+    @Deprecated
     public ConfigStorage getConfigStorage() {
         return configStorage;
     }
@@ -69,6 +72,10 @@ public class Services {
 
     public FileManager getFileManager() {
         return fileManager;
+    }
+    
+    public UIConfigStore getUIConfigStore() {
+        return uiConfigStore;
     }
 
     public void setAuthenticator(Authenticator authenticator) {

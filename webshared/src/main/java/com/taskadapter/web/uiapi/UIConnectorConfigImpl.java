@@ -1,4 +1,4 @@
-package com.taskadapter.web.richapi;
+package com.taskadapter.web.uiapi;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.PluginFactory;
@@ -11,14 +11,14 @@ import com.taskadapter.web.PluginEditorFactory;
  * @param <T>
  *            type of a connector config.
  */
-final class RichConnectorConfigImpl<T extends ConnectorConfig> extends
-        RichConnectorConfig {
+final class UIConnectorConfigImpl<T extends ConnectorConfig> extends
+        UIConnectorConfig {
     private final PluginFactory<T> connectorFactory;
     private final PluginEditorFactory<T> factory;
     private final T config;
     private final String connectorTypeId;
 
-    public RichConnectorConfigImpl(PluginFactory<T> connectorFactory,
+    public UIConnectorConfigImpl(PluginFactory<T> connectorFactory,
             PluginEditorFactory<T> editorFactory, T config,
             String connectorTypeId) {
         this.connectorFactory = connectorFactory;
