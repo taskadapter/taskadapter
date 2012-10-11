@@ -1,9 +1,9 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.config.ConnectorDataHolder;
-import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.MappingSide;
 import com.taskadapter.web.service.Services;
+import com.taskadapter.web.uiapi.UIConnectorConfig;
+import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.export.Exporter;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
@@ -19,14 +19,14 @@ import com.vaadin.ui.themes.Runo;
  */
 public class ConfigActionsPanel extends VerticalLayout {
     private Navigator navigator;
-    private TAFile file;
+    private UISyncConfig syncConfig;
     private Services services;
     private HorizontalLayout horizontalLayout;
     private static final String NO_DESCRIPTION_TEXT = "<i>No description</i>"; //&nbsp;
 
-    public ConfigActionsPanel(Navigator navigator, TAFile file, Services services) {
+    public ConfigActionsPanel(Navigator navigator, UISyncConfig uiSyncConfig, Services services) {
         this.navigator = navigator;
-        this.file = file;
+        this.syncConfig = uiSyncConfig;
         this.services = services;
         buildUI();
     }
@@ -39,27 +39,27 @@ public class ConfigActionsPanel extends VerticalLayout {
         horizontalLayout.setSpacing(true);
         addComponent(horizontalLayout);
 
-        createBox(file.getConnectorDataHolder1());
+        createBox(syncConfig.getConnector1());
         createActionButtons();
-        createBox(file.getConnectorDataHolder2());
+        createBox(syncConfig.getConnector2());
     }
 
     private void addDescription() {
-        final String labelText = file.getConfigLabel();
+        final String labelText = syncConfig.getLabel();
         Label description = new Label(labelText.isEmpty() ? NO_DESCRIPTION_TEXT : labelText, Label.CONTENT_XHTML);
         description.setStyleName("configs-description-label");
         addComponent(description);
         setComponentAlignment(description, Alignment.MIDDLE_CENTER);
     }
 
-    private void createBox(final ConnectorDataHolder dataHolder) {
-        final String label = dataHolder.getData().getLabel();
+    private void createBox(final UIConnectorConfig dataHolder) {
+        final String label = dataHolder.getLabel();
         NativeButton configBoxButton = new NativeButton(label);
         configBoxButton.addStyleName("boxButton");
         configBoxButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
-                navigator.showConfigureTaskPage(file);
+                navigator.showConfigureTaskPage(syncConfig.tafileize());
             }
         });
         horizontalLayout.addComponent(configBoxButton);
@@ -90,7 +90,9 @@ public class ConfigActionsPanel extends VerticalLayout {
         button.setStyleName(Runo.BUTTON_SMALL);
         button.addStyleName("configsTableArrowButton");
 
-        final Exporter exporter = new Exporter(navigator, services.getPluginManager(), file, exportDirection);
+        final Exporter exporter = new Exporter(navigator,
+                services.getPluginManager(), syncConfig.tafileize(),
+                exportDirection);
         button.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {

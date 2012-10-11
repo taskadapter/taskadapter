@@ -2,6 +2,7 @@ package com.taskadapter.config;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
 
+@Deprecated
 public class ConnectorDataHolder<T extends ConnectorConfig> {
     /**
      * this no-args constructor is required for GSon.

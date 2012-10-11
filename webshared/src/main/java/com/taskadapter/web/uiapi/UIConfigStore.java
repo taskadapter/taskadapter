@@ -15,7 +15,7 @@ import com.taskadapter.connector.definition.NewMappings;
  * {@link StoredConnectorConfig}. All methods of this class creates new fresh
  * instances of UIMappingConfig. Modifications of that instances will not affect
  * other instances for a same config file. See also documentation for
- * {@link UIMappingConfig}.
+ * {@link UISyncConfig}.
  * 
  */
 public final class UIConfigStore {
@@ -43,10 +43,10 @@ public final class UIConfigStore {
      *            login name to load items for.
      * @return collection of user config in no particular order.
      */
-    public List<UIMappingConfig> getUserConfigs(String userLoginName) {
+    public List<UISyncConfig> getUserConfigs(String userLoginName) {
         final List<StoredExportConfig> storedConfigs = configStorage
                 .getUserConfigs(userLoginName);
-        final List<UIMappingConfig> result = new ArrayList<UIMappingConfig>(
+        final List<UISyncConfig> result = new ArrayList<UISyncConfig>(
                 storedConfigs.size());
         for (StoredExportConfig storedConfig : storedConfigs) {
             result.add(uize(storedConfig));
@@ -69,7 +69,7 @@ public final class UIConfigStore {
      * @throws StorageException
      *             if config storage fails.
      */
-    public UIMappingConfig createNewConfig(String userName, String label,
+    public UISyncConfig createNewConfig(String userName, String label,
             String connector1id, String connector2id) throws StorageException {
         final UIConnectorConfig config1 = uiConfigService
                 .createDefaultConfig(connector1id);
@@ -81,7 +81,7 @@ public final class UIConfigStore {
                 config1.getConnectorTypeId(), config1.getConfigString(),
                 config2.getConnectorTypeId(), config2.getConfigString(),
                 mappingsString);
-        return new UIMappingConfig(identity, label, config1, config2, mappings);
+        return new UISyncConfig(identity, label, config1, config2, mappings);
     }
 
     /**
@@ -91,7 +91,7 @@ public final class UIConfigStore {
      *            stored config to create an instance for.
      * @return new parsed config.
      */
-    private UIMappingConfig uize(StoredExportConfig storedConfig) {
+    private UISyncConfig uize(StoredExportConfig storedConfig) {
         final String label = storedConfig.getName();
         final StoredConnectorConfig conn1Config = storedConfig.getConnector1();
         final StoredConnectorConfig conn2Config = storedConfig.getConnector2();
@@ -103,7 +103,7 @@ public final class UIConfigStore {
                 conn2Config.getSerializedConfig());
         final NewMappings mappings = new Gson().fromJson(
                 storedConfig.getMappings(), NewMappings.class);
-        return new UIMappingConfig(storedConfig.getId(), label, config1,
+        return new UISyncConfig(storedConfig.getId(), label, config1,
                 config2, mappings);
     }
 

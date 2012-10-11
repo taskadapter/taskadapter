@@ -3,7 +3,7 @@ package com.taskadapter.webui;
 import com.taskadapter.config.StorageException;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.ValidationException;
-import com.taskadapter.web.uiapi.UIMappingConfig;
+import com.taskadapter.web.uiapi.UISyncConfig;
 import com.vaadin.ui.*;
 
 import java.util.Iterator;
@@ -95,7 +95,7 @@ public class NewConfigPage extends Page {
         try {
             validate();
             errorMessageLabel.setValue("");
-            final UIMappingConfig saveResult = save();
+            final UISyncConfig saveResult = save();
             showTaskDetailsPage(saveResult);
 
             //clear for new config
@@ -108,7 +108,7 @@ public class NewConfigPage extends Page {
         }
     }
 
-    private void showTaskDetailsPage(UIMappingConfig file) {
+    private void showTaskDetailsPage(UISyncConfig file) {
         navigator.showConfigureTaskPage(file.tafileize());
     }
 
@@ -128,14 +128,14 @@ public class NewConfigPage extends Page {
         }
     }
 
-    private UIMappingConfig save() throws StorageException {
+    private UISyncConfig save() throws StorageException {
         
         final String descriptionString = (String) descriptionTextField.getValue();
         final String id1 = (String) connector1.getValue();
         final String id2 = (String) connector2.getValue();
         final String currentUserLoginName = services.getAuthenticator().getUserName();
         
-        final UIMappingConfig config = services.getUIConfigStore()
+        final UISyncConfig config = services.getUIConfigStore()
                 .createNewConfig(currentUserLoginName, descriptionString, id1,
                         id2);
         return config;

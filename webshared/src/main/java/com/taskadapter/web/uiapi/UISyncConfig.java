@@ -8,12 +8,12 @@ import com.taskadapter.connector.definition.NewMappings;
  * immutable. Simple fields or fields with immutable values (like a String
  * fields) are mutable in this config.
  * <p>
- * There may be several instances of {@link UIMappingConfig} for a same
+ * There may be several instances of {@link UISyncConfig} for a same
  * "hard-copy". Moreover, that instances may differs from each other. Users of
  * this class should be aware of this behavior.
  * 
  */
-public final class UIMappingConfig {
+public final class UISyncConfig {
 
     /**
      * Config identity. Unique "config-storage" id to distinguish between
@@ -41,7 +41,7 @@ public final class UIMappingConfig {
      */
     private final NewMappings newMappings;
 
-    UIMappingConfig(String identity, String label,
+    UISyncConfig(String identity, String label,
             UIConnectorConfig connector1, UIConnectorConfig connector2,
             NewMappings newMappings) {
         this.identity = identity;

@@ -1,6 +1,6 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.config.TAFile;
+import com.taskadapter.web.uiapi.UISyncConfig;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
@@ -14,6 +14,15 @@ import java.util.List;
  * @author Alexey Skorokhodov
  */
 public class ConfigsPage extends Page {
+    
+    private static final Comparator<UISyncConfig> CONFIG_COMPARATOR = 
+            new Comparator<UISyncConfig>() {
+                @Override
+                public int compare(UISyncConfig o1, UISyncConfig o2) {
+                    return o1.getLabel().compareTo(o2.getLabel());
+                }
+            };
+    
     private static final int COLUMNS_NUMBER = 1;
     private VerticalLayout layout = new VerticalLayout();
     private GridLayout configsLayout = new GridLayout();
@@ -46,15 +55,16 @@ public class ConfigsPage extends Page {
     private void reloadConfigs() {
         configsLayout.removeAllComponents();
 
-        String userLoginName = services.getAuthenticator().getUserName();
-        List<TAFile> allConfigs = services.getConfigStorage().getConfigs(userLoginName);
-        Collections.sort(allConfigs, new DescriptionComparator());
-        for (TAFile file : allConfigs) {
+        final String userLoginName = services.getAuthenticator().getUserName();
+        final List<UISyncConfig> allConfigs = services.getUIConfigStore()
+                .getUserConfigs(userLoginName);
+        Collections.sort(allConfigs, CONFIG_COMPARATOR);
+        for (UISyncConfig file : allConfigs) {
             addTask(file);
         }
     }
 
-    private void addTask(final TAFile file) {
+    private void addTask(final UISyncConfig file) {
         configsLayout.addComponent(new ConfigActionsPanel(navigator, file, services));
     }
 
@@ -67,13 +77,5 @@ public class ConfigsPage extends Page {
     public Component getUI() {
         reloadConfigs();
         return layout;
-    }
-
-    private class DescriptionComparator implements Comparator<TAFile> {
-
-        @Override
-        public int compare(TAFile o1, TAFile o2) {
-            return o1.getConfigLabel().compareToIgnoreCase(o2.getConfigLabel());
-        }
     }
 }

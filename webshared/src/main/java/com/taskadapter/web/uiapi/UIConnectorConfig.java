@@ -29,6 +29,14 @@ public abstract class UIConnectorConfig {
      */
     public abstract String getConfigString();
     
+    /**
+     * Calculates and returns connector label. This label may change when
+     * connector changes a configuration.
+     * @return connector user-friendly label.
+     */
+    public abstract String getLabel();
+    
     @Deprecated
     abstract ConnectorDataHolder holderize();
+
 }

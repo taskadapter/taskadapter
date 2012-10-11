@@ -44,4 +44,9 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends
         return new ConnectorDataHolder<ConnectorConfig>(connectorTypeId, config);
     }
 
+    @Override
+    public String getLabel() {
+        return config.getLabel();
+    }
+
 }
