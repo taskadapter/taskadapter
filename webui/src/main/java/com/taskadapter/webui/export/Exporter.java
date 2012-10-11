@@ -58,6 +58,9 @@ public class Exporter {
                 exportConfig.getTargetConfig().getData().validateForSave();
 
             } catch (MSPOutputFileNameNotSetException e) {
+                // TODO !!! added for Maxim K:
+                // catch (MSPOutputFileNameNotSetException e) { ... } - autofixConfigForSave
+
                 // auto generate output file name (for MSP local mode)
                 Services services = navigator.getServices();
                 String userName = services.getAuthenticator().getUserName();
