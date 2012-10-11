@@ -1,7 +1,6 @@
 package com.taskadapter.connector.redmine.editor;
 
 import com.taskadapter.connector.definition.AvailableFields;
-import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
 import com.taskadapter.connector.redmine.RelationCreationException;
@@ -18,7 +17,7 @@ import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.VerticalLayout;
 
-public class RedmineEditorFactory implements PluginEditorFactory {
+public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.redmine.messages";
 
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
@@ -47,14 +46,13 @@ public class RedmineEditorFactory implements PluginEditorFactory {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, ConnectorConfig someConfig) {
-        RedmineConfig config = (RedmineConfig) someConfig;
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, RedmineConfig config) {
         RedmineServerPanel redmineServerPanel = new RedmineServerPanel(windowProvider, config);
         ShowProjectElement showProjectElement = new ShowProjectElement(windowProvider, config);
         LoadQueriesElement loadQueriesElement = new LoadQueriesElement(windowProvider, config);
         ProjectPanel projectPanel = new ProjectPanel(windowProvider,
-                EditorUtil.wrapNulls(new MethodProperty<String>(someConfig, "projectKey")),
-                EditorUtil.wrapNulls(new MethodProperty<Integer>(someConfig, "queryId")),
+                EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
+                EditorUtil.wrapNulls(new MethodProperty<Integer>(config, "queryId")),
                 Interfaces.fromMethod(DataProvider.class, RedmineLoaders.class, "getProjects", config.getServerInfo()),
                 Interfaces.fromMethod(SimpleCallback.class, showProjectElement, "showProjectInfo"),
                 Interfaces.fromMethod(DataProvider.class, loadQueriesElement, "loadQueries"));

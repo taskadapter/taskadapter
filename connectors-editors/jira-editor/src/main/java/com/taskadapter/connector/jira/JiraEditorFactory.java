@@ -1,7 +1,6 @@
 package com.taskadapter.connector.jira;
 
 import com.taskadapter.connector.definition.AvailableFields;
-import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.jira.exceptions.BadHostException;
 import com.taskadapter.connector.jira.exceptions.BadURIException;
@@ -17,7 +16,7 @@ import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.VerticalLayout;
 
-public class JiraEditorFactory implements PluginEditorFactory {
+public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.jira.messages";
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
 
@@ -49,8 +48,7 @@ public class JiraEditorFactory implements PluginEditorFactory {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, ConnectorConfig genericConfig) {
-        JiraConfig config = (JiraConfig) genericConfig;
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, JiraConfig config) {
         WebServerInfo serverInfo = config.getServerInfo();
         ServerContainer serverPanel = new ServerContainer(new MethodProperty<String>(config, "label"),
                 new MethodProperty<String>(serverInfo, "host"),

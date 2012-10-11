@@ -14,9 +14,10 @@ class ConnectorFactory {
         this.pluginManager = pluginManager;
     }
 
-    Connector getConnector(ConnectorDataHolder connectorDataHolder) {
-        final PluginFactory factory = pluginManager.getPluginFactory(connectorDataHolder.getType());
-        final ConnectorConfig config = connectorDataHolder.getData();
+    <T extends ConnectorConfig> Connector<T> getConnector(ConnectorDataHolder connectorDataHolder) {
+        final PluginFactory<T> factory = pluginManager.getPluginFactory(connectorDataHolder.getType());
+        @SuppressWarnings("unchecked")
+        final T config = (T) connectorDataHolder.getData();
         return factory.createConnector(config);
     }
 

@@ -1,7 +1,6 @@
 package com.taskadapter.connector.github.editor;
 
 import com.taskadapter.connector.definition.AvailableFields;
-import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.connector.github.GithubConfig;
@@ -19,7 +18,7 @@ import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.VerticalLayout;
 
-public class GithubEditorFactory implements PluginEditorFactory {
+public class GithubEditorFactory implements PluginEditorFactory<GithubConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.github.messages";
 
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
@@ -50,9 +49,9 @@ public class GithubEditorFactory implements PluginEditorFactory {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, ConnectorConfig config) {
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, GithubConfig config) {
         VerticalLayout layout = new VerticalLayout();
-        final WebServerInfo serverInfo = ((GithubConfig) config).getServerInfo();
+        final WebServerInfo serverInfo = config.getServerInfo();
         ServerPanel serverPanel = new ServerPanel(new MethodProperty<String>(config, "label"),
                 new MethodProperty<String>(serverInfo, "host"),
                 new MethodProperty<String>(serverInfo, "userName"),

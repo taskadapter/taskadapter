@@ -1,5 +1,6 @@
 package com.taskadapter;
 
+import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.util.InternalError;
@@ -12,7 +13,7 @@ import java.util.Map;
 public class PluginManager {
 
     private Map<String, Descriptor> pluginDescriptors = new HashMap<String, Descriptor>();
-    private Map<String, PluginFactory> pluginFactories = new HashMap<String, PluginFactory>();
+    private Map<String, PluginFactory<?>> pluginFactories = new HashMap<String, PluginFactory<?>>();
 
     public PluginManager() {
         loadPlugins();
@@ -23,8 +24,8 @@ public class PluginManager {
             Collection<String> classNames = new PluginsFileParser().parseResource("plugins.txt");
             for (String factoryClassName : classNames) {
                 @SuppressWarnings("unchecked")
-				Class<PluginFactory> factoryClass = (Class<PluginFactory>) Class.forName(factoryClassName);
-                PluginFactory pluginFactory = factoryClass.newInstance();
+				Class<PluginFactory<?>> factoryClass = (Class<PluginFactory<?>>) Class.forName(factoryClassName);
+                PluginFactory<?> pluginFactory = factoryClass.newInstance();
                 Descriptor descriptor = pluginFactory.getDescriptor();
                 pluginDescriptors.put(descriptor.getID(), descriptor);
                 pluginFactories.put(descriptor.getID(), pluginFactory);
@@ -43,9 +44,10 @@ public class PluginManager {
         return pluginDescriptors.get(realId);
     }
 
-    public PluginFactory getPluginFactory(String pluginId) {
+    @SuppressWarnings("unchecked")
+    public <T extends ConnectorConfig> PluginFactory<T> getPluginFactory(String pluginId) {
         String realId = LegacyConnectorsSupport.getRealId(pluginId);
-        return pluginFactories.get(realId);
+        return (PluginFactory<T>) pluginFactories.get(realId);
     }
 
 }

@@ -1,7 +1,6 @@
 package com.taskadapter.connector.mantis.editor;
 
 import com.taskadapter.connector.definition.AvailableFields;
-import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.mantis.MantisConfig;
 import com.taskadapter.connector.mantis.MantisConnector;
@@ -22,7 +21,7 @@ import com.vaadin.ui.VerticalLayout;
 
 import java.util.List;
 
-public class MantisEditorFactory implements PluginEditorFactory {
+public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.mantis.editor.messages";
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
 
@@ -49,10 +48,10 @@ public class MantisEditorFactory implements PluginEditorFactory {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, ConnectorConfig config) {
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, MantisConfig config) {
         VerticalLayout layout = new VerticalLayout();
 
-        final WebServerInfo serverInfo = ((MantisConfig) config).getServerInfo();
+        final WebServerInfo serverInfo = config.getServerInfo();
 
         ServerPanel serverPanel = new ServerPanel(new MethodProperty<String>(config, "label"),
                 new MethodProperty<String>(serverInfo, "host"),

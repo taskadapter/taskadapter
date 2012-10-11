@@ -5,7 +5,7 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.web.service.Services;
 import com.vaadin.ui.ComponentContainer;
 
-public interface PluginEditorFactory {
+public interface PluginEditorFactory<C extends ConnectorConfig> {
     String getId();
 
     /**
@@ -18,5 +18,5 @@ public interface PluginEditorFactory {
 
     AvailableFields getAvailableFields();
 
-    ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, ConnectorConfig config);
+    ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, C config);
 }

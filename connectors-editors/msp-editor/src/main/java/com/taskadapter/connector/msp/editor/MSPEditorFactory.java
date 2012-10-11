@@ -15,7 +15,7 @@ import com.taskadapter.web.service.Services;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.*;
 
-public class MSPEditorFactory implements PluginEditorFactory {
+public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.msp.messages";
     private static final String LABEL_DESCRIPTION_TEXT = "Description:";
     private static final String LABEL_TOOLTIP = "Text to show for this connector on 'Export' button. Enter any text.";
@@ -44,7 +44,7 @@ public class MSPEditorFactory implements PluginEditorFactory {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, ConnectorConfig config) {
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, MSPConfig config) {
         VerticalLayout layout = new VerticalLayout();
         layout.addComponent(createDescriptionElement(config));
         layout.addComponent(createInfoReadOnlyPanel());
@@ -70,9 +70,9 @@ public class MSPEditorFactory implements PluginEditorFactory {
         return infoPanel;
     }
 
-    private Panel createFilePanel(Services services, ConnectorConfig config) {
+    private Panel createFilePanel(Services services, MSPConfig config) {
         if (isLocalMode(services)) {
-            return new LocalModeFilePanel((MSPConfig) config);
+            return new LocalModeFilePanel(config);
         } else {
             return createRemoteModeFilePanel(services, config);
         }
