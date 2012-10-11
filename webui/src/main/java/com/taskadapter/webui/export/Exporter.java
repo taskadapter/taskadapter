@@ -1,21 +1,18 @@
-package com.taskadapter.webui;
+package com.taskadapter.webui.export;
 
 
 import com.taskadapter.PluginManager;
-import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
-import com.taskadapter.connector.MappingBuilder;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.FileBasedConnector;
 import com.taskadapter.connector.definition.MappingSide;
-import com.taskadapter.connector.definition.Mappings;
-import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPOutputFileNameNotSetException;
 import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.service.Services;
+import com.taskadapter.webui.Navigator;
 
 import java.io.File;
 import java.util.Arrays;
@@ -30,60 +27,27 @@ public class Exporter {
     private final Navigator navigator;
     private final PluginManager pluginManager;
     private final TAFile file;
-
-    private ConnectorDataHolder sourceDataHolder;
-    private ConnectorDataHolder destinationDataHolder;
-    private Mappings destinationMappings;
-    private Mappings sourceMappings;
+    private final MappingSide exportDirection;
+    private final DirectionResolver resolver;
 
     public Exporter(Navigator navigator, PluginManager pluginManager,
                     TAFile taFile, MappingSide exportDirection) {
         this.navigator = navigator;
         this.pluginManager = pluginManager;
         this.file = taFile;
-
-        prepare(exportDirection);
+        this.exportDirection = exportDirection;
+        resolver = new DirectionResolver(taFile, exportDirection);
     }
-
-    private void prepare(MappingSide exportDirection) {
-        switch (exportDirection) {
-            case RIGHT:
-                sourceDataHolder = file.getConnectorDataHolder1();
-                destinationDataHolder = file.getConnectorDataHolder2();
-                break;
-            case LEFT:
-                sourceDataHolder = file.getConnectorDataHolder2();
-                destinationDataHolder = file.getConnectorDataHolder1();
-                break;
-            default:
-                throw new IllegalArgumentException();
-        }
-        sourceMappings = MappingBuilder.build(file.getMappings(), getOppositeSide(exportDirection));
-        destinationMappings = MappingBuilder.build(file.getMappings(), exportDirection);
-    }
-
-
-    private MappingSide getOppositeSide(MappingSide side) {
-        switch (side) {
-            case LEFT:
-                return MappingSide.RIGHT;
-            case RIGHT:
-                return MappingSide.LEFT;
-            default:
-                throw new IllegalArgumentException();
-        }
-    }
-
 
     public void export() {
-        String dataHolderLabel = null;
+//        String dataHolderLabel = null;
         String errorMessage = null;
         boolean valid = true;
 
         try {
-            sourceDataHolder.getData().validateForLoad();
+            resolver.getSourceConfig().validateForLoad();
         } catch (ValidationException e) {
-            dataHolderLabel = sourceDataHolder.getData().getLabel();
+//            dataHolderLabel = resolver.getSourceConfig().getLabel();
             errorMessage = e.getMessage();
             valid = false;
         }
@@ -91,7 +55,7 @@ public class Exporter {
         // TODO refactor these if (valid), if (valid) checks
         if (valid) {
             try {
-                destinationDataHolder.getData().validateForSave();
+                resolver.getDestinationConfig().validateForSave();
 
             } catch (MSPOutputFileNameNotSetException e) {
                 // auto generate output file name (for MSP local mode)
@@ -99,12 +63,12 @@ public class Exporter {
                 String userName = services.getAuthenticator().getUserName();
                 String absoluteFileName = services.getFileManager().createDefaultMSPFileName(userName);
 
-                ((MSPConfig) destinationDataHolder.getData()).setOutputAbsoluteFilePath(absoluteFileName);
-                ((MSPConfig) destinationDataHolder.getData()).setInputAbsoluteFilePath(absoluteFileName);
+                ((MSPConfig) resolver.getDestinationConfig()).setOutputAbsoluteFilePath(absoluteFileName);
+                ((MSPConfig) resolver.getDestinationConfig()).setInputAbsoluteFilePath(absoluteFileName);
                 services.getConfigStorage().saveConfig(userName, file);
 
             } catch (ValidationException e) {
-                dataHolderLabel = destinationDataHolder.getData().getLabel();
+//                dataHolderLabel = destinationDataHolder.getData().getLabel();
                 errorMessage = e.getMessage();
                 valid = false;
             }
@@ -118,7 +82,7 @@ public class Exporter {
     }
 
     private void processBasedOnDestinationConnectorType() {
-        Connector<ConnectorConfig> destinationConnector = getConnector(destinationDataHolder);
+        Connector<ConnectorConfig> destinationConnector = new ConnectorFactory(pluginManager).getConnector(resolver.getDestinationDataHolder());
         if (destinationConnector instanceof FileBasedConnector) {
             processFile((FileBasedConnector) destinationConnector);
         } else {
@@ -155,23 +119,12 @@ public class Exporter {
     }
 
     private void startUpdateFile() {
-        UpdateFilePage page = new UpdateFilePage(sourceDataHolder.getType(),
-                getConnector(sourceDataHolder), getConnector(destinationDataHolder),
-                destinationDataHolder.getType(),
-                file, sourceMappings, destinationMappings);
+        UpdateFilePage page = new UpdateFilePage(pluginManager, file, exportDirection);
         navigator.show(page);
     }
 
     private void startRegularExport() {
-        ExportPage page = new ExportPage(getConnector(sourceDataHolder), sourceDataHolder.getType(),
-                getConnector(destinationDataHolder), destinationDataHolder.getType(), file, sourceMappings, destinationMappings);
+        ExportPage page = new ExportPage(pluginManager, file, exportDirection);
         navigator.show(page);
     }
-
-    private Connector getConnector(ConnectorDataHolder connectorDataHolder) {
-        final PluginFactory factory = pluginManager.getPluginFactory(connectorDataHolder.getType());
-        final ConnectorConfig config = connectorDataHolder.getData();
-        return factory.createConnector(config);
-    }
-
 }

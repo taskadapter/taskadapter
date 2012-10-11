@@ -1,17 +1,27 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.connector.definition.NewMappings;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.FieldMapping;
+import com.taskadapter.connector.definition.NewMappings;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.web.Messages;
+import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.Validatable;
+import com.taskadapter.web.service.Services;
+import com.taskadapter.webui.export.DirectionResolver;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 
 import java.util.Arrays;
 
@@ -43,7 +53,22 @@ public class OnePageMappingPanel extends Panel implements Validatable {
         this.connector2Fields = connector2Fields;
         this.mappings = mappings;
 
-        setDescription("Select fields to export when SAVING data to this system");
+        addFields();
+    }
+
+    public OnePageMappingPanel(Services services, DirectionResolver resolver) {
+        PluginEditorFactory editorFactory = services.getEditorManager().getEditorFactory(resolver.getDestinationConnectorId());
+        AvailableFields fieldsSupportedByDestination = editorFactory.getAvailableFields();
+        PluginEditorFactory sourceFactory = services.getEditorManager().getEditorFactory(resolver.getSourceConnectorId());
+        AvailableFields fieldsSupportedBySource = sourceFactory.getAvailableFields();
+
+        // TODO !!! this is incorrect. fix this.
+        this.connector1Label = resolver.getSourceConnectorId();
+        this.connector2Label = resolver.getDestinationConnectorId();
+        this.connector1Fields = fieldsSupportedBySource;
+        this.connector2Fields = fieldsSupportedByDestination;
+
+        this.mappings = resolver.getMappings();
         addFields();
     }
 
@@ -90,8 +115,8 @@ public class OnePageMappingPanel extends Panel implements Validatable {
     private void addField(GTaskDescriptor.FIELD field) {
         addCheckbox(field);
 //        addEmptyCell();
-        addConnectorField(field, connector1Fields, mappings.getMapping(field), "left");
-        addConnectorField(field, connector2Fields, mappings.getMapping(field), "right");
+        addConnectorField(field, connector1Fields, mappings.getMapping(field), "connector1");
+        addConnectorField(field, connector2Fields, mappings.getMapping(field), "connector2");
     }
 
     private CheckBox addCheckbox(GTaskDescriptor.FIELD field) {

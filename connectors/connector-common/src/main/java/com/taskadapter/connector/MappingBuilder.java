@@ -17,9 +17,9 @@ public class MappingBuilder {
     public static String getSideMappedTo(FieldMapping fieldMapping, MappingSide side) {
         switch (side) {
             case LEFT:
-                return fieldMapping.getLeft();
+                return fieldMapping.getConnector1();
             case RIGHT:
-                return fieldMapping.getRight();
+                return fieldMapping.getConnector2();
         }
         throw new IllegalArgumentException("Unsupported mapping direction : " + side);
     }

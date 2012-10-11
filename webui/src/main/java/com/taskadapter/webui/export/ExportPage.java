@@ -1,9 +1,15 @@
-package com.taskadapter.webui;
+package com.taskadapter.webui.export;
 
 import com.google.common.base.Strings;
+import com.taskadapter.PluginManager;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
-import com.taskadapter.connector.definition.*;
+import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.MappingSide;
+import com.taskadapter.connector.definition.SyncResult;
+import com.taskadapter.connector.definition.TaskError;
+import com.taskadapter.connector.definition.TaskErrors;
+import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.ConnectorError;
@@ -13,6 +19,7 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.file.FileDownloadResource;
+import com.taskadapter.webui.MonitorWrapper;
 import com.taskadapter.webui.data.ExceptionFormatter;
 import com.vaadin.Application;
 import com.vaadin.ui.Button;
@@ -34,25 +41,15 @@ public class ExportPage extends ActionPage {
             "Please check that the server name is valid and the server is accessible.";
 
     private final Logger logger = LoggerFactory.getLogger(ExportPage.class);
+    private final PluginManager pluginManager;
 
     private VerticalLayout donePanel = new VerticalLayout();
 
     private SyncResult<TaskSaveResult, TaskErrors<ConnectorError<Throwable>>> result;
 
-    // TODO these ids are already set in the super class
-    private final String sourceConnectorId;
-    private final String destinationConnectorId;
-
-    public ExportPage(Connector<?> connectorFrom, String sourceConnectorId,
-                      Connector<?> connectorTo, String destinationConnectorId,
-                      TAFile taFile,
-                      Mappings sourceMappings,
-                      Mappings destinationMappings) {
-        super(sourceConnectorId, connectorFrom, connectorTo,
-                destinationConnectorId, taFile, sourceMappings,
-                destinationMappings);
-        this.sourceConnectorId = sourceConnectorId;
-        this.destinationConnectorId = destinationConnectorId;
+    public ExportPage(PluginManager pluginManager, TAFile file, MappingSide exportDirection) {
+        super(file, exportDirection);
+        this.pluginManager = pluginManager;
     }
 
     @Override
@@ -63,9 +60,10 @@ public class ExportPage extends ActionPage {
     @Override
     protected void loadData() {
         try {
+            Connector<?> sourceConnector = new ConnectorFactory(pluginManager).getConnector(resolver.getSourceDataHolder());
             this.loadedTasks = TaskLoader.loadTasks(
-                    services.getLicenseManager(), connectorFrom,
-                    sourceMappings, ProgressMonitorUtils.getDummyMonitor());
+                    services.getLicenseManager(), sourceConnector,
+                    resolver.getSourceMappings(), ProgressMonitorUtils.getDummyMonitor());
         } catch (CommunicationException e) {
             String message = getErrorMessageForException(e);
             showErrorMessageOnPage(message);
@@ -95,7 +93,7 @@ public class ExportPage extends ActionPage {
 
     @Override
     protected String getInitialText() {
-        return "Will load data from " + connectorFrom.getConfig().getSourceLocation() + " (" + connectorFrom.getConfig().getLabel() + ")";
+        return "Will load data from " + resolver.getSourceConfig().getSourceLocation() + " (" + resolver.getSourceConfig().getLabel() + ")";
     }
 
     @Override
@@ -134,7 +132,7 @@ public class ExportPage extends ActionPage {
     }
 
     private void addFromToPanel() {
-        donePanel.addComponent(createdExportResultLabel("From", connectorFrom.getConfig().getSourceLocation()));
+        donePanel.addComponent(createdExportResultLabel("From", resolver.getSourceConfig().getSourceLocation()));
     }
 
     private void addExportNumbersStats(TaskSaveResult result) {
@@ -231,10 +229,12 @@ public class ExportPage extends ActionPage {
     protected void saveData(List<GTask> tasks) throws ConnectorException {
         saveProgress.setValue(0);
         final MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
+        ConnectorFactory factory = new ConnectorFactory(pluginManager);
+        Connector<?> destinationConnector = factory.getConnector(resolver.getDestinationDataHolder());
         try {
-            result = TaskSaver.save(sourceConnectorId,
-                    connectorTo, destinationConnectorId,
-                    destinationMappings, tasks, wrapper);
+            result = TaskSaver.save(resolver.getSourceConnectorId(),
+                    destinationConnector, resolver.getDestinationConnectorId(),
+                    resolver.getDestinationMappings(), tasks, wrapper);
         } catch (ConnectorException e) {
             showErrorMessageOnPage(ExceptionFormatter.format(e));
             logger.error(e.getMessage(), e);

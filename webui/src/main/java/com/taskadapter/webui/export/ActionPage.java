@@ -1,13 +1,11 @@
-package com.taskadapter.webui;
+package com.taskadapter.webui.export;
 
 import com.taskadapter.config.TAFile;
-import com.taskadapter.connector.definition.AvailableFields;
-import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.definition.MappingSide;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
-import com.taskadapter.web.PluginEditorFactory;
-import com.taskadapter.webui.action.ConfirmExportPage;
+import com.taskadapter.webui.Navigator;
+import com.taskadapter.webui.Page;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -17,33 +15,24 @@ import com.vaadin.ui.VerticalLayout;
 import java.util.List;
 
 public abstract class ActionPage extends Page {
+    private final TAFile file;
+    private final MappingSide exportDirection;
+
     protected final VerticalLayout mainPanel;
-    private String sourceConnectorId;
-    protected final Connector<?> connectorFrom;
-    protected final Connector<?> connectorTo;
-    private final String destinationConnectorId;
-    private final TAFile taFile;
-    protected Mappings sourceMappings;
-    protected Mappings destinationMappings;
 
     protected ProgressIndicator loadProgress = new ProgressIndicator();
     protected ProgressIndicator saveProgress = new ProgressIndicator();
     protected List<GTask> loadedTasks;
     private ConfirmExportPage confirmExportPage;
+    protected final DirectionResolver resolver;
 
-    public ActionPage(String sourceConnectorId, Connector<?> connectorFrom, Connector<?> connectorTo, String destinationConnectorId, TAFile file,
-                      Mappings sourceMappings, Mappings destinationMappings) {
-        this.sourceConnectorId = sourceConnectorId;
-        this.connectorFrom = connectorFrom;
-        this.connectorTo = connectorTo;
-        this.destinationConnectorId = destinationConnectorId;
-        this.taFile = file;
-        this.sourceMappings = sourceMappings;
-        this.destinationMappings = destinationMappings;
+    protected ActionPage(TAFile file, MappingSide exportDirection) {
+        this.file = file;
+        this.exportDirection = exportDirection;
+        resolver = new DirectionResolver(file, exportDirection);
         mainPanel = new VerticalLayout();
         mainPanel.setSpacing(true);
         mainPanel.setMargin(true);
-
         buildInitialPage();
     }
 
@@ -81,7 +70,7 @@ public abstract class ActionPage extends Page {
         loadProgress.setIndeterminate(true);
         loadProgress.setPollingInterval(200);
         mainPanel.addComponent(loadProgress);
-        String labelText = "Loading data from " + connectorFrom.getConfig().getSourceLocation() + " (" + connectorFrom.getConfig().getLabel() + ") ...";
+        String labelText = "Loading data from " + resolver.getSourceConfig().getSourceLocation() + " (" + resolver.getSourceConfig().getLabel() + ") ...";
         mainPanel.addComponent(createLabel(labelText));
     }
 
@@ -168,23 +157,15 @@ public abstract class ActionPage extends Page {
     }
 
     protected void buildConfirmationUI() {
-        PluginEditorFactory editorFactory = services.getEditorManager().getEditorFactory(destinationConnectorId);
-        AvailableFields fieldsSupportedByDestination = editorFactory.getAvailableFields();
-        PluginEditorFactory sourceFactory = services.getEditorManager().getEditorFactory(sourceConnectorId);
-        AvailableFields fieldsSupportedBySource = sourceFactory.getAvailableFields();
-
-        confirmExportPage = new ConfirmExportPage(navigator, loadedTasks,
-                sourceConnectorId,
-                fieldsSupportedBySource,
-                destinationConnectorId,
-                connectorTo.getConfig(),
-                fieldsSupportedByDestination, new Button.ClickListener() {
+        confirmExportPage = new ConfirmExportPage(services, navigator, loadedTasks,
+                file, exportDirection,
+                new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 saveConfigIfChanged();
                 startSaveTasksProcess();
             }
-        }, taFile.getMappings());
+        });
         mainPanel.addComponent(confirmExportPage);
         mainPanel.setExpandRatio(confirmExportPage, 1f); // use all available space
     }
@@ -196,7 +177,7 @@ public abstract class ActionPage extends Page {
             saveProgress = new ProgressIndicator();
             saveProgress.setIndeterminate(false);
             saveProgress.setEnabled(true);
-            saveProgress.setCaption("Saving to " + connectorTo.getConfig().getTargetLocation());
+            saveProgress.setCaption("Saving to " + resolver.getDestinationConfig().getTargetLocation());
             mainPanel.removeAllComponents();
             mainPanel.addComponent(saveProgress);
 

@@ -1,11 +1,13 @@
-package com.taskadapter.webui;
+package com.taskadapter.webui.export;
 
+import com.taskadapter.PluginManager;
 import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.definition.MappingSide;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.Updater;
 import com.taskadapter.model.GTask;
+import com.taskadapter.webui.MonitorWrapper;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
@@ -15,11 +17,12 @@ public class UpdateFilePage extends ActionPage {
 
     private final Updater updater;
 
-    public UpdateFilePage(String sourceConnectorId, Connector<?> connectorFrom, Connector<?> connectorTo, String destinationConnectorId, TAFile taFile,
-                          Mappings sourceMappings,
-                          Mappings destinationMappings) {
-        super(sourceConnectorId, connectorFrom, connectorTo, destinationConnectorId, taFile, sourceMappings, destinationMappings);
-        updater = new Updater(connectorTo, destinationMappings, connectorFrom, sourceMappings);
+    public UpdateFilePage(PluginManager pluginManager, TAFile file, MappingSide exportDirection) {
+        super(file, exportDirection);
+        ConnectorFactory factory = new ConnectorFactory(pluginManager);
+        Connector<?> sourceConnector = factory.getConnector(resolver.getSourceDataHolder());
+        Connector<?> destinationConnector = factory.getConnector(resolver.getDestinationDataHolder());
+        updater = new Updater(destinationConnector, resolver.getDestinationMappings(), sourceConnector, resolver.getSourceMappings());
     }
 
     @Override
@@ -35,7 +38,7 @@ public class UpdateFilePage extends ActionPage {
     @Override
     protected String getInitialText() {
         return "Click \"Go\" to load file<BR><i>" +
-                connectorTo.getConfig().getTargetLocation() +
+                resolver.getDestinationConfig().getTargetLocation() +
                 "</i><BR> and check which tasks have 'remote ids' associated with them." +
                 "<br>You can select which of those tasks to update with the data from the external system." +
                 "<br>No other tasks will be updated or created.";
@@ -49,7 +52,7 @@ public class UpdateFilePage extends ActionPage {
     @Override
     public String getNoDataLoadedText() {
         return "The current MSP XML file \n"
-                + connectorTo.getConfig().getSourceLocation()
+                + resolver.getDestinationConfig().getSourceLocation()
                 + "\ndoes not have any tasks previously exported to (or loaded from) another system "
                 + "\nusing \"Save Remote IDs\" option.";
 

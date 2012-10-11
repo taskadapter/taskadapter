@@ -4,8 +4,8 @@ import com.taskadapter.model.GTaskDescriptor;
 
 public final class FieldMapping {
     private GTaskDescriptor.FIELD field;
-    private String left;
-    private String right;
+    private String connector1;
+    private String connector2;
     private boolean selected;
 
     /**
@@ -14,10 +14,10 @@ public final class FieldMapping {
     public FieldMapping() {
     }
 
-    public FieldMapping(GTaskDescriptor.FIELD field, String left, String right, boolean selected) {
+    public FieldMapping(GTaskDescriptor.FIELD field, String connector1, String connector2, boolean selected) {
         this.field = field;
-        this.left = left;
-        this.right = right;
+        this.connector1 = connector1;
+        this.connector2 = connector2;
         this.selected = selected;
     }
 
@@ -25,24 +25,24 @@ public final class FieldMapping {
         return field;
     }
 
-    public void setLeft(String left) {
-        this.left = left;
-    }
-
-    public void setRight(String right) {
-        this.right = right;
-    }
-
-    public String getLeft() {
-        return left;
-    }
-
-    public String getRight() {
-        return right;
-    }
-
     public boolean isSelected() {
         return selected;
+    }
+
+    public void setConnector1(String connector1) {
+        this.connector1 = connector1;
+    }
+
+    public void setConnector2(String connector2) {
+        this.connector2 = connector2;
+    }
+
+    public String getConnector1() {
+        return connector1;
+    }
+
+    public String getConnector2() {
+        return connector2;
     }
 
     public void setSelected(boolean selected) {
@@ -53,8 +53,8 @@ public final class FieldMapping {
     public String toString() {
         return "FieldMapping{" +
                 "field=" + field +
-                ", left='" + left + '\'' +
-                ", right='" + right + '\'' +
+                ", connector1='" + connector1 + '\'' +
+                ", connector2='" + connector2 + '\'' +
                 ", selected=" + selected +
                 '}';
     }

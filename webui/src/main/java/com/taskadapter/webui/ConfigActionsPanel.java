@@ -2,10 +2,9 @@ package com.taskadapter.webui;
 
 import com.taskadapter.config.ConnectorDataHolder;
 import com.taskadapter.config.TAFile;
-import com.taskadapter.connector.MappingBuilder;
 import com.taskadapter.connector.definition.MappingSide;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.web.service.Services;
+import com.taskadapter.webui.export.Exporter;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
