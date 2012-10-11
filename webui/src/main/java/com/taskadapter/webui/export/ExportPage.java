@@ -60,10 +60,10 @@ public class ExportPage extends ActionPage {
     @Override
     protected void loadData() {
         try {
-            Connector<?> sourceConnector = new ConnectorFactory(pluginManager).getConnector(resolver.getSourceDataHolder());
+            Connector<?> sourceConnector = new ConnectorFactory(pluginManager).getConnector(exportConfig.getSourceConfig());
             this.loadedTasks = TaskLoader.loadTasks(
                     services.getLicenseManager(), sourceConnector,
-                    resolver.getSourceMappings(), ProgressMonitorUtils.getDummyMonitor());
+                    exportConfig.generateSourceMappings(), ProgressMonitorUtils.getDummyMonitor());
         } catch (CommunicationException e) {
             String message = getErrorMessageForException(e);
             showErrorMessageOnPage(message);
@@ -93,7 +93,7 @@ public class ExportPage extends ActionPage {
 
     @Override
     protected String getInitialText() {
-        return "Will load data from " + resolver.getSourceConfig().getSourceLocation() + " (" + resolver.getSourceConfig().getLabel() + ")";
+        return "Will load data from " + exportConfig.getSourceConfig().getData().getSourceLocation() + " (" + exportConfig.getSourceConfig().getData().getLabel() + ")";
     }
 
     @Override
@@ -132,7 +132,7 @@ public class ExportPage extends ActionPage {
     }
 
     private void addFromToPanel() {
-        donePanel.addComponent(createdExportResultLabel("From", resolver.getSourceConfig().getSourceLocation()));
+        donePanel.addComponent(createdExportResultLabel("From", exportConfig.getSourceConfig().getData().getSourceLocation()));
     }
 
     private void addExportNumbersStats(TaskSaveResult result) {
@@ -230,11 +230,11 @@ public class ExportPage extends ActionPage {
         saveProgress.setValue(0);
         final MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
         ConnectorFactory factory = new ConnectorFactory(pluginManager);
-        Connector<?> destinationConnector = factory.getConnector(resolver.getDestinationDataHolder());
+        Connector<?> destinationConnector = factory.getConnector(exportConfig.getTargetConfig());
         try {
-            result = TaskSaver.save(resolver.getSourceConnectorId(),
-                    destinationConnector, resolver.getDestinationConnectorId(),
-                    resolver.getDestinationMappings(), tasks, wrapper);
+            result = TaskSaver.save(exportConfig.getSourceConfig().getType(),
+                    destinationConnector, exportConfig.getTargetConfig().getType(),
+                    exportConfig.generateTargetMappings(), tasks, wrapper);
         } catch (ConnectorException e) {
             showErrorMessageOnPage(ExceptionFormatter.format(e));
             logger.error(e.getMessage(), e);

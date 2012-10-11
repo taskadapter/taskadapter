@@ -9,7 +9,6 @@ import com.taskadapter.web.Messages;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.Validatable;
 import com.taskadapter.web.service.Services;
-import com.taskadapter.webui.export.DirectionResolver;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.terminal.Resource;
@@ -53,22 +52,6 @@ public class OnePageMappingPanel extends Panel implements Validatable {
         this.connector2Fields = connector2Fields;
         this.mappings = mappings;
 
-        addFields();
-    }
-
-    public OnePageMappingPanel(Services services, DirectionResolver resolver) {
-        PluginEditorFactory editorFactory = services.getEditorManager().getEditorFactory(resolver.getDestinationConnectorId());
-        AvailableFields fieldsSupportedByDestination = editorFactory.getAvailableFields();
-        PluginEditorFactory sourceFactory = services.getEditorManager().getEditorFactory(resolver.getSourceConnectorId());
-        AvailableFields fieldsSupportedBySource = sourceFactory.getAvailableFields();
-
-        // TODO !!! this is incorrect. fix this.
-        this.connector1Label = resolver.getSourceConnectorId();
-        this.connector2Label = resolver.getDestinationConnectorId();
-        this.connector1Fields = fieldsSupportedBySource;
-        this.connector2Fields = fieldsSupportedByDestination;
-
-        this.mappings = resolver.getMappings();
         addFields();
     }
 

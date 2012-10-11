@@ -1,8 +1,8 @@
 package com.taskadapter.webui.export;
 
-import com.taskadapter.config.TAFile;
-import com.taskadapter.connector.definition.MappingSide;
+import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.model.GTask;
+import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.service.Services;
 import com.taskadapter.webui.Navigator;
 import com.taskadapter.webui.OnePageMappingPanel;
@@ -23,13 +23,13 @@ public class ConfirmExportPage extends CustomComponent {
     private final Services services;
     private OnePageMappingPanel onePageMappingPanel;
     private MyTree connectorTree;
-    private final DirectionResolver resolver;
+    private final ExportConfig<?, ?> exportConfig;
 
     public ConfirmExportPage(Services services, Navigator navigator, List<GTask> rootLevelTasks,
-                             TAFile file, MappingSide exportDirection,
+                             ExportConfig<?, ?> exportConfig,
                              Button.ClickListener goListener) {
         this.services = services;
-        resolver = new DirectionResolver(file, exportDirection);
+        this.exportConfig = exportConfig;
 
         this.navigator = navigator;
         this.rootLevelTasks = rootLevelTasks;
@@ -42,7 +42,7 @@ public class ConfirmExportPage extends CustomComponent {
         layout.setSpacing(true);
 
         // TODO !!! change ID to target location to allow working with two connectors of the same kind (redmine-redmine)
-        Label text1 = new Label("Please confirm export to " + resolver.getDestinationConnectorId());
+        Label text1 = new Label("Please confirm export to " + exportConfig.getTargetConfig().getType());
         layout.addComponent(text1);
 
         connectorTree = new MyTree();
@@ -58,7 +58,14 @@ public class ConfirmExportPage extends CustomComponent {
         buttonsLayout.addComponent(PageUtil.createButton(navigator, "Cancel", Navigator.HOME));
         layout.addComponent(buttonsLayout);
 
-        onePageMappingPanel = new OnePageMappingPanel(services, resolver);
+        PluginEditorFactory<?> targetFactory = services.getEditorManager().getEditorFactory(exportConfig.getTargetConfig().getType());
+        AvailableFields fieldsSupportedByDestination = targetFactory.getAvailableFields();
+        PluginEditorFactory<?> sourceFactory = services.getEditorManager().getEditorFactory(exportConfig.getSourceConfig().getType());
+        AvailableFields fieldsSupportedBySource = sourceFactory.getAvailableFields();
+        onePageMappingPanel = new OnePageMappingPanel(exportConfig
+                .getSourceConfig().getType(), fieldsSupportedBySource,
+                exportConfig.getTargetConfig().getType(),
+                fieldsSupportedByDestination, exportConfig.getMappings());
         layout.addComponent(onePageMappingPanel);
 
         setCompositionRoot(layout);

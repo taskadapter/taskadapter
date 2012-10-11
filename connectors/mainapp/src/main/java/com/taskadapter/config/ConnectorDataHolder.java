@@ -2,7 +2,7 @@ package com.taskadapter.config;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
 
-public class ConnectorDataHolder {
+public class ConnectorDataHolder<T extends ConnectorConfig> {
     /**
      * this no-args constructor is required for GSon.
      */
@@ -10,9 +10,9 @@ public class ConnectorDataHolder {
     }
 
     private String type;
-    private ConnectorConfig data;
+    private T data;
 
-    public ConnectorDataHolder(String type2, ConnectorConfig data) {
+    public ConnectorDataHolder(String type2, T data) {
         this.type = type2;
         this.data = data;
     }
@@ -21,7 +21,7 @@ public class ConnectorDataHolder {
         return type;
     }
 
-    public ConnectorConfig getData() {
+    public T getData() {
         return data;
     }
 
@@ -45,7 +45,7 @@ public class ConnectorDataHolder {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        ConnectorDataHolder other = (ConnectorDataHolder) obj;
+        ConnectorDataHolder<?> other = (ConnectorDataHolder<?>) obj;
         if (data == null) {
             if (other.data != null) {
                 return false;

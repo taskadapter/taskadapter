@@ -20,9 +20,13 @@ public class UpdateFilePage extends ActionPage {
     public UpdateFilePage(PluginManager pluginManager, TAFile file, MappingSide exportDirection) {
         super(file, exportDirection);
         ConnectorFactory factory = new ConnectorFactory(pluginManager);
-        Connector<?> sourceConnector = factory.getConnector(resolver.getSourceDataHolder());
-        Connector<?> destinationConnector = factory.getConnector(resolver.getDestinationDataHolder());
-        updater = new Updater(destinationConnector, resolver.getDestinationMappings(), sourceConnector, resolver.getSourceMappings());
+        Connector<?> sourceConnector = factory.getConnector(exportConfig.getSourceConfig());
+        Connector<?> destinationConnector = factory.getConnector(exportConfig.getTargetConfig());
+        /* 
+         * TODO !!! Next line will cause TA to ignore all mapping changes prior
+         * to exporting into MSP 
+         */
+        updater = new Updater(destinationConnector, exportConfig.generateTargetMappings(), sourceConnector, exportConfig.generateSourceMappings());
     }
 
     @Override
@@ -38,7 +42,7 @@ public class UpdateFilePage extends ActionPage {
     @Override
     protected String getInitialText() {
         return "Click \"Go\" to load file<BR><i>" +
-                resolver.getDestinationConfig().getTargetLocation() +
+                exportConfig.getTargetConfig().getData().getTargetLocation() +
                 "</i><BR> and check which tasks have 'remote ids' associated with them." +
                 "<br>You can select which of those tasks to update with the data from the external system." +
                 "<br>No other tasks will be updated or created.";
@@ -52,7 +56,7 @@ public class UpdateFilePage extends ActionPage {
     @Override
     public String getNoDataLoadedText() {
         return "The current MSP XML file \n"
-                + resolver.getDestinationConfig().getSourceLocation()
+                + exportConfig.getTargetConfig().getData().getSourceLocation()
                 + "\ndoes not have any tasks previously exported to (or loaded from) another system "
                 + "\nusing \"Save Remote IDs\" option.";
 

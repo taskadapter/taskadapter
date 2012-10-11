@@ -28,7 +28,7 @@ public class Exporter {
     private final PluginManager pluginManager;
     private final TAFile file;
     private final MappingSide exportDirection;
-    private final DirectionResolver resolver;
+    private final ExportConfig<?, ?> exportConfig;
 
     public Exporter(Navigator navigator, PluginManager pluginManager,
                     TAFile taFile, MappingSide exportDirection) {
@@ -36,7 +36,7 @@ public class Exporter {
         this.pluginManager = pluginManager;
         this.file = taFile;
         this.exportDirection = exportDirection;
-        resolver = new DirectionResolver(taFile, exportDirection);
+        this.exportConfig = ExportConfig.createExportOrder(taFile, exportDirection);
     }
 
     public void export() {
@@ -45,7 +45,7 @@ public class Exporter {
         boolean valid = true;
 
         try {
-            resolver.getSourceConfig().validateForLoad();
+            exportConfig.getSourceConfig().getData().validateForLoad();
         } catch (ValidationException e) {
 //            dataHolderLabel = resolver.getSourceConfig().getLabel();
             errorMessage = e.getMessage();
@@ -55,7 +55,7 @@ public class Exporter {
         // TODO refactor these if (valid), if (valid) checks
         if (valid) {
             try {
-                resolver.getDestinationConfig().validateForSave();
+                exportConfig.getTargetConfig().getData().validateForSave();
 
             } catch (MSPOutputFileNameNotSetException e) {
                 // auto generate output file name (for MSP local mode)
@@ -63,8 +63,8 @@ public class Exporter {
                 String userName = services.getAuthenticator().getUserName();
                 String absoluteFileName = services.getFileManager().createDefaultMSPFileName(userName);
 
-                ((MSPConfig) resolver.getDestinationConfig()).setOutputAbsoluteFilePath(absoluteFileName);
-                ((MSPConfig) resolver.getDestinationConfig()).setInputAbsoluteFilePath(absoluteFileName);
+                ((MSPConfig) exportConfig.getTargetConfig().getData()).setOutputAbsoluteFilePath(absoluteFileName);
+                ((MSPConfig) exportConfig.getTargetConfig().getData()).setInputAbsoluteFilePath(absoluteFileName);
                 services.getConfigStorage().saveConfig(userName, file);
 
             } catch (ValidationException e) {
@@ -82,7 +82,7 @@ public class Exporter {
     }
 
     private void processBasedOnDestinationConnectorType() {
-        Connector<ConnectorConfig> destinationConnector = new ConnectorFactory(pluginManager).getConnector(resolver.getDestinationDataHolder());
+        Connector<ConnectorConfig> destinationConnector = new ConnectorFactory(pluginManager).getConnector(exportConfig.getTargetConfig());
         if (destinationConnector instanceof FileBasedConnector) {
             processFile((FileBasedConnector) destinationConnector);
         } else {

@@ -15,21 +15,17 @@ import com.vaadin.ui.VerticalLayout;
 import java.util.List;
 
 public abstract class ActionPage extends Page {
-    private final TAFile file;
-    private final MappingSide exportDirection;
-
     protected final VerticalLayout mainPanel;
 
     protected ProgressIndicator loadProgress = new ProgressIndicator();
     protected ProgressIndicator saveProgress = new ProgressIndicator();
     protected List<GTask> loadedTasks;
     private ConfirmExportPage confirmExportPage;
-    protected final DirectionResolver resolver;
+    protected final ExportConfig<?, ?> exportConfig;
 
     protected ActionPage(TAFile file, MappingSide exportDirection) {
-        this.file = file;
-        this.exportDirection = exportDirection;
-        resolver = new DirectionResolver(file, exportDirection);
+        this.exportConfig = ExportConfig.createExportOrder(file,
+                exportDirection);
         mainPanel = new VerticalLayout();
         mainPanel.setSpacing(true);
         mainPanel.setMargin(true);
@@ -70,7 +66,9 @@ public abstract class ActionPage extends Page {
         loadProgress.setIndeterminate(true);
         loadProgress.setPollingInterval(200);
         mainPanel.addComponent(loadProgress);
-        String labelText = "Loading data from " + resolver.getSourceConfig().getSourceLocation() + " (" + resolver.getSourceConfig().getLabel() + ") ...";
+        String labelText = "Loading data from "
+                + exportConfig.getSourceConfig().getData().getSourceLocation()
+                + " (" + exportConfig.getSourceConfig().getData().getLabel() + ") ...";
         mainPanel.addComponent(createLabel(labelText));
     }
 
@@ -158,7 +156,7 @@ public abstract class ActionPage extends Page {
 
     protected void buildConfirmationUI() {
         confirmExportPage = new ConfirmExportPage(services, navigator, loadedTasks,
-                file, exportDirection,
+                exportConfig, 
                 new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -177,7 +175,7 @@ public abstract class ActionPage extends Page {
             saveProgress = new ProgressIndicator();
             saveProgress.setIndeterminate(false);
             saveProgress.setEnabled(true);
-            saveProgress.setCaption("Saving to " + resolver.getDestinationConfig().getTargetLocation());
+            saveProgress.setCaption("Saving to " + exportConfig.getTargetConfig().getData().getTargetLocation());
             mainPanel.removeAllComponents();
             mainPanel.addComponent(saveProgress);
 
