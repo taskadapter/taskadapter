@@ -1,13 +1,13 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.config.ConnectorDataHolder;
-import com.taskadapter.config.TAFile;
+import com.taskadapter.config.StorageException;
+import com.taskadapter.web.uiapi.UISyncConfig;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
 
 public class EditConfigPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
-    private TAFile file;
+    private UISyncConfig config;
     private TextField configDescription;
     private OnePageEditor onePageEditor;
 
@@ -35,8 +35,8 @@ public class EditConfigPage extends Page {
         buttonsLayout.addComponent(errorMessageLabel);
         buttonsLayout.setExpandRatio(errorMessageLabel, 1.0f);
 
-        CloneDeletePanel cloneDeletePanel = new CloneDeletePanel(navigator, file,
-                new CloneDeletePanel.Callback() {
+        CloneDeletePanel cloneDeletePanel = new CloneDeletePanel(navigator,
+                config.tafileize(), new CloneDeletePanel.Callback() {
 
                     @Override
                     public boolean onCloneConfig() {
@@ -53,25 +53,33 @@ public class EditConfigPage extends Page {
         descriptionLayout.addComponent(new Label("Description:"));
         configDescription = new TextField();
         configDescription.addStyleName("configEditorDescriptionLabel");
-        configDescription.setValue(file.getConfigLabel());
+        configDescription.setValue(config.getLabel());
         descriptionLayout.addComponent(configDescription);
 
-        ConnectorDataHolder leftConnectorDataHolder = file.getConnectorDataHolder1();
-        ConnectorDataHolder rightConnectorDataHolder = file.getConnectorDataHolder2();
-
-        onePageEditor = new OnePageEditor(services, leftConnectorDataHolder, rightConnectorDataHolder, file.getMappings());
+        onePageEditor = new OnePageEditor(services, config);
         layout.addComponent(onePageEditor);
     }
 
-    public void setFile(TAFile file) {
-        this.file = file;
+    public void setConfig(UISyncConfig config) {
+        this.config = config.normalized();
     }
 
     private void save() {
         if (validateEditor()) {
 //            updateFileWithDataInForm();
             String userLoginName = services.getAuthenticator().getUserName();
-            services.getConfigStorage().saveConfig(userLoginName, file);
+            try {
+                services.getUIConfigStore().saveConfig(userLoginName, config);
+            } catch (StorageException e) {
+                // FIXME:
+                // TODO !!! 
+                // Write some message to a user.
+                errorMessageLabel.setValue("Failed to save config"
+                        + e.getMessage());
+                navigator.showNotification("Failed to save config",
+                        "Failed to save config");
+                return;
+            }
             navigator.showNotification("Saved", "All is saved OK");
 
             errorMessageLabel.setValue("");

@@ -1,12 +1,10 @@
 package com.taskadapter.webui.export;
 
-import com.taskadapter.PluginManager;
-import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.MappingSide;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.Updater;
 import com.taskadapter.model.GTask;
+import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.MonitorWrapper;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -17,16 +15,17 @@ public class UpdateFilePage extends ActionPage {
 
     private final Updater updater;
 
-    public UpdateFilePage(PluginManager pluginManager, TAFile file, MappingSide exportDirection) {
-        super(file, exportDirection);
-        ConnectorFactory factory = new ConnectorFactory(pluginManager);
-        Connector<?> sourceConnector = factory.getConnector(exportConfig.getSourceConfig());
-        Connector<?> destinationConnector = factory.getConnector(exportConfig.getTargetConfig());
+    public UpdateFilePage(UISyncConfig config) {
+        super(config);
+        Connector<?> sourceConnector = config.getConnector1().createConnectorInstance();
+        Connector<?> destinationConnector = config.getConnector2().createConnectorInstance();
         /* 
          * TODO !!! Next line will cause TA to ignore all mapping changes prior
          * to exporting into MSP 
          */
-        updater = new Updater(destinationConnector, exportConfig.generateTargetMappings(), sourceConnector, exportConfig.generateSourceMappings());
+        updater = new Updater(destinationConnector,
+                config.generateTargetMappings(), sourceConnector,
+                config.generateSourceMappings());
     }
 
     @Override
@@ -42,7 +41,7 @@ public class UpdateFilePage extends ActionPage {
     @Override
     protected String getInitialText() {
         return "Click \"Go\" to load file<BR><i>" +
-                exportConfig.getTargetConfig().getData().getTargetLocation() +
+                config.getConnector2().getDestinationLocation() +
                 "</i><BR> and check which tasks have 'remote ids' associated with them." +
                 "<br>You can select which of those tasks to update with the data from the external system." +
                 "<br>No other tasks will be updated or created.";
@@ -56,7 +55,7 @@ public class UpdateFilePage extends ActionPage {
     @Override
     public String getNoDataLoadedText() {
         return "The current MSP XML file \n"
-                + exportConfig.getTargetConfig().getData().getSourceLocation()
+                + config.getConnector2().getSourceLocation()
                 + "\ndoes not have any tasks previously exported to (or loaded from) another system "
                 + "\nusing \"Save Remote IDs\" option.";
 

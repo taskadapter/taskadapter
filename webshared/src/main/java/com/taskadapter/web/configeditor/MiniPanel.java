@@ -1,7 +1,7 @@
 package com.taskadapter.web.configeditor;
 
-import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.web.WindowProvider;
+import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.event.ShortcutAction;
@@ -11,15 +11,13 @@ public class MiniPanel extends GridLayout {
     private static final int COLUMNS_NUMBER = 3;
 
     private WindowProvider windowProvider;
-    private String connectorType;
-    private ConnectorConfig config;
+    private UIConnectorConfig config;
     private Window newWindow;
     private Label dataLocationLabel;
 
-    public MiniPanel(WindowProvider windowProvider, String connectorType, ConnectorConfig config) {
+    public MiniPanel(WindowProvider windowProvider, UIConnectorConfig connectorConfig) {
         this.windowProvider = windowProvider;
-        this.connectorType = connectorType;
-        this.config = config;
+        this.config = connectorConfig;
         buildU();
     }
 
@@ -47,7 +45,7 @@ public class MiniPanel extends GridLayout {
 
     private void configureEditServerWindow() {
         newWindow = new Window();
-        newWindow.setCaption("Edit " + connectorType + " settings");
+        newWindow.setCaption("Edit " + config.getConnectorTypeId() + " settings");
         newWindow.setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
         newWindow.addListener(new Window.CloseListener() {
             @Override
@@ -58,7 +56,7 @@ public class MiniPanel extends GridLayout {
     }
 
     private void refreshLabel() {
-        Property connectorLabel = EditorUtil.wrapNulls(new MethodProperty<String>(config, "label"));
+        Property connectorLabel = EditorUtil.wrapNulls(new MethodProperty<String>(config.getRawConfig(), "label"));
         dataLocationLabel.setPropertyDataSource(connectorLabel);
     }
 

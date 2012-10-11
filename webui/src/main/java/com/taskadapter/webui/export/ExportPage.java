@@ -1,11 +1,8 @@
 package com.taskadapter.webui.export;
 
 import com.google.common.base.Strings;
-import com.taskadapter.PluginManager;
-import com.taskadapter.config.TAFile;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.MappingSide;
 import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.definition.TaskError;
 import com.taskadapter.connector.definition.TaskErrors;
@@ -19,6 +16,7 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.file.FileDownloadResource;
+import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.MonitorWrapper;
 import com.taskadapter.webui.data.ExceptionFormatter;
 import com.vaadin.Application;
@@ -41,15 +39,13 @@ public class ExportPage extends ActionPage {
             "Please check that the server name is valid and the server is accessible.";
 
     private final Logger logger = LoggerFactory.getLogger(ExportPage.class);
-    private final PluginManager pluginManager;
 
     private VerticalLayout donePanel = new VerticalLayout();
 
     private SyncResult<TaskSaveResult, TaskErrors<ConnectorError<Throwable>>> result;
 
-    public ExportPage(PluginManager pluginManager, TAFile file, MappingSide exportDirection) {
-        super(file, exportDirection);
-        this.pluginManager = pluginManager;
+    public ExportPage(UISyncConfig config) {
+        super(config);
     }
 
     @Override
@@ -60,10 +56,11 @@ public class ExportPage extends ActionPage {
     @Override
     protected void loadData() {
         try {
-            Connector<?> sourceConnector = new ConnectorFactory(pluginManager).getConnector(exportConfig.getSourceConfig());
+            Connector<?> sourceConnector = config.getConnector1().createConnectorInstance(); 
             this.loadedTasks = TaskLoader.loadTasks(
                     services.getLicenseManager(), sourceConnector,
-                    exportConfig.generateSourceMappings(), ProgressMonitorUtils.getDummyMonitor());
+                    config.generateSourceMappings(),
+                    ProgressMonitorUtils.getDummyMonitor());
         } catch (CommunicationException e) {
             String message = getErrorMessageForException(e);
             showErrorMessageOnPage(message);
@@ -93,7 +90,9 @@ public class ExportPage extends ActionPage {
 
     @Override
     protected String getInitialText() {
-        return "Will load data from " + exportConfig.getSourceConfig().getData().getSourceLocation() + " (" + exportConfig.getSourceConfig().getData().getLabel() + ")";
+        return "Will load data from "
+                + config.getConnector1().getSourceLocation() + " ("
+                + config.getConnector1().getLabel() + ")";
     }
 
     @Override
@@ -132,7 +131,7 @@ public class ExportPage extends ActionPage {
     }
 
     private void addFromToPanel() {
-        donePanel.addComponent(createdExportResultLabel("From", exportConfig.getSourceConfig().getData().getSourceLocation()));
+        donePanel.addComponent(createdExportResultLabel("From", config.getConnector1().getSourceLocation()));
     }
 
     private void addExportNumbersStats(TaskSaveResult result) {
@@ -214,7 +213,7 @@ public class ExportPage extends ActionPage {
     private String decodeException(ConnectorError<Throwable> e) {
         final String connectorID = e.getConnectorId();
 
-        final PluginEditorFactory factory = services.getEditorManager()
+        final PluginEditorFactory<?> factory = services.getEditorManager()
                 .getEditorFactory(connectorID);
 
         String errorText = factory.formatError(e.getError());
@@ -229,12 +228,13 @@ public class ExportPage extends ActionPage {
     protected void saveData(List<GTask> tasks) throws ConnectorException {
         saveProgress.setValue(0);
         final MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
-        ConnectorFactory factory = new ConnectorFactory(pluginManager);
-        Connector<?> destinationConnector = factory.getConnector(exportConfig.getTargetConfig());
+        final Connector<?> destinationConnector = config.getConnector2().createConnectorInstance();
         try {
-            result = TaskSaver.save(exportConfig.getSourceConfig().getType(),
-                    destinationConnector, exportConfig.getTargetConfig().getType(),
-                    exportConfig.generateTargetMappings(), tasks, wrapper);
+            result = TaskSaver.save(
+                    config.getConnector2().getConnectorTypeId(),
+                    destinationConnector, config.getConnector1()
+                            .getConnectorTypeId(), config
+                            .generateTargetMappings(), tasks, wrapper);
         } catch (ConnectorException e) {
             showErrorMessageOnPage(ExceptionFormatter.format(e));
             logger.error(e.getMessage(), e);

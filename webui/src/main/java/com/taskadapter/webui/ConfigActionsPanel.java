@@ -20,14 +20,12 @@ import com.vaadin.ui.themes.Runo;
 public class ConfigActionsPanel extends VerticalLayout {
     private Navigator navigator;
     private UISyncConfig syncConfig;
-    private Services services;
     private HorizontalLayout horizontalLayout;
     private static final String NO_DESCRIPTION_TEXT = "<i>No description</i>"; //&nbsp;
 
-    public ConfigActionsPanel(Navigator navigator, UISyncConfig uiSyncConfig, Services services) {
+    public ConfigActionsPanel(Navigator navigator, UISyncConfig uiSyncConfig) {
         this.navigator = navigator;
         this.syncConfig = uiSyncConfig;
-        this.services = services;
         buildUI();
     }
 
@@ -59,7 +57,7 @@ public class ConfigActionsPanel extends VerticalLayout {
         configBoxButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
-                navigator.showConfigureTaskPage(syncConfig.tafileize());
+                navigator.showConfigureTaskPage(syncConfig);
             }
         });
         horizontalLayout.addComponent(configBoxButton);
@@ -75,23 +73,26 @@ public class ConfigActionsPanel extends VerticalLayout {
 
     private Button createButton(MappingSide exportDirection) {
         String imageFile;
+        UISyncConfig config;
+        
         switch (exportDirection) {
             case RIGHT:
                 imageFile = "img/arrow_right.png";
+                config = syncConfig;
                 break;
             case LEFT:
                 imageFile = "img/arrow_left.png";
+                config = syncConfig.reverse();
                 break;
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("Unsupported mapping direction " + exportDirection);
         }
         Button button = new Button();
         button.setIcon(new ThemeResource(imageFile));
         button.setStyleName(Runo.BUTTON_SMALL);
         button.addStyleName("configsTableArrowButton");
 
-        final Exporter exporter = new Exporter(navigator,
-                services.getPluginManager(), syncConfig, exportDirection);
+        final Exporter exporter = new Exporter(navigator, config);
         button.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {

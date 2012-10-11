@@ -103,7 +103,7 @@ public final class UIConfigStore {
         final String mappingsStr = new Gson().toJson(mappings);
         configStorage.saveConfig(userLoginName, syncConfig.getIdentity(),
                 label, config1.getConnectorTypeId(), config1.getConfigString(),
-                config2.getConnectorTypeId(), config2.getConnectorTypeId(),
+                config2.getConnectorTypeId(), config2.getConfigString(),
                 mappingsStr);
     }
 
@@ -124,8 +124,9 @@ public final class UIConfigStore {
         final UIConnectorConfig config2 = uiConfigService.createRichConfig(
                 conn2Config.getConnectorTypeId(),
                 conn2Config.getSerializedConfig());
-        final NewMappings mappings = new Gson().fromJson(
-                storedConfig.getMappings(), NewMappings.class);
+        final NewMappings mappings = storedConfig.getMappings() == null ? new NewMappings()
+                : new Gson().fromJson(storedConfig.getMappings(),
+                        NewMappings.class);
         return new UISyncConfig(storedConfig.getId(), label, config1, config2,
                 mappings, false);
     }

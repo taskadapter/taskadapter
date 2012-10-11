@@ -6,9 +6,8 @@ import com.taskadapter.connector.definition.NewMappings;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.web.Messages;
-import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.Validatable;
-import com.taskadapter.web.service.Services;
+import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.terminal.Resource;
@@ -36,20 +35,15 @@ public class OnePageMappingPanel extends Panel implements Validatable {
 
     private GridLayout gridLayout;
 
-    private String connector1Label;
-    private AvailableFields connector1Fields;
-    private String connector2Label;
-    private AvailableFields connector2Fields;
+    private UIConnectorConfig connector1;
+    private UIConnectorConfig connector2;
     private NewMappings mappings;
 
-    public OnePageMappingPanel(String connector1Label, AvailableFields connector1Fields,
-                               String connector2Label, AvailableFields connector2Fields,
-                               NewMappings mappings) {
+    public OnePageMappingPanel(UIConnectorConfig connector1,
+            UIConnectorConfig connector2, NewMappings mappings) {
         super("Task fields mapping");
-        this.connector1Label = connector1Label;
-        this.connector1Fields = connector1Fields;
-        this.connector2Label = connector2Label;
-        this.connector2Fields = connector2Fields;
+        this.connector1 = connector1;
+        this.connector2 = connector2;               
         this.mappings = mappings;
 
         addFields();
@@ -76,13 +70,13 @@ public class OnePageMappingPanel extends Panel implements Validatable {
         label2.setWidth("30px");
         gridLayout.addComponent(label2, COLUMN_DESCRIPTION, 0);
 
-        Label label1 = new Label(connector1Label);
+        Label label1 = new Label(connector1.getLabel());
         label1.addStyleName("fieldsTitle");
         label1.setWidth("135px");
         gridLayout.addComponent(label1, COLUMN_LEFT_CONNECTOR, 0);
 
 
-        Label label3 = new Label(connector2Label);
+        Label label3 = new Label(connector2.getLabel());
         label3.addStyleName("fieldsTitle");
         gridLayout.addComponent(label3, COLUMN_RIGHT_CONNECTOR, 0);
 
@@ -98,8 +92,10 @@ public class OnePageMappingPanel extends Panel implements Validatable {
     private void addField(GTaskDescriptor.FIELD field) {
         addCheckbox(field);
 //        addEmptyCell();
-        addConnectorField(field, connector1Fields, mappings.getMapping(field), "connector1");
-        addConnectorField(field, connector2Fields, mappings.getMapping(field), "connector2");
+        addConnectorField(field, connector1.getAvailableFields(),
+                mappings.getMapping(field), "connector1");
+        addConnectorField(field, connector2.getAvailableFields(),
+                mappings.getMapping(field), "connector2");
     }
 
     private CheckBox addCheckbox(GTaskDescriptor.FIELD field) {

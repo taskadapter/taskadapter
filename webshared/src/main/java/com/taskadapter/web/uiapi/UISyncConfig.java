@@ -1,7 +1,10 @@
 package com.taskadapter.web.uiapi;
 
 import com.taskadapter.config.TAFile;
+import com.taskadapter.connector.MappingBuilder;
 import com.taskadapter.connector.definition.FieldMapping;
+import com.taskadapter.connector.definition.MappingSide;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.NewMappings;
 
 /**
@@ -105,7 +108,7 @@ public final class UISyncConfig {
      * Returns a "normalized" (canonical) form of this config.
      * @return normalized (canonical) version of this config.
      */
-    UISyncConfig normalized() {
+    public UISyncConfig normalized() {
         return reversed ? reverse() : this;
     }
     
@@ -120,6 +123,25 @@ public final class UISyncConfig {
     private static FieldMapping reverse(FieldMapping mapping) {
         return new FieldMapping(mapping.getField(), mapping.getConnector2(),
                 mapping.getConnector1(), mapping.isSelected());
+    }
+
+    /**
+     * Generates a source mappings. Returned mappings is snapshot of a current
+     * state and are not updated when newMappings changes.
+     * @return source mappings
+     */
+    public Mappings generateSourceMappings() {
+        return MappingBuilder.build(newMappings, MappingSide.LEFT);
+    }
+
+    /**
+     * Generates a target mappings. Returned mappings is snapshot of a current
+     * state and are not updated when newMappings changes.
+     * 
+     * @return target mappings.
+     */
+    public Mappings generateTargetMappings() {
+        return MappingBuilder.build(newMappings, MappingSide.RIGHT);
     }
 
 }

@@ -1,9 +1,8 @@
 package com.taskadapter.webui.export;
 
-import com.taskadapter.config.TAFile;
-import com.taskadapter.connector.definition.MappingSide;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
+import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.Navigator;
 import com.taskadapter.webui.Page;
 import com.vaadin.ui.Button;
@@ -14,6 +13,10 @@ import com.vaadin.ui.VerticalLayout;
 
 import java.util.List;
 
+/**
+ * Action page. Always perform action from connector1 to connector2.
+ *
+ */
 public abstract class ActionPage extends Page {
     protected final VerticalLayout mainPanel;
 
@@ -21,11 +24,10 @@ public abstract class ActionPage extends Page {
     protected ProgressIndicator saveProgress = new ProgressIndicator();
     protected List<GTask> loadedTasks;
     private ConfirmExportPage confirmExportPage;
-    protected final ExportConfig<?, ?> exportConfig;
+    protected final UISyncConfig config;
 
-    protected ActionPage(TAFile file, MappingSide exportDirection) {
-        this.exportConfig = ExportConfig.createExportOrder(file,
-                exportDirection);
+    protected ActionPage(UISyncConfig config) {
+        this.config = config;
         mainPanel = new VerticalLayout();
         mainPanel.setSpacing(true);
         mainPanel.setMargin(true);
@@ -67,8 +69,8 @@ public abstract class ActionPage extends Page {
         loadProgress.setPollingInterval(200);
         mainPanel.addComponent(loadProgress);
         String labelText = "Loading data from "
-                + exportConfig.getSourceConfig().getData().getSourceLocation()
-                + " (" + exportConfig.getSourceConfig().getData().getLabel() + ") ...";
+                + config.getConnector1().getSourceLocation()
+                + " (" + config.getConnector1().getLabel() + ") ...";
         mainPanel.addComponent(createLabel(labelText));
     }
 
@@ -155,15 +157,14 @@ public abstract class ActionPage extends Page {
     }
 
     protected void buildConfirmationUI() {
-        confirmExportPage = new ConfirmExportPage(services, navigator, loadedTasks,
-                exportConfig, 
-                new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                saveConfigIfChanged();
-                startSaveTasksProcess();
-            }
-        });
+        confirmExportPage = new ConfirmExportPage(navigator, loadedTasks,
+                config, new Button.ClickListener() {
+                    @Override
+                    public void buttonClick(Button.ClickEvent event) {
+                        saveConfigIfChanged();
+                        startSaveTasksProcess();
+                    }
+                });
         mainPanel.addComponent(confirmExportPage);
         mainPanel.setExpandRatio(confirmExportPage, 1f); // use all available space
     }
@@ -175,7 +176,8 @@ public abstract class ActionPage extends Page {
             saveProgress = new ProgressIndicator();
             saveProgress.setIndeterminate(false);
             saveProgress.setEnabled(true);
-            saveProgress.setCaption("Saving to " + exportConfig.getTargetConfig().getData().getTargetLocation());
+            saveProgress.setCaption("Saving to "
+                    + config.getConnector2().getDestinationLocation());
             mainPanel.removeAllComponents();
             mainPanel.addComponent(saveProgress);
 

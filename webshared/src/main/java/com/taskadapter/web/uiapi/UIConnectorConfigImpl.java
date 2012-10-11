@@ -1,11 +1,15 @@
 package com.taskadapter.web.uiapi;
 
 import com.taskadapter.config.ConnectorDataHolder;
+import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.web.PluginEditorFactory;
+import com.taskadapter.web.WindowProvider;
+import com.taskadapter.web.service.Services;
+import com.vaadin.ui.ComponentContainer;
 
 /**
  * Implementation of RichConfig. Hides implementation details inside and keeps a
@@ -17,7 +21,7 @@ import com.taskadapter.web.PluginEditorFactory;
 final class UIConnectorConfigImpl<T extends ConnectorConfig> extends
         UIConnectorConfig {
     private final PluginFactory<T> connectorFactory;
-    private final PluginEditorFactory<T> factory;
+    private final PluginEditorFactory<T> editorFactory;
     private final T config;
     private final String connectorTypeId;
 
@@ -25,7 +29,7 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends
             PluginEditorFactory<T> editorFactory, T config,
             String connectorTypeId) {
         this.connectorFactory = connectorFactory;
-        this.factory = editorFactory;
+        this.editorFactory = editorFactory;
         this.config = config;
         this.connectorTypeId = connectorTypeId;
     }
@@ -70,6 +74,27 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends
     @Override
     public Connector<?> createConnectorInstance() {
         return connectorFactory.createConnector(config);
+    }
+
+    @Override
+    public ComponentContainer createMiniPanel(WindowProvider windowProvider,
+            Services services) {
+        return editorFactory.getMiniPanelContents(windowProvider, services, config);
+    }
+
+    @Override
+    public AvailableFields getAvailableFields() {
+        return editorFactory.getAvailableFields();
+    }
+
+    @Override
+    public String getSourceLocation() {
+        return config.getSourceLocation();
+    }
+
+    @Override
+    public String getDestinationLocation() {
+        return config.getTargetLocation();
     }
 
 }

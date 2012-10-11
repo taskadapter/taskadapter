@@ -108,8 +108,8 @@ public class NewConfigPage extends Page {
         }
     }
 
-    private void showTaskDetailsPage(UISyncConfig file) {
-        navigator.showConfigureTaskPage(file.tafileize());
+    private void showTaskDetailsPage(UISyncConfig config) {
+        navigator.showConfigureTaskPage(config);
     }
 
     private void validate() throws ValidationException {

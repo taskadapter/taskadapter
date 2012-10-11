@@ -57,7 +57,7 @@ public final class TaskSaver {
                     .getGeneralErrors(), destinationConnectorId));
         } catch (ConnectorException e) {
             saveResult = null;
-            errors.addGeneralError(new ConnectorError<Throwable>(e, sourceConnectorId));
+            errors.addGeneralError(new ConnectorError<Throwable>(e, destinationConnectorId));
         }
 
         if (monitor != null) {

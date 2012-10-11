@@ -1,8 +1,8 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.config.TAFile;
 import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.service.Services;
+import com.taskadapter.web.uiapi.UISyncConfig;
 import com.vaadin.Application;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
@@ -143,13 +143,13 @@ public class Navigator {
     }
 
     // TODO these 5 showXX methods are not in line with the other show(). refactor!
-    public void showConfigureTaskPage(TAFile file) {
-        showConfigureTaskPage(file, null);
+    public void showConfigureTaskPage(UISyncConfig config) {
+        showConfigureTaskPage(config, null);
     }
 
-    public void showConfigureTaskPage(TAFile file, String errorMessage) {
+    public void showConfigureTaskPage(UISyncConfig config, String errorMessage) {
         EditConfigPage page = (EditConfigPage) pages.get(EDIT_CONFIG_PAGE);
-        page.setFile(file);
+        page.setConfig(config);
         page.setErrorMessage(errorMessage);
 
         show(page);

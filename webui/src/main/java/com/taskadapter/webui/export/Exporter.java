@@ -1,12 +1,9 @@
 package com.taskadapter.webui.export;
 
 
-import com.taskadapter.PluginManager;
 import com.taskadapter.config.StorageException;
 import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.FileBasedConnector;
-import com.taskadapter.connector.definition.MappingSide;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPOutputFileNameNotSetException;
@@ -30,16 +27,11 @@ public class Exporter {
     private static final String CANCEL = "Cancel";
 
     private final Navigator navigator;
-    private final PluginManager pluginManager;
     private final UISyncConfig syncConfig;
-    private final MappingSide exportDirection;
 
-    public Exporter(Navigator navigator, PluginManager pluginManager,
-                    UISyncConfig syncConfig, MappingSide exportDirection) {
+    public Exporter(Navigator navigator, UISyncConfig syncConfig) {
         this.navigator = navigator;
-        this.pluginManager = pluginManager;
         this.syncConfig = syncConfig;
-        this.exportDirection = exportDirection;
     }
 
     public void export() {
@@ -85,7 +77,7 @@ public class Exporter {
         if (valid) {
             processBasedOnDestinationConnectorType();
         } else {
-            navigator.showConfigureTaskPage(syncConfig.tafileize(), errorMessage);
+            navigator.showConfigureTaskPage(syncConfig, errorMessage);
         }
     }
 
@@ -125,14 +117,14 @@ public class Exporter {
             startRegularExport();
         }
     }
-
+    
     private void startUpdateFile() {
-        UpdateFilePage page = new UpdateFilePage(pluginManager, syncConfig.tafileize(), exportDirection);
+        UpdateFilePage page = new UpdateFilePage(syncConfig);
         navigator.show(page);
     }
 
     private void startRegularExport() {
-        ExportPage page = new ExportPage(pluginManager, syncConfig.tafileize(), exportDirection);
+        ExportPage page = new ExportPage(syncConfig);
         navigator.show(page);
     }
 }
