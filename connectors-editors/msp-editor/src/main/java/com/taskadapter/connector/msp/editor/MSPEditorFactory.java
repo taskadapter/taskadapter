@@ -1,5 +1,7 @@
 package com.taskadapter.connector.msp.editor;
 
+import java.io.File;
+
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ValidationException;
@@ -102,6 +104,16 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
         if (config.getInputAbsoluteFilePath().isEmpty()) {
             throw new ValidationException("Please provide the input file name in MSP config");
         }
+    }
+
+    @Override
+    public String describeSourceLocation(MSPConfig config) {
+        return new File(config.getInputAbsoluteFilePath()).getName();
+    }
+
+    @Override
+    public String describeDestinationLocation(MSPConfig config) {
+        return new File(config.getOutputAbsoluteFilePath()).getName();
     }
 
 }

@@ -36,4 +36,18 @@ public interface PluginEditorFactory<C extends ConnectorConfig> {
      * @throws ValidationException if validation fails.
      */
     void validateForLoad(C config) throws ValidationException;
+    
+    /**
+     * Describes source location in a user-friendly manner.
+     * @param config config.
+     * @return user-friendly description of a source location.
+     */
+    String describeSourceLocation(C config);
+
+    /**
+     * Describes destination location in a user-friendly manner.
+     * @param config config.
+     * @return user-friendly description of a detination location.
+     */
+    String describeDestinationLocation(C config);
 }

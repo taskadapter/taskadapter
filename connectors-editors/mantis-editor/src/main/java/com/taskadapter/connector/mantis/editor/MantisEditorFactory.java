@@ -83,4 +83,14 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
         // TODO !!! Implement
     }
 
+    @Override
+    public String describeSourceLocation(MantisConfig config) {
+        return config.getServerInfo().getHost();
+    }
+
+    @Override
+    public String describeDestinationLocation(MantisConfig config) {
+        return describeSourceLocation(config);
+    }
+
 }

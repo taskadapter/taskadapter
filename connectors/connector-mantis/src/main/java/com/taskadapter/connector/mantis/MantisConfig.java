@@ -39,17 +39,6 @@ public class MantisConfig extends ConnectorConfig {
         return serverInfo;
     }
 
-    @Override
-    public String getSourceLocation() {
-        return serverInfo.getHost();
-    }
-
-    @Override
-    public String getTargetLocation() {
-        // target is the same as source for web-based configs
-        return getSourceLocation();
-    }
-
     public void setServerInfo(WebServerInfo serverInfo) {
         this.serverInfo = serverInfo;
     }

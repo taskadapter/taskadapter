@@ -81,17 +81,6 @@ public class RedmineConfig extends ConnectorConfig {
         this.serverInfo = serverInfo;
     }
 
-    @Override
-    public String getSourceLocation() {
-        return serverInfo.getHost();
-    }
-
-    @Override
-    public String getTargetLocation() {
-        // target is the same as source for web-based configs
-        return getSourceLocation();
-    }
-
     public boolean isFindUserByName() {
         return findUserByName;
     }

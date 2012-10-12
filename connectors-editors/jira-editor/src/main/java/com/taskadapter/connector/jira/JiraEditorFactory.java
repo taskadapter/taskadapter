@@ -110,4 +110,14 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
         }
     }
 
+    @Override
+    public String describeSourceLocation(JiraConfig config) {
+        return config.getServerInfo().getHost();
+    }
+
+    @Override
+    public String describeDestinationLocation(JiraConfig config) {
+        return describeSourceLocation(config);
+    }
+
 }

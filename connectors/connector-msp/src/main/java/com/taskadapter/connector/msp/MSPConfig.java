@@ -71,16 +71,6 @@ public class MSPConfig extends ConnectorConfig {
     }
 
     @Override
-    public String getSourceLocation() {
-        return new File(inputAbsoluteFilePath).getName();
-    }
-
-    @Override
-    public String getTargetLocation() {
-        return new File(outputAbsoluteFilePath).getName();
-    }
-
-    @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();

@@ -28,16 +28,6 @@ public abstract class ConnectorConfig implements Serializable {
         this.label = label;
     }
 
-    /**
-     * Label describing where the data is located.
-     * <p>sample values:
-     * for Redmine connector: "http://www.redmine.org:1234",
-     * for MSProject: "c:\folder1\file.txt"
-     */
-    public abstract String getSourceLocation();
-
-    public abstract String getTargetLocation();
-
     public ConnectorConfig() {
         priorities = generateDefaultPriorities();
     }

@@ -82,12 +82,12 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends
 
     @Override
     public String getSourceLocation() {
-        return config.getSourceLocation();
+        return editorFactory.describeSourceLocation(config);
     }
 
     @Override
     public String getDestinationLocation() {
-        return config.getTargetLocation();
+        return editorFactory.describeDestinationLocation(config);
     }
 
 }

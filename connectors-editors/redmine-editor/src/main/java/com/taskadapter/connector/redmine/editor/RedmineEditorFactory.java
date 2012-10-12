@@ -75,4 +75,14 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
             throws ValidationException {
         // TODO !!! Implement
     }
+
+    @Override
+    public String describeSourceLocation(RedmineConfig config) {
+        return config.getServerInfo().getHost();
+    }
+
+    @Override
+    public String describeDestinationLocation(RedmineConfig config) {
+        return describeSourceLocation(config);
+    }
 }

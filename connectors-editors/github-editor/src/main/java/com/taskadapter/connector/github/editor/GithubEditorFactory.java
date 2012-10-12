@@ -88,4 +88,14 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig> {
             throw new ValidationException("Server URL is not set");
         }
     }
+
+    @Override
+    public String describeSourceLocation(GithubConfig config) {
+        return config.getServerInfo().getHost();
+    }
+
+    @Override
+    public String describeDestinationLocation(GithubConfig config) {
+        return describeSourceLocation(config);
+    }
 }
