@@ -59,6 +59,7 @@ public class ExportPage extends ActionPage {
             Connector<?> sourceConnector = config.getConnector1().createConnectorInstance(); 
             this.loadedTasks = TaskLoader.loadTasks(
                     services.getLicenseManager(), sourceConnector,
+                    config.getConnector1().getLabel(),
                     config.generateSourceMappings(),
                     ProgressMonitorUtils.getDummyMonitor());
         } catch (CommunicationException e) {
@@ -230,11 +231,10 @@ public class ExportPage extends ActionPage {
         final MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
         final Connector<?> destinationConnector = config.getConnector2().createConnectorInstance();
         try {
-            result = TaskSaver.save(
-                    config.getConnector2().getConnectorTypeId(),
-                    destinationConnector, config.getConnector1()
-                            .getConnectorTypeId(), config
-                            .generateTargetMappings(), tasks, wrapper);
+            result = TaskSaver.save(destinationConnector, config
+                    .getConnector2().getConnectorTypeId(), config
+                    .getConnector2().getDestinationLocation(), config
+                    .generateTargetMappings(), tasks, wrapper);
         } catch (ConnectorException e) {
             showErrorMessageOnPage(ExceptionFormatter.format(e));
             logger.error(e.getMessage(), e);

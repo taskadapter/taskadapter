@@ -24,16 +24,16 @@ public final class TaskSaver {
     }
 
     public static SyncResult<TaskSaveResult, TaskErrors<ConnectorError<Throwable>>> save(
-            String sourceConnectorId,
-            Connector<?> connectorTo, String destinationConnectorId, Mappings destinationMappings,
-            List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
+            Connector<?> connectorTo, String destinationConnectorId, String destinationName, 
+            Mappings destinationMappings, List<GTask> tasks,
+            ProgressMonitor monitor) throws ConnectorException {
         if (monitor == null) {
             monitor = ProgressMonitorUtils.getDummyMonitor();
         }
         
         final int totalNumberOfTasks = DataConnectorUtil.calculateNumberOfTasks(tasks);
         monitor.beginTask("Saving " + totalNumberOfTasks + " tasks to "
-                + connectorTo.getConfig().getTargetLocation(), totalNumberOfTasks);
+                + destinationName, totalNumberOfTasks);
         
         final List<GTask> treeToSave;
         if (destinationMappings.isFieldSelected(FIELD.REMOTE_ID)) {

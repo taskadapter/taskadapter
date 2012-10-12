@@ -68,14 +68,16 @@ public class IntegrationTest {
 
         Mappings mspMappings = DefaultMSPMappings.generate();
         mspMappings.setMapping(GTaskDescriptor.FIELD.REMOTE_ID, true, MSPUtils.getDefaultRemoteIdMapping());
-        List<GTask> loadedTasks = TaskLoader.loadTasks(new LicenseManager(), msProjectConnector, mspMappings, DUMMY_MONITOR);
+        List<GTask> loadedTasks = TaskLoader.loadTasks(new LicenseManager(), msProjectConnector, "msp1", mspMappings, DUMMY_MONITOR);
 
         RedmineConnector redmineConnector = new RedmineConnector(redmineConfigTo);
         Mappings redmineMappings = DefaultRedmineMappings.generate();
-        TaskSaver.save(MSPConnector.ID, redmineConnector, RedmineConnector.ID, redmineMappings, loadedTasks, DUMMY_MONITOR);
+        TaskSaver.save(redmineConnector, RedmineConnector.ID,
+                "Redmine target location", redmineMappings, loadedTasks,
+                DUMMY_MONITOR);
 
         //reload from MSP file
-        List<GTask> tasksReloadedFromMSPFile = TaskLoader.loadTasks(new LicenseManager(), msProjectConnector, mspMappings, DUMMY_MONITOR);
+        List<GTask> tasksReloadedFromMSPFile = TaskLoader.loadTasks(new LicenseManager(), msProjectConnector, "msp2", mspMappings, DUMMY_MONITOR);
 
         assertEquals(2, tasksReloadedFromMSPFile.size());
 
@@ -93,12 +95,14 @@ public class IntegrationTest {
         Connector<?> projectConnector = new MSPConnector(mspConfig);
 
         Mappings mspMappings = DefaultMSPMappings.generate();
-        List<GTask> loadedTasks = TaskLoader.loadTasks(new LicenseManager(), projectConnector, mspMappings, DUMMY_MONITOR);
+        List<GTask> loadedTasks = TaskLoader.loadTasks(new LicenseManager(), projectConnector, "project1", mspMappings, DUMMY_MONITOR);
         try {
             // save to Redmine
             Mappings redmineMappings = DefaultRedmineMappings.generate();
             RedmineConnector redmineConnector = new RedmineConnector(redmineConfigTo);
-            TaskSaver.save(MSPConnector.ID, redmineConnector, RedmineConnector.ID, redmineMappings, loadedTasks, DUMMY_MONITOR);
+            TaskSaver.save(redmineConnector,
+                    RedmineConnector.ID, "Redmine target location",
+                    redmineMappings, loadedTasks, DUMMY_MONITOR);
         } catch (Throwable t) {
             t.printStackTrace();
             fail(t.toString());

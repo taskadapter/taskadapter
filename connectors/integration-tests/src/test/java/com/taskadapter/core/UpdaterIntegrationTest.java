@@ -67,7 +67,7 @@ public class UpdaterIntegrationTest {
     }
 
     private void updateMSPFile(Mappings mspMappingsWithRemoteIdSet, Mappings redmineMappings) throws ConnectorException {
-        Updater updater = new Updater(projectConnector, mspMappingsWithRemoteIdSet, redmineConnector, redmineMappings);
+        Updater updater = new Updater(projectConnector, mspMappingsWithRemoteIdSet, redmineConnector, redmineMappings, "someTestData");
         updater.loadTasksFromFile(ProgressMonitorUtils.getDummyMonitor());
         updater.removeTasksWithoutRemoteIds();
         updater.loadExternalTasks();

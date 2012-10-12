@@ -47,11 +47,6 @@ public class JiraConnector implements Connector<JiraConfig> {
         throw new UnsupportedConnectorOperation("updateRemoteIDs");
     }
 
-    @Override
-    public JiraConfig getConfig() {
-        return config;
-    }
-
     public GTask loadTaskByKey(WebServerInfo info, String key) throws ConnectorException {
         try {
             JiraConnection connection = JiraConnectionFactory.createConnection(info);

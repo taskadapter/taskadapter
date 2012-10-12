@@ -39,11 +39,6 @@ public class GithubConnector implements Connector<GithubConfig> {
     }
 
     @Override
-    public GithubConfig getConfig() {
-        return config;
-    }
-
-    @Override
     public GTask loadTaskByKey(String key, Mappings mappings) throws ConnectorException {
         IssueService issueService = new ConnectionFactory(config.getServerInfo()).getIssueService();
 

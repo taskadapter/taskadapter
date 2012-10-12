@@ -1,7 +1,6 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.Priorities;
-import com.taskadapter.connector.definition.ValidationException;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -11,12 +10,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class MSPConfigTest {
-    @Test(expected = ValidationException.class)
-    public void noInputFileNameFailsValidation() throws ValidationException {
-        MSPConfig config = new MSPConfig();
-        config.validateForLoad();
-    }
-
     @Test
     public void unselectedSaveIssueRelationsIsCopiedByCopyConstructor() {
         MSPConfig config = new MSPConfig();

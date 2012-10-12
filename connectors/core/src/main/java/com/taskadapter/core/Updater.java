@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.taskadapter.connector.common.ConnectorUtils;
-import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.FileBasedConnector;
@@ -22,14 +21,17 @@ public class Updater {
     private Connector<?> remoteConnector;
     private Mappings remoteMappings;
     private ProgressMonitor monitor;
+    private String sourceLocationName;
 
     public Updater(Connector<?> fileConnector, Mappings fileMappings,
-            Connector<?> remoteConnector, Mappings remoteMappings) {
+            Connector<?> remoteConnector, Mappings remoteMappings,
+            String sourceLocationName) {
         super();
         this.fileConnector = fileConnector;
         this.fileMappings = fileMappings;
         this.remoteConnector = remoteConnector;
         this.remoteMappings = remoteMappings;
+        this.sourceLocationName  = sourceLocationName;
     }
 
     public void loadTasksFromFile(ProgressMonitor monitor) throws ConnectorException {
@@ -40,7 +42,7 @@ public class Updater {
         this.tasksInExternalSystem = new ArrayList<GTask>(existingTasks.size());
         if (monitor != null) {
             monitor.beginTask("Loading " + existingTasks.size()
-                    + " tasks from " + getRemoteSystemURI(),
+                    + " tasks from " + sourceLocationName,
                     existingTasks.size());
         }
         for (GTask gTask : existingTasks) {
@@ -78,14 +80,6 @@ public class Updater {
 
     public void removeTasksWithoutRemoteIds() {
         this.existingTasks = TreeUtils.cloneTreeSkipEmptyRemoteIds(existingTasks);
-    }
-
-    public String getFilePath() {
-        return fileConnector.getConfig().getTargetLocation();
-    }
-
-    public String getRemoteSystemURI() {
-        return remoteConnector.getConfig().getSourceLocation();
     }
 
     public void setMonitor(ProgressMonitor monitor) {

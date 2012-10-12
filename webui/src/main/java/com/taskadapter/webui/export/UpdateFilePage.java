@@ -25,7 +25,8 @@ public class UpdateFilePage extends ActionPage {
          */
         updater = new Updater(destinationConnector,
                 config.generateTargetMappings(), sourceConnector,
-                config.generateSourceMappings());
+                config.generateSourceMappings(), config.getConnector1()
+                        .getDestinationLocation());
     }
 
     @Override
@@ -64,8 +65,11 @@ public class UpdateFilePage extends ActionPage {
     @Override
     protected VerticalLayout getDoneInfoPanel() {
         VerticalLayout donePanel = new VerticalLayout();
-        donePanel.addComponent(new Label(updater.getNumberOfUpdatedTasks() + " tasks were updated in file "
-                + updater.getFilePath() + " with the data from " + updater.getRemoteSystemURI()));
+        donePanel.addComponent(new Label(updater.getNumberOfUpdatedTasks()
+                + " tasks were updated in file "
+                + config.getConnector2().getDestinationLocation()
+                + " with the data from "
+                + config.getConnector1().getSourceLocation()));
 
         return donePanel;
     }

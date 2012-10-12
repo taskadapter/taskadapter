@@ -48,6 +48,4 @@ public interface Connector<T extends ConnectorConfig> {
      */
     void updateRemoteIDs(ConnectorConfig sourceConfig,
                                 Map<Integer, String> remoteIds, com.taskadapter.connector.definition.ProgressMonitor monitor, Mappings mappings) throws ConnectorException;
-
-    T getConfig();
 }

@@ -29,14 +29,13 @@ public final class TaskLoader {
     private static final Logger logger = LoggerFactory.getLogger(TaskLoader.class);
 
     public static List<GTask> loadTasks(LicenseManager licenseManager,
-            Connector<?> connectorFrom, Mappings sourceMappings,
+            Connector<?> connectorFrom, String sourceName, Mappings sourceMappings,
             ProgressMonitor monitor) throws ConnectorException {
         if (monitor == null) {
             monitor = ProgressMonitorUtils.getDummyMonitor();
         }
         
-        monitor.beginTask("Loading data from "
-                + connectorFrom.getConfig().getLabel(), 100);
+        monitor.beginTask("Loading data from " + sourceName, 100);
         List<GTask> flatTasksList = ConnectorUtils.loadDataOrderedById(connectorFrom, sourceMappings, monitor);
         flatTasksList = applyTrialIfNeeded(licenseManager, flatTasksList);
 

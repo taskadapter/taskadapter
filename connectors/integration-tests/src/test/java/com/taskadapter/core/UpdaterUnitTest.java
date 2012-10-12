@@ -29,7 +29,9 @@ public class UpdaterUnitTest {
     @Test
     public void tasksWithoutRemoteIdsAreFiltered() throws ConnectorException {
         // TODO refactor: DefaultRedmineMappings.generate() is not even used in Updater in this case.
-        Updater updater = new Updater(projectConnector, DefaultMSPMappings.generate(), null, DefaultRedmineMappings.generate());
+        Updater updater = new Updater(projectConnector,
+                DefaultMSPMappings.generate(), null,
+                DefaultRedmineMappings.generate(), "someTestData");
         updater.loadTasksFromFile(ProgressMonitorUtils.getDummyMonitor());
         assertEquals(9, updater.getExistingTasks().size());
         updater.removeTasksWithoutRemoteIds();

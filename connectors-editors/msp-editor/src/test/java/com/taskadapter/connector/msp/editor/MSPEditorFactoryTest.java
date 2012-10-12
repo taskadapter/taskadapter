@@ -1,5 +1,6 @@
 package com.taskadapter.connector.msp.editor;
 
+import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.service.Authenticator;
@@ -12,6 +13,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class MSPEditorFactoryTest {
+    @Test(expected = ValidationException.class)
+    public void noInputFileNameFailsValidation() throws ValidationException {
+        MSPConfig config = new MSPConfig();
+        new MSPEditorFactory().validateForLoad(config);
+    }
+
     @Test
     public void miniPanelInstanceIsCreated() {
         Services services = new Services(new File("testfolder.tmp"));

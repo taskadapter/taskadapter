@@ -53,11 +53,6 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
         }
     }
 
-    @Override
-    public MSPConfig getConfig() {
-        return config;
-    }
-
     private void setFieldIfNotNull(Mappings mappings, FIELD field, Task mspTask, String value) {
         String v = mappings.getMappedTo(field);
         TaskField f = MSPUtils.getTaskFieldByName(v);

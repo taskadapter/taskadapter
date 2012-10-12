@@ -33,7 +33,7 @@ public class TaskLoaderTest {
         mappings.setMapping(GTaskDescriptor.FIELD.REMOTE_ID, true, TaskField.TEXT22.toString());
 
         Connector<?> projectConnector = new MSPConnector(mspConfig);
-        List<GTask> list = TaskLoader.loadTasks(new LicenseManager(), projectConnector, mappings, ProgressMonitorUtils.getDummyMonitor());
+        List<GTask> list = TaskLoader.loadTasks(new LicenseManager(), projectConnector, "project1", mappings, ProgressMonitorUtils.getDummyMonitor());
         assertEquals(1, list.size());
     }
 
