@@ -10,7 +10,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class JiraConfig extends ConnectorConfig {
-
+    
+    private static final Priorities DEFAULT_PRIORITIES = createDefaultPriorities();
+    
     static final String DEFAULT_LABEL = "Atlassian Jira";
 
     private static final long serialVersionUID = 1L;
@@ -36,6 +38,7 @@ public class JiraConfig extends ConnectorConfig {
     private Map<String, String> customFields = new TreeMap<String, String>();
 
     public JiraConfig() {
+        super(DEFAULT_PRIORITIES);
         setLabel(DEFAULT_LABEL);
         setDefaultTaskType(TASK_TYPE_BUG);
     }
@@ -72,28 +75,19 @@ public class JiraConfig extends ConnectorConfig {
         this.queryString = queryString;
     }
 
-    @Override
-    protected Priorities generateDefaultPriorities() {
-        return createDefaultPriorities();
-    }
-
     /**
      * Creates a default priorities.
      *
      * @return default priorities.
      */
     public static Priorities createDefaultPriorities() {
-        return new Priorities(new HashMap<String, Integer>() {
-            private static final long serialVersionUID = 516389048716909610L;
-
-            {
-                put("Trivial", 100);
-                put("Minor", 300);
-                put("Major", 700);
-                put("Critical", 800);
-                put("Blocker", 1000);
-            }
-        });
+        final Map<String, Integer> result = new HashMap<String, Integer>();
+        result.put("Trivial", 100);
+        result.put("Minor", 300);
+        result.put("Major", 700);
+        result.put("Critical", 800);
+        result.put("Blocker", 1000);
+        return new Priorities(result);
     }
 
 

@@ -1,12 +1,16 @@
 package com.taskadapter.connector.github;
 
-import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.WebServerInfo;
 
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Map;
 
 public class GithubConfig extends ConnectorConfig {
+    
+    private static final Map<String, Integer> DEFAULT_PRIORITIES = Collections
+            .emptyMap();
+    
     static final String DEFAULT_LABEL = "Github";
 
     private String issueState;
@@ -16,6 +20,7 @@ public class GithubConfig extends ConnectorConfig {
     private String projectKey;
 
     public GithubConfig() {
+        super(DEFAULT_PRIORITIES);
         setLabel(DEFAULT_LABEL);
         getServerInfo().setHost("http://github.com");
     }
@@ -42,17 +47,6 @@ public class GithubConfig extends ConnectorConfig {
 
     public void setQueryString(String queryString) {
         this.queryString = queryString;
-    }
-
-    @Override
-    protected Priorities generateDefaultPriorities() {
-        return new Priorities(new HashMap<String, Integer>() {
-            private static final long serialVersionUID = 516389048716909610L;
-
-            {
-                // EMPTY! Github does not support priorities for issues
-            }
-        });
     }
 
     public WebServerInfo getServerInfo() {

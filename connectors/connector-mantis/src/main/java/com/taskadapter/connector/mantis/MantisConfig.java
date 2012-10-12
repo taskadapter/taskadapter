@@ -1,14 +1,22 @@
 package com.taskadapter.connector.mantis;
 
-import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.WebServerInfo;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class MantisConfig extends ConnectorConfig {
 
+    static final Map<String, Integer> DEFAULT_PRIORITIES = new HashMap<String, Integer>();    
+    static {
+        DEFAULT_PRIORITIES.put("low", 100);
+        DEFAULT_PRIORITIES.put("normal", 500);
+        DEFAULT_PRIORITIES.put("high", 700);
+        DEFAULT_PRIORITIES.put("urgent", 800);
+        DEFAULT_PRIORITIES.put("immediate", 1000);
+    }
+    
     static final String DEFAULT_LABEL = "Mantis";
 
     private static final long serialVersionUID = 1L;
@@ -17,22 +25,8 @@ public class MantisConfig extends ConnectorConfig {
     private boolean findUserByName;
 
     public MantisConfig() {
+        super(DEFAULT_PRIORITIES);
         setLabel(DEFAULT_LABEL);
-    }
-
-    @Override
-    protected Priorities generateDefaultPriorities() {
-        return new Priorities(new HashMap<String, Integer>() {
-            private static final long serialVersionUID = 516389048716909610L;
-
-            {
-                put("low", 100);
-                put("normal", 500);
-                put("high", 700);
-                put("urgent", 800);
-                put("immediate", 1000);
-            }
-        });
     }
 
     public WebServerInfo getServerInfo() {

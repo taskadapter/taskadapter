@@ -4,8 +4,10 @@ import com.google.common.base.Objects;
 import com.taskadapter.connector.Priorities;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
-public abstract class ConnectorConfig implements Serializable {
+public class ConnectorConfig implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -28,10 +30,31 @@ public abstract class ConnectorConfig implements Serializable {
         this.label = label;
     }
 
-    public ConnectorConfig() {
-        priorities = generateDefaultPriorities();
+    /**
+     * Creates a new connector config. This constructor creates a new instance
+     * of priorities to be used inside this class. Such behavior allows to
+     * connectors to have single constant value for a priorities.
+     * 
+     * @param defaultPriorities
+     *            default priorities.
+     */
+    public ConnectorConfig(Priorities defaultPriorities) {
+        priorities = new Priorities(defaultPriorities);
     }
 
+    /**
+     * Creates a new connector config. This constructor creates a new instance
+     * of priorities to be used inside this class. Such behavior allows to
+     * connectors to have single constant value for a priorities.
+     * 
+     * @param defaultPriorities
+     *            default priorities.
+     */
+    public ConnectorConfig(Map<String, Integer> defaultPriorities) {
+        priorities = new Priorities(new HashMap<String, Integer>(
+                defaultPriorities));
+    }
+    
     public ConnectorConfig(ConnectorConfig configToDeepClone) {
         saveIssueRelations = configToDeepClone.getSaveIssueRelations();
         defaultTaskType = configToDeepClone.getDefaultTaskType();
@@ -45,8 +68,6 @@ public abstract class ConnectorConfig implements Serializable {
     public void setSaveIssueRelations(boolean saveIssueRelations) {
         this.saveIssueRelations = saveIssueRelations;
     }
-
-    abstract protected Priorities generateDefaultPriorities();
 
     public String getDefaultTaskType() {
         return defaultTaskType;
@@ -70,10 +91,6 @@ public abstract class ConnectorConfig implements Serializable {
         } else {
             return false;
         }
-    }
-
-    public void setPriorities(Priorities priorities) {
-        this.priorities = priorities;
     }
 
     public Priorities getPriorities() {

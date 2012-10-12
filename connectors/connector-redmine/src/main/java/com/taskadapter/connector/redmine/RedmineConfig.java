@@ -1,13 +1,11 @@
 package com.taskadapter.connector.redmine;
 
 import com.google.common.base.Objects;
-import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.WebServerInfo;
-import com.taskadapter.model.GTaskDescriptor;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class RedmineConfig extends ConnectorConfig {
 
@@ -15,6 +13,15 @@ public class RedmineConfig extends ConnectorConfig {
 
     private static final long serialVersionUID = 1L;
     private static final String TASK_TYPE_BUG = "Bug";
+    
+    private static final Map<String, Integer> DEFAULT_PRIORITIES = new HashMap<String, Integer>();    
+    static {
+        DEFAULT_PRIORITIES.put("Low", 100);
+        DEFAULT_PRIORITIES.put("Normal", 500);
+        DEFAULT_PRIORITIES.put("High", 700);
+        DEFAULT_PRIORITIES.put("Urgent", 800);
+        DEFAULT_PRIORITIES.put("Immediate", 1000);
+    }
 
     private WebServerInfo serverInfo = new WebServerInfo();
 
@@ -24,6 +31,7 @@ public class RedmineConfig extends ConnectorConfig {
     private String projectKey;
 
     public RedmineConfig() {
+        super(DEFAULT_PRIORITIES);
         setLabel(DEFAULT_LABEL);
         setDefaultTaskType(TASK_TYPE_BUG);
     }
@@ -34,21 +42,6 @@ public class RedmineConfig extends ConnectorConfig {
 
     public void setDefaultTaskStatus(String defaultTaskStatus) {
         this.defaultTaskStatus = defaultTaskStatus;
-    }
-
-    @Override
-    protected Priorities generateDefaultPriorities() {
-        return new Priorities(new HashMap<String, Integer>() {
-            private static final long serialVersionUID = 516389048716909610L;
-
-            {
-                put("Low", 100);
-                put("Normal", 500);
-                put("High", 700);
-                put("Urgent", 800);
-                put("Immediate", 1000);
-            }
-        });
     }
 
     @Override

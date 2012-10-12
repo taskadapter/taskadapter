@@ -1,13 +1,21 @@
 package com.taskadapter.connector.msp;
 
-import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ConnectorConfig;
 
-import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 
 public class MSPConfig extends ConnectorConfig {
     private static final long serialVersionUID = 1L;
+    
+    private static final Map<String, Integer> DEFAULT_PRIORITIES = new HashMap<String, Integer>();
+    static {
+        DEFAULT_PRIORITIES.put("100", 100);
+        DEFAULT_PRIORITIES.put("500", 500);
+        DEFAULT_PRIORITIES.put("700", 700);
+        DEFAULT_PRIORITIES.put("800", 800);
+        DEFAULT_PRIORITIES.put("1000", 1000);
+    }
 
     // TODO this is a UI element. move it to UI layer
     static final String DEFAULT_LABEL = "Microsoft Project";
@@ -21,7 +29,7 @@ public class MSPConfig extends ConnectorConfig {
 
 
     public MSPConfig() {
-        super();
+        super(DEFAULT_PRIORITIES);
         setLabel(DEFAULT_LABEL);
     }
 
@@ -29,6 +37,7 @@ public class MSPConfig extends ConnectorConfig {
      * @param absoluteFilePath absolute path to the MSP file name
      */
     public MSPConfig(String absoluteFilePath) {
+        super(DEFAULT_PRIORITIES);
         this.inputAbsoluteFilePath = absoluteFilePath;
         this.outputAbsoluteFilePath = absoluteFilePath;
         setLabel(DEFAULT_LABEL);
@@ -106,20 +115,5 @@ public class MSPConfig extends ConnectorConfig {
     @Override
     public String toString() {
         return "MSPConfig [inputAbsoluteFilePath=" + inputAbsoluteFilePath + ", outputAbsoluteFilePath=" + outputAbsoluteFilePath + "]";
-    }
-
-    @Override
-    protected Priorities generateDefaultPriorities() {
-        return new Priorities(new HashMap<String, Integer>() {
-            private static final long serialVersionUID = 516389048716909610L;
-
-            {
-                put("100", 100);
-                put("500", 500);
-                put("700", 700);
-                put("800", 800);
-                put("1000", 1000);
-            }
-        });
     }
 }

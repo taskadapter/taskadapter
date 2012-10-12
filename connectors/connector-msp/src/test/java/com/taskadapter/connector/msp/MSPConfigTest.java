@@ -3,8 +3,6 @@ package com.taskadapter.connector.msp;
 import com.taskadapter.connector.Priorities;
 import org.junit.Test;
 
-import java.util.HashMap;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -38,23 +36,20 @@ public class MSPConfigTest {
     @Test
     public void prioritiesCopiedByCopyConstructor() {
         MSPConfig config = new MSPConfig();
-        Priorities priorities = getSamplePriorities();
-        config.setPriorities(priorities);
+        final Priorities sourcePriorities = config.getPriorities();
+        sourcePriorities.clear();
+        sourcePriorities.setPriority("Low", 100);
+        sourcePriorities.setPriority("Normal", 500);
+        sourcePriorities.setPriority("High", 700);
+        sourcePriorities.setPriority("Urgent", 800);
         MSPConfig cloned = new MSPConfig(config);
         Priorities clonedPriorities = cloned.getPriorities();
-        assertEquals(priorities.getAllNames().size(), clonedPriorities.getAllNames().size());
+        assertEquals(sourcePriorities.getAllNames().size(), clonedPriorities.getAllNames().size());
         assertTrue(clonedPriorities.getAllNames().contains("Normal"));
         assertEquals(Integer.valueOf(700), clonedPriorities.getPriorityByText("High"));
-    }
-
-    private Priorities getSamplePriorities() {
-        return new Priorities(new HashMap<String, Integer>() {
-            {
-                put("Low", 100);
-                put("Normal", 500);
-                put("High", 700);
-                put("Urgent", 800);
-            }
-        });
+        
+        sourcePriorities.setPriority("Urgent", 123);
+        assertEquals(Integer.valueOf(800), clonedPriorities.getPriorityByText("Urgent"));
+        assertEquals(Integer.valueOf(123), sourcePriorities.getPriorityByText("Urgent"));
     }
 }
