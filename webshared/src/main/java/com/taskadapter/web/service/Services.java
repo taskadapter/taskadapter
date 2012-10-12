@@ -71,4 +71,10 @@ public class Services {
     public UIConfigStore getUIConfigStore() {
         return uiConfigStore;
     }
+
+    @Deprecated
+    public void setAuthenticator(Authenticator authenticator2) {
+        this.authenticator = authenticator2;
+    }
+    
 }
