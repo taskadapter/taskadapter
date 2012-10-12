@@ -8,8 +8,8 @@ import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.service.EditorManager;
 
 /**
- * Service to deal with rich connector configurations. It's just a closure for a
- * required configuration services (execution context).
+ * Service to deal with UI connector configurations. Provides canonical and
+ * simple ways to create new UI connectors.
  */
 public final class UIConfigService {
     private final PluginManager pluginManager;
