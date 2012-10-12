@@ -67,7 +67,7 @@ public class Exporter {
                     services.getUIConfigStore().saveConfig(userName, syncConfig);
                 } catch (StorageException e1) {
                     // FIXME:
-                    // TODO !!!
+                    // TODO log and report error instead of printing stacktrace
                     e1.printStackTrace();
                 }
 

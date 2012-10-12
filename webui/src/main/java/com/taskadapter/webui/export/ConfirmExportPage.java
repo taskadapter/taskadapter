@@ -61,7 +61,7 @@ public class ConfirmExportPage extends CustomComponent {
         setCompositionRoot(layout);
     }
 
-    // TODO !!! fix this
+    // TODO !!! config changed on the confirmation page is not saved
 //    public boolean needToSaveConfig() {
 //        return onePageMappingPanel.haveChanges();
 //    }
