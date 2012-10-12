@@ -82,20 +82,6 @@ public abstract class ConnectorConfig implements Serializable {
         }
     }
 
-    /**
-     * The default implementation does nothing.
-     */
-    public void validateForSave() throws ValidationException {
-        // nothing
-    }
-
-    /**
-     * The default implementation does nothing.
-     */
-    public void validateForLoad() throws ValidationException {
-        // nothing
-    }
-
     public void setPriorities(Priorities priorities) {
         this.priorities = priorities;
     }

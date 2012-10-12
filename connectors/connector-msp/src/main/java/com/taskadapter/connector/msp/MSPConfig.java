@@ -2,7 +2,6 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.ValidationException;
 
 import java.io.File;
 import java.util.HashMap;
@@ -117,20 +116,6 @@ public class MSPConfig extends ConnectorConfig {
     @Override
     public String toString() {
         return "MSPConfig [inputAbsoluteFilePath=" + inputAbsoluteFilePath + ", outputAbsoluteFilePath=" + outputAbsoluteFilePath + "]";
-    }
-
-    @Override
-    public void validateForLoad() throws ValidationException {
-        if (inputAbsoluteFilePath.isEmpty()) {
-            throw new ValidationException("Please provide the input file name in MSP config");
-        }
-    }
-
-    @Override
-    public void validateForSave() throws ValidationException {
-        if (outputAbsoluteFilePath.isEmpty()) {
-            throw new MSPOutputFileNameNotSetException();
-        }
     }
 
     @Override

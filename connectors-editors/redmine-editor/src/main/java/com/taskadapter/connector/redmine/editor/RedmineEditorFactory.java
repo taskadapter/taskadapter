@@ -1,6 +1,7 @@
 package com.taskadapter.connector.redmine.editor;
 
 import com.taskadapter.connector.definition.AvailableFields;
+import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
 import com.taskadapter.connector.redmine.RelationCreationException;
@@ -61,5 +62,17 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
         layout.addComponent(projectPanel);
         layout.addComponent(new OtherRedmineFieldsContainer(config));
         return layout;
+    }
+
+    @Override
+    public void validateForSave(RedmineConfig config)
+            throws ValidationException {
+        // TODO !!! Implement
+    }
+
+    @Override
+    public void validateForLoad(RedmineConfig config)
+            throws ValidationException {
+        // TODO !!! Implement
     }
 }

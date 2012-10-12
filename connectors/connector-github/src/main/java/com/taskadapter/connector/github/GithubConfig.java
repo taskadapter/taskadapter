@@ -2,8 +2,6 @@ package com.taskadapter.connector.github;
 
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Mappings;
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
 
 import java.util.HashMap;
@@ -55,17 +53,6 @@ public class GithubConfig extends ConnectorConfig {
                 // EMPTY! Github does not support priorities for issues
             }
         });
-    }
-
-    @Override
-    public void validateForLoad() throws ValidationException {
-        if (!serverInfo.isHostSet()) {
-            throw new ValidationException("Server URL is not set");
-        }
-
-        if(serverInfo.getUserName().isEmpty()) {
-            throw new ValidationException("User login name is required.");
-        }
     }
 
     public WebServerInfo getServerInfo() {

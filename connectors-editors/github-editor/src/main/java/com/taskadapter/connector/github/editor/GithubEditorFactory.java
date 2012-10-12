@@ -1,6 +1,7 @@
 package com.taskadapter.connector.github.editor;
 
 import com.taskadapter.connector.definition.AvailableFields;
+import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.connector.github.GithubConfig;
@@ -66,5 +67,25 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig> {
         projectPanel.setProjectKeyLabel("Repository ID");
         layout.addComponent(projectPanel);
         return layout;
+    }
+
+    @Override
+    public void validateForSave(GithubConfig config) throws ValidationException {
+        final WebServerInfo serverInfo = config.getServerInfo();
+        if (!serverInfo.isHostSet()) {
+            throw new ValidationException("Server URL is not set");
+        }
+
+        if(serverInfo.getUserName().isEmpty()) {
+            throw new ValidationException("User login name is required.");
+        }
+    }
+
+    @Override
+    public void validateForLoad(GithubConfig config) throws ValidationException {
+        final WebServerInfo serverInfo = config.getServerInfo();
+        if (!serverInfo.isHostSet()) {
+            throw new ValidationException("Server URL is not set");
+        }
     }
 }

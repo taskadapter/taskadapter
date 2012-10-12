@@ -2,8 +2,10 @@ package com.taskadapter.connector.msp.editor;
 
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
+import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
+import com.taskadapter.connector.msp.MSPOutputFileNameNotSetException;
 import com.taskadapter.connector.msp.UnsupportedRelationType;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.WindowProvider;
@@ -86,6 +88,20 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
 
     private boolean isLocalMode(Services services) {
         return services.getSettingsManager().isTAWorkingOnLocalMachine();
+    }
+
+    @Override
+    public void validateForSave(MSPConfig config) throws ValidationException {
+        if (config.getOutputAbsoluteFilePath().isEmpty()) {
+            throw new MSPOutputFileNameNotSetException();
+        }
+    }
+
+    @Override
+    public void validateForLoad(MSPConfig config) throws ValidationException {
+        if (config.getInputAbsoluteFilePath().isEmpty()) {
+            throw new ValidationException("Please provide the input file name in MSP config");
+        }
     }
 
 }

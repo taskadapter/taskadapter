@@ -3,8 +3,6 @@ package com.taskadapter.connector.jira;
 import com.google.common.base.Objects;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Mappings;
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
 
 import java.util.HashMap;
@@ -72,31 +70,6 @@ public class JiraConfig extends ConnectorConfig {
 
     public void setQueryString(String queryString) {
         this.queryString = queryString;
-    }
-
-    @Override
-    public void validateForLoad() throws ValidationException {
-        if (!serverInfo.isHostSet()) {
-            throw new ValidationException("Server URL is not set");
-        }
-
-        if (queryId == null) {
-            throw new ValidationException("The current Task Adapter version supports loading data from Jira\n" +
-                    "only using saved \"Query ID\".\n" +
-                    "Please specify it in the Jira configuration dialog");
-        }
-    }
-
-    @Override
-    public void validateForSave() throws ValidationException {
-        if (!serverInfo.isHostSet()) {
-            throw new ValidationException("Server URL is not set");
-        }
-
-        if (projectKey.isEmpty()) {
-            throw new ValidationException("Please specify the Jira project name\n" +
-                    "where you want your tasks to be created.");
-        }
     }
 
     @Override

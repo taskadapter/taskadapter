@@ -50,12 +50,12 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends
 
     @Override
     public void validateForLoad() throws ValidationException {
-        config.validateForLoad();
+        editorFactory.validateForLoad(config);
     }
 
     @Override
     public void validateForSave() throws ValidationException {
-        config.validateForSave();
+        editorFactory.validateForSave(config);
     }
     
     @Override

@@ -1,6 +1,7 @@
 package com.taskadapter.connector.jira;
 
 import com.taskadapter.connector.definition.AvailableFields;
+import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.jira.exceptions.BadHostException;
 import com.taskadapter.connector.jira.exceptions.BadURIException;
@@ -80,6 +81,33 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
     private CustomFieldsTablePanel createCustomOtherFieldsPanel(JiraConfig config) {
         CustomFieldsTablePanel customFieldsTablePanel = new CustomFieldsTablePanel(config.getCustomFields());
         return customFieldsTablePanel;
+    }
+
+    @Override
+    public void validateForSave(JiraConfig config) throws ValidationException {
+        final WebServerInfo serverInfo = config.getServerInfo();
+        if (!serverInfo.isHostSet()) {
+            throw new ValidationException("Server URL is not set");
+        }
+
+        if (config.getProjectKey().isEmpty()) {
+            throw new ValidationException("Please specify the Jira project name\n" +
+                    "where you want your tasks to be created.");
+        }
+    }
+
+    @Override
+    public void validateForLoad(JiraConfig config) throws ValidationException {
+        final WebServerInfo serverInfo = config.getServerInfo();
+        if (!serverInfo.isHostSet()) {
+            throw new ValidationException("Server URL is not set");
+        }
+
+        if (config.getQueryId() == null) {
+            throw new ValidationException("The current Task Adapter version supports loading data from Jira\n" +
+                    "only using saved \"Query ID\".\n" +
+                    "Please specify it in the Jira configuration dialog");
+        }
     }
 
 }
