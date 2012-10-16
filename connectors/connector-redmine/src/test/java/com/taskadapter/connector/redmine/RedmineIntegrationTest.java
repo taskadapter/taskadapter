@@ -167,7 +167,7 @@ public class RedmineIntegrationTest {
         GTask task = TestUtils.generateTask();
         task.setAssignee(currentUser);
 
-        RedmineConfig config = RedmineTestConfig.getRedmineTestConfig();
+        RedmineConfig config = getTestConfig();
         config.setFindUserByName(true);
         GTask loadedTask = getTestSaver(config).selectField(FIELD.ASSIGNEE).saveAndLoad(task);
         assertEquals(currentUser.getId(), loadedTask.getAssignee().getId());
@@ -302,7 +302,7 @@ public class RedmineIntegrationTest {
 
     @Test
     public void taskExportedWithoutRelations() throws Exception {
-        RedmineConfig config = RedmineTestConfig.getRedmineTestConfig();
+        RedmineConfig config = getTestConfig();
         config.setSaveIssueRelations(false);
         GTask loadedTask = createTaskWithPrecedesRelations(getConnector(config), 2, DefaultRedmineMappings.generate());
 
@@ -311,7 +311,7 @@ public class RedmineIntegrationTest {
 
     @Test
     public void taskExportedWithRelations() throws Exception {
-        RedmineConfig config = RedmineTestConfig.getRedmineTestConfig();
+        RedmineConfig config = getTestConfig();
         config.setSaveIssueRelations(true);
         GTask loadedTask = createTaskWithPrecedesRelations(getConnector(config), 2, DefaultRedmineMappings.generate());
 
@@ -327,7 +327,7 @@ public class RedmineIntegrationTest {
 
     @Test
     public void taskUpdateTaskWithDeletedRelation() throws Exception {
-        RedmineConfig config = RedmineTestConfig.getRedmineTestConfig();
+        RedmineConfig config = getTestConfig();
         config.setSaveIssueRelations(true);
         Mappings mapping = DefaultRedmineMappings.generate();
         RedmineConnector connector = getConnector(config);
@@ -354,7 +354,7 @@ public class RedmineIntegrationTest {
 
     @Test
     public void taskUpdateTaskWithCreatedRelation() throws Exception {
-        RedmineConfig config = RedmineTestConfig.getRedmineTestConfig();
+        RedmineConfig config = getTestConfig();
         config.setSaveIssueRelations(true);
         Mappings mapping = DefaultRedmineMappings.generate();
         RedmineConnector connector = getConnector(config);
@@ -423,10 +423,14 @@ public class RedmineIntegrationTest {
         return TestUtils.findTaskBySummary(loadedList, task.getSummary());
     }
 
-    private RedmineConnector getConnector() {
+    private RedmineConfig getTestConfig() {
         RedmineConfig config = RedmineTestConfig.getRedmineTestConfig();
         config.setProjectKey(projectKey);
-        return getConnector(config);
+        return config;
+    }
+
+    private RedmineConnector getConnector() {
+        return getConnector(getTestConfig());
     }
 
     private RedmineConnector getConnector(RedmineConfig config) {
