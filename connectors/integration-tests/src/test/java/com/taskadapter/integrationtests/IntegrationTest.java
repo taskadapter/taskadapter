@@ -86,7 +86,7 @@ public class IntegrationTest {
                 redmineMappings, loadedTasks,
                 DUMMY_MONITOR);
         RemoteIdUpdater.updateRemoteIds(result.getIdToRemoteKeyMap(),
-                redmineMappings, redmineConnector);
+                mspMappings, msProjectConnector);
 
         //reload from MSP file
         List<GTask> tasksReloadedFromMSPFile = TaskLoader.loadTasks(new LicenseManager(), msProjectConnector, "msp2", mspMappings, DUMMY_MONITOR);
