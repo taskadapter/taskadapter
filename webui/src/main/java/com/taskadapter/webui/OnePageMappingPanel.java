@@ -144,27 +144,17 @@ public class OnePageMappingPanel extends Panel implements Validatable {
                 Object currentValue = mappedTo.getValue();
                 combo.select(currentValue);
             } else if (allowedValues.length == 1) {
-                createMappingForSingleValue(allowedValues[0], fieldMapping, leftRightField);
+                createMappingForSingleValue(allowedValues[0]);
             } else {
                 String displayValue = GTaskDescriptor.getDisplayValue(field);
-                createMappingForSingleValue(displayValue, fieldMapping, leftRightField);
+                createMappingForSingleValue(displayValue);
             }
         } else {
             addEmptyCell();
         }
     }
 
-    private void createMappingForSingleValue(String displayValue, FieldMapping mapping, String leftRight) {
-/*
-        // TODO !!! bug? why did we set this?
-        if (leftRight.equals("left")) {
-            mapping.setLeft(displayValue);
-        } else if (leftRight.equals("right")) {
-            mapping.setRight(displayValue);
-        } else {
-            throw new IllegalArgumentException();
-        }
-*/
+    private void createMappingForSingleValue(String displayValue) {
         Label label = new Label(displayValue);
         gridLayout.addComponent(label);
         gridLayout.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
