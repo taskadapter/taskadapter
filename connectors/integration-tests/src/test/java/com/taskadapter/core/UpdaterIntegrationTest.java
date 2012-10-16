@@ -2,7 +2,6 @@ package com.taskadapter.core;
 
 import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
-import com.taskadapter.connector.common.TestUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
@@ -14,6 +13,7 @@ import com.taskadapter.connector.redmine.DefaultRedmineMappings;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
 import com.taskadapter.connector.redmine.RedmineToGTask;
+import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.integrationtests.RedmineTestConfig;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;

@@ -8,8 +8,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static com.taskadapter.connector.common.TestUtils.findTaskBySummary;
 import static com.taskadapter.connector.msp.MSPTestUtils.load;
+import static com.taskadapter.connector.testlib.TestUtils.findTaskBySummary;
 import static org.junit.Assert.assertEquals;
 
 public class DateTest {

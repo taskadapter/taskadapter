@@ -1,4 +1,4 @@
-package com.taskadapter.connector;
+package com.taskadapter.connector.testlib;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;

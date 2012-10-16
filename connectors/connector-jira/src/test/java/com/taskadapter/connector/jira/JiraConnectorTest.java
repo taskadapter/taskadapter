@@ -1,7 +1,7 @@
 package com.taskadapter.connector.jira;
 
-import com.taskadapter.connector.common.CommonTests;
-import com.taskadapter.connector.common.TestUtils;
+import com.taskadapter.connector.testlib.CommonTests;
+import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.model.GTask;
 import org.junit.Test;
 

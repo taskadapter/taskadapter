@@ -1,18 +1,23 @@
 package com.taskadapter.connector.jira;
 
-import com.atlassian.jira.rest.client.domain.*;
+import com.atlassian.jira.rest.client.domain.BasicComponent;
+import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.IssueType;
+import com.atlassian.jira.rest.client.domain.Priority;
+import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rest.client.internal.json.IssueJsonParser;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import com.taskadapter.connector.TestDataLoader;
-import com.taskadapter.connector.jira.mock.*;
+import com.taskadapter.connector.jira.mock.BasicComponentMock;
+import com.taskadapter.connector.jira.mock.IssueTypeMock;
+import com.taskadapter.connector.jira.mock.PriorityMock;
+import com.taskadapter.connector.jira.mock.VersionMock;
+import com.taskadapter.connector.testlib.TestDataLoader;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class MockData {

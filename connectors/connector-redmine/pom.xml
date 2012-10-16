@@ -33,5 +33,11 @@
             <artifactId>redmine-java-api</artifactId>
             <version>1.15</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.taskadapter</groupId>
+            <artifactId>test-utilities</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

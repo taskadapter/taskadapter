@@ -1,6 +1,6 @@
 package com.taskadapter.connector.github;
 
-import com.taskadapter.connector.TestDataLoader;
+import com.taskadapter.connector.testlib.TestDataLoader;
 import com.taskadapter.model.GTask;
 import org.eclipse.egit.github.core.Issue;
 import org.junit.Test;

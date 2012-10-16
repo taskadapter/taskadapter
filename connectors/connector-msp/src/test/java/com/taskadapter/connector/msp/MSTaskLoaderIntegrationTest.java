@@ -1,6 +1,6 @@
 package com.taskadapter.connector.msp;
 
-import com.taskadapter.connector.common.TestUtils;
+import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.model.GTask;
 import org.junit.Assert;
 import org.junit.Test;

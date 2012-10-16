@@ -1,12 +1,12 @@
 package com.taskadapter.connector.redmine;
 
-import com.taskadapter.connector.common.CommonTests;
-import com.taskadapter.connector.common.TestSaver;
-import com.taskadapter.connector.common.TestUtils;
 import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.testlib.CommonTests;
+import com.taskadapter.connector.testlib.TestSaver;
+import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;

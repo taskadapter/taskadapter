@@ -1,5 +1,6 @@
-package com.taskadapter.connector.common;
+package com.taskadapter.connector.testlib;
 
+import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.SyncResult;
@@ -8,7 +9,13 @@ import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 public class TestUtils {
     public static List<GTask> generateTasks(int quantity) {

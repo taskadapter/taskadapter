@@ -1,14 +1,18 @@
 package com.taskadapter.connector.msp;
 
-import com.taskadapter.connector.common.CommonTests;
-import com.taskadapter.connector.common.TestSaver;
-import com.taskadapter.connector.common.TestUtils;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.testlib.CommonTests;
+import com.taskadapter.connector.testlib.TestSaver;
+import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
-import net.sf.mpxj.*;
+import net.sf.mpxj.ConstraintType;
+import net.sf.mpxj.MPXJException;
+import net.sf.mpxj.ProjectFile;
+import net.sf.mpxj.Task;
+import net.sf.mpxj.TaskField;
 import org.junit.Before;
 import org.junit.Test;
 

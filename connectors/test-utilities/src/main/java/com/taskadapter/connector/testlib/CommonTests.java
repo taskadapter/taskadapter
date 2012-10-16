@@ -1,5 +1,6 @@
-package com.taskadapter.connector.common;
+package com.taskadapter.connector.testlib;
 
+import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.SyncResult;

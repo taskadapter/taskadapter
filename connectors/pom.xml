@@ -35,6 +35,7 @@
         <module>model</module>
         <module>util</module>
         <module>core</module>
+        <module>test-utilities</module>
         <module>connector-jira</module>
         <module>connector-mantis</module>
         <module>connector-redmine</module>
@@ -64,6 +65,12 @@
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
                 <version>1.6</version>
+            </dependency>
+            <dependency>
+                <groupId>com.taskadapter</groupId>
+                <artifactId>test-utilities</artifactId>
+                <version>1</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
