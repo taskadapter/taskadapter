@@ -67,13 +67,13 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
     @Override
     public void validateForSave(RedmineConfig config)
             throws ValidationException {
-        // TODO !!! Implement
+        // TODO !! Implement
     }
 
     @Override
     public void validateForLoad(RedmineConfig config)
             throws ValidationException {
-        // TODO !!! Implement
+        // TODO !! Implement
     }
 
     @Override

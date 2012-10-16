@@ -66,21 +66,21 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
         layout.addComponent(new ProjectPanel(windowProvider, EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
                 null,
                 Interfaces.fromMethod(DataProvider.class, MantisLoaders.class,
-                        "getProjects", ((MantisConfig) config).getServerInfo())
+                        "getProjects", config.getServerInfo())
                 , NULL_PROJECT_INFO_CALLBACK, NULL_QUERY_PROVIDER));
-        layout.addComponent(new OtherMantisFieldsPanel((MantisConfig) config));
+        layout.addComponent(new OtherMantisFieldsPanel(config));
 
         return layout;
     }
 
     @Override
     public void validateForSave(MantisConfig config) throws ValidationException {
-        // TODO !!! Implement
+        // TODO !! Implement
     }
 
     @Override
     public void validateForLoad(MantisConfig config) throws ValidationException {
-        // TODO !!! Implement
+        // TODO !! Implement
     }
 
     @Override
