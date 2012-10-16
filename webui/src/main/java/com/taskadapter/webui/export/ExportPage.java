@@ -3,6 +3,7 @@ package com.taskadapter.webui.export;
 import com.google.common.base.Strings;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.definition.TaskError;
 import com.taskadapter.connector.definition.TaskErrors;
@@ -16,6 +17,7 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.file.FileDownloadResource;
+import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.MonitorWrapper;
 import com.taskadapter.webui.data.ExceptionFormatter;
@@ -229,12 +231,17 @@ public class ExportPage extends ActionPage {
     protected void saveData(List<GTask> tasks) throws ConnectorException {
         saveProgress.setValue(0);
         final MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
+        UIConnectorConfig sourceConnectorConfig = config.getConnector1();
+        final Connector<?> sourceConnector =  sourceConnectorConfig.createConnectorInstance();
+        ConnectorConfig sourceConfig = sourceConnectorConfig.getRawConfig();
+
         final Connector<?> destinationConnector = config.getConnector2().createConnectorInstance();
         try {
-            result = TaskSaver.save(destinationConnector, config
-                    .getConnector2().getConnectorTypeId(), config
-                    .getConnector2().getDestinationLocation(), config
-                    .generateTargetMappings(), tasks, wrapper);
+            result = TaskSaver.save(sourceConnector, sourceConfig,
+                    destinationConnector,
+                    config.getConnector2().getConnectorTypeId(),
+                    config.getConnector2().getDestinationLocation(),
+                    config.generateTargetMappings(), tasks, wrapper);
         } catch (ConnectorException e) {
             showErrorMessageOnPage(ExceptionFormatter.format(e));
             logger.error(e.getMessage(), e);

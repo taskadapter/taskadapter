@@ -40,10 +40,15 @@ public class IntegrationTest {
     @Ignore
     @Test
     public void testSaveRemoteId() throws IOException {
-//		RedmineConfig config = RedmineTestConfig.getRedmineTestConfig();
-//		config.setProjectKey("test");
+		RedmineConfig config = RedmineTestConfig.getRedmineTestConfig();
+		config.setProjectKey("test");
         // XXX query id is hardcoded
-//		config.setQueryId(1);
+		config.setQueryId(1);
+
+//        TaskSaver.save(msProjectConnector, mspConfig,
+//                redmineConnector, RedmineConnector.ID,
+//                "Redmine target location", redmineMappings, loadedTasks,
+//                DUMMY_MONITOR);
 
 //		RedmineConnector redmine = new RedmineConnector(config);
 
@@ -61,18 +66,22 @@ public class IntegrationTest {
     @Test
     public void testSaveRemoteIdWithNonLinearUUID() throws URISyntaxException, IOException, ConnectorException {
 
-        RedmineConfig redmineConfigTo = RedmineTestConfig.getRedmineTestConfig();
-
         MSPConfig mspConfig = generateTemporaryConfig("com/taskadapter/integrationtests/non-linear-uuid.xml");
         Connector<?> msProjectConnector = new MSPConnector(mspConfig);
 
         Mappings mspMappings = DefaultMSPMappings.generate();
         mspMappings.setMapping(GTaskDescriptor.FIELD.REMOTE_ID, true, MSPUtils.getDefaultRemoteIdMapping());
-        List<GTask> loadedTasks = TaskLoader.loadTasks(new LicenseManager(), msProjectConnector, "msp1", mspMappings, DUMMY_MONITOR);
-
-        RedmineConnector redmineConnector = new RedmineConnector(redmineConfigTo);
+        RedmineConnector redmineConnector = new RedmineConnector(RedmineTestConfig.getRedmineTestConfig());
         Mappings redmineMappings = DefaultRedmineMappings.generate();
-        TaskSaver.save(redmineConnector, RedmineConnector.ID,
+        // TODO !!! this is not quite correct. the RemoteID flag is set in the destination config manually,
+        // while it should be set by our NewMapping parser to both source and destination mappings.
+        redmineMappings.setMapping(GTaskDescriptor.FIELD.REMOTE_ID, true, MSPUtils.getDefaultRemoteIdMapping());
+
+        // load from MSP
+        List<GTask> loadedTasks = TaskLoader.loadTasks(new LicenseManager(), msProjectConnector, "msp1", mspMappings, DUMMY_MONITOR);
+        // save to Redmine. this should save the remote IDs
+        TaskSaver.save(msProjectConnector, mspConfig,
+                redmineConnector, RedmineConnector.ID,
                 "Redmine target location", redmineMappings, loadedTasks,
                 DUMMY_MONITOR);
 
@@ -100,7 +109,8 @@ public class IntegrationTest {
             // save to Redmine
             Mappings redmineMappings = DefaultRedmineMappings.generate();
             RedmineConnector redmineConnector = new RedmineConnector(redmineConfigTo);
-            TaskSaver.save(redmineConnector,
+            TaskSaver.save(projectConnector, mspConfig,
+                    redmineConnector,
                     RedmineConnector.ID, "Redmine target location",
                     redmineMappings, loadedTasks, DUMMY_MONITOR);
         } catch (Throwable t) {
