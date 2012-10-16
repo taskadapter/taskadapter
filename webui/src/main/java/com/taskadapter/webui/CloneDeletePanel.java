@@ -60,7 +60,7 @@ public class CloneDeletePanel extends HorizontalLayout {
                     public void onDialogResult(String answer) {
                         if (YES.equals(answer)) {
                             services.getUIConfigStore().deleteConfig(config);
-                            navigator.show(Navigator.HOME);
+                            navigator.show(new ConfigsPage());
                         }
                     }
                 }
@@ -83,7 +83,7 @@ public class CloneDeletePanel extends HorizontalLayout {
                                 //TODO !!! Add an error handler.
                                 e.printStackTrace();
                             }
-                            navigator.show(Navigator.HOME);
+                            navigator.show(new ConfigsPage());
                         }
                     }
                 }

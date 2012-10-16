@@ -2,6 +2,7 @@ package com.taskadapter.webui.export;
 
 import com.taskadapter.model.GTask;
 import com.taskadapter.web.uiapi.UISyncConfig;
+import com.taskadapter.webui.ConfigsPage;
 import com.taskadapter.webui.Navigator;
 import com.taskadapter.webui.OnePageMappingPanel;
 import com.taskadapter.webui.PageUtil;
@@ -51,7 +52,7 @@ public class ConfirmExportPage extends CustomComponent {
 
         HorizontalLayout buttonsLayout = new HorizontalLayout();
         buttonsLayout.addComponent(goButton);
-        buttonsLayout.addComponent(PageUtil.createButton(navigator, "Cancel", Navigator.HOME));
+        buttonsLayout.addComponent(PageUtil.createButton(navigator, "Cancel", new ConfigsPage()));
         layout.addComponent(buttonsLayout);
 
         onePageMappingPanel = new OnePageMappingPanel(config.getConnector1(),

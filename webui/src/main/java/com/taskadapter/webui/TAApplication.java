@@ -37,7 +37,7 @@ public class TAApplication extends Application implements HttpServletRequestList
         getServices().getAuthenticator().init();
 
         Navigator navigator = new Navigator(layout, services);
-        navigator.show(Navigator.HOME);
+        navigator.show(new ConfigsPage());
     }
 
     @Override

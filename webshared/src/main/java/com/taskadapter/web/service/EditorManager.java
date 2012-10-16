@@ -12,13 +12,13 @@ import java.util.Map;
 public class EditorManager {
     private Map<String, PluginEditorFactory<?>> editorFactories = new HashMap<String, PluginEditorFactory<?>>();
 
-    public EditorManager() {
-        loadEditors();
+    public EditorManager(String editorsFileContents) {
+        loadEditors(editorsFileContents);
     }
 
-    private void loadEditors() {
+    private void loadEditors(String editorsFileContents) {
         try {
-            Collection<String> classNames = new PluginsFileParser().parseResource("editors.properties");
+            Collection<String> classNames = new PluginsFileParser().parsePluginsFile(editorsFileContents);
             for (String factoryClassName : classNames) {
                 @SuppressWarnings("unchecked")
                 Class<PluginEditorFactory<?>> factoryClass = (Class<PluginEditorFactory<?>>) Class.forName(factoryClassName);

@@ -28,7 +28,7 @@ public class EditConfigPage extends Page {
         });
         buttonsLayout.addComponent(saveButton);
 
-        buttonsLayout.addComponent(PageUtil.createButton(navigator, "Cancel", Navigator.HOME));
+        buttonsLayout.addComponent(PageUtil.createButton(navigator, "Cancel", new ConfigsPage()));
 
         errorMessageLabel.addStyleName("error-message-label");
         errorMessageLabel.setWidth(100, Sizeable.UNITS_PERCENTAGE);
@@ -81,7 +81,7 @@ public class EditConfigPage extends Page {
             navigator.showNotification("Saved", "All is saved OK");
 
             errorMessageLabel.setValue("");
-            navigator.show(Navigator.HOME);
+            navigator.show(new ConfigsPage());
         }
     }
 

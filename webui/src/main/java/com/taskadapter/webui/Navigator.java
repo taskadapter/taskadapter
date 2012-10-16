@@ -14,14 +14,6 @@ import java.util.Map;
 public class Navigator {
     public static final String MAIN_WIDTH = "920px";// like GitHub
 
-    public static final String HOME = "home";
-    public static final String CONFIGURE_SYSTEM_PAGE = "configure_system";
-    public static final String FEEDBACK_PAGE = "feedback";
-    public static final String NEW_CONFIG_PAGE = "new_config";
-    public static final String LICENSE_AGREEMENT_PAGE = "license_agreement";
-
-    private static final String LOGIN_PAGE = "login";
-
     private Map<String, Page> pages = new HashMap<String, Page>();
     private HorizontalLayout navigationPanel;
     private HorizontalLayout currentComponentArea = new HorizontalLayout();
@@ -35,7 +27,6 @@ public class Navigator {
     public Navigator(VerticalLayout layout, Services services) {
         this.layout = layout;
         this.services = services;
-        registerPages();
         addGoogleAnalytics();
         buildUI();
     }
@@ -44,16 +35,6 @@ public class Navigator {
         tracker = new GoogleAnalyticsTracker("UA-3768502-12", "none");
         // Add ONLY ONE tracker per window
         layout.getWindow().addComponent(tracker);
-    }
-
-    private void registerPages() {
-        ConfigsPage configsPage = new ConfigsPage();
-        registerPage(LOGIN_PAGE, new LoginPage());
-        registerPage(HOME, configsPage);
-        registerPage(CONFIGURE_SYSTEM_PAGE, new ConfigureSystemPage());
-        registerPage(FEEDBACK_PAGE, new SupportPage(services.getUpdateManager()));
-        registerPage(NEW_CONFIG_PAGE, new NewConfigPage());
-        registerPage(LICENSE_AGREEMENT_PAGE, new LicenseAgreementPage());
     }
 
     private void buildUI() {
@@ -108,13 +89,13 @@ public class Navigator {
 
         currentPage = page;
         if (!services.getAuthenticator().isLoggedIn() && requiresLogin(page)) {
-            currentPage = pages.get(LOGIN_PAGE);
+            currentPage = new LoginPage();
         }
 
         if (services.getAuthenticator().isLoggedIn()
                 && services.getAuthenticator().getUserName().equals("admin")
                 && !services.getSettingsManager().isLicenseAgreementAccepted()) {
-            currentPage = pages.get(LICENSE_AGREEMENT_PAGE);
+            currentPage = new LicenseAgreementPage();
         }
 
         setServicesToPage(currentPage);

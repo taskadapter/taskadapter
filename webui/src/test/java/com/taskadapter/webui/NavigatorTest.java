@@ -14,15 +14,16 @@ import static org.junit.Assert.assertEquals;
 public class NavigatorTest {
     @Test
     public void feedbackPageIsShownWithoutLogin() {
-        Navigator navigator = getNavigator();
-        navigator.show(Navigator.FEEDBACK_PAGE);
+        Services services = getServices();
+        Navigator navigator = getNavigator(services);
+        navigator.show(new SupportPage(services.getUpdateManager()));
         assertEquals("support", navigator.getCurrentPage().getPageGoogleAnalyticsID());
     }
 
     @Test
     public void homePageRedirectsToLoginIfNotLoggedIn() {
         Navigator navigator = getNavigator();
-        navigator.show(Navigator.HOME);
+        navigator.show(new ConfigsPage());
         assertEquals("login", navigator.getCurrentPage().getPageGoogleAnalyticsID());
     }
 
@@ -31,8 +32,9 @@ public class NavigatorTest {
         Services services = getServices();
         services.getAuthenticator().tryLogin("admin", "admin", false);
         Navigator navigator = getNavigator(services);
-        navigator.show(Navigator.HOME);
-        assertEquals("home", navigator.getCurrentPage().getPageGoogleAnalyticsID());
+        ConfigsPage home = new ConfigsPage();
+        navigator.show(home);
+        assertEquals(home.getPageGoogleAnalyticsID(), navigator.getCurrentPage().getPageGoogleAnalyticsID());
     }
 
     private Navigator getNavigator() {

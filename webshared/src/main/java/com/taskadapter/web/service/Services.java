@@ -11,9 +11,17 @@ import com.taskadapter.web.uiapi.UIConfigStore;
 import java.io.File;
 
 public class Services {
+    // TODO !!! "webshared" module is a library for all editors. it should not have hardcoded editors list.
+    private final static String EDITORS =
+            "com.taskadapter.connector.redmine.editor.RedmineEditorFactory\n" +
+                    "com.taskadapter.connector.jira.JiraEditorFactory\n" +
+                    "com.taskadapter.connector.msp.editor.MSPEditorFactory\n" +
+                    "com.taskadapter.connector.github.editor.GithubEditorFactory\n" +
+                    "com.taskadapter.connector.mantis.editor.MantisEditorFactory";
+
     private Authenticator authenticator;
     private UpdateManager updateManager = new UpdateManager();
-    private EditorManager editorManager = new EditorManager();
+    private EditorManager editorManager = new EditorManager(EDITORS);
     private PluginManager pluginManager = new PluginManager();
     private SettingsManager settingsManager = new SettingsManager();
     private LicenseManager licenseManager = new LicenseManager();
@@ -27,7 +35,7 @@ public class Services {
         userManager = new UserManager(fileManager);
         final ConfigStorage configStorage = new ConfigStorage(fileManager);
         authenticator = new Authenticator(userManager, cookiesManager);
-        
+
         this.uiConfigStore = new UIConfigStore(new UIConfigService(
                 pluginManager, editorManager), configStorage);
     }
@@ -67,7 +75,7 @@ public class Services {
     public FileManager getFileManager() {
         return fileManager;
     }
-    
+
     public UIConfigStore getUIConfigStore() {
         return uiConfigStore;
     }
@@ -76,5 +84,5 @@ public class Services {
     public void setAuthenticator(Authenticator authenticator2) {
         this.authenticator = authenticator2;
     }
-    
+
 }

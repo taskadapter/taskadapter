@@ -46,7 +46,7 @@ public class ConfigsPage extends Page {
         addButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
-                navigator.show(Navigator.NEW_CONFIG_PAGE);
+                navigator.show(new NewConfigPage());
             }
         });
         layout.addComponent(addButton);

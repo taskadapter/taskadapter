@@ -3,7 +3,7 @@ package com.taskadapter.webui.export;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.web.uiapi.UISyncConfig;
-import com.taskadapter.webui.Navigator;
+import com.taskadapter.webui.ConfigsPage;
 import com.taskadapter.webui.Page;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -141,7 +141,7 @@ public abstract class ActionPage extends Page {
         button.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                navigator.show(Navigator.HOME);
+                navigator.show(new ConfigsPage());
             }
         });
 

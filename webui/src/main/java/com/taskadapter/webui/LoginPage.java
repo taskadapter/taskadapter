@@ -69,7 +69,7 @@ public class LoginPage extends Page {
                     services.getAuthenticator().tryLogin(username, password, staySignedIn.booleanValue());
                     clearLoginFields();
                     errorLabel.setValue("");
-                    navigator.show(Navigator.HOME);
+                    navigator.show(new ConfigsPage());
                 } catch (WrongPasswordException e) {
                     errorLabel.setValue("Wrong password.");
                     passwordEdit.setValue("");

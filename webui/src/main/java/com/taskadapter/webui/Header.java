@@ -61,7 +61,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 services.getAuthenticator().logout();
-                navigator.show(Navigator.HOME);
+                navigator.show(new ConfigsPage());
             }
         });
         panelForLoggedInUsers.addComponent(logoutButton);
@@ -94,7 +94,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
     }
 
     private void addLogo() {
-        Button logo = createButtonLink("Task Adapter", Navigator.HOME, "logo");
+        Button logo = createButtonLink("Task Adapter", new ConfigsPage(), "logo");
         internalLayout.addComponent(logo);
         internalLayout.setExpandRatio(logo, 2f);
     }
@@ -102,15 +102,18 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
     private void addMenuItems() {
         HorizontalLayout menu = new HorizontalLayout();
         menu.setSpacing(true);
-        configureButton = createButtonLink("Configure", Navigator.CONFIGURE_SYSTEM_PAGE, "menu");
+        configureButton = createButtonLink("Configure", new ConfigureSystemPage(), "menu");
         menu.addComponent(configureButton);
-        Button supportButton = createButtonLink("Support", Navigator.FEEDBACK_PAGE, "menu");
+        Button supportButton = createButtonLink("Support", new SupportPage(services.getUpdateManager()), "menu");
         menu.addComponent(supportButton);
         internalLayout.addComponent(menu);
         internalLayout.setExpandRatio(menu, 1f);
         internalLayout.setComponentAlignment(menu, Alignment.MIDDLE_CENTER);
     }
 
+    /** use creatButtonLink with Page instead of pageId
+     */
+    @Deprecated
     private Button createButtonLink(String caption, final String pageId, String additionalStyle) {
         Button button = new Button(caption);
         button.setStyleName(BaseTheme.BUTTON_LINK);
@@ -119,6 +122,19 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 navigator.show(pageId);
+            }
+        });
+        return button;
+    }
+
+    private Button createButtonLink(String caption, final Page page, String additionalStyle) {
+        Button button = new Button(caption);
+        button.setStyleName(BaseTheme.BUTTON_LINK);
+        button.addStyleName(additionalStyle);
+        button.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                navigator.show(page);
             }
         });
         return button;

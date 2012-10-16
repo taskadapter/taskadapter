@@ -19,7 +19,7 @@ public class PluginsFileParser {
         }
     }
 
-    Collection<String> parsePluginsFile(String fileContents) {
+    public Collection<String> parsePluginsFile(String fileContents) {
         String[] strings = fileContents.split("\r\n|\r|\n");
         Collection<String> items = new ArrayList<String>();
         for (String s : strings) {

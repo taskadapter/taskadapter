@@ -65,7 +65,7 @@ public class LicenseAgreementPage extends Page {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 services.getSettingsManager().markLicenseAgreementAsAccepted();
-                navigator.show(Navigator.HOME);
+                navigator.show(new ConfigsPage());
             }
         });
 
