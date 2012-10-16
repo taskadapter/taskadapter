@@ -102,19 +102,19 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
                             RelationType.FINISH_START, delay);
                 } else {
                     logger.error("save relations for MSP: unknown type: " + relation.getType());
-                    errors.addGeneralError(new UnsupportedRelationType(relation.getType()));
+                    result.addGeneralError(new UnsupportedRelationType(relation.getType()));
                 }
             }
 
             writer.writeProject(projectFile);
         } catch (MPXJException e) {
-            errors.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations (" + e.toString() + ")"));
+            result.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations (" + e.toString() + ")"));
             e.printStackTrace();
         } catch (IOException e) {
-            errors.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations (" + e.toString() + ")"));
+            result.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations (" + e.toString() + ")"));
             e.printStackTrace();
         } catch (Throwable e) {
-            errors.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations (" + e.toString() + ")"));
+            result.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations (" + e.toString() + ")"));
             e.printStackTrace();
         }
     }

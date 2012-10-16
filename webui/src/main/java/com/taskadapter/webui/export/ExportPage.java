@@ -3,18 +3,14 @@ package com.taskadapter.webui.export;
 import com.google.common.base.Strings;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.SyncResult;
 import com.taskadapter.connector.definition.TaskError;
-import com.taskadapter.connector.definition.TaskErrors;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.core.ConnectorError;
+import com.taskadapter.core.RemoteIdUpdater;
 import com.taskadapter.core.TaskLoader;
 import com.taskadapter.core.TaskSaver;
 import com.taskadapter.model.GTask;
-import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.file.FileDownloadResource;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
@@ -44,7 +40,7 @@ public class ExportPage extends ActionPage {
 
     private VerticalLayout donePanel = new VerticalLayout();
 
-    private SyncResult<TaskSaveResult, TaskErrors<ConnectorError<Throwable>>> result;
+    private TaskSaveResult result;
 
     public ExportPage(UISyncConfig config) {
         super(config);
@@ -111,15 +107,15 @@ public class ExportPage extends ActionPage {
 
         addDateTimeInfo();
         addFromToPanel();
-        final TaskSaveResult saveResult = result.getResult();
+        final TaskSaveResult saveResult = result;
         if (saveResult != null) {
             addDownloadButtonIfServerMode(saveResult.getTargetFileAbsolutePath());
             addExportNumbersStats(saveResult);
             addFileInfoIfNeeded(saveResult);
         }
 
-        if (result.getErrors().hasErrors()) {
-            addErrors(result.getErrors());
+        if (!result.getGeneralErrors().isEmpty() || !result.getTaskErrors().isEmpty()) {
+            addErrors(config.getConnector2(), result.getGeneralErrors(), result.getTaskErrors());
         }
         return donePanel;
     }
@@ -157,17 +153,19 @@ public class ExportPage extends ActionPage {
 
         return hl;
     }
-
-    private void addErrors(TaskErrors<ConnectorError<Throwable>> result) {
+    
+    private void addErrors(UIConnectorConfig connector, List<Throwable> generalErrors, List<TaskError<Throwable>> taskErrors) {
         donePanel.addComponent(new Label("There were some problems during export:"));
         String errorText = "";
-        for (ConnectorError<Throwable> e : result.getGeneralErrors()) {
-            errorText += quot(decodeException(e)) + "<br/>";
+        for (Throwable e : generalErrors) {
+            errorText += quot(connector.decodeException(e)) + "<br/>";
         }
-        for (TaskError<ConnectorError<Throwable>> e : result.getErrors()) {
-            errorText += quot(getMessageForTask(e)) + "<br/>";
+        for (TaskError<Throwable> error : taskErrors) {
+            errorText += "Task " + error.getTask().getId() + " (\""
+                    + error.getTask().getSummary() + "\"): "
+                    + connector.decodeException(error.getErrors());
         }
-        Label errorTextLabel = new Label(errorText);
+        final Label errorTextLabel = new Label(errorText);
         errorTextLabel.addStyleName("errorMessage");
         errorTextLabel.setContentMode(Label.CONTENT_XHTML);
         donePanel.addComponent(errorTextLabel);
@@ -209,39 +207,20 @@ public class ExportPage extends ActionPage {
         donePanel.addComponent(downloadButton);
     }
 
-    private String getMessageForTask(TaskError<ConnectorError<Throwable>> e) {
-        return "Task " + e.getTask().getId() + " (\"" + e.getTask().getSummary() + "\"): " + decodeException(e.getErrors());
-    }
-
-    private String decodeException(ConnectorError<Throwable> e) {
-        final String connectorID = e.getConnectorId();
-
-        final PluginEditorFactory<?> factory = services.getEditorManager()
-                .getEditorFactory(connectorID);
-
-        String errorText = factory.formatError(e.getError());
-        if (errorText == null) {
-            errorText = ExceptionFormatter.format(e.getError());
-        }
-
-        return "Connector " + connectorID + " error : " + errorText;
-    }
-
     @Override
     protected void saveData(List<GTask> tasks) throws ConnectorException {
         saveProgress.setValue(0);
         final MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
-        UIConnectorConfig sourceConnectorConfig = config.getConnector1();
-        final Connector<?> sourceConnector =  sourceConnectorConfig.createConnectorInstance();
-        ConnectorConfig sourceConfig = sourceConnectorConfig.getRawConfig();
 
         final Connector<?> destinationConnector = config.getConnector2().createConnectorInstance();
         try {
-            result = TaskSaver.save(sourceConnector, sourceConfig,
-                    destinationConnector,
-                    config.getConnector2().getConnectorTypeId(),
-                    config.getConnector2().getDestinationLocation(),
-                    config.generateTargetMappings(), tasks, wrapper);
+            result = TaskSaver.save(destinationConnector, config.getConnector2().getDestinationLocation(),
+                    config.generateTargetMappings(),
+                    tasks,
+                    wrapper);
+            RemoteIdUpdater.updateRemoteIds(result.getIdToRemoteKeyMap(), 
+                    config.generateSourceMappings(),
+                    config.getConnector1().createConnectorInstance());
         } catch (ConnectorException e) {
             showErrorMessageOnPage(ExceptionFormatter.format(e));
             logger.error(e.getMessage(), e);

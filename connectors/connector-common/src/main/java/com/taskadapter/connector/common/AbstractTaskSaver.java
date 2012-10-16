@@ -1,15 +1,10 @@
 package com.taskadapter.connector.common;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ProgressMonitor;
-import com.taskadapter.connector.definition.SyncResult;
-import com.taskadapter.connector.definition.TaskError;
-import com.taskadapter.connector.definition.TaskErrors;
-import com.taskadapter.connector.definition.TaskErrorsBuilder;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.TaskSaveResultBuilder;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
@@ -19,7 +14,6 @@ import com.taskadapter.model.GTask;
 public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
 
     protected final TaskSaveResultBuilder result = new TaskSaveResultBuilder();
-    protected final TaskErrorsBuilder<Throwable> errors = new TaskErrorsBuilder<Throwable>();
 
     private final List<GTask> totalTaskList = new ArrayList<GTask>();
 
@@ -45,7 +39,7 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
         // nothing here
     }
 
-    public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
+    public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
         this.monitor = monitor;
 
         if (!tasks.isEmpty()) {
@@ -53,8 +47,7 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
             save(null, tasks);
         }
 
-        return new SyncResult<TaskSaveResult, TaskErrors<Throwable>>(
-                result.getResult(), errors.getResult());
+        return result.getResult();
     }
 
     /**
@@ -72,9 +65,9 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
                 Object nativeIssueToCreateOrUpdate = convertToNativeTask(task);
                 newTaskKey = submitTask(task, nativeIssueToCreateOrUpdate);
             } catch (ConnectorException e) {
-                errors.addError(new TaskError<Throwable>(task, e));
+                result.addTaskError(task, e);
             } catch (Throwable t) {
-                errors.addError(new TaskError<Throwable>(task, t));
+                result.addTaskError(task, t);
             }
             reportProgress();
 

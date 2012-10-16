@@ -7,11 +7,8 @@ import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rpc.soap.client.RemoteFilter;
 import com.google.common.collect.Iterables;
 import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
-import com.taskadapter.connector.definition.SyncResult;
-import com.taskadapter.connector.definition.TaskErrors;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
@@ -41,7 +38,7 @@ public class JiraConnector implements Connector<JiraConfig> {
     }
 
     @Override
-    public void updateRemoteIDs(ConnectorConfig configuration,
+    public void updateRemoteIDs(
             Map<Integer, String> res, ProgressMonitor monitor, Mappings mappings)
             throws UnsupportedConnectorOperation {
         throw new UnsupportedConnectorOperation("updateRemoteIDs");
@@ -152,7 +149,7 @@ public class JiraConnector implements Connector<JiraConfig> {
     }
     
     @Override
-    public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
+    public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
     	return new JiraTaskSaver(config, mappings).saveData(tasks, monitor);
     }
 }

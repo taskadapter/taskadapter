@@ -105,4 +105,12 @@ public abstract class UIConnectorConfig {
      * @return destination location name.
      */
     public abstract String getDestinationLocation();
+
+    /**
+     * Decodes a connector exception into a user-friendly (possibly 
+     * localized) message. 
+     * @param e exception to decode.
+     * @return user-friendly error description.
+     */
+    public abstract String decodeException(Throwable e);
 }

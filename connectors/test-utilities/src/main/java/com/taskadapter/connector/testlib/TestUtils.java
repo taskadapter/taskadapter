@@ -3,8 +3,6 @@ package com.taskadapter.connector.testlib;
 import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
-import com.taskadapter.connector.definition.SyncResult;
-import com.taskadapter.connector.definition.TaskErrors;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
@@ -83,8 +81,7 @@ public class TestUtils {
     }
 
     public static GTask saveAndLoad(Connector<?> connector, GTask task, Mappings mappings) throws ConnectorException {
-        SyncResult<TaskSaveResult,TaskErrors<Throwable>> syncResult = connector.saveData(Arrays.asList(task), null, mappings);
-        TaskSaveResult result = syncResult.getResult();
+        TaskSaveResult result = connector.saveData(Arrays.asList(task), null, mappings);
         Collection<String> remoteKeys = result.getRemoteKeys();
         String remoteKey = remoteKeys.iterator().next();
         return connector.loadTaskByKey(remoteKey, mappings);
@@ -99,8 +96,7 @@ public class TestUtils {
      * @return the new task Key
      */
     public static String save(Connector<?> connector, GTask task, Mappings mappings) throws ConnectorException {
-        SyncResult<TaskSaveResult,TaskErrors<Throwable>> syncResult = connector.saveData(Arrays.asList(task), null, mappings);
-        TaskSaveResult result = syncResult.getResult();
+        TaskSaveResult result = connector.saveData(Arrays.asList(task), null, mappings);
         Collection<String> remoteKeys = result.getRemoteKeys();
         return remoteKeys.iterator().next();
     }

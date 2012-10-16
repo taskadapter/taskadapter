@@ -25,8 +25,7 @@ public class MantisConnector implements Connector<MantisConfig> {
     }
 
     @Override
-    public void updateRemoteIDs(ConnectorConfig configuration,
-                                Map<Integer, String> res, ProgressMonitor monitor, Mappings mappings) throws UnsupportedConnectorOperation {
+    public void updateRemoteIDs(Map<Integer, String> res, ProgressMonitor monitor, Mappings mappings) throws UnsupportedConnectorOperation {
         throw new UnsupportedConnectorOperation("updateRemoteIDs");
     }
 
@@ -70,7 +69,7 @@ public class MantisConnector implements Connector<MantisConfig> {
 
     
     @Override
-    public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
+    public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
     	return new MantisTaskSaver(config, mappings).saveData(tasks, monitor);
     }
 }

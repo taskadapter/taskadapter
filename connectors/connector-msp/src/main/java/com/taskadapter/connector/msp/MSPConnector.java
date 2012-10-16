@@ -31,7 +31,7 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
     }
 
     @Override
-    public void updateRemoteIDs(ConnectorConfig config, Map<Integer, String> remoteKeys, ProgressMonitor monitorIGNORED, Mappings mappings) throws ConnectorException {
+    public void updateRemoteIDs(Map<Integer, String> remoteKeys, ProgressMonitor monitorIGNORED, Mappings mappings) throws ConnectorException {
         MSPConfig c = (MSPConfig) config;
         String fileName = c.getInputAbsoluteFilePath();
         try {
@@ -167,7 +167,7 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
     }
 
     @Override
-    public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
+    public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
         return new MSPTaskSaver(config, mappings).saveData(tasks, monitor);
     }
 }

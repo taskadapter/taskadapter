@@ -1,8 +1,12 @@
 package com.taskadapter.connector.definition;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import com.taskadapter.model.GTask;
 
 /**
  * Save result builder.
@@ -25,6 +29,10 @@ public final class TaskSaveResultBuilder {
 
     // maps ID --> remote KEY when new tasks are created
     private final Map<Integer, String> idToRemoteKeyMap = new HashMap<Integer, String>();
+    
+    private final List<Throwable> generalErrors = new ArrayList<Throwable>();
+    
+    private final List<TaskError<Throwable>> taskErrors = new ArrayList<TaskError<Throwable>>();
 
     public void setTargetFileAbsolutePath(String targetFileAbsolutePath) {
         this.targetFileAbsolutePath = targetFileAbsolutePath;
@@ -43,11 +51,21 @@ public final class TaskSaveResultBuilder {
     public String getRemoteKey(Integer originalId) {
         return idToRemoteKeyMap.get(originalId);
     }
+    
+    public void addGeneralError(Throwable e) {
+        generalErrors.add(e);
+    }
+    
+    public void addTaskError(GTask task, Throwable e) {
+        taskErrors.add(new TaskError<Throwable>(task, e));
+    }
 
     public TaskSaveResult getResult() {
         return new TaskSaveResult(targetFileAbsolutePath, updatedTasksNumber,
                 createdTasksNumber,
                 Collections.unmodifiableMap(new HashMap<Integer, String>(
-                        idToRemoteKeyMap)));
+                        idToRemoteKeyMap)),
+                Collections.unmodifiableList(generalErrors),
+                Collections.unmodifiableList(taskErrors));
     }
 }

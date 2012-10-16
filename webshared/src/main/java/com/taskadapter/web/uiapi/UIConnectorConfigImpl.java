@@ -90,4 +90,9 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends
         return editorFactory.describeDestinationLocation(config);
     }
 
+    @Override
+    public String decodeException(Throwable e) {
+        return editorFactory.formatError(e);
+    }
+
 }

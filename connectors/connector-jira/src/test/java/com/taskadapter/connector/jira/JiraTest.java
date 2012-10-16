@@ -4,8 +4,6 @@ import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueLink;
 import com.atlassian.jira.rest.client.domain.User;
 import com.google.common.collect.Iterables;
-import com.taskadapter.connector.definition.SyncResult;
-import com.taskadapter.connector.definition.TaskErrors;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
@@ -73,8 +71,8 @@ public class JiraTest {
         int tasksQty = 2;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
         JiraConnector connector = new JiraConnector(config);
-        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(tasks, null, DefaultJiraMappings.generate());
-        assertEquals(tasksQty, result.getResult().getCreatedTasksNumber());
+        TaskSaveResult result = connector.saveData(tasks, null, DefaultJiraMappings.generate());
+        assertEquals(tasksQty, result.getCreatedTasksNumber());
     }
 
     @Test
@@ -86,12 +84,12 @@ public class JiraTest {
         List<GTask> tasks = TestUtils.generateTasks(1);
         tasks.get(0).setAssignee(new GUser(jiraUser.getName()));
 
-        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(tasks, null, DefaultJiraMappings.generate());
-        assertFalse("Task creation failed", result.getErrors().hasErrors());
+        TaskSaveResult result = connector.saveData(tasks, null, DefaultJiraMappings.generate());
+        assertFalse("Task creation failed", result.hasErrors());
 
         Map<Integer, String> remoteKeyById = new HashMap<Integer, String>();
         for (GTask task : tasks) {
-            remoteKeyById.put(task.getId(), result.getResult().getIdToRemoteKeyMap().get(task.getId()));
+            remoteKeyById.put(task.getId(), result.getIdToRemoteKeyMap().get(task.getId()));
         }
 
         for (Map.Entry<Integer, String> entry : remoteKeyById.entrySet()) {
@@ -111,10 +109,10 @@ public class JiraTest {
 
         // CREATE
         JiraConnector connector = new JiraConnector(config);
-        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result = connector.saveData(Arrays.asList(task), null, DefaultJiraMappings.generate());
-        assertTrue(result.getErrors().getErrors().isEmpty());
-        assertEquals(tasksQty, result.getResult().getCreatedTasksNumber());
-        String remoteKey = result.getResult().getRemoteKey(id);
+        TaskSaveResult result = connector.saveData(Arrays.asList(task), null, DefaultJiraMappings.generate());
+        assertTrue(!result.hasErrors());
+        assertEquals(tasksQty, result.getCreatedTasksNumber());
+        String remoteKey = result.getRemoteKey(id);
 
         GTask loaded = connector.loadTaskByKey(serverInfo, remoteKey);
 
@@ -122,9 +120,9 @@ public class JiraTest {
         String NEW_SUMMARY = "new summary here";
         loaded.setSummary(NEW_SUMMARY);
         loaded.setRemoteId(remoteKey);
-        SyncResult<TaskSaveResult, TaskErrors<Throwable>> result2 = connector.saveData(Arrays.asList(loaded), null, DefaultJiraMappings.generate());
-        assertTrue("some errors while updating the data: " + result2.getErrors(), result2.getErrors().getErrors().isEmpty());
-        assertEquals(1, result2.getResult().getUpdatedTasksNumber());
+        TaskSaveResult result2 = connector.saveData(Arrays.asList(loaded), null, DefaultJiraMappings.generate());
+        assertTrue("some errors while updating the data: " + result2.getGeneralErrors() + result2.getTaskErrors(), !result2.hasErrors());
+        assertEquals(1, result2.getUpdatedTasksNumber());
 
         GTask loadedAgain = connector.loadTaskByKey(serverInfo, remoteKey);
         assertEquals(NEW_SUMMARY, loadedAgain.getSummary());

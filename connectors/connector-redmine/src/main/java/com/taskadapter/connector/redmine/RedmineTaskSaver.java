@@ -110,9 +110,9 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
                 mgr.createRelation(taskKey, relatedTaskKey, gRelation.getType().toString());
             }
         } catch (RedmineProcessingException e) {
-            errors.addGeneralError(new RelationCreationException(e));
+            result.addGeneralError(new RelationCreationException(e));
         } catch (RedmineException e) {
-            errors.addGeneralError(new CommunicationException(e));
+            result.addGeneralError(new CommunicationException(e));
         }
     }
 

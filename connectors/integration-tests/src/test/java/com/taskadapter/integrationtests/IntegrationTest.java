@@ -4,6 +4,7 @@ import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
+import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.msp.DefaultMSPMappings;
 import com.taskadapter.connector.msp.MSPConfig;
@@ -12,6 +13,7 @@ import com.taskadapter.connector.msp.MSPUtils;
 import com.taskadapter.connector.redmine.DefaultRedmineMappings;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
+import com.taskadapter.core.RemoteIdUpdater;
 import com.taskadapter.core.TaskLoader;
 import com.taskadapter.core.TaskSaver;
 import com.taskadapter.license.LicenseManager;
@@ -80,10 +82,11 @@ public class IntegrationTest {
         // load from MSP
         List<GTask> loadedTasks = TaskLoader.loadTasks(new LicenseManager(), msProjectConnector, "msp1", mspMappings, DUMMY_MONITOR);
         // save to Redmine. this should save the remote IDs
-        TaskSaver.save(msProjectConnector, mspConfig,
-                redmineConnector, RedmineConnector.ID,
-                "Redmine target location", redmineMappings, loadedTasks,
+        final TaskSaveResult result = TaskSaver.save(redmineConnector, "Redmine target location",
+                redmineMappings, loadedTasks,
                 DUMMY_MONITOR);
+        RemoteIdUpdater.updateRemoteIds(result.getIdToRemoteKeyMap(),
+                redmineMappings, redmineConnector);
 
         //reload from MSP file
         List<GTask> tasksReloadedFromMSPFile = TaskLoader.loadTasks(new LicenseManager(), msProjectConnector, "msp2", mspMappings, DUMMY_MONITOR);
@@ -109,10 +112,9 @@ public class IntegrationTest {
             // save to Redmine
             Mappings redmineMappings = DefaultRedmineMappings.generate();
             RedmineConnector redmineConnector = new RedmineConnector(redmineConfigTo);
-            TaskSaver.save(projectConnector, mspConfig,
-                    redmineConnector,
-                    RedmineConnector.ID, "Redmine target location",
-                    redmineMappings, loadedTasks, DUMMY_MONITOR);
+            TaskSaver.save(redmineConnector, "Redmine target location",
+                    redmineMappings,
+                    loadedTasks, DUMMY_MONITOR);
         } catch (Throwable t) {
             t.printStackTrace();
             fail(t.toString());

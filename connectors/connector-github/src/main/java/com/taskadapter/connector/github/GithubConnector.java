@@ -1,11 +1,8 @@
 package com.taskadapter.connector.github;
 
 import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
-import com.taskadapter.connector.definition.SyncResult;
-import com.taskadapter.connector.definition.TaskErrors;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
@@ -32,7 +29,7 @@ public class GithubConnector implements Connector<GithubConfig> {
         this.config = config;
     }
 
-    public void updateRemoteIDs(ConnectorConfig sourceConfig,
+    public void updateRemoteIDs(
             Map<Integer, String> remoteIds, ProgressMonitor monitor, Mappings mappings)
             throws UnsupportedConnectorOperation {
         throw new UnsupportedConnectorOperation("updateRemoteIDs");
@@ -79,7 +76,7 @@ public class GithubConnector implements Connector<GithubConfig> {
     
 
     @Override
-    public SyncResult<TaskSaveResult, TaskErrors<Throwable>> saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings)
+    public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings)
             throws ConnectorException {
         return new GithubTaskSaver(config, mappings).saveData(tasks, monitor);
     }

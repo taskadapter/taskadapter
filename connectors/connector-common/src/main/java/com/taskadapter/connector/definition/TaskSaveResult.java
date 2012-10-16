@@ -1,6 +1,7 @@
 package com.taskadapter.connector.definition;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public final class TaskSaveResult {
@@ -14,15 +15,22 @@ public final class TaskSaveResult {
 
     // maps ID --> remote KEY when new tasks are created
     private final Map<Integer, String> idToRemoteKeyMap;
+    
+    private final List<Throwable> generalErrors;
+    
+    private final List<TaskError<Throwable>> taskErrors;
 
     public TaskSaveResult(String targetFileAbsolutePath,
             int updatedTasksNumber, int createdTasksNumber,
-            Map<Integer, String> idToRemoteKeyMap) {
+            Map<Integer, String> idToRemoteKeyMap, List<Throwable> generalErrors,
+            List<TaskError<Throwable>> taskErrors) {
         super();
         this.targetFileAbsolutePath = targetFileAbsolutePath;
         this.updatedTasksNumber = updatedTasksNumber;
         this.createdTasksNumber = createdTasksNumber;
         this.idToRemoteKeyMap = idToRemoteKeyMap;
+        this.generalErrors = generalErrors;
+        this.taskErrors = taskErrors;
     }
 
     public String getTargetFileAbsolutePath() {
@@ -47,6 +55,14 @@ public final class TaskSaveResult {
 
     public Collection<String> getRemoteKeys() {
         return idToRemoteKeyMap.values();
+    }
+    
+    public List<Throwable> getGeneralErrors() {
+        return generalErrors;
+    }
+
+    public List<TaskError<Throwable>> getTaskErrors() {
+        return taskErrors;
     }
 
     @Override
@@ -89,6 +105,10 @@ public final class TaskSaveResult {
         if (updatedTasksNumber != other.updatedTasksNumber)
             return false;
         return true;
+    }
+
+    public boolean hasErrors() {
+        return !generalErrors.isEmpty() || !taskErrors.isEmpty();
     }
 
 }
