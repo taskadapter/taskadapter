@@ -80,9 +80,8 @@ public class CloneDeletePanel extends HorizontalLayout {
                             try {
                                 services.getUIConfigStore().cloneConfig(userLoginName, config);
                             } catch (StorageException e) {
-                                //FIXME:
-                                //TODO !!!
-                                // Add an error handler.
+                                //TODO !!! Add an error handler.
+                                e.printStackTrace();
                             }
                             navigator.show(Navigator.HOME);
                         }
