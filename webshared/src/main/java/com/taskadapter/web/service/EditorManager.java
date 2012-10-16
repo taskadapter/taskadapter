@@ -1,40 +1,28 @@
 package com.taskadapter.web.service;
 
 import com.taskadapter.LegacyConnectorsSupport;
-import com.taskadapter.PluginsFileParser;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.web.PluginEditorFactory;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 public class EditorManager {
-    private Map<String, PluginEditorFactory<?>> editorFactories = new HashMap<String, PluginEditorFactory<?>>();
+    private final Map<String, String> editors;
 
-    public EditorManager(String editorsFileContents) {
-        loadEditors(editorsFileContents);
-    }
-
-    private void loadEditors(String editorsFileContents) {
-        try {
-            Collection<String> classNames = new PluginsFileParser().parsePluginsFile(editorsFileContents);
-            for (String factoryClassName : classNames) {
-                @SuppressWarnings("unchecked")
-                Class<PluginEditorFactory<?>> factoryClass = (Class<PluginEditorFactory<?>>) Class.forName(factoryClassName);
-                PluginEditorFactory<?> pluginFactory = factoryClass.newInstance();
-                String connectorId = pluginFactory.getId();
-                editorFactories.put(connectorId, pluginFactory);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Loading editors: " + e.getMessage(), e);
-        }
+    public EditorManager(Map<String, String> editors) {
+        this.editors = editors;
     }
 
     @SuppressWarnings("unchecked")
     public <T extends ConnectorConfig> PluginEditorFactory<T> getEditorFactory(String connectorId) {
         String realId = LegacyConnectorsSupport.getRealId(connectorId);
-        return (PluginEditorFactory<T>) editorFactories.get(realId);
+        String className = editors.get(realId);
+        try {
+            Class<PluginEditorFactory<?>> factoryClass = (Class<PluginEditorFactory<?>>) Class.forName(className);
+            return (PluginEditorFactory<T>) factoryClass.newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException("Error loading editor class for connector " + connectorId + ". " + e.toString(), e);
+        }
     }
 
 }
