@@ -21,7 +21,7 @@ public class PluginManager {
 
     private void loadPlugins() {
         try {
-            Collection<String> classNames = new PluginsFileParser().parseResource("plugins.txt");
+            Collection<String> classNames = new PluginsFileParser().parseResource("plugins.properties");
             for (String factoryClassName : classNames) {
                 @SuppressWarnings("unchecked")
 				Class<PluginFactory<?>> factoryClass = (Class<PluginFactory<?>>) Class.forName(factoryClassName);

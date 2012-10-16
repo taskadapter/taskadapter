@@ -35,13 +35,12 @@ public class EditConfigPage extends Page {
         buttonsLayout.addComponent(errorMessageLabel);
         buttonsLayout.setExpandRatio(errorMessageLabel, 1.0f);
 
-        CloneDeletePanel cloneDeletePanel = new CloneDeletePanel(navigator,
-                config, new CloneDeletePanel.Callback() {
-                    @Override
-                    public boolean onCloneConfig() {
-                        return validateEditor();
-                    }
-                });
+        CloneDeletePanel cloneDeletePanel = new CloneDeletePanel(services, navigator, config, new CloneDeletePanel.Callback() {
+            @Override
+            public boolean onCloneConfig() {
+                return validateEditor();
+            }
+        });
         buttonsLayout.addComponent(cloneDeletePanel);
         buttonsLayout.setComponentAlignment(cloneDeletePanel, Alignment.MIDDLE_RIGHT);
         layout.addComponent(buttonsLayout);

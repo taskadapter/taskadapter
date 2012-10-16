@@ -54,7 +54,7 @@ public class Navigator {
         registerPage(CONFIGURE_SYSTEM_PAGE, new ConfigureSystemPage());
         registerPage(FEEDBACK_PAGE, new SupportPage(services.getUpdateManager()));
         registerPage(NEW_CONFIG_PAGE, new NewConfigPage());
-        registerPage(EDIT_CONFIG_PAGE, new EditConfigPage());
+//        registerPage(EDIT_CONFIG_PAGE, new EditConfigPage());
         registerPage(LICENSE_AGREEMENT_PAGE, new LicenseAgreementPage());
     }
 
@@ -148,7 +148,8 @@ public class Navigator {
     }
 
     public void showConfigureTaskPage(UISyncConfig config, String errorMessage) {
-        EditConfigPage page = (EditConfigPage) pages.get(EDIT_CONFIG_PAGE);
+        EditConfigPage page = new EditConfigPage();
+        page.setServices(services);
         page.setConfig(config);
         page.setErrorMessage(errorMessage);
 
@@ -178,10 +179,5 @@ public class Navigator {
         if (previousPage != null) {
             show(previousPage);
         }
-    }
-
-    @Deprecated
-    public Services getServices() {
-        return services;
     }
 }

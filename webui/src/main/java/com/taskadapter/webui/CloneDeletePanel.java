@@ -16,9 +16,11 @@ public class CloneDeletePanel extends HorizontalLayout {
     private final Navigator navigator;
     private final UISyncConfig config;
     private Callback callback;
+    private final Services services;
 
-    public CloneDeletePanel(Navigator navigator, UISyncConfig config,
-            Callback callback) {
+    public CloneDeletePanel(Services services, Navigator navigator, UISyncConfig config,
+                            Callback callback) {
+        this.services = services;
         this.navigator = navigator;
         this.config = config;
         this.callback = callback;
@@ -57,8 +59,7 @@ public class CloneDeletePanel extends HorizontalLayout {
                 new MessageDialog.Callback() {
                     public void onDialogResult(String answer) {
                         if (YES.equals(answer)) {
-                            navigator.getServices().getUIConfigStore()
-                                    .deleteConfig(config);
+                            services.getUIConfigStore().deleteConfig(config);
                             navigator.show(Navigator.HOME);
                         }
                     }
@@ -75,7 +76,6 @@ public class CloneDeletePanel extends HorizontalLayout {
                 new MessageDialog.Callback() {
                     public void onDialogResult(String answer) {
                         if (YES.equals(answer)) {
-                            final Services services = navigator.getServices();
                             final String userLoginName = services.getAuthenticator().getUserName();
                             try {
                                 services.getUIConfigStore().cloneConfig(userLoginName, config);

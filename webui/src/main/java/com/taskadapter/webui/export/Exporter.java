@@ -26,10 +26,12 @@ public class Exporter {
     private static final String CREATE = "Create";
     private static final String CANCEL = "Cancel";
 
+    private final Services services;
     private final Navigator navigator;
     private final UISyncConfig syncConfig;
 
-    public Exporter(Navigator navigator, UISyncConfig syncConfig) {
+    public Exporter(Services services, Navigator navigator, UISyncConfig syncConfig) {
+        this.services = services;
         this.navigator = navigator;
         this.syncConfig = syncConfig;
     }
@@ -57,7 +59,6 @@ public class Exporter {
                 // catch (MSPOutputFileNameNotSetException e) { ... } - autofixConfigForSave
 
                 // auto generate output file name (for MSP local mode)
-                final Services services = navigator.getServices();
                 final String userName = services.getAuthenticator().getUserName();
                 String absoluteFileName = services.getFileManager().createDefaultMSPFileName(userName);
 

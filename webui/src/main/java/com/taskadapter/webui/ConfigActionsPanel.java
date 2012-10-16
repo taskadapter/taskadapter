@@ -22,8 +22,10 @@ public class ConfigActionsPanel extends VerticalLayout {
     private UISyncConfig syncConfig;
     private HorizontalLayout horizontalLayout;
     private static final String NO_DESCRIPTION_TEXT = "<i>No description</i>"; //&nbsp;
+    private final Services services;
 
-    public ConfigActionsPanel(Navigator navigator, UISyncConfig uiSyncConfig) {
+    public ConfigActionsPanel(Services services, Navigator navigator, UISyncConfig uiSyncConfig) {
+        this.services = services;
         this.navigator = navigator;
         this.syncConfig = uiSyncConfig;
         buildUI();
@@ -92,7 +94,7 @@ public class ConfigActionsPanel extends VerticalLayout {
         button.setStyleName(Runo.BUTTON_SMALL);
         button.addStyleName("configsTableArrowButton");
 
-        final Exporter exporter = new Exporter(navigator, config);
+        final Exporter exporter = new Exporter(services, navigator, config);
         button.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {

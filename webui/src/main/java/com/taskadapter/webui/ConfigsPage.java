@@ -65,7 +65,7 @@ public class ConfigsPage extends Page {
     }
 
     private void addTask(final UISyncConfig file) {
-        configsLayout.addComponent(new ConfigActionsPanel(navigator, file));
+        configsLayout.addComponent(new ConfigActionsPanel(services, navigator, file));
     }
 
     @Override
