@@ -27,11 +27,6 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
 
     @Override
-    public String getId() {
-        return MSPConnector.ID;
-    }
-
-    @Override
     public String formatError(Throwable e) {
         if (e instanceof UnsupportedRelationType) {
             return MESSAGES.format(

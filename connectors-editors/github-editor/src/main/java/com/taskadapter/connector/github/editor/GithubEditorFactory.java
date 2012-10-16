@@ -25,11 +25,6 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig> {
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
 
     @Override
-    public String getId() {
-        return GithubConnector.ID;
-    }
-
-    @Override
     public String formatError(Throwable e) {
         if (!(e instanceof UnsupportedConnectorOperation)) {
             return null;

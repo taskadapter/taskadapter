@@ -7,8 +7,6 @@ import com.taskadapter.web.service.Services;
 import com.vaadin.ui.ComponentContainer;
 
 public interface PluginEditorFactory<C extends ConnectorConfig> {
-    String getId();
-
     /**
      * Requests to format a plugin error. If error is not supported (not a 
      * custom error), this method may safelly return <code>null</code>.

@@ -24,11 +24,6 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
 
     @Override
-    public String getId() {
-        return RedmineConnector.ID;
-    }
-
-    @Override
     public String formatError(Throwable e) {
         if (e instanceof RelationCreationException) {
             return MESSAGES.format("errors.relationsUpdateFailure", e

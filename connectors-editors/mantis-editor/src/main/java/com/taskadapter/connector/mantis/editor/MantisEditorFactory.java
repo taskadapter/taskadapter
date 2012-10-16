@@ -27,11 +27,6 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
 
     @Override
-    public String getId() {
-        return MantisConnector.ID;
-    }
-
-    @Override
     public String formatError(Throwable e) {
         if (e instanceof UnsupportedOperationException) {
             final UnsupportedOperationException uop = (UnsupportedOperationException) e;

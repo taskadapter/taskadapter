@@ -22,11 +22,6 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
 
     @Override
-    public String getId() {
-        return JiraConnector.ID;
-    }
-
-    @Override
     public String formatError(Throwable e) {
         if (e instanceof BadHostException) {
             return MESSAGES.format("errors.unsupported.illegalHostName", e
