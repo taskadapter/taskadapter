@@ -18,7 +18,7 @@ public class EditorManager {
 
     private void loadEditors() {
         try {
-            Collection<String> classNames = new PluginsFileParser().parseResource("editors.txt");
+            Collection<String> classNames = new PluginsFileParser().parseResource("editors.properties");
             for (String factoryClassName : classNames) {
                 @SuppressWarnings("unchecked")
                 Class<PluginEditorFactory<?>> factoryClass = (Class<PluginEditorFactory<?>>) Class.forName(factoryClassName);

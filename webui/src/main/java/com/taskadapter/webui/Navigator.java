@@ -20,7 +20,6 @@ public class Navigator {
     public static final String NEW_CONFIG_PAGE = "new_config";
     public static final String LICENSE_AGREEMENT_PAGE = "license_agreement";
 
-    private static final String EDIT_CONFIG_PAGE = "configure_task";
     private static final String LOGIN_PAGE = "login";
 
     private Map<String, Page> pages = new HashMap<String, Page>();
@@ -54,7 +53,6 @@ public class Navigator {
         registerPage(CONFIGURE_SYSTEM_PAGE, new ConfigureSystemPage());
         registerPage(FEEDBACK_PAGE, new SupportPage(services.getUpdateManager()));
         registerPage(NEW_CONFIG_PAGE, new NewConfigPage());
-//        registerPage(EDIT_CONFIG_PAGE, new EditConfigPage());
         registerPage(LICENSE_AGREEMENT_PAGE, new LicenseAgreementPage());
     }
 
@@ -179,5 +177,9 @@ public class Navigator {
         if (previousPage != null) {
             show(previousPage);
         }
+    }
+
+    Page getCurrentPage() {
+        return currentPage;
     }
 }
