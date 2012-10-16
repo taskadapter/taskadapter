@@ -30,7 +30,7 @@ public class Services {
 
     private Authenticator authenticator;
     private UpdateManager updateManager = new UpdateManager();
-    private EditorManager editorManager = new EditorManager(EDITORS);
+    private final EditorManager editorManager;
     private PluginManager pluginManager = new PluginManager();
     private SettingsManager settingsManager = new SettingsManager();
     private LicenseManager licenseManager = new LicenseManager();
@@ -39,7 +39,8 @@ public class Services {
     private FileManager fileManager;
     private UIConfigStore uiConfigStore;
 
-    public Services(File dataRootFolder) {
+    public Services(File dataRootFolder, EditorManager editorManager) {
+        this.editorManager = editorManager;
         fileManager = new FileManager(dataRootFolder);
         userManager = new UserManager(fileManager);
         final ConfigStorage configStorage = new ConfigStorage(fileManager);

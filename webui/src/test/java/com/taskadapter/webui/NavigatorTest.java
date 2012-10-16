@@ -1,5 +1,7 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.web.PluginEditorFactory;
+import com.taskadapter.web.service.EditorManager;
 import com.taskadapter.web.service.Services;
 import com.taskadapter.web.service.UserNotFoundException;
 import com.taskadapter.web.service.WrongPasswordException;
@@ -8,6 +10,7 @@ import com.vaadin.ui.Window;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 
@@ -50,7 +53,7 @@ public class NavigatorTest {
 
     private Services getServices() {
         File dataRootFolder = new File("tmp");
-        return new Services(dataRootFolder);
+        return new Services(dataRootFolder, new EditorManager(Collections.<String,PluginEditorFactory<?>>emptyMap()));
     }
 
 }

@@ -1,0 +1,7 @@
+# list of EDITORS for Task Adapter
+Redmine REST=com.taskadapter.connector.redmine.editor.RedmineEditorFactory
+Atlassian Jira=com.taskadapter.connector.jira.JiraEditorFactory
+Github=com.taskadapter.connector.github.editor.GithubEditorFactory
+Mantis=com.taskadapter.connector.mantis.editor.MantisEditorFactory
+Microsoft Project=com.taskadapter.connector.msp.editor.MSPEditorFactory
+Microsoft Project (XML)=com.taskadapter.connector.msp.editor.MSPEditorFactory
