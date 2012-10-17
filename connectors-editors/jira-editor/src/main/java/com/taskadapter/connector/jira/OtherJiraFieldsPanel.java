@@ -1,7 +1,5 @@
 package com.taskadapter.connector.jira;
 
-import java.util.List;
-
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.WindowProvider;
@@ -13,11 +11,13 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 
+import java.util.List;
+
 /**
-* Panel with title: "Set these fields when EXPORTING to Jira"
+* Panel with title: "Set when exporting to Jira"
 */
 class OtherJiraFieldsPanel extends Panel {
-    private static final String SAVE_GROUP_LABEL = "Set these fields when EXPORTING to Jira";
+    private static final String SAVE_GROUP_LABEL = "Set when exporting to Jira";
 
     private JiraConfig config;
     private WindowProvider windowProvider;

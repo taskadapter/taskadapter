@@ -16,6 +16,7 @@ import com.taskadapter.web.service.Services;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Panel;
 
 public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.redmine.messages";
@@ -42,7 +43,10 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
 
     @Override
     public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, RedmineConfig config) {
+        Panel panel = new Panel("Server Info");
         RedmineServerPanel redmineServerPanel = new RedmineServerPanel(windowProvider, config);
+        panel.addComponent(redmineServerPanel);
+
         ShowProjectElement showProjectElement = new ShowProjectElement(windowProvider, config);
         LoadQueriesElement loadQueriesElement = new LoadQueriesElement(windowProvider, config);
         ProjectPanel projectPanel = new ProjectPanel(windowProvider,
@@ -56,9 +60,9 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
         gridLayout.setMargin(true);
         gridLayout.setSpacing(true);
 
-        gridLayout.addComponent(redmineServerPanel);
+        gridLayout.addComponent(panel);
         gridLayout.addComponent(projectPanel);
-        gridLayout.addComponent(new OtherRedmineFieldsContainer(config));
+        gridLayout.addComponent(new OtherRedmineFieldsContainer(windowProvider, config));
         return gridLayout;
     }
 

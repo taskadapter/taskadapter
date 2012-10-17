@@ -13,11 +13,12 @@ import com.taskadapter.web.configeditor.CustomFieldsTablePanel;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.PriorityPanel;
 import com.taskadapter.web.configeditor.ProjectPanel;
-import com.taskadapter.web.configeditor.ServerContainer;
+import com.taskadapter.web.configeditor.ServerPanel;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Services;
 import com.vaadin.data.util.MethodProperty;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.GridLayout;
 
@@ -50,7 +51,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
     @Override
     public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, JiraConfig config) {
         WebServerInfo serverInfo = config.getServerInfo();
-        ServerContainer serverPanel = new ServerContainer(new MethodProperty<String>(config, "label"),
+        ServerPanel serverPanel = new ServerPanel(new MethodProperty<String>(config, "label"),
                 new MethodProperty<String>(serverInfo, "host"),
                 new MethodProperty<String>(serverInfo, "userName"),
                 new MethodProperty<String>(serverInfo, "password"));
@@ -63,6 +64,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
                         "loadProjects", config.getServerInfo()),
                 Interfaces.fromMethod(SimpleCallback.class, showProjectElement, "loadProjectInfo"),
                 Interfaces.fromMethod(DataProvider.class, new LoadQueriesElement(config), "loadQueries"));
+        projectPanel.setHeight(100, Sizeable.UNITS_PERCENTAGE);
 
         GridLayout gridLayout = new GridLayout(2, 4);
         gridLayout.setMargin(true);
@@ -71,7 +73,9 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
         gridLayout.addComponent(serverPanel);
         gridLayout.addComponent(projectPanel);
 
-        gridLayout.addComponent(new OtherJiraFieldsPanel(windowProvider, config));
+        OtherJiraFieldsPanel otherJiraFieldsPanel = new OtherJiraFieldsPanel(windowProvider, config);
+        otherJiraFieldsPanel.setHeight(100, Sizeable.UNITS_PERCENTAGE);
+        gridLayout.addComponent(otherJiraFieldsPanel);
 
         PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(),
                 Interfaces.fromMethod(DataProvider.class, new PrioritiesLoader(config), "loadJiraPriorities"));

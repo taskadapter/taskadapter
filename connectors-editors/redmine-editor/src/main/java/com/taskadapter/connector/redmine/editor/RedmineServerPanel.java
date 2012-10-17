@@ -3,16 +3,18 @@ package com.taskadapter.connector.redmine.editor;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.redmine.RedmineConfig;
-import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.WindowProvider;
-import com.taskadapter.web.callbacks.DataProvider;
-import com.taskadapter.web.configeditor.DefaultPanel;
-import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.Validatable;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.event.FieldEvents;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.OptionGroup;
+import com.vaadin.ui.PasswordField;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,9 +43,9 @@ class RedmineServerPanel extends VerticalLayout implements Validatable {
     }
 
     private void buildUI() {
-        setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
+//        setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
         // set spacing around the layout (not between components in the layout!)
-        setMargin(true);
+//        setMargin(true);
 
         GridLayout layout = new GridLayout();
         addComponent(layout);
@@ -97,8 +99,6 @@ class RedmineServerPanel extends VerticalLayout implements Validatable {
         currentRow++;
         layout.addComponent(createEmptyLabel(emptyLabelHeight), 0, currentRow++);
 
-
-
         Label apiKeyLabel = new Label("API access key:");
         layout.addComponent(apiKeyLabel, 0, currentRow);
         layout.setComponentAlignment(apiKeyLabel, Alignment.MIDDLE_LEFT);
@@ -137,41 +137,6 @@ class RedmineServerPanel extends VerticalLayout implements Validatable {
             authOptionsGroup.select(USE_LOGIN);
         }
         setAuthOptionsState(serverInfo.isUseAPIKeyInsteadOfLoginPassword());
-        createShowTaskTypeElement();
-    }
-
-    private void createShowTaskTypeElement() {
-        HorizontalLayout taskTypeLayout = new HorizontalLayout();
-        taskTypeLayout.setSpacing(true);
-        final TextField defaultTaskType = EditorUtil.addLabeledText(taskTypeLayout, "Default task type:",
-                "New tasks will be created with this 'tracker' (bug/task/support/feature/...)");
-        defaultTaskType.setWidth("200px");
-        final MethodProperty<String> taskTypeProperty = new MethodProperty<String>(config, "defaultTaskType");
-        defaultTaskType.setPropertyDataSource(taskTypeProperty);
-
-        Button showDefaultTaskType = EditorUtil.createLookupButton(
-                windowProvider,
-                "...",
-                "Show list of available tracker types on the Redmine server",
-                "Select task type",
-                "List of available task types on the Redmine server",
-                new DataProvider<List<? extends NamedKeyedObject>>() {
-                    @Override
-                    public List<? extends NamedKeyedObject> loadData()
-                            throws ValidationException {
-                        try {
-                            return RedmineLoaders.loadTrackers(config);
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                },
-                taskTypeProperty,
-                true
-        );
-
-        taskTypeLayout.addComponent(showDefaultTaskType);
-        addComponent(taskTypeLayout);
     }
 
     private Label createEmptyLabel(String height) {
