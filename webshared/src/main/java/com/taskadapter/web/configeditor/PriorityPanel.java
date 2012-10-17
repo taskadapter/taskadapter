@@ -64,7 +64,7 @@ public class PriorityPanel extends Panel implements Validatable {
     private void buildUI() {
         setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
 
-        prioritiesTable = new Table("Priorities");
+        prioritiesTable = new Table();
         prioritiesTable.setContainerDataSource(data);
         prioritiesTable.setStyleName(Runo.TABLE_SMALL);
         prioritiesTable.addStyleName("priorities-table");
@@ -73,20 +73,16 @@ public class PriorityPanel extends Panel implements Validatable {
         prioritiesTable.setColumnHeader(PriorityPanel.TEXT, NAME_HEADER);
         prioritiesTable.setColumnHeader(PriorityPanel.VALUE, VALUE_HEADER);
         prioritiesTable.setVisibleColumns(new Object[]{PriorityPanel.TEXT, PriorityPanel.VALUE});
-
-        //prioritiesTable.setColumnWidth(Priority.TEXT, );
         prioritiesTable.setWidth("100%");
+        prioritiesTable.setContainerDataSource(data);
 
         addComponent(prioritiesTable);
-        
-		prioritiesTable.setContainerDataSource(data);
-		
 		final ItemSetChangeListener listener = new ItemSetChangeListener() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void containerItemSetChange(ItemSetChangeEvent event) {
-		        prioritiesTable.setPageLength(prioritiesTable.size() + 1);
+		        prioritiesTable.setPageLength(prioritiesTable.size());
 			}
 		};
 		
