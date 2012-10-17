@@ -3,7 +3,6 @@ package com.taskadapter.connector.redmine.editor;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.redmine.RedmineConfig;
-import com.taskadapter.connector.redmine.RedmineConnector;
 import com.taskadapter.connector.redmine.RelationCreationException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.WindowProvider;
@@ -16,7 +15,7 @@ import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Services;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.GridLayout;
 
 public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.redmine.messages";
@@ -52,11 +51,15 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
                 Interfaces.fromMethod(DataProvider.class, RedmineLoaders.class, "getProjects", config.getServerInfo()),
                 Interfaces.fromMethod(SimpleCallback.class, showProjectElement, "showProjectInfo"),
                 Interfaces.fromMethod(DataProvider.class, loadQueriesElement, "loadQueries"));
-        VerticalLayout layout = new VerticalLayout();
-        layout.addComponent(redmineServerPanel);
-        layout.addComponent(projectPanel);
-        layout.addComponent(new OtherRedmineFieldsContainer(config));
-        return layout;
+        GridLayout gridLayout = new GridLayout();
+        gridLayout.setColumns(2);
+        gridLayout.setMargin(true);
+        gridLayout.setSpacing(true);
+
+        gridLayout.addComponent(redmineServerPanel);
+        gridLayout.addComponent(projectPanel);
+        gridLayout.addComponent(new OtherRedmineFieldsContainer(config));
+        return gridLayout;
     }
 
     @Override

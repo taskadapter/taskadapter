@@ -9,13 +9,17 @@ import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
-import com.taskadapter.web.configeditor.*;
+import com.taskadapter.web.configeditor.CustomFieldsTablePanel;
+import com.taskadapter.web.configeditor.EditorUtil;
+import com.taskadapter.web.configeditor.PriorityPanel;
+import com.taskadapter.web.configeditor.ProjectPanel;
+import com.taskadapter.web.configeditor.ServerContainer;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Services;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.GridLayout;
 
 public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.jira.messages";
@@ -60,17 +64,20 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
                 Interfaces.fromMethod(SimpleCallback.class, showProjectElement, "loadProjectInfo"),
                 Interfaces.fromMethod(DataProvider.class, new LoadQueriesElement(config), "loadQueries"));
 
-        VerticalLayout layout = new VerticalLayout();
-        layout.addComponent(serverPanel);
-        layout.addComponent(projectPanel);
+        GridLayout gridLayout = new GridLayout(2, 4);
+        gridLayout.setMargin(true);
+        gridLayout.setSpacing(true);
 
-        layout.addComponent(new OtherJiraFieldsPanel(windowProvider, config));
+        gridLayout.addComponent(serverPanel);
+        gridLayout.addComponent(projectPanel);
+
+        gridLayout.addComponent(new OtherJiraFieldsPanel(windowProvider, config));
 
         PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(),
                 Interfaces.fromMethod(DataProvider.class, new PrioritiesLoader(config), "loadJiraPriorities"));
-        layout.addComponent(priorityPanel);
-        layout.addComponent(createCustomOtherFieldsPanel(config));
-        return layout;
+        gridLayout.addComponent(priorityPanel);
+        gridLayout.addComponent(createCustomOtherFieldsPanel(config));
+        return gridLayout;
     }
 
     private CustomFieldsTablePanel createCustomOtherFieldsPanel(JiraConfig config) {
