@@ -1,12 +1,9 @@
 package com.taskadapter.connector.msp.editor;
 
-import java.io.File;
-
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.msp.MSPConfig;
-import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.msp.MSPOutputFileNameNotSetException;
 import com.taskadapter.connector.msp.UnsupportedRelationType;
 import com.taskadapter.web.PluginEditorFactory;
@@ -17,7 +14,15 @@ import com.taskadapter.web.configeditor.file.ServerModelFilePanelPresenter;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
 import com.vaadin.data.util.MethodProperty;
-import com.vaadin.ui.*;
+import com.vaadin.terminal.Sizeable;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
+
+import java.io.File;
 
 public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.msp.messages";
@@ -45,9 +50,10 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     @Override
     public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, MSPConfig config) {
         VerticalLayout layout = new VerticalLayout();
+        layout.setWidth(450, Sizeable.UNITS_PIXELS);
         layout.addComponent(createDescriptionElement(config));
-        layout.addComponent(createInfoReadOnlyPanel());
         layout.addComponent(createFilePanel(services, config));
+        layout.addComponent(createInfoReadOnlyPanel());
         return layout;
     }
 

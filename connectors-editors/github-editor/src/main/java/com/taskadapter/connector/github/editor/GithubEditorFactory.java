@@ -5,7 +5,6 @@ import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.connector.github.GithubConfig;
-import com.taskadapter.connector.github.GithubConnector;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
@@ -16,6 +15,7 @@ import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Services;
 import com.vaadin.data.util.MethodProperty;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.VerticalLayout;
 
@@ -47,6 +47,7 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig> {
     @Override
     public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, GithubConfig config) {
         VerticalLayout layout = new VerticalLayout();
+        layout.setWidth(380, Sizeable.UNITS_PIXELS);
         final WebServerInfo serverInfo = config.getServerInfo();
         ServerPanel serverPanel = new ServerPanel(new MethodProperty<String>(config, "label"),
                 new MethodProperty<String>(serverInfo, "host"),
