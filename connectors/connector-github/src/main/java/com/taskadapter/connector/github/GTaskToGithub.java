@@ -1,7 +1,9 @@
 package com.taskadapter.connector.github;
 
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
+import com.taskadapter.model.GTaskDescriptor;
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.service.IssueService;
@@ -16,25 +18,38 @@ public class GTaskToGithub {
     private Map<String, User> ghUsers = new HashMap<String, User>();
 
     private final UserService userService;
+    private final Mappings mappings;
 
-    // TODO see http://www.hostedredmine.com/issues/111002
-    GTaskToGithub(UserService userService) {
+    GTaskToGithub(UserService userService, Mappings mappings) {
         this.userService = userService;
+        this.mappings = mappings;
     }
 
     protected Issue toIssue(GTask task) throws ConnectorException {
         Issue issue = new Issue();
-        issue.setTitle(task.getSummary());
-        issue.setBody(task.getDescription());
+
+        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.SUMMARY)) {
+            issue.setTitle(task.getSummary());
+        }
+
+        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.DESCRIPTION)) {
+            issue.setBody(task.getDescription());
+        }
         issue.setCreatedAt(task.getCreatedOn());
         issue.setUpdatedAt(task.getUpdatedOn());
-        issue.setState(task.getDoneRatio() != null && task.getDoneRatio() == 100 ? IssueService.STATE_CLOSED : IssueService.STATE_OPEN);
+        // TODO add tests
+        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.TASK_STATUS)) {
+            issue.setState(task.getDoneRatio() != null && task.getDoneRatio() == 100 ? IssueService.STATE_CLOSED : IssueService.STATE_OPEN);
+        }
 
         if (task.getRemoteId() != null) {
             issue.setNumber(Integer.parseInt(task.getRemoteId()));
         }
 
-        processAssignee(task, issue);
+        // TODO add tests
+        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.ASSIGNEE)) {
+            processAssignee(task, issue);
+        }
         return issue;
     }
 

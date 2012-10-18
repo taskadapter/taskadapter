@@ -15,6 +15,7 @@ import java.util.List;
 
 public class GithubTaskSaver extends AbstractTaskSaver<GithubConfig> {
 
+    private final Mappings mappings;
     private IssueService issueService;
 
     private GithubToGTask taskConverter;
@@ -23,6 +24,7 @@ public class GithubTaskSaver extends AbstractTaskSaver<GithubConfig> {
     // TODO !!! unused param. see http://www.hostedredmine.com/issues/111002
     public GithubTaskSaver(GithubConfig config, Mappings mappings) {
         super(config);
+        this.mappings = mappings;
         ConnectionFactory ghConnector = new ConnectionFactory(config.getServerInfo());
         issueService = ghConnector.getIssueService();
         userService = ghConnector.getUserService();
@@ -31,7 +33,7 @@ public class GithubTaskSaver extends AbstractTaskSaver<GithubConfig> {
 
     @Override
     protected Issue convertToNativeTask(GTask task) throws ConnectorException {
-        return new GTaskToGithub(userService).toIssue(task);
+        return new GTaskToGithub(userService, mappings).toIssue(task);
     }
 
     @Override
