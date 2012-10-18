@@ -50,16 +50,25 @@ public class SupportPage extends Page {
     private void checkForUpdate() {
         lastVersionInfoLayout.removeAllComponents();
 
-        String lastAvailableVersion = LastVersionLoader.loadLastVersion();
-        Label latestVersionLabel = new Label("Latest available version: " + lastAvailableVersion);
-        lastVersionInfoLayout.addComponent(latestVersionLabel);
-        if (VersionComparator.isCurrentVersionOutdated(currentTaskAdapterVersion, lastAvailableVersion)) {
-            Link downloadLink = new Link();
-            downloadLink.setResource(new ExternalResource("http://www.taskadapter.com/download"));
-            downloadLink.setCaption("Open Download page");
-            downloadLink.setTargetName("_new");
-            lastVersionInfoLayout.addComponent(downloadLink);
+        try {
+            String lastAvailableVersion = LastVersionLoader.loadLastVersion();
+            Label latestVersionLabel = new Label("Latest available version: " + lastAvailableVersion);
+            lastVersionInfoLayout.addComponent(latestVersionLabel);
+            if (VersionComparator.isCurrentVersionOutdated(currentTaskAdapterVersion, lastAvailableVersion)) {
+                addDownloadLink();
+            }
+        } catch (RuntimeException e) {
+            lastVersionInfoLayout.addComponent(new Label("Can't find information about the last available version."));
+            addDownloadLink();
         }
+    }
+
+    private void addDownloadLink() {
+        Link downloadLink = new Link();
+        downloadLink.setResource(new ExternalResource("http://www.taskadapter.com/download"));
+        downloadLink.setCaption("Open Download page");
+        downloadLink.setTargetName("_new");
+        lastVersionInfoLayout.addComponent(downloadLink);
     }
 
     private void addBuyLicenseLink() {
