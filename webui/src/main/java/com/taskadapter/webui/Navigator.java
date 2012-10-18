@@ -5,16 +5,18 @@ import com.taskadapter.web.service.Services;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.vaadin.Application;
 import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import org.vaadin.googleanalytics.tracking.GoogleAnalyticsTracker;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class Navigator {
     public static final String MAIN_WIDTH = "920px";// like GitHub
 
-    private Map<String, Page> pages = new HashMap<String, Page>();
     private HorizontalLayout navigationPanel;
     private HorizontalLayout currentComponentArea = new HorizontalLayout();
     private Layout mainArea = new CssLayout();
@@ -69,19 +71,6 @@ public class Navigator {
         navigationPanel.setSpacing(true);
         layout.addComponent(navigationPanel);
         layout.setComponentAlignment(navigationPanel, Alignment.MIDDLE_CENTER);
-    }
-
-    public void registerPage(String id, Page page) {
-        pages.put(id, page);
-    }
-
-    public void show(String pageId) {
-        Page page = pages.get(pageId);
-        if (page != null) {
-            show(page);
-        } else {
-            showError("Page \"" + pageId + "\" is not registered");
-        }
     }
 
     public void show(final Page page) {
