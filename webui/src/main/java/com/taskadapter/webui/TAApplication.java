@@ -23,7 +23,7 @@ public class TAApplication extends Application implements HttpServletRequestList
 
     @Override
     public String getVersion() {
-        return getServices().getUpdateManager().getCurrentVersion();
+        return getServices().getCurrentTaskAdapterVersion();
     }
 
     @Override

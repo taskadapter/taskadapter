@@ -4,7 +4,11 @@ import com.taskadapter.license.LicenseChangeListener;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.service.LoginEventListener;
 import com.taskadapter.web.service.Services;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
 /**
@@ -104,26 +108,28 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
         menu.setSpacing(true);
         configureButton = createButtonLink("Configure", new ConfigureSystemPage(), "menu");
         menu.addComponent(configureButton);
-        Button supportButton = createButtonLink("Support", new SupportPage(services.getUpdateManager()), "menu");
-        menu.addComponent(supportButton);
+
+        addSupportItem(menu);
         internalLayout.addComponent(menu);
         internalLayout.setExpandRatio(menu, 1f);
         internalLayout.setComponentAlignment(menu, Alignment.MIDDLE_CENTER);
     }
 
-    /** use creatButtonLink with Page instead of pageId
-     */
-    @Deprecated
-    private Button createButtonLink(String caption, final String pageId, String additionalStyle) {
-        Button button = new Button(caption);
-        button.setStyleName(BaseTheme.BUTTON_LINK);
-        button.addStyleName(additionalStyle);
-        button.addListener(new Button.ClickListener() {
+    private void addSupportItem(HorizontalLayout menu) {
+        Button supportButton = createButtonWithoutListener("Support");
+        supportButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                navigator.show(pageId);
+                navigator.show(new SupportPage(services.getCurrentTaskAdapterVersion()));
             }
         });
+        menu.addComponent(supportButton);
+    }
+
+    private Button createButtonWithoutListener(String caption) {
+        Button button = new Button(caption);
+        button.setStyleName(BaseTheme.BUTTON_LINK);
+        button.addStyleName("menu");
         return button;
     }
 

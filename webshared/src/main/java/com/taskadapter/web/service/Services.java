@@ -12,7 +12,6 @@ import java.io.File;
 
 public class Services {
     private Authenticator authenticator;
-    private UpdateManager updateManager = new UpdateManager();
     private final EditorManager editorManager;
     private PluginManager pluginManager = new PluginManager();
     private SettingsManager settingsManager = new SettingsManager();
@@ -21,6 +20,9 @@ public class Services {
     private UserManager userManager;
     private FileManager fileManager;
     private UIConfigStore uiConfigStore;
+
+    // TODO this is not the right place for this variable.
+    private String currentTaskAdapterVersion;
 
     public Services(File dataRootFolder, EditorManager editorManager) {
         this.editorManager = editorManager;
@@ -31,10 +33,8 @@ public class Services {
 
         this.uiConfigStore = new UIConfigStore(new UIConfigService(
                 pluginManager, editorManager), configStorage);
-    }
 
-    public UpdateManager getUpdateManager() {
-        return updateManager;
+        this.currentTaskAdapterVersion = new CurrentVersionLoader().getCurrentVersion();
     }
 
     public EditorManager getEditorManager() {
@@ -78,4 +78,7 @@ public class Services {
         this.authenticator = authenticator2;
     }
 
+    public String getCurrentTaskAdapterVersion() {
+        return currentTaskAdapterVersion;
+    }
 }

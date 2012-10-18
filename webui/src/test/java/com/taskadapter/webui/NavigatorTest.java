@@ -19,7 +19,7 @@ public class NavigatorTest {
     public void feedbackPageIsShownWithoutLogin() {
         Services services = getServices();
         Navigator navigator = getNavigator(services);
-        navigator.show(new SupportPage(services.getUpdateManager()));
+        navigator.show(new SupportPage("1.1"));
         assertEquals("support", navigator.getCurrentPage().getPageGoogleAnalyticsID());
     }
 
