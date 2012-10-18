@@ -62,10 +62,9 @@ public class ConfirmExportPage extends CustomComponent {
         setCompositionRoot(layout);
     }
 
-    // TODO !!! config changed on the confirmation page is not saved
-//    public boolean needToSaveConfig() {
-//        return onePageMappingPanel.haveChanges();
-//    }
+    public boolean needToSaveConfig() {
+        return onePageMappingPanel.hasChanges();
+    }
 
     public List<GTask> getSelectedRootLevelTasks() {
         return connectorTree.getSelectedRootLevelTasks();

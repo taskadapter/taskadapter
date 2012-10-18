@@ -58,4 +58,28 @@ public final class FieldMapping {
                 ", selected=" + selected +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FieldMapping that = (FieldMapping) o;
+
+        if (selected != that.selected) return false;
+        if (connector1 != null ? !connector1.equals(that.connector1) : that.connector1 != null) return false;
+        if (connector2 != null ? !connector2.equals(that.connector2) : that.connector2 != null) return false;
+        if (field != that.field) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = field != null ? field.hashCode() : 0;
+        result = 31 * result + (connector1 != null ? connector1.hashCode() : 0);
+        result = 31 * result + (connector2 != null ? connector2.hashCode() : 0);
+        result = 31 * result + (selected ? 1 : 0);
+        return result;
+    }
 }

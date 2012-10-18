@@ -1,5 +1,6 @@
 package com.taskadapter.webui.export;
 
+import com.taskadapter.config.StorageException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.web.uiapi.UISyncConfig;
@@ -10,6 +11,8 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -18,6 +21,8 @@ import java.util.List;
  *
  */
 public abstract class ActionPage extends Page {
+    private final Logger logger = LoggerFactory.getLogger(ActionPage.class);
+
     protected final VerticalLayout mainPanel;
 
     protected ProgressIndicator loadProgress = new ProgressIndicator();
@@ -149,11 +154,15 @@ public abstract class ActionPage extends Page {
     }
 
     private void saveConfigIfChanged() {
-        // TODO !!! config not saved
-        /*if (confirmExportPage.needToSaveConfig()) {
+        if (confirmExportPage.needToSaveConfig()) {
             String userLoginName = services.getAuthenticator().getUserName();
-            services.getConfigStorage().saveConfig(userLoginName, taFile);
-        }*/
+            try {
+                services.getUIConfigStore().saveConfig(userLoginName, config);
+            } catch (StorageException e) {
+                logger.error("Can't save the updated config: " + e.toString(), e);
+                // TODO !! report in the UI
+            }
+        }
     }
 
     protected void buildConfirmationUI() {

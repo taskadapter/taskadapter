@@ -1,5 +1,6 @@
 package com.taskadapter.webui;
 
+import com.google.common.collect.ImmutableSet;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.NewMappings;
@@ -37,6 +38,7 @@ public class OnePageMappingPanel extends Panel implements Validatable {
 
     private UIConnectorConfig connector1;
     private UIConnectorConfig connector2;
+    private NewMappings originalMappings;
     private NewMappings mappings;
 
     public OnePageMappingPanel(UIConnectorConfig connector1,
@@ -45,6 +47,7 @@ public class OnePageMappingPanel extends Panel implements Validatable {
         this.connector1 = connector1;
         this.connector2 = connector2;               
         this.mappings = mappings;
+        this.originalMappings = new NewMappings(mappings.getMappings());
 
         addFields();
     }
@@ -193,11 +196,14 @@ public class OnePageMappingPanel extends Panel implements Validatable {
     }
 
     /**
-     * Checks, if there are any changes to perform.
+     * Checks, if there were any changes in the mappings made by the user since this page was created.
      *
-     * @return <code>true</code> iff there are changes since panel creation.
+     * @return <code>true</code> if there are changes since panel creation.
      */
- /*   public boolean hasChanges() {
-        return originalMappings.equals(mappings);
-    }*/
+    public boolean hasChanges() {
+        // TODO !! Add unit tests here. this comparison seems too complex.
+        ImmutableSet<FieldMapping> original = ImmutableSet.copyOf(originalMappings.getMappings());
+        ImmutableSet<FieldMapping> current = ImmutableSet.copyOf(mappings.getMappings());
+        return !original.equals(current);
+    }
 }

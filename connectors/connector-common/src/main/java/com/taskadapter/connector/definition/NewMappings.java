@@ -8,6 +8,20 @@ import java.util.Collection;
 public class NewMappings {
     private Collection<FieldMapping> mappings = new ArrayList<FieldMapping>();
 
+    public NewMappings() {
+    }
+
+    // TODO Add tests
+    /**
+     * Deep clone constructor.
+     * @param mappings
+     */
+    public NewMappings(Collection<FieldMapping> mappings) {
+        for (FieldMapping m : mappings) {
+            this.mappings.add(new FieldMapping(m.getField(), m.getConnector1(), m.getConnector2(), m.isSelected()));
+        }
+    }
+
     /**
      * Finds and returns a mapping specification for a GTask field. If no
      * mapping is found, returns <code>null</code>.
