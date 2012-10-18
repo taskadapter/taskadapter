@@ -1,5 +1,6 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.service.EditorManager;
 import com.taskadapter.web.service.Services;
@@ -19,7 +20,7 @@ public class NavigatorTest {
     public void feedbackPageIsShownWithoutLogin() {
         Services services = getServices();
         Navigator navigator = getNavigator(services);
-        navigator.show(new SupportPage("1.1"));
+        navigator.show(new SupportPage("1.1", new LicenseManager()));
         assertEquals("support", navigator.getCurrentPage().getPageGoogleAnalyticsID());
     }
 

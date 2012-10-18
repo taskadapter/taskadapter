@@ -1,7 +1,7 @@
 package com.taskadapter.webui.license;
 
 import com.taskadapter.license.License;
-import com.taskadapter.web.service.Services;
+import com.taskadapter.license.LicenseManager;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import static com.taskadapter.license.LicenseFormatDescriptor.LICENSE_DATE_FORMAT;
 
 public class LicenseInfoPanel extends GridLayout {
+    private final LicenseManager licenseManager;
     private SimpleDateFormat licenseDateFormatter = new SimpleDateFormat(LICENSE_DATE_FORMAT);
     private static final String LICENSE_DATE_FORMAT_DESCRIPTION_FOR_GUI = "(year-month-day)";
 
@@ -18,10 +19,9 @@ public class LicenseInfoPanel extends GridLayout {
     private Label usersNumberLabel;
     private Label licenseCreatedOn;
     private Label licenseExpiresOn;
-    private Services services;
 
-    public LicenseInfoPanel(Services services) {
-        this.services = services;
+    public LicenseInfoPanel(LicenseManager licenseManager) {
+        this.licenseManager = licenseManager;
         buildUI();
     }
 
@@ -71,7 +71,7 @@ public class LicenseInfoPanel extends GridLayout {
     }
 
     private void clearLicenseInfo() {
-        services.getLicenseManager().removeTaskAdapterLicenseFromThisComputer();
+        licenseManager.removeTaskAdapterLicenseFromThisComputer();
         getWindow().showNotification("Removed the license info");
     }
 }

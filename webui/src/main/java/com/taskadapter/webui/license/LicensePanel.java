@@ -2,29 +2,29 @@ package com.taskadapter.webui.license;
 
 import com.taskadapter.license.License;
 import com.taskadapter.license.LicenseChangeListener;
-import com.taskadapter.web.service.Services;
+import com.taskadapter.license.LicenseManager;
 import com.vaadin.ui.Panel;
 
 public class LicensePanel extends Panel implements LicenseChangeListener {
 
+    private final LicenseManager licenseManager;
     private EnterLicensePanel enterLicensePanel;
     private LicenseInfoPanel licenseInfoPanel;
-    private Services services;
 
-    public LicensePanel(Services services) {
+    public LicensePanel(LicenseManager licenseManager) {
         super("License Information");
-        this.services = services;
+        this.licenseManager = licenseManager;
         buildUI();
-        services.getLicenseManager().addLicenseChangeListener(this);
+        licenseManager.addLicenseChangeListener(this);
         updateFormBasingOnLicense();
     }
 
     private void buildUI() {
-        enterLicensePanel = new EnterLicensePanel(services);
+        enterLicensePanel = new EnterLicensePanel(licenseManager);
         enterLicensePanel.setVisible(false);
         addComponent(enterLicensePanel);
 
-        licenseInfoPanel = new LicenseInfoPanel(services);
+        licenseInfoPanel = new LicenseInfoPanel(licenseManager);
         licenseInfoPanel.setVisible(false);
         addComponent(licenseInfoPanel);
     }
@@ -35,8 +35,8 @@ public class LicensePanel extends Panel implements LicenseChangeListener {
     }
 
     private void updateFormBasingOnLicense() {
-        if (services.getLicenseManager().isSomeLicenseInstalled()) {
-            showRegisteredMode(services.getLicenseManager().getLicense());
+        if (licenseManager.isSomeLicenseInstalled()) {
+            showRegisteredMode(licenseManager.getLicense());
         } else {
             showUnregisteredMode();
         }

@@ -120,7 +120,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
         supportButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                navigator.show(new SupportPage(services.getCurrentTaskAdapterVersion()));
+                navigator.show(new SupportPage(services.getCurrentTaskAdapterVersion(), services.getLicenseManager()));
             }
         });
         menu.addComponent(supportButton);

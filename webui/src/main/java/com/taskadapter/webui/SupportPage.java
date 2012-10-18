@@ -1,6 +1,8 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.service.LastVersionLoader;
+import com.taskadapter.webui.license.LicensePanel;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
@@ -12,25 +14,27 @@ import com.vaadin.ui.VerticalLayout;
 
 public class SupportPage extends Page {
     private final String currentTaskAdapterVersion;
+    private final LicenseManager licenseManager;
     private VerticalLayout layout = new VerticalLayout();
     private Panel versionPanel;
     private VerticalLayout lastVersionInfoLayout = new VerticalLayout();
 
-    public SupportPage(String currentTaskAdapterVersion) {
+    public SupportPage(String currentTaskAdapterVersion, LicenseManager licenseManager) {
         this.currentTaskAdapterVersion = currentTaskAdapterVersion;
+        this.licenseManager = licenseManager;
         buildUI();
     }
 
     private void buildUI() {
         layout.setSpacing(true);
         addVersionInfo();
-        addBuyLicenseLink();
+        createLicenseSection();
         addEmailLink();
     }
 
     private void addVersionInfo() {
         versionPanel = new Panel("Version Info");
-        versionPanel.setWidth(300, Sizeable.UNITS_PIXELS);
+        versionPanel.setWidth(400, Sizeable.UNITS_PIXELS);
 
         Label currentVersionLabel = new Label("Task Adapter version " + currentTaskAdapterVersion);
         versionPanel.addComponent(currentVersionLabel);
@@ -63,18 +67,17 @@ public class SupportPage extends Page {
         }
     }
 
+    private void createLicenseSection() {
+        LicensePanel panel = new LicensePanel(licenseManager);
+        layout.addComponent(panel);
+    }
+
     private void addDownloadLink() {
         Link downloadLink = new Link();
         downloadLink.setResource(new ExternalResource("http://www.taskadapter.com/download"));
         downloadLink.setCaption("Open Download page");
         downloadLink.setTargetName("_new");
         lastVersionInfoLayout.addComponent(downloadLink);
-    }
-
-    private void addBuyLicenseLink() {
-        Link buyLink = new Link("Buy license", new ExternalResource("http://www.taskadapter.com/buy"));
-        buyLink.setTargetName("_blank");
-        layout.addComponent(buyLink);
     }
 
     private void addEmailLink() {
