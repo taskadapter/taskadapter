@@ -21,7 +21,6 @@ public class GithubTaskSaver extends AbstractTaskSaver<GithubConfig> {
     private GithubToGTask taskConverter;
     private final UserService userService;
 
-    // TODO !!! unused param. see http://www.hostedredmine.com/issues/111002
     public GithubTaskSaver(GithubConfig config, Mappings mappings) {
         super(config);
         this.mappings = mappings;
