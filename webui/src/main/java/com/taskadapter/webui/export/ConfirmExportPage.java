@@ -38,8 +38,8 @@ public class ConfirmExportPage extends CustomComponent {
         VerticalLayout layout = new VerticalLayout();
         layout.setSpacing(true);
 
-        // TODO !!! change ID to target location to allow working with two connectors of the same kind (redmine-redmine)
-        Label text1 = new Label("Please confirm export to " + config.getConnector2().getConnectorTypeId());
+        String destination = config.getConnector2().getDestinationLocation() + " (" + config.getConnector2().getConnectorTypeId() + ")";
+        Label text1 = new Label("Please confirm export to " + destination);
         layout.addComponent(text1);
 
         connectorTree = new MyTree();
