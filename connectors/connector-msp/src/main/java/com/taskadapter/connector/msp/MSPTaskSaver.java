@@ -6,10 +6,16 @@ import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.EntityPersistenseException;
 import com.taskadapter.connector.msp.write.MSXMLFileWriter;
+import com.taskadapter.connector.msp.write.RealWriter;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GRelation.TYPE;
 import com.taskadapter.model.GTask;
-import net.sf.mpxj.*;
+import net.sf.mpxj.Duration;
+import net.sf.mpxj.MPXJException;
+import net.sf.mpxj.ProjectFile;
+import net.sf.mpxj.RelationType;
+import net.sf.mpxj.Task;
+import net.sf.mpxj.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +30,7 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
 
     public MSPTaskSaver(MSPConfig config, Mappings mappings) {
         super(config);
-        this.writer = new MSXMLFileWriter(config, mappings);
+        this.writer = new MSXMLFileWriter(mappings);
     }
 
     @Override
@@ -43,7 +49,7 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
      */
     private void saveData(List<GTask> tasks, boolean keepTaskId) throws ConnectorException {
         try {
-            String resultFile = writer.write(result, tasks, keepTaskId);
+            String resultFile = writer.write(config.getOutputAbsoluteFilePath(), result, tasks, keepTaskId);
             result.setTargetFileAbsolutePath(resultFile);
         } catch (IOException e) {
             throw MSPExceptions.convertException(e);
@@ -82,7 +88,8 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
     protected void saveRelations(List<GRelation> relations) {
         MSPFileReader fileReader = new MSPFileReader();
         try {
-            ProjectFile projectFile = fileReader.readFile(config.getOutputAbsoluteFilePath());
+            String outputAbsoluteFilePath = config.getOutputAbsoluteFilePath();
+            ProjectFile projectFile = fileReader.readFile(outputAbsoluteFilePath);
             for (GRelation relation : relations) {
                 if (relation.getType().equals(TYPE.precedes)) {
                     Integer intKey = Integer.parseInt(relation
@@ -106,7 +113,7 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
                 }
             }
 
-            writer.writeProject(projectFile);
+            RealWriter.writeProject(outputAbsoluteFilePath, projectFile);
         } catch (MPXJException e) {
             result.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations (" + e.toString() + ")"));
             e.printStackTrace();

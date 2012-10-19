@@ -2,7 +2,7 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
-import com.taskadapter.connector.msp.write.MSXMLFileWriter;
+import com.taskadapter.connector.msp.write.RealWriter;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import net.sf.mpxj.ConstraintType;
 import net.sf.mpxj.ProjectFile;
@@ -94,12 +94,11 @@ public class MSPUtils {
      * @param mppFilePath absolute path to *.mpp file
      * @return new absolute path to .xml
      */
-    public static String convertMppProjectFileToXml(String mppFilePath, Mappings mappings) {
+    public static String convertMppProjectFileToXml(String mppFilePath) {
         try {
+            String outputAbsoluteFilePath = changeExtension(mppFilePath, ".xml");
             ProjectFile projectFile = new MSPFileReader().readFile(mppFilePath);
-            MSPConfig config = new MSPConfig();
-            config.setOutputAbsoluteFilePath(changeExtension(mppFilePath, ".xml"));
-            return new MSXMLFileWriter(config, mappings).writeProject(projectFile);
+            return RealWriter.writeProject(outputAbsoluteFilePath, projectFile);
         } catch (Throwable e) {
             logger.error("error converting MPP file to XML: " + e.getMessage(), e);
         }

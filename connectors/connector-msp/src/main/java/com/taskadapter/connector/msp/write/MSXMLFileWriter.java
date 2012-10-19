@@ -3,16 +3,22 @@ package com.taskadapter.connector.msp.write;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.TaskSaveResultBuilder;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
-import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPUtils;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
-import net.sf.mpxj.*;
-import net.sf.mpxj.mspdi.MSPDIWriter;
-import net.sf.mpxj.writer.ProjectWriter;
+import net.sf.mpxj.ConstraintType;
+import net.sf.mpxj.Duration;
+import net.sf.mpxj.Priority;
+import net.sf.mpxj.ProjectFile;
+import net.sf.mpxj.ProjectHeader;
+import net.sf.mpxj.Resource;
+import net.sf.mpxj.ResourceAssignment;
+import net.sf.mpxj.ResourceType;
+import net.sf.mpxj.Task;
+import net.sf.mpxj.TaskField;
+import net.sf.mpxj.TimeUnit;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -20,9 +26,7 @@ import java.util.List;
 public class MSXMLFileWriter {
 
     private static final String ALIAS_REMOTE_ID = "TA Remote ID";
-
     private static final String ALIAS_ISSUE_TYPE = "TA Task Type";
-
     private static final String ALIAS_ISSUE_STATUS = "TA Task Status";
 
     /**
@@ -40,15 +44,13 @@ public class MSXMLFileWriter {
     public static final TaskField FIELD_DURATION_UNDEFINED = TaskField.TEXT20;
     public static final TaskField FIELD_WORK_UNDEFINED = TaskField.TEXT21;
 
-    private MSPConfig config;
     private Mappings mappings;
 
-    public MSXMLFileWriter(MSPConfig config, Mappings mappings) {
-        this.config = config;
+    public MSXMLFileWriter(Mappings mappings) {
         this.mappings = mappings;
     }
 
-    public String write(TaskSaveResultBuilder syncResult, List<GTask> rows,
+    public String write(String absoluteFilePath, TaskSaveResultBuilder syncResult, List<GTask> rows,
                         boolean keepTaskId) throws IOException, BadConfigException {
 
         // XXX load resources from existing MS file to cache here
@@ -77,7 +79,7 @@ public class MSXMLFileWriter {
           */
         header.setSubject(taTag);
 
-        return writeProject(project);
+        return RealWriter.writeProject(absoluteFilePath, project);
     }
 
     private void addTasks(TaskSaveResultBuilder syncResult, ProjectFile project,
@@ -116,25 +118,6 @@ public class MSXMLFileWriter {
         return resource;
     }
 
-    /**
-     * @param project project
-     * @return absolute file path
-     * @throws java.io.IOException exception
-     */
-    public String writeProject(ProjectFile project)
-            throws IOException {
-        String mspFileName = config.getOutputAbsoluteFilePath();
-        File folder = new File(mspFileName).getParentFile();
-        if (folder != null) {
-            folder.mkdirs();
-        }
-        File realFile = new File(mspFileName);
-
-        ProjectWriter writer = new MSPDIWriter();
-        writer.write(project, realFile);
-        return realFile.getAbsolutePath();
-    }
-
     void setAliases(ProjectFile project) {
         project.setTaskFieldAlias(FIELD_DURATION_UNDEFINED, ALIAS_IS_DURATION_UNDEFINED);
         project.setTaskFieldAlias(FIELD_WORK_UNDEFINED, ALIAS_IS_WORK_UNDEFINED);
@@ -159,10 +142,11 @@ public class MSXMLFileWriter {
      * "% done" field is used to calculate "actual work". this is more like a
      * hack used until Redmine REST API provides "time spent" serverInfo in
      * "issues list" response (see task http://www.redmine.org/issues/5303 )
-     * @throws BadConfigException 
+     *
+     * @throws BadConfigException
      */
     public void setTaskFields(ProjectFile project, Task mspTask,
-                                 GTask gTask, boolean keepTaskId) throws BadConfigException {
+                              GTask gTask, boolean keepTaskId) throws BadConfigException {
         mspTask.setMilestone(false);
 
         if (mappings.isFieldSelected(FIELD.SUMMARY)) {
@@ -268,7 +252,7 @@ public class MSXMLFileWriter {
     }
 
     private void setFieldIfSelected(FIELD field, Task mspTask, Object value) {
-		if (mappings.isFieldSelected(field)) {
+        if (mappings.isFieldSelected(field)) {
             String v = mappings.getMappedTo(field);
             TaskField f = MSPUtils.getTaskFieldByName(v);
             mspTask.set(f, value);

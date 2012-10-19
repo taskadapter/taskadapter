@@ -1,12 +1,17 @@
 package com.taskadapter.connector.msp;
 
-import com.taskadapter.connector.definition.*;
+import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.FileBasedConnector;
+import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.definition.ProgressMonitor;
+import com.taskadapter.connector.definition.TaskSaveResult;
+import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.msp.write.MSXMLFileWriter;
+import com.taskadapter.connector.msp.write.RealWriter;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
-
 import net.sf.mpxj.MPXJException;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Task;
@@ -32,10 +37,9 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
 
     @Override
     public void updateRemoteIDs(Map<Integer, String> remoteKeys, ProgressMonitor monitorIGNORED, Mappings mappings) throws ConnectorException {
-        MSPConfig c = (MSPConfig) config;
-        String fileName = c.getInputAbsoluteFilePath();
+        String inputAbsoluteFilePath = config.getInputAbsoluteFilePath();
         try {
-            ProjectFile projectFile = new MSPFileReader().readFile(fileName);
+            ProjectFile projectFile = new MSPFileReader().readFile(inputAbsoluteFilePath);
             List<Task> allTasks = projectFile.getAllTasks();
 
             for (Task mspTask : allTasks) {
@@ -45,7 +49,7 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
                 }
             }
 
-            new MSXMLFileWriter(c, mappings).writeProject(projectFile);
+            RealWriter.writeProject(config.getOutputAbsoluteFilePath(), projectFile);
         } catch (MPXJException e) {
             throw MSPExceptions.convertException(e);
         } catch (IOException e) {
@@ -68,7 +72,7 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
     @Override
     public void updateTasksByRemoteIds(List<GTask> tasksFromExternalSystem, Mappings mappings) throws ConnectorException {
         String fileName = config.getInputAbsoluteFilePath();
-        MSXMLFileWriter writer = new MSXMLFileWriter(config, mappings);
+        MSXMLFileWriter writer = new MSXMLFileWriter(mappings);
         try {
             ProjectFile projectFile = new MSPFileReader().readFile(fileName);
             List<Task> allTasks = projectFile.getAllTasks();
@@ -76,7 +80,7 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
                 Task mspTask = findTaskByRemoteId(mappings, allTasks, gTask.getKey());
                 writer.setTaskFields(projectFile, mspTask, gTask, true);
             }
-            writer.writeProject(projectFile);
+            RealWriter.writeProject(config.getOutputAbsoluteFilePath(), projectFile);
         } catch (MPXJException e) {
             throw MSPExceptions.convertException(e);
         } catch (IOException e) {
