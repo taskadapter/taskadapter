@@ -28,7 +28,10 @@ public class NewMappings {
      * @param field field to find.
      * @return field mapping or <code>null</code> if no mapping was defined for
      * a <code>field</code>.
+     * @deprecated this method should not be used at all. It can't reliable find
+     * fields for remote-ids.
      */
+    @Deprecated
     public FieldMapping getMapping(GTaskDescriptor.FIELD field) {
         if (field == null) {
             return null;

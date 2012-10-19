@@ -6,6 +6,7 @@ import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.NewMappings;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.GTaskDescriptor;
+import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.web.Messages;
 import com.taskadapter.web.configeditor.Validatable;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
@@ -87,28 +88,37 @@ public class OnePageMappingPanel extends Panel implements Validatable {
     }
 
     private void addSupportedFields() {
-        for (GTaskDescriptor.FIELD field : GTaskDescriptor.FIELD.values()) {
-            addField(field);
+        for (FieldMapping mapping : mappings.getMappings()) {
+            addField(mapping);
         }
     }
 
-    private void addField(GTaskDescriptor.FIELD field) {
+    private void addField(FieldMapping field) {
         addCheckbox(field);
 //        addEmptyCell();
-        addConnectorField(field, connector1.getAvailableFields(),
-                mappings.getMapping(field), "connector1");
-        addConnectorField(field, connector2.getAvailableFields(),
-                mappings.getMapping(field), "connector2");
+        if (field.getConnector1() == null) {
+            final String displayValue = GTaskDescriptor
+                    .getDisplayValue(FIELD.ID);
+            createMappingForSingleValue(displayValue);
+        } else {
+            addConnectorField(connector1.getAvailableFields(), field,
+                    "connector1");
+        }
+        
+        if (field.getConnector2() == null) {
+            final String displayValue = GTaskDescriptor
+                    .getDisplayValue(FIELD.ID);
+            createMappingForSingleValue(displayValue);
+        } else {
+            addConnectorField(connector2.getAvailableFields(), field,
+                    "connector2");
+        }
     }
 
-    private CheckBox addCheckbox(GTaskDescriptor.FIELD field) {
-        CheckBox checkbox = new CheckBox(GTaskDescriptor.getDisplayValue(field));
-        FieldMapping fieldMapping = mappings.getMapping(field);
-        if (fieldMapping == null) {
-            fieldMapping = new FieldMapping(field, "", "", true);
-            mappings.put(fieldMapping);
-        }
-        final MethodProperty<Boolean> selected = new MethodProperty<Boolean>(fieldMapping, "selected");
+    private CheckBox addCheckbox(FieldMapping field) {
+        CheckBox checkbox = new CheckBox(GTaskDescriptor.getDisplayValue(field
+                .getField()));
+        final MethodProperty<Boolean> selected = new MethodProperty<Boolean>(field, "selected");
         checkbox.setPropertyDataSource(selected);
 
         String helpForField = getHelpForField(field);
@@ -131,12 +141,12 @@ public class OnePageMappingPanel extends Panel implements Validatable {
         gridLayout.setComponentAlignment(emptyLabel, Alignment.MIDDLE_LEFT);
     }
 
-    private void addConnectorField(GTaskDescriptor.FIELD field, AvailableFields connectorFields, FieldMapping fieldMapping, String leftRightField) {
-        String[] allowedValues = connectorFields.getAllowedValues(field);
+    private void addConnectorField(AvailableFields connectorFields, FieldMapping fieldMapping, String leftRightField) {
+        String[] allowedValues = connectorFields.getAllowedValues(fieldMapping.getField());
         BeanItemContainer<String> container = new BeanItemContainer<String>(String.class);
         final MethodProperty<String> mappedTo = new MethodProperty<String>(fieldMapping, leftRightField);
 
-        if (connectorFields.isFieldSupported(field)) {
+        if (connectorFields.isFieldSupported(fieldMapping.getField())) {
             if (allowedValues.length > 1) {
                 container.addAll(Arrays.asList(allowedValues));
                 ComboBox combo = new ComboBox(null, container);
@@ -149,7 +159,8 @@ public class OnePageMappingPanel extends Panel implements Validatable {
             } else if (allowedValues.length == 1) {
                 createMappingForSingleValue(allowedValues[0]);
             } else {
-                String displayValue = GTaskDescriptor.getDisplayValue(field);
+                final String displayValue = GTaskDescriptor
+                        .getDisplayValue(fieldMapping.getField());
                 createMappingForSingleValue(displayValue);
             }
         } else {
@@ -163,8 +174,8 @@ public class OnePageMappingPanel extends Panel implements Validatable {
         gridLayout.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
     }
 
-    private String getHelpForField(GTaskDescriptor.FIELD field) {
-        return Messages.getMessageDefaultLocale(field.toString());
+    private String getHelpForField(FieldMapping field) {
+        return Messages.getMessageDefaultLocale(field.getField().toString());
     }
 
     private HorizontalLayout addHelpTipToCheckbox(CheckBox checkbox,

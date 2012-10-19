@@ -5,9 +5,13 @@ import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.config.StorageException;
 import com.taskadapter.config.StoredConnectorConfig;
 import com.taskadapter.config.StoredExportConfig;
+import com.taskadapter.connector.definition.AvailableFields;
+import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.NewMappings;
+import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -127,8 +131,93 @@ public final class UIConfigStore {
         final NewMappings mappings = storedConfig.getMappings() == null ? new NewMappings()
                 : new Gson().fromJson(storedConfig.getMappings(),
                         NewMappings.class);
+        final NewMappings fixedMappings = fixMappings(mappings, config1, config2);
         return new UISyncConfig(storedConfig.getId(), label, config1, config2,
-                mappings, false);
+                fixedMappings, false);
+    }
+
+    /**
+     * Fixes mappings. Remove "unsupported" mappings. Add new mappings (in 
+     * disabled state).
+     * @param mappings mappings to fix.
+     * @param config1 first config.
+     * @param config2 second config.
+     */
+    private NewMappings fixMappings(NewMappings mappings, UIConnectorConfig config1,
+            UIConnectorConfig config2) {
+        final AvailableFields fields1 = config1.getAvailableFields();
+        final AvailableFields fields2 = config2.getAvailableFields();
+        final Collection<FIELD> firstFields = fields1
+                .getSupportedFields();
+        final Collection<FIELD> secondFields = fields2
+                .getSupportedFields();
+        
+        final NewMappings result = new NewMappings();
+
+        if (secondFields.contains(FIELD.REMOTE_ID)) {
+            final FieldMapping saved = findRemote(mappings, false, true);
+            if (saved != null) {
+                result.put(saved);
+            } else {
+                result.put(new FieldMapping(FIELD.REMOTE_ID, null,
+                    getDefaultFieldValue(FIELD.REMOTE_ID, fields2), false));
+            }
+        }
+        
+        if (firstFields.contains(FIELD.REMOTE_ID)) {
+            final FieldMapping saved = findRemote(mappings, true, false);
+            if (saved != null) {
+                result.put(saved);
+            } else {
+                result.put(new FieldMapping(FIELD.REMOTE_ID,
+                        getDefaultFieldValue(FIELD.REMOTE_ID, fields1), null,
+                        false));
+            }
+        }
+        
+        for (FIELD field : FIELD.values()) {
+            if (field == FIELD.ID || field == FIELD.REMOTE_ID) {
+                continue;
+            }
+            
+            if (!firstFields.contains(field) || !secondFields.contains(field)) {
+                continue;
+            }
+            
+            final FieldMapping oldMapping = mappings.getMapping(field);
+            if (oldMapping != null) {
+                result.put(oldMapping);
+                continue;
+            }
+            
+            final FieldMapping newMapping = new FieldMapping(field,
+                    getDefaultFieldValue(field, fields1), getDefaultFieldValue(
+                            field, fields2), false);
+            result.put(newMapping);
+        }
+        
+        return result;        
+    }
+    
+    private static FieldMapping findRemote(NewMappings mappings,
+            boolean remoteLeft, boolean remoteRight) {
+        for (FieldMapping mapping : mappings.getMappings()) {
+            if (
+                    mapping.getField() == FIELD.ID && (
+                    ((mapping.getConnector1() == null) != remoteLeft) ||
+                    ((mapping.getConnector2() == null) != remoteRight))) {
+                return mapping;
+            }
+        }
+        return null;
+    }
+
+    private String getDefaultFieldValue(FIELD field, AvailableFields fields1) {
+        final String[] values = fields1.getAllowedValues(field);
+        if (values == null || values.length < 1) {
+            return null;
+        }
+        return values[0];
     }
 
     /**
