@@ -81,7 +81,7 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig> {
     public void validateForLoad(GithubConfig config) throws ValidationException {
         final WebServerInfo serverInfo = config.getServerInfo();
         if (!serverInfo.isHostSet()) {
-            throw new ValidationException("Server URL is not set");
+            throw new ValidationException("Github server URL is not set");
         }
     }
 

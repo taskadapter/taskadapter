@@ -186,7 +186,7 @@ class RedmineServerPanel extends VerticalLayout implements Validatable {
     public void validate() throws ValidationException {
         String host = getServerURL();
         if (host == null || host.isEmpty() || host.equalsIgnoreCase(WebServerInfo.DEFAULT_URL_PREFIX)) {
-            throw new ValidationException("Server URL is not set");
+            throw new ValidationException("Redmine server URL is not set");
         }
     }
 

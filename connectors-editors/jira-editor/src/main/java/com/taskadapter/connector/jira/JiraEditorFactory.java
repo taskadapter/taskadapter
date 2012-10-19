@@ -106,7 +106,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
     public void validateForLoad(JiraConfig config) throws ValidationException {
         final WebServerInfo serverInfo = config.getServerInfo();
         if (!serverInfo.isHostSet()) {
-            throw new ValidationException("Server URL is not set");
+            throw new ValidationException("Jira server URL is not set");
         }
 
         if (config.getQueryId() == null) {
