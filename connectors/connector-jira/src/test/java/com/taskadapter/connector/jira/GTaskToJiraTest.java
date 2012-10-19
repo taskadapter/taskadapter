@@ -1,6 +1,10 @@
 package com.taskadapter.connector.jira;
 
-import com.atlassian.jira.rest.client.domain.*;
+import com.atlassian.jira.rest.client.domain.BasicComponent;
+import com.atlassian.jira.rest.client.domain.IssueFieldId;
+import com.atlassian.jira.rest.client.domain.IssueType;
+import com.atlassian.jira.rest.client.domain.Priority;
+import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
@@ -11,7 +15,6 @@ import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GUser;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -20,9 +23,10 @@ import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import java.util.Calendar;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
-@Ignore
 public class GTaskToJiraTest {
 
     private static Iterable<Priority> priorities;
