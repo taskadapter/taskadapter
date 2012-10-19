@@ -27,7 +27,7 @@ public final class UISyncConfig {
     /**
      * Config label
      */
-    private final String label;
+    private String label;
 
     /**
      * First connector config.
@@ -57,6 +57,10 @@ public final class UISyncConfig {
         this.connector1 = connector1;
         this.connector2 = connector2;
         this.newMappings = newMappings;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public String getLabel() {

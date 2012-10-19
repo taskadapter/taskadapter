@@ -2,6 +2,7 @@ package com.taskadapter.webui;
 
 import com.taskadapter.config.StorageException;
 import com.taskadapter.web.uiapi.UISyncConfig;
+import com.vaadin.data.util.MethodProperty;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -18,8 +19,6 @@ public class EditConfigPage extends Page {
 
     private VerticalLayout layout = new VerticalLayout();
     private UISyncConfig config;
-    private TextField configDescription;
-    private OnePageEditor onePageEditor;
 
     private Label errorMessageLabel = new Label("Test");
 
@@ -59,12 +58,13 @@ public class EditConfigPage extends Page {
         descriptionLayout.setSpacing(true);
         layout.addComponent(descriptionLayout);
         descriptionLayout.addComponent(new Label("Description:"));
-        configDescription = new TextField();
-        configDescription.addStyleName("configEditorDescriptionLabel");
-        configDescription.setValue(config.getLabel());
-        descriptionLayout.addComponent(configDescription);
+        TextField descriptionField = new TextField();
+        descriptionField.addStyleName("configEditorDescriptionLabel");
+        MethodProperty<String> label = new MethodProperty<String>(config, "label");
+        descriptionField.setPropertyDataSource(label);
+        descriptionLayout.addComponent(descriptionField);
 
-        onePageEditor = new OnePageEditor(services, config);
+        OnePageEditor onePageEditor = new OnePageEditor(services, config);
         layout.addComponent(onePageEditor);
     }
 
