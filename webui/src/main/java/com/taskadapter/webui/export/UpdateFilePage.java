@@ -13,20 +13,10 @@ import java.util.List;
 
 public class UpdateFilePage extends ActionPage {
 
-    private final Updater updater;
+    private Updater updater;
 
     public UpdateFilePage(UISyncConfig config) {
         super(config);
-        Connector<?> sourceConnector = config.getConnector1().createConnectorInstance();
-        Connector<?> destinationConnector = config.getConnector2().createConnectorInstance();
-        /* 
-         * TODO !!! Next line will cause TA to ignore all mapping changes prior
-         * to exporting into MSP 
-         */
-        updater = new Updater(destinationConnector,
-                config.generateTargetMappings(), sourceConnector,
-                config.generateSourceMappings(), config.getConnector1()
-                        .getDestinationLocation());
     }
 
     @Override
@@ -77,6 +67,12 @@ public class UpdateFilePage extends ActionPage {
     @Override
     public void loadData() throws ConnectorException {
         MonitorWrapper wrapper = new MonitorWrapper(loadProgress);
+        Connector<?> sourceConnector = config.getConnector1().createConnectorInstance();
+        Connector<?> destinationConnector = config.getConnector2().createConnectorInstance();
+        updater = new Updater(destinationConnector,
+                config.generateTargetMappings(), sourceConnector,
+                config.generateSourceMappings(), config.getConnector1()
+                        .getDestinationLocation());
         updater.loadTasksFromFile(wrapper);
         updater.removeTasksWithoutRemoteIds();
         loadedTasks = updater.getExistingTasks();
