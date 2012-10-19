@@ -1,14 +1,14 @@
 package com.taskadapter.web.uiapi;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gson.Gson;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.config.StorageException;
 import com.taskadapter.config.StoredConnectorConfig;
 import com.taskadapter.config.StoredExportConfig;
 import com.taskadapter.connector.definition.NewMappings;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * UI-level config manager. Manages UIMappingConfigs instead of low-level
@@ -95,7 +95,8 @@ public final class UIConfigStore {
      */
     public void saveConfig(String userLoginName, UISyncConfig syncConfig)
             throws StorageException {
-        syncConfig = syncConfig.normalized();
+        throw new StorageException("something bad something bad something bad something bad something bad something bad something bad something bad");
+/*        syncConfig = syncConfig.normalized();
         final String label = syncConfig.getLabel();
         final UIConnectorConfig config1 = syncConfig.getConnector1();
         final UIConnectorConfig config2 = syncConfig.getConnector2();
@@ -104,7 +105,7 @@ public final class UIConfigStore {
         configStorage.saveConfig(userLoginName, syncConfig.getIdentity(),
                 label, config1.getConnectorTypeId(), config1.getConfigString(),
                 config2.getConnectorTypeId(), config2.getConfigString(),
-                mappingsStr);
+                mappingsStr);*/
     }
 
     /**

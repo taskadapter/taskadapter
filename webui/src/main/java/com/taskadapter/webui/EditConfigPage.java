@@ -3,9 +3,19 @@ package com.taskadapter.webui;
 import com.taskadapter.config.StorageException;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EditConfigPage extends Page {
+    private final Logger logger = LoggerFactory.getLogger(EditConfigPage.class);
+
     private VerticalLayout layout = new VerticalLayout();
     private UISyncConfig config;
     private TextField configDescription;
@@ -69,13 +79,9 @@ public class EditConfigPage extends Page {
             try {
                 services.getUIConfigStore().saveConfig(userLoginName, config);
             } catch (StorageException e) {
-                // FIXME:
-                // TODO !!! 
-                // Write some message to a user.
-                errorMessageLabel.setValue("Failed to save config"
-                        + e.getMessage());
-                navigator.showNotification("Failed to save config",
-                        "Failed to save config");
+                String message = "Can't save: " + e.getMessage();
+                errorMessageLabel.setValue(message);
+                logger.error(message, e);
                 return;
             }
             navigator.showNotification("Saved", "All is saved OK");

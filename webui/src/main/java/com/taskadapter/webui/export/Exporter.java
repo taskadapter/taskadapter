@@ -11,15 +11,18 @@ import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.service.Services;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.Navigator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Arrays;
 
 /**
  * Data exporter. Always exports from connector1 to connector2.
- *
  */
 public class Exporter {
+
+    private final Logger logger = LoggerFactory.getLogger(Exporter.class);
 
     private static final String UPDATE = "Only update tasks present in the file";
     private static final String OVERWRITE = "Overwrite";
@@ -67,9 +70,9 @@ public class Exporter {
                 try {
                     services.getUIConfigStore().saveConfig(userName, syncConfig);
                 } catch (StorageException e1) {
-                    // FIXME:
-                    // TODO log and report error instead of printing stacktrace
-                    e1.printStackTrace();
+                    String message = "There were some troubles saving the config:<BR>" + e.getMessage();
+                    logger.error(message, e);
+                    navigator.showError(message);
                 }
 
             } catch (ValidationException e) {

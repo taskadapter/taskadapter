@@ -125,11 +125,11 @@ public class Navigator {
     }
 
     public void showError(String message) {
-        showNotification("Internal error!", message);
+        layout.getWindow().showNotification("Oops", message , Window.Notification.TYPE_ERROR_MESSAGE);
     }
 
     public void showNotification(String caption, String message) {
-        layout.getWindow().showNotification(caption, "<pre>" + message + "</pre>", Window.Notification.TYPE_HUMANIZED_MESSAGE);
+        layout.getWindow().showNotification(caption, message , Window.Notification.TYPE_HUMANIZED_MESSAGE);
     }
 
     public void addWindow(MessageDialog messageDialog) {

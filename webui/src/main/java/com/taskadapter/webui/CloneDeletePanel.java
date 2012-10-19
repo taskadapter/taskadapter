@@ -6,10 +6,17 @@ import com.taskadapter.web.service.Services;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
+/**
+ * UI Component containing Clone and Delete buttons. Shown in "Edit Config" page.
+ */
 public class CloneDeletePanel extends HorizontalLayout {
+    private final Logger logger = LoggerFactory.getLogger(CloneDeletePanel.class);
+
     private static final String YES = "Yes";
     private static final String CANCEL = "Cancel";
 
@@ -79,11 +86,12 @@ public class CloneDeletePanel extends HorizontalLayout {
                             final String userLoginName = services.getAuthenticator().getUserName();
                             try {
                                 services.getUIConfigStore().cloneConfig(userLoginName, config);
+                                navigator.show(new ConfigsPage());
                             } catch (StorageException e) {
-                                //TODO !!! Add an error handler.
-                                e.printStackTrace();
+                                String message = "There were some troubles cloning the config:<BR>" + e.getMessage();
+                                logger.error(message, e);
+                                navigator.showError(message);
                             }
-                            navigator.show(new ConfigsPage());
                         }
                     }
                 }
