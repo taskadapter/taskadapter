@@ -22,16 +22,12 @@ public class CloneDeletePanel extends HorizontalLayout {
 
     private final Navigator navigator;
     private final UISyncConfig config;
-    private Callback callback;
     private final Services services;
 
-    public CloneDeletePanel(Services services, Navigator navigator, UISyncConfig config,
-                            Callback callback) {
+    public CloneDeletePanel(Services services, Navigator navigator, UISyncConfig config) {
         this.services = services;
         this.navigator = navigator;
         this.config = config;
-        this.callback = callback;
-
         buildUI();
     }
 
@@ -41,9 +37,7 @@ public class CloneDeletePanel extends HorizontalLayout {
         cloneButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                if (callback.onCloneConfig()) {
-                    showConfirmClonePage();
-                }
+                showConfirmClonePage();
             }
         });
         addComponent(cloneButton);
@@ -98,9 +92,5 @@ public class CloneDeletePanel extends HorizontalLayout {
         );
         messageDialog.setWidth("175px");
         getWindow().addWindow(messageDialog);
-    }
-
-    public interface Callback {
-        boolean onCloneConfig();
     }
 }

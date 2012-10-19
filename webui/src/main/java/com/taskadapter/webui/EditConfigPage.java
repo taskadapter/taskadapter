@@ -44,12 +44,7 @@ public class EditConfigPage extends Page {
         buttonsLayout.addComponent(errorMessageLabel);
         buttonsLayout.setExpandRatio(errorMessageLabel, 1.0f);
 
-        CloneDeletePanel cloneDeletePanel = new CloneDeletePanel(services, navigator, config, new CloneDeletePanel.Callback() {
-            @Override
-            public boolean onCloneConfig() {
-                return validateEditor();
-            }
-        });
+        CloneDeletePanel cloneDeletePanel = new CloneDeletePanel(services, navigator, config);
         buttonsLayout.addComponent(cloneDeletePanel);
         buttonsLayout.setComponentAlignment(cloneDeletePanel, Alignment.MIDDLE_RIGHT);
         layout.addComponent(buttonsLayout);
@@ -73,55 +68,20 @@ public class EditConfigPage extends Page {
     }
 
     private void save() {
-        if (validateEditor()) {
-//            updateFileWithDataInForm();
-            String userLoginName = services.getAuthenticator().getUserName();
-            try {
-                services.getUIConfigStore().saveConfig(userLoginName, config);
-            } catch (StorageException e) {
-                String message = "Can't save: " + e.getMessage();
-                errorMessageLabel.setValue(message);
-                logger.error(message, e);
-                return;
-            }
-            navigator.showNotification("Saved", "All is saved OK");
-
-            errorMessageLabel.setValue("");
-            navigator.show(new ConfigsPage());
-        }
-    }
-
-    private boolean validateEditor() {
-        // TODO !!! delete
-/*        try {
-            panel1.validateAll();
-        } catch (ValidationException e) {
-            errorMessageLabel.setValue(e.getMessage());
-            tabSheet.setSelectedTab(panel1);
-            return false;
-        }
-
+        String userLoginName = services.getAuthenticator().getUserName();
         try {
-            panel2.validateAll();
-        } catch (ValidationException e) {
-            errorMessageLabel.setValue(e.getMessage());
-            tabSheet.setSelectedTab(panel2);
-            return false;
+            services.getUIConfigStore().saveConfig(userLoginName, config);
+        } catch (StorageException e) {
+            String message = "Can't save: " + e.getMessage();
+            errorMessageLabel.setValue(message);
+            logger.error(message, e);
+            return;
         }
-*/
-        return true;
+        navigator.showNotification("Saved", "All is saved OK");
+
+        errorMessageLabel.setValue("");
+        navigator.show(new ConfigsPage());
     }
-
-//    private void updateFileWithDataInForm() {
-//        ConnectorConfig c1 = panel1.getConfig();
-//        ConnectorConfig c2 = panel2.getConfig();
-//        ConnectorDataHolder d1 = new ConnectorDataHolder(file.getConnectorDataHolder1().getType(), c1);
-//        ConnectorDataHolder d2 = new ConnectorDataHolder(file.getConnectorDataHolder2().getType(), c2);
-
-//        file.setConfigLabel((String) configDescription.getValue());
-//        file.setConnectorDataHolder1(d1);
-//        file.setConnectorDataHolder2(d2);
-//    }
 
     @Override
     public String getPageGoogleAnalyticsID() {
