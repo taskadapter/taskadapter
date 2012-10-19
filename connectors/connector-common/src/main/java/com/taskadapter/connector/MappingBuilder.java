@@ -4,12 +4,16 @@ import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.MappingSide;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.NewMappings;
+import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 public class MappingBuilder {
     public static Mappings build(NewMappings newMappings, MappingSide leftRight) {
         Mappings mappings = new Mappings();
         for (FieldMapping fieldMapping : newMappings.getMappings()) {
-            mappings.setMapping(fieldMapping.getField(), fieldMapping.isSelected(), getSideMappedTo(fieldMapping, leftRight));
+            final String mappingTarget = getSideMappedTo(fieldMapping, leftRight);
+            if (fieldMapping.getField() != FIELD.REMOTE_ID || mappingTarget != null) {
+                mappings.setMapping(fieldMapping.getField(), fieldMapping.isSelected(), mappingTarget);
+            }
         }
         return mappings;
     }
