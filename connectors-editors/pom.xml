@@ -31,6 +31,15 @@
         <module>redmine-editor</module>
     </modules>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.taskadapter</groupId>
+                <artifactId>webshared</artifactId>
+                <version>2.3</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -42,6 +51,12 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>1.9.5-rc1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.taskadapter</groupId>
+            <artifactId>test-utilities</artifactId>
+            <version>1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

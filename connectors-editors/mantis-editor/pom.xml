@@ -16,7 +16,6 @@
         <dependency>
             <groupId>com.taskadapter</groupId>
             <artifactId>webshared</artifactId>
-            <version>2.3</version>
         </dependency>
         <dependency>
             <groupId>com.taskadapter</groupId>

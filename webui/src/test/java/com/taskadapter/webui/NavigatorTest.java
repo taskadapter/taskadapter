@@ -1,5 +1,6 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.connector.testlib.FileBasedTest;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.service.EditorManager;
@@ -10,12 +11,11 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import org.junit.Test;
 
-import java.io.File;
 import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 
-public class NavigatorTest {
+public class NavigatorTest extends FileBasedTest {
     @Test
     public void feedbackPageIsShownWithoutLogin() {
         Services services = getServices();
@@ -53,8 +53,7 @@ public class NavigatorTest {
     }
 
     private Services getServices() {
-        File dataRootFolder = new File("tmp");
-        return new Services(dataRootFolder, new EditorManager(Collections.<String,PluginEditorFactory<?>>emptyMap()));
+        return new Services(tempFolder, new EditorManager(Collections.<String,PluginEditorFactory<?>>emptyMap()));
     }
 
 }
