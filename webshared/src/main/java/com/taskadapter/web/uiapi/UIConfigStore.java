@@ -95,8 +95,7 @@ public final class UIConfigStore {
      */
     public void saveConfig(String userLoginName, UISyncConfig syncConfig)
             throws StorageException {
-        throw new StorageException("something bad something bad something bad something bad something bad something bad something bad something bad");
-/*        syncConfig = syncConfig.normalized();
+        syncConfig = syncConfig.normalized();
         final String label = syncConfig.getLabel();
         final UIConnectorConfig config1 = syncConfig.getConnector1();
         final UIConnectorConfig config2 = syncConfig.getConnector2();
@@ -105,7 +104,7 @@ public final class UIConfigStore {
         configStorage.saveConfig(userLoginName, syncConfig.getIdentity(),
                 label, config1.getConnectorTypeId(), config1.getConfigString(),
                 config2.getConnectorTypeId(), config2.getConfigString(),
-                mappingsStr);*/
+                mappingsStr);
     }
 
     /**
