@@ -40,14 +40,12 @@ public class Exporter {
     }
 
     public void export() {
-//        String dataHolderLabel = null;
         String errorMessage = null;
         boolean valid = true;
 
         try {
             syncConfig.getConnector1().validateForLoad();
         } catch (ValidationException e) {
-//            dataHolderLabel = resolver.getSourceConfig().getLabel();
             errorMessage = e.getMessage();
             valid = false;
         }
