@@ -103,7 +103,11 @@
         </plugins>
         <pluginManagement>
             <plugins>
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <!--This plugin's configuration is used to store Eclipse m2e settings. -->
+
+<!-- Alexey: I disabled this plugin because it started bringing a newer GWT dependency to the
+build and this broke GWT Compilation *probably* because GWT 2.3.0 and 2.4.0 were mixed together.
+
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
@@ -153,6 +157,7 @@
                         </lifecycleMappingMetadata>
                     </configuration>
                 </plugin>
+-->
             </plugins>
         </pluginManagement>
     </build>
