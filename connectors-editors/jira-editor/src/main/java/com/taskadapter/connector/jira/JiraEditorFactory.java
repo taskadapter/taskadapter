@@ -96,7 +96,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
             throw new ValidationException("Server URL is not set");
         }
 
-        if (config.getProjectKey().isEmpty()) {
+        if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
             throw new ValidationException("Please specify the Jira project name\n" +
                     "where you want your tasks to be created.");
         }
