@@ -3,6 +3,9 @@ package com.taskadapter.connector.github.editor;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.connector.definition.exceptions.LoginNameNotSpecifiedException;
+import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.connector.github.GithubConfig;
 import com.taskadapter.web.PluginEditorFactory;
@@ -26,17 +29,25 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig> {
 
     @Override
     public String formatError(Throwable e) {
+
+        if (e instanceof ServerURLNotSetException) {
+            return MESSAGES.get("errors.serverURLNotSet");
+        }
+        if (e instanceof LoginNameNotSpecifiedException) {
+            return MESSAGES.get("errors.loginNameNotSet");
+        }
         if (!(e instanceof UnsupportedConnectorOperation)) {
-            return null;
+            return e.getMessage();
         }
 
         final UnsupportedConnectorOperation connEx = (UnsupportedConnectorOperation) e;
-        if ("updateRemoteIDs".equals(connEx.getMessage()))
+        if ("updateRemoteIDs".equals(connEx.getMessage())) {
             return MESSAGES.get("errors.unsupported.remoteId");
-        else if ("saveRelations".equals(connEx.getMessage()))
+        } else if ("saveRelations".equals(connEx.getMessage())) {
             return MESSAGES.get("errors.unsupported.relations");
-        else
-            return null;
+        } else {
+            return e.getMessage();
+        }
     }
 
     @Override
@@ -66,14 +77,14 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig> {
     }
 
     @Override
-    public void validateForSave(GithubConfig config) throws ValidationException {
+    public void validateForSave(GithubConfig config) throws BadConfigException {
         final WebServerInfo serverInfo = config.getServerInfo();
         if (!serverInfo.isHostSet()) {
-            throw new ValidationException("Server URL is not set");
+            throw new ServerURLNotSetException();
         }
 
-        if(serverInfo.getUserName().isEmpty()) {
-            throw new ValidationException("User login name is required.");
+        if (serverInfo.getUserName().isEmpty()) {
+            throw new LoginNameNotSpecifiedException();
         }
     }
 

@@ -1,9 +1,6 @@
 package com.taskadapter.connector.msp;
 
-import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
 
-public class MSPOutputFileNameNotSetException extends ValidationException {
-    public MSPOutputFileNameNotSetException() {
-        super("");
-    }
+public class MSPOutputFileNameNotSetException extends BadConfigException {
 }

@@ -67,8 +67,7 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
     }
 
     @Override
-    public void validateForSave(RedmineConfig config)
-            throws ValidationException {
+    public void validateForSave(RedmineConfig config) {
         // TODO !! Implement
     }
 

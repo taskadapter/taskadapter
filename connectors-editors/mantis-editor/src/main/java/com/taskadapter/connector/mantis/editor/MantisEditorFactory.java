@@ -69,7 +69,7 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
     }
 
     @Override
-    public void validateForSave(MantisConfig config) throws ValidationException {
+    public void validateForSave(MantisConfig config) {
         // TODO !! Implement
     }
 

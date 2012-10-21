@@ -5,10 +5,12 @@ import com.taskadapter.config.StorageException;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.FileBasedConnector;
 import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPOutputFileNameNotSetException;
 import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.service.Services;
+import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.Navigator;
 import org.slf4j.Logger;
@@ -52,8 +54,9 @@ public class Exporter {
 
         // TODO refactor these if (valid), if (valid) checks
         if (valid) {
+            UIConnectorConfig connector2 = syncConfig.getConnector2();
             try {
-                syncConfig.getConnector2().validateForSave();
+                connector2.validateForSave();
 
             } catch (MSPOutputFileNameNotSetException e) {
                 // TODO !!! added for Maxim K:
@@ -63,8 +66,8 @@ public class Exporter {
                 final String userName = services.getAuthenticator().getUserName();
                 String absoluteFileName = services.getFileManager().createDefaultMSPFileName(userName);
 
-                ((MSPConfig) syncConfig.getConnector2().getRawConfig()).setOutputAbsoluteFilePath(absoluteFileName);
-                ((MSPConfig) syncConfig.getConnector2().getRawConfig()).setInputAbsoluteFilePath(absoluteFileName);
+                ((MSPConfig) connector2.getRawConfig()).setOutputAbsoluteFilePath(absoluteFileName);
+                ((MSPConfig) connector2.getRawConfig()).setInputAbsoluteFilePath(absoluteFileName);
                 try {
                     services.getUIConfigStore().saveConfig(userName, syncConfig);
                 } catch (StorageException e1) {
@@ -73,8 +76,8 @@ public class Exporter {
                     navigator.showError(message);
                 }
 
-            } catch (ValidationException e) {
-                errorMessage = e.getMessage();
+            } catch (BadConfigException e) {
+                errorMessage = connector2.decodeException(e);
                 valid = false;
             }
         }

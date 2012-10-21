@@ -3,6 +3,9 @@ package com.taskadapter.connector.jira;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.connector.definition.exceptions.ProjectNotSpecifiedException;
+import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.jira.exceptions.BadHostException;
 import com.taskadapter.connector.jira.exceptions.BadURIException;
 import com.taskadapter.web.PluginEditorFactory;
@@ -39,8 +42,12 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
                 return MESSAGES.get("errors.unsupported.relations");
         } else if (e instanceof BadURIException) {
             return MESSAGES.get("errors.badURI");
+        } else if (e instanceof ProjectNotSpecifiedException) {
+            return MESSAGES.get("errors.projectKeyNotSet");
+        } else if (e instanceof ServerURLNotSetException) {
+            return MESSAGES.get("errors.serverUrlNotSet");
         }
-        return null;
+        return e.getMessage();
     }
 
     @Override
@@ -90,15 +97,16 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
     }
 
     @Override
-    public void validateForSave(JiraConfig config) throws ValidationException {
+    public void validateForSave(JiraConfig config) throws BadConfigException {
         final WebServerInfo serverInfo = config.getServerInfo();
         if (!serverInfo.isHostSet()) {
-            throw new ValidationException("Server URL is not set");
+            throw new ServerURLNotSetException();
         }
 
         if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
-            throw new ValidationException("Please specify the Jira project name\n" +
-                    "where you want your tasks to be created.");
+            throw new ProjectNotSpecifiedException();
+//                    ValidationException("Please specify the Jira project name\n" +
+//                    "where you want your tasks to be created.");
         }
     }
 

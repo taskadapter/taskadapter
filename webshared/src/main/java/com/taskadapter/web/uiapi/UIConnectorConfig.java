@@ -4,6 +4,7 @@ import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.service.Services;
 import com.vaadin.ui.ComponentContainer;
@@ -54,10 +55,10 @@ public abstract class UIConnectorConfig {
     /**
      * Validates current config for load.
      * 
-     * @throws ValidationException
+     * @throws BadConfigException
      *             if config is invalid.
      */
-    public abstract void validateForSave() throws ValidationException;
+    public abstract void validateForSave() throws BadConfigException;
 
     @Deprecated
     public abstract ConnectorConfig getRawConfig();

@@ -3,6 +3,7 @@ package com.taskadapter.connector.msp.editor;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPOutputFileNameNotSetException;
 import com.taskadapter.connector.msp.UnsupportedRelationType;
@@ -94,7 +95,7 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     }
 
     @Override
-    public void validateForSave(MSPConfig config) throws ValidationException {
+    public void validateForSave(MSPConfig config) throws BadConfigException {
         if (config.getOutputAbsoluteFilePath().isEmpty()) {
             throw new MSPOutputFileNameNotSetException();
         }
