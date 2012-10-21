@@ -85,8 +85,8 @@ public final class UIConfigStore {
                 config1.getConnectorTypeId(), config1.getConfigString(),
                 config2.getConnectorTypeId(), config2.getConfigString(),
                 mappingsString);
-        return new UISyncConfig(identity, label, config1, config2, mappings,
-                false);
+        return new UISyncConfig(identity, label, config1, config2, fixMappings(
+                mappings, config1, config2, true), false);
     }
 
     /**
@@ -131,20 +131,21 @@ public final class UIConfigStore {
         final NewMappings mappings = storedConfig.getMappings() == null ? new NewMappings()
                 : new Gson().fromJson(storedConfig.getMappings(),
                         NewMappings.class);
-        final NewMappings fixedMappings = fixMappings(mappings, config1, config2);
+        final NewMappings fixedMappings = fixMappings(mappings, config1, config2, false);
         return new UISyncConfig(storedConfig.getId(), label, config1, config2,
                 fixedMappings, false);
     }
 
     /**
      * Fixes mappings. Remove "unsupported" mappings. Add new mappings (in 
-     * disabled state).
+     * <code>newMappingsEnabled</code> state).
      * @param mappings mappings to fix.
      * @param config1 first config.
      * @param config2 second config.
+     * @param newMappingsEnabled state for a new (added) mappings.
      */
     private NewMappings fixMappings(NewMappings mappings, UIConnectorConfig config1,
-            UIConnectorConfig config2) {
+            UIConnectorConfig config2, boolean newMappingsEnabled) {
         final AvailableFields fields1 = config1.getAvailableFields();
         final AvailableFields fields2 = config2.getAvailableFields();
         final Collection<FIELD> firstFields = fields1
@@ -160,7 +161,8 @@ public final class UIConfigStore {
                 result.put(saved);
             } else {
                 result.put(new FieldMapping(FIELD.REMOTE_ID, null,
-                    getDefaultFieldValue(FIELD.REMOTE_ID, fields2), false));
+                        getDefaultFieldValue(FIELD.REMOTE_ID, fields2),
+                        newMappingsEnabled));
             }
         }
         
@@ -171,7 +173,7 @@ public final class UIConfigStore {
             } else {
                 result.put(new FieldMapping(FIELD.REMOTE_ID,
                         getDefaultFieldValue(FIELD.REMOTE_ID, fields1), null,
-                        false));
+                        newMappingsEnabled));
             }
         }
         
@@ -192,7 +194,7 @@ public final class UIConfigStore {
             
             final FieldMapping newMapping = new FieldMapping(field,
                     getDefaultFieldValue(field, fields1), getDefaultFieldValue(
-                            field, fields2), false);
+                            field, fields2), newMappingsEnabled);
             result.put(newMapping);
         }
         
