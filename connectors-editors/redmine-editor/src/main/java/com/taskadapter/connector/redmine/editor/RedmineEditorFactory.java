@@ -1,7 +1,6 @@
 package com.taskadapter.connector.redmine.editor;
 
 import com.taskadapter.connector.definition.AvailableFields;
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RelationCreationException;
 import com.taskadapter.web.PluginEditorFactory;
@@ -72,8 +71,7 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
     }
 
     @Override
-    public void validateForLoad(RedmineConfig config)
-            throws ValidationException {
+    public void validateForLoad(RedmineConfig config) {
         // TODO !! Implement
     }
 

@@ -2,15 +2,20 @@ package com.taskadapter.webui;
 
 import com.taskadapter.config.StorageException;
 import com.taskadapter.connector.definition.Descriptor;
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.web.uiapi.UISyncConfig;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Form;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.ListSelect;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 import java.util.Iterator;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class NewConfigPage extends Page {
     private static final String DESCRIPTION_HINT = "(optional)";
     private static final String SYSTEM_1_TITLE = "System 1";
@@ -100,7 +105,7 @@ public class NewConfigPage extends Page {
 
             //clear for new config
             descriptionTextField.setValue("");
-        } catch (ValidationException e) {
+        } catch (ConnectorNotSelectedException e) {
             errorMessageLabel.setValue(e.getMessage());
         } catch (StorageException e) {
             errorMessageLabel
@@ -112,17 +117,17 @@ public class NewConfigPage extends Page {
         navigator.showConfigureTaskPage(config);
     }
 
-    private void validate() throws ValidationException {
+    private void validate() throws ConnectorNotSelectedException {
         if (connector1.getValue() == null) {
             connector1.setRequiredError(SELECT_CONNECTOR_1_MESSAGE);
-            throw new ValidationException(SELECT_CONNECTOR_1_MESSAGE);
+            throw new ConnectorNotSelectedException(SELECT_CONNECTOR_1_MESSAGE);
         } else {
             connector1.setRequiredError("");
         }
 
         if (connector2.getValue() == null) {
             connector1.setRequiredError(SELECT_CONNECTOR_2_MESSAGE);
-            throw new ValidationException(SELECT_CONNECTOR_2_MESSAGE);
+            throw new ConnectorNotSelectedException(SELECT_CONNECTOR_2_MESSAGE);
         } else {
             connector2.setRequiredError("");
         }
@@ -150,5 +155,14 @@ public class NewConfigPage extends Page {
     public Component getUI() {
         loadDataConnectors();
         return panel;
+    }
+
+    private class ConnectorNotSelectedException extends Exception {
+
+        private static final long serialVersionUID = 1L;
+
+        public ConnectorNotSelectedException(String string) {
+            super(string);
+        }
     }
 }

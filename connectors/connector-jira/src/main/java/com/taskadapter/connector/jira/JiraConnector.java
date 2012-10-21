@@ -11,8 +11,8 @@ import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.WebServerInfo;
-import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.NamedKeyedObject;
@@ -85,7 +85,7 @@ public class JiraConnector implements Connector<JiraConfig> {
             JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
             String projectKey = config.getProjectKey();
             if (projectKey == null) {
-                throw new BadConfigException("Project key is not provided.");
+                throw new ProjectNotSetException();
             }
             Iterable<BasicComponent> components = connection.getComponents(projectKey);
             List<NamedKeyedObject> list = new ArrayList<NamedKeyedObject>();
@@ -108,7 +108,7 @@ public class JiraConnector implements Connector<JiraConfig> {
             JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
             String projectKey = config.getProjectKey();
             if (projectKey == null) {
-                throw new BadConfigException("Project key is not provided.");
+                throw new ProjectNotSetException();
             }
             Iterable<Version> objects = connection.getVersions(projectKey);
             List<NamedKeyedObject> list = new ArrayList<NamedKeyedObject>();

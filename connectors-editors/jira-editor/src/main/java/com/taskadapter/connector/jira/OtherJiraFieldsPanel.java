@@ -1,6 +1,6 @@
 package com.taskadapter.connector.jira;
 
-import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
@@ -14,8 +14,8 @@ import com.vaadin.ui.TextField;
 import java.util.List;
 
 /**
-* Panel with title: "Set when exporting to Jira"
-*/
+ * Panel with title: "Set when exporting to Jira"
+ */
 class OtherJiraFieldsPanel extends Panel {
     private static final String SAVE_GROUP_LABEL = "Set when exporting to Jira";
 
@@ -40,12 +40,12 @@ class OtherJiraFieldsPanel extends Panel {
     }
 
     private void addLookupButtonsAndTextEdit(GridLayout lookupButtonsLayout) {
-		final TextField jiraComponent = EditorUtil.addLabeledText(
-				lookupButtonsLayout, "Project Component:",
-				"Component inside the Jira project");
-		final MethodProperty<String> componentProperty = new MethodProperty<String>(
-				config, "component");
-		jiraComponent.setPropertyDataSource(componentProperty);
+        final TextField jiraComponent = EditorUtil.addLabeledText(
+                lookupButtonsLayout, "Project Component:",
+                "Component inside the Jira project");
+        final MethodProperty<String> componentProperty = new MethodProperty<String>(
+                config, "component");
+        jiraComponent.setPropertyDataSource(componentProperty);
         Button showComponentsButton = EditorUtil.createLookupButton(
                 windowProvider,
                 "...",
@@ -53,40 +53,31 @@ class OtherJiraFieldsPanel extends Panel {
                 "Select component",
                 "List of available components on the server",
                 new DataProvider<List<? extends NamedKeyedObject>>() {
-					@Override
-					public List<? extends NamedKeyedObject> loadData()
-							throws ValidationException {
-						try {
-							return new JiraConnector(config).getComponents();
-						} catch (Exception e) {
-							throw new RuntimeException(e);
-						}
-					}
-				},
+                    @Override
+                    public List<? extends NamedKeyedObject> loadData() throws ConnectorException {
+                        return new JiraConnector(config).getComponents();
+                    }
+                },
                 componentProperty,
                 true
         );
         lookupButtonsLayout.addComponent(showComponentsButton);
 
 
-		final TextField affectedVersion = EditorUtil
-				.addLabeledText(lookupButtonsLayout,
-						"Set 'Affected version' to:",
-						"Set this 'affected version' value when submitting issues to Jira.");
+        final TextField affectedVersion = EditorUtil
+                .addLabeledText(lookupButtonsLayout,
+                        "Set 'Affected version' to:",
+                        "Set this 'affected version' value when submitting issues to Jira.");
         final MethodProperty<String> affectedVersionProperty = new MethodProperty<String>(config, "affectedVersion");
-		affectedVersion.setPropertyDataSource(affectedVersionProperty);
+        affectedVersion.setPropertyDataSource(affectedVersionProperty);
         final DataProvider<List<? extends NamedKeyedObject>> versionProvider = new DataProvider<List<? extends NamedKeyedObject>>() {
-			@Override
-			public List<? extends NamedKeyedObject> loadData()
-					throws ValidationException {
-				try {
-					return new JiraConnector(config).getVersions();
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-			}
-		};
-		Button showAffectedVersion = EditorUtil.createLookupButton(
+            @Override
+            public List<? extends NamedKeyedObject> loadData()
+                    throws ConnectorException {
+                return new JiraConnector(config).getVersions();
+            }
+        };
+        Button showAffectedVersion = EditorUtil.createLookupButton(
                 windowProvider,
                 "...",
                 "Show list of available versions",
@@ -98,12 +89,12 @@ class OtherJiraFieldsPanel extends Panel {
         );
         lookupButtonsLayout.addComponent(showAffectedVersion);
 
-		final TextField fixForVersion = EditorUtil
-				.addLabeledText(lookupButtonsLayout,
-						"Set 'Fix for version' to:",
-						"Set this 'fix for version' value when submitting issues to Jira.");
+        final TextField fixForVersion = EditorUtil
+                .addLabeledText(lookupButtonsLayout,
+                        "Set 'Fix for version' to:",
+                        "Set this 'fix for version' value when submitting issues to Jira.");
         final MethodProperty<String> fixForProperty = new MethodProperty<String>(config, "fixForVersion");
-		fixForVersion.setPropertyDataSource(fixForProperty);
+        fixForVersion.setPropertyDataSource(fixForProperty);
         Button showFixForVersion = EditorUtil.createLookupButton(
                 windowProvider,
                 "...",
@@ -117,11 +108,11 @@ class OtherJiraFieldsPanel extends Panel {
         lookupButtonsLayout.addComponent(showFixForVersion);
 
 
-		final TextField defaultTaskType = EditorUtil
-				.addLabeledText(lookupButtonsLayout, "Default issue type:",
-						"New issues will be created with this 'issue type' (bug/improvement/task...)");
+        final TextField defaultTaskType = EditorUtil
+                .addLabeledText(lookupButtonsLayout, "Default issue type:",
+                        "New issues will be created with this 'issue type' (bug/improvement/task...)");
         final MethodProperty<String> defaultTaskTypeProperty = new MethodProperty<String>(config, "defaultTaskType");
-		defaultTaskType.setPropertyDataSource(defaultTaskTypeProperty);
+        defaultTaskType.setPropertyDataSource(defaultTaskTypeProperty);
         Button showDefaultTaskType = EditorUtil.createLookupButton(
                 windowProvider,
                 "...",
@@ -129,16 +120,11 @@ class OtherJiraFieldsPanel extends Panel {
                 "Select issue type",
                 "List of available issue types on the Jira server",
                 new DataProvider<List<? extends NamedKeyedObject>>() {
-					@Override
-					public List<? extends NamedKeyedObject> loadData()
-							throws ValidationException {
-						try {
-							return new JiraConnector(config).getIssueTypes();
-						} catch (Exception e) {
-							throw new RuntimeException(e);
-						}
-					}
-				},
+                    @Override
+                    public List<? extends NamedKeyedObject> loadData() throws ConnectorException {
+                        return new JiraConnector(config).getIssueTypes();
+                    }
+                },
                 defaultTaskTypeProperty,
                 true
         );

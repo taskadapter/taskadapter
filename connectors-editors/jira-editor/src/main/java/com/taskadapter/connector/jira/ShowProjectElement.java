@@ -1,7 +1,8 @@
 package com.taskadapter.connector.jira;
 
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
+import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.model.GProject;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
@@ -19,15 +20,14 @@ public class ShowProjectElement {
     /**
      * Shows a project info.
      *
-     * @throws com.taskadapter.connector.definition.ValidationException
      * @throws com.taskadapter.connector.definition.exceptions.ConnectorException
      */
-    void loadProjectInfo() throws ValidationException, ConnectorException {
+    void loadProjectInfo() throws ConnectorException {
         if (!jiraConfig.getServerInfo().isHostSet()) {
-            throw new ValidationException("Host URL is not set");
+            throw new ServerURLNotSetException();
         }
         if (jiraConfig.getProjectKey() == null || jiraConfig.getProjectKey().isEmpty()) {
-            throw new ValidationException("Please, provide the project key first");
+            throw new ProjectNotSetException();
         }
         GProject project = JiraLoaders.loadProject(
                 jiraConfig.getServerInfo(), jiraConfig.getProjectKey());

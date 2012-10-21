@@ -1,6 +1,6 @@
 package com.taskadapter.web.configeditor;
 
-import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.ChangePasswordDialog;
 import com.taskadapter.web.InputDialog;
@@ -101,10 +101,15 @@ public class EditorUtil {
                         windowProvider.getWindow().showNotification("No objects", "No objects have been found");
                     }
                     listener.notifyDone(objects);
-                } catch (ValidationException e) {
-                    EditorUtil.show(windowProvider.getWindow(), "Validation failed", e);
+                } catch (BadConfigException e) {
+                    // TODO !!! this does not show any error for "load components" Jira operation with no
+                    // project key set because I switched JiraEditor to use the new exception
+                    // (ServerUrlNotSetException)
+                    // instead of providing the error text in the exception constructor itself.
+                    // need to use exception formatter/resolver here.
+                    EditorUtil.show(windowProvider.getWindow(), "Please update the config", e);
                 } catch (Exception e) {
-                    EditorUtil.show(windowProvider.getWindow(), "Operation failed", e);
+                    EditorUtil.show(windowProvider.getWindow(), "Something went wrong", e);
                 }
             }
         });

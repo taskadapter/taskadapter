@@ -1,7 +1,6 @@
 package com.taskadapter.connector.github.editor;
 
 import com.taskadapter.connector.definition.AvailableFields;
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.LoginNameNotSpecifiedException;
@@ -89,10 +88,10 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig> {
     }
 
     @Override
-    public void validateForLoad(GithubConfig config) throws ValidationException {
+    public void validateForLoad(GithubConfig config) throws BadConfigException {
         final WebServerInfo serverInfo = config.getServerInfo();
         if (!serverInfo.isHostSet()) {
-            throw new ValidationException("Github server URL is not set");
+            throw new ServerURLNotSetException();
         }
     }
 

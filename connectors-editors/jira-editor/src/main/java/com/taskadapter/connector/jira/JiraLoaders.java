@@ -4,11 +4,10 @@ import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.Priority;
 import com.atlassian.jira.rest.client.domain.Project;
 import com.taskadapter.connector.Priorities;
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.model.GProject;
-import com.taskadapter.model.NamedKeyedObject;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -17,11 +16,9 @@ import java.util.List;
 
 public class JiraLoaders {
 
-    public static Priorities loadPriorities(WebServerInfo serverInfo)
-            throws ValidationException, ConnectorException {
+    public static Priorities loadPriorities(WebServerInfo serverInfo) throws ConnectorException {
         validate(serverInfo);
-        final Priorities defaultPriorities = JiraConfig
-                .createDefaultPriorities();
+        final Priorities defaultPriorities = JiraConfig.createDefaultPriorities();
         final Priorities result = new Priorities();
 
         try {
@@ -44,8 +41,7 @@ public class JiraLoaders {
         return result;
     }
 
-    public static List<GProject> loadProjects(WebServerInfo serverInfo)
-            throws ValidationException, ConnectorException {
+    public static List<GProject> loadProjects(WebServerInfo serverInfo) throws ConnectorException {
         validate(serverInfo);
         List<GProject> gProjects;
         try {
@@ -65,13 +61,11 @@ public class JiraLoaders {
         return gProjects;
     }
 
-    public static GProject loadProject(WebServerInfo serverInfo,
-                                       String projectKey) throws ValidationException, ConnectorException {
+    public static GProject loadProject(WebServerInfo serverInfo, String projectKey) throws ConnectorException {
         GProject gProject;
         validate(serverInfo);
         try {
-            JiraConnection connection = JiraConnectionFactory
-                    .createConnection(serverInfo);
+            JiraConnection connection = JiraConnectionFactory.createConnection(serverInfo);
 
             Project project = connection.getProject(projectKey);
             gProject = new JiraProjectConverter().toGProject(project);
@@ -83,13 +77,11 @@ public class JiraLoaders {
             throw JiraUtils.convertException(e);
         }
         return gProject;
-
     }
 
-    private static void validate(WebServerInfo serverInfo)
-            throws ValidationException {
+    private static void validate(WebServerInfo serverInfo) throws ServerURLNotSetException {
         if ((serverInfo.getHost() == null) || (serverInfo.getHost().isEmpty())) {
-            throw new ValidationException("Host URL is not set");
+            throw new ServerURLNotSetException();
         }
     }
 

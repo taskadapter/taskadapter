@@ -1,7 +1,6 @@
 package com.taskadapter.connector.mantis.editor;
 
 import com.taskadapter.connector.definition.AvailableFields;
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.mantis.MantisConfig;
 import com.taskadapter.model.NamedKeyedObject;
@@ -74,7 +73,7 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
     }
 
     @Override
-    public void validateForLoad(MantisConfig config) throws ValidationException {
+    public void validateForLoad(MantisConfig config) {
         // TODO !! Implement
     }
 

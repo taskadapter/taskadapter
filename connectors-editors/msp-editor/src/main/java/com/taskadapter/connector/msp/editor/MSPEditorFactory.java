@@ -2,11 +2,11 @@ package com.taskadapter.connector.msp.editor;
 
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPOutputFileNameNotSetException;
 import com.taskadapter.connector.msp.UnsupportedRelationType;
+import com.taskadapter.connector.msp.editor.error.InputFileNameNotSetException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.configeditor.file.LocalModeFilePanel;
@@ -39,6 +39,8 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
                     "errors.unsupportedRelation",
                     MESSAGES.get("relations."
                             + ((UnsupportedRelationType) e).getRelationType()));
+        } else if (e instanceof InputFileNameNotSetException) {
+            return MESSAGES.get("error.inputFileNameNotSet");
         }
         return null;
     }
@@ -102,9 +104,9 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     }
 
     @Override
-    public void validateForLoad(MSPConfig config) throws ValidationException {
+    public void validateForLoad(MSPConfig config) throws BadConfigException {
         if (config.getInputAbsoluteFilePath().isEmpty()) {
-            throw new ValidationException("Please provide the input file name in MSP config");
+            throw new InputFileNameNotSetException();
         }
     }
 

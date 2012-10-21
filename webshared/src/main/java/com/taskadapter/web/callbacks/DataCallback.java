@@ -1,7 +1,5 @@
 package com.taskadapter.web.callbacks;
 
-import com.taskadapter.connector.definition.ValidationException;
-
 /**
  * Data callback.
  * 
@@ -19,5 +17,5 @@ public interface DataCallback<T> {
 	 * @throws ValidationException
 	 *             if data is invalid.
 	 */
-	public void callBack(T data) throws ValidationException;
+	public void callBack(T data);
 }

@@ -2,7 +2,7 @@ package com.taskadapter.connector.jira;
 
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
-import com.taskadapter.connector.definition.exceptions.ProjectNotSpecifiedException;
+import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.testlib.FileBasedTest;
 import com.taskadapter.web.PluginEditorFactory;
@@ -30,7 +30,7 @@ public class JiraEditorFactoryTest extends FileBasedTest {
         new JiraEditorFactory().validateForSave(new JiraConfig());
     }
 
-    @Test(expected = ProjectNotSpecifiedException.class)
+    @Test(expected = ProjectNotSetException.class)
     public void projectKeyIsRequired() throws BadConfigException {
         JiraConfig config = new JiraConfig();
         config.setServerInfo(new WebServerInfo("http://somehost","",""));

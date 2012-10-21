@@ -3,7 +3,6 @@ package com.taskadapter.web.uiapi;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.service.Services;
@@ -47,10 +46,10 @@ public abstract class UIConnectorConfig {
     /**
      * Validates config for load.
      * 
-     * @throws ValidationException
+     * @throws BadConfigException
      *             if config is invalid.
      */
-    public abstract void validateForLoad() throws ValidationException;
+    public abstract void validateForLoad() throws BadConfigException;
 
     /**
      * Validates current config for load.

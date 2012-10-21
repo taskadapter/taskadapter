@@ -5,7 +5,6 @@ import com.taskadapter.connector.definition.FileBasedConnector;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.TaskSaveResult;
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.msp.write.MSXMLFileWriter;
@@ -114,9 +113,9 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
     }
 
     @Override
-    public void validateCanUpdate() throws ValidationException {
+    public void validateCanUpdate() throws BadConfigException {
         if (config.getInputAbsoluteFilePath().toLowerCase().endsWith(MSPFileReader.MPP_SUFFIX_LOWERCASE)) {
-            throw new ValidationException("The Microsoft Project 'Input File Name' you provided ends with \"" +
+            throw new BadConfigException("The Microsoft Project 'Input File Name' you provided ends with \"" +
                     MSPFileReader.MPP_SUFFIX_LOWERCASE + "\"."
                     + "\nTask Adapter can't write MPP files."
                     + "\nPlease replace the MPP file name with XML if you want to use \"Update\" operation.");

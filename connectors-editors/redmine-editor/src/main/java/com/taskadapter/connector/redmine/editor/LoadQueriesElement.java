@@ -1,6 +1,6 @@
 package com.taskadapter.connector.redmine.editor;
 
-import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.redmineapi.NotFoundException;
@@ -19,14 +19,14 @@ public class LoadQueriesElement {
         this.config = config;
     }
 
-    List<? extends NamedKeyedObject> loadQueries() throws ValidationException {
+    List<? extends NamedKeyedObject> loadQueries() throws BadConfigException {
         try {
             return RedmineLoaders.loadData(config.getServerInfo(), config.getProjectKey());
         } catch (NotFoundException e) {
             EditorUtil.show(windowProvider.getWindow(), "Can't load Saved Queries", "The server did not return any saved queries.\n" +
                     "NOTE: This operation is only supported by Redmine 1.3.0+");
             return null;
-        } catch (ValidationException e) {
+        } catch (BadConfigException e) {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);

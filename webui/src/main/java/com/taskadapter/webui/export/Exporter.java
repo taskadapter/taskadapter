@@ -4,7 +4,6 @@ package com.taskadapter.webui.export;
 import com.taskadapter.config.StorageException;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.FileBasedConnector;
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPOutputFileNameNotSetException;
@@ -45,10 +44,11 @@ public class Exporter {
         String errorMessage = null;
         boolean valid = true;
 
+        UIConnectorConfig connector1 = syncConfig.getConnector1();
         try {
-            syncConfig.getConnector1().validateForLoad();
-        } catch (ValidationException e) {
-            errorMessage = e.getMessage();
+            connector1.validateForLoad();
+        } catch (BadConfigException e) {
+            errorMessage = connector1.decodeException(e);
             valid = false;
         }
 

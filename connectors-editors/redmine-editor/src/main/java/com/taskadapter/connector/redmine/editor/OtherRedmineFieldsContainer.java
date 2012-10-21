@@ -1,6 +1,6 @@
 package com.taskadapter.connector.redmine.editor;
 
-import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.WindowProvider;
@@ -58,13 +58,8 @@ public class OtherRedmineFieldsContainer extends Panel {
                 "List of available task types on the Redmine server",
                 new DataProvider<List<? extends NamedKeyedObject>>() {
                     @Override
-                    public List<? extends NamedKeyedObject> loadData()
-                            throws ValidationException {
-                        try {
-                            return RedmineLoaders.loadTrackers(config);
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
+                    public List<? extends NamedKeyedObject> loadData() throws ConnectorException {
+                        return RedmineLoaders.loadTrackers(config);
                     }
                 },
                 taskTypeProperty,

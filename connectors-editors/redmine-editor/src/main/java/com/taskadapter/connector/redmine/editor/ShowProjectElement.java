@@ -1,7 +1,9 @@
 package com.taskadapter.connector.redmine.editor;
 
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
+import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Project;
@@ -18,12 +20,12 @@ public class ShowProjectElement {
         this.config = config;
     }
 
-    void showProjectInfo() throws ValidationException {
+    void showProjectInfo() throws BadConfigException {
         if (!config.getServerInfo().isHostSet()) {
-            throw new ValidationException("Host URL is not set");
+            throw new ServerURLNotSetException();
         }
         if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
-            throw new ValidationException("Please, provide the project key first");
+            throw new ProjectNotSetException();
         }
         notifyProjectLoaded(RedmineLoaders.loadProject(getRedmineManager(),
                 config.getProjectKey()));

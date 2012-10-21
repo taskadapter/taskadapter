@@ -1,11 +1,8 @@
 package com.taskadapter.web.configeditor;
 
-import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
 
-/**
- * @author Alexey Skorokhodov
- */
 public interface Validatable {
-    void validate() throws ValidationException;
+    void validate() throws BadConfigException;
 }
 

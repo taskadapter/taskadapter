@@ -1,7 +1,7 @@
 package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.Priorities;
-import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.data.Messages;
 import com.vaadin.data.Container.ItemSetChangeEvent;
@@ -116,7 +116,7 @@ public class PriorityPanel extends Panel implements Validatable {
     }
 
     @Override
-    public void validate() throws ValidationException {
+    public void validate() throws BadConfigException {
         Integer mspValue;
         
         final Map<String, String> badValues = data.getInvalidValues();
@@ -141,7 +141,7 @@ public class PriorityPanel extends Panel implements Validatable {
         }
         
         if (message.length() > 0) {
-            throw new ValidationException(message.toString());
+            throw new BadConfigException(message.toString());
         }
     }
 }

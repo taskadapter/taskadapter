@@ -1,7 +1,7 @@
 package com.taskadapter.connector.redmine.editor;
 
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.configeditor.Validatable;
@@ -183,10 +183,10 @@ class RedmineServerPanel extends VerticalLayout implements Validatable {
     }
 
     @Override
-    public void validate() throws ValidationException {
+    public void validate() throws ServerURLNotSetException {
         String host = getServerURL();
         if (host == null || host.isEmpty() || host.equalsIgnoreCase(WebServerInfo.DEFAULT_URL_PREFIX)) {
-            throw new ValidationException("Redmine server URL is not set");
+            throw new ServerURLNotSetException();
         }
     }
 

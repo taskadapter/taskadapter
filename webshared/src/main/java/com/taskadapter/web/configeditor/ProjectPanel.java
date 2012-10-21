@@ -1,14 +1,21 @@
 package com.taskadapter.web.configeditor;
 
 import com.google.common.base.Strings;
-import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
 import com.vaadin.data.Property;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.TextField;
 
 import java.util.List;
 
@@ -165,13 +172,10 @@ public class ProjectPanel extends Panel implements Validatable {
     private void loadProject() {
         try {
             projectInfoCallback.callBack();
-        } catch (ValidationException e) {
-            windowProvider.getWindow().showNotification(
-                    "Please, update the settings", e.getMessage());
         } catch (ConnectorException e) {
             // TODO: format exceptions.
             windowProvider.getWindow().showNotification(
-                    "Failed to load data", e.getMessage());
+                    "Oops", e.getMessage());
         }
     }
 
@@ -188,17 +192,18 @@ public class ProjectPanel extends Panel implements Validatable {
     }
 
     @Override
-    public void validate() throws ValidationException {
+    public void validate() throws BadConfigException {
         if (!Strings.isNullOrEmpty(getQueryValue()) && isQueryInteger()) {
             try {
                 Integer.parseInt(getQueryValue());
             } catch (NumberFormatException e) {
-                throw new ValidationException("Query Id must be a number");
+                throw new BadConfigException("Query Id must be a number");
             }
         }
 
+        // TODO !!! most likely will result in NPE here
         if (getProjectKey().trim().isEmpty()) {
-            throw new ValidationException("Project Key is required");
+            throw new ProjectNotSetException();
         }
     }
 }

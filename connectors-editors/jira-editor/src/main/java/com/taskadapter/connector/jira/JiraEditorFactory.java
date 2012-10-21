@@ -1,10 +1,9 @@
 package com.taskadapter.connector.jira;
 
 import com.taskadapter.connector.definition.AvailableFields;
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
-import com.taskadapter.connector.definition.exceptions.ProjectNotSpecifiedException;
+import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.jira.exceptions.BadHostException;
 import com.taskadapter.connector.jira.exceptions.BadURIException;
@@ -42,10 +41,12 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
                 return MESSAGES.get("errors.unsupported.relations");
         } else if (e instanceof BadURIException) {
             return MESSAGES.get("errors.badURI");
-        } else if (e instanceof ProjectNotSpecifiedException) {
+        } else if (e instanceof ProjectNotSetException) {
             return MESSAGES.get("errors.projectKeyNotSet");
         } else if (e instanceof ServerURLNotSetException) {
             return MESSAGES.get("errors.serverUrlNotSet");
+        } else if (e instanceof QueryIdNotSetException) {
+            return MESSAGES.get("error.queryIdNotSet");
         }
         return e.getMessage();
     }
@@ -92,8 +93,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
     }
 
     private CustomFieldsTablePanel createCustomOtherFieldsPanel(JiraConfig config) {
-        CustomFieldsTablePanel customFieldsTablePanel = new CustomFieldsTablePanel(config.getCustomFields());
-        return customFieldsTablePanel;
+        return new CustomFieldsTablePanel(config.getCustomFields());
     }
 
     @Override
@@ -104,23 +104,20 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
         }
 
         if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
-            throw new ProjectNotSpecifiedException();
-//                    ValidationException("Please specify the Jira project name\n" +
-//                    "where you want your tasks to be created.");
+            throw new ProjectNotSetException();
         }
     }
 
+    // TODO !!! replace
     @Override
-    public void validateForLoad(JiraConfig config) throws ValidationException {
+    public void validateForLoad(JiraConfig config) throws BadConfigException {
         final WebServerInfo serverInfo = config.getServerInfo();
         if (!serverInfo.isHostSet()) {
-            throw new ValidationException("Jira server URL is not set");
+            throw new ServerURLNotSetException();
         }
 
         if (config.getQueryId() == null) {
-            throw new ValidationException("The current Task Adapter version supports loading data from Jira\n" +
-                    "only using saved \"Query ID\".\n" +
-                    "Please specify it in the Jira configuration dialog");
+            throw new QueryIdNotSetException();
         }
     }
 

@@ -1,6 +1,5 @@
 package com.taskadapter.web.callbacks;
 
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 
 /**
@@ -13,7 +12,7 @@ public interface DataProvider<T> {
      * Loads data.
      * 
      * @return loaded data.
-     * @throws ValidationException if current state is invalid.
+     * @throws ConnectorException if current state is invalid.
      */
-    public T loadData() throws ValidationException, ConnectorException;
+    public T loadData() throws ConnectorException;
 }

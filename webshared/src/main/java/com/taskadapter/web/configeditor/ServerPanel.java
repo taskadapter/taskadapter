@@ -1,6 +1,6 @@
 package com.taskadapter.web.configeditor;
 
-import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Panel;
 
@@ -24,9 +24,9 @@ public class ServerPanel extends Panel implements Validatable {
     }
 
     @Override
-    public void validate() throws ValidationException {
+    public void validate() throws ServerURLNotSetException {
         if (serverContainer.getHostString().isEmpty()) {
-            throw new ValidationException("Server URL is not set");
+            throw new ServerURLNotSetException();
         }
     }
 

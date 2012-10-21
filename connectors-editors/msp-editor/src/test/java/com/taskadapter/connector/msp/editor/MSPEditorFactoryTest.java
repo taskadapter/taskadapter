@@ -1,7 +1,8 @@
 package com.taskadapter.connector.msp.editor;
 
-import com.taskadapter.connector.definition.ValidationException;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.msp.MSPConfig;
+import com.taskadapter.connector.msp.editor.error.InputFileNameNotSetException;
 import com.taskadapter.connector.testlib.FileBasedTest;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.WindowProvider;
@@ -16,8 +17,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class MSPEditorFactoryTest extends FileBasedTest {
-    @Test(expected = ValidationException.class)
-    public void noInputFileNameFailsValidation() throws ValidationException {
+    @Test(expected = InputFileNameNotSetException.class)
+    public void noInputFileNameFailsValidation() throws BadConfigException {
         MSPConfig config = new MSPConfig();
         new MSPEditorFactory().validateForLoad(config);
     }

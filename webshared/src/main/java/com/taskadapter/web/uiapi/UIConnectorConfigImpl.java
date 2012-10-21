@@ -4,7 +4,6 @@ import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.PluginFactory;
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.WindowProvider;
@@ -50,7 +49,7 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends
     }
 
     @Override
-    public void validateForLoad() throws ValidationException {
+    public void validateForLoad() throws BadConfigException {
         editorFactory.validateForLoad(config);
     }
 

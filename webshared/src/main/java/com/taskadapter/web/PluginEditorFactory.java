@@ -2,7 +2,6 @@ package com.taskadapter.web;
 
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.service.Services;
 import com.vaadin.ui.ComponentContainer;
@@ -32,9 +31,9 @@ public interface PluginEditorFactory<C extends ConnectorConfig> {
      * Validates a connector config for load mode. If validation fails, plugin
      * editor factory should provide appropriate user-friendly message. 
      * @param config config to check.
-     * @throws ValidationException if validation fails.
+     * @throws BadConfigException if validation fails.
      */
-    void validateForLoad(C config) throws ValidationException;
+    void validateForLoad(C config) throws BadConfigException;
     
     /**
      * Describes source location in a user-friendly manner.

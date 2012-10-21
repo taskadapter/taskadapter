@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableSet;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.NewMappings;
-import com.taskadapter.connector.definition.ValidationException;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.web.Messages;
@@ -189,11 +188,12 @@ public class OnePageMappingPanel extends Panel implements Validatable {
     }
 
     @Override
-    public void validate() throws ValidationException {
+    public void validate() {
+        // TODO !!! bring the required fields check back.
 /*
         for (GTaskDescriptor.FIELD f : availableFields.getSupportedFields()) {
             if (mappings.isFieldSelected(f) && mappings.getMappedTo(f) == null) {
-                throw new ValidationException(getRequiredFieldErrorMessage(f));
+                throw new ...(getRequiredFieldErrorMessage(f));
             }
         }
 */
