@@ -11,6 +11,7 @@ import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.model.GTask;
@@ -82,7 +83,11 @@ public class JiraConnector implements Connector<JiraConfig> {
     public List<NamedKeyedObject> getComponents() throws ConnectorException {
         try {
             JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
-            Iterable<BasicComponent> components = connection.getComponents(config.getProjectKey());
+            String projectKey = config.getProjectKey();
+            if (projectKey == null) {
+                throw new BadConfigException("Project key is not provided.");
+            }
+            Iterable<BasicComponent> components = connection.getComponents(projectKey);
             List<NamedKeyedObject> list = new ArrayList<NamedKeyedObject>();
             for (BasicComponent c : components) {
                 list.add(new NamedKeyedObjectImpl(String.valueOf(c.getId()), c.getName()));
@@ -101,7 +106,11 @@ public class JiraConnector implements Connector<JiraConfig> {
     public List<NamedKeyedObject> getVersions() throws ConnectorException {
         try {
             JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
-            Iterable<Version> objects = connection.getVersions(config.getProjectKey());
+            String projectKey = config.getProjectKey();
+            if (projectKey == null) {
+                throw new BadConfigException("Project key is not provided.");
+            }
+            Iterable<Version> objects = connection.getVersions(projectKey);
             List<NamedKeyedObject> list = new ArrayList<NamedKeyedObject>();
             for (Version o : objects) {
                 list.add(new NamedKeyedObjectImpl(String.valueOf(o.getId()), o.getName()));

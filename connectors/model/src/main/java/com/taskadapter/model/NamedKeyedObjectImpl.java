@@ -17,4 +17,12 @@ public class NamedKeyedObjectImpl implements NamedKeyedObject {
     public String getName() {
         return name;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "key='" + key + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
