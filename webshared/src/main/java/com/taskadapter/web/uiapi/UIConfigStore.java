@@ -1,6 +1,8 @@
 package com.taskadapter.web.uiapi;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.config.StorageException;
 import com.taskadapter.config.StoredConnectorConfig;
@@ -128,12 +130,81 @@ public final class UIConfigStore {
         final UIConnectorConfig config2 = uiConfigService.createRichConfig(
                 conn2Config.getConnectorTypeId(),
                 conn2Config.getSerializedConfig());
-        final NewMappings mappings = storedConfig.getMappings() == null ? new NewMappings()
+        final NewMappings mappings = storedConfig.getMappings() == null ? guessNewMappings(storedConfig)
                 : new Gson().fromJson(storedConfig.getMappings(),
                         NewMappings.class);
         final NewMappings fixedMappings = fixMappings(mappings, config1, config2, false);
         return new UISyncConfig(storedConfig.getId(), label, config1, config2,
                 fixedMappings, false);
+    }
+
+    /**
+     * Guesses a new config from an old (non-updated) config.
+     * @param storedConfig config to update.
+     * @return new mappings guessed from a previous config.
+     */
+    private NewMappings guessNewMappings(StoredExportConfig storedConfig) {
+        final JsonObject cc1 = new JsonParser()
+                .parse(storedConfig.getConnector1().getSerializedConfig())
+                .getAsJsonObject().get("fieldsMapping").getAsJsonObject();
+        final JsonObject cc2 = new JsonParser()
+                .parse(storedConfig.getConnector2().getSerializedConfig())
+                .getAsJsonObject().get("fieldsMapping").getAsJsonObject();
+        
+        /* Config is too old. Don't do anything with it */
+        if (!cc1.has("selected") || !cc2.has("selected")) {
+            return new NewMappings();
+        }
+        final JsonObject sel1 = cc1.get("selected").getAsJsonObject();
+        final JsonObject sel2 = cc2.get("selected").getAsJsonObject();
+        final JsonObject map1 = cc1.get("mapTo").getAsJsonObject();
+        final JsonObject map2 = cc1.get("mapTo").getAsJsonObject();
+        
+        final NewMappings res = new NewMappings();
+        
+        for (FIELD field : FIELD.values()) {
+            if (field == FIELD.ID || field == FIELD.REMOTE_ID) {
+                continue;
+            }
+            
+            final String fieldName = field.name();
+            
+            if (!sel1.has(fieldName) || !sel2.has(fieldName)) {
+                continue;
+            }
+
+            /* Don't create mappings here. New mappings will be generated in
+             * a fixup phase.
+             */
+            if (!sel1.get(fieldName).getAsBoolean()
+                    || !sel2.get(fieldName).getAsBoolean()) {
+                continue;
+            }
+            
+            if (map1.get(fieldName).isJsonNull()
+                    || map2.get(fieldName).isJsonNull()) {
+                continue;
+            }
+            
+            res.put(new FieldMapping(field, map1.get(fieldName).getAsString(),
+                    map2.get(fieldName).getAsString(), true));
+        }
+        
+        if (sel2.has(FIELD.REMOTE_ID.name())
+                && sel2.get(FIELD.REMOTE_ID.name()).getAsBoolean() 
+                && !map2.get(FIELD.REMOTE_ID.name()).isJsonNull()) {
+            res.put(new FieldMapping(FIELD.REMOTE_ID, null, map2.get(
+                    FIELD.REMOTE_ID.name()).getAsString(), true));
+        }
+        
+        if (sel1.has(FIELD.REMOTE_ID.name())
+                && sel1.get(FIELD.REMOTE_ID.name()).getAsBoolean()
+                && !map1.get(FIELD.REMOTE_ID.name()).isJsonNull()) {
+            res.put(new FieldMapping(FIELD.REMOTE_ID, map1.get(
+                    FIELD.REMOTE_ID.name()).getAsString(), null, true));
+        }
+        
+        return res;
     }
 
     /**
