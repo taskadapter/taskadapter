@@ -53,7 +53,7 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
                 EditorUtil.wrapNulls(new MethodProperty<Integer>(config, "queryId")),
                 Interfaces.fromMethod(DataProvider.class, RedmineLoaders.class, "getProjects", config.getServerInfo()),
                 Interfaces.fromMethod(SimpleCallback.class, showProjectElement, "showProjectInfo"),
-                Interfaces.fromMethod(DataProvider.class, loadQueriesElement, "loadQueries"));
+                Interfaces.fromMethod(DataProvider.class, loadQueriesElement, "loadQueries"), this);
         GridLayout gridLayout = new GridLayout();
         gridLayout.setColumns(2);
         gridLayout.setMargin(true);
@@ -61,7 +61,7 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
 
         gridLayout.addComponent(panel);
         gridLayout.addComponent(projectPanel);
-        gridLayout.addComponent(new OtherRedmineFieldsContainer(windowProvider, config));
+        gridLayout.addComponent(new OtherRedmineFieldsContainer(windowProvider, config, this));
         return gridLayout;
     }
 

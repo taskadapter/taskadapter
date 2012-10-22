@@ -71,7 +71,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
                 Interfaces.fromMethod(DataProvider.class, JiraLoaders.class,
                         "loadProjects", config.getServerInfo()),
                 Interfaces.fromMethod(SimpleCallback.class, showProjectElement, "loadProjectInfo"),
-                Interfaces.fromMethod(DataProvider.class, new LoadQueriesElement(config), "loadQueries"));
+                Interfaces.fromMethod(DataProvider.class, new LoadQueriesElement(config), "loadQueries"), this);
         projectPanel.setHeight(100, Sizeable.UNITS_PERCENTAGE);
 
         GridLayout gridLayout = new GridLayout(2, 4);
@@ -81,7 +81,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
         gridLayout.addComponent(serverPanel);
         gridLayout.addComponent(projectPanel);
 
-        OtherJiraFieldsPanel otherJiraFieldsPanel = new OtherJiraFieldsPanel(windowProvider, config);
+        OtherJiraFieldsPanel otherJiraFieldsPanel = new OtherJiraFieldsPanel(windowProvider, config, this);
         otherJiraFieldsPanel.setHeight(100, Sizeable.UNITS_PERCENTAGE);
         gridLayout.addComponent(otherJiraFieldsPanel);
 

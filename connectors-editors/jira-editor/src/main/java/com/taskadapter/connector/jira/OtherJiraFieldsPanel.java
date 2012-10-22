@@ -2,6 +2,7 @@ package com.taskadapter.connector.jira;
 
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.NamedKeyedObject;
+import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
@@ -19,12 +20,14 @@ import java.util.List;
 class OtherJiraFieldsPanel extends Panel {
     private static final String SAVE_GROUP_LABEL = "Set when exporting to Jira";
 
-    private JiraConfig config;
-    private WindowProvider windowProvider;
+    private final JiraConfig config;
+    private final WindowProvider windowProvider;
+    private final ExceptionFormatter exceptionFormatter;
 
-    public OtherJiraFieldsPanel(WindowProvider windowProvider, JiraConfig config) {
+    public OtherJiraFieldsPanel(WindowProvider windowProvider, JiraConfig config, ExceptionFormatter exceptionFormatter) {
         this.windowProvider = windowProvider;
         this.config = config;
+        this.exceptionFormatter = exceptionFormatter;
         buildUI();
     }
 
@@ -59,7 +62,7 @@ class OtherJiraFieldsPanel extends Panel {
                     }
                 },
                 componentProperty,
-                true
+                true, exceptionFormatter
         );
         lookupButtonsLayout.addComponent(showComponentsButton);
 
@@ -85,7 +88,8 @@ class OtherJiraFieldsPanel extends Panel {
                 "List of available versions",
                 versionProvider,
                 affectedVersionProperty,
-                true
+                true,
+                exceptionFormatter
         );
         lookupButtonsLayout.addComponent(showAffectedVersion);
 
@@ -103,7 +107,7 @@ class OtherJiraFieldsPanel extends Panel {
                 "List of available versions",
                 versionProvider,
                 fixForProperty,
-                true
+                true, exceptionFormatter
         );
         lookupButtonsLayout.addComponent(showFixForVersion);
 
@@ -126,7 +130,8 @@ class OtherJiraFieldsPanel extends Panel {
                     }
                 },
                 defaultTaskTypeProperty,
-                true
+                true,
+                exceptionFormatter
         );
         lookupButtonsLayout.addComponent(showDefaultTaskType);
     }

@@ -61,7 +61,7 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
                 null,
                 Interfaces.fromMethod(DataProvider.class, MantisLoaders.class,
                         "getProjects", config.getServerInfo())
-                , NULL_PROJECT_INFO_CALLBACK, NULL_QUERY_PROVIDER));
+                , NULL_PROJECT_INFO_CALLBACK, NULL_QUERY_PROVIDER, this));
         layout.addComponent(new OtherMantisFieldsPanel(config));
 
         return layout;

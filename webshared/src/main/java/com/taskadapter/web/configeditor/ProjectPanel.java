@@ -5,6 +5,7 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.model.NamedKeyedObject;
+import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
@@ -47,6 +48,8 @@ public class ProjectPanel extends Panel implements Validatable {
     private final Property queryValueProperty;
 
     private final WindowProvider windowProvider;
+    
+    private final ExceptionFormatter exceptionFormatter;
 
     /**
      * Creates a new project panel.
@@ -57,13 +60,15 @@ public class ProjectPanel extends Panel implements Validatable {
      * @param projectProvider     project provider, optional.
      * @param projectInfoCallback project info callback, optional.
      * @param queryProvider       query provider, optional.
+     * @param exceptionFormatter  exception formatter, required.
      */
     public ProjectPanel(WindowProvider windowProvider,
                         Property projectKey,
                         Property queryValue,
                         DataProvider<List<? extends NamedKeyedObject>> projectProvider,
                         SimpleCallback projectInfoCallback,
-                        DataProvider<List<? extends NamedKeyedObject>> queryProvider) {
+                        DataProvider<List<? extends NamedKeyedObject>> queryProvider,
+                        ExceptionFormatter exceptionFormatter) {
         super(DEFAULT_PANEL_CAPTION);
         this.windowProvider = windowProvider;
         this.projectKeyProperty = projectKey;
@@ -71,6 +76,7 @@ public class ProjectPanel extends Panel implements Validatable {
         this.projectProvider = projectProvider;
         this.projectInfoCallback = projectInfoCallback;
         this.queryProvider = queryProvider;
+        this.exceptionFormatter = exceptionFormatter;
         buildUI();
     }
 
@@ -114,7 +120,7 @@ public class ProjectPanel extends Panel implements Validatable {
                 "List of projects on the server",
                 projectProvider,
                 projectKeyProperty,
-                false
+                false, exceptionFormatter
         );
         projectKeyButton.setEnabled(projectProvider != null);
         keyHorizontalLayout.addComponent(projectKeyButton);
@@ -142,7 +148,7 @@ public class ProjectPanel extends Panel implements Validatable {
                     "List of saved queries on the server",
                     queryProvider,
                     queryValueProperty,
-                    false
+                    false, exceptionFormatter
             );
 
             setQueryLabels();

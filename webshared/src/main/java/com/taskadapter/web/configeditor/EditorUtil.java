@@ -3,14 +3,13 @@ package com.taskadapter.web.configeditor;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.ChangePasswordDialog;
+import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.InputDialog;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.service.Authenticator;
 import com.taskadapter.web.service.UserManager;
 import com.vaadin.data.Property;
-import com.vaadin.data.Property.ConversionException;
-import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.data.util.AbstractProperty;
 import com.vaadin.ui.*;
 
@@ -58,7 +57,8 @@ public class EditorUtil {
 			String description, final String windowTitle,
 			final String listTitle,
 			final DataProvider<List<? extends NamedKeyedObject>> operation,
-			final Property destination, final boolean useValue) {
+			final Property destination, final boolean useValue, 
+			final ExceptionFormatter errorFormatter) {
         Button button = new Button(buttonLabel);
         button.setDescription(description);
         final LookupResultListener listener = new LookupResultListener() {
@@ -102,12 +102,7 @@ public class EditorUtil {
                     }
                     listener.notifyDone(objects);
                 } catch (BadConfigException e) {
-                    // TODO !!! this does not show any error for "load components" Jira operation with no
-                    // project key set because I switched JiraEditor to use the new exception
-                    // (ServerUrlNotSetException)
-                    // instead of providing the error text in the exception constructor itself.
-                    // need to use exception formatter/resolver here.
-                    EditorUtil.show(windowProvider.getWindow(), "Please update the config", e);
+                    EditorUtil.show(windowProvider.getWindow(), "Please update the config", errorFormatter.formatError(e));
                 } catch (Exception e) {
                     EditorUtil.show(windowProvider.getWindow(), "Something went wrong", e);
                 }

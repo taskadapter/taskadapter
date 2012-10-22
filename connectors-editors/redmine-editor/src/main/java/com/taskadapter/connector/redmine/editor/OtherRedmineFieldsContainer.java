@@ -3,6 +3,7 @@ package com.taskadapter.connector.redmine.editor;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.model.NamedKeyedObject;
+import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.DefaultPanel;
@@ -23,11 +24,13 @@ public class OtherRedmineFieldsContainer extends Panel {
 
     private final WindowProvider windowProvider;
     private final RedmineConfig config;
+    private final ExceptionFormatter exceptionFormatter;
 
-    public OtherRedmineFieldsContainer(WindowProvider windowProvider, RedmineConfig config) {
+    public OtherRedmineFieldsContainer(WindowProvider windowProvider, RedmineConfig config, ExceptionFormatter exceptionFormatter) {
         super(OTHER_PANEL_CAPTION);
         this.windowProvider = windowProvider;
         this.config = config;
+        this.exceptionFormatter = exceptionFormatter;
         buildUI();
     }
 
@@ -63,7 +66,7 @@ public class OtherRedmineFieldsContainer extends Panel {
                     }
                 },
                 taskTypeProperty,
-                true
+                true, exceptionFormatter
         );
 
         taskTypeLayout.addComponent(showDefaultTaskType);
