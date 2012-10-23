@@ -1,4 +1,4 @@
-package com.taskadapter.web;
+package com.taskadapter.web.data;
 
 import com.taskadapter.model.GTaskDescriptor;
 import org.junit.Test;
