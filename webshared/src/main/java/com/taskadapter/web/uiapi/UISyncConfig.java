@@ -57,6 +57,7 @@ public final class UISyncConfig {
         this.connector1 = connector1;
         this.connector2 = connector2;
         this.newMappings = newMappings;
+        this.reversed = reversed;
     }
 
     public void setLabel(String label) {
