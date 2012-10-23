@@ -34,6 +34,7 @@ public class NavigatorTest extends FileBasedTest {
     @Test
     public void homePageIsShownIfLoggedIn() throws UserNotFoundException, WrongPasswordException {
         Services services = getServices();
+        services.getUserManager().createFirstAdminUserIfNeeded();
         services.getAuthenticator().tryLogin("admin", "admin", false);
         Navigator navigator = getNavigator(services);
         ConfigsPage home = new ConfigsPage();
