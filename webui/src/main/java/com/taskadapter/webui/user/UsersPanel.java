@@ -23,6 +23,8 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     private GridLayout usersLayout;
     private static final String DELETE_BUTTON = "Delete";
     private Label errorLabel;
+    private Button addUserButton;
+    private Label statusLabel;
 
     public UsersPanel(Services services) {
         super("Users");
@@ -34,6 +36,7 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     private void refreshPage() {
         removeAllComponents();
         addErrorLabel();
+        addStatusLabel();
         Collection<User> users = services.getUserManager().getUsers();
         addCreateUserSectionIfAllowedByLicense(users.size());
         addUsersListPanel();
@@ -43,6 +46,10 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     private void addErrorLabel() {
         errorLabel = new Label();
         errorLabel.addStyleName("errorMessage");
+    }
+
+    private void addStatusLabel() {
+        statusLabel = new Label();
     }
 
     private void addUsersListPanel() {
@@ -145,22 +152,22 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
             if (numberOfRegisteredUsers < maxUsersNumber) {
                 addCreateUserSection();
             } else {
-                addComponent(new Label("Maximum users number allowed by your license is reached."));
+                statusLabel.setValue("Maximum users number allowed by your license is reached.");
             }
         } else {
-            addComponent(new Label("Can't add users until a license is installed."));
+            statusLabel.setValue("Can't add users until a license is installed.");
         }
     }
 
     private void addCreateUserSection() {
-        Button button = new Button("Add user");
-        button.addListener(new Button.ClickListener() {
+        addUserButton = new Button("Add user");
+        addUserButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 startCreateUserProcess();
             }
         });
-        addComponent(button);
+        addComponent(addUserButton);
     }
 
     private void startCreateUserProcess() {
@@ -181,5 +188,13 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     @Override
     public void licenseInfoUpdated() {
         refreshPage();
+    }
+
+    String getStatusLabelText() {
+        return (String) statusLabel.getValue();
+    }
+
+    Button getAddUserButton() {
+        return addUserButton;
     }
 }

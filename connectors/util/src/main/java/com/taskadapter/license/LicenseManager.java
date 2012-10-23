@@ -39,10 +39,6 @@ public class LicenseManager {
 
     private License license;
 
-    public LicenseManager() {
-        license = getInstalledTaskAdapterLicense();
-    }
-
     public void setNewLicense(String licenseText) throws LicenseException {
         this.licenseText = licenseText;
         license = new LicenseParser().parseLicense(licenseText);
@@ -70,11 +66,8 @@ public class LicenseManager {
         }
     }
 
-    /**
-     * @return NULL if the license is not found or is invalid
-     */
-    private static License getInstalledTaskAdapterLicense() {
-        return loadLicense(Product.TASK_ADAPTER_WEB);
+    public void loadInstalledTaskAdapterLicense() {
+        this.license = loadLicense(Product.TASK_ADAPTER_WEB);
     }
 
     /**

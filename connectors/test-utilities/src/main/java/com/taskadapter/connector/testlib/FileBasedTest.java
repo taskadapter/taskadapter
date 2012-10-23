@@ -21,4 +21,6 @@ public abstract class FileBasedTest {
         FileDeleter.deleteRecursively(tempFolder);
     }
 
+    // TODO maybe add getServices() method here because this is what
+    // this class is usually used for.
 }

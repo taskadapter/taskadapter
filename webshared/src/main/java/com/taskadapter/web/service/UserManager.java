@@ -22,12 +22,9 @@ public class UserManager {
 
     public UserManager(FileManager fileManager) {
         this.fileManager = fileManager;
-        // TODO race condition here: what if two sessions will be started at the same time?
-        // completely unlikely, but still not nice!
-        createFirstAdminUserIfNeeded();
     }
 
-    private void createFirstAdminUserIfNeeded() {
+    public void createFirstAdminUserIfNeeded() {
         try {
             getUser(ADMIN_LOGIN_NAME);
         } catch (UserNotFoundException e) {

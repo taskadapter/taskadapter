@@ -57,6 +57,8 @@ public class TAApplication extends Application implements HttpServletRequestList
 
             services = new Services(dataRootFolder,
                     EditorManager.fromResource("editors.txt"));
+            services.getLicenseManager().loadInstalledTaskAdapterLicense();
+            services.getUserManager().createFirstAdminUserIfNeeded();
         }
         return services;
     }

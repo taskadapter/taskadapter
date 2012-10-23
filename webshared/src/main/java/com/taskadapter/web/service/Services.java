@@ -15,7 +15,7 @@ public class Services {
     private final EditorManager editorManager;
     private PluginManager pluginManager = new PluginManager();
     private SettingsManager settingsManager = new SettingsManager();
-    private LicenseManager licenseManager = new LicenseManager();
+    private LicenseManager licenseManager;
     private CookiesManager cookiesManager = new CookiesManager();
     private UserManager userManager;
     private FileManager fileManager;
@@ -35,6 +35,8 @@ public class Services {
                 pluginManager, editorManager), configStorage);
 
         this.currentTaskAdapterVersion = new CurrentVersionLoader().getCurrentVersion();
+
+        licenseManager = new LicenseManager();
     }
 
     public EditorManager getEditorManager() {
