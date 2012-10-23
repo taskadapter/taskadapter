@@ -102,7 +102,7 @@ public class EditorUtil {
                     }
                     listener.notifyDone(objects);
                 } catch (BadConfigException e) {
-                    EditorUtil.show(windowProvider.getWindow(), "Please update the config", errorFormatter.formatError(e));
+                    EditorUtil.show(windowProvider.getWindow(), "", errorFormatter.formatError(e));
                 } catch (Exception e) {
                     EditorUtil.show(windowProvider.getWindow(), "Something went wrong", e);
                 }

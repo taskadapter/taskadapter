@@ -108,7 +108,6 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
         }
     }
 
-    // TODO !!! replace
     @Override
     public void validateForLoad(JiraConfig config) throws BadConfigException {
         final WebServerInfo serverInfo = config.getServerInfo();

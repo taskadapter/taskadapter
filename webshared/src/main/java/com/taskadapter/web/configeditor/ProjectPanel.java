@@ -178,10 +178,12 @@ public class ProjectPanel extends Panel implements Validatable {
     private void loadProject() {
         try {
             projectInfoCallback.callBack();
+        } catch (BadConfigException e) {
+            String localizedMessage = exceptionFormatter.formatError(e);
+            windowProvider.getWindow().showNotification(localizedMessage);
         } catch (ConnectorException e) {
-            // TODO: format exceptions.
-            windowProvider.getWindow().showNotification(
-                    "Oops", e.getMessage());
+            String localizedMessage = exceptionFormatter.formatError(e);
+            windowProvider.getWindow().showNotification("Oops", localizedMessage);
         }
     }
 
@@ -203,6 +205,7 @@ public class ProjectPanel extends Panel implements Validatable {
             try {
                 Integer.parseInt(getQueryValue());
             } catch (NumberFormatException e) {
+                // TODO !!! create a specific exception and move the string into messages file.
                 throw new BadConfigException("Query Id must be a number");
             }
         }

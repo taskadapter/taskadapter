@@ -1,6 +1,7 @@
 package com.taskadapter.connector.redmine.editor;
 
 import com.taskadapter.connector.definition.AvailableFields;
+import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RelationCreationException;
 import com.taskadapter.web.PluginEditorFactory;
@@ -31,8 +32,10 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
             final UnsupportedOperationException uop = (UnsupportedOperationException) e;
             if ("updateRemoteIDs".equals(uop.getMessage()))
                 return MESSAGES.get("errors.unsupported.remoteId");
+        } else if (e instanceof ServerURLNotSetException) {
+            return MESSAGES.get("error.serverUrlNotSet");
         }
-        return null;
+        return e.getMessage();
     }
 
     @Override

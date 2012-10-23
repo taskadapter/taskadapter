@@ -32,12 +32,11 @@ public class RedmineLoaders {
             throws ServerURLNotSetException {
         validate(serverInfo);
 
-        RedmineManager mgr = RedmineManagerFactory
-                .createRedmineManager(serverInfo);
+        RedmineManager mgr = RedmineManagerFactory.createRedmineManager(serverInfo);
         List<com.taskadapter.redmineapi.bean.Project> rmProjects;
         try {
             rmProjects = mgr.getProjects();
-        } catch (Exception e) {
+        } catch (RedmineException e) {
             throw new RuntimeException(e.toString(), e);
         }
 
@@ -94,11 +93,10 @@ public class RedmineLoaders {
         return result;
     }
 
-    public static List<? extends NamedKeyedObject> loadTrackers(
-            RedmineConfig config) throws ConnectorException {
+    public static List<? extends NamedKeyedObject> loadTrackers(RedmineConfig config) throws ConnectorException {
         RedmineManager redmineManager = RedmineManagerFactory
                 .createRedmineManager(config.getServerInfo());
-        Project project = null;
+        Project project;
         String projectKey = config.getProjectKey();
         try {
             project = redmineManager.getProjectByKey(projectKey);
