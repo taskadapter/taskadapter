@@ -6,7 +6,6 @@ import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.NewMappings;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
-import com.taskadapter.web.Messages;
 import com.taskadapter.web.configeditor.Validatable;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.vaadin.data.util.BeanItemContainer;
@@ -25,9 +24,14 @@ import com.vaadin.ui.Panel;
 import java.util.Arrays;
 
 public class OnePageMappingPanel extends Panel implements Validatable {
-    public static final int COLUMN_DESCRIPTION = 0;
-    public static final int COLUMN_LEFT_CONNECTOR = 1;
-    public static final int COLUMN_RIGHT_CONNECTOR = 2;
+    private static final int COLUMN_DESCRIPTION = 0;
+    private static final int COLUMN_LEFT_CONNECTOR = 1;
+    private static final int COLUMN_RIGHT_CONNECTOR = 2;
+
+    // TODO merge this help file with all the other localized strings
+    private static final String BUNDLE_NAME = "help";
+    private static final com.taskadapter.web.data.Messages MESSAGES = new com.taskadapter.web.data.Messages(BUNDLE_NAME);
+
     private Resource helpIconResource = new ThemeResource("../runo/icons/16/help.png");
 
     private static final String PANEL_TITLE = "Task fields";
@@ -173,8 +177,9 @@ public class OnePageMappingPanel extends Panel implements Validatable {
         gridLayout.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
     }
 
-    private String getHelpForField(FieldMapping field) {
-        return Messages.getMessageDefaultLocale(field.getField().toString());
+    String getHelpForField(FieldMapping field) {
+        String elementId = field.getField().toString();
+        return MESSAGES.getNoDefault(elementId);
     }
 
     private HorizontalLayout addHelpTipToCheckbox(CheckBox checkbox,
