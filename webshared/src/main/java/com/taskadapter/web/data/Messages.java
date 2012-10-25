@@ -40,6 +40,7 @@ public class Messages {
         }
     }
 
+    // TODO !! "format" name is inconsistent with "get"
     /**
      * Formats a message.
      * 

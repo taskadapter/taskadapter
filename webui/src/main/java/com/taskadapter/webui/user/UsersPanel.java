@@ -36,7 +36,7 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     private Label statusLabel;
 
     public UsersPanel(Services services) {
-        super("Users");
+        super(MESSAGES.get("users.title"));
         this.services = services;
         services.getLicenseManager().addLicenseChangeListener(this);
         refreshPage();
@@ -132,7 +132,8 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     private void startDeleteProcess(final String userLoginName) {
         final String deleteText = MESSAGES.get("button.delete");
         MessageDialog messageDialog = new MessageDialog(
-                "Please confirm", "Delete user " + userLoginName,
+                MESSAGES.get("users.pleaseConfirm"),
+                MESSAGES.format("users.deleteUser", userLoginName),
                 Arrays.asList(deleteText, MessageDialog.CANCEL_BUTTON_LABEL),
                 new MessageDialog.Callback() {
                     public void onDialogResult(String answer) {
@@ -150,7 +151,7 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
         try {
             services.getUserManager().deleteUser(userLoginName);
         } catch (IOException e) {
-            errorLabel.setValue("Can't delete user. " + e.getMessage());
+            errorLabel.setValue(MESSAGES.format("users.error.cantDeleteUser", e.toString()));
         }
         refreshPage();
     }
@@ -162,10 +163,10 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
             if (numberOfRegisteredUsers < maxUsersNumber) {
                 addCreateUserSection();
             } else {
-                statusLabel.setValue("Maximum users number allowed by your license is reached.");
+                statusLabel.setValue(MESSAGES.get("users.maximumUsersNumberReached"));
             }
         } else {
-            statusLabel.setValue("Can't add users until a license is installed.");
+            statusLabel.setValue(MESSAGES.get("users.cantAddUsersUntilLicenseInstalled"));
         }
     }
 
@@ -212,7 +213,8 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
 
     // TODO this is similar to startChangePasswordProcess() in Header class.
     private static void startSetPasswordProcess(Window parentWindow, final UserManager userManager, final String userLoginName) {
-        InputDialog inputDialog = new InputDialog("Change password for " + userLoginName, "New password: ",
+        InputDialog inputDialog = new InputDialog(MESSAGES.format("users.changePassword", userLoginName),
+                MESSAGES.get("users.newPassword"),
                 new InputDialog.Recipient() {
                     public void gotInput(String newPassword) {
                         userManager.saveUser(userLoginName, newPassword);
