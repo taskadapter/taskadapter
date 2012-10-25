@@ -5,7 +5,7 @@ import com.taskadapter.license.License;
 import com.taskadapter.license.LicenseChangeListener;
 import com.taskadapter.web.InputDialog;
 import com.taskadapter.web.MessageDialog;
-import com.taskadapter.web.configeditor.EditorUtil;
+import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
 import com.taskadapter.web.service.UserManager;
 import com.vaadin.ui.Button;
@@ -15,14 +15,22 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class UsersPanel extends Panel implements LicenseChangeListener {
+    // TODO !!! for Maxim K - need to get global Messages object in some other way,
+    // not just rebuild is many times everywhere.
+    private static final Messages MESSAGES = new Messages("com.taskadapter.webui.data.messages");
+
     private static final int COLUMNS_NUMBER = 3;
 
     private Services services;
     private GridLayout usersLayout;
-    private static final String DELETE_BUTTON = "Delete";
     private Label errorLabel;
     private Button addUserButton;
     private Label statusLabel;
@@ -91,7 +99,7 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     }
 
     private void addSetPasswordButton(final String userLoginName) {
-        Button setPasswordButton = new Button("Set password");
+        Button setPasswordButton = new Button(MESSAGES.get("users.setPassword"));
         setPasswordButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -111,7 +119,7 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     }
 
     private void addDeleteButton(final String userLoginName) {
-        Button deleteButton = new Button(DELETE_BUTTON);
+        Button deleteButton = new Button(MESSAGES.get("button.delete"));
         deleteButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -122,12 +130,13 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     }
 
     private void startDeleteProcess(final String userLoginName) {
+        final String deleteText = MESSAGES.get("button.delete");
         MessageDialog messageDialog = new MessageDialog(
                 "Please confirm", "Delete user " + userLoginName,
-                Arrays.asList(DELETE_BUTTON, MessageDialog.CANCEL_BUTTON_LABEL),
+                Arrays.asList(deleteText, MessageDialog.CANCEL_BUTTON_LABEL),
                 new MessageDialog.Callback() {
                     public void onDialogResult(String answer) {
-                        if (answer.equals(DELETE_BUTTON)) {
+                        if (answer.equals(deleteText)) {
                             deleteUser(userLoginName);
                         }
                     }
@@ -161,7 +170,7 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     }
 
     private void addCreateUserSection() {
-        addUserButton = new Button("Add user");
+        addUserButton = new Button(MESSAGES.get("users.addUser"));
         addUserButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -172,18 +181,20 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     }
 
     private void startCreateUserProcess() {
-        InputDialog inputDialog = new InputDialog("Create a new user", "Login name: ",
-                new InputDialog.Recipient() {
-                    public void gotInput(String loginName) {
-                        createUser(loginName);
-                    }
-                });
-        getWindow().addWindow(inputDialog);
+        final CreateUserDialog dialog = new CreateUserDialog();
+        dialog.addOKListener(new Button.ClickListener() {
+            public void buttonClick(Button.ClickEvent event) {
+                createUser(dialog.getLogin(), dialog.getPassword());
+                getWindow().removeWindow(dialog);
+                refreshPage();
+            }
+        });
+
+        getWindow().addWindow(dialog);
     }
 
-    private void createUser(String loginName) {
-        services.getUserManager().saveUser(loginName, "");
-        refreshPage();
+    private void createUser(String login, String password) {
+        services.getUserManager().saveUser(login, password);
     }
 
     @Override
