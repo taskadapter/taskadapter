@@ -76,7 +76,9 @@
         </plugins>
         <pluginManagement>
         	<plugins>
-        		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        		<!--This plugin's configuration is used to store Eclipse m2e settings only.
+        		It can only influence the build in a way that it can bring some bad dependencies, e.g. the wrong GWT version
+        		(2.4.0 when you already have 2.3.0 used in the build, which can cause problems running the project in IDEA).-->
         		<plugin>
         			<groupId>org.eclipse.m2e</groupId>
         			<artifactId>lifecycle-mapping</artifactId>
