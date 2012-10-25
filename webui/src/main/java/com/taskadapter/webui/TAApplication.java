@@ -20,6 +20,7 @@ public class TAApplication extends Application implements HttpServletRequestList
     private final Window mainWindow = new Window("Task Adapter");
 
     private Services services;
+    private File dataRootFolder;
 
     @Override
     public String getVersion() {
@@ -50,16 +51,31 @@ public class TAApplication extends Application implements HttpServletRequestList
     public void onRequestEnd(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
     }
 
-    private Services getServices() {
-        if (services == null) {
-            String userHome = System.getProperty("user.home");
-            File dataRootFolder = new File(userHome, "taskadapter");
+    /**
+     * Used for testing.
+     */
+    void setDataRootFolder(File dataRootFolder) {
+        this.dataRootFolder = dataRootFolder;
+    }
 
-            services = new Services(dataRootFolder,
-                    EditorManager.fromResource("editors.txt"));
+    Services getServices() {
+        if (services == null) {
+            services = new Services(getDataRootFolder(), EditorManager.fromResource("editors.txt"));
             services.getLicenseManager().loadInstalledTaskAdapterLicense();
             services.getUserManager().createFirstAdminUserIfNeeded();
         }
         return services;
+    }
+
+    private File getDataRootFolder() {
+        return dataRootFolder == null ? getDefaultRootFolder() : dataRootFolder;
+    }
+
+    /**
+     * @return user.home / taskadapter
+     */
+    private File getDefaultRootFolder() {
+        String userHome = System.getProperty("user.home");
+        return new File(userHome, "taskadapter");
     }
 }
