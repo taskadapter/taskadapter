@@ -2,18 +2,24 @@ package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.model.NamedKeyedObject;
-import com.taskadapter.web.ChangePasswordDialog;
 import com.taskadapter.web.ExceptionFormatter;
-import com.taskadapter.web.InputDialog;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
-import com.taskadapter.web.service.Authenticator;
-import com.taskadapter.web.service.UserManager;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.AbstractProperty;
-import com.vaadin.ui.*;
+import com.vaadin.ui.AbstractLayout;
+import com.vaadin.ui.AbstractTextField;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.Window;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author Alexey Skorokhodov
@@ -136,22 +142,6 @@ public class EditorUtil {
             result = result.getCause();
         }
         return result;
-    }
-
-    public static void startSetPasswordProcess(Window parentWindow, final UserManager userManager, final String userLoginName) {
-        InputDialog inputDialog = new InputDialog("Change password for " + userLoginName, "New password: ",
-                new InputDialog.Recipient() {
-                    public void gotInput(String newPassword) {
-                        userManager.saveUser(userLoginName, newPassword);
-                    }
-                });
-        inputDialog.setPasswordMode();
-        parentWindow.addWindow(inputDialog);
-    }
-
-    public static void startChangePasswordProcess(Window parentWindow, final UserManager userManager, final Authenticator authenticator) {
-        ChangePasswordDialog passwordDialog = new ChangePasswordDialog(userManager, authenticator);
-        parentWindow.addWindow(passwordDialog);
     }
 
     /**

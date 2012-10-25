@@ -1,4 +1,4 @@
-package com.taskadapter.web;
+package com.taskadapter.webui.user;
 
 import com.taskadapter.web.service.Authenticator;
 import com.taskadapter.web.service.UserManager;

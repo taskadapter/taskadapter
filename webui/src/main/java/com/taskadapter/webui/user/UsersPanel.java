@@ -12,6 +12,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.Window;
 
 import java.io.IOException;
 import java.util.*;
@@ -94,7 +95,7 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
         setPasswordButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                EditorUtil.startSetPasswordProcess(getWindow(), services.getUserManager(), userLoginName);
+                startSetPasswordProcess(getWindow(), services.getUserManager(), userLoginName);
             }
         });
         usersLayout.addComponent(setPasswordButton);
@@ -197,4 +198,17 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     Button getAddUserButton() {
         return addUserButton;
     }
+
+    // TODO this is similar to startChangePasswordProcess() in Header class.
+    private static void startSetPasswordProcess(Window parentWindow, final UserManager userManager, final String userLoginName) {
+        InputDialog inputDialog = new InputDialog("Change password for " + userLoginName, "New password: ",
+                new InputDialog.Recipient() {
+                    public void gotInput(String newPassword) {
+                        userManager.saveUser(userLoginName, newPassword);
+                    }
+                });
+        inputDialog.setPasswordMode();
+        parentWindow.addWindow(inputDialog);
+    }
+
 }

@@ -1,14 +1,17 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.license.LicenseChangeListener;
-import com.taskadapter.web.configeditor.EditorUtil;
+import com.taskadapter.webui.user.ChangePasswordDialog;
+import com.taskadapter.web.service.Authenticator;
 import com.taskadapter.web.service.LoginEventListener;
 import com.taskadapter.web.service.Services;
+import com.taskadapter.web.service.UserManager;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 
 /**
@@ -78,7 +81,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
         setPasswordButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                EditorUtil.startChangePasswordProcess(getWindow(), services.getUserManager(), services.getAuthenticator());
+                startChangePasswordProcess(getWindow(), services.getUserManager(), services.getAuthenticator());
             }
         });
         panelForLoggedInUsers.addComponent(setPasswordButton);
@@ -164,4 +167,10 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
         panelForLoggedInUsers.setVisible(userLoggedIn);
         configureButton.setVisible(userLoggedIn);
     }
+
+    private static void startChangePasswordProcess(Window parentWindow, final UserManager userManager, final Authenticator authenticator) {
+        ChangePasswordDialog passwordDialog = new ChangePasswordDialog(userManager, authenticator);
+        parentWindow.addWindow(passwordDialog);
+    }
+
 }
