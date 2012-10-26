@@ -22,7 +22,8 @@ public final class MappingFactory {
     public static Mappings createWithEnabled(GTaskDescriptor.FIELD... fields) {
         final Mappings result = new Mappings();
         for (FIELD field : fields) {
-            result.setFieldSelected(field, true);
+            String displayValue = GTaskDescriptor.getDisplayValue(field);
+            result.setMapping(field, true, displayValue);
         }
         return result;
     }
