@@ -205,12 +205,12 @@ public class ProjectPanel extends Panel implements Validatable {
             try {
                 Integer.parseInt(getQueryValue());
             } catch (NumberFormatException e) {
-                // TODO !!! create a specific exception and move the string into messages file.
+                // TODO !! create a specific exception and move the string into messages file.
                 throw new BadConfigException("Query Id must be a number");
             }
         }
 
-        // TODO !!! most likely will result in NPE here
+        // TODO !!! will result in NPE if getProjectKey can return NULL. (can it?)
         if (getProjectKey().trim().isEmpty()) {
             throw new ProjectNotSetException();
         }

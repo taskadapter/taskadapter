@@ -5,7 +5,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public class Messages {
-    // TODO !!! for Maxim K: maybe generate a constant file with Messages so that code will
+    // TODO !! for Maxim K: maybe generate a constant file with Messages so that code will
     // use constructs like "Messages.usersPanelSetPassword" instead of "Messages.get("usersPanelSetPassword")"
     // the values would be reloaded depending on the client language.
     private final ResourceBundle bundle;
