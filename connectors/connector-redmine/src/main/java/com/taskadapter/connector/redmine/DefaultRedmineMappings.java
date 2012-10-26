@@ -13,6 +13,9 @@ public class DefaultRedmineMappings {
     };
     
     public static Mappings generate() {
+        // TODO !!! this will generate Task Type field with "Task Type" text shown in the UI later,
+        // while the actual field name for Redmine is "Tracker Type". Need to do the same
+        // manual mapping as DefaultMSPMapping class does: set field names one-by-one.
         return MappingFactory.createWithEnabled(DEFAULT_FIELDS);
     }
 }
