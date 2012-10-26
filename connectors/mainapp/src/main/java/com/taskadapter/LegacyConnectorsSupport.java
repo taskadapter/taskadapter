@@ -1,13 +1,21 @@
 package com.taskadapter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class LegacyConnectorsSupport {
-    private static final String MSP_ID_LEGACY = "Microsoft Project (XML)";
-    private static final String MSP_ID = "Microsoft Project";
+    private static Map<String, String> oldToNewMap = new HashMap<String, String>();
+
+    static {
+        oldToNewMap.put("Microsoft Project (XML)", "Microsoft Project");
+        oldToNewMap.put("Redmine REST", "Redmine");
+
+    }
 
     public static String getRealId(String pluginId) {
         String realId = pluginId;
-        if (pluginId.equals(MSP_ID_LEGACY)) {
-            realId = MSP_ID;
+        if (oldToNewMap.containsKey(pluginId)) {
+            realId = oldToNewMap.get(pluginId);
         }
         return realId;
     }

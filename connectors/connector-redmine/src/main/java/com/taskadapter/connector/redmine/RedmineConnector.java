@@ -23,7 +23,7 @@ public class RedmineConnector implements Connector<RedmineConfig> {
     /**
      * Keep it the same to enable backward compatibility for previously created config files.
      */
-    public static final String ID = "Redmine REST";
+    public static final String ID = "Redmine";
 
     private RedmineConfig config;
 
