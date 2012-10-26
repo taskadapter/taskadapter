@@ -82,14 +82,9 @@ public class MappingFixer {
         }
         return null;
     }
-
-    // TODO !!! this is completely wrong. use real default values, not the 1st field.
+    
     private static String getDefaultFieldValue(GTaskDescriptor.FIELD field, AvailableFields fields1) {
-        final String[] values = fields1.getAllowedValues(field);
-        if (values == null || values.length < 1) {
-            return null;
-        }
-        return values[0];
+        return fields1.getDefaultValue(field);
     }
 
 }
