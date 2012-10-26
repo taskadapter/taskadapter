@@ -2,6 +2,7 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.model.GTaskDescriptor;
+import net.sf.mpxj.ConstraintType;
 
 public class DefaultMSPMappings {
     public static Mappings generate() {
@@ -16,8 +17,7 @@ public class DefaultMSPMappings {
         result.setMapping(GTaskDescriptor.FIELD.ASSIGNEE, true, null);
         result.setMapping(GTaskDescriptor.FIELD.DESCRIPTION, true, null);
 
-        String defaultStartDateOption = MSPUtils.getStartDateOptions()[0];
-        result.setMapping(GTaskDescriptor.FIELD.START_DATE, false, defaultStartDateOption);
+        result.setMapping(GTaskDescriptor.FIELD.START_DATE, false, ConstraintType.MUST_START_ON.name());
 
         String defaultDueDateOption = MSPUtils.getDueDateOptions()[0];
         result.setMapping(GTaskDescriptor.FIELD.DUE_DATE, false, defaultDueDateOption);

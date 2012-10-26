@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.taskadapter.connector.common.ConfigUtils;
 import com.taskadapter.connector.definition.Descriptor;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.PluginFactory;
 
 public class MantisFactory implements PluginFactory<MantisConfig> {
@@ -34,5 +35,10 @@ public class MantisFactory implements PluginFactory<MantisConfig> {
     @Override
     public MantisConfig createDefaultConfig() {
         return new MantisConfig();
+    }
+
+    @Override
+    public Mappings createDefaultMappings() {
+        return DefaultMantisMappings.generate();
     }
 }

@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.taskadapter.connector.common.ConfigUtils;
 import com.taskadapter.connector.definition.Descriptor;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.PluginFactory;
 
 public class JiraFactory implements PluginFactory<JiraConfig> {
@@ -33,5 +34,10 @@ public class JiraFactory implements PluginFactory<JiraConfig> {
     @Override
     public JiraConfig createDefaultConfig() {
         return new JiraConfig();
+    }
+
+    @Override
+    public Mappings createDefaultMappings() {
+        return DefaultJiraMappings.generate();
     }
 }

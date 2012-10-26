@@ -141,8 +141,7 @@ public class NewConfigPage extends Page {
         final String currentUserLoginName = services.getAuthenticator().getUserName();
         
         final UISyncConfig config = services.getUIConfigStore()
-                .createNewConfig(currentUserLoginName, descriptionString, id1,
-                        id2);
+                .createNewConfig(currentUserLoginName, descriptionString, id1,id2);
         return config;
     }
 

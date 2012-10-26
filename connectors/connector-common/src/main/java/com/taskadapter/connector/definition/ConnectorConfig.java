@@ -51,8 +51,7 @@ public class ConnectorConfig implements Serializable {
      *            default priorities.
      */
     public ConnectorConfig(Map<String, Integer> defaultPriorities) {
-        priorities = new Priorities(new HashMap<String, Integer>(
-                defaultPriorities));
+        priorities = new Priorities(new HashMap<String, Integer>(defaultPriorities));
     }
     
     public ConnectorConfig(ConnectorConfig configToDeepClone) {

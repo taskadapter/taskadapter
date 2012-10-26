@@ -38,4 +38,6 @@ public interface PluginFactory<C extends ConnectorConfig> {
      */
     C createDefaultConfig();
 
+    Mappings createDefaultMappings();
+
 }

@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.taskadapter.connector.common.ConfigUtils;
 import com.taskadapter.connector.definition.Descriptor;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.PluginFactory;
 
 public class RedmineFactory implements PluginFactory<RedmineConfig> {
@@ -34,5 +35,10 @@ public class RedmineFactory implements PluginFactory<RedmineConfig> {
     @Override
     public RedmineConfig createDefaultConfig() {
         return new RedmineConfig();
+    }
+
+    @Override
+    public Mappings createDefaultMappings() {
+        return DefaultRedmineMappings.generate();
     }
 }

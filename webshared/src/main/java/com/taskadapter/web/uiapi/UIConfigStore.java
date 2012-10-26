@@ -2,18 +2,14 @@ package com.taskadapter.web.uiapi;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.config.StorageException;
 import com.taskadapter.config.StoredConnectorConfig;
 import com.taskadapter.config.StoredExportConfig;
-import com.taskadapter.connector.definition.AvailableFields;
-import com.taskadapter.connector.definition.FieldMapping;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.NewMappings;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -22,7 +18,6 @@ import java.util.List;
  * instances of UIMappingConfig. Modifications of that instances will not affect
  * other instances for a same config file. See also documentation for
  * {@link UISyncConfig}.
- * 
  */
 public final class UIConfigStore {
 
@@ -37,23 +32,20 @@ public final class UIConfigStore {
     private final ConfigStorage configStorage;
 
     public UIConfigStore(UIConfigService uiConfigService,
-            ConfigStorage configStorage) {
+                         ConfigStorage configStorage) {
         this.uiConfigService = uiConfigService;
         this.configStorage = configStorage;
     }
 
     /**
      * Lists all user-created configs.
-     * 
-     * @param userLoginName
-     *            login name to load items for.
+     *
+     * @param userLoginName login name to load items for.
      * @return collection of user config in no particular order.
      */
     public List<UISyncConfig> getUserConfigs(String userLoginName) {
-        final List<StoredExportConfig> storedConfigs = configStorage
-                .getUserConfigs(userLoginName);
-        final List<UISyncConfig> result = new ArrayList<UISyncConfig>(
-                storedConfigs.size());
+        final List<StoredExportConfig> storedConfigs = configStorage.getUserConfigs(userLoginName);
+        final List<UISyncConfig> result = new ArrayList<UISyncConfig>(storedConfigs.size());
         for (StoredExportConfig storedConfig : storedConfigs) {
             result.add(uize(storedConfig));
         }
@@ -62,42 +54,41 @@ public final class UIConfigStore {
 
     /**
      * Creates a new (fresh) config.
-     * 
-     * @param userName
-     *            user login name (for whom config will be created).
-     * @param label
-     *            config label (name).
-     * @param connector1id
-     *            first connector id.
-     * @param connector2id
-     *            second connector id.
+     *
+     * @param userName     user login name (for whom config will be created).
+     * @param label        config label (name).
+     * @param connector1id first connector id.
+     * @param connector2id second connector id.
      * @return newly created (and saved) UI mapping config.
-     * @throws StorageException
-     *             if config storage fails.
+     * @throws StorageException if config storage fails.
      */
     public UISyncConfig createNewConfig(String userName, String label,
-            String connector1id, String connector2id) throws StorageException {
-        final UIConnectorConfig config1 = uiConfigService
-                .createDefaultConfig(connector1id);
-        final UIConnectorConfig config2 = uiConfigService
-                .createDefaultConfig(connector2id);
+                                        String connector1id, String connector2id) throws StorageException {
+        final UIConnectorConfig config1 = uiConfigService.createDefaultConfig(connector1id);
+
+        // TODO !!! use these mappings
+        final Mappings mappings1 = uiConfigService.createDefaultMappings(connector1id);
+
+        final UIConnectorConfig config2 = uiConfigService.createDefaultConfig(connector2id);
+        // TODO !!! use these mappings
+        final Mappings mappings2 = uiConfigService.createDefaultMappings(connector2id);
+
         final NewMappings mappings = new NewMappings();
+
         final String mappingsString = new Gson().toJson(mappings);
         final String identity = configStorage.createNewConfig(userName, label,
                 config1.getConnectorTypeId(), config1.getConfigString(),
                 config2.getConnectorTypeId(), config2.getConfigString(),
                 mappingsString);
-        return new UISyncConfig(identity, label, config1, config2, fixMappings(
-                mappings, config1, config2, true), false);
+        NewMappings fixedMappings = MappingFixer.fixMappings(mappings, config1, config2, true);
+        return new UISyncConfig(identity, label, config1, config2, fixedMappings, false);
     }
 
     /**
      * Saves a config.
-     * 
-     * @param syncConfig
-     *            config to save.
-     * @throws StorageException
-     *             if config cannot be saved.
+     *
+     * @param syncConfig config to save.
+     * @throws StorageException if config cannot be saved.
      */
     public void saveConfig(String userLoginName, UISyncConfig syncConfig)
             throws StorageException {
@@ -115,186 +106,26 @@ public final class UIConfigStore {
 
     /**
      * Create a new UI config instance for a stored config.
-     * 
-     * @param storedConfig
-     *            stored config to create an instance for.
+     *
+     * @param storedConfig stored config to create an instance for.
      * @return new parsed config.
      */
     private UISyncConfig uize(StoredExportConfig storedConfig) {
         final String label = storedConfig.getName();
         final StoredConnectorConfig conn1Config = storedConfig.getConnector1();
         final StoredConnectorConfig conn2Config = storedConfig.getConnector2();
-        final UIConnectorConfig config1 = uiConfigService.createRichConfig(
-                conn1Config.getConnectorTypeId(),
-                conn1Config.getSerializedConfig());
-        final UIConnectorConfig config2 = uiConfigService.createRichConfig(
-                conn2Config.getConnectorTypeId(),
-                conn2Config.getSerializedConfig());
-        final NewMappings mappings = storedConfig.getMappings() == null ? guessNewMappings(storedConfig)
+        final UIConnectorConfig config1 = uiConfigService.createRichConfig(conn1Config.getConnectorTypeId(), conn1Config.getSerializedConfig());
+        final UIConnectorConfig config2 = uiConfigService.createRichConfig(conn2Config.getConnectorTypeId(), conn2Config.getSerializedConfig());
+        final NewMappings mappings = storedConfig.getMappings() == null ? MappingGuesser.guessNewMappings(storedConfig)
                 : new Gson().fromJson(storedConfig.getMappings(),
-                        NewMappings.class);
-        final NewMappings fixedMappings = fixMappings(mappings, config1, config2, false);
-        return new UISyncConfig(storedConfig.getId(), label, config1, config2,
-                fixedMappings, false);
-    }
-
-    /**
-     * Guesses a new config from an old (non-updated) config.
-     * @param storedConfig config to update.
-     * @return new mappings guessed from a previous config.
-     */
-    private NewMappings guessNewMappings(StoredExportConfig storedConfig) {
-        final JsonObject cc1 = new JsonParser()
-                .parse(storedConfig.getConnector1().getSerializedConfig())
-                .getAsJsonObject().get("fieldsMapping").getAsJsonObject();
-        final JsonObject cc2 = new JsonParser()
-                .parse(storedConfig.getConnector2().getSerializedConfig())
-                .getAsJsonObject().get("fieldsMapping").getAsJsonObject();
-        
-        /* Config is too old. Don't do anything with it */
-        if (!cc1.has("selected") || !cc2.has("selected")) {
-            return new NewMappings();
-        }
-        final JsonObject sel1 = cc1.get("selected").getAsJsonObject();
-        final JsonObject sel2 = cc2.get("selected").getAsJsonObject();
-        final JsonObject map1 = cc1.get("mapTo").getAsJsonObject();
-        final JsonObject map2 = cc1.get("mapTo").getAsJsonObject();
-        
-        final NewMappings res = new NewMappings();
-        
-        for (FIELD field : FIELD.values()) {
-            if (field == FIELD.ID || field == FIELD.REMOTE_ID) {
-                continue;
-            }
-            
-            final String fieldName = field.name();
-            
-            if (!sel1.has(fieldName) || !sel2.has(fieldName)) {
-                continue;
-            }
-
-            /* Don't create mappings here. New mappings will be generated in
-             * a fixup phase.
-             */
-            if (!sel1.get(fieldName).getAsBoolean()
-                    || !sel2.get(fieldName).getAsBoolean()) {
-                continue;
-            }
-            
-            if (map1.get(fieldName).isJsonNull()
-                    || map2.get(fieldName).isJsonNull()) {
-                continue;
-            }
-            
-            res.put(new FieldMapping(field, map1.get(fieldName).getAsString(),
-                    map2.get(fieldName).getAsString(), true));
-        }
-        
-        if (sel2.has(FIELD.REMOTE_ID.name())
-                && sel2.get(FIELD.REMOTE_ID.name()).getAsBoolean() 
-                && !map2.get(FIELD.REMOTE_ID.name()).isJsonNull()) {
-            res.put(new FieldMapping(FIELD.REMOTE_ID, null, map2.get(
-                    FIELD.REMOTE_ID.name()).getAsString(), true));
-        }
-        
-        if (sel1.has(FIELD.REMOTE_ID.name())
-                && sel1.get(FIELD.REMOTE_ID.name()).getAsBoolean()
-                && !map1.get(FIELD.REMOTE_ID.name()).isJsonNull()) {
-            res.put(new FieldMapping(FIELD.REMOTE_ID, map1.get(
-                    FIELD.REMOTE_ID.name()).getAsString(), null, true));
-        }
-        
-        return res;
-    }
-
-    /**
-     * Fixes mappings. Remove "unsupported" mappings. Add new mappings (in 
-     * <code>newMappingsEnabled</code> state).
-     * @param mappings mappings to fix.
-     * @param config1 first config.
-     * @param config2 second config.
-     * @param newMappingsEnabled state for a new (added) mappings.
-     */
-    private NewMappings fixMappings(NewMappings mappings, UIConnectorConfig config1,
-            UIConnectorConfig config2, boolean newMappingsEnabled) {
-        final AvailableFields fields1 = config1.getAvailableFields();
-        final AvailableFields fields2 = config2.getAvailableFields();
-        final Collection<FIELD> firstFields = fields1
-                .getSupportedFields();
-        final Collection<FIELD> secondFields = fields2
-                .getSupportedFields();
-        
-        final NewMappings result = new NewMappings();
-
-        if (secondFields.contains(FIELD.REMOTE_ID)) {
-            final FieldMapping saved = findRemote(mappings, false, true);
-            if (saved != null) {
-                result.put(saved);
-            } else {
-                result.put(new FieldMapping(FIELD.REMOTE_ID, null,
-                        getDefaultFieldValue(FIELD.REMOTE_ID, fields2),
-                        newMappingsEnabled));
-            }
-        }
-        
-        if (firstFields.contains(FIELD.REMOTE_ID)) {
-            final FieldMapping saved = findRemote(mappings, true, false);
-            if (saved != null) {
-                result.put(saved);
-            } else {
-                result.put(new FieldMapping(FIELD.REMOTE_ID,
-                        getDefaultFieldValue(FIELD.REMOTE_ID, fields1), null,
-                        newMappingsEnabled));
-            }
-        }
-        
-        for (FIELD field : FIELD.values()) {
-            if (field == FIELD.ID || field == FIELD.REMOTE_ID) {
-                continue;
-            }
-            
-            if (!firstFields.contains(field) || !secondFields.contains(field)) {
-                continue;
-            }
-            
-            final FieldMapping oldMapping = mappings.getMapping(field);
-            if (oldMapping != null) {
-                result.put(oldMapping);
-                continue;
-            }
-            
-            final FieldMapping newMapping = new FieldMapping(field,
-                    getDefaultFieldValue(field, fields1), getDefaultFieldValue(
-                            field, fields2), newMappingsEnabled);
-            result.put(newMapping);
-        }
-        
-        return result;        
-    }
-    
-    private static FieldMapping findRemote(NewMappings mappings,
-            boolean remoteLeft, boolean remoteRight) {
-        for (FieldMapping mapping : mappings.getMappings()) {
-            if (
-                    mapping.getField() == FIELD.ID && (
-                    ((mapping.getConnector1() == null) != remoteLeft) ||
-                    ((mapping.getConnector2() == null) != remoteRight))) {
-                return mapping;
-            }
-        }
-        return null;
-    }
-
-    private String getDefaultFieldValue(FIELD field, AvailableFields fields1) {
-        final String[] values = fields1.getAllowedValues(field);
-        if (values == null || values.length < 1) {
-            return null;
-        }
-        return values[0];
+                NewMappings.class);
+        final NewMappings fixedMappings = MappingFixer.fixMappings(mappings, config1, config2, false);
+        return new UISyncConfig(storedConfig.getId(), label, config1, config2, fixedMappings, false);
     }
 
     /**
      * Deletes a config.
+     *
      * @param config config to delete.
      */
     public void deleteConfig(UISyncConfig config) {
@@ -303,8 +134,9 @@ public final class UIConfigStore {
 
     /**
      * Clones a config.
+     *
      * @param userLoginName user login name.
-     * @param syncConfig config to clone.
+     * @param syncConfig    config to clone.
      * @throws StorageException if an error occured.
      */
     public void cloneConfig(String userLoginName, UISyncConfig syncConfig) throws StorageException {

@@ -5,6 +5,7 @@ import com.google.gson.JsonParseException;
 import com.taskadapter.connector.common.ConfigUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Descriptor;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.PluginFactory;
 
 public class GithubFactory implements PluginFactory<GithubConfig> {
@@ -36,5 +37,10 @@ public class GithubFactory implements PluginFactory<GithubConfig> {
     @Override
     public GithubConfig createDefaultConfig() {
         return new GithubConfig();
+    }
+
+    @Override
+    public Mappings createDefaultMappings() {
+        return DefaultGithubMappings.generate();
     }
 }

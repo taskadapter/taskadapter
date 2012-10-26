@@ -56,8 +56,7 @@ public class ConfigsPage extends Page {
         configsLayout.removeAllComponents();
 
         final String userLoginName = services.getAuthenticator().getUserName();
-        final List<UISyncConfig> allConfigs = services.getUIConfigStore()
-                .getUserConfigs(userLoginName);
+        final List<UISyncConfig> allConfigs = services.getUIConfigStore().getUserConfigs(userLoginName);
         Collections.sort(allConfigs, CONFIG_COMPARATOR);
         for (UISyncConfig config : allConfigs) {
             addTask(config);
