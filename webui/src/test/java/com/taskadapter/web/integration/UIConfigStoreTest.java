@@ -21,19 +21,14 @@ import static org.junit.Assert.assertTrue;
 public class UIConfigStoreTest extends FileBasedTest {
     @Test
     public void configCreatedWithProperDefaultMappings() throws Exception {
-        FileManager fileManager = new FileManager(tempFolder);
-        final ConfigStorage configStorage = new ConfigStorage(fileManager);
+        UISyncConfig config = getStore().createNewConfig("admin", "label1", "Redmine REST", "Microsoft Project");
+        checkFieldSelected(config.getNewMappings(), "Start Date", "MUST_START_ON");
+    }
 
-        EditorManager editorManager = EditorManager.fromResource("editors.txt");
-        UIConfigService uiConfigService = new UIConfigService(new PluginManager(), editorManager);
-
-        UIConfigStore store = new UIConfigStore(uiConfigService, configStorage);
-        UISyncConfig config = store.createNewConfig("admin", "some label1", "Redmine REST", "Microsoft Project");
-        NewMappings newMappings = config.getNewMappings();
-        Collection<FieldMapping> mappings = newMappings.getMappings();
-        FieldMapping fieldMapping = findField(mappings, GTaskDescriptor.FIELD.START_DATE);
-        assertEquals("Start date", fieldMapping.getConnector1());
-        assertEquals("MUST_START_ON", fieldMapping.getConnector2());
+    private void checkFieldSelected(NewMappings newMappings, String connector1ExpectedValue, String connector2ExpectedValue) {
+        FieldMapping fieldMapping = findField(newMappings.getMappings(), GTaskDescriptor.FIELD.START_DATE);
+        assertEquals(connector1ExpectedValue, fieldMapping.getConnector1());
+        assertEquals(connector2ExpectedValue, fieldMapping.getConnector2());
         assertTrue(fieldMapping.isSelected());
     }
 
@@ -44,5 +39,15 @@ public class UIConfigStoreTest extends FileBasedTest {
             }
         }
         return null;
+    }
+
+    private UIConfigStore getStore() {
+        FileManager fileManager = new FileManager(tempFolder);
+        final ConfigStorage configStorage = new ConfigStorage(fileManager);
+
+        EditorManager editorManager = EditorManager.fromResource("editors.txt");
+        UIConfigService uiConfigService = new UIConfigService(new PluginManager(), editorManager);
+
+        return new UIConfigStore(uiConfigService, configStorage);
     }
 }

@@ -66,23 +66,20 @@ public final class UIConfigStore {
                                         String connector1id, String connector2id) throws StorageException {
         final UIConnectorConfig config1 = uiConfigService.createDefaultConfig(connector1id);
 
-        // TODO !!! use these mappings
         final Mappings mappings1 = uiConfigService.createDefaultMappings(connector1id);
-
         final UIConnectorConfig config2 = uiConfigService.createDefaultConfig(connector2id);
-        // TODO !!! use these mappings
+
         final Mappings mappings2 = uiConfigService.createDefaultMappings(connector2id);
+        final NewMappings newMappings = NewMappingBuilder.createNewMappings(mappings1, mappings2);
 
-        final NewMappings mappings = new NewMappings();
-
-        final String mappingsString = new Gson().toJson(mappings);
+        final String mappingsString = new Gson().toJson(newMappings);
         final String identity = configStorage.createNewConfig(userName, label,
                 config1.getConnectorTypeId(), config1.getConfigString(),
                 config2.getConnectorTypeId(), config2.getConfigString(),
                 mappingsString);
         AvailableFields availableFields1 = config1.getAvailableFields();
         AvailableFields availableFields2 = config2.getAvailableFields();
-        NewMappings fixedMappings = MappingFixer.fixMappings(mappings, availableFields1, availableFields2, true);
+        NewMappings fixedMappings = MappingFixer.fixMappings(newMappings, availableFields1, availableFields2, true);
         return new UISyncConfig(identity, label, config1, config2, fixedMappings, false);
     }
 

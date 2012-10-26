@@ -4,8 +4,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.taskadapter.config.StoredExportConfig;
 import com.taskadapter.connector.definition.FieldMapping;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.NewMappings;
 import com.taskadapter.model.GTaskDescriptor;
+
+import java.util.Collection;
 
 public class MappingGuesser {
     /**
@@ -77,5 +80,4 @@ public class MappingGuesser {
 
         return res;
     }
-
 }

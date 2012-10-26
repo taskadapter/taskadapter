@@ -4,7 +4,7 @@ import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 /**
- * Mappings factory. Provides canonical and simple ways to create a mappings.
+ * Mappings factory. Provides a canonical way to create mappings.
  */
 public final class MappingFactory {
     private MappingFactory() {
