@@ -16,14 +16,10 @@ public class MappingFixer {
      * Add new mappings (in <code>newMappingsEnabled</code> state).
      *
      * @param mappings           mappings to fix.
-     * @param config1            first config.
-     * @param config2            second config.
      * @param newMappingsEnabled state for the new (added) mappings.
      */
-    static NewMappings fixMappings(NewMappings mappings, UIConnectorConfig config1,
-                                    UIConnectorConfig config2, boolean newMappingsEnabled) {
-        final AvailableFields fields1 = config1.getAvailableFields();
-        final AvailableFields fields2 = config2.getAvailableFields();
+    static NewMappings fixMappings(NewMappings mappings, AvailableFields fields1,
+                                   AvailableFields fields2, boolean newMappingsEnabled) {
         final Collection<GTaskDescriptor.FIELD> firstFields = fields1.getSupportedFields();
         final Collection<GTaskDescriptor.FIELD> secondFields = fields2.getSupportedFields();
 

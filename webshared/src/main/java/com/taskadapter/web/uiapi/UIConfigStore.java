@@ -1,11 +1,11 @@
 package com.taskadapter.web.uiapi;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.config.StorageException;
 import com.taskadapter.config.StoredConnectorConfig;
 import com.taskadapter.config.StoredExportConfig;
+import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.NewMappings;
 
@@ -80,7 +80,9 @@ public final class UIConfigStore {
                 config1.getConnectorTypeId(), config1.getConfigString(),
                 config2.getConnectorTypeId(), config2.getConfigString(),
                 mappingsString);
-        NewMappings fixedMappings = MappingFixer.fixMappings(mappings, config1, config2, true);
+        AvailableFields availableFields1 = config1.getAvailableFields();
+        AvailableFields availableFields2 = config2.getAvailableFields();
+        NewMappings fixedMappings = MappingFixer.fixMappings(mappings, availableFields1, availableFields2, true);
         return new UISyncConfig(identity, label, config1, config2, fixedMappings, false);
     }
 
@@ -119,7 +121,10 @@ public final class UIConfigStore {
         final NewMappings mappings = storedConfig.getMappings() == null ? MappingGuesser.guessNewMappings(storedConfig)
                 : new Gson().fromJson(storedConfig.getMappings(),
                 NewMappings.class);
-        final NewMappings fixedMappings = MappingFixer.fixMappings(mappings, config1, config2, false);
+
+        AvailableFields availableFields1 = config1.getAvailableFields();
+        AvailableFields availableFields2 = config2.getAvailableFields();
+        final NewMappings fixedMappings = MappingFixer.fixMappings(mappings, availableFields1, availableFields2, false);
         return new UISyncConfig(storedConfig.getId(), label, config1, config2, fixedMappings, false);
     }
 
