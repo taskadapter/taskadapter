@@ -3,6 +3,7 @@ package com.taskadapter.connector.msp;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.testlib.CommonTests;
+import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.connector.testlib.TestSaver;
 import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.model.GTask;
@@ -141,7 +142,7 @@ public class FieldMappingTest {
     @Test
     public void descriptionExportedByDefault() throws Exception {
         GTask task = TestUtils.generateTask();
-        GTask loadedTask = TestUtils.saveAndLoadViaSummary(connector, task, DefaultMSPMappings.generate());
+        GTask loadedTask = TestUtils.saveAndLoadViaSummary(connector, task, TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
         assertEquals(task.getDescription(), loadedTask.getDescription());
     }
 
@@ -159,7 +160,7 @@ public class FieldMappingTest {
         Calendar yearAgo = TestUtils.getDateRoundedToDay();
         yearAgo.add(Calendar.YEAR, -1);
         task.setStartDate(yearAgo.getTime());
-        Mappings mappings = DefaultMSPMappings.generate();
+        Mappings mappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
         mappings.setMapping(FIELD.START_DATE, true, MSPUtils.NO_CONSTRAINT);
         GTask loadedTask = TestUtils.saveAndLoadViaSummary(connector, task, mappings);
         assertEquals(yearAgo.getTime(), loadedTask.getStartDate());
@@ -169,7 +170,7 @@ public class FieldMappingTest {
     public void startDateMustStartOn() throws Exception {
         GTask task = TestUtils.generateTask();
         Calendar cal = TestUtils.setTaskStartYearAgo(task);
-        Mappings mappings = DefaultMSPMappings.generate();
+        Mappings mappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
         mappings.setMapping(FIELD.START_DATE, true, ConstraintType.MUST_START_ON.name());
         GTask loadedTask = TestUtils.saveAndLoadViaSummary(connector, task, mappings);
         assertEquals(cal.getTime(), loadedTask.getStartDate());
@@ -198,13 +199,13 @@ public class FieldMappingTest {
         GTask task = TestUtils.generateTask();
         GUser assignee = new GUser(123, "some user");
         task.setAssignee(assignee);
-        GTask loadedTask = TestUtils.saveAndLoadViaSummary(connector, task, DefaultMSPMappings.generate());
+        GTask loadedTask = TestUtils.saveAndLoadViaSummary(connector, task, TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
         assertEquals(assignee.getId(), loadedTask.getAssignee().getId());
     }
 
     private static List<Task> saveAndLoad(MSPConfig config, FIELD field, boolean useMap, String mapTo, GTask... tasks) throws IOException, MPXJException, ConnectorException {
         MSPConfig temporaryClonedconfig = new MSPConfig(config);
-        Mappings mappings = DefaultMSPMappings.generate();
+        Mappings mappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
         mappings.setMapping(field, useMap, mapTo);
 
         String fileName = "testdata.tmp";
@@ -238,25 +239,25 @@ public class FieldMappingTest {
 
     @Test
     public void testLoadTasks() throws Exception {
-        new CommonTests().testLoadTasks(connector, DefaultMSPMappings.generate());
+        new CommonTests().testLoadTasks(connector, TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
     }
 
     @Test
     public void descriptionSavedByDefault() throws Exception {
-        new CommonTests().descriptionSavedByDefault(connector, DefaultMSPMappings.generate());
+        new CommonTests().descriptionSavedByDefault(connector, TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
     }
 
     @Test
     public void descriptionSavedIfSelected() throws Exception {
-        new CommonTests().descriptionSavedIfSelected(connector, DefaultMSPMappings.generate());
+        new CommonTests().descriptionSavedIfSelected(connector, TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
     }
 
     @Test
     public void twoTasksAreCreated() throws Exception {
-        new CommonTests().testCreates2Tasks(connector, DefaultMSPMappings.generate());
+        new CommonTests().testCreates2Tasks(connector, TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
     }
 
     private TestSaver getTestSaver() {
-        return new TestSaver(connector, DefaultMSPMappings.generate());
+        return new TestSaver(connector, TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
     }
 }

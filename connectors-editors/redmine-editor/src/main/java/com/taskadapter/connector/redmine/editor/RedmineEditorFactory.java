@@ -1,6 +1,5 @@
 package com.taskadapter.connector.redmine.editor;
 
-import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RelationCreationException;
@@ -36,11 +35,6 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
             return MESSAGES.get("error.serverUrlNotSet");
         }
         return e.getMessage();
-    }
-
-    @Override
-    public AvailableFields getAvailableFields() {
-        return RedmineSupportedFields.SUPPORTED_FIELDS;
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.taskadapter.connector.msp;
 import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.model.GTask;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Task;
@@ -58,7 +59,7 @@ public class MSPTestUtils {
     }
 
     static List<GTask> loadWithDefaultMappings(String fileNameInClasspath) throws ConnectorException {
-        return load(fileNameInClasspath, DefaultMSPMappings.generate());
+        return load(fileNameInClasspath, TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
     }
 
     /**

@@ -3,12 +3,17 @@ package com.taskadapter.connector.redmine;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.taskadapter.connector.common.ConfigUtils;
+import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Descriptor;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.PluginFactory;
 
 public class RedmineFactory implements PluginFactory<RedmineConfig> {
     private static final Descriptor DESCRIPTOR = new Descriptor(RedmineConnector.ID, RedmineConfig.DEFAULT_LABEL);
+    
+    @Override
+    public AvailableFields getAvailableFields() {
+        return RedmineSupportedFields.SUPPORTED_FIELDS;
+    }
 
     @Override
     public RedmineConnector createConnector(RedmineConfig config) {
@@ -35,10 +40,5 @@ public class RedmineFactory implements PluginFactory<RedmineConfig> {
     @Override
     public RedmineConfig createDefaultConfig() {
         return new RedmineConfig();
-    }
-
-    @Override
-    public Mappings createDefaultMappings() {
-        return DefaultRedmineMappings.generate();
     }
 }

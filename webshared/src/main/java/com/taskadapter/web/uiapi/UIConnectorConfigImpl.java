@@ -77,7 +77,7 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends
 
     @Override
     public AvailableFields getAvailableFields() {
-        return editorFactory.getAvailableFields();
+        return connectorFactory.getAvailableFields();
     }
 
     @Override

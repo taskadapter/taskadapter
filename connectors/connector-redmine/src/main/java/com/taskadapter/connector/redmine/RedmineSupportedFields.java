@@ -1,11 +1,11 @@
-package com.taskadapter.connector.redmine.editor;
+package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.AvailableFieldsBuilder;
 import com.taskadapter.model.GTaskDescriptor;
 
 public class RedmineSupportedFields {
-    static final AvailableFields SUPPORTED_FIELDS;
+    public static final AvailableFields SUPPORTED_FIELDS;
 
     static {
         final AvailableFieldsBuilder builder = AvailableFieldsBuilder.start();
@@ -16,7 +16,7 @@ public class RedmineSupportedFields {
         builder.addField(GTaskDescriptor.FIELD.DONE_RATIO, "Done ratio");
         builder.addField(GTaskDescriptor.FIELD.ASSIGNEE, "Assignee");
         builder.addField(GTaskDescriptor.FIELD.DUE_DATE, "Due Date");
-        builder.addField(GTaskDescriptor.FIELD.START_DATE, "Start date");
+        builder.addField(GTaskDescriptor.FIELD.START_DATE, "Start Date");
         builder.addField(GTaskDescriptor.FIELD.TASK_STATUS, "Task status");
         SUPPORTED_FIELDS = builder.end();
     }

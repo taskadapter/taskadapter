@@ -9,6 +9,7 @@ import com.google.gson.JsonParseException;
  * plugin factory and leave this as a "connector factory" item.
  */
 public interface PluginFactory<C extends ConnectorConfig> {
+    AvailableFields getAvailableFields();
 
     Connector<C> createConnector(C config);
 
@@ -37,7 +38,4 @@ public interface PluginFactory<C extends ConnectorConfig> {
      * @return new connector config.
      */
     C createDefaultConfig();
-
-    Mappings createDefaultMappings();
-
 }

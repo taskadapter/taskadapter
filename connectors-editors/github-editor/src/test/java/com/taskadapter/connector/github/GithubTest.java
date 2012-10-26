@@ -1,8 +1,10 @@
 package com.taskadapter.connector.github;
 
 import com.taskadapter.connector.common.ConnectorUtils;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.github.editor.GithubLoaders;
+import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.model.GProject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -36,7 +38,10 @@ public class GithubTest {
         for (GProject project : projects) {
             System.out.println("project.getName() = " + project.getName());
             config.setProjectKey(project.getKey());
-            System.out.println("project.getTasks() = " + ConnectorUtils.loadDataOrderedById(connector, DefaultGithubMappings.generate()));
+            final Mappings mappings = TestMappingUtils
+                    .fromFields(GithubSupportedFields.SUPPORTED_FIELDS);
+
+            System.out.println("project.getTasks() = " + ConnectorUtils.loadDataOrderedById(connector, mappings));
             System.out.println("---");
         }
     }

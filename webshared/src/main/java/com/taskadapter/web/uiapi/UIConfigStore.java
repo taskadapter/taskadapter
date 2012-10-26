@@ -6,7 +6,6 @@ import com.taskadapter.config.StorageException;
 import com.taskadapter.config.StoredConnectorConfig;
 import com.taskadapter.config.StoredExportConfig;
 import com.taskadapter.connector.definition.AvailableFields;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.NewMappings;
 
 import java.util.ArrayList;
@@ -65,12 +64,10 @@ public final class UIConfigStore {
     public UISyncConfig createNewConfig(String userName, String label,
                                         String connector1id, String connector2id) throws StorageException {
         final UIConnectorConfig config1 = uiConfigService.createDefaultConfig(connector1id);
-
-        final Mappings mappings1 = uiConfigService.createDefaultMappings(connector1id);
         final UIConnectorConfig config2 = uiConfigService.createDefaultConfig(connector2id);
 
-        final Mappings mappings2 = uiConfigService.createDefaultMappings(connector2id);
-        final NewMappings newMappings = NewMappingBuilder.createNewMappings(mappings1, mappings2);
+        final NewMappings newMappings = NewMappingBuilder.createNewMappings(
+                config1.getAvailableFields(), config2.getAvailableFields());
 
         final String mappingsString = new Gson().toJson(newMappings);
         final String identity = configStorage.createNewConfig(userName, label,

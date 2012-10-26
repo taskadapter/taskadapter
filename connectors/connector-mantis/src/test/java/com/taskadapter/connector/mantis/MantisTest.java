@@ -1,5 +1,6 @@
 package com.taskadapter.connector.mantis;
 
+import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.connector.testlib.TestSaver;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
@@ -98,6 +99,8 @@ public class MantisTest {
     }
 
     private TestSaver getTestSaver() {
-        return new TestSaver(mantis, DefaultMantisMappings.generate());
+        return new TestSaver(mantis,
+                TestMappingUtils
+                        .fromFields(MantisSupportedFields.SUPPORTED_FIELDS));
     }
 }

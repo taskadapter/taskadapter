@@ -1,5 +1,6 @@
 package com.taskadapter.connector.msp;
 
+import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.model.GTask;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +18,7 @@ public class DateTest {
 
     @Before
     public void init() throws Exception {
-        gtasks = load("start_date_by_constraint.xml", DefaultMSPMappings.generate());
+        gtasks = load("start_date_by_constraint.xml", TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
     }
 
     @Test

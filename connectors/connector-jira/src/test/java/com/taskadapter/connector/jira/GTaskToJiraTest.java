@@ -10,6 +10,7 @@ import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.google.common.collect.Iterables;
 import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GUser;
@@ -67,7 +68,7 @@ public class GTaskToJiraTest {
 
     @Test(expected = IllegalStateException.class)
     public void noIssueTypesSetGeneratesIllegalStateException() {
-        GTaskToJira converter = new GTaskToJira(config, DefaultJiraMappings.generate());
+        GTaskToJira converter = new GTaskToJira(config, TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS));
         GTask task = new GTask();
         task.setSummary("some task");
         converter.convertToJiraIssue(task);
@@ -81,7 +82,7 @@ public class GTaskToJiraTest {
         task.setSummary("task with critical priority");
         task.setPriority(750);
 
-        Mappings mappings = DefaultJiraMappings.generate();
+        Mappings mappings = TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS);
         mappings.setMapping(GTaskDescriptor.FIELD.PRIORITY, true, null);
         GTaskToJira converter = getConverter(mappings);
 
@@ -105,7 +106,7 @@ public class GTaskToJiraTest {
         GTask task = new GTask();
         task.setSummary("checking issueType");
 
-        Mappings mappings = DefaultJiraMappings.generate();
+        Mappings mappings = TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS);
         mappings.setMapping(GTaskDescriptor.FIELD.TASK_TYPE, true, null);
         GTaskToJira converter = getConverter(mappings);
         IssueType requiredIssueType = findIssueType(issueTypeList, "Task");
@@ -120,7 +121,7 @@ public class GTaskToJiraTest {
     public void defaultIssueTypeSetWhenNoneProvided() throws MalformedURLException, RemoteException, URISyntaxException {
         GTask task = new GTask();
         task.setType(null);
-        Mappings mappings = DefaultJiraMappings.generate();
+        Mappings mappings = TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS);
         mappings.setMapping(GTaskDescriptor.FIELD.TASK_TYPE, true, null);
         GTaskToJira converter = getConverter(mappings);
 
@@ -281,7 +282,7 @@ public class GTaskToJiraTest {
     }
 
     private GTaskToJira getConverter() {
-        return getConverter(DefaultJiraMappings.generate());
+        return getConverter(TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS));
     }
 
     private GTaskToJira getConverter(Mappings mappings) {
@@ -304,7 +305,7 @@ public class GTaskToJiraTest {
 
     private GTaskToJira createConverterWithField(GTaskDescriptor.FIELD field, boolean selected) {
         JiraConfig config = new JiraTestData().createTestConfig();
-        Mappings mappings = DefaultJiraMappings.generate();
+        Mappings mappings = TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS);
         mappings.setMapping(field, selected, null);
         GTaskToJira converter = new GTaskToJira(config, mappings);
         converter.setPriorities(priorities);

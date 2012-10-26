@@ -3,12 +3,17 @@ package com.taskadapter.connector.mantis;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.taskadapter.connector.common.ConfigUtils;
+import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Descriptor;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.PluginFactory;
 
 public class MantisFactory implements PluginFactory<MantisConfig> {
     private static final Descriptor DESCRIPTOR = new Descriptor(MantisConnector.ID, MantisConfig.DEFAULT_LABEL);
+
+    @Override
+    public AvailableFields getAvailableFields() {
+        return MantisSupportedFields.SUPPORTED_FIELDS;
+    }
 
     @Override
     public MantisConnector createConnector(MantisConfig config) {
@@ -35,10 +40,5 @@ public class MantisFactory implements PluginFactory<MantisConfig> {
     @Override
     public MantisConfig createDefaultConfig() {
         return new MantisConfig();
-    }
-
-    @Override
-    public Mappings createDefaultMappings() {
-        return DefaultMantisMappings.generate();
     }
 }

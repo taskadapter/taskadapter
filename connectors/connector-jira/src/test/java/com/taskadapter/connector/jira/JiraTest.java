@@ -7,6 +7,7 @@ import com.google.common.collect.Iterables;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
@@ -63,7 +64,7 @@ public class JiraTest {
     public void testJiraDoesNotFailWithNULLMonitorAndEmptyList()
             throws Exception {
         JiraConnector connector = new JiraConnector(config);
-        connector.saveData(new ArrayList<GTask>(), null, DefaultJiraMappings.generate());
+        connector.saveData(new ArrayList<GTask>(), null, TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS));
     }
 
     @Test
@@ -71,7 +72,7 @@ public class JiraTest {
         int tasksQty = 2;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
         JiraConnector connector = new JiraConnector(config);
-        TaskSaveResult result = connector.saveData(tasks, null, DefaultJiraMappings.generate());
+        TaskSaveResult result = connector.saveData(tasks, null, TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS));
         assertEquals(tasksQty, result.getCreatedTasksNumber());
     }
 
@@ -84,7 +85,7 @@ public class JiraTest {
         List<GTask> tasks = TestUtils.generateTasks(1);
         tasks.get(0).setAssignee(new GUser(jiraUser.getName()));
 
-        TaskSaveResult result = connector.saveData(tasks, null, DefaultJiraMappings.generate());
+        TaskSaveResult result = connector.saveData(tasks, null, TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS));
         assertFalse("Task creation failed", result.hasErrors());
 
         Map<Integer, String> remoteKeyById = new HashMap<Integer, String>();
@@ -109,7 +110,7 @@ public class JiraTest {
 
         // CREATE
         JiraConnector connector = new JiraConnector(config);
-        TaskSaveResult result = connector.saveData(Arrays.asList(task), null, DefaultJiraMappings.generate());
+        TaskSaveResult result = connector.saveData(Arrays.asList(task), null, TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS));
         assertTrue(!result.hasErrors());
         assertEquals(tasksQty, result.getCreatedTasksNumber());
         String remoteKey = result.getRemoteKey(id);
@@ -120,7 +121,7 @@ public class JiraTest {
         String NEW_SUMMARY = "new summary here";
         loaded.setSummary(NEW_SUMMARY);
         loaded.setRemoteId(remoteKey);
-        TaskSaveResult result2 = connector.saveData(Arrays.asList(loaded), null, DefaultJiraMappings.generate());
+        TaskSaveResult result2 = connector.saveData(Arrays.asList(loaded), null, TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS));
         assertTrue("some errors while updating the data: " + result2.getGeneralErrors() + result2.getTaskErrors(), !result2.hasErrors());
         assertEquals(1, result2.getUpdatedTasksNumber());
 
@@ -134,7 +135,7 @@ public class JiraTest {
         int tasksQty = 2;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
         JiraConnector connector = new JiraConnector(config);
-        connector.saveData(tasks, null, DefaultJiraMappings.generate());
+        connector.saveData(tasks, null, TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS));
 
         Iterable<Issue> issues = connection.getIssuesByProject(config.getProjectKey());
         Assert.assertNotSame(0, Iterables.size(issues));
@@ -159,7 +160,7 @@ public class JiraTest {
         list.add(task1);
         list.add(task2);
 
-        TestUtils.saveAndLoadList(connector, list, DefaultJiraMappings.generate());
+        TestUtils.saveAndLoadList(connector, list, TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS));
         List<Issue> issues = connection.getIssuesBySummary(task1.getSummary());
         Issue issue2 = connection.getIssuesBySummary(task2.getSummary()).get(0);
 

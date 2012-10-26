@@ -1,14 +1,11 @@
 package com.taskadapter.web;
 
-import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.service.Services;
 import com.vaadin.ui.ComponentContainer;
 
 public interface PluginEditorFactory<C extends ConnectorConfig> extends ExceptionFormatter {
-    AvailableFields getAvailableFields();
-
     ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, C config);
     
     /**

@@ -5,14 +5,15 @@ import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.connector.msp.DefaultMSPMappings;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
+import com.taskadapter.connector.msp.MSPSupportedFields;
 import com.taskadapter.connector.msp.MSPTaskSaver;
-import com.taskadapter.connector.redmine.DefaultRedmineMappings;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
+import com.taskadapter.connector.redmine.RedmineSupportedFields;
 import com.taskadapter.connector.redmine.RedmineToGTask;
+import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.integrationtests.RedmineTestConfig;
 import com.taskadapter.model.GTask;
@@ -59,7 +60,7 @@ public class UpdaterIntegrationTest {
         Mappings mspMappingsWithRemoteIdSet = getMSPMappingsWithRemoteIdSet();
         saveToMSP(mspMappingsWithRemoteIdSet);
 
-        Mappings redmineMappings = DefaultRedmineMappings.generate();
+        Mappings redmineMappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
         modifyRedmineData(redmineMappings);
 
         updateMSPFile(mspMappingsWithRemoteIdSet, redmineMappings);
@@ -160,7 +161,7 @@ public class UpdaterIntegrationTest {
     }
 
     private Mappings getMSPMappingsWithRemoteIdSet() {
-        Mappings mappings = DefaultMSPMappings.generate();
+        Mappings mappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
         mappings.setMapping(GTaskDescriptor.FIELD.REMOTE_ID, true, TaskField.TEXT22.toString());
         return mappings;
     }

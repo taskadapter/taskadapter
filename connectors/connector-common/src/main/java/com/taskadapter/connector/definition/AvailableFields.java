@@ -21,7 +21,7 @@ public final class AvailableFields {
 	/**
 	 * Map of supported field values.
 	 */
-	private final Map<GTaskDescriptor.FIELD, String[]> fieldValues;
+	private final Map<GTaskDescriptor.FIELD, FieldConfiguration> fieldValues;
 
 	/**
 	 * Creates a new "available fields" settings.
@@ -29,24 +29,35 @@ public final class AvailableFields {
 	 * @param fieldValues
 	 *            supported field values.
 	 */
-	AvailableFields(Map<FIELD, String[]> fieldValues) {
+	AvailableFields(Map<FIELD, FieldConfiguration> fieldValues) {
 		this.fieldValues = fieldValues;
 	}
 
 	public String[] getAllowedValues(FIELD field) {
-		final String[] guess = fieldValues.get(field);
-		return guess != null ? guess : EMPTY_VALUES;
+		final FieldConfiguration guess = fieldValues.get(field);
+		return guess != null ? guess.getFieldValues() : EMPTY_VALUES;
 	}
-
-	/**
-	 * Returns collection of supported fields.
-	 * @return collection of supported fields.
-	 */
-	public Collection<FIELD> getSupportedFields() {
-		return Collections.unmodifiableCollection(fieldValues.keySet());
+	
+	public String getDefaultValue(FIELD field) {
+        final FieldConfiguration guess = fieldValues.get(field);
+        return guess != null ? guess.getDefaultValue() : "";
+	}
+	
+	public boolean isSelectedByDefault(FIELD field) {
+        final FieldConfiguration guess = fieldValues.get(field);
+        return guess != null && guess.isSelectedByDefault();
 	}
 
     public boolean isFieldSupported(FIELD field) {
         return fieldValues.containsKey(field);
     }
+
+    /**
+     * Returns collection of supported fields.
+     * @return collection of supported fields.
+     */
+    public Collection<FIELD> getSupportedFields() {
+        return Collections.unmodifiableCollection(fieldValues.keySet());
+    }
+
 }

@@ -2,6 +2,7 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
 import junit.framework.Assert;
@@ -68,14 +69,14 @@ public class MSTaskToGenericTaskConverterTest {
 
     @Test
     public void estimatedTimeFoundThroughWork() throws BadConfigException {
-        Mappings mappings = DefaultMSPMappings.generate();
+        Mappings mappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
         mappings.setMapping(FIELD.ESTIMATED_TIME, true, TaskField.WORK.toString());
         assertEquals(Float.valueOf(2), getConverter(mappings).extractEstimatedHours(task1));
     }
 
     @Test
     public void estimatedTimeFoundThroughDuration() throws BadConfigException {
-        Mappings mappings = DefaultMSPMappings.generate();
+        Mappings mappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
         mappings.setMapping(FIELD.ESTIMATED_TIME, true, TaskField.DURATION.toString());
         Assert.assertEquals(0.5f, getConverter(mappings).extractEstimatedHours(task2), 0.001f);
     }
@@ -102,7 +103,7 @@ public class MSTaskToGenericTaskConverterTest {
     }
 
     private MSTaskToGenericTaskConverter getConverter() {
-        return getConverter(DefaultMSPMappings.generate());
+        return getConverter(TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
     }
 
     private MSTaskToGenericTaskConverter getConverter(Mappings mappings) {

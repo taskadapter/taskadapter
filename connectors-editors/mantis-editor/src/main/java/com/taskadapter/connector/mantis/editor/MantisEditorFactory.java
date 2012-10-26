@@ -1,6 +1,5 @@
 package com.taskadapter.connector.mantis.editor;
 
-import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.mantis.MantisConfig;
 import com.taskadapter.model.NamedKeyedObject;
@@ -35,11 +34,6 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
                 return MESSAGES.get("errors.unsupported.relations");
         }
         return null;
-    }
-
-    @Override
-    public AvailableFields getAvailableFields() {
-        return MantisSupportedFields.SUPPORTED_FIELDS;
     }
 
     @Override

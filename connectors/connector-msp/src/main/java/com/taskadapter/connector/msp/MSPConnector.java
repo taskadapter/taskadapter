@@ -33,7 +33,7 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
     public MSPConnector(MSPConfig config) {
         this.config = config;
     }
-
+    
     @Override
     public void updateRemoteIDs(Map<Integer, String> remoteKeys, ProgressMonitor monitorIGNORED, Mappings mappings) throws ConnectorException {
         String inputAbsoluteFilePath = config.getInputAbsoluteFilePath();

@@ -3,14 +3,19 @@ package com.taskadapter.connector.github;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.taskadapter.connector.common.ConfigUtils;
+import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Descriptor;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.PluginFactory;
 
 public class GithubFactory implements PluginFactory<GithubConfig> {
     private static final String LABEL = "Github";
     private static final Descriptor DESCRIPTOR = new Descriptor(GithubConnector.ID, LABEL);
+
+    @Override
+    public AvailableFields getAvailableFields() {
+        return GithubSupportedFields.SUPPORTED_FIELDS;
+    }
 
     @Override
     public Connector<GithubConfig> createConnector(GithubConfig config) {
@@ -37,10 +42,5 @@ public class GithubFactory implements PluginFactory<GithubConfig> {
     @Override
     public GithubConfig createDefaultConfig() {
         return new GithubConfig();
-    }
-
-    @Override
-    public Mappings createDefaultMappings() {
-        return DefaultGithubMappings.generate();
     }
 }

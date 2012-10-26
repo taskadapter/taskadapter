@@ -1,6 +1,5 @@
 package com.taskadapter.connector.msp.editor;
 
-import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.msp.MSPConfig;
@@ -43,11 +42,6 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
             return MESSAGES.get("error.inputFileNameNotSet");
         }
         return null;
-    }
-
-    @Override
-    public AvailableFields getAvailableFields() {
-        return MSPSupportedFields.SUPPORTED_FIELDS;
     }
 
     @Override

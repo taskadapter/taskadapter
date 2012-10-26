@@ -1,6 +1,5 @@
 package com.taskadapter.connector.github.editor;
 
-import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.LoginNameNotSpecifiedException;
@@ -47,11 +46,6 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig> {
         } else {
             return e.getMessage();
         }
-    }
-
-    @Override
-    public AvailableFields getAvailableFields() {
-        return GithubSupportedFields.SUPPORTED_FIELDS;
     }
 
     @Override

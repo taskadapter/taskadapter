@@ -2,6 +2,7 @@ package com.taskadapter.connector.github;
 
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GUser;
@@ -42,7 +43,8 @@ public class GTaskToGithubTest {
 
     @Test
     public void summaryIsNOTConvertedInUnmapped() throws ConnectorException {
-        Mappings mappings = DefaultGithubMappings.generate();
+        Mappings mappings = TestMappingUtils
+        .fromFields(GithubSupportedFields.SUPPORTED_FIELDS);
         mappings.deselectField(GTaskDescriptor.FIELD.SUMMARY);
         Issue issue = getConverter(mappings).toIssue(createTask("summary1"));
         assertNull(issue.getTitle());
@@ -56,14 +58,16 @@ public class GTaskToGithubTest {
 
     @Test
     public void descriptionIsNOTConvertedInUnmapped() throws ConnectorException {
-        Mappings mappings = DefaultGithubMappings.generate();
+        Mappings mappings = TestMappingUtils
+        .fromFields(GithubSupportedFields.SUPPORTED_FIELDS);
         mappings.deselectField(GTaskDescriptor.FIELD.DESCRIPTION);
         Issue issue = getConverter(mappings).toIssue(createTask("summary1", "description 1"));
         assertNull(issue.getBody());
     }
 
     private GTaskToGithub getConverter() {
-        return getConverter(DefaultGithubMappings.generate());
+        return getConverter(TestMappingUtils
+        .fromFields(GithubSupportedFields.SUPPORTED_FIELDS));
     }
 
     private GTaskToGithub getConverter(Mappings mappings) {

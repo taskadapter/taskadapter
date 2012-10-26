@@ -1,6 +1,5 @@
 package com.taskadapter.connector.jira;
 
-import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
@@ -49,11 +48,6 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
             return MESSAGES.get("error.queryIdNotSet");
         }
         return e.getMessage();
-    }
-
-    @Override
-    public AvailableFields getAvailableFields() {
-        return JiraSupportedFields.SUPPORTED_FIELDS;
     }
 
     @Override

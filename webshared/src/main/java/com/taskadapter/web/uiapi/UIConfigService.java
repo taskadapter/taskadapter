@@ -3,7 +3,6 @@ package com.taskadapter.web.uiapi;
 import com.google.gson.JsonParser;
 import com.taskadapter.PluginManager;
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.service.EditorManager;
@@ -56,13 +55,4 @@ public final class UIConfigService {
         final T config = connectorFactory.createDefaultConfig();
         return new UIConnectorConfigImpl<T>(connectorFactory, editorFactory, config, connectorTypeId);
     }
-
-    public Mappings createDefaultMappings(String connectorTypeId) {
-        final PluginFactory connectorFactory = pluginManager.getPluginFactory(connectorTypeId);
-        if (connectorFactory == null) {
-            throw new RuntimeException("Connector with ID " + connectorTypeId + " not found.");
-        }
-        return connectorFactory.createDefaultMappings();
-    }
-
 }

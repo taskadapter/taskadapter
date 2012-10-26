@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface Connector<T extends ConnectorConfig> {
-
 	/**
 	 * Loads a list of tasks. Order of loaded tasks is not specified and may
 	 * depend on implementation. To get tasks in a specific order, use

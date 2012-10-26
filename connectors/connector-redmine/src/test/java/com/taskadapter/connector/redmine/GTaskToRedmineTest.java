@@ -1,6 +1,7 @@
 package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
@@ -121,7 +122,7 @@ public class GTaskToRedmineTest {
 
     private GTaskToRedmine createDefaultConverter() {
         RedmineConfig config = new RedmineConfig();
-        return new GTaskToRedmine(config, DefaultRedmineMappings.generate());
+        return new GTaskToRedmine(config, TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS));
     }
 
     private GTaskToRedmine createConverterWithSelectedField(GTaskDescriptor.FIELD field) {
@@ -134,7 +135,7 @@ public class GTaskToRedmineTest {
 
     private GTaskToRedmine createConverterWithField(GTaskDescriptor.FIELD field, boolean selected) {
         RedmineConfig config = new RedmineConfig();
-        Mappings mappings = DefaultRedmineMappings.generate();
+        Mappings mappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
         mappings.setMapping(field, selected, null);
         return new GTaskToRedmine(config, mappings);
     }

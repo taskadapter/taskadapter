@@ -3,12 +3,17 @@ package com.taskadapter.connector.jira;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.taskadapter.connector.common.ConfigUtils;
+import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Descriptor;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.PluginFactory;
 
 public class JiraFactory implements PluginFactory<JiraConfig> {
     private static final Descriptor DESCRIPTOR = new Descriptor(JiraConnector.ID, JiraConfig.DEFAULT_LABEL);
+
+    @Override
+    public AvailableFields getAvailableFields() {
+        return JiraSupportedFields.SUPPORTED_FIELDS;
+    }
 
     @Override
     public JiraConnector createConnector(JiraConfig config) {
@@ -34,10 +39,5 @@ public class JiraFactory implements PluginFactory<JiraConfig> {
     @Override
     public JiraConfig createDefaultConfig() {
         return new JiraConfig();
-    }
-
-    @Override
-    public Mappings createDefaultMappings() {
-        return DefaultJiraMappings.generate();
     }
 }

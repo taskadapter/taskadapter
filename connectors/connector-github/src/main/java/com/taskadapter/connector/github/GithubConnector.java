@@ -28,7 +28,7 @@ public class GithubConnector implements Connector<GithubConfig> {
     public GithubConnector(GithubConfig config) {
         this.config = config;
     }
-
+    
     public void updateRemoteIDs(
             Map<Integer, String> remoteIds, ProgressMonitor monitor, Mappings mappings)
             throws UnsupportedConnectorOperation {

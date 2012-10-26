@@ -6,13 +6,14 @@ import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.connector.msp.DefaultMSPMappings;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
+import com.taskadapter.connector.msp.MSPSupportedFields;
 import com.taskadapter.connector.msp.MSPUtils;
-import com.taskadapter.connector.redmine.DefaultRedmineMappings;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
+import com.taskadapter.connector.redmine.RedmineSupportedFields;
+import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.core.RemoteIdUpdater;
 import com.taskadapter.core.TaskLoader;
 import com.taskadapter.core.TaskSaver;
@@ -71,10 +72,10 @@ public class IntegrationTest {
         MSPConfig mspConfig = generateTemporaryConfig("com/taskadapter/integrationtests/non-linear-uuid.xml");
         Connector<?> msProjectConnector = new MSPConnector(mspConfig);
 
-        Mappings mspMappings = DefaultMSPMappings.generate();
+        Mappings mspMappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
         mspMappings.setMapping(GTaskDescriptor.FIELD.REMOTE_ID, true, MSPUtils.getDefaultRemoteIdMapping());
         RedmineConnector redmineConnector = new RedmineConnector(RedmineTestConfig.getRedmineTestConfig());
-        Mappings redmineMappings = DefaultRedmineMappings.generate();
+        Mappings redmineMappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
         // TODO !! for Maxim K: this is not quite correct. the RemoteID flag is set in the destination config manually,
         // while it should be set by our NewMapping parser to both source and destination mappings.
         redmineMappings.setMapping(GTaskDescriptor.FIELD.REMOTE_ID, true, MSPUtils.getDefaultRemoteIdMapping());
@@ -106,11 +107,11 @@ public class IntegrationTest {
         MSPConfig mspConfig = generateTemporaryConfig("com/taskadapter/integrationtests/ProjectWithOneSideDisconnectedRelationships.xml");
         Connector<?> projectConnector = new MSPConnector(mspConfig);
 
-        Mappings mspMappings = DefaultMSPMappings.generate();
+        Mappings mspMappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
         List<GTask> loadedTasks = TaskLoader.loadTasks(new LicenseManager(), projectConnector, "project1", mspMappings, DUMMY_MONITOR);
         try {
             // save to Redmine
-            Mappings redmineMappings = DefaultRedmineMappings.generate();
+            Mappings redmineMappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
             RedmineConnector redmineConnector = new RedmineConnector(redmineConfigTo);
             TaskSaver.save(redmineConnector, "Redmine target location",
                     redmineMappings,

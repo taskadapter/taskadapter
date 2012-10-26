@@ -1,48 +1,41 @@
 package com.taskadapter.web.uiapi;
 
+import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.FieldMapping;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.NewMappings;
 import com.taskadapter.model.GTaskDescriptor;
 
 public class NewMappingBuilder {
-    static NewMappings createNewMappings(Mappings m1, Mappings m2) {
+    static NewMappings createNewMappings(AvailableFields m1, AvailableFields m2) {
         final NewMappings res = new NewMappings();
         for (GTaskDescriptor.FIELD field : GTaskDescriptor.FIELD.values()) {
             if (field == GTaskDescriptor.FIELD.ID || field == GTaskDescriptor.FIELD.REMOTE_ID) {
                 continue;
             }
 
-            if (!m1.haveMappingFor(field) || !m2.haveMappingFor(field)) {
+            if (!m1.isFieldSupported(field) || !m2.isFieldSupported(field)) {
                 continue;
             }
 
             /* Don't create mappings here. New mappings will be generated in the fix-up phase.
              */
-            if (!m1.isFieldSelected(field) && !m2.isFieldSelected(field)) {
-                continue;
-            }
+            final boolean selectByDefault = m1.isSelectedByDefault(field)
+                    && m2.isSelectedByDefault(field);
 
-//            if (m1.get(fieldName).isJsonNull()
-//                    || map2.get(fieldName).isJsonNull()) {
-//                continue;
-//            }
-
-            res.put(new FieldMapping(field, m1.getMappedTo(field), m2.getMappedTo(field), true));
+            res.put(new FieldMapping(field, m1.getDefaultValue(field), m2
+                    .getDefaultValue(field), selectByDefault));
         }
 
-        if (m2.haveMappingFor(GTaskDescriptor.FIELD.REMOTE_ID)
-                && m2.isFieldSelected(GTaskDescriptor.FIELD.REMOTE_ID)
-//                && !map2.get(GTaskDescriptor.FIELD.REMOTE_ID.name()).isJsonNull()
-                ) {
-            res.put(new FieldMapping(GTaskDescriptor.FIELD.REMOTE_ID, null, m2.getMappedTo(GTaskDescriptor.FIELD.REMOTE_ID), true));
+        if (m2.isFieldSupported(GTaskDescriptor.FIELD.REMOTE_ID)) {
+            res.put(new FieldMapping(GTaskDescriptor.FIELD.REMOTE_ID, null, 
+                    m2.getDefaultValue(GTaskDescriptor.FIELD.REMOTE_ID), 
+                    m2.isSelectedByDefault(GTaskDescriptor.FIELD.REMOTE_ID)));
         }
 
-        if (m1.haveMappingFor(GTaskDescriptor.FIELD.REMOTE_ID)
-                && m1.isFieldSelected(GTaskDescriptor.FIELD.REMOTE_ID)
-//                && !map1.get(GTaskDescriptor.FIELD.REMOTE_ID.name()).isJsonNull()
-                ) {
-            res.put(new FieldMapping(GTaskDescriptor.FIELD.REMOTE_ID, m1.getMappedTo(GTaskDescriptor.FIELD.REMOTE_ID), null, true));
+        if (m1.isFieldSupported(GTaskDescriptor.FIELD.REMOTE_ID)) {
+            res.put(new FieldMapping(GTaskDescriptor.FIELD.REMOTE_ID, 
+                    m1.getDefaultValue(GTaskDescriptor.FIELD.REMOTE_ID), null, 
+                    m1.isSelectedByDefault(GTaskDescriptor.FIELD.REMOTE_ID)));
         }
 
         return res;
