@@ -13,6 +13,7 @@ import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
+import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.NamedKeyedObject;
@@ -63,24 +64,25 @@ public class JiraConnector implements Connector<JiraConfig> {
 
     // XXX refactor this. we don't even need the IDs!
     public List<NamedKeyedObject> getFilters() throws ConnectorException {
-            try {
-                JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
-                RemoteFilter[] objects = connection.getSavedFilters();
-                List<NamedKeyedObject> list = new ArrayList<NamedKeyedObject>();
-                for (RemoteFilter o : objects) {
-                    list.add(new NamedKeyedObjectImpl(o.getId(), o.getName()));
-                }
-                return list;
-            } catch (RemoteException e) {
-                throw JiraUtils.convertException(e);
-            } catch (MalformedURLException e) {
-                throw JiraUtils.convertException(e);
-            } catch (URISyntaxException e) {
-                throw JiraUtils.convertException(e);
+        try {
+            JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
+            RemoteFilter[] objects = connection.getSavedFilters();
+            List<NamedKeyedObject> list = new ArrayList<NamedKeyedObject>();
+            for (RemoteFilter o : objects) {
+                list.add(new NamedKeyedObjectImpl(o.getId(), o.getName()));
             }
+            return list;
+        } catch (RemoteException e) {
+            throw JiraUtils.convertException(e);
+        } catch (MalformedURLException e) {
+            throw JiraUtils.convertException(e);
+        } catch (URISyntaxException e) {
+            throw JiraUtils.convertException(e);
+        }
     }
 
     public List<NamedKeyedObject> getComponents() throws ConnectorException {
+        validateServerURLSet();
         try {
             JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
             String projectKey = config.getProjectKey();
@@ -98,12 +100,13 @@ public class JiraConnector implements Connector<JiraConfig> {
         } catch (MalformedURLException e) {
             throw JiraUtils.convertException(e);
         } catch (URISyntaxException e) {
-                throw JiraUtils.convertException(e);
+            throw JiraUtils.convertException(e);
         }
     }
 
     // XXX refactor this. we don't even need the IDs!
     public List<NamedKeyedObject> getVersions() throws ConnectorException {
+        validateServerURLSet();
         try {
             JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
             String projectKey = config.getProjectKey();
@@ -121,11 +124,12 @@ public class JiraConnector implements Connector<JiraConfig> {
         } catch (MalformedURLException e) {
             throw JiraUtils.convertException(e);
         } catch (URISyntaxException e) {
-                throw JiraUtils.convertException(e);
+            throw JiraUtils.convertException(e);
         }
     }
 
     public List<NamedKeyedObject> getIssueTypes() throws ConnectorException {
+        validateServerURLSet();
         try {
             JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
             Iterable<IssueType> issueTypeList = connection.getIssueTypeList();
@@ -141,24 +145,30 @@ public class JiraConnector implements Connector<JiraConfig> {
         } catch (MalformedURLException e) {
             throw JiraUtils.convertException(e);
         } catch (URISyntaxException e) {
-                throw JiraUtils.convertException(e);
+            throw JiraUtils.convertException(e);
         }
     }
 
     @Override
     public GTask loadTaskByKey(String key, Mappings mappings) throws ConnectorException {
-    	final JiraTaskLoader loader = new JiraTaskLoader(config);
-    	return loader.loadTask(key);
+        final JiraTaskLoader loader = new JiraTaskLoader(config);
+        return loader.loadTask(key);
     }
-    
+
     @Override
     public List<GTask> loadData(Mappings mappings, ProgressMonitor monitorIGNORED) throws ConnectorException {
-    	final JiraTaskLoader loader = new JiraTaskLoader(config);
-    	return loader.loadTasks(config);
+        final JiraTaskLoader loader = new JiraTaskLoader(config);
+        return loader.loadTasks(config);
     }
-    
+
     @Override
     public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
-    	return new JiraTaskSaver(config, mappings).saveData(tasks, monitor);
+        return new JiraTaskSaver(config, mappings).saveData(tasks, monitor);
+    }
+
+    private void validateServerURLSet() throws ServerURLNotSetException {
+        if (!config.getServerInfo().isHostSet()) {
+            throw new ServerURLNotSetException();
+        }
     }
 }

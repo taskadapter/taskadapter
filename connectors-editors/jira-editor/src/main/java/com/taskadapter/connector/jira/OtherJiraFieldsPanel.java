@@ -46,8 +46,7 @@ class OtherJiraFieldsPanel extends Panel {
         final TextField jiraComponent = EditorUtil.addLabeledText(
                 lookupButtonsLayout, "Project Component:",
                 "Component inside the Jira project");
-        final MethodProperty<String> componentProperty = new MethodProperty<String>(
-                config, "component");
+        final MethodProperty<String> componentProperty = new MethodProperty<String>(config, "component");
         jiraComponent.setPropertyDataSource(componentProperty);
         Button showComponentsButton = EditorUtil.createLookupButton(
                 windowProvider,

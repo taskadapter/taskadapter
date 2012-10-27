@@ -1,6 +1,7 @@
 package com.taskadapter.connector.mantis.editor;
 
 import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.mantis.MantisConfig;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.PluginEditorFactory;
@@ -26,12 +27,16 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
 
     @Override
     public String formatError(Throwable e) {
+        if (e instanceof ServerURLNotSetException) {
+            return MESSAGES.get("error.serverUrlNotSet");
+        }
         if (e instanceof UnsupportedOperationException) {
             final UnsupportedOperationException uop = (UnsupportedOperationException) e;
-            if ("updateRemoteIDs".equals(uop.getMessage()))
-                return MESSAGES.get("errors.unsupported.remoteId");
-            else if ("saveRelations".equals(uop.getMessage()))
-                return MESSAGES.get("errors.unsupported.relations");
+            if ("updateRemoteIDs".equals(uop.getMessage())) {
+                return MESSAGES.get("error.unsupported.remoteId");
+            } else if ("saveRelations".equals(uop.getMessage())) {
+                return MESSAGES.get("error.unsupported.relations");
+            }
         }
         return null;
     }

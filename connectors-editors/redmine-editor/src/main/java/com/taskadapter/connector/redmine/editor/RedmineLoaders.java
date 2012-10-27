@@ -94,8 +94,8 @@ public class RedmineLoaders {
     }
 
     public static List<? extends NamedKeyedObject> loadTrackers(RedmineConfig config) throws ConnectorException {
-        RedmineManager redmineManager = RedmineManagerFactory
-                .createRedmineManager(config.getServerInfo());
+        validate(config.getServerInfo());
+        RedmineManager redmineManager = RedmineManagerFactory.createRedmineManager(config.getServerInfo());
         Project project;
         String projectKey = config.getProjectKey();
         try {

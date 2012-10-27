@@ -2,6 +2,7 @@ package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.data.Messages;
 import com.vaadin.data.Container.ItemSetChangeEvent;
@@ -45,6 +46,7 @@ public class PriorityPanel extends Panel implements Validatable {
 	public static final String TEXT = "text";
 	
 	private final DataProvider<Priorities> priorityLoader;
+    private ExceptionFormatter exceptionFormatter;
 
     /**
 	 * @param priorities
@@ -53,10 +55,11 @@ public class PriorityPanel extends Panel implements Validatable {
 	 *            "load priorities" data provider. Optional (may be
 	 *            <code>null</code>).
 	 */
-	public PriorityPanel(Priorities priorities,	DataProvider<Priorities> priorityLoader) {
+	public PriorityPanel(Priorities priorities,	DataProvider<Priorities> priorityLoader, ExceptionFormatter exceptionFormatter) {
 		super("Priorities");
 		this.priorities = priorities;
         this.priorityLoader = priorityLoader;
+        this.exceptionFormatter = exceptionFormatter;
         this.data = new PrioritiesModel(priorities);
         buildUI();
     }
@@ -97,9 +100,12 @@ public class PriorityPanel extends Panel implements Validatable {
             public void buttonClick(Button.ClickEvent event) {
                 try {
                     reloadPriorityList();
+                } catch (BadConfigException e) {
+                    String localizedMessage = exceptionFormatter.formatError(e);
+                    getWindow().showNotification(localizedMessage);
                 } catch (Exception e) {
                     logger.error("Error loading priorities: " + e.getMessage(), e);
-                    getWindow().showNotification("Error!", e.getMessage(), Window.Notification.TYPE_ERROR_MESSAGE);
+                    getWindow().showNotification("Oops", e.getMessage(), Window.Notification.TYPE_ERROR_MESSAGE);
                 }
             }
         });

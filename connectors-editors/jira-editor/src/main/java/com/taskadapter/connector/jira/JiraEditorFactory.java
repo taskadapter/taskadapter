@@ -80,7 +80,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
         gridLayout.addComponent(otherJiraFieldsPanel);
 
         PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(),
-                Interfaces.fromMethod(DataProvider.class, new PrioritiesLoader(config), "loadJiraPriorities"));
+                Interfaces.fromMethod(DataProvider.class, new PrioritiesLoader(config), "loadJiraPriorities"), this);
         gridLayout.addComponent(priorityPanel);
         gridLayout.addComponent(createCustomOtherFieldsPanel(config));
         return gridLayout;
