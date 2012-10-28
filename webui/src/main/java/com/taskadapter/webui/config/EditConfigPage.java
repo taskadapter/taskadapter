@@ -79,6 +79,10 @@ public class EditConfigPage extends Page {
         // TODO refactor: this method is long and ugly.
         try {
             editor.validate();
+        } catch (FieldAlreadyMappedException e) {
+            String s = MESSAGES.format("editConfig.error.fieldAlreadyMapped", e.getValue());
+            errorMessageLabel.setValue(s);
+            return;
         } catch (FieldNotMappedException e) {
             String fieldDisplayName = GTaskDescriptor.getDisplayValue(e.getField());
             String s = MESSAGES.format("error.fieldSelectedForExportNotMapped", fieldDisplayName);
