@@ -54,13 +54,6 @@
     text-decoration: underline;
 }
 
-.configsTable .v-table-header {
-    background-color: #B8DBFF;
-    font-weight: bold;
-    text-shadow: none;
-    text-align: center;
-}
-
 .configsTableArrowButton .v-button {
     width: 60px;
     height: 37px;
@@ -94,10 +87,6 @@
     height: auto;
     padding: 2px;
     font-size: 11px;
-}
-
-.v-nativebutton-boxButton:hover {
-    background-color: #d0e8f6;
 }
 
 .priorities-table {
@@ -213,7 +202,7 @@
 }
 
 .v-nativebutton-boxButton {
-    background-color: #DAF1FF;
+    background-color: #dcf7ff;
     color: #222219;
     border: 1px solid gray;
     border-radius: 4px;
@@ -222,6 +211,10 @@
     vertical-align: middle;
     text-align: center;
     /*line-height: 100px;*/
+}
+
+.v-nativebutton-boxButton:hover {
+    background-color: #d0e8f6;
 }
 
 .userLoginLabelInUsersPanel {
