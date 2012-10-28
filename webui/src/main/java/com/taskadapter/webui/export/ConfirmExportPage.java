@@ -4,7 +4,7 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigsPage;
 import com.taskadapter.webui.Navigator;
-import com.taskadapter.webui.OnePageMappingPanel;
+import com.taskadapter.webui.config.OnePageMappingPanel;
 import com.taskadapter.webui.PageUtil;
 import com.taskadapter.webui.action.MyTree;
 import com.vaadin.ui.Button;

@@ -1,5 +1,6 @@
-package com.taskadapter.webui;
+package com.taskadapter.webui.config;
 
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.configeditor.MiniPanel;
 import com.taskadapter.web.service.Services;
@@ -11,10 +12,12 @@ import com.vaadin.ui.Panel;
 public class OnePageEditor extends GridLayout implements WindowProvider {
     private static final int COLUMNS_NUMBER = 2;
 
+    // TODO for MaximK: why is this deprecated? what's the replacement for it?
     @Deprecated
     private Services services;
     
     private UISyncConfig config;
+    private OnePageMappingPanel onePageMappingPanel;
 
     public OnePageEditor(Services services, UISyncConfig config) {
         this.services = services;
@@ -28,7 +31,8 @@ public class OnePageEditor extends GridLayout implements WindowProvider {
         setWidth(700, UNITS_PIXELS);
         addComponent(createMiniPanel(config.getConnector1()));
         addComponent(createMiniPanel(config.getConnector2()));
-        addComponent(addOnePageMappingPanel(), 0, 1, 1, 1);
+        onePageMappingPanel = createOnePageMappingPanel();
+        addComponent(onePageMappingPanel, 0, 1, 1, 1);
     }
     
     private Panel createMiniPanel(UIConnectorConfig connectorConfig) {
@@ -41,7 +45,11 @@ public class OnePageEditor extends GridLayout implements WindowProvider {
         return panel;
     }
 
-    private OnePageMappingPanel addOnePageMappingPanel() {
+    private OnePageMappingPanel createOnePageMappingPanel() {
         return new OnePageMappingPanel(config.getConnector1(), config.getConnector2(), config.getNewMappings());
+    }
+
+    public void validate() throws BadConfigException {
+        onePageMappingPanel.validate();
     }
 }

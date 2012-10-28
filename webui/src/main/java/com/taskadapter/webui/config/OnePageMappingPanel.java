@@ -1,9 +1,10 @@
-package com.taskadapter.webui;
+package com.taskadapter.webui.config;
 
 import com.google.common.collect.ImmutableSet;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.NewMappings;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.web.configeditor.Validatable;
@@ -27,15 +28,11 @@ public class OnePageMappingPanel extends Panel implements Validatable {
     private static final int COLUMN_DESCRIPTION = 0;
     private static final int COLUMN_LEFT_CONNECTOR = 1;
     private static final int COLUMN_RIGHT_CONNECTOR = 2;
-
     // TODO merge this help file with all the other localized strings
     private static final String BUNDLE_NAME = "help";
-    private static final com.taskadapter.web.data.Messages MESSAGES = new com.taskadapter.web.data.Messages(BUNDLE_NAME);
-
-    private Resource helpIconResource = new ThemeResource("../runo/icons/16/help.png");
-
+    private static final com.taskadapter.web.data.Messages HELP_MESSAGES = new com.taskadapter.web.data.Messages(BUNDLE_NAME);
+    private static final Resource helpIconResource = new ThemeResource("../runo/icons/16/help.png");
     private static final String PANEL_TITLE = "Task fields";
-
     private static final int COLUMNS_NUMBER = 3;
 
     private GridLayout gridLayout;
@@ -46,10 +43,10 @@ public class OnePageMappingPanel extends Panel implements Validatable {
     private NewMappings mappings;
 
     public OnePageMappingPanel(UIConnectorConfig connector1,
-            UIConnectorConfig connector2, NewMappings mappings) {
+                               UIConnectorConfig connector2, NewMappings mappings) {
         super("Task fields mapping");
         this.connector1 = connector1;
-        this.connector2 = connector2;               
+        this.connector2 = connector2;
         this.mappings = mappings;
         this.originalMappings = new NewMappings(mappings.getMappings());
 
@@ -100,34 +97,28 @@ public class OnePageMappingPanel extends Panel implements Validatable {
         addCheckbox(field);
 //        addEmptyCell();
         if (field.getConnector1() == null) {
-            final String displayValue = GTaskDescriptor
-                    .getDisplayValue(FIELD.ID);
+            final String displayValue = GTaskDescriptor.getDisplayValue(FIELD.ID);
             createMappingForSingleValue(displayValue);
         } else {
-            addConnectorField(connector1.getAvailableFields(), field,
-                    "connector1");
+            addConnectorField(connector1.getAvailableFields(), field, "connector1");
         }
-        
+
         if (field.getConnector2() == null) {
-            final String displayValue = GTaskDescriptor
-                    .getDisplayValue(FIELD.ID);
+            final String displayValue = GTaskDescriptor.getDisplayValue(FIELD.ID);
             createMappingForSingleValue(displayValue);
         } else {
-            addConnectorField(connector2.getAvailableFields(), field,
-                    "connector2");
+            addConnectorField(connector2.getAvailableFields(), field, "connector2");
         }
     }
 
     private CheckBox addCheckbox(FieldMapping field) {
-        CheckBox checkbox = new CheckBox(GTaskDescriptor.getDisplayValue(field
-                .getField()));
+        CheckBox checkbox = new CheckBox(GTaskDescriptor.getDisplayValue(field.getField()));
         final MethodProperty<Boolean> selected = new MethodProperty<Boolean>(field, "selected");
         checkbox.setPropertyDataSource(selected);
 
         String helpForField = getHelpForField(field);
         if (helpForField != null) {
-            HorizontalLayout layout = addHelpTipToCheckbox(checkbox,
-                    helpForField);
+            HorizontalLayout layout = addHelpTipToCheckbox(checkbox, helpForField);
             gridLayout.addComponent(layout);
             gridLayout.setComponentAlignment(layout, Alignment.MIDDLE_LEFT);
         } else {
@@ -179,7 +170,7 @@ public class OnePageMappingPanel extends Panel implements Validatable {
 
     String getHelpForField(FieldMapping field) {
         String elementId = field.getField().toString();
-        return MESSAGES.getNoDefault(elementId);
+        return HELP_MESSAGES.getNoDefault(elementId);
     }
 
     private HorizontalLayout addHelpTipToCheckbox(CheckBox checkbox,
@@ -193,22 +184,13 @@ public class OnePageMappingPanel extends Panel implements Validatable {
     }
 
     @Override
-    public void validate() {
-        // TODO !!! bring the required fields check back.
-/*
-        for (GTaskDescriptor.FIELD f : availableFields.getSupportedFields()) {
-            if (mappings.isFieldSelected(f) && mappings.getMappedTo(f) == null) {
-                throw new ...(getRequiredFieldErrorMessage(f));
+    public void validate() throws BadConfigException {
+        for (FieldMapping mapping : mappings.getMappings()) {
+            boolean oneOfConnectorsIsNotMapped = (mapping.getConnector1() == null) || (mapping.getConnector2() == null);
+            if (mapping.isSelected() && oneOfConnectorsIsNotMapped) {
+                throw new FieldNotMappedException(mapping.getField());
             }
         }
-*/
-    }
-
-    private String getRequiredFieldErrorMessage(GTaskDescriptor.FIELD f) {
-        return "Field \"" + GTaskDescriptor.getDisplayValue(f)
-                + "\" is selected for export."
-                + "\nPlease set the *destination* field or constraint in "
-                + PANEL_TITLE + " section.";
     }
 
     /**

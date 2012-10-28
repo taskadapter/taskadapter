@@ -1,7 +1,14 @@
-package com.taskadapter.webui;
+package com.taskadapter.webui.config;
 
 import com.taskadapter.config.StorageException;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.web.uiapi.UISyncConfig;
+import com.taskadapter.webui.CloneDeletePanel;
+import com.taskadapter.webui.ConfigsPage;
+import com.taskadapter.webui.Page;
+import com.taskadapter.webui.PageUtil;
+import com.taskadapter.webui.data.ExceptionFormatter;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
@@ -21,6 +28,7 @@ public class EditConfigPage extends Page {
     private UISyncConfig config;
 
     private Label errorMessageLabel = new Label("Test");
+    private OnePageEditor editor;
 
     private void buildUI() {
         layout.removeAllComponents();
@@ -59,8 +67,8 @@ public class EditConfigPage extends Page {
         descriptionField.setPropertyDataSource(label);
         descriptionLayout.addComponent(descriptionField);
 
-        OnePageEditor onePageEditor = new OnePageEditor(services, config);
-        layout.addComponent(onePageEditor);
+        editor = new OnePageEditor(services, config);
+        layout.addComponent(editor);
     }
 
     public void setConfig(UISyncConfig config) {
@@ -68,6 +76,19 @@ public class EditConfigPage extends Page {
     }
 
     private void save() {
+        // TODO refactor: this method is long and ugly.
+        try {
+            editor.validate();
+        } catch (FieldNotMappedException e) {
+            String fieldDisplayName = GTaskDescriptor.getDisplayValue(e.getField());
+            String s = MESSAGES.format("error.fieldSelectedForExportNotMapped", fieldDisplayName);
+            errorMessageLabel.setValue(s);
+            return;
+        } catch (BadConfigException e) {
+            String s = ExceptionFormatter.format(e);
+            errorMessageLabel.setValue(s);
+            return;
+        }
         String userLoginName = services.getAuthenticator().getUserName();
         try {
             services.getUIConfigStore().saveConfig(userLoginName, config);
