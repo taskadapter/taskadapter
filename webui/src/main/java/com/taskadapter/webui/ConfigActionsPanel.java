@@ -39,9 +39,9 @@ public class ConfigActionsPanel extends VerticalLayout {
         horizontalLayout.setSpacing(true);
         addComponent(horizontalLayout);
 
-        createBox(syncConfig.getConnector1());
+        createBox(syncConfig.getConnector1().getLabel());
         createActionButtons();
-        createBox(syncConfig.getConnector2());
+        createBox(syncConfig.getConnector2().getLabel());
     }
 
     private void addDescription() {
@@ -52,8 +52,7 @@ public class ConfigActionsPanel extends VerticalLayout {
         setComponentAlignment(description, Alignment.MIDDLE_CENTER);
     }
 
-    private void createBox(final UIConnectorConfig dataHolder) {
-        final String label = dataHolder.getLabel();
+    private void createBox(final String label) {
         NativeButton configBoxButton = new NativeButton(label);
         configBoxButton.addStyleName("boxButton");
         configBoxButton.addListener(new Button.ClickListener() {

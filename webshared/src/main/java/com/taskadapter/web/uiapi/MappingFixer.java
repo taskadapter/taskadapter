@@ -71,18 +71,20 @@ public class MappingFixer {
         return result;
     }
 
+    // TODO this method hurts my brain. simplify this!!
     private static FieldMapping findRemote(NewMappings mappings,
                                            boolean remoteLeft, boolean remoteRight) {
         for (FieldMapping mapping : mappings.getMappings()) {
-            if (mapping.getField() == GTaskDescriptor.FIELD.ID && (
-                    ((mapping.getConnector1() == null) != remoteLeft) ||
-                            ((mapping.getConnector2() == null) != remoteRight))) {
+            boolean something1 = (mapping.getConnector1() == null) != remoteLeft;
+            boolean something2 = (mapping.getConnector2() == null) != remoteRight;
+            if (mapping.getField() == GTaskDescriptor.FIELD.REMOTE_ID &&
+                    (something1 || something2)) {
                 return mapping;
             }
         }
         return null;
     }
-    
+
     private static String getDefaultFieldValue(GTaskDescriptor.FIELD field, AvailableFields fields1) {
         return fields1.getDefaultValue(field);
     }

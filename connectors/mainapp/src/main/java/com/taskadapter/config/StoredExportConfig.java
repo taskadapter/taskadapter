@@ -57,4 +57,10 @@ public final class StoredExportConfig {
         return mappings;
     }
 
+    @Override
+    public String toString() {
+        return "StoredExportConfig{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

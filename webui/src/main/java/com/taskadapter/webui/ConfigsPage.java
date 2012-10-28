@@ -59,11 +59,11 @@ public class ConfigsPage extends Page {
         final List<UISyncConfig> allConfigs = services.getUIConfigStore().getUserConfigs(userLoginName);
         Collections.sort(allConfigs, CONFIG_COMPARATOR);
         for (UISyncConfig config : allConfigs) {
-            addTask(config);
+            addConfigToPage(config);
         }
     }
 
-    private void addTask(final UISyncConfig config) {
+    private void addConfigToPage(final UISyncConfig config) {
         configsLayout.addComponent(new ConfigActionsPanel(services, navigator, config));
     }
 
