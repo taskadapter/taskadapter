@@ -186,12 +186,14 @@ public class OnePageMappingPanel extends Panel implements Validatable {
     @Override
     public void validate() throws BadConfigException {
         for (FieldMapping mapping : mappings.getMappings()) {
+            boolean notMapped;
             if (mapping.getField() == FIELD.REMOTE_ID) {
                 // TODO !!! this is a hack.  fix Remote ID mapping.
-                continue;
+                notMapped = mapping.getConnector1() == null && mapping.getConnector2() == null;
+            } else {
+                notMapped = mapping.getConnector1() == null || mapping.getConnector2() == null;
             }
-            boolean oneOfConnectorsIsNotMapped = mapping.getConnector1() == null || mapping.getConnector2() == null;
-            if (mapping.isSelected() && oneOfConnectorsIsNotMapped) {
+            if (mapping.isSelected() && notMapped) {
                 throw new FieldNotMappedException(mapping.getField());
             }
         }
