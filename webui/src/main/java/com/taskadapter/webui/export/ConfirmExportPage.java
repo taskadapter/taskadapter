@@ -1,6 +1,7 @@
 package com.taskadapter.webui.export;
 
 import com.taskadapter.model.GTask;
+import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigsPage;
 import com.taskadapter.webui.Navigator;
@@ -21,11 +22,13 @@ public class ConfirmExportPage extends CustomComponent {
     private final Button.ClickListener goListener;
     private OnePageMappingPanel onePageMappingPanel;
     private MyTree connectorTree;
+    private Messages messages;
     private final UISyncConfig config;
 
-    public ConfirmExportPage(Navigator navigator, List<GTask> rootLevelTasks,
+    public ConfirmExportPage(Messages messages, Navigator navigator, List<GTask> rootLevelTasks,
                              UISyncConfig config,
                              Button.ClickListener goListener) {
+        this.messages = messages;
         this.config = config;
 
         this.navigator = navigator;
@@ -55,7 +58,7 @@ public class ConfirmExportPage extends CustomComponent {
         buttonsLayout.addComponent(PageUtil.createButton(navigator, "Cancel", new ConfigsPage()));
         layout.addComponent(buttonsLayout);
 
-        onePageMappingPanel = new OnePageMappingPanel(config.getConnector1(),
+        onePageMappingPanel = new OnePageMappingPanel(messages, config.getConnector1(),
                 config.getConnector2(), config.getNewMappings());
         layout.addComponent(onePageMappingPanel);
 

@@ -67,7 +67,7 @@ public class EditConfigPage extends Page {
         descriptionField.setPropertyDataSource(label);
         descriptionLayout.addComponent(descriptionField);
 
-        editor = new OnePageEditor(services, config);
+        editor = new OnePageEditor(MESSAGES, services, config);
         layout.addComponent(editor);
     }
 

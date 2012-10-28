@@ -3,6 +3,7 @@ package com.taskadapter.webui.config;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.configeditor.MiniPanel;
+import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
@@ -12,6 +13,7 @@ import com.vaadin.ui.Panel;
 public class OnePageEditor extends GridLayout implements WindowProvider {
     private static final int COLUMNS_NUMBER = 2;
 
+    private Messages messages;
     // TODO for MaximK: why is this deprecated? what's the replacement for it?
     @Deprecated
     private Services services;
@@ -19,7 +21,8 @@ public class OnePageEditor extends GridLayout implements WindowProvider {
     private UISyncConfig config;
     private OnePageMappingPanel onePageMappingPanel;
 
-    public OnePageEditor(Services services, UISyncConfig config) {
+    public OnePageEditor(Messages messages, Services services, UISyncConfig config) {
+        this.messages = messages;
         this.services = services;
         this.config = config;
         buildUI();
@@ -46,7 +49,7 @@ public class OnePageEditor extends GridLayout implements WindowProvider {
     }
 
     private OnePageMappingPanel createOnePageMappingPanel() {
-        return new OnePageMappingPanel(config.getConnector1(), config.getConnector2(), config.getNewMappings());
+        return new OnePageMappingPanel(messages, config.getConnector1(), config.getConnector2(), config.getNewMappings());
     }
 
     public void validate() throws BadConfigException {

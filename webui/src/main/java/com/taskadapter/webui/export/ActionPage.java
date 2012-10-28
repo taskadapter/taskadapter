@@ -166,7 +166,7 @@ public abstract class ActionPage extends Page {
     }
 
     protected void buildConfirmationUI() {
-        confirmExportPage = new ConfirmExportPage(navigator, loadedTasks,
+        confirmExportPage = new ConfirmExportPage(MESSAGES, navigator, loadedTasks,
                 config, new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {

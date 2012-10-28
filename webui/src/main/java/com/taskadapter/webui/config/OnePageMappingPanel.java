@@ -8,6 +8,7 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.web.configeditor.Validatable;
+import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.MethodProperty;
@@ -32,19 +33,20 @@ public class OnePageMappingPanel extends Panel implements Validatable {
     private static final String BUNDLE_NAME = "help";
     private static final com.taskadapter.web.data.Messages HELP_MESSAGES = new com.taskadapter.web.data.Messages(BUNDLE_NAME);
     private static final Resource helpIconResource = new ThemeResource("../runo/icons/16/help.png");
-    private static final String PANEL_TITLE = "Task fields";
     private static final int COLUMNS_NUMBER = 3;
 
     private GridLayout gridLayout;
 
+    private Messages messages;
     private UIConnectorConfig connector1;
     private UIConnectorConfig connector2;
     private NewMappings originalMappings;
     private NewMappings mappings;
 
-    public OnePageMappingPanel(UIConnectorConfig connector1,
+    public OnePageMappingPanel(Messages messages, UIConnectorConfig connector1,
                                UIConnectorConfig connector2, NewMappings mappings) {
         super("Task fields mapping");
+        this.messages = messages;
         this.connector1 = connector1;
         this.connector2 = connector2;
         this.mappings = mappings;
@@ -69,9 +71,9 @@ public class OnePageMappingPanel extends Panel implements Validatable {
     }
 
     private void addTableHeaders() {
-        Label label2 = new Label("Field");
+        Label label2 = new Label(messages.get("editConfig.mappings.exportFieldHeader"));
         label2.addStyleName("fieldsTitle");
-        label2.setWidth("30px");
+        label2.setWidth(60, UNITS_PIXELS);
         gridLayout.addComponent(label2, COLUMN_DESCRIPTION, 0);
 
         Label label1 = new Label(connector1.getLabel());
@@ -112,7 +114,7 @@ public class OnePageMappingPanel extends Panel implements Validatable {
     }
 
     private CheckBox addCheckbox(FieldMapping field) {
-        CheckBox checkbox = new CheckBox(GTaskDescriptor.getDisplayValue(field.getField()));
+        CheckBox checkbox = new CheckBox();
         final MethodProperty<Boolean> selected = new MethodProperty<Boolean>(field, "selected");
         checkbox.setPropertyDataSource(selected);
 
@@ -145,7 +147,7 @@ public class OnePageMappingPanel extends Panel implements Validatable {
                 container.addAll(Arrays.asList(allowedValues));
                 ComboBox combo = new ComboBox(null, container);
                 combo.setPropertyDataSource(mappedTo);
-                combo.setWidth("160px");
+                combo.setWidth(160, UNITS_PIXELS);
                 gridLayout.addComponent(combo);
                 gridLayout.setComponentAlignment(combo, Alignment.MIDDLE_LEFT);
                 Object currentValue = mappedTo.getValue();
