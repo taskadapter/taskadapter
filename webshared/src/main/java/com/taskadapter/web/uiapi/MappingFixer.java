@@ -2,6 +2,7 @@ package com.taskadapter.web.uiapi;
 
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.FieldMapping;
+import com.taskadapter.connector.definition.MappingSide;
 import com.taskadapter.connector.definition.NewMappings;
 import com.taskadapter.model.GTaskDescriptor;
 
@@ -26,7 +27,7 @@ public class MappingFixer {
         final NewMappings result = new NewMappings();
 
         if (secondFields.contains(GTaskDescriptor.FIELD.REMOTE_ID)) {
-            final FieldMapping saved = findRemote(mappings, false, true);
+            final FieldMapping saved = findRemote(mappings, MappingSide.RIGHT);
             if (saved != null) {
                 result.put(saved);
             } else {
@@ -37,7 +38,7 @@ public class MappingFixer {
         }
 
         if (firstFields.contains(GTaskDescriptor.FIELD.REMOTE_ID)) {
-            final FieldMapping saved = findRemote(mappings, true, false);
+            final FieldMapping saved = findRemote(mappings, MappingSide.LEFT);
             if (saved != null) {
                 result.put(saved);
             } else {
@@ -71,14 +72,25 @@ public class MappingFixer {
         return result;
     }
 
-    // TODO this method hurts my brain. simplify this!!
     private static FieldMapping findRemote(NewMappings mappings,
-                                           boolean remoteLeft, boolean remoteRight) {
+                                           MappingSide sideWithRemoteId) {
         for (FieldMapping mapping : mappings.getMappings()) {
-            boolean something1 = (mapping.getConnector1() == null) != remoteLeft;
-            boolean something2 = (mapping.getConnector2() == null) != remoteRight;
-            if (mapping.getField() == GTaskDescriptor.FIELD.REMOTE_ID &&
-                    (something1 || something2)) {
+            if (mapping.getField() != GTaskDescriptor.FIELD.REMOTE_ID) {
+                continue;
+            }
+            String targetMapping;
+            switch (sideWithRemoteId) {
+            case LEFT:
+                targetMapping = mapping.getConnector1();
+                break;
+            case RIGHT:
+                targetMapping = mapping.getConnector2();
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported mapping side "
+                        + sideWithRemoteId);
+            }
+            if (targetMapping != null) {
                 return mapping;
             }
         }
