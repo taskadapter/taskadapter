@@ -45,8 +45,9 @@ public final class UIConfigStore {
     public List<UISyncConfig> getUserConfigs(String userLoginName) {
         final List<StoredExportConfig> storedConfigs = configStorage.getUserConfigs(userLoginName);
         final List<UISyncConfig> result = new ArrayList<UISyncConfig>(storedConfigs.size());
+        UISyncConfigBuilder builder = new UISyncConfigBuilder(uiConfigService);
         for (StoredExportConfig storedConfig : storedConfigs) {
-            result.add(uize(storedConfig));
+            result.add(builder.uize(storedConfig));
         }
         return result;
     }
@@ -98,28 +99,6 @@ public final class UIConfigStore {
                 label, config1.getConnectorTypeId(), config1.getConfigString(),
                 config2.getConnectorTypeId(), config2.getConfigString(),
                 mappingsStr);
-    }
-
-    /**
-     * Create a new UI config instance for a stored config.
-     *
-     * @param storedConfig stored config to create an instance for.
-     * @return new parsed config.
-     */
-    private UISyncConfig uize(StoredExportConfig storedConfig) {
-        final String label = storedConfig.getName();
-        final StoredConnectorConfig conn1Config = storedConfig.getConnector1();
-        final StoredConnectorConfig conn2Config = storedConfig.getConnector2();
-        final UIConnectorConfig config1 = uiConfigService.createRichConfig(conn1Config.getConnectorTypeId(), conn1Config.getSerializedConfig());
-        final UIConnectorConfig config2 = uiConfigService.createRichConfig(conn2Config.getConnectorTypeId(), conn2Config.getSerializedConfig());
-        final NewMappings mappings = storedConfig.getMappings() == null ? MappingGuesser.guessNewMappings(storedConfig)
-                : new Gson().fromJson(storedConfig.getMappings(),
-                NewMappings.class);
-
-        AvailableFields availableFields1 = config1.getAvailableFields();
-        AvailableFields availableFields2 = config2.getAvailableFields();
-        final NewMappings fixedMappings = MappingFixer.fixMappings(mappings, availableFields1, availableFields2, false);
-        return new UISyncConfig(storedConfig.getId(), label, config1, config2, fixedMappings, false);
     }
 
     /**

@@ -12,7 +12,7 @@ public final class NewConfigParser {
     private static final String CONN2_DATA_PREFIX = "ta.connector2.data=";
     private static final String MAPPINGS_PREFIX = "mappings=";
 
-    static StoredExportConfig parse(String id, String fileContents) {
+    public static StoredExportConfig parse(String id, String fileContents) {
         final String lines[] = fileContents.split("\\r?\\n");
 
         final String name = findString(NAME_PREFIX, lines);
