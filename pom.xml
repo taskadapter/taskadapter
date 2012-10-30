@@ -19,7 +19,7 @@
         <module>webui</module>
         <module>webshared</module>
         <module>connectors-editors</module>
-        <module>license</module>
+        <module>license-generator</module>
         <module>launcher</module>
     </modules>
 
