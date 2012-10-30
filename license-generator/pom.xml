@@ -3,10 +3,28 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <groupId>com.taskadapter</groupId>
     <artifactId>license-generator</artifactId>
     <version>1</version>
+
+    <repositories>
+        <repository>
+            <id>TA_DEV</id>
+            <url>http://ta-dev.dyndns.biz:8081/nexus/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>

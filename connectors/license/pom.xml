@@ -3,12 +3,11 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <artifactId>connectors</artifactId>
-        <groupId>com.taskadapter</groupId>
-        <version>1</version>
-    </parent>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
+    <groupId>com.taskadapter</groupId>
     <artifactId>license</artifactId>
     <version>1</version>
 
@@ -21,6 +20,33 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
+            <version>1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>12.0</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>ta-nexus-releases</id>
+            <name>ta-nexus-releases</name>
+            <url>http://ta-dev.dyndns.biz:8081/nexus/content/repositories/releases</url>
+            <uniqueVersion>true</uniqueVersion>
+        </repository>
+        <snapshotRepository>
+            <id>ta-nexus-snapshots</id>
+            <name>ta-nexus-snapshots</name>
+            <url>http://ta-dev.dyndns.biz:8081/nexus/content/repositories/snapshots</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
 </project>

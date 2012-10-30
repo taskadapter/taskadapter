@@ -23,10 +23,6 @@
         </dependency>
         <dependency>
             <groupId>com.taskadapter</groupId>
-            <artifactId>license</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.taskadapter</groupId>
             <artifactId>test-utilities</artifactId>
             <scope>test</scope>
         </dependency>
