@@ -151,5 +151,13 @@ public class MSPUtils {
 	    return TaskField.TEXT24.toString();
 	}
 
+    public static String getDefaultDueDate() {
+        return TaskField.FINISH.toString();
+    }
+
 	public static final String NO_CONSTRAINT = "<no constraint>";
+
+    public static String getDefaultEstimatedTime() {
+        return TaskField.DURATION.toString();
+    }
 }
