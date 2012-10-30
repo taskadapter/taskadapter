@@ -3,7 +3,6 @@ package com.taskadapter;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.PluginFactory;
-import com.taskadapter.util.InternalError;
 
 import java.util.Collection;
 import java.util.HashMap;

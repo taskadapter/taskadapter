@@ -1,4 +1,4 @@
-package com.taskadapter.util;
+package com.taskadapter;
 
 /**
  * Internal task adapter error. Means invariant violation (broken code), absent
