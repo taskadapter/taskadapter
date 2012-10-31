@@ -6,7 +6,9 @@ import com.taskadapter.config.StoredExportConfig;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.NewMappings;
 
-public class UISyncConfigBuilder {
+//TODO: This class should really be package-visible.
+// Need to move test to an appropriate package and use it!
+public final class UISyncConfigBuilder {
 
     private final UIConfigService uiConfigService;
 

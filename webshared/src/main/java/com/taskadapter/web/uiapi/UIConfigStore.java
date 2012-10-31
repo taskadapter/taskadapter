@@ -30,10 +30,16 @@ public final class UIConfigStore {
      */
     private final ConfigStorage configStorage;
 
+    /**
+     * Config builder.
+     */
+    private final UISyncConfigBuilder syncConfigBuilder;
+
     public UIConfigStore(UIConfigService uiConfigService,
                          ConfigStorage configStorage) {
         this.uiConfigService = uiConfigService;
         this.configStorage = configStorage;
+        this.syncConfigBuilder = new UISyncConfigBuilder(uiConfigService);
     }
 
     /**
@@ -45,9 +51,8 @@ public final class UIConfigStore {
     public List<UISyncConfig> getUserConfigs(String userLoginName) {
         final List<StoredExportConfig> storedConfigs = configStorage.getUserConfigs(userLoginName);
         final List<UISyncConfig> result = new ArrayList<UISyncConfig>(storedConfigs.size());
-        UISyncConfigBuilder builder = new UISyncConfigBuilder(uiConfigService);
         for (StoredExportConfig storedConfig : storedConfigs) {
-            result.add(builder.uize(storedConfig));
+            result.add(syncConfigBuilder.uize(storedConfig));
         }
         return result;
     }
