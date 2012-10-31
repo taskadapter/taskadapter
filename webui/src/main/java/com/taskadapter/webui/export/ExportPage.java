@@ -9,6 +9,7 @@ import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.RemoteIdUpdater;
 import com.taskadapter.core.TaskLoader;
+import com.taskadapter.core.TaskMapper;
 import com.taskadapter.core.TaskSaver;
 import com.taskadapter.model.GTask;
 import com.taskadapter.web.configeditor.EditorUtil;
@@ -210,6 +211,7 @@ public class ExportPage extends ActionPage {
     @Override
     protected void saveData(List<GTask> tasks) throws ConnectorException {
         saveProgress.setValue(0);
+        TaskMapper.remap(config.getNewMappings(), tasks);
         final MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
 
         final Connector<?> destinationConnector = config.getConnector2().createConnectorInstance();
