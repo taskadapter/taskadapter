@@ -27,7 +27,6 @@ public class UISyncConfigTest {
         UISyncConfigBuilder builder = new UISyncConfigBuilder(uiConfigService);
         UISyncConfig uiSyncConfig = builder.uize(config);
 
-        assertTrue(uiSyncConfig.generateSourceMappings().isFieldSelected(GTaskDescriptor.FIELD.REMOTE_ID));
         assertTrue(uiSyncConfig.generateTargetMappings().isFieldSelected(GTaskDescriptor.FIELD.REMOTE_ID));
 
         assertTrue(uiSyncConfig.generateSourceMappings().isFieldSelected(GTaskDescriptor.FIELD.SUMMARY));

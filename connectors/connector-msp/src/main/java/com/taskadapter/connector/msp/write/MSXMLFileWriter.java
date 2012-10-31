@@ -222,7 +222,7 @@ public class MSXMLFileWriter {
             mspTask.setPriority(Priority.getInstance(gTask.getPriority()));
         }
 
-        setFieldIfSelected(FIELD.REMOTE_ID, mspTask, gTask.getRemoteId());
+        setFieldIfSelected(FIELD.REMOTE_ID, mspTask, gTask.getKey());
 
         // START DATE
         if (mappings.isFieldSelected(FIELD.START_DATE)) {
