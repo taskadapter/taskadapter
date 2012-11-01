@@ -1,5 +1,6 @@
 package com.taskadapter.web.uiapi;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.taskadapter.config.StoredExportConfig;
@@ -52,13 +53,15 @@ public class MappingGuesser {
                 continue;
             }
 
-            if (map1.get(fieldName).isJsonNull()
-                    || map2.get(fieldName).isJsonNull()) {
+            JsonElement map1FieldValue = map1.get(fieldName);
+            JsonElement map2FieldValue = map2.get(fieldName);
+            if (map1FieldValue == null || map1FieldValue.isJsonNull()
+                    || map2FieldValue == null || map2FieldValue.isJsonNull()) {
                 continue;
             }
 
-            res.put(new FieldMapping(field, map1.get(fieldName).getAsString(),
-                    map2.get(fieldName).getAsString(), true));
+            res.put(new FieldMapping(field, map1FieldValue.getAsString(),
+                    map2FieldValue.getAsString(), true));
         }
 
         if (sel2.has(GTaskDescriptor.FIELD.REMOTE_ID.name())
