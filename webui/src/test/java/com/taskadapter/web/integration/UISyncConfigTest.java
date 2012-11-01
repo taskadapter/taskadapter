@@ -14,21 +14,33 @@ import org.junit.Test;
 
 import java.io.IOException;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class UISyncConfigTest {
     @Test
     public void remoteIdIsRecognizedAsSelected() throws IOException {
-        String contents = Resources.toString(Resources.getResource("jira_msp.conf"), Charsets.UTF_8);
+        UISyncConfig uiSyncConfig = getConfig("jira_msp.conf");
+
+        assertTrue(uiSyncConfig.generateTargetMappings().isFieldSelected(GTaskDescriptor.FIELD.REMOTE_ID));
+        assertTrue(uiSyncConfig.generateSourceMappings().isFieldSelected(GTaskDescriptor.FIELD.SUMMARY));
+    }
+
+    @Test
+    public void legacyConfigLoadedWithoutNPE() throws IOException {
+        UISyncConfig config = getConfig("legacy_config_ta_2.2.txt");
+        assertEquals("Some Config", config.getLabel());
+    }
+
+    private UISyncConfig getConfig(String resourceNameInClassPath) throws IOException {
+        String contents = Resources.toString(Resources.getResource(resourceNameInClassPath), Charsets.UTF_8);
         StoredExportConfig config = NewConfigParser.parse("someId", contents);
 
         EditorManager editorManager = EditorManager.fromResource("editors.txt");
         UIConfigService uiConfigService = new UIConfigService(new PluginManager(), editorManager);
         UISyncConfigBuilder builder = new UISyncConfigBuilder(uiConfigService);
-        UISyncConfig uiSyncConfig = builder.uize(config);
-
-        assertTrue(uiSyncConfig.generateTargetMappings().isFieldSelected(GTaskDescriptor.FIELD.REMOTE_ID));
-
-        assertTrue(uiSyncConfig.generateSourceMappings().isFieldSelected(GTaskDescriptor.FIELD.SUMMARY));
+        return builder.uize(config);
     }
+
+
 }
