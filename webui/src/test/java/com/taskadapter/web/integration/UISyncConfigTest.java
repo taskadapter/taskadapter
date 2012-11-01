@@ -27,10 +27,17 @@ public class UISyncConfigTest {
     }
 
     @Test
-    public void legacyConfigLoadedWithoutNPE() throws IOException {
+    public void legacyConfigTA22LoadedWithoutNPE() throws IOException {
         UISyncConfig config = getConfig("legacy_config_ta_2.2.txt");
         assertEquals("Some Config", config.getLabel());
     }
+
+    @Test
+    public void legacyConfigTA22WithNullRemoteIdLoadedWithoutNPE() throws IOException {
+        UISyncConfig config = getConfig("legacy_config_2.2_null_values.txt");
+        assertEquals("Bogdan-2", config.getLabel());
+    }
+
 
     private UISyncConfig getConfig(String resourceNameInClassPath) throws IOException {
         String contents = Resources.toString(Resources.getResource(resourceNameInClassPath), Charsets.UTF_8);

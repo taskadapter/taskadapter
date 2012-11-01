@@ -64,11 +64,12 @@ public class MappingGuesser {
                     map2FieldValue.getAsString(), true));
         }
 
+        JsonElement map2RemoteIdValue = map2.get(GTaskDescriptor.FIELD.REMOTE_ID.name());
+        boolean map2RemoteIdIsPresent = map2RemoteIdValue != null && !map2RemoteIdValue.isJsonNull();
         if (sel2.has(GTaskDescriptor.FIELD.REMOTE_ID.name())
                 && sel2.get(GTaskDescriptor.FIELD.REMOTE_ID.name()).getAsBoolean()
-                && !map2.get(GTaskDescriptor.FIELD.REMOTE_ID.name()).isJsonNull()) {
-            res.put(new FieldMapping(GTaskDescriptor.FIELD.REMOTE_ID, null, map2.get(
-                    GTaskDescriptor.FIELD.REMOTE_ID.name()).getAsString(), true));
+                && map2RemoteIdIsPresent) {
+            res.put(new FieldMapping(GTaskDescriptor.FIELD.REMOTE_ID, null, map2RemoteIdValue.getAsString(), true));
         }
 
         if (sel1.has(GTaskDescriptor.FIELD.REMOTE_ID.name())
