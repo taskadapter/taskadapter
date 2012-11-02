@@ -8,6 +8,7 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPOutputFileNameNotSetException;
 import com.taskadapter.web.MessageDialog;
+import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
@@ -18,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.Arrays;
 
+import static com.vaadin.terminal.Sizeable.UNITS_PIXELS;
+
 /**
  * Data exporter. Always exports from connector1 to connector2.
  */
@@ -25,16 +28,14 @@ public class Exporter {
 
     private final Logger logger = LoggerFactory.getLogger(Exporter.class);
 
-    private static final String UPDATE = "Only update tasks present in the file";
-    private static final String OVERWRITE = "Overwrite";
-    private static final String CREATE = "Create";
-    private static final String CANCEL = "Cancel";
 
+    private Messages messages;
     private final Services services;
     private final Navigator navigator;
     private final UISyncConfig syncConfig;
 
-    public Exporter(Services services, Navigator navigator, UISyncConfig syncConfig) {
+    public Exporter(Messages messages, Services services, Navigator navigator, UISyncConfig syncConfig) {
+        this.messages = messages;
         this.services = services;
         this.navigator = navigator;
         this.syncConfig = syncConfig;
@@ -71,7 +72,7 @@ public class Exporter {
                 try {
                     services.getUIConfigStore().saveConfig(userName, syncConfig);
                 } catch (StorageException e1) {
-                    String message = "There were some troubles saving the config:<BR>" + e.getMessage();
+                    String message = messages.format("export.troublesSavingConfig", e1.getMessage());
                     logger.error(message, e);
                     navigator.showError(message);
                 }
@@ -102,26 +103,27 @@ public class Exporter {
         if (connectorTo.fileExists()) {
             String fileName = new File(connectorTo.getAbsoluteOutputFileName()).getName();
             MessageDialog messageDialog = new MessageDialog(
-                    "Choose operation", "Destination file already exists:<br><b>" + fileName + "</b>",
-                    Arrays.asList(UPDATE, OVERWRITE, CANCEL),
+                    messages.get("export.chooseOperation"),
+                    messages.format("export.fileAlreadyExists", fileName),
+                    Arrays.asList(messages.get("export.update"), messages.get("export.overwrite"), messages.get("button.cancel")),
                     new MessageDialog.Callback() {
                         public void onDialogResult(String answer) {
                             processFileAction(answer);
                         }
                     }
             );
-            messageDialog.setWidth("465px");
+            messageDialog.setWidth(465, UNITS_PIXELS);
 
             navigator.addWindow(messageDialog);
         } else {
-            processFileAction(CREATE);
+            processFileAction(messages.get("export.create"));
         }
     }
 
     private void processFileAction(String action) {
-        if (action.equals(UPDATE)) {
+        if (action.equals(messages.get("export.update"))) {
             startUpdateFile();
-        } else if (action.equals(OVERWRITE) || action.equals(CREATE)) {
+        } else if (action.equals(messages.get("export.overwrite")) || action.equals(messages.get("export.create"))) {
             startRegularExport();
         }
     }

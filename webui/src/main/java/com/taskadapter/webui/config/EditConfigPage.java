@@ -4,10 +4,9 @@ import com.taskadapter.config.StorageException;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.web.uiapi.UISyncConfig;
+import com.taskadapter.webui.ButtonBuilder;
 import com.taskadapter.webui.CloneDeletePanel;
-import com.taskadapter.webui.ConfigsPage;
 import com.taskadapter.webui.Page;
-import com.taskadapter.webui.PageUtil;
 import com.taskadapter.webui.data.ExceptionFormatter;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.terminal.Sizeable;
@@ -27,7 +26,7 @@ public class EditConfigPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
     private UISyncConfig config;
 
-    private Label errorMessageLabel = new Label("Test");
+    private Label errorMessageLabel = new Label();
     private OnePageEditor editor;
 
     private void buildUI() {
@@ -36,7 +35,7 @@ public class EditConfigPage extends Page {
         HorizontalLayout buttonsLayout = new HorizontalLayout();
         buttonsLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
 
-        Button saveButton = new Button("Save");
+        Button saveButton = new Button(MESSAGES.get("button.save"));
         saveButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -45,7 +44,7 @@ public class EditConfigPage extends Page {
         });
         buttonsLayout.addComponent(saveButton);
 
-        buttonsLayout.addComponent(PageUtil.createButton(navigator, "Cancel", new ConfigsPage()));
+        buttonsLayout.addComponent(ButtonBuilder.createBackButton(navigator, MESSAGES.get("button.cancel")));
 
         errorMessageLabel.addStyleName("error-message-label");
         errorMessageLabel.setWidth(100, Sizeable.UNITS_PERCENTAGE);
@@ -103,7 +102,7 @@ public class EditConfigPage extends Page {
             logger.error(message, e);
             return;
         }
-        navigator.showNotification("", "Saved");
+        navigator.showNotification("", MESSAGES.get("editConfig.messageSaved"));
     }
 
     @Override

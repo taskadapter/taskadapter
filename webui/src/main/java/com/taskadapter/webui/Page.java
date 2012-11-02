@@ -2,7 +2,6 @@ package com.taskadapter.webui;
 
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 
 public abstract class Page {
@@ -24,24 +23,4 @@ public abstract class Page {
     public void setServices(Services services) {
         this.services = services;
     }
-
-    /**
-     * Button which return to previous page
-     *
-     * @param title button caption
-     * @return instance
-     */
-    protected Button createBackButton(String title) {
-        Button button = new Button(title);
-        button.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                if (navigator != null) {
-                    navigator.back();
-                }
-            }
-        });
-        return button;
-    }
-
 }

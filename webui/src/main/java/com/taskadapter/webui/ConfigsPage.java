@@ -11,9 +11,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class ConfigsPage extends Page {
     
     private static final Comparator<UISyncConfig> CONFIG_COMPARATOR = 
@@ -65,7 +62,7 @@ public class ConfigsPage extends Page {
     }
 
     private void addConfigToPage(final UISyncConfig config) {
-        configsLayout.addComponent(new ConfigActionsPanel(services, navigator, config));
+        configsLayout.addComponent(new ConfigActionsPanel(MESSAGES, services, navigator, config));
     }
 
     @Override

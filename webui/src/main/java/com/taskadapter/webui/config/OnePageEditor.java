@@ -41,7 +41,7 @@ public class OnePageEditor extends VerticalLayout implements WindowProvider {
     private void addConnectorsPanel() {
         HorizontalLayout layout = new HorizontalLayout();
         layout.addComponent(createMiniPanel(config.getConnector1()));
-        layout.addComponent(new ExportButtonsFragment(services, navigator, config));
+        layout.addComponent(new ExportButtonsFragment(messages, services, navigator, config));
         layout.addComponent(createMiniPanel(config.getConnector2()));
         addComponent(layout);
     }

@@ -21,9 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class EditorUtil {
 
     public static void setNullSafe(AbstractTextField field, Object value) {
@@ -50,6 +47,7 @@ public class EditorUtil {
         window.showNotification(caption, message);
     }
 
+    // TODO can't move this to ButtonBuilder class right now because it's not accessible from webshared module.
     public static Button createButton(String label, String description, Button.ClickListener clickListener) {
         Button button = new Button(label);
         button.setDescription(description);

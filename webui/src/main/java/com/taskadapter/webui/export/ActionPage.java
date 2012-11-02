@@ -4,6 +4,7 @@ import com.taskadapter.config.StorageException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.web.uiapi.UISyncConfig;
+import com.taskadapter.webui.ButtonBuilder;
 import com.taskadapter.webui.ConfigsPage;
 import com.taskadapter.webui.Page;
 import com.vaadin.ui.Button;
@@ -28,7 +29,7 @@ public abstract class ActionPage extends Page {
     protected ProgressIndicator loadProgress = new ProgressIndicator();
     protected ProgressIndicator saveProgress = new ProgressIndicator();
     protected List<GTask> loadedTasks;
-    private ConfirmExportPage confirmExportPage;
+    private ConfirmExportFragment confirmExportFragment;
     protected final UISyncConfig config;
 
     protected ActionPage(UISyncConfig config) {
@@ -43,12 +44,18 @@ public abstract class ActionPage extends Page {
 
     protected abstract void loadData() throws ConnectorException;
 
+    protected abstract String getInitialText();
+
+    protected abstract String getNoDataLoadedText();
+
+    protected abstract VerticalLayout getDoneInfoPanel();
+
     private void buildInitialPage() {
         Label label = createLabel(getInitialText());
         label.setContentMode(Label.CONTENT_XHTML);
         mainPanel.addComponent(label);
 
-        Button goButton = new Button("Go");
+        Button goButton = new Button(MESSAGES.get("button.go"));
         goButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -59,13 +66,10 @@ public abstract class ActionPage extends Page {
             }
         });
         mainPanel.addComponent(goButton);
+
+        Button cancelButton = ButtonBuilder.createBackButton(navigator, MESSAGES.get("button.cancel"));
+        mainPanel.addComponent(cancelButton);
     }
-
-    protected abstract String getInitialText();
-
-    protected abstract String getNoDataLoadedText();
-
-    protected abstract VerticalLayout getDoneInfoPanel();
 
     protected void buildLoadingPage() {
         mainPanel.removeAllComponents();
@@ -83,7 +87,7 @@ public abstract class ActionPage extends Page {
         loadProgress.setEnabled(false);
         if (loadedTasks == null || loadedTasks.isEmpty()) {
             mainPanel.addComponent(createLabel(getNoDataLoadedText()));
-            mainPanel.addComponent(createBackButton("Back"));
+            mainPanel.addComponent(ButtonBuilder.createBackButton(navigator, MESSAGES.get("button.back")));
         } else {
             buildConfirmationUI();
         }
@@ -154,7 +158,7 @@ public abstract class ActionPage extends Page {
     }
 
     private void saveConfigIfChanged() {
-        if (confirmExportPage.needToSaveConfig()) {
+        if (confirmExportFragment.needToSaveConfig()) {
             String userLoginName = services.getAuthenticator().getUserName();
             try {
                 services.getUIConfigStore().saveConfig(userLoginName, config);
@@ -166,7 +170,7 @@ public abstract class ActionPage extends Page {
     }
 
     protected void buildConfirmationUI() {
-        confirmExportPage = new ConfirmExportPage(MESSAGES, navigator, loadedTasks,
+        confirmExportFragment = new ConfirmExportFragment(MESSAGES, navigator, loadedTasks,
                 config, new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
@@ -174,12 +178,12 @@ public abstract class ActionPage extends Page {
                         startSaveTasksProcess();
                     }
                 });
-        mainPanel.addComponent(confirmExportPage);
-        mainPanel.setExpandRatio(confirmExportPage, 1f); // use all available space
+        mainPanel.addComponent(confirmExportFragment);
+        mainPanel.setExpandRatio(confirmExportFragment, 1f); // use all available space
     }
 
     protected void startSaveTasksProcess() {
-        List<GTask> selectedRootLevelTasks = confirmExportPage.getSelectedRootLevelTasks();
+        List<GTask> selectedRootLevelTasks = confirmExportFragment.getSelectedRootLevelTasks();
 
         if (!loadedTasks.isEmpty()) {
             saveProgress = new ProgressIndicator();
