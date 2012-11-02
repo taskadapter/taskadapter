@@ -19,7 +19,6 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 
@@ -27,13 +26,15 @@ import java.util.Arrays;
 
 public class OnePageMappingPanel extends Panel implements Validatable {
     private static final int COLUMN_DESCRIPTION = 0;
-    private static final int COLUMN_LEFT_CONNECTOR = 1;
-    private static final int COLUMN_RIGHT_CONNECTOR = 2;
+    private static final int COLUMN_HELP = 1;
+    private static final int COLUMN_LEFT_CONNECTOR = 2;
+    private static final int COLUMN_RIGHT_CONNECTOR = 3;
+    private static final int COLUMNS_NUMBER = 4;
+
     // TODO merge this help file with all the other localized strings
     private static final String BUNDLE_NAME = "help";
     private static final com.taskadapter.web.data.Messages HELP_MESSAGES = new com.taskadapter.web.data.Messages(BUNDLE_NAME);
-    private static final Resource helpIconResource = new ThemeResource("../runo/icons/16/help.png");
-    private static final int COLUMNS_NUMBER = 3;
+    private static final Resource HELP_ICON_RESOURCE = new ThemeResource("../runo/icons/16/help.png");
 
     private GridLayout gridLayout;
 
@@ -45,7 +46,7 @@ public class OnePageMappingPanel extends Panel implements Validatable {
 
     public OnePageMappingPanel(Messages messages, UIConnectorConfig connector1,
                                UIConnectorConfig connector2, NewMappings mappings) {
-        super("Task fields mapping");
+        super(messages.get("editConfig.mappings.caption"));
         this.messages = messages;
         this.connector1 = connector1;
         this.connector2 = connector2;
@@ -73,12 +74,17 @@ public class OnePageMappingPanel extends Panel implements Validatable {
     private void addTableHeaders() {
         Label label2 = new Label(messages.get("editConfig.mappings.exportFieldHeader"));
         label2.addStyleName("fieldsTitle");
-        label2.setWidth(60, UNITS_PIXELS);
+        label2.setWidth(50, UNITS_PIXELS);
         gridLayout.addComponent(label2, COLUMN_DESCRIPTION, 0);
+        gridLayout.setComponentAlignment(label2, Alignment.MIDDLE_LEFT);
+
+        Label label = new Label(" ");
+        label.setWidth(20, UNITS_PIXELS);
+        gridLayout.addComponent(label, COLUMN_HELP, 0);
 
         Label label1 = new Label(connector1.getLabel());
         label1.addStyleName("fieldsTitle");
-        label1.setWidth("135px");
+        label1.setWidth(135, UNITS_PIXELS);
         gridLayout.addComponent(label1, COLUMN_LEFT_CONNECTOR, 0);
 
 
@@ -97,38 +103,39 @@ public class OnePageMappingPanel extends Panel implements Validatable {
 
     private void addField(FieldMapping field) {
         addCheckbox(field);
-//        addEmptyCell();
+        String helpForField = getHelpForField(field);
+        if (helpForField != null) {
+            addHelp(helpForField);
+        } else {
+            addEmptyCell();
+        }
+        String idFieldDisplayValue = GTaskDescriptor.getDisplayValue(FIELD.ID);
         if (field.getConnector1() == null) {
-            final String displayValue = GTaskDescriptor.getDisplayValue(FIELD.ID);
-            createMappingForSingleValue(displayValue);
+            createMappingForSingleValue(idFieldDisplayValue);
         } else {
             addConnectorField(connector1.getAvailableFields(), field, "connector1");
         }
 
         if (field.getConnector2() == null) {
-            final String displayValue = GTaskDescriptor.getDisplayValue(FIELD.ID);
-            createMappingForSingleValue(displayValue);
+            createMappingForSingleValue(idFieldDisplayValue);
         } else {
             addConnectorField(connector2.getAvailableFields(), field, "connector2");
         }
     }
 
-    private CheckBox addCheckbox(FieldMapping field) {
+    private void addCheckbox(FieldMapping field) {
         CheckBox checkbox = new CheckBox();
         final MethodProperty<Boolean> selected = new MethodProperty<Boolean>(field, "selected");
         checkbox.setPropertyDataSource(selected);
+        gridLayout.addComponent(checkbox);
+        gridLayout.setComponentAlignment(checkbox, Alignment.MIDDLE_CENTER);
+    }
 
-        String helpForField = getHelpForField(field);
-        if (helpForField != null) {
-            HorizontalLayout layout = addHelpTipToCheckbox(checkbox, helpForField);
-            gridLayout.addComponent(layout);
-            gridLayout.setComponentAlignment(layout, Alignment.MIDDLE_LEFT);
-        } else {
-            gridLayout.addComponent(checkbox);
-            gridLayout.setComponentAlignment(checkbox, Alignment.MIDDLE_LEFT);
-        }
-
-        return checkbox;
+    private void addHelp(String helpForField) {
+        Embedded helpIcon = new Embedded(null, HELP_ICON_RESOURCE);
+        helpIcon.setDescription(helpForField);
+        gridLayout.addComponent(helpIcon);
+        gridLayout.setComponentAlignment(helpIcon, Alignment.MIDDLE_CENTER);
     }
 
     private void addEmptyCell() {
@@ -173,16 +180,6 @@ public class OnePageMappingPanel extends Panel implements Validatable {
     String getHelpForField(FieldMapping field) {
         String elementId = field.getField().toString();
         return HELP_MESSAGES.getNoDefault(elementId);
-    }
-
-    private HorizontalLayout addHelpTipToCheckbox(CheckBox checkbox,
-                                                  String helpForField) {
-        Embedded helpIcon = new Embedded(null, helpIconResource);
-        helpIcon.setDescription(helpForField);
-        HorizontalLayout layout = new HorizontalLayout();
-        layout.addComponent(checkbox);
-        layout.addComponent(helpIcon);
-        return layout;
     }
 
     @Override
