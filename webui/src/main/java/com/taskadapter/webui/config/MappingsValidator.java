@@ -35,14 +35,18 @@ public class MappingsValidator {
         Set<String> connector1Values = new HashSet<String>();
         Set<String> connector2Values = new HashSet<String>();
         for (FieldMapping mapping : mappings.getMappings()) {
-            if (connector1Values.contains(mapping.getConnector1())) {
-                throw new FieldAlreadyMappedException(mapping.getConnector1());
+            String connector1Value = mapping.getConnector1();
+            // it is null if no value is selected in the dropdown with MSP Text fields.
+            if (connector1Value != null && connector1Values.contains(connector1Value)) {
+                throw new FieldAlreadyMappedException(connector1Value);
             }
-            if (connector2Values.contains(mapping.getConnector2())) {
-                throw new FieldAlreadyMappedException(mapping.getConnector2());
+            String connector2Value = mapping.getConnector2();
+            // it is null if no value is selected in the dropdown with MSP Text fields.
+            if (connector2Value != null && connector2Values.contains(connector2Value)) {
+                throw new FieldAlreadyMappedException(connector2Value);
             }
-            connector1Values.add(mapping.getConnector1());
-            connector2Values.add(mapping.getConnector2());
+            connector1Values.add(connector1Value);
+            connector2Values.add(connector2Value);
         }
     }
 
