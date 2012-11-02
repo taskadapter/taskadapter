@@ -15,7 +15,6 @@ public class MSPInfoPanel extends Panel {
 
     private void buildUI() {
         GridLayout layout = new GridLayout();
-        //layout.setColumnExpandRatio(0, 0.7f);
         layout.setWidth(100, UNITS_PERCENTAGE);
         layout.setColumns(2);
         layout.setRows(2);
@@ -28,7 +27,6 @@ public class MSPInfoPanel extends Panel {
         final Label durationText = new Label();
         durationText.setValue(MSXMLFileWriter.FIELD_DURATION_UNDEFINED.toString());
         layout.addComponent(durationText, 1, 0);
-        //layout.setComponentAlignment(durationText, Alignment.MIDDLE_RIGHT);
 
         label = new Label("Store 'Work undefined' flag as:");
         label.setWidth("200px");
