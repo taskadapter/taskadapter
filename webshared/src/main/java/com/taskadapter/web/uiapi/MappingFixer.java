@@ -8,6 +8,7 @@ import com.taskadapter.model.GTaskDescriptor;
 
 import java.util.Collection;
 
+// TODO !! this class is not used anymore. make sure there's nothing useful in here and delete it.
 public class MappingFixer {
 
     // TODO why does this method do two things instead of 1?

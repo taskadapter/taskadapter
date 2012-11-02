@@ -80,10 +80,7 @@ public final class UIConfigStore {
                 config1.getConnectorTypeId(), config1.getConfigString(),
                 config2.getConnectorTypeId(), config2.getConfigString(),
                 mappingsString);
-        AvailableFields availableFields1 = config1.getAvailableFields();
-        AvailableFields availableFields2 = config2.getAvailableFields();
-        NewMappings fixedMappings = MappingFixer.fixMappings(newMappings, availableFields1, availableFields2, true);
-        return new UISyncConfig(identity, label, config1, config2, fixedMappings, false);
+        return new UISyncConfig(identity, label, config1, config2, newMappings, false);
     }
 
     /**

@@ -32,10 +32,7 @@ public final class UISyncConfigBuilder {
                 : new Gson().fromJson(storedConfig.getMappings(),
                 NewMappings.class);
 
-        AvailableFields availableFields1 = config1.getAvailableFields();
-        AvailableFields availableFields2 = config2.getAvailableFields();
-        final NewMappings fixedMappings = MappingFixer.fixMappings(mappings, availableFields1, availableFields2, false);
-        return new UISyncConfig(storedConfig.getId(), label, config1, config2, fixedMappings, false);
+        return new UISyncConfig(storedConfig.getId(), label, config1, config2, mappings, false);
     }
 
 }

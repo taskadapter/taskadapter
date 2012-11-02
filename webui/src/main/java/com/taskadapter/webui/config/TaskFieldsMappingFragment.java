@@ -84,18 +84,20 @@ public class TaskFieldsMappingFragment extends Panel implements Validatable {
 
         Label label1 = new Label(connector1.getLabel());
         label1.addStyleName("fieldsTitle");
-        label1.setWidth(135, UNITS_PIXELS);
+        label1.setWidth(180, UNITS_PIXELS);
         gridLayout.addComponent(label1, COLUMN_LEFT_CONNECTOR, 0);
 
 
         Label label3 = new Label(connector2.getLabel());
         label3.addStyleName("fieldsTitle");
+        label3.setWidth(180, UNITS_PIXELS);
         gridLayout.addComponent(label3, COLUMN_RIGHT_CONNECTOR, 0);
 
         gridLayout.addComponent(new Label("<hr>", Label.CONTENT_XHTML), 0, 1, COLUMNS_NUMBER - 1, 1);
     }
 
     private void addSupportedFields() {
+        // TODO sort?
         for (FieldMapping mapping : mappings.getMappings()) {
             addField(mapping);
         }
@@ -109,18 +111,22 @@ public class TaskFieldsMappingFragment extends Panel implements Validatable {
         } else {
             addEmptyCell();
         }
-        String idFieldDisplayValue = GTaskDescriptor.getDisplayValue(FIELD.ID);
-        if (field.getConnector1() == null) {
-            createMappingForSingleValue(idFieldDisplayValue);
-        } else {
-            addConnectorField(connector1.getAvailableFields(), field, "connector1");
-        }
 
-        if (field.getConnector2() == null) {
+        addConnectorElement(field, connector1, "connector1");
+        addConnectorElement(field, connector2, "connector2");
+    }
+
+    private void addConnectorElement(FieldMapping field, UIConnectorConfig config, String leftRightField) {
+        if (field.getField() == FIELD.REMOTE_ID && remoteIdFieldNotSupported(config)) {
+            String idFieldDisplayValue = GTaskDescriptor.getDisplayValue(FIELD.ID);
             createMappingForSingleValue(idFieldDisplayValue);
         } else {
-            addConnectorField(connector2.getAvailableFields(), field, "connector2");
+            addConnectorField(config.getAvailableFields(), field, leftRightField);
         }
+    }
+
+    private boolean remoteIdFieldNotSupported(UIConnectorConfig config) {
+        return !config.getAvailableFields().isFieldSupported(FIELD.REMOTE_ID);
     }
 
     private void addCheckbox(FieldMapping field) {
