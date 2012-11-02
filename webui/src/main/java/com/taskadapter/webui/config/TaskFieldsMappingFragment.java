@@ -24,7 +24,7 @@ import com.vaadin.ui.Panel;
 
 import java.util.Arrays;
 
-public class OnePageMappingPanel extends Panel implements Validatable {
+public class TaskFieldsMappingFragment extends Panel implements Validatable {
     private static final int COLUMN_DESCRIPTION = 0;
     private static final int COLUMN_HELP = 1;
     private static final int COLUMN_LEFT_CONNECTOR = 2;
@@ -44,8 +44,8 @@ public class OnePageMappingPanel extends Panel implements Validatable {
     private NewMappings originalMappings;
     private NewMappings mappings;
 
-    public OnePageMappingPanel(Messages messages, UIConnectorConfig connector1,
-                               UIConnectorConfig connector2, NewMappings mappings) {
+    public TaskFieldsMappingFragment(Messages messages, UIConnectorConfig connector1,
+                                     UIConnectorConfig connector2, NewMappings mappings) {
         super(messages.get("editConfig.mappings.caption"));
         this.messages = messages;
         this.connector1 = connector1;

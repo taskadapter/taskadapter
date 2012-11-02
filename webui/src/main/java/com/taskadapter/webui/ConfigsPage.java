@@ -1,6 +1,7 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.web.uiapi.UISyncConfig;
+import com.taskadapter.webui.config.ConfigActionsPanel;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;

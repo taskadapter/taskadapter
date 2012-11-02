@@ -1,18 +1,14 @@
-package com.taskadapter.webui;
+package com.taskadapter.webui.config;
 
-import com.taskadapter.connector.definition.MappingSide;
 import com.taskadapter.web.service.Services;
-import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
-import com.taskadapter.webui.export.Exporter;
-import com.vaadin.terminal.ThemeResource;
+import com.taskadapter.webui.Navigator;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Runo;
 
 /**
  * Buttons panel with left/right arrows.
@@ -44,6 +40,10 @@ public class ConfigActionsPanel extends VerticalLayout {
         createBox(syncConfig.getConnector2().getLabel());
     }
 
+    private void createActionButtons() {
+        horizontalLayout.addComponent(new ExportButtonsFragment(services, navigator, syncConfig));
+    }
+
     private void addDescription() {
         final String labelText = syncConfig.getLabel();
         Label description = new Label(labelText.isEmpty() ? NO_DESCRIPTION_TEXT : labelText, Label.CONTENT_XHTML);
@@ -62,44 +62,5 @@ public class ConfigActionsPanel extends VerticalLayout {
             }
         });
         horizontalLayout.addComponent(configBoxButton);
-    }
-
-    private void createActionButtons() {
-        VerticalLayout buttonsLayout = new VerticalLayout();
-        buttonsLayout.setSpacing(true);
-        buttonsLayout.addComponent(createButton(MappingSide.RIGHT));
-        buttonsLayout.addComponent(createButton(MappingSide.LEFT));
-        horizontalLayout.addComponent(buttonsLayout);
-    }
-
-    private Button createButton(MappingSide exportDirection) {
-        String imageFile;
-        UISyncConfig config;
-        
-        switch (exportDirection) {
-            case RIGHT:
-                imageFile = "img/arrow_right.png";
-                config = syncConfig;
-                break;
-            case LEFT:
-                imageFile = "img/arrow_left.png";
-                config = syncConfig.reverse();
-                break;
-            default:
-                throw new IllegalArgumentException("Unsupported mapping direction " + exportDirection);
-        }
-        Button button = new Button();
-        button.setIcon(new ThemeResource(imageFile));
-        button.setStyleName(Runo.BUTTON_SMALL);
-        button.addStyleName("configsTableArrowButton");
-
-        final Exporter exporter = new Exporter(services, navigator, config);
-        button.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                exporter.export();
-            }
-        });
-        return button;
     }
 }

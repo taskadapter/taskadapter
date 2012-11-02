@@ -67,7 +67,7 @@ public class EditConfigPage extends Page {
         descriptionField.setPropertyDataSource(label);
         descriptionLayout.addComponent(descriptionField);
 
-        editor = new OnePageEditor(MESSAGES, services, config);
+        editor = new OnePageEditor(MESSAGES, services, navigator, config);
         layout.addComponent(editor);
     }
 
@@ -77,6 +77,7 @@ public class EditConfigPage extends Page {
 
     private void save() {
         // TODO refactor: this method is long and ugly.
+        errorMessageLabel.setValue("");
         try {
             editor.validate();
         } catch (FieldAlreadyMappedException e) {
@@ -102,10 +103,7 @@ public class EditConfigPage extends Page {
             logger.error(message, e);
             return;
         }
-        navigator.showNotification("Saved", "All is saved OK");
-
-        errorMessageLabel.setValue("");
-        navigator.show(new ConfigsPage());
+        navigator.showNotification("", "Saved");
     }
 
     @Override

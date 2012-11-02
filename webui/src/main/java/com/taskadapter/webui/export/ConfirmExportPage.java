@@ -5,7 +5,7 @@ import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigsPage;
 import com.taskadapter.webui.Navigator;
-import com.taskadapter.webui.config.OnePageMappingPanel;
+import com.taskadapter.webui.config.TaskFieldsMappingFragment;
 import com.taskadapter.webui.PageUtil;
 import com.taskadapter.webui.action.MyTree;
 import com.vaadin.ui.Button;
@@ -20,7 +20,7 @@ public class ConfirmExportPage extends CustomComponent {
     private final Navigator navigator;
     private final List<GTask> rootLevelTasks;
     private final Button.ClickListener goListener;
-    private OnePageMappingPanel onePageMappingPanel;
+    private TaskFieldsMappingFragment taskFieldsMappingFragment;
     private MyTree connectorTree;
     private Messages messages;
     private final UISyncConfig config;
@@ -58,15 +58,15 @@ public class ConfirmExportPage extends CustomComponent {
         buttonsLayout.addComponent(PageUtil.createButton(navigator, "Cancel", new ConfigsPage()));
         layout.addComponent(buttonsLayout);
 
-        onePageMappingPanel = new OnePageMappingPanel(messages, config.getConnector1(),
+        taskFieldsMappingFragment = new TaskFieldsMappingFragment(messages, config.getConnector1(),
                 config.getConnector2(), config.getNewMappings());
-        layout.addComponent(onePageMappingPanel);
+        layout.addComponent(taskFieldsMappingFragment);
 
         setCompositionRoot(layout);
     }
 
     public boolean needToSaveConfig() {
-        return onePageMappingPanel.hasChanges();
+        return taskFieldsMappingFragment.hasChanges();
     }
 
     public List<GTask> getSelectedRootLevelTasks() {
