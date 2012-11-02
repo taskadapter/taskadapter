@@ -14,14 +14,14 @@ public class MSPSupportedFields {
         final AvailableFieldsBuilder builder = AvailableFieldsBuilder.start();
         builder.addField(GTaskDescriptor.FIELD.SUMMARY, TaskField.SUMMARY.getName());
         builder.addField(GTaskDescriptor.FIELD.DESCRIPTION, TaskField.NOTES.getName());
-        builder.addField(GTaskDescriptor.FIELD.TASK_TYPE, MSPUtils.getAllTextFieldNames()).withDefault(MSPUtils.getDefaultTaskType());
+        builder.addField(GTaskDescriptor.FIELD.TASK_TYPE, MSPUtils.getTextFieldNamesAvailableForMapping()).withDefault(MSPUtils.getDefaultTaskType());
         builder.addField(GTaskDescriptor.FIELD.ESTIMATED_TIME, MSPUtils.getEstimatedTimeOptions()).withDefault(MSPUtils.getDefaultEstimatedTime());
         builder.addField(GTaskDescriptor.FIELD.DONE_RATIO, TaskField.PERCENT_COMPLETE.getName());
         builder.addField(GTaskDescriptor.FIELD.ASSIGNEE, TaskField.ASSIGNMENT_OWNER.getName());
         builder.addField(GTaskDescriptor.FIELD.DUE_DATE, MSPUtils.getDueDateOptions()).unselected().withDefault(MSPUtils.getDefaultDueDate());
         builder.addField(GTaskDescriptor.FIELD.START_DATE, MSPUtils.getStartDateOptions()).withDefault(ConstraintType.MUST_START_ON.name());
-        builder.addField(GTaskDescriptor.FIELD.REMOTE_ID, MSPUtils.getAllTextFieldNames()).unselected().withDefault(MSPUtils.getDefaultRemoteIdMapping());
-        builder.addField(GTaskDescriptor.FIELD.TASK_STATUS, MSPUtils.getAllTextFieldNames()).unselected().withDefault(MSPUtils.getDefaultTaskStatus());
+        builder.addField(GTaskDescriptor.FIELD.REMOTE_ID, MSPUtils.getTextFieldNamesAvailableForMapping()).unselected().withDefault(MSPUtils.getDefaultRemoteIdMapping());
+        builder.addField(GTaskDescriptor.FIELD.TASK_STATUS, MSPUtils.getTextFieldNamesAvailableForMapping()).unselected().withDefault(MSPUtils.getDefaultTaskStatus());
         SUPPORTED_FIELDS = builder.end();
     }
 
