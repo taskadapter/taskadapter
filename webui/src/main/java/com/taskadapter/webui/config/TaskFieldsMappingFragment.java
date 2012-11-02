@@ -31,9 +31,9 @@ public class TaskFieldsMappingFragment extends Panel implements Validatable {
     private static final int COLUMN_RIGHT_CONNECTOR = 3;
     private static final int COLUMNS_NUMBER = 4;
 
-    // TODO merge this help file with all the other localized strings
+    // TODO maybe merge this help file with all the other localized strings? but it has some rules about namings...
     private static final String BUNDLE_NAME = "help";
-    private static final com.taskadapter.web.data.Messages HELP_MESSAGES = new com.taskadapter.web.data.Messages(BUNDLE_NAME);
+    private static final Messages HELP_MESSAGES = new Messages(BUNDLE_NAME);
     private static final Resource HELP_ICON_RESOURCE = new ThemeResource("../runo/icons/16/help.png");
 
     private GridLayout gridLayout;
