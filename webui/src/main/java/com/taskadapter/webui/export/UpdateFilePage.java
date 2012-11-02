@@ -31,11 +31,7 @@ public class UpdateFilePage extends ActionPage {
 
     @Override
     protected String getInitialText() {
-        return "Click \"Go\" to load file<BR><i>" +
-                config.getConnector2().getDestinationLocation() +
-                "</i><BR> and check which tasks have 'remote ids' associated with them." +
-                "<br>You can select which of those tasks to update with the data from the external system." +
-                "<br>No other tasks will be updated or created.";
+        return MESSAGES.format("updatePage.initialText", config.getConnector2().getDestinationLocation());
     }
 
     @Override
@@ -45,21 +41,15 @@ public class UpdateFilePage extends ActionPage {
 
     @Override
     public String getNoDataLoadedText() {
-        return "The current MSP XML file \n"
-                + config.getConnector2().getSourceLocation()
-                + "\ndoes not have any tasks previously exported to (or loaded from) another system "
-                + "\nusing \"Save Remote IDs\" option.";
-
+        return MESSAGES.format("updatePage.noTasksWithRemoteIds", config.getConnector2().getSourceLocation());
     }
 
     @Override
     protected VerticalLayout getDoneInfoPanel() {
         VerticalLayout donePanel = new VerticalLayout();
-        donePanel.addComponent(new Label(updater.getNumberOfUpdatedTasks()
-                + " tasks were updated in file "
-                + config.getConnector2().getDestinationLocation()
-                + " with the data from "
-                + config.getConnector1().getSourceLocation()));
+        String text = MESSAGES.format("updatePage.result", updater.getNumberOfUpdatedTasks(),
+                config.getConnector2().getDestinationLocation(), config.getConnector1().getSourceLocation());
+        donePanel.addComponent(new Label(text));
 
         return donePanel;
     }
@@ -72,7 +62,7 @@ public class UpdateFilePage extends ActionPage {
         updater = new Updater(destinationConnector,
                 config.generateTargetMappings(), sourceConnector,
                 config.generateSourceMappings(), config.getConnector1()
-                        .getDestinationLocation());
+                .getDestinationLocation());
         updater.loadTasksFromFile(wrapper);
         updater.removeTasksWithoutRemoteIds();
         loadedTasks = updater.getExistingTasks();

@@ -7,6 +7,7 @@ import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ButtonBuilder;
 import com.taskadapter.webui.ConfigsPage;
 import com.taskadapter.webui.Page;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -19,7 +20,6 @@ import java.util.List;
 
 /**
  * Action page. Always perform action from connector1 to connector2.
- *
  */
 public abstract class ActionPage extends Page {
     private final Logger logger = LoggerFactory.getLogger(ActionPage.class);
@@ -77,9 +77,9 @@ public abstract class ActionPage extends Page {
         loadProgress.setIndeterminate(true);
         loadProgress.setPollingInterval(200);
         mainPanel.addComponent(loadProgress);
-        String labelText = "Loading data from "
-                + config.getConnector1().getSourceLocation()
-                + " (" + config.getConnector1().getLabel() + ") ...";
+        String sourceDescription = config.getConnector1().getSourceLocation()
+                + " (" + config.getConnector1().getLabel() + ")";
+        String labelText = MESSAGES.format("action.loadingData", sourceDescription);
         mainPanel.addComponent(createLabel(labelText));
     }
 
@@ -95,7 +95,7 @@ public abstract class ActionPage extends Page {
 
     private Label createLabel(String text) {
         Label label = new Label(text);
-        label.setWidth("800px");
+        label.setWidth(800, Sizeable.UNITS_PIXELS);
         return label;
     }
 
@@ -146,7 +146,6 @@ public abstract class ActionPage extends Page {
         mainPanel.addComponent(getDoneInfoPanel());
 
         Button button = new Button("Back to home page");
-        //button.setStyleName(BaseTheme.BUTTON_LINK);
         button.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -172,12 +171,12 @@ public abstract class ActionPage extends Page {
     protected void buildConfirmationUI() {
         confirmExportFragment = new ConfirmExportFragment(MESSAGES, navigator, loadedTasks,
                 config, new Button.ClickListener() {
-                    @Override
-                    public void buttonClick(Button.ClickEvent event) {
-                        saveConfigIfChanged();
-                        startSaveTasksProcess();
-                    }
-                });
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                saveConfigIfChanged();
+                startSaveTasksProcess();
+            }
+        });
         mainPanel.addComponent(confirmExportFragment);
         mainPanel.setExpandRatio(confirmExportFragment, 1f); // use all available space
     }
@@ -189,14 +188,13 @@ public abstract class ActionPage extends Page {
             saveProgress = new ProgressIndicator();
             saveProgress.setIndeterminate(false);
             saveProgress.setEnabled(true);
-            saveProgress.setCaption("Saving to "
-                    + config.getConnector2().getDestinationLocation());
+            saveProgress.setCaption(MESSAGES.format("action.saving", config.getConnector2().getDestinationLocation()));
             mainPanel.removeAllComponents();
             mainPanel.addComponent(saveProgress);
 
             new SaveWorker(selectedRootLevelTasks).start();
         } else {
-            mainPanel.getWindow().showNotification("Please select some tasks first.");
+            mainPanel.getWindow().showNotification(MESSAGES.get("action.pleaseSelectTasks"));
         }
     }
 
