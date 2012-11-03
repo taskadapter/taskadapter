@@ -37,7 +37,6 @@ public abstract class ActionPage extends Page {
         mainPanel = new VerticalLayout();
         mainPanel.setSpacing(true);
         mainPanel.setMargin(true);
-        buildInitialPage();
     }
 
     protected abstract void saveData(List<GTask> tasks) throws ConnectorException;
@@ -50,7 +49,7 @@ public abstract class ActionPage extends Page {
 
     protected abstract VerticalLayout getDoneInfoPanel();
 
-    private void buildInitialPage() {
+    protected void buildInitialPage() {
         Label label = createLabel(getInitialText());
         label.setContentMode(Label.CONTENT_XHTML);
         mainPanel.addComponent(label);

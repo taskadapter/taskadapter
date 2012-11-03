@@ -130,11 +130,15 @@ public class Exporter {
     
     private void startUpdateFile() {
         UpdateFilePage page = new UpdateFilePage(syncConfig);
+        page.setNavigator(navigator);
+        page.buildInitialPage();
         navigator.show(page);
     }
 
     private void startRegularExport() {
         ExportPage page = new ExportPage(syncConfig);
+        page.setNavigator(navigator);
+        page.buildInitialPage();
         navigator.show(page);
     }
 }
