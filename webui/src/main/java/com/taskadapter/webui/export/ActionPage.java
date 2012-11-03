@@ -144,7 +144,7 @@ public abstract class ActionPage extends Page {
         mainPanel.removeAllComponents();
         mainPanel.addComponent(getDoneInfoPanel());
 
-        Button button = new Button("Back to home page");
+        Button button = new Button(MESSAGES.get("action.backToHomePage"));
         button.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -161,7 +161,7 @@ public abstract class ActionPage extends Page {
             try {
                 services.getUIConfigStore().saveConfig(userLoginName, config);
             } catch (StorageException e) {
-                logger.error("Can't save the updated config: " + e.toString(), e);
+                logger.error(MESSAGES.format("action.cantSaveUpdatedConfig", e.getMessage()), e);
                 // TODO !! report in the UI
             }
         }
