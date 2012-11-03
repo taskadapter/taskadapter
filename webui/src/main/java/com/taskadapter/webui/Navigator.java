@@ -17,7 +17,7 @@ import org.vaadin.googleanalytics.tracking.GoogleAnalyticsTracker;
 
 public class Navigator {
     private static final String GOOGLE_ANALYTICS_ID = "UA-3768502-12";
-    static final String MAIN_WIDTH = "920px";// like GitHub
+    static final String MAIN_WIDTH = "900px";
 
     private HorizontalLayout navigationPanel;
     private HorizontalLayout currentComponentArea = new HorizontalLayout();
@@ -48,10 +48,8 @@ public class Navigator {
         header.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         layout.addComponent(header);
 
-        addNavigationPanel();
+        addEmptyNavigationPanelUsedAsASpacerForNow();
 
-        // the big shadowed page on middle
-        //mainArea.setStyleName(Runo.CSSLAYOUT_SHADOW);
         mainArea.setStyleName("no-shadow");
         mainArea.setWidth(MAIN_WIDTH);
 
@@ -68,9 +66,9 @@ public class Navigator {
         layout.setComponentAlignment(mainArea, Alignment.MIDDLE_CENTER);
     }
 
-    private void addNavigationPanel() {
+    private void addEmptyNavigationPanelUsedAsASpacerForNow() {
         navigationPanel = new HorizontalLayout();
-        navigationPanel.setHeight("30px");
+        navigationPanel.setHeight(30, Sizeable.UNITS_PIXELS);
         navigationPanel.setSpacing(true);
         layout.addComponent(navigationPanel);
         layout.setComponentAlignment(navigationPanel, Alignment.MIDDLE_CENTER);

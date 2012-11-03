@@ -1,6 +1,7 @@
 package com.taskadapter.webui.config;
 
 import com.taskadapter.config.StorageException;
+import com.taskadapter.connector.definition.MappingSide;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.web.uiapi.UISyncConfig;
@@ -8,6 +9,7 @@ import com.taskadapter.webui.ButtonBuilder;
 import com.taskadapter.webui.CloneDeletePanel;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.data.ExceptionFormatter;
+import com.taskadapter.webui.export.Exporter;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
@@ -32,6 +34,46 @@ public class EditConfigPage extends Page {
     private void buildUI() {
         layout.removeAllComponents();
         layout.setSpacing(true);
+        createButtons();
+        createEditDescriptionElement();
+        createMainEditor();
+    }
+
+    private void createMainEditor() {
+        editor = new OnePageEditor(MESSAGES, services, config);
+        addExportButtonListeners();
+        layout.addComponent(editor);
+    }
+
+    private void addExportButtonListeners() {
+        addExportButtonListener(editor.getButtonLeft(), MappingSide.LEFT);
+        addExportButtonListener(editor.getButtonRight(), MappingSide.RIGHT);
+    }
+
+    private void addExportButtonListener(Button button, MappingSide exportDirection) {
+        UISyncConfig configForExport = DirectionResolver.getDirectionalConfig(config, exportDirection);
+        final Exporter exporter = new Exporter(MESSAGES, services, navigator, configForExport);
+        button.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                exportClicked(exporter);
+            }
+        });
+    }
+
+    private void createEditDescriptionElement() {
+        HorizontalLayout descriptionLayout = new HorizontalLayout();
+        descriptionLayout.setSpacing(true);
+        layout.addComponent(descriptionLayout);
+        descriptionLayout.addComponent(new Label(MESSAGES.get("editConfig.description")));
+        TextField descriptionField = new TextField();
+        descriptionField.addStyleName("configEditorDescriptionLabel");
+        MethodProperty<String> label = new MethodProperty<String>(config, "label");
+        descriptionField.setPropertyDataSource(label);
+        descriptionLayout.addComponent(descriptionField);
+    }
+
+    private void createButtons() {
         HorizontalLayout buttonsLayout = new HorizontalLayout();
         buttonsLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
 
@@ -39,7 +81,7 @@ public class EditConfigPage extends Page {
         saveButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                save();
+                saveClicked();
             }
         });
         buttonsLayout.addComponent(saveButton);
@@ -55,44 +97,49 @@ public class EditConfigPage extends Page {
         buttonsLayout.addComponent(cloneDeletePanel);
         buttonsLayout.setComponentAlignment(cloneDeletePanel, Alignment.MIDDLE_RIGHT);
         layout.addComponent(buttonsLayout);
+    }
 
-        HorizontalLayout descriptionLayout = new HorizontalLayout();
-        descriptionLayout.setSpacing(true);
-        layout.addComponent(descriptionLayout);
-        descriptionLayout.addComponent(new Label(MESSAGES.get("editConfig.description")));
-        TextField descriptionField = new TextField();
-        descriptionField.addStyleName("configEditorDescriptionLabel");
-        MethodProperty<String> label = new MethodProperty<String>(config, "label");
-        descriptionField.setPropertyDataSource(label);
-        descriptionLayout.addComponent(descriptionField);
+    private void saveClicked() {
+        if (validate()) {
+            save();
+            navigator.showNotification("", MESSAGES.get("editConfig.messageSaved"));
+        }
+    }
 
-        editor = new OnePageEditor(MESSAGES, services, navigator, config);
-        layout.addComponent(editor);
+    private void exportClicked(Exporter exporter) {
+        if (validate()) {
+            save();
+            exporter.export();
+        }
     }
 
     public void setConfig(UISyncConfig config) {
         this.config = config.normalized();
     }
 
-    private void save() {
-        // TODO refactor: this method is long and ugly.
+    private boolean validate() {
         errorMessageLabel.setValue("");
         try {
             editor.validate();
         } catch (FieldAlreadyMappedException e) {
             String s = MESSAGES.format("editConfig.error.fieldAlreadyMapped", e.getValue());
             errorMessageLabel.setValue(s);
-            return;
+            return false;
         } catch (FieldNotMappedException e) {
             String fieldDisplayName = GTaskDescriptor.getDisplayValue(e.getField());
             String s = MESSAGES.format("error.fieldSelectedForExportNotMapped", fieldDisplayName);
             errorMessageLabel.setValue(s);
-            return;
+            return false;
         } catch (BadConfigException e) {
             String s = ExceptionFormatter.format(e);
             errorMessageLabel.setValue(s);
-            return;
+            return false;
         }
+        return true;
+    }
+
+    private void save() {
+        // TODO refactor: this method is long and ugly.
         String userLoginName = services.getAuthenticator().getUserName();
         try {
             services.getUIConfigStore().saveConfig(userLoginName, config);
@@ -102,7 +149,6 @@ public class EditConfigPage extends Page {
             logger.error(message, e);
             return;
         }
-        navigator.showNotification("", MESSAGES.get("editConfig.messageSaved"));
     }
 
     @Override

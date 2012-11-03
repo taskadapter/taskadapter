@@ -1,9 +1,11 @@
 package com.taskadapter.webui.config;
 
+import com.taskadapter.connector.definition.MappingSide;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.Navigator;
+import com.taskadapter.webui.export.Exporter;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
@@ -21,6 +23,7 @@ public class ConfigActionsPanel extends VerticalLayout {
     private static final String NO_DESCRIPTION_TEXT = "<i>No description</i>"; //&nbsp;
     private final Messages messages;
     private final Services services;
+    private ExportButtonsFragment exportButtonsFragment;
 
     public ConfigActionsPanel(Messages messages, Services services, Navigator navigator, UISyncConfig uiSyncConfig) {
         this.messages = messages;
@@ -44,7 +47,25 @@ public class ConfigActionsPanel extends VerticalLayout {
     }
 
     private void createActionButtons() {
-        horizontalLayout.addComponent(new ExportButtonsFragment(messages, services, navigator, syncConfig));
+        exportButtonsFragment = new ExportButtonsFragment();
+        addExportButtonListeners();
+        horizontalLayout.addComponent(exportButtonsFragment);
+    }
+
+    private void addExportButtonListeners() {
+        addExportButtonListener(exportButtonsFragment.getButtonLeft(), MappingSide.LEFT);
+        addExportButtonListener(exportButtonsFragment.getButtonRight(), MappingSide.RIGHT);
+    }
+
+    private void addExportButtonListener(Button button, MappingSide exportDirection) {
+        UISyncConfig configForExport = DirectionResolver.getDirectionalConfig(syncConfig, exportDirection);
+        final Exporter exporter = new Exporter(messages, services, navigator, configForExport);
+        button.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                exporter.export();
+            }
+        });
     }
 
     private void addDescription() {

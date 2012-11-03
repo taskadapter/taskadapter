@@ -7,7 +7,7 @@ import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
-import com.taskadapter.webui.Navigator;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
@@ -19,14 +19,13 @@ public class OnePageEditor extends VerticalLayout implements WindowProvider {
     @Deprecated
     private Services services;
 
-    private Navigator navigator;
     private UISyncConfig config;
     private TaskFieldsMappingFragment taskFieldsMappingFragment;
+    private ExportButtonsFragment exportButtonsFragment;
 
-    public OnePageEditor(Messages messages, Services services, Navigator navigator, UISyncConfig config) {
+    public OnePageEditor(Messages messages, Services services, UISyncConfig config) {
         this.messages = messages;
         this.services = services;
-        this.navigator = navigator;
         this.config = config;
         buildUI();
     }
@@ -41,7 +40,8 @@ public class OnePageEditor extends VerticalLayout implements WindowProvider {
     private void addConnectorsPanel() {
         HorizontalLayout layout = new HorizontalLayout();
         layout.addComponent(createMiniPanel(config.getConnector1()));
-        layout.addComponent(new ExportButtonsFragment(messages, services, navigator, config));
+        exportButtonsFragment = new ExportButtonsFragment();
+        layout.addComponent(exportButtonsFragment);
         layout.addComponent(createMiniPanel(config.getConnector2()));
         addComponent(layout);
     }
@@ -67,6 +67,16 @@ public class OnePageEditor extends VerticalLayout implements WindowProvider {
     }
 
     public void validate() throws BadConfigException {
+        // TODO !!! validate left/right editors too. this was lost during the last refactoring.
         taskFieldsMappingFragment.validate();
     }
+
+    Button getButtonRight() {
+        return exportButtonsFragment.getButtonRight();
+    }
+
+    Button getButtonLeft() {
+        return exportButtonsFragment.getButtonLeft();
+    }
+
 }
