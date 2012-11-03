@@ -103,19 +103,6 @@ public class ChangePasswordDialog extends Window {
         grid.addComponent(oldPassword);
         oldPasswordField = new PasswordField();
         grid.addComponent(oldPasswordField);
-//        oldPasswordField.setImmediate(true);
-//        oldPasswordField.addListener(new FieldEvents.TextChangeListener() {
-//            @Override
-//            public void textChange(FieldEvents.TextChangeEvent textChangeEvent) {
-//                oldPasswordField.setComponentError(null);
-//            }
-//        });
-//        oldPasswordField.addListener(new FieldEvents.FocusListener() {
-//            @Override
-//            public void focus(FieldEvents.FocusEvent focusEvent) {
-//                oldPasswordField.setComponentError(null);
-//            }
-//        });
     }
 
     private void createNewPasswordField() {
