@@ -59,7 +59,7 @@ public class EditConfigPage extends Page {
         HorizontalLayout descriptionLayout = new HorizontalLayout();
         descriptionLayout.setSpacing(true);
         layout.addComponent(descriptionLayout);
-        descriptionLayout.addComponent(new Label("Description:"));
+        descriptionLayout.addComponent(new Label(MESSAGES.get("editConfig.description")));
         TextField descriptionField = new TextField();
         descriptionField.addStyleName("configEditorDescriptionLabel");
         MethodProperty<String> label = new MethodProperty<String>(config, "label");
@@ -97,7 +97,7 @@ public class EditConfigPage extends Page {
         try {
             services.getUIConfigStore().saveConfig(userLoginName, config);
         } catch (StorageException e) {
-            String message = "Can't save: " + e.getMessage();
+            String message = MESSAGES.format("editConfig.error.cantSave", e.getMessage());
             errorMessageLabel.setValue(message);
             logger.error(message, e);
             return;

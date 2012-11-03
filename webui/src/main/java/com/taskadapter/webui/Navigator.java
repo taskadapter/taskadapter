@@ -16,7 +16,8 @@ import com.vaadin.ui.Window;
 import org.vaadin.googleanalytics.tracking.GoogleAnalyticsTracker;
 
 public class Navigator {
-    public static final String MAIN_WIDTH = "920px";// like GitHub
+    private static final String GOOGLE_ANALYTICS_ID = "UA-3768502-12";
+    static final String MAIN_WIDTH = "920px";// like GitHub
 
     private HorizontalLayout navigationPanel;
     private HorizontalLayout currentComponentArea = new HorizontalLayout();
@@ -35,13 +36,14 @@ public class Navigator {
     }
 
     private void addGoogleAnalytics() {
-        tracker = new GoogleAnalyticsTracker("UA-3768502-12", "none");
+        tracker = new GoogleAnalyticsTracker(GOOGLE_ANALYTICS_ID, "none");
         // Add ONLY ONE tracker per window
         layout.getWindow().addComponent(tracker);
     }
 
     private void buildUI() {
-        Header header = new Header(this, services);
+        // TODO !! this is a hack
+        Header header = new Header(Page.MESSAGES, this, services);
         header.setHeight(50, Sizeable.UNITS_PIXELS);
         header.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         layout.addComponent(header);

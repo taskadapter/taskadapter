@@ -1,6 +1,7 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.license.LicenseChangeListener;
+import com.taskadapter.web.data.Messages;
 import com.taskadapter.webui.user.ChangePasswordDialog;
 import com.taskadapter.web.service.Authenticator;
 import com.taskadapter.web.service.LoginEventListener;
@@ -22,11 +23,14 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
     private HorizontalLayout internalLayout = new HorizontalLayout();
     private HorizontalLayout panelForLoggedInUsers;
     private VerticalLayout trialLayout = new VerticalLayout();
-    private Navigator navigator;
-    private Services services;
+
+    private final Messages messages;
+    private final Navigator navigator;
+    private final Services services;
     private Button configureButton;
 
-    public Header(Navigator navigator, Services services) {
+    public Header(Messages messages, Navigator navigator, Services services) {
+        this.messages = messages;
         this.navigator = navigator;
         this.services = services;
         buildMainLayout();
@@ -168,9 +172,8 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
         configureButton.setVisible(userLoggedIn);
     }
 
-    private static void startChangePasswordProcess(Window parentWindow, final UserManager userManager, final Authenticator authenticator) {
-        ChangePasswordDialog passwordDialog = new ChangePasswordDialog(userManager, authenticator);
+    private void startChangePasswordProcess(Window parentWindow, final UserManager userManager, final Authenticator authenticator) {
+        ChangePasswordDialog passwordDialog = new ChangePasswordDialog(messages, userManager, authenticator);
         parentWindow.addWindow(passwordDialog);
     }
-
 }
