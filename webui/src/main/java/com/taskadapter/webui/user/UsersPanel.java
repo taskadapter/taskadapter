@@ -23,11 +23,10 @@ import java.util.Comparator;
 import java.util.List;
 
 public class UsersPanel extends Panel implements LicenseChangeListener {
-    // TODO !!! for Maxim K - need to get global Messages object in some other way,
-    // not just rebuild is many times everywhere.
-    private static final Messages MESSAGES = new Messages("com.taskadapter.webui.data.messages");
 
     private static final int COLUMNS_NUMBER = 3;
+
+    private final Messages messages;
 
     private Services services;
     private GridLayout usersLayout;
@@ -35,8 +34,9 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     private Button addUserButton;
     private Label statusLabel;
 
-    public UsersPanel(Services services) {
-        super(MESSAGES.get("users.title"));
+    public UsersPanel(Messages messages, Services services) {
+        super(messages.get("users.title"));
+        this.messages = messages;
         this.services = services;
         services.getLicenseManager().addLicenseChangeListener(this);
         refreshPage();
@@ -99,7 +99,7 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     }
 
     private void addSetPasswordButton(final String userLoginName) {
-        Button setPasswordButton = new Button(MESSAGES.get("users.setPassword"));
+        Button setPasswordButton = new Button(messages.get("users.setPassword"));
         setPasswordButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -119,7 +119,7 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     }
 
     private void addDeleteButton(final String userLoginName) {
-        Button deleteButton = new Button(MESSAGES.get("button.delete"));
+        Button deleteButton = new Button(messages.get("button.delete"));
         deleteButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -130,10 +130,10 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     }
 
     private void startDeleteProcess(final String userLoginName) {
-        final String deleteText = MESSAGES.get("button.delete");
+        final String deleteText = messages.get("button.delete");
         MessageDialog messageDialog = new MessageDialog(
-                MESSAGES.get("users.pleaseConfirm"),
-                MESSAGES.format("users.deleteUser", userLoginName),
+                messages.get("users.pleaseConfirm"),
+                messages.format("users.deleteUser", userLoginName),
                 Arrays.asList(deleteText, MessageDialog.CANCEL_BUTTON_LABEL),
                 new MessageDialog.Callback() {
                     public void onDialogResult(String answer) {
@@ -151,7 +151,7 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
         try {
             services.getUserManager().deleteUser(userLoginName);
         } catch (IOException e) {
-            errorLabel.setValue(MESSAGES.format("users.error.cantDeleteUser", e.toString()));
+            errorLabel.setValue(messages.format("users.error.cantDeleteUser", e.toString()));
         }
         refreshPage();
     }
@@ -163,15 +163,15 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
             if (numberOfRegisteredUsers < maxUsersNumber) {
                 addCreateUserSection();
             } else {
-                statusLabel.setValue(MESSAGES.get("users.maximumUsersNumberReached"));
+                statusLabel.setValue(messages.get("users.maximumUsersNumberReached"));
             }
         } else {
-            statusLabel.setValue(MESSAGES.get("users.cantAddUsersUntilLicenseInstalled"));
+            statusLabel.setValue(messages.get("users.cantAddUsersUntilLicenseInstalled"));
         }
     }
 
     private void addCreateUserSection() {
-        addUserButton = new Button(MESSAGES.get("users.addUser"));
+        addUserButton = new Button(messages.get("users.addUser"));
         addUserButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -212,9 +212,9 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     }
 
     // TODO this is similar to startChangePasswordProcess() in Header class.
-    private static void startSetPasswordProcess(Window parentWindow, final UserManager userManager, final String userLoginName) {
-        InputDialog inputDialog = new InputDialog(MESSAGES.format("users.changePassword", userLoginName),
-                MESSAGES.get("users.newPassword"),
+    private void startSetPasswordProcess(Window parentWindow, final UserManager userManager, final String userLoginName) {
+        InputDialog inputDialog = new InputDialog(messages.format("users.changePassword", userLoginName),
+                messages.get("users.newPassword"),
                 new InputDialog.Recipient() {
                     public void gotInput(String newPassword) {
                         userManager.saveUser(userLoginName, newPassword);

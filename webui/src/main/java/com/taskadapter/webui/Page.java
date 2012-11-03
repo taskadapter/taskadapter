@@ -5,7 +5,7 @@ import com.taskadapter.web.service.Services;
 import com.vaadin.ui.Component;
 
 public abstract class Page {
-    private static final String BUNDLE_NAME = "com.taskadapter.webui.data.messages";
+    public static final String BUNDLE_NAME = "com.taskadapter.webui.data.messages";
     // TODO !! do not create instances in every single page!
     protected static final Messages MESSAGES = new Messages(BUNDLE_NAME);
 

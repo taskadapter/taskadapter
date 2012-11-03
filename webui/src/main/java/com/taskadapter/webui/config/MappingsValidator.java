@@ -30,8 +30,6 @@ public class MappingsValidator {
     }
 
     private static void validateFieldsAreOnlyUsedOnce(NewMappings mappings) throws FieldAlreadyMappedException {
-        // TODO !!! also need to check for the "internal" fields used by our MSP connectors.
-        // see FIELD_WORK_UNDEFINED and FIELD_DURATION_UNDEFINED in MSXMLFileWriter
         Set<String> connector1Values = new HashSet<String>();
         Set<String> connector2Values = new HashSet<String>();
         for (FieldMapping mapping : mappings.getMappings()) {

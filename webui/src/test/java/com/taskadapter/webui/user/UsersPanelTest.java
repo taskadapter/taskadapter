@@ -5,8 +5,10 @@ import com.google.common.io.Resources;
 import com.taskadapter.connector.testlib.FileBasedTest;
 import com.taskadapter.license.LicenseException;
 import com.taskadapter.web.PluginEditorFactory;
+import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.EditorManager;
 import com.taskadapter.web.service.Services;
+import com.taskadapter.webui.Page;
 import com.vaadin.ui.Button;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +31,7 @@ public class UsersPanelTest extends FileBasedTest {
 
     @Test
     public void addUserButtonIsHiddenWithoutLicense() {
-        UsersPanel panel = new UsersPanel(services);
+        UsersPanel panel = new UsersPanel(new Messages(Page.BUNDLE_NAME), services);
         assertNull(panel.getAddUserButton());
         assertEquals("Can't add users until a license is installed.", panel.getStatusLabelText());
     }
@@ -38,7 +40,7 @@ public class UsersPanelTest extends FileBasedTest {
     public void addUserButtonIsShownWith5UserLicenseAndNoUsers() throws IOException, LicenseException {
         String validMultiUserLicense = Resources.toString(Resources.getResource("license/taskadapterweb.5-users.license"), Charsets.UTF_8);
         services.getLicenseManager().setNewLicense(validMultiUserLicense);
-        UsersPanel panel = new UsersPanel(services);
+        UsersPanel panel = new UsersPanel(new Messages(Page.BUNDLE_NAME), services);
         assertTrue(panel.getAddUserButton() instanceof Button);
         assertEquals("", panel.getStatusLabelText());
     }
@@ -48,7 +50,7 @@ public class UsersPanelTest extends FileBasedTest {
         String validMultiUserLicense = Resources.toString(Resources.getResource("license/taskadapterweb.5-users.license"), Charsets.UTF_8);
         services.getLicenseManager().setNewLicense(validMultiUserLicense);
         createUsers(services, 4);
-        UsersPanel panel = new UsersPanel(services);
+        UsersPanel panel = new UsersPanel(new Messages(Page.BUNDLE_NAME), services);
         assertEquals("", panel.getStatusLabelText());
         assertTrue(panel.getAddUserButton() instanceof Button);
     }
@@ -58,7 +60,7 @@ public class UsersPanelTest extends FileBasedTest {
         String validMultiUserLicense = Resources.toString(Resources.getResource("license/taskadapterweb.5-users.license"), Charsets.UTF_8);
         services.getLicenseManager().setNewLicense(validMultiUserLicense);
         createUsers(services, 5);
-        UsersPanel panel = new UsersPanel(services);
+        UsersPanel panel = new UsersPanel(new Messages(Page.BUNDLE_NAME), services);
         assertNull(panel.getAddUserButton());
         assertEquals("Maximum users number allowed by your license is reached.", panel.getStatusLabelText());
     }

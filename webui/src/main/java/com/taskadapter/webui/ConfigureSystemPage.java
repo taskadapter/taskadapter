@@ -32,7 +32,7 @@ public class ConfigureSystemPage extends Page {
     }
 
     private void createUsersSection() {
-        layout.addComponent(new UsersPanel(services));
+        layout.addComponent(new UsersPanel(MESSAGES, services));
     }
 
     private void setPanelWidth(Panel panel) {
