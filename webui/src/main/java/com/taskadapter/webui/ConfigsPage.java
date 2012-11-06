@@ -84,7 +84,7 @@ public class ConfigsPage extends Page {
     private void filterFields(String filterStr) {
         lastFilter = filterStr;
         final String[] words = filterStr == null ? new String[0] : filterStr
-                .split(" +");
+                .toLowerCase().split(" +");
         final Iterator<Component> compiter = configsLayout.getComponentIterator();
         while (compiter.hasNext()) {
             final ConfigActionsPanel cap = (ConfigActionsPanel) compiter.next();
@@ -97,9 +97,11 @@ public class ConfigsPage extends Page {
             return true;
         }
         for (String name : filters) {
-            if (!config.getLabel().contains(name)
-                    && !config.getConnector1().getLabel().contains(name)
-                    && !config.getConnector2().getLabel().contains(name)) {
+            if (!config.getLabel().toLowerCase().contains(name)
+                    && !config.getConnector1().getLabel().toLowerCase()
+                            .contains(name)
+                    && !config.getConnector2().getLabel().toLowerCase()
+                            .contains(name)) {
                 return false;
             }
         }
