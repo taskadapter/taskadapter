@@ -30,6 +30,7 @@ public class ConfigsPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
     private GridLayout configsLayout = new GridLayout();
     private final TextField filterField = new TextField();
+    private String lastFilter;
 
     public ConfigsPage() {
         buildUI();
@@ -77,9 +78,11 @@ public class ConfigsPage extends Page {
         for (UISyncConfig config : allConfigs) {
             addConfigToPage(config);
         }
+        filterFields(lastFilter);
     }
 
     private void filterFields(String filterStr) {
+        lastFilter = filterStr;
         final String[] words = filterStr == null ? new String[0] : filterStr
                 .split(" +");
         final Iterator<Component> compiter = configsLayout.getComponentIterator();
