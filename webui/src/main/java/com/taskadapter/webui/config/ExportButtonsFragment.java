@@ -6,11 +6,11 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Runo;
 
-class ExportButtonsFragment extends VerticalLayout {
+public final class ExportButtonsFragment extends VerticalLayout {
     private Button buttonRight;
     private Button buttonLeft;
 
-    ExportButtonsFragment() {
+    public ExportButtonsFragment() {
         buildUI();
     }
 
@@ -42,11 +42,19 @@ class ExportButtonsFragment extends VerticalLayout {
         return button;
     }
 
-    Button getButtonRight() {
+    /**
+     * @deprecated buttons must be incapsulated properly!
+     */
+    @Deprecated
+    public Button getButtonRight() {
         return buttonRight;
     }
 
-    Button getButtonLeft() {
+    /**
+     * @deprecated buttons must be incapsulated properly!
+     */
+    @Deprecated
+    public Button getButtonLeft() {
         return buttonLeft;
     }
 }

@@ -1,10 +1,11 @@
-package com.taskadapter.webui.config;
+package com.taskadapter.webui;
 
 import com.taskadapter.connector.definition.MappingSide;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
 import com.taskadapter.web.uiapi.UISyncConfig;
-import com.taskadapter.webui.Navigator;
+import com.taskadapter.webui.config.DirectionResolver;
+import com.taskadapter.webui.config.ExportButtonsFragment;
 import com.taskadapter.webui.export.Exporter;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -86,5 +87,9 @@ public class ConfigActionsPanel extends VerticalLayout {
             }
         });
         horizontalLayout.addComponent(configBoxButton);
+    }
+
+    UISyncConfig getConfig() {
+        return syncConfig;
     }
 }
