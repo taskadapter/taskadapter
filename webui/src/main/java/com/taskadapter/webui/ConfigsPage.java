@@ -3,9 +3,10 @@ package com.taskadapter.webui;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.terminal.Sizeable;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
@@ -26,11 +27,11 @@ public class ConfigsPage extends Page {
                 }
             };
     
-    private static final int COLUMNS_NUMBER = 1;
     private VerticalLayout layout = new VerticalLayout();
-    private GridLayout configsLayout = new GridLayout();
+    private VerticalLayout configsLayout = new VerticalLayout();
     private final TextField filterField = new TextField();
     private String lastFilter;
+    private HorizontalLayout actionPanel;
 
     public ConfigsPage() {
         buildUI();
@@ -38,27 +39,40 @@ public class ConfigsPage extends Page {
 
     private void buildUI() {
         layout.setSpacing(true);
-        createAddButton();
-        
+
+        addActionBar();
+        addCreateNewConfigButton();
+        addFilter();
+
+        configsLayout.setSpacing(true);
+        configsLayout.setWidth(480, Sizeable.UNITS_PIXELS);
+        layout.addComponent(configsLayout);
+        configsLayout.addStyleName("configsTable");
+    }
+
+    private void addActionBar() {
+        actionPanel = new HorizontalLayout();
+        actionPanel.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        layout.addComponent(actionPanel);
+    }
+
+    private void addFilter() {
         final HorizontalLayout filterPanel = new HorizontalLayout();
-        filterField.addListener(new FieldEvents.TextChangeListener() {            
+        filterField.addListener(new FieldEvents.TextChangeListener() {
             @Override
             public void textChange(TextChangeEvent event) {
                 filterFields(event.getText());
             }
         });
         filterPanel.addComponent(new Label("Filter"));
+        filterPanel.addStyleName("filterPanel");
         filterPanel.addComponent(filterField);
         filterPanel.setSpacing(true);
-        layout.addComponent(filterPanel);
-
-        configsLayout.setColumns(COLUMNS_NUMBER);
-        configsLayout.setSpacing(true);
-        layout.addComponent(configsLayout);
-        configsLayout.addStyleName("configsTable");
+        actionPanel.addComponent(filterPanel);
+        actionPanel.setComponentAlignment(filterPanel, Alignment.MIDDLE_RIGHT);
     }
 
-    private void createAddButton() {
+    private void addCreateNewConfigButton() {
         Button addButton = new Button("New config");
         addButton.addListener(new Button.ClickListener() {
             @Override
@@ -66,7 +80,9 @@ public class ConfigsPage extends Page {
                 navigator.show(new NewConfigPage());
             }
         });
-        layout.addComponent(addButton);
+        actionPanel.addComponent(addButton);
+        actionPanel.setComponentAlignment(addButton, Alignment.MIDDLE_LEFT);
+
     }
 
     private void reloadConfigs() {
