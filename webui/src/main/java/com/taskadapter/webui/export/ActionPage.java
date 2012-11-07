@@ -10,6 +10,7 @@ import com.taskadapter.webui.Page;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalLayout;
@@ -54,6 +55,11 @@ public abstract class ActionPage extends Page {
         label.setContentMode(Label.CONTENT_XHTML);
         mainPanel.addComponent(label);
 
+        addButtons();
+    }
+
+    private void addButtons() {
+        HorizontalLayout buttonsLayout = new HorizontalLayout();
         Button goButton = new Button(MESSAGES.get("button.go"));
         goButton.addListener(new Button.ClickListener() {
             @Override
@@ -64,10 +70,11 @@ public abstract class ActionPage extends Page {
                 new LoadWorker().start();
             }
         });
-        mainPanel.addComponent(goButton);
+        buttonsLayout.addComponent(goButton);
 
         Button cancelButton = ButtonBuilder.createBackButton(navigator, MESSAGES.get("button.cancel"));
-        mainPanel.addComponent(cancelButton);
+        buttonsLayout.addComponent(cancelButton);
+        mainPanel.addComponent(buttonsLayout);
     }
 
     protected void buildLoadingPage() {
