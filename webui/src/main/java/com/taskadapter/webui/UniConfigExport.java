@@ -39,7 +39,7 @@ final class UniConfigExport {
     
     private HorizontalLayout createUI() {
         final HorizontalLayout res = new HorizontalLayout();
-        res.setWidth(273, Sizeable.UNITS_PIXELS);
+        res.setWidth(274, Sizeable.UNITS_PIXELS);
         res.addStyleName("uniExportPanel");
         
         final UIConnectorConfig config1;
