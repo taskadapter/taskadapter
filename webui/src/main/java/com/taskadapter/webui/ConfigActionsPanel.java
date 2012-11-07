@@ -79,8 +79,4 @@ public class ConfigActionsPanel extends VerticalLayout {
         horizontalLayout.addComponent(new UniConfigExport(messages, services,
                 navigator, syncConfig.reverse()).getUI());
     }
-
-    UISyncConfig getConfig() {
-        return syncConfig;
-    }
 }

@@ -32,6 +32,7 @@ public class ConfigsPage extends Page {
     private final TextField filterField = new TextField();
     private String lastFilter;
     private HorizontalLayout actionPanel;
+    private List<UISyncConfig> cachedConfigs;
 
     public ConfigsPage() {
         buildUI();
@@ -95,6 +96,7 @@ public class ConfigsPage extends Page {
         for (UISyncConfig config : allConfigs) {
             addConfigToPage(config);
         }
+        this.cachedConfigs = allConfigs;
         filterFields(lastFilter);
     }
 
@@ -102,10 +104,11 @@ public class ConfigsPage extends Page {
         lastFilter = filterStr;
         final String[] words = filterStr == null ? new String[0] : filterStr
                 .toLowerCase().split(" +");
-        final Iterator<Component> compiter = configsLayout.getComponentIterator();
-        while (compiter.hasNext()) {
-            final ConfigActionsPanel cap = (ConfigActionsPanel) compiter.next();
-            cap.setVisible(matches(cap.getConfig(), words));
+        configsLayout.removeAllComponents();
+        for (UISyncConfig config : cachedConfigs) {
+            if (matches(config, words)) {
+                addConfigToPage(config);
+            }
         }
     }
 
