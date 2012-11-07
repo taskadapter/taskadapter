@@ -69,7 +69,7 @@ public class ConfigActionsPanel extends VerticalLayout {
     }
 
     private void addEditIcon() {
-        final Embedded editButton = new Embedded("", new ThemeResource("img/edit.png"));
+        final Embedded editButton = new Embedded(null, new ThemeResource("img/edit.png"));
         descriptionLayout.addComponent(editButton);
         descriptionLayout.setComponentAlignment(editButton, Alignment.MIDDLE_RIGHT);
     }
