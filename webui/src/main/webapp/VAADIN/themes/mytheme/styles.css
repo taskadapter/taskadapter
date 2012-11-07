@@ -162,6 +162,14 @@
     margin-bottom: 3px;
 }
 
+.configDescriptionPanel :hover {
+    background-color: #F0F0F0;
+}
+
+.configDescriptionPanel :active {
+    background-color: #d3d3d3;
+}
+
 .configDescriptionLabel {
     font-size: 16px;
     padding-left: 5px;

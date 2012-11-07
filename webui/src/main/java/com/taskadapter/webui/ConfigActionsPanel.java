@@ -7,13 +7,15 @@ import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.config.DirectionResolver;
 import com.taskadapter.webui.config.ExportButtonsFragment;
 import com.taskadapter.webui.export.Exporter;
+import com.vaadin.event.LayoutEvents;
+import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Runo;
 
 /**
  * Buttons panel with left/right arrows.
@@ -26,7 +28,6 @@ public class ConfigActionsPanel extends VerticalLayout {
     private final Messages messages;
     private final Services services;
     private ExportButtonsFragment exportButtonsFragment;
-    private Button editButton;
     private HorizontalLayout descriptionLayout;
 
     public ConfigActionsPanel(Messages messages, Services services, Navigator navigator, UISyncConfig uiSyncConfig) {
@@ -48,9 +49,15 @@ public class ConfigActionsPanel extends VerticalLayout {
         descriptionLayout = new HorizontalLayout();
         descriptionLayout.setWidth(100, UNITS_PERCENTAGE);
         descriptionLayout.addStyleName("configDescriptionPanel");
+        descriptionLayout.addListener(new LayoutEvents.LayoutClickListener() {
+            @Override
+            public void layoutClick(LayoutClickEvent event) {
+                navigator.showConfigureTaskPage(syncConfig);
+            }
+        });
         addComponent(descriptionLayout);
         addDescription();
-        addEditButton();
+        addEditIcon();
     }
 
     private void addDescription() {
@@ -61,17 +68,8 @@ public class ConfigActionsPanel extends VerticalLayout {
         descriptionLayout.setComponentAlignment(description, Alignment.MIDDLE_LEFT);
     }
 
-    private void addEditButton() {
-        editButton = new Button();
-        editButton.setIcon(new ThemeResource("img/edit.png"));
-        editButton.setStyleName(Runo.BUTTON_SMALL);
-        editButton.addStyleName("editConfigButton");
-        editButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                navigator.showConfigureTaskPage(syncConfig);
-            }
-        });
+    private void addEditIcon() {
+        final Embedded editButton = new Embedded("", new ThemeResource("img/edit.png"));
         descriptionLayout.addComponent(editButton);
         descriptionLayout.setComponentAlignment(editButton, Alignment.MIDDLE_RIGHT);
     }
