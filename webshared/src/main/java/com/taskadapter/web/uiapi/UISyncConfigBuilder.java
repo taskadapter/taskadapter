@@ -3,7 +3,6 @@ package com.taskadapter.web.uiapi;
 import com.google.gson.Gson;
 import com.taskadapter.config.StoredConnectorConfig;
 import com.taskadapter.config.StoredExportConfig;
-import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.NewMappings;
 
 //TODO: This class should really be package-visible.
@@ -32,7 +31,10 @@ public final class UISyncConfigBuilder {
                 : new Gson().fromJson(storedConfig.getMappings(),
                 NewMappings.class);
 
-        return new UISyncConfig(storedConfig.getId(), label, config1, config2, mappings, false);
+        final NewMappings fixedMappings = MappingFixer.fixMappings(mappings,
+                config1.getAvailableFields(), config2.getAvailableFields(),
+                false);
+        return new UISyncConfig(storedConfig.getId(), label, config1, config2, fixedMappings, false);
     }
 
 }
