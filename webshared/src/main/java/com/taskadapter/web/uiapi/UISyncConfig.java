@@ -104,6 +104,15 @@ public final class UISyncConfig {
         return reversed ? reverse() : this;
     }
     
+    /**
+     * Checks, if config is reversed (i.e. connector1/connector2 are opposite
+     * from a stored data).
+     * @return <code>true</code> iff config is reversed.
+     */
+    public boolean isReversed() {
+        return reversed;
+    }
+    
     private static NewMappings reverse(NewMappings mappings) {
         final NewMappings result = new NewMappings();
         for (FieldMapping mapping : mappings.getMappings()) {

@@ -153,14 +153,15 @@
 }
 
 .configPanelInConfigsList {
-    margin-bottom: 20px;
+    margin-bottom: 0px;
 }
 
 .configDescriptionPanel {
     background-color: #e3e3e3;
-    color: #222219;
+    color: #444438;
     margin-bottom: 3px;
     cursor: pointer;
+    font-weight: bold;
 }
 
 .configDescriptionPanel :hover {
@@ -176,16 +177,31 @@
     padding-left: 5px;
 }
 
-.connectorLabelInBlueBox {
+.uniExportPanel {
     background-color: #dcf7ff;
     color: #222219;
     border: 1px solid gray;
-    border-radius: 4px;
-    width: 200px;
-    height: 27px;
-    padding-top: 10px;
-    text-align: center;
-    font-size: 16px;
+    border-radius: 2px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.uniExportPanel :hover {
+    background-color: #ecffff;
+    color: #333329;
+}
+
+.uniExportPanel :active {
+    background-color: #cce7ef;
+    color: #222219;
+}
+
+.uniExportPanel .left-label {
+	text-align: right;
+}
+
+.uniExportPanel .right-label {
+    text-align: left;
 }
 
 .editableConnectorTitle {

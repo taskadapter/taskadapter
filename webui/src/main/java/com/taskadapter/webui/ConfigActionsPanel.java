@@ -1,17 +1,12 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.connector.definition.MappingSide;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
 import com.taskadapter.web.uiapi.UISyncConfig;
-import com.taskadapter.webui.config.DirectionResolver;
-import com.taskadapter.webui.config.ExportButtonsFragment;
-import com.taskadapter.webui.export.Exporter;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -27,7 +22,6 @@ public class ConfigActionsPanel extends VerticalLayout {
     private static final String NO_DESCRIPTION_TEXT = "<i>No description</i>"; //&nbsp;
     private final Messages messages;
     private final Services services;
-    private ExportButtonsFragment exportButtonsFragment;
     private HorizontalLayout descriptionLayout;
 
     public ConfigActionsPanel(Messages messages, Services services, Navigator navigator, UISyncConfig uiSyncConfig) {
@@ -42,7 +36,7 @@ public class ConfigActionsPanel extends VerticalLayout {
         addStyleName("configPanelInConfigsList");
 
         addDescriptionPart();
-        addExportPart();
+        addModernExportPart();
     }
 
     private void addDescriptionPart() {
@@ -74,43 +68,16 @@ public class ConfigActionsPanel extends VerticalLayout {
         descriptionLayout.setComponentAlignment(editButton, Alignment.MIDDLE_RIGHT);
     }
 
-    private void addExportPart() {
+    private void addModernExportPart() {
         horizontalLayout = new HorizontalLayout();
         horizontalLayout.setSpacing(true);
         addComponent(horizontalLayout);
 
-        createBox(syncConfig.getConnector1().getLabel());
-        createActionButtons();
-        createBox(syncConfig.getConnector2().getLabel());
-    }
-
-    private void createActionButtons() {
-        exportButtonsFragment = new ExportButtonsFragment();
-        addExportButtonListeners();
-        horizontalLayout.addComponent(exportButtonsFragment);
-    }
-
-    private void addExportButtonListeners() {
-        addExportButtonListener(exportButtonsFragment.getButtonLeft(), MappingSide.LEFT);
-        addExportButtonListener(exportButtonsFragment.getButtonRight(), MappingSide.RIGHT);
-    }
-
-    private void addExportButtonListener(Button button, MappingSide exportDirection) {
-        UISyncConfig configForExport = DirectionResolver.getDirectionalConfig(syncConfig, exportDirection);
-        final Exporter exporter = new Exporter(messages, services, navigator, configForExport);
-        button.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                exporter.export();
-            }
-        });
-    }
-
-    private void createBox(final String label) {
-        Label configBoxButton = new Label(label);
-        configBoxButton.addStyleName("connectorLabelInBlueBox");
-        horizontalLayout.addComponent(configBoxButton);
-        horizontalLayout.setComponentAlignment(configBoxButton, Alignment.MIDDLE_CENTER);
+        horizontalLayout
+                .addComponent(new UniConfigExport(messages, services,
+                        navigator, syncConfig).getUI());
+        horizontalLayout.addComponent(new UniConfigExport(messages, services,
+                navigator, syncConfig.reverse()).getUI());
     }
 
     UISyncConfig getConfig() {
