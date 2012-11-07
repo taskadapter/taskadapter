@@ -13,33 +13,23 @@ public class MiniPanel extends GridLayout {
     private WindowProvider windowProvider;
     private UIConnectorConfig config;
     private Window newWindow;
-    private Label dataLocationLabel;
+    private Label connectorLabel;
 
     public MiniPanel(WindowProvider windowProvider, UIConnectorConfig connectorConfig) {
         this.windowProvider = windowProvider;
         this.config = connectorConfig;
-        buildU();
+        buildUI();
     }
 
-    private void buildU() {
+    private void buildUI() {
         setColumns(COLUMNS_NUMBER);
         setMargin(true);
         setSpacing(true);
 
-        dataLocationLabel = new Label();
-        addComponent(dataLocationLabel);
+        connectorLabel = new Label();
+        connectorLabel.addStyleName("connectorLabelInBlueBox");
+        addComponent(connectorLabel);
         refreshLabel();
-
-        Button editServerButton = EditorUtil.createButton("Edit", "Edit the server settings",
-                new Button.ClickListener() {
-                    @Override
-                    public void buttonClick(Button.ClickEvent event) {
-                        showEditServerDialog();
-                    }
-                }
-        );
-        addComponent(editServerButton);
-
         configureEditServerWindow();
     }
 
@@ -57,10 +47,10 @@ public class MiniPanel extends GridLayout {
 
     private void refreshLabel() {
         Property connectorLabel = EditorUtil.wrapNulls(new MethodProperty<String>(config.getRawConfig(), "label"));
-        dataLocationLabel.setPropertyDataSource(connectorLabel);
+        this.connectorLabel.setPropertyDataSource(connectorLabel);
     }
 
-    private void showEditServerDialog() {
+    public void showEditConnectorDialog() {
         newWindow.center();
         newWindow.setModal(true);
 

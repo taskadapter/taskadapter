@@ -2,15 +2,18 @@ package com.taskadapter.webui.config;
 
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.WindowProvider;
+import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.MiniPanel;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Runo;
 
 public class OnePageEditor extends VerticalLayout implements WindowProvider {
 
@@ -31,7 +34,7 @@ public class OnePageEditor extends VerticalLayout implements WindowProvider {
     }
 
     private void buildUI() {
-        setWidth(500, UNITS_PIXELS);
+        setWidth(760, UNITS_PIXELS);
         setMargin(true);
         addConnectorsPanel();
         addMappingPanel();
@@ -39,10 +42,23 @@ public class OnePageEditor extends VerticalLayout implements WindowProvider {
 
     private void addConnectorsPanel() {
         HorizontalLayout layout = new HorizontalLayout();
-        layout.addComponent(createMiniPanel(config.getConnector1()));
+
+        MiniPanel miniPanel1 = createMiniPanel(config.getConnector1());
+        Button editButton1 = createEditButton(miniPanel1);
+        layout.addComponent(editButton1);
+        layout.setComponentAlignment(editButton1, Alignment.MIDDLE_LEFT);
+        layout.addComponent(miniPanel1);
+
         exportButtonsFragment = new ExportButtonsFragment();
         layout.addComponent(exportButtonsFragment);
-        layout.addComponent(createMiniPanel(config.getConnector2()));
+        layout.setComponentAlignment(exportButtonsFragment, Alignment.MIDDLE_CENTER);
+
+        MiniPanel miniPanel2 = createMiniPanel(config.getConnector2());
+        Button editButton2 = createEditButton(miniPanel2);
+
+        layout.addComponent(miniPanel2);
+        layout.addComponent(editButton2);
+        layout.setComponentAlignment(editButton2, Alignment.MIDDLE_RIGHT);
         addComponent(layout);
     }
 
@@ -51,17 +67,27 @@ public class OnePageEditor extends VerticalLayout implements WindowProvider {
         addComponent(taskFieldsMappingFragment);
     }
 
-    private Panel createMiniPanel(UIConnectorConfig connectorConfig) {
+    private MiniPanel createMiniPanel(UIConnectorConfig connectorConfig) {
         MiniPanel miniPanel = new MiniPanel(this, connectorConfig);
         // "services" instance is only used by MSP Editor Factory
         miniPanel.setPanelContents(connectorConfig.createMiniPanel(this, services));
-
-        Panel panel = new Panel(miniPanel);
-        panel.setWidth(200, UNITS_PIXELS);
-        panel.setCaption(connectorConfig.getConnectorTypeId());
-        return panel;
+        return miniPanel;
     }
 
+    private Button createEditButton(final MiniPanel miniPanel){
+        Button editButton = EditorUtil.createButton("", "Edit the connector settings",
+                new Button.ClickListener() {
+                    @Override
+                    public void buttonClick(Button.ClickEvent event) {
+                        miniPanel.showEditConnectorDialog();
+                    }
+                }
+        );
+        editButton.setIcon(new ThemeResource("img/edit.png"));
+        editButton.setStyleName(Runo.BUTTON_SMALL);
+        editButton.addStyleName("editConfigButton");
+        return editButton;
+    }
     private TaskFieldsMappingFragment createOnePageMappingPanel() {
         return new TaskFieldsMappingFragment(messages, config.getConnector1(), config.getConnector2(), config.getNewMappings());
     }

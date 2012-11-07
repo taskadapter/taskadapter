@@ -3,10 +3,10 @@ package com.taskadapter.webui.config;
 import com.taskadapter.connector.definition.MappingSide;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.themes.Runo;
 
-public final class ExportButtonsFragment extends VerticalLayout {
+public final class ExportButtonsFragment extends HorizontalLayout {
     private Button buttonRight;
     private Button buttonLeft;
 
@@ -16,10 +16,10 @@ public final class ExportButtonsFragment extends VerticalLayout {
 
     private void buildUI() {
         setSpacing(true);
-        buttonRight = createButton(MappingSide.RIGHT);
-        addComponent(buttonRight);
         buttonLeft = createButton(MappingSide.LEFT);
         addComponent(buttonLeft);
+        buttonRight = createButton(MappingSide.RIGHT);
+        addComponent(buttonRight);
     }
 
     private Button createButton(MappingSide exportDirection) {

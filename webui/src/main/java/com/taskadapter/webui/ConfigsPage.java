@@ -39,15 +39,16 @@ public class ConfigsPage extends Page {
 
     private void buildUI() {
         layout.setSpacing(true);
+        layout.setWidth(560, Sizeable.UNITS_PIXELS);
+
+        configsLayout.setSpacing(true);
+        configsLayout.setWidth(560, Sizeable.UNITS_PIXELS);
 
         addActionBar();
         addCreateNewConfigButton();
         addFilter();
 
-        configsLayout.setSpacing(true);
-        configsLayout.setWidth(480, Sizeable.UNITS_PIXELS);
         layout.addComponent(configsLayout);
-        configsLayout.addStyleName("configsTable");
     }
 
     private void addActionBar() {
@@ -64,7 +65,7 @@ public class ConfigsPage extends Page {
                 filterFields(event.getText());
             }
         });
-        filterPanel.addComponent(new Label("Filter"));
+        filterPanel.addComponent(new Label(MESSAGES.get("configsPage.filter")));
         filterPanel.addStyleName("filterPanel");
         filterPanel.addComponent(filterField);
         filterPanel.setSpacing(true);
@@ -73,7 +74,7 @@ public class ConfigsPage extends Page {
     }
 
     private void addCreateNewConfigButton() {
-        Button addButton = new Button("New config");
+        Button addButton = new Button(MESSAGES.get("configsPage.buttonNewConfig"));
         addButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {

@@ -42,31 +42,6 @@
     font-weight: bold;
 }
 
-.configsTableButton .v-button-caption {
-    font-size: 14px;
-    margin: 20px 10px;
-    text-decoration: none;
-}
-
-.configsTableButton .v-button-caption:hover {
-    font-size: 14px;
-    margin: 20px 10px;
-    text-decoration: underline;
-}
-
-.exportLeftRightButton .v-button {
-    width: 60px;
-    height: 37px;
-}
-
-.configsTable .v-table-caption-container {
-    text-shadow: none;
-}
-
-.configsTable .v-table-cell-content {
-    height: 28px;
-}
-
 .v-table-cell-content-centered {
     text-align: center;
 }
@@ -103,10 +78,6 @@
 
 .v-gridlayout-margin-left {
     padding-left: 3px;
-}
-
-.v-gridlayout-margin-right {
-    padding-right: 3px;
 }
 
 .v-gridlayout-spacing-on {
@@ -181,40 +152,40 @@
     border-bottom: 3px solid #AAAAAA;
 }
 
-.configs-single-panel-inner {
-    margin-bottom: 10px;
+.configPanelInConfigsList {
+    margin-bottom: 20px;
 }
-.configs-description-label {
+
+.configDescriptionPanel {
     background-color: #e3e3e3;
     color: #222219;
-    border: 1px solid #d3d3d3;
-    border-radius: 4px;
-    vertical-align: middle;
-    text-align: center;
-    margin-bottom: 1px;
-    width:  477px;
-
-    /*line-height: 100px;*/
+    margin-bottom: 3px;
 }
 
-.boxButton .v-nativebutton-caption {
-    font-size: 18px;
+.configDescriptionLabel {
+    font-size: 16px;
+    padding-left: 5px;
 }
 
-.v-nativebutton-boxButton {
+.connectorLabelInBlueBox {
     background-color: #dcf7ff;
     color: #222219;
     border: 1px solid gray;
     border-radius: 4px;
     width: 200px;
-    height: 85px;
-    vertical-align: middle;
+    height: 27px;
+    padding-top: 10px;
     text-align: center;
-    /*line-height: 100px;*/
+    font-size: 16px;
 }
 
-.v-nativebutton-boxButton:hover {
-    background-color: #d0e8f6;
+.exportLeftRightButton .v-button {
+    width: 55px;
+    height: 37px;
+}
+
+.editConfigButton {
+    padding-right: 5px;
 }
 
 .userLoginLabelInUsersPanel {

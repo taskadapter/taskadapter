@@ -7,12 +7,13 @@ import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.config.DirectionResolver;
 import com.taskadapter.webui.config.ExportButtonsFragment;
 import com.taskadapter.webui.export.Exporter;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Runo;
 
 /**
  * Buttons panel with left/right arrows.
@@ -25,6 +26,8 @@ public class ConfigActionsPanel extends VerticalLayout {
     private final Messages messages;
     private final Services services;
     private ExportButtonsFragment exportButtonsFragment;
+    private Button editButton;
+    private HorizontalLayout descriptionLayout;
 
     public ConfigActionsPanel(Messages messages, Services services, Navigator navigator, UISyncConfig uiSyncConfig) {
         this.messages = messages;
@@ -35,10 +38,46 @@ public class ConfigActionsPanel extends VerticalLayout {
     }
 
     private void buildUI() {
-        addDescription();
+        addStyleName("configPanelInConfigsList");
 
+        addDescriptionPart();
+        addExportPart();
+    }
+
+    private void addDescriptionPart() {
+        descriptionLayout = new HorizontalLayout();
+        descriptionLayout.setWidth(100, UNITS_PERCENTAGE);
+        descriptionLayout.addStyleName("configDescriptionPanel");
+        addComponent(descriptionLayout);
+        addDescription();
+        addEditButton();
+    }
+
+    private void addDescription() {
+        final String labelText = syncConfig.getLabel();
+        Label description = new Label(labelText.isEmpty() ? NO_DESCRIPTION_TEXT : labelText, Label.CONTENT_XHTML);
+        description.addStyleName("configDescriptionLabel");
+        descriptionLayout.addComponent(description);
+        descriptionLayout.setComponentAlignment(description, Alignment.MIDDLE_LEFT);
+    }
+
+    private void addEditButton() {
+        editButton = new Button();
+        editButton.setIcon(new ThemeResource("img/edit.png"));
+        editButton.setStyleName(Runo.BUTTON_SMALL);
+        editButton.addStyleName("editConfigButton");
+        editButton.addListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                navigator.showConfigureTaskPage(syncConfig);
+            }
+        });
+        descriptionLayout.addComponent(editButton);
+        descriptionLayout.setComponentAlignment(editButton, Alignment.MIDDLE_RIGHT);
+    }
+
+    private void addExportPart() {
         horizontalLayout = new HorizontalLayout();
-        horizontalLayout.addStyleName("configs-single-panel-inner");
         horizontalLayout.setSpacing(true);
         addComponent(horizontalLayout);
 
@@ -69,24 +108,11 @@ public class ConfigActionsPanel extends VerticalLayout {
         });
     }
 
-    private void addDescription() {
-        final String labelText = syncConfig.getLabel();
-        Label description = new Label(labelText.isEmpty() ? NO_DESCRIPTION_TEXT : labelText, Label.CONTENT_XHTML);
-        description.setStyleName("configs-description-label");
-        addComponent(description);
-        setComponentAlignment(description, Alignment.MIDDLE_CENTER);
-    }
-
     private void createBox(final String label) {
-        NativeButton configBoxButton = new NativeButton(label);
-        configBoxButton.addStyleName("boxButton");
-        configBoxButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                navigator.showConfigureTaskPage(syncConfig);
-            }
-        });
+        Label configBoxButton = new Label(label);
+        configBoxButton.addStyleName("connectorLabelInBlueBox");
         horizontalLayout.addComponent(configBoxButton);
+        horizontalLayout.setComponentAlignment(configBoxButton, Alignment.MIDDLE_CENTER);
     }
 
     UISyncConfig getConfig() {
