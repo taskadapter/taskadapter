@@ -43,23 +43,35 @@ public class OnePageEditor extends VerticalLayout implements WindowProvider {
     private void addConnectorsPanel() {
         HorizontalLayout layout = new HorizontalLayout();
 
+        addLeft(layout);
+        addExportButtonsToCenter(layout);
+        addRight(layout);
+
+        addComponent(layout);
+    }
+
+    private void addExportButtonsToCenter(HorizontalLayout layout) {
+        exportButtonsFragment = new ExportButtonsFragment();
+        layout.addComponent(exportButtonsFragment);
+        layout.setComponentAlignment(exportButtonsFragment, Alignment.MIDDLE_CENTER);
+    }
+
+    private void addLeft(HorizontalLayout layout) {
         MiniPanel miniPanel1 = createMiniPanel(config.getConnector1());
         Button editButton1 = createEditButton(miniPanel1);
         layout.addComponent(editButton1);
         layout.setComponentAlignment(editButton1, Alignment.MIDDLE_LEFT);
         layout.addComponent(miniPanel1);
+        layout.setComponentAlignment(miniPanel1, Alignment.MIDDLE_RIGHT);
+    }
 
-        exportButtonsFragment = new ExportButtonsFragment();
-        layout.addComponent(exportButtonsFragment);
-        layout.setComponentAlignment(exportButtonsFragment, Alignment.MIDDLE_CENTER);
-
+    private void addRight(HorizontalLayout layout) {
         MiniPanel miniPanel2 = createMiniPanel(config.getConnector2());
         Button editButton2 = createEditButton(miniPanel2);
-
         layout.addComponent(miniPanel2);
         layout.addComponent(editButton2);
         layout.setComponentAlignment(editButton2, Alignment.MIDDLE_RIGHT);
-        addComponent(layout);
+        layout.setComponentAlignment(miniPanel2, Alignment.MIDDLE_LEFT);
     }
 
     private void addMappingPanel() {
@@ -74,7 +86,7 @@ public class OnePageEditor extends VerticalLayout implements WindowProvider {
         return miniPanel;
     }
 
-    private Button createEditButton(final MiniPanel miniPanel){
+    private Button createEditButton(final MiniPanel miniPanel) {
         Button editButton = EditorUtil.createButton("", "Edit the connector settings",
                 new Button.ClickListener() {
                     @Override
@@ -88,6 +100,7 @@ public class OnePageEditor extends VerticalLayout implements WindowProvider {
         editButton.addStyleName("editConfigButton");
         return editButton;
     }
+
     private TaskFieldsMappingFragment createOnePageMappingPanel() {
         return new TaskFieldsMappingFragment(messages, config.getConnector1(), config.getConnector2(), config.getNewMappings());
     }
