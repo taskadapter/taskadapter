@@ -48,7 +48,7 @@ public class OnePageEditor extends VerticalLayout implements WindowProvider {
     }
 
     private void addExportButtonsToCenter(HorizontalLayout layout) {
-        exportButtonsFragment = new ExportButtonsFragment();
+        exportButtonsFragment = new ExportButtonsFragment(messages);
         layout.addComponent(exportButtonsFragment);
         layout.setComponentAlignment(exportButtonsFragment, Alignment.MIDDLE_CENTER);
     }
