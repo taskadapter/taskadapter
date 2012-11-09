@@ -31,6 +31,8 @@ public final class UISyncConfigBuilder {
                 : new Gson().fromJson(storedConfig.getMappings(),
                 NewMappings.class);
 
+        // fixing the mappings is important to load config files created by Task Adapter v. 2.2 or older.
+        // feel free to delete MappingFixer.fixMappings() call if it's 2013.
         final NewMappings fixedMappings = MappingFixer.fixMappings(mappings,
                 config1.getAvailableFields(), config2.getAvailableFields(),
                 false);
