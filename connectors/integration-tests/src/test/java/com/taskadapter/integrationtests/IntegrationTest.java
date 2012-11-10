@@ -33,6 +33,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+// TODO split all tests in the project to "unit" and "integration" ones.
+// "unit" must be run during the regular Maven "test" stage, "integration" - during "integration-test" stage.
+// See http://stackoverflow.com/questions/1228709/best-practices-for-integration-tests-with-maven
+// and http://stackoverflow.com/a/10381662/477655
 public class IntegrationTest {
 
     private static final ProgressMonitor DUMMY_MONITOR = ProgressMonitorUtils.getDummyMonitor();
