@@ -178,22 +178,30 @@
 }
 
 .uniExportPanel {
-    background-color: #dcf7ff;
-    color: #222219;
     border: 1px solid gray;
     border-radius: 2px;
     font-size: 12px;
     cursor: pointer;
 }
 
-.uniExportPanel :hover {
+.uniExportPanel.valid {
+    background-color: #dcf7ff;
+    color: #222219;
+}
+
+.uniExportPanel.valid :hover {
     background-color: #ecffff;
     color: #333329;
 }
 
-.uniExportPanel :active {
+.uniExportPanel.valid :active {
     background-color: #cce7ef;
     color: #222219;
+}
+
+.uniExportPanel.invalid {
+    background-color: #bcd7df;
+    color: #444438;
 }
 
 .uniExportPanel .left-label {
