@@ -42,7 +42,8 @@ final class UniConfigExport {
         final HorizontalLayout res = new HorizontalLayout();
         res.setWidth(274, Sizeable.UNITS_PIXELS);
 
-        final boolean isValid = checkValid();
+        final String validationFailure = getValidationError();
+        final boolean isValid = validationFailure == null;
 
         res.addStyleName("uniExportPanel");
         res.addStyleName(isValid ? "valid" : "invalid");
@@ -88,19 +89,34 @@ final class UniConfigExport {
                     export();
                 }
             });
+        } else {
+            leftLabel.setDescription(validationFailure);
+            rightLabel.setDescription(validationFailure);
+            actionLabel.setDescription(validationFailure);
+            res.setDescription(validationFailure);
         }
 
         return res;
     }
 
-    private boolean checkValid() {
+    private String getValidationError() {
+        final StringBuilder rb = new StringBuilder();
         try {
             syncConfig.getConnector1().validateForLoad();
-            syncConfig.getConnector2().validateForSave();
         } catch (BadConfigException e) {
-            return false;
+            rb.append(messages.format("configsPage.errorSource", syncConfig
+                    .getConnector1().decodeException(e)));
         }
-        return true;
+        try {
+            syncConfig.getConnector2().validateForLoad();
+        } catch (BadConfigException e) {
+            rb.append(messages.format("configsPage.errorDestination",
+                    syncConfig.getConnector2().decodeException(e)));
+        }
+        if (rb.length() == 0) {
+            return null;
+        }
+        return messages.format("configsPage.validationTemplate", rb.toString());
     }
 
     private Label createLabel(UIConnectorConfig connector) {
