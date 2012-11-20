@@ -34,9 +34,10 @@ public class EditConfigPage extends Page {
     private void buildUI() {
         layout.removeAllComponents();
         layout.setSpacing(true);
-        createButtons();
+        createTopButtons();
         createEditDescriptionElement();
         createMainEditor();
+        createBottomButtons();
     }
 
     private void createMainEditor() {
@@ -73,9 +74,21 @@ public class EditConfigPage extends Page {
         descriptionLayout.addComponent(descriptionField);
     }
 
-    private void createButtons() {
+    private void createTopButtons() {
         HorizontalLayout buttonsLayout = new HorizontalLayout();
         buttonsLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        CloneDeletePanel cloneDeletePanel = new CloneDeletePanel(services, navigator, config);
+        buttonsLayout.addComponent(cloneDeletePanel);
+        buttonsLayout.setComponentAlignment(cloneDeletePanel, Alignment.MIDDLE_RIGHT);
+        layout.addComponent(buttonsLayout);
+    }
+
+    private void createBottomButtons() {
+        HorizontalLayout buttonsLayout = new HorizontalLayout();
+        buttonsLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        HorizontalLayout rightLayout = new HorizontalLayout();
+        buttonsLayout.addComponent(rightLayout);
+        buttonsLayout.setComponentAlignment(rightLayout, Alignment.BOTTOM_RIGHT);
 
         Button saveButton = new Button(MESSAGES.get("button.save"));
         saveButton.addListener(new Button.ClickListener() {
@@ -84,18 +97,15 @@ public class EditConfigPage extends Page {
                 saveClicked();
             }
         });
-        buttonsLayout.addComponent(saveButton);
+        rightLayout.addComponent(saveButton);
 
-        buttonsLayout.addComponent(ButtonBuilder.createBackButton(navigator, MESSAGES.get("button.cancel")));
+        rightLayout.addComponent(ButtonBuilder.createBackButton(navigator, MESSAGES.get("button.close")));
 
         errorMessageLabel.addStyleName("error-message-label");
         errorMessageLabel.setWidth(100, Sizeable.UNITS_PERCENTAGE);
-        buttonsLayout.addComponent(errorMessageLabel);
-        buttonsLayout.setExpandRatio(errorMessageLabel, 1.0f);
+        rightLayout.addComponent(errorMessageLabel);
+        rightLayout.setExpandRatio(errorMessageLabel, 1.0f);
 
-        CloneDeletePanel cloneDeletePanel = new CloneDeletePanel(services, navigator, config);
-        buttonsLayout.addComponent(cloneDeletePanel);
-        buttonsLayout.setComponentAlignment(cloneDeletePanel, Alignment.MIDDLE_RIGHT);
         layout.addComponent(buttonsLayout);
     }
 
