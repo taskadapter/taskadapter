@@ -7,7 +7,9 @@ import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.data.Messages;
 import com.vaadin.data.Container.ItemSetChangeEvent;
 import com.vaadin.data.Container.ItemSetChangeListener;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
@@ -67,6 +69,10 @@ public class PriorityPanel extends Panel implements Validatable {
     private void buildUI() {
         setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
 
+        GridLayout layout = new GridLayout();
+        layout.setWidth(100, UNITS_PERCENTAGE);
+        layout.setSpacing(true);
+
         prioritiesTable = new Table();
         prioritiesTable.setContainerDataSource(data);
         prioritiesTable.setStyleName(Runo.TABLE_SMALL);
@@ -79,7 +85,7 @@ public class PriorityPanel extends Panel implements Validatable {
         prioritiesTable.setWidth("100%");
         prioritiesTable.setContainerDataSource(data);
 
-        addComponent(prioritiesTable);
+        layout.addComponent(prioritiesTable);
 		final ItemSetChangeListener listener = new ItemSetChangeListener() {
 			private static final long serialVersionUID = 1L;
 
@@ -109,7 +115,9 @@ public class PriorityPanel extends Panel implements Validatable {
                 }
             }
         });
-        addComponent(reloadButton);
+        layout.addComponent(reloadButton);
+        layout.setComponentAlignment(reloadButton, Alignment.MIDDLE_RIGHT);
+        addComponent(layout);
     }
 
     private void reloadPriorityList() throws Exception {
