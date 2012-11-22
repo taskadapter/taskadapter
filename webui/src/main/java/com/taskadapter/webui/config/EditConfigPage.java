@@ -37,6 +37,7 @@ public class EditConfigPage extends Page {
         createTopButtons();
         createEditDescriptionElement();
         createMainEditor();
+        createErrorArea();
         createBottomButtons();
     }
 
@@ -83,6 +84,12 @@ public class EditConfigPage extends Page {
         layout.addComponent(buttonsLayout);
     }
 
+    private void createErrorArea() {
+        errorMessageLabel.addStyleName("error-message-label");
+        errorMessageLabel.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        layout.addComponent(errorMessageLabel);
+    }
+
     private void createBottomButtons() {
         HorizontalLayout buttonsLayout = new HorizontalLayout();
         buttonsLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
@@ -98,14 +105,7 @@ public class EditConfigPage extends Page {
             }
         });
         rightLayout.addComponent(saveButton);
-
         rightLayout.addComponent(ButtonBuilder.createBackButton(navigator, MESSAGES.get("button.close")));
-
-        errorMessageLabel.addStyleName("error-message-label");
-        errorMessageLabel.setWidth(100, Sizeable.UNITS_PERCENTAGE);
-        rightLayout.addComponent(errorMessageLabel);
-        rightLayout.setExpandRatio(errorMessageLabel, 1.0f);
-
         layout.addComponent(buttonsLayout);
     }
 
