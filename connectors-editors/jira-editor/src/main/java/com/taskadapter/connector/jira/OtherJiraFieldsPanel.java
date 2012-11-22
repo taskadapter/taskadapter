@@ -7,6 +7,7 @@ import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.vaadin.data.util.MethodProperty;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Panel;
@@ -42,9 +43,9 @@ class OtherJiraFieldsPanel extends Panel {
         addComponent(lookupButtonsLayout);
     }
 
-    private void addLookupButtonsAndTextEdit(GridLayout lookupButtonsLayout) {
+    private void addLookupButtonsAndTextEdit(GridLayout grid) {
         final TextField jiraComponent = EditorUtil.addLabeledText(
-                lookupButtonsLayout, "Project Component:",
+                grid, "Project Component:",
                 "Component inside the Jira project");
         final MethodProperty<String> componentProperty = new MethodProperty<String>(config, "component");
         jiraComponent.setPropertyDataSource(componentProperty);
@@ -63,11 +64,12 @@ class OtherJiraFieldsPanel extends Panel {
                 componentProperty,
                 true, exceptionFormatter
         );
-        lookupButtonsLayout.addComponent(showComponentsButton);
+        grid.addComponent(showComponentsButton);
+        grid.setComponentAlignment(showComponentsButton, Alignment.MIDDLE_CENTER);
 
 
         final TextField affectedVersion = EditorUtil
-                .addLabeledText(lookupButtonsLayout,
+                .addLabeledText(grid,
                         "Set 'Affected version' to:",
                         "Set this 'affected version' value when submitting issues to Jira.");
         final MethodProperty<String> affectedVersionProperty = new MethodProperty<String>(config, "affectedVersion");
@@ -90,10 +92,10 @@ class OtherJiraFieldsPanel extends Panel {
                 true,
                 exceptionFormatter
         );
-        lookupButtonsLayout.addComponent(showAffectedVersion);
+        grid.addComponent(showAffectedVersion);
 
         final TextField fixForVersion = EditorUtil
-                .addLabeledText(lookupButtonsLayout,
+                .addLabeledText(grid,
                         "Set 'Fix for version' to:",
                         "Set this 'fix for version' value when submitting issues to Jira.");
         final MethodProperty<String> fixForProperty = new MethodProperty<String>(config, "fixForVersion");
@@ -108,11 +110,11 @@ class OtherJiraFieldsPanel extends Panel {
                 fixForProperty,
                 true, exceptionFormatter
         );
-        lookupButtonsLayout.addComponent(showFixForVersion);
+        grid.addComponent(showFixForVersion);
 
 
         final TextField defaultTaskType = EditorUtil
-                .addLabeledText(lookupButtonsLayout, "Default issue type:",
+                .addLabeledText(grid, "Default issue type:",
                         "New issues will be created with this 'issue type' (bug/improvement/task...)");
         final MethodProperty<String> defaultTaskTypeProperty = new MethodProperty<String>(config, "defaultTaskType");
         defaultTaskType.setPropertyDataSource(defaultTaskTypeProperty);
@@ -132,6 +134,6 @@ class OtherJiraFieldsPanel extends Panel {
                 true,
                 exceptionFormatter
         );
-        lookupButtonsLayout.addComponent(showDefaultTaskType);
+        grid.addComponent(showDefaultTaskType);
     }
 }

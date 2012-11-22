@@ -123,13 +123,14 @@ public class EditorUtil {
         Label label = new Label(caption);
         layout.addComponent(label);
 
-        if (layout instanceof Layout.AlignmentHandler) {
-            ((Layout.AlignmentHandler) layout).setComponentAlignment(label, Alignment.MIDDLE_LEFT);
-        }
-
         TextField field = new TextField();
         field.setDescription(tooltip);
         layout.addComponent(field);
+
+        if (layout instanceof Layout.AlignmentHandler) {
+            ((Layout.AlignmentHandler) layout).setComponentAlignment(label, Alignment.MIDDLE_LEFT);
+            ((Layout.AlignmentHandler) layout).setComponentAlignment(field, Alignment.MIDDLE_CENTER);
+        }
 
         return field;
     }
