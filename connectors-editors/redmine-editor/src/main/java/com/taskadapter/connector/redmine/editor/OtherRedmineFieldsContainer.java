@@ -13,6 +13,7 @@ import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 
@@ -45,15 +46,18 @@ public class OtherRedmineFieldsContainer extends Panel {
     }
 
     private void addDefaultTaskTypeElement() {
-        HorizontalLayout taskTypeLayout = new HorizontalLayout();
-        taskTypeLayout.setSpacing(true);
-        final TextField defaultTaskType = EditorUtil.addLabeledText(taskTypeLayout, "Default task type:",
-                "New tasks will be created with this 'tracker' (bug/task/support/feature/...)");
+        HorizontalLayout layout = new HorizontalLayout();
+        layout.setSpacing(true);
+        layout.addComponent(new Label("Default task type:"));
+
+        TextField defaultTaskType = new TextField();
+        defaultTaskType.setDescription("New tasks will be created with this 'tracker' (bug/task/support/feature/...)");
         defaultTaskType.setWidth("200px");
+        layout.addComponent(defaultTaskType);
         final MethodProperty<String> taskTypeProperty = new MethodProperty<String>(config, "defaultTaskType");
         defaultTaskType.setPropertyDataSource(taskTypeProperty);
 
-        Button showDefaultTaskType = EditorUtil.createLookupButton(
+        Button showTaskTypesButton = EditorUtil.createLookupButton(
                 windowProvider,
                 "...",
                 "Show list of available tracker types on the Redmine server",
@@ -69,7 +73,7 @@ public class OtherRedmineFieldsContainer extends Panel {
                 true, exceptionFormatter
         );
 
-        taskTypeLayout.addComponent(showDefaultTaskType);
-        addComponent(taskTypeLayout);
+        layout.addComponent(showTaskTypesButton);
+        addComponent(layout);
     }
 }

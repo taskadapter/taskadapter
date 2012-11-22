@@ -10,10 +10,8 @@ import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
 import com.vaadin.data.Property;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
@@ -25,14 +23,13 @@ import java.util.List;
  */
 public class ProjectPanel extends Panel implements Validatable {
     private static final String DEFAULT_PANEL_CAPTION = "Project Info";
-    private static final int COLUMNS_NUMBER = 2;
+    private static final String TEXT_AREA_WIDTH = "120px";
 
     private TextField projectKey;
     private TextField queryValue;
 
     private Label projectKeyLabel;
     private Label queryValueLabel;
-    private static final String TEXT_AREA_WIDTH = "120px";
 
     private final DataProvider<List<? extends NamedKeyedObject>> projectProvider;
 
@@ -48,7 +45,7 @@ public class ProjectPanel extends Panel implements Validatable {
     private final Property queryValueProperty;
 
     private final WindowProvider windowProvider;
-    
+
     private final ExceptionFormatter exceptionFormatter;
 
     /**
@@ -81,25 +78,18 @@ public class ProjectPanel extends Panel implements Validatable {
     }
 
     private void buildUI() {
-        GridLayout gridLayout = new GridLayout();
-        addComponent(gridLayout);
+        GridLayout grid = new GridLayout(4, 2);
+        addComponent(grid);
 
-        gridLayout.setColumns(COLUMNS_NUMBER);
-        gridLayout.setMargin(true);
-        gridLayout.setSpacing(true);
+        grid.setSpacing(true);
 
         projectKeyLabel = new Label("Project key:");
-        gridLayout.addComponent(projectKeyLabel);
-        gridLayout.setComponentAlignment(projectKeyLabel, Alignment.MIDDLE_LEFT);
-
-        final HorizontalLayout keyHorizontalLayout = new HorizontalLayout();
-        gridLayout.addComponent(keyHorizontalLayout);
+        grid.addComponent(projectKeyLabel);
 
         projectKey = new TextField();
         projectKey.setPropertyDataSource(projectKeyProperty);
-        keyHorizontalLayout.addComponent(projectKey);
+        grid.addComponent(projectKey);
         projectKey.setWidth(TEXT_AREA_WIDTH);
-
 
         Button infoButton = EditorUtil.createButton("Info", "View the project info",
                 new Button.ClickListener() {
@@ -110,9 +100,9 @@ public class ProjectPanel extends Panel implements Validatable {
                 }
         );
         infoButton.setEnabled(projectInfoCallback != null);
-        keyHorizontalLayout.addComponent(infoButton);
+        grid.addComponent(infoButton);
 
-        Button projectKeyButton = EditorUtil.createLookupButton(
+        Button showProjectsButton = EditorUtil.createLookupButton(
                 windowProvider,
                 "...",
                 "Show list of available projects on the server.",
@@ -122,21 +112,16 @@ public class ProjectPanel extends Panel implements Validatable {
                 projectKeyProperty,
                 false, exceptionFormatter
         );
-        projectKeyButton.setEnabled(projectProvider != null);
-        keyHorizontalLayout.addComponent(projectKeyButton);
-
+        showProjectsButton.setEnabled(projectProvider != null);
+        grid.addComponent(showProjectsButton);
 
         if (queryValueProperty != null) {
             queryValueLabel = new Label("Query ID:");
-            gridLayout.addComponent(queryValueLabel);
-            gridLayout.setComponentAlignment(queryValueLabel, Alignment.MIDDLE_LEFT);
-
-            final HorizontalLayout queryHorizontalLayout = new HorizontalLayout();
-            gridLayout.addComponent(queryHorizontalLayout);
+            grid.addComponent(queryValueLabel);
             queryValue = new TextField();
             queryValue.setDescription("Custom query/filter ID (number). You need to create a query on the server before accessing it from here.\n"
                     + "Read help for more details.");
-            queryHorizontalLayout.addComponent(queryValue);
+            grid.addComponent(queryValue);
             queryValue.setWidth(TEXT_AREA_WIDTH);
             queryValue.setPropertyDataSource(queryValueProperty);
 
@@ -155,7 +140,7 @@ public class ProjectPanel extends Panel implements Validatable {
             // TODO maybe set "enabled" basing on whether or not loadSavedQueriesOperation is NULL?
             // then can delete the whole "features" mechanism
             showQueriesButton.setEnabled(queryProvider != null);
-            queryHorizontalLayout.addComponent(showQueriesButton);
+            grid.addComponent(showQueriesButton);
         }
     }
 
