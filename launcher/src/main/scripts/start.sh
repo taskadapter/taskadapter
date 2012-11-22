@@ -32,4 +32,4 @@ if [ "$FOUND_REQUIRED_JAVA" -eq 0 ]; then
 fi
 
 echo "Starting TaskAdapter using Java ${VER}."
-java -jar launcher.jar --port=8080  --openTaskAdapterPageInWebBrowser
+java -jar launcher.jar --port=9944  --openTaskAdapterPageInWebBrowser

@@ -34,7 +34,7 @@ for /f "delims=. tokens=1-3" %%v in ("%JAVAVER%") do (
 @REM if Major GEQ 1
 if %Major% geq 1 if %Minor% geq 6 (
   echo Starting Task Adapter using Java %JAVAVER%
-  java -jar launcher.jar --port=8080 --openTaskAdapterPageInWebBrowser
+  java -jar launcher.jar --port=9944 --openTaskAdapterPageInWebBrowser
 ) else (
   echo Task Adapter requires Java Runtime Environment 1.6 or newer installed and available in PATH.
   echo Java found on your machine is: %JAVAVER%

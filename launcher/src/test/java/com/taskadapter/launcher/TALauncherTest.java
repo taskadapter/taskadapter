@@ -15,7 +15,7 @@ public class TALauncherTest {
     @Test
     public void defaultPortReturnedWhenNoParameter() {
         String[] args = {"something and something else"};
-        assertEquals(8080, TALauncher.findPortNumberInArgs(args));
+        assertEquals(9944, TALauncher.findPortNumberInArgs(args));
     }
 
     @Test
