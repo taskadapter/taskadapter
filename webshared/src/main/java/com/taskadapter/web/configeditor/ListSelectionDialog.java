@@ -2,7 +2,9 @@ package com.taskadapter.web.configeditor;
 
 import com.vaadin.data.Property;
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Window;
 
@@ -25,6 +27,8 @@ public class ListSelectionDialog extends Window {
 
     private void buildUI() {
         setWidth("350px");
+        GridLayout layout = new GridLayout();
+        layout.setSpacing(true);
         final ListSelect listSelect = new ListSelect(listTitle, items);
         listSelect.setNullSelectionAllowed(false);
         listSelect.setWidth("300px");
@@ -35,7 +39,7 @@ public class ListSelectionDialog extends Window {
                 closeButton.setEnabled(true);
             }
         });
-        addComponent(listSelect);
+        layout.addComponent(listSelect);
 
         closeButton = new Button("Select");
         closeButton.setEnabled(false);
@@ -46,6 +50,8 @@ public class ListSelectionDialog extends Window {
                 close();
             }
         });
-        addComponent(closeButton);
+        layout.addComponent(closeButton);
+        layout.setComponentAlignment(closeButton, Alignment.MIDDLE_RIGHT);
+        addComponent(layout);
     }
 }
