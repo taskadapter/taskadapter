@@ -51,7 +51,7 @@ public class EnterLicensePanel extends VerticalLayout {
 
         try {
             licenseManager.setNewLicense(licenseText.trim());
-            licenseManager.installLicense();
+            licenseManager.copyLicenseToConfigFolder();
             getWindow().showNotification("Successfully registered to: " + licenseManager.getLicense().getCustomerName());
         } catch (LicenseExpiredException e) {
             getWindow().showNotification("License not accepted", e.getMessage());

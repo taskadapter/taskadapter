@@ -36,7 +36,7 @@ public class Services {
 
         this.currentTaskAdapterVersion = new CurrentVersionLoader().getCurrentVersion();
 
-        licenseManager = new LicenseManager();
+        licenseManager = new LicenseManager(dataRootFolder);
     }
 
     public EditorManager getEditorManager() {

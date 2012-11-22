@@ -7,6 +7,7 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.msp.MSPSupportedFields;
+import com.taskadapter.connector.testlib.FileBasedTest;
 import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.integrationtests.MSPConfigLoader;
 import com.taskadapter.license.LicenseManager;
@@ -21,7 +22,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class TaskLoaderTest {
+public class TaskLoaderTest extends FileBasedTest {
 
     @Test
     /**
@@ -34,7 +35,7 @@ public class TaskLoaderTest {
         mappings.setMapping(GTaskDescriptor.FIELD.REMOTE_ID, true, TaskField.TEXT22.toString());
 
         Connector<?> projectConnector = new MSPConnector(mspConfig);
-        List<GTask> list = TaskLoader.loadTasks(new LicenseManager(), projectConnector, "project1", mappings, ProgressMonitorUtils.getDummyMonitor());
+        List<GTask> list = TaskLoader.loadTasks(new LicenseManager(tempFolder), projectConnector, "project1", mappings, ProgressMonitorUtils.getDummyMonitor());
         assertEquals(1, list.size());
     }
 

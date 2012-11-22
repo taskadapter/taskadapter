@@ -4,17 +4,12 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.prefs.Preferences;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class LicenseManager {
-
-    private String licenseText;
 
     public static enum Product {
         TASK_ADAPTER_WEB
@@ -25,19 +20,19 @@ public class LicenseManager {
     public static final String TRIAL_MESSAGE =
             "=== TRIAL VERSION LIMIT: will only process UP TO " + TRIAL_TASKS_NUMBER_LIMIT + " tasks ===";
 
-    private static final String USAGE_TEXT =
-            "Usage:\n" +
-                    "  ./licenses [license_file_to_install] [-clean]\n\n" +
-                    "  [license_file_to_install]     Install license from this file (full or relative path)\n" +
-                    "  -clean                        Clean all installed licenses from this computer.";
+    private static final String LICENSE_FILE_NAME = "taskadapter-license.txt";
 
+    private final File dataRootFolder;
 
-    private static final String DASHES = "\n------------------------------\n";
-    private static final String COMMAND_CLEAN = "-clean";
+    private String licenseText;
 
     private Collection<LicenseChangeListener> listeners = new HashSet<LicenseChangeListener>();
 
     private License license;
+
+    public LicenseManager(File dataRootFolder) {
+        this.dataRootFolder = dataRootFolder;
+    }
 
     public void setNewLicense(String licenseText) throws LicenseException {
         this.licenseText = licenseText;
@@ -54,10 +49,18 @@ public class LicenseManager {
         return licenseText;
     }
 
-    public void installLicense() {
-        Preferences preferences = Preferences.userNodeForPackage(LicenseManager.class);
-        preferences.put(license.getProduct().toString(), licenseText);
+    public void copyLicenseToConfigFolder() {
+        File licenseFile = getLicenseFile();
+        try {
+            Files.write(licenseText, licenseFile, Charsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException("Error writing the license to " + licenseFile.getAbsolutePath() + " The problem is: " + e.toString());
+        }
         notifyListeners();
+    }
+
+    private File getLicenseFile() {
+        return new File(dataRootFolder, LICENSE_FILE_NAME);
     }
 
     private void notifyListeners() {
@@ -67,16 +70,22 @@ public class LicenseManager {
     }
 
     public void loadInstalledTaskAdapterLicense() {
-        this.license = loadLicense(Product.TASK_ADAPTER_WEB);
+        this.license = loadLicense();
     }
 
     /**
-     * @param product Product type
      * @return NULL if the license is not found
      */
-    private static License loadLicense(Product product) {
-        Preferences preferences = Preferences.userNodeForPackage(LicenseManager.class);
-        String licenseText = preferences.get(product.toString(), null);
+    private License loadLicense() {
+        String licenseText = null;
+        try {
+            licenseText = Files.toString(getLicenseFile(), Charsets.UTF_8);
+        } catch (FileNotFoundException e) {
+            // System.out.println("License file not found: " + getLicenseFile().getAbsolutePath());
+        } catch (IOException e) {
+            throw new RuntimeException("Can't load the license file " + getLicenseFile().getAbsolutePath()
+                    + ". The problem is: " + e.toString());
+        }
         License loadedLicense = null;
         if (licenseText != null) {
             try {
@@ -104,66 +113,13 @@ public class LicenseManager {
         return license != null;
     }
 
-    public boolean isSingleUserLicenseInstalled() {
-        return isSomeValidLicenseInstalled() && (license.getUsersNumber() == 1);
-    }
-
     public void addLicenseChangeListener(LicenseChangeListener listener) {
         listeners.add(listener);
     }
 
-    //------------------------------------------------------------------------------------------------------------------
-    public static void main(String[] args) {
-        if (args.length < 1) {
-            System.out.println(USAGE_TEXT);
-            return;
-        }
-
-        LicenseManager licenseManager = new LicenseManager();
-
-        printInstalledLicense(licenseManager);
-
-        String command = args[0];
-
-        if (COMMAND_CLEAN.equals(command)) {
-            licenseManager.removeTaskAdapterLicenseFromThisComputer();
-            System.out.println("TaskAdapter license was removed from this computer.");
-
-        } else {
-            try {
-                installLicenseFromFile(command);
-            } catch (IOException e) {
-                System.out.println("Cannot find file: " + command + "\n\n" + USAGE_TEXT);
-            }
-        }
-    }
-
-    private static void printInstalledLicense(LicenseManager licenseManager) {
-        System.out.println("Found installed license:\n" + licenseManager.getLicense().toString());
-    }
-
-    public void removeTaskAdapterLicenseFromThisComputer() {
-        Preferences preferences = Preferences.userNodeForPackage(LicenseManager.class);
-        preferences.remove(Product.TASK_ADAPTER_WEB.toString());
+    public void removeTaskAdapterLicenseFromConfigFolder() {
+        getLicenseFile().delete();
         this.license = null;
         notifyListeners();
-    }
-
-    private static void installLicenseFromFile(String fileName) throws IOException {
-        String licenseFileText = Files.toString(new File(fileName), Charsets.UTF_8);
-        System.out.println("Loaded file: " + fileName);
-        System.out.println("Installing license: " + DASHES + licenseFileText + DASHES);
-
-        LicenseManager licenseManager = new LicenseManager();
-
-        try {
-            licenseManager.setNewLicense(licenseFileText);
-            licenseManager.installLicense();
-            System.out.println("The license was successfully installed to this computer.");
-
-        } catch (LicenseException e) {
-            System.out.println("Invalid license file:\n" + fileName);
-        }
-
     }
 }

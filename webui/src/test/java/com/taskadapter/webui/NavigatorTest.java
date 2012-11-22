@@ -20,7 +20,7 @@ public class NavigatorTest extends FileBasedTest {
     public void feedbackPageIsShownWithoutLogin() {
         Services services = getServices();
         Navigator navigator = getNavigator(services);
-        navigator.show(new SupportPage("1.1", new LicenseManager()));
+        navigator.show(new SupportPage("1.1", new LicenseManager(tempFolder)));
         assertEquals("support", navigator.getCurrentPage().getPageGoogleAnalyticsID());
     }
 

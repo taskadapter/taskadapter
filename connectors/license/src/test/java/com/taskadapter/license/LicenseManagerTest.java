@@ -2,18 +2,21 @@ package com.taskadapter.license;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.taskadapter.connector.testlib.FileBasedTest;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
-public class LicenseManagerTest {
+public class LicenseManagerTest extends FileBasedTest {
     @Test
     public void testValidSingleLicense() throws IOException {
-        LicenseManager licenseManager = new LicenseManager();
+        LicenseManager licenseManager = new LicenseManager(tempFolder);
         try {
             licenseManager.setNewLicense(getValidSingleUserLicense());
         } catch (LicenseException e) {
@@ -34,7 +37,7 @@ public class LicenseManagerTest {
     @Test
     public void testValidMultiLicense() throws IOException {
         String validMultiUserLicense = Resources.toString(Resources.getResource("taskadapterweb.5-users.license"), Charsets.UTF_8);
-        LicenseManager licenseManager = new LicenseManager();
+        LicenseManager licenseManager = new LicenseManager(tempFolder);
         try {
             licenseManager.setNewLicense(validMultiUserLicense);
         } catch (LicenseException e) {
@@ -50,7 +53,7 @@ public class LicenseManagerTest {
 
     @Test
     public void licenseBecomesInvalidAfterRemoval() throws IOException {
-        LicenseManager licenseManager = new LicenseManager();
+        LicenseManager licenseManager = new LicenseManager(tempFolder);
         String oldLicenseText = licenseManager.getLicenseText();
         try {
             licenseManager.setNewLicense(getValidSingleUserLicense());
@@ -59,7 +62,7 @@ public class LicenseManagerTest {
         }
         assertTrue("License is expected to be valid", licenseManager.isSomeValidLicenseInstalled());
         try {
-            licenseManager.removeTaskAdapterLicenseFromThisComputer();
+            licenseManager.removeTaskAdapterLicenseFromConfigFolder();
             assertFalse("License must be INVALID after removal", licenseManager.isSomeValidLicenseInstalled());
         } finally {
             if (oldLicenseText != null) {
@@ -68,7 +71,7 @@ public class LicenseManagerTest {
                 } catch (LicenseException e) {
                     fail("License must be valid at this point");
                 }
-                licenseManager.installLicense();
+                licenseManager.copyLicenseToConfigFolder();
             }
         }
 

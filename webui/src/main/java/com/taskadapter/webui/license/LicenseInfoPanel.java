@@ -71,7 +71,7 @@ public class LicenseInfoPanel extends GridLayout {
     }
 
     private void clearLicenseInfo() {
-        licenseManager.removeTaskAdapterLicenseFromThisComputer();
+        licenseManager.removeTaskAdapterLicenseFromConfigFolder();
         getWindow().showNotification("Removed the license info");
     }
 }

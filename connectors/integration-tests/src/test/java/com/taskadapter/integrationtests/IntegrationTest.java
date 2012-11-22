@@ -13,6 +13,7 @@ import com.taskadapter.connector.msp.MSPUtils;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
 import com.taskadapter.connector.redmine.RedmineSupportedFields;
+import com.taskadapter.connector.testlib.FileBasedTest;
 import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.core.RemoteIdUpdater;
 import com.taskadapter.core.TaskLoader;
@@ -37,9 +38,17 @@ import static org.junit.Assert.assertNotNull;
 // "unit" must be run during the regular Maven "test" stage, "integration" - during "integration-test" stage.
 // See http://stackoverflow.com/questions/1228709/best-practices-for-integration-tests-with-maven
 // and http://stackoverflow.com/a/10381662/477655
-public class IntegrationTest {
+public class IntegrationTest extends FileBasedTest {
 
     private static final ProgressMonitor DUMMY_MONITOR = ProgressMonitorUtils.getDummyMonitor();
+
+    private LicenseManager licenseManager;
+
+    @Override
+    public void beforeEachTest() {
+        super.beforeEachTest();
+        licenseManager = new LicenseManager(tempFolder);
+    }
 
     // this test is ignored because "load" operation does not set remote id anymore,
     // it's now done as a part of "save" (as it should have been from the beginning!)
@@ -47,10 +56,10 @@ public class IntegrationTest {
     @Ignore
     @Test
     public void testSaveRemoteId() throws IOException {
-		RedmineConfig config = RedmineTestConfig.getRedmineTestConfig();
-		config.setProjectKey("test");
+        RedmineConfig config = RedmineTestConfig.getRedmineTestConfig();
+        config.setProjectKey("test");
         // XXX query id is hardcoded
-		config.setQueryId(1);
+        config.setQueryId(1);
 
 //        TaskSaver.save(msProjectConnector, mspConfig,
 //                redmineConnector, RedmineConnector.ID,
@@ -82,7 +91,7 @@ public class IntegrationTest {
         Mappings redmineMappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
 
         // load from MSP
-        List<GTask> loadedTasks = TaskLoader.loadTasks(new LicenseManager(), msProjectConnector, "msp1", mspMappings, DUMMY_MONITOR);
+        List<GTask> loadedTasks = TaskLoader.loadTasks(licenseManager, msProjectConnector, "msp1", mspMappings, DUMMY_MONITOR);
         // save to Redmine. this should save the remote IDs
         final TaskSaveResult result = TaskSaver.save(redmineConnector, "Redmine target location",
                 redmineMappings, loadedTasks,
@@ -91,7 +100,7 @@ public class IntegrationTest {
                 mspMappings, msProjectConnector);
 
         //reload from MSP file
-        List<GTask> tasksReloadedFromMSPFile = TaskLoader.loadTasks(new LicenseManager(), msProjectConnector, "msp2", mspMappings, DUMMY_MONITOR);
+        List<GTask> tasksReloadedFromMSPFile = TaskLoader.loadTasks(licenseManager, msProjectConnector, "msp2", mspMappings, DUMMY_MONITOR);
 
         assertEquals(2, tasksReloadedFromMSPFile.size());
 
@@ -109,7 +118,7 @@ public class IntegrationTest {
         Connector<?> projectConnector = new MSPConnector(mspConfig);
 
         Mappings mspMappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
-        List<GTask> loadedTasks = TaskLoader.loadTasks(new LicenseManager(), projectConnector, "project1", mspMappings, DUMMY_MONITOR);
+        List<GTask> loadedTasks = TaskLoader.loadTasks(licenseManager, projectConnector, "project1", mspMappings, DUMMY_MONITOR);
         try {
             // save to Redmine
             Mappings redmineMappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
