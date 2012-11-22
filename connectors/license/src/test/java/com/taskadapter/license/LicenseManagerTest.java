@@ -1,19 +1,34 @@
 package com.taskadapter.license;
 
 import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 import com.google.common.io.Resources;
-import com.taskadapter.connector.testlib.FileBasedTest;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+public class LicenseManagerTest {
 
-public class LicenseManagerTest extends FileBasedTest {
+    private File tempFolder;
+
+    @Before
+    public void beforeEachTest() {
+        tempFolder = Files.createTempDir();
+    }
+
+    @After
+    public void afterEachTest() throws IOException {
+        FileDeleter.deleteRecursively(tempFolder);
+    }
+
     @Test
     public void testValidSingleLicense() throws IOException {
         LicenseManager licenseManager = new LicenseManager(tempFolder);
