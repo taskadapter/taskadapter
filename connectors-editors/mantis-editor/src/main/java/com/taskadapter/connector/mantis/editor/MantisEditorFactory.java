@@ -1,6 +1,8 @@
 package com.taskadapter.connector.mantis.editor;
 
 import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.mantis.MantisConfig;
 import com.taskadapter.model.NamedKeyedObject;
@@ -67,13 +69,23 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
     }
 
     @Override
-    public void validateForSave(MantisConfig config) {
-        // TODO !! Implement
+    public void validateForSave(MantisConfig config) throws BadConfigException {
+        final WebServerInfo serverInfo = config.getServerInfo();
+        if (!serverInfo.isHostSet()) {
+            throw new ServerURLNotSetException();
+        }
+
+        if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
+            throw new ProjectNotSetException();
+        }
     }
 
     @Override
-    public void validateForLoad(MantisConfig config) {
-        // TODO !! Implement
+    public void validateForLoad(MantisConfig config) throws ServerURLNotSetException {
+        final WebServerInfo serverInfo = config.getServerInfo();
+        if (!serverInfo.isHostSet()) {
+            throw new ServerURLNotSetException();
+        }
     }
 
     @Override
