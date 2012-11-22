@@ -3,6 +3,7 @@ package com.taskadapter.webui;
 import com.taskadapter.config.StorageException;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.web.uiapi.UISyncConfig;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -38,9 +39,8 @@ public class NewConfigPage extends Page {
         panel.setWidth("600px");
         Form form = new Form();
         panel.addComponent(form);
-        //form.setSizeFull();
 
-        GridLayout grid = new GridLayout(2, 2);
+        GridLayout grid = new GridLayout(2, 4);
         grid.setSpacing(true);
 
         connector1 = new ListSelect(SYSTEM_1_TITLE);
@@ -60,6 +60,10 @@ public class NewConfigPage extends Page {
         grid.addComponent(descriptionTextField, 0, 1, 1, 1);
         grid.setComponentAlignment(descriptionTextField, Alignment.MIDDLE_CENTER);
 
+        // empty label by default
+        errorMessageLabel = new Label();
+        errorMessageLabel.addStyleName("error-message-label");
+
         Button saveButton = new Button("Create");
         saveButton.addListener(new Button.ClickListener() {
             @Override
@@ -70,14 +74,9 @@ public class NewConfigPage extends Page {
 
         form.setLayout(grid);
 
-        // empty label by default
-        errorMessageLabel = new Label();
-        errorMessageLabel.addStyleName("error-message-label");
-
-        VerticalLayout bottomPanel = new VerticalLayout();
-        bottomPanel.addComponent(saveButton);
-        bottomPanel.addComponent(errorMessageLabel);
-        form.getFooter().addComponent(bottomPanel);
+        grid.addComponent(errorMessageLabel, 0, 2, 1, 2);
+        grid.addComponent(saveButton, 1, 3);
+        grid.setComponentAlignment(saveButton, Alignment.MIDDLE_RIGHT);
     }
 
     private void loadDataConnectors() {
@@ -108,8 +107,7 @@ public class NewConfigPage extends Page {
         } catch (ConnectorNotSelectedException e) {
             errorMessageLabel.setValue(e.getMessage());
         } catch (StorageException e) {
-            errorMessageLabel
-                    .setValue("Failed to save config in persistent store");
+            errorMessageLabel.setValue("Failed to save config in persistent store");
         }
     }
 
@@ -134,14 +132,14 @@ public class NewConfigPage extends Page {
     }
 
     private UISyncConfig save() throws StorageException {
-        
+
         final String descriptionString = (String) descriptionTextField.getValue();
         final String id1 = (String) connector1.getValue();
         final String id2 = (String) connector2.getValue();
         final String currentUserLoginName = services.getAuthenticator().getUserName();
-        
+
         final UISyncConfig config = services.getUIConfigStore()
-                .createNewConfig(currentUserLoginName, descriptionString, id1,id2);
+                .createNewConfig(currentUserLoginName, descriptionString, id1, id2);
         return config;
     }
 
