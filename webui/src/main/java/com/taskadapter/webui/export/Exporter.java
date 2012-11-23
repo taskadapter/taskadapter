@@ -28,11 +28,14 @@ public class Exporter {
 
     private final Logger logger = LoggerFactory.getLogger(Exporter.class);
 
+
+    private Messages messages;
     private final Services services;
     private final Navigator navigator;
     private final UISyncConfig syncConfig;
 
-    public Exporter(Services services, Navigator navigator, UISyncConfig syncConfig) {
+    public Exporter(Messages messages, Services services, Navigator navigator, UISyncConfig syncConfig) {
+        this.messages = messages;
         this.services = services;
         this.navigator = navigator;
         this.syncConfig = syncConfig;
@@ -69,7 +72,7 @@ public class Exporter {
                 try {
                     services.getUIConfigStore().saveConfig(userName, syncConfig);
                 } catch (StorageException e1) {
-                    String message = services.getMessages().format("export.troublesSavingConfig", e1.getMessage());
+                    String message = messages.format("export.troublesSavingConfig", e1.getMessage());
                     logger.error(message, e);
                     navigator.showError(message);
                 }
@@ -100,9 +103,9 @@ public class Exporter {
         if (connectorTo.fileExists()) {
             String fileName = new File(connectorTo.getAbsoluteOutputFileName()).getName();
             MessageDialog messageDialog = new MessageDialog(
-                    services.getMessages().get("export.chooseOperation"),
-                    services.getMessages().format("export.fileAlreadyExists", fileName),
-                    Arrays.asList(services.getMessages().get("export.update"), services.getMessages().get("export.overwrite"), services.getMessages().get("button.cancel")),
+                    messages.get("export.chooseOperation"),
+                    messages.format("export.fileAlreadyExists", fileName),
+                    Arrays.asList(messages.get("export.update"), messages.get("export.overwrite"), messages.get("button.cancel")),
                     new MessageDialog.Callback() {
                         public void onDialogResult(String answer) {
                             processFileAction(answer);
@@ -113,14 +116,14 @@ public class Exporter {
 
             navigator.addWindow(messageDialog);
         } else {
-            processFileAction(services.getMessages().get("export.create"));
+            processFileAction(messages.get("export.create"));
         }
     }
 
     private void processFileAction(String action) {
-        if (action.equals(services.getMessages().get("export.update"))) {
+        if (action.equals(messages.get("export.update"))) {
             startUpdateFile();
-        } else if (action.equals(services.getMessages().get("export.overwrite")) || action.equals(services.getMessages().get("export.create"))) {
+        } else if (action.equals(messages.get("export.overwrite")) || action.equals(messages.get("export.create"))) {
             startRegularExport();
         }
     }

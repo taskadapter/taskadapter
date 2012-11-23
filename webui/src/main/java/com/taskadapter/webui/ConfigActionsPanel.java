@@ -1,5 +1,6 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.vaadin.event.LayoutEvents;
@@ -19,10 +20,12 @@ public class ConfigActionsPanel extends VerticalLayout {
     private UISyncConfig syncConfig;
     private HorizontalLayout horizontalLayout;
     private static final String NO_DESCRIPTION_TEXT = "<i>No description</i>"; //&nbsp;
+    private final Messages messages;
     private final Services services;
     private HorizontalLayout descriptionLayout;
 
-    public ConfigActionsPanel(Services services, Navigator navigator, UISyncConfig uiSyncConfig) {
+    public ConfigActionsPanel(Messages messages, Services services, Navigator navigator, UISyncConfig uiSyncConfig) {
+        this.messages = messages;
         this.services = services;
         this.navigator = navigator;
         this.syncConfig = uiSyncConfig;
@@ -71,9 +74,9 @@ public class ConfigActionsPanel extends VerticalLayout {
         addComponent(horizontalLayout);
 
         horizontalLayout
-                .addComponent(new UniConfigExport(services,
+                .addComponent(new UniConfigExport(messages, services,
                         navigator, syncConfig).getUI());
-        horizontalLayout.addComponent(new UniConfigExport(services,
+        horizontalLayout.addComponent(new UniConfigExport(messages, services,
                 navigator, syncConfig.reverse()).getUI());
     }
 }

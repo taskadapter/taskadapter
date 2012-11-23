@@ -42,7 +42,7 @@ public class EditConfigPage extends Page {
     }
 
     private void createMainEditor() {
-        editor = new OnePageEditor(services, config);
+        editor = new OnePageEditor(MESSAGES, services, config);
         addExportButtonListeners();
         layout.addComponent(editor);
     }
@@ -54,7 +54,7 @@ public class EditConfigPage extends Page {
 
     private void addExportButtonListener(Button button, MappingSide exportDirection) {
         UISyncConfig configForExport = DirectionResolver.getDirectionalConfig(config, exportDirection);
-        final Exporter exporter = new Exporter(services, navigator, configForExport);
+        final Exporter exporter = new Exporter(MESSAGES, services, navigator, configForExport);
         button.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
@@ -67,7 +67,7 @@ public class EditConfigPage extends Page {
         HorizontalLayout descriptionLayout = new HorizontalLayout();
         descriptionLayout.setSpacing(true);
         layout.addComponent(descriptionLayout);
-        descriptionLayout.addComponent(new Label(services.getMessages().get("editConfig.description")));
+        descriptionLayout.addComponent(new Label(MESSAGES.get("editConfig.description")));
         TextField descriptionField = new TextField();
         descriptionField.addStyleName("configEditorDescriptionLabel");
         MethodProperty<String> label = new MethodProperty<String>(config, "label");
@@ -97,7 +97,7 @@ public class EditConfigPage extends Page {
         buttonsLayout.addComponent(rightLayout);
         buttonsLayout.setComponentAlignment(rightLayout, Alignment.BOTTOM_RIGHT);
 
-        Button saveButton = new Button(services.getMessages().get("button.save"));
+        Button saveButton = new Button(MESSAGES.get("button.save"));
         saveButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -105,14 +105,14 @@ public class EditConfigPage extends Page {
             }
         });
         rightLayout.addComponent(saveButton);
-        rightLayout.addComponent(ButtonBuilder.createBackButton(navigator, services.getMessages().get("button.close")));
+        rightLayout.addComponent(ButtonBuilder.createBackButton(navigator, MESSAGES.get("button.close")));
         layout.addComponent(buttonsLayout);
     }
 
     private void saveClicked() {
         if (validate()) {
             save();
-            navigator.showNotification("", services.getMessages().get("editConfig.messageSaved"));
+            navigator.showNotification("", MESSAGES.get("editConfig.messageSaved"));
         }
     }
 
@@ -132,12 +132,12 @@ public class EditConfigPage extends Page {
         try {
             editor.validate();
         } catch (FieldAlreadyMappedException e) {
-            String s = services.getMessages().format("editConfig.error.fieldAlreadyMapped", e.getValue());
+            String s = MESSAGES.format("editConfig.error.fieldAlreadyMapped", e.getValue());
             errorMessageLabel.setValue(s);
             return false;
         } catch (FieldNotMappedException e) {
             String fieldDisplayName = GTaskDescriptor.getDisplayValue(e.getField());
-            String s = services.getMessages().format("error.fieldSelectedForExportNotMapped", fieldDisplayName);
+            String s = MESSAGES.format("error.fieldSelectedForExportNotMapped", fieldDisplayName);
             errorMessageLabel.setValue(s);
             return false;
         } catch (BadConfigException e) {
@@ -154,7 +154,7 @@ public class EditConfigPage extends Page {
         try {
             services.getUIConfigStore().saveConfig(userLoginName, config);
         } catch (StorageException e) {
-            String message = services.getMessages().format("editConfig.error.cantSave", e.getMessage());
+            String message = MESSAGES.format("editConfig.error.cantSave", e.getMessage());
             errorMessageLabel.setValue(message);
             logger.error(message, e);
             return;

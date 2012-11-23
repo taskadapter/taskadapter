@@ -31,7 +31,7 @@ public class UpdateFilePage extends ActionPage {
 
     @Override
     protected String getInitialText() {
-        return services.getMessages().format("updatePage.initialText", config.getConnector2().getDestinationLocation());
+        return MESSAGES.format("updatePage.initialText", config.getConnector2().getDestinationLocation());
     }
 
     @Override
@@ -41,13 +41,13 @@ public class UpdateFilePage extends ActionPage {
 
     @Override
     public String getNoDataLoadedText() {
-        return services.getMessages().format("updatePage.noTasksWithRemoteIds", config.getConnector2().getSourceLocation());
+        return MESSAGES.format("updatePage.noTasksWithRemoteIds", config.getConnector2().getSourceLocation());
     }
 
     @Override
     protected VerticalLayout getDoneInfoPanel() {
         VerticalLayout donePanel = new VerticalLayout();
-        String text = services.getMessages().format("updatePage.result", updater.getNumberOfUpdatedTasks(),
+        String text = MESSAGES.format("updatePage.result", updater.getNumberOfUpdatedTasks(),
                 config.getConnector2().getDestinationLocation(), config.getConnector1().getSourceLocation());
         donePanel.addComponent(new Label(text));
 

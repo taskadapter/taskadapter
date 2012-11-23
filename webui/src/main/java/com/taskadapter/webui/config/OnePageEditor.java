@@ -14,6 +14,7 @@ import com.vaadin.ui.VerticalLayout;
 
 public class OnePageEditor extends VerticalLayout implements WindowProvider {
 
+    private Messages messages;
     // TODO for MaximK: why is this deprecated? what's a replacement for it?
     @Deprecated
     private Services services;
@@ -22,7 +23,8 @@ public class OnePageEditor extends VerticalLayout implements WindowProvider {
     private TaskFieldsMappingFragment taskFieldsMappingFragment;
     private ExportButtonsFragment exportButtonsFragment;
 
-    public OnePageEditor(Services services, UISyncConfig config) {
+    public OnePageEditor(Messages messages, Services services, UISyncConfig config) {
+        this.messages = messages;
         this.services = services;
         this.config = config;
         buildUI();
@@ -46,7 +48,7 @@ public class OnePageEditor extends VerticalLayout implements WindowProvider {
     }
 
     private void addExportButtonsToCenter(HorizontalLayout layout) {
-        exportButtonsFragment = new ExportButtonsFragment(services.getMessages());
+        exportButtonsFragment = new ExportButtonsFragment(messages);
         layout.addComponent(exportButtonsFragment);
         layout.setComponentAlignment(exportButtonsFragment, Alignment.MIDDLE_CENTER);
     }
@@ -76,7 +78,7 @@ public class OnePageEditor extends VerticalLayout implements WindowProvider {
     }
 
     private TaskFieldsMappingFragment createOnePageMappingPanel() {
-        return new TaskFieldsMappingFragment(services.getMessages(), config.getConnector1(), config.getConnector2(), config.getNewMappings());
+        return new TaskFieldsMappingFragment(messages, config.getConnector1(), config.getConnector2(), config.getNewMappings());
     }
 
     public void validate() throws BadConfigException {

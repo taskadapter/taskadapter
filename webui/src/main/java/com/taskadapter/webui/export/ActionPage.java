@@ -60,7 +60,7 @@ public abstract class ActionPage extends Page {
 
     private void addButtons() {
         HorizontalLayout buttonsLayout = new HorizontalLayout();
-        Button goButton = new Button(services.getMessages().get("button.go"));
+        Button goButton = new Button(MESSAGES.get("button.go"));
         goButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -72,7 +72,7 @@ public abstract class ActionPage extends Page {
         });
         buttonsLayout.addComponent(goButton);
 
-        Button cancelButton = ButtonBuilder.createBackButton(navigator, services.getMessages().get("button.cancel"));
+        Button cancelButton = ButtonBuilder.createBackButton(navigator, MESSAGES.get("button.cancel"));
         buttonsLayout.addComponent(cancelButton);
         mainPanel.addComponent(buttonsLayout);
     }
@@ -85,7 +85,7 @@ public abstract class ActionPage extends Page {
         mainPanel.addComponent(loadProgress);
         String sourceDescription = config.getConnector1().getSourceLocation()
                 + " (" + config.getConnector1().getLabel() + ")";
-        String labelText = services.getMessages().format("action.loadingData", sourceDescription);
+        String labelText = MESSAGES.format("action.loadingData", sourceDescription);
         mainPanel.addComponent(createLabel(labelText));
     }
 
@@ -93,7 +93,7 @@ public abstract class ActionPage extends Page {
         loadProgress.setEnabled(false);
         if (loadedTasks == null || loadedTasks.isEmpty()) {
             mainPanel.addComponent(createLabel(getNoDataLoadedText()));
-            mainPanel.addComponent(ButtonBuilder.createBackButton(navigator, services.getMessages().get("button.back")));
+            mainPanel.addComponent(ButtonBuilder.createBackButton(navigator, MESSAGES.get("button.back")));
         } else {
             buildConfirmationUI();
         }
@@ -151,7 +151,7 @@ public abstract class ActionPage extends Page {
         mainPanel.removeAllComponents();
         mainPanel.addComponent(getDoneInfoPanel());
 
-        Button button = new Button(services.getMessages().get("action.backToHomePage"));
+        Button button = new Button(MESSAGES.get("action.backToHomePage"));
         button.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -168,14 +168,14 @@ public abstract class ActionPage extends Page {
             try {
                 services.getUIConfigStore().saveConfig(userLoginName, config);
             } catch (StorageException e) {
-                logger.error(services.getMessages().format("action.cantSaveUpdatedConfig", e.getMessage()), e);
+                logger.error(MESSAGES.format("action.cantSaveUpdatedConfig", e.getMessage()), e);
                 // TODO !! report in the UI
             }
         }
     }
 
     protected void buildConfirmationUI() {
-        confirmExportFragment = new ConfirmExportFragment(services.getMessages(), navigator, loadedTasks,
+        confirmExportFragment = new ConfirmExportFragment(MESSAGES, navigator, loadedTasks,
                 config, new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -194,13 +194,13 @@ public abstract class ActionPage extends Page {
             saveProgress = new ProgressIndicator();
             saveProgress.setIndeterminate(false);
             saveProgress.setEnabled(true);
-            saveProgress.setCaption(services.getMessages().format("action.saving", config.getConnector2().getDestinationLocation()));
+            saveProgress.setCaption(MESSAGES.format("action.saving", config.getConnector2().getDestinationLocation()));
             mainPanel.removeAllComponents();
             mainPanel.addComponent(saveProgress);
 
             new SaveWorker(selectedRootLevelTasks).start();
         } else {
-            mainPanel.getWindow().showNotification(services.getMessages().get("action.pleaseSelectTasks"));
+            mainPanel.getWindow().showNotification(MESSAGES.get("action.pleaseSelectTasks"));
         }
     }
 
