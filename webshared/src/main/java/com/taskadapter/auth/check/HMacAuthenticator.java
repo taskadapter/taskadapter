@@ -43,7 +43,7 @@ public class HMacAuthenticator implements AuthFactory<String, String> {
     /**
      * Default salt bytes strength.
      */
-    private static final int DEFAULT_SALT_BYTES = 256 / 8;
+    private static final int DEFAULT_SALT_BYTES = 160 / 8;
 
     /**
      * Algorithm to use.
