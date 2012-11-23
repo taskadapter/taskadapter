@@ -2,7 +2,6 @@ package com.taskadapter.webui;
 
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.web.MessageDialog;
-import com.taskadapter.web.service.Authenticator;
 import com.taskadapter.web.service.EditableCurrentUserInfo;
 import com.taskadapter.web.service.Services;
 import com.taskadapter.web.service.WrongPasswordException;

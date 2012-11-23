@@ -2,9 +2,6 @@ package com.taskadapter.web.service;
 
 import com.taskadapter.FileManager;
 import com.taskadapter.PluginManager;
-import com.taskadapter.auth.BasicCredentialsManager;
-import com.taskadapter.auth.cred.CredentialsStore;
-import com.taskadapter.auth.cred.FSCredentialStore;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.SettingsManager;
@@ -14,7 +11,6 @@ import com.taskadapter.web.uiapi.UIConfigStore;
 import java.io.File;
 
 public class Services {
-    private Authenticator authenticator;
     private final EditorManager editorManager;
     private PluginManager pluginManager = new PluginManager();
     private SettingsManager settingsManager = new SettingsManager();
@@ -33,9 +29,6 @@ public class Services {
         fileManager = new FileManager(dataRootFolder);
         userManager = new UserManager(fileManager);
         final ConfigStorage configStorage = new ConfigStorage(fileManager);
-        final CredentialsStore creds = new FSCredentialStore(fileManager);
-        final BasicCredentialsManager credentialsManager = new BasicCredentialsManager(creds, 50);
-        authenticator = new Authenticator(credentialsManager, cookiesManager, currentUserInfo);
 
         this.uiConfigStore = new UIConfigStore(new UIConfigService(
                 pluginManager, editorManager), configStorage);
