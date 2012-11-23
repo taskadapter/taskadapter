@@ -1,7 +1,6 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
-import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
@@ -21,16 +20,14 @@ import com.vaadin.ui.Label;
  * 
  */
 final class UniConfigExport {
-    private final Messages messages;
     private final Services services;
     private final Navigator navigator;
     private final UISyncConfig syncConfig;
 
     private final HorizontalLayout ui;
 
-    public UniConfigExport(Messages messages, Services services,
+    public UniConfigExport(Services services,
             Navigator navigator, UISyncConfig uiSyncConfig) {
-        this.messages = messages;
         this.services = services;
         this.navigator = navigator;
         this.syncConfig = uiSyncConfig;
@@ -104,19 +101,19 @@ final class UniConfigExport {
         try {
             syncConfig.getConnector1().validateForLoad();
         } catch (BadConfigException e) {
-            rb.append(messages.format("configsPage.errorSource", syncConfig
+            rb.append(services.getMessages().format("configsPage.errorSource", syncConfig
                     .getConnector1().decodeException(e)));
         }
         try {
             syncConfig.getConnector2().validateForLoad();
         } catch (BadConfigException e) {
-            rb.append(messages.format("configsPage.errorDestination",
+            rb.append(services.getMessages().format("configsPage.errorDestination",
                     syncConfig.getConnector2().decodeException(e)));
         }
         if (rb.length() == 0) {
             return null;
         }
-        return messages.format("configsPage.validationTemplate", rb.toString());
+        return services.getMessages().format("configsPage.validationTemplate", rb.toString());
     }
 
     private Label createLabel(UIConnectorConfig connector) {
@@ -126,7 +123,7 @@ final class UniConfigExport {
     }
 
     void export() {
-        new Exporter(messages, services, navigator, syncConfig).export();
+        new Exporter(services, navigator, syncConfig).export();
     }
 
     AbstractComponent getUI() {

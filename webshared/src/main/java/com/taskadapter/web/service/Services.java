@@ -5,12 +5,15 @@ import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.SettingsManager;
+import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.uiapi.UIConfigService;
 import com.taskadapter.web.uiapi.UIConfigStore;
 
 import java.io.File;
 
 public class Services {
+    private static final String BUNDLE_NAME = "com.taskadapter.webui.data.messages";
+    private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
     private final EditorManager editorManager;
     private PluginManager pluginManager = new PluginManager();
     private SettingsManager settingsManager = new SettingsManager();
@@ -71,5 +74,9 @@ public class Services {
 
     public String getCurrentTaskAdapterVersion() {
         return currentTaskAdapterVersion;
+    }
+    
+    public Messages getMessages() {
+        return MESSAGES;
     }
 }

@@ -2,6 +2,7 @@ package com.taskadapter.webui;
 
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.web.LocalRemoteOptionsPanel;
+import com.taskadapter.web.data.Messages;
 import com.taskadapter.webui.user.UsersPanel;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;
@@ -12,9 +13,11 @@ public class ConfigureSystemPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
 
     private final CredentialsManager credManager;
+    private final Messages messages;
     
-    public ConfigureSystemPage(CredentialsManager credManager) {
+    public ConfigureSystemPage(CredentialsManager credManager, Messages messages) {
         this.credManager = credManager;
+        this.messages = messages;
     }
 
     private void createLocalRemoteSection() {
@@ -39,7 +42,7 @@ public class ConfigureSystemPage extends Page {
     }
 
     private void createUsersSection() {
-        layout.addComponent(new UsersPanel(MESSAGES, services, credManager));
+        layout.addComponent(new UsersPanel(messages, services, credManager));
     }
 
     private void setPanelWidth(Panel panel) {

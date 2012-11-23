@@ -65,7 +65,7 @@ public class ConfigsPage extends Page {
                 filterFields(event.getText());
             }
         });
-        filterPanel.addComponent(new Label(MESSAGES.get("configsPage.filter")));
+        filterPanel.addComponent(new Label(services.getMessages().get("configsPage.filter")));
         filterPanel.addStyleName("filterPanel");
         filterPanel.addComponent(filterField);
         filterPanel.setSpacing(true);
@@ -74,7 +74,7 @@ public class ConfigsPage extends Page {
     }
 
     private void addCreateNewConfigButton() {
-        Button addButton = new Button(MESSAGES.get("configsPage.buttonNewConfig"));
+        Button addButton = new Button(services.getMessages().get("configsPage.buttonNewConfig"));
         addButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
@@ -128,7 +128,7 @@ public class ConfigsPage extends Page {
     }
 
     private void addConfigToPage(final UISyncConfig config) {
-        configsLayout.addComponent(new ConfigActionsPanel(MESSAGES, services, navigator, config));
+        configsLayout.addComponent(new ConfigActionsPanel(services, navigator, config));
     }
 
     @Override

@@ -89,7 +89,7 @@ public class Navigator {
     
     public void changePassword() {
         final ChangePasswordDialog passwordDialog = new ChangePasswordDialog(
-                Page.MESSAGES, credentialsManager,
+                services.getMessages(), credentialsManager,
                 services.getCurrentUserInfo());
         layout.getWindow().addWindow(passwordDialog);        
     }
@@ -181,6 +181,6 @@ public class Navigator {
     }
 
     public void showSystemConfiguration() {
-        show(new ConfigureSystemPage(credentialsManager));
+        show(new ConfigureSystemPage(credentialsManager, services.getMessages()));
     }
 }
