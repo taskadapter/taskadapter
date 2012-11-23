@@ -8,6 +8,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
 
 /**
@@ -105,7 +106,13 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
     private void addMenuItems() {
         HorizontalLayout menu = new HorizontalLayout();
         menu.setSpacing(true);
-        configureButton = createButtonLink("Configure", new ConfigureSystemPage(), "menu");
+        configureButton = createButtonLink("Configure", "menu",
+                new Button.ClickListener() {
+                    @Override
+                    public void buttonClick(ClickEvent event) {
+                        navigator.showSystemConfiguration();
+                    }
+                });
         menu.addComponent(configureButton);
 
         addSupportItem(menu);
@@ -133,15 +140,21 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
     }
 
     private Button createButtonLink(String caption, final Page page, String additionalStyle) {
-        Button button = new Button(caption);
-        button.setStyleName(BaseTheme.BUTTON_LINK);
-        button.addStyleName(additionalStyle);
-        button.addListener(new Button.ClickListener() {
+        final Button.ClickListener handler = new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 navigator.show(page);
             }
-        });
+        };
+        return createButtonLink(caption, additionalStyle, handler);
+    }
+
+    private Button createButtonLink(String caption, String additionalStyle,
+            final Button.ClickListener handler) {
+        Button button = new Button(caption);
+        button.setStyleName(BaseTheme.BUTTON_LINK);
+        button.addStyleName(additionalStyle);
+        button.addListener(handler);
         return button;
     }
 

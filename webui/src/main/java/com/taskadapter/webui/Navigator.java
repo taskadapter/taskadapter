@@ -2,7 +2,6 @@ package com.taskadapter.webui;
 
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.web.MessageDialog;
-import com.taskadapter.web.service.EditableCurrentUserInfo;
 import com.taskadapter.web.service.Services;
 import com.taskadapter.web.service.WrongPasswordException;
 import com.taskadapter.web.uiapi.UISyncConfig;
@@ -35,13 +34,11 @@ public class Navigator {
     private final CredentialsManager credentialsManager;
 
     public Navigator(VerticalLayout layout, Services services,
-            CredentialsManager credManager) {
+            CredentialsManager credManager, Authenticator authenticator) {
         this.layout = layout;
         this.services = services;
         this.credentialsManager = credManager;
-        this.authenticator = new Authenticator(credManager,
-                services.getCookiesManager(),
-                (EditableCurrentUserInfo) services.getCurrentUserInfo());
+        this.authenticator = authenticator;
         addGoogleAnalytics();
         buildUI();
     }
@@ -181,5 +178,9 @@ public class Navigator {
 
     Page getCurrentPage() {
         return currentPage;
+    }
+
+    public void showSystemConfiguration() {
+        show(new ConfigureSystemPage(credentialsManager));
     }
 }

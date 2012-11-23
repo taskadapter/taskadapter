@@ -1,6 +1,7 @@
 package com.taskadapter.webui.user;
 
-import com.taskadapter.config.User;
+import com.taskadapter.auth.AuthException;
+import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.license.License;
 import com.taskadapter.license.LicenseChangeListener;
 import com.taskadapter.web.InputDialog;
@@ -19,10 +20,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class UsersPanel extends Panel implements LicenseChangeListener {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UsersPanel.class);
 
     private static final int COLUMNS_NUMBER = 3;
 
@@ -33,11 +37,14 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     private Label errorLabel;
     private Button addUserButton;
     private Label statusLabel;
+    
+    private final CredentialsManager credentialsManager;
 
-    public UsersPanel(Messages messages, Services services) {
+    public UsersPanel(Messages messages, Services services, CredentialsManager credentialsManager) {
         super(messages.get("users.title"));
         this.messages = messages;
         this.services = services;
+        this.credentialsManager = credentialsManager;
         services.getLicenseManager().addLicenseChangeListener(this);
         refreshPage();
     }
@@ -46,7 +53,7 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
         removeAllComponents();
         addErrorLabel();
         addStatusLabel();
-        Collection<User> users = services.getUserManager().getUsers();
+        Collection<String> users = services.getUserManager().getUsers();
         addCreateUserSectionIfAllowedByLicense(users.size());
         addUsersListPanel();
         refreshUsers(users);
@@ -68,17 +75,12 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
         addComponent(usersLayout);
     }
 
-    private void refreshUsers(final Collection<User> users) {
+    private void refreshUsers(final Collection<String> users) {
         usersLayout.removeAllComponents();
-        List<User> usersList = new ArrayList<User>(users);
-        Collections.sort(usersList, new Comparator<User>() {
-            @Override
-            public int compare(User o1, User o2) {
-                return o1.getLoginName().compareTo(o2.getLoginName());
-            }
-        });
-        for (User user : usersList) {
-            addUserToPanel(user.getLoginName());
+        List<String> usersList = new ArrayList<String>(users);
+        Collections.sort(usersList);
+        for (String user : usersList) {
+            addUserToPanel(user);
         }
     }
 
@@ -195,7 +197,13 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     }
 
     private void createUser(String login, String password) {
-        services.getUserManager().saveUser(login, password);
+        services.getUserManager().createUser(login);
+        try {
+            credentialsManager.setPrimaryAuthToken(login, password);
+        } catch (AuthException e) {
+            LOGGER.error("User initiation error", e);
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -211,13 +219,17 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
         return addUserButton;
     }
 
-    // TODO this is similar to startChangePasswordProcess() in Header class.
     private void startSetPasswordProcess(Window parentWindow, final UserManager userManager, final String userLoginName) {
         InputDialog inputDialog = new InputDialog(messages.format("users.changePassword", userLoginName),
                 messages.get("users.newPassword"),
                 new InputDialog.Recipient() {
                     public void gotInput(String newPassword) {
-                        userManager.saveUser(userLoginName, newPassword);
+                        try {
+                            credentialsManager.setPrimaryAuthToken(userLoginName, newPassword);
+                        } catch (AuthException e) {
+                            LOGGER.error("Change password error", e);
+                            throw new RuntimeException(e);
+                        }
                     }
                 });
         inputDialog.setPasswordMode();

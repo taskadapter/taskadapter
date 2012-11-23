@@ -1,11 +1,14 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.auth.AuthException;
 import com.taskadapter.auth.BasicCredentialsManager;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.auth.cred.CredentialsStore;
 import com.taskadapter.auth.cred.FSCredentialStore;
+import com.taskadapter.web.service.EditableCurrentUserInfo;
 import com.taskadapter.web.service.EditorManager;
 import com.taskadapter.web.service.Services;
+import com.taskadapter.web.service.UserManager;
 import com.vaadin.Application;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
@@ -14,23 +17,51 @@ import com.vaadin.ui.Window;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 
 /**
  * Vaadin web application entry point.
  */
 public class TAApplication extends Application implements HttpServletRequestListener {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(TAApplication.class);
+    
     private final Window mainWindow = new Window("Task Adapter");
 
     private final Services services;
     
+    private final CookiesManager cookiesManager;
+    
+    private final Authenticator authenticator;
+    
+    private final CredentialsManager credentialsManager;
+    
     public TAApplication(File dataRootFolder) {
+        cookiesManager = new CookiesManager();
         services = new Services(dataRootFolder,
                 EditorManager.fromResource("editors.txt"));
-        services.getLicenseManager().loadInstalledTaskAdapterLicense();
-        services.getUserManager().createFirstAdminUserIfNeeded();
+
+        final CredentialsStore credStore = new FSCredentialStore(
+                services.getFileManager());
+        credentialsManager = new BasicCredentialsManager(
+                credStore, 50);
+        authenticator = new Authenticator(credentialsManager,
+                cookiesManager,
+                (EditableCurrentUserInfo) services.getCurrentUserInfo());
         
+        services.getLicenseManager().loadInstalledTaskAdapterLicense();
+        
+        if (!services.getUserManager().doesUserExists(UserManager.ADMIN_LOGIN_NAME)) {
+            services.getUserManager().createUser(UserManager.ADMIN_LOGIN_NAME);
+            try {
+                credentialsManager.setPrimaryAuthToken(UserManager.ADMIN_LOGIN_NAME, UserManager.ADMIN_LOGIN_NAME);
+            } catch (AuthException e) {
+                LOGGER.error("Admin initialization exception", e);
+            }
+        }
     }
     
     public TAApplication() {
@@ -51,18 +82,15 @@ public class TAApplication extends Application implements HttpServletRequestList
         mainWindow.setContent(layout);
         setMainWindow(mainWindow);
 
-        final CredentialsStore credStore = new FSCredentialStore(
-                services.getFileManager());
-        final CredentialsManager credentialsManager = new BasicCredentialsManager(
-                credStore, 50);
         
-        Navigator navigator = new Navigator(layout, services, credentialsManager);
+        Navigator navigator = new Navigator(layout, services,
+                credentialsManager, authenticator);
         navigator.show(new ConfigsPage());
     }
 
     @Override
     public void onRequestStart(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        services.getCookiesManager().init(httpServletRequest, httpServletResponse);
+        cookiesManager.init(httpServletRequest, httpServletResponse);
     }
 
     @Override

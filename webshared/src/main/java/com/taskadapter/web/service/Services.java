@@ -15,7 +15,6 @@ public class Services {
     private PluginManager pluginManager = new PluginManager();
     private SettingsManager settingsManager = new SettingsManager();
     private LicenseManager licenseManager;
-    private CookiesManager cookiesManager = new CookiesManager();
     private final EditableCurrentUserInfo currentUserInfo = new EditableCurrentUserInfo();
     private UserManager userManager;
     private FileManager fileManager;
@@ -52,10 +51,6 @@ public class Services {
 
     public LicenseManager getLicenseManager() {
         return licenseManager;
-    }
-
-    public CookiesManager getCookiesManager() {
-        return cookiesManager;
     }
 
     public UserManager getUserManager() {

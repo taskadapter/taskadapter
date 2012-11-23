@@ -7,6 +7,7 @@ import com.taskadapter.auth.cred.FSCredentialStore;
 import com.taskadapter.connector.testlib.FileBasedTest;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.PluginEditorFactory;
+import com.taskadapter.web.service.EditableCurrentUserInfo;
 import com.taskadapter.web.service.EditorManager;
 import com.taskadapter.web.service.Services;
 import com.vaadin.ui.VerticalLayout;
@@ -43,7 +44,8 @@ public class NavigatorTest extends FileBasedTest {
         window.setContent(layout);
         final CredentialsStore cs = new FSCredentialStore(services.getFileManager());
         final CredentialsManager cm = new BasicCredentialsManager(cs, 50);
-        return new Navigator(layout, services, cm);
+        return new Navigator(layout, services, cm, new Authenticator(cm,
+                new CookiesManager(), new EditableCurrentUserInfo()));
     }
 
     private Services getServices() {

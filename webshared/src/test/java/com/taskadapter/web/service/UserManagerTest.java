@@ -1,6 +1,5 @@
 package com.taskadapter.web.service;
 
-import com.taskadapter.config.User;
 import com.taskadapter.connector.testlib.FileBasedTest;
 import com.taskadapter.web.PluginEditorFactory;
 import org.junit.Test;
@@ -18,9 +17,7 @@ public class UserManagerTest extends FileBasedTest {
         UserManager userManager = services.getUserManager();
         assertTrue(userManager.getUsers().isEmpty());
 
-        userManager.createFirstAdminUserIfNeeded();
         assertEquals(1, userManager.getUsers().size());
-        User admin = userManager.getUser("admin");
-        assertEquals("admin", admin.getLoginName());
+        assertTrue("admin", userManager.doesUserExists("admin"));
     }
 }

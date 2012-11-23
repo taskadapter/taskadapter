@@ -1,4 +1,4 @@
-package com.taskadapter.web.service;
+package com.taskadapter.webui;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;

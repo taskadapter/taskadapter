@@ -6,7 +6,6 @@ import com.vaadin.ui.*;
 public class InputDialog extends Window {
 
     private HorizontalLayout textFieldLayout = new HorizontalLayout();
-    private AbstractTextField textFieldOld;
     private AbstractTextField textField;
 
     public InputDialog(String caption, String question, final Recipient recipient) {
