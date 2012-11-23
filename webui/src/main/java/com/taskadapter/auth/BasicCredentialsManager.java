@@ -197,8 +197,9 @@ public final class BasicCredentialsManager implements CredentialsManager {
         final String tok = idStr + ":" + keyStr;
         final String key = idStr + ":" + DEFAULT_AUTH_NAME + ":" + authData;
 
-        final int saveLength = Math.max(Math.min(creds.secondaryCredentials.size(),
-                secondaryAuthBacklog) - 1, 0);
+        final int saveLength = Math
+                .max(Math.min(creds.secondaryCredentials.size(),
+                        secondaryAuthBacklog) - 1, 0);
         final List<String> auths = new ArrayList<String>(
                 creds.secondaryCredentials.subList(
                         creds.secondaryCredentials.size() - saveLength,
@@ -263,6 +264,21 @@ public final class BasicCredentialsManager implements CredentialsManager {
         final CredentialsV1 creds = loadV1(user);
         store.saveCredentials(user, new CredentialsV1(creds.primaryCredentials,
                 Collections.<String> emptyList()));
+    }
+
+    @Override
+    public List<String> listUsers() {
+        return store.listUsers();
+    }
+
+    @Override
+    public boolean doesUserExists(String user) {
+        return store.doesUserExists(user);
+    }
+
+    @Override
+    public void removeAuth(String user) throws AuthException {
+        store.removeCredentials(user);
     }
 
 }

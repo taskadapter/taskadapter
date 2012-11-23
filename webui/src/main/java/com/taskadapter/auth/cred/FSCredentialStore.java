@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -89,14 +90,15 @@ public final class FSCredentialStore implements CredentialsStore {
     public void saveCredentials(String user, CredentialsV1 credentials)
             throws AuthException {
         final File baseDir = fileManager.getUserFolder(user);
-        
+        baseDir.mkdirs();
+
         final StringBuilder writer = new StringBuilder();
         writer.append(CURRENT_VERSION_PREFIX).append(LINE_SEPARATOR)
                 .append(credentials.primaryCredentials);
         for (String secondary : credentials.secondaryCredentials) {
             writer.append(LINE_SEPARATOR).append(secondary);
         }
-        
+
         try {
             Files.write(writer, new File(baseDir, CREDENTIALS_FILE),
                     Charset.forName(IO_CHARSET));
@@ -106,5 +108,31 @@ public final class FSCredentialStore implements CredentialsStore {
         }
 
         new File(baseDir, LEGACY_FILE).delete();
+    }
+
+    @Override
+    public List<String> listUsers() {
+        final String[] userFiles = fileManager.listUsers();
+        final List<String> result = new ArrayList<String>(userFiles.length);
+        for (String userName : userFiles) {
+            if (doesUserExists(userName)) {
+                result.add(userName);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public boolean doesUserExists(String userName) {
+        final File userHome = fileManager.getUserFolder(userName);
+        return new File(userHome, CREDENTIALS_FILE).exists()
+                || new File(userHome, LEGACY_FILE).exists();
+    }
+
+    @Override
+    public void removeCredentials(String user) {
+        final File userHome = fileManager.getUserFolder(user);
+        new File(userHome, CREDENTIALS_FILE).delete();
+        new File(userHome, LEGACY_FILE).delete();
     }
 }

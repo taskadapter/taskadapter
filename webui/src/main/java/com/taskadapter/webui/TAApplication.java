@@ -8,7 +8,6 @@ import com.taskadapter.auth.cred.FSCredentialStore;
 import com.taskadapter.web.service.EditableCurrentUserInfo;
 import com.taskadapter.web.service.EditorManager;
 import com.taskadapter.web.service.Services;
-import com.taskadapter.web.service.UserManager;
 import com.vaadin.Application;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
@@ -27,6 +26,8 @@ import java.io.File;
  * Vaadin web application entry point.
  */
 public class TAApplication extends Application implements HttpServletRequestListener {
+    public static final String ADMIN_LOGIN_NAME = "admin";
+    
     private static final Logger LOGGER = LoggerFactory.getLogger(TAApplication.class);
     
     private final Window mainWindow = new Window("Task Adapter");
@@ -54,10 +55,10 @@ public class TAApplication extends Application implements HttpServletRequestList
         
         services.getLicenseManager().loadInstalledTaskAdapterLicense();
         
-        if (!services.getUserManager().doesUserExists(UserManager.ADMIN_LOGIN_NAME)) {
-            services.getUserManager().createUser(UserManager.ADMIN_LOGIN_NAME);
+        if (!credentialsManager.doesUserExists(ADMIN_LOGIN_NAME)) {
             try {
-                credentialsManager.setPrimaryAuthToken(UserManager.ADMIN_LOGIN_NAME, UserManager.ADMIN_LOGIN_NAME);
+                credentialsManager.setPrimaryAuthToken(
+                        ADMIN_LOGIN_NAME, ADMIN_LOGIN_NAME);
             } catch (AuthException e) {
                 LOGGER.error("Admin initialization exception", e);
             }

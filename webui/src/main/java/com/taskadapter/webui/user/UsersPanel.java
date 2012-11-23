@@ -8,7 +8,7 @@ import com.taskadapter.web.InputDialog;
 import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
-import com.taskadapter.web.service.UserManager;
+import com.taskadapter.webui.TAApplication;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
@@ -53,7 +53,7 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
         removeAllComponents();
         addErrorLabel();
         addStatusLabel();
-        Collection<String> users = services.getUserManager().getUsers();
+        Collection<String> users = credentialsManager.listUsers();
         addCreateUserSectionIfAllowedByLicense(users.size());
         addUsersListPanel();
         refreshUsers(users);
@@ -89,7 +89,7 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
         userLoginLabel.addStyleName("userLoginLabelInUsersPanel");
         usersLayout.addComponent(userLoginLabel);
 
-        if (services.getUserManager().isAdmin(services.getCurrentUserInfo().getUserName())) {
+        if (isAdmin()) {
             addSetPasswordButton(userLoginName);
             addDeleteButtonUnlessUserIsHardcodedAdminUser(userLoginName);
         } else {
@@ -100,19 +100,23 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
 
     }
 
+    private boolean isAdmin() {
+        return TAApplication.ADMIN_LOGIN_NAME.equals(services.getCurrentUserInfo().getUserName());
+    }
+
     private void addSetPasswordButton(final String userLoginName) {
         Button setPasswordButton = new Button(messages.get("users.setPassword"));
         setPasswordButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                startSetPasswordProcess(getWindow(), services.getUserManager(), userLoginName);
+                startSetPasswordProcess(getWindow(), userLoginName);
             }
         });
         usersLayout.addComponent(setPasswordButton);
     }
 
     private void addDeleteButtonUnlessUserIsHardcodedAdminUser(final String userLoginName) {
-        if (!userLoginName.equals(UserManager.ADMIN_LOGIN_NAME)) {
+        if (!userLoginName.equals(TAApplication.ADMIN_LOGIN_NAME)) {
             addDeleteButton(userLoginName);
         } else {
             // filler for gridlayout
@@ -151,7 +155,10 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
 
     private void deleteUser(String userLoginName) {
         try {
-            services.getUserManager().deleteUser(userLoginName);
+            credentialsManager.removeAuth(userLoginName);
+            services.getFileManager().deleteUserFolder(userLoginName);
+        } catch (AuthException e) {
+            errorLabel.setValue(messages.format("users.error.cantDeleteUser", e.toString()));
         } catch (IOException e) {
             errorLabel.setValue(messages.format("users.error.cantDeleteUser", e.toString()));
         }
@@ -197,7 +204,6 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     }
 
     private void createUser(String login, String password) {
-        services.getUserManager().createUser(login);
         try {
             credentialsManager.setPrimaryAuthToken(login, password);
         } catch (AuthException e) {
@@ -219,7 +225,7 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
         return addUserButton;
     }
 
-    private void startSetPasswordProcess(Window parentWindow, final UserManager userManager, final String userLoginName) {
+    private void startSetPasswordProcess(Window parentWindow, final String userLoginName) {
         InputDialog inputDialog = new InputDialog(messages.format("users.changePassword", userLoginName),
                 messages.get("users.newPassword"),
                 new InputDialog.Recipient() {

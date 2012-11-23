@@ -1,5 +1,7 @@
 package com.taskadapter.auth;
 
+import java.util.List;
+
 /**
  * User credentails manager. Manages user primary/secondary credentials.
  */
@@ -95,4 +97,30 @@ public interface CredentialsManager {
      *             if some error occured during a reset.
      */
     public void destroyAllSecondaryTokens(String user) throws AuthException;
+
+    /**
+     * Lists all existing users.
+     * 
+     * @return list of all existing users.
+     */
+    public List<String> listUsers();
+
+    /**
+     * Checks a user existence.
+     * 
+     * @param user
+     *            user name to check.
+     * @return <code>true</code> iff user exists.
+     */
+    public boolean doesUserExists(String user);
+
+    /**
+     * Removes user authentication data.
+     * 
+     * @param user
+     *            user name.
+     * @throws AuthException
+     *             if user exists and cannot be deleted.
+     */
+    public void removeAuth(String user) throws AuthException;
 }

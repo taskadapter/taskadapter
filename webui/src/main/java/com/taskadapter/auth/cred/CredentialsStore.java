@@ -1,5 +1,7 @@
 package com.taskadapter.auth.cred;
 
+import java.util.List;
+
 import com.taskadapter.auth.AuthException;
 
 /**
@@ -31,4 +33,27 @@ public interface CredentialsStore {
      */
     public void saveCredentials(String user, CredentialsV1 credentials)
             throws AuthException;
+
+    /**
+     * Lists all users.
+     * 
+     * @return list of found users.
+     */
+    public List<String> listUsers();
+
+    /**
+     * Checks, if user with a given name exists.
+     * 
+     * @param user
+     *            user name.
+     * @return <code>true</code> iff user with a given name exists.
+     */
+    public boolean doesUserExists(String user);
+    
+    /**
+     * Removes user credentials.
+     * @param user user to remove.
+     * @throws AuthException if user exists and cannot be deleted.
+     */
+    public void removeCredentials(String user) throws AuthException;
 }

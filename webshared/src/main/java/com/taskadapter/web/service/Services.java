@@ -16,7 +16,6 @@ public class Services {
     private SettingsManager settingsManager = new SettingsManager();
     private LicenseManager licenseManager;
     private final EditableCurrentUserInfo currentUserInfo = new EditableCurrentUserInfo();
-    private UserManager userManager;
     private FileManager fileManager;
     private UIConfigStore uiConfigStore;
 
@@ -26,7 +25,6 @@ public class Services {
     public Services(File dataRootFolder, EditorManager editorManager) {
         this.editorManager = editorManager;
         fileManager = new FileManager(dataRootFolder);
-        userManager = new UserManager(fileManager);
         final ConfigStorage configStorage = new ConfigStorage(fileManager);
 
         this.uiConfigStore = new UIConfigStore(new UIConfigService(
@@ -51,10 +49,6 @@ public class Services {
 
     public LicenseManager getLicenseManager() {
         return licenseManager;
-    }
-
-    public UserManager getUserManager() {
-        return userManager;
     }
 
     public FileManager getFileManager() {
