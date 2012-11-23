@@ -164,7 +164,7 @@ public abstract class ActionPage extends Page {
 
     private void saveConfigIfChanged() {
         if (confirmExportFragment.needToSaveConfig()) {
-            String userLoginName = services.getAuthenticator().getUserName();
+            String userLoginName = services.getCurrentUserInfo().getUserName();
             try {
                 services.getUIConfigStore().saveConfig(userLoginName, config);
             } catch (StorageException e) {

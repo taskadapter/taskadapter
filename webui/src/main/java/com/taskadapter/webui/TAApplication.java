@@ -1,5 +1,9 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.auth.BasicCredentialsManager;
+import com.taskadapter.auth.CredentialsManager;
+import com.taskadapter.auth.cred.CredentialsStore;
+import com.taskadapter.auth.cred.FSCredentialStore;
 import com.taskadapter.web.service.EditorManager;
 import com.taskadapter.web.service.Services;
 import com.vaadin.Application;
@@ -19,12 +23,23 @@ public class TAApplication extends Application implements HttpServletRequestList
 
     private final Window mainWindow = new Window("Task Adapter");
 
-    private Services services;
-    private File dataRootFolder;
+    private final Services services;
+    
+    public TAApplication(File dataRootFolder) {
+        services = new Services(dataRootFolder,
+                EditorManager.fromResource("editors.txt"));
+        services.getLicenseManager().loadInstalledTaskAdapterLicense();
+        services.getUserManager().createFirstAdminUserIfNeeded();
+        
+    }
+    
+    public TAApplication() {
+        this(getDefaultRootFolder());
+    }
 
     @Override
     public String getVersion() {
-        return getServices().getCurrentTaskAdapterVersion();
+        return services.getCurrentTaskAdapterVersion();
     }
 
     @Override
@@ -36,15 +51,18 @@ public class TAApplication extends Application implements HttpServletRequestList
         mainWindow.setContent(layout);
         setMainWindow(mainWindow);
 
-        getServices().getAuthenticator().init();
-
-        Navigator navigator = new Navigator(layout, services);
+        final CredentialsStore credStore = new FSCredentialStore(
+                services.getFileManager());
+        final CredentialsManager credentialsManager = new BasicCredentialsManager(
+                credStore, 50);
+        
+        Navigator navigator = new Navigator(layout, services, credentialsManager);
         navigator.show(new ConfigsPage());
     }
 
     @Override
     public void onRequestStart(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        getServices().getCookiesManager().init(httpServletRequest, httpServletResponse);
+        services.getCookiesManager().init(httpServletRequest, httpServletResponse);
     }
 
     @Override
@@ -52,29 +70,9 @@ public class TAApplication extends Application implements HttpServletRequestList
     }
 
     /**
-     * Used for testing.
-     */
-    void setDataRootFolder(File dataRootFolder) {
-        this.dataRootFolder = dataRootFolder;
-    }
-
-    Services getServices() {
-        if (services == null) {
-            services = new Services(getDataRootFolder(), EditorManager.fromResource("editors.txt"));
-            services.getLicenseManager().loadInstalledTaskAdapterLicense();
-            services.getUserManager().createFirstAdminUserIfNeeded();
-        }
-        return services;
-    }
-
-    private File getDataRootFolder() {
-        return dataRootFolder == null ? getDefaultRootFolder() : dataRootFolder;
-    }
-
-    /**
      * @return user.home / taskadapter
      */
-    private File getDefaultRootFolder() {
+    private static File getDefaultRootFolder() {
         String userHome = System.getProperty("user.home");
         return new File(userHome, "taskadapter");
     }

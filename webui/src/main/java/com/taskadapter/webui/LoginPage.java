@@ -1,6 +1,5 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.web.service.UserNotFoundException;
 import com.taskadapter.web.service.WrongPasswordException;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;
@@ -66,16 +65,13 @@ public class LoginPage extends Page {
                 String username = (String) loginEdit.getValue();
                 String password = (String) passwordEdit.getValue();
                 try {
-                    services.getAuthenticator().tryLogin(username, password, staySignedIn.booleanValue());
+                    navigator.login(username, password, staySignedIn.booleanValue());
                     clearLoginFields();
                     errorLabel.setValue("");
-                    navigator.show(new ConfigsPage());
                 } catch (WrongPasswordException e) {
-                    errorLabel.setValue("Wrong password.");
+                    errorLabel.setValue("Wrong user name or password.");
                     passwordEdit.setValue("");
                     passwordEdit.focus();
-                } catch (UserNotFoundException e) {
-                    errorLabel.setValue("User " + username + " not found.");
                 }
             }
         });

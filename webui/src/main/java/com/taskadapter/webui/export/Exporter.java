@@ -64,7 +64,7 @@ public class Exporter {
                 // catch (MSPOutputFileNameNotSetException e) { ... } - autofixConfigForSave
 
                 // auto generate output file name (for MSP local mode)
-                final String userName = services.getAuthenticator().getUserName();
+                final String userName = services.getCurrentUserInfo().getUserName();
                 String absoluteFileName = services.getFileManager().createDefaultMSPFileName(userName);
 
                 ((MSPConfig) connector2.getRawConfig()).setOutputAbsoluteFilePath(absoluteFileName);

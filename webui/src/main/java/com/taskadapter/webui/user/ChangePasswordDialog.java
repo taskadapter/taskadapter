@@ -1,9 +1,9 @@
 package com.taskadapter.webui.user;
 
+import com.taskadapter.auth.AuthException;
+import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.web.data.Messages;
-import com.taskadapter.web.service.Authenticator;
-import com.taskadapter.web.service.UserManager;
-import com.taskadapter.web.service.UserNotFoundException;
+import com.taskadapter.web.service.CurrentUserInfo;
 import com.taskadapter.web.service.WrongPasswordException;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.Alignment;
@@ -20,8 +20,8 @@ import org.slf4j.LoggerFactory;
 public class ChangePasswordDialog extends Window {
     private final Logger logger = LoggerFactory.getLogger(ChangePasswordDialog.class);
     private final Messages messages;
-    private final UserManager userManager;
-    private final Authenticator authenticator;
+    private final CredentialsManager credentialsManager;
+    private final String userName;
 
     private PasswordField oldPasswordField;
     private PasswordField newPasswordField;
@@ -29,11 +29,11 @@ public class ChangePasswordDialog extends Window {
     private GridLayout grid;
     private Label errorLabel;
 
-    public ChangePasswordDialog(Messages messages, final UserManager userManager, final Authenticator authenticator) {
-        super(messages.format("changePassword.title", authenticator.getUserName()));
+    public ChangePasswordDialog(Messages messages, final CredentialsManager credentialsManager, final CurrentUserInfo currentUserInfo) {
+        super(messages.format("changePassword.title", currentUserInfo.getUserName()));
+        this.userName = currentUserInfo.getUserName();
         this.messages = messages;
-        this.userManager = userManager;
-        this.authenticator = authenticator;
+        this.credentialsManager = credentialsManager;
         buildUI();
     }
 
@@ -131,14 +131,17 @@ public class ChangePasswordDialog extends Window {
 
     private void savePassword() {
         try {
-            authenticator.checkUserPassword(authenticator.getUserName(), oldPasswordField.toString());
-            userManager.saveUser(authenticator.getUserName(), newPasswordField.toString());
+            if (!credentialsManager.isPrimaryAuthentic(userName, oldPasswordField.toString())) {
+                throw new WrongPasswordException();
+            }
+            credentialsManager.setPrimaryAuthToken(userName, newPasswordField.toString());
             getParent().removeWindow(this);
-        } catch (UserNotFoundException e) {
-            logger.error("User not found: " + authenticator.getUserName());
         } catch (WrongPasswordException e) {
             errorLabel.setValue(messages.get("changePassword.oldPasswordIncorrect"));
-            logger.error("SECURITY: wrong password provided for user " + authenticator.getUserName() + " in 'Change password' dialog.");
+            logger.error("SECURITY: wrong password provided for user " + userName + " in 'Change password' dialog.");
+        } catch (AuthException e) {
+            errorLabel.setValue(messages.get("changePassword.internalError"));
+            logger.error("SECURITY: internal error changing passowrd for user " + userName + " in 'Change password' dialog.");
         }
     }
 }

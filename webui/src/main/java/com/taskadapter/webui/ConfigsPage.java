@@ -14,7 +14,6 @@ import com.vaadin.ui.VerticalLayout;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 public class ConfigsPage extends Page {
@@ -90,7 +89,7 @@ public class ConfigsPage extends Page {
     private void reloadConfigs() {
         configsLayout.removeAllComponents();
 
-        final String userLoginName = services.getAuthenticator().getUserName();
+        final String userLoginName = services.getCurrentUserInfo().getUserName();
         final List<UISyncConfig> allConfigs = services.getUIConfigStore().getUserConfigs(userLoginName);
         Collections.sort(allConfigs, CONFIG_COMPARATOR);
         for (UISyncConfig config : allConfigs) {

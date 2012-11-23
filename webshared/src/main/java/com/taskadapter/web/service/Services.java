@@ -2,6 +2,9 @@ package com.taskadapter.web.service;
 
 import com.taskadapter.FileManager;
 import com.taskadapter.PluginManager;
+import com.taskadapter.auth.BasicCredentialsManager;
+import com.taskadapter.auth.cred.CredentialsStore;
+import com.taskadapter.auth.cred.FSCredentialStore;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.SettingsManager;
@@ -17,6 +20,7 @@ public class Services {
     private SettingsManager settingsManager = new SettingsManager();
     private LicenseManager licenseManager;
     private CookiesManager cookiesManager = new CookiesManager();
+    private final EditableCurrentUserInfo currentUserInfo = new EditableCurrentUserInfo();
     private UserManager userManager;
     private FileManager fileManager;
     private UIConfigStore uiConfigStore;
@@ -29,7 +33,9 @@ public class Services {
         fileManager = new FileManager(dataRootFolder);
         userManager = new UserManager(fileManager);
         final ConfigStorage configStorage = new ConfigStorage(fileManager);
-        authenticator = new Authenticator(userManager, cookiesManager);
+        final CredentialsStore creds = new FSCredentialStore(fileManager);
+        final BasicCredentialsManager credentialsManager = new BasicCredentialsManager(creds, 50);
+        authenticator = new Authenticator(credentialsManager, cookiesManager, currentUserInfo);
 
         this.uiConfigStore = new UIConfigStore(new UIConfigService(
                 pluginManager, editorManager), configStorage);
@@ -45,10 +51,6 @@ public class Services {
 
     public PluginManager getPluginManager() {
         return pluginManager;
-    }
-
-    public Authenticator getAuthenticator() {
-        return authenticator;
     }
 
     public SettingsManager getSettingsManager() {
@@ -74,10 +76,9 @@ public class Services {
     public UIConfigStore getUIConfigStore() {
         return uiConfigStore;
     }
-
-    @Deprecated
-    public void setAuthenticator(Authenticator authenticator2) {
-        this.authenticator = authenticator2;
+    
+    public CurrentUserInfo getCurrentUserInfo() {
+        return currentUserInfo;
     }
 
     public String getCurrentTaskAdapterVersion() {

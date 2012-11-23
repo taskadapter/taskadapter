@@ -77,7 +77,7 @@ public class CloneDeletePanel extends HorizontalLayout {
                 new MessageDialog.Callback() {
                     public void onDialogResult(String answer) {
                         if (YES.equals(answer)) {
-                            final String userLoginName = services.getAuthenticator().getUserName();
+                            final String userLoginName = services.getCurrentUserInfo().getUserName();
                             try {
                                 services.getUIConfigStore().cloneConfig(userLoginName, config);
                                 navigator.show(new ConfigsPage());

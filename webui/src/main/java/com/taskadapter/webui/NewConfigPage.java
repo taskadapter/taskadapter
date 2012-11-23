@@ -136,7 +136,7 @@ public class NewConfigPage extends Page {
         final String descriptionString = (String) descriptionTextField.getValue();
         final String id1 = (String) connector1.getValue();
         final String id2 = (String) connector2.getValue();
-        final String currentUserLoginName = services.getAuthenticator().getUserName();
+        final String currentUserLoginName = services.getCurrentUserInfo().getUserName();
 
         final UISyncConfig config = services.getUIConfigStore()
                 .createNewConfig(currentUserLoginName, descriptionString, id1, id2);

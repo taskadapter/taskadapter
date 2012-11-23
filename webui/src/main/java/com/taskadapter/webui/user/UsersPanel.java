@@ -87,7 +87,7 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
         userLoginLabel.addStyleName("userLoginLabelInUsersPanel");
         usersLayout.addComponent(userLoginLabel);
 
-        if (services.getUserManager().isAdmin(services.getAuthenticator().getUserName())) {
+        if (services.getUserManager().isAdmin(services.getCurrentUserInfo().getUserName())) {
             addSetPasswordButton(userLoginName);
             addDeleteButtonUnlessUserIsHardcodedAdminUser(userLoginName);
         } else {

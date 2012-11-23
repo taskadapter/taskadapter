@@ -82,7 +82,7 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
 
     private ServerModeFilePanel createRemoteModeFilePanel(Services services, ConnectorConfig config) {
         ServerModelFilePanelPresenter presenter =
-                new ServerModelFilePanelPresenter(services.getFileManager(), services.getAuthenticator().getUserName());
+                new ServerModelFilePanelPresenter(services.getFileManager(), services.getCurrentUserInfo().getUserName());
         return new ServerModeFilePanel(presenter, (MSPConfig) config);
     }
 

@@ -1,18 +1,13 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.license.LicenseChangeListener;
-import com.taskadapter.web.data.Messages;
-import com.taskadapter.webui.user.ChangePasswordDialog;
-import com.taskadapter.web.service.Authenticator;
 import com.taskadapter.web.service.LoginEventListener;
 import com.taskadapter.web.service.Services;
-import com.taskadapter.web.service.UserManager;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 
 /**
@@ -24,20 +19,18 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
     private HorizontalLayout panelForLoggedInUsers;
     private VerticalLayout trialLayout = new VerticalLayout();
 
-    private final Messages messages;
     private final Navigator navigator;
     private final Services services;
     private Button configureButton;
 
-    public Header(Messages messages, Navigator navigator, Services services) {
-        this.messages = messages;
+    public Header(Navigator navigator, Services services) {
         this.navigator = navigator;
         this.services = services;
         buildMainLayout();
         checkLicense();
         services.getLicenseManager().addLicenseChangeListener(this);
-        services.getAuthenticator().addLoginEventListener(this);
-        userLoginInfoChanged(services.getAuthenticator().isLoggedIn());
+        services.getCurrentUserInfo().addChangeEventListener(this);
+        userLoginInfoChanged();
     }
 
     private void buildMainLayout() {
@@ -71,8 +64,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
         logoutButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                services.getAuthenticator().logout();
-                navigator.show(new ConfigsPage());
+                navigator.logout();
             }
         });
         panelForLoggedInUsers.addComponent(logoutButton);
@@ -85,7 +77,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
         setPasswordButton.addListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                startChangePasswordProcess(getWindow(), services.getUserManager(), services.getAuthenticator());
+                navigator.changePassword();
             }
         });
         panelForLoggedInUsers.addComponent(setPasswordButton);
@@ -167,13 +159,9 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
     }
 
     @Override
-    public void userLoginInfoChanged(boolean userLoggedIn) {
+    public void userLoginInfoChanged() {
+        final boolean userLoggedIn = services.getCurrentUserInfo().isLoggedIn();
         panelForLoggedInUsers.setVisible(userLoggedIn);
         configureButton.setVisible(userLoggedIn);
-    }
-
-    private void startChangePasswordProcess(Window parentWindow, final UserManager userManager, final Authenticator authenticator) {
-        ChangePasswordDialog passwordDialog = new ChangePasswordDialog(messages, userManager, authenticator);
-        parentWindow.addWindow(passwordDialog);
     }
 }

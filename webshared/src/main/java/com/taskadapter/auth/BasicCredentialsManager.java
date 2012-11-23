@@ -183,7 +183,7 @@ public final class BasicCredentialsManager implements CredentialsManager {
             return null;
         }
 
-        if (!matchKeys(user, creds.primaryCredentials)) {
+        if (!matchKeys(primaryAuth, creds.primaryCredentials)) {
             return null;
         }
 
@@ -197,8 +197,8 @@ public final class BasicCredentialsManager implements CredentialsManager {
         final String tok = idStr + ":" + keyStr;
         final String key = idStr + ":" + DEFAULT_AUTH_NAME + ":" + authData;
 
-        final int saveLength = Math.min(creds.secondaryCredentials.size(),
-                secondaryAuthBacklog) - 1;
+        final int saveLength = Math.max(Math.min(creds.secondaryCredentials.size(),
+                secondaryAuthBacklog) - 1, 0);
         final List<String> auths = new ArrayList<String>(
                 creds.secondaryCredentials.subList(
                         creds.secondaryCredentials.size() - saveLength,
@@ -253,7 +253,8 @@ public final class BasicCredentialsManager implements CredentialsManager {
                 .get(DEFAULT_AUTH_NAME);
         store.saveCredentials(
                 user,
-                new CredentialsV1(afactory.generateAuth(newToken), Collections
+                new CredentialsV1(DEFAULT_AUTH_NAME + ":"
+                        + afactory.generateAuth(newToken), Collections
                         .<String> emptyList()));
     }
 

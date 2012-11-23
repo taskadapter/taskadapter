@@ -1,9 +1,14 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.web.MessageDialog;
+import com.taskadapter.web.service.Authenticator;
+import com.taskadapter.web.service.EditableCurrentUserInfo;
 import com.taskadapter.web.service.Services;
+import com.taskadapter.web.service.WrongPasswordException;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.config.EditConfigPage;
+import com.taskadapter.webui.user.ChangePasswordDialog;
 import com.vaadin.Application;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
@@ -27,10 +32,17 @@ public class Navigator {
     private Page previousPage;
     private Page currentPage;
     private GoogleAnalyticsTracker tracker;
+    private final Authenticator authenticator;
+    private final CredentialsManager credentialsManager;
 
-    public Navigator(VerticalLayout layout, Services services) {
+    public Navigator(VerticalLayout layout, Services services,
+            CredentialsManager credManager) {
         this.layout = layout;
         this.services = services;
+        this.credentialsManager = credManager;
+        this.authenticator = new Authenticator(credManager,
+                services.getCookiesManager(),
+                (EditableCurrentUserInfo) services.getCurrentUserInfo());
         addGoogleAnalytics();
         buildUI();
     }
@@ -43,7 +55,7 @@ public class Navigator {
 
     private void buildUI() {
         // TODO !! this is a hack
-        Header header = new Header(Page.MESSAGES, this, services);
+        Header header = new Header(this, services);
         header.setHeight(50, Sizeable.UNITS_PIXELS);
         header.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         layout.addComponent(header);
@@ -73,17 +85,35 @@ public class Navigator {
         layout.addComponent(navigationPanel);
         layout.setComponentAlignment(navigationPanel, Alignment.MIDDLE_CENTER);
     }
+    
+    public void logout() {
+        authenticator.logout();
+        show(new LoginPage());
+    }
+    
+    public void changePassword() {
+        final ChangePasswordDialog passwordDialog = new ChangePasswordDialog(
+                Page.MESSAGES, credentialsManager,
+                services.getCurrentUserInfo());
+        layout.getWindow().addWindow(passwordDialog);        
+    }
+    
+    public void login(String login, String password, boolean keepAlive)
+            throws WrongPasswordException {
+        authenticator.tryLogin(login, password, keepAlive);
+        show(new ConfigsPage());
+    }
 
     public void show(final Page page) {
         previousPage = currentPage;
 
         currentPage = page;
-        if (!services.getAuthenticator().isLoggedIn() && requiresLogin(page)) {
+        if (!services.getCurrentUserInfo().isLoggedIn() && requiresLogin(page)) {
             currentPage = new LoginPage();
         }
 
-        if (services.getAuthenticator().isLoggedIn()
-                && services.getAuthenticator().getUserName().equals("admin")
+        if (services.getCurrentUserInfo().isLoggedIn()
+                && services.getCurrentUserInfo().getUserName().equals("admin")
                 && !services.getSettingsManager().isLicenseAgreementAccepted()) {
             currentPage = new LicenseAgreementPage();
         }

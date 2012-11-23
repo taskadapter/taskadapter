@@ -11,14 +11,14 @@ public final class AuthUtils {
     /**
      * Hexed digits.
      */
-    public static final String DIGITS = "01234567890ABCDEF";
+    public static final String DIGITS = "0123456789ABCDEF";
 
     public AuthUtils() {
     }
 
-    public static String bytesToString(byte[] saltBytes) {
-        final StringBuilder resBuilder = new StringBuilder(2 * saltBytes.length);
-        for (byte b : saltBytes) {
+    public static String bytesToString(byte[] bytes) {
+        final StringBuilder resBuilder = new StringBuilder(2 * bytes.length);
+        for (byte b : bytes) {
             resBuilder.append(AuthUtils.DIGITS.charAt((b >> 4) & 0x0F));
             resBuilder.append(AuthUtils.DIGITS.charAt(b & 0x0F));
         }
@@ -37,14 +37,15 @@ public final class AuthUtils {
         if (item.length() % 2 != 0) {
             return null;
         }
-        final byte[] res = new byte[item.length() / 2];
-        for (int i = 0; i < item.length(); i++) {
-            final int lowCode = AuthUtils.digitToInt(item.charAt(2 * i));
-            final int highCode = AuthUtils.digitToInt(item.charAt(2 * i + 1));
+        final int byteCount = item.length() / 2;
+        final byte[] res = new byte[byteCount];
+        for (int i = 0; i < byteCount; i++) {
+            final int highCode = AuthUtils.digitToInt(item.charAt(2 * i));
+            final int lowCode = AuthUtils.digitToInt(item.charAt(2 * i + 1));
             if (lowCode < 0 || highCode < 0) {
                 return null;
             }
-            res[i] = (byte) ((lowCode * 16) + highCode);
+            res[i] = (byte) ((highCode * 16) + lowCode);
         }
         return res;
     }

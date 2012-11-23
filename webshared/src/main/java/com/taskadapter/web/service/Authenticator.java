@@ -1,84 +1,93 @@
 package com.taskadapter.web.service;
 
-import com.taskadapter.config.User;
+import com.taskadapter.auth.AuthException;
+import com.taskadapter.auth.CredentialsManager;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class Authenticator {
-    private static final String LOGGED_IN_COOKIE_NAME = "loggedIn";
-    private static final String USER_NAME_COOKIE_NAME = "userName";
+public final class Authenticator {
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(Authenticator.class);
+    private static final String PERM_AUTH_KEY_COOKIE_NAME = "sPermAuth";
+    private static final String PERM_AUTH_USER_COOKIE_NAME = "sPermUser";
 
-    private boolean loggedIn;
-    private String userName;
-    private UserManager userManager;
-    private CookiesManager cookiesManager;
-    private Collection<LoginEventListener> listeners = new ArrayList<LoginEventListener>();
+    private final CookiesManager cookiesManager;
+    private final CredentialsManager credentialsManager;
+    private final EditableCurrentUserInfo currentUserInfo;
 
-    public Authenticator(UserManager userManager, CookiesManager cookiesManager) {
-        this.userManager = userManager;
+    public Authenticator(CredentialsManager credentialsManager,
+            CookiesManager cookiesManager, EditableCurrentUserInfo currentUserInfo) {
+        this.credentialsManager = credentialsManager;
         this.cookiesManager = cookiesManager;
+        this.currentUserInfo = currentUserInfo;
+
+        final String ucookie = cookiesManager
+                .getCookie(PERM_AUTH_USER_COOKIE_NAME);
+        final String kcookie = cookiesManager
+                .getCookie(PERM_AUTH_KEY_COOKIE_NAME);
+
+        if (ucookie != null && kcookie != null
+                && credentialsManager.isSecondaryAuthentic(ucookie, kcookie)) {
+            currentUserInfo.setUserName(ucookie);
+        }
     }
 
-    public void init() {
-        this.loggedIn = Boolean.parseBoolean(cookiesManager.getCookie(LOGGED_IN_COOKIE_NAME));
-        this.userName = cookiesManager.getCookie(USER_NAME_COOKIE_NAME);
-        notifyListeners();
-    }
+    public void tryLogin(String userName, String password, boolean staySigned)
+            throws WrongPasswordException {
 
-    public void tryLogin(String userName, String password, boolean staySigned) throws UserNotFoundException, WrongPasswordException {
-        User actualUser = userManager.getUser(userName);
-        if (!password.equals(actualUser.getPassword())) {
+        /* Simple authentication process */
+        if (!staySigned) {
+            if (!credentialsManager.isPrimaryAuthentic(userName, password)) {
+                throw new WrongPasswordException();
+            }
+            currentUserInfo.setUserName(userName);
+            return;
+        }
+        /* Complex authentication with a long-living cookies */
+        String permatok;
+        try {
+            permatok = credentialsManager.generateSecondaryAuth(userName,
+                    password);
+        } catch (AuthException e) {
+            LOGGER.info("Error!", e);
+            permatok = null;
+        }
+
+        if (permatok == null) {
             throw new WrongPasswordException();
         }
 
-        this.loggedIn = true;
-        this.userName = userName;
+        cookiesManager.setCookie(PERM_AUTH_USER_COOKIE_NAME, userName);
+        cookiesManager.setCookie(PERM_AUTH_KEY_COOKIE_NAME, permatok);
 
-        if (staySigned) {
-            setLoggedInCookieFor1Month(userName);
-        }
-        notifyListeners();
+        currentUserInfo.setUserName(userName);
     }
 
-    public void checkUserPassword(String userName, String password) throws UserNotFoundException, WrongPasswordException {
-        User actualUser = userManager.getUser(userName);
-        if (!password.equals(actualUser.getPassword())) {
+    public void checkUserPassword(String userName, String password)
+            throws UserNotFoundException, WrongPasswordException {
+        if (!credentialsManager.isPrimaryAuthentic(userName, password)) {
             throw new WrongPasswordException();
         }
-    }
-
-    private void setLoggedInCookieFor1Month(String userName) {
-        cookiesManager.setCookie(LOGGED_IN_COOKIE_NAME, "true");
-        cookiesManager.setCookie(USER_NAME_COOKIE_NAME, userName);
     }
 
     public void logout() {
-        this.loggedIn = false;
-        this.userName = "";
+        final String ucookie = cookiesManager
+                .getCookie(PERM_AUTH_USER_COOKIE_NAME);
+        final String kcookie = cookiesManager
+                .getCookie(PERM_AUTH_KEY_COOKIE_NAME);
 
-        cookiesManager.expireCookie(LOGGED_IN_COOKIE_NAME);
-        cookiesManager.expireCookie(USER_NAME_COOKIE_NAME);
-
-        notifyListeners();
-    }
-
-    public boolean isLoggedIn() {
-        return loggedIn;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void addLoginEventListener(LoginEventListener listener) {
-        this.listeners.add(listener);
-    }
-
-    // TODO add unit tests that listeners are notified on login/logout
-    private void notifyListeners() {
-        for (LoginEventListener listener : listeners) {
-            listener.userLoginInfoChanged(isLoggedIn());
+        if (ucookie != null && kcookie != null) {
+            try {
+                credentialsManager.destroySecondaryAuthToken(ucookie, kcookie);
+            } catch (AuthException e) {
+                LOGGER.error("Failed to clean secondary auth token!", e);
+            }
         }
+        cookiesManager.expireCookie(PERM_AUTH_USER_COOKIE_NAME);
+        cookiesManager.expireCookie(PERM_AUTH_KEY_COOKIE_NAME);
+
+        currentUserInfo.setUserName(null);
     }
+
 }
