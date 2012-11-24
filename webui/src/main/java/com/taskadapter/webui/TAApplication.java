@@ -76,6 +76,7 @@ public class TAApplication extends Application implements HttpServletRequestList
 
     @Override
     public void init() {
+        authenticator.authenticate();
         setTheme("mytheme");
 
         VerticalLayout layout = new VerticalLayout();

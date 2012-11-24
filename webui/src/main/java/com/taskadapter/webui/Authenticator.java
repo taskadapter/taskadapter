@@ -25,6 +25,9 @@ public final class Authenticator {
         this.cookiesManager = cookiesManager;
         this.currentUserInfo = currentUserInfo;
 
+    }
+
+    public void authenticate() {
         final String ucookie = cookiesManager
                 .getCookie(PERM_AUTH_USER_COOKIE_NAME);
         final String kcookie = cookiesManager
