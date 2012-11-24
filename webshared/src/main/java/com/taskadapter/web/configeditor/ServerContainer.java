@@ -1,22 +1,29 @@
 package com.taskadapter.web.configeditor;
 
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.vaadin.data.Property;
-import com.vaadin.event.FieldEvents;
+import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 
-public class ServerContainer extends GridLayout {
+import java.util.List;
+
+public class ServerContainer extends GridLayout implements Property.ValueChangeListener {
     private static final String HOST_URL_TOOLTIP = "Host URL, including protocol prefix and port number. E.g. http://demo.site.com:3000";
-    private static final String DEFAULT_HOST_VALUE = "http://";
+    private final ServerInfoCache serverInfoCache;
+//    private static final String DEFAULT_HOST_VALUE = "http://";
 
     private TextField descriptionField;
-    private TextField hostURLText;
+    //    private TextField hostURLText;
+    private ComboBox urlCombobox;
 
-    public ServerContainer(Property labelProperty, Property serverURLProperty, Property userLoginNameProperty,
+    public ServerContainer(ServerInfoCache serverInfoCache, Property labelProperty, Property serverURLProperty, Property userLoginNameProperty,
                            Property passwordProperty) {
+        this.serverInfoCache = serverInfoCache;
         buildUI(labelProperty, serverURLProperty, userLoginNameProperty, passwordProperty);
     }
 
@@ -41,21 +48,22 @@ public class ServerContainer extends GridLayout {
         addComponent(urlLabel, 0, currentRow);
         setComponentAlignment(urlLabel, Alignment.MIDDLE_LEFT);
 
-        hostURLText = new TextField();
-        hostURLText.setDescription(HOST_URL_TOOLTIP);
-        hostURLText.addListener(new FieldEvents.BlurListener() {
-            @Override
-            public void blur(FieldEvents.BlurEvent event) {
-                //TODO refactor these methods (common in ServerPanel and RedmineServerPanel
-                checkProtocol();
-                cleanup();
-            }
-        });
-        hostURLText.addStyleName("server-panel-textfield");
-        hostURLText.setPropertyDataSource(serverURLProperty);
+//        hostURLText = new TextField();
+//        hostURLText.setDescription(HOST_URL_TOOLTIP);
+//        hostURLText.addListener(new FieldEvents.BlurListener() {
+//            @Override
+//            public void blur(FieldEvents.BlurEvent event) {
+//                //TODO refactor these methods (common in ServerPanel and RedmineServerPanel)
+//                checkProtocol();
+//                cleanup();
+//            }
+//        });
+//        hostURLText.addStyleName("server-panel-textfield");
+//        hostURLText.setPropertyDataSource(serverURLProperty);
+//        addComponent(hostURLText, 1, currentRow);
+//        setComponentAlignment(hostURLText, Alignment.MIDDLE_RIGHT);
 
-        addComponent(hostURLText, 1, currentRow);
-        setComponentAlignment(hostURLText, Alignment.MIDDLE_RIGHT);
+        addUrlCombobox(currentRow);
 
         currentRow++;
 
@@ -82,24 +90,71 @@ public class ServerContainer extends GridLayout {
         setComponentAlignment(password, Alignment.MIDDLE_RIGHT);
     }
 
-    private void cleanup() {
-        if (getHostString().endsWith("/")) {
-            hostURLText.setValue(getHostString().substring(0, getHostString().length() - 1));
+    private void addUrlCombobox(int currentRow) {
+        urlCombobox = new ComboBox();
+        urlCombobox.setDescription(HOST_URL_TOOLTIP);
+        urlCombobox.setNullSelectionAllowed(false);
+        urlCombobox.setTextInputAllowed(true);
+        urlCombobox.setNewItemsAllowed(true);
+        urlCombobox.setFilteringMode(AbstractSelect.Filtering.FILTERINGMODE_CONTAINS);
+        // defines width
+        urlCombobox.setWidth(100, UNITS_PERCENTAGE);
+        urlCombobox.addListener(this);
+//        urlCombobox.setNewItemHandler(this);
+        urlCombobox.setImmediate(true);
+        addComponent(urlCombobox, 1, currentRow);
+        setComponentAlignment(urlCombobox, Alignment.MIDDLE_RIGHT);
+        loadPreviousServerURLsForThisServerType();
+    }
+
+    private void loadPreviousServerURLsForThisServerType() {
+        List<WebServerInfo> values = serverInfoCache.getValues();
+        for (WebServerInfo value : values) {
+            urlCombobox.addItem(value);
         }
     }
 
-    private void checkProtocol() {
-        if (!getHostString().startsWith("http")) {
-            hostURLText.setValue(DEFAULT_HOST_VALUE + hostURLText.getValue());
-        }
+//    private Boolean lastAdded = false;
+
+    /*
+     * Shows a notification when a selection is made.
+     */
+    @Override
+    public void valueChange(Property.ValueChangeEvent event) {
+//        if (!lastAdded) {
+        getWindow().showNotification(
+                "Selected: " + event.getProperty());
+//        }
+//        lastAdded = false;
     }
 
-    TextField getServerURLField() {
-        return hostURLText;
-    }
+//    @Override
+//    public void addNewItem(String newItemCaption) {
+//        if (!urlCombobox.containsId(newItemCaption)) {
+//            getWindow().showNotification("Added: " + newItemCaption);
+//            lastAdded = true;
+//            urlCombobox.addItem(newItemCaption);
+//            urlCombobox.setValue(newItemCaption);
+//        }
+//    }
+//    private void cleanup() {
+//        if (getHostString().endsWith("/")) {
+//            hostURLText.setValue(getHostString().substring(0, getHostString().length() - 1));
+//        }
+//    }
+//
+//    private void checkProtocol() {
+//        if (!getHostString().startsWith("http")) {
+//            hostURLText.setValue(DEFAULT_HOST_VALUE + hostURLText.getValue());
+//        }
+//    }
+
+//    TextField getServerURLField() {
+//        return urlCombobox.getValue();
+//    }
 
     String getHostString() {
-        return (String) hostURLText.getValue();
+        return (String) urlCombobox.getValue();
     }
 
 }

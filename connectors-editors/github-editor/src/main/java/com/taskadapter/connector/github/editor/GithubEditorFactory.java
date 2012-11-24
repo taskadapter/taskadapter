@@ -11,6 +11,7 @@ import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.ProjectPanel;
+import com.taskadapter.web.configeditor.ServerInfoCache;
 import com.taskadapter.web.configeditor.ServerPanel;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.magic.Interfaces;
@@ -22,8 +23,10 @@ import com.vaadin.ui.VerticalLayout;
 
 public class GithubEditorFactory implements PluginEditorFactory<GithubConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.github.messages";
-
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
+
+    // TODO probably should be moved out of the factory
+    private ServerInfoCache cache = new ServerInfoCache();
 
     @Override
     public String formatError(Throwable e) {
@@ -53,11 +56,13 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig> {
         VerticalLayout layout = new VerticalLayout();
         layout.setWidth(380, Sizeable.UNITS_PIXELS);
         final WebServerInfo serverInfo = config.getServerInfo();
-        ServerPanel serverPanel = new ServerPanel(new MethodProperty<String>(config, "label"),
-                new MethodProperty<String>(serverInfo, "host"),
+        MethodProperty<String> serverUrlProperty = new MethodProperty<String>(serverInfo, "host");
+        serverUrlProperty.setReadOnly(true);
+        ServerPanel serverPanel = new ServerPanel(cache, new MethodProperty<String>(config, "label"),
+                serverUrlProperty,
                 new MethodProperty<String>(serverInfo, "userName"),
                 new MethodProperty<String>(serverInfo, "password"));
-        serverPanel.disableServerURLField();
+//        serverPanel.disableServerURLField();
         layout.addComponent(serverPanel);
 
         ProjectPanel projectPanel = new ProjectPanel(windowProvider, EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),

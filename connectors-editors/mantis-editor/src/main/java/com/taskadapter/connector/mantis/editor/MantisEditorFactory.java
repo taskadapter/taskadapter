@@ -12,6 +12,7 @@ import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.ProjectPanel;
+import com.taskadapter.web.configeditor.ServerInfoCache;
 import com.taskadapter.web.configeditor.ServerPanel;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.magic.Interfaces;
@@ -26,6 +27,8 @@ import java.util.List;
 public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.mantis.editor.messages";
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
+    // TODO probably should be moved out of the factory
+    private ServerInfoCache cache = new ServerInfoCache();
 
     @Override
     public String formatError(Throwable e) {
@@ -49,7 +52,7 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
         layout.setWidth(380, Sizeable.UNITS_PIXELS);
         final WebServerInfo serverInfo = config.getServerInfo();
 
-        ServerPanel serverPanel = new ServerPanel(new MethodProperty<String>(config, "label"),
+        ServerPanel serverPanel = new ServerPanel(cache, new MethodProperty<String>(config, "label"),
                 new MethodProperty<String>(serverInfo, "host"),
                 new MethodProperty<String>(serverInfo, "userName"),
                 new MethodProperty<String>(serverInfo, "password"));
