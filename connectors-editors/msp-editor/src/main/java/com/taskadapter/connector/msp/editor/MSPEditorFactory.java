@@ -23,6 +23,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import java.io.File;
+import java.util.List;
 
 public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.msp.messages";
@@ -45,7 +46,7 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, MSPConfig config) {
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, MSPConfig config, List<MSPConfig> relatedConfigs) {
         VerticalLayout layout = new VerticalLayout();
         layout.setWidth(450, Sizeable.UNITS_PIXELS);
         layout.addComponent(createDescriptionElement(config));

@@ -22,7 +22,7 @@ public class JiraEditorFactoryTest extends FileBasedTest {
         WindowProvider provider = mock(WindowProvider.class);
         factory.getMiniPanelContents(provider,
                 new Services(tempFolder, new EditorManager(Collections.<String, PluginEditorFactory<?>>emptyMap())),
-                new JiraConfig());
+                new JiraConfig(), Collections.<JiraConfig>emptyList());
     }
 
     @Test(expected = ServerURLNotSetException.class)

@@ -1,21 +1,24 @@
-package com.taskadapter.web.configeditor;
+package com.taskadapter.web.configeditor.server;
 
+import java.util.List;
+
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
+import com.taskadapter.web.configeditor.DefaultPanel;
+import com.taskadapter.web.configeditor.Validatable;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Panel;
 
 public class ServerPanel extends Panel implements Validatable {
     private static final String SERVER_GROUP_LABEL = "Server info";
-    private final ServerInfoCache cache;
     private ServerContainer serverContainer;
 
-    public ServerPanel(ServerInfoCache cache, Property labelProperty, Property serverURLProperty, Property userLoginNameProperty,
+    public ServerPanel(List<WebServerInfo> cache, Property labelProperty, Property serverURLProperty, Property userLoginNameProperty,
                        Property passwordProperty) {
-        this.cache = cache;
-        buildUI(labelProperty, serverURLProperty, userLoginNameProperty, passwordProperty);
+        buildUI(cache, labelProperty, serverURLProperty, userLoginNameProperty, passwordProperty);
     }
 
-    private void buildUI(Property labelProperty, Property serverURLProperty, Property userLoginNameProperty,
+    private void buildUI(List<WebServerInfo> cache, Property labelProperty, Property serverURLProperty, Property userLoginNameProperty,
                          Property passwordProperty) {
         setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
         serverContainer = new ServerContainer(cache, labelProperty, serverURLProperty, userLoginNameProperty, passwordProperty);

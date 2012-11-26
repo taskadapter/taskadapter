@@ -1,5 +1,8 @@
 package com.taskadapter.connector.github.editor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.LoginNameNotSpecifiedException;
@@ -11,8 +14,7 @@ import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.ProjectPanel;
-import com.taskadapter.web.configeditor.ServerInfoCache;
-import com.taskadapter.web.configeditor.ServerPanel;
+import com.taskadapter.web.configeditor.server.ServerPanel;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Services;
@@ -24,9 +26,6 @@ import com.vaadin.ui.VerticalLayout;
 public class GithubEditorFactory implements PluginEditorFactory<GithubConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.github.messages";
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
-
-    // TODO probably should be moved out of the factory
-    private ServerInfoCache cache = new ServerInfoCache();
 
     @Override
     public String formatError(Throwable e) {
@@ -52,13 +51,17 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig> {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, GithubConfig config) {
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, GithubConfig config, List<GithubConfig> relatedConfigs) {
         VerticalLayout layout = new VerticalLayout();
         layout.setWidth(380, Sizeable.UNITS_PIXELS);
         final WebServerInfo serverInfo = config.getServerInfo();
+        final List<WebServerInfo> related = new ArrayList<WebServerInfo>(relatedConfigs.size());
+        for (GithubConfig c : relatedConfigs) {
+            related.add(c.getServerInfo());
+        }
         MethodProperty<String> serverUrlProperty = new MethodProperty<String>(serverInfo, "host");
         serverUrlProperty.setReadOnly(true);
-        ServerPanel serverPanel = new ServerPanel(cache, new MethodProperty<String>(config, "label"),
+        ServerPanel serverPanel = new ServerPanel(related, new MethodProperty<String>(config, "label"),
                 serverUrlProperty,
                 new MethodProperty<String>(serverInfo, "userName"),
                 new MethodProperty<String>(serverInfo, "password"));

@@ -12,8 +12,7 @@ import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.ProjectPanel;
-import com.taskadapter.web.configeditor.ServerInfoCache;
-import com.taskadapter.web.configeditor.ServerPanel;
+import com.taskadapter.web.configeditor.server.ServerPanel;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Services;
@@ -22,13 +21,12 @@ import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.VerticalLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.mantis.editor.messages";
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
-    // TODO probably should be moved out of the factory
-    private ServerInfoCache cache = new ServerInfoCache();
 
     @Override
     public String formatError(Throwable e) {
@@ -47,12 +45,16 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, MantisConfig config) {
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, MantisConfig config, List<MantisConfig> relatedConfigs) {
         VerticalLayout layout = new VerticalLayout();
         layout.setWidth(380, Sizeable.UNITS_PIXELS);
         final WebServerInfo serverInfo = config.getServerInfo();
 
-        ServerPanel serverPanel = new ServerPanel(cache, new MethodProperty<String>(config, "label"),
+        final List<WebServerInfo> related = new ArrayList<WebServerInfo>(relatedConfigs.size());
+        for (MantisConfig c : relatedConfigs) {
+            related.add(c.getServerInfo());
+        }
+        ServerPanel serverPanel = new ServerPanel(related, new MethodProperty<String>(config, "label"),
                 new MethodProperty<String>(serverInfo, "host"),
                 new MethodProperty<String>(serverInfo, "userName"),
                 new MethodProperty<String>(serverInfo, "password"));

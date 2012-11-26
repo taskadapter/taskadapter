@@ -1,5 +1,7 @@
 package com.taskadapter.connector.redmine.editor;
 
+import java.util.List;
+
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RelationCreationException;
@@ -38,7 +40,7 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, RedmineConfig config) {
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, RedmineConfig config, List<RedmineConfig> relatedConfigs) {
         Panel panel = new Panel("Server Info");
         RedmineServerPanel redmineServerPanel = new RedmineServerPanel(windowProvider, config);
         panel.addComponent(redmineServerPanel);
