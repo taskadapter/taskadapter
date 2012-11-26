@@ -1,5 +1,8 @@
 package com.taskadapter.web.uiapi;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
@@ -69,10 +72,17 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends
         return connectorFactory.createConnector(config);
     }
 
+    @SuppressWarnings({ "deprecation", "unchecked" })
     @Override
     public ComponentContainer createMiniPanel(WindowProvider windowProvider,
-            Services services) {
-        return editorFactory.getMiniPanelContents(windowProvider, services, config);
+            Services services, List<UIConnectorConfig> relatedConfigs) {
+        final List<T> baseConfigs = new ArrayList<T>();
+        for (UIConnectorConfig cfg : relatedConfigs) {
+            if (cfg.getConnectorTypeId().equals(connectorTypeId)) {
+                baseConfigs.add((T) cfg.getRawConfig());
+            }
+        }
+        return editorFactory.getMiniPanelContents(windowProvider, services, config, baseConfigs);
     }
 
     @Override

@@ -1,5 +1,8 @@
 package com.taskadapter.connector.jira;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
@@ -14,8 +17,7 @@ import com.taskadapter.web.configeditor.CustomFieldsTablePanel;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.PriorityPanel;
 import com.taskadapter.web.configeditor.ProjectPanel;
-import com.taskadapter.web.configeditor.ServerInfoCache;
-import com.taskadapter.web.configeditor.ServerPanel;
+import com.taskadapter.web.configeditor.server.ServerPanel;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Services;
@@ -27,9 +29,6 @@ import com.vaadin.ui.GridLayout;
 public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.jira.messages";
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
-
-    // TODO probably should be moved out of the factory
-    private ServerInfoCache cache = new ServerInfoCache();
 
     @Override
     public String formatError(Throwable e) {
@@ -55,9 +54,13 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, JiraConfig config) {
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, JiraConfig config, List<JiraConfig> relatedConfigs) {
         WebServerInfo serverInfo = config.getServerInfo();
-        ServerPanel serverPanel = new ServerPanel(cache, new MethodProperty<String>(config, "label"),
+        final List<WebServerInfo> related = new ArrayList<WebServerInfo>(relatedConfigs.size());
+        for (JiraConfig c : relatedConfigs) {
+            related.add(c.getServerInfo());
+        }
+        ServerPanel serverPanel = new ServerPanel(related, new MethodProperty<String>(config, "label"),
                 new MethodProperty<String>(serverInfo, "host"),
                 new MethodProperty<String>(serverInfo, "userName"),
                 new MethodProperty<String>(serverInfo, "password"));

@@ -1,5 +1,7 @@
 package com.taskadapter.web.uiapi;
 
+import java.util.List;
+
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
@@ -78,10 +80,14 @@ public abstract class UIConnectorConfig {
      *            window provider.
      * @param services
      *            services - should not be used.
+     * @param allConfigs
+     *            all other related configurations. May be used to populate
+     *            completions, validations checks, etc...
      * @return informational panel.
      */
     public abstract ComponentContainer createMiniPanel(
-            WindowProvider windowProvider, Services services);
+            WindowProvider windowProvider, Services services,
+            List<UIConnectorConfig> allConfigs);
 
     /**
      * Returns a list of connector available fields in current configuration.

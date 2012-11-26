@@ -5,7 +5,6 @@ import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.config.StorageException;
 import com.taskadapter.config.StoredConnectorConfig;
 import com.taskadapter.config.StoredExportConfig;
-import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.NewMappings;
 
 import java.util.ArrayList;
