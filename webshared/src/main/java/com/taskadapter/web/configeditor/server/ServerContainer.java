@@ -30,11 +30,6 @@ public class ServerContainer extends GridLayout implements
     // private TextField hostURLText;
     private ComboBox urlCombobox;
 
-    /**
-     * Server info model.
-     */
-    private final ServerInfoModel serverInfoModel = null;
-
     private final CompletableInput<ServerCompletionItem> serverInput;
 
     private final CompletableInput<UserCompletionItem> userInput;
@@ -49,7 +44,7 @@ public class ServerContainer extends GridLayout implements
             final Property passwordProperty) {
 
         final ServerInfoModel model = new BasicModel(infos);
-        final List<ServerCompletionItem> serverCompletionsL = getServerCompletions(null);
+        final List<ServerCompletionItem> serverCompletionsL = getServerCompletions(model);
         final Property serverCompletions = new ConstProperty(serverCompletionsL);
         final Property serverValue = new AbsoluteReadonlyProperty(
                 serverURLProperty);
@@ -193,7 +188,6 @@ public class ServerContainer extends GridLayout implements
 
         buildUI(labelProperty, serverURLProperty, userLoginNameProperty,
                 passwordProperty);
-        setServerList(serverInfoModel.getServers());
     }
 
     private static List<ServerCompletionItem> getServerCompletions(
@@ -207,16 +201,6 @@ public class ServerContainer extends GridLayout implements
         }
         Collections.sort(res);
         return res;
-    }
-
-    private void setServerList(List<String> servers) {
-        final List<ServerCompletionItem> items = new ArrayList<ServerCompletionItem>();
-        for (String server : servers) {
-            items.add(new ServerCompletionItem(server, null));
-            for (String login : serverInfoModel.getLogins(server)) {
-                items.add(new ServerCompletionItem(server, login));
-            }
-        }
     }
 
     private void buildUI(Property labelProperty, Property serverURLProperty,
