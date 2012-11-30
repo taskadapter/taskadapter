@@ -31,4 +31,10 @@ final class ServerCompletionItem implements Comparable<ServerCompletionItem>{
         return this.login.compareTo(o.login);
     }
 
+    @Override
+    public String toString() {
+        return "ServerCompletionItem{" +
+                "url='" + url + '\'' +
+                '}';
+    }
 }

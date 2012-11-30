@@ -27,7 +27,6 @@ public class ServerContainer extends GridLayout implements
     // private static final String DEFAULT_HOST_VALUE = "http://";
 
     private TextField descriptionField;
-    // private TextField hostURLText;
     private ComboBox urlCombobox;
 
     private final CompletableInput<ServerCompletionItem> serverInput;
@@ -39,9 +38,9 @@ public class ServerContainer extends GridLayout implements
     private final Renderer<UserCompletionItem, String> loginRenderer;
 
     public ServerContainer(List<WebServerInfo> infos, Property labelProperty,
-            final Property serverURLProperty,
-            final Property userLoginNameProperty,
-            final Property passwordProperty) {
+                           final Property serverURLProperty,
+                           final Property userLoginNameProperty,
+                           final Property passwordProperty) {
 
         final ServerInfoModel model = new BasicModel(infos);
         final List<ServerCompletionItem> serverCompletionsL = getServerCompletions(model);
@@ -180,7 +179,7 @@ public class ServerContainer extends GridLayout implements
                     return item.login;
                 }
                 if (item.password != null) {
-                    return "---//" + item.login + " [******]"; 
+                    return "---//" + item.login + " [******]";
                 }
                 return "---//" + item.login;
             }
@@ -204,7 +203,7 @@ public class ServerContainer extends GridLayout implements
     }
 
     private void buildUI(Property labelProperty, Property serverURLProperty,
-            Property userLoginNameProperty, Property passwordProperty) {
+                         Property userLoginNameProperty, Property passwordProperty) {
         setColumns(2);
         setRows(4);
         setMargin(true);
@@ -224,22 +223,6 @@ public class ServerContainer extends GridLayout implements
         Label urlLabel = new Label("Server URL:");
         addComponent(urlLabel, 0, currentRow);
         setComponentAlignment(urlLabel, Alignment.MIDDLE_LEFT);
-
-        // hostURLText = new TextField();
-        // hostURLText.setDescription(HOST_URL_TOOLTIP);
-        // hostURLText.addListener(new FieldEvents.BlurListener() {
-        // @Override
-        // public void blur(FieldEvents.BlurEvent event) {
-        // //TODO refactor these methods (common in ServerPanel and
-        // RedmineServerPanel)
-        // checkProtocol();
-        // cleanup();
-        // }
-        // });
-        // hostURLText.addStyleName("server-panel-textfield");
-        // hostURLText.setPropertyDataSource(serverURLProperty);
-        // addComponent(hostURLText, 1, currentRow);
-        // setComponentAlignment(hostURLText, Alignment.MIDDLE_RIGHT);
 
         addUrlCombobox(currentRow);
 
@@ -274,39 +257,22 @@ public class ServerContainer extends GridLayout implements
         urlCombobox.setNullSelectionAllowed(false);
         urlCombobox.setTextInputAllowed(true);
         urlCombobox.setNewItemsAllowed(true);
-        urlCombobox
-                .setFilteringMode(AbstractSelect.Filtering.FILTERINGMODE_CONTAINS);
-        // defines width
+        urlCombobox.setFilteringMode(AbstractSelect.Filtering.FILTERINGMODE_CONTAINS);
         urlCombobox.setWidth(100, UNITS_PERCENTAGE);
         urlCombobox.addListener(this);
-        // urlCombobox.setNewItemHandler(this);
         urlCombobox.setImmediate(true);
         addComponent(urlCombobox, 1, currentRow);
         setComponentAlignment(urlCombobox, Alignment.MIDDLE_RIGHT);
     }
-
-    // private Boolean lastAdded = false;
 
     /*
      * Shows a notification when a selection is made.
      */
     @Override
     public void valueChange(Property.ValueChangeEvent event) {
-        // if (!lastAdded) {
         getWindow().showNotification("Selected: " + event.getProperty());
-        // }
-        // lastAdded = false;
     }
 
-    // @Override
-    // public void addNewItem(String newItemCaption) {
-    // if (!urlCombobox.containsId(newItemCaption)) {
-    // getWindow().showNotification("Added: " + newItemCaption);
-    // lastAdded = true;
-    // urlCombobox.addItem(newItemCaption);
-    // urlCombobox.setValue(newItemCaption);
-    // }
-    // }
     // private void cleanup() {
     // if (getHostString().endsWith("/")) {
     // hostURLText.setValue(getHostString().substring(0,
@@ -318,10 +284,6 @@ public class ServerContainer extends GridLayout implements
     // if (!getHostString().startsWith("http")) {
     // hostURLText.setValue(DEFAULT_HOST_VALUE + hostURLText.getValue());
     // }
-    // }
-
-    // TextField getServerURLField() {
-    // return urlCombobox.getValue();
     // }
 
     String getHostString() {
