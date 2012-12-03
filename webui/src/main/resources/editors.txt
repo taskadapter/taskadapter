@@ -6,3 +6,4 @@ Github=com.taskadapter.connector.github.editor.GithubEditorFactory
 Mantis=com.taskadapter.connector.mantis.editor.MantisEditorFactory
 Microsoft Project=com.taskadapter.connector.msp.editor.MSPEditorFactory
 Microsoft Project (XML)=com.taskadapter.connector.msp.editor.MSPEditorFactory
+Basecamp=com.taskadapter.connector.basecamp.editor.BasecampEditorFactory

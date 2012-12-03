@@ -29,6 +29,7 @@
         <module>mantis-editor</module>
         <module>msp-editor</module>
         <module>redmine-editor</module>
+        <module>basecamp-editor</module>
     </modules>
 
     <dependencies>
