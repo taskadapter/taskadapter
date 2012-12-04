@@ -5,8 +5,8 @@ package com.taskadapter.connector.basecamp;
  * 
  */
 public final class BasicBasecampAuth extends BasecampAuth {
-    private String login;
-    private String password;
+    private String login = "";
+    private String password = "";
 
     public String getLogin() {
         return login;

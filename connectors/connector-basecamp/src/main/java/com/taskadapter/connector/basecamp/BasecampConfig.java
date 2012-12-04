@@ -5,16 +5,19 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 
 public class BasecampConfig extends ConnectorConfig {
 
-    private BasecampAuth auth;
+    private static final String DEFAULT_LABEL = "Basecamp";
 
-    private String accountId;
+    private BasecampAuth auth = new BasicBasecampAuth();
 
-    private String projectKey;
+    private String accountId = "";
+
+    private String projectKey = "";
 
     private String todoKey;
 
     public BasecampConfig() {
         super(new Priorities());
+        setLabel(DEFAULT_LABEL);
     }
 
     public BasecampAuth getAuth() {

@@ -16,9 +16,8 @@ import com.taskadapter.model.GProject;
 public class DevTest {
     private static final String USER_ID = "2081543";
     private static final String USER_LOGIN = "basecamp.tester@mailinator.com";// "Tester's Basecamp";
-
     private static final String USER_PASSWORD = "lkajsaMLNnqw37sdafa;kjlsdf";
-    private static final String XXX_PROJECT_KEY = "1630040";
+    private static final String PROJECT_KEY = "1630040";
 
     private final ObjectAPIFactory factory = new ObjectAPIFactory(
             new BaseCommunicator());
@@ -53,7 +52,7 @@ public class DevTest {
         final BasecampConfig conf = new BasecampConfig();
         conf.setAccountId(USER_ID);
         conf.setAuth(BASE_CONFIG.getAuth());
-        conf.setProjectKey(XXX_PROJECT_KEY);
+        conf.setProjectKey(PROJECT_KEY);
         final List<TodoList> lists = BasecampUtils.loadTodoLists(factory, conf);
         System.out.println(lists);
         Assert.assertTrue(lists.size() > 0);
