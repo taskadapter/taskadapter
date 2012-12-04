@@ -42,7 +42,7 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
     @Override
     public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, RedmineConfig config, List<RedmineConfig> relatedConfigs) {
         Panel panel = new Panel("Server Info");
-        RedmineServerPanel redmineServerPanel = new RedmineServerPanel(windowProvider, config);
+        RedmineServerPanel redmineServerPanel = new RedmineServerPanel(config);
         panel.addComponent(redmineServerPanel);
 
         ShowProjectElement showProjectElement = new ShowProjectElement(windowProvider, config);

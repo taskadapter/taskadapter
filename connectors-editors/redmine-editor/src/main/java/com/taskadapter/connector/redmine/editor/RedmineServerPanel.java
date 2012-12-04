@@ -32,20 +32,15 @@ class RedmineServerPanel extends VerticalLayout implements Validatable {
 
     private final List<String> authOptions = Arrays.asList(USE_API, USE_LOGIN);
     private OptionGroup authOptionsGroup = new OptionGroup("Authorization", authOptions);
-    private WindowProvider windowProvider;
     private RedmineConfig config;
 
-    public RedmineServerPanel(final WindowProvider windowProvider, RedmineConfig config) {
-        this.windowProvider = windowProvider;
+    public RedmineServerPanel(RedmineConfig config) {
         this.config = config;
         buildUI();
         addListener();
     }
 
     private void buildUI() {
-//        setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
-        // set spacing around the layout (not between components in the layout!)
-//        setMargin(true);
 
         GridLayout layout = new GridLayout();
         addComponent(layout);
