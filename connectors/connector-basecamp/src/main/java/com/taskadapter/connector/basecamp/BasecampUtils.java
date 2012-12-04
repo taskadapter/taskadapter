@@ -12,9 +12,12 @@ import com.taskadapter.connector.basecamp.exceptions.BadFieldException;
 import com.taskadapter.connector.basecamp.exceptions.FieldNotSetException;
 import com.taskadapter.connector.basecamp.transport.ObjectAPI;
 import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GProject;
+import com.taskadapter.model.GTask;
+import com.taskadapter.model.GUser;
 
 public class BasecampUtils {
     public static List<GProject> loadProjects(ObjectAPIFactory factory,
@@ -51,6 +54,12 @@ public class BasecampUtils {
         return result;
     }
 
+    public static void validateConfig(BasecampConfig config)
+            throws ConnectorException {
+        validateProject(config);
+        validateTodolist(config);
+    }
+
     public static void validateProject(BasecampConfig config)
             throws ConnectorException {
         final String projectKey = config.getProjectKey();
@@ -59,6 +68,17 @@ public class BasecampUtils {
         }
         if (!isNum(projectKey)) {
             throw new BadFieldException("project-key");
+        }
+    }
+
+    public static void validateTodolist(BasecampConfig config)
+            throws ConnectorException {
+        final String listKey = config.getTodoKey();
+        if (listKey == null) {
+            throw new FieldNotSetException("todo-key");
+        }
+        if (!isNum(listKey)) {
+            throw new BadFieldException("todo-key");
         }
     }
 
@@ -84,7 +104,7 @@ public class BasecampUtils {
         res.setName(JsonUtils.getOptString("name", jsonObject));
         return res;
     }
-    
+
     private static GProject parseProject(JSONObject jsonObject)
             throws CommunicationException {
         final GProject res = new GProject();
@@ -93,5 +113,32 @@ public class BasecampUtils {
         res.setHomepage(JsonUtils.getOptString("homepage", jsonObject));
         res.setName(JsonUtils.getOptString("name", jsonObject));
         return res;
+    }
+
+    public static GTask parseTask(JSONObject obj, Mappings mappings)
+            throws ConnectorException {
+        final GTask result = new GTask();
+        result.setId(JsonUtils.getInt("id", obj));
+        result.setKey(Long.toString(JsonUtils.getLong("id", obj)));
+        result.setDescription(JsonUtils.getOptString("content", obj));
+        result.setSummary(JsonUtils.getOptString("content", obj));
+        result.setDoneRatio(JsonUtils.getOptBool("completed", obj) ? Integer
+                .valueOf(100) : Integer.valueOf(0));
+        result.setDueDate(JsonUtils.getOptShortDate("due_at", obj));
+        result.setCreatedOn(JsonUtils.getOptLongDate("created_at", obj));
+        result.setUpdatedOn(JsonUtils.getOptLongDate("updated_at", obj));
+        final JSONObject assObj = JsonUtils.getOptObject("assignee", obj);
+        if (assObj != null) {
+            result.setAssignee(parseUser(assObj));
+        }
+        return result;
+    }
+
+    public static GUser parseUser(JSONObject assObj)
+            throws CommunicationException {
+        final GUser result = new GUser();
+        result.setId(JsonUtils.getInt("id", assObj));
+        result.setDisplayName(JsonUtils.getOptString("name", assObj));
+        return result;
     }
 }

@@ -10,14 +10,18 @@ import com.taskadapter.connector.basecamp.beans.TodoList;
 import com.taskadapter.connector.basecamp.transport.BaseCommunicator;
 import com.taskadapter.connector.basecamp.transport.ObjectAPI;
 import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory;
+import com.taskadapter.connector.common.ProgressMonitorUtils;
+import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GProject;
+import com.taskadapter.model.GTask;
 
 public class DevTest {
     private static final String USER_ID = "2081543";
     private static final String USER_LOGIN = "basecamp.tester@mailinator.com";// "Tester's Basecamp";
     private static final String USER_PASSWORD = "lkajsaMLNnqw37sdafa;kjlsdf";
     private static final String PROJECT_KEY = "1630040";
+    private static final String TODO_KEY = "3991077";
 
     private final ObjectAPIFactory factory = new ObjectAPIFactory(
             new BaseCommunicator());
@@ -31,6 +35,8 @@ public class DevTest {
         auth.setPassword(USER_PASSWORD);
         cfg.setAuth(auth);
         cfg.setAccountId(USER_ID);
+        cfg.setProjectKey(PROJECT_KEY);
+        cfg.setTodoKey(TODO_KEY);
         BASE_CONFIG = cfg;
     }
 
@@ -49,12 +55,27 @@ public class DevTest {
 
     @Test
     public void testTodoLists() throws ConnectorException {
-        final BasecampConfig conf = new BasecampConfig();
-        conf.setAccountId(USER_ID);
-        conf.setAuth(BASE_CONFIG.getAuth());
-        conf.setProjectKey(PROJECT_KEY);
-        final List<TodoList> lists = BasecampUtils.loadTodoLists(factory, conf);
-        System.out.println(lists);
+        final List<TodoList> lists = BasecampUtils.loadTodoLists(factory,
+                BASE_CONFIG);
         Assert.assertTrue(lists.size() > 0);
+    }
+
+    @Test
+    public void testGetTodo() throws ConnectorException {
+        final GTask task = new BasecampConnector(BASE_CONFIG, factory)
+                .loadTaskByKey("23172907", new Mappings());
+        Assert.assertNotNull(task);
+        Assert.assertEquals("Create pron", task.getSummary());
+        Assert.assertEquals("Create pron", task.getDescription());
+    }
+
+    @Test
+    public void testGetTodos() throws ConnectorException {
+        final List<GTask> tasks = new BasecampConnector(BASE_CONFIG, factory)
+                .loadData(new Mappings(),
+                        ProgressMonitorUtils.getDummyMonitor());
+        System.out.println (tasks);
+        Assert.assertNotNull(tasks);
+        Assert.assertTrue(tasks.size() >= 0);
     }
 }
