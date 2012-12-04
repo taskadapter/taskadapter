@@ -48,8 +48,7 @@ public class ServerContainer extends GridLayout implements
         final Property serverValue = new AbsoluteReadonlyProperty(
                 serverURLProperty);
 
-        final Property userValue = new AbsoluteReadonlyProperty(
-                userLoginNameProperty);
+        final Property userValue = new AbsoluteReadonlyProperty(userLoginNameProperty);
         final Property userCompletions = new AbsoluteReadonlyProperty(
                 new AbstractProperty() {
                     {
@@ -72,24 +71,18 @@ public class ServerContainer extends GridLayout implements
 
                     @Override
                     public Object getValue() {
-                        final String url = (String) serverURLProperty
-                                .getValue();
-                        final List<String> items = new ArrayList<String>(model
-                                .getLogins(url));
+                        final String url = (String) serverURLProperty.getValue();
+                        final List<String> items = new ArrayList<String>(model.getLogins(url));
                         Collections.sort(items);
-                        final List<String> secondary = new ArrayList<String>(
-                                model.getLogins());
+                        final List<String> secondary = new ArrayList<String>(model.getLogins());
                         Collections.sort(secondary);
                         secondary.removeAll(items);
-                        final List<UserCompletionItem> res = new ArrayList<UserCompletionItem>(
-                                items.size() + secondary.size());
+                        final List<UserCompletionItem> res = new ArrayList<UserCompletionItem>(items.size() + secondary.size());
                         for (String item : items) {
-                            res.add(new UserCompletionItem(item, model
-                                    .getPassword(url, item), true));
+                            res.add(new UserCompletionItem(item, model.getPassword(url, item), true));
                         }
                         for (String item : secondary) {
-                            res.add(new UserCompletionItem(item, model
-                                    .getPassword(item), false));
+                            res.add(new UserCompletionItem(item, model.getPassword(item), false));
                         }
                         return res;
                     }
