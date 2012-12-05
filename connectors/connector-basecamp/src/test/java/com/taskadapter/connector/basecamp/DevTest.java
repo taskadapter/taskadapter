@@ -1,5 +1,6 @@
 package com.taskadapter.connector.basecamp;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
@@ -12,9 +13,11 @@ import com.taskadapter.connector.basecamp.transport.ObjectAPI;
 import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GProject;
 import com.taskadapter.model.GTask;
+import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 public class DevTest {
     private static final String USER_ID = "2081543";
@@ -74,8 +77,38 @@ public class DevTest {
         final List<GTask> tasks = new BasecampConnector(BASE_CONFIG, factory)
                 .loadData(new Mappings(),
                         ProgressMonitorUtils.getDummyMonitor());
-        System.out.println (tasks);
         Assert.assertNotNull(tasks);
         Assert.assertTrue(tasks.size() >= 0);
+    }
+
+    @Test
+    public void testManipulateCreateTodos() throws ConnectorException {
+        final GTask task = new GTask();
+        task.setId(123);
+        task.setDescription("Hide from police");
+        final Mappings mappings = new Mappings();
+        mappings.setMapping(FIELD.DESCRIPTION, true, "content");
+
+        final BasecampConnector conn = new BasecampConnector(BASE_CONFIG,
+                factory);
+        final TaskSaveResult res = conn.saveData(
+                Collections.singletonList(task),
+                ProgressMonitorUtils.getDummyMonitor(), mappings);
+        Assert.assertEquals(1, res.getCreatedTasksNumber());
+        Assert.assertEquals(0, res.getUpdatedTasksNumber());
+
+        final GTask update = new GTask();
+        update.setId(321);
+        update.setRemoteId(res.getRemoteKey(123));
+        update.setDescription("Change country");
+        final TaskSaveResult res1 = conn.saveData(
+                Collections.singletonList(update),
+                ProgressMonitorUtils.getDummyMonitor(), mappings);
+        Assert.assertEquals(0, res1.getCreatedTasksNumber());
+        Assert.assertEquals(1, res1.getUpdatedTasksNumber());
+
+        factory.createObjectAPI(BASE_CONFIG).delete(
+                "/projects/" + PROJECT_KEY + "/todos/" + update.getRemoteId()
+                        + ".json");
     }
 }

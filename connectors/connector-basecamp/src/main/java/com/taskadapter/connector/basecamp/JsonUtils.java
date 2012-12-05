@@ -6,6 +6,7 @@ import java.util.Date;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONWriter;
 
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 
@@ -147,5 +148,33 @@ public final class JsonUtils {
 
     public static int genLen(JSONArray arr) {
         return arr == null ? 0 : arr.length();
+    }
+
+    public static void writeOpt(JSONWriter writer, String field, String value)
+            throws JSONException {
+        if (field == null || value == null) {
+            return;
+        }
+        writer.key(field).value(value);
+    }
+
+    public static void writeOpt(JSONWriter writer, String field, Boolean value)
+            throws JSONException {
+        if (field == null || value == null) {
+            return;
+        }
+        writer.key(field).value(value.booleanValue());
+    }
+
+    public static void writeShort(JSONWriter writer, String field, Date value)
+            throws JSONException {
+        if (field == null) {
+            return;
+        }
+        writer.key(field);
+        if (value == null)
+            writer.value(null);
+        else
+            writer.value(SHORT_DATE.get().format(value));
     }
 }

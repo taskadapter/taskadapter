@@ -58,6 +58,9 @@ final class BasecampContentReader {
     private static String getContent(HttpResponse content)
             throws ConnectorException {
         final HttpEntity entity = content.getEntity();
+        if (entity == null) {
+            return "";
+        }
         final String charset = HttpUtil.getCharset(entity);
         final String encoding = HttpUtil.getEntityEncoding(entity);
         try {

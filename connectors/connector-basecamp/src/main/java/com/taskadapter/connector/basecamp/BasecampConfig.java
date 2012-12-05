@@ -15,6 +15,8 @@ public class BasecampConfig extends ConnectorConfig {
 
     private String todoKey;
 
+    private boolean lookupUsersByName;
+
     public BasecampConfig() {
         super(new Priorities());
         setLabel(DEFAULT_LABEL);
@@ -50,6 +52,18 @@ public class BasecampConfig extends ConnectorConfig {
 
     public void setTodoKey(String todoKey) {
         this.todoKey = todoKey;
+    }
+
+    public boolean isLookupUsersByName() {
+        return lookupUsersByName;
+    }
+
+    public void setLookupUsersByName(boolean lookupUsersByName) {
+        this.lookupUsersByName = lookupUsersByName;
+    }
+
+    public static String getDefaultLabel() {
+        return DEFAULT_LABEL;
     }
 
 }

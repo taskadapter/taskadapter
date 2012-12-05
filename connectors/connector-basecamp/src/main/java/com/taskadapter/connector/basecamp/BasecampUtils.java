@@ -1,11 +1,14 @@
 package com.taskadapter.connector.basecamp;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONWriter;
 
 import com.taskadapter.connector.basecamp.beans.TodoList;
 import com.taskadapter.connector.basecamp.exceptions.BadFieldException;
@@ -17,6 +20,7 @@ import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GProject;
 import com.taskadapter.model.GTask;
+import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
 
 public class BasecampUtils {
@@ -115,7 +119,7 @@ public class BasecampUtils {
         return res;
     }
 
-    public static GTask parseTask(JSONObject obj, Mappings mappings)
+    public static GTask parseTask(JSONObject obj)
             throws ConnectorException {
         final GTask result = new GTask();
         result.setId(JsonUtils.getInt("id", obj));
@@ -140,5 +144,50 @@ public class BasecampUtils {
         result.setId(JsonUtils.getInt("id", assObj));
         result.setDisplayName(JsonUtils.getOptString("name", assObj));
         return result;
+    }
+
+    public static String toRequest(GTask task, UserResolver users,
+            OutputContext ctx) throws IOException, JSONException,
+            ConnectorException {
+        final StringWriter sw = new StringWriter();
+        try {
+            final JSONWriter writer = new JSONWriter(sw);
+            writer.object();
+            JsonUtils.writeOpt(writer, ctx.getJsonName(FIELD.DESCRIPTION),
+                    task.getDescription());
+            JsonUtils.writeOpt(writer, ctx.getJsonName(FIELD.SUMMARY),
+                    task.getSummary());
+            JsonUtils.writeOpt(writer, ctx.getJsonName(FIELD.DONE_RATIO), task
+                    .getDoneRatio() == null ? null : task.getDoneRatio()
+                    .intValue() >= 100 ? Boolean.TRUE : Boolean.FALSE);
+            JsonUtils.writeShort(writer, ctx.getJsonName(FIELD.DUE_DATE),
+                    task.getDueDate());
+            writeAssignee(writer, ctx, users, task.getAssignee());
+            writer.endObject();
+        } finally {
+            sw.close();
+        }
+        return sw.toString();
+    }
+
+    private static void writeAssignee(JSONWriter writer, OutputContext ctx,
+            UserResolver resolver, GUser assignee) throws JSONException,
+            ConnectorException {
+        final String field = ctx.getJsonName(FIELD.ASSIGNEE);
+        if (field == null) {
+            return;
+        }
+        if (assignee == null) {
+            writer.key(field).value(null);
+            return;
+        }
+        assignee = resolver.resolveUser(assignee);
+        if (assignee == null || assignee.getId() == null) {
+            return;
+        }
+
+        writer.key(field).object().key("type").value("Person");
+        writer.key("id").value(assignee.getId().intValue());
+        writer.endObject();
     }
 }
