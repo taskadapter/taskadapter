@@ -2,6 +2,7 @@ package com.taskadapter.connector.basecamp;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,8 @@ import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.model.GTask;
+import com.taskadapter.model.GUser;
+import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 final class BasecampConnector implements Connector<BasecampConfig> {
 
@@ -92,13 +95,34 @@ final class BasecampConnector implements Connector<BasecampConfig> {
             Mappings mappings) throws ConnectorException {
         BasecampUtils.validateConfig(config);
         final int total = countTasks(tasks);
-        final UserResolver userResolver = new DirectUserResolver();
+        final UserResolver userResolver = findUserResolver(mappings);
         final OutputContext ctx = new StandardOutputContext(mappings);
         final TaskSaveResultBuilder resultBuilder = new TaskSaveResultBuilder();
         monitor.beginTask("Saving...", total);
         writeTasks(tasks, monitor, userResolver, ctx, resultBuilder,
                 factory.createObjectAPI(config), 0);
         return resultBuilder.getResult();
+    }
+
+    private UserResolver findUserResolver(Mappings mappings)
+            throws ConnectorException {
+        if (!mappings.isFieldSelected(FIELD.ASSIGNEE)
+                || !config.isLookupUsersByName()) {
+            return new DirectUserResolver();
+        }
+        final ObjectAPI api = factory.createObjectAPI(config);
+        final JSONArray arr = api.getObjects("people.json");
+        final Map<String, GUser> users = new HashMap<String, GUser>();
+        for (int i = 0; i < arr.length(); i++) {
+            try {
+                final GUser user = BasecampUtils
+                        .parseUser(arr.getJSONObject(i));
+                users.put(user.getDisplayName(), user);
+            } catch (JSONException e) {
+                throw new CommunicationException(e);
+            }
+        }
+        return new NamedUserResolver(users);
     }
 
     private int writeTasks(List<GTask> tasks, ProgressMonitor monitor,

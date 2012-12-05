@@ -18,6 +18,7 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GProject;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
+import com.taskadapter.model.GUser;
 
 public class DevTest {
     private static final String USER_ID = "2081543";
@@ -40,6 +41,7 @@ public class DevTest {
         cfg.setAccountId(USER_ID);
         cfg.setProjectKey(PROJECT_KEY);
         cfg.setTodoKey(TODO_KEY);
+        cfg.setLookupUsersByName(true);
         BASE_CONFIG = cfg;
     }
 
@@ -109,6 +111,33 @@ public class DevTest {
 
         factory.createObjectAPI(BASE_CONFIG).delete(
                 "/projects/" + PROJECT_KEY + "/todos/" + update.getRemoteId()
+                        + ".json");
+    }
+
+    @Test
+    public void testResolveUser() throws ConnectorException {
+        final GTask task = new GTask();
+        task.setId(123);
+        task.setDescription("Find anybody");
+        final Mappings mappings = new Mappings();
+        mappings.setMapping(FIELD.DESCRIPTION, true, "content");
+        mappings.setMapping(FIELD.ASSIGNEE, true, "assignee");
+        final GUser me = new GUser();
+        me.setId(321);
+        me.setLoginName("<noname>");
+        me.setDisplayName("Tester");
+        task.setAssignee(me);
+
+        final BasecampConnector conn = new BasecampConnector(BASE_CONFIG,
+                factory);
+        final TaskSaveResult res = conn.saveData(
+                Collections.singletonList(task),
+                ProgressMonitorUtils.getDummyMonitor(), mappings);
+        Assert.assertEquals(1, res.getCreatedTasksNumber());
+        Assert.assertEquals(0, res.getUpdatedTasksNumber());
+
+        factory.createObjectAPI(BASE_CONFIG).delete(
+                "/projects/" + PROJECT_KEY + "/todos/" + res.getRemoteKey(123)
                         + ".json");
     }
 }
