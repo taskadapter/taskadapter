@@ -13,7 +13,7 @@ public class BasecampConfig extends ConnectorConfig {
 
     private String projectKey = "";
 
-    private String todoKey;
+    private String todoKey = "";
 
     public BasecampConfig() {
         super(new Priorities());
