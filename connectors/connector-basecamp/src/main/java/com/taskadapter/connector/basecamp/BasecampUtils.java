@@ -15,7 +15,6 @@ import com.taskadapter.connector.basecamp.exceptions.BadFieldException;
 import com.taskadapter.connector.basecamp.exceptions.FieldNotSetException;
 import com.taskadapter.connector.basecamp.transport.ObjectAPI;
 import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GProject;
@@ -40,6 +39,15 @@ public class BasecampUtils {
         return result;
     }
 
+    public static GProject loadProject(ObjectAPIFactory factory,
+            BasecampConfig config) throws ConnectorException {
+        validateProject(config);
+        final ObjectAPI objApi = factory.createObjectAPI(config);
+        final JSONObject object = objApi.getObject("projects/"
+                + config.getProjectKey() + ".json");
+        return parseProject(object);
+    }
+
     public static List<TodoList> loadTodoLists(ObjectAPIFactory factory,
             BasecampConfig config) throws ConnectorException {
         validateProject(config);
@@ -56,6 +64,16 @@ public class BasecampUtils {
                     + objects.toString());
         }
         return result;
+    }
+
+    public static TodoList loadTodoList(ObjectAPIFactory factory,
+            BasecampConfig config) throws ConnectorException {
+        validateConfig(config);
+        final ObjectAPI objApi = factory.createObjectAPI(config);
+        final JSONObject object = objApi.getObject("projects/"
+                + config.getProjectKey() + "/todolists/" + config.getTodoKey()
+                + ".json");
+        return parseTodoList(object);
     }
 
     public static void validateConfig(BasecampConfig config)
@@ -119,8 +137,7 @@ public class BasecampUtils {
         return res;
     }
 
-    public static GTask parseTask(JSONObject obj)
-            throws ConnectorException {
+    public static GTask parseTask(JSONObject obj) throws ConnectorException {
         final GTask result = new GTask();
         result.setId(JsonUtils.getInt("id", obj));
         result.setKey(Long.toString(JsonUtils.getLong("id", obj)));

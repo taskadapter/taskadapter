@@ -84,6 +84,16 @@ public class DevTest {
     }
 
     @Test
+    public void testGetProject() throws ConnectorException {
+        Assert.assertNotNull(BasecampUtils.loadProject(factory, BASE_CONFIG));
+    }
+
+    @Test
+    public void testGetTodoList() throws ConnectorException {
+        Assert.assertNotNull(BasecampUtils.loadTodoList(factory, BASE_CONFIG));
+    }
+
+    @Test
     public void testManipulateCreateTodos() throws ConnectorException {
         final GTask task = new GTask();
         task.setId(123);
