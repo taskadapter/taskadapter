@@ -13,7 +13,7 @@ import java.util.List;
 public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig> {
     @Override
     public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, BasecampConfig config, List<BasecampConfig> relatedConfigs) {
-        GridLayout gridLayout = new GridLayout(2, 4);
+        GridLayout gridLayout = new GridLayout(2, 5);
         gridLayout.setMargin(true);
         gridLayout.setSpacing(true);
 
@@ -48,6 +48,14 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         TextField projectKeyField = new TextField();
         projectKeyField.setPropertyDataSource(new MethodProperty<String>(config, "projectKey"));
         gridLayout.addComponent(projectKeyField, 1, currentRow);
+
+        currentRow++;
+
+        Label todoListKey = new Label("Todo list key:");
+        gridLayout.addComponent(todoListKey , 0, currentRow);
+        TextField todoListField = new TextField();
+        todoListField.setPropertyDataSource(new MethodProperty<String>(config, "todoKey"));
+        gridLayout.addComponent(todoListField, 1, currentRow);
 
         return gridLayout;
     }

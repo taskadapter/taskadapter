@@ -24,7 +24,7 @@ public class BasecampFactory implements PluginFactory<BasecampConfig> {
     public AvailableFields getAvailableFields() {
         final AvailableFieldsBuilder builder = AvailableFieldsBuilder.start();
         builder.addField(SUMMARY, "content");
-        builder.addField(DESCRIPTION, "content");
+//        builder.addField(DESCRIPTION, "content");
         builder.addField(DONE_RATIO, "done_ratio");
         builder.addField(DUE_DATE, "due_at");
         builder.addField(ASSIGNEE, "assignee");
