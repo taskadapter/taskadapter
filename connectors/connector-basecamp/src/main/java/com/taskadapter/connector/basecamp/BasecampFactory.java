@@ -57,6 +57,9 @@ public class BasecampFactory implements PluginFactory<BasecampConfig> {
         if (auth instanceof BasicBasecampAuth) {
             BasicBasecampAuth bba = (BasicBasecampAuth) auth;
             return toJson(bba);
+        } else if (auth instanceof ApiKeyBasecampAuth) {
+            ApiKeyBasecampAuth akba = (ApiKeyBasecampAuth) auth;
+            return toJson(akba);
         }
         return null;
     }
@@ -66,6 +69,13 @@ public class BasecampFactory implements PluginFactory<BasecampConfig> {
         setp(res, "login", auth.getLogin());
         setp(res, "password", auth.getPassword());
         setp(res, "kind", "basic");
+        return res;
+    }
+
+    private JsonElement toJson(ApiKeyBasecampAuth auth) {
+        final JsonObject res = new JsonObject();
+        setp(res, "key", auth.getApiKey());
+        setp(res, "kind", "api-key");
         return res;
     }
 
@@ -89,8 +99,16 @@ public class BasecampFactory implements PluginFactory<BasecampConfig> {
         final String kind = getS("kind", o);
         if ("basic".equals(kind)) {
             return parseBasicAuth(o);
+        } else if ("api-key".equals(kind)) {
+            return parseApiKeyAuth(o);
         }
         return null;
+    }
+
+    private ApiKeyBasecampAuth parseApiKeyAuth(JsonObject o) {
+        final ApiKeyBasecampAuth res = new ApiKeyBasecampAuth();
+        res.setApiKey(getS("key", o));
+        return res;
     }
 
     private BasecampAuth parseBasicAuth(JsonObject o) {

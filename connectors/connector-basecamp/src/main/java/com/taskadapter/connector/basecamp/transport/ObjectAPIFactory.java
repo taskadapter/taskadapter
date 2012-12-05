@@ -1,5 +1,6 @@
 package com.taskadapter.connector.basecamp.transport;
 
+import com.taskadapter.connector.basecamp.ApiKeyBasecampAuth;
 import com.taskadapter.connector.basecamp.BasecampAuth;
 import com.taskadapter.connector.basecamp.BasecampConfig;
 import com.taskadapter.connector.basecamp.BasicBasecampAuth;
@@ -12,6 +13,7 @@ public final class ObjectAPIFactory {
     private final int THROTTLING_TIMEOUT_MILLIS = 25;
     private final Communicator baseTransport;
     private volatile ObjectAPIHolder holder;
+    private static final String AUTH_KEY_PASSWORD = "X";
 
     public ObjectAPIFactory(Communicator baseTransport) {
         this.baseTransport = baseTransport;
@@ -48,6 +50,19 @@ public final class ObjectAPIFactory {
                     new IntervalThrottler(THROTTLING_TIMEOUT_MILLIS));
             final ObjectAPI api = new ObjectAPI(userId, troller);
             return new BasicAuthAPIholder(api, userId, bba);
+        } else if (auth instanceof ApiKeyBasecampAuth) {
+            final ApiKeyBasecampAuth akba = (ApiKeyBasecampAuth) auth;
+            final Communicator authComm = new BasicAuthenticator(baseTransport,
+                    akba.getApiKey(), AUTH_KEY_PASSWORD);
+            final Communicator troller = new ThrottlingCommunicator(authComm,
+                    new IntervalThrottler(THROTTLING_TIMEOUT_MILLIS));
+            final ObjectAPI api = new ObjectAPI(userId, troller);
+
+            final BasicBasecampAuth dummy = new BasicBasecampAuth();
+            dummy.setLogin(akba.getApiKey());
+            dummy.setPassword(AUTH_KEY_PASSWORD);
+
+            return new BasicAuthAPIholder(api, userId, dummy);
         }
         throw new FieldNotSetException("auth");
     }
