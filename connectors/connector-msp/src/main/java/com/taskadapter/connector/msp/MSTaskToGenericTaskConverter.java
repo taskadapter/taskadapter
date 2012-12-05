@@ -61,7 +61,9 @@ class MSTaskToGenericTaskConverter {
 
         genericTask.setStatus(extractStatus(task));
 
-        genericTask.setEstimatedHours(extractEstimatedHours(task));
+        if (mappings.haveMappingFor(FIELD.ESTIMATED_TIME)) {
+            genericTask.setEstimatedHours(extractEstimatedHours(task));
+        }
         if (task.getPercentageComplete() != null) {
             genericTask.setDoneRatio(task.getPercentageComplete().intValue());
         }
@@ -77,7 +79,7 @@ class MSTaskToGenericTaskConverter {
         }
 
         // DUE DATE
-		final String dueDateField = mappings.getMappedTo(GTaskDescriptor.FIELD.DUE_DATE);
+        final String dueDateField = mappings.getMappedTo(GTaskDescriptor.FIELD.DUE_DATE);
         if (dueDateField != null) {
             Date mspDueDate = null;
             if (dueDateField.equals(TaskField.FINISH.toString())) {
