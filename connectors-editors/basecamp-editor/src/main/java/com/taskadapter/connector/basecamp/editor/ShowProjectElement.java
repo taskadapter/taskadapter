@@ -11,6 +11,8 @@ import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
 
+import static com.taskadapter.web.ui.MessageUtils.nvl;
+
 public class ShowProjectElement {
     private final WindowProvider windowProvider;
     private final BasecampConfig config;
@@ -39,19 +41,10 @@ public class ShowProjectElement {
     }
 
     private void showProjectInfo(WindowProvider windowProvider, GProject project) {
-        String msg = "<BR>Key:  " + project.getKey() +
-                "<BR>Name: " + project.getName();
-        msg += addNullSafe("Description", project.getDescription());
+        String msg = "<BR>Key:  " + project.getKey() + "<BR>Name: "
+                + project.getName() + "<BR>Description :"
+                + nvl(project.getDescription());
 
         EditorUtil.show(windowProvider.getWindow(), "Project Info", msg);
     }
-
-    private String addNullSafe(String label, String fieldValue) {
-        String msg = "<BR>" + label + ": ";
-        if (fieldValue != null) {
-            msg += fieldValue;
-        }
-        return msg;
-    }
-
 }

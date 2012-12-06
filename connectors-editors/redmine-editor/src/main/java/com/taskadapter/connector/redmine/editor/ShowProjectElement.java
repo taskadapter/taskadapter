@@ -9,6 +9,7 @@ import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
+import static com.taskadapter.web.ui.MessageUtils.nvl;
 
 public class ShowProjectElement {
 
@@ -52,19 +53,10 @@ public class ShowProjectElement {
             msg = "<br>Key:  " + project.getIdentifier()
                     + "<br>Name: " + project.getName()
                     + "<br>Created: " + project.getCreatedOn()
-                    + "<br>Updated: " + project.getUpdatedOn();
-            msg += addNullSafe("<br>Homepage", project.getHomepage());
-            msg += addNullSafe("<br>Description", project.getDescription());
+                    + "<br>Updated: " + project.getUpdatedOn()
+                    + "<br>Homepage: " + nvl(project.getHomepage()) 
+                    + "<br>Description: " + nvl(project.getDescription());
         }
         EditorUtil.show(windowProvider.getWindow(), "Project Info", msg);
     }
-
-    private String addNullSafe(String label, String fieldValue) {
-        String msg = "\n" + label + ": ";
-        if (fieldValue != null) {
-            msg += fieldValue;
-        }
-        return msg;
-    }
-
 }

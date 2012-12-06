@@ -7,6 +7,8 @@ import com.taskadapter.model.GProject;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
 
+import static com.taskadapter.web.ui.MessageUtils.nvl;
+
 // TODO unify with the same class in Redmine editor module?
 public class ShowProjectElement {
     private WindowProvider windowProvider;
@@ -35,23 +37,16 @@ public class ShowProjectElement {
     }
 
     private void showProjectInfo(GProject project) {
-        String msg = "Id: " + project.getId() + "\nKey:  "
-                + project.getKey() + "\nName: "
-                + project.getName();
+        String msg 
+                = "Id: " + project.getId() 
+                + "\nKey:  " + project.getKey() 
+                + "\nName: " + project.getName()
+                + "\nHomepage: " + nvl(project.getHomepage())
+                + "\nDescription: " + nvl(project.getDescription());
         // + "\nLead: " + project.getLead()
         // + "\nURL: " + project.getProjectUrl()
-        msg += addNullSafe("Homepage", project.getHomepage());
-        msg += addNullSafe("Description", project.getDescription());
 
         EditorUtil.show(windowProvider.getWindow(), "Project Info", msg);
-    }
-
-    private String addNullSafe(String label, String fieldValue) {
-        String msg = "\n" + label + ": ";
-        if (fieldValue != null) {
-            msg += fieldValue;
-        }
-        return msg;
     }
 
 }
