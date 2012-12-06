@@ -37,9 +37,10 @@ public class BasecampIntegrationTest {
 
     static {
         final BasecampConfig cfg = new BasecampConfig();
-        final BasicBasecampAuth auth = new BasicBasecampAuth();
+        final BasecampAuth auth = new BasecampAuth();
         auth.setLogin(USER_LOGIN);
         auth.setPassword(USER_PASSWORD);
+        auth.setUseAPIKeyInsteadOfLoginPassword(false);
         cfg.setAuth(auth);
         cfg.setAccountId(USER_ID);
         cfg.setProjectKey(PROJECT_KEY);

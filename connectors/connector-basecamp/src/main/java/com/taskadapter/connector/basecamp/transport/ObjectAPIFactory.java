@@ -1,19 +1,18 @@
 package com.taskadapter.connector.basecamp.transport;
 
-import com.taskadapter.connector.basecamp.ApiKeyBasecampAuth;
 import com.taskadapter.connector.basecamp.BasecampAuth;
 import com.taskadapter.connector.basecamp.BasecampConfig;
-import com.taskadapter.connector.basecamp.BasicBasecampAuth;
 import com.taskadapter.connector.basecamp.exceptions.FieldNotSetException;
 import com.taskadapter.connector.basecamp.transport.throttling.IntervalThrottler;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 
 public final class ObjectAPIFactory {
 
-    private final int THROTTLING_TIMEOUT_MILLIS = 25;
+    private static final int THROTTLING_TIMEOUT_MILLIS = 25;
+    private static final String AUTH_KEY_PASSWORD = "X";
+
     private final Communicator baseTransport;
     private volatile ObjectAPIHolder holder;
-    private static final String AUTH_KEY_PASSWORD = "X";
 
     public ObjectAPIFactory(Communicator baseTransport) {
         this.baseTransport = baseTransport;
@@ -42,28 +41,25 @@ public final class ObjectAPIFactory {
 
     private ObjectAPIHolder createHolder(String userId, BasecampAuth auth)
             throws ConnectorException {
-        if (auth instanceof BasicBasecampAuth) {
-            final BasicBasecampAuth bba = (BasicBasecampAuth) auth;
+        if (auth.isUseAPIKeyInsteadOfLoginPassword()) {
             final Communicator authComm = new BasicAuthenticator(baseTransport,
-                    bba.getLogin(), bba.getPassword());
-            final Communicator troller = new ThrottlingCommunicator(authComm,
+                    auth.getApiKey(), AUTH_KEY_PASSWORD);
+            final Communicator throller = new ThrottlingCommunicator(authComm,
                     new IntervalThrottler(THROTTLING_TIMEOUT_MILLIS));
-            final ObjectAPI api = new ObjectAPI(userId, troller);
-            return new BasicAuthAPIholder(api, userId, bba);
-        } else if (auth instanceof ApiKeyBasecampAuth) {
-            final ApiKeyBasecampAuth akba = (ApiKeyBasecampAuth) auth;
-            final Communicator authComm = new BasicAuthenticator(baseTransport,
-                    akba.getApiKey(), AUTH_KEY_PASSWORD);
-            final Communicator troller = new ThrottlingCommunicator(authComm,
-                    new IntervalThrottler(THROTTLING_TIMEOUT_MILLIS));
-            final ObjectAPI api = new ObjectAPI(userId, troller);
+            final ObjectAPI api = new ObjectAPI(userId, throller);
 
-            final BasicBasecampAuth dummy = new BasicBasecampAuth();
-            dummy.setLogin(akba.getApiKey());
+            final BasecampAuth dummy = new BasecampAuth();
+            dummy.setLogin(auth.getApiKey());
             dummy.setPassword(AUTH_KEY_PASSWORD);
 
             return new BasicAuthAPIholder(api, userId, dummy);
+        } else {
+            final Communicator authComm = new BasicAuthenticator(baseTransport,
+                    auth.getLogin(), auth.getPassword());
+            final Communicator throller = new ThrottlingCommunicator(authComm,
+                    new IntervalThrottler(THROTTLING_TIMEOUT_MILLIS));
+            final ObjectAPI api = new ObjectAPI(userId, throller);
+            return new BasicAuthAPIholder(api, userId, auth);
         }
-        throw new FieldNotSetException("auth");
     }
 }

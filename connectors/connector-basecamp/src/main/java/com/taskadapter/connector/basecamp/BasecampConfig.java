@@ -7,7 +7,9 @@ public class BasecampConfig extends ConnectorConfig {
 
     private static final String DEFAULT_LABEL = "Basecamp";
 
-    private BasecampAuth auth = new BasicBasecampAuth();
+    private BasecampAuth auth = new BasecampAuth();
+
+    private String serverUrl = "http://basecamp.com";
 
     private String accountId = "";
 
@@ -66,4 +68,11 @@ public class BasecampConfig extends ConnectorConfig {
         return DEFAULT_LABEL;
     }
 
+    public String getServerUrl() {
+        return serverUrl;
+    }
+
+    public void setServerUrl(String serverUrl) {
+        this.serverUrl = serverUrl;
+    }
 }

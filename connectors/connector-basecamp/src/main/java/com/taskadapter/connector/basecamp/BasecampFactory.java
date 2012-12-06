@@ -10,6 +10,7 @@ import com.taskadapter.connector.definition.AvailableFieldsBuilder;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.PluginFactory;
+
 import static com.taskadapter.model.GTaskDescriptor.FIELD.*;
 
 public class BasecampFactory implements PluginFactory<BasecampConfig> {
@@ -24,6 +25,7 @@ public class BasecampFactory implements PluginFactory<BasecampConfig> {
     public AvailableFields getAvailableFields() {
         final AvailableFieldsBuilder builder = AvailableFieldsBuilder.start();
         builder.addField(SUMMARY, "content");
+        // TODO !!! what do to with this?
 //        builder.addField(DESCRIPTION, "content");
         builder.addField(DONE_RATIO, "done_ratio");
         builder.addField(DUE_DATE, "due_at");
@@ -54,28 +56,11 @@ public class BasecampFactory implements PluginFactory<BasecampConfig> {
     }
 
     private JsonElement toJson(BasecampAuth auth) {
-        if (auth instanceof BasicBasecampAuth) {
-            BasicBasecampAuth bba = (BasicBasecampAuth) auth;
-            return toJson(bba);
-        } else if (auth instanceof ApiKeyBasecampAuth) {
-            ApiKeyBasecampAuth akba = (ApiKeyBasecampAuth) auth;
-            return toJson(akba);
-        }
-        return null;
-    }
-
-    private JsonElement toJson(BasicBasecampAuth auth) {
         final JsonObject res = new JsonObject();
         setp(res, "login", auth.getLogin());
         setp(res, "password", auth.getPassword());
-        setp(res, "kind", "basic");
-        return res;
-    }
-
-    private JsonElement toJson(ApiKeyBasecampAuth auth) {
-        final JsonObject res = new JsonObject();
-        setp(res, "key", auth.getApiKey());
-        setp(res, "kind", "api-key");
+        setp(res, "apiKey", auth.getApiKey());
+        setp(res, "useAPIKeyInsteadOfLoginPassword", Boolean.toString(auth.isUseAPIKeyInsteadOfLoginPassword()));
         return res;
     }
 
@@ -93,28 +78,12 @@ public class BasecampFactory implements PluginFactory<BasecampConfig> {
     }
 
     private BasecampAuth parseAuth(JsonObject o) {
-        if (o == null) {
-            return null;
-        }
-        final String kind = getS("kind", o);
-        if ("basic".equals(kind)) {
-            return parseBasicAuth(o);
-        } else if ("api-key".equals(kind)) {
-            return parseApiKeyAuth(o);
-        }
-        return null;
-    }
-
-    private ApiKeyBasecampAuth parseApiKeyAuth(JsonObject o) {
-        final ApiKeyBasecampAuth res = new ApiKeyBasecampAuth();
-        res.setApiKey(getS("key", o));
-        return res;
-    }
-
-    private BasecampAuth parseBasicAuth(JsonObject o) {
-        final BasicBasecampAuth res = new BasicBasecampAuth();
+        final BasecampAuth res = new BasecampAuth();
         res.setLogin(getS("login", o));
         res.setPassword(getS("password", o));
+        res.setApiKey(getS("apiKey", o));
+        res.setUseAPIKeyInsteadOfLoginPassword(Boolean.parseBoolean(getS("useAPIKeyInsteadOfLoginPassword", o)));
+
         return res;
     }
 
