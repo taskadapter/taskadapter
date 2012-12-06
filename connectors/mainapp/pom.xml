@@ -44,6 +44,11 @@
         </dependency>
         <dependency>
             <groupId>com.taskadapter</groupId>
+            <artifactId>connector-basecamp</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.taskadapter</groupId>
             <artifactId>test-utilities</artifactId>
         </dependency>
     </dependencies>
