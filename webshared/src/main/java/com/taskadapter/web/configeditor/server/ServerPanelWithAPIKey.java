@@ -1,13 +1,9 @@
-package com.taskadapter.connector.redmine.editor;
+package com.taskadapter.web.configeditor.server;
 
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
-import com.taskadapter.connector.redmine.RedmineConfig;
-import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.configeditor.Validatable;
 import com.vaadin.data.Property;
-import com.vaadin.data.util.MethodProperty;
-import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
@@ -16,31 +12,29 @@ import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 
-class RedmineServerPanel extends VerticalLayout implements Validatable {
+public class ServerPanelWithAPIKey extends VerticalLayout implements Validatable {
     private static final String USE_API = "Use API Access Key";
     private static final String USE_LOGIN = "Use Login and Password";
-    private static final String DEFAULT_USE = USE_LOGIN;
 
-    private TextField descriptionField;
     private TextField serverURL;
-    private PasswordField redmineAPIKey;
+    private PasswordField apiKeyField;
     private TextField login;
     private PasswordField password;
+    private OptionGroup authOptionsGroup;
 
-    private final List<String> authOptions = Arrays.asList(USE_API, USE_LOGIN);
-    private OptionGroup authOptionsGroup = new OptionGroup("Authorization", authOptions);
-    private RedmineConfig config;
-
-    public RedmineServerPanel(RedmineConfig config) {
-        this.config = config;
-        buildUI();
+    public ServerPanelWithAPIKey(Property labelProperty, Property serverURLProperty, Property loginNameProperty,
+                                 Property passwordProperty, Property apiKeyProperty, Property useApiKeyProperty) {
+        buildUI(labelProperty, serverURLProperty, loginNameProperty, passwordProperty, apiKeyProperty, useApiKeyProperty);
         addListener();
+        setAuthOptionsState((Boolean) authOptionsGroup.getValue());
     }
 
-    private void buildUI() {
+    private void buildUI(Property labelProperty, Property serverURLProperty,
+                         Property loginNameProperty,
+                         Property passwordProperty, Property apiKeyProperty, Property useApiKeyProperty) {
 
         GridLayout layout = new GridLayout();
         addComponent(layout);
@@ -54,9 +48,9 @@ class RedmineServerPanel extends VerticalLayout implements Validatable {
         Label descriptionLabel = new Label("Description:");
         layout.addComponent(descriptionLabel, 0, currentRow);
         layout.setComponentAlignment(descriptionLabel, Alignment.MIDDLE_LEFT);
-        descriptionField = new TextField();
+        TextField descriptionField = new TextField();
         descriptionField.addStyleName("server-panel-textfield");
-        descriptionField.setPropertyDataSource(new MethodProperty<String>(config, "label"));
+        descriptionField.setPropertyDataSource(labelProperty);
         layout.addComponent(descriptionField, 1, currentRow);
 
         currentRow++;
@@ -65,16 +59,8 @@ class RedmineServerPanel extends VerticalLayout implements Validatable {
         layout.setComponentAlignment(urlLabel, Alignment.MIDDLE_LEFT);
         serverURL = new TextField();
         serverURL.addStyleName("server-panel-textfield");
-        serverURL.setInputPrompt("http://myserver:3000/myredminelocation");
-        serverURL.addListener(new FieldEvents.BlurListener() {
-            @Override
-            public void blur(FieldEvents.BlurEvent event) {
-                //TODO refactor these methods (common in ServerPanel and RedmineServerPanel
-                checkProtocol();
-            }
-        });
-        WebServerInfo serverInfo = config.getServerInfo();
-        serverURL.setPropertyDataSource(new MethodProperty<String>(serverInfo, "host"));
+        serverURL.setInputPrompt("http://myserver:3000/some_location");
+        serverURL.setPropertyDataSource(serverURLProperty);
 
         layout.addComponent(serverURL, 1, currentRow);
 
@@ -84,10 +70,19 @@ class RedmineServerPanel extends VerticalLayout implements Validatable {
 
         layout.setComponentAlignment(serverURL, Alignment.MIDDLE_LEFT);
         layout.addComponent(createEmptyLabel(emptyLabelHeight), 0, currentRow++);
+
+        Collection<Boolean> authOptions = new ArrayList<Boolean>();
+        authOptions.add(true);
+        authOptions.add(false);
+
+        authOptionsGroup = new OptionGroup("Authorization", authOptions);
+        authOptionsGroup.setItemCaption(true, USE_API);
+        authOptionsGroup.setItemCaption(false, USE_LOGIN);
+        authOptionsGroup.setPropertyDataSource(useApiKeyProperty);
+
         authOptionsGroup.setSizeFull();
         authOptionsGroup.setNullSelectionAllowed(false);
         authOptionsGroup.setImmediate(true);
-        authOptionsGroup.select(DEFAULT_USE);
         layout.addComponent(authOptionsGroup, 0, currentRow, 1, currentRow);
         layout.setComponentAlignment(authOptionsGroup, Alignment.MIDDLE_LEFT);
 
@@ -98,12 +93,12 @@ class RedmineServerPanel extends VerticalLayout implements Validatable {
         layout.addComponent(apiKeyLabel, 0, currentRow);
         layout.setComponentAlignment(apiKeyLabel, Alignment.MIDDLE_LEFT);
 
-        redmineAPIKey = new PasswordField();
-        redmineAPIKey.addStyleName("server-panel-textfield");
-        layout.addComponent(redmineAPIKey, 1, currentRow);
-        layout.setComponentAlignment(redmineAPIKey, Alignment.MIDDLE_LEFT);
+        apiKeyField = new PasswordField();
+        apiKeyField.addStyleName("server-panel-textfield");
+        layout.addComponent(apiKeyField, 1, currentRow);
+        layout.setComponentAlignment(apiKeyField, Alignment.MIDDLE_LEFT);
         currentRow++;
-        redmineAPIKey.setPropertyDataSource(new MethodProperty<String>(serverInfo, "apiKey"));
+        apiKeyField.setPropertyDataSource(apiKeyProperty);
 
         Label loginLabel = new Label("Login:");
         layout.addComponent(loginLabel, 0, currentRow);
@@ -111,7 +106,7 @@ class RedmineServerPanel extends VerticalLayout implements Validatable {
 
         login = new TextField();
         login.addStyleName("server-panel-textfield");
-        login.setPropertyDataSource(new MethodProperty<String>(serverInfo, "userName"));
+        login.setPropertyDataSource(loginNameProperty);
         layout.addComponent(login, 1, currentRow);
         layout.setComponentAlignment(login, Alignment.MIDDLE_LEFT);
         currentRow++;
@@ -122,16 +117,9 @@ class RedmineServerPanel extends VerticalLayout implements Validatable {
 
         password = new PasswordField();
         password.addStyleName("server-panel-textfield");
-        password.setPropertyDataSource(new MethodProperty<String>(serverInfo, "password"));
+        password.setPropertyDataSource(passwordProperty);
         layout.addComponent(password, 1, currentRow);
         layout.setComponentAlignment(password, Alignment.MIDDLE_LEFT);
-
-        if (serverInfo.isUseAPIKeyInsteadOfLoginPassword()) {
-            authOptionsGroup.select(USE_API);
-        } else {
-            authOptionsGroup.select(USE_LOGIN);
-        }
-        setAuthOptionsState(serverInfo.isUseAPIKeyInsteadOfLoginPassword());
     }
 
     private Label createEmptyLabel(String height) {
@@ -144,51 +132,23 @@ class RedmineServerPanel extends VerticalLayout implements Validatable {
         authOptionsGroup.addListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                final boolean useAPIOptionSelected = isUseAPIOptionSelected();
+                boolean useAPIOptionSelected = (Boolean) authOptionsGroup.getValue();
                 setAuthOptionsState(useAPIOptionSelected);
-                config.getServerInfo().setUseAPIKeyInsteadOfLoginPassword(useAPIOptionSelected);
             }
         });
     }
 
     private void setAuthOptionsState(boolean useAPIKey) {
-        redmineAPIKey.setEnabled(useAPIKey);
+        apiKeyField.setEnabled(useAPIKey);
         login.setEnabled(!useAPIKey);
         password.setEnabled(!useAPIKey);
     }
 
-    public String getServerURL() {
-        return (String) serverURL.getValue();
-    }
-
-    public String getRedmineAPIKey() {
-        return (String) redmineAPIKey.getValue();
-    }
-
-    public String getLogin() {
-        return (String) login.getValue();
-    }
-
-    public String getPassword() {
-        return (String) password.getValue();
-    }
-
-    public boolean isUseAPIOptionSelected() {
-        return authOptionsGroup.getValue().equals(USE_API);
-    }
-
     @Override
     public void validate() throws ServerURLNotSetException {
-        String host = getServerURL();
+        String host = (String) serverURL.getValue();
         if (host == null || host.isEmpty() || host.equalsIgnoreCase(WebServerInfo.DEFAULT_URL_PREFIX)) {
             throw new ServerURLNotSetException();
-        }
-    }
-
-    private void checkProtocol() {
-        String serverURLValue = (String) serverURL.getValue();
-        if (!serverURLValue.trim().isEmpty() && !serverURLValue.startsWith("http")) {
-            serverURL.setValue(WebServerInfo.DEFAULT_URL_PREFIX + serverURLValue);
         }
     }
 }

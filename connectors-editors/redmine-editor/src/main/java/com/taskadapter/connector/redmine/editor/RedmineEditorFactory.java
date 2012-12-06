@@ -1,7 +1,6 @@
 package com.taskadapter.connector.redmine.editor;
 
-import java.util.List;
-
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RelationCreationException;
@@ -11,6 +10,7 @@ import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.ProjectPanel;
+import com.taskadapter.web.configeditor.server.ServerPanelWithAPIKey;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Services;
@@ -18,6 +18,8 @@ import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Panel;
+
+import java.util.List;
 
 public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.redmine.messages";
@@ -42,7 +44,13 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
     @Override
     public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, RedmineConfig config, List<RedmineConfig> relatedConfigs) {
         Panel panel = new Panel("Server Info");
-        RedmineServerPanel redmineServerPanel = new RedmineServerPanel(config);
+        WebServerInfo serverInfo = config.getServerInfo();
+        ServerPanelWithAPIKey redmineServerPanel = new ServerPanelWithAPIKey(new MethodProperty<String>(config, "label"),
+                new MethodProperty<String>(serverInfo, "host"),
+                new MethodProperty<String>(serverInfo, "userName"),
+                new MethodProperty<String>(serverInfo, "password"),
+                new MethodProperty<String>(serverInfo, "apiKey"),
+                new MethodProperty<Boolean>(serverInfo, "useAPIKeyInsteadOfLoginPassword"));
         panel.addComponent(redmineServerPanel);
 
         ShowProjectElement showProjectElement = new ShowProjectElement(windowProvider, config);
@@ -50,7 +58,7 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
         ProjectPanel projectPanel = new ProjectPanel(windowProvider,
                 EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
                 EditorUtil.wrapNulls(new MethodProperty<Integer>(config, "queryId")),
-                Interfaces.fromMethod(DataProvider.class, RedmineLoaders.class, "getProjects", config.getServerInfo()),
+                Interfaces.fromMethod(DataProvider.class, RedmineLoaders.class, "getProjects", serverInfo),
                 Interfaces.fromMethod(SimpleCallback.class, showProjectElement, "showProjectInfo"),
                 Interfaces.fromMethod(DataProvider.class, loadQueriesElement, "loadQueries"), this);
         GridLayout gridLayout = new GridLayout();
