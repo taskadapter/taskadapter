@@ -1,6 +1,8 @@
 package com.taskadapter.connector.basecamp;
 
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -57,13 +59,15 @@ public class BasecampIntegrationTest {
 
     @Test
     public void someProjectsAreLoaded() throws ConnectorException {
-        final List<GProject> projects = BasecampUtils.loadProjects(factory, BASE_CONFIG);
+        final List<GProject> projects = BasecampUtils.loadProjects(factory,
+                BASE_CONFIG);
         assertTrue(projects.size() > 0);
     }
 
     @Test
     public void someTodoListsAreLoaded() throws ConnectorException {
-        final List<TodoList> lists = BasecampUtils.loadTodoLists(factory, BASE_CONFIG);
+        final List<TodoList> lists = BasecampUtils.loadTodoLists(factory,
+                BASE_CONFIG);
         assertTrue(lists.size() > 0);
     }
 
@@ -151,5 +155,102 @@ public class BasecampIntegrationTest {
         factory.createObjectAPI(BASE_CONFIG).delete(
                 "/projects/" + PROJECT_KEY + "/todos/" + res.getRemoteKey(123)
                         + ".json");
+    }
+
+    @Test
+    public void testMappingsSupported() throws ConnectorException {
+        final Calendar cal = Calendar.getInstance();
+        cal.set(2013, 2, 20, 0, 0, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        final Date date1 = cal.getTime();
+        cal.set(2012, 2, 20, 0, 0, 0);
+        final Date date2 = cal.getTime();
+        final GTask template = new GTask();
+        template.setId(123);
+        template.setSummary("This is a description");
+        template.setDoneRatio(100);
+        template.setDueDate(date1);
+        final GUser me = new GUser();
+        me.setId(321);
+        me.setLoginName("<noname>");
+        me.setDisplayName("Tester");
+        template.setAssignee(me);
+
+        final Mappings allMappings = new Mappings();
+        allMappings.setMapping(FIELD.SUMMARY, true, "content");
+        allMappings.setMapping(FIELD.DONE_RATIO, true, "done_ratio");
+        allMappings.setMapping(FIELD.DUE_DATE, true, "due_date");
+        allMappings.setMapping(FIELD.ASSIGNEE, true, "assignee");
+
+        final BasecampConnector conn = new BasecampConnector(BASE_CONFIG,
+                factory);
+        final TaskSaveResult res = conn.saveData(
+                Collections.singletonList(template),
+                ProgressMonitorUtils.getDummyMonitor(), allMappings);
+        Assert.assertEquals(1, res.getCreatedTasksNumber());
+
+        final String remoteId = res.getRemoteKey(123);
+        template.setRemoteId(remoteId);
+
+        final GTask update = new GTask();
+        update.setId(123);
+        update.setSummary("It should be updated");
+        update.setDoneRatio(0);
+        update.setDueDate(date2);
+        update.setAssignee(null);
+        update.setRemoteId(remoteId);
+
+        try {
+            GTask updated = update(conn, update, FIELD.SUMMARY, "content");
+            Assert.assertEquals(update.getSummary(), updated.getSummary());
+            Assert.assertEquals(template.getDoneRatio(), updated.getDoneRatio());
+            Assert.assertEquals(template.getDueDate(), updated.getDueDate());
+            Assert.assertEquals(template.getAssignee().getDisplayName(),
+                    updated.getAssignee().getDisplayName());
+
+            conn.saveData(Collections.singletonList(template),
+                    ProgressMonitorUtils.getDummyMonitor(), allMappings);
+
+            updated = update(conn, update, FIELD.DONE_RATIO, "done_ratio");
+            Assert.assertEquals(template.getSummary(), updated.getSummary());
+            Assert.assertEquals(update.getDoneRatio(), updated.getDoneRatio());
+            Assert.assertEquals(template.getDueDate(), updated.getDueDate());
+            Assert.assertEquals(template.getAssignee().getDisplayName(),
+                    updated.getAssignee().getDisplayName());
+
+            conn.saveData(Collections.singletonList(template),
+                    ProgressMonitorUtils.getDummyMonitor(), allMappings);
+
+            updated = update(conn, update, FIELD.DUE_DATE, "due_date");
+            Assert.assertEquals(template.getSummary(), updated.getSummary());
+            Assert.assertEquals(template.getDoneRatio(), updated.getDoneRatio());
+            Assert.assertEquals(update.getDueDate(), updated.getDueDate());
+            Assert.assertEquals(template.getAssignee().getDisplayName(),
+                    updated.getAssignee().getDisplayName());
+
+            conn.saveData(Collections.singletonList(template),
+                    ProgressMonitorUtils.getDummyMonitor(), allMappings);
+
+            updated = update(conn, update, FIELD.ASSIGNEE, "assignee");
+            Assert.assertEquals(template.getSummary(), updated.getSummary());
+            Assert.assertEquals(template.getDoneRatio(), updated.getDoneRatio());
+            Assert.assertEquals(template.getDueDate(), updated.getDueDate());
+            Assert.assertNull(updated.getAssignee());
+        } finally {
+            factory.createObjectAPI(BASE_CONFIG)
+                    .delete("/projects/" + PROJECT_KEY + "/todos/" + remoteId
+                            + ".json");
+        }
+    }
+
+    private GTask update(BasecampConnector conn, GTask newTask, FIELD field,
+            String target) throws ConnectorException {
+        final Mappings newMappings = new Mappings();
+        newMappings.setMapping(field, true, target);
+        final TaskSaveResult res = conn.saveData(
+                Collections.singletonList(newTask),
+                ProgressMonitorUtils.getDummyMonitor(), newMappings);
+        Assert.assertEquals(1, res.getUpdatedTasksNumber());
+        return conn.loadTaskByKey(newTask.getRemoteId(), newMappings);
     }
 }

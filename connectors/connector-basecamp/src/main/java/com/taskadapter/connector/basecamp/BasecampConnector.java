@@ -174,8 +174,16 @@ final class BasecampConnector implements Connector<BasecampConfig> {
             final JSONObject res = api.post(
                     "/projects/" + config.getProjectKey() + "/todolists/"
                             + config.getTodoKey() + "/todos.json", repr);
-            resultBuilder.addCreatedTask(task.getId(),
-                    BasecampUtils.parseTask(res).getKey());
+
+            final String newTaskKey = BasecampUtils.parseTask(res).getKey();
+            /* Set "done ratio" if needed */
+            if (ctx.getJsonName(FIELD.DONE_RATIO) != null
+                    && task.getDoneRatio() != null
+                    && task.getDoneRatio().intValue() >= 100) {
+                api.put("/projects/" + config.getProjectKey() + "/todos/"
+                        + newTaskKey + ".json", repr);
+            }
+            resultBuilder.addCreatedTask(task.getId(), newTaskKey);
         } else {
             final JSONObject res = api.put(
                     "/projects/" + config.getProjectKey() + "/todos/"
