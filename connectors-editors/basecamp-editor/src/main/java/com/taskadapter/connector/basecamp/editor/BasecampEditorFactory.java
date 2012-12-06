@@ -1,6 +1,8 @@
 package com.taskadapter.connector.basecamp.editor;
 
 import com.taskadapter.connector.basecamp.BasecampConfig;
+import com.taskadapter.connector.basecamp.transport.BaseCommunicator;
+import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.WindowProvider;
@@ -19,6 +21,9 @@ import com.vaadin.ui.TextField;
 import java.util.List;
 
 public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig> {
+    
+    private final ObjectAPIFactory factory = new ObjectAPIFactory(new BaseCommunicator());
+    
     @Override
     public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, BasecampConfig config, List<BasecampConfig> relatedConfigs) {
 
@@ -73,7 +78,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        new ShowProjectElement(windowProvider, config, BasecampEditorFactory.this).loadProject();
+                        ShowProjectElement.loadProject(windowProvider, config, BasecampEditorFactory.this, factory);
                     }
                 }
         );

@@ -19,6 +19,8 @@ import com.vaadin.ui.TextField;
 
 import java.util.List;
 
+import static com.taskadapter.web.ui.Grids.*;
+
 /**
  * "Project info" panel with Project Key, Query Id.
  */
@@ -85,14 +87,12 @@ public class ProjectPanel extends Panel implements Validatable {
         grid.setSpacing(true);
 
         projectKeyLabel = new Label("Project key:");
-        grid.addComponent(projectKeyLabel);
-        grid.setComponentAlignment(projectKeyLabel, Alignment.MIDDLE_LEFT);
+        addTo(grid, Alignment.MIDDLE_LEFT, projectKeyLabel);
 
         projectKey = new TextField();
         projectKey.setPropertyDataSource(projectKeyProperty);
         projectKey.setWidth(TEXT_AREA_WIDTH);
-        grid.addComponent(projectKey);
-        grid.setComponentAlignment(projectKey, Alignment.MIDDLE_CENTER);
+        addTo(grid, Alignment.MIDDLE_CENTER, projectKey);
 
         Button infoButton = EditorUtil.createButton("Info", "View the project info",
                 new Button.ClickListener() {
@@ -103,8 +103,7 @@ public class ProjectPanel extends Panel implements Validatable {
                 }
         );
         infoButton.setEnabled(projectInfoCallback != null);
-        grid.addComponent(infoButton);
-        grid.setComponentAlignment(infoButton, Alignment.MIDDLE_CENTER);
+        addTo(grid, Alignment.MIDDLE_CENTER, infoButton);
 
         Button showProjectsButton = EditorUtil.createLookupButton(
                 windowProvider,
@@ -117,19 +116,16 @@ public class ProjectPanel extends Panel implements Validatable {
                 false, exceptionFormatter
         );
         showProjectsButton.setEnabled(projectProvider != null);
-        grid.addComponent(showProjectsButton);
-        grid.setComponentAlignment(showProjectsButton, Alignment.MIDDLE_CENTER);
+        addTo(grid, Alignment.MIDDLE_CENTER, showProjectsButton);
 
         if (queryValueProperty != null) {
             queryValueLabel = new Label("Query ID:");
-            grid.addComponent(queryValueLabel);
-            grid.setComponentAlignment(queryValueLabel, Alignment.MIDDLE_LEFT);
+            addTo(grid, Alignment.MIDDLE_LEFT, queryValueLabel);
 
             queryValue = new TextField();
             queryValue.setDescription("Custom query/filter ID (number). You need to create a query on the server before accessing it from here.\n"
                     + "Read help for more details.");
-            grid.addComponent(queryValue);
-            grid.setComponentAlignment(queryValue, Alignment.MIDDLE_CENTER);
+            addTo(grid, Alignment.MIDDLE_CENTER, queryValue);
 
             queryValue.setWidth(TEXT_AREA_WIDTH);
             queryValue.setPropertyDataSource(queryValueProperty);
@@ -149,9 +145,7 @@ public class ProjectPanel extends Panel implements Validatable {
             // TODO maybe set "enabled" basing on whether or not loadSavedQueriesOperation is NULL?
             // then can delete the whole "features" mechanism
             showQueriesButton.setEnabled(queryProvider != null);
-            grid.addComponent(showQueriesButton);
-            grid.setComponentAlignment(showQueriesButton, Alignment.MIDDLE_CENTER);
-
+            addTo(grid, Alignment.MIDDLE_CENTER, showQueriesButton);
         }
     }
 
