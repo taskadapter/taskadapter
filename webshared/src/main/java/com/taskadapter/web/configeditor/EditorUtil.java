@@ -7,6 +7,7 @@ import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.AbstractProperty;
+import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Alignment;
@@ -53,6 +54,23 @@ public class EditorUtil {
         button.setDescription(description);
         button.addListener(clickListener);
         return button;
+    }
+    
+    public static TextField textInput(Property property, String width) {
+        final TextField result = new TextField();
+        result.setPropertyDataSource(property);
+        result.setWidth(width);
+        return result;
+    }
+    
+    public static TextField textInput(Property property) {
+        final TextField result = new TextField();
+        result.setPropertyDataSource(property);
+        return result;
+    }
+    
+    public static TextField propertyInput(Object o, String field) {
+        return textInput(new MethodProperty<Object>(o, field));
     }
 
     // TODO review and refactor this. this method is too complex

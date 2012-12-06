@@ -10,6 +10,8 @@ import com.vaadin.ui.Window;
 
 import java.util.Collection;
 
+import static com.taskadapter.web.ui.Grids.*;
+
 public class ListSelectionDialog extends Window {
     private String listTitle;
     private Collection<String> items;
@@ -50,8 +52,7 @@ public class ListSelectionDialog extends Window {
                 close();
             }
         });
-        layout.addComponent(closeButton);
-        layout.setComponentAlignment(closeButton, Alignment.MIDDLE_RIGHT);
+        addTo(layout, Alignment.MIDDLE_RIGHT, closeButton);
         addComponent(layout);
     }
 }

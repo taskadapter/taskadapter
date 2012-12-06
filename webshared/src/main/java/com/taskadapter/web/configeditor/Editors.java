@@ -6,8 +6,6 @@ import com.vaadin.ui.CheckBox;
 /**
  * Common place to instantiate editors.
  * 
- * @author maxkar
- * 
  */
 public class Editors {
 	public static CheckBox createFindUsersElement(Property property) {

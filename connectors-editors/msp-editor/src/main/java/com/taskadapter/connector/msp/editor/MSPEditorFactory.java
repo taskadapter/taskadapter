@@ -25,6 +25,8 @@ import com.vaadin.ui.VerticalLayout;
 import java.io.File;
 import java.util.List;
 
+import static com.taskadapter.web.configeditor.EditorUtil.*;
+
 public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.msp.messages";
     private static final String LABEL_DESCRIPTION_TEXT = "Description:";
@@ -59,10 +61,9 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
         HorizontalLayout descriptionLayout = new HorizontalLayout();
         descriptionLayout.setSpacing(true);
         descriptionLayout.addComponent(new Label(LABEL_DESCRIPTION_TEXT));
-        TextField labelText = new TextField();
+        TextField labelText = propertyInput(config, "label");
         labelText.setDescription(LABEL_TOOLTIP);
         labelText.addStyleName("label-textfield");
-        labelText.setPropertyDataSource(new MethodProperty<String>(config, "label"));
         descriptionLayout.addComponent(labelText);
         return descriptionLayout;
     }

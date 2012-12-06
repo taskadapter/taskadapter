@@ -20,6 +20,8 @@ import com.vaadin.ui.TextField;
 
 import java.util.List;
 
+import static com.taskadapter.web.configeditor.EditorUtil.*;
+
 public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig> {
     
     private final ObjectAPIFactory factory = new ObjectAPIFactory(new BaseCommunicator());
@@ -64,15 +66,13 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
 
         Label accountIdLabel = new Label("Account Id:");
         grid.addComponent(accountIdLabel);
-        TextField accountIdField = new TextField();
-        accountIdField.setPropertyDataSource(new MethodProperty<String>(config, "accountId"));
+        TextField accountIdField = propertyInput(config, "accountId");
         grid.addComponent(accountIdField);
         grid.addComponent(new Label(""));
 
         Label projectKeyLabel = new Label("Project key:");
         grid.addComponent(projectKeyLabel);
-        TextField projectKeyField = new TextField();
-        projectKeyField.setPropertyDataSource(new MethodProperty<String>(config, "projectKey"));
+        TextField projectKeyField = propertyInput(config, "projectKey");
         grid.addComponent(projectKeyField);
         Button infoButton = EditorUtil.createButton("Info", "View the project info",
                 new Button.ClickListener() {
@@ -87,8 +87,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
 
         Label todoListKey = new Label("Todo list key:");
         grid.addComponent(todoListKey);
-        TextField todoListField = new TextField();
-        todoListField.setPropertyDataSource(new MethodProperty<String>(config, "todoKey"));
+        TextField todoListField = propertyInput(config, "todoKey");
         grid.addComponent(todoListField);
         grid.addComponent(new Label(""));
         return projectPanel;

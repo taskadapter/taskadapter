@@ -9,8 +9,6 @@ import com.vaadin.data.Property;
 /**
  * "Constant" item with properties. Have constant properties set.
  * 
- * @author maxkar
- * 
  */
 public final class ConstItem implements Item, Item.PropertySetChangeNotifier {
 	

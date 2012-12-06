@@ -7,6 +7,7 @@ import com.vaadin.ui.ProgressIndicator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//TODO: !!! Do we need this?
 public class ProgressElement extends GridLayout {
     private final Logger logger = LoggerFactory.getLogger(ProgressElement.class);
 

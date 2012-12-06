@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.taskadapter.web.configeditor.EditorUtil.*;
+import static com.taskadapter.web.ui.Grids.*;
+
 public class ServerContainer extends GridLayout implements
         Property.ValueChangeListener {
 
@@ -38,9 +41,9 @@ public class ServerContainer extends GridLayout implements
     private final Renderer<UserCompletionItem, String> loginRenderer;
 
     public ServerContainer(List<WebServerInfo> infos, Property labelProperty,
-                           final Property serverURLProperty,
-                           final Property userLoginNameProperty,
-                           final Property passwordProperty) {
+            final Property serverURLProperty,
+            final Property userLoginNameProperty,
+            final Property passwordProperty) {
 
         final ServerInfoModel model = new BasicModel(infos);
         final List<ServerCompletionItem> serverCompletionsL = getServerCompletions(model);
@@ -48,7 +51,8 @@ public class ServerContainer extends GridLayout implements
         final Property serverValue = new AbsoluteReadonlyProperty(
                 serverURLProperty);
 
-        final Property userValue = new AbsoluteReadonlyProperty(userLoginNameProperty);
+        final Property userValue = new AbsoluteReadonlyProperty(
+                userLoginNameProperty);
         final Property userCompletions = new AbsoluteReadonlyProperty(
                 new AbstractProperty() {
                     {
@@ -71,18 +75,24 @@ public class ServerContainer extends GridLayout implements
 
                     @Override
                     public Object getValue() {
-                        final String url = (String) serverURLProperty.getValue();
-                        final List<String> items = new ArrayList<String>(model.getLogins(url));
+                        final String url = (String) serverURLProperty
+                                .getValue();
+                        final List<String> items = new ArrayList<String>(model
+                                .getLogins(url));
                         Collections.sort(items);
-                        final List<String> secondary = new ArrayList<String>(model.getLogins());
+                        final List<String> secondary = new ArrayList<String>(
+                                model.getLogins());
                         Collections.sort(secondary);
                         secondary.removeAll(items);
-                        final List<UserCompletionItem> res = new ArrayList<UserCompletionItem>(items.size() + secondary.size());
+                        final List<UserCompletionItem> res = new ArrayList<UserCompletionItem>(
+                                items.size() + secondary.size());
                         for (String item : items) {
-                            res.add(new UserCompletionItem(item, model.getPassword(url, item), true));
+                            res.add(new UserCompletionItem(item, model
+                                    .getPassword(url, item), true));
                         }
                         for (String item : secondary) {
-                            res.add(new UserCompletionItem(item, model.getPassword(item), false));
+                            res.add(new UserCompletionItem(item, model
+                                    .getPassword(item), false));
                         }
                         return res;
                     }
@@ -196,7 +206,7 @@ public class ServerContainer extends GridLayout implements
     }
 
     private void buildUI(Property labelProperty, Property serverURLProperty,
-                         Property userLoginNameProperty, Property passwordProperty) {
+            Property userLoginNameProperty, Property passwordProperty) {
         setColumns(2);
         setRows(4);
         setMargin(true);
@@ -204,58 +214,43 @@ public class ServerContainer extends GridLayout implements
 
         int currentRow = 0;
         Label descriptionLabel = new Label("Description:");
-        addComponent(descriptionLabel, 0, currentRow);
-        setComponentAlignment(descriptionLabel, Alignment.MIDDLE_LEFT);
-        descriptionField = new TextField();
+        descriptionField = textInput(labelProperty);
         descriptionField.addStyleName("server-panel-textfield");
-        descriptionField.setPropertyDataSource(labelProperty);
+        addTo(this, 0, currentRow, Alignment.MIDDLE_LEFT, descriptionLabel);
         addComponent(descriptionField, 1, currentRow);
 
         currentRow++;
 
         Label urlLabel = new Label("Server URL:");
-        addComponent(urlLabel, 0, currentRow);
-        setComponentAlignment(urlLabel, Alignment.MIDDLE_LEFT);
-
-        addUrlCombobox(currentRow);
+        addTo(this, 0, currentRow, Alignment.MIDDLE_LEFT, urlLabel);
+        addTo(this, 1, currentRow, Alignment.MIDDLE_RIGHT, createUrlCombobox());
 
         currentRow++;
-
-        Label loginLabel = new Label("Login:");
-        addComponent(loginLabel, 0, currentRow);
-        setComponentAlignment(loginLabel, Alignment.MIDDLE_LEFT);
-
-        TextField login = new TextField();
+        TextField login = textInput(userLoginNameProperty);
         login.addStyleName("server-panel-textfield");
-        login.setPropertyDataSource(userLoginNameProperty);
-        addComponent(login, 1, currentRow);
-        setComponentAlignment(login, Alignment.MIDDLE_RIGHT);
+        addTo(this, 0, currentRow, Alignment.MIDDLE_LEFT, new Label("Login:"));
+        addTo(this, 1, currentRow, Alignment.MIDDLE_RIGHT, login);
 
         currentRow++;
-
-        Label pswdLabel = new Label("Password:");
-        addComponent(pswdLabel, 0, currentRow);
-        setComponentAlignment(pswdLabel, Alignment.MIDDLE_LEFT);
-
         PasswordField password = new PasswordField();
         password.addStyleName("server-panel-textfield");
         password.setPropertyDataSource(passwordProperty);
-        addComponent(password, 1, currentRow);
-        setComponentAlignment(password, Alignment.MIDDLE_RIGHT);
+        addTo(this, 0, currentRow, Alignment.MIDDLE_LEFT, new Label("Password:"));
+        addTo(this, 1, currentRow, Alignment.MIDDLE_RIGHT, password);
     }
 
-    private void addUrlCombobox(int currentRow) {
+    private ComboBox createUrlCombobox() {
         urlCombobox = new ComboBox();
         urlCombobox.setDescription(HOST_URL_TOOLTIP);
         urlCombobox.setNullSelectionAllowed(false);
         urlCombobox.setTextInputAllowed(true);
         urlCombobox.setNewItemsAllowed(true);
-        urlCombobox.setFilteringMode(AbstractSelect.Filtering.FILTERINGMODE_CONTAINS);
+        urlCombobox
+                .setFilteringMode(AbstractSelect.Filtering.FILTERINGMODE_CONTAINS);
         urlCombobox.setWidth(100, UNITS_PERCENTAGE);
         urlCombobox.addListener(this);
         urlCombobox.setImmediate(true);
-        addComponent(urlCombobox, 1, currentRow);
-        setComponentAlignment(urlCombobox, Alignment.MIDDLE_RIGHT);
+        return urlCombobox;
     }
 
     /*

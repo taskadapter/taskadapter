@@ -20,6 +20,7 @@ import com.vaadin.ui.TextField;
 import java.util.List;
 
 import static com.taskadapter.web.ui.Grids.*;
+import static com.taskadapter.web.configeditor.EditorUtil.*;
 
 /**
  * "Project info" panel with Project Key, Query Id.
@@ -89,9 +90,7 @@ public class ProjectPanel extends Panel implements Validatable {
         projectKeyLabel = new Label("Project key:");
         addTo(grid, Alignment.MIDDLE_LEFT, projectKeyLabel);
 
-        projectKey = new TextField();
-        projectKey.setPropertyDataSource(projectKeyProperty);
-        projectKey.setWidth(TEXT_AREA_WIDTH);
+        projectKey = textInput(projectKeyProperty, TEXT_AREA_WIDTH);
         addTo(grid, Alignment.MIDDLE_CENTER, projectKey);
 
         Button infoButton = EditorUtil.createButton("Info", "View the project info",
@@ -122,13 +121,10 @@ public class ProjectPanel extends Panel implements Validatable {
             queryValueLabel = new Label("Query ID:");
             addTo(grid, Alignment.MIDDLE_LEFT, queryValueLabel);
 
-            queryValue = new TextField();
+            queryValue = textInput(queryValueProperty, TEXT_AREA_WIDTH);
             queryValue.setDescription("Custom query/filter ID (number). You need to create a query on the server before accessing it from here.\n"
                     + "Read help for more details.");
             addTo(grid, Alignment.MIDDLE_CENTER, queryValue);
-
-            queryValue.setWidth(TEXT_AREA_WIDTH);
-            queryValue.setPropertyDataSource(queryValueProperty);
 
             Button showQueriesButton = EditorUtil.createLookupButton(
                     windowProvider,

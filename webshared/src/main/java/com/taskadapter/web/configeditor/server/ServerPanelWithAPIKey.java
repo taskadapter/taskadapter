@@ -15,6 +15,9 @@ import com.vaadin.ui.VerticalLayout;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static com.taskadapter.web.ui.Grids.*;
+import static com.taskadapter.web.configeditor.EditorUtil.*;
+
 public class ServerPanelWithAPIKey extends VerticalLayout implements Validatable {
     private static final String USE_API = "Use API Access Key";
     private static final String USE_LOGIN = "Use Login and Password";
@@ -45,30 +48,23 @@ public class ServerPanelWithAPIKey extends VerticalLayout implements Validatable
 
         int currentRow = 0;
 
-        Label descriptionLabel = new Label("Description:");
-        layout.addComponent(descriptionLabel, 0, currentRow);
-        layout.setComponentAlignment(descriptionLabel, Alignment.MIDDLE_LEFT);
-        TextField descriptionField = new TextField();
+        addTo(layout, 0, currentRow, Alignment.MIDDLE_LEFT, new Label("Description:"));
+        TextField descriptionField = textInput(labelProperty);
         descriptionField.addStyleName("server-panel-textfield");
-        descriptionField.setPropertyDataSource(labelProperty);
         layout.addComponent(descriptionField, 1, currentRow);
 
         currentRow++;
-        Label urlLabel = new Label("Server URL:");
-        layout.addComponent(urlLabel, 0, currentRow);
-        layout.setComponentAlignment(urlLabel, Alignment.MIDDLE_LEFT);
-        serverURL = new TextField();
+        addTo(layout, 0, currentRow, Alignment.MIDDLE_LEFT, new Label("Server URL:"));
+        serverURL = textInput(serverURLProperty);
         serverURL.addStyleName("server-panel-textfield");
         serverURL.setInputPrompt("http://myserver:3000/some_location");
-        serverURL.setPropertyDataSource(serverURLProperty);
 
-        layout.addComponent(serverURL, 1, currentRow);
+        addTo(layout, 1, currentRow, Alignment.MIDDLE_LEFT, serverURL);
 
         String emptyLabelHeight = "10px";
 
         currentRow++;
 
-        layout.setComponentAlignment(serverURL, Alignment.MIDDLE_LEFT);
         layout.addComponent(createEmptyLabel(emptyLabelHeight), 0, currentRow++);
 
         Collection<Boolean> authOptions = new ArrayList<Boolean>();
@@ -83,43 +79,34 @@ public class ServerPanelWithAPIKey extends VerticalLayout implements Validatable
         authOptionsGroup.setSizeFull();
         authOptionsGroup.setNullSelectionAllowed(false);
         authOptionsGroup.setImmediate(true);
+        
         layout.addComponent(authOptionsGroup, 0, currentRow, 1, currentRow);
         layout.setComponentAlignment(authOptionsGroup, Alignment.MIDDLE_LEFT);
 
         currentRow++;
         layout.addComponent(createEmptyLabel(emptyLabelHeight), 0, currentRow++);
 
-        Label apiKeyLabel = new Label("API access key:");
-        layout.addComponent(apiKeyLabel, 0, currentRow);
-        layout.setComponentAlignment(apiKeyLabel, Alignment.MIDDLE_LEFT);
+        addTo(layout, 0, currentRow, Alignment.MIDDLE_LEFT, new Label("API access key:"));
 
         apiKeyField = new PasswordField();
-        apiKeyField.addStyleName("server-panel-textfield");
-        layout.addComponent(apiKeyField, 1, currentRow);
-        layout.setComponentAlignment(apiKeyField, Alignment.MIDDLE_LEFT);
-        currentRow++;
         apiKeyField.setPropertyDataSource(apiKeyProperty);
-
-        Label loginLabel = new Label("Login:");
-        layout.addComponent(loginLabel, 0, currentRow);
-        layout.setComponentAlignment(loginLabel, Alignment.MIDDLE_LEFT);
-
-        login = new TextField();
-        login.addStyleName("server-panel-textfield");
-        login.setPropertyDataSource(loginNameProperty);
-        layout.addComponent(login, 1, currentRow);
-        layout.setComponentAlignment(login, Alignment.MIDDLE_LEFT);
+        apiKeyField.addStyleName("server-panel-textfield");
+        addTo(layout, 1, currentRow, Alignment.MIDDLE_LEFT, apiKeyField);
         currentRow++;
 
-        Label passwordLabel = new Label("Password:");
-        layout.addComponent(passwordLabel, 0, currentRow);
-        layout.setComponentAlignment(loginLabel, Alignment.MIDDLE_LEFT);
+        addTo(layout, 0, currentRow, Alignment.MIDDLE_LEFT, new Label("Login:"));
+
+        login = textInput(loginNameProperty);
+        login.addStyleName("server-panel-textfield");
+        addTo(layout, 1, currentRow, Alignment.MIDDLE_LEFT, login);
+        currentRow++;
+
+        addTo(layout, 0, currentRow, Alignment.MIDDLE_LEFT, new Label("Password:"));
 
         password = new PasswordField();
         password.addStyleName("server-panel-textfield");
         password.setPropertyDataSource(passwordProperty);
-        layout.addComponent(password, 1, currentRow);
-        layout.setComponentAlignment(password, Alignment.MIDDLE_LEFT);
+        addTo(layout, 1, currentRow, Alignment.MIDDLE_LEFT, password);
     }
 
     private Label createEmptyLabel(String height) {
