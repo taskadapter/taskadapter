@@ -20,7 +20,10 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
 
-public class DevTest {
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
+
+public class BasecampIntegrationTest {
     private static final String USER_ID = "2081543";
     private static final String USER_LOGIN = "basecamp.tester@mailinator.com";// "Tester's Basecamp";
     private static final String USER_PASSWORD = "lkajsaMLNnqw37sdafa;kjlsdf";
@@ -48,49 +51,47 @@ public class DevTest {
     @Test
     public void testSomethingWork() throws ConnectorException {
         final ObjectAPI api = factory.createObjectAPI(BASE_CONFIG);
-        Assert.assertNotNull(api.getObject("people/me.json"));
+        assertNotNull(api.getObject("people/me.json"));
     }
 
     @Test
-    public void testListProjects() throws ConnectorException {
-        final List<GProject> projects = BasecampUtils.loadProjects(factory,
-                BASE_CONFIG);
-        Assert.assertTrue(projects.size() > 0);
+    public void someProjectsAreLoaded() throws ConnectorException {
+        final List<GProject> projects = BasecampUtils.loadProjects(factory, BASE_CONFIG);
+        assertTrue(projects.size() > 0);
     }
 
     @Test
-    public void testTodoLists() throws ConnectorException {
-        final List<TodoList> lists = BasecampUtils.loadTodoLists(factory,
-                BASE_CONFIG);
-        Assert.assertTrue(lists.size() > 0);
+    public void someTodoListsAreLoaded() throws ConnectorException {
+        final List<TodoList> lists = BasecampUtils.loadTodoLists(factory, BASE_CONFIG);
+        assertTrue(lists.size() > 0);
     }
 
     @Test
-    public void testGetTodo() throws ConnectorException {
+    public void predefinedTaskLoadedByKey() throws ConnectorException {
         final GTask task = new BasecampConnector(BASE_CONFIG, factory)
                 .loadTaskByKey("23172907", new Mappings());
-        Assert.assertNotNull(task);
+        assertNotNull(task);
         Assert.assertEquals("Create pron", task.getSummary());
         Assert.assertEquals("Create pron", task.getDescription());
     }
 
     @Test
-    public void testGetTodos() throws ConnectorException {
+    public void someTodosAreLoaded() throws ConnectorException {
         final List<GTask> tasks = new BasecampConnector(BASE_CONFIG, factory)
                 .loadData(new Mappings(),
                         ProgressMonitorUtils.getDummyMonitor());
-        Assert.assertNotNull(tasks);
-        Assert.assertTrue(tasks.size() >= 0);
+        assertNotNull(tasks);
+        assertTrue(tasks.size() >= 0);
     }
 
     @Test
-    public void testGetProject() throws ConnectorException {
-        Assert.assertNotNull(BasecampUtils.loadProject(factory, BASE_CONFIG));
+    public void projectIsLoaded() throws ConnectorException {
+        assertNotNull(BasecampUtils.loadProject(factory, BASE_CONFIG));
     }
 
     @Test
     public void testGetTodoList() throws ConnectorException {
-        Assert.assertNotNull(BasecampUtils.loadTodoList(factory, BASE_CONFIG));
+        assertNotNull(BasecampUtils.loadTodoList(factory, BASE_CONFIG));
     }
 
     @Test
