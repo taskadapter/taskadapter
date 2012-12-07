@@ -2,6 +2,7 @@ package com.taskadapter.connector.basecamp.editor;
 
 import com.taskadapter.connector.basecamp.BasecampConfig;
 import com.taskadapter.connector.basecamp.BasecampUtils;
+import com.taskadapter.connector.basecamp.exceptions.BadFieldException;
 import com.taskadapter.connector.basecamp.transport.BaseCommunicator;
 import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
@@ -12,6 +13,7 @@ import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.server.ServerPanelWithAPIKey;
+import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.Alignment;
@@ -28,6 +30,8 @@ import static com.taskadapter.web.configeditor.EditorUtil.propertyInput;
 import static com.taskadapter.web.configeditor.EditorUtil.textInput;
 
 public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig> {
+    private static final String BUNDLE_NAME = "com.taskadapter.connector.basecamp.editor.messages";
+    private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
 
     private final ObjectAPIFactory factory = new ObjectAPIFactory(new BaseCommunicator());
 
@@ -143,6 +147,9 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
 
     @Override
     public String formatError(Throwable e) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        if (e instanceof BadFieldException && ((BadFieldException) e).getFieldName().equals("project-key")) {
+            return MESSAGES.format("error.projectKey");
+        }
+        return e.toString();
     }
 }
