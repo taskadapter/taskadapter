@@ -1,11 +1,15 @@
 package com.taskadapter.connector.basecamp.editor;
 
 import com.taskadapter.connector.basecamp.BasecampConfig;
+import com.taskadapter.connector.basecamp.BasecampUtils;
 import com.taskadapter.connector.basecamp.transport.BaseCommunicator;
 import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.WindowProvider;
+import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.server.ServerPanelWithAPIKey;
 import com.taskadapter.web.service.Services;
@@ -20,12 +24,13 @@ import com.vaadin.ui.TextField;
 
 import java.util.List;
 
-import static com.taskadapter.web.configeditor.EditorUtil.*;
+import static com.taskadapter.web.configeditor.EditorUtil.propertyInput;
+import static com.taskadapter.web.configeditor.EditorUtil.textInput;
 
 public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig> {
-    
+
     private final ObjectAPIFactory factory = new ObjectAPIFactory(new BaseCommunicator());
-    
+
     @Override
     public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, BasecampConfig config, List<BasecampConfig> relatedConfigs) {
 
@@ -58,7 +63,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         Panel projectPanel = new Panel("Project");
 
         GridLayout grid = new GridLayout();
-        grid.setColumns(3);
+        grid.setColumns(4);
         grid.setMargin(true);
         grid.setSpacing(true);
 
@@ -69,10 +74,12 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         TextField accountIdField = propertyInput(config, "accountId");
         grid.addComponent(accountIdField);
         grid.addComponent(new Label(""));
+        grid.addComponent(new Label(""));
 
         Label projectKeyLabel = new Label("Project key:");
         grid.addComponent(projectKeyLabel);
-        TextField projectKeyField = propertyInput(config, "projectKey");
+        MethodProperty<Object> projectKeyProperty = new MethodProperty<Object>(config, "projectKey");
+        TextField projectKeyField = textInput(projectKeyProperty);
         grid.addComponent(projectKeyField);
         Button infoButton = EditorUtil.createButton("Info", "View the project info",
                 new Button.ClickListener() {
@@ -85,14 +92,34 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         grid.addComponent(infoButton);
         grid.setComponentAlignment(infoButton, Alignment.MIDDLE_CENTER);
 
+        DataProvider<List<? extends NamedKeyedObject>> projectProvider = new DataProvider<List<? extends NamedKeyedObject>>() {
+            @Override
+            public List<? extends NamedKeyedObject> loadData() throws ConnectorException {
+                return BasecampUtils.loadProjects(factory, config);
+            }
+        };
+
+        Button showProjectsButton = EditorUtil.createLookupButton(
+                windowProvider,
+                "...",
+                "Show list of available projects on the server.",
+                "Select project",
+                "List of projects on the server",
+                projectProvider,
+                projectKeyProperty,
+                false, this
+        );
+        grid.addComponent(showProjectsButton);
+        grid.setComponentAlignment(showProjectsButton, Alignment.MIDDLE_CENTER);
+
         Label todoListKey = new Label("Todo list key:");
         grid.addComponent(todoListKey);
         TextField todoListField = propertyInput(config, "todoKey");
         grid.addComponent(todoListField);
         grid.addComponent(new Label(""));
+        grid.addComponent(new Label(""));
         return projectPanel;
     }
-
 
     @Override
     public void validateForSave(BasecampConfig config) throws BadConfigException {
