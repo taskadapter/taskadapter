@@ -28,6 +28,7 @@ import java.util.List;
 
 import static com.taskadapter.web.configeditor.EditorUtil.propertyInput;
 import static com.taskadapter.web.configeditor.EditorUtil.textInput;
+import static com.taskadapter.web.ui.Grids.*;
 
 public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.basecamp.editor.messages";
@@ -80,8 +81,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         grid.addComponent(new Label(""));
         grid.addComponent(new Label(""));
 
-        Label projectKeyLabel = new Label("Project key:");
-        grid.addComponent(projectKeyLabel);
+        grid.addComponent(new Label("Project key:"));
         MethodProperty<Object> projectKeyProperty = new MethodProperty<Object>(config, "projectKey");
         TextField projectKeyField = textInput(projectKeyProperty);
         grid.addComponent(projectKeyField);
@@ -93,8 +93,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
                     }
                 }
         );
-        grid.addComponent(infoButton);
-        grid.setComponentAlignment(infoButton, Alignment.MIDDLE_CENTER);
+        addTo(grid, Alignment.MIDDLE_CENTER, infoButton);
 
         DataProvider<List<? extends NamedKeyedObject>> projectProvider = new DataProvider<List<? extends NamedKeyedObject>>() {
             @Override
@@ -113,11 +112,9 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
                 projectKeyProperty,
                 false, this
         );
-        grid.addComponent(showProjectsButton);
-        grid.setComponentAlignment(showProjectsButton, Alignment.MIDDLE_CENTER);
+        addTo(grid, Alignment.MIDDLE_CENTER, showProjectsButton);
 
-        Label todoListKey = new Label("Todo list key:");
-        grid.addComponent(todoListKey);
+        grid.addComponent(new Label("Todo list key:"));
         TextField todoListField = propertyInput(config, "todoKey");
         grid.addComponent(todoListField);
         grid.addComponent(new Label(""));
