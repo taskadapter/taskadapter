@@ -25,6 +25,7 @@ import com.taskadapter.model.GUser;
 public class BasecampUtils {
     public static List<GProject> loadProjects(ObjectAPIFactory factory,
             BasecampConfig config) throws ConnectorException {
+        validateAccount(config);
         final ObjectAPI objApi = factory.createObjectAPI(config);
         final JSONArray objects = objApi.getObjects("projects.json");
         final List<GProject> result = new ArrayList<GProject>(objects.length());
@@ -42,6 +43,7 @@ public class BasecampUtils {
     public static GProject loadProject(ObjectAPIFactory factory,
             BasecampConfig config) throws ConnectorException {
         validateProject(config);
+        validateAccount(config);
         final ObjectAPI objApi = factory.createObjectAPI(config);
         final JSONObject object = objApi.getObject("projects/"
                 + config.getProjectKey() + ".json");
@@ -51,6 +53,7 @@ public class BasecampUtils {
     public static List<TodoList> loadTodoLists(ObjectAPIFactory factory,
             BasecampConfig config) throws ConnectorException {
         validateProject(config);
+        validateAccount(config);
         final ObjectAPI objApi = factory.createObjectAPI(config);
         final JSONArray objects = objApi.getObjects("projects/"
                 + config.getProjectKey() + "/todolists.json");
@@ -78,8 +81,20 @@ public class BasecampUtils {
 
     public static void validateConfig(BasecampConfig config)
             throws ConnectorException {
+        validateAccount(config);
         validateProject(config);
         validateTodolist(config);
+    }
+    
+    public static void validateAccount(BasecampConfig config)
+            throws ConnectorException {
+        final String accountId = config.getAccountId();
+        if (accountId == null) {
+            throw new FieldNotSetException("account-id");
+        }
+        if (!isNum(accountId)) {
+            throw new BadFieldException("account-id");
+        }
     }
 
     public static void validateProject(BasecampConfig config)
