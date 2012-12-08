@@ -154,7 +154,8 @@ public class BasecampUtils {
         final TodoList res = new TodoList();
         res.setKey(Long.toString(JsonUtils.getLong("id", jsonObject)));
         res.setDescription(JsonUtils.getOptString("description", jsonObject));
-        res.setUrl(JsonUtils.getOptString("homepage", jsonObject));
+        res.setCompletedCount(JsonUtils.getInt("completed_count", jsonObject));
+        res.setRemainingCount(JsonUtils.getInt("remaining_count", jsonObject));
         res.setName(JsonUtils.getOptString("name", jsonObject));
         return res;
     }
@@ -164,7 +165,7 @@ public class BasecampUtils {
         final GProject res = new GProject();
         res.setKey(Long.toString(JsonUtils.getLong("id", jsonObject)));
         res.setDescription(JsonUtils.getOptString("description", jsonObject));
-        res.setHomepage(JsonUtils.getOptString("homepage", jsonObject));
+        res.setHomepage(JsonUtils.getOptString("url", jsonObject));
         res.setName(JsonUtils.getOptString("name", jsonObject));
         return res;
     }
