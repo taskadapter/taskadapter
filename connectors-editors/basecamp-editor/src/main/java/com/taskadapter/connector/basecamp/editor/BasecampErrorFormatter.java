@@ -1,6 +1,7 @@
 package com.taskadapter.connector.basecamp.editor;
 
 import com.taskadapter.connector.basecamp.exceptions.BadFieldException;
+import com.taskadapter.connector.basecamp.exceptions.FieldNotSetException;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.data.Messages;
 
@@ -16,6 +17,10 @@ class BasecampErrorFormatter implements ExceptionFormatter {
         if (e instanceof BadFieldException && ((BadFieldException) e).getFieldName().equals("todo-key")) {
             return MESSAGES.format("error.todoKey");
         }
+        if (e instanceof FieldNotSetException && ((FieldNotSetException) e).getFieldId().equals("user-id")) {
+            return MESSAGES.format("error.userId");
+        }
+
         return e.toString();
     }
 }
