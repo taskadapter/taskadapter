@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
+import com.taskadapter.connector.definition.exceptions.NotAuthorizedException;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -25,7 +26,7 @@ final class BasecampContentReader {
             throws ConnectorException {
         final int responseCode = httpResponse.getStatusLine().getStatusCode();
         if (responseCode == HttpStatus.SC_UNAUTHORIZED) {
-            throw new BadConfigException("Authorization error. ");
+            throw new NotAuthorizedException();
         }
         if (responseCode == 400 || responseCode == 415) {
             throw new FatalMisunderstaningException(

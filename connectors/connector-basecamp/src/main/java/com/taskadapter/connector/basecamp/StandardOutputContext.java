@@ -18,19 +18,18 @@ final class StandardOutputContext implements OutputContext {
             return null;
         }
         switch (field) {
-        case DESCRIPTION:
-            return "content";
-        case SUMMARY:
-            return "content";
-        case DONE_RATIO:
-            return "completed";
-        case DUE_DATE:
-            return "due_at";
-        case ASSIGNEE:
-            return "assignee";
-        default:
-            throw new ConnectorException("Iternal error, uncovered field "
-                    + field);
+            case DESCRIPTION:
+                return "content";
+            case SUMMARY:
+                return "content";
+            case DONE_RATIO:
+                return "completed";
+            case DUE_DATE:
+                return "due_at";
+            case ASSIGNEE:
+                return "assignee";
+            default:
+                throw new ConnectorException("Unknown field: " + field);
         }
     }
 

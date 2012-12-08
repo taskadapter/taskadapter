@@ -1,6 +1,7 @@
 package com.taskadapter.connector.basecamp;
 
 import com.taskadapter.connector.Priorities;
+import com.taskadapter.connector.basecamp.transport.ObjectAPI;
 import com.taskadapter.connector.definition.ConnectorConfig;
 
 public class BasecampConfig extends ConnectorConfig {
@@ -9,13 +10,15 @@ public class BasecampConfig extends ConnectorConfig {
 
     private BasecampAuth auth = new BasecampAuth();
 
-    private String serverUrl = "http://basecamp.com";
+    private String serverUrl = ObjectAPI.BASECAMP_URL;
 
     private String accountId = "";
 
     private String projectKey = "";
 
     private String todoKey = "";
+
+    private Boolean loadCompletedTodos = false;
 
     private boolean lookupUsersByName;
 
@@ -74,5 +77,13 @@ public class BasecampConfig extends ConnectorConfig {
 
     public void setServerUrl(String serverUrl) {
         this.serverUrl = serverUrl;
+    }
+
+    public Boolean getLoadCompletedTodos() {
+        return loadCompletedTodos;
+    }
+
+    public void setLoadCompletedTodos(Boolean loadCompletedTodos) {
+        this.loadCompletedTodos = loadCompletedTodos;
     }
 }

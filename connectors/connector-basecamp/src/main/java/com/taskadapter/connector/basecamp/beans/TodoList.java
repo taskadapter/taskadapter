@@ -4,7 +4,8 @@ public final class TodoList {
     private String key;
     private String name;
     private String description;
-    private String url;
+    private int completedCount;
+    private int remainingCount;
 
     public String getKey() {
         return key;
@@ -30,14 +31,6 @@ public final class TodoList {
         this.description = description;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -46,7 +39,6 @@ public final class TodoList {
                 + ((description == null) ? 0 : description.hashCode());
         result = prime * result + ((key == null) ? 0 : key.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((url == null) ? 0 : url.hashCode());
         return result;
     }
 
@@ -74,18 +66,28 @@ public final class TodoList {
                 return false;
         } else if (!name.equals(other.name))
             return false;
-        if (url == null) {
-            if (other.url != null)
-                return false;
-        } else if (!url.equals(other.url))
-            return false;
         return true;
     }
 
     @Override
     public String toString() {
         return "TodoList [key=" + key + ", name=" + name + ", description="
-                + description + ", url=" + url + "]";
+                + description + "]";
     }
 
+    public int getCompletedCount() {
+        return completedCount;
+    }
+
+    public void setCompletedCount(int completedCount) {
+        this.completedCount = completedCount;
+    }
+
+    public int getRemainingCount() {
+        return remainingCount;
+    }
+
+    public void setRemainingCount(int remainingCount) {
+        this.remainingCount = remainingCount;
+    }
 }

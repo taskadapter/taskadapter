@@ -52,6 +52,7 @@ public class BasecampFactory implements PluginFactory<BasecampConfig> {
         setp(res, "auth", toJson(config.getAuth()));
         setp(res, "projectKey", config.getProjectKey());
         setp(res, "todoKey", config.getTodoKey());
+        setp(res, "loadCompletedTodos", Boolean.toString(config.getLoadCompletedTodos()));
         return res;
     }
 
@@ -74,6 +75,7 @@ public class BasecampFactory implements PluginFactory<BasecampConfig> {
         res.setAuth(parseAuth(getO("auth", obj)));
         res.setProjectKey(getS("projectKey", obj));
         res.setTodoKey(getS("todoKey", obj));
+        res.setLoadCompletedTodos(Boolean.parseBoolean(getS("loadCompletedTodos", obj)));
         return res;
     }
 

@@ -1,15 +1,6 @@
 package com.taskadapter.connector.basecamp;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONWriter;
-
+import com.taskadapter.connector.basecamp.beans.BasecampProject;
 import com.taskadapter.connector.basecamp.beans.TodoList;
 import com.taskadapter.connector.basecamp.exceptions.BadFieldException;
 import com.taskadapter.connector.basecamp.exceptions.FieldNotSetException;
@@ -17,21 +8,28 @@ import com.taskadapter.connector.basecamp.transport.ObjectAPI;
 import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.model.GProject;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONWriter;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BasecampUtils {
-    public static List<GProject> loadProjects(ObjectAPIFactory factory,
-            BasecampConfig config) throws ConnectorException {
-        validateAccount(config);
+    public static List<BasecampProject> loadProjects(ObjectAPIFactory factory,
+                                                     BasecampConfig config) throws ConnectorException {
         final ObjectAPI objApi = factory.createObjectAPI(config);
         final JSONArray objects = objApi.getObjects("projects.json");
-        final List<GProject> result = new ArrayList<GProject>(objects.length());
+        final List<BasecampProject> result = new ArrayList<BasecampProject>(objects.length());
         try {
             for (int i = 0; i < objects.length(); i++) {
-                result.add(parseProject(objects.getJSONObject(i)));
+                result.add(parseProjectFromList(objects.getJSONObject(i)));
             }
         } catch (JSONException e) {
             throw new CommunicationException("Bad content "
@@ -40,18 +38,51 @@ public class BasecampUtils {
         return result;
     }
 
-    public static GProject loadProject(ObjectAPIFactory factory,
-            BasecampConfig config) throws ConnectorException {
+    public static BasecampProject loadProject(ObjectAPIFactory factory,
+                                              BasecampConfig config) throws ConnectorException {
         validateProject(config);
         validateAccount(config);
         final ObjectAPI objApi = factory.createObjectAPI(config);
-        final JSONObject object = objApi.getObject("projects/"
-                + config.getProjectKey() + ".json");
-        return parseProject(object);
+        String objectURL = "projects/" + config.getProjectKey() + ".json";
+        final JSONObject object = objApi.getObject(objectURL);
+        return parseFullProject(object);
+    }
+
+    // POST /projects/#{project_id}/todo_lists.xml
+    public static TodoList createTodoList(ObjectAPIFactory factory, BasecampConfig config,
+                                          String todoListName, String todoListDescription) throws ConnectorException {
+        String todoListJSonRepresentation = buildTodoListJSonObject(todoListName, todoListDescription);
+        JSONObject result = factory.createObjectAPI(config).post("/projects/" + config.getProjectKey() + "/todolists.json", todoListJSonRepresentation);
+        return parseTodoList(result);
+    }
+
+    public static void deleteTodoList(ObjectAPIFactory factory, BasecampConfig config) throws ConnectorException {
+        factory.createObjectAPI(config).delete(
+                "/projects/" + config.getProjectKey() + "/todolists/" + config.getTodoKey() + ".json");
+    }
+
+    private static String buildTodoListJSonObject(String todoListName, String todoListDescription) {
+        final StringWriter sw = new StringWriter();
+        try {
+            final JSONWriter writer = new JSONWriter(sw);
+            writer.object();
+            JsonUtils.writeOpt(writer, "name", todoListName);
+            JsonUtils.writeOpt(writer, "description", todoListDescription);
+            writer.endObject();
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                sw.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return sw.toString();
     }
 
     public static List<TodoList> loadTodoLists(ObjectAPIFactory factory,
-            BasecampConfig config) throws ConnectorException {
+                                               BasecampConfig config) throws ConnectorException {
         validateProject(config);
         validateAccount(config);
         final ObjectAPI objApi = factory.createObjectAPI(config);
@@ -70,7 +101,7 @@ public class BasecampUtils {
     }
 
     public static TodoList loadTodoList(ObjectAPIFactory factory,
-            BasecampConfig config) throws ConnectorException {
+                                        BasecampConfig config) throws ConnectorException {
         validateConfig(config);
         final ObjectAPI objApi = factory.createObjectAPI(config);
         final JSONObject object = objApi.getObject("projects/"
@@ -137,19 +168,34 @@ public class BasecampUtils {
         final TodoList res = new TodoList();
         res.setKey(Long.toString(JsonUtils.getLong("id", jsonObject)));
         res.setDescription(JsonUtils.getOptString("description", jsonObject));
-        res.setUrl(JsonUtils.getOptString("homepage", jsonObject));
+        res.setCompletedCount(JsonUtils.getInt("completed_count", jsonObject));
+        res.setRemainingCount(JsonUtils.getInt("remaining_count", jsonObject));
         res.setName(JsonUtils.getOptString("name", jsonObject));
         return res;
     }
 
-    private static GProject parseProject(JSONObject jsonObject)
-            throws CommunicationException {
-        final GProject res = new GProject();
-        res.setKey(Long.toString(JsonUtils.getLong("id", jsonObject)));
-        res.setDescription(JsonUtils.getOptString("description", jsonObject));
-        res.setHomepage(JsonUtils.getOptString("homepage", jsonObject));
-        res.setName(JsonUtils.getOptString("name", jsonObject));
-        return res;
+    private static BasecampProject parseProjectFromList(JSONObject jsonObject) throws CommunicationException {
+        final BasecampProject project = new BasecampProject();
+        project.setKey(Long.toString(JsonUtils.getLong("id", jsonObject)));
+        project.setDescription(JsonUtils.getOptString("description", jsonObject));
+        project.setName(JsonUtils.getOptString("name", jsonObject));
+        return project;
+    }
+
+    private static BasecampProject parseFullProject(JSONObject jsonObject) throws CommunicationException {
+        final BasecampProject project = new BasecampProject();
+        project.setKey(Long.toString(JsonUtils.getLong("id", jsonObject)));
+        project.setDescription(JsonUtils.getOptString("description", jsonObject));
+        project.setName(JsonUtils.getOptString("name", jsonObject));
+        JSONObject todolists;
+        try {
+            todolists = jsonObject.getJSONObject("todolists");
+        } catch (JSONException e) {
+            throw new CommunicationException("Can't parse todo lists object in the project: " + e.toString());
+        }
+        project.setCompletedTodolists(JsonUtils.getInt("completed_count", todolists));
+        project.setRemainingTodolists(JsonUtils.getInt("remaining_count", todolists));
+        return project;
     }
 
     public static GTask parseTask(JSONObject obj) throws ConnectorException {
@@ -179,7 +225,7 @@ public class BasecampUtils {
     }
 
     public static String toRequest(GTask task, UserResolver users,
-            OutputContext ctx) throws IOException, JSONException,
+                                   OutputContext ctx) throws IOException, JSONException,
             ConnectorException {
         final StringWriter sw = new StringWriter();
         try {
@@ -203,7 +249,7 @@ public class BasecampUtils {
     }
 
     private static void writeAssignee(JSONWriter writer, OutputContext ctx,
-            UserResolver resolver, GUser assignee) throws JSONException,
+                                      UserResolver resolver, GUser assignee) throws JSONException,
             ConnectorException {
         final String field = ctx.getJsonName(FIELD.ASSIGNEE);
         if (field == null) {

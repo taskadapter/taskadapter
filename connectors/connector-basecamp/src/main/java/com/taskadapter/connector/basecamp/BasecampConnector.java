@@ -50,26 +50,21 @@ final class BasecampConnector implements Connector<BasecampConfig> {
         if (todosobject == null) {
             return new ArrayList<GTask>();
         }
-        final JSONArray completed = JsonUtils.getOptArray("completed",
-                todosobject);
-        final JSONArray remaining = JsonUtils.getOptArray("remaining",
-                todosobject);
-        final List<GTask> res = new ArrayList<GTask>(
-                JsonUtils.genLen(completed) + JsonUtils.genLen(remaining));
+        final JSONArray completed = JsonUtils.getOptArray("completed", todosobject);
+        final JSONArray remaining = JsonUtils.getOptArray("remaining", todosobject);
+        final List<GTask> res = new ArrayList<GTask>(JsonUtils.genLen(completed) + JsonUtils.genLen(remaining));
 
         try {
             if (remaining != null) {
                 for (int i = 0; i < remaining.length(); i++) {
-                    final GTask task = BasecampUtils.parseTask(remaining
-                            .getJSONObject(i));
+                    final GTask task = BasecampUtils.parseTask(remaining.getJSONObject(i));
                     task.setDoneRatio(Integer.valueOf(0));
                     res.add(task);
                 }
             }
-            if (completed != null) {
+            if (completed != null && config.getLoadCompletedTodos()) {
                 for (int i = 0; i < completed.length(); i++) {
-                    final GTask task = BasecampUtils.parseTask(completed
-                            .getJSONObject(i));
+                    final GTask task = BasecampUtils.parseTask(completed.getJSONObject(i));
                     task.setDoneRatio(Integer.valueOf(100));
                     res.add(task);
                 }
@@ -92,7 +87,7 @@ final class BasecampConnector implements Connector<BasecampConfig> {
 
     @Override
     public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor,
-            Mappings mappings) throws ConnectorException {
+                                   Mappings mappings) throws ConnectorException {
         BasecampUtils.validateConfig(config);
         final int total = countTasks(tasks);
         final UserResolver userResolver = findUserResolver(mappings);
@@ -126,8 +121,8 @@ final class BasecampConnector implements Connector<BasecampConfig> {
     }
 
     private int writeTasks(List<GTask> tasks, ProgressMonitor monitor,
-            UserResolver userResolver, OutputContext ctx,
-            TaskSaveResultBuilder resultBuilder, ObjectAPI api, int agg)
+                           UserResolver userResolver, OutputContext ctx,
+                           TaskSaveResultBuilder resultBuilder, ObjectAPI api, int agg)
             throws ConnectorException {
         for (GTask task : tasks) {
             try {
@@ -165,15 +160,15 @@ final class BasecampConnector implements Connector<BasecampConfig> {
     }
 
     private void writeOneTask(GTask task, UserResolver resolver,
-            OutputContext ctx, TaskSaveResultBuilder resultBuilder,
-            ObjectAPI api) throws ConnectorException, IOException,
+                              OutputContext ctx, TaskSaveResultBuilder resultBuilder,
+                              ObjectAPI api) throws ConnectorException, IOException,
             JSONException {
-        final String repr = BasecampUtils.toRequest(task, resolver, ctx);
+        final String todoItemJSonRepresentation = BasecampUtils.toRequest(task, resolver, ctx);
         final String remoteId = task.getRemoteId();
         if (remoteId == null) {
             final JSONObject res = api.post(
                     "/projects/" + config.getProjectKey() + "/todolists/"
-                            + config.getTodoKey() + "/todos.json", repr);
+                            + config.getTodoKey() + "/todos.json", todoItemJSonRepresentation);
 
             final String newTaskKey = BasecampUtils.parseTask(res).getKey();
             /* Set "done ratio" if needed */
@@ -181,13 +176,13 @@ final class BasecampConnector implements Connector<BasecampConfig> {
                     && task.getDoneRatio() != null
                     && task.getDoneRatio().intValue() >= 100) {
                 api.put("/projects/" + config.getProjectKey() + "/todos/"
-                        + newTaskKey + ".json", repr);
+                        + newTaskKey + ".json", todoItemJSonRepresentation);
             }
             resultBuilder.addCreatedTask(task.getId(), newTaskKey);
         } else {
             final JSONObject res = api.put(
                     "/projects/" + config.getProjectKey() + "/todos/"
-                            + remoteId + ".json", repr);
+                            + remoteId + ".json", todoItemJSonRepresentation);
             resultBuilder.addUpdatedTask(task.getId(),
                     BasecampUtils.parseTask(res).getKey());
         }
@@ -195,7 +190,7 @@ final class BasecampConnector implements Connector<BasecampConfig> {
 
     @Override
     public void updateRemoteIDs(Map<Integer, String> remoteIds,
-            ProgressMonitor monitor, Mappings mappings)
+                                ProgressMonitor monitor, Mappings mappings)
             throws ConnectorException {
         throw new UnsupportedConnectorOperation("remote-ids");
     }

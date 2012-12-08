@@ -1,5 +1,6 @@
 package com.taskadapter.connector.basecamp.transport;
 
+import com.google.common.base.Strings;
 import com.taskadapter.connector.basecamp.BasecampAuth;
 import com.taskadapter.connector.basecamp.BasecampConfig;
 import com.taskadapter.connector.basecamp.exceptions.FieldNotSetException;
@@ -21,7 +22,8 @@ public final class ObjectAPIFactory {
     public ObjectAPI createObjectAPI(BasecampConfig config)
             throws ConnectorException {
         final String userId = config.getAccountId();
-        if (userId == null) {
+
+        if (Strings.isNullOrEmpty(userId)) {
             throw new FieldNotSetException("user-id");
         }
         final BasecampAuth auth = config.getAuth();
