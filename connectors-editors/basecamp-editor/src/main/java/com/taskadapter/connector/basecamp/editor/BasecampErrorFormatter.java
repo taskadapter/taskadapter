@@ -2,6 +2,7 @@ package com.taskadapter.connector.basecamp.editor;
 
 import com.taskadapter.connector.basecamp.exceptions.BadFieldException;
 import com.taskadapter.connector.basecamp.exceptions.FieldNotSetException;
+import com.taskadapter.connector.definition.exceptions.NotAuthorizedException;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.data.Messages;
 
@@ -19,6 +20,10 @@ class BasecampErrorFormatter implements ExceptionFormatter {
         }
         if (e instanceof FieldNotSetException && ((FieldNotSetException) e).getFieldId().equals("user-id")) {
             return MESSAGES.format("error.userId");
+        }
+
+        if (e instanceof NotAuthorizedException) {
+            return MESSAGES.format("error.notAuthorized");
         }
 
         return e.toString();
