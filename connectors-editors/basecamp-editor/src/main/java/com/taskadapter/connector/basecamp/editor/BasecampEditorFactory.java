@@ -2,6 +2,7 @@ package com.taskadapter.connector.basecamp.editor;
 
 import com.taskadapter.connector.basecamp.BasecampConfig;
 import com.taskadapter.connector.basecamp.BasecampUtils;
+import com.taskadapter.connector.basecamp.beans.BasecampProject;
 import com.taskadapter.connector.basecamp.beans.TodoList;
 import com.taskadapter.connector.basecamp.transport.BaseCommunicator;
 import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory;
@@ -114,7 +115,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        ShowProjectElement.loadProject(windowProvider, config, formatter, factory);
+                        ShowInfoElement.loadProject(windowProvider, config, formatter, factory);
                     }
                 }
         );
@@ -123,7 +124,12 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         DataProvider<List<? extends NamedKeyedObject>> projectProvider = new DataProvider<List<? extends NamedKeyedObject>>() {
             @Override
             public List<? extends NamedKeyedObject> loadData() throws ConnectorException {
-                return BasecampUtils.loadProjects(factory, config);
+                List<BasecampProject> basecampProjects = BasecampUtils.loadProjects(factory, config);
+                List<NamedKeyedObject> objects = new ArrayList<NamedKeyedObject>();
+                for (BasecampProject project : basecampProjects) {
+                    objects.add(new NamedKeyedObjectImpl(project.getKey(), project.getName()));
+                }
+                return objects;
             }
         };
 
@@ -151,7 +157,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        ShowProjectElement.showTodoListInfo(windowProvider, config, formatter, factory);
+                        ShowInfoElement.showTodoListInfo(windowProvider, config, formatter, factory);
                     }
                 }
         );

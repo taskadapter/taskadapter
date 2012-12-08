@@ -2,6 +2,7 @@ package com.taskadapter.connector.basecamp.editor;
 
 import com.taskadapter.connector.basecamp.BasecampConfig;
 import com.taskadapter.connector.basecamp.BasecampUtils;
+import com.taskadapter.connector.basecamp.beans.BasecampProject;
 import com.taskadapter.connector.basecamp.beans.TodoList;
 import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
@@ -13,10 +14,10 @@ import com.taskadapter.web.configeditor.EditorUtil;
 
 import static com.taskadapter.web.ui.MessageUtils.nvl;
 
-public final class ShowProjectElement {
+public final class ShowInfoElement {
     static void loadProject(WindowProvider windowProvider, BasecampConfig config, ExceptionFormatter exceptionFormatter, ObjectAPIFactory factory) {
         try {
-            GProject project = BasecampUtils.loadProject(factory, config);
+            BasecampProject project = BasecampUtils.loadProject(factory, config);
             showProjectInfo(windowProvider, project);
 
         } catch (BadConfigException e) {
@@ -28,10 +29,12 @@ public final class ShowProjectElement {
         }
     }
 
-    private static void showProjectInfo(WindowProvider windowProvider, GProject project) {
-        String msg = "<BR>Key:  " + project.getKey() + "<BR>Name: "
-                + project.getName() + "<BR>Description: "
-                + nvl(project.getDescription());
+    private static void showProjectInfo(WindowProvider windowProvider, BasecampProject project) {
+        String msg = "<BR>Key:  " + project.getKey()
+                + "<BR>Name: " + project.getName()
+                + "<BR>Description: " + nvl(project.getDescription())
+                + "<BR>Completed Todo lists: " + project.getCompletedTodolists()
+                + "<BR>Remaining Todo lists: " + project.getRemainingTodolists();
 
         EditorUtil.show(windowProvider.getWindow(), "Project Info", msg);
     }

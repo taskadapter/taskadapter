@@ -1,5 +1,6 @@
 package com.taskadapter.connector.basecamp;
 
+import com.taskadapter.connector.basecamp.beans.BasecampProject;
 import com.taskadapter.connector.basecamp.beans.TodoList;
 import com.taskadapter.connector.basecamp.transport.BaseCommunicator;
 import com.taskadapter.connector.basecamp.transport.ObjectAPI;
@@ -37,8 +38,7 @@ public class BasecampIntegrationTest {
 
     @Test
     public void someProjectsAreLoaded() throws ConnectorException {
-        final List<GProject> projects = BasecampUtils.loadProjects(factory,
-                config);
+        final List<BasecampProject> projects = BasecampUtils.loadProjects(factory, config);
         assertTrue(projects.size() > 0);
     }
 

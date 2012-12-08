@@ -1,5 +1,6 @@
 package com.taskadapter.connector.basecamp;
 
+import com.taskadapter.connector.basecamp.beans.BasecampProject;
 import com.taskadapter.connector.basecamp.beans.TodoList;
 import com.taskadapter.connector.basecamp.exceptions.BadFieldException;
 import com.taskadapter.connector.basecamp.exceptions.FieldNotSetException;
@@ -7,7 +8,6 @@ import com.taskadapter.connector.basecamp.transport.ObjectAPI;
 import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.model.GProject;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
@@ -22,11 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BasecampUtils {
-    public static List<GProject> loadProjects(ObjectAPIFactory factory,
-                                              BasecampConfig config) throws ConnectorException {
+    public static List<BasecampProject> loadProjects(ObjectAPIFactory factory,
+                                                     BasecampConfig config) throws ConnectorException {
         final ObjectAPI objApi = factory.createObjectAPI(config);
         final JSONArray objects = objApi.getObjects("projects.json");
-        final List<GProject> result = new ArrayList<GProject>(objects.length());
+        final List<BasecampProject> result = new ArrayList<BasecampProject>(objects.length());
         try {
             for (int i = 0; i < objects.length(); i++) {
                 result.add(parseProject(objects.getJSONObject(i)));
@@ -38,8 +38,8 @@ public class BasecampUtils {
         return result;
     }
 
-    public static GProject loadProject(ObjectAPIFactory factory,
-                                       BasecampConfig config) throws ConnectorException {
+    public static BasecampProject loadProject(ObjectAPIFactory factory,
+                                              BasecampConfig config) throws ConnectorException {
         validateProject(config);
         final ObjectAPI objApi = factory.createObjectAPI(config);
         String objectURL = "projects/" + config.getProjectKey() + ".json";
@@ -160,14 +160,21 @@ public class BasecampUtils {
         return res;
     }
 
-    private static GProject parseProject(JSONObject jsonObject)
+    private static BasecampProject parseProject(JSONObject jsonObject)
             throws CommunicationException {
-        final GProject res = new GProject();
-        res.setKey(Long.toString(JsonUtils.getLong("id", jsonObject)));
-        res.setDescription(JsonUtils.getOptString("description", jsonObject));
-        res.setHomepage(JsonUtils.getOptString("url", jsonObject));
-        res.setName(JsonUtils.getOptString("name", jsonObject));
-        return res;
+        final BasecampProject project = new BasecampProject();
+        project.setKey(Long.toString(JsonUtils.getLong("id", jsonObject)));
+        project.setDescription(JsonUtils.getOptString("description", jsonObject));
+        project.setName(JsonUtils.getOptString("name", jsonObject));
+        JSONObject todolists;
+        try {
+            todolists = jsonObject.getJSONObject("todolists");
+        } catch (JSONException e) {
+            throw new CommunicationException("Can't parse todo lists object in the project: " + e.toString());
+        }
+        project.setCompletedTodolists(JsonUtils.getInt("completed_count", todolists));
+        project.setRemainingTodolists(JsonUtils.getInt("remaining_count", todolists));
+        return project;
     }
 
     public static GTask parseTask(JSONObject obj) throws ConnectorException {
