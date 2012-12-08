@@ -17,7 +17,7 @@ public class BasecampConfig extends ConnectorConfig {
 
     private String todoKey = "";
 
-    private Boolean loadCompletedTodos = true;
+    private Boolean loadCompletedTodos = false;
 
     private boolean lookupUsersByName;
 
