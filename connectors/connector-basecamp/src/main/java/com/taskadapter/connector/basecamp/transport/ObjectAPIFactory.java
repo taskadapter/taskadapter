@@ -1,8 +1,8 @@
 package com.taskadapter.connector.basecamp.transport;
 
-import com.google.common.base.Strings;
 import com.taskadapter.connector.basecamp.BasecampAuth;
 import com.taskadapter.connector.basecamp.BasecampConfig;
+import com.taskadapter.connector.basecamp.BasecampUtils;
 import com.taskadapter.connector.basecamp.exceptions.FieldNotSetException;
 import com.taskadapter.connector.basecamp.transport.throttling.IntervalThrottler;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
@@ -21,21 +21,20 @@ public final class ObjectAPIFactory {
 
     public ObjectAPI createObjectAPI(BasecampConfig config)
             throws ConnectorException {
-        final String userId = config.getAccountId();
+        BasecampUtils.validateAccount(config);
+        
+        final String accountId = config.getAccountId();
 
-        if (Strings.isNullOrEmpty(userId)) {
-            throw new FieldNotSetException("user-id");
-        }
         final BasecampAuth auth = config.getAuth();
         if (auth == null) {
             throw new FieldNotSetException("auth");
         }
         final ObjectAPIHolder cached = holder;
-        if (holder != null && holder.userId.equals(userId)
+        if (holder != null && holder.userId.equals(accountId)
                 && holder.accepts(auth)) {
             return cached.api;
         }
-        final ObjectAPIHolder created = createHolder(userId, auth);
+        final ObjectAPIHolder created = createHolder(accountId, auth);
         holder = created;
         return created.api;
 
