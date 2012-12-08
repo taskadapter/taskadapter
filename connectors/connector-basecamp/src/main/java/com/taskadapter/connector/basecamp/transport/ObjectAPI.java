@@ -1,5 +1,6 @@
 package com.taskadapter.connector.basecamp.transport;
 
+import com.taskadapter.connector.basecamp.exceptions.ObjectNotFoundException;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -32,14 +33,16 @@ public final class ObjectAPI {
 
     /**
      * Gets a json object.
-     * 
-     * @param suffix
-     *            object suffix.
+     *
+     * @param suffix object suffix.
      * @return returned object.
      */
     public JSONObject getObject(String suffix) throws ConnectorException {
         final HttpGet get = new HttpGet(prefix + suffix);
         final BasicHttpResponse response = communicator.sendRequest(get);
+        if (response.getResponseCode() == 404) {
+            throw new ObjectNotFoundException();
+        }
         if (response.getResponseCode() != 200) {
             throw new CommunicationException("Unexpected error code "
                     + response.getResponseCode() + " : " + response.getContent());
