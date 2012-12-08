@@ -42,8 +42,8 @@ public class BasecampUtils {
                                        BasecampConfig config) throws ConnectorException {
         validateProject(config);
         final ObjectAPI objApi = factory.createObjectAPI(config);
-        final JSONObject object = objApi.getObject("projects/"
-                + config.getProjectKey() + ".json");
+        String objectURL = "projects/" + config.getProjectKey() + ".json";
+        final JSONObject object = objApi.getObject(objectURL);
         return parseProject(object);
     }
 

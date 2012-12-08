@@ -13,6 +13,9 @@ class BasecampErrorFormatter implements ExceptionFormatter {
         if (e instanceof BadFieldException && ((BadFieldException) e).getFieldName().equals("project-key")) {
             return MESSAGES.format("error.projectKey");
         }
+        if (e instanceof BadFieldException && ((BadFieldException) e).getFieldName().equals("todo-key")) {
+            return MESSAGES.format("error.todoKey");
+        }
         return e.toString();
     }
 }
