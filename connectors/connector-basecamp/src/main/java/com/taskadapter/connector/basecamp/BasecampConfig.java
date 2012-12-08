@@ -17,6 +17,8 @@ public class BasecampConfig extends ConnectorConfig {
 
     private String todoKey = "";
 
+    private Boolean loadCompletedTodos = true;
+
     private boolean lookupUsersByName;
 
     public BasecampConfig() {
@@ -74,5 +76,13 @@ public class BasecampConfig extends ConnectorConfig {
 
     public void setServerUrl(String serverUrl) {
         this.serverUrl = serverUrl;
+    }
+
+    public Boolean getLoadCompletedTodos() {
+        return loadCompletedTodos;
+    }
+
+    public void setLoadCompletedTodos(Boolean loadCompletedTodos) {
+        this.loadCompletedTodos = loadCompletedTodos;
     }
 }

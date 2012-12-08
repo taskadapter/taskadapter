@@ -18,6 +18,7 @@ import com.taskadapter.web.service.Services;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
@@ -122,6 +123,14 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         grid.addComponent(todoListField);
         grid.addComponent(new Label(""));
         grid.addComponent(new Label(""));
+
+        CheckBox loadCompletedTasksCheckbox = new CheckBox("Load completed items");
+        loadCompletedTasksCheckbox.setPropertyDataSource(new MethodProperty<String>(config, "loadCompletedTodos"));
+        grid.addComponent(loadCompletedTasksCheckbox);
+        grid.addComponent(new Label(""));
+        grid.addComponent(new Label(""));
+        grid.addComponent(new Label(""));
+
         return projectPanel;
     }
 
