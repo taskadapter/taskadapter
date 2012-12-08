@@ -19,8 +19,8 @@ class BasecampErrorFormatter implements ExceptionFormatter {
         if (e instanceof BadFieldException && ((BadFieldException) e).getFieldName().equals("todo-key")) {
             return MESSAGES.format("error.todoKey");
         }
-        if (e instanceof FieldNotSetException && ((FieldNotSetException) e).getFieldId().equals("user-id")) {
-            return MESSAGES.format("error.userId");
+        if (e instanceof FieldNotSetException && ((FieldNotSetException) e).getFieldId().equals("account-id")) {
+            return MESSAGES.format("error.accountId");
         }
         if (e instanceof NotAuthorizedException) {
             return MESSAGES.format("error.notAuthorized");
