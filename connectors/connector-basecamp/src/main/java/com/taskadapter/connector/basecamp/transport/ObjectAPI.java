@@ -25,7 +25,7 @@ public final class ObjectAPI {
     private final Communicator communicator;
 
     public ObjectAPI(String userId, Communicator communicator) {
-        this.prefix = "https://basecamp.com/" + userId + "api/v1/";
+        this.prefix = "https://basecamp.com/" + userId + "/api/v1/";
         this.communicator = communicator;
     }
 
