@@ -2,6 +2,7 @@ package com.taskadapter.connector.basecamp;
 
 import com.taskadapter.connector.basecamp.beans.BasecampProject;
 import com.taskadapter.connector.basecamp.beans.TodoList;
+import com.taskadapter.connector.basecamp.exceptions.ObjectNotFoundException;
 import com.taskadapter.connector.basecamp.transport.BaseCommunicator;
 import com.taskadapter.connector.basecamp.transport.ObjectAPI;
 import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory;
@@ -70,9 +71,9 @@ public class BasecampIntegrationTest {
 
         try {
             BasecampUtils.loadTodoList(factory, config);
-            fail("Must have failed with 404 error.");
-        } catch (CommunicationException e) {
-            assertEquals("Unexpected error code 404 : ", e.getMessage());
+            fail("Must have failed with ObjectNotFoundException.");
+        } catch (ObjectNotFoundException e) {
+            System.out.println("Got expected ObjectNotFoundException");
         }
 
     }

@@ -29,7 +29,7 @@ public class BasecampUtils {
         final List<BasecampProject> result = new ArrayList<BasecampProject>(objects.length());
         try {
             for (int i = 0; i < objects.length(); i++) {
-                result.add(parseProject(objects.getJSONObject(i)));
+                result.add(parseProjectFromList(objects.getJSONObject(i)));
             }
         } catch (JSONException e) {
             throw new CommunicationException("Bad content "
@@ -44,7 +44,7 @@ public class BasecampUtils {
         final ObjectAPI objApi = factory.createObjectAPI(config);
         String objectURL = "projects/" + config.getProjectKey() + ".json";
         final JSONObject object = objApi.getObject(objectURL);
-        return parseProject(object);
+        return parseFullProject(object);
     }
 
     // POST /projects/#{project_id}/todo_lists.xml
@@ -160,8 +160,15 @@ public class BasecampUtils {
         return res;
     }
 
-    private static BasecampProject parseProject(JSONObject jsonObject)
-            throws CommunicationException {
+    private static BasecampProject parseProjectFromList(JSONObject jsonObject) throws CommunicationException {
+        final BasecampProject project = new BasecampProject();
+        project.setKey(Long.toString(JsonUtils.getLong("id", jsonObject)));
+        project.setDescription(JsonUtils.getOptString("description", jsonObject));
+        project.setName(JsonUtils.getOptString("name", jsonObject));
+        return project;
+    }
+
+    private static BasecampProject parseFullProject(JSONObject jsonObject) throws CommunicationException {
         final BasecampProject project = new BasecampProject();
         project.setKey(Long.toString(JsonUtils.getLong("id", jsonObject)));
         project.setDescription(JsonUtils.getOptString("description", jsonObject));
