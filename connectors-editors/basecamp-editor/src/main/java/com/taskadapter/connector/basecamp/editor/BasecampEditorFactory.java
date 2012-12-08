@@ -2,12 +2,14 @@ package com.taskadapter.connector.basecamp.editor;
 
 import com.taskadapter.connector.basecamp.BasecampConfig;
 import com.taskadapter.connector.basecamp.BasecampUtils;
+import com.taskadapter.connector.basecamp.beans.TodoList;
 import com.taskadapter.connector.basecamp.exceptions.BadFieldException;
 import com.taskadapter.connector.basecamp.transport.BaseCommunicator;
 import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.NamedKeyedObject;
+import com.taskadapter.model.NamedKeyedObjectImpl;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
@@ -25,6 +27,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.taskadapter.web.configeditor.EditorUtil.propertyInput;
@@ -74,13 +77,33 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
 
         projectPanel.addComponent(grid);
 
+        addAccountIdRow(config, grid);
+        addProjectRow(windowProvider, config, grid);
+        addTodoKeyRow(windowProvider, config, grid);
+        addCompletedCheckboxRow(config, grid);
+
+        return projectPanel;
+    }
+
+    private void addCompletedCheckboxRow(BasecampConfig config, GridLayout grid) {
+        CheckBox loadCompletedTasksCheckbox = new CheckBox("Load completed items");
+        loadCompletedTasksCheckbox.setPropertyDataSource(new MethodProperty<String>(config, "loadCompletedTodos"));
+        grid.addComponent(loadCompletedTasksCheckbox);
+        grid.addComponent(new Label(""));
+        grid.addComponent(new Label(""));
+        grid.addComponent(new Label(""));
+    }
+
+    private void addAccountIdRow(BasecampConfig config, GridLayout grid) {
         Label accountIdLabel = new Label("Account Id:");
         grid.addComponent(accountIdLabel);
         TextField accountIdField = propertyInput(config, "accountId");
         grid.addComponent(accountIdField);
         grid.addComponent(new Label(""));
         grid.addComponent(new Label(""));
+    }
 
+    private void addProjectRow(final WindowProvider windowProvider, final BasecampConfig config, GridLayout grid) {
         Label projectKeyLabel = new Label("Project key:");
         grid.addComponent(projectKeyLabel);
         MethodProperty<Object> projectKeyProperty = new MethodProperty<Object>(config, "projectKey");
@@ -116,22 +139,41 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         );
         grid.addComponent(showProjectsButton);
         grid.setComponentAlignment(showProjectsButton, Alignment.MIDDLE_CENTER);
+    }
 
+    private void addTodoKeyRow(WindowProvider windowProvider, final BasecampConfig config, GridLayout grid) {
         Label todoListKey = new Label("Todo list key:");
         grid.addComponent(todoListKey);
-        TextField todoListField = propertyInput(config, "todoKey");
+
+        MethodProperty<Object> todoKeyProperty = new MethodProperty<Object>(config, "todoKey");
+        TextField todoListField = textInput(todoKeyProperty);
         grid.addComponent(todoListField);
         grid.addComponent(new Label(""));
-        grid.addComponent(new Label(""));
 
-        CheckBox loadCompletedTasksCheckbox = new CheckBox("Load completed items");
-        loadCompletedTasksCheckbox.setPropertyDataSource(new MethodProperty<String>(config, "loadCompletedTodos"));
-        grid.addComponent(loadCompletedTasksCheckbox);
-        grid.addComponent(new Label(""));
-        grid.addComponent(new Label(""));
-        grid.addComponent(new Label(""));
+        DataProvider<List<? extends NamedKeyedObject>> todoListsProvider = new DataProvider<List<? extends NamedKeyedObject>>() {
+            @Override
+            public List<? extends NamedKeyedObject> loadData() throws ConnectorException {
+                List<TodoList> todoLists = BasecampUtils.loadTodoLists(factory, config);
+                List<NamedKeyedObject> objects = new ArrayList<NamedKeyedObject>();
+                for (TodoList todoList : todoLists) {
+                    objects.add(new NamedKeyedObjectImpl(todoList.getKey(), todoList.getName()));
+                }
+                return objects;
+            }
+        };
 
-        return projectPanel;
+        Button showTodoListsButton = EditorUtil.createLookupButton(
+                windowProvider,
+                "...",
+                "Show Todo Lists",
+                "Select a Todo list",
+                "Todo lists on the server",
+                todoListsProvider,
+                todoKeyProperty,
+                false, this
+        );
+        grid.addComponent(showTodoListsButton);
+        grid.setComponentAlignment(showTodoListsButton, Alignment.MIDDLE_CENTER);
     }
 
     @Override
