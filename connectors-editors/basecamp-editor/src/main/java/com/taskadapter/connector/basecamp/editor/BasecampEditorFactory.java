@@ -56,8 +56,10 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
 
     private Panel createServerPanel(BasecampConfig config) {
         Panel panel = new Panel("Server Info");
+        MethodProperty<String> serverURLProperty = new MethodProperty<String>(config, "serverUrl");
+        serverURLProperty.setReadOnly(true);
         ServerPanelWithAPIKey redmineServerPanel = new ServerPanelWithAPIKey(new MethodProperty<String>(config, "label"),
-                new MethodProperty<String>(config, "serverUrl"),
+                serverURLProperty,
                 new MethodProperty<String>(config.getAuth(), "login"),
                 new MethodProperty<String>(config.getAuth(), "password"),
                 new MethodProperty<String>(config.getAuth(), "apiKey"),

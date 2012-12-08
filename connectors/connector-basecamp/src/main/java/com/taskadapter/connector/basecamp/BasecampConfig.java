@@ -1,6 +1,7 @@
 package com.taskadapter.connector.basecamp;
 
 import com.taskadapter.connector.Priorities;
+import com.taskadapter.connector.basecamp.transport.ObjectAPI;
 import com.taskadapter.connector.definition.ConnectorConfig;
 
 public class BasecampConfig extends ConnectorConfig {
@@ -9,7 +10,7 @@ public class BasecampConfig extends ConnectorConfig {
 
     private BasecampAuth auth = new BasecampAuth();
 
-    private String serverUrl = "http://basecamp.com";
+    private String serverUrl = ObjectAPI.BASECAMP_URL;
 
     private String accountId = "";
 
