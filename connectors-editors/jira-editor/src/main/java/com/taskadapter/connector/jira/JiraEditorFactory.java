@@ -1,8 +1,5 @@
 package com.taskadapter.connector.jira;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
@@ -54,13 +51,9 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, JiraConfig config, List<JiraConfig> relatedConfigs) {
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, JiraConfig config) {
         WebServerInfo serverInfo = config.getServerInfo();
-        final List<WebServerInfo> related = new ArrayList<WebServerInfo>(relatedConfigs.size());
-        for (JiraConfig c : relatedConfigs) {
-            related.add(c.getServerInfo());
-        }
-        ServerPanel serverPanel = new ServerPanel(related, new MethodProperty<String>(config, "label"),
+        ServerPanel serverPanel = new ServerPanel(new MethodProperty<String>(config, "label"),
                 new MethodProperty<String>(serverInfo, "host"),
                 new MethodProperty<String>(serverInfo, "userName"),
                 new MethodProperty<String>(serverInfo, "password"));

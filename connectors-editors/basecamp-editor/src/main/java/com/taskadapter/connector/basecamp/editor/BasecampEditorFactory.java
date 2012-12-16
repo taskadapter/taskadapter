@@ -40,7 +40,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
     private final ExceptionFormatter formatter = new BasecampErrorFormatter();
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, BasecampConfig config, List<BasecampConfig> relatedConfigs) {
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, BasecampConfig config) {
 
         Panel panel = createServerPanel(config);
         Panel projectPanel = createProjectPanel(windowProvider, config);

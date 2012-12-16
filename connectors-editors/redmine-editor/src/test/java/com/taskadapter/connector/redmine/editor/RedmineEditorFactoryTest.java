@@ -19,6 +19,6 @@ public class RedmineEditorFactoryTest extends FileBasedTest {
         WindowProvider provider = mock(WindowProvider.class);
         factory.getMiniPanelContents(provider,
                 new Services(tempFolder, new EditorManager(Collections.<String, PluginEditorFactory<?>>emptyMap())),
-                new RedmineConfig(), Collections.<RedmineConfig>emptyList());
+                new RedmineConfig());
     }
 }

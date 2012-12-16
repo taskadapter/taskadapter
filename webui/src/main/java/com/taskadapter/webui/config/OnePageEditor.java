@@ -1,8 +1,5 @@
 package com.taskadapter.webui.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.configeditor.MiniPanel;
@@ -41,19 +38,11 @@ public class OnePageEditor extends VerticalLayout implements WindowProvider {
     }
 
     private void addConnectorsPanel() {
-        final List<UISyncConfig> allConfigs = services.getUIConfigStore()
-                .getUserConfigs(services.getCurrentUserInfo().getUserName());
-        final List<UIConnectorConfig> relatedConnectors = new ArrayList<UIConnectorConfig>(
-                allConfigs.size() * 2);
-        for (UISyncConfig syncConfig : allConfigs) {
-            relatedConnectors.add(syncConfig.getConnector1());
-            relatedConnectors.add(syncConfig.getConnector2());
-        }
         HorizontalLayout layout = new HorizontalLayout();
 
-        addLeft(relatedConnectors, layout);
+        addLeft(layout);
         addExportButtonsToCenter(layout);
-        addRight(relatedConnectors, layout);
+        addRight(layout);
 
         addComponent(layout);
     }
@@ -64,14 +53,14 @@ public class OnePageEditor extends VerticalLayout implements WindowProvider {
         layout.setComponentAlignment(exportButtonsFragment, Alignment.MIDDLE_CENTER);
     }
 
-    private void addLeft(List<UIConnectorConfig> relatedConnectors, HorizontalLayout layout) {
-        MiniPanel miniPanel1 = createMiniPanel(config.getConnector1(),relatedConnectors);
+    private void addLeft(HorizontalLayout layout) {
+        MiniPanel miniPanel1 = createMiniPanel(config.getConnector1());
         layout.addComponent(miniPanel1);
         layout.setComponentAlignment(miniPanel1, Alignment.MIDDLE_RIGHT);
     }
 
-    private void addRight(List<UIConnectorConfig> relatedConnectors, HorizontalLayout layout) {
-        MiniPanel miniPanel2 = createMiniPanel(config.getConnector2(), relatedConnectors);
+    private void addRight(HorizontalLayout layout) {
+        MiniPanel miniPanel2 = createMiniPanel(config.getConnector2());
         layout.addComponent(miniPanel2);
         layout.setComponentAlignment(miniPanel2, Alignment.MIDDLE_LEFT);
     }
@@ -81,10 +70,10 @@ public class OnePageEditor extends VerticalLayout implements WindowProvider {
         addComponent(taskFieldsMappingFragment);
     }
 
-    private MiniPanel createMiniPanel(UIConnectorConfig connectorConfig, List<UIConnectorConfig> relatedConnectors) {
+    private MiniPanel createMiniPanel(UIConnectorConfig connectorConfig) {
         MiniPanel miniPanel = new MiniPanel(this, connectorConfig);
         // "services" instance is only used by MSP Editor Factory
-        miniPanel.setPanelContents(connectorConfig.createMiniPanel(this, services, relatedConnectors));
+        miniPanel.setPanelContents(connectorConfig.createMiniPanel(this, services));
         return miniPanel;
     }
 

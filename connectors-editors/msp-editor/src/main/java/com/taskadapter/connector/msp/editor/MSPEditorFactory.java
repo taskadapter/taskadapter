@@ -13,7 +13,6 @@ import com.taskadapter.web.configeditor.file.ServerModeFilePanel;
 import com.taskadapter.web.configeditor.file.ServerModelFilePanelPresenter;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Services;
-import com.vaadin.data.util.MethodProperty;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.HorizontalLayout;
@@ -23,9 +22,8 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import java.io.File;
-import java.util.List;
 
-import static com.taskadapter.web.configeditor.EditorUtil.*;
+import static com.taskadapter.web.configeditor.EditorUtil.propertyInput;
 
 public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.msp.messages";
@@ -48,7 +46,7 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, MSPConfig config, List<MSPConfig> relatedConfigs) {
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, MSPConfig config) {
         VerticalLayout layout = new VerticalLayout();
         layout.setWidth(450, Sizeable.UNITS_PIXELS);
         layout.addComponent(createDescriptionElement(config));

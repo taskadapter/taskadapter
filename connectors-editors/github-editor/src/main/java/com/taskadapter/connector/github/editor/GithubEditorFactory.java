@@ -51,21 +51,16 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig> {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, GithubConfig config, List<GithubConfig> relatedConfigs) {
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, GithubConfig config) {
         VerticalLayout layout = new VerticalLayout();
         layout.setWidth(380, Sizeable.UNITS_PIXELS);
         final WebServerInfo serverInfo = config.getServerInfo();
-        final List<WebServerInfo> related = new ArrayList<WebServerInfo>(relatedConfigs.size());
-        for (GithubConfig c : relatedConfigs) {
-            related.add(c.getServerInfo());
-        }
         MethodProperty<String> serverUrlProperty = new MethodProperty<String>(serverInfo, "host");
         serverUrlProperty.setReadOnly(true);
-        ServerPanel serverPanel = new ServerPanel(related, new MethodProperty<String>(config, "label"),
+        ServerPanel serverPanel = new ServerPanel(new MethodProperty<String>(config, "label"),
                 serverUrlProperty,
                 new MethodProperty<String>(serverInfo, "userName"),
                 new MethodProperty<String>(serverInfo, "password"));
-//        serverPanel.disableServerURLField();
         layout.addComponent(serverPanel);
 
         ProjectPanel projectPanel = new ProjectPanel(windowProvider, EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),

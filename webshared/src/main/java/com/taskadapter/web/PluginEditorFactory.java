@@ -1,14 +1,12 @@
 package com.taskadapter.web;
 
-import java.util.List;
-
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.service.Services;
 import com.vaadin.ui.ComponentContainer;
 
 public interface PluginEditorFactory<C extends ConnectorConfig> extends ExceptionFormatter {
-    ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, C config, List<C> relatedConfigs);
+    ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, C config);
     
     /**
      * Validates a connector config for save mode. If validation fails, plugin

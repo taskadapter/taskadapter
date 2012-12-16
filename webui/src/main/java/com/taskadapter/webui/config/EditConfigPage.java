@@ -152,18 +152,12 @@ public class EditConfigPage extends Page {
         String userLoginName = services.getCurrentUserInfo().getUserName();
         try {
             services.getUIConfigStore().saveConfig(userLoginName, config);
-            saveServerConnectionInfoIfNew();
         } catch (StorageException e) {
             String message = MESSAGES.format("editConfig.error.cantSave", e.getMessage());
             errorMessageLabel.setValue(message);
             logger.error(message, e);
             return;
         }
-    }
-
-    // TODO !!!
-    private void saveServerConnectionInfoIfNew() {
-        navigator.showNotification("TODO", "TODO: Save Server URL, login, password per user and server type (Jira/Redmine/..)");
     }
 
     @Override

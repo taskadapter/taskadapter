@@ -21,7 +21,6 @@ import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.VerticalLayout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
@@ -45,16 +44,12 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, MantisConfig config, List<MantisConfig> relatedConfigs) {
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, MantisConfig config) {
         VerticalLayout layout = new VerticalLayout();
         layout.setWidth(380, Sizeable.UNITS_PIXELS);
         final WebServerInfo serverInfo = config.getServerInfo();
 
-        final List<WebServerInfo> related = new ArrayList<WebServerInfo>(relatedConfigs.size());
-        for (MantisConfig c : relatedConfigs) {
-            related.add(c.getServerInfo());
-        }
-        ServerPanel serverPanel = new ServerPanel(related, new MethodProperty<String>(config, "label"),
+        ServerPanel serverPanel = new ServerPanel(new MethodProperty<String>(config, "label"),
                 new MethodProperty<String>(serverInfo, "host"),
                 new MethodProperty<String>(serverInfo, "userName"),
                 new MethodProperty<String>(serverInfo, "password"));

@@ -20,6 +20,6 @@ public class GithubEditorFactoryTest extends FileBasedTest {
         factory.getMiniPanelContents(
                 provider,
                 new Services(tempFolder, new EditorManager(Collections.<String,PluginEditorFactory<?>>emptyMap())),
-                new GithubConfig(), Collections.<GithubConfig>emptyList());
+                new GithubConfig());
     }
 }

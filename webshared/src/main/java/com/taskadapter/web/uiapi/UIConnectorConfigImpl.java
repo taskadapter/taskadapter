@@ -16,20 +16,18 @@ import com.vaadin.ui.ComponentContainer;
 /**
  * Implementation of RichConfig. Hides implementation details inside and keeps a
  * config-type magic inside.
- * 
- * @param <T>
- *            type of a connector config.
+ *
+ * @param <T> type of a connector config.
  */
-final class UIConnectorConfigImpl<T extends ConnectorConfig> extends
-        UIConnectorConfig {
+final class UIConnectorConfigImpl<T extends ConnectorConfig> extends UIConnectorConfig {
     private final PluginFactory<T> connectorFactory;
     private final PluginEditorFactory<T> editorFactory;
     private final T config;
     private final String connectorTypeId;
 
     public UIConnectorConfigImpl(PluginFactory<T> connectorFactory,
-            PluginEditorFactory<T> editorFactory, T config,
-            String connectorTypeId) {
+                                 PluginEditorFactory<T> editorFactory, T config,
+                                 String connectorTypeId) {
         this.connectorFactory = connectorFactory;
         this.editorFactory = editorFactory;
         this.config = config;
@@ -60,7 +58,7 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends
     public void validateForSave() throws BadConfigException {
         editorFactory.validateForSave(config);
     }
-    
+
     @Override
     @Deprecated
     public ConnectorConfig getRawConfig() {
@@ -72,17 +70,9 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends
         return connectorFactory.createConnector(config);
     }
 
-    @SuppressWarnings({ "deprecation", "unchecked" })
     @Override
-    public ComponentContainer createMiniPanel(WindowProvider windowProvider,
-            Services services, List<UIConnectorConfig> relatedConfigs) {
-        final List<T> baseConfigs = new ArrayList<T>();
-        for (UIConnectorConfig cfg : relatedConfigs) {
-            if (cfg.getConnectorTypeId().equals(connectorTypeId)) {
-                baseConfigs.add((T) cfg.getRawConfig());
-            }
-        }
-        return editorFactory.getMiniPanelContents(windowProvider, services, config, baseConfigs);
+    public ComponentContainer createMiniPanel(WindowProvider windowProvider, Services services) {
+        return editorFactory.getMiniPanelContents(windowProvider, services, config);
     }
 
     @Override

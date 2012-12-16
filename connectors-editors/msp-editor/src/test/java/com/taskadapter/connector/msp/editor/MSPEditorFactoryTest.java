@@ -28,7 +28,7 @@ public class MSPEditorFactoryTest extends FileBasedTest {
         ((EditableCurrentUserInfo) services.getCurrentUserInfo()).setUserName("admin");
         MSPEditorFactory factory = new MSPEditorFactory();
         WindowProvider provider = mock(WindowProvider.class);
-        factory.getMiniPanelContents(provider, services, new MSPConfig(), Collections.<MSPConfig>emptyList());
+        factory.getMiniPanelContents(provider, services, new MSPConfig());
     }
 
 }
