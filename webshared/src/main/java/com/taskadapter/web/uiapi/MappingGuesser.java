@@ -34,6 +34,21 @@ public class MappingGuesser {
 
         final NewMappings res = new NewMappings();
 
+        JsonElement map2RemoteIdValue = map2.get(GTaskDescriptor.FIELD.REMOTE_ID.name());
+        boolean map2RemoteIdIsPresent = map2RemoteIdValue != null && !map2RemoteIdValue.isJsonNull();
+        if (sel2.has(GTaskDescriptor.FIELD.REMOTE_ID.name())
+                && sel2.get(GTaskDescriptor.FIELD.REMOTE_ID.name()).getAsBoolean()
+                && map2RemoteIdIsPresent) {
+            res.put(new FieldMapping(GTaskDescriptor.FIELD.REMOTE_ID, null, map2RemoteIdValue.getAsString(), true));
+        }
+
+        if (sel1.has(GTaskDescriptor.FIELD.REMOTE_ID.name())
+                && sel1.get(GTaskDescriptor.FIELD.REMOTE_ID.name()).getAsBoolean()
+                && !map1.get(GTaskDescriptor.FIELD.REMOTE_ID.name()).isJsonNull()) {
+            res.put(new FieldMapping(GTaskDescriptor.FIELD.REMOTE_ID, map1.get(
+                    GTaskDescriptor.FIELD.REMOTE_ID.name()).getAsString(), null, true));
+        }
+
         for (GTaskDescriptor.FIELD field : GTaskDescriptor.FIELD.values()) {
             if (field == GTaskDescriptor.FIELD.ID || field == GTaskDescriptor.FIELD.REMOTE_ID) {
                 continue;
@@ -62,21 +77,6 @@ public class MappingGuesser {
 
             res.put(new FieldMapping(field, map1FieldValue.getAsString(),
                     map2FieldValue.getAsString(), true));
-        }
-
-        JsonElement map2RemoteIdValue = map2.get(GTaskDescriptor.FIELD.REMOTE_ID.name());
-        boolean map2RemoteIdIsPresent = map2RemoteIdValue != null && !map2RemoteIdValue.isJsonNull();
-        if (sel2.has(GTaskDescriptor.FIELD.REMOTE_ID.name())
-                && sel2.get(GTaskDescriptor.FIELD.REMOTE_ID.name()).getAsBoolean()
-                && map2RemoteIdIsPresent) {
-            res.put(new FieldMapping(GTaskDescriptor.FIELD.REMOTE_ID, null, map2RemoteIdValue.getAsString(), true));
-        }
-
-        if (sel1.has(GTaskDescriptor.FIELD.REMOTE_ID.name())
-                && sel1.get(GTaskDescriptor.FIELD.REMOTE_ID.name()).getAsBoolean()
-                && !map1.get(GTaskDescriptor.FIELD.REMOTE_ID.name()).isJsonNull()) {
-            res.put(new FieldMapping(GTaskDescriptor.FIELD.REMOTE_ID, map1.get(
-                    GTaskDescriptor.FIELD.REMOTE_ID.name()).getAsString(), null, true));
         }
 
         return res;

@@ -8,6 +8,19 @@ import com.taskadapter.model.GTaskDescriptor;
 public class NewMappingBuilder {
     static NewMappings createNewMappings(AvailableFields m1, AvailableFields m2) {
         final NewMappings res = new NewMappings();
+        
+        if (m2.isFieldSupported(GTaskDescriptor.FIELD.REMOTE_ID)) {
+            res.put(new FieldMapping(GTaskDescriptor.FIELD.REMOTE_ID, null, 
+                    m2.getDefaultValue(GTaskDescriptor.FIELD.REMOTE_ID), 
+                    m2.isSelectedByDefault(GTaskDescriptor.FIELD.REMOTE_ID)));
+        }
+
+        if (m1.isFieldSupported(GTaskDescriptor.FIELD.REMOTE_ID)) {
+            res.put(new FieldMapping(GTaskDescriptor.FIELD.REMOTE_ID, 
+                    m1.getDefaultValue(GTaskDescriptor.FIELD.REMOTE_ID), null, 
+                    m1.isSelectedByDefault(GTaskDescriptor.FIELD.REMOTE_ID)));
+        }
+
         for (GTaskDescriptor.FIELD field : GTaskDescriptor.FIELD.values()) {
             if (field == GTaskDescriptor.FIELD.ID || field == GTaskDescriptor.FIELD.REMOTE_ID) {
                 continue;
@@ -24,18 +37,6 @@ public class NewMappingBuilder {
 
             res.put(new FieldMapping(field, m1.getDefaultValue(field), m2
                     .getDefaultValue(field), selectByDefault));
-        }
-
-        if (m2.isFieldSupported(GTaskDescriptor.FIELD.REMOTE_ID)) {
-            res.put(new FieldMapping(GTaskDescriptor.FIELD.REMOTE_ID, null, 
-                    m2.getDefaultValue(GTaskDescriptor.FIELD.REMOTE_ID), 
-                    m2.isSelectedByDefault(GTaskDescriptor.FIELD.REMOTE_ID)));
-        }
-
-        if (m1.isFieldSupported(GTaskDescriptor.FIELD.REMOTE_ID)) {
-            res.put(new FieldMapping(GTaskDescriptor.FIELD.REMOTE_ID, 
-                    m1.getDefaultValue(GTaskDescriptor.FIELD.REMOTE_ID), null, 
-                    m1.isSelectedByDefault(GTaskDescriptor.FIELD.REMOTE_ID)));
         }
 
         return res;
