@@ -18,8 +18,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.rpc.ServiceException;
-
 public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig> {
 
     private MantisManager mgr;
@@ -41,9 +39,7 @@ public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig> {
             converter.setUsers(loadUsers());
         } catch (RemoteException e) {
             throw MantisUtils.convertException(e);
-        } catch (ServiceException e) {
-            throw MantisUtils.convertException(e);
-        }
+        } 
     }
 
     private List<AccountData> loadUsers() {
@@ -73,8 +69,6 @@ public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig> {
             return MantisDataConverter.convertToGenericTask(createdIssue);
         } catch (RemoteException e) {
             throw MantisUtils.convertException(e);
-        } catch (ServiceException e) {
-            throw MantisUtils.convertException(e);
         } catch (RequiredItemException e) {
             throw new EntityProcessingException(e);
         }
@@ -88,9 +82,7 @@ public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig> {
             mgr.updateIssue(new BigInteger(taskId), mntIssue);
         } catch (RemoteException e) {
             throw MantisUtils.convertException(e);
-        } catch (ServiceException e) {
-            throw MantisUtils.convertException(e);
-        }
+        } 
     }
 
     @Override

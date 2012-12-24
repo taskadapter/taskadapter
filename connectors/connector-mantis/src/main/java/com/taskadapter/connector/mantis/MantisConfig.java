@@ -23,6 +23,7 @@ public class MantisConfig extends ConnectorConfig {
     private WebServerInfo serverInfo = new WebServerInfo();
     private String projectKey;
     private boolean findUserByName;
+    private Long queryId;
 
     public MantisConfig() {
         super(DEFAULT_PRIORITIES);
@@ -39,6 +40,14 @@ public class MantisConfig extends ConnectorConfig {
 
     public String getProjectKey() {
         return projectKey;
+    }
+    
+    public Long getQueryId() {
+        return queryId;
+    }
+
+    public void setQueryId(Long queryId) {
+        this.queryId = queryId;
     }
 
     public void setProjectKey(String projectKey) {

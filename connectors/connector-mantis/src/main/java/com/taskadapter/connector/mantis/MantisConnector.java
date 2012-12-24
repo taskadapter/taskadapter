@@ -7,7 +7,6 @@ import com.taskadapter.model.GTask;
 import org.mantis.ta.MantisManager;
 import org.mantis.ta.beans.IssueData;
 
-import javax.xml.rpc.ServiceException;
 import java.math.BigInteger;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -38,8 +37,6 @@ public class MantisConnector implements Connector<MantisConfig> {
                 issue = mgr.getIssueById(new BigInteger(key));
             } catch (RemoteException e) {
                 throw MantisUtils.convertException(e);
-            } catch (ServiceException e) {
-                throw MantisUtils.convertException(e);
             }
             return MantisDataConverter.convertToGenericTask(issue);
     } 
@@ -49,13 +46,16 @@ public class MantisConnector implements Connector<MantisConfig> {
         try {
             MantisManager mgr = MantisManagerFactory.createMantisManager(config.getServerInfo());
 
-            List<IssueData> issues = mgr.getIssuesByProject(new BigInteger(config.getProjectKey()));
+            final Long queryId = config.getQueryId();
+            List<IssueData> issues = queryId == null ? mgr
+                    .getIssuesByProject(new BigInteger(config.getProjectKey()))
+                    : mgr.getIssuesByFilter(
+                            new BigInteger(config.getProjectKey()),
+                            BigInteger.valueOf(queryId));
             return convertToGenericTasks(issues);
         } catch (RemoteException e) {
             throw MantisUtils.convertException(e);
-        } catch (ServiceException e) {
-            throw MantisUtils.convertException(e);
-        }
+        } 
     }
     
     private List<GTask> convertToGenericTasks(List<IssueData> issues) {
