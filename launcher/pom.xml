@@ -13,7 +13,7 @@
         <!-- this will be the root folder in the packaged ZIP file -->
         <distributive.root.folder>taskadapter</distributive.root.folder>
         <target.folder>target/${distributive.root.folder}</target.folder>
-        <jetty.version>8.1.7.v20120910</jetty.version>
+        <jetty.version>8.1.8.v20121106</jetty.version>
     </properties>
 
     <build>
