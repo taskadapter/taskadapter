@@ -29,6 +29,9 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
 
     @Override
     public String formatError(Throwable e) {
+        if (e instanceof ProjectNotSetException) {
+            return MESSAGES.get("error.projectNotSet");
+        }
         if (e instanceof ServerURLNotSetException) {
             return MESSAGES.get("error.serverUrlNotSet");
         }
