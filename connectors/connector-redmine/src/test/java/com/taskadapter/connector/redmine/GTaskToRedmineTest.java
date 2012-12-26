@@ -122,7 +122,7 @@ public class GTaskToRedmineTest {
 
     private GTaskToRedmine createDefaultConverter() {
         RedmineConfig config = new RedmineConfig();
-        return new GTaskToRedmine(config, TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS));
+        return new GTaskToRedmine(config, TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS), null);
     }
 
     private GTaskToRedmine createConverterWithSelectedField(GTaskDescriptor.FIELD field) {
@@ -137,6 +137,6 @@ public class GTaskToRedmineTest {
         RedmineConfig config = new RedmineConfig();
         Mappings mappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
         mappings.setMapping(field, selected, null);
-        return new GTaskToRedmine(config, mappings);
+        return new GTaskToRedmine(config, mappings, null);
     }
 }

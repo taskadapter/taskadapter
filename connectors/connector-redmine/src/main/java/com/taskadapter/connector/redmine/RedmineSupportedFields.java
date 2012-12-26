@@ -18,6 +18,7 @@ public class RedmineSupportedFields {
         builder.addField(GTaskDescriptor.FIELD.DUE_DATE, "Due Date");
         builder.addField(GTaskDescriptor.FIELD.START_DATE, "Start Date");
         builder.addField(GTaskDescriptor.FIELD.TASK_STATUS, "Task status");
+        builder.addField(GTaskDescriptor.FIELD.PRIORITY, "Priority");
         SUPPORTED_FIELDS = builder.end();
     }
 

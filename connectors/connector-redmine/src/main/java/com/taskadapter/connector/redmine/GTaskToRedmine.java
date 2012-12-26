@@ -11,6 +11,7 @@ import com.taskadapter.redmineapi.bean.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 class GTaskToRedmine {
 
@@ -18,10 +19,12 @@ class GTaskToRedmine {
     private Mappings mapping;
     private List<User> users;
     private List<IssueStatus> statusList;
+    private final Map<String, Integer> priorities;
 
-    GTaskToRedmine(RedmineConfig config, Mappings mapping) {
+    GTaskToRedmine(RedmineConfig config, Mappings mapping, Map<String, Integer> priorities) {
         this.config = config;
         this.mapping = mapping;
+        this.priorities = priorities;
         this.users = new ArrayList<User>();
     }
 
@@ -71,10 +74,24 @@ class GTaskToRedmine {
                 issue.setStatusName(status.getName());
             }
         }
-
+        
         if (mapping.isFieldSelected(FIELD.DESCRIPTION)) {
             issue.setDescription(task.getDescription());
         }
+        
+        if (mapping.isFieldSelected(FIELD.PRIORITY)) {
+            Integer priority = task.getPriority();
+            if (priority != null) {
+                final String priorityName = config.getPriorities()
+                        .getPriorityByMSP(priority);
+                final Integer val = priorities.get(priorityName);
+                if (val != null) {
+                    issue.setPriorityId(val);
+                    issue.setPriorityText(priorityName);
+                }
+            }
+        }
+        
         issue.setCreatedOn(task.getCreatedOn());
         issue.setUpdatedOn(task.getUpdatedOn());
 

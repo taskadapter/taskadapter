@@ -9,6 +9,7 @@ import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
 import com.taskadapter.web.configeditor.EditorUtil;
+import com.taskadapter.web.configeditor.PriorityPanel;
 import com.taskadapter.web.configeditor.ProjectPanel;
 import com.taskadapter.web.configeditor.server.ServerPanelWithAPIKey;
 import com.taskadapter.web.data.Messages;
@@ -66,6 +67,9 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
 
         gridLayout.addComponent(panel);
         gridLayout.addComponent(projectPanel);
+        PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(),
+                Interfaces.fromMethod(DataProvider.class, new PrioritiesLoader(config), "loadPriorities"), this);
+        gridLayout.addComponent(priorityPanel);
         gridLayout.addComponent(new OtherRedmineFieldsContainer(windowProvider, config, this));
         return gridLayout;
     }

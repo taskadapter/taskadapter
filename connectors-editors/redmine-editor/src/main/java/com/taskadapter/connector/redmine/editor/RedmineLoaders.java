@@ -1,10 +1,12 @@
 package com.taskadapter.connector.redmine.editor;
 
+import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.redmine.RedmineConfig;
+import com.taskadapter.connector.redmine.RedmineExceptions;
 import com.taskadapter.connector.redmine.RedmineManagerFactory;
 import com.taskadapter.connector.redmine.converter.RedmineProjectConverter;
 import com.taskadapter.model.GProject;
@@ -12,6 +14,7 @@ import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.bean.IssuePriority;
 import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.redmineapi.bean.SavedQuery;
 import com.taskadapter.redmineapi.bean.Tracker;
@@ -111,6 +114,25 @@ public class RedmineLoaders {
         for (Tracker tracker : trackers) {
             result.add(new NamedKeyedObjectImpl(Integer.toString(tracker
                     .getId()), tracker.getName()));
+        }
+        return result;
+    }
+    
+    public static Priorities loadPriorities(WebServerInfo server)
+            throws ConnectorException {
+        validate(server);
+        final Priorities defaultPriorities = RedmineConfig
+                .generateDefaultPriorities();
+        final RedmineManager mgr = RedmineManagerFactory
+                .createRedmineManager(server);
+        final Priorities result = new Priorities();
+        try {
+            for (IssuePriority prio : mgr.getIssuePriorities()) {
+                result.setPriority(prio.getName(),
+                        defaultPriorities.getPriorityByText(prio.getName()));
+            }
+        } catch (RedmineException e) {
+            throw RedmineExceptions.convertException(e);
         }
         return result;
     }

@@ -6,16 +6,20 @@ import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
+import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.RedmineProcessingException;
 import com.taskadapter.redmineapi.bean.Issue;
+import com.taskadapter.redmineapi.bean.IssuePriority;
 import com.taskadapter.redmineapi.bean.IssueStatus;
 import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.redmineapi.bean.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
 
@@ -23,10 +27,11 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
     private Project rmProject;
     private GTaskToRedmine converter;
     private RedmineToGTask toGTask;
+    private Mappings mappings;
 
     public RedmineTaskSaver(RedmineConfig config, Mappings mappings) {
         super(config);
-        converter = new GTaskToRedmine(config, mappings);
+        this.mappings = mappings;
         toGTask = new RedmineToGTask(config);
     }
 
@@ -39,8 +44,24 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
         } catch (RedmineException e) {
             throw RedmineExceptions.convertException(e);
         }
+        converter = new GTaskToRedmine(config, mappings, loadPriorities());
         converter.setUsers(loadUsers());
         converter.setStatusList(loadStatusList());
+    }
+
+    private Map<String, Integer> loadPriorities() throws ConnectorException {
+        if (!mappings.isFieldSelected(FIELD.PRIORITY)) {
+            return new HashMap<String, Integer>();
+        }
+        final Map<String, Integer> res = new HashMap<String, Integer>();
+        try {
+            for (IssuePriority prio : mgr.getIssuePriorities()) {
+                res.put(prio.getName(), prio.getId());
+            }
+        } catch (RedmineException e) {
+            throw RedmineExceptions.convertException(e);
+        }
+        return res;
     }
 
     private List<User> loadUsers() {

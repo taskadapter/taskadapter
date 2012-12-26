@@ -1,6 +1,7 @@
 package com.taskadapter.connector.redmine;
 
 import com.google.common.base.Objects;
+import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.WebServerInfo;
 
@@ -31,7 +32,7 @@ public class RedmineConfig extends ConnectorConfig {
     private String projectKey;
 
     public RedmineConfig() {
-        super(DEFAULT_PRIORITIES);
+        super(new HashMap<String, Integer>(DEFAULT_PRIORITIES));
         setLabel(DEFAULT_LABEL);
         setDefaultTaskType(TASK_TYPE_BUG);
     }
@@ -96,5 +97,9 @@ public class RedmineConfig extends ConnectorConfig {
 
     public void setProjectKey(String projectKey) {
         this.projectKey = projectKey;
+    }
+    
+    public static Priorities generateDefaultPriorities() {
+        return new Priorities(new HashMap<String, Integer>(DEFAULT_PRIORITIES));
     }
 }
