@@ -4,8 +4,8 @@ import com.taskadapter.connector.definition.*;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.model.GTask;
-import org.mantis.ta.MantisManager;
-import org.mantis.ta.beans.IssueData;
+import com.taskadapter.mantisapi.MantisManager;
+import com.taskadapter.mantisapi.beans.IssueData;
 
 import java.math.BigInteger;
 import java.rmi.RemoteException;
