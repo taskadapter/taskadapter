@@ -108,7 +108,7 @@ final class UniConfigExport {
                     .getConnector1().decodeException(e)));
         }
         try {
-            syncConfig.getConnector2().validateForLoad();
+            syncConfig.getConnector2().validateForSave();
         } catch (BadConfigException e) {
             rb.append(messages.format("configsPage.errorDestination",
                     syncConfig.getConnector2().decodeException(e)));

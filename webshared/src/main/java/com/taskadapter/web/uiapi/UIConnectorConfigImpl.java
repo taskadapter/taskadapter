@@ -1,8 +1,5 @@
 package com.taskadapter.web.uiapi;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
@@ -11,6 +8,7 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.service.Services;
+import com.taskadapter.webui.data.ExceptionFormatter;
 import com.vaadin.ui.ComponentContainer;
 
 /**
@@ -92,7 +90,11 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends UIConnector
 
     @Override
     public String decodeException(Throwable e) {
-        return editorFactory.formatError(e);
+        final String guess = editorFactory.formatError(e);
+        if (guess != null) {
+            return guess;
+        }
+        return ExceptionFormatter.format(e);
     }
 
 }

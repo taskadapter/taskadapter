@@ -32,6 +32,9 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
         if (e instanceof ServerURLNotSetException) {
             return MESSAGES.get("error.serverUrlNotSet");
         }
+        if (e instanceof QueryParametersNotSetException) {
+            return MESSAGES.get("error.queryParametersNotSet");
+        }
         if (e instanceof UnsupportedOperationException) {
             final UnsupportedOperationException uop = (UnsupportedOperationException) e;
             if ("updateRemoteIDs".equals(uop.getMessage())) {
@@ -81,10 +84,14 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
     }
 
     @Override
-    public void validateForLoad(MantisConfig config) throws ServerURLNotSetException {
+    public void validateForLoad(MantisConfig config) throws BadConfigException {
         final WebServerInfo serverInfo = config.getServerInfo();
         if (!serverInfo.isHostSet()) {
             throw new ServerURLNotSetException();
+        }
+        if ((config.getProjectKey() == null || config.getProjectKey().isEmpty()) && 
+                (config.getQueryId() == null)) {
+            throw new ProjectNotSetException();
         }
     }
 

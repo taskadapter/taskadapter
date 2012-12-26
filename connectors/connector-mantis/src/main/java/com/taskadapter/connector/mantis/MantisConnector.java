@@ -47,10 +47,12 @@ public class MantisConnector implements Connector<MantisConfig> {
             MantisManager mgr = MantisManagerFactory.createMantisManager(config.getServerInfo());
 
             final Long queryId = config.getQueryId();
+            final BigInteger pkey = config.getProjectKey() == null ? null
+                    : new BigInteger(config.getProjectKey());
             List<IssueData> issues = queryId == null ? mgr
-                    .getIssuesByProject(new BigInteger(config.getProjectKey()))
+                    .getIssuesByProject(pkey)
                     : mgr.getIssuesByFilter(
-                            new BigInteger(config.getProjectKey()),
+                            pkey,
                             BigInteger.valueOf(queryId));
             return convertToGenericTasks(issues);
         } catch (RemoteException e) {
