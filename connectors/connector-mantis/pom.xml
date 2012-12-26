@@ -29,9 +29,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.googlecode</groupId>
+            <groupId>com.taskadapter</groupId>
             <artifactId>mantis-java-api</artifactId>
-            <version>0.0.4</version>
+            <version>0.0.5</version>
         </dependency>
 
         <dependency>

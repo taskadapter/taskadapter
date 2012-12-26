@@ -1,11 +1,15 @@
 package com.taskadapter.connector.mantis;
 
 import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.mantisapi.beans.AccountData;
+import com.taskadapter.mantisapi.beans.IssueData;
+import com.taskadapter.mantisapi.beans.ObjectRef;
+import com.taskadapter.mantisapi.beans.ProjectData;
+import com.taskadapter.mantisapi.beans.RelationshipData;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GUser;
-import org.mantis.ta.beans.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

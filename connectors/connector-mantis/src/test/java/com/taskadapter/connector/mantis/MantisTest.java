@@ -2,6 +2,9 @@ package com.taskadapter.connector.mantis;
 
 import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.connector.testlib.TestSaver;
+import com.taskadapter.mantisapi.MantisManager;
+import com.taskadapter.mantisapi.beans.AccountData;
+import com.taskadapter.mantisapi.beans.ProjectData;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
@@ -10,9 +13,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mantis.ta.MantisManager;
-import org.mantis.ta.beans.AccountData;
-import org.mantis.ta.beans.ProjectData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

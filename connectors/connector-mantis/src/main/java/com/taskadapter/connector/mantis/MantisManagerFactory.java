@@ -1,7 +1,7 @@
 package com.taskadapter.connector.mantis;
 
 import com.taskadapter.connector.definition.WebServerInfo;
-import org.mantis.ta.MantisManager;
+import com.taskadapter.mantisapi.MantisManager;
 
 public class MantisManagerFactory {
     public static MantisManager createMantisManager(WebServerInfo serverInfo) {

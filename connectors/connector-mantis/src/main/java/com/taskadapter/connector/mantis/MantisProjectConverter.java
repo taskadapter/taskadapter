@@ -1,7 +1,7 @@
 package com.taskadapter.connector.mantis;
 
+import com.taskadapter.mantisapi.beans.ProjectData;
 import com.taskadapter.model.GProject;
-import org.mantis.ta.beans.ProjectData;
 
 import java.util.ArrayList;
 import java.util.List;

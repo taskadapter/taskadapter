@@ -5,13 +5,13 @@ import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.EntityProcessingException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
+import com.taskadapter.mantisapi.MantisManager;
+import com.taskadapter.mantisapi.RequiredItemException;
+import com.taskadapter.mantisapi.beans.AccountData;
+import com.taskadapter.mantisapi.beans.IssueData;
+import com.taskadapter.mantisapi.beans.ProjectData;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
-import org.mantis.ta.MantisManager;
-import org.mantis.ta.RequiredItemException;
-import org.mantis.ta.beans.AccountData;
-import org.mantis.ta.beans.IssueData;
-import org.mantis.ta.beans.ProjectData;
 
 import java.math.BigInteger;
 import java.rmi.RemoteException;
