@@ -4,15 +4,13 @@ import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.msp.MSPSupportedFields;
 import com.taskadapter.connector.msp.MSPTaskSaver;
-import com.taskadapter.connector.redmine.RedmineConfig;
-import com.taskadapter.connector.redmine.RedmineConnector;
-import com.taskadapter.connector.redmine.RedmineSupportedFields;
-import com.taskadapter.connector.redmine.RedmineToGTask;
+import com.taskadapter.connector.redmine.*;
 import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.integrationtests.RedmineTestConfig;
@@ -20,36 +18,77 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Issue;
+import com.taskadapter.redmineapi.bean.Project;
 import net.sf.mpxj.TaskField;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class UpdaterIntegrationTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(UpdaterIntegrationTest.class);
+    private static String projectKey;
+    private static RedmineManager mgr;
+
 
     private static final int TASKS_NUMBER = 1;
 
     private List<GTask> rmIssues;
 
     private Connector<?> redmineConnector;
-    private String projectKey;
     private RedmineConfig redmineConfig;
     private MSPConfig mspConfig;
     private Connector<?> projectConnector;
 
+    @BeforeClass
+    public static void oneTimeSetUp() {
+        WebServerInfo serverInfo = RedmineTestConfig.getRedmineTestConfig().getServerInfo();
+        logger.info("Running Redmine tests with: " + serverInfo);
+        mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getUserName(), serverInfo.getPassword());
+
+        Project project = new Project();
+        project.setName("integration test project");
+        project.setIdentifier("ittest"
+                + Calendar.getInstance().getTimeInMillis());
+        try {
+            Project createdProject = mgr.createProject(project);
+            projectKey = createdProject.getIdentifier();
+            logger.info("Created temporary Redmine project with key " + projectKey);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @AfterClass
+    public static void oneTimeTearDown() {
+        try {
+            if (mgr != null) {
+                mgr.deleteProject(projectKey);
+                logger.info("Deleted temporary Redmine project with ID " + projectKey);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("can't delete the test project '" + projectKey + ". reason: "
+                    + e.getMessage());
+        }
+    }
+
     @Before
-    public void init() {
+    public void beforeEachTest() {
         redmineConfig = RedmineTestConfig.getRedmineTestConfig();
+        redmineConfig.setProjectKey(projectKey);
         redmineConnector = new RedmineConnector(redmineConfig);
-        projectKey = redmineConfig.getProjectKey();
         mspConfig = createTempMSPConfig();
         projectConnector = new MSPConnector(mspConfig);
     }
