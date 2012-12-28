@@ -24,7 +24,10 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Project;
+import junit.framework.*;
 import org.junit.*;
+import org.junit.Assert;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -141,6 +144,7 @@ public class IntegrationTest extends FileBasedTest {
         final TaskSaveResult result = TaskSaver.save(redmineConnector, "Redmine target location",
                 redmineMappings, loadedTasks,
                 DUMMY_MONITOR);
+        assertEquals("must have created 2 tasks", 2, result.getCreatedTasksNumber());
         RemoteIdUpdater.updateRemoteIds(result.getIdToRemoteKeyMap(),
                 mspMappings, msProjectConnector);
 
