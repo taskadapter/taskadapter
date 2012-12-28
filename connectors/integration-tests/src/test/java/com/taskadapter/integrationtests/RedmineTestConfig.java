@@ -34,7 +34,6 @@ public class RedmineTestConfig {
         WebServerInfo rmInfo = new WebServerInfo(properties.getProperty("uri"), properties.getProperty("user"), properties.getProperty("password"));
         RedmineConfig redmineConfig = new RedmineConfig();
         redmineConfig.setServerInfo(rmInfo);
-        redmineConfig.setProjectKey(properties.getProperty("project.key"));
         return redmineConfig;
     }
 }

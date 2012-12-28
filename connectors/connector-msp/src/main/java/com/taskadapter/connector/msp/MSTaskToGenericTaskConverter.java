@@ -51,7 +51,7 @@ class MSTaskToGenericTaskConverter {
         genericTask.setKey(task.getUniqueID() + "");
 
         Task parent = task.getParentTask();
-        if (parent != null) {
+        if (parent != null && parent.getID()!= 0 && parent.getUniqueID() != 0) {
             genericTask.setParentKey(parent.getUniqueID() + "");
         }
 

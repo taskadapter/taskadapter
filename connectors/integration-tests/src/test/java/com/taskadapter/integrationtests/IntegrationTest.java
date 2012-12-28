@@ -5,6 +5,7 @@ import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.TaskSaveResult;
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
@@ -21,11 +22,15 @@ import com.taskadapter.core.TaskSaver;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
-import org.junit.Ignore;
-import org.junit.Test;
+import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.bean.Project;
+import org.junit.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Calendar;
 import java.util.List;
 
 import static com.taskadapter.integrationtests.MSPConfigLoader.generateTemporaryConfig;
@@ -41,8 +46,46 @@ import static org.junit.Assert.assertNotNull;
 public class IntegrationTest extends FileBasedTest {
 
     private static final ProgressMonitor DUMMY_MONITOR = ProgressMonitorUtils.getDummyMonitor();
+    private static final Logger logger = LoggerFactory.getLogger(IntegrationTest.class);
+    private static String projectKey;
+    private static RedmineManager mgr;
 
     private LicenseManager licenseManager;
+
+
+    @BeforeClass
+    public static void oneTimeSetUp() {
+        WebServerInfo serverInfo = RedmineTestConfig.getRedmineTestConfig().getServerInfo();
+        logger.info("Running Redmine tests with: " + serverInfo);
+        mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getUserName(), serverInfo.getPassword());
+
+        Project project = new Project();
+        project.setName("integration tests");
+        project.setIdentifier("itest"
+                + Calendar.getInstance().getTimeInMillis());
+        try {
+            Project createdProject = mgr.createProject(project);
+            projectKey = createdProject.getIdentifier();
+            logger.info("Created temporary Redmine project with key " + projectKey);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @AfterClass
+    public static void oneTimeTearDown() {
+        try {
+            if (mgr != null) {
+                mgr.deleteProject(projectKey);
+                logger.info("Deleted temporary Redmine project with ID " + projectKey);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail("can't delete the test project '" + projectKey + ". reason: "
+                    + e.getMessage());
+        }
+    }
 
     @Override
     public void beforeEachTest() {
@@ -57,7 +100,7 @@ public class IntegrationTest extends FileBasedTest {
     @Test
     public void testSaveRemoteId() throws IOException {
         RedmineConfig config = RedmineTestConfig.getRedmineTestConfig();
-        config.setProjectKey("test");
+        config.setProjectKey(projectKey);
         // XXX query id is hardcoded
         config.setQueryId(1);
 
@@ -87,7 +130,9 @@ public class IntegrationTest extends FileBasedTest {
 
         Mappings mspMappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
         mspMappings.setMapping(GTaskDescriptor.FIELD.REMOTE_ID, true, MSPUtils.getDefaultRemoteIdMapping());
-        RedmineConnector redmineConnector = new RedmineConnector(RedmineTestConfig.getRedmineTestConfig());
+        RedmineConfig redmineConfig = RedmineTestConfig.getRedmineTestConfig();
+        redmineConfig.setProjectKey(projectKey);
+        RedmineConnector redmineConnector = new RedmineConnector(redmineConfig);
         Mappings redmineMappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
 
         // load from MSP
@@ -113,6 +158,7 @@ public class IntegrationTest extends FileBasedTest {
     @Test
     public void testOneSideDisconnectedRelationships() throws IOException, ConnectorException {
         RedmineConfig redmineConfigTo = RedmineTestConfig.getRedmineTestConfig();
+        redmineConfigTo.setProjectKey(projectKey);
 
         MSPConfig mspConfig = generateTemporaryConfig("com/taskadapter/integrationtests/ProjectWithOneSideDisconnectedRelationships.xml");
         Connector<?> projectConnector = new MSPConnector(mspConfig);
