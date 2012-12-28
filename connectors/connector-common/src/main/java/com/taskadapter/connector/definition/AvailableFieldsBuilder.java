@@ -90,7 +90,8 @@ public final class AvailableFieldsBuilder {
     }
     
     /**
-     * Sets a last added field default value.
+     * Sets the default value for the last added field.
+     *
      * @param value new default value. Must be one of an allowed field values.
      * @return <code>this</code> builder.
      * @throws IllegalStateException if there are no fields at all.
