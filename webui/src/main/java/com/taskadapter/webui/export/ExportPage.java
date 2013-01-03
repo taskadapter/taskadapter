@@ -10,6 +10,7 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.RemoteIdUpdater;
 import com.taskadapter.core.TaskLoader;
 import com.taskadapter.core.TaskSaver;
+import com.taskadapter.license.LicenseManager;
 import com.taskadapter.model.GTask;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.file.FileDownloadResource;
@@ -31,10 +32,15 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.taskadapter.license.LicenseManager.TRIAL_MESSAGE;
+import static com.taskadapter.license.LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
+
 public class ExportPage extends ActionPage {
 
     private static final String TRANSPORT_ERROR = "There was a problem communicating with the server. " +
             "Please check that the server name is valid and the server is accessible.";
+
+    private static final int MAX_TASKS_TO_LOAD = 99999999;
 
     private final Logger logger = LoggerFactory.getLogger(ExportPage.class);
 
@@ -54,9 +60,18 @@ public class ExportPage extends ActionPage {
     @Override
     protected void loadData() {
         try {
-            Connector<?> sourceConnector = config.getConnector1().createConnectorInstance(); 
+            Connector<?> sourceConnector = config.getConnector1().createConnectorInstance();
+
+            int maxTasksToLoad;
+            if (services.getLicenseManager().isSomeValidLicenseInstalled()) {
+                maxTasksToLoad = MAX_TASKS_TO_LOAD;
+            } else {
+                logger.info(TRIAL_MESSAGE);
+                maxTasksToLoad = TRIAL_TASKS_NUMBER_LIMIT;
+            }
+
             this.loadedTasks = TaskLoader.loadTasks(
-                    services.getLicenseManager(), sourceConnector,
+                    maxTasksToLoad, sourceConnector,
                     config.getConnector1().getLabel(),
                     config.generateSourceMappings(),
                     ProgressMonitorUtils.getDummyMonitor());

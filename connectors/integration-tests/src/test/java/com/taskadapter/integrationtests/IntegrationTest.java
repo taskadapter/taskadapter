@@ -19,13 +19,14 @@ import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.core.RemoteIdUpdater;
 import com.taskadapter.core.TaskLoader;
 import com.taskadapter.core.TaskSaver;
-import com.taskadapter.license.LicenseManager;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Project;
-import org.junit.*;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,9 +52,6 @@ public class IntegrationTest extends FileBasedTest {
     private static final Logger logger = LoggerFactory.getLogger(IntegrationTest.class);
     private static String projectKey;
     private static RedmineManager mgr;
-
-    private LicenseManager licenseManager;
-
 
     @BeforeClass
     public static void oneTimeSetUp() {
@@ -92,7 +90,6 @@ public class IntegrationTest extends FileBasedTest {
     @Override
     public void beforeEachTest() {
         super.beforeEachTest();
-        licenseManager = new LicenseManager(tempFolder);
     }
 
     // this test is ignored because "load" operation does not set remote id anymore,
@@ -138,7 +135,8 @@ public class IntegrationTest extends FileBasedTest {
         Mappings redmineMappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
 
         // load from MSP
-        List<GTask> loadedTasks = TaskLoader.loadTasks(licenseManager, msProjectConnector, "msp1", mspMappings, DUMMY_MONITOR);
+        int maxTasksNumber = 999999;
+        List<GTask> loadedTasks = TaskLoader.loadTasks(maxTasksNumber, msProjectConnector, "msp1", mspMappings, DUMMY_MONITOR);
         // save to Redmine. this should save the remote IDs
         final TaskSaveResult result = TaskSaver.save(redmineConnector, "Redmine target location",
                 redmineMappings, loadedTasks,
@@ -148,7 +146,7 @@ public class IntegrationTest extends FileBasedTest {
                 mspMappings, msProjectConnector);
 
         //reload from MSP file
-        List<GTask> tasksReloadedFromMSPFile = TaskLoader.loadTasks(licenseManager, msProjectConnector, "msp2", mspMappings, DUMMY_MONITOR);
+        List<GTask> tasksReloadedFromMSPFile = TaskLoader.loadTasks(maxTasksNumber, msProjectConnector, "msp2", mspMappings, DUMMY_MONITOR);
 
         assertEquals(2, tasksReloadedFromMSPFile.size());
 
@@ -167,7 +165,8 @@ public class IntegrationTest extends FileBasedTest {
         Connector<?> projectConnector = new MSPConnector(mspConfig);
 
         Mappings mspMappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
-        List<GTask> loadedTasks = TaskLoader.loadTasks(licenseManager, projectConnector, "project1", mspMappings, DUMMY_MONITOR);
+        int maxTasksNumber = 999999;
+        List<GTask> loadedTasks = TaskLoader.loadTasks(maxTasksNumber, projectConnector, "project1", mspMappings, DUMMY_MONITOR);
         try {
             // save to Redmine
             Mappings redmineMappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);

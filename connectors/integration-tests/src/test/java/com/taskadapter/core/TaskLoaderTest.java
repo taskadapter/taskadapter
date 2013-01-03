@@ -10,7 +10,6 @@ import com.taskadapter.connector.msp.MSPSupportedFields;
 import com.taskadapter.connector.testlib.FileBasedTest;
 import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.integrationtests.MSPConfigLoader;
-import com.taskadapter.license.LicenseManager;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import net.sf.mpxj.TaskField;
@@ -35,7 +34,8 @@ public class TaskLoaderTest extends FileBasedTest {
         mappings.setMapping(GTaskDescriptor.FIELD.REMOTE_ID, true, TaskField.TEXT22.toString());
 
         Connector<?> projectConnector = new MSPConnector(mspConfig);
-        List<GTask> list = TaskLoader.loadTasks(new LicenseManager(tempFolder), projectConnector, "project1", mappings, ProgressMonitorUtils.getDummyMonitor());
+        int maxTasksNumber = 999999;
+        List<GTask> list = TaskLoader.loadTasks(maxTasksNumber, projectConnector, "project1", mappings, ProgressMonitorUtils.getDummyMonitor());
         assertEquals(1, list.size());
     }
 

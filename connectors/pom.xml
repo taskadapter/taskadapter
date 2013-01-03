@@ -32,7 +32,6 @@
     <modules>
         <module>mainapp</module>
         <module>license</module>
-        <module>core</module>
         <module>test-utilities</module>
         <module>connector-jira</module>
         <module>connector-mantis</module>
