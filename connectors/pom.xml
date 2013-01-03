@@ -30,9 +30,7 @@
     </build>
 
     <modules>
-        <module>connector-common</module>
         <module>mainapp</module>
-        <module>model</module>
         <module>license</module>
         <module>core</module>
         <module>test-utilities</module>
@@ -100,6 +98,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
             <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.taskadapter</groupId>
+            <artifactId>common</artifactId>
+            <version>1</version>
         </dependency>
     </dependencies>
 

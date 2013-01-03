@@ -10,8 +10,6 @@ import com.google.common.collect.Lists;
 import com.taskadapter.model.GRelation;
 
 import java.rmi.RemoteException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 
 public class JiraConnection {

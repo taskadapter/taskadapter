@@ -1,8 +1,5 @@
 package com.taskadapter.connector.github.editor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.LoginNameNotSpecifiedException;

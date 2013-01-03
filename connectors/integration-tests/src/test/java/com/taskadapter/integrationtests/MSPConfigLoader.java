@@ -4,8 +4,6 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.taskadapter.connector.msp.MSPConfig;
-import com.taskadapter.model.GTaskDescriptor;
-import net.sf.mpxj.TaskField;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,6 +1,5 @@
 package com.taskadapter.connector.common;
 
-import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.model.GTask;
 import org.junit.Assert;
 import org.junit.Test;

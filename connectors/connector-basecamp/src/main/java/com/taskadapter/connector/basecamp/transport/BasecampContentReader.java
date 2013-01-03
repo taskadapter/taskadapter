@@ -17,7 +17,6 @@ import org.apache.http.HttpStatus;
 import com.taskadapter.connector.basecamp.exceptions.ExternalInterlalFailure;
 import com.taskadapter.connector.basecamp.exceptions.FatalMisunderstaningException;
 import com.taskadapter.connector.basecamp.exceptions.ThrottlingException;
-import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 

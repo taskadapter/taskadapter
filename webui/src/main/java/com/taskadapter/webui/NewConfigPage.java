@@ -3,7 +3,6 @@ package com.taskadapter.webui;
 import com.taskadapter.config.StorageException;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.web.uiapi.UISyncConfig;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -13,7 +12,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 
 import java.util.Iterator;
 

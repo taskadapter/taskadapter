@@ -6,9 +6,7 @@ import com.taskadapter.connector.basecamp.exceptions.ObjectNotFoundException;
 import com.taskadapter.connector.basecamp.transport.BaseCommunicator;
 import com.taskadapter.connector.basecamp.transport.ObjectAPI;
 import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory;
-import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.model.GProject;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -19,8 +19,8 @@
         </dependency>
         <dependency>
             <groupId>com.taskadapter</groupId>
-            <artifactId>connector-common</artifactId>
-            <version>2.0.0</version>
+            <artifactId>common</artifactId>
+            <version>1</version>
         </dependency>
 
         <dependency>

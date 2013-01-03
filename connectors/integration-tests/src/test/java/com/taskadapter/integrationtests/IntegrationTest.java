@@ -24,7 +24,6 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Project;
-import junit.framework.*;
 import org.junit.*;
 import org.junit.Assert;
 import org.junit.Test;

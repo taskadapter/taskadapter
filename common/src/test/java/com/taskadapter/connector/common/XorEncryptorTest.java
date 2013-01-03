@@ -3,9 +3,6 @@ package com.taskadapter.connector.common;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- * @author Igor Laishen
- */
 public class XorEncryptorTest {
     @Test
     public void shouldEncryptWithDefaultMarker() throws Exception {
