@@ -14,17 +14,6 @@
     <dependencies>
         <dependency>
             <groupId>com.taskadapter</groupId>
-            <artifactId>model</artifactId>
-            <version>2.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.taskadapter</groupId>
-            <artifactId>common</artifactId>
-            <version>1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.taskadapter</groupId>
             <artifactId>redmine-java-api</artifactId>
             <version>1.17</version>
         </dependency>
