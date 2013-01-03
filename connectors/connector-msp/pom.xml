@@ -12,12 +12,6 @@
     <version>2.0.0</version>
     <dependencies>
         <dependency>
-            <groupId>com.taskadapter</groupId>
-            <artifactId>test-utilities</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>net.sourceforge</groupId>
             <artifactId>mpxj</artifactId>
             <version>4.3.0</version>

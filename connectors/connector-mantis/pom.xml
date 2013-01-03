@@ -14,12 +14,6 @@
     <dependencies>
         <dependency>
             <groupId>com.taskadapter</groupId>
-            <artifactId>test-utilities</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.taskadapter</groupId>
             <artifactId>mantis-java-api</artifactId>
             <version>0.0.5</version>
         </dependency>

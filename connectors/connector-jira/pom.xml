@@ -15,12 +15,6 @@
     <dependencies>
         <dependency>
             <groupId>com.taskadapter</groupId>
-            <artifactId>test-utilities</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.taskadapter</groupId>
             <artifactId>jira-rest-java-client</artifactId>
             <version>1.0</version>
         </dependency>

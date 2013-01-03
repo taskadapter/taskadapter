@@ -32,7 +32,6 @@
     <modules>
         <module>mainapp</module>
         <module>license</module>
-        <module>test-utilities</module>
         <module>connector-jira</module>
         <module>connector-mantis</module>
         <module>connector-redmine</module>
@@ -69,15 +68,15 @@
                 <artifactId>license</artifactId>
                 <version>1.1</version>
             </dependency>
-            <dependency>
-                <groupId>com.taskadapter</groupId>
-                <artifactId>test-utilities</artifactId>
-                <version>1</version>
-                <scope>test</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
+        <dependency>
+            <groupId>com.taskadapter</groupId>
+            <artifactId>test-utilities</artifactId>
+            <version>1</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

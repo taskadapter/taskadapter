@@ -12,16 +12,6 @@
     <version>2.0.0</version>
     <dependencies>
         <dependency>
-            <groupId>com.taskadapter</groupId>
-            <artifactId>common</artifactId>
-            <version>1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.taskadapter</groupId>
-            <artifactId>test-utilities</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.mylyn.github</groupId>
             <artifactId>org.eclipse.egit.github.core</artifactId>
             <version>2.0.4</version>
