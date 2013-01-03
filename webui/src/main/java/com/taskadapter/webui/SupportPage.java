@@ -1,7 +1,6 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.license.LicenseManager;
-import com.taskadapter.web.service.LastVersionLoader;
 import com.taskadapter.webui.license.LicensePanel;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Sizeable;

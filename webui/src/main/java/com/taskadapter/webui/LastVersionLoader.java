@@ -1,4 +1,4 @@
-package com.taskadapter.web.service;
+package com.taskadapter.webui;
 
 import com.google.common.io.InputSupplier;
 import com.google.common.io.Resources;

@@ -30,7 +30,6 @@
     </build>
 
     <modules>
-        <module>mainapp</module>
         <module>license</module>
         <module>connector-jira</module>
         <module>connector-mantis</module>

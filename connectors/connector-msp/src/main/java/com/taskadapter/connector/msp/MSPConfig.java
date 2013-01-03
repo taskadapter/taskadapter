@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class MSPConfig extends ConnectorConfig {
     private static final long serialVersionUID = 1L;
-    
+
     private static final Map<String, Integer> DEFAULT_PRIORITIES = new HashMap<String, Integer>();
     static {
         DEFAULT_PRIORITIES.put("100", 100);

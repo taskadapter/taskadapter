@@ -4,7 +4,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.atlassian.jira.rpc.soap.client.RemoteException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 
@@ -57,8 +56,6 @@ public class MantisLoaders {
                         .getName()));
             }
             return res;
-        } catch (RemoteException e) {
-            throw MantisUtils.convertException(e);
         } catch (java.rmi.RemoteException e) {
             throw MantisUtils.convertException(e);
         }

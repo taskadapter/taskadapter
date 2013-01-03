@@ -1,4 +1,4 @@
-package com.taskadapter.web.service;
+package com.taskadapter.webui;
 
 import org.junit.Test;
 
