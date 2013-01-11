@@ -9,7 +9,6 @@ import com.atlassian.jira.rest.client.domain.TimeTracking;
 import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
-import com.atlassian.jira.rpc.soap.client.RemoteCustomFieldValue;
 import com.google.common.collect.ImmutableList;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.model.GTask;
@@ -26,17 +25,26 @@ public class GTaskToJira {
     private static final Long ISSUE_TYPE_ID = 1l;
 
     private final JiraConfig config;
-    private Mappings mappings;
+    private final Mappings mappings;
 
     private final Map<String, BasicPriority> priorities = new HashMap<String, BasicPriority>();
     private final Map<String, BasicPriority> prioritiesOtherWay = new HashMap<String, BasicPriority>();
-    private Iterable<IssueType> issueTypeList;
-    private Iterable<Version> versions;
-    private Iterable<BasicComponent> components;
+    private final Iterable<IssueType> issueTypeList;
+    private final Iterable<Version> versions;
+    private final Iterable<BasicComponent> components;
 
-    public GTaskToJira(JiraConfig config, Mappings mappings) {
+    public GTaskToJira(JiraConfig config, Mappings mappings,
+            Iterable<IssueType> issueTypeList, Iterable<Version> versions,
+            Iterable<BasicComponent> components, Iterable<Priority> jiraPriorities) {
         this.config = config;
         this.mappings = mappings;
+        this.issueTypeList = issueTypeList;
+        this.versions = versions;
+        this.components = components;
+        for (Priority jiraPriority : jiraPriorities) {
+            priorities.put(jiraPriority.getName(), jiraPriority);
+            prioritiesOtherWay.put(String.valueOf(jiraPriority.getId()), jiraPriority);
+        }
     }
 
     public IssueInput convertToJiraIssue(GTask task) {
@@ -136,52 +144,12 @@ public class GTaskToJira {
         return null;
     }
 
-    private RemoteCustomFieldValue[] getCustomFieldsForIssue(Map<String, String> configCustomFields) {
-
-        RemoteCustomFieldValue[] values = new RemoteCustomFieldValue[configCustomFields.size()];
-
-        int i = 0;
-        for (Map.Entry<String, String> entry : configCustomFields.entrySet()) {
-            // RemoteField field = getField(possibleCustomFields, key);
-            // parentKey : Used for multidimensional custom fields such as
-            // Cascading select lists. Null in other cases
-            String parentKey = null;
-            values[i++] = new RemoteCustomFieldValue(entry.getKey(), parentKey, new String[]{entry.getValue()});
-        }
-        return values;
-    }
-
-    public void setPriorities(Iterable<Priority> jiraPriorities) {
-        for (Priority jiraPriority : jiraPriorities) {
-            priorities.put(jiraPriority.getName(), jiraPriority);
-            prioritiesOtherWay.put(String.valueOf(jiraPriority.getId()), jiraPriority);
-        }
-    }
-
-    public void setIssueTypeList(Iterable<IssueType> issueTypeList) {
-        this.issueTypeList = issueTypeList;
-    }
-
     private Long getIssueTypeIdByName(String issueTypeName) {
-        if (issueTypeList == null) {
-            throw new IllegalStateException("Issue Type list is not set in GTaskToJira. Please set it before converting tasks.");
-        }
-        Long issueTypeId = null;
-
         for (IssueType anIssueTypeList : issueTypeList) {
             if (anIssueTypeList.getName().equals(issueTypeName)) {
-                issueTypeId = anIssueTypeList.getId();
-                break;
+                return anIssueTypeList.getId();
             }
         }
-        return issueTypeId;
-    }
-
-    public void setVersions(Iterable<Version> versions) {
-        this.versions = versions;
-    }
-
-    public void setComponents(Iterable<BasicComponent> components) {
-        this.components = components;
+        return null;
     }
 }

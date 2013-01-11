@@ -17,35 +17,27 @@ import java.util.List;
 
 public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
 
-    private JiraConnection connection;
+    private final JiraConnection connection;
     private final GTaskToJira converter;
     private final JiraToGTask jiraToGTask;
 
-    public JiraTaskSaver(JiraConfig config, Mappings mappings) {
+    public JiraTaskSaver(JiraConfig config, Mappings mappings) throws ConnectorException {
         super(config);
-        converter = new GTaskToJira(config, mappings);
         jiraToGTask = new JiraToGTask(config.getPriorities());
-    }
-
-    @Override
-    public void beforeSave() throws ConnectorException {
+        
         try {
             connection = JiraConnectionFactory.createConnection(config.getServerInfo());
 
-            Iterable<IssueType> issueTypeList = checkDefaultIssueTypeExistsOnServer();
-
-            converter.setIssueTypeList(issueTypeList);
-
-            Iterable<Version> versions = connection.getVersions(config.getProjectKey());
-            converter.setVersions(versions);
-
-            Iterable<BasicComponent> components = connection.getComponents(config.getProjectKey());
-            converter.setComponents(components);
+            final Iterable<IssueType> issueTypeList = checkDefaultIssueTypeExistsOnServer();
+            final Iterable<Version> versions = connection.getVersions(config.getProjectKey());
+            final Iterable<BasicComponent> components = connection.getComponents(config.getProjectKey());
 
             /* Need to load Jira server priorities because what we store in the config files is a
                 * priority name (string), while Jira returns the number value of the issue priority */
-            Iterable<Priority> jiraPriorities = connection.getPriorities();
-            converter.setPriorities(jiraPriorities);
+            final Iterable<Priority> jiraPriorities = connection.getPriorities();
+            
+            converter = new GTaskToJira(config, mappings, issueTypeList,
+                    versions, components, jiraPriorities);
         } catch (RemoteException e) {
             throw JiraUtils.convertException(e);
         } catch (MalformedURLException e) {

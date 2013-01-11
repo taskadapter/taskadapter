@@ -66,14 +66,6 @@ public class GTaskToJiraTest {
         config = new JiraTestData().createTestConfig();
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void noIssueTypesSetGeneratesIllegalStateException() {
-        GTaskToJira converter = new GTaskToJira(config, TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS));
-        GTask task = new GTask();
-        task.setSummary("some task");
-        converter.convertToJiraIssue(task);
-    }
-
     @Test
     public void priorityConvertedToCritical() throws MalformedURLException, RemoteException, URISyntaxException {
         Priority priorityCritical = find(priorities, "Critical");
@@ -286,11 +278,7 @@ public class GTaskToJiraTest {
     }
 
     private GTaskToJira getConverter(Mappings mappings) {
-        GTaskToJira converter = new GTaskToJira(config, mappings);
-        converter.setPriorities(priorities);
-        converter.setIssueTypeList(issueTypeList);
-        converter.setVersions(versions);
-        converter.setComponents(components);
+        GTaskToJira converter = new GTaskToJira(config, mappings, issueTypeList, versions, components, priorities);
         return converter;
 
     }
@@ -307,11 +295,7 @@ public class GTaskToJiraTest {
         JiraConfig config = new JiraTestData().createTestConfig();
         Mappings mappings = TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS);
         mappings.setMapping(field, selected, null);
-        GTaskToJira converter = new GTaskToJira(config, mappings);
-        converter.setPriorities(priorities);
-        converter.setIssueTypeList(issueTypeList);
-        converter.setVersions(versions);
-        converter.setComponents(components);
+        GTaskToJira converter = new GTaskToJira(config, mappings, issueTypeList, versions, components, priorities);
         return converter;
     }
 
