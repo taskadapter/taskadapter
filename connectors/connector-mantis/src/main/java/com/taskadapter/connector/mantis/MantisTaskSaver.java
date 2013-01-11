@@ -20,40 +20,23 @@ import java.util.List;
 
 public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig> {
 
-    private MantisManager mgr;
-    private ProjectData mntProject;
-    private MantisDataConverter converter;
+    private final MantisManager mgr;
+    private final ProjectData mntProject;
+    private final MantisDataConverter converter;
 	private Mappings mappings;
 
-    public MantisTaskSaver(MantisConfig config, Mappings mappings) {
+    public MantisTaskSaver(MantisConfig config, Mappings mappings) throws ConnectorException {
         super(config);
 		this.mappings = mappings;
-    }
-
-    @Override
-    public void beforeSave() throws ConnectorException {
         this.mgr = MantisManagerFactory.createMantisManager(config.getServerInfo());
         try {
             mntProject = mgr.getProjectById(new BigInteger(config.getProjectKey()));
-            converter = new MantisDataConverter(config);
-            converter.setUsers(loadUsers());
+            final List<AccountData> users = config.isFindUserByName() ? mgr
+                    .getUsers() : new ArrayList<AccountData>();
+            converter = new MantisDataConverter(config, users);
         } catch (RemoteException e) {
             throw MantisUtils.convertException(e);
         } 
-    }
-
-    private List<AccountData> loadUsers() {
-        List<AccountData> users;
-        if (config.isFindUserByName()) {
-            try {
-                users = mgr.getUsers();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            users = new ArrayList<AccountData>();
-        }
-        return users;
     }
 
     @Override

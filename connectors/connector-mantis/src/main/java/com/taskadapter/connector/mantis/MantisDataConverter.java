@@ -39,10 +39,11 @@ public class MantisDataConverter {
     };
 
     private final MantisConfig config;
-    private List<AccountData> users;
+    private final List<AccountData> users;
 
-    public MantisDataConverter(MantisConfig config) {
+    public MantisDataConverter(MantisConfig config, List<AccountData> users) {
         this.config = config;
+        this.users = users;
     }
 
     public static GUser convertToGUser(AccountData mantisUser) {
@@ -158,10 +159,6 @@ public class MantisDataConverter {
                 }
             }
         }
-    }
-
-    public void setUsers(List<AccountData> users) {
-        this.users = users;
     }
 
     /**
