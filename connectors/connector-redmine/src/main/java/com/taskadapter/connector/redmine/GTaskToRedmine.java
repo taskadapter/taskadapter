@@ -9,32 +9,36 @@ import com.taskadapter.redmineapi.bean.IssueStatus;
 import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.redmineapi.bean.User;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 class GTaskToRedmine {
 
     private final RedmineConfig config;
-    private Mappings mapping;
-    private List<User> users;
-    private List<IssueStatus> statusList;
+    private final Mappings mapping;
+    private final List<User> users;
+    private final List<IssueStatus> statusList;
     private final Map<String, Integer> priorities;
+    private final Project project;
 
-    GTaskToRedmine(RedmineConfig config, Mappings mapping, Map<String, Integer> priorities) {
+    GTaskToRedmine(RedmineConfig config, Mappings mapping,
+            Map<String, Integer> priorities, Project project, List<User> users,
+            List<IssueStatus> statusList) {
         this.config = config;
         this.mapping = mapping;
         this.priorities = priorities;
-        this.users = new ArrayList<User>();
+        this.project = project;
+        this.users = users;
+        this.statusList = statusList;
     }
 
     // TODO refactor this into multiple tiny testable methods
-    public Issue convertToRedmineIssue(Project rmProject, GTask task) {
+    public Issue convertToRedmineIssue(GTask task) {
         Issue issue = new Issue();
         if (task.getParentKey() != null) {
             issue.setParentId(Integer.parseInt(task.getParentKey()));
         }
-        issue.setProject(rmProject);
+        issue.setProject(project);
 
         if (mapping.isFieldSelected(FIELD.SUMMARY)) {
             issue.setSubject(task.getSummary());
@@ -59,7 +63,7 @@ class GTaskToRedmine {
             if (trackerName == null) {
                 trackerName = config.getDefaultTaskType();
             }
-            issue.setTracker(rmProject.getTrackerByName(trackerName));
+            issue.setTracker(project.getTrackerByName(trackerName));
         }
 
         if (mapping.isFieldSelected(FIELD.TASK_STATUS)) {
@@ -131,15 +135,6 @@ class GTaskToRedmine {
                 issue.setStatusName(status.getName());
             }
         }
-    }
-
-    // TODO add test for users
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
-
-    public void setStatusList(List<IssueStatus> statusList) {
-        this.statusList = statusList;
     }
 
     /**

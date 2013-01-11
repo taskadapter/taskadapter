@@ -23,33 +23,33 @@ import java.util.Map;
 
 public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
 
-    private RedmineManager mgr;
-    private Project rmProject;
-    private GTaskToRedmine converter;
-    private RedmineToGTask toGTask;
-    private Mappings mappings;
+    private final RedmineManager mgr;
+    private final Project rmProject;
+    private final GTaskToRedmine converter;
+    private final RedmineToGTask toGTask;
 
-    public RedmineTaskSaver(RedmineConfig config, Mappings mappings) {
+    public RedmineTaskSaver(RedmineConfig config, Mappings mappings)
+            throws ConnectorException {
         super(config);
-        this.mappings = mappings;
+        this.rmProject = loadProject();
+        this.mgr = RedmineManagerFactory.createRedmineManager(config
+                .getServerInfo());
+        this.converter = new GTaskToRedmine(config, mappings,
+                loadPriorities(mappings), rmProject, loadUsers(),
+                loadStatusList());
         toGTask = new RedmineToGTask(config);
     }
 
-    @Override
-    public void beforeSave() throws ConnectorException {
-        this.mgr = RedmineManagerFactory.createRedmineManager(config
-                .getServerInfo());
+    private Project loadProject() throws ConnectorException {
         try {
-            rmProject = mgr.getProjectByKey(config.getProjectKey());
+            return mgr.getProjectByKey(config.getProjectKey());
         } catch (RedmineException e) {
             throw RedmineExceptions.convertException(e);
         }
-        converter = new GTaskToRedmine(config, mappings, loadPriorities());
-        converter.setUsers(loadUsers());
-        converter.setStatusList(loadStatusList());
     }
 
-    private Map<String, Integer> loadPriorities() throws ConnectorException {
+    private Map<String, Integer> loadPriorities(final Mappings mappings)
+            throws ConnectorException {
         if (!mappings.isFieldSelected(FIELD.PRIORITY)) {
             return new HashMap<String, Integer>();
         }
@@ -64,18 +64,16 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
         return res;
     }
 
-    private List<User> loadUsers() {
-        List<User> users;
-        if (config.isFindUserByName()) {
-            try {
-                users = mgr.getUsers();
-            } catch (RedmineException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            users = new ArrayList<User>();
+    private List<User> loadUsers() throws ConnectorException {
+        if (!config.isFindUserByName()) {
+            return new ArrayList<User>();
         }
-        return users;
+        
+        try {
+            return mgr.getUsers();
+        } catch (RedmineException e) {
+            throw RedmineExceptions.convertException(e);
+        }
     }
 
     private List<IssueStatus> loadStatusList() throws ConnectorException {
@@ -92,7 +90,7 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
 
     @Override
     protected Issue convertToNativeTask(GTask task) {
-        return converter.convertToRedmineIssue(rmProject, task);
+        return converter.convertToRedmineIssue(task);
     }
 
     @Override
