@@ -7,7 +7,7 @@ import org.eclipse.egit.github.core.service.IssueService;
 
 import java.io.IOException;
 
-class GithubTaskSaver implements BasicIssueSaveAPI<Issue> {
+final class GithubTaskSaver implements BasicIssueSaveAPI<Issue> {
 
     private IssueService issueService;
 

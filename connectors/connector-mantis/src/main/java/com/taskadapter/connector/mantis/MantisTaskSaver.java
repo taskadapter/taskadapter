@@ -10,7 +10,7 @@ import com.taskadapter.mantisapi.beans.IssueData;
 import java.math.BigInteger;
 import java.rmi.RemoteException;
 
-public class MantisTaskSaver implements BasicIssueSaveAPI<IssueData> {
+final class MantisTaskSaver implements BasicIssueSaveAPI<IssueData> {
 
     private final MantisManager mgr;
 

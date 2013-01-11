@@ -9,7 +9,7 @@ import com.taskadapter.model.GRelation;
 
 import java.util.List;
 
-public class JiraTaskSaver implements RelationSaver, BasicIssueSaveAPI<IssueInput> {
+final class JiraTaskSaver implements RelationSaver, BasicIssueSaveAPI<IssueInput> {
 
     private final JiraConnection connection;
 

@@ -13,7 +13,7 @@ import com.taskadapter.redmineapi.bean.Project;
 
 import java.util.List;
 
-public class RedmineTaskSaver implements RelationSaver, BasicIssueSaveAPI<Issue> {
+final class RedmineTaskSaver implements RelationSaver, BasicIssueSaveAPI<Issue> {
 
     private final RedmineManager mgr;
     private final Project rmProject;

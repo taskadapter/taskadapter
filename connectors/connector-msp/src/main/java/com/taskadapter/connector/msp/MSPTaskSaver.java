@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
-public class MSPTaskSaver {
+public final class MSPTaskSaver {
 
     private static final Logger logger = LoggerFactory.getLogger(MSPTaskSaver.class);
     private final TaskSaveResultBuilder result = new TaskSaveResultBuilder();
