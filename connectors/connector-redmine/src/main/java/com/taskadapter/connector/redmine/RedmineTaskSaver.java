@@ -1,6 +1,7 @@
 package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.common.AbstractTaskSaver;
+import com.taskadapter.connector.common.RelationSaver;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
@@ -22,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig, Issue> {
+public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig, Issue> implements RelationSaver {
 
     private final RedmineManager mgr;
     private final Project rmProject;
@@ -121,7 +122,7 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig, Issue> {
     }
 
     @Override
-    protected void saveRelations(List<GRelation> relations) {
+    public void saveRelations(List<GRelation> relations) throws ConnectorException {
         try {
             for (GRelation gRelation : relations) {
                 int taskKey = Integer.parseInt(gRelation.getTaskKey());
@@ -130,9 +131,9 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig, Issue> {
                 mgr.createRelation(taskKey, relatedTaskKey, gRelation.getType().toString());
             }
         } catch (RedmineProcessingException e) {
-            result.addGeneralError(new RelationCreationException(e));
+            throw new RelationCreationException(e);
         } catch (RedmineException e) {
-            result.addGeneralError(new CommunicationException(e));
+            throw new CommunicationException(e);
         }
     }
 

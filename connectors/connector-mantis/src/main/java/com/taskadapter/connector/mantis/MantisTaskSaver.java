@@ -5,13 +5,11 @@ import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.EntityProcessingException;
-import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.mantisapi.MantisManager;
 import com.taskadapter.mantisapi.RequiredItemException;
 import com.taskadapter.mantisapi.beans.AccountData;
 import com.taskadapter.mantisapi.beans.IssueData;
 import com.taskadapter.mantisapi.beans.ProjectData;
-import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 
 import java.math.BigInteger;
@@ -65,10 +63,5 @@ public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig, IssueData> 
         } catch (RemoteException e) {
             throw MantisUtils.convertException(e);
         } 
-    }
-
-    @Override
-    protected void saveRelations(List<GRelation> relations) throws UnsupportedConnectorOperation {
-        throw new UnsupportedConnectorOperation("saveRelations");
     }
 }

@@ -4,15 +4,12 @@ import com.taskadapter.connector.common.AbstractTaskSaver;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
-import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.service.IssueService;
 import org.eclipse.egit.github.core.service.UserService;
 
 import java.io.IOException;
-import java.util.List;
 
 public class GithubTaskSaver extends AbstractTaskSaver<GithubConfig, Issue> {
 
@@ -56,12 +53,4 @@ public class GithubTaskSaver extends AbstractTaskSaver<GithubConfig, Issue> {
             throw GithubUtils.convertException(e); 
         }
     }
-
-    @Override
-    protected void saveRelations(List<GRelation> relations)
-            throws UnsupportedConnectorOperation {
-        throw new UnsupportedConnectorOperation(
-                "saveRelations");
-    }
-
 }

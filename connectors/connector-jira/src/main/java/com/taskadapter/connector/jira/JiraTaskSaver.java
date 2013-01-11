@@ -3,11 +3,11 @@ package com.taskadapter.connector.jira;
 import com.atlassian.jira.rest.client.domain.*;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.taskadapter.connector.common.AbstractTaskSaver;
+import com.taskadapter.connector.common.RelationSaver;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 
@@ -16,7 +16,7 @@ import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import java.util.List;
 
-public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig, IssueInput> {
+public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig, IssueInput> implements RelationSaver {
 
     private final JiraConnection connection;
     private final GTaskToJira converter;
@@ -83,7 +83,7 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig, IssueInput> {
     }
 
     @Override
-    protected void saveRelations(List<GRelation> relations) throws UnsupportedConnectorOperation {
+    public void saveRelations(List<GRelation> relations) throws ConnectorException {
         for (GRelation gRelation : relations) {
             String taskKey = gRelation.getTaskKey();
             String relatedTaskKey = gRelation.getRelatedTaskKey();

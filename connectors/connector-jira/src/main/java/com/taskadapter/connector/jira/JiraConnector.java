@@ -6,6 +6,7 @@ import com.atlassian.jira.rest.client.domain.IssueType;
 import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rpc.soap.client.RemoteFilter;
 import com.google.common.collect.Iterables;
+import com.taskadapter.connector.common.TaskSavingUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
@@ -163,7 +164,10 @@ public class JiraConnector implements Connector<JiraConfig> {
 
     @Override
     public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
-        return new JiraTaskSaver(config, mappings, monitor).saveData(tasks);
+        final JiraTaskSaver saver = new JiraTaskSaver(config, mappings, monitor);
+        saver.saveData(tasks);
+        TaskSavingUtils.saveRemappedRelations(config, tasks, saver, saver.result);
+        return saver.result.getResult();
     }
 
     private void validateServerURLSet() throws ServerURLNotSetException {

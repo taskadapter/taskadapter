@@ -1,9 +1,10 @@
 package com.taskadapter.connector.msp;
 
-import com.taskadapter.connector.common.AbstractTaskSaver;
-import com.taskadapter.connector.common.TreeUtils;
+import com.taskadapter.connector.common.RelationUtils;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
+import com.taskadapter.connector.definition.TaskSaveResult;
+import com.taskadapter.connector.definition.TaskSaveResultBuilder;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.EntityPersistenseException;
 import com.taskadapter.connector.msp.write.MSXMLFileWriter;
@@ -23,70 +24,51 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
-public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig, Object> {
+public class MSPTaskSaver {
 
     private static final Logger logger = LoggerFactory.getLogger(MSPTaskSaver.class);
+    private final TaskSaveResultBuilder result = new TaskSaveResultBuilder();
+    private final MSPConfig config;
 
     private MSXMLFileWriter writer;
 
     public MSPTaskSaver(MSPConfig config, Mappings mappings, ProgressMonitor monitor) {
-        super(config, monitor);
+        this.config = config;
         this.writer = new MSXMLFileWriter(mappings);
     }
 
-    @Override
-    protected void saveTasks(String parentTaskKey, List<GTask> tasks) throws ConnectorException {
-        saveData(tasks, false);
-        List<GTask> newTaskList = TreeUtils.buildFlatListFromTree(tasks);
-        List<GRelation> relations = buildNewRelations(newTaskList);
-        saveRelations(relations);
+    public TaskSaveResult saveData(List<GTask> tasks) throws ConnectorException {
+        saveIssues(tasks);
+        
+        if (config.getSaveIssueRelations()) {
+            final List<GRelation> relations = RelationUtils.convertRelationIds(
+                    tasks, result);
+            saveRelations(relations);
+        }
+        
+        return result.getResult();
     }
-
+    
+    
     // TODO this method is always called with "false" ONLY
 
     /**
      * This method allows saving data to MSP file while keeping tasks ids.
      * @throws ConnectorException 
      */
-    private void saveData(List<GTask> tasks, boolean keepTaskId) throws ConnectorException {
+    private void saveIssues(List<GTask> tasks) throws ConnectorException {
         try {
-            String resultFile = writer.write(config.getOutputAbsoluteFilePath(), result, tasks, keepTaskId);
+            final String resultFile = writer.write(
+                    config.getOutputAbsoluteFilePath(), result, tasks, false);
             result.setTargetFileAbsolutePath(resultFile);
         } catch (IOException e) {
             throw MSPExceptions.convertException(e);
         }
     }
 
-    @Override
-    protected Object convertToNativeTask(GTask task) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    // TODO refactoring: convert MSXMLFileWriter to use the new TaskWriter API (already used by Redmine and Jira)
-    // https://www.hostedredmine.com/issues/22490
-    @Override
-    protected String submitTask(GTask task, Object nativeTask) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    protected GTask createTask(Object nativeTask) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    protected void updateTask(String taskId, Object nativeTask) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     // TODO this is a hack until this class is refactored to follow the new API.
     // have to re-open the file, which we JUST CREATED!
-    protected void saveRelations(List<GRelation> relations) {
+    private void saveRelations(List<GRelation> relations) {
         MSPFileReader fileReader = new MSPFileReader();
         try {
             String outputAbsoluteFilePath = config.getOutputAbsoluteFilePath();

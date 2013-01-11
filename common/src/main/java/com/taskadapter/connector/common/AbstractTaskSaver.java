@@ -1,6 +1,5 @@
 package com.taskadapter.connector.common;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
@@ -8,15 +7,13 @@ import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.TaskSaveResultBuilder;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 
 public abstract class AbstractTaskSaver<T extends ConnectorConfig, N> {
 
-    private final List<GTask> totalTaskList = new ArrayList<GTask>();
     private final ProgressMonitor monitor;
     
-    protected final TaskSaveResultBuilder result = new TaskSaveResultBuilder();
+    public final TaskSaveResultBuilder result = new TaskSaveResultBuilder();
     protected final T config;
 
     protected AbstractTaskSaver(T config, ProgressMonitor progressMonitor) {
@@ -33,12 +30,6 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig, N> {
 
     public TaskSaveResult saveData(List<GTask> tasks) throws ConnectorException {
         saveTasks(null, tasks);
-        
-        if (config.getSaveIssueRelations()) {
-            List<GRelation> relations = buildNewRelations(totalTaskList);
-            saveRelations(relations);
-        }
-
         return result.getResult();
     }
 
@@ -47,7 +38,6 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig, N> {
      */
     protected void saveTasks(String parentIssueKey, List<GTask> tasks) throws ConnectorException {
         for (GTask task : tasks) {
-            totalTaskList.add(task);
 
             String newTaskKey = null;
             try {
@@ -70,26 +60,6 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig, N> {
     private void reportProgress() {
         monitor.worked(1);
     }
-
-    protected List<GRelation> buildNewRelations(List<GTask> tasks) {
-        List<GRelation> newRelations = new ArrayList<GRelation>();
-        for (GTask task : tasks) {
-            String newSourceTaskKey = result.getRemoteKey(task.getId());
-            for (GRelation oldRelation : task.getRelations()) {
-                // TODO get rid of the conversion, it won't work with Jira,
-                // which has String Keys like "TEST-12"
-                Integer relatedTaskId = Integer.parseInt(oldRelation.getRelatedTaskKey());
-                String newRelatedKey = result.getRemoteKey(relatedTaskId);
-                // #25443 Export from MSP fails when newRelatedKey is null (which is a valid case in MSP)
-                if (newSourceTaskKey != null && newRelatedKey != null) {
-                    newRelations.add(new GRelation(newSourceTaskKey, newRelatedKey, oldRelation.getType()));
-                }
-            }
-        }
-        return newRelations;
-    }
-
-    abstract protected void saveRelations(List<GRelation> relations) throws ConnectorException;
 
     /**
      * @return the newly created task's KEY

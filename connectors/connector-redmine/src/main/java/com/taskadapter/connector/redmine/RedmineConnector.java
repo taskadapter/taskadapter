@@ -1,5 +1,6 @@
 package com.taskadapter.connector.redmine;
 
+import com.taskadapter.connector.common.TaskSavingUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
@@ -101,6 +102,9 @@ public class RedmineConnector implements Connector<RedmineConfig> {
     
 	@Override
 	public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
-		return new RedmineTaskSaver(config, mappings, monitor).saveData(tasks);
+		final RedmineTaskSaver saver = new RedmineTaskSaver(config, mappings, monitor);
+		saver.saveData(tasks);
+		TaskSavingUtils.saveRemappedRelations(config, tasks, saver, saver.result);
+        return saver.result.getResult();
 	}
 }
