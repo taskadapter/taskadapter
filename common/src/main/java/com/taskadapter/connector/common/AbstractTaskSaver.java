@@ -11,7 +11,7 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 
-public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
+public abstract class AbstractTaskSaver<T extends ConnectorConfig, N> {
 
     private final List<GTask> totalTaskList = new ArrayList<GTask>();
     private final ProgressMonitor monitor;
@@ -25,11 +25,11 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
                 .getDummyMonitor() : progressMonitor;
     }
 
-    abstract protected Object convertToNativeTask(GTask task) throws ConnectorException;
+    abstract protected N convertToNativeTask(GTask task) throws ConnectorException;
 
-    abstract protected GTask createTask(Object nativeTask) throws ConnectorException;
+    abstract protected GTask createTask(N nativeTask) throws ConnectorException;
 
-    abstract protected void updateTask(String taskId, Object nativeTask) throws ConnectorException;
+    abstract protected void updateTask(String taskId, N nativeTask) throws ConnectorException;
 
     public TaskSaveResult saveData(List<GTask> tasks) throws ConnectorException {
         saveTasks(null, tasks);
@@ -54,7 +54,7 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
                 if (parentIssueKey != null) {
                     task.setParentKey(parentIssueKey);
                 }
-                Object nativeIssueToCreateOrUpdate = convertToNativeTask(task);
+                N nativeIssueToCreateOrUpdate = convertToNativeTask(task);
                 newTaskKey = submitTask(task, nativeIssueToCreateOrUpdate);
             } catch (ConnectorException e) {
                 result.addTaskError(task, e);
@@ -94,7 +94,7 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
     /**
      * @return the newly created task's KEY
      */
-    protected String submitTask(GTask task, Object nativeTask) throws ConnectorException {
+    protected String submitTask(GTask task, N nativeTask) throws ConnectorException {
         String newTaskKey;
         if (task.getRemoteId() == null) {
             GTask newTask = createTask(nativeTask);

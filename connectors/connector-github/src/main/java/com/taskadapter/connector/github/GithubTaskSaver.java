@@ -14,7 +14,7 @@ import org.eclipse.egit.github.core.service.UserService;
 import java.io.IOException;
 import java.util.List;
 
-public class GithubTaskSaver extends AbstractTaskSaver<GithubConfig> {
+public class GithubTaskSaver extends AbstractTaskSaver<GithubConfig, Issue> {
 
     private final Mappings mappings;
     private IssueService issueService;
@@ -37,8 +37,7 @@ public class GithubTaskSaver extends AbstractTaskSaver<GithubConfig> {
     }
 
     @Override
-    protected GTask createTask(Object nativeTask) throws ConnectorException {
-        Issue issue = (Issue) nativeTask;
+    protected GTask createTask(Issue issue) throws ConnectorException {
         String userName = config.getServerInfo().getUserName();
         String repositoryName = config.getProjectKey();
         try {
@@ -50,8 +49,7 @@ public class GithubTaskSaver extends AbstractTaskSaver<GithubConfig> {
     }
 
     @Override
-    protected void updateTask(String taskId, Object nativeTask) throws ConnectorException {
-        Issue issue = (Issue) nativeTask;
+    protected void updateTask(String taskId, Issue issue) throws ConnectorException {
         try {
             issueService.editIssue(config.getServerInfo().getUserName(), config.getProjectKey(), issue);
         } catch (IOException e) {

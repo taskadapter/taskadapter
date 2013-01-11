@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
+public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig, Issue> {
 
     private final RedmineManager mgr;
     private final Project rmProject;
@@ -95,7 +95,7 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
     }
 
     @Override
-    protected GTask createTask(Object nativeTask) throws ConnectorException {
+    protected GTask createTask(Issue nativeTask) throws ConnectorException {
         try {
             Issue newIssue = mgr.createIssue(rmProject.getIdentifier(),
                     (Issue) nativeTask);
@@ -106,7 +106,7 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
     }
 
     @Override
-    protected void updateTask(String taskId, Object nativeTask) throws ConnectorException {
+    protected void updateTask(String taskId, Issue nativeTask) throws ConnectorException {
         Issue rmIssue = (Issue) nativeTask;
         rmIssue.setId(Integer.parseInt(taskId));
         try {

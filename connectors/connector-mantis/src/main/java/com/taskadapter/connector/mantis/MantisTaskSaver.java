@@ -19,7 +19,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig> {
+public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig, IssueData> {
 
     private final MantisManager mgr;
     private final ProjectData mntProject;
@@ -41,14 +41,14 @@ public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig> {
     }
 
     @Override
-    protected Object convertToNativeTask(GTask task) {
+    protected IssueData convertToNativeTask(GTask task) {
         return converter.convertToMantisIssue(mntProject, task, mappings);
     }
 
     @Override
-    protected GTask createTask(Object nativeTask) throws ConnectorException {
+    protected GTask createTask(IssueData nativeTask) throws ConnectorException {
         try {
-            BigInteger issueId = mgr.createIssue((IssueData) nativeTask);
+            BigInteger issueId = mgr.createIssue(nativeTask);
             IssueData createdIssue = mgr.getIssueById(issueId);
             return MantisDataConverter.convertToGenericTask(createdIssue);
         } catch (RemoteException e) {
@@ -59,11 +59,9 @@ public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig> {
     }
 
     @Override
-    protected void updateTask(String taskId, Object nativeTask) throws ConnectorException {
-        IssueData mntIssue = (IssueData) nativeTask;
-
+    protected void updateTask(String taskId, IssueData nativeTask) throws ConnectorException {
         try {
-            mgr.updateIssue(new BigInteger(taskId), mntIssue);
+            mgr.updateIssue(new BigInteger(taskId), nativeTask);
         } catch (RemoteException e) {
             throw MantisUtils.convertException(e);
         } 

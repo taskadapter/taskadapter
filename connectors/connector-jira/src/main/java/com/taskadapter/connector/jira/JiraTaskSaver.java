@@ -16,7 +16,7 @@ import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import java.util.List;
 
-public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
+public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig, IssueInput> {
 
     private final JiraConnection connection;
     private final GTaskToJira converter;
@@ -72,14 +72,14 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
     }
 
     @Override
-    protected GTask createTask(Object nativeTask) throws ConnectorException {
-        BasicIssue createdIssue = connection.createIssue((IssueInput) nativeTask);
+    protected GTask createTask(IssueInput nativeTask) throws ConnectorException {
+        BasicIssue createdIssue = connection.createIssue(nativeTask);
         return jiraToGTask.convertToGenericTask(createdIssue);
     }
 
     @Override
-    protected void updateTask(String taskId, Object nativeTask) throws ConnectorException {
-        connection.updateIssue(taskId, (IssueInput) nativeTask);
+    protected void updateTask(String taskId, IssueInput nativeTask) throws ConnectorException {
+        connection.updateIssue(taskId, nativeTask);
     }
 
     @Override

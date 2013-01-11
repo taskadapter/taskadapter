@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
-public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
+public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig, Object> {
 
     private static final Logger logger = LoggerFactory.getLogger(MSPTaskSaver.class);
 
