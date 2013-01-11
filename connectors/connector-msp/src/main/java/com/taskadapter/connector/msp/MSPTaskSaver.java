@@ -3,6 +3,7 @@ package com.taskadapter.connector.msp;
 import com.taskadapter.connector.common.AbstractTaskSaver;
 import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.EntityPersistenseException;
 import com.taskadapter.connector.msp.write.MSXMLFileWriter;
@@ -28,13 +29,13 @@ public class MSPTaskSaver extends AbstractTaskSaver<MSPConfig> {
 
     private MSXMLFileWriter writer;
 
-    public MSPTaskSaver(MSPConfig config, Mappings mappings) {
-        super(config);
+    public MSPTaskSaver(MSPConfig config, Mappings mappings, ProgressMonitor monitor) {
+        super(config, monitor);
         this.writer = new MSXMLFileWriter(mappings);
     }
 
     @Override
-    protected void save(String parentTaskKey, List<GTask> tasks) throws ConnectorException {
+    protected void saveTasks(String parentTaskKey, List<GTask> tasks) throws ConnectorException {
         saveData(tasks, false);
         List<GTask> newTaskList = TreeUtils.buildFlatListFromTree(tasks);
         List<GRelation> relations = buildNewRelations(newTaskList);

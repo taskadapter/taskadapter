@@ -2,6 +2,7 @@ package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.common.AbstractTaskSaver;
 import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GRelation;
@@ -28,12 +29,12 @@ public class RedmineTaskSaver extends AbstractTaskSaver<RedmineConfig> {
     private final GTaskToRedmine converter;
     private final RedmineToGTask toGTask;
 
-    public RedmineTaskSaver(RedmineConfig config, Mappings mappings)
+    public RedmineTaskSaver(RedmineConfig config, Mappings mappings, ProgressMonitor monitor)
             throws ConnectorException {
-        super(config);
-        this.rmProject = loadProject();
+        super(config, monitor);
         this.mgr = RedmineManagerFactory.createRedmineManager(config
                 .getServerInfo());
+        this.rmProject = loadProject();
         this.converter = new GTaskToRedmine(config, mappings,
                 loadPriorities(mappings), rmProject, loadUsers(),
                 loadStatusList());

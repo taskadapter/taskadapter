@@ -1,5 +1,6 @@
 package com.taskadapter.connector.github;
 
+import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.exceptions.NotAuthorizedException;
 import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.model.GTask;
@@ -14,8 +15,10 @@ public class GithubTaskSaverTest {
         invalidCredentialsConfig.getServerInfo().setUserName("invalidUser");
         invalidCredentialsConfig.setProjectKey("invalidRepo");
         invalidCredentialsConfig.getServerInfo().setPassword("invalidpassword");
-        GithubTaskSaver saver = new GithubTaskSaver(invalidCredentialsConfig, TestMappingUtils
-        .fromFields(GithubSupportedFields.SUPPORTED_FIELDS));
+        GithubTaskSaver saver = new GithubTaskSaver(invalidCredentialsConfig,
+                TestMappingUtils
+                        .fromFields(GithubSupportedFields.SUPPORTED_FIELDS),
+                ProgressMonitorUtils.getDummyMonitor());
         GTask task = new GTask();
         task.setSummary("api66");
         Issue issue = saver.convertToNativeTask(task);

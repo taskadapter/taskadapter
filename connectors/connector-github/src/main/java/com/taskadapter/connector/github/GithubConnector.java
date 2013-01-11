@@ -78,6 +78,6 @@ public class GithubConnector implements Connector<GithubConfig> {
     @Override
     public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings)
             throws ConnectorException {
-        return new GithubTaskSaver(config, mappings).saveData(tasks, monitor);
+        return new GithubTaskSaver(config, mappings, monitor).saveData(tasks);
     }
 }

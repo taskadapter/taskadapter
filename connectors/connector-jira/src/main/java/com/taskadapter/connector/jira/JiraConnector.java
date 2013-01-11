@@ -163,7 +163,7 @@ public class JiraConnector implements Connector<JiraConfig> {
 
     @Override
     public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
-        return new JiraTaskSaver(config, mappings).saveData(tasks, monitor);
+        return new JiraTaskSaver(config, mappings, monitor).saveData(tasks);
     }
 
     private void validateServerURLSet() throws ServerURLNotSetException {

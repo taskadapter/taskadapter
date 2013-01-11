@@ -120,7 +120,8 @@ public class UpdaterIntegrationTest {
     }
 
     private void saveToMSP(Mappings mappings) throws ConnectorException {
-        new MSPTaskSaver(mspConfig, mappings).saveData(rmIssues, null);
+        new MSPTaskSaver(mspConfig, mappings,
+                ProgressMonitorUtils.getDummyMonitor()).saveData(rmIssues);
     }
 
     private void modifyRedmineData(Mappings mappings) throws ConnectorException {

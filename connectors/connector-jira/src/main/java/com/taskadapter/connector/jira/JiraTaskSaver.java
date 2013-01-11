@@ -4,6 +4,7 @@ import com.atlassian.jira.rest.client.domain.*;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.taskadapter.connector.common.AbstractTaskSaver;
 import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
@@ -21,8 +22,8 @@ public class JiraTaskSaver extends AbstractTaskSaver<JiraConfig> {
     private final GTaskToJira converter;
     private final JiraToGTask jiraToGTask;
 
-    public JiraTaskSaver(JiraConfig config, Mappings mappings) throws ConnectorException {
-        super(config);
+    public JiraTaskSaver(JiraConfig config, Mappings mappings, ProgressMonitor monitor) throws ConnectorException {
+        super(config, monitor);
         jiraToGTask = new JiraToGTask(config.getPriorities());
         
         try {

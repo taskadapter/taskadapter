@@ -101,6 +101,6 @@ public class RedmineConnector implements Connector<RedmineConfig> {
     
 	@Override
 	public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
-		return new RedmineTaskSaver(config, mappings).saveData(tasks, monitor);
+		return new RedmineTaskSaver(config, mappings, monitor).saveData(tasks);
 	}
 }

@@ -13,17 +13,16 @@ import com.taskadapter.model.GTask;
 
 public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
 
-    protected final TaskSaveResultBuilder result = new TaskSaveResultBuilder();
-
     private final List<GTask> totalTaskList = new ArrayList<GTask>();
-
+    private final ProgressMonitor monitor;
+    
+    protected final TaskSaveResultBuilder result = new TaskSaveResultBuilder();
     protected final T config;
 
-    private ProgressMonitor monitor;
-
-    protected AbstractTaskSaver(T config) {
-        super();
+    protected AbstractTaskSaver(T config, ProgressMonitor progressMonitor) {
         this.config = config;
+        this.monitor = progressMonitor == null ? ProgressMonitorUtils
+                .getDummyMonitor() : progressMonitor;
     }
 
     abstract protected Object convertToNativeTask(GTask task) throws ConnectorException;
@@ -32,19 +31,12 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
 
     abstract protected void updateTask(String taskId, Object nativeTask) throws ConnectorException;
 
-    /**
-     * the default implementation does nothing.
-     */
-    protected void beforeSave() throws ConnectorException {
-        // nothing here
-    }
-
-    public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor) throws ConnectorException {
-        this.monitor = monitor;
-
-        if (!tasks.isEmpty()) {
-            beforeSave();
-            save(null, tasks);
+    public TaskSaveResult saveData(List<GTask> tasks) throws ConnectorException {
+        saveTasks(null, tasks);
+        
+        if (config.getSaveIssueRelations()) {
+            List<GRelation> relations = buildNewRelations(totalTaskList);
+            saveRelations(relations);
         }
 
         return result.getResult();
@@ -53,7 +45,7 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
     /**
      * this method will go through children itself.
      */
-    protected void save(String parentIssueKey, List<GTask> tasks) throws ConnectorException {
+    protected void saveTasks(String parentIssueKey, List<GTask> tasks) throws ConnectorException {
         for (GTask task : tasks) {
             totalTaskList.add(task);
 
@@ -71,23 +63,12 @@ public abstract class AbstractTaskSaver<T extends ConnectorConfig> {
             }
             reportProgress();
 
-            if (!task.getChildren().isEmpty()) {
-                save(newTaskKey, task.getChildren());
-            }
-        }
-
-        if (parentIssueKey == null) {
-            if (config.getSaveIssueRelations()) {
-                List<GRelation> relations = buildNewRelations(totalTaskList);
-                saveRelations(relations);
-            }
+            saveTasks(newTaskKey, task.getChildren());
         }
     }
 
     private void reportProgress() {
-        if (monitor != null) {
-            monitor.worked(1);
-        }
+        monitor.worked(1);
     }
 
     protected List<GRelation> buildNewRelations(List<GTask> tasks) {

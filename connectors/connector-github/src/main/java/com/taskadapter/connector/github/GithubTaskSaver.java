@@ -2,6 +2,7 @@ package com.taskadapter.connector.github;
 
 import com.taskadapter.connector.common.AbstractTaskSaver;
 import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.model.GRelation;
@@ -21,8 +22,8 @@ public class GithubTaskSaver extends AbstractTaskSaver<GithubConfig> {
     private GithubToGTask taskConverter;
     private final UserService userService;
 
-    public GithubTaskSaver(GithubConfig config, Mappings mappings) {
-        super(config);
+    public GithubTaskSaver(GithubConfig config, Mappings mappings, ProgressMonitor monitor) {
+        super(config, monitor);
         this.mappings = mappings;
         ConnectionFactory ghConnector = new ConnectionFactory(config.getServerInfo());
         issueService = ghConnector.getIssueService();

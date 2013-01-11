@@ -2,6 +2,7 @@ package com.taskadapter.connector.mantis;
 
 import com.taskadapter.connector.common.AbstractTaskSaver;
 import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.EntityProcessingException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
@@ -25,8 +26,8 @@ public class MantisTaskSaver extends AbstractTaskSaver<MantisConfig> {
     private final MantisDataConverter converter;
 	private Mappings mappings;
 
-    public MantisTaskSaver(MantisConfig config, Mappings mappings) throws ConnectorException {
-        super(config);
+    public MantisTaskSaver(MantisConfig config, Mappings mappings, ProgressMonitor monitor) throws ConnectorException {
+        super(config, monitor);
 		this.mappings = mappings;
         this.mgr = MantisManagerFactory.createMantisManager(config.getServerInfo());
         try {

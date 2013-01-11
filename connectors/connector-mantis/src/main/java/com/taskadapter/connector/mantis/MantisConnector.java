@@ -72,6 +72,6 @@ public class MantisConnector implements Connector<MantisConfig> {
     
     @Override
     public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
-    	return new MantisTaskSaver(config, mappings).saveData(tasks, monitor);
+    	return new MantisTaskSaver(config, mappings, monitor).saveData(tasks);
     }
 }
