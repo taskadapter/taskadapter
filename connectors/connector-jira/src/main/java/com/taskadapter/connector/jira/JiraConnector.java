@@ -3,6 +3,7 @@ package com.taskadapter.connector.jira;
 import com.atlassian.jira.rest.client.domain.BasicComponent;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueType;
+import com.atlassian.jira.rest.client.domain.Priority;
 import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rpc.soap.client.RemoteFilter;
 import com.google.common.collect.Iterables;
@@ -11,7 +12,9 @@ import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.TaskSaveResult;
+import com.taskadapter.connector.definition.TaskSaveResultBuilder;
 import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
@@ -164,11 +167,46 @@ public class JiraConnector implements Connector<JiraConfig> {
 
     @Override
     public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
-        final JiraTaskSaver saver = new JiraTaskSaver(config, mappings, monitor);
-        saver.saveData(tasks);
-        TaskSavingUtils.saveRemappedRelations(config, tasks, saver, saver.result);
-        return saver.result.getResult();
+        try {
+            final JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
+            
+            final Iterable<IssueType> issueTypeList = loadIssueTypes(connection);
+            final Iterable<Version> versions = connection.getVersions(config.getProjectKey());
+            final Iterable<BasicComponent> components = connection.getComponents(config.getProjectKey());
+            /* Need to load Jira server priorities because what we store in the config files is a
+             * priority name (string), while Jira returns the number value of the issue priority */
+            final Iterable<Priority> jiraPriorities = connection.getPriorities();
+            final GTaskToJira converter = new GTaskToJira(config, mappings,
+                    issueTypeList, versions, components, jiraPriorities);
+            
+            final JiraTaskSaver saver = new JiraTaskSaver(connection);
+            final TaskSaveResultBuilder rb = TaskSavingUtils.saveTasks(tasks,
+                    converter, saver, monitor);
+            TaskSavingUtils.saveRemappedRelations(config, tasks, saver, rb);
+            return rb.getResult();
+        } catch (RemoteException e) {
+            throw JiraUtils.convertException(e);
+        } catch (MalformedURLException e) {
+            throw JiraUtils.convertException(e);
+        } catch (URISyntaxException e) {
+            throw JiraUtils.convertException(e);
+        }
     }
+    
+    private Iterable<IssueType> loadIssueTypes(JiraConnection connection) throws BadConfigException {
+        Iterable<IssueType> issueTypeList = connection.getIssueTypeList();
+        
+        //check if default issue type exists in Jira
+        for (IssueType anIssueTypeList : issueTypeList) {
+            if (anIssueTypeList.getName().equals(config.getDefaultTaskType())) {
+                return issueTypeList;
+            }
+        }
+
+        throw new BadConfigException("Default issue type "
+                + config.getDefaultTaskType() + " does not exist in Jira");
+    }
+
 
     private void validateServerURLSet() throws ServerURLNotSetException {
         if (!config.getServerInfo().isHostSet()) {

@@ -1,6 +1,8 @@
 package com.taskadapter.connector.redmine;
 
+import com.taskadapter.connector.common.data.ConnectorConverter;
 import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
@@ -12,7 +14,7 @@ import com.taskadapter.redmineapi.bean.User;
 import java.util.List;
 import java.util.Map;
 
-class GTaskToRedmine {
+class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
 
     private final RedmineConfig config;
     private final Mappings mapping;
@@ -179,6 +181,11 @@ class GTaskToRedmine {
         }
 
         return foundStatus;
+    }
+
+    @Override
+    public Issue convert(GTask source) throws ConnectorException {
+        return convertToRedmineIssue(source);
     }
 
 }

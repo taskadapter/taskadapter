@@ -1,7 +1,6 @@
 package com.taskadapter.connector.common;
 
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.model.GTask;
 
 /**
  * Basic api for issue saving.
@@ -10,8 +9,9 @@ import com.taskadapter.model.GTask;
  *            native issue type.
  */
 public interface BasicIssueSaveAPI<N> {
+    
     /**
-     * Creates a new task and returns an internal task representation.
+     * Creates a new task and returns a new task key.
      * 
      * @param nativeTask
      *            native task to create.
@@ -19,7 +19,7 @@ public interface BasicIssueSaveAPI<N> {
      * @throws ConnectorException
      *             if an error occurs.
      */
-    public GTask createTask(N nativeTask) throws ConnectorException;
+    public String createTask(N nativeTask) throws ConnectorException;
 
     /**
      * Updates an existing task.

@@ -1,11 +1,14 @@
 package com.taskadapter.connector.mantis;
 
+import com.taskadapter.connector.common.TaskSavingUtils;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.mantisapi.MantisManager;
+import com.taskadapter.mantisapi.beans.AccountData;
 import com.taskadapter.mantisapi.beans.IssueData;
+import com.taskadapter.mantisapi.beans.ProjectData;
 
 import java.math.BigInteger;
 import java.rmi.RemoteException;
@@ -72,6 +75,21 @@ public class MantisConnector implements Connector<MantisConfig> {
     
     @Override
     public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
-    	return new MantisTaskSaver(config, mappings, monitor).saveData(tasks);
+        final MantisManager mgr = MantisManagerFactory.createMantisManager(config.getServerInfo());
+        try {
+            final ProjectData mntProject = mgr.getProjectById(new BigInteger(
+                    config.getProjectKey()));
+            final List<AccountData> users = config.isFindUserByName() ? mgr
+                    .getUsers() : new ArrayList<AccountData>();
+            final GTaskToMatisConverter converter = new GTaskToMatisConverter(
+                    mntProject, mappings, users);
+            final MantisTaskSaver mts = new MantisTaskSaver(mgr);
+            
+            return TaskSavingUtils.saveTasks(tasks, converter, mts, monitor)
+                    .getResult();
+        } catch (RemoteException e) {
+            throw MantisUtils.convertException(e);
+        } 
+
     }
 }

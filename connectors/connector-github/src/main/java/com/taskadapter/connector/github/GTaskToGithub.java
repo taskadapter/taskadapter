@@ -1,5 +1,6 @@
 package com.taskadapter.connector.github;
 
+import com.taskadapter.connector.common.data.ConnectorConverter;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
@@ -13,7 +14,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GTaskToGithub {
+public class GTaskToGithub implements ConnectorConverter<GTask, Issue> {
 
     private Map<String, User> ghUsers = new HashMap<String, User>();
 
@@ -25,7 +26,7 @@ public class GTaskToGithub {
         this.mappings = mappings;
     }
 
-    protected Issue toIssue(GTask task) throws ConnectorException {
+    Issue toIssue(GTask task) throws ConnectorException {
         Issue issue = new Issue();
 
         if (mappings.isFieldSelected(GTaskDescriptor.FIELD.SUMMARY)) {
@@ -72,6 +73,11 @@ public class GTaskToGithub {
                 throw GithubUtils.convertException(e);
             }
         }
+    }
+
+    @Override
+    public Issue convert(GTask source) throws ConnectorException {
+        return toIssue(source);
     }
 
 }

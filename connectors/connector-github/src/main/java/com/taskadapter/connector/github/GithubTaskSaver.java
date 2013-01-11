@@ -1,56 +1,45 @@
 package com.taskadapter.connector.github;
 
-import com.taskadapter.connector.common.AbstractTaskSaver;
-import com.taskadapter.connector.definition.Mappings;
-import com.taskadapter.connector.definition.ProgressMonitor;
+import com.taskadapter.connector.common.BasicIssueSaveAPI;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.model.GTask;
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.service.IssueService;
-import org.eclipse.egit.github.core.service.UserService;
 
 import java.io.IOException;
 
-public class GithubTaskSaver extends AbstractTaskSaver<GithubConfig, Issue> {
+class GithubTaskSaver implements BasicIssueSaveAPI<Issue> {
 
-    private final Mappings mappings;
     private IssueService issueService;
 
-    private GithubToGTask taskConverter;
-    private final UserService userService;
+    private final String userName;
+    private final String projectKey;
 
-    public GithubTaskSaver(GithubConfig config, Mappings mappings, ProgressMonitor monitor) {
-        super(config, monitor);
-        this.mappings = mappings;
-        ConnectionFactory ghConnector = new ConnectionFactory(config.getServerInfo());
-        issueService = ghConnector.getIssueService();
-        userService = ghConnector.getUserService();
-        taskConverter = new GithubToGTask();
+    public GithubTaskSaver(IssueService issueService, String userName,
+            String projectKey) {
+        this.issueService = issueService;
+        this.userName = userName;
+        this.projectKey = projectKey;
     }
 
     @Override
-    protected Issue convertToNativeTask(GTask task) throws ConnectorException {
-        return new GTaskToGithub(userService, mappings).toIssue(task);
-    }
-
-    @Override
-    protected GTask createTask(Issue issue) throws ConnectorException {
-        String userName = config.getServerInfo().getUserName();
-        String repositoryName = config.getProjectKey();
+    public String createTask(Issue issue) throws ConnectorException {
+        String repositoryName = projectKey;
         try {
-            Issue createdIssue = issueService.createIssue(userName, repositoryName, issue);
-            return taskConverter.toGtask(createdIssue);
+            final Issue createdIssue = issueService.createIssue(userName,
+                    repositoryName, issue);
+            return String.valueOf(createdIssue.getNumber());
         } catch (IOException e) {
-            throw GithubUtils.convertException(e); 
+            throw GithubUtils.convertException(e);
         }
     }
 
     @Override
-    protected void updateTask(String taskId, Issue issue) throws ConnectorException {
+    public void updateTask(String taskId, Issue issue)
+            throws ConnectorException {
         try {
-            issueService.editIssue(config.getServerInfo().getUserName(), config.getProjectKey(), issue);
+            issueService.editIssue(userName, projectKey, issue);
         } catch (IOException e) {
-            throw GithubUtils.convertException(e); 
+            throw GithubUtils.convertException(e);
         }
     }
 }

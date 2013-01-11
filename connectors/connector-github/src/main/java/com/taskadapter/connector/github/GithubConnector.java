@@ -1,9 +1,11 @@
 package com.taskadapter.connector.github;
 
+import com.taskadapter.connector.common.TaskSavingUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.TaskSaveResult;
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.model.GTask;
@@ -78,6 +80,17 @@ public class GithubConnector implements Connector<GithubConfig> {
     @Override
     public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings)
             throws ConnectorException {
-        return new GithubTaskSaver(config, mappings, monitor).saveData(tasks);
+        final WebServerInfo serverInfo = config.getServerInfo();
+        final ConnectionFactory ghConnector = new ConnectionFactory(serverInfo);
+
+        final GTaskToGithub converter = new GTaskToGithub(
+                ghConnector.getUserService(), mappings);
+
+        final IssueService issueService = ghConnector.getIssueService();
+        final GithubTaskSaver saver = new GithubTaskSaver(issueService,
+                serverInfo.getUserName(), config.getProjectKey());
+
+        return TaskSavingUtils.saveTasks(tasks, converter, saver, monitor)
+                .getResult();
     }
 }

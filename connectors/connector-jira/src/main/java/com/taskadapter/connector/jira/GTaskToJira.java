@@ -10,7 +10,9 @@ import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
 import com.google.common.collect.ImmutableList;
+import com.taskadapter.connector.common.data.ConnectorConverter;
 import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
@@ -19,7 +21,7 @@ import org.joda.time.DateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GTaskToJira {
+public class GTaskToJira implements ConnectorConverter<GTask, IssueInput> {
 
     // TODO this is hardcoded!! https://www.hostedredmine.com/issues/18074
     private static final Long ISSUE_TYPE_ID = 1l;
@@ -151,5 +153,10 @@ public class GTaskToJira {
             }
         }
         return null;
+    }
+
+    @Override
+    public IssueInput convert(GTask source) throws ConnectorException {
+        return convertToJiraIssue(source);
     }
 }

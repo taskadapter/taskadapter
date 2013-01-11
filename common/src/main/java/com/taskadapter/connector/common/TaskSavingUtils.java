@@ -2,7 +2,9 @@ package com.taskadapter.connector.common;
 
 import java.util.List;
 
+import com.taskadapter.connector.common.data.ConnectorConverter;
 import com.taskadapter.connector.definition.ConnectorConfig;
+import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.TaskSaveResultBuilder;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GRelation;
@@ -37,7 +39,7 @@ public class TaskSavingUtils {
         if (!config.getSaveIssueRelations()) {
             return;
         }
-        
+
         final List<GRelation> result = RelationUtils.convertRelationIds(tasks,
                 resultBuilder);
         try {
@@ -47,4 +49,20 @@ public class TaskSavingUtils {
         }
     }
 
+    public static <N> void saveTasks(List<GTask> tasks,
+            ConnectorConverter<GTask, N> converter,
+            BasicIssueSaveAPI<N> saveAPI, TaskSaveResultBuilder resultBuilder,
+            ProgressMonitor progressMonitor) {
+        new SimpleTaskSaver<N>(converter, saveAPI, resultBuilder,
+                progressMonitor).saveTasks(null, tasks);
+    }
+
+    public static <N> TaskSaveResultBuilder saveTasks(List<GTask> tasks,
+            ConnectorConverter<GTask, N> converter,
+            BasicIssueSaveAPI<N> saveAPI, 
+            ProgressMonitor progressMonitor) {
+        final TaskSaveResultBuilder result = new TaskSaveResultBuilder();
+        saveTasks(tasks, converter, saveAPI, result, progressMonitor);
+        return result;
+    }
 }
