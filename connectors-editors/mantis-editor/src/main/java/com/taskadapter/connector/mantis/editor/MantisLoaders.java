@@ -47,8 +47,9 @@ public class MantisLoaders {
         MantisManager mgr = MantisManagerFactory.createMantisManager(config
                 .getServerInfo());
         try {
-            final FilterData[] fis = mgr.getFilters(new BigInteger(config
-                    .getProjectKey()));
+            final BigInteger pkey = config.getProjectKey() == null ? null
+                    : new BigInteger(config.getProjectKey());
+            final FilterData[] fis = mgr.getFilters(pkey);
             final List<NamedKeyedObject> res = new ArrayList<NamedKeyedObject>(
                     fis.length);
             for (FilterData fi : fis) {
