@@ -113,8 +113,8 @@ public class TodoIntegrationTest {
         template.setDueDate(date1);
         final GUser me = new GUser();
         me.setId(321);
-        me.setLoginName("<noname>");
-        me.setDisplayName("Tester");
+        me.setLoginName("Tester");
+        me.setDisplayName("Test1");
         template.setAssignee(me);
 
         final Mappings allMappings = TodoUtil.getAllMappings();
