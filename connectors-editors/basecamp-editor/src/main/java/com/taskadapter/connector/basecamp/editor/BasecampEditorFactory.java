@@ -16,7 +16,7 @@ import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.server.ServerPanelWithAPIKey;
-import com.taskadapter.web.service.Services;
+import com.taskadapter.web.service.Sandbox;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -40,7 +40,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
     private final ExceptionFormatter formatter = new BasecampErrorFormatter();
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, BasecampConfig config) {
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Sandbox sandbox, BasecampConfig config) {
 
         Panel panel = createServerPanel(config);
         Panel projectPanel = createProjectPanel(windowProvider, config);

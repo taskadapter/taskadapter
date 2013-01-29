@@ -14,7 +14,7 @@ import com.taskadapter.web.configeditor.ProjectPanel;
 import com.taskadapter.web.configeditor.server.ServerPanelWithAPIKey;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.magic.Interfaces;
-import com.taskadapter.web.service.Services;
+import com.taskadapter.web.service.Sandbox;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.GridLayout;
@@ -41,7 +41,7 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, RedmineConfig config) {
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Sandbox sandbox, RedmineConfig config) {
         Panel panel = new Panel("Server Info");
         WebServerInfo serverInfo = config.getServerInfo();
         ServerPanelWithAPIKey redmineServerPanel = new ServerPanelWithAPIKey(new MethodProperty<String>(config, "label"),

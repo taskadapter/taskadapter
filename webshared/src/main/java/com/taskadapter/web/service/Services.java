@@ -66,4 +66,10 @@ public class Services {
     public String getCurrentTaskAdapterVersion() {
         return currentTaskAdapterVersion;
     }
+    
+    // TODO: Should it live here or somewhere else?
+    public Sandbox createCurrentUserSandbox() {
+        return new BasicSandbox(settingsManager.isTAWorkingOnLocalMachine(),
+                fileManager.getUserFilesFolder(currentUserInfo.getUserName()));
+    }
 }

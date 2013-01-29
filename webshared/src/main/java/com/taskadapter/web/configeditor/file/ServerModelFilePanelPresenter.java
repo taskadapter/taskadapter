@@ -1,6 +1,5 @@
 package com.taskadapter.web.configeditor.file;
 
-import com.taskadapter.FileManager;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPFileReader;
 import com.taskadapter.connector.msp.MSPUtils;
@@ -10,25 +9,21 @@ import com.vaadin.ui.Upload;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.Locale;
 
 public class ServerModelFilePanelPresenter {
     public static final int MAX_FILE_SIZE_BYTES = 5000000;
-    private final String userName;
 
     private IndexedContainer fileList;
     private ServerModeFilePanel view;
     private File selectedFile;
-    private final UploadReceiver uploadReceiver;
-    private FileManager fileManager;
+    private final UploadReceiver uploadReceiver;    
+    private final File userContentDirectory;
 
-    public ServerModelFilePanelPresenter(FileManager fileManager, String userName) {
-        this.fileManager = fileManager;
-        this.userName = userName;
+    public ServerModelFilePanelPresenter(File userContentDirectory) {
+        this.userContentDirectory = userContentDirectory;
         fileList = buildFileList();
-        uploadReceiver = new UploadReceiver(fileManager);
-        uploadReceiver.setSlow(true);
+        uploadReceiver = new UploadReceiver(userContentDirectory);
     }
 
     /**
@@ -37,10 +32,14 @@ public class ServerModelFilePanelPresenter {
     private IndexedContainer buildFileList() {
         IndexedContainer container = new IndexedContainer();
         container.addContainerProperty(ServerModeFilePanel.COMBOBOX_ITEM_PROPERTY, String.class, null);
-        List<File> files = fileManager.getUserFiles(userName);
-        for (File file : files) {
-            addFileToContainer(container, file.getName());
+        
+        final File[] files = userContentDirectory.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                addFileToContainer(container, file.getName());
+            }
         }
+        
         container.sort(new Object[]{ServerModeFilePanel.COMBOBOX_ITEM_PROPERTY},
                 new boolean[]{true});
 
@@ -72,7 +71,8 @@ public class ServerModelFilePanelPresenter {
             return;
         }
 
-        selectedFile = fileManager.getFileForUser(userName, fileName);
+        // TODO !!!: Validate file name, current version is too insecure.
+        selectedFile = new File(userContentDirectory, fileName);
         File file = getSelectedFile();
         SimpleDateFormat sdf = new SimpleDateFormat(ServerModeFilePanel.DATE_FORMAT, Locale.US);
         view.setStatusLabelText(sdf.format(file.lastModified()));
@@ -120,34 +120,31 @@ public class ServerModelFilePanelPresenter {
      */
     @SuppressWarnings("UnusedDeclaration")
     public void uploadSucceeded(Upload.SucceededEvent event) {
-        if (uploadReceiver.saveFile(userName)) {
-            String fileName = uploadReceiver.getFileName();
+        String fileName = uploadReceiver.getFileName();
 
-            // check if MPP file
-            boolean isMpp = fileName.toLowerCase().endsWith(MSPFileReader.MPP_SUFFIX_LOWERCASE);
-            if (isMpp) {
-                File f = fileManager.getFileForUser(userName, fileName);
-                String newFilePath = MSPUtils.convertMppProjectFileToXml(f.getAbsolutePath());
-                if (newFilePath == null) {
-                    // move error
-                    view.setStatusLabelText(ServerModeFilePanel.SAVE_FILE_FAILED);
-                    view.setUploadEnabled(true);
-                    return;
-                }
-
-                if (!f.delete()) {
-                    view.showNotification(ServerModeFilePanel.CANNOT_DELETE_MPP_FILE);
-                }
-                fileName = new File(newFilePath).getName();
+        // check if MPP file
+        boolean isMpp = fileName.toLowerCase().endsWith(MSPFileReader.MPP_SUFFIX_LOWERCASE);
+        if (isMpp) {
+            // TODO !!!: this is insecure too.
+            File f = new File(userContentDirectory, fileName);
+            String newFilePath = MSPUtils.convertMppProjectFileToXml(f.getAbsolutePath());
+            if (newFilePath == null) {
+                // move error
+                view.setStatusLabelText(ServerModeFilePanel.SAVE_FILE_FAILED);
+                view.setUploadEnabled(true);
+                return;
             }
 
-            // add to ComboBox
-            addFileToComboBoxAndSelect(fileName);
-
-            view.setStatusLabelText(isMpp ? ServerModeFilePanel.UPLOAD_MPP_SUCCESS : ServerModeFilePanel.UPLOAD_SUCCESS);
-        } else {
-            view.setStatusLabelText(ServerModeFilePanel.SAVE_FILE_FAILED);
+            if (!f.delete()) {
+                view.showNotification(ServerModeFilePanel.CANNOT_DELETE_MPP_FILE);
+            }
+            fileName = new File(newFilePath).getName();
         }
+
+        // add to ComboBox
+        addFileToComboBoxAndSelect(fileName);
+
+        view.setStatusLabelText(isMpp ? ServerModeFilePanel.UPLOAD_MPP_SUCCESS : ServerModeFilePanel.UPLOAD_SUCCESS);
 
         view.setUploadEnabled(true);
     }

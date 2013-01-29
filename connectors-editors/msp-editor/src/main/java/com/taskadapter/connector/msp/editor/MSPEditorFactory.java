@@ -12,6 +12,7 @@ import com.taskadapter.web.configeditor.file.LocalModeFilePanel;
 import com.taskadapter.web.configeditor.file.ServerModeFilePanel;
 import com.taskadapter.web.configeditor.file.ServerModelFilePanelPresenter;
 import com.taskadapter.web.data.Messages;
+import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.service.Services;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.ComponentContainer;
@@ -46,11 +47,11 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, MSPConfig config) {
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Sandbox sandbox, MSPConfig config) {
         VerticalLayout layout = new VerticalLayout();
         layout.setWidth(450, Sizeable.UNITS_PIXELS);
         layout.addComponent(createDescriptionElement(config));
-        layout.addComponent(createFilePanel(services, config));
+        layout.addComponent(createFilePanel(sandbox, config));
         layout.addComponent(createInfoReadOnlyPanel());
         return layout;
     }
@@ -72,22 +73,18 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
         return infoPanel;
     }
 
-    private Panel createFilePanel(Services services, MSPConfig config) {
-        if (isLocalMode(services)) {
+    private Panel createFilePanel(Sandbox sandbox, MSPConfig config) {
+        if (sandbox.allowLocalFSAccess()) {
             return new LocalModeFilePanel(config);
         } else {
-            return createRemoteModeFilePanel(services, config);
+            return createRemoteModeFilePanel(sandbox, config);
         }
     }
 
-    private ServerModeFilePanel createRemoteModeFilePanel(Services services, ConnectorConfig config) {
+    private ServerModeFilePanel createRemoteModeFilePanel(Sandbox sandbox, ConnectorConfig config) {
         ServerModelFilePanelPresenter presenter =
-                new ServerModelFilePanelPresenter(services.getFileManager(), services.getCurrentUserInfo().getUserName());
+                new ServerModelFilePanelPresenter(sandbox.getUserContentDirectory());
         return new ServerModeFilePanel(presenter, (MSPConfig) config);
-    }
-
-    private boolean isLocalMode(Services services) {
-        return services.getSettingsManager().isTAWorkingOnLocalMachine();
     }
 
     @Override

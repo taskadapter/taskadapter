@@ -42,7 +42,7 @@ public class EditConfigPage extends Page {
     }
 
     private void createMainEditor() {
-        editor = new OnePageEditor(MESSAGES, services, config);
+        editor = new OnePageEditor(MESSAGES, services.createCurrentUserSandbox(), config);
         addExportButtonListeners();
         layout.addComponent(editor);
     }

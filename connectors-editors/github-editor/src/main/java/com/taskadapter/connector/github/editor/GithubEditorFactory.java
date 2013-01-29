@@ -14,7 +14,7 @@ import com.taskadapter.web.configeditor.ProjectPanel;
 import com.taskadapter.web.configeditor.server.ServerPanel;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.magic.Interfaces;
-import com.taskadapter.web.service.Services;
+import com.taskadapter.web.service.Sandbox;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.ComponentContainer;
@@ -48,7 +48,7 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig> {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Services services, GithubConfig config) {
+    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Sandbox sandbox, GithubConfig config) {
         VerticalLayout layout = new VerticalLayout();
         layout.setWidth(380, Sizeable.UNITS_PIXELS);
         final WebServerInfo serverInfo = config.getServerInfo();
