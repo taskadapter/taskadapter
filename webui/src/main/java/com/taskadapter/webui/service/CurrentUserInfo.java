@@ -1,4 +1,5 @@
-package com.taskadapter.web.service;
+package com.taskadapter.webui.service;
+
 
 public abstract class CurrentUserInfo {
 

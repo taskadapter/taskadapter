@@ -2,10 +2,10 @@ package com.taskadapter.webui;
 
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.data.Messages;
-import com.taskadapter.web.service.Services;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.export.Exporter;
+import com.taskadapter.webui.service.Services;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.terminal.Sizeable;

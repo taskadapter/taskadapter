@@ -1,7 +1,7 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.web.data.Messages;
-import com.taskadapter.web.service.Services;
+import com.taskadapter.webui.service.Services;
 import com.vaadin.ui.Component;
 
 public abstract class Page {

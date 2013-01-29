@@ -9,10 +9,11 @@ import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPOutputFileNameNotSetException;
 import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.data.Messages;
-import com.taskadapter.web.service.Services;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.Navigator;
+import com.taskadapter.webui.service.Services;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

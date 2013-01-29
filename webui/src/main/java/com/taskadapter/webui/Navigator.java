@@ -2,10 +2,10 @@ package com.taskadapter.webui;
 
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.web.MessageDialog;
-import com.taskadapter.web.service.Services;
-import com.taskadapter.web.service.WrongPasswordException;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.config.EditConfigPage;
+import com.taskadapter.webui.service.Services;
+import com.taskadapter.webui.service.WrongPasswordException;
 import com.taskadapter.webui.user.ChangePasswordDialog;
 import com.vaadin.Application;
 import com.vaadin.terminal.Sizeable;

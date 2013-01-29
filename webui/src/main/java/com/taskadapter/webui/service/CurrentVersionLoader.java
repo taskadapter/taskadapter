@@ -1,6 +1,7 @@
-package com.taskadapter.web.service;
+package com.taskadapter.webui.service;
 
-import com.taskadapter.web.AppInfo;
+import com.taskadapter.webui.AppInfo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

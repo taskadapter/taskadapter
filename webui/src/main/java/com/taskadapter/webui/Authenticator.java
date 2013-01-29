@@ -2,9 +2,9 @@ package com.taskadapter.webui;
 
 import com.taskadapter.auth.AuthException;
 import com.taskadapter.auth.CredentialsManager;
-import com.taskadapter.web.service.EditableCurrentUserInfo;
-import com.taskadapter.web.service.UserNotFoundException;
-import com.taskadapter.web.service.WrongPasswordException;
+import com.taskadapter.webui.service.EditableCurrentUserInfo;
+import com.taskadapter.webui.service.UserNotFoundException;
+import com.taskadapter.webui.service.WrongPasswordException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

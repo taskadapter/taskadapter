@@ -1,6 +1,6 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.web.service.WrongPasswordException;
+import com.taskadapter.webui.service.WrongPasswordException;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Runo;

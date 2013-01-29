@@ -2,11 +2,11 @@ package com.taskadapter.webui.config;
 
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.WindowProvider;
-import com.taskadapter.web.configeditor.MiniPanel;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
+import com.taskadapter.webui.configeditor.MiniPanel;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;

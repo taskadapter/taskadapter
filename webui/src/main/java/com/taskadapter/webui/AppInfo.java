@@ -1,4 +1,4 @@
-package com.taskadapter.web;
+package com.taskadapter.webui;
 
 public class AppInfo {
     private String version;

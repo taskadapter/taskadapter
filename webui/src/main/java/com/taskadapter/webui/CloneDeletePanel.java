@@ -2,8 +2,8 @@ package com.taskadapter.webui;
 
 import com.taskadapter.config.StorageException;
 import com.taskadapter.web.MessageDialog;
-import com.taskadapter.web.service.Services;
 import com.taskadapter.web.uiapi.UISyncConfig;
+import com.taskadapter.webui.service.Services;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import org.slf4j.Logger;

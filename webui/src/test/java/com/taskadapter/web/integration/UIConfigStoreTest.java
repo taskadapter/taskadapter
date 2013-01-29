@@ -7,10 +7,11 @@ import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.NewMappings;
 import com.taskadapter.connector.testlib.FileBasedTest;
 import com.taskadapter.model.GTaskDescriptor;
-import com.taskadapter.web.service.EditorManager;
 import com.taskadapter.web.uiapi.UIConfigService;
 import com.taskadapter.web.uiapi.UIConfigStore;
 import com.taskadapter.web.uiapi.UISyncConfig;
+import com.taskadapter.webui.service.EditorManager;
+
 import org.junit.Test;
 
 import java.util.Collection;

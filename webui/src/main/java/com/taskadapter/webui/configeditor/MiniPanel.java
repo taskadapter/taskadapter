@@ -1,6 +1,7 @@
-package com.taskadapter.web.configeditor;
+package com.taskadapter.webui.configeditor;
 
 import com.taskadapter.web.WindowProvider;
+import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.MethodProperty;

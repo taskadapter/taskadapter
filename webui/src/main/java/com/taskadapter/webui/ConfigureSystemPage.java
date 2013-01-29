@@ -1,7 +1,6 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.auth.CredentialsManager;
-import com.taskadapter.web.LocalRemoteOptionsPanel;
 import com.taskadapter.webui.user.UsersPanel;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;

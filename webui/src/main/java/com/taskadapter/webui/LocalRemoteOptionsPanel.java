@@ -1,6 +1,6 @@
-package com.taskadapter.web;
+package com.taskadapter.webui;
 
-import com.taskadapter.web.service.Services;
+import com.taskadapter.webui.service.Services;
 import com.vaadin.data.Property;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.OptionGroup;

@@ -1,10 +1,12 @@
-package com.taskadapter.web.service;
+package com.taskadapter.webui.service;
 
 import com.taskadapter.FileManager;
 import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.SettingsManager;
+import com.taskadapter.web.service.Sandbox;
+import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.uiapi.UIConfigService;
 import com.taskadapter.web.uiapi.UIConfigStore;
 
@@ -69,7 +71,7 @@ public class Services {
     
     // TODO: Should it live here or somewhere else?
     public Sandbox createCurrentUserSandbox() {
-        return new BasicSandbox(settingsManager.isTAWorkingOnLocalMachine(),
+        return new Sandbox(settingsManager.isTAWorkingOnLocalMachine(),
                 fileManager.getUserFilesFolder(currentUserInfo.getUserName()));
     }
 }

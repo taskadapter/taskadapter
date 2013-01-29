@@ -13,7 +13,6 @@ import com.taskadapter.web.configeditor.file.ServerModeFilePanel;
 import com.taskadapter.web.configeditor.file.ServerModelFilePanelPresenter;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Sandbox;
-import com.taskadapter.web.service.Services;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.HorizontalLayout;

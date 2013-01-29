@@ -1,7 +1,8 @@
-package com.taskadapter.web.service;
+package com.taskadapter.webui.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
 
 /**
  * Information about current user.

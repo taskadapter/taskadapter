@@ -6,10 +6,11 @@ import com.taskadapter.PluginManager;
 import com.taskadapter.config.NewConfigParser;
 import com.taskadapter.config.StoredExportConfig;
 import com.taskadapter.model.GTaskDescriptor;
-import com.taskadapter.web.service.EditorManager;
 import com.taskadapter.web.uiapi.UIConfigService;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.web.uiapi.UISyncConfigBuilder;
+import com.taskadapter.webui.service.EditorManager;
+
 import org.junit.Test;
 
 import java.io.IOException;

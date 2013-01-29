@@ -5,7 +5,7 @@ import com.taskadapter.PluginManager;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.web.PluginEditorFactory;
-import com.taskadapter.web.service.EditorManager;
+import com.taskadapter.webui.service.EditorManager;
 
 /**
  * Service to deal with UI connector configurations. Provides canonical and

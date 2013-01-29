@@ -1,8 +1,8 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.license.LicenseChangeListener;
-import com.taskadapter.web.service.LoginEventListener;
-import com.taskadapter.web.service.Services;
+import com.taskadapter.webui.service.LoginEventListener;
+import com.taskadapter.webui.service.Services;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
