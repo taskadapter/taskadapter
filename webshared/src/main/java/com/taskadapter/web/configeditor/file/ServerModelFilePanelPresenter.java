@@ -71,8 +71,8 @@ public class ServerModelFilePanelPresenter {
             return;
         }
 
-        // TODO !!!: Validate file name, current version is too insecure.
-        selectedFile = new File(userContentDirectory, fileName);
+        selectedFile = new File(userContentDirectory,
+                FileUtils.basename(fileName));
         File file = getSelectedFile();
         SimpleDateFormat sdf = new SimpleDateFormat(ServerModeFilePanel.DATE_FORMAT, Locale.US);
         view.setStatusLabelText(sdf.format(file.lastModified()));
@@ -120,7 +120,7 @@ public class ServerModelFilePanelPresenter {
      */
     @SuppressWarnings("UnusedDeclaration")
     public void uploadSucceeded(Upload.SucceededEvent event) {
-        String fileName = uploadReceiver.getFileName();
+        String fileName = FileUtils.basename(event.getFilename());
 
         // check if MPP file
         boolean isMpp = fileName.toLowerCase().endsWith(MSPFileReader.MPP_SUFFIX_LOWERCASE);
