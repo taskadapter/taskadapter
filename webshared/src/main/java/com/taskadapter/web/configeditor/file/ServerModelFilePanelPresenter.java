@@ -1,6 +1,5 @@
 package com.taskadapter.web.configeditor.file;
 
-import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPFileReader;
 import com.taskadapter.connector.msp.MSPUtils;
 import com.vaadin.data.Item;
@@ -11,7 +10,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class ServerModelFilePanelPresenter {
+public final class ServerModelFilePanelPresenter {
     public static final int MAX_FILE_SIZE_BYTES = 5000000;
 
     private IndexedContainer fileList;
@@ -24,6 +23,20 @@ public class ServerModelFilePanelPresenter {
         this.userContentDirectory = userContentDirectory;
         fileList = buildFileList();
         uploadReceiver = new UploadReceiver(userContentDirectory);
+    }
+
+    /**
+     * TODO !!! see deprecated.
+     * @param initialFile
+     * @deprecated remove this spahetti!!!
+     */
+    @Deprecated
+    void init(String initialFile) {
+        if (initialFile != null) {
+            view.selectFileInCombobox(FileUtils.basename(initialFile));
+        } else {
+            onNoFileSelected();
+        }
     }
 
     /**
@@ -181,18 +194,5 @@ public class ServerModelFilePanelPresenter {
 
     public String getSelectedFileNameOrEmpty() {
         return selectedFile != null ? selectedFile.getAbsolutePath() : "";
-    }
-
-    public void setConfig(MSPConfig config) {
-        String absolutePath = config.getInputAbsoluteFilePath();
-        if (absolutePath == null || absolutePath.isEmpty()) {
-            absolutePath = config.getOutputAbsoluteFilePath();
-        }
-        if (absolutePath != null && !absolutePath.isEmpty()) {
-            File f = new File(absolutePath);
-            view.selectFileInCombobox(f.getName());
-        } else {
-            onNoFileSelected();
-        }
     }
 }

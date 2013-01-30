@@ -1,12 +1,12 @@
 package com.taskadapter.web.configeditor.file;
 
-import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.web.MessageDialog;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Runo;
 
+import java.io.File;
 import java.util.Arrays;
 
 /**
@@ -51,16 +51,17 @@ public class ServerModeFilePanel extends Panel{
     private ComboBox comboBox;
     private ProgressIndicator progressIndicator;
     private Button deleteButton;
+    private final Property inputFilePath;
+    private final Property outputFilePath;
     
-    private final MSPConfig config;
-
-    public ServerModeFilePanel(ServerModelFilePanelPresenter presenter, MSPConfig config) {
-        super(TITLE);
-        this.presenter = presenter;
-        this.config = config;
+    public ServerModeFilePanel(File filesDirectory, Property inputFilePath, Property outputFilePath) {
+        super(TITLE);        
+        this.inputFilePath = inputFilePath;
+        this.outputFilePath = outputFilePath;
+        this.presenter = new ServerModelFilePanelPresenter(filesDirectory);
         buildUI();
         presenter.setView(this);
-        presenter.setConfig(config);
+        presenter.init(findInitialFile(inputFilePath, outputFilePath));
     }
 
     private void buildUI() {
@@ -181,8 +182,8 @@ public class ServerModeFilePanel extends Panel{
                 } else {
                     presenter.onNoFileSelected();
                 }
-                config.setInputAbsoluteFilePath(presenter.getSelectedFileNameOrEmpty());
-                config.setOutputAbsoluteFilePath(presenter.getSelectedFileNameOrEmpty());
+                inputFilePath.setValue(presenter.getSelectedFileNameOrEmpty());
+                outputFilePath.setValue(presenter.getSelectedFileNameOrEmpty());
             }
         });
         return comboBox;
@@ -229,5 +230,15 @@ public class ServerModeFilePanel extends Panel{
     public void showNotification(String message) {
         getWindow().showNotification(message);
     }
+
+    private static String findInitialFile(Property inputFilePath,
+            Property outputFilePath) {
+        String path = (String) inputFilePath.getValue();
+        if (path == null || path.isEmpty()) {
+            path = (String) outputFilePath.getValue();
+        }
+        return (path != null && !path.isEmpty()) ? path : null; 
+    }
+
 }
 

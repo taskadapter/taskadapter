@@ -10,9 +10,10 @@ import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.configeditor.file.LocalModeFilePanel;
 import com.taskadapter.web.configeditor.file.ServerModeFilePanel;
-import com.taskadapter.web.configeditor.file.ServerModelFilePanelPresenter;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Sandbox;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.MethodProperty;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.HorizontalLayout;
@@ -73,17 +74,15 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     }
 
     private Panel createFilePanel(Sandbox sandbox, MSPConfig config) {
+        final Property inputFilePath = new MethodProperty<String>(
+                config, "inputAbsoluteFilePath");
+        final Property outputFilePath = new MethodProperty<String>(
+                config, "outputAbsoluteFilePath");
         if (sandbox.allowLocalFSAccess()) {
-            return new LocalModeFilePanel(config);
-        } else {
-            return createRemoteModeFilePanel(sandbox, config);
+            return new LocalModeFilePanel(inputFilePath, outputFilePath);
+        } else {                    
+            return new ServerModeFilePanel(sandbox.getUserContentDirectory(), inputFilePath, outputFilePath);
         }
-    }
-
-    private ServerModeFilePanel createRemoteModeFilePanel(Sandbox sandbox, ConnectorConfig config) {
-        ServerModelFilePanelPresenter presenter =
-                new ServerModelFilePanelPresenter(sandbox.getUserContentDirectory());
-        return new ServerModeFilePanel(presenter, (MSPConfig) config);
     }
 
     @Override

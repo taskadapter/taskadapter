@@ -1,7 +1,6 @@
 package com.taskadapter.web.configeditor.file;
 
-import com.taskadapter.connector.msp.MSPConfig;
-import com.vaadin.data.util.MethodProperty;
+import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
@@ -15,11 +14,13 @@ public class LocalModeFilePanel extends Panel {
     private static final String LABEL_OUTPUT_FILE_NAME = "Output file:";
     private static final String TOOLTIP_OUTPUT_FILE_NAME = "Microsoft Project file name to save the data to (only XML format is supported)";
     
-    private final MSPConfig config;
-
-    public LocalModeFilePanel(MSPConfig config) {
+    private final Property inputFilePath;
+    private final Property outputFilePath;
+    
+    public LocalModeFilePanel(Property inputFilePath, Property outputFilePath) {
     	super("Microsoft project files");
-    	this.config = config;
+    	this.inputFilePath = inputFilePath;
+    	this.outputFilePath = outputFilePath;
         buildUI();
     }
 
@@ -33,14 +34,12 @@ public class LocalModeFilePanel extends Panel {
 
         layout.addComponent(new Label(LABEL_FILE_NAME));
         TextField inputFileNameField = createFileName(TOOLTIP_FILE_NAME);
-		inputFileNameField.setPropertyDataSource(new MethodProperty<String>(
-                config, "inputAbsoluteFilePath"));
+        inputFileNameField.setPropertyDataSource(inputFilePath);
         layout.addComponent(inputFileNameField);
 
         layout.addComponent(new Label(LABEL_OUTPUT_FILE_NAME));
         outputFileNameField = createFileName(TOOLTIP_OUTPUT_FILE_NAME);
-		outputFileNameField.setPropertyDataSource(new MethodProperty<String>(
-				config, "outputAbsoluteFilePath"));
+        outputFileNameField.setPropertyDataSource(outputFilePath);
         outputFileNameField.addListener(new FieldEvents.BlurListener() {
             @Override
             public void blur(FieldEvents.BlurEvent event) {
