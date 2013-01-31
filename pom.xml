@@ -12,6 +12,7 @@
         <vaadin.version>6.8.7</vaadin.version>
         <gwt.version>2.3.0</gwt.version>
         <guava.version>12.0</guava.version>
+        <slf4j.version>1.6.6</slf4j.version>
     </properties>
 
     <modules>
