@@ -3,13 +3,17 @@ package com.taskadapter.connector.msp.editor;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.msp.MSPConfig;
+import com.taskadapter.connector.msp.MSPFileReader;
 import com.taskadapter.connector.msp.MSPOutputFileNameNotSetException;
+import com.taskadapter.connector.msp.MSPUtils;
 import com.taskadapter.connector.msp.UnsupportedRelationType;
 import com.taskadapter.connector.msp.editor.error.InputFileNameNotSetException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.WindowProvider;
+import com.taskadapter.web.configeditor.file.FileProcessingResult;
 import com.taskadapter.web.configeditor.file.LocalModeFilePanel;
 import com.taskadapter.web.configeditor.file.ServerModeFilePanel;
+import com.taskadapter.web.configeditor.file.UploadProcessor;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Sandbox;
 import com.vaadin.data.Property;
@@ -30,6 +34,9 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.msp.messages";
     private static final String LABEL_DESCRIPTION_TEXT = "Description:";
     private static final String LABEL_TOOLTIP = "Text to show for this connector on 'Export' button. Enter any text.";
+    private static final String UPLOAD_SUCCESS = "Upload success";
+    private static final String UPLOAD_MPP_SUCCESS = "File uploaded and successfully converted to XML";
+    private static final String SAVE_FILE_FAILED = "Save file error"; // error of saving after upload
 
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
 
@@ -81,8 +88,20 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
         if (sandbox.allowLocalFSAccess()) {
             return new LocalModeFilePanel(inputFilePath, outputFilePath);
         } else {                    
-            return new ServerModeFilePanel(sandbox.getUserContentDirectory(), inputFilePath, outputFilePath);
+            return createServerModePanel(sandbox, inputFilePath, outputFilePath);
         }
+    }
+
+    private ServerModeFilePanel createServerModePanel(final Sandbox sandbox,
+            final Property inputFilePath, final Property outputFilePath) {
+        final UploadProcessor proc = new UploadProcessor() {
+            @Override
+            public FileProcessingResult processFile(File uploadedFile) {
+                return MSPEditorFactory.this.processFile(sandbox, uploadedFile);
+            }
+        };
+        return new ServerModeFilePanel(sandbox.getUserContentDirectory(),
+                inputFilePath, outputFilePath, proc);
     }
 
     @Override
@@ -107,6 +126,25 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     @Override
     public String describeDestinationLocation(MSPConfig config) {
         return new File(config.getOutputAbsoluteFilePath()).getName();
+    }
+
+    FileProcessingResult processFile(Sandbox sandbox, File uploadedFile) {
+        String fileName = uploadedFile.getName();
+
+        // check if MPP file
+        boolean isMpp = fileName.toLowerCase().endsWith(MSPFileReader.MPP_SUFFIX_LOWERCASE);
+        if (!isMpp) {
+            return new FileProcessingResult(uploadedFile, UPLOAD_SUCCESS);
+        }
+        
+        File f = new File(sandbox.getUserContentDirectory(), fileName);
+        String newFilePath = MSPUtils.convertMppProjectFileToXml(f
+                .getAbsolutePath());
+        if (newFilePath == null) {
+            return new FileProcessingResult(null, SAVE_FILE_FAILED);
+        }
+        
+        return new FileProcessingResult(new File(newFilePath), UPLOAD_MPP_SUCCESS);
     }
 
 }

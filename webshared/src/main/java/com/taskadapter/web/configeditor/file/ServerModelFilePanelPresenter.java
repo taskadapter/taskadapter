@@ -1,7 +1,5 @@
 package com.taskadapter.web.configeditor.file;
 
-import com.taskadapter.connector.msp.MSPFileReader;
-import com.taskadapter.connector.msp.MSPUtils;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Upload;
@@ -18,9 +16,11 @@ public final class ServerModelFilePanelPresenter {
     private File selectedFile;
     private final UploadReceiver uploadReceiver;    
     private final File userContentDirectory;
+    private final UploadProcessor uploadProcessor;
 
-    public ServerModelFilePanelPresenter(File userContentDirectory) {
+    public ServerModelFilePanelPresenter(File userContentDirectory, UploadProcessor uploadProcessor) {
         this.userContentDirectory = userContentDirectory;
+        this.uploadProcessor = uploadProcessor;
         fileList = buildFileList();
         uploadReceiver = new UploadReceiver(userContentDirectory);
     }
@@ -133,32 +133,13 @@ public final class ServerModelFilePanelPresenter {
      */
     @SuppressWarnings("UnusedDeclaration")
     public void uploadSucceeded(Upload.SucceededEvent event) {
-        String fileName = FileUtils.basename(event.getFilename());
-
-        // check if MPP file
-        boolean isMpp = fileName.toLowerCase().endsWith(MSPFileReader.MPP_SUFFIX_LOWERCASE);
-        if (isMpp) {
-            // TODO !!!: this is insecure too.
-            File f = new File(userContentDirectory, fileName);
-            String newFilePath = MSPUtils.convertMppProjectFileToXml(f.getAbsolutePath());
-            if (newFilePath == null) {
-                // move error
-                view.setStatusLabelText(ServerModeFilePanel.SAVE_FILE_FAILED);
-                view.setUploadEnabled(true);
-                return;
-            }
-
-            if (!f.delete()) {
-                view.showNotification(ServerModeFilePanel.CANNOT_DELETE_MPP_FILE);
-            }
-            fileName = new File(newFilePath).getName();
+        final File uploaded = new File(userContentDirectory,
+                FileUtils.basename(event.getFilename()));
+        final FileProcessingResult res = uploadProcessor.processFile(uploaded);
+        if (res.getResultFile() != null) {
+            addFileToComboBoxAndSelect(res.getResultFile().getName());
         }
-
-        // add to ComboBox
-        addFileToComboBoxAndSelect(fileName);
-
-        view.setStatusLabelText(isMpp ? ServerModeFilePanel.UPLOAD_MPP_SUCCESS : ServerModeFilePanel.UPLOAD_SUCCESS);
-
+        view.setStatusLabelText(res.getMessage());
         view.setUploadEnabled(true);
     }
 

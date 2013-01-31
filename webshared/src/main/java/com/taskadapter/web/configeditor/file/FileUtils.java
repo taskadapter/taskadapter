@@ -6,7 +6,7 @@ import java.io.File;
  * File utilities.
  * 
  */
-class FileUtils {
+final class FileUtils {
     /**
      * Returns a filename for a given path. Returned result never contains any
      * path component.

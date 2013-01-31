@@ -27,8 +27,6 @@ public class ServerModeFilePanel extends Panel{
     private static final String UPLOAD_BUTTON_CAPTION = "Upload new";
     static final String DOWNLOAD_FILE_ERROR = "Download file error";
     static final String UPLOAD_FAILED = "Upload failed";
-    static final String UPLOAD_SUCCESS = "Upload success";
-    static final String SAVE_FILE_FAILED = "Save file error"; // error of saving after upload
     static final String UPLOADING = "Uploading";
     private static final String DELETE_BUTTON_CAPTION = "Delete";
     private static final String QUESTION_DELETE_FILE = "Delete selected file?";
@@ -41,8 +39,6 @@ public class ServerModeFilePanel extends Panel{
     private static final String COMBOBOX_WIDTH = "175px";
     private static final String CONFIRMATION_DIALOG_WIDTH = "200px";
 
-    public static final String UPLOAD_MPP_SUCCESS = "File uploaded and successfully converted to XML";
-    public static final String CANNOT_DELETE_MPP_FILE = "Cannot delete .mpp file";
 
     private Label statusLabel;
     private final ServerModelFilePanelPresenter presenter;
@@ -54,11 +50,13 @@ public class ServerModeFilePanel extends Panel{
     private final Property inputFilePath;
     private final Property outputFilePath;
     
-    public ServerModeFilePanel(File filesDirectory, Property inputFilePath, Property outputFilePath) {
-        super(TITLE);        
+    public ServerModeFilePanel(File filesDirectory, Property inputFilePath,
+            Property outputFilePath, UploadProcessor uploadProcessor) {
+    super(TITLE);        
         this.inputFilePath = inputFilePath;
         this.outputFilePath = outputFilePath;
-        this.presenter = new ServerModelFilePanelPresenter(filesDirectory);
+        this.presenter = new ServerModelFilePanelPresenter(filesDirectory,
+                uploadProcessor);
         buildUI();
         presenter.setView(this);
         presenter.init(findInitialFile(inputFilePath, outputFilePath));
