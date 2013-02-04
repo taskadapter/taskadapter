@@ -1,6 +1,8 @@
 package com.taskadapter.connector.redmine.editor;
 
 import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RelationCreationException;
@@ -36,6 +38,8 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
                 return MESSAGES.get("errors.unsupported.remoteId");
         } else if (e instanceof ServerURLNotSetException) {
             return MESSAGES.get("error.serverUrlNotSet");
+        } else if (e instanceof ProjectNotSetException) {
+            return MESSAGES.get("error.projectKeyNotSet");
         }
         return e.getMessage();
     }
@@ -75,8 +79,10 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
     }
 
     @Override
-    public void validateForSave(RedmineConfig config) {
-        // TODO !! Implement
+    public void validateForSave(RedmineConfig config) throws BadConfigException {
+        if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
+            throw new ProjectNotSetException();
+        }
     }
 
     @Override
