@@ -51,12 +51,24 @@ public final class ConstItem implements Item, Item.PropertySetChangeNotifier {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
+    @Override
+    public void addPropertySetChangeListener(PropertySetChangeListener listener) {
+        // not needed
+    }
+
+    @Deprecated
+    @Override
 	public void addListener(PropertySetChangeListener listener) {
 		// not needed
 	}
 
-	@Override
+    @Override
+    public void removePropertySetChangeListener(PropertySetChangeListener listener) {
+        // not needed
+    }
+
+    @Deprecated
+    @Override
 	public void removeListener(PropertySetChangeListener listener) {
 		// not needed
 	}

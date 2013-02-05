@@ -15,9 +15,6 @@ import com.vaadin.data.Property;
 
 /**
  * Set editor model.
- * 
- * @author maxkar
- * 
  */
 public final class MapEditorModel implements Container,
 		Container.ItemSetChangeNotifier, Container.PropertySetChangeNotifier {
@@ -31,9 +28,6 @@ public final class MapEditorModel implements Container,
 		PROPTYPES.put("value", String.class);
 	}
 
-	/**
-	 * Item listeners.
-	 */
 	private final List<ItemSetChangeListener> itemListeners = new LinkedList<Container.ItemSetChangeListener>();
 
 	/**
@@ -74,23 +68,47 @@ public final class MapEditorModel implements Container,
 				this, value));
 	}
 
-	@Override
+    @Override
+    public void addPropertySetChangeListener(PropertySetChangeListener listener) {
+        // not used
+    }
+
+    @Deprecated
+    @Override
 	public void addListener(PropertySetChangeListener listener) {
 		// not used
 	}
 
-	@Override
+    @Override
+    public void removePropertySetChangeListener(PropertySetChangeListener listener) {
+        // not used
+    }
+
+    @Deprecated
+    @Override
 	public void removeListener(PropertySetChangeListener listener) {
 		// not used
 	}
 
-	@Override
+    @Override
+    public void addItemSetChangeListener(ItemSetChangeListener listener) {
+        itemListeners.add(listener);
+    }
+
+    @Deprecated
+    @Override
 	public void addListener(ItemSetChangeListener listener) {
 		itemListeners.add(listener);
 
 	}
 
-	@Override
+    @Override
+    public void removeItemSetChangeListener(ItemSetChangeListener listener) {
+        itemListeners.remove(listener);
+    }
+
+    @Deprecated
+    @Override
 	public void removeListener(ItemSetChangeListener listener) {
 		itemListeners.remove(listener);
 	}

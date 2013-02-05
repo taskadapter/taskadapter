@@ -4,6 +4,7 @@ import com.taskadapter.web.configeditor.map.MapEditorModel;
 import com.vaadin.data.Container;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.ItemClickEvent;
+import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Runo;
 
@@ -46,7 +47,7 @@ public class CustomFieldsTablePanel extends Panel {
         table.setMultiSelect(false);
         table.setNullSelectionAllowed(false);
         table.setImmediate(true);
-        table.setSortDisabled(true);
+        table.setSortEnabled(false);
         table.setPageLength(5);
         table.setWidth("100%");
         table.setHeight(TABLE_HEIGHT);
@@ -57,10 +58,10 @@ public class CustomFieldsTablePanel extends Panel {
         
         table.setContainerDataSource(model);
 
-        table.addListener(new ItemClickEvent.ItemClickListener() {
+        table.addItemClickListener(new ItemClickEvent.ItemClickListener() {
             @Override
             public void itemClick(ItemClickEvent event) {
-                if (event.getButton() == ItemClickEvent.BUTTON_LEFT && event.isDoubleClick()) {
+                if (event.getButton() == MouseEventDetails.MouseButton.LEFT && event.isDoubleClick()) {
                     final Object cellItemId = event.getItemId();
                     final Object cellPropertyId = event.getPropertyId();
                     final String cellValue = event.getItem().getItemProperty(event.getPropertyId()).getValue().toString();
@@ -76,7 +77,7 @@ public class CustomFieldsTablePanel extends Panel {
                                 textField.setWidth("80%");
                                 textField.setSelectionRange(0, cellValue.length());
                                 textField.setTabIndex(0);
-                                textField.addListener(new FieldEvents.BlurListener() {
+                                textField.addBlurListener(new FieldEvents.BlurListener() {
                                     @Override
                                     public void blur(FieldEvents.BlurEvent event) {
                                         table.setEditable(false);
@@ -97,16 +98,16 @@ public class CustomFieldsTablePanel extends Panel {
 
         Button addNewBtn = new Button(ADD_NEW_BUTTON);
         addNewBtn.setDescription(ADD_NEW_BUTTON_DESCRIPTION);
-        addNewBtn.addListener(new Button.ClickListener() {
+        addNewBtn.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-            	model.append(CELL_DEFAULT_VALUE, CELL_DEFAULT_VALUE);
+                model.append(CELL_DEFAULT_VALUE, CELL_DEFAULT_VALUE);
             }
         });
 
         Button removeBtn = new Button(REMOVE_BUTTON);
         removeBtn.setDescription(REMOVE_BUTTON_DESCRIPTION);
-        removeBtn.addListener(new Button.ClickListener() {
+        removeBtn.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 Object itemId = table.getValue();

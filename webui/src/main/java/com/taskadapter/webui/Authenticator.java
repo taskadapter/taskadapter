@@ -3,9 +3,7 @@ package com.taskadapter.webui;
 import com.taskadapter.auth.AuthException;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.webui.service.EditableCurrentUserInfo;
-import com.taskadapter.webui.service.UserNotFoundException;
 import com.taskadapter.webui.service.WrongPasswordException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,23 +13,17 @@ public final class Authenticator {
     private static final String PERM_AUTH_KEY_COOKIE_NAME = "sPermAuth";
     private static final String PERM_AUTH_USER_COOKIE_NAME = "sPermUser";
 
-    private final CookiesManager cookiesManager;
     private final CredentialsManager credentialsManager;
     private final EditableCurrentUserInfo currentUserInfo;
 
-    public Authenticator(CredentialsManager credentialsManager,
-            CookiesManager cookiesManager, EditableCurrentUserInfo currentUserInfo) {
+    public Authenticator(CredentialsManager credentialsManager, EditableCurrentUserInfo currentUserInfo) {
         this.credentialsManager = credentialsManager;
-        this.cookiesManager = cookiesManager;
         this.currentUserInfo = currentUserInfo;
-
     }
 
     public void authenticate() {
-        final String ucookie = cookiesManager
-                .getCookie(PERM_AUTH_USER_COOKIE_NAME);
-        final String kcookie = cookiesManager
-                .getCookie(PERM_AUTH_KEY_COOKIE_NAME);
+        final String ucookie = CookiesManager.getCookie(PERM_AUTH_USER_COOKIE_NAME);
+        final String kcookie = CookiesManager.getCookie(PERM_AUTH_KEY_COOKIE_NAME);
 
         if (ucookie != null && kcookie != null
                 && credentialsManager.isSecondaryAuthentic(ucookie, kcookie)) {
@@ -64,24 +56,15 @@ public final class Authenticator {
             throw new WrongPasswordException();
         }
 
-        cookiesManager.setCookie(PERM_AUTH_USER_COOKIE_NAME, userName);
-        cookiesManager.setCookie(PERM_AUTH_KEY_COOKIE_NAME, permatok);
+        CookiesManager.setCookie(PERM_AUTH_USER_COOKIE_NAME, userName);
+        CookiesManager.setCookie(PERM_AUTH_KEY_COOKIE_NAME, permatok);
 
         currentUserInfo.setUserName(userName);
     }
 
-    public void checkUserPassword(String userName, String password)
-            throws UserNotFoundException, WrongPasswordException {
-        if (!credentialsManager.isPrimaryAuthentic(userName, password)) {
-            throw new WrongPasswordException();
-        }
-    }
-
     public void logout() {
-        final String ucookie = cookiesManager
-                .getCookie(PERM_AUTH_USER_COOKIE_NAME);
-        final String kcookie = cookiesManager
-                .getCookie(PERM_AUTH_KEY_COOKIE_NAME);
+        final String ucookie = CookiesManager.getCookie(PERM_AUTH_USER_COOKIE_NAME);
+        final String kcookie = CookiesManager.getCookie(PERM_AUTH_KEY_COOKIE_NAME);
 
         if (ucookie != null && kcookie != null) {
             try {
@@ -90,8 +73,8 @@ public final class Authenticator {
                 LOGGER.error("Failed to clean secondary auth token!", e);
             }
         }
-        cookiesManager.expireCookie(PERM_AUTH_USER_COOKIE_NAME);
-        cookiesManager.expireCookie(PERM_AUTH_KEY_COOKIE_NAME);
+        CookiesManager.expireCookie(PERM_AUTH_USER_COOKIE_NAME);
+        CookiesManager.expireCookie(PERM_AUTH_KEY_COOKIE_NAME);
 
         currentUserInfo.setUserName(null);
     }

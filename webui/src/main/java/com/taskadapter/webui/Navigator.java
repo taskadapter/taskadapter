@@ -1,22 +1,22 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.auth.CredentialsManager;
-import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.config.EditConfigPage;
 import com.taskadapter.webui.service.Services;
 import com.taskadapter.webui.service.WrongPasswordException;
 import com.taskadapter.webui.user.ChangePasswordDialog;
-import com.vaadin.Application;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import org.vaadin.googleanalytics.tracking.GoogleAnalyticsTracker;
+
+import static com.vaadin.server.Sizeable.Unit.PERCENTAGE;
+import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
 public class Navigator {
     private static final String GOOGLE_ANALYTICS_ID = "UA-3768502-12";
@@ -34,26 +34,35 @@ public class Navigator {
     private final CredentialsManager credentialsManager;
 
     public Navigator(VerticalLayout layout, Services services,
-            CredentialsManager credManager, Authenticator authenticator) {
+                     CredentialsManager credManager, Authenticator authenticator) {
         this.layout = layout;
         this.services = services;
         this.credentialsManager = credManager;
         this.authenticator = authenticator;
-        addGoogleAnalytics();
+        addGoogleAnalyticsIfNotTestMode();
         buildUI();
     }
 
-    private void addGoogleAnalytics() {
+    private void addGoogleAnalyticsIfNotTestMode() {
+        UI ui = UI.getCurrent();
+        /* ui is NULL when we run unit tests.
+           there's no need in tracking our test activities in Google Analytics.
+         */
+        if (ui != null) {
+            addGoogleAnalytics(ui);
+        }
+    }
+
+    private void addGoogleAnalytics(UI ui) {
         tracker = new GoogleAnalyticsTracker(GOOGLE_ANALYTICS_ID, "none");
-        // Add ONLY ONE tracker per window
-        layout.getWindow().addComponent(tracker);
+        tracker.extend(ui);
     }
 
     private void buildUI() {
         // TODO !! this is a hack
         Header header = new Header(this, services);
-        header.setHeight(50, Sizeable.UNITS_PIXELS);
-        header.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        header.setHeight(50, PIXELS);
+        header.setWidth(100, PERCENTAGE);
         layout.addComponent(header);
 
         addEmptyNavigationPanelUsedAsASpacerForNow();
@@ -76,24 +85,24 @@ public class Navigator {
 
     private void addEmptyNavigationPanelUsedAsASpacerForNow() {
         navigationPanel = new HorizontalLayout();
-        navigationPanel.setHeight(30, Sizeable.UNITS_PIXELS);
+        navigationPanel.setHeight(30, PIXELS);
         navigationPanel.setSpacing(true);
         layout.addComponent(navigationPanel);
         layout.setComponentAlignment(navigationPanel, Alignment.MIDDLE_CENTER);
     }
-    
+
     public void logout() {
         authenticator.logout();
         show(new LoginPage());
     }
-    
+
     public void changePassword() {
         final ChangePasswordDialog passwordDialog = new ChangePasswordDialog(
                 Page.MESSAGES, credentialsManager,
                 services.getCurrentUserInfo());
-        layout.getWindow().addWindow(passwordDialog);        
+        layout.getUI().addWindow(passwordDialog);
     }
-    
+
     public void login(String login, String password, boolean keepAlive)
             throws WrongPasswordException {
         authenticator.tryLogin(login, password, keepAlive);
@@ -124,12 +133,18 @@ public class Navigator {
 
         navigationPanel.removeAllComponents();
 
-        tracker.trackPageview("/" + currentPage.getPageGoogleAnalyticsID());
+        trackPageInGoogleAnalytics();
+    }
+
+    private void trackPageInGoogleAnalytics() {
+        if (tracker != null) {
+            tracker.trackPageview("/" + currentPage.getPageGoogleAnalyticsID());
+        }
     }
 
     private boolean requiresLogin(Page page) {
         // TODO refactor!
-        return ! "support".equals(page.getPageGoogleAnalyticsID());
+        return !"support".equals(page.getPageGoogleAnalyticsID());
     }
 
     private void setServicesToPage(Page page) {
@@ -149,22 +164,6 @@ public class Navigator {
         page.setErrorMessage(errorMessage);
 
         show(page);
-    }
-
-    public void showError(String message) {
-        layout.getWindow().showNotification("Oops", message , Window.Notification.TYPE_ERROR_MESSAGE);
-    }
-
-    public void showNotification(String caption, String message) {
-        layout.getWindow().showNotification(caption, message , Window.Notification.TYPE_HUMANIZED_MESSAGE);
-    }
-
-    public void addWindow(MessageDialog messageDialog) {
-        layout.getApplication().getMainWindow().addWindow(messageDialog);
-    }
-
-    public Application getApplication() {
-        return layout.getApplication();
     }
 
     /**

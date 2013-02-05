@@ -6,7 +6,6 @@ import com.taskadapter.web.uiapi.UISyncConfig;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Form;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ListSelect;
@@ -35,11 +34,11 @@ public class NewConfigPage extends Page {
     private void buildUI() {
         panel = new Panel("Create new config");
         panel.setWidth("600px");
-        Form form = new Form();
-        panel.addComponent(form);
 
         GridLayout grid = new GridLayout(2, 4);
         grid.setSpacing(true);
+        grid.setMargin(true);
+        panel.setContent(grid);
 
         connector1 = new ListSelect(SYSTEM_1_TITLE);
         connector1.setRequired(true);
@@ -63,14 +62,12 @@ public class NewConfigPage extends Page {
         errorMessageLabel.addStyleName("error-message-label");
 
         Button saveButton = new Button("Create");
-        saveButton.addListener(new Button.ClickListener() {
+        saveButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 saveClicked();
             }
         });
-
-        form.setLayout(grid);
 
         grid.addComponent(errorMessageLabel, 0, 2, 1, 2);
         grid.addComponent(saveButton, 1, 3);
@@ -131,14 +128,13 @@ public class NewConfigPage extends Page {
 
     private UISyncConfig save() throws StorageException {
 
-        final String descriptionString = (String) descriptionTextField.getValue();
+        final String descriptionString = descriptionTextField.getValue();
         final String id1 = (String) connector1.getValue();
         final String id2 = (String) connector2.getValue();
         final String currentUserLoginName = services.getCurrentUserInfo().getUserName();
 
-        final UISyncConfig config = services.getUIConfigStore()
+        return services.getUIConfigStore()
                 .createNewConfig(currentUserLoginName, descriptionString, id1, id2);
-        return config;
     }
 
     @Override

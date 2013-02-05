@@ -12,7 +12,6 @@ import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.PluginEditorFactory;
-import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.server.ServerPanelWithAPIKey;
@@ -40,10 +39,10 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
     private final ExceptionFormatter formatter = new BasecampErrorFormatter();
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Sandbox sandbox, BasecampConfig config) {
+    public ComponentContainer getMiniPanelContents(Sandbox sandbox, BasecampConfig config) {
 
         Panel panel = createServerPanel(config);
-        Panel projectPanel = createProjectPanel(windowProvider, config);
+        Panel projectPanel = createProjectPanel(config);
 
         GridLayout grid = new GridLayout();
         grid.setColumns(2);
@@ -65,11 +64,11 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
                 new MethodProperty<String>(config.getAuth(), "password"),
                 new MethodProperty<String>(config.getAuth(), "apiKey"),
                 new MethodProperty<Boolean>(config.getAuth(), "useAPIKeyInsteadOfLoginPassword"));
-        panel.addComponent(redmineServerPanel);
+        panel.setContent(redmineServerPanel);
         return panel;
     }
 
-    private Panel createProjectPanel(final WindowProvider windowProvider, final BasecampConfig config) {
+    private Panel createProjectPanel(final BasecampConfig config) {
         Panel projectPanel = new Panel("Project");
 
         GridLayout grid = new GridLayout();
@@ -77,11 +76,11 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         grid.setMargin(true);
         grid.setSpacing(true);
 
-        projectPanel.addComponent(grid);
+        projectPanel.setContent(grid);
 
         addAccountIdRow(config, grid);
-        addProjectRow(windowProvider, config, grid);
-        addTodoKeyRow(windowProvider, config, grid);
+        addProjectRow(config, grid);
+        addTodoKeyRow(config, grid);
         addCompletedCheckboxRow(config, grid);
 
         return projectPanel;
@@ -105,7 +104,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         grid.addComponent(new Label(""));
     }
 
-    private void addProjectRow(final WindowProvider windowProvider, final BasecampConfig config, GridLayout grid) {
+    private void addProjectRow(final BasecampConfig config, GridLayout grid) {
         Label projectKeyLabel = new Label("Project key:");
         addTo(grid, Alignment.MIDDLE_LEFT, projectKeyLabel);
 
@@ -115,7 +114,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        ShowInfoElement.loadProject(windowProvider, config, formatter, factory);
+                        ShowInfoElement.loadProject(config, formatter, factory);
                     }
                 }
         );
@@ -134,7 +133,6 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         };
 
         Button showProjectsButton = EditorUtil.createLookupButton(
-                windowProvider,
                 "...",
                 "Show list of available projects on the server.",
                 "Select project",
@@ -146,7 +144,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         addTo(grid, Alignment.MIDDLE_CENTER, showProjectsButton);
     }
 
-    private void addTodoKeyRow(final WindowProvider windowProvider, final BasecampConfig config, GridLayout grid) {
+    private void addTodoKeyRow(final BasecampConfig config, GridLayout grid) {
         Label todoListKey = new Label("Todo list key:");
         addTo(grid, Alignment.MIDDLE_LEFT, todoListKey);
 
@@ -157,7 +155,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        ShowInfoElement.showTodoListInfo(windowProvider, config, formatter, factory);
+                        ShowInfoElement.showTodoListInfo(config, formatter, factory);
                     }
                 }
         );
@@ -176,7 +174,6 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         };
 
         Button showTodoListsButton = EditorUtil.createLookupButton(
-                windowProvider,
                 "...",
                 "Show Todo Lists",
                 "Select a Todo list",

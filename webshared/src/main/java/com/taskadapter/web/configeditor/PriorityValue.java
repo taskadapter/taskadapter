@@ -3,14 +3,15 @@ package com.taskadapter.web.configeditor;
 import com.taskadapter.connector.Priorities;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.AbstractProperty;
+import com.vaadin.data.util.converter.Converter;
 
-public class PrioirtyValue extends AbstractProperty implements Property,
+public class PriorityValue extends AbstractProperty implements Property,
         Property.ValueChangeNotifier {
 
     private static final long serialVersionUID = -865197265809925838L;
     private final Priorities model;
     private final String key;
-    private String value;
+    private Integer value;
 
     /**
      * "Invalid" field value. Set to true iff requested value is invalid and
@@ -18,10 +19,10 @@ public class PrioirtyValue extends AbstractProperty implements Property,
      */
     private boolean invalid;
     
-    public PrioirtyValue(Priorities model, String key) {
+    public PriorityValue(Priorities model, String key) {
         this.model = model;
         this.key = key;
-        this.value = model.getPriorityByText(key).toString();
+        this.value = model.getPriorityByText(key);
     }
     
     boolean isValid() {
@@ -35,12 +36,12 @@ public class PrioirtyValue extends AbstractProperty implements Property,
 
     @Override
     public void setValue(Object newValue) throws ReadOnlyException,
-            ConversionException {
+            Converter.ConversionException {
         if (this.value == newValue || this.value != null
                 && this.value.equals(newValue)) {
             return;
         }
-        this.value = newValue.toString();
+        this.value = (Integer) newValue;
         try {
             final Integer newPriority = Integer.valueOf(value);
             model.setPriority(key, newPriority);

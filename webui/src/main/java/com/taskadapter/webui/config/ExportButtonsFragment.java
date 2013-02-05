@@ -2,7 +2,7 @@ package com.taskadapter.webui.config;
 
 import com.taskadapter.connector.definition.MappingSide;
 import com.taskadapter.web.data.Messages;
-import com.vaadin.terminal.ThemeResource;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.themes.Runo;

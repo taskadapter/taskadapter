@@ -20,7 +20,7 @@ public class ServerPanel extends Panel implements Validatable {
         setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
         serverContainer = new ServerContainer(labelProperty, serverURLProperty, userLoginNameProperty, passwordProperty);
 
-        addComponent(serverContainer);
+        setContent(serverContainer);
         setCaption(SERVER_GROUP_LABEL);
     }
 

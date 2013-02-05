@@ -1,6 +1,8 @@
 package com.taskadapter.web;
 
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 
 public class InputDialog extends Window {
@@ -11,29 +13,31 @@ public class InputDialog extends Window {
     public InputDialog(String caption, String question, final Recipient recipient) {
         super(caption);
 
-        VerticalLayout windowLayout = (VerticalLayout) this.getContent();
-        windowLayout.setSizeUndefined();
+        VerticalLayout view = new VerticalLayout();
+        setContent(view);
+        view.setSizeUndefined();
+        view.setMargin(true);
 
         setModal(true);
         setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
 
         HorizontalLayout textLayout = new HorizontalLayout();
         textLayout.setSpacing(true);
-        textLayout.addComponent(new Label(question, Label.CONTENT_XHTML));
-        textLayout.addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
+        textLayout.addComponent(new Label(question, ContentMode.HTML));
+        textLayout.addComponent(new Label("&nbsp;", ContentMode.HTML));
         textLayout.addComponent(textFieldLayout);
-        windowLayout.addComponent(textLayout);
+        view.addComponent(textLayout);
 
         final Window dialog = this;
 
         HorizontalLayout layout = new HorizontalLayout();
         layout.setSpacing(true);
-        layout.setMargin(true, false, false, false);
+        layout.setMargin(new MarginInfo(true, false, false, false));
 
         Button okButton = new Button("Ok", new Button.ClickListener() {
             public void buttonClick(Button.ClickEvent event) {
-                recipient.gotInput(textField.toString());
-                getParent().removeWindow(dialog);
+                recipient.gotInput(textField.getValue());
+                getUI().removeWindow(dialog);
             }
         });
         okButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
@@ -42,12 +46,12 @@ public class InputDialog extends Window {
 
         Button cancelButton = new Button("Cancel", new Button.ClickListener() {
             public void buttonClick(Button.ClickEvent event) {
-                getParent().removeWindow(dialog);
+                getUI().removeWindow(dialog);
             }
         });
         layout.addComponent(cancelButton);
-        windowLayout.addComponent(layout);
-        windowLayout.setComponentAlignment(layout, Alignment.BOTTOM_CENTER);
+        view.addComponent(layout);
+        view.setComponentAlignment(layout, Alignment.BOTTOM_CENTER);
         setPlainTextMode();
     }
 

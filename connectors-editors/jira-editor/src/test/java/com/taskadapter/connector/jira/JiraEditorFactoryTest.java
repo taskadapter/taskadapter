@@ -5,20 +5,28 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.testlib.FileBasedTest;
-import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.service.Sandbox;
+import com.vaadin.server.DefaultDeploymentConfiguration;
+import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.VaadinServletService;
+import com.vaadin.server.VaadinSession;
+import org.junit.Before;
 import org.junit.Test;
 
-import static org.mockito.Mockito.mock;
+import java.util.Properties;
 
 public class JiraEditorFactoryTest extends FileBasedTest {
+    @Before
+    public void before() {
+        VaadinSession.setCurrent(new VaadinSession(new VaadinServletService(
+                new VaadinServlet(), new DefaultDeploymentConfiguration(
+                getClass(), new Properties()))));
+    }
+
     @Test
     public void miniPanelIsCreated() {
         JiraEditorFactory factory = new JiraEditorFactory();
-        WindowProvider provider = mock(WindowProvider.class);
-        factory.getMiniPanelContents(provider,
-                new Sandbox(false, tempFolder),
-                new JiraConfig());
+        factory.getMiniPanelContents(new Sandbox(false, tempFolder), new JiraConfig());
     }
 
     @Test(expected = ServerURLNotSetException.class)
@@ -29,7 +37,7 @@ public class JiraEditorFactoryTest extends FileBasedTest {
     @Test(expected = ProjectNotSetException.class)
     public void projectKeyIsRequired() throws BadConfigException {
         JiraConfig config = new JiraConfig();
-        config.setServerInfo(new WebServerInfo("http://somehost","",""));
+        config.setServerInfo(new WebServerInfo("http://somehost", "", ""));
         new JiraEditorFactory().validateForSave(config);
     }
 

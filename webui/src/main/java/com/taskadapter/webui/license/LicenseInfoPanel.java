@@ -5,6 +5,7 @@ import com.taskadapter.license.LicenseManager;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 
 import java.text.SimpleDateFormat;
 
@@ -28,7 +29,7 @@ public class LicenseInfoPanel extends GridLayout {
     private void buildUI() {
         setColumns(2);
         setSpacing(true);
-        setWidth(350, UNITS_PIXELS);
+        setWidth(350, Unit.PIXELS);
 
         addComponent(new Label("Registered to:"));
         registeredTo = new Label();
@@ -47,7 +48,7 @@ public class LicenseInfoPanel extends GridLayout {
         addComponent(licenseExpiresOn);
 
         Button clearLicenseButton = new Button("Remove license info");
-        clearLicenseButton.addListener(new Button.ClickListener() {
+        clearLicenseButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 clearLicenseInfo();
@@ -58,7 +59,7 @@ public class LicenseInfoPanel extends GridLayout {
 
     public void setLicense(License license) {
         registeredTo.setValue(license.getCustomerName());
-        usersNumberLabel.setValue(license.getUsersNumber());
+        usersNumberLabel.setValue(license.getUsersNumber()+"");
         licenseCreatedOn.setValue(license.getCreatedOn());
         String formattedExpirationDateString = licenseDateFormatter.format(license.getExpiresOn());
         if (license.isExpired()) {
@@ -72,6 +73,6 @@ public class LicenseInfoPanel extends GridLayout {
 
     private void clearLicenseInfo() {
         licenseManager.removeTaskAdapterLicenseFromConfigFolder();
-        getWindow().showNotification("Removed the license info");
+        Notification.show("Removed the license info");
     }
 }

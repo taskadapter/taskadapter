@@ -8,57 +8,56 @@ import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.web.ExceptionFormatter;
-import com.taskadapter.web.WindowProvider;
-import com.taskadapter.web.configeditor.EditorUtil;
+import com.vaadin.ui.Notification;
 
 import static com.taskadapter.web.ui.MessageUtils.nvl;
 
 public final class ShowInfoElement {
-    static void loadProject(WindowProvider windowProvider, BasecampConfig config, ExceptionFormatter exceptionFormatter, ObjectAPIFactory factory) {
+    static void loadProject(BasecampConfig config, ExceptionFormatter exceptionFormatter, ObjectAPIFactory factory) {
         try {
             BasecampProject project = BasecampUtils.loadProject(factory, config);
-            showProjectInfo(windowProvider, project);
+            showProjectInfo(project);
 
         } catch (BadConfigException e) {
             String localizedMessage = exceptionFormatter.formatError(e);
-            windowProvider.getWindow().showNotification(localizedMessage);
+            Notification.show(localizedMessage);
         } catch (ConnectorException e) {
             String localizedMessage = exceptionFormatter.formatError(e);
-            windowProvider.getWindow().showNotification("Oops", localizedMessage);
+            Notification.show("Oops", localizedMessage, Notification.Type.ERROR_MESSAGE);
         }
     }
 
-    private static void showProjectInfo(WindowProvider windowProvider, BasecampProject project) {
+    private static void showProjectInfo(BasecampProject project) {
         String msg = "<BR>Key:  " + project.getKey()
                 + "<BR>Name: " + project.getName()
                 + "<BR>Description: " + nvl(project.getDescription())
                 + "<BR>Completed Todo lists: " + project.getCompletedTodolists()
                 + "<BR>Remaining Todo lists: " + project.getRemainingTodolists();
 
-        EditorUtil.show(windowProvider.getWindow(), "Project Info", msg);
+        Notification.show("Project Info", msg, Notification.Type.HUMANIZED_MESSAGE);
     }
 
-    public static void showTodoListInfo(WindowProvider windowProvider, BasecampConfig config, ExceptionFormatter formatter, ObjectAPIFactory factory) {
+    public static void showTodoListInfo(BasecampConfig config, ExceptionFormatter formatter, ObjectAPIFactory factory) {
         try {
             TodoList todoList = BasecampUtils.loadTodoList(factory, config);
-            showTodoListInfoPopup(windowProvider, todoList);
+            showTodoListInfoPopup(todoList);
 
         } catch (BadConfigException e) {
             String localizedMessage = formatter.formatError(e);
-            windowProvider.getWindow().showNotification(localizedMessage);
+            Notification.show(localizedMessage);
         } catch (ConnectorException e) {
             String localizedMessage = formatter.formatError(e);
-            windowProvider.getWindow().showNotification("Oops", localizedMessage);
+            Notification.show("Oops", localizedMessage, Notification.Type.ERROR_MESSAGE);
         }
     }
 
-    private static void showTodoListInfoPopup(WindowProvider windowProvider, TodoList todoList) {
+    private static void showTodoListInfoPopup(TodoList todoList) {
         String msg = "<BR>Key:  " + todoList.getKey()
                 + "<BR>Name: " + todoList.getName()
                 + "<BR>Description: " + nvl(todoList.getDescription())
                 + "<BR>Completed Todos: " + todoList.getCompletedCount()
                 + "<BR>Remaining Todos: " + todoList.getRemainingCount();
 
-        EditorUtil.show(windowProvider.getWindow(), "Todo List Info", msg);
+        Notification.show("Todo List Info", msg, Notification.Type.HUMANIZED_MESSAGE);
     }
 }

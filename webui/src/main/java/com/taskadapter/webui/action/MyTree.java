@@ -135,7 +135,7 @@ public class MyTree extends CustomComponent {
         final CheckBox checkBox = new CheckBox((task.getRemoteId() == null) ? CREATE : UPDATE);
         checkBox.setValue(true);
         checkBox.setData(parentId);
-        checkBox.addListener(new TreeItemSelectionHandler(checkBox, taskId));
+        checkBox.addValueChangeListener(new TreeItemSelectionHandler(checkBox, taskId));
         checkBox.setImmediate(true);
 
         tree.addItem(

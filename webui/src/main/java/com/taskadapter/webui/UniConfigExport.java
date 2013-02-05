@@ -8,13 +8,16 @@ import com.taskadapter.webui.export.Exporter;
 import com.taskadapter.webui.service.Services;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.ThemeResource;
+import com.vaadin.server.Sizeable;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+
+import static com.vaadin.server.Sizeable.Unit.PERCENTAGE;
+import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
 /**
  * Controller for a single export.
@@ -40,7 +43,7 @@ final class UniConfigExport {
 
     private HorizontalLayout createUI() {
         final HorizontalLayout res = new HorizontalLayout();
-        res.setWidth(274, Sizeable.UNITS_PIXELS);
+        res.setWidth(274, PIXELS);
 
         final String validationFailure = getValidationError();
         final boolean isValid = validationFailure == null;
@@ -83,7 +86,7 @@ final class UniConfigExport {
         res.setComponentAlignment(rightLabel, Alignment.MIDDLE_LEFT);
 
         if (isValid) {
-            res.addListener(new LayoutEvents.LayoutClickListener() {
+            res.addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
                 @Override
                 public void layoutClick(LayoutClickEvent event) {
                     export();
@@ -121,7 +124,7 @@ final class UniConfigExport {
 
     private Label createLabel(UIConnectorConfig connector) {
         final Label res = new Label(connector.getLabel());
-        res.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        res.setWidth(100, PERCENTAGE);
         return res;
     }
 

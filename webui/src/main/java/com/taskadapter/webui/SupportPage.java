@@ -2,8 +2,8 @@ package com.taskadapter.webui;
 
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.webui.license.LicensePanel;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -33,20 +33,24 @@ public class SupportPage extends Page {
 
     private void addVersionInfo() {
         versionPanel = new Panel("Version Info");
-        versionPanel.setWidth(400, Sizeable.UNITS_PIXELS);
+        versionPanel.setWidth(400, Sizeable.Unit.PIXELS);
 
         Label currentVersionLabel = new Label("Task Adapter version " + currentTaskAdapterVersion);
-        versionPanel.addComponent(currentVersionLabel);
+
+        VerticalLayout view = new VerticalLayout();
+        view.addComponent(currentVersionLabel);
+        view.setMargin(true);
 
         Button checkButton = new Button("Check for update");
-        checkButton.addListener(new Button.ClickListener() {
+        checkButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 checkForUpdate();
             }
         });
-        versionPanel.addComponent(checkButton);
-        versionPanel.addComponent(lastVersionInfoLayout);
+        view.addComponent(checkButton);
+        view.addComponent(lastVersionInfoLayout);
+        versionPanel.setContent(view);
         layout.addComponent(versionPanel);
     }
 

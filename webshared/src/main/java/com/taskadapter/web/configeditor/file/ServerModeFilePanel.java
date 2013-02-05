@@ -3,15 +3,14 @@ package com.taskadapter.web.configeditor.file;
 import com.taskadapter.web.MessageDialog;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.shared.ui.combobox.FilteringMode;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Runo;
 
 import java.io.File;
 import java.util.Arrays;
 
-/**
- * @author Alexander Kulik
- */
 public class ServerModeFilePanel extends Panel{
 
     // TODO show this limit on the webpage
@@ -25,7 +24,6 @@ public class ServerModeFilePanel extends Panel{
     static final String DATE_FORMAT = "d MMM yyyy h:mm:ss a z";
     static final String DOWNLOAD_BUTTON_CAPTION = "Download file";
     private static final String UPLOAD_BUTTON_CAPTION = "Upload new";
-    static final String DOWNLOAD_FILE_ERROR = "Download file error";
     static final String UPLOAD_FAILED = "Upload failed";
     static final String UPLOADING = "Uploading";
     private static final String DELETE_BUTTON_CAPTION = "Delete";
@@ -63,11 +61,11 @@ public class ServerModeFilePanel extends Panel{
     }
 
     private void buildUI() {
-        removeAllComponents();
-
-        addComponent(createComboboxPanel());
-        addComponent(createDateLabelPanel());
-        addComponent(createUploadPanel());
+        VerticalLayout view = new VerticalLayout();
+        view.addComponent(createComboboxPanel());
+        view.addComponent(createDateLabelPanel());
+        view.addComponent(createUploadPanel());
+        setContent(view);
     }
 
     private Layout createComboboxPanel() {
@@ -83,9 +81,9 @@ public class ServerModeFilePanel extends Panel{
         HorizontalLayout layout = new HorizontalLayout();
         layout.setSpacing(true);
 
-        layout.addComponent(new Label("&nbsp;&nbsp;&nbsp;", Label.CONTENT_XHTML));
+        layout.addComponent(new Label("&nbsp;&nbsp;&nbsp;", ContentMode.HTML));
 
-        statusLabel = new Label("", Label.CONTENT_XHTML);
+        statusLabel = new Label("", ContentMode.HTML);
         statusLabel.setStyleName(Runo.LABEL_SMALL);
         layout.addComponent(statusLabel);
         layout.setComponentAlignment(statusLabel, Alignment.MIDDLE_LEFT);
@@ -102,7 +100,7 @@ public class ServerModeFilePanel extends Panel{
     private Layout createUploadPanel() {
         Layout layout = new VerticalLayout();
 
-        layout.addComponent(new Label("<hr>", Label.CONTENT_XHTML));
+        layout.addComponent(new Label("<hr>", ContentMode.HTML));
 
         Layout bottomToolLayout = new HorizontalLayout();
         bottomToolLayout.addComponent(createUploadButton());
@@ -113,6 +111,7 @@ public class ServerModeFilePanel extends Panel{
     }
 
     private Component createUploadButton() {
+        // TODO VAADIN7 bug: the error indication stays on the page forever when an upload fails. (found by Maxim)
         uploadButton = new Upload();
         uploadButton.setReceiver(presenter.getUploadReceiver());
         uploadButton.setImmediate(true);
@@ -132,7 +131,7 @@ public class ServerModeFilePanel extends Panel{
 
     private Component createDeleteButton() {
         deleteButton = new Button(DELETE_BUTTON_CAPTION);
-        deleteButton.addListener(new Button.ClickListener() {
+        deleteButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 showConfirmationDialog(QUESTION_DELETE_FILE, DELETE_FILE_ACTION);
@@ -157,7 +156,7 @@ public class ServerModeFilePanel extends Panel{
                 }
         );
         messageDialog.setWidth(CONFIRMATION_DIALOG_WIDTH);
-        getApplication().getMainWindow().addWindow(messageDialog);
+        getUI().addWindow(messageDialog);
     }
 
 
@@ -168,10 +167,10 @@ public class ServerModeFilePanel extends Panel{
         comboBox.setNewItemsAllowed(false);
         comboBox.setInputPrompt(COMBOBOX_INPUT_PROMPT);
 
-        comboBox.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
-        comboBox.setFilteringMode(AbstractSelect.Filtering.FILTERINGMODE_STARTSWITH);
+        comboBox.setItemCaptionMode(AbstractSelect.ItemCaptionMode.PROPERTY);
+        comboBox.setFilteringMode(FilteringMode.STARTSWITH);
         comboBox.setImmediate(true);
-        comboBox.addListener(new Property.ValueChangeListener() {
+        comboBox.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
                 Property selected = presenter.getFileList().getContainerProperty(event.getProperty().toString(), COMBOBOX_ITEM_PROPERTY);
@@ -189,12 +188,6 @@ public class ServerModeFilePanel extends Panel{
 
     private Component createDownloadButton() {
         downloadButton = new Button(DOWNLOAD_BUTTON_CAPTION);
-        downloadButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                presenter.downloadSelectedFile();
-            }
-        });
         return downloadButton;
     }
 
@@ -202,10 +195,14 @@ public class ServerModeFilePanel extends Panel{
         // upload disabled in case of uploading process
         progressIndicator.setVisible(!flag);
         if (flag) {
-            progressIndicator.setValue(0);
+            progressIndicator.setValue(0f);
         }
 
         uploadButton.setEnabled(flag);
+    }
+
+    public Button getDownloadButton() {
+        return downloadButton;
     }
 
     public void setDownloadEnabled(boolean flag) {
@@ -225,10 +222,6 @@ public class ServerModeFilePanel extends Panel{
         statusLabel.setValue(text);
     }
 
-    public void showNotification(String message) {
-        getWindow().showNotification(message);
-    }
-
     private static String findInitialFile(Property inputFilePath,
             Property outputFilePath) {
         String path = (String) inputFilePath.getValue();
@@ -237,6 +230,4 @@ public class ServerModeFilePanel extends Panel{
         }
         return (path != null && !path.isEmpty()) ? path : null; 
     }
-
 }
-

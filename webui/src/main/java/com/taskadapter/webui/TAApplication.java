@@ -8,15 +8,10 @@ import com.taskadapter.auth.cred.FSCredentialStore;
 import com.taskadapter.webui.service.EditableCurrentUserInfo;
 import com.taskadapter.webui.service.EditorManager;
 import com.taskadapter.webui.service.Services;
-import com.vaadin.Application;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
+import com.vaadin.annotations.Theme;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,23 +20,19 @@ import java.io.File;
 /**
  * Vaadin web application entry point.
  */
-public class TAApplication extends Application implements HttpServletRequestListener {
+@Theme("mytheme")
+public class TAApplication extends UI {
     public static final String ADMIN_LOGIN_NAME = "admin";
     
     private static final Logger LOGGER = LoggerFactory.getLogger(TAApplication.class);
     
-    private final Window mainWindow = new Window("Task Adapter");
-
     private final Services services;
-    
-    private final CookiesManager cookiesManager;
     
     private final Authenticator authenticator;
     
     private final CredentialsManager credentialsManager;
     
     public TAApplication(File dataRootFolder) {
-        cookiesManager = new CookiesManager();
         services = new Services(dataRootFolder,
                 EditorManager.fromResource("editors.txt"));
 
@@ -50,7 +41,6 @@ public class TAApplication extends Application implements HttpServletRequestList
         credentialsManager = new BasicCredentialsManager(
                 credStore, 50);
         authenticator = new Authenticator(credentialsManager,
-                cookiesManager,
                 (EditableCurrentUserInfo) services.getCurrentUserInfo());
         
         services.getLicenseManager().loadInstalledTaskAdapterLicense();
@@ -64,39 +54,28 @@ public class TAApplication extends Application implements HttpServletRequestList
             }
         }
     }
-    
+
+    /**
+     * The public no-arg constructor is required for Vaadin.
+     */
+    @SuppressWarnings("unused")
     public TAApplication() {
         this(getDefaultRootFolder());
     }
 
     @Override
-    public String getVersion() {
-        return services.getCurrentTaskAdapterVersion();
-    }
-
-    @Override
-    public void init() {
+    public void init(VaadinRequest request) {
         authenticator.authenticate();
-        setTheme("mytheme");
 
         VerticalLayout layout = new VerticalLayout();
-        layout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
-        mainWindow.setContent(layout);
-        setMainWindow(mainWindow);
+        layout.setMargin(true);
+        layout.setWidth(100, Unit.PERCENTAGE);
+        setContent(layout);
 
         
         Navigator navigator = new Navigator(layout, services,
                 credentialsManager, authenticator);
         navigator.show(new ConfigsPage());
-    }
-
-    @Override
-    public void onRequestStart(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        cookiesManager.init(httpServletRequest, httpServletResponse);
-    }
-
-    @Override
-    public void onRequestEnd(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
     }
 
     /**

@@ -50,7 +50,7 @@ public class ConfirmExportFragment extends CustomComponent {
         layout.addComponent(connectorTree);
 
         Button goButton = new Button(messages.get("button.go"));
-        goButton.addListener(goListener);
+        goButton.addClickListener(goListener);
 
         HorizontalLayout buttonsLayout = new HorizontalLayout();
         buttonsLayout.addComponent(goButton);

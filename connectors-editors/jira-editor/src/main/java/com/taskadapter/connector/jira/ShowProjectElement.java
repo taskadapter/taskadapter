@@ -4,18 +4,15 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.model.GProject;
-import com.taskadapter.web.WindowProvider;
-import com.taskadapter.web.configeditor.EditorUtil;
+import com.vaadin.ui.Notification;
 
 import static com.taskadapter.web.ui.MessageUtils.nvl;
 
 // TODO unify with the same class in Redmine editor module?
 public class ShowProjectElement {
-    private WindowProvider windowProvider;
     private JiraConfig jiraConfig;
 
-    public ShowProjectElement(WindowProvider windowProvider, JiraConfig jiraConfig) {
-        this.windowProvider = windowProvider;
+    public ShowProjectElement(JiraConfig jiraConfig) {
         this.jiraConfig = jiraConfig;
     }
 
@@ -46,7 +43,7 @@ public class ShowProjectElement {
         // + "\nLead: " + project.getLead()
         // + "\nURL: " + project.getProjectUrl()
 
-        EditorUtil.show(windowProvider.getWindow(), "Project Info", msg);
+        Notification.show("Project Info", msg, Notification.Type.HUMANIZED_MESSAGE);
     }
 
 }

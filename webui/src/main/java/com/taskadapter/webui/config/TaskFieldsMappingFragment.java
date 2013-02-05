@@ -12,8 +12,9 @@ import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.MethodProperty;
-import com.vaadin.terminal.Resource;
-import com.vaadin.terminal.ThemeResource;
+import com.vaadin.server.Resource;
+import com.vaadin.server.ThemeResource;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
@@ -23,6 +24,8 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 
 import java.util.Arrays;
+
+import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
 public class TaskFieldsMappingFragment extends Panel implements Validatable {
     private static final int COLUMN_DESCRIPTION = 0;
@@ -68,32 +71,32 @@ public class TaskFieldsMappingFragment extends Panel implements Validatable {
         gridLayout.setSpacing(true);
         gridLayout.setRows(GTaskDescriptor.FIELD.values().length + 2);
         gridLayout.setColumns(COLUMNS_NUMBER);
-        addComponent(gridLayout);
+        setContent(gridLayout);
     }
 
     private void addTableHeaders() {
         Label label2 = new Label(messages.get("editConfig.mappings.exportFieldHeader"));
         label2.addStyleName("fieldsTitle");
-        label2.setWidth(50, UNITS_PIXELS);
+        label2.setWidth(50, PIXELS);
         gridLayout.addComponent(label2, COLUMN_DESCRIPTION, 0);
         gridLayout.setComponentAlignment(label2, Alignment.MIDDLE_LEFT);
 
         Label label = new Label(" ");
-        label.setWidth(20, UNITS_PIXELS);
+        label.setWidth(20, PIXELS);
         gridLayout.addComponent(label, COLUMN_HELP, 0);
 
         Label label1 = new Label(connector1.getLabel());
         label1.addStyleName("fieldsTitle");
-        label1.setWidth(180, UNITS_PIXELS);
+        label1.setWidth(180, PIXELS);
         gridLayout.addComponent(label1, COLUMN_LEFT_CONNECTOR, 0);
 
 
         Label label3 = new Label(connector2.getLabel());
         label3.addStyleName("fieldsTitle");
-        label3.setWidth(180, UNITS_PIXELS);
+        label3.setWidth(180, PIXELS);
         gridLayout.addComponent(label3, COLUMN_RIGHT_CONNECTOR, 0);
 
-        gridLayout.addComponent(new Label("<hr>", Label.CONTENT_XHTML), 0, 1, COLUMNS_NUMBER - 1, 1);
+        gridLayout.addComponent(new Label("<hr>", ContentMode.HTML), 0, 1, COLUMNS_NUMBER - 1, 1);
     }
 
     private void addSupportedFields() {
@@ -160,7 +163,7 @@ public class TaskFieldsMappingFragment extends Panel implements Validatable {
                 container.addAll(Arrays.asList(allowedValues));
                 ComboBox combo = new ComboBox(null, container);
                 combo.setPropertyDataSource(mappedTo);
-                combo.setWidth(160, UNITS_PIXELS);
+                combo.setWidth(160, PIXELS);
                 gridLayout.addComponent(combo);
                 gridLayout.setComponentAlignment(combo, Alignment.MIDDLE_LEFT);
                 Object currentValue = mappedTo.getValue();

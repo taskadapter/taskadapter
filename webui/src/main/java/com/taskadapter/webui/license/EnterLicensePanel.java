@@ -3,9 +3,10 @@ package com.taskadapter.webui.license;
 import com.taskadapter.license.LicenseException;
 import com.taskadapter.license.LicenseExpiredException;
 import com.taskadapter.license.LicenseManager;
-import com.vaadin.terminal.ExternalResource;
+import com.vaadin.server.BrowserWindowOpener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 
@@ -22,14 +23,11 @@ public class EnterLicensePanel extends VerticalLayout {
 
     private void buildUI() {
         addComponent(new Label("NO LICENSE INSTALLED."));
-        Button buyLink = new Button("Buy license");
-        buyLink.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                getWindow().open(new ExternalResource(HTTP_WWW_TASKADAPTER_COM_BUY), "_blank");
-            }
-        });
-        addComponent(buyLink);
+        BrowserWindowOpener opener = new BrowserWindowOpener(HTTP_WWW_TASKADAPTER_COM_BUY);
+        opener.setFeatures("height=800,width=1200,resizable");
+        Button button = new Button("Buy license");
+        opener.extend(button);
+        addComponent(button);
 
         licenseArea = new TextArea("Paste the complete contents of the license file here");
         licenseArea.setStyleName("license-area");
@@ -37,7 +35,7 @@ public class EnterLicensePanel extends VerticalLayout {
         addComponent(licenseArea);
 
         Button saveButton = new Button("Save license");
-        saveButton.addListener(new Button.ClickListener() {
+        saveButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 save();
@@ -47,16 +45,16 @@ public class EnterLicensePanel extends VerticalLayout {
     }
 
     private boolean save() {
-        String licenseText = (String) licenseArea.getValue();
+        String licenseText = licenseArea.getValue();
 
         try {
             licenseManager.setNewLicense(licenseText.trim());
             licenseManager.copyLicenseToConfigFolder();
-            getWindow().showNotification("Successfully registered to: " + licenseManager.getLicense().getCustomerName());
+            Notification.show("Successfully registered to: " + licenseManager.getLicense().getCustomerName());
         } catch (LicenseExpiredException e) {
-            getWindow().showNotification("License not accepted", e.getMessage());
+            Notification.show("License not accepted", e.getMessage(), Notification.Type.ERROR_MESSAGE);
         } catch (LicenseException e) {
-            getWindow().showNotification("License not accepted", "The license is invalid");
+            Notification.show("License not accepted", "The license is invalid", Notification.Type.ERROR_MESSAGE);
         }
 
         return licenseManager.isSomeValidLicenseInstalled();

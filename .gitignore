@@ -1,5 +1,8 @@
 /out
 classes
+com.taskadapter.webui.widgetset.Vaadin1Widgetset
+deploy
+gwt-unitCache
 target
 *.tmp
 *.war

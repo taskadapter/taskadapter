@@ -6,6 +6,7 @@ import com.taskadapter.web.data.Messages;
 import com.taskadapter.webui.service.CurrentUserInfo;
 import com.taskadapter.webui.service.WrongPasswordException;
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
@@ -28,6 +29,7 @@ public class ChangePasswordDialog extends Window {
     private PasswordField confirmPasswordField;
     private GridLayout grid;
     private Label errorLabel;
+    private VerticalLayout view;
 
     public ChangePasswordDialog(Messages messages, final CredentialsManager credentialsManager, final CurrentUserInfo currentUserInfo) {
         super(messages.format("changePassword.title", currentUserInfo.getUserName()));
@@ -38,6 +40,8 @@ public class ChangePasswordDialog extends Window {
     }
 
     private void buildUI() {
+        view = new VerticalLayout();
+        setContent(view);
         setModal(true);
         setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
 
@@ -53,7 +57,7 @@ public class ChangePasswordDialog extends Window {
     private void createErrorMessageArea() {
         errorLabel = new Label();
         errorLabel.addStyleName("errorMessage");
-        addComponent(errorLabel);
+        view.addComponent(errorLabel);
     }
 
     private void createGrid() {
@@ -62,14 +66,13 @@ public class ChangePasswordDialog extends Window {
         grid.setSpacing(true);
         grid.setSpacing(true);
         grid.setMargin(true);
-        addComponent(grid);
+        view.addComponent(grid);
     }
 
     private void createButtons() {
-        VerticalLayout windowLayout = (VerticalLayout) this.getContent();
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setSpacing(true);
-        buttonLayout.setMargin(true, false, false, false);
+        buttonLayout.setMargin(new MarginInfo(true, false, false, false));
 
         Button okButton = new Button(messages.get("button.ok"), new Button.ClickListener() {
             public void buttonClick(Button.ClickEvent event) {
@@ -83,12 +86,12 @@ public class ChangePasswordDialog extends Window {
         final Window dialog = this;
         Button cancelButton = new Button(messages.get("button.cancel"), new Button.ClickListener() {
             public void buttonClick(Button.ClickEvent event) {
-                getParent().removeWindow(dialog);
+                getUI().removeWindow(dialog);
             }
         });
         buttonLayout.addComponent(cancelButton);
-        windowLayout.addComponent(buttonLayout);
-        windowLayout.setComponentAlignment(buttonLayout, Alignment.BOTTOM_CENTER);
+        view.addComponent(buttonLayout);
+        view.setComponentAlignment(buttonLayout, Alignment.BOTTOM_CENTER);
     }
 
     private void createConfirmField() {
@@ -131,11 +134,11 @@ public class ChangePasswordDialog extends Window {
 
     private void savePassword() {
         try {
-            if (!credentialsManager.isPrimaryAuthentic(userName, oldPasswordField.toString())) {
+            if (!credentialsManager.isPrimaryAuthentic(userName, oldPasswordField.getValue())) {
                 throw new WrongPasswordException();
             }
-            credentialsManager.setPrimaryAuthToken(userName, newPasswordField.toString());
-            getParent().removeWindow(this);
+            credentialsManager.setPrimaryAuthToken(userName, newPasswordField.getValue());
+            getUI().removeWindow(this);
         } catch (WrongPasswordException e) {
             errorLabel.setValue(messages.get("changePassword.oldPasswordIncorrect"));
             logger.error("SECURITY: wrong password provided for user " + userName + " in 'Change password' dialog.");

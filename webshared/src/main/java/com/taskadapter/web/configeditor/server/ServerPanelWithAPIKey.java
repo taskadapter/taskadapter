@@ -116,7 +116,7 @@ public class ServerPanelWithAPIKey extends VerticalLayout implements Validatable
     }
 
     private void addListener() {
-        authOptionsGroup.addListener(new Property.ValueChangeListener() {
+        authOptionsGroup.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
                 boolean useAPIOptionSelected = (Boolean) authOptionsGroup.getValue();
@@ -133,7 +133,7 @@ public class ServerPanelWithAPIKey extends VerticalLayout implements Validatable
 
     @Override
     public void validate() throws ServerURLNotSetException {
-        String host = (String) serverURL.getValue();
+        String host = serverURL.getValue();
         if (host == null || host.isEmpty() || host.equalsIgnoreCase(WebServerInfo.DEFAULT_URL_PREFIX)) {
             throw new ServerURLNotSetException();
         }

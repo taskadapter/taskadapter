@@ -1,7 +1,6 @@
 package com.taskadapter.webui.config;
 
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
-import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
@@ -12,7 +11,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
-public class OnePageEditor extends VerticalLayout implements WindowProvider {
+public class OnePageEditor extends VerticalLayout {
 
     private Messages messages;
     final private Sandbox sandbox;
@@ -69,9 +68,9 @@ public class OnePageEditor extends VerticalLayout implements WindowProvider {
     }
 
     private MiniPanel createMiniPanel(UIConnectorConfig connectorConfig) {
-        MiniPanel miniPanel = new MiniPanel(this, connectorConfig);
+        MiniPanel miniPanel = new MiniPanel(connectorConfig);
         // "services" instance is only used by MSP Editor Factory
-        miniPanel.setPanelContents(connectorConfig.createMiniPanel(this, sandbox));
+        miniPanel.setPanelContents(connectorConfig.createMiniPanel(sandbox));
         return miniPanel;
     }
 
@@ -91,5 +90,4 @@ public class OnePageEditor extends VerticalLayout implements WindowProvider {
     Button getButtonLeft() {
         return exportButtonsFragment.getButtonLeft();
     }
-
 }

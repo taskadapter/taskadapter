@@ -3,22 +3,19 @@ package com.taskadapter.webui;
 import com.taskadapter.webui.service.Services;
 import com.vaadin.data.Property;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
 
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class LocalRemoteOptionsPanel extends Panel {
     private static final String LOCAL = "TA is running on my LOCAL machine. The file paths are on MY computer.";
     private static final String REMOTE = "TA is running on some shared machine (SERVER).";
 
     private static final List<String> options = Arrays.asList(LOCAL, REMOTE);
     private OptionGroup group;
-    //private ProgressElement progressElement;
     private Services services;
 
     public LocalRemoteOptionsPanel(Services services) {
@@ -32,15 +29,10 @@ public class LocalRemoteOptionsPanel extends Panel {
     private void buildUI() {
         group = new OptionGroup("", options);
         HorizontalLayout configGroupLayout = new HorizontalLayout();
-        //progressElement = new ProgressElement();
-
         group.setNullSelectionAllowed(false);   // user can not deselect
         group.setImmediate(true);               // send the change to the server at once
         configGroupLayout.addComponent(group);
-        //configGroupLayout.addComponent(progressElement);
-        //configGroupLayout.setComponentAlignment(progressElement, Alignment.MIDDLE_CENTER);
-
-        addComponent(configGroupLayout);
+        setContent(configGroupLayout);
     }
 
     private void selectLocalOrRemoteMode() {
@@ -52,13 +44,12 @@ public class LocalRemoteOptionsPanel extends Panel {
     }
 
     private void setupLocalRemoteModeListener() {
-        group.addListener(new Property.ValueChangeListener() {
+        group.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
                 boolean localModeRequested = event.getProperty().toString().equals(LOCAL);
                 services.getSettingsManager().setLocal(localModeRequested);
-                //progressElement.start();
-                getWindow().showNotification("Saved");
+                Notification.show("Saved");
             }
         });
     }

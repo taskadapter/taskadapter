@@ -44,8 +44,7 @@ public class NavigatorTest extends FileBasedTest {
         window.setContent(layout);
         final CredentialsStore cs = new FSCredentialStore(services.getFileManager());
         final CredentialsManager cm = new BasicCredentialsManager(cs, 50);
-        return new Navigator(layout, services, cm, new Authenticator(cm,
-                new CookiesManager(), new EditableCurrentUserInfo()));
+        return new Navigator(layout, services, cm, new Authenticator(cm, new EditableCurrentUserInfo()));
     }
 
     private Services getServices() {

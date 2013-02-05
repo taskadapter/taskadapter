@@ -12,7 +12,6 @@ public class ServerContainer extends GridLayout {
     private static final String HOST_URL_TOOLTIP = "Host URL, including protocol prefix and port number. E.g. http://demo.site.com:3000";
     private static final String DEFAULT_HOST_VALUE = "http://";
 
-    private TextField descriptionField;
     private TextField hostURLText;
 
     public ServerContainer(Property labelProperty, Property serverURLProperty, Property userLoginNameProperty,
@@ -30,7 +29,7 @@ public class ServerContainer extends GridLayout {
         Label descriptionLabel = new Label("Description:");
         addComponent(descriptionLabel, 0, currentRow);
         setComponentAlignment(descriptionLabel, Alignment.MIDDLE_LEFT);
-        descriptionField = new TextField();
+        TextField descriptionField = new TextField();
         descriptionField.addStyleName("server-panel-textfield");
         descriptionField.setPropertyDataSource(labelProperty);
         addComponent(descriptionField, 1, currentRow);
@@ -43,7 +42,7 @@ public class ServerContainer extends GridLayout {
 
         hostURLText = new TextField();
         hostURLText.setDescription(HOST_URL_TOOLTIP);
-        hostURLText.addListener(new FieldEvents.BlurListener() {
+        hostURLText.addBlurListener(new FieldEvents.BlurListener() {
             @Override
             public void blur(FieldEvents.BlurEvent event) {
                 //TODO refactor these methods (common in ServerPanel and RedmineServerPanel
@@ -94,12 +93,8 @@ public class ServerContainer extends GridLayout {
         }
     }
 
-    TextField getServerURLField() {
-        return hostURLText;
-    }
-
     String getHostString() {
-        return (String) hostURLText.getValue();
+        return hostURLText.getValue();
     }
 
 }

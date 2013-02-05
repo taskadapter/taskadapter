@@ -2,6 +2,8 @@ package com.taskadapter.webui;
 
 import com.taskadapter.webui.service.WrongPasswordException;
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Runo;
 
@@ -33,12 +35,12 @@ public class LoginPage extends Page {
 
     private void buildUI() {
         final VerticalLayout layout = new VerticalLayout();
-        panel.addComponent(layout);
+        panel.setContent(layout);
         layout.setWidth(FORM_WIDTH);
 
-        layout.setMargin(false, true, false, true);
+        layout.setMargin(new MarginInfo(false, true, false, true));
         layout.setSpacing(true);
-        final Label label = new Label(HINT_LABEL, Label.CONTENT_XHTML);
+        final Label label = new Label(HINT_LABEL, ContentMode.HTML);
         label.setStyleName(Runo.LABEL_SMALL);
         layout.addComponent(label);
 
@@ -60,10 +62,10 @@ public class LoginPage extends Page {
         loginButton.addStyleName(Runo.BUTTON_DEFAULT);
         loginButton.addStyleName(Runo.BUTTON_BIG);
 
-        loginButton.addListener(new Button.ClickListener() {
+        loginButton.addClickListener(new Button.ClickListener() {
             public void buttonClick(Button.ClickEvent event) {
-                String username = (String) loginEdit.getValue();
-                String password = (String) passwordEdit.getValue();
+                String username = loginEdit.getValue();
+                String password = passwordEdit.getValue();
                 try {
                     navigator.login(username, password, staySignedIn.booleanValue());
                     clearLoginFields();

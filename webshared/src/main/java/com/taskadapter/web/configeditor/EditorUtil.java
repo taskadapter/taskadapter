@@ -3,19 +3,20 @@ package com.taskadapter.web.configeditor;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.ExceptionFormatter;
-import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.AbstractProperty;
 import com.vaadin.data.util.MethodProperty;
+import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.Window;
+import com.vaadin.ui.UI;
 
 import java.util.Collection;
 import java.util.List;
@@ -24,35 +25,25 @@ import java.util.TreeMap;
 
 public class EditorUtil {
 
-    public static void setNullSafe(AbstractTextField field, Object value) {
-        if (value != null) {
-            field.setValue(value.toString());
-        }
-    }
-
-    private static void showList(WindowProvider windowProvider, String windowTitle, String listTitle, Collection<String> items, ValueListener valueListener) {
+    private static void showList(String windowTitle, String listTitle, Collection<String> items, ValueListener valueListener) {
         ListSelectionDialog newWindow = new ListSelectionDialog(windowTitle, listTitle, items, valueListener);
         newWindow.center();
         newWindow.setModal(true);
 
-        windowProvider.getWindow().addWindow(newWindow);
+        UI.getCurrent().addWindow(newWindow);
         newWindow.focus();
     }
 
-    public static void show(Window window, String caption, Exception e) {
+    public static void show(String caption, Exception e) {
         String errorMessage = getRoot(e).getMessage();
-        window.showNotification(caption, errorMessage);
-    }
-
-    public static void show(Window window, String caption, String message) {
-        window.showNotification(caption, message);
+        Notification.show(caption, errorMessage, Notification.Type.ERROR_MESSAGE);
     }
 
     // TODO can't move this to ButtonBuilder class right now because it's not accessible from webshared module.
     public static Button createButton(String label, String description, Button.ClickListener clickListener) {
         Button button = new Button(label);
         button.setDescription(description);
-        button.addListener(clickListener);
+        button.addClickListener(clickListener);
         return button;
     }
     
@@ -75,7 +66,7 @@ public class EditorUtil {
 
     // TODO review and refactor this. this method is too complex
 	public static Button createLookupButton(
-			final WindowProvider windowProvider, final String buttonLabel,
+			final String buttonLabel,
 			String description, final String windowTitle,
 			final String listTitle,
 			final DataProvider<List<? extends NamedKeyedObject>> operation,
@@ -98,7 +89,7 @@ public class EditorUtil {
                     map.put(o.getName(), o.getKey());
                 }
 
-                showList(windowProvider, windowTitle, listTitle, map.keySet(), new ValueListener() {
+                showList(windowTitle, listTitle, map.keySet(), new ValueListener() {
                     @Override
                     public void setValue(String value) {
                         if (useValue) {
@@ -112,7 +103,7 @@ public class EditorUtil {
                 });
             }
         };
-        button.addListener(new Button.ClickListener() {
+        button.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 final List<? extends NamedKeyedObject> objects;
@@ -120,13 +111,13 @@ public class EditorUtil {
                     objects = operation.loadData();
 
                     if (objects.isEmpty()) {
-                        windowProvider.getWindow().showNotification("No objects", "No objects have been found");
+                        Notification.show("No objects", "No objects have been found", Notification.Type.HUMANIZED_MESSAGE);
                     }
                     listener.notifyDone(objects);
                 } catch (BadConfigException e) {
-                    EditorUtil.show(windowProvider.getWindow(), "", errorFormatter.formatError(e));
+                    Notification.show("", errorFormatter.formatError(e), Notification.Type.HUMANIZED_MESSAGE);
                 } catch (Exception e) {
-                    EditorUtil.show(windowProvider.getWindow(), "Something went wrong", e);
+                    EditorUtil.show("Something went wrong", e);
                 }
             }
         });
@@ -172,7 +163,7 @@ public class EditorUtil {
 
 			@Override
 			public void setValue(Object newValue) throws ReadOnlyException,
-					ConversionException {
+                    Converter.ConversionException {
 				if (newValue instanceof String && ((String) newValue).isEmpty())
 					property.setValue(null);
 				else
@@ -200,11 +191,11 @@ public class EditorUtil {
 			public Class<?> getType() {
 				return property.getType();
 			}
-			
+
 			@Override
 			public String toString() {
 				final Object value = property.getValue();
-				return value == null ? "" : property.toString();
+				return value == null ? "" : value.toString();
 			}
 		};
     	

@@ -1,6 +1,7 @@
 package com.taskadapter.web.configeditor.map;
 
 import com.vaadin.data.util.AbstractProperty;
+import com.vaadin.data.util.converter.Converter;
 
 /**
  * Map value property.
@@ -50,7 +51,7 @@ final class ValueProperty extends AbstractProperty {
 
 	@Override
 	public void setValue(Object newValue) throws ReadOnlyException,
-			ConversionException {
+            Converter.ConversionException {
 		this.value = newValue.toString();
 		model.updateBinding((String) key.getValue());
 	}

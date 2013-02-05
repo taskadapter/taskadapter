@@ -4,18 +4,16 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.redmineapi.NotFoundException;
-import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
+import com.vaadin.ui.Notification;
 
 import java.util.List;
 
 public class LoadQueriesElement {
 
-    private WindowProvider windowProvider;
     private RedmineConfig config;
 
-    public LoadQueriesElement(WindowProvider windowProvider, RedmineConfig config) {
-        this.windowProvider = windowProvider;
+    public LoadQueriesElement(RedmineConfig config) {
         this.config = config;
     }
 
@@ -23,8 +21,8 @@ public class LoadQueriesElement {
         try {
             return RedmineLoaders.loadData(config.getServerInfo(), config.getProjectKey());
         } catch (NotFoundException e) {
-            EditorUtil.show(windowProvider.getWindow(), "Can't load Saved Queries", "The server did not return any saved queries.\n" +
-                    "NOTE: This operation is only supported by Redmine 1.3.0+");
+            Notification.show("Can't load Saved Queries", "The server did not return any saved queries.\n" +
+                    "NOTE: This operation is only supported by Redmine 1.3.0+", Notification.Type.HUMANIZED_MESSAGE);
             return null;
         } catch (BadConfigException e) {
             throw e;

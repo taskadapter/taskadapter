@@ -35,7 +35,7 @@ public class ListSelectionDialog extends Window {
         listSelect.setNullSelectionAllowed(false);
         listSelect.setWidth("300px");
         listSelect.setImmediate(true);
-        listSelect.addListener(new Property.ValueChangeListener() {
+        listSelect.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
                 closeButton.setEnabled(true);
@@ -45,7 +45,7 @@ public class ListSelectionDialog extends Window {
 
         closeButton = new Button("Select");
         closeButton.setEnabled(false);
-        closeButton.addListener(new Button.ClickListener() {
+        closeButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 valueListener.setValue((String) listSelect.getValue());
@@ -53,6 +53,6 @@ public class ListSelectionDialog extends Window {
             }
         });
         addTo(layout, Alignment.MIDDLE_RIGHT, closeButton);
-        addComponent(layout);
+        setContent(layout);
     }
 }

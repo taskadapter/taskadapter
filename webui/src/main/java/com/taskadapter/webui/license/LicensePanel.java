@@ -4,6 +4,7 @@ import com.taskadapter.license.License;
 import com.taskadapter.license.LicenseChangeListener;
 import com.taskadapter.license.LicenseManager;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
 
 public class LicensePanel extends Panel implements LicenseChangeListener {
 
@@ -22,11 +23,15 @@ public class LicensePanel extends Panel implements LicenseChangeListener {
     private void buildUI() {
         enterLicensePanel = new EnterLicensePanel(licenseManager);
         enterLicensePanel.setVisible(false);
-        addComponent(enterLicensePanel);
 
         licenseInfoPanel = new LicenseInfoPanel(licenseManager);
         licenseInfoPanel.setVisible(false);
-        addComponent(licenseInfoPanel);
+
+        VerticalLayout view = new VerticalLayout();
+        view.addComponent(enterLicensePanel);
+        view.addComponent(licenseInfoPanel);
+        view.setMargin(true);
+        setContent(view);
     }
 
     @Override

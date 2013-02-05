@@ -10,9 +10,9 @@ import com.vaadin.data.Container.ItemSetChangeListener;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Runo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,29 +95,29 @@ public class PriorityPanel extends Panel implements Validatable {
 			}
 		};
 		
-		data.addListener(listener);
+		data.addItemSetChangeListener(listener);
 		listener.containerItemSetChange(null);
 
         Button reloadButton = new Button("Reload");
         reloadButton.setDescription("Reload priority list.");
         reloadButton.setEnabled(priorityLoader != null);
-        reloadButton.addListener(new Button.ClickListener() {
+        reloadButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 try {
                     reloadPriorityList();
                 } catch (BadConfigException e) {
                     String localizedMessage = exceptionFormatter.formatError(e);
-                    getWindow().showNotification(localizedMessage);
+                    Notification.show(localizedMessage);
                 } catch (Exception e) {
                     logger.error("Error loading priorities: " + e.getMessage(), e);
-                    getWindow().showNotification("Oops", e.getMessage(), Window.Notification.TYPE_ERROR_MESSAGE);
+                    Notification.show("Oops", e.getMessage(), Notification.Type.ERROR_MESSAGE);
                 }
             }
         });
         layout.addComponent(reloadButton);
         layout.setComponentAlignment(reloadButton, Alignment.MIDDLE_RIGHT);
-        addComponent(layout);
+        setContent(layout);
     }
 
     private void reloadPriorityList() throws Exception {

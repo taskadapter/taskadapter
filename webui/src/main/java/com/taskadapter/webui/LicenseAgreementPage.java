@@ -3,6 +3,8 @@ package com.taskadapter.webui;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.vaadin.data.Property;
+import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 
 import java.io.IOException;
@@ -37,18 +39,17 @@ public class LicenseAgreementPage extends Page {
         } catch (IOException e) {
             agreementContent = new Label(AGREEMENT_FILE_NOT_FOUND);
         }
-        agreementContent.setContentMode(Label.CONTENT_XHTML);
-        agreementPanel.addComponent(agreementContent);
-        panel.addComponent(agreementPanel);
+        agreementContent.setContentMode(ContentMode.HTML);
+        agreementPanel.setContent(agreementContent);
 
         HorizontalLayout actionLayout = new HorizontalLayout();
         actionLayout.setWidth(FORM_WIDTH);
-        actionLayout.setMargin(true, false, false, false);
+        actionLayout.setMargin(new MarginInfo(true, false, false, false));
 
         CheckBox acceptCheckbox = new CheckBox(ACCEPT_CHECKBOX);
         acceptCheckbox.setValue(false);
         acceptCheckbox.setImmediate(true);
-        acceptCheckbox.addListener(new CheckBox.ValueChangeListener() {
+        acceptCheckbox.addValueChangeListener(new CheckBox.ValueChangeListener() {
 
             @Override
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
@@ -60,7 +61,7 @@ public class LicenseAgreementPage extends Page {
 
         acceptButton = new Button(ACCEPT_BUTTON);
         acceptButton.setEnabled(false);
-        acceptButton.addListener(new Button.ClickListener(){
+        acceptButton.addClickListener(new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
@@ -71,7 +72,12 @@ public class LicenseAgreementPage extends Page {
 
         actionLayout.addComponent(acceptButton);
         actionLayout.setComponentAlignment(acceptButton, Alignment.MIDDLE_RIGHT);
-        panel.addComponent(actionLayout);
+        VerticalLayout view = new VerticalLayout();
+        view.addComponent(agreementPanel);
+        view.addComponent(actionLayout);
+
+        panel.setContent(view);
+
     }
 
 

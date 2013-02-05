@@ -13,12 +13,6 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.ObjectProperty;
 
-/**
- * Properties model.
- * 
- * @author maxkar
- * 
- */
 final class PrioritiesModel implements Container,
         Container.ItemSetChangeNotifier, Container.PropertySetChangeNotifier {
     private static final long serialVersionUID = 1L;
@@ -40,9 +34,6 @@ final class PrioritiesModel implements Container,
      */
     private final Map<String, Item> items = new LinkedHashMap<String, Item>();
 
-    /**
-     * Item listeners.
-     */
     private final List<ItemSetChangeListener> itemListeners = new LinkedList<Container.ItemSetChangeListener>();
 
     PrioritiesModel(Priorities priorities) {
@@ -51,20 +42,44 @@ final class PrioritiesModel implements Container,
     }
 
     @Override
+    public void addPropertySetChangeListener(PropertySetChangeListener listener) {
+        // not used
+    }
+
+    @Deprecated
+    @Override
     public void addListener(PropertySetChangeListener listener) {
         // not used
     }
 
+    @Override
+    public void removePropertySetChangeListener(PropertySetChangeListener listener) {
+        // not used
+    }
+
+    @Deprecated
     @Override
     public void removeListener(PropertySetChangeListener listener) {
         // not used
     }
 
     @Override
+    public void addItemSetChangeListener(ItemSetChangeListener listener) {
+        itemListeners.add(listener);
+    }
+
+    @Deprecated
+    @Override
     public void addListener(ItemSetChangeListener listener) {
         itemListeners.add(listener);
     }
 
+    @Override
+    public void removeItemSetChangeListener(ItemSetChangeListener listener) {
+        itemListeners.remove(listener);
+    }
+
+    @Deprecated
     @Override
     public void removeListener(ItemSetChangeListener listener) {
         itemListeners.remove(listener);
@@ -143,7 +158,7 @@ final class PrioritiesModel implements Container,
 
     /**
      * Updates a content from a map.
-     * 
+     *
      * @param props
      *            used properties.
      */
@@ -156,9 +171,8 @@ final class PrioritiesModel implements Container,
 
     /**
      * Fills a property set.
-     * 
-     * @param props
-     *            priorities.
+     *
+     * @param props priorities.
      */
     void fillItems(Priorities props) {
         items.clear();
@@ -179,7 +193,7 @@ final class PrioritiesModel implements Container,
 
     /**
      * Creates a new item.
-     * 
+     *
      * @param key
      *            item key.
      * @return created item.
@@ -188,7 +202,7 @@ final class PrioritiesModel implements Container,
         final ObjectProperty<String> text = new ObjectProperty<String>(key);
         text.setReadOnly(true);
 
-        final Property value = new PrioirtyValue(priorities, key);
+        final Property value = new PriorityValue(priorities, key);
 
         final Map<String, Property> propmap = new HashMap<String, Property>();
         propmap.put("text", text);
@@ -202,13 +216,13 @@ final class PrioritiesModel implements Container,
      * names and user input values for "invalid" fields. Such invalid values are
      * not set to underlying model and value in model is undefiend. When all
      * data is valid returns an empty map.
-     * 
+     *
      * @return mapping from keys to invalid user-input values.
      */
     public Map<String, String> getInvalidValues() {
         final Map<String, String> result = new HashMap<String, String>();
         for (Item item : items.values()) {
-            final PrioirtyValue userValue = (PrioirtyValue) item
+            final PriorityValue userValue = (PriorityValue) item
                     .getItemProperty("value");
             if (!userValue.isValid()) {
                 result.put((String) item.getItemProperty("text").getValue(),

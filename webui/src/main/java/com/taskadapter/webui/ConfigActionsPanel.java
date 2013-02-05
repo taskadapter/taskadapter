@@ -5,7 +5,8 @@ import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.service.Services;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
-import com.vaadin.terminal.ThemeResource;
+import com.vaadin.server.ThemeResource;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
@@ -18,7 +19,6 @@ import com.vaadin.ui.VerticalLayout;
 public class ConfigActionsPanel extends VerticalLayout {
     private Navigator navigator;
     private UISyncConfig syncConfig;
-    private HorizontalLayout horizontalLayout;
     private static final String NO_DESCRIPTION_TEXT = "<i>No description</i>"; //&nbsp;
     private final Messages messages;
     private final Services services;
@@ -41,9 +41,9 @@ public class ConfigActionsPanel extends VerticalLayout {
 
     private void addDescriptionPart() {
         descriptionLayout = new HorizontalLayout();
-        descriptionLayout.setWidth(100, UNITS_PERCENTAGE);
+        descriptionLayout.setWidth(100, Unit.PERCENTAGE);
         descriptionLayout.addStyleName("configDescriptionPanel");
-        descriptionLayout.addListener(new LayoutEvents.LayoutClickListener() {
+        descriptionLayout.addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
             @Override
             public void layoutClick(LayoutClickEvent event) {
                 navigator.showConfigureTaskPage(syncConfig);
@@ -56,7 +56,7 @@ public class ConfigActionsPanel extends VerticalLayout {
 
     private void addDescription() {
         final String labelText = syncConfig.getLabel();
-        Label description = new Label(labelText.isEmpty() ? NO_DESCRIPTION_TEXT : labelText, Label.CONTENT_XHTML);
+        Label description = new Label(labelText.isEmpty() ? NO_DESCRIPTION_TEXT : labelText, ContentMode.HTML);
         description.addStyleName("configDescriptionLabel");
         descriptionLayout.addComponent(description);
         descriptionLayout.setComponentAlignment(description, Alignment.MIDDLE_LEFT);
@@ -69,7 +69,7 @@ public class ConfigActionsPanel extends VerticalLayout {
     }
 
     private void addModernExportPart() {
-        horizontalLayout = new HorizontalLayout();
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
         horizontalLayout.setSpacing(true);
         addComponent(horizontalLayout);
 

@@ -11,16 +11,18 @@ import com.taskadapter.webui.Page;
 import com.taskadapter.webui.data.ExceptionFormatter;
 import com.taskadapter.webui.export.Exporter;
 import com.vaadin.data.util.MethodProperty;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static com.vaadin.server.Sizeable.Unit.PERCENTAGE;
 
 public class EditConfigPage extends Page {
     private final Logger logger = LoggerFactory.getLogger(EditConfigPage.class);
@@ -55,7 +57,7 @@ public class EditConfigPage extends Page {
     private void addExportButtonListener(Button button, MappingSide exportDirection) {
         UISyncConfig configForExport = DirectionResolver.getDirectionalConfig(config, exportDirection);
         final Exporter exporter = new Exporter(MESSAGES, services, navigator, configForExport);
-        button.addListener(new Button.ClickListener() {
+        button.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 exportClicked(exporter);
@@ -77,7 +79,7 @@ public class EditConfigPage extends Page {
 
     private void createTopButtons() {
         HorizontalLayout buttonsLayout = new HorizontalLayout();
-        buttonsLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        buttonsLayout.setWidth(100, PERCENTAGE);
         CloneDeletePanel cloneDeletePanel = new CloneDeletePanel(services, navigator, config);
         buttonsLayout.addComponent(cloneDeletePanel);
         buttonsLayout.setComponentAlignment(cloneDeletePanel, Alignment.MIDDLE_RIGHT);
@@ -86,19 +88,19 @@ public class EditConfigPage extends Page {
 
     private void createErrorArea() {
         errorMessageLabel.addStyleName("error-message-label");
-        errorMessageLabel.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        errorMessageLabel.setWidth(100, PERCENTAGE);
         layout.addComponent(errorMessageLabel);
     }
 
     private void createBottomButtons() {
         HorizontalLayout buttonsLayout = new HorizontalLayout();
-        buttonsLayout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        buttonsLayout.setWidth(100, PERCENTAGE);
         HorizontalLayout rightLayout = new HorizontalLayout();
         buttonsLayout.addComponent(rightLayout);
         buttonsLayout.setComponentAlignment(rightLayout, Alignment.BOTTOM_RIGHT);
 
         Button saveButton = new Button(MESSAGES.get("button.save"));
-        saveButton.addListener(new Button.ClickListener() {
+        saveButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 saveClicked();
@@ -112,7 +114,7 @@ public class EditConfigPage extends Page {
     private void saveClicked() {
         if (validate()) {
             save();
-            navigator.showNotification("", MESSAGES.get("editConfig.messageSaved"));
+            Notification.show("", MESSAGES.get("editConfig.messageSaved"), Notification.Type.HUMANIZED_MESSAGE);
         }
     }
 
@@ -156,7 +158,6 @@ public class EditConfigPage extends Page {
             String message = MESSAGES.format("editConfig.error.cantSave", e.getMessage());
             errorMessageLabel.setValue(message);
             logger.error(message, e);
-            return;
         }
     }
 

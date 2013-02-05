@@ -7,17 +7,15 @@ import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Project;
-import com.taskadapter.web.WindowProvider;
-import com.taskadapter.web.configeditor.EditorUtil;
+import com.vaadin.ui.Notification;
+
 import static com.taskadapter.web.ui.MessageUtils.nvl;
 
 public class ShowProjectElement {
 
-    private WindowProvider windowProvider;
     private RedmineConfig config;
 
-    public ShowProjectElement(WindowProvider windowProvider, RedmineConfig config) {
-        this.windowProvider = windowProvider;
+    public ShowProjectElement(RedmineConfig config) {
         this.config = config;
     }
 
@@ -57,6 +55,6 @@ public class ShowProjectElement {
                     + "<br>Homepage: " + nvl(project.getHomepage()) 
                     + "<br>Description: " + nvl(project.getDescription());
         }
-        EditorUtil.show(windowProvider.getWindow(), "Project Info", msg);
+        Notification.show("Project Info", msg, Notification.Type.HUMANIZED_MESSAGE);
     }
 }

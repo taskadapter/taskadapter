@@ -6,6 +6,7 @@ import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.service.Services;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,7 @@ public class CloneDeletePanel extends HorizontalLayout {
     private void buildUI() {
         Button cloneButton = new Button("Clone");
         cloneButton.setDescription("Clone this config");
-        cloneButton.addListener(new Button.ClickListener() {
+        cloneButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 showConfirmClonePage();
@@ -44,7 +45,7 @@ public class CloneDeletePanel extends HorizontalLayout {
 
         Button deleteButton = new Button("Delete");
         deleteButton.setDescription("Delete this config from Task Adapter");
-        deleteButton.addListener(new Button.ClickListener() {
+        deleteButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 showDeleteFilePage();
@@ -67,7 +68,7 @@ public class CloneDeletePanel extends HorizontalLayout {
                 }
         );
         messageDialog.setWidth("175px");
-        getWindow().addWindow(messageDialog);
+        getUI().addWindow(messageDialog);
     }
 
     public void showConfirmClonePage() {
@@ -84,13 +85,13 @@ public class CloneDeletePanel extends HorizontalLayout {
                             } catch (StorageException e) {
                                 String message = "There were some troubles cloning the config:<BR>" + e.getMessage();
                                 logger.error(message, e);
-                                navigator.showError(message);
+                                Notification.show(message, Notification.Type.ERROR_MESSAGE);
                             }
                         }
                     }
                 }
         );
         messageDialog.setWidth("175px");
-        getWindow().addWindow(messageDialog);
+        getUI().addWindow(messageDialog);
     }
 }

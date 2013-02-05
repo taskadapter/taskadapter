@@ -7,7 +7,6 @@ import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.jira.exceptions.BadHostException;
 import com.taskadapter.connector.jira.exceptions.BadURIException;
 import com.taskadapter.web.PluginEditorFactory;
-import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
 import com.taskadapter.web.configeditor.CustomFieldsTablePanel;
@@ -19,9 +18,10 @@ import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Sandbox;
 import com.vaadin.data.util.MethodProperty;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.GridLayout;
+
+import static com.vaadin.server.Sizeable.Unit.PERCENTAGE;
 
 public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.jira.messages";
@@ -51,22 +51,22 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Sandbox sandbox, JiraConfig config) {
+    public ComponentContainer getMiniPanelContents(Sandbox sandbox, JiraConfig config) {
         WebServerInfo serverInfo = config.getServerInfo();
         ServerPanel serverPanel = new ServerPanel(new MethodProperty<String>(config, "label"),
                 new MethodProperty<String>(serverInfo, "host"),
                 new MethodProperty<String>(serverInfo, "userName"),
                 new MethodProperty<String>(serverInfo, "password"));
 
-        ShowProjectElement showProjectElement = new ShowProjectElement(windowProvider, config);
-        ProjectPanel projectPanel = new ProjectPanel(windowProvider,
+        ShowProjectElement showProjectElement = new ShowProjectElement(config);
+        ProjectPanel projectPanel = new ProjectPanel(
                 EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
                 EditorUtil.wrapNulls(new MethodProperty<Integer>(config, "queryId")),
                 Interfaces.fromMethod(DataProvider.class, JiraLoaders.class,
                         "loadProjects", config.getServerInfo()),
                 Interfaces.fromMethod(SimpleCallback.class, showProjectElement, "loadProjectInfo"),
                 Interfaces.fromMethod(DataProvider.class, new LoadQueriesElement(config), "loadQueries"), this);
-        projectPanel.setHeight(100, Sizeable.UNITS_PERCENTAGE);
+        projectPanel.setHeight(100, PERCENTAGE);
 
         GridLayout gridLayout = new GridLayout(2, 4);
         gridLayout.setMargin(true);
@@ -75,8 +75,8 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
         gridLayout.addComponent(serverPanel);
         gridLayout.addComponent(projectPanel);
 
-        OtherJiraFieldsPanel otherJiraFieldsPanel = new OtherJiraFieldsPanel(windowProvider, config, this);
-        otherJiraFieldsPanel.setHeight(100, Sizeable.UNITS_PERCENTAGE);
+        OtherJiraFieldsPanel otherJiraFieldsPanel = new OtherJiraFieldsPanel(config, this);
+        otherJiraFieldsPanel.setHeight(100, PERCENTAGE);
         gridLayout.addComponent(otherJiraFieldsPanel);
 
         PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(),

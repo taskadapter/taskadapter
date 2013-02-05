@@ -3,7 +3,6 @@ package com.taskadapter.webui;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -15,6 +14,9 @@ import com.vaadin.ui.VerticalLayout;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import static com.vaadin.server.Sizeable.Unit.PERCENTAGE;
+import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
 public class ConfigsPage extends Page {
     
@@ -39,10 +41,10 @@ public class ConfigsPage extends Page {
 
     private void buildUI() {
         layout.setSpacing(true);
-        layout.setWidth(560, Sizeable.UNITS_PIXELS);
+        layout.setWidth(560, PIXELS);
 
         configsLayout.setSpacing(true);
-        configsLayout.setWidth(560, Sizeable.UNITS_PIXELS);
+        configsLayout.setWidth(560, PIXELS);
 
         addActionBar();
         addCreateNewConfigButton();
@@ -53,13 +55,13 @@ public class ConfigsPage extends Page {
 
     private void addActionBar() {
         actionPanel = new HorizontalLayout();
-        actionPanel.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        actionPanel.setWidth(100, PERCENTAGE);
         layout.addComponent(actionPanel);
     }
 
     private void addFilter() {
         final HorizontalLayout filterPanel = new HorizontalLayout();
-        filterField.addListener(new FieldEvents.TextChangeListener() {
+        filterField.addTextChangeListener(new FieldEvents.TextChangeListener() {
             @Override
             public void textChange(TextChangeEvent event) {
                 filterFields(event.getText());
@@ -75,7 +77,7 @@ public class ConfigsPage extends Page {
 
     private void addCreateNewConfigButton() {
         Button addButton = new Button(MESSAGES.get("configsPage.buttonNewConfig"));
-        addButton.addListener(new Button.ClickListener() {
+        addButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 navigator.show(new NewConfigPage());

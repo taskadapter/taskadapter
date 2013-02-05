@@ -1,28 +1,30 @@
 package com.taskadapter.webui.configeditor;
 
-import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.event.LayoutEvents;
-import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.*;
+import com.vaadin.event.ShortcutAction;
+import com.vaadin.server.ThemeResource;
+import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Window;
 
 public class MiniPanel extends HorizontalLayout {
-    private WindowProvider windowProvider;
     private UIConnectorConfig config;
     private Window newWindow;
     private Label connectorLabel;
 
-    public MiniPanel(WindowProvider windowProvider, UIConnectorConfig connectorConfig) {
-        this.windowProvider = windowProvider;
+    public MiniPanel(UIConnectorConfig connectorConfig) {
         this.config = connectorConfig;
         buildUI();
-        addListener(new LayoutEvents.LayoutClickListener() {
+        addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
             @Override
             public void layoutClick(LayoutClickEvent event) {
                 showEditConnectorDialog();
@@ -31,13 +33,13 @@ public class MiniPanel extends HorizontalLayout {
     }
 
     private void buildUI() {
-        setHeight(37, Sizeable.UNITS_PIXELS);
-        setWidth(293, Sizeable.UNITS_PIXELS);
+        setHeight(37, Unit.PIXELS);
+        setWidth(293, Unit.PIXELS);
         
         final HorizontalLayout inner = new HorizontalLayout();
-        inner.setHeight(37, Sizeable.UNITS_PIXELS);
-        inner.setWidth(293, Sizeable.UNITS_PIXELS);
-        inner.setMargin(false, true, false, true);
+        inner.setHeight(37, Unit.PIXELS);
+        inner.setWidth(293, Unit.PIXELS);
+        inner.setMargin(new MarginInfo(false, true, false, true));
 
         addStyleName("editableConnectorTitle");
         connectorLabel = new Label();
@@ -58,7 +60,7 @@ public class MiniPanel extends HorizontalLayout {
         newWindow = new Window();
         newWindow.setCaption("Edit " + config.getConnectorTypeId() + " settings");
         newWindow.setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
-        newWindow.addListener(new Window.CloseListener() {
+        newWindow.addCloseListener(new Window.CloseListener() {
             @Override
             public void windowClose(Window.CloseEvent e) {
                 refreshLabel();
@@ -75,7 +77,7 @@ public class MiniPanel extends HorizontalLayout {
         newWindow.center();
         newWindow.setModal(true);
 
-        windowProvider.getWindow().addWindow(newWindow);
+        getUI().addWindow(newWindow);
         newWindow.focus();
     }
 

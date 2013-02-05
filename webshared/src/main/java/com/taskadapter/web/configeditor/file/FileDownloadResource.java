@@ -1,20 +1,16 @@
 package com.taskadapter.web.configeditor.file;
 
-import com.vaadin.Application;
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.FileResource;
+import com.vaadin.server.DownloadStream;
+import com.vaadin.server.FileResource;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-/**
- * Author: Alexander Kulik
- */
 public class FileDownloadResource extends FileResource {
 
-    public FileDownloadResource(File sourceFile, Application application) {
-        super(sourceFile, application);
+    public FileDownloadResource(File sourceFile) {
+        super(sourceFile);
     }
 
     public DownloadStream getStream() {

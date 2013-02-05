@@ -13,7 +13,9 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.Window;
+import com.vaadin.ui.VerticalLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,8 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
 public class UsersPanel extends Panel implements LicenseChangeListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(UsersPanel.class);
@@ -35,8 +36,8 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     private Services services;
     private GridLayout usersLayout;
     private Label errorLabel;
-    private Button addUserButton;
     private Label statusLabel;
+    private VerticalLayout view;
     
     private final CredentialsManager credentialsManager;
 
@@ -46,11 +47,14 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
         this.services = services;
         this.credentialsManager = credentialsManager;
         services.getLicenseManager().addLicenseChangeListener(this);
+        view = new VerticalLayout();
+        view.setMargin(true);
+        setContent(view);
         refreshPage();
     }
 
     private void refreshPage() {
-        removeAllComponents();
+        view.removeAllComponents();
         addErrorLabel();
         addStatusLabel();
         Collection<String> users = credentialsManager.listUsers();
@@ -72,7 +76,7 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
         usersLayout = new GridLayout();
         usersLayout.setColumns(COLUMNS_NUMBER);
         usersLayout.setSpacing(true);
-        addComponent(usersLayout);
+        view.addComponent(usersLayout);
     }
 
     private void refreshUsers(final Collection<String> users) {
@@ -106,10 +110,10 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
 
     private void addSetPasswordButton(final String userLoginName) {
         Button setPasswordButton = new Button(messages.get("users.setPassword"));
-        setPasswordButton.addListener(new Button.ClickListener() {
+        setPasswordButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                startSetPasswordProcess(getWindow(), userLoginName);
+                startSetPasswordProcess(userLoginName);
             }
         });
         usersLayout.addComponent(setPasswordButton);
@@ -126,7 +130,7 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
 
     private void addDeleteButton(final String userLoginName) {
         Button deleteButton = new Button(messages.get("button.delete"));
-        deleteButton.addListener(new Button.ClickListener() {
+        deleteButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 startDeleteProcess(userLoginName);
@@ -149,8 +153,8 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
                     }
                 }
         );
-        messageDialog.setWidth(200, UNITS_PIXELS);
-        getApplication().getMainWindow().addWindow(messageDialog);
+        messageDialog.setWidth(200, PIXELS);
+        getUI().addWindow(messageDialog);
     }
 
     private void deleteUser(String userLoginName) {
@@ -180,14 +184,14 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
     }
 
     private void addCreateUserSection() {
-        addUserButton = new Button(messages.get("users.addUser"));
-        addUserButton.addListener(new Button.ClickListener() {
+        Button addUserButton = new Button(messages.get("users.addUser"));
+        addUserButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 startCreateUserProcess();
             }
         });
-        addComponent(addUserButton);
+        view.addComponent(addUserButton);
     }
 
     private void startCreateUserProcess() {
@@ -195,12 +199,12 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
         dialog.addOKListener(new Button.ClickListener() {
             public void buttonClick(Button.ClickEvent event) {
                 createUser(dialog.getLogin(), dialog.getPassword());
-                getWindow().removeWindow(dialog);
+                getUI().removeWindow(dialog);
                 refreshPage();
             }
         });
 
-        getWindow().addWindow(dialog);
+        getUI().addWindow(dialog);
     }
 
     private void createUser(String login, String password) {
@@ -217,15 +221,7 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
         refreshPage();
     }
 
-    String getStatusLabelText() {
-        return (String) statusLabel.getValue();
-    }
-
-    Button getAddUserButton() {
-        return addUserButton;
-    }
-
-    private void startSetPasswordProcess(Window parentWindow, final String userLoginName) {
+    private void startSetPasswordProcess(final String userLoginName) {
         InputDialog inputDialog = new InputDialog(messages.format("users.changePassword", userLoginName),
                 messages.get("users.newPassword"),
                 new InputDialog.Recipient() {
@@ -239,7 +235,7 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
                     }
                 });
         inputDialog.setPasswordMode();
-        parentWindow.addWindow(inputDialog);
+        getUI().addWindow(inputDialog);
     }
 
 }

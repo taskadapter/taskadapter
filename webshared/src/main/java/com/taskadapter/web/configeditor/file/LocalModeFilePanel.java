@@ -28,7 +28,7 @@ public class LocalModeFilePanel extends Panel {
 
     private void buildUI() {
         GridLayout layout = new GridLayout();
-        addComponent(layout);
+        setContent(layout);
         layout.setColumns(2);
         layout.setSpacing(true);
 
@@ -40,7 +40,7 @@ public class LocalModeFilePanel extends Panel {
         layout.addComponent(new Label(LABEL_OUTPUT_FILE_NAME));
         outputFileNameField = createFileName(TOOLTIP_OUTPUT_FILE_NAME);
         outputFileNameField.setPropertyDataSource(outputFilePath);
-        outputFileNameField.addListener(new FieldEvents.BlurListener() {
+        outputFileNameField.addBlurListener(new FieldEvents.BlurListener() {
             @Override
             public void blur(FieldEvents.BlurEvent event) {
                 String val = outputFileNameField.getValue().toString();

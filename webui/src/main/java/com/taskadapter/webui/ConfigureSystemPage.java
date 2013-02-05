@@ -2,10 +2,11 @@ package com.taskadapter.webui;
 
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.webui.user.UsersPanel;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
+
+import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
 public class ConfigureSystemPage extends Page {
     private VerticalLayout layout = new VerticalLayout();
@@ -42,6 +43,6 @@ public class ConfigureSystemPage extends Page {
     }
 
     private void setPanelWidth(Panel panel) {
-        panel.setWidth(500, Sizeable.UNITS_PIXELS);
+        panel.setWidth(500, PIXELS);
     }
 }

@@ -14,13 +14,15 @@ import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.Navigator;
 import com.taskadapter.webui.service.Services;
 
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.UI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Arrays;
 
-import static com.vaadin.terminal.Sizeable.UNITS_PIXELS;
+import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
 /**
  * Data exporter. Always exports from connector1 to connector2.
@@ -75,7 +77,7 @@ public class Exporter {
                 } catch (StorageException e1) {
                     String message = messages.format("export.troublesSavingConfig", e1.getMessage());
                     logger.error(message, e);
-                    navigator.showError(message);
+                    Notification.show(message, Notification.Type.ERROR_MESSAGE);
                 }
 
             } catch (BadConfigException e) {
@@ -113,9 +115,9 @@ public class Exporter {
                         }
                     }
             );
-            messageDialog.setWidth(465, UNITS_PIXELS);
+            messageDialog.setWidth(465, PIXELS);
 
-            navigator.addWindow(messageDialog);
+            UI.getCurrent().addWindow(messageDialog);
         } else {
             processFileAction(messages.get("export.create"));
         }

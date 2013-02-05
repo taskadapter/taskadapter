@@ -2,6 +2,7 @@ package com.taskadapter.web.configeditor.file;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.server.FileDownloader;
 import com.vaadin.ui.Upload;
 
 import java.io.File;
@@ -17,12 +18,15 @@ public final class ServerModelFilePanelPresenter {
     private final UploadReceiver uploadReceiver;    
     private final File userContentDirectory;
     private final UploadProcessor uploadProcessor;
+    private final FileDownloader downloader;
 
     public ServerModelFilePanelPresenter(File userContentDirectory, UploadProcessor uploadProcessor) {
         this.userContentDirectory = userContentDirectory;
         this.uploadProcessor = uploadProcessor;
         fileList = buildFileList();
         uploadReceiver = new UploadReceiver(userContentDirectory);
+        FileDownloadResource resource = new FileDownloadResource(new File("dummyfile"));
+        downloader = new FileDownloader(resource);
     }
 
     /**
@@ -76,6 +80,7 @@ public final class ServerModelFilePanelPresenter {
         this.view = view;
         view.setComboBoxItems(fileList);
         onNoFileSelected();
+        downloader.extend(view.getDownloadButton());
     }
 
     public void onFileSelected(String fileName) {
@@ -86,9 +91,9 @@ public final class ServerModelFilePanelPresenter {
 
         selectedFile = new File(userContentDirectory,
                 FileUtils.basename(fileName));
-        File file = getSelectedFile();
         SimpleDateFormat sdf = new SimpleDateFormat(ServerModeFilePanel.DATE_FORMAT, Locale.US);
-        view.setStatusLabelText(sdf.format(file.lastModified()));
+        view.setStatusLabelText(sdf.format(selectedFile.lastModified()));
+        downloader.setFileDownloadResource(new FileDownloadResource(selectedFile));
         view.setDownloadEnabled(true);
     }
 
@@ -96,19 +101,6 @@ public final class ServerModelFilePanelPresenter {
         this.selectedFile = null;
         view.setStatusLabelText(ServerModeFilePanel.FILE_WILL_GENERATED_HINT);
         view.setDownloadEnabled(false);
-    }
-
-    private File getSelectedFile() {
-        return selectedFile;
-    }
-
-    public void downloadSelectedFile() {
-        if (selectedFile == null) {
-            view.showNotification(ServerModeFilePanel.DOWNLOAD_FILE_ERROR);
-            return;
-        }
-        FileDownloadResource resource = new FileDownloadResource(getSelectedFile(), view.getApplication());
-        view.getWindow().open(resource);
     }
 
     public UploadReceiver getUploadReceiver() {

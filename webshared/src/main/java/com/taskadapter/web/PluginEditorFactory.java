@@ -6,7 +6,7 @@ import com.taskadapter.web.service.Sandbox;
 import com.vaadin.ui.ComponentContainer;
 
 public interface PluginEditorFactory<C extends ConnectorConfig> extends ExceptionFormatter {
-    ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Sandbox sandbox, C config);
+    ComponentContainer getMiniPanelContents(Sandbox sandbox, C config);
     
     /**
      * Validates a connector config for save mode. If validation fails, plugin

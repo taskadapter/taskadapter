@@ -7,17 +7,21 @@ import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ButtonBuilder;
 import com.taskadapter.webui.ConfigsPage;
 import com.taskadapter.webui.Page;
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.VaadinSession;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+
+import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
 /**
  * Action page. Always perform action from connector1 to connector2.
@@ -52,7 +56,7 @@ public abstract class ActionPage extends Page {
 
     protected void buildInitialPage() {
         Label label = createLabel(getInitialText());
-        label.setContentMode(Label.CONTENT_XHTML);
+        label.setContentMode(ContentMode.HTML);
         mainPanel.addComponent(label);
 
         addButtons();
@@ -61,11 +65,14 @@ public abstract class ActionPage extends Page {
     private void addButtons() {
         HorizontalLayout buttonsLayout = new HorizontalLayout();
         Button goButton = new Button(MESSAGES.get("button.go"));
-        goButton.addListener(new Button.ClickListener() {
+        goButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                synchronized (navigator.getApplication()) {
+                VaadinSession.getCurrent().lock();
+                try {
                     buildLoadingPage();
+                } finally {
+                    VaadinSession.getCurrent().unlock();
                 }
                 new LoadWorker().start();
             }
@@ -79,18 +86,18 @@ public abstract class ActionPage extends Page {
 
     protected void buildLoadingPage() {
         mainPanel.removeAllComponents();
-        loadProgress = new ProgressIndicator();
-        loadProgress.setIndeterminate(true);
-        loadProgress.setPollingInterval(200);
-        mainPanel.addComponent(loadProgress);
         String sourceDescription = config.getConnector1().getSourceLocation()
                 + " (" + config.getConnector1().getLabel() + ")";
         String labelText = MESSAGES.format("action.loadingData", sourceDescription);
         mainPanel.addComponent(createLabel(labelText));
+        loadProgress = new ProgressIndicator();
+        loadProgress.setIndeterminate(true);
+        loadProgress.setPollingInterval(200);
+        mainPanel.addComponent(loadProgress);
     }
 
     protected void showAfterDataLoaded() {
-        loadProgress.setEnabled(false);
+        mainPanel.removeComponent(loadProgress);
         if (loadedTasks == null || loadedTasks.isEmpty()) {
             mainPanel.addComponent(createLabel(getNoDataLoadedText()));
             mainPanel.addComponent(ButtonBuilder.createBackButton(navigator, MESSAGES.get("button.back")));
@@ -101,7 +108,7 @@ public abstract class ActionPage extends Page {
 
     private Label createLabel(String text) {
         Label label = new Label(text);
-        label.setWidth(800, Sizeable.UNITS_PIXELS);
+        label.setWidth(800, PIXELS);
         return label;
     }
 
@@ -117,9 +124,11 @@ public abstract class ActionPage extends Page {
                 t.printStackTrace();
                 // TODO Show "internal error" dialog
             }
-            // must synchronize changes over application
-            synchronized (navigator.getApplication()) {
+            VaadinSession.getCurrent().lock();
+            try {
                 showAfterDataLoaded();
+            } finally {
+                VaadinSession.getCurrent().unlock();
             }
         }
     }
@@ -140,9 +149,11 @@ public abstract class ActionPage extends Page {
             } catch (Throwable t) {
                 t.printStackTrace();
             }
-            // must synchronize changes over application
-            synchronized (navigator.getApplication()) {
+            VaadinSession.getCurrent().lock();
+            try {
                 showAfterExport();
+            } finally {
+                VaadinSession.getCurrent().unlock();
             }
         }
     }
@@ -152,7 +163,7 @@ public abstract class ActionPage extends Page {
         mainPanel.addComponent(getDoneInfoPanel());
 
         Button button = new Button(MESSAGES.get("action.backToHomePage"));
-        button.addListener(new Button.ClickListener() {
+        button.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 navigator.show(new ConfigsPage());
@@ -200,7 +211,7 @@ public abstract class ActionPage extends Page {
 
             new SaveWorker(selectedRootLevelTasks).start();
         } else {
-            mainPanel.getWindow().showNotification(MESSAGES.get("action.pleaseSelectTasks"));
+            Notification.show(MESSAGES.get("action.pleaseSelectTasks"));
         }
     }
 

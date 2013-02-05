@@ -1,9 +1,11 @@
 package com.taskadapter.web;
 
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import java.util.List;
@@ -12,7 +14,7 @@ public class MessageDialog extends Window implements Button.ClickListener {
 
     public static final String CANCEL_BUTTON_LABEL = "Cancel";
 
-    private HorizontalLayout layout = new HorizontalLayout();
+    private VerticalLayout view = new VerticalLayout();
     private Callback callback;
 
     public MessageDialog(String caption, String question, List<String> answers, Callback callback) {
@@ -20,33 +22,36 @@ public class MessageDialog extends Window implements Button.ClickListener {
 
         setModal(true);
         setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
-        layout.setSpacing(true);
+        view.setSpacing(true);
+        view.setMargin(true);
 
         this.callback = callback;
 
         if (question != null) {
-            addComponent(new Label(question, Label.CONTENT_XHTML));
-            addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
+            view.addComponent(new Label(question, ContentMode.HTML));
+            view.addComponent(new Label("&nbsp;", ContentMode.HTML));
         }
 
         createButtons(answers);
-        addComponent(layout);
+        setContent(view);
     }
 
     private void createButtons(List<String> answers) {
+        HorizontalLayout buttonsLayout = new HorizontalLayout();
+        buttonsLayout.setSpacing(true);
+
         for (String answer : answers) {
             Button button = new Button(answer, this);
-            layout.addComponent(button);
+            buttonsLayout.addComponent(button);
             // focus on something in this window so that the window can be closed with ESC
             button.focus();
         }
+        view.addComponent(buttonsLayout);
     }
 
     @Override
     public void buttonClick(Button.ClickEvent clickEvent) {
-        if (getParent() != null) {
-            (getParent()).removeWindow(this);
-        }
+        getUI().removeWindow(this);
         callback.onDialogResult(((Button) clickEvent.getSource()).getCaption());
     }
 

@@ -6,7 +6,6 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.PluginEditorFactory;
-import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.webui.data.ExceptionFormatter;
 import com.vaadin.ui.ComponentContainer;
@@ -69,8 +68,8 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends UIConnector
     }
 
     @Override
-    public ComponentContainer createMiniPanel(WindowProvider windowProvider, Sandbox sandbox) {
-        return editorFactory.getMiniPanelContents(windowProvider, sandbox, config);
+    public ComponentContainer createMiniPanel(Sandbox sandbox) {
+        return editorFactory.getMiniPanelContents(sandbox, config);
     }
 
     @Override

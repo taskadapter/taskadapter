@@ -3,7 +3,6 @@ package com.taskadapter.connector.jira;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.ExceptionFormatter;
-import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.vaadin.data.util.MethodProperty;
@@ -22,11 +21,9 @@ class OtherJiraFieldsPanel extends Panel {
     private static final String SAVE_GROUP_LABEL = "Set when exporting to Jira";
 
     private final JiraConfig config;
-    private final WindowProvider windowProvider;
     private final ExceptionFormatter exceptionFormatter;
 
-    public OtherJiraFieldsPanel(WindowProvider windowProvider, JiraConfig config, ExceptionFormatter exceptionFormatter) {
-        this.windowProvider = windowProvider;
+    public OtherJiraFieldsPanel(JiraConfig config, ExceptionFormatter exceptionFormatter) {
         this.config = config;
         this.exceptionFormatter = exceptionFormatter;
         buildUI();
@@ -40,7 +37,7 @@ class OtherJiraFieldsPanel extends Panel {
         lookupButtonsLayout.setSpacing(true);
         addLookupButtonsAndTextEdit(lookupButtonsLayout);
 
-        addComponent(lookupButtonsLayout);
+        setContent(lookupButtonsLayout);
     }
 
     private void addLookupButtonsAndTextEdit(GridLayout grid) {
@@ -50,7 +47,6 @@ class OtherJiraFieldsPanel extends Panel {
         final MethodProperty<String> componentProperty = new MethodProperty<String>(config, "component");
         jiraComponent.setPropertyDataSource(componentProperty);
         Button showComponentsButton = EditorUtil.createLookupButton(
-                windowProvider,
                 "...",
                 "Show list of available components on the given server.",
                 "Select component",
@@ -82,7 +78,6 @@ class OtherJiraFieldsPanel extends Panel {
             }
         };
         Button showAffectedVersion = EditorUtil.createLookupButton(
-                windowProvider,
                 "...",
                 "Show list of available versions",
                 "Select version",
@@ -101,7 +96,6 @@ class OtherJiraFieldsPanel extends Panel {
         final MethodProperty<String> fixForProperty = new MethodProperty<String>(config, "fixForVersion");
         fixForVersion.setPropertyDataSource(fixForProperty);
         Button showFixForVersion = EditorUtil.createLookupButton(
-                windowProvider,
                 "...",
                 "Show list of available versions",
                 "Select version",
@@ -119,7 +113,6 @@ class OtherJiraFieldsPanel extends Panel {
         final MethodProperty<String> defaultTaskTypeProperty = new MethodProperty<String>(config, "defaultTaskType");
         defaultTaskType.setPropertyDataSource(defaultTaskTypeProperty);
         Button showDefaultTaskType = EditorUtil.createLookupButton(
-                windowProvider,
                 "...",
                 "Show list of available issue types on the Jira server",
                 "Select issue type",

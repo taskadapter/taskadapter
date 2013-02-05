@@ -5,9 +5,7 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.mantis.MantisConfig;
-import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.PluginEditorFactory;
-import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
 import com.taskadapter.web.configeditor.EditorUtil;
@@ -17,11 +15,10 @@ import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Sandbox;
 import com.vaadin.data.util.MethodProperty;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.VerticalLayout;
 
-import java.util.List;
+import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
 public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.mantis.editor.messages";
@@ -50,9 +47,9 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(WindowProvider windowProvider, Sandbox sandbox, MantisConfig config) {
+    public ComponentContainer getMiniPanelContents(Sandbox sandbox, MantisConfig config) {
         VerticalLayout layout = new VerticalLayout();
-        layout.setWidth(380, Sizeable.UNITS_PIXELS);
+        layout.setWidth(380, PIXELS);
         final WebServerInfo serverInfo = config.getServerInfo();
 
         ServerPanel serverPanel = new ServerPanel(new MethodProperty<String>(config, "label"),
@@ -61,10 +58,11 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
                 new MethodProperty<String>(serverInfo, "password"));
         layout.addComponent(serverPanel);
 
-        DataProvider<List<? extends NamedKeyedObject>> NULL_QUERY_PROVIDER = null;
+        // TODO VAADIN 7 why is this unused? I commented it out for now.
+//        DataProvider<List<? extends NamedKeyedObject>> NULL_QUERY_PROVIDER = null;
         SimpleCallback NULL_PROJECT_INFO_CALLBACK = null;
 
-        layout.addComponent(new ProjectPanel(windowProvider, EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
+        layout.addComponent(new ProjectPanel(EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
                 EditorUtil.wrapNulls(new MethodProperty<String>(config, "queryId")),
                 Interfaces.fromMethod(DataProvider.class, MantisLoaders.class,
                         "getProjects", config.getServerInfo())

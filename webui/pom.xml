@@ -11,7 +11,7 @@
 
     <artifactId>webui</artifactId>
     <packaging>war</packaging>
-    <version>2.4.1</version>
+    <version>2.4.2</version>
 
     <build>
         <finalName>ta</finalName>
@@ -22,121 +22,104 @@
                 <version>2.1.1</version>
                 <configuration>
                     <warSourceDirectory>src/main/webapp</warSourceDirectory>
+                    <packagingExcludes>**/gwt-unitCache/*</packagingExcludes>
                 </configuration>
             </plugin>
-            <!-- Compiles your custom GWT components with the GWT compiler -->
+            <!-- As we are doing "inplace" GWT compilation, ensure the widgetset -->
+            <!-- directory is cleaned properly -->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>gwt-maven-plugin</artifactId>
-                <!-- Version 2.1.0-1 works at least with Vaadin 6.5 -->
-                <version>2.3.0-1</version>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>2.4.1</version>
                 <configuration>
-                    <!-- if you don't specify any modules, the plugin will find them -->
-                    <!--modules>
-                        ..
-                    </modules-->
-                    <webappDirectory>${project.build.directory}/${project.build.finalName}/VAADIN/widgetsets
-                    </webappDirectory>
-                    <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
-                    <runTarget>clean</runTarget>
-                    <hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
-                    <noServer>true</noServer>
-                    <port>9944</port>
+                    <filesets>
+                        <fileset>
+                            <directory>src/main/webapp/VAADIN/widgetsets</directory>
+                        </fileset>
+                    </filesets>
                 </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>resources</goal>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
-            <!-- Updates Vaadin 6.2+ widgetset definitions based on project dependencies -->
             <plugin>
                 <groupId>com.vaadin</groupId>
                 <artifactId>vaadin-maven-plugin</artifactId>
-                <version>1.0.2</version>
+                <version>${vaadin.plugin.version}</version>
+                <configuration>
+                    <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
+                    <!-- <runTarget>mobilemail</runTarget> -->
+                    <!-- We are doing "inplace" but into subdir VAADIN/widgetsets. This
+                        way compatible with Vaadin eclipse plugin. -->
+                    <webappDirectory>${basedir}/src/main/webapp/VAADIN/widgetsets
+                    </webappDirectory>
+                    <hostedWebapp>${basedir}/src/main/webapp/VAADIN/widgetsets
+                    </hostedWebapp>
+                    <noServer>true</noServer>
+                    <!-- Remove draftCompile when project is ready -->
+                    <draftCompile>false</draftCompile>
+                    <compileReport>true</compileReport>
+                    <style>OBF</style>
+                    <strict>true</strict>
+                    <runTarget>http://localhost:8080/</runTarget>
+                </configuration>
                 <executions>
                     <execution>
                         <configuration>
                             <!-- if you don't specify any modules, the plugin will find them -->
-                            <!--
-                            <modules>
-                                <module>${package}.gwt.MyWidgetSet</module>
-                            </modules>
-                            -->
+                            <!-- <modules> <module>com.vaadin.demo.mobilemail.gwt.ColorPickerWidgetSet</module>
+                                </modules> -->
                         </configuration>
                         <goals>
+                            <goal>resources</goal>
                             <goal>update-widgetset</goal>
+                            <goal>compile</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
         <pluginManagement>
-        	<plugins>
-        		<!--This plugin's configuration is used to store Eclipse m2e settings only.
-        		It can only influence the build in a way that it can bring some bad dependencies, e.g. the wrong GWT version
-        		(2.4.0 when you already have 2.3.0 used in the build, which can cause problems running the project in IDEA).-->
-        		<plugin>
-        			<groupId>org.eclipse.m2e</groupId>
-        			<artifactId>lifecycle-mapping</artifactId>
-        			<version>1.0.0</version>
-        			<configuration>
-        				<lifecycleMappingMetadata>
-        					<pluginExecutions>
-        						<pluginExecution>
-        							<pluginExecutionFilter>
-        								<groupId>com.vaadin</groupId>
-        								<artifactId>
-        									vaadin-maven-plugin
-        								</artifactId>
-        								<versionRange>
-        									[1.0.2,)
-        								</versionRange>
-        								<goals>
-        									<goal>
-        										update-widgetset
-        									</goal>
-        								</goals>
-        							</pluginExecutionFilter>
-        							<action>
-        							    <execute>
-        								    <runOnIncremental>false</runOnIncremental>
-        								</execute>
-        							</action>
-        						</pluginExecution>
-        						<pluginExecution>
-        							<pluginExecutionFilter>
-        								<groupId>
-        									org.codehaus.mojo
-        								</groupId>
-        								<artifactId>
-        									gwt-maven-plugin
-        								</artifactId>
-        								<versionRange>
-        									[2.3.0-1,)
-        								</versionRange>
-        								<goals>
-        									<goal>resources</goal>
-        								</goals>
-        							</pluginExecutionFilter>
-        							<action>
-                                        <execute>
-                                            <runOnIncremental>false</runOnIncremental>
-                                        </execute>
-        							</action>
-        						</pluginExecution>
-        					</pluginExecutions>
-        				</lifecycleMappingMetadata>
-        			</configuration>
-        		</plugin>
-        	</plugins>
+            <plugins>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only.
+                It can only influence the build in a way that it can bring some bad dependencies, e.g. the wrong GWT version
+                (2.4.0 when you already have 2.3.0 used in the build, which can cause problems running the project in IDEA).-->
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>com.vaadin</groupId>
+                                        <artifactId>
+                                            vaadin-maven-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [7.0.0,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>resources</goal>
+                                            <goal>update-widgetset</goal>
+                                            <goal>compile</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
         </pluginManagement>
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.taskadapter</groupId>
             <artifactId>mainapp</artifactId>
@@ -176,11 +159,12 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>1.9.5-rc1</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.vaadin.addons</groupId>
             <artifactId>googleanalyticstracker</artifactId>
-            <version>1.1.1</version>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.taskadapter</groupId>
@@ -188,5 +172,39 @@
             <version>1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-server</artifactId>
+            <version>${vaadin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-client-compiled</artifactId>
+            <version>${vaadin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-client-compiler</artifactId>
+            <version>${vaadin.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-client</artifactId>
+            <version>${vaadin.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-themes</artifactId>
+            <version>${vaadin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 </project>

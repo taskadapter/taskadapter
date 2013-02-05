@@ -62,7 +62,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
         Button logoutButton = new Button("Logout");
         logoutButton.setStyleName(BaseTheme.BUTTON_LINK);
         logoutButton.addStyleName("personalMenuItem");
-        logoutButton.addListener(new Button.ClickListener() {
+        logoutButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 navigator.logout();
@@ -75,7 +75,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
         Button setPasswordButton = new Button("Change password");
         setPasswordButton.setStyleName(BaseTheme.BUTTON_LINK);
         setPasswordButton.addStyleName("personalMenuItem");
-        setPasswordButton.addListener(new Button.ClickListener() {
+        setPasswordButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 navigator.changePassword();
@@ -123,7 +123,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
 
     private void addSupportItem(HorizontalLayout menu) {
         Button supportButton = createButtonWithoutListener("Support");
-        supportButton.addListener(new Button.ClickListener() {
+        supportButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 navigator.show(new SupportPage(services.getCurrentTaskAdapterVersion(), services.getLicenseManager()));
@@ -154,7 +154,7 @@ public class Header extends HorizontalLayout implements LicenseChangeListener, L
         Button button = new Button(caption);
         button.setStyleName(BaseTheme.BUTTON_LINK);
         button.addStyleName(additionalStyle);
-        button.addListener(handler);
+        button.addClickListener(handler);
         return button;
     }
 

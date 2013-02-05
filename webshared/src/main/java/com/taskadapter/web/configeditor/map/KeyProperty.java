@@ -1,6 +1,7 @@
 package com.taskadapter.web.configeditor.map;
 
 import com.vaadin.data.util.AbstractProperty;
+import com.vaadin.data.util.converter.Converter;
 
 /**
  * Map "key" property.
@@ -40,7 +41,7 @@ final class KeyProperty extends AbstractProperty {
 
 	@Override
 	public void setValue(Object newValue) throws ReadOnlyException,
-			ConversionException {
+            Converter.ConversionException {
 		final String oldKey = this.key;
 		final String newKey = newValue.toString();
 		if (oldKey.equals(newKey))

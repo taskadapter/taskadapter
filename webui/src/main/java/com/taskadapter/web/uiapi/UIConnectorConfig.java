@@ -4,7 +4,6 @@ import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
-import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.service.Sandbox;
 import com.vaadin.ui.ComponentContainer;
 
@@ -74,14 +73,11 @@ public abstract class UIConnectorConfig {
     /**
      * Creates a "mini" informational panel.
      * 
-     * @param windowProvider
-     *            window provider.
      * @param sandbox
      *            user operations sandbox.
      * @return connector configuration panel.
      */
-    public abstract ComponentContainer createMiniPanel(
-            WindowProvider windowProvider, Sandbox sandbox);
+    public abstract ComponentContainer createMiniPanel(Sandbox sandbox);
 
     /**
      * Returns a list of connector available fields in current configuration.

@@ -6,7 +6,6 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.ExceptionFormatter;
-import com.taskadapter.web.WindowProvider;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
 import com.vaadin.data.Property;
@@ -14,13 +13,14 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 
 import java.util.List;
 
-import static com.taskadapter.web.ui.Grids.*;
-import static com.taskadapter.web.configeditor.EditorUtil.*;
+import static com.taskadapter.web.configeditor.EditorUtil.textInput;
+import static com.taskadapter.web.ui.Grids.addTo;
 
 /**
  * "Project info" panel with Project Key, Query Id.
@@ -48,14 +48,11 @@ public class ProjectPanel extends Panel implements Validatable {
 
     private final Property queryValueProperty;
 
-    private final WindowProvider windowProvider;
-
     private final ExceptionFormatter exceptionFormatter;
 
     /**
      * Creates a new project panel.
      *
-     * @param windowProvider      window provider.
      * @param projectKey          project key, required.
      * @param queryValue          query id, optional.
      * @param projectProvider     project provider, optional.
@@ -63,15 +60,13 @@ public class ProjectPanel extends Panel implements Validatable {
      * @param queryProvider       query provider, optional.
      * @param exceptionFormatter  exception formatter, required.
      */
-    public ProjectPanel(WindowProvider windowProvider,
-                        Property projectKey,
+    public ProjectPanel(Property projectKey,
                         Property queryValue,
                         DataProvider<List<? extends NamedKeyedObject>> projectProvider,
                         SimpleCallback projectInfoCallback,
                         DataProvider<List<? extends NamedKeyedObject>> queryProvider,
                         ExceptionFormatter exceptionFormatter) {
         super(DEFAULT_PANEL_CAPTION);
-        this.windowProvider = windowProvider;
         this.projectKeyProperty = projectKey;
         this.queryValueProperty = queryValue;
         this.projectProvider = projectProvider;
@@ -83,7 +78,7 @@ public class ProjectPanel extends Panel implements Validatable {
 
     private void buildUI() {
         GridLayout grid = new GridLayout(4, 2);
-        addComponent(grid);
+        setContent(grid);
 
         grid.setSpacing(true);
 
@@ -105,7 +100,6 @@ public class ProjectPanel extends Panel implements Validatable {
         addTo(grid, Alignment.MIDDLE_CENTER, infoButton);
 
         Button showProjectsButton = EditorUtil.createLookupButton(
-                windowProvider,
                 "...",
                 "Show list of available projects on the server.",
                 "Select project",
@@ -127,7 +121,6 @@ public class ProjectPanel extends Panel implements Validatable {
             addTo(grid, Alignment.MIDDLE_CENTER, queryValue);
 
             Button showQueriesButton = EditorUtil.createLookupButton(
-                    windowProvider,
                     "...",
                     "Show available saved queries on the server.",
                     "Select Query",
@@ -166,19 +159,15 @@ public class ProjectPanel extends Panel implements Validatable {
             projectInfoCallback.callBack();
         } catch (BadConfigException e) {
             String localizedMessage = exceptionFormatter.formatError(e);
-            windowProvider.getWindow().showNotification(localizedMessage);
+            Notification.show(localizedMessage);
         } catch (ConnectorException e) {
             String localizedMessage = exceptionFormatter.formatError(e);
-            windowProvider.getWindow().showNotification("Oops", localizedMessage);
+            Notification.show("Oops", localizedMessage, Notification.Type.ERROR_MESSAGE);
         }
     }
 
-    private String getProjectKey() {
-        return (String) projectKey.getValue();
-    }
-
     private String getQueryValue() {
-        return queryValue == null ? null : (String) queryValue.getValue();
+        return queryValue == null ? null : queryValue.getValue();
     }
 
     public void setProjectKeyLabel(String text) {
@@ -197,7 +186,7 @@ public class ProjectPanel extends Panel implements Validatable {
         }
 
         // TODO !!! will result in NPE if getProjectKey can return NULL. (can it?)
-        if (getProjectKey().trim().isEmpty()) {
+        if (projectKey.getValue().trim().isEmpty()) {
             throw new ProjectNotSetException();
         }
     }

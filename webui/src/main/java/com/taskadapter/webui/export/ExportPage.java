@@ -10,7 +10,6 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.RemoteIdUpdater;
 import com.taskadapter.core.TaskLoader;
 import com.taskadapter.core.TaskSaver;
-import com.taskadapter.license.LicenseManager;
 import com.taskadapter.model.GTask;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.file.FileDownloadResource;
@@ -18,7 +17,8 @@ import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.MonitorWrapper;
 import com.taskadapter.webui.data.ExceptionFormatter;
-import com.vaadin.Application;
+import com.vaadin.server.FileDownloader;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -139,7 +139,7 @@ public class ExportPage extends ActionPage {
         String time = new SimpleDateFormat("MMMM dd, yyyy  HH:mm").format(Calendar.getInstance().getTime());
         // TODO externalize, i18n
         Label label = new Label("<strong>Export completed on</strong> <em>" + time + "</em>");
-        label.setContentMode(Label.CONTENT_XHTML);
+        label.setContentMode(ContentMode.HTML);
 
         donePanel.addComponent(label);
     }
@@ -155,11 +155,11 @@ public class ExportPage extends ActionPage {
 
     private HorizontalLayout createdExportResultLabel(String labelName, String labelValue) {
         Label lName = new Label("<strong>" + labelName + ":</strong>");
-        lName.setContentMode(Label.CONTENT_XHTML);
+        lName.setContentMode(ContentMode.HTML);
         lName.setWidth("98px");
 
         Label lValue = new Label("<em>" + labelValue + "</em>");
-        lValue.setContentMode(Label.CONTENT_XHTML);
+        lValue.setContentMode(ContentMode.HTML);
 
         HorizontalLayout hl = new HorizontalLayout();
         hl.addComponent(lName);
@@ -182,7 +182,7 @@ public class ExportPage extends ActionPage {
         }
         final Label errorTextLabel = new Label(errorText);
         errorTextLabel.addStyleName("errorMessage");
-        errorTextLabel.setContentMode(Label.CONTENT_XHTML);
+        errorTextLabel.setContentMode(ContentMode.HTML);
         donePanel.addComponent(errorTextLabel);
     }
 
@@ -196,7 +196,7 @@ public class ExportPage extends ActionPage {
     private void addFileInfoIfNeeded(TaskSaveResult result) {
         if (result.getTargetFileAbsolutePath() != null && (services.getSettingsManager().isTAWorkingOnLocalMachine())) {
             Label label = new Label("<strong>Path to export file:</strong> <em>" + result.getTargetFileAbsolutePath() + "</em>");
-            label.setContentMode(Label.CONTENT_XHTML);
+            label.setContentMode(ContentMode.HTML);
 
             donePanel.addComponent(label);
         }
@@ -209,22 +209,17 @@ public class ExportPage extends ActionPage {
     }
 
     private void addDownloadButton(final String targetFileAbsolutePath) {
-        Button downloadButton = new Button("Download");
-        downloadButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                File file = new File(targetFileAbsolutePath);
-                Application application = navigator.getApplication();
-                FileDownloadResource resource = new FileDownloadResource(file, application);
-                application.getMainWindow().open(resource);
-            }
-        });
+        Button downloadButton = new Button("Download file");
+        File file = new File(targetFileAbsolutePath);
+        FileDownloadResource resource = new FileDownloadResource(file);
+        FileDownloader downloader = new FileDownloader(resource);
+        downloader.extend(downloadButton);
         donePanel.addComponent(downloadButton);
     }
 
     @Override
     protected void saveData(List<GTask> tasks) throws ConnectorException {
-        saveProgress.setValue(0);
+        saveProgress.setValue(0f);
         final MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
 
         final Connector<?> destinationConnector = config.getConnector2().createConnectorInstance();

@@ -12,12 +12,12 @@
     </context-param>
     <servlet>
         <servlet-name>Task Adapter Application</servlet-name>
-        <servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
+        <servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
         <init-param>
             <description>
-                Vaadin application class to start
+                Vaadin UI to display
             </description>
-            <param-name>application</param-name>
+            <param-name>UI</param-name>
             <param-value>com.taskadapter.webui.TAApplication</param-value>
         </init-param>
         <init-param>
