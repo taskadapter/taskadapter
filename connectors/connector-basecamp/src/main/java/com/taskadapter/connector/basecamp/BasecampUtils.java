@@ -128,7 +128,7 @@ public class BasecampUtils {
     public static void validateAccount(BasecampConfig config)
             throws ConnectorException {
         final String accountId = config.getAccountId();
-        if (accountId == null || "".isEmpty()) {
+        if (accountId == null || accountId.isEmpty()) {
             throw new FieldNotSetException("account-id");
         }
         if (!isNum(accountId)) {
