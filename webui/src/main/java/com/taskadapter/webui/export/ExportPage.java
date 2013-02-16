@@ -11,7 +11,6 @@ import com.taskadapter.core.RemoteIdUpdater;
 import com.taskadapter.core.TaskLoader;
 import com.taskadapter.core.TaskSaver;
 import com.taskadapter.model.GTask;
-import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.file.FileDownloadResource;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
@@ -27,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -76,7 +74,7 @@ public class ExportPage extends ActionPage {
                     config.generateSourceMappings(),
                     ProgressMonitorUtils.getDummyMonitor());
         } catch (CommunicationException e) {
-            String message = getErrorMessageForException(e);
+            String message = getErrorMessageForSourceException(e);
             showErrorMessageOnPage(message);
             logger.error("transport error: " + message, e);
         } catch (ConnectorException e) {
@@ -88,12 +86,8 @@ public class ExportPage extends ActionPage {
         }
     }
 
-    private String getErrorMessageForException(CommunicationException e) {
-        if (EditorUtil.getRoot(e) instanceof UnknownHostException) {
-            return "Unknown host";
-        } else {
-            return TRANSPORT_ERROR;
-        }
+    private String getErrorMessageForSourceException(CommunicationException e) {
+        return config.getConnector1().decodeException(e);
     }
 
     private void showErrorMessageOnPage(String errorMessage) {

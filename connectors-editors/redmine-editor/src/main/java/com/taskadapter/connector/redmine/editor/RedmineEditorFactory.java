@@ -2,10 +2,13 @@ package com.taskadapter.connector.redmine.editor;
 
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RelationCreationException;
+import com.taskadapter.redmineapi.AuthenticationException;
+import com.taskadapter.redmineapi.RedmineAuthenticationException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
@@ -39,6 +42,11 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
             return MESSAGES.get("error.serverUrlNotSet");
         } else if (e instanceof ProjectNotSetException) {
             return MESSAGES.get("error.projectKeyNotSet");
+        } else if (e instanceof CommunicationException) {
+            if (e.getCause() instanceof RedmineAuthenticationException) {
+                return MESSAGES.get("error.authError");
+            }
+            return MESSAGES.get("error.transportError");
         }
         return e.getMessage();
     }
