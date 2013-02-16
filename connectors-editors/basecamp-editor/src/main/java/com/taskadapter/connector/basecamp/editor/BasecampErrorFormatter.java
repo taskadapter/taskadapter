@@ -13,14 +13,25 @@ class BasecampErrorFormatter implements ExceptionFormatter {
 
     @Override
     public String formatError(Throwable e) {
-        if (e instanceof BadFieldException && ((BadFieldException) e).getFieldName().equals("project-key")) {
-            return MESSAGES.format("error.projectKey");
+        if (e instanceof BadFieldException) {
+            final String field = ((BadFieldException) e).getFieldName();
+            if ("project-key".equals(field)) {
+                return MESSAGES.format("error.projectKey");
+            } else if ("todo-key".equals(field)) {
+                return MESSAGES.format("error.todoKey");
+            } else if ("account-id".equals(field)) {
+                return MESSAGES.format("error.accountId");
+            }
         }
-        if (e instanceof BadFieldException && ((BadFieldException) e).getFieldName().equals("todo-key")) {
-            return MESSAGES.format("error.todoKey");
-        }
-        if (e instanceof FieldNotSetException && ((FieldNotSetException) e).getFieldId().equals("account-id")) {
-            return MESSAGES.format("error.accountId");
+        if (e instanceof FieldNotSetException) {
+            final String field = ((FieldNotSetException) e).getFieldId();
+            if ("project-key".equals(field)) {
+                return MESSAGES.format("error.projectKey");
+            } else if ("todo-key".equals(field)) {
+                return MESSAGES.format("error.todoKey");
+            } else if ("account-id".equals(field)) {
+                return MESSAGES.format("error.accountId");
+            }
         }
         if (e instanceof NotAuthorizedException) {
             return MESSAGES.format("error.notAuthorized");
