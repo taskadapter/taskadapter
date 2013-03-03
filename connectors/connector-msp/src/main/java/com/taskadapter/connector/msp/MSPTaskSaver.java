@@ -26,35 +26,35 @@ import java.util.List;
 
 public final class MSPTaskSaver {
 
-    private static final Logger logger = LoggerFactory.getLogger(MSPTaskSaver.class);
+    private static final Logger logger = LoggerFactory
+            .getLogger(MSPTaskSaver.class);
     private final TaskSaveResultBuilder result = new TaskSaveResultBuilder();
     private final MSPConfig config;
 
     private MSXMLFileWriter writer;
 
-    public MSPTaskSaver(MSPConfig config, Mappings mappings, ProgressMonitor monitor) {
+    public MSPTaskSaver(MSPConfig config, Mappings mappings,
+            ProgressMonitor monitor) {
         this.config = config;
         this.writer = new MSXMLFileWriter(mappings);
     }
 
     public TaskSaveResult saveData(List<GTask> tasks) throws ConnectorException {
         saveIssues(tasks);
-        
-        if (config.getSaveIssueRelations()) {
-            final List<GRelation> relations = RelationUtils.convertRelationIds(
-                    tasks, result);
-            saveRelations(relations);
-        }
-        
+
+        final List<GRelation> relations = RelationUtils.convertRelationIds(
+                tasks, result);
+        saveRelations(relations);
+
         return result.getResult();
     }
-    
-    
+
     // TODO this method is always called with "false" ONLY
 
     /**
      * This method allows saving data to MSP file while keeping tasks ids.
-     * @throws ConnectorException 
+     * 
+     * @throws ConnectorException
      */
     private void saveIssues(List<GTask> tasks) throws ConnectorException {
         try {
@@ -72,7 +72,8 @@ public final class MSPTaskSaver {
         MSPFileReader fileReader = new MSPFileReader();
         try {
             String outputAbsoluteFilePath = config.getOutputAbsoluteFilePath();
-            ProjectFile projectFile = fileReader.readFile(outputAbsoluteFilePath);
+            ProjectFile projectFile = fileReader
+                    .readFile(outputAbsoluteFilePath);
             for (GRelation relation : relations) {
                 if (relation.getType().equals(TYPE.precedes)) {
                     Integer intKey = Integer.parseInt(relation
@@ -91,20 +92,25 @@ public final class MSPTaskSaver {
                     relatedTask.addPredecessor(sourceTask,
                             RelationType.FINISH_START, delay);
                 } else {
-                    logger.error("save relations for MSP: unknown type: " + relation.getType());
-                    result.addGeneralError(new UnsupportedRelationType(relation.getType()));
+                    logger.error("save relations for MSP: unknown type: "
+                            + relation.getType());
+                    result.addGeneralError(new UnsupportedRelationType(relation
+                            .getType()));
                 }
             }
 
             RealWriter.writeProject(outputAbsoluteFilePath, projectFile);
         } catch (MPXJException e) {
-            result.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations (" + e.toString() + ")"));
+            result.addGeneralError(new EntityPersistenseException(
+                    "Can't create Tasks Relations (" + e.toString() + ")"));
             e.printStackTrace();
         } catch (IOException e) {
-            result.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations (" + e.toString() + ")"));
+            result.addGeneralError(new EntityPersistenseException(
+                    "Can't create Tasks Relations (" + e.toString() + ")"));
             e.printStackTrace();
         } catch (Throwable e) {
-            result.addGeneralError(new EntityPersistenseException("Can't create Tasks Relations (" + e.toString() + ")"));
+            result.addGeneralError(new EntityPersistenseException(
+                    "Can't create Tasks Relations (" + e.toString() + ")"));
             e.printStackTrace();
         }
     }
