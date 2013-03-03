@@ -29,7 +29,8 @@ public final class RelationUtils {
                 // which has String Keys like "TEST-12"
                 Integer relatedTaskId = Integer.parseInt(oldRelation
                         .getRelatedTaskKey());
-                String newRelatedKey = localToRemote.getRemoteKey(relatedTaskId);
+                String newRelatedKey = localToRemote
+                        .getRemoteKey(relatedTaskId);
                 // #25443 Export from MSP fails when newRelatedKey is null
                 // (which is a valid case in MSP)
                 if (newSourceTaskKey != null && newRelatedKey != null) {
@@ -37,7 +38,7 @@ public final class RelationUtils {
                             oldRelation.getType()));
                 }
             }
+            aggregateRelations(res, task.getChildren(), localToRemote);
         }
-
     }
 }
