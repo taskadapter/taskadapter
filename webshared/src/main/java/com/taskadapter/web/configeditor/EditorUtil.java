@@ -184,12 +184,13 @@ public class EditorUtil {
 			
 			@Override
 			public Object getValue() {
-				return property.getValue();
+				final Object v = property.getValue();
+                return v == null ? "" : v.toString();
 			}
 			
 			@Override
 			public Class<?> getType() {
-				return property.getType();
+				return String.class;
 			}
 
 			@Override
