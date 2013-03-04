@@ -87,6 +87,7 @@ public class ProjectPanel extends Panel implements Validatable {
 
         projectKey = textInput(projectKeyProperty, TEXT_AREA_WIDTH);
         addTo(grid, Alignment.MIDDLE_CENTER, projectKey);
+        projectKey.setNullRepresentation("");
 
         Button infoButton = EditorUtil.createButton("Info", "View the project info",
                 new Button.ClickListener() {
@@ -119,6 +120,7 @@ public class ProjectPanel extends Panel implements Validatable {
             queryValue.setDescription("Custom query/filter ID (number). You need to create a query on the server before accessing it from here.\n"
                     + "Read help for more details.");
             addTo(grid, Alignment.MIDDLE_CENTER, queryValue);
+            queryValue.setNullRepresentation("");
 
             Button showQueriesButton = EditorUtil.createLookupButton(
                     "...",
