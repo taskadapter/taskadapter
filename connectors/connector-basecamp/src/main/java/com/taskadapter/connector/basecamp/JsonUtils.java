@@ -61,10 +61,19 @@ public final class JsonUtils {
 
     public static Date getOptLongDate(String field, JSONObject obj)
             throws CommunicationException {
-        final String str = getOptString(field, obj);
+        String str = getOptString(field, obj);
         if (str == null) {
             return null;
         }
+
+        if (str.length() == 29
+                && str.charAt(19) == '.'
+                && Character.isDigit(str.charAt(20))
+                && Character.isDigit(str.charAt(21))
+                        && Character.isDigit(str.charAt(22))) {
+            str = str.substring(0, 19) + str.substring(23); 
+        }
+
         if (str.length() != 25 || str.charAt(10) != 'T'
                 || str.charAt(22) != ':') {
             throw new CommunicationException("Unrecognized date " + str);
