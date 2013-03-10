@@ -1,10 +1,10 @@
 package com.taskadapter.connector.basecamp;
 
 class TestBasecampConfig {
-    private static final String USER_ID = "2131659";
-    private static final String USER_LOGIN = "mdanstlj@sharklasers.com";
-    private static final String USER_PASSWORD = "123123qwe";
-    private static final String PROJECT_KEY = "1935346";
+    private static final String USER_ID = "2192889";
+    private static final String USER_LOGIN = "yosxkzqx@sharklasers.com";
+    private static final String USER_PASSWORD = "123123123";
+    private static final String PROJECT_KEY = "2337516";
 
     static BasecampConfig create() {
         BasecampConfig config = new BasecampConfig();
