@@ -14,8 +14,8 @@ public class RedmineConfig extends ConnectorConfig {
 
     private static final long serialVersionUID = 1L;
     private static final String TASK_TYPE_BUG = "Bug";
-    
-    private static final Map<String, Integer> DEFAULT_PRIORITIES = new HashMap<String, Integer>();    
+
+    private static final Map<String, Integer> DEFAULT_PRIORITIES = new HashMap<String, Integer>();
     static {
         DEFAULT_PRIORITIES.put("Low", 100);
         DEFAULT_PRIORITIES.put("Normal", 500);
@@ -47,7 +47,8 @@ public class RedmineConfig extends ConnectorConfig {
 
     @Override
     public int hashCode() {
-        return 31 * super.hashCode() + Objects.hashCode(getDefaultTaskType(), defaultTaskStatus);
+        return 31 * super.hashCode()
+                + Objects.hashCode(getDefaultTaskType(), defaultTaskStatus);
     }
 
     @Override
@@ -60,8 +61,10 @@ public class RedmineConfig extends ConnectorConfig {
         }
         if (obj instanceof RedmineConfig) {
             RedmineConfig other = (RedmineConfig) obj;
-            return Objects.equal(getDefaultTaskType(), other.getDefaultTaskType())
-                    && Objects.equal(defaultTaskStatus, other.defaultTaskStatus);
+            return Objects.equal(getDefaultTaskType(),
+                    other.getDefaultTaskType())
+                    && Objects
+                            .equal(defaultTaskStatus, other.defaultTaskStatus);
         } else {
             return false;
         }
@@ -91,6 +94,17 @@ public class RedmineConfig extends ConnectorConfig {
         this.queryId = queryId;
     }
 
+    public String getQueryIdStr() {
+        return queryId == null ? "" : queryId.toString();
+    }
+
+    public void setQueryIdStr(String id) {
+        if (id == null || id.isEmpty())
+            this.queryId = null;
+        else
+            this.queryId = Integer.parseInt(id);
+    }
+
     public String getProjectKey() {
         return projectKey;
     }
@@ -98,7 +112,7 @@ public class RedmineConfig extends ConnectorConfig {
     public void setProjectKey(String projectKey) {
         this.projectKey = projectKey;
     }
-    
+
     public static Priorities generateDefaultPriorities() {
         return new Priorities(new HashMap<String, Integer>(DEFAULT_PRIORITIES));
     }

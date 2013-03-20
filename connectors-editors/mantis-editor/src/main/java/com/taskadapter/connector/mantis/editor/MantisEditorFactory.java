@@ -63,7 +63,7 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
         SimpleCallback NULL_PROJECT_INFO_CALLBACK = null;
 
         layout.addComponent(new ProjectPanel(EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
-                EditorUtil.wrapNulls(new MethodProperty<String>(config, "queryId")),
+                new MethodProperty<String>(config, "queryIdStr"),
                 Interfaces.fromMethod(DataProvider.class, MantisLoaders.class,
                         "getProjects", config.getServerInfo())
                 , NULL_PROJECT_INFO_CALLBACK, Interfaces.fromMethod(DataProvider.class, MantisLoaders.class, "getFilters", config), this));

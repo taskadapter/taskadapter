@@ -49,6 +49,19 @@ public class MantisConfig extends ConnectorConfig {
     public void setQueryId(Long queryId) {
         this.queryId = queryId;
     }
+    
+    public String getQueryIdStr() {
+        return queryId == null ? "" : queryId.toString();
+    }
+
+    public void setQueryIdStr(String id) {
+        if (id == null || id.isEmpty())
+            this.queryId = null;
+        else
+            this.queryId = Long.parseLong(id);
+    }
+
+
 
     public void setProjectKey(String projectKey) {
         this.projectKey = projectKey;
