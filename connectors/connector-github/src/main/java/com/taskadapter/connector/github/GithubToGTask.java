@@ -27,7 +27,7 @@ public class GithubToGTask {
         task.setUpdatedOn(issue.getUpdatedAt());
         task.setCreatedOn(issue.getCreatedAt());
 
-        if (issue != null && issue.getAssignee() != null && !"".equals(issue.getAssignee().getLogin())) {
+        if (issue.getAssignee() != null && !"".equals(issue.getAssignee().getLogin())) {
             GUser user = new GUser(issue.getAssignee().getLogin());
             task.setAssignee(user);
         }

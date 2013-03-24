@@ -72,11 +72,11 @@ public class CreateUserDialog extends Window {
     }
 
     String getLogin() {
-        return loginField.getValue().toString();
+        return loginField.getValue();
     }
 
     String getPassword() {
-        return passwordField.getValue().toString();
+        return passwordField.getValue();
     }
 
     void addOKListener(Button.ClickListener listener) {

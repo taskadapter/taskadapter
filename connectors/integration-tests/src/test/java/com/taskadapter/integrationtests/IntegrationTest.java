@@ -87,11 +87,6 @@ public class IntegrationTest extends FileBasedTest {
         }
     }
 
-    @Override
-    public void beforeEachTest() {
-        super.beforeEachTest();
-    }
-
     // this test is ignored because "load" operation does not set remote id anymore,
     // it's now done as a part of "save" (as it should have been from the beginning!)
     // so this test has to be rewritten.

@@ -13,7 +13,7 @@ final class JiraTaskSaver implements RelationSaver, BasicIssueSaveAPI<IssueInput
 
     private final JiraConnection connection;
 
-    public JiraTaskSaver(JiraConnection connection) throws ConnectorException {
+    public JiraTaskSaver(JiraConnection connection) {
         this.connection = connection;
     }
 

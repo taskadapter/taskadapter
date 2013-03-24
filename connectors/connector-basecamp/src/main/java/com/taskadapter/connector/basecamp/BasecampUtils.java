@@ -252,8 +252,7 @@ public class BasecampUtils {
             JsonUtils.writeOpt(writer, ctx.getJsonName(FIELD.SUMMARY),
                     task.getSummary());
             JsonUtils.writeOpt(writer, ctx.getJsonName(FIELD.DONE_RATIO), task
-                    .getDoneRatio() == null ? null : task.getDoneRatio()
-                    .intValue() >= 100 ? Boolean.TRUE : Boolean.FALSE);
+                    .getDoneRatio() == null ? null : task.getDoneRatio() >= 100 ? Boolean.TRUE : Boolean.FALSE);
             JsonUtils.writeShort(writer, ctx.getJsonName(FIELD.DUE_DATE),
                     task.getDueDate());
             writeAssignee(writer, ctx, users, task.getAssignee());

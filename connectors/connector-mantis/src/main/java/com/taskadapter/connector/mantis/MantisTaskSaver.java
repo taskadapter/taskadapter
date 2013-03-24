@@ -14,7 +14,7 @@ final class MantisTaskSaver implements BasicIssueSaveAPI<IssueData> {
 
     private final MantisManager mgr;
 
-    public MantisTaskSaver(MantisManager mgr) throws ConnectorException {
+    public MantisTaskSaver(MantisManager mgr) {
         this.mgr = mgr;
     }
 

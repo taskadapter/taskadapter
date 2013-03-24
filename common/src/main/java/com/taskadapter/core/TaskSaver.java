@@ -19,8 +19,7 @@ public final class TaskSaver {
 
     public static TaskSaveResult save(Connector<?> connectorTo,
             String destinationName, Mappings destinationMappings,
-            List<GTask> tasks, ProgressMonitor monitor)
-            throws ConnectorException {
+            List<GTask> tasks, ProgressMonitor monitor) {
         if (monitor == null) {
             monitor = ProgressMonitorUtils.getDummyMonitor();
         }
