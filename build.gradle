@@ -10,7 +10,7 @@ ext.libraries = [
 ext {
     TASK_ADAPTER_VERSION = "2.5"
 
-    vaadinVersion = '7.0.5'
+    vaadinVersion = '7.0.6'
     httpClientVersion='4.2'
 }
 

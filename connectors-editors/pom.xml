@@ -30,6 +30,7 @@
         <module>msp-editor</module>
         <module>redmine-editor</module>
         <module>basecamp-editor</module>
+        <module>basecamp-classic-editor</module>
     </modules>
 
     <dependencyManagement>

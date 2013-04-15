@@ -15,6 +15,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 
@@ -59,7 +60,13 @@ public class EditorUtil {
         result.setPropertyDataSource(property);
         return result;
     }
-    
+
+    public static PasswordField passwordInput(Property property) {
+        final PasswordField result = new PasswordField();
+        result.setPropertyDataSource(property);
+        return result;
+    }
+
     public static TextField propertyInput(Object o, String field) {
         return textInput(new MethodProperty<Object>(o, field));
     }
@@ -192,7 +199,9 @@ public class EditorUtil {
 				return property.getType();
 			}
 
-			@Override
+            // TODO Vaadin complains about this:
+            // You are using ...toString() to get the value for ... This will not be supported starting from Vaadin 7.1
+            @Override
 			public String toString() {
 				final Object value = property.getValue();
 				return value == null ? "" : value.toString();
