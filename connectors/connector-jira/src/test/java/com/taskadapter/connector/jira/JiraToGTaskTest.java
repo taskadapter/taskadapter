@@ -80,7 +80,7 @@ public class JiraToGTaskTest {
         assertEquals(Priorities.DEFAULT_PRIORITY_VALUE, task.getPriority());
     }
 
-    private GTask convertIssue(final Issue issue) throws Exception {
+    private GTask convertIssue(final Issue issue) {
         JiraToGTask jiraToGTask = new JiraToGTask(priorities);
         return jiraToGTask.convertToGenericTask(issue);
     }

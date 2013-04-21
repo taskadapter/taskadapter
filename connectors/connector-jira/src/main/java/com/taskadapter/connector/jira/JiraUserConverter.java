@@ -26,7 +26,7 @@ public class JiraUserConverter {
     }
 
     // TODO this will probably fail if the current Jira user is not Admin
-    public GTask setAssigneeDisplayName(GTask task) throws RemoteException {
+    public GTask setAssigneeDisplayName(GTask task) {
         String loginName = task.getAssignee().getLoginName();
         String assigneeFullname = cachedJiraUsers.get(loginName);
         if (assigneeFullname == null || assigneeFullname.length() == 0) {

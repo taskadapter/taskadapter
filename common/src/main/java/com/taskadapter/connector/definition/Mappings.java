@@ -54,7 +54,7 @@ public final class Mappings {
 	 */
 	public boolean isFieldSelected(FIELD field) {
 		final Boolean result = selected.get(field);
-		return result != null && result.booleanValue();
+		return result != null && result;
 	}
 
 	/**

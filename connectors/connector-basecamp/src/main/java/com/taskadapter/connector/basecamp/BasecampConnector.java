@@ -58,14 +58,14 @@ final class BasecampConnector implements Connector<BasecampConfig> {
             if (remaining != null) {
                 for (int i = 0; i < remaining.length(); i++) {
                     final GTask task = BasecampUtils.parseTask(remaining.getJSONObject(i));
-                    task.setDoneRatio(Integer.valueOf(0));
+                    task.setDoneRatio(0);
                     res.add(task);
                 }
             }
             if (completed != null && config.getLoadCompletedTodos()) {
                 for (int i = 0; i < completed.length(); i++) {
                     final GTask task = BasecampUtils.parseTask(completed.getJSONObject(i));
-                    task.setDoneRatio(Integer.valueOf(100));
+                    task.setDoneRatio(100);
                     res.add(task);
                 }
             }
@@ -174,7 +174,7 @@ final class BasecampConnector implements Connector<BasecampConfig> {
             /* Set "done ratio" if needed */
             if (ctx.getJsonName(FIELD.DONE_RATIO) != null
                     && task.getDoneRatio() != null
-                    && task.getDoneRatio().intValue() >= 100) {
+                    && task.getDoneRatio() >= 100) {
                 api.put("/projects/" + config.getProjectKey() + "/todos/"
                         + newTaskKey + ".json", todoItemJSonRepresentation);
             }

@@ -43,7 +43,7 @@ public class LocalModeFilePanel extends Panel {
         outputFileNameField.addBlurListener(new FieldEvents.BlurListener() {
             @Override
             public void blur(FieldEvents.BlurEvent event) {
-                String val = outputFileNameField.getValue().toString();
+                String val = outputFileNameField.getValue();
                 if(!(val.endsWith(".xml") || val.endsWith(".XML"))) {
                     outputFileNameField.setValue(val + ".xml");
                 }
