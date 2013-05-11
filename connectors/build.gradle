@@ -1,0 +1,9 @@
+subprojects {
+    apply plugin: 'java'
+    dependencies {
+        compile project(":common")
+
+        testCompile project(":test-utilities")
+
+    }
+}

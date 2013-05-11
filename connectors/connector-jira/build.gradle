@@ -1,0 +1,25 @@
+dependencies {
+    compile libraries.slf4j
+
+    compile 'com.taskadapter:jira-rest-java-client:1.0'
+    compile 'com.sun.jersey:jersey-client:1.5'
+    compile 'com.sun.jersey:jersey-core:1.5'
+    compile 'com.sun.jersey:jersey-json:1.5'
+    compile 'com.sun.jersey.contribs:jersey-apache-client:1.5'
+    compile 'joda-time:joda-time:1.6'
+    compile 'commons-codec:commons-codec:1.6'
+    compile 'commons-httpclient:commons-httpclient:3.1'
+    compile 'commons-logging:commons-logging:1.0.4'
+    compile 'com.sun.xml.bind:jaxb-impl:2.1.12'
+    compile 'javax.activation:activation:1.1'
+    compile 'javax.ws.rs:jsr311-api:1.1.1'
+    compile 'javax.xml:jaxb-api:2.1'
+    compile 'javax.xml.stream:stax-api:1.0-2'
+    compile 'org.codehaus.jackson:jackson-core-asl:1.1.1'
+    compile 'stax:stax-api:1.0.1'
+    compile 'com.atlassian:jira-soapclient:4.1.1'
+    compile 'org.apache.axis:axis:1.4'
+    compile 'org.apache.axis:axis-jaxrpc:1.4'
+    compile 'commons-discovery:commons-discovery:0.2'
+    compile 'wsdl4j:wsdl4j:1.5.1'
+}

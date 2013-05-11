@@ -1,0 +1,6 @@
+dependencies {
+    compile libraries.httpclient
+    compile libraries.slf4j
+
+    compile 'org.json:json:20090211'
+}

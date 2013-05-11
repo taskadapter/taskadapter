@@ -12,7 +12,7 @@ public class TALauncher {
 
     private static final int DEFAULT_HTTP_SERVER_PORT = 9944;
     private static final String WEB_APPLICATION_ROOT_CONTEXT = "ta";
-    private static final String WAR_FILE = "files/ta.war";
+    private static final String WAR_FILE = "../war/webui.war";
 
     public static void main(String[] args) {
 

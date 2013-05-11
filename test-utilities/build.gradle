@@ -1,0 +1,8 @@
+dependencies {
+    compile project(':common')
+
+    compile libraries.gson
+
+    // yes, this is "compile", not "testCompile" dependency
+    compile 'junit:junit:4.11'
+}

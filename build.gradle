@@ -1,0 +1,41 @@
+ext.libraries = [
+    gson: 'com.google.code.gson:gson:1.6',
+    httpclient: 'org.apache.httpcomponents:httpclient:4.2',
+    httpcore: 'org.apache.httpcomponents:httpcore:4.2',
+    slf4j: 'org.slf4j:slf4j-api:1.6.6',
+    slf4jJdk: 'org.slf4j:slf4j-jdk14:1.6.6',
+    mockitoCore: 'org.mockito:mockito-core:1.9.5-rc1'
+]
+
+ext {
+    TASK_ADAPTER_VERSION = "2.5"
+
+    vaadinVersion = '7.0.5'
+    httpClientVersion='4.2'
+}
+
+subprojects {
+
+    apply plugin: 'java'
+
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+
+    repositories {
+        mavenCentral()
+
+        maven {
+            url 'http://ta-dev.dyndns.biz:8081/nexus/content/groups/public'
+        }
+        maven {
+            url 'http://maven.vaadin.com/vaadin-addons'
+        }
+    }
+
+    dependencies {
+        compile 'com.google.guava:guava:12.0'
+        testCompile 'junit:junit:4.11'
+    }
+}
+
+

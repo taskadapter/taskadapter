@@ -1,0 +1,88 @@
+apply plugin: 'war'
+
+dependencies {
+//    compile "org.apache.httpcomponents:httpclient:$httpClientVersion"
+//    compile "org.apache.httpcomponents:httpcore:$httpClientVersion"
+
+//    compile "com.vaadin:vaadin-server:$vaadinVersion"
+//    compile "com.vaadin:vaadin-client-compiled:$vaadinVersion"
+//    compile "com.vaadin:vaadin-themes:$vaadinVersion"
+    compile 'org.vaadin.addons:googleanalyticstracker:2.0.0'
+
+    compile libraries.slf4j
+    providedCompile "javax.servlet:servlet-api:2.4"
+    providedCompile "com.vaadin:vaadin-client:$vaadinVersion"
+
+//    compile project(":common")
+//    compile project(":mainapp")
+    compile project(":webshared")
+
+    compile project(":connectors:connector-msp")
+
+    compile project(":connectors-editors:basecamp-editor")
+    compile project(":connectors-editors:github-editor")
+    compile project(":connectors-editors:jira-editor")
+    compile project(":connectors-editors:mantis-editor")
+    compile project(":connectors-editors:msp-editor")
+    compile project(":connectors-editors:redmine-editor")
+
+    testCompile project(":test-utilities")
+}
+
+ext {
+    webAppDirName = "src/main/webapp"
+    gwtBuildDirInWebRoot = 'VAADIN/widgetsets'
+    vaadinDir = webAppDirName + '/' + gwtBuildDirInWebRoot
+    widgetsetClass = 'com.taskadapter.webui.widgetset.Vaadin1Widgetset'
+}
+
+// See https://github.com/johndevs/gradle-vaadin-plugin#readme
+apply from: 'http://plugins.jasoft.fi/vaadin.plugin'
+
+vaadin {
+    version = vaadinVersion
+    widgetset = 'com.taskadapter.webui.widgetset.Vaadin1Widgetset'
+}
+
+war {
+    // Exclude unneccessery GWT Compiler artifacts
+    exclude "**/gwt-unitCache/**"
+}
+
+/*
+//dependencies{
+//    compile group:'com.google.gwt',     name:'gwt-user',    version:'2.4.0'
+//    compile group:'com.google.gwt',     name:'gwt-dev',     version:'2.4.0'
+//}
+
+task widgetset << {
+    // Create widgetset directory (if needed)
+    def created = (new File(gwtBuildDir)).mkdirs()
+
+    // Compile
+    ant.java(classname: 'com.google.gwt.dev.Compiler', failOnError: 'yes',  maxmemory: '1000m') //fork: 'true'
+            {
+                classpath {
+                    pathElement(path: configurations.compile.asPath)
+                    pathElement(path: sourceSets.main.runtimeClasspath.asPath)
+                    sourceSets.main.java.srcDirs.each {
+                        pathelement(location: it.absolutePath)
+                    }
+                }
+
+                arg(line: '-war ' + gwtBuildDir)
+                arg(line: '-logLevel INFO')
+                arg(line: '-style OBF')
+                arg(line: '-localWorkers 2')
+                arg(line: widgetsetClass)
+
+//                jvmarg(value: '-Djava.awt.headless=true')
+//                jvmarg(value: '-XX:MaxPermSize=256M')
+//                jvmarg(value: '-Xmx500M')
+            }
+}
+
+
+// Require widgetset compilation before WAR is built
+//war.dependsOn widgetset
+*/

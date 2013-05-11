@@ -1,0 +1,54 @@
+apply plugin:'application'
+mainClassName = "com.taskadapter.launcher.TALauncher"
+
+ext {
+    ZIP_FILE_NAME_PREFIX = "taskadapter"
+    WAR_FILE_LOCATION = "../webui/build/libs"
+    WAR_FILE_NAME = "webui.war"
+}
+
+dependencies {
+    def jetty_version = "8.1.10.v20130312"
+
+    compile  (
+            ["org.eclipse.jetty:jetty-server:$jetty_version"],
+            ["org.eclipse.jetty:jetty-webapp:$jetty_version"]
+    )
+
+    compile "javax.servlet.jsp:jsp-api:2.1"
+}
+
+startScripts {
+    // solution from http://forums.gradle.org/gradle/topics/specifying_memory_settings_in_application_plugin_start_scripts
+    // there may be an easier way to achieve the same with the new Gradle 1.6 features. check this!
+    ext.jvmOpts = "-Xmx512m"
+    inputs.property("jvmOpts", { ext.jvmOpts }) // for incremental build to work properly
+
+    doLast {
+        def optsEnvVar = "DEFAULT_JVM_OPTS"
+        unixScript.text = unixScript.text.replace("$optsEnvVar=${'""'}", "$optsEnvVar=${'"'}$ext.jvmOpts${'"'}")
+        windowsScript.text = windowsScript.text.replace("set $optsEnvVar=", "set $optsEnvVar=$ext.jvmOpts")
+
+        // add "--openTaskAdapterPageInWebBrowser" at the end of the command line parameters
+        def WIN_REPLACE_ARG2 = "com.taskadapter.launcher.TALauncher %CMD_LINE_ARGS%"
+        def WIN_REPLACE_ARG2_WITH = WIN_REPLACE_ARG2 + " --openTaskAdapterPageInWebBrowser"
+        windowsScript.text = windowsScript.text.replace(WIN_REPLACE_ARG2, WIN_REPLACE_ARG2_WITH)
+
+        def LIN_REPLACE_ARG2 = "com.taskadapter.launcher.TALauncher \"\$@\""
+        def LIN_REPLACE_ARG2_WITH = LIN_REPLACE_ARG2 + " --openTaskAdapterPageInWebBrowser"
+        unixScript.text = unixScript.text.replace(LIN_REPLACE_ARG2, LIN_REPLACE_ARG2_WITH)
+    }
+}
+
+distZip {
+
+    distZip.baseName = ZIP_FILE_NAME_PREFIX
+    distZip.classifier = TASK_ADAPTER_VERSION
+
+    def zipFileName = "$distZip.baseName-$distZip.classifier"
+
+    into("$zipFileName/war") {
+        from WAR_FILE_LOCATION
+        include WAR_FILE_NAME
+    }
+}

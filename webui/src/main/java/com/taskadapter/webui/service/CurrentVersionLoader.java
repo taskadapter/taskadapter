@@ -27,7 +27,6 @@ public class CurrentVersionLoader {
             logger.error("Error loading " + VERSION_PROPERTIES_FILE_NAME + ": " + e.getMessage(), e);
         }
         appInfo.setVersion(properties.getProperty("version"));
-//        appInfo.setBuildDate(properties.getProperty("buildDate"));
     }
 
     public String getCurrentVersion() {
