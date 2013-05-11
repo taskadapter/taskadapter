@@ -1,4 +1,6 @@
 /out
+.gradle
+build
 classes
 com.taskadapter.webui.widgetset.Vaadin1Widgetset
 deploy
