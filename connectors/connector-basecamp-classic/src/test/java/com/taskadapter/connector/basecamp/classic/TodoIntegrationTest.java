@@ -107,8 +107,8 @@ public class TodoIntegrationTest {
         template.setDueDate(date1);
         final GUser me = new GUser();
         me.setId(321);
-        me.setLoginName("<noname>");
-        me.setDisplayName("Tester Tester2");
+        me.setLoginName("support@taskadapter.com");
+        me.setDisplayName("Alexey Skorokhodov");
         template.setAssignee(me);
 
         final Mappings allMappings = TodoUtil.getAllMappings();
