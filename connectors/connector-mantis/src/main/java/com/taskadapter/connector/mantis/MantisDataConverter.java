@@ -1,8 +1,8 @@
 package com.taskadapter.connector.mantis;
 
-import com.taskadapter.mantisapi.beans.AccountData;
-import com.taskadapter.mantisapi.beans.IssueData;
-import com.taskadapter.mantisapi.beans.RelationshipData;
+import biz.futureware.mantis.rpc.soap.client.AccountData;
+import biz.futureware.mantis.rpc.soap.client.IssueData;
+import biz.futureware.mantis.rpc.soap.client.RelationshipData;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GUser;

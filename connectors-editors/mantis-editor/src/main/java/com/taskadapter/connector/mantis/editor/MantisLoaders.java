@@ -4,17 +4,17 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import biz.futureware.mantis.rpc.soap.client.FilterData;
+import biz.futureware.mantis.rpc.soap.client.ProjectData;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.mantis.MantisConfig;
+import com.taskadapter.connector.mantis.MantisManager;
 import com.taskadapter.connector.mantis.MantisManagerFactory;
 import com.taskadapter.connector.mantis.MantisProjectConverter;
 import com.taskadapter.connector.mantis.MantisUtils;
-import com.taskadapter.mantisapi.MantisManager;
-import com.taskadapter.mantisapi.beans.FilterData;
-import com.taskadapter.mantisapi.beans.ProjectData;
 import com.taskadapter.model.GProject;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;

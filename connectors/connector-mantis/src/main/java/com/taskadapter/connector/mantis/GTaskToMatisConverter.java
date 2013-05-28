@@ -1,19 +1,19 @@
 package com.taskadapter.connector.mantis;
 
-import java.math.BigInteger;
-import java.util.Calendar;
-import java.util.List;
-
+import biz.futureware.mantis.rpc.soap.client.AccountData;
+import biz.futureware.mantis.rpc.soap.client.IssueData;
+import biz.futureware.mantis.rpc.soap.client.ObjectRef;
+import biz.futureware.mantis.rpc.soap.client.ProjectData;
 import com.taskadapter.connector.common.data.ConnectorConverter;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.mantisapi.beans.AccountData;
-import com.taskadapter.mantisapi.beans.IssueData;
-import com.taskadapter.mantisapi.beans.ObjectRef;
-import com.taskadapter.mantisapi.beans.ProjectData;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GUser;
+
+import java.math.BigInteger;
+import java.util.Calendar;
+import java.util.List;
 
 public class GTaskToMatisConverter implements
         ConnectorConverter<GTask, IssueData> {

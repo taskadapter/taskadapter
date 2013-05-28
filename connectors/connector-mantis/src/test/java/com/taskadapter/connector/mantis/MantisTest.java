@@ -1,10 +1,9 @@
 package com.taskadapter.connector.mantis;
 
+import biz.futureware.mantis.rpc.soap.client.AccountData;
+import biz.futureware.mantis.rpc.soap.client.ProjectData;
 import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.connector.testlib.TestSaver;
-import com.taskadapter.mantisapi.MantisManager;
-import com.taskadapter.mantisapi.beans.AccountData;
-import com.taskadapter.mantisapi.beans.ProjectData;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;

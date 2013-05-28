@@ -1,6 +1,6 @@
 package com.taskadapter.connector.mantis;
 
-import com.taskadapter.mantisapi.beans.ProjectData;
+import biz.futureware.mantis.rpc.soap.client.ProjectData;
 import com.taskadapter.model.GProject;
 
 import java.util.ArrayList;

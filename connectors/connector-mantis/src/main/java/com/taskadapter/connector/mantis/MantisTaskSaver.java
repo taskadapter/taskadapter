@@ -1,11 +1,9 @@
 package com.taskadapter.connector.mantis;
 
+import biz.futureware.mantis.rpc.soap.client.IssueData;
 import com.taskadapter.connector.common.BasicIssueSaveAPI;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.EntityProcessingException;
-import com.taskadapter.mantisapi.MantisManager;
-import com.taskadapter.mantisapi.RequiredItemException;
-import com.taskadapter.mantisapi.beans.IssueData;
 
 import java.math.BigInteger;
 import java.rmi.RemoteException;

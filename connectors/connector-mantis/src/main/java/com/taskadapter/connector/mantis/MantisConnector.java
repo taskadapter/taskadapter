@@ -1,14 +1,13 @@
 package com.taskadapter.connector.mantis;
 
+import biz.futureware.mantis.rpc.soap.client.AccountData;
+import biz.futureware.mantis.rpc.soap.client.IssueData;
+import biz.futureware.mantis.rpc.soap.client.ProjectData;
 import com.taskadapter.connector.common.TaskSavingUtils;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.model.GTask;
-import com.taskadapter.mantisapi.MantisManager;
-import com.taskadapter.mantisapi.beans.AccountData;
-import com.taskadapter.mantisapi.beans.IssueData;
-import com.taskadapter.mantisapi.beans.ProjectData;
 
 import java.math.BigInteger;
 import java.rmi.RemoteException;
