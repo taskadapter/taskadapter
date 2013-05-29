@@ -4,7 +4,6 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import java.awt.*;
-import java.io.File;
 import java.net.URI;
 
 public class TALauncher {
@@ -13,16 +12,15 @@ public class TALauncher {
 
     private static final int DEFAULT_HTTP_SERVER_PORT = 9944;
     private static final String WEB_APPLICATION_ROOT_CONTEXT = "ta";
-    private static final String WAR_FILE = "war/webui.war";
+    private static final String WAR_FILE = "../war/webui.war";
 
     public static void main(String[] args) {
-        System.out.println(args[0]);
 
         int portNumber = findPortNumberInArgs(args);
         System.out.println("Starting HTTP server on port " + portNumber);
 
         final Server server = new Server(portNumber);
-        server.setHandler(new WebAppContext(new File(args[0], WAR_FILE).getAbsolutePath(), "/" + WEB_APPLICATION_ROOT_CONTEXT));
+        server.setHandler(new WebAppContext(WAR_FILE, "/" + WEB_APPLICATION_ROOT_CONTEXT));
 
         try {
             server.start();
