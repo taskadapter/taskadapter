@@ -11,7 +11,7 @@ public class TALauncher {
 
     static final String PARAMETER_OPEN_TASK_ADAPTER_PAGE_IN_WEB_BROWSER = "--openTaskAdapterPageInWebBrowser";
 
-    private static final int DEFAULT_HTTP_SERVER_PORT = 9944;
+    private static final int DEFAULT_HTTP_SERVER_PORT = 10842;
     private static final String WEB_APPLICATION_ROOT_CONTEXT = "/ta";
     private static final String WAR_FOLDER = "war";
     private static final String WAR_FILE_NAME = "webui.war";
