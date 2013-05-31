@@ -37,6 +37,13 @@ startScripts {
         def LIN_REPLACE_ARG2 = "com.taskadapter.launcher.TALauncher \"\$@\""
         def LIN_REPLACE_ARG2_WITH = LIN_REPLACE_ARG2 + " --openTaskAdapterPageInWebBrowser"
         unixScript.text = unixScript.text.replace(LIN_REPLACE_ARG2, LIN_REPLACE_ARG2_WITH)
+
+
+        // add "export APP_HOME" to the linux script.
+        // otherwise APP_HOME is not available at runtime (see Launcher.java).
+        // see http://forums.gradle.org/gradle/topics/linux_launcher_script_should_export_app_home_before_starting_the_application
+        def LINUX_START_TAG = "exec \"\$JAVACMD\" \"\${JVM_OPTS[@]}\""
+        unixScript.text = unixScript.text.replace(LINUX_START_TAG, "\nexport APP_HOME\n" + LINUX_START_TAG)
     }
 }
 
