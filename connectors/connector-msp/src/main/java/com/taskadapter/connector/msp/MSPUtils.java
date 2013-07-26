@@ -2,6 +2,7 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.connector.msp.write.MSPDefaultFields;
 import com.taskadapter.connector.msp.write.MSXMLFileWriter;
 import com.taskadapter.connector.msp.write.RealWriter;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
@@ -85,8 +86,8 @@ public class MSPUtils {
     public static String[] getTextFieldNamesAvailableForMapping() {
         Set<String> keys = TEXT_FIELDS_MAP.keySet();
         Set<String> copy = new HashSet<String>(keys);
-        copy.remove(MSXMLFileWriter.FIELD_DURATION_UNDEFINED.getName());
-        copy.remove(MSXMLFileWriter.FIELD_WORK_UNDEFINED.getName());
+        copy.remove(MSPDefaultFields.FIELD_DURATION_UNDEFINED.getName());
+        copy.remove(MSPDefaultFields.FIELD_WORK_UNDEFINED.getName());
         return copy.toArray(new String[copy.size()]);
     }
 

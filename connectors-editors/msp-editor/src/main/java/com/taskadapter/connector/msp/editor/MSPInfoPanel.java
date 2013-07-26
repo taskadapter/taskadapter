@@ -1,6 +1,6 @@
 package com.taskadapter.connector.msp.editor;
 
-import com.taskadapter.connector.msp.write.MSXMLFileWriter;
+import com.taskadapter.connector.msp.write.MSPDefaultFields;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
@@ -27,14 +27,14 @@ public class MSPInfoPanel extends Panel {
         label.setWidth("200px");
         layout.addComponent(label, 0, 0);
         final Label durationText = new Label();
-        durationText.setValue(MSXMLFileWriter.FIELD_DURATION_UNDEFINED.toString());
+        durationText.setValue(MSPDefaultFields.FIELD_DURATION_UNDEFINED.toString());
         layout.addComponent(durationText, 1, 0);
 
         label = new Label("Store 'Work undefined' flag as:");
         label.setWidth("200px");
         layout.addComponent(label, 0, 1);
         final Label workText = new Label();
-        workText.setValue(MSXMLFileWriter.FIELD_WORK_UNDEFINED.toString());
+        workText.setValue(MSPDefaultFields.FIELD_WORK_UNDEFINED.toString());
         layout.addComponent(workText, 1, 1);
         setContent(layout);
     }
