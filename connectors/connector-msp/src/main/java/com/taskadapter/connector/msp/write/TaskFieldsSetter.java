@@ -73,16 +73,10 @@ public class TaskFieldsSetter {
     }
 
     private void processPriority(GTask gTask) {
-        // TODO Bug!!!
-        if (gTask.getPriority() != null) {
-            mspTask.setPriority(Priority.getInstance(gTask.getPriority()));
-        }
-
         if (mappings.isFieldSelected(GTaskDescriptor.FIELD.PRIORITY)) {
             Priority mspPriority = Priority.getInstance(gTask.getPriority());
             mspTask.setPriority(mspPriority);
         }
-
     }
 
     private void processDescription(GTask gTask) {
