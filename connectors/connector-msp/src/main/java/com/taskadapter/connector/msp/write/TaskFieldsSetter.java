@@ -46,7 +46,8 @@ public class TaskFieldsSetter {
         processDescription(gTask);
         processType(gTask);
         processStatus(gTask);
-        processTime(gTask);
+        processEstimatedTime(gTask);
+        processDoneRatio(gTask);
         processAssignee(gTask);
         processPriority(gTask);
         processKey(gTask);
@@ -125,44 +126,62 @@ public class TaskFieldsSetter {
 
                 // the same "IF" as above, now for the resource assignment. this might need refactoring...
                 if (gTask.getDoneRatio() != null && mappings.isFieldSelected(GTaskDescriptor.FIELD.DONE_RATIO)) {
-                    Duration timeAlreadySpent = TimeCalculator.calculateTimeAlreadySpent(gTask);
+                    Duration timeAlreadySpent = TimeCalculator.calculateTimeAlreadySpent(gTask.getDoneRatio(), gTask.getEstimatedHours());
                     ass.setActualWork(timeAlreadySpent);
                 }
             }
         }
     }
 
-    private void processTime(GTask gTask) throws BadConfigException {
-        // ESTIMATED TIME and DONE RATIO
+    private void processEstimatedTime(GTask gTask) throws BadConfigException {
         if (gTask.getEstimatedHours() != null && mappings.isFieldSelected(GTaskDescriptor.FIELD.ESTIMATED_TIME)) {
-            Duration estimatedValue = Duration.getInstance(
-                    gTask.getEstimatedHours(), TimeUnit.HOURS);
-            if (MSPUtils.useWork(mappings)) {
-                mspTask.setWork(estimatedValue);
-                // need to explicitly clear it because we can have previously created
-                // tasks with this field set to TRUE
-                mspTask.set(MSPDefaultFields.FIELD_WORK_UNDEFINED, "false");
-            } else {
-                // need to explicitly clear it because we can have previously created
-                // tasks with this field set to TRUE
-                mspTask.setDuration(estimatedValue);
-                mspTask.set(MSPDefaultFields.FIELD_DURATION_UNDEFINED, "false");
-            }
-
-            if (gTask.getDoneRatio() != null && mappings.isFieldSelected(GTaskDescriptor.FIELD.DONE_RATIO)) {
-                Duration timeAlreadySpent = TimeCalculator.calculateTimeAlreadySpent(gTask);
-                // time already spent
-                if (MSPUtils.useWork(mappings)) {
-                    mspTask.setActualWork(timeAlreadySpent);
-                    mspTask.setPercentageWorkComplete(gTask.getDoneRatio());
-                } else {
-                    mspTask.setActualDuration(timeAlreadySpent);
-                    mspTask.setPercentageComplete(gTask.getDoneRatio());
-                }
-            }
+            setEstimatedHours(gTask.getEstimatedHours());
         } else {
             mspTask.set(MSPDefaultFields.FIELD_DURATION_UNDEFINED, "true");
             mspTask.set(MSPDefaultFields.FIELD_WORK_UNDEFINED, "true");
+        }
+    }
+
+    private void setEstimatedHours(float hours) throws BadConfigException {
+        Duration estimatedValue = Duration.getInstance(hours, TimeUnit.HOURS);
+        if (MSPUtils.useWork(mappings)) {
+            mspTask.setWork(estimatedValue);
+            // need to explicitly clear it because we can have previously created
+            // tasks with this field set to TRUE
+            mspTask.set(MSPDefaultFields.FIELD_WORK_UNDEFINED, "false");
+        } else {
+            // need to explicitly clear it because we can have previously created
+            // tasks with this field set to TRUE
+            mspTask.setDuration(estimatedValue);
+            mspTask.set(MSPDefaultFields.FIELD_DURATION_UNDEFINED, "false");
+        }
+
+        // TEST THIS! processDoneRatio() logic was called from here until http://www.hostedredmine.com/issues/199534
+        // was requested by Matt.
+        // now I moved the call to the main setFields() so that Done Ratio is always set even if the estimated time is null.
+        // the
+//            processDoneRatio(gTask);
+    }
+
+    private void processDoneRatio(GTask gTask) throws BadConfigException {
+        if (gTask.getDoneRatio() != null && mappings.isFieldSelected(GTaskDescriptor.FIELD.DONE_RATIO)) {
+            Duration timeAlreadySpent;
+            if (gTask.getEstimatedHours() != null) {
+                timeAlreadySpent = TimeCalculator.calculateTimeAlreadySpent(gTask.getDoneRatio(), gTask.getEstimatedHours());
+            } else {
+                int defaultHoursForUnEstimatedTask = 8;
+                // "%% Done" is ignored by MSP if there's no estimate on task.
+                // This makes sense, but unfortunately some users want "% done" to be transferred even when
+                // there's no time estimate.
+                setEstimatedHours(defaultHoursForUnEstimatedTask);
+                timeAlreadySpent = TimeCalculator.calculateTimeAlreadySpent(gTask.getDoneRatio(), defaultHoursForUnEstimatedTask);
+            }
+            if (MSPUtils.useWork(mappings)) {
+                mspTask.setActualWork(timeAlreadySpent);
+            } else {
+                mspTask.setActualDuration(timeAlreadySpent);
+            }
+            mspTask.setPercentageComplete(gTask.getDoneRatio());
         }
     }
 
