@@ -15,7 +15,7 @@ public class MSPSupportedFields {
         builder.addField(GTaskDescriptor.FIELD.SUMMARY, TaskField.SUMMARY.getName());
         builder.addField(GTaskDescriptor.FIELD.DESCRIPTION, TaskField.NOTES.getName());
         builder.addField(GTaskDescriptor.FIELD.TASK_TYPE, MSPUtils.getTextFieldNamesAvailableForMapping()).withDefault(MSPUtils.getDefaultTaskType());
-        builder.addField(GTaskDescriptor.FIELD.ESTIMATED_TIME, MSPUtils.getEstimatedTimeOptions()).withDefault(MSPUtils.getDefaultEstimatedTime());
+        builder.addField(GTaskDescriptor.FIELD.ESTIMATED_TIME, MSPUtils.getEstimatedTimeOptions()).withDefault(MSPUtils.getEstimatedTimeDefaultMapping());
         builder.addField(GTaskDescriptor.FIELD.DONE_RATIO, TaskField.PERCENT_COMPLETE.getName());
         builder.addField(GTaskDescriptor.FIELD.ASSIGNEE, TaskField.ASSIGNMENT_OWNER.getName());
         builder.addField(GTaskDescriptor.FIELD.DUE_DATE, MSPUtils.getDueDateOptions()).unselected().withDefault(MSPUtils.getDefaultDueDate());

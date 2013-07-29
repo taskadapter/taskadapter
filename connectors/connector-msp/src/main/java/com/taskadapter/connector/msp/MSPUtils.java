@@ -3,7 +3,6 @@ package com.taskadapter.connector.msp;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.msp.write.MSPDefaultFields;
-import com.taskadapter.connector.msp.write.MSXMLFileWriter;
 import com.taskadapter.connector.msp.write.RealWriter;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import net.sf.mpxj.ConstraintType;
@@ -71,16 +70,9 @@ public class MSPUtils {
     public static boolean useWork(Mappings mappings) throws BadConfigException {
         String value = mappings.getMappedTo(FIELD.ESTIMATED_TIME);
         if (value == null) {
-            throw new BadConfigException("Invalid MSP Config. Estimated time must be mapped to something.");
+            value = getEstimatedTimeDefaultMapping();
         }
-        if (value.equals(TaskField.WORK.toString())) {
-            return true;
-        } else if (value.equals(TaskField.DURATION.toString())) {
-            return false;
-        } else {
-            throw new BadConfigException("Invalid value for EstimatedTime in the config: " + value + ". Allowed values: " +
-                    TaskField.WORK.toString() + ", " + TaskField.DURATION.toString());
-        }
+        return value.equals(TaskField.WORK.toString());
     }
 
     public static String[] getTextFieldNamesAvailableForMapping() {
@@ -163,7 +155,7 @@ public class MSPUtils {
 
 	public static final String NO_CONSTRAINT = "<no constraint>";
 
-    public static String getDefaultEstimatedTime() {
+    public static String getEstimatedTimeDefaultMapping() {
         return TaskField.DURATION.toString();
     }
 }

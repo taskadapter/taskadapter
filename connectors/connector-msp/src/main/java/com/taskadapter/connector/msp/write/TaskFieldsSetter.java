@@ -156,11 +156,9 @@ public class TaskFieldsSetter {
             mspTask.set(MSPDefaultFields.FIELD_DURATION_UNDEFINED, "false");
         }
 
-        // TEST THIS! processDoneRatio() logic was called from here until http://www.hostedredmine.com/issues/199534
+        // processDoneRatio() logic used to be called from here until http://www.hostedredmine.com/issues/199534
         // was requested by Matt.
         // now I moved the call to the main setFields() so that Done Ratio is always set even if the estimated time is null.
-        // the
-//            processDoneRatio(gTask);
     }
 
     private void processDoneRatio(GTask gTask) throws BadConfigException {
@@ -174,6 +172,9 @@ public class TaskFieldsSetter {
                 // This makes sense, but unfortunately some users want "% done" to be transferred even when
                 // there's no time estimate.
                 setEstimatedHours(defaultHoursForUnEstimatedTask);
+                // "estimated" means that the time was "approximate". it is shown by MSP as "?" next to the duration value.
+                // like "8 hrs?"
+                mspTask.setEstimated(true);
                 timeAlreadySpent = TimeCalculator.calculateTimeAlreadySpent(gTask.getDoneRatio(), defaultHoursForUnEstimatedTask);
             }
             if (MSPUtils.useWork(mappings)) {
