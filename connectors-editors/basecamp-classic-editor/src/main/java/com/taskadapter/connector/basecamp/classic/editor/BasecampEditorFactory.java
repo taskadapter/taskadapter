@@ -1,6 +1,7 @@
 package com.taskadapter.connector.basecamp.classic.editor;
 
 import com.taskadapter.connector.basecamp.classic.BasecampConfig;
+import com.taskadapter.connector.basecamp.classic.BasecampConfigValidator;
 import com.taskadapter.connector.basecamp.classic.BasecampUtils;
 import com.taskadapter.connector.basecamp.classic.beans.BasecampProject;
 import com.taskadapter.connector.basecamp.classic.beans.TodoList;
@@ -186,7 +187,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
 
     @Override
     public void validateForLoad(BasecampConfig config) throws BadConfigException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        BasecampConfigValidator.validateTodoList(config);
     }
 
     @Override

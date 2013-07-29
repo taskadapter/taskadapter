@@ -32,35 +32,6 @@ import org.w3c.dom.Element;
 
 public class BasecampUtils {
 
-    public static void validateServerAuth(BasecampConfig config)
-            throws FieldNotSetException {
-        final String apiKey = config.getApiKey();
-        if (apiKey == null || apiKey.isEmpty()) {
-            throw new FieldNotSetException("auth");
-        }
-        final String apiUrl = config.getServerUrl();
-        if (apiUrl == null || apiUrl.isEmpty()) {
-            throw new FieldNotSetException("api-url");
-        }
-
-    }
-
-    public static void validateProjectKey(BasecampConfig config)
-            throws FieldNotSetException {
-        final String pKey = config.getProjectKey();
-        if (pKey == null || pKey.isEmpty()) {
-            throw new FieldNotSetException("project-key");
-        }
-    }
-
-    public static void validateTodoList(BasecampConfig config)
-            throws FieldNotSetException {
-        final String pKey = config.getTodoKey();
-        if (pKey == null || pKey.isEmpty()) {
-            throw new FieldNotSetException("todo-key");
-        }
-    }
-
     public static List<BasecampProject> loadProjects(ObjectAPIFactory factory,
             BasecampConfig config) throws ConnectorException {
         final ObjectAPI objApi = factory.createObjectAPI(config);
@@ -77,7 +48,7 @@ public class BasecampUtils {
 
     public static BasecampProject loadProject(ObjectAPIFactory factory,
             BasecampConfig config) throws ConnectorException {
-        validateServerAuth(config);
+        BasecampConfigValidator.validateServerAuth(config);
         final ObjectAPI objApi = factory.createObjectAPI(config);
         String objectURL = "projects/" + config.getProjectKey() + ".xml";
         final Element object = objApi.getObject(objectURL);
@@ -88,8 +59,8 @@ public class BasecampUtils {
     public static TodoList createTodoList(ObjectAPIFactory factory,
             BasecampConfig config, String todoListName,
             String todoListDescription) throws ConnectorException {
-        validateServerAuth(config);
-        validateProjectKey(config);
+        BasecampConfigValidator.validateServerAuth(config);
+        BasecampConfigValidator.validateProjectKey(config);
         String todoListXmlRepr = buildTodoListXmlObject(todoListName,
                 todoListDescription);
         Element result = factory.createObjectAPI(config).post(
@@ -100,7 +71,7 @@ public class BasecampUtils {
 
     public static void deleteTodoList(ObjectAPIFactory factory,
             BasecampConfig config) throws ConnectorException {
-        validateServerAuth(config);
+        BasecampConfigValidator.validateServerAuth(config);
         // TODO BUG: for Maxim - I don't think Basecamp Classic supports JSON
         factory.createObjectAPI(config).delete(
                 "/todo_lists/" + config.getTodoKey() + ".json");
@@ -170,7 +141,7 @@ public class BasecampUtils {
 
     public static List<TodoList> loadTodoLists(ObjectAPIFactory factory,
             BasecampConfig config) throws ConnectorException {
-        validateServerAuth(config);
+        BasecampConfigValidator.validateServerAuth(config);
         final ObjectAPI objApi = factory.createObjectAPI(config);
         final String suffix;
         if (config.getProjectKey() == null || config.getProjectKey().isEmpty())
@@ -187,8 +158,8 @@ public class BasecampUtils {
 
     public static TodoList loadTodoList(ObjectAPIFactory factory,
             BasecampConfig config) throws ConnectorException {
-        validateServerAuth(config);
-        validateTodoList(config);
+        BasecampConfigValidator.validateServerAuth(config);
+        BasecampConfigValidator.validateTodoList(config);
         final ObjectAPI objApi = factory.createObjectAPI(config);
         final Element object = objApi.getObject("todo_lists/"
                 + config.getTodoKey() + ".xml");
