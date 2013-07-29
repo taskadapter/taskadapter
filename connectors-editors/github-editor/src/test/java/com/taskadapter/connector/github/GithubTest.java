@@ -16,16 +16,6 @@ import static org.junit.Assert.assertNotNull;
 
 public class GithubTest {
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.out.println("--- Github tests started ---");
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        System.out.println("--- Github tests finished ---");
-    }
-
     @Test
     public void projectsAreLoaded() throws Exception {
         GithubConfig config = getTestConfig();
@@ -34,15 +24,11 @@ public class GithubTest {
 
         List<GProject> projects = GithubLoaders.getProjects(config.getServerInfo());
         assertNotNull(projects);
-        System.out.println("projects.size() = " + projects.size());
         for (GProject project : projects) {
-            System.out.println("project.getName() = " + project.getName());
             config.setProjectKey(project.getKey());
             final Mappings mappings = TestMappingUtils
                     .fromFields(GithubSupportedFields.SUPPORTED_FIELDS);
-
             System.out.println("project.getTasks() = " + ConnectorUtils.loadDataOrderedById(connector, mappings));
-            System.out.println("---");
         }
     }
 
