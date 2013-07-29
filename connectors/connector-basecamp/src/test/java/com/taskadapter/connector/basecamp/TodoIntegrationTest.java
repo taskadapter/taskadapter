@@ -113,8 +113,8 @@ public class TodoIntegrationTest {
         template.setDueDate(date1);
         final GUser me = new GUser();
         me.setId(321);
-        me.setLoginName("<noname>");
-        me.setDisplayName("Tester");
+        me.setLoginName(config.getAuth().getLogin());
+        me.setDisplayName(TestBasecampConfig.USER_FIRST_NAME);
         template.setAssignee(me);
 
         final Mappings allMappings = TodoUtil.getAllMappings();
