@@ -5,10 +5,10 @@ import net.sf.mpxj.Duration;
 import net.sf.mpxj.TimeUnit;
 
 public class TimeCalculator {
-    static Duration calculateTimeAlreadySpent(GTask gTask) {
-        float doneRatio = gTask.getDoneRatio() / 100f;
-        return Duration.getInstance(doneRatio * gTask.getEstimatedHours(),
-                TimeUnit.HOURS);
+    static Duration calculateTimeAlreadySpent(float doneRatioInPercents, float hours) {
+        float doneRatio = doneRatioInPercents / 100f;
+        double duration = doneRatio * hours;
+        return Duration.getInstance(duration, TimeUnit.HOURS);
     }
 
     static Duration calculateRemainingTime(GTask gTask) {

@@ -6,18 +6,9 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.msp.MSPUtils;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
-import com.taskadapter.model.GUser;
-import net.sf.mpxj.ConstraintType;
-import net.sf.mpxj.Duration;
-import net.sf.mpxj.Priority;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.ProjectHeader;
-import net.sf.mpxj.Resource;
-import net.sf.mpxj.ResourceAssignment;
-import net.sf.mpxj.ResourceType;
 import net.sf.mpxj.Task;
-import net.sf.mpxj.TaskField;
-import net.sf.mpxj.TimeUnit;
 
 import java.io.IOException;
 import java.util.Date;
@@ -40,9 +31,6 @@ public class MSXMLFileWriter {
      * these text fields to indicate that "duration" or "work" is UNDEFINED and not "0"
      */
     private static final String ALIAS_IS_WORK_UNDEFINED = "TA isWorkUndefined";
-
-    public static final TaskField FIELD_DURATION_UNDEFINED = TaskField.TEXT20;
-    public static final TaskField FIELD_WORK_UNDEFINED = TaskField.TEXT21;
 
     private Mappings mappings;
 
@@ -94,33 +82,17 @@ public class MSXMLFileWriter {
             } else {
                 newMspTask = parentMSPTask.addTask();
             }
-            setTaskFields(project, newMspTask, gTask, keepTaskId);
+            TaskFieldsSetter setter = new TaskFieldsSetter(mappings, newMspTask, new ResourceManager(project));
+            setter.setFields(gTask, keepTaskId);
             syncResult.addCreatedTask(gTask.getId(), newMspTask.getID() + "");
             addTasks(syncResult, project, newMspTask, gTask.getChildren(), keepTaskId);
         }
 
     }
 
-    private Resource getOrCreateResource(ProjectFile project,
-                                         GUser assignee) {
-        Resource resource = project.getResourceByUniqueID(assignee.getId());
-        if (resource == null) {
-            // we assume all resources are already in the 'cache' (map)
-            resource = project.addResource();
-            resource.setName(assignee.getDisplayName());
-            resource.setType(ResourceType.WORK);
-
-            if (assignee.getId() != null) {
-                resource.setUniqueID(assignee.getId());
-            }
-            MSPUtils.markResourceAsOurs(resource);
-        }
-        return resource;
-    }
-
     void setAliases(ProjectFile project) {
-        project.setTaskFieldAlias(FIELD_DURATION_UNDEFINED, ALIAS_IS_DURATION_UNDEFINED);
-        project.setTaskFieldAlias(FIELD_WORK_UNDEFINED, ALIAS_IS_WORK_UNDEFINED);
+        project.setTaskFieldAlias(MSPDefaultFields.FIELD_DURATION_UNDEFINED, ALIAS_IS_DURATION_UNDEFINED);
+        project.setTaskFieldAlias(MSPDefaultFields.FIELD_WORK_UNDEFINED, ALIAS_IS_WORK_UNDEFINED);
 
         setAliasIfMappingNotNULL(project, FIELD.REMOTE_ID, ALIAS_REMOTE_ID);
         setAliasIfMappingNotNULL(project, FIELD.TASK_TYPE, ALIAS_ISSUE_TYPE);
@@ -137,127 +109,4 @@ public class MSXMLFileWriter {
             project.setTaskFieldAlias(MSPUtils.getTaskFieldByName(mspFileFieldName), aliasName);
         }
     }
-
-    /**
-     * "% done" field is used to calculate "actual work". this is more like a
-     * hack used until Redmine REST API provides "time spent" serverInfo in
-     * "issues list" response (see task http://www.redmine.org/issues/5303 )
-     *
-     * @throws BadConfigException
-     */
-    public void setTaskFields(ProjectFile project, Task mspTask,
-                              GTask gTask, boolean keepTaskId) throws BadConfigException {
-        mspTask.setMilestone(false);
-
-        if (mappings.isFieldSelected(FIELD.SUMMARY)) {
-            mspTask.setName(gTask.getSummary());
-        }
-
-        if (mappings.isFieldSelected(FIELD.PRIORITY)) {
-            Priority mspPriority = Priority.getInstance(gTask.getPriority());
-            mspTask.setPriority(mspPriority);
-        }
-
-        if (keepTaskId) { // Setting the old unique id, true only in
-            // "save external id" operation
-            mspTask.setUniqueID(gTask.getId());
-        }
-
-        setFieldIfSelected(FIELD.TASK_TYPE, mspTask, gTask.getType());
-        setFieldIfSelected(FIELD.TASK_STATUS, mspTask, gTask.getStatus());
-
-        // ESTIMATED TIME and DONE RATIO
-        if (gTask.getEstimatedHours() != null && mappings.isFieldSelected(FIELD.ESTIMATED_TIME)) {
-            Duration estimatedValue = Duration.getInstance(
-                    gTask.getEstimatedHours(), TimeUnit.HOURS);
-            if (MSPUtils.useWork(mappings)) {
-                mspTask.setWork(estimatedValue);
-                // need to explicitly clear it because we can have previously created
-                // tasks with this field set to TRUE
-                mspTask.set(FIELD_WORK_UNDEFINED, "false");
-            } else {
-                // need to explicitly clear it because we can have previously created
-                // tasks with this field set to TRUE
-                mspTask.setDuration(estimatedValue);
-                mspTask.set(FIELD_DURATION_UNDEFINED, "false");
-            }
-
-            if (gTask.getDoneRatio() != null && mappings.isFieldSelected(FIELD.DONE_RATIO)) {
-                Duration timeAlreadySpent = TimeCalculator.calculateTimeAlreadySpent(gTask);
-                // time already spent
-                if (MSPUtils.useWork(mappings)) {
-                    mspTask.setActualWork(timeAlreadySpent);
-                    mspTask.setPercentageWorkComplete(gTask.getDoneRatio());
-                } else {
-                    mspTask.setActualDuration(timeAlreadySpent);
-                    mspTask.setPercentageComplete(gTask.getDoneRatio());
-                }
-            }
-        } else {
-            mspTask.set(FIELD_DURATION_UNDEFINED, "true");
-            mspTask.set(FIELD_WORK_UNDEFINED, "true");
-        }
-
-        // ASSIGNEE
-        if (mappings.isFieldSelected(FIELD.ASSIGNEE) && gTask.getAssignee() != null) {
-            Resource resource = getOrCreateResource(project, gTask.getAssignee());
-            ResourceAssignment ass = mspTask.addResourceAssignment(resource);
-            ass.setUnits(100);
-            /* MUST set the remaining work to avoid this bug:
-            * http://www.hostedredmine.com/issues/7780 "Duration" field is ignored when "Assignee" is set
-            */
-            if (gTask.getEstimatedHours() != null) {
-                ass.setRemainingWork(TimeCalculator.calculateRemainingTime(gTask));
-
-                // the same "IF" as above, now for the resource assignment. this might need refactoring...
-                if (gTask.getDoneRatio() != null && mappings.isFieldSelected(FIELD.DONE_RATIO)) {
-                    Duration timeAlreadySpent = TimeCalculator.calculateTimeAlreadySpent(gTask);
-                    ass.setActualWork(timeAlreadySpent);
-                }
-            }
-        }
-
-
-        if (gTask.getPriority() != null) {
-            mspTask.setPriority(Priority.getInstance(gTask.getPriority()));
-        }
-
-        setFieldIfSelected(FIELD.REMOTE_ID, mspTask, gTask.getKey());
-
-        // START DATE
-        if (mappings.isFieldSelected(FIELD.START_DATE)) {
-            String constraint = mappings.getMappedTo(FIELD.START_DATE);
-            if (constraint == null || MSPUtils.NO_CONSTRAINT.equals(constraint)) {
-                mspTask.setStart(gTask.getStartDate());
-            } else {
-                ConstraintType constraintType = ConstraintType.valueOf(constraint);
-                mspTask.setConstraintType(constraintType);
-                mspTask.setConstraintDate(gTask.getStartDate());
-            }
-        }
-
-        // DUE DATE
-        if (gTask.getDueDate() != null && mappings.isFieldSelected(FIELD.DUE_DATE)) {
-            String dueDateValue = mappings.getMappedTo(FIELD.DUE_DATE);
-            if (dueDateValue.equals(TaskField.FINISH.toString())) {
-                mspTask.set(TaskField.FINISH, gTask.getDueDate());
-            } else if (dueDateValue.equals(TaskField.DEADLINE.toString())) {
-                mspTask.set(TaskField.DEADLINE, gTask.getDueDate());
-            }
-        }
-
-        if (mappings.isFieldSelected(FIELD.DESCRIPTION)) {
-            mspTask.setNotes(gTask.getDescription());
-        }
-    }
-
-    private void setFieldIfSelected(FIELD field, Task mspTask, Object value) {
-        if (mappings.isFieldSelected(field)) {
-            String v = mappings.getMappedTo(field);
-            TaskField f = MSPUtils.getTaskFieldByName(v);
-            mspTask.set(f, value);
-        }
-
-    }
-
 }

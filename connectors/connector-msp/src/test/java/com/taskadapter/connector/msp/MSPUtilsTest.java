@@ -1,5 +1,6 @@
 package com.taskadapter.connector.msp;
 
+import com.taskadapter.connector.msp.write.MSPDefaultFields;
 import com.taskadapter.connector.msp.write.MSXMLFileWriter;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -18,8 +19,8 @@ public class MSPUtilsTest {
     public void getAllTextFieldNamesDoesNotIncludeFieldsWeUseInternally() throws Exception {
         String[] allTextFieldNames = MSPUtils.getTextFieldNamesAvailableForMapping();
         List<String> collection = Arrays.asList(allTextFieldNames);
-        assertThat(collection, not(contains(MSXMLFileWriter.FIELD_DURATION_UNDEFINED.getName())));
-        assertThat(collection, not(contains(MSXMLFileWriter.FIELD_WORK_UNDEFINED.getName())));
+        assertThat(collection, not(contains(MSPDefaultFields.FIELD_DURATION_UNDEFINED.getName())));
+        assertThat(collection, not(contains(MSPDefaultFields.FIELD_WORK_UNDEFINED.getName())));
     }
 
     public static Matcher contains(final Object expected) {

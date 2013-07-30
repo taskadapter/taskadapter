@@ -2,13 +2,22 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
-import com.taskadapter.connector.msp.write.MSXMLFileWriter;
+import com.taskadapter.connector.msp.write.MSPDefaultFields;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
-import net.sf.mpxj.*;
+import net.sf.mpxj.ConstraintType;
+import net.sf.mpxj.Duration;
+import net.sf.mpxj.ProjectHeader;
+import net.sf.mpxj.Relation;
+import net.sf.mpxj.RelationType;
+import net.sf.mpxj.Resource;
+import net.sf.mpxj.ResourceAssignment;
+import net.sf.mpxj.Task;
+import net.sf.mpxj.TaskField;
+import net.sf.mpxj.TimeUnit;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -148,14 +157,14 @@ class MSTaskToGenericTaskConverter {
         Duration useAsEstimatedTime = null;
 
         if (MSPUtils.useWork(mappings)) {
-            String isUndefinedString = (String) task.getCurrentValue(MSXMLFileWriter.FIELD_WORK_UNDEFINED);
+            String isUndefinedString = (String) task.getCurrentValue(MSPDefaultFields.FIELD_WORK_UNDEFINED);
             boolean isUndefined = Boolean.parseBoolean(isUndefinedString);
             // this is to differentiate "0" and "undefined". unfortunately, MPXJ does not do this for us.
             if (!isUndefined) {
                 useAsEstimatedTime = task.getWork();
             }
         } else {
-            String isUndefinedString = (String) task.getCurrentValue(MSXMLFileWriter.FIELD_DURATION_UNDEFINED);
+            String isUndefinedString = (String) task.getCurrentValue(MSPDefaultFields.FIELD_DURATION_UNDEFINED);
 
             boolean isUndefined = Boolean.parseBoolean(isUndefinedString);
             // this is to differentiate "0" and "undefined". unfortunately, MPXJ does not do this for us.

@@ -39,8 +39,8 @@ final class BasecampConnector implements Connector<BasecampConfig> {
     @Override
     public List<GTask> loadData(Mappings mappings, ProgressMonitor monitor)
             throws ConnectorException {
-        BasecampUtils.validateServerAuth(config);
-        BasecampUtils.validateTodoList(config);
+        BasecampConfigValidator.validateServerAuth(config);
+        BasecampConfigValidator.validateTodoList(config);
         final ObjectAPI api = factory.createObjectAPI(config);
         final Element obj = api.getObject("todo_lists/" + config.getTodoKey()
                 + ".xml");
@@ -62,7 +62,7 @@ final class BasecampConnector implements Connector<BasecampConfig> {
     @Override
     public GTask loadTaskByKey(String key, Mappings mappings)
             throws ConnectorException {
-        BasecampUtils.validateServerAuth(config);
+        BasecampConfigValidator.validateServerAuth(config);
         final ObjectAPI api = factory.createObjectAPI(config);
         final Element obj = api.getObject("todo_items/" + key + ".xml");
         return BasecampUtils.parseTask(obj);
@@ -71,8 +71,8 @@ final class BasecampConnector implements Connector<BasecampConfig> {
     @Override
     public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor,
             Mappings mappings) throws ConnectorException {
-        BasecampUtils.validateServerAuth(config);
-        BasecampUtils.validateTodoList(config);
+        BasecampConfigValidator.validateServerAuth(config);
+        BasecampConfigValidator.validateTodoList(config);
         final int total = countTasks(tasks);
         final UserResolver userResolver = findUserResolver(mappings);
         final OutputContext ctx = new StandardOutputContext(mappings);

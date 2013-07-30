@@ -8,7 +8,7 @@ import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.data.Messages;
 
 class BasecampErrorFormatter implements ExceptionFormatter {
-    private static final String BUNDLE_NAME = "com.taskadapter.connector.basecamp.editor.messages";
+    private static final String BUNDLE_NAME = "com.taskadapter.connector.basecamp.classic.editor.messages";
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
 
     @Override
