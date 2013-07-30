@@ -10,6 +10,7 @@ import com.taskadapter.connector.definition.AvailableFieldsBuilder;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.PluginFactory;
+import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 import static com.taskadapter.model.GTaskDescriptor.FIELD.ASSIGNEE;
 import static com.taskadapter.model.GTaskDescriptor.FIELD.DONE_RATIO;
@@ -32,6 +33,7 @@ public class BasecampFactory implements PluginFactory<BasecampConfig> {
         builder.addField(DONE_RATIO, "done_ratio");
         builder.addField(DUE_DATE, "due_at");
         builder.addField(ASSIGNEE, "assignee");
+        builder.addField(FIELD.CLOSE_DATE, "closed_at");
         return builder.end();
     }
 

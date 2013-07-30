@@ -34,6 +34,7 @@ public class GTask {
     private List<GTask> children = new ArrayList<GTask>();
     private Date createdOn;
     private Date updatedOn;
+    private Date closedDate;
     private List<GRelation> relations = new ArrayList<GRelation>();
 
     /**
@@ -332,6 +333,14 @@ public class GTask {
 
     public void setUpdatedOn(Date updatedOn) {
         this.updatedOn = updatedOn;
+    }
+    
+    public Date getClosedDate() {
+        return closedDate;
+    }
+
+    public void setClosedOn(Date closedOn) {
+        this.closedDate = closedOn;
     }
 
     public List<GRelation> getRelations() {

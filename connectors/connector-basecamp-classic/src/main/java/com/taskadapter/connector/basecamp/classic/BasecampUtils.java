@@ -2,7 +2,6 @@ package com.taskadapter.connector.basecamp.classic;
 
 import com.taskadapter.connector.basecamp.classic.beans.BasecampProject;
 import com.taskadapter.connector.basecamp.classic.beans.TodoList;
-import com.taskadapter.connector.basecamp.classic.exceptions.FieldNotSetException;
 import com.taskadapter.connector.basecamp.classic.exceptions.InternalException;
 import com.taskadapter.connector.basecamp.classic.transport.ObjectAPI;
 import com.taskadapter.connector.basecamp.classic.transport.ObjectAPIFactory;
@@ -213,6 +212,7 @@ public class BasecampUtils {
         result.setDueDate(XmlUtils.getOptLongDate(obj, "due-at"));
         result.setCreatedOn(XmlUtils.getOptLongDate(obj, "created-at"));
         result.setUpdatedOn(XmlUtils.getOptLongDate(obj, "updated-at"));
+        result.setClosedOn(XmlUtils.getOptLongDate(obj, "completed-at"));
         final String rpp = XmlUtils.getOptString(obj, "responsible-party-type");
         if ("Person".equals(rpp)) {
             final GUser looser = new GUser();

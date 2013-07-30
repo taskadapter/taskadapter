@@ -22,6 +22,7 @@ public class MSPSupportedFields {
         builder.addField(GTaskDescriptor.FIELD.START_DATE, MSPUtils.getStartDateOptions()).withDefault(ConstraintType.MUST_START_ON.name());
         builder.addField(GTaskDescriptor.FIELD.REMOTE_ID, MSPUtils.getTextFieldNamesAvailableForMapping()).unselected().withDefault(MSPUtils.getDefaultRemoteIdMapping());
         builder.addField(GTaskDescriptor.FIELD.TASK_STATUS, MSPUtils.getTextFieldNamesAvailableForMapping()).unselected().withDefault(MSPUtils.getDefaultTaskStatus());
+        builder.addField(GTaskDescriptor.FIELD.CLOSE_DATE, TaskField.ACTUAL_FINISH.getName());
         SUPPORTED_FIELDS = builder.end();
     }
 

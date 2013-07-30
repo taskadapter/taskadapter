@@ -53,6 +53,7 @@ public class TaskFieldsSetter {
         processKey(gTask);
         processStartDate(gTask);
         processDueDate(gTask);
+        processClosedDate(gTask);
     }
 
     private void processKey(GTask gTask) {
@@ -87,7 +88,6 @@ public class TaskFieldsSetter {
     }
 
     private void processDueDate(GTask gTask) {
-        // DUE DATE
         if (gTask.getDueDate() != null && mappings.isFieldSelected(GTaskDescriptor.FIELD.DUE_DATE)) {
             String dueDateValue = mappings.getMappedTo(GTaskDescriptor.FIELD.DUE_DATE);
             if (dueDateValue.equals(TaskField.FINISH.toString())) {
@@ -99,7 +99,6 @@ public class TaskFieldsSetter {
     }
 
     private void processStartDate(GTask gTask) {
-        // START DATE
         if (mappings.isFieldSelected(GTaskDescriptor.FIELD.START_DATE)) {
             String constraint = mappings.getMappedTo(GTaskDescriptor.FIELD.START_DATE);
             if (constraint == null || MSPUtils.NO_CONSTRAINT.equals(constraint)) {
@@ -112,8 +111,16 @@ public class TaskFieldsSetter {
         }
     }
 
+    private void processClosedDate(GTask gTask) {
+        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.CLOSE_DATE)) {
+            String constraint = mappings.getMappedTo(GTaskDescriptor.FIELD.CLOSE_DATE);
+            if (TaskField.ACTUAL_FINISH.getName().equals(constraint)) {
+                mspTask.setActualFinish(gTask.getClosedDate());
+            }
+        }
+    }
+    
     private void processAssignee(GTask gTask) {
-        // ASSIGNEE
         if (mappings.isFieldSelected(GTaskDescriptor.FIELD.ASSIGNEE) && gTask.getAssignee() != null) {
             Resource resource = resourceManager.getOrCreateResource(gTask.getAssignee());
             ResourceAssignment ass = mspTask.addResourceAssignment(resource);

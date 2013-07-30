@@ -6,7 +6,7 @@ import java.util.Map;
 public class GTaskDescriptor {
 
     public static enum FIELD {
-        ID, SUMMARY, DESCRIPTION, TASK_TYPE, ESTIMATED_TIME, DONE_RATIO, ASSIGNEE, START_DATE, DUE_DATE, PRIORITY, REMOTE_ID, TASK_STATUS
+        ID, SUMMARY, DESCRIPTION, TASK_TYPE, ESTIMATED_TIME, DONE_RATIO, ASSIGNEE, START_DATE, DUE_DATE, CLOSE_DATE, PRIORITY, REMOTE_ID, TASK_STATUS
     }
 
     @SuppressWarnings("serial")
@@ -19,6 +19,7 @@ public class GTaskDescriptor {
             put(FIELD.ASSIGNEE, "Assignee");
             put(FIELD.DESCRIPTION, "Description");
             put(FIELD.DUE_DATE, "Due Date");
+            put(FIELD.CLOSE_DATE, "Close Date");
             put(FIELD.ESTIMATED_TIME, "Estimated time");
             put(FIELD.DONE_RATIO, "Done ratio (% done)");
             /*
