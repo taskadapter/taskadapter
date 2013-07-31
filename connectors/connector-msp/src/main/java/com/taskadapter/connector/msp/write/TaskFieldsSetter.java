@@ -18,6 +18,7 @@ public class TaskFieldsSetter {
     private Mappings mappings;
     private Task mspTask;
     private ResourceManager resourceManager;
+    private static final float DEFAULT_HOURS_FOR_NONESTIMATED_TASK = 8;
 
     public TaskFieldsSetter(Mappings mappings, Task mspTask, ResourceManager resourceManager) {
         this.mappings = mappings;
@@ -141,12 +142,67 @@ public class TaskFieldsSetter {
     }
 
     private void processEstimatedTime(GTask gTask) throws BadConfigException {
-        if (gTask.getEstimatedHours() != null && mappings.isFieldSelected(GTaskDescriptor.FIELD.ESTIMATED_TIME)) {
-            setEstimatedHours(gTask.getEstimatedHours());
-        } else {
+        final Float estimatedTime = calculateTaskEstimatedTime(gTask);
+        switch (getTaskEstimationMode(gTask)) {
+        case TASK_TIME:
+            setEstimatedHours(estimatedTime);
+            break;
+        case WILD_GUESS:
+            setEstimatedHours(estimatedTime);
+            // "estimated" means that the time was "approximate". it is shown by MSP as "?" next to the duration value.
+            // like "8 hrs?"
+            mspTask.setEstimated(true);
+            break;
+        case NO_ESTIMATE:
             mspTask.set(MSPDefaultFields.FIELD_DURATION_UNDEFINED, "true");
             mspTask.set(MSPDefaultFields.FIELD_WORK_UNDEFINED, "true");
+            break;
         }
+    }
+    
+    /**
+     * Calculates a task estimated time. In some cases (for example, exporting
+     * DONE_RATIO but no estimated time is set) we still need to use some
+     * estimation. This method respects that cases and can provide general task
+     * estimation. If task estimation is not required, returns null.
+     * 
+     * @param gTask
+     *            task to estimate it time.
+     * @return <code>null</code> if task does not require an estimated time.
+     *         Otherwise estimated (or guessed) task time.
+     */
+    private Float calculateTaskEstimatedTime(GTask gTask)
+            throws BadConfigException {
+        final TaskEstimationMode estimationMode = getTaskEstimationMode(gTask);
+        switch (estimationMode) {
+        case TASK_TIME:
+            return gTask.getEstimatedHours();
+        case WILD_GUESS:
+            return DEFAULT_HOURS_FOR_NONESTIMATED_TASK;
+        case NO_ESTIMATE:
+            return null;
+        }
+        throw new IncompatibleClassChangeError("Bad/unsupported estimation mode " + estimationMode);
+    }
+    
+    private TaskEstimationMode getTaskEstimationMode(GTask gTask) throws BadConfigException {
+        /* Normal case, time is mapped and set. */
+        if (gTask.getEstimatedHours() != null && mappings.isFieldSelected(GTaskDescriptor.FIELD.ESTIMATED_TIME))
+            return TaskEstimationMode.TASK_TIME;
+        
+        // "%% Done" is ignored by MSP if there's no estimate on task.
+        // This makes sense, but unfortunately some users want "% done" to be transferred even when
+        // there's no time estimate.
+        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.DONE_RATIO) && gTask.getDoneRatio() != null) {
+            /* Estimation time is set. Use it even if user does not ask to 
+             * map estimated time. It is still more reasonable than 
+             * "wild guess" estimation. */
+            if (gTask.getEstimatedHours() != null)
+                return TaskEstimationMode.TASK_TIME;
+            /* We need some estimation, let's just guess it. */
+            return TaskEstimationMode.WILD_GUESS;
+        }
+        return TaskEstimationMode.NO_ESTIMATE;
     }
 
     private void setEstimatedHours(float hours) throws BadConfigException {
@@ -170,20 +226,8 @@ public class TaskFieldsSetter {
 
     private void processDoneRatio(GTask gTask) throws BadConfigException {
         if (gTask.getDoneRatio() != null && mappings.isFieldSelected(GTaskDescriptor.FIELD.DONE_RATIO)) {
-            Duration timeAlreadySpent;
-            if (gTask.getEstimatedHours() != null) {
-                timeAlreadySpent = TimeCalculator.calculateTimeAlreadySpent(gTask.getDoneRatio(), gTask.getEstimatedHours());
-            } else {
-                int defaultHoursForUnEstimatedTask = 8;
-                // "%% Done" is ignored by MSP if there's no estimate on task.
-                // This makes sense, but unfortunately some users want "% done" to be transferred even when
-                // there's no time estimate.
-                setEstimatedHours(defaultHoursForUnEstimatedTask);
-                // "estimated" means that the time was "approximate". it is shown by MSP as "?" next to the duration value.
-                // like "8 hrs?"
-                mspTask.setEstimated(true);
-                timeAlreadySpent = TimeCalculator.calculateTimeAlreadySpent(gTask.getDoneRatio(), defaultHoursForUnEstimatedTask);
-            }
+            final Float estimatedTime = calculateTaskEstimatedTime(gTask);
+            final Duration timeAlreadySpent = TimeCalculator.calculateTimeAlreadySpent(gTask.getDoneRatio(), estimatedTime);
             if (MSPUtils.useWork(mappings)) {
                 mspTask.setActualWork(timeAlreadySpent);
             } else {
