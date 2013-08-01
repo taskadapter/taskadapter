@@ -184,8 +184,13 @@ public class TaskFieldsSetter {
         }
         throw new IncompatibleClassChangeError("Bad/unsupported estimation mode " + estimationMode);
     }
-    
+
+    /* Simple closure to call static calculator with proper arguments */
     private TaskEstimationMode getTaskEstimationMode(GTask gTask) throws BadConfigException {
+        return getTaskEstimationMode(gTask, mappings);
+    }
+
+    static TaskEstimationMode getTaskEstimationMode(GTask gTask, final Mappings mappings) {
         /* Normal case, time is mapped and set. */
         if (gTask.getEstimatedHours() != null && mappings.isFieldSelected(GTaskDescriptor.FIELD.ESTIMATED_TIME))
             return TaskEstimationMode.TASK_TIME;
