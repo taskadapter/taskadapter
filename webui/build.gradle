@@ -1,9 +1,6 @@
 apply plugin: 'war'
 
 dependencies {
-//    compile "org.apache.httpcomponents:httpclient:$httpClientVersion"
-//    compile "org.apache.httpcomponents:httpcore:$httpClientVersion"
-
 //    compile "com.vaadin:vaadin-server:$vaadinVersion"
 //    compile "com.vaadin:vaadin-client-compiled:$vaadinVersion"
 //    compile "com.vaadin:vaadin-themes:$vaadinVersion"
@@ -13,8 +10,6 @@ dependencies {
     providedCompile "javax.servlet:servlet-api:2.4"
     providedCompile "com.vaadin:vaadin-client:$vaadinVersion"
 
-//    compile project(":common")
-//    compile project(":mainapp")
     compile project(":webshared")
 
     compile project(":connectors:connector-msp")
@@ -43,6 +38,7 @@ apply from: 'http://plugins.jasoft.fi/vaadin.plugin'
 vaadin {
     version = vaadinVersion
     widgetset = 'com.taskadapter.webui.widgetset.Vaadin1Widgetset'
+    gwt.jvmArgs = ['-Xmx800m']
 }
 
 war {
