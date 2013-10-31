@@ -3,9 +3,6 @@ dependencies {
     compile libraries.slf4jJdk
 
     compile 'biz.futureware.mantis:mantis-axis-soap-client:1.2.9'
-    compile(group: 'javax.xml', name: 'saaj-api', version: '1.3', ext: 'pom') {
-        transitive = true
-    }
     compile 'org.apache.axis:axis-jaxrpc:1.4'
     compile 'org.apache.axis:axis:1.4'
     compile 'wsdl4j:wsdl4j:1.5.1'
