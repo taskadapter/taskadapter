@@ -46,14 +46,14 @@ public class ShowProjectElement {
     private void notifyProjectLoaded(Project project) {
         String msg;
         if (project == null) {
-            msg = "<br>Project with the given key is not found";
+            msg = "Project with the given key is not found";
         } else {
-            msg = "<br>Key:  " + project.getIdentifier()
-                    + "<br>Name: " + project.getName()
-                    + "<br>Created: " + project.getCreatedOn()
-                    + "<br>Updated: " + project.getUpdatedOn()
-                    + "<br>Homepage: " + nvl(project.getHomepage()) 
-                    + "<br>Description: " + nvl(project.getDescription());
+            msg = "Key:  " + project.getIdentifier()
+                    + "\nName: " + project.getName()
+                    + "\nCreated: " + project.getCreatedOn()
+                    + "\nUpdated: " + project.getUpdatedOn()
+                    + "\nHomepage: " + nvl(project.getHomepage())
+                    + "\nDescription: " + nvl(project.getDescription());
         }
         Notification.show("Project Info", msg, Notification.Type.HUMANIZED_MESSAGE);
     }
