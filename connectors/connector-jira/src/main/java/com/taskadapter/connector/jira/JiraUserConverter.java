@@ -1,6 +1,7 @@
 package com.taskadapter.connector.jira;
 
 import com.taskadapter.model.GTask;
+import com.taskadapter.model.GUser;
 
 import java.rmi.RemoteException;
 import java.util.HashMap;
@@ -27,14 +28,17 @@ public class JiraUserConverter {
 
     // TODO this will probably fail if the current Jira user is not Admin
     public GTask setAssigneeDisplayName(GTask task) {
-        String loginName = task.getAssignee().getLoginName();
-        String assigneeFullname = cachedJiraUsers.get(loginName);
-        if (assigneeFullname == null || assigneeFullname.length() == 0) {
-            assigneeFullname = connection.getUser(loginName).getDisplayName();
-            cachedJiraUsers.put(loginName, assigneeFullname);
+        GUser assignee = task.getAssignee();
+        if (assignee != null) {
+            String loginName = assignee.getLoginName();
+            String assigneeFullname = cachedJiraUsers.get(loginName);
+            if (assigneeFullname == null || assigneeFullname.length() == 0) {
+                assigneeFullname = connection.getUser(loginName).getDisplayName();
+                cachedJiraUsers.put(loginName, assigneeFullname);
+            }
+            assignee.setDisplayName(assigneeFullname);
+            assignee.setLoginName(loginName);
         }
-        task.getAssignee().setDisplayName(assigneeFullname);
-        task.getAssignee().setLoginName(loginName);
         return task;
     }
 

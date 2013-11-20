@@ -28,6 +28,7 @@ public class JiraTestData {
         JiraConfig config = new JiraConfig();
         config.setServerInfo(getTestServerInfo());
         config.setProjectKey(properties.getProperty("project.key"));
+        config.setDefaultTaskType(properties.getProperty("defaultTaskType"));
         return config;
     }
 

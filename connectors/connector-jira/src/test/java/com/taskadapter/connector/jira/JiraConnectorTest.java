@@ -15,7 +15,7 @@ public class JiraConnectorTest {
         GTask task = new GTask();
         String summary = "load by key";
         task.setSummary(summary);
-        task.setType("Bug");
+        task.setType("Task");
         String key = TestUtils.save(connector, task, TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS));
         GTask loadedTask = connector.loadTaskByKey(key, TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS));
         assertEquals(summary, loadedTask.getSummary());
