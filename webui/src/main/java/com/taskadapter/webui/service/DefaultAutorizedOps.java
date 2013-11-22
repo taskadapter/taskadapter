@@ -48,4 +48,9 @@ public final class DefaultAutorizedOps implements AuthorizedOperations {
         return isAdmin() && settingsManager.adminCanManageAllConfigs();
     }
 
+    @Override
+    public boolean canChangeServerSettings() {
+        return isAdmin();
+    }
+
 }

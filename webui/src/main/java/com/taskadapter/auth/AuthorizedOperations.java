@@ -15,4 +15,6 @@ public interface AuthorizedOperations {
     
     /** Checks, if user can see and manage configs for other users. */
     public boolean canManagerPeerConfigs();
+
+    public boolean canChangeServerSettings();
 }
