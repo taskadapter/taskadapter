@@ -24,14 +24,11 @@ public class Services {
     // TODO this is not the right place for this variable.
     private String currentTaskAdapterVersion;
 
-    /** Authorizations for current user. */
-    private final AuthorizedOperations authorizedOps;
-    
     /** Configuration accessors. */
     private final ConfigAccessorProvider configAccessor;
 
     public Services(FileManager fileManager, EditorManager editorManager,
-            CredentialsManager creds) {
+            CredentialsManager credentialManager) {
         this.editorManager = editorManager;
         this.fileManager = fileManager;
         final ConfigStorage configStorage = new ConfigStorage(fileManager);
@@ -39,14 +36,11 @@ public class Services {
         this.uiConfigStore = new UIConfigStore(new UIConfigService(
                 pluginManager, editorManager), configStorage);
         
-        this.authorizedOps = new DefaultAutorizedOps(currentUserInfo,
-                settingsManager);
-
         this.currentTaskAdapterVersion = new CurrentVersionLoader()
                 .getCurrentVersion();
         
         this.configAccessor = new ConfigAccessorProvider(currentUserInfo,
-                authorizedOps, uiConfigStore, creds);
+                getAuthorizedOperations(), uiConfigStore, credentialManager);
 
         licenseManager = new LicenseManager(fileManager.getLicenseDir());
 
@@ -92,7 +86,7 @@ public class Services {
      * Returns list of authorized operations for current user.
      */
     public AuthorizedOperations getAuthorizedOperations() {
-        return authorizedOps;
+        return new DefaultAutorizedOps(currentUserInfo, settingsManager);
     }
 
     // TODO: Should it live here or somewhere else?

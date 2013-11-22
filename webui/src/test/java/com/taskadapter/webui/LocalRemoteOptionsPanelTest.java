@@ -1,7 +1,10 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.auth.AuthException;
 import com.taskadapter.connector.testlib.FileBasedTest;
+import com.taskadapter.webui.service.EditableCurrentUserInfo;
 import com.taskadapter.webui.service.Services;
+import com.taskadapter.webui.service.WrongPasswordException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,10 +22,10 @@ public class LocalRemoteOptionsPanelTest extends FileBasedTest {
     }
 
     @Test
-    public void radioButtonIsEnabledForAdmin() {
+    public void radioButtonIsEnabledForAdmin() throws WrongPasswordException, AuthException {
+        EditableCurrentUserInfo userInfo = (EditableCurrentUserInfo) services.getCurrentUserInfo();
+        userInfo.setUserName("admin");
         LocalRemoteOptionsPanel panel = new LocalRemoteOptionsPanel(services);
-        // TODO there's no API to login as a certain user in tests.
-        // so this test fails.
         assertTrue(panel.getGroup().isEnabled());
     }
 
