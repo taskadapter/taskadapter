@@ -27,7 +27,7 @@ public class Services {
     /** Authorizations for current user. */
     private final AuthorizedOperations authorizedOps;
     
-    /** Configurationa accessors. */
+    /** Configuration accessors. */
     private final ConfigAccessorProvider configAccessor;
 
     public Services(FileManager fileManager, EditorManager editorManager,

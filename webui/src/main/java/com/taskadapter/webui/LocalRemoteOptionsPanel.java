@@ -54,4 +54,8 @@ public class LocalRemoteOptionsPanel extends Panel {
             }
         });
     }
+
+    OptionGroup getGroup() {
+        return group;
+    }
 }
