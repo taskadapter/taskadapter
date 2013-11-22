@@ -31,6 +31,7 @@ public class LocalRemoteOptionsPanel extends Panel {
         HorizontalLayout configGroupLayout = new HorizontalLayout();
         group.setNullSelectionAllowed(false);   // user can not deselect
         group.setImmediate(true);               // send the change to the server at once
+        group.setEnabled(services.getAuthorizedOperations().canChangeServerSettings());
         configGroupLayout.addComponent(group);
         setContent(configGroupLayout);
     }
