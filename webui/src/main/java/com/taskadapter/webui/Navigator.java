@@ -117,8 +117,7 @@ public class Navigator {
             currentPage = new LoginPage();
         }
 
-        if (services.getCurrentUserInfo().isLoggedIn()
-                && services.getCurrentUserInfo().getUserName().equals("admin")
+        if (services.getAuthorizedOperations().canAcceptLicense()
                 && !services.getSettingsManager().isLicenseAgreementAccepted()) {
             currentPage = new LicenseAgreementPage();
         }

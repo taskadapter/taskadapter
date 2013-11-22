@@ -1,6 +1,7 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.web.uiapi.UISyncConfig;
+import com.taskadapter.webui.config.ConfigAccessor;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.ui.Alignment;
@@ -20,13 +21,22 @@ import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
 public class ConfigsPage extends Page {
     
-    private static final Comparator<UISyncConfig> CONFIG_COMPARATOR = 
-            new Comparator<UISyncConfig>() {
-                @Override
-                public int compare(UISyncConfig o1, UISyncConfig o2) {
-                    return o1.getLabel().compareTo(o2.getLabel());
-                }
-            };
+    private final Comparator<UISyncConfig> CONFIG_COMPARATOR = new Comparator<UISyncConfig>() {
+        @Override
+        public int compare(UISyncConfig o1, UISyncConfig o2) {
+            final String uname = services.getCurrentUserInfo().getUserName();
+            final boolean isMyConfig1 = uname.equals(o1.getOwnerName());
+            final boolean isMyConfig2 = uname.equals(o2.getOwnerName());
+
+            if (isMyConfig1 != isMyConfig2)
+                return isMyConfig1 ? -1 : 1;
+            
+            final String n1 = configAccessor.nameOf(o1);
+            final String n2 = configAccessor.nameOf(o2);
+
+            return n1.compareTo(n2);
+        }
+    };
     
     private VerticalLayout layout = new VerticalLayout();
     private VerticalLayout configsLayout = new VerticalLayout();
@@ -34,6 +44,7 @@ public class ConfigsPage extends Page {
     private String lastFilter;
     private HorizontalLayout actionPanel;
     private List<UISyncConfig> cachedConfigs;
+    private ConfigAccessor configAccessor;
 
     public ConfigsPage() {
         buildUI();
@@ -91,8 +102,8 @@ public class ConfigsPage extends Page {
     private void reloadConfigs() {
         configsLayout.removeAllComponents();
 
-        final String userLoginName = services.getCurrentUserInfo().getUserName();
-        final List<UISyncConfig> allConfigs = services.getUIConfigStore().getUserConfigs(userLoginName);
+        configAccessor = services.getConfigAccessor().createBestAccessor();
+        final List<UISyncConfig> allConfigs = configAccessor.getConfigs();
         Collections.sort(allConfigs, CONFIG_COMPARATOR);
         for (UISyncConfig config : allConfigs) {
             addConfigToPage(config);
@@ -118,7 +129,7 @@ public class ConfigsPage extends Page {
             return true;
         }
         for (String name : filters) {
-            if (!config.getLabel().toLowerCase().contains(name)
+            if (!configAccessor.nameOf(config).toLowerCase().contains(name)
                     && !config.getConnector1().getLabel().toLowerCase()
                             .contains(name)
                     && !config.getConnector2().getLabel().toLowerCase()
@@ -130,7 +141,8 @@ public class ConfigsPage extends Page {
     }
 
     private void addConfigToPage(final UISyncConfig config) {
-        configsLayout.addComponent(new ConfigActionsPanel(MESSAGES, services, navigator, config));
+        configsLayout.addComponent(new ConfigActionsPanel(MESSAGES, services,
+                navigator, config, configAccessor));
     }
 
     @Override

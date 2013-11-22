@@ -1,13 +1,13 @@
 package com.taskadapter.webui.user;
 
 import com.taskadapter.auth.AuthException;
+import com.taskadapter.auth.AuthorizedOperations;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.license.License;
 import com.taskadapter.license.LicenseChangeListener;
 import com.taskadapter.web.InputDialog;
 import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.data.Messages;
-import com.taskadapter.webui.TAApplication;
 import com.taskadapter.webui.service.Services;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
@@ -93,19 +93,20 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
         userLoginLabel.addStyleName("userLoginLabelInUsersPanel");
         usersLayout.addComponent(userLoginLabel);
 
-        if (isAdmin()) {
+        final AuthorizedOperations allowedOps = services
+                .getAuthorizedOperations();
+        if (allowedOps.canChangePasswordFor(userLoginName)) {
             addSetPasswordButton(userLoginName);
-            addDeleteButtonUnlessUserIsHardcodedAdminUser(userLoginName);
         } else {
-            // fillers for gridlayout
-            usersLayout.addComponent(new Label(""));
             usersLayout.addComponent(new Label(""));
         }
 
-    }
-
-    private boolean isAdmin() {
-        return TAApplication.ADMIN_LOGIN_NAME.equals(services.getCurrentUserInfo().getUserName());
+        if (allowedOps.canDeleteUser(userLoginName)) {
+            addDeleteButton(userLoginName);
+        } else {
+            usersLayout.addComponent(new Label(""));
+        }
+        
     }
 
     private void addSetPasswordButton(final String userLoginName) {
@@ -117,15 +118,6 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
             }
         });
         usersLayout.addComponent(setPasswordButton);
-    }
-
-    private void addDeleteButtonUnlessUserIsHardcodedAdminUser(final String userLoginName) {
-        if (!userLoginName.equals(TAApplication.ADMIN_LOGIN_NAME)) {
-            addDeleteButton(userLoginName);
-        } else {
-            // filler for gridlayout
-            usersLayout.addComponent(new Label(""));
-        }
     }
 
     private void addDeleteButton(final String userLoginName) {

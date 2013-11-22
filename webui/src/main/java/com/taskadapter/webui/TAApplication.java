@@ -1,10 +1,12 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.FileManager;
 import com.taskadapter.auth.AuthException;
 import com.taskadapter.auth.BasicCredentialsManager;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.auth.cred.CredentialsStore;
 import com.taskadapter.auth.cred.FSCredentialStore;
+import com.taskadapter.webui.service.DefaultAutorizedOps;
 import com.taskadapter.webui.service.EditableCurrentUserInfo;
 import com.taskadapter.webui.service.EditorManager;
 import com.taskadapter.webui.service.Services;
@@ -22,8 +24,6 @@ import java.io.File;
  */
 @Theme("mytheme")
 public class TAApplication extends UI {
-    public static final String ADMIN_LOGIN_NAME = "admin";
-    
     private static final Logger LOGGER = LoggerFactory.getLogger(TAApplication.class);
     
     private final Services services;
@@ -33,22 +33,24 @@ public class TAApplication extends UI {
     private final CredentialsManager credentialsManager;
     
     public TAApplication(File dataRootFolder) {
-        services = new Services(dataRootFolder,
-                EditorManager.fromResource("editors.txt"));
-
-        final CredentialsStore credStore = new FSCredentialStore(
-                services.getFileManager());
+        final FileManager fm = new FileManager(dataRootFolder);
+        final CredentialsStore credStore = new FSCredentialStore(fm);
         credentialsManager = new BasicCredentialsManager(
                 credStore, 50);
+        
+        services = new Services(fm, EditorManager.fromResource("editors.txt"),
+                credentialsManager);
+
         authenticator = new Authenticator(credentialsManager,
                 (EditableCurrentUserInfo) services.getCurrentUserInfo());
         
         services.getLicenseManager().loadInstalledTaskAdapterLicense();
         
-        if (!credentialsManager.doesUserExists(ADMIN_LOGIN_NAME)) {
+        if (!credentialsManager.doesUserExists(DefaultAutorizedOps.ADMIN_LOGIN_NAME)) {
             try {
                 credentialsManager.setPrimaryAuthToken(
-                        ADMIN_LOGIN_NAME, ADMIN_LOGIN_NAME);
+                        DefaultAutorizedOps.ADMIN_LOGIN_NAME,
+                        DefaultAutorizedOps.ADMIN_LOGIN_NAME);
             } catch (AuthException e) {
                 LOGGER.error("Admin initialization exception", e);
             }

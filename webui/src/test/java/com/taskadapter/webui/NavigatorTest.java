@@ -1,5 +1,6 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.FileManager;
 import com.taskadapter.auth.BasicCredentialsManager;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.auth.cred.CredentialsStore;
@@ -48,7 +49,10 @@ public class NavigatorTest extends FileBasedTest {
     }
 
     private Services getServices() {
-        return new Services(tempFolder, new EditorManager(Collections.<String,PluginEditorFactory<?>>emptyMap()));
+        final FileManager fm = new FileManager(tempFolder);
+        final CredentialsStore cs = new FSCredentialStore(fm);
+        final CredentialsManager cm = new BasicCredentialsManager(cs, 50);
+        return new Services(fm, new EditorManager(Collections.<String,PluginEditorFactory<?>>emptyMap()), cm);
     }
 
 }

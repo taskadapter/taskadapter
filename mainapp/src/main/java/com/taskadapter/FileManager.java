@@ -27,6 +27,10 @@ public class FileManager {
     public String[] listUsers() {
         return dataRootFolder.list();
     }
+    
+    public File getLicenseDir() {
+        return dataRootFolder;
+    }
 
     /**
      * saves the file into &lt;home>/&lt;ta_login_name>/files/&lt;filename>

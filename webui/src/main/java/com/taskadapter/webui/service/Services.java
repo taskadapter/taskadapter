@@ -2,15 +2,15 @@ package com.taskadapter.webui.service;
 
 import com.taskadapter.FileManager;
 import com.taskadapter.PluginManager;
+import com.taskadapter.auth.AuthorizedOperations;
+import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.SettingsManager;
 import com.taskadapter.web.service.Sandbox;
-import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.uiapi.UIConfigService;
 import com.taskadapter.web.uiapi.UIConfigStore;
-
-import java.io.File;
+import com.taskadapter.webui.config.ConfigAccessorProvider;
 
 public class Services {
     private final EditorManager editorManager;
@@ -24,17 +24,32 @@ public class Services {
     // TODO this is not the right place for this variable.
     private String currentTaskAdapterVersion;
 
-    public Services(File dataRootFolder, EditorManager editorManager) {
+    /** Authorizations for current user. */
+    private final AuthorizedOperations authorizedOps;
+    
+    /** Configurationa accessors. */
+    private final ConfigAccessorProvider configAccessor;
+
+    public Services(FileManager fileManager, EditorManager editorManager,
+            CredentialsManager creds) {
         this.editorManager = editorManager;
-        fileManager = new FileManager(dataRootFolder);
+        this.fileManager = fileManager;
         final ConfigStorage configStorage = new ConfigStorage(fileManager);
 
         this.uiConfigStore = new UIConfigStore(new UIConfigService(
                 pluginManager, editorManager), configStorage);
+        
+        this.authorizedOps = new DefaultAutorizedOps(currentUserInfo,
+                settingsManager);
 
-        this.currentTaskAdapterVersion = new CurrentVersionLoader().getCurrentVersion();
+        this.currentTaskAdapterVersion = new CurrentVersionLoader()
+                .getCurrentVersion();
+        
+        this.configAccessor = new ConfigAccessorProvider(currentUserInfo,
+                authorizedOps, uiConfigStore, creds);
 
-        licenseManager = new LicenseManager(dataRootFolder);
+        licenseManager = new LicenseManager(fileManager.getLicenseDir());
+
     }
 
     public EditorManager getEditorManager() {
@@ -60,7 +75,7 @@ public class Services {
     public UIConfigStore getUIConfigStore() {
         return uiConfigStore;
     }
-    
+
     public CurrentUserInfo getCurrentUserInfo() {
         return currentUserInfo;
     }
@@ -69,6 +84,17 @@ public class Services {
         return currentTaskAdapterVersion;
     }
     
+    public ConfigAccessorProvider getConfigAccessor() {
+        return configAccessor;
+    }
+    
+    /** 
+     * Returns list of authorized operations for current user.
+     */
+    public AuthorizedOperations getAuthorizedOperations() {
+        return authorizedOps;
+    }
+
     // TODO: Should it live here or somewhere else?
     public Sandbox createCurrentUserSandbox() {
         return new Sandbox(settingsManager.isTAWorkingOnLocalMachine(),
