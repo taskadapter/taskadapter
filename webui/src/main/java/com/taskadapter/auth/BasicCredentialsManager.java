@@ -163,7 +163,7 @@ public final class BasicCredentialsManager implements CredentialsManager {
         Credentials creds = store.loadCredentials(user);
         if (creds instanceof CredentialsV0) {
             final CredentialsV0 oldCreds = (CredentialsV0) creds;
-            setPrimaryAuthToken(user, oldCreds.password);
+            savePrimaryAuthToken(user, oldCreds.password);
             creds = store.loadCredentials(user);
         }
         if (!(creds instanceof CredentialsV1)) {
@@ -248,7 +248,7 @@ public final class BasicCredentialsManager implements CredentialsManager {
     }
 
     @Override
-    public void setPrimaryAuthToken(String user, String newToken)
+    public void savePrimaryAuthToken(String user, String newToken)
             throws AuthException {
         final AuthFactory<String, String> afactory = AUTHENTICATORS
                 .get(DEFAULT_AUTH_NAME);

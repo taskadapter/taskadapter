@@ -48,9 +48,8 @@ public class TAApplication extends UI {
         
         if (!credentialsManager.doesUserExists(DefaultAutorizedOps.ADMIN_LOGIN_NAME)) {
             try {
-                credentialsManager.setPrimaryAuthToken(
-                        DefaultAutorizedOps.ADMIN_LOGIN_NAME,
-                        DefaultAutorizedOps.ADMIN_LOGIN_NAME);
+                String password = DefaultAutorizedOps.ADMIN_LOGIN_NAME;
+                credentialsManager.savePrimaryAuthToken(DefaultAutorizedOps.ADMIN_LOGIN_NAME, password);
             } catch (AuthException e) {
                 LOGGER.error("Admin initialization exception", e);
             }

@@ -201,7 +201,7 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
 
     private void createUser(String login, String password) {
         try {
-            credentialsManager.setPrimaryAuthToken(login, password);
+            credentialsManager.savePrimaryAuthToken(login, password);
         } catch (AuthException e) {
             LOGGER.error("User initiation error", e);
             throw new RuntimeException(e);
@@ -219,7 +219,7 @@ public class UsersPanel extends Panel implements LicenseChangeListener {
                 new InputDialog.Recipient() {
                     public void gotInput(String newPassword) {
                         try {
-                            credentialsManager.setPrimaryAuthToken(userLoginName, newPassword);
+                            credentialsManager.savePrimaryAuthToken(userLoginName, newPassword);
                         } catch (AuthException e) {
                             LOGGER.error("Change password error", e);
                             throw new RuntimeException(e);

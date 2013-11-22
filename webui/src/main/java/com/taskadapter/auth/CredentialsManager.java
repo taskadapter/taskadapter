@@ -69,19 +69,19 @@ public interface CredentialsManager {
      * The reason to reset secondary auths is possible primary auth compromise.
      * When hacker receives a primary auth token, she will be able to create a
      * secondary token and use then later. Thus, user must be able to reset all
-     * secondary tokens everywhere. Changing primary credentinals will require
-     * all "saved" sessions to reauthenticate, thus restoring user identity.
+     * secondary tokens everywhere. Changing primary credentials will require
+     * all "saved" sessions to re-authenticate, thus restoring user identity.
      * <p>
      * This method may be called to set an auth for non-existing user.
      * 
      * @param user
      *            user to set a primary token for.
      * @param newToken
-     *            new authentication token.
+     *            new authentication token (password).
      * @throws AuthException
      *             if token cannot be updated.
      */
-    public void setPrimaryAuthToken(String user, String newToken)
+    public void savePrimaryAuthToken(String user, String newToken)
             throws AuthException;
 
     /**

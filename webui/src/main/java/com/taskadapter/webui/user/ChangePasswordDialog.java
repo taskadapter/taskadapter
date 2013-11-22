@@ -137,7 +137,7 @@ public class ChangePasswordDialog extends Window {
             if (!credentialsManager.isPrimaryAuthentic(userName, oldPasswordField.getValue())) {
                 throw new WrongPasswordException();
             }
-            credentialsManager.setPrimaryAuthToken(userName, newPasswordField.getValue());
+            credentialsManager.savePrimaryAuthToken(userName, newPasswordField.getValue());
             getUI().removeWindow(this);
         } catch (WrongPasswordException e) {
             errorLabel.setValue(messages.get("changePassword.oldPasswordIncorrect"));
