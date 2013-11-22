@@ -18,10 +18,11 @@ public final class UISyncConfigBuilder {
     /**
      * Create a new UI config instance for a stored config.
      *
+     * @param ownerName name of config owner.
      * @param storedConfig stored config to create an instance for.
      * @return new parsed config.
      */
-    public UISyncConfig uize(StoredExportConfig storedConfig) {
+    public UISyncConfig uize(String ownerName, StoredExportConfig storedConfig) {
         final String label = storedConfig.getName();
         final StoredConnectorConfig conn1Config = storedConfig.getConnector1();
         final StoredConnectorConfig conn2Config = storedConfig.getConnector2();
@@ -36,7 +37,8 @@ public final class UISyncConfigBuilder {
         final NewMappings fixedMappings = MappingFixer.fixMappings(mappings,
                 config1.getAvailableFields(), config2.getAvailableFields(),
                 false);
-        return new UISyncConfig(storedConfig.getId(), label, config1, config2, fixedMappings, false);
+        return new UISyncConfig(storedConfig.getId(), ownerName, label,
+                config1, config2, fixedMappings, false);
     }
 
 }

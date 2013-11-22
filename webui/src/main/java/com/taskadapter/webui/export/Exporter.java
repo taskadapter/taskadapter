@@ -73,7 +73,7 @@ public class Exporter {
                 ((MSPConfig) connector2.getRawConfig()).setOutputAbsoluteFilePath(absoluteFileName);
                 ((MSPConfig) connector2.getRawConfig()).setInputAbsoluteFilePath(absoluteFileName);
                 try {
-                    services.getUIConfigStore().saveConfig(userName, syncConfig);
+                    services.getUIConfigStore().saveConfig(syncConfig);
                 } catch (StorageException e1) {
                     String message = messages.format("export.troublesSavingConfig", e1.getMessage());
                     logger.error(message, e);

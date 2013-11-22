@@ -23,7 +23,10 @@ public final class UISyncConfig {
      * configs. May be <code>null</code> for a new (non-saved) config.
      */
     private final String identity;
-
+    
+    /** Name of the user who owns this config. */
+    private final String owner;
+    
     /**
      * Config label
      */
@@ -49,10 +52,11 @@ public final class UISyncConfig {
      */
     private boolean reversed;
 
-    UISyncConfig(String identity, String label,
+    UISyncConfig(String identity, String owner, String label,
             UIConnectorConfig connector1, UIConnectorConfig connector2,
             NewMappings newMappings, boolean reversed) {
         this.identity = identity;
+        this.owner = owner;
         this.label = label;
         this.connector1 = connector1;
         this.connector2 = connector2;
@@ -79,6 +83,11 @@ public final class UISyncConfig {
     public NewMappings getNewMappings() {
         return newMappings;
     }
+    
+    /** Returns name of the user who owns this config. */
+    public String getOwnerName() {
+        return owner;
+    }
 
     String getIdentity() {
         return identity;
@@ -92,7 +101,7 @@ public final class UISyncConfig {
      * @return "reversed" (back-order) configuration.
      */
     public UISyncConfig reverse() {
-        return new UISyncConfig(identity, label, connector2, connector1,
+        return new UISyncConfig(identity, owner, label, connector2, connector1,
                 reverse(newMappings), !reversed);
     }
     

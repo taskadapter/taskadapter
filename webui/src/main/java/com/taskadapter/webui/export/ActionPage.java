@@ -175,9 +175,8 @@ public abstract class ActionPage extends Page {
 
     private void saveConfigIfChanged() {
         if (confirmExportFragment.needToSaveConfig()) {
-            String userLoginName = services.getCurrentUserInfo().getUserName();
             try {
-                services.getUIConfigStore().saveConfig(userLoginName, config);
+                services.getUIConfigStore().saveConfig(config);
             } catch (StorageException e) {
                 logger.error(MESSAGES.format("action.cantSaveUpdatedConfig", e.getMessage()), e);
                 // TODO !! report in the UI

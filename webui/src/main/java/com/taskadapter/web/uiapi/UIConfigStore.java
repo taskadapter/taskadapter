@@ -51,7 +51,7 @@ public final class UIConfigStore {
         final List<StoredExportConfig> storedConfigs = configStorage.getUserConfigs(userLoginName);
         final List<UISyncConfig> result = new ArrayList<UISyncConfig>(storedConfigs.size());
         for (StoredExportConfig storedConfig : storedConfigs) {
-            result.add(syncConfigBuilder.uize(storedConfig));
+            result.add(syncConfigBuilder.uize(userLoginName, storedConfig));
         }
         return result;
     }
@@ -79,7 +79,8 @@ public final class UIConfigStore {
                 config1.getConnectorTypeId(), config1.getConfigString(),
                 config2.getConnectorTypeId(), config2.getConfigString(),
                 mappingsString);
-        return new UISyncConfig(identity, label, config1, config2, newMappings, false);
+        return new UISyncConfig(identity, userName, label, config1, config2,
+                newMappings, false);
     }
 
     /**
@@ -88,7 +89,7 @@ public final class UIConfigStore {
      * @param syncConfig config to save.
      * @throws StorageException if config cannot be saved.
      */
-    public void saveConfig(String userLoginName, UISyncConfig syncConfig)
+    public void saveConfig(UISyncConfig syncConfig)
             throws StorageException {
         syncConfig = syncConfig.normalized();
         final String label = syncConfig.getLabel();
@@ -96,10 +97,10 @@ public final class UIConfigStore {
         final UIConnectorConfig config2 = syncConfig.getConnector2();
         final NewMappings mappings = syncConfig.getNewMappings();
         final String mappingsStr = new Gson().toJson(mappings);
-        configStorage.saveConfig(userLoginName, syncConfig.getIdentity(),
-                label, config1.getConnectorTypeId(), config1.getConfigString(),
-                config2.getConnectorTypeId(), config2.getConfigString(),
-                mappingsStr);
+        configStorage.saveConfig(syncConfig.getOwnerName(),
+                syncConfig.getIdentity(), label, config1.getConnectorTypeId(),
+                config1.getConfigString(), config2.getConnectorTypeId(),
+                config2.getConfigString(), mappingsStr);
     }
 
     /**
@@ -112,9 +113,9 @@ public final class UIConfigStore {
     }
 
     /**
-     * Clones a config.
+     * Clones a config. 
      *
-     * @param userLoginName user login name.
+     * @param userLoginName clone owner's login name.
      * @param syncConfig    config to clone.
      * @throws StorageException if an error occured.
      */

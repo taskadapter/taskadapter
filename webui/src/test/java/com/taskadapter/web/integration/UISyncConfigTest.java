@@ -47,7 +47,7 @@ public class UISyncConfigTest {
         EditorManager editorManager = EditorManager.fromResource("editors.txt");
         UIConfigService uiConfigService = new UIConfigService(new PluginManager(), editorManager);
         UISyncConfigBuilder builder = new UISyncConfigBuilder(uiConfigService);
-        return builder.uize(config);
+        return builder.uize("admin", config);
     }
 
 

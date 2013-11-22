@@ -151,9 +151,8 @@ public class EditConfigPage extends Page {
     }
 
     private void save() {
-        String userLoginName = services.getCurrentUserInfo().getUserName();
         try {
-            services.getUIConfigStore().saveConfig(userLoginName, config);
+            services.getUIConfigStore().saveConfig(config);
         } catch (StorageException e) {
             String message = MESSAGES.format("editConfig.error.cantSave", e.getMessage());
             errorMessageLabel.setValue(message);
