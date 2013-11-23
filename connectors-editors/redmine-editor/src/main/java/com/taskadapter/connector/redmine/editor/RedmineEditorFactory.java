@@ -7,7 +7,6 @@ import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RelationCreationException;
-import com.taskadapter.redmineapi.AuthenticationException;
 import com.taskadapter.redmineapi.RedmineAuthenticationException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.callbacks.DataProvider;
@@ -105,5 +104,12 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
     @Override
     public String describeDestinationLocation(RedmineConfig config) {
         return describeSourceLocation(config);
+    }
+
+    @Override
+    public boolean updateForSave(RedmineConfig config, Sandbox sandbox)
+            throws BadConfigException {
+        validateForSave(config);
+        return false;
     }
 }

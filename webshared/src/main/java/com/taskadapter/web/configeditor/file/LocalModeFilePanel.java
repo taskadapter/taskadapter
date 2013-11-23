@@ -14,10 +14,10 @@ public class LocalModeFilePanel extends Panel {
     private static final String LABEL_OUTPUT_FILE_NAME = "Output file:";
     private static final String TOOLTIP_OUTPUT_FILE_NAME = "Microsoft Project file name to save the data to (only XML format is supported)";
     
-    private final Property inputFilePath;
-    private final Property outputFilePath;
+    private final Property<String> inputFilePath;
+    private final Property<String> outputFilePath;
     
-    public LocalModeFilePanel(Property inputFilePath, Property outputFilePath) {
+    public LocalModeFilePanel(Property<String> inputFilePath, Property<String> outputFilePath) {
     	super("Microsoft project files");
     	this.inputFilePath = inputFilePath;
     	this.outputFilePath = outputFilePath;

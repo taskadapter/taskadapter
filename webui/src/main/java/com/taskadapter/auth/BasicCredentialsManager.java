@@ -25,6 +25,9 @@ public final class BasicCredentialsManager implements CredentialsManager {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(BasicCredentialsManager.class);
 
+    /** Administrator login name. */
+    private static final String ADMIN_LOGIN_NAME = "admin";
+
     /**
      * Random characters.
      */
@@ -67,13 +70,21 @@ public final class BasicCredentialsManager implements CredentialsManager {
             int secondaryAuthBacklog) {
         this.store = store;
         this.secondaryAuthBacklog = secondaryAuthBacklog;
+
+        if (listUsers().isEmpty()) {
+            try {
+                savePrimaryAuthToken(ADMIN_LOGIN_NAME, ADMIN_LOGIN_NAME);
+            } catch (AuthException e) {
+                LOGGER.error("Admin initialization exception", e);
+            }
+        }
     }
 
     @Override
-    public boolean isSecondaryAuthentic(String user, String auth) {
+    public AuthorizedOperations authenticateSecondary(String user, String auth) {
         final int prefixIdx = auth.indexOf(':');
         if (prefixIdx <= 0) {
-            return false;
+            return null;
         }
 
         final String authShort = auth.substring(0, prefixIdx);
@@ -83,7 +94,7 @@ public final class BasicCredentialsManager implements CredentialsManager {
         try {
             v1creds = loadV1(user);
         } catch (AuthException e1) {
-            return false;
+            return null;
         }
 
         final List<String> credKeys = v1creds.secondaryCredentials;
@@ -97,11 +108,11 @@ public final class BasicCredentialsManager implements CredentialsManager {
 
         /* Key not found, bad credentinals */
         if (goodKey < 0) {
-            return false;
+            return null;
         }
 
         if (goodKey == credKeys.size() - 1) {
-            return true;
+            return new AuthorizedOperationsImpl(user);
         }
 
         /* Update order of credentials */
@@ -118,7 +129,7 @@ public final class BasicCredentialsManager implements CredentialsManager {
         } catch (AuthException e) {
             LOGGER.info("Error!", e);
         }
-        return true;
+        return new AuthorizedOperationsImpl(user);
     }
 
     private boolean isGoodSecondary(String authShort, String authKey,
@@ -149,14 +160,16 @@ public final class BasicCredentialsManager implements CredentialsManager {
     }
 
     @Override
-    public boolean isPrimaryAuthentic(String user, String auth) {
+    public AuthorizedOperations authenticatePrimary(String user, String auth) {
         final CredentialsV1 creds;
         try {
             creds = loadV1(user);
         } catch (AuthException e) {
-            return false;
+            return null;
         }
-        return matchKeys(auth, creds.primaryCredentials);
+        if (matchKeys(auth, creds.primaryCredentials))
+            return new AuthorizedOperationsImpl(user);
+        return null;
     }
 
     private CredentialsV1 loadV1(String user) throws AuthException {
@@ -174,8 +187,8 @@ public final class BasicCredentialsManager implements CredentialsManager {
     }
 
     @Override
-    public String generateSecondaryAuth(String user, String primaryAuth)
-            throws AuthException {
+    public SecondarizationResult generateSecondaryAuth(String user,
+            String primaryAuth) throws AuthException {
         final CredentialsV1 creds;
         try {
             creds = loadV1(user);
@@ -207,7 +220,8 @@ public final class BasicCredentialsManager implements CredentialsManager {
         auths.add(key);
         store.saveCredentials(user, new CredentialsV1(creds.primaryCredentials,
                 auths));
-        return tok;
+        return new SecondarizationResult(new AuthorizedOperationsImpl(user),
+                tok);
     }
 
     private String getString(SecureRandom rnd, int len) {
@@ -272,13 +286,8 @@ public final class BasicCredentialsManager implements CredentialsManager {
     }
 
     @Override
-    public boolean doesUserExists(String user) {
-        return store.doesUserExists(user);
-    }
-
-    @Override
-    public void removeAuth(String user) throws AuthException {
-        store.removeCredentials(user);
+    public void removeUser(String user) throws AuthException {
+        store.removeUser(user);
     }
 
 }

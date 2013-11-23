@@ -5,7 +5,7 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
-import junit.framework.Assert;
+import org.junit.Assert;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Task;
 import net.sf.mpxj.TaskField;

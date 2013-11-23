@@ -2,7 +2,6 @@ package com.taskadapter.connector.basecamp.classic.transport;
 
 import com.taskadapter.connector.basecamp.classic.BasecampConfig;
 import com.taskadapter.connector.basecamp.classic.BasecampConfigValidator;
-import com.taskadapter.connector.basecamp.classic.BasecampUtils;
 import com.taskadapter.connector.basecamp.classic.transport.throttling.IntervalThrottler;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 

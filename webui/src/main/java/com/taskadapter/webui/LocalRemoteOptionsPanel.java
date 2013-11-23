@@ -1,7 +1,8 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.webui.service.Services;
+import com.taskadapter.web.SettingsManager;
 import com.vaadin.data.Property;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.OptionGroup;
@@ -15,47 +16,45 @@ public class LocalRemoteOptionsPanel extends Panel {
     private static final String REMOTE = "TA is running on some shared machine (SERVER).";
 
     private static final List<String> options = Arrays.asList(LOCAL, REMOTE);
-    private OptionGroup group;
-    private Services services;
+    
+    /**
+     * Creates a new local/remote settings panel.
+     * 
+     * @param settingsManager
+     *            used settings manager.
+     * @param canModify
+     *            if <code>true</code>, user can change the settings. Otherwise
+     *            user can see setting but cannot change it.
+     * @return local/remote options panel.
+     */
+    public static Component createLocalRemoteOptions(
+            final SettingsManager settingsManager, boolean canModify) {
+        final Panel ui = new Panel("Local / server mode");
 
-    public LocalRemoteOptionsPanel(Services services) {
-        super("Local / server mode");
-        this.services = services;
-        buildUI();
-        selectLocalOrRemoteMode();
-        setupLocalRemoteModeListener();
-    }
+        final HorizontalLayout configGroupLayout = new HorizontalLayout();
 
-    private void buildUI() {
-        group = new OptionGroup("", options);
-        HorizontalLayout configGroupLayout = new HorizontalLayout();
-        group.setNullSelectionAllowed(false);   // user can not deselect
-        group.setImmediate(true);               // send the change to the server at once
-        group.setEnabled(services.getAuthorizedOperations().canChangeServerSettings());
-        configGroupLayout.addComponent(group);
-        setContent(configGroupLayout);
-    }
+        final OptionGroup group = new OptionGroup("", options);
+        group.select(settingsManager.isTAWorkingOnLocalMachine() ? LOCAL
+                : REMOTE);
+        group.setNullSelectionAllowed(false); // user can not deselect
+        group.setImmediate(true); // send the change to the server at once
+        group.setEnabled(canModify);
 
-    private void selectLocalOrRemoteMode() {
-        if (services.getSettingsManager().isTAWorkingOnLocalMachine()) {
-            group.select(LOCAL);
-        } else {
-            group.select(REMOTE);
+        if (canModify) {
+            group.addValueChangeListener(new Property.ValueChangeListener() {
+                @Override
+                public void valueChange(Property.ValueChangeEvent event) {
+                    boolean localModeRequested = event.getProperty().toString()
+                            .equals(LOCAL);
+                    settingsManager.setLocal(localModeRequested);
+                    Notification.show("Saved");
+                }
+            });
         }
-    }
 
-    private void setupLocalRemoteModeListener() {
-        group.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                boolean localModeRequested = event.getProperty().toString().equals(LOCAL);
-                services.getSettingsManager().setLocal(localModeRequested);
-                Notification.show("Saved");
-            }
-        });
-    }
+        configGroupLayout.addComponent(group);
+        ui.setContent(configGroupLayout);
 
-    OptionGroup getGroup() {
-        return group;
+        return ui;
     }
 }

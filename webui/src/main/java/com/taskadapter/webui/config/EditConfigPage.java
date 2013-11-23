@@ -1,15 +1,14 @@
 package com.taskadapter.webui.config;
 
 import com.taskadapter.config.StorageException;
-import com.taskadapter.connector.definition.MappingSide;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.model.GTaskDescriptor;
+import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.uiapi.UISyncConfig;
-import com.taskadapter.webui.ButtonBuilder;
 import com.taskadapter.webui.CloneDeletePanel;
+import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.data.ExceptionFormatter;
-import com.taskadapter.webui.export.Exporter;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -24,82 +23,125 @@ import org.slf4j.LoggerFactory;
 
 import static com.vaadin.server.Sizeable.Unit.PERCENTAGE;
 
-public class EditConfigPage extends Page {
-    private final Logger logger = LoggerFactory.getLogger(EditConfigPage.class);
+public class EditConfigPage {
 
-    private VerticalLayout layout = new VerticalLayout();
-    private UISyncConfig config;
+    public static interface Callback {
+        /**
+         * User requested synchronization in "forward" directions (from left to
+         * right).
+         * 
+         * @param config
+         *            config for the operation.
+         */
+        public void forwardSync(UISyncConfig config);
 
-    private Label errorMessageLabel = new Label();
-    private OnePageEditor editor;
+        /**
+         * User requested synchronization in "reverse" direction (from right to
+         * left).
+         * 
+         * @param config
+         *            config for the operation.
+         */
+        public void backwardSync(UISyncConfig config);
 
-    private void buildUI() {
-        layout.removeAllComponents();
+        /**
+         * User attempts to leave this page.
+         */
+        public void back();
+
+    }
+
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(EditConfigPage.class);
+
+    private final UISyncConfig config;
+    private final ConfigOperations configOps;
+    private final Callback callback;
+
+    private final VerticalLayout layout;
+    private final Label errorMessageLabel;
+
+    private final OnePageEditor editor;
+
+    private EditConfigPage(final UISyncConfig config,
+            ConfigOperations operations, boolean allowFullFSAccess,
+            String error, final Callback callback) {
+        this.config = config;
+        this.configOps = operations;
+        this.callback = callback;
+
+        layout = new VerticalLayout();
         layout.setSpacing(true);
-        createTopButtons();
-        createEditDescriptionElement();
-        createMainEditor();
-        createErrorArea();
-        createBottomButtons();
-    }
 
-    private void createMainEditor() {
-        editor = new OnePageEditor(MESSAGES, services.createCurrentUserSandbox(), config);
-        addExportButtonListeners();
-        layout.addComponent(editor);
-    }
-
-    private void addExportButtonListeners() {
-        addExportButtonListener(editor.getButtonLeft(), MappingSide.LEFT);
-        addExportButtonListener(editor.getButtonRight(), MappingSide.RIGHT);
-    }
-
-    private void addExportButtonListener(Button button, MappingSide exportDirection) {
-        UISyncConfig configForExport = DirectionResolver.getDirectionalConfig(config, exportDirection);
-        final Exporter exporter = new Exporter(MESSAGES, services, navigator, configForExport);
-        button.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                exportClicked(exporter);
-            }
-        });
-    }
-
-    private void createEditDescriptionElement() {
-        HorizontalLayout descriptionLayout = new HorizontalLayout();
-        descriptionLayout.setSpacing(true);
-        layout.addComponent(descriptionLayout);
-        descriptionLayout.addComponent(new Label(MESSAGES.get("editConfig.description")));
-        TextField descriptionField = new TextField();
-        descriptionField.addStyleName("configEditorDescriptionLabel");
-        MethodProperty<String> label = new MethodProperty<String>(config, "label");
-        descriptionField.setPropertyDataSource(label);
-        descriptionLayout.addComponent(descriptionField);
-    }
-
-    private void createTopButtons() {
-        HorizontalLayout buttonsLayout = new HorizontalLayout();
+        final HorizontalLayout buttonsLayout = new HorizontalLayout();
         buttonsLayout.setWidth(100, PERCENTAGE);
-        CloneDeletePanel cloneDeletePanel = new CloneDeletePanel(services, navigator, config);
+        final Component cloneDeletePanel = CloneDeletePanel.render(config,
+                operations, new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.back();
+                    }
+                });
         buttonsLayout.addComponent(cloneDeletePanel);
-        buttonsLayout.setComponentAlignment(cloneDeletePanel, Alignment.MIDDLE_RIGHT);
+        buttonsLayout.setComponentAlignment(cloneDeletePanel,
+                Alignment.MIDDLE_RIGHT);
         layout.addComponent(buttonsLayout);
-    }
 
-    private void createErrorArea() {
+        layout.addComponent(createEditDescriptionElement(config));
+
+        editor = new OnePageEditor(Page.MESSAGES, new Sandbox(
+                allowFullFSAccess, operations.syncSandbox), config,
+                mkExportAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.backwardSync(config);
+                    }
+                }), mkExportAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.forwardSync(config);
+                    }
+                }));
+        layout.addComponent(editor.getUI());
+
+        errorMessageLabel = new Label(error);
         errorMessageLabel.addStyleName("error-message-label");
         errorMessageLabel.setWidth(100, PERCENTAGE);
         layout.addComponent(errorMessageLabel);
+        layout.addComponent(createBottomButtons());
     }
 
-    private void createBottomButtons() {
-        HorizontalLayout buttonsLayout = new HorizontalLayout();
-        buttonsLayout.setWidth(100, PERCENTAGE);
-        HorizontalLayout rightLayout = new HorizontalLayout();
-        buttonsLayout.addComponent(rightLayout);
-        buttonsLayout.setComponentAlignment(rightLayout, Alignment.BOTTOM_RIGHT);
+    /**
+     * Creates "edit description" element for the config.
+     * 
+     * @param config
+     *            config.
+     * @return description editor.
+     */
+    private static Component createEditDescriptionElement(UISyncConfig config) {
+        HorizontalLayout descriptionLayout = new HorizontalLayout();
+        descriptionLayout.setSpacing(true);
+        descriptionLayout.addComponent(new Label(Page.MESSAGES
+                .get("editConfig.description")));
+        TextField descriptionField = new TextField();
+        descriptionField.addStyleName("configEditorDescriptionLabel");
+        MethodProperty<String> label = new MethodProperty<String>(config,
+                "label");
+        descriptionField.setPropertyDataSource(label);
+        descriptionLayout.addComponent(descriptionField);
 
-        Button saveButton = new Button(MESSAGES.get("button.save"));
+        return descriptionLayout;
+    }
+
+    private Component createBottomButtons() {
+        final HorizontalLayout buttonsLayout = new HorizontalLayout();
+        buttonsLayout.setWidth(100, PERCENTAGE);
+        final HorizontalLayout rightLayout = new HorizontalLayout();
+        buttonsLayout.addComponent(rightLayout);
+        buttonsLayout
+                .setComponentAlignment(rightLayout, Alignment.BOTTOM_RIGHT);
+
+        final Button saveButton = new Button(Page.MESSAGES.get("button.save"));
         saveButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -107,26 +149,38 @@ public class EditConfigPage extends Page {
             }
         });
         rightLayout.addComponent(saveButton);
-        rightLayout.addComponent(ButtonBuilder.createBackButton(navigator, MESSAGES.get("button.close")));
-        layout.addComponent(buttonsLayout);
+
+        final Button backButton = new Button(Page.MESSAGES.get("button.close"));
+        backButton.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                callback.back();
+            }
+        });        
+        rightLayout.addComponent(backButton);
+        
+        return buttonsLayout;
     }
 
     private void saveClicked() {
         if (validate()) {
             save();
-            Notification.show("", MESSAGES.get("editConfig.messageSaved"), Notification.Type.HUMANIZED_MESSAGE);
+            Notification.show("", Page.MESSAGES.get("editConfig.messageSaved"),
+                    Notification.Type.HUMANIZED_MESSAGE);
         }
     }
 
-    private void exportClicked(Exporter exporter) {
-        if (validate()) {
-            save();
-            exporter.export();
-        }
-    }
-
-    public void setConfig(UISyncConfig config) {
-        this.config = config.normalized();
+    /** Wraps an export action. */
+    private Runnable mkExportAction(final Runnable exporter) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                if (validate()) {
+                    save();
+                    exporter.run();
+                }
+            }
+        };
     }
 
     private boolean validate() {
@@ -134,12 +188,15 @@ public class EditConfigPage extends Page {
         try {
             editor.validate();
         } catch (FieldAlreadyMappedException e) {
-            String s = MESSAGES.format("editConfig.error.fieldAlreadyMapped", e.getValue());
+            String s = Page.MESSAGES.format(
+                    "editConfig.error.fieldAlreadyMapped", e.getValue());
             errorMessageLabel.setValue(s);
             return false;
         } catch (FieldNotMappedException e) {
-            String fieldDisplayName = GTaskDescriptor.getDisplayValue(e.getField());
-            String s = MESSAGES.format("error.fieldSelectedForExportNotMapped", fieldDisplayName);
+            String fieldDisplayName = GTaskDescriptor.getDisplayValue(e
+                    .getField());
+            String s = Page.MESSAGES.format(
+                    "error.fieldSelectedForExportNotMapped", fieldDisplayName);
             errorMessageLabel.setValue(s);
             return false;
         } catch (BadConfigException e) {
@@ -152,26 +209,36 @@ public class EditConfigPage extends Page {
 
     private void save() {
         try {
-            services.getUIConfigStore().saveConfig(config);
+            configOps.saveConfig(config);
         } catch (StorageException e) {
-            String message = MESSAGES.format("editConfig.error.cantSave", e.getMessage());
+            String message = Page.MESSAGES.format("editConfig.error.cantSave",
+                    e.getMessage());
             errorMessageLabel.setValue(message);
-            logger.error(message, e);
+            LOGGER.error(message, e);
         }
-    }
-
-    @Override
-    public String getPageGoogleAnalyticsID() {
-        return "edit_config";
-    }
-
-    @Override
-    public Component getUI() {
-        buildUI();
-        return layout;
     }
 
     public void setErrorMessage(String errorMessage) {
         errorMessageLabel.setValue(errorMessage);
+    }
+
+    /**
+     * Renders a new config editor.
+     * 
+     * @param config
+     *            config to edit.
+     * @param operations
+     *            config operations.
+     * @param error
+     *            optional welcome error. May be null.
+     * @param callback
+     *            callback to invoke when user attempts to leave this page.
+     * @return edit page UI.
+     */
+    public static Component render(UISyncConfig config,
+            ConfigOperations operations, boolean allowFullFSAccess,
+            String error, Callback callback) {
+        return new EditConfigPage(config, operations, allowFullFSAccess, error,
+                callback).layout;
     }
 }

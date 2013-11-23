@@ -1,74 +1,110 @@
 package com.taskadapter.webui.export;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.taskadapter.config.StorageException;
 import com.taskadapter.model.GTask;
-import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.uiapi.UISyncConfig;
-import com.taskadapter.webui.ButtonBuilder;
-import com.taskadapter.webui.Navigator;
-import com.taskadapter.webui.config.TaskFieldsMappingFragment;
+import com.taskadapter.webui.ConfigOperations;
+import com.taskadapter.webui.Page;
 import com.taskadapter.webui.action.MyTree;
+import com.taskadapter.webui.config.TaskFieldsMappingFragment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
-import java.util.List;
+public final class ConfirmExportFragment {
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(ConfirmExportFragment.class);
 
-public class ConfirmExportFragment extends CustomComponent {
-    private final Navigator navigator;
-    private final List<GTask> rootLevelTasks;
-    private final Button.ClickListener goListener;
-    private TaskFieldsMappingFragment taskFieldsMappingFragment;
-    private MyTree connectorTree;
-    private Messages messages;
-    private final UISyncConfig config;
+    /**
+     * Confirm export fragment callbacks.
+     */
+    public static interface Callback {
+        /**
+         * Notifies about selected tasks.
+         * 
+         * @param selectedTasks
+         *            selected tasks.
+         */
+        public void onTasks(List<GTask> selectedTasks);
 
-    public ConfirmExportFragment(Messages messages, Navigator navigator, List<GTask> rootLevelTasks,
-                                 UISyncConfig config,
-                                 Button.ClickListener goListener) {
-        this.messages = messages;
-        this.config = config;
-
-        this.navigator = navigator;
-        this.rootLevelTasks = rootLevelTasks;
-        this.goListener = goListener;
-        buildUI();
+        /**
+         * Notifies about process cancellation.
+         */
+        public void onCancel();
     }
 
-    private void buildUI() {
-        VerticalLayout layout = new VerticalLayout();
+    /**
+     * Renders an export confirmation fragment.
+     * 
+     * @param config
+     *            export config.
+     * @param initalTasks
+     *            intial tasks.
+     * @param callback
+     *            result callback.
+     * @return confirmation dialog.
+     */
+    public static Component render(final ConfigOperations configOps,
+            final UISyncConfig config, List<GTask> initalTasks,
+            final Callback callback) {
+
+        final VerticalLayout layout = new VerticalLayout();
         layout.setSpacing(true);
 
-        String destination = config.getConnector2().getDestinationLocation() + " (" + config.getConnector2().getConnectorTypeId() + ")";
-        Label text1 = new Label(messages.format("exportConfirmation.pleaseConfirm", destination));
+        final String destination = config.getConnector2()
+                .getDestinationLocation()
+                + " ("
+                + config.getConnector2().getConnectorTypeId() + ")";
+        Label text1 = new Label(Page.MESSAGES.format(
+                "exportConfirmation.pleaseConfirm", destination));
         layout.addComponent(text1);
 
-        connectorTree = new MyTree();
+        final MyTree connectorTree = new MyTree();
         connectorTree.setSizeFull();
-        connectorTree.setTasks(rootLevelTasks);
+        connectorTree.setTasks(initalTasks);
         layout.addComponent(connectorTree);
 
-        Button goButton = new Button(messages.get("button.go"));
-        goButton.addClickListener(goListener);
-
-        HorizontalLayout buttonsLayout = new HorizontalLayout();
+        final HorizontalLayout buttonsLayout = new HorizontalLayout();
+        final Button goButton = new Button(Page.MESSAGES.get("button.go"));
         buttonsLayout.addComponent(goButton);
-        buttonsLayout.addComponent(ButtonBuilder.createBackButton(navigator, messages.get("button.cancel")));
+        Button backButton = new Button(Page.MESSAGES.get("button.cancel"));
+        backButton.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                callback.onCancel();
+            }
+        });
+        buttonsLayout.addComponent(backButton);
         layout.addComponent(buttonsLayout);
 
-        taskFieldsMappingFragment = new TaskFieldsMappingFragment(messages, config.getConnector1(),
-                config.getConnector2(), config.getNewMappings());
-        layout.addComponent(taskFieldsMappingFragment);
+        final TaskFieldsMappingFragment taskFieldsMappingFragment = new TaskFieldsMappingFragment(
+                Page.MESSAGES, config.getConnector1(), config.getConnector2(),
+                config.getNewMappings());
+        layout.addComponent(taskFieldsMappingFragment.getUI());
 
-        setCompositionRoot(layout);
-    }
+        goButton.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                try {
+                    configOps.saveConfig(config);
+                } catch (StorageException e) {
+                    LOGGER.error(
+                            Page.MESSAGES.format("action.cantSaveUpdatedConfig",
+                                    e.getMessage()), e);
+                }
 
-    public boolean needToSaveConfig() {
-        return taskFieldsMappingFragment.hasChanges();
-    }
+                callback.onTasks(connectorTree.getSelectedRootLevelTasks());
+            }
+        });
 
-    public List<GTask> getSelectedRootLevelTasks() {
-        return connectorTree.getSelectedRootLevelTasks();
+        return layout;
     }
 }

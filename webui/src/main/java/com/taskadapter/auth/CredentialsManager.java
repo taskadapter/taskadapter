@@ -13,9 +13,10 @@ public interface CredentialsManager {
      *            user.
      * @param auth
      *            secondary authentication token.
-     * @return <code>true</code> iff secondary token is authentic to a user.
+     * @return user autorhized operations or <code>null</code> if user is not
+     *         authorized.
      */
-    public boolean isSecondaryAuthentic(String user, String auth);
+    public AuthorizedOperations authenticateSecondary(String user, String auth);
 
     /**
      * Checks, if a user is authentic using a primary authentication token.
@@ -24,10 +25,10 @@ public interface CredentialsManager {
      *            user to check.
      * @param auth
      *            authentication token to use.
-     * @return <code>true</code> iff a user is authentic according to a primary
-     *         credentials.
+     * @return user autorhized operations or <code>null</code> if user is not
+     *         authorized.
      */
-    public boolean isPrimaryAuthentic(String user, String auth);
+    public AuthorizedOperations authenticatePrimary(String user, String auth);
 
     /**
      * Generates a secondary authentication key for a primary authentication
@@ -43,12 +44,12 @@ public interface CredentialsManager {
      * @throws AuthException
      *             if credentials are valid, but new token cannot be generated.
      */
-    public String generateSecondaryAuth(String user, String primaryAuth)
-            throws AuthException;
+    public SecondarizationResult generateSecondaryAuth(String user,
+            String primaryAuth) throws AuthException;
 
     /**
      * Deletes a secondary authentication token. After call to this method,
-     * {@link #isSecondaryAuthentic(String, String)} must return false to this
+     * {@link #authenticateSecondary(String, String)} must return false to this
      * token.
      * 
      * @param user
@@ -106,21 +107,12 @@ public interface CredentialsManager {
     public List<String> listUsers();
 
     /**
-     * Checks a user existence.
-     * 
-     * @param user
-     *            user name to check.
-     * @return <code>true</code> iff user exists.
-     */
-    public boolean doesUserExists(String user);
-
-    /**
-     * Removes user authentication data.
+     * Removes user.
      * 
      * @param user
      *            user name.
      * @throws AuthException
      *             if user exists and cannot be deleted.
      */
-    public void removeAuth(String user) throws AuthException;
+    public void removeUser(String user) throws AuthException;
 }

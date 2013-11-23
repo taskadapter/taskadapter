@@ -23,19 +23,22 @@ public final class TaskSaver {
         if (monitor == null) {
             monitor = ProgressMonitorUtils.getDummyMonitor();
         }
-        
-        final int totalNumberOfTasks = DataConnectorUtil.calculateNumberOfTasks(tasks);
+
+        final int totalNumberOfTasks = DataConnectorUtil
+                .calculateNumberOfTasks(tasks);
         monitor.beginTask("Saving " + totalNumberOfTasks + " tasks to "
                 + destinationName, totalNumberOfTasks);
-        
+
         TaskSaveResult saveResult;
 
         try {
             saveResult = connectorTo.saveData(tasks, monitor,
                     destinationMappings);
         } catch (ConnectorException e) {
-            saveResult = new TaskSaveResult("", 0, 0, Collections.<Integer, String>emptyMap(),
-                    Collections.<Throwable>singletonList(e), Collections.<TaskError<Throwable>> emptyList());
+            saveResult = new TaskSaveResult(null, 0, 0,
+                    Collections.<Integer, String> emptyMap(),
+                    Collections.<Throwable> singletonList(e),
+                    Collections.<TaskError<Throwable>> emptyList());
         }
 
         monitor.done();

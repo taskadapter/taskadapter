@@ -6,10 +6,8 @@ import com.vaadin.data.util.converter.Converter;
 /**
  * Map "key" property.
  * 
- * @author maxkar
- * 
  */
-final class KeyProperty extends AbstractProperty {
+final class KeyProperty extends AbstractProperty<String> {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -35,15 +33,15 @@ final class KeyProperty extends AbstractProperty {
 	}
 
 	@Override
-	public Object getValue() {
+	public String getValue() {
 		return key;
 	}
 
 	@Override
-	public void setValue(Object newValue) throws ReadOnlyException,
+	public void setValue(String newValue) throws ReadOnlyException,
             Converter.ConversionException {
 		final String oldKey = this.key;
-		final String newKey = newValue.toString();
+		final String newKey = newValue;
 		if (oldKey.equals(newKey))
 			return;
 		this.key = newKey;
@@ -52,7 +50,7 @@ final class KeyProperty extends AbstractProperty {
 	}
 
 	@Override
-	public Class<?> getType() {
+	public Class<String> getType() {
 		return String.class;
 	}
 

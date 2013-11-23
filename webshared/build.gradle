@@ -5,14 +5,11 @@ dependencies {
     compile libraries.slf4j
     compile libraries.slf4jJdk
 
-//    compile "com.vaadin:vaadin-server:$vaadinVersion"
     compile "com.vaadin:vaadin-client-compiled:$vaadinVersion"
     compile "com.vaadin:vaadin-client:$vaadinVersion"
     compile "com.vaadin:vaadin-themes:$vaadinVersion"
 
-    compile "javax.servlet:servlet-api:2.4"
-
-//    providedCompile "javax.servlet:servlet-api:2.4"
+    compile "javax.servlet:javax.servlet-api:3.0.1"
 
     compile project(":common")
     compile project(":mainapp")
@@ -25,8 +22,7 @@ dependencies {
 afterEvaluate {
     configure(allProcessResourcesTasks()) {
         filter(ReplaceTokens,
-                tokens: [taskAdapterVersion: TASK_ADAPTER_VERSION
-                        /*,gradleVersion: project.gradle.gradleVersion*/])
+                tokens: [taskAdapterVersion: TASK_ADAPTER_VERSION])
     }
 }
 

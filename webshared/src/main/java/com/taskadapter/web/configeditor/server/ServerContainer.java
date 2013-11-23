@@ -14,12 +14,17 @@ public class ServerContainer extends GridLayout {
 
     private TextField hostURLText;
 
-    public ServerContainer(Property labelProperty, Property serverURLProperty, Property userLoginNameProperty,
-                           Property passwordProperty) {
-        buildUI(labelProperty, serverURLProperty, userLoginNameProperty, passwordProperty);
+    public ServerContainer(Property<String> labelProperty,
+            Property<String> serverURLProperty,
+            Property<String> userLoginNameProperty,
+            Property<String> passwordProperty) {
+        buildUI(labelProperty, serverURLProperty, userLoginNameProperty,
+                passwordProperty);
     }
 
-    private void buildUI(Property labelProperty, Property serverURLProperty, Property userLoginNameProperty, Property passwordProperty) {
+    private void buildUI(Property<String> labelProperty,
+            Property<String> serverURLProperty,
+            Property<String> userLoginNameProperty, Property<String> passwordProperty) {
         setColumns(2);
         setRows(4);
         setMargin(true);

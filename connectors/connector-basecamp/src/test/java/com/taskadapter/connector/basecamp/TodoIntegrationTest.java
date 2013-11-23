@@ -10,7 +10,7 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GUser;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 public class TodoIntegrationTest {
 

@@ -8,7 +8,7 @@ import com.vaadin.ui.CheckBox;
  * 
  */
 public class Editors {
-	public static CheckBox createFindUsersElement(Property property) {
+	public static CheckBox createFindUsersElement(Property<Boolean> property) {
 		final CheckBox findUserByName = new CheckBox(
 				"Find users based on assignee's name");
 		findUserByName

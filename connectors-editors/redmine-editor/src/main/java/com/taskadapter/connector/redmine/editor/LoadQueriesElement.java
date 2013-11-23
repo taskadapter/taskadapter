@@ -4,7 +4,6 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.redmineapi.NotFoundException;
-import com.taskadapter.web.configeditor.EditorUtil;
 import com.vaadin.ui.Notification;
 
 import java.util.List;

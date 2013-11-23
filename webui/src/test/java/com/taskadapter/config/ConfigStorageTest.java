@@ -1,6 +1,5 @@
 package com.taskadapter.config;
 
-import com.taskadapter.FileManager;
 import com.taskadapter.connector.testlib.FileBasedTest;
 import org.junit.Test;
 
@@ -12,7 +11,7 @@ public class ConfigStorageTest extends FileBasedTest {
     private static final String ENCRYPTED = "test_encrypted";
     private static final String TEST_USER_LOGIN_NAME = "autotest";
 
-    private ConfigStorage configStorage = new ConfigStorage(new FileManager(tempFolder));
+    private ConfigStorage configStorage = new ConfigStorage(tempFolder);
 
     @Test
     public void checkSavingWorks() throws StorageException {

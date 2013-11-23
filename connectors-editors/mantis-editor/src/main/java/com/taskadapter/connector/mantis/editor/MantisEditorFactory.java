@@ -106,4 +106,11 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
         return describeSourceLocation(config);
     }
 
+    @Override
+    public boolean updateForSave(MantisConfig config, Sandbox sandbox)
+            throws BadConfigException {
+        validateForSave(config);
+        return false;
+    }
+
 }

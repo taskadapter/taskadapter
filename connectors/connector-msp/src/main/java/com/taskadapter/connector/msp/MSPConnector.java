@@ -73,6 +73,7 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
     @Override
     public void updateTasksByRemoteIds(List<GTask> tasksFromExternalSystem, Mappings mappings) throws ConnectorException {
         String fileName = config.getInputAbsoluteFilePath();
+        // FIXME: Why is this not used?
         MSXMLFileWriter writer = new MSXMLFileWriter(mappings);
         try {
             ProjectFile projectFile = new MSPFileReader().readFile(fileName);

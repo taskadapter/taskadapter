@@ -1,6 +1,5 @@
 package com.taskadapter.web.integration;
 
-import com.taskadapter.FileManager;
 import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.connector.definition.FieldMapping;
@@ -43,8 +42,7 @@ public class UIConfigStoreTest extends FileBasedTest {
     }
 
     private UIConfigStore getStore() {
-        FileManager fileManager = new FileManager(tempFolder);
-        final ConfigStorage configStorage = new ConfigStorage(fileManager);
+        final ConfigStorage configStorage = new ConfigStorage(tempFolder);
 
         EditorManager editorManager = EditorManager.fromResource("editors.txt");
         UIConfigService uiConfigService = new UIConfigService(new PluginManager(), editorManager);

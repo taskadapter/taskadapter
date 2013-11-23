@@ -108,7 +108,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         Label projectKeyLabel = new Label("Project key:");
         addTo(grid, Alignment.MIDDLE_LEFT, projectKeyLabel);
 
-        MethodProperty<Object> projectKeyProperty = new MethodProperty<Object>(config, "projectKey");
+        MethodProperty<String> projectKeyProperty = new MethodProperty<String>(config, "projectKey");
         addTo(grid, Alignment.MIDDLE_LEFT, textInput(projectKeyProperty));
         Button infoButton = EditorUtil.createButton("Info", "View the project info",
                 new Button.ClickListener() {
@@ -148,7 +148,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         Label todoListKey = new Label("Todo list key:");
         addTo(grid, Alignment.MIDDLE_LEFT, todoListKey);
 
-        MethodProperty<Object> todoKeyProperty = new MethodProperty<Object>(config, "todoKey");
+        MethodProperty<String> todoKeyProperty = new MethodProperty<String>(config, "todoKey");
         addTo(grid, Alignment.MIDDLE_LEFT, textInput(todoKeyProperty));
 
         Button infoButton = EditorUtil.createButton("Info", "View the todo list info",
@@ -208,5 +208,12 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
     @Override
     public String formatError(Throwable e) {
         return formatter.formatError(e);
+    }
+
+    @Override
+    public boolean updateForSave(BasecampConfig config, Sandbox sandbox)
+            throws BadConfigException {
+        validateForSave(config);
+        return false;
     }
 }

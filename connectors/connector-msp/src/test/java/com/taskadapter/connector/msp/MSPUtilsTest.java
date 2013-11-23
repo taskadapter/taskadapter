@@ -1,7 +1,6 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.msp.write.MSPDefaultFields;
-import com.taskadapter.connector.msp.write.MSXMLFileWriter;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;

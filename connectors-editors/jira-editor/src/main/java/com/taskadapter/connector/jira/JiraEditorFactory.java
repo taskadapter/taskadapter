@@ -124,4 +124,11 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
         return describeSourceLocation(config);
     }
 
+    @Override
+    public boolean updateForSave(JiraConfig config, Sandbox sandbox)
+            throws BadConfigException {
+        validateForSave(config);
+        return false;
+    }
+
 }

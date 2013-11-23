@@ -27,7 +27,6 @@ import com.vaadin.ui.VerticalLayout;
 import java.io.File;
 
 import static com.taskadapter.web.configeditor.EditorUtil.propertyInput;
-import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
 public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.msp.messages";
@@ -80,9 +79,9 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     }
 
     private Panel createFilePanel(Sandbox sandbox, MSPConfig config) {
-        final Property inputFilePath = new MethodProperty<String>(
+        final Property<String> inputFilePath = new MethodProperty<String>(
                 config, "inputAbsoluteFilePath");
-        final Property outputFilePath = new MethodProperty<String>(
+        final Property<String> outputFilePath = new MethodProperty<String>(
                 config, "outputAbsoluteFilePath");
         if (sandbox.allowLocalFSAccess()) {
             return new LocalModeFilePanel(inputFilePath, outputFilePath);
@@ -92,7 +91,7 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     }
 
     private ServerModeFilePanel createServerModePanel(final Sandbox sandbox,
-            final Property inputFilePath, final Property outputFilePath) {
+            final Property<String> inputFilePath, final Property<String> outputFilePath) {
         final UploadProcessor proc = new UploadProcessor() {
             @Override
             public FileProcessingResult processFile(File uploadedFile) {
@@ -144,6 +143,42 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
         }
         
         return new FileProcessingResult(new File(newFilePath), UPLOAD_MPP_SUCCESS);
+    }
+
+    @Override
+    public boolean updateForSave(MSPConfig config, Sandbox sandbox)
+            throws BadConfigException {
+        if (!config.getOutputAbsoluteFilePath().isEmpty())
+            return false;
+        
+        final String newPath = createDefaultMSPFileName(sandbox
+                .getUserContentDirectory());
+        if (newPath == null)
+            throw new MSPOutputFileNameNotSetException();
+        
+        config.setOutputAbsoluteFilePath(newPath);
+        config.setInputAbsoluteFilePath(newPath);
+        
+        return true;
+    }
+
+    /**
+     * Search for unused file name in user folder starting from postfix 1.
+     * 
+     * @return the new file name
+     */
+    private String createDefaultMSPFileName(File rootFolder) {
+        final String baseNameFormat = "MSP_export_%d.xml";
+        int number = 1;
+        while (number < 10000) {// give a chance to exit
+            rootFolder.mkdirs();
+            File file = new File(rootFolder, String.format(baseNameFormat,
+                    number++));
+            if (!file.exists()) {
+                return file.getAbsolutePath();
+            }
+        }
+        return null;
     }
 
 }

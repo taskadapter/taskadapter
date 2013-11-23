@@ -46,20 +46,25 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends UIConnector
         return config.getLabel();
     }
 
+
+    @Override
+    public void setLabel(String label) {
+        config.setLabel(label);
+    }
+    
     @Override
     public void validateForLoad() throws BadConfigException {
         editorFactory.validateForLoad(config);
     }
-
+    
     @Override
     public void validateForSave() throws BadConfigException {
         editorFactory.validateForSave(config);
     }
 
     @Override
-    @Deprecated
-    public ConnectorConfig getRawConfig() {
-        return config;
+    public boolean updateForSave(Sandbox sandbox) throws BadConfigException {
+        return editorFactory.updateForSave(config, sandbox);
     }
 
     @Override
@@ -95,5 +100,4 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends UIConnector
         }
         return ExceptionFormatter.format(e);
     }
-
 }

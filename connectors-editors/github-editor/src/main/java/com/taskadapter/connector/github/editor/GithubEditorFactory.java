@@ -98,4 +98,11 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig> {
     public String describeDestinationLocation(GithubConfig config) {
         return describeSourceLocation(config);
     }
+
+    @Override
+    public boolean updateForSave(GithubConfig config, Sandbox sandbox)
+            throws BadConfigException {
+        validateForSave(config);
+        return false;
+    }
 }

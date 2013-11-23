@@ -27,7 +27,7 @@ public class MyTree extends CustomComponent {
 
         @Override
         public void valueChange(Property.ValueChangeEvent event) {
-            if (checkBox.booleanValue()) {
+            if (checkBox.getValue()) {
                 // if some child is selected then also select his parent
                 selectParent();
             } else {
@@ -85,7 +85,7 @@ public class MyTree extends CustomComponent {
 
         if (itemIds != null) {
             for (Object itemId : itemIds) {
-                boolean checked = getCheckBox(itemId).booleanValue();
+                boolean checked = getCheckBox(itemId).getValue();
 
                 if (checked) {
                     idSet.add((Integer) itemId);
