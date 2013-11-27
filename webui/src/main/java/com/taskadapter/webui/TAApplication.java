@@ -6,7 +6,7 @@ import com.taskadapter.auth.BasicCredentialsManager;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.auth.cred.CredentialsStore;
 import com.taskadapter.auth.cred.FSCredentialStore;
-import com.taskadapter.webui.service.DefaultAutorizedOps;
+import com.taskadapter.webui.service.DefaultAuthorizedOps;
 import com.taskadapter.webui.service.EditableCurrentUserInfo;
 import com.taskadapter.webui.service.EditorManager;
 import com.taskadapter.webui.service.Services;
@@ -46,10 +46,10 @@ public class TAApplication extends UI {
         
         services.getLicenseManager().loadInstalledTaskAdapterLicense();
         
-        if (!credentialsManager.doesUserExists(DefaultAutorizedOps.ADMIN_LOGIN_NAME)) {
+        if (!credentialsManager.doesUserExists(DefaultAuthorizedOps.ADMIN_LOGIN_NAME)) {
             try {
-                String password = DefaultAutorizedOps.ADMIN_LOGIN_NAME;
-                credentialsManager.savePrimaryAuthToken(DefaultAutorizedOps.ADMIN_LOGIN_NAME, password);
+                String password = DefaultAuthorizedOps.ADMIN_LOGIN_NAME;
+                credentialsManager.savePrimaryAuthToken(DefaultAuthorizedOps.ADMIN_LOGIN_NAME, password);
             } catch (AuthException e) {
                 LOGGER.error("Admin initialization exception", e);
             }

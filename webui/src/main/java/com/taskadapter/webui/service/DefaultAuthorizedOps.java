@@ -4,7 +4,7 @@ import com.taskadapter.auth.AuthorizedOperations;
 import com.taskadapter.web.SettingsManager;
 
 /** Default implementation of authorization scheme. */
-public final class DefaultAutorizedOps implements AuthorizedOperations {
+public final class DefaultAuthorizedOps implements AuthorizedOperations {
     public static final String ADMIN_LOGIN_NAME = "admin";
 
     /** Information about current user. */
@@ -12,8 +12,8 @@ public final class DefaultAutorizedOps implements AuthorizedOperations {
     /** Application-wide settings. */
     private final SettingsManager settingsManager;
 
-    DefaultAutorizedOps(CurrentUserInfo userInfo,
-            SettingsManager settingsManager) {
+    DefaultAuthorizedOps(CurrentUserInfo userInfo,
+                         SettingsManager settingsManager) {
         super();
         this.userInfo = userInfo;
         this.settingsManager = settingsManager;

@@ -86,7 +86,7 @@ public class Services {
      * Returns list of authorized operations for current user.
      */
     public AuthorizedOperations getAuthorizedOperations() {
-        return new DefaultAutorizedOps(currentUserInfo, settingsManager);
+        return new DefaultAuthorizedOps(currentUserInfo, settingsManager);
     }
 
     // TODO: Should it live here or somewhere else?
