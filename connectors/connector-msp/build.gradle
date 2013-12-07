@@ -1,6 +1,6 @@
 dependencies {
     compile libraries.slf4j
 
-    compile 'net.sourceforge:mpxj:4.3.0'
+    compile 'net.sourceforge:mpxj:4.5.0-rc1'
     compile 'org.apache.poi:poi:3.8'
 }

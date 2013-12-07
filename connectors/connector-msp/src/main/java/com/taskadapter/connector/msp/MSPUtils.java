@@ -23,6 +23,7 @@ public class MSPUtils {
     private static final Logger logger = LoggerFactory.getLogger(MSPUtils.class);
 
     private static final String TA_TAG = "created_by_task_adapter";
+    private static final int RESOURCE_INDEX = 1;
 
     @SuppressWarnings("serial")
     private static Map<String, TaskField> TEXT_FIELDS_MAP = Collections.unmodifiableMap(new TreeMap<String, TaskField>() {
@@ -56,14 +57,14 @@ public class MSPUtils {
     });
 
     public static void markResourceAsOurs(Resource r) {
-        r.setText1(TA_TAG);
+        r.setText(RESOURCE_INDEX, TA_TAG);
         r.setNotes("Resource created by Task Adapter application.\nPlease, do NOT change the name or 'Unique ID' field (UID)."
                 + "\nThe UID is copied from an external system (like Redmine) and is required for 'update task' operations in Task Adapter."
                 + "\nUID=" + r.getUniqueID());
     }
 
     public static boolean isResourceOurs(Resource r) {
-        String textField1 = r.getText1();
+        String textField1 = r.getText(RESOURCE_INDEX);
         return ((textField1 != null) && textField1.equals(TA_TAG));
     }
 
