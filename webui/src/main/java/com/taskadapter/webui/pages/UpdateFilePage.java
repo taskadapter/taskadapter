@@ -236,6 +236,8 @@ public final class UpdateFilePage {
                 onDone.run();
             }
         });
+        res.addComponent(msg);
+        res.addComponent(backButton);
 
         setContent(res);
 

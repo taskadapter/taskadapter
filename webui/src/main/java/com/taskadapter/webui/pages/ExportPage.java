@@ -300,6 +300,8 @@ public final class ExportPage {
                 onDone.run();
             }
         });
+        res.addComponent(msg);
+        res.addComponent(backButton);
 
         setContent(res);
 
