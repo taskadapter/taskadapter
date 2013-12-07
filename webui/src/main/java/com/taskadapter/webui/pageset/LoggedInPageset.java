@@ -389,6 +389,8 @@ public class LoggedInPageset {
     }
 
     private void processSyncAction(UISyncConfig config, String action) {
+        if (action.equals(Page.MESSAGES.get("button.cancel")))
+            return;
         if (action.equals(Page.MESSAGES.get("export.update"))) {
             startUpdateFile(config);
         } else
