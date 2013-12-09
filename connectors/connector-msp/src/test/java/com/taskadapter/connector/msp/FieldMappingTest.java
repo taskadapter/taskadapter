@@ -3,6 +3,7 @@ package com.taskadapter.connector.msp;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.testlib.CommonTests;
+import com.taskadapter.connector.testlib.FileBasedTest;
 import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.connector.testlib.TestSaver;
 import com.taskadapter.connector.testlib.TestUtils;
@@ -17,6 +18,7 @@ import net.sf.mpxj.TaskField;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -28,18 +30,19 @@ import static com.taskadapter.connector.msp.MSPTestUtils.findMSPTaskBySummary;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class FieldMappingTest {
+public class FieldMappingTest extends FileBasedTest {
+    private static final String MSP_FILE_NAME = "msp_test_data.tmp";
+
     private MSPConfig config;
     private MSPConnector connector;
 
     @Before
     public void beforeEachTest() {
+        super.beforeEachTest();
         config = new MSPConfig();
-        // TODO need to generate a random file here to avoid possible collisions
-        // when this test class runs in multiple threads
-        config.setInputAbsoluteFilePath("msp_test_data.tmp");
-        config.setOutputAbsoluteFilePath("msp_test_data.tmp");
-
+        File file = new File(tempFolder, MSP_FILE_NAME);
+        config.setInputAbsoluteFilePath(file.getAbsolutePath());
+        config.setOutputAbsoluteFilePath(file.getAbsolutePath());
         connector = new MSPConnector(config);
     }
 
