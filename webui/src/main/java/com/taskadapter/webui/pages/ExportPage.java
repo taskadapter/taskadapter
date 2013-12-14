@@ -105,7 +105,7 @@ public final class ExportPage {
      * Starts data loading.
      */
     private void startLoading() {
-        setContent(SyncActionComponents.renderLoadInicator(config
+        setContent(SyncActionComponents.renderLoadIndicator(config
                 .getConnector1()));
 
         if (taskLimit < Integer.MAX_VALUE)

@@ -1,15 +1,16 @@
 package com.taskadapter.webui.pages;
 
 import com.taskadapter.web.uiapi.UISyncConfig;
+import com.taskadapter.webui.ImageLoader;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.server.Sizeable.Unit;
-import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
@@ -55,8 +56,7 @@ public final class ConfigActionsPanel {
         descriptionLayout.addComponent(description);
         descriptionLayout.setComponentAlignment(description,
                 Alignment.MIDDLE_LEFT);
-        final Embedded editButton = new Embedded(null, new ThemeResource(
-                "img/edit.png"));
+        final Embedded editButton = new Embedded(null, ImageLoader.getImage("edit.png"));
         descriptionLayout.addComponent(editButton);
         descriptionLayout.setComponentAlignment(editButton,
                 Alignment.MIDDLE_RIGHT);
@@ -67,16 +67,26 @@ public final class ConfigActionsPanel {
         horizontalLayout.setSpacing(true);
 
         horizontalLayout.addComponent(UniConfigExport.render(config,
-                new Runnable() {
+                new UniConfigExport.Callback() {
                     @Override
-                    public void run() {
+                    public void dropInExport(Html5File file) {
+                        callback.forwardDropIn(config, file);
+                    }
+
+                    @Override
+                    public void doExport() {
                         callback.forwardSync(config);
                     }
                 }));
         horizontalLayout.addComponent(UniConfigExport.render(config.reverse(),
-                new Runnable() {
+                new UniConfigExport.Callback() {
                     @Override
-                    public void run() {
+                    public void dropInExport(Html5File file) {
+                        callback.backwardDropIn(config, file);
+                    }
+
+                    @Override
+                    public void doExport() {
                         callback.backwardSync(config);
                     }
                 }));

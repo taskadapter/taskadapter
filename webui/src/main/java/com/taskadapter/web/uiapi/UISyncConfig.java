@@ -1,10 +1,12 @@
 package com.taskadapter.web.uiapi;
 
+import java.io.File;
 import java.util.List;
 
 import com.taskadapter.connector.MappingBuilder;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.DropInConnector;
 import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.MappingSide;
 import com.taskadapter.connector.definition.Mappings;
@@ -196,6 +198,14 @@ public final class UISyncConfig {
                         .getDummyMonitor());
     }
 
+    public List<GTask> loadDropInTasks(File tempFile, int taskLimit)
+            throws ConnectorException {
+        return TaskLoader.loadDropInTasks(taskLimit,
+                (DropInConnector<?>) getConnector1().createConnectorInstance(),
+                tempFile, generateSourceMappings(),
+                ProgressMonitorUtils.getDummyMonitor());
+    }
+
     /**
      * Saves tasks for the given config.
      * 
@@ -220,6 +230,24 @@ public final class UISyncConfig {
             return new TaskExportResult(result, e);
         }
 
+    }
+
+    /**
+     * Saves tasks for the given config.
+     * 
+     * @param tasks
+     *            tasks to save.
+     * @param progress
+     *            operation progress.
+     * @return operation state.
+     */
+    public TaskExportResult onlySaveTasks(List<GTask> tasks,
+            ProgressMonitor progress) {
+        final TaskSaveResult result = TaskSaver.save(getConnector2()
+                .createConnectorInstance(), getConnector2()
+                .getDestinationLocation(), generateTargetMappings(), tasks,
+                progress);
+        return new TaskExportResult(result, null);
     }
 
     /**

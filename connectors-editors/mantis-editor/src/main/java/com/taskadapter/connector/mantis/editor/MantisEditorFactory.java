@@ -5,6 +5,7 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.mantis.MantisConfig;
+import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
@@ -111,6 +112,12 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
             throws BadConfigException {
         validateForSave(config);
         return false;
+    }
+
+    @Override
+    public void validateForDropInLoad(MantisConfig config)
+            throws BadConfigException, DroppingNotSupportedException {
+        throw DroppingNotSupportedException.INSTANCE;
     }
 
 }

@@ -1,7 +1,7 @@
 package com.taskadapter.webui.config;
 
 import com.taskadapter.web.data.Messages;
-import com.vaadin.server.ThemeResource;
+import com.taskadapter.webui.ImageLoader;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
@@ -9,11 +9,10 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.Runo;
 
 public final class ExportButtonsFragment {
-    private static Button createButton(Messages messages, String imageFile,
-            final Runnable handler) {
+    private static Button createButton(Messages messages, String imageFile, final Runnable handler) {
 
         final Button button = new Button();
-        button.setIcon(new ThemeResource(imageFile));
+        button.setIcon(ImageLoader.getImage(imageFile));
         button.setStyleName(Runo.BUTTON_SMALL);
         button.addStyleName("exportLeftRightButton");
         button.setDescription(messages.get("export.exportButtonTooltip"));
@@ -30,9 +29,9 @@ public final class ExportButtonsFragment {
             Runnable exportToRight) {
         final HorizontalLayout res = new HorizontalLayout();
         res.setSpacing(true);
-        res.addComponent(createButton(messages, "img/arrow_left.png",
+        res.addComponent(createButton(messages, "arrow_left.png",
                 exportToLeft));
-        res.addComponent(createButton(messages, "img/arrow_right.png",
+        res.addComponent(createButton(messages, "arrow_right.png",
                 exportToRight));
 
         return res;

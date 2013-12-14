@@ -20,6 +20,7 @@ public class Preservices {
     public final UIConfigStore uiConfigStore;
 
     public final String currentTaskAdapterVersion;
+    public final TempFileManager tempFileManager;
 
     public Preservices(File rootDir, EditorManager editorManager,
             CredentialsManager credentialManager) {
@@ -32,9 +33,10 @@ public class Preservices {
 
         this.currentTaskAdapterVersion = new CurrentVersionLoader()
                 .getCurrentVersion();
+        this.tempFileManager = new TempFileManager(new File(rootDir,
+                ".temporary-files"));
 
         licenseManager = new LicenseManager(rootDir);
 
     }
-
 }

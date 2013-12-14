@@ -5,6 +5,7 @@ import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.webui.data.ExceptionFormatter;
@@ -62,6 +63,12 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends UIConnector
         editorFactory.validateForSave(config);
     }
 
+    @Override
+    public void validateForDropIn() throws BadConfigException,
+            DroppingNotSupportedException {
+        editorFactory.validateForDropInLoad(config);
+    }
+    
     @Override
     public boolean updateForSave(Sandbox sandbox) throws BadConfigException {
         return editorFactory.updateForSave(config, sandbox);

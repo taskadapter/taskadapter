@@ -6,6 +6,7 @@ import com.taskadapter.connector.definition.exceptions.LoginNameNotSpecifiedExce
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.connector.github.GithubConfig;
+import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
@@ -104,5 +105,11 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig> {
             throws BadConfigException {
         validateForSave(config);
         return false;
+    }
+
+    @Override
+    public void validateForDropInLoad(GithubConfig config)
+            throws BadConfigException, DroppingNotSupportedException {
+        throw DroppingNotSupportedException.INSTANCE;
     }
 }

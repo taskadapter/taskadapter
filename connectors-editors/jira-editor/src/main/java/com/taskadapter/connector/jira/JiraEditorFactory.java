@@ -6,6 +6,7 @@ import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.jira.exceptions.BadHostException;
 import com.taskadapter.connector.jira.exceptions.BadURIException;
+import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
@@ -129,6 +130,12 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
             throws BadConfigException {
         validateForSave(config);
         return false;
+    }
+
+    @Override
+    public void validateForDropInLoad(JiraConfig config)
+            throws BadConfigException, DroppingNotSupportedException {
+        throw DroppingNotSupportedException.INSTANCE;
     }
 
 }

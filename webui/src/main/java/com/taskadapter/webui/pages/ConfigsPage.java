@@ -8,6 +8,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -52,6 +53,26 @@ public final class ConfigsPage {
          *            config for the operation.
          */
         public void backwardSync(UISyncConfig config);
+
+        /**
+         * Performs a forward drop-in.
+         * 
+         * @param config
+         *            config to use.
+         * @param file
+         *            file to receive.
+         */
+        public void forwardDropIn(UISyncConfig config, Html5File file);
+
+        /**
+         * Performs a backward drop-in.
+         * 
+         * @param config
+         *            config to use.
+         * @param file
+         *            file to receive.
+         */
+        public void backwardDropIn(UISyncConfig config, Html5File file);
 
         /**
          * User requested creation of a new config.
@@ -170,7 +191,7 @@ public final class ConfigsPage {
         configsLayout = new VerticalLayout();
         configsLayout.setSpacing(true);
         configsLayout.setWidth(560, PIXELS);
-        
+
         setDisplayedConfigs(configs);
 
         layout.addComponent(configsLayout);

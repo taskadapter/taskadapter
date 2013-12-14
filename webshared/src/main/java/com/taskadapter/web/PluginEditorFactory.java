@@ -32,6 +32,21 @@ public interface PluginEditorFactory<C extends ConnectorConfig> extends
     void validateForLoad(C config) throws BadConfigException;
 
     /**
+     * Validates config for "drop-in" loading.
+     * 
+     * @param config
+     *            config to validate.
+     * @throws BadConfigException
+     *             if config cannot accept a drop for some reason.
+     * @throws DroppingNotSupportedException
+     *             if dropping is not supported either by this plugin or by
+     *             "config type" (i.e. it's not a "configuration
+     *             mistake", it is a definitely an "unsupported configuration").
+     */
+    void validateForDropInLoad(C config) throws BadConfigException,
+            DroppingNotSupportedException;
+
+    /**
      * Updates config for save (if it is possible). Primary purpose of this
      * method is to give a plugin editor last chance to update configuration
      * before save (for example, create a file). However, non-file plugins also

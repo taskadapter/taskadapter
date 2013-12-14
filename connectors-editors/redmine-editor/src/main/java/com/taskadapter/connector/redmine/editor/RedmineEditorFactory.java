@@ -8,6 +8,7 @@ import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RelationCreationException;
 import com.taskadapter.redmineapi.RedmineAuthenticationException;
+import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
@@ -111,5 +112,11 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
             throws BadConfigException {
         validateForSave(config);
         return false;
+    }
+
+    @Override
+    public void validateForDropInLoad(RedmineConfig config)
+            throws BadConfigException, DroppingNotSupportedException {
+        throw DroppingNotSupportedException.INSTANCE;
     }
 }

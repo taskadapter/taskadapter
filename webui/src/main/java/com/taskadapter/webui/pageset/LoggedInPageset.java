@@ -3,6 +3,9 @@ package com.taskadapter.webui.pageset;
 import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,6 +32,7 @@ import com.taskadapter.webui.UserContext;
 import com.taskadapter.webui.config.EditConfigPage;
 import com.taskadapter.webui.license.LicenseFacade;
 import com.taskadapter.webui.pages.ConfigsPage;
+import com.taskadapter.webui.pages.DropInExportPage;
 import com.taskadapter.webui.pages.ExportPage;
 import com.taskadapter.webui.pages.LicenseAgreementPage;
 import com.taskadapter.webui.pages.NewConfigPage;
@@ -37,10 +41,13 @@ import com.taskadapter.webui.pages.UpdateFilePage;
 import com.taskadapter.webui.service.Preservices;
 import com.taskadapter.webui.service.WrongPasswordException;
 import com.taskadapter.webui.user.ChangePasswordDialog;
+import com.vaadin.server.StreamVariable;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
@@ -266,6 +273,18 @@ public class LoggedInPageset {
                     public void edit(UISyncConfig config) {
                         showConfigEditor(config, null);
                     }
+
+                    @Override
+                    public void forwardDropIn(UISyncConfig config,
+                            Html5File file) {
+                        dropIn(config, file);
+                    }
+
+                    @Override
+                    public void backwardDropIn(UISyncConfig config,
+                            Html5File file) {
+                        dropIn(config.reverse(), file);
+                    }
                 }));
     }
 
@@ -338,6 +357,85 @@ public class LoggedInPageset {
         } else {
             exportCommon(config);
         }
+    }
+
+    /**
+     * Performs a drop-in.
+     * 
+     * @param config
+     *            config.
+     * @param file
+     *            dropped file.
+     */
+    private void dropIn(final UISyncConfig config, final Html5File file) {
+        final File df = services.tempFileManager.nextFile();
+        file.setStreamVariable(new StreamVariable() {
+            @Override
+            public void streamingStarted(StreamingStartEvent event) {
+            }
+
+            @Override
+            public void streamingFinished(StreamingEndEvent event) {
+                final VaadinSession ss = VaadinSession.getCurrent();
+                ss.lock();
+                try {
+                    final int maxTasks = services.licenseManager
+                            .isSomeValidLicenseInstalled() ? MAX_TASKS_TO_LOAD
+                            : LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
+                    tracker.trackPage("drop_in");
+                    applyUI(DropInExportPage.render(context.configOps, config,
+                            maxTasks, services.settingsManager
+                                    .isTAWorkingOnLocalMachine(),
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    df.delete();
+                                    showHome();
+                                }
+                            }, df));
+                } finally {
+                    ss.unlock();
+                }
+            }
+
+            @Override
+            public void streamingFailed(StreamingErrorEvent event) {
+                final VaadinSession ss = VaadinSession.getCurrent();
+                ss.lock();
+                try {
+                    Notification.show("Fatal Upload Failure "
+                            + event.getException());
+                } finally {
+                    ss.unlock();
+                }
+                df.delete();
+            }
+
+            @Override
+            public void onProgress(StreamingProgressEvent event) {
+                LOGGER.error("We don't need no progress! Vaadin is not good.");
+            }
+
+            @Override
+            public boolean listenProgress() {
+                return false;
+            }
+
+            @Override
+            public boolean isInterrupted() {
+                return false;
+            }
+
+            @Override
+            public OutputStream getOutputStream() {
+                try {
+                    return new FileOutputStream(df);
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(
+                            "Vaadin is really bad (file drop handler API)!", e);
+                }
+            }
+        });
     }
 
     /**

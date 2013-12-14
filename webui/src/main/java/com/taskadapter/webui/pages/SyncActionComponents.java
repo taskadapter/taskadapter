@@ -42,6 +42,9 @@ public final class SyncActionComponents {
             UIConnectorConfig connector, List<Throwable> generalErrors,
             List<TaskError<Throwable>> taskErrors) {
 
+        if (generalErrors.isEmpty() && taskErrors.isEmpty())
+            return;
+
         container.addComponent(new Label(
                 "There were some problems during export:"));
         String errorText = "";
@@ -101,10 +104,14 @@ public final class SyncActionComponents {
      *            source config/name.
      * @return load indicator.
      */
-    public static Component renderLoadInicator(UIConnectorConfig source) {
+    public static Component renderLoadIndicator(UIConnectorConfig source) {
+        return renderLoadIndicator(source.getSourceLocation() + " ("
+                + source.getLabel() + ")");
+
+    }
+
+    public static Component renderLoadIndicator(final String sourceDescription) {
         final VerticalLayout res = new VerticalLayout();
-        final String sourceDescription = source.getSourceLocation() + " ("
-                + source.getLabel() + ")";
         final String labelText = Page.MESSAGES.format("action.loadingData",
                 sourceDescription);
 
@@ -118,7 +125,6 @@ public final class SyncActionComponents {
 
         res.addComponent(loadProgress);
         return res;
-
     }
 
     /**

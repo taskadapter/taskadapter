@@ -3,6 +3,7 @@ package com.taskadapter.web.uiapi;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.service.Sandbox;
 import com.vaadin.ui.ComponentContainer;
 
@@ -75,7 +76,12 @@ public abstract class UIConnectorConfig {
      * Validates config for save. Does not update it in any way.
      */
     public abstract void validateForSave() throws BadConfigException;
-
+    
+    /**
+     * Validates config for drop-in operation.
+     */
+    public abstract void validateForDropIn() throws BadConfigException,
+            DroppingNotSupportedException;
 
     /**
      * Validates and updates config for save. This method is used mostly by the

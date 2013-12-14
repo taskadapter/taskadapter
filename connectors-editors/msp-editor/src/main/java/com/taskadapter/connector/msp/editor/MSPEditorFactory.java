@@ -8,6 +8,7 @@ import com.taskadapter.connector.msp.MSPOutputFileNameNotSetException;
 import com.taskadapter.connector.msp.MSPUtils;
 import com.taskadapter.connector.msp.UnsupportedRelationType;
 import com.taskadapter.connector.msp.editor.error.InputFileNameNotSetException;
+import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.file.FileProcessingResult;
 import com.taskadapter.web.configeditor.file.LocalModeFilePanel;
@@ -115,6 +116,14 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
             throw new InputFileNameNotSetException();
         }
     }
+    
+
+    @Override
+    public void validateForDropInLoad(MSPConfig config)
+            throws BadConfigException, DroppingNotSupportedException {
+        // Always valid!.
+    }
+
 
     @Override
     public String describeSourceLocation(MSPConfig config) {

@@ -2,22 +2,30 @@ package com.taskadapter.webui.pages;
 
 import static com.taskadapter.license.LicenseManager.TRIAL_MESSAGE;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.taskadapter.connector.common.ProgressMonitorUtils;
+import com.taskadapter.connector.definition.TaskError;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
+import com.taskadapter.web.configeditor.file.FileDownloadResource;
 import com.taskadapter.web.uiapi.UISyncConfig;
+import com.taskadapter.web.uiapi.UISyncConfig.TaskExportResult;
 import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.MonitorWrapper;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.export.ConfirmExportFragment;
+import com.vaadin.server.FileDownloader;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -25,10 +33,13 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalLayout;
 
-public final class UpdateFilePage {
-
+/**
+ * Export page and epoxrt handler.
+ * 
+ */
+public final class DropInExportPage {
     private static final Logger LOGGER = LoggerFactory
-            .getLogger(ExportPage.class);
+            .getLogger(DropInExportPage.class);
 
     /**
      * Config operations.
@@ -50,16 +61,28 @@ public final class UpdateFilePage {
      */
     private final Runnable onDone;
 
+    /**
+     * "Show file path" flag.
+     */
+    private final boolean showFilePath;
+
+    /**
+     * Temp file.
+     */
+    private final File tempFile;
+
     private final VerticalLayout ui;
     private final Label errorMessage;
     private final VerticalLayout content;
 
-    private UpdateFilePage(ConfigOperations configOps, UISyncConfig config,
-            int taskLimit, Runnable onDone) {
+    private DropInExportPage(ConfigOperations configOps, UISyncConfig config,
+            int taskLimit, boolean showFilePath, Runnable onDone, File tempFile) {
         this.config = config;
         this.onDone = onDone;
         this.taskLimit = taskLimit;
+        this.showFilePath = showFilePath;
         this.configOps = configOps;
+        this.tempFile = tempFile;
 
         ui = new VerticalLayout();
         errorMessage = new Label("");
@@ -71,24 +94,15 @@ public final class UpdateFilePage {
         content = new VerticalLayout();
         ui.addComponent(content);
 
-        final String welcome = Page.MESSAGES.format("updatePage.initialText",
-                config.getConnector2().getDestinationLocation());
-
-        setContent(SyncActionComponents.renderDownloadWelcome(welcome,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        startLoading();
-                    }
-                }, onDone));
+        startLoading();
     }
 
     /**
      * Starts data loading.
      */
     private void startLoading() {
-        setContent(SyncActionComponents.renderLoadIndicator(config
-                .getConnector1()));
+        setContent(SyncActionComponents.renderLoadIndicator(Page.MESSAGES
+                .get("export.dropInFile")));
 
         if (taskLimit < Integer.MAX_VALUE)
             LOGGER.info(TRIAL_MESSAGE);
@@ -97,9 +111,8 @@ public final class UpdateFilePage {
             @Override
             public void run() {
                 try {
-                    final List<GTask> tasks = config
-                            .loadTasksForUpdate(ProgressMonitorUtils
-                                    .getDummyMonitor());
+                    final List<GTask> tasks = config.loadDropInTasks(tempFile,
+                            taskLimit);
                     if (tasks.isEmpty())
                         showNoDataLoaded();
                     else
@@ -172,35 +185,69 @@ public final class UpdateFilePage {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    showExportResult(config.updateTasks(selectedTasks, wrapper));
-                } catch (CommunicationException e) {
-                    final String message = config.getConnector1()
-                            .decodeException(e);
-                    showLoadErrorMessage(message);
-                    LOGGER.error("transport error: " + message, e);
-                } catch (ConnectorException e) {
-                    showLoadErrorMessage(config.getConnector1()
-                            .decodeException(e));
-                    LOGGER.error(e.getMessage(), e);
-                } catch (RuntimeException e) {
-                    showLoadErrorMessage("Internal error: " + e.getMessage());
-                    LOGGER.error(e.getMessage(), e);
-                }
+                showExportResult(config.onlySaveTasks(selectedTasks, wrapper));
             }
         }).start();
     }
 
     /**
      * Shows task export result.
+     * 
+     * @param res
+     *            operation result.
      */
-    private void showExportResult(int updatedTasks) {
+    private void showExportResult(TaskExportResult res) {
         final VerticalLayout ui = new VerticalLayout();
 
-        final String text = Page.MESSAGES.format("updatePage.result",
-                updatedTasks, config.getConnector2().getDestinationLocation(),
-                config.getConnector1().getSourceLocation());
-        ui.addComponent(new Label(text));
+        final VerticalLayout donePanel = new VerticalLayout();
+        donePanel.setWidth("600px");
+        donePanel.setStyleName("export-panel");
+
+        final String time = new SimpleDateFormat("MMMM dd, yyyy  HH:mm")
+                .format(Calendar.getInstance().getTime());
+        final Label label = new Label(
+                "<strong>Export completed on</strong> <em>" + time + "</em>");
+        label.setContentMode(ContentMode.HTML);
+
+        donePanel.addComponent(label);
+
+        donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
+                "From", config.getConnector1().getSourceLocation()));
+
+        final String resultFile = res.saveResult.getTargetFileAbsolutePath();
+        if (resultFile != null && !showFilePath) {
+            donePanel.addComponent(createDownloadButton(resultFile));
+        }
+
+        donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
+                "Created tasks",
+                String.valueOf(res.saveResult.getCreatedTasksNumber())));
+        donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
+                "Updated tasks",
+                String.valueOf(res.saveResult.getUpdatedTasksNumber())
+                        + "<br/><br/>"));
+
+        if (resultFile != null && showFilePath) {
+            final Label flabel = new Label(
+                    "<strong>Path to export file:</strong> <em>" + resultFile
+                            + "</em>");
+            flabel.setContentMode(ContentMode.HTML);
+            donePanel.addComponent(flabel);
+        }
+
+        SyncActionComponents.addErrors(donePanel, config.getConnector2(),
+                res.saveResult.getGeneralErrors(),
+                res.saveResult.getTaskErrors());
+        if (res.remoteIdUpdateException != null)
+            SyncActionComponents
+                    .addErrors(
+                            donePanel,
+                            config.getConnector1(),
+                            Collections
+                                    .<Throwable> singletonList(res.remoteIdUpdateException),
+                            Collections.<TaskError<Throwable>> emptyList());
+
+        ui.addComponent(donePanel);
 
         final Button button = new Button(
                 Page.MESSAGES.get("action.backToHomePage"));
@@ -218,6 +265,21 @@ public final class UpdateFilePage {
         } finally {
             VaadinSession.getCurrent().unlock();
         }
+    }
+
+    /**
+     * Creates a download button.
+     * 
+     * @param targetFileAbsolutePath
+     *            target path.
+     */
+    private Component createDownloadButton(final String targetFileAbsolutePath) {
+        final Button downloadButton = new Button("Download file");
+        File file = new File(targetFileAbsolutePath);
+        final FileDownloadResource resource = new FileDownloadResource(file);
+        final FileDownloader downloader = new FileDownloader(resource);
+        downloader.extend(downloadButton);
+        return downloadButton;
     }
 
     /**
@@ -283,21 +345,32 @@ public final class UpdateFilePage {
     }
 
     /**
-     * Renders an "update file" page.
+     * Renders an export page.
      * 
      * @param configOps
      *            config operations.
      * @param config
-     *            current config.
-     * @param maxTasks
-     *            maximal number of tasks.
-     * @param onExit
-     *            exit handler.
-     * @return operation UI.
+     *            config to export.
+     * @param licenseManager
+     *            used license manager.
+     * @param onDone
+     *            "done" handler.
+     * @param tempFile
+     *            temporary file.
+     * @param dropIn
+     *            drop-in file.
+     * @return UI component.
      */
     public static Component render(ConfigOperations configOps,
-            UISyncConfig config, int maxTasks, Runnable onExit) {
-        return new UpdateFilePage(configOps, config, maxTasks, onExit).ui;
+            UISyncConfig config, int taskLimit, boolean showFilePath,
+            final Runnable onDone, final File tempFile) {
+        return new DropInExportPage(configOps, config, taskLimit, showFilePath,
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        tempFile.delete();
+                        onDone.run();
+                    }
+                }, tempFile).ui;
     }
-
 }

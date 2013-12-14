@@ -2,12 +2,12 @@ package com.taskadapter.webui.config;
 
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
+import com.taskadapter.webui.ImageLoader;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.ShortcutAction;
-import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.ComponentContainer;
@@ -45,8 +45,7 @@ public class MiniPanel extends HorizontalLayout {
         connectorLabel = new Label();
         inner.addComponent(connectorLabel);
 
-        final Embedded editIcon = new Embedded(null, new ThemeResource(
-                "img/edit.png"));
+        final Embedded editIcon = new Embedded(null, ImageLoader.getImage("edit.png"));
         inner.addComponent(editIcon);
 
         inner.setComponentAlignment(editIcon, Alignment.MIDDLE_RIGHT);

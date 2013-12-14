@@ -11,6 +11,7 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
+import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.callbacks.DataProvider;
@@ -210,5 +211,11 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
             throws BadConfigException {
         validateForSave(config);
         return false;
+    }
+
+    @Override
+    public void validateForDropInLoad(BasecampConfig config)
+            throws BadConfigException, DroppingNotSupportedException {
+        throw DroppingNotSupportedException.INSTANCE;
     }
 }
