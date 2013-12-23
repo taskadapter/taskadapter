@@ -8,6 +8,8 @@ import com.taskadapter.connector.Priorities;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GUser;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,16 +84,21 @@ public class JiraToGTask {
         }
 
         processRelations(issue, task);
-
+        processParentTask(issue, task);
         return task;
     }
 
-    public GTask convertToGenericTask(BasicIssue issue) {
-        GTask task = new GTask();
-        Integer intId = Integer.parseInt(issue.getId());
-        task.setId(intId);
-        task.setKey(issue.getKey());
-        return task;
+    private static void processParentTask(Issue issue, GTask task) {
+        if (issue.getIssueType().isSubtask()) {
+            Object parent = issue.getFieldByName("Parent").getValue();
+            JSONObject json = (JSONObject) parent;
+            try {
+                String parentKey = (String) json.get("key");
+                task.setParentKey(parentKey);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private static void processRelations(Issue issue, GTask genericTask) {
