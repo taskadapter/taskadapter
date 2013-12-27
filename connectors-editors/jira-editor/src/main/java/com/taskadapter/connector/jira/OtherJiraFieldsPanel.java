@@ -109,7 +109,7 @@ class OtherJiraFieldsPanel extends Panel {
 
         final TextField defaultTaskType = EditorUtil
                 .addLabeledText(grid, "Default issue type:",
-                        "New issues will be created with this 'issue type' (bug/improvement/task...)");
+                        "New issues will be created with this issue type (bug/improvement/task...)");
         final MethodProperty<String> defaultTaskTypeProperty = new MethodProperty<String>(config, "defaultTaskType");
         defaultTaskType.setPropertyDataSource(defaultTaskTypeProperty);
         Button showDefaultTaskType = EditorUtil.createLookupButton(
@@ -120,7 +120,7 @@ class OtherJiraFieldsPanel extends Panel {
                 new DataProvider<List<? extends NamedKeyedObject>>() {
                     @Override
                     public List<? extends NamedKeyedObject> loadData() throws ConnectorException {
-                        return new JiraConnector(config).getIssueTypes();
+                        return new JiraConnector(config).getAllIssueTypes();
                     }
                 },
                 defaultTaskTypeProperty,
@@ -128,5 +128,27 @@ class OtherJiraFieldsPanel extends Panel {
                 exceptionFormatter
         );
         grid.addComponent(showDefaultTaskType);
+
+        final TextField defaultIssueTypeForSubtasks = EditorUtil
+                .addLabeledText(grid, "Issue type for subtasks:",
+                        "Subtasks will be created with this issue type (typically this is 'subtask')");
+        final MethodProperty<String> defaultIssueTypeForSubtasksProperty = new MethodProperty<String>(config, "defaultIssueTypeForSubtasks");
+        defaultIssueTypeForSubtasks.setPropertyDataSource(defaultIssueTypeForSubtasksProperty);
+        Button showIssueTypeForSubtasksButton = EditorUtil.createLookupButton(
+                "...",
+                "Show list of available subtask types on the Jira server",
+                "Select a subtask type",
+                "List of available subtask types on the Jira server",
+                new DataProvider<List<? extends NamedKeyedObject>>() {
+                    @Override
+                    public List<? extends NamedKeyedObject> loadData() throws ConnectorException {
+                        return new JiraConnector(config).getIssueTypesForSubtasks();
+                    }
+                },
+                defaultIssueTypeForSubtasksProperty,
+                true,
+                exceptionFormatter
+        );
+        grid.addComponent(showIssueTypeForSubtasksButton);
     }
 }

@@ -10,13 +10,14 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class JiraConfig extends ConnectorConfig {
-    
+
     private static final Priorities DEFAULT_PRIORITIES = createDefaultPriorities();
     
     static final String DEFAULT_LABEL = "Atlassian Jira";
 
     private static final long serialVersionUID = 1L;
     private static final String TASK_TYPE_BUG = "Bug";
+    private static final String DEFAULT_SUB_TASK_TYPE = "Sub-task";
 
     private WebServerInfo serverInfo = new WebServerInfo();
 
@@ -36,11 +37,13 @@ public class JiraConfig extends ConnectorConfig {
     private Integer queryId;
     private String projectKey;
     private Map<String, String> customFields = new TreeMap<String, String>();
+    private String defaultIssueTypeForSubtasks;
 
     public JiraConfig() {
         super(DEFAULT_PRIORITIES);
         setLabel(DEFAULT_LABEL);
         setDefaultTaskType(TASK_TYPE_BUG);
+        setDefaultIssueTypeForSubtasks(DEFAULT_SUB_TASK_TYPE);
     }
 
     public String getComponent() {
@@ -159,5 +162,13 @@ public class JiraConfig extends ConnectorConfig {
 
     public void setCustomFields(Map<String, String> customFields) {
         this.customFields = customFields;
+    }
+
+    public String getDefaultIssueTypeForSubtasks() {
+        return defaultIssueTypeForSubtasks;
+    }
+
+    public void setDefaultIssueTypeForSubtasks(String defaultIssueTypeForSubtasks) {
+        this.defaultIssueTypeForSubtasks = defaultIssueTypeForSubtasks;
     }
 }
