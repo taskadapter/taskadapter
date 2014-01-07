@@ -3,20 +3,17 @@ package com.taskadapter.connector.msp;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.testlib.CommonTests;
-import com.taskadapter.connector.testlib.FileBasedTest;
 import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.connector.testlib.TestSaver;
 import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
-import net.sf.mpxj.ConstraintType;
-import net.sf.mpxj.MPXJException;
-import net.sf.mpxj.ProjectFile;
-import net.sf.mpxj.Task;
-import net.sf.mpxj.TaskField;
+import net.sf.mpxj.*;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,17 +27,19 @@ import static com.taskadapter.connector.msp.MSPTestUtils.findMSPTaskBySummary;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class FieldMappingTest extends FileBasedTest {
+public class FieldMappingTest {
     private static final String MSP_FILE_NAME = "msp_test_data.tmp";
 
     private MSPConfig config;
     private MSPConnector connector;
 
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
+
     @Before
     public void beforeEachTest() {
-        super.beforeEachTest();
         config = new MSPConfig();
-        File file = new File(tempFolder, MSP_FILE_NAME);
+        File file = new File(tempFolder.getRoot(), MSP_FILE_NAME);
         config.setInputAbsoluteFilePath(file.getAbsolutePath());
         config.setOutputAbsoluteFilePath(file.getAbsolutePath());
         connector = new MSPConnector(config);
