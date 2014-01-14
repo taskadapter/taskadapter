@@ -4,30 +4,33 @@ import com.taskadapter.auth.BasicCredentialsManager;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.auth.cred.CredentialsStore;
 import com.taskadapter.auth.cred.FSCredentialStore;
-import com.taskadapter.connector.testlib.FileBasedTest;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.webui.service.EditableCurrentUserInfo;
 import com.taskadapter.webui.service.Services;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import static org.junit.Assert.assertEquals;
 
-public class NavigatorTest extends FileBasedTest {
+public class NavigatorTest {
     private Services services;
+
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
 
     @Before
     public void beforeEachTest() {
-        super.beforeEachTest();
-        services = TestServicesFactory.createServices(tempFolder);
+        services = TestServicesFactory.createServices(tempFolder.getRoot());
     }
 
     @Test
     public void feedbackPageIsShownWithoutLogin() {
         Navigator navigator = getNavigator();
-        navigator.show(new SupportPage("1.1", new LicenseManager(tempFolder)));
+        navigator.show(new SupportPage("1.1", new LicenseManager(tempFolder.getRoot())));
         assertEquals("support", navigator.getCurrentPage().getPageGoogleAnalyticsID());
     }
 

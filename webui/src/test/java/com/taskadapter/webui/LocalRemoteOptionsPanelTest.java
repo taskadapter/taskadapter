@@ -1,24 +1,27 @@
 package com.taskadapter.webui;
 
 import com.taskadapter.auth.AuthException;
-import com.taskadapter.connector.testlib.FileBasedTest;
 import com.taskadapter.webui.service.EditableCurrentUserInfo;
 import com.taskadapter.webui.service.Services;
 import com.taskadapter.webui.service.WrongPasswordException;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class LocalRemoteOptionsPanelTest extends FileBasedTest {
+public class LocalRemoteOptionsPanelTest {
 
     private Services services;
 
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
+
     @Before
     public void beforeEachTest() {
-        super.beforeEachTest();
-        services = TestServicesFactory.createServices(tempFolder);
+        services = TestServicesFactory.createServices(tempFolder.getRoot());
     }
 
     @Test

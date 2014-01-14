@@ -1,12 +1,16 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.connector.testlib.FileBasedTest;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
-public class TAApplicationTest extends FileBasedTest {
+public class TAApplicationTest {
+
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
 
     @Test
     public void applicationCreatedOK() {
-        new TAApplication(tempFolder);
+        new TAApplication(tempFolder.getRoot());
     }
 }
