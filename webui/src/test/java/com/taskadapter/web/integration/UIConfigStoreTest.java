@@ -5,21 +5,25 @@ import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.NewMappings;
-import com.taskadapter.connector.testlib.FileBasedTest;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.web.uiapi.UIConfigService;
 import com.taskadapter.web.uiapi.UIConfigStore;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.service.EditorManager;
-
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class UIConfigStoreTest extends FileBasedTest {
+public class UIConfigStoreTest {
+
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
+
     @Test
     public void configCreatedWithProperDefaultMappings() throws Exception {
         UISyncConfig config = getStore().createNewConfig("admin", "label1", "Redmine REST", "Microsoft Project");
@@ -43,7 +47,7 @@ public class UIConfigStoreTest extends FileBasedTest {
     }
 
     private UIConfigStore getStore() {
-        FileManager fileManager = new FileManager(tempFolder);
+        FileManager fileManager = new FileManager(tempFolder.getRoot());
         final ConfigStorage configStorage = new ConfigStorage(fileManager);
 
         EditorManager editorManager = EditorManager.fromResource("editors.txt");
