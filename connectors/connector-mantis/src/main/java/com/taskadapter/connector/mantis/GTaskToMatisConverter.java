@@ -91,16 +91,24 @@ public class GTaskToMatisConverter implements
         if (users == null) {
             return null;
         }
-        AccountData foundUser = null;
+        
+        // getting best name to search
+        String nameToSearch = ass.getLoginName();
+        if (nameToSearch == null || "".equals(nameToSearch)) {
+            nameToSearch = ass.getDisplayName();
+        }
+        if (nameToSearch == null || "".equals(nameToSearch)) {
+            return null;
+        }
+
         for (AccountData user : users) {
-            if (ass.getLoginName().equalsIgnoreCase(user.getName())
-                    || ass.getLoginName().equalsIgnoreCase(
+            if (nameToSearch.equalsIgnoreCase(user.getName())
+                    || nameToSearch.equalsIgnoreCase(
                     user.getReal_name())) {
-                foundUser = user;
-                break;
+                return user;
             }
         }
-        return foundUser;
+        return null;
     }
 
 
