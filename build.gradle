@@ -1,23 +1,31 @@
-ext.libraries = [
-    gson: 'com.google.code.gson:gson:1.6',
-    httpclient: 'org.apache.httpcomponents:httpclient:4.2',
-    httpcore: 'org.apache.httpcomponents:httpcore:4.2',
-    slf4j: 'org.slf4j:slf4j-api:1.6.6',
-    slf4jJdk: 'org.slf4j:slf4j-jdk14:1.6.6',
-    mockitoCore: 'org.mockito:mockito-core:1.9.5-rc1'
-]
-
 ext {
+
+    // this is the application release version.
+    // it is used in the ZIP file name and is shown in "About" dialog.
     TASK_ADAPTER_VERSION = "2.6.5"
 
     vaadinVersion = '7.0.6'
     httpClientVersion='4.2'
+    slf4jVersion = '1.6.6'
 }
+
+ext.libraries = [
+    gson: 'com.google.code.gson:gson:1.6',
+    httpclient: "org.apache.httpcomponents:httpclient:$httpClientVersion",
+    httpcore: "org.apache.httpcomponents:httpcore:$httpClientVersion",
+    servletAPI: "javax.servlet:javax.servlet-api:3.0.1",
+    commonsCodec: "commons-codec:commons-codec:1.6",
+    slf4j: "org.slf4j:slf4j-api:$slf4jVersion",
+    slf4jJdk: "org.slf4j:slf4j-jdk14:$slf4jVersion",
+    mockitoCore: 'org.mockito:mockito-core:1.9.5-rc1',
+    junit: "junit:junit:4.11"
+]
 
 subprojects {
 
     apply plugin: 'java'
 
+    // use Java 1.6 because not everyone has newer 1.7
     sourceCompatibility = 1.6
     targetCompatibility = 1.6
 
@@ -34,7 +42,7 @@ subprojects {
 
     dependencies {
         compile 'com.google.guava:guava:12.0'
-        testCompile 'junit:junit:4.11'
+        testCompile libraries.junit
     }
 }
 

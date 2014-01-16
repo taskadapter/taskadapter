@@ -1,4 +1,4 @@
 dependencies {
-    compile 'commons-codec:commons-codec:1.6'
+    compile libraries.commonsCodec
     compile libraries.gson
 }
