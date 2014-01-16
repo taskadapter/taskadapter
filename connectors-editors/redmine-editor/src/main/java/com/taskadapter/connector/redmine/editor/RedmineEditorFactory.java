@@ -7,8 +7,8 @@ import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RelationCreationException;
-import com.taskadapter.redmineapi.AuthenticationException;
 import com.taskadapter.redmineapi.RedmineAuthenticationException;
+import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
@@ -105,5 +105,18 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
     @Override
     public String describeDestinationLocation(RedmineConfig config) {
         return describeSourceLocation(config);
+    }
+
+    @Override
+    public boolean updateForSave(RedmineConfig config, Sandbox sandbox)
+            throws BadConfigException {
+        validateForSave(config);
+        return false;
+    }
+
+    @Override
+    public void validateForDropInLoad(RedmineConfig config)
+            throws BadConfigException, DroppingNotSupportedException {
+        throw DroppingNotSupportedException.INSTANCE;
     }
 }

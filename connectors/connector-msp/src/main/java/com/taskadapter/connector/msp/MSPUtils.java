@@ -107,7 +107,7 @@ public class MSPUtils {
     /**
      * change extension in file name
      * @param originalName Full name of file
-     * @param newExtension New extenstion like ".xml"
+     * @param newExtension New extension like ".xml"
      * @return new file name
      */
     public static String changeExtension(String originalName, String newExtension) {

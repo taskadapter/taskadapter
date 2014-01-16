@@ -9,7 +9,6 @@ import com.vaadin.data.util.AbstractProperty;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.AbstractLayout;
-import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
@@ -48,27 +47,27 @@ public class EditorUtil {
         return button;
     }
     
-    public static TextField textInput(Property property, String width) {
+    public static TextField textInput(Property<String> property, String width) {
         final TextField result = new TextField();
         result.setPropertyDataSource(property);
         result.setWidth(width);
         return result;
     }
     
-    public static TextField textInput(Property property) {
+    public static TextField textInput(Property<String> property) {
         final TextField result = new TextField();
         result.setPropertyDataSource(property);
         return result;
     }
 
-    public static PasswordField passwordInput(Property property) {
+    public static PasswordField passwordInput(Property<String> property) {
         final PasswordField result = new PasswordField();
         result.setPropertyDataSource(property);
         return result;
     }
 
     public static TextField propertyInput(Object o, String field) {
-        return textInput(new MethodProperty<Object>(o, field));
+        return textInput(new MethodProperty<String>(o, field));
     }
 
     // TODO review and refactor this. this method is too complex
@@ -77,7 +76,7 @@ public class EditorUtil {
 			String description, final String windowTitle,
 			final String listTitle,
 			final DataProvider<List<? extends NamedKeyedObject>> operation,
-			final Property destination, final boolean useValue, 
+			final Property<String> destination, final boolean useValue, 
 			final ExceptionFormatter errorFormatter) {
         Button button = new Button(buttonLabel);
         button.setDescription(description);
@@ -89,7 +88,7 @@ public class EditorUtil {
                 }
             }
 
-            private void showValues(final Property destination, final boolean useValue,
+            private void showValues(final Property<String> destination, final boolean useValue,
                                     List<? extends NamedKeyedObject> objects) {
                 final Map<String, String> map = new TreeMap<String, String>();
                 for (NamedKeyedObject o : objects) {
@@ -164,12 +163,12 @@ public class EditorUtil {
      * @param property property to wrap.
      * @return wrapped property.
      */
-    public static Property wrapNulls(final AbstractProperty property) {
-    	return new AbstractProperty() {
+    public static <T> Property<T> wrapNulls(final AbstractProperty<T> property) {
+    	return new AbstractProperty<T>() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void setValue(Object newValue) throws ReadOnlyException,
+			public void setValue(T newValue) throws ReadOnlyException,
                     Converter.ConversionException {
 				if (newValue instanceof String && ((String) newValue).isEmpty())
 					property.setValue(null);
@@ -190,12 +189,12 @@ public class EditorUtil {
 			}
 			
 			@Override
-			public Object getValue() {
+			public T getValue() {
 				return property.getValue();
 			}
 			
 			@Override
-			public Class<?> getType() {
+			public Class<? extends T> getType() {
 				return property.getType();
 			}
 

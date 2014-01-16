@@ -42,18 +42,9 @@ public interface CredentialsStore {
     public List<String> listUsers();
 
     /**
-     * Checks, if user with a given name exists.
-     * 
-     * @param user
-     *            user name.
-     * @return <code>true</code> iff user with a given name exists.
-     */
-    public boolean doesUserExists(String user);
-    
-    /**
-     * Removes user credentials.
+     * Removes user.
      * @param user user to remove.
      * @throws AuthException if user exists and cannot be deleted.
      */
-    public void removeCredentials(String user) throws AuthException;
+    public void removeUser(String user) throws AuthException;
 }

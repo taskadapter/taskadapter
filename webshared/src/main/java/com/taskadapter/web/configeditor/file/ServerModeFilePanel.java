@@ -45,11 +45,11 @@ public class ServerModeFilePanel extends Panel{
     private ComboBox comboBox;
     private ProgressIndicator progressIndicator;
     private Button deleteButton;
-    private final Property inputFilePath;
-    private final Property outputFilePath;
+    private final Property<String> inputFilePath;
+    private final Property<String> outputFilePath;
     
-    public ServerModeFilePanel(File filesDirectory, Property inputFilePath,
-            Property outputFilePath, UploadProcessor uploadProcessor) {
+    public ServerModeFilePanel(File filesDirectory, Property<String> inputFilePath,
+            Property<String> outputFilePath, UploadProcessor uploadProcessor) {
     super(TITLE);        
         this.inputFilePath = inputFilePath;
         this.outputFilePath = outputFilePath;

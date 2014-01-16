@@ -70,7 +70,7 @@ public class PriorityPanel extends Panel implements Validatable {
         setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
 
         GridLayout layout = new GridLayout();
-        layout.setWidth(100, UNITS_PERCENTAGE);
+        layout.setWidth(100, Unit.PERCENTAGE);
         layout.setSpacing(true);
 
         prioritiesTable = new Table();

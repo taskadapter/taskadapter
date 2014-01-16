@@ -18,6 +18,7 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
@@ -27,7 +28,7 @@ import java.util.Arrays;
 
 import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
-public class TaskFieldsMappingFragment extends Panel implements Validatable {
+public class TaskFieldsMappingFragment implements Validatable {
     private static final int COLUMN_DESCRIPTION = 0;
     private static final int COLUMN_HELP = 1;
     private static final int COLUMN_LEFT_CONNECTOR = 2;
@@ -41,6 +42,8 @@ public class TaskFieldsMappingFragment extends Panel implements Validatable {
 
     private GridLayout gridLayout;
 
+    
+    private final Panel ui;
     private Messages messages;
     private UIConnectorConfig connector1;
     private UIConnectorConfig connector2;
@@ -49,13 +52,14 @@ public class TaskFieldsMappingFragment extends Panel implements Validatable {
 
     public TaskFieldsMappingFragment(Messages messages, UIConnectorConfig connector1,
                                      UIConnectorConfig connector2, NewMappings mappings) {
-        super(messages.get("editConfig.mappings.caption"));
         this.messages = messages;
         this.connector1 = connector1;
         this.connector2 = connector2;
         this.mappings = mappings;
         this.originalMappings = new NewMappings(mappings.getMappings());
 
+        ui = new Panel(messages.get("editConfig.mappings.caption"));
+        
         addFields();
     }
 
@@ -71,7 +75,7 @@ public class TaskFieldsMappingFragment extends Panel implements Validatable {
         gridLayout.setSpacing(true);
         gridLayout.setRows(GTaskDescriptor.FIELD.values().length + 2);
         gridLayout.setColumns(COLUMNS_NUMBER);
-        setContent(gridLayout);
+        ui.setContent(gridLayout);
     }
 
     private void addTableHeaders() {
@@ -194,6 +198,10 @@ public class TaskFieldsMappingFragment extends Panel implements Validatable {
     @Override
     public void validate() throws BadConfigException {
         MappingsValidator.validate(mappings);
+    }
+    
+    public Component getUI() {
+        return ui;
     }
 
     /**

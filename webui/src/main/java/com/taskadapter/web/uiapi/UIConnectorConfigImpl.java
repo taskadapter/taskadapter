@@ -5,6 +5,7 @@ import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.webui.data.ExceptionFormatter;
@@ -46,20 +47,31 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends UIConnector
         return config.getLabel();
     }
 
+
+    @Override
+    public void setLabel(String label) {
+        config.setLabel(label);
+    }
+    
     @Override
     public void validateForLoad() throws BadConfigException {
         editorFactory.validateForLoad(config);
     }
-
+    
     @Override
     public void validateForSave() throws BadConfigException {
         editorFactory.validateForSave(config);
     }
 
     @Override
-    @Deprecated
-    public ConnectorConfig getRawConfig() {
-        return config;
+    public void validateForDropIn() throws BadConfigException,
+            DroppingNotSupportedException {
+        editorFactory.validateForDropInLoad(config);
+    }
+    
+    @Override
+    public boolean updateForSave(Sandbox sandbox) throws BadConfigException {
+        return editorFactory.updateForSave(config, sandbox);
     }
 
     @Override
@@ -95,5 +107,4 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends UIConnector
         }
         return ExceptionFormatter.format(e);
     }
-
 }

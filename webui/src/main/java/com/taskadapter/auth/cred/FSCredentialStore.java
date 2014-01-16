@@ -5,13 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.io.Files;
-import com.taskadapter.FileManager;
 import com.taskadapter.auth.AuthException;
 
 /**
@@ -32,24 +32,23 @@ public final class FSCredentialStore implements CredentialsStore {
     private final Logger LOGGER = LoggerFactory
             .getLogger(FSCredentialStore.class);
 
-    /**
-     * File manager. Used to access credential files.
-     */
-    private final FileManager fileManager;
+    /** Authentication store root. */
+    private final File storeRoot;
 
     /**
      * Creates a new file-system credentials manager.
      * 
-     * @param fileManager
-     *            file manager.
+     * @param storeRoot
+     *            credentials storage root.
      */
-    public FSCredentialStore(FileManager fileManager) {
-        this.fileManager = fileManager;
+    public FSCredentialStore(File storeRoot) {
+        this.storeRoot = storeRoot;
+
     }
 
     @Override
     public Credentials loadCredentials(String user) throws AuthException {
-        final File userDir = fileManager.getUserFolder(user);
+        final File userDir = getUserFolder(user);
         final CredentialsV1 v1 = loadV1(userDir);
         if (v1 != null) {
             return v1;
@@ -89,7 +88,7 @@ public final class FSCredentialStore implements CredentialsStore {
     @Override
     public void saveCredentials(String user, CredentialsV1 credentials)
             throws AuthException {
-        final File baseDir = fileManager.getUserFolder(user);
+        final File baseDir = getUserFolder(user);
         baseDir.mkdirs();
 
         final StringBuilder writer = new StringBuilder();
@@ -112,7 +111,9 @@ public final class FSCredentialStore implements CredentialsStore {
 
     @Override
     public List<String> listUsers() {
-        final String[] userFiles = fileManager.listUsers();
+        final String[] userFiles = storeRoot.list();
+        if (userFiles == null)
+            return Collections.emptyList();
         final List<String> result = new ArrayList<String>(userFiles.length);
         for (String userName : userFiles) {
             if (doesUserExists(userName)) {
@@ -122,17 +123,40 @@ public final class FSCredentialStore implements CredentialsStore {
         return result;
     }
 
-    @Override
-    public boolean doesUserExists(String userName) {
-        final File userHome = fileManager.getUserFolder(userName);
+    private boolean doesUserExists(String userName) {
+        final File userHome = getUserFolder(userName);
         return new File(userHome, CREDENTIALS_FILE).exists()
                 || new File(userHome, LEGACY_FILE).exists();
     }
 
     @Override
-    public void removeCredentials(String user) {
-        final File userHome = fileManager.getUserFolder(user);
+    public void removeUser(String user) {
+        final File userHome = getUserFolder(user);
         new File(userHome, CREDENTIALS_FILE).delete();
         new File(userHome, LEGACY_FILE).delete();
+        try {
+            deleteRecursively(userHome);
+        } catch (IOException e) {
+            LOGGER.error("Failed to delete user " + user);
+        }
     }
+
+    /** Deletes file recursively. */
+    private static void deleteRecursively(File file) throws IOException {
+        final File[] subs = file.listFiles();
+        if (subs != null) {
+            for (File c : subs) {
+                deleteRecursively(c);
+            }
+        }
+        if (!file.delete()) {
+            throw new FileNotFoundException("Failed to delete file: " + file);
+        }
+    }
+    
+    /** Returns a credentials storage directory for the given user. */
+    private File getUserFolder(String user) {
+        return new File(storeRoot, user);
+    }
+
 }

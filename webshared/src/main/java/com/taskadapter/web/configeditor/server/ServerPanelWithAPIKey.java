@@ -4,6 +4,7 @@ import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.web.configeditor.Validatable;
 import com.vaadin.data.Property;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
@@ -28,16 +29,21 @@ public class ServerPanelWithAPIKey extends VerticalLayout implements Validatable
     private PasswordField password;
     private OptionGroup authOptionsGroup;
 
-    public ServerPanelWithAPIKey(Property labelProperty, Property serverURLProperty, Property loginNameProperty,
-                                 Property passwordProperty, Property apiKeyProperty, Property useApiKeyProperty) {
+    public ServerPanelWithAPIKey(Property<String> labelProperty,
+            Property<String> serverURLProperty,
+            Property<String> loginNameProperty,
+            Property<String> passwordProperty, Property<String> apiKeyProperty,
+            Property<Boolean> useApiKeyProperty) {
         buildUI(labelProperty, serverURLProperty, loginNameProperty, passwordProperty, apiKeyProperty, useApiKeyProperty);
         addListener();
         setAuthOptionsState((Boolean) authOptionsGroup.getValue());
     }
 
-    private void buildUI(Property labelProperty, Property serverURLProperty,
-                         Property loginNameProperty,
-                         Property passwordProperty, Property apiKeyProperty, Property useApiKeyProperty) {
+    private void buildUI(Property<String> labelProperty,
+            Property<String> serverURLProperty,
+            Property<String> loginNameProperty,
+            Property<String> passwordProperty, Property<String> apiKeyProperty,
+            Property<Boolean> useApiKeyProperty) {
 
         GridLayout layout = new GridLayout();
         addComponent(layout);
@@ -110,7 +116,7 @@ public class ServerPanelWithAPIKey extends VerticalLayout implements Validatable
     }
 
     private Label createEmptyLabel(String height) {
-        Label label = new Label("&nbsp;", Label.CONTENT_XHTML);
+        Label label = new Label("&nbsp;", ContentMode.HTML);
         label.setHeight(height);
         return label;
     }

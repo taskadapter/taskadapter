@@ -2,6 +2,7 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.model.GTask;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;

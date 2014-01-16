@@ -44,9 +44,9 @@ public class ProjectPanel extends Panel implements Validatable {
 
     private final DataProvider<List<? extends NamedKeyedObject>> queryProvider;
 
-    private final Property projectKeyProperty;
+    private final Property<String> projectKeyProperty;
 
-    private final Property queryValueProperty;
+    private final Property<String> queryValueProperty;
 
     private final ExceptionFormatter exceptionFormatter;
 
@@ -60,8 +60,8 @@ public class ProjectPanel extends Panel implements Validatable {
      * @param queryProvider       query provider, optional.
      * @param exceptionFormatter  exception formatter, required.
      */
-    public ProjectPanel(Property projectKey,
-                        Property queryValue,
+    public ProjectPanel(Property<String> projectKey,
+                        Property<String> queryValue,
                         DataProvider<List<? extends NamedKeyedObject>> projectProvider,
                         SimpleCallback projectInfoCallback,
                         DataProvider<List<? extends NamedKeyedObject>> queryProvider,

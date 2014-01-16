@@ -1,6 +1,7 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.definition.DropInConnector;
 import com.taskadapter.connector.definition.FileBasedConnector;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
@@ -24,7 +25,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
+public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector, DropInConnector<MSPConfig> {
     /**
      * Keep it the same to enable backward compatibility
      */
@@ -73,6 +74,7 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
     @Override
     public void updateTasksByRemoteIds(List<GTask> tasksFromExternalSystem, Mappings mappings) throws ConnectorException {
         String fileName = config.getInputAbsoluteFilePath();
+        // FIXME: Why is this not used?
         MSXMLFileWriter writer = new MSXMLFileWriter(mappings);
         try {
             ProjectFile projectFile = new MSPFileReader().readFile(fileName);
@@ -136,12 +138,25 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
 
     @Override
     public List<GTask> loadData(Mappings sourceMappings, ProgressMonitor monitorIGNORED) throws ConnectorException {
+        final String sourceFile = config.getInputAbsoluteFilePath();
+        return loadInternal(sourceMappings, sourceFile);
+    }
+    
+    @Override
+    public List<GTask> loadDropInData(File file, Mappings mappings,
+            ProgressMonitor monitor) throws ConnectorException {
+        return loadInternal(mappings, file.getAbsolutePath());
+    }
+
+    private List<GTask> loadInternal(Mappings sourceMappings,
+            final String sourceFile) throws BadConfigException,
+            ConnectorException {
         ProjectFile projectFile;
         final MSPFileReader fileReader = new MSPFileReader();
         try {
-            projectFile = fileReader.readFile(config.getInputAbsoluteFilePath());
+            projectFile = fileReader.readFile(sourceFile);
         } catch (FileNotFoundException e) {
-            throw new BadConfigException("MSP: Can't find file with name \"" + config.getInputAbsoluteFilePath() + "\".");
+            throw new BadConfigException("MSP: Can't find file with name \"" + sourceFile + "\".");
         } catch (MPXJException e) {
             throw MSPExceptions.convertException(e);
         }
@@ -179,4 +194,5 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector {
     public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
         return new MSPTaskSaver(config, mappings, monitor).saveData(tasks);
     }
+
 }

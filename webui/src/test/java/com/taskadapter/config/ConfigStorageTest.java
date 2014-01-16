@@ -1,6 +1,5 @@
 package com.taskadapter.config;
 
-import com.taskadapter.FileManager;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,7 +21,7 @@ public class ConfigStorageTest {
 
     @Before
     public void beforeEachTest() {
-        configStorage = new ConfigStorage(new FileManager(tempFolder.getRoot()));
+        configStorage = new ConfigStorage(tempFolder.getRoot());
     }
 
     @Test

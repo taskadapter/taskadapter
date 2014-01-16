@@ -12,7 +12,7 @@ import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GUser;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;

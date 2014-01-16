@@ -2,8 +2,8 @@ package com.taskadapter.web.uiapi;
 
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.service.Sandbox;
 import com.vaadin.ui.ComponentContainer;
 
@@ -41,6 +41,28 @@ public abstract class UIConnectorConfig {
      * @return connector user-friendly label.
      */
     public abstract String getLabel();
+    
+    /**
+     * Workadound for stupid Vaadin.
+     * @deprecated
+     */
+    public final String getVaalabel() {
+        return getLabel();
+    }
+    
+    /**
+     * Workadound for stupid Vaadin.
+     * @deprecated
+     */
+    public final void setVaalabel(String label) {
+        setLabel(label);
+    }
+    
+    /**
+     * Sets a new label.
+     * @param label new label.
+     */
+    public abstract void setLabel(String label);
 
     /**
      * Validates config for load.
@@ -51,15 +73,30 @@ public abstract class UIConnectorConfig {
     public abstract void validateForLoad() throws BadConfigException;
 
     /**
-     * Validates current config for load.
-     * 
-     * @throws BadConfigException
-     *             if config is invalid.
+     * Validates config for save. Does not update it in any way.
      */
     public abstract void validateForSave() throws BadConfigException;
+    
+    /**
+     * Validates config for drop-in operation.
+     */
+    public abstract void validateForDropIn() throws BadConfigException,
+            DroppingNotSupportedException;
 
-    @Deprecated
-    public abstract ConnectorConfig getRawConfig();
+    /**
+     * Validates and updates config for save. This method is used mostly by the
+     * file-based connectors. Such connector may create a new file for the
+     * export. However, web-based connectors also may perform some action in
+     * this method.
+     * 
+     * @param sandbox local filesystem sandbox.
+     * @return true iff config was updated.
+     * 
+     * @throws BadConfigException
+     *             if config is invalid and cannot be fixed automatically.
+     */
+    public abstract boolean updateForSave(Sandbox sandbox)
+            throws BadConfigException;
 
     /**
      * Creates a new connector instance with a current config. Note, that
@@ -103,10 +140,13 @@ public abstract class UIConnectorConfig {
     public abstract String getDestinationLocation();
 
     /**
-     * Decodes a connector exception into a user-friendly (possibly 
-     * localized) message. 
-     * @param e exception to decode.
+     * Decodes a connector exception into a user-friendly (possibly localized)
+     * message.
+     * 
+     * @param e
+     *            exception to decode.
      * @return user-friendly error description.
      */
     public abstract String decodeException(Throwable e);
+
 }

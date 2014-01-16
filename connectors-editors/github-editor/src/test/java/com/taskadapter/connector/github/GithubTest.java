@@ -6,8 +6,6 @@ import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.github.editor.GithubLoaders;
 import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.model.GProject;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
