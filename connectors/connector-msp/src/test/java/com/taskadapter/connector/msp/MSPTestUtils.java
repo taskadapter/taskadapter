@@ -5,10 +5,12 @@ import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.model.GTask;
+import net.sf.mpxj.MPXJException;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Task;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.List;
 
@@ -75,7 +77,7 @@ public class MSPTestUtils {
     /**
      * Load the file with DEFAULT field mappings into native task list
      */
-    static List<Task> loadToMSPTaskList(String fileNameInClasspath) throws Exception {
+    static List<Task> loadToMSPTaskList(String fileNameInClasspath) throws FileNotFoundException, MPXJException {
         String fileName = getTestFileAbsolutePath(fileNameInClasspath);
         ProjectFile projectFile = new MSPFileReader().readFile(fileName);
         return projectFile.getAllTasks();
