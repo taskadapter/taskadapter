@@ -28,7 +28,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 public class FieldMappingTest {
-    private static final String MSP_FILE_NAME = "msp_test_data.tmp";
+    private static final String MSP_FILE_NAME = "msp_test_data.xml";
 
     private MSPConfig config;
     private MSPConnector connector;
@@ -210,7 +210,7 @@ public class FieldMappingTest {
         Mappings mappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
         mappings.setMapping(field, useMap, mapTo);
 
-        String fileName = "testdata.tmp";
+        String fileName = "testdata.xml";
         temporaryClonedconfig.setInputAbsoluteFilePath(fileName);
         temporaryClonedconfig.setOutputAbsoluteFilePath(fileName);
         MSPConnector connector = new MSPConnector(temporaryClonedconfig);
