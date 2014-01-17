@@ -26,7 +26,7 @@ public final class ExceptionFormatter {
                     "errors.notAuthorized")
             .addMethod(EntityProcessingException.class,
                     ExceptionFormatter.class, "formatException",
-                    "General error processing entity")
+                    "errors.entityProcessing")
             .addMethod(CommunicationException.class, ExceptionFormatter.class,
                     "formatException", "errors.entityProcessing")
             .addMethod(BadConfigException.class, ExceptionFormatter.class,
