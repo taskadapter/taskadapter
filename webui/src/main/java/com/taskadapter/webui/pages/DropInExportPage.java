@@ -34,8 +34,7 @@ import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * Export page and epoxrt handler.
- * 
+ * Export page and export handler.
  */
 public final class DropInExportPage {
     private static final Logger LOGGER = LoggerFactory
@@ -328,9 +327,9 @@ public final class DropInExportPage {
      *            error message. If null, errors are hidden.
      */
     private void showErrorMessage(String message) {
-        final boolean haveMessage = message != null;
-        errorMessage.setValue(haveMessage ? message : "");
-        errorMessage.setVisible(haveMessage);
+        final boolean hasMessage = message != null;
+        errorMessage.setValue(hasMessage ? message : "");
+        errorMessage.setVisible(hasMessage);
     }
 
     /**
@@ -351,14 +350,10 @@ public final class DropInExportPage {
      *            config operations.
      * @param config
      *            config to export.
-     * @param licenseManager
-     *            used license manager.
      * @param onDone
      *            "done" handler.
      * @param tempFile
      *            temporary file.
-     * @param dropIn
-     *            drop-in file.
      * @return UI component.
      */
     public static Component render(ConfigOperations configOps,
