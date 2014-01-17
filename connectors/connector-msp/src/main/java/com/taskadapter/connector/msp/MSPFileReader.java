@@ -2,18 +2,13 @@ package com.taskadapter.connector.msp;
 
 import net.sf.mpxj.MPXJException;
 import net.sf.mpxj.ProjectFile;
-import net.sf.mpxj.mpp.MPPReader;
-import net.sf.mpxj.mspdi.MSPDIReader;
 import net.sf.mpxj.reader.ProjectReader;
+import net.sf.mpxj.reader.ProjectReaderUtility;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 
-/**
- * @author Alexey Skorokhodov
- */
 public class MSPFileReader {
-    public static final String XML_SUFFIX_LOWERCASE = ".xml";
     public static final String MPP_SUFFIX_LOWERCASE = ".mpp";
 
     public ProjectFile readFile(String projectFileName) throws FileNotFoundException, MPXJException {
@@ -22,18 +17,14 @@ public class MSPFileReader {
             throw new FileNotFoundException(projectFileName);
         }
 
-        ProjectReader projectReader;
-        if (projectFileName.toLowerCase().endsWith(MPP_SUFFIX_LOWERCASE)) {
-            projectReader = new MPPReader();
-        } else {
-            projectReader = new MSPDIReader();
-        }
-
         ProjectFile projectFile;
         try {
+            ProjectReader projectReader = ProjectReaderUtility.getProjectReader(projectFileName);
             projectFile = projectReader.read(file);
-        } catch (MPXJException e) {
-            projectFile = new MSPDIReader().read(file); //last try to fix user's mistake
+        } catch (InstantiationException e) {
+            throw new MPXJException(e.getMessage());
+        } catch (IllegalAccessException e) {
+            throw new MPXJException(e.getMessage());
         }
 
         return projectFile;

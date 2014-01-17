@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.io.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -368,7 +369,8 @@ public class LoggedInPageset {
      *            dropped file.
      */
     private void dropIn(final UISyncConfig config, final Html5File file) {
-        final File df = services.tempFileManager.nextFile();
+        String fileExtension = Files.getFileExtension(file.getFileName());
+        final File df = services.tempFileManager.nextFile(fileExtension);
         file.setStreamVariable(new StreamVariable() {
             @Override
             public void streamingStarted(StreamingStartEvent event) {

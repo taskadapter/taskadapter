@@ -31,12 +31,17 @@ public final class TempFileManager {
     }
 
     /**
-     * Generates a next temp file.
-     * 
+     * Generates a file reference for the next temp file with the given extension.
+     * It is important to save the original extension because MPXJ file loader depends on it
+     * to determine the file type (XML / MPP/ MPT / etc).
+     *
+     * <p>This method does not create the file.
+     *
      * @return temp file.
      */
-    public File nextFile() {
-        return new File(root, Integer.toString(idx.incrementAndGet()));
+    public File nextFile(String fileNameExtension) {
+        String newFileName = Integer.toString(idx.incrementAndGet()) + "." + fileNameExtension;
+        return new File(root, newFileName);
     }
 
 }
