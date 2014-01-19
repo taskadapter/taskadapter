@@ -7,6 +7,8 @@ import com.atlassian.jira.rest.client.domain.IssueType;
 import com.atlassian.jira.rest.client.domain.Priority;
 import com.atlassian.jira.rest.client.domain.TimeTracking;
 import com.atlassian.jira.rest.client.domain.Version;
+import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
+import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
 import com.google.common.collect.ImmutableList;
@@ -50,17 +52,22 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueInput> {
     }
 
     public IssueInput convertToJiraIssue(GTask task) {
-        Long issueTypeId = ISSUE_TYPE_ID;
-        if (mappings.isFieldSelected(FIELD.TASK_TYPE)) {
-            issueTypeId = getIssueTypeIdByName(task.getType());
-
-            if (issueTypeId == null) {
-                issueTypeId = getIssueTypeIdByName(config.getDefaultTaskType());
-            }
+        
+        IssueInputBuilder issueInputBuilder = new IssueInputBuilder(
+                config.getProjectKey(), findIssueTypeId(task));
+        
+        if (task.getParentKey() != null && mappings.isFieldSelected(FIELD.TASK_TYPE)) {
+            /* 
+             * See:
+             * http://stackoverflow.com/questions/14699893/how-to-create-subtasks-using-jira-rest-java-client
+             */
+            final Map<String, Object> parent = new HashMap<String, Object>();
+            parent.put("key", task.getParentKey());
+            final FieldInput parentField = new FieldInput("parent", 
+                    new ComplexIssueInputFieldValue(parent));
+            issueInputBuilder.setFieldInput(parentField);
         }
-
-        IssueInputBuilder issueInputBuilder = new IssueInputBuilder(config.getProjectKey(), issueTypeId);
-
+        
         if (mappings.isFieldSelected(FIELD.SUMMARY)) {
             issueInputBuilder.setSummary(task.getSummary());
         }
@@ -115,6 +122,28 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueInput> {
         }
 
         return issueInputBuilder.build();
+    }
+    
+    /**
+     * Finds an issue type id to use.
+     * @param task task to get an issue id.
+     * @return issue type id.
+     */
+    private Long findIssueTypeId(GTask task) {
+        /* Still need to use some issue type. BTW, why is this hardcoded?
+         * We should use config.getDefaultTaskType() at this point.
+         */
+        if (!mappings.isFieldSelected(FIELD.TASK_TYPE))
+            return ISSUE_TYPE_ID;
+        
+        /* Use explicit task type when possible. */
+        final Long explicitTypeId = getIssueTypeIdByName(task.getType());
+        if (explicitTypeId != null)
+            return explicitTypeId;
+        
+        /* Use default type for the task when  */
+        return getIssueTypeIdByName(task.getParentKey() == null ? config
+                .getDefaultTaskType() : config.getDefaultIssueTypeForSubtasks());
     }
 
     private void setAssignee(GTask task, IssueInputBuilder issue) {
