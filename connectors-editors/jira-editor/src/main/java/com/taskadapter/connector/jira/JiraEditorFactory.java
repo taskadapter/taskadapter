@@ -1,5 +1,6 @@
 package com.taskadapter.connector.jira;
 
+import com.google.common.base.Strings;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
@@ -47,6 +48,8 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
             return MESSAGES.get("errors.serverUrlNotSet");
         } else if (e instanceof QueryIdNotSetException) {
             return MESSAGES.get("error.queryIdNotSet");
+        } else if (e instanceof SubtasksTypeNotSetException) {
+            return MESSAGES.get("error.subtasksTypeNotSet");
         }
         return e.getMessage();
     }
@@ -98,8 +101,12 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
             throw new ServerURLNotSetException();
         }
 
-        if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
+        if (Strings.isNullOrEmpty(config.getProjectKey())) {
             throw new ProjectNotSetException();
+        }
+
+        if (Strings.isNullOrEmpty(config.getDefaultIssueTypeForSubtasks())) {
+            throw new SubtasksTypeNotSetException();
         }
     }
 
