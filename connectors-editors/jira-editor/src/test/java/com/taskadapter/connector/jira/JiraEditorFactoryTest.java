@@ -2,8 +2,6 @@ package com.taskadapter.connector.jira;
 
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
-import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
-import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.web.service.Sandbox;
 import com.vaadin.server.DefaultDeploymentConfiguration;
 import com.vaadin.server.VaadinServlet;
@@ -15,6 +13,8 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.util.Properties;
+
+import org.junit.Assert;
 
 public class JiraEditorFactoryTest {
 
@@ -34,26 +34,41 @@ public class JiraEditorFactoryTest {
         factory.getMiniPanelContents(new Sandbox(false, tempFolder.getRoot()), new JiraConfig());
     }
 
-    @Test(expected = ServerURLNotSetException.class)
+    @Test
     public void serverURLIsRequiredForSave() throws BadConfigException {
-        new JiraEditorFactory().validateForSave(new JiraConfig());
+        try {
+            new JiraEditorFactory().validateForSave(new JiraConfig());
+            Assert.fail();
+        } catch (JiraConfigException e) {
+            Assert.assertTrue(e.getErrors().contains(JiraValidationErrorKind.HOST_NOT_SET));
+        }
     }
 
-    @Test(expected = ProjectNotSetException.class)
+    @Test
     public void projectKeyIsRequiredForSave() throws BadConfigException {
-        JiraConfig config = new JiraConfig();
-        config.setServerInfo(new WebServerInfo("http://somehost", "", ""));
-        new JiraEditorFactory().validateForSave(config);
+        try {
+            JiraConfig config = new JiraConfig();
+            config.setServerInfo(new WebServerInfo("http://somehost", "", ""));
+            new JiraEditorFactory().validateForSave(config);
+        } catch (JiraConfigException e) {
+            Assert.assertTrue(e.getErrors().contains(
+                    JiraValidationErrorKind.PROJECT_NOT_SET));
+        }
     }
 
-    @Test(expected = SubtasksTypeNotSetException.class)
+    @Test
     public void subtasksTypeIsRequiredForSave() throws BadConfigException {
-        JiraConfig config = new JiraConfig();
-        config.setServerInfo(new WebServerInfo("http://somehost", "", ""));
-        config.setProjectKey("someproject");
-        // clear the value
-        config.setDefaultIssueTypeForSubtasks("");
-        new JiraEditorFactory().validateForSave(config);
+        try {
+            JiraConfig config = new JiraConfig();
+            config.setServerInfo(new WebServerInfo("http://somehost", "", ""));
+            config.setProjectKey("someproject");
+            // clear the value
+            config.setDefaultIssueTypeForSubtasks("");
+            new JiraEditorFactory().validateForSave(config);
+            Assert.fail();
+        } catch (JiraConfigException e) {
+            Assert.assertTrue(e.getErrors().contains(JiraValidationErrorKind.DEFAULT_SUBTASK_TYPE_NOT_SET));
+        }
     }
 
 }

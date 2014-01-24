@@ -10,6 +10,7 @@ import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.data.ExceptionFormatter;
 import com.vaadin.data.util.MethodProperty;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -107,6 +108,7 @@ public class EditConfigPage {
         errorMessageLabel = new Label(error);
         errorMessageLabel.addStyleName("error-message-label");
         errorMessageLabel.setWidth(100, PERCENTAGE);
+        errorMessageLabel.setContentMode(ContentMode.HTML);
         layout.addComponent(errorMessageLabel);
         layout.addComponent(createBottomButtons());
     }

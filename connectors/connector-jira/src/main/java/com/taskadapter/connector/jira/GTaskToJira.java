@@ -25,9 +25,6 @@ import java.util.Map;
 
 public class GTaskToJira implements ConnectorConverter<GTask, IssueInput> {
 
-    // TODO this is hardcoded!! https://www.hostedredmine.com/issues/18074
-    private static final Long ISSUE_TYPE_ID = 1l;
-
     private final JiraConfig config;
     private final Mappings mappings;
 
@@ -130,16 +127,12 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueInput> {
      * @return issue type id.
      */
     private Long findIssueTypeId(GTask task) {
-        /* Still need to use some issue type. BTW, why is this hardcoded?
-         * We should use config.getDefaultTaskType() at this point.
-         */
-        if (!mappings.isFieldSelected(FIELD.TASK_TYPE))
-            return ISSUE_TYPE_ID;
-        
         /* Use explicit task type when possible. */
-        final Long explicitTypeId = getIssueTypeIdByName(task.getType());
-        if (explicitTypeId != null)
-            return explicitTypeId;
+        if (mappings.isFieldSelected(FIELD.TASK_TYPE)) {
+            final Long explicitTypeId = getIssueTypeIdByName(task.getType());
+            if (explicitTypeId != null)
+                return explicitTypeId;
+        }
         
         /* Use default type for the task when  */
         return getIssueTypeIdByName(task.getParentKey() == null ? config

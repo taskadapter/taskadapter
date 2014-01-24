@@ -1,5 +1,9 @@
 package com.taskadapter.connector.jira;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+
 import com.google.common.base.Strings;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
@@ -46,12 +50,38 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
             return MESSAGES.get("errors.projectKeyNotSet");
         } else if (e instanceof ServerURLNotSetException) {
             return MESSAGES.get("errors.serverUrlNotSet");
-        } else if (e instanceof QueryIdNotSetException) {
-            return MESSAGES.get("error.queryIdNotSet");
-        } else if (e instanceof SubtasksTypeNotSetException) {
-            return MESSAGES.get("error.subtasksTypeNotSet");
+        } else if (e instanceof JiraConfigException) {
+            return formatValidationErrors((JiraConfigException) e);
         }
         return e.getMessage();
+    }
+    
+    private static String formatValidationErrors(JiraConfigException exn) {
+        final StringBuilder res = new StringBuilder("* ");
+        
+        final Iterator<JiraValidationErrorKind> itr = exn.getErrors().iterator();
+        res.append(getValidationMessage(itr.next()));
+        while (itr.hasNext()) {
+            res.append("<br/>\n* ").append(getValidationMessage(itr.next()));
+        }
+        
+        return res.toString();
+    }
+    
+    private static String getValidationMessage(JiraValidationErrorKind kind) {
+        switch (kind) {
+        case HOST_NOT_SET:
+            return MESSAGES.get("errors.serverUrlNotSet");
+        case PROJECT_NOT_SET:
+            return MESSAGES.get("errors.projectKeyNotSet");
+        case DEFAULT_TASK_TYPE_NOT_SET:
+            return MESSAGES.get("error.taskTypeNotSet");
+        case DEFAULT_SUBTASK_TYPE_NOT_SET:
+            return MESSAGES.get("error.subtasksTypeNotSet");
+        case QUERY_ID_NOT_SET:
+            return MESSAGES.get("error.queryIdNotSet");
+        }
+        return "??=>" + kind.toString();
     }
 
     @Override
@@ -96,30 +126,44 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
 
     @Override
     public void validateForSave(JiraConfig config) throws BadConfigException {
+        final Collection<JiraValidationErrorKind> errors = new LinkedHashSet<JiraValidationErrorKind>();
+        
         final WebServerInfo serverInfo = config.getServerInfo();
         if (!serverInfo.isHostSet()) {
-            throw new ServerURLNotSetException();
+            errors.add(JiraValidationErrorKind.HOST_NOT_SET);
         }
 
         if (Strings.isNullOrEmpty(config.getProjectKey())) {
-            throw new ProjectNotSetException();
+            errors.add(JiraValidationErrorKind.PROJECT_NOT_SET);
         }
-
+        
+        if (Strings.isNullOrEmpty(config.getDefaultTaskType())) {
+            errors.add(JiraValidationErrorKind.DEFAULT_TASK_TYPE_NOT_SET);
+        }
+        
         if (Strings.isNullOrEmpty(config.getDefaultIssueTypeForSubtasks())) {
-            throw new SubtasksTypeNotSetException();
+            errors.add(JiraValidationErrorKind.DEFAULT_SUBTASK_TYPE_NOT_SET);
         }
+        
+        if (!errors.isEmpty())
+           throw new JiraConfigException(errors);
     }
 
     @Override
     public void validateForLoad(JiraConfig config) throws BadConfigException {
+        final Collection<JiraValidationErrorKind> errors = new LinkedHashSet<JiraValidationErrorKind>();
+        
         final WebServerInfo serverInfo = config.getServerInfo();
         if (!serverInfo.isHostSet()) {
-            throw new ServerURLNotSetException();
+            errors.add(JiraValidationErrorKind.HOST_NOT_SET);
         }
 
         if (config.getQueryId() == null) {
-            throw new QueryIdNotSetException();
+            errors.add(JiraValidationErrorKind.QUERY_ID_NOT_SET);
         }
+        
+        if (!errors.isEmpty())
+            throw new JiraConfigException(errors);
     }
 
     @Override
