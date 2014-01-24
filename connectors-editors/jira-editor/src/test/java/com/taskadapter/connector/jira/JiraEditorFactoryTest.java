@@ -40,9 +40,19 @@ public class JiraEditorFactoryTest {
     }
 
     @Test(expected = ProjectNotSetException.class)
-    public void projectKeyIsRequired() throws BadConfigException {
+    public void projectKeyIsRequiredForSave() throws BadConfigException {
         JiraConfig config = new JiraConfig();
         config.setServerInfo(new WebServerInfo("http://somehost", "", ""));
+        new JiraEditorFactory().validateForSave(config);
+    }
+
+    @Test(expected = SubtasksTypeNotSetException.class)
+    public void subtasksTypeIsRequiredForSave() throws BadConfigException {
+        JiraConfig config = new JiraConfig();
+        config.setServerInfo(new WebServerInfo("http://somehost", "", ""));
+        config.setProjectKey("someproject");
+        // clear the value
+        config.setDefaultIssueTypeForSubtasks("");
         new JiraEditorFactory().validateForSave(config);
     }
 
