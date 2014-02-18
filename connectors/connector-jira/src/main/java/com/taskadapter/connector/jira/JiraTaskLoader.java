@@ -32,8 +32,7 @@ public class JiraTaskLoader {
         try {
             final List<Issue> issues;
             if (config.getQueryId() != null) {
-                issues = connection.getIssuesByQueryId(config.getProjectKey(),
-                        config.getQueryId().toString());
+                issues = connection.getIssuesByQueryId(config.getProjectKey(), config.getQueryId().toString());
             } else {
                 issues = connection.getIssuesByProject(config.getProjectKey());
             }
