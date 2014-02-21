@@ -1,7 +1,7 @@
 dependencies {
     compile libraries.slf4j
 
-    compile 'com.taskadapter:jira-rest-java-client:1.0'
+    compile 'com.taskadapter:jira-rest-java-client:1.1'
     compile 'com.sun.jersey:jersey-client:1.5'
     compile 'com.sun.jersey:jersey-core:1.5'
     compile 'com.sun.jersey:jersey-json:1.5'
