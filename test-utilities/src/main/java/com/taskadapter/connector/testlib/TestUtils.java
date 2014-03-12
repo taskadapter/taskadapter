@@ -53,8 +53,10 @@ public class TestUtils {
 
     public static GTask generateTask() {
         GTask t = new GTask();
-        t.setSummary("generic task " + Calendar.getInstance().getTimeInMillis());
-        t.setDescription("some descr" + Calendar.getInstance().getTimeInMillis() + "1");
+        long timeInMillis = Calendar.getInstance().getTimeInMillis();
+        t.setKey("ID-" + timeInMillis);
+        t.setSummary("generic task " + timeInMillis);
+        t.setDescription("some description " + timeInMillis);
         Random r = new Random();
         int hours = r.nextInt(50) + 1;
         t.setEstimatedHours((float) hours);

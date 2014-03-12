@@ -18,7 +18,8 @@ ext.libraries = [
     slf4j: "org.slf4j:slf4j-api:$slf4jVersion",
     slf4jJdk: "org.slf4j:slf4j-jdk14:$slf4jVersion",
     mockitoCore: 'org.mockito:mockito-core:1.9.5-rc1',
-    junit: "junit:junit:4.11"
+    junit: "junit:junit:4.11",
+    festassert: 'org.easytesting:fest-assert:1.4'
 ]
 
 subprojects {
