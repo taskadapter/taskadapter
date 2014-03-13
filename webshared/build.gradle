@@ -31,3 +31,19 @@ def allProcessResourcesTasks() {
         tasks[it]
     }
 }
+
+/* these dependencies will be required if we switch to Gradle Vaadin plugin 0.7
+ * see http://dev.vaadin.com/ticket/13328
+
+configurations {
+    javadocDeps
+}
+dependencies {
+    javadocDeps "javax.portlet:portlet-api:2.0"
+}
+
+javadoc {
+    classpath += configurations.javadocDeps
+}
+
+*/
