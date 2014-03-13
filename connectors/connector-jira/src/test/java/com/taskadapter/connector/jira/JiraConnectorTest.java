@@ -37,20 +37,26 @@ public class JiraConnectorTest {
     @Test
     public void subtasksAreCreated() throws ConnectorException {
         GTask parentTask = TestUtils.generateTask();
-        parentTask.setId(123123);
+        parentTask.setId(11);
         parentTask.setSummary("parent task");
         List<GTask> subTasks = TestUtils.generateTasks(2);
+        subTasks.get(0).setId(22);
+        subTasks.get(1).setId(33);
         parentTask.getChildren().addAll(subTasks);
         JiraConnector connector = getConnector();
         TaskSaveResult result = connector.saveData(Arrays.asList(parentTask), null, TEST_MAPPINGS);
         assertThat(result.getCreatedTasksNumber()).isEqualTo(3);
 
-        String remoteKey = result.getRemoteKey(123123);
-        GTask loadedParentTask = connector.loadTaskByKey(remoteKey, TEST_MAPPINGS);
+        String remoteKey = result.getRemoteKey(11);
+        String subTask1RemoteKey = result.getRemoteKey(22);
+        String subTask2RemoteKey = result.getRemoteKey(33);
+        GTask loadedSubTask1 = connector.loadTaskByKey(subTask1RemoteKey, TEST_MAPPINGS);
+        GTask loadedSubTask2 = connector.loadTaskByKey(subTask2RemoteKey, TEST_MAPPINGS);
 
-        // TODO this FAILS!
-        // only the task itself is loaded, no subtasks (even though they were created successfully)
-        assertThat(loadedParentTask.getChildren()).hasSize(2);
+        assertThat(loadedSubTask1.getParentKey()).isEqualTo(remoteKey);
+        assertThat(loadedSubTask2.getParentKey()).isEqualTo(remoteKey);
+
+        // TODO need to delete the temporary tasks
     }
 
     private JiraConnector getConnector() {
