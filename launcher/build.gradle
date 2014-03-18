@@ -7,6 +7,8 @@ ext {
     WAR_FILE_NAME = "webui.war"
 }
 
+distZip.dependsOn ":webui:war"
+
 dependencies {
     def jetty_version = "8.1.10.v20130312"
 
