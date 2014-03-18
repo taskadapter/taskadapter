@@ -21,16 +21,13 @@ dependencies {
 }
 
 startScripts {
-    // solution from http://forums.gradle.org/gradle/topics/specifying_memory_settings_in_application_plugin_start_scripts
-    // there may be an easier way to achieve the same with the new Gradle 1.6 features. check this!
     ext.jvmOpts = "-Xmx512m"
+    // "defaultJvmOpts" is a special variable recognized by "application" plugin.
+    // it is used to set JVM options
+    defaultJvmOpts = [ext.jvmOpts]
     inputs.property("jvmOpts", { ext.jvmOpts }) // for incremental build to work properly
 
     doLast {
-        def optsEnvVar = "DEFAULT_JVM_OPTS"
-        unixScript.text = unixScript.text.replace("$optsEnvVar=${'""'}", "$optsEnvVar=${'"'}$ext.jvmOpts${'"'}")
-        windowsScript.text = windowsScript.text.replace("set $optsEnvVar=", "set $optsEnvVar=$ext.jvmOpts")
-
         // add "--openTaskAdapterPageInWebBrowser" at the end of the command line parameters
         def WIN_REPLACE_ARG2 = "com.taskadapter.launcher.TALauncher %CMD_LINE_ARGS%"
         def WIN_REPLACE_ARG2_WITH = WIN_REPLACE_ARG2 + " --openTaskAdapterPageInWebBrowser"
