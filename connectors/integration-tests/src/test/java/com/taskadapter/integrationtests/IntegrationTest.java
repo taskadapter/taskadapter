@@ -14,7 +14,6 @@ import com.taskadapter.connector.msp.MSPUtils;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
 import com.taskadapter.connector.redmine.RedmineSupportedFields;
-import com.taskadapter.connector.testlib.FileBasedTest;
 import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.core.RemoteIdUpdater;
 import com.taskadapter.core.TaskLoader;
@@ -46,7 +45,7 @@ import static org.junit.Assert.assertNotNull;
 // "unit" must be run during the regular Maven "test" stage, "integration" - during "integration-test" stage.
 // See http://stackoverflow.com/questions/1228709/best-practices-for-integration-tests-with-maven
 // and http://stackoverflow.com/a/10381662/477655
-public class IntegrationTest extends FileBasedTest {
+public class IntegrationTest {
 
     private static final ProgressMonitor DUMMY_MONITOR = ProgressMonitorUtils.getDummyMonitor();
     private static final Logger logger = LoggerFactory.getLogger(IntegrationTest.class);

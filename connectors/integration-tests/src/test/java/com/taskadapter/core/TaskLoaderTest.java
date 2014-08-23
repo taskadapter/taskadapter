@@ -7,7 +7,6 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.msp.MSPSupportedFields;
-import com.taskadapter.connector.testlib.FileBasedTest;
 import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.integrationtests.MSPConfigLoader;
 import com.taskadapter.model.GTask;
@@ -21,7 +20,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class TaskLoaderTest extends FileBasedTest {
+public class TaskLoaderTest {
 
     @Test
     /**
