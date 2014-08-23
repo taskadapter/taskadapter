@@ -34,7 +34,7 @@ subprojects {
         mavenCentral()
 
         maven {
-            url 'http://ta-dev.dyndns.biz:8081/nexus/content/groups/public'
+            url 'http://76.126.10.142:8081/nexus/content/groups/public'
         }
         maven {
             url 'http://maven.vaadin.com/vaadin-addons'
