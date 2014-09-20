@@ -37,7 +37,7 @@ ext {
 // I reported this here: https://github.com/johndevs/gradle-vaadin-plugin/issues/91
 // and switched from "latest" (the next line) to v. 0.6.5
 // apply from: 'http://plugins.jasoft.fi/vaadin.plugin'
-apply from: 'http://plugins.jasoft.fi/vaadin.plugin?version=0.8.1'
+apply from: 'http://plugins.jasoft.fi/vaadin.plugin?version=0.9'
 
 vaadin {
     version = vaadinVersion

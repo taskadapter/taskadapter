@@ -45,6 +45,12 @@ subprojects {
         compile 'com.google.guava:guava:12.0'
         testCompile libraries.junit
     }
+
+    // disabled javadoc generation during Gradle build to avoid build failure.
+    // see https://github.com/johndevs/gradle-vaadin-plugin/issues/130
+    javadoc {
+        enabled = false
+    }
 }
 
 
