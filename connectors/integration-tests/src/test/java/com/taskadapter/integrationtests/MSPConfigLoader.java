@@ -16,7 +16,7 @@ public class MSPConfigLoader {
      */
     public static MSPConfig generateTemporaryConfig(String fileNameInClasspath) throws IOException {
 
-        File temp = File.createTempFile("pattern", ".suffix");
+        File temp = File.createTempFile("pattern", ".xml");
         // Delete temp file when program exits.
         temp.deleteOnExit();
 

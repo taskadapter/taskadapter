@@ -188,7 +188,7 @@ public class UpdaterIntegrationTest {
 
         File temp;
         try {
-            temp = File.createTempFile("pattern", ".suffix");
+            temp = File.createTempFile("pattern", ".xml");
         } catch (IOException e) {
             throw new RuntimeException(e.toString(), e);
         }
