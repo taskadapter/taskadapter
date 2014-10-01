@@ -51,6 +51,10 @@ subprojects {
     javadoc {
         enabled = false
     }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
 }
 
 
