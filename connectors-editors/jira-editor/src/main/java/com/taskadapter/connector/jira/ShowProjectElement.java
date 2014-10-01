@@ -17,7 +17,7 @@ public class ShowProjectElement {
     }
 
     /**
-     * Shows a project info.
+     * Load and show the project info.
      *
      * @throws com.taskadapter.connector.definition.exceptions.ConnectorException
      */
@@ -38,9 +38,6 @@ public class ShowProjectElement {
                 + "\nName: " + project.getName()
                 + "\nHomepage: " + nvl(project.getHomepage())
                 + "\nDescription: " + nvl(project.getDescription());
-        // + "\nLead: " + project.getLead()
-        // + "\nURL: " + project.getProjectUrl()
-
         Notification.show("Project Info", msg, Notification.Type.HUMANIZED_MESSAGE);
     }
 
