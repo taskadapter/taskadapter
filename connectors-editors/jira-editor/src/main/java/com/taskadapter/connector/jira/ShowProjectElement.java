@@ -34,9 +34,7 @@ public class ShowProjectElement {
     }
 
     private void showProjectInfo(GProject project) {
-        String msg 
-                = "Id: " + project.getId() 
-                + "\nKey:  " + project.getKey() 
+        String msg = "Key:  " + project.getKey()
                 + "\nName: " + project.getName()
                 + "\nHomepage: " + nvl(project.getHomepage())
                 + "\nDescription: " + nvl(project.getDescription());
