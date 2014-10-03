@@ -22,6 +22,8 @@ public class MessageDialog extends Window implements Button.ClickListener {
 
         setModal(true);
         setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
+        addStyleName("not-maximizable-window");
+
         view.setSpacing(true);
         view.setMargin(true);
 

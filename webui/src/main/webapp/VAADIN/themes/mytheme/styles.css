@@ -264,3 +264,9 @@
     border: 1px solid #e0e0e0;
     border-radius: 4px;
 }
+
+/* This is to avoid "Maximize" button next to "Close" in popup headers.
+   See https://vaadin.com/forum#!/thread/3989619 */
+.not-maximizable-window .popupContent .v-window-wrap .v-window-maximizebox{
+    height: 0px;
+}

@@ -29,6 +29,8 @@ public class CreateUserDialog extends Window {
         VerticalLayout view = new VerticalLayout();
         setContent(view);
         setModal(true);
+        addStyleName("not-maximizable-window");
+
         setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
 
         GridLayout grid = new GridLayout(2, 2);

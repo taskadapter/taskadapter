@@ -1,4 +1,5 @@
-include "common", "launcher", "mainapp", "test-utilities", "webshared", "webui",
+include "common", "launcher", "mainapp", "test-utilities", "test-utilities-ui",
+        "webshared", "webui",
         "connectors:connector-msp",
         "connectors:connector-jira",
         "connectors:connector-basecamp",

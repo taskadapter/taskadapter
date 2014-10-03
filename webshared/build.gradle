@@ -5,9 +5,7 @@ dependencies {
     compile libraries.slf4j
     compile libraries.slf4jJdk
 
-    compile "com.vaadin:vaadin-client-compiled:$vaadinVersion"
-    compile "com.vaadin:vaadin-client:$vaadinVersion"
-    compile "com.vaadin:vaadin-themes:$vaadinVersion"
+    compile "com.vaadin:vaadin-server:$vaadinVersion"
 
     compile libraries.servletAPI
 
@@ -31,19 +29,3 @@ def allProcessResourcesTasks() {
         tasks[it]
     }
 }
-
-/* these dependencies will be required if we switch to Gradle Vaadin plugin 0.7
- * see http://dev.vaadin.com/ticket/13328
-
-configurations {
-    javadocDeps
-}
-dependencies {
-    javadocDeps "javax.portlet:portlet-api:2.0"
-}
-
-javadoc {
-    classpath += configurations.javadocDeps
-}
-
-*/

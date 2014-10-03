@@ -2,19 +2,13 @@ package com.taskadapter.connector.jira;
 
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.editor.testlib.VaadinTestHelper;
 import com.taskadapter.web.service.Sandbox;
-import com.vaadin.server.DefaultDeploymentConfiguration;
-import com.vaadin.server.VaadinServlet;
-import com.vaadin.server.VaadinServletService;
-import com.vaadin.server.VaadinSession;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-
-import java.util.Properties;
-
-import org.junit.Assert;
 
 public class JiraEditorFactoryTest {
 
@@ -23,9 +17,7 @@ public class JiraEditorFactoryTest {
 
     @Before
     public void before() {
-        VaadinSession.setCurrent(new VaadinSession(new VaadinServletService(
-                new VaadinServlet(), new DefaultDeploymentConfiguration(
-                getClass(), new Properties()))));
+       VaadinTestHelper.initVaadinSession(getClass());
     }
 
     @Test

@@ -63,6 +63,7 @@ public class ChangePasswordDialog {
         ui.setContent(view);
         ui.setModal(true);
         ui.setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
+        ui.addStyleName("not-maximizable-window");
 
         errorLabel = new Label();
         errorLabel.addStyleName("errorMessage");

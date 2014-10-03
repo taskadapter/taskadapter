@@ -1,0 +1,5 @@
+dependencies {
+    compile libraries.servletAPI
+
+    compile "com.vaadin:vaadin-server:$vaadinVersion"
+}

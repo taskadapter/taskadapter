@@ -44,8 +44,8 @@ public class LocalRemoteOptionsPanel extends Panel {
             group.addValueChangeListener(new Property.ValueChangeListener() {
                 @Override
                 public void valueChange(Property.ValueChangeEvent event) {
-                    boolean localModeRequested = event.getProperty().toString()
-                            .equals(LOCAL);
+                    String selectedStringValue = (String) event.getProperty().getValue();
+                    boolean localModeRequested = selectedStringValue.equals(LOCAL);
                     settingsManager.setLocal(localModeRequested);
                     Notification.show("Saved");
                 }

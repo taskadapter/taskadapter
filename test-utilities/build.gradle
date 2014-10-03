@@ -3,6 +3,7 @@ dependencies {
 
     compile libraries.gson
 
-    // yes, this is "compile", not "testCompile" dependency
+    // yes, this is "compile", not "testCompile" dependency because "test-utilities" module
+    // is itself referenced as "testCompile" dependency
     compile libraries.junit
 }

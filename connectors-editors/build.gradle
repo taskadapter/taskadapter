@@ -4,5 +4,6 @@ subprojects {
         compile project(":webshared")
 
         testCompile project(":test-utilities")
+        testCompile project(":test-utilities-ui")
     }
 }

@@ -19,6 +19,7 @@ public class InputDialog extends Window {
         view.setMargin(true);
 
         setModal(true);
+        addStyleName("not-maximizable-window");
         setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
 
         HorizontalLayout textLayout = new HorizontalLayout();
