@@ -4,10 +4,10 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPFileReader;
-import com.taskadapter.connector.msp.MSPOutputFileNameNotSetException;
 import com.taskadapter.connector.msp.MSPUtils;
 import com.taskadapter.connector.msp.UnsupportedRelationType;
 import com.taskadapter.connector.msp.editor.error.InputFileNameNotSetException;
+import com.taskadapter.connector.msp.editor.error.OutputFileNameNotSetException;
 import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.file.FileProcessingResult;
@@ -48,6 +48,8 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
                             + ((UnsupportedRelationType) e).getRelationType()));
         } else if (e instanceof InputFileNameNotSetException) {
             return MESSAGES.get("error.inputFileNameNotSet");
+        } else if (e instanceof OutputFileNameNotSetException) {
+            return MESSAGES.get("error.outputFileNameNotSet");
         }
         return null;
     }
@@ -106,7 +108,7 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     @Override
     public void validateForSave(MSPConfig config) throws BadConfigException {
         if (config.getOutputAbsoluteFilePath().isEmpty()) {
-            throw new MSPOutputFileNameNotSetException();
+            throw new OutputFileNameNotSetException();
         }
     }
 
@@ -163,7 +165,7 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
         final String newPath = createDefaultMSPFileName(sandbox
                 .getUserContentDirectory());
         if (newPath == null)
-            throw new MSPOutputFileNameNotSetException();
+            throw new OutputFileNameNotSetException();
         
         config.setOutputAbsoluteFilePath(newPath);
         config.setInputAbsoluteFilePath(newPath);
