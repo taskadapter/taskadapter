@@ -2,6 +2,7 @@ package com.taskadapter.web.configeditor;
 
 import com.taskadapter.web.configeditor.map.MapEditorModel;
 import com.vaadin.data.Container;
+import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.shared.MouseEventDetails;
@@ -10,10 +11,6 @@ import com.vaadin.ui.themes.Runo;
 
 import java.util.Map;
 
-/**
- * @author Igor Laishen
- * @author Alexander Kulik
- */
 public class CustomFieldsTablePanel extends Panel {
     private static final String LABEL = "Custom fields:";
     private static final String ADD_NEW_BUTTON = "Add";
@@ -64,7 +61,8 @@ public class CustomFieldsTablePanel extends Panel {
                 if (event.getButton() == MouseEventDetails.MouseButton.LEFT && event.isDoubleClick()) {
                     final Object cellItemId = event.getItemId();
                     final Object cellPropertyId = event.getPropertyId();
-                    final String cellValue = event.getItem().getItemProperty(event.getPropertyId()).getValue().toString();
+                    Property property = event.getItem().getItemProperty(event.getPropertyId());
+                    final String cellValue = (String) property.getValue();
 
                     table.setTableFieldFactory(new TableFieldFactory() {
                         @Override

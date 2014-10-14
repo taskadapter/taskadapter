@@ -94,7 +94,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
 
         ShowProjectElement showProjectElement = new ShowProjectElement(config);
         ProjectPanel projectPanel = new ProjectPanel(
-                EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
+                new MethodProperty<String>(config, "projectKey"),
                 new MethodProperty<String>(config, "queryIdStr"),
                 Interfaces.fromMethod(DataProvider.class, JiraLoaders.class,
                         "loadProjects", config.getServerInfo()),

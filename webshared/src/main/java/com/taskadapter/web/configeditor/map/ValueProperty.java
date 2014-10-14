@@ -5,11 +5,8 @@ import com.vaadin.data.util.converter.Converter;
 
 /**
  * Map value property.
- * 
- * @author maxkar
- * 
  */
-final class ValueProperty extends AbstractProperty {
+final class ValueProperty extends AbstractProperty<String> {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -45,19 +42,19 @@ final class ValueProperty extends AbstractProperty {
 	}
 
 	@Override
-	public Object getValue() {
+	public String getValue() {
 		return value;
 	}
 
 	@Override
-	public void setValue(Object newValue) throws ReadOnlyException,
+	public void setValue(String newValue) throws ReadOnlyException,
             Converter.ConversionException {
-		this.value = newValue.toString();
-		model.updateBinding((String) key.getValue());
+		this.value = newValue;
+		model.updateBinding(key.getValue());
 	}
 
 	@Override
-	public Class<?> getType() {
+	public Class<String> getType() {
 		return String.class;
 	}
 
