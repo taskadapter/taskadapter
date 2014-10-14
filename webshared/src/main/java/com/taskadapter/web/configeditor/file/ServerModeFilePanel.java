@@ -173,9 +173,10 @@ public class ServerModeFilePanel extends Panel{
         comboBox.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                Property selected = presenter.getFileList().getContainerProperty(event.getProperty().toString(), COMBOBOX_ITEM_PROPERTY);
+                Property property = event.getProperty();
+                Property selected = presenter.getFileList().getContainerProperty(property.getValue(), COMBOBOX_ITEM_PROPERTY);
                 if (selected != null) {
-                    presenter.onFileSelected(selected.toString());
+                    presenter.onFileSelected((String) selected.getValue());
                 } else {
                     presenter.onNoFileSelected();
                 }

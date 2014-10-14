@@ -66,7 +66,7 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
         ShowProjectElement showProjectElement = new ShowProjectElement(config);
         LoadQueriesElement loadQueriesElement = new LoadQueriesElement(config);
         ProjectPanel projectPanel = new ProjectPanel(
-                EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
+                new MethodProperty<String>(config, "projectKey"),
                 new MethodProperty<String>(config, "queryIdStr"),
                 Interfaces.fromMethod(DataProvider.class, RedmineLoaders.class, "getProjects", serverInfo),
                 Interfaces.fromMethod(SimpleCallback.class, showProjectElement, "showProjectInfo"),

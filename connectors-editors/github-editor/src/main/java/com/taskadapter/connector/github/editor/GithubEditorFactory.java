@@ -61,8 +61,8 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig> {
                 new MethodProperty<String>(serverInfo, "password"));
         layout.addComponent(serverPanel);
 
-        ProjectPanel projectPanel = new ProjectPanel(EditorUtil.wrapNulls(new MethodProperty<String>(config, "projectKey")),
-                EditorUtil.wrapNulls(new MethodProperty<String>(config, "queryString")),
+        ProjectPanel projectPanel = new ProjectPanel(new MethodProperty<String>(config, "projectKey"),
+                new MethodProperty<String>(config, "queryString"),
                 Interfaces.fromMethod(DataProvider.class, GithubLoaders.class, "getProjects", serverInfo)
                 , null, null, this);
         projectPanel.setProjectKeyLabel("Repository ID");
