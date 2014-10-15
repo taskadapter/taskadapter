@@ -23,6 +23,7 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.TextField;
 
 import java.util.Arrays;
 
@@ -33,7 +34,8 @@ public class TaskFieldsMappingFragment implements Validatable {
     private static final int COLUMN_HELP = 1;
     private static final int COLUMN_LEFT_CONNECTOR = 2;
     private static final int COLUMN_RIGHT_CONNECTOR = 3;
-    private static final int COLUMNS_NUMBER = 4;
+    private static final int COLUMN_DEFAULT_VALUE = 4;
+    private static final int COLUMNS_NUMBER = 5;
 
     // TODO maybe merge this help file with all the other localized strings? but it has some rules about namings...
     private static final String BUNDLE_NAME = "help";
@@ -93,12 +95,20 @@ public class TaskFieldsMappingFragment implements Validatable {
         label1.addStyleName("fieldsTitle");
         label1.setWidth(180, PIXELS);
         gridLayout.addComponent(label1, COLUMN_LEFT_CONNECTOR, 0);
+        gridLayout.setComponentAlignment(label1, Alignment.MIDDLE_LEFT);
 
 
         Label label3 = new Label(connector2.getLabel());
         label3.addStyleName("fieldsTitle");
         label3.setWidth(180, PIXELS);
         gridLayout.addComponent(label3, COLUMN_RIGHT_CONNECTOR, 0);
+        gridLayout.setComponentAlignment(label3, Alignment.MIDDLE_LEFT);
+
+        Label label4 = new Label(messages.get("editConfig.mappings.defaultValueColumn"));
+        label4.addStyleName("fieldsTitle");
+        label4.setWidth(180, PIXELS);
+        gridLayout.addComponent(label4, COLUMN_DEFAULT_VALUE, 0);
+        gridLayout.setComponentAlignment(label4, Alignment.MIDDLE_LEFT);
 
         gridLayout.addComponent(new Label("<hr>", ContentMode.HTML), 0, 1, COLUMNS_NUMBER - 1, 1);
     }
@@ -121,6 +131,7 @@ public class TaskFieldsMappingFragment implements Validatable {
 
         addConnectorElement(field, connector1, "connector1");
         addConnectorElement(field, connector2, "connector2");
+        addTextFieldForDefaultValue(field);
     }
 
     private void addConnectorElement(FieldMapping field, UIConnectorConfig config, String leftRightField) {
@@ -142,6 +153,14 @@ public class TaskFieldsMappingFragment implements Validatable {
         checkbox.setPropertyDataSource(selected);
         gridLayout.addComponent(checkbox);
         gridLayout.setComponentAlignment(checkbox, Alignment.MIDDLE_CENTER);
+    }
+
+    private void addTextFieldForDefaultValue(FieldMapping mapping) {
+        TextField field = new TextField();
+        final MethodProperty<String> methodProperty = new MethodProperty<String>(mapping, "defaultValue");
+        field.setPropertyDataSource(methodProperty);
+        gridLayout.addComponent(field);
+        gridLayout.setComponentAlignment(field, Alignment.MIDDLE_CENTER);
     }
 
     private void addHelp(String helpForField) {

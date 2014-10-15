@@ -12,7 +12,7 @@ public class MappingBuilder {
         for (FieldMapping fieldMapping : newMappings.getMappings()) {
             final String mappingTarget = getSideMappedTo(fieldMapping, leftRight);
             if (fieldMapping.getField() != FIELD.REMOTE_ID || mappingTarget != null) {
-                mappings.setMapping(fieldMapping.getField(), fieldMapping.isSelected(), mappingTarget);
+                mappings.setMapping(fieldMapping.getField(), fieldMapping.isSelected(), mappingTarget, fieldMapping.getDefaultValue());
             }
         }
         return mappings;

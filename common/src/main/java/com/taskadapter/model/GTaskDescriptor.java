@@ -6,9 +6,15 @@ import java.util.Map;
 public class GTaskDescriptor {
 
     public static enum FIELD {
-        ID, SUMMARY, DESCRIPTION, TASK_TYPE, ESTIMATED_TIME, DONE_RATIO, ASSIGNEE, START_DATE, DUE_DATE, CLOSE_DATE, PRIORITY, REMOTE_ID, TASK_STATUS
+        ID, KEY, PARENT_KEY,
+        SUMMARY, DESCRIPTION, TASK_TYPE, ESTIMATED_TIME, DONE_RATIO, ASSIGNEE, START_DATE, DUE_DATE,
+        CREATED_ON, UPDATED_ON,
+        CLOSE_DATE, PRIORITY, REMOTE_ID, TASK_STATUS,
+        ENVIRONMENT,
+        CHILDREN, RELATIONS
     }
 
+    // TODO this should be on the UI level, not in the model.
     @SuppressWarnings("serial")
     private static Map<FIELD, String> displayNames = new HashMap<FIELD, String>() {
         {
@@ -28,6 +34,7 @@ public class GTaskDescriptor {
             put(FIELD.REMOTE_ID, "Remote ID");
             put(FIELD.PRIORITY, "Task priority");
             put(FIELD.TASK_STATUS, "Task status");
+            put(FIELD.ENVIRONMENT, "Environment");
         }
     };
 

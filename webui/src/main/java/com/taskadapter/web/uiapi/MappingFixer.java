@@ -27,7 +27,7 @@ public class MappingFixer {
 
         final NewMappings result = new NewMappings();
 
-        if (secondFields.contains(GTaskDescriptor.FIELD.REMOTE_ID)) {
+/*        if (secondFields.contains(GTaskDescriptor.FIELD.REMOTE_ID)) {
             final FieldMapping saved = findRemote(mappings, MappingSide.RIGHT);
             if (saved != null) {
                 result.put(saved);
@@ -69,7 +69,7 @@ public class MappingFixer {
                     field, fields2), newMappingsEnabled);
             result.put(newMapping);
         }
-
+*/
         return result;
     }
 

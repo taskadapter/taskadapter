@@ -141,7 +141,7 @@ public class GTaskToRedmineTest {
     private GTaskToRedmine createConverterWithField(GTaskDescriptor.FIELD field, boolean selected, List<User> users) {
         RedmineConfig config = new RedmineConfig();
         Mappings mappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
-        mappings.setMapping(field, selected, null);
+        mappings.setMapping(field, selected, null, "some default value for empty fields");
         users = users != null ? users : Collections.<User>emptyList();
         return new GTaskToRedmine(config, mappings, null, project, users, new ArrayList<IssueStatus>());
     }

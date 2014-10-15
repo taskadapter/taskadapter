@@ -7,6 +7,7 @@ import com.taskadapter.model.GTask;
  *
  * @param <T> error definition type.
  */
+// TODO Alexey: I see we have only one usage of this class with Throwable type. This "<T>" generic can be deleted.
 public class TaskError<T> {
     private GTask task;
     private T errors;

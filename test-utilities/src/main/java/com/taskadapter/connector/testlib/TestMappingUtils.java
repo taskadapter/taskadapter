@@ -9,7 +9,7 @@ public final class TestMappingUtils {
         final Mappings res = new Mappings();
         for (FIELD field : fields.getSupportedFields()) {
             res.setMapping(field, fields.isSelectedByDefault(field),
-                    fields.getDefaultValue(field));
+                    fields.getDefaultValue(field), null);
         }
         return res;
     }

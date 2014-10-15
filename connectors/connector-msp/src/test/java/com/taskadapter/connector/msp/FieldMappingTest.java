@@ -163,7 +163,7 @@ public class FieldMappingTest {
         yearAgo.add(Calendar.YEAR, -1);
         task.setStartDate(yearAgo.getTime());
         Mappings mappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
-        mappings.setMapping(FIELD.START_DATE, true, MSPUtils.NO_CONSTRAINT);
+        mappings.setMapping(FIELD.START_DATE, true, MSPUtils.NO_CONSTRAINT, "default start date");
         GTask loadedTask = TestUtils.saveAndLoadViaSummary(connector, task, mappings);
         assertEquals(yearAgo.getTime(), loadedTask.getStartDate());
     }
@@ -173,7 +173,7 @@ public class FieldMappingTest {
         GTask task = TestUtils.generateTask();
         Calendar cal = TestUtils.setTaskStartYearAgo(task);
         Mappings mappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
-        mappings.setMapping(FIELD.START_DATE, true, ConstraintType.MUST_START_ON.name());
+        mappings.setMapping(FIELD.START_DATE, true, ConstraintType.MUST_START_ON.name(), "default start date");
         GTask loadedTask = TestUtils.saveAndLoadViaSummary(connector, task, mappings);
         assertEquals(cal.getTime(), loadedTask.getStartDate());
     }
@@ -208,7 +208,7 @@ public class FieldMappingTest {
     private static List<Task> saveAndLoad(MSPConfig config, FIELD field, boolean useMap, String mapTo, GTask... tasks) throws IOException, MPXJException, ConnectorException {
         MSPConfig temporaryClonedconfig = new MSPConfig(config);
         Mappings mappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
-        mappings.setMapping(field, useMap, mapTo);
+        mappings.setMapping(field, useMap, mapTo, "default value for empty field. this value is unused by these tests.");
 
         String fileName = "testdata.xml";
         temporaryClonedconfig.setInputAbsoluteFilePath(fileName);

@@ -25,30 +25,33 @@ final class SimpleTaskSaver<N> {
                 .getDummyMonitor() : progressMonitor;
     }
 
-    void saveTasks(String parentIssueKey, List<GTask> tasks) {
+    void saveTasks(String parentIssueKey, List<GTask> tasks, DefaultValueSetter defaultValueSetter) {
         for (GTask task : tasks) {
             String newTaskKey = null;
             try {
                 if (parentIssueKey != null) {
                     task.setParentKey(parentIssueKey);
                 }
-                N nativeIssueToCreateOrUpdate = converter.convert(task);
-                newTaskKey = submitTask(task, nativeIssueToCreateOrUpdate);
+                GTask taskWithDefaultValues = defaultValueSetter.cloneAndReplaceEmptySelectedFieldsWithDefaultValues(task);
+                N nativeIssueToCreateOrUpdate = converter.convert(taskWithDefaultValues);
+                newTaskKey = submitTask(taskWithDefaultValues, nativeIssueToCreateOrUpdate);
             } catch (ConnectorException e) {
                 result.addTaskError(task, e);
             } catch (Throwable t) {
                 result.addTaskError(task, t);
+                t.printStackTrace();
             }
             monitor.worked(1);
 
-            saveTasks(newTaskKey, task.getChildren());
+            saveTasks(newTaskKey, task.getChildren(), defaultValueSetter);
         }
     }
 
     /**
      * @return the newly created task's KEY
      */
-    protected String submitTask(GTask task, N nativeTask)
+    // TODO refactor? we only pass the GTask to check its IDs.
+    private String submitTask(GTask task, N nativeTask)
             throws ConnectorException {
         String newTaskKey;
         if (task.getRemoteId() == null) {

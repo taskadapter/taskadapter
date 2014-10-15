@@ -3,6 +3,7 @@ package com.taskadapter.connector.mantis;
 import biz.futureware.mantis.rpc.soap.client.AccountData;
 import biz.futureware.mantis.rpc.soap.client.IssueData;
 import biz.futureware.mantis.rpc.soap.client.ProjectData;
+import com.taskadapter.connector.common.DefaultValueSetter;
 import com.taskadapter.connector.common.TaskSavingUtils;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
@@ -84,7 +85,7 @@ public class MantisConnector implements Connector<MantisConfig> {
                     mntProject, mappings, users);
             final MantisTaskSaver mts = new MantisTaskSaver(mgr);
             
-            return TaskSavingUtils.saveTasks(tasks, converter, mts, monitor)
+            return TaskSavingUtils.saveTasks(tasks, converter, mts, monitor, new DefaultValueSetter(mappings))
                     .getResult();
         } catch (RemoteException e) {
             throw MantisUtils.convertException(e);

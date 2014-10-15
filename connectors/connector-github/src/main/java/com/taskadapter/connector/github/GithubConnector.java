@@ -1,5 +1,6 @@
 package com.taskadapter.connector.github;
 
+import com.taskadapter.connector.common.DefaultValueSetter;
 import com.taskadapter.connector.common.TaskSavingUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
@@ -90,7 +91,7 @@ public class GithubConnector implements Connector<GithubConfig> {
         final GithubTaskSaver saver = new GithubTaskSaver(issueService,
                 serverInfo.getUserName(), config.getProjectKey());
 
-        return TaskSavingUtils.saveTasks(tasks, converter, saver, monitor)
+        return TaskSavingUtils.saveTasks(tasks, converter, saver, monitor, new DefaultValueSetter(mappings))
                 .getResult();
     }
 }

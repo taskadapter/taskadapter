@@ -75,24 +75,8 @@ public class TreeUtils {
     }
 
     static GTask createShallowCopyWithoutChildren(GTask task) {
-        GTask newTask = new GTask();
-        newTask.setId(task.getId());
-        newTask.setKey(task.getKey());
-        newTask.setParentKey(task.getParentKey());
-        newTask.setRemoteId(task.getRemoteId());
-        newTask.setPriority(task.getPriority());
-        newTask.setAssignee(task.getAssignee());
-        newTask.setSummary(task.getSummary());
-        newTask.setDescription(task.getDescription());
-        newTask.setEstimatedHours(task.getEstimatedHours());
-        newTask.setDoneRatio(task.getDoneRatio());
-        newTask.setStartDate(task.getStartDate());
-        newTask.setDueDate(task.getDueDate());
-        newTask.setType(task.getType());
-        newTask.setStatus(task.getStatus());
-        newTask.setCreatedOn(task.getCreatedOn());
-        newTask.setUpdatedOn(task.getUpdatedOn());
-        newTask.setRelations(task.getRelations());
+        GTask newTask = new GTask(task);
+        newTask.setChildren(new ArrayList<GTask>());
         return newTask;
     }
 

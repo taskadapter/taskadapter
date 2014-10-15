@@ -1,6 +1,9 @@
 package com.taskadapter.integrationtests;
 
+import com.taskadapter.connector.common.BasicIssueSaveAPI;
+import com.taskadapter.connector.common.DefaultValueSetter;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
+import com.taskadapter.connector.common.TaskSavingUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
@@ -11,9 +14,11 @@ import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.msp.MSPSupportedFields;
 import com.taskadapter.connector.msp.MSPUtils;
+import com.taskadapter.connector.redmine.GTaskToRedmine;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
 import com.taskadapter.connector.redmine.RedmineSupportedFields;
+import com.taskadapter.connector.redmine.RedmineTaskSaver;
 import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.core.RemoteIdUpdater;
 import com.taskadapter.core.TaskLoader;
@@ -21,6 +26,7 @@ import com.taskadapter.core.TaskSaver;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.Project;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -41,16 +47,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
-// TODO split all tests in the project to "unit" and "integration" ones.
-// "unit" must be run during the regular Maven "test" stage, "integration" - during "integration-test" stage.
-// See http://stackoverflow.com/questions/1228709/best-practices-for-integration-tests-with-maven
-// and http://stackoverflow.com/a/10381662/477655
 public class IntegrationTest {
 
     private static final ProgressMonitor DUMMY_MONITOR = ProgressMonitorUtils.getDummyMonitor();
     private static final Logger logger = LoggerFactory.getLogger(IntegrationTest.class);
     private static String projectKey;
     private static RedmineManager mgr;
+    private static Project redmineProject;
 
     @BeforeClass
     public static void oneTimeSetUp() {
@@ -63,8 +66,8 @@ public class IntegrationTest {
         project.setIdentifier("itest"
                 + Calendar.getInstance().getTimeInMillis());
         try {
-            Project createdProject = mgr.createProject(project);
-            projectKey = createdProject.getIdentifier();
+            redmineProject = mgr.createProject(project);
+            projectKey = redmineProject.getIdentifier();
             logger.info("Created temporary Redmine project with key " + projectKey);
 
         } catch (Exception e) {
@@ -122,19 +125,22 @@ public class IntegrationTest {
         Connector<?> msProjectConnector = new MSPConnector(mspConfig);
 
         Mappings mspMappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
-        mspMappings.setMapping(GTaskDescriptor.FIELD.REMOTE_ID, true, MSPUtils.getDefaultRemoteIdMapping());
+        mspMappings.setMapping(GTaskDescriptor.FIELD.REMOTE_ID, true, MSPUtils.getDefaultRemoteIdMapping(), "default remote ID");
         RedmineConfig redmineConfig = RedmineTestConfig.getRedmineTestConfig();
         redmineConfig.setProjectKey(projectKey);
-        RedmineConnector redmineConnector = new RedmineConnector(redmineConfig);
         Mappings redmineMappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
 
         // load from MSP
         int maxTasksNumber = 999999;
         List<GTask> loadedTasks = TaskLoader.loadTasks(maxTasksNumber, msProjectConnector, "msp1", mspMappings, DUMMY_MONITOR);
         // save to Redmine. this should save the remote IDs
-        final TaskSaveResult result = TaskSaver.save(redmineConnector, "Redmine target location",
-                redmineMappings, loadedTasks,
-                DUMMY_MONITOR);
+        GTaskToRedmine converter = new GTaskToRedmine(redmineConfig, redmineMappings, null, redmineProject, null, null);
+        BasicIssueSaveAPI<Issue> redmineTaskSaver = new RedmineTaskSaver(mgr, redmineProject, redmineConfig);
+        final TaskSaveResult result =  TaskSavingUtils.saveTasks(loadedTasks,
+                converter, redmineTaskSaver,
+                DUMMY_MONITOR,
+                new DefaultValueSetter(redmineMappings)).getResult();
+
         assertEquals("must have created 2 tasks", 2, result.getCreatedTasksNumber());
         RemoteIdUpdater.updateRemoteIds(result.getIdToRemoteKeyMap(),
                 mspMappings, msProjectConnector);
@@ -164,10 +170,12 @@ public class IntegrationTest {
         try {
             // save to Redmine
             Mappings redmineMappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
-            RedmineConnector redmineConnector = new RedmineConnector(redmineConfigTo);
-            TaskSaver.save(redmineConnector, "Redmine target location",
-                    redmineMappings,
-                    loadedTasks, DUMMY_MONITOR);
+            GTaskToRedmine converter = new GTaskToRedmine(redmineConfigTo, redmineMappings, null, redmineProject, null, null);
+            BasicIssueSaveAPI<Issue> redmineTaskSaver = new RedmineTaskSaver(mgr, redmineProject, redmineConfigTo);
+            TaskSavingUtils.saveTasks(loadedTasks,
+                    converter, redmineTaskSaver,
+                    DUMMY_MONITOR,
+                    new DefaultValueSetter(redmineMappings));
         } catch (Throwable t) {
             t.printStackTrace();
             fail(t.toString());

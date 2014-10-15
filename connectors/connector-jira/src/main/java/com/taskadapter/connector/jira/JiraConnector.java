@@ -6,6 +6,7 @@ import com.atlassian.jira.rest.client.domain.IssueType;
 import com.atlassian.jira.rest.client.domain.Priority;
 import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rpc.soap.client.RemoteFilter;
+import com.taskadapter.connector.common.DefaultValueSetter;
 import com.taskadapter.connector.common.TaskSavingUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
@@ -166,7 +167,7 @@ public class JiraConnector implements Connector<JiraConfig> {
 
             final JiraTaskSaver saver = new JiraTaskSaver(connection);
             final TaskSaveResultBuilder rb = TaskSavingUtils.saveTasks(tasks,
-                    converter, saver, monitor);
+                    converter, saver, monitor, new DefaultValueSetter(mappings));
             TaskSavingUtils.saveRemappedRelations(config, tasks, saver, rb);
             return rb.getResult();
         } catch (RemoteException e) {

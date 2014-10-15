@@ -1,5 +1,6 @@
 package com.taskadapter.connector.redmine;
 
+import com.taskadapter.connector.common.DefaultValueSetter;
 import com.taskadapter.connector.common.TaskSavingUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
@@ -124,7 +125,7 @@ public class RedmineConnector implements Connector<RedmineConfig> {
                 final RedmineTaskSaver rts = new RedmineTaskSaver(mgr,
                         rmProject, config);
                 final TaskSaveResultBuilder tsrb = TaskSavingUtils.saveTasks(
-                        tasks, converter, rts, monitor);
+                        tasks, converter, rts, monitor, new DefaultValueSetter(mappings));
                 TaskSavingUtils.saveRemappedRelations(config, tasks, rts, tsrb);
                 return tsrb.getResult();
             } finally {

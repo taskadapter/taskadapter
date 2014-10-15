@@ -75,7 +75,7 @@ public class GTaskToJiraTest {
         task.setPriority(750);
 
         Mappings mappings = TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS);
-        mappings.setMapping(GTaskDescriptor.FIELD.PRIORITY, true, null);
+        mappings.setMapping(GTaskDescriptor.FIELD.PRIORITY, true, null, "default priority");
         GTaskToJira converter = getConverter(mappings);
 
         IssueInput newIssue = converter.convertToJiraIssue(task);
@@ -99,7 +99,7 @@ public class GTaskToJiraTest {
         task.setSummary("checking issueType");
 
         Mappings mappings = TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS);
-        mappings.setMapping(GTaskDescriptor.FIELD.TASK_TYPE, true, null);
+        mappings.setMapping(GTaskDescriptor.FIELD.TASK_TYPE, true, null, "default task type");
         GTaskToJira converter = getConverter(mappings);
         IssueType requiredIssueType = findIssueType(issueTypeList, "Task");
         task.setType("Task");
@@ -114,7 +114,7 @@ public class GTaskToJiraTest {
         GTask task = new GTask();
         task.setType(null);
         Mappings mappings = TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS);
-        mappings.setMapping(GTaskDescriptor.FIELD.TASK_TYPE, true, null);
+        mappings.setMapping(GTaskDescriptor.FIELD.TASK_TYPE, true, null, "default task type");
         GTaskToJira converter = getConverter(mappings);
 
         IssueInput issue = converter.convertToJiraIssue(task);
@@ -294,7 +294,7 @@ public class GTaskToJiraTest {
     private GTaskToJira createConverterWithField(GTaskDescriptor.FIELD field, boolean selected) {
         JiraConfig config = new JiraTestData().createTestConfig();
         Mappings mappings = TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS);
-        mappings.setMapping(field, selected, null);
+        mappings.setMapping(field, selected, null, "some default value here");
         GTaskToJira converter = new GTaskToJira(config, mappings, issueTypeList, versions, components, priorities);
         return converter;
     }

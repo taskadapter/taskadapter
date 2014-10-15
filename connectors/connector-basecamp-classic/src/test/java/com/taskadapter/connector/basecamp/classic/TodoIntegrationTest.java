@@ -74,7 +74,7 @@ public class TodoIntegrationTest {
         task.setId(123);
         task.setDescription("Some description here - 1020");
         final Mappings mappings = new Mappings();
-        mappings.setMapping(GTaskDescriptor.FIELD.DESCRIPTION, true, "content");
+        mappings.setMapping(GTaskDescriptor.FIELD.DESCRIPTION, true, "content", "default description");
 
         final BasecampConnector conn = new BasecampConnector(config, factory);
         final TaskSaveResult res = conn.saveData(
@@ -174,7 +174,7 @@ public class TodoIntegrationTest {
     private GTask update(BasecampConnector conn, GTask newTask, GTaskDescriptor.FIELD field,
                          String target) throws ConnectorException {
         final Mappings newMappings = new Mappings();
-        newMappings.setMapping(field, true, target);
+        newMappings.setMapping(field, true, target, "some default value");
         final TaskSaveResult res = conn.saveData(
                 Collections.singletonList(newTask),
                 ProgressMonitorUtils.getDummyMonitor(), newMappings);
@@ -188,8 +188,8 @@ public class TodoIntegrationTest {
         task.setId(123);
         task.setDescription("Find anybody");
         final Mappings mappings = new Mappings();
-        mappings.setMapping(GTaskDescriptor.FIELD.DESCRIPTION, true, "content");
-        mappings.setMapping(GTaskDescriptor.FIELD.ASSIGNEE, true, "assignee");
+        mappings.setMapping(GTaskDescriptor.FIELD.DESCRIPTION, true, "content", "default description");
+        mappings.setMapping(GTaskDescriptor.FIELD.ASSIGNEE, true, "assignee", "default assignee");
         final GUser me = new GUser();
         me.setId(321);
         me.setLoginName("<noname>");

@@ -70,14 +70,14 @@ public class MSTaskToGenericTaskConverterTest {
     @Test
     public void estimatedTimeFoundThroughWork() throws BadConfigException {
         Mappings mappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
-        mappings.setMapping(FIELD.ESTIMATED_TIME, true, TaskField.WORK.toString());
+        mappings.setMapping(FIELD.ESTIMATED_TIME, true, TaskField.WORK.toString(), "default time");
         assertEquals(Float.valueOf(2), getConverter(mappings).extractEstimatedHours(task1));
     }
 
     @Test
     public void estimatedTimeFoundThroughDuration() throws BadConfigException {
         Mappings mappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
-        mappings.setMapping(FIELD.ESTIMATED_TIME, true, TaskField.DURATION.toString());
+        mappings.setMapping(FIELD.ESTIMATED_TIME, true, TaskField.DURATION.toString(), "default duration");
         Assert.assertEquals(0.5f, getConverter(mappings).extractEstimatedHours(task2), 0.001f);
     }
 

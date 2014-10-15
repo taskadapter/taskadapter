@@ -1,4 +1,6 @@
 dependencies {
     compile libraries.commonsCodec
     compile libraries.gson
+
+    testCompile libraries.festassert
 }

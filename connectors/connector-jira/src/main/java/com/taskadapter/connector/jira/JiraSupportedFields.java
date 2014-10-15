@@ -16,6 +16,7 @@ public class JiraSupportedFields {
         builder.addField(GTaskDescriptor.FIELD.ASSIGNEE);
         builder.addField(GTaskDescriptor.FIELD.DUE_DATE);
         builder.addField(GTaskDescriptor.FIELD.PRIORITY);
+        builder.addField(GTaskDescriptor.FIELD.ENVIRONMENT);
         SUPPORTED_FIELDS = builder.end();
     }
 }

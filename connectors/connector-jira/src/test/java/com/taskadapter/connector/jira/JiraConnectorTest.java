@@ -7,9 +7,12 @@ import com.taskadapter.connector.testlib.CommonTests;
 import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.model.GTask;
+import com.taskadapter.model.GTaskDescriptor;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -57,6 +60,48 @@ public class JiraConnectorTest {
         assertThat(loadedSubTask2.getParentKey()).isEqualTo(remoteKey);
 
         // TODO need to delete the temporary tasks
+    }
+
+    @Ignore("This test requires a custom project configuration: project with 'ENV' key")
+    @Test
+    public void taskIsCreatedInProjectWithRequiredEnvironmentField() throws ConnectorException {
+        GTask task = TestUtils.generateTask();
+        task.setType("Bug");
+        String environmentString = "some environment";
+        task.setEnvironment(environmentString);
+        JiraConfig testConfig = new JiraTestData().createTestConfig();
+        // special project with Environment set as a required field
+        testConfig.setProjectKey("ENV");
+        JiraConnector connector = new JiraConnector(testConfig);
+        TaskSaveResult result = connector.saveData(Arrays.asList(task), null, TEST_MAPPINGS);
+        assertThat(result.getCreatedTasksNumber()).isEqualTo(1);
+        // TODO this is ugly
+        Collection<String> values = result.getIdToRemoteKeyMap().values();
+        String key = values.iterator().next();
+        GTask loadedTask = connector.loadTaskByKey(key,  new Mappings());
+        assertThat(loadedTask.getEnvironment()).isEqualTo(environmentString);
+    }
+
+    // TODO move to some generic tests, this is not Jira-specific
+    @Test
+    public void taskIsCreatedWithDefaultEnvironmentField() throws ConnectorException {
+        GTask task = TestUtils.generateTask();
+        String environmentString = "some environment";
+        JiraConfig testConfig = new JiraTestData().createTestConfig();
+        JiraConnector connector = new JiraConnector(testConfig);
+
+        Mappings mappings = TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS);
+        mappings.setMapping(GTaskDescriptor.FIELD.ENVIRONMENT, true,
+                JiraSupportedFields.SUPPORTED_FIELDS.getDefaultValue(GTaskDescriptor.FIELD.ENVIRONMENT),
+                environmentString);
+
+        TaskSaveResult result = connector.saveData(Arrays.asList(task), null, mappings);
+        assertThat(result.getCreatedTasksNumber()).isEqualTo(1);
+        // TODO this is ugly
+        Collection<String> values = result.getIdToRemoteKeyMap().values();
+        String key = values.iterator().next();
+        GTask loadedTask = connector.loadTaskByKey(key,  new Mappings());
+        assertThat(loadedTask.getEnvironment()).isEqualTo(environmentString);
     }
 
     private JiraConnector getConnector() {

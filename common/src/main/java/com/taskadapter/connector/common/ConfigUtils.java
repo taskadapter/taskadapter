@@ -106,7 +106,9 @@ public class ConfigUtils {
 					.getAsJsonPrimitive().getAsBoolean();
 			final String mapTo = fmapping.has("currentValue") ? fmapping.get(
 					"currentValue").getAsString() : null;
-			result.setMapping(field, useMapping, mapTo);
+			final String defaultValueForEmptyField = fmapping.has("defaultValueForEmptyField") ? fmapping.get(
+					"defaultValueForEmptyField").getAsString() : "";
+			result.setMapping(field, useMapping, mapTo, defaultValueForEmptyField);
 		}
 		return result;
 	}

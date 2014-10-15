@@ -30,7 +30,7 @@ public class TaskLoaderTest {
     public void tasksAreLoadedAsTree() throws URISyntaxException, IOException, ConnectorException {
         MSPConfig mspConfig = MSPConfigLoader.generateTemporaryConfig("com/taskadapter/integrationtests/ProjectWithTree.xml");
         Mappings mappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
-        mappings.setMapping(GTaskDescriptor.FIELD.REMOTE_ID, true, TaskField.TEXT22.toString());
+        mappings.setMapping(GTaskDescriptor.FIELD.REMOTE_ID, true, TaskField.TEXT22.toString(), "default remote ID");
 
         Connector<?> projectConnector = new MSPConnector(mspConfig);
         int maxTasksNumber = 999999;

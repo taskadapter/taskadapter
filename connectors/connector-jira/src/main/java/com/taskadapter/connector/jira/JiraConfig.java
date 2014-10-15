@@ -24,6 +24,8 @@ public class JiraConfig extends ConnectorConfig {
     // TODO this can probably be moved to the super class
     private String component = "";
 
+    private String environment = "";
+
     /**
      * Version ("milestone") in the project.
      */
@@ -44,6 +46,14 @@ public class JiraConfig extends ConnectorConfig {
         setLabel(DEFAULT_LABEL);
         setDefaultTaskType(TASK_TYPE_BUG);
         setDefaultIssueTypeForSubtasks(DEFAULT_SUB_TASK_TYPE);
+    }
+
+    public String getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(String environment) {
+        this.environment = environment;
     }
 
     public String getComponent() {
@@ -97,7 +107,7 @@ public class JiraConfig extends ConnectorConfig {
     @Override
     public int hashCode() {
         return 31 * super.hashCode() +
-                Objects.hashCode(affectedVersion, component, getDefaultTaskType(), fixForVersion);
+                Objects.hashCode(affectedVersion, component, environment, getDefaultTaskType(), fixForVersion);
 
     }
 
@@ -113,6 +123,7 @@ public class JiraConfig extends ConnectorConfig {
             JiraConfig other = (JiraConfig) obj;
             return Objects.equal(affectedVersion, other.affectedVersion) &&
                     Objects.equal(component, other.component) &&
+                    Objects.equal(environment, other.environment) &&
                     Objects.equal(getDefaultTaskType(), other.component) &&
                     Objects.equal(fixForVersion, other.fixForVersion);
 

@@ -7,6 +7,7 @@ public final class FieldMapping {
     private String connector1;
     private String connector2;
     private boolean selected;
+    private String defaultValue;
 
     /**
      * Required for JSon serialization.
@@ -14,11 +15,12 @@ public final class FieldMapping {
     public FieldMapping() {
     }
 
-    public FieldMapping(GTaskDescriptor.FIELD field, String connector1, String connector2, boolean selected) {
+    public FieldMapping(GTaskDescriptor.FIELD field, String connector1, String connector2, boolean selected, String defaultValue) {
         this.field = field;
         this.connector1 = connector1;
         this.connector2 = connector2;
         this.selected = selected;
+        this.defaultValue = defaultValue;
     }
 
     public GTaskDescriptor.FIELD getField() {
@@ -49,6 +51,14 @@ public final class FieldMapping {
         this.selected = selected;
     }
 
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
     @Override
     public String toString() {
         return "FieldMapping{" +
@@ -56,6 +66,7 @@ public final class FieldMapping {
                 ", connector1='" + connector1 + '\'' +
                 ", connector2='" + connector2 + '\'' +
                 ", selected=" + selected +
+                ", defaultValue=" + defaultValue +
                 '}';
     }
 
@@ -69,6 +80,7 @@ public final class FieldMapping {
         if (selected != that.selected) return false;
         if (connector1 != null ? !connector1.equals(that.connector1) : that.connector1 != null) return false;
         if (connector2 != null ? !connector2.equals(that.connector2) : that.connector2 != null) return false;
+        if (defaultValue != null ? !defaultValue.equals(that.defaultValue) : that.defaultValue != null) return false;
         if (field != that.field) return false;
 
         return true;
@@ -80,6 +92,7 @@ public final class FieldMapping {
         result = 31 * result + (connector1 != null ? connector1.hashCode() : 0);
         result = 31 * result + (connector2 != null ? connector2.hashCode() : 0);
         result = 31 * result + (selected ? 1 : 0);
+        result = 31 * result + (defaultValue != null ? defaultValue.hashCode() : 0);
         return result;
     }
 }

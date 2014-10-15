@@ -159,4 +159,8 @@ public class MSPUtils {
     public static String getEstimatedTimeDefaultMapping() {
         return TaskField.DURATION.toString();
     }
+
+    public static String getDefaultFieldForEnvironment() {
+        return TaskField.TEXT25.toString();
+    }
 }

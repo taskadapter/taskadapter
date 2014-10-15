@@ -28,10 +28,10 @@ public class TodoUtil {
 
     static Mappings getAllMappings() {
         final Mappings allMappings = new Mappings();
-        allMappings.setMapping(GTaskDescriptor.FIELD.SUMMARY, true, "content");
-        allMappings.setMapping(GTaskDescriptor.FIELD.DONE_RATIO, true, "done_ratio");
-        allMappings.setMapping(GTaskDescriptor.FIELD.DUE_DATE, true, "due_date");
-        allMappings.setMapping(GTaskDescriptor.FIELD.ASSIGNEE, true, "assignee");
+        allMappings.setMapping(GTaskDescriptor.FIELD.SUMMARY, true, "content", "default summary");
+        allMappings.setMapping(GTaskDescriptor.FIELD.DONE_RATIO, true, "done_ratio", "default done ratio");
+        allMappings.setMapping(GTaskDescriptor.FIELD.DUE_DATE, true, "due_date", "default due date");
+        allMappings.setMapping(GTaskDescriptor.FIELD.ASSIGNEE, true, "assignee", "default assignee");
         return allMappings;
     }
 

@@ -14,7 +14,7 @@ import com.taskadapter.redmineapi.bean.User;
 import java.util.List;
 import java.util.Map;
 
-class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
+public class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
 
     private final RedmineConfig config;
     private final Mappings mapping;
@@ -23,9 +23,9 @@ class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
     private final Map<String, Integer> priorities;
     private final Project project;
 
-    GTaskToRedmine(RedmineConfig config, Mappings mapping,
-            Map<String, Integer> priorities, Project project, List<User> users,
-            List<IssueStatus> statusList) {
+    public GTaskToRedmine(RedmineConfig config, Mappings mapping,
+                          Map<String, Integer> priorities, Project project, List<User> users,
+                          List<IssueStatus> statusList) {
         this.config = config;
         this.mapping = mapping;
         this.priorities = priorities;

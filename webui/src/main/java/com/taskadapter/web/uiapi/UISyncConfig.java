@@ -159,7 +159,7 @@ public final class UISyncConfig {
 
     private static FieldMapping reverse(FieldMapping mapping) {
         return new FieldMapping(mapping.getField(), mapping.getConnector2(),
-                mapping.getConnector1(), mapping.isSelected());
+                mapping.getConnector1(), mapping.isSelected(), mapping.getDefaultValue());
     }
 
     /**

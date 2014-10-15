@@ -118,6 +118,10 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueInput> {
             issueInputBuilder.setFieldValue(IssueFieldId.TIMETRACKING_FIELD.id, timeTracking);
         }
 
+        if (mappings.isFieldSelected(FIELD.ENVIRONMENT)) {
+            issueInputBuilder.setFieldValue("environment", task.getEnvironment());
+        }
+
         return issueInputBuilder.build();
     }
     

@@ -202,7 +202,7 @@ public class UpdaterIntegrationTest {
 
     private Mappings getMSPMappingsWithRemoteIdSet() {
         Mappings mappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
-        mappings.setMapping(GTaskDescriptor.FIELD.REMOTE_ID, true, TaskField.TEXT22.toString());
+        mappings.setMapping(GTaskDescriptor.FIELD.REMOTE_ID, true, TaskField.TEXT22.toString(), "default remote ID");
         return mappings;
     }
 }

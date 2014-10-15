@@ -18,7 +18,7 @@ public class NewMappings {
      */
     public NewMappings(Collection<FieldMapping> mappings) {
         for (FieldMapping m : mappings) {
-            this.mappings.add(new FieldMapping(m.getField(), m.getConnector1(), m.getConnector2(), m.isSelected()));
+            this.mappings.add(new FieldMapping(m.getField(), m.getConnector1(), m.getConnector2(), m.isSelected(), m.getDefaultValue()));
         }
     }
 

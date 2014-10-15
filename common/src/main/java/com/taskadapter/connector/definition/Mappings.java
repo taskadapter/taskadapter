@@ -1,5 +1,6 @@
 package com.taskadapter.connector.definition;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,12 +27,15 @@ public final class Mappings {
 	 */
 	private final Map<FIELD, String> mapTo;
 
+	private final Map<FIELD, String> defaultValuesForEmptyFields;
+
 	/**
 	 * Creates empty mappings.
 	 */
 	public Mappings() {
 		this.selected = new HashMap<FIELD, Boolean>();
 		this.mapTo = new HashMap<FIELD, String>();
+		defaultValuesForEmptyFields = new HashMap<FIELD, String>();
 	}
 
 	/**
@@ -43,6 +47,7 @@ public final class Mappings {
 	public Mappings(Mappings mapping) {
 		this.selected = new HashMap<FIELD, Boolean>(mapping.selected);
 		this.mapTo = new HashMap<FIELD, String>(mapping.mapTo);
+		defaultValuesForEmptyFields = new HashMap<FIELD, String>(mapping.defaultValuesForEmptyFields);
 	}
 
 	/**
@@ -123,9 +128,10 @@ public final class Mappings {
 	 * @param target
 	 *            mapping target.
 	 */
-	public void setMapping(FIELD field, boolean selected, String target) {
+	public void setMapping(FIELD field, boolean selected, String target, String defaultValueForEmptyField) {
 		this.selected.put(field, selected);
 		mapTo.put(field, target);
+		defaultValuesForEmptyFields.put(field, defaultValueForEmptyField);
 	}
 
 	/**
@@ -148,6 +154,10 @@ public final class Mappings {
 	public void deleteMappingFor(FIELD field) {
 		selected.remove(field);
 		mapTo.remove(field);
+	}
+
+	public String getDefaultValueForEmptyField(FIELD field) {
+		return defaultValuesForEmptyFields.get(field);
 	}
 
     @Override
@@ -180,5 +190,9 @@ public final class Mappings {
 		} else if (!selected.equals(other.selected))
 			return false;
 		return true;
+	}
+
+	public Collection<FIELD> getSelectedFields() {
+		return selected.keySet();
 	}
 }

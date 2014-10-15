@@ -1,5 +1,6 @@
 package com.taskadapter.connector.jira;
 
+import com.atlassian.jira.rest.client.domain.Field;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueLink;
 import com.atlassian.jira.rest.client.domain.TimeTracking;
@@ -81,6 +82,9 @@ public class JiraToGTask {
                 task.setEstimatedHours((float) (originalEstimateMinutes / 60.0));
             }
         }
+
+        Field environmentField = issue.getField("environment");
+        task.setEnvironment((String) environmentField.getValue());
 
         processRelations(issue, task);
         processParentTask(issue, task);

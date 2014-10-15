@@ -38,7 +38,7 @@ public final class TaskFieldSetterTest {
                 getTaskEstimationMode(task, mappings));
 
         task = new GTask();
-        mappings.setMapping(FIELD.ESTIMATED_TIME, true, "test");
+        mappings.setMapping(FIELD.ESTIMATED_TIME, true, "test", "default time");
         assertEquals("Explicit estimation must not be forced", NO_ESTIMATE,
                 getTaskEstimationMode(task, mappings));
         task.setEstimatedHours(33.5f);
@@ -52,7 +52,7 @@ public final class TaskFieldSetterTest {
          */
         task = new GTask();
         mappings = new Mappings();
-        mappings.setMapping(FIELD.DONE_RATIO, true, "test");
+        mappings.setMapping(FIELD.DONE_RATIO, true, "test", "default done ratio");
         assertEquals("Done ratio is not set, no forcing", NO_ESTIMATE,
                 getTaskEstimationMode(task, mappings));
         task.setEstimatedHours(33f);
@@ -73,8 +73,8 @@ public final class TaskFieldSetterTest {
          */
         task = new GTask();
         mappings = new Mappings();
-        mappings.setMapping(FIELD.DONE_RATIO, true, "test");
-        mappings.setMapping(FIELD.ESTIMATED_TIME, true, "text");
+        mappings.setMapping(FIELD.DONE_RATIO, true, "test", "default done ratio");
+        mappings.setMapping(FIELD.ESTIMATED_TIME, true, "text", "default estimated time");
 
         assertEquals("Done ratio not set, no forcing", NO_ESTIMATE,
                 getTaskEstimationMode(task, mappings));
