@@ -5,6 +5,11 @@ apply from: 'http://plugins.jasoft.fi/vaadin.plugin?version=0.9-SNAPSHOT'
 dependencies {
     compile 'org.vaadin.addons:googleanalyticstracker:2.0.0'
 
+    // this Jar is actually added to the WAR file by the Vaadin Gradle plugin.
+    // It is referenced here as a "runtime" dependency because otherwise IDEA does not copy
+    // it to the dev output folder (classes/artifacts/webui/exploded/webui.war)
+    runtime "com.vaadin:vaadin-themes:$vaadinVersion"
+
     compile libraries.slf4j
     compile project(":webshared")
 
