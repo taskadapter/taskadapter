@@ -60,10 +60,10 @@ public class NewConfigPage {
         grid.setMargin(true);
         panel.setContent(grid);
 
-        connector1 = createPluginSelector(SYSTEM_1_TITLE, pluginManager);
+        connector1 = createSystemListSelector(SYSTEM_1_TITLE, pluginManager);
         grid.addComponent(connector1, 0, 0);
 
-        connector2 = createPluginSelector(SYSTEM_2_TITLE, pluginManager);
+        connector2 = createSystemListSelector(SYSTEM_2_TITLE, pluginManager);
         grid.addComponent(connector2, 1, 0);
 
         descriptionTextField = new TextField("Description");
@@ -90,18 +90,8 @@ public class NewConfigPage {
         grid.setComponentAlignment(saveButton, Alignment.MIDDLE_RIGHT);
     }
 
-    /**
-     * Creates a new plugin selector.
-     * 
-     * @param title
-     *            plugin selector title.
-     * @param plugins
-     *            plugin manager.
-     * @return plugin selector.
-     */
-    private static ListSelect createPluginSelector(String title,
-            PluginManager plugins) {
-        final ListSelect res = new ListSelect(SYSTEM_1_TITLE);
+    private static ListSelect createSystemListSelector(String title, PluginManager plugins) {
+        final ListSelect res = new ListSelect(title);
         res.setRequired(true);
         res.setNullSelectionAllowed(false);
 
