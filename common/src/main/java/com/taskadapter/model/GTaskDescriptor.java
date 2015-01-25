@@ -5,6 +5,14 @@ import java.util.Map;
 
 public class GTaskDescriptor {
 
+    // TODO REVIEW Probably it should not be a enum anymore. But something like
+    // class <T> Field<T> {
+    //      public Class getImplClass()
+    //      public ? parseDefaultValue(String xxx)
+    //      public JSon serializeDefaultValue(? q)
+    //      public ? deserializeDefaultValue(J json)
+    //      etc...
+    // }
     public static enum FIELD {
         ID, KEY, PARENT_KEY,
         SUMMARY, DESCRIPTION, TASK_TYPE, ESTIMATED_TIME, DONE_RATIO, ASSIGNEE, START_DATE, DUE_DATE,

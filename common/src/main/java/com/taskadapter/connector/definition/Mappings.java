@@ -27,6 +27,9 @@ public final class Mappings {
 	 */
 	private final Map<FIELD, String> mapTo;
 
+    // TODO REVIEW Have you considered storing this in one map completely describing one field?
+    // It could make much more sense. We just extract descriptor for one field and do everything we want. And we could put some "converter" logic there, etc...
+    // UPDATED: Have you considered storing this in one map completely describing one field? It could make much more sense. We just extract desciptor for one field and do everything we want. And we could put some "converter" logic there, etc...
 	private final Map<FIELD, String> defaultValuesForEmptyFields;
 
 	/**
@@ -47,6 +50,7 @@ public final class Mappings {
 	public Mappings(Mappings mapping) {
 		this.selected = new HashMap<FIELD, Boolean>(mapping.selected);
 		this.mapTo = new HashMap<FIELD, String>(mapping.mapTo);
+        // TODO REVIEW Why not EnumMap?
 		defaultValuesForEmptyFields = new HashMap<FIELD, String>(mapping.defaultValuesForEmptyFields);
 	}
 
@@ -162,6 +166,8 @@ public final class Mappings {
 
     @Override
 	public int hashCode() {
+        // TODO REVIEW Why mappings with different default values are considered equal? Could we safely replace
+        // one mapping instance with another? Why do we have equals/hashCode for this class?
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((mapTo == null) ? 0 : mapTo.hashCode());

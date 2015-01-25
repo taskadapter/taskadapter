@@ -11,13 +11,19 @@ import java.util.Map;
  */
 final public class GTask {
 
-    private Map<GTaskDescriptor.FIELD, Object> fields = new HashMap<GTaskDescriptor.FIELD, Object>();
+    // TODO REVIEW Why not EnumMap? Final?
+    private final Map<GTaskDescriptor.FIELD, Object> fields = new HashMap<GTaskDescriptor.FIELD, Object>();
 
     public GTask() {
         fields.put(GTaskDescriptor.FIELD.CHILDREN, new ArrayList<GTask>());
         fields.put(GTaskDescriptor.FIELD.RELATIONS, new ArrayList<GRelation>());
     }
 
+    // TODO REVIEW Have you considered a deep-clone method? It is not that hard, but you have
+    // to provide some meta-information (cloner) in task field descriptor.
+    // Have you considered "shallowClone" (static) method instead of the constructor?
+    // Method name would clearly express its function while constructor name does not do that
+    // (so it is possible to make subtle mistakes with the constructor but not the method).
     /**
      * Copy-constructor creating a shallow clone.
      */
@@ -29,6 +35,10 @@ final public class GTask {
         return fields.get(field);
     }
 
+    // TODO REVIEW This method could break getters. task.setValue(FIELD.ID, "'xj").
+    //    Have you considered more type-safe field keys? Then this method would be
+    //    public <T> void setValue(Field<T> field, T value)
+    //    I definitely have shown you this technique (attributes in lpg).
     public void setValue(GTaskDescriptor.FIELD field, Object value) {
         fields.put(field, value);
     }
@@ -154,6 +164,7 @@ final public class GTask {
         return true;
     }
 
+    // TODO REVIEW When fields can be null?
     @Override
     public int hashCode() {
         int result = fields != null ? fields.hashCode() : 0;

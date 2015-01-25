@@ -81,6 +81,7 @@ public final class FieldMapping {
         if (connector1 != null ? !connector1.equals(that.connector1) : that.connector1 != null) return false;
         if (connector2 != null ? !connector2.equals(that.connector2) : that.connector2 != null) return false;
         if (defaultValue != null ? !defaultValue.equals(that.defaultValue) : that.defaultValue != null) return false;
+        // TODO REVIEW Should "" and " " be considered equals for Float and Date fields?
         if (field != that.field) return false;
 
         return true;

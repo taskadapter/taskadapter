@@ -17,6 +17,7 @@ public class DefaultValueSetterTest {
         GTask originalTask = new GTask();
         originalTask.setType("original type");
         originalTask.setDescription("original description");
+        // TODO REVIEW Does this method perform a shallow copy or a deep copy?
         GTask newTask = setter.cloneAndReplaceEmptySelectedFieldsWithDefaultValues(originalTask);
 
         originalTask.setType("new type");
