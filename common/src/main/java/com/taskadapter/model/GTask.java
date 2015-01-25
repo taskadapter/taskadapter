@@ -11,7 +11,7 @@ import java.util.Map;
  */
 final public class GTask {
 
-    // TODO REVIEW Why not EnumMap? Final?
+    // TODO REVIEW Why not EnumMap?
     private final Map<GTaskDescriptor.FIELD, Object> fields = new HashMap<GTaskDescriptor.FIELD, Object>();
 
     public GTask() {
@@ -164,7 +164,6 @@ final public class GTask {
         return true;
     }
 
-    // TODO REVIEW When fields can be null?
     @Override
     public int hashCode() {
         int result = fields != null ? fields.hashCode() : 0;
