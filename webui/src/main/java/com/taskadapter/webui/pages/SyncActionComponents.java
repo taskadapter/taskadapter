@@ -66,7 +66,7 @@ public final class SyncActionComponents {
 
     public static HorizontalLayout createdExportResultLabel(String labelName,
             String labelValue) {
-        final Label lName = new Label("<strong>" + labelName + ":</strong>");
+        final Label lName = new Label("<strong>" + labelName + "</strong>");
         lName.setContentMode(ContentMode.HTML);
         lName.setWidth("98px");
 
