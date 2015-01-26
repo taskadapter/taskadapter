@@ -11,7 +11,7 @@ public class GithubConfig extends ConnectorConfig {
     private static final Map<String, Integer> DEFAULT_PRIORITIES = Collections
             .emptyMap();
     
-    static final String DEFAULT_LABEL = "Github";
+    static final String DEFAULT_LABEL = "GitHub";
 
     private String issueState;
     private String issueKeyword;

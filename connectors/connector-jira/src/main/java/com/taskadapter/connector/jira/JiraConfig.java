@@ -13,7 +13,7 @@ public class JiraConfig extends ConnectorConfig {
 
     private static final Priorities DEFAULT_PRIORITIES = createDefaultPriorities();
     
-    static final String DEFAULT_LABEL = "Atlassian Jira";
+    static final String DEFAULT_LABEL = "JIRA";
 
     private static final long serialVersionUID = 1L;
     private static final String TASK_TYPE_BUG = "Bug";

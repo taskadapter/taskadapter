@@ -9,8 +9,7 @@ import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.PluginFactory;
 
 public class GithubFactory implements PluginFactory<GithubConfig> {
-    private static final String LABEL = "Github";
-    private static final Descriptor DESCRIPTOR = new Descriptor(GithubConnector.ID, LABEL);
+    private static final Descriptor DESCRIPTOR = new Descriptor(GithubConnector.ID, GithubConfig.DEFAULT_LABEL);
 
     @Override
     public AvailableFields getAvailableFields() {

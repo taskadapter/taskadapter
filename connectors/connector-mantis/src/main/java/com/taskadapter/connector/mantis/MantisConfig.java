@@ -17,7 +17,7 @@ public class MantisConfig extends ConnectorConfig {
         DEFAULT_PRIORITIES.put("immediate", 1000);
     }
     
-    static final String DEFAULT_LABEL = "Mantis";
+    static final String DEFAULT_LABEL = "MantisBT";
 
     private static final long serialVersionUID = 1L;
     private WebServerInfo serverInfo = new WebServerInfo();
