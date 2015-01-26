@@ -251,4 +251,16 @@ final public class GTask {
     public void setEnvironment(String environment) {
         fields.put(GTaskDescriptor.FIELD.ENVIRONMENT, environment);
     }
+
+    public String getTargetVersionName() {
+        return (String) fields.get(GTaskDescriptor.FIELD.TARGET_VERSION);
+    }
+
+    /**
+     * @param versionName like "release 1.0"
+     */
+    public void setTargetVersionName(String versionName) {
+        fields.put(GTaskDescriptor.FIELD.TARGET_VERSION, versionName);
+    }
+
 }

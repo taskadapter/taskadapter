@@ -20,6 +20,7 @@ import com.taskadapter.redmineapi.bean.IssuePriority;
 import com.taskadapter.redmineapi.bean.IssueStatus;
 import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.redmineapi.bean.User;
+import com.taskadapter.redmineapi.bean.Version;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -119,8 +120,9 @@ public class RedmineConnector implements Connector<RedmineConfig> {
                 final List<User> users = !config.isFindUserByName() ? new ArrayList<User>()
                         : mgr.getUsers();
                 final List<IssueStatus> statusList = mgr.getStatuses();
+                final List<Version> versions = mgr.getVersions(rmProject.getId());
                 final GTaskToRedmine converter = new GTaskToRedmine(config,
-                        mappings, priorities, rmProject, users, statusList);
+                        mappings, priorities, rmProject, users, statusList, versions);
                 
                 final RedmineTaskSaver rts = new RedmineTaskSaver(mgr,
                         rmProject, config);

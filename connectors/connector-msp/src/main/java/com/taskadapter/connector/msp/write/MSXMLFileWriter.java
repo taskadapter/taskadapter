@@ -19,6 +19,7 @@ public class MSXMLFileWriter {
     private static final String ALIAS_REMOTE_ID = "TA Remote ID";
     private static final String ALIAS_ISSUE_TYPE = "TA Task Type";
     private static final String ALIAS_ISSUE_STATUS = "TA Task Status";
+    private static final String ALIAS_TARGET_VERSION = "TA Target Version";
 
     /**
      * MPXJ can't set NULL/undefined time for "duration" or "work" fields so we have to use
@@ -97,6 +98,7 @@ public class MSXMLFileWriter {
         setAliasIfMappingNotNULL(project, FIELD.REMOTE_ID, ALIAS_REMOTE_ID);
         setAliasIfMappingNotNULL(project, FIELD.TASK_TYPE, ALIAS_ISSUE_TYPE);
         setAliasIfMappingNotNULL(project, FIELD.TASK_STATUS, ALIAS_ISSUE_STATUS);
+        setAliasIfMappingNotNULL(project, FIELD.TARGET_VERSION, ALIAS_TARGET_VERSION);
     }
 
     private void setAliasIfMappingNotNULL(ProjectFile project, FIELD field, String aliasName) {

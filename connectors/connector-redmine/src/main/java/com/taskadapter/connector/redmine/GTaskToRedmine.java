@@ -10,6 +10,7 @@ import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.IssueStatus;
 import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.redmineapi.bean.User;
+import com.taskadapter.redmineapi.bean.Version;
 
 import java.util.List;
 import java.util.Map;
@@ -20,18 +21,21 @@ public class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
     private final Mappings mapping;
     private final List<User> users;
     private final List<IssueStatus> statusList;
+    private final List<Version> versions;
     private final Map<String, Integer> priorities;
     private final Project project;
 
     public GTaskToRedmine(RedmineConfig config, Mappings mapping,
                           Map<String, Integer> priorities, Project project, List<User> users,
-                          List<IssueStatus> statusList) {
+                          List<IssueStatus> statusList,
+                          List<Version> versions) {
         this.config = config;
         this.mapping = mapping;
         this.priorities = priorities;
         this.project = project;
         this.users = users;
         this.statusList = statusList;
+        this.versions = versions;
     }
 
     // TODO refactor this into multiple tiny testable methods
@@ -97,6 +101,11 @@ public class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
                 }
             }
         }
+
+        if (mapping.isFieldSelected(FIELD.TARGET_VERSION)) {
+            Version version = getVersionByName(task.getTargetVersionName());
+            issue.setTargetVersion(version);
+        }
         
         issue.setCreatedOn(task.getCreatedOn());
         issue.setUpdatedOn(task.getUpdatedOn());
@@ -105,6 +114,18 @@ public class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
         processTaskStatus(task, issue);
 
         return issue;
+    }
+
+    private Version getVersionByName(String versionName) {
+        if (versions == null || versionName == null) {
+            return null;
+        }
+        for (Version version : versions) {
+            if (version.getName().equals(versionName)) {
+                return version;
+            }
+        }
+        return null;
     }
 
     private void processAssignee(GTask genericTask, Issue redmineIssue) {
@@ -148,7 +169,7 @@ public class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
         if (nameToSearch == null || "".equals(nameToSearch)) {
             nameToSearch = ass.getDisplayName();
         }
-        if (nameToSearch == null || "".equals(nameToSearch)) {
+        if (users == null || nameToSearch == null || "".equals(nameToSearch)) {
             return null;
         }
 

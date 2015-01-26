@@ -24,6 +24,7 @@ public class MSPSupportedFields {
         builder.addField(GTaskDescriptor.FIELD.TASK_STATUS, MSPUtils.getTextFieldNamesAvailableForMapping()).unselected().withDefault(MSPUtils.getDefaultTaskStatus());
         builder.addField(GTaskDescriptor.FIELD.CLOSE_DATE, TaskField.ACTUAL_FINISH.getName());
         builder.addField(GTaskDescriptor.FIELD.ENVIRONMENT, MSPUtils.getTextFieldNamesAvailableForMapping()).withDefault(MSPUtils.getDefaultFieldForEnvironment());
+        builder.addField(GTaskDescriptor.FIELD.TARGET_VERSION, MSPUtils.getTextFieldNamesAvailableForMapping()).withDefault(MSPUtils.getDefaultFieldForTargetVersion());
         SUPPORTED_FIELDS = builder.end();
     }
 

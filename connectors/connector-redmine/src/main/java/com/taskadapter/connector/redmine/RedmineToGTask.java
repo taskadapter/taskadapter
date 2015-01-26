@@ -57,6 +57,9 @@ public class RedmineToGTask {
         Integer priorityValue = config.getPriorities().getPriorityByText(issue.getPriorityText());
         task.setPriority(priorityValue);
         task.setDescription(issue.getDescription());
+        if (issue.getTargetVersion() != null) {
+            task.setTargetVersionName(issue.getTargetVersion().getName());
+        }
 
         processRelations(issue, task);
         return task;

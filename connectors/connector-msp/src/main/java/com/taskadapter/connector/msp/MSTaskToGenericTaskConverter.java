@@ -103,7 +103,16 @@ class MSTaskToGenericTaskConverter {
         genericTask.setDescription(task.getNotes());
 
         processRelations(task, genericTask);
+        genericTask.setTargetVersionName(extractTargetVersion(task));
         return genericTask;
+    }
+
+    private String extractTargetVersion(Task task) {
+        Object obj = getValue(task, FIELD.TARGET_VERSION);
+        if (obj != null) {
+            return obj.toString();
+        }
+        return null;
     }
 
     private void processRelations(Task task, GTask genericTask) {
