@@ -10,6 +10,7 @@ import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.IssueStatus;
 import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.redmineapi.bean.User;
+import com.taskadapter.redmineapi.bean.Version;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -127,7 +128,7 @@ public class GTaskToRedmineTest {
                 TestMappingUtils
                         .fromFields(RedmineSupportedFields.SUPPORTED_FIELDS),
                 null, project, Collections.<User>emptyList(),
-                Collections.<IssueStatus>emptyList());
+                Collections.<IssueStatus>emptyList(), Collections.<Version>emptyList());
     }
 
     private GTaskToRedmine createConverterWithSelectedField(GTaskDescriptor.FIELD field, List<User> users) {
@@ -143,6 +144,6 @@ public class GTaskToRedmineTest {
         Mappings mappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
         mappings.setMapping(field, selected, null, "some default value for empty fields");
         users = users != null ? users : Collections.<User>emptyList();
-        return new GTaskToRedmine(config, mappings, null, project, users, new ArrayList<IssueStatus>());
+        return new GTaskToRedmine(config, mappings, null, project, users, new ArrayList<IssueStatus>(), Collections.<Version>emptyList());
     }
 }

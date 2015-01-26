@@ -134,7 +134,7 @@ public class IntegrationTest {
         int maxTasksNumber = 999999;
         List<GTask> loadedTasks = TaskLoader.loadTasks(maxTasksNumber, msProjectConnector, "msp1", mspMappings, DUMMY_MONITOR);
         // save to Redmine. this should save the remote IDs
-        GTaskToRedmine converter = new GTaskToRedmine(redmineConfig, redmineMappings, null, redmineProject, null, null);
+        GTaskToRedmine converter = new GTaskToRedmine(redmineConfig, redmineMappings, null, redmineProject, null, null, null);
         BasicIssueSaveAPI<Issue> redmineTaskSaver = new RedmineTaskSaver(mgr, redmineProject, redmineConfig);
         final TaskSaveResult result =  TaskSavingUtils.saveTasks(loadedTasks,
                 converter, redmineTaskSaver,
@@ -170,7 +170,7 @@ public class IntegrationTest {
         try {
             // save to Redmine
             Mappings redmineMappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
-            GTaskToRedmine converter = new GTaskToRedmine(redmineConfigTo, redmineMappings, null, redmineProject, null, null);
+            GTaskToRedmine converter = new GTaskToRedmine(redmineConfigTo, redmineMappings, null, redmineProject, null, null, null);
             BasicIssueSaveAPI<Issue> redmineTaskSaver = new RedmineTaskSaver(mgr, redmineProject, redmineConfigTo);
             TaskSavingUtils.saveTasks(loadedTasks,
                     converter, redmineTaskSaver,

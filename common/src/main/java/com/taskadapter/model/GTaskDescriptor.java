@@ -19,7 +19,7 @@ public class GTaskDescriptor {
         CREATED_ON, UPDATED_ON,
         CLOSE_DATE, PRIORITY, REMOTE_ID, TASK_STATUS,
         ENVIRONMENT,
-        CHILDREN, RELATIONS
+        CHILDREN, TARGET_VERSION, RELATIONS
     }
 
     // TODO this should be on the UI level, not in the model.
@@ -43,6 +43,7 @@ public class GTaskDescriptor {
             put(FIELD.PRIORITY, "Task priority");
             put(FIELD.TASK_STATUS, "Task status");
             put(FIELD.ENVIRONMENT, "Environment");
+            put(FIELD.TARGET_VERSION, "Target Version");
         }
     };
 

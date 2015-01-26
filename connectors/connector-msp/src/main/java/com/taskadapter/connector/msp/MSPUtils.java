@@ -53,6 +53,7 @@ public class MSPUtils {
             put(TaskField.TEXT23.toString(), TaskField.TEXT23);
             put(TaskField.TEXT24.toString(), TaskField.TEXT24);
             put(TaskField.TEXT25.toString(), TaskField.TEXT25);
+            put(TaskField.TEXT26.toString(), TaskField.TEXT26);
         }
     });
 
@@ -162,5 +163,9 @@ public class MSPUtils {
 
     public static String getDefaultFieldForEnvironment() {
         return TaskField.TEXT25.toString();
+    }
+
+    public static String getDefaultFieldForTargetVersion() {
+        return TaskField.TEXT26.toString();
     }
 }

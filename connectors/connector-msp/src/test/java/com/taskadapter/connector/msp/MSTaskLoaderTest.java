@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 import static junit.framework.Assert.assertNotNull;
+import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 public class MSTaskLoaderTest {
@@ -46,4 +47,18 @@ public class MSTaskLoaderTest {
         Date expectedFinishDate = new SimpleDateFormat("MM/dd/yyyy HH:mm").parse("12/12/2013 12:00");
         assertEquals(expectedFinishDate, task1.getDueDate());
     }
+
+    @Test
+    public void targetVersionFieldIsLoaded() throws Exception {
+        List<GTask> tasks = MSPTestUtils.loadWithDefaultMappings("msp_with_target_version.xml");
+        assertEquals(2, tasks.size());
+        GTask task1 = tasks.get(0);
+        assertEquals("for version 2", task1.getSummary());
+        assertEquals("version 2.0", task1.getTargetVersionName());
+
+        GTask task2 = tasks.get(1);
+        assertEquals("without version", task2.getSummary());
+        assertThat(task2.getTargetVersionName()).isNull();
+    }
+
 }

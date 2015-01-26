@@ -14,6 +14,8 @@ import net.sf.mpxj.Task;
 import net.sf.mpxj.TaskField;
 import net.sf.mpxj.TimeUnit;
 
+import static com.taskadapter.model.GTaskDescriptor.FIELD.*;
+
 public class TaskFieldsSetter {
     private Mappings mappings;
     private Task mspTask;
@@ -55,42 +57,43 @@ public class TaskFieldsSetter {
         processStartDate(gTask);
         processDueDate(gTask);
         processClosedDate(gTask);
+        setFieldIfSelected(TARGET_VERSION, mspTask, gTask.getTargetVersionName());
     }
 
     private void processKey(GTask gTask) {
-        setFieldIfSelected(GTaskDescriptor.FIELD.REMOTE_ID, mspTask, gTask.getKey());
+        setFieldIfSelected(REMOTE_ID, mspTask, gTask.getKey());
     }
 
     private void processStatus(GTask gTask) {
-        setFieldIfSelected(GTaskDescriptor.FIELD.TASK_STATUS, mspTask, gTask.getStatus());
+        setFieldIfSelected(TASK_STATUS, mspTask, gTask.getStatus());
     }
 
     private void processType(GTask gTask) {
-        setFieldIfSelected(GTaskDescriptor.FIELD.TASK_TYPE, mspTask, gTask.getType());
+        setFieldIfSelected(TASK_TYPE, mspTask, gTask.getType());
     }
 
     private void processSummary(GTask gTask) {
-        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.SUMMARY)) {
+        if (mappings.isFieldSelected(SUMMARY)) {
             mspTask.setName(gTask.getSummary());
         }
     }
 
     private void processPriority(GTask gTask) {
-        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.PRIORITY)) {
+        if (mappings.isFieldSelected(PRIORITY)) {
             Priority mspPriority = Priority.getInstance(gTask.getPriority());
             mspTask.setPriority(mspPriority);
         }
     }
 
     private void processDescription(GTask gTask) {
-        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.DESCRIPTION)) {
+        if (mappings.isFieldSelected(DESCRIPTION)) {
             mspTask.setNotes(gTask.getDescription());
         }
     }
 
     private void processDueDate(GTask gTask) {
-        if (gTask.getDueDate() != null && mappings.isFieldSelected(GTaskDescriptor.FIELD.DUE_DATE)) {
-            String dueDateValue = mappings.getMappedTo(GTaskDescriptor.FIELD.DUE_DATE);
+        if (gTask.getDueDate() != null && mappings.isFieldSelected(DUE_DATE)) {
+            String dueDateValue = mappings.getMappedTo(DUE_DATE);
             if (dueDateValue.equals(TaskField.FINISH.toString())) {
                 mspTask.set(TaskField.FINISH, gTask.getDueDate());
             } else if (dueDateValue.equals(TaskField.DEADLINE.toString())) {
@@ -100,8 +103,8 @@ public class TaskFieldsSetter {
     }
 
     private void processStartDate(GTask gTask) {
-        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.START_DATE)) {
-            String constraint = mappings.getMappedTo(GTaskDescriptor.FIELD.START_DATE);
+        if (mappings.isFieldSelected(START_DATE)) {
+            String constraint = mappings.getMappedTo(START_DATE);
             if (constraint == null || MSPUtils.NO_CONSTRAINT.equals(constraint)) {
                 mspTask.setStart(gTask.getStartDate());
             } else {
@@ -113,8 +116,8 @@ public class TaskFieldsSetter {
     }
 
     private void processClosedDate(GTask gTask) {
-        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.CLOSE_DATE)) {
-            String constraint = mappings.getMappedTo(GTaskDescriptor.FIELD.CLOSE_DATE);
+        if (mappings.isFieldSelected(CLOSE_DATE)) {
+            String constraint = mappings.getMappedTo(CLOSE_DATE);
             if (TaskField.ACTUAL_FINISH.getName().equals(constraint)) {
                 mspTask.setActualFinish(gTask.getClosedDate());
             }
@@ -122,7 +125,7 @@ public class TaskFieldsSetter {
     }
     
     private void processAssignee(GTask gTask) {
-        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.ASSIGNEE) && gTask.getAssignee() != null) {
+        if (mappings.isFieldSelected(ASSIGNEE) && gTask.getAssignee() != null) {
             Resource resource = resourceManager.getOrCreateResource(gTask.getAssignee());
             ResourceAssignment ass = mspTask.addResourceAssignment(resource);
             ass.setUnits(100);
@@ -133,7 +136,7 @@ public class TaskFieldsSetter {
                 ass.setRemainingWork(TimeCalculator.calculateRemainingTime(gTask));
 
                 // the same "IF" as above, now for the resource assignment. this might need refactoring...
-                if (gTask.getDoneRatio() != null && mappings.isFieldSelected(GTaskDescriptor.FIELD.DONE_RATIO)) {
+                if (gTask.getDoneRatio() != null && mappings.isFieldSelected(DONE_RATIO)) {
                     Duration timeAlreadySpent = TimeCalculator.calculateTimeAlreadySpent(gTask.getDoneRatio(), gTask.getEstimatedHours());
                     ass.setActualWork(timeAlreadySpent);
                 }
@@ -192,13 +195,13 @@ public class TaskFieldsSetter {
 
     static TaskEstimationMode getTaskEstimationMode(GTask gTask, final Mappings mappings) {
         /* Normal case, time is mapped and set. */
-        if (gTask.getEstimatedHours() != null && mappings.isFieldSelected(GTaskDescriptor.FIELD.ESTIMATED_TIME))
+        if (gTask.getEstimatedHours() != null && mappings.isFieldSelected(ESTIMATED_TIME))
             return TaskEstimationMode.TASK_TIME;
         
         // "%% Done" is ignored by MSP if there's no estimate on task.
         // This makes sense, but unfortunately some users want "% done" to be transferred even when
         // there's no time estimate.
-        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.DONE_RATIO) && gTask.getDoneRatio() != null) {
+        if (mappings.isFieldSelected(DONE_RATIO) && gTask.getDoneRatio() != null) {
             /* Estimation time is set. Use it even if user does not ask to 
              * map estimated time. It is still more reasonable than 
              * "wild guess" estimation. */
@@ -230,7 +233,7 @@ public class TaskFieldsSetter {
     }
 
     private void processDoneRatio(GTask gTask) throws BadConfigException {
-        if (gTask.getDoneRatio() != null && mappings.isFieldSelected(GTaskDescriptor.FIELD.DONE_RATIO)) {
+        if (gTask.getDoneRatio() != null && mappings.isFieldSelected(DONE_RATIO)) {
             final Float estimatedTime = calculateTaskEstimatedTime(gTask);
             final Duration timeAlreadySpent = TimeCalculator.calculateTimeAlreadySpent(gTask.getDoneRatio(), estimatedTime);
             if (MSPUtils.useWork(mappings)) {
