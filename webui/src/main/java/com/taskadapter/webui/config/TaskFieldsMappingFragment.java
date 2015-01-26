@@ -222,16 +222,4 @@ public class TaskFieldsMappingFragment implements Validatable {
     public Component getUI() {
         return ui;
     }
-
-    /**
-     * Checks, if there were any changes in the mappings made by the user since this page was created.
-     *
-     * @return <code>true</code> if there are changes since panel creation.
-     */
-    public boolean hasChanges() {
-        // TODO !! Add unit tests here. this comparison seems too complex.
-        ImmutableSet<FieldMapping> original = ImmutableSet.copyOf(originalMappings.getMappings());
-        ImmutableSet<FieldMapping> current = ImmutableSet.copyOf(mappings.getMappings());
-        return !original.equals(current);
-    }
 }
