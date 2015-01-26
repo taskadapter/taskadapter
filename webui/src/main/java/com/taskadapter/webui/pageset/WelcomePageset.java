@@ -133,9 +133,7 @@ public final class WelcomePageset {
      *            usage tracker.
      * @param callback
      *            callback to invoke.
-     * @param isLicensed
-     *            "licensed" flag.
-     * @return welcompe pageset.
+     * @return welcome pageset.
      */
     public static Component createPageset(Preservices services,
             Tracker tracker, LoginPage.Callback callback) {

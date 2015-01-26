@@ -1,5 +1,6 @@
 package com.taskadapter.webui.pages;
 
+import com.taskadapter.webui.Page;
 import com.taskadapter.webui.service.WrongPasswordException;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.shared.ui.MarginInfo;
@@ -12,6 +13,8 @@ import com.vaadin.ui.themes.Runo;
  * handling to the callback instance.
  */
 public final class LoginPage {
+    private static final String FORM_WIDTH = "300px";
+    private static final String EDIT_WIDTH = "260px";
 
     /**
      * Callbacks for login operation.
@@ -41,7 +44,7 @@ public final class LoginPage {
      *            page callback.
      */
     public static Component createUI(final Callback callback) {
-        final Panel panel = new Panel(LOG_IN_TITLE);
+        final Panel panel = new Panel(Page.MESSAGES.get("loginPage.login"));
 
         final VerticalLayout layout = new VerticalLayout();
         panel.setContent(layout);
@@ -49,24 +52,24 @@ public final class LoginPage {
 
         layout.setMargin(new MarginInfo(false, true, false, true));
         layout.setSpacing(true);
-        final Label label = new Label(HINT_LABEL, ContentMode.HTML);
+        final Label label = new Label(Page.MESSAGES.get("loginPage.hintLabel"), ContentMode.HTML);
         label.setStyleName(Runo.LABEL_SMALL);
         layout.addComponent(label);
 
         final TextField loginEdit = new TextField();
-        loginEdit.setCaption(LOGIN_PROMPT);
+        loginEdit.setCaption(Page.MESSAGES.get("loginPage.login"));
         loginEdit.setWidth(EDIT_WIDTH);
         layout.addComponent(loginEdit);
 
         final PasswordField passwordEdit = new PasswordField();
-        passwordEdit.setCaption(PASSWORD_PROMPT);
+        passwordEdit.setCaption(Page.MESSAGES.get("loginPage.password"));
         passwordEdit.setWidth(EDIT_WIDTH);
         layout.addComponent(passwordEdit);
 
-        final CheckBox staySignedIn = new CheckBox(STAY_SIGNED_IN);
+        final CheckBox staySignedIn = new CheckBox(Page.MESSAGES.get("loginPage.staySignedIn"));
         layout.addComponent(staySignedIn);
 
-        final Button loginButton = new Button(LOG_IN_TITLE);
+        final Button loginButton = new Button(Page.MESSAGES.get("loginPage.loginButton"));
         loginButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
         loginButton.addStyleName(Runo.BUTTON_DEFAULT);
         loginButton.addStyleName(Runo.BUTTON_BIG);
@@ -83,7 +86,7 @@ public final class LoginPage {
                     callback.authenticate(username, password,
                             staySignedIn.getValue());
                 } catch (WrongPasswordException e) {
-                    errorLabel.setValue("Wrong user name or password.");
+                    errorLabel.setValue(Page.MESSAGES.get("loginPage.wrongUserNameOrPassword"));
                     passwordEdit.setValue("");
                     passwordEdit.focus();
                 }
@@ -94,13 +97,4 @@ public final class LoginPage {
 
         return panel;
     }
-
-    private static final String LOG_IN_TITLE = "Log in";
-    private static final String LOGIN_PROMPT = "Login";
-    private static final String PASSWORD_PROMPT = "Password";
-    private static final String STAY_SIGNED_IN = "Stay signed in";
-    private static final String HINT_LABEL = "<i>Default login/password: admin/admin</i>";
-    private static final String FORM_WIDTH = "300px";
-    private static final String EDIT_WIDTH = "260px";
-
 }

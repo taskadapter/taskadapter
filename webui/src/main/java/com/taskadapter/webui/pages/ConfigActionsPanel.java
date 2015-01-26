@@ -2,6 +2,7 @@ package com.taskadapter.webui.pages;
 
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ImageLoader;
+import com.taskadapter.webui.Page;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.server.Sizeable.Unit;
@@ -18,7 +19,6 @@ import com.vaadin.ui.VerticalLayout;
  * Buttons panel with left/right arrows.
  */
 public final class ConfigActionsPanel {
-    private static final String NO_DESCRIPTION_TEXT = "<i>No description</i>"; // &nbsp;
 
     /**
      * Renders a config actions panel.
@@ -50,7 +50,7 @@ public final class ConfigActionsPanel {
 
         final String labelText = mode.nameOf(config);
         final Label description = new Label(
-                labelText.isEmpty() ? NO_DESCRIPTION_TEXT : labelText,
+                labelText.isEmpty() ? Page.MESSAGES.get("configsPage.noDescription") : labelText,
                 ContentMode.HTML);
         description.addStyleName("configDescriptionLabel");
         descriptionLayout.addComponent(description);

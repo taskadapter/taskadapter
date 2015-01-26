@@ -1,6 +1,7 @@
 package com.taskadapter.webui.pages;
 
 import static com.taskadapter.license.LicenseManager.TRIAL_MESSAGE;
+import static com.taskadapter.webui.Page.message;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -34,12 +35,11 @@ import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * Export page and epoxrt handler.
+ * Export page and export handler.
  * 
  */
 public final class ExportPage {
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(ExportPage.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExportPage.class);
 
     /**
      * Config operations.
@@ -88,9 +88,9 @@ public final class ExportPage {
         content = new VerticalLayout();
         ui.addComponent(content);
 
-        final String welcome = "Will load data from "
-                + config.getConnector1().getSourceLocation() + " ("
-                + config.getConnector1().getLabel() + ")";
+        final String welcome = Page.MESSAGES.format("export.willLoadDataFrom",
+                config.getConnector1().getSourceLocation(),
+                config.getConnector1().getLabel());
 
         setContent(SyncActionComponents.renderDownloadWelcome(welcome,
                 new Runnable() {
@@ -173,7 +173,7 @@ public final class ExportPage {
      */
     private void performExport(final List<GTask> selectedTasks) {
         if (selectedTasks.isEmpty()) {
-            Notification.show(Page.MESSAGES.get("action.pleaseSelectTasks"));
+            Notification.show(message("action.pleaseSelectTasks"));
             return;
         }
 
@@ -205,16 +205,16 @@ public final class ExportPage {
         donePanel.setWidth("600px");
         donePanel.setStyleName("export-panel");
 
+        // TODO format inside MESSAGES formatter, not here.
         final String time = new SimpleDateFormat("MMMM dd, yyyy  HH:mm")
                 .format(Calendar.getInstance().getTime());
-        final Label label = new Label(
-                "<strong>Export completed on</strong> <em>" + time + "</em>");
+        final Label label = new Label(Page.MESSAGES.format("export.exportCompletedOn", time));
         label.setContentMode(ContentMode.HTML);
 
         donePanel.addComponent(label);
 
         donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
-                "From", config.getConnector1().getSourceLocation()));
+                message("export.from"), config.getConnector1().getSourceLocation()));
 
         final String resultFile = res.saveResult.getTargetFileAbsolutePath();
         if (resultFile != null && !showFilePath) {
@@ -222,17 +222,15 @@ public final class ExportPage {
         }
 
         donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
-                "Created tasks",
+                message("export.createdTasks"),
                 String.valueOf(res.saveResult.getCreatedTasksNumber())));
         donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
-                "Updated tasks",
+                message("export.updatedTasks"),
                 String.valueOf(res.saveResult.getUpdatedTasksNumber())
                         + "<br/><br/>"));
 
         if (resultFile != null && showFilePath) {
-            final Label flabel = new Label(
-                    "<strong>Path to export file:</strong> <em>" + resultFile
-                            + "</em>");
+            final Label flabel = new Label(Page.MESSAGES.format("export.pathToExportFile", resultFile));
             flabel.setContentMode(ContentMode.HTML);
             donePanel.addComponent(flabel);
         }
@@ -251,8 +249,7 @@ public final class ExportPage {
 
         ui.addComponent(donePanel);
 
-        final Button button = new Button(
-                Page.MESSAGES.get("action.backToHomePage"));
+        final Button button = new Button(message("action.backToHomePage"));
         button.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -270,13 +267,13 @@ public final class ExportPage {
     }
 
     /**
-     * Creates a download button.
+     * Creates "download file" button.
      * 
      * @param targetFileAbsolutePath
      *            target path.
      */
     private Component createDownloadButton(final String targetFileAbsolutePath) {
-        final Button downloadButton = new Button("Download file");
+        final Button downloadButton = new Button(message("export.downloadFile"));
         File file = new File(targetFileAbsolutePath);
         final FileDownloadResource resource = new FileDownloadResource(file);
         final FileDownloader downloader = new FileDownloader(resource);
@@ -289,11 +286,10 @@ public final class ExportPage {
      */
     private void showNoDataLoaded() {
         final VerticalLayout res = new VerticalLayout();
-        final Label msg = new Label(
-                "No data was loaded using the given criteria.");
+        final Label msg = new Label(message("export.noDataWasLoaded"));
         msg.setWidth(800, Unit.PIXELS);
 
-        final Button backButton = new Button(Page.MESSAGES.get("button.back"));
+        final Button backButton = new Button(message("button.back"));
         backButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -353,8 +349,6 @@ public final class ExportPage {
      *            config operations.
      * @param config
      *            config to export.
-     * @param licenseManager
-     *            used license manager.
      * @param onDone
      *            "done" handler.
      * @return UI component.
