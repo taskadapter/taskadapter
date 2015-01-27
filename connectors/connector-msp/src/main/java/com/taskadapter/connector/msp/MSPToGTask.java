@@ -29,12 +29,12 @@ import static com.taskadapter.model.GTaskDescriptor.FIELD.TARGET_VERSION;
 import static com.taskadapter.model.GTaskDescriptor.FIELD.TASK_STATUS;
 import static com.taskadapter.model.GTaskDescriptor.FIELD.TASK_TYPE;
 
-class MSTaskToGenericTaskConverter {
+class MSPToGTask {
 
     private ProjectHeader header;
     private Mappings mappings;
 
-    MSTaskToGenericTaskConverter(Mappings mappings) {
+    MSPToGTask(Mappings mappings) {
         this.mappings = mappings;
     }
 

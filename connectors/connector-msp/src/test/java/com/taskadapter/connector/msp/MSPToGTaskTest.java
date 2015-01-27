@@ -19,7 +19,7 @@ import static com.taskadapter.model.GTaskDescriptor.FIELD.TASK_TYPE;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
-public class MSTaskToGenericTaskConverterTest {
+public class MSPToGTaskTest {
 
     private ProjectFile projectFile = MSPTestUtils.readTestProjectFile();
 
@@ -45,7 +45,7 @@ public class MSTaskToGenericTaskConverterTest {
 
     @Test
     public void extractAssignee1() {
-        MSTaskToGenericTaskConverter converter = getConverter();
+        MSPToGTask converter = getConverter();
         GUser assignee = converter.extractAssignee(task1);
         assertEquals("Assignee ID must be NULL because this file was created by an old Task Adapter version",
                 null, assignee.getId());
@@ -54,7 +54,7 @@ public class MSTaskToGenericTaskConverterTest {
 
     @Test
     public void extractAssignee2() {
-        MSTaskToGenericTaskConverter converter = getConverter();
+        MSPToGTask converter = getConverter();
         GUser assignee = converter.extractAssignee(task1);
         assertEquals("Assignee ID must be NULL because this file was created by an old Task Adapter version",
                 null, assignee.getId());
@@ -63,7 +63,7 @@ public class MSTaskToGenericTaskConverterTest {
 
     @Test
     public void extractAssignee3() {
-        MSTaskToGenericTaskConverter converter = getConverter();
+        MSPToGTask converter = getConverter();
         GUser assignee = converter.extractAssignee(task1);
         assertEquals("Assignee ID must be NULL because this file was created by an old Task Adapter version",
                 null, assignee.getId());
@@ -91,7 +91,7 @@ public class MSTaskToGenericTaskConverterTest {
 
     @Test
     public void extractRemoteId() {
-        MSTaskToGenericTaskConverter converter = getConverter();
+        MSPToGTask converter = getConverter();
         assertThat(converter.extractField(task1, REMOTE_ID)).isEqualTo(REMOTE_ID1);
         assertThat(converter.extractField(task2, REMOTE_ID)).isEqualTo(REMOTE_ID2);
         assertThat(converter.extractField(task3, REMOTE_ID)).isEqualTo(REMOTE_ID3);
@@ -99,18 +99,18 @@ public class MSTaskToGenericTaskConverterTest {
 
     @Test
     public void taskTypeIsExtracted() {
-        MSTaskToGenericTaskConverter converter = getConverter();
+        MSPToGTask converter = getConverter();
         assertThat(converter.extractField(task1, TASK_TYPE)).isEqualTo(FEATURE);
         assertThat(converter.extractField(task2, TASK_TYPE)).isEqualTo(DEV_TASK);
         assertThat(converter.extractField(task3, TASK_TYPE)).isEqualTo(BUG);
     }
 
-    private MSTaskToGenericTaskConverter getConverter() {
+    private MSPToGTask getConverter() {
         return getConverter(TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
     }
 
-    private MSTaskToGenericTaskConverter getConverter(Mappings mappings) {
-        MSTaskToGenericTaskConverter converter = new MSTaskToGenericTaskConverter(mappings);
+    private MSPToGTask getConverter(Mappings mappings) {
+        MSPToGTask converter = new MSPToGTask(mappings);
         converter.setHeader(projectFile.getProjectHeader());
         return converter;
     }

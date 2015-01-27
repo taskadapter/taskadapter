@@ -185,7 +185,7 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector, D
     }
 
     private List<GTask> loadTasks(ProjectFile project, List<Task> mspTasks, Mappings sourceMappings) throws BadConfigException {
-        final MSTaskToGenericTaskConverter converter = new MSTaskToGenericTaskConverter(sourceMappings);
+        final MSPToGTask converter = new MSPToGTask(sourceMappings);
         converter.setHeader(project.getProjectHeader());
         return converter.convertToGenericTaskList(mspTasks);
     }
