@@ -57,6 +57,7 @@ public class TaskFieldsSetter {
         processStartDate(gTask);
         processDueDate(gTask);
         processClosedDate(gTask);
+        setFieldIfSelected(ENVIRONMENT, mspTask, gTask.getEnvironment());
         setFieldIfSelected(TARGET_VERSION, mspTask, gTask.getTargetVersionName());
     }
 
