@@ -13,12 +13,17 @@ import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
+import static com.taskadapter.webui.Page.message;
+
 public final class SupportPage {
+    private static final String TASKADAPTER_DOWNLOAD_URL = "http://www.taskadapter.com/download";
+
     private final String currentTaskAdapterVersion;
     private final LicenseFacade licenseManager;
-    private VerticalLayout layout = new VerticalLayout();
+    private final VerticalLayout layout = new VerticalLayout();
+    private final VerticalLayout lastVersionInfoLayout = new VerticalLayout();
+
     private Panel versionPanel;
-    private VerticalLayout lastVersionInfoLayout = new VerticalLayout();
 
     private SupportPage(String currentTaskAdapterVersion,
             LicenseFacade licenseManager) {
@@ -35,17 +40,16 @@ public final class SupportPage {
     }
 
     private void addVersionInfo() {
-        versionPanel = new Panel("Version Info");
+        versionPanel = new Panel(message("supportPage.versionInfo"));
         versionPanel.setWidth(400, Sizeable.Unit.PIXELS);
 
-        Label currentVersionLabel = new Label("Task Adapter version "
-                + currentTaskAdapterVersion);
+        Label currentVersionLabel = new Label(message("supportPage.taskAdapterVersion", currentTaskAdapterVersion));
 
         VerticalLayout view = new VerticalLayout();
         view.addComponent(currentVersionLabel);
         view.setMargin(true);
 
-        Button checkButton = new Button("Check for update");
+        Button checkButton = new Button(message("supportPage.checkForUpdate"));
         checkButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -63,17 +67,14 @@ public final class SupportPage {
 
         try {
             String lastAvailableVersion = LastVersionLoader.loadLastVersion();
-            Label latestVersionLabel = new Label("Latest available version: "
-                    + lastAvailableVersion);
+            Label latestVersionLabel = new Label(message("supportPage.latestAvailableVersion", lastAvailableVersion));
             lastVersionInfoLayout.addComponent(latestVersionLabel);
             if (VersionComparator.isCurrentVersionOutdated(
                     currentTaskAdapterVersion, lastAvailableVersion)) {
                 addDownloadLink();
             }
         } catch (RuntimeException e) {
-            lastVersionInfoLayout
-                    .addComponent(new Label(
-                            "Can't find information about the last available version."));
+            lastVersionInfoLayout.addComponent(new Label(message("supportPage.cantFindInfoOnLatestVersion")));
             addDownloadLink();
         }
     }
@@ -84,28 +85,20 @@ public final class SupportPage {
 
     private void addDownloadLink() {
         Link downloadLink = new Link();
-        downloadLink.setResource(new ExternalResource(
-                "http://www.taskadapter.com/download"));
-        downloadLink.setCaption("Open Download page");
+        downloadLink.setResource(new ExternalResource(TASKADAPTER_DOWNLOAD_URL));
+        downloadLink.setCaption(message("supportPage.openDownloadPage"));
         downloadLink.setTargetName("_new");
         lastVersionInfoLayout.addComponent(downloadLink);
     }
 
     private void addEmailLink() {
         Link emailLink = new Link();
-        emailLink.setResource(new ExternalResource(
-                "mailto:support@taskadapter.com"));
-        emailLink.setCaption("Send us an email");
+        emailLink.setResource(new ExternalResource("mailto:support@taskadapter.com"));
+        emailLink.setCaption(message("supportPage.sendUsAnEmail"));
         emailLink.setTargetName("_new");
         layout.addComponent(emailLink);
     }
 
-    /**
-     * Renders a support page.
-     * @param taVersion task-adapter version.
-     * @param license license text.
-     * @return support UI.
-     */
     public static Component render(String taVersion, LicenseFacade license) {
         return new SupportPage(taVersion, license).layout;
     }

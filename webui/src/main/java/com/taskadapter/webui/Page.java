@@ -10,4 +10,7 @@ public abstract class Page {
     public static final String message(String key) {
         return MESSAGES.get(key);
     }
+    public static final String message(String key, String... argument) {
+        return MESSAGES.format(key, argument);
+    }
 }
