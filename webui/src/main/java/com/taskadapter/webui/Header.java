@@ -11,6 +11,8 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
+import static com.taskadapter.webui.Page.message;
+
 /**
  * Top-level header shown in the web UI. Includes logo, "configure", "logout"
  * and other buttons.
@@ -59,9 +61,8 @@ public final class Header  {
         /* Trial display. */
         final VerticalLayout trialLayout = new VerticalLayout();
         trialLayout.setSizeFull();
-        Label trialLabel = new Label("Trial mode");
-        trialLabel
-                .setDescription("Trial version will only transfer up to 10 tasks.<BR>It cannot be used in production environment.");
+        Label trialLabel = new Label(message("header.trialMode"));
+        trialLabel.setDescription(message("header.trialModeWillOnlyTransfer"));
         trialLabel.setSizeUndefined();
         trialLabel.addStyleName("trial-mode-label");
         trialLayout.addComponent(trialLabel);

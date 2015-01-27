@@ -9,8 +9,6 @@ import com.taskadapter.data.States;
 import com.taskadapter.license.License;
 import com.taskadapter.web.InputDialog;
 import com.taskadapter.web.MessageDialog;
-import com.taskadapter.web.data.Messages;
-import com.taskadapter.webui.Page;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
@@ -26,17 +24,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static com.taskadapter.webui.Page.message;
 import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
 public class UsersPanel {
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(UsersPanel.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UsersPanel.class);
 
     private static final int COLUMNS_NUMBER = 3;
 
     private final Panel ui;
-
-    private final Messages messages;
 
     private final GridLayout usersLayout;
     private final Label errorLabel;
@@ -44,7 +40,7 @@ public class UsersPanel {
     private final Button addUserButton;
 
     private final CredentialsManager credentialsManager;
-    private final AuthorizedOperations authorizedOps;
+    private final AuthorizedOperations authorizedOperations;
     private final License license;
     private final MutableState<Integer> numUsers;
 
@@ -53,19 +49,17 @@ public class UsersPanel {
      * 
      * @param credentialsManager
      *            credentials manager.
-     * @param ops
+     * @param authorizedOperations
      *            supported operations.
      * @param license
      *            current license.
      */
-    private UsersPanel(CredentialsManager credentialsManager,
-            AuthorizedOperations ops, License license) {
+    private UsersPanel(CredentialsManager credentialsManager, AuthorizedOperations authorizedOperations, License license) {
         this.credentialsManager = credentialsManager;
-        this.authorizedOps = ops;
+        this.authorizedOperations = authorizedOperations;
         this.license = license;
-        this.messages = Page.MESSAGES;
 
-        ui = new Panel(messages.get("users.title"));
+        ui = new Panel(message("users.title"));
 
         final VerticalLayout view = new VerticalLayout();
         view.setMargin(true);
@@ -86,7 +80,7 @@ public class UsersPanel {
         final Collection<String> users = credentialsManager.listUsers();
         numUsers = new MutableState<Integer>(users.size());
 
-        addUserButton = new Button(messages.get("users.addUser"));
+        addUserButton = new Button(message("users.addUser"));
         addUserButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -104,29 +98,18 @@ public class UsersPanel {
         refreshUsers(users);
     }
     
-    /**
-     * Reloads user list. 
-     */
     private void reloadUsers() {
         refreshUsers(credentialsManager.listUsers());
     }
 
-    /**
-     * Applies license restrictions.
-     * 
-     * @param numUsers
-     *            current number of users.
-     */
-    private void applyLicenseRestriction(int numUsers) {
+    private void applyLicenseRestriction(int currentNumberOfUsersCreatedInSystem) {
         addUserButton.setEnabled(license != null
-                && numUsers < license.getUsersNumber());
+                && currentNumberOfUsersCreatedInSystem < license.getUsersNumber());
         
         if (license == null) {
-            statusLabel.setValue(messages
-                    .get("users.cantAddUsersUntilLicenseInstalled"));
-        } else if (license.getUsersNumber() <= numUsers) {
-            statusLabel.setValue(messages
-                    .get("users.maximumUsersNumberReached"));
+            statusLabel.setValue(message("users.cantAddUsersUntilLicenseInstalled"));
+        } else if (license.getUsersNumber() <= currentNumberOfUsersCreatedInSystem) {
+            statusLabel.setValue(message("users.maximumUsersNumberReached"));
         } else {
             statusLabel.setValue("");
         }
@@ -149,13 +132,13 @@ public class UsersPanel {
         userLoginLabel.addStyleName("userLoginLabelInUsersPanel");
         usersLayout.addComponent(userLoginLabel);
 
-        if (authorizedOps.canChangePasswordFor(userLoginName)) {
+        if (authorizedOperations.canChangePasswordFor(userLoginName)) {
             usersLayout.addComponent(createSetPasswordButton(userLoginName));
         } else {
             usersLayout.addComponent(new Label(""));
         }
 
-        if (authorizedOps.canDeleteUser(userLoginName)) {
+        if (authorizedOperations.canDeleteUser(userLoginName)) {
             usersLayout.addComponent(createDeleteButton(userLoginName));
         } else {
             usersLayout.addComponent(new Label(""));
@@ -164,7 +147,7 @@ public class UsersPanel {
     }
 
     private Component createSetPasswordButton(final String userLoginName) {
-        final Button setPasswordButton = new Button(messages.get("users.setPassword"));
+        final Button setPasswordButton = new Button(message("users.setPassword"));
         setPasswordButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -175,7 +158,7 @@ public class UsersPanel {
     }
 
     private Component createDeleteButton(final String userLoginName) {
-        final Button deleteButton = new Button(messages.get("button.delete"));
+        final Button deleteButton = new Button(message("button.delete"));
         deleteButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -186,11 +169,10 @@ public class UsersPanel {
     }
 
     private void startDeleteProcess(final String userLoginName) {
-        final String deleteText = messages.get("button.delete");
+        final String deleteText = message("button.delete");
         MessageDialog messageDialog = new MessageDialog(
-                messages.get("users.pleaseConfirm"), messages.format(
-                        "users.deleteUser", userLoginName), Arrays.asList(
-                        deleteText, MessageDialog.CANCEL_BUTTON_LABEL),
+                message("users.pleaseConfirm"), message("users.deleteUser", userLoginName),
+                Arrays.asList(deleteText, MessageDialog.CANCEL_BUTTON_LABEL),
                 new MessageDialog.Callback() {
                     public void onDialogResult(String answer) {
                         if (answer.equals(deleteText)) {
@@ -206,8 +188,7 @@ public class UsersPanel {
         try {
             credentialsManager.removeUser(userLoginName);
         } catch (AuthException e) {
-            errorLabel.setValue(messages.format("users.error.cantDeleteUser",
-                    e.toString()));
+            errorLabel.setValue(message("users.error.cantDeleteUser", e.toString()));
         }
         reloadUsers();
     }
@@ -235,9 +216,8 @@ public class UsersPanel {
     }
 
     private void startSetPasswordProcess(final String userLoginName) {
-        InputDialog inputDialog = new InputDialog(messages.format(
-                "users.changePassword", userLoginName),
-                messages.get("users.newPassword"), new InputDialog.Recipient() {
+        InputDialog inputDialog = new InputDialog(message("users.changePassword", userLoginName),
+                message("users.newPassword"), new InputDialog.Recipient() {
                     public void gotInput(String newPassword) {
                         try {
                             credentialsManager.savePrimaryAuthToken(
@@ -253,18 +233,12 @@ public class UsersPanel {
     }
 
     /**
-     * Renders a new users panel.
+     * Renders "Users" panel.
      * 
-     * @param credentialsManager
-     *            user credentails manager.
-     * @param supportedOperations
-     *            supported operations for current user.
-     * @param license
-     *            current license.
      * @return users panel UI.
      */
     public static Component render(CredentialsManager credentialsManager,
-            AuthorizedOperations supportedOperations, License license) {
-        return new UsersPanel(credentialsManager, supportedOperations, license).ui;
+            AuthorizedOperations supportedOperationsForCurrentUser, License license) {
+        return new UsersPanel(credentialsManager, supportedOperationsForCurrentUser, license).ui;
     }
 }

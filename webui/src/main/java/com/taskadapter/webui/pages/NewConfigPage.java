@@ -16,14 +16,9 @@ import com.vaadin.ui.TextField;
 
 import java.util.Iterator;
 
+import static com.taskadapter.webui.Page.message;
+
 public class NewConfigPage {
-    private static final String DESCRIPTION_HINT = "(optional)";
-    private static final String SYSTEM_1_TITLE = "System 1";
-    private static final String SYSTEM_2_TITLE = "System 2";
-    private static final String SELECT_CONNECTOR_1_MESSAGE = "Please select "
-            + SYSTEM_1_TITLE;
-    private static final String SELECT_CONNECTOR_2_MESSAGE = "Please select "
-            + SYSTEM_2_TITLE;
 
     /**
      * Callback for config creation page.
@@ -52,7 +47,7 @@ public class NewConfigPage {
         this.configOps = ops;
         this.callback = callback;
 
-        panel = new Panel("Create new config");
+        panel = new Panel(message("createConfigPage.createNewConfig"));
         panel.setWidth("600px");
 
         final GridLayout grid = new GridLayout(2, 4);
@@ -60,24 +55,23 @@ public class NewConfigPage {
         grid.setMargin(true);
         panel.setContent(grid);
 
-        connector1 = createSystemListSelector(SYSTEM_1_TITLE, pluginManager);
+        connector1 = createSystemListSelector(message("createConfigPage.system1"), pluginManager);
         grid.addComponent(connector1, 0, 0);
 
-        connector2 = createSystemListSelector(SYSTEM_2_TITLE, pluginManager);
+        connector2 = createSystemListSelector(message("createConfigPage.system2"), pluginManager);
         grid.addComponent(connector2, 1, 0);
 
-        descriptionTextField = new TextField("Description");
-        descriptionTextField.setInputPrompt(DESCRIPTION_HINT);
+        descriptionTextField = new TextField(message("createConfigPage.description"));
+        descriptionTextField.setInputPrompt(message("createConfigPage.optional"));
         descriptionTextField.setWidth("100%");
         grid.addComponent(descriptionTextField, 0, 1, 1, 1);
-        grid.setComponentAlignment(descriptionTextField,
-                Alignment.MIDDLE_CENTER);
+        grid.setComponentAlignment(descriptionTextField, Alignment.MIDDLE_CENTER);
 
         // empty label by default
         errorMessageLabel = new Label();
         errorMessageLabel.addStyleName("error-message-label");
 
-        final Button saveButton = new Button("Create");
+        final Button saveButton = new Button(message("createConfigPage.create"));
         saveButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -114,22 +108,21 @@ public class NewConfigPage {
         } catch (ConnectorNotSelectedException e) {
             errorMessageLabel.setValue(e.getMessage());
         } catch (StorageException e) {
-            errorMessageLabel
-                    .setValue("Failed to save config in persistent store");
+            errorMessageLabel.setValue(message("createConfigPage.failedToSave"));
         }
     }
 
     private void validate() throws ConnectorNotSelectedException {
         if (connector1.getValue() == null) {
-            connector1.setRequiredError(SELECT_CONNECTOR_1_MESSAGE);
-            throw new ConnectorNotSelectedException(SELECT_CONNECTOR_1_MESSAGE);
+            connector1.setRequiredError(message("createConfigPage.pleaseSelectSystem1"));
+            throw new ConnectorNotSelectedException(message("createConfigPage.pleaseSelectSystem1"));
         } else {
             connector1.setRequiredError("");
         }
 
         if (connector2.getValue() == null) {
-            connector1.setRequiredError(SELECT_CONNECTOR_2_MESSAGE);
-            throw new ConnectorNotSelectedException(SELECT_CONNECTOR_2_MESSAGE);
+            connector1.setRequiredError(message("createConfigPage.pleaseSelectSystem2"));
+            throw new ConnectorNotSelectedException(message("createConfigPage.pleaseSelectSystem2"));
         } else {
             connector2.setRequiredError("");
         }

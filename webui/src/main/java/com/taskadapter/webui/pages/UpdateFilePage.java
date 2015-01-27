@@ -1,6 +1,7 @@
 package com.taskadapter.webui.pages;
 
 import static com.taskadapter.license.LicenseManager.TRIAL_MESSAGE;
+import static com.taskadapter.webui.Page.message;
 
 import java.util.List;
 
@@ -14,7 +15,6 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.MonitorWrapper;
-import com.taskadapter.webui.Page;
 import com.taskadapter.webui.export.ConfirmExportFragment;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.server.Sizeable.Unit;
@@ -27,8 +27,7 @@ import com.vaadin.ui.VerticalLayout;
 
 public final class UpdateFilePage {
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(ExportPage.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExportPage.class);
 
     /**
      * Config operations.
@@ -71,8 +70,7 @@ public final class UpdateFilePage {
         content = new VerticalLayout();
         ui.addComponent(content);
 
-        final String welcome = Page.MESSAGES.format("updatePage.initialText",
-                config.getConnector2().getDestinationLocation());
+        final String welcome = message("updatePage.initialText", config.getConnector2().getDestinationLocation());
 
         setContent(SyncActionComponents.renderDownloadWelcome(welcome,
                 new Runnable() {
@@ -158,7 +156,7 @@ public final class UpdateFilePage {
      */
     private void performExport(final List<GTask> selectedTasks) {
         if (selectedTasks.isEmpty()) {
-            Notification.show(Page.MESSAGES.get("action.pleaseSelectTasks"));
+            Notification.show(message("action.pleaseSelectTasks"));
             return;
         }
 
@@ -197,13 +195,12 @@ public final class UpdateFilePage {
     private void showExportResult(int updatedTasks) {
         final VerticalLayout ui = new VerticalLayout();
 
-        final String text = Page.MESSAGES.format("updatePage.result",
-                updatedTasks, config.getConnector2().getDestinationLocation(),
+        final String text = message("updatePage.result",
+                updatedTasks+"", config.getConnector2().getDestinationLocation(),
                 config.getConnector1().getSourceLocation());
         ui.addComponent(new Label(text));
 
-        final Button button = new Button(
-                Page.MESSAGES.get("action.backToHomePage"));
+        final Button button = new Button(message("action.backToHomePage"));
         button.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -225,22 +222,20 @@ public final class UpdateFilePage {
      */
     private void showNoDataLoaded() {
         final VerticalLayout res = new VerticalLayout();
-        final Label msg = new Label(
-                "No data was loaded using the given criteria.");
-        msg.setWidth(800, Unit.PIXELS);
+        final Label label = new Label(message("updatePage.noDataWasLoaded"));
+        label.setWidth(800, Unit.PIXELS);
 
-        final Button backButton = new Button(Page.MESSAGES.get("button.back"));
+        final Button backButton = new Button(message("button.back"));
         backButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 onDone.run();
             }
         });
-        res.addComponent(msg);
+        res.addComponent(label);
         res.addComponent(backButton);
 
         setContent(res);
-
     }
 
     /**
