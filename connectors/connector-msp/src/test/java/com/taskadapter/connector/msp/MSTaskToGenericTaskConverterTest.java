@@ -14,6 +14,9 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static com.taskadapter.model.GTaskDescriptor.FIELD.REMOTE_ID;
+import static com.taskadapter.model.GTaskDescriptor.FIELD.TASK_TYPE;
+import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 public class MSTaskToGenericTaskConverterTest {
@@ -89,17 +92,17 @@ public class MSTaskToGenericTaskConverterTest {
     @Test
     public void extractRemoteId() {
         MSTaskToGenericTaskConverter converter = getConverter();
-        assertEquals(REMOTE_ID1, converter.extractRemoteId(task1));
-        assertEquals(REMOTE_ID2, converter.extractRemoteId(task2));
-        assertEquals(REMOTE_ID3, converter.extractRemoteId(task3));
+        assertThat(converter.extractField(task1, REMOTE_ID)).isEqualTo(REMOTE_ID1);
+        assertThat(converter.extractField(task2, REMOTE_ID)).isEqualTo(REMOTE_ID2);
+        assertThat(converter.extractField(task3, REMOTE_ID)).isEqualTo(REMOTE_ID3);
     }
 
     @Test
     public void taskTypeIsExtracted() {
         MSTaskToGenericTaskConverter converter = getConverter();
-        assertEquals(FEATURE, converter.extractType(task1));
-        assertEquals(DEV_TASK, converter.extractType(task2));
-        assertEquals(BUG, converter.extractType(task3));
+        assertThat(converter.extractField(task1, TASK_TYPE)).isEqualTo(FEATURE);
+        assertThat(converter.extractField(task2, TASK_TYPE)).isEqualTo(DEV_TASK);
+        assertThat(converter.extractField(task3, TASK_TYPE)).isEqualTo(BUG);
     }
 
     private MSTaskToGenericTaskConverter getConverter() {

@@ -5,7 +5,6 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.msp.write.MSPDefaultFields;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
 import net.sf.mpxj.ConstraintType;
@@ -22,6 +21,13 @@ import net.sf.mpxj.TimeUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static com.taskadapter.model.GTaskDescriptor.FIELD.DUE_DATE;
+import static com.taskadapter.model.GTaskDescriptor.FIELD.ENVIRONMENT;
+import static com.taskadapter.model.GTaskDescriptor.FIELD.REMOTE_ID;
+import static com.taskadapter.model.GTaskDescriptor.FIELD.TARGET_VERSION;
+import static com.taskadapter.model.GTaskDescriptor.FIELD.TASK_STATUS;
+import static com.taskadapter.model.GTaskDescriptor.FIELD.TASK_TYPE;
 
 class MSTaskToGenericTaskConverter {
 
@@ -52,7 +58,7 @@ class MSTaskToGenericTaskConverter {
 
     public GTask convertToGenericTask(Task task) throws BadConfigException {
         GTask genericTask = new GTask();
-        genericTask.setType(extractType(task));
+        genericTask.setType(extractField(task, TASK_TYPE));
 
         genericTask.setSummary(task.getName());
         genericTask.setId(task.getUniqueID());
@@ -64,11 +70,11 @@ class MSTaskToGenericTaskConverter {
             genericTask.setParentKey(parent.getUniqueID() + "");
         }
 
-        genericTask.setRemoteId(extractRemoteId(task));
+        genericTask.setRemoteId(extractField(task, REMOTE_ID));
 
         genericTask.setPriority(task.getPriority().getValue());
 
-        genericTask.setStatus(extractStatus(task));
+        genericTask.setStatus(extractField(task, TASK_STATUS));
 
         if (mappings.haveMappingFor(FIELD.ESTIMATED_TIME)) {
             genericTask.setEstimatedHours(extractEstimatedHours(task));
@@ -88,7 +94,7 @@ class MSTaskToGenericTaskConverter {
         }
 
         // DUE DATE
-        final String dueDateField = mappings.getMappedTo(GTaskDescriptor.FIELD.DUE_DATE);
+        final String dueDateField = mappings.getMappedTo(DUE_DATE);
         if (dueDateField != null) {
             Date mspDueDate = null;
             if (dueDateField.equals(TaskField.FINISH.toString())) {
@@ -103,14 +109,15 @@ class MSTaskToGenericTaskConverter {
         genericTask.setDescription(task.getNotes());
 
         processRelations(task, genericTask);
-        genericTask.setTargetVersionName(extractTargetVersion(task));
+        genericTask.setTargetVersionName(extractField(task, TARGET_VERSION));
+        genericTask.setEnvironment(extractField(task, ENVIRONMENT));
         return genericTask;
     }
 
-    private String extractTargetVersion(Task task) {
-        Object obj = getValue(task, FIELD.TARGET_VERSION);
-        if (obj != null) {
-            return obj.toString();
+    String extractField(Task task, FIELD field) {
+        Object value = getValue(task, field);
+        if ((value != null) && !(value.toString().isEmpty())) {
+            return value.toString();
         }
         return null;
     }
@@ -190,38 +197,12 @@ class MSTaskToGenericTaskConverter {
         return null;
     }
 
-    String extractRemoteId(Task mspTask) {
-        Object remoteIdObj = getValue(mspTask, FIELD.REMOTE_ID);
-        if ((remoteIdObj != null) && !(remoteIdObj.toString().isEmpty())) {
-            return remoteIdObj.toString();
-        }
-        return null;
-    }
-
     Object getValue(Task mspTask, FIELD field) {
         String v = mappings.getMappedTo(field);
         if (v != null) {
             TaskField f = MSPUtils.getTaskFieldByName(v);
 
             return mspTask.getCurrentValue(f);
-        }
-        return null;
-    }
-
-    String extractType(Task mspTask) {
-        // GTask TYPE: bug/task/feature/review/... (using custom field from MSP file)
-        Object obj = getValue(mspTask, FIELD.TASK_TYPE);
-        if (obj != null) {
-            return obj.toString();
-        }
-        return null;
-    }
-
-    String extractStatus(Task mspTask) {
-        // GTask STATUS: new/assigned/resolved/... (using custom field from MSP file)
-        Object obj = getValue(mspTask, FIELD.TASK_STATUS);
-        if (obj != null) {
-            return obj.toString();
         }
         return null;
     }
