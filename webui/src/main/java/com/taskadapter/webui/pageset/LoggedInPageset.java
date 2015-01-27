@@ -1,5 +1,7 @@
 package com.taskadapter.webui.pageset;
 
+import static com.taskadapter.webui.Page.MESSAGES;
+import static com.taskadapter.webui.Page.message;
 import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
 import java.io.File;
@@ -26,7 +28,6 @@ import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigureSystemPage;
 import com.taskadapter.webui.Header;
-import com.taskadapter.webui.Page;
 import com.taskadapter.webui.TAPageLayout;
 import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.UserContext;
@@ -59,8 +60,7 @@ import com.vaadin.ui.themes.BaseTheme;
  */
 public class LoggedInPageset {
     private static final int MAX_TASKS_TO_LOAD = Integer.MAX_VALUE;
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(LoggedInPageset.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoggedInPageset.class);
 
     /**
      * Global (app-wide) services.
@@ -114,7 +114,7 @@ public class LoggedInPageset {
      *            usage tracker.
      * @param ctx
      *            context for active user.
-     * @param logoutCallback
+     * @param callback
      *            callback to use.
      */
     private LoggedInPageset(CredentialsManager credentialsManager,
@@ -144,7 +144,7 @@ public class LoggedInPageset {
         final HorizontalLayout panelForLoggedInUsers = new HorizontalLayout();
         panelForLoggedInUsers.setSpacing(true);
 
-        final Button logoutButton = new Button("Logout");
+        final Button logoutButton = new Button(message("headerMenu.logout"));
         logoutButton.setStyleName(BaseTheme.BUTTON_LINK);
         logoutButton.addStyleName("personalMenuItem");
         logoutButton.addClickListener(new Button.ClickListener() {
@@ -155,13 +155,13 @@ public class LoggedInPageset {
         });
         panelForLoggedInUsers.addComponent(logoutButton);
 
-        Button setPasswordButton = new Button("Change password");
+        Button setPasswordButton = new Button(message("headerMenu.changePassword"));
         setPasswordButton.setStyleName(BaseTheme.BUTTON_LINK);
         setPasswordButton.addStyleName("personalMenuItem");
         setPasswordButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                changePassword();
+                showChangePasswordDialog();
             }
         });
         panelForLoggedInUsers.addComponent(setPasswordButton);
@@ -172,7 +172,7 @@ public class LoggedInPageset {
     /**
      * Attempts to change password for the current user.
      */
-    private void changePassword() {
+    private void showChangePasswordDialog() {
         ChangePasswordDialog.showDialog(ui.getUI(), context.name,
                 new ChangePasswordDialog.Callback() {
                     @Override
@@ -185,16 +185,11 @@ public class LoggedInPageset {
                 });
     }
 
-    /**
-     * Creates a menu panel.
-     * 
-     * @return menu panel.
-     */
     private Component createMenu() {
         final HorizontalLayout menu = new HorizontalLayout();
         menu.setSpacing(true);
 
-        final Button configureButton = new Button("Configure");
+        final Button configureButton = new Button(message("headerMenu.configure"));
         configureButton.setStyleName(BaseTheme.BUTTON_LINK);
         configureButton.addStyleName("menu");
         configureButton.addClickListener(new Button.ClickListener() {
@@ -205,9 +200,7 @@ public class LoggedInPageset {
         });
         menu.addComponent(configureButton);
 
-        final Button supportButton = new Button("Support");
-        supportButton.setStyleName(BaseTheme.BUTTON_LINK);
-        supportButton.addStyleName("menu");
+        final Button supportButton = ButtonBuilder.createSupportButton();
         supportButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -343,10 +336,6 @@ public class LoggedInPageset {
      * 
      * @param config
      *            base config. May be saved!
-     * @param from
-     *            source config.
-     * @param to
-     *            destination config.
      */
     private void sync(UISyncConfig config) {
         if (!prepareForConversion(config))
@@ -385,7 +374,7 @@ public class LoggedInPageset {
                             .isSomeValidLicenseInstalled() ? MAX_TASKS_TO_LOAD
                             : LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
                     tracker.trackPage("drop_in");
-                    applyUI(DropInExportPage.render(context.configOps, config,
+                    Component component = DropInExportPage.render(context.configOps, config,
                             maxTasks, services.settingsManager
                                     .isTAWorkingOnLocalMachine(),
                             new Runnable() {
@@ -394,7 +383,8 @@ public class LoggedInPageset {
                                     df.delete();
                                     showHome();
                                 }
-                            }, df));
+                            }, df);
+                    applyUI(component);
                 } finally {
                     ss.unlock();
                 }
@@ -405,8 +395,7 @@ public class LoggedInPageset {
                 final VaadinSession ss = VaadinSession.getCurrent();
                 ss.lock();
                 try {
-                    Notification.show("Fatal Upload Failure "
-                            + event.getException());
+                    Notification.show(MESSAGES.format("uploadFailure", event.getException().toString()));
                 } finally {
                     ss.unlock();
                 }
@@ -415,7 +404,7 @@ public class LoggedInPageset {
 
             @Override
             public void onProgress(StreamingProgressEvent event) {
-                LOGGER.error("We don't need no progress! Vaadin is not good.");
+                LOGGER.debug("Safely ignoring 'progress' event. We don't need it.");
             }
 
             @Override
@@ -433,20 +422,17 @@ public class LoggedInPageset {
                 try {
                     return new FileOutputStream(df);
                 } catch (FileNotFoundException e) {
-                    throw new RuntimeException(
-                            "Vaadin is really bad (file drop handler API)!", e);
+                    throw new RuntimeException("File not found.", e);
                 }
             }
         });
     }
 
     /**
-     * Perofrms an export.
+     * Performs  export.
      * 
      * @param config
      *            config to export.
-     * @param maxTasks
-     *            number of tasks.
      */
     private void exportCommon(UISyncConfig config) {
         tracker.trackPage("export_confirmation");
@@ -473,11 +459,11 @@ public class LoggedInPageset {
         final String fileName = new File(
                 connectorTo.getAbsoluteOutputFileName()).getName();
         final MessageDialog messageDialog = new MessageDialog(
-                Page.MESSAGES.get("export.chooseOperation"),
-                Page.MESSAGES.format("export.fileAlreadyExists", fileName),
-                Arrays.asList(Page.MESSAGES.get("export.update"),
-                        Page.MESSAGES.get("export.overwrite"),
-                        Page.MESSAGES.get("button.cancel")),
+                message("export.chooseOperation"),
+                MESSAGES.format("export.fileAlreadyExists", fileName),
+                Arrays.asList(message("export.update"),
+                        message("export.overwrite"),
+                        message("button.cancel")),
                 new MessageDialog.Callback() {
                     public void onDialogResult(String answer) {
                         processSyncAction(config, answer);
@@ -489,12 +475,14 @@ public class LoggedInPageset {
     }
 
     private void processSyncAction(UISyncConfig config, String action) {
-        if (action.equals(Page.MESSAGES.get("button.cancel")))
+        if (action.equals(message("button.cancel"))) {
             return;
-        if (action.equals(Page.MESSAGES.get("export.update"))) {
+        }
+        if (action.equals(message("export.update"))) {
             startUpdateFile(config);
-        } else
+        } else {
             exportCommon(config);
+        }
     }
 
     /**
@@ -534,22 +522,19 @@ public class LoggedInPageset {
 
         final boolean updated;
         try {
-            updated = to
-                    .updateForSave(new Sandbox(services.settingsManager
-                            .isTAWorkingOnLocalMachine(),
-                            context.configOps.syncSandbox));
+            updated = to.updateForSave(new Sandbox(services.settingsManager.isTAWorkingOnLocalMachine(),
+                    context.configOps.syncSandbox));
         } catch (BadConfigException e) {
             showConfigEditor(config, to.decodeException(e));
             return false;
         }
 
-        /* If config was changed - show it! */
+        // If config was changed - save it
         if (updated) {
             try {
                 context.configOps.saveConfig(config);
             } catch (StorageException e1) {
-                final String message = Page.MESSAGES.format(
-                        "export.troublesSavingConfig", e1.getMessage());
+                final String message = MESSAGES.format("export.troublesSavingConfig", e1.getMessage());
                 LOGGER.error(message, e1);
                 Notification.show(message, Notification.Type.ERROR_MESSAGE);
             }

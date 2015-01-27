@@ -11,10 +11,9 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.themes.BaseTheme;
 
 /**
- * Pageset available for all users.
+ * Pageset available to all users.
  */
 public final class WelcomePageset {
 
@@ -58,8 +57,7 @@ public final class WelcomePageset {
      * @param callback
      *            callback to use.
      */
-    private WelcomePageset(Preservices services, Tracker tracker,
-            LoginPage.Callback callback) {
+    private WelcomePageset(Preservices services, Tracker tracker, LoginPage.Callback callback) {
         this.services = services;
         this.tracker = tracker;
         this.callback = callback;
@@ -75,16 +73,9 @@ public final class WelcomePageset {
         ui = TAPageLayout.layoutPage(header, currentComponentArea);
     }
 
-    /**
-     * Creates a menu panel.
-     * 
-     * @return menu panel.
-     */
     private Component createMenu() {
         final HorizontalLayout menu = new HorizontalLayout();
-        final Button supportButton = new Button("Support");
-        supportButton.setStyleName(BaseTheme.BUTTON_LINK);
-        supportButton.addStyleName("menu");
+        final Button supportButton = ButtonBuilder.createSupportButton();
         supportButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -137,8 +128,7 @@ public final class WelcomePageset {
      */
     public static Component createPageset(Preservices services,
             Tracker tracker, LoginPage.Callback callback) {
-        final WelcomePageset ctl = new WelcomePageset(services, tracker,
-                callback);
+        final WelcomePageset ctl = new WelcomePageset(services, tracker, callback);
         ctl.showLogin();
         return ctl.ui;
     }
