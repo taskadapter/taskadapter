@@ -2,7 +2,7 @@ ext {
 
     // this is the application release version.
     // it is used in the ZIP file name and is shown in "About" dialog.
-    TASK_ADAPTER_VERSION = "2.9.0"
+    TASK_ADAPTER_VERSION = "2.10.0-SNAPSHOT"
 
     vaadinVersion = '7.3.2'
     httpClientVersion='4.2'
