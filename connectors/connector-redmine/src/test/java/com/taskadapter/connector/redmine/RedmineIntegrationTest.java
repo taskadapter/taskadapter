@@ -48,10 +48,10 @@ public class RedmineIntegrationTest {
     public static void oneTimeSetUp() {
         WebServerInfo serverInfo = RedmineTestConfig.getRedmineTestConfig().getServerInfo();
         logger.info("Running Redmine tests with: " + serverInfo);
-        mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getUserName(), serverInfo.getPassword());
+        mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getApiKey());
 
         Project junitTestProject = new Project();
-        junitTestProject.setName("zmd test project");
+        junitTestProject.setName("TA Redmine Integration test project");
         junitTestProject.setIdentifier("test"
                 + Calendar.getInstance().getTimeInMillis());
         try {

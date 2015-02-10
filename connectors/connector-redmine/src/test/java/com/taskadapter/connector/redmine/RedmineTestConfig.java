@@ -28,7 +28,9 @@ public class RedmineTestConfig {
     }
 
     public static RedmineConfig getRedmineTestConfig() {
-        WebServerInfo rmInfo = new WebServerInfo(properties.getProperty("uri"), properties.getProperty("user"), properties.getProperty("password"));
+        WebServerInfo rmInfo = new WebServerInfo(properties.getProperty("uri"), "", "");
+        rmInfo.setApiKey(properties.getProperty("apikey"));
+        rmInfo.setUseAPIKeyInsteadOfLoginPassword(true);
         RedmineConfig redmineConfig = new RedmineConfig();
         redmineConfig.setServerInfo(rmInfo);
         redmineConfig.setProjectKey(properties.getProperty("project.key"));

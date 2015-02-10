@@ -54,7 +54,7 @@ public class UpdaterIntegrationTest {
     public static void oneTimeSetUp() {
         WebServerInfo serverInfo = RedmineTestConfig.getRedmineTestConfig().getServerInfo();
         logger.info("Running Redmine tests with: " + serverInfo);
-        mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getUserName(), serverInfo.getPassword());
+        mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getApiKey());
 
         Project project = new Project();
         project.setName("integration test project");
@@ -151,10 +151,8 @@ public class UpdaterIntegrationTest {
 
     private List<GTask> createRedmineIssues(String projectKey, int issuesNumber) {
         List<GTask> issues = new ArrayList<GTask>(issuesNumber);
-        RedmineManager mgr = new RedmineManager(redmineConfig.getServerInfo().getHost());
-        mgr.setLogin(redmineConfig.getServerInfo().getUserName());
-        mgr.setPassword(redmineConfig.getServerInfo().getPassword());
-
+        WebServerInfo serverInfo = redmineConfig.getServerInfo();
+        RedmineManager mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getApiKey());
         List<Issue> issuesToCreate = generateRedmineIssues(issuesNumber);
 
         RedmineToGTask converter = new RedmineToGTask(redmineConfig);

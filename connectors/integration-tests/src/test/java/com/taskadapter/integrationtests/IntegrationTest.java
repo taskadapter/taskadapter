@@ -59,7 +59,7 @@ public class IntegrationTest {
     public static void oneTimeSetUp() {
         WebServerInfo serverInfo = RedmineTestConfig.getRedmineTestConfig().getServerInfo();
         logger.info("Running Redmine tests with: " + serverInfo);
-        mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getUserName(), serverInfo.getPassword());
+        mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getApiKey());
 
         Project project = new Project();
         project.setName("integration tests");
