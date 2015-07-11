@@ -9,7 +9,7 @@ import com.taskadapter.redmineapi.bean.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import java.util.Collection;
 
 public class RedmineToGTask {
 
@@ -66,7 +66,7 @@ public class RedmineToGTask {
     }
 
     private static void processRelations(Issue rmIssue, GTask genericTask) {
-        List<IssueRelation> relations = rmIssue.getRelations();
+        Collection<IssueRelation> relations = rmIssue.getRelations();
         for (IssueRelation relation : relations) {
             if (relation.getType().equals(IssueRelation.TYPE.precedes.toString())) {
                 // if NOT equal to self!

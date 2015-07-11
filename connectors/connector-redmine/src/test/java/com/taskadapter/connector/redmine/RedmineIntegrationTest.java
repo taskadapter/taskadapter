@@ -16,6 +16,7 @@ import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.IssueStatus;
 import com.taskadapter.redmineapi.bean.Project;
+import com.taskadapter.redmineapi.bean.ProjectFactory;
 import com.taskadapter.redmineapi.bean.User;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -48,17 +49,15 @@ public class RedmineIntegrationTest {
     public static void oneTimeSetUp() {
         WebServerInfo serverInfo = RedmineTestConfig.getRedmineTestConfig().getServerInfo();
         logger.info("Running Redmine tests with: " + serverInfo);
-        mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getApiKey());
+        mgr = RedmineManagerFactory.createRedmineManager(serverInfo);
 
-        Project junitTestProject = new Project();
-        junitTestProject.setName("TA Redmine Integration test project");
-        junitTestProject.setIdentifier("test"
-                + Calendar.getInstance().getTimeInMillis());
+        Project junitTestProject = ProjectFactory.create("TA Redmine Integration test project",
+                "test" + Calendar.getInstance().getTimeInMillis());
         try {
-            User redmineUser = mgr.getCurrentUser();
+            User redmineUser = mgr.getUserManager().getCurrentUser();
             currentUser = RedmineToGUser.convertToGUser(redmineUser);
 
-            Project createdProject = mgr.createProject(junitTestProject);
+            Project createdProject = mgr.getProjectManager().createProject(junitTestProject);
             logger.info("Created temporary Redmine project with ID " + junitTestProject.getIdentifier());
             projectKey = createdProject.getIdentifier();
 
@@ -71,7 +70,7 @@ public class RedmineIntegrationTest {
     public static void oneTimeTearDown() {
         try {
             if (mgr != null) {
-                mgr.deleteProject(projectKey);
+                mgr.getProjectManager().deleteProject(projectKey);
                 logger.info("Deleted temporary Redmine project with ID " + projectKey);
             }
         } catch (Exception e) {
@@ -200,7 +199,7 @@ public class RedmineIntegrationTest {
     private String getDefaultTaskStatus() throws RedmineException {
         String statusName = null;
 
-        List<IssueStatus> list = mgr.getStatuses();
+        List<IssueStatus> list = mgr.getIssueManager().getStatuses();
         for (IssueStatus status : list) {
             if (status.isDefaultStatus()) {
                 statusName = status.getName();
@@ -214,7 +213,7 @@ public class RedmineIntegrationTest {
     private String getOtherTaskStatus() throws RedmineException {
         String statusName = null;
 
-        List<IssueStatus> list = mgr.getStatuses();
+        List<IssueStatus> list = mgr.getIssueManager().getStatuses();
         for (IssueStatus status : list) {
             if (!status.isDefaultStatus()) {
                 statusName = status.getName();

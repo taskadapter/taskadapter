@@ -16,18 +16,18 @@ import com.taskadapter.connector.msp.MSPSupportedFields;
 import com.taskadapter.connector.msp.MSPUtils;
 import com.taskadapter.connector.redmine.GTaskToRedmine;
 import com.taskadapter.connector.redmine.RedmineConfig;
-import com.taskadapter.connector.redmine.RedmineConnector;
+import com.taskadapter.connector.redmine.RedmineManagerFactory;
 import com.taskadapter.connector.redmine.RedmineSupportedFields;
 import com.taskadapter.connector.redmine.RedmineTaskSaver;
 import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.core.RemoteIdUpdater;
 import com.taskadapter.core.TaskLoader;
-import com.taskadapter.core.TaskSaver;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.Project;
+import com.taskadapter.redmineapi.bean.ProjectFactory;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -59,14 +59,12 @@ public class IntegrationTest {
     public static void oneTimeSetUp() {
         WebServerInfo serverInfo = RedmineTestConfig.getRedmineTestConfig().getServerInfo();
         logger.info("Running Redmine tests with: " + serverInfo);
-        mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getApiKey());
+        mgr = RedmineManagerFactory.createRedmineManager(serverInfo);
 
-        Project project = new Project();
-        project.setName("integration tests");
-        project.setIdentifier("itest"
-                + Calendar.getInstance().getTimeInMillis());
+        Project project = ProjectFactory.create("integration tests",
+                "itest" + Calendar.getInstance().getTimeInMillis());
         try {
-            redmineProject = mgr.createProject(project);
+            redmineProject = mgr.getProjectManager().createProject(project);
             projectKey = redmineProject.getIdentifier();
             logger.info("Created temporary Redmine project with key " + projectKey);
 
@@ -79,7 +77,7 @@ public class IntegrationTest {
     public static void oneTimeTearDown() {
         try {
             if (mgr != null) {
-                mgr.deleteProject(projectKey);
+                mgr.getProjectManager().deleteProject(projectKey);
                 logger.info("Deleted temporary Redmine project with ID " + projectKey);
             }
         } catch (Exception e) {
@@ -135,7 +133,7 @@ public class IntegrationTest {
         List<GTask> loadedTasks = TaskLoader.loadTasks(maxTasksNumber, msProjectConnector, "msp1", mspMappings, DUMMY_MONITOR);
         // save to Redmine. this should save the remote IDs
         GTaskToRedmine converter = new GTaskToRedmine(redmineConfig, redmineMappings, null, redmineProject, null, null, null);
-        BasicIssueSaveAPI<Issue> redmineTaskSaver = new RedmineTaskSaver(mgr, redmineProject, redmineConfig);
+        BasicIssueSaveAPI<Issue> redmineTaskSaver = new RedmineTaskSaver(mgr.getIssueManager(), redmineConfig);
         final TaskSaveResult result =  TaskSavingUtils.saveTasks(loadedTasks,
                 converter, redmineTaskSaver,
                 DUMMY_MONITOR,
@@ -171,7 +169,7 @@ public class IntegrationTest {
             // save to Redmine
             Mappings redmineMappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
             GTaskToRedmine converter = new GTaskToRedmine(redmineConfigTo, redmineMappings, null, redmineProject, null, null, null);
-            BasicIssueSaveAPI<Issue> redmineTaskSaver = new RedmineTaskSaver(mgr, redmineProject, redmineConfigTo);
+            BasicIssueSaveAPI<Issue> redmineTaskSaver = new RedmineTaskSaver(mgr.getIssueManager(), redmineConfigTo);
             TaskSavingUtils.saveTasks(loadedTasks,
                     converter, redmineTaskSaver,
                     DUMMY_MONITOR,

@@ -4,9 +4,13 @@ import com.taskadapter.connector.Priorities;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.redmineapi.bean.Issue;
+import com.taskadapter.redmineapi.bean.IssueFactory;
 import com.taskadapter.redmineapi.bean.IssueRelation;
+import com.taskadapter.redmineapi.bean.IssueRelationFactory;
 import com.taskadapter.redmineapi.bean.Tracker;
+import com.taskadapter.redmineapi.bean.TrackerFactory;
 import com.taskadapter.redmineapi.bean.User;
+import com.taskadapter.redmineapi.bean.UserFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,8 +48,7 @@ public class RedmineToGTaskTest {
 
     @Test
     public void idIsConvertedIfSet() {
-        Issue redmineIssue = new Issue();
-        redmineIssue.setId(123);
+        Issue redmineIssue = IssueFactory.create(123);
         GTask task = toGTask.convertToGenericTask(redmineIssue);
         assertEquals((Integer) 123, task.getId());
     }
@@ -59,8 +62,7 @@ public class RedmineToGTaskTest {
 
     @Test
     public void idIsSetToKey() {
-        Issue redmineIssue = new Issue();
-        redmineIssue.setId(123);
+        Issue redmineIssue = IssueFactory.create(123);
         GTask task = toGTask.convertToGenericTask(redmineIssue);
         assertEquals("123", task.getKey());
     }
@@ -90,7 +92,7 @@ public class RedmineToGTaskTest {
     @Test
     public void assigneeIsConvertedIfSet() {
         Issue redmineIssue = new Issue();
-        User assignee = new User();
+        User assignee = UserFactory.create();
         assignee.setLogin("mylogin");
         redmineIssue.setAssignee(assignee);
         GTask task = toGTask.convertToGenericTask(redmineIssue);
@@ -100,8 +102,7 @@ public class RedmineToGTaskTest {
     @Test
     public void trackerTypeIsConvertedIfSet() {
         Issue redmineIssue = new Issue();
-        Tracker tracker = new Tracker();
-        tracker.setName("something");
+        Tracker tracker = TrackerFactory.create(123, "something");
         redmineIssue.setTracker(tracker);
         GTask task = toGTask.convertToGenericTask(redmineIssue);
         assertEquals("something", task.getType());
@@ -205,11 +206,9 @@ public class RedmineToGTaskTest {
 
     @Test
     public void relationsAreConverted() {
-        Issue redmineIssue = new Issue();
-        redmineIssue.setId(10);
-        Issue blockedIssue = new Issue();
-        blockedIssue.setId(20);
-        IssueRelation relation = new IssueRelation();
+        Issue redmineIssue = IssueFactory.create(10);
+//        Issue blockedIssue = IssueFactory.create(20);
+        IssueRelation relation = IssueRelationFactory.create();
         relation.setType(IssueRelation.TYPE.precedes.toString());
         relation.setIssueId(10);
         relation.setIssueToId(20);

@@ -19,6 +19,7 @@ import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.Project;
+import com.taskadapter.redmineapi.bean.ProjectFactory;
 import net.sf.mpxj.TaskField;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -54,14 +55,12 @@ public class UpdaterIntegrationTest {
     public static void oneTimeSetUp() {
         WebServerInfo serverInfo = RedmineTestConfig.getRedmineTestConfig().getServerInfo();
         logger.info("Running Redmine tests with: " + serverInfo);
-        mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getApiKey());
+        mgr = RedmineManagerFactory.createRedmineManager(serverInfo);
 
-        Project project = new Project();
-        project.setName("integration test project");
-        project.setIdentifier("ittest"
-                + Calendar.getInstance().getTimeInMillis());
+        Project project = ProjectFactory.create("integration test project",
+                "ittest" + Calendar.getInstance().getTimeInMillis());
         try {
-            Project createdProject = mgr.createProject(project);
+            Project createdProject = mgr.getProjectManager().createProject(project);
             projectKey = createdProject.getIdentifier();
             logger.info("Created temporary Redmine project with key " + projectKey);
 
@@ -74,7 +73,7 @@ public class UpdaterIntegrationTest {
     public static void oneTimeTearDown() {
         try {
             if (mgr != null) {
-                mgr.deleteProject(projectKey);
+                mgr.getProjectManager().deleteProject(projectKey);
                 logger.info("Deleted temporary Redmine project with ID " + projectKey);
             }
         } catch (Exception e) {
@@ -115,7 +114,7 @@ public class UpdaterIntegrationTest {
     }
 
     private void createTasksInRedmine() {
-        this.rmIssues = createRedmineIssues(projectKey, TASKS_NUMBER);
+        this.rmIssues = createRedmineIssues(TASKS_NUMBER);
         TaskUtil.setRemoteIdField(rmIssues);
     }
 
@@ -149,17 +148,17 @@ public class UpdaterIntegrationTest {
         }
     }
 
-    private List<GTask> createRedmineIssues(String projectKey, int issuesNumber) {
+    private List<GTask> createRedmineIssues(int issuesNumber) {
         List<GTask> issues = new ArrayList<GTask>(issuesNumber);
         WebServerInfo serverInfo = redmineConfig.getServerInfo();
-        RedmineManager mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getApiKey());
+        RedmineManager mgr = RedmineManagerFactory.createRedmineManager(serverInfo);
         List<Issue> issuesToCreate = generateRedmineIssues(issuesNumber);
 
         RedmineToGTask converter = new RedmineToGTask(redmineConfig);
-        for (Issue anIssuesToCreate : issuesToCreate) {
+        for (Issue issueToCreate : issuesToCreate) {
             Issue issue;
             try {
-                issue = mgr.createIssue(projectKey, anIssuesToCreate);
+                issue = mgr.getIssueManager().createIssue(issueToCreate);
             } catch (Exception e) {
                 throw new RuntimeException(e.toString(), e);
             }

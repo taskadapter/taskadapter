@@ -5,32 +5,27 @@ import com.taskadapter.connector.common.RelationSaver;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GRelation;
+import com.taskadapter.redmineapi.IssueManager;
 import com.taskadapter.redmineapi.RedmineException;
-import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.RedmineProcessingException;
 import com.taskadapter.redmineapi.bean.Issue;
-import com.taskadapter.redmineapi.bean.Project;
 
 import java.util.List;
 
 public final class RedmineTaskSaver implements RelationSaver, BasicIssueSaveAPI<Issue> {
 
-    private final RedmineManager mgr;
-    private final Project rmProject;
+    private final IssueManager issueManager;
     private final RedmineConfig config;
 
-    public RedmineTaskSaver(RedmineManager mgr, Project rmProject,
-            RedmineConfig config) {
-        this.mgr = mgr;
-        this.rmProject = rmProject;
+    public RedmineTaskSaver(IssueManager mgr, RedmineConfig config) {
+        this.issueManager = mgr;
         this.config = config;
     }
 
     @Override
     public String createTask(Issue nativeTask) throws ConnectorException {
         try {
-            Issue newIssue = mgr.createIssue(rmProject.getIdentifier(),
-                    nativeTask);
+            Issue newIssue = issueManager.createIssue(nativeTask);
             return newIssue.getId().toString();
         } catch (RedmineException e) {
             throw RedmineExceptions.convertException(e);
@@ -39,12 +34,14 @@ public final class RedmineTaskSaver implements RelationSaver, BasicIssueSaveAPI<
 
     @Override
     public void updateTask(String taskId, Issue rmIssue) throws ConnectorException {
-        rmIssue.setId(Integer.parseInt(taskId));
+        // TODO BROKEN!!! fix this. remove taskIs from parameters. it is loaded by RJA from native issue itself.
+//        rmIssue.setId(Integer.parseInt(taskId));
         try {
-            mgr.update(rmIssue);
+            issueManager.update(rmIssue);
 
+            // TODO why is it here and not in saveRelations() method?
             if (config.getSaveIssueRelations()) {
-                mgr.deleteIssueRelationsByIssueId(rmIssue.getId());
+                issueManager.deleteIssueRelationsByIssueId(rmIssue.getId());
             }
         } catch (RedmineException e) {
             throw RedmineExceptions.convertException(e);
@@ -58,7 +55,7 @@ public final class RedmineTaskSaver implements RelationSaver, BasicIssueSaveAPI<
                 int taskKey = Integer.parseInt(gRelation.getTaskKey());
                 int relatedTaskKey = Integer.parseInt(gRelation
                         .getRelatedTaskKey());
-                mgr.createRelation(taskKey, relatedTaskKey, gRelation.getType().toString());
+                issueManager.createRelation(taskKey, relatedTaskKey, gRelation.getType().toString());
             }
         } catch (RedmineProcessingException e) {
             throw new RelationCreationException(e);

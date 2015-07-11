@@ -9,7 +9,9 @@ import com.taskadapter.model.GUser;
 import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.IssueStatus;
 import com.taskadapter.redmineapi.bean.Project;
+import com.taskadapter.redmineapi.bean.ProjectFactory;
 import com.taskadapter.redmineapi.bean.User;
+import com.taskadapter.redmineapi.bean.UserFactory;
 import com.taskadapter.redmineapi.bean.Version;
 import org.junit.Test;
 
@@ -23,7 +25,7 @@ import static org.junit.Assert.assertNull;
 
 public class GTaskToRedmineTest {
 
-    private Project project = new Project();
+    private final Project project = ProjectFactory.create();
 
     @Test
     public void summaryIsConvertedByDefault() {
@@ -99,13 +101,13 @@ public class GTaskToRedmineTest {
     private List<User> createUsers() {
         List<User> users = new ArrayList<User>();
 
-        User user1 = new User();
+        User user1 = UserFactory.create();
         user1.setFirstName("Diogo");
         user1.setLastName("Nascimento");
         user1.setLogin("diogo.nascimento");
         users.add(user1);
 
-        User user2 = new User();
+        User user2 = UserFactory.create();
         user2.setFirstName("Felipe");
         user2.setLastName("Castro");
         user2.setLogin("felipe.castro");
