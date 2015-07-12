@@ -1,6 +1,7 @@
 package com.taskadapter.connector.testlib;
 
 import com.taskadapter.connector.common.ConnectorUtils;
+import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.TaskSaveResult;
@@ -8,7 +9,13 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
+import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class CommonTests {
 
@@ -46,45 +53,38 @@ public class CommonTests {
         assertEquals(task.getDescription(), loadedTask.getDescription());
     }
 
-    public void testCreates2Tasks(Connector<?> connector, Mappings mappings) throws ConnectorException {
+    public static void testCreates2Tasks(Connector<?> connector, Mappings mappings) throws ConnectorException {
         int tasksQty = 2;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
         TaskSaveResult result = connector.saveData(tasks, null, mappings);
-        assertFalse("Errors: " + result.toString(), result.hasErrors());
+        assertFalse(result.hasErrors());
         assertEquals(tasksQty, result.getCreatedTasksNumber());
     }
 
-    private void assertNotNull(GTask foundTask) {
-        if (foundTask == null) {
-            throw new RuntimeException("value must be not null");
-        }
-    }
+    public static void taskCreatedAndUpdatedOK(Connector<?> connector, AvailableFields availableFields) throws ConnectorException {
+        int tasksQty = 1;
+        GTask task = TestUtils.generateTask();
 
-    private void assertFalse(String msg, boolean b) {
-        if (b) {
-            throw new RuntimeException(msg);
-        }
-    }
+        Integer id = task.getId();
 
-    private void assertTrue(boolean b) {
-        if (!b) {
-            throw new RuntimeException("expected: true, actual: false");
-        }
-    }
+        // CREATE
+        final Mappings mappings = TestMappingUtils.fromFields(availableFields);
+        TaskSaveResult result = connector.saveData(Arrays.asList(task), null, mappings);
+        assertFalse(result.hasErrors());
+        assertEquals(tasksQty, result.getCreatedTasksNumber());
+        String remoteKey = result.getRemoteKey(id);
 
-    /**
-     * this mimics JUnit behavior so we don't have to add junit bundle dependency to this module.
-     */
-    private void assertEquals(Object expected, Object actual) {
-        if ((expected == null) && (actual != null)) {
-            throw new RuntimeException("validation failed. expected:" + expected + " actual:" + actual);
-        }
-        if ((actual == null) && (expected != null)) {
-            throw new RuntimeException("validation failed. expected:" + expected + " actual:" + actual);
-        }
-        if ((expected != null) && (actual != null) && (!expected.equals(actual))) {
-            throw new RuntimeException("validation failed. expected:" + expected + " actual:" + actual);
-        }
-    }
+        GTask loaded = connector.loadTaskByKey(remoteKey, mappings);
 
+        // UPDATE
+        String NEW_SUMMARY = "new summary here";
+        loaded.setSummary(NEW_SUMMARY);
+        loaded.setRemoteId(remoteKey);
+        TaskSaveResult result2 = connector.saveData(Arrays.asList(loaded), null, mappings);
+        assertFalse(result2.hasErrors());
+        assertEquals(1, result2.getUpdatedTasksNumber());
+
+        GTask loadedAgain = connector.loadTaskByKey(remoteKey, mappings);
+        assertEquals(NEW_SUMMARY, loadedAgain.getSummary());
+    }
 }

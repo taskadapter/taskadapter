@@ -98,31 +98,8 @@ public class JiraTest {
 
     // see http://www.hostedredmine.com/issues/41212
     @Test
-    public void issueUpdatedOK() throws Exception {
-        int tasksQty = 1;
-        GTask task = TestUtils.generateTask();
-
-        Integer id = task.getId();
-
-        // CREATE
-        TaskSaveResult result = connector.saveData(Arrays.asList(task), null, TestMappingUtils.fromFields(SUPPORTED_FIELDS));
-        assertTrue(!result.hasErrors());
-        assertEquals(tasksQty, result.getCreatedTasksNumber());
-        String remoteKey = result.getRemoteKey(id);
-
-        GTask loaded = connector.loadTaskByKey(serverInfo, remoteKey);
-
-        // UPDATE
-        String NEW_SUMMARY = "new summary here";
-        loaded.setSummary(NEW_SUMMARY);
-        loaded.setRemoteId(remoteKey);
-        TaskSaveResult result2 = connector.saveData(Arrays.asList(loaded), null, TestMappingUtils.fromFields(SUPPORTED_FIELDS));
-        assertTrue("some errors while updating the data: " + result2.getGeneralErrors() + result2.getTaskErrors(), !result2.hasErrors());
-        assertEquals(1, result2.getUpdatedTasksNumber());
-
-        GTask loadedAgain = connector.loadTaskByKey(serverInfo, remoteKey);
-        assertEquals(NEW_SUMMARY, loadedAgain.getSummary());
-
+    public void taskUpdatedOK() throws Exception {
+        CommonTests.taskCreatedAndUpdatedOK(connector, SUPPORTED_FIELDS);
     }
 
     @Test
