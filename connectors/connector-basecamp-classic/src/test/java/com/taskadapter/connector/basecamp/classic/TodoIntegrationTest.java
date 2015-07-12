@@ -23,10 +23,12 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-// Tired of re-creating Basecamp demo accounts. we don't have any Basecamp users, so
-// let's just ignore these tests.
-@Ignore
 public class TodoIntegrationTest {
+
+    /**
+     * the Basecamp account used for testing must have this exact full name
+     */
+    private static final String BASECAMP_CLASSIC_USER_DISPLAY_NAME = "Al TAdev";
 
     private final ObjectAPIFactory factory = new ObjectAPIFactory(new BaseCommunicator());
 
@@ -112,7 +114,8 @@ public class TodoIntegrationTest {
         final GUser me = new GUser();
         me.setId(321);
         me.setLoginName("support@taskadapter.com");
-        me.setDisplayName("Alexey Skorokhodov");
+
+        me.setDisplayName(BASECAMP_CLASSIC_USER_DISPLAY_NAME);
         template.setAssignee(me);
 
         final Mappings allMappings = TodoUtil.getAllMappings();

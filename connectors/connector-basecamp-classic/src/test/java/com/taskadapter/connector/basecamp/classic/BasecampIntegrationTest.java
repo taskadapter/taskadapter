@@ -18,9 +18,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-// Tired of re-creating Basecamp demo accounts. we don't have any Basecamp users, so
-// let's just ignore these tests.
-@Ignore
 public class BasecampIntegrationTest {
 
     private final ObjectAPIFactory factory = new ObjectAPIFactory(
