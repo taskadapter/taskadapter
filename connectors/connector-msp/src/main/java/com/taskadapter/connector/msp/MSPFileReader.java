@@ -16,17 +16,7 @@ public class MSPFileReader {
         if (!file.exists()) {
             throw new FileNotFoundException(projectFileName);
         }
-
-        ProjectFile projectFile;
-        try {
-            ProjectReader projectReader = ProjectReaderUtility.getProjectReader(projectFileName);
-            projectFile = projectReader.read(file);
-        } catch (InstantiationException e) {
-            throw new MPXJException(e.getMessage());
-        } catch (IllegalAccessException e) {
-            throw new MPXJException(e.getMessage());
-        }
-
-        return projectFile;
+        ProjectReader projectReader = ProjectReaderUtility.getProjectReader(projectFileName);
+        return projectReader.read(file);
     }
 }
