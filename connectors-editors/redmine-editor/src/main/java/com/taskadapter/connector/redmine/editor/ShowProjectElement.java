@@ -1,10 +1,10 @@
 package com.taskadapter.connector.redmine.editor;
 
-import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.redmine.RedmineConfig;
+import com.taskadapter.connector.redmine.RedmineManagerFactory;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Project;
 import com.vaadin.ui.Notification;
@@ -26,21 +26,10 @@ public class ShowProjectElement {
         if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
             throw new ProjectNotSetException();
         }
-        notifyProjectLoaded(RedmineLoaders.loadProject(getRedmineManager(),
-                config.getProjectKey()));
-    }
-
-    RedmineManager getRedmineManager() {
-        RedmineManager mgr;
-        final WebServerInfo serverInfo = config.getServerInfo();
-        if (serverInfo.isUseAPIKeyInsteadOfLoginPassword()) {
-            mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getApiKey());
-        } else {
-            mgr = new RedmineManager(serverInfo.getHost());
-            mgr.setLogin(serverInfo.getUserName());
-            mgr.setPassword(serverInfo.getPassword());
-        }
-        return mgr;
+        final RedmineManager redmineManager = RedmineManagerFactory.createRedmineManager(config.getServerInfo());
+        final Project project = RedmineLoaders.loadProject(redmineManager.getProjectManager(),
+                config.getProjectKey());
+        notifyProjectLoaded(project);
     }
 
     private void notifyProjectLoaded(Project project) {

@@ -12,6 +12,7 @@ import com.taskadapter.connector.redmine.converter.RedmineProjectConverter;
 import com.taskadapter.model.GProject;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
+import com.taskadapter.redmineapi.ProjectManager;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.IssuePriority;
@@ -22,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -38,7 +40,7 @@ public class RedmineLoaders {
         RedmineManager mgr = RedmineManagerFactory.createRedmineManager(serverInfo);
         List<com.taskadapter.redmineapi.bean.Project> rmProjects;
         try {
-            rmProjects = mgr.getProjects();
+            rmProjects = mgr.getProjectManager().getProjects();
         } catch (RedmineException e) {
             throw new RuntimeException(e.toString(), e);
         }
@@ -59,7 +61,7 @@ public class RedmineLoaders {
      * @param projectKey project key.
      * @return loaded project.
      */
-    public static Project loadProject(RedmineManager manager, String projectKey) {
+    public static Project loadProject(ProjectManager manager, String projectKey) {
         try {
             return manager.getProjectByKey(projectKey);
         } catch (RedmineException e) {
@@ -75,13 +77,13 @@ public class RedmineLoaders {
         // get project id to filter saved queries
         Integer projectId = null;
         if (projectKey != null && projectKey.length() > 0) {
-            Project project = mgr.getProjectByKey(projectKey);
+            Project project = mgr.getProjectManager().getProjectByKey(projectKey);
             if (project != null) {
                 projectId = project.getId();
             }
         }
 
-        List<SavedQuery> savedQueries = mgr.getSavedQueries();
+        List<SavedQuery> savedQueries = mgr.getIssueManager().getSavedQueries();
         // XXX refactor: we don't even need these IDs
         for (SavedQuery savedQuery : savedQueries) {
             Integer projectIdFromQuery = savedQuery.getProjectId();
@@ -102,12 +104,12 @@ public class RedmineLoaders {
         Project project;
         String projectKey = config.getProjectKey();
         try {
-            project = redmineManager.getProjectByKey(projectKey);
+            project = redmineManager.getProjectManager().getProjectByKey(projectKey);
         } catch (RedmineException e) {
             throw new ConnectorException("Some Redmine problem when loading project by key " + projectKey);
         }
 
-        List<Tracker> trackers = project.getTrackers();
+        Collection<Tracker> trackers = project.getTrackers();
         List<NamedKeyedObject> result = new ArrayList<NamedKeyedObject>(trackers.size());
 
         // XXX refactor: we don't even need these IDs
@@ -127,7 +129,7 @@ public class RedmineLoaders {
                 .createRedmineManager(server);
         final Priorities result = new Priorities();
         try {
-            for (IssuePriority prio : mgr.getIssuePriorities()) {
+            for (IssuePriority prio : mgr.getIssueManager().getIssuePriorities()) {
                 result.setPriority(prio.getName(),
                         defaultPriorities.getPriorityByText(prio.getName()));
             }

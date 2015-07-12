@@ -2,6 +2,7 @@ package com.taskadapter.connector.mantis;
 
 import biz.futureware.mantis.rpc.soap.client.AccountData;
 import biz.futureware.mantis.rpc.soap.client.ProjectData;
+import com.taskadapter.connector.testlib.CommonTests;
 import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.connector.testlib.TestSaver;
 import com.taskadapter.model.GTask;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.math.BigInteger;
 import java.util.Calendar;
 
+import static com.taskadapter.connector.mantis.MantisSupportedFields.SUPPORTED_FIELDS;
 import static com.taskadapter.connector.testlib.TestUtils.generateTask;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -97,9 +99,14 @@ public class MantisTest {
         assertEquals(currentUser.getId(), loadedTask.getAssignee().getId());
     }
 
+    @Test
+    public void taskUpdatedOK() throws Exception {
+        CommonTests.taskCreatedAndUpdatedOK(mantis, SUPPORTED_FIELDS);
+    }
+
     private TestSaver getTestSaver() {
         return new TestSaver(mantis,
                 TestMappingUtils
-                        .fromFields(MantisSupportedFields.SUPPORTED_FIELDS));
+                        .fromFields(SUPPORTED_FIELDS));
     }
 }

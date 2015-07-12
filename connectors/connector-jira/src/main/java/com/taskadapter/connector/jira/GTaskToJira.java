@@ -23,7 +23,7 @@ import org.joda.time.DateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GTaskToJira implements ConnectorConverter<GTask, IssueInput> {
+public class GTaskToJira implements ConnectorConverter<GTask, IssueWrapper> {
 
     private final JiraConfig config;
     private final Mappings mappings;
@@ -48,7 +48,7 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueInput> {
         }
     }
 
-    public IssueInput convertToJiraIssue(GTask task) {
+    public IssueWrapper convertToJiraIssue(GTask task) {
         
         IssueInputBuilder issueInputBuilder = new IssueInputBuilder(
                 config.getProjectKey(), findIssueTypeId(task));
@@ -122,7 +122,8 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueInput> {
             issueInputBuilder.setFieldValue("environment", task.getEnvironment());
         }
 
-        return issueInputBuilder.build();
+        final IssueInput issueInput = issueInputBuilder.build();
+        return new IssueWrapper(task.getKey(), issueInput);
     }
     
     /**
@@ -182,7 +183,7 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueInput> {
     }
 
     @Override
-    public IssueInput convert(GTask source) throws ConnectorException {
+    public IssueWrapper convert(GTask source) throws ConnectorException {
         return convertToJiraIssue(source);
     }
 }

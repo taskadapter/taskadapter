@@ -61,7 +61,7 @@ final class SimpleTaskSaver<N> {
             result.addCreatedTask(task.getId(), newTaskKey);
         } else {
             newTaskKey = task.getRemoteId();
-            saveAPI.updateTask(newTaskKey, nativeTask);
+            saveAPI.updateTask(nativeTask);
             result.addUpdatedTask(task.getId(), newTaskKey);
         }
         return newTaskKey;

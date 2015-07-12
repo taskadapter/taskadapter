@@ -34,8 +34,7 @@ final class GithubTaskSaver implements BasicIssueSaveAPI<Issue> {
     }
 
     @Override
-    public void updateTask(String taskId, Issue issue)
-            throws ConnectorException {
+    public void updateTask(Issue issue) throws ConnectorException {
         try {
             issueService.editIssue(userName, projectKey, issue);
         } catch (IOException e) {

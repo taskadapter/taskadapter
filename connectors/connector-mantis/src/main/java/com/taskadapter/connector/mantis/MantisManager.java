@@ -352,13 +352,12 @@ public class MantisManager {
     /**
      * Updates the specified issue.
      *
-     * @param issueId
      * @param issue
      * @return True if the issue updated successfully.
      * @throws RemoteException
      */
-    public boolean updateIssue(BigInteger issueId, IssueData issue) throws RemoteException {
-        return getConnector().mc_issue_update(login, password, issueId, issue);
+    public boolean updateIssue(IssueData issue) throws RemoteException {
+        return getConnector().mc_issue_update(login, password, issue.getId(), issue);
     }
 
     /**

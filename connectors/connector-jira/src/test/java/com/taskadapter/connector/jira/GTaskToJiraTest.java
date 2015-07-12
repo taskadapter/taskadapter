@@ -78,7 +78,7 @@ public class GTaskToJiraTest {
         mappings.setMapping(GTaskDescriptor.FIELD.PRIORITY, true, null, "default priority");
         GTaskToJira converter = getConverter(mappings);
 
-        IssueInput newIssue = converter.convertToJiraIssue(task);
+        IssueInput newIssue = converter.convertToJiraIssue(task).getIssueInput();
         String actualPriorityId = getId(newIssue, IssueFieldId.PRIORITY_FIELD.id);
         assertEquals(priorityCritical.getId().toString(), actualPriorityId);
     }
@@ -89,7 +89,7 @@ public class GTaskToJiraTest {
         task.setSummary("something");
         task.setPriority(700);
         GTaskToJira converter = createConverterWithUnselectedField(GTaskDescriptor.FIELD.PRIORITY);
-        IssueInput issue = converter.convertToJiraIssue(task);
+        IssueInput issue = converter.convertToJiraIssue(task).getIssueInput();
         assertNull(issue.getField(IssueFieldId.PRIORITY_FIELD.id));
     }
 
@@ -105,7 +105,7 @@ public class GTaskToJiraTest {
         task.setType("Task");
 
 
-        IssueInput issue = converter.convertToJiraIssue(task);
+        IssueInput issue = converter.convertToJiraIssue(task).getIssueInput();
         assertEquals(requiredIssueType.getId().toString(), getId(issue, IssueFieldId.ISSUE_TYPE_FIELD.id));
     }
 
@@ -117,7 +117,7 @@ public class GTaskToJiraTest {
         mappings.setMapping(GTaskDescriptor.FIELD.TASK_TYPE, true, null, "default task type");
         GTaskToJira converter = getConverter(mappings);
 
-        IssueInput issue = converter.convertToJiraIssue(task);
+        IssueInput issue = converter.convertToJiraIssue(task).getIssueInput();
         // must be default issue type if we set the field to null
         assertEquals(findDefaultIssueTypeId(), getId(issue, IssueFieldId.ISSUE_TYPE_FIELD.id));
     }
@@ -141,7 +141,7 @@ public class GTaskToJiraTest {
         GTask task = new GTask();
         String summary = "summary here";
         task.setSummary(summary);
-        IssueInput issueInput = converter.convertToJiraIssue(task);
+        IssueInput issueInput = converter.convertToJiraIssue(task).getIssueInput();
         assertEquals(expectedValue, getValue(issueInput, IssueFieldId.SUMMARY_FIELD.id));
     }
 
@@ -163,7 +163,7 @@ public class GTaskToJiraTest {
     private void checkDescription(GTaskToJira converter, String expectedValue) {
         GTask task = new GTask();
         task.setDescription("description here");
-        IssueInput issueInput = converter.convertToJiraIssue(task);
+        IssueInput issueInput = converter.convertToJiraIssue(task).getIssueInput();
         assertEquals(expectedValue, getValue(issueInput, IssueFieldId.DESCRIPTION_FIELD.id));
     }
 
@@ -187,7 +187,7 @@ public class GTaskToJiraTest {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2014, Calendar.APRIL, 28, 0, 0, 0);
         task.setDueDate(calendar.getTime());
-        IssueInput issueInput = converter.convertToJiraIssue(task);
+        IssueInput issueInput = converter.convertToJiraIssue(task).getIssueInput();
         assertEquals(expected, getValue(issueInput, IssueFieldId.DUE_DATE_FIELD.id));
     }
 
@@ -209,7 +209,7 @@ public class GTaskToJiraTest {
     private void checkAssignee(GTaskToJira converter, String expected) {
         GTask task = new GTask();
         task.setAssignee(new GUser("mylogin"));
-        IssueInput issue = converter.convertToJiraIssue(task);
+        IssueInput issue = converter.convertToJiraIssue(task).getIssueInput();
         assertEquals(expected, getComplexValue(issue, IssueFieldId.ASSIGNEE_FIELD.id, "name"));
     }
 
@@ -231,7 +231,7 @@ public class GTaskToJiraTest {
     private void checkEstimatedTime(GTaskToJira converter, String expectedTime) {
         GTask task = new GTask();
         task.setEstimatedHours(3f);
-        IssueInput issue = converter.convertToJiraIssue(task);
+        IssueInput issue = converter.convertToJiraIssue(task).getIssueInput();
         assertEquals(expectedTime, getComplexValue(issue, "timetracking", "originalEstimate"));
     }
 

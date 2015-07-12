@@ -256,7 +256,7 @@ public class FieldMappingTest {
 
     @Test
     public void twoTasksAreCreated() throws Exception {
-        new CommonTests().testCreates2Tasks(connector, TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
+        CommonTests.testCreates2Tasks(connector, TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
     }
 
     private TestSaver getTestSaver() {

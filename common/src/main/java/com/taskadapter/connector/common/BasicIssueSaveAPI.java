@@ -24,14 +24,11 @@ public interface BasicIssueSaveAPI<N> {
     /**
      * Updates an existing task.
      * 
-     * @param taskId
-     *            task id to update.
      * @param nativeTask
      *            native task representation.
      * @throws ConnectorException
      *             if an error occurs.
      */
-    public void updateTask(String taskId, N nativeTask)
-            throws ConnectorException;
+    public void updateTask(N nativeTask) throws ConnectorException;
 
 }

@@ -1,7 +1,6 @@
 package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rest.client.domain.*;
-import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.taskadapter.connector.common.BasicIssueSaveAPI;
 import com.taskadapter.connector.common.RelationSaver;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
@@ -9,7 +8,7 @@ import com.taskadapter.model.GRelation;
 
 import java.util.List;
 
-final class JiraTaskSaver implements RelationSaver, BasicIssueSaveAPI<IssueInput> {
+final class JiraTaskSaver implements RelationSaver, BasicIssueSaveAPI<IssueWrapper> {
 
     private final JiraConnection connection;
 
@@ -18,14 +17,14 @@ final class JiraTaskSaver implements RelationSaver, BasicIssueSaveAPI<IssueInput
     }
 
     @Override
-    public String createTask(IssueInput nativeTask) throws ConnectorException {
-        BasicIssue createdIssue = connection.createIssue(nativeTask);
+    public String createTask(IssueWrapper wrapper) throws ConnectorException {
+        BasicIssue createdIssue = connection.createIssue(wrapper.getIssueInput());
         return createdIssue.getKey();
     }
 
     @Override
-    public void updateTask(String taskId, IssueInput nativeTask) throws ConnectorException {
-        connection.updateIssue(taskId, nativeTask);
+    public void updateTask(IssueWrapper wrapper) throws ConnectorException {
+        connection.updateIssue(wrapper.getKey(), wrapper.getIssueInput());
     }
 
     @Override

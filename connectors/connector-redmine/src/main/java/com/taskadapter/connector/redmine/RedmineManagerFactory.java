@@ -7,13 +7,11 @@ public class RedmineManagerFactory {
     public static RedmineManager createRedmineManager(WebServerInfo serverInfo) {
         RedmineManager mgr;
         if (serverInfo.isUseAPIKeyInsteadOfLoginPassword()) {
-            mgr = new RedmineManager(serverInfo.getHost(), serverInfo.getApiKey());
+            mgr = com.taskadapter.redmineapi.RedmineManagerFactory.createWithApiKey(serverInfo.getHost(), serverInfo.getApiKey());
         } else {
-            mgr = new RedmineManager(serverInfo.getHost());
-            mgr.setLogin(serverInfo.getUserName());
-            mgr.setPassword(serverInfo.getPassword());
+            mgr = com.taskadapter.redmineapi.RedmineManagerFactory.createWithUserAuth(serverInfo.getHost(),
+                    serverInfo.getUserName(), serverInfo.getPassword());
         }
         return mgr;
     }
-
 }
