@@ -19,7 +19,13 @@ public class GTaskToMatisConverter implements
         ConnectorConverter<GTask, IssueData> {
     
     private static final String DEFAULT_TASK_DESCRIPTION = "-";
-    
+
+    /** see https://bitbucket.org/taskadapter/taskadapter/issues/25/once-created-tasks-cannot-be-updated-in
+     * "Update task" fails unless you set some "category" on it. weirdly, "create tasks" works fine.
+     * whatever, I will just set this "General" category that exists on a default MantisBT server.
+     */
+    private static final String DEFAULT_TASK_CATEGORY = "General";
+
     private final ProjectData mntProject;
     private final Mappings mappings;
     private final List<AccountData> users;
@@ -37,6 +43,9 @@ public class GTaskToMatisConverter implements
         if (task.getId() != null) {
             issue.setId(BigInteger.valueOf(task.getId()));
         }
+
+        // see Javadoc for DEFAULT_TASK_CATEGORY why need to set this.
+        issue.setCategory(DEFAULT_TASK_CATEGORY);
 
         ObjectRef mntProjectRef = new ObjectRef(mntProject.getId(), mntProject.getName());
         issue.setProject(mntProjectRef);

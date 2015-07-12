@@ -40,7 +40,6 @@ class Config {
         WebServerInfo mntInfo = new WebServerInfo(Config.getURI(), Config.getUserLogin(), Config.getPassword());
         MantisConfig mantisConfig = new MantisConfig();
         mantisConfig.setServerInfo(mntInfo);
-        mantisConfig.setProjectKey(properties.getProperty("project.id"));
         return mantisConfig;
     }
 
