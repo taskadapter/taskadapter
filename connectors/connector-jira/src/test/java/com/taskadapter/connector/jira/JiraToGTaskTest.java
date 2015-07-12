@@ -19,7 +19,7 @@ public class JiraToGTaskTest {
             priorities = JiraConfig.createDefaultPriorities();
         } catch (Exception e) {
             e.printStackTrace();
-            fail("Can't init Jira tests: " + e.toString());
+            fail("Can't init JIRA tests: " + e.toString());
         }
     }
 

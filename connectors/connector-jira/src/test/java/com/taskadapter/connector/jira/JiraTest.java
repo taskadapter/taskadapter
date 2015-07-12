@@ -43,11 +43,11 @@ public class JiraTest {
     @BeforeClass
     public static void oneTimeSetUp() {
         serverInfo = new JiraTestData().getTestServerInfo();
-        logger.info("Running Jira tests using: " + serverInfo.getHost());
+        logger.info("Running JIRA tests using: " + serverInfo.getHost());
         try {
             connection = JiraConnectionFactory.createConnection(serverInfo);
         } catch (Exception e) {
-            fail("Can't init Jira tests: " + e.toString());
+            fail("Can't init JIRA tests: " + e.toString());
         }
     }
 

@@ -190,6 +190,6 @@ public class JiraConnector implements Connector<JiraConfig> {
         }
 
         throw new BadConfigException("Default issue type "
-                + config.getDefaultTaskType() + " does not exist in Jira");
+                + config.getDefaultTaskType() + " does not exist in JIRA");
     }
 }

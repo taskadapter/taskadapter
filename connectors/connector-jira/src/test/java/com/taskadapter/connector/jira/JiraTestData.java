@@ -19,7 +19,7 @@ public class JiraTestData {
         try {
             properties.load(is);
         } catch (IOException e) {
-            throw new RuntimeException("Can't load Jira test config: " + e.toString(), e);
+            throw new RuntimeException("Can't load JIRA test config: " + e.toString(), e);
         }
 
     }

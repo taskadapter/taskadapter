@@ -15,10 +15,10 @@ import com.vaadin.ui.TextField;
 import java.util.List;
 
 /**
- * Panel with title: "Set when exporting to Jira"
+ * Panel with title: "Set when exporting to JIRA"
  */
 class OtherJiraFieldsPanel extends Panel {
-    private static final String SAVE_GROUP_LABEL = "Set when exporting to Jira";
+    private static final String SAVE_GROUP_LABEL = "Set when exporting to JIRA";
 
     private final JiraConfig config;
     private final ExceptionFormatter exceptionFormatter;
@@ -43,7 +43,7 @@ class OtherJiraFieldsPanel extends Panel {
     private void addLookupButtonsAndTextEdit(GridLayout grid) {
         final TextField jiraComponent = EditorUtil.addLabeledText(
                 grid, "Project Component:",
-                "Component inside the Jira project");
+                "Component in the JIRA project");
         final MethodProperty<String> componentProperty = new MethodProperty<String>(config, "component");
         jiraComponent.setPropertyDataSource(componentProperty);
         Button showComponentsButton = EditorUtil.createLookupButton(
@@ -67,7 +67,7 @@ class OtherJiraFieldsPanel extends Panel {
         final TextField affectedVersion = EditorUtil
                 .addLabeledText(grid,
                         "Set 'Affected version' to:",
-                        "Set this 'affected version' value when submitting issues to Jira.");
+                        "Set this 'affected version' value when submitting issues to JIRA.");
         final MethodProperty<String> affectedVersionProperty = new MethodProperty<String>(config, "affectedVersion");
         affectedVersion.setPropertyDataSource(affectedVersionProperty);
         final DataProvider<List<? extends NamedKeyedObject>> versionProvider = new DataProvider<List<? extends NamedKeyedObject>>() {
@@ -92,7 +92,7 @@ class OtherJiraFieldsPanel extends Panel {
         final TextField fixForVersion = EditorUtil
                 .addLabeledText(grid,
                         "Set 'Fix for version' to:",
-                        "Set this 'fix for version' value when submitting issues to Jira.");
+                        "Set this 'fix for version' value when submitting issues to JIRA.");
         final MethodProperty<String> fixForProperty = new MethodProperty<String>(config, "fixForVersion");
         fixForVersion.setPropertyDataSource(fixForProperty);
         Button showFixForVersion = EditorUtil.createLookupButton(
@@ -114,9 +114,9 @@ class OtherJiraFieldsPanel extends Panel {
         defaultTaskType.setPropertyDataSource(defaultTaskTypeProperty);
         Button showDefaultTaskType = EditorUtil.createLookupButton(
                 "...",
-                "Show list of available issue types on the Jira server",
+                "Show list of available issue types on the JIRA server",
                 "Select issue type",
-                "List of available issue types on the Jira server",
+                "List of available issue types on the JIRA server",
                 new DataProvider<List<? extends NamedKeyedObject>>() {
                     @Override
                     public List<? extends NamedKeyedObject> loadData() throws ConnectorException {
@@ -136,9 +136,9 @@ class OtherJiraFieldsPanel extends Panel {
         defaultIssueTypeForSubtasks.setPropertyDataSource(defaultIssueTypeForSubtasksProperty);
         Button showIssueTypeForSubtasksButton = EditorUtil.createLookupButton(
                 "...",
-                "Show list of available subtask types on the Jira server",
+                "Show list of available subtask types on the JIRA server",
                 "Select a subtask type",
-                "List of available subtask types on the Jira server",
+                "List of available subtask types on the JIRA server",
                 new DataProvider<List<? extends NamedKeyedObject>>() {
                     @Override
                     public List<? extends NamedKeyedObject> loadData() throws ConnectorException {
