@@ -29,9 +29,9 @@ final class MantisTaskSaver implements BasicIssueSaveAPI<IssueData> {
     }
 
     @Override
-    public void updateTask(String taskId, IssueData nativeTask) throws ConnectorException {
+    public void updateTask(IssueData nativeTask) throws ConnectorException {
         try {
-            mgr.updateIssue(new BigInteger(taskId), nativeTask);
+            mgr.updateIssue(nativeTask);
         } catch (RemoteException e) {
             throw MantisUtils.convertException(e);
         } 

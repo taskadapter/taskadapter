@@ -7,6 +7,7 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
 import com.taskadapter.redmineapi.bean.Issue;
+import com.taskadapter.redmineapi.bean.IssueFactory;
 import com.taskadapter.redmineapi.bean.IssueStatus;
 import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.redmineapi.bean.User;
@@ -41,7 +42,7 @@ public class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
 
     // TODO refactor this into multiple tiny testable methods
     public Issue convertToRedmineIssue(GTask task) {
-        Issue issue = new Issue();
+        Issue issue = IssueFactory.create(task.getId());
         if (task.getParentKey() != null) {
             issue.setParentId(Integer.parseInt(task.getParentKey()));
         }

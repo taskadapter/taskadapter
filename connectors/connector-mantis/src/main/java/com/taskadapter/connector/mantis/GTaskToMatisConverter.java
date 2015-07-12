@@ -34,6 +34,9 @@ public class GTaskToMatisConverter implements
     @Override
     public IssueData convert(GTask task) throws ConnectorException {
         IssueData issue = new IssueData();
+        if (task.getId() != null) {
+            issue.setId(BigInteger.valueOf(task.getId()));
+        }
 
         ObjectRef mntProjectRef = new ObjectRef(mntProject.getId(), mntProject.getName());
         issue.setProject(mntProjectRef);

@@ -39,6 +39,7 @@ public class UpdaterIntegrationTest {
 
     private static final Logger logger = LoggerFactory.getLogger(UpdaterIntegrationTest.class);
     private static String projectKey;
+    private static int projectId;
     private static RedmineManager mgr;
 
 
@@ -62,6 +63,7 @@ public class UpdaterIntegrationTest {
         try {
             Project createdProject = mgr.getProjectManager().createProject(project);
             projectKey = createdProject.getIdentifier();
+            projectId = createdProject.getId();
             logger.info("Created temporary Redmine project with key " + projectKey);
 
         } catch (Exception e) {
@@ -174,6 +176,7 @@ public class UpdaterIntegrationTest {
         List<Issue> issues = new ArrayList<Issue>(issuesNumber);
         for (int i = 0; i < issuesNumber; i++) {
             Issue issue = new Issue();
+            issue.setProject(ProjectFactory.create(projectId));
             issue.setSubject("some issue " + i + " " + new Date());
             issue.setEstimatedHours((float) i);
             issues.add(issue);

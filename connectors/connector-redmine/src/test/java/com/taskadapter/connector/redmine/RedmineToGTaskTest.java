@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
@@ -212,7 +213,7 @@ public class RedmineToGTaskTest {
         relation.setType(IssueRelation.TYPE.precedes.toString());
         relation.setIssueId(10);
         relation.setIssueToId(20);
-        redmineIssue.getRelations().add(relation);
+        redmineIssue.addRelations(Collections.singletonList(relation));
         GTask task = toGTask.convertToGenericTask(redmineIssue);
 
         assertEquals(1, task.getRelations().size());

@@ -33,9 +33,7 @@ public final class RedmineTaskSaver implements RelationSaver, BasicIssueSaveAPI<
     }
 
     @Override
-    public void updateTask(String taskId, Issue rmIssue) throws ConnectorException {
-        // TODO BROKEN!!! fix this. remove taskIs from parameters. it is loaded by RJA from native issue itself.
-//        rmIssue.setId(Integer.parseInt(taskId));
+    public void updateTask(Issue rmIssue) throws ConnectorException {
         try {
             issueManager.update(rmIssue);
 
