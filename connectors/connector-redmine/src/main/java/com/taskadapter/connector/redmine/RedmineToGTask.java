@@ -77,7 +77,8 @@ public class RedmineToGTask {
                     genericTask.getRelations().add(r);
                 }
             } else {
-                logger.error("relation type is not supported: " + relation.getType());
+                logger.error("Relation type is not supported: " + relation.getType()
+                        + " - skipping it for issue " + rmIssue.getId());
             }
         }
     }

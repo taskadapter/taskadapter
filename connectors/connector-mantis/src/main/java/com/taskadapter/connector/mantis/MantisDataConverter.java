@@ -83,7 +83,8 @@ public class MantisDataConverter {
                             GRelation.TYPE.precedes);
                     genericTask.getRelations().add(r);
                 } else {
-                    logger.info("relation type is not supported: " + relation.getType());
+                    logger.info("Relation type is not supported: " + relation.getType()
+                            + " - skipping it for issue " + mntIssue.getId());
                 }
             }
         }

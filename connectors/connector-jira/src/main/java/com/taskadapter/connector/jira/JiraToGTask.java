@@ -116,7 +116,8 @@ public class JiraToGTask {
                         GRelation r = new GRelation(issue.getId(), JiraUtils.getIdFromURI(link.getTargetIssueUri()), GRelation.TYPE.precedes);
                         genericTask.getRelations().add(r);
                     } else {
-                        logger.error("relation type is not supported: " + link.getIssueLinkType());
+                        logger.info("Relation type is not supported: " + link.getIssueLinkType() +
+                                " - this link will be skipped for issue " + issue.getKey());
                     }
                 }
             }
