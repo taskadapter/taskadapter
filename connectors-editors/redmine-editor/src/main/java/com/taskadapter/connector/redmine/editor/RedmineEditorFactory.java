@@ -46,7 +46,7 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
             if (e.getCause() instanceof RedmineAuthenticationException) {
                 return MESSAGES.get("error.authError");
             }
-            return MESSAGES.get("error.transportError");
+            return MESSAGES.format("error.transportError", e.toString());
         }
         return e.getMessage();
     }
