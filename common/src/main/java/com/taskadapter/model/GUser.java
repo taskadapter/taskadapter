@@ -38,6 +38,12 @@ public class GUser {
         this.loginName = loginName;
     }
 
+    public GUser(Integer id, String loginName, String displayName) {
+        this.id = id;
+        this.loginName = loginName;
+        this.displayName = displayName;
+    }
+
     public GUser() {
     }
 

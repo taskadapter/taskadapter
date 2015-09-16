@@ -24,6 +24,7 @@ import java.util.List;
 
 import static com.taskadapter.connector.msp.MSPTestUtils.deleteFile;
 import static com.taskadapter.connector.msp.MSPTestUtils.findMSPTaskBySummary;
+import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -190,19 +191,19 @@ public class FieldMappingTest {
     @Test
     public void testAssigneeExported() throws Exception {
         GTask task = TestUtils.generateTask();
-        GUser assignee = new GUser(123, "some user");
+        GUser assignee = new GUser(-1, "login1", "full name1");
         task.setAssignee(assignee);
         GTask loadedTask = getTestSaver().selectField(FIELD.ASSIGNEE).saveAndLoad(task);
-        assertEquals(assignee.getId(), loadedTask.getAssignee().getId());
+        assertThat(assignee.getDisplayName()).isEqualTo(loadedTask.getAssignee().getDisplayName());
     }
 
     @Test
     public void testAssigneeExportedByDefault() throws Exception {
         GTask task = TestUtils.generateTask();
-        GUser assignee = new GUser(123, "some user");
+        GUser assignee = new GUser(-1, "login1", "full name");
         task.setAssignee(assignee);
         GTask loadedTask = TestUtils.saveAndLoadViaSummary(connector, task, TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
-        assertEquals(assignee.getId(), loadedTask.getAssignee().getId());
+        assertThat(assignee.getDisplayName()).isEqualTo(loadedTask.getAssignee().getDisplayName());
     }
 
     private static List<Task> saveAndLoad(MSPConfig config, FIELD field, boolean useMap, String mapTo, GTask... tasks) throws IOException, MPXJException, ConnectorException {

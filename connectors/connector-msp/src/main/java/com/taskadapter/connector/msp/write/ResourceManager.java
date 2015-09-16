@@ -1,33 +1,44 @@
 package com.taskadapter.connector.msp.write;
 
+import com.google.common.base.Optional;
 import com.taskadapter.connector.msp.MSPUtils;
-import com.taskadapter.model.GUser;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Resource;
 import net.sf.mpxj.ResourceType;
 
-public class ResourceManager {
+import java.util.List;
 
-    private ProjectFile project;
+public final class ResourceManager {
+
+    private final ProjectFile project;
 
     public ResourceManager(ProjectFile project) {
         this.project = project;
     }
 
-    Resource getOrCreateResource(GUser assignee) {
-        Resource resource = project.getResourceByUniqueID(assignee.getId());
-        if (resource == null) {
-            // we assume all resources are already in the 'cache' (map)
-            resource = project.addResource();
-            resource.setName(assignee.getDisplayName());
-            resource.setType(ResourceType.WORK);
-
-            if (assignee.getId() != null) {
-                resource.setUniqueID(assignee.getId());
-            }
-            MSPUtils.markResourceAsOurs(resource);
+    Resource getOrCreateResource(String name) {
+        final Optional<Resource> optionalResource = findResourceByName(name);
+        if (optionalResource.isPresent()) {
+            return optionalResource.get();
         }
-        return resource;
+        return createResource(name);
     }
 
+    private Resource createResource(String name) {
+        final Resource newResource = project.addResource();
+        newResource.setName(name);
+        newResource.setType(ResourceType.WORK);
+        MSPUtils.markResourceAsOurs(newResource);
+        return newResource;
+    }
+
+    private Optional<Resource> findResourceByName(String name) {
+        final List<Resource> allResources = project.getAllResources();
+        for (Resource resource : allResources) {
+            if (resource.getName().equals(name)) {
+                return Optional.of(resource);
+            }
+        }
+        return Optional.absent();
+    }
 }

@@ -5,6 +5,7 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.msp.MSPUtils;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
+import com.taskadapter.model.GUser;
 import net.sf.mpxj.ConstraintType;
 import net.sf.mpxj.Duration;
 import net.sf.mpxj.Priority;
@@ -126,8 +127,9 @@ public class TaskFieldsSetter {
     }
     
     private void processAssignee(GTask gTask) {
-        if (mappings.isFieldSelected(ASSIGNEE) && gTask.getAssignee() != null) {
-            Resource resource = resourceManager.getOrCreateResource(gTask.getAssignee());
+        final GUser assignee = gTask.getAssignee();
+        if (mappings.isFieldSelected(ASSIGNEE) && assignee != null) {
+            Resource resource = resourceManager.getOrCreateResource(assignee.getDisplayName());
             ResourceAssignment ass = mspTask.addResourceAssignment(resource);
             ass.setUnits(100);
             /* MUST set the remaining work to avoid this bug:
