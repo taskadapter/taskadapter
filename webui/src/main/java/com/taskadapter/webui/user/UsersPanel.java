@@ -197,9 +197,12 @@ public class UsersPanel {
         final CreateUserDialog dialog = new CreateUserDialog();
         dialog.addOKListener(new Button.ClickListener() {
             public void buttonClick(Button.ClickEvent event) {
-                createUser(dialog.getLogin(), dialog.getPassword());
-                ui.getUI().removeWindow(dialog);
-                reloadUsers();
+                final String loginName = dialog.getLogin();
+                if (!loginName.isEmpty()) {
+                    createUser(loginName, dialog.getPassword());
+                    ui.getUI().removeWindow(dialog);
+                    reloadUsers();
+                } // TODO would be nice to show "login name is empty" warning otherwise...
             }
         });
 
