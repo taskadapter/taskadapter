@@ -50,11 +50,11 @@ public class RedmineIntegrationTest {
     public static void oneTimeSetUp() {
         WebServerInfo serverInfo = RedmineTestConfig.getRedmineTestConfig().getServerInfo();
         logger.info("Running Redmine tests with: " + serverInfo);
-        mgr = RedmineManagerFactory.createRedmineManager(serverInfo);
-
-        Project junitTestProject = ProjectFactory.create("TA Redmine Integration test project",
-                "test" + Calendar.getInstance().getTimeInMillis());
         try {
+            mgr = RedmineManagerFactory.createRedmineManager(serverInfo);
+
+            Project junitTestProject = ProjectFactory.create("TA Redmine Integration test project",
+                    "test" + Calendar.getInstance().getTimeInMillis());
             User redmineUser = mgr.getUserManager().getCurrentUser();
             currentUser = RedmineToGUser.convertToGUser(redmineUser);
 
