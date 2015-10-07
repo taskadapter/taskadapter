@@ -12,7 +12,11 @@ public class JiraSupportedFields {
         builder.addField(GTaskDescriptor.FIELD.SUMMARY);
         builder.addField(GTaskDescriptor.FIELD.DESCRIPTION);
         builder.addField(GTaskDescriptor.FIELD.TASK_TYPE);
-        builder.addField(GTaskDescriptor.FIELD.ESTIMATED_TIME);
+        /* newer JIRA versions (like 6.4.11) does not have "timetracking" field
+           enabled for tasks by default. let's unselect this field by default
+           to avoid user confusion.
+         */
+        builder.addField(GTaskDescriptor.FIELD.ESTIMATED_TIME).unselected();
         builder.addField(GTaskDescriptor.FIELD.ASSIGNEE);
         builder.addField(GTaskDescriptor.FIELD.DUE_DATE);
         builder.addField(GTaskDescriptor.FIELD.PRIORITY);
