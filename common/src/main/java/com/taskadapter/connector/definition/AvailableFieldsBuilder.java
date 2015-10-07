@@ -71,7 +71,7 @@ public final class AvailableFieldsBuilder {
     }
     
     /**
-     * Sets a last added field as "unselected" by default. 
+     * Sets the last added field as "unselected" by default.
      * @return <code>this</code> builder.
      * @throws IllegalStateException if there are no fields at all.
      * @throws IllegalStateException if this field was explicitly set as selected or unselected already.
@@ -110,9 +110,8 @@ public final class AvailableFieldsBuilder {
     }
     
     /**
-     * "Ends" builds and returns an "Available fields" structure. Despite
-     * method name, this method allows "further" building of new fields
-     * settings.
+     * "End" builds and returns an "Available fields" structure. Despite the
+     * method name, this method allows "further" building of new fields settings.
      *
      * @return "Available fields" structure.
      */
