@@ -242,17 +242,17 @@ public class FieldMappingTest {
 
     @Test
     public void testLoadTasks() throws Exception {
-        new CommonTests().testLoadTasks(connector, TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
+        CommonTests.testLoadTasks(connector, TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
     }
 
     @Test
     public void descriptionSavedByDefault() throws Exception {
-        new CommonTests().descriptionSavedByDefault(connector, TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
+        CommonTests.descriptionSavedByDefault(connector, TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
     }
 
     @Test
     public void descriptionSavedIfSelected() throws Exception {
-        new CommonTests().descriptionSavedIfSelected(connector, TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
+        CommonTests.descriptionSavedIfSelected(connector, TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
     }
 
     @Test

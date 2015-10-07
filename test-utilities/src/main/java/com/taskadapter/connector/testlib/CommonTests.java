@@ -17,9 +17,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class CommonTests {
+public final class CommonTests {
 
-    public void testLoadTasks(Connector<?> connector, Mappings mappings) throws ConnectorException {
+    public static void testLoadTasks(Connector<?> connector, Mappings mappings) throws ConnectorException {
         int tasksQty = 1;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
 
@@ -40,13 +40,13 @@ public class CommonTests {
         assertEquals(expectedSummaryTask1, foundTask.getSummary());
     }
 
-    public void descriptionSavedByDefault(Connector<?> connector, Mappings mappings) throws ConnectorException {
+    public static void descriptionSavedByDefault(Connector<?> connector, Mappings mappings) throws ConnectorException {
         GTask task = TestUtils.generateTask();
         GTask loadedTask = TestUtils.saveAndLoadViaSummary(connector, task, mappings);
         assertEquals(task.getDescription(), loadedTask.getDescription());
     }
 
-    public void descriptionSavedIfSelected(Connector<?> connector, Mappings mappings) throws ConnectorException {
+    public static void descriptionSavedIfSelected(Connector<?> connector, Mappings mappings) throws ConnectorException {
         GTask task = TestUtils.generateTask();
         Mappings clonedMappings = new Mappings(mappings);
         GTask loadedTask = new TestSaver(connector, clonedMappings).selectField(FIELD.DESCRIPTION).saveAndLoad(task);

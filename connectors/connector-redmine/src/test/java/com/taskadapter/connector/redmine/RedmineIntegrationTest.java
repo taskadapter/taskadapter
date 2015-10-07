@@ -388,17 +388,17 @@ public class RedmineIntegrationTest {
 
     @Test
     public void someTasksAreLoaded() throws Exception {
-        new CommonTests().testLoadTasks(getConnector(), TestMappingUtils.fromFields(SUPPORTED_FIELDS));
+        CommonTests.testLoadTasks(getConnector(), TestMappingUtils.fromFields(SUPPORTED_FIELDS));
     }
 
     @Test
     public void defaultDescriptionIsMapped() throws Exception {
-        new CommonTests().descriptionSavedByDefault(getConnector(), TestMappingUtils.fromFields(SUPPORTED_FIELDS));
+        CommonTests.descriptionSavedByDefault(getConnector(), TestMappingUtils.fromFields(SUPPORTED_FIELDS));
     }
 
     @Test
     public void descriptionSavedIfSelected() throws Exception {
-        new CommonTests().descriptionSavedIfSelected(getConnector(), TestMappingUtils.fromFields(SUPPORTED_FIELDS));
+        CommonTests.descriptionSavedIfSelected(getConnector(), TestMappingUtils.fromFields(SUPPORTED_FIELDS));
     }
 
     @Test

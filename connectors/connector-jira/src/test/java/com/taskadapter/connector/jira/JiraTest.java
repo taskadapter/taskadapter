@@ -70,7 +70,7 @@ public class JiraTest {
 
     @Test
     public void twoTasksAreCreated() throws Exception {
-        new CommonTests().testCreates2Tasks(connector, TestMappingUtils.fromFields(SUPPORTED_FIELDS));
+        CommonTests.testCreates2Tasks(connector, TestMappingUtils.fromFields(SUPPORTED_FIELDS));
     }
 
     @Test

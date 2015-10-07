@@ -34,7 +34,7 @@ public class JiraConnectorTest {
 
     @Test
     public void descriptionSavedByDefault() throws ConnectorException {
-        new CommonTests().descriptionSavedByDefault(getConnector(), TEST_MAPPINGS);
+        CommonTests.descriptionSavedByDefault(getConnector(), TEST_MAPPINGS);
     }
 
     @Test
