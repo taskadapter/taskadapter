@@ -105,10 +105,13 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueWrapper> {
         }
 
         if (mappings.isFieldSelected(FIELD.PRIORITY)) {
-            String jiraPriorityName = config.getPriorities().getPriorityByMSP(task.getPriority());
-
+            final Integer priorityNumber = task.getPriority();
+            final String jiraPriorityName = config.getPriorities().getPriorityByMSP(priorityNumber);
             if (!jiraPriorityName.isEmpty()) {
-                issueInputBuilder.setPriority(priorities.get(jiraPriorityName));
+                final BasicPriority priority = priorities.get(jiraPriorityName);
+                if (priority != null) {
+                    issueInputBuilder.setPriority(priority);
+                }
             }
         }
 

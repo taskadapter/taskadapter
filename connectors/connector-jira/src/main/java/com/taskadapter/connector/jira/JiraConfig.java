@@ -89,17 +89,17 @@ public class JiraConfig extends ConnectorConfig {
     }
 
     /**
-     * Creates a default priorities.
+     * Creates default priorities.
      *
      * @return default priorities.
      */
     public static Priorities createDefaultPriorities() {
         final Map<String, Integer> result = new HashMap<String, Integer>();
-        result.put("Trivial", 100);
-        result.put("Minor", 300);
-        result.put("Major", 700);
-        result.put("Critical", 800);
-        result.put("Blocker", 1000);
+        result.put("Lowest", 100);
+        result.put("Low", 300);
+        result.put("Medium", 500);
+        result.put("High", 700);
+        result.put("Highest", 1000);
         return new Priorities(result);
     }
 
