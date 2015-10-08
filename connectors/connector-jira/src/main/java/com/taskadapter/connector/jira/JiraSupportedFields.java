@@ -4,7 +4,7 @@ import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.AvailableFieldsBuilder;
 import com.taskadapter.model.GTaskDescriptor;
 
-public class JiraSupportedFields {
+public final class JiraSupportedFields {
     public static final AvailableFields SUPPORTED_FIELDS;
 
     static {
@@ -20,7 +20,7 @@ public class JiraSupportedFields {
         builder.addField(GTaskDescriptor.FIELD.ASSIGNEE);
         builder.addField(GTaskDescriptor.FIELD.DUE_DATE);
         builder.addField(GTaskDescriptor.FIELD.PRIORITY);
-        builder.addField(GTaskDescriptor.FIELD.ENVIRONMENT);
+        builder.addField(GTaskDescriptor.FIELD.ENVIRONMENT).unselected();
         SUPPORTED_FIELDS = builder.end();
     }
 }

@@ -19,6 +19,7 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class JiraConnectorTest {
     private static final Mappings TEST_MAPPINGS = TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS);
+    private static final boolean SELECTED_FOR_EXPORT = true;
 
     @Test
     public void testLoadTaskByKey() throws ConnectorException {
@@ -84,16 +85,19 @@ public class JiraConnectorTest {
 
     // TODO move to some generic tests, this is not Jira-specific
     @Test
-    public void taskIsCreatedWithDefaultEnvironmentField() throws ConnectorException {
+    public void taskIsCreatedWithDefaultDescriptionField() throws ConnectorException {
         GTask task = TestUtils.generateTask();
-        String environmentString = "some environment";
+        // make sure the field is empty so that the default value will be set later
+        task.setDescription("");
+        String description = "some description";
         JiraConfig testConfig = new JiraTestData().createTestConfig();
         JiraConnector connector = new JiraConnector(testConfig);
 
         Mappings mappings = TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS);
-        mappings.setMapping(GTaskDescriptor.FIELD.ENVIRONMENT, true,
-                JiraSupportedFields.SUPPORTED_FIELDS.getDefaultValue(GTaskDescriptor.FIELD.ENVIRONMENT),
-                environmentString);
+        final GTaskDescriptor.FIELD descriptionField = GTaskDescriptor.FIELD.DESCRIPTION;
+        mappings.setMapping(descriptionField, SELECTED_FOR_EXPORT,
+                JiraSupportedFields.SUPPORTED_FIELDS.getDefaultValue(descriptionField),
+                description);
 
         TaskSaveResult result = connector.saveData(Arrays.asList(task), null, mappings);
         assertThat(result.getCreatedTasksNumber()).isEqualTo(1);
@@ -101,7 +105,7 @@ public class JiraConnectorTest {
         Collection<String> values = result.getIdToRemoteKeyMap().values();
         String key = values.iterator().next();
         GTask loadedTask = connector.loadTaskByKey(key,  new Mappings());
-        assertThat(loadedTask.getEnvironment()).isEqualTo(environmentString);
+        assertThat(loadedTask.getDescription()).isEqualTo(description);
     }
 
     private JiraConnector getConnector() {
