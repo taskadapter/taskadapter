@@ -30,7 +30,7 @@ public class MockData {
     }
 
     public static Iterable<Priority> loadPriorities() {
-        return (Iterable<Priority>) TestDataLoader.load("priorities_jira5.0.6.json", new TypeToken<ArrayList<PriorityMock>>() {
+        return (Iterable<Priority>) TestDataLoader.load("priorities_6.4.11.json", new TypeToken<ArrayList<PriorityMock>>() {
         }.getType());
     }
 

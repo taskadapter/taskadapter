@@ -1,0 +1,42 @@
+[
+  {
+    "self": "http://173.247.200.254:9990/rest/api/2/priority/1",
+    "statusColor": "#d04437",
+    "description": "This problem will block progress.",
+    "iconUrl": "http://173.247.200.254:9990/images/icons/priorities/highest.png",
+    "name": "Highest",
+    "id": "1"
+  },
+  {
+    "self": "http://173.247.200.254:9990/rest/api/2/priority/2",
+    "statusColor": "#f15C75",
+    "description": "Serious problem that could block progress.",
+    "iconUrl": "http://173.247.200.254:9990/images/icons/priorities/high.png",
+    "name": "High",
+    "id": "2"
+  },
+  {
+    "self": "http://173.247.200.254:9990/rest/api/2/priority/3",
+    "statusColor": "#f79232",
+    "description": "Has the potential to affect progress.",
+    "iconUrl": "http://173.247.200.254:9990/images/icons/priorities/medium.png",
+    "name": "Medium",
+    "id": "3"
+  },
+  {
+    "self": "http://173.247.200.254:9990/rest/api/2/priority/4",
+    "statusColor": "#707070",
+    "description": "Minor problem or easily worked around.",
+    "iconUrl": "http://173.247.200.254:9990/images/icons/priorities/low.png",
+    "name": "Low",
+    "id": "4"
+  },
+  {
+    "self": "http://173.247.200.254:9990/rest/api/2/priority/5",
+    "statusColor": "#999999",
+    "description": "Trivial problem with little or no impact on progress.",
+    "iconUrl": "http://173.247.200.254:9990/images/icons/priorities/lowest.png",
+    "name": "Lowest",
+    "id": "5"
+  }
+]

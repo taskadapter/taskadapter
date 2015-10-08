@@ -68,7 +68,7 @@ public class GTaskToJiraTest {
 
     @Test
     public void priorityConvertedToCritical() throws MalformedURLException, RemoteException, URISyntaxException {
-        Priority priorityCritical = find(priorities, "Critical");
+        Priority priorityCritical = find(priorities, "Highest");
 
         GTask task = new GTask();
         task.setSummary("task with critical priority");
@@ -214,8 +214,10 @@ public class GTaskToJiraTest {
     }
 
     @Test
-    public void estimatedTimeConvertedByDefault() {
-        checkEstimatedTime(getConverter(), "180m");
+    public void estimatedTimeIsNotConvertedByDefault() {
+        // new JIRA versions (6.4.11+) do not have "timetracking" field
+        // configured for tasks by default.
+        checkEstimatedTime(getConverter(), null);
     }
 
     @Test
