@@ -40,7 +40,7 @@ public class ConfigStorage {
 
     private List<StoredExportConfig> getNewConfigsInFolder(File folder) {
         File[] configs = folder.listFiles(CONFIG_FILE_FILTER);
-        final List<StoredExportConfig> files = new ArrayList<StoredExportConfig>();
+        final List<StoredExportConfig> files = new ArrayList<>();
         if (configs == null) {
             return files;
         }

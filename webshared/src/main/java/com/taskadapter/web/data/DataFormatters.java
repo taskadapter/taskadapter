@@ -24,7 +24,7 @@ public final class DataFormatters {
      */
     public static <T> DataFormatter<T> mapByClass(
             Map<Class<? extends T>, DataFormatter<T>> formatters) {
-        return new ClassmapFormatter<T>(formatters);
+        return new ClassmapFormatter<>(formatters);
     }
 
     /**
@@ -36,7 +36,7 @@ public final class DataFormatters {
      */
     public static <T> DataFormatter<T> firstApplicable(
             Collection<DataFormatter<T>> formatters) {
-        return new ChainFormatter<T>(formatters);
+        return new ChainFormatter<>(formatters);
     }
 
     /**
@@ -47,6 +47,6 @@ public final class DataFormatters {
      * @return data formatter.
      */
     public static <T> DataFormatter<T> fixed(String message) {
-        return new ConstFormatter<T>(message);
+        return new ConstFormatter<>(message);
     }
 }

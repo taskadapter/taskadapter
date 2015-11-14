@@ -151,7 +151,7 @@ public class UpdaterIntegrationTest {
     }
 
     private List<GTask> createRedmineIssues(int issuesNumber) {
-        List<GTask> issues = new ArrayList<GTask>(issuesNumber);
+        List<GTask> issues = new ArrayList<>(issuesNumber);
         WebServerInfo serverInfo = redmineConfig.getServerInfo();
         RedmineManager mgr = RedmineManagerFactory.createRedmineManager(serverInfo);
         List<Issue> issuesToCreate = generateRedmineIssues(issuesNumber);
@@ -173,7 +173,7 @@ public class UpdaterIntegrationTest {
     }
 
     private List<Issue> generateRedmineIssues(int issuesNumber) {
-        List<Issue> issues = new ArrayList<Issue>(issuesNumber);
+        List<Issue> issues = new ArrayList<>(issuesNumber);
         for (int i = 0; i < issuesNumber; i++) {
             Issue issue = new Issue();
             issue.setProject(ProjectFactory.create(projectId));

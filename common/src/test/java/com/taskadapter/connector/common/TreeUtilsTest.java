@@ -11,7 +11,7 @@ public class TreeUtilsTest {
 
     @Test
     public void testCloneTree() {
-        List<GTask> tree = new ArrayList<GTask>();
+        List<GTask> tree = new ArrayList<>();
 
         GTask genericTask = new GTask();
         genericTask.setSummary("genericTask");

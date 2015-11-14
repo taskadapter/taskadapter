@@ -79,7 +79,7 @@ public class MSPUtils {
 
     public static String[] getTextFieldNamesAvailableForMapping() {
         Set<String> keys = TEXT_FIELDS_MAP.keySet();
-        Set<String> copy = new HashSet<String>(keys);
+        Set<String> copy = new HashSet<>(keys);
         copy.remove(MSPDefaultFields.FIELD_DURATION_UNDEFINED.getName());
         copy.remove(MSPDefaultFields.FIELD_WORK_UNDEFINED.getName());
         return copy.toArray(new String[copy.size()]);

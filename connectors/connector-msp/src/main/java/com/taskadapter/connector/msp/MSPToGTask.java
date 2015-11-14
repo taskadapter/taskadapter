@@ -43,7 +43,7 @@ class MSPToGTask {
     }
 
     public List<GTask> convertToGenericTaskList(List<Task> tasks) throws BadConfigException {
-        List<GTask> genericTasks = new ArrayList<GTask>();
+        List<GTask> genericTasks = new ArrayList<>();
 
         for (Task task : tasks) {
             if (task.getName() == null) {

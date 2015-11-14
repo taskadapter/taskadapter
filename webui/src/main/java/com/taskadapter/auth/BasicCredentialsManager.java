@@ -33,7 +33,7 @@ public final class BasicCredentialsManager implements CredentialsManager {
      */
     private static final String RND_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKMLNOPQRSTUVWXYZ";
 
-    private static final Map<String, AuthFactory<String, String>> AUTHENTICATORS = new HashMap<String, AuthFactory<String, String>>();
+    private static final Map<String, AuthFactory<String, String>> AUTHENTICATORS = new HashMap<>();
 
     /**
      * Default authenticators.
@@ -116,7 +116,7 @@ public final class BasicCredentialsManager implements CredentialsManager {
         }
 
         /* Update order of credentials */
-        final List<String> newOrder = new ArrayList<String>(credKeys.size());
+        final List<String> newOrder = new ArrayList<>(credKeys.size());
         for (int i = 0; i < credKeys.size(); i++) {
             if (i != goodKey) {
                 newOrder.add(credKeys.get(i));
@@ -213,7 +213,7 @@ public final class BasicCredentialsManager implements CredentialsManager {
         final int saveLength = Math
                 .max(Math.min(creds.secondaryCredentials.size(),
                         secondaryAuthBacklog) - 1, 0);
-        final List<String> auths = new ArrayList<String>(
+        final List<String> auths = new ArrayList<>(
                 creds.secondaryCredentials.subList(
                         creds.secondaryCredentials.size() - saveLength,
                         creds.secondaryCredentials.size()));
@@ -246,7 +246,7 @@ public final class BasicCredentialsManager implements CredentialsManager {
         final String authKey = secondaryAuth.substring(prefixIdx + 1);
 
         final CredentialsV1 creds = loadV1(user);
-        final List<String> newToks = new ArrayList<String>(
+        final List<String> newToks = new ArrayList<>(
                 creds.secondaryCredentials.size());
 
         for (String tok : creds.secondaryCredentials) {

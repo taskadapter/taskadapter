@@ -95,7 +95,7 @@ public final class XmlUtils {
 
     public static List<Element> getDirectAncestors(Element elt, String name) {
         final NodeList nl = elt.getChildNodes();
-        final List<Element> res = new ArrayList<Element>();
+        final List<Element> res = new ArrayList<>();
         for (int i = 0; i < nl.getLength(); i++) {
             final Node n = nl.item(i);
             if (n.getNodeType() != Node.ELEMENT_NODE)

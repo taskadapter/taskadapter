@@ -74,7 +74,7 @@ public class RedmineConnector implements Connector<RedmineConfig> {
     }
     
 	private void addFullUsers(List<Issue> issues, RedmineManager mgr) throws RedmineException {
-	    final Map<Integer, User> users = new HashMap<Integer, User>(); 
+	    final Map<Integer, User> users = new HashMap<>();
 	    for (Issue issue : issues) {
 	        issue.setAssignee(patchAssignee(issue.getAssignee(), users, mgr));
             issue.setAuthor(patchAssignee(issue.getAuthor(), users, mgr));
@@ -98,7 +98,7 @@ public class RedmineConnector implements Connector<RedmineConfig> {
 
     private List<GTask> convertToGenericTasks(RedmineConfig config,
 			List<Issue> issues) {
-		List<GTask> result = new ArrayList<GTask>(issues.size());
+		List<GTask> result = new ArrayList<>(issues.size());
         RedmineToGTask converter = new RedmineToGTask(config);
 		for (Issue issue : issues) {
 			GTask task = converter.convertToGenericTask(issue);
@@ -115,7 +115,7 @@ public class RedmineConnector implements Connector<RedmineConfig> {
                 final Project rmProject = mgr.getProjectManager().getProjectByKey(config.getProjectKey());
                 final Map<String, Integer> priorities = loadPriorities(
                         mappings, mgr);
-                final List<User> users = !config.isFindUserByName() ? new ArrayList<User>()
+                final List<User> users = !config.isFindUserByName() ? new ArrayList<>()
                         : mgr.getUserManager().getUsers();
                 final List<IssueStatus> statusList = mgr.getIssueManager().getStatuses();
                 final List<Version> versions = mgr.getProjectManager().getVersions(rmProject.getId());
@@ -138,9 +138,9 @@ public class RedmineConnector implements Connector<RedmineConfig> {
     private static Map<String, Integer> loadPriorities(final Mappings mappings,
             final RedmineManager mgr) throws RedmineException {
         if (!mappings.isFieldSelected(FIELD.PRIORITY)) {
-            return new HashMap<String, Integer>();
+            return new HashMap<>();
         }
-        final Map<String, Integer> res = new HashMap<String, Integer>();
+        final Map<String, Integer> res = new HashMap<>();
         for (IssuePriority prio : mgr.getIssueManager().getIssuePriorities()) {
             res.put(prio.getName(), prio.getId());
         }

@@ -149,7 +149,7 @@ public class TaskFieldsMappingFragment implements Validatable {
 
     private void addCheckbox(FieldMapping field) {
         CheckBox checkbox = new CheckBox();
-        final MethodProperty<Boolean> selected = new MethodProperty<Boolean>(field, "selected");
+        final MethodProperty<Boolean> selected = new MethodProperty<>(field, "selected");
         checkbox.setPropertyDataSource(selected);
         gridLayout.addComponent(checkbox);
         gridLayout.setComponentAlignment(checkbox, Alignment.MIDDLE_CENTER);
@@ -157,7 +157,7 @@ public class TaskFieldsMappingFragment implements Validatable {
 
     private void addTextFieldForDefaultValue(FieldMapping mapping) {
         TextField field = new TextField();
-        final MethodProperty<String> methodProperty = new MethodProperty<String>(mapping, "defaultValue");
+        final MethodProperty<String> methodProperty = new MethodProperty<>(mapping, "defaultValue");
         field.setPropertyDataSource(methodProperty);
         gridLayout.addComponent(field);
         gridLayout.setComponentAlignment(field, Alignment.MIDDLE_CENTER);
@@ -178,8 +178,8 @@ public class TaskFieldsMappingFragment implements Validatable {
 
     private void addConnectorField(AvailableFields connectorFields, FieldMapping fieldMapping, String leftRightField) {
         String[] allowedValues = connectorFields.getAllowedValues(fieldMapping.getField());
-        BeanItemContainer<String> container = new BeanItemContainer<String>(String.class);
-        final MethodProperty<String> mappedTo = new MethodProperty<String>(fieldMapping, leftRightField);
+        BeanItemContainer<String> container = new BeanItemContainer<>(String.class);
+        final MethodProperty<String> mappedTo = new MethodProperty<>(fieldMapping, leftRightField);
 
         if (connectorFields.isFieldSupported(fieldMapping.getField())) {
             if (allowedValues.length > 1) {

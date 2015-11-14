@@ -64,7 +64,7 @@ public class MantisConnector implements Connector<MantisConfig> {
     }
     
     private List<GTask> convertToGenericTasks(List<IssueData> issues) {
-        List<GTask> result = new ArrayList<GTask>(issues.size());
+        List<GTask> result = new ArrayList<>(issues.size());
         for (IssueData issue : issues) {
             GTask task = MantisDataConverter.convertToGenericTask(issue);
             result.add(task);
@@ -80,7 +80,7 @@ public class MantisConnector implements Connector<MantisConfig> {
             final ProjectData mntProject = mgr.getProjectById(new BigInteger(
                     config.getProjectKey()));
             final List<AccountData> users = config.isFindUserByName() ? mgr
-                    .getUsers() : new ArrayList<AccountData>();
+                    .getUsers() : new ArrayList<>();
             final GTaskToMatisConverter converter = new GTaskToMatisConverter(
                     mntProject, mappings, users);
             final MantisTaskSaver mts = new MantisTaskSaver(mgr);

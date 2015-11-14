@@ -114,7 +114,7 @@ public final class FSCredentialStore implements CredentialsStore {
         final String[] userFiles = storeRoot.list();
         if (userFiles == null)
             return Collections.emptyList();
-        final List<String> result = new ArrayList<String>(userFiles.length);
+        final List<String> result = new ArrayList<>(userFiles.length);
         for (String userName : userFiles) {
             if (doesUserExists(userName)) {
                 result.add(userName);

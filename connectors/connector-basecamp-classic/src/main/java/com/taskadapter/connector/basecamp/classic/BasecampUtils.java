@@ -37,7 +37,7 @@ public class BasecampUtils {
         final Element objects = objApi.getObject("projects.xml");
         final List<Element> projects = XmlUtils.getDirectAncestors(objects,
                 "project");
-        final List<BasecampProject> result = new ArrayList<BasecampProject>(
+        final List<BasecampProject> result = new ArrayList<>(
                 projects.size());
         for (Element project : projects) {
             result.add(parseProjectFromList(project));
@@ -116,8 +116,6 @@ public class BasecampUtils {
 
             t.transform(new DOMSource(d), new StreamResult(sw));
             return sw.toString();
-        } catch (TransformerConfigurationException e) {
-            throw new InternalException();
         } catch (TransformerException e) {
             throw new InternalException();
         }
@@ -149,7 +147,7 @@ public class BasecampUtils {
             suffix = "projects/" + config.getProjectKey() + "/todo_lists.xml";
         final List<Element> objects = XmlUtils.getDirectAncestors(
                 objApi.getObject(suffix), "todo-list");
-        final List<TodoList> result = new ArrayList<TodoList>(objects.size());
+        final List<TodoList> result = new ArrayList<>(objects.size());
         for (Element elt : objects)
             result.add(parseTodoList(elt));
         return result;

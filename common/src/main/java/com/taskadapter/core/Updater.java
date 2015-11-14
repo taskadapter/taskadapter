@@ -39,7 +39,7 @@ public class Updater {
     }
 
     public void loadExternalTasks() throws ConnectorException {
-        this.tasksInExternalSystem = new ArrayList<GTask>(existingTasks.size());
+        this.tasksInExternalSystem = new ArrayList<>(existingTasks.size());
         if (monitor != null) {
             monitor.beginTask("Loading " + existingTasks.size()
                     + " tasks from " + sourceLocationName,

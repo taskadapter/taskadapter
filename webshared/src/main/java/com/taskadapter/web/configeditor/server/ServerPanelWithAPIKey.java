@@ -73,7 +73,7 @@ public class ServerPanelWithAPIKey extends VerticalLayout implements Validatable
 
         layout.addComponent(createEmptyLabel(emptyLabelHeight), 0, currentRow++);
 
-        Collection<Boolean> authOptions = new ArrayList<Boolean>();
+        Collection<Boolean> authOptions = new ArrayList<>();
         authOptions.add(true);
         authOptions.add(false);
 

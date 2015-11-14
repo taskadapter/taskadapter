@@ -17,7 +17,7 @@ public final class AvailableFieldsBuilder {
      * Supported field values. We use "EnumMap" to call a proper constructor in
      * an {@link #end()} method.
      */
-    private final EnumMap<GTaskDescriptor.FIELD, FieldConfiguration> fields = new EnumMap<GTaskDescriptor.FIELD, FieldConfiguration>(
+    private final EnumMap<GTaskDescriptor.FIELD, FieldConfiguration> fields = new EnumMap<>(
             GTaskDescriptor.FIELD.class);
     
     /**
@@ -116,7 +116,7 @@ public final class AvailableFieldsBuilder {
      * @return "Available fields" structure.
      */
     public AvailableFields end() {
-        return new AvailableFields(new EnumMap<GTaskDescriptor.FIELD, FieldConfiguration>(fields));
+        return new AvailableFields(new EnumMap<>(fields));
     }
 
     /**

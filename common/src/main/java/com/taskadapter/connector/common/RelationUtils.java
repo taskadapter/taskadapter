@@ -14,7 +14,7 @@ public final class RelationUtils {
 
     public static List<GRelation> convertRelationIds(List<GTask> tasks,
             TaskSaveResultBuilder localToRemote) {
-        final List<GRelation> result = new ArrayList<GRelation>();
+        final List<GRelation> result = new ArrayList<>();
         aggregateRelations(result, tasks, localToRemote);
         return result;
 

@@ -273,7 +273,7 @@ public class RedmineIntegrationTest {
         Random r = new Random();
         int hours = r.nextInt(50) + 1;
         t.setEstimatedHours((float) hours);
-        t.setChildren(new ArrayList<GTask>());
+        t.setChildren(new ArrayList<>());
 
         GTask c1 = new GTask();
         c1.setId(3);
@@ -334,7 +334,7 @@ public class RedmineIntegrationTest {
         RedmineConnector connector = getConnector(config);
         GTask loadedTask = createTaskWithPrecedesRelations(connector, 2, mapping);
 
-        ArrayList<GTask> taskList = new ArrayList<GTask>(3);
+        ArrayList<GTask> taskList = new ArrayList<>(3);
         loadedTask.setRemoteId(loadedTask.getKey());
         taskList.add(loadedTask);
 
@@ -361,7 +361,7 @@ public class RedmineIntegrationTest {
         RedmineConnector connector = getConnector(config);
         GTask loadedTask = createTaskWithPrecedesRelations(connector, 2, mapping);
 
-        ArrayList<GTask> taskList = new ArrayList<GTask>(3);
+        ArrayList<GTask> taskList = new ArrayList<>(3);
         loadedTask.setRemoteId(loadedTask.getKey());
         taskList.add(loadedTask);
 
@@ -412,7 +412,7 @@ public class RedmineIntegrationTest {
     }
 
     private static GTask createTaskWithPrecedesRelations(RedmineConnector redmine, Integer childCount, Mappings mapping) throws ConnectorException {
-        List<GTask> list = new ArrayList<GTask>();
+        List<GTask> list = new ArrayList<>();
 
         GTask task = TestUtils.generateTask();
         task.setId(1);

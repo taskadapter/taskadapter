@@ -9,7 +9,7 @@ import java.util.List;
 public class RedmineProjectConverter {
 
     public List<GProject> toGProjects(List<Project> objects) {
-        List<GProject> projects = new ArrayList<GProject>();
+        List<GProject> projects = new ArrayList<>();
         for (Project rmProject : objects) {
             GProject project = convertToGProject(rmProject);
             projects.add(project);

@@ -26,7 +26,7 @@ public class BasecampUtils {
             BasecampConfig config) throws ConnectorException {
         final ObjectAPI objApi = factory.createObjectAPI(config);
         final JSONArray objects = objApi.getObjects("projects.json");
-        final List<BasecampProject> result = new ArrayList<BasecampProject>(
+        final List<BasecampProject> result = new ArrayList<>(
                 objects.length());
         try {
             for (int i = 0; i < objects.length(); i++) {
@@ -96,7 +96,7 @@ public class BasecampUtils {
         final ObjectAPI objApi = factory.createObjectAPI(config);
         final JSONArray objects = objApi.getObjects("projects/"
                 + config.getProjectKey() + "/todolists.json");
-        final List<TodoList> result = new ArrayList<TodoList>(objects.length());
+        final List<TodoList> result = new ArrayList<>(objects.length());
         try {
             for (int i = 0; i < objects.length(); i++) {
                 result.add(parseTodoList(objects.getJSONObject(i)));

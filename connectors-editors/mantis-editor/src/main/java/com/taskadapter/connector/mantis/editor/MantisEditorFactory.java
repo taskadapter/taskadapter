@@ -53,18 +53,18 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
         layout.setWidth(380, PIXELS);
         final WebServerInfo serverInfo = config.getServerInfo();
 
-        ServerPanel serverPanel = new ServerPanel(new MethodProperty<String>(config, "label"),
-                new MethodProperty<String>(serverInfo, "host"),
-                new MethodProperty<String>(serverInfo, "userName"),
-                new MethodProperty<String>(serverInfo, "password"));
+        ServerPanel serverPanel = new ServerPanel(new MethodProperty<>(config, "label"),
+                new MethodProperty<>(serverInfo, "host"),
+                new MethodProperty<>(serverInfo, "userName"),
+                new MethodProperty<>(serverInfo, "password"));
         layout.addComponent(serverPanel);
 
         // TODO VAADIN 7 why is this unused? I commented it out for now.
 //        DataProvider<List<? extends NamedKeyedObject>> NULL_QUERY_PROVIDER = null;
         SimpleCallback NULL_PROJECT_INFO_CALLBACK = null;
 
-        layout.addComponent(new ProjectPanel(new MethodProperty<String>(config, "projectKey"),
-                new MethodProperty<String>(config, "queryIdStr"),
+        layout.addComponent(new ProjectPanel(new MethodProperty<>(config, "projectKey"),
+                new MethodProperty<>(config, "queryIdStr"),
                 Interfaces.fromMethod(DataProvider.class, MantisLoaders.class,
                         "getProjects", config.getServerInfo())
                 , NULL_PROJECT_INFO_CALLBACK, Interfaces.fromMethod(DataProvider.class, MantisLoaders.class, "getFilters", config), this));

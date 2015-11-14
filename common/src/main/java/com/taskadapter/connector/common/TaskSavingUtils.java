@@ -54,7 +54,7 @@ public class TaskSavingUtils {
             BasicIssueSaveAPI<N> saveAPI, TaskSaveResultBuilder resultBuilder,
             ProgressMonitor progressMonitor,
             DefaultValueSetter defaultValueSetter) {
-        new SimpleTaskSaver<N>(converter, saveAPI, resultBuilder,
+        new SimpleTaskSaver<>(converter, saveAPI, resultBuilder,
                 progressMonitor).saveTasks(null, tasks, defaultValueSetter);
     }
 

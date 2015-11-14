@@ -9,7 +9,7 @@ import java.util.List;
 public class MantisProjectConverter {
 
     public List<GProject> toGProjects(List<ProjectData> objects) {
-        List<GProject> projects = new ArrayList<GProject>();
+        List<GProject> projects = new ArrayList<>();
         for (ProjectData rmProject : objects) {
             GProject project = toGProject(rmProject);
             projects.add(project);

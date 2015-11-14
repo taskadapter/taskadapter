@@ -18,7 +18,7 @@ public final class MapByClassBuilder<T> {
     /**
      * Used formatters.
      */
-    private final Map<Class<? extends T>, DataFormatter<T>> formatters = new HashMap<Class<? extends T>, DataFormatter<T>>();
+    private final Map<Class<? extends T>, DataFormatter<T>> formatters = new HashMap<>();
 
     /**
      * Default formatter.
@@ -149,13 +149,13 @@ public final class MapByClassBuilder<T> {
      */
     public DataFormatter<T> get() {
         final DataFormatter<T> baseFormatter = DataFormatters
-                .mapByClass(new HashMap<Class<? extends T>, DataFormatter<T>>(
+                .mapByClass(new HashMap<>(
                         formatters));
         if (defaultFormatter == null) {
             return baseFormatter;
         }
 
-        final List<DataFormatter<T>> peers = new ArrayList<DataFormatter<T>>(2);
+        final List<DataFormatter<T>> peers = new ArrayList<>(2);
         peers.add(baseFormatter);
         peers.add(defaultFormatter);
         return DataFormatters.firstApplicable(peers);
@@ -167,6 +167,6 @@ public final class MapByClassBuilder<T> {
      * @return new builder.
      */
     public static <T> MapByClassBuilder<T> build() {
-        return new MapByClassBuilder<T>();
+        return new MapByClassBuilder<>();
     }
 }

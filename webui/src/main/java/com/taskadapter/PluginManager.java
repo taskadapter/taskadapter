@@ -11,8 +11,8 @@ import java.util.Map;
 
 public class PluginManager {
 
-    private Map<String, Descriptor> pluginDescriptors = new HashMap<String, Descriptor>();
-    private Map<String, PluginFactory<?>> pluginFactories = new HashMap<String, PluginFactory<?>>();
+    private Map<String, Descriptor> pluginDescriptors = new HashMap<>();
+    private Map<String, PluginFactory<?>> pluginFactories = new HashMap<>();
 
     public PluginManager() {
         loadPlugins();

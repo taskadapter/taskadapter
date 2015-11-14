@@ -79,7 +79,7 @@ public class MyTree extends CustomComponent {
     }
 
     public List<GTask> getSelectedRootLevelTasks() {
-        Set<Integer> idSet = new HashSet<Integer>();
+        Set<Integer> idSet = new HashSet<>();
 
         Collection<?> itemIds = tree.getItemIds();
 
@@ -101,7 +101,7 @@ public class MyTree extends CustomComponent {
     }
 
     private List<GTask> getSelectedTasks(List<GTask> gTaskList, Set<Integer> idSet) {
-        List<GTask> selectedTasks = new ArrayList<GTask>();
+        List<GTask> selectedTasks = new ArrayList<>();
 
         for (GTask gTask : gTaskList) {
             if(idSet.contains(gTask.getId())) {

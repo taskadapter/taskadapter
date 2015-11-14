@@ -11,7 +11,7 @@ import com.taskadapter.model.GProject;
 public class JiraProjectConverter {
 
     public List<GProject> toGProjects(Iterable<BasicProject> objects) {
-        List<GProject> projects = new ArrayList<GProject>();
+        List<GProject> projects = new ArrayList<>();
         for (BasicProject rmProject : objects) {
             GProject project = toGProject(rmProject);
             projects.add(project);

@@ -39,7 +39,7 @@ public class OtherRedmineFieldsContainer extends Panel {
 
         setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
         setHeight("157px");
-        view.addComponent(Editors.createFindUsersElement(new MethodProperty<Boolean>(config, "findUserByName")));
+        view.addComponent(Editors.createFindUsersElement(new MethodProperty<>(config, "findUserByName")));
         final CheckBox saveRelations = new CheckBox(SAVE_ISSUE_LABEL);
         saveRelations.setPropertyDataSource(new MethodProperty<Boolean>(config, "saveIssueRelations"));
         view.addComponent(saveRelations);
@@ -53,7 +53,7 @@ public class OtherRedmineFieldsContainer extends Panel {
 
         TextField defaultTaskType = EditorUtil.addLabeledText(grid, "Default task type:", "New tasks will be created with this 'tracker' (bug/task/support/feature/...)");
         defaultTaskType.setWidth("200px");
-        final MethodProperty<String> taskTypeProperty = new MethodProperty<String>(config, "defaultTaskType");
+        final MethodProperty<String> taskTypeProperty = new MethodProperty<>(config, "defaultTaskType");
         defaultTaskType.setPropertyDataSource(taskTypeProperty);
 
         Button showTaskTypesButton = EditorUtil.createLookupButton(

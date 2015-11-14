@@ -82,9 +82,9 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     }
 
     private Panel createFilePanel(Sandbox sandbox, MSPConfig config) {
-        final Property<String> inputFilePath = new MethodProperty<String>(
+        final Property<String> inputFilePath = new MethodProperty<>(
                 config, "inputAbsoluteFilePath");
-        final Property<String> outputFilePath = new MethodProperty<String>(
+        final Property<String> outputFilePath = new MethodProperty<>(
                 config, "outputAbsoluteFilePath");
         if (sandbox.allowLocalFSAccess()) {
             return new LocalModeFilePanel(inputFilePath, outputFilePath);

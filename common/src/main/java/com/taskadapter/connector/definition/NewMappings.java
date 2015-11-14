@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class NewMappings {
-    private Collection<FieldMapping> mappings = new ArrayList<FieldMapping>();
+    private Collection<FieldMapping> mappings = new ArrayList<>();
 
     public NewMappings() {
     }

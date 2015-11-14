@@ -70,7 +70,7 @@ public class MiniPanel extends HorizontalLayout {
     }
 
     private void refreshLabel() {
-        final Property<String> connectorLabel = new MethodProperty<String>(config, "vaalabel");
+        final Property<String> connectorLabel = new MethodProperty<>(config, "vaalabel");
         this.connectorLabel.setPropertyDataSource(connectorLabel);
     }
 

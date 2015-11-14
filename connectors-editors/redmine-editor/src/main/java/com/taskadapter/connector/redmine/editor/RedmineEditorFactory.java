@@ -55,19 +55,19 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
     public ComponentContainer getMiniPanelContents(Sandbox sandbox, RedmineConfig config) {
         Panel panel = new Panel("Server Info");
         WebServerInfo serverInfo = config.getServerInfo();
-        ServerPanelWithAPIKey redmineServerPanel = new ServerPanelWithAPIKey(new MethodProperty<String>(config, "label"),
-                new MethodProperty<String>(serverInfo, "host"),
-                new MethodProperty<String>(serverInfo, "userName"),
-                new MethodProperty<String>(serverInfo, "password"),
-                new MethodProperty<String>(serverInfo, "apiKey"),
-                new MethodProperty<Boolean>(serverInfo, "useAPIKeyInsteadOfLoginPassword"));
+        ServerPanelWithAPIKey redmineServerPanel = new ServerPanelWithAPIKey(new MethodProperty<>(config, "label"),
+                new MethodProperty<>(serverInfo, "host"),
+                new MethodProperty<>(serverInfo, "userName"),
+                new MethodProperty<>(serverInfo, "password"),
+                new MethodProperty<>(serverInfo, "apiKey"),
+                new MethodProperty<>(serverInfo, "useAPIKeyInsteadOfLoginPassword"));
         panel.setContent(redmineServerPanel);
 
         ShowProjectElement showProjectElement = new ShowProjectElement(config);
         LoadQueriesElement loadQueriesElement = new LoadQueriesElement(config);
         ProjectPanel projectPanel = new ProjectPanel(
-                new MethodProperty<String>(config, "projectKey"),
-                new MethodProperty<String>(config, "queryIdStr"),
+                new MethodProperty<>(config, "projectKey"),
+                new MethodProperty<>(config, "queryIdStr"),
                 Interfaces.fromMethod(DataProvider.class, RedmineLoaders.class, "getProjects", serverInfo),
                 Interfaces.fromMethod(SimpleCallback.class, showProjectElement, "showProjectInfo"),
                 Interfaces.fromMethod(DataProvider.class, loadQueriesElement, "loadQueries"), this);

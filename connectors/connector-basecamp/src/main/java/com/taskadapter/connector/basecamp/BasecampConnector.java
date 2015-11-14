@@ -48,11 +48,11 @@ final class BasecampConnector implements Connector<BasecampConfig> {
                 + ".json");
         final JSONObject todosobject = JsonUtils.getOptObject("todos", obj);
         if (todosobject == null) {
-            return new ArrayList<GTask>();
+            return new ArrayList<>();
         }
         final JSONArray completed = JsonUtils.getOptArray("completed", todosobject);
         final JSONArray remaining = JsonUtils.getOptArray("remaining", todosobject);
-        final List<GTask> res = new ArrayList<GTask>(JsonUtils.genLen(completed) + JsonUtils.genLen(remaining));
+        final List<GTask> res = new ArrayList<>(JsonUtils.genLen(completed) + JsonUtils.genLen(remaining));
 
         try {
             if (remaining != null) {
@@ -107,7 +107,7 @@ final class BasecampConnector implements Connector<BasecampConfig> {
         }
         final ObjectAPI api = factory.createObjectAPI(config);
         final JSONArray arr = api.getObjects("people.json");
-        final Map<String, GUser> users = new HashMap<String, GUser>();
+        final Map<String, GUser> users = new HashMap<>();
         for (int i = 0; i < arr.length(); i++) {
             try {
                 final GUser user = BasecampUtils
@@ -128,15 +128,9 @@ final class BasecampConnector implements Connector<BasecampConfig> {
             try {
                 writeOneTask(task, userResolver, ctx, resultBuilder, api);
                 monitor.worked(++agg);
-            } catch (CommunicationInterruptedException e) {
+            } catch (CommunicationInterruptedException | FatalMisunderstaningException | ThrottlingException e) {
                 throw e;
-            } catch (FatalMisunderstaningException e) {
-                throw e;
-            } catch (ThrottlingException e) {
-                throw e;
-            } catch (IOException e) {
-                throw new ConnectorException("Internal connector exception", e);
-            } catch (JSONException e) {
+            } catch (IOException | JSONException e) {
                 throw new ConnectorException("Internal connector exception", e);
             } catch (ConnectorException ee) {
                 resultBuilder.addTaskError(task, ee);

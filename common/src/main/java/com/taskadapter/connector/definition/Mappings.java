@@ -36,9 +36,9 @@ public final class Mappings {
 	 * Creates empty mappings.
 	 */
 	public Mappings() {
-		this.selected = new HashMap<FIELD, Boolean>();
-		this.mapTo = new HashMap<FIELD, String>();
-		defaultValuesForEmptyFields = new HashMap<FIELD, String>();
+		this.selected = new HashMap<>();
+		this.mapTo = new HashMap<>();
+		defaultValuesForEmptyFields = new HashMap<>();
 	}
 
 	/**
@@ -48,10 +48,10 @@ public final class Mappings {
 	 *            new mapping.
 	 */
 	public Mappings(Mappings mapping) {
-		this.selected = new HashMap<FIELD, Boolean>(mapping.selected);
-		this.mapTo = new HashMap<FIELD, String>(mapping.mapTo);
+		this.selected = new HashMap<>(mapping.selected);
+		this.mapTo = new HashMap<>(mapping.mapTo);
         // TODO REVIEW Why not EnumMap?
-		defaultValuesForEmptyFields = new HashMap<FIELD, String>(mapping.defaultValuesForEmptyFields);
+		defaultValuesForEmptyFields = new HashMap<>(mapping.defaultValuesForEmptyFields);
 	}
 
 	/**

@@ -19,7 +19,7 @@ public class Priorities {
      * Empty constructor is required for GSon library
      */
     public Priorities() {
-    	prioritiesMapping = new HashMap<String, Integer>();
+    	prioritiesMapping = new HashMap<>();
     }
 
     public Priorities(Map<String, Integer> prioritiesMapping) {
@@ -32,8 +32,8 @@ public class Priorities {
      * @param toClone the object to clone
      */
     public Priorities(Priorities toClone) {
-		prioritiesMapping = new HashMap<String, Integer>(
-				toClone.prioritiesMapping);
+		prioritiesMapping = new HashMap<>(
+                toClone.prioritiesMapping);
     }
 
     /**

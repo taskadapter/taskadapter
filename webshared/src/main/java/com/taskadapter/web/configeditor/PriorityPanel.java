@@ -142,7 +142,7 @@ public class PriorityPanel extends Panel implements Validatable {
             message.append(' ');
         }
 
-        Set<Integer> set = new HashSet<Integer>();
+        Set<Integer> set = new HashSet<>();
         int i = 0;
         for (Object id : data.getItemIds()) {
             i++;

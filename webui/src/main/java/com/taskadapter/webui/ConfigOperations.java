@@ -68,7 +68,7 @@ public final class ConfigOperations {
         if (!authorizedOps.canManagerPeerConfigs())
             return getOwnedConfigs();
 
-        final List<UISyncConfig> res = new ArrayList<UISyncConfig>();
+        final List<UISyncConfig> res = new ArrayList<>();
         for (String user : credManager.listUsers())
             res.addAll(uiConfigStore.getUserConfigs(user));
         return res;

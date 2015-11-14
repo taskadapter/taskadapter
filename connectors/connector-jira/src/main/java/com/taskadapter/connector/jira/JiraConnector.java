@@ -70,7 +70,7 @@ public class JiraConnector implements Connector<JiraConfig> {
         try {
             JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
             RemoteFilter[] objects = connection.getSavedFilters();
-            List<NamedKeyedObject> list = new ArrayList<NamedKeyedObject>();
+            List<NamedKeyedObject> list = new ArrayList<>();
             for (RemoteFilter o : objects) {
                 list.add(new NamedKeyedObjectImpl(o.getId(), o.getName()));
             }
@@ -93,7 +93,7 @@ public class JiraConnector implements Connector<JiraConfig> {
                 throw new ProjectNotSetException();
             }
             Iterable<BasicComponent> components = connection.getComponents(projectKey);
-            List<NamedKeyedObject> list = new ArrayList<NamedKeyedObject>();
+            List<NamedKeyedObject> list = new ArrayList<>();
             for (BasicComponent c : components) {
                 list.add(new NamedKeyedObjectImpl(String.valueOf(c.getId()), c.getName()));
             }
@@ -117,7 +117,7 @@ public class JiraConnector implements Connector<JiraConfig> {
                 throw new ProjectNotSetException();
             }
             Iterable<Version> objects = connection.getVersions(projectKey);
-            List<NamedKeyedObject> list = new ArrayList<NamedKeyedObject>();
+            List<NamedKeyedObject> list = new ArrayList<>();
             for (Version o : objects) {
                 list.add(new NamedKeyedObjectImpl(String.valueOf(o.getId()), o.getName()));
             }

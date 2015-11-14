@@ -10,7 +10,7 @@ import java.util.List;
 public class TreeUtils {
 
     static public List<GTask> cloneTree(Collection<GTask> tree) {
-        List<GTask> clonedTree = new ArrayList<GTask>();
+        List<GTask> clonedTree = new ArrayList<>();
 
         for (GTask task : tree) {
             GTask cloned = createShallowCopyWithoutChildren(task);
@@ -26,7 +26,7 @@ public class TreeUtils {
     // TODO refactor: this can be generalized and combined with the other util methods
     // in this class
     public static List<GTask> cloneTreeSkipEmptyRemoteIds(List<GTask> tree) {
-        List<GTask> clonedTree = new ArrayList<GTask>();
+        List<GTask> clonedTree = new ArrayList<>();
 
         for (GTask task : tree) {
             GTask cloned = createShallowCopyWithoutChildren(task);
@@ -61,7 +61,7 @@ public class TreeUtils {
      * Utility class to help convert flat list of Tasks to a tree structure.
      */
     static class TreeUtilsMap {
-        private HashMap<String, GTask> keyToGTaskMap = new HashMap<String, GTask>();
+        private HashMap<String, GTask> keyToGTaskMap = new HashMap<>();
 
         public TreeUtilsMap(List<GTask> list) {
             for (GTask task : list) {
@@ -76,7 +76,7 @@ public class TreeUtils {
 
     static GTask createShallowCopyWithoutChildren(GTask task) {
         GTask newTask = new GTask(task);
-        newTask.setChildren(new ArrayList<GTask>());
+        newTask.setChildren(new ArrayList<>());
         return newTask;
     }
 

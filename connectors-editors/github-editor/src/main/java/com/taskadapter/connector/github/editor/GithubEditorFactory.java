@@ -53,16 +53,16 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig> {
         VerticalLayout layout = new VerticalLayout();
         layout.setWidth(380, PIXELS);
         final WebServerInfo serverInfo = config.getServerInfo();
-        MethodProperty<String> serverUrlProperty = new MethodProperty<String>(serverInfo, "host");
+        MethodProperty<String> serverUrlProperty = new MethodProperty<>(serverInfo, "host");
         serverUrlProperty.setReadOnly(true);
-        ServerPanel serverPanel = new ServerPanel(new MethodProperty<String>(config, "label"),
+        ServerPanel serverPanel = new ServerPanel(new MethodProperty<>(config, "label"),
                 serverUrlProperty,
-                new MethodProperty<String>(serverInfo, "userName"),
-                new MethodProperty<String>(serverInfo, "password"));
+                new MethodProperty<>(serverInfo, "userName"),
+                new MethodProperty<>(serverInfo, "password"));
         layout.addComponent(serverPanel);
 
-        ProjectPanel projectPanel = new ProjectPanel(new MethodProperty<String>(config, "projectKey"),
-                new MethodProperty<String>(config, "queryString"),
+        ProjectPanel projectPanel = new ProjectPanel(new MethodProperty<>(config, "projectKey"),
+                new MethodProperty<>(config, "queryString"),
                 Interfaces.fromMethod(DataProvider.class, GithubLoaders.class, "getProjects", serverInfo)
                 , null, null, this);
         projectPanel.setProjectKeyLabel("Repository ID");

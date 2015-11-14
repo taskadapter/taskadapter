@@ -73,7 +73,7 @@ public class RedmineLoaders {
     public static List<? extends NamedKeyedObject> loadData(WebServerInfo config, String projectKey) throws BadConfigException, RedmineException {
         validate(config);
         RedmineManager mgr = RedmineManagerFactory.createRedmineManager(config);
-        List<NamedKeyedObject> result = new ArrayList<NamedKeyedObject>();
+        List<NamedKeyedObject> result = new ArrayList<>();
         // get project id to filter saved queries
         Integer projectId = null;
         if (projectKey != null && projectKey.length() > 0) {
@@ -110,7 +110,7 @@ public class RedmineLoaders {
         }
 
         Collection<Tracker> trackers = project.getTrackers();
-        List<NamedKeyedObject> result = new ArrayList<NamedKeyedObject>(trackers.size());
+        List<NamedKeyedObject> result = new ArrayList<>(trackers.size());
 
         // XXX refactor: we don't even need these IDs
         for (Tracker tracker : trackers) {

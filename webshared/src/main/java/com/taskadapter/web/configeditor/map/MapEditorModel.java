@@ -21,14 +21,14 @@ public final class MapEditorModel implements Container,
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Map<String, Class<?>> PROPTYPES = new HashMap<String, Class<?>>();
+	private static final Map<String, Class<?>> PROPTYPES = new HashMap<>();
 
 	static {
 		PROPTYPES.put("id", String.class);
 		PROPTYPES.put("value", String.class);
 	}
 
-	private final List<ItemSetChangeListener> itemListeners = new LinkedList<Container.ItemSetChangeListener>();
+	private final List<ItemSetChangeListener> itemListeners = new LinkedList<>();
 
 	/**
 	 * Map to edit.
@@ -43,7 +43,7 @@ public final class MapEditorModel implements Container,
 	/**
 	 * Items list.
 	 */
-	private final LinkedList<ItemHolder> items = new LinkedList<ItemHolder>();
+	private final LinkedList<ItemHolder> items = new LinkedList<>();
 
 	public MapEditorModel(Map<String, String> map) {
 		super();
@@ -131,7 +131,7 @@ public final class MapEditorModel implements Container,
 
 	@Override
 	public Collection<?> getItemIds() {
-		final List<Integer> ids = new ArrayList<Integer>(items.size());
+		final List<Integer> ids = new ArrayList<>(items.size());
 		for (ItemHolder holder : items)
 			ids.add(holder.id);
 		return ids;

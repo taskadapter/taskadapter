@@ -65,7 +65,7 @@ public class JiraTest {
 
     @Test
     public void doesNotFailWithNULLMonitorAndEmptyList() throws ConnectorException {
-        connector.saveData(new ArrayList<GTask>(), null, TestMappingUtils.fromFields(SUPPORTED_FIELDS));
+        connector.saveData(new ArrayList<>(), null, TestMappingUtils.fromFields(SUPPORTED_FIELDS));
     }
 
     @Test
@@ -84,7 +84,7 @@ public class JiraTest {
         TaskSaveResult result = connector.saveData(tasks, null, TestMappingUtils.fromFields(SUPPORTED_FIELDS));
         assertFalse("Task creation failed", result.hasErrors());
 
-        Map<Integer, String> remoteKeyById = new HashMap<Integer, String>();
+        Map<Integer, String> remoteKeyById = new HashMap<>();
         for (GTask task : tasks) {
             remoteKeyById.put(task.getId(), result.getIdToRemoteKeyMap().get(task.getId()));
         }
@@ -115,7 +115,7 @@ public class JiraTest {
     @Test
     public void twoIssuesLinked() throws ConnectorException {
         config.setSaveIssueRelations(true);
-        List<GTask> list = new ArrayList<GTask>();
+        List<GTask> list = new ArrayList<>();
 
         GTask task1 = TestUtils.generateTask();
         task1.setId(1);

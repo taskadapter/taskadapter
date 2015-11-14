@@ -38,7 +38,7 @@ public class JiraConfig extends ConnectorConfig {
     private String queryString;
     private Integer queryId;
     private String projectKey;
-    private Map<String, String> customFields = new TreeMap<String, String>();
+    private Map<String, String> customFields = new TreeMap<>();
     private String defaultIssueTypeForSubtasks;
 
     public JiraConfig() {
@@ -94,7 +94,7 @@ public class JiraConfig extends ConnectorConfig {
      * @return default priorities.
      */
     public static Priorities createDefaultPriorities() {
-        final Map<String, Integer> result = new HashMap<String, Integer>();
+        final Map<String, Integer> result = new HashMap<>();
         result.put("Lowest", 100);
         result.put("Low", 300);
         result.put("Medium", 500);

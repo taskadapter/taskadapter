@@ -37,7 +37,7 @@ public final class UIConfigService {
         final PluginEditorFactory<T> editorFactory = editorManager.getEditorFactory(connectorTypeId);
         final T config = connectorFactory.readConfig(new JsonParser()
                 .parse(serializedConfig));
-        return new UIConnectorConfigImpl<T>(connectorFactory, editorFactory,
+        return new UIConnectorConfigImpl<>(connectorFactory, editorFactory,
                 config, connectorTypeId);
     }
 
@@ -54,6 +54,6 @@ public final class UIConfigService {
         }
         final PluginEditorFactory<T> editorFactory = editorManager.getEditorFactory(connectorTypeId);
         final T config = connectorFactory.createDefaultConfig();
-        return new UIConnectorConfigImpl<T>(connectorFactory, editorFactory, config, connectorTypeId);
+        return new UIConnectorConfigImpl<>(connectorFactory, editorFactory, config, connectorTypeId);
     }
 }

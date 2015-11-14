@@ -10,7 +10,7 @@ import java.util.List;
 public class GithubToGTask {
 
     public List<GTask> toGTaskList(List<Issue> issues) {
-        List<GTask> tasks = new ArrayList<GTask>();
+        List<GTask> tasks = new ArrayList<>();
         for (Issue issue : issues) {
             GTask task = toGtask(issue);
             tasks.add(task);

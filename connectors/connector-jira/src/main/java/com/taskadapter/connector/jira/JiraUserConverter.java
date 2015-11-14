@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class JiraUserConverter {
-    private Map<String, String> cachedJiraUsers = new HashMap<String, String>();
+    private Map<String, String> cachedJiraUsers = new HashMap<>();
     private final JiraConnection connection;
 
     public JiraUserConverter(JiraConnection connection) {

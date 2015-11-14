@@ -143,7 +143,6 @@ public final class ConfigsPage {
     private final Collection<UISyncConfig> configs;
     private final DisplayMode displayMode;
     private final Callback callback;
-    private final TextField filterField;
     private final VerticalLayout configsLayout;
 
     private ConfigsPage(Collection<UISyncConfig> configs, DisplayMode mode,
@@ -173,7 +172,7 @@ public final class ConfigsPage {
         actionPanel.setComponentAlignment(addButton, Alignment.MIDDLE_LEFT);
 
         final HorizontalLayout filterPanel = new HorizontalLayout();
-        filterField = new TextField();
+        TextField filterField = new TextField();
         filterField.addTextChangeListener(new FieldEvents.TextChangeListener() {
             @Override
             public void textChange(TextChangeEvent event) {
@@ -215,7 +214,7 @@ public final class ConfigsPage {
     private void filterFields(String filterStr) {
         final String[] words = filterStr == null ? new String[0] : filterStr
                 .toLowerCase().split(" +");
-        final List<UISyncConfig> res = new ArrayList<UISyncConfig>(
+        final List<UISyncConfig> res = new ArrayList<>(
                 configs.size());
         for (UISyncConfig config : configs) {
             if (matches(config, words)) {
@@ -259,7 +258,7 @@ public final class ConfigsPage {
     public static Component render(String userName,
             Collection<UISyncConfig> configs, DisplayMode mode,
             final Callback callback) {
-        final List<UISyncConfig> configCopy = new ArrayList<UISyncConfig>(
+        final List<UISyncConfig> configCopy = new ArrayList<>(
                 configs);
         Collections.sort(configCopy, new ConfigComparator(userName));
         return new ConfigsPage(configCopy, mode, callback).layout;

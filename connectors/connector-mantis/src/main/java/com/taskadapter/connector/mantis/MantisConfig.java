@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class MantisConfig extends ConnectorConfig {
 
-    static final Map<String, Integer> DEFAULT_PRIORITIES = new HashMap<String, Integer>();    
+    static final Map<String, Integer> DEFAULT_PRIORITIES = new HashMap<>();
     static {
         DEFAULT_PRIORITIES.put("low", 100);
         DEFAULT_PRIORITIES.put("normal", 500);

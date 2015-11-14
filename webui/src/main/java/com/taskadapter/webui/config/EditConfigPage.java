@@ -127,7 +127,7 @@ public class EditConfigPage {
                 .get("editConfig.description")));
         TextField descriptionField = new TextField();
         descriptionField.addStyleName("configEditorDescriptionLabel");
-        MethodProperty<String> label = new MethodProperty<String>(config,
+        MethodProperty<String> label = new MethodProperty<>(config,
                 "label");
         descriptionField.setPropertyDataSource(label);
         descriptionLayout.addComponent(descriptionField);

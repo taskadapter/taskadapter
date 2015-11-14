@@ -67,7 +67,7 @@ public class EditorUtil {
     }
 
     public static TextField propertyInput(Object o, String field) {
-        return textInput(new MethodProperty<String>(o, field));
+        return textInput(new MethodProperty<>(o, field));
     }
 
     // TODO review and refactor this. this method is too complex
@@ -90,7 +90,7 @@ public class EditorUtil {
 
             private void showValues(final Property<String> destination, final boolean useValue,
                                     List<? extends NamedKeyedObject> objects) {
-                final Map<String, String> map = new TreeMap<String, String>();
+                final Map<String, String> map = new TreeMap<>();
                 for (NamedKeyedObject o : objects) {
                     map.put(o.getName(), o.getKey());
                 }

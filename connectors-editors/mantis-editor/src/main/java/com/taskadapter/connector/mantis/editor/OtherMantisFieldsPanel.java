@@ -15,6 +15,6 @@ public class OtherMantisFieldsPanel extends Panel {
         setContent(verticalLayout);
         verticalLayout.setSpacing(true);
 
-        verticalLayout.addComponent(Editors.createFindUsersElement(new MethodProperty<Boolean>(config, "findUserByName")));
+        verticalLayout.addComponent(Editors.createFindUsersElement(new MethodProperty<>(config, "findUserByName")));
     }
 }

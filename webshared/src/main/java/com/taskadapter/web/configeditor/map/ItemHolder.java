@@ -39,7 +39,7 @@ final class ItemHolder {
 		this.key = key;
 		this.value = value;
 
-		final Map<String, Property> content = new HashMap<String, Property>();
+		final Map<String, Property> content = new HashMap<>();
 		content.put("id", key);
 		content.put("value", value);
 		this.item = ConstItem.constItem(content);

@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class GTaskToGithub implements ConnectorConverter<GTask, Issue> {
 
-    private Map<String, User> ghUsers = new HashMap<String, User>();
+    private Map<String, User> ghUsers = new HashMap<>();
 
     private final UserService userService;
     private final Mappings mappings;

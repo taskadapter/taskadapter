@@ -50,7 +50,7 @@ final class BasecampConnector implements Connector<BasecampConfig> {
             todosobject = Collections.emptyList();
         else
             todosobject = XmlUtils.getDirectAncestors(ilist, "todo-item");
-        final List<GTask> res = new ArrayList<GTask>(todosobject.size());
+        final List<GTask> res = new ArrayList<>(todosobject.size());
 
         for (Element ee : todosobject) {
             res.add(BasecampUtils.parseTask(ee));
@@ -92,7 +92,7 @@ final class BasecampConnector implements Connector<BasecampConfig> {
         final ObjectAPI api = factory.createObjectAPI(config);
         final List<Element> arr = XmlUtils.getDirectAncestors(
                 api.getObject("people.xml"), "person");
-        final Map<String, GUser> users = new HashMap<String, GUser>();
+        final Map<String, GUser> users = new HashMap<>();
         for (Element eee : arr) {
             final GUser user = BasecampUtils.parseUser(eee);
             users.put(user.getDisplayName(), user);
@@ -108,11 +108,7 @@ final class BasecampConnector implements Connector<BasecampConfig> {
             try {
                 writeOneTask(task, userResolver, ctx, resultBuilder, api);
                 monitor.worked(++agg);
-            } catch (CommunicationInterruptedException e) {
-                throw e;
-            } catch (FatalMisunderstaningException e) {
-                throw e;
-            } catch (ThrottlingException e) {
+            } catch (CommunicationInterruptedException | FatalMisunderstaningException | ThrottlingException e) {
                 throw e;
             } catch (IOException e) {
                 throw new ConnectorException("Internal connector exception", e);

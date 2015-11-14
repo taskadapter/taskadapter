@@ -23,7 +23,7 @@ public final class CredentialsV1 extends Credentials {
             List<String> secondaryCredentials) {
         this.primaryCredentials = primaryCredentials;
         this.secondaryCredentials = Collections
-                .unmodifiableList(new ArrayList<String>(secondaryCredentials));
+                .unmodifiableList(new ArrayList<>(secondaryCredentials));
     }
 
 }

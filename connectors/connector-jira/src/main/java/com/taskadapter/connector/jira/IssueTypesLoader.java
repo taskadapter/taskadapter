@@ -19,7 +19,7 @@ public class IssueTypesLoader {
             JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
             Iterable<IssueType> issueTypeList = connection.getIssueTypeList();
             Iterable<IssueType> filtered = issueTypesFilter.filter(issueTypeList);
-            List<NamedKeyedObject> list = new ArrayList<NamedKeyedObject>();
+            List<NamedKeyedObject> list = new ArrayList<>();
 
             for (IssueType type : filtered) {
                 list.add(new NamedKeyedObjectImpl(String.valueOf(type.getId()), type.getName()));
@@ -49,7 +49,7 @@ class AllIssueTypesFilter extends IssueTypeFilter {
 class SubtaskTypesFilter extends IssueTypeFilter {
     @Override
     Iterable<IssueType> filter(Iterable<IssueType> types) {
-        List<IssueType> issueTypesForSubtasks = new ArrayList<IssueType>();
+        List<IssueType> issueTypesForSubtasks = new ArrayList<>();
         for (IssueType issueType : types) {
             if (issueType.isSubtask()) {
                 issueTypesForSubtasks.add(issueType);

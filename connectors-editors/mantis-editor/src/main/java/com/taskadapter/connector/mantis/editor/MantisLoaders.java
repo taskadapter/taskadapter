@@ -50,7 +50,7 @@ public class MantisLoaders {
             final BigInteger pkey = config.getProjectKey() == null ? null
                     : new BigInteger(config.getProjectKey());
             final FilterData[] fis = mgr.getFilters(pkey);
-            final List<NamedKeyedObject> res = new ArrayList<NamedKeyedObject>(
+            final List<NamedKeyedObject> res = new ArrayList<>(
                     fis.length);
             for (FilterData fi : fis) {
                 res.add(new NamedKeyedObjectImpl(fi.getId().toString(), fi

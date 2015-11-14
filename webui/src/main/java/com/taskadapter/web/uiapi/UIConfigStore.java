@@ -49,7 +49,7 @@ public final class UIConfigStore {
      */
     public List<UISyncConfig> getUserConfigs(String userLoginName) {
         final List<StoredExportConfig> storedConfigs = configStorage.getUserConfigs(userLoginName);
-        final List<UISyncConfig> result = new ArrayList<UISyncConfig>(storedConfigs.size());
+        final List<UISyncConfig> result = new ArrayList<>(storedConfigs.size());
         for (StoredExportConfig storedConfig : storedConfigs) {
             result.add(syncConfigBuilder.uize(userLoginName, storedConfig));
         }

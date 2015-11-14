@@ -31,7 +31,7 @@ public class JiraConnection {
         int start = 0;
         final int pageSize = maxPageSize == null ? DEFAULT_PAGE_SIZE : maxPageSize.intValue();
 
-        final List<Issue> result = new ArrayList<Issue>();
+        final List<Issue> result = new ArrayList<>();
         SearchResult<Issue> search;
 
         int section;

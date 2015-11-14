@@ -17,7 +17,7 @@ final class PrioritiesModel implements Container,
         Container.ItemSetChangeNotifier, Container.PropertySetChangeNotifier {
     private static final long serialVersionUID = 1L;
 
-    private static final Map<String, Class<?>> PROPTYPES = new HashMap<String, Class<?>>();
+    private static final Map<String, Class<?>> PROPTYPES = new HashMap<>();
 
     static {
         PROPTYPES.put("text", String.class);
@@ -32,9 +32,9 @@ final class PrioritiesModel implements Container,
     /**
      * Item mapping.
      */
-    private final Map<String, Item> items = new LinkedHashMap<String, Item>();
+    private final Map<String, Item> items = new LinkedHashMap<>();
 
-    private final List<ItemSetChangeListener> itemListeners = new LinkedList<Container.ItemSetChangeListener>();
+    private final List<ItemSetChangeListener> itemListeners = new LinkedList<>();
 
     PrioritiesModel(Priorities priorities) {
         this.priorities = priorities;
@@ -199,12 +199,12 @@ final class PrioritiesModel implements Container,
      * @return created item.
      */
     private Item createItem(String key) {
-        final ObjectProperty<String> text = new ObjectProperty<String>(key);
+        final ObjectProperty<String> text = new ObjectProperty<>(key);
         text.setReadOnly(true);
 
         final Property value = new PriorityValue(priorities, key);
 
-        final Map<String, Property> propmap = new HashMap<String, Property>();
+        final Map<String, Property> propmap = new HashMap<>();
         propmap.put("text", text);
         propmap.put("value", value);
 
@@ -220,7 +220,7 @@ final class PrioritiesModel implements Container,
      * @return mapping from keys to invalid user-input values.
      */
     public Map<String, String> getInvalidValues() {
-        final Map<String, String> result = new HashMap<String, String>();
+        final Map<String, String> result = new HashMap<>();
         for (Item item : items.values()) {
             final PriorityValue userValue = (PriorityValue) item
                     .getItemProperty("value");

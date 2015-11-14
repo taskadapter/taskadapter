@@ -15,7 +15,7 @@ public class RedmineConfig extends ConnectorConfig {
     private static final long serialVersionUID = 1L;
     private static final String TASK_TYPE_BUG = "Bug";
 
-    private static final Map<String, Integer> DEFAULT_PRIORITIES = new HashMap<String, Integer>();
+    private static final Map<String, Integer> DEFAULT_PRIORITIES = new HashMap<>();
     static {
         DEFAULT_PRIORITIES.put("Low", 100);
         DEFAULT_PRIORITIES.put("Normal", 500);
@@ -32,7 +32,7 @@ public class RedmineConfig extends ConnectorConfig {
     private String projectKey;
 
     public RedmineConfig() {
-        super(new HashMap<String, Integer>(DEFAULT_PRIORITIES));
+        super(new HashMap<>(DEFAULT_PRIORITIES));
         setLabel(DEFAULT_LABEL);
         setDefaultTaskType(TASK_TYPE_BUG);
     }
@@ -114,6 +114,6 @@ public class RedmineConfig extends ConnectorConfig {
     }
 
     public static Priorities generateDefaultPriorities() {
-        return new Priorities(new HashMap<String, Integer>(DEFAULT_PRIORITIES));
+        return new Priorities(new HashMap<>(DEFAULT_PRIORITIES));
     }
 }

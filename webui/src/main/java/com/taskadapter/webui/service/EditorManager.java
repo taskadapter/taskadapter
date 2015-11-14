@@ -25,18 +25,14 @@ public class EditorManager {
     }
     
     private static Map<String, PluginEditorFactory<?>> createEditors(Map<String, String> factories) {
-        final Map<String, PluginEditorFactory<?>> res = new HashMap<String, PluginEditorFactory<?>>();
+        final Map<String, PluginEditorFactory<?>> res = new HashMap<>();
         for (Map.Entry<String, String> spec : factories.entrySet()) {
             try {
                 @SuppressWarnings("unchecked")
                 final Class<PluginEditorFactory<?>> factoryClass = (Class<PluginEditorFactory<?>>) Class
                         .forName(spec.getValue());
                 res.put(spec.getKey(), factoryClass.newInstance());
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException("Error loading editor class for connector " + spec.getKey() + ". " + e.toString(), e);
-            } catch (InstantiationException e) {
-                throw new RuntimeException("Error loading editor class for connector " + spec.getKey() + ". " + e.toString(), e);
-            } catch (IllegalAccessException e) {
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
                 throw new RuntimeException("Error loading editor class for connector " + spec.getKey() + ". " + e.toString(), e);
             }
         }
@@ -54,7 +50,7 @@ public class EditorManager {
 
     public static EditorManager fromConfig(String config) {
         final String[] lines = config.split("\r\n|\n\r|\n");
-        final Map<String, String> implementations = new HashMap<String, String>();
+        final Map<String, String> implementations = new HashMap<>();
         for (String line : lines) {
             if (line.isEmpty() || line.startsWith(COMMENT_SYMBOL)) {
                 continue;

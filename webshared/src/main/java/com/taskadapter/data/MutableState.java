@@ -19,7 +19,7 @@ public final class MutableState<T> implements State<T> {
     /**
      * Listeners list.
      */
-    private final List<Runnable> listeners = new CopyOnWriteArrayList<Runnable>();
+    private final List<Runnable> listeners = new CopyOnWriteArrayList<>();
 
     /**
      * Creates a new mutable state with a given value.

@@ -99,7 +99,7 @@ public class GTaskToRedmineTest {
     }
 
     private List<User> createUsers() {
-        List<User> users = new ArrayList<User>();
+        List<User> users = new ArrayList<>();
 
         User user1 = UserFactory.create();
         user1.setFirstName("Diogo");
@@ -146,6 +146,6 @@ public class GTaskToRedmineTest {
         Mappings mappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
         mappings.setMapping(field, selected, null, "some default value for empty fields");
         users = users != null ? users : Collections.<User>emptyList();
-        return new GTaskToRedmine(config, mappings, null, project, users, new ArrayList<IssueStatus>(), Collections.<Version>emptyList());
+        return new GTaskToRedmine(config, mappings, null, project, users, new ArrayList<>(), Collections.<Version>emptyList());
     }
 }

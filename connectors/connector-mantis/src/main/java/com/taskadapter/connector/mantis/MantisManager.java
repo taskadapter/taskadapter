@@ -104,7 +104,7 @@ public class MantisManager {
      * @return List of projects.
      */
     public List<ProjectData> getProjects() throws RemoteException {
-        return new ArrayList<ProjectData>(Arrays.asList(getConnector()
+        return new ArrayList<>(Arrays.asList(getConnector()
                 .mc_projects_get_user_accessible(login, password)));
     }
 
@@ -167,16 +167,16 @@ public class MantisManager {
      * @throws RemoteException
      */
     public List<IssueHeaderData> getIssuesHeadersByProject(BigInteger projectId) throws RemoteException {
-        List<IssueHeaderData> issuesHeaders = new ArrayList<IssueHeaderData>();
+        List<IssueHeaderData> issuesHeaders = new ArrayList<>();
 
         if (projectId.intValue() > 0) {
 
             int pageNumber = 1;
 
-            List<IssueHeaderData> lastItems = new ArrayList<IssueHeaderData>();
+            List<IssueHeaderData> lastItems = new ArrayList<>();
 
             do {
-                List<IssueHeaderData> foundItems = new ArrayList<IssueHeaderData>();
+                List<IssueHeaderData> foundItems = new ArrayList<>();
                 foundItems = Arrays.asList(getConnector()
                         .mc_project_get_issue_headers(login, password,
                                 projectId,
@@ -214,14 +214,14 @@ public class MantisManager {
      */
     public List<IssueData> getIssuesByProject(BigInteger projectId)	throws RemoteException {
 
-        List<IssueData> issues = new ArrayList<IssueData>();
+        List<IssueData> issues = new ArrayList<>();
         if (projectId.intValue() > 0) {
             int pageNumber = 1;
 
-            List<IssueData> lastItems = new ArrayList<IssueData>();
+            List<IssueData> lastItems = new ArrayList<>();
 
             do {
-                List<IssueData> foundItems = new ArrayList<IssueData>();
+                List<IssueData> foundItems = new ArrayList<>();
                 foundItems = Arrays.asList(getConnector()
                         .mc_project_get_issues(login, password, projectId,
                                 new BigInteger(String.valueOf(pageNumber)),
@@ -258,14 +258,14 @@ public class MantisManager {
      */
     public List<IssueData> getIssuesByFilter(BigInteger projectId, BigInteger filterId) throws RemoteException {
 
-        List<IssueData> issues = new ArrayList<IssueData>();
+        List<IssueData> issues = new ArrayList<>();
         if (projectId.intValue() > 0) {
             int pageNumber = 1;
 
-            List<IssueData> lastItems = new ArrayList<IssueData>();
+            List<IssueData> lastItems = new ArrayList<>();
 
             do {
-                List<IssueData> foundItems = new ArrayList<IssueData>();
+                List<IssueData> foundItems = new ArrayList<>();
                 foundItems = Arrays.asList(getConnector()
                         .mc_filter_get_issues(login, password, projectId,
                                 filterId,
@@ -405,7 +405,7 @@ public class MantisManager {
      * @throws RemoteException
      */
     public List<AccountData> getUsers() throws RemoteException {
-        return new ArrayList<AccountData>(Arrays.asList(getConnector().mc_project_get_users(login, password, new BigInteger("0"), new BigInteger("0"))));
+        return new ArrayList<>(Arrays.asList(getConnector().mc_project_get_users(login, password, new BigInteger("0"), new BigInteger("0"))));
     }
 
     /**

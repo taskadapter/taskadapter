@@ -22,7 +22,7 @@ public class LabeledParameterized extends Parameterized {
 
     private void initialiseLabels() throws Exception {
         Collection<Object[]> parameterArrays = getParameterArrays();
-        labels = new ArrayList<String>();
+        labels = new ArrayList<>();
         for (Object[] parameterArray : parameterArrays) {
             String label = parameterArray[0].toString();
             labels.add(label);

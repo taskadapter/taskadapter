@@ -12,7 +12,7 @@ import java.util.Map;
 final public class GTask {
 
     // TODO REVIEW Why not EnumMap?
-    private final Map<GTaskDescriptor.FIELD, Object> fields = new HashMap<GTaskDescriptor.FIELD, Object>();
+    private final Map<GTaskDescriptor.FIELD, Object> fields = new HashMap<>();
 
     public GTask() {
         fields.put(GTaskDescriptor.FIELD.CHILDREN, new ArrayList<GTask>());

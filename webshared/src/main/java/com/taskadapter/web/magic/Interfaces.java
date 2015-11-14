@@ -225,7 +225,7 @@ public final class Interfaces {
 	private static List<Method> getMethods(Object object, String method) {
 		if (object instanceof Class<?>) {
 			final Method[] methods = ((Class<?>) object).getDeclaredMethods();
-			final List<Method> result = new ArrayList<Method>();
+			final List<Method> result = new ArrayList<>();
 			for (Method m : methods)
 				if (method.equals(m.getName())
 						&& Modifier.isStatic(m.getModifiers())) {
@@ -234,7 +234,7 @@ public final class Interfaces {
 			return result;
 		} else {
 			final Method[] methods = object.getClass().getDeclaredMethods();
-			final List<Method> result = new ArrayList<Method>();
+			final List<Method> result = new ArrayList<>();
 			for (Method m : methods)
 				if (method.equals(m.getName())
 						&& !Modifier.isStatic(m.getModifiers())) {

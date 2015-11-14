@@ -39,9 +39,9 @@ public final class LicenseFacade {
      */
     public LicenseFacade(LicenseManager licenseManager) {
         this.licenseManager = licenseManager;
-        this.haveValidLicense = new MutableState<Boolean>(
+        this.haveValidLicense = new MutableState<>(
                 licenseManager.isSomeValidLicenseInstalled());
-        this.currentLicense = new MutableState<License>(
+        this.currentLicense = new MutableState<>(
                 licenseManager.isSomeLicenseInstalled() ? licenseManager
                         .getLicense() : null);
     }

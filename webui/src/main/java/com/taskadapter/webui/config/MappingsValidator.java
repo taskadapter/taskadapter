@@ -30,8 +30,8 @@ public class MappingsValidator {
     }
 
     private static void validateFieldsAreOnlyUsedOnce(NewMappings mappings) throws FieldAlreadyMappedException {
-        Set<String> connector1Values = new HashSet<String>();
-        Set<String> connector2Values = new HashSet<String>();
+        Set<String> connector1Values = new HashSet<>();
+        Set<String> connector2Values = new HashSet<>();
         for (FieldMapping mapping : mappings.getMappings()) {
             String connector1Value = mapping.getConnector1();
             // it is null if no value is selected in the dropdown with MSP Text fields.

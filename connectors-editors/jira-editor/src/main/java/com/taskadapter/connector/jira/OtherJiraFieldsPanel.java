@@ -44,7 +44,7 @@ class OtherJiraFieldsPanel extends Panel {
         final TextField jiraComponent = EditorUtil.addLabeledText(
                 grid, "Project Component:",
                 "Component in the JIRA project");
-        final MethodProperty<String> componentProperty = new MethodProperty<String>(config, "component");
+        final MethodProperty<String> componentProperty = new MethodProperty<>(config, "component");
         jiraComponent.setPropertyDataSource(componentProperty);
         Button showComponentsButton = EditorUtil.createLookupButton(
                 "...",
@@ -68,7 +68,7 @@ class OtherJiraFieldsPanel extends Panel {
                 .addLabeledText(grid,
                         "Set 'Affected version' to:",
                         "Set this 'affected version' value when submitting issues to JIRA.");
-        final MethodProperty<String> affectedVersionProperty = new MethodProperty<String>(config, "affectedVersion");
+        final MethodProperty<String> affectedVersionProperty = new MethodProperty<>(config, "affectedVersion");
         affectedVersion.setPropertyDataSource(affectedVersionProperty);
         final DataProvider<List<? extends NamedKeyedObject>> versionProvider = new DataProvider<List<? extends NamedKeyedObject>>() {
             @Override
@@ -93,7 +93,7 @@ class OtherJiraFieldsPanel extends Panel {
                 .addLabeledText(grid,
                         "Set 'Fix for version' to:",
                         "Set this 'fix for version' value when submitting issues to JIRA.");
-        final MethodProperty<String> fixForProperty = new MethodProperty<String>(config, "fixForVersion");
+        final MethodProperty<String> fixForProperty = new MethodProperty<>(config, "fixForVersion");
         fixForVersion.setPropertyDataSource(fixForProperty);
         Button showFixForVersion = EditorUtil.createLookupButton(
                 "...",
@@ -110,7 +110,7 @@ class OtherJiraFieldsPanel extends Panel {
         final TextField defaultTaskType = EditorUtil
                 .addLabeledText(grid, "Default issue type:",
                         "New issues will be created with this issue type (bug/improvement/task...)");
-        final MethodProperty<String> defaultTaskTypeProperty = new MethodProperty<String>(config, "defaultTaskType");
+        final MethodProperty<String> defaultTaskTypeProperty = new MethodProperty<>(config, "defaultTaskType");
         defaultTaskType.setPropertyDataSource(defaultTaskTypeProperty);
         Button showDefaultTaskType = EditorUtil.createLookupButton(
                 "...",
@@ -132,7 +132,7 @@ class OtherJiraFieldsPanel extends Panel {
         final TextField defaultIssueTypeForSubtasks = EditorUtil
                 .addLabeledText(grid, "Issue type for subtasks:",
                         "Subtasks will be created with this issue type (typically this is 'subtask')");
-        final MethodProperty<String> defaultIssueTypeForSubtasksProperty = new MethodProperty<String>(config, "defaultIssueTypeForSubtasks");
+        final MethodProperty<String> defaultIssueTypeForSubtasksProperty = new MethodProperty<>(config, "defaultIssueTypeForSubtasks");
         defaultIssueTypeForSubtasks.setPropertyDataSource(defaultIssueTypeForSubtasksProperty);
         Button showIssueTypeForSubtasksButton = EditorUtil.createLookupButton(
                 "...",

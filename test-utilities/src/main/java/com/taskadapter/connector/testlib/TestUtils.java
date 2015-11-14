@@ -17,7 +17,7 @@ import java.util.Random;
 
 public class TestUtils {
     public static List<GTask> generateTasks(int quantity) {
-        List<GTask> tasks = new ArrayList<GTask>(quantity);
+        List<GTask> tasks = new ArrayList<>(quantity);
         for (int i = 0; i < quantity; i++) {
             tasks.add(generateTask());
         }

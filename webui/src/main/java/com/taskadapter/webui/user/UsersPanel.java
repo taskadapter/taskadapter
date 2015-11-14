@@ -78,7 +78,7 @@ public class UsersPanel {
         view.addComponent(usersLayout);
 
         final Collection<String> users = credentialsManager.listUsers();
-        numUsers = new MutableState<Integer>(users.size());
+        numUsers = new MutableState<>(users.size());
 
         addUserButton = new Button(message("users.addUser"));
         addUserButton.addClickListener(new Button.ClickListener() {
@@ -118,7 +118,7 @@ public class UsersPanel {
 
     private void refreshUsers(final Collection<String> users) {
         usersLayout.removeAllComponents();
-        List<String> usersList = new ArrayList<String>(users);
+        List<String> usersList = new ArrayList<>(users);
         Collections.sort(usersList);
         for (String user : usersList) {
             addUserToPanel(user);

@@ -21,7 +21,7 @@ public class PluginsFileParser {
 
     public Collection<String> parsePluginsFile(String fileContents) {
         String[] strings = fileContents.split("\r\n|\r|\n");
-        Collection<String> items = new ArrayList<String>();
+        Collection<String> items = new ArrayList<>();
         for (String s : strings) {
             if (s.startsWith(COMMENT_SYMBOL) || s.isEmpty()) {
                 continue;

@@ -28,8 +28,9 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueWrapper> {
     private final JiraConfig config;
     private final Mappings mappings;
 
-    private final Map<String, BasicPriority> priorities = new HashMap<String, BasicPriority>();
-    private final Map<String, BasicPriority> prioritiesOtherWay = new HashMap<String, BasicPriority>();
+    private final Map<String, BasicPriority> priorities = new HashMap<>();
+    // TODO looks like this prioritiesOtherWay is not used?
+    private final Map<String, BasicPriority> prioritiesOtherWay = new HashMap<>();
     private final Iterable<IssueType> issueTypeList;
     private final Iterable<Version> versions;
     private final Iterable<BasicComponent> components;
@@ -58,7 +59,7 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueWrapper> {
              * See:
              * http://stackoverflow.com/questions/14699893/how-to-create-subtasks-using-jira-rest-java-client
              */
-            final Map<String, Object> parent = new HashMap<String, Object>();
+            final Map<String, Object> parent = new HashMap<>();
             parent.put("key", task.getParentKey());
             final FieldInput parentField = new FieldInput("parent", 
                     new ComplexIssueInputFieldValue(parent));

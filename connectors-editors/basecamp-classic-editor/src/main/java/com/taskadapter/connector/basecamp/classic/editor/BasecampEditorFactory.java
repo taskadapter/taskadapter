@@ -62,21 +62,21 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
 
         Label descriptionLabel = new Label("Description:");
         addTo(grid, Alignment.MIDDLE_LEFT, descriptionLabel);
-        MethodProperty<String> descriptionProperty = new MethodProperty<String>(config, "label");
+        MethodProperty<String> descriptionProperty = new MethodProperty<>(config, "label");
         TextField descriptionField = textInput(descriptionProperty);
         descriptionField.addStyleName("server-panel-textfield");
         addTo(grid, Alignment.MIDDLE_LEFT, descriptionField);
 
         Label serverURLLabel = new Label("Server URL:");
         addTo(grid, Alignment.MIDDLE_LEFT, serverURLLabel);
-        MethodProperty<String> serverURLProperty = new MethodProperty<String>(config, "serverUrl");
+        MethodProperty<String> serverURLProperty = new MethodProperty<>(config, "serverUrl");
         TextField urlField = textInput(serverURLProperty);
         urlField.addStyleName("server-panel-textfield");
         addTo(grid, Alignment.MIDDLE_LEFT, urlField);
 
         Label apiKeyLabel = new Label("API access key:");
         addTo(grid, Alignment.MIDDLE_LEFT, apiKeyLabel);
-        MethodProperty<String> apiKey = new MethodProperty<String>(config, "apiKey");
+        MethodProperty<String> apiKey = new MethodProperty<>(config, "apiKey");
         PasswordField passwordField = passwordInput(apiKey);
         passwordField.addStyleName("server-panel-textfield");
         addTo(grid, Alignment.MIDDLE_LEFT, passwordField);
@@ -104,7 +104,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         Label projectKeyLabel = new Label("Project key:");
         addTo(grid, Alignment.MIDDLE_LEFT, projectKeyLabel);
 
-        MethodProperty<String> projectKeyProperty = new MethodProperty<String>(config, "projectKey");
+        MethodProperty<String> projectKeyProperty = new MethodProperty<>(config, "projectKey");
         addTo(grid, Alignment.MIDDLE_LEFT, textInput(projectKeyProperty));
         Button infoButton = EditorUtil.createButton("Info", "View the project info",
                 new Button.ClickListener() {
@@ -120,7 +120,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
             @Override
             public List<? extends NamedKeyedObject> loadData() throws ConnectorException {
                 List<BasecampProject> basecampProjects = BasecampUtils.loadProjects(factory, config);
-                List<NamedKeyedObject> objects = new ArrayList<NamedKeyedObject>();
+                List<NamedKeyedObject> objects = new ArrayList<>();
                 for (BasecampProject project : basecampProjects) {
                     objects.add(new NamedKeyedObjectImpl(project.getKey(), project.getName()));
                 }
@@ -144,7 +144,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         Label todoListKey = new Label("Todo list key:");
         addTo(grid, Alignment.MIDDLE_LEFT, todoListKey);
 
-        MethodProperty<String> todoKeyProperty = new MethodProperty<String>(config, "todoKey");
+        MethodProperty<String> todoKeyProperty = new MethodProperty<>(config, "todoKey");
         addTo(grid, Alignment.MIDDLE_LEFT, textInput(todoKeyProperty));
 
         Button infoButton = EditorUtil.createButton("Info", "View the todo list info",
@@ -161,7 +161,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
             @Override
             public List<? extends NamedKeyedObject> loadData() throws ConnectorException {
                 List<TodoList> todoLists = BasecampUtils.loadTodoLists(factory, config);
-                List<NamedKeyedObject> objects = new ArrayList<NamedKeyedObject>();
+                List<NamedKeyedObject> objects = new ArrayList<>();
                 for (TodoList todoList : todoLists) {
                     objects.add(new NamedKeyedObjectImpl(todoList.getKey(), todoList.getName()));
                 }

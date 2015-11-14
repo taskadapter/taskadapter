@@ -87,15 +87,15 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
     @Override
     public ComponentContainer getMiniPanelContents(Sandbox sandbox, JiraConfig config) {
         WebServerInfo serverInfo = config.getServerInfo();
-        ServerPanel serverPanel = new ServerPanel(new MethodProperty<String>(config, "label"),
-                new MethodProperty<String>(serverInfo, "host"),
-                new MethodProperty<String>(serverInfo, "userName"),
-                new MethodProperty<String>(serverInfo, "password"));
+        ServerPanel serverPanel = new ServerPanel(new MethodProperty<>(config, "label"),
+                new MethodProperty<>(serverInfo, "host"),
+                new MethodProperty<>(serverInfo, "userName"),
+                new MethodProperty<>(serverInfo, "password"));
 
         ShowProjectElement showProjectElement = new ShowProjectElement(config);
         ProjectPanel projectPanel = new ProjectPanel(
-                new MethodProperty<String>(config, "projectKey"),
-                new MethodProperty<String>(config, "queryIdStr"),
+                new MethodProperty<>(config, "projectKey"),
+                new MethodProperty<>(config, "queryIdStr"),
                 Interfaces.fromMethod(DataProvider.class, JiraLoaders.class,
                         "loadProjects", config.getServerInfo()),
                 Interfaces.fromMethod(SimpleCallback.class, showProjectElement, "loadProjectInfo"),
@@ -126,7 +126,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
 
     @Override
     public void validateForSave(JiraConfig config) throws BadConfigException {
-        final Collection<JiraValidationErrorKind> errors = new LinkedHashSet<JiraValidationErrorKind>();
+        final Collection<JiraValidationErrorKind> errors = new LinkedHashSet<>();
         
         final WebServerInfo serverInfo = config.getServerInfo();
         if (!serverInfo.isHostSet()) {
@@ -151,7 +151,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
 
     @Override
     public void validateForLoad(JiraConfig config) throws BadConfigException {
-        final Collection<JiraValidationErrorKind> errors = new LinkedHashSet<JiraValidationErrorKind>();
+        final Collection<JiraValidationErrorKind> errors = new LinkedHashSet<>();
         
         final WebServerInfo serverInfo = config.getServerInfo();
         if (!serverInfo.isHostSet()) {

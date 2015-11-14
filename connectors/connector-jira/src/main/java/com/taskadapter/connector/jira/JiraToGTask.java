@@ -30,7 +30,7 @@ public class JiraToGTask {
         // TODO see http://jira.atlassian.com/browse/JRA-6896
 //        logger.info("Jira: no tasks hierarchy is supported");
 
-        List<GTask> rootLevelTasks = new ArrayList<GTask>();
+        List<GTask> rootLevelTasks = new ArrayList<>();
 
         for (Issue issue : issues) {
             GTask genericTask = convertToGenericTask(issue);

@@ -13,7 +13,7 @@ import java.util.List;
 public class GithubProjectConverter {
 
     public List<GProject> toGProjects(List<Repository> repositories) {
-        List<GProject> projects = new ArrayList<GProject>(repositories.size());
+        List<GProject> projects = new ArrayList<>(repositories.size());
 
         for (Repository repository : repositories) {
             GProject project = toGProject(repository);
