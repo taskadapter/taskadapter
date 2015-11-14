@@ -101,18 +101,15 @@ public class PriorityPanel extends Panel implements Validatable {
         Button reloadButton = new Button("Reload");
         reloadButton.setDescription("Reload priority list.");
         reloadButton.setEnabled(priorityLoader != null);
-        reloadButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                try {
-                    reloadPriorityList();
-                } catch (BadConfigException e) {
-                    String localizedMessage = exceptionFormatter.formatError(e);
-                    Notification.show(localizedMessage);
-                } catch (Exception e) {
-                    logger.error("Error loading priorities: " + e.getMessage(), e);
-                    Notification.show("Oops", e.getMessage(), Notification.Type.ERROR_MESSAGE);
-                }
+        reloadButton.addClickListener((Button.ClickListener) event -> {
+            try {
+                reloadPriorityList();
+            } catch (BadConfigException e) {
+                String localizedMessage = exceptionFormatter.formatError(e);
+                Notification.show(localizedMessage);
+            } catch (Exception e) {
+                logger.error("Error loading priorities: " + e.getMessage(), e);
+                Notification.show("Oops", e.getMessage(), Notification.Type.ERROR_MESSAGE);
             }
         });
         layout.addComponent(reloadButton);

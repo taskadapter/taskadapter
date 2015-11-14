@@ -22,9 +22,6 @@ final class KeyProperty extends AbstractProperty<String> {
 
 	/**
 	 * Creates a new key property.
-	 * 
-	 * @param key
-	 * @param model
 	 */
 	KeyProperty(String key, MapEditorModel model) {
 		super();

@@ -50,12 +50,7 @@ public final class SupportPage {
         view.setMargin(true);
 
         Button checkButton = new Button(message("supportPage.checkForUpdate"));
-        checkButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                checkForUpdate();
-            }
-        });
+        checkButton.addClickListener((Button.ClickListener) event -> checkForUpdate());
         view.addComponent(checkButton);
         view.addComponent(lastVersionInfoLayout);
         versionPanel.setContent(view);

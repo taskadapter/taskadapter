@@ -16,6 +16,10 @@ import java.text.SimpleDateFormat;
 import static com.taskadapter.license.LicenseFormatDescriptor.LICENSE_DATE_FORMAT;
 
 public final class LicensePanels {
+    // TODO move to "taskadapter.properties" file
+    private static final String HTTP_WWW_TASKADAPTER_COM_BUY = "http://www.taskadapter.com/buy";
+    private static final String LICENSE_DATE_FORMAT_DESCRIPTION_FOR_GUI = "(year-month-day)";
+
     /**
      * Renders a license information.
      * 
@@ -56,12 +60,7 @@ public final class LicensePanels {
         }
 
         final Button clearLicenseButton = new Button("Remove license info");
-        clearLicenseButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                uninstallCallback.run();
-            }
-        });
+        clearLicenseButton.addClickListener((Button.ClickListener) event -> uninstallCallback.run());
         res.addComponent(clearLicenseButton);
 
         return res;
@@ -88,18 +87,9 @@ public final class LicensePanels {
         res.addComponent(licenseArea);
 
         final Button saveButton = new Button("Save license");
-        saveButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                newLicenseCallback.callBack(licenseArea.getValue());
-            }
-        });
+        saveButton.addClickListener((Button.ClickListener) event -> newLicenseCallback.callBack(licenseArea.getValue()));
         res.addComponent(saveButton);
 
         return res;
     }
-
-    // TODO move to "taskadapter.properties" file
-    private static final String HTTP_WWW_TASKADAPTER_COM_BUY = "http://www.taskadapter.com/buy";
-    private static final String LICENSE_DATE_FORMAT_DESCRIPTION_FOR_GUI = "(year-month-day)";
 }

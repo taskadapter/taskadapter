@@ -47,13 +47,10 @@ public class ServerContainer extends GridLayout {
 
         hostURLText = new TextField();
         hostURLText.setDescription(HOST_URL_TOOLTIP);
-        hostURLText.addBlurListener(new FieldEvents.BlurListener() {
-            @Override
-            public void blur(FieldEvents.BlurEvent event) {
-                //TODO refactor these methods (common in ServerPanel and RedmineServerPanel
-                checkProtocol();
-                cleanup();
-            }
+        hostURLText.addBlurListener((FieldEvents.BlurListener) event -> {
+            //TODO refactor these methods (common in ServerPanel and RedmineServerPanel
+            checkProtocol();
+            cleanup();
         });
         hostURLText.addStyleName("server-panel-textfield");
         hostURLText.setPropertyDataSource(serverURLProperty);

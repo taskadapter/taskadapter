@@ -81,12 +81,7 @@ public class UsersPanel {
         numUsers = new MutableState<>(users.size());
 
         addUserButton = new Button(message("users.addUser"));
-        addUserButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                startCreateUserProcess();
-            }
-        });
+        addUserButton.addClickListener((Button.ClickListener) event -> startCreateUserProcess());
         view.addComponent(addUserButton);
         States.onValue(numUsers, this::applyLicenseRestriction);
         

@@ -190,7 +190,7 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector, D
 
     @Override
     public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
-        return new MSPTaskSaver(config, mappings, monitor).saveData(tasks);
+        return new MSPTaskSaver(config, mappings).saveData(tasks);
     }
 
 }

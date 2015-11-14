@@ -90,12 +90,7 @@ public class ProjectPanel extends Panel implements Validatable {
         projectKey.setNullRepresentation("");
 
         Button infoButton = EditorUtil.createButton("Info", "View the project info",
-                new Button.ClickListener() {
-                    @Override
-                    public void buttonClick(Button.ClickEvent event) {
-                        loadProject();
-                    }
-                }
+                (Button.ClickListener) event -> loadProject()
         );
         infoButton.setEnabled(projectInfoCallback != null);
         addTo(grid, Alignment.MIDDLE_CENTER, infoButton);

@@ -33,8 +33,7 @@ public final class MSPTaskSaver {
 
     private MSXMLFileWriter writer;
 
-    public MSPTaskSaver(MSPConfig config, Mappings mappings,
-            ProgressMonitor monitor) {
+    public MSPTaskSaver(MSPConfig config, Mappings mappings) {
         this.config = config;
         this.writer = new MSXMLFileWriter(mappings);
     }

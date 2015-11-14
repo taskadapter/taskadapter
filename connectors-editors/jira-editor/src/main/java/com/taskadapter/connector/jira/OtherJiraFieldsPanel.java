@@ -1,9 +1,6 @@
 package com.taskadapter.connector.jira;
 
-import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.ExceptionFormatter;
-import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.Alignment;
@@ -11,8 +8,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
-
-import java.util.List;
 
 /**
  * Panel with title: "Set when exporting to JIRA"
@@ -51,12 +46,7 @@ class OtherJiraFieldsPanel extends Panel {
                 "Show list of available components on the given server.",
                 "Select component",
                 "List of available components on the server",
-                new DataProvider<List<? extends NamedKeyedObject>>() {
-                    @Override
-                    public List<? extends NamedKeyedObject> loadData() throws ConnectorException {
-                        return new JiraConnector(config).getComponents();
-                    }
-                },
+                () -> new JiraConnector(config).getComponents(),
                 componentProperty,
                 true, exceptionFormatter
         );
@@ -70,19 +60,12 @@ class OtherJiraFieldsPanel extends Panel {
                         "Set this 'affected version' value when submitting issues to JIRA.");
         final MethodProperty<String> affectedVersionProperty = new MethodProperty<>(config, "affectedVersion");
         affectedVersion.setPropertyDataSource(affectedVersionProperty);
-        final DataProvider<List<? extends NamedKeyedObject>> versionProvider = new DataProvider<List<? extends NamedKeyedObject>>() {
-            @Override
-            public List<? extends NamedKeyedObject> loadData()
-                    throws ConnectorException {
-                return new JiraConnector(config).getVersions();
-            }
-        };
         Button showAffectedVersion = EditorUtil.createLookupButton(
                 "...",
                 "Show list of available versions",
                 "Select version",
                 "List of available versions",
-                versionProvider,
+                () -> new JiraConnector(config).getVersions(),
                 affectedVersionProperty,
                 true,
                 exceptionFormatter
@@ -100,15 +83,14 @@ class OtherJiraFieldsPanel extends Panel {
                 "Show list of available versions",
                 "Select version",
                 "List of available versions",
-                versionProvider,
+                () -> new JiraConnector(config).getVersions(),
                 fixForProperty,
                 true, exceptionFormatter
         );
         grid.addComponent(showFixForVersion);
 
 
-        final TextField defaultTaskType = EditorUtil
-                .addLabeledText(grid, "Default issue type:",
+        final TextField defaultTaskType = EditorUtil.addLabeledText(grid, "Default issue type:",
                         "New issues will be created with this issue type (bug/improvement/task...)");
         final MethodProperty<String> defaultTaskTypeProperty = new MethodProperty<>(config, "defaultTaskType");
         defaultTaskType.setPropertyDataSource(defaultTaskTypeProperty);
@@ -117,12 +99,7 @@ class OtherJiraFieldsPanel extends Panel {
                 "Show list of available issue types on the JIRA server",
                 "Select issue type",
                 "List of available issue types on the JIRA server",
-                new DataProvider<List<? extends NamedKeyedObject>>() {
-                    @Override
-                    public List<? extends NamedKeyedObject> loadData() throws ConnectorException {
-                        return new JiraConnector(config).getAllIssueTypes();
-                    }
-                },
+                () -> new JiraConnector(config).getAllIssueTypes(),
                 defaultTaskTypeProperty,
                 true,
                 exceptionFormatter
@@ -139,12 +116,7 @@ class OtherJiraFieldsPanel extends Panel {
                 "Show list of available subtask types on the JIRA server",
                 "Select a subtask type",
                 "List of available subtask types on the JIRA server",
-                new DataProvider<List<? extends NamedKeyedObject>>() {
-                    @Override
-                    public List<? extends NamedKeyedObject> loadData() throws ConnectorException {
-                        return new JiraConnector(config).getIssueTypesForSubtasks();
-                    }
-                },
+                () -> new JiraConnector(config).getIssueTypesForSubtasks(),
                 defaultIssueTypeForSubtasksProperty,
                 true,
                 exceptionFormatter

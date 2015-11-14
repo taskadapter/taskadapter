@@ -9,6 +9,7 @@ import com.taskadapter.connector.definition.NewMappings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * UI-level config manager. Manages UIMappingConfigs instead of low-level
@@ -49,11 +50,9 @@ public final class UIConfigStore {
      */
     public List<UISyncConfig> getUserConfigs(String userLoginName) {
         final List<StoredExportConfig> storedConfigs = configStorage.getUserConfigs(userLoginName);
-        final List<UISyncConfig> result = new ArrayList<>(storedConfigs.size());
-        for (StoredExportConfig storedConfig : storedConfigs) {
-            result.add(syncConfigBuilder.uize(userLoginName, storedConfig));
-        }
-        return result;
+        return storedConfigs.stream()
+                .map(storedConfig -> syncConfigBuilder.uize(userLoginName, storedConfig))
+                .collect(Collectors.toList());
     }
 
     /**

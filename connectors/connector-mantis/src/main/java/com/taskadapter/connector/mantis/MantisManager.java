@@ -153,64 +153,15 @@ public class MantisManager {
      *
      * @param projectId The project to delete.
      * @return True if the project deleted successfully.
-     * @throws RemoteException
      */
     public boolean deleteProject(BigInteger projectId) throws RemoteException {
         return getConnector().mc_project_delete(login, password, projectId);
     }
 
     /**
-     * Retrieves issues headers for the specified project.
-     *
-     * @param projectId
-     * @return Issues headers list.
-     * @throws RemoteException
-     */
-    public List<IssueHeaderData> getIssuesHeadersByProject(BigInteger projectId) throws RemoteException {
-        List<IssueHeaderData> issuesHeaders = new ArrayList<>();
-
-        if (projectId.intValue() > 0) {
-
-            int pageNumber = 1;
-
-            List<IssueHeaderData> lastItems = new ArrayList<>();
-
-            do {
-                List<IssueHeaderData> foundItems = new ArrayList<>();
-                foundItems = Arrays.asList(getConnector()
-                        .mc_project_get_issue_headers(login, password,
-                                projectId,
-                                new BigInteger(String.valueOf(pageNumber)),
-                                BigInteger.valueOf(itemsPerPage)));
-
-                // if collection is identical to the collection on previous
-                // iteration
-                if (lastItems.equals(foundItems)) {
-                    break;
-                }
-
-                lastItems.clear();
-                lastItems.addAll(foundItems);
-                issuesHeaders.addAll(foundItems);
-
-                // if found nothing (works only on the first iteration) or
-                // collection contains less than itemsPerPage
-                if (foundItems.size() == 0 || foundItems.size() != itemsPerPage) {
-                    break;
-                }
-
-                pageNumber++;
-            } while (true);
-        }
-        return issuesHeaders;
-    }
-
-    /**
      * Retrieves issues for the specified project.
      *
-     * @param projectId
      * @return Issues list.
-     * @throws RemoteException
      */
     public List<IssueData> getIssuesByProject(BigInteger projectId)	throws RemoteException {
 
@@ -221,8 +172,7 @@ public class MantisManager {
             List<IssueData> lastItems = new ArrayList<>();
 
             do {
-                List<IssueData> foundItems = new ArrayList<>();
-                foundItems = Arrays.asList(getConnector()
+                List<IssueData> foundItems = Arrays.asList(getConnector()
                         .mc_project_get_issues(login, password, projectId,
                                 new BigInteger(String.valueOf(pageNumber)),
                                 BigInteger.valueOf(itemsPerPage)));
@@ -265,8 +215,7 @@ public class MantisManager {
             List<IssueData> lastItems = new ArrayList<>();
 
             do {
-                List<IssueData> foundItems = new ArrayList<>();
-                foundItems = Arrays.asList(getConnector()
+                List<IssueData> foundItems = Arrays.asList(getConnector()
                         .mc_filter_get_issues(login, password, projectId,
                                 filterId,
                                 new BigInteger(String.valueOf(pageNumber)),

@@ -95,12 +95,7 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
 
     private ServerModeFilePanel createServerModePanel(final Sandbox sandbox,
             final Property<String> inputFilePath, final Property<String> outputFilePath) {
-        final UploadProcessor proc = new UploadProcessor() {
-            @Override
-            public FileProcessingResult processFile(File uploadedFile) {
-                return MSPEditorFactory.this.processFile(sandbox, uploadedFile);
-            }
-        };
+        final UploadProcessor proc = uploadedFile -> MSPEditorFactory.this.processFile(sandbox, uploadedFile);
         return new ServerModeFilePanel(sandbox.getUserContentDirectory(),
                 inputFilePath, outputFilePath, proc);
     }

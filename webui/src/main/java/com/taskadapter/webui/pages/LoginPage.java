@@ -78,18 +78,16 @@ public final class LoginPage {
         errorLabel.addStyleName("errorMessage");
         layout.addComponent(errorLabel);
 
-        loginButton.addClickListener(new Button.ClickListener() {
-            public void buttonClick(Button.ClickEvent event) {
-                String username = loginEdit.getValue();
-                String password = passwordEdit.getValue();
-                try {
-                    callback.authenticate(username, password,
-                            staySignedIn.getValue());
-                } catch (WrongPasswordException e) {
-                    errorLabel.setValue(Page.MESSAGES.get("loginPage.wrongUserNameOrPassword"));
-                    passwordEdit.setValue("");
-                    passwordEdit.focus();
-                }
+        loginButton.addClickListener((Button.ClickListener) event -> {
+            String username = loginEdit.getValue();
+            String password = passwordEdit.getValue();
+            try {
+                callback.authenticate(username, password,
+                        staySignedIn.getValue());
+            } catch (WrongPasswordException e) {
+                errorLabel.setValue(Page.MESSAGES.get("loginPage.wrongUserNameOrPassword"));
+                passwordEdit.setValue("");
+                passwordEdit.focus();
             }
         });
         layout.addComponent(loginButton);

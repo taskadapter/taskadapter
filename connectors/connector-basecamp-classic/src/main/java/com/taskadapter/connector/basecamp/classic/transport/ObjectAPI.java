@@ -101,21 +101,15 @@ public final class ObjectAPI {
         try {
             dbf.setValidating(false);
             final DocumentBuilder db = dbf.newDocumentBuilder();
-            db.setEntityResolver(new EntityResolver() {
-                @Override
-                public InputSource resolveEntity(String publicId, String systemId)
-                        throws SAXException, IOException {
-                    throw new IOException("Entity resolution is not supported, bad XML");
-                }
+            db.setEntityResolver((publicId, systemId) -> {
+                throw new IOException("Entity resolution is not supported, bad XML");
             });
-            final Document doc = db.parse(new InputSource(new StringReader(
-                    docText)));
+            final Document doc = db.parse(new InputSource(new StringReader(docText)));
             return doc.getDocumentElement();
         } catch (ParserConfigurationException | IOException e) {
             throw new InternalException();
         } catch (SAXException e) {
-            throw new FatalMisunderstaningException("Can't parse responce "
-                    + docText, e);
+            throw new FatalMisunderstaningException("Can't parse response "+ docText, e);
         }
     }
 }

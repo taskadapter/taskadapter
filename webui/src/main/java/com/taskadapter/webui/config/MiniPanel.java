@@ -24,12 +24,7 @@ public class MiniPanel extends HorizontalLayout {
     public MiniPanel(UIConnectorConfig connectorConfig) {
         this.config = connectorConfig;
         buildUI();
-        addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
-            @Override
-            public void layoutClick(LayoutClickEvent event) {
-                showEditConnectorDialog();
-            }
-        });
+        addLayoutClickListener((LayoutEvents.LayoutClickListener) event -> showEditConnectorDialog());
     }
 
     private void buildUI() {
@@ -61,12 +56,7 @@ public class MiniPanel extends HorizontalLayout {
         newWindow.setCaption("Edit " + config.getConnectorTypeId()
                 + " settings");
         newWindow.setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
-        newWindow.addCloseListener(new Window.CloseListener() {
-            @Override
-            public void windowClose(Window.CloseEvent e) {
-                refreshLabel();
-            }
-        });
+        newWindow.addCloseListener((Window.CloseListener) e -> refreshLabel());
     }
 
     private void refreshLabel() {

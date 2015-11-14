@@ -14,8 +14,6 @@ public interface DataCallback<T> {
 	 * 
 	 * @param data
 	 *            data to receive.
-	 * @throws ValidationException
-	 *             if data is invalid.
 	 */
 	void callBack(T data);
 }

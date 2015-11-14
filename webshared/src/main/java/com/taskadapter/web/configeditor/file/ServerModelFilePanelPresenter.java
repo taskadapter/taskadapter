@@ -31,7 +31,6 @@ public final class ServerModelFilePanelPresenter {
 
     /**
      * TODO !!! see deprecated.
-     * @param initialFile
      * @deprecated remove this spahetti!!!
      */
     @Deprecated

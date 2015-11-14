@@ -71,7 +71,7 @@ public final class MapByClassBuilder<T> {
      *            object or class (for static methods) to invoke a method on.
      * @param method
      *            method name to invoke.
-     * @param extra
+     * @param args
      *            arguments. Value to convert is added last.
      * @return this to allow call chaining.
      * @throws IllegalArgumentException
@@ -124,7 +124,7 @@ public final class MapByClassBuilder<T> {
      *            object or class (for static methods) to invoke a method on.
      * @param method
      *            method name to invoke.
-     * @param extra
+     * @param args
      *            arguments. Value to convert is added last.
      * @return this to allow call chaining.
      * @throws IllegalArgumentException

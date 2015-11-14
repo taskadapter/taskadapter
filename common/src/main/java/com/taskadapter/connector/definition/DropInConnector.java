@@ -25,8 +25,6 @@ public interface DropInConnector<T extends ConnectorConfig> extends
      *            can't be null. See
      *            {@link ProgressMonitorUtils#getDummyMonitor()} if you don't
      *            want any monitoring.
-     * @throws Exception
-     *             some other exceptions the connector might throw
      */
     List<GTask> loadDropInData(File file, Mappings mappings, ProgressMonitor monitor)
             throws ConnectorException;
