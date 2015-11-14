@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.vaadin.server.Sizeable.Unit.PERCENTAGE;
 import static com.vaadin.server.Sizeable.Unit.PIXELS;
@@ -160,27 +161,15 @@ public final class ConfigsPage {
         actionPanel.setWidth(100, PERCENTAGE);
         layout.addComponent(actionPanel);
 
-        final Button addButton = new Button(
-                Page.MESSAGES.get("configsPage.buttonNewConfig"));
-        addButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                callback.newConfig();
-            }
-        });
+        final Button addButton = new Button(Page.MESSAGES.get("configsPage.buttonNewConfig"));
+        addButton.addClickListener((Button.ClickListener) clickEvent -> callback.newConfig());
         actionPanel.addComponent(addButton);
         actionPanel.setComponentAlignment(addButton, Alignment.MIDDLE_LEFT);
 
         final HorizontalLayout filterPanel = new HorizontalLayout();
         TextField filterField = new TextField();
-        filterField.addTextChangeListener(new FieldEvents.TextChangeListener() {
-            @Override
-            public void textChange(TextChangeEvent event) {
-                filterFields(event.getText());
-            }
-        });
-        filterPanel.addComponent(new Label(Page.MESSAGES
-                .get("configsPage.filter")));
+        filterField.addTextChangeListener((FieldEvents.TextChangeListener) event -> filterFields(event.getText()));
+        filterPanel.addComponent(new Label(Page.MESSAGES.get("configsPage.filter")));
         filterPanel.addStyleName("filterPanel");
         filterPanel.addComponent(filterField);
         filterPanel.setSpacing(true);
@@ -214,13 +203,9 @@ public final class ConfigsPage {
     private void filterFields(String filterStr) {
         final String[] words = filterStr == null ? new String[0] : filterStr
                 .toLowerCase().split(" +");
-        final List<UISyncConfig> res = new ArrayList<>(
-                configs.size());
-        for (UISyncConfig config : configs) {
-            if (matches(config, words)) {
-                res.add(config);
-            }
-        }
+        final List<UISyncConfig> res = configs.stream()
+                .filter(config -> matches(config, words))
+                .collect(Collectors.toList());
 
         setDisplayedConfigs(res);
     }

@@ -40,13 +40,7 @@ public final class ConfigActionsPanel {
         final HorizontalLayout descriptionLayout = new HorizontalLayout();
         descriptionLayout.setWidth(100, Unit.PERCENTAGE);
         descriptionLayout.addStyleName("configDescriptionPanel");
-        descriptionLayout
-                .addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
-                    @Override
-                    public void layoutClick(LayoutClickEvent event) {
-                        callback.edit(config);
-                    }
-                });
+        descriptionLayout.addLayoutClickListener((LayoutEvents.LayoutClickListener) event -> callback.edit(config));
 
         final String labelText = mode.nameOf(config);
         final Label description = new Label(

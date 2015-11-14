@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -48,9 +49,10 @@ public final class MapEditorModel implements Container,
 	public MapEditorModel(Map<String, String> map) {
 		super();
 		this.map = map;
-		for (Map.Entry<String, String> entry : map.entrySet()) {
-			items.add(createEntry(entry.getKey(), entry.getValue()));
-		}
+		items.addAll(map.entrySet()
+				.stream()
+				.map(entry -> createEntry(entry.getKey(), entry.getValue()))
+				.collect(Collectors.toList()));
 	}
 
 	/**
@@ -64,8 +66,7 @@ public final class MapEditorModel implements Container,
 	 */
 	private ItemHolder createEntry(String key, String value) {
 		KeyProperty keyProp = new KeyProperty(key, this);
-		return new ItemHolder(nextId++, keyProp, new ValueProperty(keyProp,
-				this, value));
+		return new ItemHolder(nextId++, keyProp, new ValueProperty(keyProp, this, value));
 	}
 
     @Override

@@ -115,9 +115,7 @@ public class TaskFieldsMappingFragment implements Validatable {
 
     private void addSupportedFields() {
         // TODO sort?
-        for (FieldMapping mapping : mappings.getMappings()) {
-            addField(mapping);
-        }
+        mappings.getMappings().forEach(this::addField);
     }
 
     private void addField(FieldMapping field) {

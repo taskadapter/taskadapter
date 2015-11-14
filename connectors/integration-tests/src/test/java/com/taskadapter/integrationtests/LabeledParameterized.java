@@ -117,24 +117,19 @@ public class LabeledParameterized extends Parameterized {
 
     private void generateLabelledDescription() throws Exception {
         Description originalDescription = super.getDescription();
-        labelledDescription = Description
-                .createSuiteDescription(originalDescription.getDisplayName());
-        ArrayList<Description> childDescriptions = originalDescription
-                .getChildren();
+        labelledDescription = Description.createSuiteDescription(originalDescription.getDisplayName());
+        ArrayList<Description> childDescriptions = originalDescription.getChildren();
         int childCount = childDescriptions.size();
-        if (childCount != labels.size())
-            throw new Exception(
-                    "Number of labels and number of parameters must match.");
+        if (childCount != labels.size()) {
+            throw new Exception("Number of labels and number of parameters must match.");
+        }
 
         for (int i = 0; i < childDescriptions.size(); i++) {
             Description childDescription = childDescriptions.get(i);
             String label = labels.get(i);
-            Description newDescription = Description
-                    .createSuiteDescription(label);
-            ArrayList<Description> grandChildren = childDescription
-                    .getChildren();
-            for (Description grandChild : grandChildren)
-                newDescription.addChild(grandChild);
+            Description newDescription = Description.createSuiteDescription(label);
+            ArrayList<Description> grandChildren = childDescription.getChildren();
+            grandChildren.forEach(newDescription::addChild);
             labelledDescription.addChild(newDescription);
         }
     }

@@ -246,8 +246,7 @@ public final class BasicCredentialsManager implements CredentialsManager {
         final String authKey = secondaryAuth.substring(prefixIdx + 1);
 
         final CredentialsV1 creds = loadV1(user);
-        final List<String> newToks = new ArrayList<>(
-                creds.secondaryCredentials.size());
+        final List<String> newToks = new ArrayList<>(creds.secondaryCredentials.size());
 
         for (String tok : creds.secondaryCredentials) {
             if (!isGoodSecondary(authShort, authKey, tok)) {

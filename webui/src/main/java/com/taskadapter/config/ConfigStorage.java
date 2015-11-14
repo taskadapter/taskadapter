@@ -11,17 +11,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConfigStorage {
+public final class ConfigStorage {
     private final Logger logger = LoggerFactory.getLogger(ConfigStorage.class);
 
     private static final String FILE_EXTENSION = "ta_conf";
     private static final String NUMBER_SEPARATOR = "_";
 
-    private static final FilenameFilter CONFIG_FILE_FILTER = new FilenameFilter() {
-        public boolean accept(File dir, String name) {
-            return name.endsWith(FILE_EXTENSION);
-        }
-    };
+    private static final FilenameFilter CONFIG_FILE_FILTER = (dir, name) -> name.endsWith(FILE_EXTENSION);
 
     private final File rootDir;
 

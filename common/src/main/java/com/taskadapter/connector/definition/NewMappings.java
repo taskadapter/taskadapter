@@ -4,9 +4,10 @@ import com.taskadapter.model.GTaskDescriptor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class NewMappings {
-    private Collection<FieldMapping> mappings = new ArrayList<>();
+    private final Collection<FieldMapping> mappings = new ArrayList<>();
 
     public NewMappings() {
     }
@@ -14,12 +15,11 @@ public class NewMappings {
     // TODO Add tests
     /**
      * Deep clone constructor.
-     * @param mappings
      */
     public NewMappings(Collection<FieldMapping> mappings) {
-        for (FieldMapping m : mappings) {
-            this.mappings.add(new FieldMapping(m.getField(), m.getConnector1(), m.getConnector2(), m.isSelected(), m.getDefaultValue()));
-        }
+        this.mappings.addAll(mappings.stream()
+                .map(m -> new FieldMapping(m.getField(), m.getConnector1(), m.getConnector2(), m.isSelected(), m.getDefaultValue()))
+                .collect(Collectors.toList()));
     }
 
     /**

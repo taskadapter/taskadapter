@@ -39,34 +39,22 @@ public final class CloneDeletePanel {
 
         final Button cloneButton = new Button("Clone");
         cloneButton.setDescription("Clone this config");
-        cloneButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                showConfirmClonePage();
-            }
-        });
+        cloneButton.addClickListener((Button.ClickListener) event -> showConfirmClonePage());
         layout.addComponent(cloneButton);
 
         final Button deleteButton = new Button("Delete");
         deleteButton.setDescription("Delete this config from Task Adapter");
-        deleteButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                showDeleteFilePage();
-            }
-        });
+        deleteButton.addClickListener((Button.ClickListener) clickEvent -> showDeleteFilePage());
         layout.addComponent(deleteButton);
     }
 
     private void showDeleteFilePage() {
         final MessageDialog messageDialog = new MessageDialog("Confirmation",
                 "Delete this config?", Arrays.asList(YES, CANCEL),
-                new MessageDialog.Callback() {
-                    public void onDialogResult(String answer) {
-                        if (YES.equals(answer)) {
-                            configOps.deleteConfig(config);
-                            onExit.run();
-                        }
+                answer -> {
+                    if (YES.equals(answer)) {
+                        configOps.deleteConfig(config);
+                        onExit.run();
                     }
                 });
         messageDialog.setWidth("175px");
@@ -76,19 +64,17 @@ public final class CloneDeletePanel {
     public void showConfirmClonePage() {
         MessageDialog messageDialog = new MessageDialog("Confirmation",
                 "Clone this config?", Arrays.asList(YES, CANCEL),
-                new MessageDialog.Callback() {
-                    public void onDialogResult(String answer) {
-                        if (YES.equals(answer)) {
-                            try {
-                                configOps.cloneConfig(config);
-                                onExit.run();
-                            } catch (StorageException e) {
-                                String message = "There were some troubles cloning the config:<BR>"
-                                        + e.getMessage();
-                                LOGGER.error(message, e);
-                                Notification.show(message,
-                                        Notification.Type.ERROR_MESSAGE);
-                            }
+                answer -> {
+                    if (YES.equals(answer)) {
+                        try {
+                            configOps.cloneConfig(config);
+                            onExit.run();
+                        } catch (StorageException e) {
+                            String message = "There were some troubles cloning the config:<BR>"
+                                    + e.getMessage();
+                            LOGGER.error(message, e);
+                            Notification.show(message,
+                                    Notification.Type.ERROR_MESSAGE);
                         }
                     }
                 });
