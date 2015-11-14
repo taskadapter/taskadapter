@@ -115,9 +115,7 @@ public class UsersPanel {
         usersLayout.removeAllComponents();
         List<String> usersList = new ArrayList<>(users);
         Collections.sort(usersList);
-        for (String user : usersList) {
-            addUserToPanel(user);
-        }
+        usersList.forEach(this::addUserToPanel);
         
         numUsers.set(usersList.size());
     }

@@ -132,17 +132,17 @@ public final class MapEditorModel implements Container,
 
 	@Override
 	public Collection<?> getItemIds() {
-		final List<Integer> ids = new ArrayList<>(items.size());
-		for (ItemHolder holder : items)
-			ids.add(holder.id);
-		return ids;
+		return items.stream()
+				.map(holder -> holder.id)
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public Property getContainerProperty(Object itemId, Object propertyId) {
 		final Item item = getItem(itemId);
-		if (item == null)
+		if (item == null) {
 			return null;
+		}
 		return item.getItemProperty(propertyId);
 	}
 
@@ -161,8 +161,9 @@ public final class MapEditorModel implements Container,
 		final int id = (Integer) itemId;
 
 		for (ItemHolder holder : items) {
-			if (holder.id == id)
+			if (holder.id == id) {
 				return true;
+			}
 		}
 		return false;
 	}

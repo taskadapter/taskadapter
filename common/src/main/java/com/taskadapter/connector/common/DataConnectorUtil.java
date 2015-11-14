@@ -7,7 +7,6 @@ import java.util.Collection;
 public class DataConnectorUtil {
 
     /**
-     * @param tasks
      * @return total number of tasks, including all children
      */
     public static int calculateNumberOfTasks(Collection<GTask> tasks) {

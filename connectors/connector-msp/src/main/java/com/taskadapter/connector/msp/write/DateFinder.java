@@ -5,9 +5,8 @@ import com.taskadapter.model.GTask;
 import java.util.Date;
 import java.util.List;
 
-public class DateFinder {
+public final class DateFinder {
     /**
-     * @param tasks
      * @return NULL if no tasks have start dates set
      */
     static Date findEarliestStartDate(List<GTask> tasks) {

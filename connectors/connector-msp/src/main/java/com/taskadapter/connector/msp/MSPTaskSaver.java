@@ -72,8 +72,7 @@ public final class MSPTaskSaver {
         MSPFileReader fileReader = new MSPFileReader();
         try {
             String outputAbsoluteFilePath = config.getOutputAbsoluteFilePath();
-            ProjectFile projectFile = fileReader
-                    .readFile(outputAbsoluteFilePath);
+            ProjectFile projectFile = fileReader.readFile(outputAbsoluteFilePath);
             for (GRelation relation : relations) {
                 if (relation.getType().equals(TYPE.precedes)) {
                     Integer intKey = Integer.parseInt(relation
@@ -100,14 +99,6 @@ public final class MSPTaskSaver {
             }
 
             RealWriter.writeProject(outputAbsoluteFilePath, projectFile);
-        } catch (MPXJException e) {
-            result.addGeneralError(new EntityPersistenseException(
-                    "Can't create Tasks Relations (" + e.toString() + ")"));
-            e.printStackTrace();
-        } catch (IOException e) {
-            result.addGeneralError(new EntityPersistenseException(
-                    "Can't create Tasks Relations (" + e.toString() + ")"));
-            e.printStackTrace();
         } catch (Throwable e) {
             result.addGeneralError(new EntityPersistenseException(
                     "Can't create Tasks Relations (" + e.toString() + ")"));

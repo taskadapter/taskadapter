@@ -18,8 +18,6 @@ public interface Connector<T extends ConnectorConfig> {
 	 *            can't be null. See
 	 *            {@link ProgressMonitorUtils#getDummyMonitor()} if you don't
 	 *            want any monitoring.
-	 * @throws Exception
-	 *             some other exceptions the connector might throw
 	 */
     List<GTask> loadData(Mappings mappings, ProgressMonitor monitor) throws ConnectorException;
 
@@ -32,10 +30,8 @@ public interface Connector<T extends ConnectorConfig> {
     GTask loadTaskByKey(String key, Mappings mappings) throws ConnectorException;
 
     /**
-     * @param tasks
      * @param monitor the monitor is already started and will be marked by Task Adapter core as "done" after the operation is completed.
      *                connectors only need to invoke monitor.worked(1) when a task is processed.
-     * @return
      */
     TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException;
 

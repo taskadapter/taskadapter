@@ -125,15 +125,15 @@ class MSPToGTask {
     private void processRelations(Task task, GTask genericTask) {
         List<Relation> relations = task.getSuccessors();
         if (relations != null) {
-            for (Relation relation : relations) {
-                if (relation.getType().equals(RelationType.FINISH_START)) {
-                    GRelation r = new GRelation(Integer.toString(relation
-                            .getSourceTask().getUniqueID()),
-                            Integer.toString(relation.getTargetTask()
-                                    .getUniqueID()), GRelation.TYPE.precedes);
-                    genericTask.getRelations().add(r);
-                }
-            }
+            relations.stream()
+                    .filter(relation -> relation.getType().equals(RelationType.FINISH_START))
+                    .forEach(relation -> {
+                        GRelation r = new GRelation(Integer.toString(relation
+                                .getSourceTask().getUniqueID()),
+                                Integer.toString(relation.getTargetTask()
+                                        .getUniqueID()), GRelation.TYPE.precedes);
+                        genericTask.getRelations().add(r);
+                    });
         }
     }
 
