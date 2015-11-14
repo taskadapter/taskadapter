@@ -115,17 +115,4 @@ public class ConfigStorage {
     public void delete(String configId) {
         new File(configId).delete();
     }
-
-    public StoredExportConfig getConfig(String userLoginName, String configId)
-            throws StorageException {
-        final File file = new File(configId);
-        try {
-            final String fileBody = Files.toString(file, Charsets.UTF_8);
-            return NewConfigParser.parse(file.getAbsolutePath(), fileBody);
-        } catch (Exception e) {
-            logger.error("Error loading file " + file.getAbsolutePath() + ": "
-                    + e.getMessage(), e);
-            throw new StorageException("Failed to load file " + configId, e);
-        }
-    }
 }

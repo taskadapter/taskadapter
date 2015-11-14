@@ -13,7 +13,7 @@ public class GTaskDescriptor {
     //      public ? deserializeDefaultValue(J json)
     //      etc...
     // }
-    public static enum FIELD {
+    public enum FIELD {
         ID, KEY, PARENT_KEY,
         SUMMARY, DESCRIPTION, TASK_TYPE, ESTIMATED_TIME, DONE_RATIO, ASSIGNEE, START_DATE, DUE_DATE,
         CREATED_ON, UPDATED_ON,

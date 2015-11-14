@@ -185,7 +185,7 @@ public final class MapEditorModel implements Container,
 			final ItemHolder item = holder.next();
 			if (item.id == id) {
 				holder.remove();
-				updateBinding((String) item.key.getValue());
+				updateBinding(item.key.getValue());
 				fireSetChanged();
 				return true;
 			}
@@ -254,7 +254,7 @@ public final class MapEditorModel implements Container,
 		while (iter.hasPrevious()) {
 			final ItemHolder item = iter.previous();
 			if (value.equals(item.key.getValue())) {
-				map.put(value, (String) item.value.getValue());
+				map.put(value, item.value.getValue());
 				return;
 			}
 		}

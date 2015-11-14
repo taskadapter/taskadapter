@@ -258,7 +258,7 @@ public class BasecampUtils {
             final Element compl = d.createElement("completed");
             compl.setAttribute("type", "boolean");
             compl.appendChild(d
-                    .createTextNode(task.getDoneRatio().intValue() >= 100 ? "true"
+                    .createTextNode(task.getDoneRatio() >= 100 ? "true"
                             : "false"));
             root.appendChild(compl);
         }

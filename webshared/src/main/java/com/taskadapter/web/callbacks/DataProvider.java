@@ -14,5 +14,5 @@ public interface DataProvider<T> {
      * @return loaded data.
      * @throws ConnectorException if current state is invalid.
      */
-    public T loadData() throws ConnectorException;
+    T loadData() throws ConnectorException;
 }

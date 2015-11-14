@@ -146,7 +146,7 @@ final class BasecampConnector implements Connector<BasecampConfig> {
              /* Set "done ratio" if needed */
             if (ctx.getXmlName(FIELD.DONE_RATIO) != null
                     && task.getDoneRatio() != null
-                    && task.getDoneRatio().intValue() >= 100) {
+                    && task.getDoneRatio() >= 100) {
                 api.put("todo_items/" + newTaskKey + "/complete.xml","");
             }
             resultBuilder.addCreatedTask(task.getId(), newTaskKey);

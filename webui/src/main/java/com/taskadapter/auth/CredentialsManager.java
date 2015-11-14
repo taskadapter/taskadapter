@@ -16,7 +16,7 @@ public interface CredentialsManager {
      * @return user autorhized operations or <code>null</code> if user is not
      *         authorized.
      */
-    public AuthorizedOperations authenticateSecondary(String user, String auth);
+    AuthorizedOperations authenticateSecondary(String user, String auth);
 
     /**
      * Checks, if a user is authentic using a primary authentication token.
@@ -28,7 +28,7 @@ public interface CredentialsManager {
      * @return user autorhized operations or <code>null</code> if user is not
      *         authorized.
      */
-    public AuthorizedOperations authenticatePrimary(String user, String auth);
+    AuthorizedOperations authenticatePrimary(String user, String auth);
 
     /**
      * Generates a secondary authentication key for a primary authentication
@@ -44,8 +44,8 @@ public interface CredentialsManager {
      * @throws AuthException
      *             if credentials are valid, but new token cannot be generated.
      */
-    public SecondarizationResult generateSecondaryAuth(String user,
-            String primaryAuth) throws AuthException;
+    SecondarizationResult generateSecondaryAuth(String user,
+                                                String primaryAuth) throws AuthException;
 
     /**
      * Deletes a secondary authentication token. After call to this method,
@@ -59,7 +59,7 @@ public interface CredentialsManager {
      * @throws AuthException
      *             if token cannot be removed (but was found as authentic).
      */
-    public void destroySecondaryAuthToken(String user, String secondaryAuth)
+    void destroySecondaryAuthToken(String user, String secondaryAuth)
             throws AuthException;
 
     /**
@@ -82,7 +82,7 @@ public interface CredentialsManager {
      * @throws AuthException
      *             if token cannot be updated.
      */
-    public void savePrimaryAuthToken(String user, String newToken)
+    void savePrimaryAuthToken(String user, String newToken)
             throws AuthException;
 
     /**
@@ -97,14 +97,14 @@ public interface CredentialsManager {
      * @throws AuthException
      *             if some error occured during a reset.
      */
-    public void destroyAllSecondaryTokens(String user) throws AuthException;
+    void destroyAllSecondaryTokens(String user) throws AuthException;
 
     /**
      * Lists all existing users.
      * 
      * @return list of all existing users.
      */
-    public List<String> listUsers();
+    List<String> listUsers();
 
     /**
      * Removes user.
@@ -114,5 +114,5 @@ public interface CredentialsManager {
      * @throws AuthException
      *             if user exists and cannot be deleted.
      */
-    public void removeUser(String user) throws AuthException;
+    void removeUser(String user) throws AuthException;
 }

@@ -9,6 +9,6 @@ public interface SimpleCallback {
 	/**
 	 * Passes a query.
 	 */
-	public void callBack() throws ConnectorException;
+	void callBack() throws ConnectorException;
 
 }

@@ -11,5 +11,5 @@ public interface UserResolver {
      *            user to resolve.
      * @return resolved user.
      */
-    public GUser resolveUser(GUser user);
+    GUser resolveUser(GUser user);
 }

@@ -11,7 +11,7 @@ public interface Communicator {
      * 
      * @return the response body.
      */
-    public abstract BasicHttpResponse sendRequest(HttpRequest request)
+    BasicHttpResponse sendRequest(HttpRequest request)
             throws ConnectorException;
 
 }

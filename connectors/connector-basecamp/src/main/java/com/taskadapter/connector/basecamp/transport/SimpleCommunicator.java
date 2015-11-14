@@ -14,7 +14,7 @@ public interface SimpleCommunicator<T> {
      * 
      * @return the response body.
      */
-    public abstract T sendRequest(HttpRequest request)
+    T sendRequest(HttpRequest request)
             throws ConnectorException;
 
 }

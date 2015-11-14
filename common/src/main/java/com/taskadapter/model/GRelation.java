@@ -1,7 +1,7 @@
 package com.taskadapter.model;
 
 public class GRelation {
-    public static enum TYPE {
+    public enum TYPE {
         // TODO this is used directly, need to use type-safe
         precedes
     }

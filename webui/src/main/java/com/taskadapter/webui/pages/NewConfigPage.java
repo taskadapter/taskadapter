@@ -23,14 +23,14 @@ public class NewConfigPage {
     /**
      * Callback for config creation page.
      */
-    public static interface Callback {
+    public interface Callback {
         /**
          * This method is called after new config was created.
          * 
          * @param config
          *            created config.
          */
-        public void configCreated(UISyncConfig config);
+        void configCreated(UISyncConfig config);
     }
 
     private final TextField descriptionTextField;

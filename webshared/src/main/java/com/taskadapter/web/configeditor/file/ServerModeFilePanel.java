@@ -122,7 +122,7 @@ public class ServerModeFilePanel extends Panel{
         uploadButton.addListener(Upload.FailedEvent.class, presenter, "uploadFailed");
         uploadButton.addListener(new Upload.ProgressListener() {
             public void updateProgress(long readBytes, long contentLength) {
-                progressIndicator.setValue(new Float(readBytes / (float) contentLength));
+                progressIndicator.setValue(readBytes / (float) contentLength);
             }
         });
 

@@ -57,7 +57,7 @@ public class InputDialog extends Window {
     }
 
     public interface Recipient {
-        public void gotInput(String input);
+        void gotInput(String input);
     }
 
     public void setPasswordMode() {

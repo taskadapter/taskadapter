@@ -61,7 +61,7 @@ public interface PluginEditorFactory<C extends ConnectorConfig> extends
      *             if config cannot be automatically updated to a
      *             "valid for save" state.
      */
-    public boolean updateForSave(C config, Sandbox sandbox)
+    boolean updateForSave(C config, Sandbox sandbox)
             throws BadConfigException;
 
     /**

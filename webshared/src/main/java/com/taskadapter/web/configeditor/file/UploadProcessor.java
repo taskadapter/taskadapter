@@ -11,5 +11,5 @@ public interface UploadProcessor {
      * @param uploadedFile uploaded file.
      * @return file processing result.
      */
-    public FileProcessingResult processFile(File uploadedFile);
+    FileProcessingResult processFile(File uploadedFile);
 }

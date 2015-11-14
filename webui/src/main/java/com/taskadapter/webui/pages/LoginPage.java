@@ -19,7 +19,7 @@ public final class LoginPage {
     /**
      * Callbacks for login operation.
      */
-    public static interface Callback {
+    public interface Callback {
         /**
          * Performs user authentication and all other required operations.
          * 

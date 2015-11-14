@@ -22,7 +22,7 @@ import static com.taskadapter.webui.Page.message;
 public class ChangePasswordDialog {
 
     /** Change password callback. */
-    public static interface Callback {
+    public interface Callback {
         /**
          * Attempts to change a password.
          * 
@@ -35,7 +35,7 @@ public class ChangePasswordDialog {
          * @throws WrongPasswordException
          *             if user password is wrong.
          */
-        public void changePassword(String oldPassword, String newPassword)
+        void changePassword(String oldPassword, String newPassword)
                 throws AuthException, WrongPasswordException;
     }
 

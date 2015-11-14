@@ -19,7 +19,7 @@ public interface CredentialsStore {
      * @throws AuthException
      *             if credentials cannot be found.
      */
-    public Credentials loadCredentials(String user) throws AuthException;
+    Credentials loadCredentials(String user) throws AuthException;
 
     /**
      * Saves a new user credentials. Only last credentials version is supported.
@@ -31,7 +31,7 @@ public interface CredentialsStore {
      * @throws AuthException
      *             if credentials cannot be saved.
      */
-    public void saveCredentials(String user, CredentialsV1 credentials)
+    void saveCredentials(String user, CredentialsV1 credentials)
             throws AuthException;
 
     /**
@@ -39,12 +39,12 @@ public interface CredentialsStore {
      * 
      * @return list of found users.
      */
-    public List<String> listUsers();
+    List<String> listUsers();
 
     /**
      * Removes user.
      * @param user user to remove.
      * @throws AuthException if user exists and cannot be deleted.
      */
-    public void removeUser(String user) throws AuthException;
+    void removeUser(String user) throws AuthException;
 }

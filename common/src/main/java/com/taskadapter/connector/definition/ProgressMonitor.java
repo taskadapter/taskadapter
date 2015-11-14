@@ -7,9 +7,9 @@ package com.taskadapter.connector.definition;
  * @author Alexey Skorokhodov
  */
 public interface ProgressMonitor {
-    public void beginTask(String taskName, int total);
+    void beginTask(String taskName, int total);
 
-    public void worked(int work);
+    void worked(int work);
 
-    public void done();
+    void done();
 }

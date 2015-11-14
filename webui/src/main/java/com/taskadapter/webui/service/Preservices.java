@@ -22,8 +22,7 @@ public class Preservices {
     public final String currentTaskAdapterVersion;
     public final TempFileManager tempFileManager;
 
-    public Preservices(File rootDir, EditorManager editorManager,
-            CredentialsManager credentialManager) {
+    public Preservices(File rootDir, EditorManager editorManager) {
         this.rootDir = rootDir;
         this.editorManager = editorManager;
         final ConfigStorage configStorage = new ConfigStorage(rootDir);

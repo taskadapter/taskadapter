@@ -17,5 +17,5 @@ public interface DataCallback<T> {
 	 * @throws ValidationException
 	 *             if data is invalid.
 	 */
-	public void callBack(T data);
+	void callBack(T data);
 }

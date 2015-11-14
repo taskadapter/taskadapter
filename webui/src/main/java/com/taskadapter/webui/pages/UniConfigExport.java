@@ -37,11 +37,11 @@ final class UniConfigExport {
     /**
      * Unified config export callback.
      */
-    public static interface Callback {
+    public interface Callback {
         /**
          * Performs a regular export.
          */
-        public void doExport();
+        void doExport();
 
         /**
          * Performs a drop-in export.
@@ -49,7 +49,7 @@ final class UniConfigExport {
          * @param file
          *            file to export.
          */
-        public void dropInExport(Html5File file);
+        void dropInExport(Html5File file);
     }
 
     private static String getDropInValidationError(UISyncConfig syncConfig)

@@ -20,7 +20,7 @@ public interface AuthFactory<K, A> {
      *            authentication data.
      * @return <code>true</code> iff key is authentic.
      */
-    public boolean isAuthentic(K key, A auth);
+    boolean isAuthentic(K key, A auth);
 
     /**
      * Creates a new authentication data for a passed key.
@@ -29,5 +29,5 @@ public interface AuthFactory<K, A> {
      *            key to generate an auth for.
      * @return auth information for a key.
      */
-    public A generateAuth(K key) throws AuthException;
+    A generateAuth(K key) throws AuthException;
 }

@@ -13,7 +13,7 @@ public interface State<T> {
      * 
      * @return current state.
      */
-    public T get();
+    T get();
 
     /**
      * Adds a state listener.
@@ -21,7 +21,7 @@ public interface State<T> {
      * @param listener
      *            listener to run on state change.
      */
-    public void addListener(Runnable listener);
+    void addListener(Runnable listener);
 
     /**
      * Removes a listener. If listener is not registered, does nothing.
@@ -29,5 +29,5 @@ public interface State<T> {
      * @param listener
      *            listener to remove.
      */
-    public void removeListener(Runnable listener);
+    void removeListener(Runnable listener);
 }

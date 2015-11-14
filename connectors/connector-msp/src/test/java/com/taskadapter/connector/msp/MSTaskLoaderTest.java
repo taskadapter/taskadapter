@@ -39,7 +39,7 @@ public class MSTaskLoaderTest {
         GTask task1 = tasks.get(0);
         assertEquals("task 1", task1.getSummary());
         assertEquals("alex", task1.getAssignee().getDisplayName());
-        assertEquals(12f, task1.getEstimatedHours().floatValue(), 0);
+        assertEquals(12f, task1.getEstimatedHours(), 0);
 
         Date expectedStartDate = new SimpleDateFormat("MM/dd/yyyy HH:mm").parse("12/11/2013 08:00");
         assertEquals(expectedStartDate, task1.getStartDate());

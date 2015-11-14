@@ -20,5 +20,5 @@ public interface ConnectorConverter<S, T> {
      * @throws ConnectorException
      *             if object cannot be converted.
      */
-    public T convert(S source) throws ConnectorException;
+    T convert(S source) throws ConnectorException;
 }

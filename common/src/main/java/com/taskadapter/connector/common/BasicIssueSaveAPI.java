@@ -19,7 +19,7 @@ public interface BasicIssueSaveAPI<N> {
      * @throws ConnectorException
      *             if an error occurs.
      */
-    public String createTask(N nativeTask) throws ConnectorException;
+    String createTask(N nativeTask) throws ConnectorException;
 
     /**
      * Updates an existing task.
@@ -29,6 +29,6 @@ public interface BasicIssueSaveAPI<N> {
      * @throws ConnectorException
      *             if an error occurs.
      */
-    public void updateTask(N nativeTask) throws ConnectorException;
+    void updateTask(N nativeTask) throws ConnectorException;
 
 }

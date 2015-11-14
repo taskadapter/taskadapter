@@ -16,5 +16,5 @@ public interface DataFormatter<T> {
      *            data to convert.
      * @return converted string.
      */
-    public String format(T data);
+    String format(T data);
 }

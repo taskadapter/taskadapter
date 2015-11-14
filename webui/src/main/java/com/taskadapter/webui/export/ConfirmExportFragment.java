@@ -26,19 +26,19 @@ public final class ConfirmExportFragment {
     /**
      * Confirm export fragment callbacks.
      */
-    public static interface Callback {
+    public interface Callback {
         /**
          * Notifies about selected tasks.
          * 
          * @param selectedTasks
          *            selected tasks.
          */
-        public void onTasks(List<GTask> selectedTasks);
+        void onTasks(List<GTask> selectedTasks);
 
         /**
          * Notifies about process cancellation.
          */
-        public void onCancel();
+        void onCancel();
     }
 
     /**

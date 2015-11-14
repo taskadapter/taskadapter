@@ -49,8 +49,7 @@ final class TAApplicationProvider extends UIProvider {
                 rootFolder);
         credentialsManager = new BasicCredentialsManager(credentialsStore, 50);
 
-        services = new Preservices(rootFolder,
-                EditorManager.fromResource("editors.txt"), credentialsManager);
+        services = new Preservices(rootFolder, EditorManager.fromResource("editors.txt"));
 
         // FIXME: WTF?
         services.licenseManager.loadInstalledTaskAdapterLicense();

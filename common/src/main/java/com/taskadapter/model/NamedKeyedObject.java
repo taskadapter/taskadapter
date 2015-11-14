@@ -1,7 +1,7 @@
 package com.taskadapter.model;
 
 public interface NamedKeyedObject {
-    public String getName();
+    String getName();
 
-    public String getKey();
+    String getKey();
 }

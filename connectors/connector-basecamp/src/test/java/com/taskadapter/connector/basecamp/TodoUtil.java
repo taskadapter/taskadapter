@@ -11,7 +11,7 @@ import com.taskadapter.model.GTaskDescriptor;
 import java.util.Collections;
 import java.util.List;
 
-public class TodoUtil {
+class TodoUtil {
     static GTask create(BasecampConfig config, ObjectAPIFactory factory, GTask task) throws ConnectorException {
         final BasecampConnector connector = new BasecampConnector(config, factory);
         final TaskSaveResult res = connector.saveData(

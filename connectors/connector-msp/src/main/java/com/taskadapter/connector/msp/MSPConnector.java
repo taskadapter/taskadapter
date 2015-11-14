@@ -148,9 +148,7 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector, D
         return loadInternal(mappings, file.getAbsolutePath());
     }
 
-    private List<GTask> loadInternal(Mappings sourceMappings,
-            final String sourceFile) throws BadConfigException,
-            ConnectorException {
+    private List<GTask> loadInternal(Mappings sourceMappings, final String sourceFile) throws ConnectorException {
         ProjectFile projectFile;
         final MSPFileReader fileReader = new MSPFileReader();
         try {

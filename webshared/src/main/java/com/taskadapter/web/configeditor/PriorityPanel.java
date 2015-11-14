@@ -81,7 +81,7 @@ public class PriorityPanel extends Panel implements Validatable {
 
         prioritiesTable.setColumnHeader(PriorityPanel.TEXT, NAME_HEADER);
         prioritiesTable.setColumnHeader(PriorityPanel.VALUE, VALUE_HEADER);
-        prioritiesTable.setVisibleColumns(new Object[]{PriorityPanel.TEXT, PriorityPanel.VALUE});
+        prioritiesTable.setVisibleColumns(PriorityPanel.TEXT, PriorityPanel.VALUE);
         prioritiesTable.setWidth("100%");
         prioritiesTable.setContainerDataSource(data);
 

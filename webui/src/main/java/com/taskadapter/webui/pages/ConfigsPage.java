@@ -27,14 +27,14 @@ public final class ConfigsPage {
     /**
      * Callback for config list page.
      */
-    public static interface Callback {
+    public interface Callback {
         /**
          * User requested to edit config.
          * 
          * @param config
          *            selected config.
          */
-        public void edit(UISyncConfig config);
+        void edit(UISyncConfig config);
 
         /**
          * User requested synchronization in "forward" directions (from left to
@@ -43,7 +43,7 @@ public final class ConfigsPage {
          * @param config
          *            config for the operation.
          */
-        public void forwardSync(UISyncConfig config);
+        void forwardSync(UISyncConfig config);
 
         /**
          * User requested synchronization in "reverse" direction (from right to
@@ -52,7 +52,7 @@ public final class ConfigsPage {
          * @param config
          *            config for the operation.
          */
-        public void backwardSync(UISyncConfig config);
+        void backwardSync(UISyncConfig config);
 
         /**
          * Performs a forward drop-in.
@@ -62,7 +62,7 @@ public final class ConfigsPage {
          * @param file
          *            file to receive.
          */
-        public void forwardDropIn(UISyncConfig config, Html5File file);
+        void forwardDropIn(UISyncConfig config, Html5File file);
 
         /**
          * Performs a backward drop-in.
@@ -72,18 +72,18 @@ public final class ConfigsPage {
          * @param file
          *            file to receive.
          */
-        public void backwardDropIn(UISyncConfig config, Html5File file);
+        void backwardDropIn(UISyncConfig config, Html5File file);
 
         /**
          * User requested creation of a new config.
          */
-        public void newConfig();
+        void newConfig();
     }
 
     /**
      * Config display mode.
      */
-    public static enum DisplayMode {
+    public enum DisplayMode {
         /**
          * This page is displaying only owned configs.
          */

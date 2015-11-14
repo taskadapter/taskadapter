@@ -29,7 +29,7 @@ public class JiraConnection {
 
     private List<Issue> searchJQL(String jql, final Integer maxPageSize) {
         int start = 0;
-        final int pageSize = maxPageSize == null ? DEFAULT_PAGE_SIZE : maxPageSize.intValue();
+        final int pageSize = maxPageSize == null ? DEFAULT_PAGE_SIZE : maxPageSize;
 
         final List<Issue> result = new ArrayList<>();
         SearchResult<Issue> search;

@@ -58,7 +58,7 @@ public class MessageDialog extends Window implements Button.ClickListener {
     }
 
     public interface Callback {
-        public void onDialogResult(String answer);
+        void onDialogResult(String answer);
     }
 }
 

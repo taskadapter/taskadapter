@@ -10,7 +10,7 @@ import com.vaadin.ui.UI;
  * way to set such factory for the servlet.
  * 
  */
-public final class AppUIProxy extends UIProvider {
+final class AppUIProxy extends UIProvider {
 
     /** Proxied instance. */
     static UIProvider instance;

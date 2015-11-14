@@ -19,7 +19,7 @@ public interface RelationSaver {
      * @throws ConnectorException
      *             if connector fails to save a relation.
      */
-    public void saveRelations(List<GRelation> relations)
+    void saveRelations(List<GRelation> relations)
             throws ConnectorException;
 
 }

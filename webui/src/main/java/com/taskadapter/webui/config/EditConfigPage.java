@@ -26,7 +26,7 @@ import static com.vaadin.server.Sizeable.Unit.PERCENTAGE;
 
 public class EditConfigPage {
 
-    public static interface Callback {
+    public interface Callback {
         /**
          * User requested synchronization in "forward" directions (from left to
          * right).
@@ -34,7 +34,7 @@ public class EditConfigPage {
          * @param config
          *            config for the operation.
          */
-        public void forwardSync(UISyncConfig config);
+        void forwardSync(UISyncConfig config);
 
         /**
          * User requested synchronization in "reverse" direction (from right to
@@ -43,12 +43,12 @@ public class EditConfigPage {
          * @param config
          *            config for the operation.
          */
-        public void backwardSync(UISyncConfig config);
+        void backwardSync(UISyncConfig config);
 
         /**
          * User attempts to leave this page.
          */
-        public void back();
+        void back();
 
     }
 

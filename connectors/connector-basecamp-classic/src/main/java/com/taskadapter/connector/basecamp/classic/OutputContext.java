@@ -17,6 +17,6 @@ public interface OutputContext {
      * @return json name for a field or <code>null</code>.
      * @throws ConnectorException
      */
-    public String getXmlName(GTaskDescriptor.FIELD field)
+    String getXmlName(GTaskDescriptor.FIELD field)
             throws ConnectorException;
 }

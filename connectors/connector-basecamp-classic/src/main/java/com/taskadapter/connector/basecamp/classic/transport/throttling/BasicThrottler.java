@@ -5,7 +5,7 @@ package com.taskadapter.connector.basecamp.classic.transport.throttling;
  * handlers must call an end method after a "throttled" action.
  */
 public interface BasicThrottler {
-    public void start() throws InterruptedException;
+    void start() throws InterruptedException;
 
-    public void end();
+    void end();
 }
