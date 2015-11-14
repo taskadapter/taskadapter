@@ -93,12 +93,7 @@ public final class ExportPage {
                 config.getConnector1().getLabel());
 
         setContent(SyncActionComponents.renderDownloadWelcome(welcome,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        startLoading();
-                    }
-                }, onDone));
+                this::startLoading, onDone));
     }
 
     /**

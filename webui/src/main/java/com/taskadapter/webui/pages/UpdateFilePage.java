@@ -73,12 +73,7 @@ public final class UpdateFilePage {
         final String welcome = message("updatePage.initialText", config.getConnector2().getDestinationLocation());
 
         setContent(SyncActionComponents.renderDownloadWelcome(welcome,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        startLoading();
-                    }
-                }, onDone));
+                this::startLoading, onDone));
     }
 
     /**

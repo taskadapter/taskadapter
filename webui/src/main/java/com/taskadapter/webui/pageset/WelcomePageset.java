@@ -63,12 +63,7 @@ public final class WelcomePageset {
         this.callback = callback;
         this.license = new LicenseFacade(services.licenseManager);
 
-        final Component header = Header.render(new Runnable() {
-            @Override
-            public void run() {
-                showLogin();
-            }
-        }, createMenu(), new HorizontalLayout(), license.isLicensed());
+        final Component header = Header.render(this::showLogin, createMenu(), new HorizontalLayout(), license.isLicensed());
 
         ui = TAPageLayout.layoutPage(header, currentComponentArea);
     }

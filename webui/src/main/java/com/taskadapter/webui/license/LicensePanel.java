@@ -1,6 +1,5 @@
 package com.taskadapter.webui.license;
 
-import com.taskadapter.data.DataCallback;
 import com.taskadapter.license.License;
 import com.taskadapter.license.LicenseException;
 import com.taskadapter.license.LicenseExpiredException;
@@ -70,20 +69,10 @@ public final class LicensePanel {
         contentPane.removeAllComponents();
         if (license != null) {
             contentPane.addComponent(LicensePanels.renderLicense(license,
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            uninstallLicense();
-                        }
-                    }));
+                    this::uninstallLicense));
         } else {
             contentPane.addComponent(LicensePanels
-                    .createLicenseInputPanel(new DataCallback<String>() {
-                        @Override
-                        public void callBack(String data) {
-                            applyNewLicense(data);
-                        }
-                    }));
+                    .createLicenseInputPanel(this::applyNewLicense));
         }
     }
 

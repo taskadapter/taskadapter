@@ -39,13 +39,7 @@ public class ConfigUtils {
 	/**
 	 * Mappings parser.
 	 */
-	private static JsonDeserializer<Mappings> MAPPINGS_PARSER = new JsonDeserializer<Mappings>() {
-		@Override
-		public Mappings deserialize(JsonElement json, Type typeOfT,
-				JsonDeserializationContext context) throws JsonParseException {
-			return parseMapping(json, typeOfT, context);
-		}
-	};
+	private static JsonDeserializer<Mappings> MAPPINGS_PARSER = ConfigUtils::parseMapping;
 
 	/**
 	 * "Raw" gson writer.

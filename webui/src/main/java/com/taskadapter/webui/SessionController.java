@@ -82,12 +82,7 @@ public final class SessionController {
 
         session.pageContainer.setPageContent(LoggedInPageset.createPageset(
                 credentialsManager, services, session.tracker, ctx,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        doLogout();
-                    }
-                }));
+                this::doLogout));
     }
 
     /**
@@ -95,14 +90,7 @@ public final class SessionController {
      */
     private void showLogin() {
         session.pageContainer.setPageContent(WelcomePageset.createPageset(
-                services, session.tracker, new LoginPage.Callback() {
-                    @Override
-                    public void authenticate(String user, String password,
-                            boolean enableSecondaryAuth)
-                            throws WrongPasswordException {
-                        tryAuth(user, password, enableSecondaryAuth);
-                    }
-                }));
+                services, session.tracker, this::tryAuth));
     }
 
     /**

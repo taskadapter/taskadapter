@@ -111,13 +111,11 @@ public final class ObjectAPI {
             final Document doc = db.parse(new InputSource(new StringReader(
                     docText)));
             return doc.getDocumentElement();
-        } catch (ParserConfigurationException e) {
+        } catch (ParserConfigurationException | IOException e) {
             throw new InternalException();
         } catch (SAXException e) {
             throw new FatalMisunderstaningException("Can't parse responce "
                     + docText, e);
-        } catch (IOException e) {
-            throw new InternalException();
         }
     }
 }

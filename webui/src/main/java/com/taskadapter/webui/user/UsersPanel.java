@@ -88,12 +88,7 @@ public class UsersPanel {
             }
         });
         view.addComponent(addUserButton);
-        States.onValue(numUsers, new DataCallback<Integer>() {
-            @Override
-            public void callBack(Integer data) {
-                applyLicenseRestriction(data);
-            }
-        });
+        States.onValue(numUsers, this::applyLicenseRestriction);
         
         refreshUsers(users);
     }

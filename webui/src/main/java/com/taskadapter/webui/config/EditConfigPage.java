@@ -77,12 +77,7 @@ public class EditConfigPage {
         final HorizontalLayout buttonsLayout = new HorizontalLayout();
         buttonsLayout.setWidth(100, PERCENTAGE);
         final Component cloneDeletePanel = CloneDeletePanel.render(config,
-                operations, new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.back();
-                    }
-                });
+                operations, callback::back);
         buttonsLayout.addComponent(cloneDeletePanel);
         buttonsLayout.setComponentAlignment(cloneDeletePanel,
                 Alignment.MIDDLE_RIGHT);

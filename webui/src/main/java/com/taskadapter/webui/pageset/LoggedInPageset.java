@@ -1,21 +1,6 @@
 package com.taskadapter.webui.pageset;
 
-import static com.taskadapter.webui.Page.MESSAGES;
-import static com.taskadapter.webui.Page.message;
-import static com.vaadin.server.Sizeable.Unit.PIXELS;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.List;
-
 import com.google.common.io.Files;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.taskadapter.auth.AuthException;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.config.StorageException;
 import com.taskadapter.connector.definition.Connector;
@@ -41,18 +26,30 @@ import com.taskadapter.webui.pages.NewConfigPage;
 import com.taskadapter.webui.pages.SupportPage;
 import com.taskadapter.webui.pages.UpdateFilePage;
 import com.taskadapter.webui.service.Preservices;
-import com.taskadapter.webui.service.WrongPasswordException;
 import com.taskadapter.webui.user.ChangePasswordDialog;
 import com.vaadin.server.StreamVariable;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.List;
+
+import static com.taskadapter.webui.Page.MESSAGES;
+import static com.taskadapter.webui.Page.message;
+import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
 /**
  * Pageset for logged-in user.
@@ -127,12 +124,7 @@ public class LoggedInPageset {
         this.logoutCallback = callback;
         this.license = new LicenseFacade(services.licenseManager);
 
-        final Component header = Header.render(new Runnable() {
-            @Override
-            public void run() {
-                showHome();
-            }
-        }, createMenu(), createSelfManagementMenu(), license.isLicensed());
+        final Component header = Header.render(this::showHome, createMenu(), createSelfManagementMenu(), license.isLicensed());
 
         ui = TAPageLayout.layoutPage(header, currentComponentArea);
     }
@@ -147,23 +139,13 @@ public class LoggedInPageset {
         final Button logoutButton = new Button(message("headerMenu.logout"));
         logoutButton.setStyleName(BaseTheme.BUTTON_LINK);
         logoutButton.addStyleName("personalMenuItem");
-        logoutButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                logoutCallback.run();
-            }
-        });
+        logoutButton.addClickListener((Button.ClickListener) event -> logoutCallback.run());
         panelForLoggedInUsers.addComponent(logoutButton);
 
         Button setPasswordButton = new Button(message("headerMenu.changePassword"));
         setPasswordButton.setStyleName(BaseTheme.BUTTON_LINK);
         setPasswordButton.addStyleName("personalMenuItem");
-        setPasswordButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                showChangePasswordDialog();
-            }
-        });
+        setPasswordButton.addClickListener((Button.ClickListener) event -> showChangePasswordDialog());
         panelForLoggedInUsers.addComponent(setPasswordButton);
 
         return panelForLoggedInUsers;
@@ -174,15 +156,7 @@ public class LoggedInPageset {
      */
     private void showChangePasswordDialog() {
         ChangePasswordDialog.showDialog(ui.getUI(), context.name,
-                new ChangePasswordDialog.Callback() {
-                    @Override
-                    public void changePassword(String oldPassword,
-                            String newPassword) throws AuthException,
-                            WrongPasswordException {
-                        context.selfManagement.changePassword(oldPassword,
-                                newPassword);
-                    }
-                });
+                context.selfManagement::changePassword);
     }
 
     private Component createMenu() {
@@ -225,12 +199,7 @@ public class LoggedInPageset {
     private void showLicensePage() {
         tracker.trackPage("license_agreement");
         applyUI(LicenseAgreementPage.render(services.settingsManager,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        showHome();
-                    }
-                }));
+                this::showHome));
     }
 
     /**
@@ -288,12 +257,7 @@ public class LoggedInPageset {
     public void createNewConfig() {
         tracker.trackPage("create_config");
         applyUI(NewConfigPage.render(services.pluginManager, context.configOps,
-                new NewConfigPage.Callback() {
-                    @Override
-                    public void configCreated(UISyncConfig config) {
-                        showConfigEditor(config, null);
-                    }
-                }));
+                config -> showConfigEditor(config, null)));
     }
 
     /**
@@ -441,12 +405,7 @@ public class LoggedInPageset {
                 : LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
         applyUI(ExportPage.render(context.configOps, config, maxTasks,
                 services.settingsManager.isTAWorkingOnLocalMachine(),
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        showHome();
-                    }
-                }));
+                this::showHome));
     }
 
     private void processFile(final UISyncConfig config,
@@ -494,12 +453,7 @@ public class LoggedInPageset {
                 .isSomeValidLicenseInstalled() ? MAX_TASKS_TO_LOAD
                 : LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
         applyUI(UpdateFilePage.render(context.configOps, config, maxTasks,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        showHome();
-                    }
-                }));
+                this::showHome));
     }
 
     /**
