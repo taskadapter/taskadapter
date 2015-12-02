@@ -10,7 +10,7 @@ ext {
 distZip.dependsOn ":webui:war"
 
 dependencies {
-    def jetty_version = "8.1.10.v20130312"
+    def jetty_version = "9.3.6.v20151106"
 
     compile  (
             ["org.eclipse.jetty:jetty-server:$jetty_version"],
