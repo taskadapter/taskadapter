@@ -8,9 +8,10 @@ import com.vaadin.ui.UI;
 /**
  * Proxy to an actual UI factory. Just because vaadin does not provide a good
  * way to set such factory for the servlet.
- * 
+ * <p>
+ * This class MUST be PUBLIC for vaadin to be able to initialize it.
  */
-final class AppUIProxy extends UIProvider {
+public final class AppUIProxy extends UIProvider {
 
     /** Proxied instance. */
     static UIProvider instance;
