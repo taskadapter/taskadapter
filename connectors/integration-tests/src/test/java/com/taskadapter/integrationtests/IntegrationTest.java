@@ -16,12 +16,15 @@ import com.taskadapter.connector.msp.MSPSupportedFields;
 import com.taskadapter.connector.msp.MSPUtils;
 import com.taskadapter.connector.redmine.GTaskToRedmine;
 import com.taskadapter.connector.redmine.RedmineConfig;
+import com.taskadapter.connector.redmine.RedmineConnector;
 import com.taskadapter.connector.redmine.RedmineManagerFactory;
 import com.taskadapter.connector.redmine.RedmineSupportedFields;
 import com.taskadapter.connector.redmine.RedmineTaskSaver;
 import com.taskadapter.connector.testlib.TestMappingUtils;
+import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.core.RemoteIdUpdater;
 import com.taskadapter.core.TaskLoader;
+import com.taskadapter.core.TaskSaver;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.redmineapi.RedmineManager;
@@ -43,6 +46,7 @@ import java.util.List;
 
 import static com.taskadapter.integrationtests.MSPConfigLoader.generateTemporaryConfig;
 import static junit.framework.Assert.fail;
+import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -87,33 +91,31 @@ public class IntegrationTest {
         }
     }
 
-    // this test is ignored because "load" operation does not set remote id anymore,
-    // it's now done as a part of "save" (as it should have been from the beginning!)
-    // so this test has to be rewritten.
-    @Ignore
+    /**
+     * regression test for https://bitbucket.org/taskadapter/taskadapter/issues/43/tasks-are-not-updated-in-redmine-404-not
+     */
     @Test
-    public void testSaveRemoteId() throws IOException {
-        RedmineConfig config = RedmineTestConfig.getRedmineTestConfig();
-        config.setProjectKey(projectKey);
+    public void taskWithRemoteIdIsUpdatedInRedmine() throws Exception {
+        RedmineConfig redmineConfig = RedmineTestConfig.getRedmineTestConfig();
+        redmineConfig.setProjectKey(projectKey);
         // XXX query id is hardcoded
-        config.setQueryId(1);
+        redmineConfig.setQueryId(1);
+        RedmineConnector redmine = new RedmineConnector(redmineConfig);
+        Mappings redmineMappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
 
-//        TaskSaver.save(msProjectConnector, mspConfig,
-//                redmineConnector, RedmineConnector.ID,
-//                "Redmine target location", redmineMappings, loadedTasks,
-//                DUMMY_MONITOR);
+        List<GTask> gTasks = TestUtils.generateTasks(1);
+        final TaskSaveResult saveResult = TaskSaver.save(redmine, "target redmine", redmineMappings, gTasks, ProgressMonitorUtils.getDummyMonitor());
 
-//		RedmineConnector redmine = new RedmineConnector(config);
+        final String key = saveResult.getRemoteKeys().iterator().next();
 
-//		MSPConfig mspConfigTo = getConfig("non-linear-uuid.xml");
-//		MSPTaskSaver saver = new MSPTaskSaver(mspConfigTo);
+        final GTask createdTask = gTasks.get(0);
+        createdTask.setRemoteId(key);
+        createdTask.setSummary("updated summary");
 
-//		SyncRunner runner = new SyncRunner();
-//		List<GTask> load = runner.load(null);
-//		for (GTask gTask : load) {
-//			assertNotNull(gTask.getRemoteId());
-//			assertFalse(gTask.getRemoteId().isEmpty());
-//		}
+        final TaskSaveResult secondResult = TaskSaver.save(redmine, "target redmine", redmineMappings, gTasks, ProgressMonitorUtils.getDummyMonitor());
+        assertThat(secondResult.hasErrors()).isFalse();
+        assertThat(secondResult.getCreatedTasksNumber()).isEqualTo(0);
+        assertThat(secondResult.getUpdatedTasksNumber()).isEqualTo(1);
     }
 
     @Test

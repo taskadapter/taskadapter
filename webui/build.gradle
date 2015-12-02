@@ -25,6 +25,7 @@ dependencies {
     compile project(":connectors-editors:redmine-editor")
 
     testCompile project(":test-utilities")
+    testCompile libraries.festassert
 }
 
 vaadin {

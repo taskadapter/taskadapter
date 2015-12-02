@@ -1,16 +1,6 @@
 package com.taskadapter.web.uiapi;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
-import com.taskadapter.PluginManager;
-import com.taskadapter.config.NewConfigParser;
-import com.taskadapter.config.StoredExportConfig;
 import com.taskadapter.model.GTaskDescriptor;
-import com.taskadapter.web.uiapi.UIConfigService;
-import com.taskadapter.web.uiapi.UISyncConfig;
-import com.taskadapter.web.uiapi.UISyncConfigBuilder;
-import com.taskadapter.webui.service.EditorManager;
-
 import org.junit.Test;
 
 import java.io.IOException;
@@ -21,7 +11,7 @@ import static org.junit.Assert.assertTrue;
 public class UISyncConfigTest {
     @Test
     public void remoteIdIsRecognizedAsSelected() throws IOException {
-        UISyncConfig uiSyncConfig = getConfig("jira_msp.conf");
+        UISyncConfig uiSyncConfig = ConfigLoader.loadConfig("jira_msp.conf");
 
         assertTrue(uiSyncConfig.generateTargetMappings().isFieldSelected(GTaskDescriptor.FIELD.REMOTE_ID));
         assertTrue(uiSyncConfig.generateSourceMappings().isFieldSelected(GTaskDescriptor.FIELD.SUMMARY));
@@ -29,26 +19,13 @@ public class UISyncConfigTest {
 
     @Test
     public void legacyConfigTA22LoadedWithoutNPE() throws IOException {
-        UISyncConfig config = getConfig("legacy_config_ta_2.2.txt");
+        UISyncConfig config = ConfigLoader.loadConfig("legacy_config_ta_2.2.txt");
         assertEquals("Some Config", config.getLabel());
     }
 
     @Test
     public void legacyConfigTA22WithNullRemoteIdLoadedWithoutNPE() throws IOException {
-        UISyncConfig config = getConfig("legacy_config_2.2_null_values.txt");
+        UISyncConfig config = ConfigLoader.loadConfig("legacy_config_2.2_null_values.txt");
         assertEquals("Bogdan-2", config.getLabel());
     }
-
-
-    private UISyncConfig getConfig(String resourceNameInClassPath) throws IOException {
-        String contents = Resources.toString(Resources.getResource(resourceNameInClassPath), Charsets.UTF_8);
-        StoredExportConfig config = NewConfigParser.parse("someId", contents);
-
-        EditorManager editorManager = EditorManager.fromResource("editors.txt");
-        UIConfigService uiConfigService = new UIConfigService(new PluginManager(), editorManager);
-        UISyncConfigBuilder builder = new UISyncConfigBuilder(uiConfigService);
-        return builder.uize("admin", config);
-    }
-
-
 }
