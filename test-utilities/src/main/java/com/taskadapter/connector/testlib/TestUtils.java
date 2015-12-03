@@ -57,6 +57,7 @@ public class TestUtils {
         t.setKey("ID-" + timeInMillis);
         t.setSummary("generic task " + timeInMillis);
         t.setDescription("some description " + timeInMillis);
+        t.setDoneRatio(0);
         Random r = new Random();
         int hours = r.nextInt(50) + 1;
         t.setEstimatedHours((float) hours);

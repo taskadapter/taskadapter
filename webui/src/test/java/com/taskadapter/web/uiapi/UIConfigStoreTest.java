@@ -1,14 +1,8 @@
 package com.taskadapter.web.uiapi;
 
-import com.taskadapter.PluginManager;
-import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.NewMappings;
 import com.taskadapter.model.GTaskDescriptor;
-import com.taskadapter.web.uiapi.UIConfigService;
-import com.taskadapter.web.uiapi.UIConfigStore;
-import com.taskadapter.web.uiapi.UISyncConfig;
-import com.taskadapter.webui.service.EditorManager;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -25,7 +19,8 @@ public class UIConfigStoreTest {
 
     @Test
     public void configCreatedWithProperDefaultMappings() throws Exception {
-        UISyncConfig config = getStore().createNewConfig("admin", "label1", "Redmine REST", "Microsoft Project");
+        final UIConfigStore store = TestUIConfigStoreFactory.createStore(tempFolder.getRoot());
+        UISyncConfig config = store.createNewConfig("admin", "label1", "Redmine REST", "Microsoft Project");
         checkFieldSelected(config.getNewMappings(), "Start Date", "MUST_START_ON");
     }
 
@@ -43,14 +38,5 @@ public class UIConfigStoreTest {
             }
         }
         return null;
-    }
-
-    private UIConfigStore getStore() {
-        final ConfigStorage configStorage = new ConfigStorage(tempFolder.getRoot());
-
-        EditorManager editorManager = EditorManager.fromResource("editors.txt");
-        UIConfigService uiConfigService = new UIConfigService(new PluginManager(), editorManager);
-
-        return new UIConfigStore(uiConfigService, configStorage);
     }
 }
