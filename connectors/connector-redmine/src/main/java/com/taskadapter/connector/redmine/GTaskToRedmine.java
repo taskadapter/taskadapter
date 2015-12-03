@@ -42,7 +42,12 @@ public class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
 
     // TODO refactor this into multiple tiny testable methods
     public Issue convertToRedmineIssue(GTask task) {
-        Issue issue = IssueFactory.create(task.getId());
+        final String key = task.getKey();
+        Integer numericKey = null;
+        if (key != null) {
+             numericKey = Integer.parseInt(key);
+        }
+        Issue issue = IssueFactory.create(numericKey);
         if (task.getParentKey() != null) {
             issue.setParentId(Integer.parseInt(task.getParentKey()));
         }
