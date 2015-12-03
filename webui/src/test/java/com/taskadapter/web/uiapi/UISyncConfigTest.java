@@ -1,4 +1,4 @@
-package com.taskadapter.web.integration;
+package com.taskadapter.web.uiapi;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;

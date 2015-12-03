@@ -1,4 +1,4 @@
-package com.taskadapter.web.integration;
+package com.taskadapter.web.uiapi;
 
 import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
