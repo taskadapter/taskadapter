@@ -49,22 +49,14 @@ public class TaskSavingUtils {
         }
     }
 
-    public static <N> void saveTasks(List<GTask> tasks,
-            ConnectorConverter<GTask, N> converter,
-            BasicIssueSaveAPI<N> saveAPI, TaskSaveResultBuilder resultBuilder,
-            ProgressMonitor progressMonitor,
-            DefaultValueSetter defaultValueSetter) {
-        new SimpleTaskSaver<>(converter, saveAPI, resultBuilder,
-                progressMonitor).saveTasks(null, tasks, defaultValueSetter);
-    }
-
     public static <N> TaskSaveResultBuilder saveTasks(List<GTask> tasks,
             ConnectorConverter<GTask, N> converter,
             BasicIssueSaveAPI<N> saveAPI, 
             ProgressMonitor progressMonitor,
             DefaultValueSetter defaultValueSetter) {
         final TaskSaveResultBuilder result = new TaskSaveResultBuilder();
-        saveTasks(tasks, converter, saveAPI, result, progressMonitor, defaultValueSetter);
+        final SimpleTaskSaver<N> saver = new SimpleTaskSaver<>(converter, saveAPI, result, progressMonitor);
+        saver.saveTasks(null, tasks, defaultValueSetter);
         return result;
     }
 }
