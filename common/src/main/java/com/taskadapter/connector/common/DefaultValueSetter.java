@@ -66,6 +66,8 @@ public class DefaultValueSetter {
                 return parseDate(value);
             case ESTIMATED_TIME:
                 return parseFloat(value);
+            case DONE_RATIO:
+                return parseFloat(value);
         }
         return value;
     }
