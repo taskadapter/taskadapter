@@ -68,6 +68,8 @@ public class DefaultValueSetter {
                 return parseFloat(value);
             case DONE_RATIO:
                 return parseFloat(value);
+            case PRIORITY:
+                return parseFloat(value);
         }
         return value;
     }

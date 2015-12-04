@@ -19,7 +19,7 @@ import static org.fest.assertions.Assertions.assertThat;
  */
 public class UISyncConfigIT {
 
-    // TODO maybe use a temporary project?
+    // TODO maybe use temporary projects in Redmine and JIRA?
 
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -47,18 +47,31 @@ public class UISyncConfigIT {
      */
     @Test
     public void taskWithRemoteIdIsUpdatedInRedmine() throws Exception {
-        List<GTask> gTasks = TestUtils.generateTasks(1);
         final UISyncConfig toRedmineConfig = config.reverse();
-        final UISyncConfig.TaskExportResult taskExportResult = toRedmineConfig.saveTasks(gTasks, ProgressMonitorUtils.getDummyMonitor());
+        trySaveAndThenUpdate(toRedmineConfig);
+    }
+
+    /**
+     * regression test for https://bitbucket.org/taskadapter/taskadapter/issues/43/tasks-are-not-updated-in-redmine-404-not
+     */
+    @Test
+    public void taskWithRemoteIdIsUpdatedInJIRA() throws Exception {
+        UISyncConfig jiraMspConfig = ConfigLoader.loadConfig("Atlassian-Jira_Microsoft-Project_3.ta_conf");
+        final UISyncConfig toJIRAConfig = jiraMspConfig.reverse();
+        trySaveAndThenUpdate(toJIRAConfig);
+    }
+
+    private static void trySaveAndThenUpdate(UISyncConfig uiSyncConfig) {
+        List<GTask> tasks = TestUtils.generateTasks(1);
+        final UISyncConfig.TaskExportResult taskExportResult = uiSyncConfig.saveTasks(tasks, ProgressMonitorUtils.getDummyMonitor());
         final TaskSaveResult saveResult = taskExportResult.saveResult;
 
         final String key = saveResult.getRemoteKeys().iterator().next();
-
-        final GTask createdTask = gTasks.get(0);
+        final GTask createdTask = tasks.get(0);
         createdTask.setRemoteId(key);
         createdTask.setSummary("updated summary");
 
-        final UISyncConfig.TaskExportResult secondResultWrapper = toRedmineConfig.saveTasks(gTasks, ProgressMonitorUtils.getDummyMonitor());
+        final UISyncConfig.TaskExportResult secondResultWrapper = uiSyncConfig.saveTasks(tasks, ProgressMonitorUtils.getDummyMonitor());
         final TaskSaveResult secondResult = secondResultWrapper.saveResult;
         assertThat(secondResult.hasErrors()).isFalse();
         assertThat(secondResult.getCreatedTasksNumber()).isEqualTo(0);
