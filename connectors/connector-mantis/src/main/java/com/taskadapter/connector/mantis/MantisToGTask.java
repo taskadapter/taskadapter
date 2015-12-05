@@ -11,15 +11,13 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 
-public class MantisDataConverter {
-    private static final Logger logger = LoggerFactory.getLogger(MantisDataConverter.class);
+public final class MantisToGTask {
+    private static final Logger logger = LoggerFactory.getLogger(MantisToGTask.class);
 
     private static HashMap<String, Integer> priorityNumbers = new HashMap<String, Integer>() {
         private static final long serialVersionUID = 516389048716909610L;
-
         {
-            // TODO this can be moved to properties section to be defined by
-            // user.
+            // TODO this can be moved to properties section to be defined by user.
             put("none", 100);
             put("low", 100);
             put("normal", 500);
@@ -32,8 +30,8 @@ public class MantisDataConverter {
     public static GUser convertToGUser(AccountData mantisUser) {
         GUser user = new GUser();
         user.setId(mantisUser.getId().intValue());
-        //user.setId(new Integer(mantisUser.getId().intValue()));
         user.setLoginName(mantisUser.getName());
+        user.setDisplayName(mantisUser.getReal_name());
         return user;
     }
 
@@ -44,9 +42,9 @@ public class MantisDataConverter {
         task.setKey(String.valueOf(issue.getId()));
         // task.setParentId(parentId);
 
-        AccountData mntUser = issue.getHandler();
-        if (mntUser != null) {
-            GUser ass = new GUser(mntUser.getId().intValue(), mntUser.getName());
+        AccountData mantisUser = issue.getHandler();
+        if (mantisUser != null) {
+            GUser ass = convertToGUser(mantisUser);
             task.setAssignee(ass);
         }
 

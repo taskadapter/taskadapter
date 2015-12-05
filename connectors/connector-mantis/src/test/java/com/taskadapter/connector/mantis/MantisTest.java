@@ -45,7 +45,7 @@ public class MantisTest {
 
         try {
             AccountData mantisUser = mgr.getCurrentUser();
-            currentUser = MantisDataConverter.convertToGUser(mantisUser);
+            currentUser = MantisToGTask.convertToGUser(mantisUser);
 
             BigInteger projectId = mgr.createProject(junitTestProject);
             projectKey = projectId.toString();

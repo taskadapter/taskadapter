@@ -55,6 +55,14 @@ public class UISyncConfigIT {
      * regression test for https://bitbucket.org/taskadapter/taskadapter/issues/43/tasks-are-not-updated-in-redmine-404-not
      */
     @Test
+    public void taskWithRemoteIdIsUpdatedInMantisBT() throws Exception {
+        final UISyncConfig config = ConfigLoader.loadConfig("Microsoft-Project_Mantis_1.ta_conf");
+        trySaveAndThenUpdate(config);
+    }
+    /**
+     * regression test for https://bitbucket.org/taskadapter/taskadapter/issues/43/tasks-are-not-updated-in-redmine-404-not
+     */
+    @Test
     public void taskWithRemoteIdIsUpdatedInJIRA() throws Exception {
         UISyncConfig jiraMspConfig = ConfigLoader.loadConfig("Atlassian-Jira_Microsoft-Project_3.ta_conf");
         final UISyncConfig toJIRAConfig = jiraMspConfig.reverse();

@@ -129,7 +129,8 @@ public class TaskFieldsSetter {
     private void processAssignee(GTask gTask) {
         final GUser assignee = gTask.getAssignee();
         if (mappings.isFieldSelected(ASSIGNEE) && assignee != null) {
-            Resource resource = resourceManager.getOrCreateResource(assignee.getDisplayName());
+            final String assigneeName = getAssigneeName(assignee);
+            Resource resource = resourceManager.getOrCreateResource(assigneeName);
             ResourceAssignment ass = mspTask.addResourceAssignment(resource);
             ass.setUnits(100);
             /* MUST set the remaining work to avoid this bug:
@@ -145,6 +146,10 @@ public class TaskFieldsSetter {
                 }
             }
         }
+    }
+
+    private String getAssigneeName(GUser assignee) {
+        return assignee.getDisplayName() == null? assignee.getLoginName() : assignee.getDisplayName();
     }
 
     private void processEstimatedTime(GTask gTask) throws BadConfigException {

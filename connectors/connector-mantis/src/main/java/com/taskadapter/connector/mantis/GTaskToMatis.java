@@ -15,8 +15,7 @@ import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.List;
 
-public class GTaskToMatisConverter implements
-        ConnectorConverter<GTask, IssueData> {
+public class GTaskToMatis implements ConnectorConverter<GTask, IssueData> {
     
     private static final String DEFAULT_TASK_DESCRIPTION = "-";
 
@@ -30,8 +29,7 @@ public class GTaskToMatisConverter implements
     private final Mappings mappings;
     private final List<AccountData> users;
 
-    public GTaskToMatisConverter(ProjectData mntProject, Mappings mappings,
-            List<AccountData> users) {
+    public GTaskToMatis(ProjectData mntProject, Mappings mappings, List<AccountData> users) {
         this.mntProject = mntProject;
         this.mappings = mappings;
         this.users = users;
@@ -40,8 +38,10 @@ public class GTaskToMatisConverter implements
     @Override
     public IssueData convert(GTask task) throws ConnectorException {
         IssueData issue = new IssueData();
-        if (task.getId() != null) {
-            issue.setId(BigInteger.valueOf(task.getId()));
+        final String key = task.getKey();
+        if (key != null) {
+            final long numericKey = Long.parseLong(key);
+            issue.setId(BigInteger.valueOf(numericKey));
         }
 
         // see Javadoc for DEFAULT_TASK_CATEGORY why need to set this.

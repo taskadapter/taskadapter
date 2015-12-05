@@ -41,7 +41,7 @@ public class MantisConnector implements Connector<MantisConfig> {
             } catch (RemoteException e) {
                 throw MantisUtils.convertException(e);
             }
-            return MantisDataConverter.convertToGenericTask(issue);
+            return MantisToGTask.convertToGenericTask(issue);
     } 
     
     @Override
@@ -66,7 +66,7 @@ public class MantisConnector implements Connector<MantisConfig> {
     private List<GTask> convertToGenericTasks(List<IssueData> issues) {
         List<GTask> result = new ArrayList<>(issues.size());
         for (IssueData issue : issues) {
-            GTask task = MantisDataConverter.convertToGenericTask(issue);
+            GTask task = MantisToGTask.convertToGenericTask(issue);
             result.add(task);
         }
         return result;
@@ -81,7 +81,7 @@ public class MantisConnector implements Connector<MantisConfig> {
                     config.getProjectKey()));
             final List<AccountData> users = config.isFindUserByName() ? mgr
                     .getUsers() : new ArrayList<>();
-            final GTaskToMatisConverter converter = new GTaskToMatisConverter(
+            final GTaskToMatis converter = new GTaskToMatis(
                     mntProject, mappings, users);
             final MantisTaskSaver mts = new MantisTaskSaver(mgr);
 
