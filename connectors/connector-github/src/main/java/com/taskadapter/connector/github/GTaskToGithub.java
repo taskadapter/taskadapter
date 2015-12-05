@@ -44,8 +44,10 @@ public class GTaskToGithub implements ConnectorConverter<GTask, Issue> {
             issue.setState(task.getDoneRatio() != null && task.getDoneRatio() == 100 ? IssueService.STATE_CLOSED : IssueService.STATE_OPEN);
         }
 
-        if (task.getRemoteId() != null) {
-            issue.setNumber(Integer.parseInt(task.getRemoteId()));
+        final String key = task.getKey();
+        if (key != null) {
+            final int numericKey = Integer.parseInt(key);
+            issue.setNumber(numericKey);
         }
 
         // TODO add tests
