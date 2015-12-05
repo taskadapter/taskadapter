@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Strings;
 import org.w3c.dom.Element;
 
 import com.taskadapter.connector.basecamp.classic.exceptions.CommunicationInterruptedException;
@@ -137,11 +138,9 @@ final class BasecampConnector implements Connector<BasecampConfig> {
             OutputContext ctx, TaskSaveResultBuilder resultBuilder,
             ObjectAPI api) throws ConnectorException, IOException {
         final String todoItemXMLRepresentation = BasecampUtils.toRequest(task, resolver, ctx);
-        final String remoteId = task.getRemoteId();
-        if (remoteId == null) {
-            final Element res = api.post("todo_lists/" + config.getTodoKey()
-                    + "/todo_items.xml", todoItemXMLRepresentation);
-
+        final String taskKey = task.getKey();
+        if (Strings.isNullOrEmpty(taskKey)) {
+            final Element res = api.post("todo_lists/" + config.getTodoKey() + "/todo_items.xml", todoItemXMLRepresentation);
             final String newTaskKey = BasecampUtils.parseTask(res).getKey();
              /* Set "done ratio" if needed */
             if (ctx.getXmlName(FIELD.DONE_RATIO) != null
@@ -151,11 +150,9 @@ final class BasecampConnector implements Connector<BasecampConfig> {
             }
             resultBuilder.addCreatedTask(task.getId(), newTaskKey);
         } else {
-            api.put("todo_items/" + remoteId + ".xml", todoItemXMLRepresentation);
-            final Element res = api
-                    .getObject("todo_items/" + remoteId + ".xml");
-            resultBuilder.addUpdatedTask(task.getId(),
-                    BasecampUtils.parseTask(res).getKey());
+            api.put("todo_items/" + taskKey + ".xml", todoItemXMLRepresentation);
+            final Element res = api.getObject("todo_items/" + taskKey + ".xml");
+            resultBuilder.addUpdatedTask(task.getId(), BasecampUtils.parseTask(res).getKey());
         }
     }
 

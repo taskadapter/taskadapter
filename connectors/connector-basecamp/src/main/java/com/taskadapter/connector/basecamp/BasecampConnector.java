@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Strings;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -153,15 +154,13 @@ final class BasecampConnector implements Connector<BasecampConfig> {
         return res;
     }
 
-    private void writeOneTask(GTask task, UserResolver resolver,
-                              OutputContext ctx, TaskSaveResultBuilder resultBuilder,
-                              ObjectAPI api) throws ConnectorException, IOException,
-            JSONException {
+    private void writeOneTask(GTask task, UserResolver resolver, OutputContext ctx,
+                              TaskSaveResultBuilder resultBuilder, ObjectAPI api)
+            throws ConnectorException, IOException, JSONException {
         final String todoItemJSonRepresentation = BasecampUtils.toRequest(task, resolver, ctx);
-        final String remoteId = task.getRemoteId();
-        if (remoteId == null) {
-            final JSONObject res = api.post(
-                    "/projects/" + config.getProjectKey() + "/todolists/"
+        final String taskKey = task.getKey();
+        if (Strings.isNullOrEmpty(taskKey)) {
+            final JSONObject res = api.post("/projects/" + config.getProjectKey() + "/todolists/"
                             + config.getTodoKey() + "/todos.json", todoItemJSonRepresentation);
 
             final String newTaskKey = BasecampUtils.parseTask(res).getKey();
@@ -174,11 +173,9 @@ final class BasecampConnector implements Connector<BasecampConfig> {
             }
             resultBuilder.addCreatedTask(task.getId(), newTaskKey);
         } else {
-            final JSONObject res = api.put(
-                    "/projects/" + config.getProjectKey() + "/todos/"
-                            + remoteId + ".json", todoItemJSonRepresentation);
-            resultBuilder.addUpdatedTask(task.getId(),
-                    BasecampUtils.parseTask(res).getKey());
+            final JSONObject res = api.put("/projects/" + config.getProjectKey() + "/todos/"
+                            + taskKey + ".json", todoItemJSonRepresentation);
+            resultBuilder.addUpdatedTask(task.getId(), BasecampUtils.parseTask(res).getKey());
         }
     }
 
