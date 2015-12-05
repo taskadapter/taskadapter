@@ -217,10 +217,10 @@ public final class UISyncConfig {
      */
     public TaskExportResult saveTasks(List<GTask> tasks,
             ProgressMonitor progress) {
-        final TaskSaveResult result = TaskSaver.save(getConnector2()
-                .createConnectorInstance(), getConnector2()
-                .getDestinationLocation(), generateTargetMappings(), tasks,
-                progress);
+        final Connector<?> connectorInstance = getConnector2().createConnectorInstance();
+        final String destinationLocation = getConnector2().getDestinationLocation();
+        final Mappings destinationMappings = generateTargetMappings();
+        final TaskSaveResult result = TaskSaver.save(connectorInstance, destinationLocation, destinationMappings, tasks, progress);
         try {
             RemoteIdUpdater.updateRemoteIds(result.getIdToRemoteKeyMap(),
                     generateSourceMappings(), getConnector1()
