@@ -152,7 +152,8 @@ final class BasecampConnector implements Connector<BasecampConfig> {
         } else {
             api.put("todo_items/" + taskKey + ".xml", todoItemXMLRepresentation);
             final Element res = api.getObject("todo_items/" + taskKey + ".xml");
-            resultBuilder.addUpdatedTask(task.getId(), BasecampUtils.parseTask(res).getKey());
+            Integer numericKey = Integer.parseInt(taskKey);
+            resultBuilder.addUpdatedTask(numericKey, BasecampUtils.parseTask(res).getKey());
         }
     }
 

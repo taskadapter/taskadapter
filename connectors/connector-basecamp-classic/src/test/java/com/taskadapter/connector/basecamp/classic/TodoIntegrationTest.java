@@ -73,7 +73,6 @@ public class TodoIntegrationTest {
     @Test
     public void todoCreatedAndUpdated() throws ConnectorException {
         final GTask task = new GTask();
-        task.setId(123);
         task.setDescription("Some description here - 1020");
         final Mappings mappings = new Mappings();
         mappings.setMapping(GTaskDescriptor.FIELD.DESCRIPTION, true, "content", "default description");
@@ -85,9 +84,9 @@ public class TodoIntegrationTest {
         Assert.assertEquals(1, res.getCreatedTasksNumber());
         Assert.assertEquals(0, res.getUpdatedTasksNumber());
 
+        final String key = res.getRemoteKeys().iterator().next();
         final GTask update = new GTask();
-        update.setId(321);
-        update.setRemoteId(res.getRemoteKey(123));
+        update.setKey(key);
         update.setDescription("Change country");
         final TaskSaveResult res1 = conn.saveData(
                 Collections.singletonList(update),
@@ -95,7 +94,7 @@ public class TodoIntegrationTest {
         Assert.assertEquals(0, res1.getCreatedTasksNumber());
         Assert.assertEquals(1, res1.getUpdatedTasksNumber());
 
-        factory.createObjectAPI(config).delete("todo_items/" + update.getRemoteId() + ".xml");
+        factory.createObjectAPI(config).delete("todo_items/" + update.getKey() + ".xml");
     }
 
     @Test
@@ -106,71 +105,64 @@ public class TodoIntegrationTest {
         final Date date1 = cal.getTime();
         cal.set(2012, 2, 20, 0, 0, 0);
         final Date date2 = cal.getTime();
-        final GTask template = new GTask();
-        template.setId(123);
-        template.setSummary("This is a description");
-        template.setDoneRatio(100);
-        template.setDueDate(date1);
+        final GTask taskToCreate = new GTask();
+        taskToCreate.setSummary("This is a description");
+        taskToCreate.setDoneRatio(100);
+        taskToCreate.setDueDate(date1);
         final GUser me = new GUser();
         me.setId(321);
         me.setLoginName("support@taskadapter.com");
-
         me.setDisplayName(BASECAMP_CLASSIC_USER_DISPLAY_NAME);
-        template.setAssignee(me);
+        taskToCreate.setAssignee(me);
 
         final Mappings allMappings = TodoUtil.getAllMappings();
 
         final BasecampConnector connector = new BasecampConnector(config, factory);
         final TaskSaveResult result = connector.saveData(
-                Collections.singletonList(template),
+                Collections.singletonList(taskToCreate),
                 ProgressMonitorUtils.getDummyMonitor(), allMappings);
         Assert.assertEquals(1, result.getCreatedTasksNumber());
 
-        final String remoteId = result.getRemoteKey(123);
-        template.setRemoteId(remoteId);
+        final String remoteKey = result.getRemoteKeys().iterator().next();
 
-        final GTask update = new GTask();
-        update.setId(123);
-        update.setSummary("It should be updated");
-        update.setDoneRatio(0);
-        update.setDueDate(date2);
-        update.setAssignee(null);
-        update.setRemoteId(remoteId);
+        final GTask taskToUpdate = new GTask();
+        taskToUpdate.setKey(remoteKey);
+        taskToUpdate.setSummary("It should be updated");
+        taskToUpdate.setDoneRatio(0);
+        taskToUpdate.setDueDate(date2);
+        taskToUpdate.setAssignee(null);
+        taskToUpdate.setRemoteId(remoteKey);
 
-        GTask updated = update(connector, update, GTaskDescriptor.FIELD.SUMMARY, "content");
-        Assert.assertEquals(update.getSummary(), updated.getSummary());
-        Assert.assertEquals(template.getDoneRatio(), updated.getDoneRatio());
-        Assert.assertEquals(template.getDueDate(), updated.getDueDate());
-        Assert.assertEquals(template.getAssignee().getDisplayName(),
+        GTask updated = update(connector, taskToUpdate, GTaskDescriptor.FIELD.SUMMARY, "content");
+        Assert.assertEquals(taskToUpdate.getSummary(), updated.getSummary());
+        Assert.assertEquals(taskToCreate.getDoneRatio(), updated.getDoneRatio());
+        Assert.assertEquals(taskToCreate.getDueDate(), updated.getDueDate());
+        Assert.assertEquals(taskToCreate.getAssignee().getDisplayName(),
                 updated.getAssignee().getDisplayName());
 
-        connector.saveData(Collections.singletonList(template),
+        connector.saveData(Collections.singletonList(taskToCreate),
                 ProgressMonitorUtils.getDummyMonitor(), allMappings);
 
-        updated = update(connector, update, GTaskDescriptor.FIELD.DONE_RATIO, "done_ratio");
-        Assert.assertEquals(template.getSummary(), updated.getSummary());
-        Assert.assertEquals(update.getDoneRatio(), updated.getDoneRatio());
-        Assert.assertEquals(template.getDueDate(), updated.getDueDate());
-        Assert.assertEquals(template.getAssignee().getDisplayName(),
+        updated = update(connector, taskToUpdate, GTaskDescriptor.FIELD.DONE_RATIO, "done_ratio");
+        Assert.assertEquals(taskToUpdate.getSummary(), updated.getSummary());
+        Assert.assertEquals(taskToUpdate.getDoneRatio(), updated.getDoneRatio());
+        Assert.assertEquals(taskToCreate.getDueDate(), updated.getDueDate());
+        Assert.assertEquals(taskToCreate.getAssignee().getDisplayName(),
                 updated.getAssignee().getDisplayName());
 
-        connector.saveData(Collections.singletonList(template),
+        connector.saveData(Collections.singletonList(taskToCreate),
                 ProgressMonitorUtils.getDummyMonitor(), allMappings);
 
-        updated = update(connector, update, GTaskDescriptor.FIELD.DUE_DATE, "due_date");
-        Assert.assertEquals(template.getSummary(), updated.getSummary());
-        Assert.assertEquals(template.getDoneRatio(), updated.getDoneRatio());
-        Assert.assertEquals(update.getDueDate(), updated.getDueDate());
-        Assert.assertEquals(template.getAssignee().getDisplayName(),
-                updated.getAssignee().getDisplayName());
+        updated = update(connector, taskToUpdate, GTaskDescriptor.FIELD.DUE_DATE, "due_date");
+        Assert.assertEquals(taskToUpdate.getSummary(), updated.getSummary());
+        Assert.assertEquals(taskToUpdate.getDoneRatio(), updated.getDoneRatio());
+        Assert.assertEquals(taskToUpdate.getDueDate(), updated.getDueDate());
+        assertEquals(BASECAMP_CLASSIC_USER_DISPLAY_NAME, updated.getAssignee().getDisplayName());
 
-        connector.saveData(Collections.singletonList(template),
+        connector.saveData(Collections.singletonList(taskToCreate),
                 ProgressMonitorUtils.getDummyMonitor(), allMappings);
 
-        updated = update(connector, update, GTaskDescriptor.FIELD.ASSIGNEE, "assignee");
-        Assert.assertEquals(template.getSummary(), updated.getSummary());
-        Assert.assertEquals(template.getDoneRatio(), updated.getDoneRatio());
-        Assert.assertEquals(template.getDueDate(), updated.getDueDate());
+        updated = update(connector, taskToUpdate, GTaskDescriptor.FIELD.ASSIGNEE, "assignee");
         Assert.assertNull(updated.getAssignee());
     }
 
