@@ -1,5 +1,6 @@
 package com.taskadapter.connector.github;
 
+import com.google.common.base.Strings;
 import com.taskadapter.connector.common.data.ConnectorConverter;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
@@ -58,7 +59,7 @@ public class GTaskToGithub implements ConnectorConverter<GTask, Issue> {
         if (task.getAssignee() != null) {
             try {
                 String userLogin = task.getAssignee().getLoginName();
-                if (userLogin != null) {
+                if (!Strings.isNullOrEmpty(userLogin)) {
                     if (!ghUsers.containsKey(userLogin)) {
                         User ghUser = userService.getUser(userLogin);
                         ghUser.setName(ghUser.getLogin());        // workaround for bug in eclipse-egit library - it uses name instead of login to build API request

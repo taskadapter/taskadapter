@@ -69,6 +69,16 @@ public class UISyncConfigIT {
         trySaveAndThenUpdate(toJIRAConfig);
     }
 
+    /**
+     * regression test for https://bitbucket.org/taskadapter/taskadapter/issues/43/tasks-are-not-updated-in-redmine-404-not
+     */
+    @Test
+    public void taskWithRemoteIdIsUpdatedInGitHub() throws Exception {
+        UISyncConfig config = ConfigLoader.loadConfig("Github_Microsoft-Project_1.ta_conf");
+        final UISyncConfig reversedConfig = config.reverse();
+        trySaveAndThenUpdate(reversedConfig);
+    }
+
     private static void trySaveAndThenUpdate(UISyncConfig uiSyncConfig) {
         List<GTask> tasks = TestUtils.generateTasks(1);
         final UISyncConfig.TaskExportResult taskExportResult = uiSyncConfig.saveTasks(tasks, ProgressMonitorUtils.getDummyMonitor());

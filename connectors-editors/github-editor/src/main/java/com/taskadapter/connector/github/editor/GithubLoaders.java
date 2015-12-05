@@ -6,18 +6,20 @@ import com.taskadapter.connector.github.ConnectionFactory;
 import com.taskadapter.connector.github.GithubProjectConverter;
 import com.taskadapter.model.GProject;
 import org.eclipse.egit.github.core.Repository;
+import org.eclipse.egit.github.core.service.RepositoryService;
 
 import java.util.List;
 
-public class GithubLoaders {
-    public static List<GProject> getProjects(WebServerInfo serverInfo)
-            throws ServerURLNotSetException {
+public final class GithubLoaders {
+    public static List<GProject> getProjects(WebServerInfo serverInfo) throws ServerURLNotSetException {
         validateServer(serverInfo);
         try {
-            List<Repository> repositories = new ConnectionFactory(serverInfo)
-                    .getRepositoryService().getRepositories(
-                            serverInfo.getUserName());
-            return new GithubProjectConverter().toGProjects(repositories);
+            final String userName = serverInfo.getUserName();
+            final ConnectionFactory connectionFactory = new ConnectionFactory(serverInfo);
+            final RepositoryService repositoryService = connectionFactory.getRepositoryService();
+            final List<Repository> repositories = repositoryService.getRepositories(userName);
+            final GithubProjectConverter converter = new GithubProjectConverter();
+            return converter.toGProjects(repositories);
         } catch (Exception e) {
             throw new RuntimeException(e.toString(), e);
         }
