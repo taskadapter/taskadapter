@@ -1,10 +1,12 @@
 package com.taskadapter.connector.jira;
 
-import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rest.client.domain.IssueLink;
-import com.atlassian.jira.rest.client.domain.User;
+import com.atlassian.jira.rest.client.api.JiraRestClient;
+import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.IssueLink;
+import com.atlassian.jira.rest.client.api.domain.User;
+import com.atlassian.util.concurrent.Promise;
 import com.google.common.collect.Iterables;
-import com.taskadapter.connector.definition.TaskSaveResult;
+import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.testlib.CommonTests;
@@ -13,7 +15,6 @@ import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GUser;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -23,35 +24,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.taskadapter.connector.jira.JiraSupportedFields.SUPPORTED_FIELDS;
+import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class JiraTest {
     private static final Logger logger = LoggerFactory.getLogger(JiraTest.class);
 
     private JiraConfig config;
-    private static WebServerInfo serverInfo;
-    private static JiraConnection connection;
+    private static JiraRestClient client;
     private JiraConnector connector;
 
     @BeforeClass
-    public static void oneTimeSetUp() {
-        serverInfo = new JiraTestData().getTestServerInfo();
+    public static void oneTimeSetUp() throws ConnectorException {
+        final WebServerInfo serverInfo = new JiraTestData().getTestServerInfo();
+        client = JiraConnectionFactory.createClient(serverInfo);
         logger.info("Running JIRA tests using: " + serverInfo.getHost());
-        try {
-            connection = JiraConnectionFactory.createConnection(serverInfo);
-        } catch (Exception e) {
-            fail("Can't init JIRA tests: " + e.toString());
-        }
     }
 
     @Before
@@ -75,28 +66,19 @@ public class JiraTest {
 
     @Test
     public void assigneeHasFullName() throws Exception {
-        JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
-        User jiraUser = connection.getUser(config.getServerInfo().getUserName());
+        Promise<User> userPromise = client.getUserClient().getUser(config.getServerInfo().getUserName());
+        final User jiraUser = userPromise.claim();
 
-        List<GTask> tasks = TestUtils.generateTasks(1);
-        tasks.get(0).setAssignee(new GUser(jiraUser.getName()));
+        GTask task = TestUtils.generateTask();
+        task.setAssignee(new GUser(jiraUser.getName()));
 
-        TaskSaveResult result = connector.saveData(tasks, null, TestMappingUtils.fromFields(SUPPORTED_FIELDS));
-        assertFalse("Task creation failed", result.hasErrors());
+        GTask loadedTask = TestUtils.saveAndLoad(connector, task, TestMappingUtils.fromFields(SUPPORTED_FIELDS));
+        assertEquals(jiraUser.getName(), loadedTask.getAssignee().getLoginName());
+        assertEquals(jiraUser.getDisplayName(), loadedTask.getAssignee().getDisplayName());
 
-        Map<Integer, String> remoteKeyById = new HashMap<>();
-        for (GTask task : tasks) {
-            remoteKeyById.put(task.getId(), result.getIdToRemoteKeyMap().get(task.getId()));
-        }
-
-        for (Map.Entry<Integer, String> entry : remoteKeyById.entrySet()) {
-            GTask loaded = connector.loadTaskByKey(serverInfo, entry.getValue());
-            assertEquals(jiraUser.getName(), loaded.getAssignee().getLoginName());
-            assertEquals(jiraUser.getDisplayName(), loaded.getAssignee().getDisplayName());
-        }
+        TestJiraClientHelper.deleteTasks(client, loadedTask.getKey());
     }
 
-    // see http://www.hostedredmine.com/issues/41212
     @Test
     public void taskUpdatedOK() throws Exception {
         CommonTests.taskCreatedAndUpdatedOK(connector, SUPPORTED_FIELDS);
@@ -106,10 +88,10 @@ public class JiraTest {
     public void testGetIssuesByProject() throws Exception {
         int tasksQty = 2;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
-        connector.saveData(tasks, null, TestMappingUtils.fromFields(SUPPORTED_FIELDS));
-
-        Iterable<Issue> issues = connection.getIssuesByProject(config.getProjectKey());
-        Assert.assertNotSame(0, Iterables.size(issues));
+        connector.saveData(tasks, ProgressMonitorUtils.DUMMY_MONITOR, TestMappingUtils.fromFields(SUPPORTED_FIELDS));
+        final String jql = JqlBuilder.findIssuesByProject(config.getProjectKey());
+        final Iterable<Issue> issues = JiraClientHelper.findIssues(client, jql);
+        assertThat(Iterables.size(issues)).isGreaterThan(1);
     }
 
     @Test
@@ -131,13 +113,17 @@ public class JiraTest {
         list.add(task2);
 
         TestUtils.saveAndLoadList(connector, list, TestMappingUtils.fromFields(SUPPORTED_FIELDS));
-        List<Issue> issues = connection.getIssuesBySummary(task1.getSummary());
-        Issue issue2 = connection.getIssuesBySummary(task2.getSummary()).get(0);
+        final Iterable<Issue> issues = TestJiraClientHelper.findIssuesBySummary(client, task1.getSummary());
 
-        Iterable<IssueLink> links = issues.get(0).getIssueLinks();
+        final Issue createdIssue1 = issues.iterator().next();
+        Iterable<IssueLink> links = createdIssue1.getIssueLinks();
         assertEquals(1, Iterables.size(links));
         IssueLink link = links.iterator().next();
         String targetIssueKey = link.getTargetIssueKey();
-        assertEquals(issue2.getKey(), targetIssueKey);
+
+        Issue createdIssue2 = TestJiraClientHelper.findIssuesBySummary(client, task2.getSummary()).iterator().next();
+        assertEquals(createdIssue2.getKey(), targetIssueKey);
+
+        TestJiraClientHelper.deleteTasks(client, createdIssue1.getKey(), createdIssue2.getKey());
     }
 }

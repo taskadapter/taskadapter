@@ -1,6 +1,7 @@
 package com.taskadapter.connector.testlib;
 
 import com.taskadapter.connector.common.ConnectorUtils;
+import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
@@ -26,7 +27,7 @@ public final class CommonTests {
         String expectedSummaryTask1 = tasks.get(0).getSummary();
         Integer expectedID = tasks.get(0).getId();
 
-        TaskSaveResult result = connector.saveData(tasks, null, mappings);
+        TaskSaveResult result = connector.saveData(tasks, ProgressMonitorUtils.DUMMY_MONITOR, mappings);
         assertEquals(tasksQty, result.getCreatedTasksNumber());
 
         Integer createdTask1Id = Integer.valueOf(result.getIdToRemoteKeyMap().get(expectedID));
@@ -56,7 +57,7 @@ public final class CommonTests {
     public static void testCreates2Tasks(Connector<?> connector, Mappings mappings) throws ConnectorException {
         int tasksQty = 2;
         List<GTask> tasks = TestUtils.generateTasks(tasksQty);
-        TaskSaveResult result = connector.saveData(tasks, null, mappings);
+        TaskSaveResult result = connector.saveData(tasks, ProgressMonitorUtils.DUMMY_MONITOR, mappings);
         assertFalse(result.hasErrors());
         assertEquals(tasksQty, result.getCreatedTasksNumber());
     }
@@ -69,7 +70,7 @@ public final class CommonTests {
 
         // CREATE
         final Mappings mappings = TestMappingUtils.fromFields(availableFields);
-        TaskSaveResult result = connector.saveData(Arrays.asList(task), null, mappings);
+        TaskSaveResult result = connector.saveData(Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, mappings);
         assertFalse(result.hasErrors());
         assertEquals(tasksQty, result.getCreatedTasksNumber());
         String remoteKey = result.getRemoteKey(id);
@@ -80,7 +81,7 @@ public final class CommonTests {
         String NEW_SUMMARY = "new summary here";
         loaded.setSummary(NEW_SUMMARY);
         loaded.setRemoteId(remoteKey);
-        TaskSaveResult result2 = connector.saveData(Arrays.asList(loaded), null, mappings);
+        TaskSaveResult result2 = connector.saveData(Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR, mappings);
         assertFalse(result2.hasErrors());
         assertEquals(1, result2.getUpdatedTasksNumber());
 

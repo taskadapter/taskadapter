@@ -1,9 +1,10 @@
 package com.taskadapter.connector.jira;
 
-import com.atlassian.jira.rest.client.domain.Field;
-import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rest.client.domain.IssueLink;
-import com.atlassian.jira.rest.client.domain.TimeTracking;
+import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.IssueField;
+import com.atlassian.jira.rest.client.api.domain.IssueLink;
+import com.atlassian.jira.rest.client.api.domain.IssueLinkType;
+import com.atlassian.jira.rest.client.api.domain.TimeTracking;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
@@ -26,7 +27,7 @@ public class JiraToGTask {
         this.priorities = priorities;
     }
 
-    public List<GTask> convertToGenericTaskList(List<Issue> issues) {
+    public List<GTask> convertToGenericTaskList(Iterable<Issue> issues) {
         // TODO see http://jira.atlassian.com/browse/JRA-6896
 //        logger.info("Jira: no tasks hierarchy is supported");
 
@@ -41,8 +42,9 @@ public class JiraToGTask {
 
     public GTask convertToGenericTask(Issue issue) {
         GTask task = new GTask();
-        Integer intId = Integer.parseInt(issue.getId());
-        task.setId(intId);
+        final Long longId = issue.getId();
+        // do we really expect more than 2bln issues in a JIRA installation? probably not. screw it.
+        task.setId(longId.intValue());
         task.setKey(issue.getKey());
 
         if (issue.getAssignee() != null) {
@@ -83,7 +85,7 @@ public class JiraToGTask {
             }
         }
 
-        Field environmentField = issue.getField("environment");
+        IssueField environmentField = issue.getField("environment");
         if (environmentField != null) {
             task.setEnvironment((String) environmentField.getValue());
         }
@@ -110,10 +112,10 @@ public class JiraToGTask {
         Iterable<IssueLink> links = issue.getIssueLinks();
         if (links != null) {
             for (IssueLink link : links) {
-                if (link.isOutbound()) {
+                if (link.getIssueLinkType().getDirection().equals(IssueLinkType.Direction.OUTBOUND)) {
                     String name = link.getIssueLinkType().getName();
                     if (name.equals(JiraConstants.getJiraLinkNameForPrecedes())) {
-                        GRelation r = new GRelation(issue.getId(), JiraUtils.getIdFromURI(link.getTargetIssueUri()), GRelation.TYPE.precedes);
+                        GRelation r = new GRelation(issue.getId()+"", JiraUtils.getIdFromURI(link.getTargetIssueUri()), GRelation.TYPE.precedes);
                         genericTask.getRelations().add(r);
                     } else {
                         logger.info("Relation type is not supported: " + link.getIssueLinkType() +

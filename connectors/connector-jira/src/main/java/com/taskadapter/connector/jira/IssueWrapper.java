@@ -1,6 +1,6 @@
 package com.taskadapter.connector.jira;
 
-import com.atlassian.jira.rest.client.domain.input.IssueInput;
+import com.atlassian.jira.rest.client.api.domain.input.IssueInput;
 
 final class IssueWrapper {
     private final String key;

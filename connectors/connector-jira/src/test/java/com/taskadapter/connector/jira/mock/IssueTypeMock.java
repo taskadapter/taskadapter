@@ -1,6 +1,6 @@
 package com.taskadapter.connector.jira.mock;
 
-import com.atlassian.jira.rest.client.domain.IssueType;
+import com.atlassian.jira.rest.client.api.domain.IssueType;
 
 public class IssueTypeMock extends IssueType {
     public IssueTypeMock() {

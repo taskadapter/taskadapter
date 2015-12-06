@@ -1,45 +1,46 @@
 package com.taskadapter.connector.jira;
 
-import java.net.MalformedURLException;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.rmi.RemoteException;
-
-import com.taskadapter.connector.definition.exceptions.NotAuthorizedException;
-import org.apache.axis.AxisFault;
-
-import com.atlassian.jira.rpc.soap.client.RemoteAuthenticationException;
+import com.atlassian.jira.rest.client.api.RestClientException;
+import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.definition.exceptions.NotAuthorizedException;
 import com.taskadapter.connector.jira.exceptions.BadHostException;
 import com.taskadapter.connector.jira.exceptions.BadURIException;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.rmi.RemoteException;
+import java.util.Collection;
+
 public final class JiraUtils {
-    private final static String[] PREFIXES_TO_DELETE = new String[] {
-            "com.atlassian.jira.rpc.exception.RemoteAuthenticationException: ",
-            "com.atlassian.jira.rpc.exception.RemoteValidationException: " };
-    private final static String SUFFIX_EMPTY_BRACES = " : []";
 
     public static ConnectorException convertException(RemoteException e) {
-        if (e instanceof RemoteAuthenticationException) {
-            return new NotAuthorizedException(((RemoteAuthenticationException) e).getFaultString());
+        return new CommunicationException(e.toString(), e);
+    }
+
+    public static ConnectorException convertException(Exception e) {
+        if (e instanceof RestClientException) {
+            return processRestException((RestClientException) e);
         }
-        
-        if (!(e instanceof AxisFault))
-            return new CommunicationException(e);
-        
-        String errorMessage = ((AxisFault) e).getFaultReason();
-        for (String s : PREFIXES_TO_DELETE) {
-            if (errorMessage.startsWith(s)) {
-                errorMessage = errorMessage.substring(s.length());
+        return new ConnectorException(e);
+    }
+
+    private static ConnectorException processRestException(RestClientException e) {
+        if (e.getStatusCode().isPresent() && e.getStatusCode().get().equals(401)) {
+            return new NotAuthorizedException();
+        }
+
+        String errorMessage = "";
+        final Collection<ErrorCollection> errorCollections = e.getErrorCollections();
+        for (ErrorCollection collection : errorCollections) {
+            for (String s : collection.getErrorMessages()) {
+                errorMessage += s + System.lineSeparator();
             }
         }
-        if (errorMessage.endsWith(SUFFIX_EMPTY_BRACES)) {
-            errorMessage = errorMessage.substring(0, errorMessage.length()
-                    - SUFFIX_EMPTY_BRACES.length());
-        }
-        return new CommunicationException(errorMessage, e);
+        return new ConnectorException(errorMessage);
+
     }
 
     public static ConnectorException convertException(MalformedURLException e) {
