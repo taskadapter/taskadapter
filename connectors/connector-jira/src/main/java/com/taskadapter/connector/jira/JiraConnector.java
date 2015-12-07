@@ -43,7 +43,6 @@ public class JiraConnector implements Connector<JiraConfig> {
 
     public JiraConnector(JiraConfig config) {
         this.config = config;
-        LOG.info("Initialized JiraConnector.");
     }
 
     @Override
@@ -56,7 +55,7 @@ public class JiraConnector implements Connector<JiraConfig> {
     // XXX refactor this. we don't even need the IDs!
     public List<NamedKeyedObject> getFilters() throws ConnectorException {
         try(JiraRestClient client = JiraConnectionFactory.createClient(config.getServerInfo())) {
-            // TODO need all filters, not just favorites
+            // TODO need all filters, not just favorites - but JIRA REST API does not support. (Dec 6 2015)
             final Promise<Iterable<Filter>> filtersPromise = client.getSearchClient().getFavouriteFilters();
             final Iterable<Filter> filters = filtersPromise.claim();
             List<NamedKeyedObject> list = new ArrayList<>();
