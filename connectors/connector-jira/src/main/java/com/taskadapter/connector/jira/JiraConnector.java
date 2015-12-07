@@ -54,7 +54,7 @@ public class JiraConnector implements Connector<JiraConfig> {
 
     // XXX refactor this. we don't even need the IDs!
     public List<NamedKeyedObject> getFilters() throws ConnectorException {
-        try(JiraRestClient client = JiraConnectionFactory.createClient(config.getServerInfo())) {
+        return withJiraRestClient(client -> {
             // TODO need all filters, not just favorites - but JIRA REST API does not support. (Dec 6 2015)
             final Promise<Iterable<Filter>> filtersPromise = client.getSearchClient().getFavouriteFilters();
             final Iterable<Filter> filters = filtersPromise.claim();
@@ -63,14 +63,12 @@ public class JiraConnector implements Connector<JiraConfig> {
                 list.add(new NamedKeyedObjectImpl(filter.getId() + "", filter.getName()));
             }
             return list;
-        } catch (Exception e) {
-            throw JiraUtils.convertException(e);
-        }
+        });
     }
 
     public List<NamedKeyedObject> getComponents() throws ConnectorException {
         JiraConfigValidator.validateServerURLSet(config);
-        try(JiraRestClient client = JiraConnectionFactory.createClient(config.getServerInfo())) {
+        return withJiraRestClient(client -> {
             String projectKey = config.getProjectKey();
             if (projectKey == null) {
                 throw new ProjectNotSetException();
@@ -83,15 +81,13 @@ public class JiraConnector implements Connector<JiraConfig> {
                 list.add(new NamedKeyedObjectImpl(String.valueOf(c.getId()), c.getName()));
             }
             return list;
-        } catch (Exception e) {
-            throw JiraUtils.convertException(e);
-        }
+        });
     }
 
     // XXX refactor this. we don't even need the IDs!
     public List<NamedKeyedObject> getVersions() throws ConnectorException {
         JiraConfigValidator.validateServerURLSet(config);
-        try(JiraRestClient client = JiraConnectionFactory.createClient(config.getServerInfo())) {
+        return withJiraRestClient(client -> {
             String projectKey = config.getProjectKey();
             if (projectKey == null) {
                 throw new ProjectNotSetException();
@@ -104,9 +100,7 @@ public class JiraConnector implements Connector<JiraConfig> {
                 list.add(new NamedKeyedObjectImpl(String.valueOf(version.getId()), version.getName()));
             }
             return list;
-        } catch (Exception e) {
-            throw JiraUtils.convertException(e);
-        }
+        });
     }
 
     public List<NamedKeyedObject> getAllIssueTypes() throws ConnectorException {
@@ -119,27 +113,23 @@ public class JiraConnector implements Connector<JiraConfig> {
 
     @Override
     public GTask loadTaskByKey(String key, Mappings mappings) throws ConnectorException {
-        try(JiraRestClient client = JiraConnectionFactory.createClient(config.getServerInfo())) {
+        return withJiraRestClient(client -> {
             final JiraTaskLoader loader = new JiraTaskLoader(client, config.getPriorities());
             return loader.loadTask(key);
-        } catch (Exception e) {
-            throw JiraUtils.convertException(e);
-        }
+        });
     }
 
     @Override
     public List<GTask> loadData(Mappings mappings, ProgressMonitor monitorIGNORED) throws ConnectorException {
-        try(JiraRestClient client = JiraConnectionFactory.createClient(config.getServerInfo())) {
+        return withJiraRestClient(client -> {
             final JiraTaskLoader loader = new JiraTaskLoader(client, config.getPriorities());
             return loader.loadTasks(config);
-        } catch (Exception e) {
-            throw JiraUtils.convertException(e);
-        }
+        });
     }
 
     @Override
     public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
-        try(JiraRestClient client = JiraConnectionFactory.createClient(config.getServerInfo())) {
+        return withJiraRestClient(client -> {
             final Iterable<IssueType> issueTypeList = loadIssueTypes(client);
             final Promise<Project> projectPromise = client.getProjectClient().getProject(config.getProjectKey());
             final Project project = projectPromise.claim();
@@ -157,9 +147,7 @@ public class JiraConnector implements Connector<JiraConfig> {
                     converter, saver, monitor, new DefaultValueSetter(mappings));
             TaskSavingUtils.saveRemappedRelations(config, tasks, saver, rb);
             return rb.getResult();
-        } catch (Exception e) {
-            throw JiraUtils.convertException(e);
-        }
+        });
     }
 
     private Iterable<IssueType> loadIssueTypes(JiraRestClient jiraRestClient) throws BadConfigException {
@@ -175,5 +163,18 @@ public class JiraConnector implements Connector<JiraConfig> {
 
         throw new BadConfigException("Default issue type "
                 + config.getDefaultTaskType() + " does not exist in JIRA");
+    }
+
+    private <T> T withJiraRestClient(JiraRestClientAction<T> f) throws ConnectorException {
+        try (JiraRestClient client = JiraConnectionFactory.createClient(config.getServerInfo())) {
+            return f.apply(client);
+        } catch (IOException e) {
+            throw JiraUtils.convertException(e);
+        }
+    }
+
+    @FunctionalInterface
+    interface JiraRestClientAction<T> {
+        T apply(JiraRestClient client) throws IOException, ConnectorException;
     }
 }
