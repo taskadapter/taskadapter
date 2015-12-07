@@ -6,7 +6,6 @@ import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.common.TaskSavingUtils;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
-import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
@@ -53,7 +52,6 @@ import static org.junit.Assert.assertNotNull;
 
 public class IntegrationTest {
 
-    private static final ProgressMonitor DUMMY_MONITOR = ProgressMonitorUtils.getDummyMonitor();
     private static final Logger logger = LoggerFactory.getLogger(IntegrationTest.class);
     private static String projectKey;
     private static RedmineManager mgr;
@@ -132,13 +130,13 @@ public class IntegrationTest {
 
         // load from MSP
         int maxTasksNumber = 999999;
-        List<GTask> loadedTasks = TaskLoader.loadTasks(maxTasksNumber, msProjectConnector, "msp1", mspMappings, DUMMY_MONITOR);
+        List<GTask> loadedTasks = TaskLoader.loadTasks(maxTasksNumber, msProjectConnector, "msp1", mspMappings, ProgressMonitorUtils.DUMMY_MONITOR);
         // save to Redmine. this should save the remote IDs
         GTaskToRedmine converter = new GTaskToRedmine(redmineConfig, redmineMappings, null, redmineProject, null, null, null);
         BasicIssueSaveAPI<Issue> redmineTaskSaver = new RedmineTaskSaver(mgr.getIssueManager(), redmineConfig);
         final TaskSaveResult result =  TaskSavingUtils.saveTasks(loadedTasks,
                 converter, redmineTaskSaver,
-                DUMMY_MONITOR,
+                ProgressMonitorUtils.DUMMY_MONITOR,
                 new DefaultValueSetter(redmineMappings)).getResult();
 
         assertEquals("must have created 2 tasks", 2, result.getCreatedTasksNumber());
@@ -146,7 +144,7 @@ public class IntegrationTest {
                 mspMappings, msProjectConnector);
 
         //reload from MSP file
-        List<GTask> tasksReloadedFromMSPFile = TaskLoader.loadTasks(maxTasksNumber, msProjectConnector, "msp2", mspMappings, DUMMY_MONITOR);
+        List<GTask> tasksReloadedFromMSPFile = TaskLoader.loadTasks(maxTasksNumber, msProjectConnector, "msp2", mspMappings, ProgressMonitorUtils.DUMMY_MONITOR);
 
         assertEquals(2, tasksReloadedFromMSPFile.size());
 
@@ -166,7 +164,7 @@ public class IntegrationTest {
 
         Mappings mspMappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
         int maxTasksNumber = 999999;
-        List<GTask> loadedTasks = TaskLoader.loadTasks(maxTasksNumber, projectConnector, "project1", mspMappings, DUMMY_MONITOR);
+        List<GTask> loadedTasks = TaskLoader.loadTasks(maxTasksNumber, projectConnector, "project1", mspMappings, ProgressMonitorUtils.DUMMY_MONITOR);
         try {
             // save to Redmine
             Mappings redmineMappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
@@ -174,7 +172,7 @@ public class IntegrationTest {
             BasicIssueSaveAPI<Issue> redmineTaskSaver = new RedmineTaskSaver(mgr.getIssueManager(), redmineConfigTo);
             TaskSavingUtils.saveTasks(loadedTasks,
                     converter, redmineTaskSaver,
-                    DUMMY_MONITOR,
+                    ProgressMonitorUtils.DUMMY_MONITOR,
                     new DefaultValueSetter(redmineMappings));
         } catch (Throwable t) {
             t.printStackTrace();

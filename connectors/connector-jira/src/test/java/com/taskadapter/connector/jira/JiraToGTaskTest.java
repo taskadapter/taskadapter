@@ -1,6 +1,6 @@
 package com.taskadapter.connector.jira;
 
-import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.model.GTask;
 import org.junit.BeforeClass;
@@ -46,7 +46,9 @@ public class JiraToGTaskTest {
 
     @Test
     public void assigneeIsConverted() throws Exception {
-        Issue issue = MockData.loadIssue("issue_with_assignee_5.0.json");
+        // TODO cannot parse an issue without "names" and "schema" section. submitted a bug:
+        // https://answers.atlassian.com/questions/32971227/jira-java-rest-client-cannot-parse-a-valid-issue-json-returned-by-jira-6.4.11-npe-at-jsonparseutil.getstringkeysjsonparseutil.java337
+        Issue issue = MockData.loadIssue("issue_with_assignee_6.4.11_expanded_names_and_schema.json");
         GTask task = convertIssue(issue);
         assertEquals(issue.getAssignee().getName(), task.getAssignee().getLoginName());
         assertEquals(issue.getAssignee().getDisplayName(), task.getAssignee().getDisplayName());

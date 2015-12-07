@@ -1,16 +1,16 @@
 package com.taskadapter.connector.jira;
 
-import com.atlassian.jira.rest.client.domain.BasicComponent;
-import com.atlassian.jira.rest.client.domain.BasicPriority;
-import com.atlassian.jira.rest.client.domain.IssueFieldId;
-import com.atlassian.jira.rest.client.domain.IssueType;
-import com.atlassian.jira.rest.client.domain.Priority;
-import com.atlassian.jira.rest.client.domain.TimeTracking;
-import com.atlassian.jira.rest.client.domain.Version;
-import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
-import com.atlassian.jira.rest.client.domain.input.FieldInput;
-import com.atlassian.jira.rest.client.domain.input.IssueInput;
-import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
+import com.atlassian.jira.rest.client.api.domain.BasicComponent;
+import com.atlassian.jira.rest.client.api.domain.BasicPriority;
+import com.atlassian.jira.rest.client.api.domain.IssueFieldId;
+import com.atlassian.jira.rest.client.api.domain.IssueType;
+import com.atlassian.jira.rest.client.api.domain.Priority;
+import com.atlassian.jira.rest.client.api.domain.TimeTracking;
+import com.atlassian.jira.rest.client.api.domain.Version;
+import com.atlassian.jira.rest.client.api.domain.input.ComplexIssueInputFieldValue;
+import com.atlassian.jira.rest.client.api.domain.input.FieldInput;
+import com.atlassian.jira.rest.client.api.domain.input.IssueInput;
+import com.atlassian.jira.rest.client.api.domain.input.IssueInputBuilder;
 import com.google.common.collect.ImmutableList;
 import com.taskadapter.connector.common.data.ConnectorConverter;
 import com.taskadapter.connector.definition.Mappings;
@@ -76,7 +76,6 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueWrapper> {
 
         Version affectedVersion = getVersion(versions, config.getAffectedVersion());
         Version fixForVersion = getVersion(versions, config.getFixForVersion());
-        //RemoteCustomFieldValue[] customValues = getCustomFieldsForIssue(config.getCustomFields());
         BasicComponent component = getComponent(components, config.getComponent());
 
         if (affectedVersion != null) {
@@ -90,11 +89,6 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueWrapper> {
         if (component != null) {
             issueInputBuilder.setComponents(ImmutableList.of(component));
         }
-
-/*        if (customValues.length != 0) {
-            issue.setCustomFieldValues(customValues);
-        }*/
-
 
         if (mappings.isFieldSelected(FIELD.DUE_DATE) && task.getDueDate() != null) {
             DateTime dueDateTime = new DateTime(task.getDueDate());

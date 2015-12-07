@@ -1,11 +1,13 @@
 package com.taskadapter.connector.jira;
 
-import com.atlassian.jira.rest.client.domain.BasicComponent;
-import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rest.client.domain.IssueType;
-import com.atlassian.jira.rest.client.domain.Priority;
-import com.atlassian.jira.rest.client.domain.Version;
-import com.atlassian.jira.rpc.soap.client.RemoteFilter;
+import com.atlassian.jira.rest.client.api.JiraRestClient;
+import com.atlassian.jira.rest.client.api.domain.BasicComponent;
+import com.atlassian.jira.rest.client.api.domain.Filter;
+import com.atlassian.jira.rest.client.api.domain.IssueType;
+import com.atlassian.jira.rest.client.api.domain.Priority;
+import com.atlassian.jira.rest.client.api.domain.Project;
+import com.atlassian.jira.rest.client.api.domain.Version;
+import com.atlassian.util.concurrent.Promise;
 import com.taskadapter.connector.common.DefaultValueSetter;
 import com.taskadapter.connector.common.TaskSavingUtils;
 import com.taskadapter.connector.definition.Connector;
@@ -13,7 +15,6 @@ import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.TaskSaveResultBuilder;
-import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
@@ -21,25 +22,28 @@ import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOpera
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.rmi.RemoteException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class JiraConnector implements Connector<JiraConfig> {
+    private static final Logger LOG = LoggerFactory.getLogger(JiraConnector.class);
 
     /**
      * Keep it the same to enable backward compatibility with the existing
      * config files.
      */
     public static final String ID = "Atlassian Jira";
-    private JiraConfig config;
+
+    private final JiraConfig config;
 
     public JiraConnector(JiraConfig config) {
         this.config = config;
+        LOG.info("Initialized JiraConnector.");
     }
 
     @Override
@@ -49,60 +53,38 @@ public class JiraConnector implements Connector<JiraConfig> {
         throw new UnsupportedConnectorOperation("updateRemoteIDs");
     }
 
-    public GTask loadTaskByKey(WebServerInfo info, String key) throws ConnectorException {
-        try {
-            JiraConnection connection = JiraConnectionFactory.createConnection(info);
-            Issue issue = connection.getIssueByKey(key);
-            JiraUserConverter userConverter = new JiraUserConverter(connection);
-            JiraToGTask jiraToGTask = new JiraToGTask(config.getPriorities());
-            return userConverter.setAssigneeDisplayName(jiraToGTask.convertToGenericTask(issue));
-        } catch (RemoteException e) {
-            throw JiraUtils.convertException(e);
-        } catch (MalformedURLException e) {
-            throw JiraUtils.convertException(e);
-        } catch (URISyntaxException e) {
-            throw JiraUtils.convertException(e);
-        }
-    }
-
     // XXX refactor this. we don't even need the IDs!
     public List<NamedKeyedObject> getFilters() throws ConnectorException {
-        try {
-            JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
-            RemoteFilter[] objects = connection.getSavedFilters();
+        try(JiraRestClient client = JiraConnectionFactory.createClient(config.getServerInfo())) {
+            // TODO need all filters, not just favorites
+            final Promise<Iterable<Filter>> filtersPromise = client.getSearchClient().getFavouriteFilters();
+            final Iterable<Filter> filters = filtersPromise.claim();
             List<NamedKeyedObject> list = new ArrayList<>();
-            for (RemoteFilter o : objects) {
-                list.add(new NamedKeyedObjectImpl(o.getId(), o.getName()));
+            for (Filter filter : filters) {
+                list.add(new NamedKeyedObjectImpl(filter.getId() + "", filter.getName()));
             }
             return list;
-        } catch (RemoteException e) {
-            throw JiraUtils.convertException(e);
-        } catch (MalformedURLException e) {
-            throw JiraUtils.convertException(e);
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
             throw JiraUtils.convertException(e);
         }
     }
 
     public List<NamedKeyedObject> getComponents() throws ConnectorException {
         JiraConfigValidator.validateServerURLSet(config);
-        try {
-            JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
+        try(JiraRestClient client = JiraConnectionFactory.createClient(config.getServerInfo())) {
             String projectKey = config.getProjectKey();
             if (projectKey == null) {
                 throw new ProjectNotSetException();
             }
-            Iterable<BasicComponent> components = connection.getComponents(projectKey);
+            Promise<Project> projectPromise = client.getProjectClient().getProject(projectKey);
+            final Project project = projectPromise.claim();
+            final Iterable<BasicComponent> components = project.getComponents();
             List<NamedKeyedObject> list = new ArrayList<>();
             for (BasicComponent c : components) {
                 list.add(new NamedKeyedObjectImpl(String.valueOf(c.getId()), c.getName()));
             }
             return list;
-        } catch (RemoteException e) {
-            throw JiraUtils.convertException(e);
-        } catch (MalformedURLException e) {
-            throw JiraUtils.convertException(e);
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
             throw JiraUtils.convertException(e);
         }
     }
@@ -110,23 +92,20 @@ public class JiraConnector implements Connector<JiraConfig> {
     // XXX refactor this. we don't even need the IDs!
     public List<NamedKeyedObject> getVersions() throws ConnectorException {
         JiraConfigValidator.validateServerURLSet(config);
-        try {
-            JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
+        try(JiraRestClient client = JiraConnectionFactory.createClient(config.getServerInfo())) {
             String projectKey = config.getProjectKey();
             if (projectKey == null) {
                 throw new ProjectNotSetException();
             }
-            Iterable<Version> objects = connection.getVersions(projectKey);
+            final Promise<Project> projectPromise = client.getProjectClient().getProject(projectKey);
+            final Project project = projectPromise.claim();
+            final Iterable<Version> versions = project.getVersions();
             List<NamedKeyedObject> list = new ArrayList<>();
-            for (Version o : objects) {
-                list.add(new NamedKeyedObjectImpl(String.valueOf(o.getId()), o.getName()));
+            for (Version version : versions) {
+                list.add(new NamedKeyedObjectImpl(String.valueOf(version.getId()), version.getName()));
             }
             return list;
-        } catch (RemoteException e) {
-            throw JiraUtils.convertException(e);
-        } catch (MalformedURLException e) {
-            throw JiraUtils.convertException(e);
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
             throw JiraUtils.convertException(e);
         }
     }
@@ -141,46 +120,52 @@ public class JiraConnector implements Connector<JiraConfig> {
 
     @Override
     public GTask loadTaskByKey(String key, Mappings mappings) throws ConnectorException {
-        final JiraTaskLoader loader = new JiraTaskLoader(config);
-        return loader.loadTask(key);
-    }
-
-    @Override
-    public List<GTask> loadData(Mappings mappings, ProgressMonitor monitorIGNORED) throws ConnectorException {
-        final JiraTaskLoader loader = new JiraTaskLoader(config);
-        return loader.loadTasks(config);
-    }
-
-    @Override
-    public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
-        try {
-            final JiraConnection connection = JiraConnectionFactory.createConnection(config.getServerInfo());
-
-            final Iterable<IssueType> issueTypeList = loadIssueTypes(connection);
-            final Iterable<Version> versions = connection.getVersions(config.getProjectKey());
-            final Iterable<BasicComponent> components = connection.getComponents(config.getProjectKey());
-            /* Need to load Jira server priorities because what we store in the config files is a
-             * priority name (string), while Jira returns the number value of the issue priority */
-            final Iterable<Priority> jiraPriorities = connection.getPriorities();
-            final GTaskToJira converter = new GTaskToJira(config, mappings,
-                    issueTypeList, versions, components, jiraPriorities);
-
-            final JiraTaskSaver saver = new JiraTaskSaver(connection);
-            final TaskSaveResultBuilder rb = TaskSavingUtils.saveTasks(tasks,
-                    converter, saver, monitor, new DefaultValueSetter(mappings));
-            TaskSavingUtils.saveRemappedRelations(config, tasks, saver, rb);
-            return rb.getResult();
-        } catch (RemoteException e) {
-            throw JiraUtils.convertException(e);
-        } catch (MalformedURLException e) {
-            throw JiraUtils.convertException(e);
-        } catch (URISyntaxException e) {
+        try(JiraRestClient client = JiraConnectionFactory.createClient(config.getServerInfo())) {
+            final JiraTaskLoader loader = new JiraTaskLoader(client, config.getPriorities());
+            return loader.loadTask(key);
+        } catch (Exception e) {
             throw JiraUtils.convertException(e);
         }
     }
 
-    private Iterable<IssueType> loadIssueTypes(JiraConnection connection) throws BadConfigException {
-        Iterable<IssueType> issueTypeList = connection.getIssueTypeList();
+    @Override
+    public List<GTask> loadData(Mappings mappings, ProgressMonitor monitorIGNORED) throws ConnectorException {
+        try(JiraRestClient client = JiraConnectionFactory.createClient(config.getServerInfo())) {
+            final JiraTaskLoader loader = new JiraTaskLoader(client, config.getPriorities());
+            return loader.loadTasks(config);
+        } catch (Exception e) {
+            throw JiraUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
+        try(JiraRestClient client = JiraConnectionFactory.createClient(config.getServerInfo())) {
+            final Iterable<IssueType> issueTypeList = loadIssueTypes(client);
+            final Promise<Project> projectPromise = client.getProjectClient().getProject(config.getProjectKey());
+            final Project project = projectPromise.claim();
+            final Iterable<Version> versions = project.getVersions();
+            final Iterable<BasicComponent> components = project.getComponents();
+            /* Need to load Jira server priorities because what we store in the config files is a
+             * priority name (string), while Jira returns the number value of the issue priority */
+            final Promise<Iterable<Priority>> prioritiesPromise = client.getMetadataClient().getPriorities();
+            final Iterable<Priority> priorities = prioritiesPromise.claim();
+            final GTaskToJira converter = new GTaskToJira(config, mappings,
+                    issueTypeList, versions, components, priorities);
+
+            final JiraTaskSaver saver = new JiraTaskSaver(client);
+            final TaskSaveResultBuilder rb = TaskSavingUtils.saveTasks(tasks,
+                    converter, saver, monitor, new DefaultValueSetter(mappings));
+            TaskSavingUtils.saveRemappedRelations(config, tasks, saver, rb);
+            return rb.getResult();
+        } catch (Exception e) {
+            throw JiraUtils.convertException(e);
+        }
+    }
+
+    private Iterable<IssueType> loadIssueTypes(JiraRestClient jiraRestClient) throws BadConfigException {
+        Promise<Iterable<IssueType>> issueTypeListPromise = jiraRestClient.getMetadataClient().getIssueTypes();
+        final Iterable<IssueType> issueTypeList = issueTypeListPromise.claim();
 
         //check if default issue type exists in Jira
         for (IssueType anIssueTypeList : issueTypeList) {

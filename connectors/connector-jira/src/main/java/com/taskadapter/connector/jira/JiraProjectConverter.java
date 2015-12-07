@@ -4,8 +4,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.atlassian.jira.rest.client.domain.BasicProject;
-import com.atlassian.jira.rest.client.domain.Project;
+import com.atlassian.jira.rest.client.api.domain.BasicProject;
+import com.atlassian.jira.rest.client.api.domain.Project;
 import com.taskadapter.model.GProject;
 
 public class JiraProjectConverter {

@@ -1,6 +1,6 @@
 package com.taskadapter.connector.jira.mock;
 
-import com.atlassian.jira.rest.client.domain.Priority;
+import com.atlassian.jira.rest.client.api.domain.Priority;
 
 public class PriorityMock extends Priority {
     public PriorityMock() {
