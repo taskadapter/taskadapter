@@ -102,7 +102,7 @@ public class IntegrationTest {
         Mappings redmineMappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
 
         List<GTask> gTasks = TestUtils.generateTasks(1);
-        final TaskSaveResult saveResult = TaskSaver.save(redmine, "target redmine", redmineMappings, gTasks, ProgressMonitorUtils.getDummyMonitor());
+        final TaskSaveResult saveResult = TaskSaver.save(redmine, "target redmine", redmineMappings, gTasks, ProgressMonitorUtils.DUMMY_MONITOR);
 
         final String key = saveResult.getRemoteKeys().iterator().next();
 
@@ -110,7 +110,7 @@ public class IntegrationTest {
         createdTask.setRemoteId(key);
         createdTask.setSummary("updated summary");
 
-        final TaskSaveResult secondResult = TaskSaver.save(redmine, "target redmine", redmineMappings, gTasks, ProgressMonitorUtils.getDummyMonitor());
+        final TaskSaveResult secondResult = TaskSaver.save(redmine, "target redmine", redmineMappings, gTasks, ProgressMonitorUtils.DUMMY_MONITOR);
         assertThat(secondResult.hasErrors()).isFalse();
         assertThat(secondResult.getCreatedTasksNumber()).isEqualTo(0);
         assertThat(secondResult.getUpdatedTasksNumber()).isEqualTo(1);

@@ -20,15 +20,4 @@ public final class ProgressMonitorUtils {
 			// not used.
 		}
 	};
-
-	/**
-	 * Returns a "dummy" monitor. Note, that this method may return same
-	 * instance each time, not a new one.
-	 * 
-	 * @return dummy monitor, which ignores all data.
-	 */
-	public static ProgressMonitor getDummyMonitor() {
-		return ProgressMonitorUtils.DUMMY_MONITOR;
-	}
-
 }

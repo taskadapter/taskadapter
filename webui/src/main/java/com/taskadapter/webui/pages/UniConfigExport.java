@@ -58,19 +58,19 @@ final class UniConfigExport {
         try {
             syncConfig.getConnector1().validateForDropIn();
         } catch (BadConfigException e) {
-            rb.append(Page.MESSAGES.format("configsPage.errorSource",
+            rb.append(Page.message("configsPage.errorSource",
                     syncConfig.getConnector1().decodeException(e)));
         }
         try {
             syncConfig.getConnector2().validateForSave();
         } catch (BadConfigException e) {
-            rb.append(Page.MESSAGES.format("configsPage.errorDestination",
+            rb.append(Page.message("configsPage.errorDestination",
                     syncConfig.getConnector2().decodeException(e)));
         }
         if (rb.length() == 0) {
             return null;
         }
-        return Page.MESSAGES.format("configsPage.validationTemplate",
+        return Page.message("configsPage.validationTemplate",
                 rb.toString());
     }
 
@@ -79,19 +79,19 @@ final class UniConfigExport {
         try {
             syncConfig.getConnector1().validateForLoad();
         } catch (BadConfigException e) {
-            rb.append(Page.MESSAGES.format("configsPage.errorSource",
+            rb.append(Page.message("configsPage.errorSource",
                     syncConfig.getConnector1().decodeException(e)));
         }
         try {
             syncConfig.getConnector2().validateForSave();
         } catch (BadConfigException e) {
-            rb.append(Page.MESSAGES.format("configsPage.errorDestination",
+            rb.append(Page.message("configsPage.errorDestination",
                     syncConfig.getConnector2().decodeException(e)));
         }
         if (rb.length() == 0) {
             return null;
         }
-        return Page.MESSAGES.format("configsPage.validationTemplate",
+        return Page.message("configsPage.validationTemplate",
                 rb.toString());
     }
 

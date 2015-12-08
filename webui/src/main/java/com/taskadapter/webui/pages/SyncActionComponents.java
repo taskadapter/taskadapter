@@ -93,7 +93,7 @@ public final class SyncActionComponents {
         final ProgressIndicator saveProgress = new ProgressIndicator();
         saveProgress.setIndeterminate(false);
         saveProgress.setEnabled(true);
-        saveProgress.setCaption(Page.MESSAGES.format("action.saving",
+        saveProgress.setCaption(Page.message("action.saving",
                 destination.getDestinationLocation()));
         return saveProgress;
 
@@ -114,7 +114,7 @@ public final class SyncActionComponents {
 
     public static Component renderLoadIndicator(final String sourceDescription) {
         final VerticalLayout res = new VerticalLayout();
-        final String labelText = Page.MESSAGES.format("action.loadingData",
+        final String labelText = Page.message("action.loadingData",
                 sourceDescription);
 
         final Label label = new Label(labelText);
@@ -150,7 +150,7 @@ public final class SyncActionComponents {
         res.addComponent(label);
 
         final HorizontalLayout buttonsLayout = new HorizontalLayout();
-        final Button goButton = new Button(Page.MESSAGES.get("button.go"));
+        final Button goButton = new Button(Page.message("button.go"));
         goButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -159,7 +159,7 @@ public final class SyncActionComponents {
         });
         buttonsLayout.addComponent(goButton);
 
-        final Button backButton = new Button(Page.MESSAGES.get("button.cancel"));
+        final Button backButton = new Button(Page.message("button.cancel"));
         backButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {

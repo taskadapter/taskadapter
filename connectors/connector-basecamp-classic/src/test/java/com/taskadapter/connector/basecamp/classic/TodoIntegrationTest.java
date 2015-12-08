@@ -80,7 +80,7 @@ public class TodoIntegrationTest {
         final BasecampConnector conn = new BasecampConnector(config, factory);
         final TaskSaveResult res = conn.saveData(
                 Collections.singletonList(task),
-                ProgressMonitorUtils.getDummyMonitor(), mappings);
+                ProgressMonitorUtils.DUMMY_MONITOR, mappings);
         Assert.assertEquals(1, res.getCreatedTasksNumber());
         Assert.assertEquals(0, res.getUpdatedTasksNumber());
 
@@ -90,7 +90,7 @@ public class TodoIntegrationTest {
         update.setDescription("Change country");
         final TaskSaveResult res1 = conn.saveData(
                 Collections.singletonList(update),
-                ProgressMonitorUtils.getDummyMonitor(), mappings);
+                ProgressMonitorUtils.DUMMY_MONITOR, mappings);
         Assert.assertEquals(0, res1.getCreatedTasksNumber());
         Assert.assertEquals(1, res1.getUpdatedTasksNumber());
 
@@ -120,7 +120,7 @@ public class TodoIntegrationTest {
         final BasecampConnector connector = new BasecampConnector(config, factory);
         final TaskSaveResult result = connector.saveData(
                 Collections.singletonList(taskToCreate),
-                ProgressMonitorUtils.getDummyMonitor(), allMappings);
+                ProgressMonitorUtils.DUMMY_MONITOR, allMappings);
         Assert.assertEquals(1, result.getCreatedTasksNumber());
 
         final String remoteKey = result.getRemoteKeys().iterator().next();
@@ -141,7 +141,7 @@ public class TodoIntegrationTest {
                 updated.getAssignee().getDisplayName());
 
         connector.saveData(Collections.singletonList(taskToCreate),
-                ProgressMonitorUtils.getDummyMonitor(), allMappings);
+                ProgressMonitorUtils.DUMMY_MONITOR, allMappings);
 
         updated = update(connector, taskToUpdate, GTaskDescriptor.FIELD.DONE_RATIO, "done_ratio");
         Assert.assertEquals(taskToUpdate.getSummary(), updated.getSummary());
@@ -151,7 +151,7 @@ public class TodoIntegrationTest {
                 updated.getAssignee().getDisplayName());
 
         connector.saveData(Collections.singletonList(taskToCreate),
-                ProgressMonitorUtils.getDummyMonitor(), allMappings);
+                ProgressMonitorUtils.DUMMY_MONITOR, allMappings);
 
         updated = update(connector, taskToUpdate, GTaskDescriptor.FIELD.DUE_DATE, "due_date");
         Assert.assertEquals(taskToUpdate.getSummary(), updated.getSummary());
@@ -160,7 +160,7 @@ public class TodoIntegrationTest {
         assertEquals(BASECAMP_CLASSIC_USER_DISPLAY_NAME, updated.getAssignee().getDisplayName());
 
         connector.saveData(Collections.singletonList(taskToCreate),
-                ProgressMonitorUtils.getDummyMonitor(), allMappings);
+                ProgressMonitorUtils.DUMMY_MONITOR, allMappings);
 
         updated = update(connector, taskToUpdate, GTaskDescriptor.FIELD.ASSIGNEE, "assignee");
         Assert.assertNull(updated.getAssignee());
@@ -172,7 +172,7 @@ public class TodoIntegrationTest {
         newMappings.setMapping(field, true, target, "some default value");
         final TaskSaveResult res = conn.saveData(
                 Collections.singletonList(newTask),
-                ProgressMonitorUtils.getDummyMonitor(), newMappings);
+                ProgressMonitorUtils.DUMMY_MONITOR, newMappings);
         Assert.assertEquals(1, res.getUpdatedTasksNumber());
         return conn.loadTaskByKey(newTask.getRemoteId(), newMappings);
     }
@@ -194,7 +194,7 @@ public class TodoIntegrationTest {
         final BasecampConnector connector = new BasecampConnector(config, factory);
         final TaskSaveResult res = connector.saveData(
                 Collections.singletonList(task),
-                ProgressMonitorUtils.getDummyMonitor(), mappings);
+                ProgressMonitorUtils.DUMMY_MONITOR, mappings);
         Assert.assertEquals(1, res.getCreatedTasksNumber());
         Assert.assertEquals(0, res.getUpdatedTasksNumber());
     }

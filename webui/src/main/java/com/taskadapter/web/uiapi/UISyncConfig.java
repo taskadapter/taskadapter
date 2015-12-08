@@ -195,7 +195,7 @@ public final class UISyncConfig {
         return TaskLoader.loadTasks(taskLimit, getConnector1()
                 .createConnectorInstance(), getConnector1().getLabel(),
                 generateSourceMappings(), ProgressMonitorUtils
-                        .getDummyMonitor());
+                        .DUMMY_MONITOR);
     }
 
     public List<GTask> loadDropInTasks(File tempFile, int taskLimit)
@@ -203,7 +203,7 @@ public final class UISyncConfig {
         return TaskLoader.loadDropInTasks(taskLimit,
                 (DropInConnector<?>) getConnector1().createConnectorInstance(),
                 tempFile, generateSourceMappings(),
-                ProgressMonitorUtils.getDummyMonitor());
+                ProgressMonitorUtils.DUMMY_MONITOR);
     }
 
     /**

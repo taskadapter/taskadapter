@@ -42,7 +42,6 @@ public final class ObjectAPIFactory {
                 apiKey, AUTH_KEY_PASSWORD);
         final Communicator throller = new ThrottlingCommunicator(authComm,
                 new IntervalThrottler(THROTTLING_TIMEOUT_MILLIS));
-        final ObjectAPI api = new ObjectAPI(url, throller);
-        return api;
+        return new ObjectAPI(url, throller);
     }
 }

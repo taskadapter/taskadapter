@@ -11,6 +11,8 @@ public class ConnectorConfig implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private final Priorities priorities;
+
     private String label;
 
     private boolean saveIssueRelations = false;
@@ -19,16 +21,6 @@ public class ConnectorConfig implements Serializable {
      * Samples: "Bug", "Task", "Feature", "Support"
      */
     private String defaultTaskType;
-
-    private Priorities priorities;
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
 
     /**
      * Creates a new connector config. This constructor creates a new instance
@@ -95,4 +87,13 @@ public class ConnectorConfig implements Serializable {
     public Priorities getPriorities() {
         return priorities;
     }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
 }

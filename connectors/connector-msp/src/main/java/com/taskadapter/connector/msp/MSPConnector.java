@@ -8,7 +8,6 @@ import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.connector.msp.write.MSXMLFileWriter;
 import com.taskadapter.connector.msp.write.RealWriter;
 import com.taskadapter.connector.msp.write.ResourceManager;
 import com.taskadapter.connector.msp.write.TaskFieldsSetter;
@@ -74,8 +73,6 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector, D
     @Override
     public void updateTasksByRemoteIds(List<GTask> tasksFromExternalSystem, Mappings mappings) throws ConnectorException {
         String fileName = config.getInputAbsoluteFilePath();
-        // FIXME: Why is this not used?
-        MSXMLFileWriter writer = new MSXMLFileWriter(mappings);
         try {
             ProjectFile projectFile = new MSPFileReader().readFile(fileName);
             List<Task> allTasks = projectFile.getAllTasks();
@@ -85,7 +82,6 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector, D
                 TaskFieldsSetter setter = new TaskFieldsSetter(mappings, mspTask, new ResourceManager(projectFile));
                 boolean keepTaskId = true;
                 setter.setFields(gTask, keepTaskId);
-//                writer.setTaskFields(projectFile, mspTask, gTask, true);
             }
             RealWriter.writeProject(config.getOutputAbsoluteFilePath(), projectFile);
         } catch (MPXJException e) {

@@ -44,7 +44,7 @@ public final class ConfigActionsPanel {
 
         final String labelText = mode.nameOf(config);
         final Label description = new Label(
-                labelText.isEmpty() ? Page.MESSAGES.get("configsPage.noDescription") : labelText,
+                labelText.isEmpty() ? Page.message("configsPage.noDescription") : labelText,
                 ContentMode.HTML);
         description.addStyleName("configDescriptionLabel");
         descriptionLayout.addComponent(description);

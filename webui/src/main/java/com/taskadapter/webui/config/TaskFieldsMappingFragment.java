@@ -1,6 +1,5 @@
 package com.taskadapter.webui.config;
 
-import com.google.common.collect.ImmutableSet;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.NewMappings;
@@ -49,7 +48,6 @@ public class TaskFieldsMappingFragment implements Validatable {
     private Messages messages;
     private UIConnectorConfig connector1;
     private UIConnectorConfig connector2;
-    private NewMappings originalMappings;
     private NewMappings mappings;
 
     public TaskFieldsMappingFragment(Messages messages, UIConnectorConfig connector1,
@@ -58,7 +56,6 @@ public class TaskFieldsMappingFragment implements Validatable {
         this.connector1 = connector1;
         this.connector2 = connector2;
         this.mappings = mappings;
-        this.originalMappings = new NewMappings(mappings.getMappings());
 
         ui = new Panel(messages.get("editConfig.mappings.caption"));
         

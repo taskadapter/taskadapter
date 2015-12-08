@@ -23,11 +23,6 @@ final class TAApplicationProvider extends UIProvider {
     private static final String GOOGLE_ANALYTICS_ID = "UA-3768502-12";
 
     /**
-     * Application operation root.
-     */
-    private final File rootFolder;
-
-    /**
      * Global credentials manager. TODO: It is not threadsafe yet, but should
      * be.
      */
@@ -43,7 +38,8 @@ final class TAApplicationProvider extends UIProvider {
      * (like credentials manager, etc...).
      */
     public TAApplicationProvider() {
-        rootFolder = getDefaultRootFolder();
+        // Application config root folder.
+        File rootFolder = getDefaultRootFolder();
 
         final CredentialsStore credentialsStore = new FSCredentialStore(
                 rootFolder);

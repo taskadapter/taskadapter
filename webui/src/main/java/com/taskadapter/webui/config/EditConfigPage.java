@@ -118,8 +118,7 @@ public class EditConfigPage {
     private static Component createEditDescriptionElement(UISyncConfig config) {
         HorizontalLayout descriptionLayout = new HorizontalLayout();
         descriptionLayout.setSpacing(true);
-        descriptionLayout.addComponent(new Label(Page.MESSAGES
-                .get("editConfig.description")));
+        descriptionLayout.addComponent(new Label(Page.message("editConfig.description")));
         TextField descriptionField = new TextField();
         descriptionField.addStyleName("configEditorDescriptionLabel");
         MethodProperty<String> label = new MethodProperty<>(config,
@@ -138,7 +137,7 @@ public class EditConfigPage {
         buttonsLayout
                 .setComponentAlignment(rightLayout, Alignment.BOTTOM_RIGHT);
 
-        final Button saveButton = new Button(Page.MESSAGES.get("button.save"));
+        final Button saveButton = new Button(Page.message("button.save"));
         saveButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -147,7 +146,7 @@ public class EditConfigPage {
         });
         rightLayout.addComponent(saveButton);
 
-        final Button backButton = new Button(Page.MESSAGES.get("button.close"));
+        final Button backButton = new Button(Page.message("button.close"));
         backButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -162,7 +161,7 @@ public class EditConfigPage {
     private void saveClicked() {
         if (validate()) {
             save();
-            Notification.show("", Page.MESSAGES.get("editConfig.messageSaved"),
+            Notification.show("", Page.message("editConfig.messageSaved"),
                     Notification.Type.HUMANIZED_MESSAGE);
         }
     }
@@ -185,15 +184,12 @@ public class EditConfigPage {
         try {
             editor.validate();
         } catch (FieldAlreadyMappedException e) {
-            String s = Page.MESSAGES.format(
-                    "editConfig.error.fieldAlreadyMapped", e.getValue());
+            String s = Page.message("editConfig.error.fieldAlreadyMapped", e.getValue());
             errorMessageLabel.setValue(s);
             return false;
         } catch (FieldNotMappedException e) {
-            String fieldDisplayName = GTaskDescriptor.getDisplayValue(e
-                    .getField());
-            String s = Page.MESSAGES.format(
-                    "error.fieldSelectedForExportNotMapped", fieldDisplayName);
+            String fieldDisplayName = GTaskDescriptor.getDisplayValue(e.getField());
+            String s = Page.message("error.fieldSelectedForExportNotMapped", fieldDisplayName);
             errorMessageLabel.setValue(s);
             return false;
         } catch (BadConfigException e) {
@@ -208,8 +204,7 @@ public class EditConfigPage {
         try {
             configOps.saveConfig(config);
         } catch (StorageException e) {
-            String message = Page.MESSAGES.format("editConfig.error.cantSave",
-                    e.getMessage());
+            String message = Page.message("editConfig.error.cantSave", e.getMessage());
             errorMessageLabel.setValue(message);
             LOGGER.error(message, e);
         }

@@ -44,7 +44,7 @@ public final class LoginPage {
      *            page callback.
      */
     public static Component createUI(final Callback callback) {
-        final Panel panel = new Panel(Page.MESSAGES.get("loginPage.login"));
+        final Panel panel = new Panel(Page.message("loginPage.login"));
 
         final VerticalLayout layout = new VerticalLayout();
         panel.setContent(layout);
@@ -52,24 +52,24 @@ public final class LoginPage {
 
         layout.setMargin(new MarginInfo(false, true, false, true));
         layout.setSpacing(true);
-        final Label label = new Label(Page.MESSAGES.get("loginPage.hintLabel"), ContentMode.HTML);
+        final Label label = new Label(Page.message("loginPage.hintLabel"), ContentMode.HTML);
         label.setStyleName(Runo.LABEL_SMALL);
         layout.addComponent(label);
 
         final TextField loginEdit = new TextField();
-        loginEdit.setCaption(Page.MESSAGES.get("loginPage.login"));
+        loginEdit.setCaption(Page.message("loginPage.login"));
         loginEdit.setWidth(EDIT_WIDTH);
         layout.addComponent(loginEdit);
 
         final PasswordField passwordEdit = new PasswordField();
-        passwordEdit.setCaption(Page.MESSAGES.get("loginPage.password"));
+        passwordEdit.setCaption(Page.message("loginPage.password"));
         passwordEdit.setWidth(EDIT_WIDTH);
         layout.addComponent(passwordEdit);
 
-        final CheckBox staySignedIn = new CheckBox(Page.MESSAGES.get("loginPage.staySignedIn"));
+        final CheckBox staySignedIn = new CheckBox(Page.message("loginPage.staySignedIn"));
         layout.addComponent(staySignedIn);
 
-        final Button loginButton = new Button(Page.MESSAGES.get("loginPage.loginButton"));
+        final Button loginButton = new Button(Page.message("loginPage.loginButton"));
         loginButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
         loginButton.addStyleName(Runo.BUTTON_DEFAULT);
         loginButton.addStyleName(Runo.BUTTON_BIG);
@@ -85,7 +85,7 @@ public final class LoginPage {
                 callback.authenticate(username, password,
                         staySignedIn.getValue());
             } catch (WrongPasswordException e) {
-                errorLabel.setValue(Page.MESSAGES.get("loginPage.wrongUserNameOrPassword"));
+                errorLabel.setValue(Page.message("loginPage.wrongUserNameOrPassword"));
                 passwordEdit.setValue("");
                 passwordEdit.focus();
             }

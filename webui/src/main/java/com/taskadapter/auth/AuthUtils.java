@@ -11,7 +11,7 @@ public final class AuthUtils {
     /**
      * Hexed digits.
      */
-    public static final String DIGITS = "0123456789ABCDEF";
+    private static final String DIGITS = "0123456789ABCDEF";
 
     public AuthUtils() {
     }

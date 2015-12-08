@@ -47,7 +47,7 @@ public class GTaskToJiraTest {
         }
     }
 
-    private static void loadMockData() throws IOException {
+    private static void loadMockData() {
         priorities = MockData.loadPriorities();
         if (Iterables.isEmpty(priorities)) {
             fail("Can't test priority field export - priority list is empty.");

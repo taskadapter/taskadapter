@@ -88,7 +88,7 @@ public final class ExportPage {
         content = new VerticalLayout();
         ui.addComponent(content);
 
-        final String welcome = Page.MESSAGES.format("export.willLoadDataFrom",
+        final String welcome = Page.message("export.willLoadDataFrom",
                 config.getConnector1().getSourceLocation(),
                 config.getConnector1().getLabel());
 
@@ -203,7 +203,7 @@ public final class ExportPage {
         // TODO format inside MESSAGES formatter, not here.
         final String time = new SimpleDateFormat("MMMM dd, yyyy  HH:mm")
                 .format(Calendar.getInstance().getTime());
-        final Label label = new Label(Page.MESSAGES.format("export.exportCompletedOn", time));
+        final Label label = new Label(Page.message("export.exportCompletedOn", time));
         label.setContentMode(ContentMode.HTML);
 
         donePanel.addComponent(label);
@@ -225,7 +225,7 @@ public final class ExportPage {
                         + "<br/><br/>"));
 
         if (resultFile != null && showFilePath) {
-            final Label flabel = new Label(Page.MESSAGES.format("export.pathToExportFile", resultFile));
+            final Label flabel = new Label(Page.message("export.pathToExportFile", resultFile));
             flabel.setContentMode(ContentMode.HTML);
             donePanel.addComponent(flabel);
         }

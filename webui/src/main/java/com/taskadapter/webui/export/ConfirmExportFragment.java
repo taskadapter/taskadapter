@@ -63,7 +63,7 @@ public final class ConfirmExportFragment {
                 .getDestinationLocation()
                 + " ("
                 + config.getConnector2().getConnectorTypeId() + ")";
-        Label text1 = new Label(Page.MESSAGES.format(
+        Label text1 = new Label(Page.message(
                 "exportConfirmation.pleaseConfirm", destination));
         layout.addComponent(text1);
 
@@ -73,9 +73,9 @@ public final class ConfirmExportFragment {
         layout.addComponent(connectorTree);
 
         final HorizontalLayout buttonsLayout = new HorizontalLayout();
-        final Button goButton = new Button(Page.MESSAGES.get("button.go"));
+        final Button goButton = new Button(Page.message("button.go"));
         buttonsLayout.addComponent(goButton);
-        Button backButton = new Button(Page.MESSAGES.get("button.cancel"));
+        Button backButton = new Button(Page.message("button.cancel"));
         backButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -97,7 +97,7 @@ public final class ConfirmExportFragment {
                     configOps.saveConfig(config);
                 } catch (StorageException e) {
                     LOGGER.error(
-                            Page.MESSAGES.format("action.cantSaveUpdatedConfig",
+                            Page.message("action.cantSaveUpdatedConfig",
                                     e.getMessage()), e);
                 }
 

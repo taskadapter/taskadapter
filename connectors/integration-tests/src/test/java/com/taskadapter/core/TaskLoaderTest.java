@@ -34,7 +34,7 @@ public class TaskLoaderTest {
 
         Connector<?> projectConnector = new MSPConnector(mspConfig);
         int maxTasksNumber = 999999;
-        List<GTask> list = TaskLoader.loadTasks(maxTasksNumber, projectConnector, "project1", mappings, ProgressMonitorUtils.getDummyMonitor());
+        List<GTask> list = TaskLoader.loadTasks(maxTasksNumber, projectConnector, "project1", mappings, ProgressMonitorUtils.DUMMY_MONITOR);
         assertEquals(1, list.size());
     }
 

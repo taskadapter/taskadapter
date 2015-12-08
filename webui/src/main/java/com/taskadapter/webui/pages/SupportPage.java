@@ -23,8 +23,6 @@ public final class SupportPage {
     private final VerticalLayout layout = new VerticalLayout();
     private final VerticalLayout lastVersionInfoLayout = new VerticalLayout();
 
-    private Panel versionPanel;
-
     private SupportPage(String currentTaskAdapterVersion,
             LicenseFacade licenseManager) {
         this.currentTaskAdapterVersion = currentTaskAdapterVersion;
@@ -40,7 +38,7 @@ public final class SupportPage {
     }
 
     private void addVersionInfo() {
-        versionPanel = new Panel(message("supportPage.versionInfo"));
+        Panel versionPanel = new Panel(message("supportPage.versionInfo"));
         versionPanel.setWidth(400, Sizeable.Unit.PIXELS);
 
         Label currentVersionLabel = new Label(message("supportPage.taskAdapterVersion", currentTaskAdapterVersion));

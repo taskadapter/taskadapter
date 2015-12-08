@@ -197,7 +197,7 @@ public class TaskFieldsSetter {
     }
 
     /* Simple closure to call static calculator with proper arguments */
-    private TaskEstimationMode getTaskEstimationMode(GTask gTask) throws BadConfigException {
+    private TaskEstimationMode getTaskEstimationMode(GTask gTask) {
         return getTaskEstimationMode(gTask, mappings);
     }
 

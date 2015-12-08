@@ -23,8 +23,7 @@ public class MSPConfigLoader {
         String fileContents = Resources.toString(Resources.getResource(fileNameInClasspath), Charsets.UTF_8);
         Files.write(fileContents, temp, Charsets.UTF_8);
 
-        MSPConfig mspConfig = new MSPConfig(temp.getAbsolutePath());
-        return mspConfig;
+        return new MSPConfig(temp.getAbsolutePath());
     }
 
 }

@@ -34,7 +34,7 @@ public class UpdaterUnitTest {
         Updater updater = new Updater(projectConnector,
                 TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS), null,
                 TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS), "someTestData");
-        updater.loadTasksFromFile(ProgressMonitorUtils.getDummyMonitor());
+        updater.loadTasksFromFile(ProgressMonitorUtils.DUMMY_MONITOR);
         assertEquals(9, updater.getExistingTasks().size());
         updater.removeTasksWithoutRemoteIds();
         // only 7 tasks have remote IDs

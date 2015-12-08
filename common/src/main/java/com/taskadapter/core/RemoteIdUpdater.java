@@ -21,10 +21,8 @@ public final class RemoteIdUpdater {
     public static void updateRemoteIds(Map<Integer, String> remappedIds,
             Mappings sourceMappings, Connector<?> connector)
             throws ConnectorException {
-        if (sourceMappings.isFieldSelected(FIELD.REMOTE_ID)
-                && remappedIds.size() > 0) {
-            connector.updateRemoteIDs(remappedIds,
-                    ProgressMonitorUtils.getDummyMonitor(), sourceMappings);
+        if (sourceMappings.isFieldSelected(FIELD.REMOTE_ID) && remappedIds.size() > 0) {
+            connector.updateRemoteIDs(remappedIds,ProgressMonitorUtils.DUMMY_MONITOR, sourceMappings);
         }
 
     }

@@ -18,16 +18,10 @@ import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 /**
  * Utilities for a connector configuration.
- * 
- * @author maxkar
- * 
  */
 public class ConfigUtils {
 
-	/**
-	 * Mappings serializer
-	 */
-	private static JsonSerializer<Mappings> MAPPINGS_SERIALIZER = new JsonSerializer<Mappings>() {
+	private static final JsonSerializer<Mappings> MAPPINGS_SERIALIZER = new JsonSerializer<Mappings>() {
 		@Override
 		public JsonElement serialize(Mappings src, Type typeOfSrc,
 				JsonSerializationContext context) {
@@ -36,10 +30,7 @@ public class ConfigUtils {
 		}
 	};
 
-	/**
-	 * Mappings parser.
-	 */
-	private static JsonDeserializer<Mappings> MAPPINGS_PARSER = ConfigUtils::parseMapping;
+	private static final JsonDeserializer<Mappings> MAPPINGS_PARSER = ConfigUtils::parseMapping;
 
 	/**
 	 * "Raw" gson writer.

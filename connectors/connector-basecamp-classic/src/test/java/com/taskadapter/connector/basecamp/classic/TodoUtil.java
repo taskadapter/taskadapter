@@ -16,14 +16,14 @@ public class TodoUtil {
         final BasecampConnector connector = new BasecampConnector(config, factory);
         final TaskSaveResult res = connector.saveData(
                 Collections.singletonList(task),
-                ProgressMonitorUtils.getDummyMonitor(), getAllMappings());
+                ProgressMonitorUtils.DUMMY_MONITOR, getAllMappings());
         String remoteKey = res.getRemoteKey(task.getId());
         return connector.loadTaskByKey(remoteKey, getAllMappings());
     }
 
     static List<GTask> load(BasecampConfig config, ObjectAPIFactory factory) throws ConnectorException {
         BasecampConnector connector = new BasecampConnector(config, factory);
-        return connector.loadData(getAllMappings(), ProgressMonitorUtils.getDummyMonitor());
+        return connector.loadData(getAllMappings(), ProgressMonitorUtils.DUMMY_MONITOR);
     }
 
     static Mappings getAllMappings() {

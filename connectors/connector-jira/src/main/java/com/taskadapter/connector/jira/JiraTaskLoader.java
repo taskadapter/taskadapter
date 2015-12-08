@@ -17,7 +17,7 @@ public class JiraTaskLoader {
     private final JiraRestClient client;
     private final JiraToGTask jiraToGTask;
     
-    public JiraTaskLoader(JiraRestClient client, Priorities priorities) throws ConnectorException {
+    public JiraTaskLoader(JiraRestClient client, Priorities priorities) {
         this.client = client;
         jiraToGTask = new JiraToGTask(priorities);
     }

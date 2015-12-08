@@ -92,7 +92,7 @@ public final class UpdateFilePage {
                 try {
                     final List<GTask> tasks = config
                             .loadTasksForUpdate(ProgressMonitorUtils
-                                    .getDummyMonitor());
+                                    .DUMMY_MONITOR);
                     if (tasks.isEmpty())
                         showNoDataLoaded();
                     else

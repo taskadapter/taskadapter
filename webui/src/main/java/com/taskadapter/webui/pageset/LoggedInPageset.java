@@ -13,6 +13,7 @@ import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigureSystemPage;
 import com.taskadapter.webui.Header;
+import com.taskadapter.webui.Page;
 import com.taskadapter.webui.TAPageLayout;
 import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.UserContext;
@@ -47,7 +48,6 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.taskadapter.webui.Page.MESSAGES;
 import static com.taskadapter.webui.Page.message;
 import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
@@ -359,7 +359,7 @@ public class LoggedInPageset {
                 final VaadinSession ss = VaadinSession.getCurrent();
                 ss.lock();
                 try {
-                    Notification.show(MESSAGES.format("uploadFailure", event.getException().toString()));
+                    Notification.show(Page.message("uploadFailure", event.getException().toString()));
                 } finally {
                     ss.unlock();
                 }
@@ -419,7 +419,7 @@ public class LoggedInPageset {
                 connectorTo.getAbsoluteOutputFileName()).getName();
         final MessageDialog messageDialog = new MessageDialog(
                 message("export.chooseOperation"),
-                MESSAGES.format("export.fileAlreadyExists", fileName),
+                Page.message("export.fileAlreadyExists", fileName),
                 Arrays.asList(message("export.update"),
                         message("export.overwrite"),
                         message("button.cancel")),
@@ -488,7 +488,7 @@ public class LoggedInPageset {
             try {
                 context.configOps.saveConfig(config);
             } catch (StorageException e1) {
-                final String message = MESSAGES.format("export.troublesSavingConfig", e1.getMessage());
+                final String message = Page.message("export.troublesSavingConfig", e1.getMessage());
                 LOGGER.error(message, e1);
                 Notification.show(message, Notification.Type.ERROR_MESSAGE);
             }

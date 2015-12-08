@@ -29,7 +29,7 @@ public final class NewConfigParser {
                 connector2ID, connector2DataString), mappings);
     }
 
-    private static final String findString(String prefix, String[] strings) {
+    private static String findString(String prefix, String[] strings) {
         for (String string : strings) {
             if (string.startsWith(prefix)) {
                 return string.substring(prefix.length());

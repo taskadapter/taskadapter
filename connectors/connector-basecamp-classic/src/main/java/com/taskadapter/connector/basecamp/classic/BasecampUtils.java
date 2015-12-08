@@ -240,8 +240,7 @@ public class BasecampUtils {
         return result;
     }
 
-    public static String toRequest(GTask task, UserResolver users,
-            OutputContext ctx) throws IOException, ConnectorException {
+    public static String toRequest(GTask task, UserResolver users, OutputContext ctx) throws ConnectorException {
         final Document d = newXDoc();
         final Element root = d.createElement("todo-item");
         d.appendChild(root);

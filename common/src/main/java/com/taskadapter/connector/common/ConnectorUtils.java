@@ -35,10 +35,9 @@ public final class ConnectorUtils {
      *
      * @param connector connector to fetch data from.
      * @return loaded tasks list, sorted by task ID.
-     * @throws ConnectorException
      */
     @Deprecated
     public static List<GTask> loadDataOrderedById(Connector<?> connector, Mappings sourceMappings) throws ConnectorException {
-        return loadDataOrderedById(connector, sourceMappings, ProgressMonitorUtils.getDummyMonitor());
+        return loadDataOrderedById(connector, sourceMappings, ProgressMonitorUtils.DUMMY_MONITOR);
     }
 }

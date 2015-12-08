@@ -28,7 +28,7 @@ public final class TaskLoader {
             Mappings sourceMappings, ProgressMonitor monitor)
             throws ConnectorException {
         if (monitor == null) {
-            monitor = ProgressMonitorUtils.getDummyMonitor();
+            monitor = ProgressMonitorUtils.DUMMY_MONITOR;
         }
 
         monitor.beginTask("Loading data from " + sourceName, 100);
@@ -48,7 +48,7 @@ public final class TaskLoader {
             Mappings sourceMappings, ProgressMonitor monitor)
             throws ConnectorException {
         if (monitor == null) {
-            monitor = ProgressMonitorUtils.getDummyMonitor();
+            monitor = ProgressMonitorUtils.DUMMY_MONITOR;
         }
 
         monitor.beginTask("Loading data from uploaded file", 100);

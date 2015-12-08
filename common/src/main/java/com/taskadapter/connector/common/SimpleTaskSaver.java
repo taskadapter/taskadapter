@@ -21,8 +21,7 @@ final class SimpleTaskSaver<N> {
         this.result = resultBuilder;
         this.converter = converter;
         this.saveAPI = saveAPI;
-        this.monitor = progressMonitor == null ? ProgressMonitorUtils
-                .getDummyMonitor() : progressMonitor;
+        this.monitor = progressMonitor == null ? ProgressMonitorUtils.DUMMY_MONITOR : progressMonitor;
     }
 
     void saveTasks(String parentIssueKey, List<GTask> tasks, DefaultValueSetter defaultValueSetter) {

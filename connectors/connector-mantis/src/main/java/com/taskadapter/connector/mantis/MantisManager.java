@@ -8,6 +8,7 @@ import biz.futureware.mantis.rpc.soap.client.MantisConnectLocator;
 import biz.futureware.mantis.rpc.soap.client.MantisConnectPortType;
 import biz.futureware.mantis.rpc.soap.client.ProjectData;
 import biz.futureware.mantis.rpc.soap.client.RelationshipData;
+import com.google.common.base.Strings;
 
 import javax.xml.rpc.ServiceException;
 import java.math.BigInteger;
@@ -138,7 +139,7 @@ public class MantisManager {
     public BigInteger createProject(ProjectData project)
             throws RemoteException, RequiredItemException {
 
-        if (project.getName() == "" || project.getName() == null) {
+        if (Strings.isNullOrEmpty(project.getName())) {
             throw new RequiredItemException("Required property Name is empty");
         }
 
@@ -280,15 +281,15 @@ public class MantisManager {
      * @throws RemoteException
      */
     public BigInteger createIssue(IssueData issue) throws RemoteException, RequiredItemException {
-        if (issue.getSummary() == "" || issue.getSummary() == null) {
+        if (Strings.isNullOrEmpty(issue.getSummary())) {
             throw new RequiredItemException("Required property Summary is empty");
         }
 
-        if (issue.getCategory() == "" || issue.getCategory() == null) {
+        if (Strings.isNullOrEmpty(issue.getCategory())) {
             issue.setCategory("General");
         }
 
-        if (issue.getDescription() == "" || issue.getDescription() == null) {
+        if (Strings.isNullOrEmpty(issue.getDescription())) {
             throw new RequiredItemException("Required property Description is empty");
         }
 

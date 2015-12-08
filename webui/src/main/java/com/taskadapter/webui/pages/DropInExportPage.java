@@ -100,8 +100,7 @@ public final class DropInExportPage {
      * Starts data loading.
      */
     private void startLoading() {
-        setContent(SyncActionComponents.renderLoadIndicator(Page.MESSAGES
-                .get("export.dropInFile")));
+        setContent(SyncActionComponents.renderLoadIndicator(Page.message("export.dropInFile")));
 
         if (taskLimit < Integer.MAX_VALUE)
             LOGGER.info(TRIAL_MESSAGE);
@@ -170,7 +169,7 @@ public final class DropInExportPage {
      */
     private void performExport(final List<GTask> selectedTasks) {
         if (selectedTasks.isEmpty()) {
-            Notification.show(Page.MESSAGES.get("action.pleaseSelectTasks"));
+            Notification.show(Page.message("action.pleaseSelectTasks"));
             return;
         }
 
@@ -249,7 +248,7 @@ public final class DropInExportPage {
         ui.addComponent(donePanel);
 
         final Button button = new Button(
-                Page.MESSAGES.get("action.backToHomePage"));
+                Page.message("action.backToHomePage"));
         button.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -290,7 +289,7 @@ public final class DropInExportPage {
                 "No data was loaded using the given criteria.");
         msg.setWidth(800, Unit.PIXELS);
 
-        final Button backButton = new Button(Page.MESSAGES.get("button.back"));
+        final Button backButton = new Button(Page.message("button.back"));
         backButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {

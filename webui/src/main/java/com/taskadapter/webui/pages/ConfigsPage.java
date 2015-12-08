@@ -161,7 +161,7 @@ public final class ConfigsPage {
         actionPanel.setWidth(100, PERCENTAGE);
         layout.addComponent(actionPanel);
 
-        final Button addButton = new Button(Page.MESSAGES.get("configsPage.buttonNewConfig"));
+        final Button addButton = new Button(Page.message("configsPage.buttonNewConfig"));
         addButton.addClickListener((Button.ClickListener) clickEvent -> callback.newConfig());
         actionPanel.addComponent(addButton);
         actionPanel.setComponentAlignment(addButton, Alignment.MIDDLE_LEFT);
@@ -169,7 +169,7 @@ public final class ConfigsPage {
         final HorizontalLayout filterPanel = new HorizontalLayout();
         TextField filterField = new TextField();
         filterField.addTextChangeListener((FieldEvents.TextChangeListener) event -> filterFields(event.getText()));
-        filterPanel.addComponent(new Label(Page.MESSAGES.get("configsPage.filter")));
+        filterPanel.addComponent(new Label(Page.message("configsPage.filter")));
         filterPanel.addStyleName("filterPanel");
         filterPanel.addComponent(filterField);
         filterPanel.setSpacing(true);

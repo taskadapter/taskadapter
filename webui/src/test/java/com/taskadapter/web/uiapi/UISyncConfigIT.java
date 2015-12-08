@@ -35,7 +35,7 @@ public class UISyncConfigIT {
     @Test
     public void tasksCanBeSavedToRedmine() throws Exception {
         List<GTask> gTasks = TestUtils.generateTasks(1);
-        final UISyncConfig.TaskExportResult taskExportResult = toRedmineConfig.saveTasks(gTasks, ProgressMonitorUtils.getDummyMonitor());
+        final UISyncConfig.TaskExportResult taskExportResult = toRedmineConfig.saveTasks(gTasks, ProgressMonitorUtils.DUMMY_MONITOR);
         final TaskSaveResult saveResult = taskExportResult.saveResult;
         assertThat(saveResult.hasErrors()).isFalse();
         assertThat(saveResult.getCreatedTasksNumber()).isEqualTo(1);
@@ -81,7 +81,7 @@ public class UISyncConfigIT {
 
     private static void trySaveAndThenUpdate(UISyncConfig uiSyncConfig) {
         List<GTask> tasks = TestUtils.generateTasks(1);
-        final UISyncConfig.TaskExportResult taskExportResult = uiSyncConfig.saveTasks(tasks, ProgressMonitorUtils.getDummyMonitor());
+        final UISyncConfig.TaskExportResult taskExportResult = uiSyncConfig.saveTasks(tasks, ProgressMonitorUtils.DUMMY_MONITOR);
         final TaskSaveResult saveResult = taskExportResult.saveResult;
 
         final String key = saveResult.getRemoteKeys().iterator().next();
@@ -89,7 +89,7 @@ public class UISyncConfigIT {
         createdTask.setRemoteId(key);
         createdTask.setSummary("updated summary");
 
-        final UISyncConfig.TaskExportResult secondResultWrapper = uiSyncConfig.saveTasks(tasks, ProgressMonitorUtils.getDummyMonitor());
+        final UISyncConfig.TaskExportResult secondResultWrapper = uiSyncConfig.saveTasks(tasks, ProgressMonitorUtils.DUMMY_MONITOR);
         final TaskSaveResult secondResult = secondResultWrapper.saveResult;
         assertThat(secondResult.hasErrors()).isFalse();
         assertThat(secondResult.getCreatedTasksNumber()).isEqualTo(0);

@@ -28,8 +28,7 @@ public final class OnePageEditor {
         addConnectorPanel(connectorsLayout, config.getConnector1(), sandbox,
                 Alignment.MIDDLE_RIGHT);
 
-        final Component exportButtonsFragment = ExportButtonsFragment.render(
-                messages, exportToLeft, exportToRight);
+        final Component exportButtonsFragment = ExportButtonsFragment.render(messages, exportToLeft, exportToRight);
         connectorsLayout.addComponent(exportButtonsFragment);
         connectorsLayout.setComponentAlignment(exportButtonsFragment,
                 Alignment.MIDDLE_CENTER);
