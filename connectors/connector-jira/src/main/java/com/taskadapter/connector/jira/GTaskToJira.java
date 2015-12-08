@@ -29,8 +29,6 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueWrapper> {
     private final Mappings mappings;
 
     private final Map<String, BasicPriority> priorities = new HashMap<>();
-    // TODO looks like this prioritiesOtherWay is not used?
-    private final Map<String, BasicPriority> prioritiesOtherWay = new HashMap<>();
     private final Iterable<IssueType> issueTypeList;
     private final Iterable<Version> versions;
     private final Iterable<BasicComponent> components;
@@ -45,7 +43,6 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueWrapper> {
         this.components = components;
         for (Priority jiraPriority : jiraPriorities) {
             priorities.put(jiraPriority.getName(), jiraPriority);
-            prioritiesOtherWay.put(String.valueOf(jiraPriority.getId()), jiraPriority);
         }
     }
 
