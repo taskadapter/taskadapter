@@ -65,5 +65,5 @@ https://docs.google.com/spreadsheets/d/1UsV1G1iCY-e2Qo7V6Y7_zWdFrtB6-IquQuGSA-1N
 * Post release notes to http://www.taskadapter.com/blog
 * Duplicate the post in a new file in https://bitbucket.org/taskadapter/site/overview - until we switch from the old
 Wordpress-based website to a new HTML/Jekyll based.
-* Update http://taskadapter.com/lastversion.txt file
+* Update https://bitbucket.org/taskadapter/releases/src/lastversion.txt file
 
