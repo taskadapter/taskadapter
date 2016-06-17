@@ -4,7 +4,7 @@ ext {
     // it is used in the ZIP file name and is shown in "About" dialog.
     TASK_ADAPTER_VERSION = "2.14.0"
 
-    vaadinVersion = '7.5.1'
+    vaadinVersion = '7.6.6'
     httpClientVersion='4.2'
     slf4jVersion = '1.6.6'
 }
