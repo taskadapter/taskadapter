@@ -21,7 +21,7 @@ import static org.junit.Assert.fail;
 // Tired of re-creating Basecamp demo accounts. we don't have any Basecamp users, so
 // let's just ignore these tests.
 @Ignore
-public class BasecampIntegrationTest {
+public class BasecampIT {
 
     private final ObjectAPIFactory factory = new ObjectAPIFactory(
             new BaseCommunicator());
