@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 // Tired of re-creating Basecamp demo accounts. we don't have any Basecamp users, so
 // let's just ignore these tests.
 @Ignore
-public class TodoIntegrationTest {
+public class TodoIT {
 
     private final ObjectAPIFactory factory = new ObjectAPIFactory(new BaseCommunicator());
 
