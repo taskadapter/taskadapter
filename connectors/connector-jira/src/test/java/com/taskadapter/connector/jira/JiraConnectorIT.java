@@ -17,7 +17,7 @@ import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-public class JiraConnectorTest {
+public class JiraConnectorIT {
     private static final Mappings TEST_MAPPINGS = TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS);
     private static final boolean SELECTED_FOR_EXPORT = true;
 
