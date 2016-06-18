@@ -24,9 +24,9 @@ import static com.taskadapter.connector.testlib.TestUtils.generateTask;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class MantisTest {
+public class MantisIT {
 
-    private static final Logger logger = LoggerFactory.getLogger(MantisTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(MantisIT.class);
 
     private static MantisManager mgr;
 
