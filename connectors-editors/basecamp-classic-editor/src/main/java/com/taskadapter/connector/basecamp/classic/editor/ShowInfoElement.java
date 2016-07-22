@@ -30,11 +30,6 @@ public final class ShowInfoElement {
     private static void showProjectInfo(BasecampProject project) {
         String msg = "<BR>Key:  " + project.getKey()
                 + "<BR>Name: " + project.getName();
-        // TODO fix or delete
-//                + "<BR>Description: " + nvl(project.getDescription())
-//                + "<BR>Completed Todo lists: " + project.getCompletedTodolists()
-//                + "<BR>Remaining Todo lists: " + project.getRemainingTodolists();
-
         Notification.show("Project Info", msg, Notification.Type.HUMANIZED_MESSAGE);
     }
 
