@@ -61,9 +61,6 @@ https://docs.google.com/spreadsheets/d/1UsV1G1iCY-e2Qo7V6Y7_zWdFrtB6-IquQuGSA-1N
 * Tag the current revision in Git (e.g. "release-2.13.0").
 * Make sure User Guide is up-to-date on http://www.taskadapter.com
 * Upload the distributive to this Git repository: https://bitbucket.org/taskadapter/releases/downloads
-* Update http://taskadapter.com/download page
-* Post release notes to http://www.taskadapter.com/blog
-* Duplicate the post in a new file in https://bitbucket.org/taskadapter/site/overview - until we switch from the old
-Wordpress-based website to a new HTML/Jekyll based.
+* Follow release steps in "site" repo: https://bitbucket.org/taskadapter/site/overview
 * Update https://bitbucket.org/taskadapter/releases/src/lastversion.txt file
 
