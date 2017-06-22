@@ -46,6 +46,7 @@ public class UISyncConfigIT {
     public void tasksCanBeLoadedFromJiraAndSavedToRedmine() throws Exception {
         UISyncConfig config = ConfigLoader.loadConfig("Atlassian-JIRA_Redmine.ta_conf");
         List<GTask> loadedTasks = config.loadTasks(100);
+        assertThat(loadedTasks.size()).isGreaterThan(0);
         final UISyncConfig.TaskExportResult taskExportResult = toRedmineConfig.saveTasks(loadedTasks, ProgressMonitorUtils.DUMMY_MONITOR);
         final TaskSaveResult saveResult = taskExportResult.saveResult;
         assertThat(saveResult.hasErrors()).isFalse();
