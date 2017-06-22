@@ -40,17 +40,20 @@ public class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
         this.versions = versions;
     }
 
+    private static Integer parseIntOrNull(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException | NullPointerException e) {
+            return null;
+        }
+    }
+
     // TODO refactor this into multiple tiny testable methods
-    public Issue convertToRedmineIssue(GTask task) {
+    Issue convertToRedmineIssue(GTask task) {
         final String key = task.getKey();
-        Integer numericKey = null;
-        if (key != null) {
-             numericKey = Integer.parseInt(key);
-        }
+        Integer numericKey = parseIntOrNull(key);
         Issue issue = IssueFactory.create(numericKey);
-        if (task.getParentKey() != null) {
-            issue.setParentId(Integer.parseInt(task.getParentKey()));
-        }
+        issue.setParentId(parseIntOrNull(task.getParentKey()));
         issue.setProject(project);
 
         if (mapping.isFieldSelected(FIELD.SUMMARY)) {

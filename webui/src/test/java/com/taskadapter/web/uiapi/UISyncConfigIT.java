@@ -42,6 +42,16 @@ public class UISyncConfigIT {
         assertThat(saveResult.getUpdatedTasksNumber()).isEqualTo(0);
     }
 
+    @Test
+    public void tasksCanBeLoadedFromJiraAndSavedToRedmine() throws Exception {
+        UISyncConfig config = ConfigLoader.loadConfig("Atlassian-JIRA_Redmine.ta_conf");
+        List<GTask> loadedTasks = config.loadTasks(100);
+        final UISyncConfig.TaskExportResult taskExportResult = toRedmineConfig.saveTasks(loadedTasks, ProgressMonitorUtils.DUMMY_MONITOR);
+        final TaskSaveResult saveResult = taskExportResult.saveResult;
+        assertThat(saveResult.hasErrors()).isFalse();
+        assertThat(saveResult.getCreatedTasksNumber()).isEqualTo(loadedTasks.size());
+    }
+
     /**
      * regression test for https://bitbucket.org/taskadapter/taskadapter/issues/43/tasks-are-not-updated-in-redmine-404-not
      */
