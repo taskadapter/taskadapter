@@ -1,7 +1,6 @@
 package com.taskadapter.webui;
 
-import com.google.common.io.InputSupplier;
-import com.google.common.io.Resources;
+import com.taskadapter.connector.PropertiesUtf8Loader;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -9,7 +8,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 public class LastVersionLoader {
@@ -18,9 +16,7 @@ public class LastVersionLoader {
      */
     public static String loadLastVersion() {
         try {
-            Properties properties = new Properties();
-            InputSupplier<InputStream> inputSupplier = Resources.newInputStreamSupplier(Resources.getResource("taskadapter.properties"));
-            properties.load(inputSupplier.getInput());
+            Properties properties = PropertiesUtf8Loader.load("taskadapter.properties");
             String url = properties.getProperty("update_site_url");
             DefaultHttpClient httpclient = new DefaultHttpClient();
             HttpGet request = new HttpGet(url);
