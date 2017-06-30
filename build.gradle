@@ -41,7 +41,7 @@ subprojects {
         }
         // This repository contains Atlassian JIRA REST Java Client library used by JIRA connector
         maven {
-            url 'https://maven.atlassian.com/public'
+            url 'https://m2proxy.atlassian.com/repository/public'
         }
     }
 
