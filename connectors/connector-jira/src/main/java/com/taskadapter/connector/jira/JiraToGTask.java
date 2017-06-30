@@ -97,7 +97,7 @@ public class JiraToGTask {
 
     private static void processParentTask(Issue issue, GTask task) {
         if (issue.getIssueType().isSubtask()) {
-            Object parent = issue.getFieldByName("Parent").getValue();
+            Object parent = issue.getField("parent").getValue();
             JSONObject json = (JSONObject) parent;
             try {
                 String parentKey = (String) json.get("key");
