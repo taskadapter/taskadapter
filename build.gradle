@@ -34,7 +34,7 @@ subprojects {
 //        mavenLocal()
 
         maven {
-            url 'http://136.24.163.163:8081/nexus/content/groups/public'
+            url 'http://dev.taskadapter.com:8081/nexus/content/groups/public'
         }
         maven {
             url 'http://maven.vaadin.com/vaadin-addons'
