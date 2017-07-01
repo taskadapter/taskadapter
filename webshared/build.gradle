@@ -3,7 +3,8 @@ import org.apache.tools.ant.filters.*
 dependencies {
     compile libraries.httpclient
     compile libraries.slf4j
-    compile libraries.slf4jJdk
+    compile libraries.slf4jBindingLibrary
+    compile libraries.log4j
 
     compile "com.vaadin:vaadin-server:$vaadinVersion"
 

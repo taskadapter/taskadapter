@@ -64,3 +64,7 @@ https://docs.google.com/spreadsheets/d/1UsV1G1iCY-e2Qo7V6Y7_zWdFrtB6-IquQuGSA-1N
 * Follow release steps in "site" repo: https://bitbucket.org/taskadapter/site/overview
 * Update https://bitbucket.org/taskadapter/releases/src/lastversion.txt file
 
+## Logging
+
+Logging is done via slf4j + log4j. Set logging levels in `log4j.properties` file in `webui` module.
+
