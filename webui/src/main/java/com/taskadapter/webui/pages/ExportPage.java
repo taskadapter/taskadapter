@@ -244,7 +244,7 @@ public final class ExportPage {
 
         ui.addComponent(donePanel);
 
-        final Button button = new Button(message("action.backToHomePage"));
+        final Button button = new Button(message("action.acknowledge"));
         button.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {

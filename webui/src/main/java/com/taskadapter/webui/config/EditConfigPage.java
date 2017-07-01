@@ -74,6 +74,7 @@ public class EditConfigPage {
         layout = new VerticalLayout();
         layout.setSpacing(true);
 
+        layout.addComponent(ConfigsListLinkComponent.render((Button.ClickListener) event -> callback.back()));
         final HorizontalLayout buttonsLayout = new HorizontalLayout();
         buttonsLayout.setWidth(100, PERCENTAGE);
         final Component cloneDeletePanel = CloneDeletePanel.render(config,

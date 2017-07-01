@@ -17,6 +17,7 @@ import com.taskadapter.webui.Page;
 import com.taskadapter.webui.TAPageLayout;
 import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.UserContext;
+import com.taskadapter.webui.WebUserSession;
 import com.taskadapter.webui.config.EditConfigPage;
 import com.taskadapter.webui.license.LicenseFacade;
 import com.taskadapter.webui.pages.ConfigsPage;
@@ -79,6 +80,7 @@ public class LoggedInPageset {
      */
     private final LicenseFacade license;
 
+    private final WebUserSession webUserSession;
     /**
      * Callback to use on logout.
      */
@@ -115,12 +117,13 @@ public class LoggedInPageset {
      *            callback to use.
      */
     private LoggedInPageset(CredentialsManager credentialsManager,
-            Preservices services, Tracker tracker, UserContext ctx,
+            Preservices services, Tracker tracker, UserContext ctx, WebUserSession webUserSession,
             Runnable callback) {
         this.services = services;
         this.credentialsManager = credentialsManager;
         this.context = ctx;
         this.tracker = tracker;
+        this.webUserSession = webUserSession;
         this.logoutCallback = callback;
         this.license = new LicenseFacade(services.licenseManager);
 
@@ -206,49 +209,58 @@ public class LoggedInPageset {
      * Shows a home page.
      */
     private void showHome() {
-        tracker.trackPage("home");
         final boolean showAll = services.settingsManager
                 .adminCanManageAllConfigs()
                 && context.authorizedOps.canManagerPeerConfigs();
         final List<UISyncConfig> configs = showAll ? context.configOps
                 .getManageableConfigs() : context.configOps.getOwnedConfigs();
 
-        applyUI(ConfigsPage.render(context.name, configs,
-                showAll ? ConfigsPage.DisplayMode.ALL_CONFIGS
-                        : ConfigsPage.DisplayMode.OWNED_CONFIGS,
-                new ConfigsPage.Callback() {
-                    @Override
-                    public void newConfig() {
-                        createNewConfig();
-                    }
+        if (webUserSession.getCurrentConfig() == null) {
+            showConfigsList(showAll, configs);
+        } else {
+            showConfigEditor(webUserSession.getCurrentConfig(), null);
+        }
+    }
 
-                    @Override
-                    public void forwardSync(UISyncConfig config) {
-                        sync(config);
-                    }
+    private void showConfigsList(boolean showAll, List<UISyncConfig> configs) {
+        tracker.trackPage("configs_list");
+        Component component = ConfigsPage.render(context.name, configs,
+        showAll ? ConfigsPage.DisplayMode.ALL_CONFIGS
+                : ConfigsPage.DisplayMode.OWNED_CONFIGS,
+        new ConfigsPage.Callback() {
+            @Override
+            public void newConfig() {
+                createNewConfig();
+            }
 
-                    @Override
-                    public void backwardSync(UISyncConfig config) {
-                        sync(config.reverse());
-                    }
+            @Override
+            public void forwardSync(UISyncConfig config) {
+                sync(config);
+            }
 
-                    @Override
-                    public void edit(UISyncConfig config) {
-                        showConfigEditor(config, null);
-                    }
+            @Override
+            public void backwardSync(UISyncConfig config) {
+                sync(config.reverse());
+            }
 
-                    @Override
-                    public void forwardDropIn(UISyncConfig config,
-                            Html5File file) {
-                        dropIn(config, file);
-                    }
+            @Override
+            public void edit(UISyncConfig config) {
+                showConfigEditor(config, null);
+            }
 
-                    @Override
-                    public void backwardDropIn(UISyncConfig config,
-                            Html5File file) {
-                        dropIn(config.reverse(), file);
-                    }
-                }));
+            @Override
+            public void forwardDropIn(UISyncConfig config,
+                                      Html5File file) {
+                dropIn(config, file);
+            }
+
+            @Override
+            public void backwardDropIn(UISyncConfig config,
+                                       Html5File file) {
+                dropIn(config.reverse(), file);
+            }
+        });
+        applyUI(component);
     }
 
     /**
@@ -275,7 +287,12 @@ public class LoggedInPageset {
      */
     private void showConfigEditor(UISyncConfig config, String error) {
         tracker.trackPage("edit_config");
-        applyUI(EditConfigPage.render(config, context.configOps,
+        webUserSession.setCurrentConfig(config);
+        applyUI(getConfigEditor(config, error));
+    }
+
+    private Component getConfigEditor(UISyncConfig config, String error) {
+        return EditConfigPage.render(config, context.configOps,
                 services.settingsManager.isTAWorkingOnLocalMachine(), error,
                 new EditConfigPage.Callback() {
                     @Override
@@ -290,9 +307,14 @@ public class LoggedInPageset {
 
                     @Override
                     public void back() {
+                        clearCurrentConfigInSession();
                         showHome();
                     }
-                }));
+                });
+    }
+
+    private void clearCurrentConfigInSession() {
+        webUserSession.setCurrentConfig(null);
     }
 
     /**
@@ -523,10 +545,10 @@ public class LoggedInPageset {
      * @return pageset UI.
      */
     public static Component createPageset(CredentialsManager credManager,
-            Preservices services, Tracker tracker, UserContext ctx,
+            Preservices services, Tracker tracker, UserContext ctx, WebUserSession webUserSession,
             Runnable logoutCallback) {
         final LoggedInPageset ps = new LoggedInPageset(credManager, services,
-                tracker, ctx, logoutCallback);
+                tracker, ctx, webUserSession, logoutCallback);
         if (services.settingsManager.isLicenseAgreementAccepted())
             ps.showHome();
         else
