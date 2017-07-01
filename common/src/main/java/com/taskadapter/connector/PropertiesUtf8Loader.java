@@ -16,7 +16,6 @@ public class PropertiesUtf8Loader {
             final CharSource source = Resources.asCharSource(resource, Charsets.UTF_8);
             try (Reader inputStream = source.openStream()) {
                 properties.load(inputStream);
-                properties.list(System.out);
             }
         } catch (Exception e) {
             throw new RuntimeException("Cannot load properties file " + resourceFileName);
