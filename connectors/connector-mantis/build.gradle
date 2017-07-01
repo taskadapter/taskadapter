@@ -2,7 +2,7 @@ dependencies {
     compile libraries.slf4j
     compile libraries.slf4jJdk
 
-    compile 'biz.futureware.mantis:mantis-axis-soap-client:1.2.15'
+    compile 'biz.futureware.mantis:mantis-axis-soap-client:1.2.19'
     compile 'org.apache.axis:axis-jaxrpc:1.4'
     compile 'org.apache.axis:axis:1.4'
     compile 'wsdl4j:wsdl4j:1.5.1'

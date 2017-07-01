@@ -70,7 +70,7 @@ public class MantisIT {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail("can't delete the test project '" + projectKey + ". reason: "
+            Assert.fail("can't delete test project with key " + projectKey + ". reason: "
                     + e.getMessage());
         }
     }
