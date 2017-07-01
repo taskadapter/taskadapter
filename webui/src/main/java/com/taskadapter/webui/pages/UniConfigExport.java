@@ -32,8 +32,6 @@ import static com.vaadin.server.Sizeable.Unit.PIXELS;
  */
 final class UniConfigExport {
 
-    private static final String DROP_ICON_TOOLTIP = "Drop an MSP file here to start the export process.";
-
     /**
      * Unified config export callback.
      */
@@ -181,7 +179,7 @@ final class UniConfigExport {
                 if (wt.getFiles().length == 0)
                     return;
                 if (wt.getFiles().length > 1) {
-                    Notification.show("Multidrops are not accepted");
+                    Notification.show(Page.message("configsPage.configElement.dndIcon.multiDropError"));
                     return;
                 }
 
@@ -206,7 +204,7 @@ final class UniConfigExport {
             final boolean isValid = validationFailure == null;
 
             final Embedded dropLabel = new Embedded(null, ImageLoader.getImage("file_drop.gif"));
-            dropLabel.setDescription(DROP_ICON_TOOLTIP);
+            dropLabel.setDescription(Page.message("configsPage.configElement.dndIcon.tooltip"));
 
             if (!isValid) {
                 dropLabel.setDescription(validationFailure);
