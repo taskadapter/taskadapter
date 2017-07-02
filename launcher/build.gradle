@@ -41,7 +41,7 @@ startScripts {
         // add "export APP_HOME" to the linux script.
         // otherwise APP_HOME is not available at runtime (see Launcher.java).
         // see http://forums.gradle.org/gradle/topics/linux_launcher_script_should_export_app_home_before_starting_the_application
-        def LINUX_START_TAG = "exec \"\$JAVACMD\" \"\${JVM_OPTS[@]}\""
+        def LINUX_START_TAG = "exec \"\$JAVACMD\""
         unixScript.text = unixScript.text.replace(LINUX_START_TAG, "\nexport APP_HOME\n" + LINUX_START_TAG)
     }
 }
