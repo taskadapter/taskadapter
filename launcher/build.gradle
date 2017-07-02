@@ -33,8 +33,8 @@ startScripts {
         def WIN_REPLACE_ARG2_WITH = WIN_REPLACE_ARG2 + " --openTaskAdapterPageInWebBrowser"
         windowsScript.text = windowsScript.text.replace(WIN_REPLACE_ARG2, WIN_REPLACE_ARG2_WITH)
 
-        def LIN_REPLACE_ARG2 = "com.taskadapter.launcher.TALauncher \"\$@\""
-        def LIN_REPLACE_ARG2_WITH = LIN_REPLACE_ARG2 + " --openTaskAdapterPageInWebBrowser"
+        def LIN_REPLACE_ARG2 = "com.taskadapter.launcher.TALauncher "
+        def LIN_REPLACE_ARG2_WITH = LIN_REPLACE_ARG2 + " --openTaskAdapterPageInWebBrowser "
         unixScript.text = unixScript.text.replace(LIN_REPLACE_ARG2, LIN_REPLACE_ARG2_WITH)
 
 
