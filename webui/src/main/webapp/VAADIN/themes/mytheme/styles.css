@@ -148,12 +148,10 @@
     color: red;
 }
 
-.configs-single-panel {
-    border-bottom: 3px solid #AAAAAA;
-}
-
 .configPanelInConfigsList {
-    margin-bottom: 0px;
+    margin-bottom: 20px;
+    /* border-bottom: 1px solid #AAAAAA;
+    padding-left: 5px */
 }
 
 .configDescriptionPanel {
