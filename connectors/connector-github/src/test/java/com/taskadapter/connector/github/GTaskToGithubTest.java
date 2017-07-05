@@ -1,14 +1,15 @@
 package com.taskadapter.connector.github;
 
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.connector.testlib.TestMappingUtils;
+import com.taskadapter.connector.testlib.FieldSelector;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GUser;
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.service.UserService;
 import org.junit.Test;
+
+import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -43,10 +44,9 @@ public class GTaskToGithubTest {
 
     @Test
     public void summaryIsNOTConvertedInUnmapped() throws ConnectorException {
-        Mappings mappings = TestMappingUtils
-        .fromFields(GithubSupportedFields.SUPPORTED_FIELDS);
-        mappings.deselectField(GTaskDescriptor.FIELD.SUMMARY);
-        Issue issue = getConverter(mappings).toIssue(createTask("summary1"));
+        Collection<GTaskDescriptor.FIELD> selectedFields = FieldSelector.getSelectedFields(GithubSupportedFields.SUPPORTED_FIELDS,
+                GTaskDescriptor.FIELD.SUMMARY, false);
+        Issue issue = getConverter(selectedFields).toIssue(createTask("summary1"));
         assertNull(issue.getTitle());
     }
 
@@ -58,21 +58,19 @@ public class GTaskToGithubTest {
 
     @Test
     public void descriptionIsNOTConvertedInUnmapped() throws ConnectorException {
-        Mappings mappings = TestMappingUtils
-        .fromFields(GithubSupportedFields.SUPPORTED_FIELDS);
-        mappings.deselectField(GTaskDescriptor.FIELD.DESCRIPTION);
-        Issue issue = getConverter(mappings).toIssue(createTask("summary1", "description 1"));
+        Collection<GTaskDescriptor.FIELD> selectedFields = FieldSelector.getSelectedFields(GithubSupportedFields.SUPPORTED_FIELDS,
+                GTaskDescriptor.FIELD.DESCRIPTION, false);
+        Issue issue = getConverter(selectedFields).toIssue(createTask("summary1", "description 1"));
         assertNull(issue.getBody());
     }
 
     private GTaskToGithub getConverter() {
-        return getConverter(TestMappingUtils
-        .fromFields(GithubSupportedFields.SUPPORTED_FIELDS));
+        return getConverter(GithubSupportedFields.SUPPORTED_FIELDS.getSupportedFields());
     }
 
-    private GTaskToGithub getConverter(Mappings mappings) {
+    private GTaskToGithub getConverter(Collection<GTaskDescriptor.FIELD> fieldsToExport) {
         UserService mock = mock(UserService.class);
-        return new GTaskToGithub(mock, mappings);
+        return new GTaskToGithub(mock, fieldsToExport);
     }
 
     private GTask createTask(String summary) {

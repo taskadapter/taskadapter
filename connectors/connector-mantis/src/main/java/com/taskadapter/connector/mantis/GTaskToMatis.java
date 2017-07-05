@@ -5,7 +5,6 @@ import biz.futureware.mantis.rpc.soap.client.IssueData;
 import biz.futureware.mantis.rpc.soap.client.ObjectRef;
 import biz.futureware.mantis.rpc.soap.client.ProjectData;
 import com.taskadapter.connector.common.data.ConnectorConverter;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
@@ -13,6 +12,7 @@ import com.taskadapter.model.GUser;
 
 import java.math.BigInteger;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 
 public class GTaskToMatis implements ConnectorConverter<GTask, IssueData> {
@@ -26,12 +26,12 @@ public class GTaskToMatis implements ConnectorConverter<GTask, IssueData> {
     private static final String DEFAULT_TASK_CATEGORY = "General";
 
     private final ProjectData mntProject;
-    private final Mappings mappings;
+    private final Collection<GTaskDescriptor.FIELD> fieldsToExport;
     private final List<AccountData> users;
 
-    public GTaskToMatis(ProjectData mntProject, Mappings mappings, List<AccountData> users) {
+    public GTaskToMatis(ProjectData mntProject, Collection<GTaskDescriptor.FIELD> fieldsToExport, List<AccountData> users) {
         this.mntProject = mntProject;
-        this.mappings = mappings;
+        this.fieldsToExport = fieldsToExport;
         this.users = users;
     }
 
@@ -50,11 +50,11 @@ public class GTaskToMatis implements ConnectorConverter<GTask, IssueData> {
         ObjectRef mntProjectRef = new ObjectRef(mntProject.getId(), mntProject.getName());
         issue.setProject(mntProjectRef);
 
-        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.SUMMARY)) {
+        if (fieldsToExport.contains(GTaskDescriptor.FIELD.SUMMARY)) {
             issue.setSummary(task.getSummary());
         }
 
-        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.DESCRIPTION)) {
+        if (fieldsToExport.contains(GTaskDescriptor.FIELD.DESCRIPTION)) {
             String description = task.getDescription();
             // empty description is not allowed by Mantis API.
             // see bug https://www.hostedredmine.com/issues/39248
@@ -64,7 +64,7 @@ public class GTaskToMatis implements ConnectorConverter<GTask, IssueData> {
             issue.setDescription(description);
         }
 
-        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.DUE_DATE)) {
+        if (fieldsToExport.contains(GTaskDescriptor.FIELD.DUE_DATE)) {
             if (task.getDueDate() != null) {
                 Calendar dueDate = Calendar.getInstance();
                 dueDate.setTime(task.getDueDate());
@@ -80,7 +80,7 @@ public class GTaskToMatis implements ConnectorConverter<GTask, IssueData> {
         updated.setTime(task.getUpdatedOn());
         issue.setLast_updated(updated);*/
 
-        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.ASSIGNEE)) {
+        if (fieldsToExport.contains(GTaskDescriptor.FIELD.ASSIGNEE)) {
             GUser ass = task.getAssignee();
 
             if (ass != null) {

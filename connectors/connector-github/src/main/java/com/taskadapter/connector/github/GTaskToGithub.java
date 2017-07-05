@@ -2,7 +2,6 @@ package com.taskadapter.connector.github;
 
 import com.google.common.base.Strings;
 import com.taskadapter.connector.common.data.ConnectorConverter;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
@@ -12,6 +11,7 @@ import org.eclipse.egit.github.core.service.IssueService;
 import org.eclipse.egit.github.core.service.UserService;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,27 +20,27 @@ public class GTaskToGithub implements ConnectorConverter<GTask, Issue> {
     private Map<String, User> ghUsers = new HashMap<>();
 
     private final UserService userService;
-    private final Mappings mappings;
+    private final Collection<GTaskDescriptor.FIELD> fieldsToExport;
 
-    GTaskToGithub(UserService userService, Mappings mappings) {
+    GTaskToGithub(UserService userService,  Collection<GTaskDescriptor.FIELD> fieldsToExport) {
         this.userService = userService;
-        this.mappings = mappings;
+        this.fieldsToExport = fieldsToExport;
     }
 
     Issue toIssue(GTask task) throws ConnectorException {
         Issue issue = new Issue();
 
-        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.SUMMARY)) {
+        if (fieldsToExport.contains(GTaskDescriptor.FIELD.SUMMARY)) {
             issue.setTitle(task.getSummary());
         }
 
-        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.DESCRIPTION)) {
+        if (fieldsToExport.contains(GTaskDescriptor.FIELD.DESCRIPTION)) {
             issue.setBody(task.getDescription());
         }
         issue.setCreatedAt(task.getCreatedOn());
         issue.setUpdatedAt(task.getUpdatedOn());
         // TODO add tests
-        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.TASK_STATUS)) {
+        if (fieldsToExport.contains(GTaskDescriptor.FIELD.TASK_STATUS)) {
             issue.setState(task.getDoneRatio() != null && task.getDoneRatio() == 100 ? IssueService.STATE_CLOSED : IssueService.STATE_OPEN);
         }
 
@@ -51,7 +51,7 @@ public class GTaskToGithub implements ConnectorConverter<GTask, Issue> {
         }
 
         // TODO add tests
-        if (mappings.isFieldSelected(GTaskDescriptor.FIELD.ASSIGNEE)) {
+        if (fieldsToExport.contains(GTaskDescriptor.FIELD.ASSIGNEE)) {
             processAssignee(task, issue);
         }
         return issue;

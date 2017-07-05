@@ -82,7 +82,7 @@ public class MantisConnector implements Connector<MantisConfig> {
             final List<AccountData> users = config.isFindUserByName() ? mgr
                     .getUsers() : new ArrayList<>();
             final GTaskToMatis converter = new GTaskToMatis(
-                    mntProject, mappings, users);
+                    mntProject, mappings.getSelectedFields(), users);
             final MantisTaskSaver mts = new MantisTaskSaver(mgr);
 
             // TODO REVIEW Why default value setter is created in each connector? Should it be created a layer above and then just passed as a parameter?

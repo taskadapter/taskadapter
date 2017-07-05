@@ -85,7 +85,7 @@ public class GithubConnector implements Connector<GithubConfig> {
         final ConnectionFactory ghConnector = new ConnectionFactory(serverInfo);
 
         final GTaskToGithub converter = new GTaskToGithub(
-                ghConnector.getUserService(), mappings);
+                ghConnector.getUserService(), mappings.getSelectedFields());
 
         final IssueService issueService = ghConnector.getIssueService();
         final GithubTaskSaver saver = new GithubTaskSaver(issueService,
