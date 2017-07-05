@@ -86,7 +86,8 @@ public class MantisConnector implements Connector<MantisConfig> {
             final MantisTaskSaver mts = new MantisTaskSaver(mgr);
 
             // TODO REVIEW Why default value setter is created in each connector? Should it be created a layer above and then just passed as a parameter?
-            return TaskSavingUtils.saveTasks(tasks, converter, mts, monitor, new DefaultValueSetter(mappings))
+            Map<String, String> defaultValuesForEmptyFields = mappings.getDefaultValuesForEmptyFields();
+            return TaskSavingUtils.saveTasks(tasks, converter, mts, monitor, new DefaultValueSetter(defaultValuesForEmptyFields))
                     .getResult();
         } catch (RemoteException e) {
             throw MantisUtils.convertException(e);

@@ -1,7 +1,6 @@
 package com.taskadapter.connector.common;
 
 import com.google.common.base.Strings;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GUser;
@@ -9,6 +8,7 @@ import com.taskadapter.model.GUser;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * When saving a task, we need to set some of its fields to some default value if there is nothing there yet.
@@ -25,10 +25,15 @@ public class DefaultValueSetter {
      */
     private static final SimpleDateFormat DATE_PARSER = new SimpleDateFormat("yyyy MM dd");
 
-    private final Mappings mappings;
+    private Map<String, String> fieldNameToDefaultValue;
 
-    public DefaultValueSetter(Mappings mappings) {
-        this.mappings = mappings;
+    /**
+     * Set default values for fields that are "empty".
+     *
+     * @param fieldNameToDefaultValue map: field name -> default value for that field if original value is empty.
+     */
+    public DefaultValueSetter(Map<String, String> fieldNameToDefaultValue) {
+        this.fieldNameToDefaultValue = fieldNameToDefaultValue;
     }
 
     // TODO REVIEW Method name is misleading and do not match its implementation.
@@ -37,12 +42,12 @@ public class DefaultValueSetter {
     // and then replacing selected empty fields with default values.
     public GTask cloneAndReplaceEmptySelectedFieldsWithDefaultValues(GTask task) throws ParseException {
         final GTask result = new GTask(task);
-        for (GTaskDescriptor.FIELD selectedField : mappings.getSelectedFields()) {
-            Object currentFieldValue = task.getValue(selectedField);
+        for (Map.Entry<String, String> entry : fieldNameToDefaultValue.entrySet()) {
+            GTaskDescriptor.FIELD field = GTaskDescriptor.FIELD.valueOf(entry.getKey());
+            Object currentFieldValue = task.getValue(field);
             if (fieldIsConsideredEmpty(currentFieldValue)) {
-                String defaultValueForEmptyField = mappings.getDefaultValueForEmptyField(selectedField);
-                Object valueWithProperType = getValueWithProperType(selectedField, defaultValueForEmptyField);
-                result.setValue(selectedField, valueWithProperType);
+                Object valueWithProperType = getValueWithProperType(field, entry.getValue());
+                result.setValue(field, valueWithProperType);
             }
         }
         return result;

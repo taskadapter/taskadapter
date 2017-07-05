@@ -1,7 +1,6 @@
 package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.common.data.ConnectorConverter;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
@@ -14,25 +13,26 @@ import com.taskadapter.redmineapi.bean.User;
 import com.taskadapter.redmineapi.bean.UserFactory;
 import com.taskadapter.redmineapi.bean.Version;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 public class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
 
     private final RedmineConfig config;
-    private final Mappings mapping;
+    private final Collection<FIELD> fieldsToExport;
     private final List<User> users;
     private final List<IssueStatus> statusList;
     private final List<Version> versions;
     private final Map<String, Integer> priorities;
     private final Project project;
 
-    public GTaskToRedmine(RedmineConfig config, Mappings mapping,
+    public GTaskToRedmine(RedmineConfig config, Collection<FIELD> fieldsToExport,
                           Map<String, Integer> priorities, Project project, List<User> users,
                           List<IssueStatus> statusList,
                           List<Version> versions) {
         this.config = config;
-        this.mapping = mapping;
+        this.fieldsToExport = fieldsToExport;
         this.priorities = priorities;
         this.project = project;
         this.users = users;
@@ -56,25 +56,25 @@ public class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
         issue.setParentId(parseIntOrNull(task.getParentKey()));
         issue.setProject(project);
 
-        if (mapping.isFieldSelected(FIELD.SUMMARY)) {
+        if (fieldsToExport.contains(FIELD.SUMMARY)) {
             issue.setSubject(task.getSummary());
         }
-        if (mapping.isFieldSelected(FIELD.START_DATE)) {
+        if (fieldsToExport.contains(FIELD.START_DATE)) {
             issue.setStartDate(task.getStartDate());
         }
-        if (mapping.isFieldSelected(FIELD.DUE_DATE)) {
+        if (fieldsToExport.contains(FIELD.DUE_DATE)) {
             issue.setDueDate(task.getDueDate());
         }
 
-        if (mapping.isFieldSelected(FIELD.ESTIMATED_TIME)) {
+        if (fieldsToExport.contains(FIELD.ESTIMATED_TIME)) {
             issue.setEstimatedHours(task.getEstimatedHours());
         }
 
-        if (mapping.isFieldSelected(FIELD.DONE_RATIO)) {
+        if (fieldsToExport.contains(FIELD.DONE_RATIO)) {
             issue.setDoneRatio(task.getDoneRatio());
         }
 
-        if (mapping.isFieldSelected(FIELD.TASK_TYPE)) {
+        if (fieldsToExport.contains(FIELD.TASK_TYPE)) {
             String trackerName = task.getType();
             if (trackerName == null) {
                 trackerName = config.getDefaultTaskType();
@@ -82,7 +82,7 @@ public class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
             issue.setTracker(project.getTrackerByName(trackerName));
         }
 
-        if (mapping.isFieldSelected(FIELD.TASK_STATUS)) {
+        if (fieldsToExport.contains(FIELD.TASK_STATUS)) {
             String statusName = task.getStatus();
             if (statusName == null) {
                 statusName = config.getDefaultTaskStatus();
@@ -95,11 +95,11 @@ public class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
             }
         }
         
-        if (mapping.isFieldSelected(FIELD.DESCRIPTION)) {
+        if (fieldsToExport.contains(FIELD.DESCRIPTION)) {
             issue.setDescription(task.getDescription());
         }
         
-        if (mapping.isFieldSelected(FIELD.PRIORITY)) {
+        if (fieldsToExport.contains(FIELD.PRIORITY)) {
             Integer priority = task.getPriority();
             if (priority != null) {
                 final String priorityName = config.getPriorities()
@@ -112,7 +112,7 @@ public class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
             }
         }
 
-        if (mapping.isFieldSelected(FIELD.TARGET_VERSION)) {
+        if (fieldsToExport.contains(FIELD.TARGET_VERSION)) {
             Version version = getVersionByName(task.getTargetVersionName());
             issue.setTargetVersion(version);
         }
@@ -139,7 +139,7 @@ public class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
     }
 
     private void processAssignee(GTask genericTask, Issue redmineIssue) {
-        if (mapping.isFieldSelected(FIELD.ASSIGNEE)) {
+        if (fieldsToExport.contains(FIELD.ASSIGNEE)) {
             GUser ass = genericTask.getAssignee();
             if ((ass != null) && (ass.getLoginName() != null || ass.getDisplayName() != null)) {
                 User rmAss;
@@ -155,7 +155,7 @@ public class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
     }
 
     private void processTaskStatus(GTask task, Issue issue) {
-        if (mapping.isFieldSelected(FIELD.TASK_STATUS)) {
+        if (fieldsToExport.contains(FIELD.TASK_STATUS)) {
             String statusName = task.getStatus();
             if (statusName == null) {
                 statusName = config.getDefaultTaskStatus();

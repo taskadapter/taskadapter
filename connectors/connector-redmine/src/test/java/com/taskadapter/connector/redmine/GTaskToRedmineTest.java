@@ -1,6 +1,5 @@
 package com.taskadapter.connector.redmine;
 
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
@@ -16,8 +15,10 @@ import com.taskadapter.redmineapi.bean.Version;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -127,8 +128,7 @@ public class GTaskToRedmineTest {
     private GTaskToRedmine createDefaultConverter() {
         RedmineConfig config = new RedmineConfig();
         return new GTaskToRedmine(config,
-                TestMappingUtils
-                        .fromFields(RedmineSupportedFields.SUPPORTED_FIELDS),
+                        RedmineSupportedFields.SUPPORTED_FIELDS.getSupportedFields(),
                 null, project, Collections.<User>emptyList(),
                 Collections.<IssueStatus>emptyList(), Collections.<Version>emptyList());
     }
@@ -143,9 +143,12 @@ public class GTaskToRedmineTest {
 
     private GTaskToRedmine createConverterWithField(GTaskDescriptor.FIELD field, boolean selected, List<User> users) {
         RedmineConfig config = new RedmineConfig();
-        Mappings mappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
-        mappings.setMapping(field, selected, null, "some default value for empty fields");
-        users = users != null ? users : Collections.<User>emptyList();
-        return new GTaskToRedmine(config, mappings, null, project, users, new ArrayList<>(), Collections.<Version>emptyList());
+        Collection<FIELD> selectedFields = RedmineSupportedFields.SUPPORTED_FIELDS.getSupportedFields()
+                .stream()
+                .filter(f -> f.equals(field) == selected)
+                .collect(Collectors.toList());
+
+//        users = users != null ? users : Collections.<User>emptyList();
+        return new GTaskToRedmine(config, selectedFields, null, project, users, new ArrayList<>(), Collections.<Version>emptyList());
     }
 }

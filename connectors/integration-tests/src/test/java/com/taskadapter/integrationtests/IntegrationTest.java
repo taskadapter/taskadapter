@@ -41,7 +41,10 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static com.taskadapter.integrationtests.MSPConfigLoader.generateTemporaryConfig;
 import static junit.framework.Assert.fail;
@@ -126,18 +129,22 @@ public class IntegrationTest {
         mspMappings.setMapping(GTaskDescriptor.FIELD.REMOTE_ID, true, MSPUtils.getDefaultRemoteIdMapping(), "default remote ID");
         RedmineConfig redmineConfig = RedmineTestConfig.getRedmineTestConfig();
         redmineConfig.setProjectKey(projectKey);
-        Mappings redmineMappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
+        Collection<GTaskDescriptor.FIELD> fields = RedmineSupportedFields.SUPPORTED_FIELDS.getSupportedFields();
+
+        Map<String, String> defaultValuesForEmptyFields = Collections.emptyMap();
 
         // load from MSP
         int maxTasksNumber = 999999;
         List<GTask> loadedTasks = TaskLoader.loadTasks(maxTasksNumber, msProjectConnector, "msp1", mspMappings, ProgressMonitorUtils.DUMMY_MONITOR);
         // save to Redmine. this should save the remote IDs
-        GTaskToRedmine converter = new GTaskToRedmine(redmineConfig, redmineMappings, null, redmineProject, null, null, null);
+        GTaskToRedmine converter = new GTaskToRedmine(redmineConfig,
+                fields,
+                Collections.emptyMap(), redmineProject, null, null, null);
         BasicIssueSaveAPI<Issue> redmineTaskSaver = new RedmineTaskSaver(mgr.getIssueManager(), redmineConfig);
         final TaskSaveResult result =  TaskSavingUtils.saveTasks(loadedTasks,
                 converter, redmineTaskSaver,
                 ProgressMonitorUtils.DUMMY_MONITOR,
-                new DefaultValueSetter(redmineMappings)).getResult();
+                new DefaultValueSetter(defaultValuesForEmptyFields)).getResult();
 
         assertEquals("must have created 2 tasks", 2, result.getCreatedTasksNumber());
         RemoteIdUpdater.updateRemoteIds(result.getIdToRemoteKeyMap(),
@@ -167,13 +174,16 @@ public class IntegrationTest {
         List<GTask> loadedTasks = TaskLoader.loadTasks(maxTasksNumber, projectConnector, "project1", mspMappings, ProgressMonitorUtils.DUMMY_MONITOR);
         try {
             // save to Redmine
-            Mappings redmineMappings = TestMappingUtils.fromFields(RedmineSupportedFields.SUPPORTED_FIELDS);
-            GTaskToRedmine converter = new GTaskToRedmine(redmineConfigTo, redmineMappings, null, redmineProject, null, null, null);
+            Map<String, String> defaultValuesForEmptyFields = Collections.emptyMap();
+
+            GTaskToRedmine converter = new GTaskToRedmine(redmineConfigTo,
+                    RedmineSupportedFields.SUPPORTED_FIELDS.getSupportedFields(),
+                    null, redmineProject, null, null, null);
             BasicIssueSaveAPI<Issue> redmineTaskSaver = new RedmineTaskSaver(mgr.getIssueManager(), redmineConfigTo);
             TaskSavingUtils.saveTasks(loadedTasks,
                     converter, redmineTaskSaver,
                     ProgressMonitorUtils.DUMMY_MONITOR,
-                    new DefaultValueSetter(redmineMappings));
+                    new DefaultValueSetter(defaultValuesForEmptyFields));
         } catch (Throwable t) {
             t.printStackTrace();
             fail(t.toString());

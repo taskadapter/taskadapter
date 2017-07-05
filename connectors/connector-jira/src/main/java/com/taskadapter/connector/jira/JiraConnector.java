@@ -143,8 +143,9 @@ public class JiraConnector implements Connector<JiraConfig> {
                     issueTypeList, versions, components, priorities);
 
             final JiraTaskSaver saver = new JiraTaskSaver(client);
+            Map<String, String> defaultValuesForEmptyFields = mappings.getDefaultValuesForEmptyFields();
             final TaskSaveResultBuilder rb = TaskSavingUtils.saveTasks(tasks,
-                    converter, saver, monitor, new DefaultValueSetter(mappings));
+                    converter, saver, monitor, new DefaultValueSetter(defaultValuesForEmptyFields));
             TaskSavingUtils.saveRemappedRelations(config, tasks, saver, rb);
             return rb.getResult();
         });

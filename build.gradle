@@ -26,6 +26,7 @@ ext.libraries = [
 subprojects {
 
     apply plugin: 'java'
+    apply plugin: 'scala'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -47,8 +48,11 @@ subprojects {
     }
 
     dependencies {
+        compile 'org.scala-lang:scala-library:2.12.2'
+
         compile 'com.google.guava:guava:19.0'
         testCompile libraries.junit
+        testCompile 'org.scalatest:scalatest_2.12:3.0.0'
     }
 
     // disabled javadoc generation during Gradle build to avoid build failure.

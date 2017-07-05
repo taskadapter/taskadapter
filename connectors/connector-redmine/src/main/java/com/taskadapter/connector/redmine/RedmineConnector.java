@@ -120,11 +120,12 @@ public class RedmineConnector implements Connector<RedmineConfig> {
                 final List<IssueStatus> statusList = mgr.getIssueManager().getStatuses();
                 final List<Version> versions = mgr.getProjectManager().getVersions(rmProject.getId());
                 final GTaskToRedmine converter = new GTaskToRedmine(config,
-                        mappings, priorities, rmProject, users, statusList, versions);
+                        mappings.getSelectedFields(), priorities, rmProject, users, statusList, versions);
                 
                 final RedmineTaskSaver saver = new RedmineTaskSaver(mgr.getIssueManager(), config);
+                Map<String, String> defaultValuesForEmptyFields = mappings.getDefaultValuesForEmptyFields();
                 final TaskSaveResultBuilder tsrb = TaskSavingUtils.saveTasks(
-                        tasks, converter, saver, monitor, new DefaultValueSetter(mappings));
+                        tasks, converter, saver, monitor, new DefaultValueSetter(defaultValuesForEmptyFields));
                 TaskSavingUtils.saveRemappedRelations(config, tasks, saver, tsrb);
                 return tsrb.getResult();
             } finally {

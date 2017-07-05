@@ -90,8 +90,8 @@ public class GithubConnector implements Connector<GithubConfig> {
         final IssueService issueService = ghConnector.getIssueService();
         final GithubTaskSaver saver = new GithubTaskSaver(issueService,
                 serverInfo.getUserName(), config.getProjectKey());
-
-        return TaskSavingUtils.saveTasks(tasks, converter, saver, monitor, new DefaultValueSetter(mappings))
+        Map<String, String> defaultValuesForEmptyFields = mappings.getDefaultValuesForEmptyFields();
+        return TaskSavingUtils.saveTasks(tasks, converter, saver, monitor, new DefaultValueSetter(defaultValuesForEmptyFields))
                 .getResult();
     }
 }

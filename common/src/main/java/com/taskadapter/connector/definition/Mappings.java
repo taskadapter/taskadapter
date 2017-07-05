@@ -54,11 +54,25 @@ public final class Mappings {
 		defaultValuesForEmptyFields = new HashMap<>(mapping.defaultValuesForEmptyFields);
 	}
 
+	public Map<String, String> getDefaultValuesForEmptyFields() {
+		/* cannot use Collectors.toMap here because it does not support null values. boo Java!
+		 see https://stackoverflow.com/questions/42546950/use-java-8-streams-to-transform-a-map-with-nulls
+
+			defaultValuesForEmptyFields.entrySet().stream().collect(
+				Collectors.toMap(k-> k.getKey().name(), Map.Entry::getValue));
+		*/
+		Map<String, String> copy = new HashMap<>();
+		for (Map.Entry<FIELD, String> entry : defaultValuesForEmptyFields.entrySet()) {
+			copy.put(entry.getKey() != null ? entry.getKey().name() : null,
+					entry.getValue()
+			);
+		}
+		return copy;
+	}
+
 	/**
-	 * Checks, if field is selected for convertion.
+	 * Checks if field is selected for conversion.
 	 * 
-	 * @param field
-	 *            field to check.
 	 * @return <code>true</code> iff field is selected for conversion.
 	 */
 	public boolean isFieldSelected(FIELD field) {
