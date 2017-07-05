@@ -1,6 +1,7 @@
 package com.taskadapter.connector.testlib;
 
 import com.taskadapter.connector.common.ConnectorUtils;
+import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.TaskSaveResult;
@@ -85,6 +86,16 @@ public class TestUtils {
         TaskSaveResult result = connector.saveData(Arrays.asList(task), null, mappings);
         Collection<String> remoteKeys = result.getRemoteKeys();
         String remoteKey = remoteKeys.iterator().next();
+        return connector.loadTaskByKey(remoteKey, mappings);
+    }
+
+    /**
+     * Load task that was previously created and its result is saved in {@link TaskSaveResult}
+     */
+    public static GTask loadCreatedTask(Connector<?> connector, AvailableFields availableFields, TaskSaveResult result) throws ConnectorException {
+        Collection<String> remoteKeys = result.getRemoteKeys();
+        String remoteKey = remoteKeys.iterator().next();
+        Mappings mappings = TestMappingUtils.fromFields(availableFields);
         return connector.loadTaskByKey(remoteKey, mappings);
     }
 

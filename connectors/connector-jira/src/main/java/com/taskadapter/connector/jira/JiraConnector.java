@@ -139,7 +139,7 @@ public class JiraConnector implements Connector<JiraConfig> {
              * priority name (string), while Jira returns the number value of the issue priority */
             final Promise<Iterable<Priority>> prioritiesPromise = client.getMetadataClient().getPriorities();
             final Iterable<Priority> priorities = prioritiesPromise.claim();
-            final GTaskToJira converter = new GTaskToJira(config, mappings,
+            final GTaskToJira converter = new GTaskToJira(config,  mappings.getSelectedFields(),
                     issueTypeList, versions, components, priorities);
 
             final JiraTaskSaver saver = new JiraTaskSaver(client);

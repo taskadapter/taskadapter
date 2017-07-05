@@ -10,6 +10,7 @@ import com.atlassian.jira.rest.client.api.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.api.domain.input.IssueInput;
 import com.google.common.collect.Iterables;
 import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.testlib.FieldSelector;
 import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
@@ -18,11 +19,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import java.util.Calendar;
+import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -280,9 +281,8 @@ public class GTaskToJiraTest {
     }
 
     private GTaskToJira getConverter(Mappings mappings) {
-        GTaskToJira converter = new GTaskToJira(config, mappings, issueTypeList, versions, components, priorities);
+        GTaskToJira converter = new GTaskToJira(config,  mappings.getSelectedFields(), issueTypeList, versions, components, priorities);
         return converter;
-
     }
 
     private GTaskToJira createConverterWithSelectedField(GTaskDescriptor.FIELD field) {
@@ -295,9 +295,10 @@ public class GTaskToJiraTest {
 
     private GTaskToJira createConverterWithField(GTaskDescriptor.FIELD field, boolean selected) {
         JiraConfig config = new JiraTestData().createTestConfig();
-        Mappings mappings = TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS);
-        mappings.setMapping(field, selected, null, "some default value here");
-        GTaskToJira converter = new GTaskToJira(config, mappings, issueTypeList, versions, components, priorities);
+        Collection<GTaskDescriptor.FIELD> selectedFields = FieldSelector.getSelectedFields(JiraSupportedFields.SUPPORTED_FIELDS,
+                field, selected);
+
+        GTaskToJira converter = new GTaskToJira(config, selectedFields, issueTypeList, versions, components, priorities);
         return converter;
     }
 

@@ -13,31 +13,31 @@ import com.atlassian.jira.rest.client.api.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.api.domain.input.IssueInputBuilder;
 import com.google.common.collect.ImmutableList;
 import com.taskadapter.connector.common.data.ConnectorConverter;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
 import org.joda.time.DateTime;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class GTaskToJira implements ConnectorConverter<GTask, IssueWrapper> {
 
     private final JiraConfig config;
-    private final Mappings mappings;
+    private final Collection<FIELD> fieldsToExport;
 
     private final Map<String, BasicPriority> priorities = new HashMap<>();
     private final Iterable<IssueType> issueTypeList;
     private final Iterable<Version> versions;
     private final Iterable<BasicComponent> components;
 
-    public GTaskToJira(JiraConfig config, Mappings mappings,
+    public GTaskToJira(JiraConfig config, Collection<FIELD> fieldsToExport,
             Iterable<IssueType> issueTypeList, Iterable<Version> versions,
             Iterable<BasicComponent> components, Iterable<Priority> jiraPriorities) {
         this.config = config;
-        this.mappings = mappings;
+        this.fieldsToExport = fieldsToExport;
         this.issueTypeList = issueTypeList;
         this.versions = versions;
         this.components = components;
@@ -51,7 +51,7 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueWrapper> {
         IssueInputBuilder issueInputBuilder = new IssueInputBuilder(
                 config.getProjectKey(), findIssueTypeId(task));
         
-        if (task.getParentKey() != null && mappings.isFieldSelected(FIELD.TASK_TYPE)) {
+        if (task.getParentKey() != null && fieldsToExport.contains(FIELD.TASK_TYPE)) {
             /* 
              * See:
              * http://stackoverflow.com/questions/14699893/how-to-create-subtasks-using-jira-rest-java-client
@@ -63,11 +63,11 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueWrapper> {
             issueInputBuilder.setFieldInput(parentField);
         }
         
-        if (mappings.isFieldSelected(FIELD.SUMMARY)) {
+        if (fieldsToExport.contains(FIELD.SUMMARY)) {
             issueInputBuilder.setSummary(task.getSummary());
         }
 
-        if (mappings.isFieldSelected(FIELD.DESCRIPTION)) {
+        if (fieldsToExport.contains(FIELD.DESCRIPTION)) {
             issueInputBuilder.setDescription(task.getDescription());
         }
 
@@ -87,16 +87,16 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueWrapper> {
             issueInputBuilder.setComponents(ImmutableList.of(component));
         }
 
-        if (mappings.isFieldSelected(FIELD.DUE_DATE) && task.getDueDate() != null) {
+        if (fieldsToExport.contains(FIELD.DUE_DATE) && task.getDueDate() != null) {
             DateTime dueDateTime = new DateTime(task.getDueDate());
             issueInputBuilder.setDueDate(dueDateTime);
         }
 
-        if (mappings.isFieldSelected(FIELD.ASSIGNEE)) {
+        if (fieldsToExport.contains(FIELD.ASSIGNEE)) {
             setAssignee(task, issueInputBuilder);
         }
 
-        if (mappings.isFieldSelected(FIELD.PRIORITY)) {
+        if (fieldsToExport.contains(FIELD.PRIORITY)) {
             final Integer priorityNumber = task.getPriority();
             final String jiraPriorityName = config.getPriorities().getPriorityByMSP(priorityNumber);
             if (!jiraPriorityName.isEmpty()) {
@@ -108,12 +108,12 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueWrapper> {
         }
 
         Float estimatedHours = task.getEstimatedHours();
-        if (mappings.isFieldSelected(FIELD.ESTIMATED_TIME) && (estimatedHours != null)) {
+        if (fieldsToExport.contains(FIELD.ESTIMATED_TIME) && (estimatedHours != null)) {
             TimeTracking timeTracking = new TimeTracking(Math.round(estimatedHours * 60), null, null);
             issueInputBuilder.setFieldValue(IssueFieldId.TIMETRACKING_FIELD.id, timeTracking);
         }
 
-        if (mappings.isFieldSelected(FIELD.ENVIRONMENT)) {
+        if (fieldsToExport.contains(FIELD.ENVIRONMENT)) {
             issueInputBuilder.setFieldValue("environment", task.getEnvironment());
         }
 
@@ -128,7 +128,7 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueWrapper> {
      */
     private Long findIssueTypeId(GTask task) {
         /* Use explicit task type when possible. */
-        if (mappings.isFieldSelected(FIELD.TASK_TYPE)) {
+        if (fieldsToExport.contains(FIELD.TASK_TYPE)) {
             final Long explicitTypeId = getIssueTypeIdByName(task.getType());
             if (explicitTypeId != null)
                 return explicitTypeId;

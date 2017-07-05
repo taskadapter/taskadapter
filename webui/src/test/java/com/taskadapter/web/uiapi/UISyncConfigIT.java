@@ -2,6 +2,10 @@ package com.taskadapter.web.uiapi;
 
 import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.TaskSaveResult;
+import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.redmine.RedmineConfig;
+import com.taskadapter.connector.redmine.RedmineConnector;
+import com.taskadapter.connector.redmine.RedmineSupportedFields;
 import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.model.GTask;
 import org.junit.Before;
@@ -40,6 +44,24 @@ public class UISyncConfigIT {
         assertThat(saveResult.hasErrors()).isFalse();
         assertThat(saveResult.getCreatedTasksNumber()).isEqualTo(1);
         assertThat(saveResult.getUpdatedTasksNumber()).isEqualTo(0);
+    }
+
+    @Test
+    public void taskWithDescriptionUnselectedIsCreatedInRedmineWithEmptyDescription() throws Exception {
+        UISyncConfig configWithDescriptionUnselected = ConfigLoader.loadConfig("Redmine_Redmine_description_unselected.ta_conf");
+        List<GTask> gTasks = TestUtils.generateTasks(1);
+        final UISyncConfig.TaskExportResult taskExportResult = configWithDescriptionUnselected.saveTasks(gTasks, ProgressMonitorUtils.DUMMY_MONITOR);
+        final TaskSaveResult saveResult = taskExportResult.saveResult;
+        assertThat(saveResult.hasErrors()).isFalse();
+        assertThat(saveResult.getCreatedTasksNumber()).isEqualTo(1);
+        assertThat(saveResult.getUpdatedTasksNumber()).isEqualTo(0);
+
+        RedmineConfig redmineConfig = new RedmineConfig();
+        // TODO get config from the same conf file as above
+        redmineConfig.setServerInfo(new WebServerInfo("http://dev.taskadapter.com/redmine", "user", "123ZC"));
+        RedmineConnector connector = new RedmineConnector(redmineConfig);
+        GTask loaded = TestUtils.loadCreatedTask(connector, RedmineSupportedFields.SUPPORTED_FIELDS, saveResult);
+        assertThat(loaded.getDescription()).isEqualTo("");
     }
 
     @Test

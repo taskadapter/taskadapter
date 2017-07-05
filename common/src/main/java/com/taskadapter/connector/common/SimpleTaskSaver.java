@@ -65,7 +65,7 @@ final class SimpleTaskSaver<N> {
     private String submitTask(GTask task, N nativeTask)
             throws ConnectorException {
         String newTaskKey;
-        if (task.getRemoteId() == null) {
+        if (task.getRemoteId() == null || task.getRemoteId().isEmpty()) {
             newTaskKey = saveAPI.createTask(nativeTask);
             result.addCreatedTask(task.getId(), newTaskKey);
         } else {

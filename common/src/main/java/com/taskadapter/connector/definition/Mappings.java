@@ -3,6 +3,7 @@ package com.taskadapter.connector.definition;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 
@@ -213,6 +214,6 @@ public final class Mappings {
 	}
 
 	public Collection<FIELD> getSelectedFields() {
-		return selected.keySet();
+		return selected.keySet().stream().filter(this::isFieldSelected).collect(Collectors.toSet());
 	}
 }

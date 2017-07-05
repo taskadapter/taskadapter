@@ -25,7 +25,7 @@ public class TestSaver {
     }
 
     public TestSaver unselectField(GTaskDescriptor.FIELD field) {
-        mappings.getSelectedFields().remove(field);
+        mappings.deselectField(field);
         return this;
     }
 

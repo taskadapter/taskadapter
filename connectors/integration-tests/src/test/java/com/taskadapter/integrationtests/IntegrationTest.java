@@ -178,7 +178,7 @@ public class IntegrationTest {
 
             GTaskToRedmine converter = new GTaskToRedmine(redmineConfigTo,
                     RedmineSupportedFields.SUPPORTED_FIELDS.getSupportedFields(),
-                    null, redmineProject, null, null, null);
+                    Collections.emptyMap(), redmineProject, null, null, null);
             BasicIssueSaveAPI<Issue> redmineTaskSaver = new RedmineTaskSaver(mgr.getIssueManager(), redmineConfigTo);
             TaskSavingUtils.saveTasks(loadedTasks,
                     converter, redmineTaskSaver,

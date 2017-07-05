@@ -1,6 +1,6 @@
 package com.taskadapter.connector.redmine;
 
-import com.taskadapter.connector.testlib.TestMappingUtils;
+import com.taskadapter.connector.testlib.FieldSelector;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
@@ -143,12 +143,8 @@ public class GTaskToRedmineTest {
 
     private GTaskToRedmine createConverterWithField(GTaskDescriptor.FIELD field, boolean selected, List<User> users) {
         RedmineConfig config = new RedmineConfig();
-        Collection<FIELD> selectedFields = RedmineSupportedFields.SUPPORTED_FIELDS.getSupportedFields()
-                .stream()
-                .filter(f -> f.equals(field) == selected)
-                .collect(Collectors.toList());
-
-//        users = users != null ? users : Collections.<User>emptyList();
+        Collection<FIELD> selectedFields = FieldSelector.getSelectedFields(RedmineSupportedFields.SUPPORTED_FIELDS,
+                field, selected);
         return new GTaskToRedmine(config, selectedFields, null, project, users, new ArrayList<>(), Collections.<Version>emptyList());
     }
 }
