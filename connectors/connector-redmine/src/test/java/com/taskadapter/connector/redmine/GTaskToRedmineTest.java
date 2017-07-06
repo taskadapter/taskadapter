@@ -127,10 +127,11 @@ public class GTaskToRedmineTest {
 
     private GTaskToRedmine createDefaultConverter() {
         RedmineConfig config = new RedmineConfig();
-        return new GTaskToRedmine(config,
-                        RedmineSupportedFields.SUPPORTED_FIELDS.getSupportedFields(),
-                null, project, Collections.<User>emptyList(),
-                Collections.<IssueStatus>emptyList(), Collections.<Version>emptyList());
+        throw new RuntimeException();
+//        return new GTaskToRedmine(config,
+//                        RedmineSupportedFields.SUPPORTED_FIELDS.getSupportedFields(),
+//                null, project, Collections.<User>emptyList(),
+//                Collections.<IssueStatus>emptyList(), Collections.<Version>emptyList());
     }
 
     private GTaskToRedmine createConverterWithSelectedField(GTaskDescriptor.FIELD field, List<User> users) {
@@ -145,6 +146,7 @@ public class GTaskToRedmineTest {
         RedmineConfig config = new RedmineConfig();
         Collection<FIELD> selectedFields = FieldSelector.getSelectedFields(RedmineSupportedFields.SUPPORTED_FIELDS,
                 field, selected);
-        return new GTaskToRedmine(config, selectedFields, null, project, users, new ArrayList<>(), Collections.<Version>emptyList());
+        throw new RuntimeException();
+//        return new GTaskToRedmine(config, selectedFields, null, project, users, new ArrayList<>(), Collections.<Version>emptyList());
     }
 }

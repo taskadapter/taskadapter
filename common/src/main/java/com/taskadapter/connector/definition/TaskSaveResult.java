@@ -111,4 +111,15 @@ public final class TaskSaveResult {
         return !generalErrors.isEmpty() || !taskErrors.isEmpty();
     }
 
+    @Override
+    public String toString() {
+        return "TaskSaveResult{" +
+                "targetFileAbsolutePath='" + targetFileAbsolutePath + '\'' +
+                ", updatedTasksNumber=" + updatedTasksNumber +
+                ", createdTasksNumber=" + createdTasksNumber +
+                ", idToRemoteKeyMap=" + idToRemoteKeyMap +
+                ", generalErrors=" + generalErrors +
+                ", taskErrors=" + taskErrors +
+                '}';
+    }
 }

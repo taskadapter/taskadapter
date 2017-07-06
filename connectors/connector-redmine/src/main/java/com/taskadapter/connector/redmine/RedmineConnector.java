@@ -11,10 +11,10 @@ import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.redmineapi.Include;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.bean.CustomFieldDefinition;
 import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.IssuePriority;
 import com.taskadapter.redmineapi.bean.IssueStatus;
@@ -109,31 +109,7 @@ public class RedmineConnector implements Connector<RedmineConfig>, NewConnector 
     
 	@Override
 	public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
-	    try {
-            final RedmineManager mgr = RedmineManagerFactory.createRedmineManager(config.getServerInfo());
-            try {
-                final Project rmProject = mgr.getProjectManager().getProjectByKey(config.getProjectKey());
-                final Map<String, Integer> priorities = loadPriorities(
-                        mappings, mgr);
-                final List<User> users = !config.isFindUserByName() ? new ArrayList<>()
-                        : mgr.getUserManager().getUsers();
-                final List<IssueStatus> statusList = mgr.getIssueManager().getStatuses();
-                final List<Version> versions = mgr.getProjectManager().getVersions(rmProject.getId());
-                final GTaskToRedmine converter = new GTaskToRedmine(config,
-                        mappings.getSelectedFields(), priorities, rmProject, users, statusList, versions);
-                
-                final RedmineTaskSaver saver = new RedmineTaskSaver(mgr.getIssueManager(), config);
-                Map<String, String> defaultValuesForEmptyFields = mappings.getDefaultValuesForEmptyFields();
-                final TaskSaveResultBuilder tsrb = TaskSavingUtils.saveTasks(
-                        tasks, converter, saver, monitor, new DefaultValueSetter(defaultValuesForEmptyFields));
-                TaskSavingUtils.saveRemappedRelations(config, tasks, saver, tsrb);
-                return tsrb.getResult();
-            } finally {
-                mgr.shutdown();
-            }
-	    } catch (RedmineException e) {
-	        throw RedmineExceptions.convertException(e);
-	    }
+	   throw new RuntimeException();
 	}
 
     @Override
@@ -150,7 +126,7 @@ public class RedmineConnector implements Connector<RedmineConfig>, NewConnector 
     }
 
     @Override
-    public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, List<FieldRow> fieldRow) {
+    public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, List<FieldRow> fieldRows) {
         try {
             final RedmineManager mgr = RedmineManagerFactory.createRedmineManager(config.getServerInfo());
             try {
@@ -160,11 +136,15 @@ public class RedmineConnector implements Connector<RedmineConfig>, NewConnector 
                         : mgr.getUserManager().getUsers();
                 final List<IssueStatus> statusList = mgr.getIssueManager().getStatuses();
                 final List<Version> versions = mgr.getProjectManager().getVersions(rmProject.getId());
-                final GTaskToRedmine converter = new GTaskToRedmine(config, mappings, priorities, rmProject, users, statusList, versions);
+                List<CustomFieldDefinition> customFieldDefinitions = mgr.getCustomFieldManager().getCustomFieldDefinitions();
+
+                final GTaskToRedmine converter = new GTaskToRedmine(config, fieldRows, priorities, rmProject, users,
+                        customFieldDefinitions, statusList, versions);
 
                 final RedmineTaskSaver saver = new RedmineTaskSaver(mgr.getIssueManager(), config);
                 final TaskSaveResultBuilder tsrb = TaskSavingUtils.saveTasks(
-                        tasks, converter, saver, monitor, new DefaultValueSetter(mappings));
+                        tasks, converter, saver, monitor,
+                        new DefaultValueSetter(ABC.targetConnectorDefaultValues(fieldRows)));
                 TaskSavingUtils.saveRemappedRelations(config, tasks, saver, tsrb);
                 return tsrb.getResult();
             } finally {
@@ -175,13 +155,13 @@ public class RedmineConnector implements Connector<RedmineConfig>, NewConnector 
         }
     }
 
-    private static Map<String, Integer> loadPriorities(final Mappings mappings,
-            final RedmineManager mgr) throws RedmineException {
-        if (!mappings.isFieldSelected(FIELD.PRIORITY)) {
-            return new HashMap<>();
-        }
-        return loadPriorities(mgr);
-    }
+//    private static Map<String, Integer> loadPriorities(final Mappings mappings,
+//            final RedmineManager mgr) throws RedmineException {
+//        if (!mappings.isFieldSelected(FIELD.PRIORITY)) {
+//            return new HashMap<>();
+//        }
+//        return loadPriorities(mgr);
+//    }
 
     private static Map<String, Integer> loadPriorities(final RedmineManager mgr) throws RedmineException {
         final Map<String, Integer> res = new HashMap<>();

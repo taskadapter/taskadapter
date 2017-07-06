@@ -43,11 +43,12 @@ public class DefaultValueSetter {
     public GTask cloneAndReplaceEmptySelectedFieldsWithDefaultValues(GTask task) throws ParseException {
         final GTask result = new GTask(task);
         for (Map.Entry<String, String> entry : fieldNameToDefaultValue.entrySet()) {
-            GTaskDescriptor.FIELD field = GTaskDescriptor.FIELD.valueOf(entry.getKey());
-            Object currentFieldValue = task.getValue(field);
+            String fieldName = entry.getKey();
+//            GTaskDescriptor.FIELD field = GTaskDescriptor.FIELD.valueOf(fieldName.toUpperCase());
+            Object currentFieldValue = task.getValue(fieldName);
             if (fieldIsConsideredEmpty(currentFieldValue)) {
-                Object valueWithProperType = getValueWithProperType(field, entry.getValue());
-                result.setValue(field, valueWithProperType);
+                Object valueWithProperType = getValueWithProperType(fieldName, entry.getValue());
+                result.setValue(fieldName, valueWithProperType);
             }
         }
         return result;
@@ -58,7 +59,15 @@ public class DefaultValueSetter {
                 || ((value instanceof String) && ((String) value).isEmpty());
     }
 
-    // TODO REVIEW Method's name is confusing. It assumes that there was/is/will be a "getValueWithImproperType" method.
+    private Object getValueWithProperType(String field, String value) throws ParseException {
+        try {
+            GTaskDescriptor.FIELD enumElement = GTaskDescriptor.FIELD.valueOf(field);
+            return getValueWithProperType(enumElement, value);
+        } catch (Exception e) {
+            return value; // string by default
+        }
+    }
+        // TODO REVIEW Method's name is confusing. It assumes that there was/is/will be a "getValueWithImproperType" method.
     // The documentation for this method neither describes a difference between proper and improper types nor points to "getValueWithImproperType" method.
     private Object getValueWithProperType(GTaskDescriptor.FIELD field, String value) throws ParseException {
         // TODO REVIEW Should this code be polymorphic and belong to a GTaskDespciptor.FIELD instances? It would be more extensible. Same for fieldIsConsideredEmpty.
