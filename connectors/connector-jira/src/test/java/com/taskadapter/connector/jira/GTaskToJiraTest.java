@@ -64,16 +64,15 @@ public class GTaskToJiraTest {
 
     @Before
     public void beforeEachTest() {
-        config = new JiraTestData().createTestConfig();
+        config = JiraPropertiesLoader.createTestConfig();
     }
 
+/*
     @Test
     public void priorityConvertedToCritical() throws MalformedURLException, RemoteException, URISyntaxException {
         Priority priorityCritical = find(priorities, "Highest");
 
-        GTask task = new GTask();
-        task.setSummary("task with critical priority");
-        task.setPriority(750);
+        GTask task = JiraGTaskBuilder.withPriority(750);
 
         Mappings mappings = TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS);
         mappings.setMapping(GTaskDescriptor.FIELD.PRIORITY, true, null, "default priority");
@@ -96,15 +95,10 @@ public class GTaskToJiraTest {
 
     @Test
     public void issueTypeExported() throws MalformedURLException, RemoteException, URISyntaxException {
-        GTask task = new GTask();
-        task.setSummary("checking issueType");
 
-        Mappings mappings = TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS);
-        mappings.setMapping(GTaskDescriptor.FIELD.TASK_TYPE, true, null, "default task type");
-        GTaskToJira converter = getConverter(mappings);
+        GTaskToJira converter = getConverter();
         IssueType requiredIssueType = findIssueType(issueTypeList, "Task");
-        task.setType("Task");
-
+        GTask task = JiraGTaskBuilder.withType("Task");
 
         IssueInput issue = converter.convertToJiraIssue(task).getIssueInput();
         assertEquals(requiredIssueType.getId().toString(), getId(issue, IssueFieldId.ISSUE_TYPE_FIELD.id));
@@ -112,11 +106,8 @@ public class GTaskToJiraTest {
 
     @Test
     public void defaultIssueTypeSetWhenNoneProvided() throws MalformedURLException, RemoteException, URISyntaxException {
-        GTask task = new GTask();
-        task.setType(null);
-        Mappings mappings = TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS);
-        mappings.setMapping(GTaskDescriptor.FIELD.TASK_TYPE, true, null, "default task type");
-        GTaskToJira converter = getConverter(mappings);
+        GTask task = JiraGTaskBuilder.withType(null);
+        GTaskToJira converter = getConverter();
 
         IssueInput issue = converter.convertToJiraIssue(task).getIssueInput();
         // must be default issue type if we set the field to null
@@ -139,9 +130,7 @@ public class GTaskToJiraTest {
     }
 
     private void checkSummary(GTaskToJira converter, String expectedValue) {
-        GTask task = new GTask();
-        String summary = "summary here";
-        task.setSummary(summary);
+        GTask task = JiraGTaskBuilder.withSummary();
         IssueInput issueInput = converter.convertToJiraIssue(task).getIssueInput();
         assertEquals(expectedValue, getValue(issueInput, IssueFieldId.SUMMARY_FIELD.id));
     }
@@ -209,7 +198,7 @@ public class GTaskToJiraTest {
 
     private void checkAssignee(GTaskToJira converter, String expected) {
         GTask task = new GTask();
-        task.setAssignee(new GUser("mylogin"));
+        task.setValue(JiraField.assignee(), "mylogin");
         IssueInput issue = converter.convertToJiraIssue(task).getIssueInput();
         assertEquals(expected, getComplexValue(issue, IssueFieldId.ASSIGNEE_FIELD.id, "name"));
     }
@@ -277,12 +266,7 @@ public class GTaskToJiraTest {
     }
 
     private GTaskToJira getConverter() {
-        return getConverter(TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS));
-    }
-
-    private GTaskToJira getConverter(Mappings mappings) {
-        GTaskToJira converter = new GTaskToJira(config,  mappings.getSelectedFields(), issueTypeList, versions, components, priorities);
-        return converter;
+        return new GTaskToJira(config,  issueTypeList, versions, components, priorities);
     }
 
     private GTaskToJira createConverterWithSelectedField(GTaskDescriptor.FIELD field) {
@@ -294,11 +278,8 @@ public class GTaskToJiraTest {
     }
 
     private GTaskToJira createConverterWithField(GTaskDescriptor.FIELD field, boolean selected) {
-        JiraConfig config = new JiraTestData().createTestConfig();
-        Collection<GTaskDescriptor.FIELD> selectedFields = FieldSelector.getSelectedFields(JiraSupportedFields.SUPPORTED_FIELDS,
-                field, selected);
-
-        GTaskToJira converter = new GTaskToJira(config, selectedFields, issueTypeList, versions, components, priorities);
+        JiraConfig config = ...
+        GTaskToJira converter = new GTaskToJira(config, issueTypeList, versions, components, priorities);
         return converter;
     }
 
@@ -310,4 +291,6 @@ public class GTaskToJiraTest {
         }
         throw new RuntimeException("Priority not found: " + priorityName);
     }
+    */
+
 }

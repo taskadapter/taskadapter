@@ -49,21 +49,16 @@ public class JiraToGTask {
 
         if (issue.getAssignee() != null) {
             String jiraUserLogin = issue.getAssignee().getName();
-            String jiraDisplayName = issue.getAssignee().getDisplayName();
-
-            GUser genericUser = new GUser();
-            genericUser.setLoginName(jiraUserLogin);
-            genericUser.setDisplayName(jiraDisplayName);
-            task.setAssignee(genericUser);
+            task.setValue(JiraField.assignee(), jiraUserLogin);
         }
 
-        task.setType(issue.getIssueType().getName());
-        task.setSummary(issue.getSummary());
-        task.setDescription(issue.getDescription());
+        task.setValue(JiraField.taskType(), issue.getIssueType().getName());
+        task.setValue(JiraField.summary(), issue.getSummary());
+        task.setValue(JiraField.description(), issue.getDescription());
 
         DateTime dueDate = issue.getDueDate();
         if (dueDate != null) {
-            task.setDueDate(dueDate.toDate());
+            task.setValue(JiraField.dueDate(), dueDate.toDate());
         }
 
         // TODO set Done Ratio
@@ -74,20 +69,20 @@ public class JiraToGTask {
             jiraPriorityName = issue.getPriority().getName();
         }
         Integer priorityValue = priorities.getPriorityByText(jiraPriorityName);
-        task.setPriority(priorityValue);
+        task.setValue(JiraField.priority(), priorityValue);
 
         TimeTracking timeTracking = issue.getTimeTracking();
         if (timeTracking != null) {
             Integer originalEstimateMinutes = timeTracking.getOriginalEstimateMinutes();
             if (originalEstimateMinutes != null
                     && !originalEstimateMinutes.equals(0)) {
-                task.setEstimatedHours((float) (originalEstimateMinutes / 60.0));
+                task.setValue(JiraField.estimatedTime(), (float) (originalEstimateMinutes / 60.0));
             }
         }
 
         IssueField environmentField = issue.getField("environment");
         if (environmentField != null) {
-            task.setEnvironment((String) environmentField.getValue());
+            task.setValue(JiraField.environment(), environmentField.getValue());
         }
 
         processRelations(issue, task);

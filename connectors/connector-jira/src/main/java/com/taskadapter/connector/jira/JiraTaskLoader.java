@@ -35,8 +35,8 @@ public class JiraTaskLoader {
             final Iterable<Issue> issues = JiraClientHelper.findIssues(client, jql);
             rows = jiraToGTask.convertToGenericTaskList(issues);
             JiraUserConverter userConverter = new JiraUserConverter(client);
-            rows = userConverter.convertAssignees(rows);
-        } catch (RemoteException e) {
+//            rows = userConverter.convertAssignees(rows);
+        } catch (Exception e) {
             throw JiraUtils.convertException(e);
         }
         return rows;

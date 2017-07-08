@@ -4,13 +4,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.taskadapter.core.NewConnector;
 
+import java.util.List;
+
 /**
  * TODO: Maybe get rid of this class? Configure binding between descriptor
  * and service in a config file? Or, at least, remove descriptor from this
  * plugin factory and leave this as a "connector factory" item.
  */
 public interface PluginFactory<C extends ConnectorConfig> {
-    AvailableFields getAvailableFields();
+    List<String> getAvailableFields();
 
     NewConnector createConnector(C config);
 

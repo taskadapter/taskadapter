@@ -7,12 +7,14 @@ import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.PluginFactory;
 
+import java.util.List;
+
 public class RedmineFactory implements PluginFactory<RedmineConfig> {
     private static final Descriptor DESCRIPTOR = new Descriptor(RedmineConnector.ID, RedmineConfig.DEFAULT_LABEL);
     
     @Override
-    public AvailableFields getAvailableFields() {
-        return RedmineSupportedFields.SUPPORTED_FIELDS;
+    public List<String> getAvailableFields() {
+        return RedmineField.fieldsAsJava();
     }
 
     @Override

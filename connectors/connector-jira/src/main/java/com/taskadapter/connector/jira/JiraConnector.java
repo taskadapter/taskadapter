@@ -8,10 +8,8 @@ import com.atlassian.jira.rest.client.api.domain.Priority;
 import com.atlassian.jira.rest.client.api.domain.Project;
 import com.atlassian.jira.rest.client.api.domain.Version;
 import com.atlassian.util.concurrent.Promise;
-import com.taskadapter.connector.common.DefaultValueSetter;
+import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.common.TaskSavingUtils;
-import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.TaskSaveResultBuilder;
@@ -19,6 +17,7 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
+import com.taskadapter.core.NewConnector;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
@@ -27,11 +26,12 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class JiraConnector implements Connector<JiraConfig> {
-    private static final Logger LOG = LoggerFactory.getLogger(JiraConnector.class);
+public class JiraConnector implements NewConnector {
+    private static final Logger logger = LoggerFactory.getLogger(JiraConnector.class);
 
     /**
      * Keep it the same to enable backward compatibility with the existing
@@ -47,9 +47,9 @@ public class JiraConnector implements Connector<JiraConfig> {
 
     @Override
     public void updateRemoteIDs(
-            Map<Integer, String> res, ProgressMonitor monitor, Mappings mappings)
-            throws UnsupportedConnectorOperation {
-        throw new UnsupportedConnectorOperation("updateRemoteIDs");
+            Map<Integer, String> res, ProgressMonitor monitor, List<FieldRow> rows)
+             {
+        throw new RuntimeException("not supported: updateRemoteIDs");
     }
 
     // XXX refactor this. we don't even need the IDs!
@@ -112,7 +112,7 @@ public class JiraConnector implements Connector<JiraConfig> {
     }
 
     @Override
-    public GTask loadTaskByKey(String key, Mappings mappings) throws ConnectorException {
+    public GTask loadTaskByKey(String key, List<FieldRow> rows) {
         return withJiraRestClient(client -> {
             final JiraTaskLoader loader = new JiraTaskLoader(client, config.getPriorities());
             return loader.loadTask(key);
@@ -120,7 +120,7 @@ public class JiraConnector implements Connector<JiraConfig> {
     }
 
     @Override
-    public List<GTask> loadData(Mappings mappings, ProgressMonitor monitorIGNORED) throws ConnectorException {
+    public List<GTask> loadData(List<FieldRow> rows, ProgressMonitor monitorIGNORED) {
         return withJiraRestClient(client -> {
             final JiraTaskLoader loader = new JiraTaskLoader(client, config.getPriorities());
             return loader.loadTasks(config);
@@ -128,7 +128,12 @@ public class JiraConnector implements Connector<JiraConfig> {
     }
 
     @Override
-    public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
+    public List<GTask> loadData() {
+        return loadData(Collections.emptyList(), null);
+    }
+
+    @Override
+    public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, List<FieldRow> rows) {
         return withJiraRestClient(client -> {
             final Iterable<IssueType> issueTypeList = loadIssueTypes(client);
             final Promise<Project> projectPromise = client.getProjectClient().getProject(config.getProjectKey());
@@ -139,13 +144,11 @@ public class JiraConnector implements Connector<JiraConfig> {
              * priority name (string), while Jira returns the number value of the issue priority */
             final Promise<Iterable<Priority>> prioritiesPromise = client.getMetadataClient().getPriorities();
             final Iterable<Priority> priorities = prioritiesPromise.claim();
-            final GTaskToJira converter = new GTaskToJira(config,  mappings.getSelectedFields(),
+            final GTaskToJira converter = new GTaskToJira(config,
                     issueTypeList, versions, components, priorities);
 
             final JiraTaskSaver saver = new JiraTaskSaver(client);
-            Map<String, String> defaultValuesForEmptyFields = mappings.getDefaultValuesForEmptyFields();
-            final TaskSaveResultBuilder rb = TaskSavingUtils.saveTasks(tasks,
-                    converter, saver, monitor, new DefaultValueSetter(defaultValuesForEmptyFields));
+            final TaskSaveResultBuilder rb = TaskSavingUtils.saveTasks(tasks, converter, saver, monitor, rows);
             TaskSavingUtils.saveRemappedRelations(config, tasks, saver, rb);
             return rb.getResult();
         });
@@ -166,11 +169,12 @@ public class JiraConnector implements Connector<JiraConfig> {
                 + config.getDefaultTaskType() + " does not exist in JIRA");
     }
 
-    private <T> T withJiraRestClient(JiraRestClientAction<T> f) throws ConnectorException {
+    private <T> T withJiraRestClient(JiraRestClientAction<T> f) {
         try (JiraRestClient client = JiraConnectionFactory.createClient(config.getServerInfo())) {
             return f.apply(client);
-        } catch (IOException e) {
-            throw JiraUtils.convertException(e);
+        } catch (Exception e) {
+//            throw JiraUtils.convertException(e);
+            throw new RuntimeException(e);
         }
     }
 

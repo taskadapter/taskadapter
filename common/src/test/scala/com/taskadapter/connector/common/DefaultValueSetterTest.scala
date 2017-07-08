@@ -22,7 +22,7 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
       FieldRow(true, "description", "description", "")
     )
 
-    val newTask = DefaultValueSetter.cloneAndReplaceEmptySelectedFieldsWithDefaultValues(rows.asJava, originalTask)
+    val newTask = DefaultValueSetter.adapt(rows.asJava, originalTask)
     originalTask.setValue("description", "new description")
     assertThat(newTask.getValue("description")).isEqualTo("original description")
 
@@ -36,7 +36,7 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
     val originalTask = new GTask
     originalTask.setValue("description", "")
 
-    val newTask = DefaultValueSetter.cloneAndReplaceEmptySelectedFieldsWithDefaultValues(rows.asJava, originalTask)
+    val newTask = DefaultValueSetter.adapt(rows.asJava, originalTask)
     newTask.getValue("description") shouldBe "default description"
   }
 
@@ -47,8 +47,19 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
     )
     val originalTask = new GTask
     originalTask.setValue("description", "something")
-    val newTask = DefaultValueSetter.cloneAndReplaceEmptySelectedFieldsWithDefaultValues(rows.asJava, originalTask)
+    val newTask = DefaultValueSetter.adapt(rows.asJava, originalTask)
     newTask.getValue("description") shouldBe "something"
+  }
+
+  // without this creating subtasks won't work, at least in JIRA
+  it("parent key is preserved") {
+    val rows = List(
+      FieldRow(true, "summary", "summary", ""),
+    )
+    val task = new GTask
+    task.setParentKey("parent1")
+    val newTask = DefaultValueSetter.adapt(rows.asJava, task)
+    newTask.getParentKey shouldBe "parent1"
   }
 }
 

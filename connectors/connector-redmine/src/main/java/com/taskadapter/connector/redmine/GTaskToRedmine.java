@@ -47,7 +47,6 @@ public class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
         final String key = task.getKey();
         Integer numericKey = parseIntOrNull(key);
         Issue issue = IssueFactory.create(numericKey);
-        issue.setParentId(parseIntOrNull(task.getParentKey()));
         issue.setProject(project);
 
         for (Map.Entry<String, Object> row : task.getFields().entrySet()) {
@@ -57,6 +56,13 @@ public class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
     }
 
     private void processField(Issue issue, String fieldName, Object value) {
+        if (fieldName.equals("PARENT_KEY")) {
+            issue.setParentId(parseIntOrNull((String) value));
+            return;
+        }
+        if (fieldName.equals("ID")) {
+            return; // TODO TA3 review this. ignore ID field because it MAYBE does not need to be provided when saving?
+        }
         if (fieldName.equalsIgnoreCase(FIELD.SUMMARY.name())) {
             issue.setSubject((String) value);
             return;

@@ -34,11 +34,11 @@ final class SimpleTaskSaver<N> {
                 }
                 // TODO REVIEW Name mismatch. Why default value setter is used to clone tasks? Consider a better name.
                 // Something like "TaskMapper", which could be an interface with the only method and several implementations.
-                GTask transformedTask = DefaultValueSetter.cloneAndReplaceEmptySelectedFieldsWithDefaultValues(fieldRows, task);
-// TODO TA3 restore this
-//                GTask finalGTaskForConversion = setKeyToRemoteIdIfPresent(task);
-                N nativeIssueToCreateOrUpdate = converter.convert(transformedTask);
-                newTaskKey = submitTask(transformedTask, nativeIssueToCreateOrUpdate);
+                GTask transformedTask = DefaultValueSetter.adapt(fieldRows, task);
+//                GTask finalGTaskForConversion = setKeyToRemoteIdIfPresent(transformedTask);
+                GTask finalGTaskForConversion = transformedTask;
+                N nativeIssueToCreateOrUpdate = converter.convert(finalGTaskForConversion);
+                newTaskKey = submitTask(finalGTaskForConversion, nativeIssueToCreateOrUpdate);
             } catch (ConnectorException e) {
                 result.addTaskError(task, e);
             } catch (Throwable t) {
@@ -47,7 +47,9 @@ final class SimpleTaskSaver<N> {
             }
             monitor.worked(1);
 
-            saveTasks(newTaskKey, task.getChildren(), fieldRows);
+            if (task.hasChildren()) {
+                saveTasks(newTaskKey, task.getChildren(), fieldRows);
+            }
         }
     }
 

@@ -1,17 +1,8 @@
 package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.FieldRow;
-import com.taskadapter.connector.common.TreeUtils;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.WebServerInfo;
-import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.connector.testlib.CommonTests;
-import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.connector.testlib.TestSaver;
-import com.taskadapter.connector.testlib.TestUtils;
-import com.taskadapter.model.GRelation;
-import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
@@ -21,21 +12,12 @@ import com.taskadapter.redmineapi.bean.ProjectFactory;
 import com.taskadapter.redmineapi.bean.User;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
-import static com.taskadapter.connector.redmine.RedmineSupportedFields.SUPPORTED_FIELDS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 public class RedmineIT {

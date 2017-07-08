@@ -15,29 +15,24 @@ import com.google.common.collect.ImmutableList;
 import com.taskadapter.connector.common.data.ConnectorConverter;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
-import com.taskadapter.model.GUser;
 import org.joda.time.DateTime;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class GTaskToJira implements ConnectorConverter<GTask, IssueWrapper> {
 
     private final JiraConfig config;
-    private final Collection<FIELD> fieldsToExport;
 
     private final Map<String, BasicPriority> priorities = new HashMap<>();
     private final Iterable<IssueType> issueTypeList;
     private final Iterable<Version> versions;
     private final Iterable<BasicComponent> components;
 
-    public GTaskToJira(JiraConfig config, Collection<FIELD> fieldsToExport,
-            Iterable<IssueType> issueTypeList, Iterable<Version> versions,
-            Iterable<BasicComponent> components, Iterable<Priority> jiraPriorities) {
+    GTaskToJira(JiraConfig config,
+                Iterable<IssueType> issueTypeList, Iterable<Version> versions,
+                Iterable<BasicComponent> components, Iterable<Priority> jiraPriorities) {
         this.config = config;
-        this.fieldsToExport = fieldsToExport;
         this.issueTypeList = issueTypeList;
         this.versions = versions;
         this.components = components;
@@ -46,29 +41,25 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueWrapper> {
         }
     }
 
-    public IssueWrapper convertToJiraIssue(GTask task) {
-        
+    IssueWrapper convertToJiraIssue(GTask task) {
+
         IssueInputBuilder issueInputBuilder = new IssueInputBuilder(
                 config.getProjectKey(), findIssueTypeId(task));
-        
-        if (task.getParentKey() != null && fieldsToExport.contains(FIELD.TASK_TYPE)) {
+
+        if (task.getParentKey() != null) {
             /* 
              * See:
              * http://stackoverflow.com/questions/14699893/how-to-create-subtasks-using-jira-rest-java-client
              */
             final Map<String, Object> parent = new HashMap<>();
             parent.put("key", task.getParentKey());
-            final FieldInput parentField = new FieldInput("parent", 
+            final FieldInput parentField = new FieldInput("parent",
                     new ComplexIssueInputFieldValue(parent));
             issueInputBuilder.setFieldInput(parentField);
         }
-        
-        if (fieldsToExport.contains(FIELD.SUMMARY)) {
-            issueInputBuilder.setSummary(task.getSummary());
-        }
 
-        if (fieldsToExport.contains(FIELD.DESCRIPTION)) {
-            issueInputBuilder.setDescription(task.getDescription());
+        for (Map.Entry<String, Object> row : task.getFields().entrySet()) {
+            processField(issueInputBuilder, row.getKey(), row.getValue());
         }
 
         Version affectedVersion = getVersion(versions, config.getAffectedVersion());
@@ -87,17 +78,31 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueWrapper> {
             issueInputBuilder.setComponents(ImmutableList.of(component));
         }
 
-        if (fieldsToExport.contains(FIELD.DUE_DATE) && task.getDueDate() != null) {
-            DateTime dueDateTime = new DateTime(task.getDueDate());
+        final IssueInput issueInput = issueInputBuilder.build();
+        return new IssueWrapper(task.getKey(), issueInput);
+    }
+
+    private void processField(IssueInputBuilder issueInputBuilder, String fieldName, Object value) {
+
+        if (fieldName.equals(JiraField.summary())) {
+            issueInputBuilder.setSummary((String) value);
+        }
+
+        if (fieldName.equals(JiraField.description())) {
+            issueInputBuilder.setDescription((String) value);
+        }
+
+        if (fieldName.equals(JiraField.dueDate()) && value != null) {
+            DateTime dueDateTime = new DateTime(value);
             issueInputBuilder.setDueDate(dueDateTime);
         }
 
-        if (fieldsToExport.contains(FIELD.ASSIGNEE)) {
-            setAssignee(task, issueInputBuilder);
+        if (fieldName.equals(JiraField.assignee()) && value != null) {
+            issueInputBuilder.setAssigneeName((String) value);
         }
 
-        if (fieldsToExport.contains(FIELD.PRIORITY)) {
-            final Integer priorityNumber = task.getPriority();
+        if (fieldName.equals(JiraField.priority())) {
+            final Integer priorityNumber = (Integer) value;
             final String jiraPriorityName = config.getPriorities().getPriorityByMSP(priorityNumber);
             if (!jiraPriorityName.isEmpty()) {
                 final BasicPriority priority = priorities.get(jiraPriorityName);
@@ -107,44 +112,34 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueWrapper> {
             }
         }
 
-        Float estimatedHours = task.getEstimatedHours();
-        if (fieldsToExport.contains(FIELD.ESTIMATED_TIME) && (estimatedHours != null)) {
+        if (fieldName.equals(JiraField.estimatedTime()) && value != null) {
+            Float estimatedHours = (Float) value;
             TimeTracking timeTracking = new TimeTracking(Math.round(estimatedHours * 60), null, null);
             issueInputBuilder.setFieldValue(IssueFieldId.TIMETRACKING_FIELD.id, timeTracking);
         }
 
-        if (fieldsToExport.contains(FIELD.ENVIRONMENT)) {
-            issueInputBuilder.setFieldValue("environment", task.getEnvironment());
+        if (fieldName.equals(JiraField.environment())) {
+            issueInputBuilder.setFieldValue(fieldName, value);
         }
 
-        final IssueInput issueInput = issueInputBuilder.build();
-        return new IssueWrapper(task.getKey(), issueInput);
     }
-    
+
     /**
      * Finds an issue type id to use.
+     *
      * @param task task to get an issue id.
      * @return issue type id.
      */
     private Long findIssueTypeId(GTask task) {
         /* Use explicit task type when possible. */
-        if (fieldsToExport.contains(FIELD.TASK_TYPE)) {
-            final Long explicitTypeId = getIssueTypeIdByName(task.getType());
+        Object value = task.getValue(JiraField.taskType());
+        final Long explicitTypeId = getIssueTypeIdByName((String) value);
             if (explicitTypeId != null)
                 return explicitTypeId;
-        }
-        
+
         /* Use default type for the task when  */
         return getIssueTypeIdByName(task.getParentKey() == null ? config
                 .getDefaultTaskType() : config.getDefaultIssueTypeForSubtasks());
-    }
-
-    private void setAssignee(GTask task, IssueInputBuilder issue) {
-        GUser ass = task.getAssignee();
-
-        if ((ass != null) && (ass.getLoginName() != null)) {
-            issue.setAssigneeName(ass.getLoginName());
-        }
     }
 
     private static Version getVersion(Iterable<Version> versions, String versionName) {

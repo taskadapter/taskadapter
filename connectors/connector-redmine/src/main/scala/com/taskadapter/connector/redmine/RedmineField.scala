@@ -1,5 +1,7 @@
 package com.taskadapter.connector.redmine
 
+import scala.collection.JavaConverters._
+
 object RedmineField {
   // Redmine field names as loaded from Redmine
   val summary = "Summary"
@@ -34,4 +36,5 @@ object RedmineField {
     targetVersion,
     priority)
 
+  def fieldsAsJava = fields.asJava
 }

@@ -36,7 +36,7 @@ public class DefaultValueSetter {
     public DefaultValueSetter(Map<String, String> fieldNameToDefaultValue) {
     }
 
-    public static GTask cloneAndReplaceEmptySelectedFieldsWithDefaultValues(List<FieldRow> fieldRows, GTask task) throws ParseException {
+    public static GTask adapt(List<FieldRow> fieldRows, GTask task) throws ParseException {
         final GTask result = new GTask();
         for (FieldRow row : fieldRows) {
             String fieldToLoadValueFrom = row.nameInSource();
@@ -48,6 +48,8 @@ public class DefaultValueSetter {
             }
             result.setValue(row.nameInTarget(), newValue);
         }
+        result.setId(task.getId());
+        result.setParentKey(task.getParentKey());
         return result;
     }
 
@@ -71,7 +73,7 @@ public class DefaultValueSetter {
         // TODO REVIEW Should this code be polymorphic and belong to a GTaskDespciptor.FIELD instances? It would be more extensible. Same for fieldIsConsideredEmpty.
         switch (field) {
             case ASSIGNEE:
-                return new GUser(value);
+                return value;
             case START_DATE:
                 return parseDate(value);
             case DUE_DATE:
