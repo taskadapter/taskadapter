@@ -1,9 +1,9 @@
 package com.taskadapter.connector.common;
 
-import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.core.NewConnector;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskUtils;
 
@@ -24,8 +24,8 @@ public final class ConnectorUtils {
      * @throws ConnectorException
      */
     @Deprecated
-    public static List<GTask> loadDataOrderedById(Connector<?> connector, Mappings sourceMappings, ProgressMonitor monitor) throws ConnectorException {
-        final List<GTask> tasks = connector.loadData(sourceMappings, monitor);
+    public static List<GTask> loadDataOrderedById(NewConnector connector, List<FieldRow> rows, ProgressMonitor monitor) throws ConnectorException {
+        final List<GTask> tasks = connector.loadData(rows, monitor);
         Collections.sort(tasks, GTaskUtils.ID_COMPARATOR);
         return tasks;
     }
@@ -37,7 +37,7 @@ public final class ConnectorUtils {
      * @return loaded tasks list, sorted by task ID.
      */
     @Deprecated
-    public static List<GTask> loadDataOrderedById(Connector<?> connector, Mappings sourceMappings) throws ConnectorException {
-        return loadDataOrderedById(connector, sourceMappings, ProgressMonitorUtils.DUMMY_MONITOR);
+    public static List<GTask> loadDataOrderedById(NewConnector connector, List<FieldRow> rows) throws ConnectorException {
+        return loadDataOrderedById(connector, rows, ProgressMonitorUtils.DUMMY_MONITOR);
     }
 }

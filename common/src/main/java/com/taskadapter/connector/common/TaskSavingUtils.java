@@ -54,11 +54,10 @@ public class TaskSavingUtils {
             ConnectorConverter<GTask, N> converter,
             BasicIssueSaveAPI<N> saveAPI, 
             ProgressMonitor progressMonitor,
-            List<FieldRow> fieldRows,
-            DefaultValueSetter defaultValueSetter) {
+            List<FieldRow> fieldRows) {
         final TaskSaveResultBuilder result = new TaskSaveResultBuilder();
         final SimpleTaskSaver<N> saver = new SimpleTaskSaver<>(converter, saveAPI, result, progressMonitor);
-        saver.saveTasks(null, tasks, fieldRows, defaultValueSetter);
+        saver.saveTasks(null, tasks, fieldRows);
         return result;
     }
 }

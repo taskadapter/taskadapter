@@ -123,7 +123,7 @@ public class IntegrationTest {
     public void testSaveRemoteIdWithNonLinearUUID() throws URISyntaxException, IOException, ConnectorException {
 
         MSPConfig mspConfig = generateTemporaryConfig("com/taskadapter/integrationtests/non-linear-uuid.xml");
-        Connector<?> msProjectConnector = new MSPConnector(mspConfig);
+        NewConnector msProjectConnector = new MSPConnector(mspConfig);
 
         Mappings mspMappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
         mspMappings.setMapping(GTaskDescriptor.FIELD.REMOTE_ID, true, MSPUtils.getDefaultRemoteIdMapping(), "default remote ID");
@@ -167,7 +167,7 @@ public class IntegrationTest {
         redmineConfigTo.setProjectKey(projectKey);
 
         MSPConfig mspConfig = generateTemporaryConfig("com/taskadapter/integrationtests/ProjectWithOneSideDisconnectedRelationships.xml");
-        Connector<?> projectConnector = new MSPConnector(mspConfig);
+        NewConnector projectConnector = new MSPConnector(mspConfig);
 
         Mappings mspMappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
         int maxTasksNumber = 999999;

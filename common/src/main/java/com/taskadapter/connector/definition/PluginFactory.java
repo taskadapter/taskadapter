@@ -2,6 +2,7 @@ package com.taskadapter.connector.definition;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.taskadapter.core.NewConnector;
 
 /**
  * TODO: Maybe get rid of this class? Configure binding between descriptor
@@ -11,7 +12,7 @@ import com.google.gson.JsonParseException;
 public interface PluginFactory<C extends ConnectorConfig> {
     AvailableFields getAvailableFields();
 
-    Connector<C> createConnector(C config);
+    NewConnector createConnector(C config);
 
     Descriptor getDescriptor();
 

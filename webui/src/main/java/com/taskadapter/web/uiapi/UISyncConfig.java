@@ -201,7 +201,7 @@ public final class UISyncConfig {
     public List<GTask> loadDropInTasks(File tempFile, int taskLimit)
             throws ConnectorException {
         return TaskLoader.loadDropInTasks(taskLimit,
-                (DropInConnector<?>) getConnector1().createConnectorInstance(),
+                (DropInNewConnector) getConnector1().createConnectorInstance(),
                 tempFile, generateSourceMappings(),
                 ProgressMonitorUtils.DUMMY_MONITOR);
     }
@@ -217,7 +217,7 @@ public final class UISyncConfig {
      */
     public TaskExportResult saveTasks(List<GTask> tasks,
             ProgressMonitor progress) {
-        final Connector<?> connectorInstance = getConnector2().createConnectorInstance();
+        final NewConnector connectorInstance = getConnector2().createConnectorInstance();
         final String destinationLocation = getConnector2().getDestinationLocation();
         final Mappings destinationMappings = generateTargetMappings();
         final TaskSaveResult result = TaskSaver.save(connectorInstance, destinationLocation, destinationMappings, tasks, progress);
@@ -272,9 +272,9 @@ public final class UISyncConfig {
      * @return updater.
      */
     private Updater makeUpdater() {
-        final Connector<?> sourceConnector = getConnector1()
+        final NewConnector sourceConnector = getConnector1()
                 .createConnectorInstance();
-        final Connector<?> destinationConnector = getConnector2()
+        final NewConnector destinationConnector = getConnector2()
                 .createConnectorInstance();
         final Updater updater = new Updater(destinationConnector,
                 generateTargetMappings(), sourceConnector,

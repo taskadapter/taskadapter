@@ -47,10 +47,10 @@ public class UpdaterIntegrationTest {
 
     private List<GTask> rmIssues;
 
-    private Connector<?> redmineConnector;
+    private NewConnector redmineConnector;
     private RedmineConfig redmineConfig;
     private MSPConfig mspConfig;
-    private Connector<?> projectConnector;
+    private NewConnector projectConnector;
 
     @BeforeClass
     public static void oneTimeSetUp() {

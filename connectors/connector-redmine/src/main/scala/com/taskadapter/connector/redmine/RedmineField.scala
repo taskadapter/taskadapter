@@ -15,4 +15,19 @@ object RedmineField {
   val taskStatus = "Task status"
   val targetVersion = "Target Version"
   val priority = "Priority"
+
+  def fields = List(summary,
+    description,
+    taskType,
+    estimatedTime,
+    doneRatio,
+    assignee,
+    dueDate,
+    startDate,
+    createdOn,
+    updatedOn,
+    taskStatus,
+    targetVersion,
+    priority)
+
 }

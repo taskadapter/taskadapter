@@ -85,10 +85,6 @@ final public class GTask {
         setValue(GTaskDescriptor.FIELD.PRIORITY, priority);
     }
 
-    public GUser getAssignee() {
-        return (GUser) getValue(GTaskDescriptor.FIELD.ASSIGNEE);
-    }
-
     public void setAssignee(GUser assignee) {
         setValue(GTaskDescriptor.FIELD.ASSIGNEE, assignee);
     }
@@ -101,31 +97,11 @@ final public class GTask {
         setValue(GTaskDescriptor.FIELD.SUMMARY, summary);
     }
 
-    public String getDescription() {
-        return (String) getValue(GTaskDescriptor.FIELD.DESCRIPTION);
-    }
-
-    public void setDescription(String description) {
-        setValue(GTaskDescriptor.FIELD.DESCRIPTION, description);
-    }
-
-    public Float getEstimatedHours() {
-        return (Float) getValue(GTaskDescriptor.FIELD.ESTIMATED_TIME);
-    }
-
-    public void setEstimatedHours(Float estimatedHours) {
-        setValue(GTaskDescriptor.FIELD.ESTIMATED_TIME, estimatedHours);
-    }
-
     /**
      * @return %% complete (e.g. "30%")
      */
     public Integer getDoneRatio()  {
         return (Integer) getValue(GTaskDescriptor.FIELD.DONE_RATIO);
-    }
-
-    public void setDoneRatio(Integer doneRatio) {
-        setValue(GTaskDescriptor.FIELD.DONE_RATIO, doneRatio);
     }
 
     public Date getStartDate() {
@@ -184,14 +160,6 @@ final public class GTask {
 
     public void setType(String type) {
         setValue(GTaskDescriptor.FIELD.TASK_TYPE, type);
-    }
-
-    public String getStatus() {
-        return (String) getValue(GTaskDescriptor.FIELD.TASK_STATUS);
-    }
-
-    public void setStatus(String status) {
-        setValue(GTaskDescriptor.FIELD.TASK_STATUS, status);
     }
 
     /**

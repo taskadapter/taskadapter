@@ -1,9 +1,9 @@
 package com.taskadapter.connector.testlib;
 
 import com.taskadapter.connector.common.ConnectorUtils;
-import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.core.NewConnector;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 
@@ -11,15 +11,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestSaver {
-    private Connector<?> connector;
+    private NewConnector connector;
     private Mappings mappings;
 
-    public TestSaver(Connector<?> connector, Mappings mappings) {
+    public TestSaver(NewConnector connector, Mappings mappings) {
         this.connector = connector;
         this.mappings = mappings;
     }
 
-    public TestSaver selectField(GTaskDescriptor.FIELD field) {
+    public TestSaver selectField(String field) {
         mappings.selectField(field);
         return this;
     }

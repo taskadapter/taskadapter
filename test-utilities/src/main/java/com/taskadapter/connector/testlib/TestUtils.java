@@ -1,11 +1,12 @@
 package com.taskadapter.connector.testlib;
 
+import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.definition.AvailableFields;
-import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.core.NewConnector;
 import com.taskadapter.model.GTask;
 
 import java.util.ArrayList;
@@ -72,17 +73,17 @@ public class TestUtils {
         return cal;
     }
 
-    public static List<GTask> saveAndLoadAll(Connector<?> connector, GTask task, Mappings mappings) throws ConnectorException {
-        connector.saveData(Arrays.asList(task), null, mappings);
-        return ConnectorUtils.loadDataOrderedById(connector, mappings);
+    public static List<GTask> saveAndLoadAll(NewConnector connector, GTask task, List<FieldRow> rows) throws ConnectorException {
+        connector.saveData(Arrays.asList(task), null, rows);
+        return ConnectorUtils.loadDataOrderedById(connector, rows);
     }
 
-    public static List<GTask> saveAndLoadList(Connector<?> connector, List<GTask> tasks, Mappings mappings) throws ConnectorException {
+    public static List<GTask> saveAndLoadList(NewConnector connector, List<GTask> tasks, Mappings mappings) throws ConnectorException {
         connector.saveData(tasks, null, mappings);
         return ConnectorUtils.loadDataOrderedById(connector, mappings);
     }
 
-    public static GTask saveAndLoad(Connector<?> connector, GTask task, Mappings mappings) throws ConnectorException {
+    public static GTask saveAndLoad(NewConnector connector, GTask task, Mappings mappings) throws ConnectorException {
         TaskSaveResult result = connector.saveData(Arrays.asList(task), null, mappings);
         Collection<String> remoteKeys = result.getRemoteKeys();
         String remoteKey = remoteKeys.iterator().next();
@@ -92,14 +93,14 @@ public class TestUtils {
     /**
      * Load task that was previously created and its result is saved in {@link TaskSaveResult}
      */
-    public static GTask loadCreatedTask(Connector<?> connector, AvailableFields availableFields, TaskSaveResult result) throws ConnectorException {
+    public static GTask loadCreatedTask(NewConnector connector, AvailableFields availableFields, TaskSaveResult result) throws ConnectorException {
         Collection<String> remoteKeys = result.getRemoteKeys();
         String remoteKey = remoteKeys.iterator().next();
         Mappings mappings = TestMappingUtils.fromFields(availableFields);
         return connector.loadTaskByKey(remoteKey, mappings);
     }
 
-    public static GTask saveAndLoadViaSummary(Connector<?> connector, GTask task, Mappings mappings) throws ConnectorException {
+    public static GTask saveAndLoadViaSummary(NewConnector connector, GTask task, Mappings mappings) throws ConnectorException {
         List<GTask> loadedTasks = saveAndLoadAll(connector, task, mappings);
         return findTaskBySummary(loadedTasks, task.getSummary());
     }
@@ -107,7 +108,7 @@ public class TestUtils {
     /**
      * @return the new task Key
      */
-    public static String save(Connector<?> connector, GTask task, Mappings mappings) throws ConnectorException {
+    public static String save(NewConnector connector, GTask task, Mappings mappings) throws ConnectorException {
         TaskSaveResult result = connector.saveData(Arrays.asList(task), null, mappings);
         Collection<String> remoteKeys = result.getRemoteKeys();
         return remoteKeys.iterator().next();

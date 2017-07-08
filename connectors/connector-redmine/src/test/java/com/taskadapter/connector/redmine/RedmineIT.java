@@ -141,9 +141,10 @@ public class RedmineIT {
         GTask task = TestUtils.generateTask();
         task.setAssignee(currentUser);
         GTask loadedTask = getTestSaver().selectField(FIELD.ASSIGNEE).saveAndLoad(task);
-        assertEquals(currentUser.getId(), loadedTask.getAssignee().getId());
+        User loadedAssignee = (User) loadedTask.getValue(RedmineField.assignee());
+        assertEquals(currentUser.getId(), loadedAssignee.getId());
         // only the ID and Display Name are set, so we can't check login name
-        assertEquals(currentUser.getDisplayName(), loadedTask.getAssignee().getDisplayName());
+        assertEquals(currentUser.getDisplayName(), loadedAssignee.getFullName());
     }
 
     @Test
@@ -151,7 +152,8 @@ public class RedmineIT {
         GTask task = TestUtils.generateTask();
         task.setAssignee(currentUser);
         GTask loadedTask = getTestSaver().unselectField(FIELD.ASSIGNEE).saveAndLoad(task);
-        assertNull(loadedTask.getAssignee());
+        User loadedAssignee = (User) loadedTask.getValue(RedmineField.assignee());
+        assertNull(loadedAssignee);
     }
 
     @Test
@@ -159,7 +161,8 @@ public class RedmineIT {
         GTask task = TestUtils.generateTask();
         task.setAssignee(currentUser);
         GTask loadedTask = TestUtils.saveAndLoad(getConnector(), task, TestMappingUtils.fromFields(SUPPORTED_FIELDS));
-        assertEquals(currentUser.getId(), loadedTask.getAssignee().getId());
+        User loadedAssignee = (User) loadedTask.getValue(RedmineField.assignee());
+        assertEquals(currentUser.getId(), loadedAssignee.getId());
     }
 
     // TODO what does it test?? how is findByName related to Assignee export?
@@ -171,9 +174,10 @@ public class RedmineIT {
         RedmineConfig config = getTestConfig();
         config.setFindUserByName(true);
         GTask loadedTask = getTestSaver(config).selectField(FIELD.ASSIGNEE).saveAndLoad(task);
-        assertEquals(currentUser.getId(), loadedTask.getAssignee().getId());
+        User loadedAssignee = (User) loadedTask.getValue(RedmineField.assignee());
+        assertEquals(currentUser.getId(), loadedAssignee.getId());
         // only the ID and Display Name are set, so we can't check login name
-        assertEquals(currentUser.getDisplayName(), loadedTask.getAssignee().getDisplayName());
+        assertEquals(currentUser.getDisplayName(), loadedAssignee.getFullName());
     }
 
     @Test
@@ -231,9 +235,9 @@ public class RedmineIT {
 
         if (defaultStatus != null) {
             GTask task = TestUtils.generateTask();
-            task.setStatus("Resolved");
+            task.setValue(RedmineField.taskStatus(), "Resolved");
             GTask loadedTask = getTestSaver().unselectField(FIELD.TASK_STATUS).saveAndLoad(task);
-            assertEquals(defaultStatus, loadedTask.getStatus());
+            assertEquals(defaultStatus, loadedTask.getValue(RedmineField.taskStatus()));
         }
     }
 
@@ -245,9 +249,9 @@ public class RedmineIT {
 
         if (otherStatus != null) {
             GTask task = TestUtils.generateTask();
-            task.setStatus(otherStatus);
+            task.setValue(RedmineField.taskStatus(), otherStatus);
             GTask loadedTask = getTestSaver().selectField(FIELD.TASK_STATUS).saveAndLoad(task);
-            assertEquals(otherStatus, loadedTask.getStatus());
+            assertEquals(otherStatus, loadedTask.getValue(RedmineField.taskStatus()));
         }
     }
 
@@ -257,9 +261,9 @@ public class RedmineIT {
 
         if (defaultStatus != null) {
             GTask task = TestUtils.generateTask();
-            task.setStatus(null);
+            task.setValue(RedmineField.taskStatus(), null);
             GTask loadedTask = TestUtils.saveAndLoad(getConnector(), task, TestMappingUtils.fromFields(SUPPORTED_FIELDS));
-            assertEquals(defaultStatus, loadedTask.getStatus());
+            assertEquals(defaultStatus, loadedTask.getValue(RedmineField.taskStatus()));
         }
     }
 

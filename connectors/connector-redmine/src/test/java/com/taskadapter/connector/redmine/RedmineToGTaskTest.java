@@ -87,7 +87,7 @@ public class RedmineToGTaskTest {
     public void assigneeIsIgnoredIfNotSet() {
         Issue redmineIssue = new Issue();
         GTask task = toGTask.convertToGenericTask(redmineIssue);
-        assertNull(task.getAssignee());
+        assertNull(task.getValue(RedmineField.assignee()));
     }
 
     @Test
@@ -97,7 +97,8 @@ public class RedmineToGTaskTest {
         assignee.setLogin("mylogin");
         redmineIssue.setAssignee(assignee);
         GTask task = toGTask.convertToGenericTask(redmineIssue);
-        assertEquals("mylogin", task.getAssignee().getLoginName());
+        User loadedAssignee = (User) task.getValue(RedmineField.assignee());
+        assertEquals("mylogin", loadedAssignee.getLogin());
     }
 
     @Test
@@ -121,7 +122,7 @@ public class RedmineToGTaskTest {
         Issue redmineIssue = new Issue();
         redmineIssue.setStatusName("some status");
         GTask task = toGTask.convertToGenericTask(redmineIssue);
-        assertEquals("some status", task.getStatus());
+        assertEquals("some status", task.getValue(RedmineField.taskStatus()));
     }
 
     @Test
@@ -161,7 +162,7 @@ public class RedmineToGTaskTest {
         Date time = getTime();
         redmineIssue.setDueDate(time);
         GTask task = toGTask.convertToGenericTask(redmineIssue);
-        assertEquals(time, task.getDueDate());
+        assertEquals(time, task.getValue(RedmineField.dueDate()));
     }
 
     @Test
@@ -194,7 +195,7 @@ public class RedmineToGTaskTest {
         Issue redmineIssue = new Issue();
         redmineIssue.setPriorityText("High");
         GTask task = toGTask.convertToGenericTask(redmineIssue);
-        assertEquals((Integer) 700, task.getPriority());
+        assertEquals(700, task.getValue(RedmineField.priority()));
     }
 
     @Test

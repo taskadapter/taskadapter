@@ -75,7 +75,7 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends UIConnector
     }
 
     @Override
-    public Connector<?> createConnectorInstance() {
+    public NewConnector createConnectorInstance() {
         return connectorFactory.createConnector(config);
     }
 

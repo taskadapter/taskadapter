@@ -1,34 +1,23 @@
 package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.FieldRow;
-import com.taskadapter.connector.common.DefaultValueSetter;
 import com.taskadapter.connector.common.TaskSavingUtils;
-import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.Mappings;
-import com.taskadapter.connector.definition.ProgressMonitor;
-import com.taskadapter.connector.definition.TaskSaveResult;
-import com.taskadapter.connector.definition.TaskSaveResultBuilder;
-import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.*;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
+import com.taskadapter.core.NewConnector;
 import com.taskadapter.model.GTask;
 import com.taskadapter.redmineapi.Include;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
-import com.taskadapter.redmineapi.bean.CustomFieldDefinition;
-import com.taskadapter.redmineapi.bean.Issue;
-import com.taskadapter.redmineapi.bean.IssuePriority;
-import com.taskadapter.redmineapi.bean.IssueStatus;
-import com.taskadapter.redmineapi.bean.Project;
-import com.taskadapter.redmineapi.bean.User;
-import com.taskadapter.redmineapi.bean.Version;
+import com.taskadapter.redmineapi.bean.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RedmineConnector implements Connector<RedmineConfig>, NewConnector {
+public class RedmineConnector implements NewConnector {
     /**
      * Keep it the same to enable backward compatibility for previously created config files.
      */
@@ -62,7 +51,7 @@ public class RedmineConnector implements Connector<RedmineConfig>, NewConnector 
     }
     
     @Override
-    public List<GTask> loadData(Mappings mappings, ProgressMonitor monitorIGNORED) throws ConnectorException {
+    public List<GTask> loadData(List<FieldRow> rows, ProgressMonitor monitorIGNORED) throws ConnectorException {
         try {
             RedmineManager mgr = RedmineManagerFactory.createRedmineManager(config.getServerInfo());
 
@@ -108,11 +97,6 @@ public class RedmineConnector implements Connector<RedmineConfig>, NewConnector 
 		return result;
 	}
     
-	@Override
-	public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
-	   throw new RuntimeException();
-	}
-
     @Override
     public List<GTask> loadData()  {
         try {
@@ -144,9 +128,7 @@ public class RedmineConnector implements Connector<RedmineConfig>, NewConnector 
 
                 final RedmineTaskSaver saver = new RedmineTaskSaver(mgr.getIssueManager(), config);
                 final TaskSaveResultBuilder tsrb = TaskSavingUtils.saveTasks(
-                        tasks, converter, saver, monitor,
-                        fieldRows,
-                        new DefaultValueSetter(ABC.targetConnectorDefaultValues(fieldRows)));
+                        tasks, converter, saver, monitor, fieldRows);
                 TaskSavingUtils.saveRemappedRelations(config, tasks, saver, tsrb);
                 return tsrb.getResult();
             } finally {

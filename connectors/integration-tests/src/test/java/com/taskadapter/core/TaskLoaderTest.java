@@ -32,7 +32,7 @@ public class TaskLoaderTest {
         Mappings mappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
         mappings.setMapping(GTaskDescriptor.FIELD.REMOTE_ID, true, TaskField.TEXT22.toString(), "default remote ID");
 
-        Connector<?> projectConnector = new MSPConnector(mspConfig);
+        NewConnector projectConnector = new MSPConnector(mspConfig);
         int maxTasksNumber = 999999;
         List<GTask> list = TaskLoader.loadTasks(maxTasksNumber, projectConnector, "project1", mappings, ProgressMonitorUtils.DUMMY_MONITOR);
         assertEquals(1, list.size());

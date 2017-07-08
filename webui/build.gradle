@@ -31,7 +31,7 @@ dependencies {
 
 vaadin {
     version = "$vaadinVersion"
-    widgetset = 'com.taskadapter.webui.widgetset.Vaadin1Widgetset'
+//    widgetset = 'com.taskadapter.webui.widgetset.Vaadin1Widgetset'
 }
 
 war {

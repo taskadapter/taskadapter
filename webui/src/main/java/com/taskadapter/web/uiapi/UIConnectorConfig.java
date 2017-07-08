@@ -105,7 +105,7 @@ public abstract class UIConnectorConfig {
      * @return new connector instance, which shares config with this UIConfig
      *         and all other connectors created via this method.
      */
-    public abstract Connector<?> createConnectorInstance();
+    public abstract NewConnector createConnectorInstance();
 
     /**
      * Creates a "mini" informational panel.

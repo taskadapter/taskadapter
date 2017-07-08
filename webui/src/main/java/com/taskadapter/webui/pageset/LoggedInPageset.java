@@ -326,7 +326,7 @@ public class LoggedInPageset {
     private void sync(UISyncConfig config) {
         if (!prepareForConversion(config))
             return;
-        final Connector<?> destinationConnector = config.getConnector2()
+        final NewConnector destinationConnector = config.getConnector2()
                 .createConnectorInstance();
         if (destinationConnector instanceof FileBasedConnector) {
             processFile(config, (FileBasedConnector) destinationConnector);
