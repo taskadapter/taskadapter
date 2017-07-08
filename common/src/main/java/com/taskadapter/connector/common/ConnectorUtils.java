@@ -1,9 +1,8 @@
 package com.taskadapter.connector.common;
 
-import com.taskadapter.connector.FieldRow;
+import com.taskadapter.connector.NewConnector;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.core.NewConnector;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskUtils;
 
@@ -24,8 +23,8 @@ public final class ConnectorUtils {
      * @throws ConnectorException
      */
     @Deprecated
-    public static List<GTask> loadDataOrderedById(NewConnector connector, List<FieldRow> rows, ProgressMonitor monitor) throws ConnectorException {
-        final List<GTask> tasks = connector.loadData(rows, monitor);
+    public static List<GTask> loadDataOrderedById(NewConnector connector, ProgressMonitor monitor) throws ConnectorException {
+        final List<GTask> tasks = connector.loadData(monitor);
         Collections.sort(tasks, GTaskUtils.ID_COMPARATOR);
         return tasks;
     }
@@ -37,7 +36,7 @@ public final class ConnectorUtils {
      * @return loaded tasks list, sorted by task ID.
      */
     @Deprecated
-    public static List<GTask> loadDataOrderedById(NewConnector connector, List<FieldRow> rows) throws ConnectorException {
-        return loadDataOrderedById(connector, rows, ProgressMonitorUtils.DUMMY_MONITOR);
+    public static List<GTask> loadDataOrderedById(NewConnector connector) throws ConnectorException {
+        return loadDataOrderedById(connector, ProgressMonitorUtils.DUMMY_MONITOR);
     }
 }

@@ -55,7 +55,7 @@ public final class SyncActionComponents {
         }
         for (TaskError<Throwable> error : taskErrors) {
             errorText += "Task " + error.getTask().getId() + " (\""
-                    + error.getTask().getSummary() + "\"): "
+                    + error.getTask() + "\"): "
                     + connector.decodeException(error.getErrors());
         }
         final Label errorTextLabel = new Label(errorText);

@@ -10,7 +10,7 @@ object FieldRowConverter {
   def rows(availableFields: AvailableFields): java.lang.Iterable[FieldRow] = {
     availableFields.getFields.asScala
       .map(legacy =>
-        FieldRow(legacy._2.isSelectedByDefault, legacy._1.name(), legacy._1.name(), defaultValueForEmpty)
+        FieldRow(legacy._2.isSelectedByDefault, legacy._1, legacy._1, defaultValueForEmpty)
       ).asJava
   }
 }

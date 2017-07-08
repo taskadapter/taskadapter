@@ -1,11 +1,13 @@
 package com.taskadapter.web.uiapi;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
+import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.MappingBuilder;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
-import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.NewConnector;
 import com.taskadapter.connector.definition.DropInConnector;
 import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.MappingSide;
@@ -172,36 +174,27 @@ public final class UISyncConfig {
         return MappingBuilder.build(newMappings, MappingSide.LEFT);
     }
 
-    /**
-     * Generates a target mappings. Returned mappings is snapshot of a current
-     * state and are not updated when newMappings changes.
-     * 
-     * @return target mappings.
-     */
-    public Mappings generateTargetMappings() {
-        return MappingBuilder.build(newMappings, MappingSide.RIGHT);
+    public List<FieldRow> getFieldRows() {
+        // TODO TA3 mapping editor
+        return Collections.emptyList();
+//        return MappingBuilder.build(newMappings, MappingSide.RIGHT);
     }
 
     /**
-     * Loads tasks from connector1.
+     * Loads tasks from connector1. This is invoked directly from UI layer when user clicks "Go" to load tasks.
      * 
-     * @param taskLimit
-     *            number of tasks to load.
+     * @param taskLimit number of tasks to load.
      * @return loaded tasks.
-     * @throws ConnectorException
-     *             if data failed to load.
      */
     public List<GTask> loadTasks(int taskLimit) throws ConnectorException {
-        return TaskLoader.loadTasks(taskLimit, getConnector1()
-                .createConnectorInstance(), getConnector1().getLabel(),
-                generateSourceMappings(), ProgressMonitorUtils
-                        .DUMMY_MONITOR);
+        return TaskLoader.loadTasks(taskLimit, getConnector1().createConnectorInstance(), getConnector1().getLabel(),
+                ProgressMonitorUtils.DUMMY_MONITOR);
     }
 
     public List<GTask> loadDropInTasks(File tempFile, int taskLimit)
             throws ConnectorException {
         return TaskLoader.loadDropInTasks(taskLimit,
-                (DropInNewConnector) getConnector1().createConnectorInstance(),
+                (DropInConnector) getConnector1().createConnectorInstance(),
                 tempFile, generateSourceMappings(),
                 ProgressMonitorUtils.DUMMY_MONITOR);
     }
@@ -219,12 +212,11 @@ public final class UISyncConfig {
             ProgressMonitor progress) {
         final NewConnector connectorInstance = getConnector2().createConnectorInstance();
         final String destinationLocation = getConnector2().getDestinationLocation();
-        final Mappings destinationMappings = generateTargetMappings();
-        final TaskSaveResult result = TaskSaver.save(connectorInstance, destinationLocation, destinationMappings, tasks, progress);
+        final List<FieldRow> rows = getFieldRows();
+        final TaskSaveResult result = TaskSaver.save(connectorInstance, destinationLocation, rows, tasks, progress);
         try {
             RemoteIdUpdater.updateRemoteIds(result.getIdToRemoteKeyMap(),
-                    generateSourceMappings(), getConnector1()
-                            .createConnectorInstance());
+                    getConnector1().createConnectorInstance());
             return new TaskExportResult(result, null);
         } catch (ConnectorException e) {
             return new TaskExportResult(result, e);
@@ -245,7 +237,7 @@ public final class UISyncConfig {
             ProgressMonitor progress) {
         final TaskSaveResult result = TaskSaver.save(getConnector2()
                 .createConnectorInstance(), getConnector2()
-                .getDestinationLocation(), generateTargetMappings(), tasks,
+                .getDestinationLocation(), getFieldRows(), tasks,
                 progress);
         return new TaskExportResult(result, null);
     }
@@ -266,20 +258,14 @@ public final class UISyncConfig {
         return updater.getExistingTasks();
     }
 
-    /**
-     * Creates a new upater.
-     * 
-     * @return updater.
-     */
     private Updater makeUpdater() {
         final NewConnector sourceConnector = getConnector1()
                 .createConnectorInstance();
         final NewConnector destinationConnector = getConnector2()
                 .createConnectorInstance();
         final Updater updater = new Updater(destinationConnector,
-                generateTargetMappings(), sourceConnector,
-                generateSourceMappings(), getConnector1()
-                        .getDestinationLocation());
+                getFieldRows(), sourceConnector,
+                getConnector1().getDestinationLocation());
         return updater;
     }
 

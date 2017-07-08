@@ -1,9 +1,7 @@
 package com.taskadapter.connector.definition;
 
-import com.taskadapter.model.GTaskDescriptor;
-
 public final class FieldMapping {
-    private GTaskDescriptor.FIELD field;
+    private String field;
     private String connector1;
     private String connector2;
     private boolean selected;
@@ -15,7 +13,7 @@ public final class FieldMapping {
     public FieldMapping() {
     }
 
-    public FieldMapping(GTaskDescriptor.FIELD field, String connector1, String connector2, boolean selected, String defaultValue) {
+    public FieldMapping(String field, String connector1, String connector2, boolean selected, String defaultValue) {
         this.field = field;
         this.connector1 = connector1;
         this.connector2 = connector2;
@@ -23,7 +21,7 @@ public final class FieldMapping {
         this.defaultValue = defaultValue;
     }
 
-    public GTaskDescriptor.FIELD getField() {
+    public String getField() {
         return field;
     }
 

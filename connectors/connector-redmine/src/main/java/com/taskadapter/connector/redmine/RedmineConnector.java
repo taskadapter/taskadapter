@@ -3,9 +3,7 @@ package com.taskadapter.connector.redmine;
 import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.common.TaskSavingUtils;
 import com.taskadapter.connector.definition.*;
-import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
-import com.taskadapter.core.NewConnector;
+import com.taskadapter.connector.NewConnector;
 import com.taskadapter.model.GTask;
 import com.taskadapter.redmineapi.Include;
 import com.taskadapter.redmineapi.RedmineException;
@@ -52,7 +50,7 @@ public class RedmineConnector implements NewConnector {
     }
     
     @Override
-    public List<GTask> loadData(List<FieldRow> rows, ProgressMonitor monitorIGNORED) {
+    public List<GTask> loadData(ProgressMonitor monitorIGNORED) {
         try {
             RedmineManager mgr = RedmineManagerFactory.createRedmineManager(config.getServerInfo());
 

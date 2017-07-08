@@ -1,19 +1,5 @@
 package com.taskadapter.connector.testlib;
 
-import com.taskadapter.connector.FieldRow;
-import com.taskadapter.connector.common.ConnectorUtils;
-import com.taskadapter.connector.common.ProgressMonitorUtils;
-import com.taskadapter.connector.definition.AvailableFields;
-import com.taskadapter.connector.definition.Mappings;
-import com.taskadapter.connector.definition.TaskSaveResult;
-import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.core.NewConnector;
-import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
-
-import java.util.Arrays;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;

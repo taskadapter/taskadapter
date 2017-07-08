@@ -23,7 +23,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
 
 
   it("doesNotFailWithNULLMonitorAndEmptyList") {
-    connector.saveData(new util.ArrayList[GTask], null, JiraFieldBuilder.getDefault)
+    connector.saveData(new util.ArrayList[GTask], ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault)
   }
 
   /*

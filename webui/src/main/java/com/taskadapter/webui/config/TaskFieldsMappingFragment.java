@@ -25,6 +25,7 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
@@ -130,8 +131,8 @@ public class TaskFieldsMappingFragment implements Validatable {
     }
 
     private void addConnectorElement(FieldMapping field, UIConnectorConfig config, String leftRightField) {
-        if (field.getField() == FIELD.REMOTE_ID && remoteIdFieldNotSupported(config)) {
-            String idFieldDisplayValue = GTaskDescriptor.getDisplayValue(FIELD.ID);
+        if (field.getField().equals(FIELD.REMOTE_ID.name()) && remoteIdFieldNotSupported(config)) {
+            String idFieldDisplayValue = GTaskDescriptor.getDisplayValue(FIELD.ID.name());
             createMappingForSingleValue(idFieldDisplayValue);
         } else {
             addConnectorField(config.getAvailableFields(), field, leftRightField);
@@ -139,7 +140,9 @@ public class TaskFieldsMappingFragment implements Validatable {
     }
 
     private boolean remoteIdFieldNotSupported(UIConnectorConfig config) {
-        return !config.getAvailableFields().isFieldSupported(FIELD.REMOTE_ID);
+        // TODO TA3 remote id
+        return true;
+//        return !config.getAvailableFields().isFieldSupported(FIELD.REMOTE_ID);
     }
 
     private void addCheckbox(FieldMapping field) {
@@ -171,8 +174,9 @@ public class TaskFieldsMappingFragment implements Validatable {
         gridLayout.setComponentAlignment(emptyLabel, Alignment.MIDDLE_LEFT);
     }
 
-    private void addConnectorField(AvailableFields connectorFields, FieldMapping fieldMapping, String leftRightField) {
-        String[] allowedValues = connectorFields.getAllowedValues(fieldMapping.getField());
+    private void addConnectorField(List<String> connectorFields, FieldMapping fieldMapping, String leftRightField) {
+        // TODO TA3 mapping editor
+/*        String[] allowedValues = connectorFields.getAllowedValues(fieldMapping.getField());
         BeanItemContainer<String> container = new BeanItemContainer<>(String.class);
         final MethodProperty<String> mappedTo = new MethodProperty<>(fieldMapping, leftRightField);
 
@@ -195,7 +199,7 @@ public class TaskFieldsMappingFragment implements Validatable {
             }
         } else {
             addEmptyCell();
-        }
+        }*/
     }
 
     private void createMappingForSingleValue(String displayValue) {

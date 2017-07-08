@@ -3,7 +3,7 @@ package com.taskadapter.webui.pageset;
 import com.google.common.io.Files;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.config.StorageException;
-import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.NewConnector;
 import com.taskadapter.connector.definition.FileBasedConnector;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.license.LicenseManager;

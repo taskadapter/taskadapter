@@ -3,6 +3,7 @@ package com.taskadapter.connector.jira
 import java.util
 
 import com.taskadapter.connector.FieldRow
+import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.testlib.TestUtils
 import org.fest.assertions.Assertions.assertThat
 import org.junit.runner.RunWith
@@ -36,7 +37,7 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     val subTask2 = new JiraGTaskBuilder("child task 2").withId(33).build()
     parentTask.getChildren.addAll(List(subTask1, subTask2).asJava)
     val connector = getConnector
-    val result = connector.saveData(util.Arrays.asList(parentTask), null, JiraFieldBuilder.getDefault)
+    val result = connector.saveData(util.Arrays.asList(parentTask), ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault)
     assertThat(result.getCreatedTasksNumber).isEqualTo(3)
     val parentKey = result.getRemoteKey(11)
     val subTask1RemoteKey = result.getRemoteKey(22)
@@ -81,7 +82,7 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
       FieldRow(true, JiraField.description, JiraField.description, "some default")
     )
 
-    val result = connector.saveData(util.Arrays.asList(task), null, rows.asJava)
+    val result = connector.saveData(util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)
     assertThat(result.getCreatedTasksNumber).isEqualTo(1)
     // TODO this is ugly
     val values = result.getIdToRemoteKeyMap.values

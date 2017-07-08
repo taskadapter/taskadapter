@@ -3,9 +3,8 @@ package com.taskadapter.connector.definition;
 import java.io.File;
 import java.util.List;
 
-import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.core.NewConnector;
+import com.taskadapter.connector.NewConnector;
 import com.taskadapter.model.GTask;
 
 /**

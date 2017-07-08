@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class UISyncConfigTest {
+/*
     @Test
     public void remoteIdIsRecognizedAsSelected() throws IOException {
         UISyncConfig uiSyncConfig = ConfigLoader.loadConfig("jira_msp.conf");
@@ -17,6 +18,7 @@ public class UISyncConfigTest {
         assertTrue(uiSyncConfig.generateSourceMappings().isFieldSelected(GTaskDescriptor.FIELD.SUMMARY));
     }
 
+*/
     @Test
     public void legacyConfigTA22LoadedWithoutNPE() throws IOException {
         UISyncConfig config = ConfigLoader.loadConfig("legacy_config_ta_2.2.txt");

@@ -44,16 +44,16 @@ public class MappingGuesser {
         if (sel2.has(GTaskDescriptor.FIELD.REMOTE_ID.name())
                 && sel2.get(GTaskDescriptor.FIELD.REMOTE_ID.name()).getAsBoolean()
                 && map2RemoteIdIsPresent) {
-            res.put(new FieldMapping(GTaskDescriptor.FIELD.REMOTE_ID, null, map2RemoteIdValue.getAsString(), true,
-                    NewMappingBuilder.DEFAULT_VALUE_FOR_EMPTY_VALUES));
+            res.put(new FieldMapping(GTaskDescriptor.FIELD.REMOTE_ID.name(), null, map2RemoteIdValue.getAsString(), true,
+                    NewMappingBuilder.DEFAULT_VALUE_FOR_EMPTY_VALUES()));
         }
 
         if (sel1.has(GTaskDescriptor.FIELD.REMOTE_ID.name())
                 && sel1.get(GTaskDescriptor.FIELD.REMOTE_ID.name()).getAsBoolean()
                 && !map1.get(GTaskDescriptor.FIELD.REMOTE_ID.name()).isJsonNull()) {
-            res.put(new FieldMapping(GTaskDescriptor.FIELD.REMOTE_ID, map1.get(
+            res.put(new FieldMapping(GTaskDescriptor.FIELD.REMOTE_ID.name(), map1.get(
                     GTaskDescriptor.FIELD.REMOTE_ID.name()).getAsString(), null, true,
-                    NewMappingBuilder.DEFAULT_VALUE_FOR_EMPTY_VALUES));
+                    NewMappingBuilder.DEFAULT_VALUE_FOR_EMPTY_VALUES()));
         }
 
         for (GTaskDescriptor.FIELD field : GTaskDescriptor.FIELD.values()) {
@@ -82,9 +82,9 @@ public class MappingGuesser {
                 continue;
             }
 
-            res.put(new FieldMapping(field, map1FieldValue.getAsString(),
+            res.put(new FieldMapping(field.name(), map1FieldValue.getAsString(),
                     map2FieldValue.getAsString(), true,
-                    NewMappingBuilder.DEFAULT_VALUE_FOR_EMPTY_VALUES));
+                    NewMappingBuilder.DEFAULT_VALUE_FOR_EMPTY_VALUES()));
         }
 
         return res;

@@ -142,7 +142,7 @@ public class MyTree extends CustomComponent {
                 new Object[]{
                         checkBox,                  // ACTION
                         String.valueOf(taskId),    // ID
-                        task.getSummary()          // SUMMARY
+                        task.getValue("Summary") // TODO TA3 use a proper connector-specific field name here
                 },
                 taskId
         );

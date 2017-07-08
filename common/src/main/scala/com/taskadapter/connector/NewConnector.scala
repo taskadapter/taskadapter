@@ -1,8 +1,7 @@
-package com.taskadapter.core
+package com.taskadapter.connector
 
 import java.util
 
-import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.definition.{ProgressMonitor, TaskSaveResult}
 import com.taskadapter.model.GTask
 
@@ -17,7 +16,7 @@ trait NewConnector {
     *                [[com.taskadapter.connector.common.ProgressMonitorUtils.DUMMY_MONITOR]]} if you don't
     *                want any monitoring.
     */
-  def loadData(rows: util.List[FieldRow], monitor: ProgressMonitor): util.List[GTask]
+  def loadData(monitor: ProgressMonitor): util.List[GTask]
 
   def loadData(): util.List[GTask]
 

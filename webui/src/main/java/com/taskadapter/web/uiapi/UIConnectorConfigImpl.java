@@ -1,7 +1,6 @@
 package com.taskadapter.web.uiapi;
 
-import com.taskadapter.connector.definition.AvailableFields;
-import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.NewConnector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
@@ -10,6 +9,8 @@ import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.webui.data.ExceptionFormatter;
 import com.vaadin.ui.ComponentContainer;
+
+import java.util.List;
 
 /**
  * Implementation of RichConfig. Hides implementation details inside and keeps a
@@ -85,7 +86,7 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends UIConnector
     }
 
     @Override
-    public AvailableFields getAvailableFields() {
+    public List<String> getAvailableFields() {
         return connectorFactory.getAvailableFields();
     }
 

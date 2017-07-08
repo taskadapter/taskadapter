@@ -24,30 +24,30 @@ public class GTaskDescriptor {
 
     // TODO this should be on the UI level, not in the model.
     @SuppressWarnings("serial")
-    private static Map<FIELD, String> displayNames = new HashMap<FIELD, String>() {
+    private static Map<String, String> displayNames = new HashMap<String, String>() {
         {
-            put(FIELD.ID, "Id");
-            put(FIELD.SUMMARY, "Summary");
-            put(FIELD.TASK_TYPE, "Task type");
-            put(FIELD.START_DATE, "Start Date");
-            put(FIELD.ASSIGNEE, "Assignee");
-            put(FIELD.DESCRIPTION, "Description");
-            put(FIELD.DUE_DATE, "Due Date");
-            put(FIELD.CLOSE_DATE, "Close Date");
-            put(FIELD.ESTIMATED_TIME, "Estimated time");
-            put(FIELD.DONE_RATIO, "Done ratio (% done)");
+            put(FIELD.ID.name(), "Id");
+            put(FIELD.SUMMARY.name(), "Summary");
+            put(FIELD.TASK_TYPE.name(), "Task type");
+            put(FIELD.START_DATE.name(), "Start Date");
+            put(FIELD.ASSIGNEE.name(), "Assignee");
+            put(FIELD.DESCRIPTION.name(), "Description");
+            put(FIELD.DUE_DATE.name(), "Due Date");
+            put(FIELD.CLOSE_DATE.name(), "Close Date");
+            put(FIELD.ESTIMATED_TIME.name(), "Estimated time");
+            put(FIELD.DONE_RATIO.name(), "Done ratio (% done)");
             /*
                 * save "remote/original ID" in this connector's database/file/whatever after tasks were loaded from some source
                 */
-            put(FIELD.REMOTE_ID, "Remote ID");
-            put(FIELD.PRIORITY, "Task priority");
-            put(FIELD.TASK_STATUS, "Task status");
-            put(FIELD.ENVIRONMENT, "Environment");
-            put(FIELD.TARGET_VERSION, "Target Version");
+            put(FIELD.REMOTE_ID.name(), "Remote ID");
+            put(FIELD.PRIORITY.name(), "Task priority");
+            put(FIELD.TASK_STATUS.name(), "Task status");
+            put(FIELD.ENVIRONMENT.name(), "Environment");
+            put(FIELD.TARGET_VERSION.name(), "Target Version");
         }
     };
 
-    public static String getDisplayValue(FIELD f) {
+    public static String getDisplayValue(String f) {
         return displayNames.get(f);
     }
 }

@@ -11,7 +11,7 @@ public class MappingBuilder {
         Mappings mappings = new Mappings();
         for (FieldMapping fieldMapping : newMappings.getMappings()) {
             final String mappingTarget = getSideMappedTo(fieldMapping, leftRight);
-            if (fieldMapping.getField() != FIELD.REMOTE_ID || mappingTarget != null) {
+            if (!fieldMapping.getField().equals(FIELD.REMOTE_ID.name()) || mappingTarget != null) {
                 mappings.setMapping(fieldMapping.getField(), fieldMapping.isSelected(), mappingTarget, fieldMapping.getDefaultValue());
             }
         }

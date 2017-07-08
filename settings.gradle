@@ -15,7 +15,7 @@ include "common",
 //        "connectors-editors:basecamp-editor",
 //        "connectors-editors:basecamp-classic-editor",
 //        "connectors-editors:github-editor",
-//        "connectors-editors:jira-editor",
+        "connectors-editors:jira-editor",
 //        "connectors-editors:mantis-editor",
 //        "connectors-editors:msp-editor",
         "connectors-editors:redmine-editor"

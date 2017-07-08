@@ -2,7 +2,6 @@ package com.taskadapter.connector
 
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.TaskSaveResult
-import com.taskadapter.core.NewConnector
 
 import scala.collection.JavaConverters._
 

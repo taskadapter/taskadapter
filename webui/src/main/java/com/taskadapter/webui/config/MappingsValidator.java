@@ -17,7 +17,7 @@ public class MappingsValidator {
     private static void validateAllSelectedFieldsMappedToSomething(NewMappings mappings) throws FieldNotMappedException {
         for (FieldMapping mapping : mappings.getMappings()) {
             boolean notMapped;
-            if (mapping.getField() == GTaskDescriptor.FIELD.REMOTE_ID) {
+            if (mapping.getField().equals(GTaskDescriptor.FIELD.REMOTE_ID.name())) {
                 // TODO !!! this is a hack.  fix Remote ID mapping.
                 notMapped = mapping.getConnector1() == null && mapping.getConnector2() == null;
             } else {

@@ -2,7 +2,7 @@ package com.taskadapter.connector.definition;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.taskadapter.core.NewConnector;
+import com.taskadapter.connector.NewConnector;
 
 import java.util.List;
 

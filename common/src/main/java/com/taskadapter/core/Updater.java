@@ -1,16 +1,16 @@
 package com.taskadapter.core;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.taskadapter.connector.FieldRow;
+import com.taskadapter.connector.NewConnector;
 import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.FileBasedConnector;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Updater {
 
@@ -19,23 +19,21 @@ public class Updater {
     private NewConnector fileConnector;
     private List<FieldRow> rows;
     private NewConnector remoteConnector;
-    private Mappings remoteMappings;
     private ProgressMonitor monitor;
     private String sourceLocationName;
 
     public Updater(NewConnector fileConnector, List<FieldRow> rows,
-            NewConnector remoteConnector, Mappings remoteMappings,
+            NewConnector remoteConnector,
             String sourceLocationName) {
         super();
         this.fileConnector = fileConnector;
         this.rows = rows;
         this.remoteConnector = remoteConnector;
-        this.remoteMappings = remoteMappings;
         this.sourceLocationName  = sourceLocationName;
     }
 
     public void loadTasksFromFile(ProgressMonitor monitor) throws ConnectorException {
-        this.existingTasks = ConnectorUtils.loadDataOrderedById(fileConnector, rows, monitor);
+        this.existingTasks = ConnectorUtils.loadDataOrderedById(fileConnector, monitor);
     }
 
     public void loadExternalTasks() throws ConnectorException {

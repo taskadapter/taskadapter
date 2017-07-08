@@ -1,16 +1,15 @@
 package com.taskadapter.webui.config;
 
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
-import com.taskadapter.model.GTaskDescriptor;
 
 public class FieldNotMappedException extends BadConfigException {
-    private GTaskDescriptor.FIELD field;
+    private String field;
 
-    public FieldNotMappedException(GTaskDescriptor.FIELD field) {
+    public FieldNotMappedException(String field) {
         this.field = field;
     }
 
-    public GTaskDescriptor.FIELD getField() {
+    public String getField() {
         return field;
     }
 }

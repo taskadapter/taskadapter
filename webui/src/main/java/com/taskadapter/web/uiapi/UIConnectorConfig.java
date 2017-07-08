@@ -1,11 +1,12 @@
 package com.taskadapter.web.uiapi;
 
-import com.taskadapter.connector.definition.AvailableFields;
-import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.NewConnector;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.service.Sandbox;
 import com.vaadin.ui.ComponentContainer;
+
+import java.util.List;
 
 /**
  * Rich connector configuration item. Provides usefull utility methods to create
@@ -122,7 +123,7 @@ public abstract class UIConnectorConfig {
      * @return list of connector avaialable fields (in current confiruation
      *         only).
      */
-    public abstract AvailableFields getAvailableFields();
+    public abstract List<String> getAvailableFields();
 
     /**
      * Returns a source location name. This name is just a string for a user.

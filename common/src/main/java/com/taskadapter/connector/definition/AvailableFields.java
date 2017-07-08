@@ -4,9 +4,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-import com.taskadapter.model.GTaskDescriptor;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
-
 /**
  * Available fields settings. Provides information about "supported" fields and
  * supported field values. Use {@link AvailableFieldsBuilder} to create instances of this class.
@@ -21,7 +18,7 @@ public final class AvailableFields {
 	/**
 	 * Map of supported field values.
 	 */
-	private final Map<GTaskDescriptor.FIELD, FieldConfiguration> fieldValues;
+	private final Map<String, FieldConfiguration> fieldValues;
 
 	/**
 	 * Creates a new "available fields" settings.
@@ -29,38 +26,34 @@ public final class AvailableFields {
 	 * @param fieldValues
 	 *            supported field values.
 	 */
-	AvailableFields(Map<FIELD, FieldConfiguration> fieldValues) {
+	AvailableFields(Map<String, FieldConfiguration> fieldValues) {
 		this.fieldValues = fieldValues;
 	}
 
-	public String[] getAllowedValues(FIELD field) {
+	public String[] getAllowedValues(String field) {
 		final FieldConfiguration guess = fieldValues.get(field);
 		return guess != null ? guess.getFieldValues() : EMPTY_VALUES;
 	}
 	
-	public String getDefaultValue(FIELD field) {
+	public String getDefaultValue(String field) {
         final FieldConfiguration guess = fieldValues.get(field);
         return guess != null ? guess.getDefaultValue() : "";
 	}
 	
-	public boolean isSelectedByDefault(FIELD field) {
+	public boolean isSelectedByDefault(String field) {
         final FieldConfiguration guess = fieldValues.get(field);
         return guess != null && guess.isSelectedByDefault();
 	}
 
-    public boolean isFieldSupported(FIELD field) {
+    public boolean isFieldSupported(String field) {
         return fieldValues.containsKey(field);
     }
 
-    /**
-     * Returns collection of supported fields.
-     * @return collection of supported fields.
-     */
-    public Collection<FIELD> getSupportedFields() {
+    public Collection<String> getSupportedFields() {
         return Collections.unmodifiableCollection(fieldValues.keySet());
     }
 
-    public Map<GTaskDescriptor.FIELD, FieldConfiguration> getFields() {
+    public Map<String, FieldConfiguration> getFields() {
         return fieldValues;
     }
 

@@ -3,7 +3,7 @@ package com.taskadapter.core
 import java.util
 import java.util.Collections
 
-import com.taskadapter.connector.FieldRow
+import com.taskadapter.connector.{FieldRow, NewConnector}
 import com.taskadapter.connector.common.DataConnectorUtil
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.connector.definition.{ProgressMonitor, TaskError, TaskSaveResult}

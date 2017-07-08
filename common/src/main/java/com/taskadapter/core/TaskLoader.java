@@ -1,6 +1,6 @@
 package com.taskadapter.core;
 
-import com.taskadapter.connector.FieldRow;
+import com.taskadapter.connector.NewConnector;
 import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.common.TreeUtils;
@@ -25,15 +25,13 @@ public final class TaskLoader {
 
     public static List<GTask> loadTasks(int maxTasksNumber,
                                         NewConnector connectorFrom, String sourceName,
-                                        List<FieldRow> rows, ProgressMonitor monitor)
-            throws ConnectorException {
+                                        ProgressMonitor monitor) throws ConnectorException {
         if (monitor == null) {
             monitor = ProgressMonitorUtils.DUMMY_MONITOR;
         }
 
         monitor.beginTask("Loading data from " + sourceName, 100);
-        List<GTask> flatTasksList = ConnectorUtils.loadDataOrderedById(
-                connectorFrom, rows, monitor);
+        List<GTask> flatTasksList = ConnectorUtils.loadDataOrderedById(connectorFrom, monitor);
         flatTasksList = getUpToNTasks(maxTasksNumber, flatTasksList);
 
         final List<GTask> tasks = TreeUtils

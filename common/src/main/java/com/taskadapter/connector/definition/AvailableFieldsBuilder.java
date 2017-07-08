@@ -1,8 +1,9 @@
 package com.taskadapter.connector.definition;
 
-import java.util.EnumMap;
-
 import com.taskadapter.model.GTaskDescriptor;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Builder for "available fields" structure. Something like a workaround for
@@ -14,16 +15,14 @@ import com.taskadapter.model.GTaskDescriptor;
  */
 public final class AvailableFieldsBuilder {
     /**
-     * Supported field values. We use "EnumMap" to call a proper constructor in
-     * an {@link #end()} method.
+     * Supported field values.
      */
-    private final EnumMap<GTaskDescriptor.FIELD, FieldConfiguration> fields = new EnumMap<>(
-            GTaskDescriptor.FIELD.class);
+    private final Map<String, FieldConfiguration> fields = new HashMap<>();
     
     /**
      * Last added field. Used in field mutators.
      */
-    private GTaskDescriptor.FIELD lastAddedField;
+    private String lastAddedField;
     
     private boolean allowSetDefault;
     
@@ -49,7 +48,7 @@ public final class AvailableFieldsBuilder {
      * @throws IllegalArgumentException if any argument is <code>null</code> or there is an attempt
      *                                  to change current mapping.
      */
-    public AvailableFieldsBuilder addField(GTaskDescriptor.FIELD field, String... values) throws IllegalArgumentException {
+    public AvailableFieldsBuilder addField(String field, String... values) throws IllegalArgumentException {
         if (field == null) {
             throw new IllegalArgumentException("Field cannot be null");
         }
@@ -115,9 +114,11 @@ public final class AvailableFieldsBuilder {
      *
      * @return "Available fields" structure.
      */
+/*
     public AvailableFields end() {
         return new AvailableFields(new EnumMap<>(fields));
     }
+*/
 
     /**
      * Start building.

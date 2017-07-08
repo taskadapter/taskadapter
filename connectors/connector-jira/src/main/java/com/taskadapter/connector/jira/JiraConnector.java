@@ -16,8 +16,7 @@ import com.taskadapter.connector.definition.TaskSaveResultBuilder;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
-import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
-import com.taskadapter.core.NewConnector;
+import com.taskadapter.connector.NewConnector;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
@@ -120,7 +119,7 @@ public class JiraConnector implements NewConnector {
     }
 
     @Override
-    public List<GTask> loadData(List<FieldRow> rows, ProgressMonitor monitorIGNORED) {
+    public List<GTask> loadData(ProgressMonitor monitorIGNORED) {
         return withJiraRestClient(client -> {
             final JiraTaskLoader loader = new JiraTaskLoader(client, config.getPriorities());
             return loader.loadTasks(config);
@@ -129,7 +128,7 @@ public class JiraConnector implements NewConnector {
 
     @Override
     public List<GTask> loadData() {
-        return loadData(Collections.emptyList(), null);
+        return loadData(null);
     }
 
     @Override

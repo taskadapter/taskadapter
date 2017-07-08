@@ -9,8 +9,8 @@ import com.taskadapter.webui.service.EditorManager;
 
 import java.io.IOException;
 
-final class ConfigLoader {
-    static UISyncConfig loadConfig(String resourceNameInClassPath) throws IOException {
+public final class ConfigLoader {
+    public static UISyncConfig loadConfig(String resourceNameInClassPath) throws IOException {
         String contents = Resources.toString(Resources.getResource(resourceNameInClassPath), Charsets.UTF_8);
         StoredExportConfig config = NewConfigParser.parse("someId", contents);
 

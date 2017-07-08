@@ -1,9 +1,10 @@
 package com.taskadapter.connector.testlib;
 
 import com.taskadapter.connector.FieldRow;
+import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.core.NewConnector;
+import com.taskadapter.connector.NewConnector;
 import com.taskadapter.model.GTask;
 
 import java.util.Arrays;
@@ -19,7 +20,7 @@ public class TestSaver {
     }
 
     public GTask saveAndLoad(GTask task) throws ConnectorException {
-        TaskSaveResult taskSaveResult = connector.saveData(Arrays.asList(task), null, rows);
+        TaskSaveResult taskSaveResult = connector.saveData(Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
         String newKey = taskSaveResult.getRemoteKeys().iterator().next();
         return connector.loadTaskByKey(newKey, rows);
     }

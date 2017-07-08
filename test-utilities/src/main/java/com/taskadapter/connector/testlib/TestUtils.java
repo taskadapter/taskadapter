@@ -2,20 +2,17 @@ package com.taskadapter.connector.testlib;
 
 import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.common.ConnectorUtils;
-import com.taskadapter.connector.definition.AvailableFields;
-import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.core.NewConnector;
+import com.taskadapter.connector.NewConnector;
 import com.taskadapter.model.GTask;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 public class TestUtils {
 /*
@@ -77,16 +74,16 @@ public class TestUtils {
 
     public static List<GTask> saveAndLoadAll(NewConnector connector, GTask task, List<FieldRow> rows) throws ConnectorException {
         connector.saveData(Arrays.asList(task), null, rows);
-        return ConnectorUtils.loadDataOrderedById(connector, rows);
+        return ConnectorUtils.loadDataOrderedById(connector);
     }
 
     public static List<GTask> saveAndLoadList(NewConnector connector, List<GTask> tasks, List<FieldRow> rows) throws ConnectorException {
-        connector.saveData(tasks, null, rows);
-        return ConnectorUtils.loadDataOrderedById(connector, rows);
+        connector.saveData(tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows);
+        return ConnectorUtils.loadDataOrderedById(connector);
     }
 
     public static GTask saveAndLoad(NewConnector connector, GTask task, List<FieldRow> rows) throws ConnectorException {
-        TaskSaveResult result = connector.saveData(Arrays.asList(task), null, rows);
+        TaskSaveResult result = connector.saveData(Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
         Collection<String> remoteKeys = result.getRemoteKeys();
         String remoteKey = remoteKeys.iterator().next();
         return connector.loadTaskByKey(remoteKey, rows);
@@ -112,7 +109,7 @@ public class TestUtils {
      * @return the new task Key
      */
     public static String save(NewConnector connector, GTask task, List<FieldRow> rows) throws ConnectorException {
-        TaskSaveResult result = connector.saveData(Arrays.asList(task), null, rows);
+        TaskSaveResult result = connector.saveData(Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
         Collection<String> remoteKeys = result.getRemoteKeys();
         return remoteKeys.iterator().next();
     }
