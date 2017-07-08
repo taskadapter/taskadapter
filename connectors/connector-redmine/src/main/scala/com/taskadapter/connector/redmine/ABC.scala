@@ -1,5 +1,7 @@
 package com.taskadapter.connector.redmine
 
+import com.taskadapter.connector.FieldRow
+
 import scala.collection.JavaConverters._
 
 object ABC {

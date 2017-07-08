@@ -2,6 +2,7 @@ package com.taskadapter.connector.common;
 
 import java.util.List;
 
+import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.common.data.ConnectorConverter;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.TaskSaveResultBuilder;
@@ -24,7 +25,7 @@ final class SimpleTaskSaver<N> {
         this.monitor = progressMonitor == null ? ProgressMonitorUtils.DUMMY_MONITOR : progressMonitor;
     }
 
-    void saveTasks(String parentIssueKey, List<GTask> tasks, DefaultValueSetter defaultValueSetter) {
+    void saveTasks(String parentIssueKey, List<GTask> tasks, List<FieldRow> fieldRows, DefaultValueSetter defaultValueSetter) {
         for (GTask task : tasks) {
             String newTaskKey = null;
             try {
@@ -33,10 +34,11 @@ final class SimpleTaskSaver<N> {
                 }
                 // TODO REVIEW Name mismatch. Why default value setter is used to clone tasks? Consider a better name.
                 // Something like "TaskMapper", which could be an interface with the only method and several implementations.
-                GTask taskWithDefaultValues = defaultValueSetter.cloneAndReplaceEmptySelectedFieldsWithDefaultValues(task);
-                GTask finalGTaskForConversion = setKeyToRemoteIdIfPresent(taskWithDefaultValues);
-                N nativeIssueToCreateOrUpdate = converter.convert(finalGTaskForConversion);
-                newTaskKey = submitTask(finalGTaskForConversion, nativeIssueToCreateOrUpdate);
+                GTask transformedTask = defaultValueSetter.cloneAndReplaceEmptySelectedFieldsWithDefaultValues(fieldRows, task);
+// TODO TA3 restore this
+//                GTask finalGTaskForConversion = setKeyToRemoteIdIfPresent(task);
+                N nativeIssueToCreateOrUpdate = converter.convert(transformedTask);
+                newTaskKey = submitTask(transformedTask, nativeIssueToCreateOrUpdate);
             } catch (ConnectorException e) {
                 result.addTaskError(task, e);
             } catch (Throwable t) {
@@ -45,7 +47,7 @@ final class SimpleTaskSaver<N> {
             }
             monitor.worked(1);
 
-            saveTasks(newTaskKey, task.getChildren(), defaultValueSetter);
+            saveTasks(newTaskKey, task.getChildren(), fieldRows, defaultValueSetter);
         }
     }
 

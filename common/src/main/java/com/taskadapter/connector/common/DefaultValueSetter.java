@@ -1,6 +1,7 @@
 package com.taskadapter.connector.common;
 
 import com.google.common.base.Strings;
+import com.taskadapter.connector.FieldRow;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GUser;
@@ -8,6 +9,7 @@ import com.taskadapter.model.GUser;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,51 +27,47 @@ public class DefaultValueSetter {
      */
     private static final SimpleDateFormat DATE_PARSER = new SimpleDateFormat("yyyy MM dd");
 
-    private Map<String, String> fieldNameToDefaultValue;
-
+    @Deprecated // TODO TA3 delete. this is not used.
     /**
      * Set default values for fields that are "empty".
      *
      * @param fieldNameToDefaultValue map: field name -> default value for that field if original value is empty.
      */
     public DefaultValueSetter(Map<String, String> fieldNameToDefaultValue) {
-        this.fieldNameToDefaultValue = fieldNameToDefaultValue;
     }
 
-    // TODO REVIEW Method name is misleading and do not match its implementation.
-    // Notably, if task have fields not preset in mappings, then that field would not be copied.
-    // However, method's name implies cloning (i.e. completely replicating original data)
-    // and then replacing selected empty fields with default values.
-    public GTask cloneAndReplaceEmptySelectedFieldsWithDefaultValues(GTask task) throws ParseException {
-        final GTask result = new GTask(task);
-        for (Map.Entry<String, String> entry : fieldNameToDefaultValue.entrySet()) {
-            String fieldName = entry.getKey();
-//            GTaskDescriptor.FIELD field = GTaskDescriptor.FIELD.valueOf(fieldName.toUpperCase());
-            Object currentFieldValue = task.getValue(fieldName);
+    public static GTask cloneAndReplaceEmptySelectedFieldsWithDefaultValues(List<FieldRow> fieldRows, GTask task) throws ParseException {
+        final GTask result = new GTask();
+        for (FieldRow row : fieldRows) {
+            String fieldToLoadValueFrom = row.nameInSource();
+            Object currentFieldValue =  task.getValue(fieldToLoadValueFrom);
+            Object newValue = currentFieldValue;
             if (fieldIsConsideredEmpty(currentFieldValue)) {
-                Object valueWithProperType = getValueWithProperType(fieldName, entry.getValue());
-                result.setValue(fieldName, valueWithProperType);
+                Object valueWithProperType = getValueWithProperType(fieldToLoadValueFrom, row.defaultValueForEmpty());
+                newValue = valueWithProperType;
             }
+            result.setValue(row.nameInTarget(), newValue);
         }
         return result;
     }
 
-    private boolean fieldIsConsideredEmpty(Object value) {
+    private static boolean fieldIsConsideredEmpty(Object value) {
         return (value == null)
                 || ((value instanceof String) && ((String) value).isEmpty());
     }
 
-    private Object getValueWithProperType(String field, String value) throws ParseException {
+    private static Object getValueWithProperType(String field, String value) throws ParseException {
         try {
-            GTaskDescriptor.FIELD enumElement = GTaskDescriptor.FIELD.valueOf(field);
+            GTaskDescriptor.FIELD enumElement = GTaskDescriptor.FIELD.valueOf(field.toUpperCase());
             return getValueWithProperType(enumElement, value);
         } catch (Exception e) {
             return value; // string by default
         }
     }
-        // TODO REVIEW Method's name is confusing. It assumes that there was/is/will be a "getValueWithImproperType" method.
+
+    // TODO REVIEW Method's name is confusing. It assumes that there was/is/will be a "getValueWithImproperType" method.
     // The documentation for this method neither describes a difference between proper and improper types nor points to "getValueWithImproperType" method.
-    private Object getValueWithProperType(GTaskDescriptor.FIELD field, String value) throws ParseException {
+    private static Object getValueWithProperType(GTaskDescriptor.FIELD field, String value) throws ParseException {
         // TODO REVIEW Should this code be polymorphic and belong to a GTaskDespciptor.FIELD instances? It would be more extensible. Same for fieldIsConsideredEmpty.
         switch (field) {
             case ASSIGNEE:
@@ -88,18 +86,18 @@ public class DefaultValueSetter {
         return value;
     }
 
-    // TODO REVIEW What about documenting behaviour for the incorrect values? Do you ensure in a UI that default value is valid for the given type?
+    // TODO REVIEW What about documenting behavior for the incorrect values? Do you ensure in a UI that default value is valid for the given type?
     // Have you considered a format where "default value" would be stored in an appropriate (non-string) format
     // which guarantees that "value" is always correct? This would involve some polymorphism and extensions in the
     // GTaskDescriptor.FIELD and (de)serialization exceptions (especially backward compatibility).
-    private Float parseFloat(String value) {
+    private static Float parseFloat(String value) {
         if (Strings.isNullOrEmpty(value)) {
             return null;
         }
         return Float.parseFloat(value);
     }
 
-    private Date parseDate(String value) throws ParseException {
+    private static Date parseDate(String value) throws ParseException {
         if (Strings.isNullOrEmpty(value)) {
             return null;
         }

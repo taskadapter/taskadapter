@@ -60,4 +60,8 @@ public final class AvailableFields {
         return Collections.unmodifiableCollection(fieldValues.keySet());
     }
 
+    public Map<GTaskDescriptor.FIELD, FieldConfiguration> getFields() {
+        return fieldValues;
+    }
+
 }

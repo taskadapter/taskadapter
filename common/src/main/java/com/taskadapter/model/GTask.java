@@ -271,4 +271,7 @@ final public class GTask {
         setValue(GTaskDescriptor.FIELD.TARGET_VERSION, versionName);
     }
 
+    public Map<String, Object> getFields() {
+        return fields;
+    }
 }

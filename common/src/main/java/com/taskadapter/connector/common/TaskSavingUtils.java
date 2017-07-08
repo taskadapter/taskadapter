@@ -2,6 +2,7 @@ package com.taskadapter.connector.common;
 
 import java.util.List;
 
+import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.common.data.ConnectorConverter;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ProgressMonitor;
@@ -53,10 +54,11 @@ public class TaskSavingUtils {
             ConnectorConverter<GTask, N> converter,
             BasicIssueSaveAPI<N> saveAPI, 
             ProgressMonitor progressMonitor,
+            List<FieldRow> fieldRows,
             DefaultValueSetter defaultValueSetter) {
         final TaskSaveResultBuilder result = new TaskSaveResultBuilder();
         final SimpleTaskSaver<N> saver = new SimpleTaskSaver<>(converter, saveAPI, result, progressMonitor);
-        saver.saveTasks(null, tasks, defaultValueSetter);
+        saver.saveTasks(null, tasks, fieldRows, defaultValueSetter);
         return result;
     }
 }

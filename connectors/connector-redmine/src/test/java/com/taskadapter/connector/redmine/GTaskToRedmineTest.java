@@ -1,28 +1,17 @@
 package com.taskadapter.connector.redmine;
 
-import com.taskadapter.connector.testlib.FieldSelector;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
-import com.taskadapter.redmineapi.bean.Issue;
-import com.taskadapter.redmineapi.bean.IssueStatus;
-import com.taskadapter.redmineapi.bean.Project;
-import com.taskadapter.redmineapi.bean.ProjectFactory;
-import com.taskadapter.redmineapi.bean.User;
-import com.taskadapter.redmineapi.bean.UserFactory;
-import com.taskadapter.redmineapi.bean.Version;
+import com.taskadapter.redmineapi.bean.*;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 public class GTaskToRedmineTest {
 
@@ -127,11 +116,10 @@ public class GTaskToRedmineTest {
 
     private GTaskToRedmine createDefaultConverter() {
         RedmineConfig config = new RedmineConfig();
-        throw new RuntimeException();
-//        return new GTaskToRedmine(config,
-//                        RedmineSupportedFields.SUPPORTED_FIELDS.getSupportedFields(),
-//                null, project, Collections.<User>emptyList(),
-//                Collections.<IssueStatus>emptyList(), Collections.<Version>emptyList());
+        return new GTaskToRedmine(config,
+                null, project, Collections.<User>emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(), Collections.emptyList());
     }
 
     private GTaskToRedmine createConverterWithSelectedField(GTaskDescriptor.FIELD field, List<User> users) {
@@ -143,10 +131,10 @@ public class GTaskToRedmineTest {
     }
 
     private GTaskToRedmine createConverterWithField(GTaskDescriptor.FIELD field, boolean selected, List<User> users) {
-        RedmineConfig config = new RedmineConfig();
-        Collection<FIELD> selectedFields = FieldSelector.getSelectedFields(RedmineSupportedFields.SUPPORTED_FIELDS,
-                field, selected);
         throw new RuntimeException();
+//        RedmineConfig config = new RedmineConfig();
+//        Collection<FIELD> selectedFields = FieldSelector.getSelectedFields(RedmineSupportedFields.legacyFields(),
+//                field, selected);
 //        return new GTaskToRedmine(config, selectedFields, null, project, users, new ArrayList<>(), Collections.<Version>emptyList());
     }
 }

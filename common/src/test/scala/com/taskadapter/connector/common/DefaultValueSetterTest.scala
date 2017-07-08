@@ -1,6 +1,7 @@
 package com.taskadapter.connector.common
 
-import com.taskadapter.model.{GTask, GTaskDescriptor}
+import com.taskadapter.connector.FieldRow
+import com.taskadapter.model.GTask
 import org.fest.assertions.Assertions.assertThat
 import org.junit.runner.RunWith
 import org.scalatest.concurrent.ScalaFutures
@@ -13,32 +14,41 @@ import scala.collection.mutable._
 @RunWith(classOf[JUnitRunner])
 class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
   it("task is deep cloned") {
-    val setter = new DefaultValueSetter(Map.empty[String, String].asJava)
-    val originalTask: GTask = new GTask
-    originalTask.setType("original type")
-    originalTask.setDescription("original description")
-    // TODO REVIEW Does this method perform a shallow copy or a deep copy?
-    val newTask: GTask = setter.cloneAndReplaceEmptySelectedFieldsWithDefaultValues(originalTask)
-    originalTask.setType("new type")
-    originalTask.setDescription("new description")
-    assertThat(newTask.getType).isEqualTo("original type")
-    assertThat(newTask.getDescription).isEqualTo("original description")
+    val originalTask = new GTask
+    originalTask.setValue("description", "original description")
+
+    val rows = List(
+      FieldRow(true, "summary", "summary", ""),
+      FieldRow(true, "description", "description", "")
+    )
+
+    val newTask = DefaultValueSetter.cloneAndReplaceEmptySelectedFieldsWithDefaultValues(rows.asJava, originalTask)
+    originalTask.setValue("description", "new description")
+    assertThat(newTask.getValue("description")).isEqualTo("original description")
+
   }
 
   it("default value is set if field is empty") {
-    val setter = new DefaultValueSetter(Map(GTaskDescriptor.FIELD.DESCRIPTION.name -> "default description").asJava)
+    val rows = List(
+      FieldRow(true, "summary", "summary", ""),
+      FieldRow(true, "description", "description", "default description")
+    )
     val originalTask = new GTask
-    originalTask.setDescription("")
-    val newTask = setter.cloneAndReplaceEmptySelectedFieldsWithDefaultValues(originalTask)
-    newTask.getDescription shouldBe "default description"
+    originalTask.setValue("description", "")
+
+    val newTask = DefaultValueSetter.cloneAndReplaceEmptySelectedFieldsWithDefaultValues(rows.asJava, originalTask)
+    newTask.getValue("description") shouldBe "default description"
   }
 
   it("existing value is preserved when field has it") {
-    val setter = new DefaultValueSetter(Map(GTaskDescriptor.FIELD.DESCRIPTION.name -> "default description").asJava)
+    val rows = List(
+      FieldRow(true, "summary", "summary", ""),
+      FieldRow(true, "description", "description", "default description")
+    )
     val originalTask = new GTask
-    originalTask.setDescription("something")
-    val newTask = setter.cloneAndReplaceEmptySelectedFieldsWithDefaultValues(originalTask)
-    newTask.getDescription shouldBe "something"
+    originalTask.setValue("description", "something")
+    val newTask = DefaultValueSetter.cloneAndReplaceEmptySelectedFieldsWithDefaultValues(rows.asJava, originalTask)
+    newTask.getValue("description") shouldBe "something"
   }
 }
 
