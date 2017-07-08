@@ -6,6 +6,10 @@ object RedmineField {
   val description = "Description"
   val taskType = "Tracker type"
   val estimatedTime = "Estimated time"
+
+  /**
+    * %% complete (e.g. "30%"). int value
+    */
   val doneRatio = "Done ratio"
   val assignee = "Assignee"
   val dueDate = "Due Date"

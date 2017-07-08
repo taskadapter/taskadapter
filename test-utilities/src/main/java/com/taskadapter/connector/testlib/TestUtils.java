@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Random;
 
 public class TestUtils {
+/*
     public static List<GTask> generateTasks(int quantity) {
         List<GTask> tasks = new ArrayList<>(quantity);
         for (int i = 0; i < quantity; i++) {
@@ -25,6 +26,7 @@ public class TestUtils {
         }
         return tasks;
     }
+*/
 
     public static GTask findTaskInList(List<GTask> list, Integer createdTask1Id) {
         for (GTask task : list) {
@@ -44,7 +46,7 @@ public class TestUtils {
         return null;
     }
 
-    public static GTask findTaskBySummary(List<GTask> tasks, String summary) {
+/*    public static GTask findTaskBySummary(List<GTask> tasks, String summary) {
         for (GTask t : tasks) {
             if (t.getSummary().equals(summary)) {
                 return t;
@@ -62,7 +64,7 @@ public class TestUtils {
         int hours = r.nextInt(50) + 1;
         t.setEstimatedHours((float) hours);
         return t;
-    }
+    }*/
 
     public static Calendar getDateRoundedToDay() {
         Calendar cal = Calendar.getInstance();
@@ -78,46 +80,47 @@ public class TestUtils {
         return ConnectorUtils.loadDataOrderedById(connector, rows);
     }
 
-    public static List<GTask> saveAndLoadList(NewConnector connector, List<GTask> tasks, Mappings mappings) throws ConnectorException {
-        connector.saveData(tasks, null, mappings);
-        return ConnectorUtils.loadDataOrderedById(connector, mappings);
+    public static List<GTask> saveAndLoadList(NewConnector connector, List<GTask> tasks, List<FieldRow> rows) throws ConnectorException {
+        connector.saveData(tasks, null, rows);
+        return ConnectorUtils.loadDataOrderedById(connector, rows);
     }
 
-    public static GTask saveAndLoad(NewConnector connector, GTask task, Mappings mappings) throws ConnectorException {
-        TaskSaveResult result = connector.saveData(Arrays.asList(task), null, mappings);
+    public static GTask saveAndLoad(NewConnector connector, GTask task, List<FieldRow> rows) throws ConnectorException {
+        TaskSaveResult result = connector.saveData(Arrays.asList(task), null, rows);
         Collection<String> remoteKeys = result.getRemoteKeys();
         String remoteKey = remoteKeys.iterator().next();
-        return connector.loadTaskByKey(remoteKey, mappings);
+        return connector.loadTaskByKey(remoteKey, rows);
     }
 
     /**
      * Load task that was previously created and its result is saved in {@link TaskSaveResult}
      */
-    public static GTask loadCreatedTask(NewConnector connector, AvailableFields availableFields, TaskSaveResult result) throws ConnectorException {
+    public static GTask loadCreatedTask(NewConnector connector, List<FieldRow> rows, TaskSaveResult result) throws ConnectorException {
         Collection<String> remoteKeys = result.getRemoteKeys();
         String remoteKey = remoteKeys.iterator().next();
-        Mappings mappings = TestMappingUtils.fromFields(availableFields);
-        return connector.loadTaskByKey(remoteKey, mappings);
+        return connector.loadTaskByKey(remoteKey, rows);
     }
 
-    public static GTask saveAndLoadViaSummary(NewConnector connector, GTask task, Mappings mappings) throws ConnectorException {
-        List<GTask> loadedTasks = saveAndLoadAll(connector, task, mappings);
+/*
+    public static GTask saveAndLoadViaSummary(NewConnector connector, GTask task, List<FieldRow> rows) throws ConnectorException {
+        List<GTask> loadedTasks = saveAndLoadAll(connector, task, rows);
         return findTaskBySummary(loadedTasks, task.getSummary());
     }
+*/
 
     /**
      * @return the new task Key
      */
-    public static String save(NewConnector connector, GTask task, Mappings mappings) throws ConnectorException {
-        TaskSaveResult result = connector.saveData(Arrays.asList(task), null, mappings);
+    public static String save(NewConnector connector, GTask task, List<FieldRow> rows) throws ConnectorException {
+        TaskSaveResult result = connector.saveData(Arrays.asList(task), null, rows);
         Collection<String> remoteKeys = result.getRemoteKeys();
         return remoteKeys.iterator().next();
     }
 
-    public static Calendar setTaskStartYearAgo(GTask task) {
+    public static Calendar setTaskStartYearAgo(GTask task, String startDateFieldName) {
         Calendar yearAgo = getDateRoundedToDay();
         yearAgo.add(Calendar.YEAR, -1);
-        task.setStartDate(yearAgo.getTime());
+        task.setValue(startDateFieldName, yearAgo.getTime());
         return yearAgo;
     }
 
@@ -127,10 +130,10 @@ public class TestUtils {
         return yearAgo.getTime();
     }
 
-    public static Calendar setTaskDueDateNextYear(GTask task) {
+    public static Calendar setTaskDueDateNextYear(GTask task, String dueDateFieldName) {
         Calendar cal = getDateRoundedToDay();
         cal.add(Calendar.YEAR, 1);
-        task.setDueDate(cal.getTime());
+        task.setValue(dueDateFieldName, cal.getTime());
         return cal;
     }
 

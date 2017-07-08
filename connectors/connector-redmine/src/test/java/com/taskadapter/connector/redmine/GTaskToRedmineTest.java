@@ -3,7 +3,6 @@ package com.taskadapter.connector.redmine;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
-import com.taskadapter.model.GUser;
 import com.taskadapter.redmineapi.bean.*;
 import org.junit.Test;
 
@@ -34,7 +33,7 @@ public class GTaskToRedmineTest {
 
     private void checkSummary(GTaskToRedmine converter, String expected) {
         GTask task = new GTask();
-        task.setSummary("summary 1");
+        task.setValue(RedmineField.summary(), "summary 1");
         Issue redmineIssue = converter.convertToRedmineIssue(task);
         assertEquals(expected, redmineIssue.getSubject());
     }
@@ -75,29 +74,26 @@ public class GTaskToRedmineTest {
 
     private GTask createDummyTaskForUser(String userDisplayName) {
         GTask gtask = new GTask();
-        gtask.setSummary("S1");
-        GUser assignee = new GUser();
+        gtask.setValue(RedmineField.summary(), "S1");
         // put the resource name on displayName like in MSP Connector
-        assignee.setDisplayName(userDisplayName);
-        gtask.setAssignee(assignee);
+        gtask.setValue(RedmineField.assignee(), userDisplayName);
         return gtask;
     }
 
     private GTaskToRedmine getConverterWithAssigneeMapped() {
-        GTaskToRedmine converter = createConverterWithSelectedField(FIELD.ASSIGNEE, createUsers());
-        return converter;
+        return createConverterWithSelectedField(FIELD.ASSIGNEE, createUsers());
     }
 
     private List<User> createUsers() {
         List<User> users = new ArrayList<>();
 
-        User user1 = UserFactory.create();
+        User user1 = UserFactory.create(1);
         user1.setFirstName("Diogo");
         user1.setLastName("Nascimento");
         user1.setLogin("diogo.nascimento");
         users.add(user1);
 
-        User user2 = UserFactory.create();
+        User user2 = UserFactory.create(2);
         user2.setFirstName("Felipe");
         user2.setLastName("Castro");
         user2.setLogin("felipe.castro");
@@ -111,7 +107,7 @@ public class GTaskToRedmineTest {
     public void nullReturnedWhenNoUsersSet() {
         GTaskToRedmine converter = createDefaultConverter();
         // should not fail with NPE or anything
-        assertNull(converter.findRedmineUserInCache(new GUser("mylogin")));
+        assertNull(converter.findRedmineUserInCache("mylogin"));
     }
 
     private GTaskToRedmine createDefaultConverter() {
@@ -131,10 +127,9 @@ public class GTaskToRedmineTest {
     }
 
     private GTaskToRedmine createConverterWithField(GTaskDescriptor.FIELD field, boolean selected, List<User> users) {
-        throw new RuntimeException();
-//        RedmineConfig config = new RedmineConfig();
+        RedmineConfig config = new RedmineConfig();
 //        Collection<FIELD> selectedFields = FieldSelector.getSelectedFields(RedmineSupportedFields.legacyFields(),
 //                field, selected);
-//        return new GTaskToRedmine(config, selectedFields, null, project, users, new ArrayList<>(), Collections.<Version>emptyList());
+        return new GTaskToRedmine(config, null, project, users, new ArrayList<>(), new ArrayList<>(), Collections.<Version>emptyList());
     }
 }

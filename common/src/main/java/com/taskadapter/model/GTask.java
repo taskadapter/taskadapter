@@ -77,49 +77,6 @@ final public class GTask {
         setValue(GTaskDescriptor.FIELD.REMOTE_ID, remoteId);
     }
 
-    public Integer getPriority() {
-        return (Integer) getValue(GTaskDescriptor.FIELD.PRIORITY);
-    }
-
-    public void setPriority(Integer priority) {
-        setValue(GTaskDescriptor.FIELD.PRIORITY, priority);
-    }
-
-    public void setAssignee(GUser assignee) {
-        setValue(GTaskDescriptor.FIELD.ASSIGNEE, assignee);
-    }
-
-    public String getSummary() {
-        return (String) getValue(GTaskDescriptor.FIELD.SUMMARY);
-    }
-
-    public void setSummary(String summary) {
-        setValue(GTaskDescriptor.FIELD.SUMMARY, summary);
-    }
-
-    /**
-     * @return %% complete (e.g. "30%")
-     */
-    public Integer getDoneRatio()  {
-        return (Integer) getValue(GTaskDescriptor.FIELD.DONE_RATIO);
-    }
-
-    public Date getStartDate() {
-        return (Date) getValue(GTaskDescriptor.FIELD.START_DATE);
-    }
-
-    public void setStartDate(Date startDate) {
-        setValue(GTaskDescriptor.FIELD.START_DATE, startDate);
-    }
-
-    public Date getDueDate() {
-        return (Date) getValue(GTaskDescriptor.FIELD.DUE_DATE);
-    }
-
-    public void setDueDate(Date dueDate) {
-        setValue(GTaskDescriptor.FIELD.DUE_DATE, dueDate);
-    }
-
     /**
      *
      * @return the list of children of an empty list when no children. never NULL.
@@ -154,14 +111,6 @@ final public class GTask {
         return result;
     }
 
-    public String getType() {
-        return (String) getValue(GTaskDescriptor.FIELD.TASK_TYPE);
-    }
-
-    public void setType(String type) {
-        setValue(GTaskDescriptor.FIELD.TASK_TYPE, type);
-    }
-
     /**
      * Some systems like Jira can have string-based "key" like "TEST-1"
      * to identify issues. This is NOT a database identifier.
@@ -178,30 +127,6 @@ final public class GTask {
         setValue(GTaskDescriptor.FIELD.KEY, key);
     }
 
-    public Date getCreatedOn() {
-        return (Date) getValue(GTaskDescriptor.FIELD.CREATED_ON);
-    }
-
-    public void setCreatedOn(Date createdOn) {
-        setValue(GTaskDescriptor.FIELD.CREATED_ON, createdOn);
-    }
-
-    public Date getUpdatedOn() {
-        return (Date) getValue(GTaskDescriptor.FIELD.UPDATED_ON);
-    }
-
-    public void setUpdatedOn(Date updatedOn) {
-        setValue(GTaskDescriptor.FIELD.UPDATED_ON, updatedOn);
-    }
-    
-    public Date getClosedDate() {
-        return (Date) getValue(GTaskDescriptor.FIELD.CLOSE_DATE);
-    }
-
-    public void setClosedOn(Date closedOn) {
-        setValue(GTaskDescriptor.FIELD.CLOSE_DATE, closedOn);
-    }
-
     public List<GRelation> getRelations() {
         return (List<GRelation>) getValue(GTaskDescriptor.FIELD.RELATIONS);
     }
@@ -212,31 +137,11 @@ final public class GTask {
 
     @Override
     public String toString() {
-        return "GTask [id=" + getId() + ", key=" + getKey() + ", remoteId=" + getRemoteId()
-                + ", summary=" + getSummary() + "]";
+        return fields.toString();
     }
 
     public void setParentKey(String parentIssueKey) {
         setValue(GTaskDescriptor.FIELD.PARENT_KEY, parentIssueKey);
-    }
-
-    public String getEnvironment() {
-        return (String) getValue(GTaskDescriptor.FIELD.ENVIRONMENT);
-    }
-
-    public void setEnvironment(String environment) {
-        setValue(GTaskDescriptor.FIELD.ENVIRONMENT, environment);
-    }
-
-    public String getTargetVersionName() {
-        return (String) getValue(GTaskDescriptor.FIELD.TARGET_VERSION);
-    }
-
-    /**
-     * @param versionName like "release 1.0"
-     */
-    public void setTargetVersionName(String versionName) {
-        setValue(GTaskDescriptor.FIELD.TARGET_VERSION, versionName);
     }
 
     public Map<String, Object> getFields() {

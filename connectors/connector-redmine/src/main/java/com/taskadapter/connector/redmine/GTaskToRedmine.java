@@ -5,7 +5,6 @@ import com.taskadapter.connector.common.data.ConnectorConverter;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
-import com.taskadapter.model.GUser;
 import com.taskadapter.redmineapi.bean.*;
 
 import java.util.Date;
@@ -156,6 +155,9 @@ public class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
         // all known fields are processed. considering this a custom field
 
         Integer customFieldId = CustomFieldDefinitionFinder.findCustomFieldId(customFieldDefinitions, fieldName);
+        if (customFieldId == null) {
+            throw new RuntimeException("Cannot find Id for custom field " + fieldName + ". Known fields are:" + customFieldDefinitions);
+        }
         CustomField customField = CustomFieldFactory.create(customFieldId, fieldName, (String) value);
         issue.addCustomField(customField);
     }
@@ -173,15 +175,15 @@ public class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
     }
 
     private void processAssignee(Issue redmineIssue, Object value) {
-        GUser ass = (GUser) value;
-        if ((ass != null) && (ass.getLoginName() != null || ass.getDisplayName() != null)) {
+        String userLoginName = (String) value;
+        if (!Strings.isNullOrEmpty(userLoginName)) {
             User rmAss;
-            if (config.isFindUserByName() || ass.getId() == null) {
-                rmAss = findRedmineUserInCache(ass);
-            } else {
-                rmAss = UserFactory.create(ass.getId());
-                rmAss.setLogin(ass.getLoginName());
-            }
+//            if (config.isFindUserByName()) {
+                rmAss = findRedmineUserInCache(userLoginName);
+//            } else {
+//                rmAss = UserFactory.create(ass.getId());
+//                rmAss.setLogin(ass.getLoginName());
+//            }
             redmineIssue.setAssignee(rmAss);
         }
     }
@@ -202,21 +204,16 @@ public class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
     /**
      * @return NULL if the user is not found or if "users" weren't previously set via setUsers() method
      */
-    User findRedmineUserInCache(GUser ass) {
-        // getting best name to search
-        String nameToSearch = ass.getLoginName();
-        if (nameToSearch == null || "".equals(nameToSearch)) {
-            nameToSearch = ass.getDisplayName();
-        }
-        if (users == null || nameToSearch == null || "".equals(nameToSearch)) {
+    User findRedmineUserInCache(String userLoginName) {
+        if (users == null || Strings.isNullOrEmpty(userLoginName)) {
             return null;
         }
 
         // Searching for the user
         User foundUser = null;
         for (User user : users) {
-            if (nameToSearch.equalsIgnoreCase(user.getLogin())
-                    || nameToSearch.equalsIgnoreCase(user.getFullName())) {
+            if (userLoginName.equalsIgnoreCase(user.getLogin())
+                    || userLoginName.equalsIgnoreCase(user.getFullName())) {
                 foundUser = user;
                 break;
             }

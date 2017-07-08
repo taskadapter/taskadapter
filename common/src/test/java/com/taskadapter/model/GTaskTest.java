@@ -35,7 +35,6 @@ public class GTaskTest {
         GTask task = new GTask();
         GTask child1 = new GTask();
         child1.setId(1011);
-        child1.setSummary("child summary");
         task.getChildren().add(child1);
 
         assertTrue(task.hasChildren());

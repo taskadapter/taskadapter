@@ -30,12 +30,12 @@ public class RedmineConnector implements NewConnector {
     }
     
     @Override
-    public void updateRemoteIDs(Map<Integer, String> res, ProgressMonitor monitor, Mappings mappings) throws UnsupportedConnectorOperation {
-        throw new UnsupportedConnectorOperation("updateRemoteIDs");
+    public void updateRemoteIDs(Map<Integer, String> res, ProgressMonitor monitor, List<FieldRow> rows)  {
+//        throw new UnsupportedConnectorOperation("updateRemoteIDs");
     }
 
     @Override
-    public GTask loadTaskByKey(String key, Mappings mappings) throws ConnectorException {
+    public GTask loadTaskByKey(String key, List<FieldRow> rows)  {
         try {
             WebServerInfo serverInfo = config.getServerInfo();
             RedmineManager mgr = RedmineManagerFactory
@@ -46,12 +46,13 @@ public class RedmineConnector implements NewConnector {
             RedmineToGTask converter = new RedmineToGTask(config);
             return converter.convertToGenericTask(issue);
         } catch (RedmineException e) {
-            throw RedmineExceptions.convertException(e);
+//            throw RedmineExceptions.convertException(e);
+            throw new RuntimeException(e);
         }
     }
     
     @Override
-    public List<GTask> loadData(List<FieldRow> rows, ProgressMonitor monitorIGNORED) throws ConnectorException {
+    public List<GTask> loadData(List<FieldRow> rows, ProgressMonitor monitorIGNORED) {
         try {
             RedmineManager mgr = RedmineManagerFactory.createRedmineManager(config.getServerInfo());
 
@@ -59,7 +60,8 @@ public class RedmineConnector implements NewConnector {
             addFullUsers(issues, mgr);
             return convertToGenericTasks(config, issues);
         } catch (RedmineException e) {
-            throw RedmineExceptions.convertException(e);
+//            throw RedmineExceptions.convertException(e);
+            throw new RuntimeException(e);
         }
     }
     
