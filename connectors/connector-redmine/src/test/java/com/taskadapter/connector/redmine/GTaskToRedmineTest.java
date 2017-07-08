@@ -16,7 +16,7 @@ public class GTaskToRedmineTest {
 
     private final Project project = ProjectFactory.create();
 
-    @Test
+/*    @Test
     public void summaryIsConvertedByDefault() {
         checkSummary(createDefaultConverter(), "summary 1");
     }
@@ -132,4 +132,5 @@ public class GTaskToRedmineTest {
 //                field, selected);
         return new GTaskToRedmine(config, null, project, users, new ArrayList<>(), new ArrayList<>(), Collections.<Version>emptyList());
     }
+    */
 }
