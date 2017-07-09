@@ -19,15 +19,14 @@ dependencies {
 }
 
 afterEvaluate {
-    // TODO TA3 re-enable this
-//    configure(allProcessResourcesTasks()) {
-//        filter(ReplaceTokens,
-//                tokens: [taskAdapterVersion: TASK_ADAPTER_VERSION])
-//    }
+    configure(allProcessResourcesTasks()) {
+        filter(ReplaceTokens,
+                tokens: [taskAdapterVersion: TASK_ADAPTER_VERSION])
+    }
 }
 
 def allProcessResourcesTasks() {
-//    sourceSets*.processResourcesTaskName.collect {
-//        tasks[it]
-//    }
+    sourceSets*.processResourcesTaskName.collect {
+        tasks[it]
+    }
 }
