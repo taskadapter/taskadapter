@@ -1,8 +1,16 @@
-// Tell Gradle to add Vaadin support
-plugins {
-    id 'fi.jasoft.plugin.vaadin' version '1.1.11'
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.devsoap.plugin:gradle-vaadin-plugin:1.2.0.beta1"
+    }
 }
+
 apply plugin: 'war'
+apply plugin: "com.devsoap.plugin.vaadin"
 
 dependencies {
     compile 'org.vaadin.addons:googleanalyticstracker:2.0.0'
@@ -20,7 +28,7 @@ dependencies {
 //    compile project(":connectors-editors:basecamp-editor")
 //    compile project(":connectors-editors:basecamp-classic-editor")
 //    compile project(":connectors-editors:github-editor")
-//    compile project(":connectors-editors:jira-editor")
+    compile project(":connectors-editors:jira-editor")
 //    compile project(":connectors-editors:mantis-editor")
 //    compile project(":connectors-editors:msp-editor")
     compile project(":connectors-editors:redmine-editor")
@@ -29,6 +37,7 @@ dependencies {
     testCompile libraries.festassert
 }
 
+vaadin.mainSourceSet = sourceSets.main.allSource
 vaadin {
     version = "$vaadinVersion"
 //    widgetset = 'com.taskadapter.webui.widgetset.Vaadin1Widgetset'

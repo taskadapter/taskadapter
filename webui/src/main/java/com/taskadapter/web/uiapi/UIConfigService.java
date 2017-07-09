@@ -32,7 +32,8 @@ public final class UIConfigService {
             String connectorTypeId, String serializedConfig) {
         final PluginFactory<T> connectorFactory = pluginManager.getPluginFactory(connectorTypeId);
         if (connectorFactory == null) {
-            throw new RuntimeException("Connector with ID '" + connectorTypeId + "' is unknown. Are you using Task Adapter with the old condig files?");
+            throw new RuntimeException("Connector with ID '" + connectorTypeId +
+                    "' is unknown. Are you using Task Adapter with very old config files?");
         }
         final PluginEditorFactory<T> editorFactory = editorManager.getEditorFactory(connectorTypeId);
         final T config = connectorFactory.readConfig(new JsonParser()

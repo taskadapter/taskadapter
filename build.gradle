@@ -25,8 +25,7 @@ ext.libraries = [
 
 subprojects {
 
-    apply plugin: 'java'
-    apply plugin: 'scala'
+    apply plugin: 'scala' // it extends Java plugin, so you don't need to apply that one separately
 
     // java sources are added to Scala compile phase and removed from Java compile.
     // this solution is fix java->scala dependency issue
