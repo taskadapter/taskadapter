@@ -111,11 +111,18 @@ public class TaskFieldsMappingFragment implements Validatable {
         gridLayout.addComponent(new Label("<hr>", ContentMode.HTML), 0, 1, COLUMNS_NUMBER - 1, 1);
     }
 
+    /**
+     * Add all rows to mappings table
+     */
     private void addSupportedFields() {
         // TODO sort?
         mappings.getMappings().forEach(this::addField);
     }
 
+    /**
+     * Add a row to mapping table:
+     * "selected", "tooltip", connector 1 field name, connector 2 field name, default value.
+     */
     private void addField(FieldMapping field) {
         addCheckbox(field);
         String helpForField = getHelpForField(field);
@@ -131,12 +138,13 @@ public class TaskFieldsMappingFragment implements Validatable {
     }
 
     private void addConnectorElement(FieldMapping field, UIConnectorConfig config, String leftRightField) {
-        if (field.getField().equals(FIELD.REMOTE_ID.name()) && remoteIdFieldNotSupported(config)) {
-            String idFieldDisplayValue = GTaskDescriptor.getDisplayValue(FIELD.ID.name());
-            createMappingForSingleValue(idFieldDisplayValue);
-        } else {
+        // TODO TA3 remote ID
+//        if (field.getField().equals(FIELD.REMOTE_ID.name()) && remoteIdFieldNotSupported(config)) {
+//            String idFieldDisplayValue = GTaskDescriptor.getDisplayValue(FIELD.ID.name());
+//            createMappingForSingleValue(idFieldDisplayValue);
+//        } else {
             addConnectorField(config.getAvailableFields(), field, leftRightField);
-        }
+//        }
     }
 
     private boolean remoteIdFieldNotSupported(UIConnectorConfig config) {
@@ -176,13 +184,13 @@ public class TaskFieldsMappingFragment implements Validatable {
 
     private void addConnectorField(List<String> connectorFields, FieldMapping fieldMapping, String leftRightField) {
         // TODO TA3 mapping editor
-/*        String[] allowedValues = connectorFields.getAllowedValues(fieldMapping.getField());
+//        String[] allowedValues = connectorFields.getAllowedValues(fieldMapping.getField());
         BeanItemContainer<String> container = new BeanItemContainer<>(String.class);
         final MethodProperty<String> mappedTo = new MethodProperty<>(fieldMapping, leftRightField);
 
-        if (connectorFields.isFieldSupported(fieldMapping.getField())) {
-            if (allowedValues.length > 1) {
-                container.addAll(Arrays.asList(allowedValues));
+//        if (connectorFields.isFieldSupported(fieldMapping.getField())) {
+//            if (allowedValues.length > 1) {
+                container.addAll(connectorFields);
                 ComboBox combo = new ComboBox(null, container);
                 combo.setPropertyDataSource(mappedTo);
                 combo.setWidth(160, PIXELS);
@@ -190,16 +198,16 @@ public class TaskFieldsMappingFragment implements Validatable {
                 gridLayout.setComponentAlignment(combo, Alignment.MIDDLE_LEFT);
                 Object currentValue = mappedTo.getValue();
                 combo.select(currentValue);
-            } else if (allowedValues.length == 1) {
-                createMappingForSingleValue(allowedValues[0]);
-            } else {
-                final String displayValue = GTaskDescriptor
-                        .getDisplayValue(fieldMapping.getField());
-                createMappingForSingleValue(displayValue);
-            }
-        } else {
-            addEmptyCell();
-        }*/
+//            } else if (allowedValues.length == 1) {
+//                createMappingForSingleValue(allowedValues[0]);
+//            } else {
+//                final String displayValue = GTaskDescriptor
+//                        .getDisplayValue(fieldMapping.getField());
+//                createMappingForSingleValue(displayValue);
+//            }
+//        } else {
+//            addEmptyCell();
+//        }
     }
 
     private void createMappingForSingleValue(String displayValue) {
