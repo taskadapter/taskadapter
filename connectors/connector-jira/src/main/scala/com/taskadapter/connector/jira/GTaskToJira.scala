@@ -27,10 +27,7 @@ class GTaskToJira(config: JiraConfig, issueTypeList: java.lang.Iterable[IssueTyp
                   jiraPriorities: java.lang.Iterable[Priority])
   extends ConnectorConverter[GTask, IssueWrapper] {
 
-  jiraPriorities.forEach { p =>
-    priorities.put(p.getName, p)
-  }
-  final private val priorities = new util.HashMap[String, BasicPriority]
+  val priorities = jiraPriorities.asScala.map(p => p.getName -> p).toMap
 
   private def convertToJiraIssue(task: GTask) = {
     val issueInputBuilder = new IssueInputBuilder(config.getProjectKey, findIssueTypeId(task))
@@ -68,7 +65,7 @@ class GTaskToJira(config: JiraConfig, issueTypeList: java.lang.Iterable[IssueTyp
         val priorityNumber = value.asInstanceOf[Integer]
         val jiraPriorityName = config.getPriorities.getPriorityByMSP(priorityNumber)
         if (!jiraPriorityName.isEmpty) {
-          val priority = priorities.get(jiraPriorityName)
+          val priority = priorities(jiraPriorityName)
           if (priority != null) issueInputBuilder.setPriority(priority)
         }
       case JiraField.estimatedTime.name => if (value != null) {
