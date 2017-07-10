@@ -72,7 +72,7 @@ public final class ExportPage {
     private final VerticalLayout content;
 
     private ExportPage(ConfigOperations configOps, UISyncConfig config,
-                       ExportDirection exportDirection, int taskLimit, boolean showFilePath, Runnable onDone) {
+                       int taskLimit, boolean showFilePath, Runnable onDone) {
         this.config = config;
         this.onDone = onDone;
         this.taskLimit = taskLimit;
@@ -333,9 +333,8 @@ public final class ExportPage {
     }
 
     public static Component render(ConfigOperations configOps,
-                                   UISyncConfig config, ExportDirection exportDirection, int taskLimit, boolean showFilePath,
+                                   UISyncConfig config, int taskLimit, boolean showFilePath,
                                    Runnable onDone) {
-        return new ExportPage(configOps, config, exportDirection, taskLimit, showFilePath,
-                onDone).ui;
+        return new ExportPage(configOps, config, taskLimit, showFilePath, onDone).ui;
     }
 }

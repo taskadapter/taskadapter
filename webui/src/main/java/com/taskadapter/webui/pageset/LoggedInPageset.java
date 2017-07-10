@@ -235,12 +235,12 @@ public class LoggedInPageset {
 
             @Override
             public void forwardSync(UISyncConfig config) {
-                sync(config, ExportDirection.RIGHT);
+                sync(config);
             }
 
             @Override
             public void backwardSync(UISyncConfig config) {
-                sync(config, ExportDirection.LEFT);
+                sync(config.reverse());
             }
 
             @Override
@@ -297,12 +297,12 @@ public class LoggedInPageset {
                 new EditConfigPage.Callback() {
                     @Override
                     public void forwardSync(UISyncConfig config) {
-                        sync(config, ExportDirection.RIGHT);
+                        sync(config);
                     }
 
                     @Override
                     public void backwardSync(UISyncConfig config) {
-                        sync(config, ExportDirection.LEFT);
+                        sync(config.reverse());
                     }
 
                     @Override
@@ -323,7 +323,7 @@ public class LoggedInPageset {
      * @param config
      *            base config. May be saved!
      */
-    private void sync(UISyncConfig config, ExportDirection exportDirection) {
+    private void sync(UISyncConfig config) {
         if (!prepareForConversion(config))
             return;
 //        final NewConnector destinationConnector = config.getConnector2().createConnectorInstance();
@@ -331,7 +331,7 @@ public class LoggedInPageset {
 //        if (destinationConnector instanceof FileBasedConnector) {
 //            processFile(config, (FileBasedConnector) destinationConnector);
 //        } else {
-            exportCommon(config, exportDirection);
+            exportCommon(config);
 //        }
     }
 
@@ -406,12 +406,12 @@ public class LoggedInPageset {
         });
     }
 
-    private void exportCommon(UISyncConfig config, ExportDirection exportDirection) {
+    private void exportCommon(UISyncConfig config) {
         tracker.trackPage("export_confirmation");
         final int maxTasks = services.licenseManager
                 .isSomeValidLicenseInstalled() ? MAX_TASKS_TO_LOAD
                 : LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
-        applyUI(ExportPage.render(context.configOps, config, exportDirection, maxTasks,
+        applyUI(ExportPage.render(context.configOps, config, maxTasks,
                 services.settingsManager.isTAWorkingOnLocalMachine(),
                 this::showHome));
     }

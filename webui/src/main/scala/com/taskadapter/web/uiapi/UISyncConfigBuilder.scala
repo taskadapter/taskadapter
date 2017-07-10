@@ -26,7 +26,7 @@ class UISyncConfigBuilder(val uiConfigService: UIConfigService) {
     val newMappings = decode[Seq[FieldMapping]](jsonString)
     newMappings match {
       case Left(e) => throw new RuntimeException(s"cannot parse mappings from config: $e")
-      case Right(m) => println(m)
+      case Right(m) =>
         new UISyncConfig(storedConfig.getId, ownerName, label, config1, config2, m.asJava, false)
     }
   }
