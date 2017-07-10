@@ -84,24 +84,24 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueWrapper> {
 
     private void processField(IssueInputBuilder issueInputBuilder, String fieldName, Object value) {
 
-        if (fieldName.equals(JiraField.summary())) {
+        if (fieldName.equals(JiraField.summary().name())) {
             issueInputBuilder.setSummary((String) value);
         }
 
-        if (fieldName.equals(JiraField.description())) {
+        if (fieldName.equals(JiraField.description().name())) {
             issueInputBuilder.setDescription((String) value);
         }
 
-        if (fieldName.equals(JiraField.dueDate()) && value != null) {
+        if (fieldName.equals(JiraField.dueDate().name()) && value != null) {
             DateTime dueDateTime = new DateTime(value);
             issueInputBuilder.setDueDate(dueDateTime);
         }
 
-        if (fieldName.equals(JiraField.assignee()) && value != null) {
+        if (fieldName.equals(JiraField.assignee().name()) && value != null) {
             issueInputBuilder.setAssigneeName((String) value);
         }
 
-        if (fieldName.equals(JiraField.priority())) {
+        if (fieldName.equals(JiraField.priority().name())) {
             final Integer priorityNumber = (Integer) value;
             final String jiraPriorityName = config.getPriorities().getPriorityByMSP(priorityNumber);
             if (!jiraPriorityName.isEmpty()) {
@@ -112,13 +112,13 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueWrapper> {
             }
         }
 
-        if (fieldName.equals(JiraField.estimatedTime()) && value != null) {
+        if (fieldName.equals(JiraField.estimatedTime().name()) && value != null) {
             Float estimatedHours = (Float) value;
             TimeTracking timeTracking = new TimeTracking(Math.round(estimatedHours * 60), null, null);
             issueInputBuilder.setFieldValue(IssueFieldId.TIMETRACKING_FIELD.id, timeTracking);
         }
 
-        if (fieldName.equals(JiraField.environment())) {
+        if (fieldName.equals(JiraField.environment().name())) {
             issueInputBuilder.setFieldValue(fieldName, value);
         }
 
