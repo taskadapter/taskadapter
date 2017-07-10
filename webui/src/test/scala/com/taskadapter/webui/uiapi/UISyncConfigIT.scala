@@ -20,7 +20,7 @@ import scala.collection.JavaConverters._
 class UISyncConfigIT extends FunSpec with Matchers  {
   // TODO maybe use temporary projects in Redmine and JIRA?
   @Rule var tempFolder = new TemporaryFolder
-  private var config = ConfigLoader.loadConfig("Redmine_Microsoft-Project_3.ta_conf")
+/*  private var config = ConfigLoader.loadConfig("Redmine_Microsoft-Project_3.ta_conf")
   private var toRedmineConfig = config.reverse
 
   it("tasksCanBeSavedToRedmine") {
@@ -48,12 +48,12 @@ class UISyncConfigIT extends FunSpec with Matchers  {
     val loaded = TestUtils.loadCreatedTask(connector, rows.asJava, saveResult)
     assertThat(loaded.getValue(RedmineField.description)).isEqualTo("")
   }
-
+*/
   it("tasksCanBeLoadedFromJiraAndSavedToRedmine") {
     val config = ConfigLoader.loadConfig("Atlassian-JIRA_Redmine.ta_conf")
     val loadedTasks = config.loadTasks(100)
     assertThat(loadedTasks.size).isGreaterThan(0)
-    val taskExportResult = toRedmineConfig.saveTasks(loadedTasks, ProgressMonitorUtils.DUMMY_MONITOR)
+    val taskExportResult = config.saveTasks(loadedTasks, ProgressMonitorUtils.DUMMY_MONITOR)
     val saveResult = taskExportResult.saveResult
     assertThat(saveResult.hasErrors).isFalse()
     assertThat(saveResult.getCreatedTasksNumber).isEqualTo(loadedTasks.size)
@@ -62,7 +62,7 @@ class UISyncConfigIT extends FunSpec with Matchers  {
   /**
     * regression test for https://bitbucket.org/taskadapter/taskadapter/issues/43/tasks-are-not-updated-in-redmine-404-not
     */
-  it("taskWithRemoteIdIsUpdatedInRedmine") {
+/*  it("taskWithRemoteIdIsUpdatedInRedmine") {
     val toRedmineConfig = config.reverse
     trySaveAndThenUpdate(toRedmineConfig)
   }
@@ -101,5 +101,5 @@ class UISyncConfigIT extends FunSpec with Matchers  {
     assertThat(secondResult.hasErrors).isFalse()
     assertThat(secondResult.getCreatedTasksNumber).isEqualTo(0)
     assertThat(secondResult.getUpdatedTasksNumber).isEqualTo(1)
-  }
+  }*/
 }

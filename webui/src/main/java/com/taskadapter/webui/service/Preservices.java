@@ -3,7 +3,6 @@ package com.taskadapter.webui.service;
 import java.io.File;
 
 import com.taskadapter.PluginManager;
-import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.SettingsManager;

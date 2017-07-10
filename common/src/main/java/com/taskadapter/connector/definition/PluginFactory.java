@@ -2,6 +2,7 @@ package com.taskadapter.connector.definition;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.taskadapter.connector.Field;
 import com.taskadapter.connector.NewConnector;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  * plugin factory and leave this as a "connector factory" item.
  */
 public interface PluginFactory<C extends ConnectorConfig> {
-    List<String> getAvailableFields();
+    List<Field> getAvailableFields();
 
     NewConnector createConnector(C config);
 

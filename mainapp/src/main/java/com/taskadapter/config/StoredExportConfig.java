@@ -53,7 +53,7 @@ public final class StoredExportConfig {
         return connector2;
     }
 
-    public String getMappings() {
+    public String getMappingsString() {
         return mappings;
     }
 

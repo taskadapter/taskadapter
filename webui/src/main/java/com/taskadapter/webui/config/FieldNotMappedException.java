@@ -1,15 +1,16 @@
 package com.taskadapter.webui.config;
 
+import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 
 public class FieldNotMappedException extends BadConfigException {
-    private String field;
+    private FieldMapping field;
 
-    public FieldNotMappedException(String field) {
+    public FieldNotMappedException(FieldMapping field) {
         this.field = field;
     }
 
-    public String getField() {
+    public FieldMapping getField() {
         return field;
     }
 }

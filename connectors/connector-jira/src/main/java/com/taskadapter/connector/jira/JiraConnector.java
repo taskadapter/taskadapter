@@ -9,6 +9,7 @@ import com.atlassian.jira.rest.client.api.domain.Project;
 import com.atlassian.jira.rest.client.api.domain.Version;
 import com.atlassian.util.concurrent.Promise;
 import com.taskadapter.connector.FieldRow;
+import com.taskadapter.connector.NewConnector;
 import com.taskadapter.connector.common.TaskSavingUtils;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.TaskSaveResult;
@@ -16,7 +17,6 @@ import com.taskadapter.connector.definition.TaskSaveResultBuilder;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
-import com.taskadapter.connector.NewConnector;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -111,7 +110,7 @@ public class JiraConnector implements NewConnector {
     }
 
     @Override
-    public GTask loadTaskByKey(String key, List<FieldRow> rows) {
+    public GTask loadTaskByKey(String key, Iterable<FieldRow> rows) {
         return withJiraRestClient(client -> {
             final JiraTaskLoader loader = new JiraTaskLoader(client, config.getPriorities());
             return loader.loadTask(key);
@@ -132,7 +131,7 @@ public class JiraConnector implements NewConnector {
     }
 
     @Override
-    public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, List<FieldRow> rows) {
+    public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Iterable<FieldRow> rows) {
         return withJiraRestClient(client -> {
             final Iterable<IssueType> issueTypeList = loadIssueTypes(client);
             final Promise<Project> projectPromise = client.getProjectClient().getProject(config.getProjectKey());

@@ -49,7 +49,7 @@ public class JiraToGTask {
 
         if (issue.getAssignee() != null) {
             String jiraUserLogin = issue.getAssignee().getName();
-            task.setValue(JiraField.assignee(), jiraUserLogin);
+            task.setValue(JiraField.assignee().name(), jiraUserLogin);
         }
 
         task.setValue(JiraField.taskType(), issue.getIssueType().getName());

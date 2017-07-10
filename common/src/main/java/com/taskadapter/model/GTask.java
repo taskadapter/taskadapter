@@ -1,5 +1,7 @@
 package com.taskadapter.model;
 
+import com.taskadapter.connector.Field;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,6 +37,10 @@ final public class GTask {
         return getValue(field.name());
     }
 
+    public Object getValue(Field field) {
+        return getValue(field.name());
+    }
+
     public Object getValue(String field) {
         return fields.get(field);
     }
@@ -47,6 +53,9 @@ final public class GTask {
         fields.put(field.name(), value);
     }
 
+    public void setValue(Field field, Object value) {
+        fields.put(field.name(), value);
+    }
     public void setValue(String field, Object value) {
         fields.put(field, value);
     }

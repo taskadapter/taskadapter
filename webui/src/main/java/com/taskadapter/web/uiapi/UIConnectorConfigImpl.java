@@ -1,5 +1,6 @@
 package com.taskadapter.web.uiapi;
 
+import com.taskadapter.connector.Field;
 import com.taskadapter.connector.NewConnector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.PluginFactory;
@@ -86,7 +87,7 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends UIConnector
     }
 
     @Override
-    public List<String> getAvailableFields() {
+    public List<Field> getAvailableFields() {
         return connectorFactory.getAvailableFields();
     }
 
@@ -107,5 +108,12 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends UIConnector
             return guess;
         }
         return ExceptionFormatter.format(e);
+    }
+
+    @Override
+    public String toString() {
+        return "UIConnectorConfigImpl{" +
+                "connectorTypeId='" + connectorTypeId + '\'' +
+                '}';
     }
 }

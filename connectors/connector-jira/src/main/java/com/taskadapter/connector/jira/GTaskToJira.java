@@ -132,7 +132,7 @@ public class GTaskToJira implements ConnectorConverter<GTask, IssueWrapper> {
      */
     private Long findIssueTypeId(GTask task) {
         /* Use explicit task type when possible. */
-        Object value = task.getValue(JiraField.taskType());
+        Object value = task.getValue(JiraField.taskType().name());
         final Long explicitTypeId = getIssueTypeIdByName((String) value);
             if (explicitTypeId != null)
                 return explicitTypeId;

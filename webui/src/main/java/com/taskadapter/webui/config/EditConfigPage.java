@@ -189,7 +189,7 @@ public class EditConfigPage {
             errorMessageLabel.setValue(s);
             return false;
         } catch (FieldNotMappedException e) {
-            String fieldDisplayName = GTaskDescriptor.getDisplayValue(e.getField());
+            String fieldDisplayName =  e.toString(); // GTaskDescriptor.getDisplayValue(e.getField());
             String s = Page.message("error.fieldSelectedForExportNotMapped", fieldDisplayName);
             errorMessageLabel.setValue(s);
             return false;

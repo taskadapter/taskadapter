@@ -2,6 +2,7 @@ package com.taskadapter.connector.redmine;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.taskadapter.connector.Field;
 import com.taskadapter.connector.common.ConfigUtils;
 import com.taskadapter.connector.definition.AvailableFields;
 import com.taskadapter.connector.definition.Descriptor;
@@ -13,7 +14,7 @@ public class RedmineFactory implements PluginFactory<RedmineConfig> {
     private static final Descriptor DESCRIPTOR = new Descriptor(RedmineConnector.ID, RedmineConfig.DEFAULT_LABEL);
     
     @Override
-    public List<String> getAvailableFields() {
+    public List<Field> getAvailableFields() {
         return RedmineField.fieldsAsJava();
     }
 

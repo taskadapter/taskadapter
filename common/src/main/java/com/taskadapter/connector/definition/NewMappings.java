@@ -1,11 +1,10 @@
 package com.taskadapter.connector.definition;
 
-import com.taskadapter.model.GTaskDescriptor;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+// TODO Delete this. it is just a wrapper on collection now.
 public class NewMappings {
     private final Collection<FieldMapping> mappings = new ArrayList<>();
 
@@ -16,11 +15,13 @@ public class NewMappings {
     /**
      * Deep clone constructor.
      */
+/*
     public NewMappings(Collection<FieldMapping> mappings) {
         this.mappings.addAll(mappings.stream()
-                .map(m -> new FieldMapping(m.getField(), m.getConnector1(), m.getConnector2(), m.isSelected(), m.getDefaultValue()))
+                .map(m -> new FieldMapping(m.classForConnector1(), m.fieldInConnector1(), m.fieldInConnector2(), m.selected(), m.defaultValue()))
                 .collect(Collectors.toList()));
     }
+*/
 
     /**
      * Finds and returns a mapping specification for a GTask field. If no
@@ -31,7 +32,7 @@ public class NewMappings {
      * @deprecated this method should not be used at all. It can't reliable find
      * fields for remote-ids.
      */
-    @Deprecated
+/*    @Deprecated
     public FieldMapping getMapping(GTaskDescriptor.FIELD field) {
         if (field == null) {
             return null;
@@ -43,7 +44,7 @@ public class NewMappings {
             }
         }
         return null;
-    }
+    }*/
 
     public void put(FieldMapping fieldMapping) {
         mappings.add(fieldMapping);

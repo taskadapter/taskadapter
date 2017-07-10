@@ -10,7 +10,7 @@ import com.taskadapter.connector.definition.{ProgressMonitor, TaskError, TaskSav
 import com.taskadapter.model.GTask
 
 object TaskSaver {
-  def save(connectorTo: NewConnector, destinationName: String, rows: util.List[FieldRow], tasks: util.List[GTask],
+  def save(connectorTo: NewConnector, destinationName: String, rows: java.lang.Iterable[FieldRow], tasks: util.List[GTask],
            monitor: ProgressMonitor): TaskSaveResult = {
     val totalNumberOfTasks = DataConnectorUtil.calculateNumberOfTasks(tasks)
     monitor.beginTask("Saving " + totalNumberOfTasks + " tasks to " + destinationName, totalNumberOfTasks)

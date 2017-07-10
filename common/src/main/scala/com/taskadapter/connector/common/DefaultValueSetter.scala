@@ -1,12 +1,11 @@
 package com.taskadapter.connector.common
 
 import java.text.{ParseException, SimpleDateFormat}
-import java.util
 import java.util.Date
 
 import com.google.common.base.Strings
-import com.taskadapter.connector.FieldRow
-import com.taskadapter.model.{GTask, GTaskDescriptor}
+import com.taskadapter.connector.{Field, FieldRow}
+import com.taskadapter.model.GTask
 
 import scala.collection.JavaConverters._
 
@@ -24,17 +23,17 @@ object DefaultValueSetter {
     */
   private val DATE_PARSER = new SimpleDateFormat("yyyy MM dd")
 
-  def adapt(fieldRows: util.List[FieldRow], task: GTask): GTask = {
+  def adapt(fieldRows: java.lang.Iterable[FieldRow], task: GTask): GTask = {
     val result = new GTask
     fieldRows.asScala.foreach { row =>
-      val fieldToLoadValueFrom = row.nameInSource
-      val currentFieldValue = task.getValue(fieldToLoadValueFrom)
+      val fieldToLoadValueFrom = row.sourceField
+      val currentFieldValue = task.getValue(fieldToLoadValueFrom.name)
       var newValue = currentFieldValue
       if (fieldIsConsideredEmpty(currentFieldValue)) {
         val valueWithProperType = getValueWithProperType(fieldToLoadValueFrom, row.defaultValueForEmpty)
         newValue = valueWithProperType
       }
-      result.setValue(row.nameInTarget, newValue)
+      result.setValue(row.targetField.name, newValue)
     }
     result.setId(task.getId)
     result.setParentKey(task.getParentKey)
@@ -43,31 +42,12 @@ object DefaultValueSetter {
 
   private def fieldIsConsideredEmpty(value: Any) = (value == null) || (value.isInstanceOf[String] && value.asInstanceOf[String].isEmpty)
 
-  private def getValueWithProperType(field: String, value: String): Object = try {
-    val enumElement = GTaskDescriptor.FIELD.valueOf(field.toUpperCase)
-    getValueWithProperType(enumElement, value)
-  } catch {
-    case e: Exception =>
-      value // string by default
-  }
+  private def getValueWithProperType(field: Field, value: String): Object = {
 
-  private def getValueWithProperType(field: GTaskDescriptor.FIELD, value: String): Object = {
-    // TODO REVIEW Should this code be polymorphic and belong to a GTaskDespciptor.FIELD instances?
-    // It would be more extensible. Same for fieldIsConsideredEmpty.
-    import scala.collection.JavaConversions._
     import scala.language.implicitConversions
-
-    field match {
-      case GTaskDescriptor.FIELD.START_DATE =>
-        parseDate(value)
-      case GTaskDescriptor.FIELD.DUE_DATE =>
-        parseDate(value)
-      case GTaskDescriptor.FIELD.ESTIMATED_TIME =>
-        parseFloat(value).asInstanceOf[Object]
-      case GTaskDescriptor.FIELD.DONE_RATIO =>
-        parseFloat(value).asInstanceOf[Object]
-      case GTaskDescriptor.FIELD.PRIORITY =>
-        parseFloat(value).asInstanceOf[Object]
+    field.typeName match {
+      case "Date" => parseDate(value)
+      case "Float" => parseFloat(value).asInstanceOf[Object]
       case _ => value
     }
   }

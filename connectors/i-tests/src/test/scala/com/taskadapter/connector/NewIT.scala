@@ -38,8 +38,8 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
 
   it("custom value saved to another custom value with default value") {
     val rows = List(
-      FieldRow(true, RedmineField.summary, RedmineField.summary, ""),
-      FieldRow(true, "my_custom_1", "my_custom_2", "default custom alex")
+      FieldRow(RedmineField.summary, RedmineField.summary, ""),
+      FieldRow(Field("my_custom_1"), Field("my_custom_2"), "default custom alex")
     )
     val issue = createIssueInRedmineWithCustomField("my_custom_1", "")
     val result = adapter.adapt(rows)
@@ -51,8 +51,8 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
 
   it("Description field gets default value on save if needed") {
     val rows = List(
-      FieldRow(true, RedmineField.summary, RedmineField.summary, ""),
-      FieldRow(true, RedmineField.description, RedmineField.description, "default alex description")
+      FieldRow(RedmineField.summary, RedmineField.summary, ""),
+      FieldRow(RedmineField.description, RedmineField.description, "default alex description")
     )
     val issue = createIssueInRedmine()
     val result = adapter.adapt(rows)
@@ -63,8 +63,8 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
 
   it("Description field keeps source value when it is present") {
     val rows = List(
-      FieldRow(true, RedmineField.summary, RedmineField.summary, ""),
-      FieldRow(true, RedmineField.description, RedmineField.description, "default alex description")
+      FieldRow(RedmineField.summary, RedmineField.summary, ""),
+      FieldRow(RedmineField.description, RedmineField.description, "default alex description")
     )
     val issue = createIssueInRedmine("description1")
     val result = adapter.adapt(rows)
@@ -77,8 +77,8 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
 
   it("loads custom field in task and saves it to another custom field") {
     val rows = List(
-      FieldRow(true, RedmineField.summary, RedmineField.summary, ""),
-      FieldRow(true, "my_custom_1", "my_custom_2", "")
+      FieldRow(RedmineField.summary, RedmineField.summary, ""),
+      FieldRow(Field("my_custom_1"), Field("my_custom_2"), "")
     )
 
     val issue = createIssueInRedmineWithCustomField("my_custom_1", "some value")
@@ -91,8 +91,8 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
 
   it("Description field value is saved to custom field") {
     val rows = List(
-      FieldRow(true, RedmineField.summary, RedmineField.summary, ""),
-      FieldRow(true, RedmineField.description, "my_custom_1", "")
+      FieldRow(RedmineField.summary, RedmineField.summary, ""),
+      FieldRow(RedmineField.description, Field("my_custom_1"), "")
     )
     val issue = createIssueInRedmine("description 1")
     val result = adapter.adapt(rows)

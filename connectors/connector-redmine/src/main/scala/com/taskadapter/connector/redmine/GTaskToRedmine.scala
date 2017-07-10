@@ -43,21 +43,22 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
       case "RELATIONS" => // processed in another place (for now?)
       case "CHILDREN" => // processed in another place (for now?)
 
-      case RedmineField.summary => issue.setSubject(value.asInstanceOf[String])
-      case RedmineField.startDate => issue.setStartDate(value.asInstanceOf[Date])
-      case RedmineField.dueDate => issue.setDueDate(value.asInstanceOf[Date])
-      case RedmineField.estimatedTime => issue.setEstimatedHours(value.asInstanceOf[Float])
+      // TODO TA3 review types
+      case RedmineField.summary.name => issue.setSubject(value.asInstanceOf[String])
+      case RedmineField.startDate.name => issue.setStartDate(value.asInstanceOf[Date])
+      case RedmineField.dueDate.name => issue.setDueDate(value.asInstanceOf[Date])
+      case RedmineField.estimatedTime.name => issue.setEstimatedHours(value.asInstanceOf[Float])
 
-      case RedmineField.doneRatio => issue.setDoneRatio(value.asInstanceOf[Integer])
-      case RedmineField.taskType =>
+      case RedmineField.doneRatio.name => issue.setDoneRatio(value.asInstanceOf[Integer])
+      case RedmineField.taskType.name =>
         var trackerName = value.asInstanceOf[String]
         if (Strings.isNullOrEmpty(trackerName)) trackerName = config.getDefaultTaskType
         issue.setTracker(project.getTrackerByName(trackerName))
-      case RedmineField.taskStatus =>
+      case RedmineField.taskStatus.name =>
         processTaskStatus(issue, value.asInstanceOf[String])
-      case RedmineField.description =>
+      case RedmineField.description.name =>
         issue.setDescription(value.asInstanceOf[String])
-      case RedmineField.priority =>
+      case RedmineField.priority.name =>
         val priority = value.asInstanceOf[Integer]
         if (priority != null) {
           val priorityName = config.getPriorities.getPriorityByMSP(priority)
@@ -67,12 +68,12 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
             issue.setPriorityText(priorityName)
           }
         }
-      case RedmineField.targetVersion =>
+      case RedmineField.targetVersion.name =>
         val version = getVersionByName(value.asInstanceOf[String])
         issue.setTargetVersion(version)
-      case RedmineField.createdOn => issue.setCreatedOn(value.asInstanceOf[Date])
-      case RedmineField.updatedOn => issue.setUpdatedOn(value.asInstanceOf[Date])
-      case RedmineField.assignee => processAssignee(issue, value)
+      case RedmineField.createdOn.name => issue.setCreatedOn(value.asInstanceOf[Date])
+      case RedmineField.updatedOn.name => issue.setUpdatedOn(value.asInstanceOf[Date])
+      case RedmineField.assignee.name => processAssignee(issue, value)
       case _ =>
         // all known fields are processed. considering this a custom field
         val customFieldId = CustomFieldDefinitionFinder.findCustomFieldId(customFieldDefinitions, fieldName)

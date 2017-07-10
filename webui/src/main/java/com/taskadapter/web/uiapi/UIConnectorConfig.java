@@ -1,5 +1,6 @@
 package com.taskadapter.web.uiapi;
 
+import com.taskadapter.connector.Field;
 import com.taskadapter.connector.NewConnector;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.DroppingNotSupportedException;
@@ -118,12 +119,9 @@ public abstract class UIConnectorConfig {
     public abstract ComponentContainer createMiniPanel(Sandbox sandbox);
 
     /**
-     * Returns a list of connector available fields in current configuration.
-     * 
-     * @return list of connector avaialable fields (in current confiruation
-     *         only).
+     * @return list of connector available fields (in current configuration).
      */
-    public abstract List<String> getAvailableFields();
+    public abstract List<Field> getAvailableFields();
 
     /**
      * Returns a source location name. This name is just a string for a user.

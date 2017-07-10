@@ -1,14 +1,5 @@
 package com.taskadapter.web.uiapi;
 
-import com.taskadapter.connector.definition.FieldMapping;
-import com.taskadapter.connector.definition.NewMappings;
-import com.taskadapter.model.GTaskDescriptor;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-
-import java.util.Collection;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -27,7 +18,7 @@ public class UIConfigStoreTest {
     }
 
     private void checkFieldSelected(NewMappings newMappings, String connector1ExpectedValue, String connector2ExpectedValue) {
-        FieldMapping fieldMapping = findField(newMappings.getMappings(), GTaskDescriptor.FIELD.START_DATE);
+        FieldMapping fieldMapping = findField(newMappings.getMappingsString(), GTaskDescriptor.FIELD.START_DATE);
         assertEquals(connector1ExpectedValue, fieldMapping.getConnector1());
         assertEquals(connector2ExpectedValue, fieldMapping.getConnector2());
         assertTrue(fieldMapping.isSelected());

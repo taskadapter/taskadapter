@@ -21,9 +21,8 @@ class SimpleTaskSaver[N](converter: ConnectorConverter[GTask, N],
                                saveAPI: BasicIssueSaveAPI[N],
                                result: TaskSaveResultBuilder, progressMonitor: ProgressMonitor) {
 
-  def saveTasks(parentIssueKey: String, tasks: util.List[GTask], fieldRows: util.List[FieldRow]): Unit = {
-    import scala.collection.JavaConversions._
-    for (task <- tasks) {
+  def saveTasks(parentIssueKey: String, tasks: util.List[GTask], fieldRows: java.lang.Iterable[FieldRow]): Unit = {
+    tasks.forEach { task =>
       var newTaskKey = ""
       try {
         if (parentIssueKey != null) task.setParentKey(parentIssueKey)

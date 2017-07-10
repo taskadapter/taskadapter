@@ -11,10 +11,6 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 
-/**
- * Task saving utils.
- * 
- */
 public class TaskSavingUtils {
     private TaskSavingUtils() {
         throw new UnsupportedOperationException();
@@ -54,7 +50,7 @@ public class TaskSavingUtils {
             ConnectorConverter<GTask, N> converter,
             BasicIssueSaveAPI<N> saveAPI, 
             ProgressMonitor progressMonitor,
-            List<FieldRow> fieldRows) {
+            Iterable<FieldRow> fieldRows) {
         final TaskSaveResultBuilder result = new TaskSaveResultBuilder();
         final SimpleTaskSaver<N> saver = new SimpleTaskSaver<>(converter, saveAPI, result, progressMonitor);
         saver.saveTasks(null, tasks, fieldRows);

@@ -20,7 +20,7 @@ public class MappingGuesser {
      * @param storedConfig config to update.
      * @return new mappings guessed from a previous config.
      */
-    static NewMappings guessNewMappings(StoredExportConfig storedConfig) {
+/*    static NewMappings guessNewMappings(StoredExportConfig storedConfig) {
         final JsonObject cc1 = new JsonParser()
                 .parse(storedConfig.getConnector1().getSerializedConfig())
                 .getAsJsonObject().get("fieldsMapping").getAsJsonObject();
@@ -28,7 +28,7 @@ public class MappingGuesser {
                 .parse(storedConfig.getConnector2().getSerializedConfig())
                 .getAsJsonObject().get("fieldsMapping").getAsJsonObject();
 
-        /* Config is too old. Don't do anything with it */
+        // Config is too old. Don't do anything with it
         if (!cc1.has("selected") || !cc2.has("selected")) {
             return new NewMappings();
         }
@@ -67,9 +67,7 @@ public class MappingGuesser {
                 continue;
             }
 
-            /* Don't create mappings here. New mappings will be generated in
-             * a fixup phase.
-             */
+            // Don't create mappings here. New mappings will be generated in a fixup phase.
             if (!sel1.get(fieldName).getAsBoolean()
                     || !sel2.get(fieldName).getAsBoolean()) {
                 continue;
@@ -88,5 +86,5 @@ public class MappingGuesser {
         }
 
         return res;
-    }
+    }*/
 }

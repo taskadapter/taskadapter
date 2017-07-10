@@ -1,6 +1,5 @@
 package com.taskadapter.connector.definition;
 
-// TODO !! Rename to ExportDirection?
-public enum MappingSide {
+public enum ExportDirection {
     LEFT, RIGHT
 }

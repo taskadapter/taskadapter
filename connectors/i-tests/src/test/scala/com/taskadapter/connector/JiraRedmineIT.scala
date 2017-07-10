@@ -37,8 +37,8 @@ class JiraRedmineIT extends FunSpec with Matchers with BeforeAndAfter with Befor
 
   it("Description from Jira is saved to description in Redmine") {
     val rows = List(
-      FieldRow(true, JiraField.summary, RedmineField.summary, ""),
-      FieldRow(true, JiraField.description, RedmineField.description, "")
+      FieldRow(JiraField.summary, RedmineField.summary, ""),
+      FieldRow(JiraField.description, RedmineField.description, "")
     )
     val task = new GTask()
     task.setValue(JiraField.summary, "summary1")

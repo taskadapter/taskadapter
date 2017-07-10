@@ -1,16 +1,16 @@
 package com.taskadapter.webui.config;
 
-import com.taskadapter.connector.definition.AvailableFields;
+import com.taskadapter.connector.Field;
 import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.NewMappings;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.model.GTaskDescriptor;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.web.configeditor.Validatable;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.MethodProperty;
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -24,8 +24,9 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
@@ -49,10 +50,10 @@ public class TaskFieldsMappingFragment implements Validatable {
     private Messages messages;
     private UIConnectorConfig connector1;
     private UIConnectorConfig connector2;
-    private NewMappings mappings;
+    private List<FieldMapping> mappings;
 
     public TaskFieldsMappingFragment(Messages messages, UIConnectorConfig connector1,
-                                     UIConnectorConfig connector2, NewMappings mappings) {
+                                     UIConnectorConfig connector2, List<FieldMapping> mappings) {
         this.messages = messages;
         this.connector1 = connector1;
         this.connector2 = connector2;
@@ -116,7 +117,7 @@ public class TaskFieldsMappingFragment implements Validatable {
      */
     private void addSupportedFields() {
         // TODO sort?
-        mappings.getMappings().forEach(this::addField);
+        mappings.forEach(this::addField);
     }
 
     /**
@@ -125,15 +126,16 @@ public class TaskFieldsMappingFragment implements Validatable {
      */
     private void addField(FieldMapping field) {
         addCheckbox(field);
-        String helpForField = getHelpForField(field);
+        // TODO TA3 help is per connector field, not for the whole row now.
+        String helpForField = null; //getHelpForField(field);
         if (helpForField != null) {
             addHelp(helpForField);
         } else {
             addEmptyCell();
         }
 
-        addConnectorElement(field, connector1, "connector1");
-        addConnectorElement(field, connector2, "connector2");
+        addConnectorElement(field, connector1, "LEFT");
+        addConnectorElement(field, connector2, "RIGHT");
         addTextFieldForDefaultValue(field);
     }
 
@@ -155,7 +157,8 @@ public class TaskFieldsMappingFragment implements Validatable {
 
     private void addCheckbox(FieldMapping field) {
         CheckBox checkbox = new CheckBox();
-        final MethodProperty<Boolean> selected = new MethodProperty<>(field, "selected");
+//        final MethodProperty<Boolean> selected = new MethodProperty<>(field, "selected");
+        ObjectProperty<Boolean> selected = new ObjectProperty<>(field.selected());
         checkbox.setPropertyDataSource(selected);
         gridLayout.addComponent(checkbox);
         gridLayout.setComponentAlignment(checkbox, Alignment.MIDDLE_CENTER);
@@ -163,7 +166,8 @@ public class TaskFieldsMappingFragment implements Validatable {
 
     private void addTextFieldForDefaultValue(FieldMapping mapping) {
         TextField field = new TextField();
-        final MethodProperty<String> methodProperty = new MethodProperty<>(mapping, "defaultValue");
+//        final MethodProperty<String> methodProperty = new MethodProperty<>(mapping, "defaultValue");
+        final ObjectProperty<String> methodProperty = new ObjectProperty<>(mapping.defaultValue());
         field.setPropertyDataSource(methodProperty);
         gridLayout.addComponent(field);
         gridLayout.setComponentAlignment(field, Alignment.MIDDLE_CENTER);
@@ -182,22 +186,28 @@ public class TaskFieldsMappingFragment implements Validatable {
         gridLayout.setComponentAlignment(emptyLabel, Alignment.MIDDLE_LEFT);
     }
 
-    private void addConnectorField(List<String> connectorFields, FieldMapping fieldMapping, String leftRightField) {
+    private void addConnectorField(List<Field> connectorFields, FieldMapping fieldMapping, String leftRightField) {
         // TODO TA3 mapping editor
 //        String[] allowedValues = connectorFields.getAllowedValues(fieldMapping.getField());
         BeanItemContainer<String> container = new BeanItemContainer<>(String.class);
-        final MethodProperty<String> mappedTo = new MethodProperty<>(fieldMapping, leftRightField);
+//        final MethodProperty<String> mappedTo = new MethodProperty<>(fieldMapping, leftRightField);
+//        final ObjectProperty<String> mappedTo = new ObjectProperty<>(fieldMapping, leftRightField);
 
 //        if (connectorFields.isFieldSupported(fieldMapping.getField())) {
 //            if (allowedValues.length > 1) {
-                container.addAll(connectorFields);
+                List<String> fieldNames = connectorFields.stream()
+                        .map(field -> field.name()).collect(Collectors.toList());
+                container.addAll(fieldNames);
                 ComboBox combo = new ComboBox(null, container);
-                combo.setPropertyDataSource(mappedTo);
+//                combo.setPropertyDataSource(mappedTo);
                 combo.setWidth(160, PIXELS);
                 gridLayout.addComponent(combo);
                 gridLayout.setComponentAlignment(combo, Alignment.MIDDLE_LEFT);
-                Object currentValue = mappedTo.getValue();
+                Object currentValue = leftRightField.equals("LEFT")? fieldMapping.fieldInConnector1().name():
+                        fieldMapping.fieldInConnector2().name();
                 combo.select(currentValue);
+
+
 //            } else if (allowedValues.length == 1) {
 //                createMappingForSingleValue(allowedValues[0]);
 //            } else {
@@ -209,7 +219,7 @@ public class TaskFieldsMappingFragment implements Validatable {
 //            addEmptyCell();
 //        }
     }
-
+/*
     private void createMappingForSingleValue(String displayValue) {
         Label label = new Label(displayValue);
         gridLayout.addComponent(label);
@@ -220,7 +230,7 @@ public class TaskFieldsMappingFragment implements Validatable {
         String elementId = field.getField().toString();
         return HELP_MESSAGES.getNoDefault(elementId);
     }
-
+*/
     @Override
     public void validate() throws BadConfigException {
         MappingsValidator.validate(mappings);

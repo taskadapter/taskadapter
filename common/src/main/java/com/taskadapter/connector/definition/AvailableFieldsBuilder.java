@@ -48,7 +48,7 @@ public final class AvailableFieldsBuilder {
      * @throws IllegalArgumentException if any argument is <code>null</code> or there is an attempt
      *                                  to change current mapping.
      */
-    public AvailableFieldsBuilder addField(String field, String... values) throws IllegalArgumentException {
+/*    public AvailableFieldsBuilder addField(String field, String... values) throws IllegalArgumentException {
         if (field == null) {
             throw new IllegalArgumentException("Field cannot be null");
         }
@@ -67,7 +67,7 @@ public final class AvailableFieldsBuilder {
         allowAvailabilitySelection = true;
         lastAddedField = field;
         return this;
-    }
+    }*/
     
     /**
      * Sets the last added field as "unselected" by default.
@@ -75,7 +75,7 @@ public final class AvailableFieldsBuilder {
      * @throws IllegalStateException if there are no fields at all.
      * @throws IllegalStateException if this field was explicitly set as selected or unselected already.
      */
-    public AvailableFieldsBuilder unselected() throws IllegalStateException {
+/*    public AvailableFieldsBuilder unselected() throws IllegalStateException {
         if (!allowAvailabilitySelection) {
             throw new IllegalStateException("Cannot change default field mapping state");
         }
@@ -87,7 +87,7 @@ public final class AvailableFieldsBuilder {
                         .getDefaultValue(), false));
         return this;
     }
-    
+    */
     /**
      * Sets the default value for the last added field.
      *
@@ -96,7 +96,7 @@ public final class AvailableFieldsBuilder {
      * @throws IllegalStateException if there are no fields at all.
      * @throws IllegalStateException if defualt field value was explicitly set already. 
      */
-    public AvailableFieldsBuilder withDefault(String value) throws IllegalStateException {
+/*    public AvailableFieldsBuilder withDefault(String value) throws IllegalStateException {
         if (!allowSetDefault) {
             throw new IllegalStateException("Cannot set default field value");
         }
@@ -106,7 +106,7 @@ public final class AvailableFieldsBuilder {
         allowSetDefault = false;
         fields.put(lastAddedField, newConfig);
         return this;
-    }
+    }*/
     
     /**
      * "End" builds and returns an "Available fields" structure. Despite the

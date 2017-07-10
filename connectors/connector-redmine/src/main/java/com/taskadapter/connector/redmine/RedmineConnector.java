@@ -33,7 +33,7 @@ public class RedmineConnector implements NewConnector {
     }
 
     @Override
-    public GTask loadTaskByKey(String key, List<FieldRow> rows)  {
+    public GTask loadTaskByKey(String key, Iterable<FieldRow> rows)  {
         try {
             WebServerInfo serverInfo = config.getServerInfo();
             RedmineManager mgr = RedmineManagerFactory
@@ -111,7 +111,7 @@ public class RedmineConnector implements NewConnector {
     }
 
     @Override
-    public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, List<FieldRow> fieldRows) {
+    public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, java.lang.Iterable<FieldRow> fieldRows) {
         try {
             final RedmineManager mgr = RedmineManagerFactory.createRedmineManager(config.getServerInfo());
             try {
@@ -139,8 +139,8 @@ public class RedmineConnector implements NewConnector {
         }
     }
 
-    private static Map<String, Integer> loadPriorities(List<FieldRow> rows, RedmineManager mgr) throws RedmineException {
-        if (FieldRowFinder.containsTargetField(rows, RedmineField.priority())) {
+    private static Map<String, Integer> loadPriorities(java.lang.Iterable<FieldRow> rows, RedmineManager mgr) throws RedmineException {
+        if (FieldRowFinder.containsTargetField(rows, RedmineField.priority().name())) {
             return loadPriorities(mgr);
         }
         return new HashMap<>();

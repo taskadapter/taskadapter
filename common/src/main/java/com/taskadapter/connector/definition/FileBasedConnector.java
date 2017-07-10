@@ -8,7 +8,7 @@ import com.taskadapter.model.GTask;
 import java.util.List;
 
 public interface FileBasedConnector {
-    void updateTasksByRemoteIds(List<GTask> tasks, List<FieldRow> rows) throws ConnectorException;
+    void updateTasksByRemoteIds(List<GTask> tasks, Iterable<FieldRow> rows) throws ConnectorException;
 
     boolean fileExists();
 

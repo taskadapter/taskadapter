@@ -17,12 +17,12 @@ public class Updater {
     private List<GTask> existingTasks;
     private List<GTask> tasksInExternalSystem;
     private NewConnector fileConnector;
-    private List<FieldRow> rows;
+    private Iterable<FieldRow> rows;
     private NewConnector remoteConnector;
     private ProgressMonitor monitor;
     private String sourceLocationName;
 
-    public Updater(NewConnector fileConnector, List<FieldRow> rows,
+    public Updater(NewConnector fileConnector, Iterable<FieldRow> rows,
             NewConnector remoteConnector,
             String sourceLocationName) {
         super();

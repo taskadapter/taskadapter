@@ -14,7 +14,7 @@ public class UISyncConfigTest {
         UISyncConfig uiSyncConfig = ConfigLoader.loadConfig("jira_msp.conf");
 
         assertTrue(uiSyncConfig.generateTargetMappings().isFieldSelected(GTaskDescriptor.FIELD.REMOTE_ID));
-        assertTrue(uiSyncConfig.generateSourceMappings().isFieldSelected(GTaskDescriptor.FIELD.SUMMARY));
+        assertTrue(uiSyncConfig.generateFieldRowsToExportLeft().isFieldSelected(GTaskDescriptor.FIELD.SUMMARY));
     }
 */
     // TODO TA3 these tests won't work without MSP editor dependency

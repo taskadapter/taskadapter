@@ -6,7 +6,7 @@ import com.taskadapter.connector.definition.{ProgressMonitor, TaskSaveResult}
 import com.taskadapter.model.GTask
 
 trait NewConnector {
-  def saveData(tasks: util.List[GTask], monitor: ProgressMonitor, rows: util.List[FieldRow]): TaskSaveResult
+  def saveData(tasks: util.List[GTask], monitor: ProgressMonitor, rows: java.lang.Iterable[FieldRow]): TaskSaveResult
 
   /**
     * Load list of tasks. Order of loaded tasks is not specified and may depend on implementation.
@@ -23,7 +23,7 @@ trait NewConnector {
   /**
     * Loads one task by its key.
     */
-  def loadTaskByKey(key: String, rows: util.List[FieldRow]): GTask
+  def loadTaskByKey(key: String, rows: java.lang.Iterable[FieldRow]): GTask
 
   /**
     * is called after data was exported from this connector and we got some new "remote IDs", which need to

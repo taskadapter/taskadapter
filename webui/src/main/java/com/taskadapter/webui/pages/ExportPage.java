@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
+import com.taskadapter.connector.definition.ExportDirection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +72,7 @@ public final class ExportPage {
     private final VerticalLayout content;
 
     private ExportPage(ConfigOperations configOps, UISyncConfig config,
-            int taskLimit, boolean showFilePath, Runnable onDone) {
+                       ExportDirection exportDirection, int taskLimit, boolean showFilePath, Runnable onDone) {
         this.config = config;
         this.onDone = onDone;
         this.taskLimit = taskLimit;
@@ -162,7 +163,7 @@ public final class ExportPage {
     }
 
     /**
-     * Perofrms an export.
+     * Launches export.
      * 
      * @param selectedTasks list of selected tasks.
      */
@@ -326,32 +327,15 @@ public final class ExportPage {
         errorMessage.setVisible(haveMessage);
     }
 
-    /**
-     * Sets new page content.
-     * 
-     * @param comp
-     *            page content.
-     */
     private void setContent(Component comp) {
         content.removeAllComponents();
         content.addComponent(comp);
     }
 
-    /**
-     * Renders an export page.
-     * 
-     * @param configOps
-     *            config operations.
-     * @param config
-     *            config to export.
-     * @param onDone
-     *            "done" handler.
-     * @return UI component.
-     */
     public static Component render(ConfigOperations configOps,
-            UISyncConfig config, int taskLimit, boolean showFilePath,
-            Runnable onDone) {
-        return new ExportPage(configOps, config, taskLimit, showFilePath,
+                                   UISyncConfig config, ExportDirection exportDirection, int taskLimit, boolean showFilePath,
+                                   Runnable onDone) {
+        return new ExportPage(configOps, config, exportDirection, taskLimit, showFilePath,
                 onDone).ui;
     }
 }

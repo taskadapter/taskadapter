@@ -1,3 +1,3 @@
 package com.taskadapter.connector
 
-case class FieldRow(selected: Boolean, nameInSource: String, nameInTarget: String, defaultValueForEmpty: String)
+case class FieldRow(sourceField: Field, targetField: Field, defaultValueForEmpty: String)

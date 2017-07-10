@@ -1,18 +1,11 @@
 package com.taskadapter.web.uiapi;
 
-import java.io.File;
-import java.util.Collections;
-import java.util.List;
-
 import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.MappingBuilder;
-import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.NewConnector;
-import com.taskadapter.connector.definition.DropInConnector;
+import com.taskadapter.connector.common.ProgressMonitorUtils;
+import com.taskadapter.connector.definition.ExportDirection;
 import com.taskadapter.connector.definition.FieldMapping;
-import com.taskadapter.connector.definition.MappingSide;
-import com.taskadapter.connector.definition.Mappings;
-import com.taskadapter.connector.definition.NewMappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
@@ -21,6 +14,10 @@ import com.taskadapter.core.TaskLoader;
 import com.taskadapter.core.TaskSaver;
 import com.taskadapter.core.Updater;
 import com.taskadapter.model.GTask;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * UI model for a mapping config. All fields with complex mutable values are
@@ -72,7 +69,7 @@ public final class UISyncConfig {
     /**
      * Field mappings. Left side is connector1, right size is connector2.
      */
-    private final NewMappings newMappings;
+    private final List<FieldMapping> fieldMappings;
 
     /**
      * "Config is reversed" flag.
@@ -81,13 +78,13 @@ public final class UISyncConfig {
 
     UISyncConfig(String identity, String owner, String label,
             UIConnectorConfig connector1, UIConnectorConfig connector2,
-            NewMappings newMappings, boolean reversed) {
+            List<FieldMapping> fieldMappings, boolean reversed) {
         this.identity = identity;
         this.owner = owner;
         this.label = label;
         this.connector1 = connector1;
         this.connector2 = connector2;
-        this.newMappings = newMappings;
+        this.fieldMappings = fieldMappings;
         this.reversed = reversed;
     }
 
@@ -107,8 +104,8 @@ public final class UISyncConfig {
         return connector2;
     }
 
-    public NewMappings getNewMappings() {
-        return newMappings;
+    public List<FieldMapping> getNewMappings() {
+        return fieldMappings;
     }
 
     /** Returns name of the user who owns this config. */
@@ -129,7 +126,7 @@ public final class UISyncConfig {
      */
     public UISyncConfig reverse() {
         return new UISyncConfig(identity, owner, label, connector2, connector1,
-                reverse(newMappings), !reversed);
+                reverse(fieldMappings), !reversed);
     }
 
     /**
@@ -151,17 +148,17 @@ public final class UISyncConfig {
         return reversed;
     }
 
-    private static NewMappings reverse(NewMappings mappings) {
-        final NewMappings result = new NewMappings();
-        for (FieldMapping mapping : mappings.getMappings()) {
-            result.put(reverse(mapping));
+    private static List<FieldMapping> reverse(List<FieldMapping> fieldMappings) {
+        List<FieldMapping> result = new ArrayList<>();
+        for (FieldMapping mapping : fieldMappings) {
+            result.add(reverse(mapping));
         }
         return result;
     }
 
     private static FieldMapping reverse(FieldMapping mapping) {
-        return new FieldMapping(mapping.getField(), mapping.getConnector2(),
-                mapping.getConnector1(), mapping.isSelected(), mapping.getDefaultValue());
+        return new FieldMapping(mapping.fieldInConnector2(),
+                mapping.fieldInConnector1(), mapping.selected(), mapping.defaultValue());
     }
 
     /**
@@ -170,14 +167,12 @@ public final class UISyncConfig {
      * 
      * @return source mappings
      */
-    public Mappings generateSourceMappings() {
-        return MappingBuilder.build(newMappings, MappingSide.LEFT);
+    Iterable<FieldRow> generateFieldRowsToExportLeft() {
+        return MappingBuilder.build(fieldMappings, ExportDirection.LEFT);
     }
 
-    public List<FieldRow> getFieldRows() {
-        // TODO TA3 mapping editor
-        return Collections.emptyList();
-//        return MappingBuilder.build(newMappings, MappingSide.RIGHT);
+    Iterable<FieldRow> generateFieldRowsToExportRight() {
+        return MappingBuilder.build(fieldMappings, ExportDirection.RIGHT);
     }
 
     /**
@@ -193,26 +188,20 @@ public final class UISyncConfig {
 
     public List<GTask> loadDropInTasks(File tempFile, int taskLimit)
             throws ConnectorException {
+        // TODO TA3 drag-n-drop
+        throw new RuntimeException("not implemented");
+/*
         return TaskLoader.loadDropInTasks(taskLimit,
                 (DropInConnector) getConnector1().createConnectorInstance(),
-                tempFile, generateSourceMappings(),
+                tempFile, generateFieldRowsToExportLeft(),
                 ProgressMonitorUtils.DUMMY_MONITOR);
+*/
     }
 
-    /**
-     * Saves tasks for the given config.
-     * 
-     * @param tasks
-     *            tasks to save.
-     * @param progress
-     *            operation progress.
-     * @return operation state.
-     */
-    public TaskExportResult saveTasks(List<GTask> tasks,
-            ProgressMonitor progress) {
+    public TaskExportResult saveTasks(List<GTask> tasks, ProgressMonitor progress) {
         final NewConnector connectorInstance = getConnector2().createConnectorInstance();
         final String destinationLocation = getConnector2().getDestinationLocation();
-        final List<FieldRow> rows = getFieldRows();
+        final Iterable<FieldRow> rows = generateFieldRowsToExportRight();
         final TaskSaveResult result = TaskSaver.save(connectorInstance, destinationLocation, rows, tasks, progress);
         try {
             RemoteIdUpdater.updateRemoteIds(result.getIdToRemoteKeyMap(),
@@ -224,20 +213,11 @@ public final class UISyncConfig {
 
     }
 
-    /**
-     * Saves tasks for the given config.
-     * 
-     * @param tasks
-     *            tasks to save.
-     * @param progress
-     *            operation progress.
-     * @return operation state.
-     */
     public TaskExportResult onlySaveTasks(List<GTask> tasks,
             ProgressMonitor progress) {
         final TaskSaveResult result = TaskSaver.save(getConnector2()
                 .createConnectorInstance(), getConnector2()
-                .getDestinationLocation(), getFieldRows(), tasks,
+                .getDestinationLocation(), generateFieldRowsToExportRight(), tasks,
                 progress);
         return new TaskExportResult(result, null);
     }
@@ -264,7 +244,7 @@ public final class UISyncConfig {
         final NewConnector destinationConnector = getConnector2()
                 .createConnectorInstance();
         final Updater updater = new Updater(destinationConnector,
-                getFieldRows(), sourceConnector,
+                generateFieldRowsToExportRight(), sourceConnector,
                 getConnector1().getDestinationLocation());
         return updater;
     }

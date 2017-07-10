@@ -78,8 +78,8 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     val connector = getConnector
 
     val rows = List(
-      FieldRow(true, JiraField.summary, JiraField.summary, ""),
-      FieldRow(true, JiraField.description, JiraField.description, "some default")
+      FieldRow(JiraField.summary, JiraField.summary, ""),
+      FieldRow(JiraField.description, JiraField.description, "some default")
     )
 
     val result = connector.saveData(util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)

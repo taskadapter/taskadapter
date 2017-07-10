@@ -40,26 +40,26 @@ public class RedmineToGTask {
         }
         User rmAss = issue.getAssignee();
         if (rmAss != null) {
-            task.setValue(RedmineField.assignee(), RedmineToGUser.convertToGUser(rmAss));
+            task.setValue(RedmineField.assignee().name(), RedmineToGUser.convertToGUser(rmAss));
         }
 
         Tracker tracker = issue.getTracker();
         if (tracker != null) {
-            task.setValue(RedmineField.taskType(), tracker.getName());
+            task.setValue(RedmineField.taskType().name(), tracker.getName());
         }
-        task.setValue(RedmineField.taskStatus(), issue.getStatusName());
-        task.setValue(RedmineField.summary(), issue.getSubject());
-        task.setValue(RedmineField.estimatedTime(), issue.getEstimatedHours());
-        task.setValue(RedmineField.doneRatio(), issue.getDoneRatio());
-        task.setValue(RedmineField.startDate(), issue.getStartDate());
-        task.setValue(RedmineField.dueDate(), issue.getDueDate());
-        task.setValue(RedmineField.createdOn(), issue.getCreatedOn());
-        task.setValue(RedmineField.updatedOn(), issue.getUpdatedOn());
+        task.setValue(RedmineField.taskStatus().name(), issue.getStatusName());
+        task.setValue(RedmineField.summary().name(), issue.getSubject());
+        task.setValue(RedmineField.estimatedTime().name(), issue.getEstimatedHours());
+        task.setValue(RedmineField.doneRatio().name(), issue.getDoneRatio());
+        task.setValue(RedmineField.startDate().name(), issue.getStartDate());
+        task.setValue(RedmineField.dueDate().name(), issue.getDueDate());
+        task.setValue(RedmineField.createdOn().name(), issue.getCreatedOn());
+        task.setValue(RedmineField.updatedOn().name(), issue.getUpdatedOn());
         Integer priorityValue = config.getPriorities().getPriorityByText(issue.getPriorityText());
-        task.setValue(RedmineField.priority(), priorityValue);
-        task.setValue(RedmineField.description(), issue.getDescription());
+        task.setValue(RedmineField.priority().name(), priorityValue);
+        task.setValue(RedmineField.description().name(), issue.getDescription());
         if (issue.getTargetVersion() != null) {
-            task.setValue(RedmineField.targetVersion(), issue.getTargetVersion().getName());
+            task.setValue(RedmineField.targetVersion().name(), issue.getTargetVersion().getName());
         }
         processCustomFields(issue, task);
         processRelations(issue, task);

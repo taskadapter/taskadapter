@@ -3,7 +3,7 @@ package com.taskadapter.webui.pageset;
 import com.google.common.io.Files;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.config.StorageException;
-import com.taskadapter.connector.NewConnector;
+import com.taskadapter.connector.definition.ExportDirection;
 import com.taskadapter.connector.definition.FileBasedConnector;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.license.LicenseManager;
@@ -235,12 +235,12 @@ public class LoggedInPageset {
 
             @Override
             public void forwardSync(UISyncConfig config) {
-                sync(config);
+                sync(config, ExportDirection.RIGHT);
             }
 
             @Override
             public void backwardSync(UISyncConfig config) {
-                sync(config.reverse());
+                sync(config, ExportDirection.LEFT);
             }
 
             @Override
@@ -297,12 +297,12 @@ public class LoggedInPageset {
                 new EditConfigPage.Callback() {
                     @Override
                     public void forwardSync(UISyncConfig config) {
-                        sync(config);
+                        sync(config, ExportDirection.RIGHT);
                     }
 
                     @Override
                     public void backwardSync(UISyncConfig config) {
-                        sync(config.reverse());
+                        sync(config, ExportDirection.LEFT);
                     }
 
                     @Override
@@ -323,26 +323,18 @@ public class LoggedInPageset {
      * @param config
      *            base config. May be saved!
      */
-    private void sync(UISyncConfig config) {
+    private void sync(UISyncConfig config, ExportDirection exportDirection) {
         if (!prepareForConversion(config))
             return;
-        final NewConnector destinationConnector = config.getConnector2()
-                .createConnectorInstance();
-        if (destinationConnector instanceof FileBasedConnector) {
-            processFile(config, (FileBasedConnector) destinationConnector);
-        } else {
-            exportCommon(config);
-        }
+//        final NewConnector destinationConnector = config.getConnector2().createConnectorInstance();
+        // TODO TA3 file based connector - MSP
+//        if (destinationConnector instanceof FileBasedConnector) {
+//            processFile(config, (FileBasedConnector) destinationConnector);
+//        } else {
+            exportCommon(config, exportDirection);
+//        }
     }
 
-    /**
-     * Performs a drop-in.
-     * 
-     * @param config
-     *            config.
-     * @param file
-     *            dropped file.
-     */
     private void dropIn(final UISyncConfig config, final Html5File file) {
         String fileExtension = Files.getFileExtension(file.getFileName());
         final File df = services.tempFileManager.nextFile(fileExtension);
@@ -414,26 +406,21 @@ public class LoggedInPageset {
         });
     }
 
-    /**
-     * Performs  export.
-     * 
-     * @param config
-     *            config to export.
-     */
-    private void exportCommon(UISyncConfig config) {
+    private void exportCommon(UISyncConfig config, ExportDirection exportDirection) {
         tracker.trackPage("export_confirmation");
         final int maxTasks = services.licenseManager
                 .isSomeValidLicenseInstalled() ? MAX_TASKS_TO_LOAD
                 : LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
-        applyUI(ExportPage.render(context.configOps, config, maxTasks,
+        applyUI(ExportPage.render(context.configOps, config, exportDirection, maxTasks,
                 services.settingsManager.isTAWorkingOnLocalMachine(),
                 this::showHome));
     }
 
-    private void processFile(final UISyncConfig config,
+    // TODO TA3 file based connector - MSP
+  /*  private void processFile(final UISyncConfig config,
             FileBasedConnector connectorTo) {
         if (!connectorTo.fileExists()) {
-            exportCommon(config);
+            exportCommon(config, exportDirection);
             return;
         }
 
@@ -462,9 +449,10 @@ public class LoggedInPageset {
         if (action.equals(message("export.update"))) {
             startUpdateFile(config);
         } else {
-            exportCommon(config);
+            exportCommon(config, exportDirection);
         }
     }
+*/
 
     /**
      * Processes a file action.

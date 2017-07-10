@@ -23,6 +23,12 @@ dependencies {
     compile libraries.slf4j
     compile project(":webshared")
 
+    def circeVersion = "0.8.0"
+
+    compile "io.circe:circe-core_2.12:$circeVersion"
+    compile "io.circe:circe-generic_2.12:$circeVersion"
+    compile "io.circe:circe-parser_2.12:$circeVersion"
+
 //    compile project(":connectors:connector-msp")
 
 //    compile project(":connectors-editors:basecamp-editor")

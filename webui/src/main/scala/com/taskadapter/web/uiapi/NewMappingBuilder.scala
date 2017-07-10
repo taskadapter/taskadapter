@@ -1,11 +1,12 @@
 package com.taskadapter.web.uiapi
 
-import java.util
-
+import com.taskadapter.connector.Field
 import com.taskadapter.connector.definition.{FieldMapping, NewMappings}
 import com.taskadapter.model.GTaskDescriptor
 
 import scala.collection.JavaConverters._
+import java.util
+import java.util.List
 
 object NewMappingBuilder {
   val DEFAULT_VALUE_FOR_EMPTY_VALUES = ""
@@ -13,8 +14,7 @@ object NewMappingBuilder {
   /**
     * try to match list of fields for connector 1 with the list for connector 2.
     */
-  def createNewMappings(m1: util.List[String], m2: util.List[String]): NewMappings = {
-    val res = new NewMappings
+  def createNewMappings(m1: util.List[Field], m2: util.List[Field]): util.List[FieldMapping] = {
     // TODO TA3 restore remote ids
     /*
             if (m2.isFieldSupported(GTaskDescriptor.FIELD.REMOTE_ID)) {
@@ -31,13 +31,13 @@ object NewMappingBuilder {
                         DEFAULT_VALUE_FOR_EMPTY_VALUES));
             }
     */
+    val selectByDefault = true
     val commonFields = m1.asScala.intersect(m2.asScala)
-    commonFields.foreach { field =>
-      if (field != GTaskDescriptor.FIELD.ID.name() && field != GTaskDescriptor.FIELD.REMOTE_ID.name()) {
-        val selectByDefault = true
-        res.put(new FieldMapping(field, "", "", selectByDefault, DEFAULT_VALUE_FOR_EMPTY_VALUES))
-      }
-    }
-    res
+    commonFields.map { field =>
+//      if (field.name != GTaskDescriptor.FIELD.ID.name() && field != GTaskDescriptor.FIELD.REMOTE_ID.name()) {
+        // TODO TA3 this is wrong. same field is put twice. need to put separately for connector 1 and 2
+        FieldMapping(field, field, selectByDefault, DEFAULT_VALUE_FOR_EMPTY_VALUES)
+//      }
+    }.asJava
   }
 }

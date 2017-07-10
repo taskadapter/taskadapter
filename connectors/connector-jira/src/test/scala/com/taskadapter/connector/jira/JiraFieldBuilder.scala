@@ -8,8 +8,8 @@ import scala.collection.JavaConverters._
 object JiraFieldBuilder {
   def getDefault(): util.List[FieldRow] = {
     List(
-      FieldRow(true, JiraField.summary, JiraField.summary, ""),
-      FieldRow(true, JiraField.assignee, JiraField.assignee, ""),
+      FieldRow(JiraField.summary, JiraField.summary, ""),
+      FieldRow(JiraField.assignee, JiraField.assignee, ""),
     ).asJava
   }
 
