@@ -50,12 +50,13 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
   def createNewConfig(userName: String, label: String, connector1id: String, connector2id: String): UISyncConfig = {
     val config1: UIConnectorConfig = uiConfigService.createDefaultConfig(connector1id)
     val config2: UIConnectorConfig = uiConfigService.createDefaultConfig(connector2id)
-    val newMappings: util.List[FieldMapping] = NewMappingBuilder.suggestedFieldMappingsForNewConfig(config1, config2)
+    val newMappings = NewConfigSuggester.suggestedFieldMappingsForNewConfig(config1.getSuggestedCombinations,
+      config2.getSuggestedCombinations)
     val mappingsString: String = new Gson().toJson(newMappings)
     val identity: String = configStorage.createNewConfig(userName, label,
       config1.getConnectorTypeId, config1.getConfigString,
       config2.getConnectorTypeId, config2.getConfigString, mappingsString)
-    new UISyncConfig(identity, userName, label, config1, config2, newMappings, false)
+    new UISyncConfig(identity, userName, label, config1, config2, newMappings.asJava, false)
   }
 
   /**

@@ -4,16 +4,18 @@ import java.util
 
 import com.taskadapter.connector.Field
 import com.taskadapter.connector.definition.FieldMapping
+import com.taskadapter.model.StandardField
 
 import scala.collection.JavaConverters._
 
-object NewMappingBuilder {
+object NewConfigSuggester {
   val DEFAULT_VALUE_FOR_EMPTY_VALUES = ""
 
   /**
     * try to match list of fields for connector 1 with the list for connector 2.
     */
-  def suggestedFieldMappingsForNewConfig(config1: UIConnectorConfig, config2: UIConnectorConfig): util.List[FieldMapping] = {
+  def suggestedFieldMappingsForNewConfig(connector1Combinations: Map[Field, StandardField],
+                                         connector2Combinations: Map[Field, StandardField]): List[FieldMapping] = {
     // TODO TA3 restore remote ids
     /*
             if (m2.isFieldSupported(GTaskDescriptor.FIELD.REMOTE_ID)) {
@@ -33,9 +35,6 @@ object NewMappingBuilder {
 
     val selectByDefault = true
 
-    val connector1Combinations = config1.getSuggestedCombinations
-    val connector2Combinations = config2.getSuggestedCombinations
-
     val result = scala.collection.mutable.ListBuffer[FieldMapping]()
     connector1Combinations.values.foreach{ standardField =>
       val field1 : Field = connector1Combinations.find(i => i._2 == standardField).map(e => e._1).getOrElse(Field(""))
@@ -45,6 +44,6 @@ object NewMappingBuilder {
     }
 
 
-    result.asJava
+    result.toList
   }
 }
