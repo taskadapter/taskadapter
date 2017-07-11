@@ -2,17 +2,12 @@ package com.taskadapter.web.uiapi
 
 import java.util
 
-import com.google.gson.Gson
-import com.taskadapter.config.{CirceBoilerplateForConfigs, ConfigStorage, StorageException, StoredExportConfig}
-import com.taskadapter.connector.definition.FieldMapping
-
 import com.taskadapter.config.CirceBoilerplateForConfigs._
+import com.taskadapter.config.{ConfigStorage, StorageException, StoredExportConfig}
+import io.circe.generic.auto._
+import io.circe.syntax._
 
 import scala.collection.JavaConverters._
-import io.circe.parser._
-import io.circe._
-import io.circe.generic.semiauto._
-import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
 
 /**
   * UI-level config manager. Manages UIMappingConfigs instead of low-level
@@ -52,7 +47,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val config2: UIConnectorConfig = uiConfigService.createDefaultConfig(connector2id)
     val newMappings = NewConfigSuggester.suggestedFieldMappingsForNewConfig(config1.getSuggestedCombinations,
       config2.getSuggestedCombinations)
-    val mappingsString: String = new Gson().toJson(newMappings)
+    val mappingsString = newMappings.asJson.noSpaces
     val identity: String = configStorage.createNewConfig(userName, label,
       config1.getConnectorTypeId, config1.getConfigString,
       config2.getConnectorTypeId, config2.getConfigString, mappingsString)
@@ -89,10 +84,10 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
   @throws[StorageException]
   def cloneConfig(userLoginName: String, syncConfig: UISyncConfig): Unit = {
     val label: String = syncConfig.getLabel
-    val config1: UIConnectorConfig = syncConfig.getConnector1
-    val config2: UIConnectorConfig = syncConfig.getConnector2
-    val mappings: util.List[FieldMapping] = syncConfig.getNewMappings
-    val mappingsStr: String = new Gson().toJson(mappings)
+    val config1 = syncConfig.getConnector1
+    val config2 = syncConfig.getConnector2
+    val mappings = syncConfig.getNewMappings
+    val mappingsStr = mappings.asJson.noSpaces
     configStorage.createNewConfig(userLoginName, label, config1.getConnectorTypeId, config1.getConfigString,
       config2.getConnectorTypeId, config2.getConfigString, mappingsStr)
   }
