@@ -13,10 +13,13 @@ import com.taskadapter.web.uiapi.{ConfigLoader, UISyncConfig}
 import org.fest.assertions.Assertions.assertThat
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
 
 import scala.collection.JavaConverters._
 
+@RunWith(classOf[JUnitRunner])
 class UISyncConfigIT extends FunSpec with Matchers  {
   // TODO maybe use temporary projects in Redmine and JIRA?
   @Rule var tempFolder = new TemporaryFolder

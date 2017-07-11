@@ -2,9 +2,11 @@ package com.taskadapter.connector.jira
 
 import com.atlassian.jira.rest.client.api.domain.Issue
 import com.taskadapter.connector.Priorities
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
 
-//@RunWith(classOf[JUnitRunner])
+@RunWith(classOf[JUnitRunner])
 class JiraToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll {
 
   private var priorities = JiraConfig.createDefaultPriorities

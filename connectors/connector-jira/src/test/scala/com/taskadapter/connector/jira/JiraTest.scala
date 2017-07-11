@@ -8,9 +8,12 @@ import com.taskadapter.connector.testlib.TestUtils
 import com.taskadapter.model.{GRelation, GTask}
 import org.fest.assertions.Assertions.assertThat
 import org.junit.Assert.assertEquals
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
 import org.slf4j.LoggerFactory
 
+@RunWith(classOf[JUnitRunner])
 class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll {
 
   private val logger = LoggerFactory.getLogger(classOf[JiraTest])
