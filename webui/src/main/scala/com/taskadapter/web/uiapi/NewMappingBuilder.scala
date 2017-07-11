@@ -1,12 +1,11 @@
 package com.taskadapter.web.uiapi
 
+import java.util
+
 import com.taskadapter.connector.Field
-import com.taskadapter.connector.definition.{FieldMapping, NewMappings}
-import com.taskadapter.model.GTaskDescriptor
+import com.taskadapter.connector.definition.FieldMapping
 
 import scala.collection.JavaConverters._
-import java.util
-import java.util.List
 
 object NewMappingBuilder {
   val DEFAULT_VALUE_FOR_EMPTY_VALUES = ""
@@ -14,7 +13,7 @@ object NewMappingBuilder {
   /**
     * try to match list of fields for connector 1 with the list for connector 2.
     */
-  def createNewMappings(m1: util.List[Field], m2: util.List[Field]): util.List[FieldMapping] = {
+  def suggestedFieldMappingsForNewConfig(config1: UIConnectorConfig, config2: UIConnectorConfig): util.List[FieldMapping] = {
     // TODO TA3 restore remote ids
     /*
             if (m2.isFieldSupported(GTaskDescriptor.FIELD.REMOTE_ID)) {
@@ -31,13 +30,21 @@ object NewMappingBuilder {
                         DEFAULT_VALUE_FOR_EMPTY_VALUES));
             }
     */
+
     val selectByDefault = true
-    val commonFields = m1.asScala.intersect(m2.asScala)
-    commonFields.map { field =>
-//      if (field.name != GTaskDescriptor.FIELD.ID.name() && field != GTaskDescriptor.FIELD.REMOTE_ID.name()) {
-        // TODO TA3 this is wrong. same field is put twice. need to put separately for connector 1 and 2
-        FieldMapping(field, field, selectByDefault, DEFAULT_VALUE_FOR_EMPTY_VALUES)
-//      }
-    }.asJava
+
+    val connector1Combinations = config1.getSuggestedCombinations
+    val connector2Combinations = config2.getSuggestedCombinations
+
+    val result = scala.collection.mutable.ListBuffer[FieldMapping]()
+    connector1Combinations.values.foreach{ standardField =>
+      val field1 : Field = connector1Combinations.find(i => i._2 == standardField).map(e => e._1).getOrElse(Field(""))
+      val field2 : Field = connector2Combinations.find(i => i._2 == standardField).map(e => e._1).getOrElse(Field(""))
+
+      result += FieldMapping(field1, field2, selectByDefault, "")
+    }
+
+
+    result.asJava
   }
 }

@@ -1,12 +1,14 @@
 package com.taskadapter.connector.redmine
 
 import com.taskadapter.connector.Field
-
 import java.util
+
+import com.taskadapter.model._
+
 import scala.collection.JavaConverters._
 
 object RedmineField {
-  // Redmine field names as loaded from Redmine
+  // Redmine field names
   val summary = Field("Summary")
   val description = Field("Description")
   val taskType = Field("Tracker type")
@@ -40,4 +42,20 @@ object RedmineField {
     priority)
 
   def fieldsAsJava(): util.List[Field] = fields.asJava
+
+  def suggestedStandardFields = Map(summary -> Summary, description -> Description, taskType -> TaskType,
+    estimatedTime -> EstimatedTime,
+    doneRatio -> DoneRatio,
+    assignee -> Assignee,
+    dueDate -> DueDate,
+    startDate -> StartDate,
+    createdOn -> CreatedOn,
+    updatedOn -> UpdatedOn,
+    taskStatus -> TaskStatus,
+    targetVersion -> TargetVersion,
+    priority -> Priority)
+
+  def getSuggestedCombinations(): Map[Field, StandardField] = {
+    suggestedStandardFields
+  }
 }

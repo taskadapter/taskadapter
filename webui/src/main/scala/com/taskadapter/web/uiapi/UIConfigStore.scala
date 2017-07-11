@@ -50,7 +50,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
   def createNewConfig(userName: String, label: String, connector1id: String, connector2id: String): UISyncConfig = {
     val config1: UIConnectorConfig = uiConfigService.createDefaultConfig(connector1id)
     val config2: UIConnectorConfig = uiConfigService.createDefaultConfig(connector2id)
-    val newMappings: util.List[FieldMapping] = NewMappingBuilder.createNewMappings(config1.getAvailableFields, config2.getAvailableFields)
+    val newMappings: util.List[FieldMapping] = NewMappingBuilder.suggestedFieldMappingsForNewConfig(config1, config2)
     val mappingsString: String = new Gson().toJson(newMappings)
     val identity: String = configStorage.createNewConfig(userName, label,
       config1.getConnectorTypeId, config1.getConfigString,

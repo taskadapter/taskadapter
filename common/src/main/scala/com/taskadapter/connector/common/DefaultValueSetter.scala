@@ -33,7 +33,11 @@ object DefaultValueSetter {
         val valueWithProperType = getValueWithProperType(fieldToLoadValueFrom, row.defaultValueForEmpty)
         newValue = valueWithProperType
       }
-      result.setValue(row.targetField.name, newValue)
+      val targetFieldName = row.targetField.name
+      if (targetFieldName == null || targetFieldName == "") {
+        throw new RuntimeException(s"Target field name is null. These fields should have been filtered before calling this method. row: $row")
+      }
+      result.setValue(targetFieldName, newValue)
     }
     result.setId(task.getId)
     result.setParentKey(task.getParentKey)

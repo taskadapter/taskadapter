@@ -59,6 +59,16 @@ class UISyncConfigIT extends FunSpec with Matchers  {
     assertThat(saveResult.getCreatedTasksNumber).isEqualTo(loadedTasks.size)
   }
 
+  it("empty description field name on right side is ignored if selected=false") {
+    val config = ConfigLoader.loadConfig("JIRA_Redmine_empty_description_on_right_side.ta_conf")
+    val loadedTasks = config.loadTasks(100)
+    assertThat(loadedTasks.size).isGreaterThan(0)
+    val taskExportResult = config.saveTasks(loadedTasks, ProgressMonitorUtils.DUMMY_MONITOR)
+    val saveResult = taskExportResult.saveResult
+    assertThat(saveResult.hasErrors).isFalse()
+    assertThat(saveResult.getCreatedTasksNumber).isEqualTo(loadedTasks.size)
+  }
+
   /**
     * regression test for https://bitbucket.org/taskadapter/taskadapter/issues/43/tasks-are-not-updated-in-redmine-404-not
     */

@@ -3,6 +3,7 @@ package com.taskadapter.web.uiapi;
 import com.taskadapter.connector.Field;
 import com.taskadapter.connector.NewConnector;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.model.StandardField;
 import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.service.Sandbox;
 import com.vaadin.ui.ComponentContainer;
@@ -122,6 +123,8 @@ public abstract class UIConnectorConfig {
      * @return list of connector available fields (in current configuration).
      */
     public abstract List<Field> getAvailableFields();
+
+    public abstract scala.collection.immutable.Map<Field, StandardField> getSuggestedCombinations();
 
     /**
      * Returns a source location name. This name is just a string for a user.

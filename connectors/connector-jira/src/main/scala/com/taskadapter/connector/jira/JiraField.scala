@@ -1,7 +1,10 @@
 package com.taskadapter.connector.jira
 
-import com.taskadapter.connector.Field
 import java.util
+
+import com.taskadapter.connector.Field
+import com.taskadapter.model._
+
 import scala.collection.JavaConverters._
 
 /**
@@ -25,4 +28,14 @@ object JiraField {
   val fields = List(summary, description, taskType, estimatedTime, assignee, dueDate, priority, environment)
 
   def fieldsAsJava(): util.List[Field] = fields.asJava
+
+  private def suggestedStandardFields = Map(summary -> Summary, description -> Description, taskType -> TaskType,
+    estimatedTime -> EstimatedTime,
+    assignee -> Assignee,
+    dueDate -> DueDate,
+    priority -> Priority)
+
+  def getSuggestedCombinations(): Map[Field, StandardField] = {
+    suggestedStandardFields
+  }
 }

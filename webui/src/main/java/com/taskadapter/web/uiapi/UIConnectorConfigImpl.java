@@ -5,6 +5,7 @@ import com.taskadapter.connector.NewConnector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.PluginFactory;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.model.StandardField;
 import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.service.Sandbox;
@@ -89,6 +90,11 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends UIConnector
     @Override
     public List<Field> getAvailableFields() {
         return connectorFactory.getAvailableFields();
+    }
+
+    @Override
+    public scala.collection.immutable.Map<Field, StandardField> getSuggestedCombinations() {
+        return connectorFactory.getSuggestedCombinations();
     }
 
     @Override

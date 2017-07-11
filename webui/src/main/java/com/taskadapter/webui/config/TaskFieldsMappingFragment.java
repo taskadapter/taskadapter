@@ -203,9 +203,10 @@ public class TaskFieldsMappingFragment implements Validatable {
                 combo.setWidth(160, PIXELS);
                 gridLayout.addComponent(combo);
                 gridLayout.setComponentAlignment(combo, Alignment.MIDDLE_LEFT);
-                Object currentValue = leftRightField.equals("LEFT")? fieldMapping.fieldInConnector1().name():
-                        fieldMapping.fieldInConnector2().name();
-                combo.select(currentValue);
+                Object currentFieldName = leftRightField.equals("LEFT")?
+                        getFieldNameOrEmptyString(fieldMapping.fieldInConnector1()) :
+                        getFieldNameOrEmptyString(fieldMapping.fieldInConnector2());
+                combo.select(currentFieldName);
 
 
 //            } else if (allowedValues.length == 1) {
@@ -219,18 +220,23 @@ public class TaskFieldsMappingFragment implements Validatable {
 //            addEmptyCell();
 //        }
     }
-/*
-    private void createMappingForSingleValue(String displayValue) {
-        Label label = new Label(displayValue);
-        gridLayout.addComponent(label);
-        gridLayout.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
+
+    private Object getFieldNameOrEmptyString(Field field) {
+        return field == null ? "" : field.name();
     }
 
-    String getHelpForField(FieldMapping field) {
-        String elementId = field.getField().toString();
-        return HELP_MESSAGES.getNoDefault(elementId);
-    }
-*/
+    /*
+        private void createMappingForSingleValue(String displayValue) {
+            Label label = new Label(displayValue);
+            gridLayout.addComponent(label);
+            gridLayout.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
+        }
+
+        String getHelpForField(FieldMapping field) {
+            String elementId = field.getField().toString();
+            return HELP_MESSAGES.getNoDefault(elementId);
+        }
+    */
     @Override
     public void validate() throws BadConfigException {
         MappingsValidator.validate(mappings);
