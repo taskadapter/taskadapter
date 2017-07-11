@@ -2,10 +2,13 @@ package com.taskadapter.connector.common
 
 import com.taskadapter.connector.definition.{ExportDirection, FieldMapping}
 import com.taskadapter.connector.{Field, MappingBuilder}
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
 
 import scala.collection.JavaConverters._
 
+@RunWith(classOf[JUnitRunner])
 class MappingBuilderTest extends FunSpec with Matchers {
   it("skips fields that are not selected") {
     val rows = MappingBuilder.build(
