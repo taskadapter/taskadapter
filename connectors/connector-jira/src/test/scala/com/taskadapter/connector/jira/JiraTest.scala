@@ -81,9 +81,9 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   }
 
   private def generateTasks = {
-    val task1 = JiraGTaskBuilder.withSummary
+    val task1 = JiraGTaskBuilder.withSummary()
     task1.setId(1)
-    val task2 = JiraGTaskBuilder.withSummary
+    val task2 = JiraGTaskBuilder.withSummary()
     task2.setId(2)
     val list = new util.ArrayList[GTask]
     list.add(task1)

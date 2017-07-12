@@ -4,6 +4,8 @@ import java.util.Date
 
 import com.taskadapter.model.GTask
 
+import scala.util.Random
+
 object JiraGTaskBuilder {
   def withPriority(value: Object): GTask = {
     val task = new GTask
@@ -19,9 +21,9 @@ object JiraGTaskBuilder {
     task
   }
 
-  def withSummary(): GTask = {
+  def withSummary(value: String = Random.nextDouble().toString): GTask = {
     val task = new GTask
-    task.setValue(JiraField.summary, "task " + new Date().getTime)
+    task.setValue(JiraField.summary, value)
     task
   }
 

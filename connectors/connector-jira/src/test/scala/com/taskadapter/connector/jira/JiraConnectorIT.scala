@@ -74,7 +74,7 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
   // TODO move to some generic tests, this is not Jira-specific
   it("taskIsCreatedWithDefaultDescriptionField") {
     // description is empty so that the default value will be set later
-    val task = JiraGTaskBuilder.withSummary
+    val task = JiraGTaskBuilder.withSummary()
     val connector = getConnector
 
     val rows = List(
