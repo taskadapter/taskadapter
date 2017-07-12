@@ -86,7 +86,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val label: String = syncConfig.getLabel
     val config1 = syncConfig.getConnector1
     val config2 = syncConfig.getConnector2
-    val mappings = syncConfig.getNewMappings
+    val mappings = syncConfig.getNewMappings.asScala
     val mappingsStr = mappings.asJson.noSpaces
     configStorage.createNewConfig(userLoginName, label, config1.getConnectorTypeId, config1.getConfigString,
       config2.getConnectorTypeId, config2.getConfigString, mappingsStr)
