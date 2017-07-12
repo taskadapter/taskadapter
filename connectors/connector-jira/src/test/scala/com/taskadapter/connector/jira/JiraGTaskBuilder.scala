@@ -32,6 +32,10 @@ object JiraGTaskBuilder {
     task.setValue(JiraField.description, "description " + new Date().getTime)
     task
   }
+
+  def getTwo(): List[GTask] = {
+    List(withSummary(), withSummary())
+  }
 }
 
 class JiraGTaskBuilder(summary: String = "task " + new Date().getTime) {

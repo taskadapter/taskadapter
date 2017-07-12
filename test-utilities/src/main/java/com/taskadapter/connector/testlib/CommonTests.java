@@ -1,5 +1,15 @@
 package com.taskadapter.connector.testlib;
 
+import com.taskadapter.connector.FieldRow;
+import com.taskadapter.connector.NewConnector;
+import com.taskadapter.connector.common.ProgressMonitorUtils;
+import com.taskadapter.connector.definition.TaskSaveResult;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.model.GTask;
+
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -40,38 +50,37 @@ public final class CommonTests {
         GTask loadedTask = new TestSaver(connector, rows).saveAndLoad(task);
         assertEquals(task.getDescription(), loadedTask.getDescription());
     }
-
-    public static void testCreates2Tasks(NewConnector connector, List<FieldRow> rows) throws ConnectorException {
-        int tasksQty = 2;
-        List<GTask> tasks = TestUtils.generateTasks(tasksQty);
+*/
+    public static void createsTasks(NewConnector connector, List<FieldRow> rows, List<GTask> tasks) throws ConnectorException {
         TaskSaveResult result = connector.saveData(tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows);
         assertFalse(result.hasErrors());
-        assertEquals(tasksQty, result.getCreatedTasksNumber());
+        assertEquals(tasks.size(), result.getCreatedTasksNumber());
     }
 
-    public static void taskCreatedAndUpdatedOK(NewConnector connector, List<FieldRow> rows) throws ConnectorException {
-        int tasksQty = 1;
-        GTask task = TestUtils.generateTask();
-
+    /**
+     * TODO TA3 this requires remote ID support.
+     */
+    public static void taskCreatedAndUpdatedOK(NewConnector connector, List<FieldRow> rows, GTask task,
+                                               String fieldToChangeInTest) throws ConnectorException {
         Integer id = task.getId();
 
         // CREATE
         TaskSaveResult result = connector.saveData(Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
         assertFalse(result.hasErrors());
-        assertEquals(tasksQty, result.getCreatedTasksNumber());
+        assertEquals(1, result.getCreatedTasksNumber());
         String remoteKey = result.getRemoteKey(id);
 
         GTask loaded = connector.loadTaskByKey(remoteKey, rows);
 
         // UPDATE
-        String NEW_SUMMARY = "new summary here";
-        loaded.setSummary(NEW_SUMMARY);
+        String newValue = "some new text";
+        loaded.setValue(fieldToChangeInTest, newValue);
         loaded.setRemoteId(remoteKey);
         TaskSaveResult result2 = connector.saveData(Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR, rows);
         assertFalse(result2.hasErrors());
         assertEquals(1, result2.getUpdatedTasksNumber());
 
         GTask loadedAgain = connector.loadTaskByKey(remoteKey, rows);
-        assertEquals(NEW_SUMMARY, loadedAgain.getSummary());
-    }*/
+        assertEquals(newValue, loadedAgain.getValue(fieldToChangeInTest));
+    }
 }

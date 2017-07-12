@@ -4,7 +4,7 @@ import java.util
 
 import com.google.common.collect.Iterables
 import com.taskadapter.connector.common.ProgressMonitorUtils
-import com.taskadapter.connector.testlib.TestUtils
+import com.taskadapter.connector.testlib.{CommonTests, TestUtils}
 import com.taskadapter.model.{GRelation, GTask}
 import org.fest.assertions.Assertions.assertThat
 import org.junit.Assert.assertEquals
@@ -12,6 +12,7 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
 import org.slf4j.LoggerFactory
+import scala.collection.JavaConverters._
 
 @RunWith(classOf[JUnitRunner])
 class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll {
@@ -24,19 +25,15 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
 
   logger.info("Running JIRA tests using: " + config.getServerInfo.getHost)
 
-
-  it("doesNotFailWithNULLMonitorAndEmptyList") {
-    connector.saveData(new util.ArrayList[GTask], ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault)
+  it("connector does not fail empty tasks list") {
+    connector.saveData(List[GTask]().asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault)
   }
 
-  /*
-      @Test
-      public void twoTasksAreCreated() throws Exception {
-          CommonTests.testCreates2Tasks(connector, JiraFieldBuilder.getDefault());
-      }
-  */
+  it("tasks are created without errors") {
+    CommonTests.createsTasks(connector, JiraFieldBuilder.getDefault(), JiraGTaskBuilder.getTwo().asJava)
+  }
 
-  it("assigneeHasFullName") {
+  it("assignee has full name") {
     val userPromise = client.getUserClient.getUser(config.getServerInfo.getUserName)
     val jiraUser = userPromise.claim
     val task = new GTask
@@ -47,12 +44,12 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     TestJiraClientHelper.deleteTasks(client, loadedTask.getKey)
   }
 
-  /*
-      @Test
-      public void taskUpdatedOK() throws Exception {
-          CommonTests.taskCreatedAndUpdatedOK(connector, SUPPORTED_FIELDS);
-      }
-  */
+  /**
+    * TODO TA3 this requires remote ID support.
+    */
+  ignore("task is updated") {
+    CommonTests.taskCreatedAndUpdatedOK(connector, JiraFieldBuilder.getDefault(), JiraGTaskBuilder.withSummary(), JiraField.summary.name)
+  }
 
   it("testGetIssuesByProject") {
     val tasks = generateTasks
@@ -62,7 +59,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     assertThat(Iterables.size(issues)).isGreaterThan(1)
   }
 
-  it("twoIssuesLinked") {
+  it("two issues linked") {
     config.setSaveIssueRelations(true)
     val list = generateTasks
     val task1 = list.get(0)
@@ -85,9 +82,6 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     task1.setId(1)
     val task2 = JiraGTaskBuilder.withSummary()
     task2.setId(2)
-    val list = new util.ArrayList[GTask]
-    list.add(task1)
-    list.add(task2)
-    list
+    List(task1, task2).asJava
   }
 }
