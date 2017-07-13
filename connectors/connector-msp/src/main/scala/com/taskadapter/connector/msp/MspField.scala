@@ -12,7 +12,6 @@ object MspField {
   //  builder.addField(GTaskDescriptor.FIELD.TASK_TYPE, MSPUtils.getTextFieldNamesAvailableForMapping).withDefault(MSPUtils.getDefaultTaskType)
   //  builder.addField(GTaskDescriptor.FIELD.DUE_DATE, MSPUtils.getDueDateOptions).unselected.withDefault(MSPUtils.getDefaultDueDate)
   //  builder.addField(GTaskDescriptor.FIELD.REMOTE_ID, MSPUtils.getTextFieldNamesAvailableForMapping).unselected.withDefault(MSPUtils.getDefaultRemoteIdMapping)
-  //  builder.addField(GTaskDescriptor.FIELD.TASK_STATUS, MSPUtils.getTextFieldNamesAvailableForMapping).unselected.withDefault(MSPUtils.getDefaultTaskStatus)
   //  builder.addField(GTaskDescriptor.FIELD.ENVIRONMENT, MSPUtils.getTextFieldNamesAvailableForMapping).withDefault(MSPUtils.getDefaultFieldForEnvironment)
   //  builder.addField(GTaskDescriptor.FIELD.TARGET_VERSION, MSPUtils.getTextFieldNamesAvailableForMapping).withDefault(MSPUtils.getDefaultFieldForTargetVersion)
 
@@ -24,6 +23,8 @@ object MspField {
   val doneRatio = Field(TaskField.PERCENT_COMPLETE.getName)
   val taskDuration = Field(TaskField.DURATION.getName)
   val taskWork = Field(TaskField.WORK.getName)
+  val status = Field(TaskField.TEXT24.getName)
+  val taskType = Field(TaskField.TEXT23.getName)
 
   // TODO TA3 default field option
   // .withDefault(ConstraintType.MUST_START_ON.name)
@@ -39,7 +40,7 @@ object MspField {
   val finishNoLaterThan = Field(ConstraintType.FINISH_NO_LATER_THAN.name())
 
   val fields = List(summary, description, assignee, closedOn, priority, doneRatio,
-    taskDuration, taskWork
+    taskDuration, taskWork, status, taskType
     //    taskType, dueDate, environment
   )
 
@@ -50,11 +51,13 @@ object MspField {
     // both fields are mapped to the same standard field because MSP supports both options
     taskDuration -> EstimatedTime,
     taskWork -> EstimatedTime,
+    status -> TaskStatus,
     assignee -> Assignee,
     closedOn -> ClosedOn,
     //    dueDate -> DueDate,
     priority -> Priority,
-    doneRatio -> DoneRatio
+    doneRatio -> DoneRatio,
+    taskType -> TaskType
   )
 
   def getSuggestedCombinations(): Map[Field, StandardField] = {

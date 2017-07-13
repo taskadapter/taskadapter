@@ -11,7 +11,6 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.msp.write.RealWriter;
 import com.taskadapter.connector.msp.write.ResourceManager;
-import com.taskadapter.connector.msp.write.TaskFieldsSetter;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
 import net.sf.mpxj.MPXJException;

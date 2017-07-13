@@ -2,9 +2,11 @@ package com.taskadapter.connector.msp.write;
 
 import com.taskadapter.connector.Field;
 import com.taskadapter.connector.FieldRow;
+import com.taskadapter.connector.common.DefaultValueSetter;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.TaskSaveResultBuilder;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.connector.msp.GTaskToMSP;
 import com.taskadapter.connector.msp.MSPUtils;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor.FIELD;
@@ -85,10 +87,11 @@ public class MSXMLFileWriter {
             } else {
                 newMspTask = parentMSPTask.addTask();
             }
-            TaskFieldsSetter setter = new TaskFieldsSetter(rows, newMspTask, new ResourceManager(project));
-            setter.setFields(gTask, keepTaskId);
-            syncResult.addCreatedTask(gTask.getId(), newMspTask.getID() + "");
-            addTasks(syncResult, project, newMspTask, gTask.getChildren(), keepTaskId);
+            GTask transformedTask = DefaultValueSetter.adapt(rows, gTask);
+            GTaskToMSP gTaskToMSP = new GTaskToMSP(newMspTask, new ResourceManager(project));
+            gTaskToMSP.setFields(transformedTask, keepTaskId);
+            syncResult.addCreatedTask(transformedTask.getId(), newMspTask.getID() + "");
+            addTasks(syncResult, project, newMspTask, transformedTask.getChildren(), keepTaskId);
         }
 
     }
