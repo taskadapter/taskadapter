@@ -10,7 +10,7 @@ object TALauncher {
   val PARAMETER_OPEN_TASK_ADAPTER_PAGE_IN_WEB_BROWSER = "--openTaskAdapterPageInWebBrowser"
   private val DEFAULT_HTTP_SERVER_PORT = 10842
   private val WEB_APPLICATION_ROOT_CONTEXT = "/ta"
-  private val WAR_FOLDER = "./webui/build/libs"
+  private val WAR_FOLDER = "war"
   private val WAR_FILE_NAME = "webui.war"
 
   def main(args: Array[String]): Unit = {
