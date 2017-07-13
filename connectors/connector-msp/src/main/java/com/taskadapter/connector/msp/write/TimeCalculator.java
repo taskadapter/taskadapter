@@ -4,7 +4,8 @@ import com.taskadapter.model.GTask;
 import net.sf.mpxj.Duration;
 import net.sf.mpxj.TimeUnit;
 
-public class TimeCalculator {
+class TimeCalculator {
+/*
     static Duration calculateTimeAlreadySpent(float doneRatioInPercents, float hours) {
         float doneRatio = doneRatioInPercents / 100f;
         double duration = doneRatio * hours;
@@ -21,4 +22,5 @@ public class TimeCalculator {
         return Duration.getInstance((1 - doneRatio) * gTask.getEstimatedHours(),
                 TimeUnit.HOURS);
     }
+*/
 }

@@ -13,7 +13,9 @@ import static org.junit.Assert.assertNull;
 
 public class DateFinderTest {
     private DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+    // TODO TA3 Msp date tests
 
+    /*
     @Test
     public void earliestDateFoundWhenAllStartDatesSet() throws Exception {
         Date date1 = formatter.parse("01/29/2010");
@@ -38,5 +40,5 @@ public class DateFinderTest {
         GTask task = new GTask();
         task.setStartDate(time);
         return task;
-    }
+    }*/
 }

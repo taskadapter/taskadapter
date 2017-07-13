@@ -44,6 +44,7 @@ public class JiraToGTask {
         GTask task = new GTask();
         final Long longId = issue.getId();
         // do we really expect more than 2bln issues in a JIRA installation? probably not. screw it.
+        // TODO TA3 task ids?
         task.setId(longId.intValue());
         task.setKey(issue.getKey());
 

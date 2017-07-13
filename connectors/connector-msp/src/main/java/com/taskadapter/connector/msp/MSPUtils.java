@@ -69,6 +69,7 @@ public class MSPUtils {
         return ((textField1 != null) && textField1.equals(TA_TAG));
     }
 
+/*
     public static boolean useWork(Mappings mappings) throws BadConfigException {
         String value = mappings.getMappedTo(FIELD.ESTIMATED_TIME);
         if (value == null) {
@@ -76,6 +77,7 @@ public class MSPUtils {
         }
         return value.equals(TaskField.WORK.toString());
     }
+*/
 
     public static String[] getTextFieldNamesAvailableForMapping() {
         Set<String> keys = TEXT_FIELDS_MAP.keySet();

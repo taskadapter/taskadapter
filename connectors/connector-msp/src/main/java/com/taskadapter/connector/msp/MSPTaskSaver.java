@@ -1,8 +1,7 @@
 package com.taskadapter.connector.msp;
 
+import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.common.RelationUtils;
-import com.taskadapter.connector.definition.Mappings;
-import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.TaskSaveResultBuilder;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
@@ -33,9 +32,9 @@ public final class MSPTaskSaver {
 
     private MSXMLFileWriter writer;
 
-    public MSPTaskSaver(MSPConfig config, Mappings mappings) {
+    public MSPTaskSaver(MSPConfig config, Iterable<FieldRow> rows) {
         this.config = config;
-        this.writer = new MSXMLFileWriter(mappings);
+        this.writer = new MSXMLFileWriter(rows);
     }
 
     public TaskSaveResult saveData(List<GTask> tasks) throws ConnectorException {
@@ -52,8 +51,6 @@ public final class MSPTaskSaver {
 
     /**
      * This method allows saving data to MSP file while keeping tasks ids.
-     * 
-     * @throws ConnectorException
      */
     private void saveIssues(List<GTask> tasks) throws ConnectorException {
         try {

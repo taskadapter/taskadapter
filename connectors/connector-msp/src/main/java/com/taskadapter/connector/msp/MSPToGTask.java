@@ -1,6 +1,5 @@
 package com.taskadapter.connector.msp;
 
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.msp.write.MSPDefaultFields;
 import com.taskadapter.model.GRelation;
@@ -32,17 +31,12 @@ import static com.taskadapter.model.GTaskDescriptor.FIELD.TASK_TYPE;
 class MSPToGTask {
 
     private ProjectHeader header;
-    private Mappings mappings;
 
-    MSPToGTask(Mappings mappings) {
-        this.mappings = mappings;
-    }
-
-    public void setHeader(ProjectHeader header) {
+     void setHeader(ProjectHeader header) {
         this.header = header;
     }
 
-    public List<GTask> convertToGenericTaskList(List<Task> tasks) throws BadConfigException {
+     List<GTask> convertToGenericTaskList(List<Task> tasks) {
         List<GTask> genericTasks = new ArrayList<>();
 
         for (Task task : tasks) {
@@ -56,11 +50,11 @@ class MSPToGTask {
         return genericTasks;
     }
 
-    public GTask convertToGenericTask(Task task) throws BadConfigException {
+     GTask convertToGenericTask(Task task) {
         GTask genericTask = new GTask();
-        genericTask.setType(extractField(task, TASK_TYPE));
+//        genericTask.setType(extractField(task, TASK_TYPE));
 
-        genericTask.setSummary(task.getName());
+        genericTask.setValue(MspField.summary(), task.getName());
         genericTask.setId(task.getUniqueID());
         // TODO Add test for this
         genericTask.setKey(task.getUniqueID() + "");
@@ -70,12 +64,13 @@ class MSPToGTask {
             genericTask.setParentKey(parent.getUniqueID() + "");
         }
 
-        genericTask.setRemoteId(extractField(task, REMOTE_ID));
+//        genericTask.setRemoteId(extractField(task, REMOTE_ID));
 
-        genericTask.setPriority(task.getPriority().getValue());
+//        genericTask.setPriority(task.getPriority().getValue());
 
-        genericTask.setStatus(extractField(task, TASK_STATUS));
+//        genericTask.setValue(MFextractField(task, TASK_STATUS));
 
+/*
         if (mappings.haveMappingFor(FIELD.ESTIMATED_TIME)) {
             genericTask.setEstimatedHours(extractEstimatedHours(task));
         }
@@ -105,14 +100,16 @@ class MSPToGTask {
             genericTask.setDueDate(mspDueDate);
         }
 
-        genericTask.setAssignee(extractAssignee(task));
-        genericTask.setDescription(task.getNotes());
+*/
+//        genericTask.setAssignee(extractAssignee(task));
+        genericTask.setValue(MspField.description(), task.getNotes());
 
         processRelations(task, genericTask);
-        genericTask.setTargetVersionName(extractField(task, TARGET_VERSION));
-        genericTask.setEnvironment(extractField(task, ENVIRONMENT));
+//        genericTask.setTargetVersionName(extractField(task, TARGET_VERSION));
+//        genericTask.setEnvironment(extractField(task, ENVIRONMENT));
         return genericTask;
     }
+/*
 
     String extractField(Task task, FIELD field) {
         Object value = getValue(task, field);
@@ -121,6 +118,7 @@ class MSPToGTask {
         }
         return null;
     }
+*/
 
     private void processRelations(Task task, GTask genericTask) {
         List<Relation> relations = task.getSuccessors();
@@ -169,6 +167,7 @@ class MSPToGTask {
         return null;
     }
 
+/*
     Float extractEstimatedHours(Task task) throws BadConfigException {
         Duration useAsEstimatedTime = null;
 
@@ -205,5 +204,6 @@ class MSPToGTask {
             return mspTask.getCurrentValue(f);
         }
         return null;
-    }
+    }*/
+
 }

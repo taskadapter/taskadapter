@@ -11,13 +11,7 @@ trait NewConnector {
   /**
     * Load list of tasks. Order of loaded tasks is not specified and may depend on implementation.
     * To get tasks in a specific order, use [[com.taskadapter.connector.common.ConnectorUtils]] methods.
-    *
-    * @param monitor can't be null. See
-    *                [[com.taskadapter.connector.common.ProgressMonitorUtils.DUMMY_MONITOR]]} if you don't
-    *                want any monitoring.
     */
-  def loadData(monitor: ProgressMonitor): util.List[GTask]
-
   def loadData(): util.List[GTask]
 
   /**

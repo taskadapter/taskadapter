@@ -1,8 +1,10 @@
 package com.taskadapter.connector.msp.write;
 
+import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.msp.MSPUtils;
+import com.taskadapter.connector.msp.MspField;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GUser;
@@ -18,13 +20,13 @@ import net.sf.mpxj.TimeUnit;
 import static com.taskadapter.model.GTaskDescriptor.FIELD.*;
 
 public class TaskFieldsSetter {
-    private Mappings mappings;
+    private final Iterable<FieldRow> rows;
     private Task mspTask;
     private ResourceManager resourceManager;
     private static final float DEFAULT_HOURS_FOR_NONESTIMATED_TASK = 8;
 
-    public TaskFieldsSetter(Mappings mappings, Task mspTask, ResourceManager resourceManager) {
-        this.mappings = mappings;
+    public TaskFieldsSetter(Iterable<FieldRow> rows, Task mspTask, ResourceManager resourceManager) {
+        this.rows = rows;
         this.mspTask = mspTask;
         this.resourceManager = resourceManager;
     }
@@ -33,10 +35,7 @@ public class TaskFieldsSetter {
      * "% done" field is used to calculate "actual work". this is more like a
      * hack used until Redmine REST API provides "time spent" serverInfo in
      * "issues list" response (see task http://www.redmine.org/issues/5303 )
-     *
-     * @throws com.taskadapter.connector.definition.exceptions.BadConfigException
      */
-    // TODO should not throw the exception because the config should have been verified by now.
     public void setFields(GTask gTask, boolean keepTaskId) throws BadConfigException {
         mspTask.setMilestone(false);
 
@@ -46,8 +45,11 @@ public class TaskFieldsSetter {
             mspTask.setUniqueID(gTask.getId());
         }
 
-        processSummary(gTask);
-        processDescription(gTask);
+        gTask.getFields().entrySet().stream().forEach(f ->
+                processField(f.getKey(), f.getValue())
+        );
+
+/*
         processType(gTask);
         processStatus(gTask);
         processEstimatedTime(gTask);
@@ -60,9 +62,19 @@ public class TaskFieldsSetter {
         processClosedDate(gTask);
         setFieldIfSelected(ENVIRONMENT, mspTask, gTask.getEnvironment());
         setFieldIfSelected(TARGET_VERSION, mspTask, gTask.getTargetVersionName());
+*/
     }
 
-    private void processKey(GTask gTask) {
+    private void processField(String fieldName, Object value) {
+        if (fieldName.equals(MspField.summary().name())) {
+            mspTask.setName((String) value);
+        }
+        if (fieldName.equals(MspField.description().name())) {
+            mspTask.setNotes((String) value);
+        }
+    }
+
+/*    private void processKey(GTask gTask) {
         setFieldIfSelected(REMOTE_ID, mspTask, gTask.getKey());
     }
 
@@ -74,22 +86,10 @@ public class TaskFieldsSetter {
         setFieldIfSelected(TASK_TYPE, mspTask, gTask.getType());
     }
 
-    private void processSummary(GTask gTask) {
-        if (mappings.isFieldSelected(SUMMARY)) {
-            mspTask.setName(gTask.getSummary());
-        }
-    }
-
     private void processPriority(GTask gTask) {
-        if (mappings.isFieldSelected(PRIORITY) && gTask.getPriority()!= null) {
+        if (mappings.isFieldSelected(PRIORITY) && gTask.getPriority() != null) {
             Priority mspPriority = Priority.getInstance(gTask.getPriority());
             mspTask.setPriority(mspPriority);
-        }
-    }
-
-    private void processDescription(GTask gTask) {
-        if (mappings.isFieldSelected(DESCRIPTION)) {
-            mspTask.setNotes(gTask.getDescription());
         }
     }
 
@@ -125,7 +125,7 @@ public class TaskFieldsSetter {
             }
         }
     }
-    
+
     private void processAssignee(GTask gTask) {
         final GUser assignee = gTask.getAssignee();
         if (mappings.isFieldSelected(ASSIGNEE) && assignee != null) {
@@ -133,9 +133,9 @@ public class TaskFieldsSetter {
             Resource resource = resourceManager.getOrCreateResource(assigneeName);
             ResourceAssignment ass = mspTask.addResourceAssignment(resource);
             ass.setUnits(100);
-            /* MUST set the remaining work to avoid this bug:
+            // MUST set the remaining work to avoid this bug:
             * http://www.hostedredmine.com/issues/7780 "Duration" field is ignored when "Assignee" is set
-            */
+
             if (gTask.getEstimatedHours() != null) {
                 ass.setRemainingWork(TimeCalculator.calculateRemainingTime(gTask));
 
@@ -149,73 +149,82 @@ public class TaskFieldsSetter {
     }
 
     private String getAssigneeName(GUser assignee) {
-        return assignee.getDisplayName() == null? assignee.getLoginName() : assignee.getDisplayName();
+        return assignee.getDisplayName() == null ? assignee.getLoginName() : assignee.getDisplayName();
     }
 
     private void processEstimatedTime(GTask gTask) throws BadConfigException {
         final Float estimatedTime = calculateTaskEstimatedTime(gTask);
         switch (getTaskEstimationMode(gTask)) {
-        case TASK_TIME:
-            setEstimatedHours(estimatedTime);
-            break;
-        case WILD_GUESS:
-            setEstimatedHours(estimatedTime);
-            // "estimated" means that the time was "approximate". it is shown by MSP as "?" next to the duration value.
-            // like "8 hrs?"
-            mspTask.setEstimated(true);
-            break;
-        case NO_ESTIMATE:
-            mspTask.set(MSPDefaultFields.FIELD_DURATION_UNDEFINED, "true");
-            mspTask.set(MSPDefaultFields.FIELD_WORK_UNDEFINED, "true");
-            break;
+            case TASK_TIME:
+                setEstimatedHours(estimatedTime);
+                break;
+            case WILD_GUESS:
+                setEstimatedHours(estimatedTime);
+                // "estimated" means that the time was "approximate". it is shown by MSP as "?" next to the duration value.
+                // like "8 hrs?"
+                mspTask.setEstimated(true);
+                break;
+            case NO_ESTIMATE:
+                mspTask.set(MSPDefaultFields.FIELD_DURATION_UNDEFINED, "true");
+                mspTask.set(MSPDefaultFields.FIELD_WORK_UNDEFINED, "true");
+                break;
         }
     }
-    
+*/
+
     /**
      * Calculates a task estimated time. In some cases (for example, exporting
      * DONE_RATIO but no estimated time is set) we still need to use some
      * estimation. This method respects that cases and can provide general task
      * estimation. If task estimation is not required, returns null.
-     * 
-     * @param gTask
-     *            task to estimate it time.
+     *
+     * @param gTask task to estimate it time.
      * @return <code>null</code> if task does not require an estimated time.
-     *         Otherwise estimated (or guessed) task time.
+     * Otherwise estimated (or guessed) task time.
      */
+/*
     private Float calculateTaskEstimatedTime(GTask gTask)
             throws BadConfigException {
         final TaskEstimationMode estimationMode = getTaskEstimationMode(gTask);
         switch (estimationMode) {
-        case TASK_TIME:
-            return gTask.getEstimatedHours();
-        case WILD_GUESS:
-            return DEFAULT_HOURS_FOR_NONESTIMATED_TASK;
-        case NO_ESTIMATE:
-            return null;
+            case TASK_TIME:
+                return gTask.getEstimatedHours();
+            case WILD_GUESS:
+                return DEFAULT_HOURS_FOR_NONESTIMATED_TASK;
+            case NO_ESTIMATE:
+                return null;
         }
         throw new IncompatibleClassChangeError("Bad/unsupported estimation mode " + estimationMode);
     }
 
-    /* Simple closure to call static calculator with proper arguments */
+    */
+/* Simple closure to call static calculator with proper arguments *//*
+
     private TaskEstimationMode getTaskEstimationMode(GTask gTask) {
         return getTaskEstimationMode(gTask, mappings);
     }
 
     static TaskEstimationMode getTaskEstimationMode(GTask gTask, final Mappings mappings) {
-        /* Normal case, time is mapped and set. */
+        */
+/* Normal case, time is mapped and set. *//*
+
         if (gTask.getEstimatedHours() != null && mappings.isFieldSelected(ESTIMATED_TIME))
             return TaskEstimationMode.TASK_TIME;
-        
+
         // "%% Done" is ignored by MSP if there's no estimate on task.
         // This makes sense, but unfortunately some users want "% done" to be transferred even when
         // there's no time estimate.
         if (mappings.isFieldSelected(DONE_RATIO) && gTask.getDoneRatio() != null) {
-            /* Estimation time is set. Use it even if user does not ask to 
+            */
+/* Estimation time is set. Use it even if user does not ask to
              * map estimated time. It is still more reasonable than 
-             * "wild guess" estimation. */
+             * "wild guess" estimation. *//*
+
             if (gTask.getEstimatedHours() != null)
                 return TaskEstimationMode.TASK_TIME;
-            /* We need some estimation, let's just guess it. */
+            */
+/* We need some estimation, let's just guess it. *//*
+
             return TaskEstimationMode.WILD_GUESS;
         }
         return TaskEstimationMode.NO_ESTIMATE;
@@ -261,4 +270,5 @@ public class TaskFieldsSetter {
         }
 
     }
+*/
 }

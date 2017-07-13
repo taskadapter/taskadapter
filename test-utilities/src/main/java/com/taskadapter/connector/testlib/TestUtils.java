@@ -43,15 +43,15 @@ public class TestUtils {
         return null;
     }
 
-/*    public static GTask findTaskBySummary(List<GTask> tasks, String summary) {
+    public static GTask findTaskByFieldName(List<GTask> tasks, String fieldName, String value) {
         for (GTask t : tasks) {
-            if (t.getSummary().equals(summary)) {
+            if (t.getValue(fieldName).equals(value)) {
                 return t;
             }
         }
         return null;
     }
-
+/*
     public static GTask generateTask() {
         GTask t = new GTask();
         long timeInMillis = Calendar.getInstance().getTimeInMillis();

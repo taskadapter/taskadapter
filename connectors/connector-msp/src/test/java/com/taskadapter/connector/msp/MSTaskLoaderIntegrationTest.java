@@ -20,7 +20,7 @@ public class MSTaskLoaderIntegrationTest {
     @Test
     public void testFind1Task() throws Exception {
         List<GTask> tasks = loadWithDefaultMappings("created_by_msp_1task.xml");
-        GTask myTaskAddedFromMSP = TestUtils.findTaskBySummary(tasks, "task1");
+        GTask myTaskAddedFromMSP = TestUtils.findTaskByFieldName(tasks, MspField.summary().name(), "task1");
         if (myTaskAddedFromMSP == null) {
             Assert.fail("required task not found in the tasks list");
         }
@@ -31,13 +31,13 @@ public class MSTaskLoaderIntegrationTest {
         List<GTask> tasks = loadWithDefaultMappings("created_by_msp_tasks.xml");
         Assert.assertEquals(4, tasks.size());
 
-        GTask t1 = TestUtils.findTaskBySummary(tasks, "task1");
+        GTask t1 = TestUtils.findTaskByFieldName(tasks, MspField.summary().name(), "task1");
         Assert.assertNotNull("required task not found in the tasks list", t1);
 
-        GTask t1Sub1 = TestUtils.findTaskBySummary(tasks, "task1-sub1");
+        GTask t1Sub1 = TestUtils.findTaskByFieldName(tasks, MspField.summary().name(), "task1-sub1");
         Assert.assertNotNull("required task not found in the tasks list", t1Sub1);
 
-        GTask t2 = TestUtils.findTaskBySummary(tasks, "task2");
+        GTask t2 = TestUtils.findTaskByFieldName(tasks, MspField.summary().name(), "task2");
         Assert.assertNotNull("required task not found in the tasks list", t2);
     }
 
@@ -46,10 +46,10 @@ public class MSTaskLoaderIntegrationTest {
         List<GTask> tasks = loadWithDefaultMappings("created_by_ta_27.xml");
         Assert.assertEquals(27, tasks.size());
 
-        GTask t1 = TestUtils.findTaskBySummary(tasks, "improve components");
+        GTask t1 = TestUtils.findTaskByFieldName(tasks, MspField.summary().name(), "improve components");
         Assert.assertNotNull("required task not found in the tasks list", t1);
 
-        GTask sub1 = TestUtils.findTaskBySummary(tasks, "sub1");
+        GTask sub1 = TestUtils.findTaskByFieldName(tasks, MspField.summary().name(), "sub1");
         Assert.assertNotNull("required task not found in the tasks list", sub1);
     }
 
@@ -59,7 +59,7 @@ public class MSTaskLoaderIntegrationTest {
         List<GTask> tasks = loadWithDefaultMappings("created_by_ta_1.xml");
         Assert.assertEquals(1, tasks.size());
 
-        GTask t1 = TestUtils.findTaskBySummary(tasks, "support me!");
+        GTask t1 = TestUtils.findTaskByFieldName(tasks, MspField.summary().name(), "support me!");
         Assert.assertNotNull("required task not found in the tasks list", t1);
     }
 

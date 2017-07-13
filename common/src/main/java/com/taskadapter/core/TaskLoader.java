@@ -26,17 +26,17 @@ public final class TaskLoader {
     public static List<GTask> loadTasks(int maxTasksNumber,
                                         NewConnector connectorFrom, String sourceName,
                                         ProgressMonitor monitor) throws ConnectorException {
-        if (monitor == null) {
-            monitor = ProgressMonitorUtils.DUMMY_MONITOR;
-        }
+//        if (monitor == null) {
+//            monitor = ProgressMonitorUtils.DUMMY_MONITOR;
+//        }
 
-        monitor.beginTask("Loading data from " + sourceName, 100);
-        List<GTask> flatTasksList = ConnectorUtils.loadDataOrderedById(connectorFrom, monitor);
+//        monitor.beginTask("Loading data from " + sourceName, 100);
+        List<GTask> flatTasksList = ConnectorUtils.loadDataOrderedById(connectorFrom);
         flatTasksList = getUpToNTasks(maxTasksNumber, flatTasksList);
 
         final List<GTask> tasks = TreeUtils
                 .buildTreeFromFlatList(flatTasksList);
-        monitor.done();
+//        monitor.done();
 
         return tasks;
     }

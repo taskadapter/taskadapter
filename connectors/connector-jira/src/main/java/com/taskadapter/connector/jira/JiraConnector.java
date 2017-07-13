@@ -118,16 +118,11 @@ public class JiraConnector implements NewConnector {
     }
 
     @Override
-    public List<GTask> loadData(ProgressMonitor monitorIGNORED) {
+    public List<GTask> loadData() {
         return withJiraRestClient(client -> {
             final JiraTaskLoader loader = new JiraTaskLoader(client, config.getPriorities());
             return loader.loadTasks(config);
         });
-    }
-
-    @Override
-    public List<GTask> loadData() {
-        return loadData(null);
     }
 
     @Override

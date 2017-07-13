@@ -7,9 +7,10 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 public class DefaultMSPMappingsTest {
-    @Test
+    // TODO TA3 tests for MSP
+/*    @Test
     public void summaryFieldSelectedByDefault() {
         assertTrue(TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS).isFieldSelected(GTaskDescriptor.FIELD.SUMMARY));
     }
-
+*/
 }

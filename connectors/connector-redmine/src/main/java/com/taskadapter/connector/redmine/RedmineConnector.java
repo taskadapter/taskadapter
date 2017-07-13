@@ -50,7 +50,7 @@ public class RedmineConnector implements NewConnector {
     }
     
     @Override
-    public List<GTask> loadData(ProgressMonitor monitorIGNORED) {
+    public List<GTask> loadData() {
         try {
             RedmineManager mgr = RedmineManagerFactory.createRedmineManager(config.getServerInfo());
 
@@ -96,19 +96,6 @@ public class RedmineConnector implements NewConnector {
 		}
 		return result;
 	}
-    
-    @Override
-    public List<GTask> loadData()  {
-        try {
-            RedmineManager mgr = RedmineManagerFactory.createRedmineManager(config.getServerInfo());
-
-            List<Issue> issues = mgr.getIssueManager().getIssues(config.getProjectKey(), config.getQueryId(), Include.relations);
-            addFullUsers(issues, mgr);
-            return convertToGenericTasks(config, issues);
-        } catch (RedmineException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @Override
     public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, java.lang.Iterable<FieldRow> fieldRows) {

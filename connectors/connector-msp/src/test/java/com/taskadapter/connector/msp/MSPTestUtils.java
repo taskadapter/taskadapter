@@ -61,17 +61,14 @@ public class MSPTestUtils {
     }
 
     static List<GTask> loadWithDefaultMappings(String fileNameInClasspath) throws ConnectorException {
-        return load(fileNameInClasspath, TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
+        return load(fileNameInClasspath);
     }
 
-    /**
-     * Load the file with DEFAULT field mappings
-     */
-    static List<GTask> load(String fileNameInClasspath, Mappings mappings) throws ConnectorException {
+    static List<GTask> load(String fileNameInClasspath) throws ConnectorException {
         String fileName = getTestFileAbsolutePath(fileNameInClasspath);
         MSPConfig config = new MSPConfig(fileName);
         final MSPConnector connector = new MSPConnector(config);
-        return ConnectorUtils.loadDataOrderedById(connector, mappings);
+        return ConnectorUtils.loadDataOrderedById(connector);
     }
 
     /**

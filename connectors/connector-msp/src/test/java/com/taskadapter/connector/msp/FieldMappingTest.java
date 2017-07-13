@@ -46,6 +46,8 @@ public class FieldMappingTest {
         connector = new MSPConnector(config);
     }
 
+    // TODO TA3 MSP fields test
+/*
     @Test
     public void testEstimatedTimeNotSaved() throws Exception {
         GTask task = TestUtils.generateTask();
@@ -263,4 +265,5 @@ public class FieldMappingTest {
     private TestSaver getTestSaver() {
         return new TestSaver(connector, TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
     }
+*/
 }

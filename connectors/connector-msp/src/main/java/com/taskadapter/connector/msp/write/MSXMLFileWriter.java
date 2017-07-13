@@ -1,5 +1,7 @@
 package com.taskadapter.connector.msp.write;
 
+import com.taskadapter.connector.Field;
+import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.TaskSaveResultBuilder;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
@@ -33,14 +35,13 @@ public class MSXMLFileWriter {
      * these text fields to indicate that "duration" or "work" is UNDEFINED and not "0"
      */
     private static final String ALIAS_IS_WORK_UNDEFINED = "TA isWorkUndefined";
+    private final Iterable<FieldRow> rows;
 
-    private Mappings mappings;
-
-    public MSXMLFileWriter(Mappings mappings) {
-        this.mappings = mappings;
+    public MSXMLFileWriter( Iterable<FieldRow> rows) {
+        this.rows = rows;
     }
 
-    public String write(String absoluteFilePath, TaskSaveResultBuilder syncResult, List<GTask> rows,
+    public String write(String absoluteFilePath, TaskSaveResultBuilder syncResult, List<GTask> tasks,
                         boolean keepTaskId) throws IOException, BadConfigException {
 
         // XXX load resources from existing MS file to cache here
@@ -54,11 +55,11 @@ public class MSXMLFileWriter {
         project.setAutoOutlineNumber(true);
 
         setAliases(project);
-        addTasks(syncResult, project, null, rows, keepTaskId);
+        addTasks(syncResult, project, null, tasks, keepTaskId);
 
         ProjectHeader header = project.getProjectHeader();
         project.addDefaultBaseCalendar();
-        Date earliestTaskDate = DateFinder.findEarliestStartDate(rows);
+        Date earliestTaskDate = DateFinder.findEarliestStartDate(tasks);
         if (earliestTaskDate != null) {
             header.setStartDate(earliestTaskDate);
         }
@@ -84,7 +85,7 @@ public class MSXMLFileWriter {
             } else {
                 newMspTask = parentMSPTask.addTask();
             }
-            TaskFieldsSetter setter = new TaskFieldsSetter(mappings, newMspTask, new ResourceManager(project));
+            TaskFieldsSetter setter = new TaskFieldsSetter(rows, newMspTask, new ResourceManager(project));
             setter.setFields(gTask, keepTaskId);
             syncResult.addCreatedTask(gTask.getId(), newMspTask.getID() + "");
             addTasks(syncResult, project, newMspTask, gTask.getChildren(), keepTaskId);
@@ -96,15 +97,15 @@ public class MSXMLFileWriter {
         project.setTaskFieldAlias(MSPDefaultFields.FIELD_DURATION_UNDEFINED, ALIAS_IS_DURATION_UNDEFINED);
         project.setTaskFieldAlias(MSPDefaultFields.FIELD_WORK_UNDEFINED, ALIAS_IS_WORK_UNDEFINED);
 
-        setAliasIfMappingNotNULL(project, FIELD.REMOTE_ID, ALIAS_REMOTE_ID);
-        setAliasIfMappingNotNULL(project, FIELD.TASK_TYPE, ALIAS_ISSUE_TYPE);
-        setAliasIfMappingNotNULL(project, FIELD.TASK_STATUS, ALIAS_ISSUE_STATUS);
-        setAliasIfMappingNotNULL(project, FIELD.ENVIRONMENT, ALIAS_ENVIRONMENT);
-        setAliasIfMappingNotNULL(project, FIELD.TARGET_VERSION, ALIAS_TARGET_VERSION);
+//        setAliasIfMappingNotNULL(project, FIELD.REMOTE_ID, ALIAS_REMOTE_ID);
+//        setAliasIfMappingNotNULL(project, Field.taskType, ALIAS_ISSUE_TYPE);
+//        setAliasIfMappingNotNULL(project, FIELD.TASK_STATUS, ALIAS_ISSUE_STATUS);
+//        setAliasIfMappingNotNULL(project, FIELD.ENVIRONMENT, ALIAS_ENVIRONMENT);
+//        setAliasIfMappingNotNULL(project, FIELD.TARGET_VERSION, ALIAS_TARGET_VERSION);
     }
 
-    private void setAliasIfMappingNotNULL(ProjectFile project, FIELD field, String aliasName) {
-        String mspFileFieldName = mappings.getMappedTo(field);
+    private void setAliasIfMappingNotNULL(ProjectFile project, Field field, String aliasName) {
+        String mspFileFieldName = field.name();
         if (mspFileFieldName != null) {
             /* it is NULL if the old Task Adapter config does not have a mapping for this field.
                 * E.g. we added "task type" field in the new TA version and then we try running
