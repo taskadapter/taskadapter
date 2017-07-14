@@ -229,11 +229,10 @@ public final class UISyncConfig {
      * @throws ConnectorException
      *             if something goes wrong.
      */
-    public List<GTask> loadTasksForUpdate(ProgressMonitor progress)
+    public List<GTask> loadTasksForUpdate()
             throws ConnectorException {
         final Updater updater = makeUpdater();
-        // FIXME: It must be one method!
-        updater.loadTasksFromFile(progress);
+        updater.loadTasks();
         updater.removeTasksWithoutRemoteIds();
         return updater.getExistingTasks();
     }

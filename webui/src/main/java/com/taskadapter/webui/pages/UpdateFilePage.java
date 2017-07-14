@@ -90,9 +90,7 @@ public final class UpdateFilePage {
             @Override
             public void run() {
                 try {
-                    final List<GTask> tasks = config
-                            .loadTasksForUpdate(ProgressMonitorUtils
-                                    .DUMMY_MONITOR);
+                    final List<GTask> tasks = config.loadTasksForUpdate();
                     if (tasks.isEmpty())
                         showNoDataLoaded();
                     else

@@ -9,6 +9,7 @@ import scala.collection.JavaConverters._
 
 object RedmineField {
   // Redmine field names
+  val id = Field("Id")
   val summary = Field("Summary")
   val description = Field("Description")
   val taskType = Field("Tracker type")
@@ -43,7 +44,7 @@ object RedmineField {
 
   def fieldsAsJava(): util.List[Field] = fields.asJava
 
-  def suggestedStandardFields = Map(summary -> Summary, description -> Description, taskType -> TaskType,
+  def suggestedStandardFields = Map(id -> Id, summary -> Summary, description -> Description, taskType -> TaskType,
     estimatedTime -> EstimatedTime,
     doneRatio -> DoneRatio,
     assignee -> Assignee,

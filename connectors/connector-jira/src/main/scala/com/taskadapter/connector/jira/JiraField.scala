@@ -24,12 +24,14 @@ object JiraField {
   val dueDate = Field.date("Due Date")
   val priority = Field("Priority")
   val environment = Field("Environment") // should not be selected by default
+  val id = Field("Id")
 
-  val fields = List(summary, description, taskType, estimatedTime, assignee, dueDate, priority, environment)
+  val fields = List(id, summary, description, taskType, estimatedTime, assignee, dueDate, priority, environment)
 
   def fieldsAsJava(): util.List[Field] = fields.asJava
 
-  private def suggestedStandardFields = Map(summary -> Summary, description -> Description, taskType -> TaskType,
+  private def suggestedStandardFields = Map(id -> Id, summary -> Summary,
+    description -> Description, taskType -> TaskType,
     estimatedTime -> EstimatedTime,
     assignee -> Assignee,
     dueDate -> DueDate,

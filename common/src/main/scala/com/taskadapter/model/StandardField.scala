@@ -16,6 +16,8 @@ case object DoneRatio extends StandardField
 
 case object DueDate extends StandardField
 
+case object Id extends StandardField
+
 case object Priority extends StandardField
 
 case object StartDate extends StandardField

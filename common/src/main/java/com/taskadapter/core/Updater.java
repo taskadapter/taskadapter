@@ -16,24 +16,24 @@ public class Updater {
 
     private List<GTask> existingTasks;
     private List<GTask> tasksInExternalSystem;
-    private NewConnector fileConnector;
+    private NewConnector sourceConnector;
     private Iterable<FieldRow> rows;
     private NewConnector remoteConnector;
     private ProgressMonitor monitor;
     private String sourceLocationName;
 
-    public Updater(NewConnector fileConnector, Iterable<FieldRow> rows,
-            NewConnector remoteConnector,
+    public Updater(NewConnector sourceConnector, Iterable<FieldRow> rows,
+            NewConnector targetConnector,
             String sourceLocationName) {
         super();
-        this.fileConnector = fileConnector;
+        this.sourceConnector = sourceConnector;
         this.rows = rows;
-        this.remoteConnector = remoteConnector;
+        this.remoteConnector = targetConnector;
         this.sourceLocationName  = sourceLocationName;
     }
 
-    public void loadTasksFromFile(ProgressMonitor monitor) throws ConnectorException {
-        this.existingTasks = ConnectorUtils.loadDataOrderedById(fileConnector);
+    public void loadTasks() throws ConnectorException {
+        this.existingTasks = ConnectorUtils.loadDataOrderedById(sourceConnector);
     }
 
     public void loadExternalTasks() throws ConnectorException {
@@ -62,7 +62,7 @@ public class Updater {
 
     public void saveFile() throws ConnectorException {
         // TODO remove the casting!
-        ((FileBasedConnector) fileConnector).updateTasksByRemoteIds(tasksInExternalSystem, rows);
+        ((FileBasedConnector) sourceConnector).updateTasksByRemoteIds(tasksInExternalSystem, rows);
     }
 
     public int getNumberOfUpdatedTasks() {
