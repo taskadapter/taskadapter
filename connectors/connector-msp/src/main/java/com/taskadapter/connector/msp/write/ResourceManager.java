@@ -16,7 +16,7 @@ public final class ResourceManager {
         this.project = project;
     }
 
-    Resource getOrCreateResource(String name) {
+    public Resource getOrCreateResource(String name) {
         final Optional<Resource> optionalResource = findResourceByName(name);
         if (optionalResource.isPresent()) {
             return optionalResource.get();

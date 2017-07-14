@@ -6,7 +6,6 @@ import net.sf.mpxj.Task
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.definition.Mappings
 import com.taskadapter.connector.definition.exceptions.BadConfigException
-import com.taskadapter.connector.msp.MSPUtils
 import com.taskadapter.connector.msp.MspField
 import com.taskadapter.model.GTask
 import com.taskadapter.model.GTaskDescriptor
@@ -58,7 +57,6 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
     }
 //    processEstimatedTime(gTask)
 //    processDoneRatio(gTask)
-//    processAssignee(gTask)
 //    processPriority(gTask)
 //    processKey(gTask)
 //    processStartDate(gTask)
@@ -72,8 +70,9 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
     fieldName match {
       case MspField.summary.name => mspTask.setName(value.asInstanceOf[String])
       case MspField.description.name => mspTask.setNotes(value.asInstanceOf[String])
-      case MspField.status.name => setFieldByName(MspField.status.name, mspTask, value)
-      case MspField.taskType.name => setFieldByName(MspField.taskType.name, mspTask, value)
+      case MspField.status.name => setFieldByName(fieldName, value)
+      case MspField.taskType.name => setFieldByName(fieldName, value)
+      case MspField.assignee.name => processAssignee(fieldName,  value)
       case _ => // unknown, ignore for now
     }
   }
@@ -115,31 +114,26 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
       if (TaskField.ACTUAL_FINISH.getName == constraint) mspTask.setActualFinish(gTask.getClosedDate)
     }
   }
+*/
+  private def processAssignee(fieldName: String, value: Any) = {
+    if (value != null) {
 
-  private def processAssignee(gTask: GTask) = {
-    val assignee = gTask.getAssignee
-    if (mappings.isFieldSelected(ASSIGNEE) && assignee != null) {
-      val assigneeName = getAssigneeName(assignee)
+      val assigneeName = value.toString
       val resource = resourceManager.getOrCreateResource(assigneeName)
       val ass = mspTask.addResourceAssignment(resource)
       ass.setUnits(100)
       // MUST set the remaining work to avoid this bug:
-      http //todo: labels is not supported
-      //www.hostedredmine.com/issues/7780 "Duration" field is ignored when "Assignee" is set
-      if (gTask.getEstimatedHours != null) {
+      //http://www.hostedredmine.com/issues/7780 "Duration" field is ignored when "Assignee" is set
+/*      if (gTask.getEstimatedHours != null) {
         ass.setRemainingWork(TimeCalculator.calculateRemainingTime(gTask))
         // the same "IF" as above, now for the resource assignment. this might need refactoring...
         if (gTask.getDoneRatio != null && mappings.isFieldSelected(DONE_RATIO)) {
           val timeAlreadySpent = TimeCalculator.calculateTimeAlreadySpent(gTask.getDoneRatio, gTask.getEstimatedHours)
           ass.setActualWork(timeAlreadySpent)
         }
-      }
+      */
     }
   }
-*/
-
-  private def getAssigneeName(assignee: GUser) = if (assignee.getDisplayName == null) assignee.getLoginName
-  else assignee.getDisplayName
 
   private def processEstimatedTime(gTask: GTask) = {
 /*
@@ -226,7 +220,7 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
       mspTask.set(f, value)
     }
   }*/
- private def setFieldByName(fieldName: String, mspTask: Task, value: Any) = {
+ private def setFieldByName(fieldName: String, value: Any) = {
       val f = MSPUtils.getTaskFieldByName(fieldName)
       mspTask.set(f, value)
   }
