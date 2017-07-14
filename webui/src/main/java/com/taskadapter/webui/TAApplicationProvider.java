@@ -77,7 +77,7 @@ final class TAApplicationProvider extends UIProvider {
      */
     private static File getDefaultRootFolder() {
         final String userHome = System.getProperty("user.home");
-        return new File(userHome, "taskadapter");
+        return new File(userHome, ".taskadapter");
     }
 
 }
