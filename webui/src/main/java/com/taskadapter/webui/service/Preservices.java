@@ -4,6 +4,7 @@ import java.io.File;
 
 import com.taskadapter.PluginManager;
 import com.taskadapter.config.ConfigStorage;
+import com.taskadapter.core.TaskKeeper;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.SettingsManager;
 import com.taskadapter.web.uiapi.UIConfigService;
@@ -25,8 +26,11 @@ public class Preservices {
         this.rootDir = rootDir;
         this.editorManager = editorManager;
         final ConfigStorage configStorage = new ConfigStorage(rootDir);
+        TaskKeeper taskKeeper = new TaskKeeper(rootDir);
 
-        this.uiConfigStore = new UIConfigStore(new UIConfigService(
+        this.uiConfigStore = new UIConfigStore(
+                taskKeeper,
+                new UIConfigService(
                 pluginManager, editorManager), configStorage);
 
         this.currentTaskAdapterVersion = new CurrentVersionLoader()

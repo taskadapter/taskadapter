@@ -4,6 +4,7 @@ import java.util
 
 import com.taskadapter.config.CirceBoilerplateForConfigs._
 import com.taskadapter.config.{ConfigStorage, StorageException, StoredExportConfig}
+import com.taskadapter.core.TaskKeeper
 import io.circe.generic.auto._
 import io.circe.syntax._
 
@@ -16,8 +17,8 @@ import scala.collection.JavaConverters._
   * other instances for a same config file. See also documentation for
   * {@link UISyncConfig}.
   */
-class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStorage) {
-  val syncConfigBuilder = new UISyncConfigBuilder(uiConfigService)
+class UIConfigStore(taskKeeper:TaskKeeper, uiConfigService: UIConfigService, configStorage: ConfigStorage) {
+  val syncConfigBuilder = new UISyncConfigBuilder(taskKeeper, uiConfigService)
 
   /**
     * Lists all user-created configs.
@@ -51,7 +52,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val identity: String = configStorage.createNewConfig(userName, label,
       config1.getConnectorTypeId, config1.getConfigString,
       config2.getConnectorTypeId, config2.getConfigString, mappingsString)
-    new UISyncConfig(identity, userName, label, config1, config2, newMappings.asJava, false)
+    new UISyncConfig(taskKeeper, identity, userName, label, config1, config2, newMappings.asJava, false)
   }
 
   /**

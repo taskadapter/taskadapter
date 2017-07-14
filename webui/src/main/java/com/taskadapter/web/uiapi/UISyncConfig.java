@@ -10,6 +10,7 @@ import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.RemoteIdUpdater;
+import com.taskadapter.core.TaskKeeper;
 import com.taskadapter.core.TaskLoader;
 import com.taskadapter.core.TaskSaver;
 import com.taskadapter.core.Updater;
@@ -42,6 +43,7 @@ public final class UISyncConfig {
         }
     }
 
+    private TaskKeeper taskKeeper;
     /**
      * Config identity. Unique "config-storage" id to distinguish between
      * configs. May be <code>null</code> for a new (non-saved) config.
@@ -76,9 +78,10 @@ public final class UISyncConfig {
      */
     private boolean reversed;
 
-    UISyncConfig(String identity, String owner, String label,
-            UIConnectorConfig connector1, UIConnectorConfig connector2,
-            List<FieldMapping> fieldMappings, boolean reversed) {
+    UISyncConfig(TaskKeeper taskKeeper, String identity, String owner, String label,
+                 UIConnectorConfig connector1, UIConnectorConfig connector2,
+                 List<FieldMapping> fieldMappings, boolean reversed) {
+        this.taskKeeper = taskKeeper;
         this.identity = identity;
         this.owner = owner;
         this.label = label;
@@ -125,7 +128,7 @@ public final class UISyncConfig {
      * @return "reversed" (back-order) configuration.
      */
     public UISyncConfig reverse() {
-        return new UISyncConfig(identity, owner, label, connector2, connector1,
+        return new UISyncConfig(taskKeeper, identity, owner, label, connector2, connector1,
                 reverse(fieldMappings), !reversed);
     }
 
@@ -203,13 +206,14 @@ public final class UISyncConfig {
         final String destinationLocation = getConnector2().getDestinationLocation();
         final Iterable<FieldRow> rows = generateFieldRowsToExportRight();
         final TaskSaveResult result = TaskSaver.save(connectorInstance, destinationLocation, rows, tasks, progress);
-        try {
-            RemoteIdUpdater.updateRemoteIds(result.getIdToRemoteKeyMap(),
-                    getConnector1().createConnectorInstance());
+//        try {
+            taskKeeper.keepTasks(result.getIdToRemoteKeyMap());
+//            RemoteIdUpdater.updateRemoteIds(result.getIdToRemoteKeyMap(),
+//                    getConnector1().createConnectorInstance());
             return new TaskExportResult(result, null);
-        } catch (ConnectorException e) {
-            return new TaskExportResult(result, e);
-        }
+//        } catch (ConnectorException e) {
+//            return new TaskExportResult(result, e);
+//        }
 
     }
 

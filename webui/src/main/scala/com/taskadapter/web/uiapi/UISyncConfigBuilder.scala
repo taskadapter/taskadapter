@@ -3,11 +3,12 @@ package com.taskadapter.web.uiapi
 import com.taskadapter.config.CirceBoilerplateForConfigs._
 import com.taskadapter.config.StoredExportConfig
 import com.taskadapter.connector.definition.FieldMapping
+import com.taskadapter.core.TaskKeeper
 import io.circe.parser._
 
 import scala.collection.JavaConverters._
 
-class UISyncConfigBuilder(val uiConfigService: UIConfigService) {
+class UISyncConfigBuilder( taskKeeper:TaskKeeper, uiConfigService: UIConfigService) {
   /**
     * Create a new UI config instance for a stored config.
     *
@@ -27,7 +28,7 @@ class UISyncConfigBuilder(val uiConfigService: UIConfigService) {
     newMappings match {
       case Left(e) => throw new RuntimeException(s"cannot parse mappings from config $storedConfig: $e")
       case Right(m) =>
-        new UISyncConfig(storedConfig.getId, ownerName, label, config1, config2, m.asJava, false)
+        new UISyncConfig(taskKeeper, storedConfig.getId, ownerName, label, config1, config2, m.asJava, false)
     }
   }
 }
