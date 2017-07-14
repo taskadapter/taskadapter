@@ -17,7 +17,7 @@ class NewConfigSuggesterTest extends FunSpec with ScalaFutures with Matchers {
     val list = NewConfigSuggester.suggestedFieldMappingsForNewConfig(
       RedmineField.getSuggestedCombinations(), JiraField.getSuggestedCombinations())
 
-    list.size shouldBe 13
+    list.size shouldBe 14
     list.contains(FieldMapping(RedmineField.assignee, JiraField.assignee, true, "")) shouldBe true
     list.contains(FieldMapping(RedmineField.targetVersion, Field(""), false, "")) shouldBe true
   }
@@ -26,7 +26,7 @@ class NewConfigSuggesterTest extends FunSpec with ScalaFutures with Matchers {
     val list = NewConfigSuggester.suggestedFieldMappingsForNewConfig(
       JiraField.getSuggestedCombinations(), RedmineField.getSuggestedCombinations())
 
-    list.size shouldBe 13
+    list.size shouldBe 14
   }
 
 }
