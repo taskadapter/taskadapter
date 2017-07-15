@@ -30,11 +30,11 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     }
   */
 
-  it("subtasksAreCreated") {
-    val parentTask = new JiraGTaskBuilder("parent task").withId(11).build()
+  it("subtasks are created") {
+    val parentTask = new JiraGTaskBuilder("parent task").withId(11l).build()
 
-    val subTask1 = new JiraGTaskBuilder("child task 1").withId(22).build()
-    val subTask2 = new JiraGTaskBuilder("child task 2").withId(33).build()
+    val subTask1 = new JiraGTaskBuilder("child task 1").withId(22l).build()
+    val subTask2 = new JiraGTaskBuilder("child task 2").withId(33l).build()
     parentTask.getChildren.addAll(List(subTask1, subTask2).asJava)
     val connector = getConnector
     val result = connector.saveData(new InMemoryTaskKeeper(), util.Arrays.asList(parentTask), ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault)

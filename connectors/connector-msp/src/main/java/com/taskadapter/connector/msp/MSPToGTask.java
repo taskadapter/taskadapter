@@ -32,11 +32,11 @@ class MSPToGTask {
 
     private ProjectHeader header;
 
-     void setHeader(ProjectHeader header) {
+    void setHeader(ProjectHeader header) {
         this.header = header;
     }
 
-     List<GTask> convertToGenericTaskList(List<Task> tasks) {
+    List<GTask> convertToGenericTaskList(List<Task> tasks) {
         List<GTask> genericTasks = new ArrayList<>();
 
         for (Task task : tasks) {
@@ -50,7 +50,7 @@ class MSPToGTask {
         return genericTasks;
     }
 
-     GTask convertToGenericTask(Task task) {
+    GTask convertToGenericTask(Task task) {
         GTask genericTask = new GTask();
 //        genericTask.setType(extractField(task, TASK_TYPE));
 
@@ -60,20 +60,24 @@ class MSPToGTask {
         genericTask.setKey(task.getUniqueID() + "");
 
         Task parent = task.getParentTask();
-        if (parent != null && parent.getID()!= 0 && parent.getUniqueID() != 0) {
+        if (parent != null && parent.getID() != 0 && parent.getUniqueID() != 0) {
             genericTask.setParentKey(parent.getUniqueID() + "");
         }
 
 //        genericTask.setRemoteId(extractField(task, REMOTE_ID));
 
-//        genericTask.setPriority(task.getPriority().getValue());
+        genericTask.setValue(MspField.priority(), task.getPriority().getValue());
 
 //        genericTask.setValue(MFextractField(task, TASK_STATUS));
 
-/*
-        if (mappings.haveMappingFor(FIELD.ESTIMATED_TIME)) {
-            genericTask.setEstimatedHours(extractEstimatedHours(task));
+        if (task.getWork() != null) {
+            genericTask.setValue(MspField.taskWork(), convertMspDurationToHours(task.getWork()));
         }
+
+        if (task.getDuration() != null) {
+            genericTask.setValue(MspField.taskDuration(), convertMspDurationToHours(task.getDuration()));
+        }
+/*
         if (task.getPercentageComplete() != null) {
             genericTask.setDoneRatio(task.getPercentageComplete().intValue());
         }
@@ -167,8 +171,12 @@ class MSPToGTask {
         return null;
     }
 
-/*
-    Float extractEstimatedHours(Task task) throws BadConfigException {
+    private Float convertMspDurationToHours(Duration mspDuration) {
+        Duration convertedToHoursDuration = mspDuration.convertUnits(TimeUnit.HOURS, header);
+        return (float) convertedToHoursDuration.getDuration();
+    }
+
+/*    Float extractEstimatedHours(Task task) throws BadConfigException {
         Duration useAsEstimatedTime = null;
 
         if (MSPUtils.useWork(mappings)) {
@@ -196,7 +204,7 @@ class MSPToGTask {
         return null;
     }
 
-    Object getValue(Task mspTask, FIELD field) {
+/*    Object getValue(Task mspTask, FIELD field) {
         String v = mappings.getMappedTo(field);
         if (v != null) {
             TaskField f = MSPUtils.getTaskFieldByName(v);

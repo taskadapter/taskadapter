@@ -35,11 +35,15 @@ class FileTaskKeeper(rootFolder: File) extends TaskKeeper {
 
   override def loadTasks(): Map[String, Long] = {
     val file = new File(rootFolder, "createdtasks.json")
-    val fileBody = Files.toString(file, Charsets.UTF_8)
-    val map = decode[Map[String, Long]](fileBody)
-    map match {
-      case Left(e) => throw new RuntimeException(s"cannot parse tasks map from file $file: $e")
-      case Right(m) => m
+    if (file.exists()) {
+      val fileBody = Files.toString(file, Charsets.UTF_8)
+      val map = decode[Map[String, Long]](fileBody)
+      map match {
+        case Left(e) => throw new RuntimeException(s"cannot parse tasks map from file $file: $e")
+        case Right(m) => m
+      }
+    } else {
+      Map()
     }
   }
 
