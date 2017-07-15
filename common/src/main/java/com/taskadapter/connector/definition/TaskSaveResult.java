@@ -14,7 +14,7 @@ public final class TaskSaveResult {
     private final int createdTasksNumber;
 
     // maps ID --> remote KEY when new tasks are created
-    private final Map<Integer, String> idToRemoteKeyMap;
+    private final Map<Long, TaskId> idToRemoteKeyMap;
     
     private final List<Throwable> generalErrors;
     
@@ -22,7 +22,7 @@ public final class TaskSaveResult {
 
     public TaskSaveResult(String targetFileAbsolutePath,
             int updatedTasksNumber, int createdTasksNumber,
-            Map<Integer, String> idToRemoteKeyMap, List<Throwable> generalErrors,
+            Map<Long, TaskId> idToRemoteKeyMap, List<Throwable> generalErrors,
             List<TaskError<Throwable>> taskErrors) {
         super();
         this.targetFileAbsolutePath = targetFileAbsolutePath;
@@ -45,15 +45,15 @@ public final class TaskSaveResult {
         return createdTasksNumber;
     }
 
-    public Map<Integer, String> getIdToRemoteKeyMap() {
+    public Map<Long, TaskId> getIdToRemoteKeyMap() {
         return idToRemoteKeyMap;
     }
     
-    public String getRemoteKey(Integer id) {
+    public TaskId getRemoteKey(Long id) {
         return idToRemoteKeyMap.get(id);
     }
 
-    public Collection<String> getRemoteKeys() {
+    public Collection<TaskId> getRemoteKeys() {
         return idToRemoteKeyMap.values();
     }
     

@@ -17,6 +17,7 @@ import com.taskadapter.connector.definition.TaskSaveResultBuilder;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
+import com.taskadapter.core.TaskKeeper;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
@@ -126,7 +127,7 @@ public class JiraConnector implements NewConnector {
     }
 
     @Override
-    public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Iterable<FieldRow> rows) {
+    public TaskSaveResult saveData(TaskKeeper taskKeeper, List<GTask> tasks, ProgressMonitor monitor, Iterable<FieldRow> rows) {
         return withJiraRestClient(client -> {
             final Iterable<IssueType> issueTypeList = loadIssueTypes(client);
             final Promise<Project> projectPromise = client.getProjectClient().getProject(config.getProjectKey());
@@ -141,7 +142,7 @@ public class JiraConnector implements NewConnector {
                     issueTypeList, versions, components, priorities);
 
             final JiraTaskSaver saver = new JiraTaskSaver(client);
-            final TaskSaveResultBuilder rb = TaskSavingUtils.saveTasks(tasks, converter, saver, monitor, rows);
+            final TaskSaveResultBuilder rb = TaskSavingUtils.saveTasks(taskKeeper, tasks, converter, saver, monitor, rows);
             TaskSavingUtils.saveRemappedRelations(config, tasks, saver, rb);
             return rb.getResult();
         });

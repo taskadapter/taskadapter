@@ -4,6 +4,7 @@ import com.taskadapter.connector.Field;
 import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.common.DefaultValueSetter;
 import com.taskadapter.connector.definition.Mappings;
+import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.connector.definition.TaskSaveResultBuilder;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.msp.GTaskToMSP;
@@ -90,7 +91,8 @@ public class MSXMLFileWriter {
             GTask transformedTask = DefaultValueSetter.adapt(rows, gTask);
             GTaskToMSP gTaskToMSP = new GTaskToMSP(newMspTask, new ResourceManager(project));
             gTaskToMSP.setFields(transformedTask, keepTaskId);
-            syncResult.addCreatedTask(transformedTask.getId(), newMspTask.getID() + "");
+            syncResult.addCreatedTask(transformedTask.getId(),
+                    new TaskId(newMspTask.getID(), newMspTask.getID() + ""));
             addTasks(syncResult, project, newMspTask, transformedTask.getChildren(), keepTaskId);
         }
 

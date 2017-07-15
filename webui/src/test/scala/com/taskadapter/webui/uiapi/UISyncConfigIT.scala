@@ -7,7 +7,7 @@ import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.WebServerInfo
 import com.taskadapter.connector.jira.JiraField
 import com.taskadapter.connector.redmine.{RedmineConfig, RedmineConnector, RedmineField}
-import com.taskadapter.connector.testlib.TestUtils
+import com.taskadapter.connector.testlib.{InMemoryTaskKeeper, TestUtils}
 import com.taskadapter.core.TaskKeeper
 import com.taskadapter.model.{GTask, GTaskBuilder}
 import com.taskadapter.web.uiapi.{ConfigLoader, UISyncConfig}
@@ -25,7 +25,6 @@ class UISyncConfigIT extends FunSpec with Matchers {
   // TODO maybe use temporary projects in Redmine and JIRA?
   var tempFolder = new TemporaryFolder()
   tempFolder.create()
-  val taskKeeper = new TaskKeeper(tempFolder.getRoot)
 
   /*  private var config = ConfigLoader.loadConfig("Redmine_Microsoft-Project_3.ta_conf")
     private var toRedmineConfig = config.reverse
@@ -57,7 +56,7 @@ class UISyncConfigIT extends FunSpec with Matchers {
     }
   */
   it("tasksCanBeLoadedFromJiraAndSavedToRedmine") {
-    val config = ConfigLoader.loadConfig(taskKeeper, "Atlassian-JIRA_Redmine.ta_conf")
+    val config = ConfigLoader.loadConfig(new InMemoryTaskKeeper, "Atlassian-JIRA_Redmine.ta_conf")
     val loadedTasks = config.loadTasks(100)
     assertThat(loadedTasks.size).isGreaterThan(0)
     val taskExportResult = config.saveTasks(loadedTasks, ProgressMonitorUtils.DUMMY_MONITOR)
@@ -67,6 +66,7 @@ class UISyncConfigIT extends FunSpec with Matchers {
   }
 
   it("empty description field name on right side is ignored if selected=false") {
+    val taskKeeper = new InMemoryTaskKeeper
     val config = ConfigLoader.loadConfig(taskKeeper, "JIRA_Redmine_empty_description_on_right_side.ta_conf")
     val loadedTasks = config.loadTasks(100)
     assertThat(loadedTasks.size).isGreaterThan(0)
@@ -74,6 +74,26 @@ class UISyncConfigIT extends FunSpec with Matchers {
     val saveResult = taskExportResult.saveResult
     assertThat(saveResult.hasErrors).isFalse()
     assertThat(saveResult.getCreatedTasksNumber).isEqualTo(loadedTasks.size)
+  }
+
+  it("fake JIRA task is created, then updated in Redmine") {
+    val config = ConfigLoader.loadConfig(new InMemoryTaskKeeper, "Atlassian-JIRA_Redmine.ta_conf")
+    val jiraTask = new GTask
+    jiraTask.setId(1l)
+    jiraTask.setKey("TEST-66")
+    jiraTask.setValue(JiraField.summary, "summary")
+
+    val list = List(jiraTask).asJava
+    val taskExportResult = config.saveTasks(list, ProgressMonitorUtils.DUMMY_MONITOR)
+    val saveResult = taskExportResult.saveResult
+    assertThat(saveResult.hasErrors).isFalse()
+    assertThat(saveResult.getCreatedTasksNumber).isEqualTo(1)
+    assertThat(saveResult.getUpdatedTasksNumber).isEqualTo(0)
+
+    val updateResult = config.saveTasks(list, ProgressMonitorUtils.DUMMY_MONITOR).saveResult
+    assertThat(updateResult.hasErrors).isFalse()
+    assertThat(updateResult.getCreatedTasksNumber).isEqualTo(0)
+    assertThat(updateResult.getUpdatedTasksNumber).isEqualTo(1)
   }
 
   /**

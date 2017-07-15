@@ -25,9 +25,11 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
   }
 
   private def convertToRedmineIssue(task: GTask): Issue = {
-    val key = task.getKey
-    val numericKey = parseIntOrNull(key)
-    val issue = IssueFactory.create(numericKey)
+    val longId = task.getId
+    val issue = longId match {
+      case null => IssueFactory.create(null)
+      case some => IssueFactory.create(some.intValue())
+    }
     issue.setProject(project)
 
     task.getFields.asScala.foreach { x =>
@@ -42,6 +44,7 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
       case "ID" => // TODO TA3 review this. ignore ID field because it MAYBE does not need to be provided when saving?
       case "RELATIONS" => // processed in another place (for now?)
       case "CHILDREN" => // processed in another place (for now?)
+      case "KEY" => // processed in [[DefaultValueSetter]] for now
 
       // TODO TA3 review types
       case RedmineField.summary.name => issue.setSubject(value.asInstanceOf[String])

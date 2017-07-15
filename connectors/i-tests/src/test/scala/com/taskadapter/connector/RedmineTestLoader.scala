@@ -11,7 +11,7 @@ object RedmineTestLoader {
   @Deprecated
   def loadCreatedTask(mgr: RedmineManager, result: TaskSaveResult): Issue = {
     val remoteKeys = result.getRemoteKeys
-    val remoteKey = remoteKeys.iterator.next
-    mgr.getIssueManager.getIssueById(Integer.valueOf(remoteKey))
+    val remoteKey = remoteKeys.iterator.next.id
+    mgr.getIssueManager.getIssueById(remoteKey.toInt)
   }
 }

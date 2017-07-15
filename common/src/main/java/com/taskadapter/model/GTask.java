@@ -61,16 +61,16 @@ final public class GTask {
     }
 
     /**
-     * This is database ID for Redmine and Jira and Unique ID (row number) for MSP.
+     * Like database ID for Redmine and Jira and Unique ID (row number) for MSP.
      */
-    public Integer getId() {
-        return (Integer) getValue(GTaskDescriptor.FIELD.ID);
+    public Long getId() {
+        return (Long) getValue(GTaskDescriptor.FIELD.ID);
     }
 
     /**
      * This is database ID for Redmine and Jira and Unique ID (row number) for MSP.
      */
-    public void setId(Integer id) {
+    public void setId(Long id) {
         setValue(GTaskDescriptor.FIELD.ID, id);
     }
 

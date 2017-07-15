@@ -5,7 +5,8 @@ import java.util.Calendar
 
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.TreeUtils
-import com.taskadapter.connector.testlib.{CommonTests, TestMappingUtils, TestSaver, TestUtils}
+import com.taskadapter.connector.testlib._
+import com.taskadapter.core.TaskKeeper
 import com.taskadapter.model.GTask
 import com.taskadapter.redmineapi.bean.ProjectFactory
 import org.junit.runner.RunWith
@@ -223,7 +224,7 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
   // TODO TA3  t.getChildren().add(c1) fails in Scala because of list conversions (list is immutable)
   ignore("task with children") {
     val t = new GTask()
-    t.setId(1)
+    t.setId(1l)
     val summary = "generic task " + Calendar.getInstance().getTimeInMillis
     t.setValue(RedmineField.summary, summary)
     t.setValue(RedmineField.description, "some descr" + Calendar.getInstance().getTimeInMillis + "1")
@@ -233,13 +234,13 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
     t.setChildren(List[GTask]().asJava)
 
     val c1 = new GTask()
-    c1.setId(3)
+    c1.setId(3l)
     c1.setParentKey("1")
     c1.setValue(RedmineField.summary, "Child 1 of " + summary)
     t.getChildren().add(c1)
 
     val c2 = new GTask()
-    c2.setId(4)
+    c2.setId(4l)
     c2.setParentKey("1")
     c2.setValue(RedmineField.summary, "Child 2 of " + summary)
     t.getChildren().add(c2)
@@ -362,9 +363,9 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
   }
 
 
-  ignore("task is updated") {
-    CommonTests.taskCreatedAndUpdatedOK(getConnector(), RedmineFieldBuilder.getDefault(), RedmineGTaskBuilder.withSummary()
-      , RedmineField.summary.name)
+  it("task is updated") {
+    CommonTests.taskCreatedAndUpdatedOK(getConnector(), RedmineFieldBuilder.getDefault(),
+      RedmineGTaskBuilder.withSummary(), RedmineField.summary.name)
   }
 
   /*

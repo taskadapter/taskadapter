@@ -42,13 +42,13 @@ public class TreeUtilsTest {
     @Test
     public void shallowCloneSkipsChildren() {
         GTask task = new GTask();
-        Integer id = 101;
+        Long id = 101l;
         String summary = "some summary here";
         task.setId(id);
         task.setValue("summary", summary);
 
         GTask child1 = new GTask();
-        child1.setId(1011);
+        child1.setId(1011l);
         child1.setValue("summary", "child summary");
 
         task.getChildren().add(child1);

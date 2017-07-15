@@ -12,6 +12,7 @@ import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.msp.MSPTaskSaver;
 import com.taskadapter.connector.msp.MspField;
 import com.taskadapter.connector.redmine.*;
+import com.taskadapter.connector.testlib.InMemoryTaskKeeper;
 import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.integrationtests.RedmineTestConfig;
@@ -52,6 +53,7 @@ public class UpdaterIntegrationTest {
     private RedmineConfig redmineConfig;
     private MSPConfig mspConfig;
     private NewConnector projectConnector;
+    private TaskKeeper taskKeeper = new InMemoryTaskKeeper();
 
     @BeforeClass
     public static void oneTimeSetUp() {
@@ -139,7 +141,7 @@ public class UpdaterIntegrationTest {
             }
             task.setValue(RedmineField.estimatedTime(), oldGoodTime + 5);
         }
-        redmineConnector.saveData(rmIssues, null, rows);
+        redmineConnector.saveData(taskKeeper, rmIssues, null, rows);
     }
 
 /*

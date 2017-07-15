@@ -18,4 +18,8 @@ object Field {
   def float(fieldName: String): Field = {
     Field("Float", fieldName)
   }
+
+  def integer(fieldName: String): Field = {
+    Field("Integer", fieldName)
+  }
 }

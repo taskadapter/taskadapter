@@ -20,8 +20,9 @@ public class TestSaver {
     }
 
     public GTask saveAndLoad(GTask task) throws ConnectorException {
-        TaskSaveResult taskSaveResult = connector.saveData(Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
-        String newKey = taskSaveResult.getRemoteKeys().iterator().next();
+        TaskSaveResult taskSaveResult = connector.saveData(new InMemoryTaskKeeper(),
+                Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
+        String newKey = taskSaveResult.getRemoteKeys().iterator().next().key();
         return connector.loadTaskByKey(newKey, rows);
     }
 }

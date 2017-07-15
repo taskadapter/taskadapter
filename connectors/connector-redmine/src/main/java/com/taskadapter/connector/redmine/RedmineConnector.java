@@ -4,6 +4,7 @@ import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.common.TaskSavingUtils;
 import com.taskadapter.connector.definition.*;
 import com.taskadapter.connector.NewConnector;
+import com.taskadapter.core.TaskKeeper;
 import com.taskadapter.model.GTask;
 import com.taskadapter.redmineapi.Include;
 import com.taskadapter.redmineapi.RedmineException;
@@ -98,7 +99,7 @@ public class RedmineConnector implements NewConnector {
 	}
 
     @Override
-    public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, java.lang.Iterable<FieldRow> fieldRows) {
+    public TaskSaveResult saveData(TaskKeeper taskKeeper, List<GTask> tasks, ProgressMonitor monitor, java.lang.Iterable<FieldRow> fieldRows) {
         try {
             final RedmineManager mgr = RedmineManagerFactory.createRedmineManager(config.getServerInfo());
             try {
@@ -114,7 +115,7 @@ public class RedmineConnector implements NewConnector {
                         customFieldDefinitions, statusList, versions);
 
                 final RedmineTaskSaver saver = new RedmineTaskSaver(mgr.getIssueManager(), config);
-                final TaskSaveResultBuilder tsrb = TaskSavingUtils.saveTasks(
+                final TaskSaveResultBuilder tsrb = TaskSavingUtils.saveTasks(taskKeeper,
                         tasks, converter, saver, monitor, fieldRows);
                 TaskSavingUtils.saveRemappedRelations(config, tasks, saver, tsrb);
                 return tsrb.getResult();

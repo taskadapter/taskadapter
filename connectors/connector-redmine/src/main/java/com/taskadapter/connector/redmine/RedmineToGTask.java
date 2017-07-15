@@ -31,7 +31,7 @@ public class RedmineToGTask {
     public GTask convertToGenericTask(Issue issue) {
         GTask task = new GTask();
 
-        task.setId(issue.getId());
+        task.setId(issue.getId().longValue());
         if (issue.getId() != null) {
             task.setKey(Integer.toString(issue.getId()));
         }

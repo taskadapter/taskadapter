@@ -3,12 +3,17 @@ package com.taskadapter.connector.testlib;
 import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.NewConnector;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
+import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.core.TaskKeeper;
+import com.taskadapter.core.TaskSaver;
 import com.taskadapter.model.GTask;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -52,7 +57,7 @@ public final class CommonTests {
     }
 */
     public static void createsTasks(NewConnector connector, List<FieldRow> rows, List<GTask> tasks) throws ConnectorException {
-        TaskSaveResult result = connector.saveData(tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows);
+        TaskSaveResult result = connector.saveData(new InMemoryTaskKeeper(), tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows);
         assertFalse(result.hasErrors());
         assertEquals(tasks.size(), result.getCreatedTasksNumber());
     }
@@ -62,25 +67,34 @@ public final class CommonTests {
      */
     public static void taskCreatedAndUpdatedOK(NewConnector connector, List<FieldRow> rows, GTask task,
                                                String fieldToChangeInTest) throws ConnectorException {
-        Integer id = task.getId();
+        Long id = task.getId();
 
+        TaskKeeper taskKeeper = new InMemoryTaskKeeper();
         // CREATE
-        TaskSaveResult result = connector.saveData(Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
+//        TaskSaveResult result = connector.saveData(taskKeeper, Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
+        TaskSaveResult result = TaskSaver.save(taskKeeper, connector, "some name", rows, Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR);
+
         assertFalse(result.hasErrors());
         assertEquals(1, result.getCreatedTasksNumber());
-        String remoteKey = result.getRemoteKey(id);
+        TaskId remoteKey = result.getRemoteKey(id);
 
-        GTask loaded = connector.loadTaskByKey(remoteKey, rows);
+        GTask loaded = connector.loadTaskByKey(remoteKey.key(), rows);
 
         // UPDATE
         String newValue = "some new text";
         loaded.setValue(fieldToChangeInTest, newValue);
-        loaded.setRemoteId(remoteKey);
-        TaskSaveResult result2 = connector.saveData(Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR, rows);
+        loaded.setKey(remoteKey.key());
+        // TODO TA3 remote id test
+//        Map<String, Long> map = new HashMap<>();
+//        map.put(remoteKey, remoteKey);
+//        taskKeeper.keepTasks(map);
+//        TaskSaveResult result2 = connector.saveData(taskKeeper, Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR, rows);
+        TaskSaveResult result2 = TaskSaver.save(taskKeeper, connector, "some name", rows, Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR);
+
         assertFalse(result2.hasErrors());
         assertEquals(1, result2.getUpdatedTasksNumber());
 
-        GTask loadedAgain = connector.loadTaskByKey(remoteKey, rows);
+        GTask loadedAgain = connector.loadTaskByKey(remoteKey.key(), rows);
         assertEquals(newValue, loadedAgain.getValue(fieldToChangeInTest));
     }
 }

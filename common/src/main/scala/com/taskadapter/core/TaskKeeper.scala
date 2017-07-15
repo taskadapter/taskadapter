@@ -8,26 +8,42 @@ import io.circe.parser._
 import io.circe.syntax._
 import scala.collection.JavaConverters._
 
-class TaskKeeper(rootFolder: File) {
+trait TaskKeeper {
+  def keepTasks(tasksMap: java.util.Map[String, Long]): Unit
+  def keepTask(sourceKey: String, targetKey: Long): Unit
+
+  def loadTasks(): Map[String, Long]
+  def store(): Unit
+}
+
+class FileTaskKeeper(rootFolder: File) extends TaskKeeper {
+  val map = scala.collection.mutable.Map[String, Long]()
 
   /**
     * Save a map with tasks info: originalId->newId
     */
-  def keepTasks(tasksMap: java.util.Map[Integer, String]): Unit = {
-    val stringMap : Map[String,String] = tasksMap.asScala.map(e => e._1.toString -> e._2).toMap
+  override def keepTasks(tasksMap: java.util.Map[String, Long]): Unit = {
+    map ++= tasksMap.asScala
+  }
+
+  override def store() : Unit = {
+    val stringMap: Map[String, Long] = map.toMap
     val jsonString = stringMap.asJson.noSpaces
     val newFile = new File(rootFolder, "createdtasks.json")
     Files.write(jsonString, newFile, Charsets.UTF_8)
   }
 
-  def loadTasks(): Map[String, String] = {
+  override def loadTasks(): Map[String, Long] = {
     val file = new File(rootFolder, "createdtasks.json")
     val fileBody = Files.toString(file, Charsets.UTF_8)
-    val map = decode[Map[String, String]](fileBody)
+    val map = decode[Map[String, Long]](fileBody)
     map match {
       case Left(e) => throw new RuntimeException(s"cannot parse tasks map from file $file: $e")
       case Right(m) => m
     }
   }
 
+  override def keepTask(sourceKey: String, targetKey: Long): Unit = {
+    map += (sourceKey -> targetKey)
+  }
 }

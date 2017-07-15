@@ -2,6 +2,13 @@ package com.taskadapter.model
 
 sealed trait StandardField
 
+/**
+  * A Key to uniquely identify a Task in the native system (Redmine, JIRA, etc).
+  *
+  * In JIRA that would be something like "MYPROJ-1", in Redmine - a numeric value like 123.
+  */
+//case object Key extends StandardField
+
 case object Assignee extends StandardField
 
 case object ClosedOn extends StandardField

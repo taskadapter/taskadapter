@@ -1,33 +1,26 @@
 package com.taskadapter.connector.common;
 
+import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 
 /**
- * Basic api for issue saving.
- * 
- * @param <N>
- *            native issue type.
+ * @param <N> native issue type.
  */
 public interface BasicIssueSaveAPI<N> {
     
     /**
-     * Creates a new task and returns a new task key.
+     * Creates a new task and returns a new task ID.
      * 
      * @param nativeTask
      *            native task to create.
-     * @return standard representation of a common task.
-     * @throws ConnectorException
-     *             if an error occurs.
+     * @return id of the new task. typically this is a database ID (in case of JIRA or Redmine)
      */
-    String createTask(N nativeTask) throws ConnectorException;
+    TaskId createTask(N nativeTask) throws ConnectorException;
 
     /**
      * Updates an existing task.
      * 
-     * @param nativeTask
-     *            native task representation.
-     * @throws ConnectorException
-     *             if an error occurs.
+     * @param nativeTask native task representation.
      */
     void updateTask(N nativeTask) throws ConnectorException;
 

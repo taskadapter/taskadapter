@@ -6,6 +6,7 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.SearchResult;
 import com.atlassian.jira.rest.client.api.domain.input.IssueInput;
 import com.atlassian.util.concurrent.Promise;
+import com.taskadapter.connector.definition.TaskId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +21,12 @@ final class JiraClientHelper {
     private static final Set<String> ALL_FIELDS = null;
 
     /**
-     * @return the new issue key
+     * @return the new issue ID
      */
-    public static String createTask(JiraRestClient client, IssueInput issueInput) {
+    public static TaskId createTask(JiraRestClient client, IssueInput issueInput) {
         final Promise<BasicIssue> promise = client.getIssueClient().createIssue(issueInput);
         final BasicIssue createdIssue = promise.claim();
-        return createdIssue.getKey();
+        return new TaskId(createdIssue.getId(), createdIssue.getKey());
     }
 
     /**

@@ -5,6 +5,7 @@ import com.atlassian.jira.rest.client.api.domain.input.LinkIssuesInput;
 import com.atlassian.util.concurrent.Promise;
 import com.taskadapter.connector.common.BasicIssueSaveAPI;
 import com.taskadapter.connector.common.RelationSaver;
+import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GRelation;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ final class JiraTaskSaver implements RelationSaver, BasicIssueSaveAPI<IssueWrapp
     }
 
     @Override
-    public String createTask(IssueWrapper wrapper) throws ConnectorException {
+    public TaskId createTask(IssueWrapper wrapper) throws ConnectorException {
         return JiraClientHelper.createTask(client, wrapper.getIssueInput());
     }
 

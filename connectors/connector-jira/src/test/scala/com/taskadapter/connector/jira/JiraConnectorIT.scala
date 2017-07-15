@@ -4,7 +4,7 @@ import java.util
 
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.ProgressMonitorUtils
-import com.taskadapter.connector.testlib.TestUtils
+import com.taskadapter.connector.testlib.{InMemoryTaskKeeper, TestUtils}
 import org.fest.assertions.Assertions.assertThat
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
@@ -37,11 +37,11 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     val subTask2 = new JiraGTaskBuilder("child task 2").withId(33).build()
     parentTask.getChildren.addAll(List(subTask1, subTask2).asJava)
     val connector = getConnector
-    val result = connector.saveData(util.Arrays.asList(parentTask), ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault)
+    val result = connector.saveData(new InMemoryTaskKeeper(), util.Arrays.asList(parentTask), ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault)
     assertThat(result.getCreatedTasksNumber).isEqualTo(3)
-    val parentKey = result.getRemoteKey(11)
-    val subTask1RemoteKey = result.getRemoteKey(22)
-    val subTask2RemoteKey = result.getRemoteKey(33)
+    val parentKey = result.getRemoteKey(11l).key
+    val subTask1RemoteKey = result.getRemoteKey(22l).key
+    val subTask2RemoteKey = result.getRemoteKey(33l).key
 
     val loadedSubTask1 = connector.loadTaskByKey(subTask1RemoteKey, JiraFieldBuilder.getDefault)
     val loadedSubTask2 = connector.loadTaskByKey(subTask2RemoteKey, JiraFieldBuilder.getDefault)
@@ -82,11 +82,11 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
       FieldRow(JiraField.description, JiraField.description, "some default")
     )
 
-    val result = connector.saveData(util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)
+    val result = connector.saveData(new InMemoryTaskKeeper(), util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)
     assertThat(result.getCreatedTasksNumber).isEqualTo(1)
     // TODO this is ugly
     val values = result.getIdToRemoteKeyMap.values
-    val key = values.iterator.next
+    val key = values.iterator.next.key
     val loadedTask = connector.loadTaskByKey(key, rows.asJava)
     assertThat(loadedTask.getValue(JiraField.description)).isEqualTo("some default")
   }

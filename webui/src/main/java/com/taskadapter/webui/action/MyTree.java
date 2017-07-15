@@ -18,9 +18,9 @@ public class MyTree extends CustomComponent {
             Property.ValueChangeListener {
         private static final long serialVersionUID = -9011190599386011166L;
         private final CheckBox checkBox;
-        private final Integer taskId;
+        private final Long taskId;
 
-        TreeItemSelectionHandler(CheckBox checkBox, Integer taskId) {
+        TreeItemSelectionHandler(CheckBox checkBox, Long taskId) {
             this.checkBox = checkBox;
             this.taskId = taskId;
         }
@@ -45,7 +45,7 @@ public class MyTree extends CustomComponent {
         }
 
         private void selectParent() {
-            Integer parentId = (Integer) checkBox.getData();
+            Long parentId = (Long) checkBox.getData();
 
             if (parentId != null) {
                 getCheckBox(parentId).setValue(true);
@@ -79,7 +79,7 @@ public class MyTree extends CustomComponent {
     }
 
     public List<GTask> getSelectedRootLevelTasks() {
-        Set<Integer> idSet = new HashSet<>();
+        Set<Long> idSet = new HashSet<>();
 
         Collection<?> itemIds = tree.getItemIds();
 
@@ -88,7 +88,7 @@ public class MyTree extends CustomComponent {
                 boolean checked = getCheckBox(itemId).getValue();
 
                 if (checked) {
-                    idSet.add((Integer) itemId);
+                    idSet.add((Long) itemId);
                 }
             }
         }
@@ -100,7 +100,7 @@ public class MyTree extends CustomComponent {
         return (CheckBox) tree.getContainerProperty(itemId, ACTION_PROPERTY).getValue();
     }
 
-    private List<GTask> getSelectedTasks(List<GTask> gTaskList, Set<Integer> idSet) {
+    private List<GTask> getSelectedTasks(List<GTask> gTaskList, Set<Long> idSet) {
         List<GTask> selectedTasks = new ArrayList<>();
 
         for (GTask gTask : gTaskList) {
@@ -130,7 +130,7 @@ public class MyTree extends CustomComponent {
     }
 
     private void addTaskToTree(Object parentId, GTask task) {
-        final Integer taskId = task.getId();
+        final Long taskId = task.getId();
 
         final CheckBox checkBox = new CheckBox((task.getRemoteId() == null) ? CREATE : UPDATE);
         checkBox.setValue(true);

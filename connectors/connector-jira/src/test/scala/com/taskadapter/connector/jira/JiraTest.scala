@@ -1,10 +1,8 @@
 package com.taskadapter.connector.jira
 
-import java.util
-
 import com.google.common.collect.Iterables
 import com.taskadapter.connector.common.ProgressMonitorUtils
-import com.taskadapter.connector.testlib.{CommonTests, TestUtils}
+import com.taskadapter.connector.testlib.{CommonTests, InMemoryTaskKeeper, TestUtils}
 import com.taskadapter.model.{GRelation, GTask}
 import org.fest.assertions.Assertions.assertThat
 import org.junit.Assert.assertEquals
@@ -12,6 +10,7 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
 import org.slf4j.LoggerFactory
+
 import scala.collection.JavaConverters._
 
 @RunWith(classOf[JUnitRunner])
@@ -26,7 +25,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   logger.info("Running JIRA tests using: " + config.getServerInfo.getHost)
 
   it("connector does not fail empty tasks list") {
-    connector.saveData(List[GTask]().asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault)
+    connector.saveData(new InMemoryTaskKeeper(), List[GTask]().asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault)
   }
 
   it("tasks are created without errors") {
@@ -53,7 +52,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
 
   it("testGetIssuesByProject") {
     val tasks = generateTasks
-    connector.saveData(tasks, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault)
+    connector.saveData(new InMemoryTaskKeeper(), tasks, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault)
     val jql = JqlBuilder.findIssuesByProject(config.getProjectKey)
     val issues = JiraClientHelper.findIssues(client, jql)
     assertThat(Iterables.size(issues)).isGreaterThan(1)

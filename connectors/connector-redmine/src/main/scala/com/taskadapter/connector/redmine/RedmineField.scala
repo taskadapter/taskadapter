@@ -26,7 +26,7 @@ object RedmineField {
   val updatedOn = Field.date("Updated On")
   val taskStatus = Field("Task status")
   val targetVersion = Field("Target Version")
-  val priority = Field.float("Priority")
+  val priority = Field.integer("Priority")
 
   def fields = List(summary,
     description,

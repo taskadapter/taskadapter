@@ -2,6 +2,7 @@ package com.taskadapter.connector
 
 import com.taskadapter.connector.it.{RedmineTestConfig, RedmineTestInitializer}
 import com.taskadapter.connector.redmine.{CustomFieldBuilder, RedmineConnector, RedmineField}
+import com.taskadapter.connector.testlib.InMemoryTaskKeeper
 import com.taskadapter.redmineapi.bean.{Issue, IssueFactory, Project}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
@@ -17,7 +18,8 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
   val targetConfig = RedmineTestConfig.getRedmineTestConfig
   val sourceConnector = new RedmineConnector(sourceConfig)
   val targetConnector = new RedmineConnector(targetConfig)
-  val adapter = new Adapter(sourceConnector, targetConnector)
+  val taskKeeper = new InMemoryTaskKeeper
+  val adapter = new Adapter(taskKeeper, sourceConnector, targetConnector)
 
   before {
     // have to create a project for each test, otherwise stuff created during one test interferes with others

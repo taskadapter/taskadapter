@@ -15,18 +15,18 @@ public class MyTreeTest {
 
     @Before
     public void init() {
-        GTask gTask0 = createTestTask(0,
-                createTestTask(1),
-                createTestTask(2),
-                createTestTask(3,
-                        createTestTask(4),
-                        createTestTask(5,
-                                createTestTask(6)
+        GTask gTask0 = createTestTask(0l,
+                createTestTask(1l),
+                createTestTask(2l),
+                createTestTask(3l,
+                        createTestTask(4l),
+                        createTestTask(5l,
+                                createTestTask(6l)
                         )
                 ),
-                createTestTask(7),
-                createTestTask(8,
-                        createTestTask(9)
+                createTestTask(7l),
+                createTestTask(8l,
+                        createTestTask(9l)
                 )
         );
 
@@ -36,7 +36,7 @@ public class MyTreeTest {
         myTree.setTasks(Arrays.asList(rootLevelTasks));
     }
 
-    private GTask createTestTask(int id, GTask... children) {
+    private GTask createTestTask(Long id, GTask... children) {
         GTask task = new GTask();
         task.setId(id);
         task.setChildren(Arrays.asList(children));
@@ -54,7 +54,7 @@ public class MyTreeTest {
     @Test
     public void allChildrenShouldBeDeselectedIfParentIsUnchecked() {
         // deselect parent #3
-        ((CheckBox) myTree.tree.getContainerProperty(3, MyTree.ACTION_PROPERTY).getValue()).setValue(false);
+        ((CheckBox) myTree.tree.getContainerProperty(3l, MyTree.ACTION_PROPERTY).getValue()).setValue(false);
 
         List<GTask> selectedGTaskList = myTree.getSelectedRootLevelTasks();
 
@@ -63,12 +63,12 @@ public class MyTreeTest {
     }
 
     private GTask[] expectedRootLevelTasks1() {
-        GTask gTask0 = createTestTask(0,
-                createTestTask(1),
-                createTestTask(2),
-                createTestTask(7),
-                createTestTask(8,
-                        createTestTask(9)
+        GTask gTask0 = createTestTask(0l,
+                createTestTask(1l),
+                createTestTask(2l),
+                createTestTask(7l),
+                createTestTask(8l,
+                        createTestTask(9l)
                 )
         );
 
@@ -78,10 +78,10 @@ public class MyTreeTest {
     @Test
     public void allParentsShouldBeSelectedIfChildrenIsSelected() {
         // deselect parent #0
-        ((CheckBox) myTree.tree.getContainerProperty(0, MyTree.ACTION_PROPERTY).getValue()).setValue(false);
+        ((CheckBox) myTree.tree.getContainerProperty(0l, MyTree.ACTION_PROPERTY).getValue()).setValue(false);
 
         // select child #6
-        ((CheckBox) myTree.tree.getContainerProperty(6, MyTree.ACTION_PROPERTY).getValue()).setValue(true);
+        ((CheckBox) myTree.tree.getContainerProperty(6l, MyTree.ACTION_PROPERTY).getValue()).setValue(true);
 
 
         List<GTask> selectedGTaskList = myTree.getSelectedRootLevelTasks();
@@ -91,10 +91,10 @@ public class MyTreeTest {
     }
 
     private GTask[] expectedRootLevelTasks2() {
-        GTask gTask0 = createTestTask(0,
-                createTestTask(3,
-                        createTestTask(5,
-                                createTestTask(6)
+        GTask gTask0 = createTestTask(0l,
+                createTestTask(3l,
+                        createTestTask(5l,
+                                createTestTask(6l)
                         )
                 )
         );

@@ -39,7 +39,9 @@ object DefaultValueSetter {
       }
       result.setValue(targetFieldName, newValue)
     }
-    result.setId(task.getId)
+//    result.setId(task.getId)
+    // Key should NOT be set here because it is a key from some source system. it is not valid in target system
+//    result.setKey(task.getKey)
     result.setParentKey(task.getParentKey)
     result
   }
@@ -52,6 +54,7 @@ object DefaultValueSetter {
     field.typeName match {
       case "Date" => parseDate(value)
       case "Float" => parseFloat(value).asInstanceOf[Object]
+      case "Integer" => parseInteger(value).asInstanceOf[Object]
       case _ => value
     }
   }
@@ -61,6 +64,12 @@ object DefaultValueSetter {
       null.asInstanceOf[Float]
     else
       value.toFloat
+  }
+  private def parseInteger(value: String): Integer = {
+    if (Strings.isNullOrEmpty(value))
+      null.asInstanceOf[Integer]
+    else
+      value.toInt
   }
 
   @throws[ParseException]

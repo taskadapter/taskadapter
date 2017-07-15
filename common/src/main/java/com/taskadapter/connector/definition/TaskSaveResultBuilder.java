@@ -8,12 +8,6 @@ import java.util.Map;
 
 import com.taskadapter.model.GTask;
 
-/**
- * Save result builder.
- * 
- * @author maxkar
- * 
- */
 public final class TaskSaveResultBuilder {
     private String targetFileAbsolutePath;
 
@@ -27,8 +21,8 @@ public final class TaskSaveResultBuilder {
      */
     private int createdTasksNumber;
 
-    // maps ID --> remote KEY when new tasks are created
-    private final Map<Integer, String> idToRemoteKeyMap = new HashMap<>();
+    // maps original task Key --> new task info when new tasks are created
+    private final Map<Long, TaskId> idToRemoteKeyMap = new HashMap<>();
     
     private final List<Throwable> generalErrors = new ArrayList<>();
     
@@ -38,17 +32,17 @@ public final class TaskSaveResultBuilder {
         this.targetFileAbsolutePath = targetFileAbsolutePath;
     }
     
-    public void addCreatedTask(Integer originalId, String newId) {
-        idToRemoteKeyMap.put(originalId, newId);
+    public void addCreatedTask(Long originalId, TaskId newKey) {
+        idToRemoteKeyMap.put(originalId, newKey);
         createdTasksNumber++;
     }
 
-    public void addUpdatedTask(Integer originalId, String newId) {
+    public void addUpdatedTask(Long originalId, TaskId newId) {
         idToRemoteKeyMap.put(originalId, newId);
         updatedTasksNumber++;
     }
     
-    public String getRemoteKey(Integer originalId) {
+    public TaskId getRemoteKey(Long originalId) {
         return idToRemoteKeyMap.get(originalId);
     }
     

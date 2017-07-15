@@ -205,9 +205,10 @@ public final class UISyncConfig {
         final NewConnector connectorInstance = getConnector2().createConnectorInstance();
         final String destinationLocation = getConnector2().getDestinationLocation();
         final Iterable<FieldRow> rows = generateFieldRowsToExportRight();
-        final TaskSaveResult result = TaskSaver.save(connectorInstance, destinationLocation, rows, tasks, progress);
+        final TaskSaveResult result = TaskSaver.save(taskKeeper, connectorInstance, destinationLocation,
+                rows, tasks, progress);
 //        try {
-            taskKeeper.keepTasks(result.getIdToRemoteKeyMap());
+//            taskKeeper.keepTasks(result.getIdToRemoteKeyMap());
 //            RemoteIdUpdater.updateRemoteIds(result.getIdToRemoteKeyMap(),
 //                    getConnector1().createConnectorInstance());
             return new TaskExportResult(result, null);
@@ -219,7 +220,7 @@ public final class UISyncConfig {
 
     public TaskExportResult onlySaveTasks(List<GTask> tasks,
             ProgressMonitor progress) {
-        final TaskSaveResult result = TaskSaver.save(getConnector2()
+        final TaskSaveResult result = TaskSaver.save(taskKeeper, getConnector2()
                 .createConnectorInstance(), getConnector2()
                 .getDestinationLocation(), generateFieldRowsToExportRight(), tasks,
                 progress);

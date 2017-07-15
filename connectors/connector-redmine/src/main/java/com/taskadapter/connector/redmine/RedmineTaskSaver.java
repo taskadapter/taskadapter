@@ -2,6 +2,7 @@ package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.common.BasicIssueSaveAPI;
 import com.taskadapter.connector.common.RelationSaver;
+import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GRelation;
@@ -23,10 +24,10 @@ public final class RedmineTaskSaver implements RelationSaver, BasicIssueSaveAPI<
     }
 
     @Override
-    public String createTask(Issue nativeTask) throws ConnectorException {
+    public TaskId createTask(Issue nativeTask) throws ConnectorException {
         try {
             Issue newIssue = issueManager.createIssue(nativeTask);
-            return newIssue.getId().toString();
+            return new TaskId(newIssue.getId().longValue(), newIssue.getId().toString());
         } catch (RedmineException e) {
             throw RedmineExceptions.convertException(e);
         }

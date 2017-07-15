@@ -53,7 +53,7 @@ class JiraGTaskBuilder(summary: String = "task " + new Date().getTime) {
     this
   }
 
-  def withId(value: Integer): JiraGTaskBuilder = {
+  def withId(value: Long): JiraGTaskBuilder = {
     task.setId(value)
     this
   }

@@ -4,35 +4,33 @@ import java.util
 
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.data.ConnectorConverter
-import com.taskadapter.connector.definition.{ProgressMonitor, TaskSaveResultBuilder}
+import com.taskadapter.connector.definition.{ProgressMonitor, TaskId, TaskSaveResultBuilder}
 import com.taskadapter.connector.definition.exceptions.ConnectorException
+import com.taskadapter.core.TaskKeeper
 import com.taskadapter.model.GTask
 
-object SimpleTaskSaver {
-  private def setKeyToRemoteIdIfPresent(gTask: GTask) = {
-    val result = new GTask(gTask)
-    val remoteId = gTask.getRemoteId
-    if (remoteId != null) result.setKey(remoteId)
-    result
-  }
-}
+class SimpleTaskSaver[N](taskKeeper: TaskKeeper, converter: ConnectorConverter[GTask, N],
+                         saveAPI: BasicIssueSaveAPI[N],
+                         result: TaskSaveResultBuilder, progressMonitor: ProgressMonitor) {
 
-class SimpleTaskSaver[N](converter: ConnectorConverter[GTask, N],
-                               saveAPI: BasicIssueSaveAPI[N],
-                               result: TaskSaveResultBuilder, progressMonitor: ProgressMonitor) {
-
-  def saveTasks(parentIssueKey: String, tasks: util.List[GTask], fieldRows: java.lang.Iterable[FieldRow]): Unit = {
+  def saveTasks(parentIssueKey: Option[Long], tasks: util.List[GTask], fieldRows: java.lang.Iterable[FieldRow]): Unit = {
+    val previouslyCreatedTasks = taskKeeper.loadTasks()
     tasks.forEach { task =>
-      var newTaskKey = ""
       try {
-        if (parentIssueKey != null) task.setParentKey(parentIssueKey)
-        // TODO REVIEW Name mismatch. Why default value setter is used to clone tasks? Consider a better name.
-        // Something like "TaskMapper", which could be an interface with the only method and several implementations.
+        if (parentIssueKey.isDefined) task.setParentKey(parentIssueKey.get + "")
+        //        val possiblyNewKey = previouslyCreatedTasks.getOrElse(task.getKey, "")
         val transformedTask = DefaultValueSetter.adapt(fieldRows, task)
-        //                GTask finalGTaskForConversion = setKeyToRemoteIdIfPresent(transformedTask);
-        val finalGTaskForConversion = transformedTask
-        val nativeIssueToCreateOrUpdate = converter.convert(finalGTaskForConversion)
-        newTaskKey = submitTask(finalGTaskForConversion, nativeIssueToCreateOrUpdate)
+        val withPossiblyNewId = replaceIdIfPreviouslyCreatedByUs(previouslyCreatedTasks, transformedTask, task.getKey)
+
+        val readyForNative = withPossiblyNewId
+        val nativeIssueToCreateOrUpdate = converter.convert(readyForNative)
+        val identity = TaskId(readyForNative.getId, readyForNative.getKey)
+        var newTaskKey = submitTask(identity, nativeIssueToCreateOrUpdate)
+        val newId = newTaskKey.id
+        taskKeeper.keepTask(task.getKey, newId)
+
+        progressMonitor.worked(1)
+        if (task.hasChildren) saveTasks(Some(newId), task.getChildren, fieldRows)
       } catch {
         case e: ConnectorException =>
           result.addTaskError(task, e)
@@ -40,26 +38,30 @@ class SimpleTaskSaver[N](converter: ConnectorConverter[GTask, N],
           result.addTaskError(task, t)
           t.printStackTrace()
       }
-      progressMonitor.worked(1)
-      if (task.hasChildren) saveTasks(newTaskKey, task.getChildren, fieldRows)
     }
+    taskKeeper.store()
+  }
+
+  private def replaceIdIfPreviouslyCreatedByUs(previouslyCreatedTasks: Map[String, Long], gTask: GTask, originalKey:String): GTask = {
+      val result = new GTask(gTask)
+      if (previouslyCreatedTasks.contains(originalKey)) {
+        result.setId(previouslyCreatedTasks(originalKey))
+      }
+      result
   }
 
   /**
     * @return the newly created task's KEY
     */
-  // TODO refactor? we only pass the GTask to check its IDs.
-  private def submitTask(task: GTask, nativeTask: N) = {
-    var newTaskKey = ""
-    if (task.getRemoteId == null || task.getRemoteId.isEmpty) {
-      newTaskKey = saveAPI.createTask(nativeTask)
-      result.addCreatedTask(task.getId, newTaskKey)
-    }
-    else {
-      newTaskKey = task.getRemoteId
+  private def submitTask(id: TaskId, nativeTask: N): TaskId = {
+    if (id.id == 0) {
+      val newTaskKey = saveAPI.createTask(nativeTask)
+      result.addCreatedTask(id.id, newTaskKey)
+      newTaskKey
+    } else {
       saveAPI.updateTask(nativeTask)
-      result.addUpdatedTask(task.getId, newTaskKey)
+      result.addUpdatedTask(id.id, id)
+      id
     }
-    newTaskKey
   }
 }

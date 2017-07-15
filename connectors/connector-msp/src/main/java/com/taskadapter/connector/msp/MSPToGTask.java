@@ -55,7 +55,7 @@ class MSPToGTask {
 //        genericTask.setType(extractField(task, TASK_TYPE));
 
         genericTask.setValue(MspField.summary(), task.getName());
-        genericTask.setId(task.getUniqueID());
+        genericTask.setId(task.getUniqueID().longValue());
         // TODO Add test for this
         genericTask.setKey(task.getUniqueID() + "");
 

@@ -3,6 +3,7 @@ package com.taskadapter.connector.testlib;
 import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
+import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.connector.definition.TaskSaveResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.NewConnector;
@@ -73,19 +74,19 @@ public class TestUtils {
     }
 
     public static List<GTask> saveAndLoadAll(NewConnector connector, GTask task, List<FieldRow> rows) throws ConnectorException {
-        connector.saveData(Arrays.asList(task), null, rows);
+        connector.saveData(new InMemoryTaskKeeper(), Arrays.asList(task), null, rows);
         return ConnectorUtils.loadDataOrderedById(connector);
     }
 
     public static List<GTask> saveAndLoadList(NewConnector connector, List<GTask> tasks, List<FieldRow> rows) throws ConnectorException {
-        connector.saveData(tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows);
+        connector.saveData(new InMemoryTaskKeeper(), tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows);
         return ConnectorUtils.loadDataOrderedById(connector);
     }
 
     public static GTask saveAndLoad(NewConnector connector, GTask task, List<FieldRow> rows) throws ConnectorException {
-        TaskSaveResult result = connector.saveData(Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
-        Collection<String> remoteKeys = result.getRemoteKeys();
-        String remoteKey = remoteKeys.iterator().next();
+        TaskSaveResult result = connector.saveData(new InMemoryTaskKeeper(), Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
+        Collection<TaskId> remoteKeys = result.getRemoteKeys();
+        String remoteKey = remoteKeys.iterator().next().key();
         return connector.loadTaskByKey(remoteKey, rows);
     }
 
@@ -93,8 +94,8 @@ public class TestUtils {
      * Load task that was previously created and its result is saved in {@link TaskSaveResult}
      */
     public static GTask loadCreatedTask(NewConnector connector, List<FieldRow> rows, TaskSaveResult result) throws ConnectorException {
-        Collection<String> remoteKeys = result.getRemoteKeys();
-        String remoteKey = remoteKeys.iterator().next();
+        Collection<TaskId> remoteKeys = result.getRemoteKeys();
+        String remoteKey = remoteKeys.iterator().next().key();
         return connector.loadTaskByKey(remoteKey, rows);
     }
 
@@ -109,9 +110,9 @@ public class TestUtils {
      * @return the new task Key
      */
     public static String save(NewConnector connector, GTask task, List<FieldRow> rows) throws ConnectorException {
-        TaskSaveResult result = connector.saveData(Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
-        Collection<String> remoteKeys = result.getRemoteKeys();
-        return remoteKeys.iterator().next();
+        TaskSaveResult result = connector.saveData(new InMemoryTaskKeeper(), Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
+        Collection<TaskId> remoteKeys = result.getRemoteKeys();
+        return remoteKeys.iterator().next().key();
     }
 
     public static Calendar setTaskStartYearAgo(GTask task, String startDateFieldName) {
