@@ -59,9 +59,10 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
       FieldRow(Field("summary"), Field("summary"), ""),
     )
     val task = new GTask
-    task.setParentIdentity(TaskId(1, "parent1"))
+    val identity = TaskId(1, "parent1")
+    task.setParentIdentity(identity)
     val newTask = DefaultValueSetter.adapt(rows.asJava, task)
-    newTask.getParentIdentity shouldBe "parent1"
+    newTask.getParentIdentity shouldBe identity
   }
 
   it("Date field type is adapted") {
