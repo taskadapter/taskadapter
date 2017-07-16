@@ -19,7 +19,7 @@ import com.taskadapter.connector.definition.Connector;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.TaskSaveResult;
-import com.taskadapter.connector.definition.TaskSaveResultBuilder;
+import com.taskadapter.connector.definition.SaveResultBuilder;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.model.GTask;
@@ -77,7 +77,7 @@ final class BasecampConnector implements Connector<BasecampConfig> {
         final int total = countTasks(tasks);
         final UserResolver userResolver = findUserResolver(mappings);
         final OutputContext ctx = new StandardOutputContext(mappings);
-        final TaskSaveResultBuilder resultBuilder = new TaskSaveResultBuilder();
+        final SaveResultBuilder resultBuilder = new SaveResultBuilder();
         monitor.beginTask("Saving...", total);
         writeTasks(tasks, monitor, userResolver, ctx, resultBuilder,
                 factory.createObjectAPI(config), 0);
@@ -103,7 +103,7 @@ final class BasecampConnector implements Connector<BasecampConfig> {
 
     private int writeTasks(List<GTask> tasks, ProgressMonitor monitor,
             UserResolver userResolver, OutputContext ctx,
-            TaskSaveResultBuilder resultBuilder, ObjectAPI api, int agg)
+            SaveResultBuilder resultBuilder, ObjectAPI api, int agg)
             throws ConnectorException {
         for (GTask task : tasks) {
             try {
@@ -135,7 +135,7 @@ final class BasecampConnector implements Connector<BasecampConfig> {
     }
 
     private void writeOneTask(GTask task, UserResolver resolver,
-            OutputContext ctx, TaskSaveResultBuilder resultBuilder,
+            OutputContext ctx, SaveResultBuilder resultBuilder,
             ObjectAPI api) throws ConnectorException, IOException {
         final String todoItemXMLRepresentation = BasecampUtils.toRequest(task, resolver, ctx);
         final String taskKey = task.getKey();

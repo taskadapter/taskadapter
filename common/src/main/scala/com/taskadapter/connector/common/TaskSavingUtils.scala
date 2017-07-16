@@ -4,7 +4,7 @@ import java.util
 
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.data.ConnectorConverter
-import com.taskadapter.connector.definition.{ConnectorConfig, ProgressMonitor, TaskSaveResultBuilder}
+import com.taskadapter.connector.definition.{ConnectorConfig, ProgressMonitor, SaveResultBuilder}
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.core.TaskKeeper
 import com.taskadapter.model.GTask
@@ -22,7 +22,7 @@ object TaskSavingUtils {
     * result builder.
     */
   def saveRemappedRelations(config: ConnectorConfig, tasks: util.List[GTask], saver: RelationSaver,
-                            resultBuilder: TaskSaveResultBuilder): Unit = {
+                            resultBuilder: SaveResultBuilder): Unit = {
     if (!config.getSaveIssueRelations) return
     val result = RelationUtils.convertRelationIds(tasks, resultBuilder)
     try
@@ -37,8 +37,8 @@ object TaskSavingUtils {
                    converter: ConnectorConverter[GTask, N],
                    saveAPI: BasicIssueSaveAPI[N],
                    progressMonitor: ProgressMonitor,
-                   fieldRows: java.lang.Iterable[FieldRow]): TaskSaveResultBuilder = {
-    val result = new TaskSaveResultBuilder
+                   fieldRows: java.lang.Iterable[FieldRow]): SaveResultBuilder = {
+    val result = new SaveResultBuilder
     val saver = new SimpleTaskSaver[N](taskKeeper, converter, saveAPI, result, progressMonitor)
     val parentIssueId = None
     saver.saveTasks(parentIssueId, tasks, fieldRows)

@@ -6,9 +6,9 @@ import com.atlassian.jira.rest.client.api.domain.IssueLink;
 import com.atlassian.jira.rest.client.api.domain.IssueLinkType;
 import com.atlassian.jira.rest.client.api.domain.TimeTracking;
 import com.taskadapter.connector.Priorities;
+import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.GUser;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
@@ -96,7 +96,8 @@ public class JiraToGTask {
             JSONObject json = (JSONObject) parent;
             try {
                 String parentKey = (String) json.get("key");
-                task.setParentKey(parentKey);
+                Long id = json.getLong("id");
+                task.setParentIdentity(new TaskId(id, parentKey));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

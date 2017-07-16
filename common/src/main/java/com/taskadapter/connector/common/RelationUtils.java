@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.taskadapter.connector.definition.TaskId;
-import com.taskadapter.connector.definition.TaskSaveResultBuilder;
+import com.taskadapter.connector.definition.SaveResultBuilder;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 
 public final class RelationUtils {
     public static List<GRelation> convertRelationIds(List<GTask> tasks,
-            TaskSaveResultBuilder localToRemote) {
+            SaveResultBuilder localToRemote) {
         final List<GRelation> result = new ArrayList<>();
         aggregateRelations(result, tasks, localToRemote);
         return result;
     }
 
     private static void aggregateRelations(List<GRelation> res,
-            List<GTask> tasks, TaskSaveResultBuilder localToRemote) {
+            List<GTask> tasks, SaveResultBuilder localToRemote) {
         for (GTask task : tasks) {
             TaskId newSourceTaskKey = localToRemote.getRemoteKey(task.getId());
             for (GRelation oldRelation : task.getRelations()) {

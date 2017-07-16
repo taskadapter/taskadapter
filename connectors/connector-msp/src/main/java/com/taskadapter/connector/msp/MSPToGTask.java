@@ -1,12 +1,9 @@
 package com.taskadapter.connector.msp;
 
-import com.taskadapter.connector.definition.exceptions.BadConfigException;
-import com.taskadapter.connector.msp.write.MSPDefaultFields;
+import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
-import net.sf.mpxj.ConstraintType;
 import net.sf.mpxj.Duration;
 import net.sf.mpxj.ProjectHeader;
 import net.sf.mpxj.Relation;
@@ -14,19 +11,10 @@ import net.sf.mpxj.RelationType;
 import net.sf.mpxj.Resource;
 import net.sf.mpxj.ResourceAssignment;
 import net.sf.mpxj.Task;
-import net.sf.mpxj.TaskField;
 import net.sf.mpxj.TimeUnit;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
-import static com.taskadapter.model.GTaskDescriptor.FIELD.DUE_DATE;
-import static com.taskadapter.model.GTaskDescriptor.FIELD.ENVIRONMENT;
-import static com.taskadapter.model.GTaskDescriptor.FIELD.REMOTE_ID;
-import static com.taskadapter.model.GTaskDescriptor.FIELD.TARGET_VERSION;
-import static com.taskadapter.model.GTaskDescriptor.FIELD.TASK_STATUS;
-import static com.taskadapter.model.GTaskDescriptor.FIELD.TASK_TYPE;
 
 class MSPToGTask {
 
@@ -61,7 +49,7 @@ class MSPToGTask {
 
         Task parent = task.getParentTask();
         if (parent != null && parent.getID() != 0 && parent.getUniqueID() != 0) {
-            genericTask.setParentKey(parent.getUniqueID() + "");
+            genericTask.setParentIdentity(new TaskId(parent.getUniqueID(), parent.getUniqueID() + ""));
         }
 
 //        genericTask.setRemoteId(extractField(task, REMOTE_ID));
@@ -109,8 +97,6 @@ class MSPToGTask {
         genericTask.setValue(MspField.description(), task.getNotes());
 
         processRelations(task, genericTask);
-//        genericTask.setTargetVersionName(extractField(task, TARGET_VERSION));
-//        genericTask.setEnvironment(extractField(task, ENVIRONMENT));
         return genericTask;
     }
 /*

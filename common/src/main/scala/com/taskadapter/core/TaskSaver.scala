@@ -1,17 +1,16 @@
 package com.taskadapter.core
 
 import java.util
-import java.util.Collections
 
-import com.taskadapter.connector.{FieldRow, NewConnector}
 import com.taskadapter.connector.common.DataConnectorUtil
 import com.taskadapter.connector.definition.exceptions.ConnectorException
-import com.taskadapter.connector.definition.{ProgressMonitor, TaskError, TaskId, TaskSaveResult}
+import com.taskadapter.connector.definition.{ProgressMonitor, SaveResult, TaskId}
+import com.taskadapter.connector.{FieldRow, NewConnector}
 import com.taskadapter.model.GTask
 
 object TaskSaver {
   def save(taskKeeper: TaskKeeper, connectorTo: NewConnector, destinationName: String, rows: java.lang.Iterable[FieldRow], tasks: util.List[GTask],
-           monitor: ProgressMonitor): TaskSaveResult = {
+           monitor: ProgressMonitor): SaveResult = {
     val totalNumberOfTasks = DataConnectorUtil.calculateNumberOfTasks(tasks)
     monitor.beginTask("Saving " + totalNumberOfTasks + " tasks to " + destinationName, totalNumberOfTasks)
     try {
@@ -23,8 +22,7 @@ object TaskSaver {
     } catch {
       case e: ConnectorException =>
         monitor.done()
-        new TaskSaveResult(null, 0, 0, Collections.emptyMap[java.lang.Long, TaskId],
-          Collections.singletonList[Throwable](e), Collections.emptyList[TaskError[Throwable]])
+        new SaveResult(null, 0, 0, List(), List(e), List())
     }
   }
 }

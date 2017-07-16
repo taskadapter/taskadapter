@@ -32,6 +32,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalLayout;
+import scala.collection.JavaConversions;
 
 /**
  * Export page and export handler.
@@ -237,13 +238,15 @@ public final class DropInExportPage {
                 res.saveResult.getGeneralErrors(),
                 res.saveResult.getTaskErrors());
         if (res.remoteIdUpdateException != null)
-            SyncActionComponents
-                    .addErrors(
-                            donePanel,
-                            config.getConnector1(),
-                            Collections
-                                    .<Throwable> singletonList(res.remoteIdUpdateException),
-                            Collections.<TaskError<Throwable>> emptyList());
+            SyncActionComponents.addErrors(
+                    donePanel,
+                    config.getConnector1(),
+                    JavaConversions.asScalaBuffer(
+                            Collections.<Throwable>singletonList(res.remoteIdUpdateException))
+                            .toList(),
+                    JavaConversions.asScalaBuffer(Collections.<TaskError<Throwable>>emptyList())
+                            .toList()
+            );
 
         ui.addComponent(donePanel);
 

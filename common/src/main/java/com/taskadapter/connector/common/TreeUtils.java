@@ -47,9 +47,13 @@ public class TreeUtils {
         TreeUtilsMap map = new TreeUtilsMap(tasksFlatList);
         GTask root = new GTask();
         for (GTask task : tasksFlatList) {
-            GTask parentTask = map.getByKey(task.getParentKey());
-            if (parentTask != null) {
-                parentTask.getChildren().add(task);
+            if (task.getParentIdentity() != null) {
+                GTask parentTask = map.getByKey(task.getParentIdentity().key());
+                if (parentTask != null) {
+                    parentTask.getChildren().add(task);
+                } else {
+                    root.getChildren().add(task);
+                }
             } else {
                 root.getChildren().add(task);
             }

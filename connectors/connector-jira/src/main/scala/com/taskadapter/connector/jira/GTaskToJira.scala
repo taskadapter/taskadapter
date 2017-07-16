@@ -31,10 +31,10 @@ class GTaskToJira(config: JiraConfig, issueTypeList: java.lang.Iterable[IssueTyp
 
   private def convertToJiraIssue(task: GTask) = {
     val issueInputBuilder = new IssueInputBuilder(config.getProjectKey, findIssueTypeId(task))
-    if (task.getParentKey != null) {
+    if (task.getParentIdentity != null) {
       // See http://stackoverflow.com/questions/14699893/how-to-create-subtasks-using-jira-rest-java-client
       val parent = new util.HashMap[String, AnyRef]
-      parent.put("key", task.getParentKey)
+      parent.put("key", task.getParentIdentity.key)
       val parentField = new FieldInput("parent", new ComplexIssueInputFieldValue(parent))
       issueInputBuilder.setFieldInput(parentField)
     }
@@ -91,7 +91,7 @@ class GTaskToJira(config: JiraConfig, issueTypeList: java.lang.Iterable[IssueTyp
     if (explicitTypeId != null) return explicitTypeId
     // Use default type for the task when
     getIssueTypeIdByName(
-      if (task.getParentKey == null) config.getDefaultTaskType
+      if (task.getParentIdentity == null) config.getDefaultTaskType
       else config.getDefaultIssueTypeForSubtasks
     )
   }

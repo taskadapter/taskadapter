@@ -1,5 +1,6 @@
 package com.taskadapter.connector.redmine;
 
+import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.redmineapi.bean.CustomField;
@@ -36,7 +37,7 @@ public class RedmineToGTask {
             task.setKey(Integer.toString(issue.getId()));
         }
         if (issue.getParentId() != null) {
-            task.setParentKey(issue.getParentId() + "");
+            task.setParentIdentity(new TaskId(issue.getParentId(), issue.getParentId() + ""));
         }
         User rmAss = issue.getAssignee();
         if (rmAss != null) {

@@ -7,7 +7,7 @@ import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.ExportDirection;
 import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.ProgressMonitor;
-import com.taskadapter.connector.definition.TaskSaveResult;
+import com.taskadapter.connector.definition.SaveResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.RemoteIdUpdater;
 import com.taskadapter.core.TaskKeeper;
@@ -33,10 +33,10 @@ import java.util.List;
 public final class UISyncConfig {
 
     public static class TaskExportResult {
-        public final TaskSaveResult saveResult;
+        public final SaveResult saveResult;
         public final Exception remoteIdUpdateException;
 
-        public TaskExportResult(TaskSaveResult saveResult,
+        public TaskExportResult(SaveResult saveResult,
                 Exception remoteIdUpdateException) {
             this.saveResult = saveResult;
             this.remoteIdUpdateException = remoteIdUpdateException;
@@ -205,7 +205,7 @@ public final class UISyncConfig {
         final NewConnector connectorInstance = getConnector2().createConnectorInstance();
         final String destinationLocation = getConnector2().getDestinationLocation();
         final Iterable<FieldRow> rows = generateFieldRowsToExportRight();
-        final TaskSaveResult result = TaskSaver.save(taskKeeper, connectorInstance, destinationLocation,
+        final SaveResult result = TaskSaver.save(taskKeeper, connectorInstance, destinationLocation,
                 rows, tasks, progress);
 //        try {
 //            taskKeeper.keepTasks(result.getIdToRemoteKeyMap());
@@ -220,7 +220,7 @@ public final class UISyncConfig {
 
     public TaskExportResult onlySaveTasks(List<GTask> tasks,
             ProgressMonitor progress) {
-        final TaskSaveResult result = TaskSaver.save(taskKeeper, getConnector2()
+        final SaveResult result = TaskSaver.save(taskKeeper, getConnector2()
                 .createConnectorInstance(), getConnector2()
                 .getDestinationLocation(), generateFieldRowsToExportRight(), tasks,
                 progress);

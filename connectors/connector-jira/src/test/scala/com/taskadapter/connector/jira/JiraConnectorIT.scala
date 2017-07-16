@@ -31,22 +31,22 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
   */
 
   it("subtasks are created") {
-    val parentTask = new JiraGTaskBuilder("parent task").withId(11l).build()
+    val parentTask = new JiraGTaskBuilder("parent task").build()
 
-    val subTask1 = new JiraGTaskBuilder("child task 1").withId(22l).build()
-    val subTask2 = new JiraGTaskBuilder("child task 2").withId(33l).build()
+    val subTask1 = new JiraGTaskBuilder("child task 1").build()
+    val subTask2 = new JiraGTaskBuilder("child task 2").build()
     parentTask.getChildren.addAll(List(subTask1, subTask2).asJava)
     val connector = getConnector
     val result = connector.saveData(new InMemoryTaskKeeper(), util.Arrays.asList(parentTask), ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault)
     assertThat(result.getCreatedTasksNumber).isEqualTo(3)
-    val parentKey = result.getRemoteKey(11l).key
-    val subTask1RemoteKey = result.getRemoteKey(22l).key
-    val subTask2RemoteKey = result.getRemoteKey(33l).key
+    val parentTaskId = result.getIdToRemoteKeyList.head._2
+    val subTask1Id = result.getIdToRemoteKeyList(1)._2
+    val subTask2Id = result.getIdToRemoteKeyList(2)._2
 
-    val loadedSubTask1 = connector.loadTaskByKey(subTask1RemoteKey, JiraFieldBuilder.getDefault)
-    val loadedSubTask2 = connector.loadTaskByKey(subTask2RemoteKey, JiraFieldBuilder.getDefault)
-    assertThat(loadedSubTask1.getParentKey).isEqualTo(parentKey)
-    assertThat(loadedSubTask2.getParentKey).isEqualTo(parentKey)
+    val loadedSubTask1 = connector.loadTaskByKey(subTask1Id.key, JiraFieldBuilder.getDefault)
+    val loadedSubTask2 = connector.loadTaskByKey(subTask2Id.key, JiraFieldBuilder.getDefault)
+    assertThat(loadedSubTask1.getParentIdentity).isEqualTo(parentTaskId)
+    assertThat(loadedSubTask2.getParentIdentity).isEqualTo(parentTaskId)
 
     // TODO need to delete the temporary tasks
   }
@@ -72,7 +72,7 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
 */
 
   // TODO move to some generic tests, this is not Jira-specific
-  it("taskIsCreatedWithDefaultDescriptionField") {
+  it("task created with default description field") {
     // description is empty so that the default value will be set later
     val task = JiraGTaskBuilder.withSummary()
     val connector = getConnector
@@ -84,10 +84,8 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
 
     val result = connector.saveData(new InMemoryTaskKeeper(), util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)
     assertThat(result.getCreatedTasksNumber).isEqualTo(1)
-    // TODO this is ugly
-    val values = result.getIdToRemoteKeyMap.values
-    val key = values.iterator.next.key
-    val loadedTask = connector.loadTaskByKey(key, rows.asJava)
+    val taskId = result.getIdToRemoteKeyList.head._2
+    val loadedTask = connector.loadTaskByKey(taskId.key, rows.asJava)
     assertThat(loadedTask.getValue(JiraField.description)).isEqualTo("some default")
   }
 

@@ -4,7 +4,7 @@ import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.NewConnector;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.TaskId;
-import com.taskadapter.connector.definition.TaskSaveResult;
+import com.taskadapter.connector.definition.SaveResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.TaskKeeper;
 import com.taskadapter.core.TaskSaver;
@@ -57,7 +57,7 @@ public final class CommonTests {
     }
 */
     public static void createsTasks(NewConnector connector, List<FieldRow> rows, List<GTask> tasks) throws ConnectorException {
-        TaskSaveResult result = connector.saveData(new InMemoryTaskKeeper(), tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows);
+        SaveResult result = connector.saveData(new InMemoryTaskKeeper(), tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows);
         assertFalse(result.hasErrors());
         assertEquals(tasks.size(), result.getCreatedTasksNumber());
     }
@@ -72,7 +72,7 @@ public final class CommonTests {
         TaskKeeper taskKeeper = new InMemoryTaskKeeper();
         // CREATE
 //        TaskSaveResult result = connector.saveData(taskKeeper, Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
-        TaskSaveResult result = TaskSaver.save(taskKeeper, connector, "some name", rows, Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR);
+        SaveResult result = TaskSaver.save(taskKeeper, connector, "some name", rows, Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR);
 
         assertFalse(result.hasErrors());
         assertEquals(1, result.getCreatedTasksNumber());
@@ -89,7 +89,7 @@ public final class CommonTests {
 //        map.put(remoteKey, remoteKey);
 //        taskKeeper.keepTasks(map);
 //        TaskSaveResult result2 = connector.saveData(taskKeeper, Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR, rows);
-        TaskSaveResult result2 = TaskSaver.save(taskKeeper, connector, "some name", rows, Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR);
+        SaveResult result2 = TaskSaver.save(taskKeeper, connector, "some name", rows, Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR);
 
         assertFalse(result2.hasErrors());
         assertEquals(1, result2.getUpdatedTasksNumber());

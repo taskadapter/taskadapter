@@ -4,20 +4,20 @@ import java.util
 
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.data.ConnectorConverter
-import com.taskadapter.connector.definition.{ProgressMonitor, TaskId, TaskSaveResultBuilder}
+import com.taskadapter.connector.definition.{ProgressMonitor, TaskId, SaveResultBuilder}
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.core.TaskKeeper
 import com.taskadapter.model.GTask
 
 class SimpleTaskSaver[N](taskKeeper: TaskKeeper, converter: ConnectorConverter[GTask, N],
                          saveAPI: BasicIssueSaveAPI[N],
-                         result: TaskSaveResultBuilder, progressMonitor: ProgressMonitor) {
+                         result: SaveResultBuilder, progressMonitor: ProgressMonitor) {
 
-  def saveTasks(parentIssueKey: Option[Long], tasks: util.List[GTask], fieldRows: java.lang.Iterable[FieldRow]): Unit = {
+  def saveTasks(parentIssueKey: Option[TaskId], tasks: util.List[GTask], fieldRows: java.lang.Iterable[FieldRow]): Unit = {
     val previouslyCreatedTasks = taskKeeper.loadTasks()
     tasks.forEach { task =>
       try {
-        if (parentIssueKey.isDefined) task.setParentKey(parentIssueKey.get + "")
+        if (parentIssueKey.isDefined) task.setParentIdentity(parentIssueKey.get)
         //        val possiblyNewKey = previouslyCreatedTasks.getOrElse(task.getKey, "")
         val transformedTask = DefaultValueSetter.adapt(fieldRows, task)
         val withPossiblyNewId = replaceIdIfPreviouslyCreatedByUs(previouslyCreatedTasks, transformedTask, task.getKey)
@@ -26,11 +26,10 @@ class SimpleTaskSaver[N](taskKeeper: TaskKeeper, converter: ConnectorConverter[G
         val nativeIssueToCreateOrUpdate = converter.convert(readyForNative)
         val identity = TaskId(readyForNative.getId, readyForNative.getKey)
         var newTaskKey = submitTask(identity, nativeIssueToCreateOrUpdate)
-        val newId = newTaskKey.id
-        taskKeeper.keepTask(task.getKey, newId)
+        taskKeeper.keepTask(task.getKey, newTaskKey.id)
 
         progressMonitor.worked(1)
-        if (task.hasChildren) saveTasks(Some(newId), task.getChildren, fieldRows)
+        if (task.hasChildren) saveTasks(Some(newTaskKey), task.getChildren, fieldRows)
       } catch {
         case e: ConnectorException =>
           result.addTaskError(task, e)
@@ -44,7 +43,7 @@ class SimpleTaskSaver[N](taskKeeper: TaskKeeper, converter: ConnectorConverter[G
 
   private def replaceIdIfPreviouslyCreatedByUs(previouslyCreatedTasks: Map[String, Long], gTask: GTask, originalKey:String): GTask = {
       val result = new GTask(gTask)
-      if (previouslyCreatedTasks.contains(originalKey)) {
+      if (originalKey!= null && previouslyCreatedTasks.contains(originalKey)) {
         result.setId(previouslyCreatedTasks(originalKey))
       }
       result

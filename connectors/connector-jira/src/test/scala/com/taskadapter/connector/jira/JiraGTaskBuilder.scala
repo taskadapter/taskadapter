@@ -2,6 +2,7 @@ package com.taskadapter.connector.jira
 
 import java.util.Date
 
+import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.model.GTask
 
 import scala.util.Random
@@ -48,8 +49,8 @@ class JiraGTaskBuilder(summary: String = "task " + new Date().getTime) {
     this
   }
 
-  def withParentId(value: Object): JiraGTaskBuilder = {
-    task.setParentKey(value.toString)
+  def withParentId(value: TaskId): JiraGTaskBuilder = {
+    task.setParentIdentity(value)
     this
   }
 

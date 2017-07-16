@@ -2,8 +2,8 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.common.RelationUtils;
-import com.taskadapter.connector.definition.TaskSaveResult;
-import com.taskadapter.connector.definition.TaskSaveResultBuilder;
+import com.taskadapter.connector.definition.SaveResult;
+import com.taskadapter.connector.definition.SaveResultBuilder;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.EntityPersistenseException;
 import com.taskadapter.connector.msp.write.MSXMLFileWriter;
@@ -27,7 +27,7 @@ public final class MSPTaskSaver {
 
     private static final Logger logger = LoggerFactory
             .getLogger(MSPTaskSaver.class);
-    private final TaskSaveResultBuilder result = new TaskSaveResultBuilder();
+    private final SaveResultBuilder result = new SaveResultBuilder();
     private final MSPConfig config;
 
     private MSXMLFileWriter writer;
@@ -37,7 +37,7 @@ public final class MSPTaskSaver {
         this.writer = new MSXMLFileWriter(rows);
     }
 
-    public TaskSaveResult saveData(List<GTask> tasks) throws ConnectorException {
+    public SaveResult saveData(List<GTask> tasks) throws ConnectorException {
         saveIssues(tasks);
 
         final List<GRelation> relations = RelationUtils.convertRelationIds(

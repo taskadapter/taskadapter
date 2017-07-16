@@ -42,7 +42,7 @@ object DefaultValueSetter {
 //    result.setId(task.getId)
     // Key should NOT be set here because it is a key from some source system. it is not valid in target system
 //    result.setKey(task.getKey)
-    result.setParentKey(task.getParentKey)
+    result.setParentIdentity(task.getParentIdentity)
     result
   }
 

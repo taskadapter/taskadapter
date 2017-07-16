@@ -2,8 +2,6 @@ package com.taskadapter.webui.pages;
 
 import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
-import java.util.List;
-
 import com.taskadapter.connector.definition.TaskError;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.webui.Page;
@@ -41,8 +39,8 @@ public final class SyncActionComponents {
      *            task errors.
      */
     public static void addErrors(ComponentContainer container,
-            UIConnectorConfig connector, List<Throwable> generalErrors,
-            List<TaskError<Throwable>> taskErrors) {
+            UIConnectorConfig connector, scala.collection.immutable.List<Throwable> generalErrors,
+            scala.collection.immutable.List<TaskError<Throwable>> taskErrors) {
 
         if (generalErrors.isEmpty() && taskErrors.isEmpty())
             return;
@@ -50,10 +48,14 @@ public final class SyncActionComponents {
         container.addComponent(new Label(
                 "There were some problems during export:"));
         String errorText = "";
-        for (Throwable e : generalErrors) {
-            errorText += quot(connector.decodeException(e)) + "<br/>";
+        scala.collection.Iterator<Throwable> generalErrorsIter = generalErrors.iterator();
+        while (generalErrorsIter.hasNext()) {
+            Throwable t = generalErrorsIter.next();
+            errorText += quot(connector.decodeException(t)) + "<br/>\n";
         }
-        for (TaskError<Throwable> error : taskErrors) {
+        scala.collection.Iterator<TaskError<Throwable>> taskErrorsIter = taskErrors.iterator();
+        while (taskErrorsIter.hasNext()) {
+            TaskError<Throwable> error = taskErrorsIter.next();
             errorText += "Task " + error.getTask().getId() + " (\""
                     + error.getTask() + "\"): "
                     + connector.decodeException(error.getErrors());

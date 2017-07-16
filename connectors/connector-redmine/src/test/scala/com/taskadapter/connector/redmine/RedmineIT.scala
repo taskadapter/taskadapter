@@ -5,6 +5,7 @@ import java.util.Calendar
 
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.TreeUtils
+import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.connector.testlib._
 import com.taskadapter.core.TaskKeeper
 import com.taskadapter.model.GTask
@@ -235,13 +236,14 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
 
     val c1 = new GTask()
     c1.setId(3l)
-    c1.setParentKey("1")
+    val parentIdentity = TaskId(1, "1")
+    c1.setParentIdentity(parentIdentity)
     c1.setValue(RedmineField.summary, "Child 1 of " + summary)
     t.getChildren().add(c1)
 
     val c2 = new GTask()
     c2.setId(4l)
-    c2.setParentKey("1")
+    c2.setParentIdentity(parentIdentity)
     c2.setValue(RedmineField.summary, "Child 2 of " + summary)
     t.getChildren().add(c2)
 

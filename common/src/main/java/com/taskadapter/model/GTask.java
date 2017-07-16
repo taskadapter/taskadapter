@@ -1,6 +1,7 @@
 package com.taskadapter.model;
 
 import com.taskadapter.connector.Field;
+import com.taskadapter.connector.definition.TaskId;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -74,8 +75,8 @@ final public class GTask {
         setValue(GTaskDescriptor.FIELD.ID, id);
     }
 
-    public String getParentKey() {
-        return (String) getValue(GTaskDescriptor.FIELD.PARENT_KEY);
+    public TaskId getParentIdentity() {
+        return (TaskId) getValue(GTaskDescriptor.FIELD.PARENT_KEY);
     }
 
     public String getRemoteId() {
@@ -149,7 +150,7 @@ final public class GTask {
         return fields.toString();
     }
 
-    public void setParentKey(String parentIssueKey) {
+    public void setParentIdentity(TaskId parentIssueKey) {
         setValue(GTaskDescriptor.FIELD.PARENT_KEY, parentIssueKey);
     }
 

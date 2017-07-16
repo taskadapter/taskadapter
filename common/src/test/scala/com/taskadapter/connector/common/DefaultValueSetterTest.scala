@@ -2,6 +2,7 @@ package com.taskadapter.connector.common
 
 import java.util.Date
 
+import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.connector.{Field, FieldRow}
 import com.taskadapter.model.GTask
 import org.fest.assertions.Assertions.assertThat
@@ -58,9 +59,9 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
       FieldRow(Field("summary"), Field("summary"), ""),
     )
     val task = new GTask
-    task.setParentKey("parent1")
+    task.setParentIdentity(TaskId(1, "parent1"))
     val newTask = DefaultValueSetter.adapt(rows.asJava, task)
-    newTask.getParentKey shouldBe "parent1"
+    newTask.getParentIdentity shouldBe "parent1"
   }
 
   it("Date field type is adapted") {

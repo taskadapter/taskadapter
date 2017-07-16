@@ -2,7 +2,7 @@ package com.taskadapter.connector.testlib;
 
 import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
-import com.taskadapter.connector.definition.TaskSaveResult;
+import com.taskadapter.connector.definition.SaveResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.NewConnector;
 import com.taskadapter.model.GTask;
@@ -20,7 +20,7 @@ public class TestSaver {
     }
 
     public GTask saveAndLoad(GTask task) throws ConnectorException {
-        TaskSaveResult taskSaveResult = connector.saveData(new InMemoryTaskKeeper(),
+        SaveResult taskSaveResult = connector.saveData(new InMemoryTaskKeeper(),
                 Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
         String newKey = taskSaveResult.getRemoteKeys().iterator().next().key();
         return connector.loadTaskByKey(newKey, rows);

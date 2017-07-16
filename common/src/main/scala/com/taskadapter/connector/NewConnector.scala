@@ -2,12 +2,12 @@ package com.taskadapter.connector
 
 import java.util
 
-import com.taskadapter.connector.definition.{ProgressMonitor, TaskSaveResult}
+import com.taskadapter.connector.definition.{ProgressMonitor, SaveResult}
 import com.taskadapter.core.TaskKeeper
 import com.taskadapter.model.GTask
 
 trait NewConnector {
-  def saveData(taskKeeper: TaskKeeper, tasks: util.List[GTask], monitor: ProgressMonitor, rows: java.lang.Iterable[FieldRow]): TaskSaveResult
+  def saveData(taskKeeper: TaskKeeper, tasks: util.List[GTask], monitor: ProgressMonitor, rows: java.lang.Iterable[FieldRow]): SaveResult
 
   /**
     * Load list of tasks. Order of loaded tasks is not specified and may depend on implementation.
