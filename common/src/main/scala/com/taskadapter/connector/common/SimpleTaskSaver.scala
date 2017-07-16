@@ -25,11 +25,20 @@ class SimpleTaskSaver[N](taskKeeper: TaskKeeper, converter: ConnectorConverter[G
         val readyForNative = withPossiblyNewId
         val nativeIssueToCreateOrUpdate = converter.convert(readyForNative)
         val identity = TaskId(readyForNative.getId, readyForNative.getKey)
-        var newTaskKey = submitTask(identity, nativeIssueToCreateOrUpdate)
-        taskKeeper.keepTask(task.getKey, newTaskKey.id)
+        var newTaskIdentity = identity.id match {
+          case 0 =>
+            val newTaskKey = saveAPI.createTask(nativeIssueToCreateOrUpdate)
+            result.addCreatedTask(task.getId, newTaskKey) // save originally requested task Id to enable tests and ...?
+            newTaskKey
+          case some =>
+            saveAPI.updateTask(nativeIssueToCreateOrUpdate)
+            result.addUpdatedTask(some, identity)
+            identity
+        }
+        taskKeeper.keepTask(task.getKey, newTaskIdentity.id)
 
         progressMonitor.worked(1)
-        if (task.hasChildren) saveTasks(Some(newTaskKey), task.getChildren, fieldRows)
+        if (task.hasChildren) saveTasks(Some(newTaskIdentity), task.getChildren, fieldRows)
       } catch {
         case e: ConnectorException =>
           result.addTaskError(task, e)
@@ -52,6 +61,7 @@ class SimpleTaskSaver[N](taskKeeper: TaskKeeper, converter: ConnectorConverter[G
   /**
     * @return the newly created task's KEY
     */
+/*
   private def submitTask(id: TaskId, nativeTask: N): TaskId = {
     if (id.id == 0) {
       val newTaskKey = saveAPI.createTask(nativeTask)
@@ -63,4 +73,5 @@ class SimpleTaskSaver[N](taskKeeper: TaskKeeper, converter: ConnectorConverter[G
       id
     }
   }
+*/
 }

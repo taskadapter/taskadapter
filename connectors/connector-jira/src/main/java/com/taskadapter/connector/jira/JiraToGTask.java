@@ -9,6 +9,7 @@ import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
+import com.taskadapter.model.Precedes$;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
@@ -111,7 +112,11 @@ public class JiraToGTask {
                 if (link.getIssueLinkType().getDirection().equals(IssueLinkType.Direction.OUTBOUND)) {
                     String name = link.getIssueLinkType().getName();
                     if (name.equals(JiraConstants.getJiraLinkNameForPrecedes())) {
-                        GRelation r = new GRelation(issue.getId()+"", JiraUtils.getIdFromURI(link.getTargetIssueUri()), GRelation.TYPE.precedes);
+//                        String targetIssueIdFromURI = JiraUtils.getIdFromURI(link.getTargetIssueUri());
+                        GRelation r = new GRelation(
+                                new TaskId(issue.getId(), issue.getKey()),
+                                new TaskId(-1, link.getTargetIssueKey()),
+                                Precedes$.MODULE$);
                         genericTask.getRelations().add(r);
                     } else {
                         logger.info("Relation type is not supported: " + link.getIssueLinkType() +

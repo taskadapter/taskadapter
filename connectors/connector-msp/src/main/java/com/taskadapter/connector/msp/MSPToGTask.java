@@ -4,6 +4,7 @@ import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GUser;
+import com.taskadapter.model.Precedes$;
 import net.sf.mpxj.Duration;
 import net.sf.mpxj.ProjectHeader;
 import net.sf.mpxj.Relation;
@@ -116,10 +117,12 @@ class MSPToGTask {
             relations.stream()
                     .filter(relation -> relation.getType().equals(RelationType.FINISH_START))
                     .forEach(relation -> {
-                        GRelation r = new GRelation(Integer.toString(relation
-                                .getSourceTask().getUniqueID()),
-                                Integer.toString(relation.getTargetTask()
-                                        .getUniqueID()), GRelation.TYPE.precedes);
+                        Task sourceTask = relation.getSourceTask();
+                        Task targetTask = relation.getTargetTask();
+                        GRelation r = new GRelation(
+                                new TaskId(sourceTask.getUniqueID(), sourceTask.getUniqueID()+""),
+                                new TaskId(targetTask.getUniqueID(), targetTask.getUniqueID()+""),
+                                Precedes$.MODULE$);
                         genericTask.getRelations().add(r);
                     });
         }

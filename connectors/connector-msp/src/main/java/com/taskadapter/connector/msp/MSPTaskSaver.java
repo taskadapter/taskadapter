@@ -9,8 +9,8 @@ import com.taskadapter.connector.definition.exceptions.EntityPersistenseExceptio
 import com.taskadapter.connector.msp.write.MSXMLFileWriter;
 import com.taskadapter.connector.msp.write.RealWriter;
 import com.taskadapter.model.GRelation;
-import com.taskadapter.model.GRelation.TYPE;
 import com.taskadapter.model.GTask;
+import com.taskadapter.model.Precedes$;
 import net.sf.mpxj.Duration;
 import net.sf.mpxj.MPXJException;
 import net.sf.mpxj.ProjectFile;
@@ -70,27 +70,24 @@ public final class MSPTaskSaver {
             String outputAbsoluteFilePath = config.getOutputAbsoluteFilePath();
             ProjectFile projectFile = fileReader.readFile(outputAbsoluteFilePath);
             for (GRelation relation : relations) {
-                if (relation.getType().equals(TYPE.precedes)) {
-                    Integer intKey = Integer.parseInt(relation
-                            .getRelatedTaskKey());
-                    Integer sourceKey = Integer.parseInt(relation.getTaskKey());
-                    Task relatedTask = projectFile.getTaskByID(intKey);
-                    Task sourceTask = projectFile.getTaskByID(sourceKey);
+                if (relation.type().equals(Precedes$.MODULE$)) {
+                    Long intKey = relation.relatedTaskId().id();
+                    Long sourceKey = relation.taskId().id();
+                    Task relatedTask = projectFile.getTaskByID(intKey.intValue());
+                    Task sourceTask = projectFile.getTaskByID(sourceKey.intValue());
 
                     Duration delay;
-                    if (relation.getDelay() != null) {
-                        delay = Duration.getInstance(relation.getDelay(),
-                                TimeUnit.DAYS);
-                    } else {
+//                    if (relation.getDelay() != null) {
+//                        delay = Duration.getInstance(relation.getDelay(),
+//                                TimeUnit.DAYS);
+//                    } else {
                         delay = Duration.getInstance(0, TimeUnit.DAYS);
-                    }
+//                    }
                     relatedTask.addPredecessor(sourceTask,
                             RelationType.FINISH_START, delay);
                 } else {
-                    logger.error("save relations for MSP: unknown type: "
-                            + relation.getType());
-                    result.addGeneralError(new UnsupportedRelationType(relation
-                            .getType()));
+                    logger.error("save relations for MSP: unknown type: " + relation.type());
+                    result.addGeneralError(new UnsupportedRelationType(relation.type()));
                 }
             }
 

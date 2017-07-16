@@ -3,7 +3,8 @@ package com.taskadapter.connector.redmine
 import java.util.{Calendar, Collections}
 
 import com.taskadapter.connector.Priorities
-import com.taskadapter.model.{GRelation, GUser}
+import com.taskadapter.connector.definition.TaskId
+import com.taskadapter.model.{GRelation, GUser, Precedes, Precedes$}
 import com.taskadapter.redmineapi.bean._
 import org.junit.Assert.{assertEquals, assertNull}
 import org.junit.runner.RunWith
@@ -35,7 +36,7 @@ class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with 
   it("idIsConvertedIfSet") {
     val redmineIssue = IssueFactory.create(123)
     val task = get().convertToGenericTask(redmineIssue)
-    assertEquals(123.asInstanceOf[Integer], task.getId)
+    task.getId shouldBe 123
   }
 
   it("idIsIgnoredIfNull") {
@@ -54,7 +55,7 @@ class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with 
     val redmineIssue = new Issue
     redmineIssue.setParentId(123)
     val task = get().convertToGenericTask(redmineIssue)
-    assertEquals("123", task.getParentIdentity)
+    task.getParentIdentity shouldBe TaskId(123, "123")
   }
 
   it("parentIdIsIgnoredIfNotSet") {
@@ -172,9 +173,8 @@ class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with 
     assertEquals(Priorities.DEFAULT_PRIORITY_VALUE, task.getValue(RedmineField.priority.name))
   }
 
-  it("relationsAreConverted") {
+  it("relations are converted") {
     val redmineIssue = IssueFactory.create(10)
-    //        Issue blockedIssue = IssueFactory.create(20);
     val relation = IssueRelationFactory.create
     relation.setType(IssueRelation.TYPE.precedes.toString)
     relation.setIssueId(10)
@@ -183,10 +183,10 @@ class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with 
     val task = get().convertToGenericTask(redmineIssue)
     assertEquals(1, task.getRelations.size)
     val gRelation = task.getRelations.get(0)
-    assertEquals("10", gRelation.getTaskKey)
-    assertEquals("20", gRelation.getRelatedTaskKey)
-    assertEquals(GRelation.TYPE.precedes, gRelation.getType)
-    assertNull(gRelation.getDelay)
+
+    gRelation.taskId.id shouldBe 10
+    gRelation.relatedTaskId.id shouldBe 20
+    gRelation.`type` shouldBe Precedes
   }
 
 }

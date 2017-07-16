@@ -3,6 +3,7 @@ package com.taskadapter.connector.redmine;
 import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
+import com.taskadapter.model.Precedes$;
 import com.taskadapter.redmineapi.bean.CustomField;
 import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.IssueRelation;
@@ -32,7 +33,7 @@ public class RedmineToGTask {
     public GTask convertToGenericTask(Issue issue) {
         GTask task = new GTask();
 
-        task.setId(issue.getId().longValue());
+        task.setId(issue.getId() == null? null : issue.getId().longValue());
         if (issue.getId() != null) {
             task.setKey(Integer.toString(issue.getId()));
         }
@@ -80,8 +81,10 @@ public class RedmineToGTask {
                 // if NOT equal to self!
                 // See http://www.redmine.org/issues/7366#note-11
                 if (!relation.getIssueToId().equals(rmIssue.getId())) {
-                    GRelation r = new GRelation(Integer.toString(rmIssue.getId()), Integer.toString(relation
-                            .getIssueToId()), GRelation.TYPE.precedes);
+                    GRelation r = new GRelation(
+                            new TaskId(rmIssue.getId(), rmIssue.getId()+""),
+                            new TaskId(relation.getIssueToId(), relation.getIssueToId()+""),
+                            Precedes$.MODULE$);
                     genericTask.getRelations().add(r);
                 }
             } else {

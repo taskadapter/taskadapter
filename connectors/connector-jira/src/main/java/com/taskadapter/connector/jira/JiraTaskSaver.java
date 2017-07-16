@@ -8,6 +8,7 @@ import com.taskadapter.connector.common.RelationSaver;
 import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GRelation;
+import com.taskadapter.model.Precedes$;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,16 +37,17 @@ final class JiraTaskSaver implements RelationSaver, BasicIssueSaveAPI<IssueWrapp
     @Override
     public void saveRelations(List<GRelation> relations) throws ConnectorException {
         for (GRelation gRelation : relations) {
-            String taskKey = gRelation.getTaskKey();
-            String relatedTaskKey = gRelation.getRelatedTaskKey();
+            String taskKey = gRelation.taskId().key();
+            String relatedTaskKey = gRelation.relatedTaskId().key();
             String linkTypeName;
-            if (gRelation.getType().equals(GRelation.TYPE.precedes)) {
+            if (gRelation.type().equals(Precedes$.MODULE$)) {
                 linkTypeName = JiraConstants.getJiraLinkNameForPrecedes();
                 LinkIssuesInput input = new LinkIssuesInput(taskKey, relatedTaskKey, linkTypeName);
                 final Promise<Void> promise = client.getIssueClient().linkIssue(input);
                 promise.claim();
             } else {
-                LOG.info("Ignoring not supported issue link type: " + gRelation.getType().toString() + ". JIRA connector only supports " + GRelation.TYPE.precedes.toString());
+                LOG.info("Ignoring not supported issue link type: " + gRelation.type().toString()
+                        + ". JIRA connector only supports " + Precedes$.MODULE$);
             }
         }
     }

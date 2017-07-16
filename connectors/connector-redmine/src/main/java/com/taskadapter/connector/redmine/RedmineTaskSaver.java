@@ -51,10 +51,11 @@ public final class RedmineTaskSaver implements RelationSaver, BasicIssueSaveAPI<
     public void saveRelations(List<GRelation> relations) throws ConnectorException {
         try {
             for (GRelation gRelation : relations) {
-                int taskKey = Integer.parseInt(gRelation.getTaskKey());
-                int relatedTaskKey = Integer.parseInt(gRelation
-                        .getRelatedTaskKey());
-                issueManager.createRelation(taskKey, relatedTaskKey, gRelation.getType().toString());
+                TaskId taskId = gRelation.taskId();
+                Integer intTaskId = (int) taskId.id();
+                TaskId relatedTaskKey = gRelation.relatedTaskId();
+                Integer intRelatedId = (int) relatedTaskKey.id();
+                issueManager.createRelation(intTaskId, intRelatedId, gRelation.type().toString());
             }
         } catch (RedmineProcessingException e) {
             throw new RelationCreationException(e);

@@ -2,8 +2,9 @@ package com.taskadapter.connector.jira
 
 import com.google.common.collect.Iterables
 import com.taskadapter.connector.common.ProgressMonitorUtils
+import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.connector.testlib.{CommonTestChecks, InMemoryTaskKeeper, TestUtils}
-import com.taskadapter.model.{GRelation, GTask}
+import com.taskadapter.model.{GRelation, GTask, Precedes}
 import org.fest.assertions.Assertions.assertThat
 import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
@@ -63,7 +64,8 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     val list = generateTasks
     val task1 = list(0)
     val task2 = list(1)
-    task1.getRelations.add(new GRelation(task1.getId.toString, task2.getId.toString, GRelation.TYPE.precedes))
+    task1.getRelations.add(GRelation(TaskId(task1.getId, task1.getKey),
+      TaskId(task2.getId, task2.getKey), Precedes))
     TestUtils.saveAndLoadList(connector, list, JiraFieldBuilder.getDefault)
     val issues = TestJiraClientHelper.findIssuesBySummary(client, task1.getValue(JiraField.summary).asInstanceOf[String])
     val createdIssue1 = issues.iterator.next

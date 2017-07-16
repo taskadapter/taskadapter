@@ -1,5 +1,6 @@
 dependencies {
     compile libraries.slf4j
 
-    compile 'com.atlassian.jira:jira-rest-java-client-core:3.0.0'
+    compile 'com.atlassian.jira:jira-rest-java-client-core:4.0.0'
+    compile "com.atlassian.fugue:fugue:2.6.1"
 }
