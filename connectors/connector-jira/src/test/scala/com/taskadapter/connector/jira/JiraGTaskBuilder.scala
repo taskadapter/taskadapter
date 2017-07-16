@@ -44,6 +44,12 @@ class JiraGTaskBuilder(summary: String = "task " + new Date().getTime) {
   // summary is pretty much always required
   task.setValue(JiraField.summary, summary)
 
+
+  def withDescription(): JiraGTaskBuilder = {
+    task.setValue(JiraField.description, "description " + new Date().getTime)
+    this
+  }
+
   def withPriority(value: Object): JiraGTaskBuilder = {
     task.setValue(JiraField.priority, value)
     this

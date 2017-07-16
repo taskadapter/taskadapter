@@ -22,7 +22,7 @@ object JiraField {
   val estimatedTime = Field.float("Estimated Time") // should not be selected by default
   val assignee = Field("Assignee")
   val dueDate = Field.date("Due Date")
-  val priority = Field("Priority")
+  val priority = Field.integer("Priority")
   val environment = Field("Environment") // should not be selected by default
   val id = Field("Id")
 
@@ -32,7 +32,8 @@ object JiraField {
 
   private def suggestedStandardFields = Map(id -> Id, summary -> Summary,
     description -> Description, taskType -> TaskType,
-    estimatedTime -> EstimatedTime,
+    // estimated time is not a part of standard JIRA 7 anymore
+//    estimatedTime -> EstimatedTime,
     assignee -> Assignee,
     dueDate -> DueDate,
     priority -> Priority)

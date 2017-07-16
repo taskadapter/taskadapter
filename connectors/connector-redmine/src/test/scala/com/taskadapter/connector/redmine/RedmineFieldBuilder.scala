@@ -14,9 +14,9 @@ object RedmineFieldBuilder {
     ).asJava
   }
 
-  def getDefault(): util.List[FieldRow] = {
+  def getDefault(): List[FieldRow] = {
     List(
       FieldRow(RedmineField.summary, RedmineField.summary, ""),
-    ).asJava
+    )
   }
 }

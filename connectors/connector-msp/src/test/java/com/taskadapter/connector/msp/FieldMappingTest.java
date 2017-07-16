@@ -1,29 +1,11 @@
 package com.taskadapter.connector.msp;
 
-import com.taskadapter.connector.definition.Mappings;
-import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.connector.testlib.CommonTests;
-import com.taskadapter.connector.testlib.TestMappingUtils;
-import com.taskadapter.connector.testlib.TestSaver;
-import com.taskadapter.connector.testlib.TestUtils;
-import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
-import com.taskadapter.model.GUser;
-import net.sf.mpxj.*;
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
-import static com.taskadapter.connector.msp.MSPTestUtils.deleteFile;
-import static com.taskadapter.connector.msp.MSPTestUtils.findMSPTaskBySummary;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;

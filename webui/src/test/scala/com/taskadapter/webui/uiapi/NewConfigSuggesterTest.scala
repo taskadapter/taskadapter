@@ -1,10 +1,9 @@
 package com.taskadapter.webui.uiapi
 
-import com.taskadapter.connector.Field
+import com.taskadapter.connector.{Field, NewConfigSuggester}
 import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.connector.jira.JiraField
 import com.taskadapter.connector.redmine.RedmineField
-import com.taskadapter.web.uiapi.NewConfigSuggester
 import org.junit.runner.RunWith
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.junit.JUnitRunner

@@ -249,7 +249,7 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
 
     val loadedTasks = TestUtils.saveAndLoadAll(getConnector(), t, RedmineFieldBuilder.getDefault())
 
-    val filtered = loadedTasks.asScala.filter(_.getValue(RedmineField.summary) == summary)
+    val filtered = loadedTasks.filter(_.getValue(RedmineField.summary) == summary)
 
     val tree = TreeUtils.buildTreeFromFlatList(filtered.asJava)
         
@@ -361,12 +361,12 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
         }
   */
   it("tasks are created without errors") {
-    CommonTests.createsTasks(getConnector(), RedmineFieldBuilder.getDefault(), RedmineGTaskBuilder.getTwo().asJava)
+    CommonTestChecks.createsTasks(getConnector(), RedmineFieldBuilder.getDefault().asJava, RedmineGTaskBuilder.getTwo().asJava)
   }
 
 
   it("task is updated") {
-    CommonTests.taskCreatedAndUpdatedOK(getConnector(), RedmineFieldBuilder.getDefault(),
+    CommonTestChecks.taskCreatedAndUpdatedOK(getConnector(), RedmineFieldBuilder.getDefault().asJava,
       RedmineGTaskBuilder.withSummary(), RedmineField.summary.name)
   }
 

@@ -3,7 +3,7 @@ package com.taskadapter.connector.testlib
 import java.util
 import java.util.{Calendar, Date}
 
-import com.taskadapter.connector.{FieldRow, NewConnector}
+import com.taskadapter.connector.{Field, FieldRow, NewConnector}
 import com.taskadapter.connector.common.{ConnectorUtils, ProgressMonitorUtils}
 import com.taskadapter.connector.definition.SaveResult
 import com.taskadapter.connector.definition.exceptions.ConnectorException
@@ -30,8 +30,16 @@ object TestUtils {
     list.asScala.find(_.getKey == key).orNull
   }
 
+  /**
+    * Use the scala version
+    */
+  @Deprecated
   def findTaskByFieldName(list: util.List[GTask], fieldName: String, value: String): GTask = {
-    list.asScala.find(_.getValue(fieldName) == value).orNull
+    findTaskByFieldName(list.asScala.toList, fieldName, value)
+  }
+
+  def findTaskByFieldName(list: List[GTask], fieldName: String, value: String): GTask = {
+    list.find(_.getValue(fieldName) == value).orNull
   }
 
   /*
@@ -56,15 +64,15 @@ object TestUtils {
   }
 
   @throws[ConnectorException]
-  def saveAndLoadAll(connector: NewConnector, task: GTask, rows: util.List[FieldRow]): util.List[GTask] = {
-    connector.saveData(new InMemoryTaskKeeper, util.Arrays.asList(task), null, rows)
-    ConnectorUtils.loadDataOrderedById(connector)
+  def saveAndLoadAll(connector: NewConnector, task: GTask, rows: List[FieldRow]): List[GTask] = {
+    connector.saveData(new InMemoryTaskKeeper, List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)
+    ConnectorUtils.loadDataOrderedById(connector).asScala.toList
   }
 
   @throws[ConnectorException]
-  def saveAndLoadList(connector: NewConnector, tasks: util.List[GTask], rows: util.List[FieldRow]): util.List[GTask] = {
-    connector.saveData(new InMemoryTaskKeeper, tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows)
-    ConnectorUtils.loadDataOrderedById(connector)
+  def saveAndLoadList(connector: NewConnector, tasks: List[GTask], rows: List[FieldRow]): List[GTask] = {
+    connector.saveData(new InMemoryTaskKeeper, tasks.asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)
+    ConnectorUtils.loadDataOrderedById(connector).asScala.toList
   }
 
   @throws[ConnectorException]
@@ -87,16 +95,16 @@ object TestUtils {
   /**
     * @return the new task Key
     */
-  /*
-      public static GTask saveAndLoadViaSummary(NewConnector connector, GTask task, List<FieldRow> rows) throws ConnectorException {
-          List<GTask> loadedTasks = saveAndLoadAll(connector, task, rows);
-          return findTaskBySummary(loadedTasks, task.getSummary());
-      }
-  */
+
+  def saveAndLoadViaSummary(connector: NewConnector, task: GTask, rows: List[FieldRow], fieldToSearch:Field): GTask = {
+    val loadedTasks = saveAndLoadAll(connector, task, rows)
+    findTaskByFieldName(loadedTasks, fieldToSearch.name, task.getValue(fieldToSearch).toString)
+  }
+
 
   @throws[ConnectorException]
-  def save(connector: NewConnector, task: GTask, rows: util.List[FieldRow]): String = {
-    val result = connector.saveData(new InMemoryTaskKeeper, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows)
+  def save(connector: NewConnector, task: GTask, rows: List[FieldRow]): String = {
+    val result = connector.saveData(new InMemoryTaskKeeper, List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)
     val remoteKeys = result.getRemoteKeys
     remoteKeys.iterator.next.key
   }

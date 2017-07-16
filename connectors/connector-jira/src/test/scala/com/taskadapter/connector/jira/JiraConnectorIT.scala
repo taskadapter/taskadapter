@@ -4,7 +4,7 @@ import java.util
 
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.ProgressMonitorUtils
-import com.taskadapter.connector.testlib.{InMemoryTaskKeeper, TestUtils}
+import com.taskadapter.connector.testlib.{CommonTestChecks, InMemoryTaskKeeper, TestUtils}
 import org.fest.assertions.Assertions.assertThat
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
@@ -20,15 +20,16 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     val summary = "load by key"
     val task = new JiraGTaskBuilder(summary).withType("Task").build
     val key = TestUtils.save(connector, task, JiraFieldBuilder.getDefault)
-    val loadedTask = connector.loadTaskByKey(key, JiraFieldBuilder.getDefault)
+    val loadedTask = connector.loadTaskByKey(key, JiraFieldBuilder.getDefault.asJava)
     assertThat(loadedTask.getValue(JiraField.summary)).isEqualTo(summary)
   }
 
-  /*
-    it("descriptionSavedByDefault") {
-      CommonTests.descriptionSavedByDefault(getConnector, JiraFieldBuilder.getDefault())
-    }
-  */
+  it("description saved by default") {
+    CommonTestChecks.descriptionSavedByDefault(getConnector,
+      new JiraGTaskBuilder().withDescription().build(),
+      JiraField.getSuggestedCombinations(),
+      JiraField.description)
+  }
 
   it("subtasks are created") {
     val parentTask = new JiraGTaskBuilder("parent task").build()
@@ -37,14 +38,16 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     val subTask2 = new JiraGTaskBuilder("child task 2").build()
     parentTask.getChildren.addAll(List(subTask1, subTask2).asJava)
     val connector = getConnector
-    val result = connector.saveData(new InMemoryTaskKeeper(), util.Arrays.asList(parentTask), ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault)
+    val result = connector.saveData(new InMemoryTaskKeeper(), util.Arrays.asList(parentTask),
+      ProgressMonitorUtils.DUMMY_MONITOR,
+      JiraFieldBuilder.getDefault.asJava)
     assertThat(result.getCreatedTasksNumber).isEqualTo(3)
     val parentTaskId = result.getIdToRemoteKeyList.head._2
     val subTask1Id = result.getIdToRemoteKeyList(1)._2
     val subTask2Id = result.getIdToRemoteKeyList(2)._2
 
-    val loadedSubTask1 = connector.loadTaskByKey(subTask1Id.key, JiraFieldBuilder.getDefault)
-    val loadedSubTask2 = connector.loadTaskByKey(subTask2Id.key, JiraFieldBuilder.getDefault)
+    val loadedSubTask1 = connector.loadTaskByKey(subTask1Id.key, JiraFieldBuilder.getDefault.asJava)
+    val loadedSubTask2 = connector.loadTaskByKey(subTask2Id.key, JiraFieldBuilder.getDefault.asJava)
     assertThat(loadedSubTask1.getParentIdentity).isEqualTo(parentTaskId)
     assertThat(loadedSubTask2.getParentIdentity).isEqualTo(parentTaskId)
 

@@ -1,6 +1,5 @@
-package com.taskadapter.web.uiapi
+package com.taskadapter.connector
 
-import com.taskadapter.connector.Field
 import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.model.StandardField
 

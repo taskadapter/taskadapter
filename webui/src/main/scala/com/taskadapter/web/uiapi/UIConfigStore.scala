@@ -4,6 +4,7 @@ import java.util
 
 import com.taskadapter.config.CirceBoilerplateForConfigs._
 import com.taskadapter.config.{ConfigStorage, StorageException, StoredExportConfig}
+import com.taskadapter.connector.NewConfigSuggester
 import com.taskadapter.core.TaskKeeper
 import io.circe.generic.auto._
 import io.circe.syntax._
