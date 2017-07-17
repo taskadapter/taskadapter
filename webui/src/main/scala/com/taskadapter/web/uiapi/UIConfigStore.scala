@@ -3,8 +3,10 @@ package com.taskadapter.web.uiapi
 import java.util
 
 import com.taskadapter.config.CirceBoilerplateForConfigs._
-import com.taskadapter.config.{ConfigStorage, StorageException, StoredExportConfig}
+import com.taskadapter.config.{ConfigStorage, ConnectorSetup, StorageException, StoredExportConfig}
 import com.taskadapter.connector.NewConfigSuggester
+import com.taskadapter.connector.common.XorEncryptor
+import com.taskadapter.connector.definition.WebServerInfo
 import com.taskadapter.core.TaskKeeper
 import io.circe.generic.auto._
 import io.circe.syntax._
@@ -18,7 +20,8 @@ import scala.collection.JavaConverters._
   * other instances for a same config file. See also documentation for
   * {@link UISyncConfig}.
   */
-class UIConfigStore(taskKeeper:TaskKeeper, uiConfigService: UIConfigService, configStorage: ConfigStorage) {
+class UIConfigStore(taskKeeper: TaskKeeper, uiConfigService: UIConfigService, configStorage: ConfigStorage) {
+  val encryptor = new XorEncryptor
   val syncConfigBuilder = new UISyncConfigBuilder(taskKeeper, uiConfigService)
 
   /**
@@ -44,16 +47,29 @@ class UIConfigStore(taskKeeper:TaskKeeper, uiConfigService: UIConfigService, con
     * @return newly created (and saved) UI mapping config.
     */
   @throws[StorageException]
-  def createNewConfig(userName: String, label: String, connector1id: String, connector2id: String): UISyncConfig = {
+  def createNewConfig(userName: String, label: String, connector1id: String, connector2id: String,
+                      connector1Info: WebServerInfo, connector2Info: WebServerInfo): UISyncConfig = {
     val config1: UIConnectorConfig = uiConfigService.createDefaultConfig(connector1id)
     val config2: UIConnectorConfig = uiConfigService.createDefaultConfig(connector2id)
-    val newMappings = NewConfigSuggester.suggestedFieldMappingsForNewConfig(config1.getSuggestedCombinations,
+    val newMappings = NewConfigSuggester.suggestedFieldMappingsForNewConfig(
+      config1.getSuggestedCombinations,
       config2.getSuggestedCombinations)
     val mappingsString = newMappings.asJson.noSpaces
     val identity: String = configStorage.createNewConfig(userName, label,
       config1.getConnectorTypeId, config1.getConfigString,
       config2.getConnectorTypeId, config2.getConfigString, mappingsString)
+
+    saveSetup(userName, connector1Info)
+    saveSetup(userName, connector2Info)
     new UISyncConfig(taskKeeper, identity, userName, label, config1, config2, newMappings.asJava, false)
+  }
+
+  def saveSetup(userName: String, setup: WebServerInfo): Unit = {
+    configStorage.saveConnectorSetup(userName,
+      setup.getLabel,
+      ConnectorSetup(setup.getLabel, setup.getHost, setup.getUserName,
+        encryptor.encrypt(setup.getPassword)
+      ).asJson.spaces2)
   }
 
   /**

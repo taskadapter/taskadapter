@@ -1,5 +1,6 @@
 package com.taskadapter.web.configeditor.server;
 
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.web.configeditor.DefaultPanel;
 import com.taskadapter.web.configeditor.Validatable;
@@ -7,25 +8,24 @@ import com.vaadin.data.Property;
 import com.vaadin.ui.Panel;
 
 public class ServerPanel extends Panel implements Validatable {
-    private static final String SERVER_GROUP_LABEL = "Server info";
     private ServerContainer serverContainer;
 
-    public ServerPanel(Property<String> labelProperty, Property<String> serverURLProperty, Property<String> userLoginNameProperty,
+    public ServerPanel(String caption, Property<String> labelProperty, Property<String> serverURLProperty, Property<String> userLoginNameProperty,
                        Property<String> passwordProperty) {
-        buildUI(labelProperty, serverURLProperty, userLoginNameProperty, passwordProperty);
+        buildUI(caption, labelProperty, serverURLProperty, userLoginNameProperty, passwordProperty);
     }
 
-    private void buildUI(Property<String> labelProperty, Property<String> serverURLProperty, Property<String> userLoginNameProperty,
+    private void buildUI(String caption, Property<String> nameProperty, Property<String> serverURLProperty, Property<String> userLoginNameProperty,
                          Property<String> passwordProperty) {
         setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
-        serverContainer = new ServerContainer(labelProperty, serverURLProperty, userLoginNameProperty, passwordProperty);
+        serverContainer = new ServerContainer(nameProperty, serverURLProperty, userLoginNameProperty, passwordProperty);
 
         setContent(serverContainer);
-        setCaption(SERVER_GROUP_LABEL);
+        setCaption(caption);
     }
 
     @Override
-    public void validate() throws ServerURLNotSetException {
+    public void validate() throws BadConfigException {
         if (serverContainer.getHostString().isEmpty()) {
             throw new ServerURLNotSetException();
         }

@@ -88,6 +88,17 @@ public final class ConfigStorage {
         }
     }
 
+    public void saveConnectorSetup(String userLoginName, String label,String connectorSetup) throws StorageException {
+        try {
+            final File folder = getUserConfigsFolder(userLoginName);
+            folder.mkdirs();
+            File newConfigFile = new File(folder, label + ".json");
+            Files.write(connectorSetup, newConfigFile, Charsets.UTF_8);
+        } catch (IOException e) {
+            throw new StorageException(e);
+        }
+    }
+
     private File findUnusedConfigFile(File userFolder, String type1,
             String type2) {
         final String namePrefix = createFileNamePrefix(type1, type2);

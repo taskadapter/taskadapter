@@ -87,7 +87,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
     @Override
     public ComponentContainer getMiniPanelContents(Sandbox sandbox, JiraConfig config) {
         WebServerInfo serverInfo = config.getServerInfo();
-        ServerPanel serverPanel = new ServerPanel(new MethodProperty<>(config, "label"),
+        ServerPanel serverPanel = new ServerPanel("Server info" , new MethodProperty<>(config, "label"),
                 new MethodProperty<>(serverInfo, "host"),
                 new MethodProperty<>(serverInfo, "userName"),
                 new MethodProperty<>(serverInfo, "password"));

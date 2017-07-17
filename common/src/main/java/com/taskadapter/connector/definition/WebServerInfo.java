@@ -1,5 +1,6 @@
 package com.taskadapter.connector.definition;
 
+import com.google.common.base.Strings;
 import com.taskadapter.connector.common.Encryptor;
 import com.taskadapter.connector.common.XorEncryptor;
 
@@ -7,6 +8,7 @@ public class WebServerInfo {
 
     public static final String DEFAULT_URL_PREFIX = "http://";
 
+    private String label = "";
     private String host = "";
     private String userName = "";
     protected String password = "";
@@ -23,6 +25,14 @@ public class WebServerInfo {
     }
 
     public WebServerInfo() {
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public String getApiKey() {
@@ -52,7 +62,7 @@ public class WebServerInfo {
     public String getPassword() {
         return encryptor.decrypt(password);
     }
-    
+
     public void setPassword(String newPassword) {
         this.password = encryptor.encrypt(newPassword);
     }
@@ -129,6 +139,19 @@ public class WebServerInfo {
 
     public boolean isHostSet() {
         return (host != null && (!host.isEmpty()) && !host.equalsIgnoreCase(DEFAULT_URL_PREFIX));
+    }
+
+    /**
+     * @return empty string if all is valid
+     */
+    public String validate() {
+        if (Strings.isNullOrEmpty(label)) {
+            return "Name is required";
+        }
+        if (!isHostSet()) {
+            return "Host is required";
+        }
+        return "";
     }
 
     @Override

@@ -14,11 +14,11 @@ public class ServerContainer extends GridLayout {
 
     private TextField hostURLText;
 
-    public ServerContainer(Property<String> labelProperty,
+    public ServerContainer(Property<String> nameProperty,
             Property<String> serverURLProperty,
             Property<String> userLoginNameProperty,
             Property<String> passwordProperty) {
-        buildUI(labelProperty, serverURLProperty, userLoginNameProperty,
+        buildUI(nameProperty, serverURLProperty, userLoginNameProperty,
                 passwordProperty);
     }
 
@@ -31,13 +31,14 @@ public class ServerContainer extends GridLayout {
         setSpacing(true);
 
         int currentRow = 0;
-        Label descriptionLabel = new Label("Description:");
-        addComponent(descriptionLabel, 0, currentRow);
-        setComponentAlignment(descriptionLabel, Alignment.MIDDLE_LEFT);
-        TextField descriptionField = new TextField();
-        descriptionField.addStyleName("server-panel-textfield");
-        descriptionField.setPropertyDataSource(labelProperty);
-        addComponent(descriptionField, 1, currentRow);
+        Label nameLabel = new Label("Name:");
+        addComponent(nameLabel, 0, currentRow);
+        setComponentAlignment(nameLabel, Alignment.MIDDLE_LEFT);
+        TextField nameField = new TextField();
+        nameField.setRequired(true);
+        nameField.addStyleName("server-panel-textfield");
+        nameField.setPropertyDataSource(labelProperty);
+        addComponent(nameField, 1, currentRow);
 
         currentRow++;
 

@@ -7,6 +7,7 @@ import java.util.List;
 import com.taskadapter.auth.AuthorizedOperations;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.config.StorageException;
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.web.uiapi.UIConfigStore;
 import com.taskadapter.web.uiapi.UISyncConfig;
 
@@ -87,10 +88,9 @@ public final class ConfigOperations {
      * @throws StorageException
      *             if config cannot be created.
      */
-    public UISyncConfig createNewConfig(String descriptionString, String id1,
-            String id2) throws StorageException {
-        return uiConfigStore.createNewConfig(userName, descriptionString, id1,
-                id2);
+    public UISyncConfig createNewConfig(String descriptionString, String id1, String id2,
+                                        WebServerInfo connector1Info, WebServerInfo connector2Info) throws StorageException {
+        return uiConfigStore.createNewConfig(userName, descriptionString, id1, id2, connector1Info, connector2Info);
     }
 
     /**
