@@ -4,7 +4,7 @@ import java.util
 
 import com.taskadapter.connector.common.DataConnectorUtil
 import com.taskadapter.connector.definition.exceptions.ConnectorException
-import com.taskadapter.connector.definition.{ProgressMonitor, SaveResult, TaskId}
+import com.taskadapter.connector.definition.{ProgressMonitor, SaveResult}
 import com.taskadapter.connector.{FieldRow, NewConnector}
 import com.taskadapter.model.GTask
 
@@ -15,8 +15,6 @@ object TaskSaver {
     monitor.beginTask("Saving " + totalNumberOfTasks + " tasks to " + destinationName, totalNumberOfTasks)
     try {
       val saveResult = connectorTo.saveData(taskKeeper, tasks, monitor, rows)
-//      taskKeeper.keepTasks(saveResult.getIdToRemoteKeyMap)
-      //            RemoteIdUpdater.updateRemoteIds(result.getIdToRemoteKeyMap(),
       monitor.done()
       saveResult
     } catch {

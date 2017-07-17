@@ -39,13 +39,10 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig> {
         }
 
         final UnsupportedConnectorOperation connEx = (UnsupportedConnectorOperation) e;
-        if ("updateRemoteIDs".equals(connEx.getMessage())) {
-            return MESSAGES.get("errors.unsupported.remoteId");
-        } else if ("saveRelations".equals(connEx.getMessage())) {
+        if ("saveRelations".equals(connEx.getMessage())) {
             return MESSAGES.get("errors.unsupported.relations");
-        } else {
-            return e.getMessage();
         }
+        return e.getMessage();
     }
 
     @Override

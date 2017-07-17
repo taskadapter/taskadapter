@@ -9,7 +9,6 @@ import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.SaveResult;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.core.RemoteIdUpdater;
 import com.taskadapter.core.TaskKeeper;
 import com.taskadapter.core.TaskLoader;
 import com.taskadapter.core.TaskSaver;
@@ -207,15 +206,7 @@ public final class UISyncConfig {
         final Iterable<FieldRow> rows = generateFieldRowsToExportRight();
         final SaveResult result = TaskSaver.save(taskKeeper, connectorInstance, destinationLocation,
                 rows, tasks, progress);
-//        try {
-//            taskKeeper.keepTasks(result.getIdToRemoteKeyMap());
-//            RemoteIdUpdater.updateRemoteIds(result.getIdToRemoteKeyMap(),
-//                    getConnector1().createConnectorInstance());
-            return new TaskExportResult(result, null);
-//        } catch (ConnectorException e) {
-//            return new TaskExportResult(result, e);
-//        }
-
+        return new TaskExportResult(result, null);
     }
 
     public TaskExportResult onlySaveTasks(List<GTask> tasks,

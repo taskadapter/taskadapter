@@ -19,12 +19,4 @@ trait NewConnector {
     * Loads one task by its key.
     */
   def loadTaskByKey(key: String, rows: java.lang.Iterable[FieldRow]): GTask
-
-  /**
-    * is called after data was exported from this connector and we got some new "remote IDs", which need to
-    * be saved in this connector
-    *
-    * @param monitor ProgressMonitor, can be NULL
-    */
-  def updateRemoteIDs(remoteIds: util.Map[Integer, String], monitor: ProgressMonitor, rows: util.List[FieldRow]): Unit
 }

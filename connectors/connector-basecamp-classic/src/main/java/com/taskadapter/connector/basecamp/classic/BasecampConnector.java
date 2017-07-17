@@ -157,11 +157,4 @@ final class BasecampConnector implements Connector<BasecampConfig> {
         }
     }
 
-    @Override
-    public void updateRemoteIDs(Map<Integer, String> remoteIds,
-            ProgressMonitor monitor, Mappings mappings)
-            throws ConnectorException {
-        throw new UnsupportedConnectorOperation("remote-ids");
-    }
-
 }

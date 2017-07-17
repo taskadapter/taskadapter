@@ -1,9 +1,5 @@
 package com.taskadapter.connector.jira;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-
 import com.google.common.base.Strings;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
@@ -17,7 +13,6 @@ import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
 import com.taskadapter.web.configeditor.CustomFieldsTablePanel;
-import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.PriorityPanel;
 import com.taskadapter.web.configeditor.ProjectPanel;
 import com.taskadapter.web.configeditor.server.ServerPanel;
@@ -27,6 +22,10 @@ import com.taskadapter.web.service.Sandbox;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.GridLayout;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 
 import static com.vaadin.server.Sizeable.Unit.PERCENTAGE;
 
@@ -41,9 +40,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
                     .getCause().toString());
         } else if (e instanceof UnsupportedOperationException) {
             final UnsupportedOperationException uop = (UnsupportedOperationException) e;
-            if ("updateRemoteIDs".equals(uop.getMessage()))
-                return MESSAGES.get("errors.unsupported.remoteId");
-            else if ("saveRelations".equals(uop.getMessage()))
+            if ("saveRelations".equals(uop.getMessage()))
                 return MESSAGES.get("errors.unsupported.relations");
         } else if (e instanceof BadURIException) {
             return MESSAGES.get("errors.badURI");

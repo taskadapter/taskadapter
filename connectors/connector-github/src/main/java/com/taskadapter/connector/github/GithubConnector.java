@@ -32,12 +32,6 @@ public class GithubConnector implements Connector<GithubConfig> {
         this.config = config;
     }
     
-    public void updateRemoteIDs(
-            Map<Integer, String> remoteIds, ProgressMonitor monitor, Mappings mappings)
-            throws UnsupportedConnectorOperation {
-        throw new UnsupportedConnectorOperation("updateRemoteIDs");
-    }
-
     @Override
     public GTask loadTaskByKey(String key, Mappings mappings) throws ConnectorException {
         IssueService issueService = new ConnectionFactory(config.getServerInfo()).getIssueService();

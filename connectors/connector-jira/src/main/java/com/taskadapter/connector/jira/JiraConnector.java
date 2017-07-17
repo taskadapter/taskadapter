@@ -44,13 +44,6 @@ public class JiraConnector implements NewConnector {
         this.config = config;
     }
 
-    @Override
-    public void updateRemoteIDs(
-            Map<Integer, String> res, ProgressMonitor monitor, List<FieldRow> rows)
-             {
-        throw new RuntimeException("not supported: updateRemoteIDs");
-    }
-
     // XXX refactor this. we don't even need the IDs!
     public List<NamedKeyedObject> getFilters() throws ConnectorException {
         return withJiraRestClient(client -> {

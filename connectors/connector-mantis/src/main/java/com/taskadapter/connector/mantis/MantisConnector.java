@@ -27,11 +27,6 @@ public class MantisConnector implements Connector<MantisConfig> {
     }
 
     @Override
-    public void updateRemoteIDs(Map<Integer, String> res, ProgressMonitor monitor, Mappings mappings) throws UnsupportedConnectorOperation {
-        throw new UnsupportedConnectorOperation("updateRemoteIDs");
-    }
-
-    @Override
     public GTask loadTaskByKey(String key, Mappings mappings) throws ConnectorException {
             MantisManager mgr = MantisManagerFactory.createMantisManager(config.getServerInfo());
 
@@ -42,8 +37,8 @@ public class MantisConnector implements Connector<MantisConfig> {
                 throw MantisUtils.convertException(e);
             }
             return MantisToGTask.convertToGenericTask(issue);
-    } 
-    
+    }
+
     @Override
     public List<GTask> loadData(Mappings mappings, ProgressMonitor monitorIGNORED) throws ConnectorException {
         try {
@@ -60,9 +55,9 @@ public class MantisConnector implements Connector<MantisConfig> {
             return convertToGenericTasks(issues);
         } catch (RemoteException e) {
             throw MantisUtils.convertException(e);
-        } 
+        }
     }
-    
+
     private List<GTask> convertToGenericTasks(List<IssueData> issues) {
         List<GTask> result = new ArrayList<>(issues.size());
         for (IssueData issue : issues) {

@@ -13,7 +13,6 @@ import com.taskadapter.connector.msp.write.RealWriter;
 import com.taskadapter.connector.msp.write.ResourceManager;
 import com.taskadapter.core.TaskKeeper;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
 import net.sf.mpxj.MPXJException;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Task;
@@ -23,7 +22,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 public class MSPConnector implements NewConnector, FileBasedConnector, DropInConnector {
     /**
@@ -37,30 +35,6 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
         this.config = config;
     }
 
-    @Override
-    public void updateRemoteIDs(Map<Integer, String> remoteKeys, ProgressMonitor monitorIGNORED, List<FieldRow> rows) {
-        // TODO TA3 remote ids in MSP
-/*
-        String inputAbsoluteFilePath = config.getInputAbsoluteFilePath();
-        try {
-            ProjectFile projectFile = new MSPFileReader().readFile(inputAbsoluteFilePath);
-            List<Task> allTasks = projectFile.getAllTasks();
-
-            for (Task mspTask : allTasks) {
-                String createdTaskKey = remoteKeys.get(mspTask.getUniqueID());
-                if (createdTaskKey != null) {
-                    setFieldIfNotNull(rows, FIELD.REMOTE_ID, mspTask, createdTaskKey);
-                }
-            }
-
-            RealWriter.writeProject(config.getOutputAbsoluteFilePath(), projectFile);
-        } catch (MPXJException e) {
-            throw new RuntimeException(MSPExceptions.convertException(e));
-        } catch (IOException e) {
-            throw new RuntimeException(MSPExceptions.convertException(e));
-        }
-*/
-    }
 /*
     private void setFieldIfNotNull(Iterable<FieldRow> rows, FIELD field, Task mspTask, String value) {
         String v = mappings.getMappedTo(field);

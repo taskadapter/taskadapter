@@ -38,9 +38,7 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig> {
         }
         if (e instanceof UnsupportedOperationException) {
             final UnsupportedOperationException uop = (UnsupportedOperationException) e;
-            if ("updateRemoteIDs".equals(uop.getMessage())) {
-                return MESSAGES.get("error.unsupported.remoteId");
-            } else if ("saveRelations".equals(uop.getMessage())) {
+            if ("saveRelations".equals(uop.getMessage())) {
                 return MESSAGES.get("error.unsupported.relations");
             }
         }

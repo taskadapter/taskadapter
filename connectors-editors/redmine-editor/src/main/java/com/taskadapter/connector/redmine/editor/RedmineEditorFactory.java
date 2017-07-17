@@ -12,7 +12,6 @@ import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
-import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.PriorityPanel;
 import com.taskadapter.web.configeditor.ProjectPanel;
 import com.taskadapter.web.configeditor.server.ServerPanelWithAPIKey;
@@ -34,10 +33,6 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
         if (e instanceof RelationCreationException) {
             return MESSAGES.format("errors.relationsUpdateFailure", e
                     .getCause().getMessage());
-        } else if (e instanceof UnsupportedOperationException) {
-            final UnsupportedOperationException uop = (UnsupportedOperationException) e;
-            if ("updateRemoteIDs".equals(uop.getMessage()))
-                return MESSAGES.get("errors.unsupported.remoteId");
         } else if (e instanceof ServerURLNotSetException) {
             return MESSAGES.get("error.serverUrlNotSet");
         } else if (e instanceof ProjectNotSetException) {

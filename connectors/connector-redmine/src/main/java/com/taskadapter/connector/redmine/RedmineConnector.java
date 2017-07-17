@@ -29,11 +29,6 @@ public class RedmineConnector implements NewConnector {
     }
     
     @Override
-    public void updateRemoteIDs(Map<Integer, String> res, ProgressMonitor monitor, List<FieldRow> rows)  {
-//        throw new UnsupportedConnectorOperation("updateRemoteIDs");
-    }
-
-    @Override
     public GTask loadTaskByKey(String key, Iterable<FieldRow> rows)  {
         try {
             WebServerInfo serverInfo = config.getServerInfo();
