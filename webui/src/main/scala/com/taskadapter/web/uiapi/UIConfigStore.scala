@@ -6,21 +6,25 @@ import com.taskadapter.config.CirceBoilerplateForConfigs._
 import com.taskadapter.config.{ConfigStorage, ConnectorSetup, StorageException, StoredExportConfig}
 import com.taskadapter.connector.NewConfigSuggester
 import com.taskadapter.connector.common.XorEncryptor
-import com.taskadapter.connector.definition.WebServerInfo
+import com.taskadapter.connector.definition.{FieldMapping, WebServerInfo}
 import com.taskadapter.core.TaskKeeper
 import io.circe.generic.auto._
 import io.circe.syntax._
+import io.circe.parser._
+import org.slf4j.{Logger, LoggerFactory}
 
 import scala.collection.JavaConverters._
 
 /**
   * UI-level config manager. Manages UIMappingConfigs instead of low-level
-  * {@link StoredConnectorConfig}. All methods of this class creates new fresh
+  * [[com.taskadapter.config.StoredConnectorConfig]]. All methods of this class creates new fresh
   * instances of UIMappingConfig. Modifications of that instances will not affect
   * other instances for a same config file. See also documentation for
-  * {@link UISyncConfig}.
+  * [[UISyncConfig]].
   */
 class UIConfigStore(taskKeeper: TaskKeeper, uiConfigService: UIConfigService, configStorage: ConfigStorage) {
+  private val logger = LoggerFactory.getLogger(classOf[ConfigStorage])
+
   val encryptor = new XorEncryptor
   val syncConfigBuilder = new UISyncConfigBuilder(taskKeeper, uiConfigService)
 
@@ -33,8 +37,38 @@ class UIConfigStore(taskKeeper: TaskKeeper, uiConfigService: UIConfigService, co
   def getUserConfigs(userLoginName: String): util.List[UISyncConfig] = {
     val storedConfigs: util.List[StoredExportConfig] = configStorage.getUserConfigs(userLoginName)
     storedConfigs.asScala
-      .map(storedConfig => syncConfigBuilder.uize(userLoginName, storedConfig))
+      .map(storedConfig => uize(userLoginName, storedConfig))
       .asJava
+  }
+
+  /**
+    * Create a new UI config instance for a stored config.
+    *
+    * @param ownerName    name of config owner.
+    * @param storedConfig stored config to create an instance for.
+    * @return new parsed config.
+    */
+  def uize(ownerName: String, storedConfig: StoredExportConfig): UISyncConfig = {
+    val label = storedConfig.getName
+    val conn1Config = storedConfig.getConnector1
+    val conn2Config = storedConfig.getConnector2
+
+    val config1 = uiConfigService.createRichConfig(conn1Config.getConnectorTypeId, conn1Config.getSerializedConfig)
+    val config2 = uiConfigService.createRichConfig(conn2Config.getConnectorTypeId, conn2Config.getSerializedConfig)
+    val jsonString = storedConfig.getMappingsString
+
+    val webServerInfo1 = loadSetup(ownerName, config1.getLabel)
+    val webServerInfo2 = loadSetup(ownerName, config2.getLabel)
+
+    config1.setWebServerInfo(webServerInfo1)
+    config2.setWebServerInfo(webServerInfo2)
+
+    val newMappings = decode[Seq[FieldMapping]](jsonString)
+    newMappings match {
+      case Left(e) => throw new RuntimeException(s"cannot parse mappings from config $storedConfig: $e")
+      case Right(m) =>
+        new UISyncConfig(taskKeeper, storedConfig.getId, ownerName, label, config1, config2, m.asJava, false)
+    }
   }
 
   /**
@@ -70,6 +104,15 @@ class UIConfigStore(taskKeeper: TaskKeeper, uiConfigService: UIConfigService, co
       ConnectorSetup(setup.getLabel, setup.getHost, setup.getUserName,
         encryptor.encrypt(setup.getPassword)
       ).asJson.spaces2)
+  }
+
+  def loadSetup(userName: String, setupLabel: String): WebServerInfo = {
+    val string = configStorage.loadConnectorSetupAsString(userName, setupLabel)
+    decode[ConnectorSetup](string) match {
+      case Left(e) => logger.error(s"Cannot parse connector setup for user $userName, setup label $setupLabel. $e")
+        null
+      case Right(setup) => new WebServerInfo(setup.label, setup.host, setup.userName, encryptor.decrypt(setup.password))
+    }
   }
 
   /**

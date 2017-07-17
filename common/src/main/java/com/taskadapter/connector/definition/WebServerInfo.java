@@ -18,10 +18,15 @@ public class WebServerInfo {
 
     private transient Encryptor encryptor = new XorEncryptor();
 
-    public WebServerInfo(String host, String userName, String password) {
+    public WebServerInfo(String label, String host, String userName, String password) {
+        this.label = label;
         this.host = host;
         this.userName = userName;
         this.password = encryptor.encrypt(password);
+    }
+
+    public WebServerInfo(String host, String userName, String password) {
+        this("", host, userName, password);
     }
 
     public WebServerInfo() {

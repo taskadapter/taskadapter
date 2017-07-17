@@ -8,7 +8,6 @@ object JiraPropertiesLoader {
 
   def createTestConfig: JiraConfig = {
     val config = new JiraConfig
-    config.setServerInfo(getTestServerInfo)
     config.setProjectKey(properties.getProperty("project.key"))
     config.setDefaultTaskType(properties.getProperty("defaultTaskType"))
     config.setDefaultIssueTypeForSubtasks(properties.getProperty("defaultSubTaskType"))

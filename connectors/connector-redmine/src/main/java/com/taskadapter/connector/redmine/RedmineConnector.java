@@ -23,17 +23,17 @@ public class RedmineConnector implements NewConnector {
     public static final String ID = "Redmine";
 
     private RedmineConfig config;
+    private WebServerInfo serverInfo;
 
-    public RedmineConnector(RedmineConfig config) {
+    public RedmineConnector(RedmineConfig config, WebServerInfo serverInfo) {
         this.config = config;
+        this.serverInfo = serverInfo;
     }
-    
+
     @Override
-    public GTask loadTaskByKey(String key, Iterable<FieldRow> rows)  {
+    public GTask loadTaskByKey(String key, Iterable<FieldRow> rows) {
         try {
-            WebServerInfo serverInfo = config.getServerInfo();
-            RedmineManager mgr = RedmineManagerFactory
-                    .createRedmineManager(serverInfo);
+            RedmineManager mgr = RedmineManagerFactory.createRedmineManager(serverInfo);
 
             Integer intKey = Integer.parseInt(key);
             Issue issue = mgr.getIssueManager().getIssueById(intKey, Include.relations);
@@ -44,11 +44,11 @@ public class RedmineConnector implements NewConnector {
             throw new RuntimeException(e);
         }
     }
-    
+
     @Override
     public List<GTask> loadData() {
         try {
-            RedmineManager mgr = RedmineManagerFactory.createRedmineManager(config.getServerInfo());
+            RedmineManager mgr = RedmineManagerFactory.createRedmineManager(serverInfo);
 
             List<Issue> issues = mgr.getIssueManager().getIssues(config.getProjectKey(), config.getQueryId(), Include.relations);
             addFullUsers(issues, mgr);
@@ -58,13 +58,13 @@ public class RedmineConnector implements NewConnector {
             throw new RuntimeException(e);
         }
     }
-    
-	private void addFullUsers(List<Issue> issues, RedmineManager mgr) throws RedmineException {
-	    final Map<Integer, User> users = new HashMap<>();
-	    for (Issue issue : issues) {
-	        issue.setAssignee(patchAssignee(issue.getAssignee(), users, mgr));
+
+    private void addFullUsers(List<Issue> issues, RedmineManager mgr) throws RedmineException {
+        final Map<Integer, User> users = new HashMap<>();
+        for (Issue issue : issues) {
+            issue.setAssignee(patchAssignee(issue.getAssignee(), users, mgr));
             issue.setAuthor(patchAssignee(issue.getAuthor(), users, mgr));
-	    }
+        }
     }
 
     private User patchAssignee(User user, Map<Integer, User> users, RedmineManager mgr) throws RedmineException {
@@ -75,28 +75,28 @@ public class RedmineConnector implements NewConnector {
         if (guess != null) {
             return guess;
         }
-        
+
         final User loaded = mgr.getUserManager().getUserById(user.getId());
         users.put(user.getId(), loaded);
-        
+
         return loaded;
     }
 
     private List<GTask> convertToGenericTasks(RedmineConfig config,
-			List<Issue> issues) {
-		List<GTask> result = new ArrayList<>(issues.size());
+                                              List<Issue> issues) {
+        List<GTask> result = new ArrayList<>(issues.size());
         RedmineToGTask converter = new RedmineToGTask(config);
-		for (Issue issue : issues) {
-			GTask task = converter.convertToGenericTask(issue);
-			result.add(task);
-		}
-		return result;
-	}
+        for (Issue issue : issues) {
+            GTask task = converter.convertToGenericTask(issue);
+            result.add(task);
+        }
+        return result;
+    }
 
     @Override
     public SaveResult saveData(TaskKeeper taskKeeper, List<GTask> tasks, ProgressMonitor monitor, java.lang.Iterable<FieldRow> fieldRows) {
         try {
-            final RedmineManager mgr = RedmineManagerFactory.createRedmineManager(config.getServerInfo());
+            final RedmineManager mgr = RedmineManagerFactory.createRedmineManager(serverInfo);
             try {
                 final Project rmProject = mgr.getProjectManager().getProjectByKey(config.getProjectKey());
                 final Map<String, Integer> priorities = loadPriorities(fieldRows, mgr);

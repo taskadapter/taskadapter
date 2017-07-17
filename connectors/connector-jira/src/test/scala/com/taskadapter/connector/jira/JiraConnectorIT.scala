@@ -92,5 +92,5 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     assertThat(loadedTask.getValue(JiraField.description)).isEqualTo("some default")
   }
 
-  private def getConnector = new JiraConnector(JiraPropertiesLoader.createTestConfig)
+  private def getConnector = new JiraConnector(JiraPropertiesLoader.createTestConfig, JiraPropertiesLoader.getTestServerInfo)
 }

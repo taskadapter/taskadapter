@@ -16,8 +16,8 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
   private val mgr = RedmineTestInitializer.mgr
   val sourceConfig = RedmineTestConfig.getRedmineTestConfig
   val targetConfig = RedmineTestConfig.getRedmineTestConfig
-  val sourceConnector = new RedmineConnector(sourceConfig)
-  val targetConnector = new RedmineConnector(targetConfig)
+  val sourceConnector = new RedmineConnector(sourceConfig, RedmineTestConfig.getRedmineServerInfo)
+  val targetConnector = new RedmineConnector(targetConfig, RedmineTestConfig.getRedmineServerInfo)
   val taskKeeper = new InMemoryTaskKeeper
   val adapter = new Adapter(taskKeeper, sourceConnector, targetConnector)
 

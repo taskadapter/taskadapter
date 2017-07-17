@@ -5,7 +5,7 @@ import java.util
 import com.google.gson.{JsonElement, JsonParseException}
 import com.taskadapter.connector.Field
 import com.taskadapter.connector.common.ConfigUtils
-import com.taskadapter.connector.definition.{Descriptor, PluginFactory}
+import com.taskadapter.connector.definition.{Descriptor, PluginFactory, WebServerInfo}
 import com.taskadapter.model.StandardField
 
 import scala.collection.immutable.Map
@@ -17,7 +17,7 @@ class RedmineFactory extends PluginFactory[RedmineConfig] {
 
   override def getSuggestedCombinations: Map[Field, StandardField] = RedmineField.getSuggestedCombinations()
 
-  override def createConnector(config: RedmineConfig) = new RedmineConnector(config)
+  override def createConnector(config: RedmineConfig, serverInfo: WebServerInfo) = new RedmineConnector(config, serverInfo)
 
   override def getDescriptor = DESCRIPTOR
 

@@ -30,7 +30,7 @@ public class IntegrationTest {
 
     @BeforeClass
     public static void oneTimeSetUp() {
-        WebServerInfo serverInfo = RedmineTestConfig.getRedmineTestConfig().getServerInfo();
+        WebServerInfo serverInfo = RedmineTestConfig.getRedmineServerInfo();
         logger.info("Running Redmine tests with: " + serverInfo);
         mgr = RedmineManagerFactory.createRedmineManager(serverInfo);
 

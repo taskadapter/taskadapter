@@ -88,12 +88,22 @@ public final class ConfigStorage {
         }
     }
 
-    public void saveConnectorSetup(String userLoginName, String label,String connectorSetup) throws StorageException {
+    public void saveConnectorSetup(String userLoginName, String setupLabel,String connectorSetup) throws StorageException {
         try {
             final File folder = getUserConfigsFolder(userLoginName);
             folder.mkdirs();
-            File newConfigFile = new File(folder, label + ".json");
+            File newConfigFile = new File(folder, setupLabel + ".json");
             Files.write(connectorSetup, newConfigFile, Charsets.UTF_8);
+        } catch (IOException e) {
+            throw new StorageException(e);
+        }
+    }
+
+    public String loadConnectorSetupAsString(String userName, String setupLabel) throws StorageException {
+        try {
+            final File folder = getUserConfigsFolder(userName);
+            File file = new File(folder, setupLabel + ".json");
+            return Files.toString(file, Charsets.UTF_8);
         } catch (IOException e) {
             throw new StorageException(e);
         }

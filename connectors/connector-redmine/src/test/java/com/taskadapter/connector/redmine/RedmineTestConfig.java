@@ -11,12 +11,15 @@ class RedmineTestConfig {
     private static final Properties properties = PropertiesUtf8Loader.load(TEST_PROPERTIES);
 
     static RedmineConfig getRedmineTestConfig() {
+        RedmineConfig redmineConfig = new RedmineConfig();
+        redmineConfig.setProjectKey(properties.getProperty("project.key"));
+        return redmineConfig;
+    }
+
+    static WebServerInfo getRedmineServerInfo() {
         WebServerInfo rmInfo = new WebServerInfo(properties.getProperty("uri"), "", "");
         rmInfo.setApiKey(properties.getProperty("apikey"));
         rmInfo.setUseAPIKeyInsteadOfLoginPassword(true);
-        RedmineConfig redmineConfig = new RedmineConfig();
-        redmineConfig.setServerInfo(rmInfo);
-        redmineConfig.setProjectKey(properties.getProperty("project.key"));
-        return redmineConfig;
+        return rmInfo;
     }
 }

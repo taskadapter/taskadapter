@@ -1,20 +1,22 @@
 package com.taskadapter.connector.jira;
 
 import com.taskadapter.connector.Priorities;
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 
 public class PrioritiesLoader {
-    private JiraConfig config;
+    private WebServerInfo webServerInfo;
 
-    public PrioritiesLoader(JiraConfig config) {
-        this.config = config;
+    public PrioritiesLoader(WebServerInfo webServerInfo) {
+
+        this.webServerInfo = webServerInfo;
     }
 
     Priorities loadJiraPriorities() throws ConnectorException {
-        if (!config.getServerInfo().isHostSet()) {
+        if (!webServerInfo.isHostSet()) {
             throw new ServerURLNotSetException();
         }
-        return JiraLoaders.loadPriorities(config.getServerInfo());
+        return JiraLoaders.loadPriorities(webServerInfo);
     }
 }

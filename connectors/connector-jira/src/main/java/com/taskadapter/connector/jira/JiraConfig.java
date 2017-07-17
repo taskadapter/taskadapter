@@ -13,13 +13,9 @@ public class JiraConfig extends ConnectorConfig {
 
     private static final Priorities DEFAULT_PRIORITIES = createDefaultPriorities();
     
-    static final String DEFAULT_LABEL = "JIRA";
-
     private static final long serialVersionUID = 1L;
     private static final String TASK_TYPE_BUG = "Bug";
     private static final String DEFAULT_SUB_TASK_TYPE = "Sub-task";
-
-    private WebServerInfo serverInfo = new WebServerInfo();
 
     // TODO this can probably be moved to the super class
     private String component = "";
@@ -43,7 +39,6 @@ public class JiraConfig extends ConnectorConfig {
 
     public JiraConfig() {
         super(DEFAULT_PRIORITIES);
-        setLabel(DEFAULT_LABEL);
         setDefaultTaskType(TASK_TYPE_BUG);
         setDefaultIssueTypeForSubtasks(DEFAULT_SUB_TASK_TYPE);
     }
@@ -130,14 +125,6 @@ public class JiraConfig extends ConnectorConfig {
         } else {
             return false;
         }
-    }
-
-    public WebServerInfo getServerInfo() {
-        return serverInfo;
-    }
-
-    public void setServerInfo(WebServerInfo serverInfo) {
-        this.serverInfo = serverInfo;
     }
 
     public Integer getQueryId() {

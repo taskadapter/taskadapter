@@ -20,10 +20,11 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   private val logger = LoggerFactory.getLogger(classOf[JiraTest])
 
   private var config = JiraPropertiesLoader.createTestConfig
-  private var client = JiraConnectionFactory.createClient(config.getServerInfo)
-  private var connector = new JiraConnector(config)
+  private val webServerInfo = JiraPropertiesLoader.getTestServerInfo
+  private var client = JiraConnectionFactory.createClient(webServerInfo)
+  private var connector = new JiraConnector(config, webServerInfo)
 
-  logger.info("Running JIRA tests using: " + config.getServerInfo.getHost)
+  logger.info("Running JIRA tests using: " + webServerInfo.getHost)
 
   it("connector does not fail empty tasks list") {
     connector.saveData(new InMemoryTaskKeeper(), List[GTask]().asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault.asJava)
@@ -34,7 +35,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   }
 
   it("assignee has full name") {
-    val userPromise = client.getUserClient.getUser(config.getServerInfo.getUserName)
+    val userPromise = client.getUserClient.getUser(webServerInfo.getUserName)
     val jiraUser = userPromise.claim
     val task = new GTask
     task.setValue(JiraField.summary, "some")

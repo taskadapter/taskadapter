@@ -18,7 +18,7 @@ trait PluginFactory[C <: ConnectorConfig] {
 
   def getSuggestedCombinations: Map[Field, StandardField]
 
-  def createConnector(config: C): NewConnector
+  def createConnector(config: C, serverInfo: WebServerInfo): NewConnector
 
   def getDescriptor: Descriptor
 

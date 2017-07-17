@@ -4,6 +4,7 @@ import com.taskadapter.connector.Field;
 import com.taskadapter.connector.NewConnector;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.PluginFactory;
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.model.StandardField;
 import com.taskadapter.web.DroppingNotSupportedException;
@@ -24,6 +25,7 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends UIConnector
     private final PluginFactory<T> connectorFactory;
     private final PluginEditorFactory<T> editorFactory;
     private final T config;
+    private WebServerInfo webServerInfo;
     private final String connectorTypeId;
 
     public UIConnectorConfigImpl(PluginFactory<T> connectorFactory,
@@ -33,6 +35,16 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends UIConnector
         this.editorFactory = editorFactory;
         this.config = config;
         this.connectorTypeId = connectorTypeId;
+    }
+
+    @Override
+    public WebServerInfo getWebServerInfo() {
+        return webServerInfo;
+    }
+
+    @Override
+    public void setWebServerInfo(WebServerInfo webServerInfo) {
+        this.webServerInfo = webServerInfo;
     }
 
     @Override
@@ -58,12 +70,12 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends UIConnector
     
     @Override
     public void validateForLoad() throws BadConfigException {
-        editorFactory.validateForLoad(config);
+        editorFactory.validateForLoad(config, webServerInfo);
     }
     
     @Override
     public void validateForSave() throws BadConfigException {
-        editorFactory.validateForSave(config);
+        editorFactory.validateForSave(config, webServerInfo);
     }
 
     @Override
@@ -74,17 +86,17 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends UIConnector
     
     @Override
     public boolean updateForSave(Sandbox sandbox) throws BadConfigException {
-        return editorFactory.updateForSave(config, sandbox);
+        return editorFactory.updateForSave(config, sandbox, webServerInfo);
     }
 
     @Override
     public NewConnector createConnectorInstance() {
-        return connectorFactory.createConnector(config);
+        return connectorFactory.createConnector(config, webServerInfo);
     }
 
     @Override
     public ComponentContainer createMiniPanel(Sandbox sandbox) {
-        return editorFactory.getMiniPanelContents(sandbox, config);
+        return editorFactory.getMiniPanelContents(sandbox, config, webServerInfo);
     }
 
     @Override
@@ -99,12 +111,12 @@ final class UIConnectorConfigImpl<T extends ConnectorConfig> extends UIConnector
 
     @Override
     public String getSourceLocation() {
-        return editorFactory.describeSourceLocation(config);
+        return editorFactory.describeSourceLocation(config, webServerInfo);
     }
 
     @Override
     public String getDestinationLocation() {
-        return editorFactory.describeDestinationLocation(config);
+        return editorFactory.describeDestinationLocation(config, webServerInfo);
     }
 
     @Override

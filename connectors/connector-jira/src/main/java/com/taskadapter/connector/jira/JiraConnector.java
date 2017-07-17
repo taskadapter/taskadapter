@@ -14,6 +14,7 @@ import com.taskadapter.connector.common.TaskSavingUtils;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.SaveResult;
 import com.taskadapter.connector.definition.SaveResultBuilder;
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
@@ -27,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class JiraConnector implements NewConnector {
     private static final Logger logger = LoggerFactory.getLogger(JiraConnector.class);
@@ -39,9 +39,11 @@ public class JiraConnector implements NewConnector {
     public static final String ID = "Atlassian Jira";
 
     private final JiraConfig config;
+    private WebServerInfo webServerInfo;
 
-    public JiraConnector(JiraConfig config) {
+    public JiraConnector(JiraConfig config,  WebServerInfo serverInfo) {
         this.config = config;
+        this.webServerInfo = serverInfo;
     }
 
     // XXX refactor this. we don't even need the IDs!
@@ -59,7 +61,6 @@ public class JiraConnector implements NewConnector {
     }
 
     public List<NamedKeyedObject> getComponents() throws ConnectorException {
-        JiraConfigValidator.validateServerURLSet(config);
         return withJiraRestClient(client -> {
             String projectKey = config.getProjectKey();
             if (projectKey == null) {
@@ -78,7 +79,6 @@ public class JiraConnector implements NewConnector {
 
     // XXX refactor this. we don't even need the IDs!
     public List<NamedKeyedObject> getVersions() throws ConnectorException {
-        JiraConfigValidator.validateServerURLSet(config);
         return withJiraRestClient(client -> {
             String projectKey = config.getProjectKey();
             if (projectKey == null) {
@@ -96,11 +96,11 @@ public class JiraConnector implements NewConnector {
     }
 
     public List<NamedKeyedObject> getAllIssueTypes() throws ConnectorException {
-        return IssueTypesLoader.getIssueTypes(config, new AllIssueTypesFilter());
+        return IssueTypesLoader.getIssueTypes(webServerInfo, new AllIssueTypesFilter());
     }
 
     public List<? extends NamedKeyedObject> getIssueTypesForSubtasks() throws ConnectorException {
-        return IssueTypesLoader.getIssueTypes(config, new SubtaskTypesFilter());
+        return IssueTypesLoader.getIssueTypes(webServerInfo, new SubtaskTypesFilter());
     }
 
     @Override
@@ -157,7 +157,7 @@ public class JiraConnector implements NewConnector {
     }
 
     private <T> T withJiraRestClient(JiraRestClientAction<T> f) {
-        try (JiraRestClient client = JiraConnectionFactory.createClient(config.getServerInfo())) {
+        try (JiraRestClient client = JiraConnectionFactory.createClient(webServerInfo)) {
             return f.apply(client);
         } catch (Exception e) {
 //            throw JiraUtils.convertException(e);

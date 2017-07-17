@@ -53,9 +53,8 @@ public class MiniPanel extends HorizontalLayout {
 
     private void configureEditServerWindow() {
         newWindow = new Window();
-        newWindow.setCaption("Edit " + config.getConnectorTypeId()
-                + " settings");
-        newWindow.setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
+        newWindow.setCaption("Configure " + config.getLabel() + "(" + config.getConnectorTypeId() + ")");
+        newWindow.addCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
         newWindow.addCloseListener((Window.CloseListener) e -> refreshLabel());
     }
 

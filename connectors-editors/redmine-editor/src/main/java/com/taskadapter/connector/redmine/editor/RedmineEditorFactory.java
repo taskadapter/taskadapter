@@ -47,23 +47,22 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(Sandbox sandbox, RedmineConfig config) {
+    public ComponentContainer getMiniPanelContents(Sandbox sandbox, RedmineConfig config, WebServerInfo webServerInfo) {
         Panel panel = new Panel("Server Info");
-        WebServerInfo serverInfo = config.getServerInfo();
         ServerPanelWithAPIKey redmineServerPanel = new ServerPanelWithAPIKey(new MethodProperty<>(config, "label"),
-                new MethodProperty<>(serverInfo, "host"),
-                new MethodProperty<>(serverInfo, "userName"),
-                new MethodProperty<>(serverInfo, "password"),
-                new MethodProperty<>(serverInfo, "apiKey"),
-                new MethodProperty<>(serverInfo, "useAPIKeyInsteadOfLoginPassword"));
+                new MethodProperty<>(webServerInfo, "host"),
+                new MethodProperty<>(webServerInfo, "userName"),
+                new MethodProperty<>(webServerInfo, "password"),
+                new MethodProperty<>(webServerInfo, "apiKey"),
+                new MethodProperty<>(webServerInfo, "useAPIKeyInsteadOfLoginPassword"));
         panel.setContent(redmineServerPanel);
 
-        ShowProjectElement showProjectElement = new ShowProjectElement(config);
-        LoadQueriesElement loadQueriesElement = new LoadQueriesElement(config);
+        ShowProjectElement showProjectElement = new ShowProjectElement(config, webServerInfo);
+        LoadQueriesElement loadQueriesElement = new LoadQueriesElement(config, webServerInfo);
         ProjectPanel projectPanel = new ProjectPanel(
                 new MethodProperty<>(config, "projectKey"),
                 new MethodProperty<>(config, "queryIdStr"),
-                Interfaces.fromMethod(DataProvider.class, RedmineLoaders.class, "getProjects", serverInfo),
+                Interfaces.fromMethod(DataProvider.class, RedmineLoaders.class, "getProjects", webServerInfo),
                 Interfaces.fromMethod(SimpleCallback.class, showProjectElement, "showProjectInfo"),
                 Interfaces.fromMethod(DataProvider.class, loadQueriesElement, "loadQueries"), this);
         GridLayout gridLayout = new GridLayout();
@@ -74,38 +73,38 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
         gridLayout.addComponent(panel);
         gridLayout.addComponent(projectPanel);
         PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(),
-                Interfaces.fromMethod(DataProvider.class, new PrioritiesLoader(config), "loadPriorities"), this);
+                Interfaces.fromMethod(DataProvider.class, new PrioritiesLoader(webServerInfo), "loadPriorities"), this);
         gridLayout.addComponent(priorityPanel);
-        gridLayout.addComponent(new OtherRedmineFieldsContainer(config, this));
+        gridLayout.addComponent(new OtherRedmineFieldsContainer(config, webServerInfo, this));
         return gridLayout;
     }
 
     @Override
-    public void validateForSave(RedmineConfig config) throws BadConfigException {
+    public void validateForSave(RedmineConfig config, WebServerInfo serverInfo) throws BadConfigException {
         if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
             throw new ProjectNotSetException();
         }
     }
 
     @Override
-    public void validateForLoad(RedmineConfig config) {
+    public void validateForLoad(RedmineConfig config,  WebServerInfo serverInfo) {
         // TODO !! Implement
     }
 
     @Override
-    public String describeSourceLocation(RedmineConfig config) {
-        return config.getServerInfo().getHost();
+    public String describeSourceLocation(RedmineConfig config,  WebServerInfo serverInfo) {
+        return serverInfo.getHost();
     }
 
     @Override
-    public String describeDestinationLocation(RedmineConfig config) {
-        return describeSourceLocation(config);
+    public String describeDestinationLocation(RedmineConfig config, WebServerInfo serverInfo) {
+        return describeSourceLocation(config, serverInfo);
     }
 
     @Override
-    public boolean updateForSave(RedmineConfig config, Sandbox sandbox)
+    public boolean updateForSave(RedmineConfig config, Sandbox sandbox,  WebServerInfo serverInfo)
             throws BadConfigException {
-        validateForSave(config);
+        validateForSave(config, serverInfo);
         return false;
     }
 

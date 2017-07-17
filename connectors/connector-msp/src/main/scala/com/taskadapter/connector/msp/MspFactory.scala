@@ -5,8 +5,9 @@ import java.util
 import com.google.gson.{JsonElement, JsonParseException}
 import com.taskadapter.connector.Field
 import com.taskadapter.connector.common.ConfigUtils
-import com.taskadapter.connector.definition.{Descriptor, PluginFactory}
+import com.taskadapter.connector.definition.{Descriptor, PluginFactory, WebServerInfo}
 import com.taskadapter.model.StandardField
+
 import scala.collection.JavaConverters._
 
 class MSPFactory extends PluginFactory[MSPConfig] {
@@ -16,7 +17,7 @@ class MSPFactory extends PluginFactory[MSPConfig] {
 
   override def getSuggestedCombinations: Map[Field, StandardField] = MspField.getSuggestedCombinations()
 
-  override def createConnector(config: MSPConfig) = new MSPConnector(config)
+  override def createConnector(config: MSPConfig, webServerInfo: WebServerInfo) = new MSPConnector(config)
 
   override def getDescriptor = DESCRIPTOR
 

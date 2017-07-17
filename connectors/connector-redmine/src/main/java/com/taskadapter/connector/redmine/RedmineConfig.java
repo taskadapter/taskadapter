@@ -24,8 +24,6 @@ public class RedmineConfig extends ConnectorConfig {
         DEFAULT_PRIORITIES.put("Immediate", 1000);
     }
 
-    private WebServerInfo serverInfo = new WebServerInfo();
-
     private String defaultTaskStatus = "New";
     private boolean findUserByName;
     private Integer queryId;
@@ -68,14 +66,6 @@ public class RedmineConfig extends ConnectorConfig {
         } else {
             return false;
         }
-    }
-
-    public WebServerInfo getServerInfo() {
-        return serverInfo;
-    }
-
-    public void setServerInfo(WebServerInfo serverInfo) {
-        this.serverInfo = serverInfo;
     }
 
     public boolean isFindUserByName() {

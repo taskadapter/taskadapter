@@ -2,6 +2,7 @@ package com.taskadapter.web.uiapi;
 
 import com.taskadapter.connector.Field;
 import com.taskadapter.connector.NewConnector;
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.model.StandardField;
 import com.taskadapter.web.DroppingNotSupportedException;
@@ -44,7 +45,11 @@ public abstract class UIConnectorConfig {
      * @return connector user-friendly label.
      */
     public abstract String getLabel();
-    
+
+    public abstract WebServerInfo getWebServerInfo();
+
+    public abstract void setWebServerInfo(WebServerInfo webServerInfo);
+
     /**
      * Workadound for stupid Vaadin.
      * @deprecated

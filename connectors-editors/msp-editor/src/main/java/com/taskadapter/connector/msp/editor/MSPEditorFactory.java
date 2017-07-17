@@ -1,6 +1,7 @@
 package com.taskadapter.connector.msp.editor;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPFileReader;
@@ -55,7 +56,7 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(Sandbox sandbox, MSPConfig config) {
+    public ComponentContainer getMiniPanelContents(Sandbox sandbox, MSPConfig config, WebServerInfo serverInfo) {
         VerticalLayout layout = new VerticalLayout();
         layout.setMargin(true);
         layout.addComponent(createDescriptionElement(config));
@@ -88,32 +89,32 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
                 config, "outputAbsoluteFilePath");
         if (sandbox.allowLocalFSAccess()) {
             return new LocalModeFilePanel(inputFilePath, outputFilePath);
-        } else {                    
+        } else {
             return createServerModePanel(sandbox, inputFilePath, outputFilePath);
         }
     }
 
     private ServerModeFilePanel createServerModePanel(final Sandbox sandbox,
-            final Property<String> inputFilePath, final Property<String> outputFilePath) {
+                                                      final Property<String> inputFilePath, final Property<String> outputFilePath) {
         final UploadProcessor proc = uploadedFile -> MSPEditorFactory.this.processFile(sandbox, uploadedFile);
         return new ServerModeFilePanel(sandbox.getUserContentDirectory(),
                 inputFilePath, outputFilePath, proc);
     }
 
     @Override
-    public void validateForSave(MSPConfig config) throws BadConfigException {
+    public void validateForSave(MSPConfig config, WebServerInfo serverInfo) throws BadConfigException {
         if (config.getOutputAbsoluteFilePath().isEmpty()) {
             throw new OutputFileNameNotSetException();
         }
     }
 
     @Override
-    public void validateForLoad(MSPConfig config) throws BadConfigException {
+    public void validateForLoad(MSPConfig config, WebServerInfo serverInfo) throws BadConfigException {
         if (config.getInputAbsoluteFilePath().isEmpty()) {
             throw new InputFileNameNotSetException();
         }
     }
-    
+
 
     @Override
     public void validateForDropInLoad(MSPConfig config)
@@ -123,12 +124,12 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
 
 
     @Override
-    public String describeSourceLocation(MSPConfig config) {
+    public String describeSourceLocation(MSPConfig config, WebServerInfo serverInfo) {
         return new File(config.getInputAbsoluteFilePath()).getName();
     }
 
     @Override
-    public String describeDestinationLocation(MSPConfig config) {
+    public String describeDestinationLocation(MSPConfig config, WebServerInfo serverInfo) {
         return new File(config.getOutputAbsoluteFilePath()).getName();
     }
 
@@ -140,37 +141,36 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
         if (!isMpp) {
             return new FileProcessingResult(uploadedFile, UPLOAD_SUCCESS);
         }
-        
+
         File f = new File(sandbox.getUserContentDirectory(), fileName);
         String newFilePath = MSPUtils.convertMppProjectFileToXml(f
                 .getAbsolutePath());
         if (newFilePath == null) {
             return new FileProcessingResult(null, SAVE_FILE_FAILED);
         }
-        
+
         return new FileProcessingResult(new File(newFilePath), UPLOAD_MPP_SUCCESS);
     }
 
     @Override
-    public boolean updateForSave(MSPConfig config, Sandbox sandbox)
+    public boolean updateForSave(MSPConfig config, Sandbox sandbox,  WebServerInfo serverInfo)
             throws BadConfigException {
         if (!config.getOutputAbsoluteFilePath().isEmpty())
             return false;
-        
-        final String newPath = createDefaultMSPFileName(sandbox
-                .getUserContentDirectory());
+
+        final String newPath = createDefaultMSPFileName(sandbox.getUserContentDirectory());
         if (newPath == null)
             throw new OutputFileNameNotSetException();
-        
+
         config.setOutputAbsoluteFilePath(newPath);
         config.setInputAbsoluteFilePath(newPath);
-        
+
         return true;
     }
 
     /**
      * Search for unused file name in user folder starting from postfix 1.
-     * 
+     *
      * @return the new file name
      */
     private String createDefaultMSPFileName(File rootFolder) {

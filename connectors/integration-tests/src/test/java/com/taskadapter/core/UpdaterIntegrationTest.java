@@ -2,39 +2,37 @@ package com.taskadapter.core;
 
 import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.NewConnector;
-import com.taskadapter.connector.common.ConnectorUtils;
-import com.taskadapter.connector.common.ProgressMonitorUtils;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.msp.MSPTaskSaver;
-import com.taskadapter.connector.msp.MspField;
-import com.taskadapter.connector.redmine.*;
+import com.taskadapter.connector.redmine.RedmineConfig;
+import com.taskadapter.connector.redmine.RedmineConnector;
+import com.taskadapter.connector.redmine.RedmineField;
+import com.taskadapter.connector.redmine.RedmineManagerFactory;
+import com.taskadapter.connector.redmine.RedmineToGTask;
 import com.taskadapter.connector.testlib.InMemoryTaskKeeper;
-import com.taskadapter.connector.testlib.TestMappingUtils;
-import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.integrationtests.RedmineTestConfig;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.redmineapi.bean.ProjectFactory;
-import net.sf.mpxj.TaskField;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class UpdaterIntegrationTest {
@@ -54,12 +52,12 @@ public class UpdaterIntegrationTest {
     private MSPConfig mspConfig;
     private NewConnector projectConnector;
     private TaskKeeper taskKeeper = new InMemoryTaskKeeper();
+    static WebServerInfo webServerInfo = RedmineTestConfig.getRedmineServerInfo();
 
     @BeforeClass
     public static void oneTimeSetUp() {
-        WebServerInfo serverInfo = RedmineTestConfig.getRedmineTestConfig().getServerInfo();
-        logger.info("Running Redmine tests with: " + serverInfo);
-        mgr = RedmineManagerFactory.createRedmineManager(serverInfo);
+        logger.info("Running Redmine tests with: " + webServerInfo);
+        mgr = RedmineManagerFactory.createRedmineManager(webServerInfo);
 
         Project project = ProjectFactory.create("integration test project",
                 "ittest" + Calendar.getInstance().getTimeInMillis());
@@ -92,7 +90,7 @@ public class UpdaterIntegrationTest {
     public void beforeEachTest() {
         redmineConfig = RedmineTestConfig.getRedmineTestConfig();
         redmineConfig.setProjectKey(projectKey);
-        redmineConnector = new RedmineConnector(redmineConfig);
+        redmineConnector = new RedmineConnector(redmineConfig, RedmineTestConfig.getRedmineServerInfo());
         mspConfig = createTempMSPConfig();
         projectConnector = new MSPConnector(mspConfig);
     }
@@ -159,8 +157,7 @@ public class UpdaterIntegrationTest {
 
     private List<GTask> createRedmineIssues(int issuesNumber) {
         List<GTask> issues = new ArrayList<>(issuesNumber);
-        WebServerInfo serverInfo = redmineConfig.getServerInfo();
-        RedmineManager mgr = RedmineManagerFactory.createRedmineManager(serverInfo);
+        RedmineManager mgr = RedmineManagerFactory.createRedmineManager(webServerInfo);
         List<Issue> issuesToCreate = generateRedmineIssues(issuesNumber);
 
         RedmineToGTask converter = new RedmineToGTask(redmineConfig);

@@ -1,5 +1,6 @@
 package com.taskadapter.connector.redmine.editor;
 
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.model.NamedKeyedObject;
@@ -24,12 +25,14 @@ public class OtherRedmineFieldsContainer extends Panel {
     private static final String SAVE_ISSUE_LABEL = "Save issue relations (follows/precedes)";
 
     private final RedmineConfig config;
+    private WebServerInfo webServerInfo;
     private final ExceptionFormatter exceptionFormatter;
     private final VerticalLayout view;
 
-    public OtherRedmineFieldsContainer(RedmineConfig config, ExceptionFormatter exceptionFormatter) {
+    public OtherRedmineFieldsContainer(RedmineConfig config, WebServerInfo webServerInfo, ExceptionFormatter exceptionFormatter) {
         super(OTHER_PANEL_CAPTION);
         this.config = config;
+        this.webServerInfo = webServerInfo;
         this.exceptionFormatter = exceptionFormatter;
         view = new VerticalLayout();
         buildUI();
@@ -61,12 +64,7 @@ public class OtherRedmineFieldsContainer extends Panel {
                 "Show list of available tracker types on the Redmine server",
                 "Select task type",
                 "List of available task types on the Redmine server",
-                new DataProvider<List<? extends NamedKeyedObject>>() {
-                    @Override
-                    public List<? extends NamedKeyedObject> loadData() throws ConnectorException {
-                        return RedmineLoaders.loadTrackers(config);
-                    }
-                },
+                () -> RedmineLoaders.loadTrackers(config, webServerInfo),
                 taskTypeProperty,
                 true, exceptionFormatter
         );

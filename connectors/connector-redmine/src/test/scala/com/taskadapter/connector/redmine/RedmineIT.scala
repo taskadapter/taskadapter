@@ -21,7 +21,7 @@ import scala.util.Random
 @RunWith(classOf[JUnitRunner])
 trait TempRedmineProject {
   val logger = LoggerFactory.getLogger(classOf[TempRedmineProject])
-  val serverInfo = RedmineTestConfig.getRedmineTestConfig.getServerInfo
+  val serverInfo = RedmineTestConfig.getRedmineServerInfo
   logger.info("Running Redmine tests with: " + serverInfo)
 
   val junitTestProject = ProjectFactory.create("TA Redmine Integration test project", "test" + Calendar.getInstance.getTimeInMillis)
@@ -397,5 +397,5 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
 
   private def getConnector(): RedmineConnector = getConnector(getTestConfig)
 
-  private def getConnector(config: RedmineConfig) = new RedmineConnector(config)
+  private def getConnector(config: RedmineConfig) = new RedmineConnector(config, RedmineTestConfig.getRedmineServerInfo)
 }

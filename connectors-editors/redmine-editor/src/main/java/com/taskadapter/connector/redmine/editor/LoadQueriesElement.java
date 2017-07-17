@@ -1,5 +1,6 @@
 package com.taskadapter.connector.redmine.editor;
 
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.model.NamedKeyedObject;
@@ -11,14 +12,16 @@ import java.util.List;
 public class LoadQueriesElement {
 
     private RedmineConfig config;
+    private WebServerInfo webServerInfo;
 
-    public LoadQueriesElement(RedmineConfig config) {
+    public LoadQueriesElement(RedmineConfig config, WebServerInfo webServerInfo) {
         this.config = config;
+        this.webServerInfo = webServerInfo;
     }
 
     List<? extends NamedKeyedObject> loadQueries() throws BadConfigException {
         try {
-            return RedmineLoaders.loadData(config.getServerInfo(), config.getProjectKey());
+            return RedmineLoaders.loadData(webServerInfo, config.getProjectKey());
         } catch (NotFoundException e) {
             Notification.show("Can't load Saved Queries", "The server did not return any saved queries.\n" +
                     "NOTE: This operation is only supported by Redmine 1.3.0+", Notification.Type.HUMANIZED_MESSAGE);

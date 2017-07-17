@@ -1,21 +1,22 @@
 package com.taskadapter.connector.redmine.editor;
 
 import com.taskadapter.connector.Priorities;
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
-import com.taskadapter.connector.redmine.RedmineConfig;
 
 public class PrioritiesLoader {
-    private RedmineConfig config;
 
-    public PrioritiesLoader(RedmineConfig config) {
-        this.config = config;
+    private WebServerInfo webServerInfo;
+
+    public PrioritiesLoader(WebServerInfo webServerInfo) {
+        this.webServerInfo = webServerInfo;
     }
 
-    Priorities loadPriorities() throws ConnectorException {
-        if (!config.getServerInfo().isHostSet()) {
+    Priorities loadPriorities(WebServerInfo webServerInfo) throws ConnectorException {
+        if (!webServerInfo.isHostSet()) {
             throw new ServerURLNotSetException();
         }
-        return RedmineLoaders.loadPriorities(config.getServerInfo());
+        return RedmineLoaders.loadPriorities(webServerInfo);
     }
 }

@@ -23,13 +23,13 @@ public class JiraEditorFactoryTest {
     @Test
     public void miniPanelIsCreated() {
         JiraEditorFactory factory = new JiraEditorFactory();
-        factory.getMiniPanelContents(new Sandbox(false, tempFolder.getRoot()), new JiraConfig());
+        factory.getMiniPanelContents(new Sandbox(false, tempFolder.getRoot()), new JiraConfig(), new WebServerInfo());
     }
 
     @Test
     public void serverURLIsRequiredForSave() throws BadConfigException {
         try {
-            new JiraEditorFactory().validateForSave(new JiraConfig());
+            new JiraEditorFactory().validateForSave(new JiraConfig(), new WebServerInfo());
             Assert.fail();
         } catch (JiraConfigException e) {
             Assert.assertTrue(e.getErrors().contains(JiraValidationErrorKind.HOST_NOT_SET));
@@ -39,9 +39,8 @@ public class JiraEditorFactoryTest {
     @Test
     public void projectKeyIsRequiredForSave() throws BadConfigException {
         try {
-            JiraConfig config = new JiraConfig();
-            config.setServerInfo(new WebServerInfo("http://somehost", "", ""));
-            new JiraEditorFactory().validateForSave(config);
+            new JiraEditorFactory().validateForSave(new JiraConfig(),
+                            new WebServerInfo("http://somehost", "", ""));
         } catch (JiraConfigException e) {
             Assert.assertTrue(e.getErrors().contains(
                     JiraValidationErrorKind.PROJECT_NOT_SET));
@@ -52,11 +51,10 @@ public class JiraEditorFactoryTest {
     public void subtasksTypeIsRequiredForSave() throws BadConfigException {
         try {
             JiraConfig config = new JiraConfig();
-            config.setServerInfo(new WebServerInfo("http://somehost", "", ""));
             config.setProjectKey("someproject");
             // clear the value
             config.setDefaultIssueTypeForSubtasks("");
-            new JiraEditorFactory().validateForSave(config);
+            new JiraEditorFactory().validateForSave(config, new WebServerInfo("http://somehost", "", ""));
             Assert.fail();
         } catch (JiraConfigException e) {
             Assert.assertTrue(e.getErrors().contains(JiraValidationErrorKind.DEFAULT_SUBTASK_TYPE_NOT_SET));

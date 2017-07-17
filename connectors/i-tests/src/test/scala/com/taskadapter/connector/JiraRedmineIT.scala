@@ -20,8 +20,8 @@ class JiraRedmineIT extends FunSpec with Matchers with BeforeAndAfter with Befor
   private val mgr = RedmineTestInitializer.mgr
   val sourceConfig = RedmineTestConfig.getRedmineTestConfig
   val targetConfig = JiraPropertiesLoader.createTestConfig
-  val sourceConnector = new RedmineConnector(sourceConfig)
-  val targetConnector = new JiraConnector(targetConfig)
+  val sourceConnector = new RedmineConnector(sourceConfig, RedmineTestConfig.getRedmineServerInfo)
+  val targetConnector = new JiraConnector(targetConfig, JiraPropertiesLoader.getTestServerInfo)
   val taskKeeper = new InMemoryTaskKeeper
   val adapter = new Adapter(taskKeeper, sourceConnector, targetConnector)
 

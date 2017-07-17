@@ -1,5 +1,6 @@
 package com.taskadapter.connector.jira;
 
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
@@ -11,25 +12,24 @@ import static com.taskadapter.web.ui.MessageUtils.nvl;
 // TODO unify with the same class in Redmine editor module?
 public class ShowProjectElement {
     private JiraConfig jiraConfig;
+    private WebServerInfo webServerInfo;
 
-    public ShowProjectElement(JiraConfig jiraConfig) {
+    public ShowProjectElement(JiraConfig jiraConfig, WebServerInfo webServerInfo) {
         this.jiraConfig = jiraConfig;
+        this.webServerInfo = webServerInfo;
     }
 
     /**
      * Load and show the project info.
-     *
-     * @throws com.taskadapter.connector.definition.exceptions.ConnectorException
      */
     void loadProjectInfo() throws ConnectorException {
-        if (!jiraConfig.getServerInfo().isHostSet()) {
+        if (!webServerInfo.isHostSet()) {
             throw new ServerURLNotSetException();
         }
         if (jiraConfig.getProjectKey() == null || jiraConfig.getProjectKey().isEmpty()) {
             throw new ProjectNotSetException();
         }
-        GProject project = JiraLoaders.loadProject(
-                jiraConfig.getServerInfo(), jiraConfig.getProjectKey());
+        GProject project = JiraLoaders.loadProject(webServerInfo, jiraConfig.getProjectKey());
         showProjectInfo(project);
     }
 

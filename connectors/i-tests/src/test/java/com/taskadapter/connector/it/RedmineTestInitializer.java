@@ -13,7 +13,7 @@ import java.util.Calendar;
 public class RedmineTestInitializer {
     private static final Logger logger = LoggerFactory.getLogger(RedmineTestInitializer.class);
 
-    private static WebServerInfo serverInfo = RedmineTestConfig.getRedmineTestConfig().getServerInfo();
+    private static WebServerInfo serverInfo = RedmineTestConfig.getRedmineServerInfo();
     public static RedmineManager mgr = RedmineManagerFactory.createRedmineManager(serverInfo);
 
     public static Project createProject() {

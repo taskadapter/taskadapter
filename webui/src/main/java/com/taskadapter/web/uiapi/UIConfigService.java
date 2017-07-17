@@ -4,6 +4,7 @@ import com.google.gson.JsonParser;
 import com.taskadapter.PluginManager;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.PluginFactory;
+import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.webui.service.EditorManager;
 
@@ -36,8 +37,7 @@ public final class UIConfigService {
                     "' is unknown. Are you using Task Adapter with very old config files?");
         }
         final PluginEditorFactory<T> editorFactory = editorManager.getEditorFactory(connectorTypeId);
-        final T config = connectorFactory.readConfig(new JsonParser()
-                .parse(serializedConfig));
+        final T config = connectorFactory.readConfig(new JsonParser().parse(serializedConfig));
         return new UIConnectorConfigImpl<>(connectorFactory, editorFactory,
                 config, connectorTypeId);
     }

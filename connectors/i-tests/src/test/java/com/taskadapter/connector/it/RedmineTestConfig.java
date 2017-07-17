@@ -31,11 +31,13 @@ public class RedmineTestConfig {
     }
 
     public static RedmineConfig getRedmineTestConfig() {
+        return new RedmineConfig();
+    }
+
+    public static WebServerInfo getRedmineServerInfo() {
         WebServerInfo rmInfo = new WebServerInfo(properties.getProperty("uri"), "", "");
         rmInfo.setApiKey(properties.getProperty("apikey"));
         rmInfo.setUseAPIKeyInsteadOfLoginPassword(true);
-        RedmineConfig redmineConfig = new RedmineConfig();
-        redmineConfig.setServerInfo(rmInfo);
-        return redmineConfig;
+        return rmInfo;
     }
 }
