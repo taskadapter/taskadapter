@@ -102,7 +102,8 @@ class UIConfigStore(taskKeeper: TaskKeeper, uiConfigService: UIConfigService, co
     configStorage.saveConnectorSetup(userName,
       setup.getLabel,
       ConnectorSetup(setup.getLabel, setup.getHost, setup.getUserName,
-        encryptor.encrypt(setup.getPassword)
+        encryptor.encrypt(setup.getPassword),
+        encryptor.encrypt(setup.getApiKey)
       ).asJson.spaces2)
   }
 
@@ -111,7 +112,9 @@ class UIConfigStore(taskKeeper: TaskKeeper, uiConfigService: UIConfigService, co
     decode[ConnectorSetup](string) match {
       case Left(e) => logger.error(s"Cannot parse connector setup for user $userName, setup label $setupLabel. $e")
         null
-      case Right(setup) => new WebServerInfo(setup.label, setup.host, setup.userName, encryptor.decrypt(setup.password))
+      case Right(setup) => new WebServerInfo(setup.label, setup.host, setup.userName,
+        encryptor.decrypt(setup.password),
+        encryptor.decrypt(setup.apiKey))
     }
   }
 
