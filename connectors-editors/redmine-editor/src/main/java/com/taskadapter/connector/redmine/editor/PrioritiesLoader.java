@@ -13,7 +13,7 @@ public class PrioritiesLoader {
         this.webServerInfo = webServerInfo;
     }
 
-    Priorities loadPriorities(WebServerInfo webServerInfo) throws ConnectorException {
+    Priorities loadPriorities() throws ConnectorException {
         if (!webServerInfo.isHostSet()) {
             throw new ServerURLNotSetException();
         }
