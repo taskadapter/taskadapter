@@ -20,30 +20,19 @@ public class JiraProjectConverter {
     }
 
     public GProject toGProject(BasicProject jiraProject) {
-        GProject gProject = new GProject();
-        gProject.setKey(jiraProject.getKey());
-        gProject.setName(jiraProject.getName());
-        //gProject.setDescription(jiraProject.getDescription());
-        //gProject.setHomepage(jiraProject.get().toString());
-        // we know that getId returns a string, which in fact holds an integer,
-        // so conversion to Integer is OK here.
-        //gProject.setId(Integer.valueOf(jiraProject.getId()));
-        return gProject;
+        return new GProject(jiraProject.getId().intValue(), jiraProject.getName(), jiraProject.getKey(),
+                "", "");
     }
 
     public GProject toGProject(Project jiraProject) {
-        GProject gProject = new GProject();
-        gProject.setKey(jiraProject.getKey());
-        gProject.setName(jiraProject.getName());
-        gProject.setDescription(jiraProject.getDescription());
-        final URI projectURI = jiraProject.getUri();
+        URI projectURI = jiraProject.getUri();
+        String uri = "";
         if (projectURI != null) {
-            gProject.setHomepage(projectURI.toString());
+            uri = projectURI.toString();
         }
-        // we know that getId returns a string, which in fact holds an integer,
-        // so conversion to Integer is OK here.
-        //gProject.setId(Integer.valueOf(jiraProject.getId()));
-        return gProject;
+        return new GProject(jiraProject.getId().intValue(), jiraProject.getName(), jiraProject.getKey(),
+                jiraProject.getDescription(),
+                uri);
     }
 
 }

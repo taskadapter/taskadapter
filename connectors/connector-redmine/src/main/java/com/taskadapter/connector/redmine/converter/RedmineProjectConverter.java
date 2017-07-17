@@ -18,13 +18,10 @@ public class RedmineProjectConverter {
     }
 
     public GProject convertToGProject(Project rmProject) {
-
-        GProject project = new GProject();
-        project.setName(rmProject.getName());
-        project.setId(rmProject.getId());
-        project.setKey(rmProject.getIdentifier());
-        project.setDescription(rmProject.getDescription());
-        project.setHomepage(rmProject.getHomepage());
-        return project;
+        return new GProject(rmProject.getId(),
+                rmProject.getName(),
+                rmProject.getIdentifier(),
+                rmProject.getDescription(),
+                rmProject.getHomepage());
     }
 }
