@@ -11,7 +11,7 @@ import com.taskadapter.core.TaskKeeper
 import io.circe.generic.auto._
 import io.circe.syntax._
 import io.circe.parser._
-import org.slf4j.{Logger, LoggerFactory}
+import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
 
@@ -26,7 +26,6 @@ class UIConfigStore(taskKeeper: TaskKeeper, uiConfigService: UIConfigService, co
   private val logger = LoggerFactory.getLogger(classOf[ConfigStorage])
 
   val encryptor = new XorEncryptor
-  val syncConfigBuilder = new UISyncConfigBuilder(taskKeeper, uiConfigService)
 
   /**
     * Lists all user-created configs.

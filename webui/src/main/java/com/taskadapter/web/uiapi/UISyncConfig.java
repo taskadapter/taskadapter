@@ -68,7 +68,7 @@ public final class UISyncConfig {
     private final UIConnectorConfig connector2;
 
     /**
-     * Field mappings. Left side is connector1, right size is connector2.
+     * Field mappings. Left side is connector1, right side is connector2.
      */
     private final List<FieldMapping> fieldMappings;
 
