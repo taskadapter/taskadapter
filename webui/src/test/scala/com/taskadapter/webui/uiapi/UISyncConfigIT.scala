@@ -25,6 +25,7 @@ class UISyncConfigIT extends FunSpec with Matchers {
   // TODO maybe use temporary projects in Redmine and JIRA?
   var tempFolder = new TemporaryFolder()
   tempFolder.create()
+  ConfigFolderTestConfigurer.configure(tempFolder.getRoot)
 
   /*  private var config = ConfigLoader.loadConfig("Redmine_Microsoft-Project_3.ta_conf")
     private var toRedmineConfig = config.reverse
@@ -56,7 +57,7 @@ class UISyncConfigIT extends FunSpec with Matchers {
     }
   */
   it("tasksCanBeLoadedFromJiraAndSavedToRedmine") {
-    val config = ConfigLoader.loadConfig(new InMemoryTaskKeeper, "Atlassian-JIRA_Redmine.ta_conf")
+    val config = ConfigLoader.loadConfig(tempFolder.getRoot, new InMemoryTaskKeeper, "Atlassian-JIRA_Redmine.ta_conf")
     val loadedTasks = config.loadTasks(100)
     assertThat(loadedTasks.size).isGreaterThan(0)
     val taskExportResult = config.saveTasks(loadedTasks, ProgressMonitorUtils.DUMMY_MONITOR)
@@ -67,7 +68,7 @@ class UISyncConfigIT extends FunSpec with Matchers {
 
   it("empty description field name on right side is ignored if selected=false") {
     val taskKeeper = new InMemoryTaskKeeper
-    val config = ConfigLoader.loadConfig(taskKeeper, "JIRA_Redmine_empty_description_on_right_side.ta_conf")
+    val config = ConfigLoader.loadConfig(tempFolder.getRoot, taskKeeper, "JIRA_Redmine_empty_description_on_right_side.ta_conf")
     val loadedTasks = config.loadTasks(100)
     assertThat(loadedTasks.size).isGreaterThan(0)
     val taskExportResult = config.saveTasks(loadedTasks, ProgressMonitorUtils.DUMMY_MONITOR)
@@ -77,7 +78,7 @@ class UISyncConfigIT extends FunSpec with Matchers {
   }
 
   it("fake JIRA task is created, then updated in Redmine") {
-    val config = ConfigLoader.loadConfig(new InMemoryTaskKeeper, "Atlassian-JIRA_Redmine.ta_conf")
+    val config = ConfigLoader.loadConfig(tempFolder.getRoot, new InMemoryTaskKeeper, "Atlassian-JIRA_Redmine.ta_conf")
     val jiraTask = new GTask
     jiraTask.setId(1l)
     jiraTask.setKey("TEST-66")

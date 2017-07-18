@@ -1,3 +1,8 @@
 package com.taskadapter.config
 
-case class ConnectorSetup(label: String, host: String, userName: String, password: String, apiKey: String)
+case class ConnectorSetup(label: String,
+                          host: String,
+                          userName: String,
+                          password: String,
+                          useApiKey: Boolean,
+                          apiKey: String)

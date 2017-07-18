@@ -103,6 +103,7 @@ class UIConfigStore(taskKeeper: TaskKeeper, uiConfigService: UIConfigService, co
       setup.getLabel,
       ConnectorSetup(setup.getLabel, setup.getHost, setup.getUserName,
         encryptor.encrypt(setup.getPassword),
+        setup.isUseAPIKeyInsteadOfLoginPassword,
         encryptor.encrypt(setup.getApiKey)
       ).asJson.spaces2)
   }
@@ -114,6 +115,7 @@ class UIConfigStore(taskKeeper: TaskKeeper, uiConfigService: UIConfigService, co
         null
       case Right(setup) => new WebServerInfo(setup.label, setup.host, setup.userName,
         encryptor.decrypt(setup.password),
+        setup.useApiKey,
         encryptor.decrypt(setup.apiKey))
     }
   }

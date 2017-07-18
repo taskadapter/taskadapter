@@ -1,8 +1,6 @@
 package com.taskadapter.connector.definition;
 
 import com.google.common.base.Strings;
-import com.taskadapter.connector.common.Encryptor;
-import com.taskadapter.connector.common.XorEncryptor;
 
 public class WebServerInfo {
 
@@ -16,18 +14,18 @@ public class WebServerInfo {
     private boolean useAPIKeyInsteadOfLoginPassword = false;
     private String apiKey = "";
 
-    private transient Encryptor encryptor = new XorEncryptor();
-
-    public WebServerInfo(String label, String host, String userName, String password, String apiKey) {
+    public WebServerInfo(String label, String host, String userName, String password,
+                         Boolean useAPIKeyInsteadOfLoginPassword, String apiKey) {
         this.label = label;
         this.host = host;
         this.userName = userName;
-        this.password = encryptor.encrypt(password);
-        this.apiKey = encryptor.encrypt(apiKey);
+        this.password = password;
+        this.useAPIKeyInsteadOfLoginPassword = useAPIKeyInsteadOfLoginPassword;
+        this.apiKey = apiKey;
     }
 
     public WebServerInfo(String host, String userName, String password) {
-        this("", host, userName, password, "");
+        this("", host, userName, password, false, "");
     }
 
     public WebServerInfo() {
@@ -66,11 +64,11 @@ public class WebServerInfo {
     }
 
     public String getPassword() {
-        return encryptor.decrypt(password);
+        return password;
     }
 
     public void setPassword(String newPassword) {
-        this.password = encryptor.encrypt(newPassword);
+        this.password = newPassword;
     }
 
     public boolean isUseAPIKeyInsteadOfLoginPassword() {
