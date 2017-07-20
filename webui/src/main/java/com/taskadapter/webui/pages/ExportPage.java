@@ -9,7 +9,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-import com.taskadapter.connector.definition.ExportDirection;
+import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -210,8 +210,12 @@ public final class ExportPage {
 
         donePanel.addComponent(label);
 
+        String sourceLocation = config.getConnector1().getSourceLocation();
+        String targetLocation = config.getConnector2().getSourceLocation();
         donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
-                message("export.from"), config.getConnector1().getSourceLocation()));
+                message("export.from"), sourceLocation));
+        donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
+                message("export.to"), targetLocation));
 
         final String resultFile = res.saveResult.getTargetFileAbsolutePath();
         if (resultFile != null && !showFilePath) {
@@ -226,7 +230,7 @@ public final class ExportPage {
                 String.valueOf(res.saveResult.getUpdatedTasksNumber())
                         + "<br/><br/>"));
 
-        if (resultFile != null && showFilePath) {
+        if (!Strings.isNullOrEmpty(resultFile) && showFilePath) {
             final Label flabel = new Label(Page.message("export.pathToExportFile", resultFile));
             flabel.setContentMode(ContentMode.HTML);
             donePanel.addComponent(flabel);
