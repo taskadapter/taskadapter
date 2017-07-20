@@ -89,13 +89,7 @@ public final class ExportPage {
 
         content = new VerticalLayout();
         ui.addComponent(content);
-
-        final String welcome = Page.message("export.willLoadDataFrom",
-                config.getConnector1().getSourceLocation(),
-                config.getConnector1().getLabel());
-
-        setContent(SyncActionComponents.renderDownloadWelcome(welcome,
-                this::startLoading, onDone));
+        startLoading();
     }
 
     /**

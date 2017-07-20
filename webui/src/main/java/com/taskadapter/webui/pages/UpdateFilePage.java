@@ -8,7 +8,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
@@ -69,16 +68,9 @@ public final class UpdateFilePage {
 
         content = new VerticalLayout();
         ui.addComponent(content);
-
-        final String welcome = message("updatePage.initialText", config.getConnector2().getDestinationLocation());
-
-        setContent(SyncActionComponents.renderDownloadWelcome(welcome,
-                this::startLoading, onDone));
+        startLoading();
     }
 
-    /**
-     * Starts data loading.
-     */
     private void startLoading() {
         setContent(SyncActionComponents.renderLoadIndicator(config
                 .getConnector1()));

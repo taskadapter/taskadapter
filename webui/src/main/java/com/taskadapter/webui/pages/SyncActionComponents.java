@@ -6,7 +6,6 @@ import com.taskadapter.connector.definition.TaskError;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.webui.Page;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.HorizontalLayout;
@@ -130,49 +129,4 @@ public final class SyncActionComponents {
         res.addComponent(loadProgress);
         return res;
     }
-
-    /**
-     * Renders a welcoming message before reading/downloading message.
-     * 
-     * @param htmlMessage
-     *            html-formatted string with the message.
-     * @param onAccepted
-     *            action to perform when user accepts an operation.
-     * @param onCancel
-     *            action to perform when user cancels the operation.
-     * @return download welcome message.
-     */
-    public static Component renderDownloadWelcome(String htmlMessage,
-            final Runnable onAccepted, final Runnable onCancel) {
-        final VerticalLayout res = new VerticalLayout();
-
-        final Label label = new Label(htmlMessage);
-        label.setWidth(800, PIXELS);
-        label.setContentMode(ContentMode.HTML);
-        res.addComponent(label);
-
-        final HorizontalLayout buttonsLayout = new HorizontalLayout();
-        final Button goButton = new Button(Page.message("button.go"));
-        goButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                onAccepted.run();
-            }
-        });
-        buttonsLayout.addComponent(goButton);
-
-        final Button backButton = new Button(Page.message("button.cancel"));
-        backButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                onCancel.run();
-            }
-        });
-        buttonsLayout.addComponent(backButton);
-
-        res.addComponent(buttonsLayout);
-
-        return res;
-    }
-
 }
