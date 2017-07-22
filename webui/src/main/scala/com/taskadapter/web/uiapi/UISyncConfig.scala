@@ -9,7 +9,7 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.connector.definition.{ExportDirection, FieldMapping, ProgressMonitor, SaveResult}
 import com.taskadapter.core._
 import com.taskadapter.model.GTask
-
+import scala.collection.JavaConverters._
 
 /**
   * UI model for a mapping config. All fields with complex mutable values are
@@ -124,12 +124,24 @@ final class UISyncConfig(configRootFolder: File, taskKeeper: TaskKeeper,
 
   /**
     * Loads tasks from connector1. This is invoked directly from UI layer when user clicks "Go" to load tasks.
+    * This method also decorates loaded tasks with "remote Ids" for known tasks (as defined by "tasks cache")
     *
-    * @param taskLimit number of tasks to load.
+    * @param taskLimit max number of tasks to load.
     * @return loaded tasks.
     */
   @throws[ConnectorException]
-  def loadTasks(taskLimit: Int): util.List[GTask] = TaskLoader.loadTasks(taskLimit, getConnector1.createConnectorInstance, getConnector1.getLabel, ProgressMonitorUtils.DUMMY_MONITOR)
+  def loadTasks(taskLimit: Int): util.List[GTask] = {
+    val loadedTasks = TaskLoader.loadTasks(taskLimit, getConnector1.createConnectorInstance, getConnector1.getLabel, ProgressMonitorUtils.DUMMY_MONITOR)
+    val map = loadPreviouslyCreatedTasks()
+    loadedTasks.asScala.foreach(t => t.setRemoteId(map.getOrElse(t.getKey, "")+""))
+    loadedTasks
+  }
+
+  private def loadPreviouslyCreatedTasks(): Map[String, Long] = {
+    val location1 = getConnector1.getSourceLocation
+    val location2 = getConnector2.getSourceLocation
+    TaskKeeperLocationStorage.loadTasks(configRootFolder, location1, location2)
+  }
 
   @throws[ConnectorException]
   def loadDropInTasks(tempFile: File, taskLimit: Int): util.List[GTask] = { // TODO TA3 drag-n-drop
