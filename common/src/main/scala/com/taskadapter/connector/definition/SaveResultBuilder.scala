@@ -14,7 +14,7 @@ class SaveResultBuilder {
   private var createdTasksNumber = 0
 
   // maps original task Key --> new task info when new tasks are created
-  private val idToRemoteKeyMap = new scala.collection.mutable.ListBuffer[(Long, TaskId)]
+  private val idToRemoteKeyMap = new scala.collection.mutable.ListBuffer[(String, TaskId)]
   private val generalErrors = new scala.collection.mutable.ListBuffer[Throwable]
   private val taskErrors = new scala.collection.mutable.ListBuffer[TaskError[Throwable]]
 
@@ -22,17 +22,17 @@ class SaveResultBuilder {
     this.targetFileAbsolutePath = targetFileAbsolutePath
   }
 
-  def addCreatedTask(originalId: Long, newKey: TaskId): Unit = {
-    idToRemoteKeyMap += ((originalId, newKey))
+  def addCreatedTask(original: String, newKey: TaskId): Unit = {
+    idToRemoteKeyMap += ((original, newKey))
     createdTasksNumber += 1
   }
 
-  def addUpdatedTask(originalId: Long, newId: TaskId): Unit = {
-    idToRemoteKeyMap += ((originalId, newId))
+  def addUpdatedTask(original: String, newId: TaskId): Unit = {
+    idToRemoteKeyMap += ((original, newId))
     updatedTasksNumber += 1
   }
 
-  def getRemoteKey(originalId: Long): TaskId = idToRemoteKeyMap.find(long => long._1 == originalId).map(e => e._2).orNull
+  def getRemoteKey(original: String): TaskId = idToRemoteKeyMap.find(long => long._1 == original).map(e => e._2).orNull
 
   def addGeneralError(e: Throwable): Unit = {
     generalErrors += e

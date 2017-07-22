@@ -8,7 +8,7 @@ import io.circe.parser._
 import io.circe.syntax._
 
 trait TaskKeeper {
-  def keepTask(sourceKey: String, targetKey: Long): Unit
+  def keepTask(sourceKey: String, targetId: Long): Unit
 
   def loadTasks(): Map[String, Long]
   def store(): Unit

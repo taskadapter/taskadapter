@@ -19,11 +19,11 @@ public final class RelationUtils {
     private static void aggregateRelations(List<GRelation> res,
             List<GTask> tasks, SaveResultBuilder localToRemote) {
         for (GTask task : tasks) {
-            TaskId newSourceTaskKey = localToRemote.getRemoteKey(task.getId());
+            TaskId newSourceTaskKey = localToRemote.getRemoteKey(task.getKey());
             for (GRelation oldRelation : task.getRelations()) {
                 // TODO get rid of the conversion, it won't work with Jira: String Keys like "TEST-12"
                 TaskId relatedTaskId = oldRelation.relatedTaskId();
-                TaskId newRelatedKey = localToRemote.getRemoteKey(relatedTaskId.id());
+                TaskId newRelatedKey = localToRemote.getRemoteKey(relatedTaskId.key());
                 // #25443 Export from MSP fails when newRelatedKey is null
                 // (which is a valid case in MSP)
                 if (newSourceTaskKey != null && newRelatedKey != null) {

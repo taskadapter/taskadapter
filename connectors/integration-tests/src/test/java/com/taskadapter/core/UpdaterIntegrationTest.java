@@ -128,7 +128,7 @@ public class UpdaterIntegrationTest {
         new MSPTaskSaver(mspConfig, rows).saveData(rmIssues);
     }
 
-    private void modifyRedmineData(List<FieldRow> rows) throws ConnectorException {
+/*    private void modifyRedmineData(List<FieldRow> rows) throws ConnectorException {
         Random r = new Random();
         for (GTask task : rmIssues) {
             String updatedSummary = "updated" + r.nextInt();
@@ -140,7 +140,7 @@ public class UpdaterIntegrationTest {
             task.setValue(RedmineField.estimatedTime(), oldGoodTime + 5);
         }
         redmineConnector.saveData(taskKeeper, rmIssues, null, rows);
-    }
+    }*/
 
 /*
     private void verifyMSPData() throws Exception {

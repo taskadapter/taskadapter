@@ -80,7 +80,7 @@ public final class SessionController {
         File userHomeFolder = new File(services.rootDir, login);
         final ConfigOperations configOps = new ConfigOperations(login, ops,
                 credentialsManager,
-                createStore(services.rootDir, userHomeFolder),
+                createStore(services.rootDir),
                 new File(userHomeFolder, "files"));
         final UserContext ctx = new UserContext(login, selfManagement, ops,
                 configOps);
@@ -90,9 +90,9 @@ public final class SessionController {
                 this::doLogout));
     }
 
-    private UIConfigStore createStore(File rootFolder, File userHomeFolder) {
+    private UIConfigStore createStore(File rootFolder) {
         final ConfigStorage configStorage = new ConfigStorage(rootFolder);
-        TaskKeeper taskKeeper = new FileTaskKeeper(userHomeFolder);
+        TaskKeeper taskKeeper = new FileTaskKeeper(rootFolder);
         return new UIConfigStore(
                 taskKeeper,
                 new UIConfigService(services.pluginManager, services.editorManager), configStorage);

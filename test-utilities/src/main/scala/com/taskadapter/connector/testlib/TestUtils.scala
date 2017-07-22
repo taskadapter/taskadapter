@@ -65,19 +65,19 @@ object TestUtils {
 
   @throws[ConnectorException]
   def saveAndLoadAll(connector: NewConnector, task: GTask, rows: List[FieldRow]): List[GTask] = {
-    connector.saveData(new InMemoryTaskKeeper, List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)
+    connector.saveData(Map[String,Long](), List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)
     ConnectorUtils.loadDataOrderedById(connector).asScala.toList
   }
 
   @throws[ConnectorException]
   def saveAndLoadList(connector: NewConnector, tasks: List[GTask], rows: List[FieldRow]): List[GTask] = {
-    connector.saveData(new InMemoryTaskKeeper, tasks.asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)
+    connector.saveData(Map[String,Long](), tasks.asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)
     ConnectorUtils.loadDataOrderedById(connector).asScala.toList
   }
 
   @throws[ConnectorException]
   def saveAndLoad(connector: NewConnector, task: GTask, rows: util.List[FieldRow]): GTask = {
-    val result = connector.saveData(new InMemoryTaskKeeper, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows)
+    val result = connector.saveData(Map[String,Long](), util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows)
     val remoteKeys = result.getRemoteKeys
     val remoteKey = remoteKeys.iterator.next.key
     connector.loadTaskByKey(remoteKey, rows)
@@ -104,7 +104,7 @@ object TestUtils {
 
   @throws[ConnectorException]
   def save(connector: NewConnector, task: GTask, rows: List[FieldRow]): String = {
-    val result = connector.saveData(new InMemoryTaskKeeper, List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)
+    val result = connector.saveData(Map[String,Long](), List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)
     val remoteKeys = result.getRemoteKeys
     remoteKeys.iterator.next.key
   }

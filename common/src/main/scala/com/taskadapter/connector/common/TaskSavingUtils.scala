@@ -6,7 +6,6 @@ import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.data.ConnectorConverter
 import com.taskadapter.connector.definition.{ConnectorConfig, ProgressMonitor, SaveResultBuilder}
 import com.taskadapter.connector.definition.exceptions.ConnectorException
-import com.taskadapter.core.TaskKeeper
 import com.taskadapter.model.GTask
 
 object TaskSavingUtils {
@@ -33,13 +32,14 @@ object TaskSavingUtils {
     }
   }
 
-  def saveTasks[N](taskKeeper: TaskKeeper, tasks: util.List[GTask],
+  def saveTasks[N](previouslyCreatedTasks: Map[String, Long],
+                   tasks: util.List[GTask],
                    converter: ConnectorConverter[GTask, N],
                    saveAPI: BasicIssueSaveAPI[N],
                    progressMonitor: ProgressMonitor,
                    fieldRows: java.lang.Iterable[FieldRow]): SaveResultBuilder = {
     val result = new SaveResultBuilder
-    val saver = new SimpleTaskSaver[N](taskKeeper, converter, saveAPI, result, progressMonitor)
+    val saver = new SimpleTaskSaver[N](previouslyCreatedTasks, converter, saveAPI, result, progressMonitor)
     val parentIssueId = None
     saver.saveTasks(parentIssueId, tasks, fieldRows)
     result

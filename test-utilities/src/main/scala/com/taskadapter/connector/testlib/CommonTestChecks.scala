@@ -38,7 +38,7 @@ object CommonTestChecks {
   */
 
   def createsTasks(connector: NewConnector, rows: util.List[FieldRow], tasks: util.List[GTask]): Unit = {
-    val result = connector.saveData(new InMemoryTaskKeeper, tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows)
+    val result = connector.saveData(Map[String, Long](), tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows)
     assertFalse(result.hasErrors)
     assertEquals(tasks.size, result.getCreatedTasksNumber)
   }

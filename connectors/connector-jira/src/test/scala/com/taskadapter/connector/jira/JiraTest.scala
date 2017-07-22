@@ -27,7 +27,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   logger.info("Running JIRA tests using: " + webServerInfo.getHost)
 
   it("connector does not fail empty tasks list") {
-    connector.saveData(new InMemoryTaskKeeper(), List[GTask]().asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault.asJava)
+    connector.saveData(Map[String, Long](), List[GTask]().asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault.asJava)
   }
 
   it("tasks are created without errors") {
@@ -54,7 +54,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
 
   it("testGetIssuesByProject") {
     val tasks = generateTasks
-    connector.saveData(new InMemoryTaskKeeper(), tasks.asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault.asJava)
+    connector.saveData(Map[String, Long](), tasks.asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault.asJava)
     val jql = JqlBuilder.findIssuesByProject(config.getProjectKey)
     val issues = JiraClientHelper.findIssues(client, jql)
     assertThat(Iterables.size(issues)).isGreaterThan(1)
@@ -82,8 +82,10 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   private def generateTasks = {
     val task1 = JiraGTaskBuilder.withSummary()
     task1.setId(1l)
+    task1.setKey("1")
     val task2 = JiraGTaskBuilder.withSummary()
     task2.setId(2l)
+    task2.setKey("2")
     List(task1, task2)
   }
 }

@@ -17,6 +17,7 @@ import net.sf.mpxj.MPXJException;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Task;
 import net.sf.mpxj.TaskField;
+import scala.collection.immutable.Map;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -165,7 +166,7 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
     }
 
     @Override
-    public SaveResult saveData(TaskKeeper taskKeeper, List<GTask> tasks,
+    public SaveResult saveData(Map<String, Object> previouslyCreatedTasks, List<GTask> tasks,
                                    ProgressMonitor monitor, Iterable<FieldRow> rows) {
         try {
             return new MSPTaskSaver(config, rows).saveData(tasks);
