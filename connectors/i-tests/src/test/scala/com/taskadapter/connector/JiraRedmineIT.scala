@@ -3,7 +3,7 @@ package com.taskadapter.connector
 import com.taskadapter.connector.it.{RedmineTestConfig, RedmineTestInitializer}
 import com.taskadapter.connector.jira.{JiraConnector, JiraField, JiraPropertiesLoader}
 import com.taskadapter.connector.redmine.{CustomFieldBuilder, RedmineConnector, RedmineField}
-import com.taskadapter.connector.testlib.{InMemoryTaskKeeper, TestSaver, TestUtils}
+import com.taskadapter.connector.testlib.{TestSaver, TestUtils}
 import com.taskadapter.model.GTask
 import com.taskadapter.redmineapi.bean.{Issue, IssueFactory, Project}
 import org.junit.runner.RunWith
@@ -22,8 +22,7 @@ class JiraRedmineIT extends FunSpec with Matchers with BeforeAndAfter with Befor
   val targetConfig = JiraPropertiesLoader.createTestConfig
   val sourceConnector = new RedmineConnector(sourceConfig, RedmineTestConfig.getRedmineServerInfo)
   val targetConnector = new JiraConnector(targetConfig, JiraPropertiesLoader.getTestServerInfo)
-  val taskKeeper = new InMemoryTaskKeeper
-  val adapter = new Adapter(taskKeeper, sourceConnector, targetConnector)
+  val adapter = new Adapter(sourceConnector, targetConnector)
 
   before {
     // have to create a project for each test, otherwise stuff created during one test interferes with others

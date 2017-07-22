@@ -19,7 +19,7 @@ public final class ConfigStorage {
 
     private static final FilenameFilter CONFIG_FILE_FILTER = (dir, name) -> name.endsWith(FILE_EXTENSION);
 
-    private final File rootDir;
+    public final File rootDir;
 
     public ConfigStorage(File rootDir) {
         this.rootDir = rootDir;

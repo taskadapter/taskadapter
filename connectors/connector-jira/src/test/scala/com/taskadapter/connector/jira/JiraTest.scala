@@ -3,7 +3,7 @@ package com.taskadapter.connector.jira
 import com.google.common.collect.Iterables
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.connector.testlib.{CommonTestChecks, InMemoryTaskKeeper, TestUtils}
+import com.taskadapter.connector.testlib.{CommonTestChecks, TestUtils}
 import com.taskadapter.model.{GRelation, GTask, Precedes}
 import org.fest.assertions.Assertions.assertThat
 import org.junit.Assert.assertEquals

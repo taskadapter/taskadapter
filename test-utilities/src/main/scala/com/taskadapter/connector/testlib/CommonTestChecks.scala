@@ -4,8 +4,8 @@ import java.util
 
 import com.taskadapter.connector._
 import com.taskadapter.connector.common.ProgressMonitorUtils
-import com.taskadapter.connector.definition.{ExportDirection, SaveResult, TaskId}
-import com.taskadapter.core.{TaskKeeper, TaskSaver}
+import com.taskadapter.connector.definition.ExportDirection
+import com.taskadapter.core.TaskSaver
 import com.taskadapter.model.{GTask, StandardField}
 import org.junit.Assert.{assertEquals, assertFalse}
 
@@ -56,10 +56,9 @@ object CommonTestChecks {
   // TODO TA3 this requires remote ID support.
   def taskCreatedAndUpdatedOK(connector: NewConnector, rows: util.List[FieldRow], task: GTask, fieldToChangeInTest: String): Unit = {
     val id = task.getId
-    val taskKeeper = new InMemoryTaskKeeper
     // CREATE
 
-    val result = TaskSaver.save(taskKeeper, connector, "some name", rows, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR)
+    val result = TaskSaver.save(Map[String, Long](), connector, "some name", rows, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR)
     assertFalse(result.hasErrors)
     assertEquals(1, result.getCreatedTasksNumber)
     val remoteKey = result.getRemoteKey(id)
@@ -73,7 +72,7 @@ object CommonTestChecks {
     //        map.put(remoteKey, remoteKey);
     //        taskKeeper.keepTasks(map);
     //        TaskSaveResult result2 = connector.saveData(taskKeeper, Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR, rows);
-    val result2 = TaskSaver.save(taskKeeper, connector, "some name", rows, util.Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR)
+    val result2 = TaskSaver.save(Map[String, Long](), connector, "some name", rows, util.Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR)
     assertFalse(result2.hasErrors)
     assertEquals(1, result2.getUpdatedTasksNumber)
     val loadedAgain = connector.loadTaskByKey(remoteKey.key, rows)

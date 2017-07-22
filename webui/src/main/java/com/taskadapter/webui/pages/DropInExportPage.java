@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
+import com.taskadapter.connector.definition.SaveResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +18,6 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.web.configeditor.file.FileDownloadResource;
 import com.taskadapter.web.uiapi.UISyncConfig;
-import com.taskadapter.web.uiapi.UISyncConfig.TaskExportResult;
 import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.MonitorWrapper;
 import com.taskadapter.webui.Page;
@@ -181,12 +181,7 @@ public final class DropInExportPage {
 
         final MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                showExportResult(config.onlySaveTasks(selectedTasks, wrapper));
-            }
-        }).start();
+        new Thread(() -> showExportResult(config.saveTasks(selectedTasks, wrapper))).start();
     }
 
     /**
@@ -195,7 +190,7 @@ public final class DropInExportPage {
      * @param res
      *            operation result.
      */
-    private void showExportResult(TaskExportResult res) {
+    private void showExportResult(SaveResult res) {
         final VerticalLayout ui = new VerticalLayout();
 
         final VerticalLayout donePanel = new VerticalLayout();
@@ -213,17 +208,17 @@ public final class DropInExportPage {
         donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
                 "From", config.getConnector1().getSourceLocation()));
 
-        final String resultFile = res.saveResult.getTargetFileAbsolutePath();
+        final String resultFile = res.getTargetFileAbsolutePath();
         if (resultFile != null && !showFilePath) {
             donePanel.addComponent(createDownloadButton(resultFile));
         }
 
         donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
                 "Created tasks",
-                String.valueOf(res.saveResult.getCreatedTasksNumber())));
+                String.valueOf(res.getCreatedTasksNumber())));
         donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
                 "Updated tasks",
-                String.valueOf(res.saveResult.getUpdatedTasksNumber())
+                String.valueOf(res.getUpdatedTasksNumber())
                         + "<br/><br/>"));
 
         if (resultFile != null && showFilePath) {
@@ -235,8 +230,10 @@ public final class DropInExportPage {
         }
 
         SyncActionComponents.addErrors(donePanel, config.getConnector2(),
-                res.saveResult.getGeneralErrors(),
-                res.saveResult.getTaskErrors());
+                res.getGeneralErrors(),
+                res.getTaskErrors());
+        // TODO TA4 check remote id
+/*
         if (res.remoteIdUpdateException != null)
             SyncActionComponents.addErrors(
                     donePanel,
@@ -248,6 +245,7 @@ public final class DropInExportPage {
                             .toList()
             );
 
+*/
         ui.addComponent(donePanel);
 
         final Button button = new Button(

@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.google.common.base.Strings;
+import com.taskadapter.connector.definition.SaveResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +20,6 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.web.configeditor.file.FileDownloadResource;
 import com.taskadapter.web.uiapi.UISyncConfig;
-import com.taskadapter.web.uiapi.UISyncConfig.TaskExportResult;
 import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.MonitorWrapper;
 import com.taskadapter.webui.Page;
@@ -189,7 +189,7 @@ public final class ExportPage {
      * @param res
      *            operation result.
      */
-    private void showExportResult(TaskExportResult res) {
+    private void showExportResult(SaveResult res) {
         final VerticalLayout ui = new VerticalLayout();
 
         final VerticalLayout donePanel = new VerticalLayout();
@@ -211,17 +211,17 @@ public final class ExportPage {
         donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
                 message("export.to"), targetLocation));
 
-        final String resultFile = res.saveResult.getTargetFileAbsolutePath();
+        final String resultFile = res.getTargetFileAbsolutePath();
         if (resultFile != null && !showFilePath) {
             donePanel.addComponent(createDownloadButton(resultFile));
         }
 
         donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
                 message("export.createdTasks"),
-                String.valueOf(res.saveResult.getCreatedTasksNumber())));
+                String.valueOf(res.getCreatedTasksNumber())));
         donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
                 message("export.updatedTasks"),
-                String.valueOf(res.saveResult.getUpdatedTasksNumber())
+                String.valueOf(res.getUpdatedTasksNumber())
                         + "<br/><br/>"));
 
         if (!Strings.isNullOrEmpty(resultFile) && showFilePath) {
@@ -231,8 +231,10 @@ public final class ExportPage {
         }
 
         SyncActionComponents.addErrors(donePanel, config.getConnector2(),
-                res.saveResult.getGeneralErrors(),
-                res.saveResult.getTaskErrors());
+                res.getGeneralErrors(),
+                res.getTaskErrors());
+        // TODO TA3 check remote id
+/*
         if (res.remoteIdUpdateException != null)
             SyncActionComponents
                     .addErrors(
@@ -245,6 +247,7 @@ public final class ExportPage {
                                     .toList()
                     );
 
+*/
         ui.addComponent(donePanel);
 
         final Button button = new Button(message("action.acknowledge"));

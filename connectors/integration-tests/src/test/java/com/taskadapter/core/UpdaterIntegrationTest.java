@@ -12,7 +12,6 @@ import com.taskadapter.connector.redmine.RedmineConnector;
 import com.taskadapter.connector.redmine.RedmineField;
 import com.taskadapter.connector.redmine.RedmineManagerFactory;
 import com.taskadapter.connector.redmine.RedmineToGTask;
-import com.taskadapter.connector.testlib.InMemoryTaskKeeper;
 import com.taskadapter.integrationtests.RedmineTestConfig;
 import com.taskadapter.model.GTask;
 import com.taskadapter.redmineapi.RedmineManager;
@@ -51,7 +50,6 @@ public class UpdaterIntegrationTest {
     private RedmineConfig redmineConfig;
     private MSPConfig mspConfig;
     private NewConnector projectConnector;
-    private TaskKeeper taskKeeper = new InMemoryTaskKeeper();
     static WebServerInfo webServerInfo = RedmineTestConfig.getRedmineServerInfo();
 
     @BeforeClass

@@ -66,7 +66,7 @@ class UIConfigStore(taskKeeper: TaskKeeper, uiConfigService: UIConfigService, co
     newMappings match {
       case Left(e) => throw new RuntimeException(s"cannot parse mappings from config $storedConfig: $e")
       case Right(m) =>
-        new UISyncConfig(taskKeeper, storedConfig.getId, ownerName, label, config1, config2, m.asJava, false)
+        new UISyncConfig(configStorage.rootDir, taskKeeper, storedConfig.getId, ownerName, label, config1, config2, m.asJava, false)
     }
   }
 
@@ -94,7 +94,7 @@ class UIConfigStore(taskKeeper: TaskKeeper, uiConfigService: UIConfigService, co
 
     saveSetup(userName, connector1Info)
     saveSetup(userName, connector2Info)
-    new UISyncConfig(taskKeeper, identity, userName, label, config1, config2, newMappings.asJava, false)
+    new UISyncConfig(configStorage.rootDir, taskKeeper, identity, userName, label, config1, config2, newMappings.asJava, false)
   }
 
   def saveSetup(userName: String, setup: WebServerInfo): Unit = {
