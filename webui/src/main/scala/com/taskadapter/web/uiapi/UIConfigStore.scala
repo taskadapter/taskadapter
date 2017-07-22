@@ -66,7 +66,7 @@ class UIConfigStore(taskKeeper: TaskKeeper, uiConfigService: UIConfigService, co
     newMappings match {
       case Left(e) => throw new RuntimeException(s"cannot parse mappings from config $storedConfig: $e")
       case Right(m) =>
-        new UISyncConfig(configStorage.rootDir, taskKeeper, storedConfig.getId, ownerName, label, config1, config2, m.asJava, false)
+        new UISyncConfig(configStorage.rootDir, taskKeeper, storedConfig.getId, ownerName, label, config1, config2, m, false)
     }
   }
 
@@ -94,7 +94,7 @@ class UIConfigStore(taskKeeper: TaskKeeper, uiConfigService: UIConfigService, co
 
     saveSetup(userName, connector1Info)
     saveSetup(userName, connector2Info)
-    new UISyncConfig(configStorage.rootDir, taskKeeper, identity, userName, label, config1, config2, newMappings.asJava, false)
+    new UISyncConfig(configStorage.rootDir, taskKeeper, identity, userName, label, config1, config2, newMappings, false)
   }
 
   def saveSetup(userName: String, setup: WebServerInfo): Unit = {
@@ -131,7 +131,7 @@ class UIConfigStore(taskKeeper: TaskKeeper, uiConfigService: UIConfigService, co
     val label: String = normalizedSyncConfig.getLabel
     val config1: UIConnectorConfig = normalizedSyncConfig.getConnector1
     val config2: UIConnectorConfig = normalizedSyncConfig.getConnector2
-    val mappings = normalizedSyncConfig.getNewMappings.asScala
+    val mappings = normalizedSyncConfig.getNewMappings
     val mappingsStr = mappings.asJson.noSpaces
 
     configStorage.saveConfig(normalizedSyncConfig.getOwnerName, normalizedSyncConfig.getIdentity, label,
@@ -151,7 +151,7 @@ class UIConfigStore(taskKeeper: TaskKeeper, uiConfigService: UIConfigService, co
     val label: String = syncConfig.getLabel
     val config1 = syncConfig.getConnector1
     val config2 = syncConfig.getConnector2
-    val mappings = syncConfig.getNewMappings.asScala
+    val mappings = syncConfig.getNewMappings
     val mappingsStr = mappings.asJson.noSpaces
     configStorage.createNewConfig(userLoginName, label, config1.getConnectorTypeId, config1.getConfigString,
       config2.getConnectorTypeId, config2.getConfigString, mappingsStr)

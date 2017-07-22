@@ -53,7 +53,8 @@ object ConfirmExportFragment {
     backButton.addClickListener(_ => callback.onCancel())
     buttonsLayout.addComponent(backButton)
     layout.addComponent(buttonsLayout)
-    val taskFieldsMappingFragment = new TaskFieldsMappingFragment(Page.MESSAGES, config.getConnector1, config.getConnector2, config.getNewMappings)
+    val taskFieldsMappingFragment = new TaskFieldsMappingFragment(Page.MESSAGES,
+      config.getConnector1, config.getConnector2, config.getNewMappings)
     layout.addComponent(taskFieldsMappingFragment.getUI)
     goButton.addClickListener(_ => {
       try

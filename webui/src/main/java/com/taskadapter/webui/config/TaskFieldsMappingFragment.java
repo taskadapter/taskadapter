@@ -23,6 +23,7 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
+import scala.collection.JavaConverters;
 
 import java.util.Collections;
 import java.util.List;
@@ -50,10 +51,10 @@ public class TaskFieldsMappingFragment implements Validatable {
     private Messages messages;
     private UIConnectorConfig connector1;
     private UIConnectorConfig connector2;
-    private List<FieldMapping> mappings;
+    private scala.collection.Seq<FieldMapping> mappings;
 
     public TaskFieldsMappingFragment(Messages messages, UIConnectorConfig connector1,
-                                     UIConnectorConfig connector2, List<FieldMapping> mappings) {
+                                     UIConnectorConfig connector2, scala.collection.Seq<FieldMapping> mappings) {
         this.messages = messages;
         this.connector1 = connector1;
         this.connector2 = connector2;
@@ -116,8 +117,7 @@ public class TaskFieldsMappingFragment implements Validatable {
      * Add all rows to mappings table
      */
     private void addSupportedFields() {
-        // TODO sort?
-        mappings.forEach(this::addField);
+        JavaConverters.asJavaCollection(mappings).forEach(this::addField);
     }
 
     /**

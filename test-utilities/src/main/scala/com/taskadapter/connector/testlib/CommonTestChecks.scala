@@ -47,8 +47,8 @@ object CommonTestChecks {
                                 suggestedMappings: Map[Field, StandardField],
                                 fieldNameToSearch: Field): Unit = {
     val mappings = NewConfigSuggester.suggestedFieldMappingsForNewConfig(suggestedMappings, suggestedMappings)
-    val rows = MappingBuilder.build(mappings.asJava, ExportDirection.RIGHT)
-    val loadedTask = TestUtils.saveAndLoadViaSummary(connector, task, rows.asScala.toList, fieldNameToSearch)
+    val rows = MappingBuilder.build(mappings, ExportDirection.RIGHT)
+    val loadedTask = TestUtils.saveAndLoadViaSummary(connector, task, rows.toList, fieldNameToSearch)
     assertEquals(task.getValue(fieldNameToSearch), loadedTask.getValue(fieldNameToSearch))
   }
 

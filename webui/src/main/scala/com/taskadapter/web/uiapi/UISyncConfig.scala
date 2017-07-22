@@ -23,13 +23,8 @@ import scala.collection.JavaConverters._
   */
 object UISyncConfig {
 
-  private def reverse(fieldMappings: util.List[FieldMapping]): util.ArrayList[FieldMapping] = {
-    val result = new util.ArrayList[FieldMapping]
-    import scala.collection.JavaConversions._
-    for (mapping <- fieldMappings) {
-      result.add(reverse(mapping))
-    }
-    result
+  private def reverse(fieldMappings: Seq[FieldMapping]): Seq[FieldMapping] = {
+    fieldMappings.map(reverse)
   }
 
   private def reverse(mapping: FieldMapping) = FieldMapping(mapping.fieldInConnector2, mapping.fieldInConnector1, mapping.selected, mapping.defaultValue)
@@ -64,7 +59,7 @@ final class UISyncConfig(configRootFolder: File, taskKeeper: TaskKeeper,
                          /**
                            * Field mappings. Left side is connector1, right side is connector2.
                            */
-                         val fieldMappings: util.List[FieldMapping],
+                         val fieldMappings: Seq[FieldMapping],
 
                          /**
                            * "Config is reversed" flag.
@@ -80,7 +75,7 @@ final class UISyncConfig(configRootFolder: File, taskKeeper: TaskKeeper,
 
   def getConnector2: UIConnectorConfig = connector2
 
-  def getNewMappings: util.List[FieldMapping] = fieldMappings
+  def getNewMappings: Seq[FieldMapping] = fieldMappings
 
   /** Returns name of the user who owns this config. */
   def getOwnerName: String = owner
@@ -118,9 +113,9 @@ final class UISyncConfig(configRootFolder: File, taskKeeper: TaskKeeper,
     *
     * @return source mappings
     */
-  private[uiapi] def generateFieldRowsToExportLeft = MappingBuilder.build(fieldMappings, ExportDirection.LEFT)
+  private def generateFieldRowsToExportLeft = MappingBuilder.build(fieldMappings, ExportDirection.LEFT)
 
-  private[uiapi] def generateFieldRowsToExportRight = MappingBuilder.build(fieldMappings, ExportDirection.RIGHT)
+  private def generateFieldRowsToExportRight = MappingBuilder.build(fieldMappings, ExportDirection.RIGHT)
 
   /**
     * Loads tasks from connector1. This is invoked directly from UI layer when user clicks "Go" to load tasks.
@@ -162,7 +157,7 @@ final class UISyncConfig(configRootFolder: File, taskKeeper: TaskKeeper,
     val location1 = getConnector1.getSourceLocation
     val location2 = getConnector2.getSourceLocation
     val previouslyCreatedTasks = TaskKeeperLocationStorage.loadTasks(configRootFolder, location1, location2)
-    val result = TaskSaver.save(previouslyCreatedTasks, connectorTo, destinationLocation, rows, tasks, progressMonitor)
+    val result = TaskSaver.save(previouslyCreatedTasks, connectorTo, destinationLocation, rows.asJava, tasks, progressMonitor)
     TaskKeeperLocationStorage.store(configRootFolder, location1, location2, result.getIdToRemoteKeyList)
     result
   }
@@ -178,7 +173,7 @@ final class UISyncConfig(configRootFolder: File, taskKeeper: TaskKeeper,
   private def makeUpdater = {
     val sourceConnector = getConnector1.createConnectorInstance
     val destinationConnector = getConnector2.createConnectorInstance
-    val updater = new Updater(destinationConnector, generateFieldRowsToExportRight, sourceConnector, getConnector1.getDestinationLocation)
+    val updater = new Updater(destinationConnector, generateFieldRowsToExportRight.asJava, sourceConnector, getConnector1.getDestinationLocation)
     updater
   }
 
