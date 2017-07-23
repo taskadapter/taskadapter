@@ -38,7 +38,7 @@ object CommonTestChecks {
   */
 
   def createsTasks(connector: NewConnector, rows: util.List[FieldRow], tasks: util.List[GTask]): Unit = {
-    val result = connector.saveData(new PreviouslyCreatedTasksResolver, tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows)
+    val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows)
     assertFalse(result.hasErrors)
     assertEquals(tasks.size, result.getCreatedTasksNumber)
   }
@@ -58,7 +58,7 @@ object CommonTestChecks {
     val id = task.getId
     // CREATE
 
-    val result = TaskSaver.save(new PreviouslyCreatedTasksResolver, connector, "some name", rows, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR)
+    val result = TaskSaver.save(PreviouslyCreatedTasksResolver.empty, connector, "some name", rows, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR)
     assertFalse(result.hasErrors)
     assertEquals(1, result.getCreatedTasksNumber)
     val remoteKey = result.getRemoteKey(id)
@@ -72,7 +72,7 @@ object CommonTestChecks {
     //        map.put(remoteKey, remoteKey);
     //        taskKeeper.keepTasks(map);
     //        TaskSaveResult result2 = connector.saveData(taskKeeper, Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR, rows);
-    val result2 = TaskSaver.save(new PreviouslyCreatedTasksResolver, connector, "some name", rows, util.Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR)
+    val result2 = TaskSaver.save(PreviouslyCreatedTasksResolver.empty, connector, "some name", rows, util.Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR)
     assertFalse(result2.hasErrors)
     assertEquals(1, result2.getUpdatedTasksNumber)
     val loadedAgain = connector.loadTaskByKey(remoteKey, rows)

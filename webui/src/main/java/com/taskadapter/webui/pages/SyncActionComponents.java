@@ -56,8 +56,9 @@ public final class SyncActionComponents {
         while (taskErrorsIter.hasNext()) {
             TaskError<Throwable> error = taskErrorsIter.next();
             errorText += "Task " + error.getTask().getId() + " (\""
-                    + error.getTask() + "\"): "
-                    + connector.decodeException(error.getErrors());
+                    + error.getTask() + "\"): <br/>\n"
+                    + connector.decodeException(error.getErrors())
+            + "<br/>\n<br/>\n";
         }
         final Label errorTextLabel = new Label(errorText);
         errorTextLabel.addStyleName("errorMessage");

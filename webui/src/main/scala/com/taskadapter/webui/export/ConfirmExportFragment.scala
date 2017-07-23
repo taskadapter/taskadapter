@@ -41,10 +41,11 @@ object ConfirmExportFragment {
              initialTasks: util.List[GTask], callback: Callback): Component = {
     val layout = new VerticalLayout
     layout.setSpacing(true)
-    val destination = config.getConnector2.getDestinationLocation + " (" + config.getConnector2.getConnectorTypeId + ")"
-    val text1 = new Label(Page.message("exportConfirmation.pleaseConfirm", destination))
+    val destinationLocation = config.getConnector2.getDestinationLocation
+    val destinationWithDecoration = destinationLocation + " (" + config.getConnector2.getConnectorTypeId + ")"
+    val text1 = new Label(Page.message("exportConfirmation.pleaseConfirm", destinationWithDecoration))
     layout.addComponent(text1)
-    val connectorTree = new MyTree(resolver, initialTasks)
+    val connectorTree = new MyTree(resolver, initialTasks, destinationLocation)
     connectorTree.setSizeFull()
     layout.addComponent(connectorTree)
     val buttonsLayout = new HorizontalLayout

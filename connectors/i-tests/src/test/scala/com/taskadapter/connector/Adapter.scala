@@ -10,7 +10,7 @@ class Adapter(connector1: NewConnector, connector2: NewConnector) {
 
   def adapt(rows: List[FieldRow]): SaveResult = {
     val tasks = connector1.loadData()
-    val result = connector2.saveData(new PreviouslyCreatedTasksResolver, tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)
+    val result = connector2.saveData(PreviouslyCreatedTasksResolver.empty, tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)
     result
   }
 

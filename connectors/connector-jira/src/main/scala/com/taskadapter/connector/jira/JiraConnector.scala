@@ -125,7 +125,8 @@ class JiraConnector(val config: JiraConfig, var webServerInfo: WebServerInfo) ex
       val priorities = prioritiesPromise.claim
       val converter = new GTaskToJira(config, issueTypeList, versions, components, priorities)
       val saver = new JiraTaskSaver(client)
-      val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows)
+      val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows,
+        webServerInfo.getHost)
       TaskSavingUtils.saveRemappedRelations(config, tasks, saver, rb)
       rb.getResult
     }

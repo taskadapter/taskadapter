@@ -14,6 +14,7 @@ import io.circe.syntax._
 import scala.util.Random
 
 case class TaskKeeperLocation(location1: String, location2: String, cacheFileLocation: String)
+case class PreviouslyCreatedTasksCache(location1: String, location2: String, items: Seq[(TaskId, TaskId)])
 
 object TaskKeeperLocationStorage {
 /*
@@ -27,7 +28,8 @@ object TaskKeeperLocationStorage {
 
   def store(configRootFolder: File, location1: String, location2: String, items: Seq[(TaskId, TaskId)]): Unit = {
     val file = getOrCreateFileLocation(configRootFolder, location1, location2)
-    val jsonString = items.asJson.spaces2
+    val cache = PreviouslyCreatedTasksCache(location1, location2, items)
+    val jsonString = cache.asJson.spaces2
     Files.write(jsonString, file, Charsets.UTF_8)
   }
 
@@ -35,13 +37,13 @@ object TaskKeeperLocationStorage {
     val file = getOrCreateFileLocation(configRootFolder, location1, location2)
     val fileBody = Files.toString(file, Charsets.UTF_8)
     if (fileBody.isEmpty) {
-      new PreviouslyCreatedTasksResolver
+      PreviouslyCreatedTasksResolver.empty
     } else {
-      val map = decode[Seq[(TaskId, TaskId)]](fileBody)
-      map match {
+      val cache = decode[PreviouslyCreatedTasksCache](fileBody)
+      cache match {
         case Left(e) =>
           throw new RuntimeException(s"cannot parse tasks map from file $file: $e")
-        case Right(m) => new PreviouslyCreatedTasksResolver(m)
+        case Right(c) => new PreviouslyCreatedTasksResolver(c)
       }
     }
   }

@@ -17,6 +17,7 @@ import java.util.*;
  */
 public class MyTree extends CustomComponent {
     private PreviouslyCreatedTasksResolver resolver;
+    private String targetLocation;
 
     private final class TreeItemSelectionHandler implements Property.ValueChangeListener {
         private final CheckBox checkBox;
@@ -62,8 +63,9 @@ public class MyTree extends CustomComponent {
     TreeTable tree = new TreeTable();
     private List<GTask> rootLevelTasks;
 
-    public MyTree(PreviouslyCreatedTasksResolver resolver, List<GTask> rootLevelTasks) {
+    public MyTree(PreviouslyCreatedTasksResolver resolver, List<GTask> rootLevelTasks, String targetLocation) {
         this.resolver = resolver;
+        this.targetLocation = targetLocation;
         buildUI();
         List<GTask> clonedToAvoidDamagingTasks = new ArrayList<>();
         for (GTask task : rootLevelTasks) {
@@ -135,7 +137,7 @@ public class MyTree extends CustomComponent {
         final TaskId taskId = new TaskId(task.getId(), task.getKey());
 
         final CheckBox checkBox = new CheckBox(
-                resolver.findSourceSystemIdentity(task).isDefined() ?
+                resolver.findSourceSystemIdentity(task, targetLocation).isDefined() ?
                         Page.message("exportConfirmation.action.update")
                         : Page.message("exportConfirmation.action.create"));
 

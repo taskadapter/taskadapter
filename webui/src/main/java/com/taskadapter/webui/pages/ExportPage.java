@@ -192,7 +192,7 @@ public final class ExportPage {
         final VerticalLayout ui = new VerticalLayout();
 
         final VerticalLayout donePanel = new VerticalLayout();
-        donePanel.setWidth("600px");
+        donePanel.setWidth("800px");
         donePanel.setStyleName("export-panel");
 
         // TODO format inside MESSAGES formatter, not here.

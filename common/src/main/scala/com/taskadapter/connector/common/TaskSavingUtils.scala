@@ -18,8 +18,7 @@ object TaskSavingUtils {
     * @param config to use. This config may prevent update of relations.
     * @param tasks tasks to save.
     * @param saver relation saver.
-    * @param resultBuilder
-    * result builder.
+    * @param resultBuilder result builder.
     */
   def saveRemappedRelations(config: ConnectorConfig, tasks: util.List[GTask], saver: RelationSaver,
                             resultBuilder: SaveResultBuilder): Unit = {
@@ -38,9 +37,10 @@ object TaskSavingUtils {
                    converter: ConnectorConverter[GTask, N],
                    saveAPI: BasicIssueSaveAPI[N],
                    progressMonitor: ProgressMonitor,
-                   fieldRows: java.lang.Iterable[FieldRow]): SaveResultBuilder = {
+                   fieldRows: java.lang.Iterable[FieldRow],
+                   targetLocation: String): SaveResultBuilder = {
     val result = new SaveResultBuilder
-    val saver = new SimpleTaskSaver[N](previouslyCreatedTasks, converter, saveAPI, result, progressMonitor)
+    val saver = new SimpleTaskSaver[N](previouslyCreatedTasks, converter, saveAPI, result, progressMonitor, targetLocation)
     val parentIssueId = None
     saver.saveTasks(parentIssueId, tasks, fieldRows)
     result
