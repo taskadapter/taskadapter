@@ -35,7 +35,9 @@ public class RedmineToGTask {
 
         task.setId(issue.getId() == null? null : issue.getId().longValue());
         if (issue.getId() != null) {
-            task.setKey(Integer.toString(issue.getId()));
+            String stringKey = Integer.toString(issue.getId());
+            task.setKey(stringKey);
+            task.setSourceSystemId(stringKey);
         }
         if (issue.getParentId() != null) {
             task.setParentIdentity(new TaskId(issue.getParentId(), issue.getParentId() + ""));

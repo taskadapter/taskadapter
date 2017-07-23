@@ -141,7 +141,7 @@ public class TaskFieldsMappingFragment implements Validatable {
 
     private void addConnectorElement(FieldMapping field, UIConnectorConfig config, String leftRightField) {
         // TODO TA3 remote ID
-//        if (field.getField().equals(FIELD.REMOTE_ID.name()) && remoteIdFieldNotSupported(config)) {
+//        if (field.getField().equals(FIELD.SOURCE_SYSTEM_ID.name()) && remoteIdFieldNotSupported(config)) {
 //            String idFieldDisplayValue = GTaskDescriptor.getDisplayValue(FIELD.ID.name());
 //            createMappingForSingleValue(idFieldDisplayValue);
 //        } else {
@@ -152,7 +152,7 @@ public class TaskFieldsMappingFragment implements Validatable {
     private boolean remoteIdFieldNotSupported(UIConnectorConfig config) {
         // TODO TA3 remote id
         return true;
-//        return !config.getAvailableFields().isFieldSupported(FIELD.REMOTE_ID);
+//        return !config.getAvailableFields().isFieldSupported(FIELD.SOURCE_SYSTEM_ID);
     }
 
     private void addCheckbox(FieldMapping field) {

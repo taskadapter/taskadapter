@@ -33,6 +33,6 @@ public class MessagesTest {
 
     @Test
     public void remoteIdMessageNotEmpty() {
-        assertFalse(MESSAGES.get(GTaskDescriptor.FIELD.REMOTE_ID.toString()).isEmpty());
+        assertFalse(MESSAGES.get(GTaskDescriptor.FIELD.SOURCE_SYSTEM_ID.toString()).isEmpty());
     }
 }

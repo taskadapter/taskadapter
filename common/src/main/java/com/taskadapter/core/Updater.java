@@ -44,10 +44,9 @@ public class Updater {
                     existingTasks.size());
         }
         for (GTask gTask : existingTasks) {
-            if (gTask.getRemoteId() != null) {
-                // TODO TA3 replaced target mappings with 'rows' here. review.
-                GTask task = remoteConnector.loadTaskByKey(gTask.getRemoteId(), rows);
-                task.setRemoteId(gTask.getRemoteId());
+            if (gTask.getSourceSystemId() != null) {
+                GTask task = remoteConnector.loadTaskByKey(gTask.getSourceSystemId(), rows);
+                task.setSourceSystemId(gTask.getSourceSystemId());
                 tasksInExternalSystem.add(task);
             }
             if (monitor != null) {

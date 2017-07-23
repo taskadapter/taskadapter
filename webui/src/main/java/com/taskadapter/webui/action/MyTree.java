@@ -1,6 +1,8 @@
 package com.taskadapter.webui.action;
 
+import com.google.common.base.Strings;
 import com.taskadapter.model.GTask;
+import com.taskadapter.webui.Page;
 import com.vaadin.data.Property;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.CustomComponent;
@@ -55,12 +57,7 @@ public class MyTree extends CustomComponent {
 
     private static final int MAX_ROWS_BEFORE_SCROLLBAR = 10;
 
-    private static final String CREATE = "Create";
-    private static final String UPDATE = "Update";
-
-    public static final  String ACTION_PROPERTY  = "Action";
-    private static final String ID_PROPERTY      = "ID";
-    private static final String SUMMARY_PROPERTY = "Summary";
+    static final  String ACTION_PROPERTY = Page.message("exportConfirmation.column.action");
 
     TreeTable tree;
     private List<GTask> rootLevelTasks;
@@ -73,8 +70,8 @@ public class MyTree extends CustomComponent {
         tree = new TreeTable();
         tree.setWidth("800px");
         tree.addContainerProperty(ACTION_PROPERTY, CheckBox.class, null);
-        tree.addContainerProperty(ID_PROPERTY, String.class, null);
-        tree.addContainerProperty(SUMMARY_PROPERTY, String.class, null);
+        tree.addContainerProperty(Page.message("exportConfirmation.column.sourceId"), String.class, null);
+        tree.addContainerProperty(Page.message("exportConfirmation.column.summary"), String.class, null);
         setCompositionRoot(tree);
     }
 
@@ -132,7 +129,8 @@ public class MyTree extends CustomComponent {
     private void addTaskToTree(Object parentId, GTask task) {
         final Long taskId = task.getId();
 
-        final CheckBox checkBox = new CheckBox((task.getRemoteId() == null) ? CREATE : UPDATE);
+        final CheckBox checkBox = new CheckBox((task.getKey() == null) ? Page.message("exportConfirmation.action.create")
+                : Page.message("exportConfirmation.action.update"));
         checkBox.setValue(true);
         checkBox.setData(parentId);
         checkBox.addValueChangeListener(new TreeItemSelectionHandler(checkBox, taskId));
@@ -141,7 +139,7 @@ public class MyTree extends CustomComponent {
         tree.addItem(
                 new Object[]{
                         checkBox,                  // ACTION
-                        String.valueOf(taskId),    // ID
+                        Strings.nullToEmpty(task.getSourceSystemId()), // ID FROM SOURCE SYSTEM
                         task.getValue("Summary") // TODO TA3 use a proper connector-specific field name here
                 },
                 taskId

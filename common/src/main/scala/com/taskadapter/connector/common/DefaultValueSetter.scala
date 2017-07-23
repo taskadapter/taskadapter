@@ -40,8 +40,8 @@ object DefaultValueSetter {
       result.setValue(targetFieldName, newValue)
     }
 //    result.setId(task.getId)
-    // Key should NOT be set here because it is a key from some source system. it is not valid in target system
 //    result.setKey(task.getKey)
+    result.setSourceSystemId(task.getSourceSystemId)
     result.setParentIdentity(task.getParentIdentity)
     result
   }

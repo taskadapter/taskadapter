@@ -45,6 +45,7 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
       case "RELATIONS" => // processed in another place (for now?)
       case "CHILDREN" => // processed in another place (for now?)
       case "KEY" => // processed in [[DefaultValueSetter]] for now
+      case "SOURCE_SYSTEM_ID" => // processed in [[DefaultValueSetter]] for now
 
       // TODO TA3 review types
       case RedmineField.summary.name => issue.setSubject(value.asInstanceOf[String])

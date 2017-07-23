@@ -31,7 +31,7 @@ public class TreeUtils {
         for (GTask task : tree) {
             GTask cloned = createShallowCopyWithoutChildren(task);
             cloned.getChildren().clear();
-            if (task.getRemoteId() != null) {
+            if (task.getSourceSystemId() != null) {
                 // only skip the tasks with no Remote IDs
                 // the children can still have Remote IDs and thus need to be
                 // included in the tree

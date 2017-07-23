@@ -78,7 +78,7 @@ public class IntegrationTest {
         final String key = saveResult.getRemoteKeys().iterator().next();
 
         final GTask createdTask = gTasks.get(0);
-        createdTask.setRemoteId(key);
+        createdTask.setSourceSystemId(key);
         createdTask.setSummary("updated summary");
 
         final TaskSaveResult secondResult = TaskSaver.save(redmine, "target redmine", redmineMappings, gTasks, ProgressMonitorUtils.DUMMY_MONITOR);
@@ -96,7 +96,7 @@ public class IntegrationTest {
         NewConnector msProjectConnector = new MSPConnector(mspConfig);
 
         Mappings mspMappings = TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS);
-        mspMappings.setMapping(GTaskDescriptor.FIELD.REMOTE_ID, true, MSPUtils.getDefaultRemoteIdMapping(), "default remote ID");
+        mspMappings.setMapping(GTaskDescriptor.FIELD.SOURCE_SYSTEM_ID, true, MSPUtils.getDefaultRemoteIdMapping(), "default remote ID");
         RedmineConfig redmineConfig = RedmineTestConfig.getRedmineTestConfig();
         redmineConfig.setProjectKey(projectKey);
         Collection<GTaskDescriptor.FIELD> fields = RedmineSupportedFields.SUPPORTED_FIELDS.getSupportedFields();
@@ -126,8 +126,8 @@ public class IntegrationTest {
         assertEquals(2, tasksReloadedFromMSPFile.size());
 
         for (GTask gTask : tasksReloadedFromMSPFile) {
-            assertNotNull(gTask.getRemoteId());
-            assertFalse(gTask.getRemoteId().isEmpty());
+            assertNotNull(gTask.getSourceSystemId());
+            assertFalse(gTask.getSourceSystemId().isEmpty());
         }
     }
 

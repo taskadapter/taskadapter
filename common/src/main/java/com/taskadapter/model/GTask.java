@@ -4,7 +4,6 @@ import com.taskadapter.connector.Field;
 import com.taskadapter.connector.definition.TaskId;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,12 +78,12 @@ final public class GTask {
         return (TaskId) getValue(GTaskDescriptor.FIELD.PARENT_KEY);
     }
 
-    public String getRemoteId() {
-        return (String) getValue(GTaskDescriptor.FIELD.REMOTE_ID);
+    public String getSourceSystemId() {
+        return (String) getValue(GTaskDescriptor.FIELD.SOURCE_SYSTEM_ID);
     }
 
-    public void setRemoteId(String remoteId) {
-        setValue(GTaskDescriptor.FIELD.REMOTE_ID, remoteId);
+    public void setSourceSystemId(String remoteId) {
+        setValue(GTaskDescriptor.FIELD.SOURCE_SYSTEM_ID, remoteId);
     }
 
     /**

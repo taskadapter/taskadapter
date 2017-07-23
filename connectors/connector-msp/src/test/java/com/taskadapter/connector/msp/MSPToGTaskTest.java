@@ -1,21 +1,11 @@
 package com.taskadapter.connector.msp;
 
-import com.taskadapter.connector.definition.Mappings;
-import com.taskadapter.connector.definition.exceptions.BadConfigException;
-import com.taskadapter.connector.testlib.TestMappingUtils;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
-import com.taskadapter.model.GUser;
-import org.junit.Assert;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Task;
-import net.sf.mpxj.TaskField;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.util.List;
 
-import static com.taskadapter.model.GTaskDescriptor.FIELD.REMOTE_ID;
-import static com.taskadapter.model.GTaskDescriptor.FIELD.TASK_TYPE;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
@@ -96,9 +86,9 @@ public class MSPToGTaskTest {
     @Test
     public void extractRemoteId() {
         MSPToGTask converter = getConverter();
-        assertThat(converter.extractField(task1, REMOTE_ID)).isEqualTo(REMOTE_ID1);
-        assertThat(converter.extractField(task2, REMOTE_ID)).isEqualTo(REMOTE_ID2);
-        assertThat(converter.extractField(task3, REMOTE_ID)).isEqualTo(REMOTE_ID3);
+        assertThat(converter.extractField(task1, SOURCE_SYSTEM_ID)).isEqualTo(REMOTE_ID1);
+        assertThat(converter.extractField(task2, SOURCE_SYSTEM_ID)).isEqualTo(REMOTE_ID2);
+        assertThat(converter.extractField(task3, SOURCE_SYSTEM_ID)).isEqualTo(REMOTE_ID3);
     }
 
     @Test

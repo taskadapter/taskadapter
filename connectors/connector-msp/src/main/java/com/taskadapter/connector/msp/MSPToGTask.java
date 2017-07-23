@@ -45,15 +45,13 @@ class MSPToGTask {
 
         genericTask.setValue(MspField.summary(), task.getName());
         genericTask.setId(task.getUniqueID().longValue());
-        // TODO Add test for this
         genericTask.setKey(task.getUniqueID() + "");
+        genericTask.setSourceSystemId(task.getUniqueID()+"");
 
         Task parent = task.getParentTask();
         if (parent != null && parent.getID() != 0 && parent.getUniqueID() != 0) {
             genericTask.setParentIdentity(new TaskId(parent.getUniqueID(), parent.getUniqueID() + ""));
         }
-
-//        genericTask.setRemoteId(extractField(task, REMOTE_ID));
 
         genericTask.setValue(MspField.priority(), task.getPriority().getValue());
 

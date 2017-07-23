@@ -127,8 +127,6 @@ final class UISyncConfig(configRootFolder: File, taskKeeper: TaskKeeper,
   @throws[ConnectorException]
   def loadTasks(taskLimit: Int): util.List[GTask] = {
     val loadedTasks = TaskLoader.loadTasks(taskLimit, getConnector1.createConnectorInstance, getConnector1.getLabel, ProgressMonitorUtils.DUMMY_MONITOR)
-    val map = loadPreviouslyCreatedTasks()
-    loadedTasks.asScala.foreach(t => t.setRemoteId(map.getOrElse(t.getKey, "")+""))
     loadedTasks
   }
 

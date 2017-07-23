@@ -49,8 +49,8 @@ class UISyncConfigIT extends FunSpec with Matchers with TempFolder {
       val loadedTasks = config.loadTasks(100)
       assertThat(loadedTasks.size).isGreaterThan(0)
       val saveResult = config.saveTasks(loadedTasks, ProgressMonitorUtils.DUMMY_MONITOR)
-      assertThat(saveResult.hasErrors).isFalse()
-      assertThat(saveResult.getCreatedTasksNumber).isEqualTo(loadedTasks.size)
+      saveResult.hasErrors shouldBe false
+      saveResult.getCreatedTasksNumber shouldBe loadedTasks.size
     }
   }
 
@@ -69,7 +69,6 @@ class UISyncConfigIT extends FunSpec with Matchers with TempFolder {
     withTempFolder { f =>
       val config = ConfigLoader.loadConfig(f, new TaskKeeper, "Atlassian-JIRA_Redmine.ta_conf")
       val jiraTask = new GTask
-      jiraTask.setId(1l)
       jiraTask.setKey("TEST-66")
       jiraTask.setValue(JiraField.summary, "summary")
 
@@ -79,6 +78,8 @@ class UISyncConfigIT extends FunSpec with Matchers with TempFolder {
       assertThat(saveResult.getCreatedTasksNumber).isEqualTo(1)
       assertThat(saveResult.getUpdatedTasksNumber).isEqualTo(0)
 
+      // now pretend that the task was loaded from somewhere
+      jiraTask.setSourceSystemId("TEST-66")
       val updateResult = config.saveTasks(list, ProgressMonitorUtils.DUMMY_MONITOR)
       assertThat(updateResult.hasErrors).isFalse()
       assertThat(updateResult.getCreatedTasksNumber).isEqualTo(0)
@@ -121,7 +122,7 @@ class UISyncConfigIT extends FunSpec with Matchers with TempFolder {
       val saveResult = taskExportResult.saveResult
       val key = saveResult.getRemoteKeys.iterator.next
       val createdTask = tasks.get(0)
-      createdTask.setRemoteId(key)
+      createdTask.setSourceSystemId(key)
       createdTask.setValue(summaryFieldName, "updated summary")
       val secondResultWrapper = uiSyncConfig.saveTasks(tasks, ProgressMonitorUtils.DUMMY_MONITOR)
       val secondResult = secondResultWrapper.saveResult

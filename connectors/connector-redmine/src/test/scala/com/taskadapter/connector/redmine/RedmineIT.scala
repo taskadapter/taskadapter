@@ -294,15 +294,15 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
             GTask loadedTask = createTaskWithPrecedesRelations(connector, 2, mapping)
   
             ArrayList<GTask> taskList = new ArrayList<>(3)
-            loadedTask.setRemoteId(loadedTask.getKey())
+            loadedTask.setSourceSystemId(loadedTask.getKey())
             taskList.add(loadedTask)
   
             GTask task = connector.loadTaskByKey(loadedTask.getRelations().get(0).getRelatedTaskKey(), mapping)
-            task.setRemoteId(task.getKey())
+            task.setSourceSystemId(task.getKey())
             taskList.add(task)
   
             task = connector.loadTaskByKey(loadedTask.getRelations().get(1).getRelatedTaskKey(), mapping)
-            task.setRemoteId(task.getKey())
+            task.setSourceSystemId(task.getKey())
             taskList.add(task)
   
             loadedTask.getRelations().remove(0)
@@ -321,20 +321,20 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
             GTask loadedTask = createTaskWithPrecedesRelations(connector, 2, mapping)
   
             ArrayList<GTask> taskList = new ArrayList<>(3)
-            loadedTask.setRemoteId(loadedTask.getKey())
+            loadedTask.setSourceSystemId(loadedTask.getKey())
             taskList.add(loadedTask)
   
             GTask task = connector.loadTaskByKey(loadedTask.getRelations().get(0).getRelatedTaskKey(), mapping)
-            task.setRemoteId(task.getKey())
+            task.setSourceSystemId(task.getKey())
             taskList.add(task)
   
             task = connector.loadTaskByKey(loadedTask.getRelations().get(1).getRelatedTaskKey(), mapping)
-            task.setRemoteId(task.getKey())
+            task.setSourceSystemId(task.getKey())
             taskList.add(task)
   
             GTask t = TestUtils.generateTask()
             GTask newTask = TestUtils.saveAndLoad(connector, t, mapping)
-            newTask.setRemoteId(newTask.getKey())
+            newTask.setSourceSystemId(newTask.getKey())
             taskList.add(newTask)
   
             loadedTask.getRelations().add(new GRelation(loadedTask.getRemoteId(), newTask.getKey(), GRelation.TYPE.precedes))

@@ -17,7 +17,7 @@ public class GTaskDescriptor {
         ID, KEY, PARENT_KEY,
         SUMMARY, DESCRIPTION, TASK_TYPE, ESTIMATED_TIME, DONE_RATIO, ASSIGNEE, START_DATE, DUE_DATE,
         CREATED_ON, UPDATED_ON,
-        CLOSE_DATE, PRIORITY, REMOTE_ID, TASK_STATUS,
+        CLOSE_DATE, PRIORITY, SOURCE_SYSTEM_ID, TASK_STATUS,
         ENVIRONMENT,
         CHILDREN, TARGET_VERSION, RELATIONS
     }
@@ -39,7 +39,7 @@ public class GTaskDescriptor {
             /*
                 * save "remote/original ID" in this connector's database/file/whatever after tasks were loaded from some source
                 */
-            put(FIELD.REMOTE_ID.name(), "Remote ID");
+            put(FIELD.SOURCE_SYSTEM_ID.name(), "Remote ID");
             put(FIELD.PRIORITY.name(), "Task priority");
             put(FIELD.TASK_STATUS.name(), "Task status");
             put(FIELD.ENVIRONMENT.name(), "Environment");

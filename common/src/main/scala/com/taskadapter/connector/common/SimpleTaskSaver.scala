@@ -4,7 +4,7 @@ import java.util
 
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.data.ConnectorConverter
-import com.taskadapter.connector.definition.{ProgressMonitor, TaskId, SaveResultBuilder}
+import com.taskadapter.connector.definition.{ProgressMonitor, SaveResultBuilder, TaskId}
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.model.GTask
 
@@ -18,7 +18,7 @@ class SimpleTaskSaver[N](previouslyCreatedTasks: Map[String, Long],
       try {
         if (parentIssueKey.isDefined) task.setParentIdentity(parentIssueKey.get)
         val transformedTask = DefaultValueSetter.adapt(fieldRows, task)
-        val withPossiblyNewId = replaceIdIfPreviouslyCreatedByUs(previouslyCreatedTasks, transformedTask, task.getKey)
+        val withPossiblyNewId = replaceIdIfPreviouslyCreatedByUs(previouslyCreatedTasks, transformedTask)
 
         val readyForNative = withPossiblyNewId
         val nativeIssueToCreateOrUpdate = converter.convert(readyForNative)
@@ -45,10 +45,10 @@ class SimpleTaskSaver[N](previouslyCreatedTasks: Map[String, Long],
     }
   }
 
-  private def replaceIdIfPreviouslyCreatedByUs(previouslyCreatedTasks: Map[String, Long], gTask: GTask, originalKey:String): GTask = {
+  private def replaceIdIfPreviouslyCreatedByUs(previouslyCreatedTasks: Map[String, Long], gTask: GTask): GTask = {
       val result = new GTask(gTask)
-      if (originalKey!= null && previouslyCreatedTasks.contains(originalKey)) {
-        result.setId(previouslyCreatedTasks(originalKey))
+      if (gTask.getSourceSystemId != null && previouslyCreatedTasks.contains(gTask.getSourceSystemId)) {
+        result.setId(previouslyCreatedTasks(gTask.getSourceSystemId))
       }
       result
   }

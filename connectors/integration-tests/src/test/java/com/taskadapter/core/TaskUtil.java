@@ -9,7 +9,7 @@ public class TaskUtil {
      */
     public static void setRemoteIdField(java.util.List<GTask> tasks) {
         for (GTask task : tasks) {
-            task.setRemoteId(task.getKey());
+            task.setSourceSystemId(task.getKey());
 
             if (!task.getChildren().isEmpty()) {
                 setRemoteIdField(task.getChildren());

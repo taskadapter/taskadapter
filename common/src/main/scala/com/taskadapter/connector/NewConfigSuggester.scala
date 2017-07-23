@@ -19,17 +19,17 @@ object NewConfigSuggester {
                                          map2: Map[Field, StandardField]): List[FieldMapping] = {
     // TODO TA3 restore remote ids
     /*
-            if (m2.isFieldSupported(GTaskDescriptor.FIELD.REMOTE_ID)) {
-                res.put(new FieldMapping(GTaskDescriptor.FIELD.REMOTE_ID, null,
-                        m2.getDefaultValue(GTaskDescriptor.FIELD.REMOTE_ID),
-                        m2.isSelectedByDefault(GTaskDescriptor.FIELD.REMOTE_ID),
+            if (m2.isFieldSupported(GTaskDescriptor.FIELD.SOURCE_SYSTEM_ID)) {
+                res.put(new FieldMapping(GTaskDescriptor.FIELD.SOURCE_SYSTEM_ID, null,
+                        m2.getDefaultValue(GTaskDescriptor.FIELD.SOURCE_SYSTEM_ID),
+                        m2.isSelectedByDefault(GTaskDescriptor.FIELD.SOURCE_SYSTEM_ID),
                         DEFAULT_VALUE_FOR_EMPTY_VALUES));
             }
 
-            if (m1.isFieldSupported(GTaskDescriptor.FIELD.REMOTE_ID)) {
-                res.put(new FieldMapping(GTaskDescriptor.FIELD.REMOTE_ID,
-                        m1.getDefaultValue(GTaskDescriptor.FIELD.REMOTE_ID), null,
-                        m1.isSelectedByDefault(GTaskDescriptor.FIELD.REMOTE_ID),
+            if (m1.isFieldSupported(GTaskDescriptor.FIELD.SOURCE_SYSTEM_ID)) {
+                res.put(new FieldMapping(GTaskDescriptor.FIELD.SOURCE_SYSTEM_ID,
+                        m1.getDefaultValue(GTaskDescriptor.FIELD.SOURCE_SYSTEM_ID), null,
+                        m1.isSelectedByDefault(GTaskDescriptor.FIELD.SOURCE_SYSTEM_ID),
                         DEFAULT_VALUE_FOR_EMPTY_VALUES));
             }
     */
