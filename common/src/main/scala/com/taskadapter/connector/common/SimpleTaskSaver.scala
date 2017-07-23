@@ -6,9 +6,10 @@ import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.data.ConnectorConverter
 import com.taskadapter.connector.definition.{ProgressMonitor, SaveResultBuilder, TaskId}
 import com.taskadapter.connector.definition.exceptions.ConnectorException
+import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.GTask
 
-class SimpleTaskSaver[N](previouslyCreatedTasks: Map[String, Long],
+class SimpleTaskSaver[N](previouslyCreatedTasksResolver: PreviouslyCreatedTasksResolver,
                          converter: ConnectorConverter[GTask, N],
                          saveAPI: BasicIssueSaveAPI[N],
                          result: SaveResultBuilder, progressMonitor: ProgressMonitor) {
@@ -18,13 +19,13 @@ class SimpleTaskSaver[N](previouslyCreatedTasks: Map[String, Long],
       try {
         if (parentIssueKey.isDefined) task.setParentIdentity(parentIssueKey.get)
         val transformedTask = DefaultValueSetter.adapt(fieldRows, task)
-        val withPossiblyNewId = replaceIdIfPreviouslyCreatedByUs(previouslyCreatedTasks, transformedTask)
+        val withPossiblyNewId = replaceIdentityIfPreviouslyCreatedByUs(previouslyCreatedTasksResolver, transformedTask)
 
         val readyForNative = withPossiblyNewId
         val nativeIssueToCreateOrUpdate = converter.convert(readyForNative)
         val identity = TaskId(readyForNative.getId, readyForNative.getKey)
-        var newTaskIdentity = identity.id match {
-          case 0 =>
+        var newTaskIdentity = identity.key match {
+          case "" | null =>
             val newTaskKey = saveAPI.createTask(nativeIssueToCreateOrUpdate)
             result.addCreatedTask(task.getKey, newTaskKey) // save originally requested task Id to enable tests and ...?
             newTaskKey
@@ -45,11 +46,13 @@ class SimpleTaskSaver[N](previouslyCreatedTasks: Map[String, Long],
     }
   }
 
-  private def replaceIdIfPreviouslyCreatedByUs(previouslyCreatedTasks: Map[String, Long], gTask: GTask): GTask = {
-      val result = new GTask(gTask)
-      if (gTask.getSourceSystemId != null && previouslyCreatedTasks.contains(gTask.getSourceSystemId)) {
-        result.setId(previouslyCreatedTasks(gTask.getSourceSystemId))
-      }
-      result
+  private def replaceIdentityIfPreviouslyCreatedByUs(resolver: PreviouslyCreatedTasksResolver, gTask: GTask): GTask = {
+    val result = new GTask(gTask)
+    val maybeId = previouslyCreatedTasksResolver.findSourceSystemIdentity(gTask)
+    if (maybeId.isDefined) {
+      result.setId(maybeId.get.id)
+      result.setKey(maybeId.get.key)
+    }
+    result
   }
 }

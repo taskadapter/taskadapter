@@ -5,14 +5,13 @@ import java.util
 
 import com.atlassian.jira.rest.client.api.JiraRestClient
 import com.atlassian.jira.rest.client.api.domain.IssueType
-import com.taskadapter.connector.{FieldRow, NewConnector}
 import com.taskadapter.connector.common.TaskSavingUtils
-import com.taskadapter.connector.definition.{ProgressMonitor, SaveResult, WebServerInfo}
 import com.taskadapter.connector.definition.exceptions.{BadConfigException, ConnectorException, ProjectNotSetException}
+import com.taskadapter.connector.definition.{ProgressMonitor, SaveResult, WebServerInfo}
+import com.taskadapter.connector.{FieldRow, NewConnector}
+import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.{GTask, NamedKeyedObject, NamedKeyedObjectImpl}
 import org.slf4j.LoggerFactory
-
-import scala.collection.immutable.Map
 
 
 object JiraConnector {
@@ -112,7 +111,7 @@ class JiraConnector(val config: JiraConfig, var webServerInfo: WebServerInfo) ex
     foo(client)
   })
 
-  def saveData(previouslyCreatedTasks: Map[String, Long], tasks: util.List[GTask], monitor: ProgressMonitor,
+  override def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask], monitor: ProgressMonitor,
                rows: java.lang.Iterable[FieldRow]): SaveResult =
     withJiraRestClient((client: JiraRestClient) => {
     def foo(client: JiraRestClient) = {

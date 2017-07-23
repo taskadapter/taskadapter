@@ -5,7 +5,6 @@ import com.taskadapter.auth.AuthorizedOperations;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.auth.SecondarizationResult;
 import com.taskadapter.config.ConfigStorage;
-import com.taskadapter.core.TaskKeeper;
 import com.taskadapter.web.uiapi.UIConfigService;
 import com.taskadapter.web.uiapi.UIConfigStore;
 import com.taskadapter.webui.pageset.LoggedInPageset;
@@ -91,9 +90,7 @@ public final class SessionController {
 
     private UIConfigStore createStore(File rootFolder) {
         final ConfigStorage configStorage = new ConfigStorage(rootFolder);
-        TaskKeeper taskKeeper = new TaskKeeper();
         return new UIConfigStore(
-                taskKeeper,
                 new UIConfigService(services.pluginManager, services.editorManager), configStorage);
     }
 

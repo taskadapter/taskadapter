@@ -5,6 +5,7 @@ import java.util
 import com.taskadapter.connector.{FieldRow, NewConnector}
 import com.taskadapter.connector.common.TaskSavingUtils
 import com.taskadapter.connector.definition._
+import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.GTask
 import com.taskadapter.redmineapi.{Include, RedmineException, RedmineManager}
 import com.taskadapter.redmineapi.bean._
@@ -79,7 +80,7 @@ class RedmineConnector(var config: RedmineConfig, var serverInfo: WebServerInfo)
     issues.asScala.map( i => converter.convertToGenericTask(i)).asJava
   }
 
-  override def saveData(previouslyCreatedTasks: Map[String, Long], tasks: util.List[GTask],
+  override def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask],
                         monitor: ProgressMonitor,
                         fieldRows: java.lang.Iterable[FieldRow]): SaveResult = try {
     val mgr = RedmineManagerFactory.createRedmineManager(serverInfo)

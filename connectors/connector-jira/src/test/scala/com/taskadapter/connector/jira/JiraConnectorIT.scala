@@ -4,7 +4,9 @@ import java.util
 
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.ProgressMonitorUtils
+import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.connector.testlib.{CommonTestChecks, TestUtils}
+import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import org.fest.assertions.Assertions.assertThat
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
@@ -38,7 +40,7 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     val subTask2 = new JiraGTaskBuilder("child task 2").build()
     parentTask.getChildren.addAll(List(subTask1, subTask2).asJava)
     val connector = getConnector
-    val result = connector.saveData(Map[String, Long](), util.Arrays.asList(parentTask),
+    val result = connector.saveData(new PreviouslyCreatedTasksResolver, util.Arrays.asList(parentTask),
       ProgressMonitorUtils.DUMMY_MONITOR,
       JiraFieldBuilder.getDefault.asJava)
     assertThat(result.getCreatedTasksNumber).isEqualTo(3)
@@ -85,7 +87,7 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
       FieldRow(JiraField.description, JiraField.description, "some default")
     )
 
-    val result = connector.saveData(Map[String, Long](), util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)
+    val result = connector.saveData(new PreviouslyCreatedTasksResolver, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)
     assertThat(result.getCreatedTasksNumber).isEqualTo(1)
     val taskId = result.getIdToRemoteKeyList.head._2
     val loadedTask = connector.loadTaskByKey(taskId.key, rows.asJava)

@@ -1,6 +1,7 @@
 package com.taskadapter.webui.action;
 
 import com.google.common.base.Strings;
+import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.model.GTask;
 import com.taskadapter.webui.Page;
 import com.vaadin.data.Property;
@@ -15,6 +16,7 @@ import java.util.*;
  */
 public class MyTree extends CustomComponent {
     private static final long serialVersionUID = -4455731550636762518L;
+    private PreviouslyCreatedTasksResolver resolver;
 
     private final class TreeItemSelectionHandler implements
             Property.ValueChangeListener {
@@ -57,12 +59,13 @@ public class MyTree extends CustomComponent {
 
     private static final int MAX_ROWS_BEFORE_SCROLLBAR = 10;
 
-    static final  String ACTION_PROPERTY = Page.message("exportConfirmation.column.action");
+    static final String ACTION_PROPERTY = Page.message("exportConfirmation.column.action");
 
     TreeTable tree;
     private List<GTask> rootLevelTasks;
 
-    public MyTree() {
+    public MyTree(PreviouslyCreatedTasksResolver resolver) {
+        this.resolver = resolver;
         buildUI();
     }
 
@@ -101,8 +104,8 @@ public class MyTree extends CustomComponent {
         List<GTask> selectedTasks = new ArrayList<>();
 
         for (GTask gTask : gTaskList) {
-            if(idSet.contains(gTask.getId())) {
-                if(gTask.hasChildren()) {
+            if (idSet.contains(gTask.getId())) {
+                if (gTask.hasChildren()) {
                     gTask.setChildren(getSelectedTasks(gTask.getChildren(), idSet));
                 }
                 selectedTasks.add(gTask);
@@ -129,8 +132,11 @@ public class MyTree extends CustomComponent {
     private void addTaskToTree(Object parentId, GTask task) {
         final Long taskId = task.getId();
 
-        final CheckBox checkBox = new CheckBox((task.getKey() == null) ? Page.message("exportConfirmation.action.create")
-                : Page.message("exportConfirmation.action.update"));
+        final CheckBox checkBox = new CheckBox(
+                resolver.findSourceSystemIdentity(task).isDefined() ?
+                        Page.message("exportConfirmation.action.update")
+                        : Page.message("exportConfirmation.action.create"));
+
         checkBox.setValue(true);
         checkBox.setData(parentId);
         checkBox.addValueChangeListener(new TreeItemSelectionHandler(checkBox, taskId));

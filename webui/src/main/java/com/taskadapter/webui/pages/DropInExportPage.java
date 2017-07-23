@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.taskadapter.connector.definition.SaveResult;
+import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +57,7 @@ public final class DropInExportPage {
      */
     private final int taskLimit;
 
+    private PreviouslyCreatedTasksResolver resolver;
     /**
      * "Process complete" handler.
      */
@@ -75,9 +77,10 @@ public final class DropInExportPage {
     private final Label errorMessage;
     private final VerticalLayout content;
 
-    private DropInExportPage(ConfigOperations configOps, UISyncConfig config,
+    private DropInExportPage(ConfigOperations configOps, UISyncConfig config, PreviouslyCreatedTasksResolver resolver,
             int taskLimit, boolean showFilePath, Runnable onDone, File tempFile) {
         this.config = config;
+        this.resolver = resolver;
         this.onDone = onDone;
         this.taskLimit = taskLimit;
         this.showFilePath = showFilePath;
@@ -141,7 +144,7 @@ public final class DropInExportPage {
      */
     private void showConfirmation(List<GTask> tasks) {
         final Component component = ConfirmExportFragment.render(configOps,
-                config, tasks, new ConfirmExportFragment.Callback() {
+                config, resolver, tasks, new ConfirmExportFragment.Callback() {
                     @Override
                     public void onTasks(List<GTask> selectedTasks) {
                         performExport(selectedTasks);
@@ -357,15 +360,12 @@ public final class DropInExportPage {
      * @return UI component.
      */
     public static Component render(ConfigOperations configOps,
-            UISyncConfig config, int taskLimit, boolean showFilePath,
+            UISyncConfig config, PreviouslyCreatedTasksResolver resolver, int taskLimit, boolean showFilePath,
             final Runnable onDone, final File tempFile) {
-        return new DropInExportPage(configOps, config, taskLimit, showFilePath,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        tempFile.delete();
-                        onDone.run();
-                    }
+        return new DropInExportPage(configOps, config, resolver, taskLimit, showFilePath,
+                () -> {
+                    tempFile.delete();
+                    onDone.run();
                 }, tempFile).ui;
     }
 }

@@ -19,22 +19,22 @@ object TaskKeeperLocationStorage {
 
   def store(configRootFolder: File, location1: String, location2: String, items: Seq[(String, TaskId)]): Unit = {
     val file = getOrCreateFileLocation(configRootFolder, location1, location2)
-    val map = items.map(i => i._1 -> i._2.id).toMap
-    val jsonString = map.asJson.noSpaces
+    val map = items.map(i => i._1 -> i._2).toMap
+    val jsonString = map.asJson.spaces2
     Files.write(jsonString, file, Charsets.UTF_8)
   }
 
-  def loadTasks(configRootFolder: File, location1: String, location2: String): Map[String, Long] = {
+  def loadTasks(configRootFolder: File, location1: String, location2: String): PreviouslyCreatedTasksResolver = {
     val file = getOrCreateFileLocation(configRootFolder, location1, location2)
     val fileBody = Files.toString(file, Charsets.UTF_8)
     if (fileBody.isEmpty) {
-      Map()
+      new PreviouslyCreatedTasksResolver
     } else {
-      val map = decode[Map[String, Long]](fileBody)
+      val map = decode[Map[String, TaskId]](fileBody)
       map match {
         case Left(e) =>
           throw new RuntimeException(s"cannot parse tasks map from file $file: $e")
-        case Right(m) => m
+        case Right(m) => new PreviouslyCreatedTasksResolver(m)
       }
     }
   }

@@ -5,6 +5,7 @@ import static com.taskadapter.webui.Page.message;
 
 import java.util.List;
 
+import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +44,7 @@ public final class UpdateFilePage {
      */
     private final int taskLimit;
 
+    private PreviouslyCreatedTasksResolver resolver;
     /**
      * "Process complete" handler.
      */
@@ -53,8 +55,9 @@ public final class UpdateFilePage {
     private final VerticalLayout content;
 
     private UpdateFilePage(ConfigOperations configOps, UISyncConfig config,
-            int taskLimit, Runnable onDone) {
+                           PreviouslyCreatedTasksResolver resolver, int taskLimit, Runnable onDone) {
         this.config = config;
+        this.resolver = resolver;
         this.onDone = onDone;
         this.taskLimit = taskLimit;
         this.configOps = configOps;
@@ -112,7 +115,7 @@ public final class UpdateFilePage {
      */
     private void showConfirmation(List<GTask> tasks) {
         final Component component = ConfirmExportFragment.render(configOps,
-                config, tasks, new ConfirmExportFragment.Callback() {
+                config, resolver, tasks, new ConfirmExportFragment.Callback() {
                     @Override
                     public void onTasks(List<GTask> selectedTasks) {
                         performExport(selectedTasks);
@@ -276,8 +279,9 @@ public final class UpdateFilePage {
      * @return operation UI.
      */
     public static Component render(ConfigOperations configOps,
-            UISyncConfig config, int maxTasks, Runnable onExit) {
-        return new UpdateFilePage(configOps, config, maxTasks, onExit).ui;
+                                   UISyncConfig config, PreviouslyCreatedTasksResolver resolver,
+                                   int maxTasks, Runnable onExit) {
+        return new UpdateFilePage(configOps, config, resolver, maxTasks, onExit).ui;
     }
 
 }

@@ -7,7 +7,6 @@ import com.taskadapter.config.{ConfigStorage, ConnectorSetup, StorageException, 
 import com.taskadapter.connector.NewConfigSuggester
 import com.taskadapter.connector.common.XorEncryptor
 import com.taskadapter.connector.definition.{FieldMapping, WebServerInfo}
-import com.taskadapter.core.TaskKeeper
 import io.circe.generic.auto._
 import io.circe.syntax._
 import io.circe.parser._
@@ -22,7 +21,7 @@ import scala.collection.JavaConverters._
   * other instances for a same config file. See also documentation for
   * [[UISyncConfig]].
   */
-class UIConfigStore(taskKeeper: TaskKeeper, uiConfigService: UIConfigService, configStorage: ConfigStorage) {
+class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStorage) {
   private val logger = LoggerFactory.getLogger(classOf[ConfigStorage])
 
   val encryptor = new XorEncryptor
@@ -66,7 +65,7 @@ class UIConfigStore(taskKeeper: TaskKeeper, uiConfigService: UIConfigService, co
     newMappings match {
       case Left(e) => throw new RuntimeException(s"cannot parse mappings from config $storedConfig: $e")
       case Right(m) =>
-        new UISyncConfig(configStorage.rootDir, taskKeeper, storedConfig.getId, ownerName, label, config1, config2, m, false)
+        new UISyncConfig(configStorage.rootDir, storedConfig.getId, ownerName, label, config1, config2, m, false)
     }
   }
 
@@ -94,7 +93,7 @@ class UIConfigStore(taskKeeper: TaskKeeper, uiConfigService: UIConfigService, co
 
     saveSetup(userName, connector1Info)
     saveSetup(userName, connector2Info)
-    new UISyncConfig(configStorage.rootDir, taskKeeper, identity, userName, label, config1, config2, newMappings, false)
+    new UISyncConfig(configStorage.rootDir, identity, userName, label, config1, config2, newMappings, false)
   }
 
   def saveSetup(userName: String, setup: WebServerInfo): Unit = {

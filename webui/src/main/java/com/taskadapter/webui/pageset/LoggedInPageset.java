@@ -6,6 +6,7 @@ import com.taskadapter.config.StorageException;
 import com.taskadapter.connector.definition.ExportDirection;
 import com.taskadapter.connector.definition.FileBasedConnector;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.service.Sandbox;
@@ -251,13 +252,15 @@ public class LoggedInPageset {
             @Override
             public void forwardDropIn(UISyncConfig config,
                                       Html5File file) {
-                dropIn(config, file);
+                // TODO TA3 drop-in
+//                dropIn(config, file);
             }
 
             @Override
             public void backwardDropIn(UISyncConfig config,
                                        Html5File file) {
-                dropIn(config.reverse(), file);
+                // TODO TA3 drop-in
+//                dropIn(config.reverse(), file);
             }
         });
         applyUI(component);
@@ -335,7 +338,7 @@ public class LoggedInPageset {
 //        }
     }
 
-    private void dropIn(final UISyncConfig config, final Html5File file) {
+    private void dropIn(final UISyncConfig config, PreviouslyCreatedTasksResolver resolver, final Html5File file) {
         String fileExtension = Files.getFileExtension(file.getFileName());
         final File df = services.tempFileManager.nextFile(fileExtension);
         file.setStreamVariable(new StreamVariable() {
@@ -353,6 +356,7 @@ public class LoggedInPageset {
                             : LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
                     tracker.trackPage("drop_in");
                     Component component = DropInExportPage.render(context.configOps, config,
+                            resolver,
                             maxTasks, services.settingsManager
                                     .isTAWorkingOnLocalMachine(),
                             new Runnable() {
@@ -454,9 +458,7 @@ public class LoggedInPageset {
     }
 */
 
-    /**
-     * Processes a file action.
-     */
+/*
     private void startUpdateFile(UISyncConfig config) {
         tracker.trackPage("update_file");
         final int maxTasks = services.licenseManager
@@ -465,6 +467,7 @@ public class LoggedInPageset {
         applyUI(UpdateFilePage.render(context.configOps, config, maxTasks,
                 this::showHome));
     }
+*/
 
     /**
      * Prepares config for conversion.

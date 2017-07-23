@@ -1,10 +1,12 @@
 package com.taskadapter.webui.action;
 
+import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.model.GTask;
 import com.vaadin.ui.CheckBox;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import scala.collection.immutable.HashMap;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +34,7 @@ public class MyTreeTest {
 
         rootLevelTasks = new GTask[]{gTask0};
 
-        myTree = new MyTree();
+        myTree = new MyTree(new PreviouslyCreatedTasksResolver(new HashMap<>()));
         myTree.setTasks(Arrays.asList(rootLevelTasks));
     }
 

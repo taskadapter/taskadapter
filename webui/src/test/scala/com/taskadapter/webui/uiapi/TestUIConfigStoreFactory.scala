@@ -4,7 +4,6 @@ import java.io.File
 
 import com.taskadapter.PluginManager
 import com.taskadapter.config.ConfigStorage
-import com.taskadapter.core.TaskKeeper
 import com.taskadapter.web.uiapi.{UIConfigService, UIConfigStore}
 import com.taskadapter.webui.service.EditorManager
 
@@ -13,6 +12,6 @@ object TestUIConfigStoreFactory {
     val configStorage = new ConfigStorage(temporaryFolder)
     val editorManager = EditorManager.fromResource("editors.txt")
     val uiConfigService = new UIConfigService(new PluginManager, editorManager)
-    new UIConfigStore(new TaskKeeper, uiConfigService, configStorage)
+    new UIConfigStore(uiConfigService, configStorage)
   }
 }

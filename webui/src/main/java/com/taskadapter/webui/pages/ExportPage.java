@@ -6,7 +6,6 @@ import static com.taskadapter.webui.Page.message;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 import com.google.common.base.Strings;
@@ -136,7 +135,7 @@ public final class ExportPage {
      */
     private void showConfirmation(List<GTask> tasks) {
         final Component component = ConfirmExportFragment.render(configOps,
-                config, tasks, new ConfirmExportFragment.Callback() {
+                config, config.getPreviouslyCreatedTasksResolver(), tasks, new ConfirmExportFragment.Callback() {
                     @Override
                     public void onTasks(List<GTask> selectedTasks) {
                         performExport(selectedTasks);
@@ -338,7 +337,8 @@ public final class ExportPage {
     }
 
     public static Component render(ConfigOperations configOps,
-                                   UISyncConfig config, int taskLimit, boolean showFilePath,
+                                   UISyncConfig config,
+                                   int taskLimit, boolean showFilePath,
                                    Runnable onDone) {
         return new ExportPage(configOps, config, taskLimit, showFilePath, onDone).ui;
     }

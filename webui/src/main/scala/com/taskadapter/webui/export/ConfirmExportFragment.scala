@@ -3,6 +3,7 @@ package com.taskadapter.webui.export
 import java.util
 
 import com.taskadapter.config.StorageException
+import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.GTask
 import com.taskadapter.web.uiapi.UISyncConfig
 import com.taskadapter.webui.{ConfigOperations, Page}
@@ -36,15 +37,16 @@ object ConfirmExportFragment {
     *
     * @return confirmation dialog.
     */
-  def render(configOps: ConfigOperations, config: UISyncConfig, initalTasks: util.List[GTask], callback: Callback): Component = {
+  def render(configOps: ConfigOperations, config: UISyncConfig, resolver: PreviouslyCreatedTasksResolver,
+             initialTasks: util.List[GTask], callback: Callback): Component = {
     val layout = new VerticalLayout
     layout.setSpacing(true)
     val destination = config.getConnector2.getDestinationLocation + " (" + config.getConnector2.getConnectorTypeId + ")"
     val text1 = new Label(Page.message("exportConfirmation.pleaseConfirm", destination))
     layout.addComponent(text1)
-    val connectorTree = new MyTree
+    val connectorTree = new MyTree(resolver)
     connectorTree.setSizeFull()
-    connectorTree.setTasks(initalTasks)
+    connectorTree.setTasks(initialTasks)
     layout.addComponent(connectorTree)
     val buttonsLayout = new HorizontalLayout
     val goButton = new Button(Page.message("button.go"))

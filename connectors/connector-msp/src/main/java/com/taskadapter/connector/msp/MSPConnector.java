@@ -11,7 +11,7 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.msp.write.RealWriter;
 import com.taskadapter.connector.msp.write.ResourceManager;
-import com.taskadapter.core.TaskKeeper;
+import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.model.GTask;
 import net.sf.mpxj.MPXJException;
 import net.sf.mpxj.ProjectFile;
@@ -166,8 +166,8 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
     }
 
     @Override
-    public SaveResult saveData(Map<String, Object> previouslyCreatedTasks, List<GTask> tasks,
-                                   ProgressMonitor monitor, Iterable<FieldRow> rows) {
+    public SaveResult saveData(PreviouslyCreatedTasksResolver previouslyCreatedTasksResolver, List<GTask> tasks,
+                               ProgressMonitor monitor, Iterable<FieldRow> rows) {
         try {
             return new MSPTaskSaver(config, rows).saveData(tasks);
         } catch (ConnectorException e) {

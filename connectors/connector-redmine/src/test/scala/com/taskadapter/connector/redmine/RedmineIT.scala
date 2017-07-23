@@ -7,7 +7,6 @@ import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.TreeUtils
 import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.connector.testlib._
-import com.taskadapter.core.TaskKeeper
 import com.taskadapter.model.GTask
 import com.taskadapter.redmineapi.bean.ProjectFactory
 import org.junit.runner.RunWith

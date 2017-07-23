@@ -3,10 +3,11 @@ package com.taskadapter.connector
 import java.util
 
 import com.taskadapter.connector.definition.{ProgressMonitor, SaveResult}
+import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.GTask
 
 trait NewConnector {
-  def saveData(previouslyCreatedTasks: Map[String, scala.Long],
+  def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver,
                tasks: util.List[GTask],
                monitor: ProgressMonitor,
                rows: java.lang.Iterable[FieldRow]): SaveResult

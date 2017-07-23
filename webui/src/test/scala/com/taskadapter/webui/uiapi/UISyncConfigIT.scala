@@ -2,7 +2,6 @@ package com.taskadapter.webui.uiapi
 
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.jira.JiraField
-import com.taskadapter.core.TaskKeeper
 import com.taskadapter.model.GTask
 import com.taskadapter.web.uiapi.ConfigLoader
 import org.fest.assertions.Assertions.assertThat
@@ -45,7 +44,7 @@ class UISyncConfigIT extends FunSpec with Matchers with TempFolder {
   */
   it("tasks can be loaded from JIRA and saved to Redmine") {
     withTempFolder { f =>
-      val config = ConfigLoader.loadConfig(f, new TaskKeeper, "Atlassian-JIRA_Redmine.ta_conf")
+      val config = ConfigLoader.loadConfig(f, "Atlassian-JIRA_Redmine.ta_conf")
       val loadedTasks = config.loadTasks(100)
       assertThat(loadedTasks.size).isGreaterThan(0)
       val saveResult = config.saveTasks(loadedTasks, ProgressMonitorUtils.DUMMY_MONITOR)
@@ -56,7 +55,7 @@ class UISyncConfigIT extends FunSpec with Matchers with TempFolder {
 
   it("empty description field name on right side is ignored if selected=false") {
     withTempFolder { f =>
-      val config = ConfigLoader.loadConfig(f, new TaskKeeper, "JIRA_Redmine_empty_description_on_right_side.ta_conf")
+      val config = ConfigLoader.loadConfig(f, "JIRA_Redmine_empty_description_on_right_side.ta_conf")
       val loadedTasks = config.loadTasks(100)
       assertThat(loadedTasks.size).isGreaterThan(0)
       val saveResult = config.saveTasks(loadedTasks, ProgressMonitorUtils.DUMMY_MONITOR)
@@ -67,7 +66,7 @@ class UISyncConfigIT extends FunSpec with Matchers with TempFolder {
 
   it("fake JIRA task is created, then updated in Redmine") {
     withTempFolder { f =>
-      val config = ConfigLoader.loadConfig(f, new TaskKeeper, "Atlassian-JIRA_Redmine.ta_conf")
+      val config = ConfigLoader.loadConfig(f, "Atlassian-JIRA_Redmine.ta_conf")
       val jiraTask = new GTask
       jiraTask.setKey("TEST-66")
       jiraTask.setValue(JiraField.summary, "summary")

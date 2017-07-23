@@ -9,7 +9,7 @@ import com.taskadapter.connector.{FieldRow, NewConnector}
 import com.taskadapter.model.GTask
 
 object TaskSaver {
-  def save(previouslyCreatedTasks: Map[String, scala.Long],
+  def save(previouslyCreatedTasks: PreviouslyCreatedTasksResolver,
            connectorTo: NewConnector,
            destinationName: String,
            rows: java.lang.Iterable[FieldRow],

@@ -6,9 +6,10 @@ import java.util
 import com.taskadapter.connector.MappingBuilder
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.exceptions.ConnectorException
-import com.taskadapter.connector.definition.{ExportDirection, FieldMapping, ProgressMonitor, SaveResult}
+import com.taskadapter.connector.definition._
 import com.taskadapter.core._
 import com.taskadapter.model.GTask
+
 import scala.collection.JavaConverters._
 
 /**
@@ -30,7 +31,7 @@ object UISyncConfig {
   private def reverse(mapping: FieldMapping) = FieldMapping(mapping.fieldInConnector2, mapping.fieldInConnector1, mapping.selected, mapping.defaultValue)
 }
 
-final class UISyncConfig(configRootFolder: File, taskKeeper: TaskKeeper,
+final class UISyncConfig(configRootFolder: File,
 
                          /**
                            * Config identity. Unique "config-storage" id to distinguish between
@@ -89,7 +90,7 @@ final class UISyncConfig(configRootFolder: File, taskKeeper: TaskKeeper,
     *
     * @return "reversed" (back-order) configuration.
     */
-  def reverse = new UISyncConfig(configRootFolder, taskKeeper, identity, owner, label, connector2, connector1, UISyncConfig.reverse(fieldMappings), !reversed)
+  def reverse = new UISyncConfig(configRootFolder, identity, owner, label, connector2, connector1, UISyncConfig.reverse(fieldMappings), !reversed)
 
   /**
     * Returns a "normalized" (canonical) form of this config.
@@ -130,7 +131,7 @@ final class UISyncConfig(configRootFolder: File, taskKeeper: TaskKeeper,
     loadedTasks
   }
 
-  private def loadPreviouslyCreatedTasks(): Map[String, Long] = {
+  def getPreviouslyCreatedTasksResolver: PreviouslyCreatedTasksResolver = {
     val location1 = getConnector1.getSourceLocation
     val location2 = getConnector2.getSourceLocation
     TaskKeeperLocationStorage.loadTasks(configRootFolder, location1, location2)
@@ -154,8 +155,8 @@ final class UISyncConfig(configRootFolder: File, taskKeeper: TaskKeeper,
 
     val location1 = getConnector1.getSourceLocation
     val location2 = getConnector2.getSourceLocation
-    val previouslyCreatedTasks = TaskKeeperLocationStorage.loadTasks(configRootFolder, location1, location2)
-    val result = TaskSaver.save(previouslyCreatedTasks, connectorTo, destinationLocation, rows.asJava, tasks, progressMonitor)
+    val previouslyCreatedTasksResolver = TaskKeeperLocationStorage.loadTasks(configRootFolder, location1, location2)
+    val result = TaskSaver.save(previouslyCreatedTasksResolver, connectorTo, destinationLocation, rows.asJava, tasks, progressMonitor)
     TaskKeeperLocationStorage.store(configRootFolder, location1, location2, result.getIdToRemoteKeyList)
     result
   }

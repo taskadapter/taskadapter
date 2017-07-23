@@ -6,6 +6,7 @@ import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.data.ConnectorConverter
 import com.taskadapter.connector.definition.{ConnectorConfig, ProgressMonitor, SaveResultBuilder}
 import com.taskadapter.connector.definition.exceptions.ConnectorException
+import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.GTask
 
 object TaskSavingUtils {
@@ -32,7 +33,7 @@ object TaskSavingUtils {
     }
   }
 
-  def saveTasks[N](previouslyCreatedTasks: Map[String, Long],
+  def saveTasks[N](previouslyCreatedTasks: PreviouslyCreatedTasksResolver,
                    tasks: util.List[GTask],
                    converter: ConnectorConverter[GTask, N],
                    saveAPI: BasicIssueSaveAPI[N],
