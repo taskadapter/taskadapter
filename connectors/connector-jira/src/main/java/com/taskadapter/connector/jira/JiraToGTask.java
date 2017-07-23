@@ -47,7 +47,7 @@ public class JiraToGTask {
         // TODO TA3 task ids?
         task.setId(longId);
         task.setKey(issue.getKey());
-        task.setSourceSystemId(issue.getKey());
+        task.setSourceSystemId(new TaskId(longId, issue.getKey()));
 
         if (issue.getAssignee() != null) {
             String jiraUserLogin = issue.getAssignee().getName();

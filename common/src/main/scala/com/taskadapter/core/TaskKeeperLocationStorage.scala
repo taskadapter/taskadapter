@@ -5,7 +5,9 @@ import java.io.File
 import com.google.common.base.Charsets
 import com.google.common.io.Files
 import com.taskadapter.connector.definition.TaskId
+import io.circe.{Decoder, Encoder}
 import io.circe.generic.auto._
+import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.parser._
 import io.circe.syntax._
 
@@ -14,13 +16,18 @@ import scala.util.Random
 case class TaskKeeperLocation(location1: String, location2: String, cacheFileLocation: String)
 
 object TaskKeeperLocationStorage {
+/*
+  implicit val fooDecoder: Decoder[TaskId] = deriveDecoder[TaskId]
+  implicit val fooEncoder: Encoder[TaskId] = deriveEncoder[TaskId]
+  implicit val mapDecoder: Decoder[Map[TaskId,TaskId]] = deriveDecoder[Map[TaskId,TaskId]]
+  implicit val mapEncoder: Encoder[Map[TaskId,TaskId]] = deriveEncoder[Map[TaskId,TaskId]]
+*/
 
   val fileName = "cache_file_links.json"
 
-  def store(configRootFolder: File, location1: String, location2: String, items: Seq[(String, TaskId)]): Unit = {
+  def store(configRootFolder: File, location1: String, location2: String, items: Seq[(TaskId, TaskId)]): Unit = {
     val file = getOrCreateFileLocation(configRootFolder, location1, location2)
-    val map = items.map(i => i._1 -> i._2).toMap
-    val jsonString = map.asJson.spaces2
+    val jsonString = items.asJson.spaces2
     Files.write(jsonString, file, Charsets.UTF_8)
   }
 
@@ -30,7 +37,7 @@ object TaskKeeperLocationStorage {
     if (fileBody.isEmpty) {
       new PreviouslyCreatedTasksResolver
     } else {
-      val map = decode[Map[String, TaskId]](fileBody)
+      val map = decode[Seq[(TaskId, TaskId)]](fileBody)
       map match {
         case Left(e) =>
           throw new RuntimeException(s"cannot parse tasks map from file $file: $e")

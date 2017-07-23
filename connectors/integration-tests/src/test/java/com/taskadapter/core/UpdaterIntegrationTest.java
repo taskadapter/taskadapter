@@ -117,11 +117,6 @@ public class UpdaterIntegrationTest {
     }
 */
 
-    private void createTasksInRedmine() {
-        this.rmIssues = createRedmineIssues(TASKS_NUMBER);
-        TaskUtil.setRemoteIdField(rmIssues);
-    }
-
     private void saveToMSP(List<FieldRow> rows) throws ConnectorException {
         new MSPTaskSaver(mspConfig, rows).saveData(rmIssues);
     }

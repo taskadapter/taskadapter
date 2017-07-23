@@ -1,6 +1,7 @@
 package com.taskadapter.webui.uiapi
 
 import com.taskadapter.connector.common.ProgressMonitorUtils
+import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.connector.jira.JiraField
 import com.taskadapter.model.GTask
 import com.taskadapter.web.uiapi.ConfigLoader
@@ -68,6 +69,7 @@ class UISyncConfigIT extends FunSpec with Matchers with TempFolder {
     withTempFolder { f =>
       val config = ConfigLoader.loadConfig(f, "Atlassian-JIRA_Redmine.ta_conf")
       val jiraTask = new GTask
+      jiraTask.setId(66l)
       jiraTask.setKey("TEST-66")
       jiraTask.setValue(JiraField.summary, "summary")
 
@@ -78,7 +80,7 @@ class UISyncConfigIT extends FunSpec with Matchers with TempFolder {
       assertThat(saveResult.getUpdatedTasksNumber).isEqualTo(0)
 
       // now pretend that the task was loaded from somewhere
-      jiraTask.setSourceSystemId("TEST-66")
+      jiraTask.setSourceSystemId(TaskId(66, "TEST-66"))
       val updateResult = config.saveTasks(list, ProgressMonitorUtils.DUMMY_MONITOR)
       assertThat(updateResult.hasErrors).isFalse()
       assertThat(updateResult.getCreatedTasksNumber).isEqualTo(0)

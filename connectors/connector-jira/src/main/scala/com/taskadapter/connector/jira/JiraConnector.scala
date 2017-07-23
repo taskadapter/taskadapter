@@ -7,7 +7,7 @@ import com.atlassian.jira.rest.client.api.JiraRestClient
 import com.atlassian.jira.rest.client.api.domain.IssueType
 import com.taskadapter.connector.common.TaskSavingUtils
 import com.taskadapter.connector.definition.exceptions.{BadConfigException, ConnectorException, ProjectNotSetException}
-import com.taskadapter.connector.definition.{ProgressMonitor, SaveResult, WebServerInfo}
+import com.taskadapter.connector.definition.{ProgressMonitor, SaveResult, TaskId, WebServerInfo}
 import com.taskadapter.connector.{FieldRow, NewConnector}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.{GTask, NamedKeyedObject, NamedKeyedObjectImpl}
@@ -93,10 +93,10 @@ class JiraConnector(val config: JiraConfig, var webServerInfo: WebServerInfo) ex
   @throws[ConnectorException]
   def getIssueTypesForSubtasks: util.List[_ <: NamedKeyedObject] = IssueTypesLoader.getIssueTypes(webServerInfo, new SubtaskTypesFilter)
 
-  override def loadTaskByKey(key: String, rows: java.lang.Iterable[FieldRow]): GTask = withJiraRestClient((client: JiraRestClient) => {
+  override def loadTaskByKey(key: TaskId, rows: java.lang.Iterable[FieldRow]): GTask = withJiraRestClient((client: JiraRestClient) => {
     def foo(client: JiraRestClient) = {
       val loader = new JiraTaskLoader(client, config.getPriorities)
-      loader.loadTask(key)
+      loader.loadTask(key.key)
     }
 
     foo(client)

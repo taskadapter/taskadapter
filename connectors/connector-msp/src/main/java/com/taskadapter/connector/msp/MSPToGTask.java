@@ -46,7 +46,7 @@ class MSPToGTask {
         genericTask.setValue(MspField.summary(), task.getName());
         genericTask.setId(task.getUniqueID().longValue());
         genericTask.setKey(task.getUniqueID() + "");
-        genericTask.setSourceSystemId(task.getUniqueID()+"");
+        genericTask.setSourceSystemId(new TaskId(task.getUniqueID(), task.getUniqueID()+""));
 
         Task parent = task.getParentTask();
         if (parent != null && parent.getID() != 0 && parent.getUniqueID() != 0) {

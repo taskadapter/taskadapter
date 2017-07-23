@@ -62,7 +62,7 @@ object CommonTestChecks {
     assertFalse(result.hasErrors)
     assertEquals(1, result.getCreatedTasksNumber)
     val remoteKey = result.getRemoteKey(id)
-    val loaded = connector.loadTaskByKey(remoteKey.key, rows)
+    val loaded = connector.loadTaskByKey(remoteKey, rows)
     // UPDATE
     val newValue = "some new text"
     loaded.setValue(fieldToChangeInTest, newValue)
@@ -75,7 +75,7 @@ object CommonTestChecks {
     val result2 = TaskSaver.save(new PreviouslyCreatedTasksResolver, connector, "some name", rows, util.Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR)
     assertFalse(result2.hasErrors)
     assertEquals(1, result2.getUpdatedTasksNumber)
-    val loadedAgain = connector.loadTaskByKey(remoteKey.key, rows)
+    val loadedAgain = connector.loadTaskByKey(remoteKey, rows)
     assertEquals(newValue, loadedAgain.getValue(fieldToChangeInTest))
   }
 }

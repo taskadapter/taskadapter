@@ -27,11 +27,11 @@ class SimpleTaskSaver[N](previouslyCreatedTasksResolver: PreviouslyCreatedTasksR
         var newTaskIdentity = identity.key match {
           case "" | null =>
             val newTaskKey = saveAPI.createTask(nativeIssueToCreateOrUpdate)
-            result.addCreatedTask(task.getKey, newTaskKey) // save originally requested task Id to enable tests and ...?
+            result.addCreatedTask(TaskId(task.getId, task.getKey), newTaskKey) // save originally requested task Id to enable tests and ...?
             newTaskKey
           case some =>
             saveAPI.updateTask(nativeIssueToCreateOrUpdate)
-            result.addUpdatedTask(task.getKey, identity)
+            result.addUpdatedTask(TaskId(task.getId, task.getKey), identity)
             identity
         }
         progressMonitor.worked(1)

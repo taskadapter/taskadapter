@@ -2,7 +2,7 @@ package com.taskadapter.connector
 
 import java.util
 
-import com.taskadapter.connector.definition.{ProgressMonitor, SaveResult}
+import com.taskadapter.connector.definition.{ProgressMonitor, SaveResult, TaskId}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.GTask
 
@@ -21,5 +21,5 @@ trait NewConnector {
   /**
     * Loads one task by its key.
     */
-  def loadTaskByKey(key: String, rows: java.lang.Iterable[FieldRow]): GTask
+  def loadTaskByKey(key: TaskId, rows: java.lang.Iterable[FieldRow]): GTask
 }

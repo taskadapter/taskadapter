@@ -78,12 +78,12 @@ final public class GTask {
         return (TaskId) getValue(GTaskDescriptor.FIELD.PARENT_KEY);
     }
 
-    public String getSourceSystemId() {
-        return (String) getValue(GTaskDescriptor.FIELD.SOURCE_SYSTEM_ID);
+    public TaskId getSourceSystemId() {
+        return (TaskId) getValue(GTaskDescriptor.FIELD.SOURCE_SYSTEM_ID);
     }
 
-    public void setSourceSystemId(String remoteId) {
-        setValue(GTaskDescriptor.FIELD.SOURCE_SYSTEM_ID, remoteId);
+    public void setSourceSystemId(TaskId sourceSystemId) {
+        setValue(GTaskDescriptor.FIELD.SOURCE_SYSTEM_ID, sourceSystemId);
     }
 
     /**

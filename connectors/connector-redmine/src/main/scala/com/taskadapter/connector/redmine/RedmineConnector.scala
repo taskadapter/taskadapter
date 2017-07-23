@@ -33,9 +33,9 @@ object RedmineConnector {
 }
 
 class RedmineConnector(var config: RedmineConfig, var serverInfo: WebServerInfo) extends NewConnector {
-  override def loadTaskByKey(key: String, rows: java.lang.Iterable[FieldRow]): GTask = try {
+  override def loadTaskByKey(key: TaskId, rows: java.lang.Iterable[FieldRow]): GTask = try {
     val mgr = RedmineManagerFactory.createRedmineManager(serverInfo)
-    val intKey = key.toInt
+    val intKey = key.id.toInt
     val issue = mgr.getIssueManager.getIssueById(intKey, Include.relations)
     val converter = new RedmineToGTask(config)
     converter.convertToGenericTask(issue)

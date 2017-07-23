@@ -44,9 +44,8 @@ object ConfirmExportFragment {
     val destination = config.getConnector2.getDestinationLocation + " (" + config.getConnector2.getConnectorTypeId + ")"
     val text1 = new Label(Page.message("exportConfirmation.pleaseConfirm", destination))
     layout.addComponent(text1)
-    val connectorTree = new MyTree(resolver)
+    val connectorTree = new MyTree(resolver, initialTasks)
     connectorTree.setSizeFull()
-    connectorTree.setTasks(initialTasks)
     layout.addComponent(connectorTree)
     val buttonsLayout = new HorizontalLayout
     val goButton = new Button(Page.message("button.go"))

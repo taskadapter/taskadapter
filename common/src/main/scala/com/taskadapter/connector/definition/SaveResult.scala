@@ -1,7 +1,7 @@
 package com.taskadapter.connector.definition
 
 class SaveResult(targetFileAbsolutePath: String, updatedTasksNumber: Int, createdTasksNumber: Int,
-                 keyToRemoteKeyList: List[(String, TaskId)],
+                 keyToRemoteKeyList: List[(TaskId, TaskId)],
                  generalErrors: List[Throwable],
                  taskErrors: List[TaskError[Throwable]]) {
 
@@ -11,7 +11,7 @@ class SaveResult(targetFileAbsolutePath: String, updatedTasksNumber: Int, create
 
   def getCreatedTasksNumber: Int = createdTasksNumber
 
-  def getIdToRemoteKeyList: List[(String, TaskId)] = keyToRemoteKeyList
+  def getIdToRemoteKeyList: List[(TaskId, TaskId)] = keyToRemoteKeyList
 
   def getRemoteKey(id: Long): TaskId = keyToRemoteKeyList.find(_._1 == id).map(_._2).orNull
 

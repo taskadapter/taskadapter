@@ -7,6 +7,7 @@ import com.taskadapter.connector.definition.FileBasedConnector;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.SaveResult;
+import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.msp.write.RealWriter;
@@ -109,7 +110,7 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
     }
 
     @Override
-    public GTask loadTaskByKey(String key, Iterable<FieldRow> rows) {
+    public GTask loadTaskByKey(TaskId key, Iterable<FieldRow> rows) {
         throw new RuntimeException("not implemented");
     }
 

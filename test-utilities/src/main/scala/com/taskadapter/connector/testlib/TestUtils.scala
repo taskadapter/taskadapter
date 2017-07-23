@@ -4,7 +4,7 @@ import java.util
 import java.util.{Calendar, Date}
 
 import com.taskadapter.connector.common.{ConnectorUtils, ProgressMonitorUtils}
-import com.taskadapter.connector.definition.SaveResult
+import com.taskadapter.connector.definition.{SaveResult, TaskId}
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.connector.{Field, FieldRow, NewConnector}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
@@ -80,7 +80,7 @@ object TestUtils {
   def saveAndLoad(connector: NewConnector, task: GTask, rows: util.List[FieldRow]): GTask = {
     val result = connector.saveData(new PreviouslyCreatedTasksResolver, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows)
     val remoteKeys = result.getRemoteKeys
-    val remoteKey = remoteKeys.iterator.next.key
+    val remoteKey = remoteKeys.iterator.next
     connector.loadTaskByKey(remoteKey, rows)
   }
 
@@ -89,7 +89,7 @@ object TestUtils {
     */
   @throws[ConnectorException]
   def loadCreatedTask(connector: NewConnector, rows: util.List[FieldRow], result: SaveResult): GTask = {
-    val remoteKey = result.getRemoteKeys.head.key
+    val remoteKey = result.getRemoteKeys.head
     connector.loadTaskByKey(remoteKey, rows)
   }
 
@@ -104,10 +104,10 @@ object TestUtils {
 
 
   @throws[ConnectorException]
-  def save(connector: NewConnector, task: GTask, rows: List[FieldRow]): String = {
+  def save(connector: NewConnector, task: GTask, rows: List[FieldRow]): TaskId = {
     val result = connector.saveData(new PreviouslyCreatedTasksResolver, List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)
     val remoteKeys = result.getRemoteKeys
-    remoteKeys.iterator.next.key
+    remoteKeys.iterator.next
   }
 
   def setTaskStartYearAgo(task: GTask, startDateFieldName: String): Calendar = {

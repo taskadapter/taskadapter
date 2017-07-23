@@ -16,7 +16,7 @@ class TestSaver(var connector: NewConnector, var rows: util.List[FieldRow]) {
       util.Arrays.asList(task),
       ProgressMonitorUtils.DUMMY_MONITOR,
       rows)
-    val newKey = taskSaveResult.getRemoteKeys.iterator.next.key
+    val newKey = taskSaveResult.getRemoteKeys.iterator.next
     connector.loadTaskByKey(newKey, rows)
   }
 }

@@ -91,7 +91,7 @@ public class MSXMLFileWriter {
             GTask transformedTask = DefaultValueSetter.adapt(rows, gTask);
             GTaskToMSP gTaskToMSP = new GTaskToMSP(newMspTask, new ResourceManager(project));
             gTaskToMSP.setFields(transformedTask, keepTaskId);
-            syncResult.addCreatedTask(gTask.getKey(),
+            syncResult.addCreatedTask(new TaskId(gTask.getId(), gTask.getKey()),
                     new TaskId(newMspTask.getID(), newMspTask.getID() + ""));
             addTasks(syncResult, project, newMspTask, transformedTask.getChildren(), keepTaskId);
         }
