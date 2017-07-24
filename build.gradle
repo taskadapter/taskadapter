@@ -42,7 +42,9 @@ subprojects {
 //        mavenLocal()
 
         maven {
-            url 'https://dev.taskadapter.com/nexus/content/groups/public'
+            // note - cannot use https://dev.taskadapter.com/nexus/content/groups/public url for now
+            // because Nginx->Nexus requires additional configuration for that.
+            url 'http://dev.taskadapter.com:8081/nexus/content/groups/public'
         }
         maven {
             url 'http://maven.vaadin.com/vaadin-addons'
