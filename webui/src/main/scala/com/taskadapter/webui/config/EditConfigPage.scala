@@ -167,9 +167,7 @@ class EditConfigPage private(val config: UISyncConfig, val configOps: ConfigOper
         errorMessageLabel.setValue(s)
         return false
       case e: FieldNotMappedException =>
-        val fieldDisplayName = e.toString
-        // GTaskDescriptor.getDisplayValue(e.getField());
-        val s = Page.message("error.fieldSelectedForExportNotMapped", fieldDisplayName)
+        val s = Page.message("error.fieldSelectedForExportNotMapped", e.fieldName)
         errorMessageLabel.setValue(s)
         return false
       case e: BadConfigException =>

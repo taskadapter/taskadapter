@@ -1,5 +1,6 @@
 package com.taskadapter.webui.config;
 
+import com.google.common.base.Strings;
 import com.taskadapter.connector.Field;
 import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
@@ -267,5 +268,12 @@ public class TaskFieldsMappingFragment implements Validatable {
                         new Field(e.fieldTypeInConnector2(), e.fieldInConnector2()),
                         e.selected(), e.defaultValue()))
                 .collect(Collectors.toList());
+    }
+
+    void removeEmptyRows() {
+        editablePojoMappings.stream()
+                .filter(e -> Strings.isNullOrEmpty(e.fieldInConnector1())
+                        && Strings.isNullOrEmpty(e.fieldInConnector2())
+                ).forEach(this::removeRow);
     }
 }

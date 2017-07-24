@@ -66,6 +66,7 @@ public final class OnePageEditor {
     }
 
     public Iterable<FieldMapping> getElements() {
+        taskFieldsMappingFragment.removeEmptyRows();
         return taskFieldsMappingFragment.getElements();
     }
     
