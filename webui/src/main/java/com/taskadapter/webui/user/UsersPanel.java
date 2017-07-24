@@ -46,13 +46,10 @@ public class UsersPanel {
 
     /**
      * Creates a new users panel.
-     * 
-     * @param credentialsManager
-     *            credentials manager.
-     * @param authorizedOperations
-     *            supported operations.
-     * @param license
-     *            current license.
+     *
+     * @param credentialsManager   credentials manager.
+     * @param authorizedOperations operations authorized for current user.
+     * @param license              current license.
      */
     private UsersPanel(CredentialsManager credentialsManager, AuthorizedOperations authorizedOperations, License license) {
         this.credentialsManager = credentialsManager;
@@ -71,7 +68,7 @@ public class UsersPanel {
 
         statusLabel = new Label();
         view.addComponent(statusLabel);
-        
+
         usersLayout = new GridLayout();
         usersLayout.setColumns(COLUMNS_NUMBER);
         usersLayout.setSpacing(true);
@@ -84,18 +81,19 @@ public class UsersPanel {
         addUserButton.addClickListener((Button.ClickListener) event -> startCreateUserProcess());
         view.addComponent(addUserButton);
         States.onValue(numUsers, this::applyLicenseRestriction);
-        
+
         refreshUsers(users);
     }
-    
+
     private void reloadUsers() {
         refreshUsers(credentialsManager.listUsers());
     }
 
     private void applyLicenseRestriction(int currentNumberOfUsersCreatedInSystem) {
         addUserButton.setEnabled(license != null
-                && currentNumberOfUsersCreatedInSystem < license.getUsersNumber());
-        
+                && currentNumberOfUsersCreatedInSystem < license.getUsersNumber()
+                && authorizedOperations.canAddUsers());
+
         if (license == null) {
             statusLabel.setValue(message("users.cantAddUsersUntilLicenseInstalled"));
         } else if (license.getUsersNumber() <= currentNumberOfUsersCreatedInSystem) {
@@ -104,14 +102,12 @@ public class UsersPanel {
             statusLabel.setValue("");
         }
     }
-    
 
     private void refreshUsers(final Collection<String> users) {
         usersLayout.removeAllComponents();
         List<String> usersList = new ArrayList<>(users);
         Collections.sort(usersList);
         usersList.forEach(this::addUserToPanel);
-        
         numUsers.set(usersList.size());
     }
 
@@ -209,27 +205,27 @@ public class UsersPanel {
     private void startSetPasswordProcess(final String userLoginName) {
         InputDialog inputDialog = new InputDialog(message("users.changePassword", userLoginName),
                 message("users.newPassword"), new InputDialog.Recipient() {
-                    public void gotInput(String newPassword) {
-                        try {
-                            credentialsManager.savePrimaryAuthToken(
-                                    userLoginName, newPassword);
-                        } catch (AuthException e) {
-                            LOGGER.error("Change password error", e);
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
+            public void gotInput(String newPassword) {
+                try {
+                    credentialsManager.savePrimaryAuthToken(
+                            userLoginName, newPassword);
+                } catch (AuthException e) {
+                    LOGGER.error("Change password error", e);
+                    throw new RuntimeException(e);
+                }
+            }
+        });
         inputDialog.setPasswordMode();
         ui.getUI().addWindow(inputDialog);
     }
 
     /**
      * Renders "Users" panel.
-     * 
+     *
      * @return users panel UI.
      */
     public static Component render(CredentialsManager credentialsManager,
-            AuthorizedOperations supportedOperationsForCurrentUser, License license) {
+                                   AuthorizedOperations supportedOperationsForCurrentUser, License license) {
         return new UsersPanel(credentialsManager, supportedOperationsForCurrentUser, license).ui;
     }
 }
