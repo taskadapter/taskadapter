@@ -105,7 +105,7 @@ public final class ExportPage {
             @Override
             public void run() {
                 try {
-                    final List<GTask> tasks = config.loadTasks(taskLimit);
+                    final List<GTask> tasks = UISyncConfig.loadTasks(config, taskLimit);
                     if (tasks.isEmpty())
                         showNoDataLoaded();
                     else

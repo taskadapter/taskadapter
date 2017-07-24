@@ -1,5 +1,6 @@
 package com.taskadapter.webui.config;
 
+import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Sandbox;
@@ -62,6 +63,10 @@ public final class OnePageEditor {
         // TODO !!! validate left/right editors too. this was lost during the
         // last refactoring.
         taskFieldsMappingFragment.validate();
+    }
+
+    public Iterable<FieldMapping> getElements() {
+        return taskFieldsMappingFragment.getElements();
     }
     
     /**

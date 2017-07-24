@@ -29,9 +29,35 @@ object UISyncConfig {
   }
 
   private def reverse(mapping: FieldMapping) = FieldMapping(mapping.fieldInConnector2, mapping.fieldInConnector1, mapping.selected, mapping.defaultValue)
+
+
+  /**
+    * Loads tasks from connector1. This is invoked directly from UI layer when user clicks "Go" to load tasks.
+    * This method also decorates loaded tasks with "remote Ids" for known tasks (as defined by "tasks cache")
+    *
+    * @param taskLimit max number of tasks to load.
+    * @return loaded tasks.
+    */
+  @throws[ConnectorException]
+  def loadTasks(config: UISyncConfig, taskLimit: Int): util.List[GTask] = {
+    val loadedTasks = TaskLoader.loadTasks(taskLimit, config.getConnector1.createConnectorInstance,
+      config.getConnector1.getLabel, ProgressMonitorUtils.DUMMY_MONITOR)
+    loadedTasks
+  }
+
+  @throws[ConnectorException]
+  def loadDropInTasks(tempFile: File, taskLimit: Int): util.List[GTask] = { // TODO TA3 drag-n-drop
+    throw new RuntimeException("not implemented")
+    /*
+            return TaskLoader.loadDropInTasks(taskLimit,
+                    (DropInConnector) getConnector1().createConnectorInstance(),
+                    tempFile, generateFieldRowsToExportLeft(),
+                    ProgressMonitorUtils.DUMMY_MONITOR);
+    */
+  }
 }
 
-final class UISyncConfig(configRootFolder: File,
+case class UISyncConfig(configRootFolder: File,
 
                          /**
                            * Config identity. Unique "config-storage" id to distinguish between
@@ -118,34 +144,10 @@ final class UISyncConfig(configRootFolder: File,
 
   private def generateFieldRowsToExportRight = MappingBuilder.build(fieldMappings, ExportDirection.RIGHT)
 
-  /**
-    * Loads tasks from connector1. This is invoked directly from UI layer when user clicks "Go" to load tasks.
-    * This method also decorates loaded tasks with "remote Ids" for known tasks (as defined by "tasks cache")
-    *
-    * @param taskLimit max number of tasks to load.
-    * @return loaded tasks.
-    */
-  @throws[ConnectorException]
-  def loadTasks(taskLimit: Int): util.List[GTask] = {
-    val loadedTasks = TaskLoader.loadTasks(taskLimit, getConnector1.createConnectorInstance, getConnector1.getLabel, ProgressMonitorUtils.DUMMY_MONITOR)
-    loadedTasks
-  }
-
   def getPreviouslyCreatedTasksResolver: PreviouslyCreatedTasksResolver = {
     val location1 = getConnector1.getSourceLocation
     val location2 = getConnector2.getSourceLocation
     TaskKeeperLocationStorage.loadTasks(configRootFolder, location1, location2)
-  }
-
-  @throws[ConnectorException]
-  def loadDropInTasks(tempFile: File, taskLimit: Int): util.List[GTask] = { // TODO TA3 drag-n-drop
-    throw new RuntimeException("not implemented")
-    /*
-            return TaskLoader.loadDropInTasks(taskLimit,
-                    (DropInConnector) getConnector1().createConnectorInstance(),
-                    tempFile, generateFieldRowsToExportLeft(),
-                    ProgressMonitorUtils.DUMMY_MONITOR);
-    */
   }
 
   def saveTasks(tasks: util.List[GTask], progressMonitor: ProgressMonitor): SaveResult = {

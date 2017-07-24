@@ -2,7 +2,6 @@ package com.taskadapter.webui.config;
 
 import com.taskadapter.connector.Field;
 import com.taskadapter.connector.definition.FieldMapping;
-import com.taskadapter.connector.definition.NewMappings;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.web.configeditor.Validatable;
@@ -10,7 +9,6 @@ import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.MethodProperty;
-import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -24,8 +22,8 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import scala.collection.JavaConverters;
+import scala.collection.Seq;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,29 +44,27 @@ public class TaskFieldsMappingFragment implements Validatable {
 
     private GridLayout gridLayout;
 
-    
     private final Panel ui;
     private Messages messages;
     private UIConnectorConfig connector1;
     private UIConnectorConfig connector2;
-    private scala.collection.Seq<FieldMapping> mappings;
+    private List<EditableFieldMapping> editablePojoMappings;
 
     public TaskFieldsMappingFragment(Messages messages, UIConnectorConfig connector1,
                                      UIConnectorConfig connector2, scala.collection.Seq<FieldMapping> mappings) {
         this.messages = messages;
         this.connector1 = connector1;
         this.connector2 = connector2;
-        this.mappings = mappings;
 
         ui = new Panel(messages.get("editConfig.mappings.caption"));
-        
-        addFields();
+
+        addFields(mappings);
     }
 
-    private void addFields() {
+    private void addFields(Seq<FieldMapping> mappings) {
         createGridLayout();
         addTableHeaders();
-        addSupportedFields();
+        addSupportedFields(mappings);
     }
 
     private void createGridLayout() {
@@ -116,15 +112,22 @@ public class TaskFieldsMappingFragment implements Validatable {
     /**
      * Add all rows to mappings table
      */
-    private void addSupportedFields() {
-        JavaConverters.asJavaCollection(mappings).forEach(this::addField);
+    private void addSupportedFields(Seq<FieldMapping> mappings) {
+        editablePojoMappings = JavaConverters.asJavaCollection(mappings)
+                .stream()
+                .map(ro ->
+                        new EditableFieldMapping(ro.fieldInConnector1().name(), ro.fieldInConnector1().typeName(),
+                                ro.fieldInConnector2().name(), ro.fieldInConnector2().typeName(),
+                                ro.selected(), ro.defaultValue()))
+                .collect(Collectors.toList());
+        editablePojoMappings.forEach(e -> addField(e));
     }
 
     /**
      * Add a row to mapping table:
-     * "selected", "tooltip", connector 1 field name, connector 2 field name, default value.
+     * selected, tooltip, connector 1 field name, connector 2 field name, default value.
      */
-    private void addField(FieldMapping field) {
+    private void addField(EditableFieldMapping field) {
         addCheckbox(field);
         // TODO TA3 help is per connector field, not for the whole row now.
         String helpForField = null; //getHelpForField(field);
@@ -134,40 +137,26 @@ public class TaskFieldsMappingFragment implements Validatable {
             addEmptyCell();
         }
 
-        addConnectorElement(field, connector1, "LEFT");
-        addConnectorElement(field, connector2, "RIGHT");
+        addConnectorElement(field, connector1, "fieldInConnector1");
+        addConnectorElement(field, connector2, "fieldInConnector2");
         addTextFieldForDefaultValue(field);
     }
 
-    private void addConnectorElement(FieldMapping field, UIConnectorConfig config, String leftRightField) {
-        // TODO TA3 remote ID
-//        if (field.getField().equals(FIELD.SOURCE_SYSTEM_ID.name()) && remoteIdFieldNotSupported(config)) {
-//            String idFieldDisplayValue = GTaskDescriptor.getDisplayValue(FIELD.ID.name());
-//            createMappingForSingleValue(idFieldDisplayValue);
-//        } else {
-            addConnectorField(config.getAvailableFields(), field, leftRightField);
-//        }
+    private void addConnectorElement(EditableFieldMapping field, UIConnectorConfig config, String leftRightField) {
+        addConnectorField(config.getAvailableFields(), field, leftRightField);
     }
 
-    private boolean remoteIdFieldNotSupported(UIConnectorConfig config) {
-        // TODO TA3 remote id
-        return true;
-//        return !config.getAvailableFields().isFieldSupported(FIELD.SOURCE_SYSTEM_ID);
-    }
-
-    private void addCheckbox(FieldMapping field) {
+    private void addCheckbox(EditableFieldMapping field) {
         CheckBox checkbox = new CheckBox();
-//        final MethodProperty<Boolean> selected = new MethodProperty<>(field, "selected");
-        ObjectProperty<Boolean> selected = new ObjectProperty<>(field.selected());
+        final MethodProperty<Boolean> selected = new MethodProperty<>(field, "selected");
         checkbox.setPropertyDataSource(selected);
         gridLayout.addComponent(checkbox);
         gridLayout.setComponentAlignment(checkbox, Alignment.MIDDLE_CENTER);
     }
 
-    private void addTextFieldForDefaultValue(FieldMapping mapping) {
+    private void addTextFieldForDefaultValue(EditableFieldMapping mapping) {
         TextField field = new TextField();
-//        final MethodProperty<String> methodProperty = new MethodProperty<>(mapping, "defaultValue");
-        final ObjectProperty<String> methodProperty = new ObjectProperty<>(mapping.defaultValue());
+        final MethodProperty<String> methodProperty = new MethodProperty<>(mapping, "defaultValue");
         field.setPropertyDataSource(methodProperty);
         gridLayout.addComponent(field);
         gridLayout.setComponentAlignment(field, Alignment.MIDDLE_CENTER);
@@ -186,63 +175,38 @@ public class TaskFieldsMappingFragment implements Validatable {
         gridLayout.setComponentAlignment(emptyLabel, Alignment.MIDDLE_LEFT);
     }
 
-    private void addConnectorField(List<Field> connectorFields, FieldMapping fieldMapping, String leftRightField) {
-        // TODO TA3 mapping editor
-//        String[] allowedValues = connectorFields.getAllowedValues(fieldMapping.getField());
+    private void addConnectorField(List<Field> connectorFields, EditableFieldMapping fieldMapping, String classFieldName) {
         BeanItemContainer<String> container = new BeanItemContainer<>(String.class);
-//        final MethodProperty<String> mappedTo = new MethodProperty<>(fieldMapping, leftRightField);
-//        final ObjectProperty<String> mappedTo = new ObjectProperty<>(fieldMapping, leftRightField);
+        final MethodProperty<String> mappedTo = new MethodProperty<>(fieldMapping, classFieldName);
 
-//        if (connectorFields.isFieldSupported(fieldMapping.getField())) {
-//            if (allowedValues.length > 1) {
-                List<String> fieldNames = connectorFields.stream()
-                        .map(field -> field.name()).collect(Collectors.toList());
-                container.addAll(fieldNames);
-                ComboBox combo = new ComboBox(null, container);
-//                combo.setPropertyDataSource(mappedTo);
-                combo.setWidth(160, PIXELS);
-                gridLayout.addComponent(combo);
-                gridLayout.setComponentAlignment(combo, Alignment.MIDDLE_LEFT);
-                Object currentFieldName = leftRightField.equals("LEFT")?
-                        getFieldNameOrEmptyString(fieldMapping.fieldInConnector1()) :
-                        getFieldNameOrEmptyString(fieldMapping.fieldInConnector2());
-                combo.select(currentFieldName);
-
-
-//            } else if (allowedValues.length == 1) {
-//                createMappingForSingleValue(allowedValues[0]);
-//            } else {
-//                final String displayValue = GTaskDescriptor
-//                        .getDisplayValue(fieldMapping.getField());
-//                createMappingForSingleValue(displayValue);
-//            }
-//        } else {
-//            addEmptyCell();
-//        }
+        List<String> fieldNames = connectorFields.stream()
+                .map(field -> field.name()).collect(Collectors.toList());
+        container.addAll(fieldNames);
+        ComboBox combo = new ComboBox(null, container);
+        combo.setPropertyDataSource(mappedTo);
+        combo.setWidth(160, PIXELS);
+        gridLayout.addComponent(combo);
+        gridLayout.setComponentAlignment(combo, Alignment.MIDDLE_LEFT);
+        String currentFieldName = classFieldName.equals("fieldInConnector1") ?
+                fieldMapping.fieldInConnector1() :
+                fieldMapping.fieldInConnector2();
+        combo.select(currentFieldName);
     }
 
-    private Object getFieldNameOrEmptyString(Field field) {
-        return field == null ? "" : field.name();
-    }
-
-    /*
-        private void createMappingForSingleValue(String displayValue) {
-            Label label = new Label(displayValue);
-            gridLayout.addComponent(label);
-            gridLayout.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
-        }
-
-        String getHelpForField(FieldMapping field) {
-            String elementId = field.getField().toString();
-            return HELP_MESSAGES.getNoDefault(elementId);
-        }
-    */
     @Override
     public void validate() throws BadConfigException {
-        MappingsValidator.validate(mappings);
+        MappingsValidator.validate(editablePojoMappings);
     }
-    
+
     public Component getUI() {
         return ui;
+    }
+
+    public Iterable<FieldMapping> getElements() {
+        return editablePojoMappings.stream()
+                .map(e -> new FieldMapping(new Field(e.fieldTypeInConnector1(), e.fieldInConnector1()),
+                        new Field(e.fieldTypeInConnector2(), e.fieldInConnector2()),
+                        e.selected(), e.defaultValue()))
+                .collect(Collectors.toList());
     }
 }
