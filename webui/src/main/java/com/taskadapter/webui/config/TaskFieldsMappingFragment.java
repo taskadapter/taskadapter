@@ -7,12 +7,15 @@ import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.web.configeditor.Validatable;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
+import com.taskadapter.webui.Page;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -25,6 +28,7 @@ import scala.collection.JavaConverters;
 import scala.collection.Seq;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.vaadin.server.Sizeable.Unit.PIXELS;
@@ -35,7 +39,8 @@ public class TaskFieldsMappingFragment implements Validatable {
     private static final int COLUMN_LEFT_CONNECTOR = 2;
     private static final int COLUMN_RIGHT_CONNECTOR = 3;
     private static final int COLUMN_DEFAULT_VALUE = 4;
-    private static final int COLUMNS_NUMBER = 5;
+    private static final int COLUMN_REMOVE = 5;
+    private static final int COLUMNS_NUMBER = 6;
 
     // TODO maybe merge this help file with all the other localized strings? but it has some rules about namings...
     private static final String BUNDLE_NAME = "help";
@@ -106,6 +111,11 @@ public class TaskFieldsMappingFragment implements Validatable {
         gridLayout.addComponent(label4, COLUMN_DEFAULT_VALUE, 0);
         gridLayout.setComponentAlignment(label4, Alignment.MIDDLE_LEFT);
 
+        Label column5label = new Label();
+        column5label.setWidth(30, PIXELS);
+        gridLayout.addComponent(column5label, COLUMN_REMOVE, 0);
+        gridLayout.setComponentAlignment(column5label, Alignment.MIDDLE_LEFT);
+
         gridLayout.addComponent(new Label("<hr>", ContentMode.HTML), 0, 1, COLUMNS_NUMBER - 1, 1);
     }
 
@@ -116,7 +126,8 @@ public class TaskFieldsMappingFragment implements Validatable {
         editablePojoMappings = JavaConverters.asJavaCollection(mappings)
                 .stream()
                 .map(ro ->
-                        new EditableFieldMapping(ro.fieldInConnector1().name(), ro.fieldInConnector1().typeName(),
+                        new EditableFieldMapping(UUID.randomUUID().toString(),
+                                ro.fieldInConnector1().name(), ro.fieldInConnector1().typeName(),
                                 ro.fieldInConnector2().name(), ro.fieldInConnector2().typeName(),
                                 ro.selected(), ro.defaultValue()))
                 .collect(Collectors.toList());
@@ -140,6 +151,34 @@ public class TaskFieldsMappingFragment implements Validatable {
         addConnectorElement(field, connector1, "fieldInConnector1");
         addConnectorElement(field, connector2, "fieldInConnector2");
         addTextFieldForDefaultValue(field);
+        addRemoveRowButton(field);
+    }
+
+    private void addRemoveRowButton(EditableFieldMapping field) {
+        Button button = new Button(Page.message("editConfig.mappings.buttonRemove"));
+        button.addClickListener((Button.ClickListener) event -> removeRow(field));
+        gridLayout.addComponent(button);
+        gridLayout.setComponentAlignment(button, Alignment.MIDDLE_RIGHT);
+    }
+
+    private void removeRow(EditableFieldMapping field) {
+        for (int row = 0; row < gridLayout.getRows(); row++) {
+            Component component = gridLayout.getComponent(0, row);
+            if (component == null) { // deleted some rows, so this is no longer valid
+                break;
+            }
+            Object data = ((AbstractComponent) component).getData();
+            if (field.uniqueIdForTemporaryMap().equals(data)) {
+                gridLayout.removeRow(row);
+                removeFieldFromList(field);
+            }
+        }
+    }
+
+    private void removeFieldFromList(EditableFieldMapping field) {
+        editablePojoMappings = editablePojoMappings.stream()
+                .filter(e -> !e.uniqueIdForTemporaryMap().equals(field.uniqueIdForTemporaryMap()))
+                .collect(Collectors.toList());
     }
 
     private void addConnectorElement(EditableFieldMapping field, UIConnectorConfig config, String leftRightField) {
@@ -148,6 +187,7 @@ public class TaskFieldsMappingFragment implements Validatable {
 
     private void addCheckbox(EditableFieldMapping field) {
         CheckBox checkbox = new CheckBox();
+        checkbox.setData(field.uniqueIdForTemporaryMap());
         final MethodProperty<Boolean> selected = new MethodProperty<>(field, "selected");
         checkbox.setPropertyDataSource(selected);
         gridLayout.addComponent(checkbox);
