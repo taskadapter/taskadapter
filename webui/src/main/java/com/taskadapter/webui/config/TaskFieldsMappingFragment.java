@@ -22,8 +22,10 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 import scala.collection.JavaConverters;
 import scala.collection.Seq;
 
@@ -54,6 +56,7 @@ public class TaskFieldsMappingFragment implements Validatable {
     private UIConnectorConfig connector1;
     private UIConnectorConfig connector2;
     private List<EditableFieldMapping> editablePojoMappings;
+    private Layout layout;
 
     public TaskFieldsMappingFragment(Messages messages, UIConnectorConfig connector1,
                                      UIConnectorConfig connector2, scala.collection.Seq<FieldMapping> mappings) {
@@ -67,18 +70,22 @@ public class TaskFieldsMappingFragment implements Validatable {
     }
 
     private void addFields(Seq<FieldMapping> mappings) {
+        layout = new VerticalLayout();
         createGridLayout();
+        layout.addComponent(gridLayout);
         addTableHeaders();
         addSupportedFields(mappings);
+        addNewRowButton();
+
+        ui.setContent(layout);
     }
 
     private void createGridLayout() {
         gridLayout = new GridLayout();
         gridLayout.setMargin(true);
         gridLayout.setSpacing(true);
-        gridLayout.setRows(GTaskDescriptor.FIELD.values().length + 2);
+        gridLayout.setRows(GTaskDescriptor.FIELD.values().length + 3);
         gridLayout.setColumns(COLUMNS_NUMBER);
-        ui.setContent(gridLayout);
     }
 
     private void addTableHeaders() {
@@ -231,6 +238,18 @@ public class TaskFieldsMappingFragment implements Validatable {
                 fieldMapping.fieldInConnector1() :
                 fieldMapping.fieldInConnector2();
         combo.select(currentFieldName);
+    }
+
+    private void addNewRowButton() {
+        Button button = new Button(Page.message("editConfig.mappings.buttonAdd"));
+        button.addClickListener((Button.ClickListener) event -> {
+            EditableFieldMapping m = new EditableFieldMapping(UUID.randomUUID().toString(),
+                    "", "String",
+                    "", "String", false, "");
+            editablePojoMappings.add(m);
+            addField(m);
+        });
+        layout.addComponent(button);
     }
 
     @Override
