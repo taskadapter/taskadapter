@@ -11,9 +11,9 @@ import com.vaadin.ui.Panel;
 import java.util.Arrays;
 import java.util.List;
 
-public class LocalRemoteOptionsPanel extends Panel {
-    private static final String LOCAL = "TA is running on my LOCAL machine. The file paths are on MY computer.";
-    private static final String REMOTE = "TA is running on some shared machine (SERVER).";
+class LocalRemoteOptionsPanel extends Panel {
+    private static final String LOCAL = Page.message("configurePage.local");
+    private static final String REMOTE = Page.message("configurePage.remote");
 
     private static final List<String> options = Arrays.asList(LOCAL, REMOTE);
     
@@ -29,7 +29,7 @@ public class LocalRemoteOptionsPanel extends Panel {
      */
     public static Component createLocalRemoteOptions(
             final SettingsManager settingsManager, boolean canModify) {
-        final Panel ui = new Panel("Local / server mode");
+        final Panel ui = new Panel(Page.message("configurePage.caption"));
 
         final HorizontalLayout configGroupLayout = new HorizontalLayout();
 
@@ -47,7 +47,7 @@ public class LocalRemoteOptionsPanel extends Panel {
                     String selectedStringValue = (String) event.getProperty().getValue();
                     boolean localModeRequested = selectedStringValue.equals(LOCAL);
                     settingsManager.setLocal(localModeRequested);
-                    Notification.show("Saved");
+                    Notification.show(Page.message("configurePage.saved"));
                 }
             });
         }
