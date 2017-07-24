@@ -272,7 +272,11 @@ public class LoggedInPageset {
     public void createNewConfig() {
         tracker.trackPage("create_config");
         applyUI(NewConfigPage.render(services.pluginManager, context.configOps,
-                config -> showConfigEditor(config, null)));
+                config -> {
+                    tracker.trackEvent("config", "created",
+                            config.connector1().getConnectorTypeId() + " - " + config.connector2().getConnectorTypeId());
+                    showConfigEditor(config, null);
+                }));
     }
 
     /**
