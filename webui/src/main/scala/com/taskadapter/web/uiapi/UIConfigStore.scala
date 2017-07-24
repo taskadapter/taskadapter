@@ -82,7 +82,11 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
   def createNewConfig(userName: String, label: String, connector1id: String, connector2id: String,
                       connector1Info: WebServerInfo, connector2Info: WebServerInfo): UISyncConfig = {
     val config1: UIConnectorConfig = uiConfigService.createDefaultConfig(connector1id)
+    config1.setLabel(connector1Info.getLabel)
+
     val config2: UIConnectorConfig = uiConfigService.createDefaultConfig(connector2id)
+    config2.setLabel(connector2Info.getLabel)
+
     val newMappings = NewConfigSuggester.suggestedFieldMappingsForNewConfig(
       config1.getSuggestedCombinations,
       config2.getSuggestedCombinations)
