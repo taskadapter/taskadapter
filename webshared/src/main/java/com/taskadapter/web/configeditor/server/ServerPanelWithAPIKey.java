@@ -9,9 +9,9 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,7 +19,7 @@ import java.util.Collection;
 import static com.taskadapter.web.ui.Grids.*;
 import static com.taskadapter.web.configeditor.EditorUtil.*;
 
-public class ServerPanelWithAPIKey extends VerticalLayout implements Validatable {
+public class ServerPanelWithAPIKey extends Panel implements Validatable {
     private static final String USE_API = "Use API Access Key";
     private static final String USE_LOGIN = "Use Login and Password";
 
@@ -29,11 +29,12 @@ public class ServerPanelWithAPIKey extends VerticalLayout implements Validatable
     private PasswordField password;
     private OptionGroup authOptionsGroup;
 
-    public ServerPanelWithAPIKey(Property<String> labelProperty,
+    public ServerPanelWithAPIKey(String caption, Property<String> labelProperty,
             Property<String> serverURLProperty,
             Property<String> loginNameProperty,
             Property<String> passwordProperty, Property<String> apiKeyProperty,
             Property<Boolean> useApiKeyProperty) {
+        setCaption(caption);
         buildUI(labelProperty, serverURLProperty, loginNameProperty, passwordProperty, apiKeyProperty, useApiKeyProperty);
         addListener();
         setAuthOptionsState((Boolean) authOptionsGroup.getValue());
@@ -46,7 +47,7 @@ public class ServerPanelWithAPIKey extends VerticalLayout implements Validatable
             Property<Boolean> useApiKeyProperty) {
 
         GridLayout layout = new GridLayout();
-        addComponent(layout);
+        setContent(layout);
         layout.setSpacing(true);
         layout.setMargin(true);
         layout.setColumns(2);

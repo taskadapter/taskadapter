@@ -15,12 +15,14 @@ import com.taskadapter.web.callbacks.SimpleCallback;
 import com.taskadapter.web.configeditor.CustomFieldsTablePanel;
 import com.taskadapter.web.configeditor.PriorityPanel;
 import com.taskadapter.web.configeditor.ProjectPanel;
+import com.taskadapter.web.configeditor.server.ServerPanelFactory;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Sandbox;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Panel;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -110,6 +112,11 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
         gridLayout.addComponent(priorityPanel);
         gridLayout.addComponent(createCustomOtherFieldsPanel(config));
         return gridLayout;
+    }
+
+    @Override
+    public Panel getSetupPanel(WebServerInfo webServerInfo) {
+        return ServerPanelFactory.withLoginAndPassword(JiraConnector.ID(), webServerInfo);
     }
 
     private CustomFieldsTablePanel createCustomOtherFieldsPanel(JiraConfig config) {

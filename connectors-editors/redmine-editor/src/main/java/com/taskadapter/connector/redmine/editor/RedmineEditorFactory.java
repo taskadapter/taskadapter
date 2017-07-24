@@ -6,6 +6,7 @@ import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.redmine.RedmineConfig;
+import com.taskadapter.connector.redmine.RedmineConnector;
 import com.taskadapter.connector.redmine.RelationCreationException;
 import com.taskadapter.redmineapi.RedmineAuthenticationException;
 import com.taskadapter.web.DroppingNotSupportedException;
@@ -14,7 +15,7 @@ import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
 import com.taskadapter.web.configeditor.PriorityPanel;
 import com.taskadapter.web.configeditor.ProjectPanel;
-import com.taskadapter.web.configeditor.server.ServerPanelWithAPIKey;
+import com.taskadapter.web.configeditor.server.ServerPanelFactory;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Sandbox;
@@ -48,15 +49,6 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
 
     @Override
     public ComponentContainer getMiniPanelContents(Sandbox sandbox, RedmineConfig config, WebServerInfo webServerInfo) {
-        Panel panel = new Panel("Server Info");
-        ServerPanelWithAPIKey redmineServerPanel = new ServerPanelWithAPIKey(new MethodProperty<>(config, "label"),
-                new MethodProperty<>(webServerInfo, "host"),
-                new MethodProperty<>(webServerInfo, "userName"),
-                new MethodProperty<>(webServerInfo, "password"),
-                new MethodProperty<>(webServerInfo, "apiKey"),
-                new MethodProperty<>(webServerInfo, "useAPIKeyInsteadOfLoginPassword"));
-        panel.setContent(redmineServerPanel);
-
         ShowProjectElement showProjectElement = new ShowProjectElement(config, webServerInfo);
         LoadQueriesElement loadQueriesElement = new LoadQueriesElement(config, webServerInfo);
         ProjectPanel projectPanel = new ProjectPanel(
@@ -70,13 +62,17 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
         gridLayout.setMargin(true);
         gridLayout.setSpacing(true);
 
-        gridLayout.addComponent(panel);
         gridLayout.addComponent(projectPanel);
         PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(),
                 Interfaces.fromMethod(DataProvider.class, new PrioritiesLoader(webServerInfo), "loadPriorities"), this);
         gridLayout.addComponent(priorityPanel);
         gridLayout.addComponent(new OtherRedmineFieldsContainer(config, webServerInfo, this));
         return gridLayout;
+    }
+
+    @Override
+    public Panel getSetupPanel(WebServerInfo webServerInfo) {
+        return ServerPanelFactory.withApiKeyAndLoginPassword(RedmineConnector.ID(), webServerInfo);
     }
 
     @Override

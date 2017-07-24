@@ -3,13 +3,12 @@ package com.taskadapter.webui.pages
 import com.taskadapter.PluginManager
 import com.taskadapter.config.StorageException
 import com.taskadapter.connector.definition.WebServerInfo
-import com.taskadapter.web.configeditor.server.ServerPanel
 import com.taskadapter.web.uiapi.UISyncConfig
 import com.taskadapter.webui.ConfigOperations
 import com.taskadapter.webui.Page.message
+import com.taskadapter.webui.service.EditorManager
 import com.vaadin.data.Property
 import com.vaadin.data.Property.ValueChangeListener
-import com.vaadin.data.util.MethodProperty
 import com.vaadin.ui._
 
 trait Callback {
@@ -26,15 +25,16 @@ object NewConfigPage {
   /**
     * Render "New Config" page
     */
-  def render(pluginManager: PluginManager, ops: ConfigOperations, callback: Callback): Component = new NewConfigPage(pluginManager, ops, callback).panel
+  def render(editorManager: EditorManager, pluginManager: PluginManager, ops: ConfigOperations, callback: Callback):
+  Component = new NewConfigPage(editorManager, pluginManager, ops, callback).panel
 }
 
-class NewConfigPage(pluginManager: PluginManager, configOps: ConfigOperations, callback: Callback) {
+class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, configOps: ConfigOperations, callback: Callback) {
   val connector1Info = new WebServerInfo
   val connector2Info = new WebServerInfo
 
-  var server1Panel: Option[ServerPanel] = None
-  var server2Panel: Option[ServerPanel] = None
+  var server1Panel: Option[Panel] = None
+  var server2Panel: Option[Panel] = None
 
   val panel = new Panel(message("createConfigPage.createNewConfig"))
   panel.setWidth("600px")
@@ -46,18 +46,25 @@ class NewConfigPage(pluginManager: PluginManager, configOps: ConfigOperations, c
 
   val connector1 = createSystemListSelector(connector1Info, message("createConfigPage.system1"), pluginManager,
     event => if (server1Panel.isEmpty) {
-      server1Panel = Some(createConnectorSetupFragment(connector1Info, event.getProperty.getValue.asInstanceOf[String]))
-      serverInfoLayout.addComponent(server1Panel.get, 0,0)
+      server1Panel = getSetupPanelForConnector(connector1Info, event)
+      serverInfoLayout.addComponent(server1Panel.get, 0, 0)
+    }
+  )
+  grid.addComponent(connector1, 0, 0)
+
+  val connector2 = createSystemListSelector(connector2Info, message("createConfigPage.system2"), pluginManager,
+    event => if (server2Panel.isEmpty) {
+      server2Panel = getSetupPanelForConnector(connector2Info, event)
+      serverInfoLayout.addComponent(server2Panel.get, 1, 0)
     }
   )
 
-  grid.addComponent(connector1, 0, 0)
-  val connector2 = createSystemListSelector(connector2Info, message("createConfigPage.system2"), pluginManager,
-    event => if (server2Panel.isEmpty) {
-      server2Panel = Some(createConnectorSetupFragment(connector2Info, event.getProperty.getValue.asInstanceOf[String]))
-      serverInfoLayout.addComponent(server2Panel.get, 1,0)
-    }
-  )
+  private def getSetupPanelForConnector(connectorInfo: WebServerInfo, event: Property.ValueChangeEvent): Some[Panel] = {
+    val connectorId = event.getProperty.getValue.asInstanceOf[String]
+    val editor = editorManager.getEditorFactory(connectorId)
+    Some(editor.getSetupPanel(connectorInfo))
+  }
+
   grid.addComponent(connector2, 1, 0)
   val descriptionTextField = new TextField(message("createConfigPage.description"))
   descriptionTextField.setInputPrompt(message("createConfigPage.optional"))
@@ -73,7 +80,7 @@ class NewConfigPage(pluginManager: PluginManager, configOps: ConfigOperations, c
   grid.addComponent(saveButton, 1, 3)
   grid.setComponentAlignment(saveButton, Alignment.MIDDLE_RIGHT)
 
-  val serverInfoLayout = new GridLayout(2,1)
+  val serverInfoLayout = new GridLayout(2, 1)
   grid.addComponent(serverInfoLayout, 0, 4, 1, 4)
 
   private def saveClicked() = {
@@ -137,15 +144,5 @@ class NewConfigPage(pluginManager: PluginManager, configOps: ConfigOperations, c
     }
     res.setRows(res.size)
     res
-  }
-
-  private def createConnectorSetupFragment(connectorInfo: WebServerInfo, connectorId: String): ServerPanel = {
-    val caption = message("createConfigPage.serverPanelCaptionFor") + s" $connectorId"
-    val serverPanel = new ServerPanel(caption,
-      new MethodProperty[String](connectorInfo, "label"),
-      new MethodProperty[String](connectorInfo, "host"),
-      new MethodProperty[String](connectorInfo, "userName"),
-      new MethodProperty[String](connectorInfo, "password"))
-    serverPanel
   }
 }

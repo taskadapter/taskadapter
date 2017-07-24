@@ -65,6 +65,11 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
         return layout;
     }
 
+    @Override
+    public Panel getSetupPanel(WebServerInfo webServerInfo) {
+        return new Panel();
+    }
+
     private HorizontalLayout createDescriptionElement(ConnectorConfig config) {
         HorizontalLayout descriptionLayout = new HorizontalLayout();
         descriptionLayout.setSpacing(true);

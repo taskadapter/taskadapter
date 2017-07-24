@@ -3,10 +3,12 @@ package com.taskadapter.web
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.connector.definition.{ConnectorConfig, WebServerInfo}
 import com.taskadapter.web.service.Sandbox
-import com.vaadin.ui.ComponentContainer
+import com.vaadin.ui.{ComponentContainer, Panel}
 
 trait PluginEditorFactory[C <: ConnectorConfig] extends ExceptionFormatter {
   def getMiniPanelContents(sandbox: Sandbox, config: C, webServerInfo: WebServerInfo): ComponentContainer
+
+  def getSetupPanel(webServerInfo: WebServerInfo): Panel
 
   /**
     * Validates a connector config for save mode. If validation fails, plugin
