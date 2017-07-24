@@ -23,8 +23,7 @@ public final class ConfigureSystemPage {
         view.setMargin(true);
         panel.setContent(view);
 
-        final CheckBox checkbox = new CheckBox(
-                "Admin can view and manage all users' configs");
+        final CheckBox checkbox = new CheckBox(Page.message("configurePage.showAllUsersConfigs"));
         checkbox.setValue(settingsManager.adminCanManageAllConfigs());
         checkbox.setImmediate(true);
         checkbox.addValueChangeListener(new CheckBox.ValueChangeListener() {
