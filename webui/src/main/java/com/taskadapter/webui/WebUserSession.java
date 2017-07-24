@@ -27,4 +27,9 @@ public final class WebUserSession {
     public void setCurrentConfig(UISyncConfig currentConfig) {
         this.currentConfig = currentConfig;
     }
+
+    public void clearCurrentConfig() {
+        this.currentConfig = null;
+    }
+
 }

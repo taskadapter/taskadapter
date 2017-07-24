@@ -321,7 +321,7 @@ public class LoggedInPageset {
     }
 
     private void clearCurrentConfigInSession() {
-        webUserSession.setCurrentConfig(null);
+        webUserSession.clearCurrentConfig();
     }
 
     /**
