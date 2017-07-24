@@ -26,8 +26,8 @@ public class PluginManager {
 				Class<PluginFactory<?>> factoryClass = (Class<PluginFactory<?>>) Class.forName(factoryClassName);
                 PluginFactory<?> pluginFactory = factoryClass.newInstance();
                 Descriptor descriptor = pluginFactory.getDescriptor();
-                pluginDescriptors.put(descriptor.getID(), descriptor);
-                pluginFactories.put(descriptor.getID(), pluginFactory);
+                pluginDescriptors.put(descriptor.id(), descriptor);
+                pluginFactories.put(descriptor.id(), pluginFactory);
             }
         } catch (Exception e) {
             throw new InternalError(e);

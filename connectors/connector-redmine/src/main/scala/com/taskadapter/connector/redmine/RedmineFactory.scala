@@ -11,7 +11,7 @@ import com.taskadapter.model.StandardField
 import scala.collection.immutable.Map
 
 class RedmineFactory extends PluginFactory[RedmineConfig] {
-  private val DESCRIPTOR = new Descriptor(RedmineConnector.ID, RedmineConfig.DEFAULT_LABEL)
+  private val DESCRIPTOR = Descriptor(RedmineConnector.ID, "Redmine")
 
   override def getAvailableFields: util.List[Field] = RedmineField.fieldsAsJava()
 

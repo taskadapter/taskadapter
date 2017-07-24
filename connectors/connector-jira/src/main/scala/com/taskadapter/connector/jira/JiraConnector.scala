@@ -20,7 +20,7 @@ object JiraConnector {
     * Keep it the same to enable backward compatibility with the existing
     * config files.
     */
-  val ID = "Atlassian Jira"
+  val ID = "Atlassian JIRA"
 
   @FunctionalInterface private[jira] trait JiraRestClientAction[T] {
     @throws[IOException]

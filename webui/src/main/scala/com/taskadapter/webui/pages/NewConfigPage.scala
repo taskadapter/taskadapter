@@ -132,8 +132,8 @@ class NewConfigPage(pluginManager: PluginManager, configOps: ConfigOperations, c
       connectors.hasNext
     }) {
       val connector = connectors.next
-      res.addItem(connector.getID)
-      res.setItemCaption(connector.getID, connector.getLabel)
+      res.addItem(connector.id)
+      res.setItemCaption(connector.id, connector.label)
     }
     res.setRows(res.size)
     res

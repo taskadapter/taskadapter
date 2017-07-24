@@ -11,7 +11,7 @@ import com.taskadapter.model.StandardField
 import scala.collection.immutable.Map
 
 class JiraFactory extends PluginFactory[JiraConfig] {
-  private val DESCRIPTOR = new Descriptor(JiraConnector.ID, "")
+  private val DESCRIPTOR = new Descriptor(JiraConnector.ID, "Atlassian JIRA")
 
   override def getAvailableFields: util.List[Field] = JiraField.fieldsAsJava()
 
