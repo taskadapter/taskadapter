@@ -1,7 +1,7 @@
 package com.taskadapter.webui.pages
 
 import com.taskadapter.PluginManager
-import com.taskadapter.config.StorageException
+import com.taskadapter.config.{ConnectorSetup, StorageException}
 import com.taskadapter.connector.definition.WebServerInfo
 import com.taskadapter.web.uiapi.UISyncConfig
 import com.taskadapter.webui.ConfigOperations
@@ -33,8 +33,8 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
   val connector1Info = new WebServerInfo
   val connector2Info = new WebServerInfo
 
-  var server1Panel: Option[Panel] = None
-  var server2Panel: Option[Panel] = None
+  var server1Panel: Option[Component] = None
+  var server2Panel: Option[Component] = None
 
   val panel = new Panel(message("createConfigPage.createNewConfig"))
   panel.setWidth("600px")
@@ -59,10 +59,20 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
     }
   )
 
-  private def getSetupPanelForConnector(connectorInfo: WebServerInfo, event: Property.ValueChangeEvent): Some[Panel] = {
+  private def getSetupPanelForConnector(connectorInfo: WebServerInfo, event: Property.ValueChangeEvent): Some[Component] = {
     val connectorId = event.getProperty.getValue.asInstanceOf[String]
     val editor = editorManager.getEditorFactory(connectorId)
-    Some(editor.getSetupPanel(connectorInfo))
+
+    val setups = configOps.getAllConnectorSetups(connectorId)
+    val selector = createSavedServerConfigurationsSelector(message("createConfigPage.selectExistingOrNew"), setups,
+      event => {
+
+      }
+    )
+
+    val panel = editor.getSetupPanel(connectorInfo)
+    val layout = new VerticalLayout(selector, panel)
+    Some(layout)
   }
 
   grid.addComponent(connector2, 1, 0)
@@ -141,6 +151,20 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
       val connector = connectors.next
       res.addItem(connector.id)
       res.setItemCaption(connector.id, connector.label)
+    }
+    res.setRows(res.size)
+    res
+  }
+
+  private def createSavedServerConfigurationsSelector(title: String,
+                                                      savedSetups: Seq[ConnectorSetup],
+                                                      valueChangeListener: ValueChangeListener) : Component = {
+    val res = new ListSelect(title)
+    res.setNullSelectionAllowed(false)
+    res.addValueChangeListener(valueChangeListener)
+    savedSetups.foreach { s =>
+      res.addItem(s.host)
+      res.setItemCaption(s.host, s"${s.label} ${s.host}")
     }
     res.setRows(res.size)
     res

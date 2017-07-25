@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.taskadapter.auth.AuthorizedOperations;
 import com.taskadapter.auth.CredentialsManager;
+import com.taskadapter.config.ConnectorSetup;
 import com.taskadapter.config.StorageException;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.web.uiapi.UIConfigStore;
@@ -126,5 +127,9 @@ public final class ConfigOperations {
     public void saveConfig(UISyncConfig config) throws StorageException {
         uiConfigStore.saveConfig(config);
 
+    }
+
+    public scala.collection.Seq<ConnectorSetup> getAllConnectorSetups(String connectorId) {
+        return uiConfigStore.getAllConnectorSetups(userName, connectorId);
     }
 }

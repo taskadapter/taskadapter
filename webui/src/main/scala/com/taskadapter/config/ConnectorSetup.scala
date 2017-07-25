@@ -1,6 +1,10 @@
 package com.taskadapter.config
 
-case class ConnectorSetup(label: String,
+/**
+  * @param connectorId is used to find all existing setups for, say, JIRA to show on "new config" page.
+  */
+case class ConnectorSetup(connectorId: String,
+                          label: String,
                           host: String,
                           userName: String,
                           password: String,

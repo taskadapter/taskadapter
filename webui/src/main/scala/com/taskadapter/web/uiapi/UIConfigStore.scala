@@ -8,8 +8,8 @@ import com.taskadapter.connector.NewConfigSuggester
 import com.taskadapter.connector.common.XorEncryptor
 import com.taskadapter.connector.definition.{FieldMapping, WebServerInfo}
 import io.circe.generic.auto._
-import io.circe.syntax._
 import io.circe.parser._
+import io.circe.syntax._
 import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
@@ -95,15 +95,15 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
       config1.getConnectorTypeId, config1.getConfigString,
       config2.getConnectorTypeId, config2.getConfigString, mappingsString)
 
-    saveSetup(userName, connector1Info)
-    saveSetup(userName, connector2Info)
+    saveSetup(userName, connector1Info, connector1id)
+    saveSetup(userName, connector2Info, connector2id)
     new UISyncConfig(configStorage.rootDir, identity, userName, label, config1, config2, newMappings, false)
   }
 
-  def saveSetup(userName: String, setup: WebServerInfo): Unit = {
+  def saveSetup(userName: String, setup: WebServerInfo, connectorId: String): Unit = {
     configStorage.saveConnectorSetup(userName,
       setup.getLabel,
-      ConnectorSetup(setup.getLabel, setup.getHost, setup.getUserName,
+      ConnectorSetup(connectorId, setup.getLabel, setup.getHost, setup.getUserName,
         encryptor.encrypt(setup.getPassword),
         setup.isUseAPIKeyInsteadOfLoginPassword,
         encryptor.encrypt(setup.getApiKey)
@@ -112,13 +112,26 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
 
   def loadSetup(userName: String, setupLabel: String): WebServerInfo = {
     val string = configStorage.loadConnectorSetupAsString(userName, setupLabel)
-    decode[ConnectorSetup](string) match {
-      case Left(e) => logger.error(s"Cannot parse connector setup for user $userName, setup label $setupLabel. $e")
-        null
-      case Right(setup) => new WebServerInfo(setup.label, setup.host, setup.userName,
+    parseSetupString(string, userName).map(setup =>
+      new WebServerInfo(setup.label, setup.host, setup.userName,
         encryptor.decrypt(setup.password),
         setup.useApiKey,
-        encryptor.decrypt(setup.apiKey))
+        encryptor.decrypt(setup.apiKey))).orNull
+  }
+
+  def getAllConnectorSetups(userLoginName: String, connectorId: String): Seq[ConnectorSetup] = {
+    val setups: Seq[Option[ConnectorSetup]] = configStorage.getAllConnectorSetupsAsStrings(userLoginName, connectorId).asScala
+      .map { setupString =>
+        parseSetupString(setupString, userLoginName)
+      }
+    setups.filter(maybeSetup => maybeSetup.isDefined && maybeSetup.get.connectorId == connectorId).flatten
+  }
+
+  def parseSetupString(string: String, userName: String): Option[ConnectorSetup] = {
+    decode[ConnectorSetup](string) match {
+      case Left(e) => logger.error(s"Cannot parse connector setup for user $userName. $e")
+        None
+      case Right(setup) => Some(setup)
     }
   }
 
