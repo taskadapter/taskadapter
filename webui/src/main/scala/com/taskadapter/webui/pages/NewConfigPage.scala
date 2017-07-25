@@ -4,7 +4,7 @@ import com.taskadapter.PluginManager
 import com.taskadapter.config.{ConnectorSetup, StorageException}
 import com.taskadapter.connector.definition.WebServerInfo
 import com.taskadapter.web.uiapi.UISyncConfig
-import com.taskadapter.webui.ConfigOperations
+import com.taskadapter.webui.{ConfigOperations, Page}
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.service.EditorManager
 import com.vaadin.data.Property
@@ -29,12 +29,53 @@ object NewConfigPage {
   Component = new NewConfigPage(editorManager, pluginManager, ops, callback).panel
 }
 
+class ChooseOrCreateSetupFragment(webServerInfo: WebServerInfo, selectPanel: ListSelect, button: Button, createPanel: Component) {
+  val layout = new VerticalLayout(selectPanel, button, createPanel)
+  if (selectPanel.getRows != 0) {
+    selectPanel.select(selectPanel.getItemIds.iterator().next())
+  }
+  var inSelectMode = true
+
+  def getUI(): Component = layout
+
+  private def refresh() = {
+    createPanel.setVisible(!inSelectMode)
+    selectPanel.setVisible(inSelectMode)
+    val caption = if (inSelectMode) Page.message("createConfigPage.button.createNew")
+    else Page.message("createConfigPage.button.selectExisting")
+    button.setCaption(caption)
+  }
+
+  def validate(): Option[String] = {
+    if (inSelectMode) {
+      if (selectPanel.getValue == null) {
+        Some(Page.message("createConfigPage.error.mustSelectOrCreate"))
+      } else {
+        None
+      }
+    } else {
+      val error = webServerInfo.validate()
+      if (!error.isEmpty) {
+        return Some(error)
+      }
+      None
+    }
+  }
+
+  button.addClickListener(_ => {
+    inSelectMode = !inSelectMode
+    refresh()
+  })
+
+  refresh()
+}
+
 class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, configOps: ConfigOperations, callback: Callback) {
   val connector1Info = new WebServerInfo
   val connector2Info = new WebServerInfo
 
-  var server1Panel: Option[Component] = None
-  var server2Panel: Option[Component] = None
+  var connector1Panel: Option[ChooseOrCreateSetupFragment] = None
+  var connector2Panel: Option[ChooseOrCreateSetupFragment] = None
 
   val panel = new Panel(message("createConfigPage.createNewConfig"))
   panel.setWidth("600px")
@@ -45,37 +86,34 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
   panel.setContent(grid)
 
   val connector1 = createSystemListSelector(connector1Info, message("createConfigPage.system1"), pluginManager,
-    event => if (server1Panel.isEmpty) {
-      server1Panel = getSetupPanelForConnector(connector1Info, event)
-      serverInfoLayout.addComponent(server1Panel.get, 0, 0)
+    event => if (connector1Panel.isEmpty) {
+      connector1Panel = Some(createSetupPanelForConnector(connector1Info, event))
+      serverInfoLayout.addComponent(connector1Panel.get.getUI, 0, 0)
     }
   )
   grid.addComponent(connector1, 0, 0)
 
   val connector2 = createSystemListSelector(connector2Info, message("createConfigPage.system2"), pluginManager,
-    event => if (server2Panel.isEmpty) {
-      server2Panel = getSetupPanelForConnector(connector2Info, event)
-      serverInfoLayout.addComponent(server2Panel.get, 1, 0)
+    event => if (connector2Panel.isEmpty) {
+      connector2Panel = Some(createSetupPanelForConnector(connector2Info, event))
+      serverInfoLayout.addComponent(connector2Panel.get.getUI, 1, 0)
     }
   )
 
-  private def getSetupPanelForConnector(connectorInfo: WebServerInfo, event: Property.ValueChangeEvent): Some[Component] = {
+  private def createSetupPanelForConnector(connectorInfo: WebServerInfo, event: Property.ValueChangeEvent):
+  ChooseOrCreateSetupFragment = {
     val connectorId = event.getProperty.getValue.asInstanceOf[String]
     val editor = editorManager.getEditorFactory(connectorId)
 
     val setups = configOps.getAllConnectorSetups(connectorId)
     val selector = createSavedServerConfigurationsSelector(message("createConfigPage.selectExistingOrNew"), setups,
       event => {
-
+        println(s"event $event")
       }
     )
     val editSetupPanel = editor.getSetupPanel(connectorInfo)
-    editSetupPanel.setVisible(false)
-    val addNewButton = new Button("+")
-    addNewButton.addClickListener(_ => {editSetupPanel.setVisible(true)})
-
-    val layout = new VerticalLayout(selector, addNewButton, editSetupPanel)
-    Some(layout)
+    val addNewButton = new Button()
+    new ChooseOrCreateSetupFragment(connectorInfo, selector, addNewButton, editSetupPanel)
   }
 
   grid.addComponent(connector2, 1, 0)
@@ -118,17 +156,17 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
       return Some(message("createConfigPage.pleaseSelectSystem1"))
     }
 
-    val info1Error = connector1Info.validate()
-    if (!info1Error.isEmpty) {
-      return Some(info1Error)
+    val info1Error = if (connector1Panel.isDefined) connector1Panel.get.validate() else None
+    if (info1Error.isDefined) {
+      return info1Error
     }
 
     if (connector2.getValue == null) {
       return Some(message("createConfigPage.pleaseSelectSystem2"))
     }
-    val info2Error = connector2Info.validate()
-    if (!info2Error.isEmpty) {
-      return Some(info2Error)
+    val info2Error = if (connector2Panel.isDefined) connector2Panel.get.validate() else None
+    if (info2Error.isDefined) {
+      return info2Error
     }
     None
   }
@@ -161,7 +199,7 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
 
   private def createSavedServerConfigurationsSelector(title: String,
                                                       savedSetups: Seq[ConnectorSetup],
-                                                      valueChangeListener: ValueChangeListener) : Component = {
+                                                      valueChangeListener: ValueChangeListener): ListSelect = {
     val res = new ListSelect(title)
     res.setNullSelectionAllowed(false)
     res.addValueChangeListener(valueChangeListener)
