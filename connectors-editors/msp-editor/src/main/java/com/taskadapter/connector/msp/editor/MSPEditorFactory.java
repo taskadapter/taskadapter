@@ -4,6 +4,7 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.msp.MSPConfig;
+import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.msp.MSPFileReader;
 import com.taskadapter.connector.msp.MSPUtils;
 import com.taskadapter.connector.msp.UnsupportedRelationType;
@@ -67,7 +68,7 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
 
     @Override
     public Panel getSetupPanel(WebServerInfo webServerInfo) {
-        return new Panel();
+        return new Panel(MSPConnector.ID + " - configured later");
     }
 
     private HorizontalLayout createDescriptionElement(ConnectorConfig config) {

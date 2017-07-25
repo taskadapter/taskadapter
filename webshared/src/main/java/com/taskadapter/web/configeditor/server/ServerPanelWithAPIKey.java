@@ -3,6 +3,7 @@ package com.taskadapter.web.configeditor.server;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.web.configeditor.Validatable;
+import com.taskadapter.webui.Page;
 import com.vaadin.data.Property;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
@@ -20,8 +21,6 @@ import static com.taskadapter.web.ui.Grids.*;
 import static com.taskadapter.web.configeditor.EditorUtil.*;
 
 public class ServerPanelWithAPIKey extends Panel implements Validatable {
-    private static final String USE_API = "Use API Access Key";
-    private static final String USE_LOGIN = "Use Login and Password";
 
     private TextField serverURL;
     private PasswordField apiKeyField;
@@ -55,13 +54,13 @@ public class ServerPanelWithAPIKey extends Panel implements Validatable {
 
         int currentRow = 0;
 
-        addTo(layout, 0, currentRow, Alignment.MIDDLE_LEFT, new Label("Description:"));
-        TextField descriptionField = textInput(labelProperty);
-        descriptionField.addStyleName("server-panel-textfield");
-        layout.addComponent(descriptionField, 1, currentRow);
+        addTo(layout, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.name")));
+        TextField labelField = textInput(labelProperty);
+        labelField.addStyleName("server-panel-textfield");
+        layout.addComponent(labelField, 1, currentRow);
 
         currentRow++;
-        addTo(layout, 0, currentRow, Alignment.MIDDLE_LEFT, new Label("Server URL:"));
+        addTo(layout, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.serverUrl")));
         serverURL = textInput(serverURLProperty);
         serverURL.addStyleName("server-panel-textfield");
         serverURL.setInputPrompt("http://myserver:3000/some_location");
@@ -78,9 +77,9 @@ public class ServerPanelWithAPIKey extends Panel implements Validatable {
         authOptions.add(true);
         authOptions.add(false);
 
-        authOptionsGroup = new OptionGroup("Authorization", authOptions);
-        authOptionsGroup.setItemCaption(true, USE_API);
-        authOptionsGroup.setItemCaption(false, USE_LOGIN);
+        authOptionsGroup = new OptionGroup(Page.message("setupPanel.authorization"), authOptions);
+        authOptionsGroup.setItemCaption(true, Page.message("setupPanel.useApiKey"));
+        authOptionsGroup.setItemCaption(false, Page.message("setupPanel.useLogin"));
         authOptionsGroup.setPropertyDataSource(useApiKeyProperty);
 
         authOptionsGroup.setSizeFull();
@@ -93,7 +92,7 @@ public class ServerPanelWithAPIKey extends Panel implements Validatable {
         currentRow++;
         layout.addComponent(createEmptyLabel(emptyLabelHeight), 0, currentRow++);
 
-        addTo(layout, 0, currentRow, Alignment.MIDDLE_LEFT, new Label("API access key:"));
+        addTo(layout, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.apiAccessKey")));
 
         apiKeyField = new PasswordField();
         apiKeyField.setPropertyDataSource(apiKeyProperty);
@@ -101,14 +100,14 @@ public class ServerPanelWithAPIKey extends Panel implements Validatable {
         addTo(layout, 1, currentRow, Alignment.MIDDLE_LEFT, apiKeyField);
         currentRow++;
 
-        addTo(layout, 0, currentRow, Alignment.MIDDLE_LEFT, new Label("Login:"));
+        addTo(layout, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.login")));
 
         login = textInput(loginNameProperty);
         login.addStyleName("server-panel-textfield");
         addTo(layout, 1, currentRow, Alignment.MIDDLE_LEFT, login);
         currentRow++;
 
-        addTo(layout, 0, currentRow, Alignment.MIDDLE_LEFT, new Label("Password:"));
+        addTo(layout, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.password")));
 
         password = new PasswordField();
         password.addStyleName("server-panel-textfield");
