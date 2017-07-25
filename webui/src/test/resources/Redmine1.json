@@ -1,4 +1,5 @@
 {
+  "connectorId":"Redmine",
   "label" : "Redmine1",
   "host" : "https://dev.taskadapter.com/redmine/",
   "userName" : "",

@@ -1,4 +1,5 @@
 {
+  "connectorId" : "Atlassian JIRA",
   "label" : "JIRA1",
   "host" : "http://dev.taskadapter.com:10012",
   "userName" : "user",

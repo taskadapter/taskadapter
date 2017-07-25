@@ -12,7 +12,7 @@ object ConfigFolderTestConfigurer {
     */
   def configure(rootFolder: File): Unit = {
     List("JIRA1.json", "Redmine1.json").foreach { resourceName =>
-      val adminFolder = new File(rootFolder, "admin/configs")
+      val adminFolder = new File(rootFolder, "admin")
       adminFolder.mkdirs()
       Files.copy(Paths.get(getClass.getClassLoader.getResource(resourceName).getPath),
         new File(adminFolder, resourceName).toPath)
