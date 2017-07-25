@@ -29,7 +29,29 @@ object NewConfigPage {
   Component = new NewConfigPage(editorManager, pluginManager, ops, callback).panel
 }
 
-class ChooseOrCreateSetupFragment(webServerInfo: WebServerInfo, selectPanel: ListSelect, button: Button, createPanel: Component) {
+class ChooseOrCreateSetupFragment(webServerInfo: WebServerInfo,
+                                  setups: Seq[ConnectorSetup],
+                                  button: Button, createPanel: Component) {
+  val selectPanel = createSavedServerConfigurationsSelector(message("createConfigPage.selectExistingOrNew"), setups,
+    event => {
+      println(s"event $event")
+    }
+  )
+
+  private def createSavedServerConfigurationsSelector(title: String,
+                                                      savedSetups: Seq[ConnectorSetup],
+                                                      valueChangeListener: ValueChangeListener): ListSelect = {
+    val res = new ListSelect(title)
+    res.setNullSelectionAllowed(false)
+    res.addValueChangeListener(valueChangeListener)
+    savedSetups.foreach { s =>
+      res.addItem(s.label)
+      res.setItemCaption(s.label, s"${s.label} ${s.host}")
+    }
+    res.setRows(res.size)
+    res
+  }
+
   val layout = new VerticalLayout(selectPanel, button, createPanel)
   if (selectPanel.getRows != 0) {
     selectPanel.select(selectPanel.getItemIds.iterator().next())
@@ -59,6 +81,19 @@ class ChooseOrCreateSetupFragment(webServerInfo: WebServerInfo, selectPanel: Lis
         return Some(error)
       }
       None
+    }
+  }
+
+  def getResult(): WebServerInfo = {
+    if (inSelectMode) {
+      setups.find(_.label == selectPanel.getValue).map(setup =>
+        new WebServerInfo(setup.label, setup.host, setup.userName,
+          setup.password,
+          setup.useApiKey,
+          setup.apiKey)
+      ).orNull
+    } else {
+      webServerInfo
     }
   }
 
@@ -106,14 +141,9 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
     val editor = editorManager.getEditorFactory(connectorId)
 
     val setups = configOps.getAllConnectorSetups(connectorId)
-    val selector = createSavedServerConfigurationsSelector(message("createConfigPage.selectExistingOrNew"), setups,
-      event => {
-        println(s"event $event")
-      }
-    )
     val editSetupPanel = editor.getSetupPanel(connectorInfo)
     val addNewButton = new Button()
-    new ChooseOrCreateSetupFragment(connectorInfo, selector, addNewButton, editSetupPanel)
+    new ChooseOrCreateSetupFragment(connectorInfo, setups, addNewButton, editSetupPanel)
   }
 
   grid.addComponent(connector2, 1, 0)
@@ -176,7 +206,8 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
     val descriptionString = descriptionTextField.getValue
     val id1 = connector1.getValue.asInstanceOf[String]
     val id2 = connector2.getValue.asInstanceOf[String]
-    configOps.createNewConfig(descriptionString, id1, id2, connector1Info, connector2Info)
+    configOps.createNewConfig(descriptionString, id1, id2, connector1Panel.get.getResult(),
+      connector2Panel.get.getResult())
   }
 
   private def createSystemListSelector(connectorInfo: WebServerInfo, title: String, plugins: PluginManager,
@@ -192,20 +223,6 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
       val connector = connectors.next
       res.addItem(connector.id)
       res.setItemCaption(connector.id, connector.label)
-    }
-    res.setRows(res.size)
-    res
-  }
-
-  private def createSavedServerConfigurationsSelector(title: String,
-                                                      savedSetups: Seq[ConnectorSetup],
-                                                      valueChangeListener: ValueChangeListener): ListSelect = {
-    val res = new ListSelect(title)
-    res.setNullSelectionAllowed(false)
-    res.addValueChangeListener(valueChangeListener)
-    savedSetups.foreach { s =>
-      res.addItem(s.label)
-      res.setItemCaption(s.label, s"${s.label} ${s.host}")
     }
     res.setRows(res.size)
     res
