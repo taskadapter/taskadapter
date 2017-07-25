@@ -69,9 +69,12 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
 
       }
     )
+    val editSetupPanel = editor.getSetupPanel(connectorInfo)
+    editSetupPanel.setVisible(false)
+    val addNewButton = new Button("+")
+    addNewButton.addClickListener(_ => {editSetupPanel.setVisible(true)})
 
-    val panel = editor.getSetupPanel(connectorInfo)
-    val layout = new VerticalLayout(selector, panel)
+    val layout = new VerticalLayout(selector, addNewButton, editSetupPanel)
     Some(layout)
   }
 
@@ -163,8 +166,8 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
     res.setNullSelectionAllowed(false)
     res.addValueChangeListener(valueChangeListener)
     savedSetups.foreach { s =>
-      res.addItem(s.host)
-      res.setItemCaption(s.host, s"${s.label} ${s.host}")
+      res.addItem(s.label)
+      res.setItemCaption(s.label, s"${s.label} ${s.host}")
     }
     res.setRows(res.size)
     res
