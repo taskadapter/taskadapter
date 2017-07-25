@@ -494,7 +494,7 @@ public class LoggedInPageset {
         final boolean updated;
         try {
             updated = to.updateForSave(new Sandbox(services.settingsManager.isTAWorkingOnLocalMachine(),
-                    context.configOps.syncSandbox));
+                    context.configOps.syncSandbox()));
         } catch (BadConfigException e) {
             showConfigEditor(config, to.decodeException(e));
             return false;
