@@ -74,18 +74,18 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     *
     * @param userName     user login name (for whom config will be created).
     * @param label        config label (name).
-    * @param connector1id first connector id.
-    * @param connector2id second connector id.
+    * @param connector1Id first connector id.
+    * @param connector2Id second connector id.
     * @return newly created (and saved) UI mapping config.
     */
   @throws[StorageException]
-  def createNewConfig(userName: String, label: String, connector1id: String, connector2id: String,
-                      connector1Info: WebServerInfo, connector2Info: WebServerInfo): UISyncConfig = {
-    val config1: UIConnectorConfig = uiConfigService.createDefaultConfig(connector1id)
-    config1.setLabel(connector1Info.getLabel)
+  def createNewConfig(userName: String, label: String, connector1Id: String, connector1Label:String,
+                      connector2Id: String, connector2Label: String): UISyncConfig = {
+    val config1: UIConnectorConfig = uiConfigService.createDefaultConfig(connector1Id)
+    config1.setLabel(connector1Label)
 
-    val config2: UIConnectorConfig = uiConfigService.createDefaultConfig(connector2id)
-    config2.setLabel(connector2Info.getLabel)
+    val config2: UIConnectorConfig = uiConfigService.createDefaultConfig(connector2Id)
+    config2.setLabel(connector2Label)
 
     val newMappings = NewConfigSuggester.suggestedFieldMappingsForNewConfig(
       config1.getSuggestedCombinations,
@@ -95,8 +95,6 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
       config1.getConnectorTypeId, config1.getConfigString,
       config2.getConnectorTypeId, config2.getConfigString, mappingsString)
 
-    saveSetup(userName, connector1Info, connector1id)
-    saveSetup(userName, connector2Info, connector2id)
     new UISyncConfig(configStorage.rootDir, identity, userName, label, config1, config2, newMappings, false)
   }
 

@@ -32,7 +32,7 @@ object NewConfigPage {
 class ChooseOrCreateSetupFragment(webServerInfo: WebServerInfo,
                                   setups: Seq[ConnectorSetup],
                                   button: Button, createPanel: Component) {
-  val selectPanel = createSavedServerConfigurationsSelector(message("createConfigPage.selectExistingOrNew"), setups,
+  private val selectPanel = createSavedServerConfigurationsSelector(message("createConfigPage.selectExistingOrNew"), setups,
     event => {
       println(s"event $event")
     }
@@ -57,6 +57,7 @@ class ChooseOrCreateSetupFragment(webServerInfo: WebServerInfo,
     selectPanel.select(selectPanel.getItemIds.iterator().next())
   }
   var inSelectMode = true
+  def inEditMode : Boolean = !inSelectMode
 
   def getUI(): Component = layout
 
@@ -84,18 +85,15 @@ class ChooseOrCreateSetupFragment(webServerInfo: WebServerInfo,
     }
   }
 
-  def getResult(): WebServerInfo = {
+  def getLabel():String = {
     if (inSelectMode) {
-      setups.find(_.label == selectPanel.getValue).map(setup =>
-        new WebServerInfo(setup.label, setup.host, setup.userName,
-          setup.password,
-          setup.useApiKey,
-          setup.apiKey)
-      ).orNull
+      selectPanel.getValue.toString
     } else {
-      webServerInfo
+      webServerInfo.getLabel
     }
   }
+
+  def getEditedResult(): WebServerInfo = webServerInfo
 
   button.addClickListener(_ => {
     inSelectMode = !inSelectMode
@@ -206,8 +204,14 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
     val descriptionString = descriptionTextField.getValue
     val id1 = connector1.getValue.asInstanceOf[String]
     val id2 = connector2.getValue.asInstanceOf[String]
-    configOps.createNewConfig(descriptionString, id1, id2, connector1Panel.get.getResult(),
-      connector2Panel.get.getResult())
+    if (connector1Panel.get.inEditMode) {
+      configOps.saveSetup(connector1Panel.get.getEditedResult(), id1)
+    }
+    if (connector2Panel.get.inEditMode) {
+      configOps.saveSetup(connector2Panel.get.getEditedResult(), id2)
+    }
+    configOps.createNewConfig(descriptionString, id1, connector1Panel.get.getLabel(),
+      id2, connector2Panel.get.getLabel())
   }
 
   private def createSystemListSelector(connectorInfo: WebServerInfo, title: String, plugins: PluginManager,

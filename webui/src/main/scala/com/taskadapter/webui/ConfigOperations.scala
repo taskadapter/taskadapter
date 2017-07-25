@@ -56,15 +56,15 @@ final class ConfigOperations(/**
     * Creates a new config and returns it.
     *
     * @param descriptionString config description.
-    * @param id1               first connector id.
-    * @param id2               second connector id.
+    * @param connector1Id               first connector id.
+    * @param connector2Id               second connector id.
     * @return new config
     * @throws StorageException if config cannot be created.
     */
   @throws[StorageException]
-  def createNewConfig(descriptionString: String, id1: String, id2: String,
-                      connector1Info: WebServerInfo, connector2Info: WebServerInfo): UISyncConfig =
-  uiConfigStore.createNewConfig(userName, descriptionString, id1, id2, connector1Info, connector2Info)
+  def createNewConfig(descriptionString: String, connector1Id: String, connector1Label:String,
+                      connector2Id: String, connector2Label: String): UISyncConfig =
+  uiConfigStore.createNewConfig(userName, descriptionString, connector1Id, connector1Label, connector2Id, connector2Label)
 
   /**
     * Deletes a config.
@@ -91,6 +91,9 @@ final class ConfigOperations(/**
   def saveConfig(config: UISyncConfig): Unit = {
     uiConfigStore.saveConfig(config)
   }
+
+  def saveSetup(setup: WebServerInfo, connectorId: String): Unit =
+    uiConfigStore.saveSetup(userName, setup, connectorId)
 
   def getAllConnectorSetups(connectorId: String): Seq[ConnectorSetup] = uiConfigStore.getAllConnectorSetups(userName, connectorId)
 }
