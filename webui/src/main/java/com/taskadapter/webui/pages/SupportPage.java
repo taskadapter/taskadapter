@@ -32,9 +32,9 @@ public final class SupportPage {
 
     private void buildUI() {
         layout.setSpacing(true);
+        addEmailPanel();
         addVersionInfo();
         createLicenseSection();
-        addEmailLink();
     }
 
     private void addVersionInfo() {
@@ -84,12 +84,15 @@ public final class SupportPage {
         lastVersionInfoLayout.addComponent(downloadLink);
     }
 
-    private void addEmailLink() {
-        Link emailLink = new Link();
-        emailLink.setResource(new ExternalResource("mailto:support@taskadapter.com"));
-        emailLink.setCaption(message("supportPage.sendUsAnEmail"));
-        emailLink.setTargetName("_new");
-        layout.addComponent(emailLink);
+    private void addEmailPanel() {
+        VerticalLayout l = new VerticalLayout();
+        l.setMargin(true);
+        String emailMessage = message("supportPage.sendUsAnEmail");
+        l.addComponent(new Label(emailMessage));
+        l.addComponent(new Label("support@taskadapter.com"));
+        Panel panel = new Panel(message("supportPage.contactPanelTitle"));
+        panel.setContent(l);
+        layout.addComponent(panel);
     }
 
     public static Component render(String taVersion, LicenseFacade license) {
