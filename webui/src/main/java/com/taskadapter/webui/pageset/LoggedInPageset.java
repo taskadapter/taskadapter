@@ -24,8 +24,8 @@ import com.taskadapter.webui.pages.ExportPage;
 import com.taskadapter.webui.pages.LicenseAgreementPage;
 import com.taskadapter.webui.pages.NewConfigPage;
 import com.taskadapter.webui.pages.SupportPage;
+import com.taskadapter.webui.pages.UserProfilePage;
 import com.taskadapter.webui.service.Preservices;
-import com.taskadapter.webui.user.ChangePasswordDialog;
 import com.vaadin.server.StreamVariable;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Alignment;
@@ -134,27 +134,18 @@ public class LoggedInPageset {
         final HorizontalLayout panelForLoggedInUsers = new HorizontalLayout();
         panelForLoggedInUsers.setSpacing(true);
 
-        final Button logoutButton = new Button(message("headerMenu.logout"));
-        logoutButton.setStyleName(BaseTheme.BUTTON_LINK);
-        logoutButton.addStyleName("personalMenuItem");
-        logoutButton.addClickListener((Button.ClickListener) event -> logoutCallback.run());
-        panelForLoggedInUsers.addComponent(logoutButton);
-
-        Button setPasswordButton = new Button(message("headerMenu.changePassword"));
-        setPasswordButton.setStyleName(BaseTheme.BUTTON_LINK);
-        setPasswordButton.addStyleName("personalMenuItem");
-        setPasswordButton.addClickListener((Button.ClickListener) event -> showChangePasswordDialog());
-        panelForLoggedInUsers.addComponent(setPasswordButton);
+        Button userProfileButton = new Button(message("headerMenu.userProfile"));
+        userProfileButton.setStyleName(BaseTheme.BUTTON_LINK);
+        userProfileButton.addStyleName("menu");
+        userProfileButton.addClickListener((Button.ClickListener) event -> showUserProfilePage());
+        panelForLoggedInUsers.addComponent(userProfileButton);
 
         return panelForLoggedInUsers;
     }
 
-    /**
-     * Attempts to change password for the current user.
-     */
-    private void showChangePasswordDialog() {
-        ChangePasswordDialog.showDialog(ui.getUI(), context.name,
-                context.selfManagement::changePassword);
+    private void showUserProfilePage() {
+        tracker.trackPage("user_profile");
+        applyUI(new UserProfilePage(context.name, context.selfManagement::changePassword, logoutCallback).ui());
     }
 
     private Component createMenu() {
