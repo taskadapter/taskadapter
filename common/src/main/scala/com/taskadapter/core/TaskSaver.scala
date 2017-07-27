@@ -7,8 +7,11 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.connector.definition.{ProgressMonitor, SaveResult}
 import com.taskadapter.connector.{FieldRow, NewConnector}
 import com.taskadapter.model.GTask
+import org.slf4j.LoggerFactory
 
 object TaskSaver {
+  private val log = LoggerFactory.getLogger(TaskSaver.getClass)
+
   def save(previouslyCreatedTasks: PreviouslyCreatedTasksResolver,
            connectorTo: NewConnector,
            destinationName: String,
@@ -16,7 +19,9 @@ object TaskSaver {
            tasks: util.List[GTask],
            monitor: ProgressMonitor): SaveResult = {
     val totalNumberOfTasks = DataConnectorUtil.calculateNumberOfTasks(tasks)
-    monitor.beginTask("Saving " + totalNumberOfTasks + " tasks to " + destinationName, totalNumberOfTasks)
+    val str = "Saving " + totalNumberOfTasks + " tasks to " + destinationName
+    log.info(str)
+    monitor.beginTask(str, totalNumberOfTasks)
     try {
       val saveResult = connectorTo.saveData(previouslyCreatedTasks, tasks, monitor, rows)
       monitor.done()

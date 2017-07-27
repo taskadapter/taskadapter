@@ -13,7 +13,6 @@ import com.taskadapter.connector.definition.SaveResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.taskadapter.connector.definition.TaskError;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
@@ -33,14 +32,13 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalLayout;
-import scala.collection.JavaConversions;
 
 /**
  * Export page and export handler.
  * 
  */
 public final class ExportPage {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExportPage.class);
+    private static final Logger log = LoggerFactory.getLogger(ExportPage.class);
 
     /**
      * Config operations.
@@ -99,13 +97,16 @@ public final class ExportPage {
                 .getConnector1()));
 
         if (taskLimit < Integer.MAX_VALUE)
-            LOGGER.info(TRIAL_MESSAGE);
+            log.info(TRIAL_MESSAGE);
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
+                    log.info("Loading from " + config.connector1().getConnectorTypeId()
+                            + " " + config.getConnector1().getSourceLocation());
                     final List<GTask> tasks = UISyncConfig.loadTasks(config, taskLimit);
+                    log.info("Loaded " + tasks.size() + " tasks");
                     if (tasks.isEmpty())
                         showNoDataLoaded();
                     else
@@ -114,14 +115,14 @@ public final class ExportPage {
                     final String message = config.getConnector1()
                             .decodeException(e);
                     showLoadErrorMessage(message);
-                    LOGGER.error("transport error: " + message, e);
+                    log.error("transport error: " + message, e);
                 } catch (ConnectorException e) {
                     showLoadErrorMessage(config.getConnector1()
                             .decodeException(e));
-                    LOGGER.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 } catch (RuntimeException e) {
                     showLoadErrorMessage("Internal error: " + e.getMessage());
-                    LOGGER.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 }
             }
         }).start();
@@ -209,6 +210,11 @@ public final class ExportPage {
                 message("export.from"), sourceLocation));
         donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
                 message("export.to"), targetLocation));
+
+        log.info("Export completed. Tasks created: " + res.getCreatedTasksNumber()
+        + ". Task updated: " + res.getUpdatedTasksNumber()
+        + " General errors: " + res.getGeneralErrors()
+        + " Task-specific errors: " + res.getTaskErrors());
 
         final String resultFile = res.getTargetFileAbsolutePath();
         if (resultFile != null && !showFilePath) {

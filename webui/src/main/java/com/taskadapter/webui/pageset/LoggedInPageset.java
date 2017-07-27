@@ -3,12 +3,9 @@ package com.taskadapter.webui.pageset;
 import com.google.common.io.Files;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.config.StorageException;
-import com.taskadapter.connector.definition.ExportDirection;
-import com.taskadapter.connector.definition.FileBasedConnector;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.license.LicenseManager;
-import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
@@ -27,7 +24,6 @@ import com.taskadapter.webui.pages.ExportPage;
 import com.taskadapter.webui.pages.LicenseAgreementPage;
 import com.taskadapter.webui.pages.NewConfigPage;
 import com.taskadapter.webui.pages.SupportPage;
-import com.taskadapter.webui.pages.UpdateFilePage;
 import com.taskadapter.webui.service.Preservices;
 import com.taskadapter.webui.user.ChangePasswordDialog;
 import com.vaadin.server.StreamVariable;
@@ -47,11 +43,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.taskadapter.webui.Page.message;
-import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
 /**
  * Pageset for logged-in user.
@@ -59,7 +53,7 @@ import static com.vaadin.server.Sizeable.Unit.PIXELS;
  */
 public class LoggedInPageset {
     private static final int MAX_TASKS_TO_LOAD = Integer.MAX_VALUE;
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoggedInPageset.class);
+    private static final Logger log = LoggerFactory.getLogger(LoggedInPageset.class);
 
     /**
      * Global (app-wide) services.
@@ -390,7 +384,7 @@ public class LoggedInPageset {
 
             @Override
             public void onProgress(StreamingProgressEvent event) {
-                LOGGER.debug("Safely ignoring 'progress' event. We don't need it.");
+                log.debug("Safely ignoring 'progress' event. We don't need it.");
             }
 
             @Override
@@ -415,10 +409,17 @@ public class LoggedInPageset {
     }
 
     private void exportCommon(UISyncConfig config) {
+        log.info("Starting export from " +
+                config.connector1().getConnectorTypeId() +
+                " (" + config.connector1().getSourceLocation() + ") "
+                + " to " +
+                config.connector2().getConnectorTypeId() +
+                " (" + config.connector2().getDestinationLocation() + ")");
         tracker.trackPage("export_confirmation");
         final int maxTasks = services.licenseManager
                 .isSomeValidLicenseInstalled() ? MAX_TASKS_TO_LOAD
                 : LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
+        log.info("License installed? " + services.licenseManager.isSomeValidLicenseInstalled());
         applyUI(ExportPage.render(context.configOps, config, maxTasks,
                 services.settingsManager.isTAWorkingOnLocalMachine(),
                 this::showHome));
@@ -506,7 +507,7 @@ public class LoggedInPageset {
                 context.configOps.saveConfig(config);
             } catch (StorageException e1) {
                 final String message = Page.message("export.troublesSavingConfig", e1.getMessage());
-                LOGGER.error(message, e1);
+                log.error(message, e1);
                 Notification.show(message, Notification.Type.ERROR_MESSAGE);
             }
         }

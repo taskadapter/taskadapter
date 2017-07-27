@@ -8,12 +8,14 @@ import com.taskadapter.connector.definition.{ProgressMonitor, SaveResultBuilder,
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.GTask
+import org.slf4j.LoggerFactory
 
 class SimpleTaskSaver[N](previouslyCreatedTasksResolver: PreviouslyCreatedTasksResolver,
                          converter: ConnectorConverter[GTask, N],
                          saveAPI: BasicIssueSaveAPI[N],
                          result: SaveResultBuilder, progressMonitor: ProgressMonitor,
                          targetLocation: String) {
+  private val log = LoggerFactory.getLogger(classOf[SimpleTaskSaver[N]])
 
   def saveTasks(parentIssueKey: Option[TaskId], tasks: util.List[GTask], fieldRows: java.lang.Iterable[FieldRow]): Unit = {
     tasks.forEach { task =>
