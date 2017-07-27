@@ -10,4 +10,6 @@ object Page {
 
   //  @annotation.varargs is a hint to generate a Java version of the method which takes an array instead of a Seq.
   @annotation.varargs def message(key: String, argument: String*): String = MESSAGES.format(key, argument)
+
+  def message(key: String, argument: String): String = MESSAGES.format(key, argument)
 }
