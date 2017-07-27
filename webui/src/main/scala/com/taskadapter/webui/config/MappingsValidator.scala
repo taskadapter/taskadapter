@@ -13,16 +13,21 @@ object MappingsValidator {
 
   @throws[FieldNotMappedException]
   private def validateAllSelectedFieldsMappedToSomething(mappings: Seq[EditableFieldMapping]) = {
-    for (mapping <- mappings) {
-      var notMapped = false
-      notMapped = mapping.fieldInConnector1 == "" || mapping.fieldInConnector2 == ""
-      var string = Strings.nullToEmpty(mapping.fieldInConnector1)
-      if (string != "" && mapping.fieldInConnector2 != "") {
-        string = " "
-      }
+    mappings.foreach { row =>
 
-      string += Strings.nullToEmpty(mapping.fieldInConnector2)
-      if (mapping.selected && notMapped) throw FieldNotMappedException(string)
+      val valid = (row.fieldInConnector1 != "" && row.fieldInConnector2 != "") ||
+        (row.fieldInConnector1 != "" && row.fieldInConnector2 == ""  && row.defaultValue != "") ||
+        (row.fieldInConnector2 != "" && row.fieldInConnector1 == ""  && row.defaultValue != "")
+
+      if (row.selected && !valid) {
+        var string = Strings.nullToEmpty(row.fieldInConnector1)
+        if (string != "" && row.fieldInConnector2 != "") {
+          string = " "
+        }
+
+        string += Strings.nullToEmpty(row.fieldInConnector2)
+        throw FieldNotMappedException(string)
+      }
     }
   }
 }
