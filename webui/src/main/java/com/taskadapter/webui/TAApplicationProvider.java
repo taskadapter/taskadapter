@@ -2,6 +2,9 @@ package com.taskadapter.webui;
 
 import java.io.File;
 
+import com.taskadapter.license.License;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.vaadin.googleanalytics.tracking.GoogleAnalyticsTracker;
 
 import com.taskadapter.auth.BasicCredentialsManager;
@@ -19,7 +22,7 @@ import com.vaadin.ui.UI;
  * Provider of the Task Adapter application.
  */
 final class TAApplicationProvider extends UIProvider {
-
+    private final Logger log = LoggerFactory.getLogger(TAApplicationProvider.class);
     private static final String GOOGLE_ANALYTICS_ID = "UA-3768502-12";
 
     /**
@@ -49,6 +52,14 @@ final class TAApplicationProvider extends UIProvider {
 
         // FIXME: WTF?
         services.licenseManager.loadInstalledTaskAdapterLicense();
+        log.info("Started TaskAdapter " + services.currentTaskAdapterVersion);
+        if (services.licenseManager.isSomeValidLicenseInstalled()) {
+            License license = services.licenseManager.getLicense();
+            log.info("License info: valid until " + license.getExpiresOn()
+                    + ". Registered to " + license.getEmail());
+        } else {
+            log.info("License NOT installed or is NOT valid. Trial mode.");
+        }
     }
 
     @Override
