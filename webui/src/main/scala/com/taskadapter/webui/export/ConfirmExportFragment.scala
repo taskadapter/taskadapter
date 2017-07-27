@@ -11,6 +11,7 @@ import com.taskadapter.webui.action.MyTree
 import com.taskadapter.webui.config.TaskFieldsMappingFragment
 import com.vaadin.ui._
 import org.slf4j.LoggerFactory
+import scala.collection.JavaConverters._
 
 object ConfirmExportFragment {
   private val LOGGER = LoggerFactory.getLogger(ConfirmExportFragment.getClass)
@@ -57,10 +58,15 @@ object ConfirmExportFragment {
     layout.addComponent(buttonsLayout)
     val taskFieldsMappingFragment = new TaskFieldsMappingFragment(Page.MESSAGES,
       config.getConnector1, config.getConnector2, config.getNewMappings)
+
+    def getPossiblyUpdatedConfig = {
+      val newFieldMappings = taskFieldsMappingFragment.getElements.asScala.toSeq
+      config.copy(fieldMappings = newFieldMappings)
+    }
     layout.addComponent(taskFieldsMappingFragment.getUI)
     goButton.addClickListener(_ => {
       try
-        configOps.saveConfig(config)
+        configOps.saveConfig(getPossiblyUpdatedConfig)
       catch {
         case e: StorageException =>
           LOGGER.error(Page.message("action.cantSaveUpdatedConfig", e.getMessage), e)
