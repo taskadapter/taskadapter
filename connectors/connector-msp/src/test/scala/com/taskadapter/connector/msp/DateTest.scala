@@ -13,7 +13,7 @@ import scala.collection.JavaConverters._
 
 @RunWith(classOf[JUnitRunner])
 class DateTest extends FunSpec with Matchers {
-  val gtasks = load("start_date_by_constraint.xml").asScala.toList
+  val gtasks = load("start_date_by_constraint.xml").asScala
 
   // TODO TA3 MSP start date tests
   it("startDateMustStartOn") {

@@ -31,15 +31,7 @@ object TestUtils {
     list.asScala.find(_.getKey == key).orNull
   }
 
-  /**
-    * Use the scala version
-    */
-  @Deprecated
-  def findTaskByFieldName(list: util.List[GTask], fieldName: String, value: String): GTask = {
-    findTaskByFieldName(list.asScala.toList, fieldName, value)
-  }
-
-  def findTaskByFieldName(list: List[GTask], fieldName: String, value: String): GTask = {
+  def findTaskByFieldName(list: Seq[GTask], fieldName: String, value: String): GTask = {
     list.find(_.getValue(fieldName) == value).orNull
   }
 
