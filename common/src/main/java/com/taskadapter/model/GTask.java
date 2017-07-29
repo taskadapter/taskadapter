@@ -98,6 +98,9 @@ final public class GTask {
         return (List<GTask>) getValue(GTaskDescriptor.FIELD.CHILDREN);
     }
 
+    public void addChildTask(GTask child) {
+        getChildren().add(child);
+    }
     public void setChildren(List<GTask> children) {
         setValue(GTaskDescriptor.FIELD.CHILDREN, children);
     }

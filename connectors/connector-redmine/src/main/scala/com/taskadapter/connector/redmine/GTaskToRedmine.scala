@@ -5,6 +5,7 @@ import java.util.Date
 
 import com.google.common.base.Strings
 import com.taskadapter.connector.common.data.ConnectorConverter
+import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.model.GTask
 import com.taskadapter.redmineapi.bean._
 
@@ -40,7 +41,9 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
 
   private def processField(issue: Issue, fieldName: String, value: Any): Unit = {
     fieldName match {
-      case "PARENT_KEY" => issue.setParentId(parseIntOrNull(value.asInstanceOf[String]))
+      case "PARENT_KEY" => if (value != null) {
+        issue.setParentId(value.asInstanceOf[TaskId].id.toInt)
+      }
       case "ID" => // TODO TA3 review this. ignore ID field because it MAYBE does not need to be provided when saving?
       case "RELATIONS" => // processed in another place (for now?)
       case "CHILDREN" => // processed in another place (for now?)

@@ -221,8 +221,7 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
       }
 */
 
-  // TODO TA3  t.getChildren().add(c1) fails in Scala because of list conversions (list is immutable)
-  ignore("task with children") {
+  it("task is created with children") {
     val t = new GTask()
     t.setId(1l)
     val summary = "generic task " + Calendar.getInstance().getTimeInMillis
@@ -231,26 +230,23 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
 
     val hours = Random.nextInt(50) + 1;
     t.setValue(RedmineField.estimatedTime, hours)
-    t.setChildren(List[GTask]().asJava)
 
     val c1 = new GTask()
     c1.setId(3l)
     val parentIdentity = TaskId(1, "1")
     c1.setParentIdentity(parentIdentity)
     c1.setValue(RedmineField.summary, "Child 1 of " + summary)
-    t.getChildren().add(c1)
+    t.addChildTask(c1)
 
     val c2 = new GTask()
     c2.setId(4l)
     c2.setParentIdentity(parentIdentity)
     c2.setValue(RedmineField.summary, "Child 2 of " + summary)
-    t.getChildren().add(c2)
+    t.addChildTask(c2)
 
     val loadedTasks = TestUtils.saveAndLoadAll(getConnector(), t, RedmineFieldBuilder.getDefault())
 
-    val filtered = loadedTasks.filter(_.getValue(RedmineField.summary) == summary)
-
-    val tree = TreeUtils.buildTreeFromFlatList(filtered.asJava)
+    val tree = TreeUtils.buildTreeFromFlatList(loadedTasks.asJava)
         
     tree.size() shouldBe 1
 
