@@ -122,7 +122,7 @@ public class LoggedInPageset {
         this.logoutCallback = callback;
         this.license = new LicenseFacade(services.licenseManager);
 
-        final Component header = Header.render(this::showHome, createMenu(), createSelfManagementMenu(), license.isLicensed());
+        final Component header = Header.render(this::showConfigsList, createMenu(), createSelfManagementMenu(), license.isLicensed());
 
         ui = TAPageLayout.layoutPage(header, currentComponentArea);
     }
@@ -191,6 +191,10 @@ public class LoggedInPageset {
                 this::showHome));
     }
 
+    private void showConfigsList() {
+        clearCurrentConfigInSession();
+        showHome();
+    }
     /**
      * Shows a home page.
      */
