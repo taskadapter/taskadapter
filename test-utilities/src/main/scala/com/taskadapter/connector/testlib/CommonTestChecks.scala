@@ -4,14 +4,13 @@ import java.util
 
 import com.taskadapter.connector._
 import com.taskadapter.connector.common.ProgressMonitorUtils
-import com.taskadapter.connector.definition.{ExportDirection}
+import com.taskadapter.connector.definition.{ExportDirection, TaskId}
 import com.taskadapter.core.{PreviouslyCreatedTasksResolver, TaskSaver}
 import com.taskadapter.model.{GTask, StandardField}
 import org.junit.Assert.{assertEquals, assertFalse}
 
-import scala.collection.JavaConverters._
-
 object CommonTestChecks {
+  def skipCleanup(id: TaskId): Unit = {}
 
   // TODO TA3 fix
   /*    public static void testLoadTasks(NewConnector connector, List<FieldRow> rows) throws ConnectorException {
@@ -37,24 +36,27 @@ object CommonTestChecks {
 
   */
 
-  def createsTasks(connector: NewConnector, rows: util.List[FieldRow], tasks: util.List[GTask]): Unit = {
+  def createsTasks(connector: NewConnector, rows: util.List[FieldRow], tasks: util.List[GTask],
+                   cleanup: TaskId => Unit): Unit = {
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows)
     assertFalse(result.hasErrors)
     assertEquals(tasks.size, result.getCreatedTasksNumber)
+    result.getRemoteKeys.foreach(cleanup(_))
   }
 
   def descriptionSavedByDefault(connector: NewConnector, task: GTask,
                                 suggestedMappings: Map[Field, StandardField],
-                                fieldNameToSearch: Field): Unit = {
+                                fieldNameToSearch: Field,
+                                cleanup: TaskId => Unit): Unit = {
     val mappings = NewConfigSuggester.suggestedFieldMappingsForNewConfig(suggestedMappings, suggestedMappings)
     val rows = MappingBuilder.build(mappings, ExportDirection.RIGHT)
     val loadedTask = TestUtils.saveAndLoadViaSummary(connector, task, rows.toList, fieldNameToSearch)
     assertEquals(task.getValue(fieldNameToSearch), loadedTask.getValue(fieldNameToSearch))
+    cleanup(loadedTask.getIdentity)
   }
 
-
-  // TODO TA3 this requires remote ID support.
-  def taskCreatedAndUpdatedOK(connector: NewConnector, rows: util.List[FieldRow], task: GTask, fieldToChangeInTest: String): Unit = {
+  def taskCreatedAndUpdatedOK(connector: NewConnector, rows: util.List[FieldRow], task: GTask, fieldToChangeInTest: String,
+                              cleanup: TaskId => Unit): Unit = {
     val id = task.getId
     // CREATE
 
@@ -67,15 +69,11 @@ object CommonTestChecks {
     val newValue = "some new text"
     loaded.setValue(fieldToChangeInTest, newValue)
     loaded.setKey(remoteKey.key)
-    // TODO TA3 remote id test
-    //        Map<String, Long> map = new HashMap<>();
-    //        map.put(remoteKey, remoteKey);
-    //        taskKeeper.keepTasks(map);
-    //        TaskSaveResult result2 = connector.saveData(taskKeeper, Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR, rows);
     val result2 = TaskSaver.save(PreviouslyCreatedTasksResolver.empty, connector, "some name", rows, util.Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR)
     assertFalse(result2.hasErrors)
     assertEquals(1, result2.getUpdatedTasksNumber)
     val loadedAgain = connector.loadTaskByKey(remoteKey, rows)
     assertEquals(newValue, loadedAgain.getValue(fieldToChangeInTest))
+    cleanup(loaded.getIdentity)
   }
 }

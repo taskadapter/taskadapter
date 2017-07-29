@@ -60,6 +60,10 @@ final public class GTask {
         fields.put(field, value);
     }
 
+    public TaskId getIdentity() {
+        return new TaskId(getId(), getKey());
+    }
+
     /**
      * Like database ID for Redmine and Jira and Unique ID (row number) for MSP.
      */

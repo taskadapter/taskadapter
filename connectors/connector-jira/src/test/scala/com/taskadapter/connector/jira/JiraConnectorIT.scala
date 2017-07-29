@@ -16,6 +16,8 @@ import scala.collection.JavaConverters._
 
 @RunWith(classOf[JUnitRunner])
 class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll {
+  private val webServerInfo = JiraPropertiesLoader.getTestServerInfo
+  private var client = JiraConnectionFactory.createClient(webServerInfo)
 
   it("testLoadTaskByKey") {
     val connector = getConnector
@@ -24,13 +26,15 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     val id = TestUtils.save(connector, task, JiraFieldBuilder.getDefault)
     val loadedTask = connector.loadTaskByKey(id, JiraFieldBuilder.getDefault.asJava)
     assertThat(loadedTask.getValue(JiraField.summary)).isEqualTo(summary)
+    TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
   }
 
   it("description saved by default") {
     CommonTestChecks.descriptionSavedByDefault(getConnector,
       new JiraGTaskBuilder().withDescription().build(),
       JiraField.getSuggestedCombinations(),
-      JiraField.description)
+      JiraField.description,
+      taskId => TestJiraClientHelper.deleteTasks(client, taskId))
   }
 
   it("subtasks are created") {
@@ -53,28 +57,8 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     assertThat(loadedSubTask1.getParentIdentity).isEqualTo(parentTaskId)
     assertThat(loadedSubTask2.getParentIdentity).isEqualTo(parentTaskId)
 
-    // TODO need to delete the temporary tasks
+    TestJiraClientHelper.deleteTasks(client, loadedSubTask1.getIdentity, loadedSubTask2.getIdentity, parentTaskId)
   }
-
-  /*
-  @Ignore("This test requires a custom project configuration: project with 'ENV' key")
-  it("taskIsCreatedInProjectWithRequiredEnvironmentField") {
-    val task = TestUtils.generateTask
-    task.setType("Bug")
-    val environmentString = "some environment"
-    task.setEnvironment(environmentString)
-    // special project with Environment set as a required field
-    testConfig.setProjectKey("ENV")
-    val connector = new JiraConnector(testConfig)
-    val result = connector.saveData(util.Arrays.asList(task), null, TEST_MAPPINGS)
-    assertThat(result.getCreatedTasksNumber).isEqualTo(1)
-    // TODO this is ugly
-    val values = result.getIdToRemoteKeyMap.values
-    val key = values.iterator.next
-    val loadedTask = connector.loadTaskByKey(key, new Mappings)
-    assertThat(loadedTask.getEnvironment).isEqualTo(environmentString)
-  }
-*/
 
   // TODO move to some generic tests, this is not Jira-specific
   it("task created with default description field") {
@@ -92,6 +76,7 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     val taskId = result.getIdToRemoteKeyList.head._2
     val loadedTask = connector.loadTaskByKey(taskId, rows.asJava)
     assertThat(loadedTask.getValue(JiraField.description)).isEqualTo("some default")
+    TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
   }
 
   private def getConnector = new JiraConnector(JiraPropertiesLoader.createTestConfig, JiraPropertiesLoader.getTestServerInfo)

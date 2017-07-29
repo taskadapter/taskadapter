@@ -360,13 +360,14 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
         }
   */
   it("tasks are created without errors") {
-    CommonTestChecks.createsTasks(getConnector(), RedmineFieldBuilder.getDefault().asJava, RedmineGTaskBuilder.getTwo().asJava)
+    CommonTestChecks.createsTasks(getConnector(), RedmineFieldBuilder.getDefault().asJava, RedmineGTaskBuilder.getTwo().asJava,
+      CommonTestChecks.skipCleanup)
   }
 
 
   it("task is updated") {
     CommonTestChecks.taskCreatedAndUpdatedOK(getConnector(), RedmineFieldBuilder.getDefault().asJava,
-      RedmineGTaskBuilder.withSummary(), RedmineField.summary.name)
+      RedmineGTaskBuilder.withSummary(), RedmineField.summary.name, CommonTestChecks.skipCleanup)
   }
 
   /*

@@ -32,7 +32,8 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   }
 
   it("tasks are created without errors") {
-    CommonTestChecks.createsTasks(connector, JiraFieldBuilder.getDefault().asJava, JiraGTaskBuilder.getTwo().asJava)
+    CommonTestChecks.createsTasks(connector, JiraFieldBuilder.getDefault().asJava, JiraGTaskBuilder.getTwo().asJava,
+      id => TestJiraClientHelper.deleteTasks(client, id))
   }
 
   it("assignee has full name") {
@@ -43,14 +44,16 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     task.setValue(JiraField.assignee, jiraUser.getName)
     val loadedTask = TestUtils.saveAndLoad(connector, task, JiraFieldBuilder.getDefault.asJava)
     assertEquals(jiraUser.getName, loadedTask.getValue(JiraField.assignee))
-    TestJiraClientHelper.deleteTasks(client, loadedTask.getKey)
+    TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
   }
 
   /**
     * TODO TA3 this requires remote ID support.
     */
   ignore("task is updated") {
-    CommonTestChecks.taskCreatedAndUpdatedOK(connector, JiraFieldBuilder.getDefault().asJava, JiraGTaskBuilder.withSummary(), JiraField.summary.name)
+    CommonTestChecks.taskCreatedAndUpdatedOK(connector, JiraFieldBuilder.getDefault().asJava,
+      JiraGTaskBuilder.withSummary(), JiraField.summary.name,
+      id => TestJiraClientHelper.deleteTasks(client, id))
   }
 
   it("testGetIssuesByProject") {
@@ -77,7 +80,8 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     val targetIssueKey = link.getTargetIssueKey
     val createdIssue2 = TestJiraClientHelper.findIssuesBySummary(client, task2.getValue(JiraField.summary).asInstanceOf[String]).iterator.next
     assertEquals(createdIssue2.getKey, targetIssueKey)
-    TestJiraClientHelper.deleteTasks(client, createdIssue1.getKey, createdIssue2.getKey)
+    TestJiraClientHelper.deleteTasks(client, TaskId(createdIssue1.getId, createdIssue1.getKey),
+      TaskId(createdIssue2.getId, createdIssue2.getKey))
   }
 
   private def generateTasks = {

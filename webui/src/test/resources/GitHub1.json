@@ -1,0 +1,9 @@
+{
+  "connectorId" : "GitHub",
+  "label" : "GitHub1",
+  "host":"http://github.com",
+  "userName":"tatest",
+  "password":"¶cRYeJTZIKjY9",
+  "useApiKey": false,
+  "apiKey": ""
+}

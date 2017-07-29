@@ -24,7 +24,7 @@ public class GithubConnector implements Connector<GithubConfig> {
      * Keep it the same to enable backward compatibility with the existing
      * config files.
      */
-    public static final String ID = "Github";
+    public static final String ID = "GitHub";
 
     private GithubConfig config;
 
