@@ -3,16 +3,14 @@ package com.taskadapter.webui.config
 import com.google.common.base.Strings
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 
-import scala.collection.JavaConverters._
-
 object MappingsValidator {
   @throws[BadConfigException]
-  def validate(mappings: java.util.List[EditableFieldMapping]) = {
-    validateAllSelectedFieldsMappedToSomething(mappings.asScala)
+  def validate(mappings: Iterable[EditableFieldMapping]) = {
+    validateAllSelectedFieldsMappedToSomething(mappings)
   }
 
   @throws[FieldNotMappedException]
-  private def validateAllSelectedFieldsMappedToSomething(mappings: Seq[EditableFieldMapping]) = {
+  private def validateAllSelectedFieldsMappedToSomething(mappings: Iterable[EditableFieldMapping]) = {
     mappings.foreach { row =>
 
       val valid = (row.fieldInConnector1 != "" && row.fieldInConnector2 != "") ||

@@ -2,6 +2,7 @@ package com.taskadapter.connector.jira;
 
 import com.google.common.base.Strings;
 import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.exception.ForbiddenException;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.NotAuthorizedException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
@@ -51,6 +52,8 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
             return MESSAGES.get("errors.serverUrlNotSet");
         } else if (e instanceof NotAuthorizedException) {
             return MESSAGES.get("errors.notAuthorized");
+        } else if (e instanceof ForbiddenException) {
+            return MESSAGES.get("errors.forbidden");
         } else if (e instanceof JiraConfigException) {
             return formatValidationErrors((JiraConfigException) e);
         }

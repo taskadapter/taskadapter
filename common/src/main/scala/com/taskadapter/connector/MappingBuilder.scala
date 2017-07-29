@@ -12,14 +12,14 @@ object MappingBuilder {
     )
   }
 
-  def getSourceField(fieldMapping: FieldMapping, exportDirection: ExportDirection): Field = {
+  def getSourceField(fieldMapping: FieldMapping, exportDirection: ExportDirection): Option[Field] = {
     exportDirection match {
       case ExportDirection.RIGHT => fieldMapping.fieldInConnector1
       case ExportDirection.LEFT => fieldMapping.fieldInConnector2
     }
   }
 
-  def getTargetField(fieldMapping: FieldMapping, exportDirection: ExportDirection): Field = {
+  def getTargetField(fieldMapping: FieldMapping, exportDirection: ExportDirection): Option[Field] = {
     exportDirection match {
       case ExportDirection.RIGHT => fieldMapping.fieldInConnector2
       case ExportDirection.LEFT => fieldMapping.fieldInConnector1

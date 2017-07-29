@@ -8,6 +8,6 @@ public class NotAuthorizedException extends BadConfigException {
     }
 
     public NotAuthorizedException() {
-        super("");
+        super("not authorized");
     }
 }

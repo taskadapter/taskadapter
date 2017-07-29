@@ -16,6 +16,8 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -26,6 +28,8 @@ import static com.taskadapter.web.ui.Grids.addTo;
  * "Project info" panel with Project Key, Query Id.
  */
 public class ProjectPanel extends Panel implements Validatable {
+    private final static Logger logger = LoggerFactory.getLogger(ProjectPanel.class);
+
     private static final String DEFAULT_PANEL_CAPTION = "Project Info";
     private static final String TEXT_AREA_WIDTH = "120px";
 
@@ -155,11 +159,13 @@ public class ProjectPanel extends Panel implements Validatable {
         try {
             projectInfoCallback.callBack();
         } catch (BadConfigException e) {
+            logger.error(e.toString());
             String localizedMessage = exceptionFormatter.formatError(e);
             Notification.show(localizedMessage);
         } catch (ConnectorException e) {
             String localizedMessage = exceptionFormatter.formatError(e);
-            Notification.show("Oops", localizedMessage, Notification.Type.ERROR_MESSAGE);
+            logger.error(e.toString());
+            Notification.show(localizedMessage);
         }
     }
 

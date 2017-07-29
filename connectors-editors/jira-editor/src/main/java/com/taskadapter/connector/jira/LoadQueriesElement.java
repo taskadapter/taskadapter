@@ -1,6 +1,7 @@
 package com.taskadapter.connector.jira;
 
 import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.model.NamedKeyedObject;
 
@@ -15,15 +16,11 @@ public class LoadQueriesElement {
         this.webServerInfo = webServerInfo;
     }
 
-    List<? extends NamedKeyedObject> loadQueries() throws ServerURLNotSetException {
+    List<? extends NamedKeyedObject> loadQueries() throws ConnectorException {
         if (!webServerInfo.isHostSet()) {
             throw new ServerURLNotSetException();
         }
-        try {
-            return new JiraConnector(config, webServerInfo).getFilters();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return new JiraConnector(config, webServerInfo).getFilters();
     }
 
 }

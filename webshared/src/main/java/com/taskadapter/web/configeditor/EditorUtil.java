@@ -1,6 +1,7 @@
 package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.callbacks.DataProvider;
@@ -17,6 +18,8 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
@@ -24,6 +27,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class EditorUtil {
+    private final static Logger logger = LoggerFactory.getLogger(EditorUtil.class);
 
     private static void showList(String windowTitle, String listTitle, Collection<String> items, ValueListener valueListener) {
         ListSelectionDialog newWindow = new ListSelectionDialog(windowTitle, listTitle, items, valueListener);
@@ -121,8 +125,13 @@ public class EditorUtil {
                     }
                     listener.notifyDone(objects);
                 } catch (BadConfigException e) {
+                    logger.error(e.toString());
+                    Notification.show("", errorFormatter.formatError(e), Notification.Type.HUMANIZED_MESSAGE);
+                } catch (ConnectorException e) {
+                    logger.error(e.toString());
                     Notification.show("", errorFormatter.formatError(e), Notification.Type.HUMANIZED_MESSAGE);
                 } catch (Exception e) {
+                    logger.error(e.toString());
                     EditorUtil.show("Something went wrong", e);
                 }
             }

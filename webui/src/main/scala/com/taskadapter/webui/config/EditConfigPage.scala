@@ -4,23 +4,13 @@ import com.taskadapter.config.StorageException
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.UISyncConfig
-import com.taskadapter.webui.CloneDeletePanel
-import com.taskadapter.webui.ConfigOperations
-import com.taskadapter.webui.Page
+import com.taskadapter.webui.{CloneDeletePanel, ConfigOperations, Page}
 import com.taskadapter.webui.data.ExceptionFormatter
 import com.vaadin.data.util.MethodProperty
-import com.vaadin.shared.ui.label.ContentMode
-import com.vaadin.ui.Alignment
-import com.vaadin.ui.Button
-import com.vaadin.ui.Component
-import com.vaadin.ui.HorizontalLayout
-import com.vaadin.ui.Label
-import com.vaadin.ui.Notification
-import com.vaadin.ui.TextField
-import com.vaadin.ui.VerticalLayout
-import org.slf4j.LoggerFactory
 import com.vaadin.server.Sizeable.Unit.PERCENTAGE
-import scala.collection.JavaConverters._
+import com.vaadin.shared.ui.label.ContentMode
+import com.vaadin.ui._
+import org.slf4j.LoggerFactory
 
 object EditConfigPage {
 
@@ -180,7 +170,8 @@ class EditConfigPage private(val config: UISyncConfig, val configOps: ConfigOper
 
   private def save() = {
     try {
-      val newFieldMappings = editor.getElements.asScala.toSeq
+      editor.removeEmptyRows
+      val newFieldMappings = editor.getElements.toSeq
       val newConfig = config.copy(fieldMappings = newFieldMappings)
       configOps.saveConfig(newConfig)
     } catch {

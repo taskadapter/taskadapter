@@ -42,7 +42,7 @@ object NewConfigSuggester {
       val selected = field1.name != "" && field2.name!= ""
       result += FieldMapping(field1, field2, selected, "")
     }
-    val remainingConnector2Fields = map2.keys.filter(f=> !result.exists(e => e.fieldInConnector2 == f))
+    val remainingConnector2Fields = map2.keys.filter(f=> !result.exists(e => e.fieldInConnector2.contains(f)))
 
     remainingConnector2Fields.foreach{ field2 =>
       val standardFor2 = map2(field2)

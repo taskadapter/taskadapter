@@ -151,9 +151,7 @@ class JiraConnector(val config: JiraConfig, var webServerInfo: WebServerInfo) ex
     try
       f.apply(client)
     catch {
-      case e: Exception =>
-        //            throw JiraUtils.convertException(e);
-        throw new RuntimeException(e)
+      case e: Exception => throw JiraUtils.convertException(e)
     } finally if (client != null) client.close()
   }
 }

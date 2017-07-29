@@ -20,7 +20,7 @@ object RedmineConnector {
 
   @throws[RedmineException]
   private def loadPriorities(rows: java.lang.Iterable[FieldRow], mgr: RedmineManager): util.Map[String, Integer] = {
-    if (FieldRowFinder.containsTargetField(rows, RedmineField.priority.name))
+    if (FieldRowFinder.containsTargetField(rows.asScala.toSeq, RedmineField.priority.name))
       loadPriorities(mgr)
     else
       new util.HashMap[String, Integer]

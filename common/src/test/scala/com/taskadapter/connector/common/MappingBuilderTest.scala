@@ -23,8 +23,8 @@ class MappingBuilderTest extends FunSpec with Matchers {
       ExportDirection.RIGHT
 
     )
-    rows.head.sourceField.name shouldBe "JiraSummary"
-    rows.head.targetField.name shouldBe "RedmineSummary"
+    rows.head.sourceField.get.name shouldBe "JiraSummary"
+    rows.head.targetField.get.name shouldBe "RedmineSummary"
   }
 
   it("export Left processes selected fields") {
@@ -33,8 +33,8 @@ class MappingBuilderTest extends FunSpec with Matchers {
       ExportDirection.LEFT
 
     )
-    rows.head.sourceField.name shouldBe "RedmineSummary"
-    rows.head.targetField.name shouldBe "JiraSummary"
+    rows.head.sourceField.get.name shouldBe "RedmineSummary"
+    rows.head.targetField.get.name shouldBe "JiraSummary"
   }
 
 }

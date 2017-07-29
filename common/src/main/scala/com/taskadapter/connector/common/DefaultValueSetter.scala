@@ -27,31 +27,34 @@ object DefaultValueSetter {
     val result = new GTask
     fieldRows.asScala.foreach { row =>
       val fieldToLoadValueFrom = row.sourceField
-      val currentFieldValue = task.getValue(fieldToLoadValueFrom.name)
-      var newValue = currentFieldValue
-      if (fieldIsConsideredEmpty(currentFieldValue)) {
-        val valueWithProperType = getValueWithProperType(fieldToLoadValueFrom, row.defaultValueForEmpty)
-        newValue = valueWithProperType
+      val currentFieldValue = fieldToLoadValueFrom.map(task.getValue).flatMap(e => Option(e))
+
+      val newValue = if (fieldIsConsideredEmpty(currentFieldValue)) {
+        val valueWithProperType = getValueWithProperType(
+          fieldToLoadValueFrom.map(_.typeName).getOrElse("String"),
+          row.defaultValueForEmpty)
+        valueWithProperType
+      } else {
+        currentFieldValue.get
       }
-      val targetFieldName = row.targetField.name
-      if (targetFieldName == null || targetFieldName == "") {
-        throw new RuntimeException(s"Target field name is null. These fields should have been filtered before calling this method. row: $row")
+      if (row.targetField.isEmpty || row.targetField.get.name == null || row.targetField.get.name == "") {
+        throw new RuntimeException(s"Target field name is null. These fields should have been filtered out before calling this method. row: $row")
       }
+      val targetFieldName = row.targetField.get.name
       result.setValue(targetFieldName, newValue)
     }
-//    result.setId(task.getId)
-//    result.setKey(task.getKey)
     result.setSourceSystemId(task.getSourceSystemId)
     result.setParentIdentity(task.getParentIdentity)
     result
   }
 
-  private def fieldIsConsideredEmpty(value: Any) = (value == null) || (value.isInstanceOf[String] && value.asInstanceOf[String].isEmpty)
+  private def fieldIsConsideredEmpty(value: Option[Any]) =
+    value.isEmpty || value.get.isInstanceOf[String] && value.get.asInstanceOf[String].isEmpty
 
-  private def getValueWithProperType(field: Field, value: String): Object = {
+  private def getValueWithProperType(fieldTypeName: String, value: String): Object = {
 
     import scala.language.implicitConversions
-    field.typeName match {
+    fieldTypeName match {
       case "Date" => parseDate(value)
       case "Float" => parseFloat(value).asInstanceOf[Object]
       case "Integer" => parseInteger(value).asInstanceOf[Object]

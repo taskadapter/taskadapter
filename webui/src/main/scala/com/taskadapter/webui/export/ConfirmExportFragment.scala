@@ -60,7 +60,7 @@ object ConfirmExportFragment {
       config.getConnector1, config.getConnector2, config.getNewMappings)
 
     def getPossiblyUpdatedConfig = {
-      val newFieldMappings = taskFieldsMappingFragment.getElements.asScala.toSeq
+      val newFieldMappings = taskFieldsMappingFragment.getElements.toSeq
       config.copy(fieldMappings = newFieldMappings)
     }
     layout.addComponent(taskFieldsMappingFragment.getUI)
