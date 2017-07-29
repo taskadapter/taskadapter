@@ -47,11 +47,9 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
   }
 
-  /**
-    * TODO TA3 this requires remote ID support.
-    */
-  ignore("task is updated") {
-    CommonTestChecks.taskCreatedAndUpdatedOK(connector, JiraFieldBuilder.getDefault().asJava,
+  it("task is updated") {
+    CommonTestChecks.taskCreatedAndUpdatedOK(webServerInfo.getHost,
+      connector, JiraFieldBuilder.getDefault(),
       JiraGTaskBuilder.withSummary(), JiraField.summary.name,
       id => TestJiraClientHelper.deleteTasks(client, id))
   }

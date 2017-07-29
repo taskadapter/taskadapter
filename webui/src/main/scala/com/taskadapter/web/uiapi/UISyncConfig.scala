@@ -158,7 +158,7 @@ case class UISyncConfig(configRootFolder: File,
     val location1 = getConnector1.getSourceLocation
     val location2 = getConnector2.getSourceLocation
     val previouslyCreatedTasksResolver = TaskKeeperLocationStorage.loadTasks(configRootFolder, location1, location2)
-    val result = TaskSaver.save(previouslyCreatedTasksResolver, connectorTo, destinationLocation, rows.asJava, tasks, progressMonitor)
+    val result = TaskSaver.save(previouslyCreatedTasksResolver, connectorTo, destinationLocation, rows, tasks, progressMonitor)
     TaskKeeperLocationStorage.store(configRootFolder, location1, location2, result.getIdToRemoteKeyList)
     result
   }

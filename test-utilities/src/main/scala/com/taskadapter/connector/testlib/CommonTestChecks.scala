@@ -5,9 +5,10 @@ import java.util
 import com.taskadapter.connector._
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.{ExportDirection, TaskId}
-import com.taskadapter.core.{PreviouslyCreatedTasksResolver, TaskSaver}
+import com.taskadapter.core.{PreviouslyCreatedTasksCache, PreviouslyCreatedTasksResolver, TaskSaver}
 import com.taskadapter.model.{GTask, StandardField}
 import org.junit.Assert.{assertEquals, assertFalse}
+import scala.collection.JavaConverters._
 
 object CommonTestChecks {
   def skipCleanup(id: TaskId): Unit = {}
@@ -55,25 +56,34 @@ object CommonTestChecks {
     cleanup(loadedTask.getIdentity)
   }
 
-  def taskCreatedAndUpdatedOK(connector: NewConnector, rows: util.List[FieldRow], task: GTask, fieldToChangeInTest: String,
+  def taskCreatedAndUpdatedOK(targetLocation: String, connector: NewConnector, rows: Seq[FieldRow], task: GTask, fieldToChangeInTest: String,
                               cleanup: TaskId => Unit): Unit = {
-    val id = task.getId
     // CREATE
-
     val result = TaskSaver.save(PreviouslyCreatedTasksResolver.empty, connector, "some name", rows, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR)
     assertFalse(result.hasErrors)
     assertEquals(1, result.getCreatedTasksNumber)
-    val remoteKey = result.getRemoteKey(id)
-    val loaded = connector.loadTaskByKey(remoteKey, rows)
+    val newTaskId = result.getRemoteKeys.iterator.next()
+    val loaded = connector.loadTaskByKey(newTaskId, rows.asJava)
+
     // UPDATE
     val newValue = "some new text"
     loaded.setValue(fieldToChangeInTest, newValue)
-    loaded.setKey(remoteKey.key)
-    val result2 = TaskSaver.save(PreviouslyCreatedTasksResolver.empty, connector, "some name", rows, util.Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR)
+    val resolver = new TaskResolverBuilder(targetLocation).pretend(newTaskId, newTaskId)
+    val result2 = TaskSaver.save(resolver, connector, "some name", rows, util.Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR)
     assertFalse(result2.hasErrors)
     assertEquals(1, result2.getUpdatedTasksNumber)
-    val loadedAgain = connector.loadTaskByKey(remoteKey, rows)
+    val loadedAgain = connector.loadTaskByKey(newTaskId, rows.asJava)
     assertEquals(newValue, loadedAgain.getValue(fieldToChangeInTest))
     cleanup(loaded.getIdentity)
+  }
+
+  class TaskResolverBuilder(targetLocation: String) {
+    def pretend(id1: TaskId, id2: TaskId) : PreviouslyCreatedTasksResolver = {
+      new PreviouslyCreatedTasksResolver(
+        PreviouslyCreatedTasksCache("1", targetLocation, Seq(
+          (id1, id2)
+        ))
+      )
+    }
   }
 }

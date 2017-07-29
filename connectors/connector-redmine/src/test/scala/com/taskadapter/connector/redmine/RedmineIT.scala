@@ -362,7 +362,8 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
 
 
   it("task is updated") {
-    CommonTestChecks.taskCreatedAndUpdatedOK(getConnector(), RedmineFieldBuilder.getDefault().asJava,
+    CommonTestChecks.taskCreatedAndUpdatedOK(RedmineTestConfig.getRedmineServerInfo.getHost,
+      getConnector(), RedmineFieldBuilder.getDefault(),
       RedmineGTaskBuilder.withSummary(), RedmineField.summary.name, CommonTestChecks.skipCleanup)
   }
 
