@@ -251,17 +251,14 @@ public class LoggedInPageset {
         applyUI(component);
     }
 
-    /**
-     * Creates a new config.
-     */
     public void createNewConfig() {
         tracker.trackPage("create_config");
-        applyUI(NewConfigPage.render(services.editorManager, services.pluginManager, context.configOps,
+        applyUI(new NewConfigPage(services.editorManager, services.pluginManager, context.configOps,
                 config -> {
                     tracker.trackEvent("config", "created",
                             config.connector1().getConnectorTypeId() + " - " + config.connector2().getConnectorTypeId());
                     showConfigEditor(config, null);
-                }));
+                }).panel());
     }
 
     /**

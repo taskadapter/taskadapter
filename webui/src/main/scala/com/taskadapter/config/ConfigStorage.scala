@@ -55,6 +55,7 @@ class ConfigStorage(val rootDir: File) {
   def saveConfig(userLoginName: String, configId: String, configName: String,
                  connector1Id: String, connector1Data: String,
                  connector2Id: String, connector2Data: String, mappings: String): Unit = {
+    logger.info(s"Saving config for user $userLoginName")
     val fileContents = NewConfigParser.toFileContent(configName, connector1Id, connector1Data, connector2Id, connector2Data, mappings)
     try {
       val folder = getUserConfigsFolder(userLoginName)
@@ -84,6 +85,7 @@ class ConfigStorage(val rootDir: File) {
 
   @throws[StorageException]
   def saveConnectorSetup(userLoginName: String, setupLabel: String, connectorSetup: String): Unit = {
+    logger.info(s"Saving connector setup for user $userLoginName. label: $setupLabel")
     try {
       val folder = getUserFolder(userLoginName)
       folder.mkdirs

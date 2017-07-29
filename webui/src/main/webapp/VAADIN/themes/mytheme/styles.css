@@ -148,6 +148,22 @@
     color: red;
 }
 
+.connectorBoxOnNewConfigPage {
+    background-color: #dcf7ff;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.connectorBoxOnNewConfigPage :hover {
+    background-color: #cce7ef;
+}
+
+.connectorLabelOnNewConfigPage {
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
 .configPanelInConfigsList {
     margin-bottom: 20px;
     /* border-bottom: 1px solid #AAAAAA;
