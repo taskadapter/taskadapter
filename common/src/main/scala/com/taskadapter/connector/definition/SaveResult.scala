@@ -22,6 +22,4 @@ class SaveResult(targetFileAbsolutePath: String, updatedTasksNumber: Int, create
   def getTaskErrors: List[TaskError[Throwable]] = taskErrors
 
   def hasErrors: Boolean = !generalErrors.isEmpty || !taskErrors.isEmpty
-
-//  override def toString: String = "SaveResult{" + "targetFileAbsolutePath='" + targetFileAbsolutePath + '\'' + ", updatedTasksNumber=" + updatedTasksNumber + ", createdTasksNumber=" + createdTasksNumber + ", idToRemoteKeyMap=" + idToRemoteKeyMap + ", generalErrors=" + generalErrors + ", taskErrors=" + taskErrors + '}'
 }

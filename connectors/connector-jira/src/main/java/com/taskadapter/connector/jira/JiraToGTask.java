@@ -44,7 +44,6 @@ public class JiraToGTask {
     public GTask convertToGenericTask(Issue issue) {
         GTask task = new GTask();
         final Long longId = issue.getId();
-        // TODO TA3 task ids?
         task.setId(longId);
         task.setKey(issue.getKey());
         task.setSourceSystemId(new TaskId(longId, issue.getKey()));

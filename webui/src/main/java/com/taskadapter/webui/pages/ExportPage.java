@@ -238,21 +238,6 @@ public final class ExportPage {
         SyncActionComponents.addErrors(donePanel, config.getConnector2(),
                 res.getGeneralErrors(),
                 res.getTaskErrors());
-        // TODO TA3 check remote id
-/*
-        if (res.remoteIdUpdateException != null)
-            SyncActionComponents
-                    .addErrors(
-                            donePanel,
-                            config.getConnector1(),
-                            JavaConversions.asScalaBuffer(
-                                    Collections.<Throwable>singletonList(res.remoteIdUpdateException))
-                                    .toList(),
-                            JavaConversions.asScalaBuffer(Collections.<TaskError<Throwable>>emptyList())
-                                    .toList()
-                    );
-
-*/
         ui.addComponent(donePanel);
 
         final Button button = new Button(message("action.acknowledge"));
