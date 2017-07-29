@@ -247,7 +247,7 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
     val loadedTasks = TestUtils.saveAndLoadAll(getConnector(), t, RedmineFieldBuilder.getDefault())
 
     val tree = TreeUtils.buildTreeFromFlatList(loadedTasks.asJava)
-        
+
     tree.size() shouldBe 1
 
     val parent = tree.get(0)
@@ -338,23 +338,25 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
   
             assertEquals(3, newTask.getRelations().size())
         }
-  
-  
-        @Test
-        public void someTasksAreLoaded() throws Exception {
-            CommonTests.testLoadTasks(getConnector(), RedmineFieldBuilder.getDefault())
-        }
-  
-        @Test
-        public void defaultDescriptionIsMapped() throws Exception {
-            CommonTests.descriptionSavedByDefault(getConnector(), TestMappingUtils.fromFields(SUPPORTED_FIELDS))
-        }
-  
-        @Test
-        public void descriptionSavedIfSelected() throws Exception {
-            CommonTests.descriptionSavedIfSelected(getConnector(), TestMappingUtils.fromFields(SUPPORTED_FIELDS))
-        }
-  */
+*/
+
+  it("task is created and loaded") {
+    CommonTestChecks.taskIsCreatedAndLoaded(getConnector(), RedmineGTaskBuilder.withSummary(),
+      RedmineFieldBuilder.getDefault(), RedmineField.summary,
+      CommonTestChecks.skipCleanup)
+  }
+
+  /*
+          @Test
+          public void defaultDescriptionIsMapped() throws Exception {
+              CommonTests.descriptionSavedByDefault(getConnector(), TestMappingUtils.fromFields(SUPPORTED_FIELDS))
+          }
+
+          @Test
+          public void descriptionSavedIfSelected() throws Exception {
+              CommonTests.descriptionSavedIfSelected(getConnector(), TestMappingUtils.fromFields(SUPPORTED_FIELDS))
+          }
+    */
   it("tasks are created without errors") {
     CommonTestChecks.createsTasks(getConnector(), RedmineFieldBuilder.getDefault().asJava, RedmineGTaskBuilder.getTwo().asJava,
       CommonTestChecks.skipCleanup)

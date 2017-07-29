@@ -224,9 +224,8 @@ public class FieldMappingTest {
         assertEquals("", loadedTask.getDescription());
     }
 
-    @Test
-    public void testLoadTasks() throws Exception {
-        CommonTests.testLoadTasks(connector, TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
+    it("task is created and loaded") {
+        CommonTests.taskIsCreatedAndLoaded(connector, TestMappingUtils.fromFields(MSPSupportedFields.SUPPORTED_FIELDS));
     }
 
     @Test

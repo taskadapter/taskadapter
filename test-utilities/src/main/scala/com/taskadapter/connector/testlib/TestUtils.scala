@@ -23,8 +23,8 @@ object TestUtils {
      }
  */
 
-  def findTaskInList(list: util.List[GTask], createdTask1Id: Long): GTask = {
-    list.asScala.find(_.getId == createdTask1Id).orNull
+  def findTaskInList(list: util.List[GTask], createdTaskId: TaskId): Option[GTask] = {
+    list.asScala.find(_.getIdentity == createdTaskId)
   }
 
   def findTaskByKey(list: util.List[GTask], key: String): GTask = {

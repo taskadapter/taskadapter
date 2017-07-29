@@ -8,34 +8,34 @@ import com.taskadapter.connector.definition.{ExportDirection, TaskId}
 import com.taskadapter.core.{PreviouslyCreatedTasksCache, PreviouslyCreatedTasksResolver, TaskSaver}
 import com.taskadapter.model.{GTask, StandardField}
 import org.junit.Assert.{assertEquals, assertFalse}
+import org.scalatest.Matchers
+
 import scala.collection.JavaConverters._
 
-object CommonTestChecks {
+object CommonTestChecks extends Matchers {
   def skipCleanup(id: TaskId): Unit = {}
 
-  // TODO TA3 fix
-  /*    public static void testLoadTasks(NewConnector connector, List<FieldRow> rows) throws ConnectorException {
-          int tasksQty = 1;
-          List<GTask> tasks = TestUtils.generateTasks(tasksQty);
+  def taskIsCreatedAndLoaded(connector: NewConnector, task: GTask, rows: Seq[FieldRow], fieldNameToSearch: Field,
+                             cleanup: TaskId => Unit): Unit = {
+    val tasksQty = 1
+    val expectedSummaryTask1 = task.getValue(fieldNameToSearch)
 
-          String expectedSummaryTask1 = tasks.get(0).getSummary();
-          Integer expectedID = tasks.get(0).getId();
+    val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR,
+      rows.asJava)
+    assertEquals(tasksQty, result.getCreatedTasksNumber)
 
-          TaskSaveResult result = connector.saveData(tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows);
-          assertEquals(tasksQty, result.getCreatedTasksNumber());
+    val createdTask1Id = result.getRemoteKeys.iterator.next()
 
-          Integer createdTask1Id = Integer.valueOf(result.getIdToRemoteKeyMap().get(expectedID));
+    val loadedTasks = connector.loadData()
+    // there could be some other previously created tasks
+    loadedTasks.size() should be >= tasksQty
 
-          List<GTask> loadedTasks = ConnectorUtils.loadDataOrderedById(connector, rows);
-          // there could be some other previously created tasks
-          assertTrue(loadedTasks.size() >= tasksQty);
+    val foundTask = TestUtils.findTaskInList(loadedTasks, createdTask1Id)
+    foundTask.isDefined shouldBe true
+    assertEquals(expectedSummaryTask1, foundTask.get.getValue(fieldNameToSearch))
+    cleanup(createdTask1Id)
+  }
 
-          GTask foundTask = TestUtils.findTaskInList(loadedTasks, createdTask1Id);
-          assertNotNull(foundTask);
-          assertEquals(expectedSummaryTask1, foundTask.getSummary());
-      }
-
-  */
 
   def createsTasks(connector: NewConnector, rows: util.List[FieldRow], tasks: util.List[GTask],
                    cleanup: TaskId => Unit): Unit = {
@@ -78,7 +78,7 @@ object CommonTestChecks {
   }
 
   class TaskResolverBuilder(targetLocation: String) {
-    def pretend(id1: TaskId, id2: TaskId) : PreviouslyCreatedTasksResolver = {
+    def pretend(id1: TaskId, id2: TaskId): PreviouslyCreatedTasksResolver = {
       new PreviouslyCreatedTasksResolver(
         PreviouslyCreatedTasksCache("1", targetLocation, Seq(
           (id1, id2)
@@ -86,4 +86,5 @@ object CommonTestChecks {
       )
     }
   }
+
 }
