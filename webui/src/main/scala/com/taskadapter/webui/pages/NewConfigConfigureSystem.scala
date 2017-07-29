@@ -6,12 +6,15 @@ import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.service.EditorManager
 import com.taskadapter.webui.{ConfigOperations, Page}
 import com.vaadin.data.Property.ValueChangeListener
-import com.vaadin.ui.{Button, Component, ListSelect, VerticalLayout}
+import com.vaadin.ui._
 
 class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOperations, connectorId: String,
                                labelSelected: String => Unit) {
 
   def ui = createSetupPanelForConnector(new WebServerInfo()).getUI()
+
+  val errorMessageLabel = new Label
+  errorMessageLabel.addStyleName("error-message-label")
 
   private def createSetupPanelForConnector(connectorInfo: WebServerInfo): ChooseOrCreateSetupFragment = {
     val editor = editorManager.getEditorFactory(connectorId)
@@ -26,9 +29,7 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
                                     setups: Seq[ConnectorSetup],
                                     button: Button, createPanel: Component) {
     private val selectPanel = createSavedServerConfigurationsSelector(message("createConfigPage.selectExistingOrNew"), setups,
-      event => {
-        println(s"event $event")
-      }
+      event => {}
     )
 
     private def createSavedServerConfigurationsSelector(title: String,
@@ -45,7 +46,7 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
       res
     }
 
-    val layout = new VerticalLayout(selectPanel, button, createPanel)
+    val layout = new VerticalLayout(selectPanel, button, createPanel, errorMessageLabel)
     if (selectPanel.getRows != 0) {
       selectPanel.select(selectPanel.getItemIds.iterator().next())
     }
@@ -59,9 +60,16 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
     nextButton.addClickListener(_ => {
       val label = getLabel()
       if (inEditMode) {
-        configOps.saveSetup(getEditedResult(), label)
+        val maybeString = validateEditMode()
+        if (maybeString.isEmpty) {
+          configOps.saveSetup(getEditedResult(), label)
+          labelSelected(label)
+        } else {
+          errorMessageLabel.setValue(maybeString.get)
+        }
+      } else {
+        labelSelected(label)
       }
-      labelSelected(label)
     }
     )
     layout.addComponent(nextButton)
@@ -74,20 +82,17 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
       button.setCaption(caption)
     }
 
-    def validate(): Option[String] = {
-      if (inSelectMode) {
-        if (selectPanel.getValue == null) {
-          Some(Page.message("createConfigPage.error.mustSelectOrCreate"))
-        } else {
-          None
-        }
-      } else {
-        val error = webServerInfo.validate()
-        if (!error.isEmpty) {
-          return Some(error)
-        }
-        None
-      }
+    def validateEditMode(): Option[String] = {
+      val error = webServerInfo.validate()
+      if (!error.isEmpty) {
+        Some(error)
+      } else None
+    }
+
+    def validateSelectMode(): Option[String] = {
+      if (selectPanel.getValue == null) {
+        Some(Page.message("createConfigPage.error.mustSelectOrCreate"))
+      } else None
     }
 
     def getLabel(): String = {
