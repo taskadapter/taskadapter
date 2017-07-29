@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory
 import scala.collection.JavaConverters._
 import scala.util.Random
 
-@RunWith(classOf[JUnitRunner])
 trait TempRedmineProject {
   val logger = LoggerFactory.getLogger(classOf[TempRedmineProject])
   val serverInfo = RedmineTestConfig.getRedmineServerInfo
@@ -33,6 +32,7 @@ trait TempRedmineProject {
   var projectKey = createdProject.getIdentifier
 }
 
+@RunWith(classOf[JUnitRunner])
 class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll with TempRedmineProject {
 
   override def afterAll() {
