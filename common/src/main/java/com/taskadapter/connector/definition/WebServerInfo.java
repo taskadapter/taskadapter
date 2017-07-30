@@ -1,7 +1,5 @@
 package com.taskadapter.connector.definition;
 
-import com.google.common.base.Strings;
-
 public class WebServerInfo {
 
     public static final String DEFAULT_URL_PREFIX = "http://";
@@ -143,19 +141,6 @@ public class WebServerInfo {
 
     public boolean isHostSet() {
         return (host != null && (!host.isEmpty()) && !host.equalsIgnoreCase(DEFAULT_URL_PREFIX));
-    }
-
-    /**
-     * @return empty string if all is valid
-     */
-    public String validate() {
-        if (Strings.isNullOrEmpty(label)) {
-            return "Name is required";
-        }
-        if (!isHostSet()) {
-            return "Host is required";
-        }
-        return "";
     }
 
     @Override

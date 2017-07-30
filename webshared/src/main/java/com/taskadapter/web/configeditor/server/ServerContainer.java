@@ -96,7 +96,7 @@ public class ServerContainer extends GridLayout {
         }
     }
 
-    String getHostString() {
+    private String getHostString() {
         return hostURLText.getValue();
     }
 

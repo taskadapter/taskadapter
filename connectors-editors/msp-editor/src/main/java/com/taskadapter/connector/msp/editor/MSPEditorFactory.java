@@ -10,6 +10,7 @@ import com.taskadapter.connector.msp.MSPUtils;
 import com.taskadapter.connector.msp.UnsupportedRelationType;
 import com.taskadapter.connector.msp.editor.error.InputFileNameNotSetException;
 import com.taskadapter.connector.msp.editor.error.OutputFileNameNotSetException;
+import com.taskadapter.web.ConnectorSetupPanel;
 import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.file.FileProcessingResult;
@@ -20,6 +21,7 @@ import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Sandbox;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.MethodProperty;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -67,8 +69,16 @@ public class MSPEditorFactory implements PluginEditorFactory<MSPConfig> {
     }
 
     @Override
-    public Panel getSetupPanel(WebServerInfo webServerInfo) {
-        return new Panel(MSPConnector.ID + " - configured later");
+    public ConnectorSetupPanel getSetupPanel(WebServerInfo webServerInfo) {
+        return new ConnectorSetupPanel() {
+            @Override
+            public Component getUI() {
+                return new Panel(MSPConnector.ID + " - configured later");
+            }
+            @Override
+            public void validate() throws BadConfigException {
+            }
+        };
     }
 
     private HorizontalLayout createDescriptionElement(ConnectorConfig config) {

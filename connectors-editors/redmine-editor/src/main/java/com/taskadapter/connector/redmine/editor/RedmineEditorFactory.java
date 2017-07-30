@@ -9,6 +9,7 @@ import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
 import com.taskadapter.connector.redmine.RelationCreationException;
 import com.taskadapter.redmineapi.RedmineAuthenticationException;
+import com.taskadapter.web.ConnectorSetupPanel;
 import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.callbacks.DataProvider;
@@ -71,7 +72,7 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
     }
 
     @Override
-    public Panel getSetupPanel(WebServerInfo webServerInfo) {
+    public ConnectorSetupPanel getSetupPanel(WebServerInfo webServerInfo) {
         return ServerPanelFactory.withApiKeyAndLoginPassword(RedmineConnector.ID(), webServerInfo);
     }
 

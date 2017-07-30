@@ -2,6 +2,9 @@ package com.taskadapter.webui.pages
 
 import com.taskadapter.config.ConnectorSetup
 import com.taskadapter.connector.definition.WebServerInfo
+import com.taskadapter.connector.definition.exception.SetupNameMissingException
+import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException
+import com.taskadapter.web.ConnectorSetupPanel
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.service.EditorManager
 import com.taskadapter.webui.{ConfigOperations, Page}
@@ -13,11 +16,12 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
 
   def ui = createSetupPanelForConnector(new WebServerInfo()).getUI()
 
+  val editor = editorManager.getEditorFactory(connectorId)
+
   val errorMessageLabel = new Label
   errorMessageLabel.addStyleName("error-message-label")
 
   private def createSetupPanelForConnector(connectorInfo: WebServerInfo): ChooseOrCreateSetupFragment = {
-    val editor = editorManager.getEditorFactory(connectorId)
 
     val setups = configOps.getAllConnectorSetups(connectorId)
     val editSetupPanel = editor.getSetupPanel(connectorInfo)
@@ -27,7 +31,7 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
 
   class ChooseOrCreateSetupFragment(webServerInfo: WebServerInfo,
                                     setups: Seq[ConnectorSetup],
-                                    button: Button, createPanel: Component) {
+                                    button: Button, connectorSetupPanel: ConnectorSetupPanel) {
     private val selectPanel = createSavedServerConfigurationsSelector(message("createConfigPage.selectExistingOrNew"), setups,
       event => {}
     )
@@ -46,7 +50,7 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
       res
     }
 
-    val layout = new VerticalLayout(selectPanel, button, createPanel, errorMessageLabel)
+    val layout = new VerticalLayout(selectPanel, button, connectorSetupPanel.getUI, errorMessageLabel)
     if (selectPanel.getRows != 0) {
       selectPanel.select(selectPanel.getItemIds.iterator().next())
     }
@@ -75,7 +79,7 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
     layout.addComponent(nextButton)
 
     private def refresh() = {
-      createPanel.setVisible(!inSelectMode)
+      connectorSetupPanel.getUI.setVisible(!inSelectMode)
       selectPanel.setVisible(inSelectMode)
       val caption = if (inSelectMode) Page.message("createConfigPage.button.createNew")
       else Page.message("createConfigPage.button.selectExisting")
@@ -83,10 +87,14 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
     }
 
     def validateEditMode(): Option[String] = {
-      val error = webServerInfo.validate()
-      if (!error.isEmpty) {
-        Some(error)
-      } else None
+      try {
+        connectorSetupPanel.validate
+        None
+      } catch {
+        case e: SetupNameMissingException => Some(Page.message("newConfig.configure.nameRequired"))
+        case e: ServerURLNotSetException => Some(Page.message("newConfig.configure.serverUrlRequired"))
+        case e => Some(editor.formatError(e))
+      }
     }
 
     def validateSelectMode(): Option[String] = {
@@ -97,7 +105,9 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
 
     def getLabel(): String = {
       if (inSelectMode) {
-        selectPanel.getValue.toString
+        if (selectPanel.getValue != null) {
+          selectPanel.getValue.toString
+        } else ""
       } else {
         webServerInfo.getLabel
       }

@@ -8,7 +8,7 @@ import com.vaadin.ui.{ComponentContainer, Panel}
 trait PluginEditorFactory[C <: ConnectorConfig] extends ExceptionFormatter {
   def getMiniPanelContents(sandbox: Sandbox, config: C, webServerInfo: WebServerInfo): ComponentContainer
 
-  def getSetupPanel(webServerInfo: WebServerInfo): Panel
+  def getSetupPanel(webServerInfo: WebServerInfo): ConnectorSetupPanel
 
   /**
     * Validates a connector config for save mode. If validation fails, plugin

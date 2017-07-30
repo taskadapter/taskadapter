@@ -1,11 +1,11 @@
 package com.taskadapter.web.configeditor.server
 
 import com.taskadapter.connector.definition.WebServerInfo
+import com.taskadapter.web.ConnectorSetupPanel
 import com.vaadin.data.util.MethodProperty
-import com.vaadin.ui.Panel
 
 object ServerPanelFactory {
-  def withApiKeyAndLoginPassword(caption: String, webServerInfo: WebServerInfo): Panel = {
+  def withApiKeyAndLoginPassword(caption: String, webServerInfo: WebServerInfo): ConnectorSetupPanel = {
       new ServerPanelWithAPIKey(caption,
         new MethodProperty[String](webServerInfo, "label"),
         new MethodProperty[String](webServerInfo, "host"),
@@ -16,13 +16,7 @@ object ServerPanelFactory {
       )
   }
 
-  /*
-    def withApi() : ServerPanelWithAPIKey = {
-
-    }
-  */
-
-  def withLoginAndPassword(caption: String, webServerInfo: WebServerInfo): Panel = {
+  def withLoginAndPassword(caption: String, webServerInfo: WebServerInfo): ConnectorSetupPanel = {
     new ServerPanel(caption,
       new MethodProperty[String](webServerInfo, "label"),
       new MethodProperty[String](webServerInfo, "host"),

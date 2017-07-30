@@ -9,6 +9,7 @@ import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.jira.exceptions.BadHostException;
 import com.taskadapter.connector.jira.exceptions.BadURIException;
+import com.taskadapter.web.ConnectorSetupPanel;
 import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.callbacks.DataProvider;
@@ -118,7 +119,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
     }
 
     @Override
-    public Panel getSetupPanel(WebServerInfo webServerInfo) {
+    public ConnectorSetupPanel getSetupPanel(WebServerInfo webServerInfo) {
         return ServerPanelFactory.withLoginAndPassword(JiraConnector.ID(), webServerInfo);
     }
 
