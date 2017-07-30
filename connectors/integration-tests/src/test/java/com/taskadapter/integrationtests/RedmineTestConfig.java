@@ -35,9 +35,6 @@ public class RedmineTestConfig {
     }
 
     public static WebServerInfo getRedmineServerInfo() {
-        WebServerInfo rmInfo = new WebServerInfo(properties.getProperty("uri"), "", "");
-        rmInfo.setApiKey(properties.getProperty("apikey"));
-        rmInfo.setUseAPIKeyInsteadOfLoginPassword(true);
-        return rmInfo;
+        return new WebServerInfo("", properties.getProperty("uri"), "", "", true, properties.getProperty("apikey"));
     }
 }
