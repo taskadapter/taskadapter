@@ -7,7 +7,7 @@ import com.atlassian.jira.rest.client.api.JiraRestClient
 import com.atlassian.jira.rest.client.api.domain.IssueType
 import com.taskadapter.connector.common.TaskSavingUtils
 import com.taskadapter.connector.definition.exceptions.{BadConfigException, ConnectorException, ProjectNotSetException}
-import com.taskadapter.connector.definition.{ProgressMonitor, SaveResult, TaskId, WebServerInfo}
+import com.taskadapter.connector.definition._
 import com.taskadapter.connector.{FieldRow, NewConnector}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.{GTask, NamedKeyedObject, NamedKeyedObjectImpl}
@@ -30,7 +30,7 @@ object JiraConnector {
 
 }
 
-class JiraConnector(val config: JiraConfig, var webServerInfo: WebServerInfo) extends NewConnector {
+class JiraConnector(config: JiraConfig, setup: WebConnectorSetup) extends NewConnector {
   // XXX refactor this. we don't even need the IDs!
   @throws[ConnectorException]
   def getFilters: util.List[NamedKeyedObject] = withJiraRestClient((client: JiraRestClient) => {
@@ -88,10 +88,10 @@ class JiraConnector(val config: JiraConfig, var webServerInfo: WebServerInfo) ex
   })
 
   @throws[ConnectorException]
-  def getAllIssueTypes: util.List[NamedKeyedObject] = IssueTypesLoader.getIssueTypes(webServerInfo, new AllIssueTypesFilter)
+  def getAllIssueTypes: util.List[NamedKeyedObject] = IssueTypesLoader.getIssueTypes(setup, new AllIssueTypesFilter)
 
   @throws[ConnectorException]
-  def getIssueTypesForSubtasks: util.List[_ <: NamedKeyedObject] = IssueTypesLoader.getIssueTypes(webServerInfo, new SubtaskTypesFilter)
+  def getIssueTypesForSubtasks: util.List[_ <: NamedKeyedObject] = IssueTypesLoader.getIssueTypes(setup, new SubtaskTypesFilter)
 
   override def loadTaskByKey(key: TaskId, rows: java.lang.Iterable[FieldRow]): GTask = withJiraRestClient((client: JiraRestClient) => {
     def foo(client: JiraRestClient) = {
@@ -126,7 +126,7 @@ class JiraConnector(val config: JiraConfig, var webServerInfo: WebServerInfo) ex
       val converter = new GTaskToJira(config, issueTypeList, versions, components, priorities)
       val saver = new JiraTaskSaver(client)
       val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows,
-        webServerInfo.getHost)
+        setup.host)
       TaskSavingUtils.saveRemappedRelations(config, tasks, saver, rb)
       rb.getResult
     }
@@ -147,7 +147,7 @@ class JiraConnector(val config: JiraConfig, var webServerInfo: WebServerInfo) ex
   }
 
   private def withJiraRestClient[T](f: JiraConnector.JiraRestClientAction[T]) = try {
-    val client = JiraConnectionFactory.createClient(webServerInfo)
+    val client = JiraConnectionFactory.createClient(setup)
     try
       f.apply(client)
     catch {

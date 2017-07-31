@@ -21,11 +21,11 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   private val logger = LoggerFactory.getLogger(classOf[JiraTest])
 
   private var config = JiraPropertiesLoader.createTestConfig
-  private val webServerInfo = JiraPropertiesLoader.getTestServerInfo
-  private var client = JiraConnectionFactory.createClient(webServerInfo)
-  private var connector = new JiraConnector(config, webServerInfo)
+  private val setup = JiraPropertiesLoader.getTestServerInfo
+  private var client = JiraConnectionFactory.createClient(setup)
+  private var connector = new JiraConnector(config, setup)
 
-  logger.info("Running JIRA tests using: " + webServerInfo.getHost)
+  logger.info("Running JIRA tests using: " + setup.host)
 
   it("connector does not fail empty tasks list") {
     connector.saveData(PreviouslyCreatedTasksResolver.empty, List[GTask]().asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault.asJava)
@@ -37,7 +37,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   }
 
   it("assignee has full name") {
-    val userPromise = client.getUserClient.getUser(webServerInfo.getUserName)
+    val userPromise = client.getUserClient.getUser(setup.userName)
     val jiraUser = userPromise.claim
     val task = new GTask
     task.setValue(JiraField.summary, "some")
@@ -48,7 +48,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   }
 
   it("task is updated") {
-    CommonTestChecks.taskCreatedAndUpdatedOK(webServerInfo.getHost,
+    CommonTestChecks.taskCreatedAndUpdatedOK(setup.host,
       connector, JiraFieldBuilder.getDefault(),
       JiraGTaskBuilder.withSummary(), JiraField.summary.name,
       id => TestJiraClientHelper.deleteTasks(client, id))

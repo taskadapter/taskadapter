@@ -1,7 +1,8 @@
 package com.taskadapter.connector.redmine.editor;
 
+import com.google.common.base.Strings;
 import com.taskadapter.connector.Priorities;
-import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
@@ -33,11 +34,11 @@ public class RedmineLoaders {
 
     private static final Logger logger = LoggerFactory.getLogger(RedmineLoaders.class);
 
-    public static List<GProject> getProjects(WebServerInfo serverInfo)
+    public static List<GProject> getProjects(WebConnectorSetup setup)
             throws ServerURLNotSetException {
-        validate(serverInfo);
+        validate(setup);
 
-        RedmineManager mgr = RedmineManagerFactory.createRedmineManager(serverInfo);
+        RedmineManager mgr = RedmineManagerFactory.createRedmineManager(setup);
         List<com.taskadapter.redmineapi.bean.Project> rmProjects;
         try {
             rmProjects = mgr.getProjectManager().getProjects();
@@ -48,8 +49,8 @@ public class RedmineLoaders {
         return new RedmineProjectConverter().toGProjects(rmProjects);
     }
 
-    private static void validate(WebServerInfo serverInfo) throws ServerURLNotSetException {
-        if ((serverInfo.getHost() == null) || (serverInfo.getHost().isEmpty())) {
+    private static void validate(WebConnectorSetup setup) throws ServerURLNotSetException {
+        if (Strings.isNullOrEmpty(setup.host())) {
             throw new ServerURLNotSetException();
         }
     }
@@ -70,9 +71,9 @@ public class RedmineLoaders {
         return null;
     }
 
-    public static List<? extends NamedKeyedObject> loadData(WebServerInfo config, String projectKey) throws BadConfigException, RedmineException {
-        validate(config);
-        RedmineManager mgr = RedmineManagerFactory.createRedmineManager(config);
+    public static List<? extends NamedKeyedObject> loadData(WebConnectorSetup setup, String projectKey) throws BadConfigException, RedmineException {
+        validate(setup);
+        RedmineManager mgr = RedmineManagerFactory.createRedmineManager(setup);
         List<NamedKeyedObject> result = new ArrayList<>();
         // get project id to filter saved queries
         Integer projectId = null;
@@ -98,9 +99,9 @@ public class RedmineLoaders {
         return result;
     }
 
-    public static List<? extends NamedKeyedObject> loadTrackers(RedmineConfig config, WebServerInfo webServerInfo) throws ConnectorException {
-        validate(webServerInfo);
-        RedmineManager redmineManager = RedmineManagerFactory.createRedmineManager(webServerInfo);
+    public static List<? extends NamedKeyedObject> loadTrackers(RedmineConfig config, WebConnectorSetup setup) throws ConnectorException {
+        validate(setup);
+        RedmineManager redmineManager = RedmineManagerFactory.createRedmineManager(setup);
         Project project;
         String projectKey = config.getProjectKey();
         try {
@@ -120,13 +121,12 @@ public class RedmineLoaders {
         return result;
     }
     
-    public static Priorities loadPriorities(WebServerInfo server)
-            throws ConnectorException {
-        validate(server);
+    public static Priorities loadPriorities(WebConnectorSetup setup) throws ConnectorException {
+        validate(setup);
         final Priorities defaultPriorities = RedmineConfig
                 .generateDefaultPriorities();
         final RedmineManager mgr = RedmineManagerFactory
-                .createRedmineManager(server);
+                .createRedmineManager(setup);
         final Priorities result = new Priorities();
         try {
             for (IssuePriority prio : mgr.getIssueManager().getIssuePriorities()) {

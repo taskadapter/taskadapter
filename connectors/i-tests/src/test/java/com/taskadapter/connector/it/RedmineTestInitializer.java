@@ -1,6 +1,6 @@
 package com.taskadapter.connector.it;
 
-import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.redmine.RedmineManagerFactory;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Project;
@@ -13,11 +13,11 @@ import java.util.Calendar;
 public class RedmineTestInitializer {
     private static final Logger logger = LoggerFactory.getLogger(RedmineTestInitializer.class);
 
-    private static WebServerInfo serverInfo = RedmineTestConfig.getRedmineServerInfo();
-    public static RedmineManager mgr = RedmineManagerFactory.createRedmineManager(serverInfo);
+    private static WebConnectorSetup setup = RedmineTestConfig.getRedmineServerInfo();
+    public static RedmineManager mgr = RedmineManagerFactory.createRedmineManager(setup);
 
     public static Project createProject() {
-        logger.info("Running Redmine tests with: " + serverInfo);
+        logger.info("Running Redmine tests with: " + setup);
 
         Project project = ProjectFactory.create("integration tests",
                 "itest" + Calendar.getInstance().getTimeInMillis());

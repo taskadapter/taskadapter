@@ -5,8 +5,8 @@ import com.taskadapter.web.ConnectorSetupPanel
 import com.vaadin.data.util.MethodProperty
 
 object ServerPanelFactory {
-  def withApiKeyAndLoginPassword(caption: String, webServerInfo: WebServerInfo): ConnectorSetupPanel = {
-      new ServerPanelWithAPIKey(caption,
+  def withApiKeyAndLoginPassword(connectorId: String, caption: String, webServerInfo: WebServerInfo): ConnectorSetupPanel = {
+      new ServerPanelWithAPIKey(connectorId, caption,
         new MethodProperty[String](webServerInfo, "label"),
         new MethodProperty[String](webServerInfo, "host"),
         new MethodProperty[String](webServerInfo, "userName"),
@@ -16,8 +16,8 @@ object ServerPanelFactory {
       )
   }
 
-  def withLoginAndPassword(caption: String, webServerInfo: WebServerInfo): ConnectorSetupPanel = {
-    new ServerPanel(caption,
+  def withLoginAndPassword(connectorId: String, caption: String, webServerInfo: WebServerInfo): ConnectorSetupPanel = {
+    new ServerPanel(connectorId, caption,
       new MethodProperty[String](webServerInfo, "label"),
       new MethodProperty[String](webServerInfo, "host"),
       new MethodProperty[String](webServerInfo, "userName"),

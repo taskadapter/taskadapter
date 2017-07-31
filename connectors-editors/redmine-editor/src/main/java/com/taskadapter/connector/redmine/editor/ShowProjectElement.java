@@ -1,6 +1,7 @@
 package com.taskadapter.connector.redmine.editor;
 
-import com.taskadapter.connector.definition.WebServerInfo;
+import com.google.common.base.Strings;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
@@ -15,21 +16,21 @@ import static com.taskadapter.web.ui.MessageUtils.nvl;
 public class ShowProjectElement {
 
     private RedmineConfig config;
-    private WebServerInfo webServerInfo;
+    private WebConnectorSetup setup;
 
-    public ShowProjectElement(RedmineConfig config, WebServerInfo webServerInfo) {
+    public ShowProjectElement(RedmineConfig config, WebConnectorSetup setup) {
         this.config = config;
-        this.webServerInfo = webServerInfo;
+        this.setup = setup;
     }
 
     void showProjectInfo() throws BadConfigException {
-        if (!webServerInfo.isHostSet()) {
+        if (Strings.isNullOrEmpty(setup.host())) {
             throw new ServerURLNotSetException();
         }
         if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
             throw new ProjectNotSetException();
         }
-        final RedmineManager redmineManager = RedmineManagerFactory.createRedmineManager(webServerInfo);
+        final RedmineManager redmineManager = RedmineManagerFactory.createRedmineManager(setup);
         final Project project = RedmineLoaders.loadProject(redmineManager.getProjectManager(),
                 config.getProjectKey());
         notifyProjectLoaded(project);

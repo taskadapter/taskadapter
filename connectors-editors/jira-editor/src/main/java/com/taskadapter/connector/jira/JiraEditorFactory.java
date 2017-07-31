@@ -1,6 +1,7 @@
 package com.taskadapter.connector.jira;
 
 import com.google.common.base.Strings;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exception.ForbiddenException;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
@@ -24,7 +25,6 @@ import com.taskadapter.web.service.Sandbox;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Panel;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -32,7 +32,7 @@ import java.util.LinkedHashSet;
 
 import static com.vaadin.server.Sizeable.Unit.PERCENTAGE;
 
-public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
+public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebConnectorSetup> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.jira.messages";
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
 
@@ -90,15 +90,15 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(Sandbox sandbox, JiraConfig config, WebServerInfo webServerInfo) {
-        ShowProjectElement showProjectElement = new ShowProjectElement(config, webServerInfo);
+    public ComponentContainer getMiniPanelContents(Sandbox sandbox, JiraConfig config, WebConnectorSetup setup) {
+        ShowProjectElement showProjectElement = new ShowProjectElement(config, setup);
         ProjectPanel projectPanel = new ProjectPanel(
                 new MethodProperty<>(config, "projectKey"),
                 new MethodProperty<>(config, "queryIdStr"),
                 Interfaces.fromMethod(DataProvider.class, JiraLoaders.class,
-                        "loadProjects", webServerInfo),
+                        "loadProjects", setup),
                 Interfaces.fromMethod(SimpleCallback.class, showProjectElement, "loadProjectInfo"),
-                Interfaces.fromMethod(DataProvider.class, new LoadQueriesElement(config, webServerInfo), "loadQueries"), this);
+                Interfaces.fromMethod(DataProvider.class, new LoadQueriesElement(config, setup), "loadQueries"), this);
         projectPanel.setHeight(100, PERCENTAGE);
 
         GridLayout gridLayout = new GridLayout(2, 4);
@@ -107,20 +107,25 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
 
         gridLayout.addComponent(projectPanel);
 
-        OtherJiraFieldsPanel otherJiraFieldsPanel = new OtherJiraFieldsPanel(config,webServerInfo, this);
+        OtherJiraFieldsPanel otherJiraFieldsPanel = new OtherJiraFieldsPanel(config,setup, this);
         otherJiraFieldsPanel.setHeight(100, PERCENTAGE);
         gridLayout.addComponent(otherJiraFieldsPanel);
 
         PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(),
-                Interfaces.fromMethod(DataProvider.class, new PrioritiesLoader(webServerInfo), "loadJiraPriorities"), this);
+                Interfaces.fromMethod(DataProvider.class, new PrioritiesLoader(setup), "loadJiraPriorities"), this);
         gridLayout.addComponent(priorityPanel);
         gridLayout.addComponent(createCustomOtherFieldsPanel(config));
         return gridLayout;
     }
 
     @Override
-    public ConnectorSetupPanel getSetupPanel(WebServerInfo webServerInfo) {
-        return ServerPanelFactory.withLoginAndPassword(JiraConnector.ID(), webServerInfo);
+    public boolean isWebConnector() {
+        return true;
+    }
+
+    @Override
+    public ConnectorSetupPanel getEditSetupPanel(Sandbox sandbox) {
+        return ServerPanelFactory.withLoginAndPassword(JiraConnector.ID(), JiraConnector.ID(), new WebServerInfo());
     }
 
     private CustomFieldsTablePanel createCustomOtherFieldsPanel(JiraConfig config) {
@@ -128,10 +133,10 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
     }
 
     @Override
-    public void validateForSave(JiraConfig config, WebServerInfo serverInfo) throws BadConfigException {
+    public void validateForSave(JiraConfig config, WebConnectorSetup serverInfo) throws BadConfigException {
         final Collection<JiraValidationErrorKind> errors = new LinkedHashSet<>();
 
-        if (!serverInfo.isHostSet()) {
+        if (Strings.isNullOrEmpty(serverInfo.host())) {
             errors.add(JiraValidationErrorKind.HOST_NOT_SET);
         }
 
@@ -152,10 +157,10 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
     }
 
     @Override
-    public void validateForLoad(JiraConfig config, WebServerInfo serverInfo) throws BadConfigException {
+    public void validateForLoad(JiraConfig config, WebConnectorSetup serverInfo) throws BadConfigException {
         final Collection<JiraValidationErrorKind> errors = new LinkedHashSet<>();
 
-        if (!serverInfo.isHostSet()) {
+        if (Strings.isNullOrEmpty(serverInfo.host())) {
             errors.add(JiraValidationErrorKind.HOST_NOT_SET);
         }
 
@@ -168,17 +173,17 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig> {
     }
 
     @Override
-    public String describeSourceLocation(JiraConfig config, WebServerInfo serverInfo) {
-        return serverInfo.getHost();
+    public String describeSourceLocation(JiraConfig config, WebConnectorSetup serverInfo) {
+        return serverInfo.host();
     }
 
     @Override
-    public String describeDestinationLocation(JiraConfig config,  WebServerInfo serverInfo) {
+    public String describeDestinationLocation(JiraConfig config,  WebConnectorSetup serverInfo) {
         return describeSourceLocation(config, serverInfo);
     }
 
     @Override
-    public boolean updateForSave(JiraConfig config, Sandbox sandbox, WebServerInfo serverInfo)
+    public boolean updateForSave(JiraConfig config, Sandbox sandbox, WebConnectorSetup serverInfo)
             throws BadConfigException {
         validateForSave(config, serverInfo);
         return false;

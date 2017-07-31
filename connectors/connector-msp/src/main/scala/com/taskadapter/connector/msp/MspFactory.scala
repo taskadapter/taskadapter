@@ -5,19 +5,19 @@ import java.util
 import com.google.gson.{JsonElement, JsonParseException}
 import com.taskadapter.connector.Field
 import com.taskadapter.connector.common.ConfigUtils
-import com.taskadapter.connector.definition.{Descriptor, PluginFactory, WebServerInfo}
+import com.taskadapter.connector.definition.{Descriptor, FileSetup, PluginFactory}
 import com.taskadapter.model.StandardField
 
 import scala.collection.JavaConverters._
 
-class MSPFactory extends PluginFactory[MSPConfig] {
-  private val DESCRIPTOR = new Descriptor(MSPConnector.ID, MSPConfig.DEFAULT_LABEL)
+class MSPFactory extends PluginFactory[MSPConfig, FileSetup] {
+  private val DESCRIPTOR = Descriptor(MSPConnector.ID, MSPConfig.DEFAULT_LABEL)
 
   override def getAvailableFields: util.List[Field] = MspField.fields.asJava
 
   override def getSuggestedCombinations: Map[Field, StandardField] = MspField.getSuggestedCombinations()
 
-  override def createConnector(config: MSPConfig, webServerInfo: WebServerInfo) = new MSPConnector(config)
+  override def createConnector(config: MSPConfig, setup: FileSetup) = new MSPConnector(config)
 
   override def getDescriptor = DESCRIPTOR
 

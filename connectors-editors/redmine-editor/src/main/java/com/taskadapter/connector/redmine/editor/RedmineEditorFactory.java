@@ -1,5 +1,6 @@
 package com.taskadapter.connector.redmine.editor;
 
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
@@ -23,9 +24,8 @@ import com.taskadapter.web.service.Sandbox;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Panel;
 
-public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> {
+public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, WebConnectorSetup> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.redmine.messages";
 
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
@@ -49,13 +49,13 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(Sandbox sandbox, RedmineConfig config, WebServerInfo webServerInfo) {
-        ShowProjectElement showProjectElement = new ShowProjectElement(config, webServerInfo);
-        LoadQueriesElement loadQueriesElement = new LoadQueriesElement(config, webServerInfo);
+    public ComponentContainer getMiniPanelContents(Sandbox sandbox, RedmineConfig config, WebConnectorSetup setup) {
+        ShowProjectElement showProjectElement = new ShowProjectElement(config, setup);
+        LoadQueriesElement loadQueriesElement = new LoadQueriesElement(config, setup);
         ProjectPanel projectPanel = new ProjectPanel(
                 new MethodProperty<>(config, "projectKey"),
                 new MethodProperty<>(config, "queryIdStr"),
-                Interfaces.fromMethod(DataProvider.class, RedmineLoaders.class, "getProjects", webServerInfo),
+                Interfaces.fromMethod(DataProvider.class, RedmineLoaders.class, "getProjects", setup),
                 Interfaces.fromMethod(SimpleCallback.class, showProjectElement, "showProjectInfo"),
                 Interfaces.fromMethod(DataProvider.class, loadQueriesElement, "loadQueries"), this);
         GridLayout gridLayout = new GridLayout();
@@ -65,43 +65,49 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig> 
 
         gridLayout.addComponent(projectPanel);
         PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(),
-                Interfaces.fromMethod(DataProvider.class, new PrioritiesLoader(webServerInfo), "loadPriorities"), this);
+                Interfaces.fromMethod(DataProvider.class, new PrioritiesLoader(setup), "loadPriorities"), this);
         gridLayout.addComponent(priorityPanel);
-        gridLayout.addComponent(new OtherRedmineFieldsContainer(config, webServerInfo, this));
+        gridLayout.addComponent(new OtherRedmineFieldsContainer(config, setup, this));
         return gridLayout;
     }
 
     @Override
-    public ConnectorSetupPanel getSetupPanel(WebServerInfo webServerInfo) {
-        return ServerPanelFactory.withApiKeyAndLoginPassword(RedmineConnector.ID(), webServerInfo);
+    public boolean isWebConnector() {
+        return true;
     }
 
     @Override
-    public void validateForSave(RedmineConfig config, WebServerInfo serverInfo) throws BadConfigException {
+    public ConnectorSetupPanel getEditSetupPanel(Sandbox sandboxUnused) {
+        return ServerPanelFactory.withApiKeyAndLoginPassword(RedmineConnector.ID(),
+                RedmineConnector.ID(), new WebServerInfo());
+    }
+
+    @Override
+    public void validateForSave(RedmineConfig config, WebConnectorSetup setup) throws BadConfigException {
         if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
             throw new ProjectNotSetException();
         }
     }
 
     @Override
-    public void validateForLoad(RedmineConfig config,  WebServerInfo serverInfo) {
+    public void validateForLoad(RedmineConfig config, WebConnectorSetup setup) {
         // TODO !! Implement
     }
 
     @Override
-    public String describeSourceLocation(RedmineConfig config,  WebServerInfo serverInfo) {
-        return serverInfo.getHost();
+    public String describeSourceLocation(RedmineConfig config, WebConnectorSetup setup) {
+        return setup.host();
     }
 
     @Override
-    public String describeDestinationLocation(RedmineConfig config, WebServerInfo serverInfo) {
-        return describeSourceLocation(config, serverInfo);
+    public String describeDestinationLocation(RedmineConfig config, WebConnectorSetup setup) {
+        return describeSourceLocation(config, setup);
     }
 
     @Override
-    public boolean updateForSave(RedmineConfig config, Sandbox sandbox,  WebServerInfo serverInfo)
+    public boolean updateForSave(RedmineConfig config, Sandbox sandbox, WebConnectorSetup setup)
             throws BadConfigException {
-        validateForSave(config, serverInfo);
+        validateForSave(config, setup);
         return false;
     }
 

@@ -1,7 +1,8 @@
 package com.taskadapter.integrationtests;
 
-import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.redmine.RedmineConfig;
+import com.taskadapter.connector.redmine.RedmineConnector;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +35,8 @@ public class RedmineTestConfig {
         return new RedmineConfig();
     }
 
-    public static WebServerInfo getRedmineServerInfo() {
-        return new WebServerInfo("", properties.getProperty("uri"), "", "", true, properties.getProperty("apikey"));
+    public static WebConnectorSetup getRedmineServerInfo() {
+        return new WebConnectorSetup(RedmineConnector.ID(),"label1", properties.getProperty("uri"),
+                "", "", true, properties.getProperty("apikey"));
     }
 }

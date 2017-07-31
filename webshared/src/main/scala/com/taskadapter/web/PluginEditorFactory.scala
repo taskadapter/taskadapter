@@ -1,14 +1,16 @@
 package com.taskadapter.web
 
 import com.taskadapter.connector.definition.exceptions.BadConfigException
-import com.taskadapter.connector.definition.{ConnectorConfig, WebServerInfo}
+import com.taskadapter.connector.definition.{ConnectorConfig, ConnectorSetup, WebServerInfo}
 import com.taskadapter.web.service.Sandbox
-import com.vaadin.ui.{ComponentContainer, Panel}
+import com.vaadin.ui.ComponentContainer
 
-trait PluginEditorFactory[C <: ConnectorConfig] extends ExceptionFormatter {
-  def getMiniPanelContents(sandbox: Sandbox, config: C, webServerInfo: WebServerInfo): ComponentContainer
+trait PluginEditorFactory[C <: ConnectorConfig, S <: ConnectorSetup] extends ExceptionFormatter {
+  def getMiniPanelContents(sandbox: Sandbox, config: C, setup: S): ComponentContainer
 
-  def getSetupPanel(webServerInfo: WebServerInfo): ConnectorSetupPanel
+  def isWebConnector: Boolean
+
+  def getEditSetupPanel(sandbox: Sandbox): ConnectorSetupPanel
 
   /**
     * Validates a connector config for save mode. If validation fails, plugin
@@ -18,7 +20,7 @@ trait PluginEditorFactory[C <: ConnectorConfig] extends ExceptionFormatter {
     * @throws BadConfigException if validation fails.
     */
   @throws[BadConfigException]
-  def validateForSave(config: C, serverInfo: WebServerInfo): Unit
+  def validateForSave(config: C, setup: S): Unit
 
   /**
     * Validates a connector config for load mode. If validation fails, plugin
@@ -28,7 +30,7 @@ trait PluginEditorFactory[C <: ConnectorConfig] extends ExceptionFormatter {
     * @throws BadConfigException if validation fails.
     */
   @throws[BadConfigException]
-  def validateForLoad(config: C, serverInfo: WebServerInfo): Unit
+  def validateForLoad(config: C, setup: S): Unit
 
   /**
     * Validates config for "drop-in" loading.
@@ -55,19 +57,19 @@ trait PluginEditorFactory[C <: ConnectorConfig] extends ExceptionFormatter {
     * @throws BadConfigException if config cannot be automatically updated to a "valid for save" state.
     */
   @throws[BadConfigException]
-  def updateForSave(config: C, sandbox: Sandbox, serverInfo: WebServerInfo): Boolean
+  def updateForSave(config: C, sandbox: Sandbox, setup: S): Boolean
 
   /**
     * Describes source location in a user-friendly manner.
     *
     * @return user-friendly description of a source location.
     */
-  def describeSourceLocation(config: C, serverInfo: WebServerInfo): String
+  def describeSourceLocation(config: C, setup: S): String
 
   /**
     * Describes destination location in a user-friendly manner.
     *
     * @return user-friendly description of destination location.
     */
-  def describeDestinationLocation(config: C, serverInfo: WebServerInfo): String
+  def describeDestinationLocation(config: C, setup: S): String
 }

@@ -13,12 +13,12 @@ import scala.collection.immutable.Map
   * and service in a config file? Or, at least, remove descriptor from this
   * plugin factory and leave this as a "connector factory" item.
   */
-trait PluginFactory[C <: ConnectorConfig] {
+trait PluginFactory[C <: ConnectorConfig, S <: ConnectorSetup] {
   def getAvailableFields: util.List[Field]
 
   def getSuggestedCombinations: Map[Field, StandardField]
 
-  def createConnector(config: C, serverInfo: WebServerInfo): NewConnector
+  def createConnector(config: C, setup: S): NewConnector
 
   def getDescriptor: Descriptor
 

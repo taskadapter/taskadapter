@@ -3,7 +3,8 @@ package com.taskadapter.connector.jira;
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.api.domain.IssueType;
 import com.atlassian.util.concurrent.Promise;
-import com.taskadapter.connector.definition.WebServerInfo;
+import com.google.common.base.Strings;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.model.NamedKeyedObject;
@@ -15,11 +16,11 @@ import java.util.List;
 
 public class IssueTypesLoader {
 
-    static List<NamedKeyedObject> getIssueTypes(WebServerInfo webServerInfo, IssueTypeFilter issueTypesFilter) throws ConnectorException {
-        if (!webServerInfo.isHostSet()) {
+    static List<NamedKeyedObject> getIssueTypes(WebConnectorSetup setup, IssueTypeFilter issueTypesFilter) throws ConnectorException {
+        if (Strings.isNullOrEmpty(setup.host())) {
             throw new ServerURLNotSetException();
         }
-        try(JiraRestClient client = JiraConnectionFactory.createClient(webServerInfo)) {
+        try(JiraRestClient client = JiraConnectionFactory.createClient(setup)) {
             Promise<Iterable<IssueType>> issueTypeListPromise = client.getMetadataClient().getIssueTypes();
             final Iterable<IssueType> issueTypes = issueTypeListPromise.claim();
             Iterable<IssueType> filtered = issueTypesFilter.filter(issueTypes);

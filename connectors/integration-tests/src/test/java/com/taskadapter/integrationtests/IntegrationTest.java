@@ -1,6 +1,6 @@
 package com.taskadapter.integrationtests;
 
-import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.redmine.RedmineManagerFactory;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Project;
@@ -13,12 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Calendar;
 
-import static junit.framework.Assert.fail;
-import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-
 public class IntegrationTest {
 
     // TODO TA3 integration tests
@@ -30,9 +24,9 @@ public class IntegrationTest {
 
     @BeforeClass
     public static void oneTimeSetUp() {
-        WebServerInfo serverInfo = RedmineTestConfig.getRedmineServerInfo();
-        logger.info("Running Redmine tests with: " + serverInfo);
-        mgr = RedmineManagerFactory.createRedmineManager(serverInfo);
+        WebConnectorSetup setup = RedmineTestConfig.getRedmineServerInfo();
+        logger.info("Running Redmine tests with: " + setup);
+        mgr = RedmineManagerFactory.createRedmineManager(setup);
 
         Project project = ProjectFactory.create("integration tests",
                 "itest" + Calendar.getInstance().getTimeInMillis());

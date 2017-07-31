@@ -3,6 +3,7 @@ package com.taskadapter.webui.pages
 import com.taskadapter.PluginManager
 import com.taskadapter.config.StorageException
 import com.taskadapter.connector.definition.WebServerInfo
+import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.UISyncConfig
 import com.taskadapter.webui.ConfigOperations
 import com.taskadapter.webui.Page.message
@@ -18,7 +19,8 @@ trait Callback {
   def configCreated(config: UISyncConfig): Unit
 }
 
-class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, configOps: ConfigOperations, callback: Callback) {
+class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, configOps: ConfigOperations,
+                    sandbox: Sandbox, callback: Callback) {
   val connector1Info = new WebServerInfo
   val connector2Info = new WebServerInfo
 
@@ -57,7 +59,7 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
         }
       ).ui
 
-      case 2 => new NewConfigConfigureSystem(editorManager, configOps, connector1Id.get, labelSelected =
+      case 2 => new NewConfigConfigureSystem(editorManager, configOps, sandbox, connector1Id.get, labelSelected =
         (label) => {
           connector1Label = Some(label)
           proceedToStage(stage + 1)
@@ -71,7 +73,7 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
         }
       ).ui
 
-      case 4 => new NewConfigConfigureSystem(editorManager, configOps, connector2Id.get, labelSelected =
+      case 4 => new NewConfigConfigureSystem(editorManager, configOps, sandbox, connector2Id.get, labelSelected =
         (label) => {
           connector2Label = Some(label)
           proceedToStage(stage + 1)

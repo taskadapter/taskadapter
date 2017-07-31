@@ -1,5 +1,6 @@
 package com.taskadapter.connector.jira;
 
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.editor.testlib.VaadinTestHelper;
@@ -23,13 +24,16 @@ public class JiraEditorFactoryTest {
     @Test
     public void miniPanelIsCreated() {
         JiraEditorFactory factory = new JiraEditorFactory();
-        factory.getMiniPanelContents(new Sandbox(false, tempFolder.getRoot()), new JiraConfig(), new WebServerInfo());
+        factory.getMiniPanelContents(new Sandbox(false, tempFolder.getRoot()), new JiraConfig(),
+                new WebConnectorSetup(JiraConnector.ID(), "label1", "host", "user", "password",
+                        false, "api"));
     }
 
     @Test
     public void serverURLIsRequiredForSave() throws BadConfigException {
         try {
-            new JiraEditorFactory().validateForSave(new JiraConfig(), new WebServerInfo());
+            new JiraEditorFactory().validateForSave(new JiraConfig(), new WebConnectorSetup(JiraConnector.ID(), "label1",
+                    "", "", "", false, ""));
             Assert.fail();
         } catch (JiraConfigException e) {
             Assert.assertTrue(e.getErrors().contains(JiraValidationErrorKind.HOST_NOT_SET));
@@ -40,7 +44,8 @@ public class JiraEditorFactoryTest {
     public void projectKeyIsRequiredForSave() throws BadConfigException {
         try {
             new JiraEditorFactory().validateForSave(new JiraConfig(),
-                            new WebServerInfo("http://somehost", "", ""));
+                            new WebConnectorSetup(JiraConnector.ID(), "label1", "http://somehost",
+                                    "", "", false, ""));
         } catch (JiraConfigException e) {
             Assert.assertTrue(e.getErrors().contains(
                     JiraValidationErrorKind.PROJECT_NOT_SET));
@@ -54,7 +59,9 @@ public class JiraEditorFactoryTest {
             config.setProjectKey("someproject");
             // clear the value
             config.setDefaultIssueTypeForSubtasks("");
-            new JiraEditorFactory().validateForSave(config, new WebServerInfo("http://somehost", "", ""));
+            new JiraEditorFactory().validateForSave(config,
+                    new WebConnectorSetup(JiraConnector.ID(), "label1", "http://somehost", "","",
+                            false, ""));
             Assert.fail();
         } catch (JiraConfigException e) {
             Assert.assertTrue(e.getErrors().contains(JiraValidationErrorKind.DEFAULT_SUBTASK_TYPE_NOT_SET));

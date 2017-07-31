@@ -1,56 +1,73 @@
 package com.taskadapter.webui.pages
 
-import com.taskadapter.config.ConnectorSetup
-import com.taskadapter.connector.definition.WebServerInfo
+import com.taskadapter.connector.common.FileNameGenerator
 import com.taskadapter.connector.definition.exception.SetupNameMissingException
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException
+import com.taskadapter.connector.definition.{ConnectorSetup, FileSetup, WebConnectorSetup}
 import com.taskadapter.web.ConnectorSetupPanel
+import com.taskadapter.web.service.Sandbox
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.service.EditorManager
 import com.taskadapter.webui.{ConfigOperations, Page}
 import com.vaadin.data.Property.ValueChangeListener
 import com.vaadin.ui._
 
-class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOperations, connectorId: String,
+import scala.collection.Seq
+
+private case class ExistingSetup(label: String, description: String)
+
+class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOperations,
+                               sandbox: Sandbox,
+                               connectorId: String,
                                labelSelected: String => Unit) {
 
-  def ui = createSetupPanelForConnector(new WebServerInfo()).getUI()
+  def ui = createSetupPanelForConnector().getUI()
 
   val editor = editorManager.getEditorFactory(connectorId)
 
   val errorMessageLabel = new Label
   errorMessageLabel.addStyleName("error-message-label")
 
-  private def createSetupPanelForConnector(connectorInfo: WebServerInfo): ChooseOrCreateSetupFragment = {
+  private def createSetupPanelForConnector(): ChooseOrCreateSetupFragment = {
 
     val setups = configOps.getAllConnectorSetups(connectorId)
-    val editSetupPanel = editor.getSetupPanel(connectorInfo)
+    val setupUiItems = setups.map { s =>
+      if (s.isInstanceOf[WebConnectorSetup]) {
+        val webSetup: WebConnectorSetup = s.asInstanceOf[WebConnectorSetup]
+        ExistingSetup(webSetup.label, s"${webSetup.connectorId} (${webSetup.host})")
+      } else {
+        val fileSetup: FileSetup = s.asInstanceOf[FileSetup]
+        ExistingSetup(fileSetup.label, fileSetup.label)
+      }
+    }
+
+    val editSetupPanel = editor.getEditSetupPanel(sandbox)
     val addNewButton = new Button()
-    new ChooseOrCreateSetupFragment(connectorInfo, setups, addNewButton, editSetupPanel)
+    new ChooseOrCreateSetupFragment(setupUiItems, addNewButton, editSetupPanel)
   }
 
-  class ChooseOrCreateSetupFragment(webServerInfo: WebServerInfo,
-                                    setups: Seq[ConnectorSetup],
-                                    button: Button, connectorSetupPanel: ConnectorSetupPanel) {
+  class ChooseOrCreateSetupFragment(setups: Seq[ExistingSetup],
+                                       button: Button, connectorSetupPanel: ConnectorSetupPanel) {
     private val selectPanel = createSavedServerConfigurationsSelector(message("createConfigPage.selectExistingOrNew"), setups,
       event => {}
     )
 
     private def createSavedServerConfigurationsSelector(title: String,
-                                                        savedSetups: Seq[ConnectorSetup],
+                                                        savedSetups: Seq[ExistingSetup],
                                                         valueChangeListener: ValueChangeListener): ListSelect = {
       val res = new ListSelect(title)
       res.setNullSelectionAllowed(false)
       res.addValueChangeListener(valueChangeListener)
       savedSetups.foreach { s =>
         res.addItem(s.label)
-        res.setItemCaption(s.label, s"${s.label} ${s.host}")
+        res.setItemCaption(s.label, s.description)
       }
       res.setRows(res.size)
       res
     }
 
-    val layout = new VerticalLayout(selectPanel, button, connectorSetupPanel.getUI, errorMessageLabel)
+    private val connectorSetupPanelUI = connectorSetupPanel.getUI
+    val layout = new VerticalLayout(selectPanel, button, connectorSetupPanelUI, errorMessageLabel)
     if (selectPanel.getRows != 0) {
       selectPanel.select(selectPanel.getItemIds.iterator().next())
     }
@@ -79,7 +96,7 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
     layout.addComponent(nextButton)
 
     private def refresh() = {
-      connectorSetupPanel.getUI.setVisible(!inSelectMode)
+      connectorSetupPanelUI.setVisible(!inSelectMode)
       selectPanel.setVisible(inSelectMode)
       val caption = if (inSelectMode) Page.message("createConfigPage.button.createNew")
       else Page.message("createConfigPage.button.selectExisting")
@@ -109,11 +126,11 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
           selectPanel.getValue.toString
         } else ""
       } else {
-        webServerInfo.getLabel
+        FileNameGenerator.createSafeAvailableFile(sandbox.getUserContentDirectory, connectorId+"_%d.json").getName
       }
     }
 
-    def getEditedResult(): WebServerInfo = webServerInfo
+    def getEditedResult(): ConnectorSetup = connectorSetupPanel.getResult
 
     button.addClickListener(_ => {
       inSelectMode = !inSelectMode

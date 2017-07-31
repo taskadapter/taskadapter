@@ -2,14 +2,13 @@ package com.taskadapter.core;
 
 import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.NewConnector;
-import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.msp.MSPTaskSaver;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
-import com.taskadapter.connector.redmine.RedmineField;
 import com.taskadapter.connector.redmine.RedmineManagerFactory;
 import com.taskadapter.connector.redmine.RedmineToGTask;
 import com.taskadapter.integrationtests.RedmineTestConfig;
@@ -30,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 import static org.junit.Assert.fail;
 
@@ -50,12 +48,12 @@ public class UpdaterIntegrationTest {
     private RedmineConfig redmineConfig;
     private MSPConfig mspConfig;
     private NewConnector projectConnector;
-    static WebServerInfo webServerInfo = RedmineTestConfig.getRedmineServerInfo();
+    static WebConnectorSetup setup = RedmineTestConfig.getRedmineServerInfo();
 
     @BeforeClass
     public static void oneTimeSetUp() {
-        logger.info("Running Redmine tests with: " + webServerInfo);
-        mgr = RedmineManagerFactory.createRedmineManager(webServerInfo);
+        logger.info("Running Redmine tests with: " + setup);
+        mgr = RedmineManagerFactory.createRedmineManager(setup);
 
         Project project = ProjectFactory.create("integration test project",
                 "ittest" + Calendar.getInstance().getTimeInMillis());
@@ -150,7 +148,7 @@ public class UpdaterIntegrationTest {
 
     private List<GTask> createRedmineIssues(int issuesNumber) {
         List<GTask> issues = new ArrayList<>(issuesNumber);
-        RedmineManager mgr = RedmineManagerFactory.createRedmineManager(webServerInfo);
+        RedmineManager mgr = RedmineManagerFactory.createRedmineManager(setup);
         List<Issue> issuesToCreate = generateRedmineIssues(issuesNumber);
 
         RedmineToGTask converter = new RedmineToGTask(redmineConfig);

@@ -156,8 +156,8 @@ class TaskFieldsMappingFragment(messages: Messages, connector1: UIConnectorConfi
     val helpForField = null //getHelpForField(field);
     if (helpForField != null) addHelp(helpForField)
     else addEmptyCell()
-    addConnectorElement(field, connector1, "fieldInConnector1")
-    addConnectorElement(field, connector2, "fieldInConnector2")
+    addConnectorField(connector1.getAvailableFields, field, "fieldInConnector1")
+    addConnectorField(connector2.getAvailableFields, field, "fieldInConnector2")
     addTextFieldForDefaultValue(field)
     addRemoveRowButton(field)
   }
@@ -183,11 +183,6 @@ class TaskFieldsMappingFragment(messages: Messages, connector1: UIConnectorConfi
       }
       row += 1
     }
-  }
-
-
-  private def addConnectorElement(field: EditableFieldMapping, config: UIConnectorConfig, leftRightField: String) = {
-    addConnectorField(config.getAvailableFields, field, leftRightField)
   }
 
   private def addCheckbox(field: EditableFieldMapping) = {

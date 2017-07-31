@@ -1,12 +1,8 @@
 package com.taskadapter.webui.config;
 
-import com.taskadapter.web.configeditor.EditorUtil;
-import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.webui.ImageLoader;
 import com.vaadin.data.Property;
-import com.vaadin.data.util.MethodProperty;
 import com.vaadin.event.LayoutEvents;
-import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
@@ -17,12 +13,14 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Window;
 
 public class MiniPanel extends HorizontalLayout {
-    private UIConnectorConfig config;
+    private final String caption;
+    private final Property<String> labelProperty;
     private Window newWindow;
     private Label connectorLabel;
 
-    public MiniPanel(UIConnectorConfig connectorConfig) {
-        this.config = connectorConfig;
+    public MiniPanel(String caption, Property<String> labelProperty) {
+        this.caption = caption;
+        this.labelProperty = labelProperty;
         buildUI();
         addLayoutClickListener((LayoutEvents.LayoutClickListener) event -> showEditConnectorDialog());
     }
@@ -53,14 +51,13 @@ public class MiniPanel extends HorizontalLayout {
 
     private void configureEditServerWindow() {
         newWindow = new Window();
-        newWindow.setCaption("Configure " + config.getLabel() + "(" + config.getConnectorTypeId() + ")");
+        newWindow.setCaption(caption);
         newWindow.addCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
         newWindow.addCloseListener((Window.CloseListener) e -> refreshLabel());
     }
 
     private void refreshLabel() {
-        final Property<String> connectorLabel = new MethodProperty<>(config, "vaalabel");
-        this.connectorLabel.setPropertyDataSource(connectorLabel);
+        this.connectorLabel.setPropertyDataSource(labelProperty);
     }
 
     public void showEditConnectorDialog() {

@@ -1,7 +1,8 @@
 package com.taskadapter.connector.redmine.editor;
 
-import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.redmine.RedmineConfig;
+import com.taskadapter.connector.redmine.RedmineConnector;
 import com.taskadapter.editor.testlib.VaadinTestHelper;
 import com.taskadapter.web.service.Sandbox;
 import com.vaadin.server.ServiceException;
@@ -24,6 +25,7 @@ public class RedmineEditorFactoryTest {
     public void miniPanelIsCreated() {
         RedmineEditorFactory factory = new RedmineEditorFactory();
         factory.getMiniPanelContents(new Sandbox(true, tempFolder.getRoot()),
-                new RedmineConfig(), new WebServerInfo());
+                new RedmineConfig(), new WebConnectorSetup(RedmineConnector.ID(), "label1", "host",
+                        "user", "password", false, "" ));
     }
 }

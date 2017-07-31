@@ -1,6 +1,6 @@
 package com.taskadapter.connector.jira;
 
-import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.vaadin.data.util.MethodProperty;
@@ -17,10 +17,10 @@ class OtherJiraFieldsPanel extends Panel {
     private static final String SAVE_GROUP_LABEL = "Set when exporting to JIRA";
 
     private final JiraConfig config;
-    private WebServerInfo webServerInfo;
+    private WebConnectorSetup webServerInfo;
     private final ExceptionFormatter exceptionFormatter;
 
-    public OtherJiraFieldsPanel(JiraConfig config, WebServerInfo webServerInfo, ExceptionFormatter exceptionFormatter) {
+    public OtherJiraFieldsPanel(JiraConfig config, WebConnectorSetup webServerInfo, ExceptionFormatter exceptionFormatter) {
         this.config = config;
         this.webServerInfo = webServerInfo;
         this.exceptionFormatter = exceptionFormatter;

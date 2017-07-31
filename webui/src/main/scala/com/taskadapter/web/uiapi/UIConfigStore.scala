@@ -3,10 +3,11 @@ package com.taskadapter.web.uiapi
 import java.util
 
 import com.taskadapter.config.CirceBoilerplateForConfigs._
-import com.taskadapter.config.{ConfigStorage, ConnectorSetup, StorageException, StoredExportConfig}
+import com.taskadapter.config._
 import com.taskadapter.connector.NewConfigSuggester
 import com.taskadapter.connector.common.XorEncryptor
-import com.taskadapter.connector.definition.{FieldMapping, WebServerInfo}
+import com.taskadapter.connector.definition._
+import io.circe.Json
 import io.circe.generic.auto._
 import io.circe.parser._
 import io.circe.syntax._
@@ -55,11 +56,11 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val config2 = uiConfigService.createRichConfig(conn2Config.getConnectorTypeId, conn2Config.getSerializedConfig)
     val jsonString = storedConfig.getMappingsString
 
-    val webServerInfo1 = loadSetup(ownerName, config1.getLabel)
-    val webServerInfo2 = loadSetup(ownerName, config2.getLabel)
+    val connector1Setup = loadSetup(ownerName, config1.getLabel)
+    val connector2Setup = loadSetup(ownerName, config2.getLabel)
 
-    config1.setWebServerInfo(webServerInfo1)
-    config2.setWebServerInfo(webServerInfo2)
+    config1.setConnectorSetup(connector1Setup)
+    config2.setConnectorSetup(connector2Setup)
 
     val newMappings = decode[Seq[FieldMapping]](jsonString)
     newMappings match {
@@ -79,12 +80,12 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     * @return newly created (and saved) UI mapping config.
     */
   @throws[StorageException]
-  def createNewConfig(userName: String, label: String, connector1Id: String, connector1Label:String,
+  def createNewConfig(userName: String, label: String, connector1Id: String, connector1Label: String,
                       connector2Id: String, connector2Label: String): UISyncConfig = {
-    val config1: UIConnectorConfig = uiConfigService.createDefaultConfig(connector1Id)
+    val config1 = uiConfigService.createDefaultConfig(connector1Id)
     config1.setLabel(connector1Label)
 
-    val config2: UIConnectorConfig = uiConfigService.createDefaultConfig(connector2Id)
+    val config2 = uiConfigService.createDefaultConfig(connector2Id)
     config2.setLabel(connector2Label)
 
     val newMappings = NewConfigSuggester.suggestedFieldMappingsForNewConfig(
@@ -98,35 +99,67 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     new UISyncConfig(configStorage.rootDir, identity, userName, label, config1, config2, newMappings, false)
   }
 
-  def saveSetup(userName: String, setup: WebServerInfo, connectorId: String): Unit = {
-    configStorage.saveConnectorSetup(userName,
-      setup.getLabel,
-      ConnectorSetup(connectorId, setup.getLabel, setup.getHost, setup.getUserName,
-        encryptor.encrypt(setup.getPassword),
-        setup.isUseAPIKeyInsteadOfLoginPassword,
-        encryptor.encrypt(setup.getApiKey)
-      ).asJson.spaces2)
+  def saveSetup(userName: String, setup: ConnectorSetup, label: String): Unit = {
+    val jsonString: String = if (setup.isInstanceOf[WebConnectorSetup]) {
+      val webSetup: WebConnectorSetup = setup.asInstanceOf[WebConnectorSetup]
+      webSetup.copy(password = encryptor.encrypt(webSetup.password),
+        apiKey = encryptor.encrypt(webSetup.apiKey)
+      ).asJson.spaces2
+    } else {
+      // only file setup is left possible
+      val fileSetup: FileSetup = setup.asInstanceOf[FileSetup]
+      fileSetup.asJson.spaces2
+    }
+    configStorage.saveConnectorSetup(userName, label, jsonString)
   }
 
-  def loadSetup(userName: String, setupLabel: String): WebServerInfo = {
+  def loadSetup(userName: String, setupLabel: String): ConnectorSetup = {
     val string = configStorage.loadConnectorSetupAsString(userName, setupLabel)
-    parseSetupString(string, userName).map(setup =>
-      new WebServerInfo(setup.label, setup.host, setup.userName,
-        encryptor.decrypt(setup.password),
-        setup.useApiKey,
-        encryptor.decrypt(setup.apiKey))).orNull
+    val json = parseSetupStringToJson(string, userName).get
+
+    val maybeParsedConfig = convertJsonSetupsToConnectorSetups(Seq(json)).head
+    if (maybeParsedConfig.isDefined) {
+      maybeParsedConfig.get
+    } else {
+      throw new RuntimeException(s"Cannot parse config $json")
+    }
   }
 
   def getAllConnectorSetups(userLoginName: String, connectorId: String): Seq[ConnectorSetup] = {
-    val setups: Seq[Option[ConnectorSetup]] = configStorage.getAllConnectorSetupsAsStrings(userLoginName, connectorId).asScala
+    val setups: Seq[Option[Json]] = configStorage.getAllConnectorSetupsAsStrings(userLoginName, connectorId).asScala
       .map { setupString =>
-        parseSetupString(setupString, userLoginName)
+        parseSetupStringToJson(setupString, userLoginName)
       }
-    setups.filter(maybeSetup => maybeSetup.isDefined && maybeSetup.get.connectorId == connectorId).flatten
+    val setupsForThisConnectorId = setups.filter(maybeSetup => maybeSetup.isDefined
+      && maybeSetup.get.hcursor.get[String]("connectorId").toOption.contains(connectorId)).flatten
+
+    convertJsonSetupsToConnectorSetups(setupsForThisConnectorId).flatten
   }
 
-  def parseSetupString(string: String, userName: String): Option[ConnectorSetup] = {
-    decode[ConnectorSetup](string) match {
+  def convertJsonSetupsToConnectorSetups(jsonSeq: Seq[Json]): Seq[Option[ConnectorSetup]] = {
+    jsonSeq.map { s =>
+      if (s.hcursor.get[String]("connectorId").toOption.contains("Microsoft Project")) {
+        s.as[FileSetup] match {
+          case Left(e) => logger.error(s"Cannot parse connector setup $s as FileSetup $e")
+            None
+          case Right(setup) => Some(setup)
+        }
+      } else {
+        s.as[WebConnectorSetup] match {
+          case Left(e) => logger.error(s"Cannot parse connector setup $s as WebConnectorSetup $e")
+            None
+          case Right(setup) => Some(setup.copy(password = encryptor.decrypt(setup.password),
+            apiKey = encryptor.decrypt(setup.apiKey)))
+        }
+      }
+    }
+  }
+
+  /**
+    * @return json map because this may contains [[WebConnectorSetup]] or [[FileSetup]] or whatever.
+    */
+  def parseSetupStringToJson(string: String, userName: String): Option[Json] = {
+    decode[Json](string) match {
       case Left(e) => logger.error(s"Cannot parse connector setup for user $userName. $e")
         None
       case Right(setup) => Some(setup)
@@ -143,8 +176,8 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
   def saveConfig(syncConfig: UISyncConfig): Unit = {
     val normalizedSyncConfig = syncConfig.normalized
     val label: String = normalizedSyncConfig.getLabel
-    val config1: UIConnectorConfig = normalizedSyncConfig.getConnector1
-    val config2: UIConnectorConfig = normalizedSyncConfig.getConnector2
+    val config1 = normalizedSyncConfig.getConnector1
+    val config2 = normalizedSyncConfig.getConnector2
     val mappings = normalizedSyncConfig.getNewMappings
     val mappingsStr = mappings.asJson.noSpaces
 

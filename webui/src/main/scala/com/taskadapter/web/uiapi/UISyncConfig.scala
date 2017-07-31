@@ -76,17 +76,17 @@ case class UISyncConfig(configRootFolder: File,
                          /**
                            * First connector config.
                            */
-                         val connector1: UIConnectorConfig,
+                         connector1: UIConnectorConfig,
 
                          /**
                            * Second connector config.
                            */
-                         val connector2: UIConnectorConfig,
+                         connector2: UIConnectorConfig,
 
                          /**
                            * Field mappings. Left side is connector1, right side is connector2.
                            */
-                         val fieldMappings: Seq[FieldMapping],
+                         fieldMappings: Seq[FieldMapping],
 
                          /**
                            * "Config is reversed" flag.

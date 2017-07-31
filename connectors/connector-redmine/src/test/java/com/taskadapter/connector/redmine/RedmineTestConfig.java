@@ -1,7 +1,7 @@
 package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.PropertiesUtf8Loader;
-import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 
 import java.util.Properties;
 
@@ -16,8 +16,8 @@ class RedmineTestConfig {
         return redmineConfig;
     }
 
-    static WebServerInfo getRedmineServerInfo() {
-        return new WebServerInfo("", properties.getProperty("uri"), "", "",
+    static WebConnectorSetup getRedmineServerInfo() {
+        return new WebConnectorSetup(RedmineConnector.ID(), "label1", properties.getProperty("uri"), "", "",
                 true,properties.getProperty("apikey"));
     }
 }

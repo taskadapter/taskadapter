@@ -4,8 +4,8 @@ import java.io.File
 import java.util
 
 import com.taskadapter.auth.{AuthorizedOperations, CredentialsManager}
-import com.taskadapter.config.{ConnectorSetup, StorageException}
-import com.taskadapter.connector.definition.WebServerInfo
+import com.taskadapter.config.StorageException
+import com.taskadapter.connector.definition.ConnectorSetup
 import com.taskadapter.web.uiapi.{UIConfigStore, UISyncConfig}
 
 import scala.collection.JavaConverters._
@@ -92,8 +92,9 @@ final class ConfigOperations(/**
     uiConfigStore.saveConfig(config)
   }
 
-  def saveSetup(setup: WebServerInfo, connectorId: String): Unit =
-    uiConfigStore.saveSetup(userName, setup, connectorId)
+  def saveSetup(setup: ConnectorSetup, label: String): Unit =
+    uiConfigStore.saveSetup(userName, setup, label)
 
-  def getAllConnectorSetups(connectorId: String): Seq[ConnectorSetup] = uiConfigStore.getAllConnectorSetups(userName, connectorId)
+  def getAllConnectorSetups(connectorId: String): Seq[ConnectorSetup] =
+    uiConfigStore.getAllConnectorSetups(userName, connectorId)
 }

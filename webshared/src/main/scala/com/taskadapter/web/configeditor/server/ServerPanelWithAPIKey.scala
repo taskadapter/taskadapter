@@ -1,9 +1,7 @@
 package com.taskadapter.web.configeditor.server
 
-import java.util
-
 import com.google.common.base.Strings
-import com.taskadapter.connector.definition.WebServerInfo
+import com.taskadapter.connector.definition.{WebConnectorSetup, WebServerInfo}
 import com.taskadapter.connector.definition.exception.SetupNameMissingException
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException
 import com.taskadapter.web.ConnectorSetupPanel
@@ -16,7 +14,8 @@ import com.vaadin.shared.ui.label.ContentMode
 import com.vaadin.ui._
 
 import scala.collection.JavaConverters._
-class ServerPanelWithAPIKey(val caption: String, val labelProperty: Property[String],
+
+class ServerPanelWithAPIKey(connectorId: String, caption: String, val labelProperty: Property[String],
                             val serverURLProperty: Property[String], val loginNameProperty: Property[String],
                             val passwordProperty: Property[String], val apiKeyProperty: Property[String],
                             val useApiKeyProperty: Property[java.lang.Boolean]) extends ConnectorSetupPanel with Validatable {
@@ -123,5 +122,10 @@ class ServerPanelWithAPIKey(val caption: String, val labelProperty: Property[Str
     if (Strings.isNullOrEmpty(labelProperty.getValue)) throw new SetupNameMissingException
     val host = serverURL.getValue
     if (host == null || host.isEmpty || host.equalsIgnoreCase(WebServerInfo.DEFAULT_URL_PREFIX)) throw new ServerURLNotSetException
+  }
+
+  override def getResult: WebConnectorSetup = {
+    WebConnectorSetup(connectorId, labelProperty.getValue, serverURLProperty.getValue, loginNameProperty.getValue,
+      passwordProperty.getValue, useApiKeyProperty.getValue, apiKeyProperty.getValue)
   }
 }

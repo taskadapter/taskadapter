@@ -257,12 +257,16 @@ public class LoggedInPageset {
 
     public void createNewConfig() {
         tracker.trackPage("create_config");
-        applyUI(new NewConfigPage(services.editorManager, services.pluginManager, context.configOps,
+        applyUI(new NewConfigPage(services.editorManager, services.pluginManager, context.configOps, createSandbox(),
                 config -> {
                     tracker.trackEvent("config", "created",
                             config.connector1().getConnectorTypeId() + " - " + config.connector2().getConnectorTypeId());
                     showConfigEditor(config, null);
                 }).panel());
+    }
+
+    private Sandbox createSandbox() {
+        return new Sandbox(services.settingsManager.isTAWorkingOnLocalMachine(), context.configOps.syncSandbox());
     }
 
     /**
