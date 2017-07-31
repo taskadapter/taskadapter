@@ -54,15 +54,6 @@ abstract class UIConnectorConfig {
   def setConnectorSetup(setup: ConnectorSetup): Unit
 
   /**
-    * @deprecated
-    */
-//  def getVaalabel: String = getLabel
-
-//  final def setVaalabel(label: String): Unit = {
-//    setLabel(label)
-//  }
-
-  /**
     * Sets a new label.
     *
     * @param label new label.

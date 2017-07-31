@@ -52,7 +52,7 @@ class OnePageEditor(messages: Messages, sandbox: Sandbox, config: UISyncConfig, 
 
   private def createMiniPanel(connectorConfig: UIConnectorConfig, sandbox: Sandbox) = {
     val caption = "Configure " + connectorConfig.getLabel + "(" + config.connector1.getConnectorTypeId + ")"
-    val connectorLabel = new MethodProperty[String](config, "label")
+    val connectorLabel = new MethodProperty[String](connectorConfig, "label")
     val miniPanel = new MiniPanel(caption, connectorLabel)
     // "services" instance is only used by MSP Editor Factory
     miniPanel.setPanelContents(connectorConfig.createMiniPanel(sandbox))

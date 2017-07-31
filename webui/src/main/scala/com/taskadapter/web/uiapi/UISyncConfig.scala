@@ -10,6 +10,7 @@ import com.taskadapter.connector.definition._
 import com.taskadapter.core._
 import com.taskadapter.model.GTask
 
+import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
 
 /**
@@ -71,7 +72,7 @@ case class UISyncConfig(configRootFolder: File,
                          /**
                            * Config label
                            */
-                         var label: String,
+                        @BeanProperty label: String,
 
                          /**
                            * First connector config.
@@ -91,12 +92,7 @@ case class UISyncConfig(configRootFolder: File,
                          /**
                            * "Config is reversed" flag.
                            */
-                         var reversed: Boolean) {
-  def setLabel(label: String): Unit = {
-    this.label = label
-  }
-
-  def getLabel: String = label
+                        var reversed: Boolean) {
 
   def getConnector1: UIConnectorConfig = connector1
 
