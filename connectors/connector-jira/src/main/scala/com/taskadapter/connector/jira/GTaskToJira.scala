@@ -73,8 +73,7 @@ class GTaskToJira(config: JiraConfig, issueTypeList: java.lang.Iterable[IssueTyp
         val timeTracking = new TimeTracking(Math.round(estimatedHours * 60), null, null)
         issueInputBuilder.setFieldValue(IssueFieldId.TIMETRACKING_FIELD.id, timeTracking)
       }
-      case JiraField.environment.name => issueInputBuilder.setFieldValue(fieldName, value)
-      case _ =>
+      case _ => // setCustomField(issueInputBuilder.setFieldValue(fieldName, value))
     }
   }
 

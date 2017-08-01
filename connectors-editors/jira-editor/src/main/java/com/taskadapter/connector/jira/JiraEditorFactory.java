@@ -15,7 +15,6 @@ import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.callbacks.SimpleCallback;
-import com.taskadapter.web.configeditor.CustomFieldsTablePanel;
 import com.taskadapter.web.configeditor.PriorityPanel;
 import com.taskadapter.web.configeditor.ProjectPanel;
 import com.taskadapter.web.configeditor.server.ServerPanelFactory;
@@ -114,7 +113,6 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
         PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(),
                 Interfaces.fromMethod(DataProvider.class, new PrioritiesLoader(setup), "loadJiraPriorities"), this);
         gridLayout.addComponent(priorityPanel);
-        gridLayout.addComponent(createCustomOtherFieldsPanel(config));
         return gridLayout;
     }
 
@@ -126,10 +124,6 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     @Override
     public ConnectorSetupPanel getEditSetupPanel(Sandbox sandbox) {
         return ServerPanelFactory.withLoginAndPassword(JiraConnector.ID(), JiraConnector.ID(), new WebServerInfo());
-    }
-
-    private CustomFieldsTablePanel createCustomOtherFieldsPanel(JiraConfig config) {
-        return new CustomFieldsTablePanel(config.getCustomFields());
     }
 
     @Override

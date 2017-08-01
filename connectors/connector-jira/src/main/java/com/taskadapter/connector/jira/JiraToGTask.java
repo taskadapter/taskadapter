@@ -81,11 +81,6 @@ public class JiraToGTask {
             }
         }
 
-        IssueField environmentField = issue.getField("environment");
-        if (environmentField != null) {
-            task.setValue(JiraField.environment(), environmentField.getValue());
-        }
-
         processRelations(issue, task);
         processParentTask(issue, task);
         return task;
