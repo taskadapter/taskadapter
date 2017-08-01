@@ -5,6 +5,7 @@ import java.util
 import com.atlassian.jira.rest.client.api.domain.input.{ComplexIssueInputFieldValue, FieldInput, IssueInputBuilder}
 import com.atlassian.jira.rest.client.api.domain.{BasicComponent, IssueFieldId, IssueType, Priority, TimeTracking, Version}
 import com.google.common.collect.ImmutableList
+import com.taskadapter.connector.common.ValueTypeResolver
 import com.taskadapter.connector.common.data.ConnectorConverter
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.model.GTask
@@ -86,10 +87,10 @@ class GTaskToJira(config: JiraConfig,
   }
 
   def getConvertedValue(fieldSchema: JiraFieldDefinition, value: Any) : Any = {
-    if (fieldSchema.typeName == "array") {
-      List(value).asJava
-    } else {
-      value
+    fieldSchema.typeName match {
+      case "array" => List(value).asJava
+      case "number" => ValueTypeResolver.getValueAsFloat(value)
+      case _ => value
     }
   }
 
