@@ -1,20 +1,24 @@
 package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
-import com.atlassian.jira.rest.client.api.domain.IssueField;
 import com.atlassian.jira.rest.client.api.domain.IssueLink;
 import com.atlassian.jira.rest.client.api.domain.IssueLinkType;
 import com.atlassian.jira.rest.client.api.domain.TimeTracking;
+import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
+import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.Precedes$;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.collection.JavaConverters;
+import scala.collection.immutable.Seq;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,10 +85,57 @@ public class JiraToGTask {
             }
         }
 
+        processCustomFields(issue, task);
         processRelations(issue, task);
         processParentTask(issue, task);
         return task;
     }
+
+    private void processCustomFields(Issue issue, GTask task) {
+        issue.getFields().forEach(f -> {
+            if (f.getId().startsWith("customfield")) {
+                // custom field
+                Object nativeValue = f.getValue();
+                Object gValue = convertToGenericValue(nativeValue);
+                task.setValue(f.getName(), gValue);
+            }
+        });
+    }
+
+    private Object convertToGenericValue(Object nativeValue) {
+        if (nativeValue == null) {
+            return null;
+        }
+        if (nativeValue instanceof JSONArray) {
+            Seq<String> strings = parseJsonArray((JSONArray) nativeValue, new StringFieldValueParser());
+            return strings;
+        }
+        return nativeValue.toString();
+    }
+
+    private Seq<String> parseJsonArray(JSONArray nativeValue, StringFieldValueParser stringFieldValueParser) {
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i < nativeValue.length(); i++) {
+            String string;
+            try {
+                string = nativeValue.getString(0);
+            } catch (JSONException e) {
+                string = "";
+            }
+            result.add(string);
+        }
+        return JavaConverters.asScalaBuffer(result).toList().toSeq();
+    }
+
+    static class StringFieldValueParser implements JsonObjectParser<String> {
+        private static final String VALUE_ATTRIBUTE = "value";
+
+        @Override
+        public String parse(JSONObject jsonObject) throws JSONException {
+            return JsonParseUtil.getNullableString(jsonObject, VALUE_ATTRIBUTE);
+        }
+    }
+
 
     private static void processParentTask(Issue issue, GTask task) {
         if (issue.getIssueType().isSubtask()) {

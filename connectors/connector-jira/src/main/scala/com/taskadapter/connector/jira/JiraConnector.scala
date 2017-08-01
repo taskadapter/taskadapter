@@ -13,6 +13,7 @@ import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.{GTask, NamedKeyedObject, NamedKeyedObjectImpl}
 import org.slf4j.LoggerFactory
 
+import scala.collection.JavaConverters._
 
 object JiraConnector {
   private val logger = LoggerFactory.getLogger(classOf[JiraConnector])
@@ -105,7 +106,7 @@ class JiraConnector(config: JiraConfig, setup: WebConnectorSetup) extends NewCon
   override def loadData: util.List[GTask] = withJiraRestClient((client: JiraRestClient) => {
     def foo(client: JiraRestClient) = {
       val loader = new JiraTaskLoader(client, config.getPriorities)
-      loader.loadTasks(config)
+      loader.loadTasks(config).asJava
     }
 
     foo(client)

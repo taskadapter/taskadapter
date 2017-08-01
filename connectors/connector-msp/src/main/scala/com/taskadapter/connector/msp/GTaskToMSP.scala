@@ -63,17 +63,17 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
 //    processStartDate(gTask)
 //    processDueDate(gTask)
 //    processClosedDate(gTask)
-    //    setFieldIfSelected(ENVIRONMENT, mspTask, gTask.getEnvironment)
     //    setFieldIfSelected(TARGET_VERSION, mspTask, gTask.getTargetVersionName)
   }
 
   private def processField(fieldName: String, value: Any) = {
+    val stringBasedValue = CustomFieldConverter.getValueAsString(value)
     fieldName match {
-      case MspField.summary.name => mspTask.setName(value.asInstanceOf[String])
-      case MspField.description.name => mspTask.setNotes(value.asInstanceOf[String])
-      case MspField.status.name => setFieldByName(fieldName, value)
-      case MspField.taskType.name => setFieldByName(fieldName, value)
-      case MspField.assignee.name => processAssignee(fieldName,  value)
+      case MspField.summary.name => mspTask.setName(stringBasedValue)
+      case MspField.description.name => mspTask.setNotes(stringBasedValue)
+      case MspField.status.name => setFieldByName(fieldName, stringBasedValue)
+      case MspField.taskType.name => setFieldByName(fieldName, stringBasedValue)
+      case MspField.assignee.name => processAssignee(fieldName,  stringBasedValue)
       case _ => // unknown, ignore for now
     }
   }
