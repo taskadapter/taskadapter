@@ -74,6 +74,7 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     descriptionLayout.addComponent(new Label(LABEL_DESCRIPTION_TEXT))
     val labelText = propertyInput(config, "label")
     labelText.setDescription(LABEL_TOOLTIP)
+    labelText.setReadOnly(true)
     labelText.addStyleName("label-textfield")
     descriptionLayout.addComponent(labelText)
     descriptionLayout

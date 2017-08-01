@@ -23,10 +23,9 @@ object JiraField {
   val assignee = Field("Assignee")
   val dueDate = Field.date("Due Date")
   val priority = Field.integer("Priority")
-  val environment = Field("Environment") // should not be selected by default
   val id = Field("Id")
 
-  val fields = List(id, summary, description, taskType, estimatedTime, assignee, dueDate, priority, environment)
+  val fields = List(id, summary, description, taskType, estimatedTime, assignee, dueDate, priority)
 
   def fieldsAsJava(): util.List[Field] = fields.asJava
 

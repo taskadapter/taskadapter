@@ -3,12 +3,14 @@ package com.taskadapter.connector.jira
 import java.util
 
 import com.atlassian.jira.rest.client.api.domain.input.{ComplexIssueInputFieldValue, FieldInput, IssueInputBuilder}
-import com.atlassian.jira.rest.client.api.domain.{BasicComponent, BasicPriority, IssueFieldId, IssueType, Priority, TimeTracking, Version}
+import com.atlassian.jira.rest.client.api.domain.{BasicComponent, CustomFieldOption, IssueFieldId, IssueType, Priority, TimeTracking, Version}
 import com.google.common.collect.ImmutableList
+import com.taskadapter.connector.common.ValueTypeResolver
 import com.taskadapter.connector.common.data.ConnectorConverter
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.model.GTask
 import org.joda.time.DateTime
+
 import scala.collection.JavaConverters._
 
 object GTaskToJira {
@@ -21,7 +23,9 @@ object GTaskToJira {
   }
 }
 
-class GTaskToJira(config: JiraConfig, issueTypeList: java.lang.Iterable[IssueType],
+class GTaskToJira(config: JiraConfig,
+                  customFieldResolver: CustomFieldResolver,
+                  issueTypeList: java.lang.Iterable[IssueType],
                   versions: java.lang.Iterable[Version],
                   components: java.lang.Iterable[BasicComponent],
                   jiraPriorities: java.lang.Iterable[Priority])
@@ -73,8 +77,25 @@ class GTaskToJira(config: JiraConfig, issueTypeList: java.lang.Iterable[IssueTyp
         val timeTracking = new TimeTracking(Math.round(estimatedHours * 60), null, null)
         issueInputBuilder.setFieldValue(IssueFieldId.TIMETRACKING_FIELD.id, timeTracking)
       }
-      case JiraField.environment.name => issueInputBuilder.setFieldValue(fieldName, value)
       case _ =>
+        val fieldSchema = customFieldResolver.getId(fieldName)
+        if (fieldSchema.isDefined) {
+          val fullIdForSave = fieldSchema.get.fullIdForSave
+          val valueWithProperJiraType = getConvertedValue(fieldSchema.get, value)
+          issueInputBuilder.setFieldValue(fullIdForSave, valueWithProperJiraType)
+        }
+    }
+  }
+
+  def getConvertedValue(fieldSchema: JiraFieldDefinition, value: Any) : Any = {
+    fieldSchema.typeName match {
+      case "array" if fieldSchema.itemsTypeIfArray.get == "string" => List(value).asJava
+      case "array" if fieldSchema.itemsTypeIfArray.get == "option" =>
+        List(
+          new CustomFieldOption(fieldSchema.id, null, value.toString, Seq().toIterable.asJava, null)
+        ).asJava
+      case "number" => ValueTypeResolver.getValueAsFloat(value)
+      case _ => value
     }
   }
 

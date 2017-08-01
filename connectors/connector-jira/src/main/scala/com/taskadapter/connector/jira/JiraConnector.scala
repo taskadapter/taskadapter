@@ -13,6 +13,7 @@ import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.{GTask, NamedKeyedObject, NamedKeyedObjectImpl}
 import org.slf4j.LoggerFactory
 
+import scala.collection.JavaConverters._
 
 object JiraConnector {
   private val logger = LoggerFactory.getLogger(classOf[JiraConnector])
@@ -105,7 +106,7 @@ class JiraConnector(config: JiraConfig, setup: WebConnectorSetup) extends NewCon
   override def loadData: util.List[GTask] = withJiraRestClient((client: JiraRestClient) => {
     def foo(client: JiraRestClient) = {
       val loader = new JiraTaskLoader(client, config.getPriorities)
-      loader.loadTasks(config)
+      loader.loadTasks(config).asJava
     }
 
     foo(client)
@@ -123,7 +124,11 @@ class JiraConnector(config: JiraConfig, setup: WebConnectorSetup) extends NewCon
       /* Need to load Jira server priorities because what we store in the config files is a
                    * priority name (string), while Jira returns the number value of the issue priority */ val prioritiesPromise = client.getMetadataClient.getPriorities
       val priorities = prioritiesPromise.claim
-      val converter = new GTaskToJira(config, issueTypeList, versions, components, priorities)
+
+      val fields = client.getMetadataClient.getFields
+      val fieldIterable = fields.claim.asScala
+      val resolver = new CustomFieldResolver(fieldIterable)
+      val converter = new GTaskToJira(config, resolver, issueTypeList, versions, components, priorities)
       val saver = new JiraTaskSaver(client)
       val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows,
         setup.host)
