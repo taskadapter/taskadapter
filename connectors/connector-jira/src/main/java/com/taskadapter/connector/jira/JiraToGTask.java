@@ -96,35 +96,48 @@ public class JiraToGTask {
             if (f.getId().startsWith("customfield")) {
                 // custom field
                 Object nativeValue = f.getValue();
-                Object gValue = convertToGenericValue(nativeValue);
+                Object gValue = null;
+                try {
+                    gValue = convertToGenericValue(nativeValue);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 task.setValue(f.getName(), gValue);
             }
         });
     }
 
-    private Object convertToGenericValue(Object nativeValue) {
+    private Object convertToGenericValue(Object nativeValue) throws JSONException {
         if (nativeValue == null) {
             return null;
         }
         if (nativeValue instanceof JSONArray) {
-            Seq<String> strings = parseJsonArray((JSONArray) nativeValue, new StringFieldValueParser());
+            Seq<Object> strings = parseJsonArray((JSONArray) nativeValue);
             return strings;
+        }
+        if (nativeValue instanceof JSONObject) {
+            return parseJsonObject((JSONObject) nativeValue);
         }
         return nativeValue.toString();
     }
 
-    private Seq<String> parseJsonArray(JSONArray nativeValue, StringFieldValueParser stringFieldValueParser) {
-        List<String> result = new ArrayList<>();
-        for (int i = 0; i < nativeValue.length(); i++) {
-            String string;
-            try {
-                string = nativeValue.getString(0);
-            } catch (JSONException e) {
-                string = "";
-            }
-            result.add(string);
+    private Seq<Object> parseJsonArray(JSONArray array) throws JSONException {
+        List<Object> result = new ArrayList<>();
+        for (int i = 0; i < array.length(); i++) {
+            Object o = array.get(i);
+            result.add(convertToGenericValue(o));
         }
         return JavaConverters.asScalaBuffer(result).toList().toSeq();
+    }
+
+    private String parseJsonObject(JSONObject jsonObject) {
+        String value;
+        try {
+            value = jsonObject.getString("value");
+        } catch (JSONException e) {
+            value = "";
+        }
+        return value;
     }
 
     static class StringFieldValueParser implements JsonObjectParser<String> {

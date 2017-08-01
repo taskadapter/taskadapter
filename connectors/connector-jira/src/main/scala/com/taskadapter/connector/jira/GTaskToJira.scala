@@ -3,13 +3,14 @@ package com.taskadapter.connector.jira
 import java.util
 
 import com.atlassian.jira.rest.client.api.domain.input.{ComplexIssueInputFieldValue, FieldInput, IssueInputBuilder}
-import com.atlassian.jira.rest.client.api.domain.{BasicComponent, IssueFieldId, IssueType, Priority, TimeTracking, Version}
+import com.atlassian.jira.rest.client.api.domain.{BasicComponent, CustomFieldOption, IssueFieldId, IssueType, Priority, TimeTracking, Version}
 import com.google.common.collect.ImmutableList
 import com.taskadapter.connector.common.ValueTypeResolver
 import com.taskadapter.connector.common.data.ConnectorConverter
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.model.GTask
 import org.joda.time.DateTime
+
 import scala.collection.JavaConverters._
 
 object GTaskToJira {
@@ -88,7 +89,11 @@ class GTaskToJira(config: JiraConfig,
 
   def getConvertedValue(fieldSchema: JiraFieldDefinition, value: Any) : Any = {
     fieldSchema.typeName match {
-      case "array" => List(value).asJava
+      case "array" if fieldSchema.itemsTypeIfArray.get == "string" => List(value).asJava
+      case "array" if fieldSchema.itemsTypeIfArray.get == "option" =>
+        List(
+          new CustomFieldOption(fieldSchema.id, null, value.toString, Seq().toIterable.asJava, null)
+        ).asJava
       case "number" => ValueTypeResolver.getValueAsFloat(value)
       case _ => value
     }
