@@ -3,7 +3,7 @@ package com.taskadapter.connector.jira
 import java.util
 
 import com.atlassian.jira.rest.client.api.domain.input.{ComplexIssueInputFieldValue, FieldInput, IssueInputBuilder}
-import com.atlassian.jira.rest.client.api.domain.{BasicComponent, BasicPriority, IssueFieldId, IssueType, Priority, TimeTracking, Version}
+import com.atlassian.jira.rest.client.api.domain.{BasicComponent, IssueFieldId, IssueType, Priority, TimeTracking, Version}
 import com.google.common.collect.ImmutableList
 import com.taskadapter.connector.common.data.ConnectorConverter
 import com.taskadapter.connector.definition.exceptions.ConnectorException
@@ -21,7 +21,9 @@ object GTaskToJira {
   }
 }
 
-class GTaskToJira(config: JiraConfig, issueTypeList: java.lang.Iterable[IssueType],
+class GTaskToJira(config: JiraConfig,
+                  customFieldResolver: CustomFieldResolver,
+                  issueTypeList: java.lang.Iterable[IssueType],
                   versions: java.lang.Iterable[Version],
                   components: java.lang.Iterable[BasicComponent],
                   jiraPriorities: java.lang.Iterable[Priority])
@@ -73,7 +75,21 @@ class GTaskToJira(config: JiraConfig, issueTypeList: java.lang.Iterable[IssueTyp
         val timeTracking = new TimeTracking(Math.round(estimatedHours * 60), null, null)
         issueInputBuilder.setFieldValue(IssueFieldId.TIMETRACKING_FIELD.id, timeTracking)
       }
-      case _ => // setCustomField(issueInputBuilder.setFieldValue(fieldName, value))
+      case _ =>
+        val fieldSchema = customFieldResolver.getId(fieldName)
+        if (fieldSchema.isDefined) {
+          val fullIdForSave = fieldSchema.get.fullIdForSave
+          val valueWithProperJiraType = getConvertedValue(fieldSchema.get, value)
+          issueInputBuilder.setFieldValue(fullIdForSave, valueWithProperJiraType)
+        }
+    }
+  }
+
+  def getConvertedValue(fieldSchema: JiraFieldDefinition, value: Any) : Any = {
+    if (fieldSchema.typeName == "array") {
+      List(value).asJava
+    } else {
+      value
     }
   }
 

@@ -19,8 +19,6 @@ class JiraTaskLoader(val client: JiraRestClient, val priorities: Priorities) {
         JqlBuilder.findIssuesByProject(config.getProjectKey)
       }
       val issues = JiraClientHelper.findIssues(client, jql)
-      val fields = client.getMetadataClient.getFields
-      val fieldIterable = fields.claim.asScala
       val rows = jiraToGTask.convertToGenericTaskList(issues)
       //      val userConverter = new JiraUserConverter(client)
       //            rows = userConverter.convertAssignees(rows);

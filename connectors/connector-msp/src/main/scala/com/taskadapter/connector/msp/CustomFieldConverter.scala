@@ -7,7 +7,13 @@ package com.taskadapter.connector.msp
   */
 object CustomFieldConverter {
 
+  /**
+    * @return empty string if given value is null, otherwise converted value
+    */
   def getValueAsString(value: Any): String = {
+    if (value == null) {
+      return ""
+    }
     if (value.isInstanceOf[Seq[String]]) {
       val seq = value.asInstanceOf[Seq[String]]
       seq.mkString(" ")
