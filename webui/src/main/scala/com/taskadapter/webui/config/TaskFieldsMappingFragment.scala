@@ -222,6 +222,7 @@ class TaskFieldsMappingFragment(messages: Messages, connector1: UIConnectorConfi
     container.addAll(fieldNames.asJava)
     val combo = new ComboBox(null, container)
     combo.setPropertyDataSource(mappedTo)
+    combo.setNewItemsAllowed(true)
     combo.setWidth(160, PIXELS)
     gridLayout.addComponent(combo)
     gridLayout.setComponentAlignment(combo, Alignment.MIDDLE_LEFT)
