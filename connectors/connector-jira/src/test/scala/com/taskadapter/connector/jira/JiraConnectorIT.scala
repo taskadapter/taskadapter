@@ -2,7 +2,7 @@ package com.taskadapter.connector.jira
 
 import java.util
 
-import com.taskadapter.connector.FieldRow
+import com.taskadapter.connector.{Field, FieldRow}
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.connector.testlib.{CommonTestChecks, TestUtils}
@@ -77,6 +77,25 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     val loadedTask = connector.loadTaskByKey(taskId, rows.asJava)
     assertThat(loadedTask.getValue(JiraField.description)).isEqualTo("some default")
     TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
+  }
+
+  /*
+    * This test requires a pre-created custom field in your JIRA.
+    *
+    * - name: custom_checkbox_1
+    * - type: checkbox multi-select
+    * - allowed values: "option1", "option2"
+    */
+  it("task is created with multi-value custom field of type option (checkboxes)") {
+    val task = JiraGTaskBuilder.withSummary()
+    task.setValue("custom_checkbox_1", List("option1", "option2"))
+    val rows = JiraFieldBuilder.getDefault() ++ List(
+      FieldRow(new Field("", "custom_checkbox_1"), new Field("", "custom_checkbox_1"), "")
+    )
+
+    CommonTestChecks.createsTasks(getConnector, rows.asJava,
+      List(task).asJava,
+      id => TestJiraClientHelper.deleteTasks(client, id))
   }
 
   private def getConnector = new JiraConnector(JiraPropertiesLoader.createTestConfig, JiraPropertiesLoader.getTestServerInfo)

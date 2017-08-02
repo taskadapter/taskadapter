@@ -90,12 +90,20 @@ class GTaskToJira(config: JiraConfig,
   def getConvertedValue(fieldSchema: JiraFieldDefinition, value: Any) : Any = {
     fieldSchema.typeName match {
       case "array" if fieldSchema.itemsTypeIfArray.get == "string" => List(value).asJava
-      case "array" if fieldSchema.itemsTypeIfArray.get == "option" =>
-        List(
-          new CustomFieldOption(fieldSchema.id, null, value.toString, Seq().toIterable.asJava, null)
-        ).asJava
+      case "array" if fieldSchema.itemsTypeIfArray.get == "option" => getComplexValueList(value)
       case "number" => ValueTypeResolver.getValueAsFloat(value)
       case _ => value
+    }
+  }
+
+  def getComplexValueList(value: Any) : util.List[ComplexIssueInputFieldValue] = {
+    if (value.isInstanceOf[Seq[String]]) {
+      val seq = value.asInstanceOf[Seq[String]]
+      seq.map(ComplexIssueInputFieldValue.`with`("value", _)
+      )
+      .toList.asJava
+    } else {
+      throw new RuntimeException(s"unknown value type: $value")
     }
   }
 

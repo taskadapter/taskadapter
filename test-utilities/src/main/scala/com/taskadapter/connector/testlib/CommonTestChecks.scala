@@ -9,10 +9,13 @@ import com.taskadapter.core.{PreviouslyCreatedTasksCache, PreviouslyCreatedTasks
 import com.taskadapter.model.{GTask, StandardField}
 import org.junit.Assert.{assertEquals, assertFalse}
 import org.scalatest.Matchers
+import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
 
 object CommonTestChecks extends Matchers {
+  private val logger = LoggerFactory.getLogger(CommonTestChecks.getClass)
+
   def skipCleanup(id: TaskId): Unit = {}
 
   def taskIsCreatedAndLoaded(connector: NewConnector, task: GTask, rows: Seq[FieldRow], fieldNameToSearch: Field,
@@ -42,6 +45,7 @@ object CommonTestChecks extends Matchers {
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows)
     assertFalse(result.hasErrors)
     assertEquals(tasks.size, result.getCreatedTasksNumber)
+    logger.debug(s"created $result")
     result.getRemoteKeys.foreach(cleanup(_))
   }
 
