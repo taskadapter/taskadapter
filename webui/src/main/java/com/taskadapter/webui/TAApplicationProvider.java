@@ -71,8 +71,8 @@ final class TAApplicationProvider extends UIProvider {
 
         SessionController.manageSession(services, credentialsManager,
                 new WebUserSession(ui, new GATrackerImpl(gaTracker)));
-        String action = services.licenseManager.isSomeValidLicenseInstalled() ? "application_started_licensed" :
-                "application_started_trial";
+        String action = services.licenseManager.isSomeValidLicenseInstalled() ? "web_app_opened_licensed" :
+                "web_app_opened_trial";
         gaTracker.trackEvent("general", action, services.currentTaskAdapterVersion);
         return ui;
     }
