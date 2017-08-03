@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.google.common.base.Strings;
 import com.taskadapter.connector.definition.SaveResult;
+import com.taskadapter.webui.Tracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +45,7 @@ public final class ExportPage {
      * Config operations.
      */
     private final ConfigOperations configOps;
+    private Tracker tracker;
 
     /**
      * Sync config.
@@ -65,17 +67,18 @@ public final class ExportPage {
      */
     private final boolean showFilePath;
 
-    private final VerticalLayout ui;
+    public final VerticalLayout ui;
     private final Label errorMessage;
     private final VerticalLayout content;
 
-    private ExportPage(ConfigOperations configOps, UISyncConfig config,
-                       int taskLimit, boolean showFilePath, Runnable onDone) {
+    public ExportPage(ConfigOperations configOps, UISyncConfig config,
+                       int taskLimit, boolean showFilePath, Runnable onDone, Tracker tracker) {
         this.config = config;
         this.onDone = onDone;
         this.taskLimit = taskLimit;
         this.showFilePath = showFilePath;
         this.configOps = configOps;
+        this.tracker = tracker;
 
         ui = new VerticalLayout();
         errorMessage = new Label("");
@@ -107,6 +110,8 @@ public final class ExportPage {
                             + " " + config.getConnector1().getSourceLocation());
                     final List<GTask> tasks = UISyncConfig.loadTasks(config, taskLimit);
                     log.info("Loaded " + tasks.size() + " tasks");
+                    String labelForTracking = config.connector1().getConnectorTypeId() + " - " + config.getConnector2().getConnectorTypeId();
+                    tracker.trackEvent("export", "loaded_tasks", labelForTracking);
                     if (tasks.isEmpty())
                         showNoDataLoaded();
                     else
@@ -248,6 +253,8 @@ public final class ExportPage {
             }
         });
         ui.addComponent(button);
+        String labelForTracking = config.connector1().getConnectorTypeId() + " - " + config.getConnector2().getConnectorTypeId();
+        tracker.trackEvent("export", "finished_saving", labelForTracking);
 
         VaadinSession.getCurrent().lock();
         try {
@@ -325,12 +332,5 @@ public final class ExportPage {
     private void setContent(Component comp) {
         content.removeAllComponents();
         content.addComponent(comp);
-    }
-
-    public static Component render(ConfigOperations configOps,
-                                   UISyncConfig config,
-                                   int taskLimit, boolean showFilePath,
-                                   Runnable onDone) {
-        return new ExportPage(configOps, config, taskLimit, showFilePath, onDone).ui;
     }
 }

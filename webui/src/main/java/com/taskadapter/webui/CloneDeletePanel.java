@@ -4,7 +4,6 @@ import com.taskadapter.config.StorageException;
 import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import org.slf4j.Logger;
@@ -26,14 +25,26 @@ public final class CloneDeletePanel {
     private final UISyncConfig config;
     private final ConfigOperations configOps;
     private final Runnable onExit;
+    private Tracker tracker;
 
-    private final HorizontalLayout layout;
-
-    private CloneDeletePanel(UISyncConfig config, ConfigOperations configOps,
-            Runnable onExit) {
+    public final HorizontalLayout layout;
+    /**
+     * Renders a clone/delete panel.
+     *
+     * @param config
+     *            current config.
+     * @param configOps
+     *            config operations.
+     * @param onExit
+     *            exit request handler.
+     * @return clone/delete UI.
+     */
+    public CloneDeletePanel(UISyncConfig config, ConfigOperations configOps,
+            Runnable onExit, Tracker tracker) {
         this.config = config;
         this.configOps = configOps;
         this.onExit = onExit;
+        this.tracker = tracker;
 
         this.layout = new HorizontalLayout();
 
@@ -44,16 +55,17 @@ public final class CloneDeletePanel {
 
         final Button deleteButton = new Button("Delete");
         deleteButton.setDescription("Delete this config from Task Adapter");
-        deleteButton.addClickListener((Button.ClickListener) clickEvent -> showDeleteFilePage());
+        deleteButton.addClickListener((Button.ClickListener) clickEvent -> showDeleteConfigDialog());
         layout.addComponent(deleteButton);
     }
 
-    private void showDeleteFilePage() {
+    private void showDeleteConfigDialog() {
         final MessageDialog messageDialog = new MessageDialog("Confirmation",
                 "Delete this config?", Arrays.asList(YES, CANCEL),
                 answer -> {
                     if (YES.equals(answer)) {
                         configOps.deleteConfig(config);
+                        tracker.trackEvent("config", "deleted", "");
                         onExit.run();
                     }
                 });
@@ -80,21 +92,5 @@ public final class CloneDeletePanel {
                 });
         messageDialog.setWidth("175px");
         layout.getUI().addWindow(messageDialog);
-    }
-
-    /**
-     * Renders a clone/delete panel.
-     * 
-     * @param config
-     *            current config.
-     * @param configOps
-     *            config operations.
-     * @param onExit
-     *            exit request handler.
-     * @return clone/delete UI.
-     */
-    public static Component render(UISyncConfig config,
-            ConfigOperations configOps, Runnable onExit) {
-        return new CloneDeletePanel(config, configOps, onExit).layout;
     }
 }

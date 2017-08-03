@@ -13,7 +13,8 @@ apply plugin: 'war'
 apply plugin: "com.devsoap.plugin.vaadin"
 
 dependencies {
-    compile 'org.vaadin.addons:googleanalyticstracker:2.0.0'
+    // this library is uploaded to our own Nexus repo because its Maven Central version is broken.
+    compile 'com.taskadapter:googleanalyticstracker:2.2.0'
 
     // this Jar is actually added to the WAR file by the Vaadin Gradle plugin.
     // It is referenced here as a "runtime" dependency because otherwise IDEA does not copy

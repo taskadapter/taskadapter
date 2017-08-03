@@ -41,7 +41,7 @@ public final class ConfigureSystemPage {
 
     public static Component render(CredentialsManager credentialsManager,
             SettingsManager settings, License license,
-            AuthorizedOperations authorizedOps) {
+            AuthorizedOperations authorizedOps, Tracker tracker) {
         final VerticalLayout layout = new VerticalLayout();
 
         layout.setSpacing(true);
@@ -54,7 +54,7 @@ public final class ConfigureSystemPage {
                 authorizedOps.canConfigureServer()));
 
         layout.addComponent(UsersPanel.render(credentialsManager,
-                authorizedOps, license));
+                authorizedOps, license, tracker));
 
         return layout;
 

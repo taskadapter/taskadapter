@@ -4,7 +4,7 @@ import com.taskadapter.config.StorageException
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.UISyncConfig
-import com.taskadapter.webui.{CloneDeletePanel, ConfigOperations, Page}
+import com.taskadapter.webui.{CloneDeletePanel, ConfigOperations, Page, Tracker}
 import com.taskadapter.webui.data.ExceptionFormatter
 import com.vaadin.data.util.MethodProperty
 import com.vaadin.server.Sizeable.Unit.PERCENTAGE
@@ -57,27 +57,20 @@ object EditConfigPage {
     descriptionLayout.addComponent(descriptionField)
     descriptionLayout
   }
-
-  /**
-    * Renders a new config editor.
-    *
-    * @param config
-    * config to edit.
-    * @param operations
-    * config operations.
-    * @param error
-    * optional welcome error. May be null.
-    * @param callback
-    * callback to invoke when user attempts to leave this page.
-    * @return edit page UI.
-    */
-  def render(config: UISyncConfig, operations: ConfigOperations, allowFullFSAccess: Boolean, error: String,
-             callback: EditConfigPage.Callback): Component =
-    new EditConfigPage(config, operations, allowFullFSAccess, error, callback).layout
 }
 
-class EditConfigPage private(val config: UISyncConfig, val configOps: ConfigOperations, val allowFullFSAccess: Boolean,
-                             val error: String, val callback: EditConfigPage.Callback) {
+
+/**
+  * Renders a new config editor.
+  *
+  * @param config config to edit.
+  * @param configOps config operations.
+  * @param error optional welcome error. May be null.
+  * @param callback callback to invoke when user attempts to leave this page.
+  * @return edit page UI.
+  */
+class EditConfigPage(config: UISyncConfig, configOps: ConfigOperations, allowFullFSAccess: Boolean,
+                             error: String, callback: EditConfigPage.Callback, tracker: Tracker) {
   private val logger = LoggerFactory.getLogger(classOf[EditConfigPage])
 
   var layout = new VerticalLayout
@@ -86,7 +79,7 @@ class EditConfigPage private(val config: UISyncConfig, val configOps: ConfigOper
   layout.addComponent(ConfigsListLinkComponent.render(_ => callback.back()))
   val buttonsLayout = new HorizontalLayout
   buttonsLayout.setWidth(100, PERCENTAGE)
-  val cloneDeletePanel: Component = CloneDeletePanel.render(config, configOps, () => callback.back)
+  val cloneDeletePanel= new CloneDeletePanel(config, configOps, () => callback.back, tracker).layout
 
   buttonsLayout.addComponent(cloneDeletePanel)
   buttonsLayout.setComponentAlignment(cloneDeletePanel, Alignment.MIDDLE_RIGHT)
@@ -174,6 +167,7 @@ class EditConfigPage private(val config: UISyncConfig, val configOps: ConfigOper
       val newFieldMappings = editor.getElements.toSeq
       val newConfig = config.copy(fieldMappings = newFieldMappings)
       configOps.saveConfig(newConfig)
+      tracker.trackEvent("config", "saved", "")
     } catch {
       case e: StorageException =>
         val message = Page.message("editConfig.error.cantSave", e.getMessage)

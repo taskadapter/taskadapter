@@ -1,6 +1,7 @@
 package com.taskadapter.webui.pages;
 
 import com.taskadapter.webui.LastVersionLoader;
+import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.VersionComparator;
 import com.taskadapter.webui.license.LicenseFacade;
 import com.taskadapter.webui.license.LicensePanel;
@@ -20,13 +21,16 @@ public final class SupportPage {
 
     private final String currentTaskAdapterVersion;
     private final LicenseFacade licenseManager;
+    private Tracker tracker;
     private final VerticalLayout layout = new VerticalLayout();
     private final VerticalLayout lastVersionInfoLayout = new VerticalLayout();
 
     private SupportPage(String currentTaskAdapterVersion,
-            LicenseFacade licenseManager) {
+                        LicenseFacade licenseManager,
+                        Tracker tracker) {
         this.currentTaskAdapterVersion = currentTaskAdapterVersion;
         this.licenseManager = licenseManager;
+        this.tracker = tracker;
         buildUI();
     }
 
@@ -73,7 +77,7 @@ public final class SupportPage {
     }
 
     private void createLicenseSection() {
-        layout.addComponent(LicensePanel.renderLicensePanel(licenseManager));
+        layout.addComponent(LicensePanel.renderLicensePanel(licenseManager, tracker));
     }
 
     private void addDownloadLink() {
@@ -95,7 +99,7 @@ public final class SupportPage {
         layout.addComponent(panel);
     }
 
-    public static Component render(String taVersion, LicenseFacade license) {
-        return new SupportPage(taVersion, license).layout;
+    public static Component render(String taVersion, LicenseFacade license, Tracker tracker) {
+        return new SupportPage(taVersion, license, tracker).layout;
     }
 }

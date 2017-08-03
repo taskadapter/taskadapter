@@ -9,6 +9,7 @@ import com.taskadapter.data.States;
 import com.taskadapter.license.License;
 import com.taskadapter.web.InputDialog;
 import com.taskadapter.web.MessageDialog;
+import com.taskadapter.webui.Tracker;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
@@ -42,19 +43,20 @@ public class UsersPanel {
     private final CredentialsManager credentialsManager;
     private final AuthorizedOperations authorizedOperations;
     private final License license;
+    private Tracker tracker;
     private final MutableState<Integer> numUsers;
 
     /**
      * Creates a new users panel.
-     *
-     * @param credentialsManager   credentials manager.
+     *  @param credentialsManager   credentials manager.
      * @param authorizedOperations operations authorized for current user.
      * @param license              current license.
      */
-    private UsersPanel(CredentialsManager credentialsManager, AuthorizedOperations authorizedOperations, License license) {
+    private UsersPanel(CredentialsManager credentialsManager, AuthorizedOperations authorizedOperations, License license, Tracker tracker) {
         this.credentialsManager = credentialsManager;
         this.authorizedOperations = authorizedOperations;
         this.license = license;
+        this.tracker = tracker;
 
         ui = new Panel(message("users.title"));
 
@@ -171,6 +173,7 @@ public class UsersPanel {
     private void deleteUser(String userLoginName) {
         try {
             credentialsManager.removeUser(userLoginName);
+            tracker.trackEvent("user", "deleted", "");
         } catch (AuthException e) {
             errorLabel.setValue(message("users.error.cantDeleteUser", e.toString()));
         }
@@ -196,6 +199,7 @@ public class UsersPanel {
     private void createUser(String login, String password) {
         try {
             credentialsManager.savePrimaryAuthToken(login, password);
+            tracker.trackEvent("user", "created", "");
         } catch (AuthException e) {
             LOGGER.error("User initiation error", e);
             throw new RuntimeException(e);
@@ -225,7 +229,8 @@ public class UsersPanel {
      * @return users panel UI.
      */
     public static Component render(CredentialsManager credentialsManager,
-                                   AuthorizedOperations supportedOperationsForCurrentUser, License license) {
-        return new UsersPanel(credentialsManager, supportedOperationsForCurrentUser, license).ui;
+                                   AuthorizedOperations supportedOperationsForCurrentUser, License license,
+                                   Tracker tracker) {
+        return new UsersPanel(credentialsManager, supportedOperationsForCurrentUser, license, tracker).ui;
     }
 }

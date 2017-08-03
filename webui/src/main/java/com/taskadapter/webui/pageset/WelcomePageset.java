@@ -94,7 +94,7 @@ public final class WelcomePageset {
      */
     private void showSupport() {
         tracker.trackPage("support");
-        applyUI(SupportPage.render(services.currentTaskAdapterVersion, license));
+        applyUI(SupportPage.render(services.currentTaskAdapterVersion, license, tracker));
     }
 
     /**

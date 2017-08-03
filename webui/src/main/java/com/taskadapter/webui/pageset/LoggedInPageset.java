@@ -179,7 +179,7 @@ public class LoggedInPageset {
      */
     private void showSupport() {
         tracker.trackPage("support");
-        applyUI(SupportPage.render(services.currentTaskAdapterVersion, license));
+        applyUI(SupportPage.render(services.currentTaskAdapterVersion, license, tracker));
     }
 
     /**
@@ -276,7 +276,7 @@ public class LoggedInPageset {
         tracker.trackPage("system_configuration");
         applyUI(ConfigureSystemPage.render(credentialsManager,
                 services.settingsManager, services.licenseManager.getLicense(),
-                context.authorizedOps));
+                context.authorizedOps, tracker));
     }
 
     /**
@@ -289,7 +289,7 @@ public class LoggedInPageset {
     }
 
     private Component getConfigEditor(UISyncConfig config, String error) {
-        return EditConfigPage.render(config, context.configOps,
+        return new EditConfigPage(config, context.configOps,
                 services.settingsManager.isTAWorkingOnLocalMachine(), error,
                 new EditConfigPage.Callback() {
                     @Override
@@ -307,7 +307,7 @@ public class LoggedInPageset {
                         clearCurrentConfigInSession();
                         showHome();
                     }
-                });
+                }, tracker).layout();
     }
 
     private void clearCurrentConfigInSession() {
@@ -416,9 +416,9 @@ public class LoggedInPageset {
                 .isSomeValidLicenseInstalled() ? MAX_TASKS_TO_LOAD
                 : LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
         log.info("License installed? " + services.licenseManager.isSomeValidLicenseInstalled());
-        applyUI(ExportPage.render(context.configOps, config, maxTasks,
+        applyUI(new ExportPage(context.configOps, config, maxTasks,
                 services.settingsManager.isTAWorkingOnLocalMachine(),
-                this::showHome));
+                this::showHome, tracker).ui);
     }
 
     // TODO TA3 file based connector - MSP
