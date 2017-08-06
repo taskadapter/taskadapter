@@ -58,8 +58,8 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val config2 = uiConfigService.createRichConfig(conn2Config.connectorTypeId, conn2Config.serializedConfig)
     val jsonString = storedConfig.getMappingsString
 
-    val connector1Setup = loadSetup(ownerName, config1.getLabel)
-    val connector2Setup = loadSetup(ownerName, config2.getLabel)
+    val connector1Setup = loadSetup(ownerName, conn1Config.connectorSavedSetupId)
+    val connector2Setup = loadSetup(ownerName, conn2Config.connectorSavedSetupId)
 
     config1.setConnectorSetup(connector1Setup)
     config2.setConnectorSetup(connector2Setup)
