@@ -83,7 +83,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     */
   @throws[StorageException]
   def createNewConfig(userName: String, label: String, connector1Id: String, connector1Label: String,
-                      connector2Id: String, connector2Label: String): UISyncConfig = {
+                      connector2Id: String, connector2Label: String): ConfigId = {
     val config1 = uiConfigService.createDefaultConfig(connector1Id)
     config1.setLabel(connector1Label)
 
@@ -99,7 +99,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
       config2.getConnectorTypeId, config2.getLabel, config2.getConfigString,
       mappingsString)
 
-    new UISyncConfig(configStorage.rootDir, configId.id, userName, label, config1, config2, newMappings, false)
+    configId
   }
 
   def saveSetup(userName: String, setup: ConnectorSetup, label: String): Unit = {

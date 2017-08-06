@@ -260,7 +260,9 @@ public class LoggedInPageset {
     public void createNewConfig() {
         tracker.trackPage("create_config");
         applyUI(new NewConfigPage(services.editorManager, services.pluginManager, context.configOps, createSandbox(),
-                config -> {
+                configId -> {
+                    Option<UISyncConfig> maybeCconfig = context.configOps.getConfig(configId);
+                    UISyncConfig config = maybeCconfig.get();
                     tracker.trackEvent("config", "created",
                             config.connector1().getConnectorTypeId() + " - " + config.connector2().getConnectorTypeId());
                     showConfigEditor(config, null);

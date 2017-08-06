@@ -67,7 +67,7 @@ final class ConfigOperations(/**
     */
   @throws[StorageException]
   def createNewConfig(descriptionString: String, connector1Id: String, connector1Label:String,
-                      connector2Id: String, connector2Label: String): UISyncConfig =
+                      connector2Id: String, connector2Label: String): ConfigId =
   uiConfigStore.createNewConfig(userName, descriptionString, connector1Id, connector1Label, connector2Id, connector2Label)
 
   /**

@@ -4,7 +4,7 @@ import com.taskadapter.PluginManager
 import com.taskadapter.config.StorageException
 import com.taskadapter.connector.definition.WebServerInfo
 import com.taskadapter.web.service.Sandbox
-import com.taskadapter.web.uiapi.UISyncConfig
+import com.taskadapter.web.uiapi.ConfigId
 import com.taskadapter.webui.ConfigOperations
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.service.EditorManager
@@ -14,9 +14,9 @@ trait Callback {
   /**
     * This method is called after new config was created.
     *
-    * @param config created config.
+    * @param configId unique id of the new config.
     */
-  def configCreated(config: UISyncConfig): Unit
+  def configCreated(configId: ConfigId): Unit
 }
 
 class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, configOps: ConfigOperations,
@@ -94,8 +94,8 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
 
   private def saveClicked() = {
     try {
-      val config = save()
-      callback.configCreated(config)
+      val configId = save()
+      callback.configCreated(configId)
     } catch {
       case e: StorageException =>
         errorMessageLabel.setValue(message("createConfigPage.failedToSave"))
@@ -103,7 +103,7 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
   }
 
   @throws[StorageException]
-  private def save(): UISyncConfig = {
+  private def save(): ConfigId = {
     val descriptionString = description.get
     val id1 = connector1Id.get
     val id2 = connector2Id.get
