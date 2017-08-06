@@ -1,6 +1,8 @@
 package com.taskadapter.connector.definition
 
-sealed trait ConnectorSetup
+sealed trait ConnectorSetup {
+  def label: String
+}
 
 /**
   * @param connectorId is used to find all existing setups for, say, JIRA to show on "new config" page.

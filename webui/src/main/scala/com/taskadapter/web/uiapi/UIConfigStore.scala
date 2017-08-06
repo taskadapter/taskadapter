@@ -54,8 +54,8 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val conn1Config = storedConfig.getConnector1
     val conn2Config = storedConfig.getConnector2
 
-    val config1 = uiConfigService.createRichConfig(conn1Config.getConnectorTypeId, conn1Config.getSerializedConfig)
-    val config2 = uiConfigService.createRichConfig(conn2Config.getConnectorTypeId, conn2Config.getSerializedConfig)
+    val config1 = uiConfigService.createRichConfig(conn1Config.connectorTypeId, conn1Config.serializedConfig)
+    val config2 = uiConfigService.createRichConfig(conn2Config.connectorTypeId, conn2Config.serializedConfig)
     val jsonString = storedConfig.getMappingsString
 
     val connector1Setup = loadSetup(ownerName, config1.getLabel)
@@ -95,8 +95,9 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
       config2.getSuggestedCombinations)
     val mappingsString = newMappings.asJson.noSpaces
     val configId = configStorage.createNewConfig(userName, label,
-      config1.getConnectorTypeId, config1.getConfigString,
-      config2.getConnectorTypeId, config2.getConfigString, mappingsString)
+      config1.getConnectorTypeId, config1.getLabel, config1.getConfigString,
+      config2.getConnectorTypeId, config2.getLabel, config2.getConfigString,
+      mappingsString)
 
     new UISyncConfig(configStorage.rootDir, configId.id, userName, label, config1, config2, newMappings, false)
   }
@@ -184,7 +185,9 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val mappingsStr = mappings.asJson.noSpaces
 
     configStorage.saveConfig(normalizedSyncConfig.getOwnerName, normalizedSyncConfig.identity, label,
-      config1.getConnectorTypeId, config1.getConfigString, config2.getConnectorTypeId, config2.getConfigString, mappingsStr)
+      config1.getConnectorTypeId, config1.getConnectorSetup.label, config1.getConfigString,
+      config2.getConnectorTypeId, config2.getConnectorSetup.label, config2.getConfigString,
+      mappingsStr)
   }
 
   def deleteConfig(configId: ConfigId): Unit = {
@@ -200,8 +203,12 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val savedConfig = configStorage.getConfig(configId)
     savedConfig match {
       case Some(config) =>
-        configStorage.createNewConfig(userLoginName, config.getName, config.getConnector1.getConnectorTypeId, config.getConnector1.getSerializedConfig,
-          config.getConnector2.getConnectorTypeId, config.getConnector2.getSerializedConfig, config.getMappingsString)
+        val connector1 = config.getConnector1
+        val connector2 = config.getConnector2
+        configStorage.createNewConfig(userLoginName, config.getName,
+          connector1.connectorTypeId, connector1.connectorSavedSetupId, connector1.serializedConfig,
+          connector2.connectorTypeId, connector2.connectorSavedSetupId, connector2.connectorTypeId,
+          config.getMappingsString)
       case None => throw new StorageException(s"Cannot find config with id $configId to clone")
     }
   }

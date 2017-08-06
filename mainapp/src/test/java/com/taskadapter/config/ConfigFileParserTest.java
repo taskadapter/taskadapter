@@ -15,7 +15,7 @@ public class ConfigFileParserTest {
         StoredExportConfig file = NewConfigParser.parse("id", contents);
 
         assertEquals("Redmine DEMO", file.getName());
-        assertEquals("Redmine REST", file.getConnector1().getConnectorTypeId());
-        assertEquals("Microsoft Project", file.getConnector2().getConnectorTypeId());
+        assertEquals("Redmine REST", file.getConnector1().connectorTypeId());
+        assertEquals("Microsoft Project", file.getConnector2().connectorTypeId());
     }
 }

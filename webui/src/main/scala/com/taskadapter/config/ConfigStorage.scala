@@ -57,10 +57,11 @@ class ConfigStorage(val rootDir: File) {
 
   @throws[StorageException]
   def saveConfig(userLoginName: String, configId: String, configName: String,
-                 connector1Id: String, connector1Data: String,
-                 connector2Id: String, connector2Data: String, mappings: String): Unit = {
+                 connector1Id: String, connector1SavedSetupId: String, connector1Data: String,
+                 connector2Id: String, connector2SavedSetupId: String, connector2Data: String, mappings: String): Unit = {
     logger.info(s"Saving config for user $userLoginName")
-    val fileContents = NewConfigParser.toFileContent(configName, connector1Id, connector1Data, connector2Id, connector2Data, mappings)
+    val fileContents = NewConfigParser.toFileContent(configName, connector1Id, connector1SavedSetupId, connector1Data,
+      connector2Id, connector2SavedSetupId, connector2Data, mappings)
     try {
       val folder = getUserConfigsFolder(userLoginName)
       folder.mkdirs
@@ -75,9 +76,14 @@ class ConfigStorage(val rootDir: File) {
     * @return unique id for the new config to find it in the storage
     */
   @throws[StorageException]
-  def createNewConfig(userLoginName: String, configName: String, connector1Id: String, connector1Data: String,
-                      connector2Id: String, connector2Data: String, mappings: String): ConfigId = {
-    val fileContents = NewConfigParser.toFileContent(configName, connector1Id, connector1Data, connector2Id, connector2Data, mappings)
+  def createNewConfig(userLoginName: String, configName: String,
+                      connector1Id: String, connector1SavedSetupIdString: String, connector1Data: String,
+                      connector2Id: String, connector2SavedSetupIdString: String, connector2Data: String,
+                      mappings: String): ConfigId = {
+    val fileContents = NewConfigParser.toFileContent(configName,
+      connector1Id, connector1SavedSetupIdString, connector1Data,
+      connector2Id, connector2SavedSetupIdString, connector2Data,
+      mappings)
     try {
       val folder = getUserConfigsFolder(userLoginName)
       folder.mkdirs
