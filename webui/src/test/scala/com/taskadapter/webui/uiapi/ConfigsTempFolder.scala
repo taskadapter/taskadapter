@@ -5,7 +5,7 @@ import java.io.File
 import org.junit.rules.TemporaryFolder
 import org.scalatest.FunSpec
 
-trait TempFolder extends FunSpec {
+trait ConfigsTempFolder extends FunSpec {
   def withTempFolder(testCode: File => Any) {
     var tempFolder = new TemporaryFolder()
     try {

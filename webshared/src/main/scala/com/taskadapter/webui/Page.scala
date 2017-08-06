@@ -12,4 +12,5 @@ object Page {
   @annotation.varargs def message(key: String, argument: String*): String = MESSAGES.format(key, argument)
 
   def message(key: String, argument: String): String = MESSAGES.format(key, argument)
+  def message(key: String, argument1: String, argument2: String): String = MESSAGES.format(key, argument1, argument2)
 }

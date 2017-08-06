@@ -31,7 +31,7 @@ class ConfigStorage(val rootDir: File) {
 
   def getUserConfigs(userLoginName: String): Seq[StoredExportConfig] = getConfigsInFolder(getUserConfigsFolder(userLoginName))
 
-  private def getUserFolder(userLoginName: String): File = {
+  def getUserFolder(userLoginName: String): File = {
     new File(rootDir, userLoginName)
   }
 
@@ -96,7 +96,7 @@ class ConfigStorage(val rootDir: File) {
     try {
       val folder = getUserFolder(userLoginName)
       folder.mkdirs
-      val newConfigFile = new File(folder, setupLabel + ".json")
+      val newConfigFile = new File(folder, setupLabel)
       Files.write(connectorSetup, newConfigFile, Charsets.UTF_8)
     } catch {
       case e: IOException =>
@@ -107,7 +107,7 @@ class ConfigStorage(val rootDir: File) {
   @throws[StorageException]
   def loadConnectorSetupAsString(userName: String, setupLabel: String): String = try {
     val folder = getUserFolder(userName)
-    val file = new File(folder, setupLabel + ".json")
+    val file = new File(folder, setupLabel)
     Files.toString(file, Charsets.UTF_8)
   } catch {
     case e: IOException =>

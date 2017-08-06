@@ -1,13 +1,13 @@
 package com.taskadapter.webui.config
 
 import com.taskadapter.config.ConfigStorage
-import com.taskadapter.webui.uiapi.TempFolder
+import com.taskadapter.webui.uiapi.ConfigsTempFolder
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
 
 @RunWith(classOf[JUnitRunner])
-class ConfigStorageTest extends FunSpec with Matchers with TempFolder {
+class ConfigStorageTest extends FunSpec with Matchers with ConfigsTempFolder {
   private val configName = "some_config_name"
   private val login = "autotest"
 

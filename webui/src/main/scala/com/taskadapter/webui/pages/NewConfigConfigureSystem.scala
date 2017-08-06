@@ -126,7 +126,7 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
           selectPanel.getValue.toString
         } else ""
       } else {
-        FileNameGenerator.createSafeAvailableFile(sandbox.getUserContentDirectory, connectorId+"_%d.json").getName
+        FileNameGenerator.createSafeAvailableFile(configOps.getSavedSetupsFolder, connectorId+"_%d.json").getName
       }
     }
 

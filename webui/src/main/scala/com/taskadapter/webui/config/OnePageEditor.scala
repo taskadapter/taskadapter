@@ -5,6 +5,7 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{UIConnectorConfig, UISyncConfig}
+import com.taskadapter.webui.Page
 import com.vaadin.data.util.MethodProperty
 import com.vaadin.ui.{Alignment, Component, HorizontalLayout, VerticalLayout}
 
@@ -51,7 +52,7 @@ class OnePageEditor(messages: Messages, sandbox: Sandbox, config: UISyncConfig, 
   }
 
   private def createMiniPanel(connectorConfig: UIConnectorConfig, sandbox: Sandbox) = {
-    val caption = s"Configure ${connectorConfig.getLabel} (${connectorConfig.getConnectorTypeId}"
+    val caption = Page.message("editConfig.configureConnector", connectorConfig.getLabel, connectorConfig.getConnectorTypeId)
     val connectorLabel = new MethodProperty[String](connectorConfig, "label")
     val miniPanel = new MiniPanel(caption, connectorLabel)
     // "services" instance is only used by MSP Editor Factory

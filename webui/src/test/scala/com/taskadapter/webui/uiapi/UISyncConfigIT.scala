@@ -13,7 +13,7 @@ import org.scalatest.{FunSpec, Matchers}
 import scala.collection.JavaConverters._
 
 @RunWith(classOf[JUnitRunner])
-class UISyncConfigIT extends FunSpec with Matchers with TempFolder {
+class UISyncConfigIT extends FunSpec with Matchers with ConfigsTempFolder {
   /*  private var config = ConfigLoader.loadConfig("Redmine_Microsoft-Project_3.ta_conf")
     private var toRedmineConfig = config.reverse
 

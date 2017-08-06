@@ -1,5 +1,7 @@
 package com.taskadapter.web.uiapi
 
+import java.io.File
+
 import com.taskadapter.config.CirceBoilerplateForConfigs._
 import com.taskadapter.config._
 import com.taskadapter.connector.NewConfigSuggester
@@ -34,6 +36,10 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
   def getUserConfigs(userLoginName: String): Seq[UISyncConfig] = {
     val storedConfigs = configStorage.getUserConfigs(userLoginName)
     storedConfigs.map(storedConfig => uize(userLoginName, storedConfig))
+  }
+
+  def getSavedSetupsFolder(loginName: String): File = {
+    configStorage.getUserFolder(loginName)
   }
 
   /**
