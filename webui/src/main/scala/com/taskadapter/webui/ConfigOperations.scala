@@ -6,7 +6,7 @@ import java.util
 import com.taskadapter.auth.{AuthorizedOperations, CredentialsManager}
 import com.taskadapter.config.StorageException
 import com.taskadapter.connector.definition.ConnectorSetup
-import com.taskadapter.web.uiapi.{UIConfigStore, UISyncConfig}
+import com.taskadapter.web.uiapi.{ConfigId, UIConfigStore, UISyncConfig}
 
 import scala.collection.JavaConverters._
 import scala.collection.Seq
@@ -67,24 +67,23 @@ final class ConfigOperations(/**
   uiConfigStore.createNewConfig(userName, descriptionString, connector1Id, connector1Label, connector2Id, connector2Label)
 
   /**
-    * Deletes a config.
+    * Delete a config.
     *
-    * @param config
-    * config to delete.
+    * @param configIdentity a unique id for the config in the store
     */
-  def deleteConfig(config: UISyncConfig): Unit = {
-    uiConfigStore.deleteConfig(config)
+  def deleteConfig(configIdentity: ConfigId): Unit = {
+    uiConfigStore.deleteConfig(configIdentity)
   }
 
   /**
     * Clones config. Current user became the owner of the clone.
     *
-    * @param config config to clone.
+    * @param configIdentity a unique id the config in the store
     * @throws StorageException if config cannot be cloned.
     */
   @throws[StorageException]
-  def cloneConfig(config: UISyncConfig): Unit = {
-    uiConfigStore.cloneConfig(userName, config)
+  def cloneConfig(configIdentity: ConfigId): Unit = {
+    uiConfigStore.cloneConfig(userName, configIdentity)
   }
 
   @throws[StorageException]

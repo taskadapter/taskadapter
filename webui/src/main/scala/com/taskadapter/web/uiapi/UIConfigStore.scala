@@ -34,8 +34,8 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     * @return collection of the user's config in no particular order.
     */
   def getUserConfigs(userLoginName: String): util.List[UISyncConfig] = {
-    val storedConfigs: util.List[StoredExportConfig] = configStorage.getUserConfigs(userLoginName)
-    storedConfigs.asScala
+    val storedConfigs = configStorage.getUserConfigs(userLoginName)
+    storedConfigs
       .map(storedConfig => uize(userLoginName, storedConfig))
       .asJava
   }
@@ -181,26 +181,26 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val mappings = normalizedSyncConfig.getNewMappings
     val mappingsStr = mappings.asJson.noSpaces
 
-    configStorage.saveConfig(normalizedSyncConfig.getOwnerName, normalizedSyncConfig.getIdentity, label,
+    configStorage.saveConfig(normalizedSyncConfig.getOwnerName, normalizedSyncConfig.identity, label,
       config1.getConnectorTypeId, config1.getConfigString, config2.getConnectorTypeId, config2.getConfigString, mappingsStr)
   }
 
-  def deleteConfig(config: UISyncConfig): Unit = {
-    configStorage.delete(config.getIdentity)
+  def deleteConfig(configId: ConfigId): Unit = {
+    configStorage.delete(configId)
   }
 
   /**
-    * @param userLoginName clone owner's login name.
-    * @param syncConfig    config to clone.
+    * @param userLoginName name of the new config owner.
+    * @param configId unique identifier for config to clone
     */
   @throws[StorageException]
-  def cloneConfig(userLoginName: String, syncConfig: UISyncConfig): Unit = {
-    val label: String = syncConfig.getLabel
-    val config1 = syncConfig.getConnector1
-    val config2 = syncConfig.getConnector2
-    val mappings = syncConfig.getNewMappings
-    val mappingsStr = mappings.asJson.noSpaces
-    configStorage.createNewConfig(userLoginName, label, config1.getConnectorTypeId, config1.getConfigString,
-      config2.getConnectorTypeId, config2.getConfigString, mappingsStr)
+  def cloneConfig(userLoginName: String, configId: ConfigId): Unit = {
+    val savedConfig = configStorage.getConfig(configId)
+    savedConfig match {
+      case Some(config) =>
+        configStorage.createNewConfig(userLoginName, config.getName, config.getConnector1.getConnectorTypeId, config.getConnector1.getSerializedConfig,
+          config.getConnector2.getConnectorTypeId, config.getConnector2.getSerializedConfig, config.getMappingsString)
+      case None => throw new StorageException(s"Cannot find config with id $configId to clone")
+    }
   }
 }

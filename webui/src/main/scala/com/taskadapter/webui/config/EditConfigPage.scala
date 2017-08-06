@@ -3,7 +3,7 @@ package com.taskadapter.webui.config
 import com.taskadapter.config.StorageException
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.web.service.Sandbox
-import com.taskadapter.web.uiapi.UISyncConfig
+import com.taskadapter.web.uiapi.{ConfigId, UISyncConfig}
 import com.taskadapter.webui.{CloneDeletePanel, ConfigOperations, Page, Tracker}
 import com.taskadapter.webui.data.ExceptionFormatter
 import com.vaadin.data.util.MethodProperty
@@ -79,7 +79,7 @@ class EditConfigPage(config: UISyncConfig, configOps: ConfigOperations, allowFul
   layout.addComponent(ConfigsListLinkComponent.render(_ => callback.back()))
   val buttonsLayout = new HorizontalLayout
   buttonsLayout.setWidth(100, PERCENTAGE)
-  val cloneDeletePanel= new CloneDeletePanel(config, configOps, () => callback.back, tracker).layout
+  val cloneDeletePanel= new CloneDeletePanel(ConfigId(config.owner, config.identity), configOps, () => callback.back, tracker).layout
 
   buttonsLayout.addComponent(cloneDeletePanel)
   buttonsLayout.setComponentAlignment(cloneDeletePanel, Alignment.MIDDLE_RIGHT)

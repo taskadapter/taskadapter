@@ -5,6 +5,7 @@ import java.util
 
 import com.google.common.base.Charsets
 import com.google.common.io.Files
+import com.taskadapter.web.uiapi.ConfigId
 import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
@@ -24,7 +25,11 @@ object ConfigStorage {
 class ConfigStorage(val rootDir: File) {
   private val logger = LoggerFactory.getLogger(classOf[ConfigStorage])
 
-  def getUserConfigs(userLoginName: String): util.List[StoredExportConfig] = getNewConfigsInFolder(getUserConfigsFolder(userLoginName))
+  def getConfig(configId: ConfigId): Option[StoredExportConfig] = {
+    getConfigsInFolder(getUserConfigsFolder(configId.ownerName)).find(_.getId == configId.id)
+  }
+
+  def getUserConfigs(userLoginName: String): Seq[StoredExportConfig] = getConfigsInFolder(getUserConfigsFolder(userLoginName))
 
   private def getUserFolder(userLoginName: String): File = {
     new File(rootDir, userLoginName)
@@ -35,20 +40,19 @@ class ConfigStorage(val rootDir: File) {
   }
 
 
-  private def getNewConfigsInFolder(folder: File): util.List[StoredExportConfig] = {
+  private def getConfigsInFolder(folder: File): Seq[StoredExportConfig] = {
     val configs = folder.listFiles(ConfigStorage.CONFIG_FILE_FILTER)
-    val files = new util.ArrayList[StoredExportConfig]
-    if (configs == null) return files
-    for (file <- configs) {
+    if (configs == null) return Seq()
+    configs.toSeq.flatMap { file =>
       try {
         val fileBody = Files.toString(file, Charsets.UTF_8)
-        files.add(NewConfigParser.parse(file.getAbsolutePath, fileBody))
+        Some(NewConfigParser.parse(file.getAbsolutePath, fileBody))
       } catch {
         case e: Exception =>
           logger.error("Error loading file " + file.getAbsolutePath + ": " + e.getMessage, e)
+          None
       }
     }
-    files
   }
 
   @throws[StorageException]
@@ -67,6 +71,9 @@ class ConfigStorage(val rootDir: File) {
     }
   }
 
+  /**
+    * @return absolute path for the new config file
+    */
   @throws[StorageException]
   def createNewConfig(userLoginName: String, configName: String, connector1Id: String, connector1Data: String,
                       connector2Id: String, connector2Data: String, mappings: String): String = {
@@ -134,8 +141,8 @@ class ConfigStorage(val rootDir: File) {
     fileName
   }
 
-  def delete(configId: String): Unit = {
-    new File(configId).delete
+  def delete(configId: ConfigId): Unit = {
+    new File(configId.id).delete
   }
 
 }

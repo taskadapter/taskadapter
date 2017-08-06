@@ -103,8 +103,6 @@ case class UISyncConfig(configRootFolder: File,
   /** Returns name of the user who owns this config. */
   def getOwnerName: String = owner
 
-  private[uiapi] def getIdentity = identity
-
   /**
     * Creates a "reversed" version of a config. Reversed version shares
     * connector configurations and config identity with this config, but have

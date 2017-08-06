@@ -4,7 +4,7 @@ import java.util
 
 import com.taskadapter.config.StorageException
 import com.taskadapter.web.MessageDialog
-import com.taskadapter.web.uiapi.UISyncConfig
+import com.taskadapter.web.uiapi.ConfigId
 import com.vaadin.ui.{Button, HorizontalLayout, Notification}
 import org.slf4j.LoggerFactory
 
@@ -12,11 +12,11 @@ import org.slf4j.LoggerFactory
   * UI Component containing Clone and Delete buttons. Shown in "Edit Config"
   * page.
   *
-  * @param config    current config.
+  * @param configId identity of the config to perform operations on.
   * @param configOps config operations.
   * @param onExit    exit request handler.
   */
-final class CloneDeletePanel(config: UISyncConfig, configOps: ConfigOperations, onExit: Runnable, tracker: Tracker) {
+final class CloneDeletePanel(configId: ConfigId, configOps: ConfigOperations, onExit: Runnable, tracker: Tracker) {
   private val log = LoggerFactory.getLogger(classOf[CloneDeletePanel])
   private val YES = "Yes"
   private val CANCEL = "Cancel"
@@ -36,7 +36,7 @@ final class CloneDeletePanel(config: UISyncConfig, configOps: ConfigOperations, 
     val messageDialog = new MessageDialog("Confirmation", "Delete this config?", util.Arrays.asList(YES, CANCEL), (answer: String) => {
       def foo(answer: String) = {
         if (YES == answer) {
-          configOps.deleteConfig(config)
+          configOps.deleteConfig(configId)
           tracker.trackEvent("config", "deleted", "")
           onExit.run()
         }
@@ -52,7 +52,7 @@ final class CloneDeletePanel(config: UISyncConfig, configOps: ConfigOperations, 
     val messageDialog = new MessageDialog("Confirmation", "Clone this config?", util.Arrays.asList(YES, CANCEL), (answer: String) => {
       def foo(answer: String) = {
         if (YES == answer) try {
-          configOps.cloneConfig(config)
+          configOps.cloneConfig(configId)
           onExit.run()
         } catch {
           case e: StorageException =>
