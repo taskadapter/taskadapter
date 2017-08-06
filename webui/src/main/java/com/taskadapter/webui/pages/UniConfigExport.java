@@ -94,7 +94,7 @@ final class UniConfigExport {
     }
 
     private static Label createLabel(UIConnectorConfig connector) {
-        final Label res = new Label(connector.getLabel());
+        final Label res = new Label(connector.getConnectorSetup().label());
         res.setWidth(100, PERCENTAGE);
         return res;
     }
