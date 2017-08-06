@@ -72,18 +72,18 @@ class ConfigStorage(val rootDir: File) {
   }
 
   /**
-    * @return absolute path for the new config file
+    * @return unique id for the new config to find it in the storage
     */
   @throws[StorageException]
   def createNewConfig(userLoginName: String, configName: String, connector1Id: String, connector1Data: String,
-                      connector2Id: String, connector2Data: String, mappings: String): String = {
+                      connector2Id: String, connector2Data: String, mappings: String): ConfigId = {
     val fileContents = NewConfigParser.toFileContent(configName, connector1Id, connector1Data, connector2Id, connector2Data, mappings)
     try {
       val folder = getUserConfigsFolder(userLoginName)
       folder.mkdirs
       val newConfigFile = findUnusedConfigFile(folder, connector1Id, connector2Id)
       Files.write(fileContents, newConfigFile, Charsets.UTF_8)
-      newConfigFile.getAbsolutePath
+      ConfigId(userLoginName, newConfigFile.getAbsolutePath)
     } catch {
       case e: IOException =>
         throw new StorageException(e)

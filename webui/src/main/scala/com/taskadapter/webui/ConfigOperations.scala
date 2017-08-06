@@ -38,7 +38,10 @@ final class ConfigOperations(/**
   /**
     * @return list of configs that user owns.
     */
-  def getOwnedConfigs: util.List[UISyncConfig] = uiConfigStore.getUserConfigs(userName)
+  def getOwnedConfigs: util.List[UISyncConfig] = uiConfigStore.getUserConfigs(userName).asJava
+
+  def getConfig(configId: ConfigId): Option[UISyncConfig] = uiConfigStore.getUserConfigs(configId.ownerName)
+    .find(_.id == configId)
 
   /**
     * @return list of configs that user can manage.
@@ -47,7 +50,7 @@ final class ConfigOperations(/**
     if (!authorizedOps.canManagerPeerConfigs) return getOwnedConfigs
     val res = new util.ArrayList[UISyncConfig]
     credManager.listUsers.asScala.foreach(user =>
-      res.addAll(uiConfigStore.getUserConfigs(user))
+      res.addAll(uiConfigStore.getUserConfigs(user).asJava)
     )
     res
   }
@@ -78,12 +81,12 @@ final class ConfigOperations(/**
   /**
     * Clones config. Current user became the owner of the clone.
     *
-    * @param configIdentity a unique id the config in the store
+    * @param configId a unique id the config in the store
     * @throws StorageException if config cannot be cloned.
     */
   @throws[StorageException]
-  def cloneConfig(configIdentity: ConfigId): Unit = {
-    uiConfigStore.cloneConfig(userName, configIdentity)
+  def cloneConfig(configId: ConfigId): Unit = {
+    uiConfigStore.cloneConfig(userName, configId)
   }
 
   @throws[StorageException]

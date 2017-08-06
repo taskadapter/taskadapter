@@ -16,22 +16,14 @@ object EditConfigPage {
 
   trait Callback {
     /**
-      * User requested synchronization in "forward" directions (from left to
-      * right).
-      *
-      * @param config
-      * config for the operation.
+      * User requested synchronization in "forward" directions (from left to right).
       */
-    def forwardSync(config: UISyncConfig): Unit
+    def forwardSync(configId: ConfigId): Unit
 
     /**
-      * User requested synchronization in "reverse" direction (from right to
-      * left).
-      *
-      * @param config
-      * config for the operation.
+      * User requested synchronization in "reverse" direction (from right to left).
       */
-    def backwardSync(config: UISyncConfig): Unit
+    def backwardSync(configId: ConfigId): Unit
 
     /**
       * User attempts to leave this page.
@@ -79,20 +71,16 @@ class EditConfigPage(config: UISyncConfig, configOps: ConfigOperations, allowFul
   layout.addComponent(ConfigsListLinkComponent.render(_ => callback.back()))
   val buttonsLayout = new HorizontalLayout
   buttonsLayout.setWidth(100, PERCENTAGE)
-  val cloneDeletePanel= new CloneDeletePanel(ConfigId(config.owner, config.identity), configOps, () => callback.back, tracker).layout
+  val cloneDeletePanel= new CloneDeletePanel(config.id, configOps, () => callback.back, tracker).layout
 
   buttonsLayout.addComponent(cloneDeletePanel)
   buttonsLayout.setComponentAlignment(cloneDeletePanel, Alignment.MIDDLE_RIGHT)
   layout.addComponent(buttonsLayout)
   layout.addComponent(EditConfigPage.createEditDescriptionElement(config))
-  var editor = new OnePageEditor(Page.MESSAGES, new Sandbox(allowFullFSAccess, configOps.syncSandbox), config, mkExportAction(new Runnable() {
-    override def run(): Unit = {
-      callback.backwardSync(config)
-    }
-  }), mkExportAction(new Runnable() {
-    override def run(): Unit = {
-      callback.forwardSync(config)
-    }
+  var editor = new OnePageEditor(Page.MESSAGES, new Sandbox(allowFullFSAccess, configOps.syncSandbox), config, mkExportAction(() => {
+    callback.backwardSync(config.id)
+  }), mkExportAction(() => {
+    callback.forwardSync(config.id)
   }))
   layout.addComponent(editor.getUI)
   var errorMessageLabel = new Label(error)

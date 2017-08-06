@@ -1,7 +1,6 @@
 package com.taskadapter.webui.config
 
 import com.taskadapter.config.ConfigStorage
-import com.taskadapter.web.uiapi.ConfigId
 import com.taskadapter.webui.uiapi.TempFolder
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
@@ -15,19 +14,17 @@ class ConfigStorageTest extends FunSpec with Matchers with TempFolder {
   it("config can be created in storage") {
     withTempFolder { folder =>
       val storage = new ConfigStorage(folder)
-      val path = storage.createNewConfig(login, configName, "jira", "value1", "jira", "value2", "mappings?")
-      val configId = ConfigId(login, path)
+      val configId = storage.createNewConfig(login, configName, "jira", "value1", "jira", "value2", "mappings")
       val config = storage.getConfig(configId)
       config.isDefined shouldBe true
-      config.get.getId shouldBe path
+      config.get.getMappingsString shouldBe "mappings"
     }
   }
 
   it("config is deleted") {
     withTempFolder { folder =>
       val storage = new ConfigStorage(folder)
-      storage.createNewConfig(login, configName, "jira", "value1", "jira", "value2", "mappings?")
-      val configId = ConfigId(login, configName)
+      val configId = storage.createNewConfig(login, configName, "jira", "value1", "jira", "value2", "mappings")
       storage.delete(configId)
       storage.getConfig(configId) shouldBe None
     }

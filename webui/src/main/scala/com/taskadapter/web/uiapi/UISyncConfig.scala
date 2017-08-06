@@ -94,6 +94,8 @@ case class UISyncConfig(configRootFolder: File,
                            */
                         var reversed: Boolean) {
 
+  val id = ConfigId(owner, identity)
+
   def getConnector1: UIConnectorConfig = connector1
 
   def getConnector2: UIConnectorConfig = connector2

@@ -7,6 +7,7 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.service.Sandbox;
+import com.taskadapter.web.uiapi.ConfigId;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigureSystemPage;
@@ -38,6 +39,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.themes.BaseTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.Option;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -293,13 +295,15 @@ public class LoggedInPageset {
                 services.settingsManager.isTAWorkingOnLocalMachine(), error,
                 new EditConfigPage.Callback() {
                     @Override
-                    public void forwardSync(UISyncConfig config) {
-                        sync(config);
+                    public void forwardSync(ConfigId configId) {
+                        Option<UISyncConfig> loadedConfig = context.configOps.getConfig(configId);
+                        sync(loadedConfig.get());
                     }
 
                     @Override
-                    public void backwardSync(UISyncConfig config) {
-                        sync(config.reverse());
+                    public void backwardSync(ConfigId configId) {
+                        Option<UISyncConfig> loadedConfig = context.configOps.getConfig(configId);
+                        sync(loadedConfig.get().reverse());
                     }
 
                     @Override

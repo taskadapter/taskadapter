@@ -1,7 +1,5 @@
 package com.taskadapter.web.uiapi
 
-import java.util
-
 import com.taskadapter.config.CirceBoilerplateForConfigs._
 import com.taskadapter.config._
 import com.taskadapter.connector.NewConfigSuggester
@@ -33,11 +31,9 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     * @param userLoginName login name to load items for.
     * @return collection of the user's config in no particular order.
     */
-  def getUserConfigs(userLoginName: String): util.List[UISyncConfig] = {
+  def getUserConfigs(userLoginName: String): Seq[UISyncConfig] = {
     val storedConfigs = configStorage.getUserConfigs(userLoginName)
-    storedConfigs
-      .map(storedConfig => uize(userLoginName, storedConfig))
-      .asJava
+    storedConfigs.map(storedConfig => uize(userLoginName, storedConfig))
   }
 
   /**
@@ -92,11 +88,11 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
       config1.getSuggestedCombinations,
       config2.getSuggestedCombinations)
     val mappingsString = newMappings.asJson.noSpaces
-    val identity: String = configStorage.createNewConfig(userName, label,
+    val configId = configStorage.createNewConfig(userName, label,
       config1.getConnectorTypeId, config1.getConfigString,
       config2.getConnectorTypeId, config2.getConfigString, mappingsString)
 
-    new UISyncConfig(configStorage.rootDir, identity, userName, label, config1, config2, newMappings, false)
+    new UISyncConfig(configStorage.rootDir, configId.id, userName, label, config1, config2, newMappings, false)
   }
 
   def saveSetup(userName: String, setup: ConnectorSetup, label: String): Unit = {
