@@ -6,6 +6,7 @@ import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException
 import com.taskadapter.connector.definition.{ConnectorSetup, FileSetup, WebConnectorSetup}
 import com.taskadapter.web.ConnectorSetupPanel
 import com.taskadapter.web.service.Sandbox
+import com.taskadapter.web.uiapi.SetupId
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.service.EditorManager
 import com.taskadapter.webui.{ConfigOperations, Page}
@@ -14,12 +15,12 @@ import com.vaadin.ui._
 
 import scala.collection.Seq
 
-private case class ExistingSetup(label: String, description: String)
+private case class ExistingSetup(id: SetupId, description: String)
 
 class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOperations,
                                sandbox: Sandbox,
                                connectorId: String,
-                               labelSelected: String => Unit) {
+                               setupSelected: SetupId => Unit) {
 
   def ui = createSetupPanelForConnector().getUI()
 
@@ -34,10 +35,10 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
     val setupUiItems = setups.map { s =>
       if (s.isInstanceOf[WebConnectorSetup]) {
         val webSetup: WebConnectorSetup = s.asInstanceOf[WebConnectorSetup]
-        ExistingSetup(webSetup.label, s"${webSetup.connectorId} (${webSetup.host})")
+        ExistingSetup(SetupId(webSetup.id.get), s"${webSetup.connectorId} (${webSetup.host})")
       } else {
         val fileSetup: FileSetup = s.asInstanceOf[FileSetup]
-        ExistingSetup(fileSetup.label, fileSetup.label)
+        ExistingSetup(SetupId(fileSetup.id.get), fileSetup.label)
       }
     }
 
@@ -59,8 +60,8 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
       res.setNullSelectionAllowed(false)
       res.addValueChangeListener(valueChangeListener)
       savedSetups.foreach { s =>
-        res.addItem(s.label)
-        res.setItemCaption(s.label, s.description)
+        res.addItem(s.id)
+        res.setItemCaption(s.id, s.description)
       }
       res.setRows(res.size)
       res
@@ -79,17 +80,17 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
 
     val nextButton = new Button(Page.message("newConfig.next"))
     nextButton.addClickListener(_ => {
-      val label = getLabel()
+      val setupId = getSetupId()
       if (inEditMode) {
         val maybeString = validateEditMode()
         if (maybeString.isEmpty) {
-          configOps.saveSetup(getEditedResult(), label)
-          labelSelected(label)
+          configOps.saveSetup(getEditedResult(), setupId)
+          setupSelected(setupId)
         } else {
           errorMessageLabel.setValue(maybeString.get)
         }
       } else {
-        labelSelected(label)
+        setupSelected(setupId)
       }
     }
     )
@@ -120,13 +121,16 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
       } else None
     }
 
-    def getLabel(): String = {
+    def getSetupId(): SetupId = {
       if (inSelectMode) {
         if (selectPanel.getValue != null) {
-          selectPanel.getValue.toString
-        } else ""
+          SetupId(selectPanel.getValue.toString)
+        } else {
+          throw new RuntimeException("unknown state")
+        }
       } else {
-        FileNameGenerator.createSafeAvailableFile(configOps.getSavedSetupsFolder, connectorId+"_%d.json").getName
+        val newFile = FileNameGenerator.createSafeAvailableFile(configOps.getSavedSetupsFolder, connectorId + "_%d.json")
+        SetupId(newFile.getName)
       }
     }
 

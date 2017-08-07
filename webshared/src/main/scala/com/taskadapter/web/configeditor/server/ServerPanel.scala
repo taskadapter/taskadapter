@@ -29,7 +29,7 @@ class ServerPanel(connectorId: String, val caption: String, val labelProperty: P
   }
 
   override def getResult: WebConnectorSetup = {
-    WebConnectorSetup(connectorId, labelProperty.getValue, serverURLProperty.getValue, userLoginNameProperty.getValue,
+    WebConnectorSetup(connectorId, None, labelProperty.getValue, serverURLProperty.getValue, userLoginNameProperty.getValue,
       passwordProperty.getValue, false, "")
   }
 }

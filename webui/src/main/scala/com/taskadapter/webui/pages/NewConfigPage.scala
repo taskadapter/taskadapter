@@ -4,7 +4,7 @@ import com.taskadapter.PluginManager
 import com.taskadapter.config.StorageException
 import com.taskadapter.connector.definition.WebServerInfo
 import com.taskadapter.web.service.Sandbox
-import com.taskadapter.web.uiapi.ConfigId
+import com.taskadapter.web.uiapi.{ConfigId, SetupId}
 import com.taskadapter.webui.ConfigOperations
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.service.EditorManager
@@ -33,9 +33,9 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
   layout.setWidth("100%")
 
   var connector1Id: Option[String] = None
-  var connector1Label: Option[String] = None
+  var connector1SetupId: Option[SetupId] = None
   var connector2Id: Option[String] = None
-  var connector2Label: Option[String] = None
+  var connector2SetupId: Option[SetupId] = None
   var description: Option[String] = None
 
   refreshUI()
@@ -59,9 +59,9 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
         }
       ).ui
 
-      case 2 => new NewConfigConfigureSystem(editorManager, configOps, sandbox, connector1Id.get, labelSelected =
+      case 2 => new NewConfigConfigureSystem(editorManager, configOps, sandbox, connector1Id.get, setupSelected =
         (label) => {
-          connector1Label = Some(label)
+          connector1SetupId = Some(label)
           proceedToStage(stage + 1)
         }
       ).ui
@@ -73,9 +73,9 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
         }
       ).ui
 
-      case 4 => new NewConfigConfigureSystem(editorManager, configOps, sandbox, connector2Id.get, labelSelected =
+      case 4 => new NewConfigConfigureSystem(editorManager, configOps, sandbox, connector2Id.get, setupSelected =
         (label) => {
-          connector2Label = Some(label)
+          connector2SetupId = Some(label)
           proceedToStage(stage + 1)
         }
       ).ui
@@ -107,7 +107,7 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
     val descriptionString = description.get
     val id1 = connector1Id.get
     val id2 = connector2Id.get
-    configOps.createNewConfig(descriptionString, id1, connector1Label.get, id2, connector2Label.get)
+    configOps.createNewConfig(descriptionString, id1, connector1SetupId.get, id2, connector2SetupId.get)
   }
 
 }

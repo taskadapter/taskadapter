@@ -1,4 +1,4 @@
-package com.taskadapter.connector.common
+package com.taskadapter.connector.testlib
 
 import java.io.File
 

@@ -82,27 +82,27 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     * @return newly created (and saved) UI mapping config.
     */
   @throws[StorageException]
-  def createNewConfig(userName: String, label: String, connector1Id: String, connector1Label: String,
-                      connector2Id: String, connector2Label: String): ConfigId = {
+  def createNewConfig(userName: String, label: String, connector1Id: String, connector1SetupId: SetupId,
+                      connector2Id: String, connector2SetupId: SetupId): ConfigId = {
     val config1 = uiConfigService.createDefaultConfig(connector1Id)
-    config1.setLabel(connector1Label)
+//    config1.setLabel(connector1Label)
 
     val config2 = uiConfigService.createDefaultConfig(connector2Id)
-    config2.setLabel(connector2Label)
+//    config2.setLabel(connector2Label)
 
     val newMappings = NewConfigSuggester.suggestedFieldMappingsForNewConfig(
       config1.getSuggestedCombinations,
       config2.getSuggestedCombinations)
     val mappingsString = newMappings.asJson.noSpaces
     val configId = configStorage.createNewConfig(userName, label,
-      config1.getConnectorTypeId, config1.getLabel, config1.getConfigString,
-      config2.getConnectorTypeId, config2.getLabel, config2.getConfigString,
+      config1.getConnectorTypeId, connector1SetupId, config1.getConfigString,
+      config2.getConnectorTypeId, connector2SetupId, config2.getConfigString,
       mappingsString)
 
     configId
   }
 
-  def saveSetup(userName: String, setup: ConnectorSetup, label: String): Unit = {
+  def saveSetup(userName: String, setup: ConnectorSetup, setupId: SetupId): Unit = {
     val jsonString: String = if (setup.isInstanceOf[WebConnectorSetup]) {
       val webSetup: WebConnectorSetup = setup.asInstanceOf[WebConnectorSetup]
       webSetup.copy(password = encryptor.encrypt(webSetup.password),
@@ -113,11 +113,11 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
       val fileSetup: FileSetup = setup.asInstanceOf[FileSetup]
       fileSetup.asJson.spaces2
     }
-    configStorage.saveConnectorSetup(userName, label, jsonString)
+    configStorage.saveConnectorSetup(userName, setupId, jsonString)
   }
 
-  def loadSetup(userName: String, setupLabel: String): ConnectorSetup = {
-    val string = configStorage.loadConnectorSetupAsString(userName, setupLabel)
+  def loadSetup(userName: String, setupId: String): ConnectorSetup = {
+    val string = configStorage.loadConnectorSetupAsString(userName, setupId)
     val json = parseSetupStringToJson(string, userName).get
 
     val maybeParsedConfig = convertJsonSetupsToConnectorSetups(Seq(json)).head
@@ -206,8 +206,8 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
         val connector1 = config.getConnector1
         val connector2 = config.getConnector2
         configStorage.createNewConfig(userLoginName, config.getName,
-          connector1.connectorTypeId, connector1.connectorSavedSetupId, connector1.serializedConfig,
-          connector2.connectorTypeId, connector2.connectorSavedSetupId, connector2.connectorTypeId,
+          connector1.connectorTypeId, SetupId(connector1.connectorSavedSetupId), connector1.serializedConfig,
+          connector2.connectorTypeId, SetupId(connector2.connectorSavedSetupId), connector2.connectorTypeId,
           config.getMappingsString)
       case None => throw new StorageException(s"Cannot find config with id $configId to clone")
     }

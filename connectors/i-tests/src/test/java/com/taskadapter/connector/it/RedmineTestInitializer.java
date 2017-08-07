@@ -1,5 +1,6 @@
 package com.taskadapter.connector.it;
 
+import com.taskadapter.connector.RedmineTestConfig;
 import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.redmine.RedmineManagerFactory;
 import com.taskadapter.redmineapi.RedmineManager;

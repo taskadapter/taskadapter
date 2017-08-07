@@ -6,7 +6,7 @@ import java.util
 import com.taskadapter.auth.{AuthorizedOperations, CredentialsManager}
 import com.taskadapter.config.StorageException
 import com.taskadapter.connector.definition.ConnectorSetup
-import com.taskadapter.web.uiapi.{ConfigId, UIConfigStore, UISyncConfig}
+import com.taskadapter.web.uiapi.{ConfigId, SetupId, UIConfigStore, UISyncConfig}
 
 import scala.collection.JavaConverters._
 import scala.collection.Seq
@@ -66,9 +66,9 @@ final class ConfigOperations(/**
     * @throws StorageException if config cannot be created.
     */
   @throws[StorageException]
-  def createNewConfig(descriptionString: String, connector1Id: String, connector1Label:String,
-                      connector2Id: String, connector2Label: String): ConfigId =
-  uiConfigStore.createNewConfig(userName, descriptionString, connector1Id, connector1Label, connector2Id, connector2Label)
+  def createNewConfig(descriptionString: String, connector1Id: String, connector1SetupId:SetupId,
+                      connector2Id: String, connector2SetupId: SetupId): ConfigId =
+  uiConfigStore.createNewConfig(userName, descriptionString, connector1Id, connector1SetupId, connector2Id, connector2SetupId)
 
   /**
     * Delete a config.
@@ -95,8 +95,8 @@ final class ConfigOperations(/**
     uiConfigStore.saveConfig(config)
   }
 
-  def saveSetup(setup: ConnectorSetup, label: String): Unit =
-    uiConfigStore.saveSetup(userName, setup, label)
+  def saveSetup(setup: ConnectorSetup, id: SetupId): Unit =
+    uiConfigStore.saveSetup(userName, setup, id)
 
   def getAllConnectorSetups(connectorId: String): Seq[ConnectorSetup] =
     uiConfigStore.getAllConnectorSetups(userName, connectorId)

@@ -20,7 +20,7 @@ public class MSPEditorFactoryTest {
     @Test(expected = InputFileNameNotSetException.class)
     public void noInputFileNameFailsValidation() throws BadConfigException {
         MSPConfig config = new MSPConfig();
-        new MSPEditorFactory().validateForLoad(config, new FileSetup(MSPConnector.ID, "label1", "", ""));
+        new MSPEditorFactory().validateForLoad(config, FileSetup.apply(MSPConnector.ID, "label1", "", ""));
     }
 
     @Test
@@ -28,7 +28,7 @@ public class MSPEditorFactoryTest {
         final Sandbox sandbox = new Sandbox(true, new File(tempFolder.getRoot(), "admin/trash"));
         MSPEditorFactory factory = new MSPEditorFactory();
         factory.getMiniPanelContents(sandbox, new MSPConfig(),
-                new FileSetup(MSPConnector.ID, "label1", "infile", "outfile"));
+                FileSetup.apply(MSPConnector.ID, "label1", "infile", "outfile"));
     }
 
 }

@@ -5,7 +5,7 @@ import java.util
 
 import com.google.common.base.Charsets
 import com.google.common.io.Files
-import com.taskadapter.web.uiapi.ConfigId
+import com.taskadapter.web.uiapi.{ConfigId, SetupId}
 import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
@@ -77,12 +77,12 @@ class ConfigStorage(val rootDir: File) {
     */
   @throws[StorageException]
   def createNewConfig(userLoginName: String, configName: String,
-                      connector1Id: String, connector1SavedSetupIdString: String, connector1Data: String,
-                      connector2Id: String, connector2SavedSetupIdString: String, connector2Data: String,
+                      connector1Id: String, connector1SavedSetupId: SetupId, connector1Data: String,
+                      connector2Id: String, connector2SavedSetupId: SetupId, connector2Data: String,
                       mappings: String): ConfigId = {
     val fileContents = NewConfigParser.toFileContent(configName,
-      connector1Id, connector1SavedSetupIdString, connector1Data,
-      connector2Id, connector2SavedSetupIdString, connector2Data,
+      connector1Id, connector1SavedSetupId.id, connector1Data,
+      connector2Id, connector2SavedSetupId.id, connector2Data,
       mappings)
     try {
       val folder = getUserConfigsFolder(userLoginName)
@@ -97,12 +97,12 @@ class ConfigStorage(val rootDir: File) {
   }
 
   @throws[StorageException]
-  def saveConnectorSetup(userLoginName: String, setupLabel: String, connectorSetup: String): Unit = {
-    logger.info(s"Saving connector setup for user $userLoginName. label: $setupLabel")
+  def saveConnectorSetup(userLoginName: String, setupId: SetupId, connectorSetup: String): Unit = {
+    logger.info(s"Saving connector setup for user $userLoginName. id $setupId")
     try {
       val folder = getUserFolder(userLoginName)
       folder.mkdirs
-      val newConfigFile = new File(folder, setupLabel)
+      val newConfigFile = new File(folder, setupId.id)
       Files.write(connectorSetup, newConfigFile, Charsets.UTF_8)
     } catch {
       case e: IOException =>
@@ -111,9 +111,9 @@ class ConfigStorage(val rootDir: File) {
   }
 
   @throws[StorageException]
-  def loadConnectorSetupAsString(userName: String, setupLabel: String): String = try {
+  def loadConnectorSetupAsString(userName: String, setupId: String): String = try {
     val folder = getUserFolder(userName)
-    val file = new File(folder, setupLabel)
+    val file = new File(folder, setupId)
     Files.toString(file, Charsets.UTF_8)
   } catch {
     case e: IOException =>
