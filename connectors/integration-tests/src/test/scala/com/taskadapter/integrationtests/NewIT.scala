@@ -1,6 +1,6 @@
-package com.taskadapter.connector
+package com.taskadapter.integrationtests
 
-import com.taskadapter.connector.it.RedmineTestInitializer
+import com.taskadapter.connector._
 import com.taskadapter.connector.redmine.{CustomFieldBuilder, RedmineConnector, RedmineField}
 import com.taskadapter.redmineapi.bean.{Issue, IssueFactory, Project}
 import org.junit.runner.RunWith

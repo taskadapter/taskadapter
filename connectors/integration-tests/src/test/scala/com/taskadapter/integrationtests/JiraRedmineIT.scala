@@ -1,6 +1,6 @@
-package com.taskadapter.connector
+package com.taskadapter.integrationtests
 
-import com.taskadapter.connector.it.RedmineTestInitializer
+import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.jira.{JiraConnector, JiraField, JiraPropertiesLoader}
 import com.taskadapter.connector.redmine.{CustomFieldBuilder, RedmineConnector, RedmineField}
 import com.taskadapter.connector.testlib.{TestSaver, TestUtils}

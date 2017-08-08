@@ -1,7 +1,8 @@
-package com.taskadapter.connector
+package com.taskadapter.integrationtests
 
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.SaveResult
+import com.taskadapter.connector.{FieldRow, NewConnector}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
 
 import scala.collection.JavaConverters._

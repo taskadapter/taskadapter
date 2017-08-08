@@ -2,16 +2,12 @@ package com.taskadapter.core;
 
 import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.NewConnector;
-import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.msp.MSPTaskSaver;
 import com.taskadapter.connector.redmine.RedmineConfig;
-import com.taskadapter.connector.redmine.RedmineConnector;
-import com.taskadapter.connector.redmine.RedmineManagerFactory;
 import com.taskadapter.connector.redmine.RedmineToGTask;
-import com.taskadapter.integrationtests.RedmineTestConfig;
 import com.taskadapter.model.GTask;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Issue;
@@ -48,12 +44,12 @@ public class UpdaterIntegrationTest {
     private RedmineConfig redmineConfig;
     private MSPConfig mspConfig;
     private NewConnector projectConnector;
-    static WebConnectorSetup setup = RedmineTestConfig.getRedmineServerInfo();
+//    static WebConnectorSetup setup = RedmineTestConfig.getRedmineServerInfo();
 
     @BeforeClass
     public static void oneTimeSetUp() {
-        logger.info("Running Redmine tests with: " + setup);
-        mgr = RedmineManagerFactory.createRedmineManager(setup);
+//        logger.info("Running Redmine tests with: " + setup);
+//        mgr = RedmineManagerFactory.createRedmineManager(setup);
 
         Project project = ProjectFactory.create("integration test project",
                 "ittest" + Calendar.getInstance().getTimeInMillis());
@@ -84,9 +80,9 @@ public class UpdaterIntegrationTest {
 
     @Before
     public void beforeEachTest() {
-        redmineConfig = RedmineTestConfig.getRedmineTestConfig();
-        redmineConfig.setProjectKey(projectKey);
-        redmineConnector = new RedmineConnector(redmineConfig, RedmineTestConfig.getRedmineServerInfo());
+//        redmineConfig = RedmineTestConfig.getRedmineTestConfig();
+//        redmineConfig.setProjectKey(projectKey);
+//        redmineConnector = new RedmineConnector(redmineConfig, RedmineTestConfig.getRedmineServerInfo());
         mspConfig = createTempMSPConfig();
         projectConnector = new MSPConnector(mspConfig);
     }
@@ -148,7 +144,6 @@ public class UpdaterIntegrationTest {
 
     private List<GTask> createRedmineIssues(int issuesNumber) {
         List<GTask> issues = new ArrayList<>(issuesNumber);
-        RedmineManager mgr = RedmineManagerFactory.createRedmineManager(setup);
         List<Issue> issuesToCreate = generateRedmineIssues(issuesNumber);
 
         RedmineToGTask converter = new RedmineToGTask(redmineConfig);

@@ -1,4 +1,4 @@
-package com.taskadapter.connector
+package com.taskadapter.integrationtests
 
 import com.taskadapter.connector.definition.SaveResult
 import com.taskadapter.redmineapi.RedmineManager

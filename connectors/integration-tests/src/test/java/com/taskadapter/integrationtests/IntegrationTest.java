@@ -1,58 +1,9 @@
 package com.taskadapter.integrationtests;
 
-import com.taskadapter.connector.definition.WebConnectorSetup;
-import com.taskadapter.connector.redmine.RedmineManagerFactory;
-import com.taskadapter.redmineapi.RedmineManager;
-import com.taskadapter.redmineapi.bean.Project;
-import com.taskadapter.redmineapi.bean.ProjectFactory;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Calendar;
-
 public class IntegrationTest {
 
     // TODO TA3 integration tests
 
-    private static final Logger logger = LoggerFactory.getLogger(IntegrationTest.class);
-    private static String projectKey;
-    private static RedmineManager mgr;
-    private static Project redmineProject;
-
-    @BeforeClass
-    public static void oneTimeSetUp() {
-        WebConnectorSetup setup = RedmineTestConfig.getRedmineServerInfo();
-        logger.info("Running Redmine tests with: " + setup);
-        mgr = RedmineManagerFactory.createRedmineManager(setup);
-
-        Project project = ProjectFactory.create("integration tests",
-                "itest" + Calendar.getInstance().getTimeInMillis());
-        try {
-            redmineProject = mgr.getProjectManager().createProject(project);
-            projectKey = redmineProject.getIdentifier();
-            logger.info("Created temporary Redmine project with key " + projectKey);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @AfterClass
-    public static void oneTimeTearDown() {
-        try {
-            if (mgr != null) {
-                mgr.getProjectManager().deleteProject(projectKey);
-                logger.info("Deleted temporary Redmine project with ID " + projectKey);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail("can't delete the test project '" + projectKey + ". reason: "
-                    + e.getMessage());
-        }
-    }
 
     /**
      * regression test for https://bitbucket.org/taskadapter/taskadapter/issues/43/tasks-are-not-updated-in-redmine-404-not

@@ -1,4 +1,5 @@
 dependencies {
     testCompile project(":connectors:connector-redmine")
+    testCompile project(":connectors:connector-jira")
     testCompile project(":connectors:connector-msp")
 }
