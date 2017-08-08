@@ -11,7 +11,6 @@ dependencies {
     compile libraries.servletAPI
 
     compile project(":common")
-    compile project(":mainapp")
     compile 'com.taskadapter:license:1'
 
     testCompile project(":test-utilities")

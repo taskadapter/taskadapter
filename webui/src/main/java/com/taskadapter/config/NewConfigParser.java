@@ -1,5 +1,7 @@
 package com.taskadapter.config;
 
+import com.taskadapter.web.uiapi.SetupId;
+
 /**
  * New configuration parser.
  * 
@@ -29,8 +31,8 @@ public final class NewConfigParser {
         final String mappings = findString(MAPPINGS_PREFIX, lines);
 
         return new StoredExportConfig(id, name,
-                new StoredConnectorConfig(connector1ID, connector1SavedSetupIdString, connector1DataString),
-                new StoredConnectorConfig(connector2ID, connector2SavedSetupIdString, connector2DataString),
+                new StoredConnectorConfig(connector1ID, SetupId.apply(connector1SavedSetupIdString), connector1DataString),
+                new StoredConnectorConfig(connector2ID, SetupId.apply(connector2SavedSetupIdString), connector2DataString),
                 mappings);
     }
 

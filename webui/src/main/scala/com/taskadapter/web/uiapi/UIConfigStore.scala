@@ -118,7 +118,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     configStorage.saveConnectorSetup(userName, setupId, jsonString)
   }
 
-  def loadSetup(userName: String, setupId: String): ConnectorSetup = {
+  def loadSetup(userName: String, setupId: SetupId): ConnectorSetup = {
     val string = configStorage.loadConnectorSetupAsString(userName, setupId)
     val json = parseSetupStringToJson(string, userName).get
 
@@ -208,8 +208,8 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
         val connector1 = config.getConnector1
         val connector2 = config.getConnector2
         configStorage.createNewConfig(userLoginName, config.getName,
-          connector1.connectorTypeId, SetupId(connector1.connectorSavedSetupId), connector1.serializedConfig,
-          connector2.connectorTypeId, SetupId(connector2.connectorSavedSetupId), connector2.connectorTypeId,
+          connector1.connectorTypeId, connector1.connectorSavedSetupId, connector1.serializedConfig,
+          connector2.connectorTypeId, connector2.connectorSavedSetupId, connector2.connectorTypeId,
           config.getMappingsString)
       case None => throw new StorageException(s"Cannot find config with id $configId to clone")
     }

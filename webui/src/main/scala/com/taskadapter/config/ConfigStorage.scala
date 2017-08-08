@@ -111,9 +111,9 @@ class ConfigStorage(val rootDir: File) {
   }
 
   @throws[StorageException]
-  def loadConnectorSetupAsString(userName: String, setupId: String): String = try {
+  def loadConnectorSetupAsString(userName: String, setupId: SetupId): String = try {
     val folder = getUserFolder(userName)
-    val file = new File(folder, setupId)
+    val file = new File(folder, setupId.id)
     Files.toString(file, Charsets.UTF_8)
   } catch {
     case e: IOException =>
