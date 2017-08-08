@@ -1,6 +1,7 @@
 package com.taskadapter.connector.definition
 
 sealed trait ConnectorSetup {
+  def connectorId: String
   def label: String
   def id: Option[String]
 }

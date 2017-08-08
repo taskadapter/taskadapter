@@ -122,12 +122,12 @@ class ConfigStorage(val rootDir: File) {
       throw new StorageException(e)
   }
 
-  def getAllConnectorSetupsAsStrings(userLoginName: String, connectorId: String): util.List[String] = {
+  def getAllConnectorSetupsAsStrings(userLoginName: String): Seq[String] = {
     val folder = getUserFolder(userLoginName)
     val setupFiles = folder.listFiles(ConfigStorage.setupFileFilter)
-    if (setupFiles == null) return List().asJava
+    if (setupFiles == null) return Seq()
 
-    setupFiles.map(Files.toString(_, Charsets.UTF_8)).toList.asJava
+    setupFiles.map(Files.toString(_, Charsets.UTF_8)).toSeq
   }
 
   private def findUnusedConfigFile(userFolder: File, type1: String, type2: String): File = {
@@ -149,8 +149,12 @@ class ConfigStorage(val rootDir: File) {
     fileName
   }
 
-  def delete(configId: ConfigId): Unit = {
+  def deleteConfig(configId: ConfigId): Unit = {
     new File(configId.id).delete
+  }
+
+  def deleteSetup(userName: String, id: SetupId): Unit = {
+    new File(getUserFolder(userName), id.id).delete
   }
 
 }

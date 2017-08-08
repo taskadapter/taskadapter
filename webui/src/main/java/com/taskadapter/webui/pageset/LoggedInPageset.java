@@ -18,6 +18,7 @@ import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.UserContext;
 import com.taskadapter.webui.WebUserSession;
 import com.taskadapter.webui.config.EditConfigPage;
+import com.taskadapter.webui.config.SetupsListPage;
 import com.taskadapter.webui.license.LicenseFacade;
 import com.taskadapter.webui.pages.ConfigsPage;
 import com.taskadapter.webui.pages.DropInExportPage;
@@ -39,7 +40,9 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.themes.BaseTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.Function0;
 import scala.Option;
+import scala.runtime.BoxedUnit;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -280,7 +283,17 @@ public class LoggedInPageset {
         tracker.trackPage("system_configuration");
         applyUI(ConfigureSystemPage.render(credentialsManager,
                 services.settingsManager, services.licenseManager.getLicense(),
-                context.authorizedOps, tracker));
+                context.authorizedOps, tracker,
+                showSetupsListPage()
+                ));
+    }
+
+    private Function0<BoxedUnit> showSetupsListPage() {
+        return () -> {
+            tracker.trackPage("setups_list");
+            applyUI(new SetupsListPage(context.configOps).ui());
+            return BoxedUnit.UNIT;
+        };
     }
 
     /**

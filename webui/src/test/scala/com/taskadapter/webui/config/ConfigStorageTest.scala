@@ -28,7 +28,7 @@ class ConfigStorageTest extends FunSpec with Matchers with ConfigsTempFolder {
       val storage = new ConfigStorage(folder)
       val configId = storage.createNewConfig(login, configName, "jira", SetupId("web"), "value1",
         "jira", SetupId("web"), "value2", "mappings")
-      storage.delete(configId)
+      storage.deleteConfig(configId)
       storage.getConfig(configId) shouldBe None
     }
   }

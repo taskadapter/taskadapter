@@ -13,8 +13,6 @@ import io.circe.parser._
 import io.circe.syntax._
 import org.slf4j.LoggerFactory
 
-import scala.collection.JavaConverters._
-
 /**
   * UI-level config manager. Manages UIMappingConfigs instead of low-level
   * [[com.taskadapter.config.StoredConnectorConfig]]. All methods of this class creates new fresh
@@ -85,10 +83,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
   def createNewConfig(userName: String, label: String, connector1Id: String, connector1SetupId: SetupId,
                       connector2Id: String, connector2SetupId: SetupId): ConfigId = {
     val config1 = uiConfigService.createDefaultConfig(connector1Id)
-//    config1.setLabel(connector1Label)
-
     val config2 = uiConfigService.createDefaultConfig(connector2Id)
-//    config2.setLabel(connector2Label)
 
     val newMappings = NewConfigSuggester.suggestedFieldMappingsForNewConfig(
       config1.getSuggestedCombinations,
@@ -130,15 +125,17 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     }
   }
 
-  def getAllConnectorSetups(userLoginName: String, connectorId: String): Seq[ConnectorSetup] = {
-    val setups: Seq[Option[Json]] = configStorage.getAllConnectorSetupsAsStrings(userLoginName, connectorId).asScala
-      .map { setupString =>
-        parseSetupStringToJson(setupString, userLoginName)
-      }
-    val setupsForThisConnectorId = setups.filter(maybeSetup => maybeSetup.isDefined
-      && maybeSetup.get.hcursor.get[String]("connectorId").toOption.contains(connectorId)).flatten
+  def getAllConnectorSetups(userLoginName: String): Seq[ConnectorSetup] = {
+    val setups: Seq[Json] = configStorage.getAllConnectorSetupsAsStrings(userLoginName).flatMap { setupString =>
+      parseSetupStringToJson(setupString, userLoginName)
+    }
+    convertJsonSetupsToConnectorSetups(setups).flatten
+  }
 
-    convertJsonSetupsToConnectorSetups(setupsForThisConnectorId).flatten
+  def getAllConnectorSetups(userLoginName: String, connectorId: String): Seq[ConnectorSetup] = {
+    val allForUser = getAllConnectorSetups(userLoginName)
+    allForUser.filter(setup =>
+      setup.connectorId == connectorId)
   }
 
   def convertJsonSetupsToConnectorSetups(jsonSeq: Seq[Json]): Seq[Option[ConnectorSetup]] = {
@@ -193,12 +190,16 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
   }
 
   def deleteConfig(configId: ConfigId): Unit = {
-    configStorage.delete(configId)
+    configStorage.deleteConfig(configId)
+  }
+
+  def deleteSetup(userName: String, id: SetupId): Unit = {
+    configStorage.deleteSetup(userName, id)
   }
 
   /**
     * @param userLoginName name of the new config owner.
-    * @param configId unique identifier for config to clone
+    * @param configId      unique identifier for config to clone
     */
   @throws[StorageException]
   def cloneConfig(userLoginName: String, configId: ConfigId): Unit = {
