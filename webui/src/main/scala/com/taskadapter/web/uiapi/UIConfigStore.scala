@@ -105,13 +105,15 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
   def saveSetup(userName: String, setup: ConnectorSetup, setupId: SetupId): Unit = {
     val jsonString: String = if (setup.isInstanceOf[WebConnectorSetup]) {
       val webSetup: WebConnectorSetup = setup.asInstanceOf[WebConnectorSetup]
-      webSetup.copy(password = encryptor.encrypt(webSetup.password),
+      webSetup.copy(id = Some(setupId.id),
+        password = encryptor.encrypt(webSetup.password),
         apiKey = encryptor.encrypt(webSetup.apiKey)
       ).asJson.spaces2
     } else {
       // only file setup is left possible
       val fileSetup: FileSetup = setup.asInstanceOf[FileSetup]
-      fileSetup.asJson.spaces2
+      fileSetup.copy(id = Some(setupId.id))
+        .asJson.spaces2
     }
     configStorage.saveConnectorSetup(userName, setupId, jsonString)
   }

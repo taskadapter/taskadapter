@@ -124,7 +124,7 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
     def getSetupId(): SetupId = {
       if (inSelectMode) {
         if (selectPanel.getValue != null) {
-          SetupId(selectPanel.getValue.toString)
+          selectPanel.getValue.asInstanceOf[SetupId]
         } else {
           throw new RuntimeException("unknown state")
         }
