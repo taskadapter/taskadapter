@@ -46,16 +46,16 @@ public final class NewConfigParser {
     }
 
     static String toFileContent(String configName,
-                                String connector1Id, String connector1SavedSetupId, String connector1Data,
-                                String connector2Id, String connector2SavedSetupId, String connector2Data,
+                                String connector1Id, SetupId connector1SavedSetupId, String connector1Data,
+                                String connector2Id, SetupId connector2SavedSetupId, String connector2Data,
                                 String mappings) {
         final StringBuilder result = new StringBuilder();
         result.append(NAME_PREFIX).append(configName).append("\n");
         result.append(CONN1_ID_PREFIX).append(connector1Id).append("\n");
-        result.append(CONN1_SAVED_SETUP_ID).append(connector1SavedSetupId).append("\n");
+        result.append(CONN1_SAVED_SETUP_ID).append(connector1SavedSetupId.id()).append("\n");
         result.append(CONN1_DATA_PREFIX).append(connector1Data).append("\n");
         result.append(CONN2_ID_PREFIX).append(connector2Id).append("\n");
-        result.append(CONN2_SAVED_SETUP_ID).append(connector2SavedSetupId).append("\n");
+        result.append(CONN2_SAVED_SETUP_ID).append(connector2SavedSetupId.id()).append("\n");
         result.append(CONN2_DATA_PREFIX).append(connector2Data).append("\n");
         result.append(MAPPINGS_PREFIX).append(mappings).append("\n");
         return result.toString();

@@ -55,10 +55,12 @@ class ConfigStorage(val rootDir: File) {
     }
   }
 
+  // TODO TA3 unify saveConfig() and createNewConfig()
+
   @throws[StorageException]
   def saveConfig(userLoginName: String, configId: String, configName: String,
-                 connector1Id: String, connector1SavedSetupId: String, connector1Data: String,
-                 connector2Id: String, connector2SavedSetupId: String, connector2Data: String, mappings: String): Unit = {
+                 connector1Id: String, connector1SavedSetupId: SetupId, connector1Data: String,
+                 connector2Id: String, connector2SavedSetupId: SetupId, connector2Data: String, mappings: String): Unit = {
     logger.info(s"Saving config for user $userLoginName")
     val fileContents = NewConfigParser.toFileContent(configName, connector1Id, connector1SavedSetupId, connector1Data,
       connector2Id, connector2SavedSetupId, connector2Data, mappings)
@@ -81,8 +83,8 @@ class ConfigStorage(val rootDir: File) {
                       connector2Id: String, connector2SavedSetupId: SetupId, connector2Data: String,
                       mappings: String): ConfigId = {
     val fileContents = NewConfigParser.toFileContent(configName,
-      connector1Id, connector1SavedSetupId.id, connector1Data,
-      connector2Id, connector2SavedSetupId.id, connector2Data,
+      connector1Id, connector1SavedSetupId, connector1Data,
+      connector2Id, connector2SavedSetupId, connector2Data,
       mappings)
     try {
       val folder = getUserConfigsFolder(userLoginName)

@@ -187,8 +187,8 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val mappingsStr = mappings.asJson.noSpaces
 
     configStorage.saveConfig(normalizedSyncConfig.getOwnerName, normalizedSyncConfig.identity, label,
-      config1.getConnectorTypeId, config1.getConnectorSetup.label, config1.getConfigString,
-      config2.getConnectorTypeId, config2.getConnectorSetup.label, config2.getConfigString,
+      config1.getConnectorTypeId, SetupId(config1.getConnectorSetup.id.get), config1.getConfigString,
+      config2.getConnectorTypeId, SetupId(config2.getConnectorSetup.id.get), config2.getConfigString,
       mappingsStr)
   }
 
