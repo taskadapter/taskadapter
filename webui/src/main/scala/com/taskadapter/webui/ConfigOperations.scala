@@ -95,6 +95,9 @@ final class ConfigOperations(/**
     uiConfigStore.saveConfig(config)
   }
 
+  def saveNewSetup(setup: ConnectorSetup): SetupId =
+    uiConfigStore.saveNewSetup(userName, setup)
+
   def saveSetup(setup: ConnectorSetup, id: SetupId): Unit =
     uiConfigStore.saveSetup(userName, setup, id)
 

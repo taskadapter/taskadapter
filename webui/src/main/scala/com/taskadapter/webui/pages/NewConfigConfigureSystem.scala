@@ -48,7 +48,7 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
   }
 
   class ChooseOrCreateSetupFragment(setups: Seq[ExistingSetup],
-                                       button: Button, connectorSetupPanel: ConnectorSetupPanel) {
+                                    button: Button, connectorSetupPanel: ConnectorSetupPanel) {
     private val selectPanel = createSavedServerConfigurationsSelector(message("createConfigPage.selectExistingOrNew"), setups,
       event => {}
     )
@@ -80,16 +80,16 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
 
     val nextButton = new Button(Page.message("newConfig.next"))
     nextButton.addClickListener(_ => {
-      val setupId = getSetupId()
       if (inEditMode) {
         val maybeString = validateEditMode()
         if (maybeString.isEmpty) {
-          configOps.saveSetup(getEditedResult(), setupId)
+          val setupId = configOps.saveNewSetup(getEditedResult())
           setupSelected(setupId)
         } else {
           errorMessageLabel.setValue(maybeString.get)
         }
       } else {
+        val setupId = selectPanel.getValue.asInstanceOf[SetupId]
         setupSelected(setupId)
       }
     }
@@ -119,19 +119,6 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
       if (selectPanel.getValue == null) {
         Some(Page.message("createConfigPage.error.mustSelectOrCreate"))
       } else None
-    }
-
-    def getSetupId(): SetupId = {
-      if (inSelectMode) {
-        if (selectPanel.getValue != null) {
-          selectPanel.getValue.asInstanceOf[SetupId]
-        } else {
-          throw new RuntimeException("unknown state")
-        }
-      } else {
-        val newFile = FileNameGenerator.createSafeAvailableFile(configOps.getSavedSetupsFolder, connectorId + "_%d.json")
-        SetupId(newFile.getName)
-      }
     }
 
     def getEditedResult(): ConnectorSetup = connectorSetupPanel.getResult

@@ -5,7 +5,7 @@ import java.io.File
 import com.taskadapter.config.CirceBoilerplateForConfigs._
 import com.taskadapter.config._
 import com.taskadapter.connector.NewConfigSuggester
-import com.taskadapter.connector.common.XorEncryptor
+import com.taskadapter.connector.common.{FileNameGenerator, XorEncryptor}
 import com.taskadapter.connector.definition._
 import io.circe.Json
 import io.circe.generic.auto._
@@ -95,6 +95,13 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
       mappingsString)
 
     configId
+  }
+
+  def saveNewSetup(userName: String, setup: ConnectorSetup): SetupId = {
+    val newFile = FileNameGenerator.createSafeAvailableFile(getSavedSetupsFolder(userName), setup.connectorId + "_%d.json")
+    val setupId = SetupId(newFile.getName)
+    saveSetup(userName, setup, setupId)
+    setupId
   }
 
   def saveSetup(userName: String, setup: ConnectorSetup, setupId: SetupId): Unit = {

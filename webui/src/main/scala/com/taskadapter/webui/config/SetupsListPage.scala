@@ -24,6 +24,7 @@ class SetupsListPage(configOperations: ConfigOperations, editorManager: EditorMa
   private val selectConnectorIdForNew = new ListSelect()
   selectConnectorIdForNew.setWidth("150px")
   selectConnectorIdForNew.setVisible(false)
+  selectConnectorIdForNew.setNullSelectionAllowed(false)
 
   selectConnectorIdForNew.addValueChangeListener { event =>
     val connectorId = event.getProperty.getValue.toString
@@ -76,11 +77,23 @@ class SetupsListPage(configOperations: ConfigOperations, editorManager: EditorMa
     selectConnectorIdForNew.setVisible(true)
     panelForEditor.setVisible(true)
   }
+  def hideAddBlock(): Unit = {
+    selectConnectorIdForNew.setVisible(false)
+    panelForEditor.setVisible(false)
+  }
 
   def showAddPanelForConnector(connectorId: String): Unit = {
     val editor = editorManager.getEditorFactory(connectorId)
     val editSetupPanel = editor.getEditSetupPanel(sandbox)
     panelForEditor.removeAllComponents()
     panelForEditor.addComponent(editSetupPanel.getUI)
+    val saveButton = new Button(Page.message("setupsListPage.saveButton"))
+    saveButton.addClickListener(_ => {
+      configOperations.saveNewSetup(editSetupPanel.getResult)
+      hideAddBlock()
+
+      refresh()
+    })
+    panelForEditor.addComponent(saveButton)
   }
 }
