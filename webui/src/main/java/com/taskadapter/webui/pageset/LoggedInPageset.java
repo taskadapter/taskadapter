@@ -291,7 +291,9 @@ public class LoggedInPageset {
     private Function0<BoxedUnit> showSetupsListPage() {
         return () -> {
             tracker.trackPage("setups_list");
-            applyUI(new SetupsListPage(context.configOps).ui());
+            applyUI(new SetupsListPage(context.configOps, services.editorManager, services.pluginManager,
+                    createSandbox()
+            ).ui());
             return BoxedUnit.UNIT;
         };
     }
