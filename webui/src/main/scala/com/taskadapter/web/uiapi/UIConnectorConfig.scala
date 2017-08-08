@@ -54,13 +54,6 @@ abstract class UIConnectorConfig {
   def setConnectorSetup(setup: ConnectorSetup): Unit
 
   /**
-    * Sets a new label.
-    *
-    * @param label new label.
-    */
-  def setLabel(label: String): Unit
-
-  /**
     * Validates config for load.
     *
     * @throws BadConfigException

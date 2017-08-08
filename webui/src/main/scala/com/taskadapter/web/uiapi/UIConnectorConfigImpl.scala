@@ -36,11 +36,7 @@ class UIConnectorConfigImpl[C <: ConnectorConfig, S <: ConnectorSetup]
 
   override def getConfigString: String = connectorFactory.writeConfig(config).toString
 
-  override def getLabel: String = config.getLabel
-
-  override def setLabel(label: String): Unit = {
-    config.setLabel(label)
-  }
+  override def getLabel: String = getConnectorSetup.label
 
   @throws[BadConfigException]
   override def validateForLoad(): Unit = {
