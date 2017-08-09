@@ -37,9 +37,13 @@ public class MSPConfig extends ConnectorConfig {
      * @param absoluteFilePath absolute path to the MSP file name
      */
     public MSPConfig(String absoluteFilePath) {
+        this(absoluteFilePath, absoluteFilePath);
+    }
+
+    public MSPConfig(String inFilePath, String outFilePath) {
         super(DEFAULT_PRIORITIES);
-        this.inputAbsoluteFilePath = absoluteFilePath;
-        this.outputAbsoluteFilePath = absoluteFilePath;
+        this.inputAbsoluteFilePath = inFilePath;
+        this.outputAbsoluteFilePath = outFilePath;
         setLabel(DEFAULT_LABEL);
     }
 

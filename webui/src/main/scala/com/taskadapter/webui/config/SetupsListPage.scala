@@ -12,7 +12,7 @@ import com.vaadin.ui._
 import scala.collection.JavaConverters._
 
 class SetupsListPage(configOperations: ConfigOperations, editorManager: EditorManager, pluginManager: PluginManager,
-                     sandbox: Sandbox) {
+                     sandbox: Sandbox, showEditSetup: (SetupId) => Unit) {
   val layout = new VerticalLayout
   layout.setSpacing(true)
   layout.setWidth(560, PIXELS)
@@ -46,7 +46,7 @@ class SetupsListPage(configOperations: ConfigOperations, editorManager: EditorMa
 
   val ui = layout
 
-  val grid = new GridLayout(3, 5)
+  val grid = new GridLayout(4, 5)
   grid.setSpacing(true)
   grid.setWidth("560px")
   layout.addComponent(grid)
@@ -61,14 +61,25 @@ class SetupsListPage(configOperations: ConfigOperations, editorManager: EditorMa
   private def addElements(): Unit = {
     val setups = configOperations.getConnectorSetups()
     setups.foreach { setup =>
-      val button = new Button(Page.message("setupsListPage.deleteButton"))
-      button.addClickListener(_ => {
-        configOperations.deleteConnectorSetup(SetupId(setup.id.get))
+      val deleteButton = new Button(Page.message("setupsListPage.deleteButton"))
+      val editButton = new Button(Page.message("setupsListPage.editButton"))
+      val setupId = SetupId(setup.id.get)
+      deleteButton.addClickListener(_ => {
+        configOperations.deleteConnectorSetup(setupId)
         refresh()
       })
-      grid.addComponents(new Label(setup.connectorId),
-        new Label(setup.label),
-        button
+
+      editButton.addClickListener(_ => {
+        showEditSetup(setupId)
+      })
+      val connectorIdLabel = new Label(setup.connectorId)
+      connectorIdLabel.setData(setupId)
+      val setupLabel = new Label(setup.label)
+      setupLabel.setData(setupId)
+      grid.addComponents(connectorIdLabel,
+        setupLabel,
+        editButton,
+        deleteButton
       )
     }
   }
@@ -77,6 +88,7 @@ class SetupsListPage(configOperations: ConfigOperations, editorManager: EditorMa
     selectConnectorIdForNew.setVisible(true)
     panelForEditor.setVisible(true)
   }
+
   def hideAddBlock(): Unit = {
     selectConnectorIdForNew.setVisible(false)
     panelForEditor.setVisible(false)
@@ -84,7 +96,7 @@ class SetupsListPage(configOperations: ConfigOperations, editorManager: EditorMa
 
   def showAddPanelForConnector(connectorId: String): Unit = {
     val editor = editorManager.getEditorFactory(connectorId)
-    val editSetupPanel = editor.getEditSetupPanel(sandbox)
+    val editSetupPanel = editor.getEditSetupPanel(sandbox, None)
     panelForEditor.removeAllComponents()
     panelForEditor.addComponent(editSetupPanel.getUI)
     val saveButton = new Button(Page.message("setupsListPage.saveButton"))

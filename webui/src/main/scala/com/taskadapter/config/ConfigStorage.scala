@@ -1,7 +1,6 @@
 package com.taskadapter.config
 
 import java.io.{File, FilenameFilter, IOException}
-import java.util
 
 import com.google.common.base.Charsets
 import com.google.common.io.Files

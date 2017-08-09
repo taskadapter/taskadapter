@@ -2,7 +2,6 @@ package com.taskadapter.connector.jira;
 
 import com.google.common.base.Strings;
 import com.taskadapter.connector.definition.WebConnectorSetup;
-import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exception.ForbiddenException;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.NotAuthorizedException;
@@ -24,6 +23,7 @@ import com.taskadapter.web.service.Sandbox;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.GridLayout;
+import scala.Option;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -122,8 +122,8 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     }
 
     @Override
-    public ConnectorSetupPanel getEditSetupPanel(Sandbox sandbox) {
-        return ServerPanelFactory.withLoginAndPassword(JiraConnector.ID(), JiraConnector.ID(), new WebServerInfo());
+    public ConnectorSetupPanel getEditSetupPanel(Sandbox sandbox, Option<WebConnectorSetup> setupOption) {
+        return ServerPanelFactory.withLoginAndPassword(JiraConnector.ID(), JiraConnector.ID(), setupOption);
     }
 
     @Override

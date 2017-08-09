@@ -1,7 +1,6 @@
 package com.taskadapter.connector.redmine.editor;
 
 import com.taskadapter.connector.definition.WebConnectorSetup;
-import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
@@ -24,6 +23,7 @@ import com.taskadapter.web.service.Sandbox;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.GridLayout;
+import scala.Option;
 
 public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, WebConnectorSetup> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.redmine.messages";
@@ -77,9 +77,9 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
     }
 
     @Override
-    public ConnectorSetupPanel getEditSetupPanel(Sandbox sandboxUnused) {
+    public ConnectorSetupPanel getEditSetupPanel(Sandbox sandboxUnused, Option<WebConnectorSetup> setupOption) {
         return ServerPanelFactory.withApiKeyAndLoginPassword(RedmineConnector.ID(),
-                RedmineConnector.ID(), new WebServerInfo());
+                RedmineConnector.ID(), setupOption);
     }
 
     @Override

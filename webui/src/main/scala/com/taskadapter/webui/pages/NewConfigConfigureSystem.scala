@@ -42,7 +42,7 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
       }
     }
 
-    val editSetupPanel = editor.getEditSetupPanel(sandbox)
+    val editSetupPanel = editor.getEditSetupPanel(sandbox, None)
     val addNewButton = new Button()
     new ChooseOrCreateSetupFragment(setupUiItems, addNewButton, editSetupPanel)
   }

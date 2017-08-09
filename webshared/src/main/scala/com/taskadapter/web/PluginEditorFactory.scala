@@ -1,7 +1,7 @@
 package com.taskadapter.web
 
 import com.taskadapter.connector.definition.exceptions.BadConfigException
-import com.taskadapter.connector.definition.{ConnectorConfig, ConnectorSetup, WebServerInfo}
+import com.taskadapter.connector.definition.{ConnectorConfig, ConnectorSetup}
 import com.taskadapter.web.service.Sandbox
 import com.vaadin.ui.ComponentContainer
 
@@ -10,7 +10,7 @@ trait PluginEditorFactory[C <: ConnectorConfig, S <: ConnectorSetup] extends Exc
 
   def isWebConnector: Boolean
 
-  def getEditSetupPanel(sandbox: Sandbox): ConnectorSetupPanel
+  def getEditSetupPanel(sandbox: Sandbox, setup: Option[S]): ConnectorSetupPanel
 
   /**
     * Validates a connector config for save mode. If validation fails, plugin

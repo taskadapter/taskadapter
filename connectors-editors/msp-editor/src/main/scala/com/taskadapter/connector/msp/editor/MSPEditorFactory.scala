@@ -46,8 +46,8 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     layout
   }
 
-  override def getEditSetupPanel(sandbox: Sandbox) = new ConnectorSetupPanel() {
-    val config = new MSPConfig()
+  override def getEditSetupPanel(sandbox: Sandbox, setup: Option[FileSetup]) = new ConnectorSetupPanel() {
+    val config = setup.map(s => new MSPConfig(s.sourceFile, s.targetFile)).getOrElse(new MSPConfig())
     val inputFilePath = new MethodProperty[String](config, "inputAbsoluteFilePath")
     val outputFilePath = new MethodProperty[String](config, "outputAbsoluteFilePath")
 

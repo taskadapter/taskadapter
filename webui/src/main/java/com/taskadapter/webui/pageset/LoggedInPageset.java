@@ -8,6 +8,7 @@ import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.uiapi.ConfigId;
+import com.taskadapter.web.uiapi.SetupId;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigureSystemPage;
@@ -18,6 +19,7 @@ import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.UserContext;
 import com.taskadapter.webui.WebUserSession;
 import com.taskadapter.webui.config.EditConfigPage;
+import com.taskadapter.webui.config.EditSetupPage;
 import com.taskadapter.webui.config.SetupsListPage;
 import com.taskadapter.webui.license.LicenseFacade;
 import com.taskadapter.webui.pages.ConfigsPage;
@@ -41,6 +43,7 @@ import com.vaadin.ui.themes.BaseTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Function0;
+import scala.Function1;
 import scala.Option;
 import scala.runtime.BoxedUnit;
 
@@ -292,7 +295,17 @@ public class LoggedInPageset {
         return () -> {
             tracker.trackPage("setups_list");
             applyUI(new SetupsListPage(context.configOps, services.editorManager, services.pluginManager,
-                    createSandbox()
+                    createSandbox(), showEditSetupPage()
+            ).ui());
+            return BoxedUnit.UNIT;
+        };
+    }
+
+    private Function1<SetupId, BoxedUnit> showEditSetupPage() {
+        return (setupId) -> {
+            tracker.trackPage("edit_setup");
+            applyUI(new EditSetupPage(context.configOps, services.editorManager, services.pluginManager,
+                    createSandbox(), setupId, showSetupsListPage()
             ).ui());
             return BoxedUnit.UNIT;
         };
