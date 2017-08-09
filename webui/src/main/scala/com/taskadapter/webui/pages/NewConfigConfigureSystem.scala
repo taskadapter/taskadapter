@@ -1,9 +1,6 @@
 package com.taskadapter.webui.pages
 
-import com.taskadapter.connector.common.FileNameGenerator
-import com.taskadapter.connector.definition.exception.SetupNameMissingException
-import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException
-import com.taskadapter.connector.definition.{ConnectorSetup, FileSetup, WebConnectorSetup}
+import com.taskadapter.connector.definition.{FileSetup, WebConnectorSetup}
 import com.taskadapter.web.ConnectorSetupPanel
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.SetupId
@@ -81,9 +78,9 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
     val nextButton = new Button(Page.message("newConfig.next"))
     nextButton.addClickListener(_ => {
       if (inEditMode) {
-        val maybeString = validateEditMode()
+        val maybeString = connectorSetupPanel.validate
         if (maybeString.isEmpty) {
-          val setupId = configOps.saveNewSetup(getEditedResult())
+          val setupId = configOps.saveNewSetup(connectorSetupPanel.getResult)
           setupSelected(setupId)
         } else {
           errorMessageLabel.setValue(maybeString.get)
@@ -104,24 +101,11 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
       button.setCaption(caption)
     }
 
-    def validateEditMode(): Option[String] = {
-      try {
-        connectorSetupPanel.validate
-        None
-      } catch {
-        case e: SetupNameMissingException => Some(Page.message("newConfig.configure.nameRequired"))
-        case e: ServerURLNotSetException => Some(Page.message("newConfig.configure.serverUrlRequired"))
-        case e => Some(editor.formatError(e))
-      }
-    }
-
     def validateSelectMode(): Option[String] = {
       if (selectPanel.getValue == null) {
         Some(Page.message("createConfigPage.error.mustSelectOrCreate"))
       } else None
     }
-
-    def getEditedResult(): ConnectorSetup = connectorSetupPanel.getResult
 
     button.addClickListener(_ => {
       inSelectMode = !inSelectMode

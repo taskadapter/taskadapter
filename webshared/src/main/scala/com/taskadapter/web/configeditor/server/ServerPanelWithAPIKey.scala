@@ -2,11 +2,8 @@ package com.taskadapter.web.configeditor.server
 
 import com.google.common.base.Strings
 import com.taskadapter.connector.definition.{WebConnectorSetup, WebServerInfo}
-import com.taskadapter.connector.definition.exception.SetupNameMissingException
-import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException
 import com.taskadapter.web.ConnectorSetupPanel
 import com.taskadapter.web.configeditor.EditorUtil._
-import com.taskadapter.web.configeditor.Validatable
 import com.taskadapter.web.ui.Grids._
 import com.taskadapter.webui.Page
 import com.vaadin.data.Property
@@ -18,7 +15,7 @@ import scala.collection.JavaConverters._
 class ServerPanelWithAPIKey(connectorId: String, caption: String, val labelProperty: Property[String],
                             val serverURLProperty: Property[String], val loginNameProperty: Property[String],
                             val passwordProperty: Property[String], val apiKeyProperty: Property[String],
-                            val useApiKeyProperty: Property[java.lang.Boolean]) extends ConnectorSetupPanel with Validatable {
+                            val useApiKeyProperty: Property[java.lang.Boolean]) extends ConnectorSetupPanel {
   val panel = new Panel
   panel.setCaption(caption)
 
@@ -29,6 +26,8 @@ class ServerPanelWithAPIKey(connectorId: String, caption: String, val labelPrope
 
   val authOptions = List[java.lang.Boolean](true, false).asJava
   val authOptionsGroup = new OptionGroup(Page.message("setupPanel.authorization"), authOptions)
+  val errorMessageLabel = new Label
+  errorMessageLabel.addStyleName("error-message-label")
 
   buildUI(labelProperty, serverURLProperty, loginNameProperty, passwordProperty, apiKeyProperty, useApiKeyProperty)
   addListener()
@@ -37,29 +36,31 @@ class ServerPanelWithAPIKey(connectorId: String, caption: String, val labelPrope
   private def buildUI(labelProperty: Property[String], serverURLProperty: Property[String],
                       loginNameProperty: Property[String], passwordProperty: Property[String],
                       apiKeyProperty: Property[String], useApiKeyProperty: Property[java.lang.Boolean]) = {
-    val layout = new GridLayout
+    val grid = new GridLayout
+
+    val layout = new VerticalLayout(grid, errorMessageLabel)
     panel.setContent(layout)
-    layout.setSpacing(true)
-    layout.setMargin(true)
-    layout.setColumns(2)
-    layout.setRows(8)
+    grid.setSpacing(true)
+    grid.setMargin(true)
+    grid.setColumns(2)
+    grid.setRows(8)
 
     var currentRow = 0
 
-    addTo(layout, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.name")))
+    addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.name")))
     val labelField = textInput(labelProperty)
     labelField.addStyleName("server-panel-textfield")
-    layout.addComponent(labelField, 1, currentRow)
+    grid.addComponent(labelField, 1, currentRow)
 
     currentRow += 1
-    addTo(layout, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.serverUrl")))
+    addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.serverUrl")))
     serverURL.addStyleName("server-panel-textfield")
     serverURL.setInputPrompt("http://myserver:3000/some_location")
-    addTo(layout, 1, currentRow, Alignment.MIDDLE_LEFT, serverURL)
+    addTo(grid, 1, currentRow, Alignment.MIDDLE_LEFT, serverURL)
     val emptyLabelHeight = "10px"
 
     currentRow += 1
-    layout.addComponent(createEmptyLabel(emptyLabelHeight), 0, currentRow)
+    grid.addComponent(createEmptyLabel(emptyLabelHeight), 0, currentRow)
 
     currentRow += 1
 
@@ -70,30 +71,30 @@ class ServerPanelWithAPIKey(connectorId: String, caption: String, val labelPrope
     authOptionsGroup.setNullSelectionAllowed(false)
     authOptionsGroup.setImmediate(true)
 
-    layout.addComponent(authOptionsGroup, 0, currentRow, 1, currentRow)
-    layout.setComponentAlignment(authOptionsGroup, Alignment.MIDDLE_LEFT)
+    grid.addComponent(authOptionsGroup, 0, currentRow, 1, currentRow)
+    grid.setComponentAlignment(authOptionsGroup, Alignment.MIDDLE_LEFT)
 
     currentRow += 1
-    layout.addComponent(createEmptyLabel(emptyLabelHeight), 0, currentRow)
+    grid.addComponent(createEmptyLabel(emptyLabelHeight), 0, currentRow)
 
     currentRow += 1
-    addTo(layout, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.apiAccessKey")))
+    addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.apiAccessKey")))
     apiKeyField.setPropertyDataSource(apiKeyProperty)
     apiKeyField.addStyleName("server-panel-textfield")
 
-    addTo(layout, 1, currentRow, Alignment.MIDDLE_LEFT, apiKeyField)
+    addTo(grid, 1, currentRow, Alignment.MIDDLE_LEFT, apiKeyField)
 
     currentRow += 1
-    addTo(layout, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.login")))
+    addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.login")))
     login.addStyleName("server-panel-textfield")
-    addTo(layout, 1, currentRow, Alignment.MIDDLE_LEFT, login)
+    addTo(grid, 1, currentRow, Alignment.MIDDLE_LEFT, login)
 
     currentRow += 1
-    addTo(layout, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.password")))
+    addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.password")))
     password.addStyleName("server-panel-textfield")
     password.setPropertyDataSource(passwordProperty)
 
-    addTo(layout, 1, currentRow, Alignment.MIDDLE_LEFT, password)
+    addTo(grid, 1, currentRow, Alignment.MIDDLE_LEFT, password)
   }
 
   private def createEmptyLabel(height: String) = {
@@ -117,15 +118,23 @@ class ServerPanelWithAPIKey(connectorId: String, caption: String, val labelPrope
 
   override def getUI: Component = panel
 
-  @throws[ServerURLNotSetException]
-  override def validate(): Unit = {
-    if (Strings.isNullOrEmpty(labelProperty.getValue)) throw new SetupNameMissingException
+  override def validate(): Option[String] = {
+    if (Strings.isNullOrEmpty(labelProperty.getValue)) {
+      return Some(Page.message("newConfig.configure.nameRequired"))
+    }
     val host = serverURL.getValue
-    if (host == null || host.isEmpty || host.equalsIgnoreCase(WebServerInfo.DEFAULT_URL_PREFIX)) throw new ServerURLNotSetException
+    if (host == null || host.isEmpty || host.equalsIgnoreCase(WebServerInfo.DEFAULT_URL_PREFIX)) {
+      return Some(Page.message("newConfig.configure.serverUrlRequired"))
+    }
+    None
   }
 
   override def getResult: WebConnectorSetup = {
     WebConnectorSetup(connectorId, None, labelProperty.getValue, serverURLProperty.getValue, loginNameProperty.getValue,
       passwordProperty.getValue, useApiKeyProperty.getValue, apiKeyProperty.getValue)
+  }
+
+  override def showError(string: String): Unit = {
+    errorMessageLabel.setValue(string)
   }
 }

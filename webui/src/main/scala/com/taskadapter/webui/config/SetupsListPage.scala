@@ -101,10 +101,14 @@ class SetupsListPage(configOperations: ConfigOperations, editorManager: EditorMa
     panelForEditor.addComponent(editSetupPanel.getUI)
     val saveButton = new Button(Page.message("setupsListPage.saveButton"))
     saveButton.addClickListener(_ => {
-      configOperations.saveNewSetup(editSetupPanel.getResult)
-      hideAddBlock()
-
-      refresh()
+      val maybeError = editSetupPanel.validate
+      if (maybeError.isEmpty) {
+        configOperations.saveNewSetup(editSetupPanel.getResult)
+        hideAddBlock()
+        refresh()
+      } else {
+        editSetupPanel.showError(maybeError.get)
+      }
     })
     panelForEditor.addComponent(saveButton)
   }

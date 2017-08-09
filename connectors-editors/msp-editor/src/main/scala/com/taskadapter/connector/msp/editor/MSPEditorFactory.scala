@@ -59,13 +59,16 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
         createServerModePanel(sandbox, inputFilePath, outputFilePath)
     }
 
-
-    @throws[BadConfigException]
-    override def validate(): Unit = {
+    override def validate(): Option[String] = {
+      None
     }
 
     override def getResult: FileSetup = FileSetup(MSPConnector.ID, inputFilePath.getValue,
       inputFilePath.getValue, outputFilePath.getValue)
+
+    override def showError(String: String): Unit = {
+      // TODO show error
+    }
   }
 
   private def createDescriptionElement(config: ConnectorConfig) = {

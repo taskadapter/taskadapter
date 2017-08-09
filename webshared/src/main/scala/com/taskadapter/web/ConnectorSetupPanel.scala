@@ -1,14 +1,17 @@
 package com.taskadapter.web
 
 import com.taskadapter.connector.definition.ConnectorSetup
-import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.vaadin.ui.Component
 
 trait ConnectorSetupPanel {
   def getUI: Component
 
-  @throws[BadConfigException]
-  def validate: Unit
+  /**
+    * @return None if no errors. localized error text otherwise
+    */
+  def validate: Option[String]
+
+  def showError(String: String) : Unit
 
   def getResult: ConnectorSetup
 }

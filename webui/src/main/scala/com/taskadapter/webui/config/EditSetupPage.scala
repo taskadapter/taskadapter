@@ -24,16 +24,20 @@ class EditSetupPage(configOperations: ConfigOperations, editorManager: EditorMan
 
   val ui = layout
 
-  val setup : ConnectorSetup = configOperations.getSetup(setupId)
+  val setup: ConnectorSetup = configOperations.getSetup(setupId)
 
-  val editor : PluginEditorFactory[_, ConnectorSetup]= editorManager.getEditorFactory(setup.connectorId)
+  val editor: PluginEditorFactory[_, ConnectorSetup] = editorManager.getEditorFactory(setup.connectorId)
   val editSetupPanel = editor.getEditSetupPanel(sandbox, Some(setup))
   layout.addComponent(editSetupPanel.getUI)
-
   layout.addComponent(new HorizontalLayout(saveButton, closeButton))
 
   def saveClicked(): Unit = {
-    configOperations.saveSetup(editSetupPanel.getResult, setupId)
-    onDone()
+    val maybeError = editSetupPanel.validate
+    if (maybeError.isEmpty) {
+      configOperations.saveSetup(editSetupPanel.getResult, setupId)
+      onDone()
+    } else {
+      editSetupPanel.showError(maybeError.get)
+    }
   }
 }
