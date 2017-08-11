@@ -1,7 +1,6 @@
 package com.taskadapter.connector.github;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.WebServerInfo;
 
 import java.util.Collections;
 import java.util.Map;
@@ -16,13 +15,11 @@ public class GithubConfig extends ConnectorConfig {
     private String issueState;
     private String issueKeyword;
     private String queryString;
-    private WebServerInfo serverInfo = new WebServerInfo();
     private String projectKey;
 
     public GithubConfig() {
         super(DEFAULT_PRIORITIES);
         setLabel(DEFAULT_LABEL);
-        getServerInfo().setHost("http://github.com");
     }
 
     public String getIssueState() {
@@ -47,10 +44,6 @@ public class GithubConfig extends ConnectorConfig {
 
     public void setQueryString(String queryString) {
         this.queryString = queryString;
-    }
-
-    public WebServerInfo getServerInfo() {
-        return serverInfo;
     }
 
     public String getProjectKey() {

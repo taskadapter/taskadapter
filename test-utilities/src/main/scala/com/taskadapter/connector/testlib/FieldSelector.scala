@@ -1,12 +1,5 @@
 package com.taskadapter.connector.testlib
 
-import java.util
-
-import com.taskadapter.connector.definition.AvailableFields
-import com.taskadapter.model.GTaskDescriptor
-
-import scala.collection.JavaConverters._
-
 object FieldSelector {
   /**
     * Helper method to get a filtered collection of fields with given `field` and `selected` values.
