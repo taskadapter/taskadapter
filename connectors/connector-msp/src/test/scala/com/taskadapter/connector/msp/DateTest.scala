@@ -14,12 +14,12 @@ import scala.collection.JavaConverters._
 class DateTest extends FunSpec with Matchers {
   val gtasks = load("start_date_by_constraint.xml").asScala
 
-  it("startDateMustStartOn") {
+  it("start date must start on") {
     val gtask = findTaskByFieldName(gtasks, MspField.summary.name, "must start on")
     gtask.getValue(MspField.mustStartOn) shouldBe createMSPDate(15, 9, 2011, 8)
   }
 
-  it("startDateNoLaterThan") {
+  it("start date no later than") {
     val gtask = findTaskByFieldName(gtasks, MspField.summary.name, "start no later than")
     gtask.getValue(MspField.startNoLaterThan) shouldBe createMSPDate(10, 9, 2011, 8)
   }

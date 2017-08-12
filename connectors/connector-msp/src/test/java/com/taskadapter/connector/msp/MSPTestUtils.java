@@ -60,10 +60,6 @@ public class MSPTestUtils {
         return null;
     }
 
-    static List<GTask> loadWithDefaultMappings(String fileNameInClasspath) throws ConnectorException {
-        return load(fileNameInClasspath);
-    }
-
     static List<GTask> load(String fileNameInClasspath) throws ConnectorException {
         String fileName = getTestFileAbsolutePath(fileNameInClasspath);
         MSPConfig config = new MSPConfig(fileName);

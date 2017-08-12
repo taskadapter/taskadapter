@@ -27,7 +27,7 @@ public class MSTaskLoaderTest {
 
     @Test
     public void testLoadTree() throws Exception {
-        List<GTask> loadedTasks = MSPTestUtils.loadWithDefaultMappings("Projeto1.xml");
+        List<GTask> loadedTasks = MSPTestUtils.load("Projeto1.xml");
         assertEquals(3, loadedTasks.size());
         List<GTask> tree = TreeUtils.buildTreeFromFlatList(loadedTasks);
         assertEquals(1, tree.size());
@@ -36,7 +36,7 @@ public class MSTaskLoaderTest {
 
     @Test
     public void fileCreatedByMSP2013IsLoaded() throws Exception {
-        List<GTask> tasks = MSPTestUtils.loadWithDefaultMappings("msp_2013.xml");
+        List<GTask> tasks = MSPTestUtils.load("msp_2013.xml");
         assertEquals(2, tasks.size());
         GTask task1 = tasks.get(0);
         assertEquals("task 1", task1.getValue(MspField.summary()));
@@ -55,7 +55,7 @@ public class MSTaskLoaderTest {
 
     @Test
     public void targetVersionFieldIsLoaded() throws Exception {
-        List<GTask> tasks = MSPTestUtils.loadWithDefaultMappings("msp_with_target_version.xml");
+        List<GTask> tasks = MSPTestUtils.load("msp_with_target_version.xml");
         assertEquals(2, tasks.size());
         GTask task1 = tasks.get(0);
         assertEquals("for version 2", task1.getValue(MspField.summary()));
