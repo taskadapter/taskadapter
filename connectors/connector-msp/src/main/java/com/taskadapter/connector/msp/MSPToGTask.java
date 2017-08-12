@@ -66,11 +66,11 @@ class MSPToGTask {
             genericTask.setValue(MspField.taskDuration(), convertMspDurationToHours(task.getDuration()));
         }
         // TODO TA3 MSP fields
-/*
+
         if (task.getPercentageComplete() != null) {
-            genericTask.setDoneRatio(task.getPercentageComplete().intValue());
+            genericTask.setValue(MspField.doneRatio(), task.getPercentageComplete().intValue());
         }
-*/
+
         // DATES
         ConstraintType type = task.getConstraintType();
         if (ConstraintType.START_NO_LATER_THAN.equals(type)) {
