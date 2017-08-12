@@ -68,7 +68,7 @@ class MSPToGTask {
         // TODO TA3 MSP fields
 
         if (task.getPercentageComplete() != null) {
-            genericTask.setValue(MspField.doneRatio(), task.getPercentageComplete().intValue());
+            genericTask.setValue(MspField.percentageComplete(), task.getPercentageComplete().intValue());
         }
 
         // DATES
