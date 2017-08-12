@@ -47,8 +47,6 @@ public final class MSPTaskSaver {
         return result.getResult();
     }
 
-    // TODO this method is always called with "false" ONLY
-
     /**
      * This method allows saving data to MSP file while keeping tasks ids.
      */

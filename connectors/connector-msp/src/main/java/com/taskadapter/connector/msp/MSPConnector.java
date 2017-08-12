@@ -150,9 +150,6 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
      * @return flat list of tasks (not a tree!)
      */
     private List<Task> skipRootNodeIfPresent(List<Task> mspTasks) {
-//        if (mspTasks.get(0).getParentTask() == null){
-//            return mspTasks.subList(1, mspTasks.size());
-//        }
         if ((mspTasks != null) && (!mspTasks.isEmpty())
                 && mspTasks.get(0).getOutlineLevel().equals(0)) {
             mspTasks = mspTasks.subList(1, mspTasks.size());

@@ -1,5 +1,6 @@
 package com.taskadapter.connector.msp.write;
 
+import com.taskadapter.connector.msp.MspField;
 import com.taskadapter.model.GTask;
 
 import java.util.Date;
@@ -12,8 +13,7 @@ final class DateFinder {
     static Date findEarliestStartDate(List<GTask> tasks) {
         Date earliestDate = null;
         for (GTask gTask : tasks) {
-            // TODO TA3 MSP restore project start date
-            final Date taskStartDate = null; // gTask.getStartDate();
+            Date taskStartDate = (Date) gTask.getValue(MspField.mustStartOn());
             if (taskStartDate == null)
                 continue;
             if (earliestDate == null || earliestDate.after(taskStartDate)) {

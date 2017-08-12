@@ -53,6 +53,7 @@ object MspField {
     taskWork -> EstimatedTime,
     status -> TaskStatus,
     assignee -> Assignee,
+    mustStartOn -> StartDate,
     closedOn -> ClosedOn,
     //    dueDate -> DueDate,
     priority -> Priority,
