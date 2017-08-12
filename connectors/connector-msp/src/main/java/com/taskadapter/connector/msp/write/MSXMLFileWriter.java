@@ -62,7 +62,7 @@ public class MSXMLFileWriter {
 
         ProjectHeader header = project.getProjectHeader();
         project.addDefaultBaseCalendar();
-        Date earliestTaskDate = DateFinder.findEarliestStartDate(tasks);
+        Date earliestTaskDate = DateFinder.findEarliestStartDate(project.getAllTasks());
         if (earliestTaskDate != null) {
             header.setStartDate(earliestTaskDate);
         }

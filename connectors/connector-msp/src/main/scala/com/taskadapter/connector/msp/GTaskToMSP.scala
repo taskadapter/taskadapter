@@ -1,5 +1,7 @@
 package com.taskadapter.connector.msp
 
+import java.util.Date
+
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.msp.write.{ResourceManager, TaskEstimationMode}
 import net.sf.mpxj.Task
@@ -19,6 +21,7 @@ import net.sf.mpxj.Task
 import net.sf.mpxj.TaskField
 import net.sf.mpxj.TimeUnit
 import com.taskadapter.model.GTaskDescriptor.FIELD._
+
 import scala.collection.JavaConverters._
 
 class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
@@ -60,7 +63,6 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
 //    processDoneRatio(gTask)
 //    processPriority(gTask)
 //    processKey(gTask)
-//    processStartDate(gTask)
 //    processDueDate(gTask)
 //    processClosedDate(gTask)
     //    setFieldIfSelected(TARGET_VERSION, mspTask, gTask.getTargetVersionName)
@@ -74,6 +76,29 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
       case MspField.status.name => setFieldByName(fieldName, stringBasedValue)
       case MspField.taskType.name => setFieldByName(fieldName, stringBasedValue)
       case MspField.assignee.name => processAssignee(fieldName,  stringBasedValue)
+      case MspField.mustStartOn.name => mspTask.setStart(value.asInstanceOf[Date])
+      case MspField.startAsSoonAsPossible.name =>
+          mspTask.setConstraintType(ConstraintType.AS_SOON_AS_POSSIBLE)
+          mspTask.setConstraintDate(value.asInstanceOf[Date])
+      case MspField.startAsLateAsPossible.name =>
+          mspTask.setConstraintType(ConstraintType.AS_LATE_AS_POSSIBLE)
+          mspTask.setConstraintDate(value.asInstanceOf[Date])
+      case MspField.startNoEarlierThan.name =>
+          mspTask.setConstraintType(ConstraintType.START_NO_EARLIER_THAN)
+          mspTask.setConstraintDate(value.asInstanceOf[Date])
+      case MspField.startNoLaterThan.name =>
+          mspTask.setConstraintType(ConstraintType.START_NO_LATER_THAN)
+          mspTask.setConstraintDate(value.asInstanceOf[Date])
+      case MspField.mustFinishOn.name =>
+          mspTask.setConstraintType(ConstraintType.MUST_FINISH_ON)
+          mspTask.setConstraintDate(value.asInstanceOf[Date])
+      case MspField.finishNoEarlierThan.name =>
+          mspTask.setConstraintType(ConstraintType.FINISH_NO_EARLIER_THAN)
+          mspTask.setConstraintDate(value.asInstanceOf[Date])
+      case MspField.finishNoLaterThan.name =>
+          mspTask.setConstraintType(ConstraintType.FINISH_NO_LATER_THAN)
+          mspTask.setConstraintDate(value.asInstanceOf[Date])
+
       case _ => // unknown, ignore for now
     }
   }
@@ -96,19 +121,6 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
       else if (dueDateValue == TaskField.DEADLINE.toString) mspTask.set(TaskField.DEADLINE, gTask.getDueDate)
     }
   }
-
-  private def processStartDate(gTask: GTask) = {
-    if (mappings.isFieldSelected(START_DATE)) {
-      val constraint = mappings.getMappedTo(START_DATE)
-      if (constraint == null || MSPUtils.NO_CONSTRAINT == constraint) mspTask.setStart(gTask.getStartDate)
-      else {
-        val constraintType = ConstraintType.valueOf(constraint)
-        mspTask.setConstraintType(constraintType)
-        mspTask.setConstraintDate(gTask.getStartDate)
-      }
-    }
-  }
-
   private def processClosedDate(gTask: GTask) = {
     if (mappings.isFieldSelected(CLOSE_DATE)) {
       val constraint = mappings.getMappedTo(CLOSE_DATE)
