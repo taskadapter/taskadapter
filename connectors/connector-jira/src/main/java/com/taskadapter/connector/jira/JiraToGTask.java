@@ -50,6 +50,7 @@ public class JiraToGTask {
         final Long longId = issue.getId();
         task.setId(longId);
         task.setKey(issue.getKey());
+        // must set source system id, otherwise "update task" is impossible later
         task.setSourceSystemId(new TaskId(longId, issue.getKey()));
 
         if (issue.getAssignee() != null) {

@@ -3,9 +3,11 @@ package com.taskadapter.connector.mantis;
 import biz.futureware.mantis.rpc.soap.client.AccountData;
 import biz.futureware.mantis.rpc.soap.client.IssueData;
 import biz.futureware.mantis.rpc.soap.client.RelationshipData;
+import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GUser;
+import com.taskadapter.model.Precedes$;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,32 +40,29 @@ public final class MantisToGTask {
     public static GTask convertToGenericTask(IssueData issue) {
         GTask task = new GTask();
 
-        task.setId(issue.getId().intValue());
-        task.setKey(String.valueOf(issue.getId()));
-        // task.setParentId(parentId);
+        long longId = issue.getId().longValue();
+        task.setId(longId);
+        String stringId = String.valueOf(issue.getId());
+        task.setKey(stringId);
+        // must set source system id, otherwise "update task" is impossible later
+        task.setSourceSystemId(new TaskId(longId, stringId));
 
         AccountData mantisUser = issue.getHandler();
         if (mantisUser != null) {
             GUser ass = convertToGUser(mantisUser);
-            task.setAssignee(ass);
+            task.setValue(MantisField.assignee(), ass);
         }
 
-        // task.setType(type);
-        task.setSummary(issue.getSummary());
-        // task.setEstimatedHours(estimatedHours); only in string values for ex.
-        // (< 1 day, 2-3 days, < 1week, < 1 month)
-        // task.setDoneRatio(doneRatio);
-        // task.setStartDate(startDate);
-        // task.setDueDate(dueDate);
-        task.setCreatedOn(issue.getDate_submitted().getTime());
-        task.setUpdatedOn(issue.getLast_updated().getTime());
+        task.setValue(MantisField.summary(), issue.getSummary());
+        task.setValue(MantisField.description(), issue.getDescription());
+        task.setValue(MantisField.createdOn(), issue.getDate_submitted().getTime());
+        task.setValue(MantisField.updatedOn(), issue.getLast_updated().getTime());
 
         Integer priorityValue = priorityNumbers.get(issue.getPriority().getName());
-        task.setPriority(priorityValue);
+        task.setValue(MantisField.priority(), priorityValue);
 
-        task.setDescription(issue.getDescription());
         if (issue.getDue_date() != null) {
-            task.setDueDate(issue.getDue_date().getTime());
+            task.setValue(MantisField.dueDate(), issue.getDue_date().getTime());
         }
 
         processRelations(issue, task);
@@ -76,9 +75,10 @@ public final class MantisToGTask {
         if (relations != null) {
             for (RelationshipData relation : relations) {
                 if (relation.getType().getName().equals("child of")) {
-                    GRelation r = new GRelation(String.valueOf(relation.getId()),
-                            String.valueOf(relation.getTarget_id()),
-                            GRelation.TYPE.precedes);
+                    GRelation r = new GRelation(
+                            new TaskId(relation.getId().longValue(), String.valueOf(relation.getId())),
+                            new TaskId(relation.getTarget_id().longValue(), String.valueOf(relation.getTarget_id())),
+                            Precedes$.MODULE$);
                     genericTask.getRelations().add(r);
                 } else {
                     logger.info("Relation type is not supported: " + relation.getType()

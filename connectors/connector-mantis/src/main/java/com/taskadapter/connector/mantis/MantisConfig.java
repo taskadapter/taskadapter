@@ -1,7 +1,6 @@
 package com.taskadapter.connector.mantis;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.WebServerInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +19,6 @@ public class MantisConfig extends ConnectorConfig {
     static final String DEFAULT_LABEL = "MantisBT";
 
     private static final long serialVersionUID = 1L;
-    private WebServerInfo serverInfo = new WebServerInfo();
     private String projectKey;
     private boolean findUserByName;
     private Long queryId;
@@ -28,14 +26,6 @@ public class MantisConfig extends ConnectorConfig {
     public MantisConfig() {
         super(DEFAULT_PRIORITIES);
         setLabel(DEFAULT_LABEL);
-    }
-
-    public WebServerInfo getServerInfo() {
-        return serverInfo;
-    }
-
-    public void setServerInfo(WebServerInfo serverInfo) {
-        this.serverInfo = serverInfo;
     }
 
     public String getProjectKey() {
