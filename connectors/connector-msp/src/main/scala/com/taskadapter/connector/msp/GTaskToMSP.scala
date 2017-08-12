@@ -63,7 +63,6 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
 //    processDoneRatio(gTask)
 //    processPriority(gTask)
 //    processKey(gTask)
-//    processDueDate(gTask)
 //    processClosedDate(gTask)
     //    setFieldIfSelected(TARGET_VERSION, mspTask, gTask.getTargetVersionName)
   }
@@ -98,6 +97,15 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
       case MspField.finishNoLaterThan.name =>
           mspTask.setConstraintType(ConstraintType.FINISH_NO_LATER_THAN)
           mspTask.setConstraintDate(value.asInstanceOf[Date])
+
+      case MspField.finish.name =>
+        if (value != null) {
+          mspTask.setFinish(value.asInstanceOf[Date])
+        }
+      case MspField.deadline.name =>
+        if (value != null) {
+          mspTask.setDeadline(value.asInstanceOf[Date])
+        }
 
       case _ => // unknown, ignore for now
     }
