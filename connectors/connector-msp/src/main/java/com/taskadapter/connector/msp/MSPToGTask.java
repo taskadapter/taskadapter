@@ -5,6 +5,7 @@ import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GUser;
 import com.taskadapter.model.Precedes$;
+import net.sf.mpxj.ConstraintType;
 import net.sf.mpxj.Duration;
 import net.sf.mpxj.ProjectHeader;
 import net.sf.mpxj.Relation;
@@ -46,7 +47,7 @@ class MSPToGTask {
         genericTask.setValue(MspField.summary(), task.getName());
         genericTask.setId(task.getUniqueID().longValue());
         genericTask.setKey(task.getUniqueID() + "");
-        genericTask.setSourceSystemId(new TaskId(task.getUniqueID(), task.getUniqueID()+""));
+        genericTask.setSourceSystemId(new TaskId(task.getUniqueID(), task.getUniqueID() + ""));
 
         Task parent = task.getParentTask();
         if (parent != null && parent.getID() != 0 && parent.getUniqueID() != 0) {
@@ -64,34 +65,30 @@ class MSPToGTask {
         if (task.getDuration() != null) {
             genericTask.setValue(MspField.taskDuration(), convertMspDurationToHours(task.getDuration()));
         }
+        // TODO TA3 MSP fields
 /*
         if (task.getPercentageComplete() != null) {
             genericTask.setDoneRatio(task.getPercentageComplete().intValue());
         }
-
+*/
         // DATES
         ConstraintType type = task.getConstraintType();
-        if (type != null
-                && ((type.equals(ConstraintType.START_NO_LATER_THAN) || (type.
-                equals(ConstraintType.MUST_START_ON))))) {
-            genericTask.setStartDate(task.getConstraintDate());
-        } else {
-            genericTask.setStartDate(task.getStart());
+        if (ConstraintType.START_NO_LATER_THAN.equals(type)) {
+            genericTask.setValue(MspField.startNoLaterThan(), task.getConstraintDate());
+        } else if (ConstraintType.START_NO_EARLIER_THAN.equals(type)) {
+            genericTask.setValue(MspField.startNoEarlierThan(), task.getConstraintDate());
+        } else if (ConstraintType.MUST_START_ON.equals(type)) {
+            genericTask.setValue(MspField.mustStartOn(), task.getStart());
+        } else if (ConstraintType.AS_SOON_AS_POSSIBLE.equals(type)) {
+            genericTask.setValue(MspField.startAsSoonAsPossible(), task.getStart());
+        } else if (ConstraintType.AS_LATE_AS_POSSIBLE.equals(type)) {
+            genericTask.setValue(MspField.startAsLateAsPossible(), task.getStart());
+        } else if (ConstraintType.MUST_FINISH_ON.equals(type)) {
+            genericTask.setValue(MspField.mustFinishOn(), task.getStart());
         }
+        genericTask.setValue(MspField.finish(), task.getFinish());
+        genericTask.setValue(MspField.deadline(), task.getDeadline());
 
-        // DUE DATE
-        final String dueDateField = mappings.getMappedTo(DUE_DATE);
-        if (dueDateField != null) {
-            Date mspDueDate = null;
-            if (dueDateField.equals(TaskField.FINISH.toString())) {
-                mspDueDate = task.getFinish();
-            } else if (dueDateField.equals(TaskField.DEADLINE.toString())) {
-                mspDueDate = task.getDeadline();
-            }
-            genericTask.setDueDate(mspDueDate);
-        }
-
-*/
 //        genericTask.setAssignee(extractAssignee(task));
         genericTask.setValue(MspField.description(), task.getNotes());
 
@@ -118,8 +115,8 @@ class MSPToGTask {
                         Task sourceTask = relation.getSourceTask();
                         Task targetTask = relation.getTargetTask();
                         GRelation r = new GRelation(
-                                new TaskId(sourceTask.getUniqueID(), sourceTask.getUniqueID()+""),
-                                new TaskId(targetTask.getUniqueID(), targetTask.getUniqueID()+""),
+                                new TaskId(sourceTask.getUniqueID(), sourceTask.getUniqueID() + ""),
+                                new TaskId(targetTask.getUniqueID(), targetTask.getUniqueID() + ""),
                                 Precedes$.MODULE$);
                         genericTask.getRelations().add(r);
                     });
