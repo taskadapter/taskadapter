@@ -89,7 +89,7 @@ class MSPToGTask {
         genericTask.setValue(MspField.finish(), task.getFinish());
         genericTask.setValue(MspField.deadline(), task.getDeadline());
 
-//        genericTask.setAssignee(extractAssignee(task));
+        genericTask.setValue(MspField.assignee(), getAssigneeNameOrNull(task));
         genericTask.setValue(MspField.description(), task.getNotes());
 
         processRelations(task, genericTask);
@@ -123,6 +123,10 @@ class MSPToGTask {
         }
     }
 
+    String getAssigneeNameOrNull(Task task) {
+        GUser user = extractAssignee(task);
+        return user == null ? null : user.getDisplayName();
+    }
     GUser extractAssignee(Task task) {
         GUser genericAssignee = new GUser();
         Resource r = getAssignee(task);

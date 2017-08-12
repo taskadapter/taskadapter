@@ -14,16 +14,16 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 public class MSTaskLoaderTest {
-/*
+
     @Test
     public void testLoadTaskType() throws Exception {
-        List<GTask> loadedTasks = MSPTestUtils.loadWithDefaultMappings("Projeto1.xml");
+        List<GTask> loadedTasks = MSPTestUtils.load("Projeto1.xml");
         assertEquals(3, loadedTasks.size());
         GTask firstGTask = loadedTasks.get(0);
         assertNotNull(firstGTask);
-        assertEquals("MyTracker", firstGTask.getType());
+        // TODO TA3 MSP fields tests
+//        assertEquals("MyTracker", firstGTask.getType());
     }
-*/
 
     @Test
     public void testLoadTree() throws Exception {
@@ -41,16 +41,15 @@ public class MSTaskLoaderTest {
         GTask task1 = tasks.get(0);
         assertEquals("task 1", task1.getValue(MspField.summary()));
         // TODO TA3 restore MSP tests
-/*
-        assertEquals("alex", task1.getAssignee().getDisplayName());
-        assertEquals(12f, task1.getEstimatedHours(), 0);
+
+        assertEquals("alex", task1.getValue(MspField.assignee()));
+        assertEquals(12f, task1.getValue(MspField.taskDuration()));
 
         Date expectedStartDate = new SimpleDateFormat("MM/dd/yyyy HH:mm").parse("12/11/2013 08:00");
-        assertEquals(expectedStartDate, task1.getStartDate());
+        assertEquals(expectedStartDate, task1.getValue(MspField.startAsSoonAsPossible()));
 
         Date expectedFinishDate = new SimpleDateFormat("MM/dd/yyyy HH:mm").parse("12/12/2013 12:00");
-        assertEquals(expectedFinishDate, task1.getDueDate());
-*/
+        assertEquals(expectedFinishDate, task1.getValue(MspField.finish()));
     }
 
     @Test

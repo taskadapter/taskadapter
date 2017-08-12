@@ -29,21 +29,11 @@ public class MSPTestUtils {
 
     private static String getTestFileAbsolutePath(String name) {
         URL url = MSPTestUtils.class.getClassLoader().getResource(name);
-        String path = null;
         try {
-            if (url.getProtocol().startsWith("bundleresource")) {
-                // for running inside OSGI via Maven
-//        		URL nativeURL = FileLocator.resolve(url);
-//                path = nativeURL.toURI().getPath();
-                throw new RuntimeException("not implemented");
-            } else {
-                // for running tests in IDE
-                path = url.toURI().getPath();
-            }
+            return url.toURI().getPath();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return path;
     }
 
     static Task findMSPTaskBySummary(List<Task> tasks, String summary) {
