@@ -50,13 +50,12 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
       case "KEY" => // processed in [[DefaultValueSetter]] for now
       case "SOURCE_SYSTEM_ID" => // processed in [[DefaultValueSetter]] for now
 
-      // TODO TA3 review types
       case RedmineField.summary.name => issue.setSubject(value.asInstanceOf[String])
       case RedmineField.startDate.name => issue.setStartDate(value.asInstanceOf[Date])
       case RedmineField.dueDate.name => issue.setDueDate(value.asInstanceOf[Date])
       case RedmineField.estimatedTime.name => issue.setEstimatedHours(value.asInstanceOf[Float])
 
-      case RedmineField.doneRatio.name => issue.setDoneRatio(value.asInstanceOf[Integer])
+      case RedmineField.doneRatio.name => issue.setDoneRatio(value.asInstanceOf[Float].toInt)
       case RedmineField.taskType.name =>
         var trackerName = value.asInstanceOf[String]
         if (Strings.isNullOrEmpty(trackerName)) trackerName = config.getDefaultTaskType
