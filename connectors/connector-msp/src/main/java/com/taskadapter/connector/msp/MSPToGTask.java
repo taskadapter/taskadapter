@@ -40,7 +40,7 @@ class MSPToGTask {
         return genericTasks;
     }
 
-    GTask convertToGenericTask(Task task) {
+    private GTask convertToGenericTask(Task task) {
         GTask genericTask = new GTask();
 
         genericTask.setValue(MspField.summary(), task.getName());
@@ -62,7 +62,6 @@ class MSPToGTask {
         if (task.getDuration() != null) {
             genericTask.setValue(MspField.taskDuration(), convertMspDurationToHours(task.getDuration()));
         }
-        // TODO TA3 MSP fields
 
         if (task.getPercentageComplete() != null) {
             genericTask.setValue(MspField.percentageComplete(), task.getPercentageComplete().intValue());
@@ -110,11 +109,12 @@ class MSPToGTask {
         }
     }
 
-    String getAssigneeNameOrNull(Task task) {
+    private String getAssigneeNameOrNull(Task task) {
         GUser user = extractAssignee(task);
         return user == null ? null : user.getDisplayName();
     }
-    GUser extractAssignee(Task task) {
+
+    private GUser extractAssignee(Task task) {
         GUser genericAssignee = new GUser();
         Resource r = getAssignee(task);
         if (r != null) {
@@ -150,43 +150,4 @@ class MSPToGTask {
         Duration convertedToHoursDuration = mspDuration.convertUnits(TimeUnit.HOURS, header);
         return (float) convertedToHoursDuration.getDuration();
     }
-
-/*    Float extractEstimatedHours(Task task) throws BadConfigException {
-        Duration useAsEstimatedTime = null;
-
-        if (MSPUtils.useWork(mappings)) {
-            String isUndefinedString = (String) task.getCurrentValue(MSPDefaultFields.FIELD_WORK_UNDEFINED);
-            boolean isUndefined = Boolean.parseBoolean(isUndefinedString);
-            // this is to differentiate "0" and "undefined". unfortunately, MPXJ does not do this for us.
-            if (!isUndefined) {
-                useAsEstimatedTime = task.getWork();
-            }
-        } else {
-            String isUndefinedString = (String) task.getCurrentValue(MSPDefaultFields.FIELD_DURATION_UNDEFINED);
-
-            boolean isUndefined = Boolean.parseBoolean(isUndefinedString);
-            // this is to differentiate "0" and "undefined". unfortunately, MPXJ does not do this for us.
-            if (!isUndefined) {
-                useAsEstimatedTime = task.getDuration();
-            }
-        }
-
-        if (useAsEstimatedTime != null) {
-            Duration convertedToHoursDuration = useAsEstimatedTime.convertUnits(TimeUnit.HOURS, header);
-            return (float) convertedToHoursDuration.getDuration();
-        }
-
-        return null;
-    }
-
-    Object getValue(Task mspTask, FIELD field) {
-        String v = mappings.getMappedTo(field);
-        if (v != null) {
-            TaskField f = MSPUtils.getTaskFieldByName(v);
-
-            return mspTask.getCurrentValue(f);
-        }
-        return null;
-    }*/
-
 }
