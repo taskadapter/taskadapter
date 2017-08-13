@@ -3,7 +3,7 @@ package com.taskadapter.connector.jira
 import java.util
 
 import com.atlassian.jira.rest.client.api.domain.input.{ComplexIssueInputFieldValue, FieldInput, IssueInputBuilder}
-import com.atlassian.jira.rest.client.api.domain.{BasicComponent, CustomFieldOption, IssueFieldId, IssueType, Priority, TimeTracking, Version}
+import com.atlassian.jira.rest.client.api.domain.{BasicComponent, IssueFieldId, IssueType, Priority, TimeTracking, Version}
 import com.google.common.collect.ImmutableList
 import com.taskadapter.connector.common.ValueTypeResolver
 import com.taskadapter.connector.common.data.ConnectorConverter
@@ -25,15 +25,15 @@ object GTaskToJira {
 
 class GTaskToJira(config: JiraConfig,
                   customFieldResolver: CustomFieldResolver,
-                  issueTypeList: java.lang.Iterable[IssueType],
-                  versions: java.lang.Iterable[Version],
-                  components: java.lang.Iterable[BasicComponent],
-                  jiraPriorities: java.lang.Iterable[Priority])
+                  issueTypeList: Iterable[IssueType],
+                  versions: Iterable[Version],
+                  components: Iterable[BasicComponent],
+                  jiraPriorities: Iterable[Priority])
   extends ConnectorConverter[GTask, IssueWrapper] {
 
-  val priorities = jiraPriorities.asScala.map(p => p.getName -> p).toMap
+  val priorities = jiraPriorities.map(p => p.getName -> p).toMap
 
-  private def convertToJiraIssue(task: GTask) = {
+  def convertToJiraIssue(task: GTask) : IssueWrapper = {
     val issueInputBuilder = new IssueInputBuilder(config.getProjectKey, findIssueTypeId(task))
     if (task.getParentIdentity != null) {
       // See http://stackoverflow.com/questions/14699893/how-to-create-subtasks-using-jira-rest-java-client
@@ -53,7 +53,7 @@ class GTaskToJira(config: JiraConfig,
     if (fixForVersion != null) issueInputBuilder.setFixVersions(ImmutableList.of(fixForVersion))
     if (component != null) issueInputBuilder.setComponents(ImmutableList.of(component))
     val issueInput = issueInputBuilder.build
-    new IssueWrapper(task.getKey, issueInput)
+    IssueWrapper(task.getKey, issueInput)
   }
 
   private def processField(issueInputBuilder: IssueInputBuilder, fieldName: String, value: Any) : Unit = {
@@ -126,7 +126,7 @@ class GTaskToJira(config: JiraConfig,
   }
 
   private def getIssueTypeIdByName(issueTypeName: String) = {
-    issueTypeList.asScala.find(i => i.getName == issueTypeName).map(_.getId).orNull
+    issueTypeList.find(i => i.getName == issueTypeName).map(_.getId).orNull
   }
 
   @throws[ConnectorException]

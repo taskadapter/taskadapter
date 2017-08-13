@@ -119,11 +119,11 @@ class JiraConnector(config: JiraConfig, setup: WebConnectorSetup) extends NewCon
       val issueTypeList = loadIssueTypes(client)
       val projectPromise = client.getProjectClient.getProject(config.getProjectKey)
       val project = projectPromise.claim
-      val versions = project.getVersions
-      val components = project.getComponents
+      val versions = project.getVersions.asScala
+      val components = project.getComponents.asScala
       /* Need to load Jira server priorities because what we store in the config files is a
                    * priority name (string), while Jira returns the number value of the issue priority */ val prioritiesPromise = client.getMetadataClient.getPriorities
-      val priorities = prioritiesPromise.claim
+      val priorities = prioritiesPromise.claim.asScala
 
       val fields = client.getMetadataClient.getFields
       val fieldIterable = fields.claim.asScala
@@ -140,7 +140,7 @@ class JiraConnector(config: JiraConfig, setup: WebConnectorSetup) extends NewCon
   })
 
   @throws[BadConfigException]
-  private def loadIssueTypes(jiraRestClient: JiraRestClient) : java.lang.Iterable[IssueType] = {
+  private def loadIssueTypes(jiraRestClient: JiraRestClient) : Iterable[IssueType] = {
     val issueTypeListPromise = jiraRestClient.getMetadataClient.getIssueTypes
     val issueTypeList = issueTypeListPromise.claim
     //check if default issue type exists in Jira

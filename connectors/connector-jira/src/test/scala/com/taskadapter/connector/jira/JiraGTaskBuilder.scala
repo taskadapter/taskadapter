@@ -50,7 +50,7 @@ class JiraGTaskBuilder(summary: String = "task " + new Date().getTime) {
     this
   }
 
-  def withPriority(value: Object): JiraGTaskBuilder = {
+  def withPriority(value: Int): JiraGTaskBuilder = {
     task.setValue(JiraField.priority, value)
     this
   }
