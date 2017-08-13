@@ -19,7 +19,11 @@ object TaskKeeperLocationStorage {
 
   val fileName = "cache_file_links.json"
 
-  def append(configRootFolder: File, location1: String, location2: String, items: Seq[(TaskId, TaskId)]): Unit = {
+  /**
+    * Store elements in the cache on disk. New items are added to existing ones, skipping duplicates.
+    * If file does not exist yet, it will be created.
+    */
+  def store(configRootFolder: File, location1: String, location2: String, items: Seq[(TaskId, TaskId)]): Unit = {
     val file = getOrCreateFileLocation(configRootFolder, location1, location2)
     val existingCache = loadCache(configRootFolder, location1, location2)
     val allItems = (existingCache.items ++ items).distinct
