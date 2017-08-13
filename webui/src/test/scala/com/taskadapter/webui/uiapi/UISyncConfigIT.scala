@@ -14,6 +14,7 @@ import scala.collection.JavaConverters._
 
 @RunWith(classOf[JUnitRunner])
 class UISyncConfigIT extends FunSpec with Matchers with ConfigsTempFolder {
+  // TODO TA3 ui-sync-level tests
   /*  private var config = ConfigLoader.loadConfig("Redmine_Microsoft-Project_3.ta_conf")
     private var toRedmineConfig = config.reverse
 
