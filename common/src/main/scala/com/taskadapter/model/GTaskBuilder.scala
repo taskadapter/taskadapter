@@ -7,6 +7,9 @@ import com.taskadapter.connector.Field
 import scala.util.Random
 
 object GTaskBuilder {
+  def withRandom(fieldName: String): GTask = {
+    new GTaskBuilder().withRandom(Field("String", fieldName)).build()
+  }
   def withRandom(field: Field): GTask = {
     new GTaskBuilder().withRandom(field).build()
   }

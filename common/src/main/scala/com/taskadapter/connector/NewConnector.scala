@@ -7,6 +7,10 @@ import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.GTask
 
 trait NewConnector {
+  /**
+    * Connectors should wrap all exceptions inside this method and return all results, including task-specific
+    * errors and general errors (like "credentials invalid").
+    */
   def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver,
                tasks: util.List[GTask],
                monitor: ProgressMonitor,
