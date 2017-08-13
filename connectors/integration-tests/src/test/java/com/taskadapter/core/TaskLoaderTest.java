@@ -1,23 +1,16 @@
 package com.taskadapter.core;
 
-import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.NewConnector;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
-import com.taskadapter.connector.msp.MspField;
-import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.integrationtests.MSPConfigLoader;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor;
-import net.sf.mpxj.TaskField;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;

@@ -2,11 +2,11 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.testlib.ResourceLoader;
 import com.taskadapter.model.GTask;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Task;
 
-import java.net.URL;
 import java.util.List;
 
 public class MSPTestUtils {
@@ -16,21 +16,8 @@ public class MSPTestUtils {
 
     public static ProjectFile readTestProjectFile() {
         try {
-            String path = getTestFileAbsolutePath();
+            String path = ResourceLoader.getAbsolutePathForResource(FILE_TO_READ);
             return fileReader.readFile(path);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static String getTestFileAbsolutePath() {
-        return getTestFileAbsolutePath(FILE_TO_READ);
-    }
-
-    private static String getTestFileAbsolutePath(String name) {
-        URL url = MSPTestUtils.class.getClassLoader().getResource(name);
-        try {
-            return url.toURI().getPath();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -46,7 +33,7 @@ public class MSPTestUtils {
     }
 
     static List<GTask> load(String fileNameInClasspath) throws ConnectorException {
-        String fileName = getTestFileAbsolutePath(fileNameInClasspath);
+        String fileName = ResourceLoader.getAbsolutePathForResource(fileNameInClasspath);
         MSPConfig config = new MSPConfig(fileName);
         final MSPConnector connector = new MSPConnector(config);
         return ConnectorUtils.loadDataOrderedById(connector);
@@ -56,7 +43,7 @@ public class MSPTestUtils {
      * Load the file into native task list
      */
     public static List<Task> loadToMSPTaskList(String fileNameInClasspath) {
-        String fileName = getTestFileAbsolutePath(fileNameInClasspath);
+        String fileName = ResourceLoader.getAbsolutePathForResource(fileNameInClasspath);
         try {
             ProjectFile projectFile = new MSPFileReader().readFile(fileName);
             return projectFile.getAllTasks();

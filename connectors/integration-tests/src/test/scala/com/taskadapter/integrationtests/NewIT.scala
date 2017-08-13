@@ -1,11 +1,21 @@
 package com.taskadapter.integrationtests
 
+import java.io.File
+
 import com.taskadapter.connector._
-import com.taskadapter.connector.redmine.{CustomFieldBuilder, RedmineConnector, RedmineField}
+import com.taskadapter.connector.common.ProgressMonitorUtils
+import com.taskadapter.connector.msp.{MSPConfig, MSPConnector}
+import com.taskadapter.connector.redmine._
+import com.taskadapter.connector.testlib.{ResourceLoader, TestUtils}
+import com.taskadapter.core.TaskLoader
+import com.taskadapter.model.FieldRowBuilder
 import com.taskadapter.redmineapi.bean.{Issue, IssueFactory, Project}
+import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
+
+import scala.collection.JavaConverters._
 
 @RunWith(classOf[JUnitRunner])
 class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll {
@@ -101,6 +111,48 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
     loaded.getCustomFieldByName("my_custom_1").getValue shouldBe "description 1"
   }
 
+  it("msp tasks with non-linear IDs are saved to Redmine") {
+    val mspConfig = getMspConfig("com/taskadapter/integrationtests/non-linear-uuid.xml")
+    val msProjectConnector = new MSPConnector(mspConfig)
+    val redmineConfig: RedmineConfig = RedmineTestConfig.getRedmineTestConfig
+    redmineConfig.setProjectKey(redmineProject.get.getIdentifier)
+
+    // load from MSP
+    val maxTasksNumber = 9999
+    val loadedTasks = TaskLoader.loadTasks(maxTasksNumber, msProjectConnector, "msp1",
+      ProgressMonitorUtils.DUMMY_MONITOR).asScala.toList
+
+    val redmineConnector = new RedmineConnector(redmineConfig, RedmineTestConfig.getRedmineServerInfo)
+    // save to Redmine
+    val result = TestUtils.saveAndLoadList(redmineConnector, loadedTasks,
+      FieldRowBuilder.rows(
+        RedmineField.summary
+      )
+    )
+    assertEquals("must have created 2 tasks", 2, result.size)
+  }
+
+  it("msp tasks with one-side disconnected relationships are saved to Redmine") {
+    val redmineConfig = RedmineTestConfig.getRedmineTestConfig
+    redmineConfig.setProjectKey(redmineProject.get.getIdentifier)
+
+    val mspConfig = getMspConfig("com/taskadapter/integrationtests/ProjectWithOneSideDisconnectedRelationships.xml")
+    val projectConnector = new MSPConnector(mspConfig)
+
+    val maxTasksNumber = 9999
+    val loadedTasks = TaskLoader.loadTasks(maxTasksNumber, projectConnector, "project1",
+      ProgressMonitorUtils.DUMMY_MONITOR).asScala.toList
+    // save to Redmine
+    val redmineConnector = new RedmineConnector(redmineConfig, RedmineTestConfig.getRedmineServerInfo)
+
+    val result = TestUtils.saveAndLoadList(redmineConnector, loadedTasks,
+      FieldRowBuilder.rows(
+        RedmineField.summary
+      )
+    )
+    assertEquals("must have created 13 tasks", 13, result.size)
+  }
+
   def createIssueInRedmineWithCustomField(fieldName: String, value: String): Issue = {
     val customFieldDefinitions = mgr.getCustomFieldManager.getCustomFieldDefinitions
     val issue = IssueFactory.create(redmineProject.get.getId, "some summary")
@@ -114,5 +166,12 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
     mgr.getIssueManager.createIssue(issue)
   }
 
+  def getMspConfig(resourceName: String): MSPConfig = {
+    val config = new MSPConfig
+    val file = new File(ResourceLoader.getAbsolutePathForResource(resourceName))
+    config.setInputAbsoluteFilePath(file.getAbsolutePath)
+    config.setOutputAbsoluteFilePath(file.getAbsolutePath)
+    config
+  }
 }
 

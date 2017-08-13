@@ -63,7 +63,7 @@ object TestUtils {
   }
 
   @throws[ConnectorException]
-  def saveAndLoadList(connector: NewConnector, tasks: List[GTask], rows: List[FieldRow]): List[GTask] = {
+  def saveAndLoadList(connector: NewConnector, tasks: Seq[GTask], rows: Seq[FieldRow]): List[GTask] = {
     connector.saveData(PreviouslyCreatedTasksResolver.empty, tasks.asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows)
     ConnectorUtils.loadDataOrderedById(connector).asScala.toList
   }

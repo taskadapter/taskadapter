@@ -17,9 +17,7 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
     */
   def setFields(gTask: GTask, keepTaskId: Boolean): Unit = {
     mspTask.setMilestone(false)
-    // TODO eliminate the boolean argument. split this function in two.
     if (keepTaskId) { // Setting the old unique id, true only in "save external id" operation
-      // TODO TA3 this is probably obsolete and won't work with JIRA text IDs
       mspTask.setUniqueID(gTask.getId.toInt)
     }
     gTask.getFields.asScala.foreach { x =>

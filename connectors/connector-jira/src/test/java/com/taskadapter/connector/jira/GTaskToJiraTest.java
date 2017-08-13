@@ -11,7 +11,6 @@ import com.atlassian.jira.rest.client.api.domain.input.IssueInput;
 import com.google.common.collect.Iterables;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.testlib.FieldSelector;
-import com.taskadapter.connector.testlib.TestMappingUtils;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GUser;
@@ -67,6 +66,7 @@ public class GTaskToJiraTest {
         config = JiraPropertiesLoader.createTestConfig();
     }
 
+    // TODO TA3 JIRA tests
 /*
     @Test
     public void priorityConvertedToCritical() throws MalformedURLException, RemoteException, URISyntaxException {
@@ -82,17 +82,6 @@ public class GTaskToJiraTest {
         String actualPriorityId = getId(newIssue, IssueFieldId.PRIORITY_FIELD.id);
         assertEquals(priorityCritical.getId().toString(), actualPriorityId);
     }
-
-    @Test
-    public void priorityNotExportedWhenNotSelected() throws MalformedURLException, RemoteException {
-        GTask task = new GTask();
-        task.setSummary("something");
-        task.setPriority(700);
-        GTaskToJira converter = createConverterWithUnselectedField(GTaskDescriptor.FIELD.PRIORITY);
-        IssueInput issue = converter.convertToJiraIssue(task).getIssueInput();
-        assertNull(issue.getField(IssueFieldId.PRIORITY_FIELD.id));
-    }
-
     @Test
     public void issueTypeExported() throws MalformedURLException, RemoteException, URISyntaxException {
 
@@ -120,11 +109,6 @@ public class GTaskToJiraTest {
     }
 
     @Test
-    public void summaryIsNotConvertedWhenNotSelected() {
-        checkSummary(createConverterWithUnselectedField(GTaskDescriptor.FIELD.SUMMARY), null);
-    }
-
-    @Test
     public void summaryIsConvertedWhenSelected() {
         checkSummary(createConverterWithSelectedField(GTaskDescriptor.FIELD.SUMMARY), "summary here");
     }
@@ -145,11 +129,6 @@ public class GTaskToJiraTest {
         checkDescription(createConverterWithSelectedField(GTaskDescriptor.FIELD.DESCRIPTION), "description here");
     }
 
-    @Test
-    public void descriptionIsNOTConvertedWhenNotSelected() {
-        checkDescription(createConverterWithUnselectedField(GTaskDescriptor.FIELD.DESCRIPTION), null);
-    }
-
     private void checkDescription(GTaskToJira converter, String expectedValue) {
         GTask task = new GTask();
         task.setDescription("description here");
@@ -167,11 +146,6 @@ public class GTaskToJiraTest {
         checkDueDate(createConverterWithSelectedField(GTaskDescriptor.FIELD.DUE_DATE), "2014-04-28");
     }
 
-    @Test
-    public void dueDateNotConvertedWhenNotSelected() {
-        checkDueDate(createConverterWithUnselectedField(GTaskDescriptor.FIELD.DUE_DATE), null);
-    }
-
     private void checkDueDate(GTaskToJira converter, String expected) {
         GTask task = new GTask();
         Calendar calendar = Calendar.getInstance();
@@ -184,11 +158,6 @@ public class GTaskToJiraTest {
     @Test
     public void assigneeConvertedByDefault() {
         checkAssignee(getConverter(), "mylogin");
-    }
-
-    @Test
-    public void assigneeNotConvertedWhenNotSelected() {
-        checkAssignee(createConverterWithUnselectedField(GTaskDescriptor.FIELD.ASSIGNEE), null);
     }
 
     @Test
@@ -213,11 +182,6 @@ public class GTaskToJiraTest {
     @Test
     public void estimatedTimeConvertedIfSelected() {
         checkEstimatedTime(createConverterWithSelectedField(GTaskDescriptor.FIELD.ESTIMATED_TIME), "180m");
-    }
-
-    @Test
-    public void estimatedTimeNotConvertedIfNotSelected() {
-        checkEstimatedTime(createConverterWithUnselectedField(GTaskDescriptor.FIELD.ESTIMATED_TIME), null);
     }
 
     private void checkEstimatedTime(GTaskToJira converter, String expectedTime) {
@@ -271,10 +235,6 @@ public class GTaskToJiraTest {
 
     private GTaskToJira createConverterWithSelectedField(GTaskDescriptor.FIELD field) {
         return createConverterWithField(field, true);
-    }
-
-    private GTaskToJira createConverterWithUnselectedField(GTaskDescriptor.FIELD field) {
-        return createConverterWithField(field, false);
     }
 
     private GTaskToJira createConverterWithField(GTaskDescriptor.FIELD field, boolean selected) {
