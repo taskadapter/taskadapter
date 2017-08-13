@@ -1,7 +1,7 @@
 package com.taskadapter.web.configeditor.server
 
 import com.google.common.base.Strings
-import com.taskadapter.connector.definition.{WebConnectorSetup, WebServerInfo}
+import com.taskadapter.connector.definition.WebConnectorSetup
 import com.taskadapter.web.ConnectorSetupPanel
 import com.taskadapter.web.configeditor.EditorUtil._
 import com.taskadapter.web.ui.Grids._
@@ -11,6 +11,10 @@ import com.vaadin.shared.ui.label.ContentMode
 import com.vaadin.ui._
 
 import scala.collection.JavaConverters._
+
+object ServerPanelWithAPIKey {
+  val defaultUrlPrefix = "http://"
+}
 
 class ServerPanelWithAPIKey(connectorId: String, caption: String, val labelProperty: Property[String],
                             val serverURLProperty: Property[String], val loginNameProperty: Property[String],
@@ -123,7 +127,7 @@ class ServerPanelWithAPIKey(connectorId: String, caption: String, val labelPrope
       return Some(Page.message("newConfig.configure.nameRequired"))
     }
     val host = serverURL.getValue
-    if (host == null || host.isEmpty || host.equalsIgnoreCase(WebServerInfo.DEFAULT_URL_PREFIX)) {
+    if (host == null || host.isEmpty || host.equalsIgnoreCase(ServerPanelWithAPIKey.defaultUrlPrefix)) {
       return Some(Page.message("newConfig.configure.serverUrlRequired"))
     }
     None

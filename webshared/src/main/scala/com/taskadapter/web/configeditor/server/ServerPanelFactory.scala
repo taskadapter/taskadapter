@@ -1,32 +1,33 @@
 package com.taskadapter.web.configeditor.server
 
-import com.taskadapter.connector.definition.{WebConnectorSetup, WebServerInfo}
+import com.taskadapter.connector.definition.WebConnectorSetup
 import com.taskadapter.web.ConnectorSetupPanel
-import com.vaadin.data.util.MethodProperty
+import com.vaadin.data.util.ObjectProperty
 
 object ServerPanelFactory {
   def withApiKeyAndLoginPassword(connectorId: String, caption: String, setupOption: Option[WebConnectorSetup]): ConnectorSetupPanel = {
-    val webServerInfo = setupOption.map(s =>
-      new WebServerInfo(s.label, s.host, s.userName, s.password, s.useApiKey, s.apiKey)).getOrElse(new WebServerInfo())
-
-      new ServerPanelWithAPIKey(connectorId, caption,
-        new MethodProperty[String](webServerInfo, "label"),
-        new MethodProperty[String](webServerInfo, "host"),
-        new MethodProperty[String](webServerInfo, "userName"),
-        new MethodProperty[String](webServerInfo, "password"),
-        new MethodProperty[String](webServerInfo, "apiKey"),
-        new MethodProperty[java.lang.Boolean](webServerInfo, "useAPIKeyInsteadOfLoginPassword")
-      )
+    val setup = getSetup(connectorId, setupOption)
+    new ServerPanelWithAPIKey(connectorId, caption,
+      new ObjectProperty[String](setup.label),
+      new ObjectProperty[String](setup.host),
+      new ObjectProperty[String](setup.userName),
+      new ObjectProperty[String](setup.password),
+      new ObjectProperty[String](setup.apiKey),
+      new ObjectProperty[java.lang.Boolean](setup.useApiKey)
+    )
   }
 
   def withLoginAndPassword(connectorId: String, caption: String, setupOption: Option[WebConnectorSetup]): ConnectorSetupPanel = {
-    val webServerInfo = setupOption.map(s =>
-      new WebServerInfo(s.label, s.host, s.userName, s.password, false, "")).getOrElse(new WebServerInfo())
+    val setup = getSetup(connectorId, setupOption)
     new ServerPanel(connectorId, caption,
-      new MethodProperty[String](webServerInfo, "label"),
-      new MethodProperty[String](webServerInfo, "host"),
-      new MethodProperty[String](webServerInfo, "userName"),
-      new MethodProperty[String](webServerInfo, "password"))
+      new ObjectProperty[String](setup.label),
+      new ObjectProperty[String](setup.host),
+      new ObjectProperty[String](setup.userName),
+      new ObjectProperty[String](setup.password)
+    )
   }
 
+  def getSetup(connectorId: String, maybeSetup: Option[WebConnectorSetup]): WebConnectorSetup = {
+    maybeSetup.getOrElse(new WebConnectorSetup(connectorId, None, "", "", "", "", false, ""))
+  }
 }

@@ -36,7 +36,7 @@ class UISyncConfigIT extends FunSpec with Matchers with ConfigsTempFolder {
       assertThat(saveResult.getUpdatedTasksNumber).isEqualTo(0)
       val redmineConfig = new RedmineConfig
       // TODO get config from the same conf file as above
-      redmineConfig.setServerInfo(new WebServerInfo("http://dev.taskadapter.com/redmine", "user", "123ZC"))
+      redmineConfig.setServerInfo(...)
       val connector = new RedmineConnector(redmineConfig)
       val rows = List(FieldRow(true, JiraField.summary, RedmineField.summary, ""), FieldRow(true, JiraField.description, RedmineField.description, ""))
       val loaded = TestUtils.loadCreatedTask(connector, rows.asJava, saveResult)

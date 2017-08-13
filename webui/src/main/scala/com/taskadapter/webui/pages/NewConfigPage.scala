@@ -2,7 +2,6 @@ package com.taskadapter.webui.pages
 
 import com.taskadapter.PluginManager
 import com.taskadapter.config.StorageException
-import com.taskadapter.connector.definition.WebServerInfo
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{ConfigId, SetupId}
 import com.taskadapter.webui.ConfigOperations
@@ -21,8 +20,6 @@ trait Callback {
 
 class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, configOps: ConfigOperations,
                     sandbox: Sandbox, callback: Callback) {
-  val connector1Info = new WebServerInfo
-  val connector2Info = new WebServerInfo
 
   var stage = 1
 
