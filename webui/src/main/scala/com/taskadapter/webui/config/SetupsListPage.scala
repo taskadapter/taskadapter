@@ -60,7 +60,8 @@ class SetupsListPage(configOperations: ConfigOperations, editorManager: EditorMa
 
   private def addElements(): Unit = {
     val setups = configOperations.getConnectorSetups()
-    setups.foreach { setup =>
+    setups.sortBy(x => x.connectorId)
+      .foreach { setup =>
       val deleteButton = new Button(Page.message("setupsListPage.deleteButton"))
       val editButton = new Button(Page.message("setupsListPage.editButton"))
       val setupId = SetupId(setup.id.get)
