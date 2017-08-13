@@ -113,7 +113,7 @@ class JiraConnector(config: JiraConfig, setup: WebConnectorSetup) extends NewCon
   })
 
   override def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask], monitor: ProgressMonitor,
-               rows: java.lang.Iterable[FieldRow]): SaveResult =
+               rows: Iterable[FieldRow]): SaveResult =
     withJiraRestClient((client: JiraRestClient) => {
     def foo(client: JiraRestClient) = {
       val issueTypeList = loadIssueTypes(client)

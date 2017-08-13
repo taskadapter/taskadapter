@@ -37,19 +37,6 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
         this.config = config;
     }
 
-/*
-    private void setFieldIfNotNull(Iterable<FieldRow> rows, FIELD field, Task mspTask, String value) {
-        String v = mappings.getMappedTo(field);
-        TaskField f = MSPUtils.getTaskFieldByName(v);
-        mspTask.set(f, value);
-    }
-
-    private Object getField( Iterable<FieldRow> rows, FIELD field, Task mspTask) {
-        String v = mappings.getMappedTo(field);
-        TaskField f = MSPUtils.getTaskFieldByName(v);
-        return mspTask.getCurrentValue(f);
-    }*/
-
     @Override
     public void updateTasksByRemoteIds(List<GTask> tasksFromExternalSystem, Iterable<FieldRow> rows) throws ConnectorException {
        /* String fileName = config.getInputAbsoluteFilePath();
@@ -70,23 +57,6 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
             throw MSPExceptions.convertException(e);
         }*/
     }
-
-/*
-    private Task findTaskByRemoteId(Iterable<FieldRow> rows, List<Task> mspTasks, String requiredRemoteId) {
-        for (Task gTask : mspTasks) {
-            String taskRemoteId = (String) getField(rows, FIELD.REMOTE_ID, gTask);
-            if (taskRemoteId == null) {
-                // not all tasks will have remote IDs
-                continue;
-            }
-            if (taskRemoteId.equals(requiredRemoteId)) {
-                return gTask;
-            }
-        }
-        return null;
-    }
-*/
-
     @Override
     public boolean fileExists() {
         File file = new File(config.getOutputAbsoluteFilePath());
@@ -111,7 +81,14 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
 
     @Override
     public GTask loadTaskByKey(TaskId key, Iterable<FieldRow> rows) {
-        throw new RuntimeException("not implemented");
+        final String sourceFile = config.getInputAbsoluteFilePath();
+        List<GTask> tasks = loadInternal(sourceFile);
+        for (GTask task : tasks) {
+            if (task.getIdentity().equals(key)) {
+                return task;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -165,7 +142,7 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
 
     @Override
     public SaveResult saveData(PreviouslyCreatedTasksResolver previouslyCreatedTasksResolver, List<GTask> tasks,
-                               ProgressMonitor monitor, Iterable<FieldRow> rows) {
+                               ProgressMonitor monitor, scala.collection.Iterable<FieldRow> rows) {
         try {
             return new MSPTaskSaver(config, rows).saveData(tasks);
         } catch (ConnectorException e) {

@@ -16,8 +16,8 @@ object MspField {
   val closedOn = Field.date(TaskField.ACTUAL_FINISH.getName)
   val priority = Field.integer(TaskField.PRIORITY.getName)
   val percentageComplete = Field.integer(TaskField.PERCENT_COMPLETE.getName)
-  val taskDuration = Field(TaskField.DURATION.getName)
-  val taskWork = Field(TaskField.WORK.getName)
+  val taskDuration = Field.float(TaskField.DURATION.getName)
+  val taskWork = Field.float(TaskField.WORK.getName)
   val status = Field(TaskField.TEXT24.getName)
   val taskType = Field(TaskField.TEXT23.getName)
   val actualWork = Field.integer(TaskField.ACTUAL_WORK.getName)
@@ -46,9 +46,7 @@ object MspField {
 
   private def suggestedStandardFields = Map(
     summary -> Summary, description -> Description,
-    // both fields are mapped to the same standard field because MSP supports both options
     taskDuration -> EstimatedTime,
-    taskWork -> EstimatedTime,
     status -> TaskStatus,
     assignee -> Assignee,
     mustStartOn -> StartDate,

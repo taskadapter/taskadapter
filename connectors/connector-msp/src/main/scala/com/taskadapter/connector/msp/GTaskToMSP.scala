@@ -35,7 +35,9 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
       case MspField.status.name => setFieldByName(fieldName, stringBasedValue)
       case MspField.taskType.name => setFieldByName(fieldName, stringBasedValue)
       case MspField.assignee.name => processAssignee(fieldName, stringBasedValue)
-      case MspField.mustStartOn.name => mspTask.setStart(value.asInstanceOf[Date])
+      case MspField.mustStartOn.name =>
+        mspTask.setConstraintType(ConstraintType.MUST_START_ON)
+        mspTask.setConstraintDate(value.asInstanceOf[Date])
       case MspField.startAsSoonAsPossible.name =>
         mspTask.setConstraintType(ConstraintType.AS_SOON_AS_POSSIBLE)
         mspTask.setConstraintDate(value.asInstanceOf[Date])
@@ -70,8 +72,8 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
         val mspPriority = Priority.getInstance(value.asInstanceOf[Int])
         mspTask.setPriority(mspPriority)
 
-      case MspField.taskDuration.name => mspTask.setDuration(Duration.getInstance(value.asInstanceOf[Int], TimeUnit.HOURS))
-      case MspField.taskWork.name => mspTask.setWork(Duration.getInstance(value.asInstanceOf[Int], TimeUnit.HOURS))
+      case MspField.taskDuration.name => mspTask.setDuration(Duration.getInstance(value.asInstanceOf[Float], TimeUnit.HOURS))
+      case MspField.taskWork.name => mspTask.setWork(Duration.getInstance(value.asInstanceOf[Float], TimeUnit.HOURS))
       case MspField.actualWork.name => mspTask.setActualWork(Duration.getInstance(value.asInstanceOf[Int], TimeUnit.HOURS))
       case MspField.actualDuration.name => mspTask.setActualDuration(Duration.getInstance(value.asInstanceOf[Int], TimeUnit.HOURS))
       case MspField.percentageComplete.name => mspTask.setPercentageComplete(value.asInstanceOf[Int])

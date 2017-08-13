@@ -28,11 +28,11 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   logger.info("Running JIRA tests using: " + setup.host)
 
   it("connector does not fail empty tasks list") {
-    connector.saveData(PreviouslyCreatedTasksResolver.empty, List[GTask]().asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault.asJava)
+    connector.saveData(PreviouslyCreatedTasksResolver.empty, List[GTask]().asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault)
   }
 
   it("tasks are created without errors") {
-    CommonTestChecks.createsTasks(connector, JiraFieldBuilder.getDefault().asJava, JiraGTaskBuilder.getTwo().asJava,
+    CommonTestChecks.createsTasks(connector, JiraFieldBuilder.getDefault(), JiraGTaskBuilder.getTwo(),
       id => TestJiraClientHelper.deleteTasks(client, id))
   }
 
@@ -42,7 +42,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     val task = new GTask
     task.setValue(JiraField.summary, "some")
     task.setValue(JiraField.assignee, jiraUser.getName)
-    val loadedTask = TestUtils.saveAndLoad(connector, task, JiraFieldBuilder.getDefault.asJava)
+    val loadedTask = TestUtils.saveAndLoad(connector, task, JiraFieldBuilder.getDefault)
     assertEquals(jiraUser.getName, loadedTask.getValue(JiraField.assignee))
     TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
   }
@@ -56,7 +56,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
 
   it("testGetIssuesByProject") {
     val tasks = generateTasks
-    connector.saveData(PreviouslyCreatedTasksResolver.empty, tasks.asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault.asJava)
+    connector.saveData(PreviouslyCreatedTasksResolver.empty, tasks.asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault)
     val jql = JqlBuilder.findIssuesByProject(config.getProjectKey)
     val issues = JiraClientHelper.findIssues(client, jql)
     assertThat(Iterables.size(issues)).isGreaterThan(1)

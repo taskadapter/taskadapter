@@ -44,7 +44,7 @@ class JiraRedmineIT extends FunSpec with Matchers with BeforeAndAfter with Befor
     task.setValue(JiraField.summary, "summary1")
     task.setValue(JiraField.description, "description1")
     // create in Jira
-    new TestSaver(sourceConnector, rows.asJava).saveAndLoad(task)
+    new TestSaver(sourceConnector, rows).saveAndLoad(task)
 
     // adapt
     val result = adapter.adapt(rows)

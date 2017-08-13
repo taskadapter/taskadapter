@@ -37,7 +37,7 @@ object TaskSavingUtils {
                    converter: ConnectorConverter[GTask, N],
                    saveAPI: BasicIssueSaveAPI[N],
                    progressMonitor: ProgressMonitor,
-                   fieldRows: java.lang.Iterable[FieldRow],
+                   fieldRows: Iterable[FieldRow],
                    targetLocation: String): SaveResultBuilder = {
     val result = new SaveResultBuilder
     val saver = new SimpleTaskSaver[N](previouslyCreatedTasks, converter, saveAPI, result, progressMonitor, targetLocation)

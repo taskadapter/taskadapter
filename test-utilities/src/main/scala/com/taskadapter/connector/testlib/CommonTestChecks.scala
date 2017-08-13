@@ -24,7 +24,7 @@ object CommonTestChecks extends Matchers {
     val expectedSummaryTask1 = task.getValue(fieldNameToSearch)
 
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR,
-      rows.asJava)
+      rows)
     assertEquals(tasksQty, result.getCreatedTasksNumber)
 
     val createdTask1Id = result.getRemoteKeys.iterator.next()
@@ -40,19 +40,19 @@ object CommonTestChecks extends Matchers {
   }
 
 
-  def createsTasks(connector: NewConnector, rows: util.List[FieldRow], tasks: util.List[GTask],
+  def createsTasks(connector: NewConnector, rows: List[FieldRow], tasks: List[GTask],
                    cleanup: TaskId => Unit): Unit = {
-    val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows)
+    val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, tasks.asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows)
     assertFalse(result.hasErrors)
     assertEquals(tasks.size, result.getCreatedTasksNumber)
     logger.debug(s"created $result")
     result.getRemoteKeys.foreach(cleanup(_))
   }
 
-  def descriptionSavedByDefault(connector: NewConnector, task: GTask,
-                                suggestedMappings: Map[Field, StandardField],
-                                fieldNameToSearch: Field,
-                                cleanup: TaskId => Unit): Unit = {
+  def fieldIsSavedByDefault(connector: NewConnector, task: GTask,
+                            suggestedMappings: Map[Field, StandardField],
+                            fieldNameToSearch: Field,
+                            cleanup: TaskId => Unit): Unit = {
     val mappings = NewConfigSuggester.suggestedFieldMappingsForNewConfig(suggestedMappings, suggestedMappings)
     val rows = MappingBuilder.build(mappings, ExportDirection.RIGHT)
     val loadedTask = TestUtils.saveAndLoadViaSummary(connector, task, rows.toList, fieldNameToSearch)

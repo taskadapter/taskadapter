@@ -45,13 +45,6 @@ class MantisIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     assertEquals(currentUser.getId, loadedTask.getAssignee.getId)
   }
 
-  it("assigneeNotExported") {
-    val task = generateTask
-    task.setAssignee(currentUser)
-    val loadedTask = getTestSaver.unselectField(FIELD.ASSIGNEE).saveAndLoad(task)
-    assertNull(loadedTask.getAssignee)
-  }
-
   it("assigneeExportedByDefault") {
     val task = generateTask
     task.setAssignee(currentUser)
@@ -67,7 +60,7 @@ class MantisIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
 
   def generateTask() = new GTaskBuilder().withRandom(MantisField.summary).build()
 
-  private def getTestSaver(rows: util.List[FieldRow]) = new TestSaver(getConnector(), rows)
+  private def getTestSaver(rows: List[FieldRow]) = new TestSaver(getConnector(), rows)
 
   private def getConnector(): MantisConnector = getConnector(config)
 

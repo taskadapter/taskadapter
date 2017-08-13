@@ -82,11 +82,11 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
 
   override def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask],
                         monitor: ProgressMonitor,
-                        fieldRows: java.lang.Iterable[FieldRow]): SaveResult = try {
+                        fieldRows: Iterable[FieldRow]): SaveResult = try {
     val mgr = RedmineManagerFactory.createRedmineManager(setup)
     try {
       val rmProject = mgr.getProjectManager.getProjectByKey(config.getProjectKey)
-      val priorities = RedmineConnector.loadPriorities(fieldRows, mgr)
+      val priorities = RedmineConnector.loadPriorities(fieldRows.asJava, mgr)
       val users = if (!config.isFindUserByName) new util.ArrayList[User]
       else mgr.getUserManager.getUsers
       val statusList = mgr.getIssueManager.getStatuses

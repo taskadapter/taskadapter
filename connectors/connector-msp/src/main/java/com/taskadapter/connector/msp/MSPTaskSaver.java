@@ -6,13 +6,11 @@ import com.taskadapter.connector.definition.SaveResult;
 import com.taskadapter.connector.definition.SaveResultBuilder;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.EntityPersistenseException;
-import com.taskadapter.connector.msp.write.MSXMLFileWriter;
 import com.taskadapter.connector.msp.write.RealWriter;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.Precedes$;
 import net.sf.mpxj.Duration;
-import net.sf.mpxj.MPXJException;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.RelationType;
 import net.sf.mpxj.Task;
@@ -20,7 +18,6 @@ import net.sf.mpxj.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.List;
 
 public final class MSPTaskSaver {
@@ -30,18 +27,17 @@ public final class MSPTaskSaver {
     private final SaveResultBuilder result = new SaveResultBuilder();
     private final MSPConfig config;
 
-    private MSXMLFileWriter writer;
+    private MsXmlFileWriter writer;
 
-    public MSPTaskSaver(MSPConfig config, Iterable<FieldRow> rows) {
+    public MSPTaskSaver(MSPConfig config, scala.collection.Iterable<FieldRow> rows) {
         this.config = config;
-        this.writer = new MSXMLFileWriter(rows);
+        this.writer = new MsXmlFileWriter(rows);
     }
 
     public SaveResult saveData(List<GTask> tasks) throws ConnectorException {
         saveIssues(tasks);
 
-        final List<GRelation> relations = RelationUtils.convertRelationIds(
-                tasks, result);
+        final List<GRelation> relations = RelationUtils.convertRelationIds(tasks, result);
         saveRelations(relations);
 
         return result.getResult();
@@ -55,7 +51,7 @@ public final class MSPTaskSaver {
             final String resultFile = writer.write(
                     config.getOutputAbsoluteFilePath(), result, tasks, false);
             result.setTargetFileAbsolutePath(resultFile);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw MSPExceptions.convertException(e);
         }
     }

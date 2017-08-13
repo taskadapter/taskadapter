@@ -10,7 +10,7 @@ trait NewConnector {
   def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver,
                tasks: util.List[GTask],
                monitor: ProgressMonitor,
-               rows: java.lang.Iterable[FieldRow]): SaveResult
+               rows: Iterable[FieldRow]): SaveResult
 
   /**
     * Load list of tasks. Order of loaded tasks is not specified and may depend on implementation.

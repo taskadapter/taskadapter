@@ -42,7 +42,6 @@ class MSPToGTask {
 
     GTask convertToGenericTask(Task task) {
         GTask genericTask = new GTask();
-//        genericTask.setType(extractField(task, TASK_TYPE));
 
         genericTask.setValue(MspField.summary(), task.getName());
         genericTask.setId(task.getUniqueID().longValue());
@@ -55,8 +54,6 @@ class MSPToGTask {
         }
 
         genericTask.setValue(MspField.priority(), task.getPriority().getValue());
-
-//        genericTask.setValue(MFextractField(task, TASK_STATUS));
 
         if (task.getWork() != null) {
             genericTask.setValue(MspField.taskWork(), convertMspDurationToHours(task.getWork()));
@@ -78,7 +75,7 @@ class MSPToGTask {
         } else if (ConstraintType.START_NO_EARLIER_THAN.equals(type)) {
             genericTask.setValue(MspField.startNoEarlierThan(), task.getConstraintDate());
         } else if (ConstraintType.MUST_START_ON.equals(type)) {
-            genericTask.setValue(MspField.mustStartOn(), task.getStart());
+            genericTask.setValue(MspField.mustStartOn(), task.getConstraintDate());
         } else if (ConstraintType.AS_SOON_AS_POSSIBLE.equals(type)) {
             genericTask.setValue(MspField.startAsSoonAsPossible(), task.getStart());
         } else if (ConstraintType.AS_LATE_AS_POSSIBLE.equals(type)) {
@@ -95,16 +92,6 @@ class MSPToGTask {
         processRelations(task, genericTask);
         return genericTask;
     }
-/*
-
-    String extractField(Task task, FIELD field) {
-        Object value = getValue(task, field);
-        if ((value != null) && !(value.toString().isEmpty())) {
-            return value.toString();
-        }
-        return null;
-    }
-*/
 
     private void processRelations(Task task, GTask genericTask) {
         List<Relation> relations = task.getSuccessors();
@@ -192,7 +179,7 @@ class MSPToGTask {
         return null;
     }
 
-/*    Object getValue(Task mspTask, FIELD field) {
+    Object getValue(Task mspTask, FIELD field) {
         String v = mappings.getMappedTo(field);
         if (v != null) {
             TaskField f = MSPUtils.getTaskFieldByName(v);

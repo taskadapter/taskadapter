@@ -30,7 +30,7 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
   }
 
   it("description saved by default") {
-    CommonTestChecks.descriptionSavedByDefault(getConnector,
+    CommonTestChecks.fieldIsSavedByDefault(getConnector,
       new JiraGTaskBuilder().withDescription().build(),
       JiraField.getSuggestedCombinations(),
       JiraField.description,
@@ -46,7 +46,7 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     val connector = getConnector
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, util.Arrays.asList(parentTask),
       ProgressMonitorUtils.DUMMY_MONITOR,
-      JiraFieldBuilder.getDefault.asJava)
+      JiraFieldBuilder.getDefault)
     assertThat(result.getCreatedTasksNumber).isEqualTo(3)
     val parentTaskId = result.getIdToRemoteKeyList.head._2
     val subTask1Id = result.getIdToRemoteKeyList(1)._2
@@ -71,7 +71,7 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
       FieldRow(JiraField.description, JiraField.description, "some default")
     )
 
-    val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)
+    val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows)
     assertThat(result.getCreatedTasksNumber).isEqualTo(1)
     val taskId = result.getIdToRemoteKeyList.head._2
     val loadedTask = connector.loadTaskByKey(taskId, rows.asJava)
@@ -93,8 +93,8 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
       FieldRow(new Field("", "custom_checkbox_1"), new Field("", "custom_checkbox_1"), "")
     )
 
-    CommonTestChecks.createsTasks(getConnector, rows.asJava,
-      List(task).asJava,
+    CommonTestChecks.createsTasks(getConnector, rows,
+      List(task),
       id => TestJiraClientHelper.deleteTasks(client, id))
   }
 

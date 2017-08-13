@@ -63,13 +63,13 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
      }
  */
 
-  private def getTestSaver(rows: util.List[FieldRow]) = new TestSaver(getConnector(), rows)
+  private def getTestSaver(rows: List[FieldRow]) = new TestSaver(getConnector(), rows)
 
   /*    private TestSaver getTestSaver() {
           return new TestSaver(getConnector(), RedmineFieldBuilder.getDefault())
       }*/
 
-  private def getTestSaver(config: RedmineConfig, rows: util.List[FieldRow]) = new TestSaver(getConnector(config), rows)
+  private def getTestSaver(config: RedmineConfig, rows: List[FieldRow]) = new TestSaver(getConnector(config), rows)
 
   /*
       private void checkStartDate(TestSaver testSaver, Date expected) throws ConnectorException {
@@ -358,7 +358,7 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
           }
     */
   it("tasks are created without errors") {
-    CommonTestChecks.createsTasks(getConnector(), RedmineFieldBuilder.getDefault().asJava, RedmineGTaskBuilder.getTwo().asJava,
+    CommonTestChecks.createsTasks(getConnector(), RedmineFieldBuilder.getDefault(), RedmineGTaskBuilder.getTwo(),
       CommonTestChecks.skipCleanup)
   }
 

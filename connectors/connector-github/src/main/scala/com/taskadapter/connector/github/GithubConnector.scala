@@ -54,7 +54,7 @@ class GithubConnector(config: GithubConfig, setup: WebConnectorSetup) extends Ne
   }
 
   override def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask], monitor: ProgressMonitor,
-                        rows: java.lang.Iterable[FieldRow]): SaveResult = {
+                        rows: Iterable[FieldRow]): SaveResult = {
     val ghConnector = new ConnectionFactory(setup)
     val converter = new GTaskToGithub(ghConnector.getUserService)
     val issueService = ghConnector.getIssueService

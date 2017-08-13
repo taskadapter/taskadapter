@@ -7,9 +7,9 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.connector.{FieldRow, NewConnector}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.GTask
+import scala.collection.JavaConverters._
 
-
-class TestSaver(var connector: NewConnector, var rows: util.List[FieldRow]) {
+class TestSaver(connector: NewConnector, rows: Iterable[FieldRow]) {
   @throws[ConnectorException]
   def saveAndLoad(task: GTask): GTask = {
     val taskSaveResult = connector.saveData(PreviouslyCreatedTasksResolver.empty,
@@ -17,6 +17,6 @@ class TestSaver(var connector: NewConnector, var rows: util.List[FieldRow]) {
       ProgressMonitorUtils.DUMMY_MONITOR,
       rows)
     val newKey = taskSaveResult.getRemoteKeys.iterator.next
-    connector.loadTaskByKey(newKey, rows)
+    connector.loadTaskByKey(newKey, rows.asJava)
   }
 }

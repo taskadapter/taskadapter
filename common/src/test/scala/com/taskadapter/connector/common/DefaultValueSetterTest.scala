@@ -24,7 +24,7 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
       FieldRow(Field("description"), Field("description"), "")
     )
 
-    val newTask = DefaultValueSetter.adapt(rows.asJava, originalTask)
+    val newTask = DefaultValueSetter.adapt(rows, originalTask)
     originalTask.setValue("description", "new description")
     assertThat(newTask.getValue("description")).isEqualTo("original description")
 
@@ -38,7 +38,7 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
     val originalTask = new GTask
     originalTask.setValue("description", "")
 
-    val newTask = DefaultValueSetter.adapt(rows.asJava, originalTask)
+    val newTask = DefaultValueSetter.adapt(rows, originalTask)
     newTask.getValue("description") shouldBe "default description"
   }
 
@@ -49,7 +49,7 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
     val originalTask = new GTask
     originalTask.setValue("description", "")
 
-    val newTask = DefaultValueSetter.adapt(rows.asJava, originalTask)
+    val newTask = DefaultValueSetter.adapt(rows, originalTask)
     newTask.getValue("description") shouldBe "default description"
   }
 
@@ -60,7 +60,7 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
     )
     val originalTask = new GTask
     originalTask.setValue("description", "something")
-    val newTask = DefaultValueSetter.adapt(rows.asJava, originalTask)
+    val newTask = DefaultValueSetter.adapt(rows, originalTask)
     newTask.getValue("description") shouldBe "something"
   }
 
@@ -72,7 +72,7 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
     val task = new GTask
     val identity = TaskId(1, "parent1")
     task.setParentIdentity(identity)
-    val newTask = DefaultValueSetter.adapt(rows.asJava, task)
+    val newTask = DefaultValueSetter.adapt(rows, task)
     newTask.getParentIdentity shouldBe identity
   }
 
@@ -83,7 +83,7 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
     val task = new GTask
     val date = new Date
     task.setValue("Due date", date)
-    val newTask = DefaultValueSetter.adapt(rows.asJava, task)
+    val newTask = DefaultValueSetter.adapt(rows, task)
     newTask.getValue("Due date") shouldBe date
   }
 }

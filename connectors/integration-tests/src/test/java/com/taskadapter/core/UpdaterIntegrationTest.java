@@ -111,7 +111,7 @@ public class UpdaterIntegrationTest {
     }
 */
 
-    private void saveToMSP(List<FieldRow> rows) throws ConnectorException {
+    private void saveToMSP(scala.collection.Iterable<FieldRow> rows) throws ConnectorException {
         new MSPTaskSaver(mspConfig, rows).saveData(rmIssues);
     }
 

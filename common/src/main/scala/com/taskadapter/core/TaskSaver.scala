@@ -8,7 +8,6 @@ import com.taskadapter.connector.definition.{ProgressMonitor, SaveResult}
 import com.taskadapter.connector.{FieldRow, NewConnector}
 import com.taskadapter.model.GTask
 import org.slf4j.LoggerFactory
-import scala.collection.JavaConverters._
 
 object TaskSaver {
   private val log = LoggerFactory.getLogger(TaskSaver.getClass)
@@ -24,7 +23,7 @@ object TaskSaver {
     log.info(str)
     monitor.beginTask(str, totalNumberOfTasks)
     try {
-      val saveResult = connectorTo.saveData(previouslyCreatedTasks, tasks, monitor, rows.asJava)
+      val saveResult = connectorTo.saveData(previouslyCreatedTasks, tasks, monitor, rows)
       monitor.done()
       saveResult
     } catch {

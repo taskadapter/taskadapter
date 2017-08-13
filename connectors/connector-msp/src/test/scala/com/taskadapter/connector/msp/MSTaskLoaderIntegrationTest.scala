@@ -31,7 +31,7 @@ class MSTaskLoaderIntegrationTest extends FunSpec with Matchers {
     Assert.assertNotNull("required task not found in the tasks list", t2)
   }
 
-  it("testLoadFileCreatedByTA") {
+  it("load file created by TA") {
     val tasks = MSPTestUtils.load("created_by_ta_27.xml").asScala
     Assert.assertEquals(27, tasks.size)
     val t1 = TestUtils.findTaskByFieldName(tasks, MspField.summary.name, "improve components")
@@ -40,14 +40,15 @@ class MSTaskLoaderIntegrationTest extends FunSpec with Matchers {
     Assert.assertNotNull("required task not found in the tasks list", sub1)
   }
 
-  it("testLoadFileCreatedByTA1Task") {
+  it("load file created by TA 1 task") {
     val tasks = MSPTestUtils.load("created_by_ta_1.xml").asScala
     Assert.assertEquals(1, tasks.size)
     val t1 = TestUtils.findTaskByFieldName(tasks, MspField.summary.name, "support me!")
     Assert.assertNotNull("required task not found in the tasks list", t1)
   }
 
-  it("testEmptyLinesAreSkipped") { // total number of lines is 170 with 163 non-empty ones
+  it("empty lines in MSP XML file are skipped") {
+    // total number of lines is 170 with 163 non-empty ones
     val tasks = MSPTestUtils.load("IT_Department_Project_Master.xml").asScala
     Assert.assertEquals(163, tasks.size)
   }

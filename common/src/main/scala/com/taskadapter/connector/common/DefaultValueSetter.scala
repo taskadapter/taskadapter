@@ -4,10 +4,8 @@ import java.text.{ParseException, SimpleDateFormat}
 import java.util.Date
 
 import com.google.common.base.Strings
-import com.taskadapter.connector.{Field, FieldRow}
+import com.taskadapter.connector.FieldRow
 import com.taskadapter.model.GTask
-
-import scala.collection.JavaConverters._
 
 /**
   * When saving a task, we need to set some of its fields to some default value if there is nothing there yet.
@@ -23,9 +21,9 @@ object DefaultValueSetter {
     */
   private val DATE_PARSER = new SimpleDateFormat("yyyy MM dd")
 
-  def adapt(fieldRows: java.lang.Iterable[FieldRow], task: GTask): GTask = {
+  def adapt(fieldRows: Iterable[FieldRow], task: GTask): GTask = {
     val result = new GTask
-    fieldRows.asScala.foreach { row =>
+    fieldRows.foreach { row =>
       val fieldToLoadValueFrom = row.sourceField
       val currentFieldValue = fieldToLoadValueFrom.map(task.getValue).flatMap(e => Option(e))
 

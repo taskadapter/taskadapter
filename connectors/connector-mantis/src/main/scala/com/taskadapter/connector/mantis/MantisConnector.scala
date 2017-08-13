@@ -54,7 +54,7 @@ class MantisConnector(config: MantisConfig, setup: WebConnectorSetup) extends Ne
   }
 
   override def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask], monitor: ProgressMonitor,
-                        rows: java.lang.Iterable[FieldRow]): SaveResult = {
+                        rows: Iterable[FieldRow]): SaveResult = {
     val mgr = MantisManagerFactory.createMantisManager(setup)
     try {
       val mntProject = mgr.getProjectById(new BigInteger(config.getProjectKey))
