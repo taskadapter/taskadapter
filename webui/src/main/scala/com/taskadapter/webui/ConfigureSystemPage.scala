@@ -35,7 +35,7 @@ object ConfigureSystemPage {
     val layout = new VerticalLayout
     layout.setSpacing(true)
     val cmt = LocalRemoteOptionsPanel.createLocalRemoteOptions(settings, authorizedOps.canConfigureServer)
-    cmt.setWidth(500, PIXELS)
+    cmt.setWidth(600, PIXELS)
     layout.addComponent(cmt)
     layout.addComponent(createAdminPermissionsSection(settings, authorizedOps.canConfigureServer))
     layout.addComponent(UsersPanel.render(credentialsManager, authorizedOps, license, tracker))

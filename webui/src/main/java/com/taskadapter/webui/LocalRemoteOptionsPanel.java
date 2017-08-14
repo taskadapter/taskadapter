@@ -51,7 +51,7 @@ class LocalRemoteOptionsPanel extends Panel {
                 }
             });
         }
-
+        configGroupLayout.setMargin(true);
         configGroupLayout.addComponent(group);
         ui.setContent(configGroupLayout);
 

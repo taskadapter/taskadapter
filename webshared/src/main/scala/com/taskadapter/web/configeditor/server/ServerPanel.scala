@@ -6,6 +6,7 @@ import com.taskadapter.web.ConnectorSetupPanel
 import com.taskadapter.web.configeditor.DefaultPanel
 import com.taskadapter.webui.Page
 import com.vaadin.data.Property
+import com.vaadin.ui.themes.ValoTheme
 import com.vaadin.ui.{Component, Label, Panel, VerticalLayout}
 
 class ServerPanel(connectorId: String, val caption: String, val labelProperty: Property[String], val serverURLProperty: Property[String],
@@ -16,7 +17,8 @@ class ServerPanel(connectorId: String, val caption: String, val labelProperty: P
   var panel = new Panel
   panel.setWidth(DefaultPanel.NARROW_PANEL_WIDTH)
   val errorMessageLabel = new Label
-  errorMessageLabel.addStyleName("error-message-label")
+  errorMessageLabel.addStyleName(ValoTheme.LABEL_FAILURE)
+  errorMessageLabel.setVisible(false)
 
   val layout = new VerticalLayout(serverContainer, errorMessageLabel)
   panel.setContent(layout)
@@ -41,5 +43,6 @@ class ServerPanel(connectorId: String, val caption: String, val labelProperty: P
 
   override def showError(string: String): Unit = {
     errorMessageLabel.setValue(string)
+    errorMessageLabel.setVisible(true)
   }
 }

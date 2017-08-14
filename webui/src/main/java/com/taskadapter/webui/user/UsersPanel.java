@@ -16,6 +16,7 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,10 +63,12 @@ public class UsersPanel {
 
         final VerticalLayout view = new VerticalLayout();
         view.setMargin(true);
+        view.setSpacing(true);
         ui.setContent(view);
 
         errorLabel = new Label();
-        errorLabel.addStyleName("errorMessage");
+        errorLabel.addStyleName(ValoTheme.LABEL_FAILURE);
+        errorLabel.setVisible(false);
         view.addComponent(errorLabel);
 
         statusLabel = new Label();
@@ -175,9 +178,14 @@ public class UsersPanel {
             credentialsManager.removeUser(userLoginName);
             tracker.trackEvent("user", "deleted", "");
         } catch (AuthException e) {
-            errorLabel.setValue(message("users.error.cantDeleteUser", e.toString()));
+            showError(message("users.error.cantDeleteUser", e.toString()));
         }
         reloadUsers();
+    }
+
+    private void showError(String message) {
+        errorLabel.setValue(message);
+        errorLabel.setVisible(true);
     }
 
     private void startCreateUserProcess() {

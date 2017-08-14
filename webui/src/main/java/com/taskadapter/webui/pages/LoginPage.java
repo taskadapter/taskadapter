@@ -7,6 +7,7 @@ import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Runo;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * System login page. Does not perform authentication by itself, delegates
@@ -53,7 +54,7 @@ public final class LoginPage {
         layout.setMargin(new MarginInfo(false, true, false, true));
         layout.setSpacing(true);
         final Label label = new Label(Page.message("loginPage.hintLabel"), ContentMode.HTML);
-        label.setStyleName(Runo.LABEL_SMALL);
+        label.setStyleName(ValoTheme.LABEL_SMALL);
         layout.addComponent(label);
 
         final TextField loginEdit = new TextField();

@@ -9,6 +9,8 @@ import scala.collection.JavaConverters._
 
 class NewConfigSelectSystem(pluginManager: PluginManager, selected: String => Unit) {
   val layout = new VerticalLayout()
+  layout.setSpacing(true)
+  layout.setMargin(true)
   layout.addComponent(new Label(message("newConfig.selectSystem")))
 
   createSystemList(event => {
@@ -20,21 +22,11 @@ class NewConfigSelectSystem(pluginManager: PluginManager, selected: String => Un
   private def createSystemList(listener: ClickListener): Unit = {
     pluginManager.getPluginDescriptors.asScala.foreach { connector =>
 
-      val system = new HorizontalLayout()
-      system.setWidth(200, com.vaadin.server.Sizeable.Unit.PIXELS)
-      system.setHeight(50, com.vaadin.server.Sizeable.Unit.PIXELS)
-      system.addStyleName("connectorBoxOnNewConfigPage")
-      system.addLayoutClickListener(_ => selected(connector.id))
-
-      val label = new Label(connector.label)
-      label.addStyleName("connectorLabelOnNewConfigPage")
-
-      system.addComponent(label)
-      system.setComponentAlignment(label, Alignment.MIDDLE_CENTER)
-
-      layout.addComponent(system)
-
-      layout.setComponentAlignment(system, Alignment.MIDDLE_CENTER)
+      val systemButton = new Button(connector.label)
+      systemButton.setWidth("200px")
+      systemButton.addClickListener(_ => selected(connector.id))
+      layout.addComponent(systemButton)
+      layout.setComponentAlignment(systemButton, Alignment.MIDDLE_CENTER)
     }
   }
 

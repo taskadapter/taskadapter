@@ -35,7 +35,7 @@ public final class LicensePanels {
 
         res.setColumns(2);
         res.setSpacing(true);
-        res.setWidth(350, Unit.PIXELS);
+        res.setWidth(400, Unit.PIXELS);
 
         res.addComponent(new Label("Registered to:"));
         res.addComponent(new Label(license.getCustomerName()));

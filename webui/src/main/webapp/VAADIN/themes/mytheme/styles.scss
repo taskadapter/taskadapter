@@ -1,4 +1,6 @@
-@import "../runo/legacy-styles.css";
+@import "mytheme.scss";
+
+@include mytheme;
 
 .header-panel {
     background-color: #e6e6e6;
@@ -148,26 +150,8 @@
     color: red;
 }
 
-.connectorBoxOnNewConfigPage {
-    background-color: #dcf7ff;
-    margin-bottom: 5px;
-    cursor: pointer;
-}
-
-.connectorBoxOnNewConfigPage :hover {
-    background-color: #cce7ef;
-}
-
-.connectorLabelOnNewConfigPage {
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
 .configPanelInConfigsList {
     margin-bottom: 20px;
-    /* border-bottom: 1px solid #AAAAAA;
-    padding-left: 5px */
 }
 
 .configDescriptionPanel {

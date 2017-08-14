@@ -12,7 +12,7 @@ import com.vaadin.ui.{Alignment, Component, HorizontalLayout, VerticalLayout}
 class OnePageEditor(messages: Messages, sandbox: Sandbox, config: UISyncConfig, exportToLeft: Runnable, exportToRight: Runnable) {
   val layout = new VerticalLayout
 
-  layout.setWidth(760, com.vaadin.server.Sizeable.Unit.PIXELS)
+  layout.setWidth(1000, com.vaadin.server.Sizeable.Unit.PIXELS)
   layout.setMargin(true)
   val connectorsLayout = new HorizontalLayout
   addConnectorPanel(connectorsLayout, config.getConnector1, sandbox, Alignment.MIDDLE_RIGHT)

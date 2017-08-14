@@ -69,7 +69,7 @@ public class CreateUserDialog extends Window {
         buttonLayout.addComponent(cancelButton);
         view.addComponent(buttonLayout);
         view.setComponentAlignment(buttonLayout, Alignment.BOTTOM_CENTER);
-        setWidth(260, PIXELS);
+        setWidth(350, PIXELS);
     }
 
     String getLogin() {
