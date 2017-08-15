@@ -32,11 +32,6 @@ class OnePageEditor(messages: Messages, sandbox: Sandbox, config: UISyncConfig, 
     taskFieldsMappingFragment.getElements
   }
 
-  /**
-    * Returns page editor UI.
-    *
-    * @return page editor UI.
-    */
   def getUI: Component = layout
 
   private def createExportComponent(): Component = {
@@ -68,9 +63,9 @@ class OnePageEditor(messages: Messages, sandbox: Sandbox, config: UISyncConfig, 
   }
 
   private def addConnectorPanel(layout: HorizontalLayout, config: UIConnectorConfig, sandbox: Sandbox, align: Alignment): Unit = {
-    val miniPanel2 = createConfigureConnectorButton(config, sandbox)
-    layout.addComponent(miniPanel2)
-    layout.setComponentAlignment(miniPanel2, align)
+    val button = createConfigureConnectorButton(config, sandbox)
+    layout.addComponent(button)
+    layout.setComponentAlignment(button, align)
   }
 
   private def createConfigureConnectorButton(connectorConfig: UIConnectorConfig, sandbox: Sandbox): Component = {
@@ -85,7 +80,6 @@ class OnePageEditor(messages: Messages, sandbox: Sandbox, config: UISyncConfig, 
     button
   }
 
-
   def showEditConnectorDialog(connectorConfig: UIConnectorConfig): Unit = {
     val newWindow = new Window()
 
@@ -95,5 +89,4 @@ class OnePageEditor(messages: Messages, sandbox: Sandbox, config: UISyncConfig, 
     layout.getUI.addWindow(newWindow)
     newWindow.focus()
   }
-
 }
