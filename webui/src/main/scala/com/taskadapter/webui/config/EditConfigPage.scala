@@ -69,13 +69,6 @@ class EditConfigPage(config: UISyncConfig, configOps: ConfigOperations, allowFul
 
   layout.setSpacing(true)
   layout.addComponent(ConfigsListLinkComponent.render(_ => callback.back()))
-  val buttonsLayout = new HorizontalLayout
-  buttonsLayout.setWidth(100, PERCENTAGE)
-  val cloneDeletePanel= new CloneDeleteComponent(config.id, configOps, () => callback.back, tracker).layout
-
-  buttonsLayout.addComponent(cloneDeletePanel)
-  buttonsLayout.setComponentAlignment(cloneDeletePanel, Alignment.MIDDLE_RIGHT)
-  layout.addComponent(buttonsLayout)
   layout.addComponent(EditConfigPage.createEditDescriptionElement(config))
   var editor = new OnePageEditor(Page.MESSAGES, new Sandbox(allowFullFSAccess, configOps.syncSandbox), config, mkExportAction(() => {
     callback.backwardSync(config.id)
@@ -94,6 +87,7 @@ class EditConfigPage(config: UISyncConfig, configOps: ConfigOperations, allowFul
     val buttonsLayout = new HorizontalLayout
     buttonsLayout.setWidth(100, PERCENTAGE)
     val rightLayout = new HorizontalLayout
+    rightLayout.setSpacing(true)
     buttonsLayout.addComponent(rightLayout)
     buttonsLayout.setComponentAlignment(rightLayout, Alignment.BOTTOM_RIGHT)
     val saveButton = new Button(Page.message("button.save"))
@@ -109,7 +103,10 @@ class EditConfigPage(config: UISyncConfig, configOps: ConfigOperations, allowFul
         callback.back()
       }
     })
+
+    val cloneDeletePanel= new CloneDeleteComponent(config.id, configOps, () => callback.back, tracker).layout
     rightLayout.addComponent(backButton)
+    rightLayout.addComponent(cloneDeletePanel)
     buttonsLayout
   }
 
