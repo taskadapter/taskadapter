@@ -224,7 +224,7 @@ public class LoggedInPageset {
 
     private void showConfigsList(boolean showAll, List<UISyncConfig> configs) {
         tracker.trackPage("configs_list");
-        Component component = ConfigsPage.render(context.name, configs,
+        Component component = new ConfigsPage(tracker, configs,
         showAll ? ConfigsPage.DisplayMode.ALL_CONFIGS
                 : ConfigsPage.DisplayMode.OWNED_CONFIGS,
         new ConfigsPage.Callback() {
@@ -261,7 +261,9 @@ public class LoggedInPageset {
                 // TODO TA3 drop-in
 //                dropIn(config.reverse(), file);
             }
-        });
+        },
+                context.configOps
+        ).layout;
         applyUI(component);
     }
 

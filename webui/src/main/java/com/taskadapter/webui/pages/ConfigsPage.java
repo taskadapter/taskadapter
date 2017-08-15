@@ -1,12 +1,12 @@
 package com.taskadapter.webui.pages;
 
 import com.taskadapter.web.uiapi.UISyncConfig;
+import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.Page;
+import com.taskadapter.webui.Tracker;
 import com.vaadin.event.FieldEvents;
-import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Label;
@@ -140,18 +140,27 @@ public final class ConfigsPage {
 
     }
 
-    private final VerticalLayout layout;
+    public VerticalLayout layout;
+    private Tracker tracker;
     private final Collection<UISyncConfig> configs;
     private final DisplayMode displayMode;
     private final Callback callback;
+    private ConfigOperations configOperations;
     private final VerticalLayout configsLayout;
 
-    private ConfigsPage(Collection<UISyncConfig> configs, DisplayMode mode,
-            final Callback callback) {
+    public ConfigsPage(Tracker tracker, Collection<UISyncConfig> configs, DisplayMode mode,
+                        final Callback callback, ConfigOperations configOperations) {
+
+        final List<UISyncConfig> configCopy = new ArrayList<>(
+                configs);
+        Collections.sort(configCopy, new ConfigComparator(configOperations.userName()));
+
+        this.tracker = tracker;
 
         this.configs = configs;
         this.displayMode = mode;
         this.callback = callback;
+        this.configOperations = configOperations;
 
         layout = new VerticalLayout();
         layout.setSpacing(true);
@@ -196,7 +205,13 @@ public final class ConfigsPage {
 
         for (UISyncConfig config : dispConfigs) {
             configsLayout.addComponent(ConfigActionsPanel.render(config,
-                    displayMode, callback));
+                    displayMode, callback, configOperations, new Runnable() {
+                        @Override
+                        public void run() {
+
+                        }
+                    }, tracker)
+            );
         }
     }
 
@@ -225,27 +240,5 @@ public final class ConfigsPage {
             }
         }
         return true;
-    }
-
-    /**
-     * Renders a config page.
-     * 
-     * @param userName
-     *            name of current user.
-     * @param configs
-     *            configs to show.
-     * @param mode
-     *            active display mode.
-     * @param callback
-     *            user action callback.
-     * @return config page UI.
-     */
-    public static Component render(String userName,
-            Collection<UISyncConfig> configs, DisplayMode mode,
-            final Callback callback) {
-        final List<UISyncConfig> configCopy = new ArrayList<>(
-                configs);
-        Collections.sort(configCopy, new ConfigComparator(userName));
-        return new ConfigsPage(configCopy, mode, callback).layout;
     }
 }
