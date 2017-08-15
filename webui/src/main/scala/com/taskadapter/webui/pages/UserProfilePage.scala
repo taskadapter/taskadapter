@@ -5,7 +5,7 @@ import com.taskadapter.webui.user.ChangePasswordDialog
 import com.vaadin.ui._
 
 class UserProfilePage(userName: String, changePasswordCallback: ChangePasswordDialog.Callback,
-                      logoutCallback: Runnable) {
+                      logoutCallback: Runnable, showSetupsListPage: () => Unit) {
   val ui = new VerticalLayout
   ui.setSpacing(true)
   addLoginInfo()
@@ -16,8 +16,13 @@ class UserProfilePage(userName: String, changePasswordCallback: ChangePasswordDi
 
     val l = new VerticalLayout
     l.setMargin(true)
+    l.setSpacing(true)
     val loginString = message("userProfile.login") + s": $userName"
     l.addComponent(new Label(loginString))
+
+    val configureSetupsButton = new Button(message("userProfile.configureConnectors"))
+    configureSetupsButton.addClickListener(_ => showSetupsListPage())
+    l.addComponent(configureSetupsButton)
 
     val button = new Button(message("userProfile.changePassword"))
     button.addClickListener(_ => showChangePasswordDialog())

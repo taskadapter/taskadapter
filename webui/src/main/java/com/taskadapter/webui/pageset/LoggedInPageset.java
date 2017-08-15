@@ -154,7 +154,8 @@ public class LoggedInPageset {
 
     private void showUserProfilePage() {
         tracker.trackPage("user_profile");
-        applyUI(new UserProfilePage(context.name, context.selfManagement::changePassword, logoutCallback).ui());
+        applyUI(new UserProfilePage(context.name, context.selfManagement::changePassword, logoutCallback,
+                showSetupsListPage()).ui());
     }
 
     private Component createMenu() {
@@ -287,9 +288,7 @@ public class LoggedInPageset {
         tracker.trackPage("system_configuration");
         applyUI(ConfigureSystemPage.render(credentialsManager,
                 services.settingsManager, services.licenseManager.getLicense(),
-                context.authorizedOps, tracker,
-                showSetupsListPage()
-                ));
+                context.authorizedOps, tracker));
     }
 
     private Function0<BoxedUnit> showSetupsListPage() {

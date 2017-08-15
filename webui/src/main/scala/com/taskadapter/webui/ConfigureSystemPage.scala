@@ -30,8 +30,7 @@ object ConfigureSystemPage {
   }
 
   def render(credentialsManager: CredentialsManager, settings: SettingsManager, license: License,
-             authorizedOps: AuthorizedOperations, tracker: Tracker,
-             showSetupsListPage: () => Unit): Component = {
+             authorizedOps: AuthorizedOperations, tracker: Tracker): Component = {
     val layout = new VerticalLayout
     layout.setSpacing(true)
     val cmt = LocalRemoteOptionsPanel.createLocalRemoteOptions(settings, authorizedOps.canConfigureServer)
@@ -39,10 +38,6 @@ object ConfigureSystemPage {
     layout.addComponent(cmt)
     layout.addComponent(createAdminPermissionsSection(settings, authorizedOps.canConfigureServer))
     layout.addComponent(UsersPanel.render(credentialsManager, authorizedOps, license, tracker))
-
-    val button = new Button("Configure connector setups")
-    button.addClickListener(_ => showSetupsListPage())
-    layout.addComponent(button)
     layout
   }
 }

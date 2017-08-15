@@ -11,7 +11,6 @@ class SetupsListPage(configOperations: ConfigOperations,
                      showNewSetup: () => Unit) {
 
   val layout = new VerticalLayout
-  layout.setWidth(1000, Sizeable.Unit.PIXELS)
 
   val introLabel = new Label(Page.message("setupsListPage.intro"))
   introLabel.addStyleName(ValoTheme.LABEL_H3)
@@ -20,7 +19,7 @@ class SetupsListPage(configOperations: ConfigOperations,
   addButton.addClickListener(_ => showNewSetup())
 
   private val introRow = new HorizontalLayout(introLabel, addButton)
-  introRow.setWidth("950px")
+  introRow.setWidth(850, Sizeable.Unit.PIXELS)
   introRow.setComponentAlignment(introLabel, Alignment.MIDDLE_LEFT)
   introRow.setComponentAlignment(addButton, Alignment.MIDDLE_RIGHT)
   introRow.setExpandRatio(introLabel, 1)
@@ -65,7 +64,7 @@ class SetupsListPage(configOperations: ConfigOperations,
         usedByLabel.setData(setupId)
 
         val descriptionLayout = new VerticalLayout(setupLabel, usedByLabel)
-        descriptionLayout.setWidth("550px")
+        descriptionLayout.setWidth("450px")
         descriptionLayout.setHeight("80px")
 
         val editLayout = new VerticalLayout(editButton)
