@@ -65,7 +65,7 @@ class EditablePojoMappings(mappings: Seq[FieldMapping]) {
       },
       if (Strings.isNullOrEmpty(e.fieldInConnector2)) {
         None
-      } else  {
+      } else {
         Some(new Field(e.fieldTypeInConnector2, e.fieldInConnector2))
       },
 
@@ -94,39 +94,42 @@ class TaskFieldsMappingFragment(messages: Messages, connector1: UIConnectorConfi
   ui.setContent(layout)
   addNewRowButton()
 
-  def rebuildMappingUI() = {
+  def rebuildMappingUI(): Unit = {
     gridLayout.removeAllComponents()
     configureGridLayout()
     addTableHeaders()
     addFieldsToUI()
   }
 
-  private def configureGridLayout() = {
+  private def configureGridLayout(): Unit = {
     gridLayout.setMargin(true)
     gridLayout.setSpacing(true)
     gridLayout.setRows(GTaskDescriptor.FIELD.values.length + 3)
     gridLayout.setColumns(TaskFieldsMappingFragment.COLUMNS_NUMBER)
   }
 
-  private def addTableHeaders() = {
+  private def addTableHeaders(): Unit = {
     val label2 = new Label(messages.get("editConfig.mappings.exportFieldHeader"))
     label2.addStyleName("fieldsTitle")
-    label2.setWidth(50, PIXELS)
+    label2.setWidth(40, PIXELS)
     gridLayout.addComponent(label2, TaskFieldsMappingFragment.COLUMN_DESCRIPTION, 0)
     gridLayout.setComponentAlignment(label2, Alignment.MIDDLE_LEFT)
     val label = new Label(" ")
     label.setWidth(20, PIXELS)
     gridLayout.addComponent(label, TaskFieldsMappingFragment.COLUMN_HELP, 0)
+
     val label1 = new Label(connector1.getConnectorSetup.label)
     label1.addStyleName("fieldsTitle")
-    label1.setWidth(180, PIXELS)
+    label1.setWidth(230, PIXELS)
     gridLayout.addComponent(label1, TaskFieldsMappingFragment.COLUMN_LEFT_CONNECTOR, 0)
     gridLayout.setComponentAlignment(label1, Alignment.MIDDLE_LEFT)
+
     val label3 = new Label(connector2.getConnectorSetup.label)
     label3.addStyleName("fieldsTitle")
-    label3.setWidth(180, PIXELS)
+    label3.setWidth(230, PIXELS)
     gridLayout.addComponent(label3, TaskFieldsMappingFragment.COLUMN_RIGHT_CONNECTOR, 0)
     gridLayout.setComponentAlignment(label3, Alignment.MIDDLE_LEFT)
+
     val label4 = new Label(messages.get("editConfig.mappings.defaultValueColumn"))
     label4.addStyleName("fieldsTitle")
     label4.setWidth(180, PIXELS)
@@ -223,7 +226,7 @@ class TaskFieldsMappingFragment(messages: Messages, connector1: UIConnectorConfi
     val combo = new ComboBox(null, container)
     combo.setPropertyDataSource(mappedTo)
     combo.setNewItemsAllowed(true)
-    combo.setWidth(160, PIXELS)
+    combo.setWidth("90%")
     gridLayout.addComponent(combo)
     gridLayout.setComponentAlignment(combo, Alignment.MIDDLE_LEFT)
     val currentFieldName = if (classFieldName == "fieldInConnector1") fieldMapping.fieldInConnector1
@@ -248,7 +251,7 @@ class TaskFieldsMappingFragment(messages: Messages, connector1: UIConnectorConfi
 
   def getUI: Component = ui
 
-  def removeEmptyRows() = {
+  def removeEmptyRows(): Unit = {
     editablePojoMappings.removeEmptyRows()
     rebuildMappingUI()
   }
