@@ -113,4 +113,8 @@ final class ConfigOperations(/**
   def deleteConnectorSetup(id: SetupId): Unit = {
     uiConfigStore.deleteSetup(userName, id)
   }
+
+  def getConfigIdsUsingThisSetup(id: SetupId) : Seq[ConfigId] = {
+    uiConfigStore.getConfigIdsUsingThisSetup(userName, id)
+  }
 }

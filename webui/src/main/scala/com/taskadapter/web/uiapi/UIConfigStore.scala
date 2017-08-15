@@ -222,4 +222,9 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
       case None => throw new StorageException(s"Cannot find config with id $configId to clone")
     }
   }
+
+  def getConfigIdsUsingThisSetup(userName: String, id: SetupId): Seq[ConfigId] = {
+    configStorage.getUserConfigs(userName).filter(c => c.getConnector1.connectorSavedSetupId == id
+      || c.getConnector2.connectorSavedSetupId == id).map(c => ConfigId(userName, c.getId))
+  }
 }
