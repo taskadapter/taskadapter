@@ -20,6 +20,7 @@ import com.taskadapter.webui.UserContext;
 import com.taskadapter.webui.WebUserSession;
 import com.taskadapter.webui.config.EditConfigPage;
 import com.taskadapter.webui.config.EditSetupPage;
+import com.taskadapter.webui.config.NewSetupPage;
 import com.taskadapter.webui.config.SetupsListPage;
 import com.taskadapter.webui.license.LicenseFacade;
 import com.taskadapter.webui.pages.ConfigsPage;
@@ -294,8 +295,8 @@ public class LoggedInPageset {
     private Function0<BoxedUnit> showSetupsListPage() {
         return () -> {
             tracker.trackPage("setups_list");
-            applyUI(new SetupsListPage(context.configOps, services.editorManager, services.pluginManager,
-                    createSandbox(), showEditSetupPage()
+            applyUI(new SetupsListPage(context.configOps,
+                    showEditSetupPage(), showNewSetupPage()
             ).ui());
             return BoxedUnit.UNIT;
         };
@@ -306,6 +307,15 @@ public class LoggedInPageset {
             tracker.trackPage("edit_setup");
             applyUI(new EditSetupPage(context.configOps, services.editorManager, services.pluginManager,
                     createSandbox(), setupId, showSetupsListPage()
+            ).ui());
+            return BoxedUnit.UNIT;
+        };
+    }
+    private Function0<BoxedUnit> showNewSetupPage() {
+        return () -> {
+            tracker.trackPage("add_setup");
+            applyUI(new NewSetupPage(context.configOps, services.editorManager, services.pluginManager,
+                    createSandbox(), showSetupsListPage()
             ).ui());
             return BoxedUnit.UNIT;
         };

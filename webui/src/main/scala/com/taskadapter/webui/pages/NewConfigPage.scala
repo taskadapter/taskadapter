@@ -49,7 +49,7 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
 
   def getUIForCurrentStage(): Component = {
     stage match {
-      case 1 => new NewConfigSelectSystem(pluginManager, selected =
+      case 1 => new SelectConnectorComponent(pluginManager, selected =
         (connectorId) => {
           connector1Id = Some(connectorId)
           proceedToStage(stage + 1)
@@ -63,7 +63,7 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
         }
       ).ui
 
-      case 3 => new NewConfigSelectSystem(pluginManager, selected =
+      case 3 => new SelectConnectorComponent(pluginManager, selected =
         (connectorId) => {
           connector2Id = Some(connectorId)
           proceedToStage(stage + 1)

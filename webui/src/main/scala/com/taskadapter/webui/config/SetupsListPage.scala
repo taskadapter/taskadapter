@@ -1,48 +1,21 @@
 package com.taskadapter.webui.config
 
-import com.taskadapter.PluginManager
-import com.taskadapter.connector.definition.Descriptor
-import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.SetupId
-import com.taskadapter.webui.service.EditorManager
 import com.taskadapter.webui.{ConfigOperations, Page}
 import com.vaadin.server.Sizeable.Unit.PIXELS
 import com.vaadin.ui._
 
-import scala.collection.JavaConverters._
-
-class SetupsListPage(configOperations: ConfigOperations, editorManager: EditorManager, pluginManager: PluginManager,
-                     sandbox: Sandbox, showEditSetup: (SetupId) => Unit) {
+class SetupsListPage(configOperations: ConfigOperations,
+                     showEditSetup: (SetupId) => Unit,
+                     showNewSetup: () => Unit) {
   val layout = new VerticalLayout
   layout.setSpacing(true)
   layout.setWidth(560, PIXELS)
 
   private val addButton = new Button(Page.message("setupsListPage.addButton"))
-  addButton.addClickListener(_ => showAddBlock())
-
-  private val plugins: Iterator[Descriptor] = pluginManager.getPluginDescriptors.asScala
-  private val selectConnectorIdForNew = new ListSelect()
-  selectConnectorIdForNew.setWidth("150px")
-  selectConnectorIdForNew.setVisible(false)
-  selectConnectorIdForNew.setNullSelectionAllowed(false)
-
-  selectConnectorIdForNew.addValueChangeListener { event =>
-    val connectorId = event.getProperty.getValue.toString
-    showAddPanelForConnector(connectorId)
-  }
-
-  plugins.foreach { connector =>
-    val itemId = selectConnectorIdForNew.addItem(connector.id)
-    selectConnectorIdForNew.setItemCaption(itemId, connector.label)
-  }
-  selectConnectorIdForNew.setRows(plugins.size)
-
-  val panelForEditor = new VerticalLayout()
-  panelForEditor.setVisible(false)
+  addButton.addClickListener(_ => showNewSetup())
 
   layout.addComponent(addButton)
-  layout.addComponent(selectConnectorIdForNew)
-  layout.addComponent(panelForEditor)
 
   val ui = layout
 
@@ -85,32 +58,4 @@ class SetupsListPage(configOperations: ConfigOperations, editorManager: EditorMa
     }
   }
 
-  def showAddBlock(): Unit = {
-    selectConnectorIdForNew.setVisible(true)
-    panelForEditor.setVisible(true)
-  }
-
-  def hideAddBlock(): Unit = {
-    selectConnectorIdForNew.setVisible(false)
-    panelForEditor.setVisible(false)
-  }
-
-  def showAddPanelForConnector(connectorId: String): Unit = {
-    val editor = editorManager.getEditorFactory(connectorId)
-    val editSetupPanel = editor.getEditSetupPanel(sandbox, None)
-    panelForEditor.removeAllComponents()
-    panelForEditor.addComponent(editSetupPanel.getUI)
-    val saveButton = new Button(Page.message("setupsListPage.saveButton"))
-    saveButton.addClickListener(_ => {
-      val maybeError = editSetupPanel.validate
-      if (maybeError.isEmpty) {
-        configOperations.saveNewSetup(editSetupPanel.getResult)
-        hideAddBlock()
-        refresh()
-      } else {
-        editSetupPanel.showError(maybeError.get)
-      }
-    })
-    panelForEditor.addComponent(saveButton)
-  }
 }
