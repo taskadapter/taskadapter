@@ -25,7 +25,6 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
   val labelProperty = new ObjectProperty[String](config.label)
 
   val layout = new VerticalLayout
-  layout.setMargin(true)
   layout.setSpacing(true)
   //  val goToConfigsListbutton = new Button(Page.message("editConfig.goToConfigsList"))
   //  goToConfigsListbutton.setDescription(Page.message("editConfig.goToConfigsList.tooltip"))
