@@ -2,31 +2,22 @@
 
 @include mytheme;
 
+.mybarmenu .v-menubar-menuitem {
+    color: black;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+.mybarmenu .v-menubar-menuitem:hover {
+    color: #717171;
+}
+
 .header-panel {
     background-color: #e6e6e6;
     color: black;
 }
 
-.logo .v-button-caption {
-    font-size: 33px;
-    text-align: left;
-    margin: 15px 0 13px 13px;
-}
-
-.menu .v-button-caption {
-    font-size: 18px;
-}
-
-.logo .v-button-caption,
-.menu .v-button-caption {
-    font-weight: bold;
-    text-decoration: none;
-}
-
-.menu .v-button-caption:hover,
-.personalMenuItem .v-button-caption:hover,
-.logo .v-button-caption:hover {
-    color: #4181c1;
+.logo {
+    font-size: 2em;
 }
 
 .trial-mode-label {

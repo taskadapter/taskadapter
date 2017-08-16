@@ -13,14 +13,15 @@ import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigureSystemPage;
 import com.taskadapter.webui.Header;
+import com.taskadapter.webui.HeaderMenuBuilder;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.TAPageLayout;
 import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.UserContext;
 import com.taskadapter.webui.WebUserSession;
+import com.taskadapter.webui.config.EditConfigPage;
 import com.taskadapter.webui.config.EditSetupPage;
 import com.taskadapter.webui.config.NewSetupPage;
-import com.taskadapter.webui.config.EditConfigPage;
 import com.taskadapter.webui.config.SetupsListPage;
 import com.taskadapter.webui.license.LicenseFacade;
 import com.taskadapter.webui.pages.ConfigsPage;
@@ -34,13 +35,10 @@ import com.taskadapter.webui.service.Preservices;
 import com.vaadin.server.StreamVariable;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.themes.BaseTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Function0;
@@ -140,16 +138,12 @@ public class LoggedInPageset {
      * Creates a self-management menu.
      */
     private Component createSelfManagementMenu() {
-        final HorizontalLayout panelForLoggedInUsers = new HorizontalLayout();
-        panelForLoggedInUsers.setSpacing(true);
-
-        Button userProfileButton = new Button(message("headerMenu.userProfile"));
-        userProfileButton.setStyleName(BaseTheme.BUTTON_LINK);
-        userProfileButton.addStyleName("menu");
-        userProfileButton.addClickListener((Button.ClickListener) event -> showUserProfilePage());
-        panelForLoggedInUsers.addComponent(userProfileButton);
-
-        return panelForLoggedInUsers;
+        HorizontalLayout layout = new HorizontalLayout(
+                HeaderMenuBuilder.createButton(
+                message("headerMenu.userProfile"),
+                this::showUserProfilePage));
+        layout.setSpacing(true);
+        return layout;
     }
 
     private void showUserProfilePage() {
@@ -161,26 +155,12 @@ public class LoggedInPageset {
     private Component createMenu() {
         final HorizontalLayout menu = new HorizontalLayout();
         menu.setSpacing(true);
+        menu.addComponent(HeaderMenuBuilder.createButton(
+                message("headerMenu.configure"),
+                this::showSystemConfiguration));
+        menu.addComponent(HeaderMenuBuilder.createButton(message("headerMenu.support"),
+                this::showSupport));
 
-        final Button configureButton = new Button(message("headerMenu.configure"));
-        configureButton.setStyleName(BaseTheme.BUTTON_LINK);
-        configureButton.addStyleName("menu");
-        configureButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                showSystemConfiguration();
-            }
-        });
-        menu.addComponent(configureButton);
-
-        final Button supportButton = ButtonBuilder.createSupportButton();
-        supportButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                showSupport();
-            }
-        });
-        menu.addComponent(supportButton);
         return menu;
     }
 

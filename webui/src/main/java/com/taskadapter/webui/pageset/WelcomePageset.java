@@ -1,6 +1,7 @@
 package com.taskadapter.webui.pageset;
 
 import com.taskadapter.webui.Header;
+import com.taskadapter.webui.HeaderMenuBuilder;
 import com.taskadapter.webui.TAPageLayout;
 import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.license.LicenseFacade;
@@ -8,9 +9,10 @@ import com.taskadapter.webui.pages.LoginPage;
 import com.taskadapter.webui.pages.SupportPage;
 import com.taskadapter.webui.service.Preservices;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
+
+import static com.taskadapter.webui.Page.message;
 
 /**
  * Pageset available to all users.
@@ -69,16 +71,9 @@ public final class WelcomePageset {
     }
 
     private Component createMenu() {
-        final HorizontalLayout menu = new HorizontalLayout();
-        final Button supportButton = ButtonBuilder.createSupportButton();
-        supportButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                showSupport();
-            }
-        });
-        menu.addComponent(supportButton);
-        return menu;
+        return new HorizontalLayout(
+                HeaderMenuBuilder.createButton(message("headerMenu.support"),
+                        this::showSupport));
     }
 
     /**
