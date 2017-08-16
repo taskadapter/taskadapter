@@ -33,7 +33,13 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     */
   def getUserConfigs(userLoginName: String): Seq[UISyncConfig] = {
     val storedConfigs = configStorage.getUserConfigs(userLoginName)
-    storedConfigs.map(storedConfig => uize(userLoginName, storedConfig))
+    storedConfigs.flatMap(storedConfig => try {
+      Some(uize(userLoginName, storedConfig))
+    } catch {
+      case e: Exception =>
+        logger.error(s"Error parsing config ${storedConfig.getId} for user $userLoginName. Skipping this config")
+        None
+    })
   }
 
   def getSavedSetupsFolder(loginName: String): File = {
