@@ -37,7 +37,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
       Some(uize(userLoginName, storedConfig))
     } catch {
       case e: Exception =>
-        logger.error(s"Error parsing config ${storedConfig.getId} for user $userLoginName. Skipping this config")
+        logger.error(s"Error parsing config ${storedConfig.getId} for user $userLoginName. Skipping this config. $e")
         None
     })
   }
@@ -102,6 +102,8 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
 
     configId
   }
+
+  def getConfig(configId: ConfigId): Option[UISyncConfig] = getUserConfigs(configId.ownerName).find(_.id == configId)
 
   def saveNewSetup(userName: String, setup: ConnectorSetup): SetupId = {
     val newFile = FileNameGenerator.createSafeAvailableFile(getSavedSetupsFolder(userName), setup.connectorId + "_%d.json")
@@ -223,7 +225,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
         val connector2 = config.getConnector2
         configStorage.createNewConfig(userLoginName, config.getName,
           connector1.connectorTypeId, connector1.connectorSavedSetupId, connector1.serializedConfig,
-          connector2.connectorTypeId, connector2.connectorSavedSetupId, connector2.connectorTypeId,
+          connector2.connectorTypeId, connector2.connectorSavedSetupId, connector2.serializedConfig,
           config.getMappingsString)
       case None => throw new StorageException(s"Cannot find config with id $configId to clone")
     }

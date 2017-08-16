@@ -41,8 +41,7 @@ final class ConfigOperations(/**
   def getOwnedConfigs: util.List[UISyncConfig] = uiConfigStore.getUserConfigs(userName).asJava
 
   def getSavedSetupsFolder = uiConfigStore.getSavedSetupsFolder(userName)
-  def getConfig(configId: ConfigId): Option[UISyncConfig] = uiConfigStore.getUserConfigs(configId.ownerName)
-    .find(_.id == configId)
+  def getConfig(configId: ConfigId): Option[UISyncConfig] = uiConfigStore.getConfig(configId)
 
   /**
     * @return list of configs that user can manage.
