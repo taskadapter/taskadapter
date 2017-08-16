@@ -8,6 +8,7 @@ import com.vaadin.ui._
   * Buttons panel with left/right arrows.
   */
 object ConfigActionsPanel {
+  val descriptionButtonWidth = "575px"
   def render(config: UISyncConfig, mode: ConfigsPage.DisplayMode, callback: ConfigsPage.Callback,
              configOps: ConfigOperations, onExit: Runnable, tracker: Tracker): Component = {
     val layout = new VerticalLayout
@@ -16,7 +17,7 @@ object ConfigActionsPanel {
     val description = if (labelText.isEmpty) Page.message("configsPage.noDescription") else labelText
 
     var descriptionButton = new Button(description)
-    descriptionButton.setWidth("500px")
+    descriptionButton.setWidth(descriptionButtonWidth)
     descriptionButton.setHtmlContentAllowed(true)
     descriptionButton.addClickListener(_ => callback.edit(config))
 

@@ -22,6 +22,9 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
                      close: Runnable) {
   private val logger = LoggerFactory.getLogger(classOf[EditConfigPage])
 
+  val descriptionFieldWidth = "600px"
+  val descriptionFormWidth = "700px"
+
   val labelProperty = new ObjectProperty[String](config.label)
 
   val layout = new VerticalLayout
@@ -30,8 +33,8 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
   //  goToConfigsListbutton.setDescription(Page.message("editConfig.goToConfigsList.tooltip"))
   //  goToConfigsListbutton.addClickListener(_ => callback.back())
 
-  val editDescription = createEditDescriptionElement(config)
-  editDescription.setWidth("700px")
+  val editDescriptionForm = createEditDescriptionElement(config)
+  editDescriptionForm.setWidth(descriptionFormWidth)
 
   var errorMessageLabel = new Label()
   errorMessageLabel.addStyleName("error-message-label")
@@ -42,10 +45,10 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
   val buttons = createConfigOperationsButtons
   buttons.setWidth("20%")
   //  layout.addComponent(goToConfigsListbutton)
-  val topRowLayout = new HorizontalLayout(editDescription, buttons)
-  topRowLayout.setComponentAlignment(editDescription, Alignment.MIDDLE_LEFT)
+  val topRowLayout = new HorizontalLayout(editDescriptionForm, buttons)
+  topRowLayout.setComponentAlignment(editDescriptionForm, Alignment.MIDDLE_LEFT)
   topRowLayout.setComponentAlignment(buttons, Alignment.MIDDLE_RIGHT)
-  topRowLayout.setExpandRatio(editDescription, 1)
+  topRowLayout.setExpandRatio(editDescriptionForm, 1)
 
   layout.addComponent(topRowLayout)
 
@@ -190,7 +193,7 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
   private def createEditDescriptionElement(config: UISyncConfig) : Component = {
     val form = new FormLayout
     val descriptionField = new TextField(Page.message("editConfig.description"))
-    descriptionField.setWidth("500px")
+    descriptionField.setWidth(descriptionFieldWidth)
     descriptionField.setPropertyDataSource(labelProperty)
     form.addComponent(descriptionField)
     form
