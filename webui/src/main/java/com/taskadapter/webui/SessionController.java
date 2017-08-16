@@ -8,7 +8,6 @@ import com.taskadapter.config.ConfigStorage;
 import com.taskadapter.web.uiapi.UIConfigService;
 import com.taskadapter.web.uiapi.UIConfigStore;
 import com.taskadapter.webui.pageset.LoggedInPageset;
-import com.taskadapter.webui.pageset.WelcomePageset;
 import com.taskadapter.webui.service.Preservices;
 import com.taskadapter.webui.service.WrongPasswordException;
 import org.slf4j.Logger;
