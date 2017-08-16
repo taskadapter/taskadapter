@@ -1,89 +1,126 @@
 package com.taskadapter.webui.config
 
 import com.taskadapter.config.StorageException
+import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.connector.definition.exceptions.BadConfigException
+import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
-import com.taskadapter.web.uiapi.{ConfigId, UISyncConfig}
-import com.taskadapter.webui.{CloneDeleteComponent, ConfigOperations, Page, Tracker}
+import com.taskadapter.web.uiapi.{UIConnectorConfig, UISyncConfig}
+import com.taskadapter.webui._
 import com.taskadapter.webui.data.ExceptionFormatter
-import com.vaadin.data.util.MethodProperty
+import com.vaadin.data.util.{MethodProperty, ObjectProperty}
 import com.vaadin.server.Sizeable.Unit.PERCENTAGE
 import com.vaadin.shared.ui.label.ContentMode
 import com.vaadin.ui._
+import com.vaadin.ui.themes.ValoTheme
 import org.slf4j.LoggerFactory
 
-object EditConfigPage {
-
-  trait Callback {
-    /**
-      * User requested synchronization in "forward" directions (from left to right).
-      */
-    def forwardSync(configId: ConfigId): Unit
-
-    /**
-      * User requested synchronization in "reverse" direction (from right to left).
-      */
-    def backwardSync(configId: ConfigId): Unit
-
-    /**
-      * User attempts to leave this page.
-      */
-    def back(): Unit
-  }
-
-  /**
-    * Creates "edit description" element for the config.
-    *
-    * @param config
-    * config.
-    * @return description editor.
-    */
-  private def createEditDescriptionElement(config: UISyncConfig) = {
-    val descriptionLayout = new HorizontalLayout
-    descriptionLayout.setSpacing(true)
-    descriptionLayout.addComponent(new Label(Page.message("editConfig.description")))
-    val descriptionField = new TextField
-    descriptionField.addStyleName("configEditorDescriptionLabel")
-    val label = new MethodProperty[String](config, "label")
-    descriptionField.setPropertyDataSource(label)
-    descriptionLayout.addComponent(descriptionField)
-    descriptionLayout
-  }
-}
-
-
-/**
-  * Renders a new config editor.
-  *
-  * @param config config to edit.
-  * @param configOps config operations.
-  * @param error optional welcome error. May be null.
-  * @param callback callback to invoke when user attempts to leave this page.
-  * @return edit page UI.
-  */
-class EditConfigPage(config: UISyncConfig, configOps: ConfigOperations, allowFullFSAccess: Boolean,
-                             error: String, callback: EditConfigPage.Callback, tracker: Tracker) {
+class EditConfigPage(messages: Messages, tracker: Tracker,
+                     configOps: ConfigOperations,
+                     sandbox: Sandbox, config: UISyncConfig, exportToLeft: Runnable,
+                     exportToRight: Runnable,
+                     close: Runnable) {
   private val logger = LoggerFactory.getLogger(classOf[EditConfigPage])
 
-  var layout = new VerticalLayout
-
+  val layout = new VerticalLayout
+  layout.setMargin(true)
   layout.setSpacing(true)
-  layout.addComponent(ConfigsListLinkComponent.render(_ => callback.back()))
-  layout.addComponent(EditConfigPage.createEditDescriptionElement(config))
-  var editor = new OnePageEditor(Page.MESSAGES, new Sandbox(allowFullFSAccess, configOps.syncSandbox), config, mkExportAction(() => {
-    callback.backwardSync(config.id)
-  }), mkExportAction(() => {
-    callback.forwardSync(config.id)
-  }))
-  layout.addComponent(editor.getUI)
-  var errorMessageLabel = new Label(error)
+  //  val goToConfigsListbutton = new Button(Page.message("editConfig.goToConfigsList"))
+  //  goToConfigsListbutton.setDescription(Page.message("editConfig.goToConfigsList.tooltip"))
+  //  goToConfigsListbutton.addClickListener(_ => callback.back())
+
+  val editDescription = createEditDescriptionElement(config)
+  editDescription.setWidth("600px")
+
+  var errorMessageLabel = new Label()
   errorMessageLabel.addStyleName("error-message-label")
   errorMessageLabel.setWidth(100, PERCENTAGE)
   errorMessageLabel.setContentMode(ContentMode.HTML)
   layout.addComponent(errorMessageLabel)
-  layout.addComponent(createBottomButtons)
 
-  private def createBottomButtons = {
+  val buttons = createConfigOperationsButtons
+  buttons.setWidth("20%")
+  //  layout.addComponent(goToConfigsListbutton)
+  val topRowLayout = new HorizontalLayout(editDescription, buttons)
+  topRowLayout.setComponentAlignment(editDescription, Alignment.MIDDLE_LEFT)
+  topRowLayout.setComponentAlignment(buttons, Alignment.MIDDLE_RIGHT)
+  topRowLayout.setExpandRatio(editDescription, 1)
+
+  layout.addComponent(topRowLayout)
+
+
+  layout.addComponent(createExportComponent())
+  val taskFieldsMappingFragment = new TaskFieldsMappingFragment(messages, config.getConnector1, config.getConnector2, config.getNewMappings)
+  layout.addComponent(taskFieldsMappingFragment.getUI)
+
+  def removeEmptyRows(): Unit = {
+    taskFieldsMappingFragment.removeEmptyRows()
+  }
+
+  def getElements: Iterable[FieldMapping] = {
+    taskFieldsMappingFragment.getElements
+  }
+
+  def getUI: Component = layout
+
+  private def createExportComponent(): Component = {
+    val layout = new HorizontalLayout
+    addConnectorPanel(layout, config.getConnector1, sandbox, Alignment.MIDDLE_RIGHT)
+    val exportButtonsFragment = createExportButtonsFragment(messages, exportToLeft, exportToRight)
+    layout.addComponent(exportButtonsFragment)
+    layout.setComponentAlignment(exportButtonsFragment, Alignment.MIDDLE_CENTER)
+    addConnectorPanel(layout, config.getConnector2, sandbox, Alignment.MIDDLE_LEFT)
+    layout
+  }
+
+  def createExportButtonsFragment(messages: Messages, exportToLeft: Runnable, exportToRight: Runnable): Component = {
+    val layout = new HorizontalLayout
+    layout.setSpacing(true)
+    layout.addComponent(createStartExportButton(messages, "arrow_left.png", exportToLeft))
+    layout.addComponent(createStartExportButton(messages, "arrow_right.png", exportToRight))
+    layout
+  }
+
+  private def createStartExportButton(messages: Messages, imageFile: String, handler: Runnable) = {
+    val button = new Button
+    button.setIcon(ImageLoader.getImage(imageFile))
+    button.setDescription(messages.get("export.exportButtonTooltip"))
+    button.addStyleName(ValoTheme.BUTTON_LARGE)
+    button.addClickListener(_ => handler.run())
+    button.setWidth("100px")
+    button
+  }
+
+  private def addConnectorPanel(layout: HorizontalLayout, config: UIConnectorConfig, sandbox: Sandbox, align: Alignment): Unit = {
+    val button = createConfigureConnectorButton(config, sandbox)
+    layout.addComponent(button)
+    layout.setComponentAlignment(button, align)
+  }
+
+  private def createConfigureConnectorButton(connectorConfig: UIConnectorConfig, sandbox: Sandbox): Component = {
+    val caption = Page.message("editConfig.configureConnector", connectorConfig.getLabel, connectorConfig.getConnectorTypeId)
+    val labelProperty = new ObjectProperty[String](connectorConfig.getConnectorSetup.label)
+    val iconResource = ImageLoader.getImage("edit.png")
+    val button = new Button(connectorConfig.getLabel)
+    button.addStyleName(ValoTheme.BUTTON_LARGE)
+    button.setIcon(iconResource)
+    button.setWidth("350px")
+    button.addClickListener(_ => showEditConnectorDialog(connectorConfig))
+    button
+  }
+
+  def showEditConnectorDialog(connectorConfig: UIConnectorConfig): Unit = {
+    val newWindow = new Window()
+
+    newWindow.setContent(connectorConfig.createMiniPanel(sandbox))
+    newWindow.center()
+    newWindow.setModal(true)
+    layout.getUI.addWindow(newWindow)
+    newWindow.focus()
+  }
+
+
+  private def createConfigOperationsButtons = {
     val buttonsLayout = new HorizontalLayout
     buttonsLayout.setWidth(100, PERCENTAGE)
     val rightLayout = new HorizontalLayout
@@ -91,44 +128,29 @@ class EditConfigPage(config: UISyncConfig, configOps: ConfigOperations, allowFul
     buttonsLayout.addComponent(rightLayout)
     buttonsLayout.setComponentAlignment(rightLayout, Alignment.BOTTOM_RIGHT)
     val saveButton = new Button(Page.message("button.save"))
-    saveButton.addClickListener(new Button.ClickListener() {
-      override def buttonClick(event: Button.ClickEvent): Unit = {
-        saveClicked()
-      }
-    })
+    saveButton.addClickListener(_ => saveClicked())
     rightLayout.addComponent(saveButton)
     val backButton = new Button(Page.message("button.close"))
-    backButton.addClickListener(new Button.ClickListener() {
-      override def buttonClick(event: Button.ClickEvent): Unit = {
-        callback.back()
-      }
-    })
+    backButton.addClickListener(_ => close.run())
 
-    val cloneDeletePanel= new CloneDeleteComponent(config.id, configOps, () => callback.back, tracker).layout
+    val cloneDeletePanel= new CloneDeleteComponent(config.id, configOps, close, tracker).layout
     rightLayout.addComponent(backButton)
     rightLayout.addComponent(cloneDeletePanel)
     buttonsLayout
   }
 
-  private def saveClicked() = {
+  private def saveClicked(): Unit = {
     if (validate) {
       save()
       Notification.show("", Page.message("editConfig.messageSaved"), Notification.Type.HUMANIZED_MESSAGE)
     }
   }
 
-  /** Wraps an export action. */
-  private def mkExportAction(exporter: Runnable): Runnable = () => {
-    if (validate) {
-      save()
-      exporter.run()
-    }
-  }
-
   private def validate: Boolean = {
     errorMessageLabel.setValue("")
     try
-      editor.validate()
+      // TODO validate left/right editors too. this was lost during the last refactoring.
+      taskFieldsMappingFragment.validate()
     catch {
       case e: FieldAlreadyMappedException =>
         val s = Page.message("editConfig.error.fieldAlreadyMapped", e.getValue)
@@ -146,10 +168,10 @@ class EditConfigPage(config: UISyncConfig, configOps: ConfigOperations, allowFul
     true
   }
 
-  private def save() = {
+  private def save(): Unit = {
     try {
-      editor.removeEmptyRows
-      val newFieldMappings = editor.getElements.toSeq
+      removeEmptyRows()
+      val newFieldMappings = getElements.toSeq
       val newConfig = config.copy(fieldMappings = newFieldMappings)
       configOps.saveConfig(newConfig)
       tracker.trackEvent("config", "saved", "")
@@ -161,7 +183,20 @@ class EditConfigPage(config: UISyncConfig, configOps: ConfigOperations, allowFul
     }
   }
 
+  private def createEditDescriptionElement(config: UISyncConfig) : Component = {
+    val form = new FormLayout
+    val descriptionField = new TextField(Page.message("editConfig.description"))
+    descriptionField.setWidth("400px")
+    descriptionField
+    val label = new MethodProperty[String](config, "label")
+    descriptionField.setPropertyDataSource(label)
+    form.addComponent(descriptionField)
+    form
+  }
+
+
   def setErrorMessage(errorMessage: String): Unit = {
     errorMessageLabel.setValue(errorMessage)
   }
+
 }

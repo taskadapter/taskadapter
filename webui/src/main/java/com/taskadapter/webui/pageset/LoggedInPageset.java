@@ -18,9 +18,9 @@ import com.taskadapter.webui.TAPageLayout;
 import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.UserContext;
 import com.taskadapter.webui.WebUserSession;
-import com.taskadapter.webui.config.EditConfigPage;
 import com.taskadapter.webui.config.EditSetupPage;
 import com.taskadapter.webui.config.NewSetupPage;
+import com.taskadapter.webui.config.EditConfigPage;
 import com.taskadapter.webui.config.SetupsListPage;
 import com.taskadapter.webui.license.LicenseFacade;
 import com.taskadapter.webui.pages.ConfigsPage;
@@ -332,6 +332,21 @@ public class LoggedInPageset {
     }
 
     private Component getConfigEditor(UISyncConfig config, String error) {
+        ConfigId configId = config.id();
+        EditConfigPage editor = new EditConfigPage(Page.MESSAGES(), tracker, context.configOps,
+                createSandbox(), config,
+                () -> {
+                    Option<UISyncConfig> loadedConfig = context.configOps.getConfig(configId);
+                    sync(loadedConfig.get().reverse());
+                },
+                () -> {
+                    Option<UISyncConfig> loadedConfig = context.configOps.getConfig(configId);
+                    sync(loadedConfig.get());
+                }, this::showConfigsList);
+
+        return editor.getUI();
+
+/*
         return new EditConfigPage(config, context.configOps,
                 services.settingsManager.isTAWorkingOnLocalMachine(), error,
                 new EditConfigPage.Callback() {
@@ -352,7 +367,7 @@ public class LoggedInPageset {
                         clearCurrentConfigInSession();
                         showHome();
                     }
-                }, tracker).layout();
+                }, tracker).layout();*/
     }
 
     private void clearCurrentConfigInSession() {
