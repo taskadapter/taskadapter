@@ -3,6 +3,7 @@ package com.taskadapter.webui.pages;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.Page;
+import com.taskadapter.webui.Sizes;
 import com.taskadapter.webui.Tracker;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.Alignment;
@@ -167,7 +168,7 @@ public final class ConfigsPage {
         layout.setWidth(560, PIXELS);
 
         final HorizontalLayout actionPanel = new HorizontalLayout();
-        actionPanel.setWidth(100, PERCENTAGE);
+        actionPanel.setWidth(Sizes.configsListWidth());
         layout.addComponent(actionPanel);
 
         final Button addButton = new Button(Page.message("configsPage.buttonNewConfig"));
@@ -179,7 +180,6 @@ public final class ConfigsPage {
         TextField filterField = new TextField();
         filterField.addTextChangeListener((FieldEvents.TextChangeListener) event -> filterFields(event.getText()));
         filterPanel.addComponent(new Label(Page.message("configsPage.filter")));
-        filterPanel.addStyleName("filterPanel");
         filterPanel.addComponent(filterField);
         filterPanel.setSpacing(true);
         actionPanel.addComponent(filterPanel);

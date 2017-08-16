@@ -22,9 +22,6 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
                      close: Runnable) {
   private val logger = LoggerFactory.getLogger(classOf[EditConfigPage])
 
-  val descriptionFieldWidth = "600px"
-  val descriptionFormWidth = "700px"
-
   val labelProperty = new ObjectProperty[String](config.label)
 
   val layout = new VerticalLayout
@@ -34,7 +31,7 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
   //  goToConfigsListbutton.addClickListener(_ => callback.back())
 
   val editDescriptionForm = createEditDescriptionElement(config)
-  editDescriptionForm.setWidth(descriptionFormWidth)
+  editDescriptionForm.setWidth(Sizes.editConfigDescriptionFormWidth)
 
   var errorMessageLabel = new Label()
   errorMessageLabel.addStyleName("error-message-label")
@@ -193,7 +190,7 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
   private def createEditDescriptionElement(config: UISyncConfig) : Component = {
     val form = new FormLayout
     val descriptionField = new TextField(Page.message("editConfig.description"))
-    descriptionField.setWidth(descriptionFieldWidth)
+    descriptionField.setWidth(Sizes.editConfigDescriptionFieldWidth)
     descriptionField.setPropertyDataSource(labelProperty)
     form.addComponent(descriptionField)
     form
