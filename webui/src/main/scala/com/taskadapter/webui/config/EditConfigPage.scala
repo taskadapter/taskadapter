@@ -32,13 +32,13 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
   //  goToConfigsListbutton.addClickListener(_ => callback.back())
 
   val editDescription = createEditDescriptionElement(config)
-  editDescription.setWidth("600px")
+  editDescription.setWidth("700px")
 
   var errorMessageLabel = new Label()
   errorMessageLabel.addStyleName("error-message-label")
   errorMessageLabel.setWidth(100, PERCENTAGE)
   errorMessageLabel.setContentMode(ContentMode.HTML)
-  layout.addComponent(errorMessageLabel)
+  errorMessageLabel.setVisible(false)
 
   val buttons = createConfigOperationsButtons
   buttons.setWidth("20%")
@@ -50,8 +50,9 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
 
   layout.addComponent(topRowLayout)
 
-
   layout.addComponent(createExportComponent())
+  layout.addComponent(errorMessageLabel)
+
   val taskFieldsMappingFragment = new TaskFieldsMappingFragment(messages, config.getConnector1, config.getConnector2, config.getNewMappings)
   layout.addComponent(taskFieldsMappingFragment.getUI)
 
@@ -149,22 +150,22 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
   }
 
   private def validate: Boolean = {
-    errorMessageLabel.setValue("")
+    clearErrorMessage()
     try
       // TODO validate left/right editors too. this was lost during the last refactoring.
       taskFieldsMappingFragment.validate()
     catch {
       case e: FieldAlreadyMappedException =>
         val s = Page.message("editConfig.error.fieldAlreadyMapped", e.getValue)
-        errorMessageLabel.setValue(s)
+        showError(s)
         return false
       case e: FieldNotMappedException =>
         val s = Page.message("error.fieldSelectedForExportNotMapped", e.fieldName)
-        errorMessageLabel.setValue(s)
+        showError(s)
         return false
       case e: BadConfigException =>
         val s = ExceptionFormatter.format(e)
-        errorMessageLabel.setValue(s)
+        showError(s)
         return false
     }
     true
@@ -182,7 +183,7 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
     } catch {
       case e: StorageException =>
         val message = Page.message("editConfig.error.cantSave", e.getMessage)
-        errorMessageLabel.setValue(message)
+        showError(message)
         logger.error(message, e)
     }
   }
@@ -190,15 +191,18 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
   private def createEditDescriptionElement(config: UISyncConfig) : Component = {
     val form = new FormLayout
     val descriptionField = new TextField(Page.message("editConfig.description"))
-    descriptionField.setWidth("400px")
+    descriptionField.setWidth("500px")
     descriptionField.setPropertyDataSource(labelProperty)
     form.addComponent(descriptionField)
     form
   }
 
-
-  def setErrorMessage(errorMessage: String): Unit = {
+  def showError(errorMessage: String): Unit = {
+    errorMessageLabel.setVisible(true)
     errorMessageLabel.setValue(errorMessage)
   }
-
+  def clearErrorMessage(): Unit = {
+    errorMessageLabel.setVisible(false)
+    errorMessageLabel.setValue("")
+  }
 }
