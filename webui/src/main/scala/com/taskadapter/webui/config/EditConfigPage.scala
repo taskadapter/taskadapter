@@ -8,7 +8,7 @@ import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{UIConnectorConfig, UISyncConfig}
 import com.taskadapter.webui._
 import com.taskadapter.webui.data.ExceptionFormatter
-import com.vaadin.data.util.{MethodProperty, ObjectProperty}
+import com.vaadin.data.util.ObjectProperty
 import com.vaadin.server.Sizeable.Unit.PERCENTAGE
 import com.vaadin.shared.ui.label.ContentMode
 import com.vaadin.ui._
@@ -21,6 +21,8 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
                      exportToRight: Runnable,
                      close: Runnable) {
   private val logger = LoggerFactory.getLogger(classOf[EditConfigPage])
+
+  val labelProperty = new ObjectProperty[String](config.label)
 
   val layout = new VerticalLayout
   layout.setMargin(true)
@@ -172,7 +174,9 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
     try {
       removeEmptyRows()
       val newFieldMappings = getElements.toSeq
-      val newConfig = config.copy(fieldMappings = newFieldMappings)
+      val newConfig = config.copy(fieldMappings = newFieldMappings,
+        label = labelProperty.getValue
+      )
       configOps.saveConfig(newConfig)
       tracker.trackEvent("config", "saved", "")
     } catch {
@@ -187,9 +191,7 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
     val form = new FormLayout
     val descriptionField = new TextField(Page.message("editConfig.description"))
     descriptionField.setWidth("400px")
-    descriptionField
-    val label = new MethodProperty[String](config, "label")
-    descriptionField.setPropertyDataSource(label)
+    descriptionField.setPropertyDataSource(labelProperty)
     form.addComponent(descriptionField)
     form
   }
