@@ -4,7 +4,8 @@ import java.io.File
 
 import com.taskadapter.connector._
 import com.taskadapter.connector.common.ProgressMonitorUtils
-import com.taskadapter.connector.msp.{MSPConfig, MSPConnector}
+import com.taskadapter.connector.definition.FileSetup
+import com.taskadapter.connector.msp.MSPConnector
 import com.taskadapter.connector.redmine._
 import com.taskadapter.connector.testlib.{ResourceLoader, TestUtils}
 import com.taskadapter.core.TaskLoader
@@ -112,8 +113,7 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
   }
 
   it("msp tasks with non-linear IDs are saved to Redmine") {
-    val mspConfig = getMspConfig("com/taskadapter/integrationtests/non-linear-uuid.xml")
-    val msProjectConnector = new MSPConnector(mspConfig)
+    val msProjectConnector = new MSPConnector(getMspSetup("com/taskadapter/integrationtests/non-linear-uuid.xml"))
     val redmineConfig: RedmineConfig = RedmineTestConfig.getRedmineTestConfig
     redmineConfig.setProjectKey(redmineProject.get.getIdentifier)
 
@@ -136,8 +136,8 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
     val redmineConfig = RedmineTestConfig.getRedmineTestConfig
     redmineConfig.setProjectKey(redmineProject.get.getIdentifier)
 
-    val mspConfig = getMspConfig("com/taskadapter/integrationtests/ProjectWithOneSideDisconnectedRelationships.xml")
-    val projectConnector = new MSPConnector(mspConfig)
+    val projectConnector = new MSPConnector(
+      getMspSetup("com/taskadapter/integrationtests/ProjectWithOneSideDisconnectedRelationships.xml"))
 
     val maxTasksNumber = 9999
     val loadedTasks = TaskLoader.loadTasks(maxTasksNumber, projectConnector, "project1",
@@ -166,12 +166,9 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
     mgr.getIssueManager.createIssue(issue)
   }
 
-  def getMspConfig(resourceName: String): MSPConfig = {
-    val config = new MSPConfig
+  def getMspSetup(resourceName: String): FileSetup = {
     val file = new File(ResourceLoader.getAbsolutePathForResource(resourceName))
-    config.setInputAbsoluteFilePath(file.getAbsolutePath)
-    config.setOutputAbsoluteFilePath(file.getAbsolutePath)
-    config
+    FileSetup(MSPConnector.ID, "label", file.getAbsolutePath, file.getAbsolutePath)
   }
 }
 

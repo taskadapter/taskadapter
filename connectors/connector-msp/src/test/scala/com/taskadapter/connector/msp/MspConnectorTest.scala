@@ -6,6 +6,7 @@ import java.util
 import java.util.Date
 
 import com.taskadapter.connector.common.TreeUtils
+import com.taskadapter.connector.definition.FileSetup
 import com.taskadapter.connector.testlib.{CommonTestChecks, TempFolder, TestSaver}
 import com.taskadapter.model.{FieldRowBuilder, GTask, GTaskBuilder}
 import org.junit.Assert.assertEquals
@@ -105,10 +106,8 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
   }
 
   def getConnector(folder: File): MSPConnector = {
-    val config = new MSPConfig
     val file = new File(folder, MSP_FILE_NAME)
-    config.setInputAbsoluteFilePath(file.getAbsolutePath)
-    config.setOutputAbsoluteFilePath(file.getAbsolutePath)
-    new MSPConnector(config)
+    val setup = FileSetup(MSPConnector.ID, Some("file"), "label", file.getAbsolutePath, file.getAbsolutePath)
+    new MSPConnector(setup)
   }
 }

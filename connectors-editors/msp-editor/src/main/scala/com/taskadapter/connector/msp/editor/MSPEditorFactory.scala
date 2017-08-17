@@ -1,6 +1,7 @@
 package com.taskadapter.connector.msp.editor
 
 import java.io.File
+import java.nio.file.Paths
 
 import com.taskadapter.connector.common.FileNameGenerator
 import com.taskadapter.connector.definition.exceptions.BadConfigException
@@ -13,7 +14,7 @@ import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.{ConnectorSetupPanel, DroppingNotSupportedException, PluginEditorFactory}
 import com.vaadin.data.Property
-import com.vaadin.data.util.MethodProperty
+import com.vaadin.data.util.ObjectProperty
 import com.vaadin.ui._
 
 class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
@@ -46,11 +47,10 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     layout
   }
 
-  override def getEditSetupPanel(sandbox: Sandbox, setup: Option[FileSetup]) = new ConnectorSetupPanel() {
-    val config = setup.map(s => new MSPConfig(s.sourceFile, s.targetFile)).getOrElse(new MSPConfig())
-    val inputFilePath = new MethodProperty[String](config, "inputAbsoluteFilePath")
-    val outputFilePath = new MethodProperty[String](config, "outputAbsoluteFilePath")
-
+  override def getEditSetupPanel(sandbox: Sandbox, maybeSetup: Option[FileSetup]) = new ConnectorSetupPanel() {
+    val setup = maybeSetup.getOrElse(FileSetup(MSPConnector.ID, "", "", ""))
+    val inputFilePath = new ObjectProperty[String](setup.sourceFile)
+    val outputFilePath = new ObjectProperty[String](setup.targetFile)
 
     override def getUI: Component = {
       if (sandbox.allowLocalFSAccess)
@@ -63,8 +63,15 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
       None
     }
 
-    override def getResult: FileSetup = FileSetup(MSPConnector.ID, inputFilePath.getValue,
-      inputFilePath.getValue, outputFilePath.getValue)
+    def getShortLabel(fileName: String): String = {
+      Paths.get(fileName).getFileName.toString
+    }
+
+    override def getResult: FileSetup = {
+      val label = getShortLabel(inputFilePath.getValue)
+      FileSetup(MSPConnector.ID, label,
+        inputFilePath.getValue, outputFilePath.getValue)
+    }
 
     override def showError(String: String): Unit = {
       // TODO show error
@@ -98,12 +105,12 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
 
   @throws[BadConfigException]
   override def validateForSave(config: MSPConfig, setup: FileSetup): Unit = {
-    if (config.getOutputAbsoluteFilePath.isEmpty) throw new OutputFileNameNotSetException
+    if (setup.targetFile.isEmpty) throw new OutputFileNameNotSetException
   }
 
   @throws[BadConfigException]
   override def validateForLoad(config: MSPConfig, setup: FileSetup): Unit = {
-    if (config.getInputAbsoluteFilePath.isEmpty) throw new InputFileNameNotSetException
+    if (setup.sourceFile.isEmpty) throw new InputFileNameNotSetException
   }
 
   @throws[BadConfigException]
@@ -113,10 +120,10 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
   }
 
   override def describeSourceLocation(config: MSPConfig, setup: FileSetup): String =
-    new File(config.getInputAbsoluteFilePath).getName
+    new File(setup.sourceFile).getName
 
   override def describeDestinationLocation(config: MSPConfig, setup: FileSetup): String =
-    new File(config.getOutputAbsoluteFilePath).getName
+    new File(setup.targetFile).getName
 
   private def processFile(sandbox: Sandbox, uploadedFile: File): FileProcessingResult = {
     val fileName = uploadedFile.getName
@@ -131,11 +138,13 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
 
   @throws[BadConfigException]
   override def updateForSave(config: MSPConfig, sandbox: Sandbox, setup: FileSetup): Boolean = {
-    if (!config.getOutputAbsoluteFilePath.isEmpty) return false
+    if (!setup.targetFile.isEmpty) return false
     val newPath = FileNameGenerator.createSafeAvailableFile(sandbox.getUserContentDirectory, "MSP_export_%d.xml").getAbsolutePath
     if (newPath == null) throw new OutputFileNameNotSetException
-    config.setOutputAbsoluteFilePath(newPath)
-    config.setInputAbsoluteFilePath(newPath)
+
+    // TODO TA3 this won't work!
+//    config.setOutputAbsoluteFilePath(newPath)
+//    config.setInputAbsoluteFilePath(newPath)
     true
   }
 

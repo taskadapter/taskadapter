@@ -2,6 +2,7 @@ package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.common.RelationUtils;
+import com.taskadapter.connector.definition.FileSetup;
 import com.taskadapter.connector.definition.SaveResult;
 import com.taskadapter.connector.definition.SaveResultBuilder;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
@@ -25,12 +26,12 @@ public final class MSPTaskSaver {
     private static final Logger logger = LoggerFactory
             .getLogger(MSPTaskSaver.class);
     private final SaveResultBuilder result = new SaveResultBuilder();
-    private final MSPConfig config;
 
     private MsXmlFileWriter writer;
+    private FileSetup setup;
 
-    public MSPTaskSaver(MSPConfig config, scala.collection.Iterable<FieldRow> rows) {
-        this.config = config;
+    public MSPTaskSaver(FileSetup setup, scala.collection.Iterable<FieldRow> rows) {
+        this.setup = setup;
         this.writer = new MsXmlFileWriter(rows);
     }
 
@@ -49,7 +50,7 @@ public final class MSPTaskSaver {
     private void saveIssues(List<GTask> tasks) throws ConnectorException {
         try {
             final String resultFile = writer.write(
-                    config.getOutputAbsoluteFilePath(), result, tasks, false);
+                    setup.targetFile(), result, tasks, false);
             result.setTargetFileAbsolutePath(resultFile);
         } catch (Exception e) {
             throw MSPExceptions.convertException(e);
@@ -61,8 +62,7 @@ public final class MSPTaskSaver {
     private void saveRelations(List<GRelation> relations) {
         MSPFileReader fileReader = new MSPFileReader();
         try {
-            String outputAbsoluteFilePath = config.getOutputAbsoluteFilePath();
-            ProjectFile projectFile = fileReader.readFile(outputAbsoluteFilePath);
+            ProjectFile projectFile = fileReader.readFile(setup.targetFile());
             for (GRelation relation : relations) {
                 if (relation.type().equals(Precedes$.MODULE$)) {
                     Long intKey = relation.relatedTaskId().id();
@@ -85,7 +85,7 @@ public final class MSPTaskSaver {
                 }
             }
 
-            RealWriter.writeProject(outputAbsoluteFilePath, projectFile);
+            RealWriter.writeProject(setup.targetFile(), projectFile);
         } catch (Throwable e) {
             result.addGeneralError(new EntityPersistenseException(
                     "Can't create Tasks Relations (" + e.toString() + ")"));

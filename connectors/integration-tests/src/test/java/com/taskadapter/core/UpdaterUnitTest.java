@@ -12,12 +12,14 @@ public class UpdaterUnitTest {
 
     private MSPConnector projectConnector;
 
+/*
     @Before
     public void beforeEachTest() throws URISyntaxException {
         URL resource = Resources.getResource("com/taskadapter/core/9tasks.xml");
         MSPConfig mspConfig = new MSPConfig(resource.toURI().getPath());
         projectConnector = new MSPConnector(mspConfig);
     }
+*/
 
     // TODO TA3 remote id tests
 /*

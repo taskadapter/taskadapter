@@ -2,8 +2,8 @@ package com.taskadapter.core;
 
 import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.NewConnector;
+import com.taskadapter.connector.definition.FileSetup;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.msp.MSPTaskSaver;
 import com.taskadapter.connector.redmine.RedmineConfig;
@@ -42,9 +42,11 @@ public class UpdaterIntegrationTest {
 
     private NewConnector redmineConnector;
     private RedmineConfig redmineConfig;
-    private MSPConfig mspConfig;
+    private FileSetup setup;
     private NewConnector projectConnector;
 //    static WebConnectorSetup setup = RedmineTestConfig.getRedmineServerInfo();
+
+    // TODO TA3 integration tests
 
     @BeforeClass
     public static void oneTimeSetUp() {
@@ -83,8 +85,8 @@ public class UpdaterIntegrationTest {
 //        redmineConfig = RedmineTestConfig.getRedmineTestConfig();
 //        redmineConfig.setProjectKey(projectKey);
 //        redmineConnector = new RedmineConnector(redmineConfig, RedmineTestConfig.getRedmineServerInfo());
-        mspConfig = createTempMSPConfig();
-        projectConnector = new MSPConnector(mspConfig);
+        setup = createTempMSPSetup();
+        projectConnector = new MSPConnector(setup);
     }
 
     // TODO TA3 Msp remote ids test
@@ -112,7 +114,7 @@ public class UpdaterIntegrationTest {
 */
 
     private void saveToMSP(scala.collection.Iterable<FieldRow> rows) throws ConnectorException {
-        new MSPTaskSaver(mspConfig, rows).saveData(rmIssues);
+        new MSPTaskSaver(setup, rows).saveData(rmIssues);
     }
 
 /*    private void modifyRedmineData(List<FieldRow> rows) throws ConnectorException {
@@ -174,8 +176,7 @@ public class UpdaterIntegrationTest {
         return issues;
     }
 
-    private MSPConfig createTempMSPConfig() {
-
+    private FileSetup createTempMSPSetup() {
         File temp;
         try {
             temp = File.createTempFile("pattern", ".xml");
@@ -184,10 +185,7 @@ public class UpdaterIntegrationTest {
         }
         temp.deleteOnExit();
 
-        MSPConfig mspConfig = new MSPConfig();
-        mspConfig.setInputAbsoluteFilePath(temp.getAbsolutePath());
-        mspConfig.setOutputAbsoluteFilePath(temp.getAbsolutePath());
-        return mspConfig;
+        return FileSetup.apply(MSPConnector.ID, "label", temp.getAbsolutePath(), temp.getAbsolutePath());
     }
 
 /*

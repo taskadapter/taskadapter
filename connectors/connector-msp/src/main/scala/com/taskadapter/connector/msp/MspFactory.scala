@@ -17,7 +17,7 @@ class MSPFactory extends PluginFactory[MSPConfig, FileSetup] {
 
   override def getSuggestedCombinations: Map[Field, StandardField] = MspField.getSuggestedCombinations()
 
-  override def createConnector(config: MSPConfig, setup: FileSetup) = new MSPConnector(config)
+  override def createConnector(config: MSPConfig, setup: FileSetup) = new MSPConnector(setup)
 
   override def getDescriptor = DESCRIPTOR
 
