@@ -1,12 +1,14 @@
 package com.taskadapter.webui.config
 
+import com.taskadapter.web.PopupDialog
 import com.taskadapter.web.uiapi.SetupId
-import com.taskadapter.webui.{ConfigOperations, Page}
+import com.taskadapter.webui.{ConfigOperations, Page, Tracker}
 import com.vaadin.server.Sizeable
 import com.vaadin.ui._
 import com.vaadin.ui.themes.ValoTheme
 
-class SetupsListPage(configOperations: ConfigOperations,
+class SetupsListPage(tracker: Tracker,
+                     configOperations: ConfigOperations,
                      showEditSetup: (SetupId) => Unit,
                      showNewSetup: () => Unit) {
 
@@ -74,8 +76,7 @@ class SetupsListPage(configOperations: ConfigOperations,
 
         val deleteButton = new Button(Page.message("setupsListPage.deleteButton"))
         deleteButton.addClickListener(_ => {
-          configOperations.deleteConnectorSetup(setupId)
-          refresh()
+          showDeleteDialog(setupId)
         })
         deleteButton.setEnabled(usedByConfigs.isEmpty)
         val deleteLayout = new VerticalLayout(deleteButton)
@@ -97,4 +98,14 @@ class SetupsListPage(configOperations: ConfigOperations,
 
   val ui = layout
 
+  private def showDeleteDialog(setupId: SetupId): Unit = {
+    val messageDialog = PopupDialog.confirm(Page.message("setupsListPage.confirmDelete.question"),
+      () => {
+        configOperations.deleteConnectorSetup(setupId)
+        tracker.trackEvent("setup", "deleted", "")
+        refresh()
+      })
+
+    layout.getUI.addWindow(messageDialog)
+  }
 }
