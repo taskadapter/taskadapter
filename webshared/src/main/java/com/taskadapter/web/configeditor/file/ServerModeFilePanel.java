@@ -29,7 +29,7 @@ public class ServerModeFilePanel extends Panel{
 
     private static final String TITLE = "Microsoft Project file";
     private static final String COMBOBOX_INPUT_PROMPT = "Select an existing file";
-    public static final String FILE_WILL_GENERATED_HINT = "File will be auto-created on export";
+    static final String FILE_WILL_GENERATED_HINT = "File will be auto-created on export";
 
     static final String COMBOBOX_ITEM_PROPERTY = "name";
     static final String DATE_FORMAT = "d MMM yyyy h:mm:ss a z";
@@ -39,15 +39,10 @@ public class ServerModeFilePanel extends Panel{
     static final String UPLOADING = "Uploading";
     private static final String DELETE_BUTTON_CAPTION = "Delete";
     private static final String QUESTION_DELETE_FILE = "Delete selected file?";
-    private static final String CONFIRMATION_DIALOG_TITLE = "Deleting";
-    private static final String CONFIRMATION_DIALOG_DELETE_BUTTON = "Delete";
     static final String FILE_DELETED_SUCCESS = "File deleted";
     static final String FILE_DELETED_FAILED = "File deletion error";
 
-    private static final int DELETE_FILE_ACTION = 1;
     private static final String COMBOBOX_WIDTH = "175px";
-    private static final String CONFIRMATION_DIALOG_WIDTH = "200px";
-
 
     private Label statusLabel;
     private final ServerModelFilePanelPresenter presenter;
