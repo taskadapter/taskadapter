@@ -37,7 +37,7 @@ object ConfigureSystemPage {
     cmt.setWidth(600, PIXELS)
     layout.addComponent(cmt)
     layout.addComponent(createAdminPermissionsSection(settings, authorizedOps.canConfigureServer))
-    layout.addComponent(UsersPanel.render(credentialsManager, authorizedOps, license, tracker))
+    layout.addComponent(new UsersPanel(credentialsManager, authorizedOps, license, tracker).ui)
     layout
   }
 }

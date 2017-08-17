@@ -15,7 +15,6 @@ import com.vaadin.ui.Window;
 import static com.taskadapter.webui.Page.message;
 import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
-// TODO !! create a class like "TADialog" and move buttons and other common stuff there
 public class CreateUserDialog extends Window {
 
     private TextField loginField;
@@ -72,11 +71,11 @@ public class CreateUserDialog extends Window {
         setWidth(350, PIXELS);
     }
 
-    String getLogin() {
+    public String getLogin() {
         return loginField.getValue();
     }
 
-    String getPassword() {
+    public String getPassword() {
         return passwordField.getValue();
     }
 

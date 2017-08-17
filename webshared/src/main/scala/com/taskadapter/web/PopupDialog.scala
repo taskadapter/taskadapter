@@ -28,11 +28,12 @@ class PopupDialog(caption: String, question: String, answers: Seq[String], click
   val view = new VerticalLayout
   view.setSpacing(true)
   view.setMargin(true)
-  view.addComponent(new Label(question, ContentMode.HTML))
+  val label = new Label(question, ContentMode.HTML)
+  label.setWidth("300px")
+  view.addComponent(label)
   view.addComponent(new Label("&nbsp;", ContentMode.HTML))
   createButtons(answers)
   setContent(view)
-  view.setWidth("300px")
 
   private def createButtons(answers: Seq[String]) = {
     val buttonsLayout = new HorizontalLayout
