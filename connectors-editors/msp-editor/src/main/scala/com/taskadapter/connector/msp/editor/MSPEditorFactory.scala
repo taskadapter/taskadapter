@@ -63,10 +63,6 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
       None
     }
 
-    def getShortLabel(fileName: String): String = {
-      Paths.get(fileName).getFileName.toString
-    }
-
     override def getResult: FileSetup = {
       val label = getShortLabel(inputFilePath.getValue)
       FileSetup(MSPConnector.ID, label,
@@ -76,6 +72,10 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     override def showError(String: String): Unit = {
       // TODO show error
     }
+  }
+
+  def getShortLabel(fileName: String): String = {
+    Paths.get(fileName).getFileName.toString
   }
 
   private def createDescriptionElement(config: ConnectorConfig) = {
@@ -103,9 +103,9 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     )
   }
 
-  @throws[BadConfigException]
   override def validateForSave(config: MSPConfig, setup: FileSetup): Unit = {
-    if (setup.targetFile.isEmpty) throw new OutputFileNameNotSetException
+    // empty target file name is valid because it will be generated in [[updateForSave]]
+    // right before the export
   }
 
   @throws[BadConfigException]
@@ -136,10 +136,11 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
 
   @throws[BadConfigException]
   override def updateForSave(config: MSPConfig, sandbox: Sandbox, setup: FileSetup): FileSetup = {
-    if (setup.targetFile.isEmpty) {
+    if (setup.targetFile.isEmpty || setup.targetFile == ".xml") {
       val newPath = FileNameGenerator.createSafeAvailableFile(sandbox.getUserContentDirectory, "MSP_export_%d.xml").getAbsolutePath
       if (newPath == null) throw new OutputFileNameNotSetException
-      setup.copy(sourceFile = newPath, targetFile = newPath)
+      setup.copy(label = getShortLabel(newPath),
+        sourceFile = newPath, targetFile = newPath)
     } else {
       setup
     }

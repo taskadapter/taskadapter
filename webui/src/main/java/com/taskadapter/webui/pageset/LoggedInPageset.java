@@ -538,6 +538,7 @@ public class LoggedInPageset {
         if (!updated.equals(to.getConnectorSetup())) {
             try {
                 context.configOps.saveSetup(updated, new SetupId(updated.id().get()));
+                to.setConnectorSetup(updated);
             } catch (Exception e1) {
                 final String message = Page.message("export.troublesSavingConfig", e1.getMessage());
                 log.error(message, e1);
