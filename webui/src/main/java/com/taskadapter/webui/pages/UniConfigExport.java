@@ -107,6 +107,7 @@ final class UniConfigExport {
             final Callback callback) {
         final HorizontalLayout res = new HorizontalLayout();
         res.setWidth(width, PIXELS);
+        res.setHeight(65, PIXELS);
 
         final String validationFailure = getValidationError(config);
         final boolean isValid = validationFailure == null;
