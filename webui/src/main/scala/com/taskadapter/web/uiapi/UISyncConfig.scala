@@ -5,8 +5,8 @@ import java.util
 
 import com.taskadapter.connector.MappingBuilder
 import com.taskadapter.connector.common.ProgressMonitorUtils
-import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.connector.definition._
+import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.core._
 import com.taskadapter.model.GTask
 
@@ -46,16 +46,6 @@ object UISyncConfig {
     loadedTasks
   }
 
-  @throws[ConnectorException]
-  def loadDropInTasks(tempFile: File, taskLimit: Int): util.List[GTask] = { // TODO TA3 drag-n-drop
-    throw new RuntimeException("not implemented")
-    /*
-            return TaskLoader.loadDropInTasks(taskLimit,
-                    (DropInConnector) getConnector1().createConnectorInstance(),
-                    tempFile, generateFieldRowsToExportLeft(),
-                    ProgressMonitorUtils.DUMMY_MONITOR);
-    */
-  }
 }
 
 case class UISyncConfig(configRootFolder: File,
@@ -140,7 +130,7 @@ case class UISyncConfig(configRootFolder: File,
 
   private def generateFieldRowsToExportRight = MappingBuilder.build(fieldMappings, ExportDirection.RIGHT)
 
-  def getPreviouslyCreatedTasksResolver: PreviouslyCreatedTasksResolver = {
+  def getPreviouslyCreatedTasksResolver(): PreviouslyCreatedTasksResolver = {
     val location1 = getConnector1.getSourceLocation
     val location2 = getConnector2.getSourceLocation
     TaskKeeperLocationStorage.loadTasks(configRootFolder, location1, location2)
@@ -186,4 +176,12 @@ case class UISyncConfig(configRootFolder: File,
     updater.saveFile()
     updater.getNumberOfUpdatedTasks
   }
+
+  @throws[ConnectorException]
+  def loadDropInTasks(tempFile: File, taskLimit: Int): util.List[GTask] = {
+    TaskLoader.loadDropInTasks(taskLimit,
+      getConnector1.createConnectorInstance.asInstanceOf[DropInConnector],
+      tempFile, ProgressMonitorUtils.DUMMY_MONITOR)
+  }
+
 }

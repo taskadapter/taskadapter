@@ -228,15 +228,13 @@ public class LoggedInPageset {
             @Override
             public void forwardDropIn(UISyncConfig config,
                                       Html5File file) {
-                // TODO TA3 drop-in
-//                dropIn(config, file);
+                dropIn(config, file);
             }
 
             @Override
             public void backwardDropIn(UISyncConfig config,
                                        Html5File file) {
-                // TODO TA3 drop-in
-//                dropIn(config.reverse(), file);
+                dropIn(config.reverse(), file);
             }
         },
                 context.configOps
@@ -369,7 +367,7 @@ public class LoggedInPageset {
 //        }
     }
 
-    private void dropIn(final UISyncConfig config, PreviouslyCreatedTasksResolver resolver, final Html5File file) {
+    private void dropIn(final UISyncConfig config, final Html5File file) {
         String fileExtension = Files.getFileExtension(file.getFileName());
         final File df = services.tempFileManager.nextFile(fileExtension);
         file.setStreamVariable(new StreamVariable() {
@@ -387,7 +385,6 @@ public class LoggedInPageset {
                             : LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
                     tracker.trackPage("drop_in");
                     Component component = DropInExportPage.render(context.configOps, config,
-                            resolver,
                             maxTasks, services.settingsManager
                                     .isTAWorkingOnLocalMachine(),
                             new Runnable() {

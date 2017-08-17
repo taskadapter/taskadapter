@@ -92,8 +92,7 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
     }
 
     @Override
-    public List<GTask> loadDropInData(File file, Mappings mappings,
-                                      ProgressMonitor monitor) throws ConnectorException {
+    public List<GTask> loadDropInData(File file, ProgressMonitor monitor) throws ConnectorException {
         return loadInternal(file.getAbsolutePath());
     }
 

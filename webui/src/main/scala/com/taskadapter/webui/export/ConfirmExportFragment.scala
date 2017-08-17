@@ -38,8 +38,9 @@ object ConfirmExportFragment {
     *
     * @return confirmation dialog.
     */
-  def render(configOps: ConfigOperations, config: UISyncConfig, resolver: PreviouslyCreatedTasksResolver,
+  def render(configOps: ConfigOperations, config: UISyncConfig,
              initialTasks: util.List[GTask], callback: Callback): Component = {
+    val resolver = config.getPreviouslyCreatedTasksResolver()
     val layout = new VerticalLayout
     layout.setSpacing(true)
     val destinationLocation = config.getConnector2.getDestinationLocation

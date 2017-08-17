@@ -5,7 +5,6 @@ import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.DropInConnector;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
@@ -34,24 +33,20 @@ public final class TaskLoader {
         List<GTask> flatTasksList = ConnectorUtils.loadDataOrderedById(connectorFrom);
         flatTasksList = getUpToNTasks(maxTasksNumber, flatTasksList);
 
-        final List<GTask> tasks = TreeUtils
-                .buildTreeFromFlatList(flatTasksList);
+        final List<GTask> tasks = TreeUtils .buildTreeFromFlatList(flatTasksList);
 //        monitor.done();
 
         return tasks;
     }
 
-    public static List<GTask> loadDropInTasks(int maxTasksNumber,
-            DropInConnector connectorFrom, File dropFile,
-            Mappings sourceMappings, ProgressMonitor monitor)
-            throws ConnectorException {
+    public static List<GTask> loadDropInTasks(int maxTasksNumber, DropInConnector connectorFrom, File dropFile,
+            ProgressMonitor monitor) throws ConnectorException {
         if (monitor == null) {
             monitor = ProgressMonitorUtils.DUMMY_MONITOR;
         }
 
         monitor.beginTask("Loading data from uploaded file", 100);
-        List<GTask> flatTasksList = connectorFrom.loadDropInData(dropFile,
-                sourceMappings, monitor);
+        List<GTask> flatTasksList = connectorFrom.loadDropInData(dropFile, monitor);
         Collections.sort(flatTasksList, GTaskUtils.ID_COMPARATOR);
         flatTasksList = getUpToNTasks(maxTasksNumber, flatTasksList);
 

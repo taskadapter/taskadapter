@@ -44,7 +44,6 @@ public final class UpdateFilePage {
      */
     private final int taskLimit;
 
-    private PreviouslyCreatedTasksResolver resolver;
     /**
      * "Process complete" handler.
      */
@@ -55,9 +54,8 @@ public final class UpdateFilePage {
     private final VerticalLayout content;
 
     private UpdateFilePage(ConfigOperations configOps, UISyncConfig config,
-                           PreviouslyCreatedTasksResolver resolver, int taskLimit, Runnable onDone) {
+                           int taskLimit, Runnable onDone) {
         this.config = config;
-        this.resolver = resolver;
         this.onDone = onDone;
         this.taskLimit = taskLimit;
         this.configOps = configOps;
@@ -115,7 +113,7 @@ public final class UpdateFilePage {
      */
     private void showConfirmation(List<GTask> tasks) {
         final Component component = ConfirmExportFragment.render(configOps,
-                config, resolver, tasks, new ConfirmExportFragment.Callback() {
+                config, tasks, new ConfirmExportFragment.Callback() {
                     @Override
                     public void onTasks(List<GTask> selectedTasks) {
                         performExport(selectedTasks);
@@ -279,9 +277,9 @@ public final class UpdateFilePage {
      * @return operation UI.
      */
     public static Component render(ConfigOperations configOps,
-                                   UISyncConfig config, PreviouslyCreatedTasksResolver resolver,
+                                   UISyncConfig config,
                                    int maxTasks, Runnable onExit) {
-        return new UpdateFilePage(configOps, config, resolver, maxTasks, onExit).ui;
+        return new UpdateFilePage(configOps, config, maxTasks, onExit).ui;
     }
 
 }

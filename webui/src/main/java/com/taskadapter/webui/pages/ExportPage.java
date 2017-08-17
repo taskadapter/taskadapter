@@ -141,7 +141,7 @@ public final class ExportPage {
      */
     private void showConfirmation(List<GTask> tasks) {
         final Component component = ConfirmExportFragment.render(configOps,
-                config, config.getPreviouslyCreatedTasksResolver(), tasks, new ConfirmExportFragment.Callback() {
+                config, tasks, new ConfirmExportFragment.Callback() {
                     @Override
                     public void onTasks(List<GTask> selectedTasks) {
                         performExport(selectedTasks);
