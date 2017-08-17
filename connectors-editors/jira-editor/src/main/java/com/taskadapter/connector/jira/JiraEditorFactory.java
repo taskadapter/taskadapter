@@ -177,10 +177,10 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     }
 
     @Override
-    public boolean updateForSave(JiraConfig config, Sandbox sandbox, WebConnectorSetup serverInfo)
+    public WebConnectorSetup updateForSave(JiraConfig config, Sandbox sandbox, WebConnectorSetup setup)
             throws BadConfigException {
-        validateForSave(config, serverInfo);
-        return false;
+        validateForSave(config, setup);
+        return setup;
     }
 
     @Override

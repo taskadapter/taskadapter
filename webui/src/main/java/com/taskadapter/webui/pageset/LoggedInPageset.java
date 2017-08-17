@@ -3,6 +3,7 @@ package com.taskadapter.webui.pageset;
 import com.google.common.io.Files;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.config.StorageException;
+import com.taskadapter.connector.definition.ConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.license.LicenseManager;
@@ -524,7 +525,7 @@ public class LoggedInPageset {
             return false;
         }
 
-        final boolean updated;
+        ConnectorSetup updated;
         try {
             updated = to.updateForSave(new Sandbox(services.settingsManager.isTAWorkingOnLocalMachine(),
                     context.configOps.syncSandbox()));
@@ -533,11 +534,11 @@ public class LoggedInPageset {
             return false;
         }
 
-        // If config was changed - save it
-        if (updated) {
+        // If setup was changed (e.g. a new file name was generated my MSP) - save it
+        if (!updated.equals(to.getConnectorSetup())) {
             try {
-                context.configOps.saveConfig(config);
-            } catch (StorageException e1) {
+                context.configOps.saveSetup(updated, new SetupId(updated.id().get()));
+            } catch (Exception e1) {
                 final String message = Page.message("export.troublesSavingConfig", e1.getMessage());
                 log.error(message, e1);
                 Notification.show(message, Notification.Type.ERROR_MESSAGE);

@@ -113,8 +113,6 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     if (setup.sourceFile.isEmpty) throw new InputFileNameNotSetException
   }
 
-  @throws[BadConfigException]
-  @throws[DroppingNotSupportedException]
   override def validateForDropInLoad(config: MSPConfig): Unit = {
     // Always valid!
   }
@@ -137,15 +135,14 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
   }
 
   @throws[BadConfigException]
-  override def updateForSave(config: MSPConfig, sandbox: Sandbox, setup: FileSetup): Boolean = {
-    if (!setup.targetFile.isEmpty) return false
-    val newPath = FileNameGenerator.createSafeAvailableFile(sandbox.getUserContentDirectory, "MSP_export_%d.xml").getAbsolutePath
-    if (newPath == null) throw new OutputFileNameNotSetException
-
-    // TODO TA3 this won't work!
-//    config.setOutputAbsoluteFilePath(newPath)
-//    config.setInputAbsoluteFilePath(newPath)
-    true
+  override def updateForSave(config: MSPConfig, sandbox: Sandbox, setup: FileSetup): FileSetup = {
+    if (setup.targetFile.isEmpty) {
+      val newPath = FileNameGenerator.createSafeAvailableFile(sandbox.getUserContentDirectory, "MSP_export_%d.xml").getAbsolutePath
+      if (newPath == null) throw new OutputFileNameNotSetException
+      setup.copy(sourceFile = newPath, targetFile = newPath)
+    } else {
+      setup
+    }
   }
 
   override def isWebConnector: Boolean = false

@@ -55,7 +55,7 @@ class UIConnectorConfigImpl[C <: ConnectorConfig, S <: ConnectorSetup]
   }
 
   @throws[BadConfigException]
-  override def updateForSave(sandbox: Sandbox): Boolean = editorFactory.updateForSave(config, sandbox, setup)
+  override def updateForSave(sandbox: Sandbox): ConnectorSetup = editorFactory.updateForSave(config, sandbox, setup)
 
   override def createConnectorInstance: NewConnector = connectorFactory.createConnector(config, setup)
 

@@ -81,11 +81,11 @@ abstract class UIConnectorConfig {
     * export. However, web-based connectors also may perform some action in this method.
     *
     * @param sandbox local filesystem sandbox.
-    * @return true iff config was updated.
+    * @return new setup, possibly updated
     * @throws BadConfigException if config is invalid and cannot be fixed automatically.
     */
   @throws[BadConfigException]
-  def updateForSave(sandbox: Sandbox): Boolean
+  def updateForSave(sandbox: Sandbox): ConnectorSetup
 
   /**
     * Creates a new connector instance with a current config. Note, that

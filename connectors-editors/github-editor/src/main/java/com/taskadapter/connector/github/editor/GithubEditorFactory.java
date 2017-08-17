@@ -100,10 +100,10 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig, We
     }
 
     @Override
-    public boolean updateForSave(GithubConfig config, Sandbox sandbox, WebConnectorSetup setup)
+    public WebConnectorSetup updateForSave(GithubConfig config, Sandbox sandbox, WebConnectorSetup setup)
             throws BadConfigException {
         validateForSave(config, setup);
-        return false;
+        return setup;
     }
 
     @Override

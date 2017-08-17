@@ -53,11 +53,11 @@ trait PluginEditorFactory[C <: ConnectorConfig, S <: ConnectorSetup] extends Exc
     *
     * @param config  config to update.
     * @param sandbox local filesystem sandbox.
-    * @return true iff config was updated.
+    * @return new setup, possibly updated
     * @throws BadConfigException if config cannot be automatically updated to a "valid for save" state.
     */
   @throws[BadConfigException]
-  def updateForSave(config: C, sandbox: Sandbox, setup: S): Boolean
+  def updateForSave(config: C, sandbox: Sandbox, setup: S): S
 
   /**
     * Describes source location in a user-friendly manner.

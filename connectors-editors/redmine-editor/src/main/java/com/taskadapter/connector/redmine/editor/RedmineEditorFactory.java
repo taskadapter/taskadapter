@@ -105,10 +105,10 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
     }
 
     @Override
-    public boolean updateForSave(RedmineConfig config, Sandbox sandbox, WebConnectorSetup setup)
+    public WebConnectorSetup updateForSave(RedmineConfig config, Sandbox sandbox, WebConnectorSetup setup)
             throws BadConfigException {
         validateForSave(config, setup);
-        return false;
+        return setup;
     }
 
     @Override
