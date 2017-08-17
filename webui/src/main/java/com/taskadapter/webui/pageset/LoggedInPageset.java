@@ -192,21 +192,17 @@ public class LoggedInPageset {
         final boolean showAll = services.settingsManager
                 .adminCanManageAllConfigs()
                 && context.authorizedOps.canManagerPeerConfigs();
-        final List<UISyncConfig> configs = showAll ? context.configOps
-                .getManageableConfigs() : context.configOps.getOwnedConfigs();
 
         if (webUserSession.getCurrentConfig() == null) {
-            showConfigsList(showAll, configs);
+            showConfigsList(showAll);
         } else {
             showConfigEditor(webUserSession.getCurrentConfig(), null);
         }
     }
 
-    private void showConfigsList(boolean showAll, List<UISyncConfig> configs) {
+    private void showConfigsList(boolean showAll) {
         tracker.trackPage("configs_list");
-        Component component = new ConfigsPage(tracker, configs,
-        showAll ? ConfigsPage.DisplayMode.ALL_CONFIGS
-                : ConfigsPage.DisplayMode.OWNED_CONFIGS,
+        Component component = new ConfigsPage(tracker, showAll,
         new ConfigsPage.Callback() {
             @Override
             public void newConfig() {
