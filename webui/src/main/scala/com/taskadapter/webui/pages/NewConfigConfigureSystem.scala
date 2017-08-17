@@ -66,10 +66,13 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
 
     private val connectorSetupPanelUI = connectorSetupPanel.getUI
     val layout = new VerticalLayout(selectPanel, button, connectorSetupPanelUI, errorMessageLabel)
+    var inSelectMode = true
     if (selectPanel.getRows != 0) {
       selectPanel.select(selectPanel.getItemIds.iterator().next())
     }
-    var inSelectMode = true
+    if (selectPanel.getRows == 0) {
+      inSelectMode = false
+    }
 
     def inEditMode: Boolean = !inSelectMode
 
