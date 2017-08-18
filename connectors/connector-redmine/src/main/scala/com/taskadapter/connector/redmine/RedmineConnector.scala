@@ -75,7 +75,7 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
     if (userId == null) return null
 
     val guess = users.get(userId)
-    if (guess != null) return guess.getLogin
+    if (guess != null) return guess.getFullName
 
     val loaded = mgr.getUserManager.getUserById(userId)
     users.put(userId, loaded)

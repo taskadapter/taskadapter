@@ -24,10 +24,10 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
   private var redmineProject: Option[Project] = None
 
   private val mgr = RedmineTestInitializer.mgr
-  val sourceConfig = RedmineTestConfig.getRedmineTestConfig
-  val targetConfig = RedmineTestConfig.getRedmineTestConfig
-  val sourceConnector = new RedmineConnector(sourceConfig, RedmineTestConfig.getRedmineServerInfo)
-  val targetConnector = new RedmineConnector(targetConfig, RedmineTestConfig.getRedmineServerInfo)
+  val sourceConfig = TestConfigs.getRedmineConfig
+  val targetConfig = TestConfigs.getRedmineConfig
+  val sourceConnector = new RedmineConnector(sourceConfig, TestConfigs.getRedmineServerInfo)
+  val targetConnector = new RedmineConnector(targetConfig, TestConfigs.getRedmineServerInfo)
   val adapter = new Adapter(sourceConnector, targetConnector)
 
   before {
@@ -114,7 +114,7 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
 
   it("msp tasks with non-linear IDs are saved to Redmine") {
     val msProjectConnector = new MSPConnector(getMspSetup("com/taskadapter/integrationtests/non-linear-uuid.xml"))
-    val redmineConfig: RedmineConfig = RedmineTestConfig.getRedmineTestConfig
+    val redmineConfig: RedmineConfig = TestConfigs.getRedmineConfig
     redmineConfig.setProjectKey(redmineProject.get.getIdentifier)
 
     // load from MSP
@@ -122,7 +122,7 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
     val loadedTasks = TaskLoader.loadTasks(maxTasksNumber, msProjectConnector, "msp1",
       ProgressMonitorUtils.DUMMY_MONITOR).asScala.toList
 
-    val redmineConnector = new RedmineConnector(redmineConfig, RedmineTestConfig.getRedmineServerInfo)
+    val redmineConnector = new RedmineConnector(redmineConfig, TestConfigs.getRedmineServerInfo)
     // save to Redmine
     val result = TestUtils.saveAndLoadList(redmineConnector, loadedTasks,
       FieldRowBuilder.rows(
@@ -133,7 +133,7 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
   }
 
   it("msp tasks with one-side disconnected relationships are saved to Redmine") {
-    val redmineConfig = RedmineTestConfig.getRedmineTestConfig
+    val redmineConfig = TestConfigs.getRedmineConfig
     redmineConfig.setProjectKey(redmineProject.get.getIdentifier)
 
     val projectConnector = new MSPConnector(
@@ -143,7 +143,7 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
     val loadedTasks = TaskLoader.loadTasks(maxTasksNumber, projectConnector, "project1",
       ProgressMonitorUtils.DUMMY_MONITOR).asScala.toList
     // save to Redmine
-    val redmineConnector = new RedmineConnector(redmineConfig, RedmineTestConfig.getRedmineServerInfo)
+    val redmineConnector = new RedmineConnector(redmineConfig, TestConfigs.getRedmineServerInfo)
 
     val result = TestUtils.saveAndLoadList(redmineConnector, loadedTasks,
       FieldRowBuilder.rows(

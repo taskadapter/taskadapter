@@ -100,7 +100,9 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
     val user = value.asInstanceOf[GUser]
     if (user != null) {
       val rmAss = findRedmineUserInCache(user.getLoginName)
-      redmineIssue.setAssigneeId(rmAss.getId)
+      if (rmAss != null) {
+        redmineIssue.setAssigneeId(rmAss.getId)
+      }
     }
   }
 
@@ -108,7 +110,9 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
     val user = value.asInstanceOf[GUser]
     if (user != null) {
       val author = findRedmineUserInCache(user.getLoginName)
-      redmineIssue.setAuthorId(author.getId)
+      if (author != null) {
+        redmineIssue.setAuthorId(author.getId)
+      }
     }
   }
 

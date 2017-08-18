@@ -46,13 +46,13 @@ public class RedmineToGTask {
             // crappy Redmine REST API does not return login name, only id and "display name",
             // this Redmine Java API library can only provide that info... this is why "loginName" is empty here.
             GUser user = new GUser(issue.getAssigneeId(), "", issue.getAssigneeName());
-            task.setValue(RedmineField.assignee().name(), user);
+            task.setValue(RedmineField.assignee(), user);
         }
         if (issue.getAuthorId() != null) {
             // crappy Redmine REST API does not return login name, only id and "display name",
             // this Redmine Java API library can only provide that info... this is why "loginName" is empty here.
             GUser user = new GUser(issue.getAuthorId(), "", issue.getAuthorName());
-            task.setValue(RedmineField.author().name(), user);
+            task.setValue(RedmineField.author(), user);
         }
 
         Tracker tracker = issue.getTracker();
