@@ -12,11 +12,13 @@ import org.scalatest.{FunSpec, Matchers}
 @RunWith(classOf[JUnitRunner])
 class NewConfigSuggesterTest extends FunSpec with ScalaFutures with Matchers {
 
+  val jiraRedmineFieldsNumber = 15
+
   it("suggests all elements from left connector") {
     val list = NewConfigSuggester.suggestedFieldMappingsForNewConfig(
       RedmineField.getSuggestedCombinations(), JiraField.getSuggestedCombinations())
 
-    list.size shouldBe 14
+    list.size shouldBe jiraRedmineFieldsNumber
     list.contains(FieldMapping(RedmineField.assignee, JiraField.assignee, true, "")) shouldBe true
     list.contains(FieldMapping(RedmineField.targetVersion, Field(""), false, "")) shouldBe true
   }
@@ -25,7 +27,7 @@ class NewConfigSuggesterTest extends FunSpec with ScalaFutures with Matchers {
     val list = NewConfigSuggester.suggestedFieldMappingsForNewConfig(
       JiraField.getSuggestedCombinations(), RedmineField.getSuggestedCombinations())
 
-    list.size shouldBe 14
+    list.size shouldBe jiraRedmineFieldsNumber
   }
 
 }

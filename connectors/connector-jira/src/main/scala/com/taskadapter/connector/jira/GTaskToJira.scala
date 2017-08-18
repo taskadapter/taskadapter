@@ -64,8 +64,8 @@ class GTaskToJira(config: JiraConfig,
         val dueDateTime = new DateTime(value)
         issueInputBuilder.setDueDate(dueDateTime)
       }
-      case JiraField.assignee.name => if (value != null) issueInputBuilder.setAssigneeName(value.asInstanceOf[String])
-      case JiraField.reporter.name => if (value != null) issueInputBuilder.setReporterName(value.asInstanceOf[String])
+      case JiraField.assignee.name => if (isNonEmptyString(value)) issueInputBuilder.setAssigneeName(value.asInstanceOf[String])
+      case JiraField.reporter.name => if (isNonEmptyString(value)) issueInputBuilder.setReporterName(value.asInstanceOf[String])
       case JiraField.priority.name =>
         val priorityNumber = value.asInstanceOf[Integer]
         val jiraPriorityName = config.getPriorities.getPriorityByMSP(priorityNumber)
@@ -86,6 +86,14 @@ class GTaskToJira(config: JiraConfig,
           issueInputBuilder.setFieldValue(fullIdForSave, valueWithProperJiraType)
         }
     }
+  }
+
+  /**
+    * If the value is not of type String, this will throw exception. This is to fail fast rather than to attempt
+    * to recover from incorrect types in the passed data.
+    */
+  def isNonEmptyString(value: Any) : Boolean = {
+    value !=null && value.asInstanceOf[String].trim != ""
   }
 
   def getConvertedValue(fieldSchema: JiraFieldDefinition, value: Any) : Any = {
