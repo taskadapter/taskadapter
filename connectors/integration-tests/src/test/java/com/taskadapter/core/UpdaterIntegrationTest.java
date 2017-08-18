@@ -168,7 +168,7 @@ public class UpdaterIntegrationTest {
         List<Issue> issues = new ArrayList<>(issuesNumber);
         for (int i = 0; i < issuesNumber; i++) {
             Issue issue = new Issue();
-            issue.setProject(ProjectFactory.create(projectId));
+            issue.setProjectId(projectId);
             issue.setSubject("some issue " + i + " " + new Date());
             issue.setEstimatedHours((float) i);
             issues.add(issue);

@@ -33,46 +33,53 @@ object RedmineConnector {
 }
 
 class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends NewConnector {
-  override def loadTaskByKey(id: TaskId, rows: java.lang.Iterable[FieldRow]): GTask = try {
-    val mgr = RedmineManagerFactory.createRedmineManager(setup)
-    val intKey = id.id.toInt
-    val issue = mgr.getIssueManager.getIssueById(intKey, Include.relations)
-    val converter = new RedmineToGTask(config)
-    converter.convertToGenericTask(issue)
-  } catch {
-    case e: RedmineException =>
-      throw new RuntimeException(e)
+  override def loadTaskByKey(id: TaskId, rows: java.lang.Iterable[FieldRow]): GTask = {
+    val httpClient = RedmineManagerFactory.createRedmineHttpClient()
+    try {
+      val mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient)
+      val intKey = id.id.toInt
+      val issue = mgr.getIssueManager.getIssueById(intKey, Include.relations)
+      val converter = new RedmineToGTask(config)
+      converter.convertToGenericTask(issue)
+    } catch {
+      case e: RedmineException =>
+        throw new RuntimeException(e)
+    } finally httpClient.getConnectionManager.shutdown()
   }
 
-  override def loadData(): util.List[GTask] = try {
-    val mgr = RedmineManagerFactory.createRedmineManager(setup)
-    val issues = mgr.getIssueManager.getIssues(config.getProjectKey, config.getQueryId, Include.relations)
-    addFullUsers(issues, mgr)
-    convertToGenericTasks(config, issues)
-  } catch {
-    case e: RedmineException =>
-      throw new RuntimeException(e)
+  override def loadData(): util.List[GTask] = {
+    val httpClient = RedmineManagerFactory.createRedmineHttpClient()
+    try {
+      val mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient)
+
+      val issues = mgr.getIssueManager.getIssues(config.getProjectKey, config.getQueryId, Include.relations)
+      addFullUsers(issues, mgr)
+      convertToGenericTasks(config, issues)
+    } catch {
+      case e: RedmineException =>
+        throw new RuntimeException(e)
+    } finally httpClient.getConnectionManager.shutdown()
   }
 
   @throws[RedmineException]
   private def addFullUsers(issues: util.List[Issue], mgr: RedmineManager) = {
     val users = new util.HashMap[Integer, User]
     issues.asScala.foreach { issue =>
-      issue.setAssignee(patchAssignee(issue.getAssignee, users, mgr))
-      issue.setAuthor(patchAssignee(issue.getAuthor, users, mgr))
+      issue.setAssigneeName(patchUserDisplayName(issue.getAssigneeId, users, mgr))
+      issue.setAuthorName(patchUserDisplayName(issue.getAuthorId, users, mgr))
     }
   }
 
   @throws[RedmineException]
-  private def patchAssignee(user: User, users: util.Map[Integer, User], mgr: RedmineManager): User = {
-    if (user == null) return null
+  private def patchUserDisplayName(userId: Integer, users: util.Map[Integer, User], mgr: RedmineManager): String = {
+    if (userId == null) return null
 
-    val guess = users.get(user.getId)
-    if (guess != null) return guess
+    val guess = users.get(userId)
+    if (guess != null) return guess.getLogin
 
-    val loaded = mgr.getUserManager.getUserById(user.getId)
-    users.put(user.getId, loaded)
-    loaded
+    val loaded = mgr.getUserManager.getUserById(userId)
+    users.put(userId, loaded)
+    loaded.getFullName
   }
 
   private def convertToGenericTasks(config: RedmineConfig, issues: util.List[Issue]) = {
@@ -83,7 +90,8 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
   override def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask],
                         monitor: ProgressMonitor,
                         fieldRows: Iterable[FieldRow]): SaveResult = try {
-    val mgr = RedmineManagerFactory.createRedmineManager(setup)
+    val httpClient = RedmineManagerFactory.createRedmineHttpClient()
+    val mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient)
     try {
       val rmProject = mgr.getProjectManager.getProjectByKey(config.getProjectKey)
       val priorities = RedmineConnector.loadPriorities(fieldRows.asJava, mgr)
@@ -98,7 +106,7 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
         setup.host)
       TaskSavingUtils.saveRemappedRelations(config, tasks, saver, tsrb)
       tsrb.getResult
-    } finally mgr.shutdown()
+    } finally httpClient.getConnectionManager.shutdown()
   } catch {
     case e: RedmineException =>
       throw new RuntimeException(e)

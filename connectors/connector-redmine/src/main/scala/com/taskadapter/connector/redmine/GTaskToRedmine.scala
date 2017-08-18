@@ -6,7 +6,7 @@ import java.util.Date
 import com.google.common.base.Strings
 import com.taskadapter.connector.common.data.ConnectorConverter
 import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.model.GTask
+import com.taskadapter.model.{GTask, GUser}
 import com.taskadapter.redmineapi.bean._
 
 import scala.collection.JavaConverters._
@@ -31,7 +31,8 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
       case null => IssueFactory.create(null)
       case some => IssueFactory.create(some.intValue())
     }
-    issue.setProject(project)
+    issue.setProjectId(project.getId)
+    issue.setProjectName(project.getName)
 
     task.getFields.asScala.foreach { x =>
       processField(issue, x._1, x._2)
@@ -80,6 +81,7 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
       case RedmineField.createdOn.name => issue.setCreatedOn(value.asInstanceOf[Date])
       case RedmineField.updatedOn.name => issue.setUpdatedOn(value.asInstanceOf[Date])
       case RedmineField.assignee.name => processAssignee(issue, value)
+      case RedmineField.author.name => processAuthor(issue, value)
       case _ =>
         // all known fields are processed. considering this a custom field
         val customFieldId = CustomFieldDefinitionFinder.findCustomFieldId(customFieldDefinitions, fieldName)
@@ -95,10 +97,18 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
   }
 
   private def processAssignee(redmineIssue: Issue, value: Any): Unit = {
-    val userLoginName = value.asInstanceOf[String]
-    if (!Strings.isNullOrEmpty(userLoginName)) {
-      val rmAss = findRedmineUserInCache(userLoginName)
-      redmineIssue.setAssignee(rmAss)
+    val user = value.asInstanceOf[GUser]
+    if (user != null) {
+      val rmAss = findRedmineUserInCache(user.getLoginName)
+      redmineIssue.setAssigneeId(rmAss.getId)
+    }
+  }
+
+  private def processAuthor(redmineIssue: Issue, value: Any): Unit = {
+    val user = value.asInstanceOf[GUser]
+    if (user != null) {
+      val author = findRedmineUserInCache(user.getLoginName)
+      redmineIssue.setAuthorId(author.getId)
     }
   }
 

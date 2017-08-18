@@ -5,7 +5,7 @@ import java.util.Date
 
 import com.google.common.base.Strings
 import com.taskadapter.connector.FieldRow
-import com.taskadapter.model.GTask
+import com.taskadapter.model.{GTask, GUser}
 
 /**
   * When saving a task, we need to set some of its fields to some default value if there is nothing there yet.
@@ -56,6 +56,7 @@ object DefaultValueSetter {
       case "Date" => parseDate(value)
       case "Float" => parseFloat(value).asInstanceOf[Object]
       case "Integer" => parseInteger(value).asInstanceOf[Object]
+      case "GUser" => getUserOrNull(value)
       case _ => value
     }
   }
@@ -71,6 +72,13 @@ object DefaultValueSetter {
       null.asInstanceOf[Integer]
     else
       value.toInt
+  }
+
+  private def getUserOrNull(value: String): GUser = {
+    if (Strings.isNullOrEmpty(value))
+      null.asInstanceOf[GUser]
+    else
+      new GUser(null, value, null)
   }
 
   @throws[ParseException]

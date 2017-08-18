@@ -4,7 +4,7 @@ import java.util.Calendar
 
 import com.atlassian.jira.rest.client.api.domain.input.{ComplexIssueInputFieldValue, IssueInput}
 import com.atlassian.jira.rest.client.api.domain.{IssueFieldId, IssueType, Priority}
-import com.taskadapter.model.{GTask, GTaskDescriptor}
+import com.taskadapter.model.{GTask, GTaskDescriptor, GUser}
 import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
@@ -94,8 +94,9 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
   }
 
   private def checkAssignee(converter: GTaskToJira, expected: String): Unit = {
+    val user = new GUser(null, expected, null)
     val task = new GTask
-    task.setValue(JiraField.assignee, "mylogin")
+    task.setValue(JiraField.assignee, user)
     val issue = converter.convertToJiraIssue(task).issueInput
     assertEquals(expected, getComplexValue(issue, IssueFieldId.ASSIGNEE_FIELD.id, "name"))
   }
