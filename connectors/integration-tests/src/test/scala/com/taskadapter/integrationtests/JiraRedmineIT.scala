@@ -59,17 +59,13 @@ class JiraRedmineIT extends FunSpec with Matchers with BeforeAndAfter with Befor
   }
 
   it("assignee and reporter can be loaded from JIRA and saved to Redmine") {
-    val loadedTasks = TaskLoader.loadTasks(1, jiraConnector, "sourceName", ProgressMonitorUtils.DUMMY_MONITOR).asScala.toList
-
-    val result = TestUtils.saveAndLoadList(redmineConnector, loadedTasks,
-      FieldRowBuilder.rows(
-        RedmineField.summary, RedmineField.assignee, RedmineField.author
-      )
+    val result = TestUtils.loadAndSave(jiraConnector, redmineConnector,
+        Seq(RedmineField.summary, RedmineField.assignee, RedmineField.author)
     )
-    val redmineAssignee = result.head.getValue(RedmineField.assignee).asInstanceOf[GUser]
+    val redmineAssignee = result.getValue(RedmineField.assignee).asInstanceOf[GUser]
     redmineAssignee.getDisplayName shouldBe "Redmine Admin"
 
-    val redmineReporter = result.head.getValue(RedmineField.author).asInstanceOf[GUser]
+    val redmineReporter = result.getValue(RedmineField.author).asInstanceOf[GUser]
     redmineReporter.getDisplayName shouldBe "Redmine Admin"
   }
 
@@ -78,7 +74,7 @@ class JiraRedmineIT extends FunSpec with Matchers with BeforeAndAfter with Befor
 
     val result = TestUtils.saveAndLoadList(jiraConnector, loadedTasks,
       FieldRowBuilder.rows(
-        JiraField.summary, JiraField.assignee
+        Seq(JiraField.summary, JiraField.assignee)
       )
     )
     val ass = result.head.getValue(JiraField.assignee).asInstanceOf[GUser]

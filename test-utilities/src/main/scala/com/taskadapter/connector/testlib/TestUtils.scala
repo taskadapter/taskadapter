@@ -7,8 +7,8 @@ import com.taskadapter.connector.common.{ConnectorUtils, ProgressMonitorUtils}
 import com.taskadapter.connector.definition.{SaveResult, TaskId}
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.connector.{Field, FieldRow, NewConnector}
-import com.taskadapter.core.PreviouslyCreatedTasksResolver
-import com.taskadapter.model.GTask
+import com.taskadapter.core.{PreviouslyCreatedTasksResolver, TaskLoader}
+import com.taskadapter.model.{FieldRowBuilder, GTask}
 
 import scala.collection.JavaConverters._
 
@@ -100,6 +100,15 @@ object TestUtils {
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows)
     val remoteKeys = result.getRemoteKeys
     remoteKeys.iterator.next
+  }
+
+  def loadAndSave(sourceConnector: NewConnector, targetConnector: NewConnector,
+                  fields: Seq[Field]): GTask = {
+    val loadedTask = TaskLoader.loadTasks(1, sourceConnector, "sourceName", ProgressMonitorUtils.DUMMY_MONITOR).asScala.toList.head
+    val result = TestUtils.saveAndLoadList(targetConnector, Seq(loadedTask),
+      FieldRowBuilder.rows(fields)
+    ).head
+    result
   }
 
   def setTaskStartYearAgo(task: GTask, startDateFieldName: String): Calendar = {
