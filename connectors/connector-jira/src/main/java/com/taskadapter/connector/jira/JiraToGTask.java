@@ -57,6 +57,10 @@ public class JiraToGTask {
             String jiraUserLogin = issue.getAssignee().getName();
             task.setValue(JiraField.assignee().name(), jiraUserLogin);
         }
+        if (issue.getReporter() != null) {
+            String jiraUserLogin = issue.getReporter().getName();
+            task.setValue(JiraField.reporter().name(), jiraUserLogin);
+        }
 
         task.setValue(JiraField.taskType(), issue.getIssueType().getName());
         task.setValue(JiraField.summary(), issue.getSummary());

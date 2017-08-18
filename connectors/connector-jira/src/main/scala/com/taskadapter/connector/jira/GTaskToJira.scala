@@ -65,6 +65,7 @@ class GTaskToJira(config: JiraConfig,
         issueInputBuilder.setDueDate(dueDateTime)
       }
       case JiraField.assignee.name => if (value != null) issueInputBuilder.setAssigneeName(value.asInstanceOf[String])
+      case JiraField.reporter.name => if (value != null) issueInputBuilder.setReporterName(value.asInstanceOf[String])
       case JiraField.priority.name =>
         val priorityNumber = value.asInstanceOf[Integer]
         val jiraPriorityName = config.getPriorities.getPriorityByMSP(priorityNumber)

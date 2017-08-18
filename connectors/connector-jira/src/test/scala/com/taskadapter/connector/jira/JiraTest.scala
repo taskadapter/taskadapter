@@ -36,14 +36,16 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
       id => TestJiraClientHelper.deleteTasks(client, id))
   }
 
-  it("assignee has full name") {
+  it("assignee and reporter are set") {
     val userPromise = client.getUserClient.getUser(setup.userName)
     val jiraUser = userPromise.claim
     val task = new GTask
     task.setValue(JiraField.summary, "some")
     task.setValue(JiraField.assignee, jiraUser.getName)
+    task.setValue(JiraField.reporter, jiraUser.getName)
     val loadedTask = TestUtils.saveAndLoad(connector, task, JiraFieldBuilder.getDefault)
     assertEquals(jiraUser.getName, loadedTask.getValue(JiraField.assignee))
+    assertEquals(jiraUser.getName, loadedTask.getValue(JiraField.reporter))
     TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
   }
 

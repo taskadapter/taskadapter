@@ -11,6 +11,8 @@ sealed trait StandardField
 
 case object Assignee extends StandardField
 
+case object Reporter extends StandardField
+
 case object ClosedOn extends StandardField
 
 case object CreatedOn extends StandardField
