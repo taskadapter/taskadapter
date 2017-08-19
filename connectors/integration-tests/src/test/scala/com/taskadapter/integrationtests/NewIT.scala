@@ -10,7 +10,7 @@ import com.taskadapter.connector.msp.{MSPConnector, MspField}
 import com.taskadapter.connector.redmine._
 import com.taskadapter.connector.testlib.{ResourceLoader, TestSaver, TestUtils}
 import com.taskadapter.core.TaskLoader
-import com.taskadapter.model.{FieldRowBuilder, GTask, GUser}
+import com.taskadapter.model.{FieldRowBuilder, GTask, GTaskBuilder, GUser}
 import com.taskadapter.redmineapi.bean.{Issue, IssueFactory, Project}
 import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
@@ -184,11 +184,17 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
     }
 
     it("assignee and reporter can be loaded from JIRA and saved to Redmine") {
-      val result = TestUtils.loadAndSave(jiraConnector, redmineConnectorWithResolveAssignees,
-        Seq(FieldRow(JiraField.summary, RedmineField.summary, ""),
-          FieldRow(JiraField.assignee, RedmineField.assignee, ""),
-          FieldRow(JiraField.reporter, RedmineField.author, "")
-        ))
+      val rows = Seq(FieldRow(JiraField.summary, RedmineField.summary, ""),
+        FieldRow(JiraField.assignee, RedmineField.assignee, ""),
+        FieldRow(JiraField.reporter, RedmineField.author, "")
+      )
+
+      val fromJira = TestUtils.saveAndLoad(jiraConnector,
+        JiraTaskBuilder.buildJiraTask(Some(RedmineTestInitializer.currentUser)),
+        rows)
+
+      val result = TestUtils.saveAndLoad(redmineConnectorWithResolveAssignees, fromJira, rows)
+
       val redmineAssignee = result.getValue(RedmineField.assignee).asInstanceOf[GUser]
       redmineAssignee.getDisplayName shouldBe "Redmine Admin"
 
