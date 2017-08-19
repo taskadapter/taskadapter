@@ -21,13 +21,10 @@ trait Callback {
 class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, configOps: ConfigOperations,
                     sandbox: Sandbox, callback: Callback) {
 
-  var stage = 1
-
   val panel = new Panel(message("createConfigPage.createNewConfig"))
   panel.setWidth("100%")
-  val layout = new VerticalLayout()
-  panel.setContent(layout)
-  layout.setWidth("100%")
+  val wizard = new WizardPanel()
+  panel.setContent(wizard.ui)
 
   var connector1Id: Option[String] = None
   var connector1SetupId: Option[SetupId] = None
@@ -35,61 +32,47 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
   var connector2SetupId: Option[SetupId] = None
   var description: Option[String] = None
 
-  refreshUI()
-
-  def refreshUI(): Unit = {
-    layout.removeAllComponents()
-    layout.addComponent(getUIForCurrentStage())
-  }
-
-  def proceedToStage(newStage: Int): Unit = {
-    stage = newStage
-    refreshUI()
-  }
-
-  def getUIForCurrentStage(): Component = {
-    stage match {
-      case 1 => new SelectConnectorComponent(pluginManager, selected =
-        (connectorId) => {
-          connector1Id = Some(connectorId)
-          proceedToStage(stage + 1)
-        }
-      ).ui
-
-      case 2 => new NewConfigConfigureSystem(editorManager, configOps, sandbox, connector1Id.get, setupSelected =
-        (label) => {
-          connector1SetupId = Some(label)
-          proceedToStage(stage + 1)
-        }
-      ).ui
-
-      case 3 => new SelectConnectorComponent(pluginManager, selected =
-        (connectorId) => {
-          connector2Id = Some(connectorId)
-          proceedToStage(stage + 1)
-        }
-      ).ui
-
-      case 4 => new NewConfigConfigureSystem(editorManager, configOps, sandbox, connector2Id.get, setupSelected =
-        (label) => {
-          connector2SetupId = Some(label)
-          proceedToStage(stage + 1)
-        }
-      ).ui
-
-      case 5 => new NewConfigGiveDescription(d => {
-        description = Some(d)
-        saveClicked()
-      }
-      ).ui
+  wizard.registerStep(1, new SelectConnectorWizardStep(pluginManager, next =
+    (connectorId) => {
+      connector1Id = Some(connectorId)
+      wizard.showStep(2)
     }
+  ))
+
+  wizard.registerStep(2, new NewConfigConfigureSystem(editorManager, configOps, sandbox, setupSelected =
+    (label) => {
+      connector1SetupId = Some(label)
+      wizard.showStep(3)
+    }
+  ))
+
+  wizard.registerStep(3, new SelectConnectorWizardStep(pluginManager, next =
+    (connectorId) => {
+      connector2Id = Some(connectorId)
+      wizard.showStep(4)
+    }
+  ))
+
+  wizard.registerStep(4, new NewConfigConfigureSystem(editorManager, configOps, sandbox, setupSelected =
+    (label) => {
+      connector2SetupId = Some(label)
+      wizard.showStep(5)
+    }
+  ))
+
+  wizard.registerStep(5, new NewConfigGiveDescription(d => {
+    description = Some(d)
+    saveClicked()
   }
+  ))
+
+  wizard.showStep(1)
 
   // empty label by default
   val errorMessageLabel = new Label
   errorMessageLabel.addStyleName("error-message-label")
 
-  private def saveClicked() = {
+  private def saveClicked(): Unit = {
     try {
       val configId = save()
       callback.configCreated(configId)
