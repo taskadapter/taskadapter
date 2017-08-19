@@ -10,6 +10,7 @@ import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
+import com.taskadapter.model.GUser;
 import com.taskadapter.model.Precedes$;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -54,12 +55,12 @@ public class JiraToGTask {
         task.setSourceSystemId(new TaskId(longId, issue.getKey()));
 
         if (issue.getAssignee() != null) {
-            String jiraUserLogin = issue.getAssignee().getName();
-            task.setValue(JiraField.assignee().name(), jiraUserLogin);
+            GUser user = new GUser(null, issue.getAssignee().getName(), issue.getAssignee().getDisplayName());
+            task.setValue(JiraField.assignee(), user);
         }
         if (issue.getReporter() != null) {
-            String jiraUserLogin = issue.getReporter().getName();
-            task.setValue(JiraField.reporter().name(), jiraUserLogin);
+            GUser user = new GUser(null, issue.getReporter().getName(), issue.getReporter().getDisplayName());
+            task.setValue(JiraField.reporter(), user);
         }
 
         task.setValue(JiraField.taskType(), issue.getIssueType().getName());

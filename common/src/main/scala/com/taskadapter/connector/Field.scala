@@ -19,6 +19,10 @@ object Field {
     Field("Float", fieldName)
   }
 
+  def user(fieldName: String): Field = {
+    Field("GUser", fieldName)
+  }
+
   def integer(fieldName: String): Field = {
     Field("Integer", fieldName)
   }

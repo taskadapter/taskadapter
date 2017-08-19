@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableList
 import com.taskadapter.connector.common.ValueTypeResolver
 import com.taskadapter.connector.common.data.ConnectorConverter
 import com.taskadapter.connector.definition.exceptions.ConnectorException
-import com.taskadapter.model.GTask
+import com.taskadapter.model.{GTask, GUser}
 import org.joda.time.DateTime
 
 import scala.collection.JavaConverters._
@@ -64,8 +64,12 @@ class GTaskToJira(config: JiraConfig,
         val dueDateTime = new DateTime(value)
         issueInputBuilder.setDueDate(dueDateTime)
       }
-      case JiraField.assignee.name => if (isNonEmptyString(value)) issueInputBuilder.setAssigneeName(value.asInstanceOf[String])
-      case JiraField.reporter.name => if (isNonEmptyString(value)) issueInputBuilder.setReporterName(value.asInstanceOf[String])
+      case JiraField.assignee.name => if (value != null) {
+        issueInputBuilder.setAssigneeName(value.asInstanceOf[GUser].getLoginName)
+      }
+      case JiraField.reporter.name => if (value != null) {
+        issueInputBuilder.setReporterName(value.asInstanceOf[GUser].getLoginName)
+      }
       case JiraField.priority.name =>
         val priorityNumber = value.asInstanceOf[Integer]
         val jiraPriorityName = config.getPriorities.getPriorityByMSP(priorityNumber)

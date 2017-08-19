@@ -8,7 +8,7 @@ import java.util.Date
 import com.taskadapter.connector.common.TreeUtils
 import com.taskadapter.connector.definition.FileSetup
 import com.taskadapter.connector.testlib.{CommonTestChecks, TempFolder, TestSaver}
-import com.taskadapter.model.{FieldRowBuilder, GTask, GTaskBuilder}
+import com.taskadapter.model.{FieldRowBuilder, GTask, GTaskBuilder, GUser}
 import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
@@ -64,7 +64,7 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
         .withRandom(MspField.deadline)
         .build()
       val loaded = new TestSaver(getConnector(folder),
-        FieldRowBuilder.rows(
+        FieldRowBuilder.rows(Seq(
           MspField.summary,
           MspField.assignee,
           MspField.taskDuration,
@@ -72,10 +72,10 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
           MspField.taskWork,
           MspField.finish,
           MspField.deadline
-        )
+        ))
       ).saveAndLoad(task)
 
-      loaded.getValue(MspField.assignee) shouldBe task.getValue(MspField.assignee)
+      loaded.getValue(MspField.assignee).asInstanceOf[GUser].getDisplayName shouldBe task.getValue(MspField.assignee).asInstanceOf[GUser].getDisplayName
       loaded.getValue(MspField.taskDuration) shouldBe task.getValue(MspField.taskDuration)
       loaded.getValue(MspField.mustStartOn) shouldBe task.getValue(MspField.mustStartOn)
       loaded.getValue(MspField.taskWork) shouldBe task.getValue(MspField.taskWork)
@@ -97,7 +97,7 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
     assertEquals(2, tasks.size)
     val task1: GTask = tasks.get(0)
     assertEquals("task 1", task1.getValue(MspField.summary))
-    assertEquals("alex", task1.getValue(MspField.assignee))
+    task1.getValue(MspField.assignee).asInstanceOf[GUser].getDisplayName shouldBe "alex"
     assertEquals(12f, task1.getValue(MspField.taskDuration))
     val expectedStartDate: Date = new SimpleDateFormat("MM/dd/yyyy HH:mm").parse("12/11/2013 08:00")
     assertEquals(expectedStartDate, task1.getValue(MspField.startAsSoonAsPossible))

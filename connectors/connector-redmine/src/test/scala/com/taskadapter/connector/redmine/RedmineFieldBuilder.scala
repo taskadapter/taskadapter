@@ -14,6 +14,13 @@ object RedmineFieldBuilder {
     ).asJava
   }
 
+  def withAssignee(defaultValue: String = ""): List[FieldRow] = {
+    List(
+      FieldRow(RedmineField.summary, RedmineField.summary, ""),
+      FieldRow(RedmineField.assignee, RedmineField.assignee, defaultValue)
+    )
+  }
+
   def getDefault(): List[FieldRow] = {
     List(
       FieldRow(RedmineField.summary, RedmineField.summary, ""),

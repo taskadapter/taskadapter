@@ -4,7 +4,7 @@ import java.util.{Calendar, Collections}
 
 import com.taskadapter.connector.Priorities
 import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.model.{GRelation, GUser, Precedes, Precedes$}
+import com.taskadapter.model.{GUser, Precedes}
 import com.taskadapter.redmineapi.bean._
 import org.junit.Assert.{assertEquals, assertNull}
 import org.junit.runner.RunWith
@@ -70,14 +70,11 @@ class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with 
     assertNull(task.getValue(RedmineField.assignee.name))
   }
 
-  it("assigneeIsConvertedIfSet") {
+  it("assignee id is converted") {
     val redmineIssue = new Issue
-    val assignee = UserFactory.create
-    assignee.setLogin("mylogin")
-    redmineIssue.setAssignee(assignee)
+    redmineIssue.setAssigneeId(123)
     val task = get().convertToGenericTask(redmineIssue)
-    val loadedAssignee = task.getValue(RedmineField.assignee.name).asInstanceOf[GUser]
-    assertEquals("mylogin", loadedAssignee.getLoginName)
+    task.getValue(RedmineField.assignee).asInstanceOf[GUser].getId shouldBe 123
   }
 
   it("trackerTypeIsConvertedIfSet") {

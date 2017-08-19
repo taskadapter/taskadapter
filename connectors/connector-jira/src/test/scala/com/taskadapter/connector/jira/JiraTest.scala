@@ -5,7 +5,7 @@ import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.connector.testlib.{CommonTestChecks, TestUtils}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
-import com.taskadapter.model.{GRelation, GTask, Precedes}
+import com.taskadapter.model.{GRelation, GTask, GUser, Precedes}
 import org.fest.assertions.Assertions.assertThat
 import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
@@ -41,11 +41,16 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     val jiraUser = userPromise.claim
     val task = new GTask
     task.setValue(JiraField.summary, "some")
-    task.setValue(JiraField.assignee, jiraUser.getName)
-    task.setValue(JiraField.reporter, jiraUser.getName)
-    val loadedTask = TestUtils.saveAndLoad(connector, task, JiraFieldBuilder.getDefault)
-    assertEquals(jiraUser.getName, loadedTask.getValue(JiraField.assignee))
-    assertEquals(jiraUser.getName, loadedTask.getValue(JiraField.reporter))
+    val user = new GUser(null, jiraUser.getName, jiraUser.getDisplayName)
+    task.setValue(JiraField.assignee, user)
+    task.setValue(JiraField.reporter, user)
+    val loadedTask = TestUtils.saveAndLoad(connector, task, JiraFieldBuilder.getDefault())
+    loadedTask.getValue(JiraField.assignee).asInstanceOf[GUser].getLoginName shouldBe jiraUser.getName
+    loadedTask.getValue(JiraField.assignee).asInstanceOf[GUser].getDisplayName shouldBe jiraUser.getDisplayName
+
+    loadedTask.getValue(JiraField.reporter).asInstanceOf[GUser].getLoginName shouldBe  jiraUser.getName
+    loadedTask.getValue(JiraField.reporter).asInstanceOf[GUser].getDisplayName shouldBe jiraUser.getDisplayName
+
     TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
   }
 

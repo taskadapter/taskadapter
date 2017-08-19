@@ -2,6 +2,7 @@ package com.taskadapter.connector.jira
 
 import com.atlassian.jira.rest.client.api.domain.Issue
 import com.taskadapter.connector.Priorities
+import com.taskadapter.model.GUser
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
@@ -33,7 +34,7 @@ class JiraToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with Bef
     // https://answers.atlassian.com/questions/32971227/jira-java-rest-client-cannot-parse-a-valid-issue-json-returned-by-jira-6.4.11-npe-at-jsonparseutil.getstringkeysjsonparseutil.java337
     val issue = MockData.loadIssue("issue_with_assignee_6.4.11_expanded_names_and_schema.json")
     val task = convertIssue(issue)
-    task.getValue(JiraField.assignee) shouldBe issue.getAssignee.getName
+    task.getValue(JiraField.assignee).asInstanceOf[GUser].getLoginName shouldBe issue.getAssignee.getName
   }
 
   it("issueTypeIsConverted") {

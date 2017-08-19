@@ -5,11 +5,12 @@ import java.io.File
 import com.taskadapter.connector._
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.FileSetup
-import com.taskadapter.connector.msp.MSPConnector
+import com.taskadapter.connector.jira.{JiraConnector, JiraField}
+import com.taskadapter.connector.msp.{MSPConnector, MspField}
 import com.taskadapter.connector.redmine._
-import com.taskadapter.connector.testlib.{ResourceLoader, TestUtils}
+import com.taskadapter.connector.testlib.{ResourceLoader, TestSaver, TestUtils}
 import com.taskadapter.core.TaskLoader
-import com.taskadapter.model.FieldRowBuilder
+import com.taskadapter.model.{FieldRowBuilder, GTask, GUser}
 import com.taskadapter.redmineapi.bean.{Issue, IssueFactory, Project}
 import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
@@ -24,17 +25,27 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
   private var redmineProject: Option[Project] = None
 
   private val mgr = RedmineTestInitializer.mgr
-  val sourceConfig = RedmineTestConfig.getRedmineTestConfig
-  val targetConfig = RedmineTestConfig.getRedmineTestConfig
-  val sourceConnector = new RedmineConnector(sourceConfig, RedmineTestConfig.getRedmineServerInfo)
-  val targetConnector = new RedmineConnector(targetConfig, RedmineTestConfig.getRedmineServerInfo)
-  val adapter = new Adapter(sourceConnector, targetConnector)
+  val sourceConfig = TestConfigs.getRedmineConfig
+  val targetConfig = TestConfigs.getRedmineConfig
+  val sourceRedmineConnector = new RedmineConnector(sourceConfig, TestConfigs.getRedmineServerInfo)
+  val targetRedmineConnector = new RedmineConnector(targetConfig, TestConfigs.getRedmineServerInfo)
+
+  val jiraConfig = TestConfigs.getJiraConfig
+  val jiraSetup = TestConfigs.getJiraSetup
+  val jiraConnector = new JiraConnector(jiraConfig, jiraSetup)
+
+  val redmineConfigWithResolveAssignees = TestConfigs.getRedmineConfig
+  redmineConfigWithResolveAssignees.setFindUserByName(true)
+  val redmineConnectorWithResolveAssignees = new RedmineConnector(redmineConfigWithResolveAssignees, TestConfigs.getRedmineServerInfo)
+
+  val adapter = new Adapter(sourceRedmineConnector, targetRedmineConnector)
 
   before {
     // have to create a project for each test, otherwise stuff created during one test interferes with others
     redmineProject = Some(RedmineTestInitializer.createProject)
     sourceConfig.setProjectKey(redmineProject.get.getIdentifier)
     targetConfig.setProjectKey(redmineProject.get.getIdentifier)
+    redmineConfigWithResolveAssignees.setProjectKey(redmineProject.get.getIdentifier)
   }
 
   after {
@@ -114,7 +125,7 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
 
   it("msp tasks with non-linear IDs are saved to Redmine") {
     val msProjectConnector = new MSPConnector(getMspSetup("com/taskadapter/integrationtests/non-linear-uuid.xml"))
-    val redmineConfig: RedmineConfig = RedmineTestConfig.getRedmineTestConfig
+    val redmineConfig: RedmineConfig = TestConfigs.getRedmineConfig
     redmineConfig.setProjectKey(redmineProject.get.getIdentifier)
 
     // load from MSP
@@ -122,18 +133,18 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
     val loadedTasks = TaskLoader.loadTasks(maxTasksNumber, msProjectConnector, "msp1",
       ProgressMonitorUtils.DUMMY_MONITOR).asScala.toList
 
-    val redmineConnector = new RedmineConnector(redmineConfig, RedmineTestConfig.getRedmineServerInfo)
+    val redmineConnector = new RedmineConnector(redmineConfig, TestConfigs.getRedmineServerInfo)
     // save to Redmine
     val result = TestUtils.saveAndLoadList(redmineConnector, loadedTasks,
-      FieldRowBuilder.rows(
+      FieldRowBuilder.rows(Seq(
         RedmineField.summary
-      )
+      ))
     )
     assertEquals("must have created 2 tasks", 2, result.size)
   }
 
   it("msp tasks with one-side disconnected relationships are saved to Redmine") {
-    val redmineConfig = RedmineTestConfig.getRedmineTestConfig
+    val redmineConfig = TestConfigs.getRedmineConfig
     redmineConfig.setProjectKey(redmineProject.get.getIdentifier)
 
     val projectConnector = new MSPConnector(
@@ -143,14 +154,74 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
     val loadedTasks = TaskLoader.loadTasks(maxTasksNumber, projectConnector, "project1",
       ProgressMonitorUtils.DUMMY_MONITOR).asScala.toList
     // save to Redmine
-    val redmineConnector = new RedmineConnector(redmineConfig, RedmineTestConfig.getRedmineServerInfo)
+    val redmineConnector = new RedmineConnector(redmineConfig, TestConfigs.getRedmineServerInfo)
 
     val result = TestUtils.saveAndLoadList(redmineConnector, loadedTasks,
-      FieldRowBuilder.rows(
+      FieldRowBuilder.rows(Seq(
         RedmineField.summary
-      )
+      ))
     )
     assertEquals("must have created 13 tasks", 13, result.size)
+  }
+
+  describe("JIRA-Redmine") {
+
+    it("Description from Jira is saved to description in Redmine") {
+      val rows = List(
+        FieldRow(JiraField.summary, RedmineField.summary, ""),
+        FieldRow(JiraField.description, RedmineField.description, "")
+      )
+      val task = new GTask()
+      task.setValue(JiraField.summary, "summary1")
+      task.setValue(JiraField.description, "description1")
+      new TestSaver(redmineConnectorWithResolveAssignees, rows).saveAndLoad(task)
+
+      val result = adapter.adapt(rows)
+
+      val redmine = TestUtils.loadCreatedTask(redmineConnectorWithResolveAssignees, rows.asJava, result)
+      redmine.getValue(RedmineField.description) shouldBe "description1"
+    }
+
+    it("assignee and reporter can be loaded from JIRA and saved to Redmine") {
+      val result = TestUtils.loadAndSave(jiraConnector, redmineConnectorWithResolveAssignees,
+        Seq(FieldRow(JiraField.summary, RedmineField.summary, ""),
+          FieldRow(JiraField.assignee, RedmineField.assignee, ""),
+          FieldRow(JiraField.reporter, RedmineField.author, "")
+        ))
+      val redmineAssignee = result.getValue(RedmineField.assignee).asInstanceOf[GUser]
+      redmineAssignee.getDisplayName shouldBe "Redmine Admin"
+
+      val redmineReporter = result.getValue(RedmineField.author).asInstanceOf[GUser]
+      redmineReporter.getDisplayName shouldBe "Redmine Admin"
+    }
+
+    it("assignee can be loaded from Redmine and saved to JIRA") {
+      val loadedTasks = TaskLoader.loadTasks(1, redmineConnectorWithResolveAssignees, "sourceName", ProgressMonitorUtils.DUMMY_MONITOR).asScala.toList
+
+      val result = TestUtils.saveAndLoadList(jiraConnector, loadedTasks,
+        FieldRowBuilder.rows(
+          Seq(JiraField.summary, JiraField.assignee)
+        )
+      )
+      val ass = result.head.getValue(JiraField.assignee).asInstanceOf[GUser]
+      ass.getDisplayName shouldBe jiraSetup.userName
+
+      val reporter = result.head.getValue(JiraField.reporter).asInstanceOf[GUser]
+      reporter.getDisplayName shouldBe jiraSetup.userName
+    }
+
+  }
+  describe("Redmine-MSP") {
+    it("assignee can be loaded from MSP and saved to Redmine") {
+      val mspConnector = new MSPConnector(getMspSetup("2tasks-projectlibre-assignees.xml"))
+      val result = TestUtils.loadAndSave(mspConnector, redmineConnectorWithResolveAssignees,
+        Seq(FieldRow(MspField.summary, MspField.summary, ""),
+          FieldRow(MspField.assignee, RedmineField.assignee, "")
+        )
+      )
+      val ass = result.getValue(RedmineField.assignee).asInstanceOf[GUser]
+      ass.getDisplayName shouldBe "Redmine Admin"
+    }
   }
 
   def createIssueInRedmineWithCustomField(fieldName: String, value: String): Issue = {

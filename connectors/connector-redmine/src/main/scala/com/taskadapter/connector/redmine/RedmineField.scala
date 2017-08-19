@@ -19,7 +19,8 @@ object RedmineField {
     * %% complete (e.g. "30%"). int value
     */
   val doneRatio = Field.float("Done ratio")
-  val assignee = Field("Assignee")
+  val author = Field.user("Author")
+  val assignee = Field.user("Assignee")
   val dueDate = Field.date("Due Date")
   val startDate = Field.date("Start Date")
   val createdOn = Field.date("Created On")
@@ -28,7 +29,8 @@ object RedmineField {
   val targetVersion = Field("Target Version")
   val priority = Field.integer("Priority")
 
-  def fields = List(summary,
+  def fields = List(author,
+    summary,
     description,
     taskType,
     estimatedTime,
@@ -44,7 +46,9 @@ object RedmineField {
 
   def fieldsAsJava(): util.List[Field] = fields.asJava
 
-  def suggestedStandardFields = Map(id -> Id, summary -> Summary, description -> Description, taskType -> TaskType,
+  def suggestedStandardFields = Map(id -> Id,
+    author -> Reporter,
+    summary -> Summary, description -> Description, taskType -> TaskType,
     estimatedTime -> EstimatedTime,
     doneRatio -> DoneRatio,
     assignee -> Assignee,

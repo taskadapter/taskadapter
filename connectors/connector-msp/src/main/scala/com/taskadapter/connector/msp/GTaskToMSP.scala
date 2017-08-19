@@ -3,7 +3,7 @@ package com.taskadapter.connector.msp
 import java.util.Date
 
 import com.taskadapter.connector.msp.write.ResourceManager
-import com.taskadapter.model.GTask
+import com.taskadapter.model.{GTask, GUser}
 import net.sf.mpxj._
 
 import scala.collection.JavaConverters._
@@ -32,7 +32,7 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
       case MspField.description.name => mspTask.setNotes(stringBasedValue)
       case MspField.status.name => setFieldByName(fieldName, stringBasedValue)
       case MspField.taskType.name => setFieldByName(fieldName, stringBasedValue)
-      case MspField.assignee.name => processAssignee(fieldName, stringBasedValue)
+      case MspField.assignee.name => processAssignee(fieldName, value)
       case MspField.mustStartOn.name =>
         mspTask.setConstraintType(ConstraintType.MUST_START_ON)
         mspTask.setConstraintDate(value.asInstanceOf[Date])
@@ -81,11 +81,10 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
     }
   }
 
-  private def processAssignee(fieldName: String, value: Any) = {
+  private def processAssignee(fieldName: String, value: Any): Unit = {
     if (value != null) {
-
-      val assigneeName = value.toString
-      val resource = resourceManager.getOrCreateResource(assigneeName)
+      val user = value.asInstanceOf[GUser]
+      val resource = resourceManager.getOrCreateResource(user.getDisplayName)
       val ass = mspTask.addResourceAssignment(resource)
       ass.setUnits(100)
       // MUST set the remaining work to avoid this bug:

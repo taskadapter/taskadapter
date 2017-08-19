@@ -9,8 +9,11 @@ import org.slf4j.LoggerFactory
 
 object RedmineTestInitializer {
   private val logger = LoggerFactory.getLogger(RedmineTestInitializer.getClass)
-  private val setup = RedmineTestConfig.getRedmineServerInfo
-  var mgr: RedmineManager = RedmineManagerFactory.createRedmineManager(setup)
+  private val setup = TestConfigs.getRedmineServerInfo
+  // TODO TA3 reuse the same http client everywhere instead of creating it here
+  val httpClient = RedmineManagerFactory.createRedmineHttpClient
+
+  var mgr: RedmineManager = RedmineManagerFactory.createRedmineManager(setup, httpClient)
 
   def createProject: Project = {
     logger.info("Running Redmine tests with: " + setup)

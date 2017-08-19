@@ -20,8 +20,8 @@ object JiraField {
      to avoid user confusion.
    */
   val estimatedTime = Field.float("Estimated Time") // should not be selected by default
-  val assignee = Field("Assignee")
-  val reporter = Field("Reporter")
+  val assignee = Field.user("Assignee")
+  val reporter = Field.user("Reporter")
   val dueDate = Field.date("Due Date")
   val priority = Field.integer("Priority")
   val id = Field("Id")

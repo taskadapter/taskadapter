@@ -6,8 +6,9 @@ import java.util.Date
 import com.google.common.base.Strings
 import com.taskadapter.connector.common.data.ConnectorConverter
 import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.model.GTask
+import com.taskadapter.model.{GTask, GUser}
 import com.taskadapter.redmineapi.bean._
+import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
 
@@ -15,6 +16,7 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
                      users: util.List[User], customFieldDefinitions: util.List[CustomFieldDefinition],
                      statusList: util.List[IssueStatus], versions: util.List[Version])
   extends ConnectorConverter[GTask, Issue] {
+  val logger = LoggerFactory.getLogger(classOf[GTaskToRedmine])
 
   private def parseIntOrNull(s: String): Integer = {
     try
@@ -31,7 +33,8 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
       case null => IssueFactory.create(null)
       case some => IssueFactory.create(some.intValue())
     }
-    issue.setProject(project)
+    issue.setProjectId(project.getId)
+    issue.setProjectName(project.getName)
 
     task.getFields.asScala.foreach { x =>
       processField(issue, x._1, x._2)
@@ -80,6 +83,7 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
       case RedmineField.createdOn.name => issue.setCreatedOn(value.asInstanceOf[Date])
       case RedmineField.updatedOn.name => issue.setUpdatedOn(value.asInstanceOf[Date])
       case RedmineField.assignee.name => processAssignee(issue, value)
+      case RedmineField.author.name => processAuthor(issue, value)
       case _ =>
         // all known fields are processed. considering this a custom field
         val customFieldId = CustomFieldDefinitionFinder.findCustomFieldId(customFieldDefinitions, fieldName)
@@ -95,10 +99,24 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
   }
 
   private def processAssignee(redmineIssue: Issue, value: Any): Unit = {
-    val userLoginName = value.asInstanceOf[String]
-    if (!Strings.isNullOrEmpty(userLoginName)) {
-      val rmAss = findRedmineUserInCache(userLoginName)
-      redmineIssue.setAssignee(rmAss)
+    val user = value.asInstanceOf[GUser]
+    if (user != null) {
+      val rmAss = findRedmineUserInCache(user)
+      if (rmAss == null) {
+        logger.warn(s"Converting task to Redmine format: assignee: cannot resolve user in Redmine for $user")
+      } else {
+        redmineIssue.setAssigneeId(rmAss.getId)
+      }
+    }
+  }
+
+  private def processAuthor(redmineIssue: Issue, value: Any): Unit = {
+    val user = value.asInstanceOf[GUser]
+    if (user != null) {
+      val author = findRedmineUserInCache(user)
+      if (author != null) {
+        redmineIssue.setAuthorId(author.getId)
+      }
     }
   }
 
@@ -115,10 +133,19 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
   /**
     * @return NULL if the user is not found or if "users" weren't previously set via setUsers() method
     */
-  private def findRedmineUserInCache(login: String): User = {
-    if (users == null || Strings.isNullOrEmpty(login)) return null
+  private def findRedmineUserInCache(user: GUser): User = {
+    if (users == null) return null
+    val valueToSearchFor = if (user.getLoginName == null) {
+      user.getDisplayName
+    } else {
+      user.getLoginName
+    }
+    if (valueToSearchFor == null) {
+      logger.warn("Cannot resolve user - neither login name non display name are present")
+      return null
+    }
     users.asScala
-      .find(u => login.equalsIgnoreCase(u.getLogin) || login.equalsIgnoreCase(u.getFullName))
+      .find(u => valueToSearchFor == u.getLogin || valueToSearchFor == u.getFullName)
       .orNull
   }
 

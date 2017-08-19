@@ -10,6 +10,7 @@ import com.taskadapter.connector.redmine.RedmineManagerFactory;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Project;
 import com.vaadin.ui.Notification;
+import org.apache.http.client.HttpClient;
 
 import static com.taskadapter.web.ui.MessageUtils.nvl;
 
@@ -17,6 +18,8 @@ public class ShowProjectElement {
 
     private RedmineConfig config;
     private WebConnectorSetup setup;
+    // TODO TA3 reuse the same http client everywhere instead of creating it here
+    private static final HttpClient httpClient = RedmineManagerFactory.createRedmineHttpClient();
 
     public ShowProjectElement(RedmineConfig config, WebConnectorSetup setup) {
         this.config = config;
@@ -30,7 +33,7 @@ public class ShowProjectElement {
         if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
             throw new ProjectNotSetException();
         }
-        final RedmineManager redmineManager = RedmineManagerFactory.createRedmineManager(setup);
+        final RedmineManager redmineManager = RedmineManagerFactory.createRedmineManager(setup, httpClient);
         final Project project = RedmineLoaders.loadProject(redmineManager.getProjectManager(),
                 config.getProjectKey());
         notifyProjectLoaded(project);

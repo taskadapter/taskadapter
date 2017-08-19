@@ -1,13 +1,12 @@
 package com.taskadapter.connector.redmine
 
-import java.util
 import java.util.Calendar
 
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.TreeUtils
 import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.connector.testlib._
-import com.taskadapter.model.GTask
+import com.taskadapter.model.{GTask, GUser}
 import com.taskadapter.redmineapi.bean.ProjectFactory
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
@@ -24,7 +23,8 @@ trait TempRedmineProject {
 
   val junitTestProject = ProjectFactory.create("TA Redmine Integration test project", "test" + Calendar.getInstance.getTimeInMillis)
 
-  var mgr = RedmineManagerFactory.createRedmineManager(serverInfo)
+  val httpClient = RedmineManagerFactory.createRedmineHttpClient()
+  var mgr = RedmineManagerFactory.createRedmineManager(serverInfo, httpClient)
   val redmineUser = mgr.getUserManager.getCurrentUser
   val currentUser = RedmineToGUser.convertToGUser(redmineUser)
   val createdProject = mgr.getProjectManager.createProject(junitTestProject)
@@ -40,26 +40,12 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
       mgr.getProjectManager.deleteProject(projectKey)
       logger.info("Deleted temporary Redmine project with ID " + projectKey)
     }
+    httpClient.getConnectionManager.shutdown()
   }
 
   /*
-     @Test
-     public void startDateNotExported() throws ConnectorException {
-         checkStartDate(getTestSaverWith(RedmineField.startDate()), null)
-     }
-
-     @Test
      public void startDateExported() throws ConnectorException {
          checkStartDate(getTestSaverWith(RedmineField.startDate()), TestUtils.getYearAgo())
-     }
-
-     @Test
-     public void startDateExportedByDefault() throws ConnectorException {
-         checkStartDate(getTestSaver(), TestUtils.getYearAgo())
-     }
-
-     private TestSaver getTestSaverWith(String field) {
-         return getTestSaver(RedmineFieldBuilder.withField(field, ""))
      }
  */
 
@@ -81,94 +67,29 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
       }
 
       @Test
-      public void dueDateNotExported() throws ConnectorException {
-          GTask task = TestUtils.generateTask()
-          TestUtils.setTaskDueDateNextYear(task)
-          GTask loadedTask = getTestSaver().unselectField(FIELD.DUE_DATE).saveAndLoad(task)
-          assertNull(loadedTask.getDueDate())
-      }
-
-      @Test
       public void dueDateExported() throws ConnectorException {
           GTask task = TestUtils.generateTask()
           Calendar yearAgo = TestUtils.setTaskDueDateNextYear(task)
           GTask loadedTask = getTestSaverWith(RedmineField.dueDate()).saveAndLoad(task)
           assertEquals(yearAgo.getTime(), loadedTask.getDueDate())
       }
+*/
+  it("exports assignee") {
+    val task = RedmineGTaskBuilder.withSummary()
+    task.setValue(RedmineField.assignee, currentUser)
+    val config = getTestConfig
+    config.setFindUserByName(true)
+    val connector = getConnector(config)
+    val loadedTask = TestUtils.saveAndLoad(connector, task, RedmineFieldBuilder.withAssignee())
+    loadedTask.getValue(RedmineField.assignee).asInstanceOf[GUser].getDisplayName shouldBe currentUser.getDisplayName
+    mgr.getIssueManager.deleteIssue(loadedTask.getId.toInt)
+  }
 
-      @Test
-      public void dueDateExportedByDefault() throws ConnectorException {
-          GTask task = TestUtils.generateTask()
-          Calendar yearAgo = TestUtils.setTaskDueDateNextYear(task)
-          GTask loadedTask = TestUtils.saveAndLoad(getConnector(), task, TestMappingUtils.fromFields(SUPPORTED_FIELDS))
-          assertEquals(yearAgo.getTime(), loadedTask.getDueDate())
-      }
-
-      @Test
-      public void assigneeExported() throws ConnectorException {
-          GTask task = TestUtils.generateTask()
-          task.setValue(RedmineField.assignee(), currentUser)
-          GTask loadedTask = getTestSaverWith(RedmineField.assignee()).saveAndLoad(task)
-          User loadedAssignee = (User) loadedTask.getValue(RedmineField.assignee())
-          assertEquals(currentUser.getId(), loadedAssignee.getId())
-          // only the ID and Display Name are set, so we can't check login name
-          assertEquals(currentUser.getDisplayName(), loadedAssignee.getFullName())
-      }
-
-      @Test
-      public void assigneeNotExported() throws ConnectorException {
-          GTask task = TestUtils.generateTask()
-          task.setValue(RedmineField.assignee(), currentUser)
-          GTask loadedTask = getTestSaver().saveAndLoad(task)
-          User loadedAssignee = (User) loadedTask.getValue(RedmineField.assignee())
-          assertNull(loadedAssignee)
-      }
-  *//*
-      @Test
-      public void assigneeExportedByDefault() throws ConnectorException {
-          GTask task = TestUtils.generateTask()
-          task.setAssignee(currentUser)
-          GTask loadedTask = TestUtils.saveAndLoad(getConnector(), task, RFBTestMappingUtils.fromFields(SUPPORTED_FIELDS))
-          User loadedAssignee = (User) loadedTask.getValue(RedmineField.assignee())
-          assertEquals(currentUser.getId(), loadedAssignee.getId())
-      }
-  */
-  // TODO what does it test?? how is findByName related to Assignee export?
   /*
-      @Test
-      public void assigneeExportedByName() throws ConnectorException {
-          GTask task = TestUtils.generateTask()
-          task.setAssignee(currentUser)
-
-          RedmineConfig config = getTestConfig()
-          config.setFindUserByName(true)
-          GTask loadedTask = getTestSaver(config, RedmineFieldBuilder.withField(RedmineField.assignee(), "")).saveAndLoad(task)
-          User loadedAssignee = (User) loadedTask.getValue(RedmineField.assignee())
-          assertEquals(currentUser.getId(), loadedAssignee.getId())
-          // only the ID and Display Name are set, so we can't check login name
-          assertEquals(currentUser.getDisplayName(), loadedAssignee.getFullName())
-      }
-
-  *//*
-      @Test
-      public void estimatedTimeNotExported() throws ConnectorException {
-          GTask task = TestUtils.generateTask()
-          GTask loadedTask = getTestSaver().unselectField(FIELD.ESTIMATED_TIME).saveAndLoad(task)
-          assertNull(loadedTask.getEstimatedHours())
-      }
-
-
       @Test
       public void estimatedTimeExported() throws ConnectorException {
           GTask task = TestUtils.generateTask()
           GTask loadedTask = getTestSaverWith(RedmineField.estimatedTime()).saveAndLoad(task)
-          assertEquals(task.getValue(RedmineField.estimatedTime()), loadedTask.getValue(RedmineField.estimatedTime()))
-      }
-
-      @Test
-      public void estimatedTimeExportedByDefault() throws ConnectorException {
-          GTask task = TestUtils.generateTask()
-          GTask loadedTask = TestUtils.saveAndLoad(getConnector(), task, TestMappingUtils.fromFields(SUPPORTED_FIELDS))
           assertEquals(task.getValue(RedmineField.estimatedTime()), loadedTask.getValue(RedmineField.estimatedTime()))
       }
   */
@@ -182,18 +103,6 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
   }
 
   /*
-      @Test
-      public void taskStatusNotExported() throws RedmineException, ConnectorException {
-          String defaultStatus = findDefaultTaskStatus()
-
-          if (defaultStatus != null) {
-              GTask task = TestUtils.generateTask()
-              task.setValue(RedmineField.taskStatus(), "Resolved")
-              GTask loadedTask = getTestSaver().unselectField(FIELD.TASK_STATUS).saveAndLoad(task)
-              assertEquals(defaultStatus, loadedTask.getValue(RedmineField.taskStatus()))
-          }
-      }
-  
       //temporary ignored (need to add ProjectMemberships to redmine-java-api)
       @Ignore
       @Test
@@ -205,18 +114,6 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
               task.setValue(RedmineField.taskStatus(), otherStatus)
               GTask loadedTask = getTestSaver().selectField(FIELD.TASK_STATUS).saveAndLoad(task)
               assertEquals(otherStatus, loadedTask.getValue(RedmineField.taskStatus()))
-          }
-      }
-  
-      @Test
-      public void taskStatusExportedByDefault() throws Exception {
-          String defaultStatus = findDefaultTaskStatus()
-
-          if (defaultStatus != null) {
-              GTask task = TestUtils.generateTask()
-              task.setValue(RedmineField.taskStatus(), null)
-              GTask loadedTask = TestUtils.saveAndLoad(getConnector(), task, TestMappingUtils.fromFields(SUPPORTED_FIELDS))
-              assertEquals(defaultStatus, loadedTask.getValue(RedmineField.taskStatus()))
           }
       }
 */
