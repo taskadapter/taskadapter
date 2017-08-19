@@ -12,7 +12,7 @@ import org.scalatest.{FunSpec, Matchers}
 @RunWith(classOf[JUnitRunner])
 class NewConfigSuggesterTest extends FunSpec with ScalaFutures with Matchers {
 
-  val jiraRedmineFieldsNumber = 15
+  val jiraRedmineFieldsNumber = 14
 
   it("suggests all elements from left connector") {
     val list = NewConfigSuggester.suggestedFieldMappingsForNewConfig(

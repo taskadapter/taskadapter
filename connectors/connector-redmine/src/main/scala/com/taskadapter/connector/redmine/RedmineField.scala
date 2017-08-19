@@ -46,7 +46,9 @@ object RedmineField {
 
   def fieldsAsJava(): util.List[Field] = fields.asJava
 
-  def suggestedStandardFields = Map(id -> Id,
+  // id field is not in the suggested list because typically
+  // id from one system cannot be directly used as id in another system.
+  def suggestedStandardFields = Map(
     author -> Reporter,
     summary -> Summary, description -> Description, taskType -> TaskType,
     estimatedTime -> EstimatedTime,

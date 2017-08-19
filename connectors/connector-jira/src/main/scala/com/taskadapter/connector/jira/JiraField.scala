@@ -30,7 +30,9 @@ object JiraField {
 
   def fieldsAsJava(): util.List[Field] = fields.asJava
 
-  private def suggestedStandardFields = Map(id -> Id, summary -> Summary,
+  // id field is not in the suggested list because typically
+  // id from one system cannot be directly used as id in another system.
+  private def suggestedStandardFields = Map(summary -> Summary,
     description -> Description, taskType -> TaskType,
     // estimated time is not a part of standard JIRA 7 anymore
 //    estimatedTime -> EstimatedTime,

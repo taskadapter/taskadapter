@@ -16,7 +16,9 @@ object MantisField {
 
   val fields = List(summary, description, assignee, dueDate, createdOn, updatedOn, priority)
 
-  private def suggestedStandardFields = Map(id -> Id, summary -> Summary,
+  // id field is not in the suggested list because typically
+  // id from one system cannot be directly used as id in another system.
+  private def suggestedStandardFields = Map(summary -> Summary,
     description -> Description,
     assignee -> Assignee,
     dueDate -> DueDate,
