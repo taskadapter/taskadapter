@@ -44,6 +44,8 @@ class UISyncConfigIT extends FunSpec with Matchers with ConfigsTempFolder {
       assertThat(loaded.getValue(RedmineField.description)).isEqualTo("")
     }
   */
+
+  // TODO this test requires some "Epic" tasks to be present in JIRA. it should create them itself
   it("tasks can be loaded from JIRA and saved to Redmine") {
     withTempFolder { f =>
       val config = ConfigLoader.loadConfig(f, "Atlassian-JIRA_Redmine.ta_conf")
