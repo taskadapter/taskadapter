@@ -53,6 +53,8 @@ public class RedmineToGTask {
             Option<GUser> userWithPatchedLoginName = userCache.findGUserInCache(null, issue.getAssigneeName());
             if (userWithPatchedLoginName.isDefined()) {
                 task.setValue(RedmineField.assignee(), userWithPatchedLoginName.get());
+            } else {
+                task.setValue(RedmineField.assignee(), new GUser(issue.getAssigneeId(), "", issue.getAssigneeName()));
             }
         }
         if (issue.getAuthorId() != null) {
