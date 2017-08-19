@@ -25,6 +25,7 @@ class GTaskBuilder {
         // round to 2 digits
         val double = Math.round(value * 100.0) / 100.0
         double.toFloat
+      case "GUser" => new GUser(null, Random.nextString(3), Random.nextString(10))
       case "String" => "value " + new Date().getTime
 
     }

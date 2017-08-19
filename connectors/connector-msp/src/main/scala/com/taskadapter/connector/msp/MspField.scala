@@ -12,7 +12,7 @@ object MspField {
 
   val summary = Field(TaskField.SUMMARY.getName)
   val description = Field(TaskField.NOTES.getName)
-  val assignee = Field(TaskField.ASSIGNMENT_OWNER.getName)
+  val assignee = Field.user(TaskField.ASSIGNMENT_OWNER.getName)
   val closedOn = Field.date(TaskField.ACTUAL_FINISH.getName)
   val priority = Field.integer(TaskField.PRIORITY.getName)
   val percentageComplete = Field.integer(TaskField.PERCENT_COMPLETE.getName)

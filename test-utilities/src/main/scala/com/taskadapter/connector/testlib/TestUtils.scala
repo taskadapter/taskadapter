@@ -102,12 +102,13 @@ object TestUtils {
     remoteKeys.iterator.next
   }
 
+  /**
+    * @param rows source-target field rows
+    */
   def loadAndSave(sourceConnector: NewConnector, targetConnector: NewConnector,
-                  fields: Seq[Field]): GTask = {
+                  rows: Seq[FieldRow]): GTask = {
     val loadedTask = TaskLoader.loadTasks(1, sourceConnector, "sourceName", ProgressMonitorUtils.DUMMY_MONITOR).asScala.toList.head
-    val result = TestUtils.saveAndLoadList(targetConnector, Seq(loadedTask),
-      FieldRowBuilder.rows(fields)
-    ).head
+    val result = TestUtils.saveAndLoadList(targetConnector, Seq(loadedTask), rows).head
     result
   }
 
