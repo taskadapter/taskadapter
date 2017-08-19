@@ -14,9 +14,11 @@ import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
 @RunWith(classOf[JUnitRunner])
 class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll {
 
+  val userCache = new RedmineUserCache(Seq())
+
   private def get(): RedmineToGTask = {
     val config = new RedmineConfig
-    new RedmineToGTask(config)
+    new RedmineToGTask(config, userCache)
   }
 
   it("summaryIsConverted") {

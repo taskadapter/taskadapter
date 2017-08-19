@@ -15,7 +15,7 @@ object TestConfigs {
     redmineConfig
   }
 
-  def getRedmineServerInfo = WebConnectorSetup(RedmineConnector.ID, "label1", properties.getProperty("uri"), "", "",
+  def getRedmineSetup = WebConnectorSetup(RedmineConnector.ID, "label1", properties.getProperty("uri"), "", "",
     true, properties.getProperty("apikey"))
 
   def getJiraConfig:JiraConfig = {

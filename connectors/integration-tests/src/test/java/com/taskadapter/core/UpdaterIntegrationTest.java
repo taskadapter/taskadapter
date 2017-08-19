@@ -144,11 +144,12 @@ public class UpdaterIntegrationTest {
     }
 */
 
+/*
     private List<GTask> createRedmineIssues(int issuesNumber) {
         List<GTask> issues = new ArrayList<>(issuesNumber);
         List<Issue> issuesToCreate = generateRedmineIssues(issuesNumber);
-
-        RedmineToGTask converter = new RedmineToGTask(redmineConfig);
+        RedmineUserCache cache = new RedmineUserCache();
+        RedmineToGTask converter = new RedmineToGTask(redmineConfig, cache);
         for (Issue issueToCreate : issuesToCreate) {
             Issue issue;
             try {
@@ -163,6 +164,7 @@ public class UpdaterIntegrationTest {
         return issues;
 
     }
+*/
 
     private List<Issue> generateRedmineIssues(int issuesNumber) {
         List<Issue> issues = new ArrayList<>(issuesNumber);

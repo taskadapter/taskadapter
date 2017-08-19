@@ -39,7 +39,8 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
       val mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient)
       val intKey = id.id.toInt
       val issue = mgr.getIssueManager.getIssueById(intKey, Include.relations)
-      val converter = new RedmineToGTask(config)
+      val userCache = loadUsersIfAllowed(mgr)
+      val converter = new RedmineToGTask(config, userCache)
       converter.convertToGenericTask(issue)
     } catch {
       case e: RedmineException =>
@@ -51,10 +52,10 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
     val httpClient = RedmineManagerFactory.createRedmineHttpClient()
     try {
       val mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient)
-
+      val usersCache = loadUsersIfAllowed(mgr)
       val issues = mgr.getIssueManager.getIssues(config.getProjectKey, config.getQueryId, Include.relations)
-      addFullUsers(issues, mgr)
-      convertToGenericTasks(config, issues)
+      addFullUsers(issues, usersCache)
+      convertToGenericTasks(config, issues, usersCache)
     } catch {
       case e: RedmineException =>
         throw new RuntimeException(e)
@@ -62,29 +63,21 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
   }
 
   @throws[RedmineException]
-  private def addFullUsers(issues: util.List[Issue], mgr: RedmineManager) = {
-    val users = new util.HashMap[Integer, User]
+  private def addFullUsers(issues: util.List[Issue], usersCache: RedmineUserCache): Unit = {
     issues.asScala.foreach { issue =>
-      issue.setAssigneeName(patchUserDisplayName(issue.getAssigneeId, users, mgr))
-      issue.setAuthorName(patchUserDisplayName(issue.getAuthorId, users, mgr))
+      issue.setAssigneeName(patchUserDisplayName(issue.getAssigneeId, usersCache).getOrElse(""))
+      issue.setAuthorName(patchUserDisplayName(issue.getAuthorId, usersCache).getOrElse(""))
     }
   }
 
   @throws[RedmineException]
-  private def patchUserDisplayName(userId: Integer, users: util.Map[Integer, User], mgr: RedmineManager): String = {
-    if (userId == null) return null
-
-    val guess = users.get(userId)
-    if (guess != null) return guess.getFullName
-
-    val loaded = mgr.getUserManager.getUserById(userId)
-    users.put(userId, loaded)
-    loaded.getFullName
+  private def patchUserDisplayName(userId: Int, usersCache: RedmineUserCache): Option[String] = {
+    usersCache.findRedmineUserInCache(userId).map(_.getFullName)
   }
 
-  private def convertToGenericTasks(config: RedmineConfig, issues: util.List[Issue]) = {
-    val converter = new RedmineToGTask(config)
-    issues.asScala.map( i => converter.convertToGenericTask(i)).asJava
+  private def convertToGenericTasks(config: RedmineConfig, issues: util.List[Issue], usersCache: RedmineUserCache) = {
+    val converter = new RedmineToGTask(config, usersCache)
+    issues.asScala.map(i => converter.convertToGenericTask(i)).asJava
   }
 
   override def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask],
@@ -95,12 +88,11 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
     try {
       val rmProject = mgr.getProjectManager.getProjectByKey(config.getProjectKey)
       val priorities = RedmineConnector.loadPriorities(fieldRows.asJava, mgr)
-      val users = if (!config.isFindUserByName) new util.ArrayList[User]
-      else mgr.getUserManager.getUsers
       val statusList = mgr.getIssueManager.getStatuses
       val versions = mgr.getProjectManager.getVersions(rmProject.getId)
       val customFieldDefinitions = mgr.getCustomFieldManager.getCustomFieldDefinitions
-      val converter = new GTaskToRedmine(config, priorities, rmProject, users, customFieldDefinitions, statusList, versions)
+      val userCache = loadUsersIfAllowed(mgr)
+      val converter = new GTaskToRedmine(config, priorities, rmProject, userCache, customFieldDefinitions, statusList, versions)
       val saver = new RedmineTaskSaver(mgr.getIssueManager, config)
       val tsrb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, fieldRows,
         setup.host)
@@ -110,5 +102,13 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
   } catch {
     case e: RedmineException =>
       throw new RuntimeException(e)
+  }
+
+  private def loadUsersIfAllowed(mgr: RedmineManager): RedmineUserCache = {
+    if (!config.isFindUserByName) {
+      new RedmineUserCache(Seq())
+    } else {
+      new RedmineUserCache(mgr.getUserManager.getUsers.asScala)
+    }
   }
 }

@@ -74,14 +74,17 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
           assertEquals(yearAgo.getTime(), loadedTask.getDueDate())
       }
 */
-  it("exports assignee") {
+  /**
+    * it is important to check login name and not just display name because login name is resolved from [[RedmineUserCache]]
+    */
+  it("assignee login name is loaded") {
     val task = RedmineGTaskBuilder.withSummary()
     task.setValue(RedmineField.assignee, currentUser)
     val config = getTestConfig
     config.setFindUserByName(true)
     val connector = getConnector(config)
     val loadedTask = TestUtils.saveAndLoad(connector, task, RedmineFieldBuilder.withAssignee())
-    loadedTask.getValue(RedmineField.assignee).asInstanceOf[GUser].getDisplayName shouldBe currentUser.getDisplayName
+    loadedTask.getValue(RedmineField.assignee).asInstanceOf[GUser].getLoginName shouldBe currentUser.getLoginName
     mgr.getIssueManager.deleteIssue(loadedTask.getId.toInt)
   }
 

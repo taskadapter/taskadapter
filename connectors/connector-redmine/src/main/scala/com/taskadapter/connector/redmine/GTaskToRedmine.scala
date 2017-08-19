@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory
 import scala.collection.JavaConverters._
 
 class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer], project: Project,
-                     users: util.List[User], customFieldDefinitions: util.List[CustomFieldDefinition],
+                     usersCache: RedmineUserCache, customFieldDefinitions: util.List[CustomFieldDefinition],
                      statusList: util.List[IssueStatus], versions: util.List[Version])
   extends ConnectorConverter[GTask, Issue] {
   val logger = LoggerFactory.getLogger(classOf[GTaskToRedmine])
@@ -101,11 +101,11 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
   private def processAssignee(redmineIssue: Issue, value: Any): Unit = {
     val user = value.asInstanceOf[GUser]
     if (user != null) {
-      val rmAss = findRedmineUserInCache(user)
-      if (rmAss == null) {
+      val rmAss = usersCache.findRedmineUserInCache(user.getLoginName, user.getDisplayName)
+      if (rmAss.isEmpty) {
         logger.warn(s"Converting task to Redmine format: assignee: cannot resolve user in Redmine for $user")
       } else {
-        redmineIssue.setAssigneeId(rmAss.getId)
+        redmineIssue.setAssigneeId(rmAss.get.getId)
       }
     }
   }
@@ -113,9 +113,9 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
   private def processAuthor(redmineIssue: Issue, value: Any): Unit = {
     val user = value.asInstanceOf[GUser]
     if (user != null) {
-      val author = findRedmineUserInCache(user)
-      if (author != null) {
-        redmineIssue.setAuthorId(author.getId)
+      val author = usersCache.findRedmineUserInCache(user.getLoginName, user.getDisplayName)
+      if (author.isDefined) {
+        redmineIssue.setAuthorId(author.get.getId)
       }
     }
   }
@@ -128,25 +128,6 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
       issue.setStatusId(status.getId)
       issue.setStatusName(status.getName)
     }
-  }
-
-  /**
-    * @return NULL if the user is not found or if "users" weren't previously set via setUsers() method
-    */
-  private def findRedmineUserInCache(user: GUser): User = {
-    if (users == null) return null
-    val valueToSearchFor = if (user.getLoginName == null) {
-      user.getDisplayName
-    } else {
-      user.getLoginName
-    }
-    if (valueToSearchFor == null) {
-      logger.warn("Cannot resolve user - neither login name non display name are present")
-      return null
-    }
-    users.asScala
-      .find(u => valueToSearchFor == u.getLogin || valueToSearchFor == u.getFullName)
-      .orNull
   }
 
   /**

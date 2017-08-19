@@ -25,10 +25,11 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
   private var redmineProject: Option[Project] = None
 
   private val mgr = RedmineTestInitializer.mgr
+
   val sourceConfig = TestConfigs.getRedmineConfig
   val targetConfig = TestConfigs.getRedmineConfig
-  val sourceRedmineConnector = new RedmineConnector(sourceConfig, TestConfigs.getRedmineServerInfo)
-  val targetRedmineConnector = new RedmineConnector(targetConfig, TestConfigs.getRedmineServerInfo)
+  val sourceRedmineConnector = new RedmineConnector(sourceConfig, TestConfigs.getRedmineSetup)
+  val targetRedmineConnector = new RedmineConnector(targetConfig, TestConfigs.getRedmineSetup)
 
   val jiraConfig = TestConfigs.getJiraConfig
   val jiraSetup = TestConfigs.getJiraSetup
@@ -36,7 +37,7 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
 
   val redmineConfigWithResolveAssignees = TestConfigs.getRedmineConfig
   redmineConfigWithResolveAssignees.setFindUserByName(true)
-  val redmineConnectorWithResolveAssignees = new RedmineConnector(redmineConfigWithResolveAssignees, TestConfigs.getRedmineServerInfo)
+  val redmineConnectorWithResolveAssignees = new RedmineConnector(redmineConfigWithResolveAssignees, TestConfigs.getRedmineSetup)
 
   val adapter = new Adapter(sourceRedmineConnector, targetRedmineConnector)
 
@@ -133,7 +134,7 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
     val loadedTasks = TaskLoader.loadTasks(maxTasksNumber, msProjectConnector, "msp1",
       ProgressMonitorUtils.DUMMY_MONITOR).asScala.toList
 
-    val redmineConnector = new RedmineConnector(redmineConfig, TestConfigs.getRedmineServerInfo)
+    val redmineConnector = new RedmineConnector(redmineConfig, TestConfigs.getRedmineSetup)
     // save to Redmine
     val result = TestUtils.saveAndLoadList(redmineConnector, loadedTasks,
       FieldRowBuilder.rows(Seq(
@@ -154,7 +155,7 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
     val loadedTasks = TaskLoader.loadTasks(maxTasksNumber, projectConnector, "project1",
       ProgressMonitorUtils.DUMMY_MONITOR).asScala.toList
     // save to Redmine
-    val redmineConnector = new RedmineConnector(redmineConfig, TestConfigs.getRedmineServerInfo)
+    val redmineConnector = new RedmineConnector(redmineConfig, TestConfigs.getRedmineSetup)
 
     val result = TestUtils.saveAndLoadList(redmineConnector, loadedTasks,
       FieldRowBuilder.rows(Seq(
@@ -196,17 +197,22 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
     }
 
     it("assignee can be loaded from Redmine and saved to JIRA") {
+      val created = createIssueInRedmine("some description", assignee = Some(RedmineTestInitializer.currentUser))
       val loadedTasks = TaskLoader.loadTasks(1, redmineConnectorWithResolveAssignees, "sourceName", ProgressMonitorUtils.DUMMY_MONITOR).asScala.toList
+      loadedTasks.size shouldBe 1
+      val redmineTask = loadedTasks.head
+      redmineTask.getValue(RedmineField.assignee).asInstanceOf[GUser].getLoginName shouldBe RedmineTestInitializer.currentUser.getLoginName
 
-      val result = TestUtils.saveAndLoadList(jiraConnector, loadedTasks,
-        FieldRowBuilder.rows(
-          Seq(JiraField.summary, JiraField.assignee)
+      val result = TestUtils.saveAndLoad(jiraConnector, redmineTask,
+        Seq(
+          FieldRow(RedmineField.summary, JiraField.summary, ""),
+          FieldRow(RedmineField.assignee, JiraField.assignee, "")
         )
       )
-      val ass = result.head.getValue(JiraField.assignee).asInstanceOf[GUser]
+      val ass = result.getValue(JiraField.assignee).asInstanceOf[GUser]
       ass.getDisplayName shouldBe jiraSetup.userName
 
-      val reporter = result.head.getValue(JiraField.reporter).asInstanceOf[GUser]
+      val reporter = result.getValue(JiraField.reporter).asInstanceOf[GUser]
       reporter.getDisplayName shouldBe jiraSetup.userName
     }
 
@@ -231,9 +237,12 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
     mgr.getIssueManager.createIssue(issue)
   }
 
-  def createIssueInRedmine(description: String = ""): Issue = {
+  def createIssueInRedmine(description: String = "", assignee: Option[GUser] = None): Issue = {
     val issue = IssueFactory.create(redmineProject.get.getId, "some summary")
     issue.setDescription(description)
+    if (assignee.isDefined) {
+      issue.setAssigneeId(assignee.get.getId)
+    }
     mgr.getIssueManager.createIssue(issue)
   }
 

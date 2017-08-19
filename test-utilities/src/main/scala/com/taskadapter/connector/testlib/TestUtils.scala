@@ -69,7 +69,7 @@ object TestUtils {
   }
 
   @throws[ConnectorException]
-  def saveAndLoad(connector: NewConnector, task: GTask, rows: List[FieldRow]): GTask = {
+  def saveAndLoad(connector: NewConnector, task: GTask, rows: Seq[FieldRow]): GTask = {
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows)
     val remoteKeys = result.getRemoteKeys
     val remoteKey = remoteKeys.iterator.next

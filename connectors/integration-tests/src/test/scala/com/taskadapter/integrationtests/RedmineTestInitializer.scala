@@ -2,18 +2,20 @@ package com.taskadapter.integrationtests
 
 import java.util.Calendar
 
-import com.taskadapter.connector.redmine.RedmineManagerFactory
+import com.taskadapter.connector.redmine.{RedmineManagerFactory, RedmineToGUser}
 import com.taskadapter.redmineapi.RedmineManager
 import com.taskadapter.redmineapi.bean.{Project, ProjectFactory}
 import org.slf4j.LoggerFactory
 
 object RedmineTestInitializer {
   private val logger = LoggerFactory.getLogger(RedmineTestInitializer.getClass)
-  private val setup = TestConfigs.getRedmineServerInfo
+  private val setup = TestConfigs.getRedmineSetup
   // TODO TA3 reuse the same http client everywhere instead of creating it here
   val httpClient = RedmineManagerFactory.createRedmineHttpClient
 
   var mgr: RedmineManager = RedmineManagerFactory.createRedmineManager(setup, httpClient)
+  val redmineUser = mgr.getUserManager.getCurrentUser
+  val currentUser = RedmineToGUser.convertToGUser(redmineUser)
 
   def createProject: Project = {
     logger.info("Running Redmine tests with: " + setup)
