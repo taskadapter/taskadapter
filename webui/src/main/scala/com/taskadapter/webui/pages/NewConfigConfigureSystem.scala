@@ -16,17 +16,14 @@ private case class ExistingSetup(id: SetupId, description: String)
 
 class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOperations,
                                sandbox: Sandbox,
-                               connectorId: String,
-                               setupSelected: SetupId => Unit) {
+                               setupSelected: SetupId => Unit) extends WizardStep[SetupId] {
+  var result: SetupId = _
 
-  def ui = createSetupPanelForConnector().getUI()
+  def ui(connectorId: Any): Component = {
+    createSetupPanelForConnector(connectorId.asInstanceOf[String]).getUI()
+  }
 
-  val editor = editorManager.getEditorFactory(connectorId)
-
-  val errorMessageLabel = new Label
-  errorMessageLabel.addStyleName("error-message-label")
-
-  private def createSetupPanelForConnector(): ChooseOrCreateSetupFragment = {
+  private def createSetupPanelForConnector(connectorId: String): ChooseOrCreateSetupFragment = {
 
     val setups = configOps.getAllConnectorSetups(connectorId)
     val setupUiItems = setups.map { s =>
@@ -39,6 +36,7 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
       }
     }
 
+    val editor = editorManager.getEditorFactory(connectorId)
     val editSetupPanel = editor.getEditSetupPanel(sandbox, None)
     val addNewButton = new Button()
     new ChooseOrCreateSetupFragment(setupUiItems, addNewButton, editSetupPanel)
@@ -64,6 +62,9 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
       res
     }
 
+    val errorMessageLabel = new Label
+    errorMessageLabel.addStyleName("error-message-label")
+
     private val connectorSetupPanelUI = connectorSetupPanel.getUI
     val layout = new VerticalLayout(selectPanel, button, connectorSetupPanelUI, errorMessageLabel)
     var inSelectMode = true
@@ -84,12 +85,14 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
         val maybeString = connectorSetupPanel.validate
         if (maybeString.isEmpty) {
           val setupId = configOps.saveNewSetup(connectorSetupPanel.getResult)
+          result = setupId
           setupSelected(setupId)
         } else {
           errorMessageLabel.setValue(maybeString.get)
         }
       } else {
         val setupId = selectPanel.getValue.asInstanceOf[SetupId]
+        result = setupId
         setupSelected(setupId)
       }
     }
@@ -118,4 +121,5 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
     refresh()
   }
 
+  override def getResult: SetupId = result
 }

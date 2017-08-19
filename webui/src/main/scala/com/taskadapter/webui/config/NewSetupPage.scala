@@ -23,7 +23,7 @@ class NewSetupPage(configOperations: ConfigOperations, editorManager: EditorMana
   val panelForEditor = new VerticalLayout()
   panelForEditor.setVisible(false)
 
-  val selectConnectorComponent = new SelectConnectorComponent(pluginManager, showAddPanelForConnector).ui
+  val selectConnectorComponent = new SelectConnectorComponent(pluginManager, showAddPanelForConnector).layout
 
   layout.addComponent(selectConnectorComponent)
   layout.addComponent(panelForEditor)
