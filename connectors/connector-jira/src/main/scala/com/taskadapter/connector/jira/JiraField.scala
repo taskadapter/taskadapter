@@ -37,7 +37,9 @@ object JiraField {
     // estimated time is not a part of standard JIRA 7 anymore
 //    estimatedTime -> EstimatedTime,
     assignee -> Assignee,
-    reporter -> Reporter,
+    // removing "Reporter" for now because export to JIRA gives
+    // "status=400, errors={reporter=Field 'reporter' cannot be set. It is not on the appropriate screen, or unknown."
+//    reporter -> Reporter,
     dueDate -> DueDate,
     priority -> Priority)
 
