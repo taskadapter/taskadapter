@@ -7,18 +7,14 @@ import scala.collection.mutable
 
 class WizardPanel {
   val layout = new VerticalLayout()
-  layout.setSpacing(true)
-  val progressLayout = new VerticalLayout()
+  layout.setMargin(true)
   val progressLabel = new Label()
   val progressBar = new ProgressBar(0)
   progressBar.setWidth("400px")
   val stepLayout = new HorizontalLayout()
 
-  progressLayout.addComponent(progressLabel)
-  progressLayout.addComponent(progressBar)
-  layout.addComponent(progressLayout)
+  layout.addComponents(progressLabel, progressBar)
   layout.addComponent(stepLayout)
-  layout.setWidth("100%")
 
   val steps = mutable.Map[Int, WizardStep[_]]()
 
