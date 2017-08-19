@@ -30,8 +30,9 @@ class WizardPanel {
     stepLayout.addComponent(nextStep.ui(config))
   }
 
-  def registerStep[C, RES](step: Int, wizardStep: WizardStep[RES]): Unit = {
-    steps += (step -> wizardStep)
+  def registerStep[C, RES](wizardStep: WizardStep[RES]): Unit = {
+    val stepNumber = steps.size + 1
+    steps += (stepNumber -> wizardStep)
   }
 
   def ui = layout

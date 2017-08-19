@@ -32,35 +32,35 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
   var connector2SetupId: Option[SetupId] = None
   var description: Option[String] = None
 
-  wizard.registerStep(1, new SelectConnectorWizardStep(pluginManager, next =
+  wizard.registerStep(new SelectConnectorWizardStep(pluginManager, next =
     (connectorId) => {
       connector1Id = Some(connectorId)
       wizard.showStep(2)
     }
   ))
 
-  wizard.registerStep(2, new NewConfigConfigureSystem(editorManager, configOps, sandbox, setupSelected =
+  wizard.registerStep(new NewConfigConfigureSystem(editorManager, configOps, sandbox, setupSelected =
     (label) => {
       connector1SetupId = Some(label)
       wizard.showStep(3)
     }
   ))
 
-  wizard.registerStep(3, new SelectConnectorWizardStep(pluginManager, next =
+  wizard.registerStep(new SelectConnectorWizardStep(pluginManager, next =
     (connectorId) => {
       connector2Id = Some(connectorId)
       wizard.showStep(4)
     }
   ))
 
-  wizard.registerStep(4, new NewConfigConfigureSystem(editorManager, configOps, sandbox, setupSelected =
+  wizard.registerStep(new NewConfigConfigureSystem(editorManager, configOps, sandbox, setupSelected =
     (label) => {
       connector2SetupId = Some(label)
       wizard.showStep(5)
     }
   ))
 
-  wizard.registerStep(5, new NewConfigGiveDescription(d => {
+  wizard.registerStep(new NewConfigGiveDescription(d => {
     description = Some(d)
     saveClicked()
   }
