@@ -31,7 +31,7 @@ public class TreeUtils {
         for (GTask task : tree) {
             GTask cloned = createShallowCopyWithoutChildren(task);
             cloned.getChildren().clear();
-            if (task.getRemoteId() != null) {
+            if (task.getSourceSystemId() != null) {
                 // only skip the tasks with no Remote IDs
                 // the children can still have Remote IDs and thus need to be
                 // included in the tree
@@ -47,9 +47,13 @@ public class TreeUtils {
         TreeUtilsMap map = new TreeUtilsMap(tasksFlatList);
         GTask root = new GTask();
         for (GTask task : tasksFlatList) {
-            GTask parentTask = map.getByKey(task.getParentKey());
-            if (parentTask != null) {
-                parentTask.getChildren().add(task);
+            if (task.getParentIdentity() != null) {
+                GTask parentTask = map.getByKey(task.getParentIdentity().key());
+                if (parentTask != null) {
+                    parentTask.getChildren().add(task);
+                } else {
+                    root.getChildren().add(task);
+                }
             } else {
                 root.getChildren().add(task);
             }

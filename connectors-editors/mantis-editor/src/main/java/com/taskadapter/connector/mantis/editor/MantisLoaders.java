@@ -6,10 +6,11 @@ import java.util.List;
 
 import biz.futureware.mantis.rpc.soap.client.FilterData;
 import biz.futureware.mantis.rpc.soap.client.ProjectData;
+import com.google.common.base.Strings;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 
-import com.taskadapter.connector.definition.WebServerInfo;
 import com.taskadapter.connector.mantis.MantisConfig;
 import com.taskadapter.connector.mantis.MantisManager;
 import com.taskadapter.connector.mantis.MantisManagerFactory;
@@ -20,11 +21,10 @@ import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
 
 public class MantisLoaders {
-    public static List<GProject> getProjects(WebServerInfo serverInfo) throws ServerURLNotSetException {
-        validate(serverInfo);
+    public static List<GProject> getProjects(WebConnectorSetup setup) throws ServerURLNotSetException {
+        validate(setup);
 
-        MantisManager mgr = MantisManagerFactory
-                .createMantisManager(serverInfo);
+        MantisManager mgr = MantisManagerFactory.createMantisManager(setup);
         List<ProjectData> mntProjects;
 
         try {
@@ -36,16 +36,15 @@ public class MantisLoaders {
         return new MantisProjectConverter().toGProjects(mntProjects);
     }
 
-    private static void validate(WebServerInfo serverInfo) throws ServerURLNotSetException {
-        if (!serverInfo.isHostSet()) {
+    private static void validate(WebConnectorSetup setup) throws ServerURLNotSetException {
+        if (Strings.isNullOrEmpty(setup.host())) {
             throw new ServerURLNotSetException();
         }
     }
 
-    public static List<NamedKeyedObject> getFilters(MantisConfig config)
+    public static List<NamedKeyedObject> getFilters(MantisConfig config, WebConnectorSetup setup)
             throws ConnectorException {
-        MantisManager mgr = MantisManagerFactory.createMantisManager(config
-                .getServerInfo());
+        MantisManager mgr = MantisManagerFactory.createMantisManager(setup);
         try {
             final BigInteger pkey = config.getProjectKey() == null ? null
                     : new BigInteger(config.getProjectKey());

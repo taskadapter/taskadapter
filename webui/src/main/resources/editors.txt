@@ -1,10 +1,9 @@
 # list of EDITORS for Task Adapter
-Redmine REST=com.taskadapter.connector.redmine.editor.RedmineEditorFactory
 Redmine=com.taskadapter.connector.redmine.editor.RedmineEditorFactory
-Atlassian Jira=com.taskadapter.connector.jira.JiraEditorFactory
-Github=com.taskadapter.connector.github.editor.GithubEditorFactory
+Atlassian JIRA=com.taskadapter.connector.jira.JiraEditorFactory
+GitHub=com.taskadapter.connector.github.editor.GithubEditorFactory
 Mantis=com.taskadapter.connector.mantis.editor.MantisEditorFactory
 Microsoft Project=com.taskadapter.connector.msp.editor.MSPEditorFactory
-Microsoft Project (XML)=com.taskadapter.connector.msp.editor.MSPEditorFactory
-Basecamp=com.taskadapter.connector.basecamp.editor.BasecampEditorFactory
-Basecamp Classic=com.taskadapter.connector.basecamp.classic.editor.BasecampEditorFactory
+# Microsoft Project (XML)=com.taskadapter.connector.msp.editor.MSPEditorFactory
+# Basecamp=com.taskadapter.connector.basecamp.editor.BasecampEditorFactory
+# Basecamp Classic=com.taskadapter.connector.basecamp.classic.editor.BasecampEditorFactory

@@ -14,6 +14,6 @@ public class LastVersionLoaderIntegrationTest {
         // must be 1 line only
         assertEquals(1, strings.length);
 
-        assertTrue(availableVersion.startsWith("2."));
+        assertTrue(availableVersion.startsWith("3."));
     }
 }

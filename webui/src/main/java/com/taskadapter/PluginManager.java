@@ -1,6 +1,7 @@
 package com.taskadapter;
 
 import com.taskadapter.connector.definition.ConnectorConfig;
+import com.taskadapter.connector.definition.ConnectorSetup;
 import com.taskadapter.connector.definition.Descriptor;
 import com.taskadapter.connector.definition.PluginFactory;
 
@@ -12,7 +13,7 @@ import java.util.Map;
 public class PluginManager {
 
     private Map<String, Descriptor> pluginDescriptors = new HashMap<>();
-    private Map<String, PluginFactory<?>> pluginFactories = new HashMap<>();
+    private Map<String, PluginFactory<?,?>> pluginFactories = new HashMap<>();
 
     public PluginManager() {
         loadPlugins();
@@ -23,11 +24,11 @@ public class PluginManager {
             Collection<String> classNames = new PluginsFileParser().parseResource("plugins.properties");
             for (String factoryClassName : classNames) {
                 @SuppressWarnings("unchecked")
-				Class<PluginFactory<?>> factoryClass = (Class<PluginFactory<?>>) Class.forName(factoryClassName);
-                PluginFactory<?> pluginFactory = factoryClass.newInstance();
+				Class<PluginFactory<?,?>> factoryClass = (Class<PluginFactory<?,?>>) Class.forName(factoryClassName);
+                PluginFactory<?,?> pluginFactory = factoryClass.newInstance();
                 Descriptor descriptor = pluginFactory.getDescriptor();
-                pluginDescriptors.put(descriptor.getID(), descriptor);
-                pluginFactories.put(descriptor.getID(), pluginFactory);
+                pluginDescriptors.put(descriptor.id(), descriptor);
+                pluginFactories.put(descriptor.id(), pluginFactory);
             }
         } catch (Exception e) {
             throw new InternalError(e);
@@ -44,9 +45,9 @@ public class PluginManager {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ConnectorConfig> PluginFactory<T> getPluginFactory(String pluginId) {
+    public <T extends ConnectorConfig, S extends ConnectorSetup> PluginFactory<T,S> getPluginFactory(String pluginId) {
         String realId = LegacyConnectorsSupport.getRealId(pluginId);
-        return (PluginFactory<T>) pluginFactories.get(realId);
+        return (PluginFactory<T, S>) pluginFactories.get(realId);
     }
 
 }

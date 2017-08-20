@@ -15,6 +15,7 @@ public class UploadReceiver implements Upload.Receiver {
     }
 
     public OutputStream receiveUpload(String filename, String mimeType) {
+        userContentDirectory.mkdirs();
         filename = FileUtils.basename(filename);
         FileOutputStream fos;
         try {

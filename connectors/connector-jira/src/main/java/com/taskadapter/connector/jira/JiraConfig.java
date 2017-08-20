@@ -3,28 +3,20 @@ package com.taskadapter.connector.jira;
 import com.google.common.base.Objects;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.WebServerInfo;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class JiraConfig extends ConnectorConfig {
 
     private static final Priorities DEFAULT_PRIORITIES = createDefaultPriorities();
     
-    static final String DEFAULT_LABEL = "JIRA";
-
     private static final long serialVersionUID = 1L;
     private static final String TASK_TYPE_BUG = "Bug";
     private static final String DEFAULT_SUB_TASK_TYPE = "Sub-task";
 
-    private WebServerInfo serverInfo = new WebServerInfo();
-
     // TODO this can probably be moved to the super class
     private String component = "";
-
-    private String environment = "";
 
     /**
      * Version ("milestone") in the project.
@@ -38,22 +30,12 @@ public class JiraConfig extends ConnectorConfig {
     private String queryString;
     private Integer queryId;
     private String projectKey;
-    private Map<String, String> customFields = new TreeMap<>();
     private String defaultIssueTypeForSubtasks;
 
     public JiraConfig() {
         super(DEFAULT_PRIORITIES);
-        setLabel(DEFAULT_LABEL);
         setDefaultTaskType(TASK_TYPE_BUG);
         setDefaultIssueTypeForSubtasks(DEFAULT_SUB_TASK_TYPE);
-    }
-
-    public String getEnvironment() {
-        return environment;
-    }
-
-    public void setEnvironment(String environment) {
-        this.environment = environment;
     }
 
     public String getComponent() {
@@ -107,7 +89,7 @@ public class JiraConfig extends ConnectorConfig {
     @Override
     public int hashCode() {
         return 31 * super.hashCode() +
-                Objects.hashCode(affectedVersion, component, environment, getDefaultTaskType(), fixForVersion);
+                Objects.hashCode(affectedVersion, component, getDefaultTaskType(), fixForVersion);
 
     }
 
@@ -123,21 +105,12 @@ public class JiraConfig extends ConnectorConfig {
             JiraConfig other = (JiraConfig) obj;
             return Objects.equal(affectedVersion, other.affectedVersion) &&
                     Objects.equal(component, other.component) &&
-                    Objects.equal(environment, other.environment) &&
                     Objects.equal(getDefaultTaskType(), other.component) &&
                     Objects.equal(fixForVersion, other.fixForVersion);
 
         } else {
             return false;
         }
-    }
-
-    public WebServerInfo getServerInfo() {
-        return serverInfo;
-    }
-
-    public void setServerInfo(WebServerInfo serverInfo) {
-        this.serverInfo = serverInfo;
     }
 
     public Integer getQueryId() {
@@ -165,14 +138,6 @@ public class JiraConfig extends ConnectorConfig {
 
     public void setProjectKey(String projectKey) {
         this.projectKey = projectKey;
-    }
-
-    public Map<String, String> getCustomFields() {
-        return customFields;
-    }
-
-    public void setCustomFields(Map<String, String> customFields) {
-        this.customFields = customFields;
     }
 
     public String getDefaultIssueTypeForSubtasks() {

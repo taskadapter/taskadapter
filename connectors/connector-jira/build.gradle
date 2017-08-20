@@ -1,5 +1,8 @@
 dependencies {
     compile libraries.slf4j
 
-    compile 'com.atlassian.jira:jira-rest-java-client-core:3.0.0'
+    // you check for new versions here
+    // https://maven.atlassian.com/content/groups/public/com/atlassian/jira/jira-rest-java-client-core/
+    compile 'com.atlassian.jira:jira-rest-java-client-core:4.0.0'
+    compile "com.atlassian.fugue:fugue:2.6.1"
 }

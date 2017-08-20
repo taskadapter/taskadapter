@@ -1,85 +1,48 @@
 package com.taskadapter.connector.msp;
 
-import com.taskadapter.connector.definition.Connector;
+import com.taskadapter.connector.FieldRow;
+import com.taskadapter.connector.NewConnector;
 import com.taskadapter.connector.definition.DropInConnector;
 import com.taskadapter.connector.definition.FileBasedConnector;
+import com.taskadapter.connector.definition.FileSetup;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
-import com.taskadapter.connector.definition.TaskSaveResult;
+import com.taskadapter.connector.definition.SaveResult;
+import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.connector.msp.write.RealWriter;
-import com.taskadapter.connector.msp.write.ResourceManager;
-import com.taskadapter.connector.msp.write.TaskFieldsSetter;
+import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
 import net.sf.mpxj.MPXJException;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Task;
-import net.sf.mpxj.TaskField;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
-public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector, DropInConnector<MSPConfig> {
+public class MSPConnector implements NewConnector, FileBasedConnector, DropInConnector {
     /**
      * Keep it the same to enable backward compatibility
      */
     public static final String ID = "Microsoft Project";
 
-    private MSPConfig config;
+    private FileSetup setup;
 
-    public MSPConnector(MSPConfig config) {
-        this.config = config;
-    }
-    
-    @Override
-    public void updateRemoteIDs(Map<Integer, String> remoteKeys, ProgressMonitor monitorIGNORED, Mappings mappings) throws ConnectorException {
-        String inputAbsoluteFilePath = config.getInputAbsoluteFilePath();
-        try {
-            ProjectFile projectFile = new MSPFileReader().readFile(inputAbsoluteFilePath);
-            List<Task> allTasks = projectFile.getAllTasks();
-
-            for (Task mspTask : allTasks) {
-                String createdTaskKey = remoteKeys.get(mspTask.getUniqueID());
-                if (createdTaskKey != null) {
-                    setFieldIfNotNull(mappings, FIELD.REMOTE_ID, mspTask, createdTaskKey);
-                }
-            }
-
-            RealWriter.writeProject(config.getOutputAbsoluteFilePath(), projectFile);
-        } catch (MPXJException e) {
-            throw MSPExceptions.convertException(e);
-        } catch (IOException e) {
-            throw MSPExceptions.convertException(e);
-        }
-    }
-
-    private void setFieldIfNotNull(Mappings mappings, FIELD field, Task mspTask, String value) {
-        String v = mappings.getMappedTo(field);
-        TaskField f = MSPUtils.getTaskFieldByName(v);
-        mspTask.set(f, value);
-    }
-
-    private Object getField(Mappings mappings, FIELD field, Task mspTask) {
-        String v = mappings.getMappedTo(field);
-        TaskField f = MSPUtils.getTaskFieldByName(v);
-        return mspTask.getCurrentValue(f);
+    public MSPConnector(FileSetup setup) {
+        this.setup = setup;
     }
 
     @Override
-    public void updateTasksByRemoteIds(List<GTask> tasksFromExternalSystem, Mappings mappings) throws ConnectorException {
-        String fileName = config.getInputAbsoluteFilePath();
+    public void updateTasksByRemoteIds(List<GTask> tasksFromExternalSystem, Iterable<FieldRow> rows) throws ConnectorException {
+       /* String fileName = config.getInputAbsoluteFilePath();
         try {
             ProjectFile projectFile = new MSPFileReader().readFile(fileName);
             List<Task> allTasks = projectFile.getAllTasks();
             for (GTask gTask : tasksFromExternalSystem) {
-                Task mspTask = findTaskByRemoteId(mappings, allTasks, gTask.getKey());
+                Task mspTask = findTaskByRemoteId(rows, allTasks, gTask.getKey());
 
-                TaskFieldsSetter setter = new TaskFieldsSetter(mappings, mspTask, new ResourceManager(projectFile));
+                TaskFieldsSetter setter = new TaskFieldsSetter(rows, mspTask, new ResourceManager(projectFile));
                 boolean keepTaskId = true;
                 setter.setFields(gTask, keepTaskId);
             }
@@ -88,37 +51,22 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector, D
             throw MSPExceptions.convertException(e);
         } catch (IOException e) {
             throw MSPExceptions.convertException(e);
-        }
+        }*/
     }
-
-    private Task findTaskByRemoteId(Mappings mappings, List<Task> mspTasks, String requiredRemoteId) {
-        for (Task gTask : mspTasks) {
-            String taskRemoteId = (String) getField(mappings, FIELD.REMOTE_ID, gTask);
-            if (taskRemoteId == null) {
-                // not all tasks will have remote IDs
-                continue;
-            }
-            if (taskRemoteId.equals(requiredRemoteId)) {
-                return gTask;
-            }
-        }
-        return null;
-    }
-
     @Override
     public boolean fileExists() {
-        File file = new File(config.getOutputAbsoluteFilePath());
+        File file = new File(setup.targetFile());
         return file.exists() && file.length() > 0; // zero files are autogenerated by config
     }
 
     @Override
     public String getAbsoluteOutputFileName() {
-        return config.getOutputAbsoluteFilePath();
+        return setup.targetFile();
     }
 
     @Override
     public void validateCanUpdate() throws BadConfigException {
-        if (config.getInputAbsoluteFilePath().toLowerCase().endsWith(MSPFileReader.MPP_SUFFIX_LOWERCASE)) {
+        if (setup.sourceFile().toLowerCase().endsWith(MSPFileReader.MPP_SUFFIX_LOWERCASE)) {
             throw new BadConfigException("The Microsoft Project 'Input File Name' you provided ends with \"" +
                     MSPFileReader.MPP_SUFFIX_LOWERCASE + "\"."
                     + "\nTask Adapter can't write MPP files."
@@ -128,36 +76,40 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector, D
     }
 
     @Override
-    public GTask loadTaskByKey(String key, Mappings mappings) {
-        throw new RuntimeException("not implemented");
+    public GTask loadTaskByKey(TaskId key, Iterable<FieldRow> rows) {
+        List<GTask> tasks = loadInternal(setup.sourceFile());
+        for (GTask task : tasks) {
+            if (task.getIdentity().equals(key)) {
+                return task;
+            }
+        }
+        return null;
     }
 
     @Override
-    public List<GTask> loadData(Mappings sourceMappings, ProgressMonitor monitorIGNORED) throws ConnectorException {
-        final String sourceFile = config.getInputAbsoluteFilePath();
-        return loadInternal(sourceMappings, sourceFile);
-    }
-    
-    @Override
-    public List<GTask> loadDropInData(File file, Mappings mappings,
-            ProgressMonitor monitor) throws ConnectorException {
-        return loadInternal(mappings, file.getAbsolutePath());
+    public List<GTask> loadData() {
+        return loadInternal(setup.sourceFile());
     }
 
-    private List<GTask> loadInternal(Mappings sourceMappings, final String sourceFile) throws ConnectorException {
+    @Override
+    public List<GTask> loadDropInData(File file, ProgressMonitor monitor) throws ConnectorException {
+        return loadInternal(file.getAbsolutePath());
+    }
+
+    private List<GTask> loadInternal(final String sourceFile) {
         ProjectFile projectFile;
         final MSPFileReader fileReader = new MSPFileReader();
         try {
             projectFile = fileReader.readFile(sourceFile);
         } catch (FileNotFoundException e) {
-            throw new BadConfigException("MSP: Can't find file with name \"" + sourceFile + "\".");
+            throw new RuntimeException(new BadConfigException("MSP: Can't find file with name \"" + sourceFile + "\"."));
         } catch (MPXJException e) {
-            throw MSPExceptions.convertException(e);
+            throw new RuntimeException(MSPExceptions.convertException(e));
         }
 
         List<Task> mspTasks = projectFile.getAllTasks();
         mspTasks = skipRootNodeIfPresent(mspTasks);
-        return loadTasks(projectFile, mspTasks, sourceMappings);
+        return loadTasks(projectFile, mspTasks);
     }
 
     /**
@@ -168,9 +120,6 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector, D
      * @return flat list of tasks (not a tree!)
      */
     private List<Task> skipRootNodeIfPresent(List<Task> mspTasks) {
-//        if (mspTasks.get(0).getParentTask() == null){
-//            return mspTasks.subList(1, mspTasks.size());
-//        }
         if ((mspTasks != null) && (!mspTasks.isEmpty())
                 && mspTasks.get(0).getOutlineLevel().equals(0)) {
             mspTasks = mspTasks.subList(1, mspTasks.size());
@@ -178,15 +127,20 @@ public class MSPConnector implements Connector<MSPConfig>, FileBasedConnector, D
         return mspTasks;
     }
 
-    private List<GTask> loadTasks(ProjectFile project, List<Task> mspTasks, Mappings sourceMappings) throws BadConfigException {
-        final MSPToGTask converter = new MSPToGTask(sourceMappings);
+    private List<GTask> loadTasks(ProjectFile project, List<Task> mspTasks) {
+        final MSPToGTask converter = new MSPToGTask();
         converter.setHeader(project.getProjectHeader());
         return converter.convertToGenericTaskList(mspTasks);
     }
 
     @Override
-    public TaskSaveResult saveData(List<GTask> tasks, ProgressMonitor monitor, Mappings mappings) throws ConnectorException {
-        return new MSPTaskSaver(config, mappings).saveData(tasks);
+    public SaveResult saveData(PreviouslyCreatedTasksResolver previouslyCreatedTasksResolver, List<GTask> tasks,
+                               ProgressMonitor monitor, scala.collection.Iterable<FieldRow> rows) {
+        try {
+            return new MSPTaskSaver(setup, rows).saveData(tasks);
+        } catch (ConnectorException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

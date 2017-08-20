@@ -20,4 +20,6 @@ public interface AuthorizedOperations {
      * Checks, if user can configure server.
      */
     boolean canConfigureServer();
+
+    boolean canAddUsers();
 }

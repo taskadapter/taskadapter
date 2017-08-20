@@ -2,6 +2,7 @@ package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.common.BasicIssueSaveAPI;
 import com.taskadapter.connector.common.RelationSaver;
+import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GRelation;
@@ -23,10 +24,10 @@ public final class RedmineTaskSaver implements RelationSaver, BasicIssueSaveAPI<
     }
 
     @Override
-    public String createTask(Issue nativeTask) throws ConnectorException {
+    public TaskId createTask(Issue nativeTask) throws ConnectorException {
         try {
             Issue newIssue = issueManager.createIssue(nativeTask);
-            return newIssue.getId().toString();
+            return new TaskId(newIssue.getId().longValue(), newIssue.getId().toString());
         } catch (RedmineException e) {
             throw RedmineExceptions.convertException(e);
         }
@@ -50,10 +51,11 @@ public final class RedmineTaskSaver implements RelationSaver, BasicIssueSaveAPI<
     public void saveRelations(List<GRelation> relations) throws ConnectorException {
         try {
             for (GRelation gRelation : relations) {
-                int taskKey = Integer.parseInt(gRelation.getTaskKey());
-                int relatedTaskKey = Integer.parseInt(gRelation
-                        .getRelatedTaskKey());
-                issueManager.createRelation(taskKey, relatedTaskKey, gRelation.getType().toString());
+                TaskId taskId = gRelation.taskId();
+                Integer intTaskId = (int) taskId.id();
+                TaskId relatedTaskKey = gRelation.relatedTaskId();
+                Integer intRelatedId = (int) relatedTaskKey.id();
+                issueManager.createRelation(intTaskId, intRelatedId, gRelation.type().toString());
             }
         } catch (RedmineProcessingException e) {
             throw new RelationCreationException(e);

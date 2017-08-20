@@ -1,7 +1,8 @@
 package com.taskadapter.connector.redmine.editor;
 
+import com.google.common.base.Strings;
 import com.taskadapter.connector.Priorities;
-import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
@@ -19,6 +20,7 @@ import com.taskadapter.redmineapi.bean.IssuePriority;
 import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.redmineapi.bean.SavedQuery;
 import com.taskadapter.redmineapi.bean.Tracker;
+import org.apache.http.client.HttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,11 +35,14 @@ public class RedmineLoaders {
 
     private static final Logger logger = LoggerFactory.getLogger(RedmineLoaders.class);
 
-    public static List<GProject> getProjects(WebServerInfo serverInfo)
-            throws ServerURLNotSetException {
-        validate(serverInfo);
+    // TODO TA3 reuse the same http client everywhere instead of creating it here
+    private static final HttpClient httpClient = RedmineManagerFactory.createRedmineHttpClient();
 
-        RedmineManager mgr = RedmineManagerFactory.createRedmineManager(serverInfo);
+    public static List<GProject> getProjects(WebConnectorSetup setup)
+            throws ServerURLNotSetException {
+        validate(setup);
+
+        RedmineManager mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient);
         List<com.taskadapter.redmineapi.bean.Project> rmProjects;
         try {
             rmProjects = mgr.getProjectManager().getProjects();
@@ -48,8 +53,8 @@ public class RedmineLoaders {
         return new RedmineProjectConverter().toGProjects(rmProjects);
     }
 
-    private static void validate(WebServerInfo serverInfo) throws ServerURLNotSetException {
-        if ((serverInfo.getHost() == null) || (serverInfo.getHost().isEmpty())) {
+    private static void validate(WebConnectorSetup setup) throws ServerURLNotSetException {
+        if (Strings.isNullOrEmpty(setup.host())) {
             throw new ServerURLNotSetException();
         }
     }
@@ -70,9 +75,9 @@ public class RedmineLoaders {
         return null;
     }
 
-    public static List<? extends NamedKeyedObject> loadData(WebServerInfo config, String projectKey) throws BadConfigException, RedmineException {
-        validate(config);
-        RedmineManager mgr = RedmineManagerFactory.createRedmineManager(config);
+    public static List<? extends NamedKeyedObject> loadData(WebConnectorSetup setup, String projectKey) throws BadConfigException, RedmineException {
+        validate(setup);
+        RedmineManager mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient);
         List<NamedKeyedObject> result = new ArrayList<>();
         // get project id to filter saved queries
         Integer projectId = null;
@@ -98,9 +103,9 @@ public class RedmineLoaders {
         return result;
     }
 
-    public static List<? extends NamedKeyedObject> loadTrackers(RedmineConfig config) throws ConnectorException {
-        validate(config.getServerInfo());
-        RedmineManager redmineManager = RedmineManagerFactory.createRedmineManager(config.getServerInfo());
+    public static List<? extends NamedKeyedObject> loadTrackers(RedmineConfig config, WebConnectorSetup setup) throws ConnectorException {
+        validate(setup);
+        RedmineManager redmineManager = RedmineManagerFactory.createRedmineManager(setup, httpClient);
         Project project;
         String projectKey = config.getProjectKey();
         try {
@@ -120,18 +125,14 @@ public class RedmineLoaders {
         return result;
     }
     
-    public static Priorities loadPriorities(WebServerInfo server)
-            throws ConnectorException {
-        validate(server);
-        final Priorities defaultPriorities = RedmineConfig
-                .generateDefaultPriorities();
-        final RedmineManager mgr = RedmineManagerFactory
-                .createRedmineManager(server);
+    public static Priorities loadPriorities(WebConnectorSetup setup) throws ConnectorException {
+        validate(setup);
+        final Priorities defaultPriorities = RedmineConfig.generateDefaultPriorities();
+        final RedmineManager mgr = RedmineManagerFactory.createRedmineManager(setup,httpClient);
         final Priorities result = new Priorities();
         try {
             for (IssuePriority prio : mgr.getIssueManager().getIssuePriorities()) {
-                result.setPriority(prio.getName(),
-                        defaultPriorities.getPriorityByText(prio.getName()));
+                result.setPriority(prio.getName(), defaultPriorities.getPriorityByText(prio.getName()));
             }
         } catch (RedmineException e) {
             throw RedmineExceptions.convertException(e);

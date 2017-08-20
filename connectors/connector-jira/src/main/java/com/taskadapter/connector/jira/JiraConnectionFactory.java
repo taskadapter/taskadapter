@@ -2,7 +2,7 @@ package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
-import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 
 import java.net.MalformedURLException;
@@ -12,9 +12,9 @@ import java.rmi.RemoteException;
 
 public class JiraConnectionFactory {
 
-    public static JiraRestClient createClient(WebServerInfo info) throws ConnectorException {
+    public static JiraRestClient createClient(WebConnectorSetup setup) throws ConnectorException {
         try {
-            return createConnection(info);
+            return createConnection(setup);
         } catch (RemoteException e) {
             throw JiraUtils.convertException(e);
         } catch (MalformedURLException e) {
@@ -24,10 +24,10 @@ public class JiraConnectionFactory {
         }
     }
 
-    private static JiraRestClient createConnection(WebServerInfo info) throws MalformedURLException, RemoteException, URISyntaxException {
-        URI jiraServerUri = new URI(info.getHost());
+    private static JiraRestClient createConnection(WebConnectorSetup setup) throws MalformedURLException, RemoteException, URISyntaxException {
+        URI jiraServerUri = new URI(setup.host());
         final AsynchronousJiraRestClientFactory factory = new AsynchronousJiraRestClientFactory();
-        final JiraRestClient restClient = factory.createWithBasicHttpAuthentication(jiraServerUri, info.getUserName(), info.getPassword());
+        final JiraRestClient restClient = factory.createWithBasicHttpAuthentication(jiraServerUri, setup.userName(), setup.password());
         return restClient;
     }
 }

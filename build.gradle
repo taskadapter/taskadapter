@@ -2,11 +2,12 @@ ext {
 
     // TaskAdapter application release version.
     // it is used in the ZIP file name and is shown in "About" dialog.
-    TASK_ADAPTER_VERSION = "2.15.0"
+    TASK_ADAPTER_VERSION = "3.0.0"
 
     vaadinVersion = '7.7.10'
     httpClientVersion='4.2'
     slf4jVersion = '1.6.6'
+    circeVersion = "0.8.0"
 }
 
 ext.libraries = [
@@ -25,8 +26,13 @@ ext.libraries = [
 
 subprojects {
 
-    apply plugin: 'java'
-    apply plugin: 'scala'
+    apply plugin: 'scala' // it extends Java plugin, so you don't need to apply that one separately
+
+    // java sources are added to Scala compile phase and removed from Java compile.
+    // this solution is fix java->scala dependency issue
+    // see  https://discuss.gradle.org/t/how-to-compile-a-java-class-that-depends-on-a-scala-class-in-gradle/6747
+    sourceSets.main.scala.srcDir "src/main/java"
+    sourceSets.main.java.srcDirs = []
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -36,12 +42,15 @@ subprojects {
 //        mavenLocal()
 
         maven {
-            url 'http://dev.taskadapter.com:8081/nexus/content/groups/public'
+            // note - cannot use https://dev.taskadapter.com/nexus/content/groups/public url for now
+            // because Nginx->Nexus requires additional configuration for that.
+            url 'http://dev.taskadapter.com:8081/nexus/repository/public'
         }
         maven {
             url 'http://maven.vaadin.com/vaadin-addons'
         }
-        // This repository contains Atlassian JIRA REST Java Client library used by JIRA connector
+        // This repository contains Atlassian JIRA REST Java Client library used by JIRA connector.
+        // Browse artifacts online: https://maven.atlassian.com/content/groups/public/com/atlassian/jira/jira-rest-java-client-core/
         maven {
             url 'https://m2proxy.atlassian.com/repository/public'
         }

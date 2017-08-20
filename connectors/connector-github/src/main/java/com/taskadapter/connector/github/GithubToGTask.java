@@ -1,5 +1,6 @@
 package com.taskadapter.connector.github;
 
+import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GUser;
 import org.eclipse.egit.github.core.Issue;
@@ -20,16 +21,20 @@ public class GithubToGTask {
 
     protected GTask toGtask(Issue issue) {
         GTask task = new GTask();
-        task.setId(issue.getNumber());
-        task.setKey(String.valueOf(issue.getNumber()));
-        task.setSummary(issue.getTitle());
-        task.setDescription(issue.getBody());
-        task.setUpdatedOn(issue.getUpdatedAt());
-        task.setCreatedOn(issue.getCreatedAt());
+
+        String stringKey = Integer.toString(issue.getNumber());
+        task.setId(Long.parseLong(stringKey));
+        task.setKey(stringKey);
+        task.setSourceSystemId(new TaskId(issue.getId(), stringKey));
+
+        task.setValue(GithubField.summary().name(), issue.getTitle());
+        task.setValue(GithubField.description().name(), issue.getBody());
+        task.setValue(GithubField.createdOn().name(), issue.getCreatedAt());
+        task.setValue(GithubField.updatedOn().name(), issue.getUpdatedAt());
 
         if (issue.getAssignee() != null && !"".equals(issue.getAssignee().getLogin())) {
             GUser user = new GUser(issue.getAssignee().getLogin());
-            task.setAssignee(user);
+            task.setValue(GithubField.assignee().name(), user.getLoginName());
         }
         return task;
     }

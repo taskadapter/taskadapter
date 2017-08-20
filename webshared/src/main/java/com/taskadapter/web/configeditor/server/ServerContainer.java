@@ -1,5 +1,6 @@
 package com.taskadapter.web.configeditor.server;
 
+import com.taskadapter.webui.Page;
 import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.Alignment;
@@ -9,16 +10,15 @@ import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 
 public class ServerContainer extends GridLayout {
-    private static final String HOST_URL_TOOLTIP = "Host URL, including protocol prefix and port number. E.g. http://demo.site.com:3000";
     private static final String DEFAULT_HOST_VALUE = "http://";
 
     private TextField hostURLText;
 
-    public ServerContainer(Property<String> labelProperty,
+    public ServerContainer(Property<String> nameProperty,
             Property<String> serverURLProperty,
             Property<String> userLoginNameProperty,
             Property<String> passwordProperty) {
-        buildUI(labelProperty, serverURLProperty, userLoginNameProperty,
+        buildUI(nameProperty, serverURLProperty, userLoginNameProperty,
                 passwordProperty);
     }
 
@@ -31,22 +31,23 @@ public class ServerContainer extends GridLayout {
         setSpacing(true);
 
         int currentRow = 0;
-        Label descriptionLabel = new Label("Description:");
-        addComponent(descriptionLabel, 0, currentRow);
-        setComponentAlignment(descriptionLabel, Alignment.MIDDLE_LEFT);
-        TextField descriptionField = new TextField();
-        descriptionField.addStyleName("server-panel-textfield");
-        descriptionField.setPropertyDataSource(labelProperty);
-        addComponent(descriptionField, 1, currentRow);
+        Label nameLabel = new Label(Page.message("setupPanel.name"));
+        addComponent(nameLabel, 0, currentRow);
+        setComponentAlignment(nameLabel, Alignment.MIDDLE_LEFT);
+        TextField nameField = new TextField();
+        nameField.setRequired(true);
+        nameField.addStyleName("server-panel-textfield");
+        nameField.setPropertyDataSource(labelProperty);
+        addComponent(nameField, 1, currentRow);
 
         currentRow++;
 
-        Label urlLabel = new Label("Server URL:");
+        Label urlLabel = new Label(Page.message("setupPanel.serverUrl"));
         addComponent(urlLabel, 0, currentRow);
         setComponentAlignment(urlLabel, Alignment.MIDDLE_LEFT);
 
         hostURLText = new TextField();
-        hostURLText.setDescription(HOST_URL_TOOLTIP);
+        hostURLText.setDescription(Page.message("setupPanel.serverUrlHint"));
         hostURLText.addBlurListener((FieldEvents.BlurListener) event -> {
             //TODO refactor these methods (common in ServerPanel and RedmineServerPanel
             checkProtocol();
@@ -60,7 +61,7 @@ public class ServerContainer extends GridLayout {
 
         currentRow++;
 
-        Label loginLabel = new Label("Login:");
+        Label loginLabel = new Label(Page.message("setupPanel.login"));
         addComponent(loginLabel, 0, currentRow);
         setComponentAlignment(loginLabel, Alignment.MIDDLE_LEFT);
 
@@ -72,7 +73,7 @@ public class ServerContainer extends GridLayout {
 
         currentRow++;
 
-        Label pswdLabel = new Label("Password:");
+        Label pswdLabel = new Label(Page.message("setupPanel.password"));
         addComponent(pswdLabel, 0, currentRow);
         setComponentAlignment(pswdLabel, Alignment.MIDDLE_LEFT);
 
@@ -95,7 +96,7 @@ public class ServerContainer extends GridLayout {
         }
     }
 
-    String getHostString() {
+    private String getHostString() {
         return hostURLText.getValue();
     }
 

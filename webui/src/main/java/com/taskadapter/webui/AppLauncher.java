@@ -7,14 +7,20 @@ import javax.servlet.ServletRegistration.Dynamic;
 import com.vaadin.server.VaadinServlet;
 
 /**
- * Task-adapter application launcher. Performs all hardcore magic. Creates
- * services, register servlets, etc...
+ * TaskAdapter application launcher. Initializes Vaadin servlet.
  */
 public final class AppLauncher implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        AppUIProxy.instance = new TAApplicationProvider();
+
+        String webAppRealPath = sce.getServletContext().getRealPath("/");
+        if (webAppRealPath.contains("/exploded/")) {
+            // dev mode when running from IDEA
+            AppUIProxy.instance = TAApplicationProvider.skipGoogleAnalytics();
+        } else {
+            AppUIProxy.instance = TAApplicationProvider.withGoogleAnalytics();
+        }
 
         final Dynamic appServlet = sce.getServletContext().addServlet(
                 "Task Adapter Application", VaadinServlet.class);
@@ -27,7 +33,7 @@ public final class AppLauncher implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        /* Nothing to destroy yet! */
+        // Nothing to destroy
     }
 
 }

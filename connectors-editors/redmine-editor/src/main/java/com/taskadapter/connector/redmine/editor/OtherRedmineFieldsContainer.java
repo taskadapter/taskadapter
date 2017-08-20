@@ -1,10 +1,8 @@
 package com.taskadapter.connector.redmine.editor;
 
-import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.redmine.RedmineConfig;
-import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.ExceptionFormatter;
-import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.DefaultPanel;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.Editors;
@@ -17,19 +15,19 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
-import java.util.List;
-
 public class OtherRedmineFieldsContainer extends Panel {
     private static final String OTHER_PANEL_CAPTION = "Additional Info";
     private static final String SAVE_ISSUE_LABEL = "Save issue relations (follows/precedes)";
 
     private final RedmineConfig config;
+    private WebConnectorSetup setup;
     private final ExceptionFormatter exceptionFormatter;
     private final VerticalLayout view;
 
-    public OtherRedmineFieldsContainer(RedmineConfig config, ExceptionFormatter exceptionFormatter) {
+    public OtherRedmineFieldsContainer(RedmineConfig config, WebConnectorSetup setup, ExceptionFormatter exceptionFormatter) {
         super(OTHER_PANEL_CAPTION);
         this.config = config;
+        this.setup = setup;
         this.exceptionFormatter = exceptionFormatter;
         view = new VerticalLayout();
         buildUI();
@@ -61,12 +59,7 @@ public class OtherRedmineFieldsContainer extends Panel {
                 "Show list of available tracker types on the Redmine server",
                 "Select task type",
                 "List of available task types on the Redmine server",
-                new DataProvider<List<? extends NamedKeyedObject>>() {
-                    @Override
-                    public List<? extends NamedKeyedObject> loadData() throws ConnectorException {
-                        return RedmineLoaders.loadTrackers(config);
-                    }
-                },
+                () -> RedmineLoaders.loadTrackers(config, setup),
                 taskTypeProperty,
                 true, exceptionFormatter
         );

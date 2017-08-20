@@ -1,13 +1,18 @@
 package com.taskadapter.connector.redmine;
 
+import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
+import com.taskadapter.model.GUser;
+import com.taskadapter.model.Precedes$;
+import com.taskadapter.redmineapi.bean.CustomField;
 import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.IssueRelation;
 import com.taskadapter.redmineapi.bean.Tracker;
 import com.taskadapter.redmineapi.bean.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.Option;
 
 import java.util.Collection;
 
@@ -16,9 +21,11 @@ public class RedmineToGTask {
     private static final Logger logger = LoggerFactory.getLogger(RedmineToGTask.class);
 
     private final RedmineConfig config;
+    private RedmineUserCache userCache;
 
-    public RedmineToGTask(RedmineConfig config) {
+    public RedmineToGTask(RedmineConfig config, RedmineUserCache userCache) {
         this.config = config;
+        this.userCache = userCache;
     }
 
     /**
@@ -30,39 +37,60 @@ public class RedmineToGTask {
     public GTask convertToGenericTask(Issue issue) {
         GTask task = new GTask();
 
-        task.setId(issue.getId());
+        task.setId(issue.getId() == null? null : issue.getId().longValue());
         if (issue.getId() != null) {
-            task.setKey(Integer.toString(issue.getId()));
+            String stringKey = Integer.toString(issue.getId());
+            task.setKey(stringKey);
+            task.setSourceSystemId(new TaskId(issue.getId(), stringKey));
         }
         if (issue.getParentId() != null) {
-            task.setParentKey(issue.getParentId() + "");
+            task.setParentIdentity(new TaskId(issue.getParentId(), issue.getParentId() + ""));
         }
-        User rmAss = issue.getAssignee();
-        if (rmAss != null) {
-            task.setAssignee(RedmineToGUser.convertToGUser(rmAss));
+
+        if (issue.getAssigneeId() != null) {
+            // crappy Redmine REST API does not return login name, only id and "display name",
+            // this Redmine Java API library can only provide that info... this is why "loginName" is empty here.
+            Option<GUser> userWithPatchedLoginName = userCache.findGUserInCache(null, issue.getAssigneeName());
+            if (userWithPatchedLoginName.isDefined()) {
+                task.setValue(RedmineField.assignee(), userWithPatchedLoginName.get());
+            } else {
+                task.setValue(RedmineField.assignee(), new GUser(issue.getAssigneeId(), "", issue.getAssigneeName()));
+            }
+        }
+        if (issue.getAuthorId() != null) {
+            // crappy Redmine REST API does not return login name, only id and "display name",
+            // this Redmine Java API library can only provide that info... this is why "loginName" is empty here.
+            GUser user = new GUser(issue.getAuthorId(), "", issue.getAuthorName());
+            task.setValue(RedmineField.author(), user);
         }
 
         Tracker tracker = issue.getTracker();
         if (tracker != null) {
-            task.setType(tracker.getName());
+            task.setValue(RedmineField.taskType().name(), tracker.getName());
         }
-        task.setStatus(issue.getStatusName());
-        task.setSummary(issue.getSubject());
-        task.setEstimatedHours(issue.getEstimatedHours());
-        task.setDoneRatio(issue.getDoneRatio());
-        task.setStartDate(issue.getStartDate());
-        task.setDueDate(issue.getDueDate());
-        task.setCreatedOn(issue.getCreatedOn());
-        task.setUpdatedOn(issue.getUpdatedOn());
+        task.setValue(RedmineField.taskStatus().name(), issue.getStatusName());
+        task.setValue(RedmineField.summary().name(), issue.getSubject());
+        task.setValue(RedmineField.estimatedTime().name(), issue.getEstimatedHours());
+        task.setValue(RedmineField.doneRatio().name(), issue.getDoneRatio());
+        task.setValue(RedmineField.startDate().name(), issue.getStartDate());
+        task.setValue(RedmineField.dueDate().name(), issue.getDueDate());
+        task.setValue(RedmineField.createdOn().name(), issue.getCreatedOn());
+        task.setValue(RedmineField.updatedOn().name(), issue.getUpdatedOn());
         Integer priorityValue = config.getPriorities().getPriorityByText(issue.getPriorityText());
-        task.setPriority(priorityValue);
-        task.setDescription(issue.getDescription());
+        task.setValue(RedmineField.priority().name(), priorityValue);
+        task.setValue(RedmineField.description().name(), issue.getDescription());
         if (issue.getTargetVersion() != null) {
-            task.setTargetVersionName(issue.getTargetVersion().getName());
+            task.setValue(RedmineField.targetVersion().name(), issue.getTargetVersion().getName());
         }
-
+        processCustomFields(issue, task);
         processRelations(issue, task);
         return task;
+    }
+
+    private void processCustomFields(Issue issue, GTask task) {
+        for (CustomField customField : issue.getCustomFields()) {
+            task.setValue(customField.getName(), customField.getValue());
+        }
     }
 
     private static void processRelations(Issue rmIssue, GTask genericTask) {
@@ -72,8 +100,10 @@ public class RedmineToGTask {
                 // if NOT equal to self!
                 // See http://www.redmine.org/issues/7366#note-11
                 if (!relation.getIssueToId().equals(rmIssue.getId())) {
-                    GRelation r = new GRelation(Integer.toString(rmIssue.getId()), Integer.toString(relation
-                            .getIssueToId()), GRelation.TYPE.precedes);
+                    GRelation r = new GRelation(
+                            new TaskId(rmIssue.getId(), rmIssue.getId()+""),
+                            new TaskId(relation.getIssueToId(), relation.getIssueToId()+""),
+                            Precedes$.MODULE$);
                     genericTask.getRelations().add(r);
                 }
             } else {

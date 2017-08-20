@@ -11,6 +11,7 @@ import com.vaadin.ui.themes.Runo;
 
 import java.util.Map;
 
+// TODO TA3 custom fields: not needed anymore?
 public class CustomFieldsTablePanel extends Panel {
     private static final String LABEL = "Custom fields:";
     private static final String ADD_NEW_BUTTON = "Add";

@@ -1,11 +1,9 @@
 package com.taskadapter.connector.definition;
 
-import java.util.Collection;
+import com.taskadapter.model.GTaskDescriptor.FIELD;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 /**
  * Mappings configuration. Each mapping represents association between general
@@ -21,17 +19,17 @@ public final class Mappings {
 	/**
 	 * Selected fields.
 	 */
-	private final Map<FIELD, Boolean> selected;
+	private final Map<String, Boolean> selected;
 
 	/**
 	 * "Map item to" setting.
 	 */
-	private final Map<FIELD, String> mapTo;
+	private final Map<String, String> mapTo;
 
     // TODO REVIEW Have you considered storing this in one map completely describing one field?
     // It could make much more sense. We just extract descriptor for one field and do everything we want. And we could put some "converter" logic there, etc...
     // UPDATED: Have you considered storing this in one map completely describing one field? It could make much more sense. We just extract desciptor for one field and do everything we want. And we could put some "converter" logic there, etc...
-	private final Map<FIELD, String> defaultValuesForEmptyFields;
+	private final Map<String, String> defaultValuesForEmptyFields;
 
 	/**
 	 * Creates empty mappings.
@@ -63,9 +61,8 @@ public final class Mappings {
 				Collectors.toMap(k-> k.getKey().name(), Map.Entry::getValue));
 		*/
 		Map<String, String> copy = new HashMap<>();
-		for (Map.Entry<FIELD, String> entry : defaultValuesForEmptyFields.entrySet()) {
-			copy.put(entry.getKey() != null ? entry.getKey().name() : null,
-					entry.getValue()
+		for (Map.Entry<String, String> entry : defaultValuesForEmptyFields.entrySet()) {
+			copy.put(entry.getKey(), entry.getValue()
 			);
 		}
 		return copy;
@@ -76,7 +73,7 @@ public final class Mappings {
 	 * 
 	 * @return <code>true</code> iff field is selected for conversion.
 	 */
-	public boolean isFieldSelected(FIELD field) {
+	public boolean isFieldSelected(String field) {
 		final Boolean result = selected.get(field);
 		return result != null && result;
 	}
@@ -89,7 +86,7 @@ public final class Mappings {
 	 *            field.
 	 * @return field, to which source is mapped.
 	 */
-	public String getMappedTo(FIELD field) {
+	public String getMappedTo(String field) {
 		return mapTo.get(field);
 	}
 
@@ -99,7 +96,7 @@ public final class Mappings {
 	 * @param field
 	 *            field to select.
 	 */
-	public void selectField(FIELD field) {
+	public void selectField(String field) {
 		setFieldSelected(field, true);
 	}
 
@@ -109,7 +106,7 @@ public final class Mappings {
 	 * @param field
 	 *            field to deselect.
 	 */
-	public void deselectField(FIELD field) {
+	public void deselectField(String field) {
 		setFieldSelected(field, false);
 	}
 
@@ -121,7 +118,7 @@ public final class Mappings {
 	 * @param selected
 	 *            field "selected" value.
 	 */
-	public void setFieldSelected(FIELD filed, boolean selected) {
+	public void setFieldSelected(String filed, boolean selected) {
 		this.selected.put(filed, selected);
 	}
 
@@ -133,7 +130,7 @@ public final class Mappings {
 	 * @param target
 	 *            target field.
 	 */
-	public void setMapping(FIELD field, String target) {
+	public void setMapping(String field, String target) {
 		mapTo.put(field, target);
 	}
 
@@ -147,7 +144,7 @@ public final class Mappings {
 	 * @param target
 	 *            mapping target.
 	 */
-	public void setMapping(FIELD field, boolean selected, String target, String defaultValueForEmptyField) {
+	public void setMapping(String field, boolean selected, String target, String defaultValueForEmptyField) {
 		this.selected.put(field, selected);
 		mapTo.put(field, target);
 		defaultValuesForEmptyFields.put(field, defaultValueForEmptyField);
@@ -160,7 +157,7 @@ public final class Mappings {
 	 *            field to use.
 	 * @return mapped field.
 	 */
-	public boolean haveMappingFor(FIELD field) {
+	public boolean haveMappingFor(String field) {
 		return selected.containsKey(field) || mapTo.containsKey(field);
 	}
 
@@ -170,7 +167,7 @@ public final class Mappings {
 	 * @param field
 	 *            field to delete a mapping for.
 	 */
-	public void deleteMappingFor(FIELD field) {
+	public void deleteMappingFor(String field) {
 		selected.remove(field);
 		mapTo.remove(field);
 	}
@@ -213,7 +210,9 @@ public final class Mappings {
 		return true;
 	}
 
+/*
 	public Collection<FIELD> getSelectedFields() {
 		return selected.keySet().stream().filter(this::isFieldSelected).collect(Collectors.toSet());
 	}
+*/
 }

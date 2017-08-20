@@ -1,6 +1,10 @@
 package com.taskadapter.connector.common
 
-import com.taskadapter.model.{GTask, GTaskDescriptor}
+import java.util.Date
+
+import com.taskadapter.connector.definition.TaskId
+import com.taskadapter.connector.{Field, FieldRow}
+import com.taskadapter.model.GTask
 import org.fest.assertions.Assertions.assertThat
 import org.junit.runner.RunWith
 import org.scalatest.concurrent.ScalaFutures
@@ -8,37 +12,79 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
 
 import scala.collection.JavaConverters._
-import scala.collection.mutable._
 
 @RunWith(classOf[JUnitRunner])
 class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
   it("task is deep cloned") {
-    val setter = new DefaultValueSetter(Map.empty[String, String].asJava)
-    val originalTask: GTask = new GTask
-    originalTask.setType("original type")
-    originalTask.setDescription("original description")
-    // TODO REVIEW Does this method perform a shallow copy or a deep copy?
-    val newTask: GTask = setter.cloneAndReplaceEmptySelectedFieldsWithDefaultValues(originalTask)
-    originalTask.setType("new type")
-    originalTask.setDescription("new description")
-    assertThat(newTask.getType).isEqualTo("original type")
-    assertThat(newTask.getDescription).isEqualTo("original description")
+    val originalTask = new GTask
+    originalTask.setValue("description", "original description")
+
+    val rows = List(
+      FieldRow(Field("summary"), Field("summary"), ""),
+      FieldRow(Field("description"), Field("description"), "")
+    )
+
+    val newTask = DefaultValueSetter.adapt(rows, originalTask)
+    originalTask.setValue("description", "new description")
+    assertThat(newTask.getValue("description")).isEqualTo("original description")
+
   }
 
-  it("default value is set if field is empty") {
-    val setter = new DefaultValueSetter(Map(GTaskDescriptor.FIELD.DESCRIPTION.name -> "default description").asJava)
+  it("default value is set if source field value is empty") {
+    val rows = List(
+      FieldRow(Field("summary"), Field("summary"), ""),
+      FieldRow(Field("description"), Field("description"), "default description")
+    )
     val originalTask = new GTask
-    originalTask.setDescription("")
-    val newTask = setter.cloneAndReplaceEmptySelectedFieldsWithDefaultValues(originalTask)
-    newTask.getDescription shouldBe "default description"
+    originalTask.setValue("description", "")
+
+    val newTask = DefaultValueSetter.adapt(rows, originalTask)
+    newTask.getValue("description") shouldBe "default description"
+  }
+
+  it("default value is set if source field is not defined but default value exists") {
+    val rows = List(
+      new FieldRow(None, Some(Field("description")), "default description")
+    )
+    val originalTask = new GTask
+    originalTask.setValue("description", "")
+
+    val newTask = DefaultValueSetter.adapt(rows, originalTask)
+    newTask.getValue("description") shouldBe "default description"
   }
 
   it("existing value is preserved when field has it") {
-    val setter = new DefaultValueSetter(Map(GTaskDescriptor.FIELD.DESCRIPTION.name -> "default description").asJava)
+    val rows = List(
+      FieldRow(Field("summary"), Field("summary"), ""),
+      FieldRow(Field("description"), Field("description"), "default description")
+    )
     val originalTask = new GTask
-    originalTask.setDescription("something")
-    val newTask = setter.cloneAndReplaceEmptySelectedFieldsWithDefaultValues(originalTask)
-    newTask.getDescription shouldBe "something"
+    originalTask.setValue("description", "something")
+    val newTask = DefaultValueSetter.adapt(rows, originalTask)
+    newTask.getValue("description") shouldBe "something"
+  }
+
+  // without this creating subtasks won't work, at least in JIRA
+  it("parent key is preserved") {
+    val rows = List(
+      FieldRow(Field("summary"), Field("summary"), ""),
+    )
+    val task = new GTask
+    val identity = TaskId(1, "parent1")
+    task.setParentIdentity(identity)
+    val newTask = DefaultValueSetter.adapt(rows, task)
+    newTask.getParentIdentity shouldBe identity
+  }
+
+  it("Date field type is adapted") {
+    val rows = List(
+      FieldRow(Field.date("Due date"), Field.date("Due date"), ""),
+    )
+    val task = new GTask
+    val date = new Date
+    task.setValue("Due date", date)
+    val newTask = DefaultValueSetter.adapt(rows, task)
+    newTask.getValue("Due date") shouldBe date
   }
 }
 

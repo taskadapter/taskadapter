@@ -1,6 +1,7 @@
 package com.taskadapter.webui.pages;
 
 import com.taskadapter.webui.LastVersionLoader;
+import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.VersionComparator;
 import com.taskadapter.webui.license.LicenseFacade;
 import com.taskadapter.webui.license.LicensePanel;
@@ -20,26 +21,29 @@ public final class SupportPage {
 
     private final String currentTaskAdapterVersion;
     private final LicenseFacade licenseManager;
+    private Tracker tracker;
     private final VerticalLayout layout = new VerticalLayout();
     private final VerticalLayout lastVersionInfoLayout = new VerticalLayout();
 
     private SupportPage(String currentTaskAdapterVersion,
-            LicenseFacade licenseManager) {
+                        LicenseFacade licenseManager,
+                        Tracker tracker) {
         this.currentTaskAdapterVersion = currentTaskAdapterVersion;
         this.licenseManager = licenseManager;
+        this.tracker = tracker;
         buildUI();
     }
 
     private void buildUI() {
         layout.setSpacing(true);
+        addEmailPanel();
         addVersionInfo();
         createLicenseSection();
-        addEmailLink();
     }
 
     private void addVersionInfo() {
         Panel versionPanel = new Panel(message("supportPage.versionInfo"));
-        versionPanel.setWidth(400, Sizeable.Unit.PIXELS);
+        versionPanel.setWidth(600, Sizeable.Unit.PIXELS);
 
         Label currentVersionLabel = new Label(message("supportPage.taskAdapterVersion", currentTaskAdapterVersion));
 
@@ -73,7 +77,7 @@ public final class SupportPage {
     }
 
     private void createLicenseSection() {
-        layout.addComponent(LicensePanel.renderLicensePanel(licenseManager));
+        layout.addComponent(LicensePanel.renderLicensePanel(licenseManager, tracker));
     }
 
     private void addDownloadLink() {
@@ -84,15 +88,18 @@ public final class SupportPage {
         lastVersionInfoLayout.addComponent(downloadLink);
     }
 
-    private void addEmailLink() {
-        Link emailLink = new Link();
-        emailLink.setResource(new ExternalResource("mailto:support@taskadapter.com"));
-        emailLink.setCaption(message("supportPage.sendUsAnEmail"));
-        emailLink.setTargetName("_new");
-        layout.addComponent(emailLink);
+    private void addEmailPanel() {
+        VerticalLayout l = new VerticalLayout();
+        l.setMargin(true);
+        String emailMessage = message("supportPage.sendUsAnEmail");
+        l.addComponent(new Label(emailMessage));
+        l.addComponent(new Label("support@taskadapter.com"));
+        Panel panel = new Panel(message("supportPage.contactPanelTitle"));
+        panel.setContent(l);
+        layout.addComponent(panel);
     }
 
-    public static Component render(String taVersion, LicenseFacade license) {
-        return new SupportPage(taVersion, license).layout;
+    public static Component render(String taVersion, LicenseFacade license, Tracker tracker) {
+        return new SupportPage(taVersion, license, tracker).layout;
     }
 }

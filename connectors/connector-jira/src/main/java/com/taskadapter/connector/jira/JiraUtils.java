@@ -2,6 +2,7 @@ package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
+import com.taskadapter.connector.definition.exception.ForbiddenException;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.NotAuthorizedException;
@@ -31,7 +32,9 @@ public final class JiraUtils {
         if (e.getStatusCode().isPresent() && e.getStatusCode().get().equals(401)) {
             return new NotAuthorizedException();
         }
-
+        if (e.getStatusCode().isPresent() && e.getStatusCode().get().equals(403)) {
+            return new ForbiddenException();
+        }
         String errorMessage = "";
         final Collection<ErrorCollection> errorCollections = e.getErrorCollections();
         for (ErrorCollection collection : errorCollections) {

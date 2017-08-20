@@ -3,14 +3,11 @@ package com.taskadapter.connector.redmine;
 import com.google.common.base.Objects;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.ConnectorConfig;
-import com.taskadapter.connector.definition.WebServerInfo;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class RedmineConfig extends ConnectorConfig {
-
-    static final String DEFAULT_LABEL = "Redmine";
 
     private static final long serialVersionUID = 1L;
     private static final String TASK_TYPE_BUG = "Bug";
@@ -24,8 +21,6 @@ public class RedmineConfig extends ConnectorConfig {
         DEFAULT_PRIORITIES.put("Immediate", 1000);
     }
 
-    private WebServerInfo serverInfo = new WebServerInfo();
-
     private String defaultTaskStatus = "New";
     private boolean findUserByName;
     private Integer queryId;
@@ -33,7 +28,6 @@ public class RedmineConfig extends ConnectorConfig {
 
     public RedmineConfig() {
         super(new HashMap<>(DEFAULT_PRIORITIES));
-        setLabel(DEFAULT_LABEL);
         setDefaultTaskType(TASK_TYPE_BUG);
     }
 
@@ -68,14 +62,6 @@ public class RedmineConfig extends ConnectorConfig {
         } else {
             return false;
         }
-    }
-
-    public WebServerInfo getServerInfo() {
-        return serverInfo;
-    }
-
-    public void setServerInfo(WebServerInfo serverInfo) {
-        this.serverInfo = serverInfo;
     }
 
     public boolean isFindUserByName() {

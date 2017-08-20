@@ -3,6 +3,7 @@ package com.taskadapter.web.configeditor.file;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.FileDownloader;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Upload;
 
 import java.io.File;
@@ -130,7 +131,8 @@ public final class ServerModelFilePanelPresenter {
         if (res.getResultFile() != null) {
             addFileToComboBoxAndSelect(res.getResultFile().getName());
         }
-        view.setStatusLabelText(res.getMessage());
+//        view.setStazztusLabelText(res.getMessage());
+        Notification.show("", res.getMessage(), Notification.Type.TRAY_NOTIFICATION);
         view.setUploadEnabled(true);
     }
 

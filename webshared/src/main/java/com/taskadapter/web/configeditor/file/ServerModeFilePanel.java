@@ -1,15 +1,26 @@
 package com.taskadapter.web.configeditor.file;
 
-import com.taskadapter.web.MessageDialog;
+import com.taskadapter.web.PopupDialog;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.*;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.ProgressIndicator;
+import com.vaadin.ui.Upload;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Runo;
+import scala.runtime.BoxedUnit;
 
 import java.io.File;
-import java.util.Arrays;
 
 public class ServerModeFilePanel extends Panel{
 
@@ -18,7 +29,7 @@ public class ServerModeFilePanel extends Panel{
 
     private static final String TITLE = "Microsoft Project file";
     private static final String COMBOBOX_INPUT_PROMPT = "Select an existing file";
-    public static final String FILE_WILL_GENERATED_HINT = "File will be auto-created on export";
+    static final String FILE_WILL_GENERATED_HINT = "File will be auto-created on export";
 
     static final String COMBOBOX_ITEM_PROPERTY = "name";
     static final String DATE_FORMAT = "d MMM yyyy h:mm:ss a z";
@@ -28,15 +39,10 @@ public class ServerModeFilePanel extends Panel{
     static final String UPLOADING = "Uploading";
     private static final String DELETE_BUTTON_CAPTION = "Delete";
     private static final String QUESTION_DELETE_FILE = "Delete selected file?";
-    private static final String CONFIRMATION_DIALOG_TITLE = "Deleting";
-    private static final String CONFIRMATION_DIALOG_DELETE_BUTTON = "Delete";
     static final String FILE_DELETED_SUCCESS = "File deleted";
     static final String FILE_DELETED_FAILED = "File deletion error";
 
-    private static final int DELETE_FILE_ACTION = 1;
     private static final String COMBOBOX_WIDTH = "175px";
-    private static final String CONFIRMATION_DIALOG_WIDTH = "200px";
-
 
     private Label statusLabel;
     private final ServerModelFilePanelPresenter presenter;
@@ -131,32 +137,16 @@ public class ServerModeFilePanel extends Panel{
 
     private Component createDeleteButton() {
         deleteButton = new Button(DELETE_BUTTON_CAPTION);
-        deleteButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                showConfirmationDialog(QUESTION_DELETE_FILE, DELETE_FILE_ACTION);
-
-            }
-        });
+        deleteButton.addClickListener((Button.ClickListener) event -> showConfirmationDialog(QUESTION_DELETE_FILE));
         return deleteButton;
     }
 
-    private void showConfirmationDialog(String question, final int action) {
-        MessageDialog messageDialog = new MessageDialog(
-                CONFIRMATION_DIALOG_TITLE, question,
-                Arrays.asList(CONFIRMATION_DIALOG_DELETE_BUTTON, MessageDialog.CANCEL_BUTTON_LABEL),
-                new MessageDialog.Callback() {
-                    public void onDialogResult(String answer) {
-                        if (!answer.equals(MessageDialog.CANCEL_BUTTON_LABEL)) {
-                            if (action == DELETE_FILE_ACTION) {
-                                presenter.deleteSelectedFile();
-                            }
-                        }
-                    }
-                }
-        );
-        messageDialog.setWidth(CONFIRMATION_DIALOG_WIDTH);
-        getUI().addWindow(messageDialog);
+    private void showConfirmationDialog(String question) {
+        PopupDialog dialog = PopupDialog.confirm(question, () -> {
+            presenter.deleteSelectedFile();
+            return BoxedUnit.UNIT;
+        });
+        getUI().addWindow(dialog);
     }
 
 

@@ -19,15 +19,15 @@ public class JiraUserConverter {
         this.client = client;
     }
 
-    public List<GTask> convertAssignees(List<GTask> tasks) throws RemoteException {
+  /*  public List<GTask> convertAssignees(List<GTask> tasks) throws RemoteException {
         tasks.stream()
                 .filter(task -> task.getAssignee() != null)
                 .forEach(this::setAssigneeDisplayName);
         return tasks;
-    }
+    }*/
 
     // TODO this will probably fail if the current Jira user is not Admin
-    public GTask setAssigneeDisplayName(GTask task) {
+/*    public GTask setAssigneeDisplayName(GTask task) {
         GUser assignee = task.getAssignee();
         if (assignee != null) {
             String loginName = assignee.getLoginName();
@@ -43,5 +43,5 @@ public class JiraUserConverter {
         }
         return task;
     }
-
+*/
 }

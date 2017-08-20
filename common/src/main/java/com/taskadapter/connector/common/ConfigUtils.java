@@ -85,7 +85,7 @@ public class ConfigUtils {
 		final JsonObject obj = json.getAsJsonObject();
 		
 		for (Map.Entry<String, JsonElement> elem : obj.entrySet()) {
-			final FIELD field = FIELD.valueOf(elem.getKey());
+			final String field = elem.getKey();
 			final JsonObject fmapping = elem.getValue().getAsJsonObject();
 			final boolean useMapping = fmapping.get("selected")
 					.getAsJsonPrimitive().getAsBoolean();

@@ -1,0 +1,9 @@
+{
+  "connectorId" : "Atlassian JIRA",
+  "label" : "JIRA1",
+  "host" : "http://dev.taskadapter.com:10012",
+  "userName" : "user",
+  "password" : "¶cRYeDhlu",
+  "useApiKey": false,
+  "apiKey": "¶eBEUZ3cefyc6Syt4JkcyLHh3FRg3eBt5ITtPeXp1EGJ/eiMdHWJ2Tw=="
+}

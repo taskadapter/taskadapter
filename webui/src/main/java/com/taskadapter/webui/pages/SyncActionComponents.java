@@ -2,13 +2,10 @@ package com.taskadapter.webui.pages;
 
 import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
-import java.util.List;
-
 import com.taskadapter.connector.definition.TaskError;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.webui.Page;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.HorizontalLayout;
@@ -41,8 +38,8 @@ public final class SyncActionComponents {
      *            task errors.
      */
     public static void addErrors(ComponentContainer container,
-            UIConnectorConfig connector, List<Throwable> generalErrors,
-            List<TaskError<Throwable>> taskErrors) {
+            UIConnectorConfig connector, scala.collection.immutable.List<Throwable> generalErrors,
+            scala.collection.immutable.List<TaskError<Throwable>> taskErrors) {
 
         if (generalErrors.isEmpty() && taskErrors.isEmpty())
             return;
@@ -50,13 +47,18 @@ public final class SyncActionComponents {
         container.addComponent(new Label(
                 "There were some problems during export:"));
         String errorText = "";
-        for (Throwable e : generalErrors) {
-            errorText += quot(connector.decodeException(e)) + "<br/>";
+        scala.collection.Iterator<Throwable> generalErrorsIter = generalErrors.iterator();
+        while (generalErrorsIter.hasNext()) {
+            Throwable t = generalErrorsIter.next();
+            errorText += quot(connector.decodeException(t)) + "<br/>\n";
         }
-        for (TaskError<Throwable> error : taskErrors) {
+        scala.collection.Iterator<TaskError<Throwable>> taskErrorsIter = taskErrors.iterator();
+        while (taskErrorsIter.hasNext()) {
+            TaskError<Throwable> error = taskErrorsIter.next();
             errorText += "Task " + error.getTask().getId() + " (\""
-                    + error.getTask().getSummary() + "\"): "
-                    + connector.decodeException(error.getErrors());
+                    + error.getTask() + "\"): <br/>\n"
+                    + connector.decodeException(error.getErrors())
+            + "<br/>\n<br/>\n";
         }
         final Label errorTextLabel = new Label(errorText);
         errorTextLabel.addStyleName("errorMessage");
@@ -128,49 +130,4 @@ public final class SyncActionComponents {
         res.addComponent(loadProgress);
         return res;
     }
-
-    /**
-     * Renders a welcoming message before reading/downloading message.
-     * 
-     * @param htmlMessage
-     *            html-formatted string with the message.
-     * @param onAccepted
-     *            action to perform when user accepts an operation.
-     * @param onCancel
-     *            action to perform when user cancels the operation.
-     * @return download welcome message.
-     */
-    public static Component renderDownloadWelcome(String htmlMessage,
-            final Runnable onAccepted, final Runnable onCancel) {
-        final VerticalLayout res = new VerticalLayout();
-
-        final Label label = new Label(htmlMessage);
-        label.setWidth(800, PIXELS);
-        label.setContentMode(ContentMode.HTML);
-        res.addComponent(label);
-
-        final HorizontalLayout buttonsLayout = new HorizontalLayout();
-        final Button goButton = new Button(Page.message("button.go"));
-        goButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                onAccepted.run();
-            }
-        });
-        buttonsLayout.addComponent(goButton);
-
-        final Button backButton = new Button(Page.message("button.cancel"));
-        backButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                onCancel.run();
-            }
-        });
-        buttonsLayout.addComponent(backButton);
-
-        res.addComponent(buttonsLayout);
-
-        return res;
-    }
-
 }

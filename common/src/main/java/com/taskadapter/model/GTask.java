@@ -1,7 +1,9 @@
 package com.taskadapter.model;
 
+import com.taskadapter.connector.Field;
+import com.taskadapter.connector.definition.TaskId;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,11 +14,11 @@ import java.util.Map;
 final public class GTask {
 
     // TODO REVIEW Why not EnumMap?
-    private final Map<GTaskDescriptor.FIELD, Object> fields = new HashMap<>();
+    private final Map<String, Object> fields = new HashMap<>();
 
     public GTask() {
-        fields.put(GTaskDescriptor.FIELD.CHILDREN, new ArrayList<GTask>());
-        fields.put(GTaskDescriptor.FIELD.RELATIONS, new ArrayList<GRelation>());
+        setValue(GTaskDescriptor.FIELD.CHILDREN, new ArrayList<GTask>());
+        setValue(GTaskDescriptor.FIELD.RELATIONS, new ArrayList<GRelation>());
     }
 
     // TODO REVIEW Have you considered a deep-clone method? It is not that hard, but you have
@@ -32,6 +34,14 @@ final public class GTask {
     }
 
     public Object getValue(GTaskDescriptor.FIELD field) {
+        return getValue(field.name());
+    }
+
+    public Object getValue(Field field) {
+        return getValue(field.name());
+    }
+
+    public Object getValue(String field) {
         return fields.get(field);
     }
 
@@ -40,100 +50,44 @@ final public class GTask {
     //    public <T> void setValue(Field<T> field, T value)
     //    I definitely have shown you this technique (attributes in lpg).
     public void setValue(GTaskDescriptor.FIELD field, Object value) {
+        fields.put(field.name(), value);
+    }
+
+    public void setValue(Field field, Object value) {
+        fields.put(field.name(), value);
+    }
+    public void setValue(String field, Object value) {
         fields.put(field, value);
     }
 
+    public TaskId getIdentity() {
+        return new TaskId(getId(), getKey());
+    }
+
+    /**
+     * Like database ID for Redmine and Jira and Unique ID (row number) for MSP.
+     */
+    public Long getId() {
+        return (Long) getValue(GTaskDescriptor.FIELD.ID);
+    }
+
     /**
      * This is database ID for Redmine and Jira and Unique ID (row number) for MSP.
      */
-    public Integer getId() {
-        return (Integer) fields.get(GTaskDescriptor.FIELD.ID);
+    public void setId(Long id) {
+        setValue(GTaskDescriptor.FIELD.ID, id);
     }
 
-    /**
-     * This is database ID for Redmine and Jira and Unique ID (row number) for MSP.
-     */
-    public void setId(Integer id) {
-        fields.put(GTaskDescriptor.FIELD.ID, id);
+    public TaskId getParentIdentity() {
+        return (TaskId) getValue(GTaskDescriptor.FIELD.PARENT_KEY);
     }
 
-    public String getParentKey() {
-        return (String) fields.get(GTaskDescriptor.FIELD.PARENT_KEY);
+    public TaskId getSourceSystemId() {
+        return (TaskId) getValue(GTaskDescriptor.FIELD.SOURCE_SYSTEM_ID);
     }
 
-    public String getRemoteId() {
-        return (String) fields.get(GTaskDescriptor.FIELD.REMOTE_ID);
-    }
-
-    public void setRemoteId(String remoteId) {
-        fields.put(GTaskDescriptor.FIELD.REMOTE_ID, remoteId);
-    }
-
-    public Integer getPriority() {
-        return (Integer) fields.get(GTaskDescriptor.FIELD.PRIORITY);
-    }
-
-    public void setPriority(Integer priority) {
-        fields.put(GTaskDescriptor.FIELD.PRIORITY, priority);
-    }
-
-    public GUser getAssignee() {
-        return (GUser) fields.get(GTaskDescriptor.FIELD.ASSIGNEE);
-    }
-
-    public void setAssignee(GUser assignee) {
-        fields.put(GTaskDescriptor.FIELD.ASSIGNEE, assignee);
-    }
-
-    public String getSummary() {
-        return (String) fields.get(GTaskDescriptor.FIELD.SUMMARY);
-    }
-
-    public void setSummary(String summary) {
-        fields.put(GTaskDescriptor.FIELD.SUMMARY, summary);
-    }
-
-    public String getDescription() {
-        return (String) fields.get(GTaskDescriptor.FIELD.DESCRIPTION);
-    }
-
-    public void setDescription(String description) {
-        fields.put(GTaskDescriptor.FIELD.DESCRIPTION, description);
-    }
-
-    public Float getEstimatedHours() {
-        return (Float) fields.get(GTaskDescriptor.FIELD.ESTIMATED_TIME);
-    }
-
-    public void setEstimatedHours(Float estimatedHours) {
-        fields.put(GTaskDescriptor.FIELD.ESTIMATED_TIME, estimatedHours);
-    }
-
-    /**
-     * @return %% complete (e.g. "30%")
-     */
-    public Integer getDoneRatio()  {
-        return (Integer) fields.get(GTaskDescriptor.FIELD.DONE_RATIO);
-    }
-
-    public void setDoneRatio(Integer doneRatio) {
-        fields.put(GTaskDescriptor.FIELD.DONE_RATIO, doneRatio);
-    }
-
-    public Date getStartDate() {
-        return (Date) fields.get(GTaskDescriptor.FIELD.START_DATE);
-    }
-
-    public void setStartDate(Date startDate) {
-        fields.put(GTaskDescriptor.FIELD.START_DATE, startDate);
-    }
-
-    public Date getDueDate() {
-        return (Date) fields.get(GTaskDescriptor.FIELD.DUE_DATE);
-    }
-
-    public void setDueDate(Date dueDate) {
-        fields.put(GTaskDescriptor.FIELD.DUE_DATE, dueDate);
+    public void setSourceSystemId(TaskId sourceSystemId) {
+        setValue(GTaskDescriptor.FIELD.SOURCE_SYSTEM_ID, sourceSystemId);
     }
 
     /**
@@ -141,11 +95,14 @@ final public class GTask {
      * @return the list of children of an empty list when no children. never NULL.
      */
     public List<GTask> getChildren() {
-        return (List<GTask>) fields.get(GTaskDescriptor.FIELD.CHILDREN);
+        return (List<GTask>) getValue(GTaskDescriptor.FIELD.CHILDREN);
     }
 
+    public void addChildTask(GTask child) {
+        getChildren().add(child);
+    }
     public void setChildren(List<GTask> children) {
-        fields.put(GTaskDescriptor.FIELD.CHILDREN, children);
+        setValue(GTaskDescriptor.FIELD.CHILDREN, children);
     }
 
     public boolean hasChildren() {
@@ -170,28 +127,12 @@ final public class GTask {
         return result;
     }
 
-    public String getType() {
-        return (String) fields.get(GTaskDescriptor.FIELD.TASK_TYPE);
-    }
-
-    public void setType(String type) {
-        fields.put(GTaskDescriptor.FIELD.TASK_TYPE, type);
-    }
-
-    public String getStatus() {
-        return (String) fields.get(GTaskDescriptor.FIELD.TASK_STATUS);
-    }
-
-    public void setStatus(String status) {
-        fields.put(GTaskDescriptor.FIELD.TASK_STATUS, status);
-    }
-
     /**
      * Some systems like Jira can have string-based "key" like "TEST-1"
      * to identify issues. This is NOT a database identifier.
      */
     public String getKey() {
-        return (String) fields.get(GTaskDescriptor.FIELD.KEY);
+        return (String) getValue(GTaskDescriptor.FIELD.KEY);
     }
 
     /**
@@ -199,68 +140,27 @@ final public class GTask {
      * to identify issues. This is NOT a database identifier.
      */
     public void setKey(String key) {
-        fields.put(GTaskDescriptor.FIELD.KEY, key);
-    }
-
-    public Date getCreatedOn() {
-        return (Date) fields.get(GTaskDescriptor.FIELD.CREATED_ON);
-    }
-
-    public void setCreatedOn(Date createdOn) {
-        fields.put(GTaskDescriptor.FIELD.CREATED_ON, createdOn);
-    }
-
-    public Date getUpdatedOn() {
-        return (Date) fields.get(GTaskDescriptor.FIELD.UPDATED_ON);
-    }
-
-    public void setUpdatedOn(Date updatedOn) {
-        fields.put(GTaskDescriptor.FIELD.UPDATED_ON, updatedOn);
-    }
-    
-    public Date getClosedDate() {
-        return (Date) fields.get(GTaskDescriptor.FIELD.CLOSE_DATE);
-    }
-
-    public void setClosedOn(Date closedOn) {
-        fields.put(GTaskDescriptor.FIELD.CLOSE_DATE, closedOn);
+        setValue(GTaskDescriptor.FIELD.KEY, key);
     }
 
     public List<GRelation> getRelations() {
-        return (List<GRelation>) fields.get(GTaskDescriptor.FIELD.RELATIONS);
+        return (List<GRelation>) getValue(GTaskDescriptor.FIELD.RELATIONS);
     }
 
     public void setRelations(List<GRelation> relations) {
-        fields.put(GTaskDescriptor.FIELD.RELATIONS, relations);
+        setValue(GTaskDescriptor.FIELD.RELATIONS, relations);
     }
 
     @Override
     public String toString() {
-        return "GTask [id=" + getId() + ", key=" + getKey() + ", remoteId=" + getRemoteId()
-                + ", summary=" + getSummary() + "]";
+        return fields.toString();
     }
 
-    public void setParentKey(String parentIssueKey) {
-        fields.put(GTaskDescriptor.FIELD.PARENT_KEY, parentIssueKey);
+    public void setParentIdentity(TaskId parentIssueKey) {
+        setValue(GTaskDescriptor.FIELD.PARENT_KEY, parentIssueKey);
     }
 
-    public String getEnvironment() {
-        return (String) fields.get(GTaskDescriptor.FIELD.ENVIRONMENT);
+    public Map<String, Object> getFields() {
+        return fields;
     }
-
-    public void setEnvironment(String environment) {
-        fields.put(GTaskDescriptor.FIELD.ENVIRONMENT, environment);
-    }
-
-    public String getTargetVersionName() {
-        return (String) fields.get(GTaskDescriptor.FIELD.TARGET_VERSION);
-    }
-
-    /**
-     * @param versionName like "release 1.0"
-     */
-    public void setTargetVersionName(String versionName) {
-        fields.put(GTaskDescriptor.FIELD.TARGET_VERSION, versionName);
-    }
-
 }

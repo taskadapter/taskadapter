@@ -1,5 +1,6 @@
 package com.taskadapter.connector.jira;
 
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.vaadin.data.util.MethodProperty;
@@ -16,10 +17,12 @@ class OtherJiraFieldsPanel extends Panel {
     private static final String SAVE_GROUP_LABEL = "Set when exporting to JIRA";
 
     private final JiraConfig config;
+    private WebConnectorSetup webServerInfo;
     private final ExceptionFormatter exceptionFormatter;
 
-    public OtherJiraFieldsPanel(JiraConfig config, ExceptionFormatter exceptionFormatter) {
+    public OtherJiraFieldsPanel(JiraConfig config, WebConnectorSetup webServerInfo, ExceptionFormatter exceptionFormatter) {
         this.config = config;
+        this.webServerInfo = webServerInfo;
         this.exceptionFormatter = exceptionFormatter;
         buildUI();
     }
@@ -46,7 +49,7 @@ class OtherJiraFieldsPanel extends Panel {
                 "Show list of available components on the given server.",
                 "Select component",
                 "List of available components on the server",
-                () -> new JiraConnector(config).getComponents(),
+                () -> new JiraConnector(config, webServerInfo).getComponents(),
                 componentProperty,
                 true, exceptionFormatter
         );
@@ -65,7 +68,7 @@ class OtherJiraFieldsPanel extends Panel {
                 "Show list of available versions",
                 "Select version",
                 "List of available versions",
-                () -> new JiraConnector(config).getVersions(),
+                () -> new JiraConnector(config, webServerInfo).getVersions(),
                 affectedVersionProperty,
                 true,
                 exceptionFormatter
@@ -83,7 +86,7 @@ class OtherJiraFieldsPanel extends Panel {
                 "Show list of available versions",
                 "Select version",
                 "List of available versions",
-                () -> new JiraConnector(config).getVersions(),
+                () -> new JiraConnector(config, webServerInfo).getVersions(),
                 fixForProperty,
                 true, exceptionFormatter
         );
@@ -99,7 +102,7 @@ class OtherJiraFieldsPanel extends Panel {
                 "Show list of available issue types on the JIRA server",
                 "Select issue type",
                 "List of available issue types on the JIRA server",
-                () -> new JiraConnector(config).getAllIssueTypes(),
+                () -> new JiraConnector(config, webServerInfo).getAllIssueTypes(),
                 defaultTaskTypeProperty,
                 true,
                 exceptionFormatter
@@ -116,7 +119,7 @@ class OtherJiraFieldsPanel extends Panel {
                 "Show list of available subtask types on the JIRA server",
                 "Select a subtask type",
                 "List of available subtask types on the JIRA server",
-                () -> new JiraConnector(config).getIssueTypesForSubtasks(),
+                () -> new JiraConnector(config, webServerInfo).getIssueTypesForSubtasks(),
                 defaultIssueTypeForSubtasksProperty,
                 true,
                 exceptionFormatter

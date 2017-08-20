@@ -5,10 +5,10 @@ import static com.taskadapter.webui.Page.message;
 
 import java.util.List;
 
+import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
@@ -54,7 +54,7 @@ public final class UpdateFilePage {
     private final VerticalLayout content;
 
     private UpdateFilePage(ConfigOperations configOps, UISyncConfig config,
-            int taskLimit, Runnable onDone) {
+                           int taskLimit, Runnable onDone) {
         this.config = config;
         this.onDone = onDone;
         this.taskLimit = taskLimit;
@@ -69,16 +69,9 @@ public final class UpdateFilePage {
 
         content = new VerticalLayout();
         ui.addComponent(content);
-
-        final String welcome = message("updatePage.initialText", config.getConnector2().getDestinationLocation());
-
-        setContent(SyncActionComponents.renderDownloadWelcome(welcome,
-                this::startLoading, onDone));
+        startLoading();
     }
 
-    /**
-     * Starts data loading.
-     */
     private void startLoading() {
         setContent(SyncActionComponents.renderLoadIndicator(config
                 .getConnector1()));
@@ -90,9 +83,7 @@ public final class UpdateFilePage {
             @Override
             public void run() {
                 try {
-                    final List<GTask> tasks = config
-                            .loadTasksForUpdate(ProgressMonitorUtils
-                                    .DUMMY_MONITOR);
+                    final List<GTask> tasks = config.loadTasksForUpdate();
                     if (tasks.isEmpty())
                         showNoDataLoaded();
                     else
@@ -286,7 +277,8 @@ public final class UpdateFilePage {
      * @return operation UI.
      */
     public static Component render(ConfigOperations configOps,
-            UISyncConfig config, int maxTasks, Runnable onExit) {
+                                   UISyncConfig config,
+                                   int maxTasks, Runnable onExit) {
         return new UpdateFilePage(configOps, config, maxTasks, onExit).ui;
     }
 

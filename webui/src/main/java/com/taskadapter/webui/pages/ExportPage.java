@@ -6,19 +6,19 @@ import static com.taskadapter.webui.Page.message;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
+import com.google.common.base.Strings;
+import com.taskadapter.connector.definition.SaveResult;
+import com.taskadapter.webui.Tracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.taskadapter.connector.definition.TaskError;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.web.configeditor.file.FileDownloadResource;
 import com.taskadapter.web.uiapi.UISyncConfig;
-import com.taskadapter.web.uiapi.UISyncConfig.TaskExportResult;
 import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.MonitorWrapper;
 import com.taskadapter.webui.Page;
@@ -39,12 +39,13 @@ import com.vaadin.ui.VerticalLayout;
  * 
  */
 public final class ExportPage {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExportPage.class);
+    private static final Logger log = LoggerFactory.getLogger(ExportPage.class);
 
     /**
      * Config operations.
      */
     private final ConfigOperations configOps;
+    private Tracker tracker;
 
     /**
      * Sync config.
@@ -66,17 +67,18 @@ public final class ExportPage {
      */
     private final boolean showFilePath;
 
-    private final VerticalLayout ui;
+    public final VerticalLayout ui;
     private final Label errorMessage;
     private final VerticalLayout content;
 
-    private ExportPage(ConfigOperations configOps, UISyncConfig config,
-            int taskLimit, boolean showFilePath, Runnable onDone) {
+    public ExportPage(ConfigOperations configOps, UISyncConfig config,
+                       int taskLimit, boolean showFilePath, Runnable onDone, Tracker tracker) {
         this.config = config;
         this.onDone = onDone;
         this.taskLimit = taskLimit;
         this.showFilePath = showFilePath;
         this.configOps = configOps;
+        this.tracker = tracker;
 
         ui = new VerticalLayout();
         errorMessage = new Label("");
@@ -87,13 +89,7 @@ public final class ExportPage {
 
         content = new VerticalLayout();
         ui.addComponent(content);
-
-        final String welcome = Page.message("export.willLoadDataFrom",
-                config.getConnector1().getSourceLocation(),
-                config.getConnector1().getLabel());
-
-        setContent(SyncActionComponents.renderDownloadWelcome(welcome,
-                this::startLoading, onDone));
+        startLoading();
     }
 
     /**
@@ -104,13 +100,18 @@ public final class ExportPage {
                 .getConnector1()));
 
         if (taskLimit < Integer.MAX_VALUE)
-            LOGGER.info(TRIAL_MESSAGE);
+            log.info(TRIAL_MESSAGE);
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    final List<GTask> tasks = config.loadTasks(taskLimit);
+                    log.info("Loading from " + config.connector1().getConnectorTypeId()
+                            + " " + config.getConnector1().getSourceLocation());
+                    final List<GTask> tasks = UISyncConfig.loadTasks(config, taskLimit);
+                    log.info("Loaded " + tasks.size() + " tasks");
+                    String labelForTracking = config.connector1().getConnectorTypeId() + " - " + config.getConnector2().getConnectorTypeId();
+                    tracker.trackEvent("export", "loaded_tasks", labelForTracking);
                     if (tasks.isEmpty())
                         showNoDataLoaded();
                     else
@@ -119,14 +120,14 @@ public final class ExportPage {
                     final String message = config.getConnector1()
                             .decodeException(e);
                     showLoadErrorMessage(message);
-                    LOGGER.error("transport error: " + message, e);
+                    log.error("transport error: " + message, e);
                 } catch (ConnectorException e) {
                     showLoadErrorMessage(config.getConnector1()
                             .decodeException(e));
-                    LOGGER.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 } catch (RuntimeException e) {
                     showLoadErrorMessage("Internal error: " + e.getMessage());
-                    LOGGER.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 }
             }
         }).start();
@@ -162,7 +163,7 @@ public final class ExportPage {
     }
 
     /**
-     * Perofrms an export.
+     * Launches export.
      * 
      * @param selectedTasks list of selected tasks.
      */
@@ -193,11 +194,11 @@ public final class ExportPage {
      * @param res
      *            operation result.
      */
-    private void showExportResult(TaskExportResult res) {
+    private void showExportResult(SaveResult res) {
         final VerticalLayout ui = new VerticalLayout();
 
         final VerticalLayout donePanel = new VerticalLayout();
-        donePanel.setWidth("600px");
+        donePanel.setWidth("800px");
         donePanel.setStyleName("export-panel");
 
         // TODO format inside MESSAGES formatter, not here.
@@ -208,40 +209,40 @@ public final class ExportPage {
 
         donePanel.addComponent(label);
 
+        String sourceLocation = config.getConnector1().getSourceLocation();
+        String targetLocation = config.getConnector2().getSourceLocation();
         donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
-                message("export.from"), config.getConnector1().getSourceLocation()));
+                message("export.from"), sourceLocation));
+        donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
+                message("export.to"), targetLocation));
 
-        final String resultFile = res.saveResult.getTargetFileAbsolutePath();
+        log.info("Export completed. Tasks created: " + res.getCreatedTasksNumber()
+        + ". Task updated: " + res.getUpdatedTasksNumber()
+        + " General errors: " + res.getGeneralErrors()
+        + " Task-specific errors: " + res.getTaskErrors());
+
+        final String resultFile = res.getTargetFileAbsolutePath();
         if (resultFile != null && !showFilePath) {
             donePanel.addComponent(createDownloadButton(resultFile));
         }
 
         donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
                 message("export.createdTasks"),
-                String.valueOf(res.saveResult.getCreatedTasksNumber())));
+                String.valueOf(res.getCreatedTasksNumber())));
         donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
                 message("export.updatedTasks"),
-                String.valueOf(res.saveResult.getUpdatedTasksNumber())
+                String.valueOf(res.getUpdatedTasksNumber())
                         + "<br/><br/>"));
 
-        if (resultFile != null && showFilePath) {
+        if (!Strings.isNullOrEmpty(resultFile) && showFilePath) {
             final Label flabel = new Label(Page.message("export.pathToExportFile", resultFile));
             flabel.setContentMode(ContentMode.HTML);
             donePanel.addComponent(flabel);
         }
 
         SyncActionComponents.addErrors(donePanel, config.getConnector2(),
-                res.saveResult.getGeneralErrors(),
-                res.saveResult.getTaskErrors());
-        if (res.remoteIdUpdateException != null)
-            SyncActionComponents
-                    .addErrors(
-                            donePanel,
-                            config.getConnector1(),
-                            Collections
-                                    .<Throwable> singletonList(res.remoteIdUpdateException),
-                            Collections.<TaskError<Throwable>> emptyList());
-
+                res.getGeneralErrors(),
+                res.getTaskErrors());
         ui.addComponent(donePanel);
 
         final Button button = new Button(message("action.acknowledge"));
@@ -252,6 +253,8 @@ public final class ExportPage {
             }
         });
         ui.addComponent(button);
+        String labelForTracking = config.connector1().getConnectorTypeId() + " - " + config.getConnector2().getConnectorTypeId();
+        tracker.trackEvent("export", "finished_saving", labelForTracking);
 
         VaadinSession.getCurrent().lock();
         try {
@@ -326,32 +329,8 @@ public final class ExportPage {
         errorMessage.setVisible(haveMessage);
     }
 
-    /**
-     * Sets new page content.
-     * 
-     * @param comp
-     *            page content.
-     */
     private void setContent(Component comp) {
         content.removeAllComponents();
         content.addComponent(comp);
-    }
-
-    /**
-     * Renders an export page.
-     * 
-     * @param configOps
-     *            config operations.
-     * @param config
-     *            config to export.
-     * @param onDone
-     *            "done" handler.
-     * @return UI component.
-     */
-    public static Component render(ConfigOperations configOps,
-            UISyncConfig config, int taskLimit, boolean showFilePath,
-            Runnable onDone) {
-        return new ExportPage(configOps, config, taskLimit, showFilePath,
-                onDone).ui;
     }
 }

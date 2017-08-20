@@ -2,5 +2,14 @@ dependencies {
     compile libraries.commonsCodec
     compile libraries.gson
 
+    compile libraries.slf4j
+    compile libraries.slf4jBindingLibrary
+    compile libraries.log4j
+
+    compile "io.circe:circe-core_2.12:$circeVersion"
+    compile "io.circe:circe-generic_2.12:$circeVersion"
+    compile "io.circe:circe-parser_2.12:$circeVersion"
+
+    testCompile project(":test-utilities")
     testCompile libraries.festassert
 }

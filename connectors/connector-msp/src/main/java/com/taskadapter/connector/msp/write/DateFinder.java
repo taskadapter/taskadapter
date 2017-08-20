@@ -1,18 +1,18 @@
 package com.taskadapter.connector.msp.write;
 
-import com.taskadapter.model.GTask;
+import net.sf.mpxj.Task;
 
 import java.util.Date;
 import java.util.List;
 
-public final class DateFinder {
+public class DateFinder {
     /**
      * @return NULL if no tasks have start dates set
      */
-    static Date findEarliestStartDate(List<GTask> tasks) {
+    public static Date findEarliestStartDate(List<Task> tasks) {
         Date earliestDate = null;
-        for (GTask gTask : tasks) {
-            final Date taskStartDate = gTask.getStartDate();
+        for (Task t : tasks) {
+            Date taskStartDate = t.getStart();
             if (taskStartDate == null)
                 continue;
             if (earliestDate == null || earliestDate.after(taskStartDate)) {

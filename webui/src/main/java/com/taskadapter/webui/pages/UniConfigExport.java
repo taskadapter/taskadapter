@@ -22,6 +22,7 @@ import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.themes.ValoTheme;
 
 import static com.vaadin.server.Sizeable.Unit.PERCENTAGE;
 import static com.vaadin.server.Sizeable.Unit.PIXELS;
@@ -31,6 +32,8 @@ import static com.vaadin.server.Sizeable.Unit.PIXELS;
  *
  */
 final class UniConfigExport {
+
+    static int width = 300;
 
     /**
      * Unified config export callback.
@@ -94,15 +97,17 @@ final class UniConfigExport {
     }
 
     private static Label createLabel(UIConnectorConfig connector) {
-        final Label res = new Label(connector.getLabel());
+        final Label res = new Label(connector.getConnectorSetup().label());
         res.setWidth(100, PERCENTAGE);
+        res.addStyleName(ValoTheme.LABEL_H3);
         return res;
     }
 
     private static Component renderSimple(UISyncConfig config,
             final Callback callback) {
         final HorizontalLayout res = new HorizontalLayout();
-        res.setWidth(274, PIXELS);
+        res.setWidth(width, PIXELS);
+        res.setHeight(65, PIXELS);
 
         final String validationFailure = getValidationError(config);
         final boolean isValid = validationFailure == null;
@@ -198,7 +203,7 @@ final class UniConfigExport {
     public static Component render(UISyncConfig config, final Callback callback) {
         final HorizontalLayout layout = new HorizontalLayout();
         final Component regularExportBox = renderSimple(config, callback);
-        layout.setWidth(274, PIXELS);
+        layout.setWidth(width, PIXELS);
         try {
             final String validationFailure = getDropInValidationError(config);
             final boolean isValid = validationFailure == null;
@@ -211,7 +216,7 @@ final class UniConfigExport {
             }
             
             dropLabel.setWidth(32, PIXELS);
-            regularExportBox.setWidth(274 - 32, PIXELS);
+            regularExportBox.setWidth(width - 32, PIXELS);
             
             if (config.isReversed()) {
                 layout.addComponent(regularExportBox);
@@ -229,7 +234,7 @@ final class UniConfigExport {
                 return wrapDropArea(callback, layout);
             }
         } catch (DroppingNotSupportedException e) {
-            regularExportBox.setWidth(274, PIXELS);
+            regularExportBox.setWidth(width, PIXELS);
             layout.addComponent(regularExportBox);
         }
         return layout;

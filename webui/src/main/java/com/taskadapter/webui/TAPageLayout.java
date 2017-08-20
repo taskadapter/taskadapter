@@ -17,7 +17,7 @@ import com.vaadin.ui.VerticalLayout;
  */
 public final class TAPageLayout {
 
-    private static final String MAIN_WIDTH = "900px";
+    private static final String MAIN_WIDTH = "1024px";
 
     /**
      * Layouts a page.

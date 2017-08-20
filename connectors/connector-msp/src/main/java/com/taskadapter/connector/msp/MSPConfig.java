@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MSPConfig extends ConnectorConfig {
-    private static final long serialVersionUID = 1L;
 
     private static final Map<String, Integer> DEFAULT_PRIORITIES = new HashMap<>();
     static {
@@ -20,100 +19,13 @@ public class MSPConfig extends ConnectorConfig {
     // TODO this is a UI element. move it to UI layer
     static final String DEFAULT_LABEL = "Microsoft Project";
 
-    private String inputAbsoluteFilePath = "";
-    private String outputAbsoluteFilePath = "";
-
-    // TODO these seem unused. delete them?
-    public static final String DEFAULT_OUTPUT_FILE_NAME = "MSP_export_";
-    public static final String DEFAULT_OUTPUT_SUFFIX = ".xml";
-
-
     public MSPConfig() {
         super(DEFAULT_PRIORITIES);
-        setLabel(DEFAULT_LABEL);
-    }
-
-    /**
-     * @param absoluteFilePath absolute path to the MSP file name
-     */
-    public MSPConfig(String absoluteFilePath) {
-        super(DEFAULT_PRIORITIES);
-        this.inputAbsoluteFilePath = absoluteFilePath;
-        this.outputAbsoluteFilePath = absoluteFilePath;
         setLabel(DEFAULT_LABEL);
     }
 
     public MSPConfig(MSPConfig configToDeepClone) {
         super(configToDeepClone);
         setLabel(configToDeepClone.getLabel());
-
-        this.inputAbsoluteFilePath = configToDeepClone.getInputAbsoluteFilePath();
-        this.outputAbsoluteFilePath = configToDeepClone.getOutputAbsoluteFilePath();
-    }
-
-    /**
-     * @return absolute path to the MSP file name
-     */
-    public String getInputAbsoluteFilePath() {
-        return inputAbsoluteFilePath;
-    }
-
-    /**
-     * @param fileName absolute path to the MSP file name
-     */
-    public void setInputAbsoluteFilePath(String fileName) {
-        this.inputAbsoluteFilePath = fileName;
-    }
-
-    /**
-     * @return absolute path to the MSP file name
-     */
-    public String getOutputAbsoluteFilePath() {
-        return outputAbsoluteFilePath;
-    }
-
-    /**
-     * @param outputAbsoluteFilePath absolute path to the MSP file name
-     */
-    public void setOutputAbsoluteFilePath(String outputAbsoluteFilePath) {
-        this.outputAbsoluteFilePath = outputAbsoluteFilePath;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result
-                + ((inputAbsoluteFilePath == null) ? 0 : inputAbsoluteFilePath.hashCode());
-        result = prime * result
-                + ((outputAbsoluteFilePath == null) ? 0 : outputAbsoluteFilePath.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        MSPConfig other = (MSPConfig) obj;
-        if (inputAbsoluteFilePath == null) {
-            if (other.inputAbsoluteFilePath != null)
-                return false;
-        } else if (!inputAbsoluteFilePath.equals(other.inputAbsoluteFilePath))
-            return false;
-        if (outputAbsoluteFilePath == null) {
-            if (other.outputAbsoluteFilePath != null)
-                return false;
-        } else if (!outputAbsoluteFilePath.equals(other.outputAbsoluteFilePath))
-            return false;
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "MSPConfig [inputAbsoluteFilePath=" + inputAbsoluteFilePath + ", outputAbsoluteFilePath=" + outputAbsoluteFilePath + "]";
     }
 }

@@ -1,12 +1,13 @@
 package com.taskadapter.webui.pages;
 
 import com.taskadapter.web.uiapi.UISyncConfig;
+import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.Page;
+import com.taskadapter.webui.Sizes;
+import com.taskadapter.webui.Tracker;
 import com.vaadin.event.FieldEvents;
-import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Label;
@@ -20,7 +21,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.vaadin.server.Sizeable.Unit.PERCENTAGE;
 import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
 public final class ConfigsPage {
@@ -31,47 +31,40 @@ public final class ConfigsPage {
     public interface Callback {
         /**
          * User requested to edit config.
-         * 
-         * @param config
-         *            selected config.
+         *
+         * @param config selected config.
          */
         void edit(UISyncConfig config);
 
         /**
          * User requested synchronization in "forward" directions (from left to
          * right).
-         * 
-         * @param config
-         *            config for the operation.
+         *
+         * @param config config for the operation.
          */
         void forwardSync(UISyncConfig config);
 
         /**
          * User requested synchronization in "reverse" direction (from right to
          * left).
-         * 
-         * @param config
-         *            config for the operation.
+         *
+         * @param config config for the operation.
          */
         void backwardSync(UISyncConfig config);
 
         /**
          * Performs a forward drop-in.
-         * 
-         * @param config
-         *            config to use.
-         * @param file
-         *            file to receive.
+         *
+         * @param config config to use.
+         * @param file   file to receive.
          */
         void forwardDropIn(UISyncConfig config, Html5File file);
 
         /**
          * Performs a backward drop-in.
-         * 
-         * @param config
-         *            config to use.
-         * @param file
-         *            file to receive.
+         *
+         * @param config config to use.
+         * @param file   file to receive.
          */
         void backwardDropIn(UISyncConfig config, Html5File file);
 
@@ -140,25 +133,32 @@ public final class ConfigsPage {
 
     }
 
-    private final VerticalLayout layout;
-    private final Collection<UISyncConfig> configs;
+    public VerticalLayout layout;
+    private Tracker tracker;
+    private Collection<UISyncConfig> configs;
+    private Boolean showAll;
     private final DisplayMode displayMode;
     private final Callback callback;
+    private ConfigOperations configOperations;
     private final VerticalLayout configsLayout;
+    TextField filterField = new TextField();
 
-    private ConfigsPage(Collection<UISyncConfig> configs, DisplayMode mode,
-            final Callback callback) {
+    public ConfigsPage(Tracker tracker, Boolean showAll,
+                       final Callback callback, ConfigOperations configOperations) {
 
-        this.configs = configs;
-        this.displayMode = mode;
+        this.tracker = tracker;
+        this.showAll = showAll;
+        this.displayMode = showAll ? ConfigsPage.DisplayMode.ALL_CONFIGS
+                : ConfigsPage.DisplayMode.OWNED_CONFIGS;
         this.callback = callback;
+        this.configOperations = configOperations;
 
         layout = new VerticalLayout();
         layout.setSpacing(true);
         layout.setWidth(560, PIXELS);
 
         final HorizontalLayout actionPanel = new HorizontalLayout();
-        actionPanel.setWidth(100, PERCENTAGE);
+        actionPanel.setWidth(Sizes.configsListWidth());
         layout.addComponent(actionPanel);
 
         final Button addButton = new Button(Page.message("configsPage.buttonNewConfig"));
@@ -167,10 +167,8 @@ public final class ConfigsPage {
         actionPanel.setComponentAlignment(addButton, Alignment.MIDDLE_LEFT);
 
         final HorizontalLayout filterPanel = new HorizontalLayout();
-        TextField filterField = new TextField();
         filterField.addTextChangeListener((FieldEvents.TextChangeListener) event -> filterFields(event.getText()));
         filterPanel.addComponent(new Label(Page.message("configsPage.filter")));
-        filterPanel.addStyleName("filterPanel");
         filterPanel.addComponent(filterField);
         filterPanel.setSpacing(true);
         actionPanel.addComponent(filterPanel);
@@ -179,24 +177,26 @@ public final class ConfigsPage {
         configsLayout = new VerticalLayout();
         configsLayout.setSpacing(true);
         configsLayout.setWidth(560, PIXELS);
-
-        setDisplayedConfigs(configs);
-
+        refreshConfigs();
         layout.addComponent(configsLayout);
     }
 
-    /**
-     * Sets a new displayed configs.
-     * 
-     * @param dispConfigs
-     *            new displayed configs.
-     */
+    private void refreshConfigs() {
+        final List<UISyncConfig> configs = showAll ? configOperations.getManageableConfigs() : configOperations.getOwnedConfigs();
+        final List<UISyncConfig> configsCopy = new ArrayList<>(configs);
+        Collections.sort(configsCopy, new ConfigComparator(configOperations.userName()));
+        this.configs = configsCopy;
+        setDisplayedConfigs(configs);
+        filterFields(filterField.getValue());
+    }
+
     private void setDisplayedConfigs(Collection<UISyncConfig> dispConfigs) {
         configsLayout.removeAllComponents();
 
         for (UISyncConfig config : dispConfigs) {
             configsLayout.addComponent(ConfigActionsPanel.render(config,
-                    displayMode, callback));
+                    displayMode, callback, configOperations, this::refreshConfigs, tracker)
+            );
         }
     }
 
@@ -218,34 +218,12 @@ public final class ConfigsPage {
             final String confName = displayMode.nameOf(config);
             if (!confName.toLowerCase().contains(name)
                     && !config.getConnector1().getLabel().toLowerCase()
-                            .contains(name)
+                    .contains(name)
                     && !config.getConnector2().getLabel().toLowerCase()
-                            .contains(name)) {
+                    .contains(name)) {
                 return false;
             }
         }
         return true;
-    }
-
-    /**
-     * Renders a config page.
-     * 
-     * @param userName
-     *            name of current user.
-     * @param configs
-     *            configs to show.
-     * @param mode
-     *            active display mode.
-     * @param callback
-     *            user action callback.
-     * @return config page UI.
-     */
-    public static Component render(String userName,
-            Collection<UISyncConfig> configs, DisplayMode mode,
-            final Callback callback) {
-        final List<UISyncConfig> configCopy = new ArrayList<>(
-                configs);
-        Collections.sort(configCopy, new ConfigComparator(userName));
-        return new ConfigsPage(configCopy, mode, callback).layout;
     }
 }

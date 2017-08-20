@@ -44,4 +44,9 @@ final class AuthorizedOperationsImpl implements AuthorizedOperations {
         return isAdmin();
     }
 
+    @Override
+    public boolean canAddUsers() {
+        return isAdmin();
+    }
+
 }

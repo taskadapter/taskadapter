@@ -1,11 +1,20 @@
-// Tell Gradle to add Vaadin support
-plugins {
-    id 'fi.jasoft.plugin.vaadin' version '1.1.11'
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.devsoap.plugin:gradle-vaadin-plugin:1.2.0.beta1"
+    }
 }
+
 apply plugin: 'war'
+apply plugin: "com.devsoap.plugin.vaadin"
 
 dependencies {
-    compile 'org.vaadin.addons:googleanalyticstracker:2.0.0'
+    // this library is uploaded to our own Nexus repo because its Maven Central version is broken.
+    compile 'com.taskadapter:googleanalyticstracker:2.2.0'
 
     // this Jar is actually added to the WAR file by the Vaadin Gradle plugin.
     // It is referenced here as a "runtime" dependency because otherwise IDEA does not copy
@@ -15,10 +24,12 @@ dependencies {
     compile libraries.slf4j
     compile project(":webshared")
 
-    compile project(":connectors:connector-msp")
+    compile "io.circe:circe-core_2.12:$circeVersion"
+    compile "io.circe:circe-generic_2.12:$circeVersion"
+    compile "io.circe:circe-parser_2.12:$circeVersion"
 
-    compile project(":connectors-editors:basecamp-editor")
-    compile project(":connectors-editors:basecamp-classic-editor")
+//    compile project(":connectors-editors:basecamp-editor")
+//    compile project(":connectors-editors:basecamp-classic-editor")
     compile project(":connectors-editors:github-editor")
     compile project(":connectors-editors:jira-editor")
     compile project(":connectors-editors:mantis-editor")
@@ -29,9 +40,10 @@ dependencies {
     testCompile libraries.festassert
 }
 
+vaadin.mainSourceSet = sourceSets.main.allSource
 vaadin {
     version = "$vaadinVersion"
-    widgetset = 'com.taskadapter.webui.widgetset.Vaadin1Widgetset'
+//    widgetset = 'com.taskadapter.webui.widgetset.Vaadin1Widgetset'
 }
 
 war {

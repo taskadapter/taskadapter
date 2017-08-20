@@ -1,6 +1,7 @@
 package com.taskadapter.connector.github.editor;
 
-import com.taskadapter.connector.definition.WebServerInfo;
+import com.google.common.base.Strings;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.github.ConnectionFactory;
 import com.taskadapter.connector.github.GithubProjectConverter;
@@ -11,13 +12,12 @@ import org.eclipse.egit.github.core.service.RepositoryService;
 import java.util.List;
 
 public final class GithubLoaders {
-    public static List<GProject> getProjects(WebServerInfo serverInfo) throws ServerURLNotSetException {
-        validateServer(serverInfo);
+    public static List<GProject> getProjects(WebConnectorSetup setup) throws ServerURLNotSetException {
+        validateServer(setup);
         try {
-            final String userName = serverInfo.getUserName();
-            final ConnectionFactory connectionFactory = new ConnectionFactory(serverInfo);
+            final ConnectionFactory connectionFactory = new ConnectionFactory(setup);
             final RepositoryService repositoryService = connectionFactory.getRepositoryService();
-            final List<Repository> repositories = repositoryService.getRepositories(userName);
+            final List<Repository> repositories = repositoryService.getRepositories(setup.userName());
             final GithubProjectConverter converter = new GithubProjectConverter();
             return converter.toGProjects(repositories);
         } catch (Exception e) {
@@ -25,8 +25,8 @@ public final class GithubLoaders {
         }
     }
 
-    private static void validateServer(WebServerInfo serverInfo) throws ServerURLNotSetException {
-        if ((serverInfo.getHost() == null) || (serverInfo.getHost().isEmpty())) {
+    private static void validateServer(WebConnectorSetup setup) throws ServerURLNotSetException {
+        if (Strings.isNullOrEmpty(setup.host())) {
             throw new ServerURLNotSetException();
         }
     }

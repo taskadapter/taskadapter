@@ -9,6 +9,7 @@ import biz.futureware.mantis.rpc.soap.client.MantisConnectPortType;
 import biz.futureware.mantis.rpc.soap.client.ProjectData;
 import biz.futureware.mantis.rpc.soap.client.RelationshipData;
 import com.google.common.base.Strings;
+import com.taskadapter.connector.definition.TaskId;
 
 import javax.xml.rpc.ServiceException;
 import java.math.BigInteger;
@@ -276,11 +277,9 @@ public class MantisManager {
     /**
      * Creates a new issue.
      *
-     * @param issue
-     * @return The issue with specified issueId.
-     * @throws RemoteException
+     * @return TaskId of the new issue
      */
-    public BigInteger createIssue(IssueData issue) throws RemoteException, RequiredItemException {
+    public TaskId createIssue(IssueData issue) throws RemoteException, RequiredItemException {
         if (Strings.isNullOrEmpty(issue.getSummary())) {
             throw new RequiredItemException("Required property Summary is empty");
         }
@@ -294,9 +293,8 @@ public class MantisManager {
         }
 
         BigInteger newId = getConnector().mc_issue_add(login, password, issue);
-        issue.setId(newId);
 
-        return newId;
+        return new TaskId(newId.longValue(), newId.longValue()+"");
     }
 
     /**

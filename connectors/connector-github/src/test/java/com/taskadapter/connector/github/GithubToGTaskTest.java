@@ -13,6 +13,6 @@ public class GithubToGTaskTest {
         GithubToGTask toGTask = new GithubToGTask();
         Issue issue = (Issue) TestDataLoader.load("issue.json", Issue.class);
         GTask task = toGTask.toGtask(issue);
-        assertEquals("task 1", task.getSummary());
+        assertEquals("task 1", task.getValue(GithubField.summary()));
     }
 }

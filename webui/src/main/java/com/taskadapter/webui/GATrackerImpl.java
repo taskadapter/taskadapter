@@ -17,4 +17,9 @@ public class GATrackerImpl implements Tracker {
         tracker.trackPageview("/" + name);
     }
 
+    @Override
+    public void trackEvent(String category, String action, String label) {
+        tracker.trackEvent(category, action, label);
+    }
+
 }

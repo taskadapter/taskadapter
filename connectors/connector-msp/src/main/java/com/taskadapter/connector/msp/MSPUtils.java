@@ -1,11 +1,7 @@
 package com.taskadapter.connector.msp;
 
-import com.taskadapter.connector.definition.Mappings;
-import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.msp.write.MSPDefaultFields;
 import com.taskadapter.connector.msp.write.RealWriter;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
-import net.sf.mpxj.ConstraintType;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Resource;
 import net.sf.mpxj.TaskField;
@@ -69,14 +65,6 @@ public class MSPUtils {
         return ((textField1 != null) && textField1.equals(TA_TAG));
     }
 
-    public static boolean useWork(Mappings mappings) throws BadConfigException {
-        String value = mappings.getMappedTo(FIELD.ESTIMATED_TIME);
-        if (value == null) {
-            value = getEstimatedTimeDefaultMapping();
-        }
-        return value.equals(TaskField.WORK.toString());
-    }
-
     public static String[] getTextFieldNamesAvailableForMapping() {
         Set<String> keys = TEXT_FIELDS_MAP.keySet();
         Set<String> copy = new HashSet<>(keys);
@@ -119,29 +107,6 @@ public class MSPUtils {
             return originalName + newExtension;
         }
     }
-
-	public static String[] getEstimatedTimeOptions() {
-	    return new String[]{TaskField.DURATION.toString(), TaskField.WORK.toString()};
-	}
-
-	public static String[] getDueDateOptions() {
-	    return new String[]{TaskField.FINISH.toString(),
-	            TaskField.DEADLINE.toString()};
-	}
-
-	public static String[] getStartDateOptions() {
-	    String[] options = new String[ConstraintType.values().length + 1];
-	    options[0] = MSPUtils.NO_CONSTRAINT;
-	    int i = 1;
-	    for (ConstraintType type : ConstraintType.values()) {
-	        options[i++] = type.name();
-	    }
-	    return options;
-	}
-
-	public static String getDefaultRemoteIdMapping() {
-	    return TaskField.TEXT22.toString();
-	}
 
 	public static String getDefaultTaskType() {
 	    return TaskField.TEXT23.toString();

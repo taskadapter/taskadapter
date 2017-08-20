@@ -1,0 +1,71 @@
+package com.taskadapter.connector.common
+
+import com.taskadapter.connector.definition.TaskId
+import com.taskadapter.connector.testlib.TempFolder
+import com.taskadapter.core.TaskKeeperLocationStorage
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+import org.scalatest.{FunSpec, Matchers}
+
+@RunWith(classOf[JUnitRunner])
+class TaskKeeperLocationStorageTest extends FunSpec with Matchers with TempFolder {
+  it("keeps existing data when called with empty results") {
+    withTempFolder { folder =>
+      val (sourceId, targetId) = createIds(1, 100)
+      TaskKeeperLocationStorage.store(folder, "location1", "location2", Seq((sourceId, targetId)))
+      TaskKeeperLocationStorage.store(folder, "location1", "location2", Seq())
+      val loaded = TaskKeeperLocationStorage.loadTasks(folder, "location1", "location2")
+      loaded.findSourceSystemIdentity(sourceId, "location2") shouldBe Some(targetId)
+    }
+  }
+
+  it("can save and load data") {
+    withTempFolder { folder =>
+      val (sourceId, targetId) = createIds(1, 100)
+      TaskKeeperLocationStorage.store(folder, "location1", "location2", Seq((sourceId, targetId)))
+
+      val loaded = TaskKeeperLocationStorage.loadTasks(folder, "location1", "location2")
+      loaded.findSourceSystemIdentity(sourceId, "location2") shouldBe Some(targetId)
+    }
+  }
+
+  it("adds new results to existing data") {
+    withTempFolder { folder =>
+      val (sourceId, targetId) = createIds(1, 100)
+      TaskKeeperLocationStorage.store(folder, "location1", "location2", Seq((sourceId, targetId)))
+
+      val (anotherSourceId, anotherTargetId) = createIds(2,200)
+      TaskKeeperLocationStorage.store(folder, "location1", "location2", Seq((anotherSourceId, anotherTargetId)))
+
+      val loaded = TaskKeeperLocationStorage.loadTasks(folder, "location1", "location2")
+      loaded.findSourceSystemIdentity(sourceId, "location2") shouldBe Some(targetId)
+      loaded.findSourceSystemIdentity(anotherSourceId, "location2") shouldBe Some(anotherTargetId)
+    }
+  }
+
+  it("skips duplicate elements on append") {
+    withTempFolder { folder =>
+      val (sourceId, targetId) = createIds(1, 100)
+      TaskKeeperLocationStorage.store(folder, "location1", "location2", Seq((sourceId, targetId)))
+      // add the same element again
+      TaskKeeperLocationStorage.store(folder, "location1", "location2", Seq((sourceId, targetId)))
+
+      val loaded = TaskKeeperLocationStorage.loadTasks(folder, "location1", "location2")
+      loaded.mapLeftToRight.keySet.size shouldBe 1
+    }
+  }
+
+  it("finds source Id for reverse operation") {
+    withTempFolder { folder =>
+      val (sourceId, targetId) = createIds(1, 100)
+      TaskKeeperLocationStorage.store(folder, "location1", "location2", Seq((sourceId, targetId)))
+
+      val loaded = TaskKeeperLocationStorage.loadTasks(folder, "location1", "location2")
+      loaded.findSourceSystemIdentity(targetId, "location1") shouldBe Some(sourceId)
+    }
+  }
+
+  def createIds(sourceId: Int, targetId: Int): (TaskId, TaskId) = {
+    (TaskId(sourceId.toLong, "task" + sourceId), TaskId(targetId.toLong, "task" + targetId))
+  }
+}

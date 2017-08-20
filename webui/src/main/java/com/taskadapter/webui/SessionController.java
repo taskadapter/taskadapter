@@ -1,19 +1,19 @@
 package com.taskadapter.webui;
 
-import java.io.File;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.taskadapter.auth.AuthException;
 import com.taskadapter.auth.AuthorizedOperations;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.auth.SecondarizationResult;
-import com.taskadapter.webui.pages.LoginPage;
+import com.taskadapter.config.ConfigStorage;
+import com.taskadapter.web.uiapi.UIConfigService;
+import com.taskadapter.web.uiapi.UIConfigStore;
 import com.taskadapter.webui.pageset.LoggedInPageset;
-import com.taskadapter.webui.pageset.WelcomePageset;
 import com.taskadapter.webui.service.Preservices;
 import com.taskadapter.webui.service.WrongPasswordException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
 
 /**
  * Controller for one (and only one!) user session.
@@ -74,15 +74,23 @@ public final class SessionController {
 
         final SelfManagement selfManagement = new SelfManagement(login,
                 credentialsManager);
+        File userHomeFolder = new File(services.rootDir, login);
         final ConfigOperations configOps = new ConfigOperations(login, ops,
-                credentialsManager, services.uiConfigStore, new File(new File(
-                        services.rootDir, login), "files"));
+                credentialsManager,
+                createStore(services.rootDir),
+                new File(userHomeFolder, "files"));
         final UserContext ctx = new UserContext(login, selfManagement, ops,
                 configOps);
 
         session.pageContainer.setPageContent(LoggedInPageset.createPageset(
                 credentialsManager, services, session.tracker, ctx, session,
                 this::doLogout));
+    }
+
+    private UIConfigStore createStore(File rootFolder) {
+        final ConfigStorage configStorage = new ConfigStorage(rootFolder);
+        return new UIConfigStore(
+                new UIConfigService(services.pluginManager, services.editorManager), configStorage);
     }
 
     /**
@@ -111,6 +119,7 @@ public final class SessionController {
         }
         CookiesManager.expireCookie(PERM_AUTH_USER_COOKIE_NAME);
         CookiesManager.expireCookie(PERM_AUTH_KEY_COOKIE_NAME);
+        session.clearCurrentConfig();
         showLogin();
     }
 

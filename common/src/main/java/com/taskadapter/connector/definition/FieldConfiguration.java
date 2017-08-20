@@ -72,7 +72,7 @@ final class FieldConfiguration {
      * Returns a "selected by default" flag.
      * @return "selected by default" flag.
      */
-    boolean isSelectedByDefault() {
+    public boolean isSelectedByDefault() {
         return selectedByDefault;
     }
 

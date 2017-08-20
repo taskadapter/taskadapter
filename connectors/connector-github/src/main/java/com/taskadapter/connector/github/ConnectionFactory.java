@@ -1,6 +1,6 @@
 package com.taskadapter.connector.github;
 
-import com.taskadapter.connector.definition.WebServerInfo;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.IssueService;
 import org.eclipse.egit.github.core.service.RepositoryService;
@@ -11,17 +11,17 @@ public class ConnectionFactory {
     private RepositoryService repositoryService;
     private UserService userService;
 
-    public ConnectionFactory(WebServerInfo serverInfo) {
-        initServices(serverInfo);
+    public ConnectionFactory(WebConnectorSetup setup) {
+        initServices(setup);
     }
 
-    private void initServices(WebServerInfo serverInfo) {
+    private void initServices(WebConnectorSetup setup) {
         GitHubClient ghClient = new GitHubClient();
-        if (serverInfo.getUserName() != null
-                && serverInfo.getUserName().trim().length() > 0
-                && serverInfo.getPassword() != null
-                && serverInfo.getPassword().trim().length() > 0) {
-            ghClient.setCredentials(serverInfo.getUserName(), serverInfo.getPassword());
+        if (setup.userName() != null
+                && setup.userName().trim().length() > 0
+                && setup.password() != null
+                && setup.password().trim().length() > 0) {
+            ghClient.setCredentials(setup.userName(), setup.password());
         }
         issueService = new IssueService(ghClient);
         repositoryService = new RepositoryService(ghClient);

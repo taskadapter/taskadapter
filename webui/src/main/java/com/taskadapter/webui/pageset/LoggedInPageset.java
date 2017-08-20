@@ -3,22 +3,27 @@ package com.taskadapter.webui.pageset;
 import com.google.common.io.Files;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.config.StorageException;
-import com.taskadapter.connector.definition.Connector;
-import com.taskadapter.connector.definition.FileBasedConnector;
+import com.taskadapter.connector.definition.ConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.license.LicenseManager;
-import com.taskadapter.web.MessageDialog;
 import com.taskadapter.web.service.Sandbox;
+import com.taskadapter.web.uiapi.ConfigId;
+import com.taskadapter.web.uiapi.SetupId;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigureSystemPage;
 import com.taskadapter.webui.Header;
+import com.taskadapter.webui.HeaderMenuBuilder;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.TAPageLayout;
 import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.UserContext;
 import com.taskadapter.webui.WebUserSession;
 import com.taskadapter.webui.config.EditConfigPage;
+import com.taskadapter.webui.config.EditSetupPage;
+import com.taskadapter.webui.config.NewSetupPage;
+import com.taskadapter.webui.config.SetupsListPage;
 import com.taskadapter.webui.license.LicenseFacade;
 import com.taskadapter.webui.pages.ConfigsPage;
 import com.taskadapter.webui.pages.DropInExportPage;
@@ -26,31 +31,29 @@ import com.taskadapter.webui.pages.ExportPage;
 import com.taskadapter.webui.pages.LicenseAgreementPage;
 import com.taskadapter.webui.pages.NewConfigPage;
 import com.taskadapter.webui.pages.SupportPage;
-import com.taskadapter.webui.pages.UpdateFilePage;
+import com.taskadapter.webui.pages.UserProfilePage;
 import com.taskadapter.webui.service.Preservices;
-import com.taskadapter.webui.user.ChangePasswordDialog;
 import com.vaadin.server.StreamVariable;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.themes.BaseTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.Function0;
+import scala.Function1;
+import scala.Option;
+import scala.runtime.BoxedUnit;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.taskadapter.webui.Page.message;
-import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
 /**
  * Pageset for logged-in user.
@@ -58,7 +61,7 @@ import static com.vaadin.server.Sizeable.Unit.PIXELS;
  */
 public class LoggedInPageset {
     private static final int MAX_TASKS_TO_LOAD = Integer.MAX_VALUE;
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoggedInPageset.class);
+    private static final Logger log = LoggerFactory.getLogger(LoggedInPageset.class);
 
     /**
      * Global (app-wide) services.
@@ -127,7 +130,7 @@ public class LoggedInPageset {
         this.logoutCallback = callback;
         this.license = new LicenseFacade(services.licenseManager);
 
-        final Component header = Header.render(this::showHome, createMenu(), createSelfManagementMenu(), license.isLicensed());
+        final Component header = Header.render(this::showConfigsList, createMenu(), createSelfManagementMenu(), license.isLicensed());
 
         ui = TAPageLayout.layoutPage(header, currentComponentArea);
     }
@@ -136,55 +139,29 @@ public class LoggedInPageset {
      * Creates a self-management menu.
      */
     private Component createSelfManagementMenu() {
-        final HorizontalLayout panelForLoggedInUsers = new HorizontalLayout();
-        panelForLoggedInUsers.setSpacing(true);
-
-        final Button logoutButton = new Button(message("headerMenu.logout"));
-        logoutButton.setStyleName(BaseTheme.BUTTON_LINK);
-        logoutButton.addStyleName("personalMenuItem");
-        logoutButton.addClickListener((Button.ClickListener) event -> logoutCallback.run());
-        panelForLoggedInUsers.addComponent(logoutButton);
-
-        Button setPasswordButton = new Button(message("headerMenu.changePassword"));
-        setPasswordButton.setStyleName(BaseTheme.BUTTON_LINK);
-        setPasswordButton.addStyleName("personalMenuItem");
-        setPasswordButton.addClickListener((Button.ClickListener) event -> showChangePasswordDialog());
-        panelForLoggedInUsers.addComponent(setPasswordButton);
-
-        return panelForLoggedInUsers;
+        HorizontalLayout layout = new HorizontalLayout(
+                HeaderMenuBuilder.createButton(
+                message("headerMenu.userProfile"),
+                this::showUserProfilePage));
+        layout.setSpacing(true);
+        return layout;
     }
 
-    /**
-     * Attempts to change password for the current user.
-     */
-    private void showChangePasswordDialog() {
-        ChangePasswordDialog.showDialog(ui.getUI(), context.name,
-                context.selfManagement::changePassword);
+    private void showUserProfilePage() {
+        tracker.trackPage("user_profile");
+        applyUI(new UserProfilePage(context.name, context.selfManagement::changePassword, logoutCallback,
+                showSetupsListPage()).ui());
     }
 
     private Component createMenu() {
         final HorizontalLayout menu = new HorizontalLayout();
         menu.setSpacing(true);
+        menu.addComponent(HeaderMenuBuilder.createButton(
+                message("headerMenu.configure"),
+                this::showSystemConfiguration));
+        menu.addComponent(HeaderMenuBuilder.createButton(message("headerMenu.support"),
+                this::showSupport));
 
-        final Button configureButton = new Button(message("headerMenu.configure"));
-        configureButton.setStyleName(BaseTheme.BUTTON_LINK);
-        configureButton.addStyleName("menu");
-        configureButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                showSystemConfiguration();
-            }
-        });
-        menu.addComponent(configureButton);
-
-        final Button supportButton = ButtonBuilder.createSupportButton();
-        supportButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                showSupport();
-            }
-        });
-        menu.addComponent(supportButton);
         return menu;
     }
 
@@ -193,7 +170,7 @@ public class LoggedInPageset {
      */
     private void showSupport() {
         tracker.trackPage("support");
-        applyUI(SupportPage.render(services.currentTaskAdapterVersion, license));
+        applyUI(SupportPage.render(services.currentTaskAdapterVersion, license, tracker));
     }
 
     /**
@@ -205,6 +182,10 @@ public class LoggedInPageset {
                 this::showHome));
     }
 
+    private void showConfigsList() {
+        clearCurrentConfigInSession();
+        showHome();
+    }
     /**
      * Shows a home page.
      */
@@ -212,21 +193,17 @@ public class LoggedInPageset {
         final boolean showAll = services.settingsManager
                 .adminCanManageAllConfigs()
                 && context.authorizedOps.canManagerPeerConfigs();
-        final List<UISyncConfig> configs = showAll ? context.configOps
-                .getManageableConfigs() : context.configOps.getOwnedConfigs();
 
         if (webUserSession.getCurrentConfig() == null) {
-            showConfigsList(showAll, configs);
+            showConfigsList(showAll);
         } else {
             showConfigEditor(webUserSession.getCurrentConfig(), null);
         }
     }
 
-    private void showConfigsList(boolean showAll, List<UISyncConfig> configs) {
+    private void showConfigsList(boolean showAll) {
         tracker.trackPage("configs_list");
-        Component component = ConfigsPage.render(context.name, configs,
-        showAll ? ConfigsPage.DisplayMode.ALL_CONFIGS
-                : ConfigsPage.DisplayMode.OWNED_CONFIGS,
+        Component component = new ConfigsPage(tracker, showAll,
         new ConfigsPage.Callback() {
             @Override
             public void newConfig() {
@@ -259,17 +236,26 @@ public class LoggedInPageset {
                                        Html5File file) {
                 dropIn(config.reverse(), file);
             }
-        });
+        },
+                context.configOps
+        ).layout;
         applyUI(component);
     }
 
-    /**
-     * Creates a new config.
-     */
     public void createNewConfig() {
         tracker.trackPage("create_config");
-        applyUI(NewConfigPage.render(services.pluginManager, context.configOps,
-                config -> showConfigEditor(config, null)));
+        applyUI(new NewConfigPage(services.editorManager, services.pluginManager, context.configOps, createSandbox(),
+                configId -> {
+                    Option<UISyncConfig> maybeCconfig = context.configOps.getConfig(configId);
+                    UISyncConfig config = maybeCconfig.get();
+                    tracker.trackEvent("config", "created",
+                            config.connector1().getConnectorTypeId() + " - " + config.connector2().getConnectorTypeId());
+                    showConfigEditor(config, null);
+                }).panel());
+    }
+
+    private Sandbox createSandbox() {
+        return new Sandbox(services.settingsManager.isTAWorkingOnLocalMachine(), context.configOps.syncSandbox());
     }
 
     /**
@@ -279,7 +265,36 @@ public class LoggedInPageset {
         tracker.trackPage("system_configuration");
         applyUI(ConfigureSystemPage.render(credentialsManager,
                 services.settingsManager, services.licenseManager.getLicense(),
-                context.authorizedOps));
+                context.authorizedOps, tracker));
+    }
+
+    private Function0<BoxedUnit> showSetupsListPage() {
+        return () -> {
+            tracker.trackPage("setups_list");
+            applyUI(new SetupsListPage(tracker, context.configOps,
+                    showEditSetupPage(), showNewSetupPage()
+            ).ui());
+            return BoxedUnit.UNIT;
+        };
+    }
+
+    private Function1<SetupId, BoxedUnit> showEditSetupPage() {
+        return (setupId) -> {
+            tracker.trackPage("edit_setup");
+            applyUI(new EditSetupPage(context.configOps, services.editorManager, services.pluginManager,
+                    createSandbox(), setupId, showSetupsListPage()
+            ).ui());
+            return BoxedUnit.UNIT;
+        };
+    }
+    private Function0<BoxedUnit> showNewSetupPage() {
+        return () -> {
+            tracker.trackPage("add_setup");
+            applyUI(new NewSetupPage(context.configOps, services.editorManager, services.pluginManager,
+                    createSandbox(), showSetupsListPage()
+            ).ui());
+            return BoxedUnit.UNIT;
+        };
     }
 
     /**
@@ -292,17 +307,34 @@ public class LoggedInPageset {
     }
 
     private Component getConfigEditor(UISyncConfig config, String error) {
-        return EditConfigPage.render(config, context.configOps,
+        ConfigId configId = config.id();
+        EditConfigPage editor = new EditConfigPage(Page.MESSAGES(), tracker, context.configOps,
+                createSandbox(), config,
+                () -> {
+                    Option<UISyncConfig> loadedConfig = context.configOps.getConfig(configId);
+                    sync(loadedConfig.get().reverse());
+                },
+                () -> {
+                    Option<UISyncConfig> loadedConfig = context.configOps.getConfig(configId);
+                    sync(loadedConfig.get());
+                }, this::showConfigsList);
+
+        return editor.getUI();
+
+/*
+        return new EditConfigPage(config, context.configOps,
                 services.settingsManager.isTAWorkingOnLocalMachine(), error,
                 new EditConfigPage.Callback() {
                     @Override
-                    public void forwardSync(UISyncConfig config) {
-                        sync(config);
+                    public void forwardSync(ConfigId configId) {
+                        Option<UISyncConfig> loadedConfig = context.configOps.getConfig(configId);
+                        sync(loadedConfig.get());
                     }
 
                     @Override
-                    public void backwardSync(UISyncConfig config) {
-                        sync(config.reverse());
+                    public void backwardSync(ConfigId configId) {
+                        Option<UISyncConfig> loadedConfig = context.configOps.getConfig(configId);
+                        sync(loadedConfig.get().reverse());
                     }
 
                     @Override
@@ -310,11 +342,11 @@ public class LoggedInPageset {
                         clearCurrentConfigInSession();
                         showHome();
                     }
-                });
+                }, tracker).layout();*/
     }
 
     private void clearCurrentConfigInSession() {
-        webUserSession.setCurrentConfig(null);
+        webUserSession.clearCurrentConfig();
     }
 
     /**
@@ -326,23 +358,15 @@ public class LoggedInPageset {
     private void sync(UISyncConfig config) {
         if (!prepareForConversion(config))
             return;
-        final Connector<?> destinationConnector = config.getConnector2()
-                .createConnectorInstance();
-        if (destinationConnector instanceof FileBasedConnector) {
-            processFile(config, (FileBasedConnector) destinationConnector);
-        } else {
+//        final NewConnector destinationConnector = config.getConnector2().createConnectorInstance();
+        // TODO TA3 file based connector - MSP
+//        if (destinationConnector instanceof FileBasedConnector) {
+//            processFile(config, (FileBasedConnector) destinationConnector);
+//        } else {
             exportCommon(config);
-        }
+//        }
     }
 
-    /**
-     * Performs a drop-in.
-     * 
-     * @param config
-     *            config.
-     * @param file
-     *            dropped file.
-     */
     private void dropIn(final UISyncConfig config, final Html5File file) {
         String fileExtension = Files.getFileExtension(file.getFileName());
         final File df = services.tempFileManager.nextFile(fileExtension);
@@ -390,7 +414,7 @@ public class LoggedInPageset {
 
             @Override
             public void onProgress(StreamingProgressEvent event) {
-                LOGGER.debug("Safely ignoring 'progress' event. We don't need it.");
+                log.debug("Safely ignoring 'progress' event. We don't need it.");
             }
 
             @Override
@@ -414,26 +438,28 @@ public class LoggedInPageset {
         });
     }
 
-    /**
-     * Performs  export.
-     * 
-     * @param config
-     *            config to export.
-     */
     private void exportCommon(UISyncConfig config) {
+        log.info("Starting export from " +
+                config.connector1().getConnectorTypeId() +
+                " (" + config.connector1().getSourceLocation() + ") "
+                + " to " +
+                config.connector2().getConnectorTypeId() +
+                " (" + config.connector2().getDestinationLocation() + ")");
         tracker.trackPage("export_confirmation");
         final int maxTasks = services.licenseManager
                 .isSomeValidLicenseInstalled() ? MAX_TASKS_TO_LOAD
                 : LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
-        applyUI(ExportPage.render(context.configOps, config, maxTasks,
+        log.info("License installed? " + services.licenseManager.isSomeValidLicenseInstalled());
+        applyUI(new ExportPage(context.configOps, config, maxTasks,
                 services.settingsManager.isTAWorkingOnLocalMachine(),
-                this::showHome));
+                this::showHome, tracker).ui);
     }
 
-    private void processFile(final UISyncConfig config,
+    // TODO TA3 file based connector - MSP
+  /*  private void processFile(final UISyncConfig config,
             FileBasedConnector connectorTo) {
         if (!connectorTo.fileExists()) {
-            exportCommon(config);
+            exportCommon(config, exportDirection);
             return;
         }
 
@@ -462,13 +488,12 @@ public class LoggedInPageset {
         if (action.equals(message("export.update"))) {
             startUpdateFile(config);
         } else {
-            exportCommon(config);
+            exportCommon(config, exportDirection);
         }
     }
+*/
 
-    /**
-     * Processes a file action.
-     */
+/*
     private void startUpdateFile(UISyncConfig config) {
         tracker.trackPage("update_file");
         final int maxTasks = services.licenseManager
@@ -477,6 +502,7 @@ public class LoggedInPageset {
         applyUI(UpdateFilePage.render(context.configOps, config, maxTasks,
                 this::showHome));
     }
+*/
 
     /**
      * Prepares config for conversion.
@@ -496,22 +522,23 @@ public class LoggedInPageset {
             return false;
         }
 
-        final boolean updated;
+        ConnectorSetup updated;
         try {
             updated = to.updateForSave(new Sandbox(services.settingsManager.isTAWorkingOnLocalMachine(),
-                    context.configOps.syncSandbox));
+                    context.configOps.syncSandbox()));
         } catch (BadConfigException e) {
             showConfigEditor(config, to.decodeException(e));
             return false;
         }
 
-        // If config was changed - save it
-        if (updated) {
+        // If setup was changed (e.g. a new file name was generated my MSP) - save it
+        if (!updated.equals(to.getConnectorSetup())) {
             try {
-                context.configOps.saveConfig(config);
-            } catch (StorageException e1) {
+                context.configOps.saveSetup(updated, new SetupId(updated.id().get()));
+                to.setConnectorSetup(updated);
+            } catch (Exception e1) {
                 final String message = Page.message("export.troublesSavingConfig", e1.getMessage());
-                LOGGER.error(message, e1);
+                log.error(message, e1);
                 Notification.show(message, Notification.Type.ERROR_MESSAGE);
             }
         }
