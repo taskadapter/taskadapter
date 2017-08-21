@@ -61,7 +61,11 @@ final public class GTask {
     }
 
     public TaskId getIdentity() {
-        return new TaskId(getId(), getKey());
+        Long id = getId();
+        if (id == null) {
+            id = 0L;
+        }
+        return new TaskId(id, getKey());
     }
 
     /**

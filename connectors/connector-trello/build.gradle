@@ -1,0 +1,6 @@
+dependencies {
+    compile libraries.slf4j
+
+    compile libraries.httpclient
+    compile 'com.julienvey.trello:trello-java-wrapper:0.3.2'
+}

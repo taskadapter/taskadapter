@@ -9,6 +9,7 @@ include "common",
         "connectors:connector-github",
         "connectors:connector-mantis",
         "connectors:connector-redmine",
+        "connectors:connector-trello",
 //        "connectors:connector-basecamp-classic",
         "connectors:integration-tests",
 //        "connectors-editors:basecamp-editor",
@@ -17,5 +18,6 @@ include "common",
         "connectors-editors:jira-editor",
         "connectors-editors:mantis-editor",
         "connectors-editors:msp-editor",
-        "connectors-editors:redmine-editor"
+        "connectors-editors:redmine-editor",
+        "connectors-editors:editor-trello"
 
