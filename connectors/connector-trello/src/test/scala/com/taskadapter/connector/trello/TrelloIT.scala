@@ -8,29 +8,33 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
 
 @RunWith(classOf[JUnitRunner])
-class TrelloIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll {
-  val setup = TrelloTestConfig.getSetup
-  val config = TrelloTestConfig.getConfig
-  val api = TrelloApiFactory.createApi(setup.password, setup.apiKey)
+class TrelloIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll with TrelloTestProject {
 
-  def getConnector(): NewConnector = new TrelloConnector(config, setup)
+  def getConnector(boardId: String): NewConnector = {
+    val configWithBoardId = config.copy(boardId = boardId)
+    new TrelloConnector(configWithBoardId, setup)
+  }
 
   it("tasks are created without errors") {
-    val task = buildTask
-    CommonTestChecks.createsTasks(getConnector(), TrelloFieldBuilder.getDefault(),
-      List(task),
-      CommonTestChecks.skipCleanup)
+    withTempBoard { boardId =>
+      val task = buildTask
+      CommonTestChecks.createsTasks(getConnector(boardId), TrelloFieldBuilder.getDefault(),
+        List(task),
+        CommonTestChecks.skipCleanup)
+    }
   }
 
   it("task is created and updated") {
-    CommonTestChecks.taskCreatedAndUpdatedOK("",
-      getConnector(), TrelloFieldBuilder.getDefault(),
-      buildTask, TrelloField.name.name, CommonTestChecks.skipCleanup)
+    withTempBoard { boardId =>
+      CommonTestChecks.taskCreatedAndUpdatedOK("",
+        getConnector(boardId), TrelloFieldBuilder.getDefault(),
+        buildTask, TrelloField.name.name, CommonTestChecks.skipCleanup)
+    }
   }
 
   def buildTask: GTask = {
     val task = GTaskBuilder.withRandom(TrelloField.name)
-    task.setValue(TrelloField.listName, "Stuff to try (this is a list)")
+    task.setValue(TrelloField.listName, "To Do")
     task
   }
 }
