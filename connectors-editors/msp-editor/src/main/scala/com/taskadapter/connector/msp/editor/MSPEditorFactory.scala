@@ -12,7 +12,7 @@ import com.taskadapter.web.configeditor.EditorUtil.propertyInput
 import com.taskadapter.web.configeditor.file.{FileProcessingResult, LocalModeFilePanel, ServerModeFilePanel}
 import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
-import com.taskadapter.web.{ConnectorSetupPanel, DroppingNotSupportedException, PluginEditorFactory}
+import com.taskadapter.web.{ConnectorSetupPanel, PluginEditorFactory}
 import com.vaadin.data.Property
 import com.vaadin.data.util.ObjectProperty
 import com.vaadin.ui._
@@ -47,8 +47,7 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     layout
   }
 
-  override def getEditSetupPanel(sandbox: Sandbox, maybeSetup: Option[FileSetup]) = new ConnectorSetupPanel() {
-    val setup = maybeSetup.getOrElse(FileSetup(MSPConnector.ID, "", "", ""))
+  override def getEditSetupPanel(sandbox: Sandbox, setup: FileSetup) = new ConnectorSetupPanel() {
     val inputFilePath = new ObjectProperty[String](setup.sourceFile)
     val outputFilePath = new ObjectProperty[String](setup.targetFile)
 
@@ -147,4 +146,7 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
   }
 
   override def isWebConnector: Boolean = false
+
+  override def createDefaultSetup(): FileSetup = FileSetup(MSPConnector.ID, None, "My MSP file", "", "")
+
 }

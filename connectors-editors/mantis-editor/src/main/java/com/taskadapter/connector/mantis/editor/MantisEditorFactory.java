@@ -34,8 +34,14 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig, We
     }
 
     @Override
-    public ConnectorSetupPanel getEditSetupPanel(Sandbox sandbox, Option<WebConnectorSetup> setupOption) {
-        return ServerPanelFactory.withLoginAndPassword(MantisConnector.ID(), MantisConnector.ID(), setupOption);
+    public ConnectorSetupPanel getEditSetupPanel(Sandbox sandbox, WebConnectorSetup setup) {
+        return ServerPanelFactory.withLoginAndPassword(MantisConnector.ID(), MantisConnector.ID(), setup);
+    }
+
+    @Override
+    public WebConnectorSetup createDefaultSetup() {
+        return new WebConnectorSetup(MantisConnector.ID(), Option.empty(), "My MantisBT", "http://",
+                "", "", false, "");
     }
 
     @Override

@@ -7,7 +7,6 @@ import scala.util.Random
 trait TrelloTestProject extends FunSpec {
 
   val setup = TrelloTestConfig.getSetup
-  val config = TrelloTestConfig.getConfig
   val client = new TrelloClient(setup.password, setup.apiKey)
 
   def withTempBoard(testCode: String => Any) {

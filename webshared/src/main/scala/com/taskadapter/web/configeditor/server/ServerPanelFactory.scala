@@ -5,8 +5,7 @@ import com.taskadapter.web.ConnectorSetupPanel
 import com.vaadin.data.util.ObjectProperty
 
 object ServerPanelFactory {
-  def withApiKeyAndLoginPassword(connectorId: String, caption: String, setupOption: Option[WebConnectorSetup]): ConnectorSetupPanel = {
-    val setup = getSetup(connectorId, setupOption)
+  def withApiKeyAndLoginPassword(connectorId: String, caption: String, setup: WebConnectorSetup): ConnectorSetupPanel = {
     new ServerPanelWithAPIKey(connectorId, caption,
       new ObjectProperty[String](setup.label),
       new ObjectProperty[String](setup.host),
@@ -17,8 +16,7 @@ object ServerPanelFactory {
     )
   }
 
-  def withLoginAndPassword(connectorId: String, caption: String, setupOption: Option[WebConnectorSetup]): ConnectorSetupPanel = {
-    val setup = getSetup(connectorId, setupOption)
+  def withLoginAndPassword(connectorId: String, caption: String, setup: WebConnectorSetup): ConnectorSetupPanel = {
     new ServerPanel(connectorId, caption,
       new ObjectProperty[String](setup.label),
       new ObjectProperty[String](setup.host),
@@ -27,7 +25,12 @@ object ServerPanelFactory {
     )
   }
 
-  def getSetup(connectorId: String, maybeSetup: Option[WebConnectorSetup]): WebConnectorSetup = {
-    maybeSetup.getOrElse(new WebConnectorSetup(connectorId, None, "", "", "", "", false, ""))
+  def withApiKeyAndToken(connectorId: String, caption: String, setup: WebConnectorSetup): ConnectorSetupPanel = {
+    new ServerPanelWithKeyAndToken(connectorId, caption,
+      new ObjectProperty[String](setup.label),
+      new ObjectProperty[String](setup.host),
+      new ObjectProperty[String](setup.password),
+      new ObjectProperty[String](setup.apiKey)
+    )
   }
 }

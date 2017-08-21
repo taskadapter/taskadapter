@@ -25,7 +25,7 @@ class EditSetupPage(configOperations: ConfigOperations, editorManager: EditorMan
   val setup: ConnectorSetup = configOperations.getSetup(setupId)
 
   val editor: PluginEditorFactory[_, ConnectorSetup] = editorManager.getEditorFactory(setup.connectorId)
-  val editSetupPanel = editor.getEditSetupPanel(sandbox, Some(setup))
+  val editSetupPanel = editor.getEditSetupPanel(sandbox, setup)
   layout.addComponent(editSetupPanel.getUI)
   layout.addComponent(new HorizontalLayout(saveButton, closeButton))
 

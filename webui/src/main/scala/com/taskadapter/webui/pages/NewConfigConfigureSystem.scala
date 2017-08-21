@@ -1,7 +1,7 @@
 package com.taskadapter.webui.pages
 
-import com.taskadapter.connector.definition.{FileSetup, WebConnectorSetup}
-import com.taskadapter.web.ConnectorSetupPanel
+import com.taskadapter.connector.definition.{ConnectorConfig, ConnectorSetup, FileSetup, WebConnectorSetup}
+import com.taskadapter.web.{ConnectorSetupPanel, PluginEditorFactory}
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.SetupId
 import com.taskadapter.webui.Page.message
@@ -36,8 +36,9 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
       }
     }
 
-    val editor = editorManager.getEditorFactory(connectorId)
-    val editSetupPanel = editor.getEditSetupPanel(sandbox, None)
+    val editor: PluginEditorFactory[ConnectorConfig, ConnectorSetup] = editorManager.getEditorFactory(connectorId)
+    val setup: ConnectorSetup = editor.createDefaultSetup()
+    val editSetupPanel = editor.getEditSetupPanel(sandbox, setup)
     val addNewButton = new Button()
     new ChooseOrCreateSetupFragment(setupUiItems, addNewButton, editSetupPanel)
   }

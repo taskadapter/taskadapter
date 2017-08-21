@@ -10,7 +10,9 @@ trait PluginEditorFactory[C <: ConnectorConfig, S <: ConnectorSetup] extends Exc
 
   def isWebConnector: Boolean
 
-  def getEditSetupPanel(sandbox: Sandbox, setup: Option[S]): ConnectorSetupPanel
+  def getEditSetupPanel(sandbox: Sandbox, setup: S): ConnectorSetupPanel
+
+  def createDefaultSetup(): S
 
   /**
     * Validates a connector config for save mode. If validation fails, plugin

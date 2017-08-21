@@ -30,7 +30,8 @@ class NewSetupPage(configOperations: ConfigOperations, editorManager: EditorMana
 
   private def showAddPanelForConnector(connectorId: String): Unit = {
     val editor = editorManager.getEditorFactory(connectorId)
-    val editSetupPanel = editor.getEditSetupPanel(sandbox, None)
+    val setup = editor.createDefaultSetup()
+    val editSetupPanel = editor.getEditSetupPanel(sandbox, setup)
     panelForEditor.removeAllComponents()
     panelForEditor.addComponent(editSetupPanel.getUI)
     val saveButton = new Button(Page.message("newSetupPage.saveButton"))

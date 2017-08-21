@@ -67,8 +67,14 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig, We
     }
 
     @Override
-    public ConnectorSetupPanel getEditSetupPanel(Sandbox sandbox, Option<WebConnectorSetup> setupOption) {
-        return ServerPanelFactory.withLoginAndPassword(GithubConnector.ID(), GithubConnector.ID(), setupOption);
+    public ConnectorSetupPanel getEditSetupPanel(Sandbox sandbox, WebConnectorSetup setup) {
+        return ServerPanelFactory.withLoginAndPassword(GithubConnector.ID(), GithubConnector.ID(), setup);
+    }
+
+    @Override
+    public WebConnectorSetup createDefaultSetup() {
+        return new WebConnectorSetup(GithubConnector.ID(), Option.empty(), "My GitHub", "https://github.com",
+                "", "", false, "");
     }
 
     @Override

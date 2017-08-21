@@ -11,7 +11,7 @@ public class ConnectorConfig implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Priorities priorities;
+    private Priorities priorities;
 
     private String label;
 
@@ -21,6 +21,8 @@ public class ConnectorConfig implements Serializable {
      * Samples: "Bug", "Task", "Feature", "Support"
      */
     private String defaultTaskType;
+
+    public ConnectorConfig(){}
 
     /**
      * Creates a new connector config. This constructor creates a new instance
@@ -50,6 +52,10 @@ public class ConnectorConfig implements Serializable {
         saveIssueRelations = configToDeepClone.getSaveIssueRelations();
         defaultTaskType = configToDeepClone.getDefaultTaskType();
         this.priorities = new Priorities(configToDeepClone.getPriorities());
+    }
+
+    public void setPriorities(Priorities priorities) {
+        this.priorities = priorities;
     }
 
     public boolean getSaveIssueRelations() {

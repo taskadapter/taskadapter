@@ -11,8 +11,8 @@ import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
 class TrelloIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll with TrelloTestProject {
 
   def getConnector(boardId: String): NewConnector = {
-    val configWithBoardId = config.copy(boardId = boardId)
-    new TrelloConnector(configWithBoardId, setup)
+    val config = TrelloTestConfig.getConfig.copy(boardId = boardId)
+    new TrelloConnector(config, setup)
   }
 
   it("tasks are created without errors") {
