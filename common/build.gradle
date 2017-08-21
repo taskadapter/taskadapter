@@ -5,6 +5,7 @@ dependencies {
     compile libraries.slf4j
     compile libraries.slf4jBindingLibrary
     compile libraries.log4j
+    compile libraries.httpclient
 
     compile "io.circe:circe-core_2.12:$circeVersion"
     compile "io.circe:circe-generic_2.12:$circeVersion"

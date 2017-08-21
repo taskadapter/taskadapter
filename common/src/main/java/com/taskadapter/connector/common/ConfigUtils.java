@@ -133,6 +133,7 @@ public class ConfigUtils {
 		final GsonBuilder result = new GsonBuilder();
 		result.registerTypeAdapter(Mappings.class, MAPPINGS_SERIALIZER);
 		result.registerTypeAdapter(Mappings.class, MAPPINGS_PARSER);
+		result.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		return result;
 	}
 

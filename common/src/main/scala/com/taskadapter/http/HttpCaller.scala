@@ -1,4 +1,4 @@
-package com.taskadapter.connector.testlib
+package com.taskadapter.http
 
 import com.taskadapter.connector.common.ConfigUtils
 import org.apache.http.HttpEntity
@@ -11,13 +11,14 @@ object HttpCaller {
   val httpclient = new DefaultHttpClient
   val gson = ConfigUtils.createDefaultGson
 
-  def get(url: String): String = {
+  def get[C](url: String, c: Class[C]): C = {
     val request = new HttpGet(url)
 
     val httpResponse = httpclient.execute(request)
     val responseEntity: HttpEntity = httpResponse.getEntity
     val responseBody = EntityUtils.toString(responseEntity)
-    responseBody
+    val result = gson.fromJson(responseBody, c)
+    result
   }
 
   def post(url: String, obj: String): String = {

@@ -12,12 +12,14 @@ import com.vaadin.ui._
 
 class ServerPanelWithKeyAndToken(connectorId: String, caption: String, val labelProperty: Property[String],
                                  val serverURLProperty: Property[String],
+                                 val userLogin: Property[String],
                                  val apiKeyProperty: Property[String],
                                  val tokenProperty: Property[String]) extends ConnectorSetupPanel {
   val panel = new Panel
   panel.setCaption(caption)
 
   val serverURL = textInput(serverURLProperty)
+  val userLoginInput = textInput(userLogin)
   val apiKeyField = new PasswordField
   val tokenField = new PasswordField
 
@@ -44,11 +46,19 @@ class ServerPanelWithKeyAndToken(connectorId: String, caption: String, val label
     labelField.addStyleName("server-panel-textfield")
     grid.addComponent(labelField, 1, currentRow)
 
+    // server url
     currentRow += 1
     addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.serverUrl")))
     serverURL.addStyleName("server-panel-textfield")
     serverURL.setInputPrompt("http://myserver:3000/some_location")
     addTo(grid, 1, currentRow, Alignment.MIDDLE_LEFT, serverURL)
+
+    // user name
+    currentRow += 1
+    addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.login")))
+    userLoginInput.addStyleName("server-panel-textfield")
+    addTo(grid, 1, currentRow, Alignment.MIDDLE_LEFT, userLoginInput)
+
     val emptyLabelHeight = "10px"
 
     currentRow += 1
@@ -92,7 +102,7 @@ class ServerPanelWithKeyAndToken(connectorId: String, caption: String, val label
   }
 
   override def getResult: WebConnectorSetup = {
-    WebConnectorSetup(connectorId, None, labelProperty.getValue, serverURLProperty.getValue, "",
+    WebConnectorSetup(connectorId, None, labelProperty.getValue, serverURLProperty.getValue, userLogin.getValue,
       apiKeyField.getValue, true, tokenProperty.getValue)
   }
 

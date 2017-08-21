@@ -1,7 +1,7 @@
 package com.taskadapter.connector.trello
 
 import com.julienvey.trello.domain.Board
-import com.taskadapter.connector.testlib.HttpCaller
+import com.taskadapter.http.HttpCaller
 
 class TrelloClient(key: String, token: String) {
   val credentials = s"key=$key&token=$token"
@@ -17,6 +17,12 @@ class TrelloClient(key: String, token: String) {
     val url = baseUrl + s"/boards/$boardId?closed=true&${credentials}"
     val board = HttpCaller.put(url, classOf[Board])
     board
+  }
+
+  def getBoards(memberIdOrLogin: String): Seq[Board] = {
+    val url = baseUrl + s"/members/$memberIdOrLogin/boards?${credentials}"
+    val result = HttpCaller.get(url, classOf[Array[Board]])
+    result
   }
 
 }

@@ -2,7 +2,6 @@ dependencies {
     compile project(':common')
 
     compile libraries.gson
-    compile libraries.httpclient
 
     // yes, this is "compile", not "testCompile" dependency because "test-utilities" module
     // is itself referenced as "testCompile" dependency

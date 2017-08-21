@@ -5,13 +5,10 @@ import java.util
 import com.google.common.base.Strings
 import com.taskadapter.connector.definition.WebConnectorSetup
 import com.taskadapter.connector.definition.exceptions.{BadConfigException, LoginNameNotSpecifiedException, ServerURLNotSetException, UnsupportedConnectorOperation}
-import com.taskadapter.connector.trello.{TrelloConfig, TrelloConnector}
-import com.taskadapter.model.NamedKeyedObject
-import com.taskadapter.web.callbacks.DataProvider
-import com.taskadapter.web.configeditor.ProjectPanel
-import com.taskadapter.web.configeditor.server.ServerPanelFactory
+import com.taskadapter.connector.trello.{TrelloClient, TrelloConfig, TrelloConnector}
+import com.taskadapter.model.{NamedKeyedObject, NamedKeyedObjectImpl}
+import com.taskadapter.web.configeditor.server.{ProjectPanelScala, ServerPanelFactory}
 import com.taskadapter.web.data.Messages
-import com.taskadapter.web.magic.Interfaces
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.{ConnectorSetupPanel, DroppingNotSupportedException, PluginEditorFactory}
 import com.vaadin.data.util.ObjectProperty
@@ -36,11 +33,13 @@ class TrelloEditorFactory extends PluginEditorFactory[TrelloConfig, WebConnector
     val layout = new VerticalLayout
     layout.setWidth(380, PIXELS)
     type C = util.List[_ <: NamedKeyedObject]
-
-    val projectPanel = new ProjectPanel(new ObjectProperty[String](config.boardId),
-      new ObjectProperty[String](config.boardId),
-      Interfaces.fromMethod(classOf[DataProvider[C]], classOf[TrelloConfig], "getProjects", setup), null, null, this)
-    projectPanel.setProjectKeyLabel("Repository ID")
+    val client = new TrelloClient(setup.password, setup.apiKey)
+    val projectPanel = new ProjectPanelScala(new ObjectProperty[String](config.boardId),
+      () => {
+        client.getBoards(setup.userName).map(b => new NamedKeyedObjectImpl(b.getId, b.getName))
+      },
+      this)
+    projectPanel.setProjectKeyLabel("Board Id")
     layout.addComponent(projectPanel)
     layout
   }

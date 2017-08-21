@@ -29,6 +29,7 @@ object ServerPanelFactory {
     new ServerPanelWithKeyAndToken(connectorId, caption,
       new ObjectProperty[String](setup.label),
       new ObjectProperty[String](setup.host),
+      new ObjectProperty[String](setup.userName),
       new ObjectProperty[String](setup.password),
       new ObjectProperty[String](setup.apiKey)
     )
