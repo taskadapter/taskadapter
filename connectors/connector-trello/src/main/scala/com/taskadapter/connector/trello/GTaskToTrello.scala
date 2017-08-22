@@ -7,12 +7,13 @@ import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
 
-class GTaskToTrello(listCache: ListCache) extends ConnectorConverter[GTask, Card] {
+class GTaskToTrello(config:TrelloConfig, listCache: ListCache) extends ConnectorConverter[GTask, Card] {
   val logger = LoggerFactory.getLogger(classOf[GTaskToTrello])
 
   override def convert(source: GTask): Card = {
     val card = new Card
     card.setId(source.getKey)
+    card.setIdBoard(config.boardId)
     source.getFields.asScala.foreach { e =>
       val fieldName = e._1
       val value = e._2
