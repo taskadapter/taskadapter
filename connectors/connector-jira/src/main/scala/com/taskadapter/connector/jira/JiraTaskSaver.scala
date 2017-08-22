@@ -3,7 +3,8 @@ package com.taskadapter.connector.jira
 import java.util
 
 import com.atlassian.jira.rest.client.api.JiraRestClient
-import com.atlassian.jira.rest.client.api.domain.input.LinkIssuesInput
+import com.atlassian.jira.rest.client.api.domain.Issue
+import com.atlassian.jira.rest.client.api.domain.input.{LinkIssuesInput, TransitionInput}
 import com.taskadapter.connector.common.{BasicIssueSaveAPI, RelationSaver}
 import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.connector.definition.exceptions.ConnectorException
@@ -16,12 +17,29 @@ class JiraTaskSaver(val client: JiraRestClient) extends RelationSaver with Basic
   val logger = LoggerFactory.getLogger(classOf[JiraTaskSaver])
 
   @throws[ConnectorException]
-  override def createTask(wrapper: IssueWrapper): TaskId = JiraClientHelper.createTask(client, wrapper.issueInput)
+  override def createTask(wrapper: IssueWrapper): TaskId = {
+    JiraClientHelper.createTask(client, wrapper.issueInput)
+  }
 
   @throws[ConnectorException]
   override def updateTask(wrapper: IssueWrapper): Unit = {
-    val promise = client.getIssueClient.updateIssue(wrapper.key, wrapper.issueInput)
-    promise.claim
+    val existingIssue = client.getIssueClient.getIssue(wrapper.key).claim()
+    client.getIssueClient.updateIssue(wrapper.key, wrapper.issueInput).claim
+
+    val newStatus = wrapper.status
+    val oldStatus = existingIssue.getStatus.getName
+
+    if (newStatus != null && oldStatus != newStatus) {
+      updateStatus(existingIssue, newStatus)
+    }
+  }
+
+  def updateStatus(existingIssue: Issue, newStatus: String) = {
+    val transitions = client.getIssueClient.getTransitions(existingIssue).claim()
+    val transitionInputMaybe = transitions.asScala.find(t=> t.getName == newStatus).map(t => new TransitionInput(t.getId))
+    if (transitionInputMaybe.isDefined) {
+      client.getIssueClient.transition(existingIssue, transitionInputMaybe.get).claim()
+    }
   }
 
   @throws[ConnectorException]

@@ -9,4 +9,10 @@ object JiraFieldBuilder {
       FieldRow(JiraField.assignee, JiraField.assignee, ""),
     )
   }
+
+  def withStatus(): List[FieldRow] = {
+    List(
+      FieldRow(JiraField.status, JiraField.status, "")
+    ) ++ getDefault()
+  }
 }

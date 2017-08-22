@@ -5,7 +5,7 @@ import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.connector.testlib.{CommonTestChecks, TestUtils}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
-import com.taskadapter.model.{GRelation, GTask, GUser, Precedes}
+import com.taskadapter.model._
 import org.fest.assertions.Assertions.assertThat
 import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
@@ -54,11 +54,21 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
   }
 
-  it("task is updated") {
-    CommonTestChecks.taskCreatedAndUpdatedOK(setup.host,
-      connector, JiraFieldBuilder.getDefault(),
-      JiraGTaskBuilder.withSummary(), JiraField.summary.name,
-      id => TestJiraClientHelper.deleteTasks(client, id))
+  describe("Update") {
+    it("task is updated") {
+      CommonTestChecks.taskCreatedAndUpdatedOK(setup.host,
+        connector, JiraFieldBuilder.getDefault(),
+        JiraGTaskBuilder.withSummary(), JiraField.summary.name, "new value",
+        id => TestJiraClientHelper.deleteTasks(client, id))
+    }
+
+    it("changes status to In Progress") {
+      CommonTestChecks.taskCreatedAndUpdatedOK(setup.host,
+        connector, JiraFieldBuilder.withStatus(),
+        GTaskBuilder.withRandom(JiraField.summary),
+        JiraField.status.name, "In Progress",
+        id => TestJiraClientHelper.deleteTasks(client, id))
+    }
   }
 
   it("testGetIssuesByProject") {

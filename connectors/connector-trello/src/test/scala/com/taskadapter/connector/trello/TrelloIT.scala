@@ -29,7 +29,8 @@ class TrelloIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     withTempBoard { boardId =>
       CommonTestChecks.taskCreatedAndUpdatedOK("",
         getConnector(boardId), TrelloFieldBuilder.getDefault(),
-        buildTask, TrelloField.name.name, CommonTestChecks.skipCleanup)
+        buildTask, TrelloField.name.name, "new value",
+        CommonTestChecks.skipCleanup)
     }
   }
 

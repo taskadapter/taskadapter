@@ -60,7 +60,9 @@ object CommonTestChecks extends Matchers {
     cleanup(loadedTask.getIdentity)
   }
 
-  def taskCreatedAndUpdatedOK(targetLocation: String, connector: NewConnector, rows: Seq[FieldRow], task: GTask, fieldToChangeInTest: String,
+  def taskCreatedAndUpdatedOK(targetLocation: String, connector: NewConnector, rows: Seq[FieldRow], task: GTask,
+                              fieldToChangeInTest: String,
+                              newValue: String,
                               cleanup: TaskId => Unit): Unit = {
     // CREATE
     val result = TaskSaver.save(PreviouslyCreatedTasksResolver.empty, connector, "some name", rows, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR)
@@ -70,7 +72,6 @@ object CommonTestChecks extends Matchers {
     val loaded = connector.loadTaskByKey(newTaskId, rows.asJava)
 
     // UPDATE
-    val newValue = "some new text"
     loaded.setValue(fieldToChangeInTest, newValue)
     val resolver = new TaskResolverBuilder(targetLocation).pretend(newTaskId, newTaskId)
     val result2 = TaskSaver.save(resolver, connector, "some name", rows, util.Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR)

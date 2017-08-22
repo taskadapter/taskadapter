@@ -113,7 +113,7 @@ class JiraConnector(config: JiraConfig, setup: WebConnectorSetup) extends NewCon
   })
 
   override def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask], monitor: ProgressMonitor,
-               rows: Iterable[FieldRow]): SaveResult =
+                        rows: Iterable[FieldRow]): SaveResult =
     withJiraRestClient((client: JiraRestClient) => {
     def foo(client: JiraRestClient) = {
       val issueTypeList = loadIssueTypes(client)
@@ -121,8 +121,9 @@ class JiraConnector(config: JiraConfig, setup: WebConnectorSetup) extends NewCon
       val project = projectPromise.claim
       val versions = project.getVersions.asScala
       val components = project.getComponents.asScala
-      /* Need to load Jira server priorities because what we store in the config files is a
-                   * priority name (string), while Jira returns the number value of the issue priority */ val prioritiesPromise = client.getMetadataClient.getPriorities
+      // Need to load Jira server priorities because what we store in the config files is a
+      // priority name (string), while Jira returns the number value of the issue priority
+      val prioritiesPromise = client.getMetadataClient.getPriorities
       val priorities = prioritiesPromise.claim.asScala
 
       val fields = client.getMetadataClient.getFields

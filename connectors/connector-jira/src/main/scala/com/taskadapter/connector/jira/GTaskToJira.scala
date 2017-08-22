@@ -53,13 +53,15 @@ class GTaskToJira(config: JiraConfig,
     if (fixForVersion != null) issueInputBuilder.setFixVersions(ImmutableList.of(fixForVersion))
     if (component != null) issueInputBuilder.setComponents(ImmutableList.of(component))
     val issueInput = issueInputBuilder.build
-    IssueWrapper(task.getKey, issueInput)
+
+    val status = task.getValue(JiraField.status).asInstanceOf[String]
+    IssueWrapper(task.getKey, issueInput, status)
   }
 
   private def processField(issueInputBuilder: IssueInputBuilder, fieldName: String, value: Any) : Unit = {
     fieldName match {
       case JiraField.summary.name => issueInputBuilder.setSummary(value.asInstanceOf[String])
-      case JiraField.status.name => // processed separately due to JIRA API design...
+      case JiraField.status.name => // processed separately, cannot be set to Issue. JIRA API......
       case JiraField.description.name => issueInputBuilder.setDescription(value.asInstanceOf[String])
       case JiraField.dueDate.name => if (value != null) {
         val dueDateTime = new DateTime(value)

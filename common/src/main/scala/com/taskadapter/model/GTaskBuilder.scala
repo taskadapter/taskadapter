@@ -18,6 +18,11 @@ object GTaskBuilder {
 class GTaskBuilder {
   val task = new GTask
 
+  def withField(field: Field, value: Any): GTaskBuilder = {
+    task.setValue(field, value)
+    this
+  }
+
   def withRandom(field: Field): GTaskBuilder = {
     val value = field.typeName match {
       case "Date" => getDateRoundedToMinutes
