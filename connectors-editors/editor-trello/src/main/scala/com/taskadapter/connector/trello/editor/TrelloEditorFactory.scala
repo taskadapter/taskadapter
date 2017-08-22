@@ -4,7 +4,7 @@ import java.util
 
 import com.google.common.base.Strings
 import com.taskadapter.connector.definition.WebConnectorSetup
-import com.taskadapter.connector.definition.exceptions.{BadConfigException, LoginNameNotSpecifiedException, ServerURLNotSetException, UnsupportedConnectorOperation}
+import com.taskadapter.connector.definition.exceptions._
 import com.taskadapter.connector.trello.{TrelloClient, TrelloConfig, TrelloConnector}
 import com.taskadapter.model.{NamedKeyedObject, NamedKeyedObjectImpl}
 import com.taskadapter.web.configeditor.server.{ProjectPanelScala, ServerPanelFactory}
@@ -23,6 +23,7 @@ class TrelloEditorFactory extends PluginEditorFactory[TrelloConfig, WebConnector
   override def formatError(e: Throwable): String = {
     if (e.isInstanceOf[ServerURLNotSetException]) return messages.get("errors.serverURLNotSet")
     if (e.isInstanceOf[LoginNameNotSpecifiedException]) return messages.get("errors.loginNameNotSet")
+    if (e.isInstanceOf[ProjectNotSetException]) return messages.get("errors.boardNotSet")
     if (!e.isInstanceOf[UnsupportedConnectorOperation]) return e.getMessage
     val connEx = e.asInstanceOf[UnsupportedConnectorOperation]
     if ("saveRelations" == connEx.getMessage) return messages.get("errors.unsupported.relations")
@@ -52,6 +53,7 @@ class TrelloEditorFactory extends PluginEditorFactory[TrelloConfig, WebConnector
   override def validateForSave(config: TrelloConfig, serverInfo: WebConnectorSetup): Unit = {
     if (Strings.isNullOrEmpty(serverInfo.host)) throw new ServerURLNotSetException
     if (Strings.isNullOrEmpty(serverInfo.userName)) throw new LoginNameNotSpecifiedException
+    if (Strings.isNullOrEmpty(config.boardId)) throw new ProjectNotSetException
   }
 
   @throws[BadConfigException]
