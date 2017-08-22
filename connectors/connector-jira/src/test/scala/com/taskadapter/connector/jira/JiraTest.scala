@@ -27,11 +27,12 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
 
   logger.info("Running JIRA tests using: " + setup.host)
 
-  it("connector does not fail empty tasks list") {
-    connector.saveData(PreviouslyCreatedTasksResolver.empty, List[GTask]().asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault)
-  }
 
   describe("Create") {
+    it("connector does not fail empty tasks list") {
+      connector.saveData(PreviouslyCreatedTasksResolver.empty, List[GTask]().asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault())
+    }
+
     it("tasks are created without errors") {
       CommonTestChecks.createsTasks(connector, JiraFieldBuilder.getDefault(), JiraGTaskBuilder.getTwo(),
         id => TestJiraClientHelper.deleteTasks(client, id))
@@ -86,7 +87,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
 
   it("testGetIssuesByProject") {
     val tasks = generateTasks
-    connector.saveData(PreviouslyCreatedTasksResolver.empty, tasks.asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault)
+    connector.saveData(PreviouslyCreatedTasksResolver.empty, tasks.asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault())
     val jql = JqlBuilder.findIssuesByProject(config.getProjectKey)
     val issues = JiraClientHelper.findIssues(client, jql)
     assertThat(Iterables.size(issues)).isGreaterThan(1)
@@ -99,7 +100,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     val task2 = list(1)
     task1.getRelations.add(GRelation(TaskId(task1.getId, task1.getKey),
       TaskId(task2.getId, task2.getKey), Precedes))
-    TestUtils.saveAndLoadList(connector, list, JiraFieldBuilder.getDefault)
+    TestUtils.saveAndLoadList(connector, list, JiraFieldBuilder.getDefault())
     val issues = TestJiraClientHelper.findIssuesBySummary(client, task1.getValue(JiraField.summary).asInstanceOf[String])
     val createdIssue1 = issues.iterator.next
     val links = createdIssue1.getIssueLinks
