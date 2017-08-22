@@ -1,5 +1,7 @@
 package com.taskadapter.connector.trello
 
+import java.util.Date
+
 import com.julienvey.trello.domain.{Card, TList}
 import com.taskadapter.connector.common.data.ConnectorConverter
 import com.taskadapter.model.GTask
@@ -25,6 +27,8 @@ class GTaskToTrello(config:TrelloConfig, listCache: ListCache) extends Connector
           val listId = listCache.getListIdByName(listName)
           card.setIdList(listId)
         case TrelloField.name.name => card.setName(value.asInstanceOf[String])
+        case TrelloField.description.name => card.setDesc(value.asInstanceOf[String])
+        case TrelloField.dueDate.name => card.setDue(value.asInstanceOf[Date])
         case _ => logger.warn(s"Unknown field in GTask: $fieldName. Skipping it")
       }
     }
