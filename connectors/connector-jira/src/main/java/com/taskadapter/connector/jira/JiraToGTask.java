@@ -66,6 +66,7 @@ public class JiraToGTask {
         task.setValue(JiraField.taskType(), issue.getIssueType().getName());
         task.setValue(JiraField.summary(), issue.getSummary());
         task.setValue(JiraField.description(), issue.getDescription());
+        task.setValue(JiraField.status(), issue.getStatus().getName());
 
         DateTime dueDate = issue.getDueDate();
         if (dueDate != null) {

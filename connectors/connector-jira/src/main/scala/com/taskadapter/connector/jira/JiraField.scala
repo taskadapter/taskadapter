@@ -15,6 +15,7 @@ object JiraField {
   val summary = Field("Summary")
   val description = Field("Description")
   val taskType = Field("Task Type")
+  val status = Field("Status")
   /* newer JIRA versions (like 6.4.11) does not have "timetracking" field
      enabled for tasks by default. let's unselect this field by default
      to avoid user confusion.
@@ -26,7 +27,7 @@ object JiraField {
   val priority = Field.integer("Priority")
   val id = Field("Id")
 
-  val fields = List(id, summary, description, taskType, estimatedTime, assignee, dueDate, priority)
+  val fields = List(id, summary, status, description, taskType, estimatedTime, assignee, dueDate, priority)
 
   def fieldsAsJava(): util.List[Field] = fields.asJava
 
@@ -36,6 +37,7 @@ object JiraField {
     description -> Description, taskType -> TaskType,
     // estimated time is not a part of standard JIRA 7 anymore
 //    estimatedTime -> EstimatedTime,
+    status -> TaskStatus,
     assignee -> Assignee,
     // removing "Reporter" for now because export to JIRA gives
     // "status=400, errors={reporter=Field 'reporter' cannot be set. It is not on the appropriate screen, or unknown."

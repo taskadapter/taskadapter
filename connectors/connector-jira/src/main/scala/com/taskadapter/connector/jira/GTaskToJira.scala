@@ -59,6 +59,7 @@ class GTaskToJira(config: JiraConfig,
   private def processField(issueInputBuilder: IssueInputBuilder, fieldName: String, value: Any) : Unit = {
     fieldName match {
       case JiraField.summary.name => issueInputBuilder.setSummary(value.asInstanceOf[String])
+      case JiraField.status.name => // processed separately due to JIRA API design...
       case JiraField.description.name => issueInputBuilder.setDescription(value.asInstanceOf[String])
       case JiraField.dueDate.name => if (value != null) {
         val dueDateTime = new DateTime(value)

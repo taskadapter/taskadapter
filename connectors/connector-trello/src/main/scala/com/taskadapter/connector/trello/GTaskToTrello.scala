@@ -22,7 +22,8 @@ class GTaskToTrello(config:TrelloConfig, listCache: ListCache) extends Connector
           card.setIdList(value.asInstanceOf[String])
         case TrelloField.listName.name =>
           val listName = value.asInstanceOf[String]
-          card.setIdList(listCache.getListIdByName(listName))
+          val listId = listCache.getListIdByName(listName)
+          card.setIdList(listId)
         case TrelloField.name.name => card.setName(value.asInstanceOf[String])
         case _ => logger.warn(s"Unknown field in GTask: $fieldName. Skipping it")
       }
