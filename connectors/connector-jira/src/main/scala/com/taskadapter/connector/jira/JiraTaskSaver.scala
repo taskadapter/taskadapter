@@ -18,7 +18,12 @@ class JiraTaskSaver(val client: JiraRestClient) extends RelationSaver with Basic
 
   @throws[ConnectorException]
   override def createTask(wrapper: IssueWrapper): TaskId = {
-    JiraClientHelper.createTask(client, wrapper.issueInput)
+    val taskId = JiraClientHelper.createTask(client, wrapper.issueInput)
+
+    // yes, reload the issue we just created. JIRA API is horrific
+    val existingIssue = client.getIssueClient.getIssue(taskId.key).claim()
+    updateStatusIfNeeded(existingIssue, wrapper.status)
+    taskId
   }
 
   @throws[ConnectorException]
@@ -26,11 +31,13 @@ class JiraTaskSaver(val client: JiraRestClient) extends RelationSaver with Basic
     val existingIssue = client.getIssueClient.getIssue(wrapper.key).claim()
     client.getIssueClient.updateIssue(wrapper.key, wrapper.issueInput).claim
 
-    val newStatus = wrapper.status
-    val oldStatus = existingIssue.getStatus.getName
+    updateStatusIfNeeded(existingIssue, wrapper.status)
+  }
 
-    if (newStatus != null && oldStatus != newStatus) {
-      updateStatus(existingIssue, newStatus)
+  def updateStatusIfNeeded(issue: Issue, requiredStatus: String): Unit = {
+    val oldStatus = issue.getStatus.getName
+    if (requiredStatus != null && oldStatus != requiredStatus) {
+      updateStatus(issue, requiredStatus)
     }
   }
 

@@ -31,27 +31,40 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     connector.saveData(PreviouslyCreatedTasksResolver.empty, List[GTask]().asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault)
   }
 
-  it("tasks are created without errors") {
-    CommonTestChecks.createsTasks(connector, JiraFieldBuilder.getDefault(), JiraGTaskBuilder.getTwo(),
-      id => TestJiraClientHelper.deleteTasks(client, id))
-  }
+  describe("Create") {
+    it("tasks are created without errors") {
+      CommonTestChecks.createsTasks(connector, JiraFieldBuilder.getDefault(), JiraGTaskBuilder.getTwo(),
+        id => TestJiraClientHelper.deleteTasks(client, id))
+    }
 
-  it("assignee and reporter are set") {
-    val userPromise = client.getUserClient.getUser(setup.userName)
-    val jiraUser = userPromise.claim
-    val task = new GTask
-    task.setValue(JiraField.summary, "some")
-    val user = new GUser(null, jiraUser.getName, jiraUser.getDisplayName)
-    task.setValue(JiraField.assignee, user)
-    task.setValue(JiraField.reporter, user)
-    val loadedTask = TestUtils.saveAndLoad(connector, task, JiraFieldBuilder.getDefault())
-    loadedTask.getValue(JiraField.assignee).asInstanceOf[GUser].getLoginName shouldBe jiraUser.getName
-    loadedTask.getValue(JiraField.assignee).asInstanceOf[GUser].getDisplayName shouldBe jiraUser.getDisplayName
+    it("assignee and reporter are set") {
+      val userPromise = client.getUserClient.getUser(setup.userName)
+      val jiraUser = userPromise.claim
+      val task = new GTask
+      task.setValue(JiraField.summary, "some")
+      val user = new GUser(null, jiraUser.getName, jiraUser.getDisplayName)
+      task.setValue(JiraField.assignee, user)
+      task.setValue(JiraField.reporter, user)
+      val loadedTask = TestUtils.saveAndLoad(connector, task, JiraFieldBuilder.getDefault())
+      loadedTask.getValue(JiraField.assignee).asInstanceOf[GUser].getLoginName shouldBe jiraUser.getName
+      loadedTask.getValue(JiraField.assignee).asInstanceOf[GUser].getDisplayName shouldBe jiraUser.getDisplayName
 
-    loadedTask.getValue(JiraField.reporter).asInstanceOf[GUser].getLoginName shouldBe  jiraUser.getName
-    loadedTask.getValue(JiraField.reporter).asInstanceOf[GUser].getDisplayName shouldBe jiraUser.getDisplayName
+      loadedTask.getValue(JiraField.reporter).asInstanceOf[GUser].getLoginName shouldBe jiraUser.getName
+      loadedTask.getValue(JiraField.reporter).asInstanceOf[GUser].getDisplayName shouldBe jiraUser.getDisplayName
 
-    TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
+      TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
+    }
+
+    it("status is set on create") {
+      CommonTestChecks.taskIsCreatedAndLoaded(connector,
+        new GTaskBuilder()
+          .withRandom(JiraField.summary)
+          .withField(JiraField.status, "In Progress")
+          .build(),
+        JiraFieldBuilder.withStatus(),
+        JiraField.status,
+        id => TestJiraClientHelper.deleteTasks(client, id))
+    }
   }
 
   describe("Update") {

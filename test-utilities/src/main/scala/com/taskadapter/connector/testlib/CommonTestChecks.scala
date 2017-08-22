@@ -21,7 +21,7 @@ object CommonTestChecks extends Matchers {
   def taskIsCreatedAndLoaded(connector: NewConnector, task: GTask, rows: Seq[FieldRow], fieldNameToSearch: Field,
                              cleanup: TaskId => Unit): Unit = {
     val tasksQty = 1
-    val expectedSummaryTask1 = task.getValue(fieldNameToSearch)
+    val expectedValue = task.getValue(fieldNameToSearch)
 
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR,
       rows)
@@ -35,7 +35,7 @@ object CommonTestChecks extends Matchers {
 
     val foundTask = TestUtils.findTaskInList(loadedTasks, createdTask1Id)
     foundTask.isDefined shouldBe true
-    assertEquals(expectedSummaryTask1, foundTask.get.getValue(fieldNameToSearch))
+    assertEquals(expectedValue, foundTask.get.getValue(fieldNameToSearch))
     cleanup(createdTask1Id)
   }
 
