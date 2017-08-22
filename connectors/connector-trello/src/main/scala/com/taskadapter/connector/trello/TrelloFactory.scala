@@ -26,5 +26,5 @@ class TrelloFactory extends PluginFactory[TrelloConfig, WebConnectorSetup] {
   @throws[JsonParseException]
   override def readConfig(config: JsonElement): TrelloConfig = ConfigUtils.createDefaultGson.fromJson(config, classOf[TrelloConfig])
 
-  override def createDefaultConfig = TrelloConfig("")
+  override def createDefaultConfig = new TrelloConfig("")
 }

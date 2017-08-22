@@ -8,11 +8,13 @@ object TrelloToGTask {
   def convert(listCache: ListCache, card: Card) : GTask = {
     val task = new GTask()
 
+    val fakeEmptyId = 0L
     val key = card.getId
+    task.setId(fakeEmptyId)
     task.setValue(TrelloField.id, key)
     task.setKey(key)
     // must set source system id, otherwise "update task" is impossible later
-    task.setSourceSystemId(TaskId(0, key))
+    task.setSourceSystemId(TaskId(fakeEmptyId, key))
 
     task.setValue(TrelloField.name, card.getName)
     task.setValue(TrelloField.listId, card.getIdList)

@@ -8,11 +8,11 @@ import scala.collection.JavaConverters._
 
 class TrelloTaskLoader(api: Trello) {
   @throws[ConnectorException]
-  def loadTasks(config: TrelloConfig): Seq[GTask] = {
+  def loadTasks(config: TrelloConfig): List[GTask] = {
     try {
-      val cards = api.getBoardCards(config.boardId).asScala
       val listsCache = new ListCache(api.getBoardLists(config.boardId).asScala)
-      val gtasks = cards.map(c => TrelloToGTask.convert(listsCache, c))
+      val cards = api.getBoardCards(config.boardId).asScala
+      val gtasks = cards.map(c => TrelloToGTask.convert(listsCache, c)).toList
       gtasks
     } catch {
       // TODO Trello process exceptions

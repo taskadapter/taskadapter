@@ -1,6 +1,5 @@
 package com.taskadapter.connector.msp;
 
-import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.definition.FileSetup;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.testlib.ResourceLoader;
@@ -9,7 +8,10 @@ import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Task;
 import scala.Option;
 
+import java.util.Collections;
 import java.util.List;
+
+import static com.taskadapter.model.GTaskUtils.ID_COMPARATOR;
 
 public class MSPTestUtils {
 
@@ -38,7 +40,9 @@ public class MSPTestUtils {
         String fileName = ResourceLoader.getAbsolutePathForResource(fileNameInClasspath);
         FileSetup setup = new FileSetup(MSPConnector.ID, Option.apply("file"), "label", fileName, fileName);
         final MSPConnector connector = new MSPConnector(setup);
-        return ConnectorUtils.loadDataOrderedById(connector);
+        List<GTask> gTasks = connector.loadData();
+        Collections.sort(gTasks, ID_COMPARATOR);
+        return gTasks;
     }
 
     /**

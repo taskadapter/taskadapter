@@ -2,7 +2,6 @@ package com.taskadapter.core;
 
 import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.NewConnector;
-import com.taskadapter.connector.common.ConnectorUtils;
 import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.FileBasedConnector;
 import com.taskadapter.connector.definition.ProgressMonitor;
@@ -10,7 +9,10 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static com.taskadapter.model.GTaskUtils.ID_COMPARATOR;
 
 public class Updater {
 
@@ -33,7 +35,9 @@ public class Updater {
     }
 
     public void loadTasks() throws ConnectorException {
-        this.existingTasks = ConnectorUtils.loadDataOrderedById(sourceConnector);
+        List<GTask> gTasks = sourceConnector.loadData();
+        Collections.sort(gTasks, ID_COMPARATOR);
+        this.existingTasks = gTasks;
     }
 
     public void loadExternalTasks() throws ConnectorException {

@@ -11,7 +11,7 @@ import com.taskadapter.web.configeditor.server.{ProjectPanelScala, ServerPanelFa
 import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.{ConnectorSetupPanel, DroppingNotSupportedException, PluginEditorFactory}
-import com.vaadin.data.util.ObjectProperty
+import com.vaadin.data.util.{MethodProperty, ObjectProperty}
 import com.vaadin.server.Sizeable.Unit.PIXELS
 import com.vaadin.ui.{ComponentContainer, VerticalLayout}
 
@@ -34,7 +34,8 @@ class TrelloEditorFactory extends PluginEditorFactory[TrelloConfig, WebConnector
     layout.setWidth(380, PIXELS)
     type C = util.List[_ <: NamedKeyedObject]
     val client = new TrelloClient(setup.password, setup.apiKey)
-    val projectPanel = new ProjectPanelScala(new ObjectProperty[String](config.boardId),
+//    val projectPanel = new ProjectPanelScala(new ObjectProperty[String](config.boardId),
+    val projectPanel = new ProjectPanelScala(new MethodProperty[String](config, "boardId"),
       () => {
         client.getBoards(setup.userName).map(b => new NamedKeyedObjectImpl(b.getId, b.getName))
       },

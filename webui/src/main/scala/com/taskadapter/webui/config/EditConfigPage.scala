@@ -100,8 +100,6 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
   }
 
   private def createConfigureConnectorButton(connectorConfig: UIConnectorConfig, sandbox: Sandbox): Component = {
-    val caption = Page.message("editConfig.configureConnector", connectorConfig.getLabel, connectorConfig.getConnectorTypeId)
-    val labelProperty = new ObjectProperty[String](connectorConfig.getConnectorSetup.label)
     val iconResource = ImageLoader.getImage("edit.png")
     val button = new Button(connectorConfig.getLabel)
     button.addStyleName(ValoTheme.BUTTON_LARGE)

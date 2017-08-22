@@ -3,12 +3,12 @@ package com.taskadapter.connector.testlib
 import java.util
 import java.util.{Calendar, Date}
 
-import com.taskadapter.connector.common.{ConnectorUtils, ProgressMonitorUtils}
-import com.taskadapter.connector.definition.{SaveResult, TaskId}
+import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.exceptions.ConnectorException
+import com.taskadapter.connector.definition.{SaveResult, TaskId}
 import com.taskadapter.connector.{Field, FieldRow, NewConnector}
 import com.taskadapter.core.{PreviouslyCreatedTasksResolver, TaskLoader}
-import com.taskadapter.model.{FieldRowBuilder, GTask}
+import com.taskadapter.model.GTask
 
 import scala.collection.JavaConverters._
 
@@ -59,13 +59,13 @@ object TestUtils {
   @throws[ConnectorException]
   def saveAndLoadAll(connector: NewConnector, task: GTask, rows: List[FieldRow]): List[GTask] = {
     connector.saveData(PreviouslyCreatedTasksResolver.empty, List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows)
-    ConnectorUtils.loadDataOrderedById(connector).asScala.toList
+    connector.loadData().asScala.sortBy(_.getId).toList
   }
 
   @throws[ConnectorException]
   def saveAndLoadList(connector: NewConnector, tasks: Seq[GTask], rows: Seq[FieldRow]): List[GTask] = {
     connector.saveData(PreviouslyCreatedTasksResolver.empty, tasks.asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows)
-    ConnectorUtils.loadDataOrderedById(connector).asScala.toList
+    connector.loadData().asScala.sortBy(_.getId).toList
   }
 
   @throws[ConnectorException]
