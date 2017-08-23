@@ -18,6 +18,7 @@ object TrelloToGTask {
 
     task.setValue(TrelloField.name, card.getName)
     task.setValue(TrelloField.dueDate, card.getDue)
+    task.setValue(TrelloField.updatedOn, card.getDateLastActivity)
     task.setValue(TrelloField.description, card.getDesc)
     task.setValue(TrelloField.listId, card.getIdList)
     task.setValue(TrelloField.listName, listCache.getListNameById(card.getIdList))

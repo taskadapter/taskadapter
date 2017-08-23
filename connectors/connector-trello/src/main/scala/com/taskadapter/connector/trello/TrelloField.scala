@@ -9,7 +9,6 @@ object TrelloField {
   val description = Field("Description")
 
   val dueDate = Field.date("Due Date")
-  val createdOn = Field.date("Created On")
   val updatedOn = Field.date("Updated On")
   val listId = Field("List Id")
   val listName = Field("List name")
@@ -18,7 +17,6 @@ object TrelloField {
     name,
     description,
     dueDate,
-    createdOn,
     updatedOn,
     listId,
     listName)
@@ -28,7 +26,6 @@ object TrelloField {
   def suggestedStandardFields = Map(
     name -> Summary, description -> Description,
     dueDate -> DueDate,
-    createdOn -> CreatedOn,
     updatedOn -> UpdatedOn,
     listName -> TaskStatus)
 
