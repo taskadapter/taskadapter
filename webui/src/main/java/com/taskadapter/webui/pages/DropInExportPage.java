@@ -1,39 +1,31 @@
 package com.taskadapter.webui.pages;
 
-import static com.taskadapter.license.LicenseManager.TRIAL_MESSAGE;
-
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
-
 import com.taskadapter.connector.definition.SaveResult;
-import com.taskadapter.core.PreviouslyCreatedTasksResolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.taskadapter.connector.definition.TaskError;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
-import com.taskadapter.web.configeditor.file.FileDownloadResource;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.MonitorWrapper;
 import com.taskadapter.webui.Page;
+import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.export.ConfirmExportFragment;
-import com.vaadin.server.FileDownloader;
-import com.vaadin.server.VaadinSession;
+import com.taskadapter.webui.export.ExportResultsFragment;
 import com.vaadin.server.Sizeable.Unit;
-import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalLayout;
-import scala.collection.JavaConversions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.List;
+
+import static com.taskadapter.license.LicenseManager.TRIAL_MESSAGE;
 
 /**
  * Export page and export handler.
@@ -71,19 +63,21 @@ public final class DropInExportPage {
      * Temp file.
      */
     private final File tempFile;
+    private Tracker tracker;
 
     private final VerticalLayout ui;
     private final Label errorMessage;
     private final VerticalLayout content;
 
     private DropInExportPage(ConfigOperations configOps, UISyncConfig config,
-            int taskLimit, boolean showFilePath, Runnable onDone, File tempFile) {
+            int taskLimit, boolean showFilePath, Runnable onDone, File tempFile, Tracker tracker) {
         this.config = config;
         this.onDone = onDone;
         this.taskLimit = taskLimit;
         this.showFilePath = showFilePath;
         this.configOps = configOps;
         this.tempFile = tempFile;
+        this.tracker = tracker;
 
         ui = new VerticalLayout();
         errorMessage = new Label("");
@@ -163,123 +157,24 @@ public final class DropInExportPage {
         }
     }
 
-    /**
-     * Perofrms an export.
-     * 
-     * @param selectedTasks
-     *            list of selected tasks.
-     */
     private void performExport(final List<GTask> selectedTasks) {
         if (selectedTasks.isEmpty()) {
             Notification.show(Page.message("action.pleaseSelectTasks"));
             return;
         }
 
-        final ProgressIndicator saveProgress = SyncActionComponents
-                .renderSaveIndicator(config.getConnector2());
+        final ProgressIndicator saveProgress = SyncActionComponents.renderSaveIndicator(config.getConnector2());
         saveProgress.setValue(0f);
         setContent(saveProgress);
 
         final MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
 
-        new Thread(() -> showExportResult(config.saveTasks(selectedTasks, wrapper))).start();
-    }
-
-    /**
-     * Shows task export result.
-     * 
-     * @param res
-     *            operation result.
-     */
-    private void showExportResult(SaveResult res) {
-        final VerticalLayout ui = new VerticalLayout();
-
-        final VerticalLayout donePanel = new VerticalLayout();
-        donePanel.setWidth("600px");
-        donePanel.setStyleName("export-panel");
-
-        final String time = new SimpleDateFormat("MMMM dd, yyyy  HH:mm")
-                .format(Calendar.getInstance().getTime());
-        final Label label = new Label(
-                "<strong>Export completed on</strong> <em>" + time + "</em>");
-        label.setContentMode(ContentMode.HTML);
-
-        donePanel.addComponent(label);
-
-        donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
-                "From", config.getConnector1().getSourceLocation()));
-
-        final String resultFile = res.getTargetFileAbsolutePath();
-        if (resultFile != null && !showFilePath) {
-            donePanel.addComponent(createDownloadButton(resultFile));
-        }
-
-        donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
-                "Created tasks",
-                String.valueOf(res.getCreatedTasksNumber())));
-        donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
-                "Updated tasks",
-                String.valueOf(res.getUpdatedTasksNumber())
-                        + "<br/><br/>"));
-
-        if (resultFile != null && showFilePath) {
-            final Label flabel = new Label(
-                    "<strong>Path to export file:</strong> <em>" + resultFile
-                            + "</em>");
-            flabel.setContentMode(ContentMode.HTML);
-            donePanel.addComponent(flabel);
-        }
-
-        SyncActionComponents.addErrors(donePanel, config.getConnector2(),
-                res.getGeneralErrors(),
-                res.getTaskErrors());
-        // TODO TA4 check remote id
-/*
-        if (res.remoteIdUpdateException != null)
-            SyncActionComponents.addErrors(
-                    donePanel,
-                    config.getConnector1(),
-                    JavaConversions.asScalaBuffer(
-                            Collections.<Throwable>singletonList(res.remoteIdUpdateException))
-                            .toList(),
-                    JavaConversions.asScalaBuffer(Collections.<TaskError<Throwable>>emptyList())
-                            .toList()
-            );
-
-*/
-        ui.addComponent(donePanel);
-
-        final Button button = new Button(
-                Page.message("action.backToHomePage"));
-        button.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                onDone.run();
-            }
-        });
-        ui.addComponent(button);
-
-        VaadinSession.getCurrent().lock();
-        try {
-            setContent(ui);
-        } finally {
-            VaadinSession.getCurrent().unlock();
-        }
-    }
-
-    /**
-     * Creates a download button.
-     * 
-     * @param targetFileAbsolutePath
-     *            target path.
-     */
-    private Component createDownloadButton(final String targetFileAbsolutePath) {
-        final Button downloadButton = new Button("Download file");
-        File file = new File(targetFileAbsolutePath);
-        final FileDownloadResource resource = new FileDownloadResource(file);
-        final FileDownloader downloader = new FileDownloader(resource);
-        downloader.extend(downloadButton);
-        return downloadButton;
+        new Thread(() -> {
+            SaveResult saveResult = config.saveTasks(selectedTasks, wrapper);
+            Component exportResult = new ExportResultsFragment(tracker, onDone, showFilePath)
+                    .showExportResult(config.connector1(), config.connector2(), saveResult);
+            setContent(exportResult);
+        }).start();
     }
 
     /**
@@ -359,11 +254,11 @@ public final class DropInExportPage {
      */
     public static Component render(ConfigOperations configOps,
             UISyncConfig config, int taskLimit, boolean showFilePath,
-            final Runnable onDone, final File tempFile) {
+            final Runnable onDone, final File tempFile, Tracker tracker) {
         return new DropInExportPage(configOps, config, taskLimit, showFilePath,
                 () -> {
                     tempFile.delete();
                     onDone.run();
-                }, tempFile).ui;
+                }, tempFile, tracker).ui;
     }
 }

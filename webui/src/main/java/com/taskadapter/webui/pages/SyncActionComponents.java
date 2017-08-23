@@ -20,69 +20,6 @@ import com.vaadin.ui.VerticalLayout;
  */
 public final class SyncActionComponents {
 
-    private static String quot(String str) {
-        return str.replace("&", "&amp;").replace("\"", "&quot;")
-                .replace("<", "&lt;").replace(">", "&gt;");
-    }
-
-    /**
-     * Adds connector errors into the output.
-     * 
-     * @param container
-     *            error container.
-     * @param connector
-     *            connector, which created the errors.
-     * @param generalErrors
-     *            list of general errors.
-     * @param taskErrors
-     *            task errors.
-     */
-    public static void addErrors(ComponentContainer container,
-            UIConnectorConfig connector, scala.collection.immutable.List<Throwable> generalErrors,
-            scala.collection.immutable.List<TaskError<Throwable>> taskErrors) {
-
-        if (generalErrors.isEmpty() && taskErrors.isEmpty())
-            return;
-
-        container.addComponent(new Label(
-                "There were some problems during export:"));
-        String errorText = "";
-        scala.collection.Iterator<Throwable> generalErrorsIter = generalErrors.iterator();
-        while (generalErrorsIter.hasNext()) {
-            Throwable t = generalErrorsIter.next();
-            errorText += quot(connector.decodeException(t)) + "<br/>\n";
-        }
-        scala.collection.Iterator<TaskError<Throwable>> taskErrorsIter = taskErrors.iterator();
-        while (taskErrorsIter.hasNext()) {
-            TaskError<Throwable> error = taskErrorsIter.next();
-            errorText += "Task " + error.getTask().getId() + " (\""
-                    + error.getTask() + "\"): <br/>\n"
-                    + connector.decodeException(error.getErrors())
-            + "<br/>\n<br/>\n";
-        }
-        final Label errorTextLabel = new Label(errorText);
-        errorTextLabel.addStyleName("errorMessage");
-        errorTextLabel.setContentMode(ContentMode.HTML);
-        container.addComponent(errorTextLabel);
-    }
-
-    public static HorizontalLayout createdExportResultLabel(String labelName,
-            String labelValue) {
-        final Label lName = new Label("<strong>" + labelName + "</strong>");
-        lName.setContentMode(ContentMode.HTML);
-        lName.setWidth("98px");
-
-        final Label lValue = new Label("<em>" + labelValue + "</em>");
-        lValue.setContentMode(ContentMode.HTML);
-
-        final HorizontalLayout hl = new HorizontalLayout();
-        hl.addComponent(lName);
-        hl.addComponent(lValue);
-        hl.addStyleName("export-result");
-
-        return hl;
-    }
-
     /**
      * Renders a "saving data" indicator.
      * 

@@ -1,38 +1,30 @@
 package com.taskadapter.webui.pages;
 
-import static com.taskadapter.license.LicenseManager.TRIAL_MESSAGE;
-import static com.taskadapter.webui.Page.message;
-
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.List;
-
-import com.google.common.base.Strings;
 import com.taskadapter.connector.definition.SaveResult;
-import com.taskadapter.webui.Tracker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
-import com.taskadapter.web.configeditor.file.FileDownloadResource;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.MonitorWrapper;
-import com.taskadapter.webui.Page;
+import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.export.ConfirmExportFragment;
-import com.vaadin.server.FileDownloader;
-import com.vaadin.server.VaadinSession;
+import com.taskadapter.webui.export.ExportResultsFragment;
 import com.vaadin.server.Sizeable.Unit;
-import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+
+import static com.taskadapter.license.LicenseManager.TRIAL_MESSAGE;
+import static com.taskadapter.webui.Page.message;
 
 /**
  * Export page and export handler.
@@ -180,103 +172,12 @@ public final class ExportPage {
 
         final MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                showExportResult(config.saveTasks(selectedTasks, wrapper));
-            }
+        new Thread(() -> {
+            SaveResult saveResult = config.saveTasks(selectedTasks, wrapper);
+            Component exportResult = new ExportResultsFragment(tracker, onDone, showFilePath)
+                    .showExportResult(config.connector1(), config.connector2(), saveResult);
+            setContent(exportResult);
         }).start();
-    }
-
-    /**
-     * Shows task export result.
-     * 
-     * @param res
-     *            operation result.
-     */
-    private void showExportResult(SaveResult res) {
-        final VerticalLayout ui = new VerticalLayout();
-
-        final VerticalLayout donePanel = new VerticalLayout();
-        donePanel.setWidth("800px");
-        donePanel.setStyleName("export-panel");
-
-        // TODO format inside MESSAGES formatter, not here.
-        final String time = new SimpleDateFormat("MMMM dd, yyyy  HH:mm")
-                .format(Calendar.getInstance().getTime());
-        final Label label = new Label(Page.message("export.exportCompletedOn", time));
-        label.setContentMode(ContentMode.HTML);
-
-        donePanel.addComponent(label);
-
-        String sourceLocation = config.getConnector1().getSourceLocation();
-        String targetLocation = config.getConnector2().getSourceLocation();
-        donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
-                message("export.from"), sourceLocation));
-        donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
-                message("export.to"), targetLocation));
-
-        log.info("Export completed. Tasks created: " + res.getCreatedTasksNumber()
-        + ". Task updated: " + res.getUpdatedTasksNumber()
-        + " General errors: " + res.getGeneralErrors()
-        + " Task-specific errors: " + res.getTaskErrors());
-
-        final String resultFile = res.getTargetFileAbsolutePath();
-        if (resultFile != null && !showFilePath) {
-            donePanel.addComponent(createDownloadButton(resultFile));
-        }
-
-        donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
-                message("export.createdTasks"),
-                String.valueOf(res.getCreatedTasksNumber())));
-        donePanel.addComponent(SyncActionComponents.createdExportResultLabel(
-                message("export.updatedTasks"),
-                String.valueOf(res.getUpdatedTasksNumber())
-                        + "<br/><br/>"));
-
-        if (!Strings.isNullOrEmpty(resultFile) && showFilePath) {
-            final Label flabel = new Label(Page.message("export.pathToExportFile", resultFile));
-            flabel.setContentMode(ContentMode.HTML);
-            donePanel.addComponent(flabel);
-        }
-
-        SyncActionComponents.addErrors(donePanel, config.getConnector2(),
-                res.getGeneralErrors(),
-                res.getTaskErrors());
-        ui.addComponent(donePanel);
-
-        final Button button = new Button(message("action.acknowledge"));
-        button.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                onDone.run();
-            }
-        });
-        ui.addComponent(button);
-        String labelForTracking = config.connector1().getConnectorTypeId() + " - " + config.getConnector2().getConnectorTypeId();
-        tracker.trackEvent("export", "finished_saving", labelForTracking);
-
-        VaadinSession.getCurrent().lock();
-        try {
-            setContent(ui);
-        } finally {
-            VaadinSession.getCurrent().unlock();
-        }
-    }
-
-    /**
-     * Creates "download file" button.
-     * 
-     * @param targetFileAbsolutePath
-     *            target path.
-     */
-    private Component createDownloadButton(final String targetFileAbsolutePath) {
-        final Button downloadButton = new Button(message("export.downloadFile"));
-        File file = new File(targetFileAbsolutePath);
-        final FileDownloadResource resource = new FileDownloadResource(file);
-        final FileDownloader downloader = new FileDownloader(resource);
-        downloader.extend(downloadButton);
-        return downloadButton;
     }
 
     /**

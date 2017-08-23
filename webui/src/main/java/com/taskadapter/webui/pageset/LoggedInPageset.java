@@ -393,7 +393,7 @@ public class LoggedInPageset {
                                     df.delete();
                                     showHome();
                                 }
-                            }, df);
+                            }, df, tracker);
                     applyUI(component);
                 } finally {
                     ss.unlock();
