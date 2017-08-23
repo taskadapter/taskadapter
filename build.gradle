@@ -2,7 +2,7 @@ ext {
 
     // TaskAdapter application release version.
     // it is used in the ZIP file name and is shown in "About" dialog.
-    TASK_ADAPTER_VERSION = "3.0.0"
+    TASK_ADAPTER_VERSION = "3.1.0"
 
     vaadinVersion = '7.7.10'
     httpClientVersion='4.2'
