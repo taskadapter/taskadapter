@@ -19,16 +19,14 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
                      configOps: ConfigOperations,
                      sandbox: Sandbox, config: UISyncConfig, exportToLeft: Runnable,
                      exportToRight: Runnable,
-                     close: Runnable) {
+                     close: Runnable,
+                     showLastResults: Runnable) {
   private val logger = LoggerFactory.getLogger(classOf[EditConfigPage])
 
   val labelProperty = new ObjectProperty[String](config.label)
 
   val layout = new VerticalLayout
   layout.setSpacing(true)
-  //  val goToConfigsListbutton = new Button(Page.message("editConfig.goToConfigsList"))
-  //  goToConfigsListbutton.setDescription(Page.message("editConfig.goToConfigsList.tooltip"))
-  //  goToConfigsListbutton.addClickListener(_ => callback.back())
 
   val editDescriptionForm = createEditDescriptionElement(config)
   editDescriptionForm.setWidth(Sizes.editConfigDescriptionFormWidth)
@@ -41,7 +39,6 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
 
   val buttons = createConfigOperationsButtons
   buttons.setWidth("20%")
-  //  layout.addComponent(goToConfigsListbutton)
   val topRowLayout = new HorizontalLayout(editDescriptionForm, buttons)
   topRowLayout.setComponentAlignment(editDescriptionForm, Alignment.MIDDLE_LEFT)
   topRowLayout.setComponentAlignment(buttons, Alignment.MIDDLE_RIGHT)
@@ -55,6 +52,12 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
   val taskFieldsMappingFragment = new TaskFieldsMappingFragment(messages, config.getConnector1, config.getConnector2, config.getNewMappings)
   layout.addComponent(taskFieldsMappingFragment.getUI)
 
+/*
+  val viewLastResultsButton = new Button(Page.message("editConfig.viewLastResults"))
+  viewLastResultsButton.addClickListener(_ => showLastResults.run())
+  layout.addComponent(viewLastResultsButton)
+
+*/
   def removeEmptyRows(): Unit = {
     taskFieldsMappingFragment.removeEmptyRows()
   }

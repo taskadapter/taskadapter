@@ -2,10 +2,8 @@ package com.taskadapter.webui.pageset;
 
 import com.google.common.io.Files;
 import com.taskadapter.auth.CredentialsManager;
-import com.taskadapter.config.StorageException;
 import com.taskadapter.connector.definition.ConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
-import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.uiapi.ConfigId;
@@ -26,6 +24,7 @@ import com.taskadapter.webui.config.NewSetupPage;
 import com.taskadapter.webui.config.SetupsListPage;
 import com.taskadapter.webui.license.LicenseFacade;
 import com.taskadapter.webui.pages.ConfigsPage;
+import com.taskadapter.webui.pages.DevPageFactory;
 import com.taskadapter.webui.pages.DropInExportPage;
 import com.taskadapter.webui.pages.ExportPage;
 import com.taskadapter.webui.pages.LicenseAgreementPage;
@@ -51,7 +50,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.List;
 
 import static com.taskadapter.webui.Page.message;
 
@@ -186,6 +184,12 @@ public class LoggedInPageset {
         clearCurrentConfigInSession();
         showHome();
     }
+
+    private void showLastResults(ConfigId configId) {
+        Option<UISyncConfig> maybeCconfig = context.configOps.getConfig(configId);
+        UISyncConfig config = maybeCconfig.get();
+        applyUI(DevPageFactory.getDevPage(tracker, config.connector1(), config.connector2(), this::showHome));
+    }
     /**
      * Shows a home page.
      */
@@ -306,6 +310,7 @@ public class LoggedInPageset {
         applyUI(getConfigEditor(config, error));
     }
 
+    // TODO TA3 error is not shown!
     private Component getConfigEditor(UISyncConfig config, String error) {
         ConfigId configId = config.id();
         EditConfigPage editor = new EditConfigPage(Page.MESSAGES(), tracker, context.configOps,
@@ -317,32 +322,10 @@ public class LoggedInPageset {
                 () -> {
                     Option<UISyncConfig> loadedConfig = context.configOps.getConfig(configId);
                     sync(loadedConfig.get());
-                }, this::showConfigsList);
+                }, this::showConfigsList,
+                () -> showLastResults(configId));
 
         return editor.getUI();
-
-/*
-        return new EditConfigPage(config, context.configOps,
-                services.settingsManager.isTAWorkingOnLocalMachine(), error,
-                new EditConfigPage.Callback() {
-                    @Override
-                    public void forwardSync(ConfigId configId) {
-                        Option<UISyncConfig> loadedConfig = context.configOps.getConfig(configId);
-                        sync(loadedConfig.get());
-                    }
-
-                    @Override
-                    public void backwardSync(ConfigId configId) {
-                        Option<UISyncConfig> loadedConfig = context.configOps.getConfig(configId);
-                        sync(loadedConfig.get().reverse());
-                    }
-
-                    @Override
-                    public void back() {
-                        clearCurrentConfigInSession();
-                        showHome();
-                    }
-                }, tracker).layout();*/
     }
 
     private void clearCurrentConfigInSession() {
