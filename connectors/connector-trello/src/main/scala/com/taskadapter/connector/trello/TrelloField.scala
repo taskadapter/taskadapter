@@ -8,14 +8,13 @@ object TrelloField {
   val name = Field("Name")
   val description = Field("Description")
 
-  val author = Field.user("Author")
   val dueDate = Field.date("Due Date")
   val createdOn = Field.date("Created On")
   val updatedOn = Field.date("Updated On")
   val listId = Field("List Id")
   val listName = Field("List name")
 
-  def fields = List(author,
+  def fields = List(
     name,
     description,
     dueDate,
@@ -27,7 +26,6 @@ object TrelloField {
   // id field is not in the suggested list because typically
   // id from one system cannot be directly used as id in another system.
   def suggestedStandardFields = Map(
-    author -> Reporter,
     name -> Summary, description -> Description,
     dueDate -> DueDate,
     createdOn -> CreatedOn,
