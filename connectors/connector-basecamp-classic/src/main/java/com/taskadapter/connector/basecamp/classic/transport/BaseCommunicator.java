@@ -59,7 +59,8 @@ public class BaseCommunicator implements Communicator {
     @Override
     public BasicHttpResponse sendRequest(HttpRequest request)
             throws ConnectorException {
-        request.addHeader("User-Agent", "Taskadapter (http://taskadapter.com)");
+//        request.addHeader("User-Agent", "Taskadapter (http://www.taskadapter.com/contacts)");
+        request.addHeader("User-Agent", "support@taskadapter.com");
         logger.debug(request.getRequestLine().toString());
 
         request.addHeader("Accept-Encoding", "gzip");

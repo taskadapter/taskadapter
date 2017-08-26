@@ -28,7 +28,7 @@ dependencies {
     compile "io.circe:circe-generic_2.12:$circeVersion"
     compile "io.circe:circe-parser_2.12:$circeVersion"
 
-//    compile project(":connectors-editors:basecamp-editor")
+    compile project(":connectors-editors:basecamp-editor")
 //    compile project(":connectors-editors:basecamp-classic-editor")
     compile project(":connectors-editors:github-editor")
     compile project(":connectors-editors:jira-editor")
@@ -44,7 +44,6 @@ dependencies {
 vaadin.mainSourceSet = sourceSets.main.allSource
 vaadin {
     version = "$vaadinVersion"
-//    widgetset = 'com.taskadapter.webui.widgetset.Vaadin1Widgetset'
 }
 
 war {

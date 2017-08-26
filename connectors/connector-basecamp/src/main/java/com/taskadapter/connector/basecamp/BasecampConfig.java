@@ -1,16 +1,11 @@
 package com.taskadapter.connector.basecamp;
 
 import com.taskadapter.connector.Priorities;
-import com.taskadapter.connector.basecamp.transport.ObjectAPI;
 import com.taskadapter.connector.definition.ConnectorConfig;
 
 public class BasecampConfig extends ConnectorConfig {
 
     private static final String DEFAULT_LABEL = "Basecamp";
-
-    private BasecampAuth auth = new BasecampAuth();
-
-    private String serverUrl = ObjectAPI.BASECAMP_URL;
 
     private String accountId = "";
 
@@ -25,14 +20,6 @@ public class BasecampConfig extends ConnectorConfig {
     public BasecampConfig() {
         super(new Priorities());
         setLabel(DEFAULT_LABEL);
-    }
-
-    public BasecampAuth getAuth() {
-        return auth;
-    }
-
-    public void setAuth(BasecampAuth auth) {
-        this.auth = auth;
     }
 
     public String getAccountId() {
@@ -69,14 +56,6 @@ public class BasecampConfig extends ConnectorConfig {
 
     public static String getDefaultLabel() {
         return DEFAULT_LABEL;
-    }
-
-    public String getServerUrl() {
-        return serverUrl;
-    }
-
-    public void setServerUrl(String serverUrl) {
-        this.serverUrl = serverUrl;
     }
 
     public Boolean getLoadCompletedTodos() {

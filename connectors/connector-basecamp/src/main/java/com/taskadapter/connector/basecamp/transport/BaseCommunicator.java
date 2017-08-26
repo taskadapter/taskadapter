@@ -59,14 +59,13 @@ public class BaseCommunicator implements Communicator {
     @Override
     public BasicHttpResponse sendRequest(HttpRequest request)
             throws ConnectorException {
-        request.addHeader("User-Agent", "Taskadapter (http://taskadapter.com)");
+        request.addHeader("User-Agent", "Taskadapter (support@taskadapter.com)");
         logger.debug(request.getRequestLine().toString());
 
         request.addHeader("Accept-Encoding", "gzip");
         final HttpClient httpclient = client;
         try {
-            final HttpResponse httpResponse = httpclient
-                    .execute((HttpUriRequest) request);
+            final HttpResponse httpResponse = httpclient.execute((HttpUriRequest) request);
             try {
                 return BasecampContentReader.processContent(httpResponse);
             } finally {

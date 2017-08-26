@@ -6,11 +6,9 @@ import com.taskadapter.connector.basecamp.exceptions.BadFieldException;
 import com.taskadapter.connector.basecamp.exceptions.FieldNotSetException;
 import com.taskadapter.connector.basecamp.transport.ObjectAPI;
 import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
-import com.taskadapter.model.GUser;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,8 +21,9 @@ import java.util.List;
 
 public class BasecampUtils {
     public static List<BasecampProject> loadProjects(ObjectAPIFactory factory,
-            BasecampConfig config) throws ConnectorException {
-        final ObjectAPI objApi = factory.createObjectAPI(config);
+                                                     BasecampConfig config, WebConnectorSetup setup)
+            throws ConnectorException {
+        final ObjectAPI objApi = factory.createObjectAPI(config, setup);
         final JSONArray objects = objApi.getObjects("projects.json");
         final List<BasecampProject> result = new ArrayList<>(
                 objects.length());
@@ -40,36 +39,37 @@ public class BasecampUtils {
     }
 
     public static BasecampProject loadProject(ObjectAPIFactory factory,
-            BasecampConfig config) throws ConnectorException {
+                                              BasecampConfig config, WebConnectorSetup setup) throws ConnectorException {
         validateProject(config);
         validateAccount(config);
-        final ObjectAPI objApi = factory.createObjectAPI(config);
+        final ObjectAPI objApi = factory.createObjectAPI(config, setup);
         String objectURL = "projects/" + config.getProjectKey() + ".json";
         final JSONObject object = objApi.getObject(objectURL);
         return parseFullProject(object);
     }
 
     // POST /projects/#{project_id}/todo_lists.xml
-    public static TodoList createTodoList(ObjectAPIFactory factory,
-            BasecampConfig config, String todoListName,
-            String todoListDescription) throws ConnectorException {
+    static TodoList createTodoList(ObjectAPIFactory factory,
+                                   BasecampConfig config, WebConnectorSetup setup,
+                                   String todoListName,
+                                   String todoListDescription) throws ConnectorException {
         String todoListJSonRepresentation = buildTodoListJSonObject(
                 todoListName, todoListDescription);
-        JSONObject result = factory.createObjectAPI(config).post(
+        JSONObject result = factory.createObjectAPI(config, setup).post(
                 "/projects/" + config.getProjectKey() + "/todolists.json",
                 todoListJSonRepresentation);
         return parseTodoList(result);
     }
 
-    public static void deleteTodoList(ObjectAPIFactory factory,
-            BasecampConfig config) throws ConnectorException {
-        factory.createObjectAPI(config).delete(
+    static void deleteTodoList(ObjectAPIFactory factory,
+                               BasecampConfig config, WebConnectorSetup setup) throws ConnectorException {
+        factory.createObjectAPI(config, setup).delete(
                 "/projects/" + config.getProjectKey() + "/todolists/"
                         + config.getTodoKey() + ".json");
     }
 
     private static String buildTodoListJSonObject(String todoListName,
-            String todoListDescription) {
+                                                  String todoListDescription) {
         final StringWriter sw = new StringWriter();
         try {
             final JSONWriter writer = new JSONWriter(sw);
@@ -90,10 +90,10 @@ public class BasecampUtils {
     }
 
     public static List<TodoList> loadTodoLists(ObjectAPIFactory factory,
-            BasecampConfig config) throws ConnectorException {
+                                               BasecampConfig config, WebConnectorSetup setup) throws ConnectorException {
         validateProject(config);
         validateAccount(config);
-        final ObjectAPI objApi = factory.createObjectAPI(config);
+        final ObjectAPI objApi = factory.createObjectAPI(config, setup);
         final JSONArray objects = objApi.getObjects("projects/"
                 + config.getProjectKey() + "/todolists.json");
         final List<TodoList> result = new ArrayList<>(objects.length());
@@ -109,9 +109,10 @@ public class BasecampUtils {
     }
 
     public static TodoList loadTodoList(ObjectAPIFactory factory,
-            BasecampConfig config) throws ConnectorException {
+                                        BasecampConfig config,
+                                        WebConnectorSetup setup) throws ConnectorException {
         validateConfig(config);
-        final ObjectAPI objApi = factory.createObjectAPI(config);
+        final ObjectAPI objApi = factory.createObjectAPI(config, setup);
         final JSONObject object = objApi.getObject("projects/"
                 + config.getProjectKey() + "/todolists/" + config.getTodoKey()
                 + ".json");
@@ -214,73 +215,4 @@ public class BasecampUtils {
         return project;
     }
 
-    public static GTask parseTask(JSONObject obj) throws ConnectorException {
-        final GTask result = new GTask();
-        result.setId(JsonUtils.getInt("id", obj));
-        result.setKey(Long.toString(JsonUtils.getLong("id", obj)));
-        result.setDescription(JsonUtils.getOptString("content", obj));
-        result.setSummary(JsonUtils.getOptString("content", obj));
-        result.setDoneRatio(JsonUtils.getOptBool("completed", obj) ? Integer
-                .valueOf(100) : Integer.valueOf(0));
-        result.setDueDate(JsonUtils.getOptShortDate("due_at", obj));
-        result.setCreatedOn(JsonUtils.getOptLongDate("created_at", obj));
-        result.setUpdatedOn(JsonUtils.getOptLongDate("updated_at", obj));
-        final JSONObject assObj = JsonUtils.getOptObject("assignee", obj);
-        if (assObj != null) {
-            result.setAssignee(parseUser(assObj));
-        }
-        return result;
-    }
-
-    public static GUser parseUser(JSONObject assObj)
-            throws CommunicationException {
-        final GUser result = new GUser();
-        result.setId(JsonUtils.getInt("id", assObj));
-        result.setDisplayName(JsonUtils.getOptString("name", assObj));
-        return result;
-    }
-
-    public static String toRequest(GTask task, UserResolver users,
-            OutputContext ctx) throws IOException, JSONException,
-            ConnectorException {
-        final StringWriter sw = new StringWriter();
-        try {
-            final JSONWriter writer = new JSONWriter(sw);
-            writer.object();
-            JsonUtils.writeOpt(writer, ctx.getJsonName(FIELD.DESCRIPTION),
-                    task.getDescription());
-            JsonUtils.writeOpt(writer, ctx.getJsonName(FIELD.SUMMARY),
-                    task.getSummary());
-            JsonUtils.writeOpt(writer, ctx.getJsonName(FIELD.DONE_RATIO), task
-                    .getDoneRatio() == null ? null : task.getDoneRatio() >= 100 ? Boolean.TRUE : Boolean.FALSE);
-            JsonUtils.writeShort(writer, ctx.getJsonName(FIELD.DUE_DATE),
-                    task.getDueDate());
-            writeAssignee(writer, ctx, users, task.getAssignee());
-            writer.endObject();
-        } finally {
-            sw.close();
-        }
-        return sw.toString();
-    }
-
-    private static void writeAssignee(JSONWriter writer, OutputContext ctx,
-            UserResolver resolver, GUser assignee) throws JSONException,
-            ConnectorException {
-        final String field = ctx.getJsonName(FIELD.ASSIGNEE);
-        if (field == null) {
-            return;
-        }
-        if (assignee == null) {
-            writer.key(field).value(null);
-            return;
-        }
-        assignee = resolver.resolveUser(assignee);
-        if (assignee == null || assignee.getId() == null) {
-            return;
-        }
-
-        writer.key(field).object().key("type").value("Person");
-        writer.key("id").value(assignee.getId().intValue());
-        writer.endObject();
-    }
 }

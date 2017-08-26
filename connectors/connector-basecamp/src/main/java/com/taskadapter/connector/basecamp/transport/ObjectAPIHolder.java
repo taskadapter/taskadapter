@@ -1,20 +1,16 @@
 package com.taskadapter.connector.basecamp.transport;
 
-import com.taskadapter.connector.basecamp.BasecampAuth;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 
-/**
- * Object API holder.
- * 
- */
 abstract class ObjectAPIHolder {
     final ObjectAPI api;
     final String userId;
 
-    public ObjectAPIHolder(ObjectAPI api, String userId) {
+    ObjectAPIHolder(ObjectAPI api, String userId) {
         super();
         this.api = api;
         this.userId = userId;
     }
 
-    abstract boolean accepts(BasecampAuth auth);
+    abstract boolean accepts(WebConnectorSetup setup);
 }

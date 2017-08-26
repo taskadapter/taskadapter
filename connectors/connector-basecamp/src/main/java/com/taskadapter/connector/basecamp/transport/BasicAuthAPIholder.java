@@ -1,6 +1,6 @@
 package com.taskadapter.connector.basecamp.transport;
 
-import com.taskadapter.connector.basecamp.BasecampAuth;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 
 public class BasicAuthAPIholder extends ObjectAPIHolder {
 
@@ -8,16 +8,16 @@ public class BasicAuthAPIholder extends ObjectAPIHolder {
     private final String password;
 
     public BasicAuthAPIholder(ObjectAPI api, String userId,
-                              BasecampAuth auth) {
+                              WebConnectorSetup setup) {
         super(api, userId);
-        this.login = auth.getLogin();
-        this.password = auth.getPassword();
+        this.login = setup.userName();
+        this.password = setup.password();
     }
 
     @Override
-    boolean accepts(BasecampAuth auth) {
-        return login.equals(auth.getLogin())
-                && password.equals(auth.getPassword());
+    boolean accepts(WebConnectorSetup setup) {
+        return login.equals(setup.userName())
+                && password.equals(setup.password());
     }
 
 }

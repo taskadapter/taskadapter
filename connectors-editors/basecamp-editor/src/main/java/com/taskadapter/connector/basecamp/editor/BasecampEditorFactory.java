@@ -1,21 +1,26 @@
 package com.taskadapter.connector.basecamp.editor;
 
 import com.taskadapter.connector.basecamp.BasecampConfig;
+import com.taskadapter.connector.basecamp.BasecampConnector;
 import com.taskadapter.connector.basecamp.BasecampUtils;
 import com.taskadapter.connector.basecamp.beans.BasecampProject;
 import com.taskadapter.connector.basecamp.beans.TodoList;
 import com.taskadapter.connector.basecamp.transport.BaseCommunicator;
+import com.taskadapter.connector.basecamp.transport.ObjectAPI;
 import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
+import com.taskadapter.web.ConnectorSetupPanel;
 import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
-import com.taskadapter.web.configeditor.server.ServerPanelWithAPIKey;
+import com.taskadapter.web.configeditor.server.ServerPanelFactory;
 import com.taskadapter.web.service.Sandbox;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.Alignment;
@@ -26,6 +31,7 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
+import scala.Option;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,42 +40,40 @@ import static com.taskadapter.web.configeditor.EditorUtil.propertyInput;
 import static com.taskadapter.web.configeditor.EditorUtil.textInput;
 import static com.taskadapter.web.ui.Grids.addTo;
 
-public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig> {
+public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig, WebConnectorSetup> {
 
     private final ObjectAPIFactory factory = new ObjectAPIFactory(new BaseCommunicator());
     private final ExceptionFormatter formatter = new BasecampErrorFormatter();
 
     @Override
-    public ComponentContainer getMiniPanelContents(Sandbox sandbox, BasecampConfig config) {
+    public boolean isWebConnector() {
+        return true;
+    }
 
-        Panel panel = createServerPanel(config);
-        Panel projectPanel = createProjectPanel(config);
+    @Override
+    public ComponentContainer getMiniPanelContents(Sandbox sandbox, BasecampConfig config, WebConnectorSetup setup) {
 
+        Panel projectPanel = createProjectPanel(config, setup);
         GridLayout grid = new GridLayout();
         grid.setColumns(2);
         grid.setMargin(true);
         grid.setSpacing(true);
-
-        grid.addComponent(panel);
         grid.addComponent(projectPanel);
         return grid;
     }
 
-    private Panel createServerPanel(BasecampConfig config) {
-        Panel panel = new Panel("Server Info");
-        MethodProperty<String> serverURLProperty = new MethodProperty<>(config, "serverUrl");
-        serverURLProperty.setReadOnly(true);
-        ServerPanelWithAPIKey redmineServerPanel = new ServerPanelWithAPIKey(new MethodProperty<>(config, "label"),
-                serverURLProperty,
-                new MethodProperty<>(config.getAuth(), "login"),
-                new MethodProperty<>(config.getAuth(), "password"),
-                new MethodProperty<>(config.getAuth(), "apiKey"),
-                new MethodProperty<>(config.getAuth(), "useAPIKeyInsteadOfLoginPassword"));
-        panel.setContent(redmineServerPanel);
-        return panel;
+    @Override
+    public ConnectorSetupPanel getEditSetupPanel(Sandbox sandbox, WebConnectorSetup setup) {
+        return ServerPanelFactory.withApiKeyAndLoginPassword(BasecampConnector.ID(), BasecampConnector.ID(), setup);
     }
 
-    private Panel createProjectPanel(final BasecampConfig config) {
+    @Override
+    public WebConnectorSetup createDefaultSetup() {
+        return new WebConnectorSetup(BasecampConnector.ID(), Option.empty(), "My JIRA", ObjectAPI.BASECAMP_URL, "",
+                "", false, "");
+    }
+
+    private Panel createProjectPanel(BasecampConfig config, WebConnectorSetup setup) {
         Panel projectPanel = new Panel("Project");
 
         GridLayout grid = new GridLayout();
@@ -80,8 +84,8 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         projectPanel.setContent(grid);
 
         addAccountIdRow(config, grid);
-        addProjectRow(config, grid);
-        addTodoKeyRow(config, grid);
+        addProjectRow(config, setup, grid);
+        addTodoKeyRow(config, setup, grid);
         addCompletedCheckboxRow(config, grid);
 
         return projectPanel;
@@ -105,7 +109,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         grid.addComponent(new Label(""));
     }
 
-    private void addProjectRow(final BasecampConfig config, GridLayout grid) {
+    private void addProjectRow(final BasecampConfig config, WebConnectorSetup setup, GridLayout grid) {
         Label projectKeyLabel = new Label("Project key:");
         addTo(grid, Alignment.MIDDLE_LEFT, projectKeyLabel);
 
@@ -115,7 +119,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        ShowInfoElement.loadProject(config, formatter, factory);
+                        ShowInfoElement.loadProject(config, setup, formatter, factory);
                     }
                 }
         );
@@ -124,7 +128,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         DataProvider<List<? extends NamedKeyedObject>> projectProvider = new DataProvider<List<? extends NamedKeyedObject>>() {
             @Override
             public List<? extends NamedKeyedObject> loadData() throws ConnectorException {
-                List<BasecampProject> basecampProjects = BasecampUtils.loadProjects(factory, config);
+                List<BasecampProject> basecampProjects = BasecampUtils.loadProjects(factory, config, setup);
                 List<NamedKeyedObject> objects = new ArrayList<>();
                 for (BasecampProject project : basecampProjects) {
                     objects.add(new NamedKeyedObjectImpl(project.getKey(), project.getName()));
@@ -145,7 +149,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         addTo(grid, Alignment.MIDDLE_CENTER, showProjectsButton);
     }
 
-    private void addTodoKeyRow(final BasecampConfig config, GridLayout grid) {
+    private void addTodoKeyRow(final BasecampConfig config, WebConnectorSetup setup, GridLayout grid) {
         Label todoListKey = new Label("Todo list key:");
         addTo(grid, Alignment.MIDDLE_LEFT, todoListKey);
 
@@ -156,22 +160,19 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        ShowInfoElement.showTodoListInfo(config, formatter, factory);
+                        ShowInfoElement.showTodoListInfo(config, setup, formatter, factory);
                     }
                 }
         );
         addTo(grid, Alignment.MIDDLE_CENTER, infoButton);
 
-        DataProvider<List<? extends NamedKeyedObject>> todoListsProvider = new DataProvider<List<? extends NamedKeyedObject>>() {
-            @Override
-            public List<? extends NamedKeyedObject> loadData() throws ConnectorException {
-                List<TodoList> todoLists = BasecampUtils.loadTodoLists(factory, config);
-                List<NamedKeyedObject> objects = new ArrayList<>();
-                for (TodoList todoList : todoLists) {
-                    objects.add(new NamedKeyedObjectImpl(todoList.getKey(), todoList.getName()));
-                }
-                return objects;
+        DataProvider<List<? extends NamedKeyedObject>> todoListsProvider = () -> {
+            List<TodoList> todoLists = BasecampUtils.loadTodoLists(factory, config, setup);
+            List<NamedKeyedObject> objects = new ArrayList<>();
+            for (TodoList todoList : todoLists) {
+                objects.add(new NamedKeyedObjectImpl(todoList.getKey(), todoList.getName()));
             }
+            return objects;
         };
 
         Button showTodoListsButton = EditorUtil.createLookupButton(
@@ -187,23 +188,24 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
     }
 
     @Override
-    public void validateForSave(BasecampConfig config) throws BadConfigException {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void validateForSave(BasecampConfig config, WebConnectorSetup setup) throws BadConfigException {
+        if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
+            throw new ProjectNotSetException();
+        }
     }
 
     @Override
-    public void validateForLoad(BasecampConfig config) throws BadConfigException {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void validateForLoad(BasecampConfig config, WebConnectorSetup setup) {
     }
 
     @Override
-    public String describeSourceLocation(BasecampConfig config) {
-        return "basecamp.com";
+    public String describeSourceLocation(BasecampConfig config, WebConnectorSetup setup) {
+        return setup.host();
     }
 
     @Override
-    public String describeDestinationLocation(BasecampConfig config) {
-        return "basecamp.com";
+    public String describeDestinationLocation(BasecampConfig config, WebConnectorSetup setup) {
+        return describeSourceLocation(config, setup);
     }
 
     @Override
@@ -212,10 +214,10 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
     }
 
     @Override
-    public boolean updateForSave(BasecampConfig config, Sandbox sandbox)
+    public WebConnectorSetup updateForSave(BasecampConfig config, Sandbox sandbox, WebConnectorSetup setup)
             throws BadConfigException {
-        validateForSave(config);
-        return false;
+        validateForSave(config, setup);
+        return setup;
     }
 
 
