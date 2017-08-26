@@ -36,9 +36,9 @@ class GTaskToBasecamp(users: UserResolver) extends ConnectorConverter[GTask, Bas
   }
 
   def processField(writer: JSONWriter, fieldName: String, value: Any): Unit = {
-    val stringValue = value.asInstanceOf[String]
     fieldName match {
       case BasecampField.description.name =>
+        val stringValue = value.asInstanceOf[String]
         JsonUtils.writeOpt(writer, "content", stringValue)
       case BasecampField.doneRatio.name =>
         val booleanValue: Boolean = if (value == null) false

@@ -5,8 +5,6 @@ import com.taskadapter.connector.definition.ConnectorConfig;
 
 public class BasecampConfig extends ConnectorConfig {
 
-    private static final String DEFAULT_LABEL = "Basecamp";
-
     private String accountId = "";
 
     private String projectKey = "";
@@ -19,7 +17,6 @@ public class BasecampConfig extends ConnectorConfig {
 
     public BasecampConfig() {
         super(new Priorities());
-        setLabel(DEFAULT_LABEL);
     }
 
     public String getAccountId() {
@@ -52,10 +49,6 @@ public class BasecampConfig extends ConnectorConfig {
 
     public void setLookupUsersByName(boolean lookupUsersByName) {
         this.lookupUsersByName = lookupUsersByName;
-    }
-
-    public static String getDefaultLabel() {
-        return DEFAULT_LABEL;
     }
 
     public Boolean getLoadCompletedTodos() {

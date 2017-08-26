@@ -7,10 +7,10 @@ import scala.Option;
 class TestBasecampConfig {
     static final String USER_FIRST_NAME = "Tester";
 
-    private static final String USER_ID = "3826992";
+    private static final String USER_ID = "3827020";
     private static final String USER_LOGIN = "sufis@storj99.top";
     private static final String USER_PASSWORD = "65690812487";
-    private static final String PROJECT_KEY = "4715519";
+    private static final String PROJECT_KEY = "14455873";
 
     static BasecampConfig config() {
         BasecampConfig config = new BasecampConfig();

@@ -1,5 +1,6 @@
 package com.taskadapter.connector.basecamp
 
+import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.model.{GTask, GUser}
 import org.json.JSONObject
 
@@ -9,6 +10,9 @@ object BasecampToGTask {
     val id = JsonUtils.getInt("id", obj)
     result.setId(id.toLong)
     result.setKey(id.toString)
+    // must set source system id, otherwise "update task" is impossible later
+    result.setSourceSystemId(TaskId(id.toLong, id.toString))
+
     result.setValue(BasecampField.description, JsonUtils.getOptString("content", obj))
     result.setValue(BasecampField.doneRatio,
       if (JsonUtils.getOptBool("completed", obj)) Integer.valueOf(100) else Integer.valueOf(0))

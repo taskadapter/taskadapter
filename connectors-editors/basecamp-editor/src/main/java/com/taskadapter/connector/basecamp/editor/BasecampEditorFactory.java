@@ -69,7 +69,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
 
     @Override
     public WebConnectorSetup createDefaultSetup() {
-        return new WebConnectorSetup(BasecampConnector.ID(), Option.empty(), "My JIRA", ObjectAPI.BASECAMP_URL, "",
+        return new WebConnectorSetup(BasecampConnector.ID(), Option.empty(), "My Basecamp 2", ObjectAPI.BASECAMP_URL, "",
                 "", false, "");
     }
 

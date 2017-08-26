@@ -9,8 +9,8 @@ class BasecampSaver(api: ObjectAPI, config: BasecampConfig, resolver: UserResolv
     * Creates a new task and returns a new task ID.
     */
   override def createTask(wrapper: BasecampTaskWrapper): TaskId = {
-    val res = api.post("/projects/" + config.getProjectKey + "/todolists/" + config.getTodoKey + "/todos.json",
-      wrapper.nativeTask)
+    val url = "/projects/" + config.getProjectKey + "/todolists/" + config.getTodoKey + "/todos.json"
+    val res = api.post(url,wrapper.nativeTask)
     val newIdentity = BasecampToGTask.parseTask(res).getIdentity
     /* Set "done ratio" if needed */
     if (wrapper.doneRatio >= 100) {
@@ -25,7 +25,8 @@ class BasecampSaver(api: ObjectAPI, config: BasecampConfig, resolver: UserResolv
     * @param nativeTask native task representation.
     */
   override def updateTask(nativeTask: BasecampTaskWrapper): Unit = {
-    val res = api.put("/projects/" + config.getProjectKey + "/todos/" + nativeTask.key + ".json", nativeTask.nativeTask)
+    val url = "/projects/" + config.getProjectKey + "/todos/" + nativeTask.key + ".json"
+    val res = api.put(url, nativeTask.nativeTask)
     BasecampToGTask.parseTask(res).getIdentity
   }
 }

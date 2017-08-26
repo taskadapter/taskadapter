@@ -15,7 +15,7 @@ object BasecampConnector {
   /**
     * Keep it the same to enable backward compatibility for previously created config files.
     */
-  var ID = "Basecamp"
+  var ID = "Basecamp 2"
 }
 
 class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factory: ObjectAPIFactory) extends NewConnector {
@@ -32,14 +32,14 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
     val res = new util.ArrayList[GTask](JsonUtils.genLen(completed) + JsonUtils.genLen(remaining))
     try {
       if (remaining != null) {
-        for (i <- 0 to remaining.length) {
+        for (i <- 0 until remaining.length) {
           val task = BasecampToGTask.parseTask(remaining.getJSONObject(i))
           task.setValue(BasecampField.doneRatio, 0)
           res.add(task)
         }
       }
       if (completed != null && config.getLoadCompletedTodos) {
-        for (i <- 0 to completed.length) {
+        for (i <- 0 until completed.length) {
           val task = BasecampToGTask.parseTask(completed.getJSONObject(i))
           task.setValue(BasecampField.doneRatio, 100)
           res.add(task)
@@ -81,7 +81,7 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
     if (!config.isLookupUsersByName) return new DirectUserResolver
     val arr = api.getObjects("people.json")
     val users = new util.HashMap[String, GUser]
-    for (i <- 0 to arr.length) {
+    for (i <- 0 until arr.length) {
       try {
         val user = BasecampToGTask.parseUser(arr.getJSONObject(i))
         users.put(user.getDisplayName, user)

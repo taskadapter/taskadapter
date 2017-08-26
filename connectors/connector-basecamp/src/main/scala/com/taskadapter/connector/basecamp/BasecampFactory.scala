@@ -12,7 +12,7 @@ import scala.collection.JavaConverters._
 import scala.collection.immutable.Map
 
 class BasecampFactory extends PluginFactory[BasecampConfig, WebConnectorSetup] {
-  val DESCRIPTOR = Descriptor(BasecampConnector.ID, "Basecamp")
+  val DESCRIPTOR = Descriptor(BasecampConnector.ID, "Basecamp 2")
   final private val factory = new ObjectAPIFactory(new BaseCommunicator)
 
   override def createConnector(config: BasecampConfig, setup: WebConnectorSetup) = new BasecampConnector(config, setup, factory)
