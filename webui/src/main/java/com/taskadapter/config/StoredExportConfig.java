@@ -1,11 +1,5 @@
 package com.taskadapter.config;
 
-/**
- * Stored configuration for a single export.
- * 
- * @author maxkar
- * 
- */
 public final class StoredExportConfig {
     /**
      * Export configuration id. It is implementation dependend and at a current
@@ -16,19 +10,21 @@ public final class StoredExportConfig {
     private final StoredConnectorConfig connector1;
     private final StoredConnectorConfig connector2;
     private final String mappings;
+    private final String schedule;
 
     /**
      * Not public. And shoult not be. It is used only during a loading process
      * and later should be decomposed into mutable "ui" settings.
      */
     StoredExportConfig(String id, String name,
-            StoredConnectorConfig connector1, StoredConnectorConfig connector2,
-            String mappings) {
+                       StoredConnectorConfig connector1, StoredConnectorConfig connector2,
+                       String mappings, String schedule) {
         this.id = id;
         this.name = name;
         this.connector1 = connector1;
         this.connector2 = connector2;
         this.mappings = mappings;
+        this.schedule = schedule;
     }
 
     /**
@@ -55,6 +51,10 @@ public final class StoredExportConfig {
 
     public String getMappingsString() {
         return mappings;
+    }
+
+    public String getSchedule() {
+        return schedule;
     }
 
     @Override

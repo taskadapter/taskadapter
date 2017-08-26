@@ -82,7 +82,10 @@ case class UISyncConfig(configRootFolder: File,
                          /**
                            * "Config is reversed" flag.
                            */
-                        var reversed: Boolean) {
+                        var reversed: Boolean,
+
+                        schedule: Schedule
+                       ) {
 
   val id = ConfigId(owner, identity)
 
@@ -102,7 +105,9 @@ case class UISyncConfig(configRootFolder: File,
     *
     * @return "reversed" (back-order) configuration.
     */
-  def reverse = new UISyncConfig(configRootFolder, identity, owner, label, connector2, connector1, UISyncConfig.reverse(fieldMappings), !reversed)
+  def reverse = new UISyncConfig(configRootFolder, identity, owner, label, connector2, connector1,
+    UISyncConfig.reverse(fieldMappings), !reversed,
+    schedule)
 
   /**
     * Returns a "normalized" (canonical) form of this config.

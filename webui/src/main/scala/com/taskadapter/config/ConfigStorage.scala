@@ -7,8 +7,6 @@ import com.google.common.io.Files
 import com.taskadapter.web.uiapi.{ConfigId, SetupId}
 import org.slf4j.LoggerFactory
 
-import scala.collection.JavaConverters._
-
 object ConfigStorage {
   private val configFileExtension = "ta_conf"
   val NUMBER_SEPARATOR = "_"
@@ -59,10 +57,11 @@ class ConfigStorage(val rootDir: File) {
   @throws[StorageException]
   def saveConfig(userLoginName: String, configId: String, configName: String,
                  connector1Id: String, connector1SavedSetupId: SetupId, connector1Data: String,
-                 connector2Id: String, connector2SavedSetupId: SetupId, connector2Data: String, mappings: String): Unit = {
+                 connector2Id: String, connector2SavedSetupId: SetupId, connector2Data: String, mappings: String,
+                 schedule: String): Unit = {
     logger.info(s"Saving config for user $userLoginName")
     val fileContents = NewConfigParser.toFileContent(configName, connector1Id, connector1SavedSetupId, connector1Data,
-      connector2Id, connector2SavedSetupId, connector2Data, mappings)
+      connector2Id, connector2SavedSetupId, connector2Data, mappings, schedule)
     try {
       val folder = getUserConfigsFolder(userLoginName)
       folder.mkdirs
@@ -80,11 +79,11 @@ class ConfigStorage(val rootDir: File) {
   def createNewConfig(userLoginName: String, configName: String,
                       connector1Id: String, connector1SavedSetupId: SetupId, connector1Data: String,
                       connector2Id: String, connector2SavedSetupId: SetupId, connector2Data: String,
-                      mappings: String): ConfigId = {
+                      mappings: String, schedule: String): ConfigId = {
     val fileContents = NewConfigParser.toFileContent(configName,
       connector1Id, connector1SavedSetupId, connector1Data,
       connector2Id, connector2SavedSetupId, connector2Data,
-      mappings)
+      mappings, schedule)
     try {
       val folder = getUserConfigsFolder(userLoginName)
       folder.mkdirs

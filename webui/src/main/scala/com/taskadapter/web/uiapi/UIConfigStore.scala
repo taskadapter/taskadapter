@@ -69,10 +69,17 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     config2.setConnectorSetup(connector2Setup)
 
     val newMappings = decode[Seq[FieldMapping]](jsonString)
+
+    val schedule = decode[Schedule](storedConfig.getSchedule) match {
+      case Left(e) => logger.error(s"cannot parse schedule from config $storedConfig: $e. Assuming no schedule.")
+        Schedule.apply
+      case Right(s) => s
+    }
+
     newMappings match {
       case Left(e) => throw new RuntimeException(s"cannot parse mappings from config $storedConfig: $e")
       case Right(m) =>
-        new UISyncConfig(configStorage.rootDir, storedConfig.getId, ownerName, label, config1, config2, m, false)
+        new UISyncConfig(configStorage.rootDir, storedConfig.getId, ownerName, label, config1, config2, m, false, schedule)
     }
   }
 
@@ -95,10 +102,11 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
       config1.getSuggestedCombinations,
       config2.getSuggestedCombinations)
     val mappingsString = newMappings.asJson.noSpaces
+    val scheduleString = Schedule.asJson.noSpaces
     val configId = configStorage.createNewConfig(userName, label,
       config1.getConnectorTypeId, connector1SetupId, config1.getConfigString,
       config2.getConnectorTypeId, connector2SetupId, config2.getConfigString,
-      mappingsString)
+      mappingsString, scheduleString)
 
     configId
   }
@@ -197,11 +205,11 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val config2 = normalizedSyncConfig.getConnector2
     val mappings = normalizedSyncConfig.getNewMappings
     val mappingsStr = mappings.asJson.noSpaces
-
+    val scheduleStr = syncConfig.schedule.asJson.noSpaces
     configStorage.saveConfig(normalizedSyncConfig.getOwnerName, normalizedSyncConfig.identity, label,
       config1.getConnectorTypeId, SetupId(config1.getConnectorSetup.id.get), config1.getConfigString,
       config2.getConnectorTypeId, SetupId(config2.getConnectorSetup.id.get), config2.getConfigString,
-      mappingsStr)
+      mappingsStr, scheduleStr)
   }
 
   def deleteConfig(configId: ConfigId): Unit = {
@@ -226,7 +234,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
         configStorage.createNewConfig(userLoginName, config.getName,
           connector1.connectorTypeId, connector1.connectorSavedSetupId, connector1.serializedConfig,
           connector2.connectorTypeId, connector2.connectorSavedSetupId, connector2.serializedConfig,
-          config.getMappingsString)
+          config.getMappingsString, config.getSchedule)
       case None => throw new StorageException(s"Cannot find config with id $configId to clone")
     }
   }

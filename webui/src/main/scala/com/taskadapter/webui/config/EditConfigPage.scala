@@ -8,7 +8,7 @@ import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{UIConnectorConfig, UISyncConfig}
 import com.taskadapter.webui._
 import com.taskadapter.webui.data.ExceptionFormatter
-import com.vaadin.data.util.ObjectProperty
+import com.vaadin.data.util.{MethodProperty, ObjectProperty}
 import com.vaadin.server.Sizeable.Unit.PERCENTAGE
 import com.vaadin.shared.ui.label.ContentMode
 import com.vaadin.ui._
@@ -50,14 +50,29 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
   layout.addComponent(errorMessageLabel)
 
   val taskFieldsMappingFragment = new TaskFieldsMappingFragment(messages, config.getConnector1, config.getConnector2, config.getNewMappings)
+
+  val scheduledSyncPanel = new HorizontalLayout()
+
+  val runIntervalField = new TextField(Page.message("export.schedule.runIntervalInMinutes"),
+    new MethodProperty[Int](config.schedule, "intervalInMinutes"))
+
+  val scheduledLeftField = new CheckBox(Page.message("export.schedule.left"),
+    new MethodProperty[Boolean](config.schedule, "directionLeft"))
+  val scheduledRightField = new CheckBox(Page.message("export.schedule.right"),
+    new MethodProperty[Boolean](config.schedule, "directionRight"))
+
+  scheduledSyncPanel.addComponent(runIntervalField)
+  scheduledSyncPanel.addComponent(scheduledLeftField)
+  scheduledSyncPanel.addComponent(scheduledRightField)
+
+  layout.addComponent(scheduledSyncPanel)
   layout.addComponent(taskFieldsMappingFragment.getUI)
 
-/*
-  val viewLastResultsButton = new Button(Page.message("editConfig.viewLastResults"))
-  viewLastResultsButton.addClickListener(_ => showLastResults.run())
-  layout.addComponent(viewLastResultsButton)
-
-*/
+  /*
+    val viewLastResultsButton = new Button(Page.message("editConfig.viewLastResults"))
+    viewLastResultsButton.addClickListener(_ => showLastResults.run())
+    layout.addComponent(viewLastResultsButton)
+  */
   def removeEmptyRows(): Unit = {
     taskFieldsMappingFragment.removeEmptyRows()
   }
@@ -136,7 +151,7 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
     val backButton = new Button(Page.message("button.close"))
     backButton.addClickListener(_ => close.run())
 
-    val cloneDeletePanel= new CloneDeleteComponent(config.id, configOps, close, tracker).layout
+    val cloneDeletePanel = new CloneDeleteComponent(config.id, configOps, close, tracker).layout
     rightLayout.addComponent(backButton)
     rightLayout.addComponent(cloneDeletePanel)
     buttonsLayout
@@ -188,7 +203,7 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
     }
   }
 
-  private def createEditDescriptionElement(config: UISyncConfig) : Component = {
+  private def createEditDescriptionElement(config: UISyncConfig): Component = {
     val form = new FormLayout
     val descriptionField = new TextField(Page.message("editConfig.description"))
     descriptionField.setWidth(Sizes.editConfigDescriptionFieldWidth)
@@ -201,6 +216,7 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
     errorMessageLabel.setVisible(true)
     errorMessageLabel.setValue(errorMessage)
   }
+
   def clearErrorMessage(): Unit = {
     errorMessageLabel.setVisible(false)
     errorMessageLabel.setValue("")
