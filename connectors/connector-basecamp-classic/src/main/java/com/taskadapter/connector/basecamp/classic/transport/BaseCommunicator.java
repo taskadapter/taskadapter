@@ -1,5 +1,9 @@
 package com.taskadapter.connector.basecamp.classic.transport;
 
+import com.taskadapter.connector.basecamp.transport.BasicHttpResponse;
+import com.taskadapter.connector.basecamp.transport.Communicator;
+import com.taskadapter.connector.basecamp.transport.ConnectionEvictor;
+import com.taskadapter.connector.basecamp.transport.HttpUtil;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;

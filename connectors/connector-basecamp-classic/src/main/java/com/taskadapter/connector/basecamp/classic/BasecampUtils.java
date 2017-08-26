@@ -5,35 +5,30 @@ import com.taskadapter.connector.basecamp.classic.beans.TodoList;
 import com.taskadapter.connector.basecamp.classic.exceptions.InternalException;
 import com.taskadapter.connector.basecamp.classic.transport.ObjectAPI;
 import com.taskadapter.connector.basecamp.classic.transport.ObjectAPIFactory;
+import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.model.GUser;
-
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BasecampUtils {
 
     public static List<BasecampProject> loadProjects(ObjectAPIFactory factory,
-            BasecampConfig config) throws ConnectorException {
-        final ObjectAPI objApi = factory.createObjectAPI(config);
+                                                     WebConnectorSetup setup) throws ConnectorException {
+        final ObjectAPI objApi = factory.createObjectAPI(setup);
         final Element objects = objApi.getObject("projects.xml");
         final List<Element> projects = XmlUtils.getDirectAncestors(objects,
                 "project");
@@ -46,9 +41,9 @@ public class BasecampUtils {
     }
 
     public static BasecampProject loadProject(ObjectAPIFactory factory,
-            BasecampConfig config) throws ConnectorException {
-        BasecampConfigValidator.validateServerAuth(config);
-        final ObjectAPI objApi = factory.createObjectAPI(config);
+                                              BasecampClassicConfig config, WebConnectorSetup setup) throws ConnectorException {
+        BasecampConfigValidator.validateServerAuth(setup);
+        final ObjectAPI objApi = factory.createObjectAPI(setup);
         String objectURL = "projects/" + config.getProjectKey() + ".xml";
         final Element object = objApi.getObject(objectURL);
         return parseFullProject(object);
@@ -56,28 +51,28 @@ public class BasecampUtils {
 
     // POST /projects/#{project_id}/todo_lists.xml
     public static TodoList createTodoList(ObjectAPIFactory factory,
-            BasecampConfig config, String todoListName,
-            String todoListDescription) throws ConnectorException {
-        BasecampConfigValidator.validateServerAuth(config);
+                                          BasecampClassicConfig config, WebConnectorSetup setup, String todoListName,
+                                          String todoListDescription) throws ConnectorException {
+        BasecampConfigValidator.validateServerAuth(setup);
         BasecampConfigValidator.validateProjectKey(config);
         String todoListXmlRepr = buildTodoListXmlObject(todoListName,
                 todoListDescription);
-        Element result = factory.createObjectAPI(config).post(
+        Element result = factory.createObjectAPI(setup).post(
                 "projects/" + config.getProjectKey() + "/todo_lists.xml",
                 todoListXmlRepr);
         return parseTodoList(result);
     }
 
     public static void deleteTodoList(ObjectAPIFactory factory,
-            BasecampConfig config) throws ConnectorException {
-        BasecampConfigValidator.validateServerAuth(config);
+                                      BasecampClassicConfig config, WebConnectorSetup setup) throws ConnectorException {
+        BasecampConfigValidator.validateServerAuth(setup);
         // TODO BUG: for Maxim - I don't think Basecamp Classic supports JSON
-        factory.createObjectAPI(config).delete(
+        factory.createObjectAPI(setup).delete(
                 "/todo_lists/" + config.getTodoKey() + ".json");
     }
 
-    private static String buildTodoListXmlObject(String todoListName,
-            String todoListDescription) {
+    public static String buildTodoListXmlObject(String todoListName,
+                                                String todoListDescription) {
         final Document d = newXDoc();
 
         final Element root = d.createElement("todo-list");
@@ -107,7 +102,7 @@ public class BasecampUtils {
         return stringify(d);
     }
 
-    private static String stringify(Document d) {
+    public static String stringify(Document d) {
         try {
             final TransformerFactory tf = TransformerFactory.newInstance();
             final Transformer t = tf.newTransformer();
@@ -122,7 +117,7 @@ public class BasecampUtils {
 
     }
 
-    private static Document newXDoc() {
+    public static Document newXDoc() {
         try {
             final DocumentBuilderFactory dbf = DocumentBuilderFactory
                     .newInstance();
@@ -137,9 +132,9 @@ public class BasecampUtils {
     }
 
     public static List<TodoList> loadTodoLists(ObjectAPIFactory factory,
-            BasecampConfig config) throws ConnectorException {
-        BasecampConfigValidator.validateServerAuth(config);
-        final ObjectAPI objApi = factory.createObjectAPI(config);
+                                               BasecampClassicConfig config, WebConnectorSetup setup) throws ConnectorException {
+        BasecampConfigValidator.validateServerAuth(setup);
+        final ObjectAPI objApi = factory.createObjectAPI(setup);
         final String suffix;
         if (config.getProjectKey() == null || config.getProjectKey().isEmpty())
             suffix = "todo_lists.xml";
@@ -154,10 +149,10 @@ public class BasecampUtils {
     }
 
     public static TodoList loadTodoList(ObjectAPIFactory factory,
-            BasecampConfig config) throws ConnectorException {
-        BasecampConfigValidator.validateServerAuth(config);
+                                        BasecampClassicConfig config, WebConnectorSetup setup) throws ConnectorException {
+        BasecampConfigValidator.validateServerAuth(setup);
         BasecampConfigValidator.validateTodoList(config);
-        final ObjectAPI objApi = factory.createObjectAPI(config);
+        final ObjectAPI objApi = factory.createObjectAPI(setup);
         final Element object = objApi.getObject("todo_lists/"
                 + config.getTodoKey() + ".xml");
         return parseTodoList(object);
@@ -197,31 +192,6 @@ public class BasecampUtils {
         return project;
     }
 
-    public static GTask parseTask(Element obj) throws ConnectorException {
-        final GTask result = new GTask();
-        result.setId(XmlUtils.getIntElt(obj, "id"));
-        result.setKey(XmlUtils.getStringElt(obj, "id"));
-        result.setDescription(XmlUtils.getStringElt(obj, "content"));
-        result.setSummary(XmlUtils.getStringElt(obj, "content"));
-
-        final boolean compl = XmlUtils.getOptBool(obj, "completed");
-
-        result.setDoneRatio(compl ? Integer.valueOf(100) : Integer.valueOf(0));
-        result.setDueDate(XmlUtils.getOptLongDate(obj, "due-at"));
-        result.setCreatedOn(XmlUtils.getOptLongDate(obj, "created-at"));
-        result.setUpdatedOn(XmlUtils.getOptLongDate(obj, "updated-at"));
-        result.setClosedOn(XmlUtils.getOptLongDate(obj, "completed-at"));
-        final String rpp = XmlUtils.getOptString(obj, "responsible-party-type");
-        if ("Person".equals(rpp)) {
-            final GUser looser = new GUser();
-            looser.setDisplayName(XmlUtils.getStringElt(obj,
-                    "responsible-party-name"));
-            looser.setLoginName(looser.getDisplayName());
-            looser.setId(XmlUtils.getIntElt(obj, "responsible-party-id"));
-            result.setAssignee(looser);
-        }
-        return result;
-    }
 
     public static GUser parseUser(Element assObj) throws CommunicationException {
         final GUser result = new GUser();
@@ -240,47 +210,4 @@ public class BasecampUtils {
         return result;
     }
 
-    public static String toRequest(GTask task, UserResolver users, OutputContext ctx) throws ConnectorException {
-        final Document d = newXDoc();
-        final Element root = d.createElement("todo-item");
-        d.appendChild(root);
-
-        if (task.getDescription() != null)
-            XmlUtils.setString(d, root, ctx.getXmlName(FIELD.DESCRIPTION),
-                    task.getDescription());
-        if (task.getSummary() != null)
-            XmlUtils.setString(d, root, ctx.getXmlName(FIELD.SUMMARY),
-                    task.getSummary());
-
-        if (task.getDoneRatio() != null
-                && ctx.getXmlName(FIELD.DONE_RATIO) != null) {
-            final Element compl = d.createElement("completed");
-            compl.setAttribute("type", "boolean");
-            compl.appendChild(d
-                    .createTextNode(task.getDoneRatio() >= 100 ? "true"
-                            : "false"));
-            root.appendChild(compl);
-        }
-        XmlUtils.setLong(d, root, ctx.getXmlName(FIELD.DUE_DATE),
-                task.getDueDate());
-
-        writeAssignee(d, root, ctx, users, task.getAssignee());
-        return stringify(d);
-    }
-
-    private static void writeAssignee(Document d, Element root,
-            OutputContext ctx, UserResolver resolver, GUser assignee)
-            throws ConnectorException {
-        final String field = ctx.getXmlName(FIELD.ASSIGNEE);
-        if (field == null) {
-            return;
-        }
-        final Element elt = d.createElement("responsible-party");
-        root.appendChild(elt);
-        assignee = resolver.resolveUser(assignee);
-        if (assignee == null || assignee.getId() == null)
-            elt.setAttribute("nil", "true");
-        else
-            elt.appendChild(d.createTextNode(assignee.getId().toString()));
-    }
 }

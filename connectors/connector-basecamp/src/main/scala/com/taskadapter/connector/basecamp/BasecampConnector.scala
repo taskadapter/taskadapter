@@ -55,7 +55,6 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
   @throws[ConnectorException]
   override def loadTaskByKey(id: TaskId, rows: java.lang.Iterable[FieldRow]): GTask = {
     BasecampUtils.validateConfig(config)
-    val api = factory.createObjectAPI(config, setup)
     val obj = api.getObject("projects/" + config.getProjectKey + "/todos/" + id.key + ".json")
     BasecampToGTask.parseTask(obj)
   }
@@ -65,9 +64,7 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
                monitor: ProgressMonitor,
                fieldRows: Iterable[FieldRow]): SaveResult = try {
     BasecampUtils.validateConfig(config)
-    val total = countTasks(tasks)
     val userResolver = findUserResolver()
-    monitor.beginTask("Saving...", total)
     val converter = new GTaskToBasecamp(userResolver)
     val saver = new BasecampSaver(api, config, userResolver)
     val resultBuilder = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, fieldRows,
@@ -92,16 +89,4 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
     }
     new NamedUserResolver(users)
   }
-
-  private def countTasks(tasks: util.List[GTask]): Int = {
-    if (tasks == null) return 0
-    var res = tasks.size
-    import scala.collection.JavaConversions._
-    for (task <- tasks) {
-      res += countTasks(task.getChildren)
-    }
-    res
-  }
-
-
 }

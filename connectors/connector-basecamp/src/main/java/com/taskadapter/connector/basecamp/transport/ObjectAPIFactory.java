@@ -42,10 +42,6 @@ public final class ObjectAPIFactory {
             final Communicator throttler = new ThrottlingCommunicator(authComm, new IntervalThrottler(THROTTLING_TIMEOUT_MILLIS));
             final ObjectAPI api = new ObjectAPI(userId, throttler);
 
-//            final BasecampAuth dummy = new BasecampAuth();
-//            dummy.setLogin(setup.getApiKey());
-//            dummy.setPassword(AUTH_KEY_PASSWORD);
-
             WebConnectorSetup dummy = new WebConnectorSetup(setup.connectorId(), setup.id(), setup.label(), setup.host(),
                     setup.apiKey(), AUTH_KEY_PASSWORD, false, "");
 

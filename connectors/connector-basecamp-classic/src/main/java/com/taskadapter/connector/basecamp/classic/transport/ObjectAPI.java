@@ -1,15 +1,12 @@
 package com.taskadapter.connector.basecamp.classic.transport;
 
-import java.io.IOException;
-import java.io.StringReader;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import com.taskadapter.connector.basecamp.classic.exceptions.FatalMisunderstaningException;
 import com.taskadapter.connector.basecamp.classic.exceptions.InternalException;
 import com.taskadapter.connector.basecamp.classic.exceptions.ObjectNotFoundException;
+import com.taskadapter.connector.basecamp.transport.BasicHttpResponse;
+import com.taskadapter.connector.basecamp.transport.Communicator;
+import com.taskadapter.connector.definition.exceptions.CommunicationException;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -18,22 +15,18 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.taskadapter.connector.definition.exceptions.CommunicationException;
-import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.StringReader;
 
 public final class ObjectAPI {
-    /**
-     * Connection prefix.
-     */
     private final String prefix;
 
-    /**
-     * User communicator.
-     */
     private final Communicator communicator;
 
     public ObjectAPI(String prefix, Communicator communicator) {
@@ -48,7 +41,7 @@ public final class ObjectAPI {
     public Element getObject(String suffix) throws ConnectorException {
         return rawGet(prefix + suffix);
     }
-    
+
     private Element rawGet(String url) throws ConnectorException {
         final HttpGet get = new HttpGet(url);
         final BasicHttpResponse response = communicator.sendRequest(get);
@@ -109,7 +102,7 @@ public final class ObjectAPI {
         } catch (ParserConfigurationException | IOException e) {
             throw new InternalException();
         } catch (SAXException e) {
-            throw new FatalMisunderstaningException("Can't parse response "+ docText, e);
+            throw new FatalMisunderstaningException("Can't parse response " + docText, e);
         }
     }
 }

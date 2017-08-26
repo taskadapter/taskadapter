@@ -52,7 +52,6 @@ class GTaskToBasecamp(resolver: UserResolver) extends ConnectorConverter[GTask, 
 
     def writeAssignee(writer: JSONWriter, assignee: GUser): Unit = {
       val field = "assignee"
-      if (field == null) return
       if (assignee == null) {
         writer.key(field).value(null)
         return

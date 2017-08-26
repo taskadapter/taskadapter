@@ -6,4 +6,4 @@ Mantis=com.taskadapter.connector.mantis.editor.MantisEditorFactory
 Microsoft Project=com.taskadapter.connector.msp.editor.MSPEditorFactory
 Trello=com.taskadapter.connector.trello.editor.TrelloEditorFactory
 Basecamp 2=com.taskadapter.connector.basecamp.editor.BasecampEditorFactory
-# Basecamp Classic=com.taskadapter.connector.basecamp.classic.editor.BasecampEditorFactory
+Basecamp Classic=com.taskadapter.connector.basecamp.classic.editor.BasecampClassicEditorFactory

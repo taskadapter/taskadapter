@@ -16,7 +16,7 @@ import org.apache.http.HttpStatus;
 
 import com.taskadapter.connector.basecamp.exceptions.ExternalInterlalFailure;
 import com.taskadapter.connector.basecamp.exceptions.FatalMisunderstaningException;
-import com.taskadapter.connector.basecamp.exceptions.ThrottlingException;
+import com.taskadapter.connector.basecamp.transport.throttling.ThrottlingException;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 
@@ -52,7 +52,7 @@ final class BasecampContentReader {
                     + responseCode + ", " + getContent(httpResponse));
         }
 
-        return new BasicHttpResponse(responseCode, getContent(httpResponse));
+        return new BasicHttpResponse(responseCode, getContent(httpResponse), null);
     }
 
     private static String getContent(HttpResponse content)

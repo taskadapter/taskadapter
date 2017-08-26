@@ -8,6 +8,9 @@ import java.io.StringWriter;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
+import com.taskadapter.connector.basecamp.transport.BasicHttpResponse;
+import com.taskadapter.connector.basecamp.transport.HttpUtil;
+import com.taskadapter.connector.basecamp.transport.throttling.ThrottlingException;
 import com.taskadapter.connector.definition.exceptions.NotAuthorizedException;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -16,7 +19,6 @@ import org.apache.http.HttpStatus;
 
 import com.taskadapter.connector.basecamp.classic.exceptions.ExternalInterlalFailure;
 import com.taskadapter.connector.basecamp.classic.exceptions.FatalMisunderstaningException;
-import com.taskadapter.connector.basecamp.classic.exceptions.ThrottlingException;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 
