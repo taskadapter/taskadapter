@@ -78,7 +78,7 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
 
   @throws[ConnectorException]
   private def findUserResolver(): UserResolver = {
-    if (!config.isLookupUsersByName) return new DirectUserResolver
+    if (!config.isFindUserByName) return new DirectUserResolver
     val arr = api.getObjects("people.json")
     val users = new util.HashMap[String, GUser]
     for (i <- 0 until arr.length) {

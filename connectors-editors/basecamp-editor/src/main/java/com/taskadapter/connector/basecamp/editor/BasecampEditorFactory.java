@@ -20,6 +20,7 @@ import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
+import com.taskadapter.web.configeditor.Editors;
 import com.taskadapter.web.configeditor.server.ServerPanelFactory;
 import com.taskadapter.web.service.Sandbox;
 import com.vaadin.data.util.MethodProperty;
@@ -87,8 +88,16 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         addProjectRow(config, setup, grid);
         addTodoKeyRow(config, setup, grid);
         addCompletedCheckboxRow(config, grid);
+        addFindUsersCheckboxRow(config, grid);
 
         return projectPanel;
+    }
+
+    private void addFindUsersCheckboxRow(BasecampConfig config, GridLayout grid) {
+        grid.addComponent(Editors.createFindUsersElement(new MethodProperty<>(config, "findUserByName")));
+        grid.addComponent(new Label(""));
+        grid.addComponent(new Label(""));
+        grid.addComponent(new Label(""));
     }
 
     private void addCompletedCheckboxRow(BasecampConfig config, GridLayout grid) {

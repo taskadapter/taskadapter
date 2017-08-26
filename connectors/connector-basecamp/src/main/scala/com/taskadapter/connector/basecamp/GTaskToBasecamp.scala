@@ -4,12 +4,12 @@ import java.io.StringWriter
 import java.util.Date
 
 import com.taskadapter.connector.common.data.ConnectorConverter
-import com.taskadapter.model.GTask
+import com.taskadapter.model.{GTask, GUser}
 import org.json.JSONWriter
 
 import scala.collection.JavaConverters._
 
-class GTaskToBasecamp(users: UserResolver) extends ConnectorConverter[GTask, BasecampTaskWrapper] {
+class GTaskToBasecamp(resolver: UserResolver) extends ConnectorConverter[GTask, BasecampTaskWrapper] {
 
   /**
     * Convert a task from source to target format.
@@ -17,7 +17,7 @@ class GTaskToBasecamp(users: UserResolver) extends ConnectorConverter[GTask, Bas
     * @param source source object to convert.
     * @return converted object
     */
-  override def convert(source: GTask) = {
+  override def convert(source: GTask): BasecampTaskWrapper = {
 
     val sw = new StringWriter
 
@@ -27,8 +27,6 @@ class GTaskToBasecamp(users: UserResolver) extends ConnectorConverter[GTask, Bas
       source.getFields.asScala.foreach { x =>
         processField(writer, x._1, x._2)
       }
-
-      //      writeAssignee(writer, ctx, users, task.getAssignee)
       writer.endObject
     } finally sw.close()
 
@@ -47,24 +45,25 @@ class GTaskToBasecamp(users: UserResolver) extends ConnectorConverter[GTask, Bas
         JsonUtils.writeOpt(writer, "completed", booleanValue)
       case BasecampField.dueDate.name =>
         JsonUtils.writeShort(writer, "due_at", value.asInstanceOf[Date])
+      case BasecampField.assignee.name => writeAssignee(writer, value.asInstanceOf[GUser])
 
       case _ => // ignore unknown fields
     }
 
-    /*def writeAssignee(writer: JSONWriter, resolver: UserResolver, assignee: GUser): Unit ={
+    def writeAssignee(writer: JSONWriter, assignee: GUser): Unit = {
       val field = "assignee"
       if (field == null) return
       if (assignee == null) {
         writer.key(field).value(null)
         return
       }
-      assignee = resolver.resolveUser(assignee)
-      if (assignee == null || assignee.getId == null) return
+      val resolvedAssignee = resolver.resolveUser(assignee)
+      if (resolvedAssignee == null || resolvedAssignee.getId == null) return
       writer.key(field).`object`.key("type").value("Person")
-      writer.key("id").value(assignee.getId.intValue)
+      writer.key("id").value(resolvedAssignee.getId.intValue)
       writer.endObject
     }
-  }*/
+
   }
 }
 

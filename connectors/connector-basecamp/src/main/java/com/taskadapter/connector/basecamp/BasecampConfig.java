@@ -13,7 +13,7 @@ public class BasecampConfig extends ConnectorConfig {
 
     private Boolean loadCompletedTodos = false;
 
-    private boolean lookupUsersByName;
+    private boolean findUserByName;
 
     public BasecampConfig() {
         super(new Priorities());
@@ -43,12 +43,12 @@ public class BasecampConfig extends ConnectorConfig {
         this.todoKey = todoKey;
     }
 
-    public boolean isLookupUsersByName() {
-        return lookupUsersByName;
+    public boolean isFindUserByName() {
+        return findUserByName;
     }
 
-    public void setLookupUsersByName(boolean lookupUsersByName) {
-        this.lookupUsersByName = lookupUsersByName;
+    public void setFindUserByName(boolean findUserByName) {
+        this.findUserByName = findUserByName;
     }
 
     public Boolean getLoadCompletedTodos() {

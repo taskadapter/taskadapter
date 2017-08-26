@@ -31,6 +31,7 @@ class BasecampFactory extends PluginFactory[BasecampConfig, WebConnectorSetup] {
     setp(res, "projectKey", config.getProjectKey)
     setp(res, "todoKey", config.getTodoKey)
     setp(res, "loadCompletedTodos", java.lang.Boolean.toString(config.getLoadCompletedTodos))
+    setp(res, "findUserByName", java.lang.Boolean.toString(config.isFindUserByName))
     res
   }
 
@@ -43,6 +44,7 @@ class BasecampFactory extends PluginFactory[BasecampConfig, WebConnectorSetup] {
     res.setProjectKey(getS("projectKey", obj))
     res.setTodoKey(getS("todoKey", obj))
     res.setLoadCompletedTodos(java.lang.Boolean.parseBoolean(getS("loadCompletedTodos", obj)))
+    res.setFindUserByName(java.lang.Boolean.parseBoolean(getS("findUserByName", obj)))
     res
   }
 

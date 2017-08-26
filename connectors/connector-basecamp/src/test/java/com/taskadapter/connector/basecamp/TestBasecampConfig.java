@@ -5,8 +5,6 @@ import com.taskadapter.connector.definition.WebConnectorSetup;
 import scala.Option;
 
 class TestBasecampConfig {
-    static final String USER_FIRST_NAME = "Tester";
-
     private static final String USER_ID = "3827020";
     private static final String USER_LOGIN = "sufis@storj99.top";
     private static final String USER_PASSWORD = "65690812487";
@@ -16,7 +14,7 @@ class TestBasecampConfig {
         BasecampConfig config = new BasecampConfig();
         config.setAccountId(USER_ID);
         config.setProjectKey(PROJECT_KEY);
-        config.setLookupUsersByName(true);
+        config.setFindUserByName(true);
         return config;
     }
 
