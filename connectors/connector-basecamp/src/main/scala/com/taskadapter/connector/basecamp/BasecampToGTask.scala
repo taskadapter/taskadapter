@@ -13,7 +13,7 @@ object BasecampToGTask {
     // must set source system id, otherwise "update task" is impossible later
     result.setSourceSystemId(TaskId(id.toLong, id.toString))
 
-    result.setValue(BasecampField.description, JsonUtils.getOptString("content", obj))
+    result.setValue(BasecampField.content, JsonUtils.getOptString("content", obj))
     result.setValue(BasecampField.doneRatio,
       if (JsonUtils.getOptBool("completed", obj)) Integer.valueOf(100) else Integer.valueOf(0))
     result.setValue(BasecampField.dueDate, JsonUtils.getOptShortDate("due_at", obj))

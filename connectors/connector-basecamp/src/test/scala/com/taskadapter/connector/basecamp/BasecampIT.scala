@@ -14,8 +14,8 @@ class BasecampIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAn
   it("task is created and loaded") {
     withTempProject { todoListKey =>
       CommonTestChecks.taskIsCreatedAndLoaded(getConnector(todoListKey),
-        GTaskBuilder.withRandom(BasecampField.description),
-        BasecampFieldBuilder.getDefault(), BasecampField.description,
+        GTaskBuilder.withRandom(BasecampField.content),
+        BasecampFieldBuilder.getDefault(), BasecampField.content,
         CommonTestChecks.skipCleanup)
     }
   }
@@ -23,8 +23,8 @@ class BasecampIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAn
     withTempProject { todoListKey =>
       CommonTestChecks.taskCreatedAndUpdatedOK(TestBasecampConfig.setup().host,
         getConnector(todoListKey), BasecampFieldBuilder.getDefault(),
-        GTaskBuilder.withRandom(BasecampField.description),
-        BasecampField.description.name, "new value",
+        GTaskBuilder.withRandom(BasecampField.content),
+        BasecampField.content.name, "new value",
         CommonTestChecks.skipCleanup)
     }
   }
