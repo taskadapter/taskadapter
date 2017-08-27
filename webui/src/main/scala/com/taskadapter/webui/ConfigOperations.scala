@@ -60,6 +60,10 @@ final class ConfigOperations(/**
     ExportResultStorage.getSaveResults(rootFolder, configId)
   }
 
+  def getExportResults(rootFolder: File): Seq[ExportResultFormat] = {
+    ExportResultStorage.getSaveResults(rootFolder)
+  }
+
   /**
     * Creates a new config and returns it.
     *

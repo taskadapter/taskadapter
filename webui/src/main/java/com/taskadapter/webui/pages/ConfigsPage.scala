@@ -60,6 +60,7 @@ object ConfigsPage {
       */
     def newConfig(): Unit
 
+    def showAllPreviousResults(): Unit
     def showAllPreviousResults(configId: ConfigId): Unit
     def showLastExportResult(configId: ConfigId): Unit
   }
@@ -101,6 +102,11 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
   addButton.addClickListener(_ => callback.newConfig())
   actionPanel.addComponent(addButton)
   actionPanel.setComponentAlignment(addButton, Alignment.MIDDLE_LEFT)
+
+  val viewAllResultsButton = new Button(Page.message("configsPage.button.viewAllResults"))
+  viewAllResultsButton.addClickListener(_ => callback.showAllPreviousResults())
+  actionPanel.addComponent(viewAllResultsButton)
+  actionPanel.setComponentAlignment(viewAllResultsButton, Alignment.MIDDLE_CENTER)
 
   val filterPanel = new HorizontalLayout
   val filterField = new TextField

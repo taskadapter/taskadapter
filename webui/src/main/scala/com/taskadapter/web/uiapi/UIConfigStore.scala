@@ -71,7 +71,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val newMappings = decode[Seq[FieldMapping]](jsonString)
 
     val schedule = decode[Schedule](storedConfig.getSchedule) match {
-      case Left(e) => logger.error(s"cannot parse schedule from config $storedConfig: $e. Assuming no schedule.")
+      case Left(e) => logger.warn(s"cannot parse schedule from config $storedConfig: $e. Assuming no schedule.")
         Schedule.apply
       case Right(s) => s
     }

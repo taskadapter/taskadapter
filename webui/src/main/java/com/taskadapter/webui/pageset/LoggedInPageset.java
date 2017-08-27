@@ -207,6 +207,12 @@ public class LoggedInPageset {
                 results).ui());
     }
 
+    private void showAllExportResults() {
+        Seq<ExportResultFormat> results = context.configOps.getExportResults(services.rootDir);
+        applyUI(new SaveResultsListPage(this::showHome,
+                results).ui());
+    }
+
     /**
      * Shows a home page.
      */
@@ -229,6 +235,11 @@ public class LoggedInPageset {
                     @Override
                     public void newConfig() {
                         createNewConfig();
+                    }
+
+                    @Override
+                    public void showAllPreviousResults() {
+                        showAllExportResults();
                     }
 
                     @Override
