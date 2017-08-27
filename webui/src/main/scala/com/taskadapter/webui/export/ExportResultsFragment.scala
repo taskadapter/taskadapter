@@ -38,7 +38,7 @@ class ExportResultsFragment(onDone: Runnable, showFilePath: Boolean) {
     donePanel.addComponent(createdExportResultLabel(message("export.from"), result.from))
     donePanel.addComponent(createdExportResultLabel(message("export.to"), result.to))
 
-    if (result.targetFileName.isDefined) {
+    if (result.targetFileName.isDefined && !(result.targetFileName.get == "")) {
       if (showFilePath) {
         val flabel = new Label(Page.message("export.pathToExportFile", result.targetFileName.get))
         flabel.setContentMode(ContentMode.HTML)

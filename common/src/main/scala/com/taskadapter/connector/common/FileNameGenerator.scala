@@ -15,18 +15,29 @@ object FileNameGenerator {
     * @return
     */
   def createSafeAvailableFile(rootFolder: File, format: String): File = {
+    createSafeAvailableFile(rootFolder, format, 10000)
+  }
+
+  def createSafeAvailableFile(rootFolder: File, format: String, numberOfTries: Int): File = {
+
     val safeFormat = makeFileNameDiskSafe(format)
     var number = 1
     rootFolder.mkdirs
     while ( {
-      number < 10000 // give a chance to exit
+      number < numberOfTries // give a chance to exit
     }) {
       val file = new File(rootFolder, String.format(safeFormat, number.asInstanceOf[Integer]))
       logger.info(s"Checking if file name ${file.getAbsolutePath} is available...")
       if (!file.exists) return file
-      number += 1
+
+      // speed up lookups when there are many existing files already
+      if (number < 20) {
+        number += 1
+      } else {
+        number += 20
+      }
     }
-    throw new RuntimeException("cannot generate available file name after many attempts")
+    throw new RuntimeException(s"cannot generate available file name after $numberOfTries attempts")
   }
 
   def makeFileNameDiskSafe(potentialFileName: String): String = {

@@ -20,13 +20,24 @@ object ExportResultStorage {
 
   implicit val formats = DefaultFormats
 
-  def store(rootDir: File, result: ExportResultFormat): Unit = {
-    logger.debug("Saved export result")
+  def store(rootDir: File, result: ExportResultFormat, maxNumberOfResultsToKeep: Int): Unit = {
     val resultsFolder = getResultsFolder(rootDir)
     resultsFolder.mkdirs()
-    val file = FileNameGenerator.createSafeAvailableFile(resultsFolder, "results_%d.json")
+    ensureMaxNumberResults(rootDir, maxNumberOfResultsToKeep)
+    val file = FileNameGenerator.createSafeAvailableFile(resultsFolder, "results_%d.json", 10000000)
     val jsonString = writePretty(result)
     Files.write(jsonString, file, Charsets.UTF_8)
+    logger.debug(s"Saved export result to ${file.getAbsolutePath}")
+  }
+
+  def ensureMaxNumberResults(rootDir: File, maxNumberOfResultsToKeep: Int): Unit = {
+    val files = getResultsFolder(rootDir)
+      .listFiles(resultsFileFilter)
+    if (files != null && files.size >= maxNumberOfResultsToKeep) {
+      val oldest = files.minBy(f => f.lastModified())
+      logger.warn(s"Deleting old result file ${oldest.getAbsolutePath} (because max allowed number of results reached: $maxNumberOfResultsToKeep)")
+      oldest.delete()
+    }
   }
 
   def getSaveResults(rootDir: File, configId: ConfigId): Seq[ExportResultFormat] = {
@@ -38,6 +49,10 @@ object ExportResultStorage {
       .listFiles(resultsFileFilter)
     if (files == null) return Seq()
 
+    convertFilesToObject(files)
+  }
+
+  private def convertFilesToObject(files: Array[File]): Seq[ExportResultFormat] = {
     files.map(Files.toString(_, Charsets.UTF_8)).flatMap { string =>
       val jValue = parse(string)
       val saveResult = jValue.extract[ExportResultFormat]

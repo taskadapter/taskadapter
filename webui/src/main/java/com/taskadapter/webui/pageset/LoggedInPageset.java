@@ -394,7 +394,9 @@ public class LoggedInPageset {
                             .isSomeValidLicenseInstalled() ? MAX_TASKS_TO_LOAD
                             : LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
                     tracker.trackPage("drop_in");
-                    Component component = DropInExportPage.render(context.configOps, config,
+                    Component component = DropInExportPage.render(
+                            services.settingsManager.getMaxNumberOfResultsToKeep(),
+                            context.configOps, config,
                             maxTasks, services.settingsManager
                                     .isTAWorkingOnLocalMachine(),
                             new Runnable() {
@@ -460,7 +462,9 @@ public class LoggedInPageset {
                 .isSomeValidLicenseInstalled() ? MAX_TASKS_TO_LOAD
                 : LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
         log.info("License installed? " + services.licenseManager.isSomeValidLicenseInstalled());
-        applyUI(new ExportPage(context.configOps, config, maxTasks,
+        applyUI(new ExportPage(
+                services.settingsManager.getMaxNumberOfResultsToKeep(),
+                context.configOps, config, maxTasks,
                 services.settingsManager.isTAWorkingOnLocalMachine(),
                 this::showHome, tracker).ui);
     }

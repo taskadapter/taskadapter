@@ -10,7 +10,7 @@ import com.taskadapter.connector.definition._
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.core._
 import com.taskadapter.model.GTask
-import com.taskadapter.webui.results.{ExportResultFormat, ExportResultStorage}
+import com.taskadapter.webui.results.ExportResultFormat
 
 import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
@@ -166,8 +166,6 @@ case class UISyncConfig(configRootFolder: File,
       new Date(start),
       ((finish - start) / 1000).toInt
     )
-
-    ExportResultStorage.store(configRootFolder, finalResult)
     finalResult
   }
 
