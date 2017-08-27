@@ -11,7 +11,7 @@ public class SettingsManager {
 
     private static final String ALLOW_MANAGE_ALL_CONFIG = "admin_can_see_all_configs";
     private static final String MAX_NUMBER_RESULTS_TO_KEEP = "max_number_of_results_to_keep";
-    private static final int DEFAULT_MAX_NUMBER_OF_RESULTS = 1000000;
+    private static final int DEFAULT_MAX_NUMBER_OF_RESULTS = 100000;
 
     private Preferences prefs = Preferences.userNodeForPackage(SettingsManager.class);
 

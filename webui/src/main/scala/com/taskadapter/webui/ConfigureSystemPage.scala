@@ -30,7 +30,7 @@ object ConfigureSystemPage {
     view.setMargin(true)
     panel.setContent(view)
     val field = new TextField(Page.message("configurePage.maxNumberOfResultsToSave"))
-
+    field.setDescription(Page.message("configurePage.maxNumberExplanation"))
     field.setValue(settingsManager.getMaxNumberOfResultsToKeep + "")
     field.setImmediate(true)
     field.addValueChangeListener(_ => settingsManager.setMaxNumberOfResultsToKeep(field.getValue.toInt))
