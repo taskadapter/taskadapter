@@ -4,7 +4,6 @@ import com.taskadapter.auth.{AuthorizedOperations, CredentialsManager}
 import com.taskadapter.license.License
 import com.taskadapter.web.SettingsManager
 import com.taskadapter.webui.user.UsersPanel
-import com.vaadin.data.Property
 import com.vaadin.server.Sizeable.Unit.PIXELS
 import com.vaadin.ui._
 
@@ -18,25 +17,37 @@ object ConfigureSystemPage {
     val checkbox = new CheckBox(Page.message("configurePage.showAllUsersConfigs"))
     checkbox.setValue(settingsManager.adminCanManageAllConfigs)
     checkbox.setImmediate(true)
-    checkbox.addValueChangeListener(new Property.ValueChangeListener() {
-      override def valueChange(valueChangeEvent: Property.ValueChangeEvent): Unit = {
-        settingsManager.setAdminCanManageAllConfigs(checkbox.getValue)
-      }
-    })
+    checkbox.addValueChangeListener(_ => settingsManager.setAdminCanManageAllConfigs(checkbox.getValue))
     view.addComponent(checkbox)
     view.setComponentAlignment(checkbox, Alignment.MIDDLE_LEFT)
     checkbox.setEnabled(modifiable)
     panel
   }
 
-  def render(credentialsManager: CredentialsManager, settings: SettingsManager, license: License,
+  def createResultsNumberSection(settingsManager: SettingsManager): Component = {
+    val panel = new Panel
+    val view = new VerticalLayout
+    view.setMargin(true)
+    panel.setContent(view)
+    val field = new TextField(Page.message("configurePage.maxNumberOfResultsToSave"))
+
+    field.setValue(settingsManager.getMaxNumberOfResultsToKeep + "")
+    field.setImmediate(true)
+    field.addValueChangeListener(_ => settingsManager.setMaxNumberOfResultsToKeep(field.getValue.toInt))
+    view.addComponent(field)
+
+    panel
+  }
+
+  def render(credentialsManager: CredentialsManager, settingsManager: SettingsManager, license: License,
              authorizedOps: AuthorizedOperations, tracker: Tracker): Component = {
     val layout = new VerticalLayout
     layout.setSpacing(true)
-    val cmt = LocalRemoteOptionsPanel.createLocalRemoteOptions(settings, authorizedOps.canConfigureServer)
+    val cmt = LocalRemoteOptionsPanel.createLocalRemoteOptions(settingsManager, authorizedOps.canConfigureServer)
     cmt.setWidth(600, PIXELS)
     layout.addComponent(cmt)
-    layout.addComponent(createAdminPermissionsSection(settings, authorizedOps.canConfigureServer))
+    layout.addComponent(createAdminPermissionsSection(settingsManager, authorizedOps.canConfigureServer))
+    layout.addComponent(createResultsNumberSection(settingsManager))
     layout.addComponent(new UsersPanel(credentialsManager, authorizedOps, license, tracker).ui)
     layout
   }
