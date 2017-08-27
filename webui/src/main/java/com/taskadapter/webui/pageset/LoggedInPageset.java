@@ -201,7 +201,7 @@ public class LoggedInPageset {
         }
     }
 
-    private void showAllPreviousResults(ConfigId configId) {
+    private void showExportResults(ConfigId configId) {
         Seq<ExportResultFormat> results = context.configOps.getExportResults(services.rootDir, configId);
         applyUI(new SaveResultsListPage(this::showHome,
                 results).ui());
@@ -232,6 +232,16 @@ public class LoggedInPageset {
                     }
 
                     @Override
+                    public void showAllPreviousResults(ConfigId configId) {
+                        showExportResults(configId);
+                    }
+
+                    @Override
+                    public void showLastExportResult(ConfigId configId) {
+                        showLastResults(configId);
+                    }
+
+                    @Override
                     public void forwardSync(UISyncConfig config) {
                         sync(config);
                     }
@@ -258,10 +268,7 @@ public class LoggedInPageset {
                 dropIn(config.reverse(), file);
             }
         },
-                context.configOps,
-                // TODO TA3 fix! important
-                ()-> /*showAllPreviousResults(configId)*/ {},
-                () -> {} // last results
+                context.configOps
         ).ui();
         applyUI(component);
     }
@@ -343,7 +350,7 @@ public class LoggedInPageset {
                     Option<UISyncConfig> loadedConfig = context.configOps.getConfig(configId);
                     sync(loadedConfig.get());
                 }, this::showConfigsList,
-                () -> showAllPreviousResults(configId),
+                () -> showExportResults(configId),
                 () -> showLastResults(configId));
 
         return editor.getUI();

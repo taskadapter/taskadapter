@@ -3,7 +3,7 @@ package com.taskadapter.webui.pages
 import java.util
 import java.util.{Collections, Comparator}
 
-import com.taskadapter.web.uiapi.UISyncConfig
+import com.taskadapter.web.uiapi.{ConfigId, UISyncConfig}
 import com.taskadapter.webui.{ConfigOperations, Page, Sizes, Tracker}
 import com.vaadin.server.Sizeable.Unit.PIXELS
 import com.vaadin.ui._
@@ -59,6 +59,9 @@ object ConfigsPage {
       * User requested creation of a new config.
       */
     def newConfig(): Unit
+
+    def showAllPreviousResults(configId: ConfigId): Unit
+    def showLastExportResult(configId: ConfigId): Unit
   }
 
   /**
@@ -82,8 +85,7 @@ object ConfigsPage {
 
 }
 
-class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Callback, configOperations: ConfigOperations,
-                  showSavedResults: Runnable, showLastExportResult: Runnable) {
+class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Callback, configOperations: ConfigOperations) {
   val displayMode = if (showAll) DisplayMode.ALL_CONFIGS
   else DisplayMode.OWNED_CONFIGS
 
@@ -128,7 +130,9 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
     configsLayout.removeAllComponents()
     dispConfigs.foreach(config =>
       configsLayout.addComponent(ConfigActionsPanel.render(config, displayMode, callback, configOperations,
-        () => refreshConfigs, showSavedResults, showLastExportResult, tracker))
+        () => refreshConfigs,
+        () => callback.showAllPreviousResults(config.id),
+        () => callback.showLastExportResult(config.id), tracker))
     )
   }
 
