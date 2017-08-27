@@ -45,9 +45,11 @@ class ExportResultsListPage(close: Runnable, results: Seq[ExportResultFormat],
     .setRenderer(new HtmlRenderer())
     .setExpandRatio(1)
 
+/*
   grid.addColumn("from")
     .setHeaderCaption(Page.message("exportResults.column.from"))
     .setExpandRatio(2)
+*/
 
   grid.addColumn("to")
     .setHeaderCaption(Page.message("exportResults.column.to"))
