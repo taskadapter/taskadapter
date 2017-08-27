@@ -1,70 +1,67 @@
 package com.taskadapter.webui.results
 
 import java.text.SimpleDateFormat
-import java.util.Date
 
 import com.taskadapter.webui.Page
+import com.vaadin.data.util.BeanItem
+import com.vaadin.data.util.converter.StringToBooleanConverter
 import com.vaadin.ui.renderers.DateRenderer
 import com.vaadin.ui.{Button, Grid, VerticalLayout}
 
-class SaveResultsListPage(close: Runnable, results: Seq[ExportResultFormat]) {
+import scala.collection.JavaConverters._
+
+class ExportResultsListPage(close: Runnable, results: Seq[ExportResultFormat],
+                            showResult: (ExportResultFormat) => Unit) {
 
   val dateFormat = "yyyy-MM-dd HH:mm"
 
   val ui = new VerticalLayout()
-  val grid = new Grid
+
+  import com.vaadin.data.util.BeanItemContainer
+
+  val ds = new BeanItemContainer[ExportResultFormat](classOf[ExportResultFormat], results.asJava)
+
+  val grid = new Grid(ds)
   grid.setWidth("980px")
-  grid.addColumn("configName", classOf[String])
+  grid.removeAllColumns()
+
+  grid.addColumn("configLabel")
     .setHeaderCaption(Page.message("exportResults.column.configName"))
     .setExpandRatio(1)
 
-  grid.addColumn("dateStarted", classOf[Date])
+  grid.addColumn("dateStarted")
     .setHeaderCaption(Page.message("exportResults.column.startedOn"))
     .setRenderer(new DateRenderer(new SimpleDateFormat(dateFormat)))
     .setExpandRatio(1)
 
-  grid.addColumn("from", classOf[String])
+  grid.addColumn("from")
     .setHeaderCaption(Page.message("exportResults.column.from"))
     .setExpandRatio(2)
 
-  grid.addColumn("to", classOf[String])
+  grid.addColumn("to")
     .setHeaderCaption(Page.message("exportResults.column.to"))
     .setExpandRatio(2)
 
-  grid.addColumn("createdTasksNumber", classOf[Integer])
+  grid.addColumn("createdTasksNumber")
     .setHeaderCaption(Page.message("exportResults.column.tasksCreated"))
     .setExpandRatio(1)
 
-  grid.addColumn("updatedTasksNumber", classOf[Integer])
+  grid.addColumn("updatedTasksNumber")
     .setHeaderCaption(Page.message("exportResults.column.tasksUpdated"))
     .setExpandRatio(1)
 
-  grid.addColumn("status", classOf[String])
+  grid.addColumn("success")
     .setHeaderCaption(Page.message("exportResults.column.status"))
+    .setConverter(
+      new StringToBooleanConverter(
+        Page.message("exportResults.column.status.success"),
+        Page.message("exportResults.column.status.errors")))
     .setExpandRatio(1)
 
-  results.foreach { r =>
-    val status = if (r.hasErrors) {
-      Page.message("exportResults.column.status.errors")
-    } else {
-      Page.message("exportResults.column.status.success")
-    }
-    grid.addRow(Seq(r.configLabel,
-      r.dateStarted,
-      r.from,
-      r.to,
-      r.createdTasksNumber.asInstanceOf[Object],
-      r.updatedTasksNumber.asInstanceOf[Object],
-      status
-    ): _*)
+  grid.addSelectionListener { _ =>
+    val result = grid.getContainerDataSource.getItem(grid.getSelectedRow).asInstanceOf[BeanItem[ExportResultFormat]].getBean
+    showResult(result)
   }
-
-  import com.vaadin.ui.Notification
-
-  grid.addSelectionListener(_ =>
-    Notification.show("Select row: " + grid.getSelectedRow)
-  )
-
 
   ui.addComponent(grid)
 

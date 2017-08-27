@@ -32,7 +32,7 @@ import com.taskadapter.webui.pages.NewConfigPage;
 import com.taskadapter.webui.pages.SupportPage;
 import com.taskadapter.webui.pages.UserProfilePage;
 import com.taskadapter.webui.results.ExportResultFormat;
-import com.taskadapter.webui.results.SaveResultsListPage;
+import com.taskadapter.webui.results.ExportResultsListPage;
 import com.taskadapter.webui.service.Preservices;
 import com.vaadin.server.StreamVariable;
 import com.vaadin.server.VaadinSession;
@@ -186,8 +186,6 @@ public class LoggedInPageset {
     }
 
     private void showLastResults(ConfigId configId) {
-        ExportResultsFragment fragment = new ExportResultsFragment(this::showHome,
-                services.settingsManager.isTAWorkingOnLocalMachine());
         Seq<ExportResultFormat> results = context.configOps.getExportResults(services.rootDir, configId);
 
         List<ExportResultFormat> javaResults = new ArrayList<>(JavaConversions.seqAsJavaList(results));
@@ -196,21 +194,37 @@ public class LoggedInPageset {
             Notification.show(Page.message("error.noLastExportResult"));
         } else {
             ExportResultFormat last = javaResults.get(0);
-            Component component = fragment.showExportResult(last);
-            applyUI(component);
+            showResult(last);
         }
+    }
+
+    private void showResult(ExportResultFormat result) {
+        ExportResultsFragment fragment = new ExportResultsFragment(this::showHome,
+                services.settingsManager.isTAWorkingOnLocalMachine());
+        Component component = fragment.showExportResult(result);
+        applyUI(component);
     }
 
     private void showExportResults(ConfigId configId) {
         Seq<ExportResultFormat> results = context.configOps.getExportResults(services.rootDir, configId);
-        applyUI(new SaveResultsListPage(this::showHome,
-                results).ui());
+        applyUI(new ExportResultsListPage(this::showHome,
+                results, showExportResultsScala()
+        ).ui());
     }
 
     private void showAllExportResults() {
         Seq<ExportResultFormat> results = context.configOps.getExportResults(services.rootDir);
-        applyUI(new SaveResultsListPage(this::showHome,
-                results).ui());
+        applyUI(
+                new ExportResultsListPage(this::showHome,
+                        results, showExportResultsScala())
+                        .ui());
+    }
+
+    private Function1<ExportResultFormat, BoxedUnit> showExportResultsScala() {
+        return (result) -> {
+            showResult(result);
+            return BoxedUnit.UNIT;
+        };
     }
 
     /**
@@ -273,12 +287,12 @@ public class LoggedInPageset {
                         dropIn(config, file);
                     }
 
-            @Override
-            public void backwardDropIn(UISyncConfig config,
-                                       Html5File file) {
-                dropIn(config.reverse(), file);
-            }
-        },
+                    @Override
+                    public void backwardDropIn(UISyncConfig config,
+                                               Html5File file) {
+                        dropIn(config.reverse(), file);
+                    }
+                },
                 context.configOps
         ).ui();
         applyUI(component);
@@ -329,6 +343,7 @@ public class LoggedInPageset {
             return BoxedUnit.UNIT;
         };
     }
+
     private Function0<BoxedUnit> showNewSetupPage() {
         return () -> {
             tracker.trackPage("add_setup");
