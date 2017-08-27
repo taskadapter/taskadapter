@@ -5,7 +5,6 @@ import java.util.{Collections, Comparator}
 
 import com.taskadapter.web.uiapi.UISyncConfig
 import com.taskadapter.webui.{ConfigOperations, Page, Sizes, Tracker}
-import com.vaadin.event.FieldEvents
 import com.vaadin.server.Sizeable.Unit.PIXELS
 import com.vaadin.ui._
 
@@ -103,7 +102,7 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
 
   val filterPanel = new HorizontalLayout
   val filterField = new TextField
-  filterField.addTextChangeListener((event: FieldEvents.TextChangeEvent) => filterFields(event.getText).asInstanceOf[FieldEvents.TextChangeListener])
+  filterField.addTextChangeListener(e => filterFields(e.getText))
   filterPanel.addComponent(new Label(Page.message("configsPage.filter")))
   filterPanel.addComponent(filterField)
   filterPanel.setSpacing(true)
