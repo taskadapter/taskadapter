@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat
 import com.taskadapter.webui.Page
 import com.vaadin.data.util.BeanItem
 import com.vaadin.data.util.converter.StringToBooleanConverter
-import com.vaadin.ui.renderers.DateRenderer
+import com.vaadin.ui.renderers.{DateRenderer, HtmlRenderer}
 import com.vaadin.ui.{Button, Grid, VerticalLayout}
 
 import scala.collection.JavaConverters._
@@ -34,6 +34,17 @@ class ExportResultsListPage(close: Runnable, results: Seq[ExportResultFormat],
     .setRenderer(new DateRenderer(new SimpleDateFormat(dateFormat)))
     .setExpandRatio(1)
 
+  grid.addColumn("success")
+    .setHeaderCaption(Page.message("exportResults.column.status"))
+    .setConverter(
+      new StringToBooleanConverter(
+        Page.message("exportResults.column.status.success"),
+        "<font color= 'red'>" + Page.message("exportResults.column.status.errors") + "</font>"
+      )
+    )
+    .setRenderer(new HtmlRenderer())
+    .setExpandRatio(1)
+
   grid.addColumn("from")
     .setHeaderCaption(Page.message("exportResults.column.from"))
     .setExpandRatio(2)
@@ -48,14 +59,6 @@ class ExportResultsListPage(close: Runnable, results: Seq[ExportResultFormat],
 
   grid.addColumn("updatedTasksNumber")
     .setHeaderCaption(Page.message("exportResults.column.tasksUpdated"))
-    .setExpandRatio(1)
-
-  grid.addColumn("success")
-    .setHeaderCaption(Page.message("exportResults.column.status"))
-    .setConverter(
-      new StringToBooleanConverter(
-        Page.message("exportResults.column.status.success"),
-        Page.message("exportResults.column.status.errors")))
     .setExpandRatio(1)
 
   grid.addSelectionListener { _ =>
