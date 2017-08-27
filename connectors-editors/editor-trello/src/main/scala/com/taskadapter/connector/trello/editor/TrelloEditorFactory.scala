@@ -57,8 +57,10 @@ class TrelloEditorFactory extends PluginEditorFactory[TrelloConfig, WebConnector
   }
 
   @throws[BadConfigException]
-  override def validateForLoad(config: TrelloConfig, serverInfo: WebConnectorSetup): Unit =
+  override def validateForLoad(config: TrelloConfig, serverInfo: WebConnectorSetup): Unit = {
     if (Strings.isNullOrEmpty(serverInfo.host)) throw new ServerURLNotSetException
+    if (Strings.isNullOrEmpty(config.boardId)) throw new ProjectNotSetException
+  }
 
   override def describeSourceLocation(config: TrelloConfig, setup: WebConnectorSetup): String = setup.host
 
