@@ -47,7 +47,7 @@ class SaveResultBuilder {
     taskErrors += new TaskError[Throwable](task, e)
   }
 
-  def getResult = new SaveResult(targetFileAbsolutePath, updatedTasksNumber, createdTasksNumber,
+  def getResult = SaveResult(targetFileAbsolutePath, updatedTasksNumber, createdTasksNumber,
     idToRemoteKeyMap.toList,
     generalErrors.toList,
     taskErrors.toList,

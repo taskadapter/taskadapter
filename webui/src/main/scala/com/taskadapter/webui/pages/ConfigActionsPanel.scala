@@ -9,8 +9,11 @@ import com.vaadin.ui._
   */
 object ConfigActionsPanel {
   val descriptionButtonWidth = "575px"
+
   def render(config: UISyncConfig, mode: ConfigsPage.DisplayMode, callback: ConfigsPage.Callback,
-             configOps: ConfigOperations, onExit: Runnable, tracker: Tracker): Component = {
+             configOps: ConfigOperations, onExit: Runnable,
+             showAllPreviousExportResults: Runnable,
+             tracker: Tracker): Component = {
     val layout = new VerticalLayout
     layout.addStyleName("configPanelInConfigsList")
     val labelText = mode.nameOf(config)
@@ -21,7 +24,8 @@ object ConfigActionsPanel {
     descriptionButton.setHtmlContentAllowed(true)
     descriptionButton.addClickListener(_ => callback.edit(config))
 
-    val configOperationsBar = new CloneDeleteComponent(config.id, configOps, onExit, tracker).layout
+    val configOperationsBar = new CloneDeleteComponent(config.id, configOps, onExit,
+      showAllPreviousExportResults, tracker).layout
     val descriptionLayout = new HorizontalLayout(descriptionButton, configOperationsBar)
     descriptionLayout.setExpandRatio(descriptionButton, 1)
     layout.addComponent(descriptionLayout)

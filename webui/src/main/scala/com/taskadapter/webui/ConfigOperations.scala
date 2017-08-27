@@ -3,9 +3,10 @@ package com.taskadapter.webui
 import java.io.File
 import java.util
 
+import com.taskadapter.SaveResultStorage
 import com.taskadapter.auth.{AuthorizedOperations, CredentialsManager}
 import com.taskadapter.config.StorageException
-import com.taskadapter.connector.definition.ConnectorSetup
+import com.taskadapter.connector.definition.{ConnectorSetup, SaveResult}
 import com.taskadapter.web.uiapi.{ConfigId, SetupId, UIConfigStore, UISyncConfig}
 
 import scala.collection.JavaConverters._
@@ -53,6 +54,10 @@ final class ConfigOperations(/**
       res.addAll(uiConfigStore.getUserConfigs(user).asJava)
     )
     res
+  }
+
+  def getExportResults(rootFolder: File, configId: ConfigId): Seq[SaveResult] = {
+    SaveResultStorage.getSaveResults(rootFolder, configId)
   }
 
   /**

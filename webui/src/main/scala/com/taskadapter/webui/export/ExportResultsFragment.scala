@@ -86,8 +86,8 @@ class ExportResultsFragment(tracker: Tracker, onDone: Runnable, showFilePath: Bo
     * @param generalErrors * list of general errors.
     * @param taskErrors    * errors specific for each task.
     */
-  def addErrors(container: ComponentContainer, connector: UIConnectorConfig, generalErrors: List[Throwable],
-                taskErrors: List[TaskError[Throwable]]): Unit = {
+  def addErrors(container: ComponentContainer, connector: UIConnectorConfig, generalErrors: Seq[Throwable],
+                taskErrors: Seq[TaskError[Throwable]]): Unit = {
     if (generalErrors.isEmpty && taskErrors.isEmpty) return
 
     val label = new Label(Page.message("exportResults.thereWereErrors"))

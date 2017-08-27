@@ -3,6 +3,7 @@ package com.taskadapter.webui.pageset;
 import com.google.common.io.Files;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.connector.definition.ConnectorSetup;
+import com.taskadapter.connector.definition.SaveResult;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.service.Sandbox;
@@ -31,6 +32,7 @@ import com.taskadapter.webui.pages.LicenseAgreementPage;
 import com.taskadapter.webui.pages.NewConfigPage;
 import com.taskadapter.webui.pages.SupportPage;
 import com.taskadapter.webui.pages.UserProfilePage;
+import com.taskadapter.webui.results.SaveResultsListPage;
 import com.taskadapter.webui.service.Preservices;
 import com.vaadin.server.StreamVariable;
 import com.vaadin.server.VaadinSession;
@@ -44,6 +46,7 @@ import org.slf4j.LoggerFactory;
 import scala.Function0;
 import scala.Function1;
 import scala.Option;
+import scala.collection.Seq;
 import scala.runtime.BoxedUnit;
 
 import java.io.File;
@@ -55,7 +58,6 @@ import static com.taskadapter.webui.Page.message;
 
 /**
  * Pageset for logged-in user.
- * 
  */
 public class LoggedInPageset {
     private static final int MAX_TASKS_TO_LOAD = Integer.MAX_VALUE;
@@ -104,22 +106,16 @@ public class LoggedInPageset {
 
     /**
      * Creates a new pageset.
-     * 
-     * @param credentialsManager
-     *            credentialsManager
-     * 
-     * @param services
-     *            used services.
-     * @param tracker
-     *            usage tracker.
-     * @param ctx
-     *            context for active user.
-     * @param callback
-     *            callback to use.
+     *
+     * @param credentialsManager credentialsManager
+     * @param services           used services.
+     * @param tracker            usage tracker.
+     * @param ctx                context for active user.
+     * @param callback           callback to use.
      */
     private LoggedInPageset(CredentialsManager credentialsManager,
-            Preservices services, Tracker tracker, UserContext ctx, WebUserSession webUserSession,
-            Runnable callback) {
+                            Preservices services, Tracker tracker, UserContext ctx, WebUserSession webUserSession,
+                            Runnable callback) {
         this.services = services;
         this.credentialsManager = credentialsManager;
         this.context = ctx;
@@ -139,8 +135,8 @@ public class LoggedInPageset {
     private Component createSelfManagementMenu() {
         HorizontalLayout layout = new HorizontalLayout(
                 HeaderMenuBuilder.createButton(
-                message("headerMenu.userProfile"),
-                this::showUserProfilePage));
+                        message("headerMenu.userProfile"),
+                        this::showUserProfilePage));
         layout.setSpacing(true);
         return layout;
     }
@@ -190,6 +186,13 @@ public class LoggedInPageset {
         UISyncConfig config = maybeCconfig.get();
         applyUI(DevPageFactory.getDevPage(tracker, config.connector1(), config.connector2(), this::showHome));
     }
+
+    private void showAllPreviousResults(ConfigId configId) {
+        Seq<SaveResult> results = context.configOps.getExportResults(services.rootDir, configId);
+        applyUI(new SaveResultsListPage(this::showHome,
+                results).ui());
+    }
+
     /**
      * Shows a home page.
      */
@@ -208,32 +211,32 @@ public class LoggedInPageset {
     private void showConfigsList(boolean showAll) {
         tracker.trackPage("configs_list");
         Component component = new ConfigsPage(tracker, showAll,
-        new ConfigsPage.Callback() {
-            @Override
-            public void newConfig() {
-                createNewConfig();
-            }
+                new ConfigsPage.Callback() {
+                    @Override
+                    public void newConfig() {
+                        createNewConfig();
+                    }
 
-            @Override
-            public void forwardSync(UISyncConfig config) {
-                sync(config);
-            }
+                    @Override
+                    public void forwardSync(UISyncConfig config) {
+                        sync(config);
+                    }
 
-            @Override
-            public void backwardSync(UISyncConfig config) {
-                sync(config.reverse());
-            }
+                    @Override
+                    public void backwardSync(UISyncConfig config) {
+                        sync(config.reverse());
+                    }
 
-            @Override
-            public void edit(UISyncConfig config) {
-                showConfigEditor(config, null);
-            }
+                    @Override
+                    public void edit(UISyncConfig config) {
+                        showConfigEditor(config, null);
+                    }
 
-            @Override
-            public void forwardDropIn(UISyncConfig config,
-                                      Html5File file) {
-                dropIn(config, file);
-            }
+                    @Override
+                    public void forwardDropIn(UISyncConfig config,
+                                              Html5File file) {
+                        dropIn(config, file);
+                    }
 
             @Override
             public void backwardDropIn(UISyncConfig config,
@@ -241,7 +244,8 @@ public class LoggedInPageset {
                 dropIn(config.reverse(), file);
             }
         },
-                context.configOps
+                context.configOps,
+                ()-> /*showAllPreviousResults(configId)*/ {}
         ).layout;
         applyUI(component);
     }
@@ -323,6 +327,7 @@ public class LoggedInPageset {
                     Option<UISyncConfig> loadedConfig = context.configOps.getConfig(configId);
                     sync(loadedConfig.get());
                 }, this::showConfigsList,
+                () -> showAllPreviousResults(configId),
                 () -> showLastResults(configId));
 
         return editor.getUI();
@@ -334,9 +339,8 @@ public class LoggedInPageset {
 
     /**
      * Performs a synchronization operation from first connector to second.
-     * 
-     * @param config
-     *            base config. May be saved!
+     *
+     * @param config base config. May be saved!
      */
     private void sync(UISyncConfig config) {
         if (!prepareForConversion(config))
@@ -346,7 +350,7 @@ public class LoggedInPageset {
 //        if (destinationConnector instanceof FileBasedConnector) {
 //            processFile(config, (FileBasedConnector) destinationConnector);
 //        } else {
-            exportCommon(config);
+        exportCommon(config);
 //        }
     }
 
@@ -489,9 +493,8 @@ public class LoggedInPageset {
 
     /**
      * Prepares config for conversion.
-     * 
-     * @param config
-     *            config to prepare.
+     *
+     * @param config config to prepare.
      * @return true iff conversion could be performed, false otherwise.
      */
     private boolean prepareForConversion(UISyncConfig config) {
@@ -530,9 +533,8 @@ public class LoggedInPageset {
 
     /**
      * Applies a new content.
-     * 
-     * @param ui
-     *            new content.
+     *
+     * @param ui new content.
      */
     private void applyUI(Component ui) {
         currentComponentArea.removeAllComponents();
@@ -543,20 +545,16 @@ public class LoggedInPageset {
 
     /**
      * Creates a new pageset for logged-in user.
-     * 
-     * @param services
-     *            global services.
-     * @param tracker
-     *            context tracker.
-     * @param ctx
-     *            Context for active user.
-     * @param logoutCallback
-     *            callback to invoke on logout.
+     *
+     * @param services       global services.
+     * @param tracker        context tracker.
+     * @param ctx            Context for active user.
+     * @param logoutCallback callback to invoke on logout.
      * @return pageset UI.
      */
     public static Component createPageset(CredentialsManager credManager,
-            Preservices services, Tracker tracker, UserContext ctx, WebUserSession webUserSession,
-            Runnable logoutCallback) {
+                                          Preservices services, Tracker tracker, UserContext ctx, WebUserSession webUserSession,
+                                          Runnable logoutCallback) {
         final LoggedInPageset ps = new LoggedInPageset(credManager, services,
                 tracker, ctx, webUserSession, logoutCallback);
         if (services.settingsManager.isLicenseAgreementAccepted())

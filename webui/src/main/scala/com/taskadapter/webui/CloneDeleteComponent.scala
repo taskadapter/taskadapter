@@ -13,7 +13,9 @@ import org.slf4j.LoggerFactory
   * @param configOps config operations.
   * @param onExit    exit request handler.
   */
-class CloneDeleteComponent(configId: ConfigId, configOps: ConfigOperations, onExit: Runnable, tracker: Tracker) {
+class CloneDeleteComponent(configId: ConfigId, configOps: ConfigOperations, onExit: Runnable,
+                           showPastExportResults:Runnable,
+                           tracker: Tracker) {
 
   private val log = LoggerFactory.getLogger(classOf[CloneDeleteComponent])
 
@@ -21,6 +23,7 @@ class CloneDeleteComponent(configId: ConfigId, configOps: ConfigOperations, onEx
   var dropdown = configOperationsBar.addItem("", null)
   dropdown.addItem(Page.message("configsPage.actionClone"), (selectedItem: MenuBar#MenuItem) => showConfirmClonePage())
   dropdown.addItem(Page.message("configsPage.actionDelete"), (selectedItem: MenuBar#MenuItem) => showDeleteConfigDialog())
+  dropdown.addItem(Page.message("configsPage.actionViewExportResults"), (selectedItem: MenuBar#MenuItem) => showPastExportResults.run())
 
   val layout = new HorizontalLayout
   layout.addComponent(configOperationsBar)

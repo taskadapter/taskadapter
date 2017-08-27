@@ -140,11 +140,13 @@ public final class ConfigsPage {
     private final DisplayMode displayMode;
     private final Callback callback;
     private ConfigOperations configOperations;
+    private Runnable showSavedResults;
     private final VerticalLayout configsLayout;
     TextField filterField = new TextField();
 
     public ConfigsPage(Tracker tracker, Boolean showAll,
-                       final Callback callback, ConfigOperations configOperations) {
+                       final Callback callback, ConfigOperations configOperations,
+                Runnable showSavedResults) {
 
         this.tracker = tracker;
         this.showAll = showAll;
@@ -152,6 +154,7 @@ public final class ConfigsPage {
                 : ConfigsPage.DisplayMode.OWNED_CONFIGS;
         this.callback = callback;
         this.configOperations = configOperations;
+        this.showSavedResults = showSavedResults;
 
         layout = new VerticalLayout();
         layout.setSpacing(true);
@@ -195,7 +198,9 @@ public final class ConfigsPage {
 
         for (UISyncConfig config : dispConfigs) {
             configsLayout.addComponent(ConfigActionsPanel.render(config,
-                    displayMode, callback, configOperations, this::refreshConfigs, tracker)
+                    displayMode, callback, configOperations, this::refreshConfigs,
+                    showSavedResults,
+                    tracker)
             );
         }
     }

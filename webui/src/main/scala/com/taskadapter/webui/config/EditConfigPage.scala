@@ -20,6 +20,7 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
                      sandbox: Sandbox, config: UISyncConfig, exportToLeft: Runnable,
                      exportToRight: Runnable,
                      close: Runnable,
+                     showAllPreviousResults: Runnable,
                      showLastResults: Runnable) {
   private val logger = LoggerFactory.getLogger(classOf[EditConfigPage])
 
@@ -151,7 +152,7 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
     val backButton = new Button(Page.message("button.close"))
     backButton.addClickListener(_ => close.run())
 
-    val cloneDeletePanel = new CloneDeleteComponent(config.id, configOps, close, tracker).layout
+    val cloneDeletePanel = new CloneDeleteComponent(config.id, configOps, close, showAllPreviousResults, tracker).layout
     rightLayout.addComponent(backButton)
     rightLayout.addComponent(cloneDeletePanel)
     buttonsLayout
