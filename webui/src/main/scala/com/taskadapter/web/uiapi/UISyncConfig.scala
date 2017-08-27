@@ -157,6 +157,7 @@ case class UISyncConfig(configRootFolder: File,
     val finish = System.currentTimeMillis()
 
     val finalResult = ExportResultFormat(id, label, getConnector1.getSourceLocation, destinationLocation,
+      Option(result.targetFileAbsolutePath),
       result.updatedTasksNumber, result.createdTasksNumber,
       result.generalErrors.map(getConnector2.decodeException),
       result.taskErrors.map(e =>

@@ -38,17 +38,17 @@ class ExportResultsFragment(onDone: Runnable, showFilePath: Boolean) {
     donePanel.addComponent(createdExportResultLabel(message("export.from"), result.from))
     donePanel.addComponent(createdExportResultLabel(message("export.to"), result.to))
 
-    // TODO TA3 download file link
-    //    val resultFile = result.targetFileAbsolutePath
-    //    if (resultFile != null && !showFilePath) donePanel.addComponent(createDownloadButton(resultFile))
+    if (result.targetFileName.isDefined) {
+      if (showFilePath) {
+        val flabel = new Label(Page.message("export.pathToExportFile", result.targetFileName.get))
+        flabel.setContentMode(ContentMode.HTML)
+        donePanel.addComponent(flabel)
+      }
+      donePanel.addComponent(createDownloadButton(result.targetFileName.get))
+    }
     donePanel.addComponent(createdExportResultLabel(message("export.createdTasks"), String.valueOf(result.createdTasksNumber)))
     donePanel.addComponent(createdExportResultLabel(message("export.updatedTasks"), String.valueOf(result.updatedTasksNumber) + "<br/><br/>"))
 
-    //    if (!Strings.isNullOrEmpty(resultFile) && showFilePath) {
-    //      val flabel = new Label(Page.message("export.pathToExportFile", resultFile))
-    //      flabel.setContentMode(ContentMode.HTML)
-    //      donePanel.addComponent(flabel)
-    //    }
 
     addErrors(donePanel, result.generalErrors, result.taskErrors)
 
