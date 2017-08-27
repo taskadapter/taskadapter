@@ -6,7 +6,8 @@ import com.taskadapter.webui.Page
 import com.vaadin.data.util.BeanItem
 import com.vaadin.data.util.converter.StringToBooleanConverter
 import com.vaadin.ui.renderers.{DateRenderer, HtmlRenderer}
-import com.vaadin.ui.{Button, Grid, VerticalLayout}
+import com.vaadin.ui.themes.ValoTheme
+import com.vaadin.ui.{Button, Grid, Label, VerticalLayout}
 
 import scala.collection.JavaConverters._
 
@@ -34,6 +35,10 @@ class ExportResultsListPage(close: Runnable, results: Seq[ExportResultFormat],
     .setRenderer(new DateRenderer(new SimpleDateFormat(dateFormat)))
     .setExpandRatio(1)
 
+  grid.addColumn("to")
+    .setHeaderCaption(Page.message("exportResults.column.to"))
+    .setExpandRatio(2)
+
   grid.addColumn("success")
     .setHeaderCaption(Page.message("exportResults.column.status"))
     .setConverter(
@@ -44,16 +49,6 @@ class ExportResultsListPage(close: Runnable, results: Seq[ExportResultFormat],
     )
     .setRenderer(new HtmlRenderer())
     .setExpandRatio(1)
-
-/*
-  grid.addColumn("from")
-    .setHeaderCaption(Page.message("exportResults.column.from"))
-    .setExpandRatio(2)
-*/
-
-  grid.addColumn("to")
-    .setHeaderCaption(Page.message("exportResults.column.to"))
-    .setExpandRatio(2)
 
   grid.addColumn("createdTasksNumber")
     .setHeaderCaption(Page.message("exportResults.column.tasksCreated"))
@@ -68,6 +63,9 @@ class ExportResultsListPage(close: Runnable, results: Seq[ExportResultFormat],
     showResult(result)
   }
 
+  private val label = new Label(Page.message("exportResults.intro"))
+  label.addStyleName(ValoTheme.LABEL_HUGE)
+  ui.addComponent(label)
   ui.addComponent(grid)
 
   val closeButton = new Button(Page.message("button.close"))
