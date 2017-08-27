@@ -262,7 +262,7 @@ public class LoggedInPageset {
                 // TODO TA3 fix! important
                 ()-> /*showAllPreviousResults(configId)*/ {},
                 () -> {} // last results
-        ).layout;
+        ).ui();
         applyUI(component);
     }
 

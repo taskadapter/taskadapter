@@ -10,7 +10,7 @@ import com.vaadin.ui._
 object ConfigActionsPanel {
   val descriptionButtonWidth = "575px"
 
-  def render(config: UISyncConfig, mode: ConfigsPage.DisplayMode, callback: ConfigsPage.Callback,
+  def render(config: UISyncConfig, mode: DisplayMode, callback: ConfigsPage.Callback,
              configOps: ConfigOperations, onExit: Runnable,
              showAllPreviousExportResults: Runnable,
              showLastExportResult: Runnable,
