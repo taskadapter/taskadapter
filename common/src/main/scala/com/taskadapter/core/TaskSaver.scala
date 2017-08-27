@@ -1,6 +1,7 @@
 package com.taskadapter.core
 
 import java.util
+import java.util.Date
 
 import com.taskadapter.connector.common.DataConnectorUtil
 import com.taskadapter.connector.definition.exceptions.ConnectorException
@@ -30,7 +31,7 @@ object TaskSaver {
       case e: ConnectorException =>
         monitor.done()
         log.error(s"Exception in connector $connectorTo while saving data. destination: $destinationName. Exception is: $e")
-        new SaveResult(null, 0, 0, List(), List(e), List())
+        SaveResult(null, 0, 0, List(), List(e), List(), new Date, 0)
     }
   }
 }

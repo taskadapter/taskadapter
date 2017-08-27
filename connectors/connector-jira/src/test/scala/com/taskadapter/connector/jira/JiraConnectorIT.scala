@@ -47,10 +47,10 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, util.Arrays.asList(parentTask),
       ProgressMonitorUtils.DUMMY_MONITOR,
       JiraFieldBuilder.getDefault)
-    assertThat(result.getCreatedTasksNumber).isEqualTo(3)
-    val parentTaskId = result.getIdToRemoteKeyList.head._2
-    val subTask1Id = result.getIdToRemoteKeyList(1)._2
-    val subTask2Id = result.getIdToRemoteKeyList(2)._2
+    assertThat(result.createdTasksNumber).isEqualTo(3)
+    val parentTaskId = result.keyToRemoteKeyList.head._2
+    val subTask1Id = result.keyToRemoteKeyList(1)._2
+    val subTask2Id = result.keyToRemoteKeyList(2)._2
 
     val loadedSubTask1 = connector.loadTaskByKey(subTask1Id, JiraFieldBuilder.getDefault.asJava)
     val loadedSubTask2 = connector.loadTaskByKey(subTask2Id, JiraFieldBuilder.getDefault.asJava)
@@ -72,8 +72,8 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     )
 
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows)
-    assertThat(result.getCreatedTasksNumber).isEqualTo(1)
-    val taskId = result.getIdToRemoteKeyList.head._2
+    assertThat(result.createdTasksNumber).isEqualTo(1)
+    val taskId = result.keyToRemoteKeyList.head._2
     val loadedTask = connector.loadTaskByKey(taskId, rows.asJava)
     assertThat(loadedTask.getValue(JiraField.description)).isEqualTo("some default")
     TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)

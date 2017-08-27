@@ -23,8 +23,8 @@ class UISyncConfigIT extends FunSpec with Matchers with ConfigsTempFolder {
       val taskExportResult = toRedmineConfig.saveTasks(gTasks, ProgressMonitorUtils.DUMMY_MONITOR)
       val saveResult = taskExportResult.saveResult
       assertThat(saveResult.hasErrors).isFalse()
-      assertThat(saveResult.getCreatedTasksNumber).isEqualTo(1)
-      assertThat(saveResult.getUpdatedTasksNumber).isEqualTo(0)
+      assertThat(saveResult.createdTasksNumber).isEqualTo(1)
+      assertThat(saveResult.updatedTasksNumber).isEqualTo(0)
     }
 
     it("task With Description Unselected Is Created In Redmine With Empty Description") {
@@ -33,8 +33,8 @@ class UISyncConfigIT extends FunSpec with Matchers with ConfigsTempFolder {
       val taskExportResult = configWithDescriptionUnselected.saveTasks(gTasks, ProgressMonitorUtils.DUMMY_MONITOR)
       val saveResult = taskExportResult.saveResult
       assertThat(saveResult.hasErrors).isFalse()
-      assertThat(saveResult.getCreatedTasksNumber).isEqualTo(1)
-      assertThat(saveResult.getUpdatedTasksNumber).isEqualTo(0)
+      assertThat(saveResult.createdTasksNumber).isEqualTo(1)
+      assertThat(saveResult.updatedTasksNumber).isEqualTo(0)
       val redmineConfig = new RedmineConfig
       // TODO get config from the same conf file as above
       redmineConfig.setServerInfo(...)
@@ -53,7 +53,7 @@ class UISyncConfigIT extends FunSpec with Matchers with ConfigsTempFolder {
       assertThat(loadedTasks.size).isGreaterThan(0)
       val saveResult = config.saveTasks(loadedTasks, ProgressMonitorUtils.DUMMY_MONITOR)
       saveResult.hasErrors shouldBe false
-      saveResult.getCreatedTasksNumber shouldBe loadedTasks.size
+      saveResult.createdTasksNumber shouldBe loadedTasks.size
     }
   }
 
@@ -64,7 +64,7 @@ class UISyncConfigIT extends FunSpec with Matchers with ConfigsTempFolder {
       assertThat(loadedTasks.size).isGreaterThan(0)
       val saveResult = config.saveTasks(loadedTasks, ProgressMonitorUtils.DUMMY_MONITOR)
       assertThat(saveResult.hasErrors).isFalse()
-      assertThat(saveResult.getCreatedTasksNumber).isEqualTo(loadedTasks.size)
+      assertThat(saveResult.createdTasksNumber).isEqualTo(loadedTasks.size)
     }
   }
 
@@ -79,15 +79,15 @@ class UISyncConfigIT extends FunSpec with Matchers with ConfigsTempFolder {
       val list = List(jiraTask).asJava
       val saveResult = config.saveTasks(list, ProgressMonitorUtils.DUMMY_MONITOR)
       assertThat(saveResult.hasErrors).isFalse()
-      assertThat(saveResult.getCreatedTasksNumber).isEqualTo(1)
-      assertThat(saveResult.getUpdatedTasksNumber).isEqualTo(0)
+      assertThat(saveResult.createdTasksNumber).isEqualTo(1)
+      assertThat(saveResult.updatedTasksNumber).isEqualTo(0)
 
       // now pretend that the task was loaded from somewhere
       jiraTask.setSourceSystemId(TaskId(66, "TEST-66"))
       val updateResult = config.saveTasks(list, ProgressMonitorUtils.DUMMY_MONITOR)
       assertThat(updateResult.hasErrors).isFalse()
-      assertThat(updateResult.getCreatedTasksNumber).isEqualTo(0)
-      assertThat(updateResult.getUpdatedTasksNumber).isEqualTo(1)
+      assertThat(updateResult.createdTasksNumber).isEqualTo(0)
+      assertThat(updateResult.updatedTasksNumber).isEqualTo(1)
     }
   }
 
@@ -131,7 +131,7 @@ class UISyncConfigIT extends FunSpec with Matchers with ConfigsTempFolder {
       val secondResultWrapper = uiSyncConfig.saveTasks(tasks, ProgressMonitorUtils.DUMMY_MONITOR)
       val secondResult = secondResultWrapper.saveResult
       assertThat(secondResult.hasErrors).isFalse()
-      assertThat(secondResult.getCreatedTasksNumber).isEqualTo(0)
-      assertThat(secondResult.getUpdatedTasksNumber).isEqualTo(1)
+      assertThat(secondResult.createdTasksNumber).isEqualTo(0)
+      assertThat(secondResult.updatedTasksNumber).isEqualTo(1)
     }*/
 }

@@ -60,7 +60,7 @@ public class TodoIT {
         final TaskSaveResult res = connector.saveData(
                 Collections.singletonList(task),
                 ProgressMonitorUtils.DUMMY_MONITOR, mappings);
-        Assert.assertEquals(1, res.getCreatedTasksNumber());
-        Assert.assertEquals(0, res.getUpdatedTasksNumber());
+        Assert.assertEquals(1, res.createdTasksNumber());
+        Assert.assertEquals(0, res.updatedTasksNumber());
     }*/
 }

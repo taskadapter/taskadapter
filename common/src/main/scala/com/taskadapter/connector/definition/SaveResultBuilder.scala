@@ -1,8 +1,13 @@
 package com.taskadapter.connector.definition
 
+import java.util.Date
+
 import com.taskadapter.model.GTask
 
 class SaveResultBuilder {
+
+  private val dateStarted = new Date
+
   private var targetFileAbsolutePath = ""
   /**
     * Number of updated tasks.
@@ -45,5 +50,8 @@ class SaveResultBuilder {
   def getResult = new SaveResult(targetFileAbsolutePath, updatedTasksNumber, createdTasksNumber,
     idToRemoteKeyMap.toList,
     generalErrors.toList,
-    taskErrors.toList)
+    taskErrors.toList,
+    dateStarted,
+    ((System.currentTimeMillis() - dateStarted.getTime)/1000).toInt
+  )
 }

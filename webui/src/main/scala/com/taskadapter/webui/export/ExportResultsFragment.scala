@@ -43,10 +43,10 @@ class ExportResultsFragment(tracker: Tracker, onDone: Runnable, showFilePath: Bo
     donePanel.addComponent(createdExportResultLabel(message("export.from"), sourceLocation))
     donePanel.addComponent(createdExportResultLabel(message("export.to"), targetLocation))
 
-    val resultFile = res.getTargetFileAbsolutePath
+    val resultFile = res.targetFileAbsolutePath
     if (resultFile != null && !showFilePath) donePanel.addComponent(createDownloadButton(resultFile))
-    donePanel.addComponent(createdExportResultLabel(message("export.createdTasks"), String.valueOf(res.getCreatedTasksNumber)))
-    donePanel.addComponent(createdExportResultLabel(message("export.updatedTasks"), String.valueOf(res.getUpdatedTasksNumber) + "<br/><br/>"))
+    donePanel.addComponent(createdExportResultLabel(message("export.createdTasks"), String.valueOf(res.createdTasksNumber)))
+    donePanel.addComponent(createdExportResultLabel(message("export.updatedTasks"), String.valueOf(res.updatedTasksNumber) + "<br/><br/>"))
 
     if (!Strings.isNullOrEmpty(resultFile) && showFilePath) {
       val flabel = new Label(Page.message("export.pathToExportFile", resultFile))
@@ -54,7 +54,7 @@ class ExportResultsFragment(tracker: Tracker, onDone: Runnable, showFilePath: Bo
       donePanel.addComponent(flabel)
     }
 
-    addErrors(donePanel, targetConfig, res.getGeneralErrors, res.getTaskErrors)
+    addErrors(donePanel, targetConfig, res.generalErrors, res.taskErrors)
 
     val button = new Button(message("action.acknowledge"))
     button.addClickListener(_ => onDone.run())
@@ -72,10 +72,10 @@ class ExportResultsFragment(tracker: Tracker, onDone: Runnable, showFilePath: Bo
 
   def logErrors(result: SaveResult): Unit = {
     log.info("Export completed. " + System.lineSeparator()
-      + "Tasks created: " + result.getCreatedTasksNumber + System.lineSeparator()
-      + "Tasks updated: " + result.getUpdatedTasksNumber + System.lineSeparator()
-      + "General errors: " + result.getGeneralErrors + System.lineSeparator()
-      + "Task-specific errors: " + result.getTaskErrors)
+      + "Tasks created: " + result.createdTasksNumber + System.lineSeparator()
+      + "Tasks updated: " + result.updatedTasksNumber + System.lineSeparator()
+      + "General errors: " + result.generalErrors + System.lineSeparator()
+      + "Task-specific errors: " + result.taskErrors)
   }
 
   /**

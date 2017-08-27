@@ -3,6 +3,7 @@ package com.taskadapter.web.uiapi
 import java.io.File
 import java.util
 
+import com.taskadapter.SaveResultStorage
 import com.taskadapter.connector.MappingBuilder
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition._
@@ -150,7 +151,8 @@ case class UISyncConfig(configRootFolder: File,
     val location2 = getConnector2.getSourceLocation
     val previouslyCreatedTasksResolver = TaskKeeperLocationStorage.loadTasks(configRootFolder, location1, location2)
     val result = TaskSaver.save(previouslyCreatedTasksResolver, connectorTo, destinationLocation, rows, tasks, progressMonitor)
-    TaskKeeperLocationStorage.store(configRootFolder, location1, location2, result.getIdToRemoteKeyList)
+    TaskKeeperLocationStorage.store(configRootFolder, location1, location2, result.keyToRemoteKeyList)
+    SaveResultStorage.store(configRootFolder, result)
     result
   }
 

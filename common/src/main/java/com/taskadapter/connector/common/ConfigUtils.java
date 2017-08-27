@@ -124,8 +124,9 @@ public class ConfigUtils {
 	/**
 	 * Creates a default "GSON" builder for a project. This builder have
 	 * configured mappings for following classes:
-	 * <ul>
-	 * </ul>
+	 *
+	 * - Mappings
+	 * - Date
 	 * 
 	 * @return default "GSON" builder for a project.
 	 */
@@ -134,6 +135,7 @@ public class ConfigUtils {
 		result.registerTypeAdapter(Mappings.class, MAPPINGS_SERIALIZER);
 		result.registerTypeAdapter(Mappings.class, MAPPINGS_PARSER);
 		result.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		result.setPrettyPrinting();
 		return result;
 	}
 
