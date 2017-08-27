@@ -4,20 +4,17 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
-import com.google.common.base.Strings
-import com.taskadapter.connector.definition.{SaveResult, TaskError}
+import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.web.configeditor.file.FileDownloadResource
-import com.taskadapter.web.uiapi.UIConnectorConfig
 import com.taskadapter.webui.Page.message
-import com.taskadapter.webui.{Page, TALog, Tracker}
+import com.taskadapter.webui.results.ExportResultFormat
+import com.taskadapter.webui.{Page, TALog}
 import com.vaadin.server.FileDownloader
 import com.vaadin.shared.ui.label.ContentMode
 import com.vaadin.ui._
 import com.vaadin.ui.themes.ValoTheme
 
-import scala.collection.immutable.List
-
-class ExportResultsFragment(tracker: Tracker, onDone: Runnable, showFilePath: Boolean) {
+class ExportResultsFragment(onDone: Runnable, showFilePath: Boolean) {
   val log = TALog.log
 
   private def quot(str: String) = str.replace("&", "&amp;").replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;")
@@ -25,10 +22,10 @@ class ExportResultsFragment(tracker: Tracker, onDone: Runnable, showFilePath: Bo
   /**
     * Shows task export result.
     *
-    * @param res
+    * @param result
     * operation result.
     */
-  def showExportResult(sourceConfig: UIConnectorConfig, targetConfig: UIConnectorConfig, res: SaveResult): Component = {
+  def showExportResult(result: ExportResultFormat): Component = {
     val donePanel = new VerticalLayout()
     donePanel.setWidth("900px")
     donePanel.setStyleName("export-panel")
@@ -37,24 +34,23 @@ class ExportResultsFragment(tracker: Tracker, onDone: Runnable, showFilePath: Bo
     val label = new Label(Page.message("export.exportCompletedOn", time))
     label.setContentMode(ContentMode.HTML)
     donePanel.addComponent(label)
-    val sourceLocation = sourceConfig.getSourceLocation
-    val targetLocation = targetConfig.getSourceLocation
 
-    donePanel.addComponent(createdExportResultLabel(message("export.from"), sourceLocation))
-    donePanel.addComponent(createdExportResultLabel(message("export.to"), targetLocation))
+    donePanel.addComponent(createdExportResultLabel(message("export.from"), result.from))
+    donePanel.addComponent(createdExportResultLabel(message("export.to"), result.to))
 
-    val resultFile = res.targetFileAbsolutePath
-    if (resultFile != null && !showFilePath) donePanel.addComponent(createDownloadButton(resultFile))
-    donePanel.addComponent(createdExportResultLabel(message("export.createdTasks"), String.valueOf(res.createdTasksNumber)))
-    donePanel.addComponent(createdExportResultLabel(message("export.updatedTasks"), String.valueOf(res.updatedTasksNumber) + "<br/><br/>"))
+    // TODO TA3 download file link
+    //    val resultFile = result.targetFileAbsolutePath
+    //    if (resultFile != null && !showFilePath) donePanel.addComponent(createDownloadButton(resultFile))
+    donePanel.addComponent(createdExportResultLabel(message("export.createdTasks"), String.valueOf(result.createdTasksNumber)))
+    donePanel.addComponent(createdExportResultLabel(message("export.updatedTasks"), String.valueOf(result.updatedTasksNumber) + "<br/><br/>"))
 
-    if (!Strings.isNullOrEmpty(resultFile) && showFilePath) {
-      val flabel = new Label(Page.message("export.pathToExportFile", resultFile))
-      flabel.setContentMode(ContentMode.HTML)
-      donePanel.addComponent(flabel)
-    }
+    //    if (!Strings.isNullOrEmpty(resultFile) && showFilePath) {
+    //      val flabel = new Label(Page.message("export.pathToExportFile", resultFile))
+    //      flabel.setContentMode(ContentMode.HTML)
+    //      donePanel.addComponent(flabel)
+    //    }
 
-    addErrors(donePanel, targetConfig, res.generalErrors, res.taskErrors)
+    addErrors(donePanel, result.generalErrors, result.taskErrors)
 
     val button = new Button(message("action.acknowledge"))
     button.addClickListener(_ => onDone.run())
@@ -63,31 +59,17 @@ class ExportResultsFragment(tracker: Tracker, onDone: Runnable, showFilePath: Bo
     ui.addComponent(donePanel)
     ui.addComponent(button)
 
-    val labelForTracking = sourceConfig.getConnectorTypeId + " - " + targetConfig.getConnectorTypeId
-    tracker.trackEvent("export", "finished_saving_tasks", labelForTracking)
-
-    logErrors(res)
     ui
-  }
-
-  def logErrors(result: SaveResult): Unit = {
-    log.info("Export completed. " + System.lineSeparator()
-      + "Tasks created: " + result.createdTasksNumber + System.lineSeparator()
-      + "Tasks updated: " + result.updatedTasksNumber + System.lineSeparator()
-      + "General errors: " + result.generalErrors + System.lineSeparator()
-      + "Task-specific errors: " + result.taskErrors)
   }
 
   /**
     * Adds connector errors into the output.
     *
     * @param container     * error container.
-    * @param connector     * connector, which created the errors.
     * @param generalErrors * list of general errors.
-    * @param taskErrors    * errors specific for each task.
+    * @param taskErrors    * errors for each task.
     */
-  def addErrors(container: ComponentContainer, connector: UIConnectorConfig, generalErrors: Seq[Throwable],
-                taskErrors: Seq[TaskError[Throwable]]): Unit = {
+  def addErrors(container: ComponentContainer, generalErrors: Seq[String], taskErrors: Seq[(TaskId, String)]): Unit = {
     if (generalErrors.isEmpty && taskErrors.isEmpty) return
 
     val label = new Label(Page.message("exportResults.thereWereErrors"))
@@ -97,7 +79,7 @@ class ExportResultsFragment(tracker: Tracker, onDone: Runnable, showFilePath: Bo
     if (generalErrors.nonEmpty) {
       var generalErrorText = ""
       generalErrors.foreach { error =>
-        generalErrorText += quot(connector.decodeException(error)) + "<br/>\n"
+        generalErrorText += quot(error) + "<br/>\n"
       }
       val generalErrorLabel = new Label(generalErrorText)
       generalErrorLabel.setContentMode(ContentMode.HTML)
@@ -111,9 +93,8 @@ class ExportResultsFragment(tracker: Tracker, onDone: Runnable, showFilePath: Bo
       container.addComponent(taskErrorsLabel)
 
       taskErrors.foreach { error =>
-        val task = error.getTask
-        val errorText = s"Task source id ${task.getSourceSystemId}<br/>" +
-          connector.decodeException(error.getErrors)
+        val taskSourceId = error._1
+        val errorText = s"Task source id $taskSourceId<br/>" + error._2
         val errorTextLabel = new Label(errorText)
         errorTextLabel.addStyleName(ValoTheme.LABEL_FAILURE)
         errorTextLabel.setContentMode(ContentMode.HTML)

@@ -2,7 +2,7 @@ package com.taskadapter.webui.results
 
 import java.util.Date
 
-import com.taskadapter.connector.definition.TaskError
+import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.web.uiapi.ConfigId
 
 case class ExportResultFormat(configId: ConfigId,
@@ -10,8 +10,8 @@ case class ExportResultFormat(configId: ConfigId,
                               from: String,
                               to: String,
                               updatedTasksNumber: Int, createdTasksNumber: Int,
-                              generalErrors: Seq[Throwable],
-                              taskErrors: Seq[TaskError[Throwable]],
+                              generalErrors: Seq[String],
+                              taskErrors: Seq[(TaskId, String)],
                               dateStarted: Date,
                               timeTookSeconds: Int) {
 

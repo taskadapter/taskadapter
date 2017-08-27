@@ -17,7 +17,7 @@ class SaveResultBuilder {
   // maps original task Key --> new task info when new tasks are created
   private val idToRemoteKeyMap = new scala.collection.mutable.ListBuffer[(TaskId, TaskId)]
   private val generalErrors = new scala.collection.mutable.ListBuffer[Throwable]
-  private val taskErrors = new scala.collection.mutable.ListBuffer[TaskError[Throwable]]
+  private val taskErrors = new scala.collection.mutable.ListBuffer[TaskError]
 
   def setTargetFileAbsolutePath(targetFileAbsolutePath: String): Unit = {
     this.targetFileAbsolutePath = targetFileAbsolutePath
@@ -40,7 +40,7 @@ class SaveResultBuilder {
   }
 
   def addTaskError(task: GTask, e: Throwable): Unit = {
-    taskErrors += new TaskError[Throwable](task, e)
+    taskErrors += new TaskError(task, e)
   }
 
   def getResult = SaveResult(targetFileAbsolutePath, updatedTasksNumber, createdTasksNumber,

@@ -1,7 +1,7 @@
 package com.taskadapter.webui.pages
 
 import com.taskadapter.web.uiapi.UISyncConfig
-import com.taskadapter.webui.{CloneDeleteComponent, ConfigOperations, Page, Tracker}
+import com.taskadapter.webui.{ConfigActionsFragment, ConfigOperations, Page, Tracker}
 import com.vaadin.ui._
 
 /**
@@ -13,6 +13,7 @@ object ConfigActionsPanel {
   def render(config: UISyncConfig, mode: ConfigsPage.DisplayMode, callback: ConfigsPage.Callback,
              configOps: ConfigOperations, onExit: Runnable,
              showAllPreviousExportResults: Runnable,
+             showLastExportResult: Runnable,
              tracker: Tracker): Component = {
     val layout = new VerticalLayout
     layout.addStyleName("configPanelInConfigsList")
@@ -24,8 +25,8 @@ object ConfigActionsPanel {
     descriptionButton.setHtmlContentAllowed(true)
     descriptionButton.addClickListener(_ => callback.edit(config))
 
-    val configOperationsBar = new CloneDeleteComponent(config.id, configOps, onExit,
-      showAllPreviousExportResults, tracker).layout
+    val configOperationsBar = new ConfigActionsFragment(config.id, configOps, onExit,
+      showAllPreviousExportResults, showLastExportResult, tracker).layout
     val descriptionLayout = new HorizontalLayout(descriptionButton, configOperationsBar)
     descriptionLayout.setExpandRatio(descriptionButton, 1)
     layout.addComponent(descriptionLayout)

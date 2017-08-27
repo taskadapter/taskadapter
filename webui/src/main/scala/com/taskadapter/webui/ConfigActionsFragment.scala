@@ -7,23 +7,25 @@ import com.vaadin.ui.{HorizontalLayout, MenuBar, Notification}
 import org.slf4j.LoggerFactory
 
 /**
-  * Contains Clone and Delete elements. Shown on Configs List and Edit Config pages.
+  * Contains buttons with varios config actions. Shown on Configs List and Edit Config pages.
   *
   * @param configId  identity of the config to perform operations on.
   * @param configOps config operations.
   * @param onExit    exit request handler.
   */
-class CloneDeleteComponent(configId: ConfigId, configOps: ConfigOperations, onExit: Runnable,
-                           showPastExportResults:Runnable,
-                           tracker: Tracker) {
+class ConfigActionsFragment(configId: ConfigId, configOps: ConfigOperations, onExit: Runnable,
+                            showPastExportResults:Runnable,
+                            showLastResult:Runnable,
+                            tracker: Tracker) {
 
-  private val log = LoggerFactory.getLogger(classOf[CloneDeleteComponent])
+  private val log = LoggerFactory.getLogger(classOf[ConfigActionsFragment])
 
   val configOperationsBar = new MenuBar()
   var dropdown = configOperationsBar.addItem("", null)
   dropdown.addItem(Page.message("configsPage.actionClone"), (selectedItem: MenuBar#MenuItem) => showConfirmClonePage())
   dropdown.addItem(Page.message("configsPage.actionDelete"), (selectedItem: MenuBar#MenuItem) => showDeleteConfigDialog())
   dropdown.addItem(Page.message("configsPage.actionViewExportResults"), (selectedItem: MenuBar#MenuItem) => showPastExportResults.run())
+  dropdown.addItem(Page.message("configsPage.actionViewLastResult"), (selectedItem: MenuBar#MenuItem) => showLastResult.run())
 
   val layout = new HorizontalLayout
   layout.addComponent(configOperationsBar)

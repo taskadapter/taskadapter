@@ -69,11 +69,6 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
   layout.addComponent(scheduledSyncPanel)
   layout.addComponent(taskFieldsMappingFragment.getUI)
 
-  /*
-    val viewLastResultsButton = new Button(Page.message("editConfig.viewLastResults"))
-    viewLastResultsButton.addClickListener(_ => showLastResults.run())
-    layout.addComponent(viewLastResultsButton)
-  */
   def removeEmptyRows(): Unit = {
     taskFieldsMappingFragment.removeEmptyRows()
   }
@@ -152,7 +147,9 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
     val backButton = new Button(Page.message("button.close"))
     backButton.addClickListener(_ => close.run())
 
-    val cloneDeletePanel = new CloneDeleteComponent(config.id, configOps, close, showAllPreviousResults, tracker).layout
+    val cloneDeletePanel = new ConfigActionsFragment(config.id, configOps, close, showAllPreviousResults,
+      showLastResults,
+      tracker).layout
     rightLayout.addComponent(backButton)
     rightLayout.addComponent(cloneDeletePanel)
     buttonsLayout

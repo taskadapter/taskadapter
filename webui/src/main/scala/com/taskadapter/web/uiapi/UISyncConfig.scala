@@ -143,7 +143,7 @@ case class UISyncConfig(configRootFolder: File,
     TaskKeeperLocationStorage.loadTasks(configRootFolder, location1, location2)
   }
 
-  def saveTasks(tasks: util.List[GTask], progressMonitor: ProgressMonitor): SaveResult = {
+  def saveTasks(tasks: util.List[GTask], progressMonitor: ProgressMonitor): ExportResultFormat = {
     val start = System.currentTimeMillis()
     val connectorTo = getConnector2.createConnectorInstance
     val destinationLocation = getConnector2.getDestinationLocation
@@ -155,14 +155,19 @@ case class UISyncConfig(configRootFolder: File,
     val result = TaskSaver.save(previouslyCreatedTasksResolver, connectorTo, destinationLocation, rows, tasks, progressMonitor)
     TaskKeeperLocationStorage.store(configRootFolder, location1, location2, result.keyToRemoteKeyList)
     val finish = System.currentTimeMillis()
-    ExportResultStorage.store(configRootFolder,
-      ExportResultFormat(id, label, getConnector1.getSourceLocation, destinationLocation,
-        result.updatedTasksNumber, result.createdTasksNumber,
-        result.generalErrors, result.taskErrors, new Date(start),
-        ((finish - start) / 1000).toInt
-      )
+
+    val finalResult = ExportResultFormat(id, label, getConnector1.getSourceLocation, destinationLocation,
+      result.updatedTasksNumber, result.createdTasksNumber,
+      result.generalErrors.map(getConnector2.decodeException),
+      result.taskErrors.map(e =>
+        (e.getTask.getSourceSystemId, getConnector2.decodeException(e.getError))
+      ),
+      new Date(start),
+      ((finish - start) / 1000).toInt
     )
-    result
+
+    ExportResultStorage.store(configRootFolder, finalResult)
+    finalResult
   }
 
   @throws[ConnectorException]

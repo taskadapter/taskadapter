@@ -3,7 +3,6 @@ package com.taskadapter.webui.pageset;
 import com.google.common.io.Files;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.connector.definition.ConnectorSetup;
-import com.taskadapter.connector.definition.SaveResult;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.service.Sandbox;
@@ -23,9 +22,9 @@ import com.taskadapter.webui.config.EditConfigPage;
 import com.taskadapter.webui.config.EditSetupPage;
 import com.taskadapter.webui.config.NewSetupPage;
 import com.taskadapter.webui.config.SetupsListPage;
+import com.taskadapter.webui.export.ExportResultsFragment;
 import com.taskadapter.webui.license.LicenseFacade;
 import com.taskadapter.webui.pages.ConfigsPage;
-import com.taskadapter.webui.pages.DevPageFactory;
 import com.taskadapter.webui.pages.DropInExportPage;
 import com.taskadapter.webui.pages.ExportPage;
 import com.taskadapter.webui.pages.LicenseAgreementPage;
@@ -47,6 +46,7 @@ import org.slf4j.LoggerFactory;
 import scala.Function0;
 import scala.Function1;
 import scala.Option;
+import scala.collection.JavaConversions;
 import scala.collection.Seq;
 import scala.runtime.BoxedUnit;
 
@@ -54,6 +54,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 import static com.taskadapter.webui.Page.message;
 
@@ -183,9 +186,19 @@ public class LoggedInPageset {
     }
 
     private void showLastResults(ConfigId configId) {
-        Option<UISyncConfig> maybeCconfig = context.configOps.getConfig(configId);
-        UISyncConfig config = maybeCconfig.get();
-        applyUI(DevPageFactory.getDevPage(tracker, config.connector1(), config.connector2(), this::showHome));
+        ExportResultsFragment fragment = new ExportResultsFragment(this::showHome,
+                services.settingsManager.isTAWorkingOnLocalMachine());
+        Seq<ExportResultFormat> results = context.configOps.getExportResults(services.rootDir, configId);
+
+        List<ExportResultFormat> javaResults = new ArrayList<>(JavaConversions.seqAsJavaList(results));
+        javaResults.sort(Comparator.comparing(ExportResultFormat::dateStarted));
+        if (javaResults.isEmpty()) {
+            Notification.show(Page.message("error.noLastExportResult"));
+        } else {
+            ExportResultFormat last = javaResults.get(0);
+            Component component = fragment.showExportResult(last);
+            applyUI(component);
+        }
     }
 
     private void showAllPreviousResults(ConfigId configId) {
@@ -246,7 +259,9 @@ public class LoggedInPageset {
             }
         },
                 context.configOps,
-                ()-> /*showAllPreviousResults(configId)*/ {}
+                // TODO TA3 fix! important
+                ()-> /*showAllPreviousResults(configId)*/ {},
+                () -> {} // last results
         ).layout;
         applyUI(component);
     }

@@ -59,6 +59,13 @@ class SaveResultsListPage(close: Runnable, results: Seq[ExportResultFormat]) {
     ): _*)
   }
 
+  import com.vaadin.ui.Notification
+
+  grid.addSelectionListener(_ =>
+    Notification.show("Select row: " + grid.getSelectedRow)
+  )
+
+
   ui.addComponent(grid)
 
   val closeButton = new Button(Page.message("button.close"))

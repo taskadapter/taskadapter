@@ -1,6 +1,5 @@
 package com.taskadapter.webui.pages;
 
-import com.taskadapter.connector.definition.SaveResult;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
@@ -11,6 +10,7 @@ import com.taskadapter.webui.Page;
 import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.export.ConfirmExportFragment;
 import com.taskadapter.webui.export.ExportResultsFragment;
+import com.taskadapter.webui.results.ExportResultFormat;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
@@ -170,9 +170,14 @@ public final class DropInExportPage {
         final MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
 
         new Thread(() -> {
-            SaveResult saveResult = config.saveTasks(selectedTasks, wrapper);
-            Component exportResult = new ExportResultsFragment(tracker, onDone, showFilePath)
-                    .showExportResult(config.connector1(), config.connector2(), saveResult);
+            ExportResultFormat saveResult = config.saveTasks(selectedTasks, wrapper);
+            ExportResultsLogger.log(saveResult);
+            Component exportResult = new ExportResultsFragment(onDone, showFilePath)
+                    .showExportResult(saveResult);
+            String labelForTracking = config.getConnector1().getConnectorTypeId() + " - " +
+                    config.getConnector2().getConnectorTypeId();
+            tracker.trackEvent("export", "finished_saving_tasks", labelForTracking);
+
             setContent(exportResult);
         }).start();
     }

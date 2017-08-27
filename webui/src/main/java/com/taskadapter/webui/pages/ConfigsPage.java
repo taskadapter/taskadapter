@@ -141,12 +141,14 @@ public final class ConfigsPage {
     private final Callback callback;
     private ConfigOperations configOperations;
     private Runnable showSavedResults;
+    private Runnable showLastExportResult;
     private final VerticalLayout configsLayout;
     TextField filterField = new TextField();
 
     public ConfigsPage(Tracker tracker, Boolean showAll,
                        final Callback callback, ConfigOperations configOperations,
-                Runnable showSavedResults) {
+                       Runnable showSavedResults,
+                       Runnable showLastExportResult) {
 
         this.tracker = tracker;
         this.showAll = showAll;
@@ -155,6 +157,7 @@ public final class ConfigsPage {
         this.callback = callback;
         this.configOperations = configOperations;
         this.showSavedResults = showSavedResults;
+        this.showLastExportResult = showLastExportResult;
 
         layout = new VerticalLayout();
         layout.setSpacing(true);
@@ -199,7 +202,7 @@ public final class ConfigsPage {
         for (UISyncConfig config : dispConfigs) {
             configsLayout.addComponent(ConfigActionsPanel.render(config,
                     displayMode, callback, configOperations, this::refreshConfigs,
-                    showSavedResults,
+                    showSavedResults, showLastExportResult,
                     tracker)
             );
         }
