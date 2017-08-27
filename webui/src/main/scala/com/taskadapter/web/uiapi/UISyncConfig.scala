@@ -2,14 +2,15 @@ package com.taskadapter.web.uiapi
 
 import java.io.File
 import java.util
+import java.util.Date
 
-import com.taskadapter.SaveResultStorage
 import com.taskadapter.connector.MappingBuilder
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition._
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.core._
 import com.taskadapter.model.GTask
+import com.taskadapter.webui.results.{ExportResultFormat, ExportResultStorage}
 
 import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
@@ -51,38 +52,38 @@ object UISyncConfig {
 
 case class UISyncConfig(configRootFolder: File,
 
-                         /**
-                           * Config identity. Unique "config-storage" id to distinguish between
-                           * configs. May be <code>null</code> for a new (non-saved) config.
-                           */
-                         identity: String,
+                        /**
+                          * Config identity. Unique "config-storage" id to distinguish between
+                          * configs. May be <code>null</code> for a new (non-saved) config.
+                          */
+                        identity: String,
 
-                         /** Name of the user who owns this config. */
-                         owner: String,
+                        /** Name of the user who owns this config. */
+                        owner: String,
 
-                         /**
-                           * Config label
-                           */
+                        /**
+                          * Config label
+                          */
                         @BeanProperty label: String,
 
-                         /**
-                           * First connector config.
-                           */
-                         connector1: UIConnectorConfig,
+                        /**
+                          * First connector config.
+                          */
+                        connector1: UIConnectorConfig,
 
-                         /**
-                           * Second connector config.
-                           */
-                         connector2: UIConnectorConfig,
+                        /**
+                          * Second connector config.
+                          */
+                        connector2: UIConnectorConfig,
 
-                         /**
-                           * Field mappings. Left side is connector1, right side is connector2.
-                           */
-                         fieldMappings: Seq[FieldMapping],
+                        /**
+                          * Field mappings. Left side is connector1, right side is connector2.
+                          */
+                        fieldMappings: Seq[FieldMapping],
 
-                         /**
-                           * "Config is reversed" flag.
-                           */
+                        /**
+                          * "Config is reversed" flag.
+                          */
                         var reversed: Boolean,
 
                         schedule: Schedule
@@ -143,6 +144,7 @@ case class UISyncConfig(configRootFolder: File,
   }
 
   def saveTasks(tasks: util.List[GTask], progressMonitor: ProgressMonitor): SaveResult = {
+    val start = System.currentTimeMillis()
     val connectorTo = getConnector2.createConnectorInstance
     val destinationLocation = getConnector2.getDestinationLocation
     val rows = generateFieldRowsToExportRight
@@ -152,7 +154,14 @@ case class UISyncConfig(configRootFolder: File,
     val previouslyCreatedTasksResolver = TaskKeeperLocationStorage.loadTasks(configRootFolder, location1, location2)
     val result = TaskSaver.save(previouslyCreatedTasksResolver, connectorTo, destinationLocation, rows, tasks, progressMonitor)
     TaskKeeperLocationStorage.store(configRootFolder, location1, location2, result.keyToRemoteKeyList)
-    SaveResultStorage.store(configRootFolder, result)
+    val finish = System.currentTimeMillis()
+    ExportResultStorage.store(configRootFolder,
+      ExportResultFormat(id, label, getConnector1.getSourceLocation, destinationLocation,
+        result.updatedTasksNumber, result.createdTasksNumber,
+        result.generalErrors, result.taskErrors, new Date(start),
+        ((finish - start) / 1000).toInt
+      )
+    )
     result
   }
 

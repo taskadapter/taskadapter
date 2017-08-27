@@ -1,11 +1,10 @@
-package com.taskadapter
+package com.taskadapter.webui.results
 
 import java.io.{File, FilenameFilter}
 
 import com.google.common.base.Charsets
 import com.google.common.io.Files
 import com.taskadapter.connector.common.FileNameGenerator
-import com.taskadapter.connector.definition.SaveResult
 import com.taskadapter.web.uiapi.ConfigId
 import net.liftweb.json.Serialization.writePretty
 import net.liftweb.json._
@@ -13,15 +12,15 @@ import org.slf4j.LoggerFactory
 
 import scala.collection.mutable._
 
-object SaveResultStorage {
-  private val logger = LoggerFactory.getLogger(SaveResultStorage.getClass)
-  val resultsFileFilter = new FilenameFilter {
+object ExportResultStorage {
+  private val logger = LoggerFactory.getLogger(ExportResultStorage.getClass)
+  private val resultsFileFilter = new FilenameFilter {
     override def accept(dir: File, name: String): Boolean = name.startsWith("results_") && name.endsWith(".json")
   }
 
   implicit val formats = DefaultFormats
 
-  def store(rootDir: File, result: SaveResult): Unit = {
+  def store(rootDir: File, result: ExportResultFormat): Unit = {
     logger.debug("Saved export result")
     val resultsFolder = getResultsFolder(rootDir)
     resultsFolder.mkdirs()
@@ -30,18 +29,18 @@ object SaveResultStorage {
     Files.write(jsonString, file, Charsets.UTF_8)
   }
 
-  def getSaveResults(rootDir: File, configId: ConfigId): Seq[SaveResult] = {
-    getSaveResults(rootDir) //.filter(r => r.configId == configId)
+  def getSaveResults(rootDir: File, configId: ConfigId): Seq[ExportResultFormat] = {
+    getSaveResults(rootDir).filter(r => r.configId == configId)
   }
 
-  def getSaveResults(rootDir: File): Seq[SaveResult] = {
+  def getSaveResults(rootDir: File): Seq[ExportResultFormat] = {
     val files = getResultsFolder(rootDir)
       .listFiles(resultsFileFilter)
     if (files == null) return Seq()
 
     files.map(Files.toString(_, Charsets.UTF_8)).flatMap { string =>
       val jValue = parse(string)
-      val saveResult = jValue.extract[SaveResult]
+      val saveResult = jValue.extract[ExportResultFormat]
       Some(saveResult)
     }
   }

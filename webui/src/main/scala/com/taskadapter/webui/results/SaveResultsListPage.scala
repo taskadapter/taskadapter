@@ -3,18 +3,17 @@ package com.taskadapter.webui.results
 import java.text.SimpleDateFormat
 import java.util.Date
 
-import com.taskadapter.connector.definition.SaveResult
 import com.taskadapter.webui.Page
 import com.vaadin.ui.renderers.DateRenderer
 import com.vaadin.ui.{Button, Grid, VerticalLayout}
 
-class SaveResultsListPage(close: Runnable, results: Seq[SaveResult]) {
+class SaveResultsListPage(close: Runnable, results: Seq[ExportResultFormat]) {
 
   val dateFormat = "yyyy-MM-dd HH:mm"
 
   val ui = new VerticalLayout()
   val grid = new Grid
-  grid.setWidth("950px")
+  grid.setWidth("980px")
   grid.addColumn("configName", classOf[String])
     .setHeaderCaption(Page.message("exportResults.column.configName"))
     .setExpandRatio(1)
@@ -22,15 +21,15 @@ class SaveResultsListPage(close: Runnable, results: Seq[SaveResult]) {
   grid.addColumn("dateStarted", classOf[Date])
     .setHeaderCaption(Page.message("exportResults.column.startedOn"))
     .setRenderer(new DateRenderer(new SimpleDateFormat(dateFormat)))
-    .setExpandRatio(2)
+    .setExpandRatio(1)
 
   grid.addColumn("from", classOf[String])
     .setHeaderCaption(Page.message("exportResults.column.from"))
-    .setExpandRatio(1)
+    .setExpandRatio(2)
 
   grid.addColumn("to", classOf[String])
     .setHeaderCaption(Page.message("exportResults.column.to"))
-    .setExpandRatio(1)
+    .setExpandRatio(2)
 
   grid.addColumn("createdTasksNumber", classOf[Integer])
     .setHeaderCaption(Page.message("exportResults.column.tasksCreated"))
@@ -50,13 +49,10 @@ class SaveResultsListPage(close: Runnable, results: Seq[SaveResult]) {
     } else {
       Page.message("exportResults.column.status.success")
     }
-    val configName = "123"
-    val from = "..."
-    val to = "..."
-    grid.addRow(Seq(configName,
+    grid.addRow(Seq(r.configLabel,
       r.dateStarted,
-      from,
-      to,
+      r.from,
+      r.to,
       r.createdTasksNumber.asInstanceOf[Object],
       r.updatedTasksNumber.asInstanceOf[Object],
       status

@@ -32,6 +32,7 @@ import com.taskadapter.webui.pages.LicenseAgreementPage;
 import com.taskadapter.webui.pages.NewConfigPage;
 import com.taskadapter.webui.pages.SupportPage;
 import com.taskadapter.webui.pages.UserProfilePage;
+import com.taskadapter.webui.results.ExportResultFormat;
 import com.taskadapter.webui.results.SaveResultsListPage;
 import com.taskadapter.webui.service.Preservices;
 import com.vaadin.server.StreamVariable;
@@ -188,7 +189,7 @@ public class LoggedInPageset {
     }
 
     private void showAllPreviousResults(ConfigId configId) {
-        Seq<SaveResult> results = context.configOps.getExportResults(services.rootDir, configId);
+        Seq<ExportResultFormat> results = context.configOps.getExportResults(services.rootDir, configId);
         applyUI(new SaveResultsListPage(this::showHome,
                 results).ui());
     }
