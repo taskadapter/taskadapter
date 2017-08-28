@@ -60,7 +60,7 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, exportResultStorage: ExportRe
   }
 
   def launchSync(c: UISyncConfig) = {
-    log
+    log.info(s"Starting scheduled export from ${c.getConnector1.getLabel} to ${c.getConnector2.getLabel}")
     val loaded = UISyncConfig.loadTasks(c, 10000)
     val result = c.saveTasks(loaded, ProgressMonitorUtils.DUMMY_MONITOR)
     ExportResultsLogger.log(result, prefix = "Scheduled export completed.")
