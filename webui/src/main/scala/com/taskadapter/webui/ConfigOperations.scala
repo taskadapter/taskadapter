@@ -7,7 +7,6 @@ import com.taskadapter.auth.{AuthorizedOperations, CredentialsManager}
 import com.taskadapter.config.StorageException
 import com.taskadapter.connector.definition.ConnectorSetup
 import com.taskadapter.web.uiapi.{ConfigId, SetupId, UIConfigStore, UISyncConfig}
-import com.taskadapter.webui.results.{ExportResultFormat, ExportResultStorage}
 
 import scala.collection.JavaConverters._
 import scala.collection.Seq
@@ -54,14 +53,6 @@ final class ConfigOperations(/**
       res.addAll(uiConfigStore.getUserConfigs(user).asJava)
     )
     res
-  }
-
-  def getExportResults(rootFolder: File, configId: ConfigId): Seq[ExportResultFormat] = {
-    ExportResultStorage.getSaveResults(rootFolder, configId)
-  }
-
-  def getExportResults(rootFolder: File): Seq[ExportResultFormat] = {
-    ExportResultStorage.getSaveResults(rootFolder)
   }
 
   /**

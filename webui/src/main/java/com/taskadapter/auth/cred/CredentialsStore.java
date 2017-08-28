@@ -37,7 +37,7 @@ public interface CredentialsStore {
     /**
      * Lists all users.
      * 
-     * @return list of found users.
+     * @return list of user login names.
      */
     List<String> listUsers();
 

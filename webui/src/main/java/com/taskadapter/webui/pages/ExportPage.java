@@ -6,6 +6,7 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.Tracker;
+import com.taskadapter.webui.results.ExportResultStorage;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Component;
@@ -20,7 +21,6 @@ import static com.taskadapter.license.LicenseManager.TRIAL_MESSAGE;
 
 /**
  * Export page and export handler.
- * 
  */
 public final class ExportPage {
     private static final Logger log = LoggerFactory.getLogger(ExportPage.class);
@@ -41,7 +41,7 @@ public final class ExportPage {
     private final Label errorMessage;
     private final VerticalLayout content;
 
-    public ExportPage(int maxNumberOfResultsToKeep, ConfigOperations configOps, UISyncConfig config,
+    public ExportPage(ExportResultStorage exportResultStorage, ConfigOperations configOps, UISyncConfig config,
                       int taskLimit, boolean showFilePath, Runnable onDone, Tracker tracker) {
         this.config = config;
         this.taskLimit = taskLimit;
@@ -55,7 +55,7 @@ public final class ExportPage {
 
         content = new VerticalLayout();
         ui.addComponent(content);
-        exportHelper = new ExportHelper(maxNumberOfResultsToKeep, configOps, tracker, onDone, showFilePath, content, config);
+        exportHelper = new ExportHelper(configOps, exportResultStorage, tracker, onDone, showFilePath, content, config);
 
         startLoading();
     }
@@ -75,7 +75,7 @@ public final class ExportPage {
                         + " " + config.getConnector1().getSourceLocation());
                 final List<GTask> tasks = UISyncConfig.loadTasks(config, taskLimit);
                 log.info("Loaded " + tasks.size() + " tasks");
-                        exportHelper.onTasksLoaded(tasks);
+                exportHelper.onTasksLoaded(tasks);
             } catch (CommunicationException e) {
                 final String message = config.getConnector1()
                         .decodeException(e);
@@ -94,9 +94,8 @@ public final class ExportPage {
 
     /**
      * Shows load error message.
-     * 
-     * @param message
-     *            message to show.
+     *
+     * @param message message to show.
      */
     private void showLoadErrorMessage(String message) {
         VaadinSession.getCurrent().lock();
@@ -110,9 +109,8 @@ public final class ExportPage {
 
     /**
      * Shows or hides an error message.
-     * 
-     * @param message
-     *            error message. If null, errors are hidden.
+     *
+     * @param message error message. If null, errors are hidden.
      */
     private void showErrorMessage(String message) {
         final boolean haveMessage = message != null;

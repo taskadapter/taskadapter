@@ -11,7 +11,9 @@ import com.taskadapter.webui.{ConfigOperations, MonitorWrapper, Tracker}
 import com.vaadin.server.VaadinSession
 import com.vaadin.ui._
 
-class ExportHelper(maxNumberOfResultsToKeep: Int, configOps: ConfigOperations, tracker: Tracker, onDone: Runnable, showFilePath: Boolean,
+class ExportHelper(configOps: ConfigOperations,
+                   exportResultStorage: ExportResultStorage,
+                   tracker: Tracker, onDone: Runnable, showFilePath: Boolean,
                    layout: VerticalLayout,
                    config: UISyncConfig) {
 
@@ -43,9 +45,7 @@ class ExportHelper(maxNumberOfResultsToKeep: Int, configOps: ConfigOperations, t
         performExport(selectedTasks)
       }
 
-      override
-
-      def onCancel(): Unit = {
+      override def onCancel(): Unit = {
         onDone.run()
       }
     })
@@ -71,9 +71,9 @@ class ExportHelper(maxNumberOfResultsToKeep: Int, configOps: ConfigOperations, t
       def foo() = {
         val saveResult = config.saveTasks(selectedTasks, wrapper)
         ExportResultsLogger.log(saveResult)
-        ExportResultStorage.store(config.configRootFolder, saveResult, maxNumberOfResultsToKeep)
-        val exportResult = new ExportResultsFragment(onDone, showFilePath).showExportResult(saveResult)
+        exportResultStorage.store(saveResult)
         val labelForTracking = config.getConnector1.getConnectorTypeId + " - " + config.getConnector2.getConnectorTypeId
+        val exportResult = new ExportResultsFragment(onDone, showFilePath).showExportResult(saveResult)
         tracker.trackEvent("export", "finished_saving_tasks", labelForTracking)
         setContent(layout, exportResult)
       }

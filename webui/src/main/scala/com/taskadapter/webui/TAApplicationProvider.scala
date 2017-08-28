@@ -2,8 +2,7 @@ package com.taskadapter.webui
 
 import java.io.File
 
-import com.taskadapter.auth.BasicCredentialsManager
-import com.taskadapter.auth.cred.FSCredentialStore
+import com.taskadapter.schedule.ScheduleRunner
 import com.taskadapter.webui.service.{EditorManager, Preservices}
 import com.vaadin.server.{UIClassSelectionEvent, UICreateEvent, UIProvider}
 import com.vaadin.ui.UI
@@ -32,8 +31,8 @@ class TAApplicationProvider(reportGoogleAnalytics: Boolean) extends UIProvider {
   val log = LoggerFactory.getLogger(classOf[TAApplicationProvider])
 
   /**
-    * Calculates a defaut taskadapter root folder. Current implementation
-    * returns <code>user.home / taskadapter</code>.
+    * Calculates default taskadapter root folder. Current implementation
+    * returns <code>user.home/.taskadapter</code>.
     *
     * @return task adapter root folder.
     */
@@ -44,13 +43,6 @@ class TAApplicationProvider(reportGoogleAnalytics: Boolean) extends UIProvider {
 
   // Application config root folder.
   val rootFolder: File = getDefaultRootFolder()
-  val credentialsStore = new FSCredentialStore(rootFolder)
-
-  /**
-    * Global credentials manager. TODO: It is not threadsafe yet, but should
-    * be.
-    */
-  private val credentialsManager = new BasicCredentialsManager(credentialsStore, 50)
 
   /**
     * Global services.
@@ -67,6 +59,9 @@ class TAApplicationProvider(reportGoogleAnalytics: Boolean) extends UIProvider {
     log.info("License NOT installed or is NOT valid. Trial mode.")
   }
 
+  private val scheduleRunner = new ScheduleRunner(services.uiConfigStore, services.exportResultStorage)
+  scheduleRunner.start()
+
   /**
     * Vaadin calls this when app is loaded in browser
     */
@@ -80,7 +75,7 @@ class TAApplicationProvider(reportGoogleAnalytics: Boolean) extends UIProvider {
       log.info("Skipping Google Analytics: started in dev mode")
       new NoOpGATracker()
     }
-    SessionController.manageSession(services, credentialsManager, new WebUserSession(ui, tracker))
+    SessionController.manageSession(services, new WebUserSession(ui, tracker))
     val action = if (services.licenseManager.isSomeValidLicenseInstalled) {
       "web_app_opened_licensed"
     } else {

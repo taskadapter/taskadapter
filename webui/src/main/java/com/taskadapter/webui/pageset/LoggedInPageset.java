@@ -186,7 +186,7 @@ public class LoggedInPageset {
     }
 
     private void showLastResults(ConfigId configId) {
-        Seq<ExportResultFormat> results = context.configOps.getExportResults(services.rootDir, configId);
+        Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults(configId);
 
         List<ExportResultFormat> javaResults = new ArrayList<>(JavaConversions.seqAsJavaList(results));
         javaResults.sort(Comparator.comparing(ExportResultFormat::dateStarted));
@@ -206,14 +206,14 @@ public class LoggedInPageset {
     }
 
     private void showExportResults(ConfigId configId) {
-        Seq<ExportResultFormat> results = context.configOps.getExportResults(services.rootDir, configId);
+        Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults(configId);
         applyUI(new ExportResultsListPage(this::showHome,
                 results, showExportResultsScala()
         ).ui());
     }
 
     private void showAllExportResults() {
-        Seq<ExportResultFormat> results = context.configOps.getExportResults(services.rootDir);
+        Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults();
         applyUI(
                 new ExportResultsListPage(this::showHome,
                         results, showExportResultsScala())
@@ -421,7 +421,7 @@ public class LoggedInPageset {
                             : LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
                     tracker.trackPage("drop_in");
                     Component component = DropInExportPage.render(
-                            services.settingsManager.getMaxNumberOfResultsToKeep(),
+                            services.exportResultStorage,
                             context.configOps, config,
                             maxTasks, services.settingsManager
                                     .isTAWorkingOnLocalMachine(),
@@ -488,8 +488,7 @@ public class LoggedInPageset {
                 .isSomeValidLicenseInstalled() ? MAX_TASKS_TO_LOAD
                 : LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
         log.info("License installed? " + services.licenseManager.isSomeValidLicenseInstalled());
-        applyUI(new ExportPage(
-                services.settingsManager.getMaxNumberOfResultsToKeep(),
+        applyUI(new ExportPage(services.exportResultStorage,
                 context.configOps, config, maxTasks,
                 services.settingsManager.isTAWorkingOnLocalMachine(),
                 this::showHome, tracker).ui);

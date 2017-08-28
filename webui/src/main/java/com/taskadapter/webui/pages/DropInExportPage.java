@@ -7,6 +7,7 @@ import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.Tracker;
+import com.taskadapter.webui.results.ExportResultStorage;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Component;
@@ -47,7 +48,7 @@ public final class DropInExportPage {
     private final Label errorMessage;
     private final VerticalLayout content;
 
-    private DropInExportPage(int maxNumberOfResultsToKeep, ConfigOperations configOps, UISyncConfig config,
+    private DropInExportPage(ExportResultStorage exportResultStorage, ConfigOperations configOps, UISyncConfig config,
                              int taskLimit, boolean showFilePath, Runnable onDone, File tempFile, Tracker tracker) {
         this.config = config;
         this.taskLimit = taskLimit;
@@ -62,7 +63,7 @@ public final class DropInExportPage {
 
         content = new VerticalLayout();
         ui.addComponent(content);
-        exportHelper = new ExportHelper(maxNumberOfResultsToKeep, configOps, tracker, onDone, showFilePath, content, config);
+        exportHelper = new ExportHelper(configOps, exportResultStorage, tracker, onDone, showFilePath, content, config);
         startLoading();
     }
 
@@ -132,19 +133,10 @@ public final class DropInExportPage {
         content.addComponent(comp);
     }
 
-    /**
-     * Renders an export page.
-     *
-     * @param configOps config operations.
-     * @param config    config to export.
-     * @param onDone    "done" handler.
-     * @param tempFile  temporary file.
-     * @return UI component.
-     */
-    public static Component render(int maxNumberOfResultsToKeep, ConfigOperations configOps,
+    public static Component render(ExportResultStorage exportResultStorage, ConfigOperations configOps,
                                    UISyncConfig config, int taskLimit, boolean showFilePath,
                                    final Runnable onDone, final File tempFile, Tracker tracker) {
-        return new DropInExportPage(maxNumberOfResultsToKeep, configOps, config, taskLimit, showFilePath,
+        return new DropInExportPage(exportResultStorage, configOps, config, taskLimit, showFilePath,
                 () -> {
                     tempFile.delete();
                     onDone.run();

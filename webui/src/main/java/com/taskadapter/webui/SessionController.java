@@ -4,9 +4,6 @@ import com.taskadapter.auth.AuthException;
 import com.taskadapter.auth.AuthorizedOperations;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.auth.SecondarizationResult;
-import com.taskadapter.config.ConfigStorage;
-import com.taskadapter.web.uiapi.UIConfigService;
-import com.taskadapter.web.uiapi.UIConfigStore;
 import com.taskadapter.webui.pageset.LoggedInPageset;
 import com.taskadapter.webui.service.Preservices;
 import com.taskadapter.webui.service.WrongPasswordException;
@@ -17,7 +14,6 @@ import java.io.File;
 
 /**
  * Controller for one (and only one!) user session.
- * 
  */
 public final class SessionController {
     private static final Logger LOGGER = LoggerFactory
@@ -40,9 +36,9 @@ public final class SessionController {
     private final WebUserSession session;
 
     private SessionController(Preservices services,
-            CredentialsManager credentialsManager, WebUserSession session) {
+                              WebUserSession session) {
         this.services = services;
-        this.credentialsManager = credentialsManager;
+        this.credentialsManager = services.credentialsManager;
         this.session = session;
     }
 
@@ -77,7 +73,7 @@ public final class SessionController {
         File userHomeFolder = new File(services.rootDir, login);
         final ConfigOperations configOps = new ConfigOperations(login, ops,
                 credentialsManager,
-                createStore(services.rootDir),
+                services.uiConfigStore,
                 new File(userHomeFolder, "files"));
         final UserContext ctx = new UserContext(login, selfManagement, ops,
                 configOps);
@@ -85,12 +81,6 @@ public final class SessionController {
         session.pageContainer.setPageContent(LoggedInPageset.createPageset(
                 credentialsManager, services, session.tracker, ctx, session,
                 this::doLogout));
-    }
-
-    private UIConfigStore createStore(File rootFolder) {
-        final ConfigStorage configStorage = new ConfigStorage(rootFolder);
-        return new UIConfigStore(
-                new UIConfigService(services.pluginManager, services.editorManager), configStorage);
     }
 
     /**
@@ -125,18 +115,13 @@ public final class SessionController {
 
     /**
      * Attempts to authorize user.
-     * 
-     * @param login
-     *            user login.
-     * @param password
-     *            user password.
-     * @param createSecondaryAuth
-     *            secondary authentication data.
-     * @throws WrongPasswordException
-     *             if login or password is wrong.
+     *
+     * @param login               user login.
+     * @param password            user password.
+     * @param createSecondaryAuth secondary authentication data.
+     * @throws WrongPasswordException if login or password is wrong.
      */
-    private void tryAuth(String login, String password,
-            boolean createSecondaryAuth) throws WrongPasswordException {
+    private void tryAuth(String login, String password, boolean createSecondaryAuth) throws WrongPasswordException {
 
         if (!createSecondaryAuth) {
             final AuthorizedOperations ops = credentialsManager
@@ -171,18 +156,12 @@ public final class SessionController {
 
     /**
      * Manages a user session.
-     * 
-     * @param services
-     *            used services.
-     * @param credentialsManager
-     *            user credentials manager.
-     * @param session
-     *            provided web session.
+     *
+     * @param services general services, like configs storage, credentials storage, etc.
+     * @param session  provided web session.
      */
-    public static void manageSession(Preservices services,
-            CredentialsManager credentialsManager, WebUserSession session) {
-        final SessionController ctl = new SessionController(services,
-                credentialsManager, session);
+    public static void manageSession(Preservices services, WebUserSession session) {
+        final SessionController ctl = new SessionController(services, session);
         ctl.initSession();
     }
 }

@@ -170,7 +170,7 @@ case class UISyncConfig(configRootFolder: File,
   }
 
   @throws[ConnectorException]
-  def loadTasksForUpdate: util.List[GTask] = {
+  def loadTasksForUpdate(): util.List[GTask] = {
     val updater = makeUpdater
     updater.loadTasks()
     updater.removeTasksWithoutRemoteIds()

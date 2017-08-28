@@ -2,6 +2,8 @@ package com.taskadapter.web.uiapi
 
 import java.io.File
 
+import com.google.common.base.Strings
+import com.taskadapter.auth.cred.CredentialsStore
 import com.taskadapter.config.CirceBoilerplateForConfigs._
 import com.taskadapter.config._
 import com.taskadapter.connector.NewConfigSuggester
@@ -13,6 +15,8 @@ import io.circe.parser._
 import io.circe.syntax._
 import org.slf4j.LoggerFactory
 
+import scala.collection.JavaConverters._
+
 /**
   * UI-level config manager. Manages UIMappingConfigs instead of low-level
   * [[com.taskadapter.config.StoredConnectorConfig]]. All methods of this class creates new fresh
@@ -20,10 +24,15 @@ import org.slf4j.LoggerFactory
   * other instances for a same config file. See also documentation for
   * [[UISyncConfig]].
   */
-class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStorage) {
+class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStorage, usersStorage: CredentialsStore) {
   private val logger = LoggerFactory.getLogger(classOf[ConfigStorage])
 
   val encryptor = new XorEncryptor
+
+  def getConfigs(): Seq[UISyncConfig] = {
+    usersStorage.listUsers().asScala
+      .map(u=> getUserConfigs(u)).flatten
+  }
 
   /**
     * Lists all user-created configs.
@@ -70,10 +79,14 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
 
     val newMappings = decode[Seq[FieldMapping]](jsonString)
 
-    val schedule = decode[Schedule](storedConfig.getSchedule) match {
-      case Left(e) => logger.warn(s"cannot parse schedule from config $storedConfig: $e. Assuming no schedule.")
-        Schedule.apply
-      case Right(s) => s
+    val schedule = if (Strings.isNullOrEmpty(storedConfig.getSchedule) || storedConfig.getSchedule == "{}") {
+      Schedule.apply
+    } else {
+      decode[Schedule](storedConfig.getSchedule) match {
+        case Left(e) => logger.warn(s"cannot parse schedule from config $storedConfig: $e. Assuming no schedule.")
+          Schedule.apply
+        case Right(s) => s
+      }
     }
 
     newMappings match {
