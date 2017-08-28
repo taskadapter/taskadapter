@@ -15,25 +15,25 @@ case class TaskKeeperLocation(location1: String, location2: String, cacheFileLoc
 
 case class PreviouslyCreatedTasksCache(location1: String, location2: String, items: Seq[(TaskId, TaskId)])
 
-object TaskKeeperLocationStorage {
-
+class TaskKeeperLocationStorage(rootFolder: File) {
+  val cacheFolder = new File(rootFolder, "cache")
   val fileName = "cache_file_links.json"
 
   /**
     * Store elements in the cache on disk. New items are added to existing ones, skipping duplicates.
     * If file does not exist yet, it will be created.
     */
-  def store(configRootFolder: File, location1: String, location2: String, items: Seq[(TaskId, TaskId)]): Unit = {
-    val file = getOrCreateFileLocation(configRootFolder, location1, location2)
-    val existingCache = loadCache(configRootFolder, location1, location2)
+  def store(location1: String, location2: String, items: Seq[(TaskId, TaskId)]): Unit = {
+    val file = getOrCreateFileLocation(location1, location2)
+    val existingCache = loadCache(location1, location2)
     val allItems = (existingCache.items ++ items).distinct
     val newCache = PreviouslyCreatedTasksCache(location1, location2, allItems)
     val jsonString = newCache.asJson.spaces2
     Files.write(jsonString, file, Charsets.UTF_8)
   }
 
-  def loadCache(configRootFolder: File, location1: String, location2: String): PreviouslyCreatedTasksCache = {
-    val file = getOrCreateFileLocation(configRootFolder, location1, location2)
+  def loadCache(location1: String, location2: String): PreviouslyCreatedTasksCache = {
+    val file = getOrCreateFileLocation(location1, location2)
     val fileBody = Files.toString(file, Charsets.UTF_8)
     if (fileBody.isEmpty) {
       PreviouslyCreatedTasksCache("", "", Seq())
@@ -47,20 +47,20 @@ object TaskKeeperLocationStorage {
     }
   }
 
-  def loadTasks(configRootFolder: File, location1: String, location2: String): PreviouslyCreatedTasksResolver = {
-    new PreviouslyCreatedTasksResolver(loadCache(configRootFolder, location1, location2))
+  def loadTasks(location1: String, location2: String): PreviouslyCreatedTasksResolver = {
+    new PreviouslyCreatedTasksResolver(loadCache(location1, location2))
   }
 
-  private def saveCacheLocation(configRootFolder: File, location1: String, location2: String, newFileName: String): Unit = {
-    val previousEntries = loadCache(configRootFolder)
+  private def saveCacheLocation(location1: String, location2: String, newFileName: String): Unit = {
+    val previousEntries = loadCache()
     val newEntries = previousEntries ++ List(TaskKeeperLocation(location1, location2, newFileName))
 
     val jsonString = newEntries.asJson.spaces2
-    Files.write(jsonString, new File(configRootFolder, fileName), Charsets.UTF_8)
+    Files.write(jsonString, new File(cacheFolder, fileName), Charsets.UTF_8)
   }
 
-  private def loadCache(configRootFolder: File): Seq[TaskKeeperLocation] = {
-    val file = new File(configRootFolder, fileName)
+  private def loadCache(): Seq[TaskKeeperLocation] = {
+    val file = new File(cacheFolder, fileName)
     if (file.exists()) {
       val jsonString = Files.toString(file, Charsets.UTF_8)
       decode[Seq[TaskKeeperLocation]](jsonString) match {
@@ -72,19 +72,20 @@ object TaskKeeperLocationStorage {
     }
   }
 
-  private def getOrCreateFileLocation(configRootFolder: File, location1: String, location2: String): File = {
-    val linksToCaches = loadCache(configRootFolder)
+  private def getOrCreateFileLocation(location1: String, location2: String): File = {
+    val linksToCaches = loadCache()
     val filePath = findCacheLocation(linksToCaches, location1, location2)
     filePath match {
       case None =>
         val newFileName = Math.abs(Random.nextInt()) + ".json"
-        val newFile = new File(configRootFolder, newFileName)
+        val newFile = new File(cacheFolder, newFileName)
+        cacheFolder.mkdirs()
         newFile.createNewFile()
 
-        saveCacheLocation(configRootFolder, location1, location2, newFileName)
+        saveCacheLocation(location1, location2, newFileName)
         newFile.getAbsoluteFile
       case Some(p) =>
-        new File(configRootFolder, p).getAbsoluteFile
+        new File(cacheFolder, p).getAbsoluteFile
     }
   }
 

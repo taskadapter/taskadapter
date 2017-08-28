@@ -9,6 +9,7 @@ import com.taskadapter.config._
 import com.taskadapter.connector.NewConfigSuggester
 import com.taskadapter.connector.common.{FileNameGenerator, XorEncryptor}
 import com.taskadapter.connector.definition._
+import com.taskadapter.core.TaskKeeperLocationStorage
 import io.circe.Json
 import io.circe.generic.auto._
 import io.circe.parser._
@@ -92,7 +93,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     newMappings match {
       case Left(e) => throw new RuntimeException(s"cannot parse mappings from config $storedConfig: $e")
       case Right(m) =>
-        new UISyncConfig(configStorage.rootDir, storedConfig.getId, ownerName, label, config1, config2, m, false, schedule)
+        new UISyncConfig(new TaskKeeperLocationStorage(configStorage.rootDir), storedConfig.getId, ownerName, label, config1, config2, m, false, schedule)
     }
   }
 

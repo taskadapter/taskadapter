@@ -50,7 +50,7 @@ object UISyncConfig {
 
 }
 
-case class UISyncConfig(configRootFolder: File,
+case class UISyncConfig(taskKeeperLocationStorage: TaskKeeperLocationStorage,
 
                         /**
                           * Config identity. Unique "config-storage" id to distinguish between
@@ -107,7 +107,7 @@ case class UISyncConfig(configRootFolder: File,
     *
     * @return "reversed" (back-order) configuration.
     */
-  def reverse = new UISyncConfig(configRootFolder, identity, owner, label, connector2, connector1,
+  def reverse = new UISyncConfig(taskKeeperLocationStorage, identity, owner, label, connector2, connector1,
     UISyncConfig.reverse(fieldMappings), !reversed,
     schedule)
 
@@ -140,7 +140,7 @@ case class UISyncConfig(configRootFolder: File,
   def getPreviouslyCreatedTasksResolver(): PreviouslyCreatedTasksResolver = {
     val location1 = getConnector1.getSourceLocation
     val location2 = getConnector2.getSourceLocation
-    TaskKeeperLocationStorage.loadTasks(configRootFolder, location1, location2)
+    taskKeeperLocationStorage.loadTasks(location1, location2)
   }
 
   def saveTasks(tasks: util.List[GTask], progressMonitor: ProgressMonitor): ExportResultFormat = {
@@ -151,9 +151,9 @@ case class UISyncConfig(configRootFolder: File,
 
     val location1 = getConnector1.getSourceLocation
     val location2 = getConnector2.getSourceLocation
-    val previouslyCreatedTasksResolver = TaskKeeperLocationStorage.loadTasks(configRootFolder, location1, location2)
+    val previouslyCreatedTasksResolver = taskKeeperLocationStorage.loadTasks(location1, location2)
     val result = TaskSaver.save(previouslyCreatedTasksResolver, connectorTo, destinationLocation, rows, tasks, progressMonitor)
-    TaskKeeperLocationStorage.store(configRootFolder, location1, location2, result.keyToRemoteKeyList)
+    taskKeeperLocationStorage.store(location1, location2, result.keyToRemoteKeyList)
     val finish = System.currentTimeMillis()
 
     val finalResult = ExportResultFormat(id, label, getConnector1.getSourceLocation, destinationLocation,
