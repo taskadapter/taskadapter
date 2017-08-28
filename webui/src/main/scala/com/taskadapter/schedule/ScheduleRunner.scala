@@ -43,7 +43,7 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, exportResultStorage: ExportRe
       val lastResult = results.maxBy(r => r.dateStarted.getTime + r.timeTookSeconds * 1000)
       val now = System.currentTimeMillis()
       val lastRanLong = lastResult.dateStarted.getTime + lastResult.timeTookSeconds * 1000
-      val timePassedMin = (now - lastRanLong) * 1000 * 60
+      val timePassedMin = (now - lastRanLong) / (60 * 1000)
       val needtoRun = timePassedMin > c.schedule.intervalInMinutes
       needtoRun
     }
@@ -60,6 +60,7 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, exportResultStorage: ExportRe
   }
 
   def launchSync(c: UISyncConfig) = {
+    log
     val loaded = UISyncConfig.loadTasks(c, 10000)
     val result = c.saveTasks(loaded, ProgressMonitorUtils.DUMMY_MONITOR)
     ExportResultsLogger.log(result, prefix = "Scheduled export completed.")
