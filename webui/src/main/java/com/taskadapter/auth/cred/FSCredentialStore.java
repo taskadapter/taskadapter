@@ -19,7 +19,6 @@ import com.taskadapter.auth.AuthException;
  * 
  */
 public final class FSCredentialStore implements CredentialsStore {
-    private static final String LEGACY_FILE = "password.txt";
     private static final String CREDENTIALS_FILE = "credits.xxx";
     private static final String CURRENT_VERSION_PREFIX = "v==1";
     private static final String IO_CHARSET = "UTF-8";
@@ -49,27 +48,11 @@ public final class FSCredentialStore implements CredentialsStore {
     @Override
     public Credentials loadCredentials(String user) throws AuthException {
         final File userDir = getUserFolder(user);
-        final CredentialsV1 v1 = loadV1(userDir);
-        if (v1 != null) {
-            return v1;
-        }
-        return loadV0(userDir);
-    }
-
-    private Credentials loadV0(File userDir) throws AuthException {
-        final File credFile = new File(userDir, LEGACY_FILE);
-        try {
-            return new CredentialsV0(Files.readFirstLine(credFile,
-                    Charset.forName(IO_CHARSET)));
-        } catch (IOException e) {
-            LOGGER.info("Broken cred v0 ", e);
-            throw new AuthException("No credentials found");
-        }
+        return loadV1(userDir);
     }
 
     private CredentialsV1 loadV1(File userDir) throws AuthException {
-        final String CRED_FILE = CREDENTIALS_FILE;
-        final File credFile = new File(userDir, CRED_FILE);
+        final File credFile = new File(userDir, CREDENTIALS_FILE);
         final List<String> creds;
         try {
             creds = Files.readLines(credFile, Charset.forName(IO_CHARSET));
@@ -105,8 +88,6 @@ public final class FSCredentialStore implements CredentialsStore {
             LOGGER.info("Failed to save credentials ", e);
             throw new AuthException("Failed to store credentials");
         }
-
-        new File(baseDir, LEGACY_FILE).delete();
     }
 
     @Override
@@ -125,15 +106,13 @@ public final class FSCredentialStore implements CredentialsStore {
 
     private boolean doesUserExists(String userName) {
         final File userHome = getUserFolder(userName);
-        return new File(userHome, CREDENTIALS_FILE).exists()
-                || new File(userHome, LEGACY_FILE).exists();
+        return new File(userHome, CREDENTIALS_FILE).exists();
     }
 
     @Override
     public void removeUser(String user) {
         final File userHome = getUserFolder(user);
         new File(userHome, CREDENTIALS_FILE).delete();
-        new File(userHome, LEGACY_FILE).delete();
         try {
             deleteRecursively(userHome);
         } catch (IOException e) {
