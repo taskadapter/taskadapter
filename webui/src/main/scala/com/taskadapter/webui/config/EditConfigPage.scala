@@ -1,5 +1,6 @@
 package com.taskadapter.webui.config
 
+import com.google.common.base.Strings
 import com.taskadapter.config.StorageException
 import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.connector.definition.exceptions.BadConfigException
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory
 
 class EditConfigPage(messages: Messages, tracker: Tracker,
                      configOps: ConfigOperations,
+                     error: String,
                      sandbox: Sandbox, config: UISyncConfig, exportToLeft: Runnable,
                      exportToRight: Runnable,
                      close: Runnable,
@@ -38,6 +40,9 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
   errorMessageLabel.setContentMode(ContentMode.HTML)
   errorMessageLabel.setVisible(false)
 
+  if (!Strings.isNullOrEmpty(error)) {
+    showError(error)
+  }
   val buttons = createConfigOperationsButtons
   buttons.setWidth("20%")
   val topRowLayout = new HorizontalLayout(editDescriptionForm, buttons)

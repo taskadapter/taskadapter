@@ -363,10 +363,10 @@ public class LoggedInPageset {
         applyUI(getConfigEditor(config, error));
     }
 
-    // TODO TA3 error is not shown!
     private Component getConfigEditor(UISyncConfig config, String error) {
         ConfigId configId = config.id();
         EditConfigPage editor = new EditConfigPage(Page.MESSAGES(), tracker, context.configOps,
+                error,
                 createSandbox(), config,
                 () -> {
                     Option<UISyncConfig> loadedConfig = context.configOps.getConfig(configId);
