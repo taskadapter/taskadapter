@@ -27,7 +27,7 @@ object TaskSaver {
       monitor.done()
       saveResult
     } catch {
-      case e: ConnectorException =>
+      case e: Exception =>
         monitor.done()
         log.error(s"Exception in connector $connectorTo while saving data. destination: $destinationName. Exception is: $e")
         SaveResult(null, 0, 0, List(), List(e), List())
