@@ -3,6 +3,7 @@ package com.taskadapter.schedule
 import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
 
 import com.taskadapter.connector.common.ProgressMonitorUtils
+import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.web.uiapi.{UIConfigStore, UISyncConfig}
 import com.taskadapter.webui.TALog
 import com.taskadapter.webui.pages.ExportResultsLogger
@@ -61,9 +62,19 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, exportResultStorage: ExportRe
 
   def launchSync(c: UISyncConfig) = {
     log.info(s"Starting scheduled export from ${c.getConnector1.getLabel} to ${c.getConnector2.getLabel}")
-    val loaded = UISyncConfig.loadTasks(c, 10000)
-    val result = c.saveTasks(loaded, ProgressMonitorUtils.DUMMY_MONITOR)
-    ExportResultsLogger.log(result, prefix = "Scheduled export completed.")
-    exportResultStorage.store(result)
+
+    try {
+      c.getConnector1.validateForLoad()
+      c.getConnector2.validateForSave()
+
+      val loaded = UISyncConfig.loadTasks(c, 10000)
+      val result = c.saveTasks(loaded, ProgressMonitorUtils.DUMMY_MONITOR)
+      ExportResultsLogger.log(result, prefix = "Scheduled export completed.")
+      exportResultStorage.store(result)
+    } catch {
+      case e: BadConfigException => log.error(s"Config ${c.id} is scheduled for periodic export, " +
+        s"but it will be skipped because it failed load or save validation: $e")
+      case other => log.error(s"Config ${c.id} scheduled sync: Error $other")
+    }
   }
 }
