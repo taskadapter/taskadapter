@@ -52,10 +52,10 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, exportResultStorage: ExportRe
   def launchSyncLeftOrRight(c: UISyncConfig) = {
     if (c.schedule.directionRight) {
       launchSync(c)
-    } else if (c.schedule.directionLeft) {
+    }
+
+    if (c.schedule.directionLeft) {
       launchSync(c.reverse)
-    } else {
-      log.error(s"Config is scheduled for periodic sync, but its scheduled direction is neither right nor left. Broken config? Config: $c")
     }
   }
 
