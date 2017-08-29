@@ -100,8 +100,7 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
       tsrb.getResult
     } finally httpClient.getConnectionManager.shutdown()
   } catch {
-    case e: RedmineException =>
-      throw new RuntimeException(e)
+    case e: RedmineException => throw RedmineExceptions.convertException(e)
   }
 
   private def loadUsersIfAllowed(mgr: RedmineManager): RedmineUserCache = {
