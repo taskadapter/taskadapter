@@ -57,21 +57,25 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
 
   val taskFieldsMappingFragment = new TaskFieldsMappingFragment(messages, config.getConnector1, config.getConnector2, config.getNewMappings)
 
-  val scheduledSyncPanel = new HorizontalLayout()
+  def getScheduledSyncPanel(): Component = {
+    val layout = new HorizontalLayout()
+    layout.setMargin(true)
+    layout.setSpacing(true)
+    val runIntervalField = new TextField(Page.message("export.schedule.runIntervalInMinutes"),
+      new MethodProperty[Int](config.schedule, "intervalInMinutes"))
 
-  val runIntervalField = new TextField(Page.message("export.schedule.runIntervalInMinutes"),
-    new MethodProperty[Int](config.schedule, "intervalInMinutes"))
+    val scheduledLeftField = new CheckBox(Page.message("export.schedule.left"),
+      new MethodProperty[Boolean](config.schedule, "directionLeft"))
+    val scheduledRightField = new CheckBox(Page.message("export.schedule.right"),
+      new MethodProperty[Boolean](config.schedule, "directionRight"))
 
-  val scheduledLeftField = new CheckBox(Page.message("export.schedule.left"),
-    new MethodProperty[Boolean](config.schedule, "directionLeft"))
-  val scheduledRightField = new CheckBox(Page.message("export.schedule.right"),
-    new MethodProperty[Boolean](config.schedule, "directionRight"))
+    layout.addComponent(runIntervalField)
+    layout.addComponent(scheduledLeftField)
+    layout.addComponent(scheduledRightField)
+    new Panel(layout)
+  }
 
-  scheduledSyncPanel.addComponent(runIntervalField)
-  scheduledSyncPanel.addComponent(scheduledLeftField)
-  scheduledSyncPanel.addComponent(scheduledRightField)
-
-  layout.addComponent(scheduledSyncPanel)
+  layout.addComponent(getScheduledSyncPanel())
   layout.addComponent(taskFieldsMappingFragment.getUI)
 
   def removeEmptyRows(): Unit = {
