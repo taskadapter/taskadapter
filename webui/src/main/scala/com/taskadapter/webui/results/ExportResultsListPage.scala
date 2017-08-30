@@ -3,8 +3,10 @@ package com.taskadapter.webui.results
 import java.text.SimpleDateFormat
 
 import com.taskadapter.webui.Page
+import com.vaadin.data.sort.SortOrder
 import com.vaadin.data.util.BeanItem
 import com.vaadin.data.util.converter.StringToBooleanConverter
+import com.vaadin.shared.data.sort.SortDirection
 import com.vaadin.ui.renderers.{DateRenderer, HtmlRenderer}
 import com.vaadin.ui.themes.ValoTheme
 import com.vaadin.ui.{Button, Grid, Label, VerticalLayout}
@@ -72,8 +74,9 @@ class ExportResultsListPage(close: Runnable,
   closeButton.addClickListener(_ => close.run())
   ui.addComponent(closeButton)
 
-  def showResults(results: Seq[ExportResultFormat]) : Unit = {
+  def showResults(results: Seq[ExportResultFormat]): Unit = {
     ds.removeAllItems()
     ds.addAll(results.asJava)
+    grid.setSortOrder(List(new SortOrder("dateStarted", SortDirection.DESCENDING)).asJava)
   }
 }
