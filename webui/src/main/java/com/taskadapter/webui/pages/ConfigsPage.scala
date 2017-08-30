@@ -94,7 +94,7 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
   val layout = new VerticalLayout
   layout.setSpacing(true)
   val actionPanel = new HorizontalLayout
-  actionPanel.setWidth(Sizes.configsListWidth)
+  actionPanel.setWidth("100%")
   val addButton = new Button(Page.message("configsPage.buttonNewConfig"))
   addButton.addClickListener(_ => callback.newConfig())
   actionPanel.addComponent(addButton)
