@@ -145,16 +145,18 @@ public class LoggedInPageset {
 
         tabs.addTab(new VerticalLayout(), Page.message("layout.tabs.schedules"));
 
-        Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults();
-        tabs.addTab(new ExportResultsListPage(this::showHome, results, showExportResultsScala()).ui(),
-                Page.message("layout.tabs.results")
-        );
+        ExportResultsListPage exportResultsListPage = new ExportResultsListPage(this::showHome, showExportResultsScala());
+        VerticalLayout resultsUi = exportResultsListPage.ui();
+        tabs.addTab(resultsUi, Page.message("layout.tabs.results"));
 
         tabs.addSelectedTabChangeListener(event -> {
-            // TODO TA34 refresh results, etc
+            if (event.getTabSheet().getSelectedTab() == resultsUi) {
+                Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults();
+                exportResultsListPage.showResults(results);
+            }
         });
 
-        ui = TAPageLayout.layoutPage(header, currentComponentArea);
+        this.ui = TAPageLayout.layoutPage(header, currentComponentArea);
         showConfigsList();
     }
 
@@ -232,21 +234,12 @@ public class LoggedInPageset {
     }
 
     private void showExportResults(ConfigId configId) {
+        ExportResultsListPage exportResultsListPage = new ExportResultsListPage(this::showHome, showExportResultsScala());
         Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults(configId);
-        applyUI(new ExportResultsListPage(this::showHome,
-                results, showExportResultsScala()
-        ).ui());
+        exportResultsListPage.showResults(results);
+        applyUI(exportResultsListPage.ui());
     }
 
-    /*
-        private void showAllExportResults() {
-            Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults();
-            applyUI(
-                    new ExportResultsListPage(this::showHome,
-                            results, showExportResultsScala())
-                            .ui());
-        }
-    */
     private Function1<ExportResultFormat, BoxedUnit> showExportResultsScala() {
         return (result) -> {
             showResult(result);
