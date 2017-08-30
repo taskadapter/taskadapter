@@ -14,6 +14,7 @@ import com.taskadapter.webui.ConfigureSystemPage;
 import com.taskadapter.webui.Header;
 import com.taskadapter.webui.HeaderMenuBuilder;
 import com.taskadapter.webui.Page;
+import com.taskadapter.webui.Sizes;
 import com.taskadapter.webui.TAPageLayout;
 import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.UserContext;
@@ -137,14 +138,10 @@ public class LoggedInPageset {
         tabs = new TabSheet();
         tabs.addStyleName("framed equal-width-tabs");
 
-        Component configsPage = getConfigsPage();
-        configTabContainer = new VerticalLayout(configsPage);
+        configTabContainer = new VerticalLayout();
         configTabContainer.setSpacing(true);
-        configTabContainer.setWidth("950px");
-//        configsPageLayout.setComponentAlignment(configsPage, Alignment.TOP_RIGHT);
-//        configsPageLayout.setExpandRatio(configsPage, 1f);
+        configTabContainer.setWidth(Sizes.tabWidth());
         tabs.addTab(configTabContainer, Page.message("layout.tabs.configs"));
-//        tabs.addTab(configsPage, Page.message("layout.tabs.configs"));
 
         tabs.addTab(new VerticalLayout(), Page.message("layout.tabs.schedules"));
 
@@ -158,7 +155,7 @@ public class LoggedInPageset {
         });
 
         ui = TAPageLayout.layoutPage(header, currentComponentArea);
-        showTabs();
+        showConfigsList();
     }
 
     /**
@@ -628,7 +625,6 @@ public class LoggedInPageset {
     private void showInConfigTab(Component ui) {
         ensureTabsElementIsShown();
         configTabContainer.removeAllComponents();
-        ui.setSizeUndefined();
         configTabContainer.addComponent(ui);
         configTabContainer.setComponentAlignment(ui, Alignment.TOP_LEFT);
     }
