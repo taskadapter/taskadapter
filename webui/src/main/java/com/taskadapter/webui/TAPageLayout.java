@@ -46,11 +46,8 @@ public final class TAPageLayout {
         mainArea.setStyleName("no-shadow");
         mainArea.setWidth(MAIN_WIDTH);
 
-        // container for currentComponentArea to be aligned in mainArea
-        // correctly
+        // container for currentComponentArea to be aligned in mainArea correctly
         final VerticalLayout verticalLayout = new VerticalLayout();
-        verticalLayout.setMargin(true);
-        verticalLayout.setSpacing(true);
         verticalLayout.addComponent(content);
 
         mainArea.addComponent(verticalLayout);

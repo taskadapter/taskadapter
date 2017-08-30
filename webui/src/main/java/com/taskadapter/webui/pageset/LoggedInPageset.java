@@ -41,6 +41,8 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.VerticalLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Function0;
@@ -107,6 +109,8 @@ public class LoggedInPageset {
      * Area for the current page.
      */
     private final HorizontalLayout currentComponentArea = new HorizontalLayout();
+    private final TabSheet tabs;
+    private final VerticalLayout configTabContainer;
 
     /**
      * Creates a new pageset.
@@ -128,9 +132,33 @@ public class LoggedInPageset {
         this.logoutCallback = callback;
         this.license = new LicenseFacade(services.licenseManager);
 
-        final Component header = Header.render(this::showConfigsList, createMenu(), createSelfManagementMenu(), license.isLicensed());
+        final Component header = Header.render(this::showHome, createMenu(), createSelfManagementMenu(), license.isLicensed());
+
+        tabs = new TabSheet();
+        tabs.addStyleName("framed equal-width-tabs");
+
+        Component configsPage = getConfigsPage();
+        configTabContainer = new VerticalLayout(configsPage);
+        configTabContainer.setSpacing(true);
+        configTabContainer.setWidth("950px");
+//        configsPageLayout.setComponentAlignment(configsPage, Alignment.TOP_RIGHT);
+//        configsPageLayout.setExpandRatio(configsPage, 1f);
+        tabs.addTab(configTabContainer, Page.message("layout.tabs.configs"));
+//        tabs.addTab(configsPage, Page.message("layout.tabs.configs"));
+
+        tabs.addTab(new VerticalLayout(), Page.message("layout.tabs.schedules"));
+
+        Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults();
+        tabs.addTab(new ExportResultsListPage(this::showHome, results, showExportResultsScala()).ui(),
+                Page.message("layout.tabs.results")
+        );
+
+        tabs.addSelectedTabChangeListener(event -> {
+            // TODO TA34 refresh results, etc
+        });
 
         ui = TAPageLayout.layoutPage(header, currentComponentArea);
+        showTabs();
     }
 
     /**
@@ -181,8 +209,9 @@ public class LoggedInPageset {
     }
 
     private void showConfigsList() {
+        tracker.trackPage("configs_list");
         clearCurrentConfigInSession();
-        showHome();
+        showInConfigTab(getConfigsPage());
     }
 
     private void showLastResults(ConfigId configId) {
@@ -212,14 +241,15 @@ public class LoggedInPageset {
         ).ui());
     }
 
-    private void showAllExportResults() {
-        Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults();
-        applyUI(
-                new ExportResultsListPage(this::showHome,
-                        results, showExportResultsScala())
-                        .ui());
-    }
-
+    /*
+        private void showAllExportResults() {
+            Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults();
+            applyUI(
+                    new ExportResultsListPage(this::showHome,
+                            results, showExportResultsScala())
+                            .ui());
+        }
+    */
     private Function1<ExportResultFormat, BoxedUnit> showExportResultsScala() {
         return (result) -> {
             showResult(result);
@@ -231,29 +261,29 @@ public class LoggedInPageset {
      * Shows a home page.
      */
     private void showHome() {
-        final boolean showAll = services.settingsManager
-                .adminCanManageAllConfigs()
-                && context.authorizedOps.canManagerPeerConfigs();
-
         if (webUserSession.getCurrentConfig() == null) {
-            showConfigsList(showAll);
+            showConfigsList();
         } else {
             showConfigEditor(webUserSession.getCurrentConfig(), null);
         }
     }
 
-    private void showConfigsList(boolean showAll) {
-        tracker.trackPage("configs_list");
-        Component component = new ConfigsPage(tracker, showAll,
+    private void showTabs() {
+        applyUI(tabs);
+    }
+
+    private boolean needToShowAllConfigs() {
+        return services.settingsManager
+                .adminCanManageAllConfigs()
+                && context.authorizedOps.canManagerPeerConfigs();
+    }
+
+    private Component getConfigsPage() {
+        return new ConfigsPage(tracker, needToShowAllConfigs(),
                 new ConfigsPage.Callback() {
                     @Override
                     public void newConfig() {
                         createNewConfig();
-                    }
-
-                    @Override
-                    public void showAllPreviousResults() {
-                        showAllExportResults();
                     }
 
                     @Override
@@ -295,7 +325,7 @@ public class LoggedInPageset {
                 },
                 context.configOps
         ).ui();
-        applyUI(component);
+
     }
 
     public void createNewConfig() {
@@ -360,7 +390,7 @@ public class LoggedInPageset {
     private void showConfigEditor(UISyncConfig config, String error) {
         tracker.trackPage("edit_config");
         webUserSession.setCurrentConfig(config);
-        applyUI(getConfigEditor(config, error));
+        showInConfigTab(getConfigEditor(config, error));
     }
 
     private Component getConfigEditor(UISyncConfig config, String error) {
@@ -593,6 +623,18 @@ public class LoggedInPageset {
         ui.setSizeUndefined();
         currentComponentArea.addComponent(ui);
         currentComponentArea.setComponentAlignment(ui, Alignment.TOP_LEFT);
+    }
+
+    private void showInConfigTab(Component ui) {
+        ensureTabsElementIsShown();
+        configTabContainer.removeAllComponents();
+        ui.setSizeUndefined();
+        configTabContainer.addComponent(ui);
+        configTabContainer.setComponentAlignment(ui, Alignment.TOP_LEFT);
+    }
+
+    private void ensureTabsElementIsShown() {
+        showTabs();
     }
 
     /**

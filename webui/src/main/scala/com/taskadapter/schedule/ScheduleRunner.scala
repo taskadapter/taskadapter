@@ -13,8 +13,8 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, exportResultStorage: ExportRe
   val log = TALog.log
 
   val threadsNumber = 1
-  val initialDelaySec = 5
-  val intervalSec = 30
+  val initialDelaySec = 60
+  val intervalSec = 60
 
   def start(): Unit = {
     log.info(s"Starting scheduler to support periodic sync. Time interval is $intervalSec sec.")

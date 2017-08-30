@@ -60,7 +60,6 @@ object ConfigsPage {
       */
     def newConfig(): Unit
 
-    def showAllPreviousResults(): Unit
     def showAllPreviousResults(configId: ConfigId): Unit
     def showLastExportResult(configId: ConfigId): Unit
   }
@@ -94,19 +93,13 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
 
   val layout = new VerticalLayout
   layout.setSpacing(true)
-  layout.setWidth(560, PIXELS)
+  layout.setWidth(950, PIXELS)
   val actionPanel = new HorizontalLayout
   actionPanel.setWidth(Sizes.configsListWidth)
-  layout.addComponent(actionPanel)
   val addButton = new Button(Page.message("configsPage.buttonNewConfig"))
   addButton.addClickListener(_ => callback.newConfig())
   actionPanel.addComponent(addButton)
   actionPanel.setComponentAlignment(addButton, Alignment.MIDDLE_LEFT)
-
-  val viewAllResultsButton = new Button(Page.message("configsPage.button.viewAllResults"))
-  viewAllResultsButton.addClickListener(_ => callback.showAllPreviousResults())
-  actionPanel.addComponent(viewAllResultsButton)
-  actionPanel.setComponentAlignment(viewAllResultsButton, Alignment.MIDDLE_CENTER)
 
   val filterPanel = new HorizontalLayout
   val filterField = new TextField
@@ -116,11 +109,20 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
   filterPanel.setSpacing(true)
   actionPanel.addComponent(filterPanel)
   actionPanel.setComponentAlignment(filterPanel, Alignment.MIDDLE_RIGHT)
-  val configsLayout = new VerticalLayout
-  configsLayout.setSpacing(true)
-  configsLayout.setWidth(560, PIXELS)
+  val configsTopLevelLayout = new HorizontalLayout()
+  configsTopLevelLayout.setSpacing(true)
+  configsTopLevelLayout.setSizeFull()
+
+  val configsLayout = new VerticalLayout()
+  configsLayout.setWidth(Sizes.configsListWidth)
+
+  configsTopLevelLayout.addComponent(configsLayout)
+  configsTopLevelLayout.setComponentAlignment(configsLayout, Alignment.TOP_CENTER)
+
+  layout.addComponent(actionPanel)
+  layout.addComponent(configsTopLevelLayout)
+  layout.setComponentAlignment(actionPanel, Alignment.TOP_LEFT)
   refreshConfigs()
-  layout.addComponent(configsLayout)
 
   private def refreshConfigs() = {
     val loadedConfigs = if (showAll) configOperations.getManageableConfigs
