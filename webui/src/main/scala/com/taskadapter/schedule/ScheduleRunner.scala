@@ -4,12 +4,12 @@ import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
 
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.exceptions.BadConfigException
-import com.taskadapter.web.uiapi.{UIConfigStore, UISyncConfig}
-import com.taskadapter.webui.TALog
+import com.taskadapter.web.uiapi.{Schedule, UIConfigStore, UISyncConfig}
 import com.taskadapter.webui.pages.ExportResultsLogger
 import com.taskadapter.webui.results.ExportResultStorage
+import com.taskadapter.webui.{SchedulesStorage, TALog}
 
-class ScheduleRunner(uiConfigStore: UIConfigStore, exportResultStorage: ExportResultStorage) {
+class ScheduleRunner(uiConfigStore: UIConfigStore, schedulesStorage: SchedulesStorage, exportResultStorage: ExportResultStorage) {
   val log = TALog.log
 
   val threadsNumber = 1
@@ -23,12 +23,11 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, exportResultStorage: ExportRe
     val task = new Runnable {
 
       def run() = {
-        val configs = uiConfigStore.getConfigs()
-        val scheduled = configs.filter(c => c.schedule.directionLeft || c.schedule.directionRight)
-        log.info(s"Found ${configs.size} configs, ${scheduled.size} scheduled for periodic execution") //. ${allResults.size} results total.")
-        scheduled.foreach { c =>
-          if (needToRun(c)) {
-            launchSyncLeftOrRight(c)
+        val schedules = schedulesStorage.getSchedules()
+        log.info(s"Found ${schedules.size} scheduled configs")
+        schedules.foreach { s =>
+          if (needToRun(s)) {
+            launchSyncLeftOrRight(s)
           }
         }
       }
@@ -36,8 +35,8 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, exportResultStorage: ExportRe
     val f = ex.scheduleAtFixedRate(task, initialDelaySec, intervalSec, TimeUnit.SECONDS)
   }
 
-  def needToRun(c: UISyncConfig): Boolean = {
-    val results = exportResultStorage.getSaveResults(c.id)
+  def needToRun(schedule: Schedule): Boolean = {
+    val results = exportResultStorage.getSaveResults(schedule.configId)
     if (results.isEmpty) {
       true
     } else {
@@ -45,22 +44,27 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, exportResultStorage: ExportRe
       val now = System.currentTimeMillis()
       val lastRanLong = lastResult.dateStarted.getTime + lastResult.timeTookSeconds * 1000
       val timePassedMin = (now - lastRanLong) / (60 * 1000)
-      val needtoRun = timePassedMin > c.schedule.intervalInMinutes
+      val needtoRun = timePassedMin > schedule.intervalInMinutes
       needtoRun
     }
   }
 
-  def launchSyncLeftOrRight(c: UISyncConfig) = {
-    if (c.schedule.directionRight) {
-      launchSync(c)
-    }
+  private def launchSyncLeftOrRight(s: Schedule): Unit = {
+    val config = uiConfigStore.getConfig(s.configId)
+    if (config.isDefined) {
+      if (s.directionRight) {
+        launchSync(config.get)
+      }
 
-    if (c.schedule.directionLeft) {
-      launchSync(c.reverse)
+      if (s.directionLeft) {
+        launchSync(config.get.reverse)
+      }
+    } else {
+      log.error(s"Cannot find config ${s.configId} scheduled for execution in $s. Skipping it.")
     }
   }
 
-  def launchSync(c: UISyncConfig) = {
+  private def launchSync(c: UISyncConfig): Unit = {
     log.info(s"Starting scheduled export from ${c.getConnector1.getLabel} to ${c.getConnector2.getLabel}")
 
     try {

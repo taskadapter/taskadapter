@@ -9,6 +9,7 @@ import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.SettingsManager;
 import com.taskadapter.web.uiapi.UIConfigService;
 import com.taskadapter.web.uiapi.UIConfigStore;
+import com.taskadapter.webui.SchedulesStorage;
 import com.taskadapter.webui.results.ExportResultStorage;
 
 import java.io.File;
@@ -24,6 +25,7 @@ public class Preservices {
     public final TempFileManager tempFileManager;
     public final ConfigStorage configStorage;
     public final ExportResultStorage exportResultStorage;
+    public final SchedulesStorage schedulesStorage;
     public final UIConfigStore uiConfigStore;
     public final BasicCredentialsManager credentialsManager;
 
@@ -37,6 +39,7 @@ public class Preservices {
         licenseManager = new LicenseManager(rootDir);
         configStorage = new ConfigStorage(rootDir);
         exportResultStorage = new ExportResultStorage(rootDir, settingsManager.getMaxNumberOfResultsToKeep());
+        schedulesStorage = new SchedulesStorage(rootDir);
 
         CredentialsStore credentialsStore = new FSCredentialStore(rootDir);
 

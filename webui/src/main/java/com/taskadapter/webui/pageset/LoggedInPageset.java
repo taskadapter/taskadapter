@@ -7,6 +7,7 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.uiapi.ConfigId;
+import com.taskadapter.web.uiapi.Schedule;
 import com.taskadapter.web.uiapi.SetupId;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
@@ -27,9 +28,11 @@ import com.taskadapter.webui.export.ExportResultsFragment;
 import com.taskadapter.webui.license.LicenseFacade;
 import com.taskadapter.webui.pages.ConfigsPage;
 import com.taskadapter.webui.pages.DropInExportPage;
+import com.taskadapter.webui.pages.EditSchedulePage;
 import com.taskadapter.webui.pages.ExportPage;
 import com.taskadapter.webui.pages.LicenseAgreementPage;
 import com.taskadapter.webui.pages.NewConfigPage;
+import com.taskadapter.webui.pages.SchedulesListPage;
 import com.taskadapter.webui.pages.SupportPage;
 import com.taskadapter.webui.pages.UserProfilePage;
 import com.taskadapter.webui.results.ExportResultFormat;
@@ -143,7 +146,8 @@ public class LoggedInPageset {
         configTabContainer.setWidth(Sizes.tabWidth());
         tabs.addTab(configTabContainer, Page.message("layout.tabs.configs"));
 
-        tabs.addTab(new VerticalLayout(), Page.message("layout.tabs.schedules"));
+        SchedulesListPage schedulesListPage = new SchedulesListPage(showScheduleScala(), this::showNewSchedulePage);
+        tabs.addTab(schedulesListPage.ui(), Page.message("layout.tabs.schedules"));
 
         ExportResultsListPage exportResultsListPage = new ExportResultsListPage(this::showHome, showExportResultsScala());
         VerticalLayout resultsUi = exportResultsListPage.ui();
@@ -153,6 +157,9 @@ public class LoggedInPageset {
             if (event.getTabSheet().getSelectedTab() == resultsUi) {
                 Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults();
                 exportResultsListPage.showResults(results);
+            } else if (event.getTabSheet().getSelectedTab() == schedulesListPage.ui()) {
+                schedulesListPage.showResults(
+                        services.schedulesStorage.getSchedules());
             }
         });
 
@@ -233,6 +240,21 @@ public class LoggedInPageset {
         applyUI(component);
     }
 
+    private void showSchedule(Schedule schedule) {
+        EditSchedulePage page = new EditSchedulePage(Option.apply(schedule), () -> showNewSchedulePage());
+        applyUI(page.ui());
+    }
+
+    private void showNewSchedulePage() {
+        tracker.trackPage("create_schedule_page");
+
+        EditSchedulePage editSchedulePage = new EditSchedulePage(
+                Option.empty(),
+                () -> {throw  new RuntimeException();} // services.schedulesStorage.store()
+        );
+        applyUI(editSchedulePage.ui());
+    }
+
     private void showExportResults(ConfigId configId) {
         ExportResultsListPage exportResultsListPage = new ExportResultsListPage(this::showHome, showExportResultsScala());
         Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults(configId);
@@ -243,6 +265,13 @@ public class LoggedInPageset {
     private Function1<ExportResultFormat, BoxedUnit> showExportResultsScala() {
         return (result) -> {
             showResult(result);
+            return BoxedUnit.UNIT;
+        };
+    }
+
+    private Function1<Schedule, BoxedUnit> showScheduleScala() {
+        return (result) -> {
+            showSchedule(result);
             return BoxedUnit.UNIT;
         };
     }

@@ -84,9 +84,7 @@ case class UISyncConfig(taskKeeperLocationStorage: TaskKeeperLocationStorage,
                         /**
                           * "Config is reversed" flag.
                           */
-                        var reversed: Boolean,
-
-                        schedule: Schedule
+                        var reversed: Boolean
                        ) {
 
   val id = ConfigId(owner, identity)
@@ -108,8 +106,7 @@ case class UISyncConfig(taskKeeperLocationStorage: TaskKeeperLocationStorage,
     * @return "reversed" (back-order) configuration.
     */
   def reverse = new UISyncConfig(taskKeeperLocationStorage, identity, owner, label, connector2, connector1,
-    UISyncConfig.reverse(fieldMappings), !reversed,
-    schedule)
+    UISyncConfig.reverse(fieldMappings), !reversed)
 
   /**
     * Returns a "normalized" (canonical) form of this config.

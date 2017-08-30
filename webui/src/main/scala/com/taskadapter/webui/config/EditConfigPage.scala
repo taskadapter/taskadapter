@@ -9,7 +9,7 @@ import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{UIConnectorConfig, UISyncConfig}
 import com.taskadapter.webui._
 import com.taskadapter.webui.data.ExceptionFormatter
-import com.vaadin.data.util.{MethodProperty, ObjectProperty}
+import com.vaadin.data.util.ObjectProperty
 import com.vaadin.server.Sizeable.Unit.PERCENTAGE
 import com.vaadin.shared.ui.label.ContentMode
 import com.vaadin.ui._
@@ -57,25 +57,6 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
 
   val taskFieldsMappingFragment = new TaskFieldsMappingFragment(messages, config.getConnector1, config.getConnector2, config.getNewMappings)
 
-  def getScheduledSyncPanel(): Component = {
-    val layout = new HorizontalLayout()
-    layout.setMargin(true)
-    layout.setSpacing(true)
-    val runIntervalField = new TextField(Page.message("export.schedule.runIntervalInMinutes"),
-      new MethodProperty[Int](config.schedule, "intervalInMinutes"))
-
-    val scheduledLeftField = new CheckBox(Page.message("export.schedule.left"),
-      new MethodProperty[Boolean](config.schedule, "directionLeft"))
-    val scheduledRightField = new CheckBox(Page.message("export.schedule.right"),
-      new MethodProperty[Boolean](config.schedule, "directionRight"))
-
-    layout.addComponent(runIntervalField)
-    layout.addComponent(scheduledLeftField)
-    layout.addComponent(scheduledRightField)
-    new Panel(layout)
-  }
-
-  layout.addComponent(getScheduledSyncPanel())
   layout.addComponent(taskFieldsMappingFragment.getUI)
 
   def removeEmptyRows(): Unit = {

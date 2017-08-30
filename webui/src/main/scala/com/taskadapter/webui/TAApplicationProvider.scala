@@ -59,7 +59,8 @@ class TAApplicationProvider(reportGoogleAnalytics: Boolean) extends UIProvider {
     log.info("License NOT installed or is NOT valid. Trial mode.")
   }
 
-  private val scheduleRunner = new ScheduleRunner(services.uiConfigStore, services.exportResultStorage)
+  private val scheduleRunner = new ScheduleRunner(services.uiConfigStore, services.schedulesStorage,
+    services.exportResultStorage)
   scheduleRunner.start()
 
   /**

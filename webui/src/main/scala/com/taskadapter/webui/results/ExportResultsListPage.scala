@@ -2,7 +2,7 @@ package com.taskadapter.webui.results
 
 import java.text.SimpleDateFormat
 
-import com.taskadapter.webui.Page
+import com.taskadapter.webui.{Page, Sizes}
 import com.vaadin.data.sort.SortOrder
 import com.vaadin.data.util.BeanItem
 import com.vaadin.data.util.converter.StringToBooleanConverter
@@ -66,7 +66,7 @@ class ExportResultsListPage(close: Runnable,
   }
 
   private val label = new Label(Page.message("exportResults.intro"))
-  label.addStyleName(ValoTheme.LABEL_HUGE)
+  label.addStyleName(Sizes.tabIntro)
   ui.addComponent(label)
   ui.addComponent(grid)
 

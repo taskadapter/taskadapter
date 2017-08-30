@@ -2,7 +2,6 @@ package com.taskadapter.web.uiapi
 
 import java.io.File
 
-import com.google.common.base.Strings
 import com.taskadapter.auth.cred.CredentialsStore
 import com.taskadapter.config.CirceBoilerplateForConfigs._
 import com.taskadapter.config._
@@ -80,20 +79,10 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
 
     val newMappings = decode[Seq[FieldMapping]](jsonString)
 
-    val schedule = if (Strings.isNullOrEmpty(storedConfig.getSchedule) || storedConfig.getSchedule == "{}") {
-      Schedule.apply
-    } else {
-      decode[Schedule](storedConfig.getSchedule) match {
-        case Left(e) => logger.warn(s"cannot parse schedule from config $storedConfig: $e. Assuming no schedule.")
-          Schedule.apply
-        case Right(s) => s
-      }
-    }
-
     newMappings match {
       case Left(e) => throw new RuntimeException(s"cannot parse mappings from config $storedConfig: $e")
       case Right(m) =>
-        new UISyncConfig(new TaskKeeperLocationStorage(configStorage.rootDir), storedConfig.getId, ownerName, label, config1, config2, m, false, schedule)
+        new UISyncConfig(new TaskKeeperLocationStorage(configStorage.rootDir), storedConfig.getId, ownerName, label, config1, config2, m, false)
     }
   }
 
@@ -116,11 +105,10 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
       config1.getSuggestedCombinations,
       config2.getSuggestedCombinations)
     val mappingsString = newMappings.asJson.noSpaces
-    val scheduleString = Schedule.asJson.noSpaces
     val configId = configStorage.createNewConfig(userName, label,
       config1.getConnectorTypeId, connector1SetupId, config1.getConfigString,
       config2.getConnectorTypeId, connector2SetupId, config2.getConfigString,
-      mappingsString, scheduleString)
+      mappingsString)
 
     configId
   }
@@ -219,11 +207,10 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val config2 = normalizedSyncConfig.getConnector2
     val mappings = normalizedSyncConfig.getNewMappings
     val mappingsStr = mappings.asJson.noSpaces
-    val scheduleStr = syncConfig.schedule.asJson.noSpaces
     configStorage.saveConfig(normalizedSyncConfig.getOwnerName, normalizedSyncConfig.identity, label,
       config1.getConnectorTypeId, SetupId(config1.getConnectorSetup.id.get), config1.getConfigString,
       config2.getConnectorTypeId, SetupId(config2.getConnectorSetup.id.get), config2.getConfigString,
-      mappingsStr, scheduleStr)
+      mappingsStr)
   }
 
   def deleteConfig(configId: ConfigId): Unit = {
@@ -248,7 +235,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
         configStorage.createNewConfig(userLoginName, config.getName,
           connector1.connectorTypeId, connector1.connectorSavedSetupId, connector1.serializedConfig,
           connector2.connectorTypeId, connector2.connectorSavedSetupId, connector2.serializedConfig,
-          config.getMappingsString, config.getSchedule)
+          config.getMappingsString)
       case None => throw new StorageException(s"Cannot find config with id $configId to clone")
     }
   }
