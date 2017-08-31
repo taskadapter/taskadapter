@@ -7,15 +7,14 @@ import org.scalatest.{FunSpec, Matchers}
 
 @RunWith(classOf[JUnitRunner])
 class FileNameGeneratorTest extends FunSpec with Matchers with TempFolder {
-  it("file name is incremented when a file already exists") {
-    withTempFolder {folder =>
+  it("second file name is different from first when a file already exists") {
+    withTempFolder { folder =>
       val filePattern = "file_%d.txt"
       val file = FileNameGenerator.createSafeAvailableFile(folder, filePattern)
-      file.getName shouldBe "file_1.txt"
       file.createNewFile()
 
       val file2 = FileNameGenerator.createSafeAvailableFile(folder, filePattern)
-      file2.getName shouldBe "file_2.txt"
+      file2.getName should not be file.getName
     }
   }
 }
