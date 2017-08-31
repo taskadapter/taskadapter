@@ -26,16 +26,12 @@ object FileNameGenerator {
     while ( {
       number < numberOfTries // give a chance to exit
     }) {
-      val file = new File(rootFolder, String.format(safeFormat, number.asInstanceOf[Integer]))
-      logger.info(s"Checking if file name ${file.getAbsolutePath} is available...")
+      val identifier = System.currentTimeMillis()
+      val file = new File(rootFolder, safeFormat.format(identifier))
+      logger.debug(s"Checking if file name ${file.getAbsolutePath} is available...")
       if (!file.exists) return file
 
-      // speed up lookups when there are many existing files already
-      if (number < 20) {
-        number += 1
-      } else {
-        number += 20
-      }
+      number += 1
     }
     throw new RuntimeException(s"cannot generate available file name after $numberOfTries attempts")
   }
