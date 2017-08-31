@@ -6,6 +6,8 @@ import com.vaadin.data.util.MethodProperty
 import com.vaadin.ui._
 
 class EditSchedulePage(configLabel: String,
+                       destinationLeft: String,
+                       destinationRight: String,
                        schedule: Schedule,
                        save: (Schedule) => Unit,
                        close: () => Unit,
@@ -19,14 +21,15 @@ class EditSchedulePage(configLabel: String,
     val runIntervalField = new TextField(Page.message("export.schedule.runIntervalInMinutes"),
       new MethodProperty[Int](schedule, "intervalInMinutes"))
 
-    val scheduledLeftField = new CheckBox(Page.message("export.schedule.left"),
+    val scheduledLeftField = new CheckBox(Page.message("export.schedule.exportTo", destinationLeft),
       new MethodProperty[Boolean](schedule, "directionLeft"))
-    val scheduledRightField = new CheckBox(Page.message("export.schedule.right"),
+    val scheduledRightField = new CheckBox(Page.message("export.schedule.exportTo", destinationRight),
       new MethodProperty[Boolean](schedule, "directionRight"))
 
     val form = new FormLayout
-    form.setWidth("400px")
+    form.setWidth("600px")
     val labelField = new TextField(Page.message("editSchedule.configLabel"), configLabel)
+    labelField.setWidth("300px")
     labelField.setReadOnly(true)
     form.addComponent(labelField)
     form.addComponent(runIntervalField)

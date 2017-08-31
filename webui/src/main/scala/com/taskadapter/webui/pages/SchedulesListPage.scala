@@ -29,9 +29,11 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
   def showSchedules(results: Seq[Schedule]): Unit = {
     ds.removeAllItems()
     ds.addAll(
-      results.map(r =>
-        ScheduleListItem(r.id, r.configId, getConfigLabel(r.configId), r.intervalInMinutes, getConfigDestination(r.configId))
-      ).asJava)
+      results.map { schedule =>
+        val config = configsList.find(c => c.id == schedule.configId).get
+        ScheduleListItem(schedule.id, schedule.configId, config.label,
+          schedule.intervalInMinutes, config.getConnector2.getLabel)
+      }.asJava)
     grid.setSortOrder(List(new SortOrder("configLabel", SortDirection.ASCENDING)).asJava)
     applyUI(listLayout)
   }
@@ -49,34 +51,26 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
   private def showSchedule(scheduleId: String): Unit = {
     tracker.trackPage("edit_schedule_page")
     val schedule = schedulesStorage.get(scheduleId).get
-    val page = new EditSchedulePage(
-      getConfigLabel(schedule.configId),
-      schedule, (schedule) => saveSchedule(schedule),
-      showSchedules,
-      (schedule) => deleteSchedule(schedule)
-    )
-    applyUI(page.ui)
+    showSchedule(schedule)
   }
 
   private def showNewScheduleEditor(configId: ConfigId): Unit = {
     tracker.trackPage("create_schedule_page")
-
     val schedule = Schedule(UUID.randomUUID().toString, configId, 60, false, false)
+    showSchedule(schedule)
+  }
+
+  private def showSchedule(schedule: Schedule): Unit = {
+    val config = configsList.find(c => c.id == schedule.configId).get
     val editSchedulePage = new EditSchedulePage(
-      getConfigLabel(configId),
+      config.label,
+      config.getConnector1.getLabel,
+      config.getConnector2.getLabel,
       schedule, (schedule) => saveSchedule(schedule),
       showSchedules,
       (schedule) => deleteSchedule(schedule)
     )
     applyUI(editSchedulePage.ui)
-  }
-
-  private def getConfigLabel(configId: ConfigId): String = {
-    configsList.find(c => c.id == configId).map(_.label).get
-  }
-
-  private def getConfigDestination(configId: ConfigId): String = {
-    configsList.find(c => c.id == configId).map(_.getConnector2.getDestinationLocation).get
   }
 
   def saveSchedule(schedule: Schedule): Unit = {
@@ -130,9 +124,9 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
       .setHeaderCaption(Page.message("schedules.column.interval"))
       .setExpandRatio(1)
 
-    grid.addColumn("to")
-      .setHeaderCaption(Page.message("schedules.column.to"))
-      .setExpandRatio(2)
+//    grid.addColumn("to")
+//      .setHeaderCaption(Page.message("schedules.column.to"))
+//      .setExpandRatio(2)
 
     grid.addSelectionListener { _ =>
       val result = grid.getContainerDataSource.getItem(grid.getSelectedRow).asInstanceOf[BeanItem[ScheduleListItem]].getBean

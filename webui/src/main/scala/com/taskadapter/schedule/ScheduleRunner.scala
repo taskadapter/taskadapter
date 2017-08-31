@@ -24,7 +24,7 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, schedulesStorage: SchedulesSt
 
       def run() = {
         val schedules = schedulesStorage.getSchedules()
-        log.info(s"Found ${schedules.size} scheduled configs")
+        log.info(s"Found ${schedules.size} scheduled configs. Checking if it is time for them to run...")
         schedules.foreach { s =>
           if (needToRun(s)) {
             launchSyncLeftOrRight(s)
