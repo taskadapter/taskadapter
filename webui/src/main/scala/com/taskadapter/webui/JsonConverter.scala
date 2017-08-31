@@ -12,10 +12,12 @@ object JsonConverter {
   implicit val formats = DefaultFormats
 
   def convertFilesToObject[T](files: Array[File])(implicit man: Manifest[T]): Seq[T] = {
-    files.map(Files.toString(_, Charsets.UTF_8)).flatMap { string =>
-      val jValue = parse(string)
-      val saveResult = jValue.extract[T]
-      Some(saveResult)
-    }
+    files.map(convertFileToObject[T])
+  }
+
+  def convertFileToObject[T](file: File)(implicit man: Manifest[T]): T = {
+    val jValue = parse(Files.toString(file, Charsets.UTF_8))
+    val saveResult = jValue.extract[T]
+    saveResult
   }
 }

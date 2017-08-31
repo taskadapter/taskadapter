@@ -19,6 +19,31 @@ class Storage(storageFolder: File, fileNamePrefix: String, fileNameExtention: St
 
   implicit val formats = DefaultFormats
 
+  def get[T](filter: (T) => Boolean)(implicit man: Manifest[T]): Option[T] = {
+    val files = storageFolder.listFiles(resultsFileFilter)
+    if (files != null) {
+      files.foreach { file =>
+        val obj = JsonConverter.convertFileToObject(file)
+        if (filter(obj)) {
+          return Some(obj)
+        }
+      }
+    }
+    None
+  }
+
+  def delete[T](filter: (T) => Boolean)(implicit man: Manifest[T]): Unit = {
+    val files = storageFolder.listFiles(resultsFileFilter)
+    if (files != null) {
+      files.foreach { file =>
+        val obj = JsonConverter.convertFileToObject(file)
+        if (filter(obj)) {
+          file.delete()
+        }
+      }
+    }
+  }
+
   def store[T](result: T): Unit = {
     storageFolder.mkdirs()
     val file = FileNameGenerator.createSafeAvailableFile(storageFolder, s"${fileNamePrefix}_%d.$fileNameExtention", 10000000)

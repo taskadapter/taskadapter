@@ -38,7 +38,7 @@ final class ConfigOperations(/**
   /**
     * @return list of configs that user owns.
     */
-  def getOwnedConfigs: util.List[UISyncConfig] = uiConfigStore.getUserConfigs(userName).asJava
+  def getOwnedConfigs: Seq[UISyncConfig] = uiConfigStore.getUserConfigs(userName)
 
   def getSavedSetupsFolder = uiConfigStore.getSavedSetupsFolder(userName)
   def getConfig(configId: ConfigId): Option[UISyncConfig] = uiConfigStore.getConfig(configId)
@@ -46,13 +46,13 @@ final class ConfigOperations(/**
   /**
     * @return list of configs that user can manage.
     */
-  def getManageableConfigs: util.List[UISyncConfig] = {
+  def getManageableConfigs: Seq[UISyncConfig] = {
     if (!authorizedOps.canManagerPeerConfigs) return getOwnedConfigs
     val res = new util.ArrayList[UISyncConfig]
     credManager.listUsers.asScala.foreach(user =>
       res.addAll(uiConfigStore.getUserConfigs(user).asJava)
     )
-    res
+    res.asScala
   }
 
   /**

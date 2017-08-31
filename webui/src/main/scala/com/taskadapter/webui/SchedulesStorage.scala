@@ -21,4 +21,12 @@ class SchedulesStorage(rootDir: File) {
   def getSchedules(): Seq[Schedule] = {
     storage.getItems[Schedule]()
   }
+
+  def get(id: String): Option[Schedule] = {
+    storage.get[Schedule](s => s.id == id)
+  }
+
+  def delete(id: String): Unit = {
+    storage.delete[Schedule](s => s.id == id)
+  }
 }

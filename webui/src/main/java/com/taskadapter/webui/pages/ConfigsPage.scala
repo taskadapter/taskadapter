@@ -126,9 +126,7 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
   private def refreshConfigs() = {
     val loadedConfigs = if (showAll) configOperations.getManageableConfigs
     else configOperations.getOwnedConfigs
-    val configsCopy = new util.ArrayList[UISyncConfig](loadedConfigs)
-    Collections.sort(configsCopy, new ConfigsPage.ConfigComparator(configOperations.userName))
-    configs = loadedConfigs.asScala
+    configs = loadedConfigs.sortBy(c => c.getOwnerName)
     setDisplayedConfigs(configs)
     filterFields(filterField.getValue)
   }
