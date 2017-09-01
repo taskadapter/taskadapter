@@ -2,6 +2,7 @@ package com.taskadapter.webui.pages
 
 import java.util.UUID
 
+import com.taskadapter.web.SettingsManager
 import com.taskadapter.web.uiapi.{ConfigId, Schedule, UISyncConfig}
 import com.taskadapter.webui.{Page, SchedulesStorage, Sizes, Tracker}
 import com.vaadin.data.sort.SortOrder
@@ -17,7 +18,8 @@ case class ScheduleListItem(id: String, configId: ConfigId,
                             @BeanProperty intervalMin: Int,
                             @BeanProperty to: String)
 
-class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, configsList: Seq[UISyncConfig]) {
+class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, configsList: Seq[UISyncConfig],
+                        settingsManager: SettingsManager) {
   val ds = new BeanItemContainer[ScheduleListItem](classOf[ScheduleListItem])
   val grid = new Grid(ds)
 
@@ -107,10 +109,13 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
 
   def createListLayout(): Layout = {
 
-    val listLayout = new VerticalLayout()
-
     val addButton = new Button(Page.message("schedules.newButton"))
     addButton.addClickListener(_ => showSelectConfig())
+
+    val checkbox = new CheckBox(Page.message("schedules.scheduledEnabled"))
+    checkbox.setValue(settingsManager.schedulerEnabled)
+    checkbox.setImmediate(true)
+    checkbox.addValueChangeListener(_ => settingsManager.setSchedulerEnabled(checkbox.getValue))
 
     grid.setWidth("980px")
     grid.removeAllColumns()
@@ -124,9 +129,9 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
       .setHeaderCaption(Page.message("schedules.column.interval"))
       .setExpandRatio(1)
 
-//    grid.addColumn("to")
-//      .setHeaderCaption(Page.message("schedules.column.to"))
-//      .setExpandRatio(2)
+    //    grid.addColumn("to")
+    //      .setHeaderCaption(Page.message("schedules.column.to"))
+    //      .setExpandRatio(2)
 
     grid.addSelectionListener { _ =>
       val result = grid.getContainerDataSource.getItem(grid.getSelectedRow).asInstanceOf[BeanItem[ScheduleListItem]].getBean
@@ -136,9 +141,15 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
     val label = new Label(Page.message("schedules.intro"))
     label.addStyleName(Sizes.tabIntro)
 
-    listLayout.addComponent(addButton)
-    listLayout.setComponentAlignment(addButton, Alignment.MIDDLE_LEFT)
+    val controlsLayout = new HorizontalLayout(addButton, checkbox)
+    controlsLayout.setWidth("100%")
+    controlsLayout.setSpacing(true)
+    controlsLayout.setComponentAlignment(addButton, Alignment.MIDDLE_LEFT)
+    controlsLayout.setComponentAlignment(checkbox, Alignment.MIDDLE_RIGHT)
+
+    val listLayout = new VerticalLayout()
     listLayout.addComponent(label)
+    listLayout.addComponent(controlsLayout)
     listLayout.addComponent(grid)
     listLayout
   }

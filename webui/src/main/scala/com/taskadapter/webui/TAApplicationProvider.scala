@@ -60,8 +60,10 @@ class TAApplicationProvider(reportGoogleAnalytics: Boolean) extends UIProvider {
   }
 
   private val scheduleRunner = new ScheduleRunner(services.uiConfigStore, services.schedulesStorage,
-    services.exportResultStorage)
-  scheduleRunner.start()
+    services.exportResultStorage, services.settingsManager)
+  if (services.settingsManager.schedulerEnabled) {
+    scheduleRunner.start()
+  }
 
   /**
     * Vaadin calls this when app is loaded in browser

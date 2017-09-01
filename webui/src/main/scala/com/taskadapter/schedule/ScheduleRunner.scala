@@ -5,34 +5,59 @@ import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.web.uiapi.{Schedule, UIConfigStore, UISyncConfig}
+import com.taskadapter.web.{SchedulerDisabledEvent, SchedulerEnabledEvent, SettingsManager}
 import com.taskadapter.webui.pages.ExportResultsLogger
 import com.taskadapter.webui.results.ExportResultStorage
 import com.taskadapter.webui.{SchedulesStorage, TALog}
 
-class ScheduleRunner(uiConfigStore: UIConfigStore, schedulesStorage: SchedulesStorage, exportResultStorage: ExportResultStorage) {
+class ScheduleRunner(uiConfigStore: UIConfigStore, schedulesStorage: SchedulesStorage,
+                     exportResultStorage: ExportResultStorage,
+                     settingsManager: SettingsManager) {
   val log = TALog.log
 
   val threadsNumber = 1
   val initialDelaySec = 60
   val intervalSec = 60
 
-  def start(): Unit = {
-    log.info(s"Starting scheduler to support periodic sync. Time interval is $intervalSec sec.")
+  var running = settingsManager.schedulerEnabled
+
+  settingsManager.registerListener {
+    case SchedulerEnabledEvent => start()
+    case SchedulerDisabledEvent => stop()
+    case _ => // ignore other events
+  }
+
+  init()
+
+  def init(): Unit = {
+    log.info(s"Configuring scheduler to support periodic sync. Time interval is $intervalSec sec. 'enabled' flag is: $running")
 
     val ex = new ScheduledThreadPoolExecutor(threadsNumber)
     val task = new Runnable {
 
       def run() = {
-        val schedules = schedulesStorage.getSchedules()
-        log.info(s"Found ${schedules.size} scheduled configs. Checking if it is time for them to run...")
-        schedules.foreach { s =>
-          if (needToRun(s)) {
-            launchSyncLeftOrRight(s)
+        if (running) {
+          val schedules = schedulesStorage.getSchedules()
+          log.info(s"Found ${schedules.size} scheduled configs. Checking if it is time for them to run...")
+          schedules.foreach { s =>
+            if (needToRun(s)) {
+              launchSyncLeftOrRight(s)
+            }
           }
         }
       }
     }
     val f = ex.scheduleAtFixedRate(task, initialDelaySec, intervalSec, TimeUnit.SECONDS)
+  }
+
+  def stop(): Unit = {
+    log.info("Stopping scheduler")
+    running = false
+  }
+
+  def start(): Unit = {
+    log.info("Starting scheduler")
+    running = true
   }
 
   def needToRun(schedule: Schedule): Boolean = {
