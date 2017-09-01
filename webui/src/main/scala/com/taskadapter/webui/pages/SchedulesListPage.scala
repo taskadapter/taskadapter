@@ -4,7 +4,7 @@ import java.util.UUID
 
 import com.taskadapter.web.SettingsManager
 import com.taskadapter.web.uiapi.{ConfigId, Schedule, UISyncConfig}
-import com.taskadapter.webui.{Page, SchedulesStorage, Sizes, Tracker}
+import com.taskadapter.webui._
 import com.vaadin.data.sort.SortOrder
 import com.vaadin.data.util.{BeanItem, BeanItemContainer}
 import com.vaadin.shared.data.sort.SortDirection
@@ -18,7 +18,7 @@ case class ScheduleListItem(id: String, configId: ConfigId,
                             @BeanProperty intervalMin: Int,
                             @BeanProperty to: String)
 
-class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, configsList: Seq[UISyncConfig],
+class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, configOperations: ConfigOperations,
                         settingsManager: SettingsManager) {
   val ds = new BeanItemContainer[ScheduleListItem](classOf[ScheduleListItem])
   val grid = new Grid(ds)
@@ -32,7 +32,7 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
     ds.removeAllItems()
     ds.addAll(
       results.map { schedule =>
-        val config = configsList.find(c => c.id == schedule.configId).get
+        val config = configOperations.getOwnedConfigs.find(c => c.id == schedule.configId).get
         ScheduleListItem(schedule.id, schedule.configId, config.label,
           schedule.intervalInMinutes, config.getConnector2.getLabel)
       }.asJava)
@@ -63,7 +63,7 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
   }
 
   private def showSchedule(schedule: Schedule): Unit = {
-    val config = configsList.find(c => c.id == schedule.configId).get
+    val config = configOperations.getOwnedConfigs.find(c => c.id == schedule.configId).get
     val editSchedulePage = new EditSchedulePage(
       config.label,
       config.getConnector1.getLabel,
@@ -98,7 +98,7 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
     res.addValueChangeListener(_ =>
       showNewScheduleEditor(res.getValue.asInstanceOf[ConfigId])
     )
-    configsList.foreach { s =>
+    configOperations.getOwnedConfigs.foreach { s =>
       res.addItem(s.id)
       res.setItemCaption(s.id, s.label)
     }
