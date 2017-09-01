@@ -16,8 +16,8 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, schedulesStorage: SchedulesSt
   val log = TALog.log
 
   val threadsNumber = 1
-  val initialDelaySec = 10
-  val intervalSec = 5
+  val initialDelaySec = 30
+  val intervalSec = 20
 
   var allowedToRun = settingsManager.schedulerEnabled
   var currentlyBusy = false
@@ -69,8 +69,8 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, schedulesStorage: SchedulesSt
       val lastResult = results.maxBy(r => r.dateStarted.getTime + r.timeTookSeconds * 1000)
       val now = System.currentTimeMillis()
       val lastRanLong = lastResult.dateStarted.getTime + lastResult.timeTookSeconds * 1000
-      val timePassedMin = (now - lastRanLong) / (60 * 1000)
-      val needtoRun = timePassedMin > schedule.intervalInMinutes
+      val timePassedSeconds = (now - lastRanLong) / 1000
+      val needtoRun = timePassedSeconds >= (schedule.intervalInMinutes * 60)
       needtoRun
     }
   }
