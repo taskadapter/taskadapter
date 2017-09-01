@@ -145,7 +145,7 @@ public class LoggedInPageset {
         tabs.addTab(configTabContainer, Page.message("layout.tabs.configs"));
 
         SchedulesListPage schedulesListPage = new SchedulesListPage(tracker, services.schedulesStorage,
-                context.configOps.getOwnedConfigs(), services.settingsManager
+                context.configOps, services.settingsManager
         );
         tabs.addTab(schedulesListPage.ui(), Page.message("layout.tabs.schedules"));
 
