@@ -3,12 +3,13 @@ package com.taskadapter.webui.pages
 import java.util.UUID
 
 import com.taskadapter.web.SettingsManager
-import com.taskadapter.web.uiapi.{ConfigId, Schedule, UISyncConfig}
+import com.taskadapter.web.uiapi.{ConfigId, Schedule}
 import com.taskadapter.webui._
 import com.vaadin.data.sort.SortOrder
 import com.vaadin.data.util.{BeanItem, BeanItemContainer}
 import com.vaadin.shared.data.sort.SortDirection
 import com.vaadin.ui._
+import org.slf4j.LoggerFactory
 
 import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
@@ -20,21 +21,30 @@ case class ScheduleListItem(id: String, configId: ConfigId,
 
 class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, configOperations: ConfigOperations,
                         settingsManager: SettingsManager) {
+  private val log = LoggerFactory.getLogger(classOf[SchedulesListPage])
+  private val configRowsToShowInListSelect = 15
+
   val ds = new BeanItemContainer[ScheduleListItem](classOf[ScheduleListItem])
   val grid = new Grid(ds)
 
   val ui = new VerticalLayout()
   val listLayout = createListLayout()
+  val configsListSelect = createConfigsList()
 
   ui.addComponent(listLayout)
 
   def showSchedules(results: Seq[Schedule]): Unit = {
     ds.removeAllItems()
     ds.addAll(
-      results.map { schedule =>
-        val config = configOperations.getOwnedConfigs.find(c => c.id == schedule.configId).get
-        ScheduleListItem(schedule.id, schedule.configId, config.label,
-          schedule.intervalInMinutes, config.getConnector2.getLabel)
+      results.flatMap { schedule =>
+        val maybeConfig = configOperations.getOwnedConfigs.find(c => c.id == schedule.configId)
+        if (maybeConfig.isDefined) {
+          Some(ScheduleListItem(schedule.id, schedule.configId, maybeConfig.get.label,
+            schedule.intervalInMinutes, maybeConfig.get.getConnector2.getLabel))
+        } else {
+          log.error(s"cannot find config for schedule $schedule")
+          None
+        }
       }.asJava)
     grid.setSortOrder(List(new SortOrder("configLabel", SortDirection.ASCENDING)).asJava)
     applyUI(listLayout)
@@ -85,27 +95,48 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
     showSchedules()
   }
 
+  def getSelectedConfigId(): ConfigId = {
+    configsListSelect.getValue.asInstanceOf[ConfigId]
+  }
+
   def showSelectConfig(): Unit = {
     val layout = new VerticalLayout()
-    layout.addComponent(new Label(Page.message("schedules.selectConfig.title")))
-    layout.addComponent(createConfigsList())
+    layout.setSpacing(true)
+    val goButton = new Button(Page.message("schedules.newConfig.go"))
+    goButton.addClickListener(_ => showNewScheduleEditor(getSelectedConfigId()))
+
+    val label = new Label(Page.message("schedules.selectConfig.title"))
+    label.addStyleName(Sizes.tabIntro)
+    layout.addComponent(label)
+    val horizontalLayout = new HorizontalLayout(configsListSelect, goButton)
+    horizontalLayout.setSpacing(true)
+    layout.addComponent(horizontalLayout)
+
+    reloadConfigsInList()
     applyUI(layout)
   }
 
   private def createConfigsList(): ListSelect = {
-    val res = new ListSelect(Page.message("export.schedule.configsList"))
+    val res = new ListSelect()
     res.setNullSelectionAllowed(false)
-    res.addValueChangeListener(_ =>
-      showNewScheduleEditor(res.getValue.asInstanceOf[ConfigId])
-    )
-    configOperations.getOwnedConfigs.foreach { s =>
-      res.addItem(s.id)
-      res.setItemCaption(s.id, s.label)
-    }
-    res.setRows(res.size)
     res
   }
 
+  private def reloadConfigsInList(): Unit = {
+    configOperations.getOwnedConfigs.foreach { s =>
+      configsListSelect.addItem(s.id)
+      configsListSelect.setItemCaption(s.id, s.label)
+    }
+    val rowsNumber = if (configsListSelect.size < configRowsToShowInListSelect) {
+      configsListSelect.size
+    } else {
+      configRowsToShowInListSelect
+    }
+    configsListSelect.setRows(rowsNumber)
+    if (configsListSelect.getRows > 0) {
+      configsListSelect.select(configsListSelect.getItemIds.iterator().next())
+    }
+  }
 
   def createListLayout(): Layout = {
 
