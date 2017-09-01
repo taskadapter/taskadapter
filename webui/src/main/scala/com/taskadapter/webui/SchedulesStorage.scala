@@ -23,10 +23,10 @@ class SchedulesStorage(rootDir: File) {
   }
 
   def get(id: String): Option[Schedule] = {
-    storage.get[Schedule](s => s.id == id)
+    storage.get[Schedule](id)
   }
 
   def delete(id: String): Unit = {
-    storage.delete[Schedule](s => s.id == id)
+    storage.delete(id)
   }
 }
