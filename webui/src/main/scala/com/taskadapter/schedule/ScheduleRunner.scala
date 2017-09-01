@@ -16,10 +16,11 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, schedulesStorage: SchedulesSt
   val log = TALog.log
 
   val threadsNumber = 1
-  val initialDelaySec = 60
-  val intervalSec = 60
+  val initialDelaySec = 10
+  val intervalSec = 5
 
-  var running = settingsManager.schedulerEnabled
+  var allowedToRun = settingsManager.schedulerEnabled
+  var currentlyBusy = false
 
   settingsManager.registerListener {
     case SchedulerEnabledEvent => start()
@@ -30,13 +31,13 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, schedulesStorage: SchedulesSt
   init()
 
   def init(): Unit = {
-    log.info(s"Configuring scheduler to support periodic sync. Time interval is $intervalSec sec. 'enabled' flag is: $running")
+    log.info(s"Configuring scheduler to support periodic sync. Time interval is $intervalSec sec. 'enabled' flag is: $allowedToRun")
 
     val ex = new ScheduledThreadPoolExecutor(threadsNumber)
     val task = new Runnable {
 
       def run() = {
-        if (running) {
+        if (allowedToRun) {
           val schedules = schedulesStorage.getSchedules()
           log.info(s"Found ${schedules.size} scheduled configs. Checking if it is time for them to run...")
           schedules.foreach { s =>
@@ -52,12 +53,12 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, schedulesStorage: SchedulesSt
 
   def stop(): Unit = {
     log.info("Stopping scheduler")
-    running = false
+    allowedToRun = false
   }
 
   def start(): Unit = {
     log.info("Starting scheduler")
-    running = true
+    allowedToRun = true
   }
 
   def needToRun(schedule: Schedule): Boolean = {
@@ -75,17 +76,26 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, schedulesStorage: SchedulesSt
   }
 
   private def launchSyncLeftOrRight(s: Schedule): Unit = {
-    val config = uiConfigStore.getConfig(s.configId)
-    if (config.isDefined) {
-      if (s.directionRight) {
-        launchSync(config.get)
-      }
-
-      if (s.directionLeft) {
-        launchSync(config.get.reverse)
-      }
+    if (currentlyBusy) {
+      log.info(s"Skipping scheduled sync for $s because another sync is currently running")
     } else {
-      log.error(s"Cannot find config ${s.configId} scheduled for execution in $s. Skipping it.")
+      currentlyBusy = true
+      try {
+        val config = uiConfigStore.getConfig(s.configId)
+        if (config.isDefined) {
+          if (s.directionRight) {
+            launchSync(config.get)
+          }
+
+          if (s.directionLeft) {
+            launchSync(config.get.reverse)
+          }
+        } else {
+          log.error(s"Cannot find config ${s.configId} scheduled for execution in $s. Skipping it.")
+        }
+      } finally {
+        currentlyBusy = false
+      }
     }
   }
 
