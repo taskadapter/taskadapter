@@ -5,11 +5,12 @@ import java.util.Date
 import com.taskadapter.connector.msp.write.ResourceManager
 import com.taskadapter.model.{GTask, GUser}
 import net.sf.mpxj._
+import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
 
 class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
-
+  private val log = LoggerFactory.getLogger(classOf[GTaskToMSP])
   /**
     * "% done" field is used to calculate "actual work". this is more like a
     * hack used until Redmine REST API provides "time spent" serverInfo in
@@ -30,8 +31,6 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
     fieldName match {
       case MspField.summary.name => mspTask.setName(stringBasedValue)
       case MspField.description.name => mspTask.setNotes(stringBasedValue)
-      case MspField.status.name => setFieldByName(fieldName, stringBasedValue)
-      case MspField.taskType.name => setFieldByName(fieldName, stringBasedValue)
       case MspField.assignee.name => processAssignee(fieldName, value)
       case MspField.mustStartOn.name =>
         mspTask.setConstraintType(ConstraintType.MUST_START_ON)
@@ -77,7 +76,10 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
       case MspField.percentageComplete.name => mspTask.setPercentageComplete(value.asInstanceOf[Int])
       case MspField.actualFinish.name => mspTask.setActualFinish(value.asInstanceOf[Date])
 
-      case _ => // unknown, ignore for now
+      case other if other.startsWith("Text") =>
+        setFieldByName(fieldName, stringBasedValue)
+
+      case unknown => // ignore for now
     }
   }
 

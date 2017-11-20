@@ -50,6 +50,10 @@ public class MSPUtils {
             put(TaskField.TEXT24.toString(), TaskField.TEXT24);
             put(TaskField.TEXT25.toString(), TaskField.TEXT25);
             put(TaskField.TEXT26.toString(), TaskField.TEXT26);
+            put(TaskField.TEXT27.toString(), TaskField.TEXT27);
+            put(TaskField.TEXT28.toString(), TaskField.TEXT28);
+            put(TaskField.TEXT29.toString(), TaskField.TEXT29);
+            put(TaskField.TEXT30.toString(), TaskField.TEXT30);
         }
     });
 
