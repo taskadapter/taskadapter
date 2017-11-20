@@ -88,6 +88,12 @@ class MSPToGTask {
         genericTask.setValue(MspField.assignee(), extractAssignee(task));
         genericTask.setValue(MspField.description(), task.getNotes());
 
+        for (int i = 1; i <= 30; i++) {
+            if (task.getText(i) != null) {
+                genericTask.setValue("Text" + i, task.getText(i));
+            }
+        }
+
         processRelations(task, genericTask);
         return genericTask;
     }

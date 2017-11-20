@@ -1,10 +1,12 @@
 package com.taskadapter.connector.msp
 
 import com.taskadapter.connector.testlib.TestUtils
+import net.sf.mpxj.TaskField
 import org.junit.Assert
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
+
 import scala.collection.JavaConverters._
 
 @RunWith(classOf[JUnitRunner])
@@ -36,6 +38,12 @@ class MSTaskLoaderIntegrationTest extends FunSpec with Matchers {
     Assert.assertEquals(27, tasks.size)
     val t1 = TestUtils.findTaskByFieldName(tasks, MspField.summary.name, "improve components")
     Assert.assertNotNull("required task not found in the tasks list", t1)
+
+    // verify TextXX fields are loaded. this is a regression test for
+    // https://bitbucket.org/taskadapter/taskadapter/issues/74/issue-type-is-reset-to-default-setting
+    t1.getValue(TaskField.TEXT1.getName) shouldBe "49"
+    t1.getValue(TaskField.TEXT2.getName) shouldBe "Feature"
+
     val sub1 = TestUtils.findTaskByFieldName(tasks, MspField.summary.name, "sub1")
     Assert.assertNotNull("required task not found in the tasks list", sub1)
   }

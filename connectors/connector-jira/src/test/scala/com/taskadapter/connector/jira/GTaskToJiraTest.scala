@@ -22,23 +22,21 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
   it("priorityConvertedToCritical") {
     val priorityCritical = find(priorities, "Highest")
     val task = new JiraGTaskBuilder().withPriority(750).build()
-//    val mappings = TestMappingUtils.fromFields(JiraSupportedFields.SUPPORTED_FIELDS)
-//    mappings.setMapping(GTaskDescriptor.FIELD.PRIORITY, true, null, "default priority")
     val converter = getConverter()
     val newIssue = converter.convertToJiraIssue(task).issueInput
     val actualPriorityId = getId(newIssue, IssueFieldId.PRIORITY_FIELD.id)
     assertEquals(priorityCritical.getId.toString, actualPriorityId)
   }
 
-  it("issueTypeExported"){
+  it("issue type preserved if present"){
     val converter = getConverter
-    val requiredIssueType = findIssueType(issueTypeList, "Task")
-    val task = JiraGTaskBuilder.withType("Task")
+    val requiredIssueType = findIssueType(issueTypeList, "Bug")
+    val task = JiraGTaskBuilder.withType("Bug")
     val issue = converter.convertToJiraIssue(task).issueInput
     assertEquals(requiredIssueType.getId.toString, getId(issue, IssueFieldId.ISSUE_TYPE_FIELD.id))
   }
 
-  it("defaultIssueTypeSetWhenNoneProvided"){
+  it("issue type set to default if not present"){
     val task = JiraGTaskBuilder.withType(null)
     val converter = getConverter
     val issue = converter.convertToJiraIssue(task).issueInput
