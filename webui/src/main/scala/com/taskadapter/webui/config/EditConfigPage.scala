@@ -92,7 +92,10 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
     button.setIcon(ImageLoader.getImage(imageFile))
     button.setDescription(messages.get("export.exportButtonTooltip"))
     button.addStyleName(ValoTheme.BUTTON_LARGE)
-    button.addClickListener(_ => handler.run())
+    button.addClickListener(_ => {
+      save()
+      handler.run()
+    })
     button.setWidth("100px")
     button
   }
@@ -196,6 +199,9 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
     val descriptionField = new TextField(Page.message("editConfig.description"))
     descriptionField.setWidth(Sizes.editConfigDescriptionFieldWidth)
     descriptionField.setPropertyDataSource(labelProperty)
+    // can use this to auto-save field changes. don't want to do this for just one field though.
+    // need to be the same experience for all fields.
+//    descriptionField.addBlurListener(_ => save())
     form.addComponent(descriptionField)
     form
   }
