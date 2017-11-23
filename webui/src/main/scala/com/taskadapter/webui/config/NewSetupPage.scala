@@ -1,7 +1,8 @@
 package com.taskadapter.webui.config
 
 import com.taskadapter.PluginManager
-import com.taskadapter.web.ConnectorSetupPanel
+import com.taskadapter.connector.definition.{ConnectorConfig, ConnectorSetup}
+import com.taskadapter.web.{ConnectorSetupPanel, PluginEditorFactory}
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.webui.pages.SelectConnectorComponent
 import com.taskadapter.webui.service.EditorManager
@@ -29,8 +30,10 @@ class NewSetupPage(configOperations: ConfigOperations, editorManager: EditorMana
   layout.addComponent(panelForEditor)
 
   private def showAddPanelForConnector(connectorId: String): Unit = {
-    val editor = editorManager.getEditorFactory(connectorId)
-    val setup = editor.createDefaultSetup()
+    // if you remove these class declarations, you will get runtime ClassCastExceptions saying cannot convert
+    // WebConnectorSetup to Nothing!
+    val editor : PluginEditorFactory[ConnectorConfig, ConnectorSetup] = editorManager.getEditorFactory(connectorId)
+    val setup : ConnectorSetup = editor.createDefaultSetup()
     val editSetupPanel = editor.getEditSetupPanel(sandbox, setup)
     panelForEditor.removeAllComponents()
     panelForEditor.addComponent(editSetupPanel.getUI)
