@@ -1,6 +1,6 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.web.uiapi.UISyncConfig;
+import com.taskadapter.web.uiapi.ConfigId;
 
 /**
  * Basic session data holder. Holds all and only data relevant to one web-user.
@@ -12,7 +12,7 @@ public final class WebUserSession {
     /** Tracker for this session. */
     public final Tracker tracker;
 
-    private UISyncConfig currentConfig = null;
+    private ConfigId currentConfigId = null;
 
     /** Creates a new web session. */
     public WebUserSession(PageContainer pageContainer, Tracker tracker) {
@@ -20,16 +20,20 @@ public final class WebUserSession {
         this.tracker = tracker;
     }
 
-    public UISyncConfig getCurrentConfig() {
-        return currentConfig;
+    public ConfigId getCurrentConfigId() {
+        return currentConfigId;
     }
 
-    public void setCurrentConfig(UISyncConfig currentConfig) {
-        this.currentConfig = currentConfig;
+    public boolean hasCurrentConfig() {
+        return currentConfigId != null;
+    }
+
+    public void setCurrentConfigId(ConfigId currentConfigId) {
+        this.currentConfigId = currentConfigId;
     }
 
     public void clearCurrentConfig() {
-        this.currentConfig = null;
+        this.currentConfigId = null;
     }
 
 }

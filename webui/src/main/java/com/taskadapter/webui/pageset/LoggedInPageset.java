@@ -258,10 +258,12 @@ public class LoggedInPageset {
      * Shows a home page.
      */
     private void showHome() {
-        if (webUserSession.getCurrentConfig() == null) {
-            showConfigsList();
+        if (webUserSession.hasCurrentConfig()) {
+            ConfigId configId = webUserSession.getCurrentConfigId();
+            Option<UISyncConfig> maybeCconfig = context.configOps.getConfig(configId);
+            showConfigEditor(maybeCconfig.get(), null);
         } else {
-            showConfigEditor(webUserSession.getCurrentConfig(), null);
+            showConfigsList();
         }
     }
 
@@ -386,7 +388,7 @@ public class LoggedInPageset {
      */
     private void showConfigEditor(UISyncConfig config, String error) {
         tracker.trackPage("edit_config");
-        webUserSession.setCurrentConfig(config);
+        webUserSession.setCurrentConfigId(config.id());
         showInConfigTab(getConfigEditor(config, error));
     }
 
