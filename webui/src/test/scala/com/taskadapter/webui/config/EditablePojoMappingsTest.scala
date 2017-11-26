@@ -10,7 +10,13 @@ import scala.collection.JavaConverters._
 @RunWith(classOf[JUnitRunner])
 class EditablePojoMappingsTest extends FunSpec with Matchers {
 
-  val connector1FieldLoader = new ConnectorFieldLoader(List[Field]().asJava)
+  val connector1FieldLoader = new ConnectorFieldLoader(List[Field](
+    Field("String", "field 1"),
+    Field("String", "field 2"),
+    Field("String", "summary"),
+    Field("String", "another")
+  )
+    .asJava)
   val connector2FieldLoader = connector1FieldLoader
 
 
