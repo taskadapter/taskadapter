@@ -150,7 +150,12 @@ case class UISyncConfig(taskKeeperLocationStorage: TaskKeeperLocationStorage,
     val location2 = getConnector2.getSourceLocation
     val previouslyCreatedTasksResolver = taskKeeperLocationStorage.loadTasks(location1, location2)
     val result = TaskSaver.save(previouslyCreatedTasksResolver, connectorTo, destinationLocation, rows, tasks, progressMonitor)
-    taskKeeperLocationStorage.store(location1, location2, result.keyToRemoteKeyList)
+    if (reversed) {
+      taskKeeperLocationStorage.store(location2, location1,
+        result.keyToRemoteKeyList.map(pair => (pair._2, pair._1)))
+    } else {
+      taskKeeperLocationStorage.store(location1, location2, result.keyToRemoteKeyList)
+    }
     val finish = System.currentTimeMillis()
 
     val finalResult = ExportResultFormat(id, label, getConnector1.getSourceLocation, destinationLocation,
