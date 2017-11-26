@@ -585,7 +585,7 @@ public class LoggedInPageset {
         try {
             from.validateForLoad();
         } catch (BadConfigException e) {
-            showConfigEditor(config, from.decodeException(e));
+            showConfigEditor(config.normalized(), from.decodeException(e));
             return false;
         }
 
@@ -594,7 +594,7 @@ public class LoggedInPageset {
             updated = to.updateForSave(new Sandbox(services.settingsManager.isTAWorkingOnLocalMachine(),
                     context.configOps.syncSandbox()));
         } catch (BadConfigException e) {
-            showConfigEditor(config, to.decodeException(e));
+            showConfigEditor(config.normalized(), to.decodeException(e));
             return false;
         }
 
