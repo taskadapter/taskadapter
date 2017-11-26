@@ -36,15 +36,14 @@ object TaskFieldsMappingFragment {
   val HELP_ICON_RESOURCE = new ThemeResource("../runo/icons/16/help.png")
 }
 
-class EditablePojoMappings(mappings: Seq[FieldMapping]) {
+class EditablePojoMappings(mappings: Seq[FieldMapping],
+                           connector1FieldLoader : ConnectorFieldLoader, connector2FieldLoader: ConnectorFieldLoader) {
   var editablePojoMappings: ListBuffer[EditableFieldMapping] = ListBuffer()
 
   editablePojoMappings = mappings.map(ro =>
     new EditableFieldMapping(UUID.randomUUID.toString,
       ro.fieldInConnector1.map(_.name).getOrElse(""),
-      ro.fieldInConnector1.map(_.typeName).getOrElse(""),
       ro.fieldInConnector2.map(_.name).getOrElse(""),
-      ro.fieldInConnector2.map(_.typeName).getOrElse(""),
       ro.selected, ro.defaultValue)).to[ListBuffer]
 
   def removeFieldFromList(field: EditableFieldMapping) = {
@@ -61,12 +60,14 @@ class EditablePojoMappings(mappings: Seq[FieldMapping]) {
       if (Strings.isNullOrEmpty(e.fieldInConnector1)) {
         None
       } else {
-        Some(new Field(e.fieldTypeInConnector1, e.fieldInConnector1))
+        val typeName = connector1FieldLoader.getTypeForFieldName(e.fieldInConnector1)
+        Some(new Field(typeName, e.fieldInConnector1))
       },
       if (Strings.isNullOrEmpty(e.fieldInConnector2)) {
         None
       } else {
-        Some(new Field(e.fieldTypeInConnector2, e.fieldInConnector2))
+        val typeName = connector2FieldLoader.getTypeForFieldName(e.fieldInConnector2)
+        Some(new Field(typeName, e.fieldInConnector2))
       },
 
       e.selected, e.defaultValue))
@@ -87,7 +88,9 @@ class TaskFieldsMappingFragment(messages: Messages, connector1: UIConnectorConfi
   val ui = new Panel(messages.get("editConfig.mappings.caption"))
   val layout = new VerticalLayout
   val gridLayout = new GridLayout
-  val editablePojoMappings = new EditablePojoMappings(mappings)
+  val editablePojoMappings = new EditablePojoMappings(mappings,
+    new ConnectorFieldLoader(connector1.getAvailableFields),
+    new ConnectorFieldLoader(connector2.getAvailableFields))
 
   layout.addComponent(gridLayout)
   rebuildMappingUI()
@@ -146,14 +149,14 @@ class TaskFieldsMappingFragment(messages: Messages, connector1: UIConnectorConfi
     * Add all rows to mappings table
     */
   private def addFieldsToUI() = {
-    editablePojoMappings.editablePojoMappings.foreach(e => addField(e))
+    editablePojoMappings.editablePojoMappings.foreach(e => addRowToVaadinForm(e))
   }
 
   /**
     * Add a row to mapping table:
     * selected, tooltip, connector 1 field name, connector 2 field name, default value.
     */
-  private def addField(field: EditableFieldMapping) = {
+  private def addRowToVaadinForm(field: EditableFieldMapping) = {
     addCheckbox(field)
     // TODO TA3 help is per connector field, not for the whole row now.
     val helpForField = null //getHelpForField(field);
@@ -237,9 +240,9 @@ class TaskFieldsMappingFragment(messages: Messages, connector1: UIConnectorConfi
   private def addNewRowButton() = {
     val button = new Button(Page.message("editConfig.mappings.buttonAdd"))
     button.addClickListener(_ => {
-      val m = new EditableFieldMapping(UUID.randomUUID.toString, "", "String", "", "String", false, "")
+      val m = new EditableFieldMapping(UUID.randomUUID.toString, "", "", false, "")
       editablePojoMappings.add(m)
-      addField(m)
+      addRowToVaadinForm(m)
     })
     layout.addComponent(button)
   }

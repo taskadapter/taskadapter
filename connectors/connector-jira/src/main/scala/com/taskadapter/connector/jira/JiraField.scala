@@ -23,11 +23,14 @@ object JiraField {
   val estimatedTime = Field.float("Estimated Time") // should not be selected by default
   val assignee = Field.user("Assignee")
   val reporter = Field.user("Reporter")
+  val dateCreated = Field.date("Date Created")
   val dueDate = Field.date("Due Date")
   val priority = Field.integer("Priority")
   val id = Field("Id")
 
-  val fields = List(id, summary, status, description, taskType, estimatedTime, assignee, dueDate, priority)
+  val fields = List(id, summary, status, description, taskType, estimatedTime, assignee,
+    dateCreated,
+    dueDate, priority)
 
   def fieldsAsJava(): util.List[Field] = fields.asJava
 
@@ -42,6 +45,7 @@ object JiraField {
     // removing "Reporter" for now because export to JIRA gives
     // "status=400, errors={reporter=Field 'reporter' cannot be set. It is not on the appropriate screen, or unknown."
 //    reporter -> Reporter,
+    dateCreated -> CreatedOn,
     dueDate -> DueDate,
     priority -> Priority)
 

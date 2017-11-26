@@ -73,6 +73,11 @@ public class JiraToGTask {
             task.setValue(JiraField.dueDate(), dueDate.toDate());
         }
 
+        DateTime createdOn = issue.getCreationDate();
+        if (createdOn != null) {
+            task.setValue(JiraField.dateCreated(), createdOn.toDate());
+        }
+
         // TODO set Done Ratio
         // task.setDoneRatio(issue.getDoneRatio());
 
