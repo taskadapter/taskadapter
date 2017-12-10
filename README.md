@@ -18,7 +18,7 @@ See http://help.github.com/win-set-up-git/ for a tutorial on how to use Git.
 
 Clone this repo: https://bitbucket.org/taskadapter/taskadapter
 
-Most development happens in "master" branch. Create a feature branch for each change and submit a pull request when done.
+Create a feature branch for each change and submit a pull request against "master" branch when ready.
 
 ### Old Eclipse-based (desktop app) Task Adapter code
 It is located in a separate GIT repository: https://bitbucket.org/taskadapter/eclipse
@@ -34,7 +34,7 @@ https://bitbucket.org/taskadapter/license
 
 ### Redmine Java API source code.
 
-Task Adapter’s Redmine Connector uses Redmine Java API. The source code is here: https://github.com/redminedev/redmine-java-api
+Task Adapter’s Redmine Connector uses Redmine Java API. The source code is here: https://github.com/taskadapter/redmine-java-api
 
 ## How to build from source code
 
@@ -56,13 +56,12 @@ https://docs.google.com/spreadsheets/d/1UsV1G1iCY-e2Qo7V6Y7_zWdFrtB6-IquQuGSA-1N
 * Make sure you have the latest code from Git server.
 * Change TASK_ADAPTER_VERSION number in /build.gradle
 * Push everything to Git.
-* Get the last build from Jenkins https://ta-dev.ddns.net:8193/job/taskadapter/
+* Get the latest build from Jenkins https://dev.taskadapter.com/jenkins/view/taskadapter/job/taskadapter
 * Verify and close issues in Bitbucket or move them to the next version.
 * Tag the current revision in Git (e.g. "release-2.13.0").
 * Make sure User Guide is up-to-date on http://www.taskadapter.com
 * Upload the distributive to this Git repository: https://bitbucket.org/taskadapter/releases/downloads
 * Follow release steps in "site" repo: https://bitbucket.org/taskadapter/site/overview
-* Update https://bitbucket.org/taskadapter/releases/src/lastversion.txt file
 
 ## Logging
 
