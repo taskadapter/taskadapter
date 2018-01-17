@@ -108,7 +108,7 @@ public class MyTree extends CustomComponent {
         List<GTask> selectedTasks = new ArrayList<>();
 
         for (GTask gTask : gTaskList) {
-            if (idSet.contains(new TaskId(gTask.getId(), gTask.getKey()))) {
+            if (idSet.contains(gTask.getIdentity())) {
                 if (gTask.hasChildren()) {
                     gTask.setChildren(getSelectedTasks(gTask.getChildren(), idSet));
                 }
@@ -134,7 +134,7 @@ public class MyTree extends CustomComponent {
     }
 
     private void addTaskToTree(Object parentId, GTask task) {
-        final TaskId taskId = new TaskId(task.getId(), task.getKey());
+        final TaskId taskId = task.getIdentity();
 
         final CheckBox checkBox = new CheckBox(
                 resolver.findSourceSystemIdentity(task, targetLocation).isDefined() ?
