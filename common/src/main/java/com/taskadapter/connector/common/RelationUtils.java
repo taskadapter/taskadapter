@@ -25,7 +25,7 @@ public final class RelationUtils {
                 TaskId newRelatedKey = localToRemote.getRemoteKey(relatedTaskId);
                 // #25443 Export from MSP fails when newRelatedKey is null
                 // (which is a valid case in MSP)
-                TaskId originalId = new TaskId(task.getId(), task.getKey());
+                TaskId originalId = task.getIdentity();
                 TaskId newSourceTaskKey = localToRemote.getRemoteKey(originalId);
                 if (newSourceTaskKey != null && newRelatedKey != null) {
                     res.add(new GRelation(newSourceTaskKey, newRelatedKey,
