@@ -58,9 +58,15 @@ class MSPToGTask {
         if (task.getWork() != null) {
             genericTask.setValue(MspField.taskWork(), convertMspDurationToHours(task.getWork()));
         }
+        if (task.getActualWork() != null) {
+            genericTask.setValue(MspField.actualWork(), convertMspDurationToHours(task.getActualWork()));
+        }
 
         if (task.getDuration() != null) {
             genericTask.setValue(MspField.taskDuration(), convertMspDurationToHours(task.getDuration()));
+        }
+        if (task.getActualDuration() != null) {
+            genericTask.setValue(MspField.actualDuration(), convertMspDurationToHours(task.getActualDuration()));
         }
 
         if (task.getPercentageComplete() != null) {

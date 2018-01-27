@@ -20,8 +20,8 @@ object MspField {
   val taskWork = Field.float(TaskField.WORK.getName)
   val status = Field(TaskField.TEXT24.getName)
   val taskType = Field(TaskField.TEXT23.getName)
-  val actualWork = Field.integer(TaskField.ACTUAL_WORK.getName)
-  val actualDuration = Field.integer(TaskField.ACTUAL_DURATION.getName)
+  val actualWork = Field.float(TaskField.ACTUAL_WORK.getName)
+  val actualDuration = Field.float(TaskField.ACTUAL_DURATION.getName)
   val actualFinish = Field.date(TaskField.ACTUAL_FINISH.getName)
 
   val startAsSoonAsPossible = Field(ConstraintType.AS_SOON_AS_POSSIBLE.name())

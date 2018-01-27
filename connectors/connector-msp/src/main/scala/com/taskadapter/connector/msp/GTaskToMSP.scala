@@ -71,8 +71,8 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
 
       case MspField.taskDuration.name => mspTask.setDuration(Duration.getInstance(value.asInstanceOf[Float], TimeUnit.HOURS))
       case MspField.taskWork.name => mspTask.setWork(Duration.getInstance(value.asInstanceOf[Float], TimeUnit.HOURS))
-      case MspField.actualWork.name => mspTask.setActualWork(Duration.getInstance(value.asInstanceOf[Int], TimeUnit.HOURS))
-      case MspField.actualDuration.name => mspTask.setActualDuration(Duration.getInstance(value.asInstanceOf[Int], TimeUnit.HOURS))
+      case MspField.actualWork.name => mspTask.setActualWork(Duration.getInstance(value.asInstanceOf[Float], TimeUnit.HOURS))
+      case MspField.actualDuration.name => mspTask.setActualDuration(Duration.getInstance(value.asInstanceOf[Float], TimeUnit.HOURS))
       case MspField.percentageComplete.name => mspTask.setPercentageComplete(value.asInstanceOf[Int])
       case MspField.actualFinish.name => mspTask.setActualFinish(value.asInstanceOf[Date])
 
