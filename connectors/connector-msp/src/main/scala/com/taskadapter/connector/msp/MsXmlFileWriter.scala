@@ -8,7 +8,7 @@ import com.taskadapter.connector.definition.{SaveResultBuilder, TaskId}
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.connector.msp.write.{DateFinder, MSPDefaultFields, RealWriter, ResourceManager}
 import com.taskadapter.model.GTask
-import net.sf.mpxj.{ProjectFile, Task}
+import net.sf.mpxj.{CustomFieldContainer, ProjectFile, Task}
 
 class MsXmlFileWriter(rows: Iterable[FieldRow]) {
   private val ALIAS_REMOTE_ID = "TA Remote ID"
@@ -26,23 +26,25 @@ class MsXmlFileWriter(rows: Iterable[FieldRow]) {
   def write(absoluteFilePath: String, syncResult: SaveResultBuilder, tasks: util.List[GTask], keepTaskId: Boolean)
   : String = { // XXX load resources from existing MS file to cache here
     val project = new ProjectFile
-    project.setAutoTaskID(true)
-    project.setAutoTaskUniqueID(!keepTaskId)
-    project.setAutoResourceID(true)
-    project.setAutoResourceUniqueID(true)
-    project.setAutoOutlineLevel(true)
-    project.setAutoOutlineNumber(true)
+    val config = project.getProjectConfig
+    config.setAutoTaskID(true)
+    config.setAutoTaskUniqueID(!keepTaskId)
+    config.setAutoResourceID(true)
+    config.setAutoResourceUniqueID(true)
+    config.setAutoOutlineLevel(true)
+    config.setAutoOutlineNumber(true)
     setAliases(project)
     addTasks(syncResult, project, null, tasks, keepTaskId)
-    val header = project.getProjectHeader
-    project.addDefaultBaseCalendar
+    val properties = project.getProjectProperties
+    project.addDefaultBaseCalendar()
     val earliestTaskDate = DateFinder.findEarliestStartDate(project.getAllTasks)
-    if (earliestTaskDate != null) header.setStartDate(earliestTaskDate)
+    if (earliestTaskDate != null) properties.setStartDate(earliestTaskDate)
     val taTag = "Project created by Task Adapter. http://www.taskadapter.com"
     /* setComments() does not work with MPXJ 4.0.0 and MS Project 2010 Prof.
               * I sent a bug report to MPXJ developer
-              * header.setComments(taTag);
-              */ header.setSubject(taTag)
+              * properties.setComments(taTag);
+              */
+    properties.setSubject(taTag)
     RealWriter.writeProject(absoluteFilePath, project)
   }
 
@@ -64,8 +66,9 @@ class MsXmlFileWriter(rows: Iterable[FieldRow]) {
   }
 
   private def setAliases(project: ProjectFile): Unit = {
-    project.setTaskFieldAlias(MSPDefaultFields.FIELD_DURATION_UNDEFINED, ALIAS_IS_DURATION_UNDEFINED)
-    project.setTaskFieldAlias(MSPDefaultFields.FIELD_WORK_UNDEFINED, ALIAS_IS_WORK_UNDEFINED)
+    val fields = project.getCustomFields
+    fields.getCustomField(MSPDefaultFields.FIELD_DURATION_UNDEFINED).setAlias(ALIAS_IS_DURATION_UNDEFINED)
+    fields.getCustomField(MSPDefaultFields.FIELD_WORK_UNDEFINED).setAlias(ALIAS_IS_WORK_UNDEFINED)
     //        setAliasIfMappingNotNULL(project, FIELD.REMOTE_ID, ALIAS_REMOTE_ID);
     //        setAliasIfMappingNotNULL(project, Field.taskType, ALIAS_ISSUE_TYPE);
     //        setAliasIfMappingNotNULL(project, FIELD.TASK_STATUS, ALIAS_ISSUE_STATUS);
@@ -73,13 +76,14 @@ class MsXmlFileWriter(rows: Iterable[FieldRow]) {
     //        setAliasIfMappingNotNULL(project, FIELD.TARGET_VERSION, ALIAS_TARGET_VERSION);
   }
 
-  private def setAliasIfMappingNotNULL(project: ProjectFile, field: Field, aliasName: String): Unit = {
+  private def setAliasIfMappingNotNULL(fieldsContainer: CustomFieldContainer, field: Field, aliasName: String): Unit = {
     val mspFileFieldName = field.name
     if (mspFileFieldName != null) {
       /* it is NULL if the old Task Adapter config does not have a mapping for this field.
                      * E.g. we added "task type" field in the new TA version and then we try running
                      * export using the old config, which does not have "task type" mapped to anything.
-                     */ project.setTaskFieldAlias(MSPUtils.getTaskFieldByName(mspFileFieldName), aliasName)
+                     */
+      fieldsContainer.getCustomField(MSPUtils.getTaskFieldByName(mspFileFieldName)).setAlias(aliasName)
     }
   }
 }

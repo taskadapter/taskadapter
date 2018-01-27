@@ -7,7 +7,7 @@ import com.taskadapter.model.GUser;
 import com.taskadapter.model.Precedes$;
 import net.sf.mpxj.ConstraintType;
 import net.sf.mpxj.Duration;
-import net.sf.mpxj.ProjectHeader;
+import net.sf.mpxj.ProjectProperties;
 import net.sf.mpxj.Relation;
 import net.sf.mpxj.RelationType;
 import net.sf.mpxj.Resource;
@@ -20,10 +20,10 @@ import java.util.List;
 
 class MSPToGTask {
 
-    private ProjectHeader header;
+    private ProjectProperties projectProperties;
 
-    void setHeader(ProjectHeader header) {
-        this.header = header;
+    MSPToGTask(ProjectProperties projectProperties) {
+        this.projectProperties = projectProperties;
     }
 
     List<GTask> convertToGenericTaskList(List<Task> tasks) {
@@ -154,7 +154,7 @@ class MSPToGTask {
     }
 
     private Float convertMspDurationToHours(Duration mspDuration) {
-        Duration convertedToHoursDuration = mspDuration.convertUnits(TimeUnit.HOURS, header);
+        Duration convertedToHoursDuration = mspDuration.convertUnits(TimeUnit.HOURS, projectProperties);
         return (float) convertedToHoursDuration.getDuration();
     }
 }

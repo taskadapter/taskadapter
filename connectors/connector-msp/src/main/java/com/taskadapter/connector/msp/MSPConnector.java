@@ -15,6 +15,7 @@ import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.model.GTask;
 import net.sf.mpxj.MPXJException;
 import net.sf.mpxj.ProjectFile;
+import net.sf.mpxj.ProjectProperties;
 import net.sf.mpxj.Task;
 
 import java.io.File;
@@ -109,7 +110,8 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
 
         List<Task> mspTasks = projectFile.getAllTasks();
         mspTasks = skipRootNodeIfPresent(mspTasks);
-        return loadTasks(projectFile, mspTasks);
+        ProjectProperties projectProperties = projectFile.getProjectProperties();
+        return loadTasks(projectProperties, mspTasks);
     }
 
     /**
@@ -127,9 +129,8 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
         return mspTasks;
     }
 
-    private List<GTask> loadTasks(ProjectFile project, List<Task> mspTasks) {
-        final MSPToGTask converter = new MSPToGTask();
-        converter.setHeader(project.getProjectHeader());
+    private List<GTask> loadTasks(ProjectProperties projectProperties, List<Task> mspTasks) {
+        final MSPToGTask converter = new MSPToGTask(projectProperties);
         return converter.convertToGenericTaskList(mspTasks);
     }
 
