@@ -8,18 +8,18 @@ import net.sf.mpxj.TimeUnit;
 
 import org.junit.Assert;
 import org.junit.Test;
-import com.taskadapter.connector.msp.MSPTestUtils;
 
 public class MSPXMLFileReaderTest {
 
     @Test
-    public void readFile() throws Exception {
+    public void readFile() {
         Assert.assertNotNull(MSPTestUtils.readTestProjectFile());
     }
 
     @Test
-    public void actualDurationValidation() throws Exception {
+    public void actualDurationValidation() {
         List<Task> list = MSPTestUtils.loadToMSPTaskList("actual_duration.mpp");
-        Assert.assertEquals(0, list.get(0).getActualDuration().compareTo(Duration.getInstance(0, TimeUnit.HOURS)));
+        Task task = list.get(0);
+        Assert.assertEquals(0, task.getActualDuration().compareTo(Duration.getInstance(0, TimeUnit.HOURS)));
     }
 }
