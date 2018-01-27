@@ -8,9 +8,9 @@ import com.taskadapter.connector.definition.FileSetup
 import com.taskadapter.connector.jira.{JiraConnector, JiraField}
 import com.taskadapter.connector.msp.{MSPConnector, MspField}
 import com.taskadapter.connector.redmine._
-import com.taskadapter.connector.testlib.{ResourceLoader, TestSaver, TestUtils}
+import com.taskadapter.connector.testlib.{FieldRowBuilder, ResourceLoader, TestSaver, TestUtils}
 import com.taskadapter.core.TaskLoader
-import com.taskadapter.model.{FieldRowBuilder, GTask, GTaskBuilder, GUser}
+import com.taskadapter.model.{GTask, GTaskBuilder, GUser}
 import com.taskadapter.redmineapi.bean.{Issue, IssueFactory, Project}
 import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
@@ -137,9 +137,9 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
     val redmineConnector = new RedmineConnector(redmineConfig, TestConfigs.getRedmineSetup)
     // save to Redmine
     val result = TestUtils.saveAndLoadList(redmineConnector, loadedTasks,
-      FieldRowBuilder.rows(Seq(
+      FieldRowBuilder.rows(
         RedmineField.summary
-      ))
+      )
     )
     assertEquals("must have created 2 tasks", 2, result.size)
   }
@@ -158,9 +158,8 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
     val redmineConnector = new RedmineConnector(redmineConfig, TestConfigs.getRedmineSetup)
 
     val result = TestUtils.saveAndLoadList(redmineConnector, loadedTasks,
-      FieldRowBuilder.rows(Seq(
-        RedmineField.summary
-      ))
+      FieldRowBuilder.rows(RedmineField.summary
+      )
     )
     assertEquals("must have created 13 tasks", 13, result.size)
   }

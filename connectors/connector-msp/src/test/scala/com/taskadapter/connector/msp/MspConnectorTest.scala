@@ -7,8 +7,8 @@ import java.util.Date
 
 import com.taskadapter.connector.common.TreeUtils
 import com.taskadapter.connector.definition.FileSetup
-import com.taskadapter.connector.testlib.{CommonTestChecks, TempFolder, TestSaver}
-import com.taskadapter.model.{FieldRowBuilder, GTask, GTaskBuilder, GUser}
+import com.taskadapter.connector.testlib.{CommonTestChecks, FieldRowBuilder, TempFolder, TestSaver}
+import com.taskadapter.model.{GTask, GTaskBuilder, GUser}
 import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
@@ -64,7 +64,7 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
         .withRandom(MspField.deadline)
         .build()
       val loaded = new TestSaver(getConnector(folder),
-        FieldRowBuilder.rows(Seq(
+        FieldRowBuilder.rows(
           MspField.summary,
           MspField.assignee,
           MspField.taskDuration,
@@ -72,7 +72,7 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
           MspField.taskWork,
           MspField.finish,
           MspField.deadline
-        ))
+        )
       ).saveAndLoad(task)
 
       loaded.getValue(MspField.assignee).asInstanceOf[GUser].getDisplayName shouldBe task.getValue(MspField.assignee).asInstanceOf[GUser].getDisplayName
