@@ -11,11 +11,9 @@ import com.taskadapter.connector.github.GithubConnector;
 import com.taskadapter.web.ConnectorSetupPanel;
 import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
-import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.ProjectPanel;
 import com.taskadapter.web.configeditor.server.ServerPanelFactory;
 import com.taskadapter.web.data.Messages;
-import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Sandbox;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
@@ -59,8 +57,8 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig, We
         layout.setWidth(380, PIXELS);
         ProjectPanel projectPanel = new ProjectPanel(new MethodProperty<>(config, "projectKey"),
                 new MethodProperty<>(config, "queryString"),
-                Interfaces.fromMethod(DataProvider.class, GithubLoaders.class, "getProjects", setup)
-                , null, null, this);
+                new GithubProjectsListLoader(setup),
+                null, null, this);
         projectPanel.setProjectKeyLabel("Repository ID");
         layout.addComponent(projectPanel);
         return layout;

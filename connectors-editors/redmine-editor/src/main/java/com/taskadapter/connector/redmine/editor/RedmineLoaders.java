@@ -9,11 +9,8 @@ import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineExceptions;
 import com.taskadapter.connector.redmine.RedmineManagerFactory;
-import com.taskadapter.connector.redmine.converter.RedmineProjectConverter;
-import com.taskadapter.model.GProject;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
-import com.taskadapter.redmineapi.ProjectManager;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.IssuePriority;
@@ -21,8 +18,6 @@ import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.redmineapi.bean.SavedQuery;
 import com.taskadapter.redmineapi.bean.Tracker;
 import org.apache.http.client.HttpClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,46 +28,13 @@ import java.util.List;
  */
 public class RedmineLoaders {
 
-    private static final Logger logger = LoggerFactory.getLogger(RedmineLoaders.class);
-
     // TODO TA3 reuse the same http client everywhere instead of creating it here
     private static final HttpClient httpClient = RedmineManagerFactory.createRedmineHttpClient();
 
-    public static List<GProject> getProjects(WebConnectorSetup setup)
-            throws ServerURLNotSetException {
-        validate(setup);
-
-        RedmineManager mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient);
-        List<com.taskadapter.redmineapi.bean.Project> rmProjects;
-        try {
-            rmProjects = mgr.getProjectManager().getProjects();
-        } catch (RedmineException e) {
-            throw new RuntimeException(e.toString(), e);
-        }
-
-        return new RedmineProjectConverter().toGProjects(rmProjects);
-    }
-
-    private static void validate(WebConnectorSetup setup) throws ServerURLNotSetException {
+    static void validate(WebConnectorSetup setup) throws ServerURLNotSetException {
         if (Strings.isNullOrEmpty(setup.host())) {
             throw new ServerURLNotSetException();
         }
-    }
-
-    /**
-     * Loads a project.
-     *
-     * @param manager    manager.
-     * @param projectKey project key.
-     * @return loaded project.
-     */
-    public static Project loadProject(ProjectManager manager, String projectKey) {
-        try {
-            return manager.getProjectByKey(projectKey);
-        } catch (RedmineException e) {
-            logger.error("Error loading redmine project with key '" + projectKey + "'. " + e.getMessage(), e);
-        }
-        return null;
     }
 
     public static List<? extends NamedKeyedObject> loadData(WebConnectorSetup setup, String projectKey) throws BadConfigException, RedmineException {

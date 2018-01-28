@@ -35,34 +35,7 @@ public class JiraLoaders {
         return result;
     }
 
-    // this is used through reflection in the UI
-    public static List<GProject> loadProjects(WebConnectorSetup setup) throws ConnectorException {
-        validate(setup);
-        List<GProject> gProjects;
-        try(JiraRestClient client = JiraConnectionFactory.createClient(setup)) {
-            Promise<Iterable<BasicProject>> promise = client.getProjectClient().getAllProjects();
-            final Iterable<BasicProject> projects = promise.claim();
-            gProjects = new JiraProjectConverter().toGProjects(projects);
-        } catch (Exception e) {
-            throw JiraUtils.convertException(e);
-        }
-        return gProjects;
-    }
-
-    public static GProject loadProject(WebConnectorSetup setup, String projectKey) throws ConnectorException {
-        GProject gProject;
-        validate(setup);
-        try(JiraRestClient client = JiraConnectionFactory.createClient(setup)) {
-            Promise<Project> promise = client.getProjectClient().getProject(projectKey);
-            final Project project = promise.claim();
-            gProject = new JiraProjectConverter().toGProject(project);
-        } catch (Exception e) {
-            throw JiraUtils.convertException(e);
-        }
-        return gProject;
-    }
-
-    private static void validate(WebConnectorSetup setup) throws ServerURLNotSetException {
+    static void validate(WebConnectorSetup setup) throws ServerURLNotSetException {
         if (Strings.isNullOrEmpty(setup.host())) {
             throw new ServerURLNotSetException();
         }

@@ -92,8 +92,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
         ProjectPanel projectPanel = new ProjectPanel(
                 new MethodProperty<>(config, "projectKey"),
                 new MethodProperty<>(config, "queryIdStr"),
-                Interfaces.fromMethod(DataProvider.class, JiraLoaders.class,
-                        "loadProjects", setup),
+                new JiraProjectsListLoader(setup),
                 new JiraProjectLoader(config, setup),
                 Interfaces.fromMethod(DataProvider.class, new LoadQueriesElement(config, setup), "loadQueries"), this);
         projectPanel.setHeight(100, PERCENTAGE);

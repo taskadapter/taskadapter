@@ -14,7 +14,24 @@ class JiraProjectLoader(jiraConfig: JiraConfig, setup: WebConnectorSetup) extend
   override def loadData: GProject = {
     if (Strings.isNullOrEmpty(setup.host)) throw new ServerURLNotSetException
     if (jiraConfig.getProjectKey == null || jiraConfig.getProjectKey.isEmpty) throw new ProjectNotSetException
-    val project = JiraLoaders.loadProject(setup, jiraConfig.getProjectKey)
+    val project = loadProject(setup, jiraConfig.getProjectKey)
     project
+  }
+
+  @throws[ConnectorException]
+  private def loadProject(setup: WebConnectorSetup, projectKey: String): GProject = {
+    JiraLoaders.validate(setup)
+    try {
+      val client = JiraConnectionFactory.createClient(setup)
+      try {
+        val promise = client.getProjectClient.getProject(projectKey)
+        val project = promise.claim
+        val gProject = new JiraProjectConverter().toGProject(project)
+        gProject
+      } catch {
+        case e: Exception =>
+          throw JiraUtils.convertException(e)
+      } finally if (client != null) client.close()
+    }
   }
 }

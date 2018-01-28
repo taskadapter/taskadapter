@@ -1,11 +1,13 @@
 package com.taskadapter.connector.github;
 
 import com.taskadapter.connector.definition.WebConnectorSetup;
-import com.taskadapter.connector.github.editor.GithubLoaders;
+import com.taskadapter.connector.github.editor.GithubProjectsListLoader;
 import com.taskadapter.model.GProject;
+import com.taskadapter.model.NamedKeyedObject;
 import org.junit.Test;
 import scala.Option;
 
+import javax.naming.Name;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -15,9 +17,10 @@ public class GithubLoadersIT {
 
     @Test
     public void projectsAreLoaded() throws Exception {
-        List<GProject> projects = GithubLoaders.getProjects(getSetup());
-        assertNotNull(projects);
-        final GProject taProject = projects.get(0);
+        GithubProjectsListLoader loader = new GithubProjectsListLoader(getSetup());
+        List<? extends NamedKeyedObject> list = loader.loadData();
+        assertNotNull(list);
+        final NamedKeyedObject taProject = list.get(0);
         assertEquals("tatest", taProject.getName());
     }
 

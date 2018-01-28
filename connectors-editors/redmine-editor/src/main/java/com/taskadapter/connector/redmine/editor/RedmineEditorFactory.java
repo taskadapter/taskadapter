@@ -53,7 +53,7 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
         ProjectPanel projectPanel = new ProjectPanel(
                 new MethodProperty<>(config, "projectKey"),
                 new MethodProperty<>(config, "queryIdStr"),
-                Interfaces.fromMethod(DataProvider.class, RedmineLoaders.class, "getProjects", setup),
+                new RedmineProjectListLoader(setup),
                 new RedmineProjectLoader(config, setup),
                 Interfaces.fromMethod(DataProvider.class, loadQueriesElement, "loadQueries"), this);
         GridLayout gridLayout = new GridLayout();
