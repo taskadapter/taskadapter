@@ -13,7 +13,6 @@ import com.taskadapter.web.ConnectorSetupPanel;
 import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.callbacks.DataProvider;
-import com.taskadapter.web.callbacks.SimpleCallback;
 import com.taskadapter.web.configeditor.PriorityPanel;
 import com.taskadapter.web.configeditor.ProjectPanel;
 import com.taskadapter.web.configeditor.server.ServerPanelFactory;
@@ -90,13 +89,12 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
 
     @Override
     public ComponentContainer getMiniPanelContents(Sandbox sandbox, JiraConfig config, WebConnectorSetup setup) {
-        ShowProjectElement showProjectElement = new ShowProjectElement(config, setup);
         ProjectPanel projectPanel = new ProjectPanel(
                 new MethodProperty<>(config, "projectKey"),
                 new MethodProperty<>(config, "queryIdStr"),
                 Interfaces.fromMethod(DataProvider.class, JiraLoaders.class,
                         "loadProjects", setup),
-                Interfaces.fromMethod(SimpleCallback.class, showProjectElement, "loadProjectInfo"),
+                new JiraProjectLoader(config, setup),
                 Interfaces.fromMethod(DataProvider.class, new LoadQueriesElement(config, setup), "loadQueries"), this);
         projectPanel.setHeight(100, PERCENTAGE);
 

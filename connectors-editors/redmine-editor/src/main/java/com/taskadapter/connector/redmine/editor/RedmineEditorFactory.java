@@ -13,7 +13,6 @@ import com.taskadapter.web.ConnectorSetupPanel;
 import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.callbacks.DataProvider;
-import com.taskadapter.web.callbacks.SimpleCallback;
 import com.taskadapter.web.configeditor.PriorityPanel;
 import com.taskadapter.web.configeditor.ProjectPanel;
 import com.taskadapter.web.configeditor.server.ServerPanelFactory;
@@ -50,13 +49,12 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
 
     @Override
     public ComponentContainer getMiniPanelContents(Sandbox sandbox, RedmineConfig config, WebConnectorSetup setup) {
-        ShowProjectElement showProjectElement = new ShowProjectElement(config, setup);
         LoadQueriesElement loadQueriesElement = new LoadQueriesElement(config, setup);
         ProjectPanel projectPanel = new ProjectPanel(
                 new MethodProperty<>(config, "projectKey"),
                 new MethodProperty<>(config, "queryIdStr"),
                 Interfaces.fromMethod(DataProvider.class, RedmineLoaders.class, "getProjects", setup),
-                Interfaces.fromMethod(SimpleCallback.class, showProjectElement, "showProjectInfo"),
+                new RedmineProjectLoader(config, setup),
                 Interfaces.fromMethod(DataProvider.class, loadQueriesElement, "loadQueries"), this);
         GridLayout gridLayout = new GridLayout();
         gridLayout.setColumns(2);
