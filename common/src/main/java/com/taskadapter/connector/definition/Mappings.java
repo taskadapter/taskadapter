@@ -26,9 +26,8 @@ public final class Mappings {
 	 */
 	private final Map<String, String> mapTo;
 
-    // TODO REVIEW Have you considered storing this in one map completely describing one field?
-    // It could make much more sense. We just extract descriptor for one field and do everything we want. And we could put some "converter" logic there, etc...
-    // UPDATED: Have you considered storing this in one map completely describing one field? It could make much more sense. We just extract desciptor for one field and do everything we want. And we could put some "converter" logic there, etc...
+    // TODO Have you considered storing this in one map completely describing one field?
+	// We could extract descriptor for one field and do everything we want. And we could put some "converter" logic there, etc...
 	private final Map<String, String> defaultValuesForEmptyFields;
 
 	/**
