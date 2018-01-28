@@ -15,7 +15,6 @@ public class JiraConfig extends ConnectorConfig {
     private static final String TASK_TYPE_BUG = "Bug";
     private static final String DEFAULT_SUB_TASK_TYPE = "Sub-task";
 
-    // TODO this can probably be moved to the super class
     private String component = "";
 
     /**

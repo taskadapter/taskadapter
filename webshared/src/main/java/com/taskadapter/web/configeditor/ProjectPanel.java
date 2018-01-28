@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
+import com.taskadapter.model.GProject;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.callbacks.DataProvider;
@@ -23,6 +24,7 @@ import java.util.List;
 
 import static com.taskadapter.web.configeditor.EditorUtil.textInput;
 import static com.taskadapter.web.ui.Grids.addTo;
+import static com.taskadapter.web.ui.MessageUtils.nvl;
 
 /**
  * "Project info" panel with Project Key, Query Id.
@@ -41,11 +43,7 @@ public class ProjectPanel extends Panel implements Validatable {
 
     private final DataProvider<List<? extends NamedKeyedObject>> projectProvider;
 
-    /**
-     * "Show project info" callback.
-     */
-    private final SimpleCallback projectInfoCallback;
-
+    private final DataProvider<GProject> projectInfoLoader;
     private final DataProvider<List<? extends NamedKeyedObject>> queryProvider;
 
     private final Property<String> projectKeyProperty;
@@ -60,21 +58,20 @@ public class ProjectPanel extends Panel implements Validatable {
      * @param projectKey          project key, required.
      * @param queryValue          query id, optional.
      * @param projectProvider     project provider, optional.
-     * @param projectInfoCallback project info callback, optional.
      * @param queryProvider       query provider, optional.
      * @param exceptionFormatter  exception formatter, required.
      */
     public ProjectPanel(Property<String> projectKey,
                         Property<String> queryValue,
                         DataProvider<List<? extends NamedKeyedObject>> projectProvider,
-                        SimpleCallback projectInfoCallback,
+                        DataProvider<GProject> projectInfoLoader,
                         DataProvider<List<? extends NamedKeyedObject>> queryProvider,
                         ExceptionFormatter exceptionFormatter) {
         super(DEFAULT_PANEL_CAPTION);
         this.projectKeyProperty = projectKey;
         this.queryValueProperty = queryValue;
         this.projectProvider = projectProvider;
-        this.projectInfoCallback = projectInfoCallback;
+        this.projectInfoLoader = projectInfoLoader;
         this.queryProvider = queryProvider;
         this.exceptionFormatter = exceptionFormatter;
         buildUI();
@@ -96,7 +93,7 @@ public class ProjectPanel extends Panel implements Validatable {
         Button infoButton = EditorUtil.createButton("Info", "View the project info",
                 (Button.ClickListener) event -> loadProject()
         );
-        infoButton.setEnabled(projectInfoCallback != null);
+        infoButton.setEnabled(projectInfoLoader != null);
         addTo(grid, Alignment.MIDDLE_CENTER, infoButton);
 
         Button showProjectsButton = EditorUtil.createLookupButton(
@@ -157,7 +154,8 @@ public class ProjectPanel extends Panel implements Validatable {
 
     private void loadProject() {
         try {
-            projectInfoCallback.callBack();
+            GProject gProject = projectInfoLoader.loadData();
+            showProjectInfo(gProject);
         } catch (BadConfigException e) {
             logger.error(e.toString());
             String localizedMessage = exceptionFormatter.formatError(e);
@@ -167,6 +165,14 @@ public class ProjectPanel extends Panel implements Validatable {
             logger.error(e.toString());
             Notification.show(localizedMessage);
         }
+    }
+
+    private static void showProjectInfo(GProject project) {
+        String msg = "Key:  " + project.getKey()
+                + "\nName: " + project.getName()
+                + "\nHomepage: " + nvl(project.homepage())
+                + "\nDescription: " + nvl(project.description());
+        Notification.show("Project Info", msg, Notification.Type.HUMANIZED_MESSAGE);
     }
 
     private String getQueryValue() {

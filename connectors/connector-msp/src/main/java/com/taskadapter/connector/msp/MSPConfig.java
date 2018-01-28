@@ -16,7 +16,6 @@ public class MSPConfig extends ConnectorConfig {
         DEFAULT_PRIORITIES.put("1000", 1000);
     }
 
-    // TODO this is a UI element. move it to UI layer
     static final String DEFAULT_LABEL = "Microsoft Project";
 
     public MSPConfig() {

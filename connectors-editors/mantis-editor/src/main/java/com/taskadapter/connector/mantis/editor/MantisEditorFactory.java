@@ -11,7 +11,6 @@ import com.taskadapter.web.ConnectorSetupPanel;
 import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.callbacks.DataProvider;
-import com.taskadapter.web.callbacks.SimpleCallback;
 import com.taskadapter.web.configeditor.ProjectPanel;
 import com.taskadapter.web.configeditor.server.ServerPanelFactory;
 import com.taskadapter.web.data.Messages;
@@ -68,13 +67,12 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig, We
     public ComponentContainer getMiniPanelContents(Sandbox sandbox, MantisConfig config, WebConnectorSetup setup) {
         VerticalLayout layout = new VerticalLayout();
         layout.setWidth(380, PIXELS);
-        SimpleCallback NULL_PROJECT_INFO_CALLBACK = null;
 
         layout.addComponent(new ProjectPanel(new MethodProperty<>(config, "projectKey"),
                 new MethodProperty<>(config, "queryIdStr"),
                 Interfaces.fromMethod(DataProvider.class, MantisLoaders.class,
-                        "getProjects", setup)
-                , NULL_PROJECT_INFO_CALLBACK,
+                        "getProjects", setup),
+                null,
                 Interfaces.fromMethod(DataProvider.class, MantisLoaders.class, "getFilters", config, setup), this));
         layout.addComponent(new OtherMantisFieldsPanel(config));
 

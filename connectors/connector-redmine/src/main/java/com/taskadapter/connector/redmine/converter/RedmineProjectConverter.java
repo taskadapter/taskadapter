@@ -17,7 +17,7 @@ public class RedmineProjectConverter {
         return projects;
     }
 
-    public GProject convertToGProject(Project rmProject) {
+    public static GProject convertToGProject(Project rmProject) {
         return new GProject(rmProject.getId(),
                 rmProject.getName(),
                 rmProject.getIdentifier(),
