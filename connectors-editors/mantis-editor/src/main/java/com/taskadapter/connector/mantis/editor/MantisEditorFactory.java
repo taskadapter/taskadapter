@@ -70,8 +70,7 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig, We
 
         layout.addComponent(new ProjectPanel(new MethodProperty<>(config, "projectKey"),
                 new MethodProperty<>(config, "queryIdStr"),
-                Interfaces.fromMethod(DataProvider.class, MantisLoaders.class,
-                        "getProjects", setup),
+                new MantisProjectsListLoader(setup),
                 null,
                 Interfaces.fromMethod(DataProvider.class, MantisLoaders.class, "getFilters", config, setup), this));
         layout.addComponent(new OtherMantisFieldsPanel(config));
