@@ -95,7 +95,6 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
 
     @Override
     public void validateForLoad(RedmineConfig config, WebConnectorSetup setup) {
-        // TODO !! Implement
     }
 
     @Override
