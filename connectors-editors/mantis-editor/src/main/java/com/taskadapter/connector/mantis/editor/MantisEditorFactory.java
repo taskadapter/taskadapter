@@ -10,11 +10,9 @@ import com.taskadapter.connector.mantis.MantisConnector;
 import com.taskadapter.web.ConnectorSetupPanel;
 import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
-import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.ProjectPanel;
 import com.taskadapter.web.configeditor.server.ServerPanelFactory;
 import com.taskadapter.web.data.Messages;
-import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Sandbox;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
@@ -72,7 +70,8 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig, We
                 new MethodProperty<>(config, "queryIdStr"),
                 new MantisProjectsListLoader(setup),
                 null,
-                Interfaces.fromMethod(DataProvider.class, MantisLoaders.class, "getFilters", config, setup), this));
+                new MantisQueryListLoader(config, setup),
+                this));
         layout.addComponent(new OtherMantisFieldsPanel(config));
 
         return layout;

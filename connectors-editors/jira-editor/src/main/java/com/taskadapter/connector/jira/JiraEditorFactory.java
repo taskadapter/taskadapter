@@ -94,7 +94,8 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
                 new MethodProperty<>(config, "queryIdStr"),
                 new JiraProjectsListLoader(setup),
                 new JiraProjectLoader(config, setup),
-                Interfaces.fromMethod(DataProvider.class, new LoadQueriesElement(config, setup), "loadQueries"), this);
+                new JiraQueryListLoader(config, setup),
+                this);
         projectPanel.setHeight(100, PERCENTAGE);
 
         GridLayout gridLayout = new GridLayout(2, 4);

@@ -49,13 +49,13 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
 
     @Override
     public ComponentContainer getMiniPanelContents(Sandbox sandbox, RedmineConfig config, WebConnectorSetup setup) {
-        LoadQueriesElement loadQueriesElement = new LoadQueriesElement(config, setup);
         ProjectPanel projectPanel = new ProjectPanel(
                 new MethodProperty<>(config, "projectKey"),
                 new MethodProperty<>(config, "queryIdStr"),
                 new RedmineProjectListLoader(setup),
                 new RedmineProjectLoader(config, setup),
-                Interfaces.fromMethod(DataProvider.class, loadQueriesElement, "loadQueries"), this);
+                new RedmineQueryListLoader(config, setup),
+    this);
         GridLayout gridLayout = new GridLayout();
         gridLayout.setColumns(2);
         gridLayout.setMargin(true);
