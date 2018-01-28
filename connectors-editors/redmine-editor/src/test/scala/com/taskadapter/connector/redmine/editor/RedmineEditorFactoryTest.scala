@@ -19,7 +19,7 @@ class RedmineEditorFactoryTest extends FunSpec with Matchers with TempFolder {
     withTempFolder { folder =>
       val factory = new RedmineEditorFactory
       factory.getMiniPanelContents(new Sandbox(true, folder), new RedmineConfig,
-        WebConnectorSetup(RedmineConnector.ID, "label1", "host", "user", "password", false, ""))
+        WebConnectorSetup(RedmineConnector.ID, "label1", "http://somehost", "user", "password", false, ""))
     }
   }
 
