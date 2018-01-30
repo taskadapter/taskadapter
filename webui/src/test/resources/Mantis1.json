@@ -1,0 +1,10 @@
+{
+  "connectorId" : "Mantis",
+  "id" : "Mantis1.json",
+  "label" : "My MantisBT",
+  "host" : "http://dev.taskadapter.com:8601/mantisbt-1.2.15",
+  "userName" : "administrator",
+  "password" : "¶MktCIA==",
+  "useApiKey" : false,
+  "apiKey" : ""
+}

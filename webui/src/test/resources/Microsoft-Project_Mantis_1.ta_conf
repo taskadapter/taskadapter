@@ -1,6 +1,0 @@
-ta.name=
-ta.connector1.id=Microsoft Project
-ta.connector1.data={"inputAbsoluteFilePath":"C:\\Users\\ask\\taskadapter\\admin\\files\\MSP_export_11.xml","outputAbsoluteFilePath":"C:\\Users\\ask\\taskadapter\\admin\\files\\MSP_export_11.xml","label":"Microsoft Project","saveIssueRelations":false,"priorities":{"prioritiesMapping":{"800":800,"1000":1000,"100":100,"500":500,"700":700}}}
-ta.connector2.id=Mantis
-ta.connector2.data={"serverInfo":{"host":"http://dev.taskadapter.com:8601/mantisbt-1.2.15","userName":"administrator","password":"¶MktCIA==","useAPIKeyInsteadOfLoginPassword":false,"apiKey":""},"projectKey":"4","findUserByName":false,"label":"MantisBT","saveIssueRelations":false,"priorities":{"prioritiesMapping":{"normal":500,"high":700,"urgent":800,"low":100,"immediate":1000}}}
-mappings={"mappings":[{"field":"REMOTE_ID","connector1":"Text22","selected":true,"defaultValue":""},{"field":"SUMMARY","connector1":"Summary","connector2":"Summary","selected":true,"defaultValue":""},{"field":"DESCRIPTION","connector1":"Notes","connector2":"Description","selected":true,"defaultValue":""},{"field":"ASSIGNEE","connector1":"Assignment Owner","connector2":"Assignee","selected":true,"defaultValue":""},{"field":"DUE_DATE","connector1":"Finish","connector2":"Due Date","selected":false,"defaultValue":""}]}

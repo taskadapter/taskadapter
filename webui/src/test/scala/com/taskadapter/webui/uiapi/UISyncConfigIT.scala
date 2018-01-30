@@ -1,9 +1,12 @@
 package com.taskadapter.webui.uiapi
 
+import com.taskadapter.connector.Field
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.TaskId
+import com.taskadapter.connector.github.GithubField
 import com.taskadapter.connector.jira.JiraField
-import com.taskadapter.model.GTask
+import com.taskadapter.connector.mantis.MantisField
+import com.taskadapter.model.{GTask, GTaskBuilder}
 import com.taskadapter.web.uiapi.{ConfigLoader, UISyncConfig}
 import org.fest.assertions.Assertions.assertThat
 import org.junit.runner.RunWith
@@ -91,47 +94,51 @@ class UISyncConfigIT extends FunSpec with Matchers with ConfigsTempFolder {
     }
   }
 
-  /**
-    * regression test for https://bitbucket.org/taskadapter/taskadapter/issues/43/tasks-are-not-updated-in-redmine-404-not
-    */
-  /*  it("taskWithRemoteIdIsUpdatedInRedmine") {
-      val toRedmineConfig = config.reverse
-      trySaveAndThenUpdate(toRedmineConfig)
-    }
-
     it("taskWithRemoteIdIsUpdatedInMantisBT") {
-      val config = ConfigLoader.loadConfig("Microsoft-Project_Mantis_1.ta_conf")
-      trySaveAndThenUpdate(config)
+      withTempFolder { f =>
+        val config = ConfigLoader.loadConfig(f, "Mantis_1-Microsoft-Project.ta_conf")
+        val reversed = config.reverse
+        trySaveAndThenUpdate(reversed, MantisField.summary, Some(MantisField.description))
+      }
     }
 
     it("taskWithRemoteIdIsUpdatedInJIRA") {
-      val jiraMspConfig = ConfigLoader.loadConfig("Atlassian-Jira_Microsoft-Project_3.ta_conf")
-      val toJIRAConfig = jiraMspConfig.reverse
-      trySaveAndThenUpdate(toJIRAConfig)
+      withTempFolder { f =>
+        val jiraMspConfig = ConfigLoader.loadConfig(f, "Atlassian-Jira_Microsoft-Project_3.ta_conf")
+        val toJIRAConfig = jiraMspConfig.reverse
+        trySaveAndThenUpdate(toJIRAConfig, JiraField.summary)
+      }
     }
 
     it("taskWithRemoteIdIsUpdatedInGitHub") {
-      val config = ConfigLoader.loadConfig("Github_Microsoft-Project_1.ta_conf")
-      val reversedConfig = config.reverse
-      trySaveAndThenUpdate(reversedConfig)
+      withTempFolder { f =>
+        val config = ConfigLoader.loadConfig(f, "Github_Microsoft-Project_1.ta_conf")
+        val reversedConfig = config.reverse
+        trySaveAndThenUpdate(reversedConfig, GithubField.summary)
+      }
     }
 
-    private def trySaveAndThenUpdate(uiSyncConfig: UISyncConfig) = {
-      val summaryFieldName = "Summary"
-      // TODO TA3 use connector-specific field
-      val task = new GTaskBuilder().withRandom(summaryFieldName).build()
-      val tasks = new util.ArrayList[GTask]
-      tasks.add(task)
-      val taskExportResult = uiSyncConfig.saveTasks(tasks, ProgressMonitorUtils.DUMMY_MONITOR)
-      val saveResult = taskExportResult.saveResult
-      val key = saveResult.getRemoteKeys.iterator.next
-      val createdTask = tasks.get(0)
-      createdTask.setSourceSystemId(key)
-      createdTask.setValue(summaryFieldName, "updated summary")
-      val secondResultWrapper = uiSyncConfig.saveTasks(tasks, ProgressMonitorUtils.DUMMY_MONITOR)
-      val secondResult = secondResultWrapper.saveResult
-      assertThat(secondResult.hasErrors).isFalse()
-      assertThat(secondResult.createdTasksNumber).isEqualTo(0)
-      assertThat(secondResult.updatedTasksNumber).isEqualTo(1)
-    }*/
+    private def trySaveAndThenUpdate(uiSyncConfig: UISyncConfig, summaryField:Field
+                                    , secondField: Option[Field] = None) = {
+      val builder = new GTaskBuilder().withRandom(summaryField)
+      val task = builder.build()
+      task.setId(123l)
+      task.setKey("123")
+      task.setSourceSystemId(TaskId(123, "123"))
+      if (secondField.isDefined) {
+        task.setValue(secondField.get, "some value")
+      }
+      val tasks = List(task).asJava
+      val firstResult = uiSyncConfig.saveTasks(tasks, ProgressMonitorUtils.DUMMY_MONITOR)
+      firstResult.hasErrors shouldBe false
+      firstResult.createdTasksNumber shouldBe 1
+      firstResult.updatedTasksNumber shouldBe 0
+
+
+      task.setValue(summaryField, "updated summary")
+      val secondResult = uiSyncConfig.saveTasks(tasks, ProgressMonitorUtils.DUMMY_MONITOR)
+      secondResult.hasErrors shouldBe false
+      secondResult.createdTasksNumber shouldBe 0
+      secondResult.updatedTasksNumber shouldBe 1
+    }
 }

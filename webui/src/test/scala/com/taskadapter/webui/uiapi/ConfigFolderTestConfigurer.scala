@@ -16,11 +16,16 @@ object ConfigFolderTestConfigurer {
     * @return folder with user configs
     */
   def configure(rootFolder: File): Unit = {
-    List(jiraSetupId.id, redmineSetupId.id).foreach { resourceName =>
-      val adminFolder = new File(rootFolder, "admin")
-      adminFolder.mkdirs()
-      Files.copy(Paths.get(getClass.getClassLoader.getResource(resourceName).getPath),
-        new File(adminFolder, resourceName).toPath)
-    }
+    List(jiraSetupId.id, redmineSetupId.id,
+      SetupId("Microsoft_Project_1.json").id,
+      SetupId("GitHub1.json").id,
+      SetupId("Mantis1.json").id
+    )
+      .foreach { resourceName =>
+        val adminFolder = new File(rootFolder, "admin")
+        adminFolder.mkdirs()
+        Files.copy(Paths.get(getClass.getClassLoader.getResource(resourceName).getPath),
+          new File(adminFolder, resourceName).toPath)
+      }
   }
 }

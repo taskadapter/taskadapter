@@ -28,8 +28,9 @@ class TaskKeeperLocationStorage(rootFolder: File) {
     val existingCache = loadCache(location1, location2)
     val allItems = (existingCache.items ++ items).distinct
     val newCache = PreviouslyCreatedTasksCache(location1, location2, allItems)
-    val jsonString = newCache.asJson.spaces2
-    Files.write(jsonString, file, Charsets.UTF_8)
+    val json = newCache.asJson
+    val formattedJson = json.spaces2
+    Files.write(formattedJson, file, Charsets.UTF_8)
   }
 
   def loadCache(location1: String, location2: String): PreviouslyCreatedTasksCache = {
