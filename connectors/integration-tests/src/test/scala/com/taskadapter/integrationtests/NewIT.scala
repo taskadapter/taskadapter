@@ -53,12 +53,6 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
     RedmineTestInitializer.deleteProject(redmineProject.get.getIdentifier)
   }
 
-  /*
-    FieldRow(true, "done_ratio", "done_ratio", ""),
-    FieldRow(true, "due_date", "due_date", ""),
-    FieldRow(true, "assignee", "assignee", ""),
-  */
-
   it("custom value saved to another custom value with default value") {
     val rows = List(
       FieldRow(RedmineField.summary, RedmineField.summary, ""),
