@@ -7,8 +7,8 @@ import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.FileSetup
 import com.taskadapter.connector.jira.{JiraConnector, JiraField}
 import com.taskadapter.connector.msp.{MSPConnector, MspField}
-import com.taskadapter.connector.redmine._
-import com.taskadapter.connector.testlib.{FieldRowBuilder, ResourceLoader, TestSaver, TestUtils}
+import com.taskadapter.connector.redmine.{CustomFieldBuilder, RedmineConfig, RedmineConnector, RedmineField}
+import com.taskadapter.connector.testlib._
 import com.taskadapter.core.TaskLoader
 import com.taskadapter.model.{GTask, GTaskBuilder, GUser}
 import com.taskadapter.redmineapi.bean.{Issue, IssueFactory, Project}
@@ -20,7 +20,7 @@ import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
 import scala.collection.JavaConverters._
 
 @RunWith(classOf[JUnitRunner])
-class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll {
+class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll with TempFolder {
 
   private var redmineProject: Option[Project] = None
 
@@ -227,6 +227,40 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
       val ass = result.getValue(RedmineField.assignee).asInstanceOf[GUser]
       ass.getDisplayName shouldBe "Redmine Admin"
     }
+
+    /**
+      * This is a regression test for a bug reported by a user: Redmine subtasks were skipped when saving
+      * to MSP: https://bitbucket.org/taskadapter/taskadapter/issues/85/subtasks-are-not-saved
+      * Turned out all subtasks were broken in the system for a long time! X8-[==]
+      */
+    it("subtasks are saved to MSP") {
+      withTempFolder { folder =>
+        createRedmineHierarchy(targetRedmineConnector)
+        val mspConnector = getMspConnector(folder)
+
+        val result = TestUtils.loadAndSaveList(sourceRedmineConnector, mspConnector,
+          Seq(FieldRow(MspField.summary, MspField.summary, "")
+          )
+        )
+        result.size shouldBe 3
+      }
+    }
+  }
+
+  def createRedmineHierarchy(redmineConnector: RedmineConnector) = {
+    val redmineFields = List(FieldRow(RedmineField.summary, RedmineField.summary, ""))
+
+    val parent = RedmineTaskBuilder.withSummary("parent task")
+    val parentId = TestUtils.save(redmineConnector, parent, redmineFields)
+
+    val sub1 = RedmineTaskBuilder.withSummary("sub 1")
+    sub1.setParentIdentity(parentId)
+
+    val sub2 = RedmineTaskBuilder.withSummary("sub 2")
+    sub2.setParentIdentity(parentId)
+
+    TestUtils.save(redmineConnector, sub1, redmineFields)
+    TestUtils.save(redmineConnector, sub2, redmineFields)
   }
 
   def createIssueInRedmineWithCustomField(fieldName: String, value: String): Issue = {
@@ -248,6 +282,12 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
   def getMspSetup(resourceName: String): FileSetup = {
     val file = new File(ResourceLoader.getAbsolutePathForResource(resourceName))
     FileSetup(MSPConnector.ID, "label", file.getAbsolutePath, file.getAbsolutePath)
+  }
+
+  def getMspConnector(folder: File): MSPConnector = {
+    val file = new File(folder, "msp_temp_file.xml")
+    val setup = FileSetup(MSPConnector.ID, Some("file"), "label", file.getAbsolutePath, file.getAbsolutePath)
+    new MSPConnector(setup)
   }
 }
 

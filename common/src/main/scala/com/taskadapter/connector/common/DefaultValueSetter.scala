@@ -43,6 +43,7 @@ object DefaultValueSetter {
     }
     result.setSourceSystemId(task.getSourceSystemId)
     result.setParentIdentity(task.getParentIdentity)
+    result.setChildren(task.getChildren)
     result
   }
 

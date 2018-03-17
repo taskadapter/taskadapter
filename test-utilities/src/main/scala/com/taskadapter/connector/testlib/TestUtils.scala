@@ -112,6 +112,13 @@ object TestUtils {
     result
   }
 
+  def loadAndSaveList(sourceConnector: NewConnector, targetConnector: NewConnector,
+                  rows: Seq[FieldRow]): List[GTask] = {
+    val loadedTasks = TaskLoader.loadTasks(1000, sourceConnector, "sourceName", ProgressMonitorUtils.DUMMY_MONITOR).asScala.toList
+    val result = TestUtils.saveAndLoadList(targetConnector, loadedTasks, rows)
+    result
+  }
+
   def setTaskStartYearAgo(task: GTask, startDateFieldName: String): Calendar = {
     val yearAgo = getDateRoundedToDay
     yearAgo.add(Calendar.YEAR, -1)

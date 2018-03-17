@@ -15,16 +15,16 @@ import scala.collection.JavaConverters._
 
 @RunWith(classOf[JUnitRunner])
 class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
+  val defaultRows = List(
+    FieldRow(Field("summary"), Field("summary"), ""),
+    FieldRow(Field("description"), Field("description"), "")
+  )
+
   it("task is deep cloned") {
     val originalTask = new GTask
     originalTask.setValue("description", "original description")
 
-    val rows = List(
-      FieldRow(Field("summary"), Field("summary"), ""),
-      FieldRow(Field("description"), Field("description"), "")
-    )
-
-    val newTask = DefaultValueSetter.adapt(rows, originalTask)
+    val newTask = DefaultValueSetter.adapt(defaultRows, originalTask)
     originalTask.setValue("description", "new description")
     assertThat(newTask.getValue("description")).isEqualTo("original description")
 
@@ -66,14 +66,23 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
 
   // without this creating subtasks won't work, at least in JIRA
   it("parent key is preserved") {
-    val rows = List(
-      FieldRow(Field("summary"), Field("summary"), ""),
-    )
     val task = new GTask
     val identity = TaskId(1, "parent1")
     task.setParentIdentity(identity)
-    val newTask = DefaultValueSetter.adapt(rows, task)
+    val newTask = DefaultValueSetter.adapt(defaultRows, task)
     newTask.getParentIdentity shouldBe identity
+  }
+
+  // regression test for https://bitbucket.org/taskadapter/taskadapter/issues/85/subtasks-are-not-saved
+  it("children are preserved") {
+    val parent = new GTask
+    parent.setId(1l)
+    val sub = new GTask
+    sub.setId(100l)
+    parent.addChildTask(sub)
+
+    val adapted = DefaultValueSetter.adapt(defaultRows, parent)
+    adapted.getChildren.size() shouldBe 1
   }
 
   it("Date field type is adapted") {
