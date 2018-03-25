@@ -8,7 +8,6 @@ import com.vaadin.ui._
   * Top-level header. Includes logo, "configure", ...
   */
 object Header {
-  private val MAIN_WIDTH = "900px"
 
   /**
     * Renders a navigator using provided menu components.
@@ -20,7 +19,7 @@ object Header {
   def render(home: Runnable, menu1: Component, menu2: Component, licensed: State[java.lang.Boolean]): Component = {
     val res = new HorizontalLayout
     val internalLayout = new HorizontalLayout
-    internalLayout.setWidth(MAIN_WIDTH)
+    internalLayout.setWidth("100%")
     internalLayout.setSpacing(true)
     res.addComponent(internalLayout)
     res.setComponentAlignment(internalLayout, Alignment.MIDDLE_CENTER)
@@ -34,10 +33,7 @@ object Header {
     internalLayout.setExpandRatio(logo, 2f)
     internalLayout.setComponentAlignment(logo, Alignment.MIDDLE_LEFT)
     internalLayout.addComponent(menu1)
-    internalLayout.setExpandRatio(menu1, 1f)
-    internalLayout.setComponentAlignment(menu1, Alignment.MIDDLE_CENTER)
     internalLayout.addComponent(menu2)
-    internalLayout.setComponentAlignment(menu2, Alignment.MIDDLE_RIGHT)
 
     // Trial display.
     val trialLayout = new VerticalLayout

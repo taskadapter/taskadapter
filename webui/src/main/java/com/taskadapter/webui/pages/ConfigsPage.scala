@@ -4,7 +4,7 @@ import java.util.Comparator
 
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{ConfigId, UISyncConfig}
-import com.taskadapter.webui.{ConfigOperations, Page, Tracker}
+import com.taskadapter.webui.{ConfigOperations, Page, Tracker, WebUserSession}
 import com.vaadin.ui._
 
 object ConfigsPage {
@@ -13,28 +13,8 @@ object ConfigsPage {
     * Callback for config list page.
     */
   trait Callback {
-    /**
-      * User requested to edit config.
-      *
-      * @param config selected config.
-      */
-    def edit(config: UISyncConfig): Unit
 
-    /**
-      * User requested synchronization in "forward" directions (from left to
-      * right).
-      *
-      * @param config config for the operation.
-      */
-    def forwardSync(config: UISyncConfig): Unit
-
-    /**
-      * User requested synchronization in "reverse" direction (from right to
-      * left).
-      *
-      * @param config config for the operation.
-      */
-    def backwardSync(config: UISyncConfig): Unit
+    def startExport(config: UISyncConfig): Unit
 
     /**
       * Performs a forward drop-in.
@@ -84,6 +64,7 @@ object ConfigsPage {
 }
 
 class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Callback, configOperations: ConfigOperations,
+                  webUserSession: WebUserSession,
                   sandbox: Sandbox) {
   val displayMode = if (showAll) DisplayMode.ALL_CONFIGS
   else DisplayMode.OWNED_CONFIGS
@@ -116,7 +97,7 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
 
   val listSelect = configureListSelect()
   val listPanel = new Panel(listSelect)
-  listPanel.setWidth("300px")
+  listPanel.setWidth("270px")
   configsLayout.addComponent(listPanel)
 
   val configArea = new Panel()
@@ -131,41 +112,52 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
   layout.setComponentAlignment(actionPanel, Alignment.TOP_LEFT)
   refreshConfigs()
 
-  private def refreshConfigs() = {
+  def refreshConfigs() = {
     val loadedConfigs = if (showAll) configOperations.getManageableConfigs
     else configOperations.getOwnedConfigs
     configs = loadedConfigs.sortBy(c => c.getOwnerName)
     setDisplayedConfigs(configs)
     filterFields(filterField.getValue)
+    if (webUserSession.hasCurrentConfig) {
+      listSelect.select(webUserSession.getCurrentConfigId)
+    }
   }
 
   private def setDisplayedConfigs(dispConfigs: Seq[UISyncConfig]): Unit = {
+    listSelect.removeAllItems()
     dispConfigs.foreach(config => {
       listSelect.addItem(config.id)
       listSelect.setItemCaption(config.id, config.label)
     })
   }
 
-  def showConfigInfo(configId: ConfigId): Unit = {
+  def showConfigSummary(configId: ConfigId): Unit = {
     val maybeConfig = configOperations.getConfig(configId)
     if (maybeConfig.isDefined) {
-      val component = ConfigSummaryPanel.render(maybeConfig.get, displayMode, callback, configOperations,
+      val component = new ConfigSummaryPanel(maybeConfig.get, displayMode, callback, configOperations,
         sandbox,
         () => refreshConfigs(),
         () => callback.showAllPreviousResults(configId),
-        () => callback.showLastExportResult(configId), tracker)
+        () => callback.showLastExportResult(configId), tracker, webUserSession).ui()
       component.setMargin(true)
       configArea.setContent(component)
+
+      tracker.trackPage("config_summary")
+      webUserSession.setCurrentConfigId(configId)
     }
   }
 
-  private def configureListSelect(): ListSelect = {
+  private def configureListSelect() = {
     val listSelect = new ListSelect()
     listSelect.setNullSelectionAllowed(false)
     listSelect.setWidth("100%")
     listSelect.setImmediate(true)
     listSelect.addValueChangeListener(e => {
-      showConfigInfo(e.getProperty.getValue.asInstanceOf[ConfigId])
+      val configId = e.getProperty.getValue.asInstanceOf[ConfigId]
+      // it will be null when an element is removed from the list
+      if (configId != null) {
+        showConfigSummary(configId)
+      }
     })
     listSelect
   }

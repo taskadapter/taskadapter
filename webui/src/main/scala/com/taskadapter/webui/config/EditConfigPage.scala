@@ -13,17 +13,13 @@ import com.vaadin.data.util.ObjectProperty
 import com.vaadin.server.Sizeable.Unit.PERCENTAGE
 import com.vaadin.shared.ui.label.ContentMode
 import com.vaadin.ui._
-import com.vaadin.ui.themes.ValoTheme
 import org.slf4j.LoggerFactory
 
 class EditConfigPage(messages: Messages, tracker: Tracker,
                      configOps: ConfigOperations,
                      error: String,
-                     sandbox: Sandbox, config: UISyncConfig, exportToLeft: Runnable,
-                     exportToRight: Runnable,
-                     close: Runnable,
-                     showAllPreviousResults: Runnable,
-                     showLastResults: Runnable) {
+                     sandbox: Sandbox, config: UISyncConfig,
+                     close: Runnable) {
   private val logger = LoggerFactory.getLogger(classOf[EditConfigPage])
 
   val labelProperty = new ObjectProperty[String](config.label)
@@ -81,11 +77,7 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
     val backButton = new Button(Page.message("button.close"))
     backButton.addClickListener(_ => close.run())
 
-    val cloneDeletePanel = new ConfigActionsFragment(config.id, configOps, close, showAllPreviousResults,
-      showLastResults,
-      tracker).layout
     rightLayout.addComponent(backButton)
-    rightLayout.addComponent(cloneDeletePanel)
     buttonsLayout
   }
 
