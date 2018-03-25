@@ -4,6 +4,7 @@ import java.util
 import java.util.Date
 
 import com.google.common.base.Strings
+import com.taskadapter.connector.common.ValueTypeResolver
 import com.taskadapter.connector.common.data.ConnectorConverter
 import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.model.{GTask, GUser}
@@ -57,9 +58,9 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
       case RedmineField.startDate.name => issue.setStartDate(value.asInstanceOf[Date])
       case RedmineField.dueDate.name => issue.setDueDate(value.asInstanceOf[Date])
       case RedmineField.estimatedTime.name =>
-        issue.setEstimatedHours(value.asInstanceOf[Float])
+        issue.setEstimatedHours(ValueTypeResolver.getValueAsFloat(value))
 
-      case RedmineField.doneRatio.name => issue.setDoneRatio(value.asInstanceOf[Float].toInt)
+      case RedmineField.doneRatio.name => issue.setDoneRatio(ValueTypeResolver.getValueAsInt(value))
       case RedmineField.taskType.name =>
         var trackerName = value.asInstanceOf[String]
         if (Strings.isNullOrEmpty(trackerName)) trackerName = config.getDefaultTaskType
