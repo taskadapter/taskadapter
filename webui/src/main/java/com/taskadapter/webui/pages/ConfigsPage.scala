@@ -120,6 +120,8 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
     filterFields(filterField.getValue)
     if (webUserSession.hasCurrentConfig) {
       listSelect.select(webUserSession.getCurrentConfigId)
+    } else {
+      clearConfigSummaryArea()
     }
   }
 
@@ -176,6 +178,11 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
       if (!confName.toLowerCase.contains(name) && !config.getConnector1.getLabel.toLowerCase.contains(name) && !config.getConnector2.getLabel.toLowerCase.contains(name)) return false
     }
     true
+  }
+
+  def clearConfigSummaryArea(): Unit = {
+    val element = new HorizontalLayout()
+    configArea.setContent(element)
   }
 
   def ui = layout
