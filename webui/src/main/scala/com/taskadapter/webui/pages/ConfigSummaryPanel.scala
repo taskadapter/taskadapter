@@ -5,10 +5,9 @@ import com.taskadapter.webui.{ConfigActionsFragment, ConfigOperations, Page, Tra
 import com.vaadin.ui._
 
 /**
-  * Buttons panel with left/right arrows.
+  * Config Summary panel with left/right arrows, connector names, action buttons (Delete/Clone/etc).
   */
-object ConfigActionsPanel {
-  val descriptionButtonWidth = "575px"
+object ConfigSummaryPanel {
 
   def render(config: UISyncConfig, mode: DisplayMode, callback: ConfigsPage.Callback,
              configOps: ConfigOperations, onExit: Runnable,
@@ -17,19 +16,18 @@ object ConfigActionsPanel {
              tracker: Tracker): VerticalLayout = {
     val layout = new VerticalLayout
     layout.addStyleName("configPanelInConfigsList")
-    val labelText = mode.nameOf(config)
-    val description = if (labelText.isEmpty) Page.message("configsPage.noDescription") else labelText
+    layout.setSpacing(true)
 
-    var descriptionButton = new Button(description)
-    descriptionButton.setWidth(descriptionButtonWidth)
+    var descriptionButton = new Button(Page.message("configSummary.configure"))
     descriptionButton.setHtmlContentAllowed(true)
     descriptionButton.addClickListener(_ => callback.edit(config))
 
     val configOperationsBar = new ConfigActionsFragment(config.id, configOps, onExit,
       showAllPreviousExportResults, showLastExportResult, tracker).layout
-    val descriptionLayout = new HorizontalLayout(descriptionButton, configOperationsBar)
-    descriptionLayout.setExpandRatio(descriptionButton, 1)
-    layout.addComponent(descriptionLayout)
+    val buttonsLayout = new HorizontalLayout(descriptionButton, configOperationsBar)
+    buttonsLayout.setSpacing(true)
+    buttonsLayout.setExpandRatio(descriptionButton, 1)
+    layout.addComponent(buttonsLayout)
 
     val horizontalLayout = new HorizontalLayout
     horizontalLayout.setSpacing(true)

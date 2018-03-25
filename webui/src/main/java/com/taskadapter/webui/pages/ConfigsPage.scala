@@ -147,8 +147,8 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
   def showConfigInfo(configId: ConfigId): Unit = {
     val maybeConfig = configOperations.getConfig(configId)
     if (maybeConfig.isDefined) {
-      val component = ConfigActionsPanel.render(maybeConfig.get, displayMode, callback, configOperations,
-        () => refreshConfigs,
+      val component = ConfigSummaryPanel.render(maybeConfig.get, displayMode, callback, configOperations,
+        () => refreshConfigs(),
         () => callback.showAllPreviousResults(configId),
         () => callback.showLastExportResult(configId), tracker)
       component.setMargin(true)
