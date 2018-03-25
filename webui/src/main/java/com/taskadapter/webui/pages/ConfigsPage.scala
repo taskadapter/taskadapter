@@ -1,14 +1,10 @@
 package com.taskadapter.webui.pages
 
-import java.util
-import java.util.{Collections, Comparator}
+import java.util.Comparator
 
 import com.taskadapter.web.uiapi.{ConfigId, UISyncConfig}
-import com.taskadapter.webui.{ConfigOperations, Page, Sizes, Tracker}
-import com.vaadin.server.Sizeable.Unit.PIXELS
+import com.taskadapter.webui.{ConfigOperations, Page, Tracker}
 import com.vaadin.ui._
-
-import scala.collection.JavaConverters._
 
 object ConfigsPage {
 
@@ -61,6 +57,7 @@ object ConfigsPage {
     def newConfig(): Unit
 
     def showAllPreviousResults(configId: ConfigId): Unit
+
     def showLastExportResult(configId: ConfigId): Unit
   }
 
@@ -112,8 +109,17 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
   configsTopLevelLayout.setSpacing(true)
   configsTopLevelLayout.setSizeFull()
 
-  val configsLayout = new VerticalLayout()
-  configsLayout.setWidth(Sizes.configsListWidth)
+  val configsLayout = new HorizontalLayout()
+  configsLayout.setWidth("100%")
+
+  val listSelect = configureListSelect()
+  val listPanel = new Panel(listSelect)
+  listPanel.setWidth("300px")
+  configsLayout.addComponent(listPanel)
+
+  val configArea = new Panel()
+  configsLayout.addComponent(configArea)
+  configsLayout.setExpandRatio(configArea, 1.0f)
 
   configsTopLevelLayout.addComponent(configsLayout)
   configsTopLevelLayout.setComponentAlignment(configsLayout, Alignment.TOP_CENTER)
@@ -132,13 +138,33 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
   }
 
   private def setDisplayedConfigs(dispConfigs: Seq[UISyncConfig]): Unit = {
-    configsLayout.removeAllComponents()
-    dispConfigs.foreach(config =>
-      configsLayout.addComponent(ConfigActionsPanel.render(config, displayMode, callback, configOperations,
+    dispConfigs.foreach(config => {
+      listSelect.addItem(config.id)
+      listSelect.setItemCaption(config.id, config.label)
+    })
+  }
+
+  def showConfigInfo(configId: ConfigId): Unit = {
+    val maybeConfig = configOperations.getConfig(configId)
+    if (maybeConfig.isDefined) {
+      val component = ConfigActionsPanel.render(maybeConfig.get, displayMode, callback, configOperations,
         () => refreshConfigs,
-        () => callback.showAllPreviousResults(config.id),
-        () => callback.showLastExportResult(config.id), tracker))
-    )
+        () => callback.showAllPreviousResults(configId),
+        () => callback.showLastExportResult(configId), tracker)
+      component.setMargin(true)
+      configArea.setContent(component)
+    }
+  }
+
+  private def configureListSelect(): ListSelect = {
+    val listSelect = new ListSelect()
+    listSelect.setNullSelectionAllowed(false)
+    listSelect.setWidth("100%")
+    listSelect.setImmediate(true)
+    listSelect.addValueChangeListener(e => {
+      showConfigInfo(e.getProperty.getValue.asInstanceOf[ConfigId])
+    })
+    listSelect
   }
 
   private def filterFields(filterStr: String): Unit = {

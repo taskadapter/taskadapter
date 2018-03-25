@@ -14,7 +14,7 @@ object ConfigActionsPanel {
              configOps: ConfigOperations, onExit: Runnable,
              showAllPreviousExportResults: Runnable,
              showLastExportResult: Runnable,
-             tracker: Tracker): Component = {
+             tracker: Tracker): VerticalLayout = {
     val layout = new VerticalLayout
     layout.addStyleName("configPanelInConfigsList")
     val labelText = mode.nameOf(config)
