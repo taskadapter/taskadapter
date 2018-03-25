@@ -15,3 +15,7 @@ target
 .classpath
 .metadata
 bin
+/webui/src/main/webapp/VAADIN/themes/mytheme/addons.scss
+/webui/src/main/webapp/VAADIN/themes/mytheme/styles.css
+/webui/src/main/webapp/VAADIN/themes/mytheme/styles.css.gz
+
