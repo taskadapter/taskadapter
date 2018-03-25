@@ -39,11 +39,16 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, schedulesStorage: SchedulesSt
       def run() = {
         if (allowedToRun) {
           val schedules = schedulesStorage.getSchedules()
-          log.info(s"Found ${schedules.size} scheduled configs. Checking if it is time for them to run...")
-          schedules.foreach { s =>
-            if (needToRun(s)) {
-              launchSyncLeftOrRight(s)
+          if (schedules.nonEmpty) {
+            log.info(s"Found ${schedules.size} scheduled configs. Checking if it is time for them to run...")
+            schedules.foreach { s =>
+              if (needToRun(s)) {
+                launchSyncLeftOrRight(s)
+              }
             }
+          } else {
+            log.debug("Scheduler is enabled in the application settings, but there are no scheduled tasks to process. " +
+              "You can define some tasks on 'Schedules' page or disable the scheduler to avoid this message.")
           }
         }
       }
