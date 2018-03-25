@@ -125,7 +125,12 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
   private def reloadConfigsInList(): Unit = {
     configOperations.getOwnedConfigs.foreach { s =>
       configsListSelect.addItem(s.id)
-      configsListSelect.setItemCaption(s.id, s.label)
+      configsListSelect.setItemCaption(s.id, if (s.label.isEmpty) {
+        Page.message("schedules.configsList.defaultLabelForConfigs")
+      } else {
+        s.label
+      }
+      )
     }
     val rowsNumber = if (configsListSelect.size < configRowsToShowInListSelect) {
       configsListSelect.size
