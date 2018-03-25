@@ -86,9 +86,8 @@ class ConfigSummaryPanel(config: UISyncConfig, mode: DisplayMode, callback: Conf
                                              configSaver: Runnable): Component = {
     val iconResource = ImageLoader.getImage("edit.png")
     val button = new Button(connectorConfig.getLabel)
-    button.addStyleName(ValoTheme.BUTTON_LARGE)
     button.setIcon(iconResource)
-    button.setWidth("270px")
+    button.setWidth("300px")
     button.setHeight("100%")
     button.addClickListener(_ => showEditConnectorDialog(layout.getUI, connectorConfig, configSaver, sandbox))
     button

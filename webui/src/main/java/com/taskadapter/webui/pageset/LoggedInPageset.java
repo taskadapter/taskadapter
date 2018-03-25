@@ -2,13 +2,10 @@ package com.taskadapter.webui.pageset;
 
 import com.google.common.io.Files;
 import com.taskadapter.auth.CredentialsManager;
-import com.taskadapter.connector.definition.ConnectorSetup;
-import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.uiapi.ConfigId;
 import com.taskadapter.web.uiapi.SetupId;
-import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigureSystemPage;
 import com.taskadapter.webui.Header;
@@ -42,7 +39,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.VerticalLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Function0;
@@ -109,7 +105,6 @@ public class LoggedInPageset {
      * Area for the current page.
      */
     private final HorizontalLayout currentComponentArea = new HorizontalLayout();
-    private final VerticalLayout mainContainer;
 
     private final ConfigsPage configsPage;
 
@@ -135,10 +130,7 @@ public class LoggedInPageset {
 
         final Component header = Header.render(this::showHome, createMenu(), createSelfManagementMenu(), license.isLicensed());
 
-        mainContainer = new VerticalLayout();
-        mainContainer.setSpacing(true);
-        mainContainer.setWidth(Sizes.tabWidth());
-
+        currentComponentArea.setWidth(Sizes.mainWidth());
         this.ui = TAPageLayout.layoutPage(header, currentComponentArea);
         this.configsPage = createConfigsPage();
         showConfigsList();
@@ -514,7 +506,7 @@ public class LoggedInPageset {
         currentComponentArea.removeAllComponents();
         ui.setSizeUndefined();
         currentComponentArea.addComponent(ui);
-        currentComponentArea.setComponentAlignment(ui, Alignment.TOP_LEFT);
+        currentComponentArea.setComponentAlignment(ui, Alignment.TOP_CENTER);
     }
 
     /**

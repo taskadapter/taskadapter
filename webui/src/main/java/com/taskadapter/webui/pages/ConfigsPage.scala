@@ -75,6 +75,7 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
   layout.setSpacing(true)
   val actionPanel = new HorizontalLayout
   actionPanel.setWidth("100%")
+  actionPanel.setSpacing(true)
   val addButton = new Button(Page.message("configsPage.buttonNewConfig"))
   addButton.addClickListener(_ => callback.newConfig())
   actionPanel.addComponent(addButton)
@@ -181,8 +182,7 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
   }
 
   def clearConfigSummaryArea(): Unit = {
-    val element = new HorizontalLayout()
-    configArea.setContent(element)
+    configArea.setContent(null)
   }
 
   def ui = layout

@@ -47,14 +47,11 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
 
   class ChooseOrCreateSetupFragment(setups: Seq[ExistingSetup],
                                     button: Button, connectorSetupPanel: ConnectorSetupPanel) {
-    private val selectPanel = createSavedServerConfigurationsSelector(message("createConfigPage.selectExistingOrNew"), setups,
-      event => {}
-    )
+    private val selectPanel = createSavedServerConfigurationsSelector(setups, event => {})
 
-    private def createSavedServerConfigurationsSelector(title: String,
-                                                        savedSetups: Seq[ExistingSetup],
+    private def createSavedServerConfigurationsSelector(savedSetups: Seq[ExistingSetup],
                                                         valueChangeListener: ValueChangeListener): ListSelect = {
-      val res = new ListSelect(title)
+      val res = new ListSelect()
       res.setNullSelectionAllowed(false)
       res.addValueChangeListener(valueChangeListener)
       savedSetups.foreach { s =>
@@ -69,7 +66,9 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
     errorMessageLabel.addStyleName("error-message-label")
 
     private val connectorSetupPanelUI = connectorSetupPanel.getUI
-    val layout = new VerticalLayout(selectPanel, button, connectorSetupPanelUI, errorMessageLabel)
+    val selectExistingLabel = new Label(message("createConfigPage.selectExistingOrNew"))
+    val orCreateNewLabel = new Label(message("createConfigPage.orCreateNew"))
+    val layout = new VerticalLayout(selectExistingLabel, selectPanel, orCreateNewLabel, button, connectorSetupPanelUI, errorMessageLabel)
     var inSelectMode = true
     if (selectPanel.getRows != 0) {
       selectPanel.select(selectPanel.getItemIds.iterator().next())
