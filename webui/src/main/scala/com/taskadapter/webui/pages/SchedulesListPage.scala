@@ -170,8 +170,11 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
     //      .setExpandRatio(2)
 
     grid.addSelectionListener { _ =>
-      val result = grid.getContainerDataSource.getItem(grid.getSelectedRow).asInstanceOf[BeanItem[ScheduleListItem]].getBean
-      showSchedule(result.id)
+      val row = grid.getSelectedRow
+      if (row != null) {
+        val result = grid.getContainerDataSource.getItem(row).asInstanceOf[BeanItem[ScheduleListItem]].getBean
+        showSchedule(result.id)
+      }
     }
 
     val label = new Label(Page.message("schedules.intro"))
