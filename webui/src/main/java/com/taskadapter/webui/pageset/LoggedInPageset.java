@@ -322,7 +322,8 @@ public class LoggedInPageset {
                         dropIn(config.reverse(), file);
                     }
                 },
-                context.configOps
+                context.configOps,
+                createSandbox()
         ).ui();
 
     }

@@ -1,8 +1,11 @@
 package com.taskadapter.webui.pages
 
-import com.taskadapter.web.uiapi.UISyncConfig
-import com.taskadapter.webui.{ConfigActionsFragment, ConfigOperations, Page, Tracker}
+import com.taskadapter.web.service.Sandbox
+import com.taskadapter.web.uiapi.{UIConnectorConfig, UISyncConfig}
+import com.taskadapter.webui._
+import com.vaadin.ui.Button.ClickListener
 import com.vaadin.ui._
+import com.vaadin.ui.themes.ValoTheme
 
 /**
   * Config Summary panel with left/right arrows, connector names, action buttons (Delete/Clone/etc).
@@ -10,7 +13,9 @@ import com.vaadin.ui._
 object ConfigSummaryPanel {
 
   def render(config: UISyncConfig, mode: DisplayMode, callback: ConfigsPage.Callback,
-             configOps: ConfigOperations, onExit: Runnable,
+             configOps: ConfigOperations,
+             sandbox: Sandbox,
+             onExit: Runnable,
              showAllPreviousExportResults: Runnable,
              showLastExportResult: Runnable,
              tracker: Tracker): VerticalLayout = {
@@ -31,17 +36,55 @@ object ConfigSummaryPanel {
 
     val horizontalLayout = new HorizontalLayout
     horizontalLayout.setSpacing(true)
-    horizontalLayout.addComponent(UniConfigExport.render(config, new UniConfigExport.Callback() {
-      override def dropInExport(file: Html5File) = callback.forwardDropIn(config, file)
 
-      override def doExport() = callback.forwardSync(config)
-    }))
-    horizontalLayout.addComponent(UniConfigExport.render(config.reverse, new UniConfigExport.Callback() {
-      override def dropInExport(file: Html5File) = callback.backwardDropIn(config, file)
+    val leftSystemButton = createConfigureConnectorButton(layout, config.connector1, sandbox)
+    horizontalLayout.addComponent(leftSystemButton)
 
-      override def doExport() = callback.backwardSync(config)
-    }))
+    val leftRightButtonsPanel = new VerticalLayout()
+    leftRightButtonsPanel.setSpacing(true)
+
+    leftRightButtonsPanel.addComponent(createArrow("arrow_right.png", _ => callback.forwardSync(config)))
+    leftRightButtonsPanel.addComponent(createArrow("arrow_left.png", _ => callback.backwardSync(config)))
+
+    horizontalLayout.addComponent(leftRightButtonsPanel)
+
+    val rightSystemButton = createConfigureConnectorButton(layout, config.connector2, sandbox)
+    horizontalLayout.addComponent(rightSystemButton)
+
     layout.addComponent(horizontalLayout)
     layout
   }
+
+  def createArrow(imageFileName: String, listener: ClickListener): Button = {
+    val leftArrow = ImageLoader.getImage(imageFileName)
+    val button = new Button(leftArrow)
+    button.setHeight("40px")
+    button.setWidth("100px")
+    button.setDescription(Page.message("export.exportButtonTooltip"))
+    button.addStyleName(ValoTheme.BUTTON_LARGE)
+    button.addClickListener(listener)
+    button
+  }
+
+  private def createConfigureConnectorButton(layout: Layout, connectorConfig: UIConnectorConfig, sandbox: Sandbox): Component = {
+    val iconResource = ImageLoader.getImage("edit.png")
+    val button = new Button(connectorConfig.getLabel)
+    button.addStyleName(ValoTheme.BUTTON_LARGE)
+    button.setIcon(iconResource)
+    button.setWidth("270px")
+    button.setHeight("100%")
+    button.addClickListener(_ => showEditConnectorDialog(layout, connectorConfig, sandbox))
+    button
+  }
+
+  private def showEditConnectorDialog(layout: Layout, connectorConfig: UIConnectorConfig, sandbox: Sandbox): Unit = {
+    val newWindow = new Window()
+
+    newWindow.setContent(connectorConfig.createMiniPanel(sandbox))
+    newWindow.center()
+    newWindow.setModal(true)
+    layout.getUI.addWindow(newWindow)
+    newWindow.focus()
+  }
+
 }

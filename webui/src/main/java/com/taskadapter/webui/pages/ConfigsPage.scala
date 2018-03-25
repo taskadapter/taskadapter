@@ -2,6 +2,7 @@ package com.taskadapter.webui.pages
 
 import java.util.Comparator
 
+import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{ConfigId, UISyncConfig}
 import com.taskadapter.webui.{ConfigOperations, Page, Tracker}
 import com.vaadin.ui._
@@ -82,7 +83,8 @@ object ConfigsPage {
 
 }
 
-class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Callback, configOperations: ConfigOperations) {
+class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Callback, configOperations: ConfigOperations,
+                  sandbox: Sandbox) {
   val displayMode = if (showAll) DisplayMode.ALL_CONFIGS
   else DisplayMode.OWNED_CONFIGS
 
@@ -148,6 +150,7 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
     val maybeConfig = configOperations.getConfig(configId)
     if (maybeConfig.isDefined) {
       val component = ConfigSummaryPanel.render(maybeConfig.get, displayMode, callback, configOperations,
+        sandbox,
         () => refreshConfigs(),
         () => callback.showAllPreviousResults(configId),
         () => callback.showLastExportResult(configId), tracker)
