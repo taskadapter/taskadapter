@@ -121,6 +121,10 @@
     padding-left: 3px;
     font-weight: bold;
 }
+.v-label-wrap pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
 
 .progress-label {
     color: #51bd51;

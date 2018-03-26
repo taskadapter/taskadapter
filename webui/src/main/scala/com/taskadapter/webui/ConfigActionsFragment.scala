@@ -3,37 +3,39 @@ package com.taskadapter.webui
 import com.taskadapter.config.StorageException
 import com.taskadapter.web.PopupDialog
 import com.taskadapter.web.uiapi.ConfigId
-import com.vaadin.ui.{HorizontalLayout, MenuBar, Notification}
+import com.vaadin.ui.{Button, HorizontalLayout, Notification}
 import org.slf4j.LoggerFactory
 
 /**
-  * Contains buttons with varios config actions. Shown on Configs List and Edit Config pages.
+  * Contains buttons with various config actions. Shown on Config Summary page.
   *
   * @param configId  identity of the config to perform operations on.
   * @param configOps config operations.
   * @param onExit    exit request handler.
   */
 class ConfigActionsFragment(configId: ConfigId, configOps: ConfigOperations, onExit: Runnable,
-                            showPastExportResults:Runnable,
-                            showLastResult:Runnable,
-                            tracker: Tracker) {
+                            showPastExportResults: Runnable,
+                            showLastResult: Runnable,
+                            showConfigEditor: Runnable,
+                            tracker: Tracker,
+                            webUserSession: WebUserSession) {
 
   private val log = LoggerFactory.getLogger(classOf[ConfigActionsFragment])
 
-  val configOperationsBar = new MenuBar()
-  var dropdown = configOperationsBar.addItem("", null)
-  dropdown.addItem(Page.message("configsPage.actionClone"), (selectedItem: MenuBar#MenuItem) => showConfirmClonePage())
-  dropdown.addItem(Page.message("configsPage.actionDelete"), (selectedItem: MenuBar#MenuItem) => showDeleteConfigDialog())
-  dropdown.addItem(Page.message("configsPage.actionViewExportResults"), (selectedItem: MenuBar#MenuItem) => showPastExportResults.run())
-  dropdown.addItem(Page.message("configsPage.actionViewLastResult"), (selectedItem: MenuBar#MenuItem) => showLastResult.run())
-
   val layout = new HorizontalLayout
-  layout.addComponent(configOperationsBar)
+  layout.setSpacing(true)
+
+  layout.addComponent(new Button(Page.message("configSummary.configure"), _ => showConfigEditor.run()))
+  layout.addComponent(new Button(Page.message("configsPage.actionViewExportResults"), _ => showPastExportResults.run()))
+  layout.addComponent(new Button(Page.message("configsPage.actionViewLastResult"), _ => showLastResult.run()))
+  layout.addComponent(new Button(Page.message("configsPage.actionClone"), _ => showConfirmClonePage()))
+  layout.addComponent(new Button(Page.message("configsPage.actionDelete"), _ => showDeleteConfigDialog()))
 
   private def showDeleteConfigDialog(): Unit = {
     val messageDialog = PopupDialog.confirm(Page.message("configsPage.actionDelete.confirmText"),
       () => {
         configOps.deleteConfig(configId)
+        webUserSession.clearCurrentConfig()
         tracker.trackEvent("config", "deleted", "")
         onExit.run()
       }

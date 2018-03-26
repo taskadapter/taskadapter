@@ -63,7 +63,11 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     }
 
     override def getResult: FileSetup = {
-      val label = getShortLabel(inputFilePath.getValue)
+      val label = if (setup.label.nonEmpty) {
+        setup.label
+      } else {
+        getShortLabel(inputFilePath.getValue)
+      }
       FileSetup(MSPConnector.ID, label,
         inputFilePath.getValue, outputFilePath.getValue)
     }
@@ -136,7 +140,7 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
   @throws[BadConfigException]
   override def updateForSave(config: MSPConfig, sandbox: Sandbox, setup: FileSetup): FileSetup = {
     if (setup.targetFile.isEmpty || setup.targetFile == ".xml") {
-      val newPath = FileNameGenerator.createSafeAvailableFile(sandbox.getUserContentDirectory, "MSP_export_%d.xml").getAbsolutePath
+      val newPath = FileNameGenerator.createSafeAvailableFile(sandbox.getUserContentDirectory, "MSP_%d.xml").getAbsolutePath
       if (newPath == null) throw new OutputFileNameNotSetException
       setup.copy(label = getShortLabel(newPath),
         sourceFile = newPath, targetFile = newPath)

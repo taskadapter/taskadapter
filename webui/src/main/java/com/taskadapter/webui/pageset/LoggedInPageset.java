@@ -2,13 +2,10 @@ package com.taskadapter.webui.pageset;
 
 import com.google.common.io.Files;
 import com.taskadapter.auth.CredentialsManager;
-import com.taskadapter.connector.definition.ConnectorSetup;
-import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.uiapi.ConfigId;
 import com.taskadapter.web.uiapi.SetupId;
-import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigureSystemPage;
 import com.taskadapter.webui.Header;
@@ -19,7 +16,6 @@ import com.taskadapter.webui.TAPageLayout;
 import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.UserContext;
 import com.taskadapter.webui.WebUserSession;
-import com.taskadapter.webui.config.EditConfigPage;
 import com.taskadapter.webui.config.EditSetupPage;
 import com.taskadapter.webui.config.NewSetupPage;
 import com.taskadapter.webui.config.SetupsListPage;
@@ -43,8 +39,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.VerticalLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Function0;
@@ -111,8 +105,8 @@ public class LoggedInPageset {
      * Area for the current page.
      */
     private final HorizontalLayout currentComponentArea = new HorizontalLayout();
-    private final TabSheet tabs;
-    private final VerticalLayout configTabContainer;
+
+    private final ConfigsPage configsPage;
 
     /**
      * Creates a new pageset.
@@ -136,34 +130,9 @@ public class LoggedInPageset {
 
         final Component header = Header.render(this::showHome, createMenu(), createSelfManagementMenu(), license.isLicensed());
 
-        tabs = new TabSheet();
-        tabs.addStyleName("framed equal-width-tabs");
-
-        configTabContainer = new VerticalLayout();
-        configTabContainer.setSpacing(true);
-        configTabContainer.setWidth(Sizes.tabWidth());
-        tabs.addTab(configTabContainer, Page.message("layout.tabs.configs"));
-
-        SchedulesListPage schedulesListPage = new SchedulesListPage(tracker, services.schedulesStorage,
-                context.configOps, services.settingsManager
-        );
-        tabs.addTab(schedulesListPage.ui(), Page.message("layout.tabs.schedules"));
-
-        ExportResultsListPage exportResultsListPage = new ExportResultsListPage(this::showHome, showExportResultsScala());
-        VerticalLayout resultsUi = exportResultsListPage.ui();
-        tabs.addTab(resultsUi, Page.message("layout.tabs.results"));
-
-        tabs.addSelectedTabChangeListener(event -> {
-            if (event.getTabSheet().getSelectedTab() == resultsUi) {
-                Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults();
-                exportResultsListPage.showResults(results);
-            } else if (event.getTabSheet().getSelectedTab() == schedulesListPage.ui()) {
-                schedulesListPage.showSchedules(
-                        services.schedulesStorage.getSchedules());
-            }
-        });
-
+        currentComponentArea.setWidth(Sizes.mainWidth());
         this.ui = TAPageLayout.layoutPage(header, currentComponentArea);
+        this.configsPage = createConfigsPage();
         showConfigsList();
     }
 
@@ -188,13 +157,38 @@ public class LoggedInPageset {
     private Component createMenu() {
         final HorizontalLayout menu = new HorizontalLayout();
         menu.setSpacing(true);
-        menu.addComponent(HeaderMenuBuilder.createButton(
-                message("headerMenu.configure"),
+        menu.addComponent(HeaderMenuBuilder.createButton(message("headerMenu.configs"),
+                this::showConfigsList));
+
+        menu.addComponent(HeaderMenuBuilder.createButton(message("headerMenu.schedules"),
+                this::showSchedules));
+
+        menu.addComponent(HeaderMenuBuilder.createButton(message("headerMenu.results"),
+                this::showAllResults));
+
+        menu.addComponent(HeaderMenuBuilder.createButton(message("headerMenu.configure"),
                 this::showSystemConfiguration));
         menu.addComponent(HeaderMenuBuilder.createButton(message("headerMenu.support"),
                 this::showSupport));
 
         return menu;
+    }
+
+    private void showAllResults() {
+        ExportResultsListPage page = new ExportResultsListPage(this::showHome, showExportResultsScala());
+        Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults();
+        page.showResults(results);
+        tracker.trackPage("all_results");
+        applyUI(page.ui());
+    }
+
+    private void showSchedules() {
+        SchedulesListPage schedulesListPage = new SchedulesListPage(tracker, services.schedulesStorage,
+                context.configOps, services.settingsManager
+        );
+        schedulesListPage.showSchedules(services.schedulesStorage.getSchedules());
+        tracker.trackPage("schedules");
+        applyUI(schedulesListPage.ui());
     }
 
     /**
@@ -215,9 +209,9 @@ public class LoggedInPageset {
     }
 
     private void showConfigsList() {
+        configsPage.refreshConfigs();
         tracker.trackPage("configs_list");
-        clearCurrentConfigInSession();
-        showInConfigTab(getConfigsPage());
+        applyUI(configsPage.ui());
     }
 
     private void showLastResults(ConfigId configId) {
@@ -254,21 +248,8 @@ public class LoggedInPageset {
         };
     }
 
-    /**
-     * Shows a home page.
-     */
     private void showHome() {
-        if (webUserSession.hasCurrentConfig()) {
-            ConfigId configId = webUserSession.getCurrentConfigId();
-            Option<UISyncConfig> maybeCconfig = context.configOps.getConfig(configId);
-            showConfigEditor(maybeCconfig.get(), null);
-        } else {
-            showConfigsList();
-        }
-    }
-
-    private void showTabs() {
-        applyUI(tabs);
+        showConfigsList();
     }
 
     private boolean needToShowAllConfigs() {
@@ -277,7 +258,7 @@ public class LoggedInPageset {
                 && context.authorizedOps.canManagerPeerConfigs();
     }
 
-    private Component getConfigsPage() {
+    private ConfigsPage createConfigsPage() {
         return new ConfigsPage(tracker, needToShowAllConfigs(),
                 new ConfigsPage.Callback() {
                     @Override
@@ -296,18 +277,8 @@ public class LoggedInPageset {
                     }
 
                     @Override
-                    public void forwardSync(UISyncConfig config) {
-                        sync(config);
-                    }
-
-                    @Override
-                    public void backwardSync(UISyncConfig config) {
-                        sync(config.reverse());
-                    }
-
-                    @Override
-                    public void edit(UISyncConfig config) {
-                        showConfigEditor(config, null);
+                    public void startExport(UISyncConfig config) {
+                        exportCommon(config);
                     }
 
                     @Override
@@ -322,8 +293,10 @@ public class LoggedInPageset {
                         dropIn(config.reverse(), file);
                     }
                 },
-                context.configOps
-        ).ui();
+                context.configOps,
+                webUserSession,
+                createSandbox()
+        );
 
     }
 
@@ -335,7 +308,8 @@ public class LoggedInPageset {
                     UISyncConfig config = maybeCconfig.get();
                     tracker.trackEvent("config", "created",
                             config.connector1().getConnectorTypeId() + " - " + config.connector2().getConnectorTypeId());
-                    showConfigEditor(config, null);
+                    webUserSession.setCurrentConfigId(configId);
+                    showConfigsList();
                 }).panel());
     }
 
@@ -381,55 +355,6 @@ public class LoggedInPageset {
             ).ui());
             return BoxedUnit.UNIT;
         };
-    }
-
-    /**
-     * Shows a config editor page.
-     */
-    private void showConfigEditor(UISyncConfig config, String error) {
-        tracker.trackPage("edit_config");
-        webUserSession.setCurrentConfigId(config.id());
-        showInConfigTab(getConfigEditor(config, error));
-    }
-
-    private Component getConfigEditor(UISyncConfig config, String error) {
-        ConfigId configId = config.id();
-        EditConfigPage editor = new EditConfigPage(Page.MESSAGES(), tracker, context.configOps,
-                error,
-                createSandbox(), config,
-                () -> {
-                    Option<UISyncConfig> loadedConfig = context.configOps.getConfig(configId);
-                    sync(loadedConfig.get().reverse());
-                },
-                () -> {
-                    Option<UISyncConfig> loadedConfig = context.configOps.getConfig(configId);
-                    sync(loadedConfig.get());
-                }, this::showConfigsList,
-                () -> showExportResults(configId),
-                () -> showLastResults(configId));
-
-        return editor.getUI();
-    }
-
-    private void clearCurrentConfigInSession() {
-        webUserSession.clearCurrentConfig();
-    }
-
-    /**
-     * Performs a synchronization operation from first connector to second.
-     *
-     * @param config base config. May be saved!
-     */
-    private void sync(UISyncConfig config) {
-        if (!prepareForConversion(config))
-            return;
-//        final NewConnector destinationConnector = config.getConnector2().createConnectorInstance();
-        // TODO TA3 file based connector - MSP
-//        if (destinationConnector instanceof FileBasedConnector) {
-//            processFile(config, (FileBasedConnector) destinationConnector);
-//        } else {
-        exportCommon(config);
-//        }
     }
 
     private void dropIn(final UISyncConfig config, final Html5File file) {
@@ -573,46 +498,6 @@ public class LoggedInPageset {
 */
 
     /**
-     * Prepares config for conversion.
-     *
-     * @param config config to prepare.
-     * @return true iff conversion could be performed, false otherwise.
-     */
-    private boolean prepareForConversion(UISyncConfig config) {
-        final UIConnectorConfig from = config.getConnector1();
-        final UIConnectorConfig to = config.getConnector2();
-
-        try {
-            from.validateForLoad();
-        } catch (BadConfigException e) {
-            showConfigEditor(config.normalized(), from.decodeException(e));
-            return false;
-        }
-
-        ConnectorSetup updated;
-        try {
-            updated = to.updateForSave(new Sandbox(services.settingsManager.isTAWorkingOnLocalMachine(),
-                    context.configOps.syncSandbox()));
-        } catch (BadConfigException e) {
-            showConfigEditor(config.normalized(), to.decodeException(e));
-            return false;
-        }
-
-        // If setup was changed (e.g. a new file name was generated my MSP) - save it
-        if (!updated.equals(to.getConnectorSetup())) {
-            try {
-                context.configOps.saveSetup(updated, new SetupId(updated.id().get()));
-                to.setConnectorSetup(updated);
-            } catch (Exception e1) {
-                final String message = Page.message("export.troublesSavingConfig", e1.getMessage());
-                log.error(message, e1);
-                Notification.show(message, Notification.Type.ERROR_MESSAGE);
-            }
-        }
-        return true;
-    }
-
-    /**
      * Applies a new content.
      *
      * @param ui new content.
@@ -621,18 +506,7 @@ public class LoggedInPageset {
         currentComponentArea.removeAllComponents();
         ui.setSizeUndefined();
         currentComponentArea.addComponent(ui);
-        currentComponentArea.setComponentAlignment(ui, Alignment.TOP_LEFT);
-    }
-
-    private void showInConfigTab(Component ui) {
-        ensureTabsElementIsShown();
-        configTabContainer.removeAllComponents();
-        configTabContainer.addComponent(ui);
-        configTabContainer.setComponentAlignment(ui, Alignment.TOP_LEFT);
-    }
-
-    private void ensureTabsElementIsShown() {
-        showTabs();
+        currentComponentArea.setComponentAlignment(ui, Alignment.TOP_CENTER);
     }
 
     /**
