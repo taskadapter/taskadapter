@@ -124,6 +124,7 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
     } else {
       clearConfigSummaryArea()
     }
+    listPanel.setVisible(loadedConfigs.nonEmpty)
   }
 
   private def setDisplayedConfigs(dispConfigs: Seq[UISyncConfig]): Unit = {
@@ -150,7 +151,7 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
     }
   }
 
-  private def configureListSelect() = {
+  private def configureListSelect(): ListSelect = {
     val listSelect = new ListSelect()
     listSelect.setNullSelectionAllowed(false)
     listSelect.setWidth("100%")
