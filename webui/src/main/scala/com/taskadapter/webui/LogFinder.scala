@@ -12,7 +12,7 @@ object LogFinder {
       val e = allAppenders.nextElement
       if (e.isInstanceOf[RollingFileAppender]) {
         // found it
-        return new File(((e.asInstanceOf[RollingFileAppender]).getFile)).getAbsolutePath
+        return new File((e.asInstanceOf[RollingFileAppender]).getFile).getAbsolutePath
       }
     }
     ""

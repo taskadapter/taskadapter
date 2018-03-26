@@ -8,6 +8,7 @@ import org.scalatest.{FunSpec, Matchers}
 @RunWith(classOf[JUnitRunner])
 class LogFinderTest extends FunSpec with Matchers with ConfigsTempFolder {
   it("finds the log file") {
-    LogFinder.getLogFileLocation() should include("taskadapter.log")
+    val location = LogFinder.getLogFileLocation()
+    location should include("taskadapter.log")
   }
 }
