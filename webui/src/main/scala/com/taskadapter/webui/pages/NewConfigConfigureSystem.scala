@@ -68,16 +68,18 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
     private val connectorSetupPanelUI = connectorSetupPanel.getUI
     val selectExistingLabel = new Label(message("createConfigPage.selectExistingOrNew"))
     val orCreateNewLabel = new Label(message("createConfigPage.orCreateNew"))
-    val layout = new VerticalLayout(selectExistingLabel, selectPanel, orCreateNewLabel, button, connectorSetupPanelUI, errorMessageLabel)
     var inSelectMode = true
     if (selectPanel.getRows != 0) {
       selectPanel.select(selectPanel.getItemIds.iterator().next())
     }
     if (selectPanel.getRows == 0) {
       inSelectMode = false
+      button.setEnabled(false)
     }
 
     def inEditMode: Boolean = !inSelectMode
+
+    val layout = new VerticalLayout(selectExistingLabel, selectPanel, orCreateNewLabel, button, connectorSetupPanelUI, errorMessageLabel)
 
     def getUI(): Component = layout
 
