@@ -2,7 +2,7 @@ package com.taskadapter.webui
 
 import java.io.File
 
-import org.apache.log4j.RollingFileAppender
+import org.apache.log4j.FileAppender
 
 object LogFinder {
   def getLogFileLocation(): String = {
@@ -10,9 +10,9 @@ object LogFinder {
     val allAppenders = logger.getAllAppenders
     while (allAppenders.hasMoreElements) {
       val e = allAppenders.nextElement
-      if (e.isInstanceOf[RollingFileAppender]) {
+      if (e.isInstanceOf[FileAppender]) {
         // found it
-        return new File((e.asInstanceOf[RollingFileAppender]).getFile).getAbsolutePath
+        return new File((e.asInstanceOf[FileAppender]).getFile).getAbsolutePath
       }
     }
     ""
