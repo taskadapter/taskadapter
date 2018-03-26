@@ -1,6 +1,7 @@
 package com.taskadapter.webui.pages;
 
 import com.taskadapter.webui.LastVersionLoader;
+import com.taskadapter.webui.LogFinder;
 import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.VersionComparator;
 import com.taskadapter.webui.license.LicenseFacade;
@@ -38,6 +39,7 @@ public final class SupportPage {
         layout.setSpacing(true);
         addEmailPanel();
         addVersionInfo();
+        addLogSection();
         createLicenseSection();
     }
 
@@ -78,6 +80,17 @@ public final class SupportPage {
 
     private void createLicenseSection() {
         layout.addComponent(LicensePanel.renderLicensePanel(licenseManager, tracker));
+    }
+
+    private void addLogSection() {
+        Panel logsPanel = new Panel(message("supportPage.logsPanel"));
+        VerticalLayout layout = new VerticalLayout(
+                new Label(message("supportPage.logLocation")),
+                new Label(LogFinder.getLogFileLocation())
+        );
+        layout.setMargin(true);
+        logsPanel.setContent(layout);
+        this.layout.addComponent(logsPanel);
     }
 
     private void addDownloadLink() {
