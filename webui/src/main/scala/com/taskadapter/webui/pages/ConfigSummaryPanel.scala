@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory
 class ConfigSummaryPanel(config: UISyncConfig, mode: DisplayMode, callback: ConfigsPage.Callback,
                          configOps: ConfigOperations,
                          sandbox: Sandbox,
-                         onExit: Runnable,
+                         onConfigChanges: Runnable,
                          showAllPreviousExportResults: Runnable,
                          showLastExportResult: Runnable,
                          tracker: Tracker,
@@ -31,7 +31,7 @@ class ConfigSummaryPanel(config: UISyncConfig, mode: DisplayMode, callback: Conf
 
   val configId = config.id
 
-  val buttonsLayout = new ConfigActionsFragment(config.id, configOps, onExit,
+  val buttonsLayout = new ConfigActionsFragment(config.id, configOps, onConfigChanges,
     showAllPreviousExportResults, showLastExportResult,
     () => showConfigEditor(""),
     tracker, webUserSession).layout
@@ -110,6 +110,7 @@ class ConfigSummaryPanel(config: UISyncConfig, mode: DisplayMode, callback: Conf
       val maybeConfig = configOps.getConfig(configId)
       if (maybeConfig.isDefined) {
         recreateContents(horizontalLayout, maybeConfig.get)
+        onConfigChanges.run()
       }
     })
     window.setContent(editor)

@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory
   *
   * @param configId  identity of the config to perform operations on.
   * @param configOps config operations.
-  * @param onExit    exit request handler.
+  * @param onConfigChanges    exit request handler.
   */
-class ConfigActionsFragment(configId: ConfigId, configOps: ConfigOperations, onExit: Runnable,
+class ConfigActionsFragment(configId: ConfigId, configOps: ConfigOperations, onConfigChanges: Runnable,
                             showPastExportResults: Runnable,
                             showLastResult: Runnable,
                             showConfigEditor: Runnable,
@@ -37,7 +37,7 @@ class ConfigActionsFragment(configId: ConfigId, configOps: ConfigOperations, onE
         configOps.deleteConfig(configId)
         webUserSession.clearCurrentConfig()
         tracker.trackEvent("config", "deleted", "")
-        onExit.run()
+        onConfigChanges.run()
       }
     )
     layout.getUI.addWindow(messageDialog)
@@ -48,7 +48,7 @@ class ConfigActionsFragment(configId: ConfigId, configOps: ConfigOperations, onE
       () => {
         try {
           configOps.cloneConfig(configId)
-          onExit.run()
+          onConfigChanges.run()
         } catch {
           case e: StorageException =>
             val message = "There were some troubles cloning the config:<BR>" + e.getMessage
