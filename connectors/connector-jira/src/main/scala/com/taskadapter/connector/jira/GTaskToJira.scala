@@ -48,10 +48,10 @@ class GTaskToJira(config: JiraConfig,
     }
     val affectedVersion = GTaskToJira.getVersion(versions, config.getAffectedVersion)
     val fixForVersion = GTaskToJira.getVersion(versions, config.getFixForVersion)
-    val component = GTaskToJira.getComponent(components, config.getComponent)
+//    val component = GTaskToJira.getComponent(components, config.getComponent)
     if (affectedVersion != null) issueInputBuilder.setAffectedVersions(ImmutableList.of(affectedVersion))
     if (fixForVersion != null) issueInputBuilder.setFixVersions(ImmutableList.of(fixForVersion))
-    if (component != null) issueInputBuilder.setComponents(ImmutableList.of(component))
+//    if (component != null) issueInputBuilder.setComponents(ImmutableList.of(component))
     val issueInput = issueInputBuilder.build
 
     val status = task.getValue(JiraField.status).asInstanceOf[String]
