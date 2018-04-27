@@ -90,9 +90,11 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
       val priorities = RedmineConnector.loadPriorities(fieldRows.asJava, mgr)
       val statusList = mgr.getIssueManager.getStatuses
       val versions = mgr.getProjectManager.getVersions(rmProject.getId)
+      val categories = mgr.getIssueManager.getCategories(rmProject.getId)
       val customFieldDefinitions = mgr.getCustomFieldManager.getCustomFieldDefinitions
       val userCache = loadUsersIfAllowed(mgr)
-      val converter = new GTaskToRedmine(config, priorities, rmProject, userCache, customFieldDefinitions, statusList, versions)
+      val converter = new GTaskToRedmine(config, priorities, rmProject, userCache, customFieldDefinitions, statusList,
+        versions, categories)
       val saver = new RedmineTaskSaver(mgr.getIssueManager, config)
       val tsrb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, fieldRows,
         setup.host)

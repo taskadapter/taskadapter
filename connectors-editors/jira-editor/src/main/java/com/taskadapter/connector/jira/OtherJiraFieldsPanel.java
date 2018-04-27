@@ -39,24 +39,6 @@ class OtherJiraFieldsPanel extends Panel {
     }
 
     private void addLookupButtonsAndTextEdit(GridLayout grid) {
-        final TextField jiraComponent = EditorUtil.addLabeledText(
-                grid, "Project Component:",
-                "Component in the JIRA project");
-        final MethodProperty<String> componentProperty = new MethodProperty<>(config, "component");
-        jiraComponent.setPropertyDataSource(componentProperty);
-        Button showComponentsButton = EditorUtil.createLookupButton(
-                "...",
-                "Show list of available components on the given server.",
-                "Select component",
-                "List of available components on the server",
-                () -> new JiraConnector(config, webServerInfo).getComponents(),
-                componentProperty,
-                true, exceptionFormatter
-        );
-        grid.addComponent(showComponentsButton);
-        grid.setComponentAlignment(showComponentsButton, Alignment.MIDDLE_CENTER);
-
-
         final TextField affectedVersion = EditorUtil
                 .addLabeledText(grid,
                         "Set 'Affected version' to:",

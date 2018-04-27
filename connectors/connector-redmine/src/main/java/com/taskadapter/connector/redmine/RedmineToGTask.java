@@ -68,6 +68,9 @@ public class RedmineToGTask {
         if (tracker != null) {
             task.setValue(RedmineField.taskType().name(), tracker.getName());
         }
+        if (issue.getCategory() != null) {
+            task.setValue(RedmineField.category().name(), issue.getCategory().getName());
+        }
         task.setValue(RedmineField.taskStatus().name(), issue.getStatusName());
         task.setValue(RedmineField.summary().name(), issue.getSubject());
         task.setValue(RedmineField.estimatedTime().name(), issue.getEstimatedHours());

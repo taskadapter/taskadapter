@@ -11,6 +11,11 @@ sealed trait StandardField
 
 case object Assignee extends StandardField
 
+/**
+  * Save this as Seq[String]
+  */
+case object Components extends StandardField
+
 case object Reporter extends StandardField
 
 case object ClosedOn extends StandardField

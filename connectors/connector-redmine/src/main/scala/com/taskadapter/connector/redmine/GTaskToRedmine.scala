@@ -15,7 +15,8 @@ import scala.collection.JavaConverters._
 
 class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer], project: Project,
                      usersCache: RedmineUserCache, customFieldDefinitions: util.List[CustomFieldDefinition],
-                     statusList: util.List[IssueStatus], versions: util.List[Version])
+                     statusList: util.List[IssueStatus], versions: util.List[Version],
+                     categories: util.List[IssueCategory])
   extends ConnectorConverter[GTask, Issue] {
   val logger = LoggerFactory.getLogger(classOf[GTaskToRedmine])
 
@@ -54,6 +55,10 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
       case "KEY" => // processed in [[DefaultValueSetter]] for now
       case "SOURCE_SYSTEM_ID" => // processed in [[DefaultValueSetter]] for now
 
+      case RedmineField.category.name =>
+        val categoryName = ValueTypeResolver.getValueAsString(value)
+        val maybeCategory = getCategoryByName(categoryName)
+        issue.setCategory(maybeCategory.orNull)
       case RedmineField.summary.name => issue.setSubject(value.asInstanceOf[String])
       case RedmineField.startDate.name => issue.setStartDate(value.asInstanceOf[Date])
       case RedmineField.dueDate.name => issue.setDueDate(value.asInstanceOf[Date])
@@ -98,6 +103,11 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
   private def getVersionByName(versionName: String): Version = {
     if (versions == null || versionName == null) return null
     versions.asScala.find(_.getName == versionName).orNull
+  }
+
+  private def getCategoryByName(name: String): Option[IssueCategory] = {
+    if (categories == null || name == null) return None
+    categories.asScala.find(_.getName == name).orElse(None)
   }
 
   private def processAssignee(redmineIssue: Issue, value: Any): Unit = {

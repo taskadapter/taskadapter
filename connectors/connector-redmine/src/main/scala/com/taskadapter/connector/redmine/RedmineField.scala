@@ -11,6 +11,7 @@ object RedmineField {
   // Redmine field names
   val id = Field("Id")
   val summary = Field("Summary")
+  val category = Field("Category")
   val description = Field("Description")
   val taskType = Field("Tracker type")
   val estimatedTime = Field.float("Estimated time")
@@ -30,6 +31,7 @@ object RedmineField {
   val priority = Field.integer("Priority")
 
   def fields = List(author,
+    category,
     summary,
     description,
     taskType,
@@ -50,6 +52,7 @@ object RedmineField {
   // id from one system cannot be directly used as id in another system.
   def suggestedStandardFields = Map(
     author -> Reporter,
+    category -> Components,
     summary -> Summary, description -> Description, taskType -> TaskType,
     estimatedTime -> EstimatedTime,
     doneRatio -> DoneRatio,
