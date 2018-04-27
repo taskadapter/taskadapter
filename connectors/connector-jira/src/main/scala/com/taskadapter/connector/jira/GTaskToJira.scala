@@ -61,12 +61,11 @@ class GTaskToJira(config: JiraConfig,
       case JiraField.summary.name => issueInputBuilder.setSummary(value.asInstanceOf[String])
       case JiraField.component.name =>
         // only first value from the list is used
-        val maybeComponent = GTaskToJira.getComponent(components, ValueTypeResolver.getValueAsString(value))
-        if (maybeComponent.isDefined) {
-          issueInputBuilder.setComponents(maybeComponent.get)
-        } else {
-          // this will erase any existing components in this task
-          issueInputBuilder.setComponents()
+        GTaskToJira.getComponent(components, ValueTypeResolver.getValueAsString(value)) match {
+          case Some(component) => issueInputBuilder.setComponents(component)
+          case None =>
+            // this will erase any existing components in this task
+            issueInputBuilder.setComponents()
         }
       case JiraField.status.name => // processed separately, cannot be set to Issue. JIRA API......
       case JiraField.description.name => issueInputBuilder.setDescription(value.asInstanceOf[String])
