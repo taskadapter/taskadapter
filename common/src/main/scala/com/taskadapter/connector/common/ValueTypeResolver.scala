@@ -23,15 +23,12 @@ object ValueTypeResolver {
   }
 
   def getValueAsString(value: Any): String = {
-    if (value.isInstanceOf[Seq[String]]) {
-      val seq = value.asInstanceOf[Seq[String]]
-      if (seq.isEmpty) {
-        ""
-      } else {
-        seq.head
-      }
-    } else {
-      value.asInstanceOf[String]
+    value match {
+      case null => ""
+      case Seq() => ""
+      case x: String => x
+      case x: Seq[String] => x.head
+      case _ => throw new RuntimeException(s"Cannot parse value $value")
     }
   }
 
