@@ -107,7 +107,7 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
 
   private def getCategoryByName(name: String): Option[IssueCategory] = {
     if (categories == null || name == null) return None
-    categories.asScala.find(_.getName == name).orElse(None)
+    categories.asScala.find(_.getName == name)
   }
 
   private def processAssignee(redmineIssue: Issue, value: Any): Unit = {
