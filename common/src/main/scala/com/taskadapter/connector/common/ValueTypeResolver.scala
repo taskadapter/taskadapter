@@ -22,4 +22,17 @@ object ValueTypeResolver {
     }
   }
 
+  def getValueAsString(value: Any): String = {
+    if (value.isInstanceOf[Seq[String]]) {
+      val seq = value.asInstanceOf[Seq[String]]
+      if (seq.isEmpty) {
+        ""
+      } else {
+        seq.head
+      }
+    } else {
+      value.asInstanceOf[String]
+    }
+  }
+
 }

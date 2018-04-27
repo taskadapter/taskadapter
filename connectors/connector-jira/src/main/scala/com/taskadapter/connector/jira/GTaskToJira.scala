@@ -18,8 +18,8 @@ object GTaskToJira {
     versions.find(_.getName == versionName).orNull
   }
 
-  def getComponent(objects: Iterable[BasicComponent], name: String): BasicComponent = {
-    objects.find(_.getName == name).orNull
+  def getComponent(objects: Iterable[BasicComponent], name: String): Option[BasicComponent] = {
+    objects.find(_.getName == name)
   }
 }
 
@@ -48,10 +48,8 @@ class GTaskToJira(config: JiraConfig,
     }
     val affectedVersion = GTaskToJira.getVersion(versions, config.getAffectedVersion)
     val fixForVersion = GTaskToJira.getVersion(versions, config.getFixForVersion)
-    val component = GTaskToJira.getComponent(components, config.getComponent)
     if (affectedVersion != null) issueInputBuilder.setAffectedVersions(ImmutableList.of(affectedVersion))
     if (fixForVersion != null) issueInputBuilder.setFixVersions(ImmutableList.of(fixForVersion))
-    if (component != null) issueInputBuilder.setComponents(ImmutableList.of(component))
     val issueInput = issueInputBuilder.build
 
     val status = task.getValue(JiraField.status).asInstanceOf[String]
@@ -61,6 +59,15 @@ class GTaskToJira(config: JiraConfig,
   private def processField(issueInputBuilder: IssueInputBuilder, fieldName: String, value: Any) : Unit = {
     fieldName match {
       case JiraField.summary.name => issueInputBuilder.setSummary(value.asInstanceOf[String])
+      case JiraField.component.name =>
+        // only first value from the list is used
+        val maybeComponent = GTaskToJira.getComponent(components, ValueTypeResolver.getValueAsString(value))
+        if (maybeComponent.isDefined) {
+          issueInputBuilder.setComponents(maybeComponent.get)
+        } else {
+          // this will erase any existing components in this task
+          issueInputBuilder.setComponents()
+        }
       case JiraField.status.name => // processed separately, cannot be set to Issue. JIRA API......
       case JiraField.description.name => issueInputBuilder.setDescription(value.asInstanceOf[String])
       case JiraField.dueDate.name => if (value != null) {

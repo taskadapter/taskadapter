@@ -19,6 +19,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.collection.JavaConverters;
+import scala.collection.JavaConverters$;
 import scala.collection.immutable.Seq;
 
 import java.util.ArrayList;
@@ -54,6 +55,11 @@ public class JiraToGTask {
         // must set source system id, otherwise "update task" is impossible later
         task.setSourceSystemId(new TaskId(longId, issue.getKey()));
 
+        // TODO !!! idea - check type in GTask when setting standard fields, otherwise it will explode sooner or later
+        List<String> target = new ArrayList<>();
+        issue.getComponents().forEach(c -> target.add(c.getName()));
+
+        task.setValue(JiraField.component(), JavaConverters$.MODULE$.asScalaBuffer(target));
         if (issue.getAssignee() != null) {
             GUser user = new GUser(null, issue.getAssignee().getName(), issue.getAssignee().getDisplayName());
             task.setValue(JiraField.assignee(), user);

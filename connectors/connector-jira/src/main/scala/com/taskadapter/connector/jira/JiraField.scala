@@ -12,6 +12,9 @@ import scala.collection.JavaConverters._
   */
 object JiraField {
 
+  /** JIRA supports several components per task, but we support only one value for now */
+  val component = Field("Component")
+
   val summary = Field("Summary")
   val description = Field("Description")
   val taskType = Field("Task Type")
@@ -28,7 +31,7 @@ object JiraField {
   val priority = Field.integer("Priority")
   val id = Field("Id")
 
-  val fields = List(id, summary, status, description, taskType, estimatedTime, assignee,
+  val fields = List(id, component, summary, status, description, taskType, estimatedTime, assignee,
     dateCreated,
     dueDate, priority)
 
@@ -37,6 +40,7 @@ object JiraField {
   // id field is not in the suggested list because typically
   // id from one system cannot be directly used as id in another system.
   private def suggestedStandardFields = Map(summary -> Summary,
+    component -> Components,
     description -> Description, taskType -> TaskType,
     // estimated time is not a part of standard JIRA 7 anymore
 //    estimatedTime -> EstimatedTime,
