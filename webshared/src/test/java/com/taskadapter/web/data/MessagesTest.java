@@ -22,16 +22,6 @@ public class MessagesTest {
     }
 
     @Test
-    public void taskTypeMessageNotEmpty() {
-        assertFalse(MESSAGES.get(GTaskDescriptor.FIELD.TASK_TYPE.toString()).isEmpty());
-    }
-
-    @Test
-    public void taskStatusMessageNotEmpty() {
-        assertFalse(MESSAGES.get(GTaskDescriptor.FIELD.TASK_STATUS.toString()).isEmpty());
-    }
-
-    @Test
     public void remoteIdMessageNotEmpty() {
         assertFalse(MESSAGES.get(GTaskDescriptor.FIELD.SOURCE_SYSTEM_ID.toString()).isEmpty());
     }

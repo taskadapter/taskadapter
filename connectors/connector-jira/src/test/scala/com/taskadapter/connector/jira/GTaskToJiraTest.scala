@@ -55,7 +55,7 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
   }
 
   it("description is converted"){
-    checkDescription(createConverterWithSelectedField(GTaskDescriptor.FIELD.DESCRIPTION), "description here")
+    checkDescription(getConverter(), "description here")
   }
 
   private def checkDescription(converter: GTaskToJira, expectedValue: String): Unit = {
@@ -71,7 +71,7 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
   }
 
   it("dueDateConvertedWhenSelected"){
-    checkDueDate(createConverterWithSelectedField(GTaskDescriptor.FIELD.DUE_DATE), "2014-04-28")
+    checkDueDate(getConverter(), "2014-04-28")
   }
 
   private def checkDueDate(converter: GTaskToJira, expected: String): Unit = {
@@ -88,7 +88,7 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
   }
 
   it("assigneeConvertedIfSelected"){
-    checkAssignee(createConverterWithSelectedField(GTaskDescriptor.FIELD.ASSIGNEE), "mylogin")
+    checkAssignee(getConverter(), "mylogin")
   }
 
   private def checkAssignee(converter: GTaskToJira, expected: String): Unit = {
@@ -100,7 +100,7 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
   }
 
   it("estimated time is converted"){
-    checkEstimatedTime(createConverterWithSelectedField(GTaskDescriptor.FIELD.ESTIMATED_TIME), "180m")
+    checkEstimatedTime(getConverter(), "180m")
   }
 
   private def checkEstimatedTime(converter: GTaskToJira, expectedTime: String): Unit = {
@@ -144,13 +144,6 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
 
   val customFieldsResolver = new CustomFieldResolver(Seq())
   private def getConverter(): GTaskToJira = new GTaskToJira(config, customFieldsResolver, issueTypeList, versions, components, priorities)
-
-  private def createConverterWithSelectedField(field: GTaskDescriptor.FIELD) = createConverterWithField(field, true)
-
-  private def createConverterWithField(field: GTaskDescriptor.FIELD, selected: Boolean) = {
-    val converter = new GTaskToJira(config, customFieldsResolver, issueTypeList, versions, components, priorities)
-    converter
-  }
 
   private def find(priorities: Iterable[Priority], priorityName: String): Priority = {
     for (priority <- priorities) {
