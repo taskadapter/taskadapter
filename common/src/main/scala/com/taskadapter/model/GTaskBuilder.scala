@@ -18,18 +18,18 @@ object GTaskBuilder {
 class GTaskBuilder {
   val task = new GTask
 
-  def withField(field: Field, value: Any): GTaskBuilder = {
+  def withField(field: Field, value: AnyRef): GTaskBuilder = {
     task.setValue(field, value)
     this
   }
 
   def withRandom(field: Field): GTaskBuilder = {
-    val value = field.typeName match {
+    val value : AnyRef = field.typeName match {
       case "Date" => getDateRoundedToMinutes
       case "Float" => val value = Random.nextFloat() * 100
         // round to 2 digits
         val double = Math.round(value * 100.0) / 100.0
-        double.toFloat
+        new java.lang.Float(double.floatValue())
       case "GUser" => new GUser(null, Random.nextString(3), Random.nextString(10))
       case "String" => "value " + new Date().getTime
 
