@@ -4,7 +4,7 @@ import com.taskadapter.connector.Field
 import com.taskadapter.model._
 
 object TrelloField {
-  val id = Field("Id")
+  val id = Field.integer("Id")
   val name = Field("Name")
   val description = Field("Description")
 

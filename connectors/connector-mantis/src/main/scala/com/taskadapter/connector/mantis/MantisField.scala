@@ -5,7 +5,7 @@ import com.taskadapter.model._
 
 object MantisField {
 
-  val id = Field("Id")
+  val id = Field.integer("Id")
   val summary = Field("Summary")
   val description = Field("Description")
   val assignee = Field("Assignee")

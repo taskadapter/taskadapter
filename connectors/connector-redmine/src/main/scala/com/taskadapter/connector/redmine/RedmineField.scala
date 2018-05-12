@@ -9,7 +9,7 @@ import scala.collection.JavaConverters._
 
 object RedmineField {
   // Redmine field names
-  val id = Field("Id")
+  val id = Field.integer("Id")
   val summary = Field("Summary")
   val category = Field("Category")
   val description = Field("Description")

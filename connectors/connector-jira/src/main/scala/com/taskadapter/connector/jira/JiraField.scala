@@ -29,7 +29,7 @@ object JiraField {
   val dateCreated = Field.date("Date Created")
   val dueDate = Field.date("Due Date")
   val priority = Field.integer("Priority")
-  val id = Field("Id")
+  val id = Field.integer("Id")
 
   val fields = List(id, component, summary, status, description, taskType, estimatedTime, assignee,
     dateCreated,
