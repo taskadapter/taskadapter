@@ -55,7 +55,7 @@ class MantisIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   it("taskUpdatedOK") {
     val task = generateTask()
     CommonTestChecks.taskCreatedAndUpdatedOK(setup.host, mantisConnector, MantisFieldBuilder.getDefault,
-      task, MantisField.summary.name, "new value",
+      task, MantisField.summary, "new value",
       CommonTestChecks.skipCleanup)
   }
 

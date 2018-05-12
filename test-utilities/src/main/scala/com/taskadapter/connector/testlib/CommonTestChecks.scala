@@ -61,7 +61,7 @@ object CommonTestChecks extends Matchers {
   }
 
   def taskCreatedAndUpdatedOK(targetLocation: String, connector: NewConnector, rows: Seq[FieldRow], task: GTask,
-                              fieldToChangeInTest: String,
+                              fieldToChangeInTest: Field,
                               newValue: String,
                               cleanup: TaskId => Unit): Unit = {
     // CREATE

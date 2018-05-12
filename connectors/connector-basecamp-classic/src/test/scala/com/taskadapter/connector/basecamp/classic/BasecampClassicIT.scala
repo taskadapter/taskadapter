@@ -29,7 +29,7 @@ class BasecampClassicIT extends FunSpec with Matchers with BeforeAndAfter with B
       CommonTestChecks.taskCreatedAndUpdatedOK(TestBasecampConfig.setup.host,
         getConnector(todoListKey), BasecampClassicFieldBuilder.getDefault(),
         GTaskBuilder.withRandom(BasecampClassicField.content),
-        BasecampClassicField.content.name, "new value",
+        BasecampClassicField.content, "new value",
         CommonTestChecks.skipCleanup)
     }
   }

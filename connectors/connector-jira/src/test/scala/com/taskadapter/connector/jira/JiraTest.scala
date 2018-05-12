@@ -72,7 +72,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     it("task is updated") {
       CommonTestChecks.taskCreatedAndUpdatedOK(setup.host,
         connector, JiraFieldBuilder.getDefault(),
-        JiraGTaskBuilder.withSummary(), JiraField.summary.name, "new value",
+        JiraGTaskBuilder.withSummary(), JiraField.summary, "new value",
         id => TestJiraClientHelper.deleteTasks(client, id))
     }
 
@@ -80,7 +80,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
       CommonTestChecks.taskCreatedAndUpdatedOK(setup.host,
         connector, JiraFieldBuilder.withStatus(),
         GTaskBuilder.withRandom(JiraField.summary),
-        JiraField.status.name, "In Progress",
+        JiraField.status, "In Progress",
         id => TestJiraClientHelper.deleteTasks(client, id))
     }
   }
