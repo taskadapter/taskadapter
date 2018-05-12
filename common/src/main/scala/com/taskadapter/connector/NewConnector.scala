@@ -25,5 +25,5 @@ trait NewConnector {
   /**
     * Loads one task by its key.
     */
-  def loadTaskByKey(key: TaskId, rows: java.lang.Iterable[FieldRow]): GTask
+  def loadTaskByKey(key: TaskId, rows: Iterable[FieldRow]): GTask
 }

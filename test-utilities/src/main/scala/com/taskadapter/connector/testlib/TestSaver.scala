@@ -17,6 +17,6 @@ class TestSaver(connector: NewConnector, rows: Iterable[FieldRow]) {
       ProgressMonitorUtils.DUMMY_MONITOR,
       rows)
     val newKey = taskSaveResult.getRemoteKeys.iterator.next
-    connector.loadTaskByKey(newKey, rows.asJava)
+    connector.loadTaskByKey(newKey, rows)
   }
 }

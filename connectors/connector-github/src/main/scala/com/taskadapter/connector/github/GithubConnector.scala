@@ -22,7 +22,7 @@ object GithubConnector {
 
 class GithubConnector(config: GithubConfig, setup: WebConnectorSetup) extends NewConnector {
   @throws[ConnectorException]
-  override def loadTaskByKey(key: TaskId, rows: java.lang.Iterable[FieldRow]): GTask = {
+  override def loadTaskByKey(key: TaskId, rows: Iterable[FieldRow]): GTask = {
     val issueService = new ConnectionFactory(setup).getIssueService
     try {
       val issue = issueService.getIssue(setup.userName, config.getProjectKey, key.id.toInt)

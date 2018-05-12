@@ -25,7 +25,7 @@ class TrelloConnector(config: TrelloConfig, setup: WebConnectorSetup) extends Ne
 
   val trelloApi = TrelloApiFactory.createApi(setup.password, setup.apiKey)
 
-  override def loadTaskByKey(key: TaskId, rows: java.lang.Iterable[FieldRow]): GTask = {
+  override def loadTaskByKey(key: TaskId, rows: Iterable[FieldRow]): GTask = {
     val loader = new TrelloTaskLoader(trelloApi)
     loader.loadTask(config, key.key)
   }

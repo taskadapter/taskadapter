@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.taskadapter.model.GTaskUtils.ID_COMPARATOR;
+import scala.collection.JavaConverters;
 
 public class Updater {
 
@@ -49,7 +50,7 @@ public class Updater {
         }
         for (GTask gTask : existingTasks) {
             if (gTask.getSourceSystemId() != null) {
-                GTask task = remoteConnector.loadTaskByKey(gTask.getSourceSystemId(), rows);
+                GTask task = remoteConnector.loadTaskByKey(gTask.getSourceSystemId(), JavaConverters.iterableAsScalaIterable(rows));
                 task.setSourceSystemId(gTask.getSourceSystemId());
                 tasksInExternalSystem.add(task);
             }

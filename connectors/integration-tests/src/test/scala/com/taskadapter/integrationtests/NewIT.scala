@@ -172,7 +172,7 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
 
       val result = adapter.adapt(rows)
 
-      val redmine = TestUtils.loadCreatedTask(redmineConnectorWithResolveAssignees, rows.asJava, result)
+      val redmine = TestUtils.loadCreatedTask(redmineConnectorWithResolveAssignees, rows, result)
       redmine.getValue(RedmineField.description) shouldBe "description1"
     }
 

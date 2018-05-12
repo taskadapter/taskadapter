@@ -33,7 +33,7 @@ object RedmineConnector {
 }
 
 class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends NewConnector {
-  override def loadTaskByKey(id: TaskId, rows: java.lang.Iterable[FieldRow]): GTask = {
+  override def loadTaskByKey(id: TaskId, rows: Iterable[FieldRow]): GTask = {
     val httpClient = RedmineManagerFactory.createRedmineHttpClient()
     try {
       val mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient)

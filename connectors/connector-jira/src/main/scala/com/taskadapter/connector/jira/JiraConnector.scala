@@ -94,7 +94,7 @@ class JiraConnector(config: JiraConfig, setup: WebConnectorSetup) extends NewCon
   @throws[ConnectorException]
   def getIssueTypesForSubtasks: util.List[_ <: NamedKeyedObject] = IssueTypesLoader.getIssueTypes(setup, new SubtaskTypesFilter)
 
-  override def loadTaskByKey(key: TaskId, rows: java.lang.Iterable[FieldRow]): GTask = withJiraRestClient((client: JiraRestClient) => {
+  override def loadTaskByKey(key: TaskId, rows: Iterable[FieldRow]): GTask = withJiraRestClient((client: JiraRestClient) => {
     def foo(client: JiraRestClient) = {
       val loader = new JiraTaskLoader(client, config.getPriorities)
       loader.loadTask(key.key)

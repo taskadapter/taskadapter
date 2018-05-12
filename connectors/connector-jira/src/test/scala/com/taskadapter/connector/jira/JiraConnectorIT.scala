@@ -24,7 +24,7 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     val summary = "load by key"
     val task = new JiraGTaskBuilder(summary).withType("Task").build
     val id = TestUtils.save(connector, task, JiraFieldBuilder.getDefault)
-    val loadedTask = connector.loadTaskByKey(id, JiraFieldBuilder.getDefault.asJava)
+    val loadedTask = connector.loadTaskByKey(id, JiraFieldBuilder.getDefault)
     assertThat(loadedTask.getValue(JiraField.summary)).isEqualTo(summary)
     TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
   }
@@ -52,8 +52,8 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     val subTask1Id = result.keyToRemoteKeyList(1)._2
     val subTask2Id = result.keyToRemoteKeyList(2)._2
 
-    val loadedSubTask1 = connector.loadTaskByKey(subTask1Id, JiraFieldBuilder.getDefault.asJava)
-    val loadedSubTask2 = connector.loadTaskByKey(subTask2Id, JiraFieldBuilder.getDefault.asJava)
+    val loadedSubTask1 = connector.loadTaskByKey(subTask1Id, JiraFieldBuilder.getDefault)
+    val loadedSubTask2 = connector.loadTaskByKey(subTask2Id, JiraFieldBuilder.getDefault)
     assertThat(loadedSubTask1.getParentIdentity).isEqualTo(parentTaskId)
     assertThat(loadedSubTask2.getParentIdentity).isEqualTo(parentTaskId)
 
@@ -74,7 +74,7 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows)
     assertThat(result.createdTasksNumber).isEqualTo(1)
     val taskId = result.keyToRemoteKeyList.head._2
-    val loadedTask = connector.loadTaskByKey(taskId, rows.asJava)
+    val loadedTask = connector.loadTaskByKey(taskId, rows)
     assertThat(loadedTask.getValue(JiraField.description)).isEqualTo("some default")
     TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
   }

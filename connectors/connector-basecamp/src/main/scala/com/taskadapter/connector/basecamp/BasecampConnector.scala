@@ -53,7 +53,7 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
   }
 
   @throws[ConnectorException]
-  override def loadTaskByKey(id: TaskId, rows: java.lang.Iterable[FieldRow]): GTask = {
+  override def loadTaskByKey(id: TaskId, rows: Iterable[FieldRow]): GTask = {
     BasecampUtils.validateConfig(config)
     val obj = api.getObject("projects/" + config.getProjectKey + "/todos/" + id.key + ".json")
     BasecampToGTask.parseTask(obj)

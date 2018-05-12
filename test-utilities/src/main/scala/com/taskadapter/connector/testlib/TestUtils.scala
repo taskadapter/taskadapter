@@ -73,14 +73,14 @@ object TestUtils {
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows)
     val remoteKeys = result.getRemoteKeys
     val remoteKey = remoteKeys.iterator.next
-    connector.loadTaskByKey(remoteKey, rows.asJava)
+    connector.loadTaskByKey(remoteKey, rows)
   }
 
   /**
     * Load task that was previously created and its result is saved in [[SaveResult]]
     */
   @throws[ConnectorException]
-  def loadCreatedTask(connector: NewConnector, rows: util.List[FieldRow], result: SaveResult): GTask = {
+  def loadCreatedTask(connector: NewConnector, rows: Seq[FieldRow], result: SaveResult): GTask = {
     val remoteKey = result.getRemoteKeys.head
     connector.loadTaskByKey(remoteKey, rows)
   }

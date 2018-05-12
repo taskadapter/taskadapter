@@ -77,7 +77,7 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
     }
 
     @Override
-    public GTask loadTaskByKey(TaskId key, Iterable<FieldRow> rows) {
+    public GTask loadTaskByKey(TaskId key, scala.collection.Iterable<FieldRow> rows) {
         List<GTask> tasks = loadInternal(setup.sourceFile());
         for (GTask task : tasks) {
             if (task.getIdentity().equals(key)) {

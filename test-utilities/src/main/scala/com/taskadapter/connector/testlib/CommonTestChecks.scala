@@ -69,7 +69,7 @@ object CommonTestChecks extends Matchers {
     assertFalse(result.hasErrors)
     assertEquals(1, result.createdTasksNumber)
     val newTaskId = result.getRemoteKeys.iterator.next()
-    val loaded = connector.loadTaskByKey(newTaskId, rows.asJava)
+    val loaded = connector.loadTaskByKey(newTaskId, rows)
 
     // UPDATE
     loaded.setValue(fieldToChangeInTest, newValue)
@@ -77,7 +77,7 @@ object CommonTestChecks extends Matchers {
     val result2 = TaskSaver.save(resolver, connector, "some name", rows, util.Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR)
     assertFalse(result2.hasErrors)
     assertEquals(1, result2.updatedTasksNumber)
-    val loadedAgain = connector.loadTaskByKey(newTaskId, rows.asJava)
+    val loadedAgain = connector.loadTaskByKey(newTaskId, rows)
     assertEquals(newValue, loadedAgain.getValue(fieldToChangeInTest))
     cleanup(loaded.getIdentity)
   }
