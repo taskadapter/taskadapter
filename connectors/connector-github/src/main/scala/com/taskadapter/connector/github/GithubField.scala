@@ -10,7 +10,7 @@ import scala.collection.JavaConverters._
 object GithubField {
   val summary = Field("Summary")
   val description = Field("Description")
-  val assignee = Field("Assignee")
+  val assignee = Field.user("Assignee")
   val startDate = Field.date("Start Date")
   val createdOn = Field.date("Created On")
   val updatedOn = Field.date("Updated On")

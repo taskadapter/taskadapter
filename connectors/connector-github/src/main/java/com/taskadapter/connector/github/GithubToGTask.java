@@ -34,7 +34,7 @@ public class GithubToGTask {
 
         if (issue.getAssignee() != null && !"".equals(issue.getAssignee().getLogin())) {
             GUser user = new GUser(issue.getAssignee().getLogin());
-            task.setValue(GithubField.assignee(), user.getLoginName());
+            task.setValue(GithubField.assignee(), user);
         }
         return task;
     }

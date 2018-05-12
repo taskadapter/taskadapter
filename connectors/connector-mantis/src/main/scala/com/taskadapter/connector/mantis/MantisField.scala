@@ -8,7 +8,7 @@ object MantisField {
   val id = Field.integer("Id")
   val summary = Field("Summary")
   val description = Field("Description")
-  val assignee = Field("Assignee")
+  val assignee = Field.user("Assignee")
   val dueDate = Field.date("Due Date")
   val createdOn = Field.date("Created On")
   val updatedOn = Field.date("Updated On")
