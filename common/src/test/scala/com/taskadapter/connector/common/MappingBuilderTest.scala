@@ -10,7 +10,7 @@ import org.scalatest.{FunSpec, Matchers}
 class MappingBuilderTest extends FunSpec with Matchers {
   it("skips fields that are not selected") {
     val rows = MappingBuilder.build(
-      List(FieldMapping(new Field("String", "summary"), new Field("String", "summary"), false, "default")),
+      List(FieldMapping(Field("summary"), Field("summary"), false, "default")),
       ExportDirection.RIGHT
 
     )
@@ -19,7 +19,7 @@ class MappingBuilderTest extends FunSpec with Matchers {
 
   it("export Right processes selected fields") {
     val rows = MappingBuilder.build(
-      List(FieldMapping(new Field("String", "JiraSummary"), new Field("String", "RedmineSummary"), true, "default")),
+      List(FieldMapping(Field("JiraSummary"), Field("RedmineSummary"), true, "default")),
       ExportDirection.RIGHT
 
     )
@@ -29,7 +29,7 @@ class MappingBuilderTest extends FunSpec with Matchers {
 
   it("export Left processes selected fields") {
     val rows = MappingBuilder.build(
-      List(FieldMapping(new Field("String", "JiraSummary"), new Field("String", "RedmineSummary"), true, "default")),
+      List(FieldMapping(Field("JiraSummary"), Field("RedmineSummary"), true, "default")),
       ExportDirection.LEFT
 
     )
