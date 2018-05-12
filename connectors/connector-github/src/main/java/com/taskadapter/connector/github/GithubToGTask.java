@@ -27,14 +27,14 @@ public class GithubToGTask {
         task.setKey(stringKey);
         task.setSourceSystemId(new TaskId(issue.getId(), stringKey));
 
-        task.setValue(GithubField.summary().name(), issue.getTitle());
-        task.setValue(GithubField.description().name(), issue.getBody());
-        task.setValue(GithubField.createdOn().name(), issue.getCreatedAt());
-        task.setValue(GithubField.updatedOn().name(), issue.getUpdatedAt());
+        task.setValue(GithubField.summary(), issue.getTitle());
+        task.setValue(GithubField.description(), issue.getBody());
+        task.setValue(GithubField.createdOn(), issue.getCreatedAt());
+        task.setValue(GithubField.updatedOn(), issue.getUpdatedAt());
 
         if (issue.getAssignee() != null && !"".equals(issue.getAssignee().getLogin())) {
             GUser user = new GUser(issue.getAssignee().getLogin());
-            task.setValue(GithubField.assignee().name(), user.getLoginName());
+            task.setValue(GithubField.assignee(), user.getLoginName());
         }
         return task;
     }
