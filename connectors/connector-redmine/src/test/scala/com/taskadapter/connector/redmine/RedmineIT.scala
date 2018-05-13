@@ -128,7 +128,7 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
     t.setValue(RedmineField.summary, summary)
     t.setValue(RedmineField.description, "some descr" + Calendar.getInstance().getTimeInMillis + "1")
 
-    val hours = Random.nextInt(50) + 1;
+    val hours : Integer = Random.nextInt(50) + 1
     t.setValue(RedmineField.estimatedTime, hours)
 
     val c1 = new GTask()

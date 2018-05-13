@@ -1,5 +1,6 @@
 package com.taskadapter.connector.jira
 
+import java.lang
 import java.util.Calendar
 
 import com.atlassian.jira.rest.client.api.domain.input.{ComplexIssueInputFieldValue, IssueInput}
@@ -105,7 +106,7 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
 
   private def checkEstimatedTime(converter: GTaskToJira, expectedTime: String): Unit = {
     val task = new GTask
-    task.setValue(JiraField.estimatedTime, 3f)
+    task.setValue(JiraField.estimatedTime, new lang.Float(3))
     val issue = converter.convertToJiraIssue(task).issueInput
     assertEquals(expectedTime, getComplexValue(issue, "timetracking", "originalEstimate"))
   }
