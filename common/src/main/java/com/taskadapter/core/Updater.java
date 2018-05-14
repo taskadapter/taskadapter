@@ -20,12 +20,12 @@ public class Updater {
     private List<GTask> existingTasks;
     private List<GTask> tasksInExternalSystem;
     private NewConnector sourceConnector;
-    private Iterable<FieldRow> rows;
+    private Iterable<FieldRow<?>> rows;
     private NewConnector remoteConnector;
     private ProgressMonitor monitor;
     private String sourceLocationName;
 
-    public Updater(NewConnector sourceConnector, Iterable<FieldRow> rows,
+    public Updater(NewConnector sourceConnector, Iterable<FieldRow<?>> rows,
             NewConnector targetConnector,
             String sourceLocationName) {
         super();
@@ -64,10 +64,10 @@ public class Updater {
 
     }
 
-    public void saveFile() throws ConnectorException {
+//    public void saveFile() throws ConnectorException {
         // TODO remove the casting!
-        ((FileBasedConnector) sourceConnector).updateTasksByRemoteIds(tasksInExternalSystem, rows);
-    }
+//        ((FileBasedConnector) sourceConnector).updateTasksByRemoteIds(tasksInExternalSystem, rows);
+//    }
 
     public int getNumberOfUpdatedTasks() {
         return tasksInExternalSystem.size();

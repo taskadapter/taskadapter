@@ -6,9 +6,9 @@ import java.util.{Calendar, Date}
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.connector.definition.{SaveResult, TaskId}
-import com.taskadapter.connector.{Field, FieldRow, NewConnector}
+import com.taskadapter.connector.{FieldRow, NewConnector}
 import com.taskadapter.core.{PreviouslyCreatedTasksResolver, TaskLoader}
-import com.taskadapter.model.GTask
+import com.taskadapter.model.{DueDate, Field, GTask, StartDate}
 
 import scala.collection.JavaConverters._
 
@@ -31,8 +31,8 @@ object TestUtils {
     list.asScala.find(_.getKey == key).orNull
   }
 
-  def findTaskByFieldName(list: Seq[GTask], fieldName: String, value: String): GTask = {
-    list.find(_.getValue(fieldName) == value).orNull
+  def findTaskByFieldName(list: Seq[GTask], field: Field[_], value: String): GTask = {
+    list.find(_.getValue(field) == value).orNull
   }
 
   /*
@@ -57,19 +57,19 @@ object TestUtils {
   }
 
   @throws[ConnectorException]
-  def saveAndLoadAll(connector: NewConnector, task: GTask, rows: List[FieldRow]): List[GTask] = {
+  def saveAndLoadAll(connector: NewConnector, task: GTask, rows: List[FieldRow[_]]): List[GTask] = {
     connector.saveData(PreviouslyCreatedTasksResolver.empty, List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows)
     connector.loadData().asScala.sortBy(_.getId).toList
   }
 
   @throws[ConnectorException]
-  def saveAndLoadList(connector: NewConnector, tasks: Seq[GTask], rows: Seq[FieldRow]): List[GTask] = {
+  def saveAndLoadList(connector: NewConnector, tasks: Seq[GTask], rows: Seq[FieldRow[_]]): List[GTask] = {
     connector.saveData(PreviouslyCreatedTasksResolver.empty, tasks.asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows)
     connector.loadData().asScala.sortBy(_.getId).toList
   }
 
   @throws[ConnectorException]
-  def saveAndLoad(connector: NewConnector, task: GTask, rows: Seq[FieldRow]): GTask = {
+  def saveAndLoad(connector: NewConnector, task: GTask, rows: Seq[FieldRow[_]]): GTask = {
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows)
     val remoteKeys = result.getRemoteKeys
     val remoteKey = remoteKeys.iterator.next
@@ -80,7 +80,7 @@ object TestUtils {
     * Load task that was previously created and its result is saved in [[SaveResult]]
     */
   @throws[ConnectorException]
-  def loadCreatedTask(connector: NewConnector, rows: Seq[FieldRow], result: SaveResult): GTask = {
+  def loadCreatedTask(connector: NewConnector, rows: Seq[FieldRow[_]], result: SaveResult): GTask = {
     val remoteKey = result.getRemoteKeys.head
     connector.loadTaskByKey(remoteKey, rows)
   }
@@ -89,14 +89,14 @@ object TestUtils {
     * @return the new task Key
     */
 
-  def saveAndLoadViaSummary(connector: NewConnector, task: GTask, rows: List[FieldRow], fieldToSearch:Field): GTask = {
+  def saveAndLoadViaSummary(connector: NewConnector, task: GTask, rows: List[FieldRow[_]], fieldToSearch:Field[_]): GTask = {
     val loadedTasks = saveAndLoadAll(connector, task, rows)
-    findTaskByFieldName(loadedTasks, fieldToSearch.name, task.getValue(fieldToSearch).toString)
+    findTaskByFieldName(loadedTasks, fieldToSearch, task.getValue(fieldToSearch).toString)
   }
 
 
   @throws[ConnectorException]
-  def save(connector: NewConnector, task: GTask, rows: List[FieldRow]): TaskId = {
+  def save(connector: NewConnector, task: GTask, rows: List[FieldRow[_]]): TaskId = {
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows)
     val remoteKeys = result.getRemoteKeys
     remoteKeys.iterator.next
@@ -106,23 +106,23 @@ object TestUtils {
     * @param rows source-target field rows
     */
   def loadAndSave(sourceConnector: NewConnector, targetConnector: NewConnector,
-                  rows: Seq[FieldRow]): GTask = {
+                  rows: Seq[FieldRow[_]]): GTask = {
     val loadedTask = TaskLoader.loadTasks(1, sourceConnector, "sourceName", ProgressMonitorUtils.DUMMY_MONITOR).asScala.toList.head
     val result = TestUtils.saveAndLoadList(targetConnector, Seq(loadedTask), rows).head
     result
   }
 
   def loadAndSaveList(sourceConnector: NewConnector, targetConnector: NewConnector,
-                  rows: Seq[FieldRow]): List[GTask] = {
+                  rows: Seq[FieldRow[_]]): List[GTask] = {
     val loadedTasks = TaskLoader.loadTasks(1000, sourceConnector, "sourceName", ProgressMonitorUtils.DUMMY_MONITOR).asScala.toList
     val result = TestUtils.saveAndLoadList(targetConnector, loadedTasks, rows)
     result
   }
 
-  def setTaskStartYearAgo(task: GTask, startDateFieldName: String): Calendar = {
+  def setTaskStartYearAgo(task: GTask): Calendar = {
     val yearAgo = getDateRoundedToDay
     yearAgo.add(Calendar.YEAR, -1)
-    task.setValue(startDateFieldName, yearAgo.getTime)
+    task.setValue(StartDate, yearAgo.getTime)
     yearAgo
   }
 
@@ -132,10 +132,10 @@ object TestUtils {
     yearAgo.getTime
   }
 
-  def setTaskDueDateNextYear(task: GTask, dueDateFieldName: String): Calendar = {
+  def setTaskDueDateNextYear(task: GTask): Calendar = {
     val cal = getDateRoundedToDay
     cal.add(Calendar.YEAR, 1)
-    task.setValue(dueDateFieldName, cal.getTime)
+    task.setValue(DueDate, cal.getTime)
     cal
   }
 }

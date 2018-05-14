@@ -1,18 +1,17 @@
 package com.taskadapter.connector.jira
 
 import com.taskadapter.connector.FieldRow
+import com.taskadapter.model.{Assignee, Summary, TaskStatus}
 
 object JiraFieldBuilder {
-  def getDefault(): List[FieldRow] = {
+  def getDefault(): List[FieldRow[_]] = {
     List(
-      FieldRow(JiraField.summary, JiraField.summary, ""),
-      FieldRow(JiraField.assignee, JiraField.assignee, ""),
+      FieldRow(Summary, Summary, ""),
+      FieldRow(Assignee, Assignee, null)
     )
   }
 
-  def withStatus(): List[FieldRow] = {
-    List(
-      FieldRow(JiraField.status, JiraField.status, "")
-    ) ++ getDefault()
+  def withStatus(): List[FieldRow[_]] = {
+    List(FieldRow(TaskStatus, TaskStatus, "")) ++ getDefault()
   }
 }

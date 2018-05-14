@@ -1,9 +1,11 @@
 package com.taskadapter.connector
 
+import com.taskadapter.model.Field
+
 object FieldRow {
-  def apply(sourceField: Field, targetField: Field, defaultValueForEmpty: String) : FieldRow = {
+  def apply[T](sourceField: Field[T], targetField: Field[T], defaultValueForEmpty: T) : FieldRow[T] = {
     FieldRow(Some(sourceField), Some(targetField), defaultValueForEmpty)
   }
 }
 
-case class FieldRow(sourceField: Option[Field], targetField: Option[Field], defaultValueForEmpty: String)
+case class FieldRow[T](sourceField: Option[Field[T]], targetField: Option[Field[T]], defaultValueForEmpty: T)

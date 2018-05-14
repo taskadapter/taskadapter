@@ -42,16 +42,16 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
       val userPromise = client.getUserClient.getUser(setup.userName)
       val jiraUser = userPromise.claim
       val task = new GTask
-      task.setValue(JiraField.summary, "some")
+      task.setValue(Summary, "some")
       val user = new GUser(null, jiraUser.getName, jiraUser.getDisplayName)
-      task.setValue(JiraField.assignee, user)
-      task.setValue(JiraField.reporter, user)
+      task.setValue(Assignee, user)
+      task.setValue(Reporter, user)
       val loadedTask = TestUtils.saveAndLoad(connector, task, JiraFieldBuilder.getDefault())
-      loadedTask.getValue(JiraField.assignee).asInstanceOf[GUser].getLoginName shouldBe jiraUser.getName
-      loadedTask.getValue(JiraField.assignee).asInstanceOf[GUser].getDisplayName shouldBe jiraUser.getDisplayName
+      loadedTask.getValue(Assignee).getLoginName shouldBe jiraUser.getName
+      loadedTask.getValue(Assignee).getDisplayName shouldBe jiraUser.getDisplayName
 
-      loadedTask.getValue(JiraField.reporter).asInstanceOf[GUser].getLoginName shouldBe jiraUser.getName
-      loadedTask.getValue(JiraField.reporter).asInstanceOf[GUser].getDisplayName shouldBe jiraUser.getDisplayName
+      loadedTask.getValue(Reporter).getLoginName shouldBe jiraUser.getName
+      loadedTask.getValue(Reporter).getDisplayName shouldBe jiraUser.getDisplayName
 
       TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
     }
@@ -59,11 +59,11 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     it("status is set on create") {
       CommonTestChecks.taskIsCreatedAndLoaded(connector,
         new GTaskBuilder()
-          .withRandom(JiraField.summary)
-          .withField(JiraField.status, "In Progress")
+          .withRandom(Summary)
+          .withField(TaskStatus, "In Progress")
           .build(),
         JiraFieldBuilder.withStatus(),
-        JiraField.status,
+        TaskStatus,
         id => TestJiraClientHelper.deleteTasks(client, id))
     }
   }
@@ -72,15 +72,15 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     it("task is updated") {
       CommonTestChecks.taskCreatedAndUpdatedOK(setup.host,
         connector, JiraFieldBuilder.getDefault(),
-        JiraGTaskBuilder.withSummary(), JiraField.summary, "new value",
+        JiraGTaskBuilder.withSummary(), Summary, "new value",
         id => TestJiraClientHelper.deleteTasks(client, id))
     }
 
     it("changes status to In Progress") {
       CommonTestChecks.taskCreatedAndUpdatedOK(setup.host,
         connector, JiraFieldBuilder.withStatus(),
-        GTaskBuilder.withRandom(JiraField.summary),
-        JiraField.status, "In Progress",
+        GTaskBuilder.withRandom(Summary),
+        TaskStatus, "In Progress",
         id => TestJiraClientHelper.deleteTasks(client, id))
     }
   }
@@ -101,13 +101,13 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     task1.getRelations.add(GRelation(TaskId(task1.getId, task1.getKey),
       TaskId(task2.getId, task2.getKey), Precedes))
     TestUtils.saveAndLoadList(connector, list, JiraFieldBuilder.getDefault())
-    val issues = TestJiraClientHelper.findIssuesBySummary(client, task1.getValue(JiraField.summary).asInstanceOf[String])
+    val issues = TestJiraClientHelper.findIssuesBySummary(client, task1.getValue(Summary))
     val createdIssue1 = issues.iterator.next
     val links = createdIssue1.getIssueLinks
     assertEquals(1, Iterables.size(links))
     val link = links.iterator.next
     val targetIssueKey = link.getTargetIssueKey
-    val createdIssue2 = TestJiraClientHelper.findIssuesBySummary(client, task2.getValue(JiraField.summary).asInstanceOf[String]).iterator.next
+    val createdIssue2 = TestJiraClientHelper.findIssuesBySummary(client, task2.getValue(Summary)).iterator.next
     assertEquals(createdIssue2.getKey, targetIssueKey)
     TestJiraClientHelper.deleteTasks(client, TaskId(createdIssue1.getId, createdIssue1.getKey),
       TaskId(createdIssue2.getId, createdIssue2.getKey))

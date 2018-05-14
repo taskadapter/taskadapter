@@ -6,7 +6,7 @@ import com.taskadapter.connector._
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.{ExportDirection, TaskId}
 import com.taskadapter.core.{PreviouslyCreatedTasksCache, PreviouslyCreatedTasksResolver, TaskSaver}
-import com.taskadapter.model.{GTask, StandardField}
+import com.taskadapter.model.{Field, GTask}
 import org.junit.Assert.{assertEquals, assertFalse}
 import org.scalatest.Matchers
 import org.slf4j.LoggerFactory
@@ -18,7 +18,7 @@ object CommonTestChecks extends Matchers {
 
   def skipCleanup(id: TaskId): Unit = {}
 
-  def taskIsCreatedAndLoaded(connector: NewConnector, task: GTask, rows: Seq[FieldRow], fieldNameToSearch: Field,
+  def taskIsCreatedAndLoaded(connector: NewConnector, task: GTask, rows: Seq[FieldRow[_]], fieldNameToSearch: Field[_],
                              cleanup: TaskId => Unit): Unit = {
     val tasksQty = 1
     val expectedValue = task.getValue(fieldNameToSearch)
@@ -40,7 +40,7 @@ object CommonTestChecks extends Matchers {
   }
 
 
-  def createsTasks(connector: NewConnector, rows: List[FieldRow], tasks: List[GTask],
+  def createsTasks(connector: NewConnector, rows: List[FieldRow[_]], tasks: List[GTask],
                    cleanup: TaskId => Unit): Unit = {
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, tasks.asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows)
     assertFalse(result.hasErrors)
@@ -50,19 +50,19 @@ object CommonTestChecks extends Matchers {
   }
 
   def fieldIsSavedByDefault(connector: NewConnector, task: GTask,
-                            suggestedMappings: Map[Field, StandardField],
-                            fieldNameToSearch: Field,
+                            suggestedMappings: Seq[Field[_]],
+                            fieldToSearch: Field[_],
                             cleanup: TaskId => Unit): Unit = {
     val mappings = NewConfigSuggester.suggestedFieldMappingsForNewConfig(suggestedMappings, suggestedMappings)
     val rows = MappingBuilder.build(mappings, ExportDirection.RIGHT)
-    val loadedTask = TestUtils.saveAndLoadViaSummary(connector, task, rows.toList, fieldNameToSearch)
-    assertEquals(task.getValue(fieldNameToSearch), loadedTask.getValue(fieldNameToSearch))
+    val loadedTask = TestUtils.saveAndLoadViaSummary(connector, task, rows.toList, fieldToSearch)
+    assertEquals(task.getValue(fieldToSearch), loadedTask.getValue(fieldToSearch))
     cleanup(loadedTask.getIdentity)
   }
 
-  def taskCreatedAndUpdatedOK(targetLocation: String, connector: NewConnector, rows: Seq[FieldRow], task: GTask,
-                              fieldToChangeInTest: Field,
-                              newValue: String,
+  def taskCreatedAndUpdatedOK[T](targetLocation: String, connector: NewConnector, rows: Seq[FieldRow[_]], task: GTask,
+                              fieldToChangeInTest: Field[T],
+                              newValue: T,
                               cleanup: TaskId => Unit): Unit = {
     // CREATE
     val result = TaskSaver.save(PreviouslyCreatedTasksResolver.empty, connector, "some name", rows, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR)

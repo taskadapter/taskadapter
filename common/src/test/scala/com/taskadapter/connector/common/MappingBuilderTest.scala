@@ -1,7 +1,8 @@
 package com.taskadapter.connector.common
 
 import com.taskadapter.connector.definition.{ExportDirection, FieldMapping}
-import com.taskadapter.connector.{Field, MappingBuilder}
+import com.taskadapter.connector.MappingBuilder
+import com.taskadapter.model.Field
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}

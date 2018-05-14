@@ -2,7 +2,6 @@ package com.taskadapter.model
 
 import java.util.Collections
 
-import com.taskadapter.connector.Field
 import org.junit.Assert.{assertFalse, assertTrue}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner

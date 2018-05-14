@@ -1,11 +1,11 @@
 package com.taskadapter.connector.definition
 
-import com.taskadapter.connector.Field
+import com.taskadapter.model.Field
 
 object FieldMapping {
-  def apply(fieldInConnector1: Field, fieldInConnector2: Field, selected: Boolean, defaultValue: String): FieldMapping = {
+  def apply[T](fieldInConnector1: Field[T], fieldInConnector2: Field[T], selected: Boolean, defaultValue: T): FieldMapping[T] = {
     FieldMapping(Some(fieldInConnector1), Some(fieldInConnector2), selected, defaultValue)
   }
 }
 
-case class FieldMapping(fieldInConnector1: Option[Field], fieldInConnector2: Option[Field], selected: Boolean, defaultValue: String)
+case class FieldMapping[T](fieldInConnector1: Option[Field[T]], fieldInConnector2: Option[Field[T]], selected: Boolean, defaultValue: T)

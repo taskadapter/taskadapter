@@ -14,7 +14,7 @@ trait NewConnector {
   def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver,
                tasks: util.List[GTask],
                monitor: ProgressMonitor,
-               rows: Iterable[FieldRow]): SaveResult
+               rows: Iterable[FieldRow[_]]): SaveResult
 
   /**
     * Load list of tasks. Order of loaded tasks is not specified and may depend on implementation.
@@ -25,5 +25,5 @@ trait NewConnector {
   /**
     * Loads one task by its key.
     */
-  def loadTaskByKey(key: TaskId, rows: Iterable[FieldRow]): GTask
+  def loadTaskByKey(key: TaskId, rows: Iterable[FieldRow[_]]): GTask
 }

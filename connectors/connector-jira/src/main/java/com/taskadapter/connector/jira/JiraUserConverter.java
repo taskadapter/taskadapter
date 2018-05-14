@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// TODO why is this not used?
 public class JiraUserConverter {
     private Map<String, String> cachedJiraUsers = new HashMap<>();
     private final JiraRestClient client;

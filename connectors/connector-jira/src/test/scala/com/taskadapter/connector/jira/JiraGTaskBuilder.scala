@@ -3,34 +3,34 @@ package com.taskadapter.connector.jira
 import java.util.Date
 
 import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.model.GTask
+import com.taskadapter.model._
 
 import scala.util.Random
 
 object JiraGTaskBuilder {
-  def withPriority(value: Object): GTask = {
+  def withPriority(value: Int): GTask = {
     val task = new GTask
-    task.setValue(JiraField.summary, "task " + new Date().getTime)
-    task.setValue(JiraField.priority, value)
+    task.setValue(Summary, "task " + new Date().getTime)
+    task.setValue(Priority, value)
     task
   }
 
-  def withType(value: Object): GTask = {
+  def withType(value: String): GTask = {
     val task = new GTask
-    task.setValue(JiraField.summary, "task " + new Date().getTime)
-    task.setValue(JiraField.taskType, value)
+    task.setValue(Summary, "task " + new Date().getTime)
+    task.setValue(TaskType, value)
     task
   }
 
   def withSummary(value: String = Random.nextDouble().toString): GTask = {
     val task = new GTask
-    task.setValue(JiraField.summary, value)
+    task.setValue(Summary, value)
     task
   }
 
   def withDescription(): GTask = {
     val task = new GTask
-    task.setValue(JiraField.description, "description " + new Date().getTime)
+    task.setValue(Description, "description " + new Date().getTime)
     task
   }
 
@@ -42,16 +42,16 @@ object JiraGTaskBuilder {
 class JiraGTaskBuilder(summary: String = "task " + new Date().getTime) {
   val task = new GTask
   // summary is pretty much always required
-  task.setValue(JiraField.summary, summary)
+  task.setValue(Summary, summary)
 
 
   def withDescription(): JiraGTaskBuilder = {
-    task.setValue(JiraField.description, "description " + new Date().getTime)
+    task.setValue(Description, "description " + new Date().getTime)
     this
   }
 
-  def withPriority(value: Integer): JiraGTaskBuilder = {
-    task.setValue(JiraField.priority, value)
+  def withPriority(value: Int): JiraGTaskBuilder = {
+    task.setValue(Priority, value)
     this
   }
 
@@ -65,8 +65,8 @@ class JiraGTaskBuilder(summary: String = "task " + new Date().getTime) {
     this
   }
 
-  def withType(value: Object): JiraGTaskBuilder = {
-    task.setValue(JiraField.taskType, value)
+  def withType(value: String): JiraGTaskBuilder = {
+    task.setValue(TaskType, value)
     this
   }
 

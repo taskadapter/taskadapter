@@ -2,15 +2,13 @@ package com.taskadapter.model
 
 import java.util.{Calendar, Date}
 
-import com.taskadapter.connector.Field
-
 import scala.util.Random
 
 object GTaskBuilder {
   def withRandom(fieldName: String): GTask = {
     new GTaskBuilder().withRandom(Field(fieldName)).build()
   }
-  def withRandom(field: Field): GTask = {
+  def withRandom(field: Field[_]): GTask = {
     new GTaskBuilder().withRandom(field).build()
   }
 }
@@ -18,23 +16,24 @@ object GTaskBuilder {
 class GTaskBuilder {
   val task = new GTask
 
-  def withField(field: Field, value: AnyRef): GTaskBuilder = {
+  def withField[T](field: Field[T], value: T): GTaskBuilder = {
     task.setValue(field, value)
     this
   }
 
-  def withRandom(field: Field): GTaskBuilder = {
-    val value : AnyRef = field.typeName match {
-      case "Date" => getDateRoundedToMinutes
-      case "Float" => val value = Random.nextFloat() * 100
-        // round to 2 digits
-        val double = Math.round(value * 100.0) / 100.0
-        new java.lang.Float(double.floatValue())
-      case "GUser" => new GUser(null, Random.nextString(3), Random.nextString(10))
-      case "String" => "value " + new Date().getTime
-
+  def withRandom(field: Field[_]): GTaskBuilder = {
+    field match {
+      //      case "Date" => getDateRoundedToMinutes
+      //      case "Float" => val value = Random.nextFloat() * 100
+      // round to 2 digits
+      //        val double = Math.round(value * 100.0) / 100.0
+      //        new java.lang.Float(double.floatValue())
+      //      case "GUser" => new GUser(null, Random.nextString(3), Random.nextString(10))
+      //      case "String" => "value " + new Date().getTime
+      case Summary => task.setValue(Summary, randomStr())
+      case Assignee => task.setValue(Assignee, new GUser(null, Random.nextString(3), Random.nextString(10)))
+      case x: CustomString => task.setValue(x, "value " + new Date().getTime)
     }
-    task.setValue(field, value)
     this
   }
 
@@ -49,5 +48,6 @@ class GTaskBuilder {
     cal.getTime
   }
 
+  def randomStr() : String = "value " + new Date().getTime
 }
 

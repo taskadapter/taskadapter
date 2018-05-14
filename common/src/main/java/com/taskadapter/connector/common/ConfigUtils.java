@@ -14,7 +14,6 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.taskadapter.connector.definition.Mappings;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
 
 /**
  * Utilities for a connector configuration.

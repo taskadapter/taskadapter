@@ -2,11 +2,12 @@ package com.taskadapter.connector.jira
 
 import java.util
 
-import com.taskadapter.connector.{Field, FieldRow}
+import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.connector.testlib.{CommonTestChecks, TestUtils}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
+import com.taskadapter.model._
 import org.fest.assertions.Assertions.assertThat
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
@@ -25,15 +26,15 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     val task = new JiraGTaskBuilder(summary).withType("Task").build
     val id = TestUtils.save(connector, task, JiraFieldBuilder.getDefault)
     val loadedTask = connector.loadTaskByKey(id, JiraFieldBuilder.getDefault)
-    assertThat(loadedTask.getValue(JiraField.summary)).isEqualTo(summary)
+    assertThat(loadedTask.getValue(Summary)).isEqualTo(summary)
     TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
   }
 
   it("description saved by default") {
     CommonTestChecks.fieldIsSavedByDefault(getConnector,
       new JiraGTaskBuilder().withDescription().build(),
-      JiraField.getSuggestedCombinations(),
-      JiraField.description,
+      JiraField.fields,
+      Description,
       taskId => TestJiraClientHelper.deleteTasks(client, taskId))
   }
 
@@ -67,15 +68,23 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     val connector = getConnector
 
     val rows = List(
-      FieldRow(JiraField.summary, JiraField.summary, ""),
-      FieldRow(JiraField.description, JiraField.description, "some default")
+      FieldRow(Summary, Summary, ""),
+      FieldRow(Description, Description, "some default")
     )
 
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows)
     assertThat(result.createdTasksNumber).isEqualTo(1)
     val taskId = result.keyToRemoteKeyList.head._2
     val loadedTask = connector.loadTaskByKey(taskId, rows)
-    assertThat(loadedTask.getValue(JiraField.description)).isEqualTo("some default")
+    assertThat(loadedTask.getValue(Description)).isEqualTo("some default")
+    TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
+  }
+
+  it("assignee is saved and loaded") {
+    val task = new JiraGTaskBuilder().build().setValue(Assignee, new GUser("user"))
+    val id = TestUtils.save(getConnector, task, JiraFieldBuilder.getDefault)
+    val loadedTask = getConnector.loadTaskByKey(id, JiraFieldBuilder.getDefault)
+    assertThat(loadedTask.getValue(Assignee).getLoginName).isEqualTo("user")
     TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
   }
 
@@ -88,14 +97,15 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     */
   it("task is created with multi-value custom field of type option (checkboxes)") {
     val task = JiraGTaskBuilder.withSummary()
-    task.setValue("custom_checkbox_1", List("option1", "option2"))
+    val field = CustomSeqString("custom_checkbox_1")
+    task.setValue(field, Seq("option1", "option2"))
     val rows = JiraFieldBuilder.getDefault() ++ List(
-      FieldRow(new Field("", "custom_checkbox_1"), new Field("", "custom_checkbox_1"), "")
+      FieldRow(field, field, Seq())
     )
-
-    CommonTestChecks.createsTasks(getConnector, rows,
-      List(task),
-      id => TestJiraClientHelper.deleteTasks(client, id))
+    val id = TestUtils.save(getConnector, task, rows)
+    val loadedTask = getConnector.loadTaskByKey(id, rows)
+    loadedTask.getValue(field) should contain only ("option1", "option2")
+    TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
   }
 
   private def getConnector = new JiraConnector(JiraPropertiesLoader.createTestConfig, JiraPropertiesLoader.getTestServerInfo)

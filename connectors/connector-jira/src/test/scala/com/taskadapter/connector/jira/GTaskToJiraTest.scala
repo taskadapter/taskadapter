@@ -1,15 +1,15 @@
 package com.taskadapter.connector.jira
 
-import java.lang
 import java.util.Calendar
 
 import com.atlassian.jira.rest.client.api.domain.input.{ComplexIssueInputFieldValue, IssueInput}
 import com.atlassian.jira.rest.client.api.domain.{IssueFieldId, IssueType, Priority}
-import com.taskadapter.model.{GTask, GTaskDescriptor, GUser}
+import com.taskadapter.model._
 import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
+import scala.collection.JavaConverters._
 
 @RunWith(classOf[JUnitRunner])
 class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll {
@@ -55,13 +55,17 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
     assertEquals(expectedValue, getValue(issueInput, IssueFieldId.SUMMARY_FIELD.id))
   }
 
-  it("description is converted"){
+  it("description"){
     checkDescription(getConverter(), "description here")
   }
 
+  it("status"){
+    val task = new GTask().setValue(TaskStatus, "TO DO")
+    getConverter().convertToJiraIssue(task).status shouldBe "TO DO"
+  }
+
   private def checkDescription(converter: GTaskToJira, expectedValue: String): Unit = {
-    val task = new GTask
-    task.setValue(JiraField.description, expectedValue)
+    val task = new GTask().setValue(Description, expectedValue)
 
     val issueInput = converter.convertToJiraIssue(task).issueInput
     assertEquals(expectedValue, getValue(issueInput, IssueFieldId.DESCRIPTION_FIELD.id))
@@ -79,9 +83,15 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
     val task = new GTask
     val calendar = Calendar.getInstance
     calendar.set(2014, Calendar.APRIL, 28, 0, 0, 0)
-    task.setValue(JiraField.dueDate, calendar.getTime)
+    task.setValue(DueDate, calendar.getTime)
     val issueInput = converter.convertToJiraIssue(task).issueInput
     assertEquals(expected, getValue(issueInput, IssueFieldId.DUE_DATE_FIELD.id))
+  }
+
+  it("reporter"){
+    val task = new GTask().setValue(Reporter, new GUser(null, "mylogin", null))
+    val issue = getConverter().convertToJiraIssue(task).issueInput
+    assertEquals("mylogin", getComplexValue(issue, IssueFieldId.REPORTER_FIELD.id, "name"))
   }
 
   it("assigneeConvertedByDefault"){
@@ -95,18 +105,24 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
   private def checkAssignee(converter: GTaskToJira, expected: String): Unit = {
     val user = new GUser(null, expected, null)
     val task = new GTask
-    task.setValue(JiraField.assignee, user)
+    task.setValue(Assignee, user)
     val issue = converter.convertToJiraIssue(task).issueInput
     assertEquals(expected, getComplexValue(issue, IssueFieldId.ASSIGNEE_FIELD.id, "name"))
   }
 
-  it("estimated time is converted"){
+  it ("components use only the first provided value and ignore others") {
+    val task = new GTask().setValue(Components, Seq("client", "server"))
+    val issue = getConverter().convertToJiraIssue(task).issueInput
+    getIterableValue(issue, IssueFieldId.COMPONENTS_FIELD.id) should contain only("client")
+  }
+
+  it("estimated time"){
     checkEstimatedTime(getConverter(), "180m")
   }
 
   private def checkEstimatedTime(converter: GTaskToJira, expectedTime: String): Unit = {
     val task = new GTask
-    task.setValue(JiraField.estimatedTime, new lang.Float(3))
+    task.setValue(EstimatedTime, 3f)
     val issue = converter.convertToJiraIssue(task).issueInput
     assertEquals(expectedTime, getComplexValue(issue, "timetracking", "originalEstimate"))
   }
@@ -128,6 +144,14 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
     if (field == null) return null
     val value = field.getValue.asInstanceOf[ComplexIssueInputFieldValue]
     value.getValuesMap.get(subFieldName).asInstanceOf[String]
+  }
+
+  private def getIterableValue(issue: IssueInput, fieldName: String): Seq[String] = {
+    val field = issue.getField(fieldName)
+    if (field == null) return null
+    val value = field.getValue.asInstanceOf[java.lang.Iterable[ComplexIssueInputFieldValue]]
+    value.asScala
+      .map(v => v.getValuesMap().get("name").asInstanceOf[String]).toSeq
   }
 
   private def findDefaultIssueTypeId = {
