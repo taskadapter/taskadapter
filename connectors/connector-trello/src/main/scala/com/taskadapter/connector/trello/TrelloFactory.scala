@@ -1,23 +1,15 @@
 package com.taskadapter.connector.trello
 
-import java.util
-
 import com.google.gson.{JsonElement, JsonParseException}
-import com.taskadapter.connector.Field
 import com.taskadapter.connector.common.ConfigUtils
 import com.taskadapter.connector.definition.{Descriptor, PluginFactory, WebConnectorSetup}
-import com.taskadapter.model.StandardField
-
-import scala.collection.JavaConverters._
-import scala.collection.immutable.Map
+import com.taskadapter.model.Field
 
 class TrelloFactory extends PluginFactory[TrelloConfig, WebConnectorSetup] {
 
   override def getDescriptor = Descriptor(TrelloConnector.ID, "Trello")
 
-  override def getAvailableFields: util.List[Field] = TrelloField.fields.asJava
-
-  override def getSuggestedCombinations: Map[Field, StandardField] = TrelloField.getSuggestedCombinations()
+  override def getSuggestedCombinations: Seq[Field[_]] = TrelloField.fields
 
   override def createConnector(config: TrelloConfig, setup: WebConnectorSetup) = new TrelloConnector(config, setup)
 

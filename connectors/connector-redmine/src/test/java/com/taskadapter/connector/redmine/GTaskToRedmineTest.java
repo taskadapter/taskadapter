@@ -1,8 +1,6 @@
 package com.taskadapter.connector.redmine;
 
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor;
-import com.taskadapter.model.GTaskDescriptor.FIELD;
 import com.taskadapter.redmineapi.bean.*;
 import org.junit.Test;
 

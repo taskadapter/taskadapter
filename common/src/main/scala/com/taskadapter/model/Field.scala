@@ -17,7 +17,7 @@ object Assignee extends Field[GUser](classOf[GUser], "Assignee")
 
 object Components extends Field[Seq[String]](classOf[Seq[String]], "Components")
 
-case object Reporter extends Field[GUser](classOf[GUser], "Reporter")
+object Reporter extends Field[GUser](classOf[GUser], "Reporter")
 
 object ClosedOn extends Field[Date](classOf[Date], "ClosedOn")
 
@@ -29,9 +29,8 @@ object EstimatedTime extends Field[Float](classOf[Float], "EstimatedTime")
 
 object Description extends Field[String](classOf[String], "Description")
 
-//
-//case object DoneRatio extends Field
-//
+object DoneRatio extends Field[Float](classOf[Float], "DoneRatio")
+
 object DueDate extends Field[Date](classOf[Date], "DueDate")
 
 object StartDate extends Field[Date](classOf[Date], "StartDate")
@@ -57,7 +56,7 @@ object TaskType extends Field[String](classOf[String], "TaskType")
 
 object TaskStatus extends Field[String](classOf[String], "Status")
 
-//case object TargetVersion extends Field
+object TargetVersion extends Field[String](classOf[String], "TargetVersion")
 
 case class CustomString(override val name: String) extends Field[String](classOf[String], name)
 

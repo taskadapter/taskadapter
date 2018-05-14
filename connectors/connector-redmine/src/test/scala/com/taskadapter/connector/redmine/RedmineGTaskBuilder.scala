@@ -1,13 +1,13 @@
 package com.taskadapter.connector.redmine
 
-import com.taskadapter.model.GTask
+import com.taskadapter.model.{GTask, Summary}
 
 import scala.util.Random
 
 object RedmineGTaskBuilder {
   def withSummary(value: String = Random.nextDouble().toString): GTask = {
     val task = new GTask
-    task.setValue(RedmineField.summary, value)
+    task.setValue(Summary, value)
     task
   }
 

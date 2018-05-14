@@ -1,29 +1,20 @@
 package com.taskadapter.connector.redmine
 
-import java.util
-
-import com.taskadapter.connector.{Field, FieldRow}
-
-import scala.collection.JavaConverters._
+import com.taskadapter.connector.FieldRow
+import com.taskadapter.model.{Assignee, GUser, Summary}
 
 object RedmineFieldBuilder {
-  def withField(typeForField: String, name: String, defaultValue: String = ""): util.List[FieldRow] = {
-    List(
-      FieldRow(RedmineField.summary, RedmineField.summary, ""),
-      FieldRow(Field(typeForField, name), Field(typeForField, name), defaultValue)
-    ).asJava
-  }
 
-  def withAssignee(defaultValue: String = ""): List[FieldRow] = {
+  def withAssignee(defaultValue: GUser = null): List[FieldRow[_]] = {
     List(
-      FieldRow(RedmineField.summary, RedmineField.summary, ""),
-      FieldRow(RedmineField.assignee, RedmineField.assignee, defaultValue)
+      FieldRow(Summary, Summary, ""),
+      FieldRow(Assignee, Assignee, defaultValue)
     )
   }
 
-  def getDefault(): List[FieldRow] = {
+  def getDefault(): List[FieldRow[_]] = {
     List(
-      FieldRow(RedmineField.summary, RedmineField.summary, ""),
+      FieldRow(Summary, Summary, "")
     )
   }
 }

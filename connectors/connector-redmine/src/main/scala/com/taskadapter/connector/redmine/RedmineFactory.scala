@@ -1,21 +1,14 @@
 package com.taskadapter.connector.redmine
 
-import java.util
-
 import com.google.gson.{JsonElement, JsonParseException}
-import com.taskadapter.connector.Field
 import com.taskadapter.connector.common.ConfigUtils
 import com.taskadapter.connector.definition.{Descriptor, PluginFactory, WebConnectorSetup}
-import com.taskadapter.model.StandardField
-
-import scala.collection.immutable.Map
+import com.taskadapter.model.Field
 
 class RedmineFactory extends PluginFactory[RedmineConfig, WebConnectorSetup] {
   private val DESCRIPTOR = Descriptor(RedmineConnector.ID, "Redmine")
 
-  override def getAvailableFields: util.List[Field] = RedmineField.fieldsAsJava()
-
-  override def getSuggestedCombinations: Map[Field, StandardField] = RedmineField.getSuggestedCombinations()
+  override def getSuggestedCombinations: Seq[Field[_]] = RedmineField.fields
 
   override def createConnector(config: RedmineConfig, setup: WebConnectorSetup) = new RedmineConnector(config, setup)
 

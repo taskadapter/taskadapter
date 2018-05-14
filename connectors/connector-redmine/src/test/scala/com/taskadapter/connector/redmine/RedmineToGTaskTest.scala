@@ -4,7 +4,7 @@ import java.util.{Calendar, Collections}
 
 import com.taskadapter.connector.Priorities
 import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.model.{GUser, Precedes}
+import com.taskadapter.model._
 import com.taskadapter.redmineapi.bean._
 import org.junit.Assert.{assertEquals, assertNull}
 import org.junit.runner.RunWith
@@ -25,14 +25,14 @@ class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with 
     val redmineIssue = new Issue
     redmineIssue.setSubject("text 1")
     val task = get().convertToGenericTask(redmineIssue)
-    assertEquals("text 1", task.getValue(RedmineField.summary.name))
+    assertEquals("text 1", task.getValue(Summary))
   }
 
   it("descriptionIsConverted") {
     val redmineIssue = new Issue
     redmineIssue.setDescription("description 1")
     val task = get().convertToGenericTask(redmineIssue)
-    assertEquals("description 1", task.getValue(RedmineField.description.name))
+    assertEquals("description 1", task.getValue(Description))
   }
 
   it("idIsConvertedIfSet") {
@@ -69,14 +69,14 @@ class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with 
   it("assigneeIsIgnoredIfNotSet") {
     val redmineIssue = new Issue
     val task = get().convertToGenericTask(redmineIssue)
-    assertNull(task.getValue(RedmineField.assignee.name))
+    assertNull(task.getValue(Assignee))
   }
 
   it("assignee id is converted") {
     val redmineIssue = new Issue
     redmineIssue.setAssigneeId(123)
     val task = get().convertToGenericTask(redmineIssue)
-    task.getValue(RedmineField.assignee).asInstanceOf[GUser].getId shouldBe 123
+    task.getValue(Assignee).getId shouldBe 123
   }
 
   it("trackerTypeIsConvertedIfSet") {
@@ -84,34 +84,34 @@ class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with 
     val tracker = TrackerFactory.create(123, "something")
     redmineIssue.setTracker(tracker)
     val task = get().convertToGenericTask(redmineIssue)
-    assertEquals("something", task.getValue(RedmineField.taskType.name))
+    assertEquals("something", task.getValue(TaskType))
   }
 
   it("trackerTypeIsIgnoredIfNotSet") {
     val redmineIssue = new Issue
     val task = get().convertToGenericTask(redmineIssue)
-    assertNull(task.getValue(RedmineField.taskType.name))
+    assertNull(task.getValue(TaskType))
   }
 
   it("statusIsConverted") {
     val redmineIssue = new Issue
     redmineIssue.setStatusName("some status")
     val task = get().convertToGenericTask(redmineIssue)
-    assertEquals("some status", task.getValue(RedmineField.taskStatus.name))
+    assertEquals("some status", task.getValue(TaskStatus))
   }
 
   it("estimatedHoursAreConverted") {
     val redmineIssue = new Issue
     redmineIssue.setEstimatedHours(55f)
     val task = get().convertToGenericTask(redmineIssue)
-    assertEquals(55f.asInstanceOf[Float], task.getValue(RedmineField.estimatedTime.name))
+    task.getValue(EstimatedTime) shouldBe 55f
   }
 
   it("doneRatioIsConverted") {
     val redmineIssue = new Issue
     redmineIssue.setDoneRatio(75)
     val task = get().convertToGenericTask(redmineIssue)
-    assertEquals(75, task.getValue(RedmineField.doneRatio.name))
+    task.getValue(DoneRatio) shouldBe 75f
   }
 
   it("startDateIsConverted") {
@@ -119,7 +119,7 @@ class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with 
     val time = getTime
     redmineIssue.setStartDate(time)
     val task = get().convertToGenericTask(redmineIssue)
-    assertEquals(time, task.getValue(RedmineField.startDate.name))
+    assertEquals(time, task.getValue(StartDate))
   }
 
   private def getTime = {
@@ -133,7 +133,7 @@ class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with 
     val time = getTime
     redmineIssue.setDueDate(time)
     val task = get().convertToGenericTask(redmineIssue)
-    assertEquals(time, task.getValue(RedmineField.dueDate.name))
+    assertEquals(time, task.getValue(DueDate))
   }
 
   it("createdOnIsConverted") {
@@ -141,7 +141,7 @@ class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with 
     val time = getTime
     redmineIssue.setCreatedOn(time)
     val task = get().convertToGenericTask(redmineIssue)
-    assertEquals(time, task.getValue(RedmineField.createdOn.name))
+    assertEquals(time, task.getValue(CreatedOn))
   }
 
   it("updatedOnIsConverted") {
@@ -149,27 +149,27 @@ class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with 
     val time = getTime
     redmineIssue.setUpdatedOn(time)
     val task = get().convertToGenericTask(redmineIssue)
-    assertEquals(time, task.getValue(RedmineField.updatedOn.name))
+    assertEquals(time, task.getValue(UpdatedOn))
   }
 
   it("priorityIsAssignedDefaultValueIfNotSet") {
     val redmineIssue = new Issue
     val task = get().convertToGenericTask(redmineIssue)
-    assertEquals(Priorities.DEFAULT_PRIORITY_VALUE, task.getValue(RedmineField.priority.name))
+    assertEquals(Priorities.DEFAULT_PRIORITY_VALUE, task.getValue(Priority))
   }
 
   it("priorityIsConvertedIfSet") {
     val redmineIssue = new Issue
     redmineIssue.setPriorityText("High")
     val task = get().convertToGenericTask(redmineIssue)
-    assertEquals(700, task.getValue(RedmineField.priority.name))
+    assertEquals(700, task.getValue(Priority))
   }
 
   it("priorityIsAssignedDefaultValueIfUnknownValueSet") {
     val redmineIssue = new Issue
     redmineIssue.setPriorityText("some unknown text")
     val task = get().convertToGenericTask(redmineIssue)
-    assertEquals(Priorities.DEFAULT_PRIORITY_VALUE, task.getValue(RedmineField.priority.name))
+    assertEquals(Priorities.DEFAULT_PRIORITY_VALUE, task.getValue(Priority))
   }
 
   it("relations are converted") {
