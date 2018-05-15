@@ -7,7 +7,7 @@ import com.taskadapter.core.PreviouslyCreatedTasksResolver
 
 class Adapter(connector1: NewConnector, connector2: NewConnector) {
 
-  def adapt(rows: List[FieldRow]): SaveResult = {
+  def adapt(rows: List[FieldRow[_]]): SaveResult = {
     val tasks = connector1.loadData()
     val result = connector2.saveData(PreviouslyCreatedTasksResolver.empty, tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows)
     result

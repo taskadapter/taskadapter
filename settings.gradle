@@ -11,8 +11,8 @@ include "common",
 //        "connectors:connector-github",
 //        "connectors:connector-mantis",
         "connectors:connector-redmine",
-        "connectors:connector-trello"
-//        "connectors:integration-tests"
+        "connectors:connector-trello",
+        "connectors:integration-tests"
 //        "connectors-editors:basecamp-editor",
 //        "connectors-editors:basecamp-classic-editor",
 //        "connectors-editors:github-editor",

@@ -12,6 +12,10 @@ object GTaskBuilder {
   def withRandom(field: Field[_]): GTask = {
     new GTaskBuilder().withRandom(field).build()
   }
+
+  def withSummary(value: String): GTask = {
+    new GTaskBuilder().withField(Summary, value).build()
+  }
 }
 
 class GTaskBuilder {
@@ -19,6 +23,11 @@ class GTaskBuilder {
 
   def withField[T](field: Field[T], value: T): GTaskBuilder = {
     task.setValue(field, value)
+    this
+  }
+
+  def withAssignee(assignee: GUser): GTaskBuilder = {
+    task.setValue(Assignee, assignee)
     this
   }
 
