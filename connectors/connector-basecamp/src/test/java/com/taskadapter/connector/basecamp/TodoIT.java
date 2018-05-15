@@ -5,7 +5,6 @@ import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor;
 import com.taskadapter.model.GUser;
 import org.junit.Assert;
 import org.junit.After;

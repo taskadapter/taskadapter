@@ -4,7 +4,7 @@ import java.util.Date
 
 import com.taskadapter.connector.basecamp.{BasecampTaskWrapper, UserResolver}
 import com.taskadapter.connector.common.data.ConnectorConverter
-import com.taskadapter.model.{GTask, GUser}
+import com.taskadapter.model._
 import org.w3c.dom.{Document, Element}
 
 import scala.collection.JavaConverters._
@@ -28,15 +28,15 @@ class GTaskToBasecampClassic(resolver: UserResolver) extends ConnectorConverter[
     }
     val str = BasecampUtils.stringify(d)
 
-    BasecampTaskWrapper(source.getKey, str, source.getValue(BasecampClassicField.doneRatio).asInstanceOf[Float])
+    BasecampTaskWrapper(source.getKey, str, source.getValue(DoneRatio))
   }
 
-  def processField(d: Document, e: Element, fieldName: String, value: Any): Unit = {
-    fieldName match {
-      case BasecampClassicField.content.name =>
+  def processField(d: Document, e: Element, field: Field[_], value: Any): Unit = {
+    field match {
+      case BasecampClassicField.content =>
         val stringValue = value.asInstanceOf[String]
         XmlUtils.setString(d, e, "content", stringValue)
-      case BasecampClassicField.doneRatio.name =>
+      case DoneRatio =>
         val booleanValue: Boolean = if (value == null) false
         else if (value.asInstanceOf[Float] >= 100) true
         else false
@@ -46,9 +46,9 @@ class GTaskToBasecampClassic(resolver: UserResolver) extends ConnectorConverter[
         compl.appendChild(d.createTextNode(booleanValue.toString))
         e.appendChild(compl)
 
-      case BasecampClassicField.dueDate.name =>
+      case DueDate =>
         XmlUtils.setLong(d, e, "due-at", value.asInstanceOf[Date])
-      case BasecampClassicField.assignee.name =>
+      case Assignee =>
         writeAssignee(d, e, value.asInstanceOf[GUser])
 
       case _ => // ignore unknown fields

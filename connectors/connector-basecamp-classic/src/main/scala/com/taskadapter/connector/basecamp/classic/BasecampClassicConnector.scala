@@ -38,7 +38,7 @@ class BasecampClassicConnector(config: BasecampClassicConfig, setup: WebConnecto
     res
   }
 
-  override def loadTaskByKey(id: TaskId, rows: Iterable[FieldRow]): GTask = {
+  override def loadTaskByKey(id: TaskId, rows: Iterable[FieldRow[_]]): GTask = {
     BasecampConfigValidator.validateServerAuth(setup)
     val obj = api.getObject("todo_items/" + id.key + ".xml")
     BasecampClassicToGTask.parseTask(obj)
@@ -47,7 +47,7 @@ class BasecampClassicConnector(config: BasecampClassicConfig, setup: WebConnecto
   @throws[ConnectorException]
   def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask],
                monitor: ProgressMonitor,
-               fieldRows: Iterable[FieldRow]): SaveResult = try {
+               fieldRows: Iterable[FieldRow[_]]): SaveResult = try {
     BasecampConfigValidator.validateServerAuth(setup)
     BasecampConfigValidator.validateTodoList(config)
     val userResolver = findUserResolver()

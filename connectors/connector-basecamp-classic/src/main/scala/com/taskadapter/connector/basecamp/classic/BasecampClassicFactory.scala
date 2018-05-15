@@ -1,16 +1,10 @@
 package com.taskadapter.connector.basecamp.classic
 
-import java.util
-
 import com.google.gson.{JsonElement, JsonParseException}
-import com.taskadapter.connector.Field
 import com.taskadapter.connector.basecamp.classic.transport.{BaseCommunicator, ObjectAPIFactory}
 import com.taskadapter.connector.common.ConfigUtils
 import com.taskadapter.connector.definition.{Descriptor, PluginFactory, WebConnectorSetup}
-import com.taskadapter.model.StandardField
-
-import scala.collection.JavaConverters._
-import scala.collection.immutable.Map
+import com.taskadapter.model.Field
 
 class BasecampClassicFactory extends PluginFactory[BasecampClassicConfig, WebConnectorSetup] {
   val DESCRIPTOR = Descriptor(BasecampClassicConnector.ID, "Basecamp Classic")
@@ -18,9 +12,7 @@ class BasecampClassicFactory extends PluginFactory[BasecampClassicConfig, WebCon
 
   override def createConnector(config: BasecampClassicConfig, setup: WebConnectorSetup) = new BasecampClassicConnector(config, setup, factory)
 
-  override def getAvailableFields: util.List[Field] = BasecampClassicField.fields.asJava
-
-  override def getSuggestedCombinations: Map[Field, StandardField] = BasecampClassicField.suggestedStandardFields
+  override def getSuggestedCombinations: Seq[Field[_]] = BasecampClassicField.fields
 
   override def getDescriptor = DESCRIPTOR
 
