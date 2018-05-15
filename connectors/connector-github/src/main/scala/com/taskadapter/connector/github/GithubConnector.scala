@@ -22,11 +22,11 @@ object GithubConnector {
 
 class GithubConnector(config: GithubConfig, setup: WebConnectorSetup) extends NewConnector {
   @throws[ConnectorException]
-  override def loadTaskByKey(key: TaskId, rows: Iterable[FieldRow]): GTask = {
+  override def loadTaskByKey(key: TaskId, rows: Iterable[FieldRow[_]]): GTask = {
     val issueService = new ConnectionFactory(setup).getIssueService
     try {
       val issue = issueService.getIssue(setup.userName, config.getProjectKey, key.id.toInt)
-      new GithubToGTask().toGtask(issue)
+      GithubToGTask.toGtask(issue)
     } catch {
       case e: IOException =>
         throw GithubUtils.convertException(e)
@@ -46,7 +46,7 @@ class GithubConnector(config: GithubConfig, setup: WebConnectorSetup) extends Ne
     val issueService = getIssueService
     try {
       val issues = issueService.getIssues(setup.userName, config.getProjectKey, issuesFilter)
-      new GithubToGTask().toGTaskList(issues)
+      GithubToGTask.toGTaskList(issues)
     } catch {
       case e: IOException =>
         throw GithubUtils.convertException(e)
@@ -54,7 +54,7 @@ class GithubConnector(config: GithubConfig, setup: WebConnectorSetup) extends Ne
   }
 
   override def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask], monitor: ProgressMonitor,
-                        rows: Iterable[FieldRow]): SaveResult = {
+                        rows: Iterable[FieldRow[_]]): SaveResult = {
     val ghConnector = new ConnectionFactory(setup)
     val converter = new GTaskToGithub(ghConnector.getUserService)
     val issueService = ghConnector.getIssueService
