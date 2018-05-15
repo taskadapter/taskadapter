@@ -30,7 +30,7 @@ public final class MSPTaskSaver {
     private MsXmlFileWriter writer;
     private FileSetup setup;
 
-    public MSPTaskSaver(FileSetup setup, scala.collection.Iterable<FieldRow> rows) {
+    public MSPTaskSaver(FileSetup setup, scala.collection.Iterable<FieldRow<?>> rows) {
         this.setup = setup;
         this.writer = new MsXmlFileWriter(rows);
     }

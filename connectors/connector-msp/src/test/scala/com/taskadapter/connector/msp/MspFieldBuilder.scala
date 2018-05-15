@@ -1,12 +1,13 @@
 package com.taskadapter.connector.msp
 
 import com.taskadapter.connector.FieldRow
+import com.taskadapter.model.Summary
 
 object MspFieldBuilder {
 
-  def getDefault(): List[FieldRow] = {
+  def getDefault(): List[FieldRow[_]] = {
     List(
-      FieldRow(MspField.summary, MspField.summary, ""),
+      FieldRow(Summary, Summary, "")
     )
   }
 }

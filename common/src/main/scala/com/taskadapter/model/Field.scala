@@ -60,4 +60,8 @@ object TargetVersion extends Field[String](classOf[String], "TargetVersion")
 
 case class CustomString(override val name: String) extends Field[String](classOf[String], name)
 
+case class CustomDate(override val name: String) extends Field[Date](classOf[Date], name)
+
+case class CustomFloat(override val name: String) extends Field[Float](classOf[Float], name)
+
 case class CustomSeqString(override val name: String) extends Field[Seq[String]](classOf[Seq[String]], name)

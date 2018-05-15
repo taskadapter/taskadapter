@@ -77,7 +77,7 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
     }
 
     @Override
-    public GTask loadTaskByKey(TaskId key, scala.collection.Iterable<FieldRow> rows) {
+    public GTask loadTaskByKey(TaskId key, scala.collection.Iterable<FieldRow<?>> rows) {
         List<GTask> tasks = loadInternal(setup.sourceFile());
         for (GTask task : tasks) {
             if (task.getIdentity().equals(key)) {
@@ -136,7 +136,7 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
 
     @Override
     public SaveResult saveData(PreviouslyCreatedTasksResolver previouslyCreatedTasksResolver, List<GTask> tasks,
-                               ProgressMonitor monitor, scala.collection.Iterable<FieldRow> rows) {
+                               ProgressMonitor monitor, scala.collection.Iterable<FieldRow<?>> rows) {
         try {
             return new MSPTaskSaver(setup, rows).saveData(tasks);
         } catch (ConnectorException e) {
