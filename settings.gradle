@@ -9,7 +9,7 @@ include "common",
 //        "connectors:connector-basecamp",
 //        "connectors:connector-basecamp-classic",
 //        "connectors:connector-github",
-//        "connectors:connector-mantis",
+        "connectors:connector-mantis",
         "connectors:connector-redmine",
         "connectors:connector-trello",
         "connectors:integration-tests"

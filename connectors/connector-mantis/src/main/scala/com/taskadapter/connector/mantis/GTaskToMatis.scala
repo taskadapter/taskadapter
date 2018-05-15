@@ -6,8 +6,7 @@ import biz.futureware.mantis.rpc.soap.client.ObjectRef
 import biz.futureware.mantis.rpc.soap.client.ProjectData
 import com.taskadapter.connector.common.data.ConnectorConverter
 import com.taskadapter.connector.definition.exceptions.ConnectorException
-import com.taskadapter.model.GTask
-import com.taskadapter.model.GUser
+import com.taskadapter.model._
 import java.math.BigInteger
 import java.util.{Calendar, Date}
 import java.util
@@ -46,10 +45,10 @@ class GTaskToMatis(val mntProject: ProjectData, val users: util.List[AccountData
     issue
   }
 
-  def processField(issue: IssueData, fieldName: String, value: Any): Unit = {
-    fieldName match {
-      case MantisField.summary.name => issue.setSummary(value.asInstanceOf[String])
-      case MantisField.description.name =>
+  def processField(issue: IssueData, field: Field[_], value: Any): Unit = {
+    field match {
+      case Summary => issue.setSummary(value.asInstanceOf[String])
+      case Description =>
         // empty description is not allowed by Mantis API.
         // see bug https://www.hostedredmine.com/issues/39248
         if (Strings.isNullOrEmpty(value.asInstanceOf[String])) {
@@ -57,19 +56,19 @@ class GTaskToMatis(val mntProject: ProjectData, val users: util.List[AccountData
         } else {
           issue.setDescription(value.asInstanceOf[String])
         }
-      case MantisField.dueDate.name =>
+      case DueDate =>
         if (value != null) {
           val calendar = Calendar.getInstance()
           calendar.setTime(value.asInstanceOf[Date])
           issue.setDue_date(calendar)
         }
 
-      case MantisField.assignee.name =>
+      case Assignee =>
         if (value != null) {
           val ass = value.asInstanceOf[GUser]
           if (ass.getId != null) {
             val mntUser = new AccountData
-            mntUser.setId(BigInteger.valueOf(ass.getId.asInstanceOf[Long]))
+            mntUser.setId(BigInteger.valueOf(ass.getId.toLong))
             mntUser.setName(ass.getLoginName)
             issue.setHandler(mntUser)
           } else {
