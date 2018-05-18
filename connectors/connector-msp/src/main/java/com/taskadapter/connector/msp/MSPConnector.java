@@ -34,8 +34,9 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
         this.setup = setup;
     }
 
+    // TODO This is not used
     @Override
-    public void updateTasksByRemoteIds(List<GTask> tasksFromExternalSystem, Iterable<FieldRow> rows) throws ConnectorException {
+    public void updateTasksByRemoteIds(List<GTask> tasksFromExternalSystem, Iterable<FieldRow<?>> rows) throws ConnectorException {
        /* String fileName = config.getInputAbsoluteFilePath();
         try {
             ProjectFile projectFile = new MSPFileReader().readFile(fileName);

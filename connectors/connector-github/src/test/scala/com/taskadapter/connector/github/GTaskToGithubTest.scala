@@ -20,8 +20,7 @@ class GTaskToGithubTest extends FunSpec with Matchers {
     it("assignee with null Login Name is ignored") {
       val task = new GTask
       task.setValue(Summary, "my")
-      val user = new GUser()
-      user.setLoginName(null)
+      val user = GUser(null, null, null)
       task.setValue(Assignee, user)
       val issue = getConverter.toIssue(task)
       assertEquals("my", issue.getTitle)

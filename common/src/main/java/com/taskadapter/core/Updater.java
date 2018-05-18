@@ -64,10 +64,10 @@ public class Updater {
 
     }
 
-//    public void saveFile() throws ConnectorException {
+    public void saveFile() throws ConnectorException {
         // TODO remove the casting!
-//        ((FileBasedConnector) sourceConnector).updateTasksByRemoteIds(tasksInExternalSystem, rows);
-//    }
+        ((FileBasedConnector) sourceConnector).updateTasksByRemoteIds(tasksInExternalSystem, rows);
+    }
 
     public int getNumberOfUpdatedTasks() {
         return tasksInExternalSystem.size();

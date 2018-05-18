@@ -66,10 +66,10 @@ class GTaskToMatis(val mntProject: ProjectData, val users: util.List[AccountData
       case Assignee =>
         if (value != null) {
           val ass = value.asInstanceOf[GUser]
-          if (ass.getId != null) {
+          if (ass.id != null) {
             val mntUser = new AccountData
-            mntUser.setId(BigInteger.valueOf(ass.getId.toLong))
-            mntUser.setName(ass.getLoginName)
+            mntUser.setId(BigInteger.valueOf(ass.id.toLong))
+            mntUser.setName(ass.loginName)
             issue.setHandler(mntUser)
           } else {
             issue.setHandler(findUser(ass))
@@ -83,8 +83,8 @@ class GTaskToMatis(val mntProject: ProjectData, val users: util.List[AccountData
   private def findUser(ass: GUser): AccountData = {
     if (users == null) return null
     // getting best name to search
-    var nameToSearch = ass.getLoginName
-    if (nameToSearch == null || "" == nameToSearch) nameToSearch = ass.getDisplayName
+    var nameToSearch = ass.loginName
+    if (nameToSearch == null || "" == nameToSearch) nameToSearch = ass.displayName
     if (nameToSearch == null || "" == nameToSearch) return null
     import scala.collection.JavaConversions._
     for (user <- users) {

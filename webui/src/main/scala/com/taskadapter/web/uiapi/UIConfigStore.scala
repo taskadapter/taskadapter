@@ -2,8 +2,8 @@ package com.taskadapter.web.uiapi
 
 import java.io.File
 
+import com.fasterxml.jackson.core.`type`.TypeReference
 import com.taskadapter.auth.cred.CredentialsStore
-import com.taskadapter.config.CirceBoilerplateForConfigs._
 import com.taskadapter.config._
 import com.taskadapter.connector.NewConfigSuggester
 import com.taskadapter.connector.common.{FileNameGenerator, XorEncryptor}
@@ -77,12 +77,20 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     config1.setConnectorSetup(connector1Setup)
     config2.setConnectorSetup(connector2Setup)
 
-    val newMappings = decode[Seq[FieldMapping]](jsonString)
+//    val newMappings = decode[Seq[FieldMapping[_]]](jsonString)
+//    newMappings match {
+//      case Left(e) => throw new RuntimeException(s"cannot parse mappings from config $storedConfig: $e")
+//      case Right(m) =>
+//        new UISyncConfig(new TaskKeeperLocationStorage(configStorage.rootDir), storedConfig.getId, ownerName, label, config1, config2, m, false)
+//    }
 
-    newMappings match {
-      case Left(e) => throw new RuntimeException(s"cannot parse mappings from config $storedConfig: $e")
-      case Right(m) =>
-        new UISyncConfig(new TaskKeeperLocationStorage(configStorage.rootDir), storedConfig.getId, ownerName, label, config1, config2, m, false)
+    try {
+      val newMappings = JsonFactory.mapper.readValue(jsonString, new TypeReference[Seq[FieldMapping[_]]]{})
+      new UISyncConfig(new TaskKeeperLocationStorage(configStorage.rootDir), storedConfig.getId, ownerName,
+        label, config1, config2, newMappings, false)
+    } catch {
+      case e: Exception =>
+        throw new RuntimeException(s"cannot parse mappings from config $storedConfig: $e")
     }
   }
 
@@ -104,7 +112,8 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val newMappings = NewConfigSuggester.suggestedFieldMappingsForNewConfig(
       config1.getSuggestedCombinations,
       config2.getSuggestedCombinations)
-    val mappingsString = newMappings.asJson.noSpaces
+//    val mappingsString = newMappings.asJson.noSpaces
+    val mappingsString = mappingsToJsonString(newMappings)
     val configId = configStorage.createNewConfig(userName, label,
       config1.getConnectorTypeId, connector1SetupId, config1.getConfigString,
       config2.getConnectorTypeId, connector2SetupId, config2.getConfigString,
@@ -193,6 +202,11 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     }
   }
 
+  def mappingsToJsonString(mappings: Seq[FieldMapping[_]]):String = {
+    //    val mappingsStr = mappings.asJson.noSpaces
+    JsonFactory.mapper.writeValueAsString(mappings)
+  }
+
   /**
     * Saves a config.
     *
@@ -206,7 +220,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val config1 = normalizedSyncConfig.getConnector1
     val config2 = normalizedSyncConfig.getConnector2
     val mappings = normalizedSyncConfig.getNewMappings
-    val mappingsStr = mappings.asJson.noSpaces
+    val mappingsStr = mappingsToJsonString(mappings)
     configStorage.saveConfig(normalizedSyncConfig.getOwnerName, normalizedSyncConfig.identity, label,
       config1.getConnectorTypeId, SetupId(config1.getConnectorSetup.id.get), config1.getConfigString,
       config2.getConnectorTypeId, SetupId(config2.getConnectorSetup.id.get), config2.getConfigString,

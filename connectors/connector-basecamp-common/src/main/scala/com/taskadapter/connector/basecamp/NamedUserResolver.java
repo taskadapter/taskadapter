@@ -16,11 +16,11 @@ public class NamedUserResolver implements UserResolver {
         if (user == null) {
             return user;
         }
-        final GUser guess1 = users.get(user.getLoginName());
+        final GUser guess1 = users.get(user.loginName());
         if (guess1 != null) {
             return guess1;
         }
-        return users.get(user.getDisplayName());
+        return users.get(user.displayName());
     }
 
 }

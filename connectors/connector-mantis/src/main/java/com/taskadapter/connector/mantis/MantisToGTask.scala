@@ -21,11 +21,7 @@ object MantisToGTask {
   )
 
   def convertToGUser(mantisUser: AccountData): GUser = {
-    val user = new GUser
-    user.setId(mantisUser.getId.intValue)
-    user.setLoginName(mantisUser.getName)
-    user.setDisplayName(mantisUser.getReal_name)
-    user
+    GUser(mantisUser.getId.intValue, mantisUser.getName, mantisUser.getReal_name)
   }
 
   def convertToGenericTask(issue: IssueData): GTask = {

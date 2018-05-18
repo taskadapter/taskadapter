@@ -27,11 +27,11 @@ import scala.collection.JavaConverters._
   */
 object UISyncConfig {
 
-  private def reverse(fieldMappings: Seq[FieldMapping]): Seq[FieldMapping] = {
+  private def reverse(fieldMappings: Seq[FieldMapping[_]]): Seq[FieldMapping[_]] = {
     fieldMappings.map(reverse)
   }
 
-  private def reverse(mapping: FieldMapping) = FieldMapping(mapping.fieldInConnector2, mapping.fieldInConnector1, mapping.selected, mapping.defaultValue)
+  private def reverse(mapping: FieldMapping[_]) = mapping // FieldMapping(mapping.fieldInConnector2, mapping.fieldInConnector1, mapping.selected, mapping.defaultValue)
 
 
   /**
@@ -79,7 +79,7 @@ case class UISyncConfig(taskKeeperLocationStorage: TaskKeeperLocationStorage,
                         /**
                           * Field mappings. Left side is connector1, right side is connector2.
                           */
-                        fieldMappings: Seq[FieldMapping],
+                        fieldMappings: Seq[FieldMapping[_]],
 
                         /**
                           * "Config is reversed" flag.
@@ -93,7 +93,7 @@ case class UISyncConfig(taskKeeperLocationStorage: TaskKeeperLocationStorage,
 
   def getConnector2: UIConnectorConfig = connector2
 
-  def getNewMappings: Seq[FieldMapping] = fieldMappings
+  def getNewMappings: Seq[FieldMapping[_]] = fieldMappings
 
   /** Returns name of the user who owns this config. */
   def getOwnerName: String = owner

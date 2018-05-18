@@ -41,7 +41,7 @@ class MantisIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     val loaded = TestUtils.saveAndLoad(getConnector(), task,
       MantisFieldBuilder.getDefault ++ FieldRowBuilder.rows(Assignee)
     )
-    loaded.getValue(Assignee).getId shouldBe currentUser.getId
+    loaded.getValue(Assignee).id shouldBe currentUser.id
   }
 
   it("task created and updated") {

@@ -51,7 +51,7 @@ class GTaskToGithub(userService: UserService) extends ConnectorConverter[GTask, 
     try {
       val user = value.asInstanceOf[GUser]
       if (user != null) {
-        val userLogin = user.getLoginName
+        val userLogin = user.loginName
         if (!Strings.isNullOrEmpty(userLogin)) {
           if (!ghUsers.containsKey(userLogin)) {
             val ghUser = userService.getUser(userLogin)

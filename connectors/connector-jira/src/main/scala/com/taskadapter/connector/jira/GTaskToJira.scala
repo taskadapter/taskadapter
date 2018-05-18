@@ -77,10 +77,10 @@ class GTaskToJira(config: JiraConfig,
         issueInputBuilder.setDueDate(dueDateTime)
       }
       case Assignee => if (value != null) {
-        issueInputBuilder.setAssigneeName(value.asInstanceOf[GUser].getLoginName)
+        issueInputBuilder.setAssigneeName(value.asInstanceOf[GUser].loginName)
       }
       case Reporter => if (value != null) {
-        issueInputBuilder.setReporterName(value.asInstanceOf[GUser].getLoginName)
+        issueInputBuilder.setReporterName(value.asInstanceOf[GUser].loginName)
       }
       case com.taskadapter.model.Priority =>
         val priorityNumber = value.asInstanceOf[Integer]

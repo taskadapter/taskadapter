@@ -189,10 +189,10 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
       val result = TestUtils.saveAndLoad(redmineConnectorWithResolveAssignees, fromJira, rows)
 
       val redmineAssignee = result.getValue(Assignee)
-      redmineAssignee.getDisplayName shouldBe "Redmine Admin"
+      redmineAssignee.displayName shouldBe "Redmine Admin"
 
       val redmineReporter = result.getValue(RedmineField.author)
-      redmineReporter.getDisplayName shouldBe "Redmine Admin"
+      redmineReporter.displayName shouldBe "Redmine Admin"
     }
 
     it("assignee can be loaded from Redmine and saved to JIRA") {
@@ -200,7 +200,7 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
       val loadedTasks = TaskLoader.loadTasks(1, redmineConnectorWithResolveAssignees, "sourceName", ProgressMonitorUtils.DUMMY_MONITOR).asScala.toList
       loadedTasks.size shouldBe 1
       val redmineTask = loadedTasks.head
-      redmineTask.getValue(Assignee).getLoginName shouldBe RedmineTestInitializer.currentUser.getLoginName
+      redmineTask.getValue(Assignee).loginName shouldBe RedmineTestInitializer.currentUser.loginName
 
       val result = TestUtils.saveAndLoad(jiraConnector, redmineTask,
         Seq(
@@ -209,10 +209,10 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
         )
       )
       val ass = result.getValue(Assignee)
-      ass.getDisplayName shouldBe jiraSetup.userName
+      ass.displayName shouldBe jiraSetup.userName
 
       val reporter = result.getValue(Reporter)
-      reporter.getDisplayName shouldBe jiraSetup.userName
+      reporter.displayName shouldBe jiraSetup.userName
     }
 
   }
@@ -225,7 +225,7 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
         )
       )
       val ass = result.getValue(Assignee)
-      ass.getDisplayName shouldBe "Redmine Admin"
+      ass.displayName shouldBe "Redmine Admin"
     }
 
     /**
@@ -274,7 +274,7 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
     val issue = IssueFactory.create(redmineProject.get.getId, "some summary")
     issue.setDescription(description)
     if (assignee.isDefined) {
-      issue.setAssigneeId(assignee.get.getId)
+      issue.setAssigneeId(assignee.get.id)
     }
     mgr.getIssueManager.createIssue(issue)
   }

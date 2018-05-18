@@ -86,7 +86,7 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
   private def processAssignee(value: Any): Unit = {
     if (value != null) {
       val user = value.asInstanceOf[GUser]
-      val resource = resourceManager.getOrCreateResource(user.getDisplayName)
+      val resource = resourceManager.getOrCreateResource(user.displayName)
       val ass = mspTask.addResourceAssignment(resource)
       ass.setUnits(100)
       // MUST set the remaining work to avoid this bug:

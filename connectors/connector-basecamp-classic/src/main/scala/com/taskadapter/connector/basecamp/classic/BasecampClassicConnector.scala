@@ -69,7 +69,7 @@ class BasecampClassicConnector(config: BasecampClassicConfig, setup: WebConnecto
     import scala.collection.JavaConversions._
     for (eee <- arr) {
       val user = BasecampUtils.parseUser(eee)
-      users.put(user.getDisplayName, user)
+      users.put(user.displayName, user)
     }
     new NamedUserResolver(users)
   }

@@ -1,9 +1,9 @@
 package com.taskadapter.webui.uiapi
 
-import com.taskadapter.connector.Field
 import com.taskadapter.connector.definition.FieldMapping
-import com.taskadapter.connector.jira.{JiraConnector, JiraField}
-import com.taskadapter.connector.redmine.{RedmineConnector, RedmineField}
+import com.taskadapter.connector.jira.JiraConnector
+import com.taskadapter.connector.redmine.RedmineConnector
+import com.taskadapter.model.{Description, Field}
 import com.taskadapter.web.uiapi.ConfigId
 import org.junit.runner.RunWith
 import org.scalatest.concurrent.ScalaFutures
@@ -31,7 +31,7 @@ class UIConfigStoreTest extends FunSpec with ScalaFutures with Matchers with Con
         JiraConnector.ID, ConfigFolderTestConfigurer.jiraSetupId)
       val config = store.getConfig(configId).get
 
-      val row = findRow(config.fieldMappings, Some(RedmineField.description), Some(JiraField.description))
+      val row = findRow(config.fieldMappings, Some(Description), Some(Description))
       row.selected shouldBe true
       row.defaultValue shouldBe ""
     }
@@ -50,7 +50,7 @@ class UIConfigStoreTest extends FunSpec with ScalaFutures with Matchers with Con
 
   }
 
-  private def findRow(mappings: Seq[FieldMapping], connector1Field: Option[Field], connector2Field: Option[Field]): FieldMapping = {
+  private def findRow(mappings: Seq[FieldMapping[_]], connector1Field: Option[Field[_]], connector2Field: Option[Field[_]]): FieldMapping[_] = {
     val row = mappings.find(m => connector1Field == m.fieldInConnector1 && connector2Field == m.fieldInConnector2)
     row.isDefined shouldBe true
     row.get

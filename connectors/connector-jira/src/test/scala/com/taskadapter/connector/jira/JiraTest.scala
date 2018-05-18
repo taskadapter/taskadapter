@@ -43,15 +43,15 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
       val jiraUser = userPromise.claim
       val task = new GTask
       task.setValue(Summary, "some")
-      val user = new GUser(null, jiraUser.getName, jiraUser.getDisplayName)
+      val user = GUser(null, jiraUser.getName, jiraUser.getDisplayName)
       task.setValue(Assignee, user)
       task.setValue(Reporter, user)
       val loadedTask = TestUtils.saveAndLoad(connector, task, JiraFieldBuilder.getDefault())
-      loadedTask.getValue(Assignee).getLoginName shouldBe jiraUser.getName
-      loadedTask.getValue(Assignee).getDisplayName shouldBe jiraUser.getDisplayName
+      loadedTask.getValue(Assignee).loginName shouldBe jiraUser.getName
+      loadedTask.getValue(Assignee).displayName shouldBe jiraUser.getDisplayName
 
-      loadedTask.getValue(Reporter).getLoginName shouldBe jiraUser.getName
-      loadedTask.getValue(Reporter).getDisplayName shouldBe jiraUser.getDisplayName
+      loadedTask.getValue(Reporter).loginName shouldBe jiraUser.getName
+      loadedTask.getValue(Reporter).displayName shouldBe jiraUser.getDisplayName
 
       TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
     }

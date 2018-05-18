@@ -2,12 +2,13 @@ package com.taskadapter.webui.config
 
 import java.util
 
-import com.taskadapter.connector.Field
+import com.taskadapter.model.Field
+
 import scala.collection.JavaConverters._
 
-class ConnectorFieldLoader(fields: util.List[Field]) {
+class ConnectorFieldLoader(fields: Seq[Field[_]]) {
 
-  def getTypeForFieldName(fieldName: String): String = {
-    fields.asScala.find(f => f.name.equals(fieldName)).map(_.typeName).getOrElse("Unknown")
-  }
+//  def getTypeForFieldName(fieldName: String): String = {
+//    fields.find(f => f.name.equals(fieldName)).map(_.typeName).getOrElse("Unknown")
+//  }
 }

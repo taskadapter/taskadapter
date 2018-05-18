@@ -57,9 +57,9 @@ class GTaskToBasecamp(resolver: UserResolver) extends ConnectorConverter[GTask, 
         return
       }
       val resolvedAssignee = resolver.resolveUser(assignee)
-      if (resolvedAssignee == null || resolvedAssignee.getId == null) return
+      if (resolvedAssignee == null || resolvedAssignee.id == null) return
       writer.key(field).`object`.key("type").value("Person")
-      writer.key("id").value(resolvedAssignee.getId.intValue)
+      writer.key("id").value(resolvedAssignee.id.intValue)
       writer.endObject
     }
 

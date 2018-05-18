@@ -126,7 +126,6 @@ class MSPToGTask {
     }
 
     private GUser extractAssignee(Task task) {
-        GUser genericAssignee = new GUser();
         Resource r = getAssignee(task);
         if (r != null) {
             /*
@@ -134,11 +133,11 @@ class MSPToGTask {
                 * otherwise we'd try creating tasks in Redmine/Jira/.. using this
                 * MSP-specific ID.
                 */
+            Integer id = null;
             if (r.getUniqueID() != null && MSPUtils.isResourceOurs(r)) {
-                genericAssignee.setId(r.getUniqueID());
+                id = r.getUniqueID();
             }
-            genericAssignee.setDisplayName(r.getName());
-            return genericAssignee;
+            return new GUser(id, null, r.getName());
         }
         return null;
     }

@@ -113,7 +113,7 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
   private def processAssignee(redmineIssue: Issue, value: Any): Unit = {
     val user = value.asInstanceOf[GUser]
     if (user != null) {
-      val rmAss = usersCache.findRedmineUserInCache(user.getLoginName, user.getDisplayName)
+      val rmAss = usersCache.findRedmineUserInCache(user.loginName, user.displayName)
       if (rmAss.isEmpty) {
         logger.warn(s"Converting task to Redmine format: assignee: cannot resolve user in Redmine for $user")
       } else {
@@ -125,7 +125,7 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
   private def processAuthor(redmineIssue: Issue, value: Any): Unit = {
     val user = value.asInstanceOf[GUser]
     if (user != null) {
-      val author = usersCache.findRedmineUserInCache(user.getLoginName, user.getDisplayName)
+      val author = usersCache.findRedmineUserInCache(user.loginName, user.displayName)
       if (author.isDefined) {
         redmineIssue.setAuthorId(author.get.getId)
       }

@@ -58,7 +58,7 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
     taskFieldsMappingFragment.removeEmptyRows()
   }
 
-  def getElements: Iterable[FieldMapping] = {
+  def getElements: Iterable[FieldMapping[_]] = {
     taskFieldsMappingFragment.getElements
   }
 

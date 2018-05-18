@@ -1,17 +1,13 @@
 package com.taskadapter.web.uiapi
 
-import java.util
-
-import com.taskadapter.connector.{Field, NewConnector}
+import com.taskadapter.connector.NewConnector
 import com.taskadapter.connector.definition._
 import com.taskadapter.connector.definition.exceptions.BadConfigException
-import com.taskadapter.model.StandardField
-import com.taskadapter.web.{DroppingNotSupportedException, PluginEditorFactory}
+import com.taskadapter.model.Field
 import com.taskadapter.web.service.Sandbox
+import com.taskadapter.web.{DroppingNotSupportedException, PluginEditorFactory}
 import com.taskadapter.webui.data.ExceptionFormatter
 import com.vaadin.ui.ComponentContainer
-
-import scala.collection.immutable.Map
 
 /**
   * Implementation of RichConfig. Hides implementation details inside and keeps a
@@ -61,9 +57,7 @@ class UIConnectorConfigImpl[C <: ConnectorConfig, S <: ConnectorSetup]
 
   override def createMiniPanel(sandbox: Sandbox): ComponentContainer = editorFactory.getMiniPanelContents(sandbox, config, setup)
 
-  override def getAvailableFields: util.List[Field] = connectorFactory.getAvailableFields
-
-  override def getSuggestedCombinations: Map[Field, StandardField] = connectorFactory.getSuggestedCombinations
+  override def getSuggestedCombinations: Seq[Field[_]] = connectorFactory.getSuggestedCombinations
 
   override def getSourceLocation: String = editorFactory.describeSourceLocation(config, setup)
 

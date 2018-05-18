@@ -10,7 +10,7 @@ object JiraField {
      to avoid user confusion.
    */
   val fields = List(Id, Components, Summary, TaskStatus, Description, TaskType, EstimatedTime, Assignee,
-    CreatedOn, DueDate, Priority)
+    CreatedOn, DueDate, Priority, Reporter)
 
   // id field is not in the suggested list because typically
   // id from one system cannot be directly used as id in another system.

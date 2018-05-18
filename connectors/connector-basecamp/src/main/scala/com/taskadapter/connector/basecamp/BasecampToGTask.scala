@@ -25,9 +25,6 @@ object BasecampToGTask {
   }
 
   def parseUser(assObj: JSONObject): GUser = {
-    val result = new GUser
-    result.setId(JsonUtils.getInt("id", assObj))
-    result.setDisplayName(JsonUtils.getOptString("name", assObj))
-    result
+    GUser(JsonUtils.getInt("id", assObj), null, JsonUtils.getOptString("name", assObj))
   }
 }

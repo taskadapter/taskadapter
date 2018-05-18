@@ -81,7 +81,7 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
     for (i <- 0 until arr.length) {
       try {
         val user = BasecampToGTask.parseUser(arr.getJSONObject(i))
-        users.put(user.getDisplayName, user)
+        users.put(user.displayName, user)
       } catch {
         case e: JSONException =>
           throw new CommunicationException(e)

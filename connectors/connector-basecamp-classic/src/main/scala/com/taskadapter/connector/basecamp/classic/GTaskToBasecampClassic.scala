@@ -61,8 +61,8 @@ class GTaskToBasecampClassic(resolver: UserResolver) extends ConnectorConverter[
     root.appendChild(elt)
 
     val resolvedAssignee = resolver.resolveUser(assignee)
-    if (resolvedAssignee == null || resolvedAssignee.getId == null) elt.setAttribute("nil", "true")
-    else elt.appendChild(d.createTextNode(resolvedAssignee.getId.toString))
+    if (resolvedAssignee == null || resolvedAssignee.id == null) elt.setAttribute("nil", "true")
+    else elt.appendChild(d.createTextNode(resolvedAssignee.id.toString))
   }
 }
 
