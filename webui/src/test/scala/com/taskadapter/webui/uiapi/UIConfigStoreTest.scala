@@ -33,7 +33,7 @@ class UIConfigStoreTest extends FunSpec with ScalaFutures with Matchers with Con
 
       val row = findRow(config.fieldMappings, Some(Description), Some(Description))
       row.selected shouldBe true
-      row.defaultValue shouldBe ""
+      org.junit.Assert.assertTrue(row.defaultValue == null)
     }
   }
 

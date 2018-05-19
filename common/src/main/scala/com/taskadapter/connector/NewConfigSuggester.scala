@@ -10,7 +10,6 @@ import com.taskadapter.model.Field
   * Equivalent means they refer to the same [[Field]].
   */
 object NewConfigSuggester {
-  val DEFAULT_VALUE_FOR_EMPTY_VALUES = ""
 
   /**
     * try to match list of fields for connector 1 with the list for connector 2.

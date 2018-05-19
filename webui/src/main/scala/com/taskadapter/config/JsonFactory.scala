@@ -5,7 +5,7 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import com.taskadapter.connector.common.ConfigUtils
 import com.taskadapter.connector.definition.FieldMapping
-import com.taskadapter.model.{Assignee, Components, CreatedOn, CustomString, Description, DueDate, EstimatedTime, Field, Priority, Reporter, Summary, TaskStatus, TaskType}
+import com.taskadapter.model.{Assignee, Children, ClosedOn, Components, CreatedOn, CustomDate, CustomFloat, CustomSeqString, CustomString, Description, DoneRatio, DueDate, EstimatedTime, Field, Id, Key, ParentKey, Priority, Relations, Reporter, SourceSystemId, StartDate, Summary, TargetVersion, TaskStatus, TaskType, UpdatedOn}
 
 import scala.util.parsing.json.JSON
 
@@ -61,17 +61,31 @@ object JsonFactory {
     val gType = json("type")
     val result = gType match {
       case "Assignee$" => Assignee
+      case "Children$" => Children
       case "Components$" => Components
+      case "ClosedOn$" => ClosedOn
       case "CreatedOn$" => CreatedOn
+      case "CustomString$" => CustomString(fieldName)
+      case "CustomFloat$" => CustomFloat(fieldName)
+      case "CustomDate$" => CustomDate(fieldName)
+      case "CustomSeqString$" => CustomSeqString(fieldName)
+      case "Description$" => Description
+      case "DoneRatio" => DoneRatio
       case "DueDate$" => DueDate
       case "EstimatedTime$" => EstimatedTime
+      case "Id$" => Id
+      case "Key$" => Key
+      case "ParentKey$" => ParentKey
+      case "Priority$" => Priority
+      case "Relations$" => Relations
+      case "Reporter$" => Reporter
+      case "SourceSystemId$" => SourceSystemId
+      case "StartDate$" => StartDate
       case "Summary$" => Summary
       case "TaskStatus$" => TaskStatus
       case "TaskType$" => TaskType
-      case "Description$" => Description
-      case "Priority$" => Priority
-      case "Reporter$" => Reporter
-      case "CustomString$" => CustomString(fieldName)
+      case "TargetVersion$" => TargetVersion
+      case "UpdatedOn$" => UpdatedOn
       case _ => throw new RuntimeException(s"unknown type: $gType")
     }
 
