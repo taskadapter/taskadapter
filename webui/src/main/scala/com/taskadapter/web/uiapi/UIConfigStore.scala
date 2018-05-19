@@ -85,7 +85,8 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
 //    }
 
     try {
-      val newMappings = JsonFactory.mapper.readValue(jsonString, new TypeReference[Seq[FieldMapping[_]]]{})
+//      val newMappings = JsonFactory.mapper.readValue(jsonString, new TypeReference[Seq[FieldMapping[_]]]{})
+      val newMappings = JsonFactory.fromJsonString(jsonString)
       new UISyncConfig(new TaskKeeperLocationStorage(configStorage.rootDir), storedConfig.getId, ownerName,
         label, config1, config2, newMappings, false)
     } catch {
@@ -113,7 +114,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
       config1.getSuggestedCombinations,
       config2.getSuggestedCombinations)
 //    val mappingsString = newMappings.asJson.noSpaces
-    val mappingsString = mappingsToJsonString(newMappings)
+    val mappingsString = JsonFactory.toString(newMappings)
     val configId = configStorage.createNewConfig(userName, label,
       config1.getConnectorTypeId, connector1SetupId, config1.getConfigString,
       config2.getConnectorTypeId, connector2SetupId, config2.getConfigString,
@@ -202,11 +203,6 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     }
   }
 
-  def mappingsToJsonString(mappings: Seq[FieldMapping[_]]):String = {
-    //    val mappingsStr = mappings.asJson.noSpaces
-    JsonFactory.mapper.writeValueAsString(mappings)
-  }
-
   /**
     * Saves a config.
     *
@@ -220,7 +216,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val config1 = normalizedSyncConfig.getConnector1
     val config2 = normalizedSyncConfig.getConnector2
     val mappings = normalizedSyncConfig.getNewMappings
-    val mappingsStr = mappingsToJsonString(mappings)
+    val mappingsStr = JsonFactory.toString(mappings)
     configStorage.saveConfig(normalizedSyncConfig.getOwnerName, normalizedSyncConfig.identity, label,
       config1.getConnectorTypeId, SetupId(config1.getConnectorSetup.id.get), config1.getConfigString,
       config2.getConnectorTypeId, SetupId(config2.getConnectorSetup.id.get), config2.getConfigString,
