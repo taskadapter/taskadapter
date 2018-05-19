@@ -6,8 +6,6 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
 
-//import scala.collection.JavaConverters._
-
 @RunWith(classOf[JUnitRunner])
 class EditablePojoMappingsTest extends FunSpec with Matchers {
 
@@ -58,7 +56,7 @@ class EditablePojoMappingsTest extends FunSpec with Matchers {
     mappings.getElements.toSeq shouldBe
       List(FieldMapping(None, Some(Field("summary")), true, "default"),
         FieldMapping(Some(Field("field 1")), None, true, "default"),
-        FieldMapping(None, Some(Field("another")), true, "default"),
+        FieldMapping(None, Some(Field("another")), true, "default")
       )
   }
 

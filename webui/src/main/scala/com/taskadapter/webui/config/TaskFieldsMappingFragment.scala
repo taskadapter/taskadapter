@@ -5,10 +5,9 @@ import java.util.UUID
 import com.google.common.base.Strings
 import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.connector.definition.exceptions.BadConfigException
-import com.taskadapter.model.Field
+import com.taskadapter.model.{Assignee, Field, GUser, Reporter}
 import com.taskadapter.web.configeditor.Validatable
 import com.taskadapter.web.data.Messages
-import com.taskadapter.web.uiapi.UIConnectorConfig
 import com.taskadapter.webui.Page
 import com.vaadin.data.util.{BeanItemContainer, MethodProperty}
 import com.vaadin.server.Sizeable.Unit.PIXELS
@@ -42,7 +41,9 @@ class EditablePojoMappings(mappings: Seq[FieldMapping[_]],
     new EditableFieldMapping(UUID.randomUUID.toString,
       ro.fieldInConnector1.map(_.name).getOrElse(""),
       ro.fieldInConnector2.map(_.name).getOrElse(""),
-      ro.selected, ro.defaultValue.asInstanceOf[String])).to[ListBuffer]
+      ro.selected,
+      if (ro.defaultValue == null) "" else ro.defaultValue.asInstanceOf[String]))
+    .to[ListBuffer]
 
   def removeFieldFromList(field: EditableFieldMapping) = {
     editablePojoMappings = editablePojoMappings.filter(
@@ -57,7 +58,10 @@ class EditablePojoMappings(mappings: Seq[FieldMapping[_]],
     new FieldMapping(
       getField(e.fieldInConnector1),
       getField(e.fieldInConnector2),
-      e.selected, e.defaultValue))
+      e.selected,
+      DefaultValueResolver.resolveDefaultValueWithProperType(getField(e.fieldInConnector1).get, e.defaultValue)
+    )
+  )
 
   def getField[T](fieldName: String): Option[Field[T]] = {
     if (Strings.isNullOrEmpty(fieldName)) {
@@ -67,7 +71,6 @@ class EditablePojoMappings(mappings: Seq[FieldMapping[_]],
       Some(field.asInstanceOf[Field[T]])
     }
   }
-
 
   def add(m: EditableFieldMapping): Unit = {
     editablePojoMappings += m
@@ -80,14 +83,18 @@ class EditablePojoMappings(mappings: Seq[FieldMapping[_]],
 
 }
 
-class TaskFieldsMappingFragment(messages: Messages, connector1: UIConnectorConfig, connector2: UIConnectorConfig,
+class TaskFieldsMappingFragment(messages: Messages,
+                                connector1SupportedFields: Seq[Field[_]],
+                                connector1Label: String,
+                                connector2SupportedFields: Seq[Field[_]],
+                                connector2Label: String,
                                 mappings: Seq[FieldMapping[_]]) extends Validatable {
   val ui = new Panel(messages.get("editConfig.mappings.caption"))
   val layout = new VerticalLayout
   val gridLayout = new GridLayout
   val editablePojoMappings = new EditablePojoMappings(mappings,
-    new ConnectorFieldLoader(connector1.getSuggestedCombinations),
-    new ConnectorFieldLoader(connector2.getSuggestedCombinations))
+    new ConnectorFieldLoader(connector1SupportedFields),
+    new ConnectorFieldLoader(connector2SupportedFields))
 
   layout.addComponent(gridLayout)
   rebuildMappingUI()
@@ -118,13 +125,13 @@ class TaskFieldsMappingFragment(messages: Messages, connector1: UIConnectorConfi
     label.setWidth(20, PIXELS)
     gridLayout.addComponent(label, TaskFieldsMappingFragment.COLUMN_HELP, 0)
 
-    val label1 = new Label(connector1.getConnectorSetup.label)
+    val label1 = new Label(connector1Label)
     label1.addStyleName("fieldsTitle")
     label1.setWidth(230, PIXELS)
     gridLayout.addComponent(label1, TaskFieldsMappingFragment.COLUMN_LEFT_CONNECTOR, 0)
     gridLayout.setComponentAlignment(label1, Alignment.MIDDLE_LEFT)
 
-    val label3 = new Label(connector2.getConnectorSetup.label)
+    val label3 = new Label(connector2Label)
     label3.addStyleName("fieldsTitle")
     label3.setWidth(230, PIXELS)
     gridLayout.addComponent(label3, TaskFieldsMappingFragment.COLUMN_RIGHT_CONNECTOR, 0)
@@ -159,8 +166,8 @@ class TaskFieldsMappingFragment(messages: Messages, connector1: UIConnectorConfi
     val helpForField = null //getHelpForField(field);
     if (helpForField != null) addHelp(helpForField)
     else addEmptyCell()
-    addConnectorField(connector1.getSuggestedCombinations, field, "fieldInConnector1")
-    addConnectorField(connector2.getSuggestedCombinations, field, "fieldInConnector2")
+    addConnectorField(connector1SupportedFields, field, "fieldInConnector1")
+    addConnectorField(connector2SupportedFields, field, "fieldInConnector2")
     addTextFieldForDefaultValue(field)
     addRemoveRowButton(field)
   }

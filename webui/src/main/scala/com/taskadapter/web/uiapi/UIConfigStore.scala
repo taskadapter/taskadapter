@@ -2,7 +2,6 @@ package com.taskadapter.web.uiapi
 
 import java.io.File
 
-import com.fasterxml.jackson.core.`type`.TypeReference
 import com.taskadapter.auth.cred.CredentialsStore
 import com.taskadapter.config._
 import com.taskadapter.connector.NewConfigSuggester
@@ -77,15 +76,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     config1.setConnectorSetup(connector1Setup)
     config2.setConnectorSetup(connector2Setup)
 
-//    val newMappings = decode[Seq[FieldMapping[_]]](jsonString)
-//    newMappings match {
-//      case Left(e) => throw new RuntimeException(s"cannot parse mappings from config $storedConfig: $e")
-//      case Right(m) =>
-//        new UISyncConfig(new TaskKeeperLocationStorage(configStorage.rootDir), storedConfig.getId, ownerName, label, config1, config2, m, false)
-//    }
-
     try {
-//      val newMappings = JsonFactory.mapper.readValue(jsonString, new TypeReference[Seq[FieldMapping[_]]]{})
       val newMappings = JsonFactory.fromJsonString(jsonString)
       new UISyncConfig(new TaskKeeperLocationStorage(configStorage.rootDir), storedConfig.getId, ownerName,
         label, config1, config2, newMappings, false)
