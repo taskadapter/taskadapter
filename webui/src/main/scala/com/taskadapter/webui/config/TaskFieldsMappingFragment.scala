@@ -35,14 +35,14 @@ object TaskFieldsMappingFragment {
 }
 
 class EditablePojoMappings(mappings: Seq[FieldMapping[_]],
-                           connector1FieldLoader : ConnectorFieldLoader, connector2FieldLoader: ConnectorFieldLoader) {
+                           connector1FieldLoader: ConnectorFieldLoader, connector2FieldLoader: ConnectorFieldLoader) {
   var editablePojoMappings: ListBuffer[EditableFieldMapping] = ListBuffer()
 
-//  editablePojoMappings = mappings.map(ro =>
-//    new EditableFieldMapping(UUID.randomUUID.toString,
-//      ro.fieldInConnector1.map(_.name).getOrElse(""),
-//      ro.fieldInConnector2.map(_.name).getOrElse(""),
-//      ro.selected, ro.defaultValue)).to[ListBuffer]
+  editablePojoMappings = mappings.map(ro =>
+    new EditableFieldMapping(UUID.randomUUID.toString,
+      ro.fieldInConnector1.map(_.name).getOrElse(""),
+      ro.fieldInConnector2.map(_.name).getOrElse(""),
+      ro.selected, ro.defaultValue.asInstanceOf[String])).to[ListBuffer]
 
   def removeFieldFromList(field: EditableFieldMapping) = {
     editablePojoMappings = editablePojoMappings.filter(
@@ -50,26 +50,24 @@ class EditablePojoMappings(mappings: Seq[FieldMapping[_]],
   }
 
   def validate(): Unit = {
-//    MappingsValidator.validate(editablePojoMappings)
+    MappingsValidator.validate(editablePojoMappings)
   }
 
-  def getElements: Iterable[FieldMapping[_]] = Seq() /*editablePojoMappings.map(e =>
+  def getElements: Iterable[FieldMapping[_]] = editablePojoMappings.map(e =>
     new FieldMapping(
-      if (Strings.isNullOrEmpty(e.fieldInConnector1)) {
-        None
-      } else {
-        val typeName = connector1FieldLoader.getTypeForFieldName(e.fieldInConnector1)
-        Some(new Field(typeName, e.fieldInConnector1))
-      },
-      if (Strings.isNullOrEmpty(e.fieldInConnector2)) {
-        None
-      } else {
-        val typeName = connector2FieldLoader.getTypeForFieldName(e.fieldInConnector2)
-        Some(new Field(typeName, e.fieldInConnector2))
-      },
-
+      getField(e.fieldInConnector1),
+      getField(e.fieldInConnector2),
       e.selected, e.defaultValue))
-*/
+
+  def getField[T](fieldName: String): Option[Field[T]] = {
+    if (Strings.isNullOrEmpty(fieldName)) {
+      None
+    } else {
+      val field = connector1FieldLoader.getTypeForFieldName(fieldName)
+      Some(field.asInstanceOf[Field[T]])
+    }
+  }
+
 
   def add(m: EditableFieldMapping): Unit = {
     editablePojoMappings += m
@@ -223,10 +221,9 @@ class TaskFieldsMappingFragment(messages: Messages, connector1: UIConnectorConfi
   case class FieldBeanItem(vaadinId: String, className: String, friendlyName: String)
 
   private def addConnectorField(connectorFields: Seq[Field[_]], fieldMapping: EditableFieldMapping, classFieldName: String) = {
-    val container = new BeanItemContainer[FieldBeanItem](classOf[FieldBeanItem])
+    val container = new BeanItemContainer[String](classOf[String])
     val mappedTo = new MethodProperty[String](fieldMapping, classFieldName)
-    val fieldNames = connectorFields.map((field: Field[_]) =>
-      FieldBeanItem(field.getClass.getName + field.name, field.getClass.getName, field.name))
+    val fieldNames = connectorFields.map((field: Field[_]) => field.name)
       .toList
     container.addAll(fieldNames.asJava)
     val combo = new ComboBox(null, container)
