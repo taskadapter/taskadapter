@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import com.taskadapter.connector.common.ConfigUtils
 import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.model.{Assignee, Children, ClosedOn, Components, CreatedOn, CustomDate, CustomFloat, CustomSeqString, CustomString, Description, DoneRatio, DueDate, EstimatedTime, Field, Id, Key, ParentKey, Priority, Relations, Reporter, SourceSystemId, StartDate, Summary, TargetVersion, TaskStatus, TaskType, UpdatedOn}
+import com.taskadapter.webui.config.DefaultValueResolver
 
 import scala.util.parsing.json.JSON
 
@@ -49,7 +50,8 @@ object JsonFactory {
           val fakeClassWhyIsThisEvenNeededWTF = classOf[String]
           val field1 = fieldFromJson(fakeClassWhyIsThisEvenNeededWTF, fieldInConnector1)
           val field2 = fieldFromJson(fakeClassWhyIsThisEvenNeededWTF, fieldInConnector2)
-          FieldMapping(field1, field2, selected, default.asInstanceOf[String])
+          FieldMapping(field1, field2, selected,
+            DefaultValueResolver.getTag(field1).deserValue(default).asInstanceOf[String])
         })
     }.get
     result
