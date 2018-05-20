@@ -51,7 +51,7 @@ object JsonFactory {
           val field2 = fieldFromJson(fieldInConnector2)
           FieldMapping(Some(field1.asInstanceOf[Field[Any]]),
             Some(field2.asInstanceOf[Field[Any]]), selected,
-            DefaultValueResolver.getTag(field1).deserValue(default))
+            default.asInstanceOf[String])
         })
     }.get
     result

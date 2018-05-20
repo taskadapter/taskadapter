@@ -34,6 +34,6 @@ object NewConfigSuggester {
   }
 
   private def getMapping[T](field: Field[T]) : FieldMapping[T] = {
-    FieldMapping.apply(field, field, true, null.asInstanceOf[T])
+    FieldMapping.apply(field, field, true, null.asInstanceOf[String])
   }
 }

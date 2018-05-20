@@ -100,7 +100,7 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     val field = CustomSeqString("custom_checkbox_1")
     task.setValue(field, Seq("option1", "option2"))
     val rows = JiraFieldBuilder.getDefault() ++ List(
-      FieldRow(field, field, Seq())
+      FieldRow(field, field, "")
     )
     val id = TestUtils.save(getConnector, task, rows)
     val loadedTask = getConnector.loadTaskByKey(id, rows)

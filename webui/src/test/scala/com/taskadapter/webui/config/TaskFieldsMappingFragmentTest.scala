@@ -10,7 +10,7 @@ import org.scalatest.{FunSpec, Matchers}
 
 @RunWith(classOf[JUnitRunner])
 class TaskFieldsMappingFragmentTest extends FunSpec with Matchers with ConfigsTempFolder {
-  it("empty default value for non-string-based field is converted to null") {
+  it("empty default value for non-string-based field is converted to empty string") {
     val f = new TaskFieldsMappingFragment(Page.MESSAGES,
       Seq(Assignee), "JIRA",
       Seq(Assignee, Reporter), "Redmine",
@@ -18,6 +18,6 @@ class TaskFieldsMappingFragmentTest extends FunSpec with Matchers with ConfigsTe
     )
 
     f.getElements.size shouldBe 1
-    org.junit.Assert.assertNull(f.getElements.head.defaultValue)
+    f.getElements.head.defaultValue shouldBe ""
   }
 }

@@ -22,7 +22,7 @@ class NewConfigSuggesterTest extends FunSpec with ScalaFutures with Matchers {
       RedmineField.fields, JiraField.fields)
 
     list.size shouldBe jiraRedmineFieldsNumber
-    list.contains(FieldMapping(Assignee, Assignee, true, noUser)) shouldBe true
+    list.contains(FieldMapping(Assignee, Assignee, true, "")) shouldBe true
     list.contains(FieldMapping(TargetVersion, Field(""), false, "")) shouldBe true
   }
 

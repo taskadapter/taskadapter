@@ -1,14 +1,14 @@
 package com.taskadapter.connector.redmine
 
 import com.taskadapter.connector.FieldRow
-import com.taskadapter.model.{Assignee, GUser, Summary}
+import com.taskadapter.model.{Assignee, Summary}
 
 object RedmineFieldBuilder {
 
-  def withAssignee(defaultValue: GUser = null): List[FieldRow[_]] = {
+  def withAssignee(loginName: String = null): List[FieldRow[_]] = {
     List(
       FieldRow(Summary, Summary, ""),
-      FieldRow(Assignee, Assignee, defaultValue)
+      FieldRow(Assignee, Assignee, loginName)
     )
   }
 

@@ -3,7 +3,7 @@ package com.taskadapter.connector.common
 import java.text.SimpleDateFormat
 
 import com.taskadapter.connector.FieldRow
-import com.taskadapter.model.GTask
+import com.taskadapter.model.{Field, GTask}
 
 /**
   * When saving a task, we need to set some of its fields to some default value if there is nothing there yet.
@@ -37,7 +37,7 @@ object DefaultValueSetter {
     } else {
       currentFieldValue.get
     }
-    val targetField = row.targetField.get
+    val targetField = row.targetField.get.asInstanceOf[Field[Any]]
     result.setValue(targetField, newValue)
   }
 

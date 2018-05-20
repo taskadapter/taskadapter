@@ -22,6 +22,8 @@ abstract sealed class FieldTypeTag[T] {
   def serValue(v: T): String = if (v == null) null else gson.toJson(v)
 
   def deserValue(v: Any): T
+
+  def editableString(v: Any) : String
 }
 
 object GUserTypeTag extends FieldTypeTag[GUser] {
@@ -35,6 +37,8 @@ object GUserTypeTag extends FieldTypeTag[GUser] {
     val loginName = map("loginName").asInstanceOf[String]
     parseDefault(loginName)
   }
+
+  override def editableString(v: Any): String = Option(v.asInstanceOf[GUser]).map(_.loginName).getOrElse("")
 }
 
 object SeqStringTypeTag extends FieldTypeTag[Seq[String]] {
@@ -47,7 +51,10 @@ object SeqStringTypeTag extends FieldTypeTag[Seq[String]] {
     val array = v.asInstanceOf[Array[String]]
     array
   }
+
+  override def editableString(v: Any): String = Option(v).toString
 }
+
 object StringTypeTag extends FieldTypeTag[String] {
   override def parseDefault(str: String): String = str
 
@@ -58,4 +65,6 @@ object StringTypeTag extends FieldTypeTag[String] {
     val array = v.asInstanceOf[String]
     array
   }
+
+  override def editableString(v: Any): String = v.asInstanceOf[String]
 }

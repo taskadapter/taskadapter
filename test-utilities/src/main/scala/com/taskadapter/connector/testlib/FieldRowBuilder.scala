@@ -9,5 +9,5 @@ object FieldRowBuilder {
     field.map(f => build(f))
   }
 
-  def build[T](f: Field[T]): FieldRow[T] = new FieldRow[T](Option(f), Option(f), null.asInstanceOf[T])
+  def build[T](f: Field[T]): FieldRow[T] = new FieldRow[T](Option(f), Option(f), null.asInstanceOf[String])
 }
