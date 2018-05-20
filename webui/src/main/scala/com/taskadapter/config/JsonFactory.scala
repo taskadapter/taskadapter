@@ -47,18 +47,17 @@ object JsonFactory {
           val selected = java.lang.Boolean.parseBoolean(i("selected").toString)
           val default = i("defaultValue")
 
-          val fakeClassWhyIsThisEvenNeededWTF = classOf[String]
-          val field1 = fieldFromJson(fakeClassWhyIsThisEvenNeededWTF, fieldInConnector1)
-          val field2 = fieldFromJson(fakeClassWhyIsThisEvenNeededWTF, fieldInConnector2)
-          FieldMapping(field1, field2, selected,
-            DefaultValueResolver.getTag(field1).deserValue(default).asInstanceOf[String])
+          val field1 = fieldFromJson(fieldInConnector1)
+          val field2 = fieldFromJson(fieldInConnector2)
+          FieldMapping(Some(field1.asInstanceOf[Field[Any]]),
+            Some(field2.asInstanceOf[Field[Any]]), selected,
+            DefaultValueResolver.getTag(field1).deserValue(default))
         })
     }.get
     result
   }
 
-  def fieldFromJson[T](clazz: Class[T], json: Map[String, Any]): Field[T] = {
-
+  def fieldFromJson[T](json: Map[String, Any]): Field[T] = {
     val fieldName = json("name").asInstanceOf[String]
     val gType = json("type")
     val result = gType match {
@@ -90,7 +89,6 @@ object JsonFactory {
       case "UpdatedOn$" => UpdatedOn
       case _ => throw new RuntimeException(s"unknown type: $gType")
     }
-
     result.asInstanceOf[Field[T]]
   }
 
