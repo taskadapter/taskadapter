@@ -1,9 +1,7 @@
 package com.taskadapter.connector.common
 
-import java.text.SimpleDateFormat
-
 import com.taskadapter.connector.FieldRow
-import com.taskadapter.model.{Field, GTask}
+import com.taskadapter.model.{CustomString, DefaultValueResolver, Field, GTask}
 
 /**
   * When saving a task, we need to set some of its fields to some default value if there is nothing there yet.
@@ -14,10 +12,6 @@ import com.taskadapter.model.{Field, GTask}
   * This class sets those default values to empty fields.
   */
 object DefaultValueSetter {
-  /**
-    * Format for dates in "default value if empty " fields on "Task Fields Mapping" panel.
-    */
-  private val DATE_PARSER = new SimpleDateFormat("yyyy MM dd")
 
   def adapt(fieldRows: Iterable[FieldRow[_]], task: GTask): GTask = {
     val result = new GTask
@@ -33,7 +27,11 @@ object DefaultValueSetter {
     val currentFieldValue = fieldToLoadValueFrom.map(f => task.getValue(f)).flatMap(e => Option(e))
 
     val newValue = if (fieldIsConsideredEmpty(currentFieldValue)) {
-      row.defaultValueForEmpty
+      val valueWithProperType = getValueWithProperType(
+        // use a fake string field if no field exists for the source side. value will come from "default" then.
+        fieldToLoadValueFrom.getOrElse(CustomString("dummy")),
+        row.defaultValueForEmpty)
+      valueWithProperType
     } else {
       currentFieldValue.get
     }
@@ -43,5 +41,8 @@ object DefaultValueSetter {
 
   private def fieldIsConsideredEmpty(value: Option[Any]) =
     value.isEmpty || value.get.isInstanceOf[String] && value.get.asInstanceOf[String].isEmpty
+
+  private def getValueWithProperType(field: Field[_], value: String): Any =
+    DefaultValueResolver.getTag(field).parseDefault(value)
 }
 

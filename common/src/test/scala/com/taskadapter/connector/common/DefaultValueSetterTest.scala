@@ -42,6 +42,8 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
     newTask.getValue(Description) shouldBe "default description"
   }
 
+  // TA supports one-sided mappings where a default value is provided to the target Field and there is
+  // no corresponding Field in the source connector
   it("default value is set if source field is not defined but default value exists") {
     val rows = List(
       new FieldRow(None, Some(Description), "default description")

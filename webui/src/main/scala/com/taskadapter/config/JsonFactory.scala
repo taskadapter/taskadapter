@@ -6,7 +6,6 @@ import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import com.taskadapter.connector.common.ConfigUtils
 import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.model.{Assignee, Children, ClosedOn, Components, CreatedOn, CustomDate, CustomFloat, CustomSeqString, CustomString, Description, DoneRatio, DueDate, EstimatedTime, Field, Id, Key, ParentKey, Priority, Relations, Reporter, SourceSystemId, StartDate, Summary, TargetVersion, TaskStatus, TaskType, UpdatedOn}
-import com.taskadapter.webui.config.DefaultValueResolver
 
 import scala.util.parsing.json.JSON
 
@@ -22,11 +21,8 @@ object JsonFactory {
   def toString(mappings: Seq[FieldMapping[_]]): String = {
     val seq = mappings.map { m =>
       val defaultValueJsonString = if (m.defaultValue == null) null else gson.toJson(m.defaultValue)
-      s"""{ "fieldInConnector1": ${toString(m.fieldInConnector1)},
-          "fieldInConnector2": ${toString(m.fieldInConnector2)},
-          "defaultValue" : $defaultValueJsonString,
-          "selected": "${m.selected}"
-           }"""
+      s"""{ "fieldInConnector1": ${toString(m.fieldInConnector1)}, "fieldInConnector2": ${toString(m.fieldInConnector2)},
+"defaultValue" : $defaultValueJsonString, "selected": "${m.selected}" }"""
     }
     val asd = seq.mkString(",")
     s"[ $asd ]".filter(_ >= ' ')
@@ -34,8 +30,11 @@ object JsonFactory {
 
 
   def toString(f: Option[Field[_]]): String = {
-    val seq = s"""{ "type" : "${f.get.getClass.getSimpleName}", "name": "${f.get.name}" } """
-    seq
+    if (f.isEmpty) {
+      "null"
+    } else {
+      s"""{ "type" : "${f.get.getClass.getSimpleName}", "name": "${f.get.name}" } """
+    }
   }
 
   def fromJsonString(jsonString: String): Seq[FieldMapping[_]] = {
@@ -49,15 +48,19 @@ object JsonFactory {
 
           val field1 = fieldFromJson(fieldInConnector1)
           val field2 = fieldFromJson(fieldInConnector2)
-          FieldMapping(Some(field1.asInstanceOf[Field[Any]]),
-            Some(field2.asInstanceOf[Field[Any]]), selected,
+          FieldMapping(field1.asInstanceOf[Option[Field[Any]]],
+            field2.asInstanceOf[Option[Field[Any]]],
+            selected,
             default.asInstanceOf[String])
         })
     }.get
     result
   }
 
-  def fieldFromJson[T](json: Map[String, Any]): Field[T] = {
+  def fieldFromJson[T](json: Map[String, Any]): Option[Field[T]] = {
+    if (json == null) {
+      return None
+    }
     val fieldName = json("name").asInstanceOf[String]
     val gType = json("type")
     val result = gType match {
@@ -89,7 +92,7 @@ object JsonFactory {
       case "UpdatedOn$" => UpdatedOn
       case _ => throw new RuntimeException(s"unknown type: $gType")
     }
-    result.asInstanceOf[Field[T]]
+    Some(result.asInstanceOf[Field[T]])
   }
 
   //  def buildAllFieldMap() : Map[String, Class[Field[_]]] = {
