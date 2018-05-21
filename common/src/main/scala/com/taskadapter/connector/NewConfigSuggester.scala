@@ -15,21 +15,6 @@ object NewConfigSuggester {
     * try to match list of fields for connector 1 with the list for connector 2.
     */
   def suggestedFieldMappingsForNewConfig(list1: Seq[Field[_]], list2: Seq[Field[_]]): Seq[FieldMapping[_]] = {
-//    val result = scala.collection.mutable.ListBuffer[FieldMapping[_]]()
-//    list1.foreach{ standardField =>
-//      val field1 : Field = list1.find(i => i._2 == standardField).map(e => e._1).getOrElse(Field(""))
-//      val field2 : Field = map2.find(i => i._2 == standardField).map(e => e._1).getOrElse(Field(""))
-//      val selected = field1.name != "" && field2.name!= ""
-//      result += FieldMapping(field1, field2, selected, "")
-//    }
-//    val remainingConnector2Fields = map2.keys.filter(f=> !result.exists(e => e.fieldInConnector2.contains(f)))
-//
-//    remainingConnector2Fields.foreach{ field2 =>
-//      val standardFor2 = map2(field2)
-//      val field1 : Field[_] = list1.find(i => i._2 == standardFor2).map(e => e._1).getOrElse(Field(""))
-//      val selected = field1.name != "" && field2.name!= ""
-//      result += FieldMapping(field1, field2, selected, "")
-//    }
     list1.intersect(list2).map(f => getMapping(f))
   }
 

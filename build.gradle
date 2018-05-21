@@ -8,7 +8,6 @@ ext {
     httpClientVersion='4.2'
     slf4jVersion = '1.7.12'
     circeVersion = "0.9.3"
-    jacksonVersion = "2.9.5"
 }
 
 ext.libraries = [

@@ -1,8 +1,5 @@
 package com.taskadapter.config
 
-import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import com.taskadapter.connector.common.ConfigUtils
 import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.model.{Assignee, Children, ClosedOn, Components, CreatedOn, CustomDate, CustomFloat, CustomSeqString, CustomString, Description, DoneRatio, DueDate, EstimatedTime, Field, Id, Key, ParentKey, Priority, Relations, Reporter, SourceSystemId, StartDate, Summary, TargetVersion, TaskStatus, TaskType, UpdatedOn}
@@ -10,12 +7,6 @@ import com.taskadapter.model.{Assignee, Children, ClosedOn, Components, CreatedO
 import scala.util.parsing.json.JSON
 
 object JsonFactory {
-  val mapper = new ObjectMapper() with ScalaObjectMapper
-  mapper.registerModule(DefaultScalaModule)
-  mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-  mapper.enableDefaultTyping()
-  mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL)
-
   val gson = ConfigUtils.createDefaultGson
 
   def toString(mappings: Seq[FieldMapping[_]]): String = {
@@ -94,16 +85,4 @@ object JsonFactory {
     }
     Some(result.asInstanceOf[Field[T]])
   }
-
-  //  def buildAllFieldMap() : Map[String, Class[Field[_]]] = {
-  //    import scala.reflect.runtime.{universe => ru}
-  //    val tpe = ru.typeOf[Field[_]]
-  //    val clazz = tpe.typeSymbol.asClass
-  //    // if you want to ensure the type is a sealed trait,
-  //    // then you can use clazz.isSealed and clazz.isTrait
-  //    val map = clazz.knownDirectSubclasses.map(c =>
-  //      (c.getClass.getSimpleName -> c.getClass.asInstanceOf[Field[_]]))
-  //    println(map)
-  //    map.toMap
-  //  }
 }

@@ -59,7 +59,6 @@ class EditablePojoMappings(mappings: Seq[FieldMapping[_]],
       getField(e.fieldInConnector1),
       getField(e.fieldInConnector2),
       e.selected,
-//      DefaultValueResolver.getTag(getField(e.fieldInConnector1).get).editableString(e.defaultValue)
       e.defaultValue
     )
   )

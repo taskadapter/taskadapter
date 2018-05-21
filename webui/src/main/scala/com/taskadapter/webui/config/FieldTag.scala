@@ -20,9 +20,6 @@ abstract sealed class FieldTag[T] {
   def serValue(v: T): String = if (v == null) null else gson.toJson(v)
 
   def deserValue(v: Any): T
-
-  // TODO unused now?
-  def editableString(v: Any): String
 }
 
 class GUserTag(field: Field[_]) extends FieldTag[GUser] {
@@ -34,8 +31,6 @@ class GUserTag(field: Field[_]) extends FieldTag[GUser] {
     val loginName = map("loginName").asInstanceOf[String]
     DefaultValueResolver.getTag(field).parseDefault(loginName).asInstanceOf[GUser]
   }
-
-  override def editableString(v: Any): String = Option(v.asInstanceOf[GUser]).map(_.loginName).getOrElse("")
 }
 
 object SeqStringTag extends FieldTag[Seq[String]] {
@@ -46,8 +41,6 @@ object SeqStringTag extends FieldTag[Seq[String]] {
     val array = v.asInstanceOf[Array[String]]
     array
   }
-
-  override def editableString(v: Any): String = Option(v).toString
 }
 
 object StringTag extends FieldTag[String] {
@@ -58,6 +51,4 @@ object StringTag extends FieldTag[String] {
     val array = v.asInstanceOf[String]
     array
   }
-
-  override def editableString(v: Any): String = v.asInstanceOf[String]
 }

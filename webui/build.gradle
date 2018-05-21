@@ -26,10 +26,6 @@ dependencies {
 
     compile project(":webshared")
 
-    compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
-    compile "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
-    compile "com.fasterxml.jackson.module:jackson-module-scala_2.12:$jacksonVersion"
-
     compile "io.circe:circe-core_2.12:$circeVersion"
     compile "io.circe:circe-generic_2.12:$circeVersion"
     compile "io.circe:circe-parser_2.12:$circeVersion"
