@@ -12,6 +12,7 @@ object DefaultValueResolver {
     CreatedOn -> DateTypeTag,
     UpdatedOn -> DateTypeTag,
     ClosedOn -> DateTypeTag,
+    Priority -> IntegerTypeTag,
     Reporter -> GUserTypeTag,
     EstimatedTime -> FloatTypeTag,
     Components -> SeqStringTypeTag)
@@ -41,7 +42,8 @@ object DateTypeTag extends FieldDefaultTag[Date] {
 }
 
 object SeqStringTypeTag extends FieldDefaultTag[Seq[String]] {
-  override def parseDefault(str: String): Seq[String] = str.split(' ')
+  override def parseDefault(str: String): Seq[String] =
+    if (Strings.isNullOrEmpty(str)) null.asInstanceOf[Seq[String]] else str.split(' ')
 }
 
 object StringTypeTag extends FieldDefaultTag[String] {
@@ -55,5 +57,5 @@ object FloatTypeTag extends FieldDefaultTag[Float] {
 
 object IntegerTypeTag extends FieldDefaultTag[Integer] {
   override def parseDefault(str: String): Integer =
-    if (Strings.isNullOrEmpty(str))null.asInstanceOf[Integer] else str.toInt
+    if (Strings.isNullOrEmpty(str)) null.asInstanceOf[Integer] else str.toInt
 }

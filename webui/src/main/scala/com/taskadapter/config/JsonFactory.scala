@@ -69,10 +69,10 @@ object JsonFactory {
       case "Components$" => Components
       case "ClosedOn$" => ClosedOn
       case "CreatedOn$" => CreatedOn
-      case "CustomString$" => CustomString(fieldName)
-      case "CustomFloat$" => CustomFloat(fieldName)
-      case "CustomDate$" => CustomDate(fieldName)
-      case "CustomSeqString$" => CustomSeqString(fieldName)
+      case "CustomString" => CustomString(fieldName)
+      case "CustomFloat" => CustomFloat(fieldName)
+      case "CustomDate" => CustomDate(fieldName)
+      case "CustomSeqString" => CustomSeqString(fieldName)
       case "Description$" => Description
       case "DoneRatio" => DoneRatio
       case "DueDate$" => DueDate

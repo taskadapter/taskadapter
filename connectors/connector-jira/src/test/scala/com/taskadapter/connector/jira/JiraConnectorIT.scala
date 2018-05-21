@@ -33,7 +33,7 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
   it("description saved by default") {
     CommonTestChecks.fieldIsSavedByDefault(getConnector,
       new JiraGTaskBuilder().withDescription().build(),
-      JiraField.fields,
+      JiraField.fields.filter(_ != EstimatedTime),
       Description,
       taskId => TestJiraClientHelper.deleteTasks(client, taskId))
   }
