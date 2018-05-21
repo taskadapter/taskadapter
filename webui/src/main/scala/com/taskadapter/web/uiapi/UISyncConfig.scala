@@ -9,7 +9,7 @@ import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition._
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.core._
-import com.taskadapter.model.GTask
+import com.taskadapter.model.{Field, GTask}
 import com.taskadapter.webui.results.ExportResultFormat
 
 import scala.beans.BeanProperty
@@ -27,11 +27,13 @@ import scala.collection.JavaConverters._
   */
 object UISyncConfig {
 
-  private def reverse(fieldMappings: Seq[FieldMapping[_]]): Seq[FieldMapping[_]] = {
+  def reverse(fieldMappings: Seq[FieldMapping[_]]): Seq[FieldMapping[_]] = {
     fieldMappings.map(reverse)
   }
 
-  private def reverse(mapping: FieldMapping[_]) = mapping // FieldMapping(mapping.fieldInConnector2, mapping.fieldInConnector1, mapping.selected, mapping.defaultValue)
+  private def reverse(mapping: FieldMapping[_]) = FieldMapping(mapping.fieldInConnector2.asInstanceOf[Option[Field[Any]]],
+    mapping.fieldInConnector1.asInstanceOf[Option[Field[Any]]],
+    mapping.selected, mapping.defaultValue)
 
 
   /**
