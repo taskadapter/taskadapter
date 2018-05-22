@@ -109,6 +109,7 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
     checkDate(CreatedOn, "2018 05 04")
     checkField(Description, "text", "text")
     checkDate(DueDate, "2018 05 04")
+    checkField(DueDate, "", null)
     checkField(DoneRatio, "33", 33)
     checkField(EstimatedTime, "10.5", 10.5)
     checkField(Id, "5", 5)

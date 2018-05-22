@@ -56,18 +56,18 @@ class EditablePojoMappings(mappings: Seq[FieldMapping[_]],
 
   def getElements: Iterable[FieldMapping[_]] = editablePojoMappings.map(e =>
     new FieldMapping(
-      getField(e.fieldInConnector1),
-      getField(e.fieldInConnector2),
+      getField(e.fieldInConnector1, connector1FieldLoader),
+      getField(e.fieldInConnector2, connector2FieldLoader),
       e.selected,
       e.defaultValue
     )
   )
 
-  def getField[T](fieldName: String): Option[Field[T]] = {
+  def getField[T](fieldName: String, fieldLoader: ConnectorFieldLoader): Option[Field[T]] = {
     if (Strings.isNullOrEmpty(fieldName)) {
       None
     } else {
-      val field = connector1FieldLoader.getTypeForFieldName(fieldName)
+      val field = fieldLoader.getTypeForFieldName(fieldName)
       Some(field.asInstanceOf[Field[T]])
     }
   }

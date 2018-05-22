@@ -12,7 +12,7 @@ object FieldTag {
     Components -> SeqStringTag)
 
   def getTag(field: Field[_]): FieldTag[_] = {
-    tags.getOrElse(field, StringTag)
+    tags(field)
   }
 }
 

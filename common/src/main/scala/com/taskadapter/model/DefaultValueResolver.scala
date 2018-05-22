@@ -28,7 +28,7 @@ object DefaultValueResolver {
       case _: CustomFloat=> FloatTypeTag
       case _: CustomSeqString=> SeqStringTypeTag
       case _: CustomString=> StringTypeTag
-      case _ => tags.getOrElse(field, StringTypeTag)
+      case _ => tags(field)
     }
   }
 }
