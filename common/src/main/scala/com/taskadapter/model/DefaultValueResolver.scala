@@ -7,18 +7,29 @@ import com.google.common.base.Strings
 
 object DefaultValueResolver {
 
-  val tags: Map[Field[_], FieldDefaultTag[_]] = Map(Assignee -> GUserTypeTag,
-    DueDate -> DateTypeTag,
-    CreatedOn -> DateTypeTag,
-    UpdatedOn -> DateTypeTag,
+  val tags: Map[Field[_], FieldDefaultTag[_]] = Map(
+    Assignee -> GUserTypeTag,
     ClosedOn -> DateTypeTag,
+    Components -> SeqStringTypeTag,
+    CreatedOn -> DateTypeTag,
+    DueDate -> DateTypeTag,
+    DoneRatio -> FloatTypeTag,
+    EstimatedTime -> FloatTypeTag,
+    Id -> LongTypeTag,
     Priority -> IntegerTypeTag,
     Reporter -> GUserTypeTag,
-    EstimatedTime -> FloatTypeTag,
-    Components -> SeqStringTypeTag)
+    StartDate -> DateTypeTag,
+    UpdatedOn -> DateTypeTag,
+  )
 
   def getTag(field: Field[_]): FieldDefaultTag[_] = {
-    tags.getOrElse(field, StringTypeTag)
+    field match {
+      case _: CustomDate => DateTypeTag
+      case _: CustomFloat=> FloatTypeTag
+      case _: CustomSeqString=> SeqStringTypeTag
+      case _: CustomString=> StringTypeTag
+      case _ => tags.getOrElse(field, StringTypeTag)
+    }
   }
 }
 
@@ -53,6 +64,11 @@ object StringTypeTag extends FieldDefaultTag[String] {
 object FloatTypeTag extends FieldDefaultTag[Float] {
   override def parseDefault(str: String): Float =
     if (Strings.isNullOrEmpty(str)) null.asInstanceOf[Float] else str.toFloat
+}
+
+object LongTypeTag extends FieldDefaultTag[java.lang.Long] {
+  override def parseDefault(str: String): java.lang.Long =
+    if (Strings.isNullOrEmpty(str)) null.asInstanceOf[java.lang.Long] else str.toLong
 }
 
 object IntegerTypeTag extends FieldDefaultTag[Integer] {
