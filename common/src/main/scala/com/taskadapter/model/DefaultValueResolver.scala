@@ -14,6 +14,7 @@ object DefaultValueResolver {
     CreatedOn -> DateTypeTag,
     DueDate -> DateTypeTag,
     DoneRatio -> FloatTypeTag,
+    Description -> StringTypeTag,
     EstimatedTime -> FloatTypeTag,
     Id -> LongTypeTag,
     Priority -> IntegerTypeTag,
@@ -28,7 +29,7 @@ object DefaultValueResolver {
       case _: CustomFloat=> FloatTypeTag
       case _: CustomSeqString=> SeqStringTypeTag
       case _: CustomString=> StringTypeTag
-      case _ => tags(field)
+      case _ => tags.getOrElse(field, StringTypeTag)
     }
   }
 }
