@@ -4,8 +4,7 @@ import java.util
 
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.ProgressMonitorUtils
-import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.connector.testlib.{CommonTestChecks, TestUtils}
+import com.taskadapter.connector.testlib.{CommonTestChecks, FieldRowBuilder, TestUtils}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model._
 import org.fest.assertions.Assertions.assertThat
@@ -108,5 +107,43 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
   }
 
-  private def getConnector = new JiraConnector(JiraPropertiesLoader.createTestConfig, JiraPropertiesLoader.getTestServerInfo)
+  private val rows: Seq[FieldRow[_]] = FieldRowBuilder.rows(Summary, TaskType)
+
+  describe("Create") {
+    it("task is created with default task type set in config") {
+      val created = TestUtils.saveAndLoad(getConnector,
+        new GTaskBuilder().withRandom(Summary)/*.withField(TaskType, "Story")*/.build(),
+        rows)
+      created.getValue(TaskType) shouldBe config.getDefaultTaskType
+      TestJiraClientHelper.deleteTasks(client, created.getIdentity)
+    }
+    it("new task gets requested type") {
+      val created = TestUtils.saveAndLoad(getConnector, task("Story"), rows)
+      created.getValue(TaskType) shouldBe "Story"
+      TestJiraClientHelper.deleteTasks(client, created.getIdentity)
+    }
+  }
+
+  private def task(taskTypeName: String): GTask = {
+    GTaskBuilder.withRandom(Summary).setValue(TaskType, taskTypeName)
+  }
+
+  describe("Update") {
+    /**
+      * TODO
+      * This is a known bug that existed for a long time, apparently. Found it in May 2018.
+      */
+    ignore("updating task does not change its type to default") {
+      // regression test
+      val created = TestUtils.saveAndLoad(getConnector, task("Story"), rows)
+      created.setValue(TaskType, null)
+      val updated = TestUtils.saveAndLoad(getConnector, created, rows)
+      updated.getValue(TaskType) shouldBe "Story"
+      TestJiraClientHelper.deleteTasks(client, created.getIdentity)
+    }
+  }
+
+  private val config: JiraConfig = JiraPropertiesLoader.createTestConfig
+
+  private def getConnector = new JiraConnector(config, JiraPropertiesLoader.getTestServerInfo)
 }
