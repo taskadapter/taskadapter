@@ -8,7 +8,7 @@ import com.taskadapter.model.Field
 class JiraFactory extends PluginFactory[JiraConfig, WebConnectorSetup] {
   private val DESCRIPTOR = Descriptor(JiraConnector.ID, "Atlassian JIRA")
 
-  override def getSuggestedCombinations: Seq[Field[_]] = JiraField.fields
+  override def getAllFields: Seq[Field[_]] = JiraField.fields
 
   override def createConnector(config: JiraConfig, setup: WebConnectorSetup) = new JiraConnector(config, setup)
 
@@ -20,4 +20,6 @@ class JiraFactory extends PluginFactory[JiraConfig, WebConnectorSetup] {
   override def readConfig(config: JsonElement): JiraConfig = ConfigUtils.createDefaultGson.fromJson(config, classOf[JiraConfig])
 
   override def createDefaultConfig = new JiraConfig
+
+  override def getDefaultFieldsForNewConfig: Seq[Field[_]] = JiraField.defaultFieldsForNewConfig
 }

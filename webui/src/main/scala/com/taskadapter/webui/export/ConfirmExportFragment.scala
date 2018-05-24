@@ -56,8 +56,8 @@ object ConfirmExportFragment {
     buttonsLayout.addComponent(backButton)
     layout.addComponent(buttonsLayout)
     val taskFieldsMappingFragment = new TaskFieldsMappingFragment(Page.MESSAGES,
-      config.getConnector1.getSuggestedCombinations, config.getConnector1.getLabel,
-      config.getConnector2.getSuggestedCombinations, config.getConnector2.getLabel,
+      config.getConnector1.getAllFields, config.getConnector1.getLabel,
+      config.getConnector2.getAllFields, config.getConnector2.getLabel,
       config.getNewMappings)
 
     def getPossiblyUpdatedConfig = {

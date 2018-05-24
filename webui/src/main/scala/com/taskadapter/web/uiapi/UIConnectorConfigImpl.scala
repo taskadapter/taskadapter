@@ -57,7 +57,9 @@ class UIConnectorConfigImpl[C <: ConnectorConfig, S <: ConnectorSetup]
 
   override def createMiniPanel(sandbox: Sandbox): ComponentContainer = editorFactory.getMiniPanelContents(sandbox, config, setup)
 
-  override def getSuggestedCombinations: Seq[Field[_]] = connectorFactory.getSuggestedCombinations
+  override def getAllFields: Seq[Field[_]] = connectorFactory.getAllFields
+
+  override def getDefaultFieldsForNewConfig: Seq[Field[_]] = connectorFactory.getDefaultFieldsForNewConfig
 
   override def getSourceLocation: String = editorFactory.describeSourceLocation(config, setup)
 

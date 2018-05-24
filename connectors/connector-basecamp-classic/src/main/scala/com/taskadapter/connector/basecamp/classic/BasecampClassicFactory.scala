@@ -12,7 +12,7 @@ class BasecampClassicFactory extends PluginFactory[BasecampClassicConfig, WebCon
 
   override def createConnector(config: BasecampClassicConfig, setup: WebConnectorSetup) = new BasecampClassicConnector(config, setup, factory)
 
-  override def getSuggestedCombinations: Seq[Field[_]] = BasecampClassicField.fields
+  override def getAllFields: Seq[Field[_]] = BasecampClassicField.fields
 
   override def getDescriptor = DESCRIPTOR
 
@@ -23,4 +23,6 @@ class BasecampClassicFactory extends PluginFactory[BasecampClassicConfig, WebCon
     ConfigUtils.createDefaultGson.fromJson(config, classOf[BasecampClassicConfig])
 
   override def createDefaultConfig = new BasecampClassicConfig
+
+  override def getDefaultFieldsForNewConfig: Seq[Field[_]] = BasecampClassicField.fields
 }

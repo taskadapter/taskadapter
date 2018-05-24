@@ -12,13 +12,10 @@ object JiraField {
   val fields = List(Components, Summary, TaskStatus, Description, TaskType, EstimatedTime, Assignee,
     CreatedOn, DueDate, Priority, Reporter)
 
-  // id field is not in the suggested list because typically
-  // id from one system cannot be directly used as id in another system.
-
-    // estimated time is not a part of standard JIRA 7 anymore
-//    estimatedTime -> EstimatedTime,
-
-    // removing "Reporter" for now because export to JIRA gives
-    // "status=400, errors={reporter=Field 'reporter' cannot be set. It is not on the appropriate screen, or unknown."
-//    reporter -> Reporter,
+  /**
+    * Estimated time is not a part of standard JIRA 7 anymore.
+    * also removed "Reporter" because export to JIRA gives
+    * "status=400, errors={reporter=Field 'reporter' cannot be set. It is not on the appropriate screen, or unknown."
+    */
+  val defaultFieldsForNewConfig = fields.filter(_ != EstimatedTime).filter(_ != Reporter)
 }

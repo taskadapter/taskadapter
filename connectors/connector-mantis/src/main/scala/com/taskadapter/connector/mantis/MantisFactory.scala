@@ -11,7 +11,7 @@ object MantisFactory {
 
 class MantisFactory extends PluginFactory[MantisConfig, WebConnectorSetup] {
 
-  override def getSuggestedCombinations: Seq[Field[_]] = MantisField.fields
+  override def getAllFields: Seq[Field[_]] = MantisField.fields
 
   def createConnector(config: MantisConfig, setup: WebConnectorSetup) = new MantisConnector(config, setup)
 
@@ -22,4 +22,6 @@ class MantisFactory extends PluginFactory[MantisConfig, WebConnectorSetup] {
   override def readConfig(config: JsonElement): MantisConfig = ConfigUtils.createDefaultGson.fromJson(config, classOf[MantisConfig])
 
   override def createDefaultConfig = new MantisConfig
+
+  override def getDefaultFieldsForNewConfig: Seq[Field[_]] = MantisField.fields
 }

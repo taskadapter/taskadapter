@@ -99,7 +99,9 @@ abstract class UIConnectorConfig {
     */
   def createMiniPanel(sandbox: Sandbox): ComponentContainer
 
-  def getSuggestedCombinations: Seq[Field[_]]
+  def getAllFields: Seq[Field[_]]
+
+  def getDefaultFieldsForNewConfig: Seq[Field[_]]
 
   /**
     * Returns a source location name. This name is just a string for a user.

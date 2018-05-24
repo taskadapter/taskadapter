@@ -9,7 +9,7 @@ class TrelloFactory extends PluginFactory[TrelloConfig, WebConnectorSetup] {
 
   override def getDescriptor = Descriptor(TrelloConnector.ID, "Trello")
 
-  override def getSuggestedCombinations: Seq[Field[_]] = TrelloField.fields
+  override def getAllFields: Seq[Field[_]] = TrelloField.fields
 
   override def createConnector(config: TrelloConfig, setup: WebConnectorSetup) = new TrelloConnector(config, setup)
 
@@ -19,4 +19,6 @@ class TrelloFactory extends PluginFactory[TrelloConfig, WebConnectorSetup] {
   override def readConfig(config: JsonElement): TrelloConfig = ConfigUtils.createDefaultGson.fromJson(config, classOf[TrelloConfig])
 
   override def createDefaultConfig = new TrelloConfig("")
+
+  override def getDefaultFieldsForNewConfig: Seq[Field[_]] = TrelloField.defaultFieldsForNewConfig
 }

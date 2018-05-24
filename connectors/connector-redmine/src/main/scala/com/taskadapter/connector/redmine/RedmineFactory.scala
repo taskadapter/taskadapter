@@ -8,7 +8,7 @@ import com.taskadapter.model.Field
 class RedmineFactory extends PluginFactory[RedmineConfig, WebConnectorSetup] {
   private val DESCRIPTOR = Descriptor(RedmineConnector.ID, "Redmine")
 
-  override def getSuggestedCombinations: Seq[Field[_]] = RedmineField.fields
+  override def getAllFields: Seq[Field[_]] = RedmineField.fields
 
   override def createConnector(config: RedmineConfig, setup: WebConnectorSetup) = new RedmineConnector(config, setup)
 
@@ -20,4 +20,6 @@ class RedmineFactory extends PluginFactory[RedmineConfig, WebConnectorSetup] {
   override def readConfig(config: JsonElement): RedmineConfig = ConfigUtils.createDefaultGson.fromJson(config, classOf[RedmineConfig])
 
   override def createDefaultConfig = new RedmineConfig
+
+  override def getDefaultFieldsForNewConfig: Seq[Field[_]] = RedmineField.fields
 }

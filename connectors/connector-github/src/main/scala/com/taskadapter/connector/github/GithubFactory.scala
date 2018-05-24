@@ -10,7 +10,7 @@ object GithubFactory {
 }
 
 class GithubFactory extends PluginFactory[GithubConfig, WebConnectorSetup] {
-  override def getSuggestedCombinations: Seq[Field[_]] = GithubField.fields
+  override def getAllFields: Seq[Field[_]] = GithubField.fields
 
   def createConnector(config: GithubConfig, setup: WebConnectorSetup) = new GithubConnector(config, setup)
 
@@ -22,4 +22,6 @@ class GithubFactory extends PluginFactory[GithubConfig, WebConnectorSetup] {
   override def readConfig(config: JsonElement): GithubConfig = ConfigUtils.createDefaultGson.fromJson(config, classOf[GithubConfig])
 
   override def createDefaultConfig = new GithubConfig
+
+  override def getDefaultFieldsForNewConfig: Seq[Field[_]] = GithubField.fields
 }

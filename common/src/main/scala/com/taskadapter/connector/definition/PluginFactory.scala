@@ -11,7 +11,9 @@ import com.taskadapter.model.Field
   */
 trait PluginFactory[C <: ConnectorConfig, S <: ConnectorSetup] {
 
-  def getSuggestedCombinations: Seq[Field[_]]
+  def getAllFields: Seq[Field[_]]
+
+  def getDefaultFieldsForNewConfig: Seq[Field[_]]
 
   def createConnector(config: C, setup: S): NewConnector
 
