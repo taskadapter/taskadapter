@@ -13,9 +13,9 @@ object JiraField {
     CreatedOn, DueDate, Priority, Reporter)
 
   /**
-    * Estimated time is not a part of standard JIRA 7 anymore.
-    * also removed "Reporter" because export to JIRA gives
-    * "status=400, errors={reporter=Field 'reporter' cannot be set. It is not on the appropriate screen, or unknown."
+    * Estimated time, Reporter, DueDate are not included in standard JIRA 7 anymore.
     */
-  val defaultFieldsForNewConfig = fields.filter(_ != EstimatedTime).filter(_ != Reporter)
+  val defaultFieldsForNewConfig = fields.filter(_ != EstimatedTime)
+    .filter(_ != Reporter)
+    .filter(_ != DueDate)
 }
