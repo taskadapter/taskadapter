@@ -18,10 +18,9 @@ object CommonTestChecks extends Matchers {
 
   def skipCleanup(id: TaskId): Unit = {}
 
-  def taskIsCreatedAndLoaded(connector: NewConnector, task: GTask, rows: Seq[FieldRow[_]], fieldNameToSearch: Field[_],
+  def taskIsCreatedAndLoaded(connector: NewConnector, task: GTask, rows: Seq[FieldRow[_]], fields: Seq[Field[_]],
                              cleanup: TaskId => Unit): Unit = {
     val tasksQty = 1
-    val expectedValue = task.getValue(fieldNameToSearch)
 
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR,
       rows)
@@ -35,7 +34,10 @@ object CommonTestChecks extends Matchers {
 
     val foundTask = TestUtils.findTaskInList(loadedTasks, createdTask1Id)
     foundTask.isDefined shouldBe true
-    assertEquals(expectedValue, foundTask.get.getValue(fieldNameToSearch))
+
+    // check all requested fields
+    fields.foreach(f=> foundTask.get.getValue(f) shouldBe task.getValue(f))
+
     cleanup(createdTask1Id)
   }
 
@@ -61,24 +63,34 @@ object CommonTestChecks extends Matchers {
   }
 
   def taskCreatedAndUpdatedOK[T](targetLocation: String, connector: NewConnector, rows: Seq[FieldRow[_]], task: GTask,
-                              fieldToChangeInTest: Field[T],
-                              newValue: T,
-                              cleanup: TaskId => Unit): Unit = {
+                                 fieldToChangeInTest: Field[T],
+                                 newValue: T,
+                                 cleanup: TaskId => Unit): Unit = {
+    taskCreatedAndUpdatedOK(targetLocation, connector, rows, task, Seq((fieldToChangeInTest, newValue)), cleanup)
+  }
+
+  def taskCreatedAndUpdatedOK[T](targetLocation: String, connector: NewConnector, rows: Seq[FieldRow[_]], task: GTask,
+                                 toUpdate: Seq[(Field[T], T)],
+                                 cleanup: TaskId => Unit): Unit = {
+
     // CREATE
     val result = TaskSaver.save(PreviouslyCreatedTasksResolver.empty, connector, "some name", rows, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR)
-    assertFalse(result.hasErrors)
+    assertFalse(s"must not have any errors, but got ${result.taskErrors}", result.hasErrors)
     assertEquals(1, result.createdTasksNumber)
     val newTaskId = result.getRemoteKeys.iterator.next()
     val loaded = connector.loadTaskByKey(newTaskId, rows)
 
-    // UPDATE
-    loaded.setValue(fieldToChangeInTest, newValue)
+    // UPDATE all requested fields
+    toUpdate.foreach(i => loaded.setValue(i._1, i._2))
+
     val resolver = new TaskResolverBuilder(targetLocation).pretend(newTaskId, newTaskId)
     val result2 = TaskSaver.save(resolver, connector, "some name", rows, util.Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR)
     assertFalse(result2.hasErrors)
     assertEquals(1, result2.updatedTasksNumber)
     val loadedAgain = connector.loadTaskByKey(newTaskId, rows)
-    assertEquals(newValue, loadedAgain.getValue(fieldToChangeInTest))
+
+    toUpdate.foreach(i => assertEquals(i._2, loadedAgain.getValue(i._1)))
+
     cleanup(loaded.getIdentity)
   }
 
@@ -92,4 +104,23 @@ object CommonTestChecks extends Matchers {
     }
   }
 
+}
+
+case class ITFixture(targetLocation: String, connector: NewConnector, cleanup: TaskId => Unit) {
+  def taskIsCreatedAndLoaded(task: GTask, fieldNameToSearch: Field[_]): Unit = {
+    taskIsCreatedAndLoaded(task, Seq(fieldNameToSearch))
+  }
+  def taskIsCreatedAndLoaded(task: GTask, fields: Seq[Field[_]]): Unit = {
+    CommonTestChecks.taskIsCreatedAndLoaded(connector, task, FieldRowBuilder.rows(fields), fields, cleanup)
+  }
+
+  def taskCreatedAndUpdatedOK[T](rows: Seq[FieldRow[_]], task: GTask, fieldToChangeInTest: Field[T], newValue: T): Unit = {
+    CommonTestChecks.taskCreatedAndUpdatedOK(targetLocation, connector, rows, task, fieldToChangeInTest, newValue, cleanup)
+  }
+
+  def taskCreatedAndUpdatedOK[T](task: GTask, toUpdate: Seq[(Field[T], T)]): Unit = {
+    CommonTestChecks.taskCreatedAndUpdatedOK(targetLocation, connector,
+      FieldRowBuilder.rows(toUpdate.map(_._1)),
+      task, toUpdate, cleanup)
+  }
 }

@@ -3,7 +3,7 @@ package com.taskadapter.connector.jira
 import com.google.common.collect.Iterables
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.connector.testlib.{CommonTestChecks, TestUtils}
+import com.taskadapter.connector.testlib.{CommonTestChecks, ITFixture, TestUtils}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model._
 import org.fest.assertions.Assertions.assertThat
@@ -27,6 +27,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
 
   logger.info("Running JIRA tests using: " + setup.host)
 
+  private val fixture = ITFixture(setup.host, connector, id => TestJiraClientHelper.deleteTasks(client, id))
 
   describe("Create") {
     it("connector does not fail empty tasks list") {
@@ -34,7 +35,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     }
 
     it("tasks are created without errors") {
-      CommonTestChecks.createsTasks(connector, JiraFieldBuilder.getDefault(), JiraGTaskBuilder.getTwo(),
+      CommonTestChecks.createsTasks(connector, JiraFieldBuilder.getDefault(), GTaskBuilder.getTwo(),
         id => TestJiraClientHelper.deleteTasks(client, id))
     }
 
@@ -57,31 +58,20 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     }
 
     it("status is set on create") {
-      CommonTestChecks.taskIsCreatedAndLoaded(connector,
-        new GTaskBuilder()
-          .withRandom(Summary)
-          .withField(TaskStatus, "In Progress")
-          .build(),
-        JiraFieldBuilder.withStatus(),
-        TaskStatus,
-        id => TestJiraClientHelper.deleteTasks(client, id))
+      fixture.taskIsCreatedAndLoaded(
+        GTaskBuilder.withSummary().setValue(TaskStatus, "In Progress"),
+        Seq(Summary, TaskStatus))
     }
   }
 
   describe("Update") {
-    it("task is updated") {
-      CommonTestChecks.taskCreatedAndUpdatedOK(setup.host,
-        connector, JiraFieldBuilder.getDefault(),
-        JiraGTaskBuilder.withSummary(), Summary, "new value",
-        id => TestJiraClientHelper.deleteTasks(client, id))
-    }
-
-    it("changes status to In Progress") {
-      CommonTestChecks.taskCreatedAndUpdatedOK(setup.host,
-        connector, JiraFieldBuilder.withStatus(),
-        GTaskBuilder.withRandom(Summary),
-        TaskStatus, "In Progress",
-        id => TestJiraClientHelper.deleteTasks(client, id))
+    it("fields are updated") {
+      fixture.taskCreatedAndUpdatedOK(GTaskBuilder.withRandom(Summary),
+        Seq((TaskStatus, "In Progress"),
+          (Summary, "new value"),
+          (Description, "new description")
+        )
+      )
     }
   }
 
@@ -113,13 +103,8 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
       TaskId(createdIssue2.getId, createdIssue2.getKey))
   }
 
-  private def generateTasks = {
-    val task1 = JiraGTaskBuilder.withSummary()
-    task1.setId(1l)
-    task1.setKey("1")
-    val task2 = JiraGTaskBuilder.withSummary()
-    task2.setId(2l)
-    task2.setKey("2")
-    List(task1, task2)
+  private def generateTasks: List[GTask] = {
+    List(GTaskBuilder.withSummary().setId(1l).setKey("1"),
+      GTaskBuilder.withSummary().setId(2l).setKey("2"))
   }
 }

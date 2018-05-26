@@ -14,7 +14,7 @@ import java.util
 import com.google.common.base.Strings
 
 
-object GTaskToMatis {
+object GTaskToMantis {
   val DEFAULT_TASK_DESCRIPTION = "-"
   /** see https://bitbucket.org/taskadapter/taskadapter/issues/25/once-created-tasks-cannot-be-updated-in
     * "Update task" fails unless you set some "category" on it. weirdly, "create tasks" works fine.
@@ -23,7 +23,7 @@ object GTaskToMatis {
   val DEFAULT_TASK_CATEGORY = "General"
 }
 
-class GTaskToMatis(val mntProject: ProjectData, val users: util.List[AccountData]) extends ConnectorConverter[GTask, IssueData] {
+class GTaskToMantis(val mntProject: ProjectData, val users: util.List[AccountData]) extends ConnectorConverter[GTask, IssueData] {
 
   @throws[ConnectorException]
   override def convert(task: GTask): IssueData = {
@@ -39,7 +39,7 @@ class GTaskToMatis(val mntProject: ProjectData, val users: util.List[AccountData
     }
 
     // see Javadoc for DEFAULT_TASK_CATEGORY why need to set this.
-    issue.setCategory(GTaskToMatis.DEFAULT_TASK_CATEGORY)
+    issue.setCategory(GTaskToMantis.DEFAULT_TASK_CATEGORY)
     val mntProjectRef = new ObjectRef(mntProject.getId, mntProject.getName)
     issue.setProject(mntProjectRef)
     issue

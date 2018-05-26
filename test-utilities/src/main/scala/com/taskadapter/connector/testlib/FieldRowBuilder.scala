@@ -5,7 +5,7 @@ import com.taskadapter.model.Field
 
 object FieldRowBuilder {
 
-  def rows(field: Field[_]*): Seq[FieldRow[_]] = {
+  def rows(field: Seq[Field[_]]): Seq[FieldRow[_]] = {
     field.map(f => build(f))
   }
 

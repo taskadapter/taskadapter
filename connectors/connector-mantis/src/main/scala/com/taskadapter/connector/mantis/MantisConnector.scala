@@ -60,7 +60,7 @@ class MantisConnector(config: MantisConfig, setup: WebConnectorSetup) extends Ne
       val mntProject = mgr.getProjectById(new BigInteger(config.getProjectKey))
       val users = if (config.isFindUserByName) mgr.getUsers
       else new util.ArrayList[AccountData]
-      val converter = new GTaskToMatis(mntProject, users)
+      val converter = new GTaskToMantis(mntProject, users)
       val saver = new MantisTaskSaver(mgr)
       val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows,
         setup.host)

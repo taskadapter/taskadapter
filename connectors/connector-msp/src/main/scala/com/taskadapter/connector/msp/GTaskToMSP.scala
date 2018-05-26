@@ -87,6 +87,7 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
     if (value != null) {
       val user = value.asInstanceOf[GUser]
       val resource = resourceManager.getOrCreateResource(user.displayName)
+      resource.set(MspConstants.loginFieldName, user.loginName)
       val ass = mspTask.addResourceAssignment(resource)
       ass.setUnits(100)
       // MUST set the remaining work to avoid this bug:

@@ -5,8 +5,8 @@ import java.util.Calendar
 
 import biz.futureware.mantis.rpc.soap.client.ProjectData
 import com.taskadapter.connector.FieldRow
-import com.taskadapter.connector.testlib.{CommonTestChecks, FieldRowBuilder, TestSaver, TestUtils}
-import com.taskadapter.model.{Assignee, GTaskBuilder, Summary}
+import com.taskadapter.connector.testlib.{CommonTestChecks, ITFixture, TestSaver}
+import com.taskadapter.model.{Assignee, Description, DueDate, GTaskBuilder, Summary}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
@@ -32,26 +32,23 @@ class MantisIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   config.setProjectKey(projectKey)
   val mantisConnector = new MantisConnector(config, setup)
 
+  private val fixture = ITFixture(setup.host, mantisConnector, id => CommonTestChecks.skipCleanup(id))
+
   override def afterAll() {
     if (mgr != null) mgr.deleteProject(new BigInteger(projectKey))
   }
 
-  it("assignee exported") {
-    val task = new GTaskBuilder().withRandom(Summary).withAssignee(currentUser).build()
-    val loaded = TestUtils.saveAndLoad(getConnector(), task,
-      MantisFieldBuilder.getDefault ++ FieldRowBuilder.rows(Assignee)
-    )
-    loaded.getValue(Assignee).id shouldBe currentUser.id
+  it("task is created and loaded") {
+    fixture.taskIsCreatedAndLoaded(GTaskBuilder.withSummary()
+      .setValue(Assignee, currentUser)
+      .setValue(Description, "123"),
+      Seq(Assignee, Summary, Description, DueDate))
   }
 
   it("task created and updated") {
-    val task = generateTask()
-    CommonTestChecks.taskCreatedAndUpdatedOK(setup.host, mantisConnector, MantisFieldBuilder.getDefault,
-      task, Summary, "new value",
-      CommonTestChecks.skipCleanup)
+    val task = GTaskBuilder.withSummary()
+    fixture.taskCreatedAndUpdatedOK(MantisFieldBuilder.getDefault(), task, Summary, "new value")
   }
-
-  def generateTask() = new GTaskBuilder().withRandom(Summary).build()
 
   private def getTestSaver(rows: List[FieldRow[_]]) = new TestSaver(getConnector(), rows)
 

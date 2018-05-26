@@ -50,7 +50,7 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
   }
 
   private def checkSummary(converter: GTaskToJira, expectedValue: String): Unit = {
-    val task = JiraGTaskBuilder.withSummary(expectedValue)
+    val task = GTaskBuilder.withSummary(expectedValue)
     val issueInput = converter.convertToJiraIssue(task).issueInput
     assertEquals(expectedValue, getValue(issueInput, IssueFieldId.SUMMARY_FIELD.id))
   }
