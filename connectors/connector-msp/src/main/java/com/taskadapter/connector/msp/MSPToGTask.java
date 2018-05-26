@@ -137,7 +137,7 @@ class MSPToGTask {
             if (r.getUniqueID() != null && MSPUtils.isResourceOurs(r)) {
                 id = r.getUniqueID();
             }
-            return new GUser(id, null, r.getName());
+            return new GUser(id, r.getName(), r.getName());
         }
         return null;
     }
