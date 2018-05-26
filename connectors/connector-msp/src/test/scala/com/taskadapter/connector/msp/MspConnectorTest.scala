@@ -8,7 +8,7 @@ import java.util.Date
 import com.taskadapter.connector.common.TreeUtils
 import com.taskadapter.connector.definition.FileSetup
 import com.taskadapter.connector.testlib.{CommonTestChecks, FieldRowBuilder, TempFolder, TestSaver}
-import com.taskadapter.model.{GTask, GTaskBuilder, GUser}
+import com.taskadapter.model._
 import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
@@ -27,8 +27,8 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
 
   it("task is created and loaded") {
     withTempFolder { folder =>
-      CommonTestChecks.taskIsCreatedAndLoaded(getConnector(folder), GTaskBuilder.withRandom(MspField.summary),
-        MspFieldBuilder.getDefault(), MspField.summary,
+      CommonTestChecks.taskIsCreatedAndLoaded(getConnector(folder), GTaskBuilder.withRandom(Summary),
+        MspFieldBuilder.getDefault(), Summary,
         CommonTestChecks.skipCleanup)
     }
   }
@@ -36,9 +36,9 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
   it("description saved by default") {
     withTempFolder { folder =>
       CommonTestChecks.fieldIsSavedByDefault(getConnector(folder),
-        new GTaskBuilder().withRandom(MspField.summary).withRandom(MspField.description).build(),
-        MspField.getSuggestedCombinations(),
-        MspField.description,
+        new GTaskBuilder().withRandom(Summary).withRandom(Description).build(),
+        MspField.fields,
+        Description,
         CommonTestChecks.skipCleanup)
     }
   }
@@ -47,7 +47,7 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
   it("twoTasksAreCreated") {
     withTempFolder { folder =>
       CommonTestChecks.createsTasks(getConnector(folder), MspFieldBuilder.getDefault(),
-        List(GTaskBuilder.withRandom(MspField.summary), GTaskBuilder.withRandom(MspField.summary)),
+        List(GTaskBuilder.withRandom(Summary), GTaskBuilder.withRandom(Summary)),
         CommonTestChecks.skipCleanup
       )
     }
@@ -56,7 +56,7 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
   it("fields are saved") {
     withTempFolder { folder =>
       val task = new GTaskBuilder()
-        .withRandom(MspField.assignee)
+        .withRandom(Assignee)
         .withRandom(MspField.taskDuration)
         .withRandom(MspField.taskWork)
         .withRandom(MspField.mustStartOn)
@@ -65,8 +65,8 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
         .build()
       val loaded = new TestSaver(getConnector(folder),
         FieldRowBuilder.rows(
-          MspField.summary,
-          MspField.assignee,
+          Summary,
+          Assignee,
           MspField.taskDuration,
           MspField.mustStartOn,
           MspField.taskWork,
@@ -75,7 +75,7 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
         )
       ).saveAndLoad(task)
 
-      loaded.getValue(MspField.assignee).asInstanceOf[GUser].getDisplayName shouldBe task.getValue(MspField.assignee).asInstanceOf[GUser].getDisplayName
+      loaded.getValue(Assignee).displayName shouldBe task.getValue(Assignee).displayName
       loaded.getValue(MspField.taskDuration) shouldBe task.getValue(MspField.taskDuration)
       loaded.getValue(MspField.mustStartOn) shouldBe task.getValue(MspField.mustStartOn)
       loaded.getValue(MspField.taskWork) shouldBe task.getValue(MspField.taskWork)
@@ -96,9 +96,9 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
     val tasks: util.List[GTask] = MSPTestUtils.load("msp_2013.xml")
     assertEquals(2, tasks.size)
     val task1: GTask = tasks.get(0)
-    assertEquals("task 1", task1.getValue(MspField.summary))
-    task1.getValue(MspField.assignee).asInstanceOf[GUser].getDisplayName shouldBe "alex"
-    assertEquals(12f, task1.getValue(MspField.taskDuration))
+    assertEquals("task 1", task1.getValue(Summary))
+    task1.getValue(Assignee).displayName shouldBe "alex"
+    task1.getValue(MspField.taskDuration) shouldBe 12f
     val expectedStartDate: Date = new SimpleDateFormat("MM/dd/yyyy HH:mm").parse("12/11/2013 08:00")
     assertEquals(expectedStartDate, task1.getValue(MspField.startAsSoonAsPossible))
     val expectedFinishDate: Date = new SimpleDateFormat("MM/dd/yyyy HH:mm").parse("12/12/2013 12:00")

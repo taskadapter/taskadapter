@@ -2,15 +2,15 @@ package com.taskadapter.connector.msp
 
 import java.util
 
-import com.taskadapter.connector.{Field, FieldRow}
+import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.DefaultValueSetter
-import com.taskadapter.connector.definition.{SaveResultBuilder, TaskId}
 import com.taskadapter.connector.definition.exceptions.BadConfigException
+import com.taskadapter.connector.definition.{SaveResultBuilder, TaskId}
 import com.taskadapter.connector.msp.write.{DateFinder, MSPDefaultFields, RealWriter, ResourceManager}
 import com.taskadapter.model.GTask
-import net.sf.mpxj.{CustomFieldContainer, ProjectFile, Task}
+import net.sf.mpxj.{ProjectFile, Task}
 
-class MsXmlFileWriter(rows: Iterable[FieldRow]) {
+class MsXmlFileWriter(rows: Iterable[FieldRow[_]]) {
   private val ALIAS_REMOTE_ID = "TA Remote ID"
   private val ALIAS_ISSUE_TYPE = "TA Task Type"
   private val ALIAS_ISSUE_STATUS = "TA Task Status"
@@ -76,14 +76,14 @@ class MsXmlFileWriter(rows: Iterable[FieldRow]) {
     //        setAliasIfMappingNotNULL(project, FIELD.TARGET_VERSION, ALIAS_TARGET_VERSION);
   }
 
-  private def setAliasIfMappingNotNULL(fieldsContainer: CustomFieldContainer, field: Field, aliasName: String): Unit = {
-    val mspFileFieldName = field.name
-    if (mspFileFieldName != null) {
-      /* it is NULL if the old Task Adapter config does not have a mapping for this field.
-                     * E.g. we added "task type" field in the new TA version and then we try running
-                     * export using the old config, which does not have "task type" mapped to anything.
-                     */
-      fieldsContainer.getCustomField(MSPUtils.getTaskFieldByName(mspFileFieldName)).setAlias(aliasName)
-    }
-  }
+//  private def setAliasIfMappingNotNULL(fieldsContainer: CustomFieldContainer, field: Field[_], aliasName: String): Unit = {
+//    val mspFileFieldName = field.name
+//    if (mspFileFieldName != null) {
+//      /* it is NULL if the old Task Adapter config does not have a mapping for this field.
+//                     * E.g. we added "task type" field in the new TA version and then we try running
+//                     * export using the old config, which does not have "task type" mapped to anything.
+//                     */
+//      fieldsContainer.getCustomField(MSPUtils.getTaskFieldByName(mspFileFieldName)).setAlias(aliasName)
+//    }
+//  }
 }

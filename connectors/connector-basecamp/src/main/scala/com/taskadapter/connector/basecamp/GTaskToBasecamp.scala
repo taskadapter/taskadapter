@@ -4,7 +4,7 @@ import java.io.StringWriter
 import java.util.Date
 
 import com.taskadapter.connector.common.data.ConnectorConverter
-import com.taskadapter.model.{GTask, GUser}
+import com.taskadapter.model._
 import org.json.JSONWriter
 
 import scala.collection.JavaConverters._
@@ -30,22 +30,22 @@ class GTaskToBasecamp(resolver: UserResolver) extends ConnectorConverter[GTask, 
       writer.endObject
     } finally sw.close()
 
-    BasecampTaskWrapper(source.getKey, sw.toString, source.getValue(BasecampField.doneRatio).asInstanceOf[Float])
+    BasecampTaskWrapper(source.getKey, sw.toString, source.getValue(DoneRatio))
   }
 
-  def processField(writer: JSONWriter, fieldName: String, value: Any): Unit = {
-    fieldName match {
-      case BasecampField.content.name =>
+  def processField(writer: JSONWriter, field: Field[_], value: Any): Unit = {
+    field match {
+      case BasecampField.content =>
         val stringValue = value.asInstanceOf[String]
         JsonUtils.writeOpt(writer, "content", stringValue)
-      case BasecampField.doneRatio.name =>
+      case DoneRatio =>
         val booleanValue: Boolean = if (value == null) false
         else if (value.asInstanceOf[Float] >= 100) true
         else false
         JsonUtils.writeOpt(writer, "completed", booleanValue)
-      case BasecampField.dueDate.name =>
+      case DueDate =>
         JsonUtils.writeShort(writer, "due_at", value.asInstanceOf[Date])
-      case BasecampField.assignee.name => writeAssignee(writer, value.asInstanceOf[GUser])
+      case Assignee => writeAssignee(writer, value.asInstanceOf[GUser])
 
       case _ => // ignore unknown fields
     }
@@ -57,9 +57,9 @@ class GTaskToBasecamp(resolver: UserResolver) extends ConnectorConverter[GTask, 
         return
       }
       val resolvedAssignee = resolver.resolveUser(assignee)
-      if (resolvedAssignee == null || resolvedAssignee.getId == null) return
+      if (resolvedAssignee == null || resolvedAssignee.id == null) return
       writer.key(field).`object`.key("type").value("Person")
-      writer.key("id").value(resolvedAssignee.getId.intValue)
+      writer.key("id").value(resolvedAssignee.id.intValue)
       writer.endObject
     }
 

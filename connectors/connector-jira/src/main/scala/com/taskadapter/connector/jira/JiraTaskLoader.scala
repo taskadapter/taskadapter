@@ -13,15 +13,14 @@ class JiraTaskLoader(val client: JiraRestClient, val priorities: Priorities) {
   @throws[ConnectorException]
   def loadTasks(config: JiraConfig): Seq[GTask] = {
     try {
+      val resolver = JiraClientHelper.loadCustomFields(client)
       val jql = if (config.getQueryId != null) {
         JqlBuilder.findIssuesByProjectAndFilterId(config.getProjectKey, config.getQueryId)
       } else {
         JqlBuilder.findIssuesByProject(config.getProjectKey)
       }
       val issues = JiraClientHelper.findIssues(client, jql)
-      val rows = jiraToGTask.convertToGenericTaskList(issues)
-      //      val userConverter = new JiraUserConverter(client)
-      //            rows = userConverter.convertAssignees(rows);
+      val rows = jiraToGTask.convertToGenericTaskList(resolver, issues)
       rows.asScala
     } catch {
       case e: Exception =>
@@ -30,8 +29,9 @@ class JiraTaskLoader(val client: JiraRestClient, val priorities: Priorities) {
   }
 
   def loadTask(taskKey: String): GTask = {
+    val resolver = JiraClientHelper.loadCustomFields(client)
     val promise = client.getIssueClient.getIssue(taskKey)
     val issue = promise.claim
-    jiraToGTask.convertToGenericTask(issue)
+    jiraToGTask.convertToGenericTask(resolver, issue)
   }
 }

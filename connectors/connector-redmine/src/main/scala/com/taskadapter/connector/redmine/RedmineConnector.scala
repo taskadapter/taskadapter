@@ -6,7 +6,7 @@ import com.taskadapter.connector.{FieldRow, NewConnector}
 import com.taskadapter.connector.common.TaskSavingUtils
 import com.taskadapter.connector.definition._
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
-import com.taskadapter.model.GTask
+import com.taskadapter.model.{GTask, Priority}
 import com.taskadapter.redmineapi.{Include, RedmineException, RedmineManager}
 import com.taskadapter.redmineapi.bean._
 
@@ -19,8 +19,8 @@ object RedmineConnector {
   val ID = "Redmine"
 
   @throws[RedmineException]
-  private def loadPriorities(rows: java.lang.Iterable[FieldRow], mgr: RedmineManager): util.Map[String, Integer] = {
-    if (FieldRowFinder.containsTargetField(rows.asScala.toSeq, RedmineField.priority.name))
+  private def loadPriorities(rows: java.lang.Iterable[FieldRow[_]], mgr: RedmineManager): util.Map[String, Integer] = {
+    if (FieldRowFinder.containsTargetField(rows.asScala.toSeq, Priority))
       loadPriorities(mgr)
     else
       new util.HashMap[String, Integer]
@@ -33,7 +33,7 @@ object RedmineConnector {
 }
 
 class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends NewConnector {
-  override def loadTaskByKey(id: TaskId, rows: Iterable[FieldRow]): GTask = {
+  override def loadTaskByKey(id: TaskId, rows: Iterable[FieldRow[_]]): GTask = {
     val httpClient = RedmineManagerFactory.createRedmineHttpClient()
     try {
       val mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient)
@@ -82,7 +82,7 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
 
   override def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask],
                         monitor: ProgressMonitor,
-                        fieldRows: Iterable[FieldRow]): SaveResult = try {
+                        fieldRows: Iterable[FieldRow[_]]): SaveResult = try {
     val httpClient = RedmineManagerFactory.createRedmineHttpClient()
     val mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient)
     try {

@@ -3,7 +3,6 @@ package com.taskadapter.web.uiapi
 import java.io.File
 
 import com.taskadapter.auth.cred.CredentialsStore
-import com.taskadapter.config.CirceBoilerplateForConfigs._
 import com.taskadapter.config._
 import com.taskadapter.connector.NewConfigSuggester
 import com.taskadapter.connector.common.{FileNameGenerator, XorEncryptor}
@@ -77,12 +76,13 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     config1.setConnectorSetup(connector1Setup)
     config2.setConnectorSetup(connector2Setup)
 
-    val newMappings = decode[Seq[FieldMapping]](jsonString)
-
-    newMappings match {
-      case Left(e) => throw new RuntimeException(s"cannot parse mappings from config $storedConfig: $e")
-      case Right(m) =>
-        new UISyncConfig(new TaskKeeperLocationStorage(configStorage.rootDir), storedConfig.getId, ownerName, label, config1, config2, m, false)
+    try {
+      val newMappings = JsonFactory.fromJsonString(jsonString)
+      new UISyncConfig(new TaskKeeperLocationStorage(configStorage.rootDir), storedConfig.getId, ownerName,
+        label, config1, config2, newMappings, false)
+    } catch {
+      case e: Exception =>
+        throw new RuntimeException(s"cannot parse mappings from config $storedConfig: $e")
     }
   }
 
@@ -102,9 +102,9 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val config2 = uiConfigService.createDefaultConfig(connector2Id)
 
     val newMappings = NewConfigSuggester.suggestedFieldMappingsForNewConfig(
-      config1.getSuggestedCombinations,
-      config2.getSuggestedCombinations)
-    val mappingsString = newMappings.asJson.noSpaces
+      config1.getDefaultFieldsForNewConfig,
+      config2.getDefaultFieldsForNewConfig)
+    val mappingsString = JsonFactory.toString(newMappings)
     val configId = configStorage.createNewConfig(userName, label,
       config1.getConnectorTypeId, connector1SetupId, config1.getConfigString,
       config2.getConnectorTypeId, connector2SetupId, config2.getConfigString,
@@ -206,7 +206,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val config1 = normalizedSyncConfig.getConnector1
     val config2 = normalizedSyncConfig.getConnector2
     val mappings = normalizedSyncConfig.getNewMappings
-    val mappingsStr = mappings.asJson.noSpaces
+    val mappingsStr = JsonFactory.toString(mappings)
     configStorage.saveConfig(normalizedSyncConfig.getOwnerName, normalizedSyncConfig.identity, label,
       config1.getConnectorTypeId, SetupId(config1.getConnectorSetup.id.get), config1.getConfigString,
       config2.getConnectorTypeId, SetupId(config2.getConnectorSetup.id.get), config2.getConfigString,

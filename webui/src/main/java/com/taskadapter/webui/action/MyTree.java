@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.model.GTask;
+import com.taskadapter.model.Summary$;
 import com.taskadapter.webui.Page;
 import com.vaadin.data.Property;
 import com.vaadin.ui.CheckBox;
@@ -152,7 +153,7 @@ public class MyTree extends CustomComponent {
                 new Object[]{
                         checkBox,       // ACTION
                         sourceSystemId, // ID FROM SOURCE SYSTEM
-                        task.getValue("Summary") // TODO TA3 use a proper connector-specific field name here
+                        task.getValue(Summary$.MODULE$) // TODO TA3 use a proper connector-specific field name here
                 },
                 taskId
         );

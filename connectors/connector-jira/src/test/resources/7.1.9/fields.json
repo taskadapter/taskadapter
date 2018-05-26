@@ -1,0 +1,767 @@
+[
+  {
+    "id": "issuetype",
+    "name": "Issue Type",
+    "custom": false,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "issuetype",
+      "type"
+    ],
+    "schema": {
+      "type": "issuetype",
+      "system": "issuetype"
+    }
+  },
+  {
+    "id": "timespent",
+    "name": "Time Spent",
+    "custom": false,
+    "orderable": false,
+    "navigable": true,
+    "searchable": false,
+    "clauseNames": [
+      "timespent"
+    ],
+    "schema": {
+      "type": "number",
+      "system": "timespent"
+    }
+  },
+  {
+    "id": "project",
+    "name": "Project",
+    "custom": false,
+    "orderable": false,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "project"
+    ],
+    "schema": {
+      "type": "project",
+      "system": "project"
+    }
+  },
+  {
+    "id": "fixVersions",
+    "name": "Fix Version/s",
+    "custom": false,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "fixVersion"
+    ],
+    "schema": {
+      "type": "array",
+      "items": "version",
+      "system": "fixVersions"
+    }
+  },
+  {
+    "id": "aggregatetimespent",
+    "name": "Σ Time Spent",
+    "custom": false,
+    "orderable": false,
+    "navigable": true,
+    "searchable": false,
+    "clauseNames": [],
+    "schema": {
+      "type": "number",
+      "system": "aggregatetimespent"
+    }
+  },
+  {
+    "id": "resolution",
+    "name": "Resolution",
+    "custom": false,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "resolution"
+    ],
+    "schema": {
+      "type": "resolution",
+      "system": "resolution"
+    }
+  },
+  {
+    "id": "resolutiondate",
+    "name": "Resolved",
+    "custom": false,
+    "orderable": false,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "resolutiondate",
+      "resolved"
+    ],
+    "schema": {
+      "type": "datetime",
+      "system": "resolutiondate"
+    }
+  },
+  {
+    "id": "workratio",
+    "name": "Work Ratio",
+    "custom": false,
+    "orderable": false,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "workratio"
+    ],
+    "schema": {
+      "type": "number",
+      "system": "workratio"
+    }
+  },
+  {
+    "id": "lastViewed",
+    "name": "Last Viewed",
+    "custom": false,
+    "orderable": false,
+    "navigable": true,
+    "searchable": false,
+    "clauseNames": [
+      "lastViewed"
+    ],
+    "schema": {
+      "type": "datetime",
+      "system": "lastViewed"
+    }
+  },
+  {
+    "id": "watches",
+    "name": "Watchers",
+    "custom": false,
+    "orderable": false,
+    "navigable": true,
+    "searchable": false,
+    "clauseNames": [
+      "watchers"
+    ],
+    "schema": {
+      "type": "watches",
+      "system": "watches"
+    }
+  },
+  {
+    "id": "thumbnail",
+    "name": "Images",
+    "custom": false,
+    "orderable": false,
+    "navigable": true,
+    "searchable": false,
+    "clauseNames": []
+  },
+  {
+    "id": "created",
+    "name": "Created",
+    "custom": false,
+    "orderable": false,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "created",
+      "createdDate"
+    ],
+    "schema": {
+      "type": "datetime",
+      "system": "created"
+    }
+  },
+  {
+    "id": "priority",
+    "name": "Priority",
+    "custom": false,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "priority"
+    ],
+    "schema": {
+      "type": "priority",
+      "system": "priority"
+    }
+  },
+  {
+    "id": "customfield_10101",
+    "name": "Environment",
+    "custom": true,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "cf[10101]"
+    ],
+    "schema": {
+      "type": "option",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+      "customId": 10101
+    }
+  },
+  {
+    "id": "customfield_10102",
+    "name": "custom_text_1",
+    "custom": true,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "cf[10102]",
+      "custom_text_1"
+    ],
+    "schema": {
+      "type": "string",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+      "customId": 10102
+    }
+  },
+  {
+    "id": "labels",
+    "name": "Labels",
+    "custom": false,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "labels"
+    ],
+    "schema": {
+      "type": "array",
+      "items": "string",
+      "system": "labels"
+    }
+  },
+  {
+    "id": "timeestimate",
+    "name": "Remaining Estimate",
+    "custom": false,
+    "orderable": false,
+    "navigable": true,
+    "searchable": false,
+    "clauseNames": [
+      "remainingEstimate",
+      "timeestimate"
+    ],
+    "schema": {
+      "type": "number",
+      "system": "timeestimate"
+    }
+  },
+  {
+    "id": "aggregatetimeoriginalestimate",
+    "name": "Σ Original Estimate",
+    "custom": false,
+    "orderable": false,
+    "navigable": true,
+    "searchable": false,
+    "clauseNames": [],
+    "schema": {
+      "type": "number",
+      "system": "aggregatetimeoriginalestimate"
+    }
+  },
+  {
+    "id": "versions",
+    "name": "Affects Version/s",
+    "custom": false,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "affectedVersion"
+    ],
+    "schema": {
+      "type": "array",
+      "items": "version",
+      "system": "versions"
+    }
+  },
+  {
+    "id": "issuelinks",
+    "name": "Linked Issues",
+    "custom": false,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [],
+    "schema": {
+      "type": "array",
+      "items": "issuelinks",
+      "system": "issuelinks"
+    }
+  },
+  {
+    "id": "assignee",
+    "name": "Assignee",
+    "custom": false,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "assignee"
+    ],
+    "schema": {
+      "type": "user",
+      "system": "assignee"
+    }
+  },
+  {
+    "id": "updated",
+    "name": "Updated",
+    "custom": false,
+    "orderable": false,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "updated",
+      "updatedDate"
+    ],
+    "schema": {
+      "type": "datetime",
+      "system": "updated"
+    }
+  },
+  {
+    "id": "status",
+    "name": "Status",
+    "custom": false,
+    "orderable": false,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "status"
+    ],
+    "schema": {
+      "type": "status",
+      "system": "status"
+    }
+  },
+  {
+    "id": "components",
+    "name": "Component/s",
+    "custom": false,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "component"
+    ],
+    "schema": {
+      "type": "array",
+      "items": "component",
+      "system": "components"
+    }
+  },
+  {
+    "id": "issuekey",
+    "name": "Key",
+    "custom": false,
+    "orderable": false,
+    "navigable": true,
+    "searchable": false,
+    "clauseNames": [
+      "id",
+      "issue",
+      "issuekey",
+      "key"
+    ]
+  },
+  {
+    "id": "timeoriginalestimate",
+    "name": "Original Estimate",
+    "custom": false,
+    "orderable": false,
+    "navigable": true,
+    "searchable": false,
+    "clauseNames": [
+      "originalEstimate",
+      "timeoriginalestimate"
+    ],
+    "schema": {
+      "type": "number",
+      "system": "timeoriginalestimate"
+    }
+  },
+  {
+    "id": "description",
+    "name": "Description",
+    "custom": false,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "description"
+    ],
+    "schema": {
+      "type": "string",
+      "system": "description"
+    }
+  },
+  {
+    "id": "timetracking",
+    "name": "Time Tracking",
+    "custom": false,
+    "orderable": true,
+    "navigable": false,
+    "searchable": true,
+    "clauseNames": [],
+    "schema": {
+      "type": "timetracking",
+      "system": "timetracking"
+    }
+  },
+  {
+    "id": "customfield_10005",
+    "name": "Epic Color",
+    "custom": true,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "cf[10005]",
+      "Epic Color"
+    ],
+    "schema": {
+      "type": "string",
+      "custom": "com.pyxis.greenhopper.jira:gh-epic-color",
+      "customId": 10005
+    }
+  },
+  {
+    "id": "customfield_10006",
+    "name": "Story Points",
+    "custom": true,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "cf[10006]",
+      "Story Points"
+    ],
+    "schema": {
+      "type": "number",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:float",
+      "customId": 10006
+    }
+  },
+  {
+    "id": "security",
+    "name": "Security Level",
+    "custom": false,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "level"
+    ],
+    "schema": {
+      "type": "securitylevel",
+      "system": "security"
+    }
+  },
+  {
+    "id": "attachment",
+    "name": "Attachment",
+    "custom": false,
+    "orderable": true,
+    "navigable": false,
+    "searchable": true,
+    "clauseNames": [
+      "attachments"
+    ],
+    "schema": {
+      "type": "array",
+      "items": "attachment",
+      "system": "attachment"
+    }
+  },
+  {
+    "id": "aggregatetimeestimate",
+    "name": "Σ Remaining Estimate",
+    "custom": false,
+    "orderable": false,
+    "navigable": true,
+    "searchable": false,
+    "clauseNames": [],
+    "schema": {
+      "type": "number",
+      "system": "aggregatetimeestimate"
+    }
+  },
+  {
+    "id": "summary",
+    "name": "Summary",
+    "custom": false,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "summary"
+    ],
+    "schema": {
+      "type": "string",
+      "system": "summary"
+    }
+  },
+  {
+    "id": "creator",
+    "name": "Creator",
+    "custom": false,
+    "orderable": false,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "creator"
+    ],
+    "schema": {
+      "type": "user",
+      "system": "creator"
+    }
+  },
+  {
+    "id": "subtasks",
+    "name": "Sub-Tasks",
+    "custom": false,
+    "orderable": false,
+    "navigable": true,
+    "searchable": false,
+    "clauseNames": [
+      "subtasks"
+    ],
+    "schema": {
+      "type": "array",
+      "items": "issuelinks",
+      "system": "subtasks"
+    }
+  },
+  {
+    "id": "reporter",
+    "name": "Reporter",
+    "custom": false,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "reporter"
+    ],
+    "schema": {
+      "type": "user",
+      "system": "reporter"
+    }
+  },
+  {
+    "id": "aggregateprogress",
+    "name": "Σ Progress",
+    "custom": false,
+    "orderable": false,
+    "navigable": true,
+    "searchable": false,
+    "clauseNames": [],
+    "schema": {
+      "type": "progress",
+      "system": "aggregateprogress"
+    }
+  },
+  {
+    "id": "customfield_10000",
+    "name": "Rank",
+    "custom": true,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "cf[10000]",
+      "Rank"
+    ],
+    "schema": {
+      "type": "any",
+      "custom": "com.pyxis.greenhopper.jira:gh-lexo-rank",
+      "customId": 10000
+    }
+  },
+  {
+    "id": "customfield_10001",
+    "name": "Sprint",
+    "custom": true,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "cf[10001]",
+      "Sprint"
+    ],
+    "schema": {
+      "type": "array",
+      "items": "string",
+      "custom": "com.pyxis.greenhopper.jira:gh-sprint",
+      "customId": 10001
+    }
+  },
+  {
+    "id": "customfield_10002",
+    "name": "Epic Link",
+    "custom": true,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "cf[10002]",
+      "Epic Link"
+    ],
+    "schema": {
+      "type": "any",
+      "custom": "com.pyxis.greenhopper.jira:gh-epic-link",
+      "customId": 10002
+    }
+  },
+  {
+    "id": "customfield_10200",
+    "name": "custom_checkbox_1",
+    "custom": true,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "cf[10200]",
+      "custom_checkbox_1"
+    ],
+    "schema": {
+      "type": "array",
+      "items": "option",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes",
+      "customId": 10200
+    }
+  },
+  {
+    "id": "customfield_10003",
+    "name": "Epic Status",
+    "custom": true,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "cf[10003]",
+      "Epic Status"
+    ],
+    "schema": {
+      "type": "option",
+      "custom": "com.pyxis.greenhopper.jira:gh-epic-status",
+      "customId": 10003
+    }
+  },
+  {
+    "id": "customfield_10004",
+    "name": "Epic Name",
+    "custom": true,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "cf[10004]",
+      "Epic Name"
+    ],
+    "schema": {
+      "type": "string",
+      "custom": "com.pyxis.greenhopper.jira:gh-epic-label",
+      "customId": 10004
+    }
+  },
+  {
+    "id": "environment",
+    "name": "Environment",
+    "custom": false,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "environment"
+    ],
+    "schema": {
+      "type": "string",
+      "system": "environment"
+    }
+  },
+  {
+    "id": "duedate",
+    "name": "Due Date",
+    "custom": false,
+    "orderable": true,
+    "navigable": true,
+    "searchable": true,
+    "clauseNames": [
+      "due",
+      "duedate"
+    ],
+    "schema": {
+      "type": "date",
+      "system": "duedate"
+    }
+  },
+  {
+    "id": "progress",
+    "name": "Progress",
+    "custom": false,
+    "orderable": false,
+    "navigable": true,
+    "searchable": false,
+    "clauseNames": [
+      "progress"
+    ],
+    "schema": {
+      "type": "progress",
+      "system": "progress"
+    }
+  },
+  {
+    "id": "comment",
+    "name": "Comment",
+    "custom": false,
+    "orderable": true,
+    "navigable": false,
+    "searchable": true,
+    "clauseNames": [
+      "comment"
+    ],
+    "schema": {
+      "type": "comments-page",
+      "system": "comment"
+    }
+  },
+  {
+    "id": "votes",
+    "name": "Votes",
+    "custom": false,
+    "orderable": false,
+    "navigable": true,
+    "searchable": false,
+    "clauseNames": [
+      "votes"
+    ],
+    "schema": {
+      "type": "votes",
+      "system": "votes"
+    }
+  },
+  {
+    "id": "worklog",
+    "name": "Log Work",
+    "custom": false,
+    "orderable": true,
+    "navigable": false,
+    "searchable": true,
+    "clauseNames": [],
+    "schema": {
+      "type": "array",
+      "items": "worklog",
+      "system": "worklog"
+    }
+  }
+]

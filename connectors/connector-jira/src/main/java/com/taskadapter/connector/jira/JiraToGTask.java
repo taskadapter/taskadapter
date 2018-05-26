@@ -4,23 +4,29 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueLink;
 import com.atlassian.jira.rest.client.api.domain.IssueLinkType;
 import com.atlassian.jira.rest.client.api.domain.TimeTracking;
-import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
-import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
+import com.taskadapter.model.Assignee$;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.TaskId;
+import com.taskadapter.model.Components$;
+import com.taskadapter.model.CreatedOn$;
+import com.taskadapter.model.Description$;
+import com.taskadapter.model.DueDate$;
+import com.taskadapter.model.EstimatedTime$;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GUser;
 import com.taskadapter.model.Precedes$;
-import org.codehaus.jettison.json.JSONArray;
+import com.taskadapter.model.Priority$;
+import com.taskadapter.model.Reporter$;
+import com.taskadapter.model.Summary$;
+import com.taskadapter.model.TaskStatus$;
+import com.taskadapter.model.TaskType$;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scala.collection.JavaConverters;
 import scala.collection.JavaConverters$;
-import scala.collection.immutable.Seq;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,20 +40,20 @@ public class JiraToGTask {
         this.priorities = priorities;
     }
 
-    public List<GTask> convertToGenericTaskList(Iterable<Issue> issues) {
+    public List<GTask> convertToGenericTaskList(CustomFieldResolver customFieldResolver, Iterable<Issue> issues) {
         // TODO see http://jira.atlassian.com/browse/JRA-6896
 //        logger.info("Jira: no tasks hierarchy is supported");
 
         List<GTask> rootLevelTasks = new ArrayList<>();
 
         for (Issue issue : issues) {
-            GTask genericTask = convertToGenericTask(issue);
+            GTask genericTask = convertToGenericTask(customFieldResolver, issue);
             rootLevelTasks.add(genericTask);
         }
         return rootLevelTasks;
     }
 
-    public GTask convertToGenericTask(Issue issue) {
+    public GTask convertToGenericTask(CustomFieldResolver customFieldResolver, Issue issue) {
         GTask task = new GTask();
         final Long longId = issue.getId();
         task.setId(longId);
@@ -55,33 +61,32 @@ public class JiraToGTask {
         // must set source system id, otherwise "update task" is impossible later
         task.setSourceSystemId(new TaskId(longId, issue.getKey()));
 
-        // TODO !!! idea - check type in GTask when setting standard fields, otherwise it will explode sooner or later
         List<String> target = new ArrayList<>();
         issue.getComponents().forEach(c -> target.add(c.getName()));
 
-        task.setValue(JiraField.component(), JavaConverters$.MODULE$.asScalaBuffer(target));
+        task.setValue(Components$.MODULE$, JavaConverters$.MODULE$.asScalaBuffer(target));
         if (issue.getAssignee() != null) {
             GUser user = new GUser(null, issue.getAssignee().getName(), issue.getAssignee().getDisplayName());
-            task.setValue(JiraField.assignee(), user);
+            task.setValue(Assignee$.MODULE$, user);
         }
         if (issue.getReporter() != null) {
             GUser user = new GUser(null, issue.getReporter().getName(), issue.getReporter().getDisplayName());
-            task.setValue(JiraField.reporter(), user);
+            task.setValue(Reporter$.MODULE$, user);
         }
 
-        task.setValue(JiraField.taskType(), issue.getIssueType().getName());
-        task.setValue(JiraField.summary(), issue.getSummary());
-        task.setValue(JiraField.description(), issue.getDescription());
-        task.setValue(JiraField.status(), issue.getStatus().getName());
+        task.setValue(TaskType$.MODULE$, issue.getIssueType().getName());
+        task.setValue(Summary$.MODULE$, issue.getSummary());
+        task.setValue(Description$.MODULE$, issue.getDescription());
+        task.setValue(TaskStatus$.MODULE$, issue.getStatus().getName());
 
         DateTime dueDate = issue.getDueDate();
         if (dueDate != null) {
-            task.setValue(JiraField.dueDate(), dueDate.toDate());
+            task.setValue(DueDate$.MODULE$, dueDate.toDate());
         }
 
         DateTime createdOn = issue.getCreationDate();
         if (createdOn != null) {
-            task.setValue(JiraField.dateCreated(), createdOn.toDate());
+            task.setValue(CreatedOn$.MODULE$, createdOn.toDate());
         }
 
         // TODO set Done Ratio
@@ -92,81 +97,22 @@ public class JiraToGTask {
             jiraPriorityName = issue.getPriority().getName();
         }
         Integer priorityValue = priorities.getPriorityByText(jiraPriorityName);
-        task.setValue(JiraField.priority(), priorityValue);
+        task.setValue(Priority$.MODULE$, priorityValue);
 
         TimeTracking timeTracking = issue.getTimeTracking();
         if (timeTracking != null) {
             Integer originalEstimateMinutes = timeTracking.getOriginalEstimateMinutes();
             if (originalEstimateMinutes != null
                     && !originalEstimateMinutes.equals(0)) {
-                task.setValue(JiraField.estimatedTime(), (float) (originalEstimateMinutes / 60.0));
+                task.setValue(EstimatedTime$.MODULE$, (float) (originalEstimateMinutes / 60.0));
             }
         }
 
-        processCustomFields(issue, task);
+        JiraToGTaskHelper$.MODULE$.processCustomFields(customFieldResolver, issue, task);
         processRelations(issue, task);
         processParentTask(issue, task);
         return task;
     }
-
-    private void processCustomFields(Issue issue, GTask task) {
-        issue.getFields().forEach(f -> {
-            if (f.getId().startsWith("customfield")) {
-                // custom field
-                Object nativeValue = f.getValue();
-                Object gValue = null;
-                try {
-                    gValue = convertToGenericValue(nativeValue);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                task.setValue(f.getName(), gValue);
-            }
-        });
-    }
-
-    private Object convertToGenericValue(Object nativeValue) throws JSONException {
-        if (nativeValue == null) {
-            return null;
-        }
-        if (nativeValue instanceof JSONArray) {
-            Seq<Object> strings = parseJsonArray((JSONArray) nativeValue);
-            return strings;
-        }
-        if (nativeValue instanceof JSONObject) {
-            return parseJsonObject((JSONObject) nativeValue);
-        }
-        return nativeValue.toString();
-    }
-
-    private Seq<Object> parseJsonArray(JSONArray array) throws JSONException {
-        List<Object> result = new ArrayList<>();
-        for (int i = 0; i < array.length(); i++) {
-            Object o = array.get(i);
-            result.add(convertToGenericValue(o));
-        }
-        return JavaConverters.asScalaBuffer(result).toList().toSeq();
-    }
-
-    private String parseJsonObject(JSONObject jsonObject) {
-        String value;
-        try {
-            value = jsonObject.getString("value");
-        } catch (JSONException e) {
-            value = "";
-        }
-        return value;
-    }
-
-    static class StringFieldValueParser implements JsonObjectParser<String> {
-        private static final String VALUE_ATTRIBUTE = "value";
-
-        @Override
-        public String parse(JSONObject jsonObject) throws JSONException {
-            return JsonParseUtil.getNullableString(jsonObject, VALUE_ATTRIBUTE);
-        }
-    }
-
 
     private static void processParentTask(Issue issue, GTask task) {
         if (issue.getIssueType().isSubtask()) {

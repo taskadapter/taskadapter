@@ -1,22 +1,19 @@
 package com.taskadapter.webui.config
 
-import java.util
 import java.util.UUID
 
 import com.google.common.base.Strings
-import com.taskadapter.connector.Field
 import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.connector.definition.exceptions.BadConfigException
-import com.taskadapter.model.GTaskDescriptor
+import com.taskadapter.model.{Assignee, Field, GUser, Reporter}
 import com.taskadapter.web.configeditor.Validatable
 import com.taskadapter.web.data.Messages
-import com.taskadapter.web.uiapi.UIConnectorConfig
 import com.taskadapter.webui.Page
 import com.vaadin.data.util.{BeanItemContainer, MethodProperty}
 import com.vaadin.server.Sizeable.Unit.PIXELS
 import com.vaadin.server.ThemeResource
 import com.vaadin.shared.ui.label.ContentMode
-import com.vaadin.ui._
+import com.vaadin.ui.{AbstractComponent, Alignment, Button, CheckBox, ComboBox, Component, Embedded, GridLayout, Label, Panel, TextField, VerticalLayout}
 
 import scala.collection.JavaConverters._
 import scala.collection.Seq
@@ -36,15 +33,17 @@ object TaskFieldsMappingFragment {
   val HELP_ICON_RESOURCE = new ThemeResource("../runo/icons/16/help.png")
 }
 
-class EditablePojoMappings(mappings: Seq[FieldMapping],
-                           connector1FieldLoader : ConnectorFieldLoader, connector2FieldLoader: ConnectorFieldLoader) {
+class EditablePojoMappings(mappings: Seq[FieldMapping[_]],
+                           connector1FieldLoader: ConnectorFieldLoader, connector2FieldLoader: ConnectorFieldLoader) {
   var editablePojoMappings: ListBuffer[EditableFieldMapping] = ListBuffer()
 
   editablePojoMappings = mappings.map(ro =>
     new EditableFieldMapping(UUID.randomUUID.toString,
       ro.fieldInConnector1.map(_.name).getOrElse(""),
       ro.fieldInConnector2.map(_.name).getOrElse(""),
-      ro.selected, ro.defaultValue)).to[ListBuffer]
+      ro.selected,
+      if (ro.defaultValue == null) "" else ro.defaultValue.asInstanceOf[String]))
+    .to[ListBuffer]
 
   def removeFieldFromList(field: EditableFieldMapping) = {
     editablePojoMappings = editablePojoMappings.filter(
@@ -55,22 +54,23 @@ class EditablePojoMappings(mappings: Seq[FieldMapping],
     MappingsValidator.validate(editablePojoMappings)
   }
 
-  def getElements: Iterable[FieldMapping] = editablePojoMappings.map(e =>
+  def getElements: Iterable[FieldMapping[_]] = editablePojoMappings.map(e =>
     new FieldMapping(
-      if (Strings.isNullOrEmpty(e.fieldInConnector1)) {
-        None
-      } else {
-        val typeName = connector1FieldLoader.getTypeForFieldName(e.fieldInConnector1)
-        Some(new Field(typeName, e.fieldInConnector1))
-      },
-      if (Strings.isNullOrEmpty(e.fieldInConnector2)) {
-        None
-      } else {
-        val typeName = connector2FieldLoader.getTypeForFieldName(e.fieldInConnector2)
-        Some(new Field(typeName, e.fieldInConnector2))
-      },
+      getField(e.fieldInConnector1, connector1FieldLoader),
+      getField(e.fieldInConnector2, connector2FieldLoader),
+      e.selected,
+      e.defaultValue
+    )
+  )
 
-      e.selected, e.defaultValue))
+  def getField[T](fieldName: String, fieldLoader: ConnectorFieldLoader): Option[Field[T]] = {
+    if (Strings.isNullOrEmpty(fieldName)) {
+      None
+    } else {
+      val field = fieldLoader.getTypeForFieldName(fieldName)
+      Some(field.asInstanceOf[Field[T]])
+    }
+  }
 
   def add(m: EditableFieldMapping): Unit = {
     editablePojoMappings += m
@@ -83,14 +83,18 @@ class EditablePojoMappings(mappings: Seq[FieldMapping],
 
 }
 
-class TaskFieldsMappingFragment(messages: Messages, connector1: UIConnectorConfig, connector2: UIConnectorConfig,
-                                mappings: Seq[FieldMapping]) extends Validatable {
+class TaskFieldsMappingFragment(messages: Messages,
+                                connector1SupportedFields: Seq[Field[_]],
+                                connector1Label: String,
+                                connector2SupportedFields: Seq[Field[_]],
+                                connector2Label: String,
+                                mappings: Seq[FieldMapping[_]]) extends Validatable {
   val ui = new Panel(messages.get("editConfig.mappings.caption"))
   val layout = new VerticalLayout
   val gridLayout = new GridLayout
   val editablePojoMappings = new EditablePojoMappings(mappings,
-    new ConnectorFieldLoader(connector1.getAvailableFields),
-    new ConnectorFieldLoader(connector2.getAvailableFields))
+    new ConnectorFieldLoader(connector1SupportedFields),
+    new ConnectorFieldLoader(connector2SupportedFields))
 
   layout.addComponent(gridLayout)
   rebuildMappingUI()
@@ -107,7 +111,7 @@ class TaskFieldsMappingFragment(messages: Messages, connector1: UIConnectorConfi
   private def configureGridLayout(): Unit = {
     gridLayout.setMargin(true)
     gridLayout.setSpacing(true)
-    gridLayout.setRows(GTaskDescriptor.FIELD.values.length + 3)
+    gridLayout.setRows(mappings.size + 3)
     gridLayout.setColumns(TaskFieldsMappingFragment.COLUMNS_NUMBER)
   }
 
@@ -121,13 +125,13 @@ class TaskFieldsMappingFragment(messages: Messages, connector1: UIConnectorConfi
     label.setWidth(20, PIXELS)
     gridLayout.addComponent(label, TaskFieldsMappingFragment.COLUMN_HELP, 0)
 
-    val label1 = new Label(connector1.getConnectorSetup.label)
+    val label1 = new Label(connector1Label)
     label1.addStyleName("fieldsTitle")
     label1.setWidth(230, PIXELS)
     gridLayout.addComponent(label1, TaskFieldsMappingFragment.COLUMN_LEFT_CONNECTOR, 0)
     gridLayout.setComponentAlignment(label1, Alignment.MIDDLE_LEFT)
 
-    val label3 = new Label(connector2.getConnectorSetup.label)
+    val label3 = new Label(connector2Label)
     label3.addStyleName("fieldsTitle")
     label3.setWidth(230, PIXELS)
     gridLayout.addComponent(label3, TaskFieldsMappingFragment.COLUMN_RIGHT_CONNECTOR, 0)
@@ -162,8 +166,8 @@ class TaskFieldsMappingFragment(messages: Messages, connector1: UIConnectorConfi
     val helpForField = null //getHelpForField(field);
     if (helpForField != null) addHelp(helpForField)
     else addEmptyCell()
-    addConnectorField(connector1.getAvailableFields, field, "fieldInConnector1")
-    addConnectorField(connector2.getAvailableFields, field, "fieldInConnector2")
+    addConnectorField(connector1SupportedFields, field, "fieldInConnector1")
+    addConnectorField(connector2SupportedFields, field, "fieldInConnector2")
     addTextFieldForDefaultValue(field)
     addRemoveRowButton(field)
   }
@@ -221,10 +225,13 @@ class TaskFieldsMappingFragment(messages: Messages, connector1: UIConnectorConfi
     gridLayout.setComponentAlignment(emptyLabel, Alignment.MIDDLE_LEFT)
   }
 
-  private def addConnectorField(connectorFields: util.List[Field], fieldMapping: EditableFieldMapping, classFieldName: String) = {
+  case class FieldBeanItem(vaadinId: String, className: String, friendlyName: String)
+
+  private def addConnectorField(connectorFields: Seq[Field[_]], fieldMapping: EditableFieldMapping, classFieldName: String) = {
     val container = new BeanItemContainer[String](classOf[String])
     val mappedTo = new MethodProperty[String](fieldMapping, classFieldName)
-    val fieldNames = connectorFields.asScala.map((field: Field) => field.name).toList
+    val fieldNames = connectorFields.map((field: Field[_]) => field.name)
+      .toList
     container.addAll(fieldNames.asJava)
     val combo = new ComboBox(null, container)
     combo.setPropertyDataSource(mappedTo)
@@ -259,6 +266,6 @@ class TaskFieldsMappingFragment(messages: Messages, connector1: UIConnectorConfi
     rebuildMappingUI()
   }
 
-  def getElements: Iterable[FieldMapping] = editablePojoMappings.getElements
+  def getElements: Iterable[FieldMapping[_]] = editablePojoMappings.getElements
 
 }

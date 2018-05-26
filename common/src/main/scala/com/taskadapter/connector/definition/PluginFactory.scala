@@ -1,12 +1,8 @@
 package com.taskadapter.connector.definition
 
-import java.util
-
 import com.google.gson.{JsonElement, JsonParseException}
-import com.taskadapter.connector.{Field, NewConnector}
-import com.taskadapter.model.StandardField
-
-import scala.collection.immutable.Map
+import com.taskadapter.connector.NewConnector
+import com.taskadapter.model.Field
 
 /**
   * TODO: Maybe get rid of this class? Configure binding between descriptor
@@ -14,9 +10,10 @@ import scala.collection.immutable.Map
   * plugin factory and leave this as a "connector factory" item.
   */
 trait PluginFactory[C <: ConnectorConfig, S <: ConnectorSetup] {
-  def getAvailableFields: util.List[Field]
 
-  def getSuggestedCombinations: Map[Field, StandardField]
+  def getAllFields: Seq[Field[_]]
+
+  def getDefaultFieldsForNewConfig: Seq[Field[_]]
 
   def createConnector(config: C, setup: S): NewConnector
 

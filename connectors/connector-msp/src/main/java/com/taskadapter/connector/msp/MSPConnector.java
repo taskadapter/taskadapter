@@ -34,8 +34,9 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
         this.setup = setup;
     }
 
+    // TODO This is not used
     @Override
-    public void updateTasksByRemoteIds(List<GTask> tasksFromExternalSystem, Iterable<FieldRow> rows) throws ConnectorException {
+    public void updateTasksByRemoteIds(List<GTask> tasksFromExternalSystem, Iterable<FieldRow<?>> rows) throws ConnectorException {
        /* String fileName = config.getInputAbsoluteFilePath();
         try {
             ProjectFile projectFile = new MSPFileReader().readFile(fileName);
@@ -77,7 +78,7 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
     }
 
     @Override
-    public GTask loadTaskByKey(TaskId key, scala.collection.Iterable<FieldRow> rows) {
+    public GTask loadTaskByKey(TaskId key, scala.collection.Iterable<FieldRow<?>> rows) {
         List<GTask> tasks = loadInternal(setup.sourceFile());
         for (GTask task : tasks) {
             if (task.getIdentity().equals(key)) {
@@ -136,7 +137,7 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
 
     @Override
     public SaveResult saveData(PreviouslyCreatedTasksResolver previouslyCreatedTasksResolver, List<GTask> tasks,
-                               ProgressMonitor monitor, scala.collection.Iterable<FieldRow> rows) {
+                               ProgressMonitor monitor, scala.collection.Iterable<FieldRow<?>> rows) {
         try {
             return new MSPTaskSaver(setup, rows).saveData(tasks);
         } catch (ConnectorException e) {

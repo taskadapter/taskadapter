@@ -7,7 +7,7 @@ import java.util.Date
 import com.google.common.base.Strings
 import com.taskadapter.connector.common.data.ConnectorConverter
 import com.taskadapter.connector.definition.exceptions.ConnectorException
-import com.taskadapter.model.GTask
+import com.taskadapter.model._
 import org.eclipse.egit.github.core.{Issue, User}
 import org.eclipse.egit.github.core.service.{IssueService, UserService}
 
@@ -36,28 +36,31 @@ class GTaskToGithub(userService: UserService) extends ConnectorConverter[GTask, 
     issue
   }
 
-  private def processField(issue: Issue, fieldName: String, value: Any): Unit = {
-    fieldName match {
-      case GithubField.summary.name => issue.setTitle(value.asInstanceOf[String])
-      case GithubField.description.name => issue.setBody(value.asInstanceOf[String])
-      case GithubField.assignee.name => processAssignee(issue, fieldName, value)
-      case GithubField.createdOn.name => issue.setCreatedAt(value.asInstanceOf[Date])
-      case GithubField.updatedOn.name => issue.setUpdatedAt(value.asInstanceOf[Date])
+  private def processField(issue: Issue, field: Field[_], value: Any): Unit = {
+    field match {
+      case Summary => issue.setTitle(value.asInstanceOf[String])
+      case Description => issue.setBody(value.asInstanceOf[String])
+      case Assignee => processAssignee(issue, value)
+      case CreatedOn => issue.setCreatedAt(value.asInstanceOf[Date])
+      case UpdatedOn => issue.setUpdatedAt(value.asInstanceOf[Date])
       case _ => // unknown fields, ignore
     }
   }
 
-  private def processAssignee(issue: Issue, fieldName: String, value: Any): Unit = {
+  private def processAssignee(issue: Issue, value: Any): Unit = {
     try {
-      val userLogin = value.asInstanceOf[String]
-      if (!Strings.isNullOrEmpty(userLogin)) {
-        if (!ghUsers.containsKey(userLogin)) {
-          val ghUser = userService.getUser(userLogin)
-          ghUser.setName(ghUser.getLogin) // workaround for bug in eclipse-egit library - it uses name instead of login to build API request
+      val user = value.asInstanceOf[GUser]
+      if (user != null) {
+        val userLogin = user.loginName
+        if (!Strings.isNullOrEmpty(userLogin)) {
+          if (!ghUsers.containsKey(userLogin)) {
+            val ghUser = userService.getUser(userLogin)
+            ghUser.setName(ghUser.getLogin) // workaround for bug in eclipse-egit library - it uses name instead of login to build API request
 
-          ghUsers.put(userLogin, ghUser)
+            ghUsers.put(userLogin, ghUser)
+          }
+          if (ghUsers.get(userLogin) != null) issue.setAssignee(ghUsers.get(userLogin))
         }
-        if (ghUsers.get(userLogin) != null) issue.setAssignee(ghUsers.get(userLogin))
       }
     } catch {
       case e: IOException =>

@@ -1,13 +1,13 @@
 package com.taskadapter.connector.definition;
 
-import com.taskadapter.model.GTaskDescriptor.FIELD;
+import com.taskadapter.model.Field;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Mappings configuration. Each mapping represents association between general
- * {@link FIELD} and internal "plugin" data field. Each such mapping may be
+ * {@link Field} and internal "plugin" data field. Each such mapping may be
  * enabled or disabled. Association and "enabled" state can be managed
  * independently.
  * 
@@ -171,7 +171,7 @@ public final class Mappings {
 		mapTo.remove(field);
 	}
 
-	public String getDefaultValueForEmptyField(FIELD field) {
+	public String getDefaultValueForEmptyField(Field<?> field) {
 		return defaultValuesForEmptyFields.get(field);
 	}
 
@@ -208,10 +208,4 @@ public final class Mappings {
 			return false;
 		return true;
 	}
-
-/*
-	public Collection<FIELD> getSelectedFields() {
-		return selected.keySet().stream().filter(this::isFieldSelected).collect(Collectors.toSet());
-	}
-*/
 }

@@ -1,10 +1,14 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.definition.TaskId;
+import com.taskadapter.model.Assignee$;
+import com.taskadapter.model.CustomString;
+import com.taskadapter.model.Description$;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GUser;
 import com.taskadapter.model.Precedes$;
+import com.taskadapter.model.Summary$;
 import net.sf.mpxj.ConstraintType;
 import net.sf.mpxj.Duration;
 import net.sf.mpxj.ProjectProperties;
@@ -43,7 +47,7 @@ class MSPToGTask {
     private GTask convertToGenericTask(Task task) {
         GTask genericTask = new GTask();
 
-        genericTask.setValue(MspField.summary(), task.getName());
+        genericTask.setValue(Summary$.MODULE$, task.getName());
         genericTask.setId(task.getUniqueID().longValue());
         genericTask.setKey(task.getUniqueID() + "");
         genericTask.setSourceSystemId(new TaskId(task.getUniqueID(), task.getUniqueID() + ""));
@@ -91,12 +95,12 @@ class MSPToGTask {
         genericTask.setValue(MspField.finish(), task.getFinish());
         genericTask.setValue(MspField.deadline(), task.getDeadline());
 
-        genericTask.setValue(MspField.assignee(), extractAssignee(task));
-        genericTask.setValue(MspField.description(), task.getNotes());
+        genericTask.setValue(Assignee$.MODULE$, extractAssignee(task));
+        genericTask.setValue(Description$.MODULE$, task.getNotes());
 
         for (int i = 1; i <= 30; i++) {
             if (task.getText(i) != null) {
-                genericTask.setValue("Text" + i, task.getText(i));
+                genericTask.setValue(new CustomString("Text" + i), task.getText(i));
             }
         }
 
@@ -122,7 +126,6 @@ class MSPToGTask {
     }
 
     private GUser extractAssignee(Task task) {
-        GUser genericAssignee = new GUser();
         Resource r = getAssignee(task);
         if (r != null) {
             /*
@@ -130,11 +133,11 @@ class MSPToGTask {
                 * otherwise we'd try creating tasks in Redmine/Jira/.. using this
                 * MSP-specific ID.
                 */
+            Integer id = null;
             if (r.getUniqueID() != null && MSPUtils.isResourceOurs(r)) {
-                genericAssignee.setId(r.getUniqueID());
+                id = r.getUniqueID();
             }
-            genericAssignee.setDisplayName(r.getName());
-            return genericAssignee;
+            return new GUser(id, null, r.getName());
         }
         return null;
     }

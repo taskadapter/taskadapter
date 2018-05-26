@@ -1,17 +1,12 @@
 package com.taskadapter.web.uiapi
 
-import java.util
-
+import com.taskadapter.connector.NewConnector
 import com.taskadapter.connector.definition.ConnectorSetup
-import com.taskadapter.connector.{Field, NewConnector}
 import com.taskadapter.connector.definition.exceptions.BadConfigException
-import com.taskadapter.model.StandardField
+import com.taskadapter.model.Field
 import com.taskadapter.web.DroppingNotSupportedException
 import com.taskadapter.web.service.Sandbox
 import com.vaadin.ui.ComponentContainer
-
-import scala.beans.BeanProperty
-import scala.collection.immutable.Map
 
 
 /**
@@ -104,12 +99,9 @@ abstract class UIConnectorConfig {
     */
   def createMiniPanel(sandbox: Sandbox): ComponentContainer
 
-  /**
-    * @return list of connector available fields (in current configuration).
-    */
-  def getAvailableFields: util.List[Field]
+  def getAllFields: Seq[Field[_]]
 
-  def getSuggestedCombinations: Map[Field, StandardField]
+  def getDefaultFieldsForNewConfig: Seq[Field[_]]
 
   /**
     * Returns a source location name. This name is just a string for a user.

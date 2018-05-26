@@ -3,7 +3,7 @@ package com.taskadapter.connector.msp
 import java.util.Date
 
 import com.taskadapter.connector.msp.write.ResourceManager
-import com.taskadapter.model.{GTask, GUser}
+import com.taskadapter.model.{Priority => _, _}
 import net.sf.mpxj._
 import org.slf4j.LoggerFactory
 
@@ -26,67 +26,67 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
     }
   }
 
-  private def processField(fieldName: String, value: Any): Unit = {
+  private def processField(field: Field[_], value: Any): Unit = {
     val stringBasedValue = CustomFieldConverter.getValueAsString(value)
-    fieldName match {
-      case MspField.summary.name => mspTask.setName(stringBasedValue)
-      case MspField.description.name => mspTask.setNotes(stringBasedValue)
-      case MspField.assignee.name => processAssignee(fieldName, value)
-      case MspField.mustStartOn.name =>
+    field match {
+      case Summary => mspTask.setName(stringBasedValue)
+      case Description => mspTask.setNotes(stringBasedValue)
+      case Assignee => processAssignee(value)
+      case MspField.mustStartOn =>
         mspTask.setConstraintType(ConstraintType.MUST_START_ON)
         mspTask.setConstraintDate(value.asInstanceOf[Date])
-      case MspField.startAsSoonAsPossible.name =>
+      case MspField.startAsSoonAsPossible =>
         mspTask.setConstraintType(ConstraintType.AS_SOON_AS_POSSIBLE)
         mspTask.setConstraintDate(value.asInstanceOf[Date])
-      case MspField.startAsLateAsPossible.name =>
+      case MspField.startAsLateAsPossible =>
         mspTask.setConstraintType(ConstraintType.AS_LATE_AS_POSSIBLE)
         mspTask.setConstraintDate(value.asInstanceOf[Date])
-      case MspField.startNoEarlierThan.name =>
+      case MspField.startNoEarlierThan =>
         mspTask.setConstraintType(ConstraintType.START_NO_EARLIER_THAN)
         mspTask.setConstraintDate(value.asInstanceOf[Date])
-      case MspField.startNoLaterThan.name =>
+      case MspField.startNoLaterThan =>
         mspTask.setConstraintType(ConstraintType.START_NO_LATER_THAN)
         mspTask.setConstraintDate(value.asInstanceOf[Date])
-      case MspField.mustFinishOn.name =>
+      case MspField.mustFinishOn =>
         mspTask.setConstraintType(ConstraintType.MUST_FINISH_ON)
         mspTask.setConstraintDate(value.asInstanceOf[Date])
-      case MspField.finishNoEarlierThan.name =>
+      case MspField.finishNoEarlierThan =>
         mspTask.setConstraintType(ConstraintType.FINISH_NO_EARLIER_THAN)
         mspTask.setConstraintDate(value.asInstanceOf[Date])
-      case MspField.finishNoLaterThan.name =>
+      case MspField.finishNoLaterThan =>
         mspTask.setConstraintType(ConstraintType.FINISH_NO_LATER_THAN)
         mspTask.setConstraintDate(value.asInstanceOf[Date])
 
-      case MspField.finish.name =>
+      case MspField.finish =>
         if (value != null) {
           mspTask.setFinish(value.asInstanceOf[Date])
         }
-      case MspField.deadline.name =>
+      case MspField.deadline =>
         if (value != null) {
           mspTask.setDeadline(value.asInstanceOf[Date])
         }
-      case MspField.priority.name =>
+      case com.taskadapter.model.Priority =>
         val mspPriority = Priority.getInstance(value.asInstanceOf[Int])
         mspTask.setPriority(mspPriority)
 
-      case MspField.taskDuration.name => mspTask.setDuration(Duration.getInstance(value.asInstanceOf[Float], TimeUnit.HOURS))
-      case MspField.taskWork.name => mspTask.setWork(Duration.getInstance(value.asInstanceOf[Float], TimeUnit.HOURS))
-      case MspField.actualWork.name => mspTask.setActualWork(Duration.getInstance(value.asInstanceOf[Float], TimeUnit.HOURS))
-      case MspField.actualDuration.name => mspTask.setActualDuration(Duration.getInstance(value.asInstanceOf[Float], TimeUnit.HOURS))
-      case MspField.percentageComplete.name => mspTask.setPercentageComplete(value.asInstanceOf[Int])
-      case MspField.actualFinish.name => mspTask.setActualFinish(value.asInstanceOf[Date])
+      case MspField.taskDuration => mspTask.setDuration(Duration.getInstance(value.asInstanceOf[Float], TimeUnit.HOURS))
+      case MspField.taskWork => mspTask.setWork(Duration.getInstance(value.asInstanceOf[Float], TimeUnit.HOURS))
+      case MspField.actualWork => mspTask.setActualWork(Duration.getInstance(value.asInstanceOf[Float], TimeUnit.HOURS))
+      case MspField.actualDuration => mspTask.setActualDuration(Duration.getInstance(value.asInstanceOf[Float], TimeUnit.HOURS))
+      case MspField.percentageComplete => mspTask.setPercentageComplete(value.asInstanceOf[Float])
+      case MspField.actualFinish => mspTask.setActualFinish(value.asInstanceOf[Date])
 
-      case other if other.startsWith("Text") =>
-        setFieldByName(fieldName, stringBasedValue)
+      case other if other.name.startsWith("Text") =>
+        setFieldByName(field, stringBasedValue)
 
       case unknown => // ignore for now
     }
   }
 
-  private def processAssignee(fieldName: String, value: Any): Unit = {
+  private def processAssignee(value: Any): Unit = {
     if (value != null) {
       val user = value.asInstanceOf[GUser]
-      val resource = resourceManager.getOrCreateResource(user.getDisplayName)
+      val resource = resourceManager.getOrCreateResource(user.displayName)
       val ass = mspTask.addResourceAssignment(resource)
       ass.setUnits(100)
       // MUST set the remaining work to avoid this bug:
@@ -102,8 +102,8 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
     }
   }
 
-  private def setFieldByName(fieldName: String, value: Any): Unit = {
-    val f = MSPUtils.getTaskFieldByName(fieldName)
+  private def setFieldByName(field: Field[_], value: Any): Unit = {
+    val f = MSPUtils.getTaskFieldByName(field.name)
     mspTask.set(f, value)
   }
 }

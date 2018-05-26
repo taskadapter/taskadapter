@@ -1,24 +1,16 @@
 package com.taskadapter.connector.github
-import java.util
 
 import com.google.gson.{JsonElement, JsonParseException}
-import com.taskadapter.connector.Field
 import com.taskadapter.connector.common.ConfigUtils
 import com.taskadapter.connector.definition.{Descriptor, PluginFactory, WebConnectorSetup}
-import com.taskadapter.model.StandardField
-
-import scala.collection.immutable.Map
-
+import com.taskadapter.model.Field
 
 object GithubFactory {
   val DESCRIPTOR = Descriptor(GithubConnector.ID, GithubConfig.DEFAULT_LABEL)
 }
 
 class GithubFactory extends PluginFactory[GithubConfig, WebConnectorSetup] {
-  override def getAvailableFields: util.List[Field] = GithubField.fieldsAsJava()
-
-
-  override def getSuggestedCombinations: Map[Field, StandardField] = GithubField.getSuggestedCombinations()
+  override def getAllFields: Seq[Field[_]] = GithubField.fields
 
   def createConnector(config: GithubConfig, setup: WebConnectorSetup) = new GithubConnector(config, setup)
 
@@ -30,4 +22,6 @@ class GithubFactory extends PluginFactory[GithubConfig, WebConnectorSetup] {
   override def readConfig(config: JsonElement): GithubConfig = ConfigUtils.createDefaultGson.fromJson(config, classOf[GithubConfig])
 
   override def createDefaultConfig = new GithubConfig
+
+  override def getDefaultFieldsForNewConfig: Seq[Field[_]] = GithubField.fields
 }

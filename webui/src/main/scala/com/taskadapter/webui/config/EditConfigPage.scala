@@ -6,7 +6,7 @@ import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
-import com.taskadapter.web.uiapi.{UIConnectorConfig, UISyncConfig}
+import com.taskadapter.web.uiapi.UISyncConfig
 import com.taskadapter.webui._
 import com.taskadapter.webui.data.ExceptionFormatter
 import com.vaadin.data.util.ObjectProperty
@@ -50,7 +50,10 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
 
   layout.addComponent(errorMessageLabel)
 
-  val taskFieldsMappingFragment = new TaskFieldsMappingFragment(messages, config.getConnector1, config.getConnector2, config.getNewMappings)
+  val taskFieldsMappingFragment = new TaskFieldsMappingFragment(messages,
+    config.getConnector1.getAllFields, config.getConnector1.getLabel,
+    config.getConnector2.getAllFields, config.getConnector2.getLabel,
+    config.getNewMappings)
 
   layout.addComponent(taskFieldsMappingFragment.getUI)
 
@@ -58,7 +61,7 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
     taskFieldsMappingFragment.removeEmptyRows()
   }
 
-  def getElements: Iterable[FieldMapping] = {
+  def getElements: Iterable[FieldMapping[_]] = {
     taskFieldsMappingFragment.getElements
   }
 

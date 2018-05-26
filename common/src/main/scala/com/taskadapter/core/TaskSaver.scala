@@ -15,7 +15,7 @@ object TaskSaver {
   def save(previouslyCreatedTasks: PreviouslyCreatedTasksResolver,
            connectorTo: NewConnector,
            destinationName: String,
-           rows: Seq[FieldRow],
+           rows: Seq[FieldRow[_]],
            tasks: util.List[GTask],
            monitor: ProgressMonitor): SaveResult = {
     val totalNumberOfTasks = DataConnectorUtil.calculateNumberOfTasks(tasks)

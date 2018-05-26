@@ -94,7 +94,7 @@ class JiraConnector(config: JiraConfig, setup: WebConnectorSetup) extends NewCon
   @throws[ConnectorException]
   def getIssueTypesForSubtasks: util.List[_ <: NamedKeyedObject] = IssueTypesLoader.getIssueTypes(setup, new SubtaskTypesFilter)
 
-  override def loadTaskByKey(key: TaskId, rows: Iterable[FieldRow]): GTask = withJiraRestClient((client: JiraRestClient) => {
+  override def loadTaskByKey(key: TaskId, rows: Iterable[FieldRow[_]]): GTask = withJiraRestClient((client: JiraRestClient) => {
     def foo(client: JiraRestClient) = {
       val loader = new JiraTaskLoader(client, config.getPriorities)
       loader.loadTask(key.key)
@@ -113,7 +113,7 @@ class JiraConnector(config: JiraConfig, setup: WebConnectorSetup) extends NewCon
   })
 
   override def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask], monitor: ProgressMonitor,
-                        rows: Iterable[FieldRow]): SaveResult =
+                        rows: Iterable[FieldRow[_]]): SaveResult =
     withJiraRestClient((client: JiraRestClient) => {
     def foo(client: JiraRestClient) = {
       val issueTypeList = loadIssueTypes(client)
@@ -126,9 +126,7 @@ class JiraConnector(config: JiraConfig, setup: WebConnectorSetup) extends NewCon
       val prioritiesPromise = client.getMetadataClient.getPriorities
       val priorities = prioritiesPromise.claim.asScala
 
-      val fields = client.getMetadataClient.getFields
-      val fieldIterable = fields.claim.asScala
-      val resolver = new CustomFieldResolver(fieldIterable)
+      val resolver = JiraClientHelper.loadCustomFields(client)
       val converter = new GTaskToJira(config, resolver, issueTypeList, versions, components, priorities)
       val saver = new JiraTaskSaver(client)
       val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows,

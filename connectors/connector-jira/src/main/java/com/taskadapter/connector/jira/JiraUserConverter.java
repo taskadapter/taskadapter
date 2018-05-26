@@ -1,16 +1,11 @@
 package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rest.client.api.JiraRestClient;
-import com.atlassian.jira.rest.client.api.domain.User;
-import com.atlassian.util.concurrent.Promise;
-import com.taskadapter.model.GTask;
-import com.taskadapter.model.GUser;
 
-import java.rmi.RemoteException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+// TODO why is this not used?
 public class JiraUserConverter {
     private Map<String, String> cachedJiraUsers = new HashMap<>();
     private final JiraRestClient client;
@@ -30,12 +25,12 @@ public class JiraUserConverter {
 /*    public GTask setAssigneeDisplayName(GTask task) {
         GUser assignee = task.getAssignee();
         if (assignee != null) {
-            String loginName = assignee.getLoginName();
+            String loginName = assignee.loginName();
             String assigneeFullname = cachedJiraUsers.get(loginName);
             if (assigneeFullname == null || assigneeFullname.length() == 0) {
                 final Promise<User> userPromise = client.getUserClient().getUser(loginName);
                 final User user = userPromise.claim();
-                assigneeFullname = user.getDisplayName();
+                assigneeFullname = user.displayName();
                 cachedJiraUsers.put(loginName, assigneeFullname);
             }
             assignee.setDisplayName(assigneeFullname);

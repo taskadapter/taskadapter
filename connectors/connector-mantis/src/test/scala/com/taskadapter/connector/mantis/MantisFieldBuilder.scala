@@ -1,20 +1,13 @@
 package com.taskadapter.connector.mantis
 
-import com.taskadapter.connector.{Field, FieldRow}
+import com.taskadapter.connector.FieldRow
+import com.taskadapter.model.{Description, Summary}
 
 object MantisFieldBuilder {
-
-  def withField(typeForField: String, name: String, defaultValue: String = ""): Seq[FieldRow] = {
+  def getDefault(): List[FieldRow[_]] = {
     List(
-      FieldRow(MantisField.summary, MantisField.summary, ""),
-      FieldRow(Field(typeForField, name), Field(typeForField, name), defaultValue)
-    )
-  }
-
-  def getDefault(): List[FieldRow] = {
-    List(
-      FieldRow(MantisField.summary, MantisField.summary, ""),
-      FieldRow(MantisField.description, MantisField.description, "-"),
+      FieldRow(Summary, Summary, ""),
+      FieldRow(Description, Description, "-")
     )
   }
 }

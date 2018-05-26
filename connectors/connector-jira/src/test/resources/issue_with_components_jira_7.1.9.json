@@ -1,0 +1,380 @@
+{
+  "expand": "renderedFields,names,schema,transitions,operations,editmeta,changelog,versionedRepresentations",
+  "id": "10627",
+  "self": "http://dev.taskadapter.com:10012/rest/api/2/issue/10627",
+  "key": "TEST-532",
+  "fields": {
+    "issuetype": {
+      "self": "http://dev.taskadapter.com:10012/rest/api/2/issuetype/10004",
+      "id": "10004",
+      "description": "A problem which impairs or prevents the functions of the product.",
+      "iconUrl": "http://dev.taskadapter.com:10012/secure/viewavatar?size=xsmall&avatarId=10303&avatarType=issuetype",
+      "name": "Bug",
+      "subtask": false,
+      "avatarId": 10303
+    },
+    "components": [
+      {
+        "self": "http://dev.taskadapter.com:10012/rest/api/2/component/10100",
+        "id": "10100",
+        "name": "compiler"
+      },
+      {
+        "self": "http://dev.taskadapter.com:10012/rest/api/2/component/10101",
+        "id": "10101",
+        "name": "gui"
+      }
+    ],
+    "timespent": null,
+    "timeoriginalestimate": null,
+    "description": null,
+    "project": {
+      "self": "http://dev.taskadapter.com:10012/rest/api/2/project/10000",
+      "id": "10000",
+      "key": "TEST",
+      "name": "TEST",
+      "avatarUrls": {
+        "48x48": "http://dev.taskadapter.com:10012/secure/projectavatar?avatarId=10324",
+        "24x24": "http://dev.taskadapter.com:10012/secure/projectavatar?size=small&avatarId=10324",
+        "16x16": "http://dev.taskadapter.com:10012/secure/projectavatar?size=xsmall&avatarId=10324",
+        "32x32": "http://dev.taskadapter.com:10012/secure/projectavatar?size=medium&avatarId=10324"
+      }
+    },
+    "fixVersions": [],
+    "aggregatetimespent": null,
+    "resolution": null,
+    "timetracking": {},
+    "attachment": [],
+    "aggregatetimeestimate": null,
+    "resolutiondate": null,
+    "workratio": -1,
+    "summary": "Another task",
+    "lastViewed": "2018-05-13T12:27:44.164-0700",
+    "watches": {
+      "self": "http://dev.taskadapter.com:10012/rest/api/2/issue/TEST-532/watchers",
+      "watchCount": 1,
+      "isWatching": true
+    },
+    "creator": {
+      "self": "http://dev.taskadapter.com:10012/rest/api/2/user?username=user",
+      "name": "user",
+      "key": "user",
+      "emailAddress": "alskor@gmail.com",
+      "avatarUrls": {
+        "48x48": "http://www.gravatar.com/avatar/2cb6b6446d377dd4bc02acd1508d29b7?d=mm&s=48",
+        "24x24": "http://www.gravatar.com/avatar/2cb6b6446d377dd4bc02acd1508d29b7?d=mm&s=24",
+        "16x16": "http://www.gravatar.com/avatar/2cb6b6446d377dd4bc02acd1508d29b7?d=mm&s=16",
+        "32x32": "http://www.gravatar.com/avatar/2cb6b6446d377dd4bc02acd1508d29b7?d=mm&s=32"
+      },
+      "displayName": "user",
+      "active": true,
+      "timeZone": "America/Los_Angeles"
+    },
+    "subtasks": [],
+    "created": "2017-11-19T15:55:07.903-0800",
+    "reporter": {
+      "self": "http://dev.taskadapter.com:10012/rest/api/2/user?username=user",
+      "name": "user",
+      "key": "user",
+      "emailAddress": "alskor@gmail.com",
+      "avatarUrls": {
+        "48x48": "http://www.gravatar.com/avatar/2cb6b6446d377dd4bc02acd1508d29b7?d=mm&s=48",
+        "24x24": "http://www.gravatar.com/avatar/2cb6b6446d377dd4bc02acd1508d29b7?d=mm&s=24",
+        "16x16": "http://www.gravatar.com/avatar/2cb6b6446d377dd4bc02acd1508d29b7?d=mm&s=16",
+        "32x32": "http://www.gravatar.com/avatar/2cb6b6446d377dd4bc02acd1508d29b7?d=mm&s=32"
+      },
+      "displayName": "user",
+      "active": true,
+      "timeZone": "America/Los_Angeles"
+    },
+    "customfield_10000": "0|hzzzzr:",
+    "aggregateprogress": {
+      "progress": 0,
+      "total": 0
+    },
+    "priority": {
+      "self": "http://dev.taskadapter.com:10012/rest/api/2/priority/3",
+      "iconUrl": "http://dev.taskadapter.com:10012/images/icons/priorities/medium.svg",
+      "name": "Medium",
+      "id": "3"
+    },
+    "customfield_10001": [
+      "com.atlassian.greenhopper.service.sprint.Sprint@80f0329[id=1,rapidViewId=1,state=ACTIVE,name=TEST Sprint 1,startDate=2017-11-19T15:39:45.213-08:00,endDate=2017-12-03T15:39:00.000-08:00,completeDate=<null>,sequence=1]"
+    ],
+    "customfield_10002": null,
+    "customfield_10101": null,
+    "customfield_10102": null,
+    "labels": [],
+    "environment": null,
+    "timeestimate": null,
+    "aggregatetimeoriginalestimate": null,
+    "versions": [],
+    "duedate": null,
+    "progress": {
+      "progress": 0,
+      "total": 0
+    },
+    "comment": {
+      "startAt": 0,
+      "maxResults": 0,
+      "total": 0,
+      "comments": []
+    },
+    "issuelinks": [],
+    "votes": {
+      "self": "http://dev.taskadapter.com:10012/rest/api/2/issue/TEST-532/votes",
+      "votes": 0,
+      "hasVoted": false
+    },
+    "worklog": {
+      "startAt": 0,
+      "maxResults": 20,
+      "total": 0,
+      "worklogs": []
+    },
+    "assignee": null,
+    "updated": "2018-05-13T12:27:05.032-0700",
+    "status": {
+      "self": "http://dev.taskadapter.com:10012/rest/api/2/status/3",
+      "description": "This issue is being actively worked on at the moment by the assignee.",
+      "iconUrl": "http://dev.taskadapter.com:10012/images/icons/statuses/inprogress.png",
+      "name": "In Progress",
+      "id": "3",
+      "statusCategory": {
+        "self": "http://dev.taskadapter.com:10012/rest/api/2/statuscategory/4",
+        "id": 4,
+        "key": "indeterminate",
+        "colorName": "yellow",
+        "name": "In Progress"
+      }
+    }
+  },
+  "names": {
+    "issuetype": "Issue Type",
+    "components": "Component/s",
+    "timespent": "Time Spent",
+    "timeoriginalestimate": "Original Estimate",
+    "description": "Description",
+    "project": "Project",
+    "fixVersions": "Fix Version/s",
+    "aggregatetimespent": "Σ Time Spent",
+    "resolution": "Resolution",
+    "timetracking": "Time Tracking",
+    "attachment": "Attachment",
+    "aggregatetimeestimate": "Σ Remaining Estimate",
+    "resolutiondate": "Resolved",
+    "workratio": "Work Ratio",
+    "summary": "Summary",
+    "lastViewed": "Last Viewed",
+    "watches": "Watchers",
+    "creator": "Creator",
+    "subtasks": "Sub-Tasks",
+    "created": "Created",
+    "reporter": "Reporter",
+    "customfield_10000": "Rank",
+    "aggregateprogress": "Σ Progress",
+    "priority": "Priority",
+    "customfield_10001": "Sprint",
+    "customfield_10002": "Epic Link",
+    "customfield_10101": "Environment",
+    "customfield_10102": "custom_text_1",
+    "labels": "Labels",
+    "environment": "Environment",
+    "timeestimate": "Remaining Estimate",
+    "aggregatetimeoriginalestimate": "Σ Original Estimate",
+    "versions": "Affects Version/s",
+    "duedate": "Due Date",
+    "progress": "Progress",
+    "comment": "Comment",
+    "issuelinks": "Linked Issues",
+    "votes": "Votes",
+    "worklog": "Log Work",
+    "assignee": "Assignee",
+    "updated": "Updated",
+    "status": "Status"
+  },
+  "schema": {
+    "issuetype": {
+      "type": "issuetype",
+      "system": "issuetype"
+    },
+    "components": {
+      "type": "array",
+      "items": "component",
+      "system": "components"
+    },
+    "timespent": {
+      "type": "number",
+      "system": "timespent"
+    },
+    "timeoriginalestimate": {
+      "type": "number",
+      "system": "timeoriginalestimate"
+    },
+    "description": {
+      "type": "string",
+      "system": "description"
+    },
+    "project": {
+      "type": "project",
+      "system": "project"
+    },
+    "fixVersions": {
+      "type": "array",
+      "items": "version",
+      "system": "fixVersions"
+    },
+    "aggregatetimespent": {
+      "type": "number",
+      "system": "aggregatetimespent"
+    },
+    "resolution": {
+      "type": "resolution",
+      "system": "resolution"
+    },
+    "timetracking": {
+      "type": "timetracking",
+      "system": "timetracking"
+    },
+    "attachment": {
+      "type": "array",
+      "items": "attachment",
+      "system": "attachment"
+    },
+    "aggregatetimeestimate": {
+      "type": "number",
+      "system": "aggregatetimeestimate"
+    },
+    "resolutiondate": {
+      "type": "datetime",
+      "system": "resolutiondate"
+    },
+    "workratio": {
+      "type": "number",
+      "system": "workratio"
+    },
+    "summary": {
+      "type": "string",
+      "system": "summary"
+    },
+    "lastViewed": {
+      "type": "datetime",
+      "system": "lastViewed"
+    },
+    "watches": {
+      "type": "watches",
+      "system": "watches"
+    },
+    "creator": {
+      "type": "user",
+      "system": "creator"
+    },
+    "subtasks": {
+      "type": "array",
+      "items": "issuelinks",
+      "system": "subtasks"
+    },
+    "created": {
+      "type": "datetime",
+      "system": "created"
+    },
+    "reporter": {
+      "type": "user",
+      "system": "reporter"
+    },
+    "customfield_10000": {
+      "type": "any",
+      "custom": "com.pyxis.greenhopper.jira:gh-lexo-rank",
+      "customId": 10000
+    },
+    "aggregateprogress": {
+      "type": "progress",
+      "system": "aggregateprogress"
+    },
+    "priority": {
+      "type": "priority",
+      "system": "priority"
+    },
+    "customfield_10001": {
+      "type": "array",
+      "items": "string",
+      "custom": "com.pyxis.greenhopper.jira:gh-sprint",
+      "customId": 10001
+    },
+    "customfield_10002": {
+      "type": "any",
+      "custom": "com.pyxis.greenhopper.jira:gh-epic-link",
+      "customId": 10002
+    },
+    "customfield_10101": {
+      "type": "option",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+      "customId": 10101
+    },
+    "customfield_10102": {
+      "type": "string",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+      "customId": 10102
+    },
+    "labels": {
+      "type": "array",
+      "items": "string",
+      "system": "labels"
+    },
+    "environment": {
+      "type": "string",
+      "system": "environment"
+    },
+    "timeestimate": {
+      "type": "number",
+      "system": "timeestimate"
+    },
+    "aggregatetimeoriginalestimate": {
+      "type": "number",
+      "system": "aggregatetimeoriginalestimate"
+    },
+    "versions": {
+      "type": "array",
+      "items": "version",
+      "system": "versions"
+    },
+    "duedate": {
+      "type": "date",
+      "system": "duedate"
+    },
+    "progress": {
+      "type": "progress",
+      "system": "progress"
+    },
+    "comment": {
+      "type": "comments-page",
+      "system": "comment"
+    },
+    "issuelinks": {
+      "type": "array",
+      "items": "issuelinks",
+      "system": "issuelinks"
+    },
+    "votes": {
+      "type": "votes",
+      "system": "votes"
+    },
+    "worklog": {
+      "type": "array",
+      "items": "worklog",
+      "system": "worklog"
+    },
+    "assignee": {
+      "type": "user",
+      "system": "assignee"
+    },
+    "updated": {
+      "type": "datetime",
+      "system": "updated"
+    },
+    "status": {
+      "type": "status",
+      "system": "status"
+    }
+  }
+}

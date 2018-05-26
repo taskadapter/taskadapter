@@ -1,22 +1,5 @@
 package com.taskadapter.connector.basecamp;
 
-import com.taskadapter.connector.basecamp.beans.TodoList;
-import com.taskadapter.connector.common.ProgressMonitorUtils;
-import com.taskadapter.connector.definition.Mappings;
-import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.model.GTask;
-import com.taskadapter.model.GTaskDescriptor;
-import com.taskadapter.model.GUser;
-import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 
 // Tired of re-creating Basecamp demo accounts. we don't have any Basecamp users, so

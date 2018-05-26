@@ -6,7 +6,7 @@ import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.TreeUtils
 import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.connector.testlib._
-import com.taskadapter.model.{GTask, GUser}
+import com.taskadapter.model._
 import com.taskadapter.redmineapi.bean.ProjectFactory
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
@@ -49,13 +49,13 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
      }
  */
 
-  private def getTestSaver(rows: List[FieldRow]) = new TestSaver(getConnector(), rows)
+  private def getTestSaver(rows: List[FieldRow[_]]) = new TestSaver(getConnector(), rows)
 
   /*    private TestSaver getTestSaver() {
           return new TestSaver(getConnector(), RedmineFieldBuilder.getDefault())
       }*/
 
-  private def getTestSaver(config: RedmineConfig, rows: List[FieldRow]) = new TestSaver(getConnector(config), rows)
+  private def getTestSaver(config: RedmineConfig, rows: List[FieldRow[_]]) = new TestSaver(getConnector(config), rows)
 
   /*
       private void checkStartDate(TestSaver testSaver, Date expected) throws ConnectorException {
@@ -79,12 +79,12 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
     */
   it("assignee login name is loaded") {
     val task = RedmineGTaskBuilder.withSummary()
-    task.setValue(RedmineField.assignee, currentUser)
+    task.setValue(Assignee, currentUser)
     val config = getTestConfig
     config.setFindUserByName(true)
     val connector = getConnector(config)
     val loadedTask = TestUtils.saveAndLoad(connector, task, RedmineFieldBuilder.withAssignee())
-    loadedTask.getValue(RedmineField.assignee).asInstanceOf[GUser].getLoginName shouldBe currentUser.getLoginName
+    loadedTask.getValue(Assignee).loginName shouldBe currentUser.loginName
     mgr.getIssueManager.deleteIssue(loadedTask.getId.toInt)
   }
 
@@ -125,23 +125,23 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
     val t = new GTask()
     t.setId(1l)
     val summary = "generic task " + Calendar.getInstance().getTimeInMillis
-    t.setValue(RedmineField.summary, summary)
-    t.setValue(RedmineField.description, "some descr" + Calendar.getInstance().getTimeInMillis + "1")
+    t.setValue(Summary, summary)
+    t.setValue(Description, "some descr" + Calendar.getInstance().getTimeInMillis + "1")
 
     val hours : Integer = Random.nextInt(50) + 1
-    t.setValue(RedmineField.estimatedTime, hours)
+    t.setValue(EstimatedTime, hours.toFloat)
 
     val c1 = new GTask()
     c1.setId(3l)
     val parentIdentity = TaskId(1, "1")
     c1.setParentIdentity(parentIdentity)
-    c1.setValue(RedmineField.summary, "Child 1 of " + summary)
+    c1.setValue(Summary, "Child 1 of " + summary)
     t.addChildTask(c1)
 
     val c2 = new GTask()
     c2.setId(4l)
     c2.setParentIdentity(parentIdentity)
-    c2.setValue(RedmineField.summary, "Child 2 of " + summary)
+    c2.setValue(Summary, "Child 2 of " + summary)
     t.addChildTask(c2)
 
     val loadedTasks = TestUtils.saveAndLoadAll(getConnector(), t, RedmineFieldBuilder.getDefault())
@@ -242,7 +242,7 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
 
   it("task is created and loaded") {
     CommonTestChecks.taskIsCreatedAndLoaded(getConnector(), RedmineGTaskBuilder.withSummary(),
-      RedmineFieldBuilder.getDefault(), RedmineField.summary,
+      RedmineFieldBuilder.getDefault(), Summary,
       CommonTestChecks.skipCleanup)
   }
 
@@ -266,7 +266,7 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
   it("task is updated") {
     CommonTestChecks.taskCreatedAndUpdatedOK(RedmineTestConfig.getRedmineServerInfo.host,
       getConnector(), RedmineFieldBuilder.getDefault(),
-      RedmineGTaskBuilder.withSummary(), RedmineField.summary, "new value",
+      RedmineGTaskBuilder.withSummary(), Summary, "new value",
       CommonTestChecks.skipCleanup)
   }
 

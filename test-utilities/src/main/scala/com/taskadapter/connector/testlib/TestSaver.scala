@@ -9,7 +9,7 @@ import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.GTask
 import scala.collection.JavaConverters._
 
-class TestSaver(connector: NewConnector, rows: Iterable[FieldRow]) {
+class TestSaver(connector: NewConnector, rows: Iterable[FieldRow[_]]) {
   @throws[ConnectorException]
   def saveAndLoad(task: GTask): GTask = {
     val taskSaveResult = connector.saveData(PreviouslyCreatedTasksResolver.empty,

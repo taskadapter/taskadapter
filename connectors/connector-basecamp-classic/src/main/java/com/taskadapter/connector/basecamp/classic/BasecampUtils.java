@@ -194,20 +194,18 @@ public class BasecampUtils {
 
 
     public static GUser parseUser(Element assObj) throws CommunicationException {
-        final GUser result = new GUser();
-        result.setId(XmlUtils.getIntElt(assObj, "id"));
-        String name = "";
+        Integer id = XmlUtils.getIntElt(assObj, "id");
+        String fullName = "";
         final String fname = XmlUtils.getOptString(assObj, "first-name");
         if (fname != null && !fname.isEmpty())
-            name += fname;
+            fullName += fname;
         final String ffname = XmlUtils.getOptString(assObj, "last-name");
         if (ffname != null && !ffname.isEmpty())
-            if (name.isEmpty())
-                name = ffname;
+            if (fullName.isEmpty())
+                fullName = ffname;
             else
-                name += " " + ffname;
-        result.setDisplayName(name);
-        return result;
+                fullName += " " + ffname;
+        return new GUser(id, null, fullName);
     }
 
 }

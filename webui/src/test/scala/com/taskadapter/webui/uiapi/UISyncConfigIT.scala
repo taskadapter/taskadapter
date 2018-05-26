@@ -1,12 +1,11 @@
 package com.taskadapter.webui.uiapi
 
-import com.taskadapter.connector.Field
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.connector.github.GithubField
 import com.taskadapter.connector.jira.JiraField
 import com.taskadapter.connector.mantis.MantisField
-import com.taskadapter.model.{GTask, GTaskBuilder}
+import com.taskadapter.model.{Description, Field, GTask, GTaskBuilder, Summary}
 import com.taskadapter.web.uiapi.{ConfigLoader, UISyncConfig}
 import org.fest.assertions.Assertions.assertThat
 import org.junit.runner.RunWith
@@ -77,7 +76,7 @@ class UISyncConfigIT extends FunSpec with Matchers with ConfigsTempFolder {
       val jiraTask = new GTask
       jiraTask.setId(66l)
       jiraTask.setKey("TEST-66")
-      jiraTask.setValue(JiraField.summary, "summary")
+      jiraTask.setValue(Summary, "summary")
 
       val list = List(jiraTask).asJava
       val saveResult = config.saveTasks(list, ProgressMonitorUtils.DUMMY_MONITOR)
@@ -98,7 +97,7 @@ class UISyncConfigIT extends FunSpec with Matchers with ConfigsTempFolder {
       withTempFolder { f =>
         val config = ConfigLoader.loadConfig(f, "Mantis_1-Microsoft-Project.ta_conf")
         val reversed = config.reverse
-        trySaveAndThenUpdate(reversed, MantisField.summary, Some(MantisField.description))
+        trySaveAndThenUpdate(reversed, Summary, Some(Description))
       }
     }
 
@@ -106,7 +105,7 @@ class UISyncConfigIT extends FunSpec with Matchers with ConfigsTempFolder {
       withTempFolder { f =>
         val jiraMspConfig = ConfigLoader.loadConfig(f, "Atlassian-Jira_Microsoft-Project_3.ta_conf")
         val toJIRAConfig = jiraMspConfig.reverse
-        trySaveAndThenUpdate(toJIRAConfig, JiraField.summary)
+        trySaveAndThenUpdate(toJIRAConfig, Summary)
       }
     }
 
@@ -114,12 +113,12 @@ class UISyncConfigIT extends FunSpec with Matchers with ConfigsTempFolder {
       withTempFolder { f =>
         val config = ConfigLoader.loadConfig(f, "Github_Microsoft-Project_1.ta_conf")
         val reversedConfig = config.reverse
-        trySaveAndThenUpdate(reversedConfig, GithubField.summary)
+        trySaveAndThenUpdate(reversedConfig, Summary)
       }
     }
 
-    private def trySaveAndThenUpdate(uiSyncConfig: UISyncConfig, summaryField:Field
-                                    , secondField: Option[Field] = None) = {
+    private def trySaveAndThenUpdate(uiSyncConfig: UISyncConfig, summaryField:Field[String]
+                                    , secondField: Option[Field[String]] = None) = {
       val builder = new GTaskBuilder().withRandom(summaryField)
       val task = builder.build()
       task.setId(123l)

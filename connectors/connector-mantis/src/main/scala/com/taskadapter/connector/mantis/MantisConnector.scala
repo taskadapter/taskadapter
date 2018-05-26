@@ -16,7 +16,7 @@ object MantisConnector {
 }
 
 class MantisConnector(config: MantisConfig, setup: WebConnectorSetup) extends NewConnector {
-  override def loadTaskByKey(key: TaskId, rows: Iterable[FieldRow]): GTask = {
+  override def loadTaskByKey(key: TaskId, rows: Iterable[FieldRow[_]]): GTask = {
     val mgr = MantisManagerFactory.createMantisManager(setup)
     try {
       val issue = mgr.getIssueById(BigInteger.valueOf(key.id))
@@ -54,7 +54,7 @@ class MantisConnector(config: MantisConfig, setup: WebConnectorSetup) extends Ne
   }
 
   override def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask], monitor: ProgressMonitor,
-                        rows: Iterable[FieldRow]): SaveResult = {
+                        rows: Iterable[FieldRow[_]]): SaveResult = {
     val mgr = MantisManagerFactory.createMantisManager(setup)
     try {
       val mntProject = mgr.getProjectById(new BigInteger(config.getProjectKey))

@@ -20,12 +20,12 @@ public class Updater {
     private List<GTask> existingTasks;
     private List<GTask> tasksInExternalSystem;
     private NewConnector sourceConnector;
-    private Iterable<FieldRow> rows;
+    private Iterable<FieldRow<?>> rows;
     private NewConnector remoteConnector;
     private ProgressMonitor monitor;
     private String sourceLocationName;
 
-    public Updater(NewConnector sourceConnector, Iterable<FieldRow> rows,
+    public Updater(NewConnector sourceConnector, Iterable<FieldRow<?>> rows,
             NewConnector targetConnector,
             String sourceLocationName) {
         super();

@@ -8,7 +8,7 @@ import com.taskadapter.connector.definition._
 import com.taskadapter.connector.definition.exceptions.{CommunicationException, ConnectorException}
 import com.taskadapter.connector.{FieldRow, NewConnector}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
-import com.taskadapter.model.{GTask, GUser}
+import com.taskadapter.model.{DoneRatio, GTask, GUser}
 import org.json.JSONException
 
 object BasecampConnector {
@@ -34,14 +34,14 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
       if (remaining != null) {
         for (i <- 0 until remaining.length) {
           val task = BasecampToGTask.parseTask(remaining.getJSONObject(i))
-          task.setValue(BasecampField.doneRatio, new java.lang.Float(0))
+          task.setValue(DoneRatio,0f)
           res.add(task)
         }
       }
       if (completed != null && config.getLoadCompletedTodos) {
         for (i <- 0 until completed.length) {
           val task = BasecampToGTask.parseTask(completed.getJSONObject(i))
-          task.setValue(BasecampField.doneRatio, new java.lang.Float(100))
+          task.setValue(DoneRatio, 100f)
           res.add(task)
         }
       }
@@ -53,7 +53,7 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
   }
 
   @throws[ConnectorException]
-  override def loadTaskByKey(id: TaskId, rows: Iterable[FieldRow]): GTask = {
+  override def loadTaskByKey(id: TaskId, rows: Iterable[FieldRow[_]]): GTask = {
     BasecampUtils.validateConfig(config)
     val obj = api.getObject("projects/" + config.getProjectKey + "/todos/" + id.key + ".json")
     BasecampToGTask.parseTask(obj)
@@ -62,7 +62,7 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
   @throws[ConnectorException]
   def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask],
                monitor: ProgressMonitor,
-               fieldRows: Iterable[FieldRow]): SaveResult = try {
+               fieldRows: Iterable[FieldRow[_]]): SaveResult = try {
     BasecampUtils.validateConfig(config)
     val userResolver = findUserResolver()
     val converter = new GTaskToBasecamp(userResolver)
@@ -81,7 +81,7 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
     for (i <- 0 until arr.length) {
       try {
         val user = BasecampToGTask.parseUser(arr.getJSONObject(i))
-        users.put(user.getDisplayName, user)
+        users.put(user.displayName, user)
       } catch {
         case e: JSONException =>
           throw new CommunicationException(e)

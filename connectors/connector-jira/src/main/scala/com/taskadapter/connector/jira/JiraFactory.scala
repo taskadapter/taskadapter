@@ -1,21 +1,14 @@
 package com.taskadapter.connector.jira
 
-import java.util
-
 import com.google.gson.{JsonElement, JsonParseException}
-import com.taskadapter.connector.Field
 import com.taskadapter.connector.common.ConfigUtils
 import com.taskadapter.connector.definition.{Descriptor, PluginFactory, WebConnectorSetup}
-import com.taskadapter.model.StandardField
-
-import scala.collection.immutable.Map
+import com.taskadapter.model.Field
 
 class JiraFactory extends PluginFactory[JiraConfig, WebConnectorSetup] {
   private val DESCRIPTOR = Descriptor(JiraConnector.ID, "Atlassian JIRA")
 
-  override def getAvailableFields: util.List[Field] = JiraField.fieldsAsJava()
-
-  override def getSuggestedCombinations: Map[Field, StandardField] = JiraField.getSuggestedCombinations()
+  override def getAllFields: Seq[Field[_]] = JiraField.fields
 
   override def createConnector(config: JiraConfig, setup: WebConnectorSetup) = new JiraConnector(config, setup)
 
@@ -27,4 +20,6 @@ class JiraFactory extends PluginFactory[JiraConfig, WebConnectorSetup] {
   override def readConfig(config: JsonElement): JiraConfig = ConfigUtils.createDefaultGson.fromJson(config, classOf[JiraConfig])
 
   override def createDefaultConfig = new JiraConfig
+
+  override def getDefaultFieldsForNewConfig: Seq[Field[_]] = JiraField.defaultFieldsForNewConfig
 }

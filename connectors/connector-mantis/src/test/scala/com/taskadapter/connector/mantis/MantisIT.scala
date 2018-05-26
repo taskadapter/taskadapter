@@ -1,13 +1,12 @@
 package com.taskadapter.connector.mantis
 
 import java.math.BigInteger
-import java.util
 import java.util.Calendar
 
 import biz.futureware.mantis.rpc.soap.client.ProjectData
 import com.taskadapter.connector.FieldRow
-import com.taskadapter.connector.testlib.{CommonTestChecks, TestSaver}
-import com.taskadapter.model.GTaskBuilder
+import com.taskadapter.connector.testlib.{CommonTestChecks, FieldRowBuilder, TestSaver, TestUtils}
+import com.taskadapter.model.{Assignee, GTaskBuilder, Summary}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
@@ -37,31 +36,24 @@ class MantisIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     if (mgr != null) mgr.deleteProject(new BigInteger(projectKey))
   }
 
-/*
-  it("assigneeExported") {
-    val task = generateTask
-    task.setAssignee(currentUser)
-    val loadedTask = getTestSaver.selectField(FIELD.ASSIGNEE).saveAndLoad(task)
-    assertEquals(currentUser.getId, loadedTask.getAssignee.getId)
+  it("assignee exported") {
+    val task = new GTaskBuilder().withRandom(Summary).withAssignee(currentUser).build()
+    val loaded = TestUtils.saveAndLoad(getConnector(), task,
+      MantisFieldBuilder.getDefault ++ FieldRowBuilder.rows(Assignee)
+    )
+    loaded.getValue(Assignee).id shouldBe currentUser.id
   }
 
-  it("assigneeExportedByDefault") {
-    val task = generateTask
-    task.setAssignee(currentUser)
-    val loadedTask = getTestSaver.saveAndLoad(task)
-    assertEquals(currentUser.getId, loadedTask.getAssignee.getId)
-  }*/
-
-  it("taskUpdatedOK") {
+  it("task created and updated") {
     val task = generateTask()
     CommonTestChecks.taskCreatedAndUpdatedOK(setup.host, mantisConnector, MantisFieldBuilder.getDefault,
-      task, MantisField.summary, "new value",
+      task, Summary, "new value",
       CommonTestChecks.skipCleanup)
   }
 
-  def generateTask() = new GTaskBuilder().withRandom(MantisField.summary).build()
+  def generateTask() = new GTaskBuilder().withRandom(Summary).build()
 
-  private def getTestSaver(rows: List[FieldRow]) = new TestSaver(getConnector(), rows)
+  private def getTestSaver(rows: List[FieldRow[_]]) = new TestSaver(getConnector(), rows)
 
   private def getConnector(): MantisConnector = getConnector(config)
 

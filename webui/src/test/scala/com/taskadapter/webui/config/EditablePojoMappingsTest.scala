@@ -1,22 +1,20 @@
 package com.taskadapter.webui.config
 
-import com.taskadapter.connector.Field
 import com.taskadapter.connector.definition.FieldMapping
+import com.taskadapter.model.{CustomString, Field}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
-import scala.collection.JavaConverters._
 
 @RunWith(classOf[JUnitRunner])
 class EditablePojoMappingsTest extends FunSpec with Matchers {
 
-  val connector1FieldLoader = new ConnectorFieldLoader(List[Field](
-    Field("field 1"),
-    Field("field 2"),
-    Field("summary"),
-    Field("another")
-  )
-    .asJava)
+  val connector1FieldLoader = new ConnectorFieldLoader(List(
+    CustomString("field 1"),
+    CustomString("field 2"),
+    CustomString("summary"),
+    CustomString("another")
+  ))
   val connector2FieldLoader = connector1FieldLoader
 
 
@@ -58,7 +56,7 @@ class EditablePojoMappingsTest extends FunSpec with Matchers {
     mappings.getElements.toSeq shouldBe
       List(FieldMapping(None, Some(Field("summary")), true, "default"),
         FieldMapping(Some(Field("field 1")), None, true, "default"),
-        FieldMapping(None, Some(Field("another")), true, "default"),
+        FieldMapping(None, Some(Field("another")), true, "default")
       )
   }
 

@@ -17,7 +17,7 @@ class SimpleTaskSaver[N](previouslyCreatedTasksResolver: PreviouslyCreatedTasksR
                          targetLocation: String) {
   private val log = LoggerFactory.getLogger(classOf[SimpleTaskSaver[N]])
 
-  def saveTasks(parentIssueKey: Option[TaskId], tasks: util.List[GTask], fieldRows: Iterable[FieldRow]): Unit = {
+  def saveTasks(parentIssueKey: Option[TaskId], tasks: util.List[GTask], fieldRows: Iterable[FieldRow[_]]): Unit = {
     tasks.forEach { task =>
       try {
         if (parentIssueKey.isDefined) task.setParentIdentity(parentIssueKey.get)

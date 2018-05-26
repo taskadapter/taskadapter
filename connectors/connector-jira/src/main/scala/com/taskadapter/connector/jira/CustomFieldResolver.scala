@@ -1,6 +1,7 @@
 package com.taskadapter.connector.jira
 
-import com.atlassian.jira.rest.client.api.domain.Field
+import com.atlassian.jira.rest.client.api.domain.{Field, IssueField}
+import com.taskadapter.model.{CustomSeqString, CustomString}
 
 object CustomFieldResolver {
   def apply(): CustomFieldResolver = new CustomFieldResolver(Seq())
@@ -12,7 +13,7 @@ object CustomFieldResolver {
   * @param itemsTypeIfArray "null" for any [typeName] other than 'array'. for arrays sample values are:
   *                         "string","attachment", "version", "component", "version", "issueLinks", "worklog", ...
   */
-case class JiraFieldDefinition(id: Long, fullIdForSave: String, typeName: String, itemsTypeIfArray: Option[String])
+case class JiraFieldDefinition(id: Long, fieldName: String, fullIdForSave: String, typeName: String, itemsTypeIfArray: Option[String])
 
 /**
   * Sample custom field loaded from JIRA 7:
@@ -26,10 +27,22 @@ case class JiraFieldDefinition(id: Long, fullIdForSave: String, typeName: String
 class CustomFieldResolver(fields: Iterable[Field]) {
   val mapNameToSchema = fields
     .filter(f => f.getSchema != null)
-    .map(f => f.getName -> JiraFieldDefinition(f.getSchema.getCustomId, f.getId, f.getSchema.getType, Option(f.getSchema.getItems)))
+    .map(f => f.getName -> JiraFieldDefinition(f.getSchema.getCustomId, f.getName, f.getId, f.getSchema.getType, Option(f.getSchema.getItems)))
     .toMap
 
   def getId(name: String): Option[JiraFieldDefinition] = {
     mapNameToSchema.get(name)
+  }
+
+  def getField(jiraField: IssueField): Option[com.taskadapter.model.Field[_]] = {
+    getId(jiraField.getName) match {
+      case Some(definition) => definition.typeName match {
+        case "string" | "any" => Some(CustomString(definition.fieldName))
+        case "array" => Some(CustomSeqString(definition.fieldName))
+        case _ => None
+      }
+      case None => None
+    }
+
   }
 }

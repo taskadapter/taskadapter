@@ -5,10 +5,11 @@ import java.util
 import com.atlassian.jira.rest.client.api.domain.input.{ComplexIssueInputFieldValue, FieldInput, IssueInputBuilder}
 import com.atlassian.jira.rest.client.api.domain.{BasicComponent, IssueFieldId, IssueType, Priority, TimeTracking, Version}
 import com.google.common.collect.ImmutableList
+import com.taskadapter.model.Summary
 import com.taskadapter.connector.common.ValueTypeResolver
 import com.taskadapter.connector.common.data.ConnectorConverter
 import com.taskadapter.connector.definition.exceptions.ConnectorException
-import com.taskadapter.model.{GTask, GUser}
+import com.taskadapter.model._
 import org.joda.time.DateTime
 
 import scala.collection.JavaConverters._
@@ -52,47 +53,49 @@ class GTaskToJira(config: JiraConfig,
     if (fixForVersion != null) issueInputBuilder.setFixVersions(ImmutableList.of(fixForVersion))
     val issueInput = issueInputBuilder.build
 
-    val status = task.getValue(JiraField.status).asInstanceOf[String]
+    val status = task.getValue(TaskStatus)
     IssueWrapper(task.getKey, issueInput, status)
   }
 
-  private def processField(issueInputBuilder: IssueInputBuilder, fieldName: String, value: Any) : Unit = {
-    fieldName match {
-      case JiraField.summary.name => issueInputBuilder.setSummary(value.asInstanceOf[String])
-      case JiraField.component.name =>
+  private def processField(issueInputBuilder: IssueInputBuilder, field: Field[_], value: Any) : Unit = {
+    field match {
+      case Summary => issueInputBuilder.setSummary(value.asInstanceOf[String])
+      case Components =>
         // only first value from the list is used
-        GTaskToJira.getComponent(components, ValueTypeResolver.getValueAsString(value)) match {
-          case Some(component) => issueInputBuilder.setComponents(component)
-          case None =>
+        if (value != null) {
+          val firstComponentName = value.asInstanceOf[Seq[String]].head
+          val component = GTaskToJira.getComponent(components, firstComponentName)
+          component.map(issueInputBuilder.setComponents(_))
+        } else {
             // this will erase any existing components in this task
             issueInputBuilder.setComponents()
         }
-      case JiraField.status.name => // processed separately, cannot be set to Issue. JIRA API......
-      case JiraField.description.name => issueInputBuilder.setDescription(value.asInstanceOf[String])
-      case JiraField.dueDate.name => if (value != null) {
+      case TaskStatus => // Task Status is processed separately, cannot be set to Issue due to JIRA API design.
+      case Description => issueInputBuilder.setDescription(value.asInstanceOf[String])
+      case DueDate => if (value != null) {
         val dueDateTime = new DateTime(value)
         issueInputBuilder.setDueDate(dueDateTime)
       }
-      case JiraField.assignee.name => if (value != null) {
-        issueInputBuilder.setAssigneeName(value.asInstanceOf[GUser].getLoginName)
+      case Assignee => if (value != null) {
+        issueInputBuilder.setAssigneeName(value.asInstanceOf[GUser].loginName)
       }
-      case JiraField.reporter.name => if (value != null) {
-        issueInputBuilder.setReporterName(value.asInstanceOf[GUser].getLoginName)
+      case Reporter => if (value != null) {
+        issueInputBuilder.setReporterName(value.asInstanceOf[GUser].loginName)
       }
-      case JiraField.priority.name =>
+      case com.taskadapter.model.Priority =>
         val priorityNumber = value.asInstanceOf[Integer]
         val jiraPriorityName = config.getPriorities.getPriorityByMSP(priorityNumber)
         if (!jiraPriorityName.isEmpty) {
           val priority = priorities(jiraPriorityName)
           if (priority != null) issueInputBuilder.setPriority(priority)
         }
-      case JiraField.estimatedTime.name => if (value != null) {
+      case EstimatedTime => if (value != null) {
         val estimatedHours = value.asInstanceOf[Float]
         val timeTracking = new TimeTracking(Math.round(estimatedHours * 60), null, null)
         issueInputBuilder.setFieldValue(IssueFieldId.TIMETRACKING_FIELD.id, timeTracking)
       }
       case _ =>
-        val fieldSchema = customFieldResolver.getId(fieldName)
+        val fieldSchema = customFieldResolver.getId(field.name)
         if (fieldSchema.isDefined) {
           val fullIdForSave = fieldSchema.get.fullIdForSave
           val valueWithProperJiraType = getConvertedValue(fieldSchema.get, value)
@@ -119,6 +122,7 @@ class GTaskToJira(config: JiraConfig,
   }
 
   def getComplexValueList(value: Any) : util.List[ComplexIssueInputFieldValue] = {
+    // TODO this check does not quite work due to type erasure
     if (value.isInstanceOf[Seq[String]]) {
       val seq = value.asInstanceOf[Seq[String]]
       seq.map(ComplexIssueInputFieldValue.`with`("value", _)
@@ -137,8 +141,8 @@ class GTaskToJira(config: JiraConfig,
     */
   private def findIssueTypeId(task: GTask): Long = {
     // Use explicit task type when possible.
-    val value = task.getValue(JiraField.taskType.name)
-    val explicitTypeId = getIssueTypeIdByName(value.asInstanceOf[String])
+    val value = task.getValue(TaskType)
+    val explicitTypeId = getIssueTypeIdByName(value)
     if (explicitTypeId != null) return explicitTypeId
     // Use default type for the task when
     getIssueTypeIdByName(

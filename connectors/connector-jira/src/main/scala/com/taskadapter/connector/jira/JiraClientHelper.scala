@@ -6,6 +6,7 @@ import com.atlassian.jira.rest.client.api.JiraRestClient
 import com.atlassian.jira.rest.client.api.domain.{Issue, SearchResult}
 import com.atlassian.jira.rest.client.api.domain.input.IssueInput
 import com.taskadapter.connector.definition.TaskId
+import scala.collection.JavaConverters._
 
 
 /**
@@ -48,5 +49,11 @@ object JiraClientHelper {
       loadedIssues.size < searchResult.getTotal
     })
     loadedIssues
+  }
+
+  def loadCustomFields(client: JiraRestClient): CustomFieldResolver = {
+    val fields = client.getMetadataClient.getFields
+    val fieldIterable = fields.claim.asScala
+    new CustomFieldResolver(fieldIterable)
   }
 }
