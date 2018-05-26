@@ -132,7 +132,7 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
     // save to Redmine
     val result = TestUtils.saveAndLoadList(redmineConnector, loadedTasks,
       FieldRowBuilder.rows(
-        Summary
+        Seq(Summary)
       )
     )
     assertEquals("must have created 2 tasks", 2, result.size)
@@ -152,7 +152,7 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
     val redmineConnector = new RedmineConnector(redmineConfig, TestConfigs.getRedmineSetup)
 
     val result = TestUtils.saveAndLoadList(redmineConnector, loadedTasks,
-      FieldRowBuilder.rows(Summary
+      FieldRowBuilder.rows(Seq(Summary)
       )
     )
     assertEquals("must have created 13 tasks", 13, result.size)

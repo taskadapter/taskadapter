@@ -5,37 +5,12 @@ import java.util.Date
 import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.model._
 
-import scala.util.Random
-
 object JiraGTaskBuilder {
-  def withPriority(value: Int): GTask = {
-    val task = new GTask
-    task.setValue(Summary, "task " + new Date().getTime)
-    task.setValue(Priority, value)
-    task
-  }
-
   def withType(value: String): GTask = {
     val task = new GTask
     task.setValue(Summary, "task " + new Date().getTime)
     task.setValue(TaskType, value)
     task
-  }
-
-  def withSummary(value: String = Random.nextDouble().toString): GTask = {
-    val task = new GTask
-    task.setValue(Summary, value)
-    task
-  }
-
-  def withDescription(): GTask = {
-    val task = new GTask
-    task.setValue(Description, "description " + new Date().getTime)
-    task
-  }
-
-  def getTwo(): List[GTask] = {
-    List(withSummary(), withSummary())
   }
 }
 

@@ -39,7 +39,7 @@ class MantisIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   it("assignee exported") {
     val task = new GTaskBuilder().withRandom(Summary).withAssignee(currentUser).build()
     val loaded = TestUtils.saveAndLoad(getConnector(), task,
-      MantisFieldBuilder.getDefault ++ FieldRowBuilder.rows(Assignee)
+      MantisFieldBuilder.getDefault ++ FieldRowBuilder.rows(Seq(Assignee))
     )
     loaded.getValue(Assignee).id shouldBe currentUser.id
   }

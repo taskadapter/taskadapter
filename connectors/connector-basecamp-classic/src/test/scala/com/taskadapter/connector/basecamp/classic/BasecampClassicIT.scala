@@ -20,7 +20,7 @@ class BasecampClassicIT extends FunSpec with Matchers with BeforeAndAfter with B
     withTempProject { todoListKey =>
       CommonTestChecks.taskIsCreatedAndLoaded(getConnector(todoListKey),
         GTaskBuilder.withRandom(BasecampClassicField.content),
-        BasecampClassicFieldBuilder.getDefault(), BasecampClassicField.content,
+        BasecampClassicFieldBuilder.getDefault(), Seq(BasecampClassicField.content),
         CommonTestChecks.skipCleanup)
     }
   }

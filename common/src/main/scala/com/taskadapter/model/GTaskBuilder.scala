@@ -13,8 +13,12 @@ object GTaskBuilder {
     new GTaskBuilder().withRandom(field).build()
   }
 
-  def withSummary(value: String): GTask = {
+  def withSummary(value: String = Random.nextDouble().toString): GTask = {
     new GTaskBuilder().withField(Summary, value).build()
+  }
+
+  def getTwo(): List[GTask] = {
+    List(withSummary(), withSummary())
   }
 }
 

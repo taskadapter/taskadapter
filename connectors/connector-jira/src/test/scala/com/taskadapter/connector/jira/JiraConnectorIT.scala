@@ -63,7 +63,7 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
   // TODO move to some generic tests, this is not Jira-specific
   it("task created with default description field") {
     // description is empty so that the default value will be set later
-    val task = JiraGTaskBuilder.withSummary()
+    val task = GTaskBuilder.withSummary()
     val connector = getConnector
 
     val rows = List(
@@ -95,7 +95,7 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     * - allowed values: "option1", "option2"
     */
   it("task is created with multi-value custom field of type option (checkboxes)") {
-    val task = JiraGTaskBuilder.withSummary()
+    val task = GTaskBuilder.withSummary()
     val field = CustomSeqString("custom_checkbox_1")
     task.setValue(field, Seq("option1", "option2"))
     val rows = JiraFieldBuilder.getDefault() ++ List(
@@ -107,7 +107,7 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
   }
 
-  private val rows: Seq[FieldRow[_]] = FieldRowBuilder.rows(Summary, TaskType)
+  private val rows: Seq[FieldRow[_]] = FieldRowBuilder.rows(Seq(Summary, TaskType))
 
   describe("Create") {
     it("task is created with default task type set in config") {

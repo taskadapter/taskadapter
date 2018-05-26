@@ -42,7 +42,7 @@ final class GTask() {
   /**
     * This is database ID for Redmine and Jira and Unique ID (row number) for MSP.
     */
-  def setId(id: java.lang.Long): Unit = setValue(Id, id)
+  def setId(id: java.lang.Long): GTask = setValue(Id, id)
 
   def getParentIdentity: TaskId = getValue(ParentKey)
 
@@ -68,7 +68,7 @@ final class GTask() {
     */
   def getKey: String = getValue(Key)
 
-  def setKey(key: String): Unit = setValue(Key, key)
+  def setKey(key: String): GTask = setValue(Key, key)
 
   def getRelations: util.List[GRelation] = getValue(Relations)
 

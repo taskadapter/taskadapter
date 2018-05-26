@@ -13,15 +13,6 @@ import com.taskadapter.model.{DueDate, Field, GTask, StartDate}
 import scala.collection.JavaConverters._
 
 object TestUtils {
-  /*
-     public static List<GTask> generateTasks(int quantity) {
-         List<GTask> tasks = new ArrayList<>(quantity);
-         for (int i = 0; i < quantity; i++) {
-             tasks.add(generateTask());
-         }
-         return tasks;
-     }
- */
 
   def findTaskInList(list: util.List[GTask], createdTaskId: TaskId): Option[GTask] = {
     list.asScala.find(_.getIdentity == createdTaskId)
@@ -34,18 +25,6 @@ object TestUtils {
   def findTaskByFieldName(list: Seq[GTask], field: Field[_], value: String): GTask = {
     list.find(_.getValue(field) == value).orNull
   }
-
-  /*
-      public static GTask generateTask() {
-          GTask t = new GTask();
-          long timeInMillis = Calendar.getInstance().getTimeInMillis();
-          t.setSummary("generic task " + timeInMillis);
-          t.setDescription("some description " + timeInMillis);
-          Random r = new Random();
-          int hours = r.nextInt(50) + 1;
-          t.setEstimatedHours((float) hours);
-          return t;
-      }*/
 
   def getDateRoundedToDay: Calendar = {
     val cal = Calendar.getInstance
@@ -126,16 +105,15 @@ object TestUtils {
     yearAgo
   }
 
-  def getYearAgo: Date = {
+  def yearAgo: Date = {
     val yearAgo = getDateRoundedToDay
     yearAgo.add(Calendar.YEAR, -1)
     yearAgo.getTime
   }
 
-  def setTaskDueDateNextYear(task: GTask): Calendar = {
+  def nextYear: Date = {
     val cal = getDateRoundedToDay
     cal.add(Calendar.YEAR, 1)
-    task.setValue(DueDate, cal.getTime)
-    cal
+    cal.getTime
   }
 }

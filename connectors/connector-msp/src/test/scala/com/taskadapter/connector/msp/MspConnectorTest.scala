@@ -28,7 +28,7 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
   it("task is created and loaded") {
     withTempFolder { folder =>
       CommonTestChecks.taskIsCreatedAndLoaded(getConnector(folder), GTaskBuilder.withRandom(Summary),
-        MspFieldBuilder.getDefault(), Summary,
+        MspFieldBuilder.getDefault(), Seq(Summary),
         CommonTestChecks.skipCleanup)
     }
   }
@@ -64,14 +64,14 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
         .withRandom(MspField.deadline)
         .build()
       val loaded = new TestSaver(getConnector(folder),
-        FieldRowBuilder.rows(
+        FieldRowBuilder.rows(Seq(
           Summary,
           Assignee,
           MspField.taskDuration,
           MspField.mustStartOn,
           MspField.taskWork,
           MspField.finish,
-          MspField.deadline
+          MspField.deadline)
         )
       ).saveAndLoad(task)
 
