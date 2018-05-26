@@ -7,7 +7,7 @@ import java.util.Date
 
 import com.taskadapter.connector.common.TreeUtils
 import com.taskadapter.connector.definition.FileSetup
-import com.taskadapter.connector.testlib.{CommonTestChecks, FieldRowBuilder, TempFolder, TestSaver}
+import com.taskadapter.connector.testlib.{CommonTestChecks, ITFixture, TempFolder}
 import com.taskadapter.model._
 import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
@@ -27,9 +27,20 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
 
   it("task is created and loaded") {
     withTempFolder { folder =>
-      CommonTestChecks.taskIsCreatedAndLoaded(getConnector(folder), GTaskBuilder.withRandom(Summary),
-        MspFieldBuilder.getDefault(), Seq(Summary),
-        CommonTestChecks.skipCleanup)
+      val fixture = ITFixture("ta-test.tmp", getConnector(folder), CommonTestChecks.skipCleanup)
+      val task = new GTaskBuilder().withRandom(Summary)
+        .withRandom(MspField.taskDuration)
+        .withRandom(MspField.taskWork)
+        .withRandom(MspField.mustStartOn)
+        .withRandom(MspField.finish)
+        .withRandom(MspField.deadline)
+        .build()
+        .setValue(Description, "desc")
+        .setValue(Assignee, GUser(null, "login", "display name"))
+        .setValue(Priority, 888)
+      fixture.taskIsCreatedAndLoaded(task,
+        Seq(Assignee, MspField.taskDuration, MspField.taskWork, MspField.mustStartOn, MspField.finish, MspField.deadline,
+          Description, Priority, Summary))
     }
   }
 
@@ -50,37 +61,6 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
         List(GTaskBuilder.withRandom(Summary), GTaskBuilder.withRandom(Summary)),
         CommonTestChecks.skipCleanup
       )
-    }
-  }
-
-  it("fields are saved") {
-    withTempFolder { folder =>
-      val task = new GTaskBuilder()
-        .withRandom(Assignee)
-        .withRandom(MspField.taskDuration)
-        .withRandom(MspField.taskWork)
-        .withRandom(MspField.mustStartOn)
-        .withRandom(MspField.finish)
-        .withRandom(MspField.deadline)
-        .build()
-      val loaded = new TestSaver(getConnector(folder),
-        FieldRowBuilder.rows(Seq(
-          Summary,
-          Assignee,
-          MspField.taskDuration,
-          MspField.mustStartOn,
-          MspField.taskWork,
-          MspField.finish,
-          MspField.deadline)
-        )
-      ).saveAndLoad(task)
-
-      loaded.getValue(Assignee).displayName shouldBe task.getValue(Assignee).displayName
-      loaded.getValue(MspField.taskDuration) shouldBe task.getValue(MspField.taskDuration)
-      loaded.getValue(MspField.mustStartOn) shouldBe task.getValue(MspField.mustStartOn)
-      loaded.getValue(MspField.taskWork) shouldBe task.getValue(MspField.taskWork)
-      loaded.getValue(MspField.finish) shouldBe task.getValue(MspField.finish)
-      loaded.getValue(MspField.deadline) shouldBe task.getValue(MspField.deadline)
     }
   }
 

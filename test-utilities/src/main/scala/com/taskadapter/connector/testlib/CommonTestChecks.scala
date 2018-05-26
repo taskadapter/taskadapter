@@ -75,7 +75,7 @@ object CommonTestChecks extends Matchers {
 
     // CREATE
     val result = TaskSaver.save(PreviouslyCreatedTasksResolver.empty, connector, "some name", rows, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR)
-    assertFalse(result.hasErrors)
+    assertFalse(s"must not have any errors, but got ${result.taskErrors}", result.hasErrors)
     assertEquals(1, result.createdTasksNumber)
     val newTaskId = result.getRemoteKeys.iterator.next()
     val loaded = connector.loadTaskByKey(newTaskId, rows)
