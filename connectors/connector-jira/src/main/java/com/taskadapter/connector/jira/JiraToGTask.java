@@ -16,10 +16,10 @@ import com.taskadapter.model.DueDate$;
 import com.taskadapter.model.EstimatedTime$;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.GUser;
 import com.taskadapter.model.Precedes$;
 import com.taskadapter.model.Priority$;
-import com.taskadapter.model.Reporter$;
+import com.taskadapter.model.ReporterFullName$;
+import com.taskadapter.model.ReporterLoginName$;
 import com.taskadapter.model.Summary$;
 import com.taskadapter.model.TaskStatus$;
 import com.taskadapter.model.TaskType$;
@@ -73,8 +73,8 @@ public class JiraToGTask {
             task.setValue(AssigneeFullName$.MODULE$, assignee.getDisplayName());
         }
         if (issue.getReporter() != null) {
-            GUser user = new GUser(null, issue.getReporter().getName(), issue.getReporter().getDisplayName());
-            task.setValue(Reporter$.MODULE$, user);
+            task.setValue(ReporterFullName$.MODULE$, issue.getReporter().getDisplayName());
+            task.setValue(ReporterLoginName$.MODULE$, issue.getReporter().getName());
         }
 
         task.setValue(TaskType$.MODULE$, issue.getIssueType().getName());

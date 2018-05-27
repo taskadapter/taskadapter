@@ -4,9 +4,8 @@ import com.taskadapter.model._
 
 object RedmineField {
   val category = Components
-  val author = Reporter
 
-  def fields = List(author,
+  def fields = List(
     category,
     Summary,
     Description,
@@ -16,6 +15,8 @@ object RedmineField {
     AssigneeFullName,
     AssigneeLoginName,
     DueDate,
+    ReporterFullName,
+    ReporterLoginName,
     StartDate,
     CreatedOn,
     UpdatedOn,

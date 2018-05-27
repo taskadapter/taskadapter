@@ -5,11 +5,10 @@ import java.util
 import com.atlassian.jira.rest.client.api.domain.input.{ComplexIssueInputFieldValue, FieldInput, IssueInputBuilder}
 import com.atlassian.jira.rest.client.api.domain.{BasicComponent, IssueFieldId, IssueType, Priority, TimeTracking, Version}
 import com.google.common.collect.ImmutableList
-import com.taskadapter.model.Summary
 import com.taskadapter.connector.common.ValueTypeResolver
 import com.taskadapter.connector.common.data.ConnectorConverter
 import com.taskadapter.connector.definition.exceptions.ConnectorException
-import com.taskadapter.model._
+import com.taskadapter.model.{Summary, _}
 import org.joda.time.DateTime
 
 import scala.collection.JavaConverters._
@@ -79,8 +78,8 @@ class GTaskToJira(config: JiraConfig,
       case AssigneeLoginName => if (value != null) {
         issueInputBuilder.setAssigneeName(value.asInstanceOf[String])
       }
-      case Reporter => if (value != null) {
-        issueInputBuilder.setReporterName(value.asInstanceOf[GUser].loginName)
+      case ReporterLoginName => if (value != null) {
+        issueInputBuilder.setReporterName(value.asInstanceOf[String])
       }
       case com.taskadapter.model.Priority =>
         val priorityNumber = value.asInstanceOf[Integer]

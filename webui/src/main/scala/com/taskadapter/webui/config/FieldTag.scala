@@ -2,13 +2,12 @@ package com.taskadapter.webui.config
 
 import com.taskadapter.config.JsonFactory.gson
 import com.taskadapter.connector.common.ConfigUtils
-import com.taskadapter.model.{Components, DefaultValueResolver, Field, GUser, Reporter}
+import com.taskadapter.model.{Components, DefaultValueResolver, Field, GUser}
 
 object FieldTag {
   val gson = ConfigUtils.createDefaultGson
 
   val tags: Map[Field[_], FieldTag[_]] = Map(
-    Reporter -> new GUserTag(Reporter),
     Components -> SeqStringTag)
 
   def getTag(field: Field[_]): FieldTag[_] = {

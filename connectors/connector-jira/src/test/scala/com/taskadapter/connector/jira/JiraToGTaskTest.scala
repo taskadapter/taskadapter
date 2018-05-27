@@ -46,7 +46,7 @@ class JiraToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with Bef
   it("reporter") { // TODO cannot parse an issue without "names" and "schema" section. submitted a bug:
     // https://answers.atlassian.com/questions/32971227/jira-java-rest-client-cannot-parse-a-valid-issue-json-returned-by-jira-6.4.11-npe-at-jsonparseutil.getstringkeysjsonparseutil.java337
     val issue = MockData.loadIssue("issue_with_assignee_6.4.11_expanded_names_and_schema.json")
-    convertIssue(issue).getValue(Reporter).loginName shouldBe issue.getReporter.getName
+    convertIssue(issue).getValue(ReporterLoginName) shouldBe issue.getReporter.getName
   }
 
   it("issue type") {

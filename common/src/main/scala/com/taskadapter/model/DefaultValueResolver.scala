@@ -19,7 +19,8 @@ object DefaultValueResolver {
     EstimatedTime -> FloatTypeTag,
     Id -> LongTypeTag,
     Priority -> IntegerTypeTag,
-    Reporter -> GUserTypeTag,
+    ReporterFullName -> StringTypeTag,
+    ReporterLoginName -> StringTypeTag,
     StartDate -> DateTypeTag,
     UpdatedOn -> DateTypeTag,
   )

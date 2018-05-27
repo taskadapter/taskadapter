@@ -88,9 +88,26 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
         issue.setTargetVersion(version)
       case CreatedOn => issue.setCreatedOn(value.asInstanceOf[Date])
       case UpdatedOn => issue.setUpdatedOn(value.asInstanceOf[Date])
-      case AssigneeLoginName => processAssigneeByLogin(issue, value)
-      case AssigneeFullName => processAssigneeFullName(issue, value)
-      case Reporter => processAuthor(issue, value)
+      case AssigneeLoginName =>
+        val maybeId = getUserIdByLogin(value.asInstanceOf[String])
+        if (maybeId.isDefined) {
+          issue.setAssigneeId(maybeId.get)
+        }
+      case AssigneeFullName =>
+        val maybeId = getUserIdByFullName(value.asInstanceOf[String])
+        if (maybeId.isDefined) {
+          issue.setAssigneeId(maybeId.get)
+        }
+      case ReporterLoginName =>
+        val maybeId = getUserIdByLogin(value.asInstanceOf[String])
+        if (maybeId.isDefined) {
+          issue.setAuthorId(maybeId.get)
+        }
+      case ReporterFullName =>
+        val maybeId = getUserIdByFullName(value.asInstanceOf[String])
+        if (maybeId.isDefined) {
+          issue.setAuthorId(maybeId.get)
+        }
       case _ =>
         // all known fields are processed. considering this a custom field
         val customFieldId = CustomFieldDefinitionFinder.findCustomFieldId(customFieldDefinitions, field)
@@ -110,37 +127,12 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
     categories.asScala.find(_.getName == name)
   }
 
-  private def processAssigneeByLogin(redmineIssue: Issue, value: Any): Unit = {
-    val user = value.asInstanceOf[String]
-    if (user != null) {
-      val rmAss = usersCache.findRedmineUserByLogin(user)
-      if (rmAss.isEmpty) {
-        logger.warn(s"Converting task to Redmine format: assignee: cannot resolve user in Redmine for $user")
-      } else {
-        redmineIssue.setAssigneeId(rmAss.get.getId)
-      }
-    }
-  }
-  private def processAssigneeFullName(redmineIssue: Issue, value: Any): Unit = {
-    val user = value.asInstanceOf[String]
-    if (user != null) {
-      val rmAss = usersCache.findRedmineUserByFullName(user)
-      if (rmAss.isEmpty) {
-        logger.warn(s"Converting task to Redmine format: assignee: cannot resolve user in Redmine for $user")
-      } else {
-        redmineIssue.setAssigneeId(rmAss.get.getId)
-      }
-    }
+  private def getUserIdByLogin(login: String): Option[Integer] = {
+    usersCache.findRedmineUserByLogin(login).map(_.getId)
   }
 
-  private def processAuthor(redmineIssue: Issue, value: Any): Unit = {
-    val user = value.asInstanceOf[GUser]
-    if (user != null) {
-      val author = usersCache.findRedmineUserInCache(user.loginName, user.displayName)
-      if (author.isDefined) {
-        redmineIssue.setAuthorId(author.get.getId)
-      }
-    }
+  private def getUserIdByFullName(fullName: String): Option[Integer] = {
+    usersCache.findRedmineUserByFullName(fullName).map(_.getId)
   }
 
   private def processTaskStatus(issue: Issue, value: String): Unit = {

@@ -10,12 +10,12 @@ object JiraField {
      to avoid user confusion.
    */
   val fields = List(Components, Summary, TaskStatus, Description, TaskType, EstimatedTime, AssigneeLoginName,
-    CreatedOn, DueDate, Priority, Reporter)
+    CreatedOn, DueDate, Priority, ReporterLoginName)
 
   /**
     * Estimated time, Reporter, DueDate are not included in standard JIRA 7 anymore.
     */
   val defaultFieldsForNewConfig = fields.filter(_ != EstimatedTime)
-    .filter(_ != Reporter)
+    .filter(_ != ReporterLoginName)
     .filter(_ != DueDate)
 }

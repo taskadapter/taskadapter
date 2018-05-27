@@ -120,16 +120,13 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
     checkField(TargetVersion, "1.0", "1.0")
     checkField(TaskStatus, "new", "new")
     checkField(TaskType, "feature", "feature")
-    checkUser(Reporter, "login")
+    checkField(ReporterLoginName, "login", "login")
+    checkField(ReporterFullName, "name", "name")
     checkDate(UpdatedOn, "2018 05 04")
   }
 
   private def checkDate(field: Field[_], str: String): Unit = {
     checkField(field, str, DateTypeTag.DATE_PARSER.parse(str))
-  }
-
-  private def checkUser(field: Field[_], str: String): Unit = {
-    checkField(field, str, GUser(null, str, null))
   }
 
   private def checkField(field: Field[_], defaultString: String, expectedValue: Any): Unit = {

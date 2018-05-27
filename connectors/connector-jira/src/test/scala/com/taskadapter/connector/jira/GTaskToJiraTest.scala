@@ -75,10 +75,6 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
     checkDueDate(getConverter, "2014-04-28")
   }
 
-  it("dueDateConvertedWhenSelected"){
-    checkDueDate(getConverter(), "2014-04-28")
-  }
-
   private def checkDueDate(converter: GTaskToJira, expected: String): Unit = {
     val task = new GTask
     val calendar = Calendar.getInstance
@@ -88,17 +84,13 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
     assertEquals(expected, getValue(issueInput, IssueFieldId.DUE_DATE_FIELD.id))
   }
 
-  it("reporter"){
-    val task = new GTask().setValue(Reporter, new GUser(null, "mylogin", null))
+  it("reporter login name"){
+    val task = new GTask().setValue(ReporterLoginName, "mylogin")
     val issue = getConverter().convertToJiraIssue(task).issueInput
     assertEquals("mylogin", getComplexValue(issue, IssueFieldId.REPORTER_FIELD.id, "name"))
   }
 
   it("assigneeConvertedByDefault"){
-    checkAssignee(getConverter(), "mylogin")
-  }
-
-  it("assigneeConvertedIfSelected"){
     checkAssignee(getConverter(), "mylogin")
   }
 

@@ -50,7 +50,8 @@ object Priority extends Field[Int]("Priority")
 
 object Relations extends Field[util.List[GRelation]]("Relations")
 
-object Reporter extends Field[GUser]("Reporter")
+object ReporterFullName extends Field[String]("ReporterFullName")
+object ReporterLoginName extends Field[String]("ReporterLoginName")
 
 object SourceSystemId extends Field[TaskId]("SourceSystemId")
 

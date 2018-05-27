@@ -48,7 +48,7 @@ class UISyncConfigIT extends FunSpec with Matchers with ConfigsTempFolder {
   */
 
   // TODO this test requires some "Epic" tasks to be present in JIRA. it should create them itself
-  it("tasks can be loaded from JIRA and saved to Redmine") {
+  it("tasks loaded from JIRA and saved to Redmine") {
     withTempFolder { f =>
       val config = ConfigLoader.loadConfig(f, "Atlassian-JIRA_Redmine.ta_conf")
       val loadedTasks = UISyncConfig.loadTasks(config, 100)

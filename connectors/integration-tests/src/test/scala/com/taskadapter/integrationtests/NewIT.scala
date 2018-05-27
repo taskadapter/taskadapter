@@ -7,7 +7,7 @@ import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.FileSetup
 import com.taskadapter.connector.jira.JiraConnector
 import com.taskadapter.connector.msp.MSPConnector
-import com.taskadapter.connector.redmine.{CustomFieldBuilder, RedmineConfig, RedmineConnector, RedmineField}
+import com.taskadapter.connector.redmine.{CustomFieldBuilder, RedmineConfig, RedmineConnector}
 import com.taskadapter.connector.testlib._
 import com.taskadapter.core.TaskLoader
 import com.taskadapter.model._
@@ -179,7 +179,7 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
     it("assignee and reporter can be loaded from JIRA and saved to Redmine") {
       val rows = Seq(FieldRow(Summary, Summary, ""),
         FieldRow(AssigneeLoginName, AssigneeLoginName, null),
-        FieldRow(Reporter, Reporter, null)
+        FieldRow(ReporterLoginName, ReporterLoginName, null)
       )
 
       val fromJira = TestUtils.saveAndLoad(jiraConnector,
@@ -191,7 +191,8 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
       redmineResult.getValue(AssigneeFullName) shouldBe "Redmine Admin"
       redmineResult.getValue(AssigneeLoginName) shouldBe "user"
 
-      redmineResult.getValue(RedmineField.author).displayName shouldBe "Redmine Admin"
+      redmineResult.getValue(ReporterFullName) shouldBe "Redmine Admin"
+      redmineResult.getValue(ReporterLoginName) shouldBe "user"
     }
 
     it("assignee can be loaded from Redmine and saved to JIRA") {
@@ -209,8 +210,7 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
       )
       result.getValue(AssigneeLoginName) shouldBe jiraSetup.userName
 
-      val reporter = result.getValue(Reporter)
-      reporter.displayName shouldBe jiraSetup.userName
+      result.getValue(ReporterFullName) shouldBe jiraSetup.userName
     }
 
   }

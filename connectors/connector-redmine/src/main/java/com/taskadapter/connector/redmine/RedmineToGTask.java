@@ -11,9 +11,10 @@ import com.taskadapter.model.DueDate$;
 import com.taskadapter.model.EstimatedTime$;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.GUser;
 import com.taskadapter.model.Precedes$;
 import com.taskadapter.model.Priority$;
+import com.taskadapter.model.ReporterFullName$;
+import com.taskadapter.model.ReporterLoginName$;
 import com.taskadapter.model.StartDate$;
 import com.taskadapter.model.Summary$;
 import com.taskadapter.model.TargetVersion$;
@@ -74,10 +75,13 @@ public class RedmineToGTask {
             task.setValue(AssigneeFullName$.MODULE$, issue.getAssigneeName());
         }
         if (issue.getAuthorId() != null) {
+            task.setValue(ReporterFullName$.MODULE$, issue.getAuthorName());
             // crappy Redmine REST API does not return login name, only id and "display name",
-            // this Redmine Java API library can only provide that info... this is why "loginName" is empty here.
-            GUser user = new GUser(issue.getAuthorId(), "", issue.getAuthorName());
-            task.setValue(RedmineField.author(), user);
+            // this Redmine Java API library can only provide that info... have to resolve login from full name -
+            Option<User> userWithPatchedLoginName = userCache.findRedmineUserByFullName(issue.getAuthorName());
+            if (userWithPatchedLoginName.isDefined()) {
+                task.setValue(ReporterLoginName$.MODULE$, userWithPatchedLoginName.get().getLogin());
+            }
         }
 
         Tracker tracker = issue.getTracker();
