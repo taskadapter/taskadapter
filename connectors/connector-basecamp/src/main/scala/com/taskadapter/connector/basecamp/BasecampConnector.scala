@@ -10,6 +10,7 @@ import com.taskadapter.connector.{FieldRow, NewConnector}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.{DoneRatio, GTask, GUser}
 import org.json.JSONException
+import scala.collection.JavaConverters._
 
 object BasecampConnector {
   /**
@@ -64,9 +65,9 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
                monitor: ProgressMonitor,
                fieldRows: Iterable[FieldRow[_]]): SaveResult = try {
     BasecampUtils.validateConfig(config)
-    val userResolver = findUserResolver()
-    val converter = new GTaskToBasecamp(userResolver)
-    val saver = new BasecampSaver(api, config, userResolver)
+    val users = loadUsers()
+    val converter = new GTaskToBasecamp(users)
+    val saver = new BasecampSaver(api, config)
     val resultBuilder = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, fieldRows,
       setup.host)
 
@@ -74,19 +75,22 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
   }
 
   @throws[ConnectorException]
-  private def findUserResolver(): UserResolver = {
-    if (!config.isFindUserByName) return new DirectUserResolver
-    val arr = api.getObjects("people.json")
-    val users = new util.HashMap[String, GUser]
-    for (i <- 0 until arr.length) {
-      try {
-        val user = BasecampToGTask.parseUser(arr.getJSONObject(i))
-        users.put(user.displayName, user)
-      } catch {
-        case e: JSONException =>
-          throw new CommunicationException(e)
+  private def loadUsers(): Seq[GUser] = {
+    if (config.isFindUserByName) {
+      val arr = api.getObjects("people.json")
+      val users = new util.ArrayList[GUser]
+      for (i <- 0 until arr.length) {
+        try {
+          val user = BasecampToGTask.parseUser(arr.getJSONObject(i))
+          users.add(user)
+        } catch {
+          case e: JSONException =>
+            throw new CommunicationException(e)
+        }
       }
+      users.asScala
+    } else {
+      Seq()
     }
-    new NamedUserResolver(users)
   }
 }

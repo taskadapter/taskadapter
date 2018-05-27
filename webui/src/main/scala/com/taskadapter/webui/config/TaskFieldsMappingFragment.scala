@@ -5,7 +5,7 @@ import java.util.UUID
 import com.google.common.base.Strings
 import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.connector.definition.exceptions.BadConfigException
-import com.taskadapter.model.{Assignee, Field, GUser, Reporter}
+import com.taskadapter.model.Field
 import com.taskadapter.web.configeditor.Validatable
 import com.taskadapter.web.data.Messages
 import com.taskadapter.webui.Page

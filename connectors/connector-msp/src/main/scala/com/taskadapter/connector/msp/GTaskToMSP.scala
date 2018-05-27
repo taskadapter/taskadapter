@@ -31,7 +31,7 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
     field match {
       case Summary => mspTask.setName(stringBasedValue)
       case Description => mspTask.setNotes(stringBasedValue)
-      case Assignee => processAssignee(value)
+      case AssigneeFullName => processAssignee(value.asInstanceOf[String])
       case MspField.mustStartOn =>
         mspTask.setConstraintType(ConstraintType.MUST_START_ON)
         mspTask.setConstraintDate(value.asInstanceOf[Date])
@@ -83,11 +83,9 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
     }
   }
 
-  private def processAssignee(value: Any): Unit = {
+  private def processAssignee(value: String): Unit = {
     if (value != null) {
-      val user = value.asInstanceOf[GUser]
-      val resource = resourceManager.getOrCreateResource(user.displayName)
-      resource.set(MspConstants.loginFieldName, user.loginName)
+      val resource = resourceManager.getOrCreateResource(value)
       val ass = mspTask.addResourceAssignment(resource)
       ass.setUnits(100)
       // MUST set the remaining work to avoid this bug:

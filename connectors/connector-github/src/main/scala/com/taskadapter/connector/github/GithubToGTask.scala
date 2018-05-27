@@ -27,9 +27,9 @@ object GithubToGTask {
     task.setValue(Description, issue.getBody)
     task.setValue(CreatedOn, issue.getCreatedAt)
     task.setValue(UpdatedOn, issue.getUpdatedAt)
-    if (issue.getAssignee != null && !("" == issue.getAssignee.getLogin)) {
-      val user = GUser(null, issue.getAssignee.getLogin, null)
-      task.setValue(Assignee, user)
+    if (issue.getAssignee != null) {
+      task.setValue(AssigneeFullName, issue.getAssignee.getName)
+      task.setValue(AssigneeLoginName, issue.getAssignee.getLogin)
     }
     task
   }

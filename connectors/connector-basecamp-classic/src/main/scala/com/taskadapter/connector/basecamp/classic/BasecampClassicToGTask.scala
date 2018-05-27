@@ -24,8 +24,8 @@ object BasecampClassicToGTask {
     val rpp = XmlUtils.getOptString(obj, "responsible-party-type")
     if ("Person" == rpp) {
       val displayName = XmlUtils.getStringElt(obj, "responsible-party-name")
-      val looser = GUser(XmlUtils.getIntElt(obj, "responsible-party-id"), displayName, displayName)
-      result.setValue(Assignee, looser)
+      val idUnusedNow = XmlUtils.getIntElt(obj, "responsible-party-id")
+      result.setValue(AssigneeFullName, displayName)
     }
     result
   }

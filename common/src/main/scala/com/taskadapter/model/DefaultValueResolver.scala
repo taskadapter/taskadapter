@@ -8,7 +8,8 @@ import com.google.common.base.Strings
 object DefaultValueResolver {
 
   val tags: Map[Field[_], FieldDefaultTag[_]] = Map(
-    Assignee -> GUserTypeTag,
+    AssigneeLoginName -> StringTypeTag,
+    AssigneeFullName -> StringTypeTag,
     ClosedOn -> DateTypeTag,
     Components -> SeqStringTypeTag,
     CreatedOn -> DateTypeTag,

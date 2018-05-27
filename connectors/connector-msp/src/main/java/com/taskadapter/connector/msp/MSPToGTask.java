@@ -1,12 +1,11 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.definition.TaskId;
-import com.taskadapter.model.Assignee$;
+import com.taskadapter.model.AssigneeFullName$;
 import com.taskadapter.model.CustomString;
 import com.taskadapter.model.Description$;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.GUser;
 import com.taskadapter.model.Precedes$;
 import com.taskadapter.model.Summary$;
 import net.sf.mpxj.ConstraintType;
@@ -95,7 +94,7 @@ class MSPToGTask {
         genericTask.setValue(MspField.finish(), task.getFinish());
         genericTask.setValue(MspField.deadline(), task.getDeadline());
 
-        genericTask.setValue(Assignee$.MODULE$, extractAssignee(task));
+        genericTask.setValue(AssigneeFullName$.MODULE$, extractAssignee(task));
         genericTask.setValue(Description$.MODULE$, task.getNotes());
 
         for (int i = 1; i <= 30; i++) {
@@ -125,7 +124,7 @@ class MSPToGTask {
         }
     }
 
-    private GUser extractAssignee(Task task) {
+    private String extractAssignee(Task task) {
         Resource r = getAssignee(task);
         if (r != null) {
             /*
@@ -133,12 +132,11 @@ class MSPToGTask {
                 * otherwise we'd try creating tasks in Redmine/Jira/.. using this
                 * MSP-specific ID.
                 */
-            Integer id = null;
-            if (r.getUniqueID() != null && MSPUtils.isResourceOurs(r)) {
-                id = r.getUniqueID();
-            }
-            Object loginName = r.getCurrentValue(MspConstants$.MODULE$.loginFieldName());
-            return new GUser(id, loginName == null ? null : loginName.toString(), r.getName());
+//            Integer id = null;
+//            if (r.getUniqueID() != null && MSPUtils.isResourceOurs(r)) {
+//                id = r.getUniqueID();
+//            }
+            return r.getName();
         }
         return null;
     }

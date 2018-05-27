@@ -20,7 +20,7 @@ object BasecampToGTask {
     result.setValue(CreatedOn, JsonUtils.getOptLongDate("created_at", obj))
     result.setValue(UpdatedOn, JsonUtils.getOptLongDate("updated_at", obj))
     val assObj = JsonUtils.getOptObject("assignee", obj)
-    if (assObj != null) result.setValue(Assignee, parseUser(assObj))
+    if (assObj != null) result.setValue(AssigneeFullName, parseUser(assObj).displayName)
     result
   }
 

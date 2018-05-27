@@ -6,7 +6,7 @@ import java.util.Calendar
 import biz.futureware.mantis.rpc.soap.client.ProjectData
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.testlib.{CommonTestChecks, ITFixture, TestSaver}
-import com.taskadapter.model.{Assignee, Description, DueDate, GTaskBuilder, Summary}
+import com.taskadapter.model.{AssigneeFullName, Description, DueDate, GTaskBuilder, Summary}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
@@ -25,7 +25,6 @@ class MantisIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   junitTestProject.setName("test project" + Calendar.getInstance.getTimeInMillis)
   junitTestProject.setDescription("test" + Calendar.getInstance.getTimeInMillis)
   val mantisUser = mgr.getCurrentUser
-  val currentUser = MantisToGTask.convertToGUser(mantisUser)
   val projectId = mgr.createProject(junitTestProject)
   val projectKey = projectId.toString
   val config = new MantisConfig
@@ -40,9 +39,9 @@ class MantisIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
 
   it("task is created and loaded") {
     fixture.taskIsCreatedAndLoaded(GTaskBuilder.withSummary()
-      .setValue(Assignee, currentUser)
+      .setValue(AssigneeFullName, mantisUser.getReal_name)
       .setValue(Description, "123"),
-      Seq(Assignee, Summary, Description, DueDate))
+      Seq(AssigneeFullName, Summary, Description, DueDate))
   }
 
   it("task created and updated") {

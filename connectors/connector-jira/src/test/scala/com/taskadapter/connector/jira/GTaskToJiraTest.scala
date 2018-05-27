@@ -103,9 +103,7 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
   }
 
   private def checkAssignee(converter: GTaskToJira, expected: String): Unit = {
-    val user = new GUser(null, expected, null)
-    val task = new GTask
-    task.setValue(Assignee, user)
+    val task = new GTask().setValue(AssigneeLoginName, expected)
     val issue = converter.convertToJiraIssue(task).issueInput
     assertEquals(expected, getComplexValue(issue, IssueFieldId.ASSIGNEE_FIELD.id, "name"))
   }

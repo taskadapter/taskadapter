@@ -97,7 +97,8 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
   }
 
   it("sets default values with proper types") {
-    checkUser(Assignee, "login")
+    checkField(AssigneeLoginName, "login", "login")
+    checkField(AssigneeFullName, "name", "name")
     checkField(Priority, "1", 1)
     checkDate(ClosedOn, "2018 05 04")
     checkField(Components, "c1 c2", Seq("c1", "c2"))

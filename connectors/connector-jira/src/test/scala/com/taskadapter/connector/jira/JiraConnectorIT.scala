@@ -80,10 +80,10 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
   }
 
   it("assignee is saved and loaded") {
-    val task = new JiraGTaskBuilder().build().setValue(Assignee, GUser(null, "user", "full name"))
+    val task = new JiraGTaskBuilder().build().setValue(AssigneeLoginName, "user")
     val id = TestUtils.save(getConnector, task, JiraFieldBuilder.getDefault)
     val loadedTask = getConnector.loadTaskByKey(id, JiraFieldBuilder.getDefault)
-    assertThat(loadedTask.getValue(Assignee).loginName).isEqualTo("user")
+    loadedTask.getValue(AssigneeLoginName) shouldBe "user"
     TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
   }
 

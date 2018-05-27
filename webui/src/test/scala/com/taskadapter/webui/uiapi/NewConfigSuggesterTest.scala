@@ -4,7 +4,7 @@ import com.taskadapter.connector.NewConfigSuggester
 import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.connector.jira.JiraField
 import com.taskadapter.connector.redmine.RedmineField
-import com.taskadapter.model.{Assignee, GUser}
+import com.taskadapter.model.{AssigneeLoginName, GUser}
 import org.junit.runner.RunWith
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.junit.JUnitRunner
@@ -22,7 +22,7 @@ class NewConfigSuggesterTest extends FunSpec with ScalaFutures with Matchers {
       RedmineField.fields, JiraField.fields)
 
     list.size shouldBe jiraRedmineFieldsNumber
-    list.contains(FieldMapping(Assignee, Assignee, true, null)) shouldBe true
+    list.contains(FieldMapping(AssigneeLoginName, AssigneeLoginName, true, null)) shouldBe true
   }
 
   it("suggests all elements from right connector") {

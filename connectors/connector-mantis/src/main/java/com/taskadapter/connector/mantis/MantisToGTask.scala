@@ -20,10 +20,6 @@ object MantisToGTask {
     "immediate" -> 800
   )
 
-  def convertToGUser(mantisUser: AccountData): GUser = {
-    GUser(mantisUser.getId.intValue, mantisUser.getName, mantisUser.getReal_name)
-  }
-
   def convertToGenericTask(issue: IssueData): GTask = {
     val task = new GTask
     val longId = issue.getId.longValue
@@ -35,8 +31,8 @@ object MantisToGTask {
 
     val mantisUser = issue.getHandler
     if (mantisUser != null) {
-      val ass = convertToGUser(mantisUser)
-      task.setValue(Assignee, ass)
+      task.setValue(AssigneeLoginName, mantisUser.getName)
+      task.setValue(AssigneeFullName, mantisUser.getReal_name)
     }
     task.setValue(Summary, issue.getSummary)
     task.setValue(Description, issue.getDescription)

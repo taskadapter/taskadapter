@@ -2,14 +2,14 @@ package com.taskadapter.connector.basecamp.classic
 
 import java.util.Date
 
-import com.taskadapter.connector.basecamp.{BasecampTaskWrapper, UserResolver}
+import com.taskadapter.connector.basecamp.BasecampTaskWrapper
 import com.taskadapter.connector.common.data.ConnectorConverter
 import com.taskadapter.model._
 import org.w3c.dom.{Document, Element}
 
 import scala.collection.JavaConverters._
 
-class GTaskToBasecampClassic(resolver: UserResolver) extends ConnectorConverter[GTask, BasecampTaskWrapper] {
+class GTaskToBasecampClassic(users: Seq[GUser]) extends ConnectorConverter[GTask, BasecampTaskWrapper] {
 
   /**
     * Convert a task from source to target format.
@@ -48,19 +48,18 @@ class GTaskToBasecampClassic(resolver: UserResolver) extends ConnectorConverter[
 
       case DueDate =>
         XmlUtils.setLong(d, e, "due-at", value.asInstanceOf[Date])
-      case Assignee =>
-        writeAssignee(d, e, value.asInstanceOf[GUser])
+      case AssigneeFullName =>
+        writeAssignee(d, e, value.asInstanceOf[String])
 
       case _ => // ignore unknown fields
     }
   }
 
-  def writeAssignee(d: Document, root: Element, assignee: GUser): Unit = {
-    val field = "assignee"
+  def writeAssignee(d: Document, root: Element, fullName: String): Unit = {
     val elt = d.createElement("responsible-party")
     root.appendChild(elt)
 
-    val resolvedAssignee = resolver.resolveUser(assignee)
+    val resolvedAssignee = users.find(_.displayName == fullName).orNull
     if (resolvedAssignee == null || resolvedAssignee.id == null) elt.setAttribute("nil", "true")
     else elt.appendChild(d.createTextNode(resolvedAssignee.id.toString))
   }

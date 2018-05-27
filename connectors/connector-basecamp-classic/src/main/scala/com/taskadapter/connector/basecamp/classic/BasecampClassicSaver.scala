@@ -1,11 +1,11 @@
 package com.taskadapter.connector.basecamp.classic
 
-import com.taskadapter.connector.basecamp.{BasecampTaskWrapper, UserResolver}
+import com.taskadapter.connector.basecamp.BasecampTaskWrapper
 import com.taskadapter.connector.basecamp.classic.transport.ObjectAPI
 import com.taskadapter.connector.common.BasicIssueSaveAPI
 import com.taskadapter.connector.definition.TaskId
 
-class BasecampClassicSaver(api: ObjectAPI, config: BasecampClassicConfig, resolver: UserResolver)
+class BasecampClassicSaver(api: ObjectAPI, config: BasecampClassicConfig)
   extends BasicIssueSaveAPI[BasecampTaskWrapper] {
   override def createTask(wrapper: BasecampTaskWrapper): TaskId = {
     val res = api.post("todo_lists/" + config.getTodoKey + "/todo_items.xml", wrapper.nativeTask)

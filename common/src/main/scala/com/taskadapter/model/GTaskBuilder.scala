@@ -30,8 +30,8 @@ class GTaskBuilder {
     this
   }
 
-  def withAssignee(assignee: GUser): GTaskBuilder = {
-    task.setValue(Assignee, assignee)
+  def withAssigneeLogin(loginName: String): GTaskBuilder = {
+    task.setValue(AssigneeLoginName, loginName)
     this
   }
 
@@ -46,7 +46,8 @@ class GTaskBuilder {
       //      case "String" => "value " + new Date().getTime
       case Summary => task.setValue(Summary, randomStr())
       case Description => task.setValue(Description, randomStr())
-      case Assignee => task.setValue(Assignee, GUser(null, Random.nextString(3), Random.nextString(10)))
+      case AssigneeLoginName => task.setValue(AssigneeLoginName, Random.nextString(10))
+      case AssigneeFullName => task.setValue(AssigneeFullName, Random.nextString(10))
       case x: CustomString => task.setValue(x, "value " + new Date().getTime)
     }
     this

@@ -178,21 +178,20 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
 
     it("assignee and reporter can be loaded from JIRA and saved to Redmine") {
       val rows = Seq(FieldRow(Summary, Summary, ""),
-        FieldRow(Assignee, Assignee, null),
+        FieldRow(AssigneeLoginName, AssigneeLoginName, null),
         FieldRow(Reporter, Reporter, null)
       )
 
       val fromJira = TestUtils.saveAndLoad(jiraConnector,
-        new GTaskBuilder().withRandom(Summary).withAssignee(RedmineTestInitializer.currentUser).build(),
+        new GTaskBuilder().withRandom(Summary).withAssigneeLogin(RedmineTestInitializer.currentUser.loginName).build(),
         rows)
 
-      val result = TestUtils.saveAndLoad(redmineConnectorWithResolveAssignees, fromJira, rows)
+      val redmineResult = TestUtils.saveAndLoad(redmineConnectorWithResolveAssignees, fromJira, rows)
 
-      val redmineAssignee = result.getValue(Assignee)
-      redmineAssignee.displayName shouldBe "Redmine Admin"
+      redmineResult.getValue(AssigneeFullName) shouldBe "Redmine Admin"
+      redmineResult.getValue(AssigneeLoginName) shouldBe "user"
 
-      val redmineReporter = result.getValue(RedmineField.author)
-      redmineReporter.displayName shouldBe "Redmine Admin"
+      redmineResult.getValue(RedmineField.author).displayName shouldBe "Redmine Admin"
     }
 
     it("assignee can be loaded from Redmine and saved to JIRA") {
@@ -200,16 +199,15 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
       val loadedTasks = TaskLoader.loadTasks(1, redmineConnectorWithResolveAssignees, "sourceName", ProgressMonitorUtils.DUMMY_MONITOR).asScala.toList
       loadedTasks.size shouldBe 1
       val redmineTask = loadedTasks.head
-      redmineTask.getValue(Assignee).loginName shouldBe RedmineTestInitializer.currentUser.loginName
+      redmineTask.getValue(AssigneeLoginName) shouldBe RedmineTestInitializer.currentUser.loginName
 
       val result = TestUtils.saveAndLoad(jiraConnector, redmineTask,
         Seq(
           FieldRow(Summary, Summary, ""),
-          FieldRow(Assignee, Assignee, null)
+          FieldRow(AssigneeLoginName, AssigneeLoginName, null)
         )
       )
-      val ass = result.getValue(Assignee)
-      ass.displayName shouldBe jiraSetup.userName
+      result.getValue(AssigneeLoginName) shouldBe jiraSetup.userName
 
       val reporter = result.getValue(Reporter)
       reporter.displayName shouldBe jiraSetup.userName
@@ -219,13 +217,12 @@ class NewIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfte
   describe("Redmine-MSP") {
     it("assignee can be loaded from MSP and saved to Redmine") {
       val mspConnector = new MSPConnector(getMspSetup("2tasks-projectlibre-assignees.xml"))
-      val result = TestUtils.loadAndSave(mspConnector, redmineConnectorWithResolveAssignees,
+      val redmineResult = TestUtils.loadAndSave(mspConnector, redmineConnectorWithResolveAssignees,
         Seq(FieldRow(Summary, Summary, ""),
-          FieldRow(Assignee, Assignee, null)
+          FieldRow(AssigneeFullName, AssigneeFullName, null)
         )
       )
-      val ass = result.getValue(Assignee)
-      ass.displayName shouldBe "Redmine Admin"
+      redmineResult.getValue(AssigneeFullName) shouldBe "Redmine Admin"
     }
 
     /**

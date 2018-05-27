@@ -1,18 +1,16 @@
 package com.taskadapter.connector.mantis
 
-import biz.futureware.mantis.rpc.soap.client.AccountData
-import biz.futureware.mantis.rpc.soap.client.IssueData
-import biz.futureware.mantis.rpc.soap.client.ObjectRef
-import biz.futureware.mantis.rpc.soap.client.ProjectData
+import java.math.BigInteger
+import java.util
+import java.util.{Calendar, Date}
+
+import biz.futureware.mantis.rpc.soap.client.{AccountData, IssueData, ObjectRef, ProjectData}
+import com.google.common.base.Strings
 import com.taskadapter.connector.common.data.ConnectorConverter
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.model._
-import java.math.BigInteger
-import java.util.{Calendar, Date}
-import java.util
 
-import com.google.common.base.Strings
-
+import scala.collection.JavaConverters._
 
 object GTaskToMantis {
   val DEFAULT_TASK_DESCRIPTION = "-"
@@ -63,33 +61,13 @@ class GTaskToMantis(val mntProject: ProjectData, val users: util.List[AccountDat
           issue.setDue_date(calendar)
         }
 
-      case Assignee =>
-        if (value != null) {
-          val ass = value.asInstanceOf[GUser]
-          if (ass.id != null) {
-            val mntUser = new AccountData
-            mntUser.setId(BigInteger.valueOf(ass.id.toLong))
-            mntUser.setName(ass.loginName)
-            issue.setHandler(mntUser)
-          } else {
-            issue.setHandler(findUser(ass))
-          }
-        }
-
+      case AssigneeFullName =>
+        val fullName = value.asInstanceOf[String]
+        issue.setHandler(users.asScala.find(_.getName == fullName).orNull)
+      case AssigneeLoginName =>
+        val login = value.asInstanceOf[String]
+        issue.setHandler(users.asScala.find(_.getName == login).orNull)
       case _ => // ignore the rest of the fields
     }
-  }
-
-  private def findUser(ass: GUser): AccountData = {
-    if (users == null) return null
-    // getting best name to search
-    var nameToSearch = ass.loginName
-    if (nameToSearch == null || "" == nameToSearch) nameToSearch = ass.displayName
-    if (nameToSearch == null || "" == nameToSearch) return null
-    import scala.collection.JavaConversions._
-    for (user <- users) {
-      if (nameToSearch.equalsIgnoreCase(user.getName) || nameToSearch.equalsIgnoreCase(user.getReal_name)) return user
-    }
-    null
   }
 }

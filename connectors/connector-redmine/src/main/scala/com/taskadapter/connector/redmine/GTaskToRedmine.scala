@@ -6,7 +6,6 @@ import java.util.Date
 import com.google.common.base.Strings
 import com.taskadapter.connector.common.ValueTypeResolver
 import com.taskadapter.connector.common.data.ConnectorConverter
-import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.model._
 import com.taskadapter.redmineapi.bean._
 import org.slf4j.LoggerFactory
@@ -89,7 +88,8 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
         issue.setTargetVersion(version)
       case CreatedOn => issue.setCreatedOn(value.asInstanceOf[Date])
       case UpdatedOn => issue.setUpdatedOn(value.asInstanceOf[Date])
-      case Assignee => processAssignee(issue, value)
+      case AssigneeLoginName => processAssigneeByLogin(issue, value)
+      case AssigneeFullName => processAssigneeFullName(issue, value)
       case Reporter => processAuthor(issue, value)
       case _ =>
         // all known fields are processed. considering this a custom field
@@ -110,10 +110,21 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
     categories.asScala.find(_.getName == name)
   }
 
-  private def processAssignee(redmineIssue: Issue, value: Any): Unit = {
-    val user = value.asInstanceOf[GUser]
+  private def processAssigneeByLogin(redmineIssue: Issue, value: Any): Unit = {
+    val user = value.asInstanceOf[String]
     if (user != null) {
-      val rmAss = usersCache.findRedmineUserInCache(user.loginName, user.displayName)
+      val rmAss = usersCache.findRedmineUserByLogin(user)
+      if (rmAss.isEmpty) {
+        logger.warn(s"Converting task to Redmine format: assignee: cannot resolve user in Redmine for $user")
+      } else {
+        redmineIssue.setAssigneeId(rmAss.get.getId)
+      }
+    }
+  }
+  private def processAssigneeFullName(redmineIssue: Issue, value: Any): Unit = {
+    val user = value.asInstanceOf[String]
+    if (user != null) {
+      val rmAss = usersCache.findRedmineUserByFullName(user)
       if (rmAss.isEmpty) {
         logger.warn(s"Converting task to Redmine format: assignee: cannot resolve user in Redmine for $user")
       } else {

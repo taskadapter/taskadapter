@@ -9,7 +9,7 @@ import org.json.JSONWriter
 
 import scala.collection.JavaConverters._
 
-class GTaskToBasecamp(resolver: UserResolver) extends ConnectorConverter[GTask, BasecampTaskWrapper] {
+class GTaskToBasecamp(users: Seq[GUser]) extends ConnectorConverter[GTask, BasecampTaskWrapper] {
 
   /**
     * Convert a task from source to target format.
@@ -45,18 +45,18 @@ class GTaskToBasecamp(resolver: UserResolver) extends ConnectorConverter[GTask, 
         JsonUtils.writeOpt(writer, "completed", booleanValue)
       case DueDate =>
         JsonUtils.writeShort(writer, "due_at", value.asInstanceOf[Date])
-      case Assignee => writeAssignee(writer, value.asInstanceOf[GUser])
+      case AssigneeFullName => writeAssignee(writer, value.asInstanceOf[String])
 
       case _ => // ignore unknown fields
     }
 
-    def writeAssignee(writer: JSONWriter, assignee: GUser): Unit = {
+    def writeAssignee(writer: JSONWriter, fullName: String): Unit = {
       val field = "assignee"
-      if (assignee == null) {
+      if (fullName == null) {
         writer.key(field).value(null)
         return
       }
-      val resolvedAssignee = resolver.resolveUser(assignee)
+      val resolvedAssignee = users.find(_.displayName == fullName).orNull
       if (resolvedAssignee == null || resolvedAssignee.id == null) return
       writer.key(field).`object`.key("type").value("Person")
       writer.key("id").value(resolvedAssignee.id.intValue)

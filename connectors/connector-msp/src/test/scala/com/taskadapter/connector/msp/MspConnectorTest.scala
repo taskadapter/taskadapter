@@ -36,10 +36,10 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
         .withRandom(MspField.deadline)
         .build()
         .setValue(Description, "desc")
-        .setValue(Assignee, GUser(null, "login", "display name"))
+        .setValue(AssigneeFullName, "display name")
         .setValue(Priority, 888)
       fixture.taskIsCreatedAndLoaded(task,
-        Seq(Assignee, MspField.taskDuration, MspField.taskWork, MspField.mustStartOn, MspField.finish, MspField.deadline,
+        Seq(AssigneeFullName, MspField.taskDuration, MspField.taskWork, MspField.mustStartOn, MspField.finish, MspField.deadline,
           Description, Priority, Summary))
     }
   }
@@ -77,7 +77,7 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
     assertEquals(2, tasks.size)
     val task1: GTask = tasks.get(0)
     assertEquals("task 1", task1.getValue(Summary))
-    task1.getValue(Assignee).displayName shouldBe "alex"
+    task1.getValue(AssigneeFullName) shouldBe "alex"
     task1.getValue(MspField.taskDuration) shouldBe 12f
     val expectedStartDate: Date = new SimpleDateFormat("MM/dd/yyyy HH:mm").parse("12/11/2013 08:00")
     assertEquals(expectedStartDate, task1.getValue(MspField.startAsSoonAsPossible))

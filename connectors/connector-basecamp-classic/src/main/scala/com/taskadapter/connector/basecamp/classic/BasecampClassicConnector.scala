@@ -3,7 +3,6 @@ package com.taskadapter.connector.basecamp.classic
 import java.util
 
 import com.taskadapter.connector.basecamp.classic.transport.ObjectAPIFactory
-import com.taskadapter.connector.basecamp.{DirectUserResolver, NamedUserResolver, UserResolver}
 import com.taskadapter.connector.common.TaskSavingUtils
 import com.taskadapter.connector.definition._
 import com.taskadapter.connector.definition.exceptions.ConnectorException
@@ -12,6 +11,7 @@ import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.{GTask, GUser}
 
 import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 object BasecampClassicConnector {
   /**
@@ -50,9 +50,9 @@ class BasecampClassicConnector(config: BasecampClassicConfig, setup: WebConnecto
                fieldRows: Iterable[FieldRow[_]]): SaveResult = try {
     BasecampConfigValidator.validateServerAuth(setup)
     BasecampConfigValidator.validateTodoList(config)
-    val userResolver = findUserResolver()
-    val converter = new GTaskToBasecampClassic(userResolver)
-    val saver = new BasecampClassicSaver(api, config, userResolver)
+    val users = loadUsers()
+    val converter = new GTaskToBasecampClassic(users)
+    val saver = new BasecampClassicSaver(api, config)
     val resultBuilder = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, fieldRows,
       setup.host)
 
@@ -60,19 +60,12 @@ class BasecampClassicConnector(config: BasecampClassicConfig, setup: WebConnecto
   }
 
   @throws[ConnectorException]
-  private def findUserResolver(): UserResolver = {
-    if (!config.isLookupUsersByName) {
-      return new DirectUserResolver
+  private def loadUsers(): Seq[GUser] = {
+    if (config.isLookupUsersByName) {
+      val arr = XmlUtils.getDirectAncestors(api.getObject("people.xml"), "person")
+      arr.asScala.map(BasecampUtils.parseUser)
+    } else {
+      Seq()
     }
-    val arr = XmlUtils.getDirectAncestors(api.getObject("people.xml"), "person")
-    val users = new util.HashMap[String, GUser]
-    import scala.collection.JavaConversions._
-    for (eee <- arr) {
-      val user = BasecampUtils.parseUser(eee)
-      users.put(user.displayName, user)
-    }
-    new NamedUserResolver(users)
   }
-
-
 }

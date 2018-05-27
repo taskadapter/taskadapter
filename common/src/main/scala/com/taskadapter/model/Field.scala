@@ -13,7 +13,8 @@ object Field {
   }
 }
 
-object Assignee extends Field[GUser]("Assignee")
+object AssigneeFullName extends Field[String]("AssigneeFullName")
+object AssigneeLoginName extends Field[String]("AssigneeLoginName")
 
 object Children extends Field[util.List[GTask]]("Children")
 

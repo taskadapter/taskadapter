@@ -1,13 +1,13 @@
 package com.taskadapter.connector.jira
 
 import com.taskadapter.connector.FieldRow
-import com.taskadapter.model.{Assignee, Summary, TaskStatus}
+import com.taskadapter.model.{AssigneeLoginName, Summary, TaskStatus}
 
 object JiraFieldBuilder {
   def getDefault(): List[FieldRow[_]] = {
     List(
       FieldRow(Summary, Summary, ""),
-      FieldRow(Assignee, Assignee, null)
+      FieldRow(AssigneeLoginName, AssigneeLoginName, null)
     )
   }
 

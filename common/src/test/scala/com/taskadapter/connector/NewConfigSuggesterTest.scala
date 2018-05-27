@@ -16,7 +16,7 @@ class NewConfigSuggesterTest extends FunSpec with Matchers {
 
   it("suggests elements from left connector") {
     val list = suggestedFieldMappingsForNewConfig(
-      Seq(Summary, Description, Assignee),
+      Seq(Summary, Description, AssigneeLoginName),
       Seq(Summary, Description))
 
     list should contain only(summaryM, descriptionM)

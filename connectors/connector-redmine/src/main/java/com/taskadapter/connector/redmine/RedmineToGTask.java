@@ -1,7 +1,8 @@
 package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.definition.TaskId;
-import com.taskadapter.model.Assignee$;
+import com.taskadapter.model.AssigneeFullName$;
+import com.taskadapter.model.AssigneeLoginName$;
 import com.taskadapter.model.CreatedOn$;
 import com.taskadapter.model.CustomString;
 import com.taskadapter.model.Description$;
@@ -23,6 +24,7 @@ import com.taskadapter.redmineapi.bean.CustomField;
 import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.IssueRelation;
 import com.taskadapter.redmineapi.bean.Tracker;
+import com.taskadapter.redmineapi.bean.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
@@ -65,12 +67,11 @@ public class RedmineToGTask {
         if (issue.getAssigneeId() != null) {
             // crappy Redmine REST API does not return login name, only id and "display name",
             // this Redmine Java API library can only provide that info... this is why "loginName" is empty here.
-            Option<GUser> userWithPatchedLoginName = userCache.findGUserInCache(null, issue.getAssigneeName());
+            Option<User> userWithPatchedLoginName = userCache.findRedmineUserByFullName(issue.getAssigneeName());
             if (userWithPatchedLoginName.isDefined()) {
-                task.setValue(Assignee$.MODULE$, userWithPatchedLoginName.get());
-            } else {
-                task.setValue(Assignee$.MODULE$, new GUser(issue.getAssigneeId(), "", issue.getAssigneeName()));
+                task.setValue(AssigneeLoginName$.MODULE$, userWithPatchedLoginName.get().getLogin());
             }
+            task.setValue(AssigneeFullName$.MODULE$, issue.getAssigneeName());
         }
         if (issue.getAuthorId() != null) {
             // crappy Redmine REST API does not return login name, only id and "display name",

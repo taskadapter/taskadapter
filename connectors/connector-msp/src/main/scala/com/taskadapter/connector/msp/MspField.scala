@@ -29,7 +29,7 @@ object MspField {
   val deadline = CustomDate(TaskField.DEADLINE.name())
 
   val fields = List(actualDuration, actualWork, actualFinish,
-    Summary, Description, Assignee, closedOn, priority, percentageComplete,
+    Summary, Description, AssigneeFullName, closedOn, priority, percentageComplete,
     taskDuration, taskWork, status, taskType,
     finish, deadline
   )

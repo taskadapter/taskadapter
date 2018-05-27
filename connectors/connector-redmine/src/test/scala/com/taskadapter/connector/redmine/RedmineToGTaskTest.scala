@@ -69,14 +69,8 @@ class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with 
   it("assigneeIsIgnoredIfNotSet") {
     val redmineIssue = new Issue
     val task = get().convertToGenericTask(redmineIssue)
-    assertNull(task.getValue(Assignee))
-  }
-
-  it("assignee id is converted") {
-    val redmineIssue = new Issue
-    redmineIssue.setAssigneeId(123)
-    val task = get().convertToGenericTask(redmineIssue)
-    task.getValue(Assignee).id shouldBe 123
+    assertNull(task.getValue(AssigneeFullName))
+    assertNull(task.getValue(AssigneeLoginName))
   }
 
   it("trackerTypeIsConvertedIfSet") {

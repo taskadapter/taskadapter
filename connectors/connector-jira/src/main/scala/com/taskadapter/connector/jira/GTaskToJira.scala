@@ -76,8 +76,8 @@ class GTaskToJira(config: JiraConfig,
         val dueDateTime = new DateTime(value)
         issueInputBuilder.setDueDate(dueDateTime)
       }
-      case Assignee => if (value != null) {
-        issueInputBuilder.setAssigneeName(value.asInstanceOf[GUser].loginName)
+      case AssigneeLoginName => if (value != null) {
+        issueInputBuilder.setAssigneeName(value.asInstanceOf[String])
       }
       case Reporter => if (value != null) {
         issueInputBuilder.setReporterName(value.asInstanceOf[GUser].loginName)

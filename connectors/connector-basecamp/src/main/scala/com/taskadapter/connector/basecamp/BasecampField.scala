@@ -4,5 +4,5 @@ import com.taskadapter.model._
 
 object BasecampField {
   val content = Field("Content")
-  val fields = List(content, DoneRatio, DueDate, Assignee, CreatedOn, UpdatedOn)
+  val fields = List(content, DoneRatio, DueDate, AssigneeFullName, CreatedOn, UpdatedOn)
 }

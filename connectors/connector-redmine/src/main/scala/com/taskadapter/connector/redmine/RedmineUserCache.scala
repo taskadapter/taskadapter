@@ -31,7 +31,11 @@ class RedmineUserCache(users: Seq[User]) {
       .find(u => valueToSearchFor == u.getLogin || valueToSearchFor == u.getFullName)
   }
 
-  def findGUserInCache(loginName: String, displayName: String): Option[GUser] = {
-    findRedmineUserInCache(loginName, displayName).map(RedmineToGUser.convertToGUser)
+  def findRedmineUserByLogin(loginName: String): Option[User] = {
+    users.find(_.getLogin == loginName)
+  }
+
+  def findRedmineUserByFullName(fullName: String): Option[User] = {
+    users.find(_.getFullName == fullName)
   }
 }

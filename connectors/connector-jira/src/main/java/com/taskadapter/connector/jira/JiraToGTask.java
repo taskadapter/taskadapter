@@ -4,9 +4,11 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueLink;
 import com.atlassian.jira.rest.client.api.domain.IssueLinkType;
 import com.atlassian.jira.rest.client.api.domain.TimeTracking;
-import com.taskadapter.model.Assignee$;
+import com.atlassian.jira.rest.client.api.domain.User;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.TaskId;
+import com.taskadapter.model.AssigneeFullName$;
+import com.taskadapter.model.AssigneeLoginName$;
 import com.taskadapter.model.Components$;
 import com.taskadapter.model.CreatedOn$;
 import com.taskadapter.model.Description$;
@@ -66,8 +68,9 @@ public class JiraToGTask {
 
         task.setValue(Components$.MODULE$, JavaConverters$.MODULE$.asScalaBuffer(target));
         if (issue.getAssignee() != null) {
-            GUser user = new GUser(null, issue.getAssignee().getName(), issue.getAssignee().getDisplayName());
-            task.setValue(Assignee$.MODULE$, user);
+            User assignee = issue.getAssignee();
+            task.setValue(AssigneeLoginName$.MODULE$, assignee.getName());
+            task.setValue(AssigneeFullName$.MODULE$, assignee.getDisplayName());
         }
         if (issue.getReporter() != null) {
             GUser user = new GUser(null, issue.getReporter().getName(), issue.getReporter().getDisplayName());

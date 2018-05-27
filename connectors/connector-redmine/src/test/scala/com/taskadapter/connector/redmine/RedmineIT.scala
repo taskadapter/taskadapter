@@ -50,12 +50,12 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
     */
   it("assignee login name is loaded") {
     val task = GTaskBuilder.withSummary()
-    task.setValue(Assignee, currentUser)
+    task.setValue(AssigneeFullName, redmineUser.getFullName)
     val config = getTestConfig
     config.setFindUserByName(true)
     val connector = getConnector(config)
     val loadedTask = TestUtils.saveAndLoad(connector, task, RedmineFieldBuilder.withAssignee())
-    loadedTask.getValue(Assignee).loginName shouldBe currentUser.loginName
+    loadedTask.getValue(AssigneeLoginName) shouldBe redmineUser.getLogin
     mgr.getIssueManager.deleteIssue(loadedTask.getId.toInt)
   }
 

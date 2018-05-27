@@ -4,11 +4,11 @@ import com.taskadapter.model.GUser
 
 trait UserResolver {
   /**
-    * Resolves a user by a user. Converts user into a Basecamp user. May return
-    * <code>null</code> if no user found. May receive null as input.
+    * Find user by login.
     *
-    * @param user user to resolve.
-    * @return resolved user.
+    * @return resolved user or <code>null</code> if no user found. May receive null as input.
     */
-    def resolveUser(user: GUser): GUser
+    def findUserByLogin(loginName: String): GUser
+
+    def findUserByDisplayName(displayName: String): GUser
 }

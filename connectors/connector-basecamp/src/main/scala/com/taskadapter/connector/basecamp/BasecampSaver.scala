@@ -4,7 +4,7 @@ import com.taskadapter.connector.basecamp.transport.ObjectAPI
 import com.taskadapter.connector.common.BasicIssueSaveAPI
 import com.taskadapter.connector.definition.TaskId
 
-class BasecampSaver(api: ObjectAPI, config: BasecampConfig, resolver: UserResolver) extends BasicIssueSaveAPI[BasecampTaskWrapper] {
+class BasecampSaver(api: ObjectAPI, config: BasecampConfig) extends BasicIssueSaveAPI[BasecampTaskWrapper] {
   /**
     * Creates a new task and returns a new task ID.
     */

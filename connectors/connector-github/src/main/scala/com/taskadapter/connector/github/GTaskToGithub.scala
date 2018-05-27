@@ -40,27 +40,21 @@ class GTaskToGithub(userService: UserService) extends ConnectorConverter[GTask, 
     field match {
       case Summary => issue.setTitle(value.asInstanceOf[String])
       case Description => issue.setBody(value.asInstanceOf[String])
-      case Assignee => processAssignee(issue, value)
+      case AssigneeLoginName => processAssigneeLoginName(issue, value.asInstanceOf[String])
       case CreatedOn => issue.setCreatedAt(value.asInstanceOf[Date])
       case UpdatedOn => issue.setUpdatedAt(value.asInstanceOf[Date])
       case _ => // unknown fields, ignore
     }
   }
 
-  private def processAssignee(issue: Issue, value: Any): Unit = {
+  private def processAssigneeLoginName(issue: Issue, userLogin: String): Unit = {
     try {
-      val user = value.asInstanceOf[GUser]
-      if (user != null) {
-        val userLogin = user.loginName
-        if (!Strings.isNullOrEmpty(userLogin)) {
-          if (!ghUsers.containsKey(userLogin)) {
-            val ghUser = userService.getUser(userLogin)
-            ghUser.setName(ghUser.getLogin) // workaround for bug in eclipse-egit library - it uses name instead of login to build API request
-
-            ghUsers.put(userLogin, ghUser)
-          }
-          if (ghUsers.get(userLogin) != null) issue.setAssignee(ghUsers.get(userLogin))
+      if (!Strings.isNullOrEmpty(userLogin)) {
+        if (!ghUsers.containsKey(userLogin)) {
+          val ghUser = userService.getUser(userLogin)
+          ghUsers.put(userLogin, ghUser)
         }
+        if (ghUsers.get(userLogin) != null) issue.setAssignee(ghUsers.get(userLogin))
       }
     } catch {
       case e: IOException =>

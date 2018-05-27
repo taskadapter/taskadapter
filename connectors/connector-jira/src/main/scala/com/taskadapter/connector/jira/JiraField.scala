@@ -9,7 +9,7 @@ object JiraField {
      enabled for tasks by default. let's unselect this field by default
      to avoid user confusion.
    */
-  val fields = List(Components, Summary, TaskStatus, Description, TaskType, EstimatedTime, Assignee,
+  val fields = List(Components, Summary, TaskStatus, Description, TaskType, EstimatedTime, AssigneeLoginName,
     CreatedOn, DueDate, Priority, Reporter)
 
   /**
