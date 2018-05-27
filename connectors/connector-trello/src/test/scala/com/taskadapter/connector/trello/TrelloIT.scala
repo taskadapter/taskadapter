@@ -5,7 +5,7 @@ import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.NewConnector
 import com.taskadapter.connector.testlib.{CommonTestChecks, ITFixture}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
-import com.taskadapter.model.{GTask, GTaskBuilder, ReporterFullName, ReporterLoginName, Summary}
+import com.taskadapter.model.{Description, GTask, GTaskBuilder, ReporterFullName, ReporterLoginName, Summary}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
@@ -26,8 +26,10 @@ class TrelloIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
       // reporter info is not used when creating a task, but will be used to check value in the created tasks
       val task = buildTask.setValue(ReporterLoginName, "altest6")
         .setValue(ReporterFullName, "Alex Skor")
+        .setValue(Description, "desc")
       val fixture = ITFixture("Trello server", getConnector(boardId), CommonTestChecks.skipCleanup)
-      fixture.taskIsCreatedAndLoaded(task, Seq(Summary, TrelloField.listName, ReporterLoginName, ReporterFullName))
+      fixture.taskIsCreatedAndLoaded(task,
+        Seq(Description, Summary, TrelloField.listName, ReporterLoginName, ReporterFullName))
     }
   }
 
@@ -44,10 +46,10 @@ class TrelloIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     withTempBoard { boardId =>
       val task = buildTask
       task.setValue(TrelloField.listName, "unknown list")
-        val result = getConnector(boardId).saveData(PreviouslyCreatedTasksResolver.empty, List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR, TrelloFieldBuilder.getDefault())
+      val result = getConnector(boardId).saveData(PreviouslyCreatedTasksResolver.empty, List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR, TrelloFieldBuilder.getDefault())
       result.taskErrors.size shouldBe 1
       val error = result.taskErrors.head.getError
-      error shouldBe a [TrelloBadRequestException]
+      error shouldBe a[TrelloBadRequestException]
       error.getMessage shouldBe "invalid value for idList"
     }
   }
