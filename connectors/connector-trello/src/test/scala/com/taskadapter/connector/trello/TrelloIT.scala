@@ -3,9 +3,9 @@ package com.taskadapter.connector.trello
 import com.julienvey.trello.impl.TrelloBadRequestException
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.NewConnector
-import com.taskadapter.connector.testlib.CommonTestChecks
+import com.taskadapter.connector.testlib.{CommonTestChecks, ITFixture}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
-import com.taskadapter.model.{GTask, GTaskBuilder, Summary}
+import com.taskadapter.model.{GTask, GTaskBuilder, ReporterFullName, ReporterLoginName, Summary}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
@@ -21,12 +21,13 @@ class TrelloIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     new TrelloConnector(config, setup)
   }
 
-  it("tasks are created without errors") {
+  it("task created and loaded") {
     withTempBoard { boardId =>
-      val task = buildTask
-      CommonTestChecks.createsTasks(getConnector(boardId), TrelloFieldBuilder.getDefault(),
-        List(task),
-        CommonTestChecks.skipCleanup)
+      // reporter info is not used when creating a task, but will be used to check value in the created tasks
+      val task = buildTask.setValue(ReporterLoginName, "altest6")
+        .setValue(ReporterFullName, "Alex Skor")
+      val fixture = ITFixture("Trello server", getConnector(boardId), CommonTestChecks.skipCleanup)
+      fixture.taskIsCreatedAndLoaded(task, Seq(Summary, TrelloField.listName, ReporterLoginName, ReporterFullName))
     }
   }
 
