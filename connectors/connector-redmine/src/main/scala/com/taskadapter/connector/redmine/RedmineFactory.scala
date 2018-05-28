@@ -21,5 +21,5 @@ class RedmineFactory extends PluginFactory[RedmineConfig, WebConnectorSetup] {
 
   override def createDefaultConfig = new RedmineConfig
 
-  override def getDefaultFieldsForNewConfig: Seq[Field[_]] = RedmineField.fields
+  override def getDefaultFieldsForNewConfig: Seq[Field[_]] = RedmineField.defaultFieldsForNewConfig
 }

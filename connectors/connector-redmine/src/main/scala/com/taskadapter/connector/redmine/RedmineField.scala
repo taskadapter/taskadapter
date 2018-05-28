@@ -23,4 +23,7 @@ object RedmineField {
     TaskStatus,
     TargetVersion,
     Priority)
+
+  val defaultFieldsForNewConfig = fields.filter(_ != UpdatedOn)
+
 }
