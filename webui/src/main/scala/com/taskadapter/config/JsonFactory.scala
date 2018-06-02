@@ -20,7 +20,7 @@ object JsonFactory {
   }
 
 
-  def toString(f: Option[Field[_]]): String = {
+  private def toString(f: Option[Field[_]]): String = {
     if (f.isEmpty) {
       "null"
     } else {
@@ -48,7 +48,7 @@ object JsonFactory {
     result
   }
 
-  def fieldFromJson[T](json: Map[String, Any]): Option[Field[T]] = {
+  private def fieldFromJson[T](json: Map[String, Any]): Option[Field[T]] = {
     if (json == null) {
       return None
     }
@@ -66,7 +66,7 @@ object JsonFactory {
       case "CustomDate" => CustomDate(fieldName)
       case "CustomSeqString" => CustomSeqString(fieldName)
       case "Description$" => Description
-      case "DoneRatio" => DoneRatio
+      case "DoneRatio$" => DoneRatio
       case "DueDate$" => DueDate
       case "EstimatedTime$" => EstimatedTime
       case "Id$" => Id

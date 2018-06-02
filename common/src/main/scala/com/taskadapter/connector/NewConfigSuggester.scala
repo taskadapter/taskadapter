@@ -1,5 +1,6 @@
 package com.taskadapter.connector
 
+import com.taskadapter.connector.common.FieldMappingBuilder
 import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.model.Field
 
@@ -15,10 +16,6 @@ object NewConfigSuggester {
     * try to match list of fields for connector 1 with the list for connector 2.
     */
   def suggestedFieldMappingsForNewConfig(list1: Seq[Field[_]], list2: Seq[Field[_]]): Seq[FieldMapping[_]] = {
-    list1.intersect(list2).map(f => getMapping(f))
-  }
-
-  private def getMapping[T](field: Field[T]) : FieldMapping[T] = {
-    FieldMapping.apply(field, field, true, null.asInstanceOf[String])
+    list1.intersect(list2).map(f => FieldMappingBuilder.getMapping(f))
   }
 }
