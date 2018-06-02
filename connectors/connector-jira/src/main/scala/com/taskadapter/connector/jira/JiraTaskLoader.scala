@@ -20,7 +20,7 @@ class JiraTaskLoader(val client: JiraRestClient, val priorities: Priorities) {
         JqlBuilder.findIssuesByProject(config.getProjectKey)
       }
       val issues = JiraClientHelper.findIssues(client, jql)
-      val rows = jiraToGTask.convertToGenericTaskList(resolver, issues)
+      val rows = jiraToGTask.convertToGenericTaskList(resolver, issues.asScala)
       rows.asScala
     } catch {
       case e: Exception =>
