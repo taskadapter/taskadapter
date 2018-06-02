@@ -4,7 +4,7 @@ import java.util.Date
 
 import com.julienvey.trello.domain.{Card, TList}
 import com.taskadapter.connector.common.data.ConnectorConverter
-import com.taskadapter.model.{Description, DueDate, GTask, Summary}
+import com.taskadapter.model.{Children, Description, DueDate, GTask, Id, Key, ParentKey, Relations, SourceSystemId, Summary}
 import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
@@ -20,6 +20,13 @@ class GTaskToTrello(config:TrelloConfig, listCache: ListCache) extends Connector
       val field = e._1
       val value = e._2
       field match {
+        case Children => // processed in another place
+        case Id => // ignore ID field because it does not need to be provided when saving
+        case Key => // processed in [[DefaultValueSetter]]
+        case SourceSystemId => // processed in [[DefaultValueSetter]]
+        case ParentKey => // processed above
+        case Relations => // processed in another place
+
         case TrelloField.listId =>
           card.setIdList(value.asInstanceOf[String])
         case TrelloField.listName =>
