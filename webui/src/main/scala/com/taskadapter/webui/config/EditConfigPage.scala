@@ -51,8 +51,8 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
   layout.addComponent(errorMessageLabel)
 
   val taskFieldsMappingFragment = new TaskFieldsMappingFragment(messages,
-    config.getConnector1.getAllFields, config.getConnector1.getLabel,
-    config.getConnector2.getAllFields, config.getConnector2.getLabel,
+    config.getConnector1.getAllFields, config.getConnector1.fieldNames, config.getConnector1.getLabel,
+    config.getConnector2.getAllFields, config.getConnector2.fieldNames, config.getConnector2.getLabel,
     config.getNewMappings)
 
   layout.addComponent(taskFieldsMappingFragment.getUI)

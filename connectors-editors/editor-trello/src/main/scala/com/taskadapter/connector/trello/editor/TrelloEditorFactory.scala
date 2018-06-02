@@ -1,7 +1,5 @@
 package com.taskadapter.connector.trello.editor
 
-import java.util
-
 import com.google.common.base.Strings
 import com.taskadapter.connector.definition.WebConnectorSetup
 import com.taskadapter.connector.definition.exceptions._
@@ -77,4 +75,6 @@ class TrelloEditorFactory extends PluginEditorFactory[TrelloConfig, WebConnector
 
   override def createDefaultSetup(): WebConnectorSetup = WebConnectorSetup(TrelloConnector.ID, None, "My Trello",
     "https://api.trello.com", "", "", false, "")
+
+  override def fieldNames: Messages = new Messages("com.taskadapter.connector.trello.field-names")
 }

@@ -110,6 +110,11 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig, We
     }
 
     @Override
+    public Messages fieldNames() {
+        return MESSAGES;
+    }
+
+    @Override
     public WebConnectorSetup updateForSave(MantisConfig config, Sandbox sandbox, WebConnectorSetup setup)
             throws BadConfigException {
         validateForSave(config, setup);

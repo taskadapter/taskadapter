@@ -108,6 +108,11 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
     }
 
     @Override
+    public Messages fieldNames() {
+        return MESSAGES;
+    }
+
+    @Override
     public WebConnectorSetup updateForSave(RedmineConfig config, Sandbox sandbox, WebConnectorSetup setup)
             throws BadConfigException {
         validateForSave(config, setup);

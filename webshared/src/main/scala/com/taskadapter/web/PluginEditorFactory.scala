@@ -2,6 +2,7 @@ package com.taskadapter.web
 
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.connector.definition.{ConnectorConfig, ConnectorSetup}
+import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
 import com.vaadin.ui.ComponentContainer
 
@@ -74,4 +75,9 @@ trait PluginEditorFactory[C <: ConnectorConfig, S <: ConnectorSetup] extends Exc
     * @return user-friendly description of destination location.
     */
   def describeDestinationLocation(config: C, setup: S): String
+
+  /**
+    * Describes what labels to show for fields. e.g. "Status" field can be shown as "List Name" for Trello.
+    */
+  def fieldNames: Messages
 }

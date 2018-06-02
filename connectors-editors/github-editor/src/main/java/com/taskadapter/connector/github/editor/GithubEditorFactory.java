@@ -104,6 +104,11 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig, We
     }
 
     @Override
+    public Messages fieldNames() {
+        return MESSAGES;
+    }
+
+    @Override
     public WebConnectorSetup updateForSave(GithubConfig config, Sandbox sandbox, WebConnectorSetup setup)
             throws BadConfigException {
         validateForSave(config, setup);

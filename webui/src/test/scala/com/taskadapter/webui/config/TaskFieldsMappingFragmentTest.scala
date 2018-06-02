@@ -12,8 +12,8 @@ import org.scalatest.{FunSpec, Matchers}
 class TaskFieldsMappingFragmentTest extends FunSpec with Matchers with ConfigsTempFolder {
   it("empty default value for non-string-based field is converted to empty string") {
     val f = new TaskFieldsMappingFragment(Page.MESSAGES,
-      Seq(CreatedOn), "JIRA",
-      Seq(CreatedOn, UpdatedOn), "Redmine",
+      Seq(CreatedOn), Page.MESSAGES, "JIRA",
+      Seq(CreatedOn, UpdatedOn), Page.MESSAGES, "Redmine",
       Seq(FieldMapping(CreatedOn, CreatedOn, true, null))
     )
 

@@ -153,4 +153,5 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
 
   override def createDefaultSetup(): FileSetup = FileSetup(MSPConnector.ID, None, "My MSP file", "", "")
 
+  override def fieldNames: Messages = messages
 }

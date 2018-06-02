@@ -181,6 +181,11 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     }
 
     @Override
+    public Messages fieldNames() {
+        return MESSAGES;
+    }
+
+    @Override
     public WebConnectorSetup updateForSave(JiraConfig config, Sandbox sandbox, WebConnectorSetup setup)
             throws BadConfigException {
         validateForSave(config, setup);

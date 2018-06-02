@@ -85,8 +85,10 @@ class EditablePojoMappings(mappings: Seq[FieldMapping[_]],
 
 class TaskFieldsMappingFragment(messages: Messages,
                                 connector1SupportedFields: Seq[Field[_]],
+                                connector1Messages: Messages,
                                 connector1Label: String,
                                 connector2SupportedFields: Seq[Field[_]],
+                                connector2Messages: Messages,
                                 connector2Label: String,
                                 mappings: Seq[FieldMapping[_]]) extends Validatable {
   val ui = new Panel(messages.get("editConfig.mappings.caption"))
@@ -166,8 +168,8 @@ class TaskFieldsMappingFragment(messages: Messages,
     val helpForField = null //getHelpForField(field);
     if (helpForField != null) addHelp(helpForField)
     else addEmptyCell()
-    addConnectorField(connector1SupportedFields, field, "fieldInConnector1")
-    addConnectorField(connector2SupportedFields, field, "fieldInConnector2")
+    addConnectorField(connector1SupportedFields, connector1Messages, field, "fieldInConnector1")
+    addConnectorField(connector2SupportedFields, connector2Messages, field, "fieldInConnector2")
     addTextFieldForDefaultValue(field)
     addRemoveRowButton(field)
   }
@@ -227,14 +229,20 @@ class TaskFieldsMappingFragment(messages: Messages,
 
   case class FieldBeanItem(vaadinId: String, className: String, friendlyName: String)
 
-  private def addConnectorField(connectorFields: Seq[Field[_]], fieldMapping: EditableFieldMapping, classFieldName: String) = {
+  private def addConnectorField(connectorFields: Seq[Field[_]], connectorMessages: Messages,
+                                fieldMapping: EditableFieldMapping, classFieldName: String) = {
     val container = new BeanItemContainer[String](classOf[String])
     val mappedTo = new MethodProperty[String](fieldMapping, classFieldName)
-    val fieldNames = connectorFields.map((field: Field[_]) => field.name)
-      .toList
-    container.addAll(fieldNames.asJava)
+
     val combo = new ComboBox(null, container)
     combo.setPropertyDataSource(mappedTo)
+    connectorFields.foreach( f => {
+      // field name (f.name) will be the value in the model, while visibleLabel string will be shown in the combobox
+      val itemId = container.addItem(f.name)
+      val visibleLabel = Option(connectorMessages.getNoDefault(f.name)).getOrElse(f.name)
+      combo.setItemCaption(f.name, visibleLabel)
+    })
+
     combo.setNewItemsAllowed(true)
     combo.setWidth("90%")
     gridLayout.addComponent(combo)

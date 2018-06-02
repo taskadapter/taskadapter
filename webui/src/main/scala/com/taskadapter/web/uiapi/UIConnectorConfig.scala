@@ -5,6 +5,7 @@ import com.taskadapter.connector.definition.ConnectorSetup
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.model.Field
 import com.taskadapter.web.DroppingNotSupportedException
+import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
 import com.vaadin.ui.ComponentContainer
 
@@ -116,6 +117,8 @@ abstract class UIConnectorConfig {
     * @return destination location name.
     */
   def getDestinationLocation: String
+
+  def fieldNames: Messages
 
   /**
     * Decodes a connector exception into a user-friendly (possibly localized) message.

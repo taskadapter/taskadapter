@@ -4,6 +4,7 @@ import com.taskadapter.connector.NewConnector
 import com.taskadapter.connector.definition._
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.model.Field
+import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.{DroppingNotSupportedException, PluginEditorFactory}
 import com.taskadapter.webui.data.ExceptionFormatter
@@ -70,6 +71,8 @@ class UIConnectorConfigImpl[C <: ConnectorConfig, S <: ConnectorSetup]
     if (guess != null) return guess
     ExceptionFormatter.format(e)
   }
+
+  override def fieldNames: Messages = editorFactory.fieldNames
 
   override def toString: String = "UIConnectorConfigImpl{" + "connectorTypeId='" + connectorTypeId + '\'' + '}'
 }

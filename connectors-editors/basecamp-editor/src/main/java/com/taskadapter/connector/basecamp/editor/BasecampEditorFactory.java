@@ -22,6 +22,7 @@ import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.web.configeditor.Editors;
 import com.taskadapter.web.configeditor.server.ServerPanelFactory;
+import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Sandbox;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.Alignment;
@@ -45,6 +46,8 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
 
     private final ObjectAPIFactory factory = new ObjectAPIFactory(new BaseCommunicator());
     private final ExceptionFormatter formatter = new BasecampErrorFormatter();
+    private static final String BUNDLE_NAME = "com.taskadapter.connector.basecamp.editor.messages";
+    private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
 
     @Override
     public boolean isWebConnector() {
@@ -215,6 +218,11 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
     @Override
     public String describeDestinationLocation(BasecampConfig config, WebConnectorSetup setup) {
         return describeSourceLocation(config, setup);
+    }
+
+    @Override
+    public Messages fieldNames() {
+        return MESSAGES;
     }
 
     @Override
