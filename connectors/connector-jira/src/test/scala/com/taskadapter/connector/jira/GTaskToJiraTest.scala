@@ -106,6 +106,12 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
     getIterableValue(issue, IssueFieldId.COMPONENTS_FIELD.id) should contain only("client")
   }
 
+  it ("empty component is valid") {
+    val task = new GTask().setValue(Components, Seq())
+    val issue = getConverter().convertToJiraIssue(task).issueInput
+    getIterableValue(issue, IssueFieldId.COMPONENTS_FIELD.id) shouldBe null
+  }
+
   it("estimated time"){
     checkEstimatedTime(getConverter(), "180m")
   }

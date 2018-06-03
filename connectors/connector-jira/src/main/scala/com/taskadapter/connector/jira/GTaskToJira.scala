@@ -62,9 +62,12 @@ class GTaskToJira(config: JiraConfig,
       case Components =>
         // only first value from the list is used
         if (value != null) {
-          val firstComponentName = value.asInstanceOf[Seq[String]].head
-          val component = GTaskToJira.getComponent(components, firstComponentName)
-          component.map(issueInputBuilder.setComponents(_))
+          val strings = value.asInstanceOf[Seq[String]]
+          if (strings.nonEmpty) {
+            val firstComponentName = strings.head
+            val component = GTaskToJira.getComponent(components, firstComponentName)
+            component.map(issueInputBuilder.setComponents(_))
+          }
         } else {
             // this will erase any existing components in this task
             issueInputBuilder.setComponents()
