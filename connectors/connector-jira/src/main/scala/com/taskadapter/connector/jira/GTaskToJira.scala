@@ -58,6 +58,13 @@ class GTaskToJira(config: JiraConfig,
 
   private def processField(issueInputBuilder: IssueInputBuilder, field: Field[_], value: Any) : Unit = {
     field match {
+      case Children => // processed in another place
+      case Id => // ignore ID field because it does not need to be provided when saving
+      case Key => // processed in [[DefaultValueSetter]]
+      case SourceSystemId => // processed in [[DefaultValueSetter]]
+      case ParentKey => // processed above
+      case Relations => // processed in another place
+
       case Summary => issueInputBuilder.setSummary(value.asInstanceOf[String])
       case Components =>
         // only first value from the list is used
