@@ -165,7 +165,7 @@ case class UISyncConfig(taskKeeperLocationStorage: TaskKeeperLocationStorage,
       result.updatedTasksNumber, result.createdTasksNumber,
       result.generalErrors.map(getConnector2.decodeException),
       result.taskErrors.map(e =>
-        (e.getTask.getSourceSystemId, getConnector2.decodeException(e.getError))
+        (e.getTask.getSourceSystemId, getConnector2.decodeException(e.getError), e.getError)
       ),
       new Date(start),
       ((finish - start) / 1000).toInt

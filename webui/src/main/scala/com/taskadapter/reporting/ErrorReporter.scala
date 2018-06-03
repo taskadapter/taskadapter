@@ -1,7 +1,6 @@
 package com.taskadapter.reporting
 
-import java.io.{PrintWriter, StringWriter}
-
+import com.google.common.base.Throwables
 import com.taskadapter.web.SettingsManager
 import com.taskadapter.web.uiapi.UISyncConfig
 import com.taskadapter.webui.results.ExportResultFormat
@@ -12,7 +11,7 @@ object ErrorReporter {
 
   def reportIfAllowed(config: UISyncConfig, throwable: Throwable): Unit = {
     if (isAllowedToSend) {
-      val mailBody = getConfigInfo(config) + div + stacktraceToString(throwable)
+      val mailBody = getConfigInfo(config) + div + Throwables.getStackTraceAsString(throwable)
       sendMail(mailBody)
     }
   }
@@ -33,13 +32,6 @@ object ErrorReporter {
     val subject = s"TaskAdapter error reporter. $version"
     MailSender.sendFromGMail(MailSettings.fromEmail,
       MailSettings.fromPassword, MailSettings.toEmail, subject, mailBody)
-  }
-
-  private def stacktraceToString(throwable: Throwable): String = {
-    val sw = new StringWriter
-    val pw = new PrintWriter(sw)
-    throwable.printStackTrace(pw)
-    sw.toString
   }
 
   def isAllowedToSend: Boolean = new SettingsManager().isErrorReportingEnabled

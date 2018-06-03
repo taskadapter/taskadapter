@@ -1,5 +1,6 @@
 package com.taskadapter.reporting
 
+import com.google.common.base.Throwables
 import com.taskadapter.webui.results.ExportResultFormat
 
 object ExportResultsFormatter {
@@ -7,6 +8,13 @@ object ExportResultsFormatter {
     System.lineSeparator() + "Tasks created: " + result.createdTasksNumber + System.lineSeparator() +
       "Tasks updated: " + result.updatedTasksNumber + System.lineSeparator() +
       "General errors: " + result.generalErrors + System.lineSeparator() +
-      "Task-specific errors: " + result.taskErrors
+      formatTaskErrors(result)
+  }
+
+  private def formatTaskErrors(result: ExportResultFormat): String = {
+    "Task-specific errors: " + System.lineSeparator() +
+      result.taskErrors.map(e => e._1 + " - " + e._2 + " - " +
+        Throwables.getStackTraceAsString(e._3)
+        + System.lineSeparator())
   }
 }

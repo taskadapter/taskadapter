@@ -18,7 +18,7 @@ case class ExportResultFormat(configId: ConfigId,
                               @BeanProperty updatedTasksNumber: Int,
                               @BeanProperty createdTasksNumber: Int,
                               @BeanProperty generalErrors: Seq[String],
-                              @BeanProperty taskErrors: Seq[(TaskId, String)],
+                              @BeanProperty taskErrors: Seq[(TaskId, String, Throwable)],
                               @BeanProperty dateStarted: Date,
                               @BeanProperty timeTookSeconds: Int) {
 
