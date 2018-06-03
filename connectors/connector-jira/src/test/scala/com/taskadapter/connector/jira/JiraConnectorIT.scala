@@ -122,6 +122,14 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
       created.getValue(TaskType) shouldBe "Story"
       TestJiraClientHelper.deleteTasks(client, created.getIdentity)
     }
+
+    it("Epic with name defined via custom field") {
+      val created = TestUtils.saveAndLoad(getConnector,
+        task("Epic").setValue(CustomString("Epic Name"), "some epic"),
+        rows ++ FieldRowBuilder.rows(Seq(CustomString("Epic Name"))))
+      created.getValue(TaskType) shouldBe "Epic"
+      TestJiraClientHelper.deleteTasks(client, created.getIdentity)
+    }
   }
 
   private def task(taskTypeName: String): GTask = {
