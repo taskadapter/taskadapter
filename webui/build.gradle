@@ -13,6 +13,7 @@ apply plugin: 'war'
 apply plugin: "com.devsoap.plugin.vaadin"
 
 dependencies {
+    compile 'javax.mail:mail:1.4.5'
     // this library is uploaded to our own Nexus repo because its Maven Central version is broken.
     compile 'com.taskadapter:googleanalyticstracker:2.2.0'
 

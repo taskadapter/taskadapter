@@ -14,14 +14,23 @@ object ConfigureSystemPage {
     val view = new VerticalLayout
     view.setMargin(true)
     panel.setContent(view)
-    val checkbox = new CheckBox(Page.message("configurePage.showAllUsersConfigs"))
-    checkbox.setValue(settingsManager.schedulerEnabled)
+    addCheckbox(view, Page.message("configurePage.showAllUsersConfigs"), settingsManager.schedulerEnabled, modifiable,
+      newValue => settingsManager.setSchedulerEnabled(newValue))
+
+    addCheckbox(view, Page.message("configurePage.anonymousErrorReporting"), settingsManager.isErrorReportingEnabled, modifiable,
+      newValue => settingsManager.setErrorReporting(newValue))
+
+    panel
+  }
+
+  private def addCheckbox(view: VerticalLayout, label: String, value: Boolean, modifiable: Boolean, listener: Boolean => Unit) = {
+    val checkbox = new CheckBox(label)
+    checkbox.setValue(value)
     checkbox.setImmediate(true)
-    checkbox.addValueChangeListener(_ => settingsManager.setSchedulerEnabled(checkbox.getValue))
+    checkbox.addValueChangeListener(_ => listener.apply(checkbox.getValue))
     view.addComponent(checkbox)
     view.setComponentAlignment(checkbox, Alignment.MIDDLE_LEFT)
     checkbox.setEnabled(modifiable)
-    panel
   }
 
   def createResultsNumberSection(settingsManager: SettingsManager): Component = {

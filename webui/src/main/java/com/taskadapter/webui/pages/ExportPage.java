@@ -3,6 +3,7 @@ package com.taskadapter.webui.pages;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
+import com.taskadapter.reporting.ErrorReporter;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.Tracker;
@@ -77,16 +78,17 @@ public final class ExportPage {
                 log.info("Loaded " + tasks.size() + " tasks");
                 exportHelper.onTasksLoaded(tasks);
             } catch (CommunicationException e) {
-                final String message = config.getConnector1()
-                        .decodeException(e);
+                final String message = config.getConnector1().decodeException(e);
                 showLoadErrorMessage(message);
+                ErrorReporter.reportIfAllowed(config, e);
                 log.error("transport error: " + message, e);
             } catch (ConnectorException e) {
-                showLoadErrorMessage(config.getConnector1()
-                        .decodeException(e));
+                showLoadErrorMessage(config.getConnector1().decodeException(e));
+                ErrorReporter.reportIfAllowed(config, e);
                 log.error(e.getMessage(), e);
             } catch (RuntimeException e) {
                 showLoadErrorMessage("Internal error: " + e.getMessage());
+                ErrorReporter.reportIfAllowed(config, e);
                 log.error(e.getMessage(), e);
             }
         }).start();

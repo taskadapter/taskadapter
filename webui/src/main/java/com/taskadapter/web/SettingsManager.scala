@@ -5,6 +5,10 @@ import java.util.prefs.Preferences
 class SettingsManager {
   private val LICENSE_AGREEMENT_FLAG = "task_adapter_license_agreement_accepted"
   private val DEFAULT_LICENSE_AGREEMENT_ACCEPTED = false
+
+  private val ERROR_REPORTING_ENABLED = "task_adapter.error_reporting_enabled"
+  private val ERROR_REPORTING_DEFAULT_STATE = true
+
   private val FIELD_IS_LOCAL_MODE = "TALocal"
   private val DEFAULT_LOCAL = true
   private val ALLOW_MANAGE_ALL_CONFIG = "admin_can_see_all_configs"
@@ -24,7 +28,11 @@ class SettingsManager {
 
   def isLicenseAgreementAccepted: Boolean = prefs.getBoolean(LICENSE_AGREEMENT_FLAG, DEFAULT_LICENSE_AGREEMENT_ACCEPTED)
 
+  def isErrorReportingEnabled: Boolean = prefs.getBoolean(ERROR_REPORTING_ENABLED, ERROR_REPORTING_DEFAULT_STATE)
+
   def markLicenseAgreementAsAccepted(): Unit = prefs.putBoolean(LICENSE_AGREEMENT_FLAG, true)
+
+  def setErrorReporting(enabled: Boolean): Unit = prefs.putBoolean(ERROR_REPORTING_ENABLED, enabled)
 
   def getMaxNumberOfResultsToKeep: Int = prefs.getInt(MAX_NUMBER_RESULTS_TO_KEEP, DEFAULT_MAX_NUMBER_OF_RESULTS)
 
@@ -38,8 +46,7 @@ class SettingsManager {
 
   def setSchedulerEnabled(flag: Boolean): Unit = {
     prefs.putBoolean(SCHEDULER_ENABLED, flag)
-    notifyListeners(if (flag) SchedulerEnabledEvent
-    else SchedulerDisabledEvent)
+    notifyListeners(if (flag) SchedulerEnabledEvent else SchedulerDisabledEvent)
   }
 
   private def notifyListeners(event: SettingChangedEvent): Unit =
