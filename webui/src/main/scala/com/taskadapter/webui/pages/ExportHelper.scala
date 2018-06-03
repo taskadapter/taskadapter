@@ -3,6 +3,7 @@ package com.taskadapter.webui.pages
 import java.util
 
 import com.taskadapter.model.GTask
+import com.taskadapter.reporting.ErrorReporter
 import com.taskadapter.web.uiapi.UISyncConfig
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.export.{ConfirmExportFragment, ExportResultsFragment}
@@ -72,6 +73,7 @@ class ExportHelper(configOps: ConfigOperations,
         val saveResult = config.saveTasks(selectedTasks, wrapper)
         ExportResultsLogger.log(saveResult)
         exportResultStorage.store(saveResult)
+        if (saveResult.hasErrors) ErrorReporter.reportIfAllowed(config, saveResult)
         val labelForTracking = config.getConnector1.getConnectorTypeId + " - " + config.getConnector2.getConnectorTypeId
         val exportResult = new ExportResultsFragment(onDone, showFilePath).showExportResult(saveResult)
         tracker.trackEvent("export", "finished_saving_tasks", labelForTracking)
