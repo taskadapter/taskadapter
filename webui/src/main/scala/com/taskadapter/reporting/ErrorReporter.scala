@@ -8,18 +8,26 @@ import com.taskadapter.webui.service.CurrentVersionLoader
 
 object ErrorReporter {
   private val version = new CurrentVersionLoader().getCurrentVersion
+  val defaultSubject = s"TaskAdapter error reporter. $version"
 
   def reportIfAllowed(config: UISyncConfig, throwable: Throwable): Unit = {
     if (isAllowedToSend) {
       val mailBody = getConfigInfo(config) + div + Throwables.getStackTraceAsString(throwable)
-      sendMail(mailBody)
+      sendMail(defaultSubject, mailBody)
+    }
+  }
+
+  def reportIfAllowed(throwable: Throwable): Unit = {
+    if (isAllowedToSend) {
+      val mailBody = Throwables.getStackTraceAsString(throwable)
+      sendMail(defaultSubject + " - uncaught exception", mailBody)
     }
   }
 
   def reportIfAllowed(config: UISyncConfig, results: ExportResultFormat): Unit = {
     if (isAllowedToSend && results.hasErrors) {
       val mailBody = getConfigInfo(config) + div + ExportResultsFormatter.toNiceString(results)
-      sendMail(mailBody)
+      sendMail(defaultSubject, mailBody)
     }
   }
 
@@ -28,8 +36,7 @@ object ErrorReporter {
       div + config.fieldMappings.toString()
   }
 
-  private def sendMail(mailBody: String): Unit = {
-    val subject = s"TaskAdapter error reporter. $version"
+  private def sendMail(subject: String, mailBody: String): Unit = {
     MailSender.sendFromGMail(MailSettings.fromEmail,
       MailSettings.fromPassword, MailSettings.toEmail, subject, mailBody)
   }

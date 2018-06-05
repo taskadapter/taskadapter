@@ -2,6 +2,7 @@ package com.taskadapter.webui;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.UI;
 
@@ -15,10 +16,7 @@ public class DummyUI extends UI implements PageContainer {
 
     @Override
     protected void init(VaadinRequest request) {
-        /*
-         * Nothing to do. Really. All is done. Go away and poke vaadin
-         * developers.
-         */
+        VaadinSession.getCurrent().setErrorHandler(new MyCustomErrorHandler());
     }
 
 }
