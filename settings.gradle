@@ -22,3 +22,6 @@ include "common",
         "connectors-editors:redmine-editor",
         "connectors-editors:editor-trello"
 
+// uncomment this during development to allow composite Gradle builds in IDEA
+
+// includeBuild("../trello-java-wrapper")

@@ -1,8 +1,8 @@
 package com.taskadapter.connector.trello
 
-import com.julienvey.trello.impl.TrelloBadRequestException
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.NewConnector
+import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.connector.testlib.{CommonTestChecks, ITFixture}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.{Description, GTask, GTaskBuilder, ReporterFullName, ReporterLoginName, Summary}
@@ -42,15 +42,15 @@ class TrelloIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     }
   }
 
-  it("proper exception with wrong list id") {
+  it("proper exception with unknown list name") {
     withTempBoard { boardId =>
       val task = buildTask
       task.setValue(TrelloField.listName, "unknown list")
       val result = getConnector(boardId).saveData(PreviouslyCreatedTasksResolver.empty, List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR, TrelloFieldBuilder.getDefault())
       result.taskErrors.size shouldBe 1
       val error = result.taskErrors.head.getError
-      error shouldBe a[TrelloBadRequestException]
-      error.getMessage shouldBe "invalid value for idList"
+      error shouldBe a[ConnectorException]
+      error.getMessage should include ("Trello list with name 'unknown list' is not found on the requested Trello Board")
     }
   }
 

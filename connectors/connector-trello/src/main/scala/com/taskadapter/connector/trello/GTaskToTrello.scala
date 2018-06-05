@@ -4,6 +4,7 @@ import java.util.Date
 
 import com.julienvey.trello.domain.{Card, TList}
 import com.taskadapter.connector.common.data.ConnectorConverter
+import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.model.{Children, Description, DueDate, GTask, Id, Key, ParentKey, Relations, SourceSystemId, Summary}
 import org.slf4j.LoggerFactory
 
@@ -32,7 +33,12 @@ class GTaskToTrello(config:TrelloConfig, listCache: ListCache) extends Connector
         case TrelloField.listName =>
           val listName = value.asInstanceOf[String]
           val listId = listCache.getListIdByName(listName)
-          card.setIdList(listId)
+          if (listId.isDefined) {
+            card.setIdList(listId.get)
+          } else {
+            throw new ConnectorException(
+              s"Trello list with name '$listName' is not found on the requested Trello Board (board ID ${config.boardId} )")
+          }
         case Summary => card.setName(value.asInstanceOf[String])
         case Description => card.setDesc(value.asInstanceOf[String])
         case DueDate => card.setDue(value.asInstanceOf[Date])
