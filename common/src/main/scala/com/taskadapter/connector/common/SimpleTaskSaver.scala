@@ -43,7 +43,7 @@ class SimpleTaskSaver[N](previouslyCreatedTasksResolver: PreviouslyCreatedTasksR
       } catch {
         case e: ConnectorException =>
           result.addTaskError(task, e)
-        case t: Throwable =>
+        case t: Exception =>
           result.addTaskError(task, t)
           t.printStackTrace()
       }

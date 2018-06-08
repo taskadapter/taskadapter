@@ -26,15 +26,6 @@ object TestUtils {
     list.find(_.getValue(field) == value).orNull
   }
 
-  def getDateRoundedToDay: Calendar = {
-    val cal = Calendar.getInstance
-    cal.set(Calendar.SECOND, 0)
-    cal.set(Calendar.MILLISECOND, 0)
-    cal.set(Calendar.MINUTE, 0)
-    cal.set(Calendar.HOUR_OF_DAY, 0)
-    cal
-  }
-
   @throws[ConnectorException]
   def saveAndLoadAll(connector: NewConnector, task: GTask, rows: List[FieldRow[_]]): List[GTask] = {
     connector.saveData(PreviouslyCreatedTasksResolver.empty, List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows)
@@ -99,20 +90,20 @@ object TestUtils {
   }
 
   def setTaskStartYearAgo(task: GTask): Calendar = {
-    val yearAgo = getDateRoundedToDay
+    val yearAgo = DateUtils.getCalendarRoundedToDay
     yearAgo.add(Calendar.YEAR, -1)
     task.setValue(StartDate, yearAgo.getTime)
     yearAgo
   }
 
   def yearAgo: Date = {
-    val yearAgo = getDateRoundedToDay
+    val yearAgo = DateUtils.getCalendarRoundedToDay
     yearAgo.add(Calendar.YEAR, -1)
     yearAgo.getTime
   }
 
   def nextYear: Date = {
-    val cal = getDateRoundedToDay
+    val cal = DateUtils.getCalendarRoundedToDay
     cal.add(Calendar.YEAR, 1)
     cal.getTime
   }

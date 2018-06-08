@@ -39,7 +39,7 @@ class SaveResultBuilder {
     generalErrors += e
   }
 
-  def addTaskError(task: GTask, e: Throwable): Unit = {
+  def addTaskError(task: GTask, e: Exception): Unit = {
     taskErrors += new TaskError(task, e)
   }
 

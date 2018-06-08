@@ -4,6 +4,7 @@ import java.io.File
 import java.util
 import java.util.Date
 
+import com.google.common.base.Throwables
 import com.taskadapter.connector.MappingBuilder
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition._
@@ -165,7 +166,8 @@ case class UISyncConfig(taskKeeperLocationStorage: TaskKeeperLocationStorage,
       result.updatedTasksNumber, result.createdTasksNumber,
       result.generalErrors.map(getConnector2.decodeException),
       result.taskErrors.map(e =>
-        (e.getTask.getSourceSystemId, getConnector2.decodeException(e.getError), e.getError)
+        (e.getTask.getSourceSystemId, getConnector2.decodeException(e.getError),
+          Throwables.getStackTraceAsString(e.getError))
       ),
       new Date(start),
       ((finish - start) / 1000).toInt
