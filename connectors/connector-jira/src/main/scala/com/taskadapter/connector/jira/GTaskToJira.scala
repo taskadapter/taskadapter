@@ -25,7 +25,6 @@ object GTaskToJira {
 
 class GTaskToJira(config: JiraConfig,
                   customFieldResolver: CustomFieldResolver,
-                  issueTypeList: Iterable[IssueType],
                   versions: Iterable[Version],
                   components: Iterable[BasicComponent],
                   jiraPriorities: Iterable[Priority])
@@ -34,7 +33,11 @@ class GTaskToJira(config: JiraConfig,
   val priorities = jiraPriorities.map(p => p.getName -> p).toMap
 
   def convertToJiraIssue(task: GTask) : IssueWrapper = {
-    val issueInputBuilder = new IssueInputBuilder(config.getProjectKey, findIssueTypeId(task))
+    val issueInputBuilder = new IssueInputBuilder()
+    issueInputBuilder.setProjectKey(config.getProjectKey)
+
+    // issue type has to be set later in JiraTaskSaver because it depends on create/update
+
     if (task.getParentIdentity != null) {
       // See http://stackoverflow.com/questions/14699893/how-to-create-subtasks-using-jira-rest-java-client
       val parent = new util.HashMap[String, AnyRef]
@@ -53,7 +56,7 @@ class GTaskToJira(config: JiraConfig,
     val issueInput = issueInputBuilder.build
 
     val status = task.getValue(TaskStatus)
-    IssueWrapper(task.getKey, issueInput, status)
+    IssueWrapper(task.getKey, issueInput, status, Option(task.getValue(TaskType)))
   }
 
   private def processField(issueInputBuilder: IssueInputBuilder, field: Field[_], value: Any) : Unit = {
@@ -140,28 +143,6 @@ class GTaskToJira(config: JiraConfig,
     } else {
       throw new RuntimeException(s"unknown value type: $value")
     }
-  }
-
-  /**
-    * Finds an issue type id to use.
-    *
-    * @param task task to get an issue id.
-    * @return issue type id.
-    */
-  private def findIssueTypeId(task: GTask): Long = {
-    // Use explicit task type when possible.
-    val value = task.getValue(TaskType)
-    val explicitTypeId = getIssueTypeIdByName(value)
-    if (explicitTypeId != null) return explicitTypeId
-    // Use default type for the task when
-    getIssueTypeIdByName(
-      if (task.getParentIdentity == null) config.getDefaultTaskType
-      else config.getDefaultIssueTypeForSubtasks
-    )
-  }
-
-  private def getIssueTypeIdByName(issueTypeName: String) = {
-    issueTypeList.find(i => i.getName == issueTypeName).map(_.getId).orNull
   }
 
   @throws[ConnectorException]

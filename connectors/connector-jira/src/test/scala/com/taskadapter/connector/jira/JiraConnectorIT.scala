@@ -4,7 +4,7 @@ import java.util
 
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.ProgressMonitorUtils
-import com.taskadapter.connector.testlib.{CommonTestChecks, FieldRowBuilder, TestUtils}
+import com.taskadapter.connector.testlib.{CommonTestChecks, FieldRowBuilder, StatefulTestTaskSaver, TestUtils}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model._
 import org.fest.assertions.Assertions.assertThat
@@ -137,15 +137,12 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
   }
 
   describe("Update") {
-    /**
-      * TODO
-      * This is a known bug that existed for a long time, apparently. Found it in May 2018.
-      */
-    ignore("updating task does not change its type to default") {
+    it("does not reset task type to config default") {
+      val saver = new StatefulTestTaskSaver(getConnector, JiraPropertiesLoader.getTestServerInfo.host)
       // regression test
-      val created = TestUtils.saveAndLoad(getConnector, task("Story"), rows)
+      val created = saver.saveAndLoad(task("Story"), rows)
       created.setValue(TaskType, null)
-      val updated = TestUtils.saveAndLoad(getConnector, created, rows)
+      val updated = saver.saveAndLoad(created, rows)
       updated.getValue(TaskType) shouldBe "Story"
       TestJiraClientHelper.deleteTasks(client, created.getIdentity)
     }
