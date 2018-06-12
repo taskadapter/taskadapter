@@ -76,7 +76,7 @@ final class GTask() {
 
   override def toString: String = fields.toString
 
-  def setParentIdentity(parentIssueKey: TaskId): Unit = setValue(ParentKey, parentIssueKey)
+  def setParentIdentity(parentIssueKey: TaskId): GTask = setValue(ParentKey, parentIssueKey)
 
   def getFields: util.Map[Field[_], Any] = fields
 

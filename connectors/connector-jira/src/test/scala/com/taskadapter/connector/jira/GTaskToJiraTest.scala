@@ -14,35 +14,13 @@ import scala.collection.JavaConverters._
 @RunWith(classOf[JUnitRunner])
 class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll {
 
-  val config = JiraPropertiesLoader.createTestConfig
-  var priorities = MockData.loadPriorities
-  val issueTypeList = MockData.loadIssueTypes
-  val versions = MockData.loadVersions
-  val components = MockData.loadComponents
-
   it("priorityConvertedToCritical") {
-    val priorityCritical = find(priorities, "Highest")
+    val priorityCritical = find(GTaskToJiraFactory.priorities, "Highest")
     val task = new JiraGTaskBuilder().withPriority(750).build()
     val converter = getConverter()
     val newIssue = converter.convertToJiraIssue(task).issueInput
     val actualPriorityId = getId(newIssue, IssueFieldId.PRIORITY_FIELD.id)
     assertEquals(priorityCritical.getId.toString, actualPriorityId)
-  }
-
-  it("issue type preserved if present"){
-    val converter = getConverter
-    val requiredIssueType = findIssueType(issueTypeList, "Bug")
-    val task = JiraGTaskBuilder.withType("Bug")
-    val issue = converter.convertToJiraIssue(task).issueInput
-    assertEquals(requiredIssueType.getId.toString, getId(issue, IssueFieldId.ISSUE_TYPE_FIELD.id))
-  }
-
-  it("issue type set to default if not present"){
-    val task = JiraGTaskBuilder.withType(null)
-    val converter = getConverter
-    val issue = converter.convertToJiraIssue(task).issueInput
-    // must be default issue type if we set the field to null
-    assertEquals(findDefaultIssueTypeId, getId(issue, IssueFieldId.ISSUE_TYPE_FIELD.id))
   }
 
   it("summary is converted"){
@@ -150,12 +128,6 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
       .map(v => v.getValuesMap().get("name").asInstanceOf[String]).toSeq
   }
 
-  private def findDefaultIssueTypeId = {
-    val defaultTaskTypeName = config.getDefaultTaskType
-    val issueType = findIssueType(issueTypeList, defaultTaskTypeName)
-    issueType.getId.toString
-  }
-
   private def findIssueType(issueTypes: Iterable[IssueType], `type`: String): IssueType = {
     for (issueType <- issueTypes) {
       if (issueType.getName == `type`) return issueType
@@ -163,8 +135,7 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
     throw new RuntimeException("Not found: " + `type`)
   }
 
-  val customFieldsResolver = new CustomFieldResolver(Seq())
-  private def getConverter(): GTaskToJira = new GTaskToJira(config, customFieldsResolver, issueTypeList, versions, components, priorities)
+  private def getConverter(): GTaskToJira = GTaskToJiraFactory.getConverter()
 
   private def find(priorities: Iterable[Priority], priorityName: String): Priority = {
     for (priority <- priorities) {

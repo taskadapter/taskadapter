@@ -127,8 +127,8 @@ class JiraConnector(config: JiraConfig, setup: WebConnectorSetup) extends NewCon
       val priorities = prioritiesPromise.claim.asScala
 
       val resolver = JiraClientHelper.loadCustomFields(client)
-      val converter = new GTaskToJira(config, resolver, issueTypeList, versions, components, priorities)
-      val saver = new JiraTaskSaver(client)
+      val converter = new GTaskToJira(config, resolver, versions, components, priorities)
+      val saver = new JiraTaskSaver(client, issueTypeList, config.getDefaultTaskType, config.getDefaultIssueTypeForSubtasks)
       val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows,
         setup.host)
       TaskSavingUtils.saveRemappedRelations(config, tasks, saver, rb)

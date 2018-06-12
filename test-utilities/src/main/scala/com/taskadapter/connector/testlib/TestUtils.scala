@@ -7,7 +7,7 @@ import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.connector.definition.{SaveResult, TaskId}
 import com.taskadapter.connector.{FieldRow, NewConnector}
-import com.taskadapter.core.{PreviouslyCreatedTasksResolver, TaskLoader}
+import com.taskadapter.core.{PreviouslyCreatedTasksCache, PreviouslyCreatedTasksResolver, TaskLoader}
 import com.taskadapter.model.{DueDate, Field, GTask, StartDate}
 
 import scala.collection.JavaConverters._
@@ -38,6 +38,10 @@ object TestUtils {
     connector.loadData().asScala.sortBy(_.getId).toList
   }
 
+  /**
+    * Uses a NEW instance of PreviouslyCreatedTasksResolver (empty) for each call, so this won't work for some tests
+    * that require updates.
+    */
   @throws[ConnectorException]
   def saveAndLoad(connector: NewConnector, task: GTask, rows: Seq[FieldRow[_]]): GTask = {
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows)
