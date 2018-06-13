@@ -8,7 +8,7 @@ package com.taskadapter.connector.msp
 object CustomFieldConverter {
 
   /**
-    * @return empty string if given value is null, otherwise converted value
+    * @return empty string if given value is null, otherwise converted value. never returns null
     */
   def getValueAsString(value: Any): String = {
     if (value == null) {

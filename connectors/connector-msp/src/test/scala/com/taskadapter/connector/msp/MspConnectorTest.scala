@@ -7,7 +7,7 @@ import java.util.Date
 
 import com.taskadapter.connector.common.TreeUtils
 import com.taskadapter.connector.definition.FileSetup
-import com.taskadapter.connector.testlib.{CommonTestChecks, ITFixture, TempFolder}
+import com.taskadapter.connector.testlib.{CommonTestChecks, FieldRowBuilder, ITFixture, TempFolder, TestUtils}
 import com.taskadapter.model._
 import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
@@ -54,6 +54,14 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
     }
   }
 
+  it("trims field value and removes line break at the end") {
+    withTempFolder { folder =>
+      val textWithEndingLineBreak = " text " + System.lineSeparator()
+      val task = new GTask().setValue(Summary, textWithEndingLineBreak)
+      val created = TestUtils.saveAndLoad(getConnector(folder), task, FieldRowBuilder.rows(Seq(Summary)))
+      created.getValue(Summary) shouldBe "text"
+    }
+  }
 
   it("twoTasksAreCreated") {
     withTempFolder { folder =>

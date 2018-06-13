@@ -28,10 +28,11 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
 
   private def processField(field: Field[_], value: Any): Unit = {
     val stringBasedValue = CustomFieldConverter.getValueAsString(value)
+      .trim
     field match {
       case Summary => mspTask.setName(stringBasedValue)
       case Description => mspTask.setNotes(stringBasedValue)
-      case AssigneeFullName => processAssignee(value.asInstanceOf[String])
+      case AssigneeFullName => processAssignee(stringBasedValue)
       case MspField.mustStartOn =>
         mspTask.setConstraintType(ConstraintType.MUST_START_ON)
         mspTask.setConstraintDate(value.asInstanceOf[Date])
