@@ -1,19 +1,16 @@
-package com.taskadapter.core
+package com.taskadapter.web
 
 import java.io.File
 
 import com.google.common.base.Charsets
 import com.google.common.io.Files
 import com.taskadapter.connector.definition.TaskId
+import com.taskadapter.core.{PreviouslyCreatedTasksCache, PreviouslyCreatedTasksResolver, TaskKeeperLocation}
 import io.circe.generic.auto._
 import io.circe.parser._
 import io.circe.syntax._
 
 import scala.util.Random
-
-case class TaskKeeperLocation(location1: String, location2: String, cacheFileLocation: String)
-
-case class PreviouslyCreatedTasksCache(location1: String, location2: String, items: Seq[(TaskId, TaskId)])
 
 class TaskKeeperLocationStorage(rootFolder: File) {
   val cacheFolder = new File(rootFolder, "cache")

@@ -1,20 +1,23 @@
 package com.taskadapter.connector.common
 
-import com.taskadapter.connector.testlib.TempFolder
+import java.io.File
+
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
 
 @RunWith(classOf[JUnitRunner])
-class FileNameGeneratorTest extends FunSpec with Matchers with TempFolder {
+class FileNameGeneratorTest extends FunSpec with Matchers {
   it("second file name is different from first when a file already exists") {
-    withTempFolder { folder =>
-      val filePattern = "file_%d.txt"
-      val file = FileNameGenerator.createSafeAvailableFile(folder, filePattern)
-      file.createNewFile()
+    val folder = new File(System.getProperty("java.io.tmpdir"));
 
-      val file2 = FileNameGenerator.createSafeAvailableFile(folder, filePattern)
-      file2.getName should not be file.getName
-    }
+    val filePattern = "file_%d.txt"
+    val file = FileNameGenerator.createSafeAvailableFile(folder, filePattern)
+    file.createNewFile()
+    file.deleteOnExit()
+
+    val file2 = FileNameGenerator.createSafeAvailableFile(folder, filePattern)
+    file2.getName should not be file.getName
+    file2.deleteOnExit()
   }
 }

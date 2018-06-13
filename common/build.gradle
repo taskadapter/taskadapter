@@ -11,6 +11,5 @@ dependencies {
     compile "io.circe:circe-generic_2.12:$circeVersion"
     compile "io.circe:circe-parser_2.12:$circeVersion"
 
-    testCompile project(":test-utilities")
     testCompile libraries.festassert
 }

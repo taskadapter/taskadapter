@@ -1,8 +1,7 @@
-package com.taskadapter.connector.common
+package com.taskadapter.web
 
 import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.connector.testlib.TempFolder
-import com.taskadapter.core.TaskKeeperLocationStorage
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}

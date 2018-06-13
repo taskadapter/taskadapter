@@ -7,7 +7,7 @@ import com.taskadapter.config._
 import com.taskadapter.connector.NewConfigSuggester
 import com.taskadapter.connector.common.{FileNameGenerator, XorEncryptor}
 import com.taskadapter.connector.definition._
-import com.taskadapter.core.TaskKeeperLocationStorage
+import com.taskadapter.web.TaskKeeperLocationStorage
 import io.circe.Json
 import io.circe.generic.auto._
 import io.circe.parser._

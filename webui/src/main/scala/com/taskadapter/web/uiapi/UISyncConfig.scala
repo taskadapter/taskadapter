@@ -11,6 +11,7 @@ import com.taskadapter.connector.definition._
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.core._
 import com.taskadapter.model.{Field, GTask}
+import com.taskadapter.web.TaskKeeperLocationStorage
 import com.taskadapter.webui.results.ExportResultFormat
 
 import scala.beans.BeanProperty
