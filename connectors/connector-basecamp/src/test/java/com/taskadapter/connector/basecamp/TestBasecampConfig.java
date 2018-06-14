@@ -5,10 +5,10 @@ import com.taskadapter.connector.definition.WebConnectorSetup;
 import scala.Option;
 
 class TestBasecampConfig {
-    private static final String USER_ID = "3827020";
-    private static final String USER_LOGIN = "sufis@storj99.top";
-    private static final String USER_PASSWORD = "65690812487";
-    private static final String PROJECT_KEY = "14455873";
+    private static final String USER_ID = "4039521";
+    private static final String USER_LOGIN = "d42dse+81ho6e4c19m44@sharklasers.com";
+    private static final String USER_PASSWORD = "1234567f";
+    private static final String PROJECT_KEY = "15524708";
 
     static BasecampConfig config() {
         BasecampConfig config = new BasecampConfig();

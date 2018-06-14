@@ -51,9 +51,11 @@ class OtherJiraFieldsPanel extends Panel {
                 "Select version",
                 "List of available versions",
                 () -> new JiraConnector(config, webServerInfo).getVersions(),
-                affectedVersionProperty,
-                true,
-                exceptionFormatter
+                exceptionFormatter,
+                namedKeyedObject -> {
+                    affectedVersionProperty.setValue(namedKeyedObject.getName());
+                    return null;
+                }
         );
         grid.addComponent(showAffectedVersion);
 
@@ -69,8 +71,11 @@ class OtherJiraFieldsPanel extends Panel {
                 "Select version",
                 "List of available versions",
                 () -> new JiraConnector(config, webServerInfo).getVersions(),
-                fixForProperty,
-                true, exceptionFormatter
+                exceptionFormatter,
+                namedKeyedObject -> {
+                    fixForProperty.setValue(namedKeyedObject.getName());
+                    return null;
+                }
         );
         grid.addComponent(showFixForVersion);
 
@@ -85,9 +90,11 @@ class OtherJiraFieldsPanel extends Panel {
                 "Select issue type",
                 "List of available issue types on the JIRA server",
                 () -> new JiraConnector(config, webServerInfo).getAllIssueTypes(),
-                defaultTaskTypeProperty,
-                true,
-                exceptionFormatter
+                exceptionFormatter,
+                namedKeyedObject -> {
+                    defaultTaskTypeProperty.setValue(namedKeyedObject.getName());
+                    return null;
+                }
         );
         grid.addComponent(showDefaultTaskType);
 
@@ -102,9 +109,11 @@ class OtherJiraFieldsPanel extends Panel {
                 "Select a subtask type",
                 "List of available subtask types on the JIRA server",
                 () -> new JiraConnector(config, webServerInfo).getIssueTypesForSubtasks(),
-                defaultIssueTypeForSubtasksProperty,
-                true,
-                exceptionFormatter
+                exceptionFormatter,
+                namedKeyedObject -> {
+                    defaultIssueTypeForSubtasksProperty.setValue(namedKeyedObject.getName());
+                    return null;
+                }
         );
         grid.addComponent(showIssueTypeForSubtasksButton);
     }

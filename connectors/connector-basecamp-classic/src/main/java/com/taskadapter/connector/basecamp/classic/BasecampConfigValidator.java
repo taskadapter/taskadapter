@@ -1,6 +1,6 @@
 package com.taskadapter.connector.basecamp.classic;
 
-import com.taskadapter.connector.basecamp.classic.exceptions.FieldNotSetException;
+import com.taskadapter.connector.basecamp.FieldNotSetException;
 import com.taskadapter.connector.definition.WebConnectorSetup;
 
 public class BasecampConfigValidator {
