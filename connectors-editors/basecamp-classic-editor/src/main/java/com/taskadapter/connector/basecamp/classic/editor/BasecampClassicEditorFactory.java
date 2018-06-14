@@ -1,12 +1,12 @@
 package com.taskadapter.connector.basecamp.classic.editor;
 
+import com.taskadapter.connector.basecamp.FieldNotSetException;
 import com.taskadapter.connector.basecamp.classic.BasecampClassicConfig;
 import com.taskadapter.connector.basecamp.classic.BasecampClassicConnector;
 import com.taskadapter.connector.basecamp.classic.BasecampConfigValidator;
 import com.taskadapter.connector.basecamp.classic.BasecampUtils;
 import com.taskadapter.connector.basecamp.classic.beans.BasecampProject;
 import com.taskadapter.connector.basecamp.classic.beans.TodoList;
-import com.taskadapter.connector.basecamp.classic.exceptions.FieldNotSetException;
 import com.taskadapter.connector.basecamp.classic.transport.BaseCommunicator;
 import com.taskadapter.connector.basecamp.classic.transport.ObjectAPIFactory;
 import com.taskadapter.connector.definition.WebConnectorSetup;
@@ -123,8 +123,11 @@ public class BasecampClassicEditorFactory implements PluginEditorFactory<Basecam
                 "Select project",
                 "List of projects on the server",
                 projectProvider,
-                projectKeyProperty,
-                false, formatter
+                formatter,
+                namedKeyedObject -> {
+                    projectKeyProperty.setValue(namedKeyedObject.getKey());
+                    return null;
+                }
         );
         addTo(grid, Alignment.MIDDLE_CENTER, showProjectsButton);
     }
@@ -164,8 +167,11 @@ public class BasecampClassicEditorFactory implements PluginEditorFactory<Basecam
                 "Select a Todo list",
                 "Todo lists on the server",
                 todoListsProvider,
-                todoKeyProperty,
-                false, formatter
+                formatter,
+                namedKeyedObject -> {
+                    todoKeyProperty.setValue(namedKeyedObject.getKey());
+                    return null;
+                }
         );
         addTo(grid, Alignment.MIDDLE_CENTER, showTodoListsButton);
     }

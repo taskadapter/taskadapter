@@ -1,7 +1,7 @@
 package com.taskadapter.connector.basecamp.classic.editor;
 
-import com.taskadapter.connector.basecamp.classic.exceptions.BadFieldException;
-import com.taskadapter.connector.basecamp.classic.exceptions.FieldNotSetException;
+import com.google.common.base.Strings;
+import com.taskadapter.connector.basecamp.FieldNotSetException;
 import com.taskadapter.connector.basecamp.classic.exceptions.ObjectNotFoundException;
 import com.taskadapter.connector.definition.exceptions.NotAuthorizedException;
 import com.taskadapter.web.ExceptionFormatter;
@@ -13,24 +13,11 @@ class BasecampErrorFormatter implements ExceptionFormatter {
 
     @Override
     public String formatError(Throwable e) {
-        if (e instanceof BadFieldException) {
-            final String field = ((BadFieldException) e).getFieldName();
-            if ("project-key".equals(field)) {
-                return MESSAGES.format("error.projectKey");
-            } else if ("todo-key".equals(field)) {
-                return MESSAGES.format("error.todoKey");
-            } else if ("account-id".equals(field)) {
-                return MESSAGES.format("error.accountId");
-            }
-        }
         if (e instanceof FieldNotSetException) {
-            final String field = ((FieldNotSetException) e).getFieldId();
-            if ("project-key".equals(field)) {
-                return MESSAGES.format("error.projectKey");
-            } else if ("todo-key".equals(field)) {
-                return MESSAGES.format("error.todoKey");
-            } else if ("account-id".equals(field)) {
-                return MESSAGES.format("error.accountId");
+            String field = ((FieldNotSetException) e).field();
+            String message = MESSAGES.format("error." + field);
+            if (!Strings.isNullOrEmpty(message)) {
+                return message;
             }
         }
         if (e instanceof NotAuthorizedException) {

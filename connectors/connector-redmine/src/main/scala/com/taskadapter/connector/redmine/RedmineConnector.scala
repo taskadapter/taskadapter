@@ -53,7 +53,7 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
     try {
       val mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient)
       val usersCache = loadUsersIfAllowed(mgr)
-      val issues = mgr.getIssueManager.getIssues(config.getProjectKey, config.getQueryId, Include.relations)
+      val issues = mgr.getIssueManager.getIssues(config.getProjectKey, config.getQueryId.intValue(), Include.relations)
       addFullUsers(issues, usersCache)
       convertToGenericTasks(config, issues, usersCache)
     } catch {

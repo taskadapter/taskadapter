@@ -8,6 +8,7 @@ import com.taskadapter.model.GProject;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.callbacks.DataProvider;
+import com.taskadapter.web.configeditor.server.StringToLongNonFormattingConverter;
 import com.taskadapter.webui.Page;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Alignment;
@@ -51,13 +52,13 @@ public class ProjectPanel extends Panel implements Validatable {
 
     private final Property<String> projectKeyProperty;
 
-    private final Option<Property<String>> queryIdProperty;
+    private final Option<Property<Long>> queryIdProperty;
     private final Option<Property<String>> queryTextProperty;
 
     private final ExceptionFormatter exceptionFormatter;
 
     public ProjectPanel(Property<String> projectKey,
-                        Option<Property<String>> queryIdProperty,
+                        Option<Property<Long>> queryIdProperty,
                         Option<Property<String>> queryTextProperty,
                         DataProvider<List<? extends NamedKeyedObject>> projectProvider,
                         DataProvider<GProject> projectInfoLoader,
@@ -100,8 +101,10 @@ public class ProjectPanel extends Panel implements Validatable {
                 "Select project",
                 "List of projects on the server",
                 projectProvider,
-                projectKeyProperty,
-                false, exceptionFormatter
+                exceptionFormatter, namedKeyedObject -> {
+                    projectKeyProperty.setValue(namedKeyedObject.getKey());
+                    return null;
+                }
         );
         showProjectsButton.setEnabled(projectProvider != null);
         addTo(grid, Alignment.MIDDLE_CENTER, showProjectsButton);
@@ -114,7 +117,7 @@ public class ProjectPanel extends Panel implements Validatable {
         }
     }
 
-    private void addQueryIdWithLoader(Property<String> stringProperty) {
+    private void addQueryIdWithLoader(Property<Long> stringProperty) {
         queryIdLabel = new Label(Page.message("editConfig.projectPanel.queryId"));
         queryIdLabel.setDescription(Page.message("editConfig.projectPanel.queryId.description"));
         addTo(grid, Alignment.MIDDLE_LEFT, queryIdLabel);
@@ -123,6 +126,8 @@ public class ProjectPanel extends Panel implements Validatable {
         queryIdValue.setDescription(Page.message("editConfig.projectPanel.queryId.description"));
         addTo(grid, Alignment.MIDDLE_CENTER, queryIdValue);
         queryIdValue.setNullRepresentation("");
+        queryIdValue.setValidationVisible(true);
+        queryIdValue.setConverter(new StringToLongNonFormattingConverter());
 
         Button showQueriesButton = EditorUtil.createLookupButton(
                 "...",
@@ -130,8 +135,10 @@ public class ProjectPanel extends Panel implements Validatable {
                 "Select Query",
                 "List of saved queries on the server",
                 queryProvider,
-                stringProperty,
-                false, exceptionFormatter
+                exceptionFormatter,namedKeyedObject -> {
+                    stringProperty.setValue(Long.valueOf(namedKeyedObject.getKey()));
+                    return null;
+                }
         );
 
         // TODO maybe set "enabled" basing on whether or not loadSavedQueriesOperation is NULL?

@@ -155,8 +155,11 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
                 "Select project",
                 "List of projects on the server",
                 projectProvider,
-                projectKeyProperty,
-                false, formatter
+                formatter,
+                namedKeyedObject -> {
+                    projectKeyProperty.setValue(namedKeyedObject.getKey());
+                    return null;
+                }
         );
         addTo(grid, Alignment.MIDDLE_CENTER, showProjectsButton);
     }
@@ -193,8 +196,11 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
                 "Select a Todo list",
                 "Todo lists on the server",
                 todoListsProvider,
-                todoKeyProperty,
-                false, formatter
+                formatter,
+                namedKeyedObject -> {
+                    todoKeyProperty.setValue(namedKeyedObject.getKey());
+                    return null;
+                }
         );
         addTo(grid, Alignment.MIDDLE_CENTER, showTodoListsButton);
     }

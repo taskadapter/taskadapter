@@ -27,7 +27,7 @@ public class JiraConfig extends ConnectorConfig {
      */
     private String fixForVersion = "";
     private String queryString;
-    private Integer queryId;
+    private Long queryId;
     private String projectKey;
     private String defaultIssueTypeForSubtasks;
 
@@ -112,25 +112,14 @@ public class JiraConfig extends ConnectorConfig {
         }
     }
 
-    public Integer getQueryId() {
+    public Long getQueryId() {
         return queryId;
     }
 
-    public void setQueryId(Integer queryId) {
+    public void setQueryId(Long queryId) {
         this.queryId = queryId;
     }
     
-    public String getQueryIdStr() {
-        return queryId == null ? "" : queryId.toString();
-    }
-
-    public void setQueryIdStr(String id) {
-        if (id == null || id.isEmpty())
-            this.queryId = null;
-        else
-            this.queryId = Integer.parseInt(id);
-    }
-
     public String getProjectKey() {
         return projectKey;
     }

@@ -5,7 +5,7 @@ public final class JqlBuilder {
         return "project = " + projectKey;
     }
 
-    public static String findIssuesByProjectAndFilterId(String projectKey, int filterId) {
+    public static String findIssuesByProjectAndFilterId(String projectKey, long filterId) {
         return "project = " + projectKey + " AND filter = " + filterId;
     }
 }

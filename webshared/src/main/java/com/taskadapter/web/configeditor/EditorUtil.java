@@ -3,12 +3,11 @@ package com.taskadapter.web.configeditor;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.NamedKeyedObject;
+import com.taskadapter.model.NamedKeyedObjectImpl;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.vaadin.data.Property;
-import com.vaadin.data.util.AbstractProperty;
 import com.vaadin.data.util.MethodProperty;
-import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -25,6 +24,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Function;
 
 public class EditorUtil {
     private final static Logger logger = LoggerFactory.getLogger(EditorUtil.class);
@@ -51,7 +51,7 @@ public class EditorUtil {
         return button;
     }
     
-    public static TextField textInput(Property<String> property, String width) {
+    public static <T> TextField textInput(Property<T> property, String width) {
         final TextField result = new TextField();
         result.setPropertyDataSource(property);
         result.setWidth(width);
@@ -76,40 +76,31 @@ public class EditorUtil {
 
     // TODO review and refactor this. this method is too complex
 	public static Button createLookupButton(
-			final String buttonLabel,
-			String description, final String windowTitle,
-			final String listTitle,
-			final DataProvider<List<? extends NamedKeyedObject>> operation,
-			final Property<String> destination, final boolean useValue, 
-			final ExceptionFormatter errorFormatter) {
+            final String buttonLabel,
+            String description, final String windowTitle,
+            final String listTitle,
+            final DataProvider<List<? extends NamedKeyedObject>> operation,
+            final ExceptionFormatter errorFormatter,
+            Function<NamedKeyedObject, Void> selectionListener) {
         Button button = new Button(buttonLabel);
         button.setDescription(description);
         final LookupResultListener listener = new LookupResultListener() {
             @Override
             public void notifyDone(List<? extends NamedKeyedObject> objects) {
                 if (!objects.isEmpty()) {
-                    showValues(destination, useValue, objects);
+                    showValues(objects);
                 }
             }
 
-            private void showValues(final Property<String> destination, final boolean useValue,
-                                    List<? extends NamedKeyedObject> objects) {
+            private void showValues(List<? extends NamedKeyedObject> objects) {
                 final Map<String, String> map = new TreeMap<>();
                 for (NamedKeyedObject o : objects) {
                     map.put(o.getName(), o.getKey());
                 }
 
-                showList(windowTitle, listTitle, map.keySet(), new ValueListener() {
-                    @Override
-                    public void setValue(String value) {
-                        if (useValue) {
-                            destination.setValue(value);
-                        } else {
-                            String key = map.get(value);
-                            destination.setValue(key);
-                        }
-
-                    }
+                showList(windowTitle, listTitle, map.keySet(), value -> {
+                    String key = map.get(value);
+                    selectionListener.apply(new NamedKeyedObjectImpl(key, value));
                 });
             }
         };
@@ -125,7 +116,7 @@ public class EditorUtil {
                     }
                     listener.notifyDone(objects);
                 } catch (BadConfigException e) {
-                    logger.error(e.toString());
+                    logger.error(e.getMessage());
                     Notification.show("", errorFormatter.formatError(e), Notification.Type.HUMANIZED_MESSAGE);
                 } catch (ConnectorException e) {
                     logger.error(e.toString());

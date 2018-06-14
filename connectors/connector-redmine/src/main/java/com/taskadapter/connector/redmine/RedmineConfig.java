@@ -23,7 +23,7 @@ public class RedmineConfig extends ConnectorConfig {
 
     private String defaultTaskStatus = "New";
     private boolean findUserByName;
-    private Integer queryId;
+    private Long queryId;
     private String projectKey;
 
     public RedmineConfig() {
@@ -72,23 +72,12 @@ public class RedmineConfig extends ConnectorConfig {
         this.findUserByName = findUserByName;
     }
 
-    public Integer getQueryId() {
+    public Long getQueryId() {
         return queryId;
     }
 
-    public void setQueryId(Integer queryId) {
+    public void setQueryId(Long queryId) {
         this.queryId = queryId;
-    }
-
-    public String getQueryIdStr() {
-        return queryId == null ? "" : queryId.toString();
-    }
-
-    public void setQueryIdStr(String id) {
-        if (id == null || id.isEmpty())
-            this.queryId = null;
-        else
-            this.queryId = Integer.parseInt(id);
     }
 
     public String getProjectKey() {

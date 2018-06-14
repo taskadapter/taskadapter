@@ -3,7 +3,6 @@ package com.taskadapter.connector.basecamp;
 import com.taskadapter.connector.basecamp.beans.BasecampProject;
 import com.taskadapter.connector.basecamp.beans.TodoList;
 import com.taskadapter.connector.basecamp.exceptions.BadFieldException;
-import com.taskadapter.connector.basecamp.exceptions.FieldNotSetException;
 import com.taskadapter.connector.basecamp.transport.ObjectAPI;
 import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory;
 import com.taskadapter.connector.definition.WebConnectorSetup;

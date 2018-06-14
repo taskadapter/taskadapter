@@ -60,8 +60,11 @@ public class OtherRedmineFieldsContainer extends Panel {
                 "Select task type",
                 "List of available task types on the Redmine server",
                 () -> RedmineLoaders.loadTrackers(config, setup),
-                taskTypeProperty,
-                true, exceptionFormatter
+                exceptionFormatter,
+                namedKeyedObject -> {
+                    taskTypeProperty.setValue(namedKeyedObject.getName());
+                    return null;
+                }
         );
 
         grid.addComponent(showTaskTypesButton);

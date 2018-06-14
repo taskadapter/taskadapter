@@ -91,7 +91,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     public ComponentContainer getMiniPanelContents(Sandbox sandbox, JiraConfig config, WebConnectorSetup setup) {
         ProjectPanel projectPanel = new ProjectPanel(
                 new MethodProperty<>(config, "projectKey"),
-                Option.apply(new MethodProperty<>(config, "queryIdStr")),
+                Option.apply(new MethodProperty<>(config, "queryId")),
                 Option.empty(),
                 new JiraProjectsListLoader(setup),
                 new JiraProjectLoader(config, setup),
