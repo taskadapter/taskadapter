@@ -67,7 +67,8 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig, We
         layout.setWidth(380, PIXELS);
 
         layout.addComponent(new ProjectPanel(new MethodProperty<>(config, "projectKey"),
-                new MethodProperty<>(config, "queryIdStr"),
+                Option.apply(new MethodProperty<>(config, "queryIdStr")),
+                Option.empty(),
                 new MantisProjectsListLoader(setup),
                 null,
                 new MantisQueryListLoader(config, setup),

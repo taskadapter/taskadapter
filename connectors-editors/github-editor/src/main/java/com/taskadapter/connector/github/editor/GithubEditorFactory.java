@@ -56,7 +56,8 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig, We
         VerticalLayout layout = new VerticalLayout();
         layout.setWidth(380, PIXELS);
         ProjectPanel projectPanel = new ProjectPanel(new MethodProperty<>(config, "projectKey"),
-                new MethodProperty<>(config, "queryString"),
+                Option.empty(),
+                Option.apply(new MethodProperty<>(config, "queryString")),
                 new GithubProjectsListLoader(setup),
                 null, null, this);
         projectPanel.setProjectKeyLabel("Repository ID");

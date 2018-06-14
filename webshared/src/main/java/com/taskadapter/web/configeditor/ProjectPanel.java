@@ -8,7 +8,7 @@ import com.taskadapter.model.GProject;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.callbacks.DataProvider;
-import com.taskadapter.web.callbacks.SimpleCallback;
+import com.taskadapter.webui.Page;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -19,6 +19,7 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.Option;
 
 import java.util.List;
 
@@ -36,10 +37,12 @@ public class ProjectPanel extends Panel implements Validatable {
     private static final String TEXT_AREA_WIDTH = "120px";
 
     private TextField projectKey;
-    private TextField queryValue;
+    private Label queryIdLabel;
+    private TextField queryIdValue;
 
     private Label projectKeyLabel;
-    private Label queryValueLabel;
+    private Label queryTextLabel;
+    private TextField queryTextValue;
 
     private final DataProvider<List<? extends NamedKeyedObject>> projectProvider;
 
@@ -48,28 +51,22 @@ public class ProjectPanel extends Panel implements Validatable {
 
     private final Property<String> projectKeyProperty;
 
-    private final Property<String> queryValueProperty;
+    private final Option<Property<String>> queryIdProperty;
+    private final Option<Property<String>> queryTextProperty;
 
     private final ExceptionFormatter exceptionFormatter;
 
-    /**
-     * Creates a new project panel.
-     *
-     * @param projectKey          project key, required.
-     * @param queryValue          query id, optional.
-     * @param projectProvider     project provider, optional.
-     * @param queryProvider       query provider, optional.
-     * @param exceptionFormatter  exception formatter, required.
-     */
     public ProjectPanel(Property<String> projectKey,
-                        Property<String> queryValue,
+                        Option<Property<String>> queryIdProperty,
+                        Option<Property<String>> queryTextProperty,
                         DataProvider<List<? extends NamedKeyedObject>> projectProvider,
                         DataProvider<GProject> projectInfoLoader,
                         DataProvider<List<? extends NamedKeyedObject>> queryProvider,
                         ExceptionFormatter exceptionFormatter) {
         super(DEFAULT_PANEL_CAPTION);
         this.projectKeyProperty = projectKey;
-        this.queryValueProperty = queryValue;
+        this.queryIdProperty = queryIdProperty;
+        this.queryTextProperty = queryTextProperty;
         this.projectProvider = projectProvider;
         this.projectInfoLoader = projectInfoLoader;
         this.queryProvider = queryProvider;
@@ -77,8 +74,9 @@ public class ProjectPanel extends Panel implements Validatable {
         buildUI();
     }
 
+    private GridLayout grid = new GridLayout(4, 2);
+
     private void buildUI() {
-        GridLayout grid = new GridLayout(4, 2);
         setContent(grid);
 
         grid.setSpacing(true);
@@ -108,48 +106,49 @@ public class ProjectPanel extends Panel implements Validatable {
         showProjectsButton.setEnabled(projectProvider != null);
         addTo(grid, Alignment.MIDDLE_CENTER, showProjectsButton);
 
-        if (queryValueProperty != null) {
-            queryValueLabel = new Label("Query ID:");
-            addTo(grid, Alignment.MIDDLE_LEFT, queryValueLabel);
-
-            queryValue = textInput(queryValueProperty, TEXT_AREA_WIDTH);
-            queryValue.setDescription("Custom query/filter ID (number). You need to create a query on the server before accessing it from here.\n"
-                    + "Read help for more details.");
-            addTo(grid, Alignment.MIDDLE_CENTER, queryValue);
-            queryValue.setNullRepresentation("");
-
-            Button showQueriesButton = EditorUtil.createLookupButton(
-                    "...",
-                    "Show available saved queries on the server.",
-                    "Select Query",
-                    "List of saved queries on the server",
-                    queryProvider,
-                    queryValueProperty,
-                    false, exceptionFormatter
-            );
-
-            setQueryLabels();
-            // TODO maybe set "enabled" basing on whether or not loadSavedQueriesOperation is NULL?
-            // then can delete the whole "features" mechanism
-            showQueriesButton.setEnabled(queryProvider != null);
-            addTo(grid, Alignment.MIDDLE_CENTER, showQueriesButton);
+        if (queryIdProperty.isDefined()) {
+            addQueryIdWithLoader(queryIdProperty.get());
+        }
+        if (queryTextProperty.isDefined()) {
+            addQueryText(queryTextProperty.get());
         }
     }
 
-    private boolean isQueryInteger() {
-        return queryValueProperty.getType().equals(Integer.class);
+    private void addQueryIdWithLoader(Property<String> stringProperty) {
+        queryIdLabel = new Label(Page.message("editConfig.projectPanel.queryId"));
+        queryIdLabel.setDescription(Page.message("editConfig.projectPanel.queryId.description"));
+        addTo(grid, Alignment.MIDDLE_LEFT, queryIdLabel);
+
+        queryIdValue = textInput(stringProperty, TEXT_AREA_WIDTH);
+        queryIdValue.setDescription(Page.message("editConfig.projectPanel.queryId.description"));
+        addTo(grid, Alignment.MIDDLE_CENTER, queryIdValue);
+        queryIdValue.setNullRepresentation("");
+
+        Button showQueriesButton = EditorUtil.createLookupButton(
+                "...",
+                "Show available saved queries on the server.",
+                "Select Query",
+                "List of saved queries on the server",
+                queryProvider,
+                stringProperty,
+                false, exceptionFormatter
+        );
+
+        // TODO maybe set "enabled" basing on whether or not loadSavedQueriesOperation is NULL?
+        // then can delete the whole "features" mechanism
+        showQueriesButton.setEnabled(queryProvider != null);
+        addTo(grid, Alignment.MIDDLE_CENTER, showQueriesButton);
     }
 
-    private void setQueryLabels() {
-        if (isQueryInteger()) {
-            queryValueLabel.setValue("Query ID:");
-            queryValue.setDescription("Custom query/filter ID (number). You need to create a query on the server before accessing it from here.\n"
-                    + "Read help for more details.");
-        } else {
-            queryValueLabel.setValue("Query:");
-            queryValue.setDescription("You can set query string to filter issues.\n"
-                    + "Read help for more details.");
-        }
+    private void addQueryText(Property<String> stringProperty) {
+        queryTextLabel = new Label(Page.message("editConfig.projectPanel.queryText"));
+        queryTextLabel.setDescription(Page.message("editConfig.projectPanel.queryText.description"));
+        addTo(grid, Alignment.MIDDLE_LEFT, queryTextLabel);
+
+        queryTextValue = textInput(stringProperty, TEXT_AREA_WIDTH);
+        queryTextValue.setDescription(Page.message("editConfig.projectPanel.queryId.description"));
+        addTo(grid, Alignment.MIDDLE_CENTER, queryTextValue);
+        queryTextValue.setNullRepresentation("");
     }
 
     private void loadProject() {
@@ -175,8 +174,8 @@ public class ProjectPanel extends Panel implements Validatable {
         Notification.show("Project Info", msg, Notification.Type.HUMANIZED_MESSAGE);
     }
 
-    private String getQueryValue() {
-        return queryValue == null ? null : queryValue.getValue();
+    private String getQueryIdValue() {
+        return queryIdValue == null ? null : queryIdValue.getValue();
     }
 
     public void setProjectKeyLabel(String text) {
@@ -185,9 +184,9 @@ public class ProjectPanel extends Panel implements Validatable {
 
     @Override
     public void validate() throws BadConfigException {
-        if (!Strings.isNullOrEmpty(getQueryValue()) && isQueryInteger()) {
+        if (!Strings.isNullOrEmpty(getQueryIdValue())) {
             try {
-                Integer.parseInt(getQueryValue());
+                Integer.parseInt(getQueryIdValue());
             } catch (NumberFormatException e) {
                 // TODO !! create a specific exception and move the string into messages file.
                 throw new BadConfigException("Query Id must be a number");
