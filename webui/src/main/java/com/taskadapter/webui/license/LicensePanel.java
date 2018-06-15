@@ -3,6 +3,7 @@ package com.taskadapter.webui.license;
 import com.taskadapter.license.License;
 import com.taskadapter.license.LicenseException;
 import com.taskadapter.license.LicenseExpiredException;
+import com.taskadapter.webui.LicenseCategory$;
 import com.taskadapter.webui.TALog;
 import com.taskadapter.webui.Tracker;
 import com.vaadin.ui.Component;
@@ -48,16 +49,16 @@ public final class LicensePanel {
             if (newLicense != null) {
                 String text = "Successfully registered to: " + newLicense.getCustomerName();
                 log.info(text);
-                tracker.trackEvent("license", "install", "success_valid");
+                tracker.trackEvent(LicenseCategory$.MODULE$, "install", "success_valid");
                 Notification.show(text);
             }
         } catch (LicenseExpiredException e) {
-            tracker.trackEvent("license", "install", "failed_expired");
+            tracker.trackEvent(LicenseCategory$.MODULE$, "install", "failed_expired");
             log.error("Cannot install license: it is expired. License text: " + licenseText);
             Notification.show("License not accepted", e.getMessage(),
                     Notification.Type.ERROR_MESSAGE);
         } catch (LicenseException e) {
-            tracker.trackEvent("license", "install", "failed_validation");
+            tracker.trackEvent(LicenseCategory$.MODULE$, "install", "failed_validation");
             log.error("Cannot install license because of exception. "
                     + e.toString() + "\nLicense text:\n" + licenseText);
             Notification.show("License not accepted", "The license is invalid",
@@ -72,7 +73,7 @@ public final class LicensePanel {
         licenseManager.uninstall();
         String string = "Removed license info";
         log.info(string);
-        tracker.trackEvent("license", "removed", "");
+        tracker.trackEvent(LicenseCategory$.MODULE$, "removed", "");
         Notification.show(string);
     }
 

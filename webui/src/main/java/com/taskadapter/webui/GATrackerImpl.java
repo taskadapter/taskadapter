@@ -5,7 +5,6 @@ import org.vaadin.googleanalytics.tracking.GoogleAnalyticsTracker;
 /** Google analytics tracker implementation. */
 public class GATrackerImpl implements Tracker {
 
-    /** Used tracker. */
     final GoogleAnalyticsTracker tracker;
 
     public GATrackerImpl(GoogleAnalyticsTracker tracker) {
@@ -18,8 +17,7 @@ public class GATrackerImpl implements Tracker {
     }
 
     @Override
-    public void trackEvent(String category, String action, String label) {
-        tracker.trackEvent(category, action, label);
+    public void trackEvent(EventCategory category, String action, String label) {
+        tracker.trackEvent(category.name(), action, label);
     }
-
 }

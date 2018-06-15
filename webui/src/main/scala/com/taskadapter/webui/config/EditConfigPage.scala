@@ -121,7 +121,7 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
         label = labelProperty.getValue
       )
       configOps.saveConfig(newConfig)
-      tracker.trackEvent("config", "saved", "")
+      tracker.trackEvent(ConfigCategory, "saved", "")
     } catch {
       case e: StorageException =>
         val message = Page.message("editConfig.error.cantSave", e.getMessage)

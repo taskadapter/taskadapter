@@ -84,7 +84,7 @@ class TAApplicationProvider(reportGoogleAnalytics: Boolean) extends UIProvider {
     } else {
       "web_app_opened_trial"
     }
-    tracker.trackEvent("webapp", action, services.currentTaskAdapterVersion)
+    tracker.trackEvent(WebAppCategory, action, services.currentTaskAdapterVersion)
     ui
   }
 

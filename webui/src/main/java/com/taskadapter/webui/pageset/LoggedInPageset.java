@@ -7,6 +7,7 @@ import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.uiapi.ConfigId;
 import com.taskadapter.web.uiapi.SetupId;
 import com.taskadapter.web.uiapi.UISyncConfig;
+import com.taskadapter.webui.ConfigCategory$;
 import com.taskadapter.webui.ConfigureSystemPage;
 import com.taskadapter.webui.Header;
 import com.taskadapter.webui.HeaderMenuBuilder;
@@ -306,7 +307,7 @@ public class LoggedInPageset {
                 configId -> {
                     Option<UISyncConfig> maybeCconfig = context.configOps.getConfig(configId);
                     UISyncConfig config = maybeCconfig.get();
-                    tracker.trackEvent("config", "created",
+                    tracker.trackEvent(ConfigCategory$.MODULE$, "created",
                             config.connector1().getConnectorTypeId() + " - " + config.connector2().getConnectorTypeId());
                     webUserSession.setCurrentConfigId(configId);
                     showConfigsList();

@@ -36,7 +36,7 @@ class ConfigActionsFragment(configId: ConfigId, configOps: ConfigOperations, onC
       () => {
         configOps.deleteConfig(configId)
         webUserSession.clearCurrentConfig()
-        tracker.trackEvent("config", "deleted", "")
+        tracker.trackEvent(ConfigCategory, "deleted", "")
         onConfigChanges.run()
       }
     )

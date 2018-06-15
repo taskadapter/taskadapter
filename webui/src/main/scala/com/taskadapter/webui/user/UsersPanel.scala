@@ -5,7 +5,7 @@ import com.taskadapter.data.{MutableState, States}
 import com.taskadapter.license.License
 import com.taskadapter.web.{InputDialog, PopupDialog}
 import com.taskadapter.webui.Page.message
-import com.taskadapter.webui.Tracker
+import com.taskadapter.webui.{Tracker, UserCategory}
 import com.vaadin.server.Sizeable.Unit.PIXELS
 import com.vaadin.ui._
 import com.vaadin.ui.themes.ValoTheme
@@ -99,7 +99,7 @@ class UsersPanel(credentialsManager: CredentialsManager, authorizedOperations: A
   private def deleteUser(userLoginName: String): Unit = {
     try {
       credentialsManager.removeUser(userLoginName)
-      tracker.trackEvent("user", "deleted", "")
+      tracker.trackEvent(UserCategory, "deleted", "")
     } catch {
       case e: AuthException =>
         showError(message("users.error.cantDeleteUser", e.toString))
@@ -129,7 +129,7 @@ class UsersPanel(credentialsManager: CredentialsManager, authorizedOperations: A
   private def createUser(login: String, password: String) = {
     try {
       credentialsManager.savePrimaryAuthToken(login, password)
-      tracker.trackEvent("user", "created", "")
+      tracker.trackEvent(UserCategory, "created", "")
     } catch {
       case e: AuthException =>
         logger.error("User initiation error", e)

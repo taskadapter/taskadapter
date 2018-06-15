@@ -8,7 +8,7 @@ import com.taskadapter.web.uiapi.UISyncConfig
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.export.{ConfirmExportFragment, ExportResultsFragment}
 import com.taskadapter.webui.results.ExportResultStorage
-import com.taskadapter.webui.{ConfigOperations, MonitorWrapper, Tracker}
+import com.taskadapter.webui.{ConfigOperations, ExportCategory, MonitorWrapper, Tracker}
 import com.vaadin.server.VaadinSession
 import com.vaadin.ui._
 
@@ -20,7 +20,7 @@ class ExportHelper(configOps: ConfigOperations,
 
   def onTasksLoaded(tasks: util.List[GTask]): Unit = {
     val labelForTracking = config.connector1.getConnectorTypeId + " - " + config.getConnector2.getConnectorTypeId
-    tracker.trackEvent("export", "loaded_tasks", labelForTracking)
+    tracker.trackEvent(ExportCategory, "loaded_tasks", labelForTracking)
 
     if (tasks.isEmpty) showNoDataLoaded()
     else showConfirmation(tasks)
@@ -76,7 +76,7 @@ class ExportHelper(configOps: ConfigOperations,
         if (saveResult.hasErrors) ErrorReporter.reportIfAllowed(config, saveResult)
         val labelForTracking = config.getConnector1.getConnectorTypeId + " - " + config.getConnector2.getConnectorTypeId
         val exportResult = new ExportResultsFragment(onDone, showFilePath).showExportResult(saveResult)
-        tracker.trackEvent("export", "finished_saving_tasks", labelForTracking)
+        tracker.trackEvent(ExportCategory, "finished_saving_tasks", labelForTracking)
         setContent(layout, exportResult)
       }
 
