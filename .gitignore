@@ -1,4 +1,4 @@
-/out
+out/
 .gradle
 build
 classes
