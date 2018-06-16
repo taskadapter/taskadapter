@@ -4,6 +4,7 @@ import java.util.Date
 
 import com.taskadapter.connector.basecamp.BasecampTaskWrapper
 import com.taskadapter.connector.common.data.ConnectorConverter
+import com.taskadapter.connector.definition.exception.FieldConversionException
 import com.taskadapter.model._
 import org.w3c.dom.{Document, Element}
 
@@ -24,7 +25,13 @@ class GTaskToBasecampClassic(users: Seq[GUser]) extends ConnectorConverter[GTask
     d.appendChild(root)
 
     source.getFields.asScala.foreach { x =>
-      processField(d, root, x._1, x._2)
+      val field = x._1
+      val value = x._2
+      try {
+        processField(d, root, field, value)
+      } catch {
+        case _: Exception => throw FieldConversionException(BasecampClassicConnector.ID, field, value)
+      }
     }
     val str = BasecampUtils.stringify(d)
 

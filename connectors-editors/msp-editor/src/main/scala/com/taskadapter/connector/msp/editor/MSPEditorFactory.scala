@@ -33,9 +33,8 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
         messages.get("relations." + relationType.getRelationType))
       case _: InputFileNameNotSetException => return messages.get("error.inputFileNameNotSet")
       case _: OutputFileNameNotSetException => return messages.get("error.outputFileNameNotSet")
-      case _ =>
+      case _ => e.getMessage
     }
-    null
   }
 
   override def getMiniPanelContents(sandbox: Sandbox, config: MSPConfig, setup: FileSetup): ComponentContainer = {

@@ -1,6 +1,7 @@
 package com.taskadapter.reporting
 
 import com.google.common.base.Strings
+import com.taskadapter.connector.common.FieldPrettyNameBuilder
 import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.model.Field
 
@@ -15,14 +16,7 @@ object FieldMappingFormatter {
   }
 
   def formatField(field: Option[Field[_]]): String = {
-    val string = field.map(f => {
-      if (f.getClass.getSimpleName.startsWith("Custom")) {
-        f.toString
-      } else {
-        f.getClass.getSimpleName.replace("$", "")
-      }
-    }).getOrElse("None")
-
+    val string = field.map(FieldPrettyNameBuilder.getPrettyFieldName).getOrElse("None")
     Strings.padEnd(string, 30, ' ')
   }
 }

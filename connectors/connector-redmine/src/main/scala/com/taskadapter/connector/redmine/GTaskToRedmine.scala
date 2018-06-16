@@ -6,6 +6,7 @@ import java.util.Date
 import com.google.common.base.Strings
 import com.taskadapter.connector.common.ValueTypeResolver
 import com.taskadapter.connector.common.data.ConnectorConverter
+import com.taskadapter.connector.definition.exception.FieldConversionException
 import com.taskadapter.model._
 import com.taskadapter.redmineapi.bean._
 import org.slf4j.LoggerFactory
@@ -40,7 +41,13 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
       issue.setParentId(task.getParentIdentity.id.toInt)
     }
     task.getFields.asScala.foreach { x =>
-      processField(issue, x._1, x._2)
+      val field = x._1
+      val value = x._2
+      try {
+        processField(issue, field, value)
+      } catch {
+        case _: Exception => throw FieldConversionException(RedmineConnector.ID, field, value)
+      }
     }
     issue
   }

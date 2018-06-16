@@ -7,6 +7,7 @@ import com.atlassian.jira.rest.client.api.domain.{BasicComponent, IssueFieldId, 
 import com.google.common.collect.ImmutableList
 import com.taskadapter.connector.common.ValueTypeResolver
 import com.taskadapter.connector.common.data.ConnectorConverter
+import com.taskadapter.connector.definition.exception.FieldConversionException
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.model.{Summary, _}
 import org.joda.time.DateTime
@@ -45,9 +46,12 @@ class GTaskToJira(config: JiraConfig,
       val parentField = new FieldInput("parent", new ComplexIssueInputFieldValue(parent))
       issueInputBuilder.setFieldInput(parentField)
     }
-    import scala.collection.JavaConversions._
-    for (row <- task.getFields.entrySet) {
+    for (row <- task.getFields.entrySet.asScala) {
+      try {
       processField(issueInputBuilder, row.getKey, row.getValue)
+      } catch {
+        case _: Exception => throw FieldConversionException(JiraConnector.ID, row.getKey, row.getValue)
+      }
     }
     val affectedVersion = GTaskToJira.getVersion(versions, config.getAffectedVersion)
     val fixForVersion = GTaskToJira.getVersion(versions, config.getFixForVersion)

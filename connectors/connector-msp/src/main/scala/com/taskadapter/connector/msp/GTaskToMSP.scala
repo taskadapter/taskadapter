@@ -2,6 +2,7 @@ package com.taskadapter.connector.msp
 
 import java.util.Date
 
+import com.taskadapter.connector.definition.exception.FieldConversionException
 import com.taskadapter.connector.msp.write.ResourceManager
 import com.taskadapter.model.{Priority => _, _}
 import net.sf.mpxj._
@@ -11,6 +12,7 @@ import scala.collection.JavaConverters._
 
 class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
   private val log = LoggerFactory.getLogger(classOf[GTaskToMSP])
+
   /**
     * "% done" field is used to calculate "actual work". this is more like a
     * hack used until Redmine REST API provides "time spent" serverInfo in
@@ -22,7 +24,13 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
       mspTask.setUniqueID(gTask.getId.toInt)
     }
     gTask.getFields.asScala.foreach { x =>
-      processField(x._1, x._2)
+      val field = x._1
+      val value = x._2
+      try {
+        processField(field, value)
+      } catch {
+        case _: Exception => throw FieldConversionException(MSPConnector.ID, field, value)
+      }
     }
   }
 

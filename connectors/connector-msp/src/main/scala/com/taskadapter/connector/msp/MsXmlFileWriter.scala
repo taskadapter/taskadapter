@@ -4,11 +4,12 @@ import java.util
 
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.DefaultValueSetter
-import com.taskadapter.connector.definition.exceptions.BadConfigException
+import com.taskadapter.connector.definition.exceptions.{BadConfigException, ConnectorException}
 import com.taskadapter.connector.definition.{SaveResultBuilder, TaskId}
 import com.taskadapter.connector.msp.write.{DateFinder, MSPDefaultFields, RealWriter, ResourceManager}
 import com.taskadapter.model.GTask
 import net.sf.mpxj.{ProjectFile, Task}
+import scala.collection.JavaConverters._
 
 class MsXmlFileWriter(rows: Iterable[FieldRow[_]]) {
   private val ALIAS_REMOTE_ID = "TA Remote ID"
@@ -50,18 +51,25 @@ class MsXmlFileWriter(rows: Iterable[FieldRow[_]]) {
 
   @throws[BadConfigException]
   private def addTasks(syncResult: SaveResultBuilder, project: ProjectFile, parentMSPTask: Task, gTasks: util.List[GTask], keepTaskId: Boolean): Unit = {
-    import scala.collection.JavaConversions._
-    for (gTask <- gTasks) {
-      val newMspTask = if (parentMSPTask == null) {
-        project.addTask()
-      } else {
-        parentMSPTask.addTask()
+    for (gTask <- gTasks.asScala) {
+      try {
+        val newMspTask = if (parentMSPTask == null) {
+          project.addTask()
+        } else {
+          parentMSPTask.addTask()
+        }
+        val transformedTask = DefaultValueSetter.adapt(rows, gTask)
+        val gTaskToMSP = new GTaskToMSP(newMspTask, new ResourceManager(project))
+        gTaskToMSP.setFields(transformedTask, keepTaskId)
+        syncResult.addCreatedTask(TaskId(gTask.getId, gTask.getKey), TaskId(newMspTask.getID.longValue(), newMspTask.getID + ""))
+        addTasks(syncResult, project, newMspTask, transformedTask.getChildren, keepTaskId)
+      } catch {
+          case e: ConnectorException =>
+            syncResult.addTaskError(gTask, e)
+          case t: Exception =>
+            syncResult.addTaskError(gTask, t)
+            t.printStackTrace()
       }
-      val transformedTask = DefaultValueSetter.adapt(rows, gTask)
-      val gTaskToMSP = new GTaskToMSP(newMspTask, new ResourceManager(project))
-      gTaskToMSP.setFields(transformedTask, keepTaskId)
-      syncResult.addCreatedTask(TaskId(gTask.getId, gTask.getKey), TaskId(newMspTask.getID.longValue(), newMspTask.getID + ""))
-      addTasks(syncResult, project, newMspTask, transformedTask.getChildren, keepTaskId)
     }
   }
 

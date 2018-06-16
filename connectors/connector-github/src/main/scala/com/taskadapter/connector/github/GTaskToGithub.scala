@@ -6,10 +6,12 @@ import java.util.Date
 
 import com.google.common.base.Strings
 import com.taskadapter.connector.common.data.ConnectorConverter
+import com.taskadapter.connector.definition.exception.FieldConversionException
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.model._
 import org.eclipse.egit.github.core.{Issue, User}
 import org.eclipse.egit.github.core.service.{IssueService, UserService}
+import scala.collection.JavaConverters._
 
 class GTaskToGithub(userService: UserService) extends ConnectorConverter[GTask, Issue] {
   private val ghUsers = new util.HashMap[String, User]
@@ -18,9 +20,12 @@ class GTaskToGithub(userService: UserService) extends ConnectorConverter[GTask, 
   def toIssue(task: GTask): Issue = {
     val issue = new Issue
 
-    import scala.collection.JavaConversions._
-    for (row <- task.getFields.entrySet) {
-      processField(issue, row.getKey, row.getValue)
+    for (row <- task.getFields.entrySet.asScala) {
+      try {
+        processField(issue, row.getKey, row.getValue)
+      } catch {
+        case _: Exception => throw FieldConversionException(GithubConnector.ID, row.getKey, row.getValue)
+      }
     }
 
     //    if (fieldsToExport.contains(GTaskDescriptor.FIELD.TASK_STATUS))

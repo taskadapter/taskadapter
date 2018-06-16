@@ -7,6 +7,7 @@ import java.util.{Calendar, Date}
 import biz.futureware.mantis.rpc.soap.client.{AccountData, IssueData, ObjectRef, ProjectData}
 import com.google.common.base.Strings
 import com.taskadapter.connector.common.data.ConnectorConverter
+import com.taskadapter.connector.definition.exception.FieldConversionException
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.model._
 
@@ -31,9 +32,12 @@ class GTaskToMantis(val mntProject: ProjectData, val users: util.List[AccountDat
       issue.setId(BigInteger.valueOf(id))
     }
 
-    import scala.collection.JavaConversions._
-    for (row <- task.getFields.entrySet) {
-      processField(issue, row.getKey, row.getValue)
+    for (row <- task.getFields.entrySet.asScala) {
+      try {
+        processField(issue, row.getKey, row.getValue)
+      } catch {
+        case _: Exception => throw FieldConversionException(MantisConnector.ID, row.getKey, row.getValue)
+      }
     }
 
     // see Javadoc for DEFAULT_TASK_CATEGORY why need to set this.

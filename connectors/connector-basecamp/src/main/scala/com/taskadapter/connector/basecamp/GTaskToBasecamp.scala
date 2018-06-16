@@ -4,6 +4,7 @@ import java.io.StringWriter
 import java.util.Date
 
 import com.taskadapter.connector.common.data.ConnectorConverter
+import com.taskadapter.connector.definition.exception.FieldConversionException
 import com.taskadapter.model._
 import org.json.JSONWriter
 
@@ -25,7 +26,13 @@ class GTaskToBasecamp(users: Seq[GUser]) extends ConnectorConverter[GTask, Basec
       val writer = new JSONWriter(sw)
       writer.`object`
       source.getFields.asScala.foreach { x =>
-        processField(writer, x._1, x._2)
+        val field = x._1
+        val value = x._2
+        try {
+          processField(writer, field, value)
+        } catch {
+          case _: Exception => throw FieldConversionException(BasecampConnector.ID, field, value)
+        }
       }
       writer.endObject
     } finally sw.close()
