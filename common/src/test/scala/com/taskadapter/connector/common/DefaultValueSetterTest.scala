@@ -53,6 +53,13 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
     newTask.getValue(Description) shouldBe "default description"
   }
 
+  it("field is safely skipped if target field is not defined") {
+    val rows = List(new FieldRow(Some(Description), None, "default"))
+    val newTask = DefaultValueSetter.adapt(rows,
+      new GTask().setValue(Description, ""))
+    newTask.getValue(Description) shouldBe null
+  }
+
   it("existing value is preserved when field has it") {
     val rows = List(
       FieldRow(Summary, Summary, ""),

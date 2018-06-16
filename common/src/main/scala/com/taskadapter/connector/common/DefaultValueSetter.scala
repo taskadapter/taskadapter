@@ -23,20 +23,22 @@ object DefaultValueSetter {
   }
 
   private def adaptRow[T](task: GTask, result: GTask, row: FieldRow[T]): Unit = {
-    val fieldToLoadValueFrom = row.sourceField
-    val currentFieldValue = fieldToLoadValueFrom.map(f => task.getValue(f)).flatMap(e => Option(e))
+    if (row.targetField.isDefined) {
+      val fieldToLoadValueFrom = row.sourceField
+      val currentFieldValue = fieldToLoadValueFrom.map(f => task.getValue(f)).flatMap(e => Option(e))
 
-    val newValue = if (fieldIsConsideredEmpty(currentFieldValue)) {
-      val valueWithProperType = getValueWithProperType(
-        // use a fake string field if no field exists for the source side. value will come from "default" then.
-        fieldToLoadValueFrom.getOrElse(CustomString("dummy")),
-        row.defaultValueForEmpty)
-      valueWithProperType
-    } else {
-      currentFieldValue.get
+      val newValue = if (fieldIsConsideredEmpty(currentFieldValue)) {
+        val valueWithProperType = getValueWithProperType(
+          // use a fake string field if no field exists for the source side. value will come from "default" then.
+          fieldToLoadValueFrom.getOrElse(CustomString("dummy")),
+          row.defaultValueForEmpty)
+        valueWithProperType
+      } else {
+        currentFieldValue.get
+      }
+      val targetField = row.targetField.get.asInstanceOf[Field[Any]]
+      result.setValue(targetField, newValue)
     }
-    val targetField = row.targetField.get.asInstanceOf[Field[Any]]
-    result.setValue(targetField, newValue)
   }
 
   private def fieldIsConsideredEmpty(value: Option[Any]) =
