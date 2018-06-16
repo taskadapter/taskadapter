@@ -54,11 +54,11 @@ https://docs.google.com/spreadsheets/d/1UsV1G1iCY-e2Qo7V6Y7_zWdFrtB6-IquQuGSA-1N
 
 ## Release process.
 * Make sure you have the latest code from Git server.
-* Change TASK_ADAPTER_VERSION number in /build.gradle
+* Change `version` in `/gradle.properties`
 * Push everything to Git.
 * Get the latest build from Jenkins https://dev.taskadapter.com/jenkins/view/taskadapter/job/taskadapter
-* Verify and close issues in Bitbucket or move them to the next version.
-* Tag the current revision in Git (e.g. "release-2.13.0").
+* Verify and close issues on TaskAdapter Trello board: https://trello.com/b/eLGOvlZa/ta
+* Tag the current revision in Git (e.g. "release-3.8.0").
 * Make sure User Guide is up-to-date on http://www.taskadapter.com
 * Upload the distributive to this Git repository: https://bitbucket.org/taskadapter/releases/downloads
 * Follow release steps in "site" repo: https://bitbucket.org/taskadapter/site/overview

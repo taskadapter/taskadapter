@@ -4,7 +4,6 @@ mainClassName = "com.taskadapter.launcher.TALauncher"
 ext {
     ZIP_FILE_NAME_PREFIX = "taskadapter"
     WAR_FILE_LOCATION = "../webui/build/libs"
-    WAR_FILE_NAME = "webui.war"
 }
 
 distZip.dependsOn ":webui:war"
@@ -49,10 +48,8 @@ startScripts {
 distZip {
 
     distZip.baseName = ZIP_FILE_NAME_PREFIX
-    distZip.classifier = TASK_ADAPTER_VERSION
 
-    def zipFileName = "$distZip.baseName-$distZip.classifier"
-
+    def zipFileName = "$distZip.baseName-" + project.property('version')
     into("$zipFileName/war") {
         from WAR_FILE_LOCATION
         include WAR_FILE_NAME

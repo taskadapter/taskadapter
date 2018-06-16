@@ -54,5 +54,10 @@ vaadin {
 war {
     // Exclude unnecessary GWT Compiler artifacts
     exclude "**/gwt-unitCache/**"
+
+    // this file name is used by TALauncher script to init webapp context.
+    // need to explicitly set it here, otherwise you get webui-projectversion.war file
+    // while both TALauncher class and launcher/build.gradle expect "webui.war" without project version in the name
+    archiveName "$WAR_FILE_NAME"
 }
 

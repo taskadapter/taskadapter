@@ -20,7 +20,7 @@ dependencies {
 afterEvaluate {
     configure(allProcessResourcesTasks()) {
         filter(ReplaceTokens,
-                tokens: [taskAdapterVersion: TASK_ADAPTER_VERSION])
+                tokens: [taskAdapterVersion: project.property('version')])
     }
 }
 

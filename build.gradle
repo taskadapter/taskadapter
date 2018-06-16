@@ -1,13 +1,10 @@
 ext {
-
-    // TaskAdapter application release version.
-    // it is used in the ZIP file name and is shown in "About" dialog.
-    TASK_ADAPTER_VERSION = "3.8.2-SNAPSHOT"
-
     vaadinVersion = '7.7.10'
     httpClientVersion='4.2'
     slf4jVersion = '1.7.12'
     circeVersion = "0.9.3"
+
+    WAR_FILE_NAME = "webui.war"
 }
 
 ext.libraries = [
