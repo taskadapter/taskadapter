@@ -8,7 +8,7 @@ import com.taskadapter.webui.service.CurrentVersionLoader
 
 object ErrorReporter {
   private val version = new CurrentVersionLoader().getCurrentVersion
-  val defaultSubject = s"TaskAdapter error reporter. $version"
+  val defaultSubject = s"TaskAdapter error. $version"
 
   def reportIfAllowed(config: UISyncConfig, throwable: Throwable): Unit = {
     if (isAllowedToSend) {
@@ -27,13 +27,14 @@ object ErrorReporter {
   def reportIfAllowed(config: UISyncConfig, results: ExportResultFormat): Unit = {
     if (isAllowedToSend && results.hasErrors) {
       val mailBody = getConfigInfo(config) + div + ExportResultsFormatter.toNiceString(results)
-      sendMail(defaultSubject, mailBody)
+      val subject = s"TaskAdapter export error. $version. Config '${config.label}'"
+      sendMail(subject, mailBody)
     }
   }
 
   private def getConfigInfo(config: UISyncConfig): String = {
     config.getConnector1.getConnectorTypeId + " - " + config.getConnector2.getConnectorTypeId +
-      div + config.fieldMappings.toString()
+      div + FieldMappingFormatter.format(config.fieldMappings)
   }
 
   private def sendMail(subject: String, mailBody: String): Unit = {
