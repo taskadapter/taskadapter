@@ -59,8 +59,11 @@ https://docs.google.com/spreadsheets/d/1UsV1G1iCY-e2Qo7V6Y7_zWdFrtB6-IquQuGSA-1N
 * Get the latest build from Jenkins https://dev.taskadapter.com/jenkins/view/taskadapter/job/taskadapter
 * Verify and close issues on TaskAdapter Trello board: https://trello.com/b/eLGOvlZa/ta
 * Tag the current revision in Git (e.g. "release-3.8.0").
-* Make sure User Guide is up-to-date on http://www.taskadapter.com
-* Upload the distributive to this Git repository: https://bitbucket.org/taskadapter/releases/downloads
+* Make sure User Guide is up-to-date on http://www.taskadapter.com (website contents is stored in 
+https://bitbucket.org/taskadapter/site git repo)
+* Trigger a release build that will upload the distributive to Bitbucket 
+https://dev.taskadapter.com/jenkins/view/taskadapter/job/taskadapter-release/
+
 * Follow release steps in "site" repo: https://bitbucket.org/taskadapter/site/overview
 
 ## Logging
