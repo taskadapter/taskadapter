@@ -33,4 +33,6 @@ trait Tracker {
   def trackPage(name: String): Unit
 
   def trackEvent(category: EventCategory, action: String, label: String): Unit
+
+  def trackEvent(category: EventCategory, action: String, label: String, value: Integer): Unit
 }

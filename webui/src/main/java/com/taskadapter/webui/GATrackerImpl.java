@@ -20,4 +20,9 @@ public class GATrackerImpl implements Tracker {
     public void trackEvent(EventCategory category, String action, String label) {
         tracker.trackEvent(category.name(), action, label);
     }
+
+    @Override
+    public void trackEvent(EventCategory category, String action, String label, Integer value) {
+        tracker.trackEvent(category.name(), action, label, value);
+    }
 }

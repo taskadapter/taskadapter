@@ -20,7 +20,7 @@ class ExportHelper(configOps: ConfigOperations,
 
   def onTasksLoaded(tasks: util.List[GTask]): Unit = {
     val labelForTracking = config.connector1.getConnectorTypeId + " - " + config.getConnector2.getConnectorTypeId
-    tracker.trackEvent(ExportCategory, "loaded_tasks", labelForTracking)
+    tracker.trackEvent(ExportCategory, "loaded_tasks", labelForTracking, tasks.size())
 
     if (tasks.isEmpty) showNoDataLoaded()
     else showConfirmation(tasks)
@@ -77,6 +77,9 @@ class ExportHelper(configOps: ConfigOperations,
         val labelForTracking = config.getConnector1.getConnectorTypeId + " - " + config.getConnector2.getConnectorTypeId
         val exportResult = new ExportResultsFragment(onDone, showFilePath).showExportResult(saveResult)
         tracker.trackEvent(ExportCategory, "finished_saving_tasks", labelForTracking)
+        tracker.trackEvent(ExportCategory, "created_tasks", labelForTracking, saveResult.createdTasksNumber)
+        tracker.trackEvent(ExportCategory, "updated_tasks", labelForTracking, saveResult.updatedTasksNumber)
+        tracker.trackEvent(ExportCategory, "tasks_with_errors", labelForTracking, saveResult.taskErrors.size)
         setContent(layout, exportResult)
       }
 
