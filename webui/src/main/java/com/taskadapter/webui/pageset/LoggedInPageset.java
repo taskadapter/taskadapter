@@ -22,6 +22,7 @@ import com.taskadapter.webui.config.NewSetupPage;
 import com.taskadapter.webui.config.SetupsListPage;
 import com.taskadapter.webui.export.ExportResultsFragment;
 import com.taskadapter.webui.license.LicenseFacade;
+import com.taskadapter.webui.pages.AppUpdateNotificationComponent;
 import com.taskadapter.webui.pages.ConfigsPage;
 import com.taskadapter.webui.pages.DropInExportPage;
 import com.taskadapter.webui.pages.ExportPage;
@@ -132,7 +133,7 @@ public class LoggedInPageset {
         final Component header = Header.render(this::showHome, createMenu(), createSelfManagementMenu(), license.isLicensed());
 
         currentComponentArea.setWidth(Sizes.mainWidth());
-        this.ui = TAPageLayout.layoutPage(header, currentComponentArea);
+        this.ui = TAPageLayout.layoutPage(header, new AppUpdateNotificationComponent(), currentComponentArea);
         this.configsPage = createConfigsPage();
         showConfigsList();
     }

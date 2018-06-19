@@ -6,19 +6,16 @@ import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.VersionComparator;
 import com.taskadapter.webui.license.LicenseFacade;
 import com.taskadapter.webui.license.LicensePanel;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 import static com.taskadapter.webui.Page.message;
 
 public final class SupportPage {
-    private static final String TASKADAPTER_DOWNLOAD_URL = "http://www.taskadapter.com/download";
 
     private final String currentTaskAdapterVersion;
     private final LicenseFacade licenseManager;
@@ -70,11 +67,11 @@ public final class SupportPage {
             lastVersionInfoLayout.addComponent(latestVersionLabel);
             if (VersionComparator.isCurrentVersionOutdated(
                     currentTaskAdapterVersion, lastAvailableVersion)) {
-                addDownloadLink();
+                lastVersionInfoLayout.addComponent(WebAppUpdater.addDownloadLink());
             }
         } catch (RuntimeException e) {
             lastVersionInfoLayout.addComponent(new Label(message("supportPage.cantFindInfoOnLatestVersion")));
-            addDownloadLink();
+            lastVersionInfoLayout.addComponent(WebAppUpdater.addDownloadLink());
         }
     }
 
@@ -91,14 +88,6 @@ public final class SupportPage {
         layout.setMargin(true);
         logsPanel.setContent(layout);
         this.layout.addComponent(logsPanel);
-    }
-
-    private void addDownloadLink() {
-        Link downloadLink = new Link();
-        downloadLink.setResource(new ExternalResource(TASKADAPTER_DOWNLOAD_URL));
-        downloadLink.setCaption(message("supportPage.openDownloadPage"));
-        downloadLink.setTargetName("_new");
-        lastVersionInfoLayout.addComponent(downloadLink);
     }
 
     private void addEmailPanel() {

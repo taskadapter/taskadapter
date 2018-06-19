@@ -2,7 +2,7 @@ package com.taskadapter.webui
 
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.license.LicenseFacade
-import com.taskadapter.webui.pages.{LoginPage, SupportPage}
+import com.taskadapter.webui.pages.{AppUpdateNotificationComponent, LoginPage, SupportPage}
 import com.taskadapter.webui.service.Preservices
 import com.vaadin.ui.{Alignment, Component, HorizontalLayout}
 
@@ -23,7 +23,7 @@ class WelcomePageset(services: Preservices, tracker: Tracker, callback: LoginPag
   val header = Header.render(() => showLogin(), createMenu, new HorizontalLayout, licenseFacade.isLicensed)
   val currentComponentArea = new HorizontalLayout
 
-  val ui = TAPageLayout.layoutPage(header, currentComponentArea)
+  val ui = TAPageLayout.layoutPage(header, new AppUpdateNotificationComponent, currentComponentArea)
 
   private def showLogin(): Unit = {
     tracker.trackPage("login")
