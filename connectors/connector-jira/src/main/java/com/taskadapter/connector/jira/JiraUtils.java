@@ -2,6 +2,7 @@ package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
+import com.taskadapter.connector.definition.exception.BadRequestException;
 import com.taskadapter.connector.definition.exception.ForbiddenException;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
@@ -25,6 +26,9 @@ public final class JiraUtils {
         if (e instanceof RestClientException) {
             return processRestException((RestClientException) e);
         }
+        if (e instanceof ConnectorException) {
+            return (ConnectorException) e;
+        }
         return new ConnectorException(e);
     }
 
@@ -41,6 +45,9 @@ public final class JiraUtils {
             for (String s : collection.getErrorMessages()) {
                 errorMessage += s + System.lineSeparator();
             }
+        }
+        if (e.getStatusCode().isPresent() && e.getStatusCode().get().equals(400)) {
+            return new BadRequestException(errorMessage);
         }
         return new ConnectorException(errorMessage);
 
