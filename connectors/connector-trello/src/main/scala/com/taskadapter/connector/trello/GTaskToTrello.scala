@@ -47,6 +47,7 @@ class GTaskToTrello(config:TrelloConfig, listCache: ListCache) extends Connector
           case _ => logger.warn(s"Unknown field in GTask: $field. Skipping it")
         }
       } catch {
+        case e: ConnectorException => throw e
         case e: Exception => throw FieldConversionException(TrelloConnector.ID, field, value)
       }
     }
