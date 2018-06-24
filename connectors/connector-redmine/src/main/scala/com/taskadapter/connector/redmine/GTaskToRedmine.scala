@@ -7,6 +7,7 @@ import com.google.common.base.Strings
 import com.taskadapter.connector.common.ValueTypeResolver
 import com.taskadapter.connector.common.data.ConnectorConverter
 import com.taskadapter.connector.definition.exception.FieldConversionException
+import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.model._
 import com.taskadapter.redmineapi.bean._
 import org.slf4j.LoggerFactory
@@ -46,7 +47,7 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
       try {
         processField(issue, field, value)
       } catch {
-        case _: Exception => throw FieldConversionException(RedmineConnector.ID, field, value)
+        case x: Exception => throw FieldConversionException(RedmineConnector.ID, field, value, x.getMessage)
       }
     }
     issue
@@ -88,6 +89,8 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
           if (`val` != null) {
             issue.setPriorityId(`val`)
             issue.setPriorityText(priorityName)
+          } else {
+            throw new ConnectorException(s"Priority with name $priorityName is not found on the server. Please check your Redmine priorities settings")
           }
         }
       case TargetVersion =>

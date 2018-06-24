@@ -48,9 +48,9 @@ class GTaskToJira(config: JiraConfig,
     }
     for (row <- task.getFields.entrySet.asScala) {
       try {
-      processField(issueInputBuilder, row.getKey, row.getValue)
+        processField(issueInputBuilder, row.getKey, row.getValue)
       } catch {
-        case _: Exception => throw FieldConversionException(JiraConnector.ID, row.getKey, row.getValue)
+        case x: Exception => throw FieldConversionException(JiraConnector.ID, row.getKey, row.getValue, x.getMessage)
       }
     }
     val affectedVersion = GTaskToJira.getVersion(versions, config.getAffectedVersion)
@@ -102,8 +102,12 @@ class GTaskToJira(config: JiraConfig,
         val priorityNumber = value.asInstanceOf[Integer]
         val jiraPriorityName = config.getPriorities.getPriorityByMSP(priorityNumber)
         if (!jiraPriorityName.isEmpty) {
-          val priority = priorities(jiraPriorityName)
-          if (priority != null) issueInputBuilder.setPriority(priority)
+          val priority = priorities.get(jiraPriorityName)
+          if (priority.isDefined) {
+            issueInputBuilder.setPriority(priority.get)
+          } else {
+            throw new ConnectorException(s"Priority with name $jiraPriorityName is not found on the server. Please check your JIRA priorities settings")
+          }
         }
       case EstimatedTime => if (value != null) {
         val estimatedHours = value.asInstanceOf[Float]

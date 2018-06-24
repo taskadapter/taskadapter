@@ -4,23 +4,39 @@ import java.util.Calendar
 
 import com.atlassian.jira.rest.client.api.domain.input.{ComplexIssueInputFieldValue, IssueInput}
 import com.atlassian.jira.rest.client.api.domain.{IssueFieldId, IssueType, Priority}
+import com.taskadapter.connector.definition.exception.FieldConversionException
 import com.taskadapter.model._
 import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
+
 import scala.collection.JavaConverters._
 
 @RunWith(classOf[JUnitRunner])
 class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll {
 
   it("priorityConvertedToCritical") {
-    val priorityCritical = find(GTaskToJiraFactory.priorities, "Highest")
+    val priorityCritical = find(GTaskToJiraFactory.defaultPriorities, "Highest")
     val task = new JiraGTaskBuilder().withPriority(750).build()
     val converter = getConverter()
     val newIssue = converter.convertToJiraIssue(task).issueInput
     val actualPriorityId = getId(newIssue, IssueFieldId.PRIORITY_FIELD.id)
     assertEquals(priorityCritical.getId.toString, actualPriorityId)
+  }
+
+  /**
+    * regression test: priority conversion was failing with exception when priorities loaded from server did not contain
+    * priority name set in JIRA config. e.g. if JIRA is set to have non-english priority names,
+    * while TaskAdapter JIRA config has english names in its "priority mapping" table.
+    */
+  it("unknown priority name gives user-friendly error") {
+    val task = new JiraGTaskBuilder().withPriority(500).build()
+    val converter = GTaskToJiraFactory.getConverter(priorities = Seq())
+    val exception = intercept[FieldConversionException] {
+      converter.convertToJiraIssue(task).issueInput
+    }
+    exception.getMessage should include ("Reason: Priority with name Medium is not found on the server")
   }
 
   it("summary is converted"){
