@@ -4,7 +4,7 @@ import com.taskadapter.connector.common.FieldPrettyNameBuilder
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.model.Field
 
-case class FieldConversionException(connectorId: String, field: Field[_], value: Any, details: String = "") extends ConnectorException {
+case class FieldConversionException(connectorId: String, field: Field[_], value: Any, details: String) extends ConnectorException {
 
   override def getMessage: String = {
     val valueString = value match {

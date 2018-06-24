@@ -29,7 +29,7 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
       try {
         processField(field, value)
       } catch {
-        case _: Exception => throw FieldConversionException(MSPConnector.ID, field, value)
+        case e: Exception => throw FieldConversionException(MSPConnector.ID, field, value, e.getMessage)
       }
     }
   }

@@ -48,7 +48,7 @@ class GTaskToTrello(config:TrelloConfig, listCache: ListCache) extends Connector
         }
       } catch {
         case e: ConnectorException => throw e
-        case e: Exception => throw FieldConversionException(TrelloConnector.ID, field, value)
+        case e: Exception => throw FieldConversionException(TrelloConnector.ID, field, value, e.getMessage)
       }
     }
     card

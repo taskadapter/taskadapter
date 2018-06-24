@@ -24,7 +24,7 @@ class GTaskToGithub(userService: UserService) extends ConnectorConverter[GTask, 
       try {
         processField(issue, row.getKey, row.getValue)
       } catch {
-        case _: Exception => throw FieldConversionException(GithubConnector.ID, row.getKey, row.getValue)
+        case e: Exception => throw FieldConversionException(GithubConnector.ID, row.getKey, row.getValue, e.getMessage)
       }
     }
 

@@ -30,7 +30,7 @@ class GTaskToBasecampClassic(users: Seq[GUser]) extends ConnectorConverter[GTask
       try {
         processField(d, root, field, value)
       } catch {
-        case _: Exception => throw FieldConversionException(BasecampClassicConnector.ID, field, value)
+        case e: Exception => throw FieldConversionException(BasecampClassicConnector.ID, field, value, e.getMessage)
       }
     }
     val str = BasecampUtils.stringify(d)

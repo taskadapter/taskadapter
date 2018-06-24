@@ -36,7 +36,7 @@ class GTaskToMantis(val mntProject: ProjectData, val users: util.List[AccountDat
       try {
         processField(issue, row.getKey, row.getValue)
       } catch {
-        case _: Exception => throw FieldConversionException(MantisConnector.ID, row.getKey, row.getValue)
+        case e: Exception => throw FieldConversionException(MantisConnector.ID, row.getKey, row.getValue, e.getMessage)
       }
     }
 
