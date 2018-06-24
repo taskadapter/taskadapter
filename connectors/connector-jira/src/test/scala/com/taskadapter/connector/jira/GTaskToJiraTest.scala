@@ -144,13 +144,6 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
       .map(v => v.getValuesMap().get("name").asInstanceOf[String]).toSeq
   }
 
-  private def findIssueType(issueTypes: Iterable[IssueType], `type`: String): IssueType = {
-    for (issueType <- issueTypes) {
-      if (issueType.getName == `type`) return issueType
-    }
-    throw new RuntimeException("Not found: " + `type`)
-  }
-
   private def getConverter(): GTaskToJira = GTaskToJiraFactory.getConverter()
 
   private def find(priorities: Iterable[Priority], priorityName: String): Priority = {
