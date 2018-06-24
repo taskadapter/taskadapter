@@ -30,14 +30,15 @@ class TrelloEditorFactory extends PluginEditorFactory[TrelloConfig, WebConnector
 
   override def getMiniPanelContents(sandbox: Sandbox, config: TrelloConfig, setup: WebConnectorSetup): ComponentContainer = {
     val layout = new VerticalLayout
-    layout.setWidth(380, PIXELS)
+    layout.setWidth(600, PIXELS)
     val client = new TrelloClient(setup.password, setup.apiKey)
-    val projectPanel = new ProjectPanelScala(new MethodProperty[String](config, "boardId"),
+    val projectPanel = new ProjectPanelScala(messages.get("projectPanel.projectLabel"),
+      new MethodProperty[String](config, "boardName"),
+      new MethodProperty[String](config, "boardId"),
       () => {
-        client.getBoards(setup.userName).map(b => new NamedKeyedObjectImpl(b.getId, b.getName))
+        client.getBoards(setup.userName).map(b => NamedKeyedObjectImpl(b.getId, b.getName))
       },
       this)
-    projectPanel.setProjectKeyLabel("Board Id")
     layout.addComponent(projectPanel)
     layout
   }

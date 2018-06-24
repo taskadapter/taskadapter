@@ -7,7 +7,7 @@ import com.taskadapter.connector.definition.ConnectorConfig
 
 import scala.beans.BeanProperty
 
-class TrelloConfig(@BeanProperty var boardId: String) extends ConnectorConfig {
+class TrelloConfig(@BeanProperty var boardId: String, @BeanProperty var boardName: String) extends ConnectorConfig {
 
   setPriorities(createDefaultPriorities)
 

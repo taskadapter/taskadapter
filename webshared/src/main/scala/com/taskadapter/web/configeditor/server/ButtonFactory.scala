@@ -3,10 +3,9 @@ package com.taskadapter.web.configeditor.server
 import java.util
 
 import com.taskadapter.connector.definition.exceptions.{BadConfigException, ConnectorException}
-import com.taskadapter.model.NamedKeyedObject
+import com.taskadapter.model.{NamedKeyedObject, NamedKeyedObjectImpl}
 import com.taskadapter.web.ExceptionFormatter
 import com.taskadapter.web.configeditor.{EditorUtil, ListSelectionDialog}
-import com.vaadin.data.Property
 import com.vaadin.ui.{Button, Notification, UI}
 import org.slf4j.LoggerFactory
 
@@ -14,28 +13,24 @@ object ButtonFactory {
   private val logger = LoggerFactory.getLogger(ButtonFactory.getClass)
 
   def createLookupButton(buttonLabel: String, description: String, windowTitle: String, listTitle: String,
-                         loadProjects: (() => Seq[_ <: NamedKeyedObject]),
-                         destination: Property[String],
-                         useValue: Boolean,
-                         errorFormatter: ExceptionFormatter): Button = {
+                         loadProjects: () => Seq[_ <: NamedKeyedObject],
+                         errorFormatter: ExceptionFormatter,
+                         selectionListener: NamedKeyedObject => Unit): Button = {
     val button = new Button(buttonLabel)
     button.setDescription(description)
     val listener = new LookupResultListenerScala() {
       override def notifyDone(objects: Seq[_ <: NamedKeyedObject]): Unit = {
-        if (objects.nonEmpty) showValues(destination, useValue, objects)
+        if (objects.nonEmpty) showValues(objects)
       }
 
-      def showValues(destination: Property[String], useValue: Boolean, objects: Seq[_ <: NamedKeyedObject]): Unit = {
+      def showValues(objects: Seq[_ <: NamedKeyedObject]): Unit = {
         val map = new util.TreeMap[String, String]
         for (o <- objects) {
           map.put(o.getName, o.getKey)
         }
         showList(windowTitle, listTitle, map.keySet, (value: String) => {
-          if (useValue) destination.setValue(value)
-          else {
-            val key = map.get(value)
-            destination.setValue(key)
-          }
+          val key = map.get(value)
+          selectionListener.apply(NamedKeyedObjectImpl(key, value))
         })
       }
     }
