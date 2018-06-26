@@ -53,16 +53,12 @@ Dev servers, Jenkins, etc are described here (including access passwords):
 https://docs.google.com/spreadsheets/d/1UsV1G1iCY-e2Qo7V6Y7_zWdFrtB6-IquQuGSA-1NGy0/edit#gid=0&vpid=A2
 
 ## Release process.
-* Make sure you have the latest code from Git server.
-* Change `version` in `/gradle.properties`
-* Push everything to Git.
 * Get the latest build from Jenkins https://dev.taskadapter.com/jenkins/view/taskadapter/job/taskadapter
-* Verify and close issues on TaskAdapter Trello board: https://trello.com/b/eLGOvlZa/ta
+* With this build - verify and close issues on TaskAdapter Trello board: https://trello.com/b/eLGOvlZa/ta
 * Make sure User Guide is up-to-date on http://www.taskadapter.com (website contents is stored in 
 https://bitbucket.org/taskadapter/site git repo)
 * Trigger a release build that will upload the distributive to Bitbucket 
 https://dev.taskadapter.com/jenkins/view/taskadapter/job/taskadapter-release/
-
 * Follow release steps in "site" repo: https://bitbucket.org/taskadapter/site/overview
 
 ## Logging
