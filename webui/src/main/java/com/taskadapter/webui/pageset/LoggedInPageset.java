@@ -3,6 +3,7 @@ package com.taskadapter.webui.pageset;
 import com.google.common.io.Files;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.license.LicenseManager;
+import com.taskadapter.web.TaskKeeperLocationStorage;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.uiapi.ConfigId;
 import com.taskadapter.web.uiapi.SetupId;
@@ -198,7 +199,8 @@ public class LoggedInPageset {
      */
     private void showSupport() {
         tracker.trackPage("support");
-        applyUI(SupportPage.render(services.currentTaskAdapterVersion, license, tracker));
+        TaskKeeperLocationStorage storage = new TaskKeeperLocationStorage(services.rootDir);
+        applyUI(SupportPage.render(services.currentTaskAdapterVersion, license, tracker, storage.cacheFolder().getAbsolutePath()));
     }
 
     /**
