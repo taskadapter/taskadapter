@@ -34,7 +34,10 @@ class WelcomePageset(services: Preservices, tracker: Tracker, callback: LoginPag
   private def showSupport(): Unit = {
     tracker.trackPage("support")
     val storage = new TaskKeeperLocationStorage(services.rootDir)
-    applyUI(SupportPage.render(services.currentTaskAdapterVersion, licenseFacade, tracker, storage.cacheFolder.getAbsolutePath))
+    val logFileLocation = LogFinder.getLogFileLocation
+    applyUI(SupportPage.render(services.currentTaskAdapterVersion, licenseFacade, tracker,
+      storage.cacheFolder.getAbsolutePath,
+      logFileLocation))
   }
 
   private def applyUI(ui: Component): Unit = {

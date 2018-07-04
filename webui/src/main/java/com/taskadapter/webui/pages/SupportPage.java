@@ -1,7 +1,6 @@
 package com.taskadapter.webui.pages;
 
 import com.taskadapter.webui.LastVersionLoader;
-import com.taskadapter.webui.LogFinder;
 import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.VersionComparator;
 import com.taskadapter.webui.license.LicenseFacade;
@@ -22,17 +21,20 @@ public final class SupportPage {
     private final LicenseFacade licenseManager;
     private Tracker tracker;
     private final String cacheFileLocation;
+    private final String logFileLocation;
     private final VerticalLayout layout = new VerticalLayout();
     private final VerticalLayout lastVersionInfoLayout = new VerticalLayout();
 
     private SupportPage(String currentTaskAdapterVersion,
                         LicenseFacade licenseManager,
                         Tracker tracker,
-                        String cacheFileLocation) {
+                        String cacheFileLocation,
+                        String logFileLocation) {
         this.currentTaskAdapterVersion = currentTaskAdapterVersion;
         this.licenseManager = licenseManager;
         this.tracker = tracker;
         this.cacheFileLocation = cacheFileLocation;
+        this.logFileLocation = logFileLocation;
         buildUI();
     }
 
@@ -90,7 +92,7 @@ public final class SupportPage {
         grid.setSpacing(true);
         grid.setMargin(true);
         grid.addComponent(new Label(message("supportPage.logLocation")));
-        grid.addComponent(new Label(LogFinder.getLogFileLocation()));
+        grid.addComponent(new Label(logFileLocation));
 
         grid.addComponent(new Label(message("supportPage.cacheFileLocation")));
         grid.addComponent(new Label(cacheFileLocation));
@@ -110,7 +112,8 @@ public final class SupportPage {
         layout.addComponent(panel);
     }
 
-    public static Component render(String taVersion, LicenseFacade license, Tracker tracker, String cacheFileLocation) {
-        return new SupportPage(taVersion, license, tracker, cacheFileLocation).layout;
+    public static Component render(String taVersion, LicenseFacade license, Tracker tracker, String cacheFileLocation,
+                                   String logFileLocation) {
+        return new SupportPage(taVersion, license, tracker, cacheFileLocation, logFileLocation).layout;
     }
 }

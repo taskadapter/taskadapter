@@ -12,6 +12,7 @@ import com.taskadapter.webui.ConfigCategory$;
 import com.taskadapter.webui.ConfigureSystemPage;
 import com.taskadapter.webui.Header;
 import com.taskadapter.webui.HeaderMenuBuilder;
+import com.taskadapter.webui.LogFinder;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.Sizes;
 import com.taskadapter.webui.TAPageLayout;
@@ -200,7 +201,10 @@ public class LoggedInPageset {
     private void showSupport() {
         tracker.trackPage("support");
         TaskKeeperLocationStorage storage = new TaskKeeperLocationStorage(services.rootDir);
-        applyUI(SupportPage.render(services.currentTaskAdapterVersion, license, tracker, storage.cacheFolder().getAbsolutePath()));
+        String logFileLocation = LogFinder.getLogFileLocation();
+        applyUI(SupportPage.render(services.currentTaskAdapterVersion, license, tracker,
+                storage.cacheFolder().getAbsolutePath(),
+                logFileLocation));
     }
 
     /**
