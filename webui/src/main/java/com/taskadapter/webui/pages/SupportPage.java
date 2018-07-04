@@ -88,7 +88,7 @@ public final class SupportPage {
         GridLayout grid = new GridLayout(2, 2);
         grid.setWidth("100%");
         grid.setSpacing(true);
-       // grid.setMargin(true);
+        grid.setMargin(true);
         grid.addComponent(new Label(message("supportPage.logLocation")));
         grid.addComponent(new Label(LogFinder.getLogFileLocation()));
 
