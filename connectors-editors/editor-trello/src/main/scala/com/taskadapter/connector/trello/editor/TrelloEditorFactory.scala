@@ -15,8 +15,6 @@ import com.vaadin.data.util.MethodProperty
 import com.vaadin.server.Sizeable.Unit.PIXELS
 import com.vaadin.ui.{ComponentContainer, VerticalLayout}
 
-import scala.collection.mutable.ListBuffer
-
 class TrelloEditorFactory extends PluginEditorFactory[TrelloConfig, WebConnectorSetup] {
   private val messages = new Messages("com.taskadapter.connector.trello.messages")
 
@@ -61,6 +59,7 @@ class TrelloEditorFactory extends PluginEditorFactory[TrelloConfig, WebConnector
     checkTrelloListIsMapped(fieldMappings)
   }
 
+  @throws[BadConfigException]
   def checkTrelloListIsMapped(fieldMappings: Seq[FieldMapping[_]]): Unit = {
     // "List Name" must be present on the right side and must be selected for export
     if (!fieldMappings.exists(m => m.fieldInConnector2.contains(TaskStatus) && m.selected)) {
@@ -87,7 +86,6 @@ class TrelloEditorFactory extends PluginEditorFactory[TrelloConfig, WebConnector
     setup
   }
 
-  @throws[BadConfigException]
   @throws[DroppingNotSupportedException]
   override def validateForDropInLoad(config: TrelloConfig) = throw DroppingNotSupportedException.INSTANCE
 
