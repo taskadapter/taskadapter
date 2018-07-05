@@ -6,6 +6,7 @@ import com.taskadapter.connector.basecamp.exceptions.BadFieldException;
 import com.taskadapter.connector.basecamp.transport.ObjectAPI;
 import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory;
 import com.taskadapter.connector.definition.WebConnectorSetup;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import org.json.JSONArray;
@@ -118,15 +119,13 @@ public class BasecampUtils {
         return parseTodoList(object);
     }
 
-    public static void validateConfig(BasecampConfig config)
-            throws ConnectorException {
+    public static void validateConfig(BasecampConfig config) throws BadConfigException {
         validateAccount(config);
         validateProject(config);
         validateTodolist(config);
     }
 
-    public static void validateAccount(BasecampConfig config)
-            throws ConnectorException {
+    public static void validateAccount(BasecampConfig config) throws BadConfigException {
         final String accountId = config.getAccountId();
         if (accountId == null || accountId.isEmpty()) {
             throw new FieldNotSetException("account-id");
@@ -136,8 +135,7 @@ public class BasecampUtils {
         }
     }
 
-    public static void validateProject(BasecampConfig config)
-            throws ConnectorException {
+    public static void validateProject(BasecampConfig config) throws BadConfigException {
         final String projectKey = config.getProjectKey();
         if (projectKey == null) {
             throw new FieldNotSetException("project-key");
@@ -147,8 +145,7 @@ public class BasecampUtils {
         }
     }
 
-    public static void validateTodolist(BasecampConfig config)
-            throws ConnectorException {
+    public static void validateTodolist(BasecampConfig config) throws BadConfigException {
         final String listKey = config.getTodoKey();
         if (listKey == null) {
             throw new FieldNotSetException("todo-key");

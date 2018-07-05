@@ -213,7 +213,8 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
     }
 
     @Override
-    public void validateForLoad(BasecampConfig config, WebConnectorSetup setup) {
+    public void validateForLoad(BasecampConfig config, WebConnectorSetup setup) throws BadConfigException {
+        BasecampUtils.validateConfig(config);
     }
 
     @Override
