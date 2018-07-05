@@ -4,6 +4,7 @@ import com.taskadapter.connector.basecamp.FieldNotSetException;
 import com.taskadapter.connector.basecamp.exceptions.BadFieldException;
 import com.taskadapter.connector.basecamp.exceptions.ObjectNotFoundException;
 import com.taskadapter.connector.definition.exceptions.NotAuthorizedException;
+import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.data.Messages;
 
@@ -13,6 +14,9 @@ class BasecampErrorFormatter implements ExceptionFormatter {
 
     @Override
     public String formatError(Throwable e) {
+        if (e instanceof ProjectNotSetException) {
+            return MESSAGES.get("error.projectKeyNotSet");
+        }
         if (e instanceof BadFieldException) {
             final String field = ((BadFieldException) e).getFieldName();
             if ("project-key".equals(field)) {
@@ -26,7 +30,7 @@ class BasecampErrorFormatter implements ExceptionFormatter {
         if (e instanceof FieldNotSetException) {
             final String field = ((FieldNotSetException) e).field();
             if ("project-key".equals(field)) {
-                return MESSAGES.format("error.projectKey");
+                return MESSAGES.format("errors.projectKeyNotSet");
             } else if ("todo-key".equals(field)) {
                 return MESSAGES.format("error.todoKey");
             } else if ("account-id".equals(field)) {
