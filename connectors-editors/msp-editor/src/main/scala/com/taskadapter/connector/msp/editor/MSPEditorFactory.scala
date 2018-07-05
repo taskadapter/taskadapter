@@ -19,8 +19,6 @@ import com.vaadin.data.Property
 import com.vaadin.data.util.ObjectProperty
 import com.vaadin.ui._
 
-import scala.collection.mutable.ListBuffer
-
 class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
   private val BUNDLE_NAME = "com.taskadapter.connector.msp.messages"
   private val LABEL_DESCRIPTION_TEXT = "Description:"
