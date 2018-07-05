@@ -37,6 +37,10 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig, We
         if (e instanceof ServerURLNotSetException) {
             return MESSAGES.get("errors.serverURLNotSet");
         }
+
+        if (e instanceof ProjectNotSetException) {
+            return MESSAGES.get("github.errors.projectNotSet");
+        }
         if (e instanceof LoginNameNotSpecifiedException) {
             return MESSAGES.get("errors.loginNameNotSet");
         }
@@ -91,6 +95,10 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig, We
     public void validateForLoad(GithubConfig config, WebConnectorSetup serverInfo) throws BadConfigException {
         if (Strings.isNullOrEmpty(serverInfo.host())) {
             throw new ServerURLNotSetException();
+        }
+
+        if (Strings.isNullOrEmpty(config.getProjectKey())) {
+            throw new ProjectNotSetException();
         }
     }
 
