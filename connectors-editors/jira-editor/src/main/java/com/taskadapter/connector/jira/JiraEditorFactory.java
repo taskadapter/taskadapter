@@ -60,12 +60,12 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     }
 
     private static String formatValidationErrors(JiraConfigException exn) {
-        final StringBuilder res = new StringBuilder("* ");
+        StringBuilder res = new StringBuilder();
 
         final Iterator<JiraValidationErrorKind> itr = exn.getErrors().iterator();
         res.append(getValidationMessage(itr.next()));
         while (itr.hasNext()) {
-            res.append("<br/>\n* ").append(getValidationMessage(itr.next()));
+            res.append("<br/>\n").append(getValidationMessage(itr.next()));
         }
 
         return res.toString();

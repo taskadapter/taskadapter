@@ -29,7 +29,7 @@ import static com.taskadapter.web.ui.Grids.addTo;
 import static com.taskadapter.web.ui.MessageUtils.nvl;
 
 /**
- * "Project info" panel with Project Key, Query Id.
+ * "Project info" panel with Project Key, Filter Id.
  */
 public class ProjectPanel extends Panel implements Validatable {
     private final static Logger logger = LoggerFactory.getLogger(ProjectPanel.class);
