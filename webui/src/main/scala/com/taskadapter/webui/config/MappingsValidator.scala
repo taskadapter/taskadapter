@@ -1,6 +1,7 @@
 package com.taskadapter.webui.config
 
 import com.google.common.base.Strings
+import com.taskadapter.connector.definition.exception.FieldNotMappedException
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 
 object MappingsValidator {

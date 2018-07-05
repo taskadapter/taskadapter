@@ -51,7 +51,7 @@ class ProjectPanelScala(projectKeyLabelText: String,
 
   private def setVisibleName(): Unit = {
     val text = if (projectNameProperty.getValue == null) {
-      ""
+      projectKeyProperty.getValue
     } else {
       s"${projectNameProperty.getValue} (${projectKeyProperty.getValue})"
     }

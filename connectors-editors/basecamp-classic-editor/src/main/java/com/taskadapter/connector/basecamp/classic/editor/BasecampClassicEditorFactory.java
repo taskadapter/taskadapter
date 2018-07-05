@@ -9,6 +9,7 @@ import com.taskadapter.connector.basecamp.classic.beans.BasecampProject;
 import com.taskadapter.connector.basecamp.classic.beans.TodoList;
 import com.taskadapter.connector.basecamp.classic.transport.BaseCommunicator;
 import com.taskadapter.connector.basecamp.classic.transport.ObjectAPIFactory;
+import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
@@ -32,6 +33,7 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import scala.Option;
+import scala.collection.Seq;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -177,7 +179,7 @@ public class BasecampClassicEditorFactory implements PluginEditorFactory<Basecam
     }
 
     @Override
-    public void validateForSave(BasecampClassicConfig config, WebConnectorSetup setup) throws BadConfigException {
+    public void validateForSave(BasecampClassicConfig config, WebConnectorSetup setup, Seq<FieldMapping<?>> fieldMappings) throws BadConfigException {
         if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
             throw new ProjectNotSetException();
         }
@@ -209,9 +211,10 @@ public class BasecampClassicEditorFactory implements PluginEditorFactory<Basecam
     }
 
     @Override
-    public WebConnectorSetup updateForSave(BasecampClassicConfig config, Sandbox sandbox, WebConnectorSetup setup)
+    public WebConnectorSetup updateForSave(BasecampClassicConfig config, Sandbox sandbox, WebConnectorSetup setup,
+                                           Seq<FieldMapping<?>> fieldMappings)
             throws BadConfigException {
-        validateForSave(config, setup);
+        validateForSave(config, setup, fieldMappings);
         return setup;
     }
 

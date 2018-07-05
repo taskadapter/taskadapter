@@ -5,7 +5,7 @@ import java.nio.file.Paths
 
 import com.taskadapter.connector.common.FileNameGenerator
 import com.taskadapter.connector.definition.exceptions.BadConfigException
-import com.taskadapter.connector.definition.{ConnectorConfig, FileSetup}
+import com.taskadapter.connector.definition.{ConnectorConfig, FieldMapping, FileSetup}
 import com.taskadapter.connector.msp._
 import com.taskadapter.connector.msp.editor.error.{InputFileNameNotSetException, OutputFileNameNotSetException}
 import com.taskadapter.web.configeditor.EditorUtil.propertyInput
@@ -105,7 +105,7 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     )
   }
 
-  override def validateForSave(config: MSPConfig, setup: FileSetup): Unit = {
+  override def validateForSave(config: MSPConfig, setup: FileSetup, fieldMappings: Seq[FieldMapping[_]]): Unit = {
     // empty target file name is valid because it will be generated in [[updateForSave]]
     // right before the export
   }
@@ -137,7 +137,8 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
   }
 
   @throws[BadConfigException]
-  override def updateForSave(config: MSPConfig, sandbox: Sandbox, setup: FileSetup): FileSetup = {
+  override def updateForSave(config: MSPConfig, sandbox: Sandbox, setup: FileSetup,
+                             fieldMappings: Seq[FieldMapping[_]]): FileSetup = {
     if (setup.targetFile.isEmpty || setup.targetFile == ".xml") {
       val newPath = FileNameGenerator.createSafeAvailableFile(sandbox.getUserContentDirectory, "MSP_%d.xml").getAbsolutePath
       if (newPath == null) throw new OutputFileNameNotSetException

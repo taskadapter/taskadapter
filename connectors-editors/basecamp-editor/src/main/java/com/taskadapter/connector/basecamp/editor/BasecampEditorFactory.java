@@ -8,6 +8,7 @@ import com.taskadapter.connector.basecamp.beans.TodoList;
 import com.taskadapter.connector.basecamp.transport.BaseCommunicator;
 import com.taskadapter.connector.basecamp.transport.ObjectAPI;
 import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory;
+import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
@@ -34,6 +35,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import scala.Option;
+import scala.collection.Seq;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -206,14 +208,15 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
     }
 
     @Override
-    public void validateForSave(BasecampConfig config, WebConnectorSetup setup) throws BadConfigException {
+    public void validateForSave(BasecampConfig config, WebConnectorSetup setup, Seq<FieldMapping<?>> fieldMappings) throws BadConfigException {
         if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
             throw new ProjectNotSetException();
         }
     }
 
     @Override
-    public void validateForLoad(BasecampConfig config, WebConnectorSetup setup) {
+    public void validateForLoad(BasecampConfig config, WebConnectorSetup setup) throws BadConfigException {
+        BasecampUtils.validateConfig(config);
     }
 
     @Override
@@ -237,9 +240,10 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
     }
 
     @Override
-    public WebConnectorSetup updateForSave(BasecampConfig config, Sandbox sandbox, WebConnectorSetup setup)
+    public WebConnectorSetup updateForSave(BasecampConfig config, Sandbox sandbox, WebConnectorSetup setup,
+                                           Seq<FieldMapping<?>> fieldMappings)
             throws BadConfigException {
-        validateForSave(config, setup);
+        validateForSave(config, setup, fieldMappings);
         return setup;
     }
 

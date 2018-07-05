@@ -1,6 +1,7 @@
 package com.taskadapter.connector.jira;
 
 import com.google.common.base.Strings;
+import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exception.ForbiddenException;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
@@ -23,6 +24,7 @@ import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.GridLayout;
 import scala.Option;
+import scala.collection.Seq;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -60,12 +62,12 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     }
 
     private static String formatValidationErrors(JiraConfigException exn) {
-        final StringBuilder res = new StringBuilder("* ");
+        StringBuilder res = new StringBuilder();
 
         final Iterator<JiraValidationErrorKind> itr = exn.getErrors().iterator();
         res.append(getValidationMessage(itr.next()));
         while (itr.hasNext()) {
-            res.append("<br/>\n* ").append(getValidationMessage(itr.next()));
+            res.append("<br/>\n").append(getValidationMessage(itr.next()));
         }
 
         return res.toString();
@@ -132,7 +134,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     }
 
     @Override
-    public void validateForSave(JiraConfig config, WebConnectorSetup serverInfo) throws BadConfigException {
+    public void validateForSave(JiraConfig config, WebConnectorSetup serverInfo, Seq<FieldMapping<?>> fieldMappings) throws BadConfigException {
         final Collection<JiraValidationErrorKind> errors = new LinkedHashSet<>();
 
         if (Strings.isNullOrEmpty(serverInfo.host())) {
@@ -187,9 +189,10 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     }
 
     @Override
-    public WebConnectorSetup updateForSave(JiraConfig config, Sandbox sandbox, WebConnectorSetup setup)
+    public WebConnectorSetup updateForSave(JiraConfig config, Sandbox sandbox, WebConnectorSetup setup,
+                                           Seq<FieldMapping<?>> fieldMappings)
             throws BadConfigException {
-        validateForSave(config, setup);
+        validateForSave(config, setup, fieldMappings);
         return setup;
     }
 

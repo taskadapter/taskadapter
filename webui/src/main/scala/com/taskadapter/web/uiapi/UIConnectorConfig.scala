@@ -1,13 +1,15 @@
 package com.taskadapter.web.uiapi
 
 import com.taskadapter.connector.NewConnector
-import com.taskadapter.connector.definition.ConnectorSetup
+import com.taskadapter.connector.definition.{ConnectorSetup, FieldMapping}
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.model.Field
 import com.taskadapter.web.DroppingNotSupportedException
 import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
 import com.vaadin.ui.ComponentContainer
+
+import scala.collection.Seq
 
 
 /**
@@ -62,7 +64,7 @@ abstract class UIConnectorConfig {
     * Validates config for save. Does not update it in any way.
     */
   @throws[BadConfigException]
-  def validateForSave(): Unit
+  def validateForSave(fieldMappings: Seq[FieldMapping[_]]): Unit
 
   /**
     * Validates config for drop-in operation.
@@ -81,7 +83,7 @@ abstract class UIConnectorConfig {
     * @throws BadConfigException if config is invalid and cannot be fixed automatically.
     */
   @throws[BadConfigException]
-  def updateForSave(sandbox: Sandbox): ConnectorSetup
+  def updateForSave(sandbox: Sandbox, fieldMappings: Seq[FieldMapping[_]]): ConnectorSetup
 
   /**
     * Creates a new connector instance with a current config. Note, that

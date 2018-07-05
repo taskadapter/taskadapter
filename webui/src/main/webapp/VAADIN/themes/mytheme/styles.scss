@@ -121,12 +121,19 @@
     width: 280px;
 }
 
-.error-message-label {
+.validationPanelCaption {
     color: #ff6347;
     padding-top: 3px;
     padding-left: 3px;
     font-weight: bold;
 }
+
+.error-message-label {
+    color: #c3270b;
+    padding-top: 3px;
+    padding-left: 3px;
+}
+
 .v-label-wrap pre {
     white-space: pre-wrap;
     word-wrap: break-word;

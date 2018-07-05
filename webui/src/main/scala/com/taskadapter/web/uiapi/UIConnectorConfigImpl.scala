@@ -10,6 +10,8 @@ import com.taskadapter.web.{DroppingNotSupportedException, PluginEditorFactory}
 import com.taskadapter.webui.data.ExceptionFormatter
 import com.vaadin.ui.ComponentContainer
 
+import scala.collection.Seq
+
 /**
   * Implementation of RichConfig. Hides implementation details inside and keeps a
   * config-type magic inside.
@@ -41,8 +43,8 @@ class UIConnectorConfigImpl[C <: ConnectorConfig, S <: ConnectorSetup]
   }
 
   @throws[BadConfigException]
-  override def validateForSave(): Unit = {
-    editorFactory.validateForSave(config, setup)
+  override def validateForSave(mappings: Seq[FieldMapping[_]]): Unit = {
+    editorFactory.validateForSave(config, setup, mappings)
   }
 
   @throws[BadConfigException]
@@ -52,7 +54,8 @@ class UIConnectorConfigImpl[C <: ConnectorConfig, S <: ConnectorSetup]
   }
 
   @throws[BadConfigException]
-  override def updateForSave(sandbox: Sandbox): ConnectorSetup = editorFactory.updateForSave(config, sandbox, setup)
+  override def updateForSave(sandbox: Sandbox, fieldMappings: Seq[FieldMapping[_]]): ConnectorSetup =
+    editorFactory.updateForSave(config, sandbox, setup, fieldMappings)
 
   override def createConnectorInstance: NewConnector = connectorFactory.createConnector(config, setup)
 
