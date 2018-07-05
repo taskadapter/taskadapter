@@ -3,7 +3,6 @@ package com.taskadapter.connector.github.editor
 import com.google.common.base.Strings
 import com.taskadapter.connector.ValidationErrorBuilder
 import com.taskadapter.connector.definition.{FieldMapping, WebConnectorSetup}
-import com.taskadapter.connector.definition.exception.ConfigValidationError
 import com.taskadapter.connector.definition.exceptions.{BadConfigException, LoginNameNotSpecifiedException, ProjectNotSetException, ServerURLNotSetException, UnsupportedConnectorOperation}
 import com.taskadapter.connector.github.{GithubConfig, GithubConnector}
 import com.taskadapter.web.{ConnectorSetupPanel, DroppingNotSupportedException, PluginEditorFactory}
@@ -56,7 +55,7 @@ class GithubEditorFactory extends PluginEditorFactory[GithubConfig, WebConnector
     if (Strings.isNullOrEmpty(serverInfo.userName)) throw new LoginNameNotSpecifiedException
   }
 
-  override def validateForLoad(config: GithubConfig, serverInfo: WebConnectorSetup): Seq[ConfigValidationError] = {
+  override def validateForLoad(config: GithubConfig, serverInfo: WebConnectorSetup): Seq[BadConfigException] = {
     val builder = new ValidationErrorBuilder
     if (Strings.isNullOrEmpty(serverInfo.host)) builder.error(new ServerURLNotSetException)
     if (Strings.isNullOrEmpty(config.getProjectKey)) builder.error(new ProjectNotSetException)

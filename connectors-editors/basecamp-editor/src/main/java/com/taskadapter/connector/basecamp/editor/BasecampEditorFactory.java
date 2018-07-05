@@ -26,7 +26,6 @@ import com.taskadapter.web.configeditor.Editors;
 import com.taskadapter.web.configeditor.server.ServerPanelFactory;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Sandbox;
-import com.taskadapter.connector.definition.exception.ConfigValidationError;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -217,7 +216,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
     }
 
     @Override
-    public Seq<ConfigValidationError> validateForLoad(BasecampConfig config, WebConnectorSetup setup) {
+    public Seq<BadConfigException> validateForLoad(BasecampConfig config, WebConnectorSetup setup) {
         return BasecampValidator.validateConfig(config);
     }
 

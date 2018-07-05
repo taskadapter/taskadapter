@@ -1,6 +1,5 @@
 package com.taskadapter.web
 
-import com.taskadapter.connector.definition.exception.ConfigValidationError
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.connector.definition.{ConnectorConfig, ConnectorSetup, FieldMapping}
 import com.taskadapter.web.data.Messages
@@ -34,7 +33,7 @@ trait PluginEditorFactory[C <: ConnectorConfig, S <: ConnectorSetup] extends Exc
     *
     * @param config config to check.
     */
-  def validateForLoad(config: C, setup: S): Seq[ConfigValidationError]
+  def validateForLoad(config: C, setup: S): Seq[BadConfigException]
 
   /**
     * Validates config for "drop-in" loading.

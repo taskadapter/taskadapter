@@ -5,7 +5,6 @@ import java.nio.file.Paths
 
 import com.taskadapter.connector.ValidationErrorBuilder
 import com.taskadapter.connector.common.FileNameGenerator
-import com.taskadapter.connector.definition.exception.ConfigValidationError
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.connector.definition.{ConnectorConfig, FieldMapping, FileSetup}
 import com.taskadapter.connector.msp._
@@ -112,7 +111,7 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     // right before the export
   }
 
-  override def validateForLoad(config: MSPConfig, setup: FileSetup): Seq[ConfigValidationError] = {
+  override def validateForLoad(config: MSPConfig, setup: FileSetup): Seq[BadConfigException] = {
     val builder = new ValidationErrorBuilder
     if (setup.sourceFile.isEmpty) builder.error(new InputFileNameNotSetException)
     builder.build()

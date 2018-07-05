@@ -3,7 +3,6 @@ package com.taskadapter.schedule
 import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
 
 import com.taskadapter.connector.common.ProgressMonitorUtils
-import com.taskadapter.connector.definition.exception.ConfigValidationError
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.web.uiapi.{Schedule, UIConfigStore, UISyncConfig}
 import com.taskadapter.web.{SchedulerDisabledEvent, SchedulerEnabledEvent, SettingsManager}
@@ -127,7 +126,7 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, schedulesStorage: SchedulesSt
     }
   }
 
-  private def logErrors(c: UISyncConfig, errors: Seq[ConfigValidationError]) : Unit = {
+  private def logErrors(c: UISyncConfig, errors: Seq[BadConfigException]) : Unit = {
     log.error(s"Config ${c.id} is scheduled for periodic export, " +
       s"but it will be skipped because it failed load or save validation: $errors")
   }

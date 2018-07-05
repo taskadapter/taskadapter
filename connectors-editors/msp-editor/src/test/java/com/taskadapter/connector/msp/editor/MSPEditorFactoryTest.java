@@ -1,7 +1,7 @@
 package com.taskadapter.connector.msp.editor;
 
 import com.taskadapter.connector.definition.FileSetup;
-import com.taskadapter.connector.definition.exception.ConfigValidationError;
+import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.msp.editor.error.InputFileNameNotSetException;
@@ -23,9 +23,9 @@ public class MSPEditorFactoryTest {
     @Test
     public void noInputFileNameFailsValidation() {
         MSPConfig config = new MSPConfig();
-        Seq<ConfigValidationError> errors = new MSPEditorFactory()
+        Seq<BadConfigException> errors = new MSPEditorFactory()
                 .validateForLoad(config, FileSetup.apply(MSPConnector.ID, "label1", "", ""));
-        assertTrue(errors.head().error() instanceof InputFileNameNotSetException);
+        assertTrue(errors.head() instanceof InputFileNameNotSetException);
     }
 
     @Test

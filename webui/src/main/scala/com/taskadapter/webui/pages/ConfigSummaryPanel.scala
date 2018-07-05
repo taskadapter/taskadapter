@@ -192,7 +192,7 @@ class ConfigSummaryPanel(config: UISyncConfig, mode: DisplayMode, callback: Conf
 
   def validateLoad(uiConfig: UIConnectorConfig, fieldMappings: Seq[FieldMapping[_]], configSaver: Runnable): Seq[ValidationErrorTextWithProcessor] = {
     val errors = uiConfig.validateForLoad()
-    errors.map(e => buildItem(uiConfig, e.error, configSaver))
+    errors.map(e => buildItem(uiConfig, e, configSaver))
   }
 
   def buildItem(uiConfig: UIConnectorConfig, e: BadConfigException, configSaver: Runnable): ValidationErrorTextWithProcessor = {

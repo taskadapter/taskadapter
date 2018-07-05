@@ -2,7 +2,6 @@ package com.taskadapter.web.uiapi
 
 import com.taskadapter.connector.NewConnector
 import com.taskadapter.connector.definition._
-import com.taskadapter.connector.definition.exception.ConfigValidationError
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.model.Field
 import com.taskadapter.web.data.Messages
@@ -38,7 +37,7 @@ class UIConnectorConfigImpl[C <: ConnectorConfig, S <: ConnectorSetup]
 
   override def getLabel: String = getConnectorSetup.label
 
-  override def validateForLoad(): Seq[ConfigValidationError] = {
+  override def validateForLoad(): Seq[BadConfigException] = {
     editorFactory.validateForLoad(config, setup)
   }
 

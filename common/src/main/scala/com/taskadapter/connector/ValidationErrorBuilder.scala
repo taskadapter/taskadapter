@@ -1,19 +1,18 @@
 package com.taskadapter.connector
 
-import com.taskadapter.connector.definition.exception.ConfigValidationError
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 
 import scala.collection.mutable.ListBuffer
 
 class ValidationErrorBuilder {
-  val errors = new ListBuffer[ConfigValidationError]()
+  val errors = new ListBuffer[BadConfigException]()
 
   def error(exception: BadConfigException): ValidationErrorBuilder = {
-    errors += ConfigValidationError(exception, None)
+    errors += exception
     this
   }
 
-  def build(): Seq[ConfigValidationError] = {
+  def build(): Seq[BadConfigException] = {
     errors
   }
 }

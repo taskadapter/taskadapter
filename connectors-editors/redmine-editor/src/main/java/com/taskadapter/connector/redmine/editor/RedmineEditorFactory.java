@@ -20,7 +20,6 @@ import com.taskadapter.web.configeditor.server.ServerPanelFactory;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Sandbox;
-import com.taskadapter.connector.definition.exception.ConfigValidationError;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.GridLayout;
@@ -99,8 +98,8 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
     }
 
     @Override
-    public Seq<ConfigValidationError> validateForLoad(RedmineConfig config, WebConnectorSetup setup) {
-        return Seq$.MODULE$.<ConfigValidationError>empty();
+    public Seq<BadConfigException> validateForLoad(RedmineConfig config, WebConnectorSetup setup) {
+        return Seq$.MODULE$.<BadConfigException>empty();
     }
 
     @Override

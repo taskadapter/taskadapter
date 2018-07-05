@@ -2,7 +2,6 @@ package com.taskadapter.connector.basecamp
 
 import com.taskadapter.connector.ValidationErrorBuilder
 import com.taskadapter.connector.basecamp.exceptions.BadFieldException
-import com.taskadapter.connector.definition.exception.ConfigValidationError
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 
 import scala.collection.Seq
@@ -25,15 +24,15 @@ object BasecampValidator {
   }
 
   @throws[BadConfigException]
-  private def failIfErrors(errors: Seq[ConfigValidationError]): Unit = {
-    if (errors.nonEmpty) throw errors.head.error
+  private def failIfErrors(errors: Seq[BadConfigException]): Unit = {
+    if (errors.nonEmpty) throw errors.head
   }
 
-  def validateConfig(config: BasecampConfig): Seq[ConfigValidationError] = {
+  def validateConfig(config: BasecampConfig): Seq[BadConfigException] = {
     validateAccount(config) ++ validateProject(config) ++ validateTodolist(config)
   }
 
-  def validateAccount(config: BasecampConfig): Seq[ConfigValidationError] = {
+  def validateAccount(config: BasecampConfig): Seq[BadConfigException] = {
     val errorBuilder = new ValidationErrorBuilder
     val accountId = config.getAccountId
     if (accountId == null || accountId.isEmpty) errorBuilder.error(FieldNotSetException("account-id"))
@@ -41,7 +40,7 @@ object BasecampValidator {
     errorBuilder.build()
   }
 
-  def validateProject(config: BasecampConfig): Seq[ConfigValidationError] = {
+  def validateProject(config: BasecampConfig): Seq[BadConfigException] = {
     val errorBuilder = new ValidationErrorBuilder
     val projectKey = config.getProjectKey
     if (projectKey == null) errorBuilder.error(FieldNotSetException("project-key"))
@@ -49,7 +48,7 @@ object BasecampValidator {
     errorBuilder.build()
   }
 
-  def validateTodolist(config: BasecampConfig): Seq[ConfigValidationError] = {
+  def validateTodolist(config: BasecampConfig): Seq[BadConfigException] = {
     val errorBuilder = new ValidationErrorBuilder
     val listKey = config.getTodoKey
     if (listKey == null) errorBuilder.error(FieldNotSetException("todo-key"))

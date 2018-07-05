@@ -2,7 +2,7 @@ package com.taskadapter.connector.trello.editor
 
 import com.google.common.base.Strings
 import com.taskadapter.connector.ValidationErrorBuilder
-import com.taskadapter.connector.definition.exception.{ConfigValidationError, FieldNotMappedException}
+import com.taskadapter.connector.definition.exception.FieldNotMappedException
 import com.taskadapter.connector.definition.exceptions._
 import com.taskadapter.connector.definition.{FieldMapping, WebConnectorSetup}
 import com.taskadapter.connector.trello.{TrelloClient, TrelloConfig, TrelloConnector}
@@ -67,7 +67,7 @@ class TrelloEditorFactory extends PluginEditorFactory[TrelloConfig, WebConnector
     }
   }
 
-  override def validateForLoad(config: TrelloConfig, serverInfo: WebConnectorSetup): Seq[ConfigValidationError] = {
+  override def validateForLoad(config: TrelloConfig, serverInfo: WebConnectorSetup): Seq[BadConfigException] = {
     val builder = new ValidationErrorBuilder
     if (Strings.isNullOrEmpty(serverInfo.host)) builder.error(new ServerURLNotSetException)
     if (Strings.isNullOrEmpty(config.boardId)) builder.error(new ProjectNotSetException)

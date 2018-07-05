@@ -1,6 +1,5 @@
 package com.taskadapter.webui.pages;
 
-import com.taskadapter.connector.definition.exception.ConfigValidationError;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
@@ -8,8 +7,8 @@ import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ImageLoader;
 import com.taskadapter.webui.Page;
 import com.vaadin.event.LayoutEvents;
-import com.vaadin.event.Transferable;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
+import com.vaadin.event.Transferable;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptAll;
@@ -17,11 +16,11 @@ import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DragAndDropWrapper;
+import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.themes.ValoTheme;
 import scala.collection.Seq;
@@ -79,9 +78,9 @@ final class UniConfigExport {
 
     private static String getValidationError(UISyncConfig syncConfig) {
         StringBuilder rb = new StringBuilder();
-        Seq<ConfigValidationError> errors = syncConfig.getConnector1().validateForLoad();
+        Seq<BadConfigException> errors = syncConfig.getConnector1().validateForLoad();
         errors.foreach(e -> rb.append(Page.message("configsPage.errorSource",
-                syncConfig.getConnector1().decodeException(e.error()))));
+                syncConfig.getConnector1().decodeException(e))));
         try {
             syncConfig.getConnector2().validateForSave(syncConfig.fieldMappings());
         } catch (BadConfigException e) {

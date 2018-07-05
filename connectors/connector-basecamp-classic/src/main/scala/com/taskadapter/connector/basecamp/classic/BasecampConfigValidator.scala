@@ -3,7 +3,6 @@ package com.taskadapter.connector.basecamp.classic
 import com.taskadapter.connector.ValidationErrorBuilder
 import com.taskadapter.connector.basecamp.FieldNotSetException
 import com.taskadapter.connector.definition.WebConnectorSetup
-import com.taskadapter.connector.definition.exception.ConfigValidationError
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 
 import scala.collection.Seq
@@ -13,7 +12,7 @@ object BasecampConfigValidator {
     failIfErrors(validateServerAuthNoException(setup))
   }
 
-  def validateServerAuthNoException(setup: WebConnectorSetup): Seq[ConfigValidationError] = {
+  def validateServerAuthNoException(setup: WebConnectorSetup): Seq[BadConfigException] = {
     val errorBuilder = new ValidationErrorBuilder
     val apiKey = setup.apiKey
     if (apiKey == null || apiKey.isEmpty) errorBuilder.error(FieldNotSetException("auth"))
@@ -26,7 +25,7 @@ object BasecampConfigValidator {
     failIfErrors(validateProjectKeyNoException(config))
   }
 
-  def validateProjectKeyNoException(config: BasecampClassicConfig): Seq[ConfigValidationError] = {
+  def validateProjectKeyNoException(config: BasecampClassicConfig): Seq[BadConfigException] = {
     val errorBuilder = new ValidationErrorBuilder
     val pKey = config.getProjectKey
     if (pKey == null || pKey.isEmpty) errorBuilder.error(FieldNotSetException("project-key"))
@@ -37,7 +36,7 @@ object BasecampConfigValidator {
     failIfErrors(validateTodoListNoException(config))
   }
 
-  def validateTodoListNoException(config: BasecampClassicConfig): Seq[ConfigValidationError] = {
+  def validateTodoListNoException(config: BasecampClassicConfig): Seq[BadConfigException] = {
     val errorBuilder = new ValidationErrorBuilder
     val pKey = config.getTodoKey
     if (pKey == null || pKey.isEmpty) errorBuilder.error(FieldNotSetException("todo-key"))
@@ -45,7 +44,7 @@ object BasecampConfigValidator {
   }
 
   @throws[BadConfigException]
-  private def failIfErrors(errors: Seq[ConfigValidationError]): Unit = {
-    if (errors.nonEmpty) throw errors.head.error
+  private def failIfErrors(errors: Seq[BadConfigException]): Unit = {
+    if (errors.nonEmpty) throw errors.head
   }
 }

@@ -10,7 +10,6 @@ import com.taskadapter.connector.basecamp.classic.transport.BaseCommunicator;
 import com.taskadapter.connector.basecamp.classic.transport.ObjectAPIFactory;
 import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.WebConnectorSetup;
-import com.taskadapter.connector.definition.exception.ConfigValidationError;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
@@ -186,7 +185,7 @@ public class BasecampClassicEditorFactory implements PluginEditorFactory<Basecam
     }
 
     @Override
-    public Seq<ConfigValidationError> validateForLoad(BasecampClassicConfig config, WebConnectorSetup setup) {
+    public Seq<BadConfigException> validateForLoad(BasecampClassicConfig config, WebConnectorSetup setup) {
         return BasecampConfigValidator.validateTodoListNoException(config);
     }
 

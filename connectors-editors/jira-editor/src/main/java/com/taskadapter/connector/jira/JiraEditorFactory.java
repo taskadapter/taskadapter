@@ -4,7 +4,6 @@ import com.google.common.base.Strings;
 import com.taskadapter.connector.ValidationErrorBuilder;
 import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.WebConnectorSetup;
-import com.taskadapter.connector.definition.exception.ConfigValidationError;
 import com.taskadapter.connector.definition.exception.FilterNotSetException;
 import com.taskadapter.connector.definition.exception.ForbiddenException;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
@@ -163,7 +162,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     }
 
     @Override
-    public Seq<ConfigValidationError> validateForLoad(JiraConfig config, WebConnectorSetup serverInfo) {
+    public Seq<BadConfigException> validateForLoad(JiraConfig config, WebConnectorSetup serverInfo) {
         ValidationErrorBuilder builder = new ValidationErrorBuilder();
 
         if (Strings.isNullOrEmpty(serverInfo.host())) {
