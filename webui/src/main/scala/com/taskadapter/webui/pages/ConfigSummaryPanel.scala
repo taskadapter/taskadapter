@@ -1,5 +1,6 @@
 package com.taskadapter.webui.pages
 
+import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{SetupId, UIConnectorConfig, UISyncConfig}
@@ -151,20 +152,20 @@ class ConfigSummaryPanel(config: UISyncConfig, mode: DisplayMode, callback: Conf
   }
 
   def validateSaveToLeft(config: UISyncConfig) : Seq[String] = {
-    val loadErrors = validateLoad(config.getConnector2)
-    val saveErrors = validateSave(config.getConnector1)
+    val loadErrors = validateLoad(config.getConnector2, config.fieldMappings)
+    val saveErrors = validateSave(config.getConnector1, config.fieldMappings)
     loadErrors ++ saveErrors
   }
 
   def validateSaveToRight(config: UISyncConfig) : Seq[String] = {
-    val loadErrors = validateLoad(config.getConnector1)
-    val saveErrors = validateSave(config.getConnector2)
+    val loadErrors = validateLoad(config.getConnector1, config.fieldMappings)
+    val saveErrors = validateSave(config.getConnector2, config.fieldMappings)
     loadErrors ++ saveErrors
   }
 
-  def validateSave(uiConfig: UIConnectorConfig): Seq[String] = {
+  def validateSave(uiConfig: UIConnectorConfig, fieldMappings: Seq[FieldMapping[_]]): Seq[String] = {
     try {
-      val updated = uiConfig.updateForSave(sandbox)
+      val updated = uiConfig.updateForSave(sandbox, fieldMappings)
       // If setup was changed (e.g. a new file name was generated my MSP) - save it
       if (!(updated == uiConfig.getConnectorSetup)) try {
         configOps.saveSetup(updated, SetupId(updated.id.get))
@@ -183,7 +184,7 @@ class ConfigSummaryPanel(config: UISyncConfig, mode: DisplayMode, callback: Conf
     }
   }
 
-  def validateLoad(uiConfig: UIConnectorConfig) : Seq[String] = {
+  def validateLoad(uiConfig: UIConnectorConfig, fieldMappings: Seq[FieldMapping[_]]) : Seq[String] = {
     try {
       uiConfig.validateForLoad()
       Seq()

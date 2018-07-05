@@ -24,7 +24,7 @@ class JiraEditorFactoryTest extends FunSpec with Matchers with TempFolder {
 
   it("serverURLIsRequiredForSave"){
     try {
-      new JiraEditorFactory().validateForSave(new JiraConfig, WebConnectorSetup(JiraConnector.ID, "label1", "", "", "", false, ""))
+      new JiraEditorFactory().validateForSave(new JiraConfig, WebConnectorSetup(JiraConnector.ID, "label1", "", "", "", false, ""), Seq())
       Assert.fail()
     } catch {
       case e: JiraConfigException =>
@@ -34,7 +34,7 @@ class JiraEditorFactoryTest extends FunSpec with Matchers with TempFolder {
 
   it("projectKeyIsRequiredForSave") {
     try
-      new JiraEditorFactory().validateForSave(new JiraConfig, WebConnectorSetup(JiraConnector.ID, "label1", "http://somehost", "", "", false, ""))
+      new JiraEditorFactory().validateForSave(new JiraConfig, WebConnectorSetup(JiraConnector.ID, "label1", "http://somehost", "", "", false, ""), Seq())
     catch {
       case e: JiraConfigException =>
         Assert.assertTrue(e.getErrors.contains(JiraValidationErrorKind.PROJECT_NOT_SET))
@@ -47,7 +47,7 @@ class JiraEditorFactoryTest extends FunSpec with Matchers with TempFolder {
       config.setProjectKey("someproject")
       // clear the value
       config.setDefaultIssueTypeForSubtasks("")
-      new JiraEditorFactory().validateForSave(config, WebConnectorSetup(JiraConnector.ID, "label1", "http://somehost", "", "", false, ""))
+      new JiraEditorFactory().validateForSave(config, WebConnectorSetup(JiraConnector.ID, "label1", "http://somehost", "", "", false, ""), Seq())
       Assert.fail()
     } catch {
       case e: JiraConfigException =>

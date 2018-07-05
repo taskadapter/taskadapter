@@ -109,7 +109,7 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, schedulesStorage: SchedulesSt
 
     try {
       c.getConnector1.validateForLoad()
-      c.getConnector2.validateForSave()
+      c.getConnector2.validateForSave(c.fieldMappings)
 
       val loaded = UISyncConfig.loadTasks(c, 10000)
       val result = c.saveTasks(loaded, ProgressMonitorUtils.DUMMY_MONITOR)

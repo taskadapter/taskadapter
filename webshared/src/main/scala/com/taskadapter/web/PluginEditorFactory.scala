@@ -1,7 +1,7 @@
 package com.taskadapter.web
 
 import com.taskadapter.connector.definition.exceptions.BadConfigException
-import com.taskadapter.connector.definition.{ConnectorConfig, ConnectorSetup}
+import com.taskadapter.connector.definition.{ConnectorConfig, ConnectorSetup, FieldMapping}
 import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
 import com.vaadin.ui.ComponentContainer
@@ -23,7 +23,7 @@ trait PluginEditorFactory[C <: ConnectorConfig, S <: ConnectorSetup] extends Exc
     * @throws BadConfigException if validation fails.
     */
   @throws[BadConfigException]
-  def validateForSave(config: C, setup: S): Unit
+  def validateForSave(config: C, setup: S, fieldMappings: Seq[FieldMapping[_]]): Unit
 
   /**
     * Validates a connector config for load mode. If validation fails, plugin
@@ -60,7 +60,7 @@ trait PluginEditorFactory[C <: ConnectorConfig, S <: ConnectorSetup] extends Exc
     * @throws BadConfigException if config cannot be automatically updated to a "valid for save" state.
     */
   @throws[BadConfigException]
-  def updateForSave(config: C, sandbox: Sandbox, setup: S): S
+  def updateForSave(config: C, sandbox: Sandbox, setup: S, fieldMappings: Seq[FieldMapping[_]]): S
 
   /**
     * Describes source location in a user-friendly manner.

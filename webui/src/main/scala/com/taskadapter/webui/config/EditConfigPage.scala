@@ -3,6 +3,7 @@ package com.taskadapter.webui.config
 import com.google.common.base.Strings
 import com.taskadapter.config.StorageException
 import com.taskadapter.connector.definition.FieldMapping
+import com.taskadapter.connector.definition.exception.FieldNotMappedException
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox

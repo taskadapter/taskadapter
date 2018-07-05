@@ -1,9 +1,11 @@
 package com.taskadapter.connector.github.editor;
 
 import com.google.common.base.Strings;
+import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.LoginNameNotSpecifiedException;
+import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOperation;
 import com.taskadapter.connector.github.GithubConfig;
@@ -19,6 +21,7 @@ import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.VerticalLayout;
 import scala.Option;
+import scala.collection.Seq;
 
 import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
@@ -81,7 +84,7 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig, We
     }
 
     @Override
-    public void validateForSave(GithubConfig config, WebConnectorSetup serverInfo) throws BadConfigException {
+    public void validateForSave(GithubConfig config, WebConnectorSetup serverInfo, Seq<FieldMapping<?>> fieldMappings) throws BadConfigException {
         if (Strings.isNullOrEmpty(serverInfo.host())) {
             throw new ServerURLNotSetException();
         }
@@ -118,9 +121,10 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig, We
     }
 
     @Override
-    public WebConnectorSetup updateForSave(GithubConfig config, Sandbox sandbox, WebConnectorSetup setup)
+    public WebConnectorSetup updateForSave(GithubConfig config, Sandbox sandbox, WebConnectorSetup setup,
+                                           Seq<FieldMapping<?>> fieldMappings)
             throws BadConfigException {
-        validateForSave(config, setup);
+        validateForSave(config, setup, fieldMappings);
         return setup;
     }
 

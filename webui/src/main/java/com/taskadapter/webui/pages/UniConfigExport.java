@@ -63,7 +63,7 @@ final class UniConfigExport {
                     syncConfig.getConnector1().decodeException(e)));
         }
         try {
-            syncConfig.getConnector2().validateForSave();
+            syncConfig.getConnector2().validateForSave(syncConfig.fieldMappings());
         } catch (BadConfigException e) {
             rb.append(Page.message("configsPage.errorDestination",
                     syncConfig.getConnector2().decodeException(e)));
@@ -84,7 +84,7 @@ final class UniConfigExport {
                     syncConfig.getConnector1().decodeException(e)));
         }
         try {
-            syncConfig.getConnector2().validateForSave();
+            syncConfig.getConnector2().validateForSave(syncConfig.fieldMappings());
         } catch (BadConfigException e) {
             rb.append(Page.message("configsPage.errorDestination",
                     syncConfig.getConnector2().decodeException(e)));
