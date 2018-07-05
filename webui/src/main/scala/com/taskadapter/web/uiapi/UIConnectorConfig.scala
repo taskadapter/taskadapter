@@ -60,8 +60,7 @@ abstract class UIConnectorConfig {
   /**
     * Validates config for save. Does not update it in any way.
     */
-  @throws[BadConfigException]
-  def validateForSave(fieldMappings: Seq[FieldMapping[_]]): Unit
+  def validateForSave(fieldMappings: Seq[FieldMapping[_]]): Seq[BadConfigException]
 
   /**
     * Validates config for drop-in operation.
@@ -69,18 +68,6 @@ abstract class UIConnectorConfig {
   @throws[BadConfigException]
   @throws[DroppingNotSupportedException]
   def validateForDropIn(): Unit
-
-  /**
-    * Validates and updates config for save. This method is used mostly by the
-    * file-based connectors. Such connector may create a new file for the
-    * export. However, web-based connectors also may perform some action in this method.
-    *
-    * @param sandbox local filesystem sandbox.
-    * @return new setup, possibly updated
-    * @throws BadConfigException if config is invalid and cannot be fixed automatically.
-    */
-  @throws[BadConfigException]
-  def updateForSave(sandbox: Sandbox, fieldMappings: Seq[FieldMapping[_]]): ConnectorSetup
 
   /**
     * Creates a new connector instance with a current config. Note, that

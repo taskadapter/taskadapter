@@ -15,17 +15,18 @@ trait PluginEditorFactory[C <: ConnectorConfig, S <: ConnectorSetup] extends Exc
 
   def getEditSetupPanel(sandbox: Sandbox, setup: S): ConnectorSetupPanel
 
-  def createDefaultSetup(): S
+  /**
+    * @param sandbox this may used by file-based connectors, e.g. to generate a new file name inside user data folder
+    */
+  def createDefaultSetup(sandbox: Sandbox): S
 
   /**
     * Validates a connector config for save mode. If validation fails, plugin
     * editor factory should provide appropriate user-friendly message.
     *
     * @param config config to check.
-    * @throws BadConfigException if validation fails.
     */
-  @throws[BadConfigException]
-  def validateForSave(config: C, setup: S, fieldMappings: Seq[FieldMapping[_]]): Unit
+  def validateForSave(config: C, setup: S, fieldMappings: Seq[FieldMapping[_]]): Seq[BadConfigException]
 
   /**
     * Validates a connector config for load mode. If validation fails, plugin
@@ -47,20 +48,6 @@ trait PluginEditorFactory[C <: ConnectorConfig, S <: ConnectorSetup] extends Exc
   @throws[BadConfigException]
   @throws[DroppingNotSupportedException]
   def validateForDropInLoad(config: C): Unit
-
-  /**
-    * Updates config for save (if it is possible). Primary purpose of this
-    * method is to give a plugin editor last chance to update configuration
-    * before save (for example, create a file). However, non-file plugins also
-    * may update config if it is feasible.
-    *
-    * @param config  config to update.
-    * @param sandbox local filesystem sandbox.
-    * @return new setup, possibly updated
-    * @throws BadConfigException if config cannot be automatically updated to a "valid for save" state.
-    */
-  @throws[BadConfigException]
-  def updateForSave(config: C, sandbox: Sandbox, setup: S, fieldMappings: Seq[FieldMapping[_]]): S
 
   /**
     * Describes source location in a user-friendly manner.

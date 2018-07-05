@@ -12,11 +12,11 @@ class FileNameGeneratorTest extends FunSpec with Matchers {
     val folder = new File(System.getProperty("java.io.tmpdir"));
 
     val filePattern = "file_%d.txt"
-    val file = FileNameGenerator.createSafeAvailableFile(folder, filePattern)
+    val file = FileNameGenerator.findSafeAvailableFileName(folder, filePattern)
     file.createNewFile()
     file.deleteOnExit()
 
-    val file2 = FileNameGenerator.createSafeAvailableFile(folder, filePattern)
+    val file2 = FileNameGenerator.findSafeAvailableFileName(folder, filePattern)
     file2.getName should not be file.getName
     file2.deleteOnExit()
   }

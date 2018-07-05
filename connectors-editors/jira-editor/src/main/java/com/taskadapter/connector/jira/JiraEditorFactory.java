@@ -29,9 +29,6 @@ import scala.collection.JavaConverters;
 import scala.collection.Seq;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import static com.vaadin.server.Sizeable.Unit.PERCENTAGE;
@@ -61,38 +58,12 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
             return MESSAGES.get("errors.notAuthorized");
         } else if (e instanceof ForbiddenException) {
             return MESSAGES.get("errors.forbidden");
-        } else if (e instanceof JiraConfigException) {
-            return formatValidationErrors((JiraConfigException) e);
+        } else if (e instanceof DefaultTaskTypeNotSetException) {
+            return MESSAGES.get("error.taskTypeNotSet");
+        } else if (e instanceof DefaultSubTaskTypeNotSetException) {
+            return MESSAGES.get("error.subtasksTypeNotSet");
         }
-        return e.getMessage();
-    }
-
-    private static String formatValidationErrors(JiraConfigException exn) {
-        StringBuilder res = new StringBuilder();
-
-        final Iterator<JiraValidationErrorKind> itr = exn.getErrors().iterator();
-        res.append(getValidationMessage(itr.next()));
-        while (itr.hasNext()) {
-            res.append("<br/>\n").append(getValidationMessage(itr.next()));
-        }
-
-        return res.toString();
-    }
-
-    private static String getValidationMessage(JiraValidationErrorKind kind) {
-        switch (kind) {
-            case HOST_NOT_SET:
-                return MESSAGES.get("errors.serverUrlNotSet");
-            case PROJECT_NOT_SET:
-                return MESSAGES.get("errors.projectKeyNotSet");
-            case DEFAULT_TASK_TYPE_NOT_SET:
-                return MESSAGES.get("error.taskTypeNotSet");
-            case DEFAULT_SUBTASK_TYPE_NOT_SET:
-                return MESSAGES.get("error.subtasksTypeNotSet");
-            case QUERY_ID_NOT_SET:
-                return MESSAGES.get("jira.error.filterNotSet");
-        }
-        return "??=>" + kind.toString();
+        return e.toString();
     }
 
     @Override
@@ -134,38 +105,33 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     }
 
     @Override
-    public WebConnectorSetup createDefaultSetup() {
+    public WebConnectorSetup createDefaultSetup(Sandbox sandbox) {
         return new WebConnectorSetup(JiraConnector.ID(), Option.empty(), "My JIRA", "http://", "",
                 "", false, "");
     }
 
     @Override
-    public void validateForSave(JiraConfig config, WebConnectorSetup serverInfo, Seq<FieldMapping<?>> fieldMappings) throws BadConfigException {
-        final Collection<JiraValidationErrorKind> errors = new LinkedHashSet<>();
-
+    public Seq<BadConfigException> validateForSave(JiraConfig config, WebConnectorSetup serverInfo,
+                                                   Seq<FieldMapping<?>> fieldMappings) {
+        List<BadConfigException> list = new ArrayList<>();
         if (Strings.isNullOrEmpty(serverInfo.host())) {
-            errors.add(JiraValidationErrorKind.HOST_NOT_SET);
+            list.add(new ServerURLNotSetException());
         }
-
         if (Strings.isNullOrEmpty(config.getProjectKey())) {
-            errors.add(JiraValidationErrorKind.PROJECT_NOT_SET);
+            list.add(new ProjectNotSetException());
         }
-
         if (Strings.isNullOrEmpty(config.getDefaultTaskType())) {
-            errors.add(JiraValidationErrorKind.DEFAULT_TASK_TYPE_NOT_SET);
+            list.add(new DefaultTaskTypeNotSetException());
         }
-
         if (Strings.isNullOrEmpty(config.getDefaultIssueTypeForSubtasks())) {
-            errors.add(JiraValidationErrorKind.DEFAULT_SUBTASK_TYPE_NOT_SET);
+            list.add(new DefaultSubTaskTypeNotSetException());
         }
-
-        if (!errors.isEmpty())
-            throw new JiraConfigException(errors);
+        return JavaConverters.asScalaBuffer(list);
     }
 
     @Override
     public Seq<BadConfigException> validateForLoad(JiraConfig config, WebConnectorSetup serverInfo) {
-        List<BadConfigException> list = new ArrayList();
+        List<BadConfigException> list = new ArrayList<>();
 
         if (Strings.isNullOrEmpty(serverInfo.host())) {
             list.add(new ServerURLNotSetException());
@@ -191,14 +157,6 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     @Override
     public Messages fieldNames() {
         return MESSAGES;
-    }
-
-    @Override
-    public WebConnectorSetup updateForSave(JiraConfig config, Sandbox sandbox, WebConnectorSetup setup,
-                                           Seq<FieldMapping<?>> fieldMappings)
-            throws BadConfigException {
-        validateForSave(config, setup, fieldMappings);
-        return setup;
     }
 
     @Override

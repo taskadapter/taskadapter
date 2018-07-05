@@ -24,8 +24,11 @@ import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.GridLayout;
 import scala.Option;
+import scala.collection.JavaConverters;
 import scala.collection.Seq;
 import scala.collection.Seq$;
+
+import java.util.Arrays;
 
 public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, WebConnectorSetup> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.redmine.messages";
@@ -85,16 +88,18 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
     }
 
     @Override
-    public WebConnectorSetup createDefaultSetup() {
+    public WebConnectorSetup createDefaultSetup(Sandbox sandbox) {
         return new WebConnectorSetup(RedmineConnector.ID(), Option.empty(), "My Redmine", "", "",
                 "", true, "");
     }
 
     @Override
-    public void validateForSave(RedmineConfig config, WebConnectorSetup setup, Seq<FieldMapping<?>> fieldMappings) throws BadConfigException {
+    public Seq<BadConfigException> validateForSave(RedmineConfig config, WebConnectorSetup setup,
+                                                   Seq<FieldMapping<?>> fieldMappings) {
         if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
-            throw new ProjectNotSetException();
+            return JavaConverters.asScalaBuffer(Arrays.asList(new ProjectNotSetException()));
         }
+        return Seq$.MODULE$.<BadConfigException>empty();
     }
 
     @Override
@@ -115,14 +120,6 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
     @Override
     public Messages fieldNames() {
         return MESSAGES;
-    }
-
-    @Override
-    public WebConnectorSetup updateForSave(RedmineConfig config, Sandbox sandbox, WebConnectorSetup setup,
-                                           Seq<FieldMapping<?>> fieldMappings)
-            throws BadConfigException {
-        validateForSave(config, setup, fieldMappings);
-        return setup;
     }
 
     @Override

@@ -32,6 +32,7 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import scala.Option;
+import scala.collection.JavaConverters;
 import scala.collection.Seq;
 
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class BasecampClassicEditorFactory implements PluginEditorFactory<Basecam
     }
 
     @Override
-    public WebConnectorSetup createDefaultSetup() {
+    public WebConnectorSetup createDefaultSetup(Sandbox sandbox) {
         return new WebConnectorSetup(BasecampClassicConnector.ID(), Option.empty(),
                 "My Basecamp Classic", "https://-my-project-name-here-.basecamphq.com", "",
                 "", true, "");
@@ -178,10 +179,13 @@ public class BasecampClassicEditorFactory implements PluginEditorFactory<Basecam
     }
 
     @Override
-    public void validateForSave(BasecampClassicConfig config, WebConnectorSetup setup, Seq<FieldMapping<?>> fieldMappings) throws BadConfigException {
+    public Seq<BadConfigException> validateForSave(BasecampClassicConfig config, WebConnectorSetup setup,
+                                                   Seq<FieldMapping<?>> fieldMappings) {
+        List<BadConfigException> list = new ArrayList<>();
         if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
-            throw new ProjectNotSetException();
+            list.add(new ProjectNotSetException());
         }
+        return JavaConverters.asScalaBuffer(list);
     }
 
     @Override
@@ -207,14 +211,6 @@ public class BasecampClassicEditorFactory implements PluginEditorFactory<Basecam
     @Override
     public String formatError(Throwable e) {
         return formatter.formatError(e);
-    }
-
-    @Override
-    public WebConnectorSetup updateForSave(BasecampClassicConfig config, Sandbox sandbox, WebConnectorSetup setup,
-                                           Seq<FieldMapping<?>> fieldMappings)
-            throws BadConfigException {
-        validateForSave(config, setup, fieldMappings);
-        return setup;
     }
 
     @Override

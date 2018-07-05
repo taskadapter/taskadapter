@@ -42,7 +42,7 @@ class UIConnectorConfigImpl[C <: ConnectorConfig, S <: ConnectorSetup]
   }
 
   @throws[BadConfigException]
-  override def validateForSave(mappings: Seq[FieldMapping[_]]): Unit = {
+  override def validateForSave(mappings: Seq[FieldMapping[_]]): Seq[BadConfigException] = {
     editorFactory.validateForSave(config, setup, mappings)
   }
 
@@ -51,10 +51,6 @@ class UIConnectorConfigImpl[C <: ConnectorConfig, S <: ConnectorSetup]
   override def validateForDropIn(): Unit = {
     editorFactory.validateForDropInLoad(config)
   }
-
-  @throws[BadConfigException]
-  override def updateForSave(sandbox: Sandbox, fieldMappings: Seq[FieldMapping[_]]): ConnectorSetup =
-    editorFactory.updateForSave(config, sandbox, setup, fieldMappings)
 
   override def createConnectorInstance: NewConnector = connectorFactory.createConnector(config, setup)
 

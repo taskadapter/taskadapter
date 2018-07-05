@@ -36,9 +36,12 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import scala.Option;
+import scala.collection.JavaConverters;
 import scala.collection.Seq;
+import scala.collection.Seq$;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.taskadapter.web.configeditor.EditorUtil.propertyInput;
@@ -75,7 +78,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
     }
 
     @Override
-    public WebConnectorSetup createDefaultSetup() {
+    public WebConnectorSetup createDefaultSetup(Sandbox sandbox) {
         return new WebConnectorSetup(BasecampConnector.ID(), Option.empty(), "My Basecamp 2", ObjectAPI.BASECAMP_URL, "",
                 "", false, "");
     }
@@ -209,10 +212,11 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
     }
 
     @Override
-    public void validateForSave(BasecampConfig config, WebConnectorSetup setup, Seq<FieldMapping<?>> fieldMappings) throws BadConfigException {
+    public Seq<BadConfigException> validateForSave(BasecampConfig config, WebConnectorSetup setup, Seq<FieldMapping<?>> fieldMappings) {
         if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
-            throw new ProjectNotSetException();
+            return JavaConverters.asScalaBuffer(Arrays.asList(new ProjectNotSetException()));
         }
+        return Seq$.MODULE$.<BadConfigException>empty();
     }
 
     @Override
@@ -239,15 +243,6 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
     public String formatError(Throwable e) {
         return formatter.formatError(e);
     }
-
-    @Override
-    public WebConnectorSetup updateForSave(BasecampConfig config, Sandbox sandbox, WebConnectorSetup setup,
-                                           Seq<FieldMapping<?>> fieldMappings)
-            throws BadConfigException {
-        validateForSave(config, setup, fieldMappings);
-        return setup;
-    }
-
 
     @Override
     public void validateForDropInLoad(BasecampConfig config) throws DroppingNotSupportedException {

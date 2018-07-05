@@ -33,7 +33,7 @@ class NewSetupPage(configOperations: ConfigOperations, editorManager: EditorMana
     // if you remove these class declarations, you will get runtime ClassCastExceptions saying cannot convert
     // WebConnectorSetup to Nothing!
     val editor : PluginEditorFactory[ConnectorConfig, ConnectorSetup] = editorManager.getEditorFactory(connectorId)
-    val setup : ConnectorSetup = editor.createDefaultSetup()
+    val setup : ConnectorSetup = editor.createDefaultSetup(sandbox)
     val editSetupPanel = editor.getEditSetupPanel(sandbox, setup)
     panelForEditor.removeAllComponents()
     panelForEditor.addComponent(editSetupPanel.getUI)

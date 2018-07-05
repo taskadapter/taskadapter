@@ -20,7 +20,11 @@ import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.VerticalLayout;
 import scala.Option;
+import scala.collection.JavaConverters;
 import scala.collection.Seq;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
@@ -39,7 +43,7 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig, We
     }
 
     @Override
-    public WebConnectorSetup createDefaultSetup() {
+    public WebConnectorSetup createDefaultSetup(Sandbox sandbox) {
         return new WebConnectorSetup(MantisConnector.ID(), Option.empty(), "My MantisBT", "http://",
                 "", "", false, "");
     }
@@ -82,14 +86,16 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig, We
     }
 
     @Override
-    public void validateForSave(MantisConfig config, WebConnectorSetup setup, Seq<FieldMapping<?>> fieldMappings) throws BadConfigException {
+    public Seq<BadConfigException> validateForSave(MantisConfig config, WebConnectorSetup setup, Seq<FieldMapping<?>> fieldMappings) {
+        List<BadConfigException> list = new ArrayList<>();
         if (Strings.isNullOrEmpty(setup.host())) {
-            throw new ServerURLNotSetException();
+            list.add(new ServerURLNotSetException());
         }
 
         if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
-            throw new ProjectNotSetException();
+            list.add(new ProjectNotSetException());
         }
+        return JavaConverters.asScalaBuffer(list);
     }
 
     @Override
@@ -121,16 +127,7 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig, We
     }
 
     @Override
-    public WebConnectorSetup updateForSave(MantisConfig config, Sandbox sandbox, WebConnectorSetup setup,
-                                           Seq<FieldMapping<?>> fieldMappings)
-            throws BadConfigException {
-        validateForSave(config, setup, fieldMappings);
-        return setup;
-    }
-
-    @Override
-    public void validateForDropInLoad(MantisConfig config)
-            throws BadConfigException, DroppingNotSupportedException {
+    public void validateForDropInLoad(MantisConfig config) throws DroppingNotSupportedException {
         throw DroppingNotSupportedException.INSTANCE;
     }
 

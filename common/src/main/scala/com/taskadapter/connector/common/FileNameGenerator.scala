@@ -14,11 +14,11 @@ object FileNameGenerator {
     * @param format     sample: `MSP_export_%d.xml`
     * @return
     */
-  def createSafeAvailableFile(rootFolder: File, format: String): File = {
-    createSafeAvailableFile(rootFolder, format, 10000)
+  def findSafeAvailableFileName(rootFolder: File, format: String): File = {
+    findSafeAvailableFileName(rootFolder, format, 10000)
   }
 
-  def createSafeAvailableFile(rootFolder: File, format: String, numberOfTries: Int): File = {
+  def findSafeAvailableFileName(rootFolder: File, format: String, numberOfTries: Int): File = {
 
     val safeFormat = makeFileNameDiskSafe(format)
     var number = 1

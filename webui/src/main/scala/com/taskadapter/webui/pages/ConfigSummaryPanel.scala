@@ -4,7 +4,7 @@ import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.connector.definition.exception.FieldNotMappedException
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.web.service.Sandbox
-import com.taskadapter.web.uiapi.{SetupId, UIConnectorConfig, UISyncConfig}
+import com.taskadapter.web.uiapi.{UIConnectorConfig, UISyncConfig}
 import com.taskadapter.webui._
 import com.taskadapter.webui.config.EditConfigPage
 import com.vaadin.ui.Button.ClickListener
@@ -171,23 +171,8 @@ class ConfigSummaryPanel(config: UISyncConfig, mode: DisplayMode, callback: Conf
   }
 
   def validateSave(uiConfig: UIConnectorConfig, fieldMappings: Seq[FieldMapping[_]], configSaver: Runnable): Seq[ValidationErrorTextWithProcessor] = {
-    try {
-      val updated = uiConfig.updateForSave(sandbox, fieldMappings)
-      // If setup was changed (e.g. a new file name was generated my MSP) - save it
-      if (!(updated == uiConfig.getConnectorSetup)) try {
-        configOps.saveSetup(updated, SetupId(updated.id.get))
-        uiConfig.setConnectorSetup(updated)
-      } catch {
-        case e: Exception =>
-          val message = Page.message("export.troublesSavingConfig", e.getMessage)
-          log.error(message, e)
-          Notification.show(message, Notification.Type.ERROR_MESSAGE)
-      }
-      Seq()
-    } catch {
-      case e: BadConfigException =>
-        Seq(buildItem(uiConfig, e, configSaver))
-    }
+    val errors = uiConfig.validateForSave(fieldMappings)
+    errors.map(e => buildItem(uiConfig, e, configSaver))
   }
 
   def validateLoad(uiConfig: UIConnectorConfig, fieldMappings: Seq[FieldMapping[_]], configSaver: Runnable): Seq[ValidationErrorTextWithProcessor] = {

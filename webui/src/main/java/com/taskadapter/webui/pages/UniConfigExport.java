@@ -63,12 +63,10 @@ final class UniConfigExport {
             rb.append(Page.message("configsPage.errorSource",
                     syncConfig.getConnector1().decodeException(e)));
         }
-        try {
-            syncConfig.getConnector2().validateForSave(syncConfig.fieldMappings());
-        } catch (BadConfigException e) {
-            rb.append(Page.message("configsPage.errorDestination",
-                    syncConfig.getConnector2().decodeException(e)));
-        }
+        Seq<BadConfigException> saveErrors = syncConfig.getConnector2().validateForSave(syncConfig.fieldMappings());
+        saveErrors.foreach(e -> rb.append(Page.message("configsPage.errorDestination",
+                syncConfig.getConnector2().decodeException(e))));
+
         if (rb.length() == 0) {
             return null;
         }
@@ -78,15 +76,15 @@ final class UniConfigExport {
 
     private static String getValidationError(UISyncConfig syncConfig) {
         StringBuilder rb = new StringBuilder();
-        Seq<BadConfigException> errors = syncConfig.getConnector1().validateForLoad();
-        errors.foreach(e -> rb.append(Page.message("configsPage.errorSource",
+
+        Seq<BadConfigException> loadErrors = syncConfig.getConnector1().validateForLoad();
+        loadErrors.foreach(e -> rb.append(Page.message("configsPage.errorSource",
                 syncConfig.getConnector1().decodeException(e))));
-        try {
-            syncConfig.getConnector2().validateForSave(syncConfig.fieldMappings());
-        } catch (BadConfigException e) {
-            rb.append(Page.message("configsPage.errorDestination",
-                    syncConfig.getConnector2().decodeException(e)));
-        }
+
+        Seq<BadConfigException> saveErrors = syncConfig.getConnector2().validateForSave(syncConfig.fieldMappings());
+        saveErrors.foreach(e -> rb.append(Page.message("configsPage.errorDestination",
+                    syncConfig.getConnector2().decodeException(e))));
+
         if (rb.length() == 0) {
             return null;
         }

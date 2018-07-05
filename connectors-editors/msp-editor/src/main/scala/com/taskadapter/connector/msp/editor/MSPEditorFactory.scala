@@ -106,9 +106,11 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     )
   }
 
-  override def validateForSave(config: MSPConfig, setup: FileSetup, fieldMappings: Seq[FieldMapping[_]]): Unit = {
+  override def validateForSave(config: MSPConfig, setup: FileSetup, fieldMappings: Seq[FieldMapping[_]]):
+    Seq[BadConfigException] = {
     // empty target file name is valid because it will be generated in [[updateForSave]]
     // right before the export
+    Seq()
   }
 
   override def validateForLoad(config: MSPConfig, setup: FileSetup): Seq[BadConfigException] = {
@@ -138,22 +140,14 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     new FileProcessingResult(new File(newFilePath), UPLOAD_MPP_SUCCESS)
   }
 
-  @throws[BadConfigException]
-  override def updateForSave(config: MSPConfig, sandbox: Sandbox, setup: FileSetup,
-                             fieldMappings: Seq[FieldMapping[_]]): FileSetup = {
-    if (setup.targetFile.isEmpty || setup.targetFile == ".xml") {
-      val newPath = FileNameGenerator.createSafeAvailableFile(sandbox.getUserContentDirectory, "MSP_%d.xml").getAbsolutePath
-      if (newPath == null) throw new OutputFileNameNotSetException
-      setup.copy(label = getShortLabel(newPath),
-        sourceFile = newPath, targetFile = newPath)
-    } else {
-      setup
-    }
-  }
-
   override def isWebConnector: Boolean = false
 
-  override def createDefaultSetup(): FileSetup = FileSetup(MSPConnector.ID, None, "My MSP file", "", "")
+  override def createDefaultSetup(sandbox: Sandbox): FileSetup = {
+    val newPath = FileNameGenerator.findSafeAvailableFileName(sandbox.getUserContentDirectory, "MSP_%d.xml").getAbsolutePath
+    if (newPath == null) throw new OutputFileNameNotSetException
+    val label = getShortLabel(newPath)
+    FileSetup(MSPConnector.ID, None, label, newPath, newPath)
+  }
 
   override def fieldNames: Messages = messages
 }

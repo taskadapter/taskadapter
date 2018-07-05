@@ -1,7 +1,6 @@
 package com.taskadapter.connector.trello.editor
 
 import com.google.common.base.Strings
-import com.taskadapter.connector.ValidationErrorBuilder
 import com.taskadapter.connector.definition.exception.FieldNotMappedException
 import com.taskadapter.connector.definition.exceptions._
 import com.taskadapter.connector.definition.{FieldMapping, WebConnectorSetup}
@@ -15,6 +14,8 @@ import com.vaadin.data.util.MethodProperty
 import com.vaadin.server.Sizeable.Unit.PIXELS
 import com.vaadin.ui.{ComponentContainer, VerticalLayout}
 
+import scala.collection.mutable
+
 class TrelloEditorFactory extends PluginEditorFactory[TrelloConfig, WebConnectorSetup] {
   private val messages = new Messages("com.taskadapter.connector.trello.messages")
 
@@ -25,7 +26,7 @@ class TrelloEditorFactory extends PluginEditorFactory[TrelloConfig, WebConnector
     if (e.isInstanceOf[LoginNameNotSpecifiedException]) return messages.get("errors.loginNameNotSet")
     if (e.isInstanceOf[ProjectNotSetException]) return messages.get("errors.boardNotSet")
     if (e.isInstanceOf[FieldNotMappedException]) return messages.format("trello.error.requiredFieldNotMapped",
-        e.asInstanceOf[FieldNotMappedException].fieldName)
+      e.asInstanceOf[FieldNotMappedException].fieldName)
     if (!e.isInstanceOf[UnsupportedConnectorOperation]) return e.getMessage
     val connEx = e.asInstanceOf[UnsupportedConnectorOperation]
     if ("saveRelations" == connEx.getMessage) return messages.get("errors.unsupported.relations")
@@ -50,28 +51,29 @@ class TrelloEditorFactory extends PluginEditorFactory[TrelloConfig, WebConnector
   override def getEditSetupPanel(sandbox: Sandbox, setup: WebConnectorSetup): ConnectorSetupPanel =
     ServerPanelFactory.withApiKeyAndToken(TrelloConnector.ID, TrelloConnector.ID, setup)
 
-  @throws[BadConfigException]
-  override def validateForSave(config: TrelloConfig, serverInfo: WebConnectorSetup, fieldMappings: Seq[FieldMapping[_]]): Unit = {
-    if (Strings.isNullOrEmpty(serverInfo.host)) throw new ServerURLNotSetException
-    if (Strings.isNullOrEmpty(serverInfo.userName)) throw new LoginNameNotSpecifiedException
-    if (Strings.isNullOrEmpty(config.boardId)) throw new ProjectNotSetException
+  override def validateForSave(config: TrelloConfig, serverInfo: WebConnectorSetup, fieldMappings: Seq[FieldMapping[_]]):
+    Seq[BadConfigException] = {
+    val seq = new mutable.ListBuffer[BadConfigException]
+    if (Strings.isNullOrEmpty(serverInfo.host)) seq += new ServerURLNotSetException
+    if (Strings.isNullOrEmpty(serverInfo.userName)) seq += new LoginNameNotSpecifiedException
+    if (Strings.isNullOrEmpty(config.boardId)) seq += new ProjectNotSetException
 
-    checkTrelloListIsMapped(fieldMappings)
+    seq ++ checkTrelloListIsMapped(fieldMappings)
   }
 
-  @throws[BadConfigException]
-  def checkTrelloListIsMapped(fieldMappings: Seq[FieldMapping[_]]): Unit = {
+  def checkTrelloListIsMapped(fieldMappings: Seq[FieldMapping[_]]): Seq[BadConfigException] = {
     // "List Name" must be present on the right side and must be selected for export
     if (!fieldMappings.exists(m => m.fieldInConnector2.contains(TaskStatus) && m.selected)) {
-      throw FieldNotMappedException("List Name")
+      return Seq(FieldNotMappedException("List Name"))
     }
+    Seq()
   }
 
   override def validateForLoad(config: TrelloConfig, serverInfo: WebConnectorSetup): Seq[BadConfigException] = {
-    val builder = new ValidationErrorBuilder
-    if (Strings.isNullOrEmpty(serverInfo.host)) builder.error(new ServerURLNotSetException)
-    if (Strings.isNullOrEmpty(config.boardId)) builder.error(new ProjectNotSetException)
-    builder.build()
+    val seq = new mutable.ListBuffer[BadConfigException]
+    if (Strings.isNullOrEmpty(serverInfo.host)) seq += new ServerURLNotSetException
+    if (Strings.isNullOrEmpty(config.boardId)) seq += new ProjectNotSetException
+    seq
   }
 
   override def describeSourceLocation(config: TrelloConfig, setup: WebConnectorSetup): String = setup.host
@@ -79,17 +81,10 @@ class TrelloEditorFactory extends PluginEditorFactory[TrelloConfig, WebConnector
   override def describeDestinationLocation(config: TrelloConfig, setup: WebConnectorSetup): String =
     describeSourceLocation(config, setup)
 
-  @throws[BadConfigException]
-  override def updateForSave(config: TrelloConfig, sandbox: Sandbox, setup: WebConnectorSetup,
-                             fieldMappings: Seq[FieldMapping[_]]): WebConnectorSetup = {
-    validateForSave(config, setup, fieldMappings)
-    setup
-  }
-
   @throws[DroppingNotSupportedException]
   override def validateForDropInLoad(config: TrelloConfig) = throw DroppingNotSupportedException.INSTANCE
 
-  override def createDefaultSetup(): WebConnectorSetup = WebConnectorSetup(TrelloConnector.ID, None, "My Trello",
+  override def createDefaultSetup(sandbox: Sandbox): WebConnectorSetup = WebConnectorSetup(TrelloConnector.ID, None, "My Trello",
     "https://api.trello.com", "", "", false, "")
 
   override def fieldNames: Messages = new Messages("com.taskadapter.connector.trello.field-names")

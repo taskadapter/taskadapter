@@ -116,7 +116,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
   def getConfig(configId: ConfigId): Option[UISyncConfig] = getUserConfigs(configId.ownerName).find(_.id == configId)
 
   def saveNewSetup(userName: String, setup: ConnectorSetup): SetupId = {
-    val newFile = FileNameGenerator.createSafeAvailableFile(getSavedSetupsFolder(userName), setup.connectorId + "_%d.json")
+    val newFile = FileNameGenerator.findSafeAvailableFileName(getSavedSetupsFolder(userName), setup.connectorId + "_%d.json")
     val setupId = SetupId(newFile.getName)
     saveSetup(userName, setup, setupId)
     setupId
