@@ -184,15 +184,9 @@ class ConfigSummaryPanel(config: UISyncConfig, mode: DisplayMode, callback: Conf
     }
   }
 
-  def validateLoad(uiConfig: UIConnectorConfig, fieldMappings: Seq[FieldMapping[_]]) : Seq[String] = {
-    try {
-      uiConfig.validateForLoad()
-      Seq()
-    } catch {
-      case e: BadConfigException =>
-        val message = uiConfig.decodeException(e)
-        Seq(message)
-    }
+  def validateLoad(uiConfig: UIConnectorConfig, fieldMappings: Seq[FieldMapping[_]]): Seq[String] = {
+    val errors = uiConfig.validateForLoad()
+    errors.map(e => uiConfig.decodeException(e.error))
   }
 
   /**

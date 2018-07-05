@@ -3,6 +3,7 @@ package com.taskadapter.connector.basecamp.editor;
 import com.taskadapter.connector.basecamp.BasecampConfig;
 import com.taskadapter.connector.basecamp.BasecampConnector;
 import com.taskadapter.connector.basecamp.BasecampUtils;
+import com.taskadapter.connector.basecamp.BasecampValidator;
 import com.taskadapter.connector.basecamp.beans.BasecampProject;
 import com.taskadapter.connector.basecamp.beans.TodoList;
 import com.taskadapter.connector.basecamp.transport.BaseCommunicator;
@@ -25,6 +26,7 @@ import com.taskadapter.web.configeditor.Editors;
 import com.taskadapter.web.configeditor.server.ServerPanelFactory;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Sandbox;
+import com.taskadapter.connector.definition.exception.ConfigValidationError;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -215,8 +217,8 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
     }
 
     @Override
-    public void validateForLoad(BasecampConfig config, WebConnectorSetup setup) throws BadConfigException {
-        BasecampUtils.validateConfig(config);
+    public Seq<ConfigValidationError> validateForLoad(BasecampConfig config, WebConnectorSetup setup) {
+        return BasecampValidator.validateConfig(config);
     }
 
     @Override

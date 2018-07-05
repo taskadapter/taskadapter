@@ -20,11 +20,13 @@ import com.taskadapter.web.configeditor.server.ServerPanelFactory;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Sandbox;
+import com.taskadapter.connector.definition.exception.ConfigValidationError;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.GridLayout;
 import scala.Option;
 import scala.collection.Seq;
+import scala.collection.Seq$;
 
 public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, WebConnectorSetup> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.redmine.messages";
@@ -97,7 +99,8 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
     }
 
     @Override
-    public void validateForLoad(RedmineConfig config, WebConnectorSetup setup) {
+    public Seq<ConfigValidationError> validateForLoad(RedmineConfig config, WebConnectorSetup setup) {
+        return Seq$.MODULE$.<ConfigValidationError>empty();
     }
 
     @Override
@@ -124,8 +127,7 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
     }
 
     @Override
-    public void validateForDropInLoad(RedmineConfig config)
-            throws BadConfigException, DroppingNotSupportedException {
+    public void validateForDropInLoad(RedmineConfig config) throws DroppingNotSupportedException {
         throw DroppingNotSupportedException.INSTANCE;
     }
 }

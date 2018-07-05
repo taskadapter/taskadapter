@@ -1,6 +1,7 @@
 package com.taskadapter.web.uiapi
 
 import com.taskadapter.connector.NewConnector
+import com.taskadapter.connector.definition.exception.ConfigValidationError
 import com.taskadapter.connector.definition.{ConnectorSetup, FieldMapping}
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.model.Field
@@ -53,12 +54,9 @@ abstract class UIConnectorConfig {
 
   /**
     * Validates config for load.
-    *
-    * @throws BadConfigException
-    * if config is invalid.
+    * @return list of config errors. empty is no errors found. never null
     */
-  @throws[BadConfigException]
-  def validateForLoad(): Unit
+  def validateForLoad(): Seq[ConfigValidationError]
 
   /**
     * Validates config for save. Does not update it in any way.

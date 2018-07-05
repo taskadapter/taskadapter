@@ -1,11 +1,12 @@
 package com.taskadapter.connector.trello.editor
 
 import com.google.common.base.Strings
-import com.taskadapter.connector.definition.exception.FieldNotMappedException
-import com.taskadapter.connector.definition.{FieldMapping, WebConnectorSetup}
+import com.taskadapter.connector.ValidationErrorBuilder
+import com.taskadapter.connector.definition.exception.{ConfigValidationError, FieldNotMappedException}
 import com.taskadapter.connector.definition.exceptions._
-import com.taskadapter.connector.trello.{TrelloClient, TrelloConfig, TrelloConnector, TrelloField}
-import com.taskadapter.model.{NamedKeyedObject, NamedKeyedObjectImpl, TaskStatus}
+import com.taskadapter.connector.definition.{FieldMapping, WebConnectorSetup}
+import com.taskadapter.connector.trello.{TrelloClient, TrelloConfig, TrelloConnector}
+import com.taskadapter.model.{NamedKeyedObjectImpl, TaskStatus}
 import com.taskadapter.web.configeditor.server.{ProjectPanelScala, ServerPanelFactory}
 import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
@@ -13,6 +14,8 @@ import com.taskadapter.web.{ConnectorSetupPanel, DroppingNotSupportedException, 
 import com.vaadin.data.util.MethodProperty
 import com.vaadin.server.Sizeable.Unit.PIXELS
 import com.vaadin.ui.{ComponentContainer, VerticalLayout}
+
+import scala.collection.mutable.ListBuffer
 
 class TrelloEditorFactory extends PluginEditorFactory[TrelloConfig, WebConnectorSetup] {
   private val messages = new Messages("com.taskadapter.connector.trello.messages")
@@ -65,10 +68,11 @@ class TrelloEditorFactory extends PluginEditorFactory[TrelloConfig, WebConnector
     }
   }
 
-  @throws[BadConfigException]
-  override def validateForLoad(config: TrelloConfig, serverInfo: WebConnectorSetup): Unit = {
-    if (Strings.isNullOrEmpty(serverInfo.host)) throw new ServerURLNotSetException
-    if (Strings.isNullOrEmpty(config.boardId)) throw new ProjectNotSetException
+  override def validateForLoad(config: TrelloConfig, serverInfo: WebConnectorSetup): Seq[ConfigValidationError] = {
+    val builder = new ValidationErrorBuilder
+    if (Strings.isNullOrEmpty(serverInfo.host)) builder.error(new ServerURLNotSetException)
+    if (Strings.isNullOrEmpty(config.boardId)) builder.error(new ProjectNotSetException)
+    builder.build()
   }
 
   override def describeSourceLocation(config: TrelloConfig, setup: WebConnectorSetup): String = setup.host

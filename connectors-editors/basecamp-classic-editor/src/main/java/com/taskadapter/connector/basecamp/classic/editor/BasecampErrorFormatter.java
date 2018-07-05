@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.taskadapter.connector.basecamp.FieldNotSetException;
 import com.taskadapter.connector.basecamp.classic.exceptions.ObjectNotFoundException;
 import com.taskadapter.connector.definition.exceptions.NotAuthorizedException;
+import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.data.Messages;
 
@@ -13,6 +14,10 @@ class BasecampErrorFormatter implements ExceptionFormatter {
 
     @Override
     public String formatError(Throwable e) {
+        if (e instanceof ProjectNotSetException) {
+            return MESSAGES.get("basecampclassic.error.projectKeyNotSet");
+        }
+
         if (e instanceof FieldNotSetException) {
             String field = ((FieldNotSetException) e).field();
             String message = MESSAGES.format("error." + field);

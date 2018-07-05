@@ -1,6 +1,7 @@
 package com.taskadapter.connector.github.editor;
 
 import com.google.common.base.Strings;
+import com.taskadapter.connector.ValidationErrorBuilder;
 import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
@@ -17,11 +18,16 @@ import com.taskadapter.web.configeditor.ProjectPanel;
 import com.taskadapter.web.configeditor.server.ServerPanelFactory;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Sandbox;
+import com.taskadapter.connector.definition.exception.ConfigValidationError;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.VerticalLayout;
 import scala.Option;
+import scala.collection.JavaConverters;
 import scala.collection.Seq;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
@@ -95,14 +101,16 @@ public class GithubEditorFactory implements PluginEditorFactory<GithubConfig, We
     }
 
     @Override
-    public void validateForLoad(GithubConfig config, WebConnectorSetup serverInfo) throws BadConfigException {
+    public Seq<ConfigValidationError> validateForLoad(GithubConfig config, WebConnectorSetup serverInfo) {
+        ValidationErrorBuilder builder = new ValidationErrorBuilder();
         if (Strings.isNullOrEmpty(serverInfo.host())) {
-            throw new ServerURLNotSetException();
+            builder.error(new ServerURLNotSetException());
         }
 
         if (Strings.isNullOrEmpty(config.getProjectKey())) {
-            throw new ProjectNotSetException();
+            builder.error(new ProjectNotSetException());
         }
+        return builder.build();
     }
 
     @Override

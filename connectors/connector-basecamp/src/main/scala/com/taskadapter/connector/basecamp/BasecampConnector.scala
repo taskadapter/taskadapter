@@ -23,7 +23,7 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
   private val api = factory.createObjectAPI(config, setup)
 
   def loadData(): util.List[GTask] = {
-    BasecampUtils.validateConfig(config)
+    BasecampValidator.validateConfigWithException(config)
     val api = factory.createObjectAPI(config, setup)
     val obj = api.getObject("projects/" + config.getProjectKey + "/todolists/" + config.getTodoKey + ".json")
     val todosobject = JsonUtils.getOptObject("todos", obj)
@@ -55,7 +55,7 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
 
   @throws[ConnectorException]
   override def loadTaskByKey(id: TaskId, rows: Iterable[FieldRow[_]]): GTask = {
-    BasecampUtils.validateConfig(config)
+    BasecampValidator.validateConfigWithException(config)
     val obj = api.getObject("projects/" + config.getProjectKey + "/todos/" + id.key + ".json")
     BasecampToGTask.parseTask(obj)
   }
@@ -64,7 +64,7 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
   def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask],
                monitor: ProgressMonitor,
                fieldRows: Iterable[FieldRow[_]]): SaveResult = try {
-    BasecampUtils.validateConfig(config)
+    BasecampValidator.validateConfigWithException(config)
     val users = loadUsers()
     val converter = new GTaskToBasecamp(users)
     val saver = new BasecampSaver(api, config)

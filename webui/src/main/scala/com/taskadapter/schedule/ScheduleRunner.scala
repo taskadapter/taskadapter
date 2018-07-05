@@ -3,6 +3,7 @@ package com.taskadapter.schedule
 import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
 
 import com.taskadapter.connector.common.ProgressMonitorUtils
+import com.taskadapter.connector.definition.exception.ConfigValidationError
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.web.uiapi.{Schedule, UIConfigStore, UISyncConfig}
 import com.taskadapter.web.{SchedulerDisabledEvent, SchedulerEnabledEvent, SettingsManager}
@@ -108,17 +109,26 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, schedulesStorage: SchedulesSt
     log.info(s"Starting scheduled export from ${c.getConnector1.getLabel} to ${c.getConnector2.getLabel}")
 
     try {
-      c.getConnector1.validateForLoad()
-      c.getConnector2.validateForSave(c.fieldMappings)
+      val errors = c.getConnector1.validateForLoad()
+      if (errors.isEmpty) {
+        c.getConnector2.validateForSave(c.fieldMappings)
 
-      val loaded = UISyncConfig.loadTasks(c, 10000)
-      val result = c.saveTasks(loaded, ProgressMonitorUtils.DUMMY_MONITOR)
-      ExportResultsLogger.log(result, prefix = "Scheduled export completed.")
-      exportResultStorage.store(result)
+        val loaded = UISyncConfig.loadTasks(c, 10000)
+        val result = c.saveTasks(loaded, ProgressMonitorUtils.DUMMY_MONITOR)
+        ExportResultsLogger.log(result, prefix = "Scheduled export completed.")
+        exportResultStorage.store(result)
+      } else {
+        logErrors(c, errors)
+      }
     } catch {
       case e: BadConfigException => log.error(s"Config ${c.id} is scheduled for periodic export, " +
         s"but it will be skipped because it failed load or save validation: $e")
       case other => log.error(s"Config ${c.id} scheduled sync: Error $other")
     }
+  }
+
+  private def logErrors(c: UISyncConfig, errors: Seq[ConfigValidationError]) : Unit = {
+    log.error(s"Config ${c.id} is scheduled for periodic export, " +
+      s"but it will be skipped because it failed load or save validation: $errors")
   }
 }

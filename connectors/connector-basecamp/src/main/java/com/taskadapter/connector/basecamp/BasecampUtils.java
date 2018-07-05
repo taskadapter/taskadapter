@@ -2,11 +2,9 @@ package com.taskadapter.connector.basecamp;
 
 import com.taskadapter.connector.basecamp.beans.BasecampProject;
 import com.taskadapter.connector.basecamp.beans.TodoList;
-import com.taskadapter.connector.basecamp.exceptions.BadFieldException;
 import com.taskadapter.connector.basecamp.transport.ObjectAPI;
 import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory;
 import com.taskadapter.connector.definition.WebConnectorSetup;
-import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import org.json.JSONArray;
@@ -40,8 +38,8 @@ public class BasecampUtils {
 
     public static BasecampProject loadProject(ObjectAPIFactory factory,
                                               BasecampConfig config, WebConnectorSetup setup) throws ConnectorException {
-        validateProject(config);
-        validateAccount(config);
+        BasecampValidator.validateProjectWithException(config);
+        BasecampValidator.validateAccountWithException(config);
         final ObjectAPI objApi = factory.createObjectAPI(config, setup);
         String objectURL = "projects/" + config.getProjectKey() + ".json";
         final JSONObject object = objApi.getObject(objectURL);
@@ -91,8 +89,8 @@ public class BasecampUtils {
 
     public static List<TodoList> loadTodoLists(ObjectAPIFactory factory,
                                                BasecampConfig config, WebConnectorSetup setup) throws ConnectorException {
-        validateProject(config);
-        validateAccount(config);
+        BasecampValidator.validateProjectWithException(config);
+        BasecampValidator.validateAccountWithException(config);
         final ObjectAPI objApi = factory.createObjectAPI(config, setup);
         final JSONArray objects = objApi.getObjects("projects/"
                 + config.getProjectKey() + "/todolists.json");
@@ -111,61 +109,12 @@ public class BasecampUtils {
     public static TodoList loadTodoList(ObjectAPIFactory factory,
                                         BasecampConfig config,
                                         WebConnectorSetup setup) throws ConnectorException {
-        validateConfig(config);
+        BasecampValidator.validateConfigWithException(config);
         final ObjectAPI objApi = factory.createObjectAPI(config, setup);
         final JSONObject object = objApi.getObject("projects/"
                 + config.getProjectKey() + "/todolists/" + config.getTodoKey()
                 + ".json");
         return parseTodoList(object);
-    }
-
-    public static void validateConfig(BasecampConfig config) throws BadConfigException {
-        validateAccount(config);
-        validateProject(config);
-        validateTodolist(config);
-    }
-
-    public static void validateAccount(BasecampConfig config) throws BadConfigException {
-        final String accountId = config.getAccountId();
-        if (accountId == null || accountId.isEmpty()) {
-            throw new FieldNotSetException("account-id");
-        }
-        if (!isNum(accountId)) {
-            throw new BadFieldException("account-id");
-        }
-    }
-
-    public static void validateProject(BasecampConfig config) throws BadConfigException {
-        final String projectKey = config.getProjectKey();
-        if (projectKey == null) {
-            throw new FieldNotSetException("project-key");
-        }
-        if (!isNum(projectKey)) {
-            throw new BadFieldException("project-key");
-        }
-    }
-
-    public static void validateTodolist(BasecampConfig config) throws BadConfigException {
-        final String listKey = config.getTodoKey();
-        if (listKey == null) {
-            throw new FieldNotSetException("todo-key");
-        }
-        if (!isNum(listKey)) {
-            throw new BadFieldException("todo-key");
-        }
-    }
-
-    private static boolean isNum(String str) {
-        if (str.length() == 0) {
-            return false;
-        }
-        for (int i = 0; i < str.length(); i++) {
-            final char chr = str.charAt(i);
-            if (chr < '0' || '9' < chr) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private static TodoList parseTodoList(JSONObject jsonObject)

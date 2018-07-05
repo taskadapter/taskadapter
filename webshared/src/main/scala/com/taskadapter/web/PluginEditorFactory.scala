@@ -1,10 +1,13 @@
 package com.taskadapter.web
 
+import com.taskadapter.connector.definition.exception.ConfigValidationError
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.connector.definition.{ConnectorConfig, ConnectorSetup, FieldMapping}
 import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
 import com.vaadin.ui.ComponentContainer
+
+import scala.collection.Seq
 
 trait PluginEditorFactory[C <: ConnectorConfig, S <: ConnectorSetup] extends ExceptionFormatter {
   def getMiniPanelContents(sandbox: Sandbox, config: C, setup: S): ComponentContainer
@@ -30,10 +33,8 @@ trait PluginEditorFactory[C <: ConnectorConfig, S <: ConnectorSetup] extends Exc
     * editor factory should provide appropriate user-friendly message.
     *
     * @param config config to check.
-    * @throws BadConfigException if validation fails.
     */
-  @throws[BadConfigException]
-  def validateForLoad(config: C, setup: S): Unit
+  def validateForLoad(config: C, setup: S): Seq[ConfigValidationError]
 
   /**
     * Validates config for "drop-in" loading.

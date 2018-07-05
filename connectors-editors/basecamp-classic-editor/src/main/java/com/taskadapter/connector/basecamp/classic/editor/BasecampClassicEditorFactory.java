@@ -1,6 +1,5 @@
 package com.taskadapter.connector.basecamp.classic.editor;
 
-import com.taskadapter.connector.basecamp.FieldNotSetException;
 import com.taskadapter.connector.basecamp.classic.BasecampClassicConfig;
 import com.taskadapter.connector.basecamp.classic.BasecampClassicConnector;
 import com.taskadapter.connector.basecamp.classic.BasecampConfigValidator;
@@ -11,6 +10,7 @@ import com.taskadapter.connector.basecamp.classic.transport.BaseCommunicator;
 import com.taskadapter.connector.basecamp.classic.transport.ObjectAPIFactory;
 import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.WebConnectorSetup;
+import com.taskadapter.connector.definition.exception.ConfigValidationError;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
@@ -186,8 +186,8 @@ public class BasecampClassicEditorFactory implements PluginEditorFactory<Basecam
     }
 
     @Override
-    public void validateForLoad(BasecampClassicConfig config, WebConnectorSetup setup) throws FieldNotSetException {
-        BasecampConfigValidator.validateTodoList(config);
+    public Seq<ConfigValidationError> validateForLoad(BasecampClassicConfig config, WebConnectorSetup setup) {
+        return BasecampConfigValidator.validateTodoListNoException(config);
     }
 
     @Override
@@ -220,7 +220,7 @@ public class BasecampClassicEditorFactory implements PluginEditorFactory<Basecam
 
     @Override
     public void validateForDropInLoad(BasecampClassicConfig config)
-            throws BadConfigException, DroppingNotSupportedException {
+            throws DroppingNotSupportedException {
         throw DroppingNotSupportedException.INSTANCE;
     }
 }

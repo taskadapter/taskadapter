@@ -1,7 +1,7 @@
 package com.taskadapter.connector.basecamp.transport;
 
 import com.taskadapter.connector.basecamp.BasecampConfig;
-import com.taskadapter.connector.basecamp.BasecampUtils;
+import com.taskadapter.connector.basecamp.BasecampValidator;
 import com.taskadapter.connector.basecamp.transport.throttling.IntervalThrottler;
 import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
@@ -20,7 +20,7 @@ public final class ObjectAPIFactory {
 
     public ObjectAPI createObjectAPI(BasecampConfig config, WebConnectorSetup setup)
             throws ConnectorException {
-        BasecampUtils.validateAccount(config);
+        BasecampValidator.validateAccountWithException(config);
         
         final String accountId = config.getAccountId();
 

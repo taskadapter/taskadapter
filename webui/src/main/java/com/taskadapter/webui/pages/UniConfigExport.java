@@ -1,5 +1,6 @@
 package com.taskadapter.webui.pages;
 
+import com.taskadapter.connector.definition.exception.ConfigValidationError;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
@@ -23,6 +24,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.themes.ValoTheme;
+import scala.collection.Seq;
 
 import static com.vaadin.server.Sizeable.Unit.PERCENTAGE;
 import static com.vaadin.server.Sizeable.Unit.PIXELS;
@@ -76,13 +78,10 @@ final class UniConfigExport {
     }
 
     private static String getValidationError(UISyncConfig syncConfig) {
-        final StringBuilder rb = new StringBuilder();
-        try {
-            syncConfig.getConnector1().validateForLoad();
-        } catch (BadConfigException e) {
-            rb.append(Page.message("configsPage.errorSource",
-                    syncConfig.getConnector1().decodeException(e)));
-        }
+        StringBuilder rb = new StringBuilder();
+        Seq<ConfigValidationError> errors = syncConfig.getConnector1().validateForLoad();
+        errors.foreach(e -> rb.append(Page.message("configsPage.errorSource",
+                syncConfig.getConnector1().decodeException(e.error()))));
         try {
             syncConfig.getConnector2().validateForSave(syncConfig.fieldMappings());
         } catch (BadConfigException e) {

@@ -1,8 +1,11 @@
 package com.taskadapter.connector.jira;
 
 import com.google.common.base.Strings;
+import com.taskadapter.connector.ValidationErrorBuilder;
 import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.WebConnectorSetup;
+import com.taskadapter.connector.definition.exception.ConfigValidationError;
+import com.taskadapter.connector.definition.exception.FilterNotSetException;
 import com.taskadapter.connector.definition.exception.ForbiddenException;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.NotAuthorizedException;
@@ -51,6 +54,8 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
             return MESSAGES.get("errors.projectKeyNotSet");
         } else if (e instanceof ServerURLNotSetException) {
             return MESSAGES.get("errors.serverUrlNotSet");
+        } else if (e instanceof FilterNotSetException) {
+            return MESSAGES.get("jira.error.filterNotSet");
         } else if (e instanceof NotAuthorizedException) {
             return MESSAGES.get("errors.notAuthorized");
         } else if (e instanceof ForbiddenException) {
@@ -84,7 +89,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
             case DEFAULT_SUBTASK_TYPE_NOT_SET:
                 return MESSAGES.get("error.subtasksTypeNotSet");
             case QUERY_ID_NOT_SET:
-                return MESSAGES.get("error.queryIdNotSet");
+                return MESSAGES.get("jira.error.filterNotSet");
         }
         return "??=>" + kind.toString();
     }
@@ -158,19 +163,18 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     }
 
     @Override
-    public void validateForLoad(JiraConfig config, WebConnectorSetup serverInfo) throws BadConfigException {
-        final Collection<JiraValidationErrorKind> errors = new LinkedHashSet<>();
+    public Seq<ConfigValidationError> validateForLoad(JiraConfig config, WebConnectorSetup serverInfo) {
+        ValidationErrorBuilder builder = new ValidationErrorBuilder();
 
         if (Strings.isNullOrEmpty(serverInfo.host())) {
-            errors.add(JiraValidationErrorKind.HOST_NOT_SET);
+            builder.error(new ServerURLNotSetException());
         }
 
         if (config.getQueryId() == null) {
-            errors.add(JiraValidationErrorKind.QUERY_ID_NOT_SET);
+            builder.error(new FilterNotSetException());
         }
 
-        if (!errors.isEmpty())
-            throw new JiraConfigException(errors);
+        return builder.build();
     }
 
     @Override
