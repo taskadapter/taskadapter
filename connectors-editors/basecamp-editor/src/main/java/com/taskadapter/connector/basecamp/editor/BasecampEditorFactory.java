@@ -250,8 +250,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
 
 
     @Override
-    public void validateForDropInLoad(BasecampConfig config)
-            throws BadConfigException, DroppingNotSupportedException {
+    public void validateForDropInLoad(BasecampConfig config) throws DroppingNotSupportedException {
         throw DroppingNotSupportedException.INSTANCE;
     }
 }

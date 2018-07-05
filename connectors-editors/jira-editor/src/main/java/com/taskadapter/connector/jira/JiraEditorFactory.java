@@ -1,7 +1,6 @@
 package com.taskadapter.connector.jira;
 
 import com.google.common.base.Strings;
-import com.taskadapter.connector.ValidationErrorBuilder;
 import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exception.FilterNotSetException;
@@ -26,11 +25,14 @@ import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.GridLayout;
 import scala.Option;
+import scala.collection.JavaConverters;
 import scala.collection.Seq;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 import static com.vaadin.server.Sizeable.Unit.PERCENTAGE;
 
@@ -111,7 +113,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
 
         gridLayout.addComponent(projectPanel);
 
-        OtherJiraFieldsPanel otherJiraFieldsPanel = new OtherJiraFieldsPanel(config,setup, this);
+        OtherJiraFieldsPanel otherJiraFieldsPanel = new OtherJiraFieldsPanel(config, setup, this);
         otherJiraFieldsPanel.setHeight(100, PERCENTAGE);
         gridLayout.addComponent(otherJiraFieldsPanel);
 
@@ -163,17 +165,17 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
 
     @Override
     public Seq<BadConfigException> validateForLoad(JiraConfig config, WebConnectorSetup serverInfo) {
-        ValidationErrorBuilder builder = new ValidationErrorBuilder();
+        List<BadConfigException> list = new ArrayList();
 
         if (Strings.isNullOrEmpty(serverInfo.host())) {
-            builder.error(new ServerURLNotSetException());
+            list.add(new ServerURLNotSetException());
         }
 
         if (config.getQueryId() == null) {
-            builder.error(new FilterNotSetException());
+            list.add(new FilterNotSetException());
         }
 
-        return builder.build();
+        return JavaConverters.asScalaBuffer(list);
     }
 
     @Override
@@ -182,7 +184,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     }
 
     @Override
-    public String describeDestinationLocation(JiraConfig config,  WebConnectorSetup serverInfo) {
+    public String describeDestinationLocation(JiraConfig config, WebConnectorSetup serverInfo) {
         return describeSourceLocation(config, serverInfo);
     }
 
@@ -200,8 +202,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     }
 
     @Override
-    public void validateForDropInLoad(JiraConfig config)
-            throws BadConfigException, DroppingNotSupportedException {
+    public void validateForDropInLoad(JiraConfig config) throws DroppingNotSupportedException {
         throw DroppingNotSupportedException.INSTANCE;
     }
 
