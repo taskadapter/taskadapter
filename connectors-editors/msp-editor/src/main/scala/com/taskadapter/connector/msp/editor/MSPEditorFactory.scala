@@ -3,7 +3,6 @@ package com.taskadapter.connector.msp.editor
 import java.io.File
 import java.nio.file.Paths
 
-import com.taskadapter.connector.ValidationErrorBuilder
 import com.taskadapter.connector.common.FileNameGenerator
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.connector.definition.{ConnectorConfig, FieldMapping, FileSetup}
@@ -17,6 +16,8 @@ import com.taskadapter.web.{ConnectorSetupPanel, PluginEditorFactory}
 import com.vaadin.data.Property
 import com.vaadin.data.util.ObjectProperty
 import com.vaadin.ui._
+
+import scala.collection.mutable
 
 class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
   private val BUNDLE_NAME = "com.taskadapter.connector.msp.messages"
@@ -114,9 +115,9 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
   }
 
   override def validateForLoad(config: MSPConfig, setup: FileSetup): Seq[BadConfigException] = {
-    val builder = new ValidationErrorBuilder
-    if (setup.sourceFile.isEmpty) builder.error(new InputFileNameNotSetException)
-    builder.build()
+    val seq = new mutable.ListBuffer[BadConfigException]()
+    if (setup.sourceFile.isEmpty) seq += new InputFileNameNotSetException
+    seq
   }
 
   override def validateForDropInLoad(config: MSPConfig): Unit = {

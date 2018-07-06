@@ -1,10 +1,9 @@
 package com.taskadapter.connector.basecamp
 
-import com.taskadapter.connector.ValidationErrorBuilder
 import com.taskadapter.connector.basecamp.exceptions.BadFieldException
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 
-import scala.collection.Seq
+import scala.collection.{Seq, mutable}
 
 object BasecampValidator {
 
@@ -33,27 +32,27 @@ object BasecampValidator {
   }
 
   def validateAccount(config: BasecampConfig): Seq[BadConfigException] = {
-    val errorBuilder = new ValidationErrorBuilder
+    val seq = new mutable.ListBuffer[BadConfigException]()
     val accountId = config.getAccountId
-    if (accountId == null || accountId.isEmpty) errorBuilder.error(FieldNotSetException("account-id"))
-    if (!isNum(accountId)) errorBuilder.error(new BadFieldException("account-id"))
-    errorBuilder.build()
+    if (accountId == null || accountId.isEmpty) seq += FieldNotSetException("account-id")
+    if (!isNum(accountId)) seq += new BadFieldException("account-id")
+    seq
   }
 
   def validateProject(config: BasecampConfig): Seq[BadConfigException] = {
-    val errorBuilder = new ValidationErrorBuilder
+    val seq = new mutable.ListBuffer[BadConfigException]()
     val projectKey = config.getProjectKey
-    if (projectKey == null) errorBuilder.error(FieldNotSetException("project-key"))
-    if (!isNum(projectKey)) errorBuilder.error(new BadFieldException("project-key"))
-    errorBuilder.build()
+    if (projectKey == null) seq += FieldNotSetException("project-key")
+    if (!isNum(projectKey)) seq += new BadFieldException("project-key")
+    seq
   }
 
   def validateTodolist(config: BasecampConfig): Seq[BadConfigException] = {
-    val errorBuilder = new ValidationErrorBuilder
+    val seq = new mutable.ListBuffer[BadConfigException]()
     val listKey = config.getTodoKey
-    if (listKey == null) errorBuilder.error(FieldNotSetException("todo-key"))
-    if (!isNum(listKey)) errorBuilder.error(new BadFieldException("todo-key"))
-    errorBuilder.build()
+    if (listKey == null) seq += FieldNotSetException("todo-key")
+    if (!isNum(listKey)) seq += new BadFieldException("todo-key")
+    seq
   }
 
   private def isNum(str: String): Boolean = str forall Character.isDigit
