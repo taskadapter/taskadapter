@@ -99,7 +99,7 @@ class OtherJiraFieldsPanel extends Panel {
         grid.addComponent(showDefaultTaskType);
 
         final TextField defaultIssueTypeForSubtasks = EditorUtil
-                .addLabeledText(grid, "Issue type for subtasks:",
+                .addLabeledText(grid, "Default issue type for subtasks:",
                         "Subtasks will be created with this issue type (typically this is 'subtask')");
         final MethodProperty<String> defaultIssueTypeForSubtasksProperty = new MethodProperty<>(config, "defaultIssueTypeForSubtasks");
         defaultIssueTypeForSubtasks.setPropertyDataSource(defaultIssueTypeForSubtasksProperty);
