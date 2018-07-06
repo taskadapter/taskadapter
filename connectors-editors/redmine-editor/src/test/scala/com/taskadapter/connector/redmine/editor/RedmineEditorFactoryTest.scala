@@ -16,17 +16,23 @@ class RedmineEditorFactoryTest extends FunSpec with Matchers with TempFolder {
 
   VaadinTestHelper.initVaadinSession(getClass)
   val factory = new RedmineEditorFactory
+  val config = new RedmineConfig()
+  val setup = WebConnectorSetup(RedmineConnector.ID, "label1", "http://somehost", "", "", false, "")
 
   it("mini panel is created") {
     withTempFolder { folder =>
-      factory.getMiniPanelContents(new Sandbox(true, folder), new RedmineConfig,
-        WebConnectorSetup(RedmineConnector.ID, "label1", "http://somehost", "user", "password", false, ""))
+      factory.getMiniPanelContents(new Sandbox(true, folder), new RedmineConfig, setup)
     }
   }
-  describe("config validation") {
-    it("projectKeyIsRequiredForSave") {
-      val exceptions = factory.validateForSave(new RedmineConfig, WebConnectorSetup(RedmineConnector.ID, "label1", "http://somehost", "", "", false, ""), Seq())
+  describe("config validation for save") {
+    it("gives error for empty project key") {
+      val exceptions = factory.validateForSave(new RedmineConfig, setup, Seq())
       exceptions.head shouldBe a[ProjectNotSetException]
+    }
+    it("passes with some project key") {
+      config.setProjectKey("project123")
+      val errors = factory.validateForSave(config, setup, Seq())
+      errors shouldBe empty
     }
   }
 }
