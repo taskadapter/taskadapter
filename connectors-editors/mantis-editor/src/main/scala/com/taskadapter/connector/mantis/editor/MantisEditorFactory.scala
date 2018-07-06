@@ -32,7 +32,7 @@ class MantisEditorFactory extends PluginEditorFactory[MantisConfig, WebConnector
   override def formatError(e: Throwable): String = {
     if (e.isInstanceOf[ProjectNotSetException]) return MESSAGES.get("error.projectNotSet")
     if (e.isInstanceOf[ServerURLNotSetException]) return MESSAGES.get("error.serverUrlNotSet")
-    if (e.isInstanceOf[QueryParametersNotSetException]) return MESSAGES.get("error.queryParametersNotSet")
+    if (e.isInstanceOf[BothProjectKeyAndQueryIsAreMissingException]) return MESSAGES.get("mantisbt.error.bothProjectKeyAndQueryIdAreMissing")
     if (e.isInstanceOf[UnsupportedOperationException]) {
       val uop = e.asInstanceOf[UnsupportedOperationException]
       if ("saveRelations" == uop.getMessage) return MESSAGES.get("error.unsupported.relations")
@@ -60,7 +60,7 @@ class MantisEditorFactory extends PluginEditorFactory[MantisConfig, WebConnector
   override def validateForLoad(config: MantisConfig, setup: WebConnectorSetup): Seq[BadConfigException] = {
     val seq = new mutable.ListBuffer[BadConfigException]()
     if (Strings.isNullOrEmpty(setup.host)) seq += new ServerURLNotSetException
-    if ((config.getProjectKey == null || config.getProjectKey.isEmpty) && (config.getQueryId == null)) seq += new ProjectNotSetException
+    if (Strings.isNullOrEmpty(config.getProjectKey) && config.getQueryId == null) seq += new BothProjectKeyAndQueryIsAreMissingException
     seq
   }
 
