@@ -14,6 +14,7 @@ public class LastVersionLoaderIntegrationTest {
         // must be 1 line only
         assertEquals(1, strings.length);
 
-        assertTrue(availableVersion.startsWith("3."));
+        assertTrue("last version tag loaded from TA site must start with 3, but it was: '" + availableVersion + "'",
+                availableVersion.startsWith("3."));
     }
 }
