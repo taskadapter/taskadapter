@@ -12,13 +12,10 @@ object JiraField {
   val fields = List(Components, Summary, TaskStatus, Description, Id, TaskType, EstimatedTime, AssigneeLoginName,
     CreatedOn, DueDate, Key, Priority, ReporterLoginName)
 
-  val excludeFromNewConfig = Seq(Id, Key)
+  val excludeFromNewConfig = Seq(DueDate, EstimatedTime, Id, Key, ReporterLoginName)
 
   /**
     * Estimated time, Reporter, DueDate are not included in standard JIRA 7 anymore.
     */
-  val defaultFieldsForNewConfig = fields.filter(_ != EstimatedTime)
-    .filter(_ != ReporterLoginName)
-    .filter(_ != DueDate)
-    .diff(excludeFromNewConfig)
+  val defaultFieldsForNewConfig = fields.diff(excludeFromNewConfig)
 }
