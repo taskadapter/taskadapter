@@ -1,6 +1,6 @@
 package com.taskadapter.connector.jira
 
-import com.taskadapter.model.{AssigneeLoginName, DueDate, EstimatedTime, ReporterLoginName}
+import com.taskadapter.model.{AssigneeLoginName, DueDate, EstimatedTime, Id, Key, ReporterLoginName}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
@@ -12,7 +12,8 @@ class JiraFactoryTest extends FunSpec with Matchers {
       new JiraFactory().getDefaultFieldsForNewConfig should contain(AssigneeLoginName)
     }
     it("skip optional ones") {
-      new JiraFactory().getDefaultFieldsForNewConfig should contain noneOf (ReporterLoginName, EstimatedTime, DueDate)
+      new JiraFactory().getDefaultFieldsForNewConfig should contain noneOf (ReporterLoginName, EstimatedTime, DueDate,
+      Id, Key)
     }
   }
 }

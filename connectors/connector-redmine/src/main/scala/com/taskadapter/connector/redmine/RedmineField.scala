@@ -9,12 +9,14 @@ object RedmineField {
     category,
     Summary,
     Description,
+    Id,
     TaskType,
     EstimatedTime,
     DoneRatio,
     AssigneeFullName,
     AssigneeLoginName,
     DueDate,
+    Key,
     ReporterFullName,
     ReporterLoginName,
     StartDate,
@@ -24,6 +26,7 @@ object RedmineField {
     TargetVersion,
     Priority)
 
-  val defaultFieldsForNewConfig = fields.filter(_ != UpdatedOn)
+  val excludeFromNewConfig = Seq(UpdatedOn, Id, Key)
+  val defaultFieldsForNewConfig = fields.diff(excludeFromNewConfig)
 
 }

@@ -9,8 +9,10 @@ object JiraField {
      enabled for tasks by default. let's unselect this field by default
      to avoid user confusion.
    */
-  val fields = List(Components, Summary, TaskStatus, Description, TaskType, EstimatedTime, AssigneeLoginName,
-    CreatedOn, DueDate, Priority, ReporterLoginName)
+  val fields = List(Components, Summary, TaskStatus, Description, Id, TaskType, EstimatedTime, AssigneeLoginName,
+    CreatedOn, DueDate, Key, Priority, ReporterLoginName)
+
+  val excludeFromNewConfig = Seq(Id, Key)
 
   /**
     * Estimated time, Reporter, DueDate are not included in standard JIRA 7 anymore.
@@ -18,4 +20,5 @@ object JiraField {
   val defaultFieldsForNewConfig = fields.filter(_ != EstimatedTime)
     .filter(_ != ReporterLoginName)
     .filter(_ != DueDate)
+    .diff(excludeFromNewConfig)
 }

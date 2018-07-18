@@ -2,8 +2,8 @@ package com.taskadapter.webui.uiapi
 
 import com.taskadapter.connector.NewConfigSuggester
 import com.taskadapter.connector.definition.FieldMapping
-import com.taskadapter.connector.jira.JiraField
-import com.taskadapter.connector.redmine.RedmineField
+import com.taskadapter.connector.jira.{JiraFactory, JiraField}
+import com.taskadapter.connector.redmine.{RedmineFactory, RedmineField}
 import com.taskadapter.model.{AssigneeLoginName, GUser}
 import org.junit.runner.RunWith
 import org.scalatest.concurrent.ScalaFutures
@@ -13,13 +13,17 @@ import org.scalatest.{FunSpec, Matchers}
 @RunWith(classOf[JUnitRunner])
 class NewConfigSuggesterTest extends FunSpec with ScalaFutures with Matchers {
 
-  val jiraRedmineFieldsNumber = 11
+  val defaultRedmineFields = new RedmineFactory().getDefaultFieldsForNewConfig
+  val defaultJiraFields = new JiraFactory().getDefaultFieldsForNewConfig
+
+  val jiraRedmineFieldsNumber = 8
 
   val noUser : GUser = null.asInstanceOf[GUser]
 
   it("suggests all elements from left connector") {
     val list = NewConfigSuggester.suggestedFieldMappingsForNewConfig(
-      RedmineField.fields, JiraField.fields)
+      defaultRedmineFields,
+      defaultJiraFields)
 
     list.size shouldBe jiraRedmineFieldsNumber
     list.contains(FieldMapping(AssigneeLoginName, AssigneeLoginName, true, null)) shouldBe true
@@ -27,7 +31,7 @@ class NewConfigSuggesterTest extends FunSpec with ScalaFutures with Matchers {
 
   it("suggests all elements from right connector") {
     val list = NewConfigSuggester.suggestedFieldMappingsForNewConfig(
-      JiraField.fields, RedmineField.fields)
+      defaultJiraFields, defaultRedmineFields)
 
     list.size shouldBe jiraRedmineFieldsNumber
   }
