@@ -112,14 +112,6 @@ public class MSPUtils {
         }
     }
 
-	public static String getDefaultTaskType() {
-	    return TaskField.TEXT23.toString();
-	}
-
-	public static String getDefaultTaskStatus() {
-	    return TaskField.TEXT24.toString();
-	}
-
     public static String getDefaultDueDate() {
         return TaskField.FINISH.toString();
     }
@@ -130,11 +122,4 @@ public class MSPUtils {
         return TaskField.DURATION.toString();
     }
 
-    public static String getDefaultFieldForEnvironment() {
-        return TaskField.TEXT25.toString();
-    }
-
-    public static String getDefaultFieldForTargetVersion() {
-        return TaskField.TEXT26.toString();
-    }
 }

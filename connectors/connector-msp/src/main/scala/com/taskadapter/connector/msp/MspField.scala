@@ -10,8 +10,9 @@ object MspField {
   val percentageComplete = DoneRatio
   val taskDuration = CustomFloat(TaskField.DURATION.getName)
   val taskWork = CustomFloat(TaskField.WORK.getName)
-  val status = Field(TaskField.TEXT24.getName)
-  val taskType = Field(TaskField.TEXT23.getName)
+
+  val textFields = for (i <- 1 to 30) yield Field(s"Text$i")
+
   val actualWork = CustomFloat(TaskField.ACTUAL_WORK.getName)
   val actualDuration = CustomFloat(TaskField.ACTUAL_DURATION.getName)
   val actualFinish = CustomDate(TaskField.ACTUAL_FINISH.getName)
@@ -38,7 +39,7 @@ object MspField {
     startNoLaterThan,
     startAsSoonAsPossible,
     startAsLateAsPossible,
-    taskDuration, taskWork, status, taskType,
+    taskDuration, taskWork,
     finish, deadline
-  )
+  ) ++ textFields
 }
