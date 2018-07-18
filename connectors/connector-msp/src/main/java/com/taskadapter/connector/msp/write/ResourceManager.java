@@ -33,7 +33,7 @@ public final class ResourceManager {
     }
 
     private Optional<Resource> findResourceByName(String name) {
-        final List<Resource> allResources = project.getAllResources();
+        final List<Resource> allResources = project.getResources();
         for (Resource resource : allResources) {
             if (resource.getName().equals(name)) {
                 return Optional.of(resource);

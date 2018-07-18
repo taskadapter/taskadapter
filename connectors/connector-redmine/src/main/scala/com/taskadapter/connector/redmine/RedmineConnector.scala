@@ -59,7 +59,7 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
         config.getQueryId.intValue()
       }
       val issues = mgr.getIssueManager.getIssues(config.getProjectKey, queryId, Include.relations)
-      addFullUsers(issues, usersCache)
+//      addFullUsers(issues, usersCache)
       convertToGenericTasks(config, issues, usersCache)
     } catch {
       case e: RedmineException =>
