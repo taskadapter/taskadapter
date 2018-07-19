@@ -59,25 +59,11 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
         config.getQueryId.intValue()
       }
       val issues = mgr.getIssueManager.getIssues(config.getProjectKey, queryId, Include.relations)
-//      addFullUsers(issues, usersCache)
       convertToGenericTasks(config, issues, usersCache)
     } catch {
       case e: RedmineException =>
         throw new RuntimeException(e)
     } finally httpClient.getConnectionManager.shutdown()
-  }
-
-  @throws[RedmineException]
-  private def addFullUsers(issues: util.List[Issue], usersCache: RedmineUserCache): Unit = {
-    issues.asScala.foreach { issue =>
-      issue.setAssigneeName(patchUserDisplayName(issue.getAssigneeId, usersCache).getOrElse(""))
-      issue.setAuthorName(patchUserDisplayName(issue.getAuthorId, usersCache).getOrElse(""))
-    }
-  }
-
-  @throws[RedmineException]
-  private def patchUserDisplayName(userId: Int, usersCache: RedmineUserCache): Option[String] = {
-    usersCache.findRedmineUserInCache(userId).map(_.getFullName)
   }
 
   private def convertToGenericTasks(config: RedmineConfig, issues: util.List[Issue], usersCache: RedmineUserCache) = {
