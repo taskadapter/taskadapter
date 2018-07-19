@@ -32,6 +32,8 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
         case e: Exception => throw FieldConversionException(MSPConnector.ID, field, value, e.getMessage)
       }
     }
+    // assignee is a special case because updating this field requires information from several fields
+    processAssignee(gTask)
   }
 
   private def processField(field: Field[_], value: Any): Unit = {
@@ -40,7 +42,7 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
     field match {
       case Summary => mspTask.setName(stringBasedValue)
       case Description => mspTask.setNotes(stringBasedValue)
-      case AssigneeFullName => processAssignee(stringBasedValue)
+      case AssigneeFullName => // skip - processed separately because it requires access to several fields
       case MspField.mustStartOn =>
         mspTask.setConstraintType(ConstraintType.MUST_START_ON)
         mspTask.setConstraintDate(value.asInstanceOf[Date])
@@ -92,21 +94,22 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
     }
   }
 
-  private def processAssignee(value: String): Unit = {
+  private def processAssignee(gTask: GTask): Unit = {
+    val assigneeFullName = gTask.getValue(AssigneeFullName)
+    val value = CustomFieldConverter.getValueAsString(assigneeFullName).trim
     if (value != null) {
       val resource = resourceManager.getOrCreateResource(value)
       val ass = mspTask.addResourceAssignment(resource)
       ass.setUnits(100)
       // MUST set the remaining work to avoid this bug:
       //http://www.hostedredmine.com/issues/7780 "Duration" field is ignored when "Assignee" is set
-      /*      if (gTask.getEstimatedHours != null) {
-              ass.setRemainingWork(TimeCalculator.calculateRemainingTime(gTask))
-              // the same "IF" as above, now for the resource assignment. this might need refactoring...
-              if (gTask.getDoneRatio != null && mappings.isFieldSelected(DONE_RATIO)) {
-                val timeAlreadySpent = TimeCalculator.calculateTimeAlreadySpent(gTask.getDoneRatio, gTask.getEstimatedHours)
-                ass.setActualWork(timeAlreadySpent)
-              }
-            */
+      if (gTask.getValue(EstimatedTime) != 0) {
+        ass.setRemainingWork(TimeCalculator.calculateRemainingTime(gTask))
+        if (gTask.getValue(DoneRatio) != 0) {
+          val timeAlreadySpent = TimeCalculator.calculateTimeAlreadySpent(gTask)
+          ass.setActualWork(timeAlreadySpent)
+        }
+      }
     }
   }
 
