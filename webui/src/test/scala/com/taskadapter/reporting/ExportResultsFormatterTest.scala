@@ -8,33 +8,55 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class ExportResultsFormatterTest extends FunSpec with Matchers {
 
-  val item1 = (TaskId(1, "key1"), "error", "exception")
-  val item1Text = "TaskId(1,key1) - error - exception"
+  val id1 = TaskId(1, "key1")
+  val id2 = TaskId(2, "key2")
+  val id3 = TaskId(3, "key3")
 
-  val item1SameError = (TaskId(2, "key2"), "error", "exception")
-  val item1SameErrorText = "TaskId(2,key2) - error - same as previous"
-
-  val item2 = (TaskId(3, "key3"), "error", "another exception")
-  val item2Text = "TaskId(3,key3) - error - another exception"
+  val item1 = (id1, "error", "exception")
+  val item1SameError = (id2, "error", "exception")
+  val item3 = (id3, "error", "another exception")
 
   it("replaces duplicate exceptions") {
     ExportResultsFormatter.formatTaskErrors(Seq(item1, item1SameError)) shouldBe
-      item1Text + System.lineSeparator() + item1SameErrorText
+      orig(id1) + line + same(id2)
   }
+
+  it("replaces two duplicate exceptions") {
+    ExportResultsFormatter.formatTaskErrors(Seq(
+      (id1, "error", "exception"),
+      (id2, "error", "exception"),
+      (id3, "error", "exception"))) shouldBe
+      orig(id1) + line + same(id2) + line + same(id3)
+  }
+
   it("leaves single element as is") {
-    ExportResultsFormatter.formatTaskErrors(Seq(item1)) shouldBe item1Text
+    ExportResultsFormatter.formatTaskErrors(Seq(item1)) shouldBe orig(id1)
   }
 
   it("leaves different element in place") {
-    ExportResultsFormatter.formatTaskErrors(Seq(item1, item2)) shouldBe
-      item1Text + System.lineSeparator() + item2Text
+    ExportResultsFormatter.formatTaskErrors(Seq(item1, item3)) shouldBe
+      orig(id1) + line + other(id3)
   }
 
   it("replaces duplicate and leaves different one in place") {
-    ExportResultsFormatter.formatTaskErrors(Seq(item1, item1SameError, item2)) shouldBe
-      item1Text + System.lineSeparator() + item1SameErrorText + System.lineSeparator() + item2Text
+    ExportResultsFormatter.formatTaskErrors(Seq(item1, item1SameError, item3)) shouldBe
+      orig(id1) + line + same(id2) + line + other(id3)
   }
   it("empty list gives empty string") {
     ExportResultsFormatter.formatTaskErrors(Seq()) shouldBe ""
   }
+
+  def orig(id: TaskId): String = {
+    s"$id - error - exception"
+  }
+
+  def same(id: TaskId): String = {
+    s"$id - error - same as previous"
+  }
+
+  def other(id: TaskId): String = {
+    s"$id - error - another exception"
+  }
+
+  private def line = System.lineSeparator()
 }

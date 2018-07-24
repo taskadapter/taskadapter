@@ -3,6 +3,8 @@ package com.taskadapter.reporting
 import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.webui.results.ExportResultFormat
 
+import scala.collection.mutable.ListBuffer
+
 object ExportResultsFormatter {
   def toNiceString(result: ExportResultFormat): String = {
     System.lineSeparator() + "Tasks created: " + result.createdTasksNumber + System.lineSeparator() +
@@ -15,15 +17,22 @@ object ExportResultsFormatter {
     if (errors.isEmpty) {
       return ""
     }
-    errors.drop(1)
-      .scanLeft(errors.head) {
-        case (prev, current) => if (prev._3 == current._3) {
-          (current._1, current._2, "same as previous")
-        } else {
-          (current._1, current._2, current._3)
-        }
+
+    var results = new ListBuffer[(TaskId, String, String)]()
+    results += errors.head
+
+    for (i <- 1 until errors.size) {
+      val prev = errors(i - 1)
+      val current = errors(i)
+
+      val newItem = if (current._3 == prev._3) {
+        (current._1, current._2, "same as previous")
+      } else {
+        current
       }
-      .map(e => e._1 + " - " + e._2 + " - " + e._3)
+      results += newItem
+    }
+    results.map(e => e._1 + " - " + e._2 + " - " + e._3)
       .mkString(System.lineSeparator())
   }
 }
