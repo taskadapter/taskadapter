@@ -1,13 +1,13 @@
 package com.taskadapter.auth;
 
 /** Default implementation of authorization scheme. */
-final class AuthorizedOperationsImpl implements AuthorizedOperations {
+public final class AuthorizedOperationsImpl implements AuthorizedOperations {
     public static final String ADMIN_LOGIN_NAME = "admin";
 
     /** Information about current user. */
     private final String user;
 
-    AuthorizedOperationsImpl(String user) {
+    public AuthorizedOperationsImpl(String user) {
         this.user = user;
     }
 
