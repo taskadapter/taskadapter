@@ -14,7 +14,7 @@ import scala.collection.JavaConverters._
   */
 object JiraClientHelper {
   private val DEFAULT_PAGE_SIZE = 50
-  private val ALL_FIELDS = null
+  private val ALL_FIELDS = Set("*all")
 
   /**
     * @return the new issue ID
@@ -39,7 +39,7 @@ object JiraClientHelper {
     var searchResult: SearchResult = null
     do {
       val currentCursor = loadedIssues.size
-      val searchPromise = client.getSearchClient.searchJql(jql, pageSize, currentCursor, ALL_FIELDS)
+      val searchPromise = client.getSearchClient.searchJql(jql, pageSize, currentCursor, ALL_FIELDS.asJava)
       searchResult = searchPromise.claim
       import scala.collection.JavaConversions._
       for (issue <- searchResult.getIssues) {
