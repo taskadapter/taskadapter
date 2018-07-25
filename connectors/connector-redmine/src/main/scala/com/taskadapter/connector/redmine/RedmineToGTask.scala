@@ -3,7 +3,7 @@ package com.taskadapter.connector.redmine
 import java.util
 
 import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.model.{AssigneeFullName, AssigneeLoginName, CreatedOn, CustomString, Description, DoneRatio, DueDate, EstimatedTime, GRelation, GTask, Precedes, Priority, ReporterFullName, ReporterLoginName, StartDate, Summary, TargetVersion, TaskStatus, TaskType, UpdatedOn}
+import com.taskadapter.model.{AssigneeFullName, AssigneeLoginName, CreatedOn, CustomString, Description, DoneRatio, DueDate, EstimatedTime, GRelation, GTask, Precedes, Priority, ReporterFullName, ReporterLoginName, SpentTime, StartDate, Summary, TargetVersion, TaskStatus, TaskType, UpdatedOn}
 import com.taskadapter.redmineapi.bean.{Issue, IssueRelation}
 import org.slf4j.LoggerFactory
 
@@ -64,6 +64,7 @@ class RedmineToGTask(val config: RedmineConfig, var userCache: RedmineUserCache)
     task.setValue(TaskStatus, issue.getStatusName)
     task.setValue(Summary, issue.getSubject)
     task.setValue(EstimatedTime, issue.getEstimatedHours.toFloat)
+    task.setValue(SpentTime, issue.getSpentHours.toFloat)
     task.setValue(DoneRatio, issue.getDoneRatio.toFloat)
     task.setValue(StartDate, issue.getStartDate)
     task.setValue(DueDate, issue.getDueDate)

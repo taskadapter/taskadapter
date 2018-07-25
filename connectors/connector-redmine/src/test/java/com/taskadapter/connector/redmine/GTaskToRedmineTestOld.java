@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class GTaskToRedmineTest {
+public class GTaskToRedmineTestOld {
 
     private final Project project = ProjectFactory.create();
 

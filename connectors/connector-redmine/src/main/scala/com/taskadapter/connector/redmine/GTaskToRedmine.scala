@@ -71,6 +71,8 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
       case DueDate => issue.setDueDate(value.asInstanceOf[Date])
       case EstimatedTime =>
         issue.setEstimatedHours(ValueTypeResolver.getValueAsFloat(value))
+      case SpentTime =>
+        issue.setSpentHours(ValueTypeResolver.getValueAsFloat(value))
 
       case DoneRatio => issue.setDoneRatio(ValueTypeResolver.getValueAsInt(value))
       case TaskType =>

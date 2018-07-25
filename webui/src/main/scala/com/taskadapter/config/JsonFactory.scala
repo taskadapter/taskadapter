@@ -2,7 +2,7 @@ package com.taskadapter.config
 
 import com.taskadapter.connector.common.ConfigUtils
 import com.taskadapter.connector.definition.FieldMapping
-import com.taskadapter.model.{AssigneeFullName, AssigneeLoginName, Children, ClosedOn, Components, CreatedOn, CustomDate, CustomFloat, CustomSeqString, CustomString, Description, DoneRatio, DueDate, EstimatedTime, Field, Id, Key, ParentKey, Priority, Relations, ReporterFullName, ReporterLoginName, SourceSystemId, StartDate, Summary, TargetVersion, TaskStatus, TaskType, UpdatedOn}
+import com.taskadapter.model.{AssigneeFullName, AssigneeLoginName, Children, ClosedOn, Components, CreatedOn, CustomDate, CustomFloat, CustomSeqString, CustomString, Description, DoneRatio, DueDate, EstimatedTime, Field, Id, Key, ParentKey, Priority, Relations, ReporterFullName, ReporterLoginName, SourceSystemId, SpentTime, StartDate, Summary, TargetVersion, TaskStatus, TaskType, UpdatedOn}
 
 import scala.util.parsing.json.JSON
 
@@ -69,6 +69,7 @@ object JsonFactory {
       case "DoneRatio$" => DoneRatio
       case "DueDate$" => DueDate
       case "EstimatedTime$" => EstimatedTime
+      case "SpentTime$" => SpentTime
       case "Id$" => Id
       case "Key$" => Key
       case "ParentKey$" => ParentKey

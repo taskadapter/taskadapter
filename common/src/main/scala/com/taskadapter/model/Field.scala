@@ -40,6 +40,8 @@ object DueDate extends Field[Date]("DueDate")
 
 object EstimatedTime extends Field[Float]("EstimatedTime")
 
+object SpentTime extends Field[Float]("SpentTime")
+
 object Id extends Field[java.lang.Long]("Id")
 
 object Key extends Field[String]("Key")
