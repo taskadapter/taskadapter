@@ -28,7 +28,7 @@ object ExportResultsFormatter {
       val newItem = if (current._3 == prev._3) {
         (current._1, current._2, "same as previous")
       } else {
-        current
+        (current._1, current._2, StacktraceCleaner.stripInternalStacktraceItems(current._3))
       }
       results += newItem
     }
