@@ -72,7 +72,8 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
       case EstimatedTime =>
         issue.setEstimatedHours(ValueTypeResolver.getValueAsFloat(value))
       case SpentTime =>
-        issue.setSpentHours(ValueTypeResolver.getValueAsFloat(value))
+        // does not work - ignored by Redmine server. most likely need to add a Time Entry via a separate REST call
+//        issue.setSpentHours(ValueTypeResolver.getValueAsFloat(value))
 
       case DoneRatio => issue.setDoneRatio(ValueTypeResolver.getValueAsInt(value))
       case TaskType =>

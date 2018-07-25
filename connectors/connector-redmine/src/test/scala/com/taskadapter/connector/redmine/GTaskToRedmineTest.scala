@@ -18,11 +18,6 @@ class GTaskToRedmineTest extends FunSpec with Matchers {
     convert(task).getSpentHours shouldBe 2.5f
   }
 
-  it("sets EstimatedTime") {
-    val task = new GTask().setValue(EstimatedTime, 2.5f)
-    convert(task).getEstimatedHours shouldBe 2.5f
-  }
-
   private def convert(gTask: GTask): Issue = getConverter().convert(gTask)
 
   private def getConverter(): GTaskToRedmine = {
