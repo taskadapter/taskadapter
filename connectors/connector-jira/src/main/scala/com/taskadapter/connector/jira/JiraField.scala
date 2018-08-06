@@ -10,10 +10,9 @@ object JiraField {
      to avoid user confusion.
    */
   val fields = List(Components, Summary, TaskStatus, Description, Id, TaskType, EstimatedTime, AssigneeLoginName,
-    CreatedOn, DueDate, Key, Priority, ReporterLoginName,
-    SpentTime)
+    CreatedOn, DueDate, Key, Priority, ReporterLoginName)
 
-  val excludeFromNewConfig = Seq(DueDate, EstimatedTime, Id, Key, ReporterLoginName, SpentTime)
+  val excludeFromNewConfig = Seq(DueDate, EstimatedTime, Id, Key, ReporterLoginName)
 
   /**
     * Estimated time, Reporter, DueDate are not included in standard JIRA 7 anymore.

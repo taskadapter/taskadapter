@@ -17,7 +17,7 @@ object DefaultValueResolver {
     DoneRatio -> FloatTypeTag,
     Description -> StringTypeTag,
     EstimatedTime -> FloatTypeTag,
-    SpentTime -> FloatTypeTag,
+//    SpentTime -> FloatTypeTag,
     Id -> LongTypeTag,
     Priority -> IntegerTypeTag,
     ReporterFullName -> StringTypeTag,

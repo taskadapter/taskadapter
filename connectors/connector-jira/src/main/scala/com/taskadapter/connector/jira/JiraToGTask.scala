@@ -100,8 +100,8 @@ class JiraToGTask(val priorities: Priorities) {
       val originalEstimateMinutes = timeTracking.getOriginalEstimateMinutes
       if (originalEstimateMinutes != null && !(originalEstimateMinutes == 0)) task.setValue(EstimatedTime, (originalEstimateMinutes / 60.0).toFloat)
 
-      val spentTimeMinutes = timeTracking.getTimeSpentMinutes
-      task.setValue(SpentTime, (spentTimeMinutes/60.0).toFloat)
+//      val spentTimeMinutes = timeTracking.getTimeSpentMinutes
+//      task.setValue(SpentTime, (spentTimeMinutes/60.0).toFloat)
     }
     JiraToGTaskHelper.processCustomFields(customFieldResolver, issue, task)
     JiraToGTask.processRelations(issue, task)

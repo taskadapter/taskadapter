@@ -20,16 +20,17 @@ object RedmineField {
     ReporterFullName,
     ReporterLoginName,
     StartDate,
-    SpentTime,
+//    SpentTime,
     CreatedOn,
     UpdatedOn,
     TaskStatus,
     TargetVersion,
     Priority)
 
-  val excludeFromNewConfig = Seq(UpdatedOn, Id, Key,
+  val excludeFromNewConfig = Seq(UpdatedOn, Id, Key
     // SpentTime is only supported for load, not save. it is better to skip it in default configs
-    SpentTime)
+//    SpentTime
+  )
   val defaultFieldsForNewConfig = fields.diff(excludeFromNewConfig)
 
 }

@@ -111,7 +111,15 @@ class GTaskToJira(config: JiraConfig,
         }
       case EstimatedTime => if (value != null) {
         val estimatedHours = value.asInstanceOf[Float]
-        val timeTracking = new TimeTracking(Math.round(estimatedHours * 60), null, null)
+        val currentTimeTracking = getTimeTrackingElement(issueInputBuilder)
+        val timeTracking = if (currentTimeTracking.isDefined) {
+          // maybe reset the current value. leave other values intact
+          new TimeTracking(roundedMinutes(estimatedHours),
+            currentTimeTracking.get.getRemainingEstimateMinutes,
+            currentTimeTracking.get.getTimeSpentMinutes)
+        } else {
+          new TimeTracking(roundedMinutes(estimatedHours), null, null)
+        }
         issueInputBuilder.setFieldValue(IssueFieldId.TIMETRACKING_FIELD.id, timeTracking)
       }
       case _ =>
@@ -122,6 +130,15 @@ class GTaskToJira(config: JiraConfig,
           issueInputBuilder.setFieldValue(fullIdForSave, valueWithProperJiraType)
         }
     }
+  }
+
+  private def roundedMinutes(hours: Float) : Integer = {
+    Math.round(hours * 60)
+  }
+
+  private def getTimeTrackingElement(issueInputBuilder: IssueInputBuilder) : Option[TimeTracking] = {
+    val maybeElement = issueInputBuilder.build().getField(IssueFieldId.TIMETRACKING_FIELD.id)
+    Option(maybeElement).map(f => f.asInstanceOf[TimeTracking])
   }
 
   /**
