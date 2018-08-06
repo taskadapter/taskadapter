@@ -1,9 +1,9 @@
 {
   "connectorId":"Redmine",
   "label" : "Redmine1",
-  "host" : "https://dev.taskadapter.com/redmine/",
-  "userName" : "",
-  "password" : "",
-  "useApiKey": true,
-  "apiKey": "¶eBEUZ3cefyc6Syt4JkcyLHh3FRg3eBt5ITtPeXp1EGJ/eiMdHWJ2Tw=="
+  "host" : "http://dev.taskadapter.com:8094",
+  "userName" : "user",
+  "password" : "1234ZXCV",
+  "useApiKey": false,
+  "apiKey": "¶eBMdY3JPfiM6THx9ekA0KCojFBxkdkx/J2xOfXt6RWcucyQWHDIgGg=="
 }
