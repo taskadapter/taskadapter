@@ -57,11 +57,11 @@ https://docs.google.com/spreadsheets/d/1UsV1G1iCY-e2Qo7V6Y7_zWdFrtB6-IquQuGSA-1N
 ## Release process.
 * Get the latest build from Jenkins https://dev.taskadapter.com/jenkins/view/taskadapter/job/taskadapter
 * With this build - verify and close issues on TaskAdapter Trello board: https://trello.com/b/eLGOvlZa/ta
-* Make sure User Guide is up-to-date on http://www.taskadapter.com (website contents is stored in 
-https://bitbucket.org/taskadapter/site git repo)
 * Trigger a release build that will upload the distributive to Bitbucket 
 https://dev.taskadapter.com/jenkins/view/taskadapter/job/taskadapter-release/
-* Follow release steps in "site" repo: https://bitbucket.org/taskadapter/site/overview
+* Make sure User Guide is up-to-date on http://www.taskadapter.com (website contents is stored in 
+https://bitbucket.org/taskadapter/site git repo)
+* Update and deploy website contents, including new app version tag/file, see this repo: https://bitbucket.org/taskadapter/site/overview
 
 ## Logging
 
