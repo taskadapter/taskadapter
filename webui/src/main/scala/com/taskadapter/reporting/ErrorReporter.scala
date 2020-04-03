@@ -10,7 +10,10 @@ import com.taskadapter.webui.service.CurrentVersionLoader
 
 object ErrorReporter {
   private val appVersion = new CurrentVersionLoader().getCurrentVersion
-  private val rollbar = Rollbar.init(ConfigBuilder.withAccessToken("7443b08768344185beae9cfe6828dc81").build)
+  private val rollbar = Rollbar.init(ConfigBuilder
+    .withAccessToken("7443b08768344185beae9cfe6828dc81")
+    .codeVersion(appVersion)
+    .build)
 
   def reportIfAllowed(config: UISyncConfig, throwable: Throwable): Unit = {
     if (isAllowedToSend) {
@@ -33,7 +36,7 @@ object ErrorReporter {
   }
 
   private def getHeader(config: UISyncConfig): String = {
-    getConfigInfo(config) + s"$div TaskAdapter v. $appVersion $div"
+    getConfigInfo(config) + div
   }
 
   private def getConfigInfo(config: UISyncConfig): String = {
