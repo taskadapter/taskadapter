@@ -2,8 +2,10 @@
 
 
 ## Tools you need to work on this project.
+* Java 8. 
 * Some IDE like Eclipse 3.7 or IDEA. See TA_IDE_guide_eclipse and TA_IDE_guide_IDEA documents in GDrive for Eclipse/IDEA-specific instructions.
-* Gradle.
+* Gradle build system v. 4.9. Gradle will be downloaded automatically by Gradle Wrapper. See the current Gradle version
+  used by this project in `gradle/gradle.properties` file).
 * Git.
 
 ## Source code locations.
@@ -40,11 +42,11 @@ Task Adapter’s Redmine Connector uses Redmine Java API. The source code is her
 
 Compile and test:
 
-    gradle clean build
+    ./gradlew clean build
 
 Full build:
 
-    gradle clean build distZip
+    ./gradlew clean build distZip
 This creates a ZIP file in taskadapter\launcher\build\distributions folder. Unpack the ZIP anywhere,
 run bin/launch.bat. It will automatically open TA URL in browser when the web app is ready.
 
@@ -65,3 +67,6 @@ https://dev.taskadapter.com/jenkins/view/taskadapter/job/taskadapter-release/
 
 Logging is done via slf4j + log4j. Set logging levels in `log4j.properties` file in `webui` module.
 
+## Error reporting
+
+Application errors are submitted to Rollbar. See https://rollbar.com/alex2020/TaskAdapter
