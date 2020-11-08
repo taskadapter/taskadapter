@@ -10,26 +10,24 @@ import com.vaadin.data.Property
 import com.vaadin.shared.ui.label.ContentMode
 import com.vaadin.ui._
 
-class ServerPanelWithKeyAndToken(connectorId: String, caption: String, val labelProperty: Property[String],
-                                 val serverURLProperty: Property[String],
-                                 val userLogin: Property[String],
-                                 val apiKeyProperty: Property[String],
-                                 val tokenProperty: Property[String]) extends ConnectorSetupPanel {
+class ServerPanelWithLoginAndToken(connectorId: String, caption: String, val labelProperty: Property[String],
+                                   val serverURLProperty: Property[String],
+                                   val userLogin: Property[String],
+                                   val apiTokenProperty: Property[String],
+                                   tokenDescription: String) extends ConnectorSetupPanel {
   val panel = new Panel
   panel.setCaption(caption)
 
-  val serverURL = textInput(serverURLProperty)
-  val userLoginInput = textInput(userLogin)
-  val apiKeyField = new PasswordField
-  val tokenField = new PasswordField
+  private val serverURL = textInput(serverURLProperty)
+  private val userLoginInput = textInput(userLogin)
+  private val apiTokenField = new PasswordField
 
   val errorMessageLabel = new Label
   errorMessageLabel.addStyleName("error-message-label")
 
-  buildUI(labelProperty, serverURLProperty, apiKeyProperty, tokenProperty)
+  buildUI(labelProperty)
 
-  private def buildUI(labelProperty: Property[String], serverURLProperty: Property[String],
-                      apiKeyProperty: Property[String], tokenProperty: Property[String]) = {
+  private def buildUI(labelProperty: Property[String]) = {
     val grid = new GridLayout
 
     val layout = new VerticalLayout(grid, errorMessageLabel)
@@ -65,21 +63,14 @@ class ServerPanelWithKeyAndToken(connectorId: String, caption: String, val label
     grid.addComponent(createEmptyLabel(emptyLabelHeight), 0, currentRow)
 
     currentRow += 1
-
-    grid.addComponent(createEmptyLabel(emptyLabelHeight), 0, currentRow)
-
-    currentRow += 1
-    addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.apiAccessKey")))
-    apiKeyField.setPropertyDataSource(apiKeyProperty)
-    apiKeyField.addStyleName("server-panel-textfield")
-
-    addTo(grid, 1, currentRow, Alignment.MIDDLE_LEFT, apiKeyField)
+    addTo(grid, Alignment.MIDDLE_LEFT, new Label(tokenDescription, ContentMode.HTML))
 
     currentRow += 1
-    addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.token")))
-    tokenField.setPropertyDataSource(tokenProperty)
-    tokenField.addStyleName("server-panel-textfield")
-    addTo(grid, 1, currentRow, Alignment.MIDDLE_LEFT, tokenField)
+    addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT,
+      new Label(Page.message("setupPanel.token"), ContentMode.HTML))
+    apiTokenField.setPropertyDataSource(apiTokenProperty)
+    apiTokenField.addStyleName("server-panel-textfield")
+    addTo(grid, 1, currentRow, Alignment.MIDDLE_LEFT, apiTokenField)
   }
 
   private def createEmptyLabel(height: String) = {
@@ -103,7 +94,7 @@ class ServerPanelWithKeyAndToken(connectorId: String, caption: String, val label
 
   override def getResult: WebConnectorSetup = {
     WebConnectorSetup(connectorId, None, labelProperty.getValue, serverURLProperty.getValue, userLogin.getValue,
-      apiKeyField.getValue, true, tokenProperty.getValue)
+      "", true, apiTokenProperty.getValue)
   }
 
   override def showError(string: String): Unit = {

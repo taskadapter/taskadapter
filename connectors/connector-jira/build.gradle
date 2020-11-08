@@ -3,6 +3,6 @@ dependencies {
 
     // you check for new versions here
     // https://maven.atlassian.com/content/groups/public/com/atlassian/jira/jira-rest-java-client-core/
-    compile 'com.atlassian.jira:jira-rest-java-client-core:4.0.0'
-    compile "com.atlassian.fugue:fugue:2.6.1"
+    compile 'com.atlassian.jira:jira-rest-java-client-core:5.2.2'
+    runtime "io.atlassian.fugue:fugue:4.7.2"
 }

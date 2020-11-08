@@ -6,7 +6,7 @@ import com.vaadin.data.util.ObjectProperty
 
 object ServerPanelFactory {
   def withApiKeyAndLoginPassword(connectorId: String, caption: String, setup: WebConnectorSetup): ConnectorSetupPanel = {
-    new ServerPanelWithAPIKey(connectorId, caption,
+    new ServerPanelWithPasswordAndAPIKey(connectorId, caption,
       new ObjectProperty[String](setup.label),
       new ObjectProperty[String](setup.host),
       new ObjectProperty[String](setup.userName),
@@ -22,6 +22,17 @@ object ServerPanelFactory {
       new ObjectProperty[String](setup.host),
       new ObjectProperty[String](setup.userName),
       new ObjectProperty[String](setup.password)
+    )
+  }
+
+  def withEmailAndApiToken(connectorId: String, caption: String, tokenDescription: String,
+                           setup: WebConnectorSetup): ConnectorSetupPanel = {
+    new ServerPanelWithLoginAndToken(connectorId, caption,
+      new ObjectProperty[String](setup.label),
+      new ObjectProperty[String](setup.host),
+      new ObjectProperty[String](setup.userName),
+      new ObjectProperty[String](setup.apiKey),
+      tokenDescription
     )
   }
 
