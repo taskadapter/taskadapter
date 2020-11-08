@@ -52,9 +52,10 @@ public class XorEncryptor implements Encryptor {
     /**
      * Decrypts string with key using XOR method and BASE64 decoding
      *
-     * @param string string to be decrypted
+     * @param string string to be decrypted.
      * @param key key used for XOR method
-     * @return Decrypted string
+     * @return Decrypted string. if the original string is not encrypted (which is determined by the absence
+     *         of some marker), the original string is returned without modification.
      */
     @Override
     public String decrypt(String string, String key) {
@@ -80,7 +81,8 @@ public class XorEncryptor implements Encryptor {
      * Decrypts string with default key
      *
      * @param string string to be decrypted
-     * @return Decrypted string
+     * @return Decrypted string. if the original string is not encrypted (which is determined by the absence
+     *         of some marker), the original string is returned without modification.
      */
     @Override
     public String decrypt(String string) {
