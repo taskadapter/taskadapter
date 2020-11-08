@@ -8,11 +8,16 @@ import com.taskadapter.connector.basecamp.classic.transport.{BaseCommunicator, O
 import com.taskadapter.connector.testlib.CommonTestChecks
 import com.taskadapter.model.GTaskBuilder
 import org.junit.Assert.{assertEquals, assertNotNull, assertTrue}
+import org.junit.Ignore
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
 
-@RunWith(classOf[JUnitRunner])
+/**
+  * Basecamp tests are now ignored - there are no known TaskAdapter users of basecamp.
+  * Not worth maintaining this connector.
+  */
+@Ignore
 class BasecampClassicIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll with BasecampClassicTestProject {
   private val factory = new ObjectAPIFactory(new BaseCommunicator)
 
