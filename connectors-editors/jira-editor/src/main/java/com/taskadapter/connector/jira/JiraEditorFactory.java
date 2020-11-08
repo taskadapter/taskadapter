@@ -109,8 +109,8 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
 
     @Override
     public WebConnectorSetup createDefaultSetup(Sandbox sandbox) {
-        return new WebConnectorSetup(JiraConnector.ID(), Option.empty(), "My JIRA", "http://", "",
-                "", false, "");
+        return new WebConnectorSetup(JiraConnector.ID(), Option.empty(), "My Jira", "https://", "",
+                "", true, "");
     }
 
     @Override

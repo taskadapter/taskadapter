@@ -48,7 +48,7 @@ class ServerPanelWithLoginAndToken(connectorId: String, caption: String, val lab
     currentRow += 1
     addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.serverUrl")))
     serverURL.addStyleName("server-panel-textfield")
-    serverURL.setInputPrompt("http://myserver:3000/some_location")
+    serverURL.setInputPrompt("https://myserver:3000/some_location")
     addTo(grid, 1, currentRow, Alignment.MIDDLE_LEFT, serverURL)
 
     // user name
