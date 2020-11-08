@@ -2,19 +2,19 @@ package com.taskadapter.webui.pages
 
 import java.util.Comparator
 
-import com.taskadapter.web.service.Sandbox
+import com.taskadapter.web.event.{EventBusImpl, ShowConfigPageRequested}
 import com.taskadapter.web.uiapi.{ConfigId, UISyncConfig}
-import com.taskadapter.webui.{ConfigOperations, Page, Tracker, WebUserSession}
+import com.taskadapter.webui.{ConfigOperations, Page}
 import com.vaadin.ui._
+import com.vaadin.ui.themes.BaseTheme
+import org.slf4j.LoggerFactory
 
-object ConfigsPage {
+object ConfigsListPage {
 
   /**
     * Callback for config list page.
     */
   trait Callback {
-
-    def startExport(config: UISyncConfig): Unit
 
     /**
       * Performs a forward drop-in.
@@ -36,10 +36,6 @@ object ConfigsPage {
       * User requested creation of a new config.
       */
     def newConfig(): Unit
-
-    def showAllPreviousResults(configId: ConfigId): Unit
-
-    def showLastExportResult(configId: ConfigId): Unit
   }
 
   /**
@@ -63,9 +59,9 @@ object ConfigsPage {
 
 }
 
-class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Callback, configOperations: ConfigOperations,
-                  webUserSession: WebUserSession,
-                  sandbox: Sandbox) {
+class ConfigsListPage(showAll: Boolean, callback: ConfigsListPage.Callback, configOperations: ConfigOperations) {
+  private val log = LoggerFactory.getLogger(classOf[ConfigsListPage])
+
   val displayMode = if (showAll) DisplayMode.ALL_CONFIGS
   else DisplayMode.OWNED_CONFIGS
 
@@ -93,17 +89,8 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
   configsTopLevelLayout.setSpacing(true)
   configsTopLevelLayout.setSizeFull()
 
-  val configsLayout = new HorizontalLayout()
+  val configsLayout = new VerticalLayout()
   configsLayout.setWidth("100%")
-
-  val listSelect = configureListSelect()
-  val listPanel = new Panel(listSelect)
-  listPanel.setWidth("270px")
-  configsLayout.addComponent(listPanel)
-
-  val configArea = new Panel()
-  configsLayout.addComponent(configArea)
-  configsLayout.setExpandRatio(configArea, 1.0f)
 
   configsTopLevelLayout.addComponent(configsLayout)
   configsTopLevelLayout.setComponentAlignment(configsLayout, Alignment.TOP_CENTER)
@@ -119,51 +106,27 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
     configs = loadedConfigs.sortBy(c => c.getOwnerName)
     setDisplayedConfigs(configs)
     filterFields(filterField.getValue)
-    if (webUserSession.hasCurrentConfig) {
-      listSelect.select(webUserSession.getCurrentConfigId)
-    } else {
-      clearConfigSummaryArea()
-    }
-    listPanel.setVisible(loadedConfigs.nonEmpty)
   }
 
   private def setDisplayedConfigs(dispConfigs: Seq[UISyncConfig]): Unit = {
-    listSelect.removeAllItems()
+    configsLayout.removeAllComponents()
     dispConfigs.foreach(config => {
-      listSelect.addItem(config.id)
-      listSelect.setItemCaption(config.id, config.label)
+      configsLayout.addComponent(createConfigComponent(config))
     })
   }
 
-  def showConfigSummary(configId: ConfigId): Unit = {
-    val maybeConfig = configOperations.getConfig(configId)
-    if (maybeConfig.isDefined) {
-      val component = new ConfigSummaryPanel(maybeConfig.get, displayMode, callback, configOperations,
-        sandbox,
-        () => refreshConfigs(),
-        () => callback.showAllPreviousResults(configId),
-        () => callback.showLastExportResult(configId), tracker, webUserSession).ui()
-      component.setMargin(true)
-      configArea.setContent(component)
-
-      tracker.trackPage("config_summary")
-      webUserSession.setCurrentConfigId(configId)
-    }
+  private def createConfigComponent(config: UISyncConfig): Component = {
+    val layout = new HorizontalLayout()
+    val configLabel = config.label
+    val link = new Button(configLabel)
+    link.addStyleName(BaseTheme.BUTTON_LINK)
+    link.addClickListener(_ => showConfigSummary(config.id))
+    layout.addComponent(link)
+    layout
   }
 
-  private def configureListSelect(): ListSelect = {
-    val listSelect = new ListSelect()
-    listSelect.setNullSelectionAllowed(false)
-    listSelect.setWidth("100%")
-    listSelect.setImmediate(true)
-    listSelect.addValueChangeListener(e => {
-      val configId = e.getProperty.getValue.asInstanceOf[ConfigId]
-      // it will be null when an element is removed from the list
-      if (configId != null) {
-        showConfigSummary(configId)
-      }
-    })
-    listSelect
+  private def showConfigSummary(configId: ConfigId): Unit = {
+    EventBusImpl.post(ShowConfigPageRequested(configId))
   }
 
   private def filterFields(filterStr: String): Unit = {
@@ -180,10 +143,6 @@ class ConfigsPage(tracker: Tracker, showAll: Boolean, callback: ConfigsPage.Call
       if (!confName.toLowerCase.contains(name) && !config.getConnector1.getLabel.toLowerCase.contains(name) && !config.getConnector2.getLabel.toLowerCase.contains(name)) return false
     }
     true
-  }
-
-  def clearConfigSummaryArea(): Unit = {
-    configArea.setContent(null)
   }
 
   def ui = layout

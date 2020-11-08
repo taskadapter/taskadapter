@@ -4,8 +4,9 @@ import java.util
 
 import com.taskadapter.config.StorageException
 import com.taskadapter.model.GTask
+import com.taskadapter.web.event.{ConfigSaveRequested, EventBusImpl}
 import com.taskadapter.web.uiapi.UISyncConfig
-import com.taskadapter.webui.{ConfigOperations, Page}
+import com.taskadapter.webui.Page
 import com.taskadapter.webui.action.MyTree
 import com.taskadapter.webui.config.TaskFieldsMappingFragment
 import com.vaadin.ui._
@@ -36,7 +37,7 @@ object ConfirmExportFragment {
     *
     * @return confirmation dialog.
     */
-  def render(configOps: ConfigOperations, config: UISyncConfig,
+  def render(config: UISyncConfig,
              initialTasks: util.List[GTask], callback: Callback): Component = {
     val resolver = config.getPreviouslyCreatedTasksResolver()
     val layout = new VerticalLayout
@@ -66,9 +67,9 @@ object ConfirmExportFragment {
     }
     layout.addComponent(taskFieldsMappingFragment.getUI)
     goButton.addClickListener(_ => {
-      try
-        configOps.saveConfig(getPossiblyUpdatedConfig)
-      catch {
+      try {
+        EventBusImpl.post(ConfigSaveRequested(getPossiblyUpdatedConfig))
+      } catch {
         case e: StorageException =>
           LOGGER.error(Page.message("action.cantSaveUpdatedConfig", e.getMessage), e)
       }

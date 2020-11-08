@@ -33,7 +33,8 @@ dependencies {
 
     compile (
             "org.scala-lang.modules:scala-parser-combinators_2.12:1.0.4",
-            "com.rollbar:rollbar-java:1.6.0"
+            "com.rollbar:rollbar-java:1.6.0",
+            "io.reactivex:rxscala_2.12:0.26.5"
     )
 
     compile project(":connectors-editors:basecamp-editor")

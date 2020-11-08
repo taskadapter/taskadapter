@@ -109,7 +109,6 @@ public final class SessionController {
         }
         CookiesManager.expireCookie(PERM_AUTH_USER_COOKIE_NAME);
         CookiesManager.expireCookie(PERM_AUTH_KEY_COOKIE_NAME);
-        session.clearCurrentConfig();
         showLogin();
     }
 

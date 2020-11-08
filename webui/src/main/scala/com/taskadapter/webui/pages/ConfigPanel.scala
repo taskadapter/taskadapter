@@ -3,6 +3,7 @@ package com.taskadapter.webui.pages
 import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.connector.definition.exception.FieldNotMappedException
 import com.taskadapter.connector.definition.exceptions.BadConfigException
+import com.taskadapter.web.event.{ConfigSaveRequested, EventBusImpl, StartExportRequested}
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{UIConnectorConfig, UISyncConfig}
 import com.taskadapter.webui._
@@ -13,28 +14,29 @@ import com.vaadin.ui.themes.ValoTheme
 import org.slf4j.LoggerFactory
 
 /**
-  * Config Summary panel with left/right arrows, connector names, action buttons (Delete/Clone/etc).
+  * Config panel with left/right arrows, connector names, action buttons (Delete/Clone/etc).
   */
-class ConfigSummaryPanel(config: UISyncConfig, mode: DisplayMode, callback: ConfigsPage.Callback,
-                         configOps: ConfigOperations,
-                         sandbox: Sandbox,
-                         onConfigChanges: Runnable,
-                         showAllPreviousExportResults: Runnable,
-                         showLastExportResult: Runnable,
-                         tracker: Tracker,
-                         webUserSession: WebUserSession) {
-  private val log = LoggerFactory.getLogger(classOf[ConfigSummaryPanel])
+class ConfigPanel(config: UISyncConfig,
+                  configOps: ConfigOperations,
+                  sandbox: Sandbox,
+                  tracker: Tracker) {
+  private val log = LoggerFactory.getLogger(classOf[ConfigPanel])
+
+  private val configId = config.id
 
   val layout = new VerticalLayout
   layout.addStyleName("configPanelInConfigsList")
   layout.setSpacing(true)
 
-  val configId = config.id
+  val configTitleLine = new Label(config.label)
+  layout.addComponent(configTitleLine)
 
-  val buttonsLayout = new ConfigActionsFragment(config.id, configOps, onConfigChanges,
-    showAllPreviousExportResults, showLastExportResult,
-    () => showConfigEditor(""),
-    tracker, webUserSession).layout
+  EventBusImpl.subscribe((e: ConfigSaveRequested)  => {
+    configTitleLine.setValue(e.config.label)
+  })
+
+  val buttonsLayout = new ConfigActionsFragment(config.id,
+    () => showConfigEditor("")).layout
   layout.addComponent(buttonsLayout)
 
   val validationPanelSaveToRight = new ValidationMessagesPanel(
@@ -58,14 +60,14 @@ class ConfigSummaryPanel(config: UISyncConfig, mode: DisplayMode, callback: Conf
     horizontalLayout.removeAllComponents()
     val configSaver = new Runnable {
       override def run(): Unit = {
-        configOps.saveConfig(config)
+        EventBusImpl.post(ConfigSaveRequested(config))
         recreateContents(config)
       }
     }
     val leftConnectorEditListener = new Runnable {
       override def run(): Unit = showEditConnectorDialog(config.getConnector1, configSaver, sandbox)
     }
-    val leftSystemButton = createConfigureConnectorButton(config.connector1, sandbox, configSaver, leftConnectorEditListener)
+    val leftSystemButton = createConfigureConnectorButton(config.connector1, leftConnectorEditListener)
     horizontalLayout.addComponent(leftSystemButton)
 
     val leftRightButtonsPanel = new VerticalLayout()
@@ -79,7 +81,7 @@ class ConfigSummaryPanel(config: UISyncConfig, mode: DisplayMode, callback: Conf
     val rightConnectorEditListener = new Runnable {
       override def run(): Unit = showEditConnectorDialog(config.getConnector2, configSaver, sandbox)
     }
-    val rightSystemButton = createConfigureConnectorButton(config.connector2, sandbox, configSaver, rightConnectorEditListener)
+    val rightSystemButton = createConfigureConnectorButton(config.connector2, rightConnectorEditListener)
     horizontalLayout.addComponent(rightSystemButton)
 
     performValidation(config, configSaver)
@@ -97,8 +99,6 @@ class ConfigSummaryPanel(config: UISyncConfig, mode: DisplayMode, callback: Conf
   }
 
   private def createConfigureConnectorButton(connectorConfig: UIConnectorConfig,
-                                             sandbox: Sandbox,
-                                             configSaver: Runnable,
                                              buttonListener: Runnable): Component = {
     val iconResource = ImageLoader.getImage("edit.png")
     val button = new Button(connectorConfig.getLabel)
@@ -126,12 +126,10 @@ class ConfigSummaryPanel(config: UISyncConfig, mode: DisplayMode, callback: Conf
       val maybeConfig = configOps.getConfig(configId)
       if (maybeConfig.isDefined) {
         recreateContents(maybeConfig.get)
-        onConfigChanges.run()
       }
     })
     window.setContent(editor)
     tracker.trackPage("edit_config")
-    webUserSession.setCurrentConfigId(config.id)
   }
 
   def loadConfig(): UISyncConfig = {
@@ -143,7 +141,7 @@ class ConfigSummaryPanel(config: UISyncConfig, mode: DisplayMode, callback: Conf
   }
 
   private def getConfigEditor(config: UISyncConfig, error: String, closeAction: Runnable): Component = {
-    val editor = new EditConfigPage(Page.MESSAGES, tracker, configOps, error, sandbox, config,
+    val editor = new EditConfigPage(Page.MESSAGES, error, config,
       () => closeAction.run())
     editor.getUI
   }
@@ -198,7 +196,7 @@ class ConfigSummaryPanel(config: UISyncConfig, mode: DisplayMode, callback: Conf
     * @param config base config. May be saved!
     */
   private def sync(config: UISyncConfig): Unit = {
-    callback.startExport(config)
+    EventBusImpl.post(StartExportRequested(config))
   }
 
   def ui(): VerticalLayout = layout
