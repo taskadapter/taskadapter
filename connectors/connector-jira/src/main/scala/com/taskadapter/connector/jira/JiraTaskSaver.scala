@@ -51,7 +51,7 @@ class JiraTaskSaver(client: JiraRestClient, issueTypeList: Iterable[IssueType],
   def getWithTaskTypeSet(wrapper: IssueWrapper, issueTypeId: Long): IssueInput = {
     val newMap = wrapper.issueInput.getFields.asScala.filter(_._1 != "issuetype")
     newMap.put("issuetype", createType(issueTypeId))
-    new IssueInput(newMap.asJava)
+    new IssueInput(newMap.asJava, List().asJava)
   }
 
   private def createType(issueTypeId: Long) =

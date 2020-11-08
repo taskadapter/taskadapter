@@ -1,18 +1,13 @@
 package com.taskadapter.connector.jira;
 
 import com.atlassian.jira.rest.client.api.JiraRestClient;
-import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.Priority;
-import com.atlassian.jira.rest.client.api.domain.Project;
-import com.atlassian.util.concurrent.Promise;
 import com.google.common.base.Strings;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
-import com.taskadapter.model.GProject;
-
-import java.util.List;
+import io.atlassian.util.concurrent.Promise;
 
 public class JiraLoaders {
 

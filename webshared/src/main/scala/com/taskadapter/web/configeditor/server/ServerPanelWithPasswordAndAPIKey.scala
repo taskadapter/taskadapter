@@ -12,14 +12,14 @@ import com.vaadin.ui._
 
 import scala.collection.JavaConverters._
 
-object ServerPanelWithAPIKey {
+object ServerPanelWithPasswordAndAPIKey {
   val defaultUrlPrefix = "http://"
 }
 
-class ServerPanelWithAPIKey(connectorId: String, caption: String, val labelProperty: Property[String],
-                            val serverURLProperty: Property[String], val loginNameProperty: Property[String],
-                            val passwordProperty: Property[String], val apiKeyProperty: Property[String],
-                            val useApiKeyProperty: Property[java.lang.Boolean]) extends ConnectorSetupPanel {
+class ServerPanelWithPasswordAndAPIKey(connectorId: String, caption: String, val labelProperty: Property[String],
+                                       val serverURLProperty: Property[String], val loginNameProperty: Property[String],
+                                       val passwordProperty: Property[String], val apiKeyProperty: Property[String],
+                                       val useApiKeyProperty: Property[java.lang.Boolean]) extends ConnectorSetupPanel {
   val panel = new Panel
   panel.setCaption(caption)
 
@@ -127,7 +127,7 @@ class ServerPanelWithAPIKey(connectorId: String, caption: String, val labelPrope
       return Some(Page.message("newConfig.configure.nameRequired"))
     }
     val host = serverURL.getValue
-    if (host == null || host.isEmpty || host.equalsIgnoreCase(ServerPanelWithAPIKey.defaultUrlPrefix)) {
+    if (host == null || host.isEmpty || host.equalsIgnoreCase(ServerPanelWithPasswordAndAPIKey.defaultUrlPrefix)) {
       return Some(Page.message("newConfig.configure.serverUrlRequired"))
     }
     None
