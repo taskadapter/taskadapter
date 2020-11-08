@@ -15,10 +15,6 @@ object EventBusImpl extends EventBus {
     }
   }
 
-  /**
-    * Use #subscribeWithAutoCleanup instead
-    */
-  @Deprecated
   def observable[T](eventClass: Class[T]): Observable[T] = {
     bus.filter(o => o != null) // Filter out null objects, better safe than sorry
       .filter(o => eventClass.isInstance(o)) // We're only interested in a specific event class

@@ -2,6 +2,7 @@ package com.taskadapter.webui
 
 import com.taskadapter.config.StorageException
 import com.taskadapter.web.PopupDialog
+import com.taskadapter.web.event.{ConfigCloneRequested, ConfigDeleteRequested, EventBusImpl, ShowAllExportResultsRequested, ShowConfigsListPageRequested, ShowLastExportResultRequested}
 import com.taskadapter.web.uiapi.ConfigId
 import com.vaadin.ui.{Button, HorizontalLayout, Notification}
 import org.slf4j.LoggerFactory
@@ -10,15 +11,9 @@ import org.slf4j.LoggerFactory
   * Contains buttons with various config actions. Shown on Config Summary page.
   *
   * @param configId  identity of the config to perform operations on.
-  * @param configOps config operations.
-  * @param onConfigChanges    exit request handler.
   */
-class ConfigActionsFragment(configId: ConfigId, configOps: ConfigOperations, onConfigChanges: Runnable,
-                            showPastExportResults: Runnable,
-                            showLastResult: Runnable,
-                            showConfigEditor: Runnable,
-                            tracker: Tracker,
-                            webUserSession: WebUserSession) {
+class ConfigActionsFragment(configId: ConfigId,
+                            showConfigEditor: Runnable) {
 
   private val log = LoggerFactory.getLogger(classOf[ConfigActionsFragment])
 
@@ -26,18 +21,18 @@ class ConfigActionsFragment(configId: ConfigId, configOps: ConfigOperations, onC
   layout.setSpacing(true)
 
   layout.addComponent(new Button(Page.message("configSummary.configure"), _ => showConfigEditor.run()))
-  layout.addComponent(new Button(Page.message("configsPage.actionViewExportResults"), _ => showPastExportResults.run()))
-  layout.addComponent(new Button(Page.message("configsPage.actionViewLastResult"), _ => showLastResult.run()))
+  layout.addComponent(new Button(Page.message("configsPage.actionViewExportResults"),
+    _ => EventBusImpl.post(ShowAllExportResultsRequested(configId))))
+  layout.addComponent(new Button(Page.message("configsPage.actionViewLastResult"),
+    _ => EventBusImpl.post(ShowLastExportResultRequested(configId))))
   layout.addComponent(new Button(Page.message("configsPage.actionClone"), _ => showConfirmClonePage()))
   layout.addComponent(new Button(Page.message("configsPage.actionDelete"), _ => showDeleteConfigDialog()))
 
   private def showDeleteConfigDialog(): Unit = {
     val messageDialog = PopupDialog.confirm(Page.message("configsPage.actionDelete.confirmText"),
       () => {
-        configOps.deleteConfig(configId)
-        webUserSession.clearCurrentConfig()
-        tracker.trackEvent(ConfigCategory, "deleted", "")
-        onConfigChanges.run()
+        EventBusImpl.post(ConfigDeleteRequested(configId))
+        EventBusImpl.post(ShowConfigsListPageRequested())
       }
     )
     layout.getUI.addWindow(messageDialog)
@@ -47,8 +42,8 @@ class ConfigActionsFragment(configId: ConfigId, configOps: ConfigOperations, onC
     val messageDialog = PopupDialog.confirm(Page.message("configsPage.actionClone.confirmText"),
       () => {
         try {
-          configOps.cloneConfig(configId)
-          onConfigChanges.run()
+          EventBusImpl.post(ConfigCloneRequested(configId))
+          EventBusImpl.post(ShowConfigsListPageRequested())
         } catch {
           case e: StorageException =>
             val message = "There were some troubles cloning the config:<BR>" + e.getMessage

@@ -5,7 +5,6 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.reporting.ErrorReporter;
 import com.taskadapter.web.uiapi.UISyncConfig;
-import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.results.ExportResultStorage;
 import com.vaadin.server.Sizeable.Unit;
@@ -42,7 +41,7 @@ public final class ExportPage {
     private final Label errorMessage;
     private final VerticalLayout content;
 
-    public ExportPage(ExportResultStorage exportResultStorage, ConfigOperations configOps, UISyncConfig config,
+    public ExportPage(ExportResultStorage exportResultStorage, UISyncConfig config,
                       int taskLimit, boolean showFilePath, Runnable onDone, Tracker tracker) {
         this.config = config;
         this.taskLimit = taskLimit;
@@ -56,7 +55,7 @@ public final class ExportPage {
 
         content = new VerticalLayout();
         ui.addComponent(content);
-        exportHelper = new ExportHelper(configOps, exportResultStorage, tracker, onDone, showFilePath, content, config);
+        exportHelper = new ExportHelper(exportResultStorage, tracker, onDone, showFilePath, content, config);
 
         startLoading();
     }

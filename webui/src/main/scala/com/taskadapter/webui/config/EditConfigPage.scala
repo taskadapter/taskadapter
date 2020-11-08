@@ -6,7 +6,7 @@ import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.connector.definition.exception.FieldNotMappedException
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.web.data.Messages
-import com.taskadapter.web.service.Sandbox
+import com.taskadapter.web.event.{ConfigSaveRequested, EventBusImpl}
 import com.taskadapter.web.uiapi.UISyncConfig
 import com.taskadapter.webui._
 import com.taskadapter.webui.data.ExceptionFormatter
@@ -16,10 +16,12 @@ import com.vaadin.shared.ui.label.ContentMode
 import com.vaadin.ui._
 import org.slf4j.LoggerFactory
 
-class EditConfigPage(messages: Messages, tracker: Tracker,
-                     configOps: ConfigOperations,
+/**
+  * Fields mapping plus "description" element at the top.
+  */
+class EditConfigPage(messages: Messages,
                      error: String,
-                     sandbox: Sandbox, config: UISyncConfig,
+                     config: UISyncConfig,
                      close: Runnable) {
   private val logger = LoggerFactory.getLogger(classOf[EditConfigPage])
 
@@ -121,8 +123,7 @@ class EditConfigPage(messages: Messages, tracker: Tracker,
       val newConfig = config.copy(fieldMappings = newFieldMappings,
         label = labelProperty.getValue
       )
-      configOps.saveConfig(newConfig)
-      tracker.trackEvent(ConfigCategory, "saved", "")
+      EventBusImpl.post(ConfigSaveRequested(newConfig))
     } catch {
       case e: StorageException =>
         val message = Page.message("editConfig.error.cantSave", e.getMessage)

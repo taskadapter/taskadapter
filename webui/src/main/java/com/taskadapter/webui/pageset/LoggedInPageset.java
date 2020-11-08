@@ -4,6 +4,12 @@ import com.google.common.io.Files;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.TaskKeeperLocationStorage;
+import com.taskadapter.web.event.EventBusImpl;
+import com.taskadapter.web.event.ShowAllExportResultsRequested;
+import com.taskadapter.web.event.ShowConfigPageRequested;
+import com.taskadapter.web.event.ShowConfigsListPageRequested;
+import com.taskadapter.web.event.ShowLastExportResultRequested;
+import com.taskadapter.web.event.StartExportRequested;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.uiapi.ConfigId;
 import com.taskadapter.web.uiapi.SetupId;
@@ -25,7 +31,8 @@ import com.taskadapter.webui.config.SetupsListPage;
 import com.taskadapter.webui.export.ExportResultsFragment;
 import com.taskadapter.webui.license.LicenseFacade;
 import com.taskadapter.webui.pages.AppUpdateNotificationComponent;
-import com.taskadapter.webui.pages.ConfigsPage;
+import com.taskadapter.webui.pages.ConfigPanel;
+import com.taskadapter.webui.pages.ConfigsListPage;
 import com.taskadapter.webui.pages.DropInExportPage;
 import com.taskadapter.webui.pages.ExportPage;
 import com.taskadapter.webui.pages.LicenseAgreementPage;
@@ -45,6 +52,7 @@ import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rx.lang.scala.Subscriber;
 import scala.Function0;
 import scala.Function1;
 import scala.Option;
@@ -110,7 +118,7 @@ public class LoggedInPageset {
      */
     private final HorizontalLayout currentComponentArea = new HorizontalLayout();
 
-    private final ConfigsPage configsPage;
+    private final ConfigsListPage configsListPage;
 
     /**
      * Creates a new pageset.
@@ -136,8 +144,50 @@ public class LoggedInPageset {
 
         currentComponentArea.setWidth(Sizes.mainWidth());
         this.ui = TAPageLayout.layoutPage(header, new AppUpdateNotificationComponent(), currentComponentArea);
-        this.configsPage = createConfigsPage();
+        this.configsListPage = createConfigsPage();
+        registerEventListeners();
         showConfigsList();
+    }
+
+    private void registerEventListeners() {
+        EventBusImpl.observable(ShowConfigsListPageRequested.class)
+                .subscribe(new Subscriber<ShowConfigsListPageRequested>() {
+                    @Override
+                    public void onNext(ShowConfigsListPageRequested value) {
+                        showConfigsList();
+                    }
+                });
+
+        EventBusImpl.observable(ShowConfigPageRequested.class)
+                .subscribe(new Subscriber<ShowConfigPageRequested>() {
+                    @Override
+                    public void onNext(ShowConfigPageRequested value) {
+                        showConfigPanel(value.configId());
+                    }
+                });
+
+        EventBusImpl.observable(StartExportRequested.class)
+                .subscribe(new Subscriber<StartExportRequested>() {
+                    @Override
+                    public void onNext(StartExportRequested value) {
+                        exportCommon(value.config());
+                    }
+                });
+
+        EventBusImpl.observable(ShowLastExportResultRequested.class)
+                .subscribe(new Subscriber<ShowLastExportResultRequested>() {
+                    @Override
+                    public void onNext(ShowLastExportResultRequested value) {
+                        showLastExportResult(value.configId());
+                    }
+                });
+        EventBusImpl.observable(ShowAllExportResultsRequested.class)
+                .subscribe(new Subscriber<ShowAllExportResultsRequested>() {
+                    @Override
+                    public void onNext(ShowAllExportResultsRequested value) {
+                        showExportResults(value.configId());
+                    }
+                });
     }
 
     /**
@@ -195,6 +245,19 @@ public class LoggedInPageset {
         applyUI(schedulesListPage.ui());
     }
 
+    private void showConfigPanel(ConfigId configId) {
+        Option<UISyncConfig> maybeConfig = context.configOps.getConfig(configId);
+        if (maybeConfig.isEmpty()) {
+            log.error("Cannot find config with id " + configId + "to show in the UI. It may have been deleted already");
+            return;
+        }
+        UISyncConfig config = maybeConfig.get();
+
+        ConfigPanel panel = new ConfigPanel(config, context.configOps, createSandbox(), tracker);
+        tracker.trackPage("config_panel");
+        applyUI(panel.ui());
+    }
+
     /**
      * Shows a support page.
      */
@@ -217,12 +280,12 @@ public class LoggedInPageset {
     }
 
     private void showConfigsList() {
-        configsPage.refreshConfigs();
+        configsListPage.refreshConfigs();
         tracker.trackPage("configs_list");
-        applyUI(configsPage.ui());
+        applyUI(configsListPage.ui());
     }
 
-    private void showLastResults(ConfigId configId) {
+    private void showLastExportResult(ConfigId configId) {
         Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults(configId);
 
         List<ExportResultFormat> javaResults = new ArrayList<>(JavaConversions.seqAsJavaList(results));
@@ -236,14 +299,15 @@ public class LoggedInPageset {
     }
 
     private void showResult(ExportResultFormat result) {
-        ExportResultsFragment fragment = new ExportResultsFragment(this::showHome,
+        ExportResultsFragment fragment = new ExportResultsFragment(() -> showConfigPanel(result.configId()),
                 services.settingsManager.isTAWorkingOnLocalMachine());
         Component component = fragment.showExportResult(result);
         applyUI(component);
     }
 
     private void showExportResults(ConfigId configId) {
-        ExportResultsListPage exportResultsListPage = new ExportResultsListPage(this::showHome, showExportResultsScala());
+        ExportResultsListPage exportResultsListPage = new ExportResultsListPage(() -> showConfigPanel(configId),
+                showExportResultsScala());
         Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults(configId);
         exportResultsListPage.showResults(results);
         applyUI(exportResultsListPage.ui());
@@ -266,27 +330,12 @@ public class LoggedInPageset {
                 && context.authorizedOps.canManagerPeerConfigs();
     }
 
-    private ConfigsPage createConfigsPage() {
-        return new ConfigsPage(tracker, needToShowAllConfigs(),
-                new ConfigsPage.Callback() {
+    private ConfigsListPage createConfigsPage() {
+        return new ConfigsListPage(needToShowAllConfigs(),
+                new ConfigsListPage.Callback() {
                     @Override
                     public void newConfig() {
                         createNewConfig();
-                    }
-
-                    @Override
-                    public void showAllPreviousResults(ConfigId configId) {
-                        showExportResults(configId);
-                    }
-
-                    @Override
-                    public void showLastExportResult(ConfigId configId) {
-                        showLastResults(configId);
-                    }
-
-                    @Override
-                    public void startExport(UISyncConfig config) {
-                        exportCommon(config);
                     }
 
                     @Override
@@ -301,9 +350,7 @@ public class LoggedInPageset {
                         dropIn(config.reverse(), file);
                     }
                 },
-                context.configOps,
-                webUserSession,
-                createSandbox()
+                context.configOps
         );
 
     }
@@ -316,7 +363,6 @@ public class LoggedInPageset {
                     UISyncConfig config = maybeCconfig.get();
                     tracker.trackEvent(ConfigCategory$.MODULE$, "created",
                             config.connector1().getConnectorTypeId() + " - " + config.connector2().getConnectorTypeId());
-                    webUserSession.setCurrentConfigId(configId);
                     showConfigsList();
                 }).panel());
     }
@@ -451,9 +497,9 @@ public class LoggedInPageset {
                 : LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
         log.info("License installed? " + services.licenseManager.isSomeValidLicenseInstalled());
         applyUI(new ExportPage(services.exportResultStorage,
-                context.configOps, config, maxTasks,
+                config, maxTasks,
                 services.settingsManager.isTAWorkingOnLocalMachine(),
-                this::showHome, tracker).ui);
+                () -> showConfigPanel(config.id()), tracker).ui);
     }
 
     // TODO TA3 file based connector - MSP

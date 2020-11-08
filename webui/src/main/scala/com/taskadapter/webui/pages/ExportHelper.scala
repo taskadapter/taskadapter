@@ -8,12 +8,11 @@ import com.taskadapter.web.uiapi.UISyncConfig
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.export.{ConfirmExportFragment, ExportResultsFragment}
 import com.taskadapter.webui.results.ExportResultStorage
-import com.taskadapter.webui.{ConfigOperations, ExportCategory, MonitorWrapper, Tracker}
+import com.taskadapter.webui.{ExportCategory, MonitorWrapper, Tracker}
 import com.vaadin.server.VaadinSession
 import com.vaadin.ui._
 
-class ExportHelper(configOps: ConfigOperations,
-                   exportResultStorage: ExportResultStorage,
+class ExportHelper(exportResultStorage: ExportResultStorage,
                    tracker: Tracker, onDone: Runnable, showFilePath: Boolean,
                    layout: VerticalLayout,
                    config: UISyncConfig) {
@@ -41,7 +40,7 @@ class ExportHelper(configOps: ConfigOperations,
   }
 
   private def showConfirmation(tasks: util.List[GTask]): Unit = {
-    val component = ConfirmExportFragment.render(configOps, config, tasks, new ConfirmExportFragment.Callback() {
+    val component = ConfirmExportFragment.render(config, tasks, new ConfirmExportFragment.Callback() {
       override def onTasks(selectedTasks: util.List[GTask]): Unit = {
         performExport(selectedTasks)
       }

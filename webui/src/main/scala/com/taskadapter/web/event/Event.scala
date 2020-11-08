@@ -17,9 +17,19 @@ case class CredentialsChangeRequested(login: String, password: String) extends E
 
 case class ShowConfigPageRequested(configId: ConfigId) extends Event
 
+case class ShowConfigsListPageRequested() extends Event
+
+case class ShowLastExportResultRequested(configId: ConfigId) extends Event
+
+case class ShowAllExportResultsRequested(configId: ConfigId) extends Event
+
 case class StartExportRequested(config: UISyncConfig) extends Event
 
 case class ConfigSaveRequested(config: UISyncConfig) extends Event
+
+case class ConfigCloneRequested(configId: ConfigId) extends Event
+
+case class ConfigDeleteRequested(configId: ConfigId) extends Event
 
 case object LogPanelInfoPrinted extends Event
 
