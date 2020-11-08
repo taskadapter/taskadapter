@@ -22,11 +22,18 @@ class ConfigPanel(config: UISyncConfig,
                   tracker: Tracker) {
   private val log = LoggerFactory.getLogger(classOf[ConfigPanel])
 
+  private val configId = config.id
+
   val layout = new VerticalLayout
   layout.addStyleName("configPanelInConfigsList")
   layout.setSpacing(true)
 
-  val configId = config.id
+  val configTitleLine = new Label(config.label)
+  layout.addComponent(configTitleLine)
+
+  EventBusImpl.subscribe((e: ConfigSaveRequested)  => {
+    configTitleLine.setValue(e.config.label)
+  })
 
   val buttonsLayout = new ConfigActionsFragment(config.id,
     () => showConfigEditor("")).layout
