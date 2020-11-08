@@ -1,7 +1,7 @@
 ta.name=
 ta.connector1.id=GitHub
 ta.connector1.savedSetupId=GitHub1.json
-ta.connector1.data={"projectKey":"tatest","label":"GitHub","saveIssueRelations":false,"priorities":{"prioritiesMapping":{}}}
+ta.connector1.data={"projectKey":"ta-test","label":"GitHub","saveIssueRelations":false,"priorities":{"prioritiesMapping":{}}}
 ta.connector2.id=Microsoft Project
 ta.connector2.savedSetupId=Microsoft_Project_1.json
 ta.connector2.data={"priorities":{"prioritiesMapping":{"800":800,"1000":1000,"100":100,"500":500,"700":700}},"label":"Microsoft Project","saveIssueRelations":false}

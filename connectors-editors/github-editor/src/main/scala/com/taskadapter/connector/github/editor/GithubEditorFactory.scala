@@ -42,8 +42,11 @@ class GithubEditorFactory extends PluginEditorFactory[GithubConfig, WebConnector
     layout
   }
 
-  override def getEditSetupPanel(sandbox: Sandbox, setup: WebConnectorSetup): ConnectorSetupPanel =
-    ServerPanelFactory.withLoginAndPassword(GithubConnector.ID, GithubConnector.ID, setup)
+  override def getEditSetupPanel(sandbox: Sandbox, setup: WebConnectorSetup): ConnectorSetupPanel = {
+    val description = "Please generate an API token here: <br/>" +
+      "<b>https://github.com/settings/tokens</b>"
+    ServerPanelFactory.withLoginAndApiToken(GithubConnector.ID, GithubConnector.ID, description, setup)
+  }
 
   override def createDefaultSetup(sandbox: Sandbox) = new WebConnectorSetup(
     GithubConnector.ID, Option.empty, "My GitHub", "https://github.com", "", "", false, "")

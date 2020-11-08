@@ -25,7 +25,7 @@ object ServerPanelFactory {
     )
   }
 
-  def withEmailAndApiToken(connectorId: String, caption: String, tokenDescription: String,
+  def withLoginAndApiToken(connectorId: String, caption: String, tokenDescription: String,
                            setup: WebConnectorSetup): ConnectorSetupPanel = {
     new ServerPanelWithLoginAndToken(connectorId, caption,
       new ObjectProperty[String](setup.label),

@@ -2,8 +2,8 @@
   "connectorId" : "GitHub",
   "label" : "GitHub1",
   "host":"http://github.com",
-  "userName":"tatest",
-  "password":"¶cRYeJTZIKjY9",
-  "useApiKey": false,
-  "apiKey": ""
+  "userName":"ta-api",
+  "password":"",
+  "useApiKey": true,
+  "apiKey": "18724afee4a9959e98cd93f7e2cc2d553e8e9c08"
 }

@@ -103,7 +103,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     public ConnectorSetupPanel getEditSetupPanel(Sandbox sandbox, WebConnectorSetup setup) {
         String description = "Please generate an API token here: <br/>" +
                 "<b>https://id.atlassian.com/manage-profile/security/api-tokens</b>";
-        return ServerPanelFactory.withEmailAndApiToken(JiraConnector.ID(), JiraConnector.ID(),
+        return ServerPanelFactory.withLoginAndApiToken(JiraConnector.ID(), JiraConnector.ID(),
                 description, setup);
     }
 

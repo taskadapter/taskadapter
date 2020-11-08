@@ -19,9 +19,9 @@ public class ConnectionFactory {
         GitHubClient ghClient = new GitHubClient();
         if (setup.userName() != null
                 && setup.userName().trim().length() > 0
-                && setup.password() != null
-                && setup.password().trim().length() > 0) {
-            ghClient.setCredentials(setup.userName(), setup.password());
+                && setup.apiKey() != null
+                && setup.apiKey().trim().length() > 0) {
+            ghClient.setCredentials(setup.userName(), setup.apiKey());
         }
         issueService = new IssueService(ghClient);
         repositoryService = new RepositoryService(ghClient);
