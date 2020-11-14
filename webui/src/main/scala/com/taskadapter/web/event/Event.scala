@@ -19,8 +19,6 @@ case class ShowConfigPageRequested(configId: ConfigId) extends Event
 
 case class ShowConfigsListPageRequested() extends Event
 
-case class ShowLastExportResultRequested(configId: ConfigId) extends Event
-
 case class ShowAllExportResultsRequested(configId: ConfigId) extends Event
 
 case class StartExportRequested(config: UISyncConfig) extends Event

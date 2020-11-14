@@ -1,6 +1,7 @@
 package com.taskadapter.webui.pageset;
 
 import com.google.common.io.Files;
+import com.taskadapter.Constants;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.TaskKeeperLocationStorage;
@@ -8,8 +9,6 @@ import com.taskadapter.web.event.EventBusImpl;
 import com.taskadapter.web.event.ShowAllExportResultsRequested;
 import com.taskadapter.web.event.ShowConfigPageRequested;
 import com.taskadapter.web.event.ShowConfigsListPageRequested;
-import com.taskadapter.web.event.ShowLastExportResultRequested;
-import com.taskadapter.web.event.StartExportRequested;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.uiapi.ConfigId;
 import com.taskadapter.web.uiapi.SetupId;
@@ -34,7 +33,6 @@ import com.taskadapter.webui.pages.AppUpdateNotificationComponent;
 import com.taskadapter.webui.pages.ConfigPanel;
 import com.taskadapter.webui.pages.ConfigsListPage;
 import com.taskadapter.webui.pages.DropInExportPage;
-import com.taskadapter.webui.pages.ExportPage;
 import com.taskadapter.webui.pages.LicenseAgreementPage;
 import com.taskadapter.webui.pages.NewConfigPage;
 import com.taskadapter.webui.pages.SchedulesListPage;
@@ -56,7 +54,6 @@ import rx.lang.scala.Subscriber;
 import scala.Function0;
 import scala.Function1;
 import scala.Option;
-import scala.collection.JavaConversions;
 import scala.collection.Seq;
 import scala.runtime.BoxedUnit;
 
@@ -64,9 +61,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 
 import static com.taskadapter.webui.Page.message;
 
@@ -74,7 +68,6 @@ import static com.taskadapter.webui.Page.message;
  * Pageset for logged-in user.
  */
 public class LoggedInPageset {
-    private static final int MAX_TASKS_TO_LOAD = Integer.MAX_VALUE;
     private static final Logger log = LoggerFactory.getLogger(LoggedInPageset.class);
 
     /**
@@ -97,7 +90,6 @@ public class LoggedInPageset {
      */
     private final LicenseFacade license;
 
-    private final WebUserSession webUserSession;
     /**
      * Callback to use on logout.
      */
@@ -130,13 +122,12 @@ public class LoggedInPageset {
      * @param callback           callback to use.
      */
     private LoggedInPageset(CredentialsManager credentialsManager,
-                            Preservices services, Tracker tracker, UserContext ctx, WebUserSession webUserSession,
+                            Preservices services, Tracker tracker, UserContext ctx,
                             Runnable callback) {
         this.services = services;
         this.credentialsManager = credentialsManager;
         this.context = ctx;
         this.tracker = tracker;
-        this.webUserSession = webUserSession;
         this.logoutCallback = callback;
         this.license = new LicenseFacade(services.licenseManager);
 
@@ -166,21 +157,6 @@ public class LoggedInPageset {
                     }
                 });
 
-        EventBusImpl.observable(StartExportRequested.class)
-                .subscribe(new Subscriber<StartExportRequested>() {
-                    @Override
-                    public void onNext(StartExportRequested value) {
-                        exportCommon(value.config());
-                    }
-                });
-
-        EventBusImpl.observable(ShowLastExportResultRequested.class)
-                .subscribe(new Subscriber<ShowLastExportResultRequested>() {
-                    @Override
-                    public void onNext(ShowLastExportResultRequested value) {
-                        showLastExportResult(value.configId());
-                    }
-                });
         EventBusImpl.observable(ShowAllExportResultsRequested.class)
                 .subscribe(new Subscriber<ShowAllExportResultsRequested>() {
                     @Override
@@ -229,7 +205,7 @@ public class LoggedInPageset {
     }
 
     private void showAllResults() {
-        ExportResultsListPage page = new ExportResultsListPage(this::showHome, showExportResultsScala());
+        ExportResultsListPage page = new ExportResultsListPage(showExportResultsScala());
         Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults();
         page.showResults(results);
         tracker.trackPage("all_results");
@@ -253,7 +229,7 @@ public class LoggedInPageset {
         }
         UISyncConfig config = maybeConfig.get();
 
-        ConfigPanel panel = new ConfigPanel(config, context.configOps, createSandbox(), tracker);
+        ConfigPanel panel = new ConfigPanel(config, context.configOps, services, createSandbox(), tracker);
         tracker.trackPage("config_panel");
         applyUI(panel.ui());
     }
@@ -285,29 +261,15 @@ public class LoggedInPageset {
         applyUI(configsListPage.ui());
     }
 
-    private void showLastExportResult(ConfigId configId) {
-        Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults(configId);
-
-        List<ExportResultFormat> javaResults = new ArrayList<>(JavaConversions.seqAsJavaList(results));
-        javaResults.sort(Comparator.comparing(ExportResultFormat::dateStarted));
-        if (javaResults.isEmpty()) {
-            Notification.show(Page.message("error.noLastExportResult"));
-        } else {
-            ExportResultFormat last = javaResults.get(0);
-            showResult(last);
-        }
-    }
-
     private void showResult(ExportResultFormat result) {
-        ExportResultsFragment fragment = new ExportResultsFragment(() -> showConfigPanel(result.configId()),
+        ExportResultsFragment fragment = new ExportResultsFragment(
                 services.settingsManager.isTAWorkingOnLocalMachine());
         Component component = fragment.showExportResult(result);
         applyUI(component);
     }
 
     private void showExportResults(ConfigId configId) {
-        ExportResultsListPage exportResultsListPage = new ExportResultsListPage(() -> showConfigPanel(configId),
-                showExportResultsScala());
+        ExportResultsListPage exportResultsListPage = new ExportResultsListPage(showExportResultsScala());
         Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults(configId);
         exportResultsListPage.showResults(results);
         applyUI(exportResultsListPage.ui());
@@ -425,7 +387,7 @@ public class LoggedInPageset {
                 ss.lock();
                 try {
                     final int maxTasks = services.licenseManager
-                            .isSomeValidLicenseInstalled() ? MAX_TASKS_TO_LOAD
+                            .isSomeValidLicenseInstalled() ? Constants.maxTasksToLoad()
                             : LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
                     tracker.trackPage("drop_in");
                     Component component = DropInExportPage.render(
@@ -484,24 +446,6 @@ public class LoggedInPageset {
         });
     }
 
-    private void exportCommon(UISyncConfig config) {
-        log.info("Starting export from " +
-                config.connector1().getConnectorTypeId() +
-                " (" + config.connector1().getSourceLocation() + ") "
-                + " to " +
-                config.connector2().getConnectorTypeId() +
-                " (" + config.connector2().getDestinationLocation() + ")");
-        tracker.trackPage("export_confirmation");
-        final int maxTasks = services.licenseManager
-                .isSomeValidLicenseInstalled() ? MAX_TASKS_TO_LOAD
-                : LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
-        log.info("License installed? " + services.licenseManager.isSomeValidLicenseInstalled());
-        applyUI(new ExportPage(services.exportResultStorage,
-                config, maxTasks,
-                services.settingsManager.isTAWorkingOnLocalMachine(),
-                () -> showConfigPanel(config.id()), tracker).ui);
-    }
-
     // TODO TA3 file based connector - MSP
   /*  private void processFile(final UISyncConfig config,
             FileBasedConnector connectorTo) {
@@ -551,14 +495,8 @@ public class LoggedInPageset {
     }
 */
 
-    /**
-     * Applies a new content.
-     *
-     * @param ui new content.
-     */
     private void applyUI(Component ui) {
         currentComponentArea.removeAllComponents();
-        ui.setSizeUndefined();
         currentComponentArea.addComponent(ui);
         currentComponentArea.setComponentAlignment(ui, Alignment.TOP_CENTER);
     }
@@ -573,10 +511,10 @@ public class LoggedInPageset {
      * @return pageset UI.
      */
     public static Component createPageset(CredentialsManager credManager,
-                                          Preservices services, Tracker tracker, UserContext ctx, WebUserSession webUserSession,
+                                          Preservices services, Tracker tracker, UserContext ctx,
                                           Runnable logoutCallback) {
         final LoggedInPageset ps = new LoggedInPageset(credManager, services,
-                tracker, ctx, webUserSession, logoutCallback);
+                tracker, ctx, logoutCallback);
         if (services.settingsManager.isLicenseAgreementAccepted())
             ps.showHome();
         else

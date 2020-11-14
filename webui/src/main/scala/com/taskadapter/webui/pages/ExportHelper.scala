@@ -75,7 +75,7 @@ class ExportHelper(exportResultStorage: ExportResultStorage,
         if (saveResult.hasErrors) ErrorReporter.reportIfAllowed(config, saveResult)
         val targetLabel = config.getConnector2.getConnectorTypeId
         val sourceAndTarget = config.getConnector1.getConnectorTypeId + " - " + targetLabel
-        val exportResult = new ExportResultsFragment(onDone, showFilePath).showExportResult(saveResult)
+        val exportResult = new ExportResultsFragment(showFilePath).showExportResult(saveResult)
         tracker.trackEvent(ExportCategory, "finished_export", sourceAndTarget)
         tracker.trackEvent(ExportCategory, "finished_saving_tasks", targetLabel)
         tracker.trackEvent(ExportCategory, "created_tasks", targetLabel, saveResult.createdTasksNumber)

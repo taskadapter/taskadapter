@@ -8,8 +8,8 @@ import com.vaadin.ui.Component
   * sample code for faster development.
   */
 object DevPageFactory {
-  def getDevPage(result: ExportResultFormat, onDone: Runnable): Component = {
-    val page = new ExportResultsFragment(onDone, false)
+  def getDevPage(result: ExportResultFormat): Component = {
+    val page = new ExportResultsFragment(false)
     page.showExportResult(result)
   }
 }

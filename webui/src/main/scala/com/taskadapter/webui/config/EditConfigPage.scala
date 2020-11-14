@@ -28,7 +28,6 @@ class EditConfigPage(messages: Messages,
   val labelProperty = new ObjectProperty[String](config.label)
 
   val layout = new VerticalLayout
-  layout.setSpacing(true)
 
   val editDescriptionForm = createEditDescriptionElement(config)
   editDescriptionForm.setWidth(Sizes.editConfigDescriptionFormWidth)
@@ -47,7 +46,6 @@ class EditConfigPage(messages: Messages,
   val topRowLayout = new HorizontalLayout(editDescriptionForm, buttons)
   topRowLayout.setComponentAlignment(editDescriptionForm, Alignment.MIDDLE_LEFT)
   topRowLayout.setComponentAlignment(buttons, Alignment.MIDDLE_RIGHT)
-  topRowLayout.setExpandRatio(editDescriptionForm, 1)
 
   layout.addComponent(topRowLayout)
 

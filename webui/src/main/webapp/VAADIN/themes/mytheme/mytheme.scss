@@ -4,4 +4,14 @@
   @include valo;
 
   // Insert your own theme rules here
+
+
+  .configTabLeftButton:hover {
+    background-color: #999595;
+  }
+
+  .configTabLeftButtonSelected {
+    font-weight: bold;
+    background-color: #b6b3b3;
+  }
 }

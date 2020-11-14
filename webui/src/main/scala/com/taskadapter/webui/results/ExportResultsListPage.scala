@@ -13,8 +13,7 @@ import com.vaadin.ui.{Button, Grid, Label, VerticalLayout}
 
 import scala.collection.JavaConverters._
 
-class ExportResultsListPage(close: Runnable,
-                            showResult: (ExportResultFormat) => Unit) {
+class ExportResultsListPage(showResult: (ExportResultFormat) => Unit) {
 
   val dateFormat = "yyyy-MM-dd HH:mm"
 
@@ -25,7 +24,7 @@ class ExportResultsListPage(close: Runnable,
   val ds = new BeanItemContainer[ExportResultFormat](classOf[ExportResultFormat])
 
   val grid = new Grid(ds)
-  grid.setWidth("980px")
+  grid.setSizeFull()
   grid.removeAllColumns()
 
   grid.addColumn("configLabel")
@@ -69,10 +68,6 @@ class ExportResultsListPage(close: Runnable,
   label.addStyleName(Sizes.tabIntro)
   ui.addComponent(label)
   ui.addComponent(grid)
-
-  val closeButton = new Button(Page.message("button.close"))
-  closeButton.addClickListener(_ => close.run())
-  ui.addComponent(closeButton)
 
   def showResults(results: Seq[ExportResultFormat]): Unit = {
     ds.removeAllItems()

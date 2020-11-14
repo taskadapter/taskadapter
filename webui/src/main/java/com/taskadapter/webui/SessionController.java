@@ -79,7 +79,7 @@ public final class SessionController {
                 configOps);
 
         session.pageContainer.setPageContent(LoggedInPageset.createPageset(
-                credentialsManager, services, session.tracker, ctx, session,
+                credentialsManager, services, session.tracker, ctx,
                 this::doLogout));
     }
 

@@ -14,7 +14,7 @@ import com.vaadin.shared.ui.label.ContentMode
 import com.vaadin.ui._
 import com.vaadin.ui.themes.ValoTheme
 
-class ExportResultsFragment(onDone: Runnable, showFilePath: Boolean) {
+class ExportResultsFragment(showFilePath: Boolean) {
   val log = TALog.log
 
   private def quot(str: String) = str.replace("&", "&amp;").replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;")
@@ -52,12 +52,8 @@ class ExportResultsFragment(onDone: Runnable, showFilePath: Boolean) {
 
     addErrors(donePanel, result.generalErrors, result.taskErrors)
 
-    val button = new Button(message("action.acknowledge"))
-    button.addClickListener(_ => onDone.run())
-
     val ui = new VerticalLayout
     ui.addComponent(donePanel)
-    ui.addComponent(button)
 
     ui
   }
