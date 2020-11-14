@@ -54,7 +54,7 @@ subprojects {
     }
 
     dependencies {
-        compile 'org.scala-lang:scala-library:2.12.2'
+        compile 'org.scala-lang:scala-library:2.12.5'
 
         compile 'com.google.guava:guava:19.0'
         testCompile libraries.junit
@@ -74,6 +74,13 @@ subprojects {
     test {
         testLogging {
             exceptionFormat = 'full'
+        }
+    }
+
+    // this is a crutch for buggy Gradle 4.10.x - the build fails without it.
+    configurations.all {
+        if (name.startsWith("incrementalScalaAnalysis")) {
+            extendsFrom = []
         }
     }
 }
