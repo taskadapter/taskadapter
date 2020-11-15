@@ -5,7 +5,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "com.devsoap.plugin:gradle-vaadin-plugin:1.4.1"
+        classpath "com.devsoap.plugin:gradle-vaadin-plugin:2.0.0.beta2"
     }
 }
 

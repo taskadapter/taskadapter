@@ -43,7 +43,7 @@ subprojects {
             url 'http://dev.taskadapter.com:8081/nexus/repository/public'
         }
         maven {
-            url 'http://maven.vaadin.com/vaadin-addons'
+            url 'https://maven.vaadin.com/vaadin-addons'
         }
         // This repository contains Atlassian JIRA REST Java Client library used by JIRA connector.
         // Browse artifacts online: https://maven.atlassian.com/content/groups/public/com/atlassian/jira/jira-rest-java-client-core/
