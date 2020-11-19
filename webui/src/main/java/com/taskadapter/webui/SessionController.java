@@ -2,15 +2,21 @@ package com.taskadapter.webui;
 
 import com.taskadapter.auth.AuthException;
 import com.taskadapter.auth.AuthorizedOperations;
+import com.taskadapter.auth.AuthorizedOperationsImpl;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.auth.SecondarizationResult;
+import com.taskadapter.web.service.Sandbox;
+import com.taskadapter.webui.auth.PermissionViolationException;
+import com.taskadapter.webui.config.ApplicationSettings;
 import com.taskadapter.webui.pageset.LoggedInPageset;
+import com.taskadapter.webui.service.EditorManager;
 import com.taskadapter.webui.service.Preservices;
 import com.taskadapter.webui.service.WrongPasswordException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.Optional;
 
 /**
  * Controller for one (and only one!) user session.
@@ -20,32 +26,24 @@ public final class SessionController {
             .getLogger(SessionController.class);
     private static final String PERM_AUTH_KEY_COOKIE_NAME = "sPermAuth";
     private static final String PERM_AUTH_USER_COOKIE_NAME = "sPermUser";
-    /**
-     * Used services.
-     */
-    private final Preservices services;
 
-    /**
-     * User credentials manager.
-     */
-    private final CredentialsManager credentialsManager;
+    // Application config root folder.
+    private static File rootFolder = ApplicationSettings.getDefaultRootFolder();
+
+    private static final Preservices services = new Preservices(rootFolder, EditorManager.fromResource("editors.txt"));
+    private static final CredentialsManager credentialsManager = services.credentialsManager;
 
     /**
      * Active session.
      */
-    private final WebUserSession session;
-
-    private SessionController(Preservices services,
-                              WebUserSession session) {
-        this.services = services;
-        this.credentialsManager = services.credentialsManager;
-        this.session = session;
-    }
+    private static WebUserSession session;
 
     /**
      * Initializes a new session.
      */
-    private void initSession() {
+    private static void initSession(WebUserSession newSession) {
+        session = newSession;
+
         final String ucookie = CookiesManager
                 .getCookie(PERM_AUTH_USER_COOKIE_NAME);
         final String kcookie = CookiesManager
@@ -55,7 +53,7 @@ public final class SessionController {
             showLogin();
             return;
         }
-        final AuthorizedOperations ops = credentialsManager
+        final AuthorizedOperations ops = services.credentialsManager
                 .authenticateSecondary(ucookie, kcookie);
         if (ops == null)
             showLogin();
@@ -66,7 +64,8 @@ public final class SessionController {
     /**
      * Shows a common interface (for logged-in user).
      */
-    private void showUserHome(String login, AuthorizedOperations ops) {
+    private static void showUserHome(String login, AuthorizedOperations ops) {
+        session.setCurrentUserName(login);
 
         final SelfManagement selfManagement = new SelfManagement(login,
                 credentialsManager);
@@ -80,21 +79,21 @@ public final class SessionController {
 
         session.pageContainer.setPageContent(LoggedInPageset.createPageset(
                 credentialsManager, services, session.tracker, ctx,
-                this::doLogout));
+                SessionController::doLogout));
     }
 
     /**
      * Shows a login page.
      */
-    private void showLogin() {
+    private static void showLogin() {
         session.pageContainer.setPageContent(WelcomePageset.createPageset(
-                services, session.tracker, this::tryAuth));
+                services, session.tracker, SessionController::tryAuth));
     }
 
     /**
      * Performs a logout.
      */
-    private void doLogout() {
+    private static void doLogout() {
         final String ucookie = CookiesManager
                 .getCookie(PERM_AUTH_USER_COOKIE_NAME);
         final String kcookie = CookiesManager
@@ -120,7 +119,7 @@ public final class SessionController {
      * @param createSecondaryAuth secondary authentication data.
      * @throws WrongPasswordException if login or password is wrong.
      */
-    private void tryAuth(String login, String password, boolean createSecondaryAuth) throws WrongPasswordException {
+    private static void tryAuth(String login, String password, boolean createSecondaryAuth) throws WrongPasswordException {
 
         if (!createSecondaryAuth) {
             final AuthorizedOperations ops = credentialsManager
@@ -153,14 +152,38 @@ public final class SessionController {
         showUserHome(login, supResult.ops);
     }
 
-    /**
-     * Manages a user session.
-     *
-     * @param services general services, like configs storage, credentials storage, etc.
-     * @param session  provided web session.
-     */
-    public static void manageSession(Preservices services, WebUserSession session) {
-        final SessionController ctl = new SessionController(services, session);
-        ctl.initSession();
+    public static void manageSession(WebUserSession session) {
+        SessionController.initSession(session);
+    }
+
+    public static void tmpLoginAsAdmin() {
+        session.setCurrentUserName("admin");
+    }
+
+    public static String getCurrentUserName() {
+        return session.getCurrentUserName().orElse("");
+    }
+
+    public static Sandbox createSandbox() {
+        ConfigOperations configOperations = buildConfigOperations();
+        return new Sandbox(services.settingsManager.isTAWorkingOnLocalMachine(), configOperations.syncSandbox());
+    }
+
+    public static ConfigOperations buildConfigOperations() {
+        Optional<String> currentUserName = session.getCurrentUserName();
+        if (!currentUserName.isPresent()) {
+            throw new PermissionViolationException();
+        }
+        File userHomeFolder = new File(services.rootDir, currentUserName.get());
+        AuthorizedOperations authorizedOperations = new AuthorizedOperationsImpl(getCurrentUserName());
+        return new ConfigOperations(currentUserName.get(),
+                authorizedOperations,
+                services.credentialsManager,
+                services.uiConfigStore,
+                new File(userHomeFolder, "files"));
+    }
+
+    public static Preservices getServices() {
+        return services;
     }
 }

@@ -42,7 +42,7 @@ public final class ExportPage {
     private final VerticalLayout content;
 
     public ExportPage(ExportResultStorage exportResultStorage, UISyncConfig config,
-                      int taskLimit, boolean showFilePath, Runnable onDone, Tracker tracker) {
+                      int taskLimit, boolean showFilePath, Runnable onDone) {
         this.config = config;
         this.taskLimit = taskLimit;
 
@@ -55,7 +55,7 @@ public final class ExportPage {
 
         content = new VerticalLayout();
         ui.addComponent(content);
-        exportHelper = new ExportHelper(exportResultStorage, tracker, onDone, showFilePath, content, config);
+        exportHelper = new ExportHelper(exportResultStorage, onDone, showFilePath, content, config);
 
         startLoading();
     }

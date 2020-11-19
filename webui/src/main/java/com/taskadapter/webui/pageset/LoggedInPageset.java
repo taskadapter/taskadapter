@@ -5,7 +5,10 @@ import com.taskadapter.Constants;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.TaskKeeperLocationStorage;
+import com.taskadapter.web.event.ApplicationActionEvent;
+import com.taskadapter.web.event.ApplicationActionEventWithValue;
 import com.taskadapter.web.event.EventBusImpl;
+import com.taskadapter.web.event.PageShown;
 import com.taskadapter.web.event.ShowAllExportResultsRequested;
 import com.taskadapter.web.event.ShowConfigPageRequested;
 import com.taskadapter.web.event.ShowConfigsListPageRequested;
@@ -15,6 +18,7 @@ import com.taskadapter.web.uiapi.SetupId;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigCategory$;
 import com.taskadapter.webui.ConfigureSystemPage;
+import com.taskadapter.webui.EventTracker;
 import com.taskadapter.webui.Header;
 import com.taskadapter.webui.HeaderMenuBuilder;
 import com.taskadapter.webui.LogFinder;
@@ -30,6 +34,7 @@ import com.taskadapter.webui.config.SetupsListPage;
 import com.taskadapter.webui.export.ExportResultsFragment;
 import com.taskadapter.webui.license.LicenseFacade;
 import com.taskadapter.webui.pages.AppUpdateNotificationComponent;
+import com.taskadapter.webui.pages.ConfigPage;
 import com.taskadapter.webui.pages.ConfigPanel;
 import com.taskadapter.webui.pages.ConfigsListPage;
 import com.taskadapter.webui.pages.DropInExportPage;
@@ -141,6 +146,30 @@ public class LoggedInPageset {
     }
 
     private void registerEventListeners() {
+        // temporary code to catch and re-throw "tracker" events
+        EventBusImpl.observable(PageShown.class)
+                .subscribe(new Subscriber<PageShown>() {
+                    @Override
+                    public void onNext(PageShown value) {
+                        tracker.trackPage(value.pageName());
+                    }
+                });
+        EventBusImpl.observable(ApplicationActionEvent.class)
+                .subscribe(new Subscriber<ApplicationActionEvent>() {
+                    @Override
+                    public void onNext(ApplicationActionEvent value) {
+                        tracker.trackEvent(value.category(), value.action(), value.label());
+                    }
+                });
+
+        EventBusImpl.observable(ApplicationActionEventWithValue.class)
+                .subscribe(new Subscriber<ApplicationActionEventWithValue>() {
+                    @Override
+                    public void onNext(ApplicationActionEventWithValue value) {
+                        tracker.trackEvent(value.category(), value.action(), value.label(), value.value());
+                    }
+                });
+
         EventBusImpl.observable(ShowConfigsListPageRequested.class)
                 .subscribe(new Subscriber<ShowConfigsListPageRequested>() {
                     @Override
@@ -179,7 +208,7 @@ public class LoggedInPageset {
     }
 
     private void showUserProfilePage() {
-        tracker.trackPage("user_profile");
+        EventTracker.trackPage("user_profile");
         applyUI(new UserProfilePage(context.name, context.selfManagement::changePassword, logoutCallback,
                 showSetupsListPage()).ui());
     }
@@ -208,7 +237,7 @@ public class LoggedInPageset {
         ExportResultsListPage page = new ExportResultsListPage(showExportResultsScala());
         Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults();
         page.showResults(results);
-        tracker.trackPage("all_results");
+        EventTracker.trackPage("all_results");
         applyUI(page.ui());
     }
 
@@ -217,7 +246,7 @@ public class LoggedInPageset {
                 context.configOps, services.settingsManager
         );
         schedulesListPage.showSchedules(services.schedulesStorage.getSchedules());
-        tracker.trackPage("schedules");
+        EventTracker.trackPage("schedules");
         applyUI(schedulesListPage.ui());
     }
 
@@ -229,16 +258,16 @@ public class LoggedInPageset {
         }
         UISyncConfig config = maybeConfig.get();
 
-        ConfigPanel panel = new ConfigPanel(config, context.configOps, services, createSandbox(), tracker);
-        tracker.trackPage("config_panel");
-        applyUI(panel.ui());
+        ConfigPage page = new ConfigPage(config);
+        EventTracker.trackPage("config_panel");
+        applyUI(page.ui());
     }
 
     /**
      * Shows a support page.
      */
     private void showSupport() {
-        tracker.trackPage("support");
+        EventTracker.trackPage("support");
         TaskKeeperLocationStorage storage = new TaskKeeperLocationStorage(services.rootDir);
         String logFileLocation = LogFinder.getLogFileLocation();
         applyUI(SupportPage.render(services.currentTaskAdapterVersion, license, tracker,
@@ -250,14 +279,14 @@ public class LoggedInPageset {
      * Shows a license agreement page.
      */
     private void showLicensePage() {
-        tracker.trackPage("license_agreement");
+        EventTracker.trackPage("license_agreement");
         applyUI(LicenseAgreementPage.render(services.settingsManager,
                 this::showHome));
     }
 
     private void showConfigsList() {
         configsListPage.refreshConfigs();
-        tracker.trackPage("configs_list");
+        EventTracker.trackPage("configs_list");
         applyUI(configsListPage.ui());
     }
 
@@ -318,12 +347,12 @@ public class LoggedInPageset {
     }
 
     public void createNewConfig() {
-        tracker.trackPage("create_config");
+        EventTracker.trackPage("create_config");
         applyUI(new NewConfigPage(services.editorManager, services.pluginManager, context.configOps, createSandbox(),
                 configId -> {
                     Option<UISyncConfig> maybeCconfig = context.configOps.getConfig(configId);
                     UISyncConfig config = maybeCconfig.get();
-                    tracker.trackEvent(ConfigCategory$.MODULE$, "created",
+                    EventTracker.trackEvent(ConfigCategory$.MODULE$, "created",
                             config.connector1().getConnectorTypeId() + " - " + config.connector2().getConnectorTypeId());
                     showConfigsList();
                 }).panel());
@@ -337,7 +366,7 @@ public class LoggedInPageset {
      * Shows a system configuration panel.
      */
     private void showSystemConfiguration() {
-        tracker.trackPage("system_configuration");
+        EventTracker.trackPage("system_configuration");
         applyUI(ConfigureSystemPage.render(credentialsManager,
                 services.settingsManager, services.licenseManager.getLicense(),
                 context.authorizedOps, tracker));
@@ -345,7 +374,7 @@ public class LoggedInPageset {
 
     private Function0<BoxedUnit> showSetupsListPage() {
         return () -> {
-            tracker.trackPage("setups_list");
+            EventTracker.trackPage("setups_list");
             applyUI(new SetupsListPage(tracker, context.configOps,
                     showEditSetupPage(), showNewSetupPage()
             ).ui());
@@ -355,7 +384,7 @@ public class LoggedInPageset {
 
     private Function1<SetupId, BoxedUnit> showEditSetupPage() {
         return (setupId) -> {
-            tracker.trackPage("edit_setup");
+            EventTracker.trackPage("edit_setup");
             applyUI(new EditSetupPage(context.configOps, services.editorManager, services.pluginManager,
                     createSandbox(), setupId, showSetupsListPage()
             ).ui());
@@ -365,7 +394,7 @@ public class LoggedInPageset {
 
     private Function0<BoxedUnit> showNewSetupPage() {
         return () -> {
-            tracker.trackPage("add_setup");
+            EventTracker.trackPage("add_setup");
             applyUI(new NewSetupPage(context.configOps, services.editorManager, services.pluginManager,
                     createSandbox(), showSetupsListPage()
             ).ui());
@@ -389,7 +418,7 @@ public class LoggedInPageset {
                     final int maxTasks = services.licenseManager
                             .isSomeValidLicenseInstalled() ? Constants.maxTasksToLoad()
                             : LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
-                    tracker.trackPage("drop_in");
+                    EventTracker.trackPage("drop_in");
                     Component component = DropInExportPage.render(
                             services.exportResultStorage,
                             context.configOps, config,

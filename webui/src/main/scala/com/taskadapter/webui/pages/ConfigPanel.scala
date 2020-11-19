@@ -24,8 +24,7 @@ import org.slf4j.LoggerFactory
 class ConfigPanel(config: UISyncConfig,
                   configOps: ConfigOperations,
                   services: Preservices,
-                  sandbox: Sandbox,
-                  tracker: Tracker) {
+                  sandbox: Sandbox) {
   private val log = LoggerFactory.getLogger(classOf[ConfigPanel])
 
   private val configId = config.id
@@ -257,7 +256,7 @@ class ConfigPanel(config: UISyncConfig,
         }
       })
       window.setContent(editor)
-      tracker.trackPage("edit_config")
+      EventTracker.trackPage("edit_config")
     }
 
     override def ui: VerticalLayout = layout
@@ -271,7 +270,7 @@ class ConfigPanel(config: UISyncConfig,
     from ${config.connector1.getConnectorTypeId} (${config.connector1.getSourceLocation})
     to   ${config.connector2.getConnectorTypeId} (${config.connector2.getDestinationLocation}""")
 
-    tracker.trackPage("export_confirmation")
+    EventTracker.trackPage("export_confirmation")
     val maxTasks = if (services.licenseManager.isSomeValidLicenseInstalled) {
       Constants.maxTasksToLoad
     } else {
@@ -280,7 +279,7 @@ class ConfigPanel(config: UISyncConfig,
     log.info(s"License installed? ${services.licenseManager.isSomeValidLicenseInstalled}")
     val panel = new ExportPage(services.exportResultStorage, config, maxTasks,
       services.settingsManager.isTAWorkingOnLocalMachine,
-      () => overviewPanel.reload(), tracker)
+      () => overviewPanel.reload())
     overviewPanel.ui.removeAllComponents()
     overviewPanel.ui.addComponent(panel.ui)
   }

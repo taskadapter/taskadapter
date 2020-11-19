@@ -3,6 +3,7 @@ package com.taskadapter.web.event
 import java.util.UUID
 
 import com.taskadapter.web.uiapi.{ConfigId, UISyncConfig}
+import com.taskadapter.webui.EventCategory
 
 sealed trait Event {
   // useful for debugging events sometimes
@@ -28,6 +29,12 @@ case class ConfigSaveRequested(config: UISyncConfig) extends Event
 case class ConfigCloneRequested(configId: ConfigId) extends Event
 
 case class ConfigDeleteRequested(configId: ConfigId) extends Event
+
+case class PageShown(pageName: String) extends Event
+
+case class ApplicationActionEvent(category: EventCategory, action: String, label: String) extends Event
+
+case class ApplicationActionEventWithValue(category: EventCategory, action: String, label: String, value: Int) extends Event
 
 case object LogPanelInfoPrinted extends Event
 
