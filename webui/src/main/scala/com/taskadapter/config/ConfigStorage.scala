@@ -62,8 +62,9 @@ class ConfigStorage(val rootDir: File) {
     val configFiles = folder.listFiles(ConfigStorage.CONFIG_FILE_FILTER)
     val configs = getConfigsInFolder(configFiles)
 
+    val largestIdInNonLegacyConfigs = configs.map(c => c.getId).max
     val legacyConfigFiles = folder.listFiles(ConfigStorage.LEGACY_CONFIG_FILE_FILTER)
-    val legacyConfigs = getLegacyConfigsInFolder(userLoginName, legacyConfigFiles)
+    val legacyConfigs = getLegacyConfigsInFolder(userLoginName, legacyConfigFiles, largestIdInNonLegacyConfigs)
 
     configs ++ legacyConfigs
   }
@@ -82,12 +83,18 @@ class ConfigStorage(val rootDir: File) {
     }
   }
 
-  private def getLegacyConfigsInFolder(userLoginName: String, configFiles: Seq[File]): Seq[StoredExportConfig] = {
+  /**
+    * @param largestIdInNonLegacyConfigs is used to name newly converted configs, to ensure their names do not conflict
+    */
+  private def getLegacyConfigsInFolder(userLoginName: String, configFiles: Seq[File],
+                                       largestIdInNonLegacyConfigs: Int): Seq[StoredExportConfig] = {
+    var lastUsedId = largestIdInNonLegacyConfigs
     if (configFiles == null) return Seq()
     configFiles.flatMap { file =>
       try {
         val fileBody = Files.toString(file, Charsets.UTF_8)
-        val newId = new Random().nextInt().abs
+        val newId = lastUsedId + 1
+        lastUsedId = newId
         val newConfig = NewConfigParser.parseLegacyConfig(newId, fileBody)
         saveConfig(userLoginName, newId, newConfig.getName,
           newConfig.getConnector1.connectorTypeId, newConfig.getConnector1.connectorSavedSetupId, newConfig.getConnector1.serializedConfig,
