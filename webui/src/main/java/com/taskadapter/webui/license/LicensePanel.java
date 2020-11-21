@@ -92,14 +92,7 @@ public final class LicensePanel {
         }
     }
 
-    /**
-     * Renders a new license panel for the model.
-     * 
-     * @param model
-     *            model to render a panel for.
-     * @return license UI.
-     */
-    public static Component renderLicensePanel(LicenseFacade model) {
-        return new LicensePanel(model).ui;
+    public static Component renderLicensePanel(LicenseFacade licenseFacade) {
+        return new LicensePanel(licenseFacade).ui;
     }
 }

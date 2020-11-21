@@ -1,6 +1,5 @@
 package com.taskadapter.webui
 
-import com.taskadapter.web.TaskKeeperLocationStorage
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.license.LicenseFacade
 import com.taskadapter.webui.pages.{AppUpdateNotificationComponent, LoginPage, SupportPage}
@@ -32,12 +31,7 @@ class WelcomePageset(services: Preservices, callback: LoginPage.Callback) {
   }
 
   private def showSupport(): Unit = {
-    EventTracker.trackPage("support")
-    val storage = new TaskKeeperLocationStorage(services.rootDir)
-    val logFileLocation = LogFinder.getLogFileLocation
-    applyUI(SupportPage.render(services.currentTaskAdapterVersion, licenseFacade,
-      storage.cacheFolder.getAbsolutePath,
-      logFileLocation))
+    applyUI(new SupportPage().ui)
   }
 
   private def applyUI(ui: Component): Unit = {
