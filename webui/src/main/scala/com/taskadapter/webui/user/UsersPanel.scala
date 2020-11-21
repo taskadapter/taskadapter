@@ -5,7 +5,7 @@ import com.taskadapter.data.{MutableState, States}
 import com.taskadapter.license.License
 import com.taskadapter.web.{InputDialog, PopupDialog}
 import com.taskadapter.webui.Page.message
-import com.taskadapter.webui.{Tracker, UserCategory}
+import com.taskadapter.webui.{EventTracker, UserCategory}
 import com.vaadin.server.Sizeable.Unit.PIXELS
 import com.vaadin.ui._
 import com.vaadin.ui.themes.ValoTheme
@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
 
-class UsersPanel(credentialsManager: CredentialsManager, authorizedOperations: AuthorizedOperations, license: License, tracker: Tracker) {
+class UsersPanel(credentialsManager: CredentialsManager, authorizedOperations: AuthorizedOperations, license: License) {
 
   val logger = LoggerFactory.getLogger(classOf[UsersPanel])
   val COLUMNS_NUMBER = 3
@@ -99,7 +99,7 @@ class UsersPanel(credentialsManager: CredentialsManager, authorizedOperations: A
   private def deleteUser(userLoginName: String): Unit = {
     try {
       credentialsManager.removeUser(userLoginName)
-      tracker.trackEvent(UserCategory, "deleted", "")
+      EventTracker.trackEvent(UserCategory, "deleted", "")
     } catch {
       case e: AuthException =>
         showError(message("users.error.cantDeleteUser", e.toString))
@@ -129,7 +129,7 @@ class UsersPanel(credentialsManager: CredentialsManager, authorizedOperations: A
   private def createUser(login: String, password: String) = {
     try {
       credentialsManager.savePrimaryAuthToken(login, password)
-      tracker.trackEvent(UserCategory, "created", "")
+      EventTracker.trackEvent(UserCategory, "created", "")
     } catch {
       case e: AuthException =>
         logger.error("User initiation error", e)

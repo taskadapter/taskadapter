@@ -68,7 +68,7 @@ class TAApplicationProvider(reportGoogleAnalytics: Boolean) extends UIProvider {
       log.info("Skipping Google Analytics: started in dev mode")
       new NoOpGATracker()
     }
-    SessionController.manageSession(new WebUserSession(ui, tracker))
+    SessionController.initSession(new WebUserSession(ui), tracker)
     val action = if (services.licenseManager.isSomeValidLicenseInstalled) {
       "web_app_opened_licensed"
     } else {

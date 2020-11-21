@@ -11,14 +11,14 @@ import com.vaadin.ui.{Alignment, Component, HorizontalLayout}
   * Pageset available to all users.
   */
 object WelcomePageset {
-  def createPageset(services: Preservices, tracker: Tracker, callback: LoginPage.Callback): Component = {
-    val ctl = new WelcomePageset(services, tracker, callback)
+  def createPageset(services: Preservices, callback: LoginPage.Callback): Component = {
+    val ctl = new WelcomePageset(services, callback)
     ctl.showLogin()
     ctl.ui
   }
 }
 
-class WelcomePageset(services: Preservices, tracker: Tracker, callback: LoginPage.Callback) {
+class WelcomePageset(services: Preservices, callback: LoginPage.Callback) {
   val licenseFacade = new LicenseFacade(services.licenseManager)
   def createMenu = new HorizontalLayout(HeaderMenuBuilder.createButton(message("headerMenu.support"), () => showSupport()))
   val header = Header.render(() => showLogin(), createMenu, new HorizontalLayout, licenseFacade.isLicensed)
@@ -27,15 +27,15 @@ class WelcomePageset(services: Preservices, tracker: Tracker, callback: LoginPag
   val ui = TAPageLayout.layoutPage(header, new AppUpdateNotificationComponent, currentComponentArea)
 
   private def showLogin(): Unit = {
-    tracker.trackPage("login")
+    EventTracker.trackPage("login")
     applyUI(LoginPage.createUI(callback))
   }
 
   private def showSupport(): Unit = {
-    tracker.trackPage("support")
+    EventTracker.trackPage("support")
     val storage = new TaskKeeperLocationStorage(services.rootDir)
     val logFileLocation = LogFinder.getLogFileLocation
-    applyUI(SupportPage.render(services.currentTaskAdapterVersion, licenseFacade, tracker,
+    applyUI(SupportPage.render(services.currentTaskAdapterVersion, licenseFacade,
       storage.cacheFolder.getAbsolutePath,
       logFileLocation))
   }

@@ -6,7 +6,6 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.Page;
-import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.results.ExportResultStorage;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.VaadinSession;
@@ -49,7 +48,7 @@ public final class DropInExportPage {
     private final VerticalLayout content;
 
     private DropInExportPage(ExportResultStorage exportResultStorage, ConfigOperations configOps, UISyncConfig config,
-                             int taskLimit, boolean showFilePath, Runnable onDone, File tempFile, Tracker tracker) {
+                             int taskLimit, boolean showFilePath, Runnable onDone, File tempFile) {
         this.config = config;
         this.taskLimit = taskLimit;
         this.tempFile = tempFile;
@@ -135,11 +134,11 @@ public final class DropInExportPage {
 
     public static Component render(ExportResultStorage exportResultStorage, ConfigOperations configOps,
                                    UISyncConfig config, int taskLimit, boolean showFilePath,
-                                   final Runnable onDone, final File tempFile, Tracker tracker) {
+                                   final Runnable onDone, final File tempFile) {
         return new DropInExportPage(exportResultStorage, configOps, config, taskLimit, showFilePath,
                 () -> {
                     tempFile.delete();
                     onDone.run();
-                }, tempFile, tracker).ui;
+                }, tempFile).ui;
     }
 }

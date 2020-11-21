@@ -5,7 +5,6 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.reporting.ErrorReporter;
 import com.taskadapter.web.uiapi.UISyncConfig;
-import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.results.ExportResultStorage;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.VaadinSession;

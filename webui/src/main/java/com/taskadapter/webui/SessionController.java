@@ -14,9 +14,9 @@ import com.taskadapter.webui.service.Preservices;
 import com.taskadapter.webui.service.WrongPasswordException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.Option;
 
 import java.io.File;
-import java.util.Optional;
 
 /**
  * Controller for one (and only one!) user session.
@@ -33,16 +33,13 @@ public final class SessionController {
     private static final Preservices services = new Preservices(rootFolder, EditorManager.fromResource("editors.txt"));
     private static final CredentialsManager credentialsManager = services.credentialsManager;
 
-    /**
-     * Active session.
-     */
+    private static Tracker tracker;
+
     private static WebUserSession session;
 
-    /**
-     * Initializes a new session.
-     */
-    private static void initSession(WebUserSession newSession) {
+    public static void initSession(WebUserSession newSession, Tracker providedTracker) {
         session = newSession;
+        tracker = providedTracker;
 
         final String ucookie = CookiesManager
                 .getCookie(PERM_AUTH_USER_COOKIE_NAME);
@@ -77,8 +74,8 @@ public final class SessionController {
         final UserContext ctx = new UserContext(login, selfManagement, ops,
                 configOps);
 
-        session.pageContainer.setPageContent(LoggedInPageset.createPageset(
-                credentialsManager, services, session.tracker, ctx,
+        session.pageContainer().setPageContent(LoggedInPageset.createPageset(
+                credentialsManager, services, ctx,
                 SessionController::doLogout));
     }
 
@@ -86,8 +83,8 @@ public final class SessionController {
      * Shows a login page.
      */
     private static void showLogin() {
-        session.pageContainer.setPageContent(WelcomePageset.createPageset(
-                services, session.tracker, SessionController::tryAuth));
+        session.pageContainer().setPageContent(WelcomePageset.createPageset(
+                services, SessionController::tryAuth));
     }
 
     /**
@@ -152,16 +149,12 @@ public final class SessionController {
         showUserHome(login, supResult.ops);
     }
 
-    public static void manageSession(WebUserSession session) {
-        SessionController.initSession(session);
-    }
-
     public static void tmpLoginAsAdmin() {
         session.setCurrentUserName("admin");
     }
 
     public static String getCurrentUserName() {
-        return session.getCurrentUserName().orElse("");
+        return session.getCurrentUserName().getOrElse(() -> "");
     }
 
     public static Sandbox createSandbox() {
@@ -170,8 +163,8 @@ public final class SessionController {
     }
 
     public static ConfigOperations buildConfigOperations() {
-        Optional<String> currentUserName = session.getCurrentUserName();
-        if (!currentUserName.isPresent()) {
+        Option<String> currentUserName = session.getCurrentUserName();
+        if (currentUserName.isEmpty()) {
             throw new PermissionViolationException();
         }
         File userHomeFolder = new File(services.rootDir, currentUserName.get());
@@ -185,5 +178,9 @@ public final class SessionController {
 
     public static Preservices getServices() {
         return services;
+    }
+
+    public static Tracker getTracker() {
+        return tracker;
     }
 }

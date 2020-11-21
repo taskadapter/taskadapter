@@ -17,7 +17,7 @@ class ConfigureSystemPageTest extends FunSpec with Matchers with ConfigsTempFold
     withTempFolder { folder =>
       val preservices = createTestPreservices(folder)
       val container = ConfigureSystemPage.render(preservices.credentialsManager, preservices.settingsManager,
-        preservices.licenseManager.getLicense, adminOps, new NoOpGATracker)
+        preservices.licenseManager.getLicense, adminOps)
       val auto = UiTester.findElement(container, Page.message("configurePage.anonymousErrorReporting"))
       auto.isEnabled shouldBe false
     }
@@ -27,7 +27,7 @@ class ConfigureSystemPageTest extends FunSpec with Matchers with ConfigsTempFold
     withTempFolder { folder =>
       val preservices = createTestPreservices(folder)
       val container = ConfigureSystemPage.render(preservices.credentialsManager, preservices.settingsManager,
-        LicenseGenerator.someLicense(), adminOps, new NoOpGATracker)
+        LicenseGenerator.someLicense(), adminOps)
       val auto = UiTester.findElement(container, Page.message("configurePage.anonymousErrorReporting"))
       auto.isEnabled shouldBe true
     }

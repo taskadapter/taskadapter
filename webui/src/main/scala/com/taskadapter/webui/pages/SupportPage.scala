@@ -1,19 +1,19 @@
 package com.taskadapter.webui.pages
 
 import com.taskadapter.webui.Page.message
-import com.taskadapter.webui.{LastVersionLoader, Tracker, VersionComparator}
+import com.taskadapter.webui.{LastVersionLoader, VersionComparator}
 import com.taskadapter.webui.license.{LicenseFacade, LicensePanel}
 import com.vaadin.server.Sizeable
 import com.vaadin.ui.{Button, Component, GridLayout, Label, Panel, VerticalLayout}
 
 object SupportPage {
-  def render(taVersion: String, license: LicenseFacade, tracker: Tracker, cacheFileLocation: String,
+  def render(taVersion: String, license: LicenseFacade, cacheFileLocation: String,
              logFileLocation: String): Component =
-    new SupportPage(taVersion, license, tracker, cacheFileLocation, logFileLocation).layout
+    new SupportPage(taVersion, license, cacheFileLocation, logFileLocation).layout
 }
 
 class SupportPage private(currentTaskAdapterVersion: String, licenseManager: LicenseFacade,
-                          tracker: Tracker, cacheFileLocation: String, logFileLocation: String) {
+                          cacheFileLocation: String, logFileLocation: String) {
   private val layout = new VerticalLayout
   private val lastVersionInfoLayout = new VerticalLayout
 
@@ -56,7 +56,7 @@ class SupportPage private(currentTaskAdapterVersion: String, licenseManager: Lic
     }
   }
 
-  private def createLicenseSection(): Unit = layout.addComponent(LicensePanel.renderLicensePanel(licenseManager, tracker))
+  private def createLicenseSection(): Unit = layout.addComponent(LicensePanel.renderLicensePanel(licenseManager))
 
   private def addFileLocationsSection(): Unit = {
     val logsPanel = new Panel(message("supportPage.fileLocationsPanel"))

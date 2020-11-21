@@ -49,7 +49,7 @@ object ConfigureSystemPage {
   }
 
   def render(credentialsManager: CredentialsManager, settingsManager: SettingsManager, license: License,
-             authorizedOps: AuthorizedOperations, tracker: Tracker): ComponentContainer = {
+             authorizedOps: AuthorizedOperations): ComponentContainer = {
     val layout = new VerticalLayout
     layout.setSpacing(true)
     val cmt = LocalRemoteOptionsPanel.createLocalRemoteOptions(settingsManager, authorizedOps.canConfigureServer)
@@ -58,7 +58,7 @@ object ConfigureSystemPage {
     val allowedToEdit = authorizedOps.canConfigureServer && license != null
     layout.addComponent(createAdminPermissionsSection(settingsManager, allowedToEdit))
     layout.addComponent(createResultsNumberSection(settingsManager))
-    layout.addComponent(new UsersPanel(credentialsManager, authorizedOps, license, tracker).ui)
+    layout.addComponent(new UsersPanel(credentialsManager, authorizedOps, license).ui)
     layout
   }
 }

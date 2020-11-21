@@ -2,13 +2,12 @@ package com.taskadapter.webui.config
 
 import com.taskadapter.web.PopupDialog
 import com.taskadapter.web.uiapi.SetupId
-import com.taskadapter.webui.{ConfigOperations, Page, SetupCategory, Tracker}
+import com.taskadapter.webui.{ConfigOperations, EventTracker, Page, SetupCategory}
 import com.vaadin.server.Sizeable
 import com.vaadin.ui._
 import com.vaadin.ui.themes.ValoTheme
 
-class SetupsListPage(tracker: Tracker,
-                     configOperations: ConfigOperations,
+class SetupsListPage(configOperations: ConfigOperations,
                      showEditSetup: (SetupId) => Unit,
                      showNewSetup: () => Unit) {
 
@@ -102,7 +101,7 @@ class SetupsListPage(tracker: Tracker,
     val messageDialog = PopupDialog.confirm(Page.message("setupsListPage.confirmDelete.question"),
       () => {
         configOperations.deleteConnectorSetup(setupId)
-        tracker.trackEvent(SetupCategory, "deleted", "")
+        EventTracker.trackEvent(SetupCategory, "deleted", "")
         refresh()
       })
 

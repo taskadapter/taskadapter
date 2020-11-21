@@ -19,7 +19,7 @@ case class ScheduleListItem(id: String, configId: ConfigId,
                             @BeanProperty intervalMin: Int,
                             @BeanProperty to: String)
 
-class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, configOperations: ConfigOperations,
+class SchedulesListPage(schedulesStorage: SchedulesStorage, configOperations: ConfigOperations,
                         settingsManager: SettingsManager) {
   private val log = LoggerFactory.getLogger(classOf[SchedulesListPage])
   private val configRowsToShowInListSelect = 15
@@ -61,13 +61,13 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
   }
 
   private def showSchedule(scheduleId: String): Unit = {
-    tracker.trackPage("edit_schedule_page")
+    EventTracker.trackPage("edit_schedule_page")
     val schedule = schedulesStorage.get(scheduleId).get
     showSchedule(schedule)
   }
 
   private def showNewScheduleEditor(configId: ConfigId): Unit = {
-    tracker.trackPage("create_schedule_page")
+    EventTracker.trackPage("create_schedule_page")
     val schedule = Schedule(UUID.randomUUID().toString, configId, 60, false, false)
     showSchedule(schedule)
   }

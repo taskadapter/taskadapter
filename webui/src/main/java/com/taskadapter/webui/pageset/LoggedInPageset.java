@@ -23,6 +23,7 @@ import com.taskadapter.webui.Header;
 import com.taskadapter.webui.HeaderMenuBuilder;
 import com.taskadapter.webui.LogFinder;
 import com.taskadapter.webui.Page;
+import com.taskadapter.webui.SessionController;
 import com.taskadapter.webui.Sizes;
 import com.taskadapter.webui.TAPageLayout;
 import com.taskadapter.webui.Tracker;
@@ -35,7 +36,6 @@ import com.taskadapter.webui.export.ExportResultsFragment;
 import com.taskadapter.webui.license.LicenseFacade;
 import com.taskadapter.webui.pages.AppUpdateNotificationComponent;
 import com.taskadapter.webui.pages.ConfigPage;
-import com.taskadapter.webui.pages.ConfigPanel;
 import com.taskadapter.webui.pages.ConfigsListPage;
 import com.taskadapter.webui.pages.DropInExportPage;
 import com.taskadapter.webui.pages.LicenseAgreementPage;
@@ -101,11 +101,6 @@ public class LoggedInPageset {
     private final Runnable logoutCallback;
 
     /**
-     * Usage tracer.
-     */
-    private final Tracker tracker;
-
-    /**
      * Ui component.
      */
     private final Component ui;
@@ -122,17 +117,15 @@ public class LoggedInPageset {
      *
      * @param credentialsManager credentialsManager
      * @param services           used services.
-     * @param tracker            usage tracker.
      * @param ctx                context for active user.
      * @param callback           callback to use.
      */
     private LoggedInPageset(CredentialsManager credentialsManager,
-                            Preservices services, Tracker tracker, UserContext ctx,
+                            Preservices services, UserContext ctx,
                             Runnable callback) {
         this.services = services;
         this.credentialsManager = credentialsManager;
         this.context = ctx;
-        this.tracker = tracker;
         this.logoutCallback = callback;
         this.license = new LicenseFacade(services.licenseManager);
 
@@ -146,6 +139,7 @@ public class LoggedInPageset {
 
     private void registerEventListeners() {
         // temporary code to catch and re-throw "tracker" events
+        Tracker tracker = SessionController.getTracker();
         EventBusImpl.observable(PageShown.class)
                 .subscribe(new Subscriber<PageShown>() {
                     @Override
@@ -241,7 +235,7 @@ public class LoggedInPageset {
     }
 
     private void showSchedules() {
-        SchedulesListPage schedulesListPage = new SchedulesListPage(tracker, services.schedulesStorage,
+        SchedulesListPage schedulesListPage = new SchedulesListPage(services.schedulesStorage,
                 context.configOps, services.settingsManager
         );
         schedulesListPage.showSchedules(services.schedulesStorage.getSchedules());
@@ -269,7 +263,7 @@ public class LoggedInPageset {
         EventTracker.trackPage("support");
         TaskKeeperLocationStorage storage = new TaskKeeperLocationStorage(services.rootDir);
         String logFileLocation = LogFinder.getLogFileLocation();
-        applyUI(SupportPage.render(services.currentTaskAdapterVersion, license, tracker,
+        applyUI(SupportPage.render(services.currentTaskAdapterVersion, license,
                 storage.cacheFolder().getAbsolutePath(),
                 logFileLocation));
     }
@@ -368,13 +362,13 @@ public class LoggedInPageset {
         EventTracker.trackPage("system_configuration");
         applyUI(ConfigureSystemPage.render(credentialsManager,
                 services.settingsManager, services.licenseManager.getLicense(),
-                context.authorizedOps, tracker));
+                context.authorizedOps));
     }
 
     private Function0<BoxedUnit> showSetupsListPage() {
         return () -> {
             EventTracker.trackPage("setups_list");
-            applyUI(new SetupsListPage(tracker, context.configOps,
+            applyUI(new SetupsListPage(context.configOps,
                     showEditSetupPage(), showNewSetupPage()
             ).ui());
             return BoxedUnit.UNIT;
@@ -429,7 +423,7 @@ public class LoggedInPageset {
                                     df.delete();
                                     showHome();
                                 }
-                            }, df, tracker);
+                            }, df);
                     applyUI(component);
                 } finally {
                     ss.unlock();
@@ -533,16 +527,15 @@ public class LoggedInPageset {
      * Creates a new pageset for logged-in user.
      *
      * @param services       global services.
-     * @param tracker        context tracker.
      * @param ctx            Context for active user.
      * @param logoutCallback callback to invoke on logout.
      * @return pageset UI.
      */
     public static Component createPageset(CredentialsManager credManager,
-                                          Preservices services, Tracker tracker, UserContext ctx,
+                                          Preservices services, UserContext ctx,
                                           Runnable logoutCallback) {
         final LoggedInPageset ps = new LoggedInPageset(credManager, services,
-                tracker, ctx, logoutCallback);
+                ctx, logoutCallback);
         if (services.settingsManager.isLicenseAgreementAccepted())
             ps.showHome();
         else
