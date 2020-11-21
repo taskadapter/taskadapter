@@ -1,18 +1,25 @@
 package com.taskadapter.webui.pages
 
+import com.taskadapter.web.event.{EventBusImpl, ShowSetupsListPageRequested}
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.user.ChangePasswordDialog
+import com.taskadapter.webui.{EventTracker, SessionController}
 import com.vaadin.ui._
 
-class UserProfilePage(userName: String, changePasswordCallback: ChangePasswordDialog.Callback,
-                      logoutCallback: Runnable, showSetupsListPage: () => Unit) {
-  val ui = new VerticalLayout
-  ui.setSpacing(true)
+class UserProfilePage() extends BasePage {
+  def ui: VerticalLayout = new UserProfilePanel()
+}
+
+class UserProfilePanel() extends VerticalLayout {
+  EventTracker.trackPage("user_profile")
+
+  setSpacing(true)
   addLoginInfo()
+  val userName = SessionController.getCurrentUserName
 
   private def addLoginInfo(): Unit = {
     val panel = new Panel(message("userProfile.title"))
-    ui.addComponent(panel)
+    addComponent(panel)
 
     val l = new VerticalLayout
     l.setMargin(true)
@@ -21,7 +28,7 @@ class UserProfilePage(userName: String, changePasswordCallback: ChangePasswordDi
     l.addComponent(new Label(loginString))
 
     val configureSetupsButton = new Button(message("userProfile.configureConnectors"))
-    configureSetupsButton.addClickListener(_ => showSetupsListPage())
+    configureSetupsButton.addClickListener(_ => EventBusImpl.post(ShowSetupsListPageRequested()))
     l.addComponent(configureSetupsButton)
 
     val button = new Button(message("userProfile.changePassword"))
@@ -29,7 +36,7 @@ class UserProfilePage(userName: String, changePasswordCallback: ChangePasswordDi
     l.addComponent(button)
 
     val logoutButton = new Button(message("userProfile.logout"))
-    logoutButton.addClickListener(_ => logoutCallback.run())
+    logoutButton.addClickListener(_ => SessionController.logout())
     l.addComponent(logoutButton)
     panel.setContent(l)
   }
@@ -38,6 +45,8 @@ class UserProfilePage(userName: String, changePasswordCallback: ChangePasswordDi
     * Attempts to change password for the current user.
     */
   private def showChangePasswordDialog() = {
-    ChangePasswordDialog.showDialog(ui.getUI(), userName, changePasswordCallback)
+    val selfManagement = SessionController.getUserContext.selfManagement
+    ChangePasswordDialog.showDialog(getUI(), userName, (oldPassword: String, newPassword: String) =>
+      selfManagement.changePassword(oldPassword, newPassword))
   }
 }

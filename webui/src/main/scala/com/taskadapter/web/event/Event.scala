@@ -18,6 +18,8 @@ case class CredentialsChangeRequested(login: String, password: String) extends E
 
 case class ShowConfigPageRequested(configId: ConfigId) extends Event
 
+case class ShowSetupsListPageRequested() extends Event
+
 case class ShowConfigsListPageRequested() extends Event
 
 case class ShowAllExportResultsRequested(configId: ConfigId) extends Event

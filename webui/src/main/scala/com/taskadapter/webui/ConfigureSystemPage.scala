@@ -3,12 +3,21 @@ package com.taskadapter.webui
 import com.taskadapter.auth.{AuthorizedOperations, CredentialsManager}
 import com.taskadapter.license.License
 import com.taskadapter.web.SettingsManager
+import com.taskadapter.web.service.Sandbox
+import com.taskadapter.webui.service.Preservices
 import com.taskadapter.webui.user.UsersPanel
 import com.vaadin.server.Sizeable.Unit.PIXELS
 import com.vaadin.ui._
 
+class ConfigureSystemPage() {
+  private val configOps: ConfigOperations = SessionController.buildConfigOperations()
+  private val services: Preservices = SessionController.getServices
 
-object ConfigureSystemPage {
+  def ui: VerticalLayout = ConfigureSystemPanel.render(services.credentialsManager, services.settingsManager, services.licenseManager.getLicense,
+  configOps.authorizedOps)
+}
+
+object ConfigureSystemPanel {
   private def createAdminPermissionsSection(settingsManager: SettingsManager, modifiable: Boolean) = {
     val panel = new Panel
     val view = new VerticalLayout
@@ -49,7 +58,9 @@ object ConfigureSystemPage {
   }
 
   def render(credentialsManager: CredentialsManager, settingsManager: SettingsManager, license: License,
-             authorizedOps: AuthorizedOperations): ComponentContainer = {
+             authorizedOps: AuthorizedOperations): VerticalLayout = {
+    EventTracker.trackPage("system_configuration")
+
     val layout = new VerticalLayout
     layout.setSpacing(true)
     val cmt = LocalRemoteOptionsPanel.createLocalRemoteOptions(settingsManager, authorizedOps.canConfigureServer)

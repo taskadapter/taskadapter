@@ -2,9 +2,7 @@ package com.taskadapter.webui.pageset;
 
 import com.google.common.io.Files;
 import com.taskadapter.Constants;
-import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.license.LicenseManager;
-import com.taskadapter.web.TaskKeeperLocationStorage;
 import com.taskadapter.web.event.ApplicationActionEvent;
 import com.taskadapter.web.event.ApplicationActionEventWithValue;
 import com.taskadapter.web.event.EventBusImpl;
@@ -12,6 +10,7 @@ import com.taskadapter.web.event.PageShown;
 import com.taskadapter.web.event.ShowAllExportResultsRequested;
 import com.taskadapter.web.event.ShowConfigPageRequested;
 import com.taskadapter.web.event.ShowConfigsListPageRequested;
+import com.taskadapter.web.event.ShowSetupsListPageRequested;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.uiapi.ConfigId;
 import com.taskadapter.web.uiapi.SetupId;
@@ -21,7 +20,6 @@ import com.taskadapter.webui.ConfigureSystemPage;
 import com.taskadapter.webui.EventTracker;
 import com.taskadapter.webui.Header;
 import com.taskadapter.webui.HeaderMenuBuilder;
-import com.taskadapter.webui.LogFinder;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.SessionController;
 import com.taskadapter.webui.Sizes;
@@ -80,11 +78,6 @@ public class LoggedInPageset {
     private final Preservices services;
 
     /**
-     * Credentials manager.
-     */
-    private final CredentialsManager credentialsManager;
-
-    /**
      * Context for current (logged-in) user.
      */
     private final UserContext context;
@@ -93,11 +86,6 @@ public class LoggedInPageset {
      * License facade.
      */
     private final LicenseFacade license;
-
-    /**
-     * Callback to use on logout.
-     */
-    private final Runnable logoutCallback;
 
     /**
      * Ui component.
@@ -112,20 +100,12 @@ public class LoggedInPageset {
     private final ConfigsListPage configsListPage;
 
     /**
-     * Creates a new pageset.
-     *
-     * @param credentialsManager credentialsManager
      * @param services           used services.
      * @param ctx                context for active user.
-     * @param callback           callback to use.
      */
-    private LoggedInPageset(CredentialsManager credentialsManager,
-                            Preservices services, UserContext ctx,
-                            Runnable callback) {
+    private LoggedInPageset(Preservices services, UserContext ctx) {
         this.services = services;
-        this.credentialsManager = credentialsManager;
         this.context = ctx;
-        this.logoutCallback = callback;
         this.license = new LicenseFacade(services.licenseManager);
 
         final Component header = Header.render(this::showHome, createMenu(), createSelfManagementMenu(), license.isLicensed());
@@ -170,6 +150,14 @@ public class LoggedInPageset {
                     }
                 });
 
+        EventBusImpl.observable(ShowSetupsListPageRequested.class)
+                .subscribe(new Subscriber<ShowSetupsListPageRequested>() {
+                    @Override
+                    public void onNext(ShowSetupsListPageRequested value) {
+                        showSetupsListPage();
+                    }
+                });
+
         EventBusImpl.observable(ShowConfigPageRequested.class)
                 .subscribe(new Subscriber<ShowConfigPageRequested>() {
                     @Override
@@ -200,9 +188,7 @@ public class LoggedInPageset {
     }
 
     private void showUserProfilePage() {
-        EventTracker.trackPage("user_profile");
-        applyUI(new UserProfilePage(context.name, context.selfManagement::changePassword, logoutCallback,
-                showSetupsListPage()).ui());
+        applyUI(new UserProfilePage().ui());
     }
 
     private Component createMenu() {
@@ -234,12 +220,7 @@ public class LoggedInPageset {
     }
 
     private void showSchedules() {
-        SchedulesListPage schedulesListPage = new SchedulesListPage(services.schedulesStorage,
-                context.configOps, services.settingsManager
-        );
-        schedulesListPage.showSchedules(services.schedulesStorage.getSchedules());
-        EventTracker.trackPage("schedules");
-        applyUI(schedulesListPage.ui());
+        applyUI(new SchedulesListPage().ui());
     }
 
     private void showConfigPanel(ConfigId configId) {
@@ -349,32 +330,20 @@ public class LoggedInPageset {
         return new Sandbox(services.settingsManager.isTAWorkingOnLocalMachine(), context.configOps.syncSandbox());
     }
 
-    /**
-     * Shows a system configuration panel.
-     */
     private void showSystemConfiguration() {
-        EventTracker.trackPage("system_configuration");
-        applyUI(ConfigureSystemPage.render(credentialsManager,
-                services.settingsManager, services.licenseManager.getLicense(),
-                context.authorizedOps));
+        applyUI(new ConfigureSystemPage().ui());
     }
 
-    private Function0<BoxedUnit> showSetupsListPage() {
-        return () -> {
-            EventTracker.trackPage("setups_list");
-            applyUI(new SetupsListPage(context.configOps,
-                    showEditSetupPage(), showNewSetupPage()
-            ).ui());
-            return BoxedUnit.UNIT;
-        };
+    private void showSetupsListPage() {
+        applyUI(new SetupsListPage(context.configOps, showEditSetupPage(), showNewSetupPage())
+                .ui());
     }
 
     private Function1<SetupId, BoxedUnit> showEditSetupPage() {
         return (setupId) -> {
             EventTracker.trackPage("edit_setup");
             applyUI(new EditSetupPage(context.configOps, services.editorManager, services.pluginManager,
-                    createSandbox(), setupId, showSetupsListPage()
-            ).ui());
+                    createSandbox(), setupId).ui());
             return BoxedUnit.UNIT;
         };
     }
@@ -383,8 +352,7 @@ public class LoggedInPageset {
         return () -> {
             EventTracker.trackPage("add_setup");
             applyUI(new NewSetupPage(context.configOps, services.editorManager, services.pluginManager,
-                    createSandbox(), showSetupsListPage()
-            ).ui());
+                    createSandbox()).ui());
             return BoxedUnit.UNIT;
         };
     }
@@ -522,14 +490,11 @@ public class LoggedInPageset {
      *
      * @param services       global services.
      * @param ctx            Context for active user.
-     * @param logoutCallback callback to invoke on logout.
      * @return pageset UI.
      */
-    public static Component createPageset(CredentialsManager credManager,
-                                          Preservices services, UserContext ctx,
-                                          Runnable logoutCallback) {
-        final LoggedInPageset ps = new LoggedInPageset(credManager, services,
-                ctx, logoutCallback);
+    public static Component createPageset(Preservices services, UserContext ctx) {
+        final LoggedInPageset ps = new LoggedInPageset(services,
+                ctx);
         if (services.settingsManager.isLicenseAgreementAccepted())
             ps.showHome();
         else

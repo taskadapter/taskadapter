@@ -10,7 +10,7 @@ import com.vaadin.ui.themes.ValoTheme
 class SetupsListPage(configOperations: ConfigOperations,
                      showEditSetup: (SetupId) => Unit,
                      showNewSetup: () => Unit) {
-
+  EventTracker.trackPage("setups_list")
   val layout = new VerticalLayout
 
   val introLabel = new Label(Page.message("setupsListPage.intro"))

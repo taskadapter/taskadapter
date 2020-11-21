@@ -55,15 +55,23 @@ public final class SessionController {
         if (ops == null)
             showLogin();
         else
-            showUserHome(ucookie, ops);
+            showUserHome(ucookie);
     }
 
     /**
      * Shows a common interface (for logged-in user).
      */
-    private static void showUserHome(String login, AuthorizedOperations ops) {
+    private static void showUserHome(String login) {
         session.setCurrentUserName(login);
 
+        UserContext ctx = getUserContext();
+        session.pageContainer().setPageContent(LoggedInPageset.createPageset(
+                 services, ctx));
+    }
+
+    public static UserContext getUserContext() {
+        String login = getCurrentUserName();
+        AuthorizedOperationsImpl ops = new AuthorizedOperationsImpl(login);
         final SelfManagement selfManagement = new SelfManagement(login,
                 credentialsManager);
         File userHomeFolder = new File(services.rootDir, login);
@@ -71,12 +79,9 @@ public final class SessionController {
                 credentialsManager,
                 services.uiConfigStore,
                 new File(userHomeFolder, "files"));
-        final UserContext ctx = new UserContext(login, selfManagement, ops,
-                configOps);
 
-        session.pageContainer().setPageContent(LoggedInPageset.createPageset(
-                credentialsManager, services, ctx,
-                SessionController::doLogout));
+        return new UserContext(login, selfManagement, ops,
+                configOps);
     }
 
     /**
@@ -87,10 +92,7 @@ public final class SessionController {
                 services, SessionController::tryAuth));
     }
 
-    /**
-     * Performs a logout.
-     */
-    private static void doLogout() {
+    public static void logout() {
         final String ucookie = CookiesManager
                 .getCookie(PERM_AUTH_USER_COOKIE_NAME);
         final String kcookie = CookiesManager
@@ -124,7 +126,7 @@ public final class SessionController {
             if (ops == null) {
                 throw new WrongPasswordException();
             }
-            showUserHome(login, ops);
+            showUserHome(login);
             return;
         }
 
@@ -146,7 +148,7 @@ public final class SessionController {
         CookiesManager.setCookie(PERM_AUTH_KEY_COOKIE_NAME,
                 supResult.secondaryToken);
 
-        showUserHome(login, supResult.ops);
+        showUserHome(login);
     }
 
     public static void tmpLoginAsAdmin() {

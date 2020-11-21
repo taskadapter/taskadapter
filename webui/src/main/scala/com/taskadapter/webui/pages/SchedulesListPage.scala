@@ -5,6 +5,7 @@ import java.util.UUID
 import com.taskadapter.web.SettingsManager
 import com.taskadapter.web.uiapi.{ConfigId, Schedule}
 import com.taskadapter.webui._
+import com.taskadapter.webui.service.Preservices
 import com.vaadin.data.sort.SortOrder
 import com.vaadin.data.util.{BeanItem, BeanItemContainer}
 import com.vaadin.shared.data.sort.SortDirection
@@ -19,8 +20,16 @@ case class ScheduleListItem(id: String, configId: ConfigId,
                             @BeanProperty intervalMin: Int,
                             @BeanProperty to: String)
 
-class SchedulesListPage(schedulesStorage: SchedulesStorage, configOperations: ConfigOperations,
-                        settingsManager: SettingsManager) {
+class SchedulesListPage() {
+  private val configOps: ConfigOperations = SessionController.buildConfigOperations()
+  private val services: Preservices = SessionController.getServices
+
+  def ui: VerticalLayout = new SchedulesListPanel(services.schedulesStorage, configOps, services.settingsManager)
+}
+
+class SchedulesListPanel(schedulesStorage: SchedulesStorage, configOperations: ConfigOperations,
+                        settingsManager: SettingsManager) extends VerticalLayout {
+  EventTracker.trackPage("schedules");
   private val log = LoggerFactory.getLogger(classOf[SchedulesListPage])
   private val configRowsToShowInListSelect = 15
 
@@ -32,6 +41,7 @@ class SchedulesListPage(schedulesStorage: SchedulesStorage, configOperations: Co
   val configsListSelect = createConfigsList()
 
   ui.addComponent(listLayout)
+  showSchedules(schedulesStorage.getSchedules())
 
   def showSchedules(results: Seq[Schedule]): Unit = {
     ds.removeAllItems()

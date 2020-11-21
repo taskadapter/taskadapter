@@ -10,13 +10,13 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
 
 @RunWith(classOf[JUnitRunner])
-class ConfigureSystemPageTest extends FunSpec with Matchers with ConfigsTempFolder {
+class ConfigureSystemPanelTest extends FunSpec with Matchers with ConfigsTempFolder {
   val adminOps = createAdminOps()
 
   it("disables admin section editing in non-licensed version") {
     withTempFolder { folder =>
       val preservices = createTestPreservices(folder)
-      val container = ConfigureSystemPage.render(preservices.credentialsManager, preservices.settingsManager,
+      val container = ConfigureSystemPanel.render(preservices.credentialsManager, preservices.settingsManager,
         preservices.licenseManager.getLicense, adminOps)
       val auto = UiTester.findElement(container, Page.message("configurePage.anonymousErrorReporting"))
       auto.isEnabled shouldBe false
@@ -26,7 +26,7 @@ class ConfigureSystemPageTest extends FunSpec with Matchers with ConfigsTempFold
   it("enables admin section editing in licensed version") {
     withTempFolder { folder =>
       val preservices = createTestPreservices(folder)
-      val container = ConfigureSystemPage.render(preservices.credentialsManager, preservices.settingsManager,
+      val container = ConfigureSystemPanel.render(preservices.credentialsManager, preservices.settingsManager,
         LicenseGenerator.someLicense(), adminOps)
       val auto = UiTester.findElement(container, Page.message("configurePage.anonymousErrorReporting"))
       auto.isEnabled shouldBe true
