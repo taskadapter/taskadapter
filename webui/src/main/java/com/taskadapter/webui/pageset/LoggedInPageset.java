@@ -32,6 +32,7 @@ import com.taskadapter.webui.config.SetupsListPage;
 import com.taskadapter.webui.export.ExportResultsFragment;
 import com.taskadapter.webui.license.LicenseFacade;
 import com.taskadapter.webui.pages.AppUpdateNotificationComponent;
+import com.taskadapter.webui.pages.BeforeEvent;
 import com.taskadapter.webui.pages.ConfigPage;
 import com.taskadapter.webui.pages.ConfigsListPage;
 import com.taskadapter.webui.pages.DropInExportPage;
@@ -231,8 +232,8 @@ public class LoggedInPageset {
         }
         UISyncConfig config = maybeConfig.get();
 
-        ConfigPage page = new ConfigPage(config);
-        EventTracker.trackPage("config_panel");
+        ConfigPage page = new ConfigPage();
+        page.setParameter(new BeforeEvent(), config.configId().id() + "");
         applyUI(page.ui());
     }
 
