@@ -60,10 +60,7 @@ case class UISyncConfig(taskKeeperLocationStorage: TaskKeeperLocationStorage,
                           * Config identity. Unique "config-storage" id to distinguish between
                           * configs. May be <code>null</code> for a new (non-saved) config.
                           */
-                        identity: String,
-
-                        /** Name of the user who owns this config. */
-                        owner: String,
+                        configId: ConfigId,
 
                         /**
                           * Config label
@@ -91,8 +88,6 @@ case class UISyncConfig(taskKeeperLocationStorage: TaskKeeperLocationStorage,
                         var reversed: Boolean
                        ) {
 
-  val id = ConfigId(owner, identity)
-
   def getConnector1: UIConnectorConfig = connector1
 
   def getConnector2: UIConnectorConfig = connector2
@@ -100,7 +95,7 @@ case class UISyncConfig(taskKeeperLocationStorage: TaskKeeperLocationStorage,
   def getNewMappings: Seq[FieldMapping[_]] = fieldMappings
 
   /** Returns name of the user who owns this config. */
-  def getOwnerName: String = owner
+  def getOwnerName: String = configId.ownerName
 
   /**
     * Creates a "reversed" version of a config. Reversed version shares
@@ -109,7 +104,7 @@ case class UISyncConfig(taskKeeperLocationStorage: TaskKeeperLocationStorage,
     *
     * @return "reversed" (back-order) configuration.
     */
-  def reverse = new UISyncConfig(taskKeeperLocationStorage, identity, owner, label, connector2, connector1,
+  def reverse = new UISyncConfig(taskKeeperLocationStorage, configId, label, connector2, connector1,
     UISyncConfig.reverse(fieldMappings), !reversed)
 
   /**
@@ -162,7 +157,7 @@ case class UISyncConfig(taskKeeperLocationStorage: TaskKeeperLocationStorage,
     }
     val finish = System.currentTimeMillis()
 
-    val finalResult = ExportResultFormat(id, label, getConnector1.getSourceLocation, destinationLocation,
+    val finalResult = ExportResultFormat(configId, label, getConnector1.getSourceLocation, destinationLocation,
       Option(result.targetFileAbsolutePath),
       result.updatedTasksNumber, result.createdTasksNumber,
       result.generalErrors.map(getConnector2.decodeException),

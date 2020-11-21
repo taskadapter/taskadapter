@@ -78,7 +78,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
 
     try {
       val newMappings = JsonFactory.fromJsonString(jsonString)
-      new UISyncConfig(new TaskKeeperLocationStorage(configStorage.rootDir), storedConfig.getId, ownerName,
+      new UISyncConfig(new TaskKeeperLocationStorage(configStorage.rootDir), ConfigId(ownerName,storedConfig.getId),
         label, config1, config2, newMappings, false)
     } catch {
       case e: Exception =>
@@ -113,7 +113,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     configId
   }
 
-  def getConfig(configId: ConfigId): Option[UISyncConfig] = getUserConfigs(configId.ownerName).find(_.id == configId)
+  def getConfig(configId: ConfigId): Option[UISyncConfig] = getUserConfigs(configId.ownerName).find(_.configId == configId)
 
   def saveNewSetup(userName: String, setup: ConnectorSetup): SetupId = {
     val newFile = FileNameGenerator.findSafeAvailableFileName(getSavedSetupsFolder(userName), setup.connectorId + "_%d.json")
@@ -207,7 +207,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val config2 = normalizedSyncConfig.getConnector2
     val mappings = normalizedSyncConfig.getNewMappings
     val mappingsStr = JsonFactory.toString(mappings)
-    configStorage.saveConfig(normalizedSyncConfig.getOwnerName, normalizedSyncConfig.identity, label,
+    configStorage.saveConfig(normalizedSyncConfig.getOwnerName, normalizedSyncConfig.configId.id, label,
       config1.getConnectorTypeId, SetupId(config1.getConnectorSetup.id.get), config1.getConfigString,
       config2.getConnectorTypeId, SetupId(config2.getConnectorSetup.id.get), config2.getConfigString,
       mappingsStr)

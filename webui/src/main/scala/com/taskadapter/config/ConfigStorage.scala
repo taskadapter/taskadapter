@@ -7,13 +7,29 @@ import com.google.common.io.Files
 import com.taskadapter.web.uiapi.{ConfigId, SetupId}
 import org.slf4j.LoggerFactory
 
+import scala.util.Random
+
 object ConfigStorage {
-  private val configFileExtension = "ta_conf"
-  val NUMBER_SEPARATOR = "_"
+  /**
+    * file name extension for legacy configs
+    *
+    * legacy configs do not have "ta.id" field and thus have no numeric id in them. they used full file name
+    * as "id" until November 2020. Yay, 2020 is almost over now! I hope you all survived it.
+    */
+  private val legacyConfigFileExtension = ".ta_conf"
+  private val configFileExtension = ".conf"
+  private val setupFileExtension = "json"
+
+  private val NUMBER_SEPARATOR = "_"
+
   val CONFIG_FILE_FILTER = new FilenameFilter {
     override def accept(dir: File, name: String): Boolean = name.endsWith(configFileExtension)
   }
-  private val setupFileExtension = "json"
+
+  val LEGACY_CONFIG_FILE_FILTER = new FilenameFilter {
+    override def accept(dir: File, name: String): Boolean = name.endsWith(legacyConfigFileExtension)
+  }
+
   val setupFileFilter = new FilenameFilter {
     override def accept(dir: File, name: String): Boolean = name.endsWith(setupFileExtension)
   }
@@ -23,10 +39,14 @@ class ConfigStorage(val rootDir: File) {
   private val logger = LoggerFactory.getLogger(classOf[ConfigStorage])
 
   def getConfig(configId: ConfigId): Option[StoredExportConfig] = {
-    getConfigsInFolder(getUserConfigsFolder(configId.ownerName)).find(_.getId == configId.id)
+    val file = getConfigFile(configId)
+    if (file.exists()) {
+      val fileBody = Files.toString(file, Charsets.UTF_8)
+      Some(NewConfigParser.parse(fileBody))
+    } else {
+      None
+    }
   }
-
-  def getUserConfigs(userLoginName: String): Seq[StoredExportConfig] = getConfigsInFolder(getUserConfigsFolder(userLoginName))
 
   def getUserFolder(userLoginName: String): File = {
     new File(rootDir, userLoginName)
@@ -36,14 +56,24 @@ class ConfigStorage(val rootDir: File) {
     new File(getUserFolder(userLoginName), "configs")
   }
 
+  def getUserConfigs(userLoginName: String): Seq[StoredExportConfig] = {
+    val folder = getUserConfigsFolder(userLoginName)
 
-  private def getConfigsInFolder(folder: File): Seq[StoredExportConfig] = {
-    val configs = folder.listFiles(ConfigStorage.CONFIG_FILE_FILTER)
-    if (configs == null) return Seq()
-    configs.toSeq.flatMap { file =>
+    val configFiles = folder.listFiles(ConfigStorage.CONFIG_FILE_FILTER)
+    val configs = getConfigsInFolder(configFiles)
+
+    val legacyConfigFiles = folder.listFiles(ConfigStorage.LEGACY_CONFIG_FILE_FILTER)
+    val legacyConfigs = getLegacyConfigsInFolder(userLoginName, legacyConfigFiles)
+
+    configs ++ legacyConfigs
+  }
+
+  private def getConfigsInFolder(configFiles: Seq[File]): Seq[StoredExportConfig] = {
+    if (configFiles == null) return Seq()
+    configFiles.flatMap { file =>
       try {
         val fileBody = Files.toString(file, Charsets.UTF_8)
-        Some(NewConfigParser.parse(file.getAbsolutePath, fileBody))
+        Some(NewConfigParser.parse(fileBody))
       } catch {
         case e: Exception =>
           logger.error("Error loading file " + file.getAbsolutePath + ": " + e.getMessage, e)
@@ -52,19 +82,41 @@ class ConfigStorage(val rootDir: File) {
     }
   }
 
+  private def getLegacyConfigsInFolder(userLoginName: String, configFiles: Seq[File]): Seq[StoredExportConfig] = {
+    if (configFiles == null) return Seq()
+    configFiles.flatMap { file =>
+      try {
+        val fileBody = Files.toString(file, Charsets.UTF_8)
+        val newId = new Random().nextInt().abs
+        val newConfig = NewConfigParser.parseLegacyConfig(newId, fileBody)
+        saveConfig(userLoginName, newId, newConfig.getName,
+          newConfig.getConnector1.connectorTypeId, newConfig.getConnector1.connectorSavedSetupId, newConfig.getConnector1.serializedConfig,
+          newConfig.getConnector2.connectorTypeId, newConfig.getConnector2.connectorSavedSetupId, newConfig.getConnector2.serializedConfig,
+          newConfig.getMappingsString)
+        file.renameTo(new File(file.getAbsoluteFile + ".bak"))
+        Some(newConfig)
+      } catch {
+        case e: Exception =>
+          logger.error("Error loading legacy config file " + file.getAbsolutePath + ": " + e.getMessage, e)
+          None
+      }
+    }
+  }
+
   // TODO TA3 unify saveConfig() and createNewConfig()
 
   @throws[StorageException]
-  def saveConfig(userLoginName: String, configId: String, configName: String,
+  def saveConfig(userLoginName: String, configId: Int, configName: String,
                  connector1Id: String, connector1SavedSetupId: SetupId, connector1Data: String,
                  connector2Id: String, connector2SavedSetupId: SetupId, connector2Data: String, mappings: String): Unit = {
     logger.info(s"Saving config for user $userLoginName")
-    val fileContents = NewConfigParser.toFileContent(configName, connector1Id, connector1SavedSetupId, connector1Data,
+    val fileContents = NewConfigParser.toFileContent(configId, configName, connector1Id, connector1SavedSetupId, connector1Data,
       connector2Id, connector2SavedSetupId, connector2Data, mappings)
     try {
       val folder = getUserConfigsFolder(userLoginName)
       folder.mkdirs
-      Files.write(fileContents, new File(configId), Charsets.UTF_8)
+      val newConfigFile = getConfigFile(userLoginName, configId)
+      Files.write(fileContents, newConfigFile, Charsets.UTF_8)
     } catch {
       case e: IOException =>
         throw new StorageException(e)
@@ -79,16 +131,20 @@ class ConfigStorage(val rootDir: File) {
                       connector1Id: String, connector1SavedSetupId: SetupId, connector1Data: String,
                       connector2Id: String, connector2SavedSetupId: SetupId, connector2Data: String,
                       mappings: String): ConfigId = {
-    val fileContents = NewConfigParser.toFileContent(configName,
-      connector1Id, connector1SavedSetupId, connector1Data,
-      connector2Id, connector2SavedSetupId, connector2Data,
-      mappings)
     try {
       val folder = getUserConfigsFolder(userLoginName)
       folder.mkdirs
-      val newConfigFile = findUnusedConfigFile(folder, connector1Id, connector2Id)
+      val numberOfFiles = countNumberOfFilesInDirectory(folder)
+      val newId = numberOfFiles + 1
+      val newConfigFile = getConfigFile(userLoginName, newId)
+
+      val fileContents = NewConfigParser.toFileContent(newId, configName,
+        connector1Id, connector1SavedSetupId, connector1Data,
+        connector2Id, connector2SavedSetupId, connector2Data,
+        mappings)
+
       Files.write(fileContents, newConfigFile, Charsets.UTF_8)
-      ConfigId(userLoginName, newConfigFile.getAbsolutePath)
+      ConfigId(userLoginName, newId)
     } catch {
       case e: IOException =>
         throw new StorageException(e)
@@ -127,31 +183,24 @@ class ConfigStorage(val rootDir: File) {
     setupFiles.map(Files.toString(_, Charsets.UTF_8)).toSeq
   }
 
-  private def findUnusedConfigFile(userFolder: File, type1: String, type2: String): File = {
-    val namePrefix = createFileNamePrefix(type1, type2)
-    var fileOrdinal = 1
-    var file: File = null
-    do {
-      file = new File(userFolder, namePrefix + fileOrdinal + "." + ConfigStorage.configFileExtension)
-      fileOrdinal += 1
-    } while ( {
-      file.exists
-    })
-    file
-  }
-
-  private def createFileNamePrefix(type1: String, type2: String): String = {
-    var fileName = type1 + "_" + type2 + ConfigStorage.NUMBER_SEPARATOR
-    fileName = fileName.replaceAll(" ", "-")
-    fileName
-  }
-
   def deleteConfig(configId: ConfigId): Unit = {
-    new File(configId.id).delete
+    getConfigFile(configId.ownerName, configId.id).delete()
   }
 
   def deleteSetup(userName: String, id: SetupId): Unit = {
     new File(getUserFolder(userName), id.id).delete
   }
 
+  @Deprecated
+  def getConfigFile(userName: String, id: Int): File = {
+    new File(getUserConfigsFolder(userName), id + ConfigStorage.configFileExtension)
+  }
+
+  def getConfigFile(configId: ConfigId): File = {
+    new File(getUserConfigsFolder(configId.ownerName), configId.id + ConfigStorage.configFileExtension)
+  }
+
+  def countNumberOfFilesInDirectory(file : File) : Int = {
+    file.list().size
+  }
 }

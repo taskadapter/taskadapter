@@ -27,7 +27,7 @@ class ConfigPanel(config: UISyncConfig,
                   sandbox: Sandbox) {
   private val log = LoggerFactory.getLogger(classOf[ConfigPanel])
 
-  private val configId = config.id
+  private val configId = config.configId
 
   val layout = new VerticalLayout
   layout.addStyleName("configPanelInConfigsList")

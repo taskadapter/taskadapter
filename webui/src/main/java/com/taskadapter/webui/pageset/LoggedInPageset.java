@@ -142,7 +142,6 @@ public class LoggedInPageset {
         this.ui = TAPageLayout.layoutPage(header, new AppUpdateNotificationComponent(), currentComponentArea);
         this.configsListPage = createConfigsPage();
         registerEventListeners();
-        showConfigsList();
     }
 
     private void registerEventListeners() {

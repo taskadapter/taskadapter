@@ -98,7 +98,6 @@ class ConfigsListPage(showAll: Boolean, callback: ConfigsListPage.Callback, conf
   layout.addComponent(actionPanel)
   layout.addComponent(configsTopLevelLayout)
   layout.setComponentAlignment(actionPanel, Alignment.TOP_LEFT)
-  refreshConfigs()
 
   def refreshConfigs() = {
     val loadedConfigs = if (showAll) configOperations.getManageableConfigs
@@ -120,7 +119,7 @@ class ConfigsListPage(showAll: Boolean, callback: ConfigsListPage.Callback, conf
     val configLabel = config.label
     val link = new Button(configLabel)
     link.addStyleName(BaseTheme.BUTTON_LINK)
-    link.addClickListener(_ => showConfigSummary(config.id))
+    link.addClickListener(_ => showConfigSummary(config.configId))
     layout.addComponent(link)
     layout
   }

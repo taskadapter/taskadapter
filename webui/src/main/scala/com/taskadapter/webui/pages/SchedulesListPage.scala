@@ -37,7 +37,7 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
     ds.removeAllItems()
     ds.addAll(
       results.flatMap { schedule =>
-        val maybeConfig = configOperations.getOwnedConfigs.find(c => c.id == schedule.configId)
+        val maybeConfig = configOperations.getOwnedConfigs.find(c => c.configId == schedule.configId)
         if (maybeConfig.isDefined) {
           Some(ScheduleListItem(schedule.id, schedule.configId, maybeConfig.get.label,
             schedule.intervalInMinutes, maybeConfig.get.getConnector2.getLabel))
@@ -73,7 +73,7 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
   }
 
   private def showSchedule(schedule: Schedule): Unit = {
-    val config = configOperations.getOwnedConfigs.find(c => c.id == schedule.configId).get
+    val config = configOperations.getOwnedConfigs.find(c => c.configId == schedule.configId).get
     val editSchedulePage = new EditSchedulePage(
       config.label,
       config.getConnector1.getLabel,
@@ -124,8 +124,8 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
 
   private def reloadConfigsInList(): Unit = {
     configOperations.getOwnedConfigs.foreach { s =>
-      configsListSelect.addItem(s.id)
-      configsListSelect.setItemCaption(s.id, if (s.label.isEmpty) {
+      configsListSelect.addItem(s.configId)
+      configsListSelect.setItemCaption(s.configId, if (s.label.isEmpty) {
         Page.message("schedules.configsList.defaultLabelForConfigs")
       } else {
         s.label

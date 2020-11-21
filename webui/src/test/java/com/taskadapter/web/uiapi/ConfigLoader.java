@@ -16,7 +16,7 @@ public final class ConfigLoader {
 
     public static UISyncConfig loadConfig(File rootFolder, String resourceNameInClassPath) throws IOException {
         String contents = Resources.toString(Resources.getResource(resourceNameInClassPath), Charsets.UTF_8);
-        StoredExportConfig config = NewConfigParser.parse("someId", contents);
+        StoredExportConfig config = NewConfigParser.parse(contents);
 
         EditorManager editorManager = EditorManager.fromResource("editors.txt");
         UIConfigService uiConfigService = new UIConfigService(new PluginManager(), editorManager);
