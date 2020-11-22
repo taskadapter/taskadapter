@@ -198,7 +198,7 @@ public class LoggedInPageset {
     }
 
     private void showUserProfilePage() {
-        applyUI(new UserProfilePage().ui());
+        applyUI(new UserProfilePage());
     }
 
     private Component createMenu() {
@@ -250,7 +250,7 @@ public class LoggedInPageset {
      * Shows a support page.
      */
     private void showSupport() {
-        applyUI(new SupportPage().ui());
+        applyUI(new SupportPage());
     }
 
     /**

@@ -7,10 +7,6 @@ import com.taskadapter.webui.{BasePage, EventTracker, SessionController}
 import com.vaadin.ui._
 
 class UserProfilePage() extends BasePage {
-  def ui: VerticalLayout = new UserProfilePanel()
-}
-
-class UserProfilePanel() extends VerticalLayout {
   EventTracker.trackPage("user_profile")
 
   setSpacing(true)

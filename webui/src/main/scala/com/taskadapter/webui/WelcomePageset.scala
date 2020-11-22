@@ -31,7 +31,7 @@ class WelcomePageset(services: Preservices, callback: LoginPage.Callback) {
   }
 
   private def showSupport(): Unit = {
-    applyUI(new SupportPage().ui)
+    applyUI(new SupportPage())
   }
 
   private def applyUI(ui: Component): Unit = {

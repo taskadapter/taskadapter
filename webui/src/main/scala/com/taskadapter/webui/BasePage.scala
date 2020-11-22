@@ -1,5 +1,7 @@
 package com.taskadapter.webui
 
-class BasePage {
+import com.vaadin.ui.VerticalLayout
+
+class BasePage extends VerticalLayout {
 
 }
