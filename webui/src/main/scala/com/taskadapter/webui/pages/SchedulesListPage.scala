@@ -2,7 +2,6 @@ package com.taskadapter.webui.pages
 
 import java.util.UUID
 
-import com.taskadapter.web.SettingsManager
 import com.taskadapter.web.uiapi.{ConfigId, Schedule}
 import com.taskadapter.webui._
 import com.taskadapter.webui.service.Preservices
@@ -20,15 +19,10 @@ case class ScheduleListItem(id: String, configId: ConfigId,
                             @BeanProperty intervalMin: Int,
                             @BeanProperty to: String)
 
-class SchedulesListPage() {
+class SchedulesListPage() extends BasePage {
   private val configOps: ConfigOperations = SessionController.buildConfigOperations()
   private val services: Preservices = SessionController.getServices
 
-  def ui: VerticalLayout = new SchedulesListPanel(services.schedulesStorage, configOps, services.settingsManager)
-}
-
-class SchedulesListPanel(schedulesStorage: SchedulesStorage, configOperations: ConfigOperations,
-                        settingsManager: SettingsManager) extends VerticalLayout {
   EventTracker.trackPage("schedules");
   private val log = LoggerFactory.getLogger(classOf[SchedulesListPage])
   private val configRowsToShowInListSelect = 15
@@ -41,13 +35,13 @@ class SchedulesListPanel(schedulesStorage: SchedulesStorage, configOperations: C
   val configsListSelect = createConfigsList()
 
   ui.addComponent(listLayout)
-  showSchedules(schedulesStorage.getSchedules())
+  showSchedules(services.schedulesStorage.getSchedules())
 
   def showSchedules(results: Seq[Schedule]): Unit = {
     ds.removeAllItems()
     ds.addAll(
       results.flatMap { schedule =>
-        val maybeConfig = configOperations.getOwnedConfigs.find(c => c.configId == schedule.configId)
+        val maybeConfig = configOps.getOwnedConfigs.find(c => c.configId == schedule.configId)
         if (maybeConfig.isDefined) {
           Some(ScheduleListItem(schedule.id, schedule.configId, maybeConfig.get.label,
             schedule.intervalInMinutes, maybeConfig.get.getConnector2.getLabel))
@@ -62,7 +56,7 @@ class SchedulesListPanel(schedulesStorage: SchedulesStorage, configOperations: C
 
 
   def showSchedules(): Unit = {
-    showSchedules(schedulesStorage.getSchedules())
+    showSchedules(services.schedulesStorage.getSchedules())
   }
 
   private def applyUI(newUi: Component): Unit = {
@@ -72,7 +66,7 @@ class SchedulesListPanel(schedulesStorage: SchedulesStorage, configOperations: C
 
   private def showSchedule(scheduleId: String): Unit = {
     EventTracker.trackPage("edit_schedule_page")
-    val schedule = schedulesStorage.get(scheduleId).get
+    val schedule = services.schedulesStorage.get(scheduleId).get
     showSchedule(schedule)
   }
 
@@ -83,7 +77,7 @@ class SchedulesListPanel(schedulesStorage: SchedulesStorage, configOperations: C
   }
 
   private def showSchedule(schedule: Schedule): Unit = {
-    val config = configOperations.getOwnedConfigs.find(c => c.configId == schedule.configId).get
+    val config = configOps.getOwnedConfigs.find(c => c.configId == schedule.configId).get
     val editSchedulePage = new EditSchedulePage(
       config.label,
       config.getConnector1.getLabel,
@@ -96,12 +90,12 @@ class SchedulesListPanel(schedulesStorage: SchedulesStorage, configOperations: C
   }
 
   def saveSchedule(schedule: Schedule): Unit = {
-    schedulesStorage.store(schedule)
+    services.schedulesStorage.store(schedule)
     showSchedules()
   }
 
   def deleteSchedule(schedule: Schedule): Unit = {
-    schedulesStorage.delete(schedule.id)
+    services.schedulesStorage.delete(schedule.id)
     showSchedules()
   }
 
@@ -133,7 +127,7 @@ class SchedulesListPanel(schedulesStorage: SchedulesStorage, configOperations: C
   }
 
   private def reloadConfigsInList(): Unit = {
-    configOperations.getOwnedConfigs.foreach { s =>
+    configOps.getOwnedConfigs.foreach { s =>
       configsListSelect.addItem(s.configId)
       configsListSelect.setItemCaption(s.configId, if (s.label.isEmpty) {
         Page.message("schedules.configsList.defaultLabelForConfigs")
@@ -159,9 +153,9 @@ class SchedulesListPanel(schedulesStorage: SchedulesStorage, configOperations: C
     addButton.addClickListener(_ => showSelectConfig())
 
     val checkbox = new CheckBox(Page.message("schedules.scheduledEnabled"))
-    checkbox.setValue(settingsManager.schedulerEnabled)
+    checkbox.setValue(services.settingsManager.schedulerEnabled)
     checkbox.setImmediate(true)
-    checkbox.addValueChangeListener(_ => settingsManager.setSchedulerEnabled(checkbox.getValue))
+    checkbox.addValueChangeListener(_ => services.settingsManager.setSchedulerEnabled(checkbox.getValue))
 
     grid.setWidth("980px")
     grid.removeAllColumns()
