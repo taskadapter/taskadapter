@@ -16,6 +16,8 @@ case object SampleCaseObjectEvent extends Event
 
 case class CredentialsChangeRequested(login: String, password: String) extends Event
 
+case class ShowHomePageRequested() extends Event
+
 case class ShowConfigPageRequested(configId: ConfigId) extends Event
 
 case class NewConfigPageRequested() extends Event

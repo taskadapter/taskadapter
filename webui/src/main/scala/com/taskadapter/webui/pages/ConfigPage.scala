@@ -65,11 +65,11 @@ class ConfigPanel(config: UISyncConfig,
   addComponent(tabSheet.ui)
 
   val previousResultsPanel = new ResultsPanel(configId)
-  val fieldMappingsPanel = createFieldMappingsPanel()
+  val fieldMappingsPanel = new FieldMappingPanel()
   val overviewPanel = new OverviewPanel(config)
 
   tabSheet.addTab("Overview", overviewPanel)
-  tabSheet.addTab("Field mappings", new SimpleTab(fieldMappingsPanel))
+  tabSheet.addTab("Field mappings", fieldMappingsPanel)
   tabSheet.addTab("Results", previousResultsPanel)
 
   private val rightButton = createArrow("arrow_right.png", _ => sync(config))
@@ -123,8 +123,13 @@ class ConfigPanel(config: UISyncConfig,
     EventBusImpl.post(StartExportRequested(config))
   }
 
-  def createFieldMappingsPanel(): Component = {
-    getConfigEditor(config, "", () => {})
+  class FieldMappingPanel extends ReloadableComponent {
+    val layout = new VerticalLayout()
+    def show(config: UISyncConfig) = {
+      layout.addComponent(getConfigEditor(config, "", () => {}))
+    }
+    def ui: VerticalLayout = layout
+    override def reload(): Unit = show(config)
   }
 
   class ResultsPanel(configId: ConfigId) extends ReloadableComponent {

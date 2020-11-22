@@ -265,7 +265,7 @@ public class LoggedInPageset {
     private void showConfigsList() {
         configsListPage.refreshConfigs();
         EventTracker.trackPage("configs_list");
-        applyUI(configsListPage.ui());
+        applyUI(configsListPage);
     }
 
     private void showResult(ExportResultFormat result) {

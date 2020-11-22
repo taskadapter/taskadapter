@@ -48,8 +48,7 @@ class ConfigsListPage() extends BasePage {
 
   private var configs = Seq[UISyncConfig]()
 
-  val layout = new VerticalLayout
-  layout.setSpacing(true)
+  setSpacing(true)
   val actionPanel = new HorizontalLayout
   actionPanel.setWidth("100%")
   actionPanel.setSpacing(true)
@@ -76,9 +75,9 @@ class ConfigsListPage() extends BasePage {
   configsTopLevelLayout.addComponent(configsLayout)
   configsTopLevelLayout.setComponentAlignment(configsLayout, Alignment.TOP_CENTER)
 
-  layout.addComponent(actionPanel)
-  layout.addComponent(configsTopLevelLayout)
-  layout.setComponentAlignment(actionPanel, Alignment.TOP_LEFT)
+  addComponent(actionPanel)
+  addComponent(configsTopLevelLayout)
+  setComponentAlignment(actionPanel, Alignment.TOP_LEFT)
 
   def refreshConfigs() = {
     val loadedConfigs = if (showAll) configOps.getManageableConfigs
@@ -124,6 +123,4 @@ class ConfigsListPage() extends BasePage {
     }
     true
   }
-
-  def ui = layout
 }
