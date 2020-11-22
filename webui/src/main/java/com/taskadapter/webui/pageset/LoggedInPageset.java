@@ -6,6 +6,7 @@ import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.event.ApplicationActionEvent;
 import com.taskadapter.web.event.ApplicationActionEventWithValue;
 import com.taskadapter.web.event.EventBusImpl;
+import com.taskadapter.web.event.NewConfigPageRequested;
 import com.taskadapter.web.event.PageShown;
 import com.taskadapter.web.event.ShowAllExportResultsRequested;
 import com.taskadapter.web.event.ShowConfigPageRequested;
@@ -113,7 +114,7 @@ public class LoggedInPageset {
 
         currentComponentArea.setWidth(Sizes.mainWidth());
         this.ui = TAPageLayout.layoutPage(header, new AppUpdateNotificationComponent(), currentComponentArea);
-        this.configsListPage = createConfigsPage();
+        this.configsListPage = new ConfigsListPage();
         registerEventListeners();
     }
 
@@ -172,6 +173,14 @@ public class LoggedInPageset {
                     @Override
                     public void onNext(ShowAllExportResultsRequested value) {
                         showExportResults(value.configId());
+                    }
+                });
+
+        EventBusImpl.observable(NewConfigPageRequested.class)
+                .subscribe(new Subscriber<NewConfigPageRequested>() {
+                    @Override
+                    public void onNext(NewConfigPageRequested value) {
+                        createNewConfig();
                     }
                 });
     }
@@ -282,37 +291,6 @@ public class LoggedInPageset {
 
     private void showHome() {
         showConfigsList();
-    }
-
-    private boolean needToShowAllConfigs() {
-        return services.settingsManager
-                .adminCanManageAllConfigs()
-                && context.authorizedOps.canManagerPeerConfigs();
-    }
-
-    private ConfigsListPage createConfigsPage() {
-        return new ConfigsListPage(needToShowAllConfigs(),
-                new ConfigsListPage.Callback() {
-                    @Override
-                    public void newConfig() {
-                        createNewConfig();
-                    }
-
-                    @Override
-                    public void forwardDropIn(UISyncConfig config,
-                                              Html5File file) {
-                        dropIn(config, file);
-                    }
-
-                    @Override
-                    public void backwardDropIn(UISyncConfig config,
-                                               Html5File file) {
-                        dropIn(config.reverse(), file);
-                    }
-                },
-                context.configOps
-        );
-
     }
 
     public void createNewConfig() {

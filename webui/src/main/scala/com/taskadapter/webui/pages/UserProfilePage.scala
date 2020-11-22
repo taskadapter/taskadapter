@@ -3,7 +3,7 @@ package com.taskadapter.webui.pages
 import com.taskadapter.web.event.{EventBusImpl, ShowSetupsListPageRequested}
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.user.ChangePasswordDialog
-import com.taskadapter.webui.{EventTracker, SessionController}
+import com.taskadapter.webui.{BasePage, EventTracker, SessionController}
 import com.vaadin.ui._
 
 class UserProfilePage() extends BasePage {

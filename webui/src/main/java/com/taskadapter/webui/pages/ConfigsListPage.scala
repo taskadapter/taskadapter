@@ -2,41 +2,15 @@ package com.taskadapter.webui.pages
 
 import java.util.Comparator
 
-import com.taskadapter.web.event.{EventBusImpl, ShowConfigPageRequested}
+import com.taskadapter.web.event.{EventBusImpl, NewConfigPageRequested, ShowConfigPageRequested}
 import com.taskadapter.web.uiapi.{ConfigId, UISyncConfig}
-import com.taskadapter.webui.{ConfigOperations, Page}
+import com.taskadapter.webui.service.Preservices
+import com.taskadapter.webui.{BasePage, ConfigOperations, Page, SessionController}
 import com.vaadin.ui._
 import com.vaadin.ui.themes.BaseTheme
 import org.slf4j.LoggerFactory
 
 object ConfigsListPage {
-
-  /**
-    * Callback for config list page.
-    */
-  trait Callback {
-
-    /**
-      * Performs a forward drop-in.
-      *
-      * @param config config to use.
-      * @param file   file to receive.
-      */
-    def forwardDropIn(config: UISyncConfig, file: Html5File): Unit
-
-    /**
-      * Performs a backward drop-in.
-      *
-      * @param config config to use.
-      * @param file   file to receive.
-      */
-    def backwardDropIn(config: UISyncConfig, file: Html5File): Unit
-
-    /**
-      * User requested creation of a new config.
-      */
-    def newConfig(): Unit
-  }
 
   /**
     * Comparator for configuration files.
@@ -59,8 +33,15 @@ object ConfigsListPage {
 
 }
 
-class ConfigsListPage(showAll: Boolean, callback: ConfigsListPage.Callback, configOperations: ConfigOperations) {
+class ConfigsListPage() extends BasePage {
+
   private val log = LoggerFactory.getLogger(classOf[ConfigsListPage])
+
+  private val configOps: ConfigOperations = SessionController.buildConfigOperations()
+  private val services: Preservices = SessionController.getServices
+
+  val showAll = services.settingsManager.adminCanManageAllConfigs &&
+    SessionController.getUserContext.authorizedOps.canManagerPeerConfigs
 
   val displayMode = if (showAll) DisplayMode.ALL_CONFIGS
   else DisplayMode.OWNED_CONFIGS
@@ -73,7 +54,7 @@ class ConfigsListPage(showAll: Boolean, callback: ConfigsListPage.Callback, conf
   actionPanel.setWidth("100%")
   actionPanel.setSpacing(true)
   val addButton = new Button(Page.message("configsPage.buttonNewConfig"))
-  addButton.addClickListener(_ => callback.newConfig())
+  addButton.addClickListener(_ => EventBusImpl.post(NewConfigPageRequested()))
   actionPanel.addComponent(addButton)
   actionPanel.setComponentAlignment(addButton, Alignment.MIDDLE_LEFT)
 
@@ -100,8 +81,8 @@ class ConfigsListPage(showAll: Boolean, callback: ConfigsListPage.Callback, conf
   layout.setComponentAlignment(actionPanel, Alignment.TOP_LEFT)
 
   def refreshConfigs() = {
-    val loadedConfigs = if (showAll) configOperations.getManageableConfigs
-    else configOperations.getOwnedConfigs
+    val loadedConfigs = if (showAll) configOps.getManageableConfigs
+    else configOps.getOwnedConfigs
     configs = loadedConfigs.sortBy(c => c.getOwnerName)
     setDisplayedConfigs(configs)
     filterFields(filterField.getValue)
