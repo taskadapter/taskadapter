@@ -2,6 +2,7 @@ package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
+import com.taskadapter.vaadin14shim.GridLayout;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.data.Messages;
@@ -9,7 +10,6 @@ import com.vaadin.data.Container.ItemSetChangeEvent;
 import com.vaadin.data.Container.ItemSetChangeListener;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
@@ -85,7 +85,7 @@ public class PriorityPanel extends Panel implements Validatable {
         prioritiesTable.setWidth("100%");
         prioritiesTable.setContainerDataSource(data);
 
-        layout.addComponent(prioritiesTable);
+        layout.add(prioritiesTable);
 		final ItemSetChangeListener listener = new ItemSetChangeListener() {
 			private static final long serialVersionUID = 1L;
 
@@ -112,7 +112,7 @@ public class PriorityPanel extends Panel implements Validatable {
                 Notification.show("Oops", e.getMessage(), Notification.Type.ERROR_MESSAGE);
             }
         });
-        layout.addComponent(reloadButton);
+        layout.add(reloadButton);
         layout.setComponentAlignment(reloadButton, Alignment.MIDDLE_RIGHT);
         setContent(layout);
     }

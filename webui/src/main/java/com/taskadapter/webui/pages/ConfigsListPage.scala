@@ -2,11 +2,12 @@ package com.taskadapter.webui.pages
 
 import java.util.Comparator
 
+import com.taskadapter.vaadin14shim.{HorizontalLayout, VerticalLayout}
 import com.taskadapter.web.event.{EventBusImpl, NewConfigPageRequested, ShowConfigPageRequested}
 import com.taskadapter.web.uiapi.{ConfigId, UISyncConfig}
 import com.taskadapter.webui.service.Preservices
 import com.taskadapter.webui.{BasePage, ConfigOperations, Page, SessionController}
-import com.vaadin.ui._
+import com.vaadin.ui.{Alignment, Button, Component, Label, TextField}
 import com.vaadin.ui.themes.BaseTheme
 import org.slf4j.LoggerFactory
 
@@ -54,16 +55,16 @@ class ConfigsListPage() extends BasePage {
   actionPanel.setSpacing(true)
   val addButton = new Button(Page.message("configsPage.buttonNewConfig"))
   addButton.addClickListener(_ => EventBusImpl.post(NewConfigPageRequested()))
-  actionPanel.addComponent(addButton)
+  actionPanel.add(addButton)
   actionPanel.setComponentAlignment(addButton, Alignment.MIDDLE_LEFT)
 
   val filterPanel = new HorizontalLayout
   val filterField = new TextField
   filterField.addTextChangeListener(e => filterFields(e.getText))
-  filterPanel.addComponent(new Label(Page.message("configsPage.filter")))
-  filterPanel.addComponent(filterField)
+  filterPanel.add(new Label(Page.message("configsPage.filter")))
+  filterPanel.add(filterField)
   filterPanel.setSpacing(true)
-  actionPanel.addComponent(filterPanel)
+  actionPanel.add(filterPanel)
   actionPanel.setComponentAlignment(filterPanel, Alignment.MIDDLE_RIGHT)
   val configsTopLevelLayout = new HorizontalLayout()
   configsTopLevelLayout.setSpacing(true)
@@ -72,7 +73,7 @@ class ConfigsListPage() extends BasePage {
   val configsLayout = new VerticalLayout()
   configsLayout.setWidth("100%")
 
-  configsTopLevelLayout.addComponent(configsLayout)
+  configsTopLevelLayout.add(configsLayout)
   configsTopLevelLayout.setComponentAlignment(configsLayout, Alignment.TOP_CENTER)
 
   addComponent(actionPanel)
@@ -88,9 +89,9 @@ class ConfigsListPage() extends BasePage {
   }
 
   private def setDisplayedConfigs(dispConfigs: Seq[UISyncConfig]): Unit = {
-    configsLayout.removeAllComponents()
+    configsLayout.removeAll()
     dispConfigs.foreach(config => {
-      configsLayout.addComponent(createConfigComponent(config))
+      configsLayout.add(createConfigComponent(config))
     })
   }
 
@@ -100,7 +101,7 @@ class ConfigsListPage() extends BasePage {
     val link = new Button(configLabel)
     link.addStyleName(BaseTheme.BUTTON_LINK)
     link.addClickListener(_ => showConfigSummary(config.configId))
-    layout.addComponent(link)
+    layout.add(link)
     layout
   }
 

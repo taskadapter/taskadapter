@@ -2,10 +2,10 @@ package com.taskadapter.web.configeditor.file;
 
 import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;
-import com.vaadin.ui.GridLayout;
+import com.taskadapter.vaadin14shim.GridLayout;
+import com.taskadapter.vaadin14shim.TextField;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextField;
 
 public class LocalModeFilePanel extends Panel {
     private static final String LABEL_FILE_NAME = "Input file:";
@@ -32,12 +32,12 @@ public class LocalModeFilePanel extends Panel {
         layout.setColumns(2);
         layout.setSpacing(true);
 
-        layout.addComponent(new Label(LABEL_FILE_NAME));
+        layout.add(new Label(LABEL_FILE_NAME));
         TextField inputFileNameField = createFileName(TOOLTIP_FILE_NAME);
         inputFileNameField.setPropertyDataSource(inputFilePath);
-        layout.addComponent(inputFileNameField);
+        layout.add(inputFileNameField);
 
-        layout.addComponent(new Label(LABEL_OUTPUT_FILE_NAME));
+        layout.add(new Label(LABEL_OUTPUT_FILE_NAME));
         outputFileNameField = createFileName(TOOLTIP_OUTPUT_FILE_NAME);
         outputFileNameField.setPropertyDataSource(outputFilePath);
         outputFileNameField.addBlurListener(new FieldEvents.BlurListener() {
@@ -49,14 +49,14 @@ public class LocalModeFilePanel extends Panel {
                 }
             }
         });
-        layout.addComponent(outputFileNameField);
+        layout.add(outputFileNameField);
     }
 
 
     private TextField createFileName(String tooltip) {
         final TextField field = new TextField();
         field.setDescription(tooltip);
-        field.addStyleName("msp-file-name-textfield");
+        field.addClassName("msp-file-name-textfield");
         return field;
     }
 }

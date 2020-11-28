@@ -10,13 +10,13 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
+import com.taskadapter.vaadin14shim.HorizontalLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.Upload;
-import com.vaadin.ui.VerticalLayout;
+import com.taskadapter.vaadin14shim.VerticalLayout;
+import com.taskadapter.vaadin14shim.Label;
 import com.vaadin.ui.themes.Runo;
 import scala.runtime.BoxedUnit;
 
@@ -68,18 +68,18 @@ public class ServerModeFilePanel extends Panel{
 
     private void buildUI() {
         VerticalLayout view = new VerticalLayout();
-        view.addComponent(createComboboxPanel());
-        view.addComponent(createDateLabelPanel());
-        view.addComponent(createUploadPanel());
+        view.add(createComboboxPanel());
+        view.add(createDateLabelPanel());
+        view.add(createUploadPanel());
         setContent(view);
     }
 
     private Layout createComboboxPanel() {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setSpacing(true);
-        layout.addComponent(createComboBox());
-        layout.addComponent(createDownloadButton());
-        layout.addComponent(createDeleteButton());
+        layout.add(createComboBox());
+        layout.add(createDownloadButton());
+        layout.add(createDeleteButton());
         return layout;
     }
 
@@ -87,31 +87,31 @@ public class ServerModeFilePanel extends Panel{
         HorizontalLayout layout = new HorizontalLayout();
         layout.setSpacing(true);
 
-        layout.addComponent(new Label("&nbsp;&nbsp;&nbsp;", ContentMode.HTML));
+        layout.add(new Label("&nbsp;&nbsp;&nbsp;", ContentMode.HTML));
 
         statusLabel = new Label("", ContentMode.HTML);
         statusLabel.setStyleName(Runo.LABEL_SMALL);
-        layout.addComponent(statusLabel);
+        layout.add(statusLabel);
         layout.setComponentAlignment(statusLabel, Alignment.MIDDLE_LEFT);
 
         progressIndicator = new ProgressIndicator(new Float(0.0));
         progressIndicator.setPollingInterval(500);
         progressIndicator.setVisible(false);
-        layout.addComponent(progressIndicator);
+        layout.add(progressIndicator);
         layout.setComponentAlignment(progressIndicator, Alignment.MIDDLE_LEFT);
 
         return layout;
     }
 
     private Layout createUploadPanel() {
-        Layout layout = new VerticalLayout();
+        VerticalLayout layout = new VerticalLayout();
 
-        layout.addComponent(new Label("<hr>", ContentMode.HTML));
+        layout.add(new Label("<hr>", ContentMode.HTML));
 
-        Layout bottomToolLayout = new HorizontalLayout();
-        bottomToolLayout.addComponent(createUploadButton());
+        HorizontalLayout bottomToolLayout = new HorizontalLayout();
+        bottomToolLayout.add(createUploadButton());
 
-        layout.addComponent(bottomToolLayout);
+        layout.add(bottomToolLayout);
 
         return layout;
     }
@@ -210,7 +210,7 @@ public class ServerModeFilePanel extends Panel{
     }
 
     public void setStatusLabelText(String text) {
-        statusLabel.setValue(text);
+        statusLabel.setText(text);
     }
 
     private static String findInitialFile(Property inputFilePath,

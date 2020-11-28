@@ -1,5 +1,7 @@
 package com.taskadapter.webui.config
 
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
 import com.taskadapter.PluginManager
 import com.taskadapter.connector.definition.ConnectorSetup
 import com.taskadapter.web.PluginEditorFactory
@@ -27,8 +29,8 @@ class EditSetupPage(configOperations: ConfigOperations, editorManager: EditorMan
 
   val editor: PluginEditorFactory[_, ConnectorSetup] = editorManager.getEditorFactory(setup.connectorId)
   val editSetupPanel = editor.getEditSetupPanel(sandbox, setup)
-  layout.addComponent(editSetupPanel.getUI)
-  layout.addComponent(new HorizontalLayout(saveButton, closeButton))
+  layout.add(editSetupPanel.getUI)
+  layout.add(new HorizontalLayout(saveButton, closeButton))
 
   def saveClicked(): Unit = {
     val maybeError = editSetupPanel.validate

@@ -1,10 +1,11 @@
 package com.taskadapter.webui
 
 import com.taskadapter.config.StorageException
+import com.taskadapter.vaadin14shim.HorizontalLayout
 import com.taskadapter.web.PopupDialog
 import com.taskadapter.web.event.{ConfigCloneRequested, ConfigDeleteRequested, EventBusImpl, ShowConfigsListPageRequested}
 import com.taskadapter.web.uiapi.ConfigId
-import com.vaadin.ui.{Button, HorizontalLayout, Notification}
+import com.vaadin.ui.{Button, Notification}
 import org.slf4j.LoggerFactory
 
 /**
@@ -19,8 +20,8 @@ class ConfigActionsFragment(configId: ConfigId) {
   val layout = new HorizontalLayout
   layout.setSpacing(true)
 
-  layout.addComponent(new Button(Page.message("configsPage.actionClone"), _ => showConfirmClonePage()))
-  layout.addComponent(new Button(Page.message("configsPage.actionDelete"), _ => showDeleteConfigDialog()))
+  layout.add(new Button(Page.message("configsPage.actionClone"), _ => showConfirmClonePage()))
+  layout.add(new Button(Page.message("configsPage.actionDelete"), _ => showDeleteConfigDialog()))
 
   private def showDeleteConfigDialog(): Unit = {
     val messageDialog = PopupDialog.confirm(Page.message("configsPage.actionDelete.confirmText"),

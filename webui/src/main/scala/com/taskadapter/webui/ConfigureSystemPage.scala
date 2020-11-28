@@ -1,5 +1,7 @@
 package com.taskadapter.webui
 
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
 import com.taskadapter.auth.{AuthorizedOperations, CredentialsManager}
 import com.taskadapter.license.License
 import com.taskadapter.web.SettingsManager
@@ -37,7 +39,7 @@ object ConfigureSystemPanel {
     checkbox.setValue(value)
     checkbox.setImmediate(true)
     checkbox.addValueChangeListener(_ => listener.apply(checkbox.getValue))
-    view.addComponent(checkbox)
+    view.add(checkbox)
     view.setComponentAlignment(checkbox, Alignment.MIDDLE_LEFT)
     checkbox.setEnabled(modifiable)
   }
@@ -52,7 +54,7 @@ object ConfigureSystemPanel {
     field.setValue(settingsManager.getMaxNumberOfResultsToKeep + "")
     field.setImmediate(true)
     field.addValueChangeListener(_ => settingsManager.setMaxNumberOfResultsToKeep(field.getValue.toInt))
-    view.addComponent(field)
+    view.add(field)
 
     panel
   }
@@ -65,11 +67,11 @@ object ConfigureSystemPanel {
     layout.setSpacing(true)
     val cmt = LocalRemoteOptionsPanel.createLocalRemoteOptions(settingsManager, authorizedOps.canConfigureServer)
     cmt.setWidth(600, PIXELS)
-    layout.addComponent(cmt)
+    layout.add(cmt)
     val allowedToEdit = authorizedOps.canConfigureServer && license != null
-    layout.addComponent(createAdminPermissionsSection(settingsManager, allowedToEdit))
-    layout.addComponent(createResultsNumberSection(settingsManager))
-    layout.addComponent(new UsersPanel(credentialsManager, authorizedOps, license).ui)
+    layout.add(createAdminPermissionsSection(settingsManager, allowedToEdit))
+    layout.add(createResultsNumberSection(settingsManager))
+    layout.add(new UsersPanel(credentialsManager, authorizedOps, license).ui)
     layout
   }
 }

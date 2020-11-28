@@ -3,7 +3,7 @@ package com.taskadapter.webui;
 import com.taskadapter.web.SettingsManager;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
+import com.taskadapter.vaadin14shim.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
@@ -52,7 +52,7 @@ class LocalRemoteOptionsPanel extends Panel {
             });
         }
         configGroupLayout.setMargin(true);
-        configGroupLayout.addComponent(group);
+        configGroupLayout.add(group);
         ui.setContent(configGroupLayout);
 
         return ui;

@@ -1,6 +1,9 @@
 package com.taskadapter.web.configeditor.server
 
-import com.google.common.base.Strings
+import com.taskadapter.vaadin14shim.GridLayout
+import com.taskadapter.vaadin14shim.Label
+import com.taskadapter.vaadin14shim.TextField
+import com.taskadapter.vaadin14shim.PasswordField
 import com.taskadapter.connector.definition.WebConnectorSetup
 import com.taskadapter.web.ConnectorSetupPanel
 import com.taskadapter.web.configeditor.EditorUtil.textInput
@@ -9,6 +12,7 @@ import com.taskadapter.webui.Page
 import com.vaadin.data.Property
 import com.vaadin.shared.ui.label.ContentMode
 import com.vaadin.ui._
+import com.google.common.base.Strings
 
 class ServerPanelWithKeyAndToken(connectorId: String, caption: String, val labelProperty: Property[String],
                                  val serverURLProperty: Property[String],
@@ -24,7 +28,7 @@ class ServerPanelWithKeyAndToken(connectorId: String, caption: String, val label
   val tokenField = new PasswordField
 
   val errorMessageLabel = new Label
-  errorMessageLabel.addStyleName("error-message-label")
+  errorMessageLabel.addClassName("error-message-label")
 
   buildUI(labelProperty, serverURLProperty, apiKeyProperty, tokenProperty)
 
@@ -43,35 +47,35 @@ class ServerPanelWithKeyAndToken(connectorId: String, caption: String, val label
 
     addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.name")))
     val labelField = textInput(labelProperty)
-    labelField.addStyleName("server-panel-textfield")
-    grid.addComponent(labelField, 1, currentRow)
+    labelField.addClassName("server-panel-textfield")
+    grid.add(labelField, 1, currentRow)
 
     // server url
     currentRow += 1
     addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.serverUrl")))
-    serverURL.addStyleName("server-panel-textfield")
+    serverURL.addClassName("server-panel-textfield")
     serverURL.setInputPrompt("http://myserver:3000/some_location")
     addTo(grid, 1, currentRow, Alignment.MIDDLE_LEFT, serverURL)
 
     // user name
     currentRow += 1
     addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.login")))
-    userLoginInput.addStyleName("server-panel-textfield")
+    userLoginInput.addClassName("server-panel-textfield")
     addTo(grid, 1, currentRow, Alignment.MIDDLE_LEFT, userLoginInput)
 
     val emptyLabelHeight = "10px"
 
     currentRow += 1
-    grid.addComponent(createEmptyLabel(emptyLabelHeight), 0, currentRow)
+    grid.add(createEmptyLabel(emptyLabelHeight), 0, currentRow)
 
     currentRow += 1
 
-    grid.addComponent(createEmptyLabel(emptyLabelHeight), 0, currentRow)
+    grid.add(createEmptyLabel(emptyLabelHeight), 0, currentRow)
 
     currentRow += 1
     addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.apiAccessKey")))
     apiKeyField.setPropertyDataSource(apiKeyProperty)
-    apiKeyField.addStyleName("server-panel-textfield")
+    apiKeyField.addClassName("server-panel-textfield")
 
     addTo(grid, 1, currentRow, Alignment.MIDDLE_LEFT, apiKeyField)
 

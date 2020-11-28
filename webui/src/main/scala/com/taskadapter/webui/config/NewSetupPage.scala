@@ -1,5 +1,7 @@
 package com.taskadapter.webui.config
 
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
 import com.taskadapter.PluginManager
 import com.taskadapter.connector.definition.{ConnectorConfig, ConnectorSetup}
 import com.taskadapter.web.event.{EventBusImpl, ShowSetupsListPageRequested}
@@ -27,8 +29,8 @@ class NewSetupPage(configOperations: ConfigOperations, editorManager: EditorMana
 
   val selectConnectorComponent = new SelectConnectorComponent(pluginManager, showAddPanelForConnector).layout
 
-  layout.addComponent(selectConnectorComponent)
-  layout.addComponent(panelForEditor)
+  layout.add(selectConnectorComponent)
+  layout.add(panelForEditor)
 
   private def showAddPanelForConnector(connectorId: String): Unit = {
     // if you remove these class declarations, you will get runtime ClassCastExceptions saying cannot convert
@@ -36,13 +38,13 @@ class NewSetupPage(configOperations: ConfigOperations, editorManager: EditorMana
     val editor : PluginEditorFactory[ConnectorConfig, ConnectorSetup] = editorManager.getEditorFactory(connectorId)
     val setup : ConnectorSetup = editor.createDefaultSetup(sandbox)
     val editSetupPanel = editor.getEditSetupPanel(sandbox, setup)
-    panelForEditor.removeAllComponents()
-    panelForEditor.addComponent(editSetupPanel.getUI)
+    panelForEditor.removeAll()
+    panelForEditor.add(editSetupPanel.getUI)
     val saveButton = new Button(Page.message("newSetupPage.saveButton"))
     saveButton.addClickListener(_ => saveClicked(editSetupPanel))
     val closeButton = new Button(Page.message("newSetupPage.cancelButton"))
     closeButton.addClickListener(_ => EventBusImpl.post(ShowSetupsListPageRequested()))
-    panelForEditor.addComponent(new HorizontalLayout(saveButton, closeButton))
+    panelForEditor.add(new HorizontalLayout(saveButton, closeButton))
     panelForEditor.setVisible(true)
   }
 

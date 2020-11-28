@@ -3,9 +3,9 @@ package com.taskadapter.web;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.HorizontalLayout;
+import com.taskadapter.vaadin14shim.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.taskadapter.vaadin14shim.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import java.util.List;
@@ -30,8 +30,8 @@ public class MessageDialog extends Window implements Button.ClickListener {
         this.callback = callback;
 
         if (question != null) {
-            view.addComponent(new Label(question, ContentMode.HTML));
-            view.addComponent(new Label("&nbsp;", ContentMode.HTML));
+            view.add(new Label(question, ContentMode.HTML));
+            view.add(new Label("&nbsp;", ContentMode.HTML));
         }
 
         createButtons(answers);
@@ -44,11 +44,11 @@ public class MessageDialog extends Window implements Button.ClickListener {
 
         for (String answer : answers) {
             Button button = new Button(answer, this);
-            buttonsLayout.addComponent(button);
+            buttonsLayout.add(button);
             // focus on something in this window so that the window can be closed with ESC
             button.focus();
         }
-        view.addComponent(buttonsLayout);
+        view.add(buttonsLayout);
     }
 
     @Override

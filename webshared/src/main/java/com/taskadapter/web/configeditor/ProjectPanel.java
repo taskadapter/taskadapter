@@ -13,11 +13,11 @@ import com.taskadapter.webui.Page;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Label;
+import com.taskadapter.vaadin14shim.GridLayout;
+import com.taskadapter.vaadin14shim.Label;
+import com.taskadapter.vaadin14shim.TextField;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
@@ -90,7 +90,7 @@ public class ProjectPanel extends Panel implements Validatable {
         projectKey.setNullRepresentation("");
 
         Button infoButton = EditorUtil.createButton("Info", "View the project info",
-                (Button.ClickListener) event -> loadProject()
+                event -> loadProject()
         );
         infoButton.setEnabled(projectInfoLoader != null);
         addTo(grid, Alignment.MIDDLE_CENTER, infoButton);
@@ -186,7 +186,7 @@ public class ProjectPanel extends Panel implements Validatable {
     }
 
     public void setProjectKeyLabel(String text) {
-        projectKeyLabel.setValue(text);
+        projectKeyLabel.setText(text);
     }
 
     @Override

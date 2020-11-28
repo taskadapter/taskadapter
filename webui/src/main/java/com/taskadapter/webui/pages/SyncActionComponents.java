@@ -8,12 +8,12 @@ import com.taskadapter.webui.Page;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.HorizontalLayout;
+import com.taskadapter.vaadin14shim.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.taskadapter.vaadin14shim.VerticalLayout;
 
 /**
  * Component factory for different sync actions.
@@ -58,13 +58,13 @@ public final class SyncActionComponents {
 
         final Label label = new Label(labelText);
         label.setWidth(800, PIXELS);
-        res.addComponent(label);
+        res.add(label);
 
         final ProgressBar loadProgress = new ProgressBar();
         loadProgress.setIndeterminate(true);
         UI.getCurrent().setPollInterval(200);
 
-        res.addComponent(loadProgress);
+        res.add(loadProgress);
         return res;
     }
 }

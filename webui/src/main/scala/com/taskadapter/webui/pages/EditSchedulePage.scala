@@ -1,5 +1,7 @@
 package com.taskadapter.webui.pages
 
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
 import com.taskadapter.web.uiapi.Schedule
 import com.taskadapter.webui.Page
 import com.vaadin.data.util.MethodProperty
@@ -50,21 +52,21 @@ class EditSchedulePage(configLabel: String,
     val buttonsLayout = new HorizontalLayout()
     buttonsLayout.setSpacing(true)
     buttonsLayout.setWidth("100%")
-    buttonsLayout.addComponent(saveButton)
+    buttonsLayout.add(saveButton)
     buttonsLayout.setComponentAlignment(saveButton, Alignment.MIDDLE_LEFT)
 
-    buttonsLayout.addComponent(closeButton)
+    buttonsLayout.add(closeButton)
     buttonsLayout.setComponentAlignment(closeButton, Alignment.MIDDLE_CENTER)
 
     //    if (schedule.) {
-    buttonsLayout.addComponent(deleteButton)
+    buttonsLayout.add(deleteButton)
     buttonsLayout.setComponentAlignment(deleteButton, Alignment.MIDDLE_RIGHT)
     //    }
     buttonsLayout
   }
 
-  layout.addComponent(createButtonsLayout())
-  layout.addComponent(createScheduledSyncPanel())
+  layout.add(createButtonsLayout())
+  layout.add(createScheduledSyncPanel())
 
   def ui = layout
 }

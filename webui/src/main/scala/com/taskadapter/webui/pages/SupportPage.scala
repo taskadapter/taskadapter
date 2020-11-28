@@ -1,5 +1,8 @@
 package com.taskadapter.webui.pages
 
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
+import com.taskadapter.vaadin14shim.GridLayout
 import com.taskadapter.web.TaskKeeperLocationStorage
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.webui.Page.message
@@ -7,7 +10,7 @@ import com.taskadapter.webui.license.{LicenseFacade, LicensePanel}
 import com.taskadapter.webui.service.Preservices
 import com.taskadapter.webui.{BasePage, ConfigOperations, EventTracker, LastVersionLoader, LogFinder, SessionController, VersionComparator}
 import com.vaadin.server.Sizeable
-import com.vaadin.ui.{Button, GridLayout, Label, Panel, VerticalLayout}
+import com.vaadin.ui.{Button, Label, Panel}
 
 class SupportPage extends BasePage {
   private val configOps: ConfigOperations = SessionController.buildConfigOperations()
@@ -35,27 +38,27 @@ class SupportPage extends BasePage {
     versionPanel.setWidth(700, Sizeable.Unit.PIXELS)
     val currentVersionLabel = new Label(message("supportPage.taskAdapterVersion", services.currentTaskAdapterVersion))
     val view = new VerticalLayout
-    view.addComponent(currentVersionLabel)
+    view.add(currentVersionLabel)
     view.setMargin(true)
     val checkButton = new Button(message("supportPage.checkForUpdate"))
     checkButton.addClickListener(_ => checkForUpdate())
-    view.addComponent(checkButton)
-    view.addComponent(lastVersionInfoLayout)
+    view.add(checkButton)
+    view.add(lastVersionInfoLayout)
     versionPanel.setContent(view)
-    addComponent(versionPanel)
+    add(versionPanel)
   }
 
   private def checkForUpdate(): Unit = {
-    lastVersionInfoLayout.removeAllComponents()
+    lastVersionInfoLayout.removeAll()
     try {
       val lastAvailableVersion = LastVersionLoader.loadLastVersion
       val latestVersionLabel = new Label(message("supportPage.latestAvailableVersion", lastAvailableVersion))
-      lastVersionInfoLayout.addComponent(latestVersionLabel)
-      if (VersionComparator.isCurrentVersionOutdated(services.currentTaskAdapterVersion, lastAvailableVersion)) lastVersionInfoLayout.addComponent(WebAppUpdater.addDownloadLink)
+      lastVersionInfoLayout.add(latestVersionLabel)
+      if (VersionComparator.isCurrentVersionOutdated(services.currentTaskAdapterVersion, lastAvailableVersion)) lastVersionInfoLayout.add(WebAppUpdater.createDownloadLink)
     } catch {
       case e: RuntimeException =>
-        lastVersionInfoLayout.addComponent(new Label(message("supportPage.cantFindInfoOnLatestVersion")))
-        lastVersionInfoLayout.addComponent(WebAppUpdater.addDownloadLink)
+        lastVersionInfoLayout.add(new Label(message("supportPage.cantFindInfoOnLatestVersion")))
+        lastVersionInfoLayout.add(WebAppUpdater.createDownloadLink)
     }
   }
 
@@ -68,10 +71,10 @@ class SupportPage extends BasePage {
     grid.setWidth("100%")
     grid.setSpacing(true)
     grid.setMargin(true)
-    grid.addComponent(new Label(message("supportPage.logLocation")))
-    grid.addComponent(new Label(logFileLocation))
-    grid.addComponent(new Label(message("supportPage.cacheFileLocation")))
-    grid.addComponent(new Label(cacheFileLocation))
+    grid.add(new Label(message("supportPage.logLocation")))
+    grid.add(new Label(logFileLocation))
+    grid.add(new Label(message("supportPage.cacheFileLocation")))
+    grid.add(new Label(cacheFileLocation))
     logsPanel.setContent(grid)
     addComponent(logsPanel)
   }
@@ -80,10 +83,10 @@ class SupportPage extends BasePage {
     val l = new VerticalLayout
     l.setMargin(true)
     val emailMessage = message("supportPage.sendUsAnEmail")
-    l.addComponent(new Label(emailMessage))
-    l.addComponent(new Label("support@taskadapter.com"))
+    l.add(new Label(emailMessage))
+    l.add(new Label("support@taskadapter.com"))
     val panel = new Panel(message("supportPage.contactPanelTitle"))
     panel.setContent(l)
-    addComponent(panel)
+    add(panel)
   }
 }

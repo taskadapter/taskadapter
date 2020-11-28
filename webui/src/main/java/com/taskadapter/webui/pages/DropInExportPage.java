@@ -10,8 +10,8 @@ import com.taskadapter.webui.results.ExportResultStorage;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.taskadapter.vaadin14shim.VerticalLayout;
+import com.taskadapter.vaadin14shim.Label;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,13 +55,13 @@ public final class DropInExportPage {
 
         ui = new VerticalLayout();
         errorMessage = new Label("");
-        errorMessage.addStyleName("errorMessage");
+        errorMessage.addClassName("errorMessage");
         errorMessage.setVisible(false);
         errorMessage.setWidth(500, Unit.PIXELS);
-        ui.addComponent(errorMessage);
+        ui.add(errorMessage);
 
         content = new VerticalLayout();
-        ui.addComponent(content);
+        ui.add(content);
         exportHelper = new ExportHelper(exportResultStorage, onDone, showFilePath, content, config);
         startLoading();
     }
@@ -122,14 +122,9 @@ public final class DropInExportPage {
         errorMessage.setVisible(hasMessage);
     }
 
-    /**
-     * Sets new page content.
-     *
-     * @param comp page content.
-     */
     private void setContent(Component comp) {
-        content.removeAllComponents();
-        content.addComponent(comp);
+        content.removeAll();
+        content.add(comp);
     }
 
     public static Component render(ExportResultStorage exportResultStorage, ConfigOperations configOps,

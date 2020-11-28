@@ -7,6 +7,7 @@ import com.taskadapter.connector.basecamp.classic.{BasecampClassicConfig, Baseca
 import com.taskadapter.connector.definition.exceptions.{BadConfigException, ConnectorException, ProjectNotSetException}
 import com.taskadapter.connector.definition.{FieldMapping, WebConnectorSetup}
 import com.taskadapter.model.{NamedKeyedObject, NamedKeyedObjectImpl}
+import com.taskadapter.vaadin14shim.GridLayout
 import com.taskadapter.web.callbacks.DataProvider
 import com.taskadapter.web.configeditor.EditorUtil
 import com.taskadapter.web.configeditor.EditorUtil.textInput
@@ -16,7 +17,7 @@ import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.ui.Grids.addTo
 import com.taskadapter.web.{ConnectorSetupPanel, DroppingNotSupportedException, PluginEditorFactory}
 import com.vaadin.data.util.MethodProperty
-import com.vaadin.ui.{Alignment, ComponentContainer, GridLayout, Label, Panel}
+import com.vaadin.ui.{Alignment, ComponentContainer, Label, Panel}
 
 import scala.collection.{JavaConverters, Seq}
 
@@ -41,7 +42,7 @@ class BasecampClassicEditorFactory extends PluginEditorFactory[BasecampClassicCo
     grid.setColumns(2)
     grid.setMargin(true)
     grid.setSpacing(true)
-    grid.addComponent(projectPanel)
+    grid.add(projectPanel)
     grid
   }
 

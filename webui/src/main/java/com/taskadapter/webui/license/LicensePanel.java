@@ -11,12 +11,12 @@ import com.vaadin.server.Page;
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Label;
+import com.taskadapter.vaadin14shim.GridLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
-import com.vaadin.ui.VerticalLayout;
+import com.taskadapter.vaadin14shim.VerticalLayout;
+import com.taskadapter.vaadin14shim.Label;
 import org.slf4j.Logger;
 
 import java.text.SimpleDateFormat;
@@ -85,12 +85,12 @@ public final class LicensePanel {
     }
 
     private void showLicense(License license) {
-        contentPane.removeAllComponents();
+        contentPane.removeAll();
         if (license != null) {
-            contentPane.addComponent(renderLicense(license,
+            contentPane.add(renderLicense(license,
                     this::uninstallLicense));
         } else {
-            contentPane.addComponent(createLicenseInputPanel(this::applyNewLicense));
+            contentPane.add(createLicenseInputPanel(this::applyNewLicense));
         }
     }
 
@@ -105,20 +105,20 @@ public final class LicensePanel {
             final DataCallback<String> newLicenseCallback) {
         final VerticalLayout res = new VerticalLayout();
 
-        res.addComponent(new Label("NO LICENSE INSTALLED."));
+        res.add(new Label("NO LICENSE INSTALLED."));
         final Button button = new Button("Buy license", event ->
                 Page.getCurrent().getJavaScript().execute("window.open('" + HTTP_WWW_TASKADAPTER_COM_BUY + "');")
         );
-        res.addComponent(button);
+        res.add(button);
 
         final TextArea licenseArea = new TextArea(
                 "Paste the complete contents of the license file here");
         licenseArea.setStyleName("license-area");
-        res.addComponent(licenseArea);
+        res.add(licenseArea);
 
         final Button saveButton = new Button("Save license");
         saveButton.addClickListener(event -> newLicenseCallback.callBack(licenseArea.getValue()));
-        res.addComponent(saveButton);
+        res.add(saveButton);
 
         return res;
     }
@@ -138,33 +138,33 @@ public final class LicensePanel {
         res.setSpacing(true);
         res.setWidth(400, Sizeable.Unit.PIXELS);
 
-        res.addComponent(new Label("Registered to:"));
-        res.addComponent(new Label(license.getCustomerName()));
-        res.addComponent(new Label("Users number:"));
-        res.addComponent(new Label(Integer.toString(license.getUsersNumber())));
+        res.add(new Label("Registered to:"));
+        res.add(new Label(license.getCustomerName()));
+        res.add(new Label("Users number:"));
+        res.add(new Label(Integer.toString(license.getUsersNumber())));
 
-        res.addComponent(new Label("License created "
+        res.add(new Label("License created "
                 + LICENSE_DATE_FORMAT_DESCRIPTION_FOR_GUI));
-        res.addComponent(new Label(license.getCreatedOn()));
+        res.add(new Label(license.getCreatedOn()));
 
-        res.addComponent(new Label("License expires "
+        res.add(new Label("License expires "
                 + LICENSE_DATE_FORMAT_DESCRIPTION_FOR_GUI));
         final String formattedExpireDate = new SimpleDateFormat(
                 LICENSE_DATE_FORMAT).format(license.getExpiresOn());
 
         if (license.isExpired()) {
             final Label expLabel = new Label(formattedExpireDate + " - EXPIRED");
-            expLabel.addStyleName("expiredLicenseLabel");
-            res.addComponent(expLabel);
+            expLabel.addClassName("expiredLicenseLabel");
+            res.add(expLabel);
         } else {
-            res.addComponent(new Label(formattedExpireDate));
+            res.add(new Label(formattedExpireDate));
         }
 
         Button removeLicenseButton = new Button("Remove license info", event -> removeLicenseCallback.run());
 
         VerticalLayout layout = new VerticalLayout();
-        layout.addComponent(res);
-        layout.addComponent(removeLicenseButton);
+        layout.add(res);
+        layout.add(removeLicenseButton);
 
         return layout;
     }

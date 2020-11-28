@@ -5,14 +5,14 @@ import com.taskadapter.webui.service.WrongPasswordException;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.PasswordField;
+import com.taskadapter.vaadin14shim.GridLayout;
+import com.taskadapter.vaadin14shim.HorizontalLayout;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.taskadapter.vaadin14shim.VerticalLayout;
+import com.taskadapter.vaadin14shim.PasswordField;
+import com.taskadapter.vaadin14shim.Button;
+import com.taskadapter.vaadin14shim.Label;
 import com.vaadin.ui.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +64,7 @@ public class ChangePasswordDialog {
 
         errorLabel = new Label();
         errorLabel.addStyleName("errorMessage");
-        view.addComponent(errorLabel);
+        view.add(errorLabel);
 
         /* Main layout. */
         final GridLayout grid = new GridLayout();
@@ -72,22 +72,22 @@ public class ChangePasswordDialog {
         grid.setSpacing(true);
         grid.setSpacing(true);
         grid.setMargin(true);
-        view.addComponent(grid);
+        view.add(grid);
 
-        grid.addComponent(new Label(message("changePassword.oldPassword")));
+        grid.add(new Label(message("changePassword.oldPassword")));
         oldPasswordField = new PasswordField();
-        grid.addComponent(oldPasswordField);
+        grid.add(oldPasswordField);
 
-        grid.addComponent(new Label(message("changePassword.newPassword")));
+        grid.add(new Label(message("changePassword.newPassword")));
         newPasswordField = new PasswordField();
-        grid.addComponent(newPasswordField);
+        grid.add(newPasswordField);
 
-        grid.addComponent(new Label(message("changePassword.confirmPassword")));
+        grid.add(new Label(message("changePassword.confirmPassword")));
         confirmPasswordField = new PasswordField();
-        grid.addComponent(confirmPasswordField);
+        grid.add(confirmPasswordField);
 
         final Component buttonLayout = createButtons();
-        view.addComponent(buttonLayout);
+        view.add(buttonLayout);
         view.setComponentAlignment(buttonLayout, Alignment.BOTTOM_CENTER);
 
         oldPasswordField.focus();
@@ -98,34 +98,26 @@ public class ChangePasswordDialog {
         buttonLayout.setSpacing(true);
         buttonLayout.setMargin(new MarginInfo(true, false, false, false));
 
-        Button okButton = new Button(message("button.ok"),
-                new Button.ClickListener() {
-                    public void buttonClick(Button.ClickEvent event) {
-                        okClicked();
-                    }
-                });
+        Button okButton = new Button(message("button.ok"), event -> okClicked());
         okButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
-        okButton.addStyleName("v-button-default");
-        buttonLayout.addComponent(okButton);
+        okButton.addClassName("v-button-default");
+        buttonLayout.add(okButton);
 
-        final Window dialog = ui;
+        Window dialog = ui;
         Button cancelButton = new Button(message("button.cancel"),
-                new Button.ClickListener() {
-                    public void buttonClick(Button.ClickEvent event) {
-                        ui.getUI().removeWindow(dialog);
-                    }
-                });
-        buttonLayout.addComponent(cancelButton);
+                event -> ui.getUI().removeWindow(dialog)
+        );
+        buttonLayout.add(cancelButton);
 
         return buttonLayout;
     }
 
     private void okClicked() {
         if (newPasswordMatchesConfirmation()) {
-            errorLabel.setValue("");
+            errorLabel.setText("");
             savePassword();
         } else {
-            errorLabel.setValue(message("changePassword.newPasswordNotConfirmed"));
+            errorLabel.setText(message("changePassword.newPasswordNotConfirmed"));
         }
     }
 
@@ -140,10 +132,10 @@ public class ChangePasswordDialog {
                     newPasswordField.getValue());
             ui.getUI().removeWindow(ui);
         } catch (WrongPasswordException e) {
-            errorLabel.setValue(message("changePassword.oldPasswordIncorrect"));
+            errorLabel.setText(message("changePassword.oldPasswordIncorrect"));
             LOGGER.error("SECURITY: wrong password provided for user " + userName + " in 'Change password' dialog.");
         } catch (AuthException e) {
-            errorLabel.setValue(message("changePassword.internalError"));
+            errorLabel.setText(message("changePassword.internalError"));
             LOGGER.error("SECURITY: internal error changing password for user " + userName + " in 'Change password' dialog." + e.toString());
         }
     }

@@ -4,6 +4,7 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
+import com.taskadapter.vaadin14shim.TextField;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.vaadin.data.Property;
@@ -15,7 +16,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,8 +82,7 @@ public class EditorUtil {
             final DataProvider<List<? extends NamedKeyedObject>> operation,
             final ExceptionFormatter errorFormatter,
             Function<NamedKeyedObject, Void> selectionListener) {
-        Button button = new Button(buttonLabel);
-        button.setDescription(description);
+
         final LookupResultListener listener = new LookupResultListener() {
             @Override
             public void notifyDone(List<? extends NamedKeyedObject> objects) {
@@ -104,29 +103,27 @@ public class EditorUtil {
                 });
             }
         };
-        button.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                final List<? extends NamedKeyedObject> objects;
-                try {
-                    objects = operation.loadData();
+        Button button = new Button(buttonLabel, event -> {
+            final List<? extends NamedKeyedObject> objects;
+            try {
+                objects = operation.loadData();
 
-                    if (objects.isEmpty()) {
-                        Notification.show("No objects", "No objects have been found", Notification.Type.HUMANIZED_MESSAGE);
-                    }
-                    listener.notifyDone(objects);
-                } catch (BadConfigException e) {
-                    logger.error(e.getMessage());
-                    Notification.show("", errorFormatter.formatError(e), Notification.Type.HUMANIZED_MESSAGE);
-                } catch (ConnectorException e) {
-                    logger.error(e.toString());
-                    Notification.show("", errorFormatter.formatError(e), Notification.Type.HUMANIZED_MESSAGE);
-                } catch (Exception e) {
-                    logger.error(e.toString());
-                    EditorUtil.show("Something went wrong", e);
+                if (objects.isEmpty()) {
+                    Notification.show("No objects", "No objects have been found", Notification.Type.HUMANIZED_MESSAGE);
                 }
+                listener.notifyDone(objects);
+            } catch (BadConfigException e) {
+                logger.error(e.getMessage());
+                Notification.show("", errorFormatter.formatError(e), Notification.Type.HUMANIZED_MESSAGE);
+            } catch (ConnectorException e) {
+                logger.error(e.toString());
+                Notification.show("", errorFormatter.formatError(e), Notification.Type.HUMANIZED_MESSAGE);
+            } catch (Exception e) {
+                logger.error(e.toString());
+                EditorUtil.show("Something went wrong", e);
             }
         });
+        button.setDescription(description);
         return button;
     }
 	

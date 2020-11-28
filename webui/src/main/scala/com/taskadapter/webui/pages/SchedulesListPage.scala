@@ -1,5 +1,8 @@
 package com.taskadapter.webui.pages
 
+import com.taskadapter.vaadin14shim.Label
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
 import java.util.UUID
 
 import com.taskadapter.web.uiapi.{ConfigId, Schedule}
@@ -60,8 +63,8 @@ class SchedulesListPage() extends BasePage {
   }
 
   private def applyUI(newUi: Component): Unit = {
-    ui.removeAllComponents()
-    ui.addComponent(newUi)
+    ui.removeAll()
+    ui.add(newUi)
   }
 
   private def showSchedule(scheduleId: String): Unit = {
@@ -110,11 +113,11 @@ class SchedulesListPage() extends BasePage {
     goButton.addClickListener(_ => showNewScheduleEditor(getSelectedConfigId()))
 
     val label = new Label(Page.message("schedules.selectConfig.title"))
-    label.addStyleName(Sizes.tabIntro)
-    layout.addComponent(label)
+    label.addClassName(Sizes.tabIntro)
+    layout.add(label)
     val horizontalLayout = new HorizontalLayout(configsListSelect, goButton)
     horizontalLayout.setSpacing(true)
-    layout.addComponent(horizontalLayout)
+    layout.add(horizontalLayout)
 
     reloadConfigsInList()
     applyUI(layout)
@@ -182,7 +185,7 @@ class SchedulesListPage() extends BasePage {
     }
 
     val label = new Label(Page.message("schedules.intro"))
-    label.addStyleName(Sizes.tabIntro)
+    label.addClassName(Sizes.tabIntro)
 
     val controlsLayout = new HorizontalLayout(addButton, checkbox)
     controlsLayout.setWidth("100%")
@@ -191,9 +194,9 @@ class SchedulesListPage() extends BasePage {
     controlsLayout.setComponentAlignment(checkbox, Alignment.MIDDLE_RIGHT)
 
     val listLayout = new VerticalLayout()
-    listLayout.addComponent(label)
-    listLayout.addComponent(controlsLayout)
-    listLayout.addComponent(grid)
+    listLayout.add(label)
+    listLayout.add(controlsLayout)
+    listLayout.add(grid)
     listLayout
   }
 

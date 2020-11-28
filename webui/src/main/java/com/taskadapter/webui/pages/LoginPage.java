@@ -1,5 +1,10 @@
 package com.taskadapter.webui.pages;
 
+import com.taskadapter.vaadin14shim.VerticalLayout;
+import com.taskadapter.vaadin14shim.HorizontalLayout;
+import com.taskadapter.vaadin14shim.GridLayout;
+import com.taskadapter.vaadin14shim.Button;
+import com.taskadapter.vaadin14shim.Label;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.service.WrongPasswordException;
 import com.vaadin.event.ShortcutAction;
@@ -55,29 +60,29 @@ public final class LoginPage {
         layout.setSpacing(true);
         final Label label = new Label(Page.message("loginPage.hintLabel"), ContentMode.HTML);
         label.setStyleName(ValoTheme.LABEL_SMALL);
-        layout.addComponent(label);
+        layout.add(label);
 
         final TextField loginEdit = new TextField();
         loginEdit.setCaption(Page.message("loginPage.login"));
         loginEdit.setWidth(EDIT_WIDTH);
-        layout.addComponent(loginEdit);
+        layout.add(loginEdit);
 
         final PasswordField passwordEdit = new PasswordField();
         passwordEdit.setCaption(Page.message("loginPage.password"));
         passwordEdit.setWidth(EDIT_WIDTH);
-        layout.addComponent(passwordEdit);
+        layout.add(passwordEdit);
 
         final CheckBox staySignedIn = new CheckBox(Page.message("loginPage.staySignedIn"));
-        layout.addComponent(staySignedIn);
+        layout.add(staySignedIn);
 
         final Button loginButton = new Button(Page.message("loginPage.loginButton"));
         loginButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
-        loginButton.addStyleName(Runo.BUTTON_DEFAULT);
-        loginButton.addStyleName(Runo.BUTTON_BIG);
+        loginButton.addClassName(Runo.BUTTON_DEFAULT);
+        loginButton.addClassName(Runo.BUTTON_BIG);
 
         final Label errorLabel = new Label();
-        errorLabel.addStyleName("errorMessage");
-        layout.addComponent(errorLabel);
+        errorLabel.addClassName("errorMessage");
+        layout.add(errorLabel);
 
         loginButton.addClickListener((Button.ClickListener) event -> {
             String username = loginEdit.getValue();
@@ -91,7 +96,7 @@ public final class LoginPage {
                 passwordEdit.focus();
             }
         });
-        layout.addComponent(loginButton);
+        layout.add(loginButton);
         loginEdit.focus();
 
         return panel;

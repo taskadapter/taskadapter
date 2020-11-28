@@ -11,6 +11,7 @@ import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.jira.exceptions.BadHostException;
 import com.taskadapter.connector.jira.exceptions.BadURIException;
+import com.taskadapter.vaadin14shim.GridLayout;
 import com.taskadapter.web.ConnectorSetupPanel;
 import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
@@ -23,7 +24,6 @@ import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Sandbox;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.GridLayout;
 import scala.Option;
 import scala.collection.JavaConverters;
 import scala.collection.Seq;
@@ -82,15 +82,15 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
         gridLayout.setMargin(true);
         gridLayout.setSpacing(true);
 
-        gridLayout.addComponent(projectPanel);
+        gridLayout.add(projectPanel);
 
         OtherJiraFieldsPanel otherJiraFieldsPanel = new OtherJiraFieldsPanel(config, setup, this);
         otherJiraFieldsPanel.setHeight(100, PERCENTAGE);
-        gridLayout.addComponent(otherJiraFieldsPanel);
+        gridLayout.add(otherJiraFieldsPanel);
 
         PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(),
                 Interfaces.fromMethod(DataProvider.class, new PrioritiesLoader(setup), "loadJiraPriorities"), this);
-        gridLayout.addComponent(priorityPanel);
+        gridLayout.add(priorityPanel);
         return gridLayout;
     }
 

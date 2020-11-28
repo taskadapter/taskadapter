@@ -1,5 +1,7 @@
 package com.taskadapter.webui.config
 
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
 import com.google.common.base.Strings
 import com.taskadapter.config.StorageException
 import com.taskadapter.connector.definition.FieldMapping
@@ -47,16 +49,16 @@ class EditConfigPage(messages: Messages,
   topRowLayout.setComponentAlignment(editDescriptionForm, Alignment.MIDDLE_LEFT)
   topRowLayout.setComponentAlignment(buttons, Alignment.MIDDLE_RIGHT)
 
-  layout.addComponent(topRowLayout)
+  layout.add(topRowLayout)
 
-  layout.addComponent(errorMessageLabel)
+  layout.add(errorMessageLabel)
 
   val taskFieldsMappingFragment = new TaskFieldsMappingFragment(messages,
     config.getConnector1.getAllFields, config.getConnector1.fieldNames, config.getConnector1.getLabel,
     config.getConnector2.getAllFields, config.getConnector2.fieldNames, config.getConnector2.getLabel,
     config.getNewMappings)
 
-  layout.addComponent(taskFieldsMappingFragment.getUI)
+  layout.add(taskFieldsMappingFragment.getUI)
 
   def removeEmptyRows(): Unit = {
     taskFieldsMappingFragment.removeEmptyRows()
@@ -73,15 +75,15 @@ class EditConfigPage(messages: Messages,
     buttonsLayout.setWidth(100, PERCENTAGE)
     val rightLayout = new HorizontalLayout
     rightLayout.setSpacing(true)
-    buttonsLayout.addComponent(rightLayout)
+    buttonsLayout.add(rightLayout)
     buttonsLayout.setComponentAlignment(rightLayout, Alignment.BOTTOM_RIGHT)
     val saveButton = new Button(Page.message("button.save"))
     saveButton.addClickListener(_ => saveClicked())
-    rightLayout.addComponent(saveButton)
+    rightLayout.add(saveButton)
     val backButton = new Button(Page.message("button.close"))
     backButton.addClickListener(_ => close.run())
 
-    rightLayout.addComponent(backButton)
+    rightLayout.add(backButton)
     buttonsLayout
   }
 

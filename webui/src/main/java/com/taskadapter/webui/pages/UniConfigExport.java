@@ -18,9 +18,9 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.DragAndDropWrapper;
 import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
 import com.vaadin.ui.Embedded;
-import com.vaadin.ui.HorizontalLayout;
+import com.taskadapter.vaadin14shim.HorizontalLayout;
+import com.taskadapter.vaadin14shim.Label;
 import com.vaadin.ui.Html5File;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.themes.ValoTheme;
 import scala.collection.Seq;
@@ -95,7 +95,7 @@ final class UniConfigExport {
     private static Label createLabel(UIConnectorConfig connector) {
         final Label res = new Label(connector.getConnectorSetup().label());
         res.setWidth(100, PERCENTAGE);
-        res.addStyleName(ValoTheme.LABEL_H3);
+        res.addClassName(ValoTheme.LABEL_H3);
         return res;
     }
 
@@ -108,8 +108,8 @@ final class UniConfigExport {
         final String validationFailure = getValidationError(config);
         final boolean isValid = validationFailure == null;
 
-        res.addStyleName("uniExportPanel");
-        res.addStyleName(isValid ? "valid" : "invalid");
+        res.addClassName("uniExportPanel");
+        res.addClassName(isValid ? "valid" : "invalid");
 
         final UIConnectorConfig config1;
         final UIConnectorConfig config2;
@@ -129,12 +129,12 @@ final class UniConfigExport {
         final Label rightLabel = createLabel(config2);
         final Embedded actionLabel = new Embedded(null, ImageLoader.getImage(assetName));
 
-        leftLabel.addStyleName("left-label");
-        rightLabel.addStyleName("right-label");
+        leftLabel.addClassName("left-label");
+        rightLabel.addClassName("right-label");
 
-        res.addComponent(leftLabel);
-        res.addComponent(actionLabel);
-        res.addComponent(rightLabel);
+        res.add(leftLabel);
+        res.add(actionLabel);
+        res.add(rightLabel);
 
         res.setExpandRatio(leftLabel, 1.0f);
         res.setExpandRatio(rightLabel, 1.0f);
@@ -215,12 +215,12 @@ final class UniConfigExport {
             regularExportBox.setWidth(width - 32, PIXELS);
             
             if (config.isReversed()) {
-                layout.addComponent(regularExportBox);
-                layout.addComponent(dropLabel);
+                layout.add(regularExportBox);
+                layout.add(dropLabel);
                 layout.setComponentAlignment(dropLabel, Alignment.MIDDLE_RIGHT);
             } else {
-                layout.addComponent(dropLabel);
-                layout.addComponent(regularExportBox);
+                layout.add(dropLabel);
+                layout.add(regularExportBox);
                 layout.setComponentAlignment(dropLabel, Alignment.MIDDLE_LEFT);
             }
             layout.setExpandRatio(regularExportBox, 1f);
@@ -231,7 +231,7 @@ final class UniConfigExport {
             }
         } catch (DroppingNotSupportedException e) {
             regularExportBox.setWidth(width, PIXELS);
-            layout.addComponent(regularExportBox);
+            layout.add(regularExportBox);
         }
         return layout;
     }

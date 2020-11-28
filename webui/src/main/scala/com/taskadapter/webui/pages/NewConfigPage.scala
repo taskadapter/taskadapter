@@ -1,5 +1,7 @@
 package com.taskadapter.webui.pages
 
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.Label
 import com.taskadapter.PluginManager
 import com.taskadapter.config.StorageException
 import com.taskadapter.web.service.Sandbox
@@ -78,7 +80,7 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
       callback.configCreated(configId)
     } catch {
       case e: StorageException =>
-        errorMessageLabel.setValue(message("createConfigPage.failedToSave"))
+        errorMessageLabel.setText(message("createConfigPage.failedToSave"))
     }
   }
 

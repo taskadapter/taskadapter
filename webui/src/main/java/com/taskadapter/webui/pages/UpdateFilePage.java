@@ -9,6 +9,7 @@ import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.taskadapter.vaadin14shim.Label;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
@@ -20,10 +21,9 @@ import com.vaadin.server.VaadinSession;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.ProgressIndicator;
-import com.vaadin.ui.VerticalLayout;
+import com.taskadapter.vaadin14shim.VerticalLayout;
 
 public final class UpdateFilePage {
 
@@ -62,13 +62,13 @@ public final class UpdateFilePage {
 
         ui = new VerticalLayout();
         errorMessage = new Label("");
-        errorMessage.addStyleName("errorMessage");
+        errorMessage.addClassName("errorMessage");
         errorMessage.setVisible(false);
         errorMessage.setWidth(500, Unit.PIXELS);
-        ui.addComponent(errorMessage);
+        ui.add(errorMessage);
 
         content = new VerticalLayout();
-        ui.addComponent(content);
+        ui.add(content);
         startLoading();
     }
 
@@ -184,16 +184,10 @@ public final class UpdateFilePage {
         final String text = message("updatePage.result",
                 updatedTasks+"", config.getConnector2().getDestinationLocation(),
                 config.getConnector1().getSourceLocation());
-        ui.addComponent(new Label(text));
+        ui.add(new Label(text));
 
-        final Button button = new Button(message("action.backToHomePage"));
-        button.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                onDone.run();
-            }
-        });
-        ui.addComponent(button);
+        Button button = new Button(message("action.backToHomePage"), event -> onDone.run());
+        ui.add(button);
 
         VaadinSession.getCurrent().lock();
         try {
@@ -211,15 +205,9 @@ public final class UpdateFilePage {
         final Label label = new Label(message("updatePage.noDataWasLoaded"));
         label.setWidth(800, Unit.PIXELS);
 
-        final Button backButton = new Button(message("button.back"));
-        backButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                onDone.run();
-            }
-        });
-        res.addComponent(label);
-        res.addComponent(backButton);
+        Button backButton = new Button(message("button.back"), event -> onDone.run());
+        res.add(label);
+        res.add(backButton);
 
         setContent(res);
     }
@@ -259,8 +247,8 @@ public final class UpdateFilePage {
      *            page content.
      */
     private void setContent(Component comp) {
-        content.removeAllComponents();
-        content.addComponent(comp);
+        content.removeAll();
+        content.add(comp);
     }
 
     /**

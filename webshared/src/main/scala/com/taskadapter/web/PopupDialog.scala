@@ -1,5 +1,7 @@
 package com.taskadapter.web
 
+import com.taskadapter.vaadin14shim.HorizontalLayout
+import com.taskadapter.vaadin14shim.VerticalLayout
 import com.taskadapter.webui.Page
 import com.vaadin.event.ShortcutAction
 import com.vaadin.shared.ui.label.ContentMode
@@ -30,8 +32,8 @@ class PopupDialog(caption: String, question: String, answers: Seq[String], click
   view.setMargin(true)
   val label = new Label(question, ContentMode.HTML)
   label.setWidth("300px")
-  view.addComponent(label)
-  view.addComponent(new Label("&nbsp;", ContentMode.HTML))
+  view.add(label)
+  view.add(new Label("&nbsp;", ContentMode.HTML))
   createButtons(answers)
   setContent(view)
 
@@ -40,7 +42,7 @@ class PopupDialog(caption: String, question: String, answers: Seq[String], click
     buttonsLayout.setSpacing(true)
     for (answer <- answers) {
       val button = new Button(answer)
-      buttonsLayout.addComponent(button)
+      buttonsLayout.add(button)
       button.addClickListener(event => {
         getUI.removeWindow(this)
         clicked(event.getSource.asInstanceOf[Button].getCaption)
@@ -48,6 +50,6 @@ class PopupDialog(caption: String, question: String, answers: Seq[String], click
       // focus on something in this window so that the window can be closed with ESC
       button.focus()
     }
-    view.addComponent(buttonsLayout)
+    view.add(buttonsLayout)
   }
 }

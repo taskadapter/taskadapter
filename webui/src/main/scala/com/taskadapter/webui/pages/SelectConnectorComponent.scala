@@ -1,5 +1,8 @@
 package com.taskadapter.webui.pages
 
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
+import com.taskadapter.vaadin14shim.GridLayout
 import com.taskadapter.PluginManager
 import com.taskadapter.webui.Page.message
 import com.vaadin.ui.Button.ClickListener
@@ -22,7 +25,7 @@ class SelectConnectorComponent(pluginManager: PluginManager, next: String => Uni
   val layout = new VerticalLayout()
   layout.setSpacing(true)
   layout.setMargin(true)
-  layout.addComponent(new Label(message("newConfig.selectSystem")))
+  layout.add(new Label(message("newConfig.selectSystem")))
 
   createSystemList(event => {
     val connectorId = event.getButton.getData.asInstanceOf[String]
@@ -35,7 +38,7 @@ class SelectConnectorComponent(pluginManager: PluginManager, next: String => Uni
       val systemButton = new Button(connector.label)
       systemButton.setWidth("200px")
       systemButton.addClickListener(_ => next(connector.id))
-      layout.addComponent(systemButton)
+      layout.add(systemButton)
       layout.setComponentAlignment(systemButton, Alignment.MIDDLE_CENTER)
     }
   }

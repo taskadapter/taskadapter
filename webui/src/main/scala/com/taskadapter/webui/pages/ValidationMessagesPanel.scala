@@ -1,8 +1,11 @@
 package com.taskadapter.webui.pages
 
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
+import com.taskadapter.vaadin14shim.Label
+import com.taskadapter.vaadin14shim.Button
 import com.taskadapter.webui.Page
 import com.vaadin.shared.ui.label.ContentMode
-import com.vaadin.ui.{Button, HorizontalLayout, Label, VerticalLayout}
 
 class ValidationMessagesPanel(caption: String) {
   val layout = new VerticalLayout
@@ -10,12 +13,12 @@ class ValidationMessagesPanel(caption: String) {
   def ui = layout
 
   def show(errors: Seq[ValidationErrorTextWithProcessor]): Unit = {
-    layout.removeAllComponents()
+    layout.removeAll()
     layout.setVisible(errors.nonEmpty)
     if (errors.nonEmpty) {
       val captionLabel = new Label(caption)
-      captionLabel.addStyleName("validationPanelCaption")
-      layout.addComponent(captionLabel)
+      captionLabel.addClassName("validationPanelCaption")
+      layout.add(captionLabel)
       errors.foreach(showMessage)
     }
   }
@@ -24,15 +27,15 @@ class ValidationMessagesPanel(caption: String) {
     val row = new HorizontalLayout
     val decoratedMessage = s"* ${error.text}"
     val errorMessageLabel = new Label(decoratedMessage)
-    errorMessageLabel.addStyleName("error-message-label")
+    errorMessageLabel.addClassName("error-message-label")
     errorMessageLabel.setWidth("600px")
-    errorMessageLabel.addStyleName("wrap")
+    errorMessageLabel.addClassName("wrap")
     errorMessageLabel.setContentMode(ContentMode.HTML)
 
     val fixButton = new Button(Page.message("configSummary.fixButtonCaption"))
     fixButton.addClickListener(_ => error.processor.run())
     row.addComponent(errorMessageLabel)
     row.addComponent(fixButton)
-    layout.addComponent(row)
+    layout.add(row)
   }
 }

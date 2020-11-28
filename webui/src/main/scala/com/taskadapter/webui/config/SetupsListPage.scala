@@ -1,5 +1,7 @@
 package com.taskadapter.webui.config
 
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
 import com.taskadapter.web.PopupDialog
 import com.taskadapter.web.uiapi.SetupId
 import com.taskadapter.webui.{ConfigOperations, EventTracker, Page, SetupCategory}
@@ -25,15 +27,15 @@ class SetupsListPage(configOperations: ConfigOperations,
   introRow.setComponentAlignment(addButton, Alignment.MIDDLE_RIGHT)
   introRow.setExpandRatio(introLabel, 1)
 
-  layout.addComponent(introRow)
+  layout.add(introRow)
 
   val elementsComponent = new VerticalLayout()
-  layout.addComponent(elementsComponent)
+  layout.add(elementsComponent)
 
   refresh()
 
   private def refresh(): Unit = {
-    elementsComponent.removeAllComponents()
+    elementsComponent.removeAll()
     addElements()
   }
 
@@ -91,7 +93,7 @@ class SetupsListPage(configOperations: ConfigOperations,
 
         val panel = new Panel()
         panel.setContent(row)
-        elementsComponent.addComponent(panel)
+        elementsComponent.add(panel)
       }
   }
 

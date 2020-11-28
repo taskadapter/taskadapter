@@ -1,5 +1,10 @@
 package com.taskadapter.webui.config
 
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
+import com.taskadapter.vaadin14shim.GridLayout
+import com.taskadapter.vaadin14shim.Label
+import com.taskadapter.vaadin14shim.TextField
 import java.util.UUID
 
 import com.google.common.base.Strings
@@ -13,7 +18,7 @@ import com.vaadin.data.util.{BeanItemContainer, MethodProperty}
 import com.vaadin.server.Sizeable.Unit.PIXELS
 import com.vaadin.server.ThemeResource
 import com.vaadin.shared.ui.label.ContentMode
-import com.vaadin.ui.{AbstractComponent, Alignment, Button, CheckBox, ComboBox, Component, Embedded, GridLayout, Label, Panel, TextField, VerticalLayout}
+import com.vaadin.ui.{AbstractComponent, Alignment, Button, CheckBox, ComboBox, Component, Embedded,  Panel}
 
 import scala.collection.JavaConverters._
 import scala.collection.Seq
@@ -98,13 +103,13 @@ class TaskFieldsMappingFragment(messages: Messages,
     new ConnectorFieldLoader(connector1SupportedFields),
     new ConnectorFieldLoader(connector2SupportedFields))
 
-  layout.addComponent(gridLayout)
+  layout.add(gridLayout)
   rebuildMappingUI()
   ui.setContent(layout)
   addNewRowButton()
 
   def rebuildMappingUI(): Unit = {
-    gridLayout.removeAllComponents()
+    gridLayout.removeAll()
     configureGridLayout()
     addTableHeaders()
     addFieldsToUI()
@@ -119,36 +124,36 @@ class TaskFieldsMappingFragment(messages: Messages,
 
   private def addTableHeaders(): Unit = {
     val label2 = new Label(messages.get("editConfig.mappings.exportFieldHeader"))
-    label2.addStyleName("fieldsTitle")
+    label2.addClassName("fieldsTitle")
     label2.setWidth(40, PIXELS)
-    gridLayout.addComponent(label2, TaskFieldsMappingFragment.COLUMN_DESCRIPTION, 0)
+    gridLayout.add(label2, TaskFieldsMappingFragment.COLUMN_DESCRIPTION, 0)
     gridLayout.setComponentAlignment(label2, Alignment.MIDDLE_LEFT)
     val label = new Label(" ")
     label.setWidth(20, PIXELS)
-    gridLayout.addComponent(label, TaskFieldsMappingFragment.COLUMN_HELP, 0)
+    gridLayout.add(label, TaskFieldsMappingFragment.COLUMN_HELP, 0)
 
     val label1 = new Label(connector1Label)
-    label1.addStyleName("fieldsTitle")
+    label1.addClassName("fieldsTitle")
     label1.setWidth(230, PIXELS)
-    gridLayout.addComponent(label1, TaskFieldsMappingFragment.COLUMN_LEFT_CONNECTOR, 0)
+    gridLayout.add(label1, TaskFieldsMappingFragment.COLUMN_LEFT_CONNECTOR, 0)
     gridLayout.setComponentAlignment(label1, Alignment.MIDDLE_LEFT)
 
     val label3 = new Label(connector2Label)
-    label3.addStyleName("fieldsTitle")
+    label3.addClassName("fieldsTitle")
     label3.setWidth(230, PIXELS)
-    gridLayout.addComponent(label3, TaskFieldsMappingFragment.COLUMN_RIGHT_CONNECTOR, 0)
+    gridLayout.add(label3, TaskFieldsMappingFragment.COLUMN_RIGHT_CONNECTOR, 0)
     gridLayout.setComponentAlignment(label3, Alignment.MIDDLE_LEFT)
 
     val label4 = new Label(messages.get("editConfig.mappings.defaultValueColumn"))
-    label4.addStyleName("fieldsTitle")
+    label4.addClassName("fieldsTitle")
     label4.setWidth(180, PIXELS)
-    gridLayout.addComponent(label4, TaskFieldsMappingFragment.COLUMN_DEFAULT_VALUE, 0)
+    gridLayout.add(label4, TaskFieldsMappingFragment.COLUMN_DEFAULT_VALUE, 0)
     gridLayout.setComponentAlignment(label4, Alignment.MIDDLE_LEFT)
     val column5label = new Label
     column5label.setWidth(30, PIXELS)
-    gridLayout.addComponent(column5label, TaskFieldsMappingFragment.COLUMN_REMOVE, 0)
+    gridLayout.add(column5label, TaskFieldsMappingFragment.COLUMN_REMOVE, 0)
     gridLayout.setComponentAlignment(column5label, Alignment.MIDDLE_LEFT)
-    gridLayout.addComponent(new Label("<hr>", ContentMode.HTML), 0, 1, TaskFieldsMappingFragment.COLUMNS_NUMBER - 1, 1)
+    gridLayout.add(new Label("<hr>", ContentMode.HTML), 0, 1, TaskFieldsMappingFragment.COLUMNS_NUMBER - 1, 1)
   }
 
   /**
@@ -177,7 +182,7 @@ class TaskFieldsMappingFragment(messages: Messages,
   private def addRemoveRowButton(field: EditableFieldMapping) = {
     val button = new Button(Page.message("editConfig.mappings.buttonRemove"))
     button.addClickListener(_ => removeRow(field))
-    gridLayout.addComponent(button)
+    gridLayout.add(button)
     gridLayout.setComponentAlignment(button, Alignment.MIDDLE_RIGHT)
   }
 
@@ -202,7 +207,7 @@ class TaskFieldsMappingFragment(messages: Messages,
     checkbox.setData(field.uniqueIdForTemporaryMap)
     val selected = new MethodProperty[Boolean](field, "selected")
     checkbox.setPropertyDataSource(selected)
-    gridLayout.addComponent(checkbox)
+    gridLayout.add(checkbox)
     gridLayout.setComponentAlignment(checkbox, Alignment.MIDDLE_CENTER)
   }
 
@@ -210,20 +215,20 @@ class TaskFieldsMappingFragment(messages: Messages,
     val field = new TextField
     val methodProperty = new MethodProperty[String](mapping, "defaultValue")
     field.setPropertyDataSource(methodProperty)
-    gridLayout.addComponent(field)
+    gridLayout.add(field)
     gridLayout.setComponentAlignment(field, Alignment.MIDDLE_CENTER)
   }
 
   private def addHelp(helpForField: String) = {
     val helpIcon = new Embedded(null, TaskFieldsMappingFragment.HELP_ICON_RESOURCE)
     helpIcon.setDescription(helpForField)
-    gridLayout.addComponent(helpIcon)
+    gridLayout.add(helpIcon)
     gridLayout.setComponentAlignment(helpIcon, Alignment.MIDDLE_CENTER)
   }
 
   private def addEmptyCell() = {
     val emptyLabel = new Label(" ")
-    gridLayout.addComponent(emptyLabel)
+    gridLayout.add(emptyLabel)
     gridLayout.setComponentAlignment(emptyLabel, Alignment.MIDDLE_LEFT)
   }
 
@@ -245,7 +250,7 @@ class TaskFieldsMappingFragment(messages: Messages,
 
     combo.setNewItemsAllowed(true)
     combo.setWidth("90%")
-    gridLayout.addComponent(combo)
+    gridLayout.add(combo)
     gridLayout.setComponentAlignment(combo, Alignment.MIDDLE_LEFT)
     val currentFieldName = if (classFieldName == "fieldInConnector1") fieldMapping.fieldInConnector1
     else fieldMapping.fieldInConnector2
@@ -259,7 +264,7 @@ class TaskFieldsMappingFragment(messages: Messages,
       editablePojoMappings.add(m)
       addRowToVaadinForm(m)
     })
-    layout.addComponent(button)
+    layout.add(button)
   }
 
   @throws[BadConfigException]

@@ -6,7 +6,7 @@ import com.taskadapter.web.configeditor.EditorUtil;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.GridLayout;
+import com.taskadapter.vaadin14shim.GridLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 
@@ -57,7 +57,7 @@ class OtherJiraFieldsPanel extends Panel {
                     return null;
                 }
         );
-        grid.addComponent(showAffectedVersion);
+        grid.add(showAffectedVersion);
 
         final TextField fixForVersion = EditorUtil
                 .addLabeledText(grid,
@@ -77,7 +77,7 @@ class OtherJiraFieldsPanel extends Panel {
                     return null;
                 }
         );
-        grid.addComponent(showFixForVersion);
+        grid.add(showFixForVersion);
 
 
         final TextField defaultTaskType = EditorUtil.addLabeledText(grid, "Default issue type:",
@@ -96,7 +96,7 @@ class OtherJiraFieldsPanel extends Panel {
                     return null;
                 }
         );
-        grid.addComponent(showDefaultTaskType);
+        grid.add(showDefaultTaskType);
 
         final TextField defaultIssueTypeForSubtasks = EditorUtil
                 .addLabeledText(grid, "Default issue type for subtasks:",
@@ -115,6 +115,6 @@ class OtherJiraFieldsPanel extends Panel {
                     return null;
                 }
         );
-        grid.addComponent(showIssueTypeForSubtasksButton);
+        grid.add(showIssueTypeForSubtasksButton);
     }
 }

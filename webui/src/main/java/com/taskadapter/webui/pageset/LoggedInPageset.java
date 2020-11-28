@@ -49,7 +49,7 @@ import com.vaadin.server.StreamVariable;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
+import com.taskadapter.vaadin14shim.HorizontalLayout;
 import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Notification;
 import org.slf4j.Logger;
@@ -459,8 +459,8 @@ public class LoggedInPageset {
 */
 
     private void applyUI(Component ui) {
-        currentComponentArea.removeAllComponents();
-        currentComponentArea.addComponent(ui);
+        currentComponentArea.removeAll();
+        currentComponentArea.add(ui);
         currentComponentArea.setComponentAlignment(ui, Alignment.TOP_CENTER);
     }
 

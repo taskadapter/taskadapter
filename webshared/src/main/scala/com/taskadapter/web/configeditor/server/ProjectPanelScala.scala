@@ -1,5 +1,6 @@
 package com.taskadapter.web.configeditor.server
 
+import com.taskadapter.vaadin14shim.GridLayout
 import com.taskadapter.connector.definition.exceptions.{BadConfigException, ProjectNotSetException}
 import com.taskadapter.model.NamedKeyedObject
 import com.taskadapter.web.ExceptionFormatter

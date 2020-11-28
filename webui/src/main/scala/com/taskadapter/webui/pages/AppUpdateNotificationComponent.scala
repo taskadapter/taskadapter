@@ -1,9 +1,10 @@
 package com.taskadapter.webui.pages
 
+import com.taskadapter.vaadin14shim.{HorizontalLayout, Label}
 import com.taskadapter.webui.service.CurrentVersionLoader
 import com.taskadapter.webui.{LastVersionLoader, Page, VersionComparator}
+import com.vaadin.ui.Component
 import com.vaadin.ui.themes.ValoTheme
-import com.vaadin.ui.{Component, HorizontalLayout, Label}
 
 class AppUpdateNotificationComponent {
   val lastAvailableVersion = LastVersionLoader.loadLastVersion
@@ -18,11 +19,10 @@ class AppUpdateNotificationComponent {
     if (outdated) {
       val message = Page.message("appUpdaterNotification.versionOutdated", currentVersion, lastAvailableVersion)
       val label = new Label(message)
-      label.addStyleName("important-notification-label")
-      layout.addComponent(label)
-      val link = WebAppUpdater.addDownloadLink
-      link.addStyleName(ValoTheme.LABEL_BOLD)
-      layout.addComponent(link)
+      label.addClassName("important-notification-label")
+      layout.add(label)
+      val link = WebAppUpdater.createDownloadLink
+      layout.add(link)
     }
     layout.setVisible(outdated)
     layout

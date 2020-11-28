@@ -3,6 +3,8 @@ package com.taskadapter.connector.msp.editor
 import java.io.File
 import java.nio.file.Paths
 
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
 import com.taskadapter.connector.common.FileNameGenerator
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.connector.definition.{ConnectorConfig, FieldMapping, FileSetup}
@@ -42,9 +44,9 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
   override def getMiniPanelContents(sandbox: Sandbox, config: MSPConfig, setup: FileSetup): ComponentContainer = {
     val layout = new VerticalLayout
     layout.setMargin(true)
-    layout.addComponent(createDescriptionElement(config))
-    //    layout.addComponent(createFilePanel(sandbox, config))
-    layout.addComponent(createInfoReadOnlyPanel)
+    layout.add(createDescriptionElement(config))
+    //    layout.add(createFilePanel(sandbox, config))
+    layout.add(createInfoReadOnlyPanel)
     layout
   }
 
@@ -85,12 +87,12 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
   private def createDescriptionElement(config: ConnectorConfig) = {
     val descriptionLayout = new HorizontalLayout
     descriptionLayout.setSpacing(true)
-    descriptionLayout.addComponent(new Label(LABEL_DESCRIPTION_TEXT))
+    descriptionLayout.add(new Label(LABEL_DESCRIPTION_TEXT))
     val labelText = propertyInput(config, "label")
     labelText.setDescription(LABEL_TOOLTIP)
     labelText.setReadOnly(true)
-    labelText.addStyleName("label-textfield")
-    descriptionLayout.addComponent(labelText)
+    labelText.addClassName("label-textfield")
+    descriptionLayout.add(labelText)
     descriptionLayout
   }
 

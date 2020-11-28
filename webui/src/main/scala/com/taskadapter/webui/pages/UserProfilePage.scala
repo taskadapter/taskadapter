@@ -1,5 +1,7 @@
 package com.taskadapter.webui.pages
 
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
 import com.taskadapter.web.event.{EventBusImpl, ShowSetupsListPageRequested}
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.user.ChangePasswordDialog
@@ -15,21 +17,21 @@ class UserProfilePage() extends BasePage {
 
   private def addLoginInfo(): Unit = {
     val panel = new Panel(message("userProfile.title"))
-    addComponent(panel)
+    add(panel)
 
     val l = new VerticalLayout
     l.setMargin(true)
     l.setSpacing(true)
     val loginString = message("userProfile.login") + s": $userName"
-    l.addComponent(new Label(loginString))
+    l.add(new Label(loginString))
 
-    val configureSetupsButton = new Button(message("userProfile.configureConnectors"))
-    configureSetupsButton.addClickListener(_ => EventBusImpl.post(ShowSetupsListPageRequested()))
-    l.addComponent(configureSetupsButton)
+    val configureSetupsButton = new Button(message("userProfile.configureConnectors"),
+      _ => EventBusImpl.post(ShowSetupsListPageRequested()))
+    l.add(configureSetupsButton)
 
     val button = new Button(message("userProfile.changePassword"))
     button.addClickListener(_ => showChangePasswordDialog())
-    l.addComponent(button)
+    l.add(button)
 
     val logoutButton = new Button(message("userProfile.logout"))
     logoutButton.addClickListener(_ => SessionController.logout())

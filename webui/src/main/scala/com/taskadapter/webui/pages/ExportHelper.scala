@@ -4,13 +4,14 @@ import java.util
 
 import com.taskadapter.model.GTask
 import com.taskadapter.reporting.ErrorReporter
+import com.taskadapter.vaadin14shim.VerticalLayout
 import com.taskadapter.web.uiapi.UISyncConfig
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.export.{ConfirmExportFragment, ExportResultsFragment}
 import com.taskadapter.webui.results.ExportResultStorage
 import com.taskadapter.webui.{EventTracker, ExportCategory, MonitorWrapper}
 import com.vaadin.server.VaadinSession
-import com.vaadin.ui._
+import com.vaadin.ui.{Button, Component, Label, Notification}
 
 class ExportHelper(exportResultStorage: ExportResultStorage,
                    onDone: Runnable, showFilePath: Boolean,
@@ -34,8 +35,8 @@ class ExportHelper(exportResultStorage: ExportResultStorage,
     msg.setWidth("800px")
     val backButton = new Button(message("button.back"))
     backButton.addClickListener(_ => onDone.run())
-    res.addComponent(msg)
-    res.addComponent(backButton)
+    res.add(msg)
+    res.add(backButton)
     setContent(layout, res)
   }
 
@@ -89,7 +90,7 @@ class ExportHelper(exportResultStorage: ExportResultStorage,
   }
 
   private def setContent(content: VerticalLayout, comp: Component): Unit = {
-    content.removeAllComponents()
-    content.addComponent(comp)
+    content.removeAll()
+    content.add(comp)
   }
 }

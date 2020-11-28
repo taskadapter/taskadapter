@@ -1,5 +1,9 @@
 package com.taskadapter.webui.export
 
+
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
+import com.taskadapter.vaadin14shim.GridLayout
 import java.util
 
 import com.taskadapter.config.StorageException
@@ -45,17 +49,17 @@ object ConfirmExportFragment {
     val destinationLocation = config.getConnector2.getDestinationLocation
     val destinationWithDecoration = destinationLocation + " (" + config.getConnector2.getConnectorTypeId + ")"
     val text1 = new Label(Page.message("exportConfirmation.pleaseConfirm", destinationWithDecoration))
-    layout.addComponent(text1)
+    layout.add(text1)
     val connectorTree = new MyTree(resolver, initialTasks, destinationLocation)
     connectorTree.setSizeFull()
-    layout.addComponent(connectorTree)
+    layout.add(connectorTree)
     val buttonsLayout = new HorizontalLayout
     val goButton = new Button(Page.message("button.go"))
-    buttonsLayout.addComponent(goButton)
+    buttonsLayout.add(goButton)
     val backButton = new Button(Page.message("button.cancel"))
     backButton.addClickListener(_ => callback.onCancel())
-    buttonsLayout.addComponent(backButton)
-    layout.addComponent(buttonsLayout)
+    buttonsLayout.add(backButton)
+    layout.add(buttonsLayout)
     val taskFieldsMappingFragment = new TaskFieldsMappingFragment(Page.MESSAGES,
       config.getConnector1.getAllFields, config.getConnector1.fieldNames, config.getConnector1.getLabel,
       config.getConnector2.getAllFields, config.getConnector2.fieldNames, config.getConnector2.getLabel,
@@ -65,7 +69,7 @@ object ConfirmExportFragment {
       val newFieldMappings = taskFieldsMappingFragment.getElements.toSeq
       config.copy(fieldMappings = newFieldMappings)
     }
-    layout.addComponent(taskFieldsMappingFragment.getUI)
+    layout.add(taskFieldsMappingFragment.getUI)
     goButton.addClickListener(_ => {
       try {
         EventBusImpl.post(ConfigSaveRequested(getPossiblyUpdatedConfig))

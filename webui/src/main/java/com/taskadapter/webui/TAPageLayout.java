@@ -5,9 +5,9 @@ import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.HorizontalLayout;
+import com.taskadapter.vaadin14shim.HorizontalLayout;
 import com.vaadin.ui.Layout;
-import com.vaadin.ui.VerticalLayout;
+import com.taskadapter.vaadin14shim.VerticalLayout;
 
 import static com.vaadin.server.Sizeable.Unit.PERCENTAGE;
 import static com.vaadin.server.Sizeable.Unit.PIXELS;
@@ -20,16 +20,16 @@ public final class TAPageLayout {
 
         header.setHeight(50, PIXELS);
         header.setWidth(100, PERCENTAGE);
-        layout.addComponent(header);
+        layout.add(header);
 
         HorizontalLayout navigationPanel = new HorizontalLayout();
         navigationPanel.setHeight(30, PIXELS);
         navigationPanel.setSpacing(true);
-        layout.addComponent(navigationPanel);
+        layout.add(navigationPanel);
         layout.setComponentAlignment(navigationPanel, Alignment.MIDDLE_CENTER);
 
         Component updaterUi = updateNotificationComponent.ui();
-        layout.addComponent(updaterUi);
+        layout.add(updaterUi);
         layout.setComponentAlignment(updaterUi, Alignment.TOP_CENTER);
 
         Layout mainArea = new CssLayout();
@@ -38,12 +38,12 @@ public final class TAPageLayout {
 
         // container for currentComponentArea to be aligned in mainArea correctly
         VerticalLayout verticalLayout = new VerticalLayout();
-        verticalLayout.addComponent(content);
+        verticalLayout.add(content);
 
         mainArea.addComponent(verticalLayout);
         verticalLayout.setComponentAlignment(content, Alignment.MIDDLE_CENTER);
 
-        layout.addComponent(mainArea);
+        layout.add(mainArea);
         layout.setComponentAlignment(mainArea, Alignment.MIDDLE_CENTER);
 
         return layout;

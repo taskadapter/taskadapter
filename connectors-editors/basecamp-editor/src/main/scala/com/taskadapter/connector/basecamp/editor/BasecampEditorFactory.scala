@@ -7,6 +7,7 @@ import com.taskadapter.connector.basecamp.{BasecampConfig, BasecampConnector, Ba
 import com.taskadapter.connector.definition.exceptions.{BadConfigException, ConnectorException, ProjectNotSetException}
 import com.taskadapter.connector.definition.{FieldMapping, WebConnectorSetup}
 import com.taskadapter.model.{NamedKeyedObject, NamedKeyedObjectImpl}
+import com.taskadapter.vaadin14shim.GridLayout
 import com.taskadapter.web.callbacks.DataProvider
 import com.taskadapter.web.configeditor.EditorUtil.{propertyInput, textInput}
 import com.taskadapter.web.configeditor.server.ServerPanelFactory
@@ -16,7 +17,7 @@ import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.ui.Grids.addTo
 import com.taskadapter.web.{ConnectorSetupPanel, DroppingNotSupportedException, PluginEditorFactory}
 import com.vaadin.data.util.MethodProperty
-import com.vaadin.ui.{Alignment, CheckBox, ComponentContainer, GridLayout, Label, Panel}
+import com.vaadin.ui.{Alignment, CheckBox, ComponentContainer, Label, Panel}
 
 import scala.collection.JavaConverters._
 import scala.collection.Seq
@@ -35,7 +36,7 @@ class BasecampEditorFactory extends PluginEditorFactory[BasecampConfig, WebConne
     grid.setColumns(2)
     grid.setMargin(true)
     grid.setSpacing(true)
-    grid.addComponent(projectPanel)
+    grid.add(projectPanel)
     grid
   }
 
@@ -59,28 +60,28 @@ class BasecampEditorFactory extends PluginEditorFactory[BasecampConfig, WebConne
   }
 
   private def addFindUsersCheckboxRow(config: BasecampConfig, grid: GridLayout) = {
-    grid.addComponent(Editors.createFindUsersElement(new MethodProperty[java.lang.Boolean](config, "findUserByName")))
-    grid.addComponent(new Label(""))
-    grid.addComponent(new Label(""))
-    grid.addComponent(new Label(""))
+    grid.add(Editors.createFindUsersElement(new MethodProperty[java.lang.Boolean](config, "findUserByName")))
+    grid.add(new Label(""))
+    grid.add(new Label(""))
+    grid.add(new Label(""))
   }
 
   private def addCompletedCheckboxRow(config: BasecampConfig, grid: GridLayout) = {
     val loadCompletedTasksCheckbox = new CheckBox("Load completed items")
     loadCompletedTasksCheckbox.setPropertyDataSource(new MethodProperty[String](config, "loadCompletedTodos"))
-    grid.addComponent(loadCompletedTasksCheckbox)
-    grid.addComponent(new Label(""))
-    grid.addComponent(new Label(""))
-    grid.addComponent(new Label(""))
+    grid.add(loadCompletedTasksCheckbox)
+    grid.add(new Label(""))
+    grid.add(new Label(""))
+    grid.add(new Label(""))
   }
 
   private def addAccountIdRow(config: BasecampConfig, grid: GridLayout) = {
     val accountIdLabel = new Label("Account Id:")
-    grid.addComponent(accountIdLabel)
+    grid.add(accountIdLabel)
     val accountIdField = propertyInput(config, "accountId")
-    grid.addComponent(accountIdField)
-    grid.addComponent(new Label(""))
-    grid.addComponent(new Label(""))
+    grid.add(accountIdField)
+    grid.add(new Label(""))
+    grid.add(new Label(""))
   }
 
   private def addProjectRow(config: BasecampConfig, setup: WebConnectorSetup, grid: GridLayout) = {

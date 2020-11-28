@@ -4,7 +4,7 @@ import com.vaadin.data.Property;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.GridLayout;
+import com.taskadapter.vaadin14shim.GridLayout;
 import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Window;
 
@@ -41,17 +41,13 @@ public class ListSelectionDialog extends Window {
                 closeButton.setEnabled(true);
             }
         });
-        layout.addComponent(listSelect);
+        layout.add(listSelect);
 
-        closeButton = new Button("Select");
-        closeButton.setEnabled(false);
-        closeButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                valueListener.setValue((String) listSelect.getValue());
-                close();
-            }
+        closeButton = new Button("Select", event -> {
+            valueListener.setValue((String) listSelect.getValue());
+            close();
         });
+        closeButton.setEnabled(false);
         addTo(layout, Alignment.MIDDLE_RIGHT, closeButton);
         setContent(layout);
     }

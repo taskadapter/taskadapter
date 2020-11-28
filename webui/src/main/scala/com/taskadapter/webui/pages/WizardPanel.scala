@@ -1,7 +1,8 @@
 package com.taskadapter.webui.pages
 
+import com.taskadapter.vaadin14shim.{HorizontalLayout, VerticalLayout, Label}
 import com.taskadapter.webui.Page
-import com.vaadin.ui.{HorizontalLayout, Label, ProgressBar, VerticalLayout}
+import com.vaadin.ui.{ProgressBar}
 
 import scala.collection.mutable
 
@@ -14,20 +15,20 @@ class WizardPanel {
   val stepLayout = new HorizontalLayout()
 
   layout.addComponents(progressLabel, progressBar)
-  layout.addComponent(stepLayout)
+  layout.add(stepLayout)
 
   val steps = mutable.Map[Int, WizardStep[_]]()
 
   def totalSteps = steps.size
 
   def showStep(step: Int): Unit = {
-    progressLabel.setValue(Page.message("newConfig.step", step + "", totalSteps + ""))
+    progressLabel.setText(Page.message("newConfig.step", step + "", totalSteps + ""))
     progressBar.setValue(step.toFloat / totalSteps)
-    stepLayout.removeAllComponents()
+    stepLayout.removeAll()
     val previousStep = steps.get(step - 1)
     val config = previousStep.map(_.getResult).getOrElse("")
     val nextStep = steps(step)
-    stepLayout.addComponent(nextStep.ui(config))
+    stepLayout.add(nextStep.ui(config))
   }
 
   def registerStep[C, RES](wizardStep: WizardStep[RES]): Unit = {

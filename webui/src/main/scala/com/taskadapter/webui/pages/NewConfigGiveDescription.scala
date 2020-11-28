@@ -1,7 +1,8 @@
 package com.taskadapter.webui.pages
 
+import com.taskadapter.vaadin14shim.GridLayout
 import com.taskadapter.webui.Page.message
-import com.vaadin.ui.{Alignment, Button, GridLayout, TextField}
+import com.vaadin.ui.{Alignment, Button, TextField}
 
 class NewConfigGiveDescription(saveClicked: String => Unit) extends WizardStep[String] {
   var result = ""
@@ -12,7 +13,7 @@ class NewConfigGiveDescription(saveClicked: String => Unit) extends WizardStep[S
   val descriptionTextField = new TextField(message("createConfigPage.description"))
   descriptionTextField.setRequired(true)
   descriptionTextField.setWidth("400px")
-  grid.addComponent(descriptionTextField, 0, 0)
+  grid.add(descriptionTextField, 0, 0)
   grid.setComponentAlignment(descriptionTextField, Alignment.MIDDLE_CENTER)
 
   val createButton = new Button(message("createConfigPage.create"))
@@ -22,7 +23,7 @@ class NewConfigGiveDescription(saveClicked: String => Unit) extends WizardStep[S
   descriptionTextField.addValueChangeListener(e =>
     createButton.setEnabled(e.getProperty.getValue.asInstanceOf[String].nonEmpty))
 
-  grid.addComponent(createButton, 0, 1)
+  grid.add(createButton, 0, 1)
   grid.setComponentAlignment(createButton, Alignment.MIDDLE_RIGHT)
 
   override def getResult: String = result

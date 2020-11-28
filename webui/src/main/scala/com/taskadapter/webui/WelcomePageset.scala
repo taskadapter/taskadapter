@@ -1,10 +1,11 @@
 package com.taskadapter.webui
 
+import com.taskadapter.vaadin14shim.HorizontalLayout
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.license.LicenseFacade
 import com.taskadapter.webui.pages.{AppUpdateNotificationComponent, LoginPage, SupportPage}
 import com.taskadapter.webui.service.Preservices
-import com.vaadin.ui.{Alignment, Component, HorizontalLayout}
+import com.vaadin.ui.{Alignment, Component}
 
 /**
   * Pageset available to all users.
@@ -35,9 +36,9 @@ class WelcomePageset(services: Preservices, callback: LoginPage.Callback) {
   }
 
   private def applyUI(ui: Component): Unit = {
-    currentComponentArea.removeAllComponents()
+    currentComponentArea.removeAll()
     ui.setSizeUndefined()
-    currentComponentArea.addComponent(ui)
+    currentComponentArea.add(ui)
     currentComponentArea.setComponentAlignment(ui, Alignment.TOP_LEFT)
   }
 }
