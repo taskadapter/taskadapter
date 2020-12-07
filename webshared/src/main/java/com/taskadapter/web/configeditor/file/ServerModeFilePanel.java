@@ -1,5 +1,6 @@
 package com.taskadapter.web.configeditor.file;
 
+import com.taskadapter.connector.definition.FileSetup;
 import com.taskadapter.web.PopupDialog;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
@@ -43,6 +44,7 @@ public class ServerModeFilePanel extends Panel{
     static final String FILE_DELETED_FAILED = "File deletion error";
 
     private static final String COMBOBOX_WIDTH = "175px";
+    private final FileSetup fileSetup;
 
     private Label statusLabel;
     private final ServerModelFilePanelPresenter presenter;
@@ -51,19 +53,15 @@ public class ServerModeFilePanel extends Panel{
     private ComboBox comboBox;
     private ProgressIndicator progressIndicator;
     private Button deleteButton;
-    private final Property<String> inputFilePath;
-    private final Property<String> outputFilePath;
-    
-    public ServerModeFilePanel(File filesDirectory, Property<String> inputFilePath,
-            Property<String> outputFilePath, UploadProcessor uploadProcessor) {
-    super(TITLE);        
-        this.inputFilePath = inputFilePath;
-        this.outputFilePath = outputFilePath;
+
+    public ServerModeFilePanel(File filesDirectory, FileSetup fileSetup, UploadProcessor uploadProcessor) {
+        super(TITLE);
+        this.fileSetup = fileSetup;
         this.presenter = new ServerModelFilePanelPresenter(filesDirectory,
                 uploadProcessor);
         buildUI();
         presenter.setView(this);
-        presenter.init(findInitialFile(inputFilePath, outputFilePath));
+        presenter.init(findInitialFile(fileSetup));
     }
 
     private void buildUI() {
@@ -170,8 +168,8 @@ public class ServerModeFilePanel extends Panel{
                 } else {
                     presenter.onNoFileSelected();
                 }
-                inputFilePath.setValue(presenter.getSelectedFileNameOrEmpty());
-                outputFilePath.setValue(presenter.getSelectedFileNameOrEmpty());
+                fileSetup.setSourceFile(presenter.getSelectedFileNameOrEmpty());
+                fileSetup.setTargetFile(presenter.getSelectedFileNameOrEmpty());
             }
         });
         return comboBox;
@@ -213,11 +211,10 @@ public class ServerModeFilePanel extends Panel{
         statusLabel.setText(text);
     }
 
-    private static String findInitialFile(Property inputFilePath,
-            Property outputFilePath) {
-        String path = (String) inputFilePath.getValue();
+    private static String findInitialFile(FileSetup fileSetup) {
+        String path = fileSetup.sourceFile();
         if (path == null || path.isEmpty()) {
-            path = (String) outputFilePath.getValue();
+            path = fileSetup.targetFile();
         }
         return (path != null && !path.isEmpty()) ? path : null; 
     }

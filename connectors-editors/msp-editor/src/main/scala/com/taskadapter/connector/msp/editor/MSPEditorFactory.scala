@@ -15,8 +15,6 @@ import com.taskadapter.web.configeditor.file.{FileProcessingResult, LocalModeFil
 import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.{ConnectorSetupPanel, PluginEditorFactory}
-import com.vaadin.data.Property
-import com.vaadin.data.util.ObjectProperty
 import com.vaadin.ui._
 
 import scala.collection.mutable
@@ -51,14 +49,12 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
   }
 
   override def getEditSetupPanel(sandbox: Sandbox, setup: FileSetup) = new ConnectorSetupPanel() {
-    val inputFilePath = new ObjectProperty[String](setup.sourceFile)
-    val outputFilePath = new ObjectProperty[String](setup.targetFile)
 
     override def getUI: Component = {
       if (sandbox.allowLocalFSAccess)
-        new LocalModeFilePanel(inputFilePath, outputFilePath)
+        new LocalModeFilePanel(setup)
       else
-        createServerModePanel(sandbox, inputFilePath, outputFilePath)
+        createServerModePanel(sandbox, setup)
     }
 
     override def validate(): Option[String] = {
@@ -66,13 +62,7 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     }
 
     override def getResult: FileSetup = {
-      val label = if (setup.label.nonEmpty) {
-        setup.label
-      } else {
-        getShortLabel(inputFilePath.getValue)
-      }
-      FileSetup(MSPConnector.ID, label,
-        inputFilePath.getValue, outputFilePath.getValue)
+      setup
     }
 
     override def showError(String: String): Unit = {
@@ -102,9 +92,8 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     infoPanel
   }
 
-  private def createServerModePanel(sandbox: Sandbox, inputFilePath: Property[String], outputFilePath: Property[String]):
-  Panel = {
-    new ServerModeFilePanel(sandbox.getUserContentDirectory, inputFilePath, outputFilePath,
+  private def createServerModePanel(sandbox: Sandbox, fileSetup: FileSetup): Panel = {
+    new ServerModeFilePanel(sandbox.getUserContentDirectory, fileSetup,
       (uploadedFile: File) => processFile(sandbox, uploadedFile)
     )
   }

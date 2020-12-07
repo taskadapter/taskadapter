@@ -1,14 +1,13 @@
 package com.taskadapter.connector.jira;
 
 import com.taskadapter.connector.definition.WebConnectorSetup;
+import com.taskadapter.vaadin14shim.Binder;
+import com.taskadapter.vaadin14shim.TextField;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.configeditor.EditorUtil;
-import com.vaadin.data.util.MethodProperty;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.taskadapter.vaadin14shim.GridLayout;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextField;
 
 /**
  * Panel with title: "Set when exporting to JIRA"
@@ -43,8 +42,7 @@ class OtherJiraFieldsPanel extends Panel {
                 .addLabeledText(grid,
                         "Set 'Affected version' to:",
                         "Set this 'affected version' value when submitting issues to JIRA.");
-        final MethodProperty<String> affectedVersionProperty = new MethodProperty<>(config, "affectedVersion");
-        affectedVersion.setPropertyDataSource(affectedVersionProperty);
+        Binder.bindField(affectedVersion, config, "affectedVersion");
         Button showAffectedVersion = EditorUtil.createLookupButton(
                 "...",
                 "Show list of available versions",
@@ -53,7 +51,7 @@ class OtherJiraFieldsPanel extends Panel {
                 () -> new JiraConnector(config, webServerInfo).getVersions(),
                 exceptionFormatter,
                 namedKeyedObject -> {
-                    affectedVersionProperty.setValue(namedKeyedObject.getName());
+                    affectedVersion.setValue(namedKeyedObject.getName());
                     return null;
                 }
         );
@@ -63,8 +61,8 @@ class OtherJiraFieldsPanel extends Panel {
                 .addLabeledText(grid,
                         "Set 'Fix for version' to:",
                         "Set this 'fix for version' value when submitting issues to JIRA.");
-        final MethodProperty<String> fixForProperty = new MethodProperty<>(config, "fixForVersion");
-        fixForVersion.setPropertyDataSource(fixForProperty);
+        Binder.bindField(fixForVersion, config, "fixForVersion");
+
         Button showFixForVersion = EditorUtil.createLookupButton(
                 "...",
                 "Show list of available versions",
@@ -73,7 +71,7 @@ class OtherJiraFieldsPanel extends Panel {
                 () -> new JiraConnector(config, webServerInfo).getVersions(),
                 exceptionFormatter,
                 namedKeyedObject -> {
-                    fixForProperty.setValue(namedKeyedObject.getName());
+                    fixForVersion.setValue(namedKeyedObject.getName());
                     return null;
                 }
         );
@@ -82,8 +80,7 @@ class OtherJiraFieldsPanel extends Panel {
 
         final TextField defaultTaskType = EditorUtil.addLabeledText(grid, "Default issue type:",
                         "New issues will be created with this issue type (bug/improvement/task...)");
-        final MethodProperty<String> defaultTaskTypeProperty = new MethodProperty<>(config, "defaultTaskType");
-        defaultTaskType.setPropertyDataSource(defaultTaskTypeProperty);
+        Binder.bindField(defaultTaskType, config, "defaultTaskType");
         Button showDefaultTaskType = EditorUtil.createLookupButton(
                 "...",
                 "Show list of available issue types on the JIRA server",
@@ -92,7 +89,7 @@ class OtherJiraFieldsPanel extends Panel {
                 () -> new JiraConnector(config, webServerInfo).getAllIssueTypes(),
                 exceptionFormatter,
                 namedKeyedObject -> {
-                    defaultTaskTypeProperty.setValue(namedKeyedObject.getName());
+                    defaultTaskType.setValue(namedKeyedObject.getName());
                     return null;
                 }
         );
@@ -101,8 +98,7 @@ class OtherJiraFieldsPanel extends Panel {
         final TextField defaultIssueTypeForSubtasks = EditorUtil
                 .addLabeledText(grid, "Default issue type for subtasks:",
                         "Subtasks will be created with this issue type (typically this is 'subtask')");
-        final MethodProperty<String> defaultIssueTypeForSubtasksProperty = new MethodProperty<>(config, "defaultIssueTypeForSubtasks");
-        defaultIssueTypeForSubtasks.setPropertyDataSource(defaultIssueTypeForSubtasksProperty);
+        Binder.bindField(defaultIssueTypeForSubtasks, config, "defaultIssueTypeForSubtasks");
         Button showIssueTypeForSubtasksButton = EditorUtil.createLookupButton(
                 "...",
                 "Show list of available subtask types on the JIRA server",
@@ -111,7 +107,7 @@ class OtherJiraFieldsPanel extends Panel {
                 () -> new JiraConnector(config, webServerInfo).getIssueTypesForSubtasks(),
                 exceptionFormatter,
                 namedKeyedObject -> {
-                    defaultIssueTypeForSubtasksProperty.setValue(namedKeyedObject.getName());
+                    defaultIssueTypeForSubtasks.setValue(namedKeyedObject.getName());
                     return null;
                 }
         );
