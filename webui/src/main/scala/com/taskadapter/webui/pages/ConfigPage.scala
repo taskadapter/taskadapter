@@ -9,7 +9,6 @@ import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.connector.definition.exception.FieldNotMappedException
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.license.LicenseManager
-import com.taskadapter.web.event.{ConfigSaveRequested, EventBusImpl, StartExportRequested}
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{ConfigId, UIConnectorConfig, UISyncConfig}
 import com.taskadapter.webui.`export`.ExportResultsFragment
@@ -61,10 +60,6 @@ class ConfigPanel(config: UISyncConfig,
   val configTitleLine = new Label(config.label)
   addComponent(configTitleLine)
 
-  EventBusImpl.subscribe((e: ConfigSaveRequested) => {
-    configTitleLine.setValue(e.config.label)
-  })
-
   val tabSheet = new ConfigPanelTabbedSheet();
   addComponent(tabSheet.ui)
 
@@ -81,6 +76,10 @@ class ConfigPanel(config: UISyncConfig,
 
   overviewPanel.reload()
   tabSheet.showTab("Overview")
+
+  def updateConfigTitleLine(config: UISyncConfig) : Unit = {
+    configTitleLine.setValue(config.label)
+  }
 
   def createArrow(imageFileName: String, listener: ClickListener): Button = {
     val leftArrow = ImageLoader.getImage(imageFileName)
@@ -124,7 +123,7 @@ class ConfigPanel(config: UISyncConfig,
     * @param config base config. May be saved!
     */
   private def sync(config: UISyncConfig): Unit = {
-    EventBusImpl.post(StartExportRequested(config))
+    exportCommon(config)
   }
 
   class FieldMappingPanel extends ReloadableComponent {
@@ -187,7 +186,7 @@ class ConfigPanel(config: UISyncConfig,
       horizontalLayout.removeAll()
       val configSaver = new Runnable {
         override def run(): Unit = {
-          EventBusImpl.post(ConfigSaveRequested(config))
+          updateConfigTitleLine(config)
           recreateContents(config)
         }
       }
@@ -212,10 +211,6 @@ class ConfigPanel(config: UISyncConfig,
       horizontalLayout.add(rightSystemButton)
 
       performValidation(config, configSaver)
-
-      EventBusImpl.subscribe((e: StartExportRequested) => {
-        exportCommon(e.config);
-      })
     }
 
     def showInitialState() = {

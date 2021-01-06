@@ -28,8 +28,6 @@ case class ShowConfigsListPageRequested() extends Event
 
 case class ShowAllExportResultsRequested(configId: ConfigId) extends Event
 
-case class StartExportRequested(config: UISyncConfig) extends Event
-
 case class ConfigSaveRequested(config: UISyncConfig) extends Event
 
 case class ConfigCloneRequested(configId: ConfigId) extends Event
