@@ -10,8 +10,21 @@ import static org.junit.Assert.assertEquals;
 
 public class ConfigFileParserTest {
     @Test
-    public void fileIsParsed() throws IOException {
+    public void legacyConfigFileIsParsed() throws IOException {
         String contents = Resources.toString(Resources.getResource("redmine.ta_conf"), Charsets.UTF_8);
+        StoredExportConfig file = NewConfigParser.parseLegacyConfig(1, contents);
+
+        assertEquals("Redmine DEMO", file.getName());
+        assertEquals("Redmine REST", file.getConnector1().connectorTypeId());
+        assertEquals("Microsoft Project", file.getConnector2().connectorTypeId());
+    }
+
+    /**
+     * configs with ID were introduced in Jan 2021.
+     */
+    @Test
+    public void configWithIdFileIsParsed() throws IOException {
+        String contents = Resources.toString(Resources.getResource("redmine.conf"), Charsets.UTF_8);
         StoredExportConfig file = NewConfigParser.parse(contents);
 
         assertEquals("Redmine DEMO", file.getName());

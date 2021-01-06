@@ -4,9 +4,6 @@ import com.vaadin.data.Property
 
 object Binder {
   def bindField(textField: TextField, obj: Object, fieldName: String): Unit = {
-    //    val instanceField = obj.getClass.getDeclaredField(fieldName)
-    //    val methodName = "set" + fieldName.capitalize
-    //    val instanceField = obj.getClass.getDeclaredMethod(methodName, classOf[String])
     val instanceField = BinderJava.getField(obj, fieldName)
     instanceField.setAccessible(true)
     val value = instanceField.get(obj).asInstanceOf[String]
