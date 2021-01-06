@@ -1,10 +1,13 @@
 package com.taskadapter.webui.pages
 
+import com.taskadapter.vaadin14shim.Label
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
 import java.util.UUID
 
-import com.taskadapter.web.SettingsManager
 import com.taskadapter.web.uiapi.{ConfigId, Schedule}
 import com.taskadapter.webui._
+import com.taskadapter.webui.service.Preservices
 import com.vaadin.data.sort.SortOrder
 import com.vaadin.data.util.{BeanItem, BeanItemContainer}
 import com.vaadin.shared.data.sort.SortDirection
@@ -19,8 +22,11 @@ case class ScheduleListItem(id: String, configId: ConfigId,
                             @BeanProperty intervalMin: Int,
                             @BeanProperty to: String)
 
-class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, configOperations: ConfigOperations,
-                        settingsManager: SettingsManager) {
+class SchedulesListPage() extends BasePage {
+  private val configOps: ConfigOperations = SessionController.buildConfigOperations()
+  private val services: Preservices = SessionController.getServices
+
+  EventTracker.trackPage("schedules");
   private val log = LoggerFactory.getLogger(classOf[SchedulesListPage])
   private val configRowsToShowInListSelect = 15
 
@@ -32,12 +38,13 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
   val configsListSelect = createConfigsList()
 
   ui.addComponent(listLayout)
+  showSchedules(services.schedulesStorage.getSchedules())
 
   def showSchedules(results: Seq[Schedule]): Unit = {
     ds.removeAllItems()
     ds.addAll(
       results.flatMap { schedule =>
-        val maybeConfig = configOperations.getOwnedConfigs.find(c => c.id == schedule.configId)
+        val maybeConfig = configOps.getOwnedConfigs.find(c => c.configId == schedule.configId)
         if (maybeConfig.isDefined) {
           Some(ScheduleListItem(schedule.id, schedule.configId, maybeConfig.get.label,
             schedule.intervalInMinutes, maybeConfig.get.getConnector2.getLabel))
@@ -52,28 +59,28 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
 
 
   def showSchedules(): Unit = {
-    showSchedules(schedulesStorage.getSchedules())
+    showSchedules(services.schedulesStorage.getSchedules())
   }
 
   private def applyUI(newUi: Component): Unit = {
-    ui.removeAllComponents()
-    ui.addComponent(newUi)
+    ui.removeAll()
+    ui.add(newUi)
   }
 
   private def showSchedule(scheduleId: String): Unit = {
-    tracker.trackPage("edit_schedule_page")
-    val schedule = schedulesStorage.get(scheduleId).get
+    EventTracker.trackPage("edit_schedule_page")
+    val schedule = services.schedulesStorage.get(scheduleId).get
     showSchedule(schedule)
   }
 
   private def showNewScheduleEditor(configId: ConfigId): Unit = {
-    tracker.trackPage("create_schedule_page")
+    EventTracker.trackPage("create_schedule_page")
     val schedule = Schedule(UUID.randomUUID().toString, configId, 60, false, false)
     showSchedule(schedule)
   }
 
   private def showSchedule(schedule: Schedule): Unit = {
-    val config = configOperations.getOwnedConfigs.find(c => c.id == schedule.configId).get
+    val config = configOps.getOwnedConfigs.find(c => c.configId == schedule.configId).get
     val editSchedulePage = new EditSchedulePage(
       config.label,
       config.getConnector1.getLabel,
@@ -86,12 +93,12 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
   }
 
   def saveSchedule(schedule: Schedule): Unit = {
-    schedulesStorage.store(schedule)
+    services.schedulesStorage.store(schedule)
     showSchedules()
   }
 
   def deleteSchedule(schedule: Schedule): Unit = {
-    schedulesStorage.delete(schedule.id)
+    services.schedulesStorage.delete(schedule.id)
     showSchedules()
   }
 
@@ -106,11 +113,11 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
     goButton.addClickListener(_ => showNewScheduleEditor(getSelectedConfigId()))
 
     val label = new Label(Page.message("schedules.selectConfig.title"))
-    label.addStyleName(Sizes.tabIntro)
-    layout.addComponent(label)
+    label.addClassName(Sizes.tabIntro)
+    layout.add(label)
     val horizontalLayout = new HorizontalLayout(configsListSelect, goButton)
     horizontalLayout.setSpacing(true)
-    layout.addComponent(horizontalLayout)
+    layout.add(horizontalLayout)
 
     reloadConfigsInList()
     applyUI(layout)
@@ -123,9 +130,9 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
   }
 
   private def reloadConfigsInList(): Unit = {
-    configOperations.getOwnedConfigs.foreach { s =>
-      configsListSelect.addItem(s.id)
-      configsListSelect.setItemCaption(s.id, if (s.label.isEmpty) {
+    configOps.getOwnedConfigs.foreach { s =>
+      configsListSelect.addItem(s.configId)
+      configsListSelect.setItemCaption(s.configId, if (s.label.isEmpty) {
         Page.message("schedules.configsList.defaultLabelForConfigs")
       } else {
         s.label
@@ -149,9 +156,9 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
     addButton.addClickListener(_ => showSelectConfig())
 
     val checkbox = new CheckBox(Page.message("schedules.scheduledEnabled"))
-    checkbox.setValue(settingsManager.schedulerEnabled)
+    checkbox.setValue(services.settingsManager.schedulerEnabled)
     checkbox.setImmediate(true)
-    checkbox.addValueChangeListener(_ => settingsManager.setSchedulerEnabled(checkbox.getValue))
+    checkbox.addValueChangeListener(_ => services.settingsManager.setSchedulerEnabled(checkbox.getValue))
 
     grid.setWidth("980px")
     grid.removeAllColumns()
@@ -178,7 +185,7 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
     }
 
     val label = new Label(Page.message("schedules.intro"))
-    label.addStyleName(Sizes.tabIntro)
+    label.addClassName(Sizes.tabIntro)
 
     val controlsLayout = new HorizontalLayout(addButton, checkbox)
     controlsLayout.setWidth("100%")
@@ -187,9 +194,9 @@ class SchedulesListPage(tracker: Tracker, schedulesStorage: SchedulesStorage, co
     controlsLayout.setComponentAlignment(checkbox, Alignment.MIDDLE_RIGHT)
 
     val listLayout = new VerticalLayout()
-    listLayout.addComponent(label)
-    listLayout.addComponent(controlsLayout)
-    listLayout.addComponent(grid)
+    listLayout.add(label)
+    listLayout.add(controlsLayout)
+    listLayout.add(grid)
     listLayout
   }
 

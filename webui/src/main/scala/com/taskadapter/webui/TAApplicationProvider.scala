@@ -3,6 +3,7 @@ package com.taskadapter.webui
 import java.io.File
 
 import com.taskadapter.schedule.ScheduleRunner
+import com.taskadapter.webui.config.ApplicationSettings
 import com.taskadapter.webui.service.{EditorManager, Preservices}
 import com.vaadin.server.{UIClassSelectionEvent, UICreateEvent, UIProvider}
 import com.vaadin.ui.UI
@@ -30,19 +31,8 @@ class TAApplicationProvider(reportGoogleAnalytics: Boolean) extends UIProvider {
   val GOOGLE_ANALYTICS_ID = "UA-3768502-12"
   val log = LoggerFactory.getLogger(classOf[TAApplicationProvider])
 
-  /**
-    * Calculates default taskadapter root folder. Current implementation
-    * returns <code>user.home/.taskadapter</code>.
-    *
-    * @return task adapter root folder.
-    */
-  def getDefaultRootFolder(): File = {
-    val userHome = System.getProperty("user.home")
-    new File(userHome, ".taskadapter")
-  }
-
   // Application config root folder.
-  val rootFolder: File = getDefaultRootFolder()
+  val rootFolder: File = ApplicationSettings.getDefaultRootFolder()
 
   /**
     * Global services.
@@ -78,7 +68,7 @@ class TAApplicationProvider(reportGoogleAnalytics: Boolean) extends UIProvider {
       log.info("Skipping Google Analytics: started in dev mode")
       new NoOpGATracker()
     }
-    SessionController.manageSession(services, new WebUserSession(ui, tracker))
+    SessionController.initSession(new WebUserSession(ui), tracker)
     val action = if (services.licenseManager.isSomeValidLicenseInstalled) {
       "web_app_opened_licensed"
     } else {

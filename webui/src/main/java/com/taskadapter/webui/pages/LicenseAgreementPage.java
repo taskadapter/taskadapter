@@ -1,5 +1,8 @@
 package com.taskadapter.webui.pages;
 
+import com.taskadapter.vaadin14shim.VerticalLayout;
+import com.taskadapter.vaadin14shim.HorizontalLayout;
+import com.taskadapter.vaadin14shim.GridLayout;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.taskadapter.web.SettingsManager;
@@ -46,9 +49,12 @@ public final class LicenseAgreementPage {
         acceptCheckbox.setValue(false);
         acceptCheckbox.setImmediate(true);
 
-        final Button acceptButton = new Button(ACCEPT_BUTTON);
+        Button acceptButton = new Button(ACCEPT_BUTTON, event -> {
+            sm.markLicenseAgreementAsAccepted();
+            onComplete.run();
+        });
         acceptButton.setEnabled(false);
-        
+
         acceptCheckbox
                 .addValueChangeListener(new CheckBox.ValueChangeListener() {
                     @Override
@@ -57,26 +63,17 @@ public final class LicenseAgreementPage {
                         acceptButton.setEnabled(acceptCheckbox.getValue());
                     }
                 });
-        actionLayout.addComponent(acceptCheckbox);
+        actionLayout.add(acceptCheckbox);
         actionLayout.setComponentAlignment(acceptCheckbox,
                 Alignment.MIDDLE_LEFT);
-        
-        acceptButton.addClickListener(new Button.ClickListener() {
 
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                sm.markLicenseAgreementAsAccepted();
-                onComplete.run();
-            }
-        });
-
-        actionLayout.addComponent(acceptButton);
+        actionLayout.add(acceptButton);
         actionLayout
                 .setComponentAlignment(acceptButton, Alignment.MIDDLE_RIGHT);
         
         final VerticalLayout view = new VerticalLayout();
-        view.addComponent(agreementPanel);
-        view.addComponent(actionLayout);
+        view.add(agreementPanel);
+        view.add(actionLayout);
 
         panel.setContent(view);
         

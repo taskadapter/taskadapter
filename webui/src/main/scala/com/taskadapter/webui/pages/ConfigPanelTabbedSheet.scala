@@ -1,6 +1,10 @@
 package com.taskadapter.webui.pages
 
-import com.vaadin.ui.{Component, HorizontalLayout, Label, Panel, VerticalLayout}
+
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
+import com.taskadapter.vaadin14shim.GridLayout
+import com.vaadin.ui.{Component, Label, Panel}
 
 import scala.collection.mutable
 
@@ -11,9 +15,9 @@ class ConfigPanelTabbedSheet {
   private val emptyGapArea = new VerticalLayout()
   emptyGapArea.setWidth("10px")
   private val componentArea = new VerticalLayout()
-  ui.addComponent(buttonArea)
-  ui.addComponent(emptyGapArea)
-  ui.addComponent(componentArea)
+  ui.add(buttonArea)
+  ui.add(emptyGapArea)
+  ui.add(componentArea)
 
   private val captionToComponentMap = mutable.Map[String, ReloadableComponent]()
   private val captionToButtonsMap = mutable.Map[String, Component]()
@@ -30,14 +34,14 @@ class ConfigPanelTabbedSheet {
 
     val panel = new Panel()
     val button = new Label(caption)
-    layout.addComponent(button) // label is not clickable, so have to wrap it into a layout
+    layout.add(button) // label is not clickable, so have to wrap it into a layout
     layout.addLayoutClickListener(_ => {
       showTab(caption)
     })
 
     panel.setContent(layout)
 
-    buttonArea.addComponent(panel)
+    buttonArea.add(panel)
   }
 
   def showTab(caption: String): Unit = {
@@ -51,8 +55,8 @@ class ConfigPanelTabbedSheet {
   }
 
   private def showTab(component: ReloadableComponent): Unit = {
-    componentArea.removeAllComponents()
-    componentArea.addComponent(component.ui())
+    componentArea.removeAll()
+    componentArea.add(component.ui())
     component.reload()
   }
 }

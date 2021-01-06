@@ -1,6 +1,9 @@
 package com.taskadapter.web.configeditor;
 
 import com.taskadapter.web.configeditor.map.MapEditorModel;
+import com.taskadapter.vaadin14shim.HorizontalLayout;
+import com.taskadapter.vaadin14shim.VerticalLayout;
+
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;
@@ -95,35 +98,26 @@ public class CustomFieldsTablePanel extends Panel {
         });
 
 
-        Button addNewBtn = new Button(ADD_NEW_BUTTON);
+        Button addNewBtn = new Button(ADD_NEW_BUTTON,
+                event -> model.append(CELL_DEFAULT_VALUE, CELL_DEFAULT_VALUE));
         addNewBtn.setDescription(ADD_NEW_BUTTON_DESCRIPTION);
-        addNewBtn.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                model.append(CELL_DEFAULT_VALUE, CELL_DEFAULT_VALUE);
-            }
-        });
 
-        Button removeBtn = new Button(REMOVE_BUTTON);
-        removeBtn.setDescription(REMOVE_BUTTON_DESCRIPTION);
-        removeBtn.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                Object itemId = table.getValue();
-                if (itemId != null) {
-                    model.removeItem(itemId);
-                }
+        Button removeBtn = new Button(REMOVE_BUTTON, event -> {
+            Object itemId = table.getValue();
+            if (itemId != null) {
+                model.removeItem(itemId);
             }
         });
+        removeBtn.setDescription(REMOVE_BUTTON_DESCRIPTION);
 
         HorizontalLayout buttonsLayout = new HorizontalLayout();
-        buttonsLayout.addComponent(addNewBtn);
-        buttonsLayout.addComponent(removeBtn);
+        buttonsLayout.add(addNewBtn);
+        buttonsLayout.add(removeBtn);
 
-        mainLayout.addComponent(table);
+        mainLayout.add(table);
         mainLayout.setComponentAlignment(table, Alignment.TOP_CENTER);
 
-        mainLayout.addComponent(buttonsLayout);
+        mainLayout.add(buttonsLayout);
         mainLayout.setComponentAlignment(buttonsLayout, Alignment.TOP_LEFT);
 
         mainLayout.setMargin(true);

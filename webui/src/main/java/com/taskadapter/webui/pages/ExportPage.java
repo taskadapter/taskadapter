@@ -5,13 +5,12 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.reporting.ErrorReporter;
 import com.taskadapter.web.uiapi.UISyncConfig;
-import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.results.ExportResultStorage;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.taskadapter.vaadin14shim.VerticalLayout;
+import com.taskadapter.vaadin14shim.Label;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,20 +41,20 @@ public final class ExportPage {
     private final VerticalLayout content;
 
     public ExportPage(ExportResultStorage exportResultStorage, UISyncConfig config,
-                      int taskLimit, boolean showFilePath, Runnable onDone, Tracker tracker) {
+                      int taskLimit, boolean showFilePath, Runnable onDone) {
         this.config = config;
         this.taskLimit = taskLimit;
 
         ui = new VerticalLayout();
         errorMessage = new Label("");
-        errorMessage.addStyleName("errorMessage");
+        errorMessage.addClassName("errorMessage");
         errorMessage.setVisible(false);
         errorMessage.setWidth(500, Unit.PIXELS);
-        ui.addComponent(errorMessage);
+        ui.add(errorMessage);
 
         content = new VerticalLayout();
-        ui.addComponent(content);
-        exportHelper = new ExportHelper(exportResultStorage, tracker, onDone, showFilePath, content, config);
+        ui.add(content);
+        exportHelper = new ExportHelper(exportResultStorage, onDone, showFilePath, content, config);
 
         startLoading();
     }
@@ -115,12 +114,12 @@ public final class ExportPage {
      */
     private void showErrorMessage(String message) {
         final boolean haveMessage = message != null;
-        errorMessage.setValue(haveMessage ? message : "");
+        errorMessage.setText(haveMessage ? message : "");
         errorMessage.setVisible(haveMessage);
     }
 
     private void setContent(Component comp) {
-        content.removeAllComponents();
-        content.addComponent(comp);
+        content.removeAll();
+        content.add(comp);
     }
 }

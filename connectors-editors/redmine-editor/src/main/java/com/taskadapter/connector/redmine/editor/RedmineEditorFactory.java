@@ -22,7 +22,7 @@ import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Sandbox;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.GridLayout;
+import com.taskadapter.vaadin14shim.GridLayout;
 import scala.Option;
 import scala.collection.JavaConverters;
 import scala.collection.Seq;
@@ -68,11 +68,11 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
         gridLayout.setMargin(true);
         gridLayout.setSpacing(true);
 
-        gridLayout.addComponent(projectPanel);
+        gridLayout.add(projectPanel);
         PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(),
                 Interfaces.fromMethod(DataProvider.class, new PrioritiesLoader(setup), "loadPriorities"), this);
-        gridLayout.addComponent(priorityPanel);
-        gridLayout.addComponent(new OtherRedmineFieldsContainer(config, setup, this));
+        gridLayout.add(priorityPanel);
+        gridLayout.add(new OtherRedmineFieldsContainer(config, setup, this));
         return gridLayout;
     }
 

@@ -1,12 +1,12 @@
 package com.taskadapter.web.ui;
 
+import com.taskadapter.vaadin14shim.GridLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
 
 /**
  * Grid layout utilities.
- * 
+ *
  */
 public final class Grids {
     /**
@@ -21,8 +21,8 @@ public final class Grids {
      * @return <code>layout</code> to allow chaining calls.
      */
     public static GridLayout addTo(GridLayout layout, Alignment alignment,
-            Component comp) {
-        layout.addComponent(comp);
+                                   Component comp) {
+        layout.add(comp);
         layout.setComponentAlignment(comp, alignment);
         return layout;
     }
@@ -44,7 +44,7 @@ public final class Grids {
      */
     public static GridLayout addTo(GridLayout layout, int col, int row,
             Alignment alignment, Component comp) {
-        layout.addComponent(comp, col, row);
+        layout.add(comp, col, row);
         layout.setComponentAlignment(comp, alignment);
         return layout;
     }

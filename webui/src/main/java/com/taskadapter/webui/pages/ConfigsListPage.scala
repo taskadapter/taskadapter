@@ -2,41 +2,16 @@ package com.taskadapter.webui.pages
 
 import java.util.Comparator
 
-import com.taskadapter.web.event.{EventBusImpl, ShowConfigPageRequested}
+import com.taskadapter.vaadin14shim.{HorizontalLayout, VerticalLayout}
+import com.taskadapter.web.event.{EventBusImpl, NewConfigPageRequested, ShowConfigPageRequested}
 import com.taskadapter.web.uiapi.{ConfigId, UISyncConfig}
-import com.taskadapter.webui.{ConfigOperations, Page}
-import com.vaadin.ui._
+import com.taskadapter.webui.service.Preservices
+import com.taskadapter.webui.{BasePage, ConfigOperations, Page, SessionController}
+import com.vaadin.ui.{Alignment, Button, Component, Label, TextField}
 import com.vaadin.ui.themes.BaseTheme
 import org.slf4j.LoggerFactory
 
 object ConfigsListPage {
-
-  /**
-    * Callback for config list page.
-    */
-  trait Callback {
-
-    /**
-      * Performs a forward drop-in.
-      *
-      * @param config config to use.
-      * @param file   file to receive.
-      */
-    def forwardDropIn(config: UISyncConfig, file: Html5File): Unit
-
-    /**
-      * Performs a backward drop-in.
-      *
-      * @param config config to use.
-      * @param file   file to receive.
-      */
-    def backwardDropIn(config: UISyncConfig, file: Html5File): Unit
-
-    /**
-      * User requested creation of a new config.
-      */
-    def newConfig(): Unit
-  }
 
   /**
     * Comparator for configuration files.
@@ -59,31 +34,37 @@ object ConfigsListPage {
 
 }
 
-class ConfigsListPage(showAll: Boolean, callback: ConfigsListPage.Callback, configOperations: ConfigOperations) {
+class ConfigsListPage() extends BasePage {
+
   private val log = LoggerFactory.getLogger(classOf[ConfigsListPage])
+
+  private val configOps: ConfigOperations = SessionController.buildConfigOperations()
+  private val services: Preservices = SessionController.getServices
+
+  val showAll = services.settingsManager.adminCanManageAllConfigs &&
+    SessionController.getUserContext.authorizedOps.canManagerPeerConfigs
 
   val displayMode = if (showAll) DisplayMode.ALL_CONFIGS
   else DisplayMode.OWNED_CONFIGS
 
   private var configs = Seq[UISyncConfig]()
 
-  val layout = new VerticalLayout
-  layout.setSpacing(true)
+  setSpacing(true)
   val actionPanel = new HorizontalLayout
   actionPanel.setWidth("100%")
   actionPanel.setSpacing(true)
   val addButton = new Button(Page.message("configsPage.buttonNewConfig"))
-  addButton.addClickListener(_ => callback.newConfig())
-  actionPanel.addComponent(addButton)
+  addButton.addClickListener(_ => EventBusImpl.post(NewConfigPageRequested()))
+  actionPanel.add(addButton)
   actionPanel.setComponentAlignment(addButton, Alignment.MIDDLE_LEFT)
 
   val filterPanel = new HorizontalLayout
   val filterField = new TextField
   filterField.addTextChangeListener(e => filterFields(e.getText))
-  filterPanel.addComponent(new Label(Page.message("configsPage.filter")))
-  filterPanel.addComponent(filterField)
+  filterPanel.add(new Label(Page.message("configsPage.filter")))
+  filterPanel.add(filterField)
   filterPanel.setSpacing(true)
-  actionPanel.addComponent(filterPanel)
+  actionPanel.add(filterPanel)
   actionPanel.setComponentAlignment(filterPanel, Alignment.MIDDLE_RIGHT)
   val configsTopLevelLayout = new HorizontalLayout()
   configsTopLevelLayout.setSpacing(true)
@@ -92,26 +73,25 @@ class ConfigsListPage(showAll: Boolean, callback: ConfigsListPage.Callback, conf
   val configsLayout = new VerticalLayout()
   configsLayout.setWidth("100%")
 
-  configsTopLevelLayout.addComponent(configsLayout)
+  configsTopLevelLayout.add(configsLayout)
   configsTopLevelLayout.setComponentAlignment(configsLayout, Alignment.TOP_CENTER)
 
-  layout.addComponent(actionPanel)
-  layout.addComponent(configsTopLevelLayout)
-  layout.setComponentAlignment(actionPanel, Alignment.TOP_LEFT)
-  refreshConfigs()
+  addComponent(actionPanel)
+  addComponent(configsTopLevelLayout)
+  setComponentAlignment(actionPanel, Alignment.TOP_LEFT)
 
   def refreshConfigs() = {
-    val loadedConfigs = if (showAll) configOperations.getManageableConfigs
-    else configOperations.getOwnedConfigs
+    val loadedConfigs = if (showAll) configOps.getManageableConfigs
+    else configOps.getOwnedConfigs
     configs = loadedConfigs.sortBy(c => c.getOwnerName)
     setDisplayedConfigs(configs)
     filterFields(filterField.getValue)
   }
 
   private def setDisplayedConfigs(dispConfigs: Seq[UISyncConfig]): Unit = {
-    configsLayout.removeAllComponents()
+    configsLayout.removeAll()
     dispConfigs.foreach(config => {
-      configsLayout.addComponent(createConfigComponent(config))
+      configsLayout.add(createConfigComponent(config))
     })
   }
 
@@ -120,8 +100,8 @@ class ConfigsListPage(showAll: Boolean, callback: ConfigsListPage.Callback, conf
     val configLabel = config.label
     val link = new Button(configLabel)
     link.addStyleName(BaseTheme.BUTTON_LINK)
-    link.addClickListener(_ => showConfigSummary(config.id))
-    layout.addComponent(link)
+    link.addClickListener(_ => showConfigSummary(config.configId))
+    layout.add(link)
     layout
   }
 
@@ -144,6 +124,4 @@ class ConfigsListPage(showAll: Boolean, callback: ConfigsListPage.Callback, conf
     }
     true
   }
-
-  def ui = layout
 }

@@ -10,10 +10,10 @@ import com.vaadin.data.util.MethodProperty;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.GridLayout;
+import com.taskadapter.vaadin14shim.GridLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+import com.taskadapter.vaadin14shim.VerticalLayout;
 
 public class OtherRedmineFieldsContainer extends Panel {
     private static final String OTHER_PANEL_CAPTION = "Additional Info";
@@ -37,10 +37,10 @@ public class OtherRedmineFieldsContainer extends Panel {
 
         setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
         setHeight("157px");
-        view.addComponent(Editors.createFindUsersElement(new MethodProperty<>(config, "findUserByName")));
+        view.add(Editors.createFindUsersElement(new MethodProperty<>(config, "findUserByName")));
         final CheckBox saveRelations = new CheckBox(SAVE_ISSUE_LABEL);
         saveRelations.setPropertyDataSource(new MethodProperty<Boolean>(config, "saveIssueRelations"));
-        view.addComponent(saveRelations);
+        view.add(saveRelations);
         addDefaultTaskTypeElement();
         setContent(view);
     }
@@ -67,8 +67,8 @@ public class OtherRedmineFieldsContainer extends Panel {
                 }
         );
 
-        grid.addComponent(showTaskTypesButton);
+        grid.add(showTaskTypesButton);
         grid.setComponentAlignment(showTaskTypesButton, Alignment.MIDDLE_CENTER);
-        view.addComponent(grid);
+        view.add(grid);
     }
 }

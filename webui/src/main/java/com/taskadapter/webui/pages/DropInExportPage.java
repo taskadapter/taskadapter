@@ -6,13 +6,12 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.Page;
-import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.results.ExportResultStorage;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.taskadapter.vaadin14shim.VerticalLayout;
+import com.taskadapter.vaadin14shim.Label;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,21 +48,21 @@ public final class DropInExportPage {
     private final VerticalLayout content;
 
     private DropInExportPage(ExportResultStorage exportResultStorage, ConfigOperations configOps, UISyncConfig config,
-                             int taskLimit, boolean showFilePath, Runnable onDone, File tempFile, Tracker tracker) {
+                             int taskLimit, boolean showFilePath, Runnable onDone, File tempFile) {
         this.config = config;
         this.taskLimit = taskLimit;
         this.tempFile = tempFile;
 
         ui = new VerticalLayout();
         errorMessage = new Label("");
-        errorMessage.addStyleName("errorMessage");
+        errorMessage.addClassName("errorMessage");
         errorMessage.setVisible(false);
         errorMessage.setWidth(500, Unit.PIXELS);
-        ui.addComponent(errorMessage);
+        ui.add(errorMessage);
 
         content = new VerticalLayout();
-        ui.addComponent(content);
-        exportHelper = new ExportHelper(exportResultStorage, tracker, onDone, showFilePath, content, config);
+        ui.add(content);
+        exportHelper = new ExportHelper(exportResultStorage, onDone, showFilePath, content, config);
         startLoading();
     }
 
@@ -123,23 +122,18 @@ public final class DropInExportPage {
         errorMessage.setVisible(hasMessage);
     }
 
-    /**
-     * Sets new page content.
-     *
-     * @param comp page content.
-     */
     private void setContent(Component comp) {
-        content.removeAllComponents();
-        content.addComponent(comp);
+        content.removeAll();
+        content.add(comp);
     }
 
     public static Component render(ExportResultStorage exportResultStorage, ConfigOperations configOps,
                                    UISyncConfig config, int taskLimit, boolean showFilePath,
-                                   final Runnable onDone, final File tempFile, Tracker tracker) {
+                                   final Runnable onDone, final File tempFile) {
         return new DropInExportPage(exportResultStorage, configOps, config, taskLimit, showFilePath,
                 () -> {
                     tempFile.delete();
                     onDone.run();
-                }, tempFile, tracker).ui;
+                }, tempFile).ui;
     }
 }

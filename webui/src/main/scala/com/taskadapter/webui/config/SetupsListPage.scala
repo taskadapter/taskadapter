@@ -1,17 +1,18 @@
 package com.taskadapter.webui.config
 
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
 import com.taskadapter.web.PopupDialog
 import com.taskadapter.web.uiapi.SetupId
-import com.taskadapter.webui.{ConfigOperations, Page, SetupCategory, Tracker}
+import com.taskadapter.webui.{ConfigOperations, EventTracker, Page, SetupCategory}
 import com.vaadin.server.Sizeable
 import com.vaadin.ui._
 import com.vaadin.ui.themes.ValoTheme
 
-class SetupsListPage(tracker: Tracker,
-                     configOperations: ConfigOperations,
+class SetupsListPage(configOperations: ConfigOperations,
                      showEditSetup: (SetupId) => Unit,
                      showNewSetup: () => Unit) {
-
+  EventTracker.trackPage("setups_list")
   val layout = new VerticalLayout
 
   val introLabel = new Label(Page.message("setupsListPage.intro"))
@@ -26,15 +27,15 @@ class SetupsListPage(tracker: Tracker,
   introRow.setComponentAlignment(addButton, Alignment.MIDDLE_RIGHT)
   introRow.setExpandRatio(introLabel, 1)
 
-  layout.addComponent(introRow)
+  layout.add(introRow)
 
   val elementsComponent = new VerticalLayout()
-  layout.addComponent(elementsComponent)
+  layout.add(elementsComponent)
 
   refresh()
 
   private def refresh(): Unit = {
-    elementsComponent.removeAllComponents()
+    elementsComponent.removeAll()
     addElements()
   }
 
@@ -92,7 +93,7 @@ class SetupsListPage(tracker: Tracker,
 
         val panel = new Panel()
         panel.setContent(row)
-        elementsComponent.addComponent(panel)
+        elementsComponent.add(panel)
       }
   }
 
@@ -102,7 +103,7 @@ class SetupsListPage(tracker: Tracker,
     val messageDialog = PopupDialog.confirm(Page.message("setupsListPage.confirmDelete.question"),
       () => {
         configOperations.deleteConnectorSetup(setupId)
-        tracker.trackEvent(SetupCategory, "deleted", "")
+        EventTracker.trackEvent(SetupCategory, "deleted", "")
         refresh()
       })
 

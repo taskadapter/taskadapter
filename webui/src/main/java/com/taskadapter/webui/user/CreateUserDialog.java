@@ -3,13 +3,13 @@ package com.taskadapter.webui.user;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
+import com.taskadapter.vaadin14shim.GridLayout;
+import com.taskadapter.vaadin14shim.HorizontalLayout;
+import com.taskadapter.vaadin14shim.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+import com.taskadapter.vaadin14shim.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import static com.taskadapter.webui.Page.message;
@@ -32,22 +32,22 @@ public class CreateUserDialog extends Window {
         setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
 
         GridLayout grid = new GridLayout(2, 2);
-        view.addComponent(grid);
+        view.add(grid);
         grid.setSpacing(true);
         grid.setSpacing(true);
         grid.setMargin(true);
 
         Label loginLabel = new Label(message("createUser.login"));
-        grid.addComponent(loginLabel, 0, 0);
+        grid.add(loginLabel, 0, 0);
         loginField = new TextField();
-        grid.addComponent(loginField, 1, 0);
+        grid.add(loginField, 1, 0);
         loginField.focus();
         loginField.setImmediate(true);
 
         Label newPassword = new Label(message("createUser.password"));
-        grid.addComponent(newPassword, 0, 1);
+        grid.add(newPassword, 0, 1);
         passwordField = new PasswordField();
-        grid.addComponent(passwordField, 1, 1);
+        grid.add(passwordField, 1, 1);
 
         final Window dialog = this;
 
@@ -57,16 +57,13 @@ public class CreateUserDialog extends Window {
 
         okButton = new Button(message("button.create"));
         okButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
-        okButton.addStyleName("v-button-default");
-        buttonLayout.addComponent(okButton);
+        okButton.addClassName("v-button-default");
+        buttonLayout.add(okButton);
 
-        Button cancelButton = new Button(message("button.cancel"), new Button.ClickListener() {
-            public void buttonClick(Button.ClickEvent event) {
-                getUI().removeWindow(dialog);
-            }
-        });
-        buttonLayout.addComponent(cancelButton);
-        view.addComponent(buttonLayout);
+        Button cancelButton = new Button(message("button.cancel"),
+                event -> getUI().removeWindow(dialog));
+        buttonLayout.add(cancelButton);
+        view.add(buttonLayout);
         view.setComponentAlignment(buttonLayout, Alignment.BOTTOM_CENTER);
         setWidth(350, PIXELS);
     }
@@ -79,7 +76,7 @@ public class CreateUserDialog extends Window {
         return passwordField.getValue();
     }
 
-    void addOKListener(Button.ClickListener listener) {
-        okButton.addClickListener(listener);
+    void addOKListener(Runnable okListener) {
+        okButton.addClickListener(event -> okListener.run());
     }
 }

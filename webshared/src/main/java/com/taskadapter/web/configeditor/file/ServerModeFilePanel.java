@@ -1,5 +1,6 @@
 package com.taskadapter.web.configeditor.file;
 
+import com.taskadapter.connector.definition.FileSetup;
 import com.taskadapter.web.PopupDialog;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
@@ -10,13 +11,13 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
+import com.taskadapter.vaadin14shim.HorizontalLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.Upload;
-import com.vaadin.ui.VerticalLayout;
+import com.taskadapter.vaadin14shim.VerticalLayout;
+import com.taskadapter.vaadin14shim.Label;
 import com.vaadin.ui.themes.Runo;
 import scala.runtime.BoxedUnit;
 
@@ -43,6 +44,7 @@ public class ServerModeFilePanel extends Panel{
     static final String FILE_DELETED_FAILED = "File deletion error";
 
     private static final String COMBOBOX_WIDTH = "175px";
+    private final FileSetup fileSetup;
 
     private Label statusLabel;
     private final ServerModelFilePanelPresenter presenter;
@@ -51,35 +53,31 @@ public class ServerModeFilePanel extends Panel{
     private ComboBox comboBox;
     private ProgressIndicator progressIndicator;
     private Button deleteButton;
-    private final Property<String> inputFilePath;
-    private final Property<String> outputFilePath;
-    
-    public ServerModeFilePanel(File filesDirectory, Property<String> inputFilePath,
-            Property<String> outputFilePath, UploadProcessor uploadProcessor) {
-    super(TITLE);        
-        this.inputFilePath = inputFilePath;
-        this.outputFilePath = outputFilePath;
+
+    public ServerModeFilePanel(File filesDirectory, FileSetup fileSetup, UploadProcessor uploadProcessor) {
+        super(TITLE);
+        this.fileSetup = fileSetup;
         this.presenter = new ServerModelFilePanelPresenter(filesDirectory,
                 uploadProcessor);
         buildUI();
         presenter.setView(this);
-        presenter.init(findInitialFile(inputFilePath, outputFilePath));
+        presenter.init(findInitialFile(fileSetup));
     }
 
     private void buildUI() {
         VerticalLayout view = new VerticalLayout();
-        view.addComponent(createComboboxPanel());
-        view.addComponent(createDateLabelPanel());
-        view.addComponent(createUploadPanel());
+        view.add(createComboboxPanel());
+        view.add(createDateLabelPanel());
+        view.add(createUploadPanel());
         setContent(view);
     }
 
     private Layout createComboboxPanel() {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setSpacing(true);
-        layout.addComponent(createComboBox());
-        layout.addComponent(createDownloadButton());
-        layout.addComponent(createDeleteButton());
+        layout.add(createComboBox());
+        layout.add(createDownloadButton());
+        layout.add(createDeleteButton());
         return layout;
     }
 
@@ -87,31 +85,31 @@ public class ServerModeFilePanel extends Panel{
         HorizontalLayout layout = new HorizontalLayout();
         layout.setSpacing(true);
 
-        layout.addComponent(new Label("&nbsp;&nbsp;&nbsp;", ContentMode.HTML));
+        layout.add(new Label("&nbsp;&nbsp;&nbsp;", ContentMode.HTML));
 
         statusLabel = new Label("", ContentMode.HTML);
         statusLabel.setStyleName(Runo.LABEL_SMALL);
-        layout.addComponent(statusLabel);
+        layout.add(statusLabel);
         layout.setComponentAlignment(statusLabel, Alignment.MIDDLE_LEFT);
 
         progressIndicator = new ProgressIndicator(new Float(0.0));
         progressIndicator.setPollingInterval(500);
         progressIndicator.setVisible(false);
-        layout.addComponent(progressIndicator);
+        layout.add(progressIndicator);
         layout.setComponentAlignment(progressIndicator, Alignment.MIDDLE_LEFT);
 
         return layout;
     }
 
     private Layout createUploadPanel() {
-        Layout layout = new VerticalLayout();
+        VerticalLayout layout = new VerticalLayout();
 
-        layout.addComponent(new Label("<hr>", ContentMode.HTML));
+        layout.add(new Label("<hr>", ContentMode.HTML));
 
-        Layout bottomToolLayout = new HorizontalLayout();
-        bottomToolLayout.addComponent(createUploadButton());
+        HorizontalLayout bottomToolLayout = new HorizontalLayout();
+        bottomToolLayout.add(createUploadButton());
 
-        layout.addComponent(bottomToolLayout);
+        layout.add(bottomToolLayout);
 
         return layout;
     }
@@ -170,8 +168,8 @@ public class ServerModeFilePanel extends Panel{
                 } else {
                     presenter.onNoFileSelected();
                 }
-                inputFilePath.setValue(presenter.getSelectedFileNameOrEmpty());
-                outputFilePath.setValue(presenter.getSelectedFileNameOrEmpty());
+                fileSetup.setSourceFile(presenter.getSelectedFileNameOrEmpty());
+                fileSetup.setTargetFile(presenter.getSelectedFileNameOrEmpty());
             }
         });
         return comboBox;
@@ -210,14 +208,13 @@ public class ServerModeFilePanel extends Panel{
     }
 
     public void setStatusLabelText(String text) {
-        statusLabel.setValue(text);
+        statusLabel.setText(text);
     }
 
-    private static String findInitialFile(Property inputFilePath,
-            Property outputFilePath) {
-        String path = (String) inputFilePath.getValue();
+    private static String findInitialFile(FileSetup fileSetup) {
+        String path = fileSetup.sourceFile();
         if (path == null || path.isEmpty()) {
-            path = (String) outputFilePath.getValue();
+            path = fileSetup.targetFile();
         }
         return (path != null && !path.isEmpty()) ? path : null; 
     }

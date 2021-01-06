@@ -1,11 +1,16 @@
 package com.taskadapter.webui.user
 
+
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.Label
+import com.taskadapter.vaadin14shim.TextField
+import com.taskadapter.vaadin14shim.GridLayout
 import com.taskadapter.auth.{AuthException, AuthorizedOperations, CredentialsManager}
 import com.taskadapter.data.{MutableState, States}
 import com.taskadapter.license.License
 import com.taskadapter.web.{InputDialog, PopupDialog}
 import com.taskadapter.webui.Page.message
-import com.taskadapter.webui.{Tracker, UserCategory}
+import com.taskadapter.webui.{EventTracker, UserCategory}
 import com.vaadin.server.Sizeable.Unit.PIXELS
 import com.vaadin.ui._
 import com.vaadin.ui.themes.ValoTheme
@@ -13,7 +18,7 @@ import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
 
-class UsersPanel(credentialsManager: CredentialsManager, authorizedOperations: AuthorizedOperations, license: License, tracker: Tracker) {
+class UsersPanel(credentialsManager: CredentialsManager, authorizedOperations: AuthorizedOperations, license: License) {
 
   val logger = LoggerFactory.getLogger(classOf[UsersPanel])
   val COLUMNS_NUMBER = 3
@@ -24,20 +29,20 @@ class UsersPanel(credentialsManager: CredentialsManager, authorizedOperations: A
   view.setSpacing(true)
   ui.setContent(view)
   val errorLabel = new Label
-  errorLabel.addStyleName(ValoTheme.LABEL_FAILURE)
+  errorLabel.addClassName(ValoTheme.LABEL_FAILURE)
   errorLabel.setVisible(false)
   view.addComponent(errorLabel)
   val statusLabel = new Label
-  view.addComponent(statusLabel)
+  view.add(statusLabel)
   val usersLayout = new GridLayout
   usersLayout.setColumns(COLUMNS_NUMBER)
   usersLayout.setSpacing(true)
-  view.addComponent(usersLayout)
+  view.add(usersLayout)
   val users = credentialsManager.listUsers.asScala
   val numUsers = new MutableState[Int](users.size)
   val addUserButton = new Button(message("users.addUser"))
   addUserButton.addClickListener(_ => startCreateUserProcess())
-  view.addComponent(addUserButton)
+  view.add(addUserButton)
   States.onValue(numUsers, (data: Int) => applyLicenseRestriction(data))
   refreshUsers(users)
 
@@ -50,28 +55,28 @@ class UsersPanel(credentialsManager: CredentialsManager, authorizedOperations: A
       && currentNumberOfUsersCreatedInSystem < license.getUsersNumber
       && authorizedOperations.canAddUsers)
     if (license == null) {
-      statusLabel.setValue(message("users.cantAddUsersUntilLicenseInstalled"))
+      statusLabel.setText(message("users.cantAddUsersUntilLicenseInstalled"))
     } else if (license.getUsersNumber <= currentNumberOfUsersCreatedInSystem) {
-      statusLabel.setValue(message("users.maximumUsersNumberReached"))
+      statusLabel.setText(message("users.maximumUsersNumberReached"))
     } else {
-      statusLabel.setValue("")
+      statusLabel.setText("")
     }
   }
 
   private def refreshUsers(users: Seq[String]): Unit = {
-    usersLayout.removeAllComponents()
+    usersLayout.removeAll()
     users.sorted.foreach(u => addUserToPanel(u))
     numUsers.set(users.size)
   }
 
   private def addUserToPanel(userLoginName: String) = {
     val userLoginLabel = new Label(userLoginName)
-    userLoginLabel.addStyleName("userLoginLabelInUsersPanel")
-    usersLayout.addComponent(userLoginLabel)
-    if (authorizedOperations.canChangePasswordFor(userLoginName)) usersLayout.addComponent(createSetPasswordButton(userLoginName))
-    else usersLayout.addComponent(new Label(""))
-    if (authorizedOperations.canDeleteUser(userLoginName)) usersLayout.addComponent(createDeleteButton(userLoginName))
-    else usersLayout.addComponent(new Label(""))
+    userLoginLabel.addClassName("userLoginLabelInUsersPanel")
+    usersLayout.add(userLoginLabel)
+    if (authorizedOperations.canChangePasswordFor(userLoginName)) usersLayout.add(createSetPasswordButton(userLoginName))
+    else usersLayout.add(new Label(""))
+    if (authorizedOperations.canDeleteUser(userLoginName)) usersLayout.add(createDeleteButton(userLoginName))
+    else usersLayout.add(new Label(""))
   }
 
   private def createSetPasswordButton(userLoginName: String) = {
@@ -99,7 +104,7 @@ class UsersPanel(credentialsManager: CredentialsManager, authorizedOperations: A
   private def deleteUser(userLoginName: String): Unit = {
     try {
       credentialsManager.removeUser(userLoginName)
-      tracker.trackEvent(UserCategory, "deleted", "")
+      EventTracker.trackEvent(UserCategory, "deleted", "")
     } catch {
       case e: AuthException =>
         showError(message("users.error.cantDeleteUser", e.toString))
@@ -108,13 +113,13 @@ class UsersPanel(credentialsManager: CredentialsManager, authorizedOperations: A
   }
 
   private def showError(message: String) = {
-    errorLabel.setValue(message)
+    errorLabel.setText(message)
     errorLabel.setVisible(true)
   }
 
   private def startCreateUserProcess() = {
     val dialog = new CreateUserDialog()
-    dialog.addOKListener((event: Button.ClickEvent) => {
+    dialog.addOKListener(() => {
       val loginName = dialog.getLogin
       if (!loginName.isEmpty) {
         createUser(loginName, dialog.getPassword)
@@ -129,7 +134,7 @@ class UsersPanel(credentialsManager: CredentialsManager, authorizedOperations: A
   private def createUser(login: String, password: String) = {
     try {
       credentialsManager.savePrimaryAuthToken(login, password)
-      tracker.trackEvent(UserCategory, "created", "")
+      EventTracker.trackEvent(UserCategory, "created", "")
     } catch {
       case e: AuthException =>
         logger.error("User initiation error", e)

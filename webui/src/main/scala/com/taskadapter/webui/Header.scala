@@ -1,5 +1,7 @@
 package com.taskadapter.webui
 
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
 import com.taskadapter.data.{State, States}
 import com.taskadapter.webui.Page.message
 import com.vaadin.ui._
@@ -21,7 +23,7 @@ object Header {
     val internalLayout = new HorizontalLayout
     internalLayout.setWidth("100%")
     internalLayout.setSpacing(true)
-    res.addComponent(internalLayout)
+    res.add(internalLayout)
     res.setComponentAlignment(internalLayout, Alignment.MIDDLE_CENTER)
     res.setSpacing(true)
     res.addStyleName("header-panel")
@@ -29,11 +31,11 @@ object Header {
     // Logo
     val logo = HeaderMenuBuilder.createButton("Task Adapter", home)
     logo.addStyleName("logo")
-    internalLayout.addComponent(logo)
+    internalLayout.add(logo)
     internalLayout.setExpandRatio(logo, 2f)
     internalLayout.setComponentAlignment(logo, Alignment.MIDDLE_LEFT)
-    internalLayout.addComponent(menu1)
-    internalLayout.addComponent(menu2)
+    internalLayout.add(menu1)
+    internalLayout.add(menu2)
 
     // Trial display.
     val trialLayout = new VerticalLayout
@@ -42,10 +44,10 @@ object Header {
     trialLabel.setDescription(message("header.trialModeWillOnlyTransfer"))
     trialLabel.setSizeUndefined()
     trialLabel.addStyleName("trial-mode-label")
-    trialLayout.addComponent(trialLabel)
+    trialLayout.add(trialLabel)
     trialLayout.setComponentAlignment(trialLabel, Alignment.MIDDLE_CENTER)
     States.onValue(licensed, (data: java.lang.Boolean) => trialLayout.setVisible(!data))
-    internalLayout.addComponent(trialLayout)
+    internalLayout.add(trialLayout)
     internalLayout.setExpandRatio(trialLayout, 1f)
     res
   }

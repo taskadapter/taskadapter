@@ -6,13 +6,14 @@ import com.taskadapter.connector.definition.exceptions._
 import com.taskadapter.connector.definition.{FieldMapping, WebConnectorSetup}
 import com.taskadapter.connector.trello.{TrelloClient, TrelloConfig, TrelloConnector}
 import com.taskadapter.model.{NamedKeyedObjectImpl, TaskStatus}
+import com.taskadapter.vaadin14shim.VerticalLayout
 import com.taskadapter.web.configeditor.server.{ProjectPanelScala, ServerPanelFactory}
 import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.{ConnectorSetupPanel, DroppingNotSupportedException, PluginEditorFactory}
 import com.vaadin.data.util.MethodProperty
 import com.vaadin.server.Sizeable.Unit.PIXELS
-import com.vaadin.ui.{ComponentContainer, VerticalLayout}
+import com.vaadin.ui.ComponentContainer
 
 import scala.collection.mutable
 
@@ -44,7 +45,7 @@ class TrelloEditorFactory extends PluginEditorFactory[TrelloConfig, WebConnector
         client.getBoards(setup.userName).map(b => NamedKeyedObjectImpl(b.getId, b.getName))
       },
       this)
-    layout.addComponent(projectPanel)
+    layout.add(projectPanel)
     layout
   }
 

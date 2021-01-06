@@ -5,7 +5,7 @@ public final class StoredExportConfig {
      * Export configuration id. It is implementation dependend and at a current
      * time it is an absolute file name.
      */
-    private final String id;
+    private final int id;
     private final String name;
     private final StoredConnectorConfig connector1;
     private final StoredConnectorConfig connector2;
@@ -15,7 +15,7 @@ public final class StoredExportConfig {
      * Not public. And should not be. It is used only during a loading process
      * and later should be decomposed into mutable "ui" settings.
      */
-    StoredExportConfig(String id, String name,
+    StoredExportConfig(int id, String name,
                        StoredConnectorConfig connector1, StoredConnectorConfig connector2,
                        String mappings) {
         this.id = id;
@@ -31,7 +31,7 @@ public final class StoredExportConfig {
      * 
      * @return implementation-specific export configuration id.
      */
-    public String getId() {
+    public int getId() {
         return id;
     }
     

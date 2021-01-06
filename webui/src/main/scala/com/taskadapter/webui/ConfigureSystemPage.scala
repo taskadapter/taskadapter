@@ -1,14 +1,25 @@
 package com.taskadapter.webui
 
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
 import com.taskadapter.auth.{AuthorizedOperations, CredentialsManager}
 import com.taskadapter.license.License
 import com.taskadapter.web.SettingsManager
+import com.taskadapter.web.service.Sandbox
+import com.taskadapter.webui.service.Preservices
 import com.taskadapter.webui.user.UsersPanel
 import com.vaadin.server.Sizeable.Unit.PIXELS
 import com.vaadin.ui._
 
+class ConfigureSystemPage() {
+  private val configOps: ConfigOperations = SessionController.buildConfigOperations()
+  private val services: Preservices = SessionController.getServices
 
-object ConfigureSystemPage {
+  def ui: VerticalLayout = ConfigureSystemPanel.render(services.credentialsManager, services.settingsManager, services.licenseManager.getLicense,
+  configOps.authorizedOps)
+}
+
+object ConfigureSystemPanel {
   private def createAdminPermissionsSection(settingsManager: SettingsManager, modifiable: Boolean) = {
     val panel = new Panel
     val view = new VerticalLayout
@@ -28,7 +39,7 @@ object ConfigureSystemPage {
     checkbox.setValue(value)
     checkbox.setImmediate(true)
     checkbox.addValueChangeListener(_ => listener.apply(checkbox.getValue))
-    view.addComponent(checkbox)
+    view.add(checkbox)
     view.setComponentAlignment(checkbox, Alignment.MIDDLE_LEFT)
     checkbox.setEnabled(modifiable)
   }
@@ -43,22 +54,24 @@ object ConfigureSystemPage {
     field.setValue(settingsManager.getMaxNumberOfResultsToKeep + "")
     field.setImmediate(true)
     field.addValueChangeListener(_ => settingsManager.setMaxNumberOfResultsToKeep(field.getValue.toInt))
-    view.addComponent(field)
+    view.add(field)
 
     panel
   }
 
   def render(credentialsManager: CredentialsManager, settingsManager: SettingsManager, license: License,
-             authorizedOps: AuthorizedOperations, tracker: Tracker): ComponentContainer = {
+             authorizedOps: AuthorizedOperations): VerticalLayout = {
+    EventTracker.trackPage("system_configuration")
+
     val layout = new VerticalLayout
     layout.setSpacing(true)
     val cmt = LocalRemoteOptionsPanel.createLocalRemoteOptions(settingsManager, authorizedOps.canConfigureServer)
     cmt.setWidth(600, PIXELS)
-    layout.addComponent(cmt)
+    layout.add(cmt)
     val allowedToEdit = authorizedOps.canConfigureServer && license != null
-    layout.addComponent(createAdminPermissionsSection(settingsManager, allowedToEdit))
-    layout.addComponent(createResultsNumberSection(settingsManager))
-    layout.addComponent(new UsersPanel(credentialsManager, authorizedOps, license, tracker).ui)
+    layout.add(createAdminPermissionsSection(settingsManager, allowedToEdit))
+    layout.add(createResultsNumberSection(settingsManager))
+    layout.add(new UsersPanel(credentialsManager, authorizedOps, license).ui)
     layout
   }
 }

@@ -1,5 +1,7 @@
 package com.taskadapter.connector.definition
 
+import scala.beans.BeanProperty
+
 sealed trait ConnectorSetup {
   def connectorId: String
   def label: String
@@ -37,5 +39,5 @@ object FileSetup {
 case class FileSetup(connectorId: String,
                      id: Option[String],
                      label: String,
-                     sourceFile: String,
-                     targetFile: String) extends ConnectorSetup
+                     @BeanProperty var sourceFile: String,
+                     @BeanProperty var targetFile: String) extends ConnectorSetup

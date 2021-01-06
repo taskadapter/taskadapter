@@ -2,35 +2,39 @@ package com.taskadapter.webui.pageset;
 
 import com.google.common.io.Files;
 import com.taskadapter.Constants;
-import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.license.LicenseManager;
-import com.taskadapter.web.TaskKeeperLocationStorage;
+import com.taskadapter.web.event.ApplicationActionEvent;
+import com.taskadapter.web.event.ApplicationActionEventWithValue;
 import com.taskadapter.web.event.EventBusImpl;
+import com.taskadapter.web.event.NewConfigPageRequested;
+import com.taskadapter.web.event.PageShown;
 import com.taskadapter.web.event.ShowAllExportResultsRequested;
 import com.taskadapter.web.event.ShowConfigPageRequested;
 import com.taskadapter.web.event.ShowConfigsListPageRequested;
+import com.taskadapter.web.event.ShowSetupsListPageRequested;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.uiapi.ConfigId;
 import com.taskadapter.web.uiapi.SetupId;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigCategory$;
 import com.taskadapter.webui.ConfigureSystemPage;
+import com.taskadapter.webui.EventTracker;
 import com.taskadapter.webui.Header;
 import com.taskadapter.webui.HeaderMenuBuilder;
-import com.taskadapter.webui.LogFinder;
 import com.taskadapter.webui.Page;
+import com.taskadapter.webui.SessionController;
 import com.taskadapter.webui.Sizes;
 import com.taskadapter.webui.TAPageLayout;
 import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.UserContext;
-import com.taskadapter.webui.WebUserSession;
 import com.taskadapter.webui.config.EditSetupPage;
 import com.taskadapter.webui.config.NewSetupPage;
 import com.taskadapter.webui.config.SetupsListPage;
 import com.taskadapter.webui.export.ExportResultsFragment;
 import com.taskadapter.webui.license.LicenseFacade;
 import com.taskadapter.webui.pages.AppUpdateNotificationComponent;
-import com.taskadapter.webui.pages.ConfigPanel;
+import com.taskadapter.webui.pages.BeforeEvent;
+import com.taskadapter.webui.pages.ConfigPage;
 import com.taskadapter.webui.pages.ConfigsListPage;
 import com.taskadapter.webui.pages.DropInExportPage;
 import com.taskadapter.webui.pages.LicenseAgreementPage;
@@ -45,7 +49,7 @@ import com.vaadin.server.StreamVariable;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
+import com.taskadapter.vaadin14shim.HorizontalLayout;
 import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Notification;
 import org.slf4j.Logger;
@@ -76,11 +80,6 @@ public class LoggedInPageset {
     private final Preservices services;
 
     /**
-     * Credentials manager.
-     */
-    private final CredentialsManager credentialsManager;
-
-    /**
      * Context for current (logged-in) user.
      */
     private final UserContext context;
@@ -89,16 +88,6 @@ public class LoggedInPageset {
      * License facade.
      */
     private final LicenseFacade license;
-
-    /**
-     * Callback to use on logout.
-     */
-    private final Runnable logoutCallback;
-
-    /**
-     * Usage tracer.
-     */
-    private final Tracker tracker;
 
     /**
      * Ui component.
@@ -113,39 +102,61 @@ public class LoggedInPageset {
     private final ConfigsListPage configsListPage;
 
     /**
-     * Creates a new pageset.
-     *
-     * @param credentialsManager credentialsManager
      * @param services           used services.
-     * @param tracker            usage tracker.
      * @param ctx                context for active user.
-     * @param callback           callback to use.
      */
-    private LoggedInPageset(CredentialsManager credentialsManager,
-                            Preservices services, Tracker tracker, UserContext ctx,
-                            Runnable callback) {
+    private LoggedInPageset(Preservices services, UserContext ctx) {
         this.services = services;
-        this.credentialsManager = credentialsManager;
         this.context = ctx;
-        this.tracker = tracker;
-        this.logoutCallback = callback;
         this.license = new LicenseFacade(services.licenseManager);
 
         final Component header = Header.render(this::showHome, createMenu(), createSelfManagementMenu(), license.isLicensed());
 
         currentComponentArea.setWidth(Sizes.mainWidth());
         this.ui = TAPageLayout.layoutPage(header, new AppUpdateNotificationComponent(), currentComponentArea);
-        this.configsListPage = createConfigsPage();
+        this.configsListPage = new ConfigsListPage();
         registerEventListeners();
-        showConfigsList();
     }
 
     private void registerEventListeners() {
+        // temporary code to catch and re-throw "tracker" events
+        Tracker tracker = SessionController.getTracker();
+        EventBusImpl.observable(PageShown.class)
+                .subscribe(new Subscriber<PageShown>() {
+                    @Override
+                    public void onNext(PageShown value) {
+                        tracker.trackPage(value.pageName());
+                    }
+                });
+        EventBusImpl.observable(ApplicationActionEvent.class)
+                .subscribe(new Subscriber<ApplicationActionEvent>() {
+                    @Override
+                    public void onNext(ApplicationActionEvent value) {
+                        tracker.trackEvent(value.category(), value.action(), value.label());
+                    }
+                });
+
+        EventBusImpl.observable(ApplicationActionEventWithValue.class)
+                .subscribe(new Subscriber<ApplicationActionEventWithValue>() {
+                    @Override
+                    public void onNext(ApplicationActionEventWithValue value) {
+                        tracker.trackEvent(value.category(), value.action(), value.label(), value.value());
+                    }
+                });
+
         EventBusImpl.observable(ShowConfigsListPageRequested.class)
                 .subscribe(new Subscriber<ShowConfigsListPageRequested>() {
                     @Override
                     public void onNext(ShowConfigsListPageRequested value) {
                         showConfigsList();
+                    }
+                });
+
+        EventBusImpl.observable(ShowSetupsListPageRequested.class)
+                .subscribe(new Subscriber<ShowSetupsListPageRequested>() {
+                    @Override
+                    public void onNext(ShowSetupsListPageRequested value) {
+                        showSetupsListPage();
                     }
                 });
 
@@ -164,6 +175,14 @@ public class LoggedInPageset {
                         showExportResults(value.configId());
                     }
                 });
+
+        EventBusImpl.observable(NewConfigPageRequested.class)
+                .subscribe(new Subscriber<NewConfigPageRequested>() {
+                    @Override
+                    public void onNext(NewConfigPageRequested value) {
+                        createNewConfig();
+                    }
+                });
     }
 
     /**
@@ -179,9 +198,7 @@ public class LoggedInPageset {
     }
 
     private void showUserProfilePage() {
-        tracker.trackPage("user_profile");
-        applyUI(new UserProfilePage(context.name, context.selfManagement::changePassword, logoutCallback,
-                showSetupsListPage()).ui());
+        applyUI(new UserProfilePage());
     }
 
     private Component createMenu() {
@@ -208,17 +225,12 @@ public class LoggedInPageset {
         ExportResultsListPage page = new ExportResultsListPage(showExportResultsScala());
         Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults();
         page.showResults(results);
-        tracker.trackPage("all_results");
+        EventTracker.trackPage("all_results");
         applyUI(page.ui());
     }
 
     private void showSchedules() {
-        SchedulesListPage schedulesListPage = new SchedulesListPage(tracker, services.schedulesStorage,
-                context.configOps, services.settingsManager
-        );
-        schedulesListPage.showSchedules(services.schedulesStorage.getSchedules());
-        tracker.trackPage("schedules");
-        applyUI(schedulesListPage.ui());
+        applyUI(new SchedulesListPage().ui());
     }
 
     private void showConfigPanel(ConfigId configId) {
@@ -229,36 +241,31 @@ public class LoggedInPageset {
         }
         UISyncConfig config = maybeConfig.get();
 
-        ConfigPanel panel = new ConfigPanel(config, context.configOps, services, createSandbox(), tracker);
-        tracker.trackPage("config_panel");
-        applyUI(panel.ui());
+        ConfigPage page = new ConfigPage();
+        page.setParameter(new BeforeEvent(), config.configId().id() + "");
+        applyUI(page.ui());
     }
 
     /**
      * Shows a support page.
      */
     private void showSupport() {
-        tracker.trackPage("support");
-        TaskKeeperLocationStorage storage = new TaskKeeperLocationStorage(services.rootDir);
-        String logFileLocation = LogFinder.getLogFileLocation();
-        applyUI(SupportPage.render(services.currentTaskAdapterVersion, license, tracker,
-                storage.cacheFolder().getAbsolutePath(),
-                logFileLocation));
+        applyUI(new SupportPage());
     }
 
     /**
      * Shows a license agreement page.
      */
     private void showLicensePage() {
-        tracker.trackPage("license_agreement");
+        EventTracker.trackPage("license_agreement");
         applyUI(LicenseAgreementPage.render(services.settingsManager,
                 this::showHome));
     }
 
     private void showConfigsList() {
         configsListPage.refreshConfigs();
-        tracker.trackPage("configs_list");
-        applyUI(configsListPage.ui());
+        EventTracker.trackPage("configs_list");
+        applyUI(configsListPage);
     }
 
     private void showResult(ExportResultFormat result) {
@@ -286,44 +293,13 @@ public class LoggedInPageset {
         showConfigsList();
     }
 
-    private boolean needToShowAllConfigs() {
-        return services.settingsManager
-                .adminCanManageAllConfigs()
-                && context.authorizedOps.canManagerPeerConfigs();
-    }
-
-    private ConfigsListPage createConfigsPage() {
-        return new ConfigsListPage(needToShowAllConfigs(),
-                new ConfigsListPage.Callback() {
-                    @Override
-                    public void newConfig() {
-                        createNewConfig();
-                    }
-
-                    @Override
-                    public void forwardDropIn(UISyncConfig config,
-                                              Html5File file) {
-                        dropIn(config, file);
-                    }
-
-                    @Override
-                    public void backwardDropIn(UISyncConfig config,
-                                               Html5File file) {
-                        dropIn(config.reverse(), file);
-                    }
-                },
-                context.configOps
-        );
-
-    }
-
     public void createNewConfig() {
-        tracker.trackPage("create_config");
+        EventTracker.trackPage("create_config");
         applyUI(new NewConfigPage(services.editorManager, services.pluginManager, context.configOps, createSandbox(),
                 configId -> {
                     Option<UISyncConfig> maybeCconfig = context.configOps.getConfig(configId);
                     UISyncConfig config = maybeCconfig.get();
-                    tracker.trackEvent(ConfigCategory$.MODULE$, "created",
+                    EventTracker.trackEvent(ConfigCategory$.MODULE$, "created",
                             config.connector1().getConnectorTypeId() + " - " + config.connector2().getConnectorTypeId());
                     showConfigsList();
                 }).panel());
@@ -333,42 +309,29 @@ public class LoggedInPageset {
         return new Sandbox(services.settingsManager.isTAWorkingOnLocalMachine(), context.configOps.syncSandbox());
     }
 
-    /**
-     * Shows a system configuration panel.
-     */
     private void showSystemConfiguration() {
-        tracker.trackPage("system_configuration");
-        applyUI(ConfigureSystemPage.render(credentialsManager,
-                services.settingsManager, services.licenseManager.getLicense(),
-                context.authorizedOps, tracker));
+        applyUI(new ConfigureSystemPage().ui());
     }
 
-    private Function0<BoxedUnit> showSetupsListPage() {
-        return () -> {
-            tracker.trackPage("setups_list");
-            applyUI(new SetupsListPage(tracker, context.configOps,
-                    showEditSetupPage(), showNewSetupPage()
-            ).ui());
-            return BoxedUnit.UNIT;
-        };
+    private void showSetupsListPage() {
+        applyUI(new SetupsListPage(context.configOps, showEditSetupPage(), showNewSetupPage())
+                .ui());
     }
 
     private Function1<SetupId, BoxedUnit> showEditSetupPage() {
         return (setupId) -> {
-            tracker.trackPage("edit_setup");
+            EventTracker.trackPage("edit_setup");
             applyUI(new EditSetupPage(context.configOps, services.editorManager, services.pluginManager,
-                    createSandbox(), setupId, showSetupsListPage()
-            ).ui());
+                    createSandbox(), setupId).ui());
             return BoxedUnit.UNIT;
         };
     }
 
     private Function0<BoxedUnit> showNewSetupPage() {
         return () -> {
-            tracker.trackPage("add_setup");
+            EventTracker.trackPage("add_setup");
             applyUI(new NewSetupPage(context.configOps, services.editorManager, services.pluginManager,
-                    createSandbox(), showSetupsListPage()
-            ).ui());
+                    createSandbox()).ui());
             return BoxedUnit.UNIT;
         };
     }
@@ -389,7 +352,7 @@ public class LoggedInPageset {
                     final int maxTasks = services.licenseManager
                             .isSomeValidLicenseInstalled() ? Constants.maxTasksToLoad()
                             : LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
-                    tracker.trackPage("drop_in");
+                    EventTracker.trackPage("drop_in");
                     Component component = DropInExportPage.render(
                             services.exportResultStorage,
                             context.configOps, config,
@@ -401,7 +364,7 @@ public class LoggedInPageset {
                                     df.delete();
                                     showHome();
                                 }
-                            }, df, tracker);
+                            }, df);
                     applyUI(component);
                 } finally {
                     ss.unlock();
@@ -496,8 +459,8 @@ public class LoggedInPageset {
 */
 
     private void applyUI(Component ui) {
-        currentComponentArea.removeAllComponents();
-        currentComponentArea.addComponent(ui);
+        currentComponentArea.removeAll();
+        currentComponentArea.add(ui);
         currentComponentArea.setComponentAlignment(ui, Alignment.TOP_CENTER);
     }
 
@@ -505,16 +468,12 @@ public class LoggedInPageset {
      * Creates a new pageset for logged-in user.
      *
      * @param services       global services.
-     * @param tracker        context tracker.
      * @param ctx            Context for active user.
-     * @param logoutCallback callback to invoke on logout.
      * @return pageset UI.
      */
-    public static Component createPageset(CredentialsManager credManager,
-                                          Preservices services, Tracker tracker, UserContext ctx,
-                                          Runnable logoutCallback) {
-        final LoggedInPageset ps = new LoggedInPageset(credManager, services,
-                tracker, ctx, logoutCallback);
+    public static Component createPageset(Preservices services, UserContext ctx) {
+        final LoggedInPageset ps = new LoggedInPageset(services,
+                ctx);
         if (services.settingsManager.isLicenseAgreementAccepted())
             ps.showHome();
         else

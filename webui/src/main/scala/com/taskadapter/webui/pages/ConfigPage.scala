@@ -1,22 +1,46 @@
 package com.taskadapter.webui.pages
 
+
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
+import com.taskadapter.vaadin14shim.GridLayout
 import com.taskadapter.Constants
 import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.connector.definition.exception.FieldNotMappedException
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.license.LicenseManager
-import com.taskadapter.web.event.{ConfigSaveRequested, EventBusImpl, StartExportRequested}
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{ConfigId, UIConnectorConfig, UISyncConfig}
-import com.taskadapter.webui._
 import com.taskadapter.webui.`export`.ExportResultsFragment
 import com.taskadapter.webui.config.EditConfigPage
 import com.taskadapter.webui.results.{ExportResultFormat, ExportResultsListPage}
 import com.taskadapter.webui.service.Preservices
+import com.taskadapter.webui.{BasePage, ConfigActionsFragment, ConfigOperations, EventTracker, ImageLoader, Page, SessionController}
 import com.vaadin.ui.Button.ClickListener
-import com.vaadin.ui._
+import com.vaadin.ui.{Button, Component,  Label}
 import com.vaadin.ui.themes.ValoTheme
 import org.slf4j.LoggerFactory
+
+class ConfigPage() extends BasePage with HasUrlParameter {
+  private val configOps: ConfigOperations = SessionController.buildConfigOperations()
+  private val services: Preservices = SessionController.getServices
+  private val sandbox: Sandbox = SessionController.createSandbox()
+
+  private var panel: ConfigPanel = null
+
+  def setParameter(event: BeforeEvent, configIdStr: String) = {
+    EventTracker.trackPage("config_panel");
+
+    val configId = ConfigId(SessionController.getCurrentUserName, Integer.parseInt(configIdStr))
+    val maybeConfig = configOps.getConfig(configId)
+    if (maybeConfig.isDefined) {
+      val config = maybeConfig.get
+      panel = new ConfigPanel(config, configOps, services, sandbox)
+    }
+  }
+
+  def ui: VerticalLayout = panel
+}
 
 /**
   * Config panel with left/right arrows, connector names, action buttons (Delete/Clone/etc).
@@ -24,33 +48,27 @@ import org.slf4j.LoggerFactory
 class ConfigPanel(config: UISyncConfig,
                   configOps: ConfigOperations,
                   services: Preservices,
-                  sandbox: Sandbox,
-                  tracker: Tracker) {
+                  sandbox: Sandbox) extends VerticalLayout {
   private val log = LoggerFactory.getLogger(classOf[ConfigPanel])
 
-  private val configId = config.id
+  private val configId = config.configId
 
-  val layout = new VerticalLayout
-  layout.addStyleName("configPanelInConfigsList")
-  layout.setSpacing(true)
-  layout.setSizeFull()
+  addStyleName("configPanelInConfigsList")
+  setSpacing(true)
+  setSizeFull()
 
   val configTitleLine = new Label(config.label)
-  layout.addComponent(configTitleLine)
-
-  EventBusImpl.subscribe((e: ConfigSaveRequested) => {
-    configTitleLine.setValue(e.config.label)
-  })
+  addComponent(configTitleLine)
 
   val tabSheet = new ConfigPanelTabbedSheet();
-  layout.addComponent(tabSheet.ui)
+  addComponent(tabSheet.ui)
 
   val previousResultsPanel = new ResultsPanel(configId)
-  val fieldMappingsPanel = createFieldMappingsPanel()
+  val fieldMappingsPanel = new FieldMappingPanel()
   val overviewPanel = new OverviewPanel(config)
 
   tabSheet.addTab("Overview", overviewPanel)
-  tabSheet.addTab("Field mappings", new SimpleTab(fieldMappingsPanel))
+  tabSheet.addTab("Field mappings", fieldMappingsPanel)
   tabSheet.addTab("Results", previousResultsPanel)
 
   private val rightButton = createArrow("arrow_right.png", _ => sync(config))
@@ -58,6 +76,10 @@ class ConfigPanel(config: UISyncConfig,
 
   overviewPanel.reload()
   tabSheet.showTab("Overview")
+
+  def updateConfigTitleLine(config: UISyncConfig) : Unit = {
+    configTitleLine.setValue(config.label)
+  }
 
   def createArrow(imageFileName: String, listener: ClickListener): Button = {
     val leftArrow = ImageLoader.getImage(imageFileName)
@@ -101,11 +123,16 @@ class ConfigPanel(config: UISyncConfig,
     * @param config base config. May be saved!
     */
   private def sync(config: UISyncConfig): Unit = {
-    EventBusImpl.post(StartExportRequested(config))
+    exportCommon(config)
   }
 
-  def createFieldMappingsPanel(): Component = {
-    getConfigEditor(config, "", () => {})
+  class FieldMappingPanel extends ReloadableComponent {
+    val layout = new VerticalLayout()
+    def show(config: UISyncConfig) = {
+      layout.add(getConfigEditor(config, "", () => {}))
+    }
+    def ui: VerticalLayout = layout
+    override def reload(): Unit = show(config)
   }
 
   class ResultsPanel(configId: ConfigId) extends ReloadableComponent {
@@ -118,16 +145,16 @@ class ConfigPanel(config: UISyncConfig,
       })
       val results = services.exportResultStorage.getSaveResults(configId);
       resultsList.showResults(results);
-      layout.removeAllComponents()
-      layout.addComponent(resultsList.ui)
+      layout.removeAll()
+      layout.add(resultsList.ui)
     }
 
     def showSingleResult(result: ExportResultFormat): Unit = {
       val fragment = new ExportResultsFragment(
         services.settingsManager.isTAWorkingOnLocalMachine)
       val ui = fragment.showExportResult(result)
-      layout.removeAllComponents()
-      layout.addComponent(ui)
+      layout.removeAll()
+      layout.add(ui)
     }
 
     def ui: VerticalLayout = layout
@@ -156,10 +183,10 @@ class ConfigPanel(config: UISyncConfig,
     }
 
     private def recreateContents(config: UISyncConfig): Unit = {
-      horizontalLayout.removeAllComponents()
+      horizontalLayout.removeAll()
       val configSaver = new Runnable {
         override def run(): Unit = {
-          EventBusImpl.post(ConfigSaveRequested(config))
+          updateConfigTitleLine(config)
           recreateContents(config)
         }
       }
@@ -167,37 +194,33 @@ class ConfigPanel(config: UISyncConfig,
         override def run(): Unit = showEditConnectorDialog(config.getConnector1, configSaver, sandbox)
       }
       val leftSystemButton = createConfigureConnectorButton(config.connector1, leftConnectorEditListener)
-      horizontalLayout.addComponent(leftSystemButton)
+      horizontalLayout.add(leftSystemButton)
 
       val leftRightButtonsPanel = new VerticalLayout()
       leftRightButtonsPanel.setSpacing(true)
 
-      leftRightButtonsPanel.addComponent(rightButton)
-      leftRightButtonsPanel.addComponent(leftButton)
+      leftRightButtonsPanel.add(rightButton)
+      leftRightButtonsPanel.add(leftButton)
 
-      horizontalLayout.addComponent(leftRightButtonsPanel)
+      horizontalLayout.add(leftRightButtonsPanel)
 
       val rightConnectorEditListener = new Runnable {
         override def run(): Unit = showEditConnectorDialog(config.getConnector2, configSaver, sandbox)
       }
       val rightSystemButton = createConfigureConnectorButton(config.connector2, rightConnectorEditListener)
-      horizontalLayout.addComponent(rightSystemButton)
+      horizontalLayout.add(rightSystemButton)
 
       performValidation(config, configSaver)
-
-      EventBusImpl.subscribe((e: StartExportRequested) => {
-        exportCommon(e.config);
-      })
     }
 
     def showInitialState() = {
-      layout.removeAllComponents()
+      layout.removeAll()
       val buttonsLayout = new ConfigActionsFragment(configId).layout
 
-      layout.addComponent(buttonsLayout)
-      layout.addComponent(horizontalLayout)
-      layout.addComponent(validationPanelSaveToRight.ui)
-      layout.addComponent(validationPanelSaveToLeft.ui)
+      layout.add(buttonsLayout)
+      layout.add(horizontalLayout)
+      layout.add(validationPanelSaveToRight.ui)
+      layout.add(validationPanelSaveToLeft.ui)
 
       recreateContents(config)
     }
@@ -257,7 +280,7 @@ class ConfigPanel(config: UISyncConfig,
         }
       })
       window.setContent(editor)
-      tracker.trackPage("edit_config")
+      EventTracker.trackPage("edit_config")
     }
 
     override def ui: VerticalLayout = layout
@@ -271,7 +294,7 @@ class ConfigPanel(config: UISyncConfig,
     from ${config.connector1.getConnectorTypeId} (${config.connector1.getSourceLocation})
     to   ${config.connector2.getConnectorTypeId} (${config.connector2.getDestinationLocation}""")
 
-    tracker.trackPage("export_confirmation")
+    EventTracker.trackPage("export_confirmation")
     val maxTasks = if (services.licenseManager.isSomeValidLicenseInstalled) {
       Constants.maxTasksToLoad
     } else {
@@ -280,10 +303,9 @@ class ConfigPanel(config: UISyncConfig,
     log.info(s"License installed? ${services.licenseManager.isSomeValidLicenseInstalled}")
     val panel = new ExportPage(services.exportResultStorage, config, maxTasks,
       services.settingsManager.isTAWorkingOnLocalMachine,
-      () => overviewPanel.reload(), tracker)
-    overviewPanel.ui.removeAllComponents()
-    overviewPanel.ui.addComponent(panel.ui)
+      () => overviewPanel.reload())
+    overviewPanel.ui.removeAll()
+    overviewPanel.ui.add(panel.ui)
   }
 
-  def ui(): VerticalLayout = layout
 }

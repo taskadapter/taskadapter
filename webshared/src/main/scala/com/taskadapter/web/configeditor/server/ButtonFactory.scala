@@ -34,8 +34,7 @@ object ButtonFactory {
         })
       }
     }
-    button.addClickListener(new Button.ClickListener() {
-      override def buttonClick(event: Button.ClickEvent): Unit = {
+    button.addClickListener(_ => {
         try {
           val objects = loadProjects()
           if (objects.isEmpty) Notification.show("No objects", "No objects have been found", Notification.Type.HUMANIZED_MESSAGE)
@@ -51,7 +50,6 @@ object ButtonFactory {
             logger.error(e.toString)
             EditorUtil.show("Something went wrong", e)
         }
-      }
     })
     button
   }

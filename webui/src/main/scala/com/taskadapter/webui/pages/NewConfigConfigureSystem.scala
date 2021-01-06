@@ -1,5 +1,9 @@
 package com.taskadapter.webui.pages
 
+
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
+import com.taskadapter.vaadin14shim.GridLayout
 import com.taskadapter.connector.definition.{ConnectorConfig, ConnectorSetup, FileSetup, WebConnectorSetup}
 import com.taskadapter.web.{ConnectorSetupPanel, PluginEditorFactory}
 import com.taskadapter.web.service.Sandbox
@@ -101,7 +105,7 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
       }
     }
     )
-    layout.addComponent(nextButton)
+    layout.add(nextButton)
 
     private def refresh() = {
       connectorSetupPanelUI.setVisible(!inSelectMode)

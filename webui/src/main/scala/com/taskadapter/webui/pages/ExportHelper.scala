@@ -4,22 +4,23 @@ import java.util
 
 import com.taskadapter.model.GTask
 import com.taskadapter.reporting.ErrorReporter
+import com.taskadapter.vaadin14shim.VerticalLayout
 import com.taskadapter.web.uiapi.UISyncConfig
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.export.{ConfirmExportFragment, ExportResultsFragment}
 import com.taskadapter.webui.results.ExportResultStorage
-import com.taskadapter.webui.{ExportCategory, MonitorWrapper, Tracker}
+import com.taskadapter.webui.{EventTracker, ExportCategory, MonitorWrapper}
 import com.vaadin.server.VaadinSession
-import com.vaadin.ui._
+import com.vaadin.ui.{Button, Component, Label, Notification}
 
 class ExportHelper(exportResultStorage: ExportResultStorage,
-                   tracker: Tracker, onDone: Runnable, showFilePath: Boolean,
+                   onDone: Runnable, showFilePath: Boolean,
                    layout: VerticalLayout,
                    config: UISyncConfig) {
 
   def onTasksLoaded(tasks: util.List[GTask]): Unit = {
     val dataSourceLabel = config.connector1.getConnectorTypeId
-    tracker.trackEvent(ExportCategory, "loaded_tasks", dataSourceLabel, tasks.size())
+    EventTracker.trackEvent(ExportCategory, "loaded_tasks", dataSourceLabel, tasks.size())
 
     if (tasks.isEmpty) showNoDataLoaded()
     else showConfirmation(tasks)
@@ -34,8 +35,8 @@ class ExportHelper(exportResultStorage: ExportResultStorage,
     msg.setWidth("800px")
     val backButton = new Button(message("button.back"))
     backButton.addClickListener(_ => onDone.run())
-    res.addComponent(msg)
-    res.addComponent(backButton)
+    res.add(msg)
+    res.add(backButton)
     setContent(layout, res)
   }
 
@@ -76,11 +77,11 @@ class ExportHelper(exportResultStorage: ExportResultStorage,
         val targetLabel = config.getConnector2.getConnectorTypeId
         val sourceAndTarget = config.getConnector1.getConnectorTypeId + " - " + targetLabel
         val exportResult = new ExportResultsFragment(showFilePath).showExportResult(saveResult)
-        tracker.trackEvent(ExportCategory, "finished_export", sourceAndTarget)
-        tracker.trackEvent(ExportCategory, "finished_saving_tasks", targetLabel)
-        tracker.trackEvent(ExportCategory, "created_tasks", targetLabel, saveResult.createdTasksNumber)
-        tracker.trackEvent(ExportCategory, "updated_tasks", targetLabel, saveResult.updatedTasksNumber)
-        tracker.trackEvent(ExportCategory, "tasks_with_errors", targetLabel, saveResult.taskErrors.size)
+        EventTracker.trackEvent(ExportCategory, "finished_export", sourceAndTarget)
+        EventTracker.trackEvent(ExportCategory, "finished_saving_tasks", targetLabel)
+        EventTracker.trackEvent(ExportCategory, "created_tasks", targetLabel, saveResult.createdTasksNumber)
+        EventTracker.trackEvent(ExportCategory, "updated_tasks", targetLabel, saveResult.updatedTasksNumber)
+        EventTracker.trackEvent(ExportCategory, "tasks_with_errors", targetLabel, saveResult.taskErrors.size)
         setContent(layout, exportResult)
       }
 
@@ -89,7 +90,7 @@ class ExportHelper(exportResultStorage: ExportResultStorage,
   }
 
   private def setContent(content: VerticalLayout, comp: Component): Unit = {
-    content.removeAllComponents()
-    content.addComponent(comp)
+    content.removeAll()
+    content.add(comp)
   }
 }

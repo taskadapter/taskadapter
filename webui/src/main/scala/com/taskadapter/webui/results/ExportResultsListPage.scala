@@ -2,6 +2,9 @@ package com.taskadapter.webui.results
 
 import java.text.SimpleDateFormat
 
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
+import com.taskadapter.vaadin14shim.Label
 import com.taskadapter.webui.{Page, Sizes}
 import com.vaadin.data.sort.SortOrder
 import com.vaadin.data.util.BeanItem
@@ -9,7 +12,7 @@ import com.vaadin.data.util.converter.StringToBooleanConverter
 import com.vaadin.shared.data.sort.SortDirection
 import com.vaadin.ui.renderers.{DateRenderer, HtmlRenderer}
 import com.vaadin.ui.themes.ValoTheme
-import com.vaadin.ui.{Button, Grid, Label, VerticalLayout}
+import com.vaadin.ui.Grid
 
 import scala.collection.JavaConverters._
 
@@ -65,9 +68,9 @@ class ExportResultsListPage(showResult: (ExportResultFormat) => Unit) {
   }
 
   private val label = new Label(Page.message("exportResults.intro"))
-  label.addStyleName(Sizes.tabIntro)
-  ui.addComponent(label)
-  ui.addComponent(grid)
+  label.addClassName(Sizes.tabIntro)
+  ui.add(label)
+  ui.add(grid)
 
   def showResults(results: Seq[ExportResultFormat]): Unit = {
     ds.removeAllItems()

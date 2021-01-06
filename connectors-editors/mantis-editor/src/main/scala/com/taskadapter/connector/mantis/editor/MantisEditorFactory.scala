@@ -3,6 +3,8 @@ package com.taskadapter.connector.mantis.editor
 import java.util
 
 import com.google.common.base.Strings
+import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.vaadin14shim.HorizontalLayout
 import com.taskadapter.connector.definition.exceptions.{BadConfigException, ProjectNotSetException, ServerURLNotSetException}
 import com.taskadapter.connector.definition.{FieldMapping, WebConnectorSetup}
 import com.taskadapter.connector.mantis.{MantisConfig, MantisConnector}
@@ -13,7 +15,7 @@ import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.{ConnectorSetupPanel, DroppingNotSupportedException, PluginEditorFactory}
 import com.vaadin.data.util.MethodProperty
 import com.vaadin.server.Sizeable.Unit.PIXELS
-import com.vaadin.ui.{ComponentContainer, VerticalLayout}
+import com.vaadin.ui.ComponentContainer
 
 import scala.collection.{JavaConverters, Seq, mutable}
 
@@ -43,10 +45,10 @@ class MantisEditorFactory extends PluginEditorFactory[MantisConfig, WebConnector
   override def getMiniPanelContents(sandbox: Sandbox, config: MantisConfig, setup: WebConnectorSetup): ComponentContainer = {
     val layout = new VerticalLayout
     layout.setWidth(380, PIXELS)
-    layout.addComponent(new ProjectPanel(new MethodProperty[String](config, "projectKey"),
+    layout.add(new ProjectPanel(new MethodProperty[String](config, "projectKey"),
       Option.apply(new MethodProperty[java.lang.Long](config, "queryId")),
       Option.empty, new MantisProjectsListLoader(setup), null, new MantisQueryListLoader(config, setup), this))
-    layout.addComponent(new OtherMantisFieldsPanel(config))
+    layout.add(new OtherMantisFieldsPanel(config))
     layout
   }
 

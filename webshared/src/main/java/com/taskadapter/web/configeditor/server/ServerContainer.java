@@ -1,13 +1,13 @@
 package com.taskadapter.web.configeditor.server;
 
+import com.taskadapter.vaadin14shim.TextField;
+import com.taskadapter.vaadin14shim.PasswordField;
+import com.taskadapter.vaadin14shim.GridLayout;
 import com.taskadapter.webui.Page;
 import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.TextField;
 
 public class ServerContainer extends GridLayout {
     private static final String DEFAULT_HOST_VALUE = "http://";
@@ -36,7 +36,7 @@ public class ServerContainer extends GridLayout {
         setComponentAlignment(nameLabel, Alignment.MIDDLE_LEFT);
         TextField nameField = new TextField();
         nameField.setRequired(true);
-        nameField.addStyleName("server-panel-textfield");
+        nameField.addClassName("server-panel-textfield");
         nameField.setPropertyDataSource(labelProperty);
         addComponent(nameField, 1, currentRow);
 
@@ -53,7 +53,7 @@ public class ServerContainer extends GridLayout {
             checkProtocol();
             cleanup();
         });
-        hostURLText.addStyleName("server-panel-textfield");
+        hostURLText.addClassName("server-panel-textfield");
         hostURLText.setPropertyDataSource(serverURLProperty);
 
         addComponent(hostURLText, 1, currentRow);
@@ -66,7 +66,7 @@ public class ServerContainer extends GridLayout {
         setComponentAlignment(loginLabel, Alignment.MIDDLE_LEFT);
 
         TextField login = new TextField();
-        login.addStyleName("server-panel-textfield");
+        login.addClassName("server-panel-textfield");
         login.setPropertyDataSource(userLoginNameProperty);
         addComponent(login, 1, currentRow);
         setComponentAlignment(login, Alignment.MIDDLE_RIGHT);
@@ -78,7 +78,7 @@ public class ServerContainer extends GridLayout {
         setComponentAlignment(pswdLabel, Alignment.MIDDLE_LEFT);
 
         PasswordField password = new PasswordField();
-        password.addStyleName("server-panel-textfield");
+        password.addClassName("server-panel-textfield");
         password.setPropertyDataSource(passwordProperty);
         addComponent(password, 1, currentRow);
         setComponentAlignment(password, Alignment.MIDDLE_RIGHT);
