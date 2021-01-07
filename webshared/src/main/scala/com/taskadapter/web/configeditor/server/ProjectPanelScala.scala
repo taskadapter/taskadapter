@@ -6,15 +6,14 @@ import com.taskadapter.model.NamedKeyedObject
 import com.taskadapter.web.ExceptionFormatter
 import com.taskadapter.web.configeditor.Validatable
 import com.taskadapter.web.ui.Grids.addTo
-import com.vaadin.data.Property
 import com.vaadin.ui._
 
 /**
   * "Project info" panel with Project Key, Query Id.
   */
 class ProjectPanelScala(projectKeyLabelText: String,
-                        projectNameProperty: Property[String],
-                        projectKeyProperty: Property[String],
+                        projectNameField: TextField,
+                        projectKeyField: TextField,
                         projectsLoader: (() => Seq[_ <: NamedKeyedObject]),
                         exceptionFormatter: ExceptionFormatter) extends Panel with Validatable {
 
@@ -37,8 +36,8 @@ class ProjectPanelScala(projectKeyLabelText: String,
   val showProjectsButton = ButtonFactory.createLookupButton("...", "Show list of available projects on the server.",
     "Select project", "List of projects on the server", projectsLoader, exceptionFormatter,
     result => {
-      projectKeyProperty.setValue(result.getKey)
-      projectNameProperty.setValue(result.getName)
+      projectKeyField.setValue(result.getKey)
+      projectNameField.setValue(result.getName)
       setVisibleName()
     }
   )
@@ -47,14 +46,14 @@ class ProjectPanelScala(projectKeyLabelText: String,
 
   @throws[BadConfigException]
   override def validate(): Unit = {
-    if (projectKeyProperty.getValue.trim.isEmpty) throw new ProjectNotSetException
+    if (projectKeyField.getValue.trim.isEmpty) throw new ProjectNotSetException
   }
 
   private def setVisibleName(): Unit = {
-    val text = if (projectNameProperty.getValue == null) {
-      projectKeyProperty.getValue
+    val text = if (projectNameField.getValue == null) {
+      projectKeyField.getValue
     } else {
-      s"${projectNameProperty.getValue} (${projectKeyProperty.getValue})"
+      s"${projectNameField.getValue} (${projectKeyField.getValue})"
     }
     projectLabel.setValue(text)
   }

@@ -7,11 +7,11 @@ import com.taskadapter.connector.definition.{FieldMapping, WebConnectorSetup}
 import com.taskadapter.connector.trello.{TrelloClient, TrelloConfig, TrelloConnector}
 import com.taskadapter.model.{NamedKeyedObjectImpl, TaskStatus}
 import com.taskadapter.vaadin14shim.VerticalLayout
+import com.taskadapter.web.configeditor.EditorUtil
 import com.taskadapter.web.configeditor.server.{ProjectPanelScala, ServerPanelFactory}
 import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.{ConnectorSetupPanel, DroppingNotSupportedException, PluginEditorFactory}
-import com.vaadin.data.util.MethodProperty
 import com.vaadin.server.Sizeable.Unit.PIXELS
 import com.vaadin.ui.HasComponents
 
@@ -39,8 +39,8 @@ class TrelloEditorFactory extends PluginEditorFactory[TrelloConfig, WebConnector
     layout.setWidth(600, PIXELS)
     val client = new TrelloClient(setup.password, setup.apiKey)
     val projectPanel = new ProjectPanelScala(messages.get("projectPanel.projectLabel"),
-      new MethodProperty[String](config, "boardName"),
-      new MethodProperty[String](config, "boardId"),
+      EditorUtil.textField(config, "boardName"),
+      EditorUtil.textField(config, "boardId"),
       () => {
         client.getBoards(setup.userName).map(b => NamedKeyedObjectImpl(b.getId, b.getName))
       },

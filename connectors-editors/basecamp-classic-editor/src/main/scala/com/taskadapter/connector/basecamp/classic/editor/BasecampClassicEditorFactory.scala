@@ -15,7 +15,6 @@ import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.ui.Grids.addTo
 import com.taskadapter.web.{ConnectorSetupPanel, DroppingNotSupportedException, PluginEditorFactory}
-import com.vaadin.data.util.MethodProperty
 import com.vaadin.ui.{Alignment, HasComponents, Label, Panel}
 
 import scala.collection.{JavaConverters, Seq}
@@ -60,8 +59,8 @@ class BasecampClassicEditorFactory extends PluginEditorFactory[BasecampClassicCo
   private def addProjectRow(config: BasecampClassicConfig, setup: WebConnectorSetup, grid: GridLayout) = {
     val projectKeyLabel = new Label("Project key:")
     addTo(grid, Alignment.MIDDLE_LEFT, projectKeyLabel)
-    val projectKeyProperty = new MethodProperty[String](config, "projectKey")
-    addTo(grid, Alignment.MIDDLE_LEFT, textInput(projectKeyProperty))
+    val projectKeyField = EditorUtil.textField(config, "projectKey")
+    addTo(grid, Alignment.MIDDLE_LEFT, projectKeyField)
     val infoButton = EditorUtil.createButton("Info", "View the project info",
       _ => ShowInfoElement.loadProject(config, setup, formatter, factory)
     )
@@ -86,7 +85,7 @@ class BasecampClassicEditorFactory extends PluginEditorFactory[BasecampClassicCo
       formatter,
       (namedKeyedObject: NamedKeyedObject) => {
         def foo(namedKeyedObject: NamedKeyedObject) = {
-          projectKeyProperty.setValue(namedKeyedObject.getKey)
+          projectKeyField.setValue(namedKeyedObject.getKey)
           null
         }
 
@@ -98,8 +97,8 @@ class BasecampClassicEditorFactory extends PluginEditorFactory[BasecampClassicCo
   private def addTodoKeyRow(config: BasecampClassicConfig, setup: WebConnectorSetup, grid: GridLayout) = {
     val todoListKey = new Label("Todo list key:")
     addTo(grid, Alignment.MIDDLE_LEFT, todoListKey)
-    val todoKeyProperty = new MethodProperty[String](config, "todoKey")
-    addTo(grid, Alignment.MIDDLE_LEFT, textInput(todoKeyProperty))
+    val todoKeyField = EditorUtil.textField(config, "todoKey")
+    addTo(grid, Alignment.MIDDLE_LEFT, todoKeyField)
     val infoButton = EditorUtil.createButton("Info", "View the todo list info",
       _ => ShowInfoElement.showTodoListInfo(config, setup, formatter, factory)
     )
@@ -124,7 +123,7 @@ class BasecampClassicEditorFactory extends PluginEditorFactory[BasecampClassicCo
       formatter,
       (namedKeyedObject: NamedKeyedObject) => {
         def foo(namedKeyedObject: NamedKeyedObject) = {
-          todoKeyProperty.setValue(namedKeyedObject.getKey)
+          todoKeyField.setValue(namedKeyedObject.getKey)
           null
         }
 

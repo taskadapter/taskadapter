@@ -21,14 +21,14 @@ object WebConnectorSetup {
 /**
   * @param connectorId is used to find all existing setups for, say, JIRA to show on "new config" page.
   */
-case class WebConnectorSetup(connectorId: String,
-                             id: Option[String],
-                             label: String,
-                             host: String,
-                             userName: String,
-                             password: String,
-                             useApiKey: Boolean,
-                             apiKey: String) extends ConnectorSetup
+case class WebConnectorSetup(@BeanProperty var connectorId: String,
+                             @BeanProperty var id: Option[String],
+                             @BeanProperty var label: String,
+                             @BeanProperty var host: String,
+                             @BeanProperty var userName: String,
+                             @BeanProperty var password: String,
+                             @BeanProperty var useApiKey: Boolean,
+                             @BeanProperty var apiKey: String) extends ConnectorSetup
 
 object FileSetup {
   def apply(connectorId: String,

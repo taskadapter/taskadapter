@@ -1,18 +1,13 @@
 package com.taskadapter.web.configeditor.server
 
-import com.taskadapter.vaadin14shim.GridLayout
-import com.taskadapter.vaadin14shim.Label
-import com.taskadapter.vaadin14shim.TextField
-import com.taskadapter.vaadin14shim.PasswordField
+import com.taskadapter.vaadin14shim.{GridLayout, Label, VerticalLayout}
 import com.taskadapter.connector.definition.WebConnectorSetup
 import com.taskadapter.web.ConnectorSetupPanel
-import com.taskadapter.web.configeditor.EditorUtil._
 import com.taskadapter.web.ui.Grids._
 import com.taskadapter.webui.Page
-import com.vaadin.data.Property
 import com.vaadin.shared.ui.label.ContentMode
-import com.vaadin.ui._
 import com.google.common.base.Strings
+import com.vaadin.ui.{Alignment, Component, OptionGroup, Panel}
 
 import scala.collection.JavaConverters._
 
@@ -20,30 +15,27 @@ object ServerPanelWithPasswordAndAPIKey {
   val defaultUrlPrefix = "http://"
 }
 
-class ServerPanelWithPasswordAndAPIKey(connectorId: String, caption: String, val labelProperty: Property[String],
-                                       val serverURLProperty: Property[String], val loginNameProperty: Property[String],
-                                       val passwordProperty: Property[String], val apiKeyProperty: Property[String],
-                                       val useApiKeyProperty: Property[java.lang.Boolean]) extends ConnectorSetupPanel {
+class ServerPanelWithPasswordAndAPIKey(connectorId: String, caption: String, setup: WebConnectorSetup)
+  extends ConnectorSetupPanel {
+
   val panel = new Panel
   panel.setCaption(caption)
 
-  val serverURL = textInput(serverURLProperty)
-  val apiKeyField = new PasswordField
-  val login = textInput(loginNameProperty)
-  val password = new PasswordField
+  val serverURL = ServerPanelUtil.host(setup)
+  val apiKeyField = ServerPanelUtil.apiKey(setup)
+  val login = ServerPanelUtil.userName(setup)
+  val password = ServerPanelUtil.password(setup)
 
   val authOptions = List[java.lang.Boolean](true, false).asJava
   val authOptionsGroup = new OptionGroup(Page.message("setupPanel.authorization"), authOptions)
   val errorMessageLabel = new Label
   errorMessageLabel.addClassName("error-message-label")
 
-  buildUI(labelProperty, serverURLProperty, loginNameProperty, passwordProperty, apiKeyProperty, useApiKeyProperty)
+  buildUI(setup)
   addListener()
   setAuthOptionsState(authOptionsGroup.getValue.asInstanceOf[Boolean])
 
-  private def buildUI(labelProperty: Property[String], serverURLProperty: Property[String],
-                      loginNameProperty: Property[String], passwordProperty: Property[String],
-                      apiKeyProperty: Property[String], useApiKeyProperty: Property[java.lang.Boolean]) = {
+  private def buildUI(setup: WebConnectorSetup) = {
     val grid = new GridLayout
 
     val layout = new VerticalLayout(grid, errorMessageLabel)
@@ -56,7 +48,7 @@ class ServerPanelWithPasswordAndAPIKey(connectorId: String, caption: String, val
     var currentRow = 0
 
     addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.name")))
-    val labelField = textInput(labelProperty)
+    val labelField = ServerPanelUtil.label(setup)
     labelField.addClassName("server-panel-textfield")
     grid.add(labelField, 1, currentRow)
 
@@ -74,7 +66,6 @@ class ServerPanelWithPasswordAndAPIKey(connectorId: String, caption: String, val
 
     authOptionsGroup.setItemCaption(true, Page.message("setupPanel.useApiKey"))
     authOptionsGroup.setItemCaption(false, Page.message("setupPanel.useLogin"))
-    authOptionsGroup.setPropertyDataSource(useApiKeyProperty)
     authOptionsGroup.setSizeFull()
     authOptionsGroup.setNullSelectionAllowed(false)
     authOptionsGroup.setImmediate(true)
@@ -87,7 +78,6 @@ class ServerPanelWithPasswordAndAPIKey(connectorId: String, caption: String, val
 
     currentRow += 1
     addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.apiAccessKey")))
-    apiKeyField.setPropertyDataSource(apiKeyProperty)
     apiKeyField.addClassName("server-panel-textfield")
 
     addTo(grid, 1, currentRow, Alignment.MIDDLE_LEFT, apiKeyField)
@@ -100,7 +90,6 @@ class ServerPanelWithPasswordAndAPIKey(connectorId: String, caption: String, val
     currentRow += 1
     addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.password")))
     password.addClassName("server-panel-textfield")
-    password.setPropertyDataSource(passwordProperty)
 
     addTo(grid, 1, currentRow, Alignment.MIDDLE_LEFT, password)
   }
@@ -112,9 +101,11 @@ class ServerPanelWithPasswordAndAPIKey(connectorId: String, caption: String, val
   }
 
   private def addListener() = {
+    authOptionsGroup.setValue(setup.useApiKey)
     authOptionsGroup.addValueChangeListener(_ => {
       val useAPIOptionSelected = authOptionsGroup.getValue.asInstanceOf[java.lang.Boolean]
       setAuthOptionsState(useAPIOptionSelected)
+      setup.useApiKey = useAPIOptionSelected
     })
   }
 
@@ -127,7 +118,7 @@ class ServerPanelWithPasswordAndAPIKey(connectorId: String, caption: String, val
   override def getUI: Component = panel
 
   override def validate(): Option[String] = {
-    if (Strings.isNullOrEmpty(labelProperty.getValue)) {
+    if (Strings.isNullOrEmpty(setup.label)) {
       return Some(Page.message("newConfig.configure.nameRequired"))
     }
     val host = serverURL.getValue
@@ -138,8 +129,8 @@ class ServerPanelWithPasswordAndAPIKey(connectorId: String, caption: String, val
   }
 
   override def getResult: WebConnectorSetup = {
-    WebConnectorSetup(connectorId, None, labelProperty.getValue, serverURLProperty.getValue, loginNameProperty.getValue,
-      passwordProperty.getValue, useApiKeyProperty.getValue, apiKeyProperty.getValue)
+    WebConnectorSetup(connectorId, None, setup.label, setup.host, setup.userName,
+      setup.password, setup.useApiKey, setup.apiKey)
   }
 
   override def showError(string: String): Unit = {

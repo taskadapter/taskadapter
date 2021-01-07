@@ -1,10 +1,11 @@
 package com.taskadapter.web.configeditor.server;
 
+import com.taskadapter.connector.definition.WebConnectorSetup;
+import com.taskadapter.vaadin14shim.Binder;
 import com.taskadapter.vaadin14shim.TextField;
 import com.taskadapter.vaadin14shim.PasswordField;
 import com.taskadapter.vaadin14shim.GridLayout;
 import com.taskadapter.webui.Page;
-import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Label;
@@ -14,17 +15,11 @@ public class ServerContainer extends GridLayout {
 
     private TextField hostURLText;
 
-    public ServerContainer(Property<String> nameProperty,
-            Property<String> serverURLProperty,
-            Property<String> userLoginNameProperty,
-            Property<String> passwordProperty) {
-        buildUI(nameProperty, serverURLProperty, userLoginNameProperty,
-                passwordProperty);
+    public ServerContainer(WebConnectorSetup setup) {
+        buildUI(setup);
     }
 
-    private void buildUI(Property<String> labelProperty,
-            Property<String> serverURLProperty,
-            Property<String> userLoginNameProperty, Property<String> passwordProperty) {
+    private void buildUI(WebConnectorSetup setup) {
         setColumns(2);
         setRows(4);
         setMargin(true);
@@ -37,7 +32,7 @@ public class ServerContainer extends GridLayout {
         TextField nameField = new TextField();
         nameField.setRequired(true);
         nameField.addClassName("server-panel-textfield");
-        nameField.setPropertyDataSource(labelProperty);
+        Binder.bindField(nameField, setup, "label");
         addComponent(nameField, 1, currentRow);
 
         currentRow++;
@@ -54,7 +49,7 @@ public class ServerContainer extends GridLayout {
             cleanup();
         });
         hostURLText.addClassName("server-panel-textfield");
-        hostURLText.setPropertyDataSource(serverURLProperty);
+        Binder.bindField(hostURLText, setup, "host");
 
         addComponent(hostURLText, 1, currentRow);
         setComponentAlignment(hostURLText, Alignment.MIDDLE_RIGHT);
@@ -67,7 +62,7 @@ public class ServerContainer extends GridLayout {
 
         TextField login = new TextField();
         login.addClassName("server-panel-textfield");
-        login.setPropertyDataSource(userLoginNameProperty);
+        Binder.bindField(login, setup, "userName");
         addComponent(login, 1, currentRow);
         setComponentAlignment(login, Alignment.MIDDLE_RIGHT);
 
@@ -79,7 +74,7 @@ public class ServerContainer extends GridLayout {
 
         PasswordField password = new PasswordField();
         password.addClassName("server-panel-textfield");
-        password.setPropertyDataSource(passwordProperty);
+        Binder.bindField(password, setup, "password");
         addComponent(password, 1, currentRow);
         setComponentAlignment(password, Alignment.MIDDLE_RIGHT);
     }

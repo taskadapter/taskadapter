@@ -4,7 +4,9 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
+import com.taskadapter.vaadin14shim.Binder;
 import com.taskadapter.vaadin14shim.TextField;
+import com.taskadapter.vaadin14shim.PasswordField;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.vaadin.data.Property;
@@ -15,7 +17,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.UI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -152,6 +153,18 @@ public class EditorUtil {
         while (result.getCause() != null) {
             result = result.getCause();
         }
+        return result;
+    }
+
+    public static TextField textField(Object obj, String fieldName) {
+        TextField result = new TextField();
+        Binder.bindField(result, obj, fieldName);
+        return result;
+    }
+
+    public static PasswordField passwordField(Object obj, String fieldName) {
+        PasswordField result = new PasswordField();
+        Binder.bindField(result, obj, fieldName);
         return result;
     }
 }
