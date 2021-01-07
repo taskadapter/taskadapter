@@ -12,7 +12,7 @@ import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.{ConnectorSetupPanel, DroppingNotSupportedException, PluginEditorFactory}
 import com.vaadin.data.util.MethodProperty
 import com.vaadin.server.Sizeable.Unit.PIXELS
-import com.vaadin.ui.ComponentContainer
+import com.vaadin.ui.HasComponents
 
 import scala.collection.{Seq, mutable}
 
@@ -32,7 +32,7 @@ class GithubEditorFactory extends PluginEditorFactory[GithubConfig, WebConnector
     e.getMessage
   }
 
-  override def getMiniPanelContents(sandbox: Sandbox, config: GithubConfig, setup: WebConnectorSetup): ComponentContainer = {
+  override def getMiniPanelContents(sandbox: Sandbox, config: GithubConfig, setup: WebConnectorSetup): HasComponents = {
     val layout = new VerticalLayout
     layout.setWidth(380, PIXELS)
     val projectPanel = new ProjectPanel(new MethodProperty[String](config, "projectKey"), Option.empty,

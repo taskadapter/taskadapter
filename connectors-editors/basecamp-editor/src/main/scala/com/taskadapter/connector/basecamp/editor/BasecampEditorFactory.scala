@@ -1,7 +1,6 @@
 package com.taskadapter.connector.basecamp.editor
 
 import java.util
-
 import com.taskadapter.connector.basecamp.transport.{BaseCommunicator, ObjectAPI, ObjectAPIFactory}
 import com.taskadapter.connector.basecamp.{BasecampConfig, BasecampConnector, BasecampUtils, BasecampValidator}
 import com.taskadapter.connector.definition.exceptions.{BadConfigException, ConnectorException, ProjectNotSetException}
@@ -17,7 +16,7 @@ import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.ui.Grids.addTo
 import com.taskadapter.web.{ConnectorSetupPanel, DroppingNotSupportedException, PluginEditorFactory}
 import com.vaadin.data.util.MethodProperty
-import com.vaadin.ui.{Alignment, CheckBox, ComponentContainer, Label, Panel}
+import com.vaadin.ui.{Alignment, CheckBox, HasComponents, Label, Panel}
 
 import scala.collection.JavaConverters._
 import scala.collection.Seq
@@ -30,7 +29,7 @@ class BasecampEditorFactory extends PluginEditorFactory[BasecampConfig, WebConne
 
   override def isWebConnector = true
 
-  override def getMiniPanelContents(sandbox: Sandbox, config: BasecampConfig, setup: WebConnectorSetup): ComponentContainer = {
+  override def getMiniPanelContents(sandbox: Sandbox, config: BasecampConfig, setup: WebConnectorSetup): HasComponents = {
     val projectPanel = createProjectPanel(config, setup)
     val grid = new GridLayout
     grid.setColumns(2)

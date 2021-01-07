@@ -23,7 +23,7 @@ import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Sandbox;
 import com.vaadin.data.util.MethodProperty;
-import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.HasComponents;
 import scala.Option;
 import scala.collection.JavaConverters;
 import scala.collection.Seq;
@@ -67,7 +67,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     }
 
     @Override
-    public ComponentContainer getMiniPanelContents(Sandbox sandbox, JiraConfig config, WebConnectorSetup setup) {
+    public HasComponents getMiniPanelContents(Sandbox sandbox, JiraConfig config, WebConnectorSetup setup) {
         ProjectPanel projectPanel = new ProjectPanel(
                 new MethodProperty<>(config, "projectKey"),
                 Option.apply(new MethodProperty<>(config, "queryId")),

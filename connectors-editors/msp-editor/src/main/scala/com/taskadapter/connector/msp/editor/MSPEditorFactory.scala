@@ -2,9 +2,7 @@ package com.taskadapter.connector.msp.editor
 
 import java.io.File
 import java.nio.file.Paths
-
-import com.taskadapter.vaadin14shim.VerticalLayout
-import com.taskadapter.vaadin14shim.HorizontalLayout
+import com.taskadapter.vaadin14shim.{HorizontalLayout, Label, VerticalLayout}
 import com.taskadapter.connector.common.FileNameGenerator
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.connector.definition.{ConnectorConfig, FieldMapping, FileSetup}
@@ -15,7 +13,7 @@ import com.taskadapter.web.configeditor.file.{FileProcessingResult, LocalModeFil
 import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.{ConnectorSetupPanel, PluginEditorFactory}
-import com.vaadin.ui._
+import com.vaadin.ui.{Component, HasComponents, Panel}
 
 import scala.collection.mutable
 
@@ -39,7 +37,7 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     }
   }
 
-  override def getMiniPanelContents(sandbox: Sandbox, config: MSPConfig, setup: FileSetup): ComponentContainer = {
+  override def getMiniPanelContents(sandbox: Sandbox, config: MSPConfig, setup: FileSetup): HasComponents = {
     val layout = new VerticalLayout
     layout.setMargin(true)
     layout.add(createDescriptionElement(config))

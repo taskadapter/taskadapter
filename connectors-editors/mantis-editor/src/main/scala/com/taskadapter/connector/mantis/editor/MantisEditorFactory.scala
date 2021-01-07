@@ -1,7 +1,6 @@
 package com.taskadapter.connector.mantis.editor
 
 import java.util
-
 import com.google.common.base.Strings
 import com.taskadapter.vaadin14shim.VerticalLayout
 import com.taskadapter.vaadin14shim.HorizontalLayout
@@ -15,7 +14,7 @@ import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.{ConnectorSetupPanel, DroppingNotSupportedException, PluginEditorFactory}
 import com.vaadin.data.util.MethodProperty
 import com.vaadin.server.Sizeable.Unit.PIXELS
-import com.vaadin.ui.ComponentContainer
+import com.vaadin.ui.HasComponents
 
 import scala.collection.{JavaConverters, Seq, mutable}
 
@@ -42,7 +41,7 @@ class MantisEditorFactory extends PluginEditorFactory[MantisConfig, WebConnector
     e.toString
   }
 
-  override def getMiniPanelContents(sandbox: Sandbox, config: MantisConfig, setup: WebConnectorSetup): ComponentContainer = {
+  override def getMiniPanelContents(sandbox: Sandbox, config: MantisConfig, setup: WebConnectorSetup): HasComponents = {
     val layout = new VerticalLayout
     layout.setWidth(380, PIXELS)
     layout.add(new ProjectPanel(new MethodProperty[String](config, "projectKey"),

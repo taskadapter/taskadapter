@@ -7,7 +7,6 @@ import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.webui.Page;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
 import com.taskadapter.vaadin14shim.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressBar;

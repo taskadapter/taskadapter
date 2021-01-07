@@ -1,7 +1,6 @@
 package com.taskadapter.connector.basecamp.classic.editor
 
 import java.util
-
 import com.taskadapter.connector.basecamp.classic.transport.{BaseCommunicator, ObjectAPIFactory}
 import com.taskadapter.connector.basecamp.classic.{BasecampClassicConfig, BasecampClassicConnector, BasecampConfigValidator, BasecampUtils}
 import com.taskadapter.connector.definition.exceptions.{BadConfigException, ConnectorException, ProjectNotSetException}
@@ -17,7 +16,7 @@ import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.ui.Grids.addTo
 import com.taskadapter.web.{ConnectorSetupPanel, DroppingNotSupportedException, PluginEditorFactory}
 import com.vaadin.data.util.MethodProperty
-import com.vaadin.ui.{Alignment, ComponentContainer, Label, Panel}
+import com.vaadin.ui.{Alignment, HasComponents, Label, Panel}
 
 import scala.collection.{JavaConverters, Seq}
 
@@ -36,7 +35,7 @@ class BasecampClassicEditorFactory extends PluginEditorFactory[BasecampClassicCo
     "My Basecamp Classic", "https://-my-project-name-here-.basecamphq.com",
     "", "", true, "")
 
-  override def getMiniPanelContents(sandbox: Sandbox, config: BasecampClassicConfig, setup: WebConnectorSetup): ComponentContainer = {
+  override def getMiniPanelContents(sandbox: Sandbox, config: BasecampClassicConfig, setup: WebConnectorSetup): HasComponents = {
     val projectPanel = createProjectPanel(config, setup)
     val grid = new GridLayout
     grid.setColumns(2)
