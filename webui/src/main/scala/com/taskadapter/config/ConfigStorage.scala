@@ -62,7 +62,13 @@ class ConfigStorage(val rootDir: File) {
     val configFiles = folder.listFiles(ConfigStorage.CONFIG_FILE_FILTER)
     val configs = getConfigsInFolder(configFiles)
 
-    val largestIdInNonLegacyConfigs = configs.map(c => c.getId).max
+    val configIds = configs.map(c => c.getId)
+    val largestIdInNonLegacyConfigs = if (configIds.nonEmpty) {
+      configIds.max
+    } else {
+      0
+    }
+
     val legacyConfigFiles = folder.listFiles(ConfigStorage.LEGACY_CONFIG_FILE_FILTER)
     val legacyConfigs = getLegacyConfigsInFolder(userLoginName, legacyConfigFiles, largestIdInNonLegacyConfigs)
 
