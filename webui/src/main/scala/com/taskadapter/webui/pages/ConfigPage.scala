@@ -9,6 +9,7 @@ import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.connector.definition.exception.FieldNotMappedException
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.license.LicenseManager
+import com.taskadapter.web.event.{ConfigSaveRequested, EventBusImpl}
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{ConfigId, UIConnectorConfig, UISyncConfig}
 import com.taskadapter.webui.`export`.ExportResultsFragment
@@ -17,7 +18,7 @@ import com.taskadapter.webui.results.{ExportResultFormat, ExportResultsListPage}
 import com.taskadapter.webui.service.Preservices
 import com.taskadapter.webui.{BasePage, ConfigActionsFragment, ConfigOperations, EventTracker, ImageLoader, Page, SessionController}
 import com.vaadin.ui.Button.ClickListener
-import com.vaadin.ui.{Button, Component,  Label}
+import com.vaadin.ui.{Button, Component, Label}
 import com.vaadin.ui.themes.ValoTheme
 import org.slf4j.LoggerFactory
 
@@ -186,6 +187,7 @@ class ConfigPanel(config: UISyncConfig,
       horizontalLayout.removeAll()
       val configSaver = new Runnable {
         override def run(): Unit = {
+          EventBusImpl.post(ConfigSaveRequested(config))
           updateConfigTitleLine(config)
           recreateContents(config)
         }
