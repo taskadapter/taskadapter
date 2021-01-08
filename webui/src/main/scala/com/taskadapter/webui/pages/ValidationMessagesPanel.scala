@@ -1,11 +1,13 @@
 package com.taskadapter.webui.pages
 
-import com.taskadapter.vaadin14shim.VerticalLayout
-import com.taskadapter.vaadin14shim.HorizontalLayout
-import com.taskadapter.vaadin14shim.Label
-import com.taskadapter.vaadin14shim.Button
+
+
+
+
 import com.taskadapter.webui.Page
-import com.vaadin.shared.ui.label.ContentMode
+import com.vaadin.flow.component.button.Button
+import com.vaadin.flow.component.html.Label
+import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout}
 
 class ValidationMessagesPanel(caption: String) {
   val layout = new VerticalLayout
@@ -30,12 +32,12 @@ class ValidationMessagesPanel(caption: String) {
     errorMessageLabel.addClassName("error-message-label")
     errorMessageLabel.setWidth("600px")
     errorMessageLabel.addClassName("wrap")
-    errorMessageLabel.setContentMode(ContentMode.HTML)
+//    errorMessageLabel.setContentMode(ContentMode.HTML)
 
     val fixButton = new Button(Page.message("configSummary.fixButtonCaption"))
     fixButton.addClickListener(_ => error.processor.run())
-    row.addComponent(errorMessageLabel)
-    row.addComponent(fixButton)
+    row.add(errorMessageLabel)
+    row.add(fixButton)
     layout.add(row)
   }
 }

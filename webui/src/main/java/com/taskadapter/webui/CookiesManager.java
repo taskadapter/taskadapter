@@ -1,6 +1,6 @@
 package com.taskadapter.webui;
 
-import com.vaadin.server.VaadinService;
+import com.vaadin.flow.server.VaadinService;
 
 import javax.servlet.http.Cookie;
 

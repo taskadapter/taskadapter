@@ -4,15 +4,13 @@ import com.google.common.base.Strings
 import com.taskadapter.connector.definition.exceptions.{BadConfigException, LoginNameNotSpecifiedException, ProjectNotSetException, ServerURLNotSetException, UnsupportedConnectorOperation}
 import com.taskadapter.connector.definition.{FieldMapping, WebConnectorSetup}
 import com.taskadapter.connector.github.{GithubConfig, GithubConnector}
-import com.taskadapter.vaadin14shim.VerticalLayout
 import com.taskadapter.web.configeditor.ProjectPanel
-import com.taskadapter.web.configeditor.server.ServerPanelFactory
+import com.taskadapter.web.configeditor.server.ServerPanelWithLoginAndToken
 import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
+import com.taskadapter.web.uiapi.{DefaultSavableComponent, SavableComponent}
 import com.taskadapter.web.{ConnectorSetupPanel, DroppingNotSupportedException, PluginEditorFactory}
-import com.vaadin.data.util.MethodProperty
-import com.vaadin.server.Sizeable.Unit.PIXELS
-import com.vaadin.ui.HasComponents
+import com.vaadin.flow.data.binder.{Binder, ValidationException}
 
 import scala.collection.{Seq, mutable}
 
@@ -32,21 +30,32 @@ class GithubEditorFactory extends PluginEditorFactory[GithubConfig, WebConnector
     e.getMessage
   }
 
-  override def getMiniPanelContents(sandbox: Sandbox, config: GithubConfig, setup: WebConnectorSetup): HasComponents = {
-    val layout = new VerticalLayout
-    layout.setWidth(380, PIXELS)
-    val projectPanel = new ProjectPanel(new MethodProperty[String](config, "projectKey"), Option.empty,
-      Option.apply(new MethodProperty[String](config, "queryString")),
-      new GithubProjectsListLoader(setup), null, null, this)
+  override def getMiniPanelContents(sandbox: Sandbox, config: GithubConfig, setup: WebConnectorSetup): SavableComponent = {
+    val binder = new Binder[GithubConfig](classOf[GithubConfig])
+
+    val projectPanel = new ProjectPanel(binder,
+      "projectKey",
+      Option.empty,
+      Option.apply("queryString"),
+      new GithubProjectsListLoader(setup),
+      null, null, this)
     projectPanel.setProjectKeyLabel("Repository ID")
-    layout.add(projectPanel)
-    layout
+
+    binder.readBean(config)
+
+    new DefaultSavableComponent(projectPanel, () => {
+      try binder.writeBean(config)
+      catch {
+        case e: ValidationException =>
+          e.printStackTrace()
+      }
+    })
   }
 
   override def getEditSetupPanel(sandbox: Sandbox, setup: WebConnectorSetup): ConnectorSetupPanel = {
     val description = "Please generate an API token here: <br/>" +
       "<b>https://github.com/settings/tokens</b>"
-    ServerPanelFactory.withLoginAndApiToken(GithubConnector.ID, GithubConnector.ID, description, setup)
+    new ServerPanelWithLoginAndToken(GithubConnector.ID, GithubConnector.ID, setup, description)
   }
 
   override def createDefaultSetup(sandbox: Sandbox) = new WebConnectorSetup(

@@ -6,7 +6,7 @@ import java.util
 import com.taskadapter.auth.{AuthorizedOperations, CredentialsManager}
 import com.taskadapter.config.StorageException
 import com.taskadapter.connector.definition.ConnectorSetup
-import com.taskadapter.web.event.{ConfigCloneRequested, ConfigDeleteRequested, ConfigSaveRequested, EventBusImpl}
+import com.taskadapter.web.event.{ConfigCreateCompleted, EventBusImpl}
 import com.taskadapter.web.uiapi.{ConfigId, SetupId, UIConfigStore, UISyncConfig}
 
 import scala.collection.JavaConverters._
@@ -37,22 +37,10 @@ final class ConfigOperations(/**
                                */
                              val syncSandbox: File) {
 
-  EventBusImpl.subscribe((e: ConfigDeleteRequested) => {
-    deleteConfig(e.configId)
-  })
-
-  EventBusImpl.subscribe((e: ConfigSaveRequested) => {
-    saveConfig(e.config)
-  })
-
-  EventBusImpl.subscribe((e: ConfigCloneRequested) => {
-    cloneConfig(e.configId)
-  })
-
   /**
     * @return list of configs that user owns.
     */
-  def getOwnedConfigs: Seq[UISyncConfig] = uiConfigStore.getUserConfigs(userName)
+  def getOwnedConfigs: java.util.List[UISyncConfig] = uiConfigStore.getUserConfigs(userName).asJava
 
   def getSavedSetupsFolder = uiConfigStore.getSavedSetupsFolder(userName)
   def getConfig(configId: ConfigId): Option[UISyncConfig] = uiConfigStore.getConfig(configId)
@@ -60,13 +48,13 @@ final class ConfigOperations(/**
   /**
     * @return list of configs that user can manage.
     */
-  def getManageableConfigs: Seq[UISyncConfig] = {
+  def getManageableConfigs: java.util.List[UISyncConfig] = {
     if (!authorizedOps.canManagerPeerConfigs) return getOwnedConfigs
     val res = new util.ArrayList[UISyncConfig]
     credManager.listUsers.asScala.foreach(user =>
       res.addAll(uiConfigStore.getUserConfigs(user).asJava)
     )
-    res.asScala
+    res
   }
 
   /**
@@ -80,15 +68,19 @@ final class ConfigOperations(/**
     */
   @throws[StorageException]
   def createNewConfig(descriptionString: String, connector1Id: String, connector1SetupId: SetupId,
-                      connector2Id: String, connector2SetupId: SetupId): ConfigId =
-  uiConfigStore.createNewConfig(userName, descriptionString, connector1Id, connector1SetupId, connector2Id, connector2SetupId)
+                      connector2Id: String, connector2SetupId: SetupId): ConfigId = {
+    val configId = uiConfigStore.createNewConfig(userName, descriptionString, connector1Id, connector1SetupId,
+      connector2Id, connector2SetupId)
+    EventBusImpl.post(ConfigCreateCompleted(configId))
+    configId
+  }
 
   /**
     * Delete a config.
     *
     * @param configIdentity a unique id for the config in the store
     */
-  private def deleteConfig(configIdentity: ConfigId): Unit = {
+  def deleteConfig(configIdentity: ConfigId): Unit = {
     uiConfigStore.deleteConfig(configIdentity)
     // tracker.trackEvent(ConfigCategory, "deleted", "")
   }
@@ -100,12 +92,12 @@ final class ConfigOperations(/**
     * @throws StorageException if config cannot be cloned.
     */
   @throws[StorageException]
-  private def cloneConfig(configId: ConfigId): Unit = {
+  def cloneConfig(configId: ConfigId): Unit = {
     uiConfigStore.cloneConfig(userName, configId)
   }
 
   @throws[StorageException]
-  private def saveConfig(config: UISyncConfig): Unit = {
+  def saveConfig(config: UISyncConfig): Unit = {
     uiConfigStore.saveConfig(config)
     // tracker.trackEvent(ConfigCategory, "saved", "")
   }

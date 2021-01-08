@@ -5,6 +5,7 @@ import com.taskadapter.connector.definition.exceptions.{ProjectNotSetException, 
 import com.taskadapter.connector.testlib.TempFolder
 import com.taskadapter.editor.testlib.VaadinTestHelper
 import com.taskadapter.web.service.Sandbox
+import com.vaadin.flow.data.binder.Binder
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}

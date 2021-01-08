@@ -4,20 +4,17 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
-import com.taskadapter.vaadin14shim.Binder;
-import com.taskadapter.vaadin14shim.TextField;
-import com.taskadapter.vaadin14shim.PasswordField;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.callbacks.DataProvider;
-import com.vaadin.data.Property;
-import com.vaadin.data.util.MethodProperty;
-import com.vaadin.ui.AbstractLayout;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.UI;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Binder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,49 +27,57 @@ import java.util.function.Function;
 public class EditorUtil {
     private final static Logger logger = LoggerFactory.getLogger(EditorUtil.class);
 
+    // TODO 14 - not attached!!
+    private static final String errorStyle = ".notification-error-style { "
+            + "  color: red;"
+            + " }";
+
     private static void showList(String windowTitle, String listTitle, Collection<String> items, ValueListener valueListener) {
         ListSelectionDialog newWindow = new ListSelectionDialog(windowTitle, listTitle, items, valueListener);
-        newWindow.center();
-        newWindow.setModal(true);
-
-        UI.getCurrent().addWindow(newWindow);
-        newWindow.focus();
+        // TODO 14 show list
+//        newWindow.center();
+//        newWindow.setModal(true);
+//
+//        UI.getCurrent().addWindow(newWindow);
+//        newWindow.focus();
     }
 
     public static void show(String caption, Exception e) {
         String errorMessage = getRoot(e).getMessage();
-        Notification.show(caption, errorMessage, Notification.Type.ERROR_MESSAGE);
+        Div content = new Div();
+        content.addClassName("notification-error-style");
+        content.setText(caption + " " + errorMessage);
+
+        Notification notification = new Notification(content);
+        notification.setDuration(3000);
     }
 
     // TODO can't move this to ButtonBuilder class right now because it's not accessible from webshared module.
-    public static Button createButton(String label, String description, Button.ClickListener clickListener) {
+    // TODO zzz raw type
+    public static Button createButton(String label, String description, ComponentEventListener clickListener) {
         Button button = new Button(label);
-        button.setDescription(description);
+        button.getElement().setProperty("title", description); // tooltip
         button.addClickListener(clickListener);
         return button;
     }
-    
-    public static <T> TextField textInput(Property<T> property, String width) {
-        final TextField result = new TextField();
-        result.setPropertyDataSource(property);
-        result.setWidth(width);
-        return result;
-    }
-    
-    public static TextField textInput(Property<String> property) {
-        final TextField result = new TextField();
-        result.setPropertyDataSource(property);
+
+    public static <T> TextField textInput(Binder<T> binder, String propertyName) {
+        TextField result = new TextField();
+        binder.bind(result, propertyName);
         return result;
     }
 
-    public static PasswordField passwordInput(Property<String> property) {
-        final PasswordField result = new PasswordField();
-        result.setPropertyDataSource(property);
-        return result;
+    public static <T> Checkbox checkbox(String label, String description, Binder<T> binder, String propertyName) {
+        Checkbox field = new Checkbox(label);
+        field.getElement().setProperty("title", description); // tooltip
+        binder.bind(field, propertyName);
+        return field;
     }
 
-    public static TextField propertyInput(Object o, String field) {
-        return textInput(new MethodProperty<>(o, field));
+    public static <T> PasswordField passwordInput(Binder<T> binder, String propertyName) {
+        PasswordField result = new PasswordField();
+        binder.bind(result, propertyName);
+        return result;
     }
 
     // TODO review and refactor this. this method is too complex
@@ -110,21 +115,21 @@ public class EditorUtil {
                 objects = operation.loadData();
 
                 if (objects.isEmpty()) {
-                    Notification.show("No objects", "No objects have been found", Notification.Type.HUMANIZED_MESSAGE);
+                    Notification.show("No objects have been found");
                 }
                 listener.notifyDone(objects);
             } catch (BadConfigException e) {
                 logger.error(e.getMessage());
-                Notification.show("", errorFormatter.formatError(e), Notification.Type.HUMANIZED_MESSAGE);
+                Notification.show(errorFormatter.formatError(e));
             } catch (ConnectorException e) {
                 logger.error(e.toString());
-                Notification.show("", errorFormatter.formatError(e), Notification.Type.HUMANIZED_MESSAGE);
+                Notification.show(errorFormatter.formatError(e));
             } catch (Exception e) {
                 logger.error(e.toString());
                 EditorUtil.show("Something went wrong", e);
             }
         });
-        button.setDescription(description);
+        button.getElement().setProperty("title", description); // tooltip
         return button;
     }
 	
@@ -132,39 +137,11 @@ public class EditorUtil {
         void setValue(String value);
     }
 
-    public static TextField addLabeledText(AbstractLayout layout, String caption, String tooltip) {
-        Label label = new Label(caption);
-        layout.addComponent(label);
-
-        TextField field = new TextField();
-        field.setDescription(tooltip);
-        layout.addComponent(field);
-
-        if (layout instanceof Layout.AlignmentHandler) {
-            ((Layout.AlignmentHandler) layout).setComponentAlignment(label, Alignment.MIDDLE_LEFT);
-            ((Layout.AlignmentHandler) layout).setComponentAlignment(field, Alignment.MIDDLE_CENTER);
-        }
-
-        return field;
-    }
-
     public static Throwable getRoot(Throwable t) {
         Throwable result = t;
         while (result.getCause() != null) {
             result = result.getCause();
         }
-        return result;
-    }
-
-    public static TextField textField(Object obj, String fieldName) {
-        TextField result = new TextField();
-        Binder.bindField(result, obj, fieldName);
-        return result;
-    }
-
-    public static PasswordField passwordField(Object obj, String fieldName) {
-        PasswordField result = new PasswordField();
-        Binder.bindField(result, obj, fieldName);
         return result;
     }
 }

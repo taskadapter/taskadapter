@@ -5,11 +5,17 @@ import static com.taskadapter.webui.Page.message;
 
 import java.util.List;
 
+import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.core.PreviouslyCreatedTasksResolver;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.server.VaadinSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.taskadapter.vaadin14shim.Label;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
@@ -17,13 +23,6 @@ import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.MonitorWrapper;
 import com.taskadapter.webui.export.ConfirmExportFragment;
-import com.vaadin.server.VaadinSession;
-import com.vaadin.server.Sizeable.Unit;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.ProgressIndicator;
-import com.taskadapter.vaadin14shim.VerticalLayout;
 
 public final class UpdateFilePage {
 
@@ -64,7 +63,7 @@ public final class UpdateFilePage {
         errorMessage = new Label("");
         errorMessage.addClassName("errorMessage");
         errorMessage.setVisible(false);
-        errorMessage.setWidth(500, Unit.PIXELS);
+//        errorMessage.setWidth(500, Unit.PIXELS);
         ui.add(errorMessage);
 
         content = new VerticalLayout();
@@ -113,6 +112,7 @@ public final class UpdateFilePage {
      */
     private void showConfirmation(List<GTask> tasks) {
         final Component component = ConfirmExportFragment.render(
+                configOps,
                 config, tasks, new ConfirmExportFragment.Callback() {
                     @Override
                     public void onTasks(List<GTask> selectedTasks) {
@@ -128,36 +128,33 @@ public final class UpdateFilePage {
         VaadinSession.getCurrent().lock();
         try {
             setContent(component);
-            content.setExpandRatio(component, 1f);
+//            content.setExpandRatio(component, 1f);
         } finally {
             VaadinSession.getCurrent().unlock();
         }
     }
 
-    /**
-     * Perofrms an export.
-     * 
-     * @param selectedTasks
-     *            list of selected tasks.
-     */
     private void performExport(final List<GTask> selectedTasks) {
         if (selectedTasks.isEmpty()) {
             Notification.show(message("action.pleaseSelectTasks"));
             return;
         }
 
+/*
         final ProgressIndicator saveProgress = SyncActionComponents
                 .renderSaveIndicator(config.getConnector2());
-        saveProgress.setValue(0f);
+        saveProgress.setProgress(0f);
         setContent(saveProgress);
+*/
 
-        final MonitorWrapper wrapper = new MonitorWrapper(saveProgress);
+
+//        final MonitorWrapper wrapper = new MonitorWrapper(ProgressMonitorUtils.DUMMY_MONITOR);
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    showExportResult(config.updateTasks(selectedTasks, wrapper));
+                    showExportResult(config.updateTasks(selectedTasks, ProgressMonitorUtils.DUMMY_MONITOR));
                 } catch (CommunicationException e) {
                     final String message = config.getConnector1()
                             .decodeException(e);
@@ -203,7 +200,7 @@ public final class UpdateFilePage {
     private void showNoDataLoaded() {
         final VerticalLayout res = new VerticalLayout();
         final Label label = new Label(message("updatePage.noDataWasLoaded"));
-        label.setWidth(800, Unit.PIXELS);
+//        label.setWidth(800, Unit.PIXELS);
 
         Button backButton = new Button(message("button.back"), event -> onDone.run());
         res.add(label);
@@ -236,7 +233,7 @@ public final class UpdateFilePage {
      */
     private void showErrorMessage(String message) {
         final boolean haveMessage = message != null;
-        errorMessage.setValue(haveMessage ? message : "");
+//        errorMessage.setValue(haveMessage ? message : "");
         errorMessage.setVisible(haveMessage);
     }
 

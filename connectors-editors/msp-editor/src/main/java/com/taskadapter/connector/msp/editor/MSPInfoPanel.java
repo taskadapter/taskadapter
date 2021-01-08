@@ -1,22 +1,18 @@
 package com.taskadapter.connector.msp.editor;
 
 import com.taskadapter.connector.msp.write.MSPDefaultFields;
-import com.taskadapter.vaadin14shim.GridLayout;
-import com.taskadapter.vaadin14shim.Label;
-import com.vaadin.ui.Panel;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-import static com.vaadin.server.Sizeable.Unit.PERCENTAGE;
-
-public class MSPInfoPanel extends Panel {
+public class MSPInfoPanel extends VerticalLayout {
 	private static final long serialVersionUID = 1L;
 
 	public MSPInfoPanel() {
-        super("MSP Text Fields to store some internal stuff");
+//        super("MSP Text Fields to store some internal stuff");
         buildUI();
     }
 
     private void buildUI() {
-        GridLayout layout = new GridLayout();
+       /* GridLayout layout = new GridLayout();
         layout.setWidth(100, PERCENTAGE);
         layout.setColumns(2);
         layout.setRows(2);
@@ -36,6 +32,6 @@ public class MSPInfoPanel extends Panel {
         final Label workText = new Label();
         workText.setText(MSPDefaultFields.FIELD_WORK_UNDEFINED.toString());
         layout.add(workText, 1, 1);
-        setContent(layout);
+        setContent(layout);*/
     }
 }

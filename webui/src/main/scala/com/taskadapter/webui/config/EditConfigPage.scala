@@ -1,43 +1,40 @@
 package com.taskadapter.webui.config
 
-import com.taskadapter.vaadin14shim.VerticalLayout
-import com.taskadapter.vaadin14shim.HorizontalLayout
 import com.google.common.base.Strings
 import com.taskadapter.config.StorageException
 import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.connector.definition.exception.FieldNotMappedException
 import com.taskadapter.connector.definition.exceptions.BadConfigException
+import com.taskadapter.web.configeditor.EditorUtil
 import com.taskadapter.web.data.Messages
-import com.taskadapter.web.event.{ConfigSaveRequested, EventBusImpl}
+import com.taskadapter.web.ui.HtmlLabel
 import com.taskadapter.web.uiapi.UISyncConfig
 import com.taskadapter.webui._
 import com.taskadapter.webui.data.ExceptionFormatter
-import com.vaadin.data.util.ObjectProperty
-import com.vaadin.server.Sizeable.Unit.PERCENTAGE
-import com.vaadin.shared.ui.label.ContentMode
-import com.vaadin.ui._
+import com.vaadin.flow.component.Component
+import com.vaadin.flow.component.button.Button
+import com.vaadin.flow.component.formlayout.FormLayout
+import com.vaadin.flow.component.notification.Notification
+import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout}
+import com.vaadin.flow.data.binder.Binder
 import org.slf4j.LoggerFactory
 
 /**
   * Fields mapping plus "description" element at the top.
   */
-class EditConfigPage(messages: Messages,
+class EditConfigPage(configOps: ConfigOperations,
+                     messages: Messages,
                      error: String,
-                     config: UISyncConfig,
-                     close: Runnable) {
+                     config: UISyncConfig) {
   private val logger = LoggerFactory.getLogger(classOf[EditConfigPage])
 
-  val labelProperty = new ObjectProperty[String](config.label)
+  val binder = new Binder[UISyncConfig](classOf[UISyncConfig])
+  val descriptionField = EditorUtil.textInput(binder, "label")
+  val editDescriptionForm = createEditDescriptionElement()
 
-  val layout = new VerticalLayout
-
-  val editDescriptionForm = createEditDescriptionElement(config)
-  editDescriptionForm.setWidth(Sizes.editConfigDescriptionFormWidth)
-
-  var errorMessageLabel = new Label()
-  errorMessageLabel.addStyleName("error-message-label")
-  errorMessageLabel.setWidth(100, PERCENTAGE)
-  errorMessageLabel.setContentMode(ContentMode.HTML)
+  var errorMessageLabel = new HtmlLabel("")
+  errorMessageLabel.addClassName("error-message-label")
+  errorMessageLabel.setWidth("100%")
   errorMessageLabel.setVisible(false)
 
   if (!Strings.isNullOrEmpty(error)) {
@@ -46,23 +43,17 @@ class EditConfigPage(messages: Messages,
   val buttons = createConfigOperationsButtons
   buttons.setWidth("20%")
   val topRowLayout = new HorizontalLayout(editDescriptionForm, buttons)
-  topRowLayout.setComponentAlignment(editDescriptionForm, Alignment.MIDDLE_LEFT)
-  topRowLayout.setComponentAlignment(buttons, Alignment.MIDDLE_RIGHT)
 
-  layout.add(topRowLayout)
-
-  layout.add(errorMessageLabel)
+  val layout = new VerticalLayout(topRowLayout, errorMessageLabel)
 
   val taskFieldsMappingFragment = new TaskFieldsMappingFragment(messages,
     config.getConnector1.getAllFields, config.getConnector1.fieldNames, config.getConnector1.getLabel,
     config.getConnector2.getAllFields, config.getConnector2.fieldNames, config.getConnector2.getLabel,
     config.getNewMappings)
 
-  layout.add(taskFieldsMappingFragment.getUI)
+  layout.add(taskFieldsMappingFragment.getComponent)
 
-  def removeEmptyRows(): Unit = {
-    taskFieldsMappingFragment.removeEmptyRows()
-  }
+  binder.readBean(config)
 
   def getElements: Iterable[FieldMapping[_]] = {
     taskFieldsMappingFragment.getElements
@@ -72,16 +63,14 @@ class EditConfigPage(messages: Messages,
 
   private def createConfigOperationsButtons = {
     val buttonsLayout = new HorizontalLayout
-    buttonsLayout.setWidth(100, PERCENTAGE)
     val rightLayout = new HorizontalLayout
     rightLayout.setSpacing(true)
     buttonsLayout.add(rightLayout)
-    buttonsLayout.setComponentAlignment(rightLayout, Alignment.BOTTOM_RIGHT)
     val saveButton = new Button(Page.message("button.save"))
     saveButton.addClickListener(_ => saveClicked())
     rightLayout.add(saveButton)
     val backButton = new Button(Page.message("button.close"))
-    backButton.addClickListener(_ => close.run())
+//    backButton.addClickListener(_ => close.run())
 
     rightLayout.add(backButton)
     buttonsLayout
@@ -90,7 +79,7 @@ class EditConfigPage(messages: Messages,
   private def saveClicked(): Unit = {
     if (validate) {
       save()
-      Notification.show("", Page.message("editConfig.messageSaved"), Notification.Type.HUMANIZED_MESSAGE)
+      Notification.show(Page.message("editConfig.messageSaved"))
     }
   }
 
@@ -118,12 +107,12 @@ class EditConfigPage(messages: Messages,
 
   private def save(): Unit = {
     try {
-      removeEmptyRows()
+      taskFieldsMappingFragment.save()
       val newFieldMappings = getElements.toSeq
       val newConfig = config.copy(fieldMappings = newFieldMappings,
-        label = labelProperty.getValue
+        label = descriptionField.getValue
       )
-      EventBusImpl.post(ConfigSaveRequested(newConfig))
+      configOps.saveConfig(newConfig)
     } catch {
       case e: StorageException =>
         val message = Page.message("editConfig.error.cantSave", e.getMessage)
@@ -132,25 +121,26 @@ class EditConfigPage(messages: Messages,
     }
   }
 
-  private def createEditDescriptionElement(config: UISyncConfig): Component = {
+  private def createEditDescriptionElement(): Component = {
     val form = new FormLayout
-    val descriptionField = new TextField(Page.message("editConfig.description"))
+    descriptionField.setTitle(Page.message("editConfig.description"))
     descriptionField.setWidth(Sizes.editConfigDescriptionFieldWidth)
-    descriptionField.setPropertyDataSource(labelProperty)
+
     // can use this to auto-save field changes. don't want to do this for just one field though.
     // need to be the same experience for all fields.
 //    descriptionField.addBlurListener(_ => save())
-    form.addComponent(descriptionField)
+    form.add(descriptionField)
+    form.setWidth(Sizes.editConfigDescriptionFormWidth)
     form
   }
 
   def showError(errorMessage: String): Unit = {
     errorMessageLabel.setVisible(true)
-    errorMessageLabel.setValue(errorMessage)
+    errorMessageLabel.setText(errorMessage)
   }
 
   def clearErrorMessage(): Unit = {
     errorMessageLabel.setVisible(false)
-    errorMessageLabel.setValue("")
+    errorMessageLabel.setText("")
   }
 }

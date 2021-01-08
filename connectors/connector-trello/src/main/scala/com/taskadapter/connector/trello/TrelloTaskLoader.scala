@@ -10,8 +10,8 @@ class TrelloTaskLoader(api: Trello) {
   @throws[ConnectorException]
   def loadTasks(config: TrelloConfig): List[GTask] = {
     try {
-      val listsCache = new ListCache(api.getBoardLists(config.boardId).asScala)
-      val cards = api.getBoardCards(config.boardId).asScala
+      val listsCache = new ListCache(api.getBoardLists(config.getBoardId).asScala)
+      val cards = api.getBoardCards(config.getBoardId).asScala
       val gtasks = cards.map(c => TrelloToGTask.convert(listsCache, c)).toList
       gtasks
     } catch {
@@ -21,7 +21,7 @@ class TrelloTaskLoader(api: Trello) {
   }
 
   def loadTask(config: TrelloConfig, taskKey: String): GTask = {
-    val listsCache = new ListCache(api.getBoardLists(config.boardId).asScala)
+    val listsCache = new ListCache(api.getBoardLists(config.getBoardId).asScala)
     val card = api.getCard(taskKey)
     TrelloToGTask.convert(listsCache, card)
   }

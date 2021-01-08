@@ -1,44 +1,54 @@
 package com.taskadapter.webui.config
 
-import com.taskadapter.vaadin14shim.VerticalLayout
-import com.taskadapter.vaadin14shim.HorizontalLayout
-import com.taskadapter.PluginManager
 import com.taskadapter.connector.definition.ConnectorSetup
 import com.taskadapter.web.PluginEditorFactory
-import com.taskadapter.web.event.{EventBusImpl, ShowSetupsListPageRequested}
-import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.SetupId
-import com.taskadapter.webui.service.EditorManager
-import com.taskadapter.webui.{ConfigOperations, Page}
-import com.vaadin.ui._
+import com.taskadapter.webui.pages.Navigator
+import com.taskadapter.webui.{BasePage, EventTracker, Layout, Page, SessionController}
+import com.vaadin.flow.component.button.Button
+import com.vaadin.flow.component.dependency.CssImport
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout
+import com.vaadin.flow.router.{BeforeEvent, HasUrlParameter, Route}
 
-class EditSetupPage(configOperations: ConfigOperations, editorManager: EditorManager, pluginManager: PluginManager,
-                    sandbox: Sandbox, setupId: SetupId) {
-  val layout = new VerticalLayout
-  layout.setSpacing(true)
+@Route(value = "edit-setup", layout = classOf[Layout])
+@CssImport(value = "./styles/views/mytheme.css")
+class EditSetupPage() extends BasePage with HasUrlParameter[String]{
 
-  val saveButton = new Button(Page.message("editSetupPage.saveButton"))
-  saveButton.addClickListener(_ => saveClicked())
+  private val configOps = SessionController.buildConfigOperations()
+  private val services = SessionController.getServices
+  private val sandbox = SessionController.createSandbox()
 
-  val closeButton = new Button(Page.message("editSetupPage.closeButton"))
-  closeButton.addClickListener(_ => EventBusImpl.post(ShowSetupsListPageRequested()))
+  override def setParameter(event: BeforeEvent, setupIdStr: String): Unit = {
+    EventTracker.trackPage("edit-setup")
+    showSetup(SetupId(setupIdStr))
+  }
 
-  val ui = layout
+  def showSetup(setupId: SetupId) : Unit = {
 
-  val setup: ConnectorSetup = configOperations.getSetup(setupId)
+    val setup: ConnectorSetup = configOps.getSetup(setupId)
 
-  val editor: PluginEditorFactory[_, ConnectorSetup] = editorManager.getEditorFactory(setup.connectorId)
-  val editSetupPanel = editor.getEditSetupPanel(sandbox, setup)
-  layout.add(editSetupPanel.getUI)
-  layout.add(new HorizontalLayout(saveButton, closeButton))
+    val editor: PluginEditorFactory[_, ConnectorSetup] = services.editorManager.getEditorFactory(setup.connectorId)
+    val editSetupPanel = editor.getEditSetupPanel(sandbox, setup)
+    add(editSetupPanel.getUI)
 
-  def saveClicked(): Unit = {
-    val maybeError = editSetupPanel.validate
-    if (maybeError.isEmpty) {
-      configOperations.saveSetup(editSetupPanel.getResult, setupId)
-      EventBusImpl.post(ShowSetupsListPageRequested())
-    } else {
-      editSetupPanel.showError(maybeError.get)
+    def saveClicked(): Unit = {
+      val maybeError = editSetupPanel.validate
+      if (maybeError.isEmpty) {
+        configOps.saveSetup(editSetupPanel.getResult, setupId)
+        Navigator.setupsList()
+      } else {
+        editSetupPanel.showError(maybeError.get)
+      }
     }
+
+    val saveButton = new Button(Page.message("editSetupPage.saveButton"))
+    saveButton.addClickListener(_ => saveClicked())
+
+    val closeButton = new Button(Page.message("editSetupPage.closeButton"))
+    closeButton.addClickListener(_ => Navigator.setupsList())
+
+
+    add(new HorizontalLayout(saveButton, closeButton))
+
   }
 }

@@ -5,12 +5,12 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.reporting.ErrorReporter;
 import com.taskadapter.web.uiapi.UISyncConfig;
+import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.results.ExportResultStorage;
-import com.vaadin.server.Sizeable.Unit;
-import com.vaadin.server.VaadinSession;
-import com.vaadin.ui.Component;
-import com.taskadapter.vaadin14shim.VerticalLayout;
-import com.taskadapter.vaadin14shim.Label;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,11 +21,12 @@ import static com.taskadapter.license.LicenseManager.TRIAL_MESSAGE;
 /**
  * Export page and export handler.
  */
-public final class ExportPage {
+public final class ExportPage extends VerticalLayout {
     private static final Logger log = LoggerFactory.getLogger(ExportPage.class);
 
     private final ExportHelper exportHelper;
 
+    private final UI ui;
     /**
      * Sync config.
      */
@@ -36,34 +37,30 @@ public final class ExportPage {
      */
     private final int taskLimit;
 
-    public final VerticalLayout ui;
     private final Label errorMessage;
     private final VerticalLayout content;
 
-    public ExportPage(ExportResultStorage exportResultStorage, UISyncConfig config,
-                      int taskLimit, boolean showFilePath, Runnable onDone) {
+    public ExportPage(UI ui, ExportResultStorage exportResultStorage, UISyncConfig config,
+                      int taskLimit, boolean showFilePath, Runnable onDone,
+                      ConfigOperations configOps) {
+        this.ui = ui;
         this.config = config;
         this.taskLimit = taskLimit;
 
-        ui = new VerticalLayout();
         errorMessage = new Label("");
         errorMessage.addClassName("errorMessage");
         errorMessage.setVisible(false);
-        errorMessage.setWidth(500, Unit.PIXELS);
-        ui.add(errorMessage);
+        errorMessage.setWidth("500px");
+        add(errorMessage);
 
         content = new VerticalLayout();
-        ui.add(content);
-        exportHelper = new ExportHelper(exportResultStorage, onDone, showFilePath, content, config);
-
-        startLoading();
+        add(errorMessage, content);
+        exportHelper = new ExportHelper(exportResultStorage, onDone, showFilePath, content, config, configOps);
     }
 
-    /**
-     * Starts data loading.
-     */
-    private void startLoading() {
-        setContent(SyncActionComponents.renderLoadIndicator(config.getConnector1()));
+    public void startLoading() {
+        Component renderLoadIndicator = SyncActionComponents.renderLoadIndicator(config.getConnector1());
+        content.add(renderLoadIndicator);
 
         if (taskLimit < Integer.MAX_VALUE)
             log.info(TRIAL_MESSAGE);
@@ -77,15 +74,15 @@ public final class ExportPage {
                 exportHelper.onTasksLoaded(tasks);
             } catch (CommunicationException e) {
                 final String message = config.getConnector1().decodeException(e);
-                showLoadErrorMessage(message);
+                showLoadErrorMessage(ui, message);
                 ErrorReporter.reportIfAllowed(config, e);
                 log.error("transport error: " + message, e);
             } catch (ConnectorException e) {
-                showLoadErrorMessage(config.getConnector1().decodeException(e));
+                showLoadErrorMessage(ui, config.getConnector1().decodeException(e));
                 ErrorReporter.reportIfAllowed(config, e);
                 log.error(e.getMessage(), e);
             } catch (RuntimeException e) {
-                showLoadErrorMessage("Internal error: " + e.getMessage());
+                showLoadErrorMessage(ui, "Internal error: " + e.getMessage());
                 ErrorReporter.reportIfAllowed(config, e);
                 log.error(e.getMessage(), e);
             }
@@ -97,14 +94,11 @@ public final class ExportPage {
      *
      * @param message message to show.
      */
-    private void showLoadErrorMessage(String message) {
-        VaadinSession.getCurrent().lock();
-        try {
+    private void showLoadErrorMessage(UI ui, String message) {
+        ui.access(() -> {
             showErrorMessage(message);
             exportHelper.showNoDataLoaded();
-        } finally {
-            VaadinSession.getCurrent().unlock();
-        }
+        });
     }
 
     /**
@@ -116,10 +110,5 @@ public final class ExportPage {
         final boolean haveMessage = message != null;
         errorMessage.setText(haveMessage ? message : "");
         errorMessage.setVisible(haveMessage);
-    }
-
-    private void setContent(Component comp) {
-        content.removeAll();
-        content.add(comp);
     }
 }

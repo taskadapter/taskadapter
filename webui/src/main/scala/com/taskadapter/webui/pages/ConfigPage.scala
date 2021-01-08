@@ -1,46 +1,49 @@
 package com.taskadapter.webui.pages
 
-
-import com.taskadapter.vaadin14shim.VerticalLayout
-import com.taskadapter.vaadin14shim.HorizontalLayout
-import com.taskadapter.vaadin14shim.GridLayout
 import com.taskadapter.Constants
 import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.connector.definition.exception.FieldNotMappedException
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.license.LicenseManager
-import com.taskadapter.web.event.{ConfigSaveRequested, EventBusImpl}
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{ConfigId, UIConnectorConfig, UISyncConfig}
 import com.taskadapter.webui.`export`.ExportResultsFragment
 import com.taskadapter.webui.config.EditConfigPage
 import com.taskadapter.webui.results.{ExportResultFormat, ExportResultsListPage}
 import com.taskadapter.webui.service.Preservices
+import com.taskadapter.webui.{BasePage, ConfigOperations, EventTracker, Layout, SessionController}
+import com.vaadin.flow.component.dependency.CssImport
+import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout}
+import com.vaadin.flow.router.Route
+import com.vaadin.flow.router.HasUrlParameter
+import com.vaadin.flow.router.BeforeEvent
 import com.taskadapter.webui.{BasePage, ConfigActionsFragment, ConfigOperations, EventTracker, ImageLoader, Page, SessionController}
-import com.vaadin.ui.Button.ClickListener
-import com.vaadin.ui.{Button, Component, Label}
-import com.vaadin.ui.themes.ValoTheme
+import com.vaadin.flow.component.{ClickEvent, Component, ComponentEventListener}
+import com.vaadin.flow.component.button.Button
+import com.vaadin.flow.component.html.Label
+import com.vaadin.flow.component.notification.Notification
 import org.slf4j.LoggerFactory
 
-class ConfigPage() extends BasePage with HasUrlParameter {
+import scala.collection.JavaConverters._
+
+@Route(value = "config", layout = classOf[Layout])
+@CssImport(value = "./styles/views/mytheme.css")
+class ConfigPage() extends BasePage with HasUrlParameter[String] {
   private val configOps: ConfigOperations = SessionController.buildConfigOperations()
   private val services: Preservices = SessionController.getServices
   private val sandbox: Sandbox = SessionController.createSandbox()
 
-  private var panel: ConfigPanel = null
-
   def setParameter(event: BeforeEvent, configIdStr: String) = {
     EventTracker.trackPage("config_panel");
+    removeAll()
 
     val configId = ConfigId(SessionController.getCurrentUserName, Integer.parseInt(configIdStr))
     val maybeConfig = configOps.getConfig(configId)
     if (maybeConfig.isDefined) {
       val config = maybeConfig.get
-      panel = new ConfigPanel(config, configOps, services, sandbox)
+      add(new ConfigPanel(config, configOps, services, sandbox))
     }
   }
-
-  def ui: VerticalLayout = panel
 }
 
 /**
@@ -54,17 +57,17 @@ class ConfigPanel(config: UISyncConfig,
 
   private val configId = config.configId
 
-  addStyleName("configPanelInConfigsList")
+  addClassName("configPanelInConfigsList")
   setSpacing(true)
   setSizeFull()
 
   val configTitleLine = new Label(config.label)
-  addComponent(configTitleLine)
+  add(configTitleLine)
 
   val tabSheet = new ConfigPanelTabbedSheet();
-  addComponent(tabSheet.ui)
+  add(tabSheet)
 
-  val previousResultsPanel = new ResultsPanel(configId)
+  val previousResultsPanel = new ResultsPanel()
   val fieldMappingsPanel = new FieldMappingPanel()
   val overviewPanel = new OverviewPanel(config)
 
@@ -79,16 +82,16 @@ class ConfigPanel(config: UISyncConfig,
   tabSheet.showTab("Overview")
 
   def updateConfigTitleLine(config: UISyncConfig) : Unit = {
-    configTitleLine.setValue(config.label)
+    configTitleLine.setText(config.label)
   }
 
-  def createArrow(imageFileName: String, listener: ClickListener): Button = {
+  def createArrow(imageFileName: String, listener: ComponentEventListener[ClickEvent[Button]]): Button = {
     val leftArrow = ImageLoader.getImage(imageFileName)
     val button = new Button(leftArrow)
     button.setHeight("40px")
     button.setWidth("100px")
-    button.setDescription(Page.message("export.exportButtonTooltip"))
-    button.addStyleName(ValoTheme.BUTTON_LARGE)
+    button.getElement.setProperty("title", Page.message("export.exportButtonTooltip"))
+//    button.addClassName(BUTTON_LARGE)
     button.addClickListener(listener)
     button
   }
@@ -112,9 +115,8 @@ class ConfigPanel(config: UISyncConfig,
     maybeConfig.get
   }
 
-  private def getConfigEditor(config: UISyncConfig, error: String, closeAction: Runnable): Component = {
-    val editor = new EditConfigPage(Page.MESSAGES, error, config,
-      () => closeAction.run())
+  private def getConfigEditor(config: UISyncConfig, error: String): Component = {
+    val editor = new EditConfigPage(configOps, Page.MESSAGES, error, config)
     editor.getUI
   }
 
@@ -129,25 +131,34 @@ class ConfigPanel(config: UISyncConfig,
 
   class FieldMappingPanel extends ReloadableComponent {
     val layout = new VerticalLayout()
-    def show(config: UISyncConfig) = {
-      layout.add(getConfigEditor(config, "", () => {}))
+    def show() = {
+      val maybeConfig = configOps.getConfig(configId)
+      if (maybeConfig.isEmpty) {
+        Notification.show("The config with ID " + configId.id + " is not found")
+      } else {
+        layout.removeAll()
+        layout.add(getConfigEditor(maybeConfig.get, ""))
+      }
     }
     def ui: VerticalLayout = layout
-    override def reload(): Unit = show(config)
+    override def reload(): Unit = show()
   }
 
-  class ResultsPanel(configId: ConfigId) extends ReloadableComponent {
+  class ResultsPanel() extends ReloadableComponent {
     val layout = new VerticalLayout()
     layout.setWidth("920px")
 
-    def showResultsList() = {
-      val resultsList = new ExportResultsListPage(result => {
-        showSingleResult(result)
+    def showResultsList(configId: ConfigId) = {
+      val resultsList = new ExportResultsListPage(new java.util.function.Function[ExportResultFormat, Void] {
+        override def apply(result: ExportResultFormat): Void = {
+          showSingleResult(result)
+          null
+        }
       })
       val results = services.exportResultStorage.getSaveResults(configId);
-      resultsList.showResults(results);
+      resultsList.showResults(results.asJava);
       layout.removeAll()
-      layout.add(resultsList.ui)
+      layout.add(resultsList)
     }
 
     def showSingleResult(result: ExportResultFormat): Unit = {
@@ -160,7 +171,7 @@ class ConfigPanel(config: UISyncConfig,
 
     def ui: VerticalLayout = layout
 
-    override def reload(): Unit = showResultsList()
+    override def reload(): Unit = showResultsList(config.configId)
   }
 
   class OverviewPanel(config: UISyncConfig) extends ReloadableComponent {
@@ -176,22 +187,31 @@ class ConfigPanel(config: UISyncConfig,
 
     private def showEditConnectorDialog(connectorConfig: UIConnectorConfig,
                                         configSaver: Runnable, sandbox: Sandbox): Unit = {
-      val window = ModalWindow.showWindow(horizontalLayout.getUI)
-
       val systemPanel = connectorConfig.createMiniPanel(sandbox)
-      window.setContent(systemPanel)
-      window.addCloseListener(_ => configSaver.run())
+      val dialog = ModalWindow.showDialog(systemPanel.getComponent)
+      dialog.addDialogCloseActionListener(_ => {
+        // save the fields from the component into the original bean
+        systemPanel.save()
+
+        // save the config to disk
+        configSaver.run()
+
+        dialog.close()
+      })
+    }
+
+    private val configSaver = new Runnable {
+      override def run(): Unit = {
+        // TODO 14 check that the new config is used here
+        configOps.saveConfig(config)
+        updateConfigTitleLine(config)
+        recreateContents(config)
+      }
     }
 
     private def recreateContents(config: UISyncConfig): Unit = {
       horizontalLayout.removeAll()
-      val configSaver = new Runnable {
-        override def run(): Unit = {
-          EventBusImpl.post(ConfigSaveRequested(config))
-          updateConfigTitleLine(config)
-          recreateContents(config)
-        }
-      }
+
       val leftConnectorEditListener = new Runnable {
         override def run(): Unit = showEditConnectorDialog(config.getConnector1, configSaver, sandbox)
       }
@@ -217,7 +237,7 @@ class ConfigPanel(config: UISyncConfig,
 
     def showInitialState() = {
       layout.removeAll()
-      val buttonsLayout = new ConfigActionsFragment(configId).layout
+      val buttonsLayout = new ConfigActionsFragment(configId)
 
       layout.add(buttonsLayout)
       layout.add(horizontalLayout)
@@ -272,16 +292,16 @@ class ConfigPanel(config: UISyncConfig,
       }
 
     private def showConfigEditor(error: String): Unit = {
-      val window = ModalWindow.showWindow(layout.getUI)
-      val editor = getConfigEditor(loadConfig(), error, () => {
-        window.close()
+//      val window = ModalWindow.showWindow(layout.getUI)
+//      val editor = getConfigEditor(loadConfig(), error, () => {
+//        window.close()
         // the config may have been changed by the editor. reload it
-        val maybeConfig = configOps.getConfig(configId)
-        if (maybeConfig.isDefined) {
-          recreateContents(maybeConfig.get)
-        }
-      })
-      window.setContent(editor)
+//        val maybeConfig = configOps.getConfig(configId)
+//        if (maybeConfig.isDefined) {
+//          recreateContents(maybeConfig.get)
+//        }
+//      })
+//      window.setContent(editor)
       EventTracker.trackPage("edit_config")
     }
 
@@ -303,11 +323,13 @@ class ConfigPanel(config: UISyncConfig,
       LicenseManager.TRIAL_TASKS_NUMBER_LIMIT
     }
     log.info(s"License installed? ${services.licenseManager.isSomeValidLicenseInstalled}")
-    val panel = new ExportPage(services.exportResultStorage, config, maxTasks,
+    val panel = new ExportPage(getUI.get(), services.exportResultStorage, config, maxTasks,
       services.settingsManager.isTAWorkingOnLocalMachine,
-      () => overviewPanel.reload())
+      () => overviewPanel.reload(),
+      configOps)
     overviewPanel.ui.removeAll()
-    overviewPanel.ui.add(panel.ui)
+    overviewPanel.ui.add(panel)
+    panel.startLoading()
   }
 
 }

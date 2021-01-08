@@ -1,18 +1,12 @@
 package com.taskadapter.webui.pages;
 
-import static com.vaadin.server.Sizeable.Unit.PIXELS;
-
 import com.taskadapter.connector.definition.TaskError;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.webui.Page;
-import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Component;
-import com.taskadapter.vaadin14shim.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.ProgressBar;
-import com.vaadin.ui.ProgressIndicator;
-import com.vaadin.ui.UI;
-import com.taskadapter.vaadin14shim.VerticalLayout;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.progressbar.ProgressBar;
 
 /**
  * Component factory for different sync actions.
@@ -26,16 +20,18 @@ public final class SyncActionComponents {
      *            save destination.
      * @return progress indicator.
      */
-    public static ProgressIndicator renderSaveIndicator(
+
+    public static ProgressBar renderSaveIndicator(
             UIConnectorConfig destination) {
-        final ProgressIndicator saveProgress = new ProgressIndicator();
+        final ProgressBar saveProgress = new ProgressBar();
         saveProgress.setIndeterminate(false);
-        saveProgress.setEnabled(true);
-        saveProgress.setCaption(Page.message("action.saving",
-                destination.getDestinationLocation()));
+//        saveProgress.setEnabled(true);
+//        saveProgress.setCaption(Page.message("action.saving",
+//                destination.getDestinationLocation()));
         return saveProgress;
 
     }
+
 
     /**
      * Creates a load indicator.
@@ -56,12 +52,12 @@ public final class SyncActionComponents {
                 sourceDescription);
 
         final Label label = new Label(labelText);
-        label.setWidth(800, PIXELS);
+//        label.setWidth(800, PIXELS);
         res.add(label);
 
         final ProgressBar loadProgress = new ProgressBar();
         loadProgress.setIndeterminate(true);
-        UI.getCurrent().setPollInterval(200);
+//        UI.getCurrent().setPollInterval(200);
 
         res.add(loadProgress);
         return res;

@@ -5,13 +5,12 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigOperations;
-import com.taskadapter.webui.Page;
 import com.taskadapter.webui.results.ExportResultStorage;
-import com.vaadin.server.Sizeable.Unit;
-import com.vaadin.server.VaadinSession;
-import com.vaadin.ui.Component;
-import com.taskadapter.vaadin14shim.VerticalLayout;
-import com.taskadapter.vaadin14shim.Label;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.server.VaadinSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +22,7 @@ import static com.taskadapter.license.LicenseManager.TRIAL_MESSAGE;
 /**
  * Export page and export handler.
  */
-public final class DropInExportPage {
+public final class DropInExportPage extends VerticalLayout {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(DropInExportPage.class);
 
@@ -43,7 +42,6 @@ public final class DropInExportPage {
     private final File tempFile;
     private final ExportHelper exportHelper;
 
-    private final VerticalLayout ui;
     private final Label errorMessage;
     private final VerticalLayout content;
 
@@ -53,16 +51,15 @@ public final class DropInExportPage {
         this.taskLimit = taskLimit;
         this.tempFile = tempFile;
 
-        ui = new VerticalLayout();
         errorMessage = new Label("");
         errorMessage.addClassName("errorMessage");
         errorMessage.setVisible(false);
-        errorMessage.setWidth(500, Unit.PIXELS);
-        ui.add(errorMessage);
+        errorMessage.setWidth("500px");
+        add(errorMessage);
 
         content = new VerticalLayout();
-        ui.add(content);
-        exportHelper = new ExportHelper(exportResultStorage, onDone, showFilePath, content, config);
+        add(content);
+        exportHelper = new ExportHelper(exportResultStorage, onDone, showFilePath, content, config, configOps);
         startLoading();
     }
 
@@ -70,7 +67,7 @@ public final class DropInExportPage {
      * Starts data loading.
      */
     private void startLoading() {
-        setContent(SyncActionComponents.renderLoadIndicator(Page.message("export.dropInFile")));
+//        setContent(SyncActionComponents.renderLoadIndicator(Page.message("export.dropInFile")));
 
         if (taskLimit < Integer.MAX_VALUE)
             LOGGER.info(TRIAL_MESSAGE);
@@ -118,7 +115,7 @@ public final class DropInExportPage {
      */
     private void showErrorMessage(String message) {
         final boolean hasMessage = message != null;
-        errorMessage.setValue(hasMessage ? message : "");
+        errorMessage.setText(hasMessage ? message : "");
         errorMessage.setVisible(hasMessage);
     }
 
@@ -127,13 +124,13 @@ public final class DropInExportPage {
         content.add(comp);
     }
 
-    public static Component render(ExportResultStorage exportResultStorage, ConfigOperations configOps,
+    public static Component render(UI ui, ExportResultStorage exportResultStorage, ConfigOperations configOps,
                                    UISyncConfig config, int taskLimit, boolean showFilePath,
                                    final Runnable onDone, final File tempFile) {
         return new DropInExportPage(exportResultStorage, configOps, config, taskLimit, showFilePath,
                 () -> {
                     tempFile.delete();
                     onDone.run();
-                }, tempFile).ui;
+                }, tempFile);
     }
 }

@@ -122,7 +122,7 @@ class ConfigStorage(val rootDir: File) {
   def saveConfig(userLoginName: String, configId: Int, configName: String,
                  connector1Id: String, connector1SavedSetupId: SetupId, connector1Data: String,
                  connector2Id: String, connector2SavedSetupId: SetupId, connector2Data: String, mappings: String): Unit = {
-    logger.info(s"Saving config for user $userLoginName")
+    logger.info(s"Saving config " + configId + " for user $userLoginName")
     val fileContents = NewConfigParser.toFileContent(configId, configName, connector1Id, connector1SavedSetupId, connector1Data,
       connector2Id, connector2SavedSetupId, connector2Data, mappings)
     try {

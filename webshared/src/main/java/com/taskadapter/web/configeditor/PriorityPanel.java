@@ -2,18 +2,17 @@ package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
-import com.taskadapter.vaadin14shim.GridLayout;
+
+import com.taskadapter.vaadin14shim.Label;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.data.Messages;
-import com.vaadin.data.Container.ItemSetChangeEvent;
-import com.vaadin.data.Container.ItemSetChangeListener;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.themes.Runo;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,87 +20,46 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class PriorityPanel extends Panel implements Validatable {
-    private static final long serialVersionUID = 2702903968099614416L;
-
+public class PriorityPanel extends VerticalLayout implements Validatable {
     private static final String BUNDLE_NAME = "com.taskadapter.web.configeditor.priorities";
-
     private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
 
     private final Logger logger = LoggerFactory.getLogger(PriorityPanel.class);
 
-    private static final String NAME_HEADER = "Name";
+    private static final String NAME_HEADER = "Priority name";
     private static final String VALUE_HEADER = "Task Adapter Priority Value";
 
-    /**
-     * Priorities model.
-     */
-    private final PrioritiesModel data;
-
-    /**
-     * Used priorities.
-     */
     private final Priorities priorities;
 
-    private Table prioritiesTable;
 	public static final String VALUE = "value";
 	public static final String TEXT = "text";
 	
 	private final DataProvider<Priorities> priorityLoader;
     private ExceptionFormatter exceptionFormatter;
-
+    FormLayout prioritiesTableLayout = new FormLayout();
     /**
 	 * @param priorities
 	 *            priorities to edit.
 	 * @param priorityLoader
-	 *            "load priorities" data provider. Optional (may be
-	 *            <code>null</code>).
+	 *            "load priorities" data provider. Optional (may be <code>null</code>).
 	 */
 	public PriorityPanel(Priorities priorities,	DataProvider<Priorities> priorityLoader, ExceptionFormatter exceptionFormatter) {
-		super("Priorities");
 		this.priorities = priorities;
         this.priorityLoader = priorityLoader;
         this.exceptionFormatter = exceptionFormatter;
-        this.data = new PrioritiesModel(priorities);
         buildUI();
+        setPriorities(priorities);
     }
 
     private void buildUI() {
-        setWidth(DefaultPanel.NARROW_PANEL_WIDTH);
 
-        GridLayout layout = new GridLayout();
-        layout.setWidth(100, Unit.PERCENTAGE);
-        layout.setSpacing(true);
-
-        prioritiesTable = new Table();
-        prioritiesTable.setContainerDataSource(data);
-        prioritiesTable.setStyleName(Runo.TABLE_SMALL);
-        prioritiesTable.addStyleName("priorities-table");
-        prioritiesTable.setEditable(true);
-
-        prioritiesTable.setColumnHeader(PriorityPanel.TEXT, NAME_HEADER);
-        prioritiesTable.setColumnHeader(PriorityPanel.VALUE, VALUE_HEADER);
-        prioritiesTable.setVisibleColumns(PriorityPanel.TEXT, PriorityPanel.VALUE);
-        prioritiesTable.setWidth("100%");
-        prioritiesTable.setContainerDataSource(data);
-
-        layout.add(prioritiesTable);
-		final ItemSetChangeListener listener = new ItemSetChangeListener() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void containerItemSetChange(ItemSetChangeEvent event) {
-		        prioritiesTable.setPageLength(prioritiesTable.size());
-			}
-		};
-		
-		data.addItemSetChangeListener(listener);
-		listener.containerItemSetChange(null);
+        prioritiesTableLayout.setResponsiveSteps(
+                new FormLayout.ResponsiveStep("50em", 1),
+                new FormLayout.ResponsiveStep("50em", 2));
 
         Button reloadButton = new Button("Reload");
-        reloadButton.setDescription("Reload priority list.");
         reloadButton.setEnabled(priorityLoader != null);
-        reloadButton.addClickListener((Button.ClickListener) event -> {
+        reloadButton.addClickListener(event -> {
             try {
                 reloadPriorityList();
             } catch (BadConfigException e) {
@@ -109,26 +67,38 @@ public class PriorityPanel extends Panel implements Validatable {
                 Notification.show(localizedMessage);
             } catch (Exception e) {
                 logger.error("Error loading priorities: " + e.getMessage(), e);
-                Notification.show("Oops", e.getMessage(), Notification.Type.ERROR_MESSAGE);
+                new Notification(e.getMessage())
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
         });
-        layout.add(reloadButton);
-        layout.setComponentAlignment(reloadButton, Alignment.MIDDLE_RIGHT);
-        setContent(layout);
+
+        add(new Label("Priorities"),
+                prioritiesTableLayout,
+                reloadButton);
     }
 
     private void reloadPriorityList() throws Exception {
-        final Priorities newPriorities = priorityLoader.loadData();
+        Priorities newPriorities = priorityLoader.loadData();
         setPriorities(newPriorities);
     }
 
     private void setPriorities(Priorities items) {
-    	data.updateContent(items);
+        prioritiesTableLayout.removeAll();
+        items.getAllNames().forEach(s -> {
+            Label label = new Label(s);
+            TextField textField = new TextField();
+            textField.setValue(items.getPriorityByText(s) + "");
+            textField.setReadOnly(true);
+
+            prioritiesTableLayout.add(label, textField);
+        });
     }
 
     @Override
     public void validate() throws BadConfigException {
-        Integer mspValue;
+	    // TODO 14 validate priorities
+
+/*        Integer mspValue;
         
         final Map<String, String> badValues = data.getInvalidValues();
         
@@ -154,5 +124,6 @@ public class PriorityPanel extends Panel implements Validatable {
         if (message.length() > 0) {
             throw new BadConfigException(message.toString());
         }
+ */
     }
 }

@@ -1,25 +1,17 @@
 package com.taskadapter.webui.pages
 
-import com.vaadin.ui.{Component, UI, Window}
+import com.vaadin.flow.component.Component
+import com.vaadin.flow.component.dialog.Dialog
 
 object ModalWindow {
 
-  def showWindow(ui: UI): Window = {
-    val newWindow = new Window()
-    newWindow.center()
-    newWindow.setModal(true)
-    ui.addWindow(newWindow)
-    newWindow.focus()
-    newWindow
+  def showDialog(component: Component): Dialog = {
+    val dialog = new Dialog()
+    dialog.setModal(true)
+    dialog.setCloseOnEsc(true)
+    dialog.setCloseOnOutsideClick(true)
+    dialog.add(component)
+    dialog.open()
+    dialog
   }
-
-  def show(ui: UI, component: Component): Unit = {
-    val newWindow = new Window()
-    newWindow.setContent(component)
-    newWindow.center()
-    newWindow.setModal(true)
-    ui.addWindow(newWindow)
-    newWindow.focus()
-  }
-
 }

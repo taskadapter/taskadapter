@@ -1,13 +1,11 @@
 package com.taskadapter.web.configeditor.file;
 
-import com.vaadin.ui.Upload;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
-public class UploadReceiver implements Upload.Receiver {
+public class UploadReceiver /*implements Upload.Receiver*/ {
     private final File userContentDirectory;
 
     public UploadReceiver(File userContentDirectory) {

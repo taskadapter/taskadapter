@@ -8,13 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.taskadapter.connector.Priorities;
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.util.ObjectProperty;
 
-final class PrioritiesModel implements Container,
-        Container.ItemSetChangeNotifier, Container.PropertySetChangeNotifier {
+final class PrioritiesModel /*implements Container,
+        Container.ItemSetChangeNotifier, Container.PropertySetChangeNotifier*/ {
     private static final long serialVersionUID = 1L;
 
     private static final Map<String, Class<?>> PROPTYPES = new HashMap<>();
@@ -32,74 +28,51 @@ final class PrioritiesModel implements Container,
     /**
      * Item mapping.
      */
-    private final Map<String, Item> items = new LinkedHashMap<>();
+//    private final Map<String, Item> items = new LinkedHashMap<>();
 
-    private final List<ItemSetChangeListener> itemListeners = new LinkedList<>();
+//    private final List<ItemSetChangeListener> itemListeners = new LinkedList<>();
 
     PrioritiesModel(Priorities priorities) {
         this.priorities = priorities;
         fillItems(priorities);
     }
 
-    @Override
-    public void addPropertySetChangeListener(PropertySetChangeListener listener) {
-        // not used
-    }
+//    @Override
+//    public void addItemSetChangeListener(ItemSetChangeListener listener) {
+//        itemListeners.add(listener);
+//    }
 
-    @Deprecated
-    @Override
-    public void addListener(PropertySetChangeListener listener) {
-        // not used
-    }
+//    @Deprecated
+//    @Override
+//    public void addListener(ItemSetChangeListener listener) {
+//        itemListeners.add(listener);
+//    }
 
-    @Override
-    public void removePropertySetChangeListener(PropertySetChangeListener listener) {
-        // not used
-    }
+//    @Override
+//    public void removeItemSetChangeListener(ItemSetChangeListener listener) {
+//        itemListeners.remove(listener);
+//    }
+//
+//    public void removeListener(ItemSetChangeListener listener) {
+//        itemListeners.remove(listener);
+//    }
 
-    @Deprecated
-    @Override
-    public void removeListener(PropertySetChangeListener listener) {
-        // not used
-    }
+//    @Override
+//    public Item getItem(Object itemId) {
+//        return items.get(itemId);
+//    }
 
-    @Override
-    public void addItemSetChangeListener(ItemSetChangeListener listener) {
-        itemListeners.add(listener);
-    }
+//    @Override
+//    public Collection<?> getContainerPropertyIds() {
+//        return PROPTYPES.keySet();
+//    }
 
-    @Deprecated
-    @Override
-    public void addListener(ItemSetChangeListener listener) {
-        itemListeners.add(listener);
-    }
+//    @Override
+//    public Collection<?> getItemIds() {
+//        return items.keySet();
+//    }
 
-    @Override
-    public void removeItemSetChangeListener(ItemSetChangeListener listener) {
-        itemListeners.remove(listener);
-    }
-
-    @Deprecated
-    @Override
-    public void removeListener(ItemSetChangeListener listener) {
-        itemListeners.remove(listener);
-    }
-
-    @Override
-    public Item getItem(Object itemId) {
-        return items.get(itemId);
-    }
-
-    @Override
-    public Collection<?> getContainerPropertyIds() {
-        return PROPTYPES.keySet();
-    }
-
-    @Override
-    public Collection<?> getItemIds() {
-        return items.keySet();
-    }
-
+/*
     @Override
     public Property getContainerProperty(Object itemId, Object propertyId) {
         final Item item = getItem(itemId);
@@ -118,43 +91,11 @@ final class PrioritiesModel implements Container,
         return items.size();
     }
 
-    @Override
-    public boolean containsId(Object itemId) {
-        return items.containsKey(itemId);
-    }
-
-    @Override
-    public Item addItem(Object itemId) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Object addItem() throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean removeItem(Object itemId)
-            throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean addContainerProperty(Object propertyId, Class<?> type,
-            Object defaultValue) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean removeContainerProperty(Object propertyId)
-            throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean removeAllItems() throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
-    }
+*/
+//    @Override
+//    public boolean containsId(Object itemId) {
+//        return items.containsKey(itemId);
+//    }
 
     /**
      * Updates a content from a map.
@@ -175,7 +116,7 @@ final class PrioritiesModel implements Container,
      * @param props priorities.
      */
     void fillItems(Priorities props) {
-        items.clear();
+/*        items.clear();
         for (String key : props.getAllNames())
             items.put(key, createItem(key));
         final ItemSetChangeEvent evt = new ItemSetChangeEvent() {
@@ -188,7 +129,7 @@ final class PrioritiesModel implements Container,
         };
         for (ItemSetChangeListener iscl : itemListeners
                 .toArray(new ItemSetChangeListener[itemListeners.size()]))
-            iscl.containerItemSetChange(evt);
+            iscl.containerItemSetChange(evt);*/
     }
 
     /**
@@ -198,7 +139,7 @@ final class PrioritiesModel implements Container,
      *            item key.
      * @return created item.
      */
-    private Item createItem(String key) {
+  /*  private Item createItem(String key) {
         final ObjectProperty<String> text = new ObjectProperty<>(key);
         text.setReadOnly(true);
 
@@ -210,7 +151,7 @@ final class PrioritiesModel implements Container,
 
         return ConstItem.constItem(propmap);
     }
-
+*/
     /**
      * Checks model for valid and invalid "mapped" values. Returns priority
      * names and user input values for "invalid" fields. Such invalid values are
@@ -221,14 +162,14 @@ final class PrioritiesModel implements Container,
      */
     public Map<String, String> getInvalidValues() {
         final Map<String, String> result = new HashMap<>();
-        for (Item item : items.values()) {
+/*        for (Item item : items.values()) {
             final PriorityValue userValue = (PriorityValue) item
                     .getItemProperty("value");
             if (!userValue.isValid()) {
                 result.put((String) item.getItemProperty("text").getValue(),
                         (String) userValue.getValue());
             }
-        }
+        }*/
         return result;
     }
 }

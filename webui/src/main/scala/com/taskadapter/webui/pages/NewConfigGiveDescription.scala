@@ -1,32 +1,31 @@
 package com.taskadapter.webui.pages
 
-import com.taskadapter.vaadin14shim.GridLayout
 import com.taskadapter.webui.Page.message
-import com.vaadin.ui.{Alignment, Button, TextField}
+import com.vaadin.flow.component.button.Button
+import com.vaadin.flow.component.formlayout.FormLayout
+import com.vaadin.flow.component.textfield.TextField
 
 class NewConfigGiveDescription(saveClicked: String => Unit) extends WizardStep[String] {
   var result = ""
-  val grid = new GridLayout(2, 2)
-  grid.setSpacing(true)
-  grid.setMargin(true)
+  val layout = new FormLayout()
+  layout.setResponsiveSteps(
+    new FormLayout.ResponsiveStep("50em", 1))
 
   val descriptionTextField = new TextField(message("createConfigPage.description"))
   descriptionTextField.setRequired(true)
   descriptionTextField.setWidth("400px")
-  grid.add(descriptionTextField, 0, 0)
-  grid.setComponentAlignment(descriptionTextField, Alignment.MIDDLE_CENTER)
 
   val createButton = new Button(message("createConfigPage.create"))
   createButton.addClickListener(_ => saveClicked(descriptionTextField.getValue))
 
   createButton.setEnabled(descriptionTextField.getValue.nonEmpty)
   descriptionTextField.addValueChangeListener(e =>
-    createButton.setEnabled(e.getProperty.getValue.asInstanceOf[String].nonEmpty))
+    createButton.setEnabled(e.getValue.asInstanceOf[String].nonEmpty))
 
-  grid.add(createButton, 0, 1)
-  grid.setComponentAlignment(createButton, Alignment.MIDDLE_RIGHT)
+  layout.add(descriptionTextField,
+    createButton)
 
   override def getResult: String = result
 
-  override def ui(config: Any) = grid
+  override def ui(config: Any) = layout
 }

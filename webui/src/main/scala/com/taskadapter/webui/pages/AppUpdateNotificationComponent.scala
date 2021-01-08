@@ -1,10 +1,13 @@
 package com.taskadapter.webui.pages
 
-import com.taskadapter.vaadin14shim.{HorizontalLayout, Label}
+
 import com.taskadapter.webui.service.CurrentVersionLoader
 import com.taskadapter.webui.{LastVersionLoader, Page, VersionComparator}
-import com.vaadin.ui.Component
-import com.vaadin.ui.themes.ValoTheme
+import com.vaadin.flow.component.Component
+import com.vaadin.flow.component.html.Label
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout
+
+
 
 class AppUpdateNotificationComponent {
   val lastAvailableVersion = LastVersionLoader.loadLastVersion

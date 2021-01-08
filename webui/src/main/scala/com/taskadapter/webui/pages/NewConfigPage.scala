@@ -1,15 +1,15 @@
 package com.taskadapter.webui.pages
 
-import com.taskadapter.vaadin14shim.VerticalLayout
-import com.taskadapter.vaadin14shim.Label
-import com.taskadapter.PluginManager
 import com.taskadapter.config.StorageException
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{ConfigId, SetupId}
-import com.taskadapter.webui.ConfigOperations
+import com.taskadapter.webui.{BasePage, ConfigOperations, EventTracker, Layout, SessionController}
 import com.taskadapter.webui.Page.message
-import com.taskadapter.webui.service.EditorManager
-import com.vaadin.ui._
+import com.taskadapter.webui.service.Preservices
+import com.vaadin.flow.component.Text
+import com.vaadin.flow.component.dependency.CssImport
+import com.vaadin.flow.component.html.Label
+import com.vaadin.flow.router.Route
 
 trait Callback {
   /**
@@ -20,13 +20,19 @@ trait Callback {
   def configCreated(configId: ConfigId): Unit
 }
 
-class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, configOps: ConfigOperations,
-                    sandbox: Sandbox, callback: Callback) {
+@Route(value = Navigator.NEW_CONFIG, layout = classOf[Layout])
+@CssImport(value = "./styles/views/mytheme.css")
+class NewConfigPage extends BasePage {
 
-  val panel = new Panel(message("createConfigPage.createNewConfig"))
-  panel.setWidth("100%")
+  EventTracker.trackPage("create_config")
+
+  private val configOps: ConfigOperations = SessionController.buildConfigOperations()
+  private val services: Preservices = SessionController.getServices
+  private val sandbox: Sandbox = SessionController.createSandbox()
+  private val pluginManager = services.pluginManager
+  private val editorManager = services.editorManager
+
   val wizard = new WizardPanel()
-  panel.setContent(wizard.ui)
 
   var connector1Id: Option[String] = None
   var connector1SetupId: Option[SetupId] = None
@@ -71,13 +77,17 @@ class NewConfigPage(editorManager: EditorManager, pluginManager: PluginManager, 
   wizard.showStep(1)
 
   // empty label by default
-  val errorMessageLabel = new Label
-  errorMessageLabel.addStyleName("error-message-label")
+  val errorMessageLabel = new Text("")
+//  errorMessageLabel.addClassName("error-message-label")
+
+  add(new Label(message("createConfigPage.createNewConfig")),
+    errorMessageLabel,
+    wizard.ui)
 
   private def saveClicked(): Unit = {
     try {
       val configId = save()
-      callback.configCreated(configId)
+      Navigator.configsList()
     } catch {
       case e: StorageException =>
         errorMessageLabel.setText(message("createConfigPage.failedToSave"))

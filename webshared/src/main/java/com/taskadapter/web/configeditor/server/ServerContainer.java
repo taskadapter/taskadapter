@@ -3,22 +3,19 @@ package com.taskadapter.web.configeditor.server;
 import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.vaadin14shim.Binder;
 import com.taskadapter.vaadin14shim.TextField;
-import com.taskadapter.vaadin14shim.PasswordField;
-import com.taskadapter.vaadin14shim.GridLayout;
 import com.taskadapter.webui.Page;
-import com.vaadin.event.FieldEvents;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Label;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-public class ServerContainer extends GridLayout {
+public class ServerContainer extends VerticalLayout {
     private static final String DEFAULT_HOST_VALUE = "http://";
 
     private TextField hostURLText;
 
     public ServerContainer(WebConnectorSetup setup) {
-        buildUI(setup);
+//        buildUI(setup);
     }
-
+/*
     private void buildUI(WebConnectorSetup setup) {
         setColumns(2);
         setRows(4);
@@ -94,5 +91,5 @@ public class ServerContainer extends GridLayout {
     private String getHostString() {
         return hostURLText.getValue();
     }
-
+*/
 }

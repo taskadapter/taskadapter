@@ -1,8 +1,6 @@
 package com.taskadapter.vaadin14shim;
 
-import com.vaadin.shared.ui.label.ContentMode;
-
-public class Label extends com.vaadin.ui.Label {
+public class Label extends com.vaadin.flow.component.html.Label {
 
     public Label() {
         super();
@@ -12,15 +10,4 @@ public class Label extends com.vaadin.ui.Label {
         super(str);
     }
 
-    public Label(String str, ContentMode mode) {
-        super(str, mode);
-    }
-
-    public void addClassName(String c) {
-        addStyleName(c);
-    }
-
-    public void setText(String value) {
-        setValue(value);
-    }
 }

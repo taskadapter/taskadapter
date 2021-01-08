@@ -1,36 +1,38 @@
 package com.taskadapter.webui.config
 
-import com.taskadapter.vaadin14shim.VerticalLayout
-import com.taskadapter.vaadin14shim.HorizontalLayout
 import com.taskadapter.web.PopupDialog
 import com.taskadapter.web.uiapi.SetupId
-import com.taskadapter.webui.{ConfigOperations, EventTracker, Page, SetupCategory}
-import com.vaadin.server.Sizeable
-import com.vaadin.ui._
-import com.vaadin.ui.themes.ValoTheme
+import com.taskadapter.webui.pages.Navigator
+import com.taskadapter.webui.{BasePage, ConfigOperations, EventTracker, Layout, Page, SessionController, SetupCategory}
+import com.vaadin.flow.component.button.Button
+import com.vaadin.flow.component.dependency.CssImport
+import com.vaadin.flow.component.html.Label
+import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout}
+import com.vaadin.flow.router.Route
 
-class SetupsListPage(configOperations: ConfigOperations,
-                     showEditSetup: (SetupId) => Unit,
-                     showNewSetup: () => Unit) {
-  EventTracker.trackPage("setups_list")
-  val layout = new VerticalLayout
+@Route(value = Navigator.SETUPS_LIST, layout = classOf[Layout])
+@CssImport(value = "./styles/views/mytheme.css")
+class SetupsListPage() extends BasePage {
+  EventTracker.trackPage(Navigator.SETUPS_LIST)
+  private val configOps = SessionController.buildConfigOperations()
+  private val services = SessionController.getServices
 
   val introLabel = new Label(Page.message("setupsListPage.intro"))
-  introLabel.addStyleName(ValoTheme.LABEL_H3)
+//  introLabel.addClassName(ValoTheme.LABEL_H3)
   introLabel.setWidth(null)
   val addButton = new Button(Page.message("setupsListPage.addButton"))
-  addButton.addClickListener(_ => showNewSetup())
+  addButton.addClickListener(_ => Navigator.newSetup())
 
   private val introRow = new HorizontalLayout(introLabel, addButton)
-  introRow.setWidth(850, Sizeable.Unit.PIXELS)
-  introRow.setComponentAlignment(introLabel, Alignment.MIDDLE_LEFT)
-  introRow.setComponentAlignment(addButton, Alignment.MIDDLE_RIGHT)
-  introRow.setExpandRatio(introLabel, 1)
+//  introRow.setWidth(850, Sizeable.Unit.PIXELS)
+//  introRow.setComponentAlignment(introLabel, Alignment.MIDDLE_LEFT)
+//  introRow.setComponentAlignment(addButton, Alignment.MIDDLE_RIGHT)
+//  introRow.setExpandRatio(introLabel, 1)
 
-  layout.add(introRow)
+  add(introRow)
 
   val elementsComponent = new VerticalLayout()
-  layout.add(elementsComponent)
+  add(elementsComponent)
 
   refresh()
 
@@ -40,38 +42,38 @@ class SetupsListPage(configOperations: ConfigOperations,
   }
 
   private def addElements(): Unit = {
-    val setups = configOperations.getConnectorSetups()
+    val setups = configOps.getConnectorSetups()
     setups.sortBy(x => x.connectorId)
       .foreach { setup =>
         val setupId = SetupId(setup.id.get)
         val editButton = new Button(Page.message("setupsListPage.editButton"))
         editButton.addClickListener(_ => {
-          showEditSetup(setupId)
+          getUI.get().navigate("edit-setup/" + setup.id.get)
         })
         val connectorIdLabel = new Label(setup.connectorId)
-        connectorIdLabel.setData(setupId)
+//        connectorIdLabel.setData(setupId)
         connectorIdLabel.setWidth(null)
-        connectorIdLabel.addStyleName(ValoTheme.LABEL_BOLD)
+//        connectorIdLabel.addClassName(ValoTheme.LABEL_BOLD)
 
         val connectorIdLayout = new HorizontalLayout(connectorIdLabel)
         connectorIdLayout.setWidth("200px")
         connectorIdLayout.setHeight("100%")
-        connectorIdLayout.setComponentAlignment(connectorIdLabel, Alignment.MIDDLE_CENTER)
+//        connectorIdLayout.setComponentAlignment(connectorIdLabel, Alignment.MIDDLE_CENTER)
 
         val setupLabel = new Label(setup.label)
-        setupLabel.addStyleName(ValoTheme.LABEL_BOLD)
-        setupLabel.setData(setupId)
+//        setupLabel.addClassName(ValoTheme.LABEL_BOLD)
+//        setupLabel.setData(setupId)
         setupLabel.setWidth(null)
-        val usedByConfigs = configOperations.getConfigIdsUsingThisSetup(setupId)
+        val usedByConfigs = configOps.getConfigIdsUsingThisSetup(setupId)
         val usedByLabel = new Label(Page.message("setupsListPage.usedByConfigs", usedByConfigs.size + ""))
-        usedByLabel.setData(setupId)
+//        usedByLabel.setData(setupId)
 
         val descriptionLayout = new VerticalLayout(setupLabel, usedByLabel)
         descriptionLayout.setWidth("450px")
         descriptionLayout.setHeight("80px")
 
         val editLayout = new VerticalLayout(editButton)
-        editLayout.setComponentAlignment(editButton, Alignment.MIDDLE_CENTER)
+//        editLayout.setComponentAlignment(editButton, Alignment.MIDDLE_CENTER)
         editLayout.setWidth("100px")
         editLayout.setHeight("100%")
 
@@ -81,7 +83,7 @@ class SetupsListPage(configOperations: ConfigOperations,
         })
         deleteButton.setEnabled(usedByConfigs.isEmpty)
         val deleteLayout = new VerticalLayout(deleteButton)
-        deleteLayout.setComponentAlignment(deleteButton, Alignment.MIDDLE_CENTER)
+//        deleteLayout.setComponentAlignment(deleteButton, Alignment.MIDDLE_CENTER)
         deleteLayout.setWidth("100px")
         deleteLayout.setHeight("100%")
 
@@ -91,22 +93,17 @@ class SetupsListPage(configOperations: ConfigOperations,
           deleteLayout
         )
 
-        val panel = new Panel()
-        panel.setContent(row)
-        elementsComponent.add(panel)
+        elementsComponent.add(row)
       }
   }
 
-  val ui = layout
 
   private def showDeleteDialog(setupId: SetupId): Unit = {
-    val messageDialog = PopupDialog.confirm(Page.message("setupsListPage.confirmDelete.question"),
+    PopupDialog.confirm(Page.message("setupsListPage.confirmDelete.question"),
       () => {
-        configOperations.deleteConnectorSetup(setupId)
+        configOps.deleteConnectorSetup(setupId)
         EventTracker.trackEvent(SetupCategory, "deleted", "")
         refresh()
       })
-
-    layout.getUI.addWindow(messageDialog)
   }
 }

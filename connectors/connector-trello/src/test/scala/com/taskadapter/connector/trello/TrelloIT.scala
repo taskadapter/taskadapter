@@ -17,7 +17,7 @@ class TrelloIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
 
   def getConnector(boardId: String): NewConnector = {
     val config = TrelloTestConfig.getConfig
-    config.boardId = boardId
+    config.setBoardId(boardId)
     new TrelloConnector(config, setup)
   }
 

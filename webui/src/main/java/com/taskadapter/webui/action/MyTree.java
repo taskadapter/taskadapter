@@ -6,28 +6,26 @@ import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.Summary$;
 import com.taskadapter.webui.Page;
-import com.vaadin.data.Property;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.TreeTable;
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.treegrid.TreeGrid;
+import com.vaadin.flow.data.provider.hierarchy.TreeData;
+
 
 import java.util.*;
 
-/**
- * @author Alexey Skorokhodov
- */
-public class MyTree extends CustomComponent {
+public class MyTree {
     private PreviouslyCreatedTasksResolver resolver;
     private String targetLocation;
 
-    private final class TreeItemSelectionHandler implements Property.ValueChangeListener {
-        private final CheckBox checkBox;
+/*    private final class TreeItemSelectionHandler implements Property.ValueChangeListener {
+        private final Checkbox checkBox;
         private final TaskId taskId;
 
-        TreeItemSelectionHandler(CheckBox checkBox, TaskId taskId) {
+        TreeItemSelectionHandler(Checkbox checkBox, TaskId taskId) {
             this.checkBox = checkBox;
             this.taskId = taskId;
         }
+
 
         @Override
         public void valueChange(Property.ValueChangeEvent event) {
@@ -39,6 +37,7 @@ public class MyTree extends CustomComponent {
                 deselectChildren();
             }
         }
+
 
         private void deselectChildren() {
             if (tree.hasChildren(taskId)) {
@@ -57,11 +56,13 @@ public class MyTree extends CustomComponent {
         }
     }
 
+   */
     private static final int MAX_ROWS_BEFORE_SCROLLBAR = 10;
 
     static final String ACTION_PROPERTY = Page.message("exportConfirmation.column.action");
 
-    TreeTable tree = new TreeTable();
+    private TreeData<TreeTaskItem> treeData = new TreeData<>();
+    private TreeGrid<TreeTaskItem> tree = new TreeGrid<>();
     private List<GTask> rootLevelTasks;
 
     public MyTree(PreviouslyCreatedTasksResolver resolver, List<GTask> rootLevelTasks, String targetLocation) {
@@ -72,37 +73,32 @@ public class MyTree extends CustomComponent {
         for (GTask task : rootLevelTasks) {
             clonedToAvoidDamagingTasks.add(new GTask(task));
         }
+        tree.setTreeData(treeData);
         setTasks(clonedToAvoidDamagingTasks);
     }
 
     private void buildUI() {
         tree.setWidth("800px");
-        tree.addContainerProperty(ACTION_PROPERTY, CheckBox.class, null);
-        tree.addContainerProperty(Page.message("exportConfirmation.column.sourceId"), String.class, null);
-        tree.addContainerProperty(Page.message("exportConfirmation.column.summary"), String.class, null);
-        setCompositionRoot(tree);
+        tree.addComponentHierarchyColumn(TreeTaskItem::getCheckBox)
+                .setHeader(ACTION_PROPERTY);
+        tree.addColumn(TreeTaskItem::getSourceSystemId)
+                .setHeader(Page.message("exportConfirmation.column.sourceId"));
+        tree.addColumn(TreeTaskItem::getTaskSummary)
+                .setHeader(Page.message("exportConfirmation.column.summary"));
     }
 
     public List<GTask> getSelectedRootLevelTasks() {
         Set<TaskId> idSet = new HashSet<>();
-
-        Collection<?> itemIds = tree.getItemIds();
-
-        if (itemIds != null) {
-            for (Object itemId : itemIds) {
-                boolean checked = getCheckBox(itemId).getValue();
-
+        Collection<TreeTaskItem> items = tree.getTreeData().getRootItems();
+        if (items != null) {
+            for (TreeTaskItem item : items) {
+                boolean checked = item.checkBox.getValue();
                 if (checked) {
-                    idSet.add((TaskId) itemId);
+                    idSet.add(item.taskId);
                 }
             }
         }
-
         return getSelectedTasks(rootLevelTasks, idSet);
-    }
-
-    CheckBox getCheckBox(Object itemId) {
-        return (CheckBox) tree.getContainerProperty(itemId, ACTION_PROPERTY).getValue();
     }
 
     private List<GTask> getSelectedTasks(List<GTask> gTaskList, Set<TaskId> idSet) {
@@ -124,47 +120,92 @@ public class MyTree extends CustomComponent {
         this.rootLevelTasks = rootLevelTasks;
         addTasksToTree(null, rootLevelTasks);
 
-        int rowsNumber = Math.min(tree.size() + 1, MAX_ROWS_BEFORE_SCROLLBAR);
-        tree.setPageLength(rowsNumber);
+        int rowsNumber = Math.min(rootLevelTasks.size(), MAX_ROWS_BEFORE_SCROLLBAR);
+        tree.setPageSize(rowsNumber);
     }
 
-    private void addTasksToTree(Object parentId, List<GTask> tasks) {
+    private void addTasksToTree(TreeTaskItem parentId, List<GTask> tasks) {
         for (GTask task : tasks) {
             addTaskToTree(parentId, task);
         }
     }
 
-    private void addTaskToTree(Object parentId, GTask task) {
-        final TaskId taskId = task.getIdentity();
+    private void addTaskToTree(TreeTaskItem parentId, GTask task) {
+        TaskId taskId = task.getIdentity();
 
-        final CheckBox checkBox = new CheckBox(
-                resolver.findSourceSystemIdentity(task, targetLocation).isDefined() ?
-                        Page.message("exportConfirmation.action.update")
-                        : Page.message("exportConfirmation.action.create"));
+        String actionText = resolver.findSourceSystemIdentity(task, targetLocation).isDefined() ?
+                Page.message("exportConfirmation.action.update")
+                : Page.message("exportConfirmation.action.create");
+        Checkbox checkBox = new Checkbox(
+                actionText);
 
         checkBox.setValue(true);
-        checkBox.setData(parentId);
-        checkBox.addValueChangeListener(new TreeItemSelectionHandler(checkBox, taskId));
-        checkBox.setImmediate(true);
+//        checkBox.setValue(parentId);
+//        checkBox.addValueChangeListener(new TreeItemSelectionHandler(checkBox, taskId));
+//        checkBox.setImmediate(true);
 
         String sourceSystemId = task.getSourceSystemId() == null ? "" :
                 Strings.nullToEmpty(task.getSourceSystemId().key());
-        tree.addItem(
-                new Object[]{
-                        checkBox,       // ACTION
-                        sourceSystemId, // ID FROM SOURCE SYSTEM
-                        task.getValue(Summary$.MODULE$) // TODO TA3 use a proper connector-specific field name here
-                },
-                taskId
+        TreeTaskItem taskItem = new TreeTaskItem(
+                taskId,
+                actionText,
+                checkBox,
+                sourceSystemId, // ID FROM SOURCE SYSTEM
+                task.getValue(Summary$.MODULE$) // TODO TA3 use a proper connector-specific field name here
+        );
+        treeData.addItem(
+                parentId,
+                taskItem
         );
 
-        if (parentId != null) {
-            tree.setParent(taskId, parentId);
-        }
+//        if (parentId != null) {
+//            tree.setParent(taskId, parentId);
+//        }
 
         if (task.hasChildren()) {
-            addTasksToTree(taskId, task.getChildren());
-            tree.setCollapsed(taskId, false);
+            addTasksToTree(taskItem, task.getChildren());
+//            tree.setCollapsed(taskId, false);
         }
+    }
+
+    static class TreeTaskItem {
+
+        TaskId taskId;
+        String actionText;
+        Checkbox checkBox;
+        String sourceSystemId;
+        String taskSummary;
+
+        TreeTaskItem(TaskId taskId, String actionText, Checkbox checkBox, String sourceSystemId, String taskSummary) {
+            this.taskId = taskId;
+            this.actionText = actionText;
+            this.checkBox = checkBox;
+            this.sourceSystemId = sourceSystemId;
+            this.taskSummary = taskSummary;
+        }
+
+        public TaskId getTaskId() {
+            return taskId;
+        }
+
+        public String getActionText() {
+            return actionText;
+        }
+
+        public Checkbox getCheckBox() {
+            return checkBox;
+        }
+
+        public String getSourceSystemId() {
+            return sourceSystemId;
+        }
+
+        public String getTaskSummary() {
+            return taskSummary;
+        }
+    }
+
+    public TreeGrid<TreeTaskItem> getTree() {
+        return tree;
     }
 }

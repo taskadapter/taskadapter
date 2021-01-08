@@ -1,25 +1,30 @@
 package com.taskadapter.webui;
 
+import com.google.common.base.Strings;
 import com.taskadapter.auth.AuthException;
 import com.taskadapter.auth.AuthorizedOperations;
 import com.taskadapter.auth.AuthorizedOperationsImpl;
-import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.auth.SecondarizationResult;
+import com.taskadapter.schedule.ScheduleRunner;
+import com.taskadapter.web.event.EventBusImpl;
+import com.taskadapter.web.event.SchedulerStatusChanged;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.webui.auth.PermissionViolationException;
 import com.taskadapter.webui.config.ApplicationSettings;
-import com.taskadapter.webui.pageset.LoggedInPageset;
 import com.taskadapter.webui.service.EditorManager;
 import com.taskadapter.webui.service.Preservices;
 import com.taskadapter.webui.service.WrongPasswordException;
+import com.vaadin.flow.component.UI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rx.lang.scala.Subscriber;
 import scala.Option;
 
 import java.io.File;
+import java.util.Optional;
 
 /**
- * Controller for one (and only one!) user session.
+ * Controller for a single user session.
  */
 public final class SessionController {
     private static final Logger LOGGER = LoggerFactory
@@ -31,11 +36,33 @@ public final class SessionController {
     private static File rootFolder = ApplicationSettings.getDefaultRootFolder();
 
     private static final Preservices services = new Preservices(rootFolder, EditorManager.fromResource("editors.txt"));
-    private static final CredentialsManager credentialsManager = services.credentialsManager;
+
+    // storing the init code for the Vaadin 14 app here for now
+    static {
+        services.licenseManager.loadInstalledTaskAdapterLicense();
+
+        ScheduleRunner scheduleRunner = new ScheduleRunner(services.uiConfigStore, services.schedulesStorage,
+                services.exportResultStorage, services.settingsManager);
+        EventBusImpl.observable(SchedulerStatusChanged.class)
+                .subscribe(new Subscriber<SchedulerStatusChanged>() {
+                    @Override
+                    public void onNext(SchedulerStatusChanged value) {
+                        if (value.schedulerEnabled()) {
+                            scheduleRunner.start();
+                        } else {
+                            scheduleRunner.stop();
+                        }
+                    }
+                });
+        boolean schedulerEnabled = services.settingsManager.schedulerEnabled();
+        if (schedulerEnabled) {
+            EventBusImpl.post(new SchedulerStatusChanged(schedulerEnabled));
+        }
+    }
 
     private static Tracker tracker;
 
-    private static WebUserSession session;
+    private static WebUserSession session = new WebUserSession();
 
     public static void initSession(WebUserSession newSession, Tracker providedTracker) {
         session = newSession;
@@ -46,53 +73,31 @@ public final class SessionController {
         final String kcookie = CookiesManager
                 .getCookie(PERM_AUTH_KEY_COOKIE_NAME);
 
-        if (ucookie == null || kcookie == null) {
-            showLogin();
-            return;
-        }
-        final AuthorizedOperations ops = services.credentialsManager
-                .authenticateSecondary(ucookie, kcookie);
-        if (ops == null)
-            showLogin();
-        else
-            showUserHome(ucookie);
-    }
-
-    /**
-     * Shows a common interface (for logged-in user).
-     */
-    private static void showUserHome(String login) {
-        session.setCurrentUserName(login);
-
-        UserContext ctx = getUserContext();
-        session.pageContainer().setPageContent(LoggedInPageset.createPageset(
-                 services, ctx));
+//        if (ucookie == null || kcookie == null) {
+//            showLogin();
+//            return;
+//        }
+//        final AuthorizedOperations ops = services.credentialsManager
+//                .authenticateSecondary(ucookie, kcookie);
+//        if (ops == null)
+//            showLogin();
+//        else
+//            showUserHome(ucookie);
     }
 
     public static UserContext getUserContext() {
         String login = getCurrentUserName();
         AuthorizedOperationsImpl ops = new AuthorizedOperationsImpl(login);
         final SelfManagement selfManagement = new SelfManagement(login,
-                credentialsManager);
-        File userHomeFolder = new File(services.rootDir, login);
-        final ConfigOperations configOps = new ConfigOperations(login, ops,
-                credentialsManager,
-                services.uiConfigStore,
-                new File(userHomeFolder, "files"));
+                services.credentialsManager);
+
+        final ConfigOperations configOps = buildConfigOperations();
 
         return new UserContext(login, selfManagement, ops,
                 configOps);
     }
 
-    /**
-     * Shows a login page.
-     */
-    private static void showLogin() {
-        session.pageContainer().setPageContent(WelcomePageset.createPageset(
-                services, SessionController::tryAuth));
-    }
-
-    public static void logout() {
+    public static void logout(){
         final String ucookie = CookiesManager
                 .getCookie(PERM_AUTH_USER_COOKIE_NAME);
         final String kcookie = CookiesManager
@@ -100,14 +105,15 @@ public final class SessionController {
 
         if (ucookie != null && kcookie != null) {
             try {
-                credentialsManager.destroySecondaryAuthToken(ucookie, kcookie);
+                services.credentialsManager.destroySecondaryAuthToken(ucookie, kcookie);
             } catch (AuthException e) {
                 LOGGER.error("Failed to clean secondary auth token!", e);
             }
         }
         CookiesManager.expireCookie(PERM_AUTH_USER_COOKIE_NAME);
         CookiesManager.expireCookie(PERM_AUTH_KEY_COOKIE_NAME);
-        showLogin();
+        session.clear();
+        UI.getCurrent().navigate("");
     }
 
     /**
@@ -118,22 +124,21 @@ public final class SessionController {
      * @param createSecondaryAuth secondary authentication data.
      * @throws WrongPasswordException if login or password is wrong.
      */
-    private static void tryAuth(String login, String password, boolean createSecondaryAuth) throws WrongPasswordException {
+    public static void tryAuth(String login, String password, boolean createSecondaryAuth) throws WrongPasswordException {
 
         if (!createSecondaryAuth) {
-            final AuthorizedOperations ops = credentialsManager
+            final AuthorizedOperations ops = services.credentialsManager
                     .authenticatePrimary(login, password);
             if (ops == null) {
                 throw new WrongPasswordException();
             }
-            showUserHome(login);
             return;
         }
 
-        /* Complex authentication with a long-living cookies */
+        /* Complex authentication with long-living cookies */
         SecondarizationResult supResult;
         try {
-            supResult = credentialsManager.generateSecondaryAuth(login,
+            supResult = services.credentialsManager.generateSecondaryAuth(login,
                     password);
         } catch (AuthException e) {
             LOGGER.info("Error!", e);
@@ -147,16 +152,14 @@ public final class SessionController {
         CookiesManager.setCookie(PERM_AUTH_USER_COOKIE_NAME, login);
         CookiesManager.setCookie(PERM_AUTH_KEY_COOKIE_NAME,
                 supResult.secondaryToken);
-
-        showUserHome(login);
-    }
-
-    public static void tmpLoginAsAdmin() {
-        session.setCurrentUserName("admin");
     }
 
     public static String getCurrentUserName() {
-        return session.getCurrentUserName().getOrElse(() -> "");
+        return session.getCurrentUserName().orElse("");
+    }
+
+    public static boolean userIsLoggedIn() {
+        return !Strings.isNullOrEmpty(getCurrentUserName());
     }
 
     public static Sandbox createSandbox() {
@@ -165,8 +168,8 @@ public final class SessionController {
     }
 
     public static ConfigOperations buildConfigOperations() {
-        Option<String> currentUserName = session.getCurrentUserName();
-        if (currentUserName.isEmpty()) {
+        Optional<String> currentUserName = session.getCurrentUserName();
+        if (!currentUserName.isPresent()) {
             throw new PermissionViolationException();
         }
         File userHomeFolder = new File(services.rootDir, currentUserName.get());

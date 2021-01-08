@@ -1,6 +1,7 @@
 package com.taskadapter.webui.pages
 
-import com.vaadin.ui.Component
+import com.vaadin.flow.component.Component
+
 
 class SimpleTab(component: Component) extends ReloadableComponent {
   override def reload(): Unit = {}

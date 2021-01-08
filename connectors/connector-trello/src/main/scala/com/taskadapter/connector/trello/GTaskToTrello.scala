@@ -17,7 +17,7 @@ class GTaskToTrello(config:TrelloConfig, listCache: ListCache) extends Connector
   override def convert(source: GTask): Card = {
     val card = new Card
     card.setId(source.getKey)
-    card.setIdBoard(config.boardId)
+    card.setIdBoard(config.getBoardId)
     source.getFields.asScala.foreach { e =>
       val field = e._1
       val value = e._2
@@ -39,7 +39,7 @@ class GTaskToTrello(config:TrelloConfig, listCache: ListCache) extends Connector
               card.setIdList(listId.get)
             } else {
               throw new ConnectorException(
-                s"Trello list with name '$listName' is not found on the requested Trello Board (board ID ${config.boardId} )")
+                s"Trello list with name '$listName' is not found on the requested Trello Board (board ID ${config.getBoardId} )")
             }
           case Summary => card.setName(value.asInstanceOf[String])
           case Description => card.setDesc(value.asInstanceOf[String])

@@ -11,6 +11,13 @@ object HttpCaller {
   val httpclient = new DefaultHttpClient
   val gson = ConfigUtils.createDefaultGson
 
+  def getAsString(url: String): String = {
+    val request = new HttpGet(url)
+    val httpResponse = httpclient.execute(request)
+    val responseEntity: HttpEntity = httpResponse.getEntity
+    EntityUtils.toString(responseEntity)
+  }
+
   def get[C](url: String, c: Class[C]): C = {
     val request = new HttpGet(url)
 

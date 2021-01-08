@@ -1,71 +1,62 @@
 package com.taskadapter.webui.user;
 
-import com.vaadin.event.ShortcutAction;
-import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.ui.Alignment;
-import com.taskadapter.vaadin14shim.GridLayout;
-import com.taskadapter.vaadin14shim.HorizontalLayout;
-import com.taskadapter.vaadin14shim.Button;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.TextField;
-import com.taskadapter.vaadin14shim.VerticalLayout;
-import com.vaadin.ui.Window;
+import com.taskadapter.webui.Page;
+import com.vaadin.flow.component.Html;
+import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.component.textfield.TextField;
 
 import static com.taskadapter.webui.Page.message;
-import static com.vaadin.server.Sizeable.Unit.PIXELS;
 
-public class CreateUserDialog extends Window {
+public class CreateUserDialog extends Dialog {
 
     private TextField loginField;
     private PasswordField passwordField;
     private Button okButton;
 
     public CreateUserDialog() {
-        super(message("createUser.title"));
-
-        VerticalLayout view = new VerticalLayout();
-        setContent(view);
         setModal(true);
-        addStyleName("not-maximizable-window");
+        setCloseOnEsc(true);
+        setCloseOnOutsideClick(true);
 
-        setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
+        Html captionLabel = new Html("<b>" + Page.MESSAGES().get("createUser.title") + "</b>");
 
-        GridLayout grid = new GridLayout(2, 2);
-        view.add(grid);
-        grid.setSpacing(true);
-        grid.setSpacing(true);
-        grid.setMargin(true);
+        FormLayout grid = new FormLayout();
 
         Label loginLabel = new Label(message("createUser.login"));
-        grid.add(loginLabel, 0, 0);
         loginField = new TextField();
-        grid.add(loginField, 1, 0);
+        grid.add(loginLabel, loginField);
+
         loginField.focus();
-        loginField.setImmediate(true);
 
         Label newPassword = new Label(message("createUser.password"));
-        grid.add(newPassword, 0, 1);
         passwordField = new PasswordField();
-        grid.add(passwordField, 1, 1);
-
-        final Window dialog = this;
+        grid.add(newPassword, passwordField);
 
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setSpacing(true);
-        buttonLayout.setMargin(new MarginInfo(true, false, false, false));
 
         okButton = new Button(message("button.create"));
-        okButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
+        okButton.addClickShortcut(Key.ENTER);
         okButton.addClassName("v-button-default");
         buttonLayout.add(okButton);
 
-        Button cancelButton = new Button(message("button.cancel"),
-                event -> getUI().removeWindow(dialog));
+        Button cancelButton = new Button(message("button.cancel"), event ->
+                close()
+        );
         buttonLayout.add(cancelButton);
-        view.add(buttonLayout);
-        view.setComponentAlignment(buttonLayout, Alignment.BOTTOM_CENTER);
-        setWidth(350, PIXELS);
+        setWidth("350px");
+
+        VerticalLayout view = new VerticalLayout(captionLabel,
+                grid,
+                buttonLayout);
+        add(view);
     }
 
     public String getLogin() {

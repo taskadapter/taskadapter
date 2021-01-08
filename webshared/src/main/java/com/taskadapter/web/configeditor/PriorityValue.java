@@ -1,14 +1,10 @@
 package com.taskadapter.web.configeditor;
 
 import com.taskadapter.connector.Priorities;
-import com.vaadin.data.Property;
-import com.vaadin.data.util.AbstractProperty;
-import com.vaadin.data.util.converter.Converter;
 
-public class PriorityValue extends AbstractProperty implements Property,
-        Property.ValueChangeNotifier {
+public class PriorityValue /*extends AbstractProperty implements Property,
+        Property.ValueChangeNotifier*/ {
 
-    private static final long serialVersionUID = -865197265809925838L;
     private final Priorities model;
     private final String key;
     private Integer value;
@@ -28,6 +24,7 @@ public class PriorityValue extends AbstractProperty implements Property,
     boolean isValid() {
         return !invalid;
     }
+/*
 
     @Override
     public Object getValue() {
@@ -55,5 +52,6 @@ public class PriorityValue extends AbstractProperty implements Property,
     public Class<?> getType() {
         return Integer.class;
     }
+*/
 
 }

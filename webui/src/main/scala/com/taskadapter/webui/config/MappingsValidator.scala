@@ -14,17 +14,17 @@ object MappingsValidator {
   private def validateAllSelectedFieldsMappedToSomething(mappings: Iterable[EditableFieldMapping]) = {
     mappings.foreach { row =>
 
-      val valid = (row.fieldInConnector1 != "" && row.fieldInConnector2 != "") ||
-        (row.fieldInConnector1 != "" && row.fieldInConnector2 == ""  && row.defaultValue != "") ||
-        (row.fieldInConnector2 != "" && row.fieldInConnector1 == ""  && row.defaultValue != "")
+      val valid = (row.getFieldInConnector1 != "" && row.getFieldInConnector2 != "") ||
+        (row.getFieldInConnector1 != "" && row.getFieldInConnector2 == ""  && row.getDefaultValue != "") ||
+        (row.getFieldInConnector2 != "" && row.getFieldInConnector1 == ""  && row.getDefaultValue != "")
 
-      if (row.selected && !valid) {
-        var string = Strings.nullToEmpty(row.fieldInConnector1)
-        if (string != "" && row.fieldInConnector2 != "") {
+      if (row.getSelected && !valid) {
+        var string = Strings.nullToEmpty(row.getFieldInConnector1)
+        if (string != "" && row.getFieldInConnector2 != "") {
           string = " "
         }
 
-        string += Strings.nullToEmpty(row.fieldInConnector2)
+        string += Strings.nullToEmpty(row.getFieldInConnector2)
         throw FieldNotMappedException(string)
       }
     }

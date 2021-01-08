@@ -1,19 +1,17 @@
 package com.taskadapter.webui.export
 
-
-import com.taskadapter.vaadin14shim.VerticalLayout
-import com.taskadapter.vaadin14shim.HorizontalLayout
-import com.taskadapter.vaadin14shim.GridLayout
 import java.util
 
 import com.taskadapter.config.StorageException
 import com.taskadapter.model.GTask
-import com.taskadapter.web.event.{ConfigSaveRequested, EventBusImpl}
 import com.taskadapter.web.uiapi.UISyncConfig
-import com.taskadapter.webui.Page
+import com.taskadapter.webui.{ConfigOperations, Page}
 import com.taskadapter.webui.action.MyTree
 import com.taskadapter.webui.config.TaskFieldsMappingFragment
-import com.vaadin.ui._
+import com.vaadin.flow.component.Component
+import com.vaadin.flow.component.button.Button
+import com.vaadin.flow.component.html.Label
+import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout}
 import org.slf4j.LoggerFactory
 
 object ConfirmExportFragment {
@@ -41,7 +39,8 @@ object ConfirmExportFragment {
     *
     * @return confirmation dialog.
     */
-  def render(config: UISyncConfig,
+  def render(configOps: ConfigOperations,
+             config: UISyncConfig,
              initialTasks: util.List[GTask], callback: Callback): Component = {
     val resolver = config.getPreviouslyCreatedTasksResolver()
     val layout = new VerticalLayout
@@ -51,8 +50,7 @@ object ConfirmExportFragment {
     val text1 = new Label(Page.message("exportConfirmation.pleaseConfirm", destinationWithDecoration))
     layout.add(text1)
     val connectorTree = new MyTree(resolver, initialTasks, destinationLocation)
-    connectorTree.setSizeFull()
-    layout.add(connectorTree)
+    layout.add(connectorTree.getTree)
     val buttonsLayout = new HorizontalLayout
     val goButton = new Button(Page.message("button.go"))
     buttonsLayout.add(goButton)
@@ -69,10 +67,11 @@ object ConfirmExportFragment {
       val newFieldMappings = taskFieldsMappingFragment.getElements.toSeq
       config.copy(fieldMappings = newFieldMappings)
     }
-    layout.add(taskFieldsMappingFragment.getUI)
+
+    layout.add(taskFieldsMappingFragment.getComponent)
     goButton.addClickListener(_ => {
       try {
-        EventBusImpl.post(ConfigSaveRequested(getPossiblyUpdatedConfig))
+        configOps.saveConfig(getPossiblyUpdatedConfig)
       } catch {
         case e: StorageException =>
           LOGGER.error(Page.message("action.cantSaveUpdatedConfig", e.getMessage), e)

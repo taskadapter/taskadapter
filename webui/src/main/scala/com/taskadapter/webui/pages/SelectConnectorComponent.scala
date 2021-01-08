@@ -1,12 +1,10 @@
 package com.taskadapter.webui.pages
 
-import com.taskadapter.vaadin14shim.VerticalLayout
-import com.taskadapter.vaadin14shim.HorizontalLayout
-import com.taskadapter.vaadin14shim.GridLayout
 import com.taskadapter.PluginManager
 import com.taskadapter.webui.Page.message
-import com.vaadin.ui.Button.ClickListener
-import com.vaadin.ui._
+import com.vaadin.flow.component.button.Button
+import com.vaadin.flow.component.html.Label
+import com.vaadin.flow.component.orderedlayout.VerticalLayout
 
 import scala.collection.JavaConverters._
 
@@ -27,19 +25,15 @@ class SelectConnectorComponent(pluginManager: PluginManager, next: String => Uni
   layout.setMargin(true)
   layout.add(new Label(message("newConfig.selectSystem")))
 
-  createSystemList(event => {
-    val connectorId = event.getButton.getData.asInstanceOf[String]
-    next(connectorId)
-  })
+  createSystemList()
 
-  private def createSystemList(listener: ClickListener): Unit = {
+  private def createSystemList(): Unit = {
     pluginManager.getPluginDescriptors.asScala.foreach { connector =>
 
       val systemButton = new Button(connector.label)
       systemButton.setWidth("200px")
       systemButton.addClickListener(_ => next(connector.id))
       layout.add(systemButton)
-      layout.setComponentAlignment(systemButton, Alignment.MIDDLE_CENTER)
     }
   }
 

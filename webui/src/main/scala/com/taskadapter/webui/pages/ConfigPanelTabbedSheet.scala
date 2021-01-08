@@ -1,57 +1,50 @@
 package com.taskadapter.webui.pages
 
-
-import com.taskadapter.vaadin14shim.VerticalLayout
-import com.taskadapter.vaadin14shim.HorizontalLayout
-import com.taskadapter.vaadin14shim.GridLayout
-import com.vaadin.ui.{Component, Label, Panel}
+import com.vaadin.flow.component.{Component, HasStyle}
+import com.vaadin.flow.component.html.Label
+import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout}
 
 import scala.collection.mutable
 
-class ConfigPanelTabbedSheet {
-  val ui = new HorizontalLayout()
-
+class ConfigPanelTabbedSheet extends HorizontalLayout {
   private val buttonArea = new VerticalLayout()
   private val emptyGapArea = new VerticalLayout()
   emptyGapArea.setWidth("10px")
   private val componentArea = new VerticalLayout()
-  ui.add(buttonArea)
-  ui.add(emptyGapArea)
-  ui.add(componentArea)
+  add(buttonArea)
+  add(emptyGapArea)
+  add(componentArea)
 
   private val captionToComponentMap = mutable.Map[String, ReloadableComponent]()
-  private val captionToButtonsMap = mutable.Map[String, Component]()
+  private val captionToButtonsMap = mutable.Map[String, HasStyle]()
   private val configTabLeftButtonSelected = "configTabLeftButtonSelected"
 
   def addTab(caption: String, component: ReloadableComponent): Unit = {
-    val layout = new HorizontalLayout()
-    layout.setWidth("150px")
-    layout.setMargin(true)
-    layout.setSpacing(true)
-    layout.addStyleName("configTabLeftButton")
-    captionToButtonsMap += (caption -> layout)
+    val buttonLayout = new HorizontalLayout()
+    buttonLayout.setWidth("150px")
+    buttonLayout.setMargin(true)
+    buttonLayout.setSpacing(true)
+    buttonLayout.addClassName("configTabLeftButton")
+    captionToButtonsMap += (caption -> buttonLayout)
     captionToComponentMap += (caption -> component)
 
-    val panel = new Panel()
     val button = new Label(caption)
-    layout.add(button) // label is not clickable, so have to wrap it into a layout
-    layout.addLayoutClickListener(_ => {
+    buttonLayout.add(button) // label is not clickable, so have to wrap it into a layout
+    buttonLayout.addClickListener(_ => {
       showTab(caption)
     })
 
-    panel.setContent(layout)
-
-    buttonArea.add(panel)
+    buttonArea.add(buttonLayout)
   }
 
   def showTab(caption: String): Unit = {
     unselectAllButtons()
-    captionToButtonsMap(caption).addStyleName(configTabLeftButtonSelected)
+    captionToButtonsMap(caption).addClassName(configTabLeftButtonSelected)
     showTab(captionToComponentMap(caption))
   }
 
   private def unselectAllButtons(): Unit = {
-    captionToButtonsMap.values.foreach(b => b.removeStyleName(configTabLeftButtonSelected))
+    captionToButtonsMap.values.foreach(b => b.removeClassName(configTabLeftButtonSelected))
   }
 
   private def showTab(component: ReloadableComponent): Unit = {

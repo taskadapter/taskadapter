@@ -1,23 +1,38 @@
 package com.taskadapter.web.configeditor.server
 
-import com.taskadapter.vaadin14shim.{GridLayout, Label, VerticalLayout}
 import com.google.common.base.Strings
 import com.taskadapter.connector.definition.WebConnectorSetup
 import com.taskadapter.web.ConnectorSetupPanel
-import com.taskadapter.web.ui.Grids.addTo
+import com.taskadapter.web.ui.HtmlLabel
 import com.taskadapter.webui.Page
-import com.vaadin.shared.ui.label.ContentMode
-import com.vaadin.ui.{Alignment, Component, Panel}
+import com.vaadin.flow.component.formlayout.FormLayout
+import com.vaadin.flow.component.html.Label
+import com.vaadin.flow.component.orderedlayout.VerticalLayout
+import com.vaadin.flow.component.{Component, Html}
+import com.vaadin.flow.data.binder.Binder
 
 class ServerPanelWithLoginAndToken(connectorId: String, caption: String,
                                    setup: WebConnectorSetup,
                                    tokenDescription: String) extends ConnectorSetupPanel {
-  val panel = new Panel
-  panel.setCaption(caption)
+  val layout = new VerticalLayout()
+  val captionLabel = new Html(s"<b>$caption</b>")
 
-  private val serverURL = ServerPanelUtil.host(setup)
-  private val userLoginInput = ServerPanelUtil.userName(setup)
-  private val apiTokenField = ServerPanelUtil.apiKey(setup)
+  val binder = new Binder(classOf[WebConnectorSetup])
+
+  val labelField = ServerPanelUtil.label(binder)
+  labelField.addClassName("server-panel-textfield")
+
+  private val hostField = ServerPanelUtil.host(binder)
+  hostField.addClassName("server-panel-textfield")
+  hostField.setPlaceholder("https://myserver:3000/some_location")
+
+  private val userLoginInput = ServerPanelUtil.userName(binder)
+  userLoginInput.addClassName("server-panel-textfield")
+
+  private val apiTokenField = ServerPanelUtil.apiKey(binder)
+  apiTokenField.addClassName("server-panel-textfield")
+
+  binder.readBean(setup)
 
   val errorMessageLabel = new Label
   errorMessageLabel.addClassName("error-message-label")
@@ -25,63 +40,48 @@ class ServerPanelWithLoginAndToken(connectorId: String, caption: String,
   buildUI()
 
   private def buildUI() = {
-    val grid = new GridLayout
+    val form = new FormLayout()
 
-    val layout = new VerticalLayout(grid, errorMessageLabel)
-    panel.setContent(layout)
-    grid.setSpacing(true)
-    grid.setMargin(true)
-    grid.setColumns(2)
-    grid.setRows(8)
+    form.add(
+      new Label(Page.message("setupPanel.name")),
+      labelField)
 
-    var currentRow = 0
+    form.add(
+      new Label(Page.message("setupPanel.serverUrl")),
+      hostField)
 
-    addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.name")))
-    val labelField = ServerPanelUtil.label(setup)
-    labelField.addClassName("server-panel-textfield")
-    grid.add(labelField, 1, currentRow)
-
-    // server url
-    currentRow += 1
-    addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.serverUrl")))
-    serverURL.addClassName("server-panel-textfield")
-    serverURL.setInputPrompt("https://myserver:3000/some_location")
-    addTo(grid, 1, currentRow, Alignment.MIDDLE_LEFT, serverURL)
-
-    // user name
-    currentRow += 1
-    addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT, new Label(Page.message("setupPanel.login")))
-    userLoginInput.addClassName("server-panel-textfield")
-    addTo(grid, 1, currentRow, Alignment.MIDDLE_LEFT, userLoginInput)
+    form.add(
+      new Label(Page.message("setupPanel.login")),
+      userLoginInput)
 
     val emptyLabelHeight = "10px"
+    val emptyLabel = createEmptyLabel(emptyLabelHeight)
+    form.add(
+      emptyLabel,
+      emptyLabel)
 
-    currentRow += 1
-    grid.add(createEmptyLabel(emptyLabelHeight), 0, currentRow)
+    form.add(new HtmlLabel(tokenDescription), 2)
 
-    currentRow += 1
-    addTo(grid, Alignment.MIDDLE_LEFT, new Label(tokenDescription, ContentMode.HTML))
+    form.add(
+      new HtmlLabel(Page.message("setupPanel.token")),
+      apiTokenField)
 
-    currentRow += 1
-    addTo(grid, 0, currentRow, Alignment.MIDDLE_LEFT,
-      new Label(Page.message("setupPanel.token"), ContentMode.HTML))
-    apiTokenField.addClassName("server-panel-textfield")
-    addTo(grid, 1, currentRow, Alignment.MIDDLE_LEFT, apiTokenField)
+    layout.add(captionLabel, form, errorMessageLabel)
   }
 
   private def createEmptyLabel(height: String) = {
-    val label = new Label("&nbsp;", ContentMode.HTML)
+    val label = new HtmlLabel("&nbsp;")
     label.setHeight(height)
     label
   }
 
-  override def getUI: Component = panel
+  override def getUI: Component = layout
 
   override def validate(): Option[String] = {
-    if (Strings.isNullOrEmpty(setup.label)) {
+    if (Strings.isNullOrEmpty(labelField.getValue)) {
       return Some(Page.message("newConfig.configure.nameRequired"))
     }
-    val host = serverURL.getValue
+    val host = hostField.getValue
     if (host == null || host.isEmpty || host.equalsIgnoreCase(ServerPanelWithPasswordAndAPIKey.defaultUrlPrefix)) {
       return Some(Page.message("newConfig.configure.serverUrlRequired"))
     }
@@ -89,13 +89,11 @@ class ServerPanelWithLoginAndToken(connectorId: String, caption: String,
   }
 
   override def getResult: WebConnectorSetup = {
-    WebConnectorSetup(connectorId, None, setup.label, setup.host, setup.userName,
-      "", true, setup.apiKey)
+    WebConnectorSetup(connectorId, None, labelField.getValue, hostField.getValue, userLoginInput.getValue,
+      "", true, apiTokenField.getValue)
   }
 
   override def showError(string: String): Unit = {
-    errorMessageLabel.setValue(string)
-
+    errorMessageLabel.setText(string)
   }
-
 }

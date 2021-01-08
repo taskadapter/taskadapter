@@ -1,8 +1,9 @@
 package com.taskadapter.webui.pages
 
-import com.taskadapter.vaadin14shim.{HorizontalLayout, VerticalLayout, Label}
+import com.taskadapter.vaadin14shim.Label
 import com.taskadapter.webui.Page
-import com.vaadin.ui.{ProgressBar}
+import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout}
+import com.vaadin.flow.component.progressbar.ProgressBar
 
 import scala.collection.mutable
 
@@ -10,11 +11,11 @@ class WizardPanel {
   val layout = new VerticalLayout()
   layout.setMargin(true)
   val progressLabel = new Label()
-  val progressBar = new ProgressBar(0)
-  progressBar.setWidth("400px")
+  val progressBar = new ProgressBar()
+  progressBar.setWidth("500px")
   val stepLayout = new HorizontalLayout()
 
-  layout.addComponents(progressLabel, progressBar)
+  layout.add(progressLabel, progressBar)
   layout.add(stepLayout)
 
   val steps = mutable.Map[Int, WizardStep[_]]()

@@ -2,8 +2,7 @@ package com.taskadapter.config;
 
 public final class StoredExportConfig {
     /**
-     * Export configuration id. It is implementation dependend and at a current
-     * time it is an absolute file name.
+     * Export configuration id.
      */
     private final int id;
     private final String name;

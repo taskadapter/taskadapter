@@ -1,12 +1,15 @@
 import org.apache.tools.ant.filters.*
 
 dependencies {
+    compile enforcedPlatform("com.vaadin:vaadin-bom:$vaadinVersion")
+    compile libraries.vaadinCore
+
     compile libraries.httpclient
     compile libraries.slf4j
     compile libraries.slf4jBindingLibrary
     compile libraries.log4j
 
-    compile "com.vaadin:vaadin-server:$vaadinVersion"
+//    compile "com.vaadin:vaadin-core:$vaadinVersion"
 
     compile libraries.servletAPI
 

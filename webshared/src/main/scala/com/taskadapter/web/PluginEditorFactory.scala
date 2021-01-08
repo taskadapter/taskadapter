@@ -4,12 +4,14 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.connector.definition.{ConnectorConfig, ConnectorSetup, FieldMapping}
 import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
-import com.vaadin.ui.HasComponents
+import com.taskadapter.web.uiapi.SavableComponent
+import com.vaadin.flow.component.{Component, HasComponents}
+import com.vaadin.flow.data.binder.Binder
 
 import scala.collection.Seq
 
 trait PluginEditorFactory[C <: ConnectorConfig, S <: ConnectorSetup] extends ExceptionFormatter {
-  def getMiniPanelContents(sandbox: Sandbox, config: C, setup: S): HasComponents
+  def getMiniPanelContents(sandbox: Sandbox, config: C, setup: S): SavableComponent
 
   def isWebConnector: Boolean
 

@@ -2,18 +2,21 @@ package com.taskadapter.connector.msp.editor
 
 import java.io.File
 import java.nio.file.Paths
-import com.taskadapter.vaadin14shim.{HorizontalLayout, Label, VerticalLayout}
+
+import com.taskadapter.vaadin14shim.{HorizontalLayout, Label}
 import com.taskadapter.connector.common.FileNameGenerator
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.connector.definition.{ConnectorConfig, FieldMapping, FileSetup}
 import com.taskadapter.connector.msp._
 import com.taskadapter.connector.msp.editor.error.{InputFileNameNotSetException, OutputFileNameNotSetException}
-import com.taskadapter.web.configeditor.EditorUtil.propertyInput
 import com.taskadapter.web.configeditor.file.{FileProcessingResult, LocalModeFilePanel, ServerModeFilePanel}
 import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
+import com.taskadapter.web.uiapi.{DefaultSavableComponent, SavableComponent}
 import com.taskadapter.web.{ConnectorSetupPanel, PluginEditorFactory}
-import com.vaadin.ui.{Component, HasComponents, Panel}
+import com.vaadin.flow.component.{Component, HasComponents}
+import com.vaadin.flow.component.orderedlayout.VerticalLayout
+import com.vaadin.flow.data.binder.Binder
 
 import scala.collection.mutable
 
@@ -37,13 +40,15 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     }
   }
 
-  override def getMiniPanelContents(sandbox: Sandbox, config: MSPConfig, setup: FileSetup): HasComponents = {
+  // TODO 14 use the binder
+  override def getMiniPanelContents(sandbox: Sandbox, config: MSPConfig, setup: FileSetup): SavableComponent = {
     val layout = new VerticalLayout
     layout.setMargin(true)
     layout.add(createDescriptionElement(config))
     //    layout.add(createFilePanel(sandbox, config))
     layout.add(createInfoReadOnlyPanel)
-    layout
+    // TODO 14 update the save function
+    new DefaultSavableComponent(layout, () => {})
   }
 
   override def getEditSetupPanel(sandbox: Sandbox, setup: FileSetup) = new ConnectorSetupPanel() {
@@ -76,11 +81,11 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     val descriptionLayout = new HorizontalLayout
     descriptionLayout.setSpacing(true)
     descriptionLayout.add(new Label(LABEL_DESCRIPTION_TEXT))
-    val labelText = propertyInput(config, "label")
-    labelText.setDescription(LABEL_TOOLTIP)
-    labelText.setReadOnly(true)
-    labelText.addClassName("label-textfield")
-    descriptionLayout.add(labelText)
+//    val labelText = propertyInput(config, "label")
+//    labelText.setDescription(LABEL_TOOLTIP)
+//    labelText.setReadOnly(true)
+//    labelText.addClassName("label-textfield")
+//    descriptionLayout.add(labelText)
     descriptionLayout
   }
 
@@ -90,7 +95,7 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     infoPanel
   }
 
-  private def createServerModePanel(sandbox: Sandbox, fileSetup: FileSetup): Panel = {
+  private def createServerModePanel(sandbox: Sandbox, fileSetup: FileSetup): Component = {
     new ServerModeFilePanel(sandbox.getUserContentDirectory, fileSetup,
       (uploadedFile: File) => processFile(sandbox, uploadedFile)
     )

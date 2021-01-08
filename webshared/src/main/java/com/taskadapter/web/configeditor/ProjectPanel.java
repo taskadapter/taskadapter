@@ -8,16 +8,14 @@ import com.taskadapter.model.GProject;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.callbacks.DataProvider;
-import com.taskadapter.web.configeditor.server.StringToLongNonFormattingConverter;
 import com.taskadapter.webui.Page;
-import com.vaadin.data.Property;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.taskadapter.vaadin14shim.GridLayout;
-import com.taskadapter.vaadin14shim.Label;
-import com.taskadapter.vaadin14shim.TextField;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Panel;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.converter.StringToLongConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
@@ -25,19 +23,15 @@ import scala.Option;
 import java.util.List;
 
 import static com.taskadapter.web.configeditor.EditorUtil.textInput;
-import static com.taskadapter.web.ui.Grids.addTo;
 import static com.taskadapter.web.ui.MessageUtils.nvl;
 
 /**
  * "Project info" panel with Project Key, Filter Id.
  */
-public class ProjectPanel extends Panel implements Validatable {
+public class ProjectPanel extends FormLayout implements Validatable {
     private final static Logger logger = LoggerFactory.getLogger(ProjectPanel.class);
 
-    private static final String DEFAULT_PANEL_CAPTION = "Project Info";
-    private static final String TEXT_AREA_WIDTH = "120px";
-
-    private TextField projectKey;
+    private TextField projectKeyField;
     private Label queryIdLabel;
     private TextField queryIdValue;
 
@@ -46,25 +40,24 @@ public class ProjectPanel extends Panel implements Validatable {
     private TextField queryTextValue;
 
     private final DataProvider<List<? extends NamedKeyedObject>> projectProvider;
-
     private final DataProvider<GProject> projectInfoLoader;
     private final DataProvider<List<? extends NamedKeyedObject>> queryProvider;
 
-    private final Property<String> projectKeyProperty;
-
-    private final Option<Property<Long>> queryIdProperty;
-    private final Option<Property<String>> queryTextProperty;
-
+    private final Binder<?> binder;
+    private final String projectKeyProperty;
+    private final Option<String> queryIdProperty;
+    private final Option<String> queryTextProperty;
     private final ExceptionFormatter exceptionFormatter;
 
-    public ProjectPanel(Property<String> projectKey,
-                        Option<Property<Long>> queryIdProperty,
-                        Option<Property<String>> queryTextProperty,
+    public ProjectPanel(Binder<?> binder,
+                        String projectKey,
+                        Option<String> queryIdProperty,
+                        Option<String> queryTextProperty,
                         DataProvider<List<? extends NamedKeyedObject>> projectProvider,
                         DataProvider<GProject> projectInfoLoader,
                         DataProvider<List<? extends NamedKeyedObject>> queryProvider,
                         ExceptionFormatter exceptionFormatter) {
-        super(DEFAULT_PANEL_CAPTION);
+        this.binder = binder;
         this.projectKeyProperty = projectKey;
         this.queryIdProperty = queryIdProperty;
         this.queryTextProperty = queryTextProperty;
@@ -75,25 +68,20 @@ public class ProjectPanel extends Panel implements Validatable {
         buildUI();
     }
 
-    private GridLayout grid = new GridLayout(4, 2);
-
     private void buildUI() {
-        setContent(grid);
+        setResponsiveSteps(
+                new ResponsiveStep("40em", 1),
+                new ResponsiveStep("50em", 2),
+                new ResponsiveStep("20em", 3),
+                new ResponsiveStep("20em", 4));
 
-        grid.setSpacing(true);
-
-        projectKeyLabel = new Label("Project key:");
-        addTo(grid, Alignment.MIDDLE_LEFT, projectKeyLabel);
-
-        projectKey = textInput(projectKeyProperty, TEXT_AREA_WIDTH);
-        addTo(grid, Alignment.MIDDLE_CENTER, projectKey);
-        projectKey.setNullRepresentation("");
+        projectKeyLabel = new Label("Project key");
+        projectKeyField = textInput(binder, projectKeyProperty);
 
         Button infoButton = EditorUtil.createButton("Info", "View the project info",
                 event -> loadProject()
         );
         infoButton.setEnabled(projectInfoLoader != null);
-        addTo(grid, Alignment.MIDDLE_CENTER, infoButton);
 
         Button showProjectsButton = EditorUtil.createLookupButton(
                 "...",
@@ -102,12 +90,13 @@ public class ProjectPanel extends Panel implements Validatable {
                 "List of projects on the server",
                 projectProvider,
                 exceptionFormatter, namedKeyedObject -> {
-                    projectKeyProperty.setValue(namedKeyedObject.getKey());
+                    projectKeyField.setValue(namedKeyedObject.getKey());
                     return null;
                 }
         );
         showProjectsButton.setEnabled(projectProvider != null);
-        addTo(grid, Alignment.MIDDLE_CENTER, showProjectsButton);
+
+        add(projectKeyLabel, projectKeyField, infoButton, showProjectsButton);
 
         if (queryIdProperty.isDefined()) {
             addQueryIdWithLoader(queryIdProperty.get());
@@ -117,17 +106,19 @@ public class ProjectPanel extends Panel implements Validatable {
         }
     }
 
-    private void addQueryIdWithLoader(Property<Long> stringProperty) {
+    private void addQueryIdWithLoader(String stringProperty) {
         queryIdLabel = new Label(Page.message("editConfig.projectPanel.queryId"));
-        queryIdLabel.setDescription(Page.message("editConfig.projectPanel.queryId.description"));
-        addTo(grid, Alignment.MIDDLE_LEFT, queryIdLabel);
+        queryIdLabel.getElement()
+                .setProperty("title", Page.message("editConfig.projectPanel.queryId.description"));
 
-        queryIdValue = textInput(stringProperty, TEXT_AREA_WIDTH);
-        queryIdValue.setDescription(Page.message("editConfig.projectPanel.queryId.description"));
-        addTo(grid, Alignment.MIDDLE_CENTER, queryIdValue);
-        queryIdValue.setNullRepresentation("");
-        queryIdValue.setValidationVisible(true);
-        queryIdValue.setConverter(new StringToLongNonFormattingConverter());
+        queryIdValue = new TextField();
+        binder.forField(queryIdValue)
+                .withConverter(new StringToLongConverter("Not a number"))
+                .withNullRepresentation(0L)
+                .bind(stringProperty);
+        // set tooltip
+        queryIdValue.getElement()
+                .setProperty("title", Page.message("editConfig.projectPanel.queryId.description"));
 
         Button showQueriesButton = EditorUtil.createLookupButton(
                 "...",
@@ -136,7 +127,7 @@ public class ProjectPanel extends Panel implements Validatable {
                 "List of saved queries on the server",
                 queryProvider,
                 exceptionFormatter,namedKeyedObject -> {
-                    stringProperty.setValue(Long.valueOf(namedKeyedObject.getKey()));
+                    queryIdValue.setValue(namedKeyedObject.getKey());
                     return null;
                 }
         );
@@ -144,18 +135,19 @@ public class ProjectPanel extends Panel implements Validatable {
         // TODO maybe set "enabled" basing on whether or not loadSavedQueriesOperation is NULL?
         // then can delete the whole "features" mechanism
         showQueriesButton.setEnabled(queryProvider != null);
-        addTo(grid, Alignment.MIDDLE_CENTER, showQueriesButton);
+
+        add(queryIdLabel, queryIdValue, showQueriesButton);
     }
 
-    private void addQueryText(Property<String> stringProperty) {
+    private void addQueryText(String stringProperty) {
         queryTextLabel = new Label(Page.message("editConfig.projectPanel.queryText"));
-        queryTextLabel.setDescription(Page.message("editConfig.projectPanel.queryText.description"));
-        addTo(grid, Alignment.MIDDLE_LEFT, queryTextLabel);
+        queryTextLabel.getElement()
+                .setProperty("title", Page.message("editConfig.projectPanel.queryText.description"));
 
-        queryTextValue = textInput(stringProperty, TEXT_AREA_WIDTH);
-        queryTextValue.setDescription(Page.message("editConfig.projectPanel.queryId.description"));
-        addTo(grid, Alignment.MIDDLE_CENTER, queryTextValue);
-        queryTextValue.setNullRepresentation("");
+        queryTextValue = textInput(binder, stringProperty);
+        queryTextValue.getElement()
+                .setProperty("title", Page.message("editConfig.projectPanel.queryId.description"));
+        add(queryTextLabel, queryTextValue);
     }
 
     private void loadProject() {
@@ -178,7 +170,7 @@ public class ProjectPanel extends Panel implements Validatable {
                 + "\nName: " + project.getName()
                 + "\nHomepage: " + nvl(project.homepage())
                 + "\nDescription: " + nvl(project.description());
-        Notification.show("Project Info", msg, Notification.Type.HUMANIZED_MESSAGE);
+        Notification.show(msg);
     }
 
     private String getQueryIdValue() {
@@ -201,7 +193,7 @@ public class ProjectPanel extends Panel implements Validatable {
         }
 
         // TODO !!! will result in NPE if getProjectKey can return NULL. (can it?)
-        if (projectKey.getValue().trim().isEmpty()) {
+        if (projectKeyField.getValue().trim().isEmpty()) {
             throw new ProjectNotSetException();
         }
     }

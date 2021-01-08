@@ -1,14 +1,17 @@
 package com.taskadapter.webui
 
-import com.vaadin.ui.themes.ValoTheme
-import com.vaadin.ui.{Component, MenuBar}
+import com.vaadin.flow.component.contextmenu.MenuItem
+import com.vaadin.flow.component.{ClickEvent, Component, ComponentEventListener}
+import com.vaadin.flow.component.menubar.MenuBar
 
 object HeaderMenuBuilder {
   def createButton(caption: String, command: Runnable): Component = {
     val menuBar = new MenuBar
-    menuBar.setStyleName(ValoTheme.MENUBAR_BORDERLESS)
-    menuBar.addStyleName("mybarmenu")
-    menuBar.addItem(caption, (selectedItem: MenuBar#MenuItem) => command.run())
+//    menuBar.setClassName(ValoTheme.MENUBAR_BORDERLESS)
+//    menuBar.addClassName("mybarmenu")
+    menuBar.addItem(caption, new ComponentEventListener[ClickEvent[MenuItem]] {
+      override def onComponentEvent(event: ClickEvent[MenuItem]): Unit = command.run()
+    })
     menuBar
   }
 }

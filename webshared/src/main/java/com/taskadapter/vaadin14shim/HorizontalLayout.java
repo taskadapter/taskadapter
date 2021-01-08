@@ -1,26 +1,11 @@
 package com.taskadapter.vaadin14shim;
 
-import com.vaadin.ui.Component;
+import com.vaadin.flow.component.Component;
 
-public class HorizontalLayout extends com.vaadin.ui.HorizontalLayout {
+public class HorizontalLayout extends com.vaadin.flow.component.orderedlayout.HorizontalLayout {
 
     public HorizontalLayout(Component... children) {
         super(children);
     }
 
-    public void add(Component c) {
-        addComponent(c);
-    }
-
-    public void setClassName(String c) {
-        setStyleName(c);
-    }
-
-    public void addClassName(String c) {
-        addStyleName(c);
-    }
-
-    public void removeAll() {
-        removeAllComponents();
-    }
 }

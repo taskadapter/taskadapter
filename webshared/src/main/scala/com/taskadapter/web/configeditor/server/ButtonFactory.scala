@@ -6,7 +6,9 @@ import com.taskadapter.connector.definition.exceptions.{BadConfigException, Conn
 import com.taskadapter.model.{NamedKeyedObject, NamedKeyedObjectImpl}
 import com.taskadapter.web.ExceptionFormatter
 import com.taskadapter.web.configeditor.{EditorUtil, ListSelectionDialog}
-import com.vaadin.ui.{Button, Notification, UI}
+import com.vaadin.flow.component.{ClickEvent, ComponentEventListener}
+import com.vaadin.flow.component.button.Button
+import com.vaadin.flow.component.notification.Notification
 import org.slf4j.LoggerFactory
 
 object ButtonFactory {
@@ -17,7 +19,7 @@ object ButtonFactory {
                          errorFormatter: ExceptionFormatter,
                          selectionListener: NamedKeyedObject => Unit): Button = {
     val button = new Button(buttonLabel)
-    button.setDescription(description)
+    button.getElement.setProperty("title", description)
     val listener = new LookupResultListenerScala() {
       override def notifyDone(objects: Seq[_ <: NamedKeyedObject]): Unit = {
         if (objects.nonEmpty) showValues(objects)
@@ -30,22 +32,22 @@ object ButtonFactory {
         }
         showList(windowTitle, listTitle, map.keySet, (value: String) => {
           val key = map.get(value)
-          selectionListener.apply(NamedKeyedObjectImpl(key, value))
+          selectionListener.apply(new NamedKeyedObjectImpl(key, value))
         })
       }
     }
     button.addClickListener(_ => {
         try {
           val objects = loadProjects()
-          if (objects.isEmpty) Notification.show("No objects", "No objects have been found", Notification.Type.HUMANIZED_MESSAGE)
+          if (objects.isEmpty) Notification.show("No objects have been found")
           listener.notifyDone(objects)
         } catch {
           case e: BadConfigException =>
             logger.error(e.toString)
-            Notification.show("", errorFormatter.formatError(e), Notification.Type.HUMANIZED_MESSAGE)
+            Notification.show(errorFormatter.formatError(e))
           case e: ConnectorException =>
             logger.error(e.toString)
-            Notification.show("", errorFormatter.formatError(e), Notification.Type.HUMANIZED_MESSAGE)
+            Notification.show(errorFormatter.formatError(e))
           case e: Exception =>
             logger.error(e.toString)
             EditorUtil.show("Something went wrong", e)
@@ -57,10 +59,10 @@ object ButtonFactory {
   private def showList(windowTitle: String, listTitle: String, items: util.Collection[String],
                        valueListener: EditorUtil.ValueListener): Unit = {
     val newWindow = new ListSelectionDialog(windowTitle, listTitle, items, valueListener)
-    newWindow.center()
-    newWindow.setModal(true)
-    UI.getCurrent.addWindow(newWindow)
-    newWindow.focus()
+//    newWindow.center()
+//    newWindow.setModal(true)
+//    UI.getCurrent.addWindow(newWindow)
+//    newWindow.focus()
   }
 
 }

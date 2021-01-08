@@ -1,7 +1,7 @@
 subprojects {
     apply plugin: 'java'
     dependencies {
-        compile project(":webshared")
+        implementation project(":webshared")
 
         testCompile project(":test-utilities")
         testCompile project(":test-utilities-ui")

@@ -13,16 +13,16 @@ import com.taskadapter.redmineapi.RedmineAuthenticationException;
 import com.taskadapter.web.ConnectorSetupPanel;
 import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
-import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.PriorityPanel;
 import com.taskadapter.web.configeditor.ProjectPanel;
-import com.taskadapter.web.configeditor.server.ServerPanelFactory;
+import com.taskadapter.web.configeditor.server.ServerPanelWithPasswordAndAPIKey;
 import com.taskadapter.web.data.Messages;
-import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Sandbox;
-import com.vaadin.data.util.MethodProperty;
-import com.taskadapter.vaadin14shim.GridLayout;
-import com.vaadin.ui.HasComponents;
+import com.taskadapter.web.uiapi.DefaultSavableComponent;
+import com.taskadapter.web.uiapi.SavableComponent;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import scala.Option;
 import scala.collection.JavaConverters;
 import scala.collection.Seq;
@@ -54,26 +54,38 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
     }
 
     @Override
-    public HasComponents getMiniPanelContents(Sandbox sandbox, RedmineConfig config, WebConnectorSetup setup) {
+    public SavableComponent getMiniPanelContents(Sandbox sandbox, RedmineConfig config, WebConnectorSetup setup) {
+        Binder<RedmineConfig> binder = new Binder<>(RedmineConfig.class);
         ProjectPanel projectPanel = new ProjectPanel(
-                new MethodProperty<>(config, "projectKey"),
-                Option.apply(new MethodProperty<>(config, "queryId")),
+                binder,
+                "projectKey",
+                Option.apply("queryId"),
                 Option.empty(),
                 new RedmineProjectListLoader(setup),
                 new RedmineProjectLoader(config, setup),
                 new RedmineQueryListLoader(config, setup),
-    this);
-        GridLayout gridLayout = new GridLayout();
-        gridLayout.setColumns(2);
-        gridLayout.setMargin(true);
-        gridLayout.setSpacing(true);
+                this);
+        FormLayout layout = new FormLayout();
+        layout.setResponsiveSteps(
+                new FormLayout.ResponsiveStep("50em", 1),
+                new FormLayout.ResponsiveStep("50em", 2));
 
-        gridLayout.add(projectPanel);
+        // TODO 14 priorities panel is read-only for now. its values are not saved
         PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(),
-                Interfaces.fromMethod(DataProvider.class, new PrioritiesLoader(setup), "loadPriorities"), this);
-        gridLayout.add(priorityPanel);
-        gridLayout.add(new OtherRedmineFieldsContainer(config, setup, this));
-        return gridLayout;
+                new PrioritiesLoader(setup),this);
+
+        layout.add(projectPanel,
+                priorityPanel,
+                new OtherRedmineFieldsContainer(binder, config, setup, this));
+
+        binder.readBean(config);
+        return new DefaultSavableComponent(layout, () -> {
+            try {
+                binder.writeBean(config);
+            } catch (ValidationException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override
@@ -83,7 +95,7 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
 
     @Override
     public ConnectorSetupPanel getEditSetupPanel(Sandbox sandboxUnused, WebConnectorSetup setup) {
-        return ServerPanelFactory.withApiKeyAndLoginPassword(RedmineConnector.ID(),
+        return new ServerPanelWithPasswordAndAPIKey(RedmineConnector.ID(),
                 RedmineConnector.ID(), setup);
     }
 

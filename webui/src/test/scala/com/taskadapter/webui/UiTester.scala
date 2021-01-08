@@ -1,6 +1,7 @@
 package com.taskadapter.webui
 
-import com.vaadin.ui.{Component, HasComponents}
+import com.vaadin.flow.component.{Component, HasComponents}
+
 
 object UiTester {
 
@@ -14,7 +15,7 @@ object UiTester {
   }
 
   private def findUiElementOption(container: HasComponents, caption: String): Option[Component] = {
-    val iterator = container.iterator()
+    /*val iterator = container.getElementiterator()
     while (iterator.hasNext) {
       val item = iterator.next()
       if (item.getCaption == caption) {
@@ -26,7 +27,7 @@ object UiTester {
           return inside
         }
       }
-    }
+    }*/
     None
   }
 }

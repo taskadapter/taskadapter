@@ -2,13 +2,10 @@ package com.taskadapter.web.configeditor.file;
 
 import com.taskadapter.connector.definition.FileSetup;
 import com.taskadapter.vaadin14shim.Binder;
-import com.vaadin.event.FieldEvents;
-import com.taskadapter.vaadin14shim.GridLayout;
 import com.taskadapter.vaadin14shim.TextField;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-public class LocalModeFilePanel extends Panel {
+public class LocalModeFilePanel extends VerticalLayout {
     private static final String LABEL_FILE_NAME = "Input file:";
     private static final String TOOLTIP_FILE_NAME = "Microsoft Project file name to load the data from (MPP or XML file)";
 
@@ -18,14 +15,14 @@ public class LocalModeFilePanel extends Panel {
     private final FileSetup fileSetup;
 
     public LocalModeFilePanel(FileSetup fileSetup) {
-    	super("Microsoft project files");
+//    	super("Microsoft project files");
         this.fileSetup = fileSetup;
-        buildUI();
+//        buildUI();
     }
 
     private TextField outputFileNameField;
 
-    private void buildUI() {
+   /* private void buildUI() {
         GridLayout layout = new GridLayout();
         setContent(layout);
         layout.setColumns(2);
@@ -48,10 +45,10 @@ public class LocalModeFilePanel extends Panel {
         layout.add(outputFileNameField);
     }
 
-
+*/
     private TextField createFileName(String tooltip) {
         final TextField field = new TextField();
-        field.setDescription(tooltip);
+//        field.setDescription(tooltip);
         field.addClassName("msp-file-name-textfield");
         return field;
     }

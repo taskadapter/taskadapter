@@ -1,9 +1,5 @@
 package com.taskadapter.webui.pages
 
-
-import com.taskadapter.vaadin14shim.VerticalLayout
-import com.taskadapter.vaadin14shim.HorizontalLayout
-import com.taskadapter.vaadin14shim.GridLayout
 import com.taskadapter.connector.definition.{ConnectorConfig, ConnectorSetup, FileSetup, WebConnectorSetup}
 import com.taskadapter.web.{ConnectorSetupPanel, PluginEditorFactory}
 import com.taskadapter.web.service.Sandbox
@@ -11,8 +7,11 @@ import com.taskadapter.web.uiapi.SetupId
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.service.EditorManager
 import com.taskadapter.webui.{ConfigOperations, Page}
-import com.vaadin.data.Property.ValueChangeListener
-import com.vaadin.ui._
+import com.vaadin.flow.component.Component
+import com.vaadin.flow.component.button.Button
+import com.vaadin.flow.component.html.Label
+import com.vaadin.flow.component.orderedlayout.VerticalLayout
+import com.vaadin.flow.component.select.Select
 
 import scala.collection.Seq
 
@@ -23,6 +22,7 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
                                setupSelected: SetupId => Unit) extends WizardStep[SetupId] {
   var result: SetupId = _
 
+  @Override
   def ui(connectorId: Any): Component = {
     createSetupPanelForConnector(connectorId.asInstanceOf[String]).getUI()
   }
@@ -51,41 +51,34 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
 
   class ChooseOrCreateSetupFragment(setups: Seq[ExistingSetup],
                                     button: Button, connectorSetupPanel: ConnectorSetupPanel) {
-    private val selectPanel = createSavedServerConfigurationsSelector(setups, event => {})
+    private val selectPanel = createSavedServerConfigurationsSelector(setups)
+    val selectExistingLabel = message("createConfigPage.selectExistingOrNew")
 
-    private def createSavedServerConfigurationsSelector(savedSetups: Seq[ExistingSetup],
-                                                        valueChangeListener: ValueChangeListener): ListSelect = {
-      val res = new ListSelect()
-      res.setNullSelectionAllowed(false)
-      res.addValueChangeListener(valueChangeListener)
-      savedSetups.foreach { s =>
-        res.addItem(s.id)
-        res.setItemCaption(s.id, s.description)
-      }
-      res.setRows(res.size)
-      res
+    private def createSavedServerConfigurationsSelector(savedSetups: Seq[ExistingSetup]): Select[ExistingSetup] = {
+      val combobox = new Select[ExistingSetup]()
+      combobox.setMinWidth("500px")
+      combobox.setLabel(selectExistingLabel)
+      combobox.setEmptySelectionAllowed(false)
+      combobox.setItemLabelGenerator((item: ExistingSetup) => item.description)
+      combobox.setItems(java.util.Arrays.asList(savedSetups: _*))
+      combobox
     }
 
     val errorMessageLabel = new Label
-    errorMessageLabel.addStyleName("error-message-label")
+    errorMessageLabel.addClassName("error-message-label")
 
     private val connectorSetupPanelUI = connectorSetupPanel.getUI
-    val selectExistingLabel = new Label(message("createConfigPage.selectExistingOrNew"))
     val orCreateNewLabel = new Label(message("createConfigPage.orCreateNew"))
     var inSelectMode = true
-    if (selectPanel.getRows != 0) {
-      selectPanel.select(selectPanel.getItemIds.iterator().next())
-    }
-    if (selectPanel.getRows == 0) {
+
+    if (setups.nonEmpty) {
+      selectPanel.setValue(setups.head)
+    } else {
       inSelectMode = false
       button.setEnabled(false)
     }
 
     def inEditMode: Boolean = !inSelectMode
-
-    val layout = new VerticalLayout(selectExistingLabel, selectPanel, orCreateNewLabel, button, connectorSetupPanelUI, errorMessageLabel)
-
-    def getUI(): Component = layout
 
     val nextButton = new Button(Page.message("newConfig.next"))
     nextButton.addClickListener(_ => {
@@ -96,23 +89,28 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
           result = setupId
           setupSelected(setupId)
         } else {
-          errorMessageLabel.setValue(maybeString.get)
+          errorMessageLabel.setText(maybeString.get)
         }
       } else {
-        val setupId = selectPanel.getValue.asInstanceOf[SetupId]
+        val setupId = selectPanel.getValue.id
         result = setupId
         setupSelected(setupId)
       }
     }
     )
-    layout.add(nextButton)
+
+    val layout = new VerticalLayout()
+    layout.add(selectPanel, orCreateNewLabel, button, connectorSetupPanelUI, errorMessageLabel,
+      nextButton)
+
+    def getUI(): Component = layout
 
     private def refresh() = {
       connectorSetupPanelUI.setVisible(!inSelectMode)
       selectPanel.setVisible(inSelectMode)
       val caption = if (inSelectMode) Page.message("createConfigPage.button.createNew")
       else Page.message("createConfigPage.button.selectExisting")
-      button.setCaption(caption)
+      button.setText(caption)
     }
 
     def validateSelectMode(): Option[String] = {

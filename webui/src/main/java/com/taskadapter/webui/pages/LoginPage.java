@@ -1,104 +1,102 @@
 package com.taskadapter.webui.pages;
 
-import com.taskadapter.vaadin14shim.VerticalLayout;
-import com.taskadapter.vaadin14shim.HorizontalLayout;
-import com.taskadapter.vaadin14shim.GridLayout;
-import com.taskadapter.vaadin14shim.Button;
-import com.taskadapter.vaadin14shim.Label;
+import com.taskadapter.webui.BasePage;
+import com.taskadapter.webui.Layout;
+import com.taskadapter.webui.NoOpGATracker;
 import com.taskadapter.webui.Page;
+import com.taskadapter.webui.SessionController;
+import com.taskadapter.webui.WebUserSession;
 import com.taskadapter.webui.service.WrongPasswordException;
-import com.vaadin.event.ShortcutAction;
-import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.*;
-import com.vaadin.ui.themes.Runo;
-import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.flow.component.Html;
+import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.Route;
 
-/**
- * System login page. Does not perform authentication by itself, delegates
- * handling to the callback instance.
- */
-public final class LoginPage {
+@Route(value = Navigator.LOGIN, layout = Layout.class)
+@CssImport(value = "./styles/views/mytheme.css")
+public class LoginPage extends BasePage {
     private static final String FORM_WIDTH = "300px";
     private static final String EDIT_WIDTH = "260px";
 
-    /**
-     * Callbacks for login operation.
-     */
-    public interface Callback {
-        /**
-         * Performs user authentication and all other required operations.
-         * 
-         * @param user
-         *            user name.
-         * @param password
-         *            password.
-         * @param enableSecondaryAuth
-         *            flag, indicating, that secondary device authentication
-         *            (non-password) should be enabled.
-         * @throws WrongPasswordException
-         *             if username or password is wrong.
-         */
-        void authenticate(String user, String password,
-                boolean enableSecondaryAuth) throws WrongPasswordException;
+    public LoginPage() {
+        buildUi();
     }
 
-    /**
-     * Creates a page ui.
-     * 
-     * @param callback
-     *            page callback.
-     */
-    public static Component createUI(final Callback callback) {
-        final Panel panel = new Panel(Page.message("loginPage.login"));
+    public void buildUi() {
+        H1 captionLabel = new H1(Page.message("loginPage.login"));
 
-        final VerticalLayout layout = new VerticalLayout();
-        panel.setContent(layout);
+        VerticalLayout layout = new VerticalLayout();
         layout.setWidth(FORM_WIDTH);
 
-        layout.setMargin(new MarginInfo(false, true, false, true));
         layout.setSpacing(true);
-        final Label label = new Label(Page.message("loginPage.hintLabel"), ContentMode.HTML);
-        label.setStyleName(ValoTheme.LABEL_SMALL);
+        Html label = new Html(Page.message("loginPage.hintLabel"));
         layout.add(label);
 
-        final TextField loginEdit = new TextField();
-        loginEdit.setCaption(Page.message("loginPage.login"));
-        loginEdit.setWidth(EDIT_WIDTH);
-        layout.add(loginEdit);
+        TextField loginField = new TextField(Page.message("loginPage.login"));
+        loginField.setWidth(EDIT_WIDTH);
+        layout.add(loginField);
 
-        final PasswordField passwordEdit = new PasswordField();
-        passwordEdit.setCaption(Page.message("loginPage.password"));
-        passwordEdit.setWidth(EDIT_WIDTH);
-        layout.add(passwordEdit);
+        PasswordField passwordField = new PasswordField(Page.message("loginPage.password"));
+        passwordField.setWidth(EDIT_WIDTH);
+        layout.add(passwordField);
 
-        final CheckBox staySignedIn = new CheckBox(Page.message("loginPage.staySignedIn"));
+        loginField.setValue("admin");
+        passwordField.setValue("admin");
+
+        Checkbox staySignedIn = new Checkbox(Page.message("loginPage.staySignedIn"));
         layout.add(staySignedIn);
 
-        final Button loginButton = new Button(Page.message("loginPage.loginButton"));
-        loginButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
-        loginButton.addClassName(Runo.BUTTON_DEFAULT);
-        loginButton.addClassName(Runo.BUTTON_BIG);
-
-        final Label errorLabel = new Label();
+        Label errorLabel = new Label("");
         errorLabel.addClassName("errorMessage");
         layout.add(errorLabel);
 
-        loginButton.addClickListener((Button.ClickListener) event -> {
-            String username = loginEdit.getValue();
-            String password = passwordEdit.getValue();
-            try {
-                callback.authenticate(username, password,
-                        staySignedIn.getValue());
-            } catch (WrongPasswordException e) {
-                errorLabel.setValue(Page.message("loginPage.wrongUserNameOrPassword"));
-                passwordEdit.setValue("");
-                passwordEdit.focus();
-            }
-        });
-        layout.add(loginButton);
-        loginEdit.focus();
+        Button loginButton = new Button(Page.message("loginPage.loginButton"),
+                event -> {
+                    String username = loginField.getValue();
+                    String password = passwordField.getValue();
+                    try {
+                        authenticate(username, password,
+                                staySignedIn.getValue());
+                        // TODO 14 restore google analytics tracker
+                        SessionController.initSession(new WebUserSession().setCurrentUserName(username), new NoOpGATracker());
+                        redirectToNextPage();
+                    } catch (WrongPasswordException e) {
+                        errorLabel.setText(Page.message("loginPage.wrongUserNameOrPassword"));
+                        passwordField.setValue("");
+                        passwordField.focus();
+                    }
+                });
+        loginButton.addClickShortcut(Key.ENTER);
 
-        return panel;
+        layout.add(loginButton);
+        loginField.focus();
+
+        add(captionLabel,
+                layout);
+    }
+
+    private void redirectToNextPage() {
+        Navigator.configsList();
+    }
+
+    /**
+     * Performs user authentication.
+     *
+     * @param user                user name.
+     * @param password            password.
+     * @param enableSecondaryAuth flag, indicating, that secondary device authentication
+     *                            (non-password) should be enabled.
+     * @throws WrongPasswordException if username or password is wrong.
+     */
+    private void authenticate(String user, String password,
+                              boolean enableSecondaryAuth) throws WrongPasswordException {
+        SessionController.tryAuth(user, password, enableSecondaryAuth);
     }
 }

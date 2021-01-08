@@ -1,81 +1,92 @@
 package com.taskadapter.web;
 
-import com.taskadapter.vaadin14shim.HorizontalLayout;
-import com.taskadapter.vaadin14shim.VerticalLayout;
-import com.taskadapter.vaadin14shim.Button;
 import com.taskadapter.vaadin14shim.Label;
-import com.vaadin.event.ShortcutAction;
-import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.AbstractTextField;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.Window;
+import com.taskadapter.web.uiapi.DefaultSavableComponent;
+import com.taskadapter.web.uiapi.SavableComponent;
+import com.vaadin.flow.component.Html;
+import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.component.textfield.TextField;
 
+/**
+ * popup dialog with "ok" and "cancel" buttons.
+ * <p>
+ * sample usage:
+ * <pre>
+ *       InputDialog.showSecret(
+ *                      message("users.changePassword", userLoginName),
+ *                      message("users.newPassword"),
+ *        (newPassword) => {
+ *          // save here
+ *        });
+ *
+ * </pre>
+ */
+public class InputDialog extends Dialog {
 
-public class InputDialog extends Window {
-
-    private HorizontalLayout textFieldLayout = new HorizontalLayout();
-    private AbstractTextField textField;
-
-    public InputDialog(String caption, String question, final Recipient recipient) {
-        super(caption);
-
-        VerticalLayout view = new VerticalLayout();
-        setContent(view);
-        view.setSizeUndefined();
-        view.setMargin(true);
+    public InputDialog(String caption, SavableComponent component) {
+        Html captionLabel = new Html("<b>" + caption + "</b>");
 
         setModal(true);
-        addStyleName("not-maximizable-window");
-        setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
-
-        HorizontalLayout textLayout = new HorizontalLayout();
-        textLayout.setSpacing(true);
-        textLayout.add(new Label(question, ContentMode.HTML));
-        textLayout.add(new Label("&nbsp;", ContentMode.HTML));
-        textLayout.add(textFieldLayout);
-        view.add(textLayout);
-
-        final Window dialog = this;
-
-        HorizontalLayout layout = new HorizontalLayout();
-        layout.setSpacing(true);
-        layout.setMargin(new MarginInfo(true, false, false, false));
+        setCloseOnEsc(true);
+        setCloseOnOutsideClick(true);
 
         Button okButton = new Button("Ok", event -> {
-                recipient.gotInput(textField.getValue());
-                getUI().removeWindow(dialog);
+            component.save();
+            close();
         });
-        okButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
-        okButton.addClassName("v-button-default");
-        layout.add(okButton);
+        okButton.addClickShortcut(Key.ENTER);
 
-        Button cancelButton = new Button("Cancel", event -> getUI().removeWindow(dialog));
-        layout.add(cancelButton);
-        view.add(layout);
-        view.setComponentAlignment(layout, Alignment.BOTTOM_CENTER);
-        setPlainTextMode();
+        Button cancelButton = new Button("Cancel",
+                event -> close());
+
+        VerticalLayout layout = new VerticalLayout(
+                captionLabel,
+                component.getComponent(),
+                new HorizontalLayout(okButton, cancelButton));
+        layout.setSpacing(true);
+
+        add(layout);
+    }
+
+    public static void show(String caption, String question, Recipient recipient) {
+        TextField textField = new TextField();
+        FormLayout form = new FormLayout();
+        form.add(
+                new Html(question),
+                textField);
+        textField.focus();
+
+        new InputDialog(caption,
+                new DefaultSavableComponent(form, () -> {
+                    recipient.gotInput(textField.getValue());
+                })).open();
+    }
+
+    /**
+     * show a popup dialog with a single secret (password-style) field.
+     */
+    public static void showSecret(String caption, String question, Recipient recipient) {
+        PasswordField field = new PasswordField();
+        FormLayout form = new FormLayout();
+        form.add(
+                new Label(question),
+                field);
+        field.focus();
+
+        new InputDialog(caption,
+                new DefaultSavableComponent(form, () -> {
+                    recipient.gotInput(field.getValue());
+                })).open();
     }
 
     public interface Recipient {
         void gotInput(String input);
     }
-
-    public void setPasswordMode() {
-        textFieldLayout.removeAll();
-        textField = new PasswordField();
-        textFieldLayout.add(textField);
-        textField.focus();
-    }
-
-    private void setPlainTextMode() {
-        textFieldLayout.removeAll();
-        textField = new TextField();
-        textFieldLayout.add(textField);
-        textField.focus();
-    }
-
 }
 

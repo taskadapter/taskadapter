@@ -2,6 +2,8 @@ package com.taskadapter.web
 
 import java.util.prefs.Preferences
 
+import com.taskadapter.web.event.{EventBusImpl, SchedulerStatusChanged}
+
 class SettingsManager {
   private val LICENSE_AGREEMENT_FLAG = "task_adapter_license_agreement_accepted"
   private val DEFAULT_LICENSE_AGREEMENT_ACCEPTED = false
@@ -15,10 +17,6 @@ class SettingsManager {
   private val SCHEDULER_ENABLED = "scheduler_enabled"
   private val MAX_NUMBER_RESULTS_TO_KEEP = "max_number_of_results_to_keep"
   private val DEFAULT_MAX_NUMBER_OF_RESULTS = 100000
-
-  private val listeners = new java.util.ArrayList[SettingListener]()
-
-  def registerListener(listener: SettingListener): Unit = listeners.add(listener)
 
   private val prefs = Preferences.userNodeForPackage(classOf[SettingsManager])
 
@@ -46,9 +44,6 @@ class SettingsManager {
 
   def setSchedulerEnabled(flag: Boolean): Unit = {
     prefs.putBoolean(SCHEDULER_ENABLED, flag)
-    notifyListeners(if (flag) SchedulerEnabledEvent else SchedulerDisabledEvent)
+    EventBusImpl.post(SchedulerStatusChanged(flag))
   }
-
-  private def notifyListeners(event: SettingChangedEvent): Unit =
-    listeners.forEach(listener => listener.settingChanged(event))
 }

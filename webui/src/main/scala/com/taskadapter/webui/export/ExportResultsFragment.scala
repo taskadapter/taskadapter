@@ -4,18 +4,16 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
-import com.taskadapter.vaadin14shim.HorizontalLayout
-import com.taskadapter.vaadin14shim.VerticalLayout
-import com.taskadapter.vaadin14shim.Label
 import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.web.configeditor.file.FileDownloadResource
+import com.taskadapter.web.ui.HtmlLabel
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.results.ExportResultFormat
 import com.taskadapter.webui.{Page, TALog}
-import com.vaadin.server.FileDownloader
-import com.vaadin.shared.ui.label.ContentMode
-import com.vaadin.ui._
-import com.vaadin.ui.themes.ValoTheme
+import com.vaadin.flow.component.{Component, HasComponents, Html}
+import com.vaadin.flow.component.button.Button
+import com.vaadin.flow.component.html.{H2, Label}
+import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout}
 
 class ExportResultsFragment(showFilePath: Boolean) {
   val log = TALog.log
@@ -24,18 +22,14 @@ class ExportResultsFragment(showFilePath: Boolean) {
 
   /**
     * Shows task export result.
-    *
-    * @param result
-    * operation result.
     */
   def showExportResult(result: ExportResultFormat): Component = {
     val donePanel = new VerticalLayout()
     donePanel.setWidth("900px")
-    donePanel.setStyleName("export-panel")
+    donePanel.setClassName("export-panel")
     // TODO format inside MESSAGES formatter, not here.
     val time = new SimpleDateFormat("MMMM dd, yyyy  HH:mm").format(Calendar.getInstance.getTime)
-    val label = new Label(Page.message("export.exportCompletedOn", time))
-    label.setContentMode(ContentMode.HTML)
+    val label = new HtmlLabel(Page.message("export.exportCompletedOn", time))
     donePanel.add(label)
 
     donePanel.add(createdExportResultLabel(message("export.from"), result.from))
@@ -43,8 +37,7 @@ class ExportResultsFragment(showFilePath: Boolean) {
 
     if (result.targetFileName.isDefined && !(result.targetFileName.get == "")) {
       if (showFilePath) {
-        val flabel = new Label(Page.message("export.pathToExportFile", result.targetFileName.get))
-        flabel.setContentMode(ContentMode.HTML)
+        val flabel = new HtmlLabel(Page.message("export.pathToExportFile", result.targetFileName.get))
         donePanel.add(flabel)
       }
       donePanel.add(createDownloadButton(result.targetFileName.get))
@@ -68,11 +61,10 @@ class ExportResultsFragment(showFilePath: Boolean) {
     * @param generalErrors * list of general errors.
     * @param taskErrors    * errors for each task.
     */
-  def addErrors(container: VerticalLayout, generalErrors: Seq[String], taskErrors: Seq[(TaskId, String, String)]): Unit = {
+  def addErrors(container: HasComponents, generalErrors: Seq[String], taskErrors: Seq[(TaskId, String, String)]): Unit = {
     if (generalErrors.isEmpty && taskErrors.isEmpty) return
 
-    val label = new Label(Page.message("exportResults.thereWereErrors"))
-    label.addClassName(ValoTheme.LABEL_H2)
+    val label = new H2(Page.message("exportResults.thereWereErrors"))
     container.add(label)
 
     if (generalErrors.nonEmpty) {
@@ -80,39 +72,34 @@ class ExportResultsFragment(showFilePath: Boolean) {
       generalErrors.foreach { error =>
         generalErrorText += quot(error) + "<br/>\n"
       }
-      val generalErrorLabel = new Label(generalErrorText)
-      generalErrorLabel.setContentMode(ContentMode.HTML)
-      generalErrorLabel.addClassName(ValoTheme.LABEL_FAILURE)
+      val generalErrorLabel = new HtmlLabel(generalErrorText)
+      generalErrorLabel.addClassName("failure")
       container.add(generalErrorLabel)
     }
 
     if (taskErrors.nonEmpty) {
-      val taskErrorsLabel = new Label(Page.message("exportResults.taskErrors"))
-      taskErrorsLabel.addClassName(ValoTheme.LABEL_H2)
+      val taskErrorsLabel = new H2(Page.message("exportResults.taskErrors"))
       container.add(taskErrorsLabel)
 
       taskErrors.foreach { error =>
         val taskSourceId = error._1
         val errorText = s"Task source id $taskSourceId<br/>" + error._2
-        val errorTextLabel = new Label(errorText)
-        errorTextLabel.addClassName(ValoTheme.LABEL_FAILURE)
-        errorTextLabel.setContentMode(ContentMode.HTML)
+        val errorTextLabel = new HtmlLabel(errorText)
+        errorTextLabel.addClassName("failure")
         container.add(errorTextLabel)
       }
     }
   }
 
   def createdExportResultLabel(labelName: String, labelValue: String): HorizontalLayout = {
-    val lName = new Label("<strong>" + labelName + "</strong>")
-    lName.setContentMode(ContentMode.HTML)
+    val lName = new HtmlLabel("<strong>" + labelName + "</strong>")
     lName.setWidth("120px")
-    val lValue = new Label("<em>" + labelValue + "</em>")
-    lValue.setContentMode(ContentMode.HTML)
-    val hl = new HorizontalLayout
-    hl.add(lName)
-    hl.add(lValue)
-    hl.addClassName("export-result")
-    hl
+    val lValue = new HtmlLabel("<em>" + labelValue + "</em>")
+    val layout = new HorizontalLayout
+    layout.add(lName)
+    layout.add(lValue)
+    layout.addClassName("export-result")
+    layout
   }
 
   /**
@@ -124,9 +111,9 @@ class ExportResultsFragment(showFilePath: Boolean) {
   private def createDownloadButton(targetFileAbsolutePath: String) = {
     val downloadButton = new Button(message("export.downloadFile"))
     val file = new File(targetFileAbsolutePath)
-    val resource = new FileDownloadResource(file)
-    val downloader = new FileDownloader(resource)
-    downloader.extend(downloadButton)
+//    val resource = new FileDownloadResource(file)
+//    val downloader = new FileDownloader(resource)
+//    downloader.extend(downloadButton)
     downloadButton
   }
 

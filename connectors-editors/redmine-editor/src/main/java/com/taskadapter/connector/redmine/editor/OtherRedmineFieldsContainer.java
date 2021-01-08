@@ -3,56 +3,59 @@ package com.taskadapter.connector.redmine.editor;
 import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.web.ExceptionFormatter;
-import com.taskadapter.web.configeditor.DefaultPanel;
 import com.taskadapter.web.configeditor.EditorUtil;
-import com.taskadapter.web.configeditor.Editors;
-import com.vaadin.data.util.MethodProperty;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
-import com.taskadapter.vaadin14shim.GridLayout;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextField;
-import com.taskadapter.vaadin14shim.VerticalLayout;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Binder;
 
-public class OtherRedmineFieldsContainer extends Panel {
+public class OtherRedmineFieldsContainer extends VerticalLayout {
     private static final String OTHER_PANEL_CAPTION = "Additional Info";
     private static final String SAVE_ISSUE_LABEL = "Save issue relations (follows/precedes)";
 
     private final RedmineConfig config;
     private WebConnectorSetup setup;
     private final ExceptionFormatter exceptionFormatter;
-    private final VerticalLayout view;
+    private final Binder<RedmineConfig> binder;
 
-    public OtherRedmineFieldsContainer(RedmineConfig config, WebConnectorSetup setup, ExceptionFormatter exceptionFormatter) {
-        super(OTHER_PANEL_CAPTION);
+    public OtherRedmineFieldsContainer(Binder<RedmineConfig> binder,
+                                       RedmineConfig config, WebConnectorSetup setup, ExceptionFormatter exceptionFormatter) {
+        this.binder = binder;
         this.config = config;
         this.setup = setup;
         this.exceptionFormatter = exceptionFormatter;
-        view = new VerticalLayout();
         buildUI();
     }
 
     private void buildUI() {
+        Checkbox findUserByName = EditorUtil.checkbox("Find users based on assignee's name",
+                "This option can be useful when you need to export a new MSP project file to Redmine/JIRA/MantisBT/....\n"
+                        + "Task Adapter can load the system's users by resource names specified in the MSP file\n"
+                        + "and assign the new tasks to them.\n"
+                        + "Note: this operation usually requires 'Admin' permission in the system.",
+                binder, "findUserByName");
 
-        setWidth(DefaultPanel.WIDE_PANEL_WIDTH);
-        setHeight("157px");
-        view.add(Editors.createFindUsersElement(new MethodProperty<>(config, "findUserByName")));
-        final CheckBox saveRelations = new CheckBox(SAVE_ISSUE_LABEL);
-        saveRelations.setPropertyDataSource(new MethodProperty<Boolean>(config, "saveIssueRelations"));
-        view.add(saveRelations);
-        addDefaultTaskTypeElement();
-        setContent(view);
+        Checkbox saveRelations = EditorUtil.checkbox(SAVE_ISSUE_LABEL,
+                "",
+                binder, "saveIssueRelations");
+
+        add(findUserByName,
+                saveRelations,
+                createDefaultTaskTypeElement());
     }
 
-    private void addDefaultTaskTypeElement() {
-        GridLayout grid = new GridLayout(3, 1);
-        grid.setSpacing(true);
+    private Component createDefaultTaskTypeElement() {
+        HorizontalLayout row = new HorizontalLayout();
 
-        TextField defaultTaskType = EditorUtil.addLabeledText(grid, "Default task type:", "New tasks will be created with this 'tracker' (bug/task/support/feature/...)");
-        defaultTaskType.setWidth("200px");
-        final MethodProperty<String> taskTypeProperty = new MethodProperty<>(config, "defaultTaskType");
-        defaultTaskType.setPropertyDataSource(taskTypeProperty);
+        Label label = new Label("Default task type");
+        label.getElement().setProperty("title",
+                "New tasks will be created with this 'tracker' (bug/task/support/feature/...)"); // tooltip
+
+        TextField textField = EditorUtil.textInput(binder, "defaultTaskType");
 
         Button showTaskTypesButton = EditorUtil.createLookupButton(
                 "...",
@@ -62,13 +65,12 @@ public class OtherRedmineFieldsContainer extends Panel {
                 () -> RedmineLoaders.loadTrackers(config, setup),
                 exceptionFormatter,
                 namedKeyedObject -> {
-                    taskTypeProperty.setValue(namedKeyedObject.getName());
+                    textField.setValue(namedKeyedObject.getName());
                     return null;
                 }
         );
 
-        grid.add(showTaskTypesButton);
-        grid.setComponentAlignment(showTaskTypesButton, Alignment.MIDDLE_CENTER);
-        view.add(grid);
+        row.add(label, textField, showTaskTypesButton);
+        return row;
     }
 }

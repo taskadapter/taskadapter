@@ -16,25 +16,16 @@ case object SampleCaseObjectEvent extends Event
 
 case class CredentialsChangeRequested(login: String, password: String) extends Event
 
-case class ShowHomePageRequested() extends Event
-
 case class ShowConfigPageRequested(configId: ConfigId) extends Event
-
-case class NewConfigPageRequested() extends Event
-
-case class ShowSetupsListPageRequested() extends Event
 
 case class ShowConfigsListPageRequested() extends Event
 
 case class ShowAllExportResultsRequested(configId: ConfigId) extends Event
 
-case class ConfigSaveRequested(config: UISyncConfig) extends Event
-
-case class ConfigCloneRequested(configId: ConfigId) extends Event
-
-case class ConfigDeleteRequested(configId: ConfigId) extends Event
+case class ConfigCreateCompleted(configId: ConfigId) extends Event
 
 case class PageShown(pageName: String) extends Event
+case class SchedulerStatusChanged(schedulerEnabled: Boolean) extends Event
 
 case class ApplicationActionEvent(category: EventCategory, action: String, label: String) extends Event
 

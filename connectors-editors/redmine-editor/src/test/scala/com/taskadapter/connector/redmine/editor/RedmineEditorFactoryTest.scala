@@ -6,6 +6,7 @@ import com.taskadapter.connector.redmine.{RedmineConfig, RedmineConnector}
 import com.taskadapter.connector.testlib.TempFolder
 import com.taskadapter.editor.testlib.VaadinTestHelper
 import com.taskadapter.web.service.Sandbox
+import com.vaadin.flow.data.binder.Binder
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
@@ -18,6 +19,7 @@ class RedmineEditorFactoryTest extends FunSpec with Matchers with TempFolder {
   val factory = new RedmineEditorFactory
   val config = new RedmineConfig()
   val setup = WebConnectorSetup(RedmineConnector.ID, "label1", "http://somehost", "", "", false, "")
+  val binder = new Binder[RedmineConfig]
 
   it("mini panel is created") {
     withTempFolder { folder =>

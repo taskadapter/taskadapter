@@ -7,7 +7,7 @@ import com.taskadapter.model.Field
 import com.taskadapter.web.DroppingNotSupportedException
 import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
-import com.vaadin.ui.HasComponents
+import com.vaadin.flow.component.{Component, HasComponents}
 
 import scala.collection.Seq
 
@@ -84,7 +84,7 @@ abstract class UIConnectorConfig {
     * @param sandbox user operations sandbox.
     * @return connector configuration panel.
     */
-  def createMiniPanel(sandbox: Sandbox): HasComponents
+  def createMiniPanel(sandbox: Sandbox): SavableComponent
 
   def getAllFields: Seq[Field[_]]
 

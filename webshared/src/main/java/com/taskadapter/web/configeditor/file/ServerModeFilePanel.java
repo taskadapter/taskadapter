@@ -2,28 +2,17 @@ package com.taskadapter.web.configeditor.file;
 
 import com.taskadapter.connector.definition.FileSetup;
 import com.taskadapter.web.PopupDialog;
-import com.vaadin.data.Property;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.shared.ui.combobox.FilteringMode;
-import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.taskadapter.vaadin14shim.HorizontalLayout;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.ProgressIndicator;
-import com.vaadin.ui.Upload;
-import com.taskadapter.vaadin14shim.VerticalLayout;
-import com.taskadapter.vaadin14shim.Label;
-import com.vaadin.ui.themes.Runo;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.upload.Upload;
 import scala.runtime.BoxedUnit;
 
 import java.io.File;
 
-public class ServerModeFilePanel extends Panel{
+public class ServerModeFilePanel extends VerticalLayout {
 
     // TODO show this limit on the webpage
     static final int MAX_FILE_SIZE_BYTES = 5000000;
@@ -47,23 +36,25 @@ public class ServerModeFilePanel extends Panel{
     private final FileSetup fileSetup;
 
     private Label statusLabel;
-    private final ServerModelFilePanelPresenter presenter;
+//    private final ServerModelFilePanelPresenter presenter;
     private Upload uploadButton;
     private Button downloadButton;
     private ComboBox comboBox;
-    private ProgressIndicator progressIndicator;
+//    private ProgressIndicator progressIndicator;
     private Button deleteButton;
 
     public ServerModeFilePanel(File filesDirectory, FileSetup fileSetup, UploadProcessor uploadProcessor) {
-        super(TITLE);
+//        super(TITLE);
         this.fileSetup = fileSetup;
-        this.presenter = new ServerModelFilePanelPresenter(filesDirectory,
-                uploadProcessor);
-        buildUI();
-        presenter.setView(this);
-        presenter.init(findInitialFile(fileSetup));
+//        this.presenter = new ServerModelFilePanelPresenter(filesDirectory,
+//                uploadProcessor);
+//        buildUI();
+//        presenter.setView(this);
+//        presenter.init(findInitialFile(fileSetup));
     }
 
+
+/*
     private void buildUI() {
         VerticalLayout view = new VerticalLayout();
         view.add(createComboboxPanel());
@@ -80,15 +71,16 @@ public class ServerModeFilePanel extends Panel{
         layout.add(createDeleteButton());
         return layout;
     }
+*/
 
-    private Layout createDateLabelPanel() {
+/*    private Layout createDateLabelPanel() {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setSpacing(true);
 
         layout.add(new Label("&nbsp;&nbsp;&nbsp;", ContentMode.HTML));
 
         statusLabel = new Label("", ContentMode.HTML);
-        statusLabel.setStyleName(Runo.LABEL_SMALL);
+        statusLabel.setClassName(Runo.LABEL_SMALL);
         layout.add(statusLabel);
         layout.setComponentAlignment(statusLabel, Alignment.MIDDLE_LEFT);
 
@@ -99,9 +91,9 @@ public class ServerModeFilePanel extends Panel{
         layout.setComponentAlignment(progressIndicator, Alignment.MIDDLE_LEFT);
 
         return layout;
-    }
+    }*/
 
-    private Layout createUploadPanel() {
+/*    private Layout createUploadPanel() {
         VerticalLayout layout = new VerticalLayout();
 
         layout.add(new Label("<hr>", ContentMode.HTML));
@@ -112,11 +104,12 @@ public class ServerModeFilePanel extends Panel{
         layout.add(bottomToolLayout);
 
         return layout;
-    }
+    }*/
 
     private Component createUploadButton() {
         // TODO VAADIN7 bug: the error indication stays on the page forever when an upload fails. (found by Maxim)
         uploadButton = new Upload();
+/*
         uploadButton.setReceiver(presenter.getUploadReceiver());
         uploadButton.setImmediate(true);
         uploadButton.setButtonCaption(UPLOAD_BUTTON_CAPTION);
@@ -129,26 +122,27 @@ public class ServerModeFilePanel extends Panel{
                 progressIndicator.setValue(readBytes / (float) contentLength);
             }
         });
+*/
 
         return uploadButton;
     }
 
     private Component createDeleteButton() {
         deleteButton = new Button(DELETE_BUTTON_CAPTION);
-        deleteButton.addClickListener((Button.ClickListener) event -> showConfirmationDialog(QUESTION_DELETE_FILE));
+//        deleteButton.addClickListener((Button.ClickListener) event -> showConfirmationDialog(QUESTION_DELETE_FILE));
         return deleteButton;
     }
 
     private void showConfirmationDialog(String question) {
-        PopupDialog dialog = PopupDialog.confirm(question, () -> {
-            presenter.deleteSelectedFile();
-            return BoxedUnit.UNIT;
-        });
-        getUI().addWindow(dialog);
+//        PopupDialog dialog = PopupDialog.confirm(question, () -> {
+//            presenter.deleteSelectedFile();
+//            return BoxedUnit.UNIT;
+//        });
+//        getUI().addWindow(dialog);
     }
 
 
-    private Component createComboBox() {
+ /*   private Component createComboBox() {
         comboBox = new ComboBox();
         comboBox.setItemCaptionPropertyId(COMBOBOX_ITEM_PROPERTY);// Sets the combobox to show a certain property as the item caption
         comboBox.setWidth(COMBOBOX_WIDTH);
@@ -174,20 +168,20 @@ public class ServerModeFilePanel extends Panel{
         });
         return comboBox;
     }
-
+*/
     private Component createDownloadButton() {
         downloadButton = new Button(DOWNLOAD_BUTTON_CAPTION);
         return downloadButton;
     }
 
     public void setUploadEnabled(boolean flag) {
-        // upload disabled in case of uploading process
+/*        // upload disabled in case of uploading process
         progressIndicator.setVisible(!flag);
         if (flag) {
             progressIndicator.setValue(0f);
         }
 
-        uploadButton.setEnabled(flag);
+        uploadButton.setEnabled(flag);*/
     }
 
     public Button getDownloadButton() {
@@ -199,13 +193,17 @@ public class ServerModeFilePanel extends Panel{
         deleteButton.setEnabled(flag);
     }
 
-    public void setComboBoxItems(IndexedContainer fileList) {
-        comboBox.setContainerDataSource(fileList);
-    }
-
-    public void selectFileInCombobox(String fileName) {
-        comboBox.select(fileName);
-    }
+//    public void setComboBoxItems(IndexedContainer fileList) {
+//        comboBox.setContainerDataSource(fileList);
+//    }
+//
+//    public void selectFileInCombobox(String fileName) {
+//        comboBox.select(fileName);
+//    }
+//
+//    public void setStatusLabelText(String text) {
+//        statusLabel.setValue(text);
+//    }
 
     public void setStatusLabelText(String text) {
         statusLabel.setText(text);

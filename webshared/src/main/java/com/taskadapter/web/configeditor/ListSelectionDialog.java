@@ -1,18 +1,13 @@
 package com.taskadapter.web.configeditor;
 
-import com.vaadin.data.Property;
-import com.vaadin.event.ShortcutAction;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.taskadapter.vaadin14shim.GridLayout;
-import com.vaadin.ui.ListSelect;
-import com.vaadin.ui.Window;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 
 import java.util.Collection;
 
 import static com.taskadapter.web.ui.Grids.*;
 
-public class ListSelectionDialog extends Window {
+public class ListSelectionDialog extends Dialog {
     private String listTitle;
     private Collection<String> items;
     private EditorUtil.ValueListener valueListener;
@@ -23,12 +18,12 @@ public class ListSelectionDialog extends Window {
         this.items = items;
         this.valueListener = valueListener;
         buildUI();
-        setCaption(windowTitle);
-        setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
+//        setCaption(windowTitle);
+        setCloseOnEsc(true);
     }
 
     private void buildUI() {
-        setWidth("350px");
+/*        setWidth("350px");
         GridLayout layout = new GridLayout();
         layout.setSpacing(true);
         final ListSelect listSelect = new ListSelect(listTitle, items);
@@ -50,5 +45,7 @@ public class ListSelectionDialog extends Window {
         closeButton.setEnabled(false);
         addTo(layout, Alignment.MIDDLE_RIGHT, closeButton);
         setContent(layout);
+
+ */
     }
 }

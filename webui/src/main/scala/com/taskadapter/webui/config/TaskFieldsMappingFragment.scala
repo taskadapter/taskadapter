@@ -1,24 +1,22 @@
 package com.taskadapter.webui.config
 
-import com.taskadapter.vaadin14shim.VerticalLayout
-import com.taskadapter.vaadin14shim.HorizontalLayout
-import com.taskadapter.vaadin14shim.GridLayout
-import com.taskadapter.vaadin14shim.Label
-import com.taskadapter.vaadin14shim.TextField
 import java.util.UUID
 
 import com.google.common.base.Strings
 import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.model.Field
-import com.taskadapter.web.configeditor.Validatable
+import com.taskadapter.web.configeditor.{EditorUtil, Validatable}
 import com.taskadapter.web.data.Messages
+import com.taskadapter.web.uiapi.SavableComponent
 import com.taskadapter.webui.Page
-import com.vaadin.data.util.{BeanItemContainer, MethodProperty}
-import com.vaadin.server.Sizeable.Unit.PIXELS
-import com.vaadin.server.ThemeResource
-import com.vaadin.shared.ui.label.ContentMode
-import com.vaadin.ui.{AbstractComponent, Alignment, Button, CheckBox, ComboBox, Component, Embedded,  Panel}
+import com.vaadin.flow.component.Component
+import com.vaadin.flow.component.button.Button
+import com.vaadin.flow.component.combobox.ComboBox
+import com.vaadin.flow.component.formlayout.FormLayout
+import com.vaadin.flow.component.html.Label
+import com.vaadin.flow.component.orderedlayout.VerticalLayout
+import com.vaadin.flow.data.binder.Binder
 
 import scala.collection.JavaConverters._
 import scala.collection.Seq
@@ -35,38 +33,43 @@ object TaskFieldsMappingFragment {
   // TODO maybe merge this help file with all the other localized strings? but it has some rules about namings...
   val BUNDLE_NAME = "help"
   val HELP_MESSAGES = new Messages(BUNDLE_NAME)
-  val HELP_ICON_RESOURCE = new ThemeResource("../runo/icons/16/help.png")
+//  val HELP_ICON_RESOURCE = new ThemeResource("../runo/icons/16/help.png")
 }
 
 class EditablePojoMappings(mappings: Seq[FieldMapping[_]],
                            connector1FieldLoader: ConnectorFieldLoader, connector2FieldLoader: ConnectorFieldLoader) {
-  var editablePojoMappings: ListBuffer[EditableFieldMapping] = ListBuffer()
-
-  editablePojoMappings = mappings.map(ro =>
-    new EditableFieldMapping(UUID.randomUUID.toString,
+  var editablePojoMappings: ListBuffer[EditableFieldMapping] = mappings.map(ro =>
+    new EditableFieldMapping(
+      new Binder[EditableFieldMapping](classOf[EditableFieldMapping]),
+      UUID.randomUUID.toString,
       ro.fieldInConnector1.map(_.name).getOrElse(""),
       ro.fieldInConnector2.map(_.name).getOrElse(""),
       ro.selected,
-      if (ro.defaultValue == null) "" else ro.defaultValue.asInstanceOf[String]))
+      if (ro.defaultValue == null) "" else ro.defaultValue))
     .to[ListBuffer]
 
   def removeFieldFromList(field: EditableFieldMapping) = {
     editablePojoMappings = editablePojoMappings.filter(
-      e => !(e.uniqueIdForTemporaryMap == field.uniqueIdForTemporaryMap))
+      e => !(e.getUniqueIdForTemporaryMap == field.getUniqueIdForTemporaryMap()))
   }
 
   def validate(): Unit = {
     MappingsValidator.validate(editablePojoMappings)
   }
 
-  def getElements: Iterable[FieldMapping[_]] = editablePojoMappings.map(e =>
-    new FieldMapping(
-      getField(e.fieldInConnector1, connector1FieldLoader),
-      getField(e.fieldInConnector2, connector2FieldLoader),
-      e.selected,
-      e.defaultValue
+  def getElements: Iterable[FieldMapping[_]] = editablePojoMappings
+    // skip empty rows
+    .filter(e =>
+      !(Strings.isNullOrEmpty(e.getFieldInConnector1) && Strings.isNullOrEmpty(e.getFieldInConnector2)))
+    // convert to the output format
+    .map(e =>
+      new FieldMapping(
+        getField(e.getFieldInConnector1, connector1FieldLoader),
+        getField(e.getFieldInConnector2, connector2FieldLoader),
+        e.getSelected,
+        e.getDefaultValue
+      )
     )
-  )
 
   def getField[T](fieldName: String, fieldLoader: ConnectorFieldLoader): Option[Field[T]] = {
     if (Strings.isNullOrEmpty(fieldName)) {
@@ -80,12 +83,6 @@ class EditablePojoMappings(mappings: Seq[FieldMapping[_]],
   def add(m: EditableFieldMapping): Unit = {
     editablePojoMappings += m
   }
-
-  def removeEmptyRows() = {
-    editablePojoMappings = editablePojoMappings.filter(e =>
-      !(Strings.isNullOrEmpty(e.fieldInConnector1) && Strings.isNullOrEmpty(e.fieldInConnector2)))
-  }
-
 }
 
 class TaskFieldsMappingFragment(messages: Messages,
@@ -95,65 +92,61 @@ class TaskFieldsMappingFragment(messages: Messages,
                                 connector2SupportedFields: Seq[Field[_]],
                                 connector2Messages: Messages,
                                 connector2Label: String,
-                                mappings: Seq[FieldMapping[_]]) extends Validatable {
-  val ui = new Panel(messages.get("editConfig.mappings.caption"))
+                                mappings: Seq[FieldMapping[_]]) extends SavableComponent with Validatable {
   val layout = new VerticalLayout
-  val gridLayout = new GridLayout
+  val gridLayout = new FormLayout()
+  gridLayout.setResponsiveSteps(
+    new FormLayout.ResponsiveStep("2em", 1),
+    new FormLayout.ResponsiveStep("2em", 2),
+    new FormLayout.ResponsiveStep("10em", 3),
+    new FormLayout.ResponsiveStep("10em", 4),
+    new FormLayout.ResponsiveStep("10em", 5),
+    new FormLayout.ResponsiveStep("5em", 6));
+
   val editablePojoMappings = new EditablePojoMappings(mappings,
     new ConnectorFieldLoader(connector1SupportedFields),
     new ConnectorFieldLoader(connector2SupportedFields))
 
-  layout.add(gridLayout)
+  layout.add(
+    new Label(messages.get("editConfig.mappings.caption")),
+    gridLayout)
+
   rebuildMappingUI()
-  ui.setContent(layout)
   addNewRowButton()
 
   def rebuildMappingUI(): Unit = {
     gridLayout.removeAll()
-    configureGridLayout()
     addTableHeaders()
     addFieldsToUI()
-  }
-
-  private def configureGridLayout(): Unit = {
-    gridLayout.setMargin(true)
-    gridLayout.setSpacing(true)
-    gridLayout.setRows(mappings.size + 3)
-    gridLayout.setColumns(TaskFieldsMappingFragment.COLUMNS_NUMBER)
   }
 
   private def addTableHeaders(): Unit = {
     val label2 = new Label(messages.get("editConfig.mappings.exportFieldHeader"))
     label2.addClassName("fieldsTitle")
-    label2.setWidth(40, PIXELS)
-    gridLayout.add(label2, TaskFieldsMappingFragment.COLUMN_DESCRIPTION, 0)
-    gridLayout.setComponentAlignment(label2, Alignment.MIDDLE_LEFT)
+    label2.setWidth("40px")
+    gridLayout.add(label2)
     val label = new Label(" ")
-    label.setWidth(20, PIXELS)
-    gridLayout.add(label, TaskFieldsMappingFragment.COLUMN_HELP, 0)
+    label.setWidth("20px");
+    gridLayout.add(label)
 
     val label1 = new Label(connector1Label)
     label1.addClassName("fieldsTitle")
-    label1.setWidth(230, PIXELS)
-    gridLayout.add(label1, TaskFieldsMappingFragment.COLUMN_LEFT_CONNECTOR, 0)
-    gridLayout.setComponentAlignment(label1, Alignment.MIDDLE_LEFT)
+    label1.setWidth("230px")
+    gridLayout.add(label1)
 
     val label3 = new Label(connector2Label)
     label3.addClassName("fieldsTitle")
-    label3.setWidth(230, PIXELS)
-    gridLayout.add(label3, TaskFieldsMappingFragment.COLUMN_RIGHT_CONNECTOR, 0)
-    gridLayout.setComponentAlignment(label3, Alignment.MIDDLE_LEFT)
+    label3.setWidth("230px");
+    gridLayout.add(label3)
 
     val label4 = new Label(messages.get("editConfig.mappings.defaultValueColumn"))
     label4.addClassName("fieldsTitle")
-    label4.setWidth(180, PIXELS)
-    gridLayout.add(label4, TaskFieldsMappingFragment.COLUMN_DEFAULT_VALUE, 0)
-    gridLayout.setComponentAlignment(label4, Alignment.MIDDLE_LEFT)
+    label4.setWidth("180px");
+    gridLayout.add(label4)
     val column5label = new Label
-    column5label.setWidth(30, PIXELS)
-    gridLayout.add(column5label, TaskFieldsMappingFragment.COLUMN_REMOVE, 0)
-    gridLayout.setComponentAlignment(column5label, Alignment.MIDDLE_LEFT)
-    gridLayout.add(new Label("<hr>", ContentMode.HTML), 0, 1, TaskFieldsMappingFragment.COLUMNS_NUMBER - 1, 1)
+    column5label.setWidth("30px");
+    gridLayout.add(column5label)
+//    gridLayout.add(new Label("<hr>", ContentMode.HTML), 0, 1, TaskFieldsMappingFragment.COLUMNS_NUMBER - 1, 1)
   }
 
   /**
@@ -168,26 +161,29 @@ class TaskFieldsMappingFragment(messages: Messages,
     * selected, tooltip, connector 1 field name, connector 2 field name, default value.
     */
   private def addRowToVaadinForm(field: EditableFieldMapping) = {
-    addCheckbox(field)
-    // TODO TA3 help is per connector field, not for the whole row now.
+
+    addCheckbox(field.getBinder)
+/////////////////     TODO TA3 help is per connector field, not for the whole row now.
     val helpForField = null //getHelpForField(field);
     if (helpForField != null) addHelp(helpForField)
     else addEmptyCell()
-    addConnectorField(connector1SupportedFields, connector1Messages, field, "fieldInConnector1")
-    addConnectorField(connector2SupportedFields, connector2Messages, field, "fieldInConnector2")
-    addTextFieldForDefaultValue(field)
+    addConnectorField(field.getBinder, connector1SupportedFields, connector1Messages, field.getFieldInConnector1, "fieldInConnector1")
+    addConnectorField(field.getBinder, connector2SupportedFields, connector2Messages, field.getFieldInConnector2, "fieldInConnector2")
+    addTextFieldForDefaultValue(field.getBinder)
     addRemoveRowButton(field)
+    field.getBinder.readBean(field)
   }
 
   private def addRemoveRowButton(field: EditableFieldMapping) = {
     val button = new Button(Page.message("editConfig.mappings.buttonRemove"))
     button.addClickListener(_ => removeRow(field))
     gridLayout.add(button)
-    gridLayout.setComponentAlignment(button, Alignment.MIDDLE_RIGHT)
+//    gridLayout.setComponentAlignment(button, Alignment.MIDDLE_RIGHT)
   }
 
   private def removeRow(field: EditableFieldMapping) = {
     var row = 0
+/*
     while (row < gridLayout.getRows) {
       val component = gridLayout.getComponent(0, row)
       if (component != null) { // deleted some rows, so this is no longer valid
@@ -200,67 +196,52 @@ class TaskFieldsMappingFragment(messages: Messages,
       }
       row += 1
     }
+*/
   }
 
-  private def addCheckbox(field: EditableFieldMapping) = {
-    val checkbox = new CheckBox
-    checkbox.setData(field.uniqueIdForTemporaryMap)
-    val selected = new MethodProperty[Boolean](field, "selected")
-    checkbox.setPropertyDataSource(selected)
+  private def addCheckbox(binder: Binder[EditableFieldMapping]) = {
+    val checkbox = EditorUtil.checkbox("", "Include this field when exporting data", binder, "selected")
+//    checkbox.setData(field.uniqueIdForTemporaryMap)
     gridLayout.add(checkbox)
-    gridLayout.setComponentAlignment(checkbox, Alignment.MIDDLE_CENTER)
   }
 
-  private def addTextFieldForDefaultValue(mapping: EditableFieldMapping) = {
-    val field = new TextField
-    val methodProperty = new MethodProperty[String](mapping, "defaultValue")
-    field.setPropertyDataSource(methodProperty)
+  private def addTextFieldForDefaultValue(binder: Binder[EditableFieldMapping]) = {
+    val field = EditorUtil.textInput(binder, "defaultValue")
     gridLayout.add(field)
-    gridLayout.setComponentAlignment(field, Alignment.MIDDLE_CENTER)
   }
 
   private def addHelp(helpForField: String) = {
-    val helpIcon = new Embedded(null, TaskFieldsMappingFragment.HELP_ICON_RESOURCE)
-    helpIcon.setDescription(helpForField)
-    gridLayout.add(helpIcon)
-    gridLayout.setComponentAlignment(helpIcon, Alignment.MIDDLE_CENTER)
+//    val helpIcon = new Embedded(null, TaskFieldsMappingFragment.HELP_ICON_RESOURCE)
+//    helpIcon.setDescription(helpForField)
+//    gridLayout.add(helpIcon)
+//    gridLayout.setComponentAlignment(helpIcon, Alignment.MIDDLE_CENTER)
   }
 
   private def addEmptyCell() = {
     val emptyLabel = new Label(" ")
     gridLayout.add(emptyLabel)
-    gridLayout.setComponentAlignment(emptyLabel, Alignment.MIDDLE_LEFT)
   }
 
-  case class FieldBeanItem(vaadinId: String, className: String, friendlyName: String)
-
-  private def addConnectorField(connectorFields: Seq[Field[_]], connectorMessages: Messages,
-                                fieldMapping: EditableFieldMapping, classFieldName: String) = {
-    val container = new BeanItemContainer[String](classOf[String])
-    val mappedTo = new MethodProperty[String](fieldMapping, classFieldName)
-
-    val combo = new ComboBox(null, container)
-    combo.setPropertyDataSource(mappedTo)
-    connectorFields.foreach( f => {
-      // field name (f.name) will be the value in the model, while visibleLabel string will be shown in the combobox
-      val itemId = container.addItem(f.name)
-      val visibleLabel = Option(connectorMessages.getNoDefault(f.name)).getOrElse(f.name)
-      combo.setItemCaption(f.name, visibleLabel)
-    })
-
-    combo.setNewItemsAllowed(true)
-    combo.setWidth("90%")
-    gridLayout.add(combo)
-    gridLayout.setComponentAlignment(combo, Alignment.MIDDLE_LEFT)
-    val currentFieldName = if (classFieldName == "fieldInConnector1") fieldMapping.fieldInConnector1
-    else fieldMapping.fieldInConnector2
-    combo.select(currentFieldName)
+  private def addConnectorField(binder: Binder[EditableFieldMapping],
+                                connectorFields: Seq[Field[_]], connectorMessages: Messages,
+                                selectedValue: String,
+                                propertyName: String) :Unit = {
+    val combobox = new ComboBox[String]()
+    combobox.setItemLabelGenerator(fieldName =>
+      Option(connectorMessages.getNoDefault(fieldName)).getOrElse(fieldName))
+    combobox.setItems(connectorFields.map(_.name).asJava)
+    combobox.setAllowCustomValue(true)
+    gridLayout.add(combobox)
+    combobox.setValue(selectedValue)
+    binder.bind(combobox, propertyName)
   }
 
   private def addNewRowButton() = {
     val button = new Button(Page.message("editConfig.mappings.buttonAdd"))
     button.addClickListener(_ => {
-      val m = new EditableFieldMapping(UUID.randomUUID.toString, "", "", false, "")
+      val m = new EditableFieldMapping(
+        new Binder[EditableFieldMapping](classOf[EditableFieldMapping]),
+        UUID.randomUUID.toString, "", "", false, "")
       editablePojoMappings.add(m)
       addRowToVaadinForm(m)
     })
@@ -272,13 +253,13 @@ class TaskFieldsMappingFragment(messages: Messages,
     editablePojoMappings.validate()
   }
 
-  def getUI: Component = ui
-
-  def removeEmptyRows(): Unit = {
-    editablePojoMappings.removeEmptyRows()
-    rebuildMappingUI()
-  }
-
   def getElements: Iterable[FieldMapping[_]] = editablePojoMappings.getElements
 
+  override def getComponent: Component = layout
+
+  override def save(): Unit = {
+    editablePojoMappings.editablePojoMappings.foreach(fieldMapping => {
+      fieldMapping.getBinder.writeBean(fieldMapping)
+    })
+  }
 }

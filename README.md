@@ -50,6 +50,26 @@ Full build:
 This creates a ZIP file in taskadapter\launcher\build\distributions folder. Unpack the ZIP anywhere,
 run bin/launch.bat. It will automatically open TA URL in browser when the web app is ready.
 
+## How to run locally
+
+Pre-requisites
+* have Jetty 9.4.9 or newer, to get Java9 modules support (must have)
+* disable Vaadin Gradle usage reporting to avoid a failing NPM "integrity" check:
+
+
+    /projects/taskadapter/webui$ npm explore @vaadin/vaadin-usage-statistics -- npm run disable
+* Register the Jetty instance in your IDEA, add the WAR artifact (will be created during the build)
+as deployment.
+* Start the Jetty server from IDEA (run configuration). 
+
+# How to see all Gradle dependencies
+
+The main build file contains definition for a custom "allDeps" command. You can run it to see the dependency tree: 
+
+```
+    gradle allDeps
+```
+   
 ## Our dev infrastructure.
 Dev servers, Jenkins, etc are described here (including access passwords):
 https://docs.google.com/spreadsheets/d/1UsV1G1iCY-e2Qo7V6Y7_zWdFrtB6-IquQuGSA-1NGy0/edit#gid=0&vpid=A2
@@ -65,7 +85,8 @@ https://bitbucket.org/taskadapter/site git repo)
 
 ## Logging
 
-Logging is done via slf4j + log4j. Set logging levels in `log4j.properties` file in `webui` module.
+The project uses slf4j API with logback as the implementation mechanism. Set logging levels in `logback.xml` file
+in `webui` module. Note that some older modules or libraries ignore ""slf4j" and can still require log4j implementation.
 
 ## Error reporting
 

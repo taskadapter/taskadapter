@@ -9,7 +9,8 @@ import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.web.ExceptionFormatter;
-import com.vaadin.ui.Notification;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 
 import static com.taskadapter.web.ui.MessageUtils.nvl;
 
@@ -24,7 +25,8 @@ public final class ShowInfoElement {
             Notification.show(localizedMessage);
         } catch (ConnectorException e) {
             String localizedMessage = exceptionFormatter.formatError(e);
-            Notification.show("Oops", localizedMessage, Notification.Type.ERROR_MESSAGE);
+            Notification.show(localizedMessage)
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
     }
 
@@ -35,7 +37,7 @@ public final class ShowInfoElement {
                 + "<BR>Completed Todo lists: " + project.getCompletedTodolists()
                 + "<BR>Remaining Todo lists: " + project.getRemainingTodolists();
 
-        Notification.show("Project Info", msg, Notification.Type.HUMANIZED_MESSAGE);
+        Notification.show(msg);
     }
 
     public static void showTodoListInfo(BasecampConfig config, WebConnectorSetup setup, ExceptionFormatter formatter, ObjectAPIFactory factory) {
@@ -48,7 +50,8 @@ public final class ShowInfoElement {
             Notification.show(localizedMessage);
         } catch (ConnectorException e) {
             String localizedMessage = formatter.formatError(e);
-            Notification.show("Oops", localizedMessage, Notification.Type.ERROR_MESSAGE);
+            // TODO show error
+            Notification.show(localizedMessage);
         }
     }
 
@@ -59,6 +62,6 @@ public final class ShowInfoElement {
                 + "<BR>Completed Todos: " + todoList.getCompletedCount()
                 + "<BR>Remaining Todos: " + todoList.getRemainingCount();
 
-        Notification.show("Todo List Info", msg, Notification.Type.HUMANIZED_MESSAGE);
+        Notification.show(msg);
     }
 }

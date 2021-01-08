@@ -1,7 +1,7 @@
 package com.taskadapter.web
 
 import com.taskadapter.connector.definition.ConnectorSetup
-import com.vaadin.ui.Component
+import com.vaadin.flow.component.Component
 
 trait ConnectorSetupPanel {
   def getUI: Component

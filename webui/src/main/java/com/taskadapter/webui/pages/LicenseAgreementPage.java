@@ -1,15 +1,19 @@
 package com.taskadapter.webui.pages;
 
-import com.taskadapter.vaadin14shim.VerticalLayout;
-import com.taskadapter.vaadin14shim.HorizontalLayout;
-import com.taskadapter.vaadin14shim.GridLayout;
+
+
+
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.taskadapter.web.SettingsManager;
-import com.vaadin.data.Property;
-import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.*;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import java.io.IOException;
 
@@ -31,23 +35,23 @@ public final class LicenseAgreementPage {
      * @return license agreement page.
      */
     public static Component render(final SettingsManager sm, final Runnable onComplete) {
-        final Panel panel = new Panel(AGREEMENT_TITLE);
+//        final Panel panel = new VerticalLayout(AGREEMENT_TITLE);
         
-        final Panel agreementPanel = new Panel();
-        agreementPanel.setWidth(FORM_WIDTH);
-        agreementPanel.setHeight(AGREEMENT_PANEL_HEIGHT);
+//        final Panel agreementPanel = new VerticalLayout();
+//        agreementPanel.setWidth(FORM_WIDTH);
+//        agreementPanel.setHeight(AGREEMENT_PANEL_HEIGHT);
 
-        final Label agreementContent = new Label(readLicense());        
-        agreementContent.setContentMode(ContentMode.HTML);
-        agreementPanel.setContent(agreementContent);
+        final Label agreementContent = new Label(readLicense());
+//        agreementContent.setContentMode(ContentMode.HTML);
+//        agreementPanel.setContent(agreementContent);
 
         final HorizontalLayout actionLayout = new HorizontalLayout();
         actionLayout.setWidth(FORM_WIDTH);
-        actionLayout.setMargin(new MarginInfo(true, false, false, false));
+//        actionLayout.setMargin(new MarginInfo(true, false, false, false));
 
-        final CheckBox acceptCheckbox = new CheckBox(ACCEPT_CHECKBOX);
+        final Checkbox acceptCheckbox = new Checkbox(ACCEPT_CHECKBOX);
         acceptCheckbox.setValue(false);
-        acceptCheckbox.setImmediate(true);
+//        acceptCheckbox.setImmediate(true);
 
         Button acceptButton = new Button(ACCEPT_BUTTON, event -> {
             sm.markLicenseAgreementAsAccepted();
@@ -55,29 +59,29 @@ public final class LicenseAgreementPage {
         });
         acceptButton.setEnabled(false);
 
-        acceptCheckbox
-                .addValueChangeListener(new CheckBox.ValueChangeListener() {
+/*        acceptCheckbox
+                .addValueChangeListener(new Checkbox.ValueChangeListener() {
                     @Override
                     public void valueChange(
                             Property.ValueChangeEvent valueChangeEvent) {
                         acceptButton.setEnabled(acceptCheckbox.getValue());
                     }
-                });
+                });*/
         actionLayout.add(acceptCheckbox);
-        actionLayout.setComponentAlignment(acceptCheckbox,
-                Alignment.MIDDLE_LEFT);
+//        actionLayout.setComponentAlignment(acceptCheckbox,
+//                Alignment.MIDDLE_LEFT);
 
         actionLayout.add(acceptButton);
-        actionLayout
-                .setComponentAlignment(acceptButton, Alignment.MIDDLE_RIGHT);
+//        actionLayout
+//                .setComponentAlignment(acceptButton, Alignment.MIDDLE_RIGHT);
         
         final VerticalLayout view = new VerticalLayout();
-        view.add(agreementPanel);
+//        view.add(agreementPanel);
         view.add(actionLayout);
 
-        panel.setContent(view);
+//        panel.setContent(view);
         
-        return panel;
+        return view;
     }
 
     /**

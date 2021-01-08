@@ -6,27 +6,11 @@ import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ImageLoader;
 import com.taskadapter.webui.Page;
-import com.vaadin.event.LayoutEvents;
-import com.vaadin.event.LayoutEvents.LayoutClickEvent;
-import com.vaadin.event.Transferable;
-import com.vaadin.event.dd.DragAndDropEvent;
-import com.vaadin.event.dd.DropHandler;
-import com.vaadin.event.dd.acceptcriteria.AcceptAll;
-import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.DragAndDropWrapper;
-import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
-import com.vaadin.ui.Embedded;
-import com.taskadapter.vaadin14shim.HorizontalLayout;
-import com.taskadapter.vaadin14shim.Label;
-import com.vaadin.ui.Html5File;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.themes.ValoTheme;
-import scala.collection.Seq;
 
-import static com.vaadin.server.Sizeable.Unit.PERCENTAGE;
-import static com.vaadin.server.Sizeable.Unit.PIXELS;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import scala.collection.Seq;
 
 /**
  * Controller for a single export.
@@ -51,7 +35,7 @@ final class UniConfigExport {
          * @param file
          *            file to export.
          */
-        void dropInExport(Html5File file);
+//        void dropInExport(Html5File file);
     }
 
     private static String getDropInValidationError(UISyncConfig syncConfig)
@@ -94,16 +78,16 @@ final class UniConfigExport {
 
     private static Label createLabel(UIConnectorConfig connector) {
         final Label res = new Label(connector.getConnectorSetup().label());
-        res.setWidth(100, PERCENTAGE);
-        res.addClassName(ValoTheme.LABEL_H3);
+//        res.setWidth(100, PERCENTAGE);
+//        res.addClassName(ValoTheme.LABEL_H3);
         return res;
     }
 
     private static Component renderSimple(UISyncConfig config,
-            final Callback callback) {
+                                          final Callback callback) {
         final HorizontalLayout res = new HorizontalLayout();
-        res.setWidth(width, PIXELS);
-        res.setHeight(65, PIXELS);
+//        res.setWidth(width, PIXELS);
+//        res.setHeight(65, PIXELS);
 
         final String validationFailure = getValidationError(config);
         final boolean isValid = validationFailure == null;
@@ -127,23 +111,24 @@ final class UniConfigExport {
 
         final Label leftLabel = createLabel(config1);
         final Label rightLabel = createLabel(config2);
-        final Embedded actionLabel = new Embedded(null, ImageLoader.getImage(assetName));
+//        final Embedded actionLabel = new Embedded(null, ImageLoader.getImage(assetName));
 
         leftLabel.addClassName("left-label");
         rightLabel.addClassName("right-label");
 
         res.add(leftLabel);
-        res.add(actionLabel);
+//        res.add(actionLabel);
         res.add(rightLabel);
 
-        res.setExpandRatio(leftLabel, 1.0f);
-        res.setExpandRatio(rightLabel, 1.0f);
+//        res.setExpandRatio(leftLabel, 1.0f);
+//        res.setExpandRatio(rightLabel, 1.0f);
         res.setSpacing(true);
 
-        res.setComponentAlignment(leftLabel, Alignment.MIDDLE_RIGHT);
-        res.setComponentAlignment(actionLabel, Alignment.MIDDLE_CENTER);
-        res.setComponentAlignment(rightLabel, Alignment.MIDDLE_LEFT);
+//        res.setComponentAlignment(leftLabel, Alignment.MIDDLE_RIGHT);
+//        res.setComponentAlignment(actionLabel, Alignment.MIDDLE_CENTER);
+//        res.setComponentAlignment(rightLabel, Alignment.MIDDLE_LEFT);
 
+/*
         if (isValid) {
             res.addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
                 @Override
@@ -158,14 +143,15 @@ final class UniConfigExport {
             res.setDescription(validationFailure);
         }
 
+*/
         return res;
     }
     
     private static Component wrapDropArea(final Callback callback,
             final Component dropLabel) {
-        final DragAndDropWrapper dadw = new DragAndDropWrapper(dropLabel);
+//        final DragAndDropWrapper dadw = new DragAndDropWrapper(dropLabel);
 
-        dadw.setDropHandler(new DropHandler() {
+/*        dadw.setDropHandler(new DropHandler() {
             @Override
             public AcceptCriterion getAcceptCriterion() {
                 return AcceptAll.get();
@@ -187,7 +173,8 @@ final class UniConfigExport {
                 callback.dropInExport(wt.getFiles()[0]);
             }
         });
-        return dadw;
+        return dadw;*/
+        return null;
     }
 
     /**
@@ -199,38 +186,38 @@ final class UniConfigExport {
     public static Component render(UISyncConfig config, final Callback callback) {
         final HorizontalLayout layout = new HorizontalLayout();
         final Component regularExportBox = renderSimple(config, callback);
-        layout.setWidth(width, PIXELS);
+//        layout.setWidth(width, PIXELS);
         try {
             final String validationFailure = getDropInValidationError(config);
             final boolean isValid = validationFailure == null;
 
-            final Embedded dropLabel = new Embedded(null, ImageLoader.getImage("file_drop.gif"));
-            dropLabel.setDescription(Page.message("configsPage.configElement.dndIcon.tooltip"));
+//            final Embedded dropLabel = new Embedded(null, ImageLoader.getImage("file_drop.gif"));
+//            dropLabel.setDescription(Page.message("configsPage.configElement.dndIcon.tooltip"));
 
-            if (!isValid) {
-                dropLabel.setDescription(validationFailure);
-            }
+//            if (!isValid) {
+//                dropLabel.setDescription(validationFailure);
+//            }
+//
+//            dropLabel.setWidth(32, PIXELS);
+//            regularExportBox.setWidth(width - 32, PIXELS);
             
-            dropLabel.setWidth(32, PIXELS);
-            regularExportBox.setWidth(width - 32, PIXELS);
-            
-            if (config.isReversed()) {
-                layout.add(regularExportBox);
-                layout.add(dropLabel);
-                layout.setComponentAlignment(dropLabel, Alignment.MIDDLE_RIGHT);
-            } else {
-                layout.add(dropLabel);
-                layout.add(regularExportBox);
-                layout.setComponentAlignment(dropLabel, Alignment.MIDDLE_LEFT);
-            }
-            layout.setExpandRatio(regularExportBox, 1f);
-            layout.setExpandRatio(dropLabel, 0.0f);
+//            if (config.isReversed()) {
+//                layout.add(regularExportBox);
+//                layout.add(dropLabel);
+//                layout.setComponentAlignment(dropLabel, Alignment.MIDDLE_RIGHT);
+//            } else {
+//                layout.add(dropLabel);
+//                layout.add(regularExportBox);
+//                layout.setComponentAlignment(dropLabel, Alignment.MIDDLE_LEFT);
+//            }
+//            layout.setExpandRatio(regularExportBox, 1f);
+//            layout.setExpandRatio(dropLabel, 0.0f);
 
             if (isValid) {
                 return wrapDropArea(callback, layout);
             }
         } catch (DroppingNotSupportedException e) {
-            regularExportBox.setWidth(width, PIXELS);
+//            regularExportBox.setWidth(width, PIXELS);
             layout.add(regularExportBox);
         }
         return layout;

@@ -5,8 +5,9 @@ import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
+import com.taskadapter.web.callbacks.DataProvider;
 
-public class PrioritiesLoader {
+public class PrioritiesLoader implements DataProvider<Priorities> {
 
     private WebConnectorSetup setup;
 
@@ -14,7 +15,8 @@ public class PrioritiesLoader {
         this.setup = setup;
     }
 
-    Priorities loadPriorities() throws ConnectorException {
+    @Override
+    public Priorities loadData() throws ConnectorException {
         if (Strings.isNullOrEmpty(setup.host())) {
             throw new ServerURLNotSetException();
         }

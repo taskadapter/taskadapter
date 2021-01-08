@@ -1,5 +1,5 @@
 dependencies {
     compile libraries.servletAPI
 
-    compile "com.vaadin:vaadin-server:$vaadinVersion"
+    compile "com.vaadin:flow-server:2.4.1"
 }

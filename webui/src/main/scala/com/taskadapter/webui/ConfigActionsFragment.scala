@@ -1,52 +1,54 @@
 package com.taskadapter.webui
 
 import com.taskadapter.config.StorageException
-import com.taskadapter.vaadin14shim.HorizontalLayout
 import com.taskadapter.web.PopupDialog
-import com.taskadapter.web.event.{ConfigCloneRequested, ConfigDeleteRequested, EventBusImpl, ShowConfigsListPageRequested}
+import com.taskadapter.web.event.{EventBusImpl, ShowConfigsListPageRequested}
 import com.taskadapter.web.uiapi.ConfigId
-import com.vaadin.ui.{Button, Notification}
+import com.taskadapter.webui.pages.Navigator
+import com.vaadin.flow.component.button.Button
+import com.vaadin.flow.component.notification.{Notification, NotificationVariant}
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout
 import org.slf4j.LoggerFactory
 
 /**
-  * Contains buttons with various config actions. Shown on Config Summary page.
+  * Contains buttons with various config actions (Clone, Delete, etc). Shown on Config Summary page.
   *
   * @param configId  identity of the config to perform operations on.
   */
-class ConfigActionsFragment(configId: ConfigId) {
+class ConfigActionsFragment(configId: ConfigId) extends HorizontalLayout {
+
+  private val configOps: ConfigOperations = SessionController.buildConfigOperations()
 
   private val log = LoggerFactory.getLogger(classOf[ConfigActionsFragment])
 
-  val layout = new HorizontalLayout
-  layout.setSpacing(true)
-
-  layout.add(new Button(Page.message("configsPage.actionClone"), _ => showConfirmClonePage()))
-  layout.add(new Button(Page.message("configsPage.actionDelete"), _ => showDeleteConfigDialog()))
+  add(new Button(Page.message("configsPage.actionClone"), _ => showConfirmClonePage()))
+  add(new Button(Page.message("configsPage.actionDelete"), _ => showDeleteConfigDialog()))
 
   private def showDeleteConfigDialog(): Unit = {
-    val messageDialog = PopupDialog.confirm(Page.message("configsPage.actionDelete.confirmText"),
+    PopupDialog.confirm(Page.message("configsPage.actionDelete.confirmText"),
       () => {
-        EventBusImpl.post(ConfigDeleteRequested(configId))
-        EventBusImpl.post(ShowConfigsListPageRequested())
+        configOps.deleteConfig(configId)
+        Navigator.configsList()
       }
     )
-    layout.getUI.addWindow(messageDialog)
   }
 
   def showConfirmClonePage(): Unit = {
-    val messageDialog = PopupDialog.confirm(Page.message("configsPage.actionClone.confirmText"),
+   PopupDialog.confirm(Page.message("configsPage.actionClone.confirmText"),
       () => {
         try {
-          EventBusImpl.post(ConfigCloneRequested(configId))
-          EventBusImpl.post(ShowConfigsListPageRequested())
+          configOps.cloneConfig(configId)
+          Navigator.configsList()
+          Notification.show(Page.message("configsPage.actionClone.success"))
+            .addThemeVariants(NotificationVariant.LUMO_SUCCESS)
         } catch {
           case e: StorageException =>
-            val message = "There were some troubles cloning the config:<BR>" + e.getMessage
+            val message = Page.message("configsPage.actionClone.error", e.getMessage)
             log.error(message, e)
-            Notification.show(message, Notification.Type.ERROR_MESSAGE)
+            Notification.show(message)
+              .addThemeVariants(NotificationVariant.LUMO_ERROR)
         }
       }
     )
-    layout.getUI.addWindow(messageDialog)
   }
 }

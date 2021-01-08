@@ -7,16 +7,18 @@ import com.taskadapter.license.LicenseExpiredException;
 import com.taskadapter.webui.EventTracker;
 import com.taskadapter.webui.LicenseCategory$;
 import com.taskadapter.webui.TALog;
-import com.vaadin.server.Page;
-import com.vaadin.server.Sizeable;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.taskadapter.vaadin14shim.GridLayout;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextArea;
-import com.taskadapter.vaadin14shim.VerticalLayout;
-import com.taskadapter.vaadin14shim.Label;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.Html;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextArea;
 import org.slf4j.Logger;
 
 import java.text.SimpleDateFormat;
@@ -33,16 +35,12 @@ public final class LicensePanel {
 
     private final LicenseFacade licenseManager;
     private final VerticalLayout contentPane;
-    private final Panel ui;
 
     private LicensePanel(LicenseFacade licenseManager) {
         this.licenseManager = licenseManager;
 
-        ui = new Panel("License Information");
-
         contentPane = new VerticalLayout();
         contentPane.setMargin(true);
-        ui.setContent(contentPane);
 
         showLicense(licenseManager.getLicense().get());
     }
@@ -57,19 +55,20 @@ public final class LicensePanel {
                 String text = "Successfully registered to: " + newLicense.getCustomerName();
                 log.info(text);
                 EventTracker.trackEvent(LicenseCategory$.MODULE$, "install", "success_valid");
-                Notification.show(text);
+                Notification.show(text)
+                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
             }
         } catch (LicenseExpiredException e) {
             EventTracker.trackEvent(LicenseCategory$.MODULE$, "install", "failed_expired");
             log.error("Cannot install license: it is expired. License text: " + licenseText);
-            Notification.show("License not accepted", e.getMessage(),
-                    Notification.Type.ERROR_MESSAGE);
+            Notification.show("License not accepted: " + e.getMessage())
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
         } catch (LicenseException e) {
             EventTracker.trackEvent(LicenseCategory$.MODULE$, "install", "failed_validation");
             log.error("Cannot install license because of exception. "
                     + e.toString() + "\nLicense text:\n" + licenseText);
-            Notification.show("License not accepted", "The license is invalid",
-                    Notification.Type.ERROR_MESSAGE);
+            Notification.show("License not accepted: the license is invalid")
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
     }
 
@@ -86,6 +85,7 @@ public final class LicensePanel {
 
     private void showLicense(License license) {
         contentPane.removeAll();
+        contentPane.add(new Html("<b>License Information</b>"));
         if (license != null) {
             contentPane.add(renderLicense(license,
                     this::uninstallLicense));
@@ -95,25 +95,29 @@ public final class LicensePanel {
     }
 
     public static Component renderLicensePanel(LicenseFacade licenseFacade) {
-        return new LicensePanel(licenseFacade).ui;
+        return new LicensePanel(licenseFacade).contentPane;
     }
 
     /**
      * Creates a panel for the new license input.
      */
-    public Component createLicenseInputPanel(
+    private static Component createLicenseInputPanel(
             final DataCallback<String> newLicenseCallback) {
         final VerticalLayout res = new VerticalLayout();
 
         res.add(new Label("NO LICENSE INSTALLED."));
-        final Button button = new Button("Buy license", event ->
-                Page.getCurrent().getJavaScript().execute("window.open('" + HTTP_WWW_TASKADAPTER_COM_BUY + "');")
-        );
+        final Button button = new Button("Buy license", new ComponentEventListener<ClickEvent<Button>>() {
+            @Override
+            public void onComponentEvent(ClickEvent<Button> event) {
+                UI.getCurrent().getPage().executeJs("window.open('" + HTTP_WWW_TASKADAPTER_COM_BUY + "');");
+            }
+        });
+
         res.add(button);
 
         final TextArea licenseArea = new TextArea(
                 "Paste the complete contents of the license file here");
-        licenseArea.setStyleName("license-area");
+        licenseArea.setClassName("license-area");
         res.add(licenseArea);
 
         final Button saveButton = new Button("Save license");
@@ -126,17 +130,13 @@ public final class LicensePanel {
     /**
      * Renders a license information.
      *
-     * @param license           license information.
+     * @param license               license information.
      * @param removeLicenseCallback license uninstall callback.
      * @return license information UI.
      */
     private static Component renderLicense(License license,
                                            final Runnable removeLicenseCallback) {
-        final GridLayout res = new GridLayout();
-
-        res.setColumns(2);
-        res.setSpacing(true);
-        res.setWidth(400, Sizeable.Unit.PIXELS);
+        FormLayout res = new FormLayout();
 
         res.add(new Label("Registered to:"));
         res.add(new Label(license.getCustomerName()));

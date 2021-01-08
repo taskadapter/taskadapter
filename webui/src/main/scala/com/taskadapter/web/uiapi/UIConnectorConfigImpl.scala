@@ -8,7 +8,8 @@ import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.{DroppingNotSupportedException, PluginEditorFactory}
 import com.taskadapter.webui.data.ExceptionFormatter
-import com.vaadin.ui.HasComponents
+import com.vaadin.flow.component.Component
+import com.vaadin.flow.data.binder.Binder
 
 import scala.collection.Seq
 
@@ -54,7 +55,9 @@ class UIConnectorConfigImpl[C <: ConnectorConfig, S <: ConnectorSetup]
 
   override def createConnectorInstance: NewConnector = connectorFactory.createConnector(config, setup)
 
-  override def createMiniPanel(sandbox: Sandbox): HasComponents = editorFactory.getMiniPanelContents(sandbox, config, setup)
+  override def createMiniPanel(sandbox: Sandbox): SavableComponent = {
+    editorFactory.getMiniPanelContents(sandbox, config, setup)
+  }
 
   override def getAllFields: Seq[Field[_]] = connectorFactory.getAllFields
 

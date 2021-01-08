@@ -4,19 +4,22 @@ import java.util
 
 import com.taskadapter.model.GTask
 import com.taskadapter.reporting.ErrorReporter
-import com.taskadapter.vaadin14shim.VerticalLayout
 import com.taskadapter.web.uiapi.UISyncConfig
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.export.{ConfirmExportFragment, ExportResultsFragment}
 import com.taskadapter.webui.results.ExportResultStorage
-import com.taskadapter.webui.{EventTracker, ExportCategory, MonitorWrapper}
-import com.vaadin.server.VaadinSession
-import com.vaadin.ui.{Button, Component, Label, Notification}
+import com.taskadapter.webui.{ConfigOperations, EventTracker, ExportCategory, MonitorWrapper}
+import com.vaadin.flow.component.Component
+import com.vaadin.flow.component.button.Button
+import com.vaadin.flow.component.html.Label
+import com.vaadin.flow.component.notification.Notification
+import com.vaadin.flow.component.orderedlayout.VerticalLayout
 
 class ExportHelper(exportResultStorage: ExportResultStorage,
                    onDone: Runnable, showFilePath: Boolean,
                    layout: VerticalLayout,
-                   config: UISyncConfig) {
+                   config: UISyncConfig,
+                   configOps: ConfigOperations) {
 
   def onTasksLoaded(tasks: util.List[GTask]): Unit = {
     val dataSourceLabel = config.connector1.getConnectorTypeId
@@ -37,11 +40,11 @@ class ExportHelper(exportResultStorage: ExportResultStorage,
     backButton.addClickListener(_ => onDone.run())
     res.add(msg)
     res.add(backButton)
-    setContent(layout, res)
+    setContent(res)
   }
 
   private def showConfirmation(tasks: util.List[GTask]): Unit = {
-    val component = ConfirmExportFragment.render(config, tasks, new ConfirmExportFragment.Callback() {
+    val confirmationComponent = ConfirmExportFragment.render(configOps, config, tasks, new ConfirmExportFragment.Callback() {
       override def onTasks(selectedTasks: util.List[GTask]): Unit = {
         performExport(selectedTasks)
       }
@@ -50,11 +53,8 @@ class ExportHelper(exportResultStorage: ExportResultStorage,
         onDone.run()
       }
     })
-    VaadinSession.getCurrent.lock()
-    try {
-      setContent(layout, component)
-      layout.setExpandRatio(component, 1f)
-    } finally VaadinSession.getCurrent.unlock()
+
+    setContent(confirmationComponent)
   }
 
   private def performExport(selectedTasks: util.List[GTask]): Unit = {
@@ -65,7 +65,7 @@ class ExportHelper(exportResultStorage: ExportResultStorage,
     val saveProgress = SyncActionComponents.renderSaveIndicator(config.getConnector2)
     saveProgress.setValue(0f)
 
-    setContent(layout, saveProgress)
+    setContent(saveProgress)
 
     val wrapper = new MonitorWrapper(saveProgress)
     new Thread(() => {
@@ -82,15 +82,17 @@ class ExportHelper(exportResultStorage: ExportResultStorage,
         EventTracker.trackEvent(ExportCategory, "created_tasks", targetLabel, saveResult.createdTasksNumber)
         EventTracker.trackEvent(ExportCategory, "updated_tasks", targetLabel, saveResult.updatedTasksNumber)
         EventTracker.trackEvent(ExportCategory, "tasks_with_errors", targetLabel, saveResult.taskErrors.size)
-        setContent(layout, exportResult)
+        setContent(exportResult)
       }
 
       foo()
     }).start()
   }
 
-  private def setContent(content: VerticalLayout, comp: Component): Unit = {
-    content.removeAll()
-    content.add(comp)
+  private def setContent(comp: Component): Unit = {
+    layout.getUI.get().access(() => {
+      layout.removeAll()
+      layout.add(comp)
+    })
   }
 }

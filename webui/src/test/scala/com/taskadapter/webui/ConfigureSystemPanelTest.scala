@@ -16,20 +16,20 @@ class ConfigureSystemPanelTest extends FunSpec with Matchers with ConfigsTempFol
   it("disables admin section editing in non-licensed version") {
     withTempFolder { folder =>
       val preservices = createTestPreservices(folder)
-      val container = ConfigureSystemPanel.render(preservices.credentialsManager, preservices.settingsManager,
-        preservices.licenseManager.getLicense, adminOps)
+      val container = new ConfigureSystemPage()
       val auto = UiTester.findElement(container, Page.message("configurePage.anonymousErrorReporting"))
-      auto.isEnabled shouldBe false
+      val attr = auto.getElement().getAttribute("disabled")
+      attr.toBoolean shouldBe true
     }
   }
 
   it("enables admin section editing in licensed version") {
     withTempFolder { folder =>
       val preservices = createTestPreservices(folder)
-      val container = ConfigureSystemPanel.render(preservices.credentialsManager, preservices.settingsManager,
-        LicenseGenerator.someLicense(), adminOps)
+      val container = new ConfigureSystemPage()
       val auto = UiTester.findElement(container, Page.message("configurePage.anonymousErrorReporting"))
-      auto.isEnabled shouldBe true
+      val attr = auto.getElement().getAttribute("disabled")
+      attr.toBoolean shouldBe false
     }
   }
 

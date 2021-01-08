@@ -4,7 +4,8 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletRegistration.Dynamic;
 
-import com.vaadin.server.VaadinServlet;
+import com.vaadin.flow.server.VaadinServlet;
+import com.vaadin.flow.server.VaadinSession;
 
 /**
  * TaskAdapter application launcher. Initializes Vaadin servlet.
@@ -17,9 +18,9 @@ public final class AppLauncher implements ServletContextListener {
         String webAppRealPath = sce.getServletContext().getRealPath("/");
         if (webAppRealPath.contains("/exploded/")) {
             // dev mode when running from IDEA
-            AppUIProxy.instance = TAApplicationProvider.skipGoogleAnalytics();
+            TAApplicationProvider.skipGoogleAnalytics();
         } else {
-            AppUIProxy.instance = TAApplicationProvider.withGoogleAnalytics();
+            TAApplicationProvider.withGoogleAnalytics();
         }
 
         final Dynamic appServlet = sce.getServletContext().addServlet(
@@ -29,6 +30,8 @@ public final class AppLauncher implements ServletContextListener {
         appServlet.setInitParameter("UIProvider",
                 "com.taskadapter.webui.AppUIProxy");
         appServlet.addMapping("/*");
+
+        VaadinSession.getCurrent().setErrorHandler(new MyCustomErrorHandler());
     }
 
     @Override

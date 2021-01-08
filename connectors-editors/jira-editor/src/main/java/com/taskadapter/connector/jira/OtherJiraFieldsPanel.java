@@ -1,25 +1,26 @@
 package com.taskadapter.connector.jira;
 
 import com.taskadapter.connector.definition.WebConnectorSetup;
-import com.taskadapter.vaadin14shim.Binder;
-import com.taskadapter.vaadin14shim.TextField;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.configeditor.EditorUtil;
-import com.vaadin.ui.Button;
-import com.taskadapter.vaadin14shim.GridLayout;
-import com.vaadin.ui.Panel;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Binder;
 
 /**
  * Panel with title: "Set when exporting to JIRA"
  */
-class OtherJiraFieldsPanel extends Panel {
-    private static final String SAVE_GROUP_LABEL = "Set when exporting to JIRA";
-
+class OtherJiraFieldsPanel extends FormLayout {
+    private final Binder<JiraConfig> binder;
     private final JiraConfig config;
-    private WebConnectorSetup webServerInfo;
+    private final WebConnectorSetup webServerInfo;
     private final ExceptionFormatter exceptionFormatter;
 
-    public OtherJiraFieldsPanel(JiraConfig config, WebConnectorSetup webServerInfo, ExceptionFormatter exceptionFormatter) {
+    public OtherJiraFieldsPanel(Binder<JiraConfig> binder,
+                                JiraConfig config, WebConnectorSetup webServerInfo, ExceptionFormatter exceptionFormatter) {
+        this.binder = binder;
         this.config = config;
         this.webServerInfo = webServerInfo;
         this.exceptionFormatter = exceptionFormatter;
@@ -27,22 +28,15 @@ class OtherJiraFieldsPanel extends Panel {
     }
 
     private void buildUI() {
-        setCaption(SAVE_GROUP_LABEL);
+        setResponsiveSteps(
+                new FormLayout.ResponsiveStep("20em", 1),
+                new FormLayout.ResponsiveStep("20em", 2),
+                new FormLayout.ResponsiveStep("5em", 3));
 
-        GridLayout lookupButtonsLayout = new GridLayout(3, 4);
-        lookupButtonsLayout.setMargin(true);
-        lookupButtonsLayout.setSpacing(true);
-        addLookupButtonsAndTextEdit(lookupButtonsLayout);
-
-        setContent(lookupButtonsLayout);
-    }
-
-    private void addLookupButtonsAndTextEdit(GridLayout grid) {
-        final TextField affectedVersion = EditorUtil
-                .addLabeledText(grid,
-                        "Set 'Affected version' to:",
-                        "Set this 'affected version' value when submitting issues to JIRA.");
-        Binder.bindField(affectedVersion, config, "affectedVersion");
+        Label setAffectedVersionLabel = new Label("Set 'Affected version' to");
+        setAffectedVersionLabel.getElement().setProperty("title",
+                "Set this 'affected version' value when submitting issues to JIRA."); // tooltip
+        TextField affectedVersion = EditorUtil.textInput(binder, "affectedVersion");
         Button showAffectedVersion = EditorUtil.createLookupButton(
                 "...",
                 "Show list of available versions",
@@ -55,14 +49,11 @@ class OtherJiraFieldsPanel extends Panel {
                     return null;
                 }
         );
-        grid.add(showAffectedVersion);
 
-        final TextField fixForVersion = EditorUtil
-                .addLabeledText(grid,
-                        "Set 'Fix for version' to:",
-                        "Set this 'fix for version' value when submitting issues to JIRA.");
-        Binder.bindField(fixForVersion, config, "fixForVersion");
-
+        Label fixForVersionLabel = new Label("Set 'Fix for version' to");
+        fixForVersionLabel.getElement().setProperty("title",
+                "Set this 'fix for version' value when submitting issues to JIRA.");
+        TextField fixForVersion = EditorUtil.textInput(binder, "fixForVersion");
         Button showFixForVersion = EditorUtil.createLookupButton(
                 "...",
                 "Show list of available versions",
@@ -75,12 +66,11 @@ class OtherJiraFieldsPanel extends Panel {
                     return null;
                 }
         );
-        grid.add(showFixForVersion);
 
-
-        final TextField defaultTaskType = EditorUtil.addLabeledText(grid, "Default issue type:",
-                        "New issues will be created with this issue type (bug/improvement/task...)");
-        Binder.bindField(defaultTaskType, config, "defaultTaskType");
+        Label defaultTaskTypeLabel = new Label("Default issue type");
+        fixForVersionLabel.getElement().setProperty("title",
+                "New issues will be created with this issue type (bug/improvement/task...)");
+        TextField defaultTaskTypeField = EditorUtil.textInput(binder, "defaultTaskType");
         Button showDefaultTaskType = EditorUtil.createLookupButton(
                 "...",
                 "Show list of available issue types on the JIRA server",
@@ -89,16 +79,15 @@ class OtherJiraFieldsPanel extends Panel {
                 () -> new JiraConnector(config, webServerInfo).getAllIssueTypes(),
                 exceptionFormatter,
                 namedKeyedObject -> {
-                    defaultTaskType.setValue(namedKeyedObject.getName());
+                    defaultTaskTypeField.setValue(namedKeyedObject.getName());
                     return null;
                 }
         );
-        grid.add(showDefaultTaskType);
 
-        final TextField defaultIssueTypeForSubtasks = EditorUtil
-                .addLabeledText(grid, "Default issue type for subtasks:",
-                        "Subtasks will be created with this issue type (typically this is 'subtask')");
-        Binder.bindField(defaultIssueTypeForSubtasks, config, "defaultIssueTypeForSubtasks");
+        Label issueTypeSubtasksLabel = new Label("Default issue type for subtasks");
+        issueTypeSubtasksLabel.getElement().setProperty("title",
+                "Subtasks will be created with this issue type (typically this is 'subtask')");
+        TextField defaultIssueTypeForSubtasks = EditorUtil.textInput(binder, "defaultIssueTypeForSubtasks");
         Button showIssueTypeForSubtasksButton = EditorUtil.createLookupButton(
                 "...",
                 "Show list of available subtask types on the JIRA server",
@@ -111,6 +100,10 @@ class OtherJiraFieldsPanel extends Panel {
                     return null;
                 }
         );
-        grid.add(showIssueTypeForSubtasksButton);
+
+        add(setAffectedVersionLabel, affectedVersion, showAffectedVersion,
+                fixForVersionLabel, fixForVersion, showFixForVersion,
+                defaultTaskTypeLabel, defaultTaskTypeField, showDefaultTaskType,
+                issueTypeSubtasksLabel, defaultIssueTypeForSubtasks, showIssueTypeForSubtasksButton);
     }
 }

@@ -2,6 +2,8 @@ package com.taskadapter.config;
 
 import com.taskadapter.web.uiapi.SetupId;
 
+import java.util.Random;
+
 public final class NewConfigParser {
     private static final String ID_PREFIX = "ta.id=";
     private static final String NAME_PREFIX = "ta.name=";
@@ -42,6 +44,8 @@ public final class NewConfigParser {
     public static StoredExportConfig parseLegacyConfig(int id, String fileContents) {
         final String lines[] = fileContents.split("\\r?\\n");
 
+        String idString = findString(ID_PREFIX, lines);
+        int configId = idString == null ? new Random().nextInt() : Integer.parseInt(idString);
         final String name = findString(NAME_PREFIX, lines);
         final String connector1ID = findString(CONN1_ID_PREFIX, lines);
         final String connector1SavedSetupIdString = findString(CONN1_SAVED_SETUP_ID, lines);
@@ -53,7 +57,7 @@ public final class NewConfigParser {
 
         final String mappings = findString(MAPPINGS_PREFIX, lines);
 
-        return new StoredExportConfig(id, name,
+        return new StoredExportConfig(configId, name,
                 new StoredConnectorConfig(connector1ID, SetupId.apply(connector1SavedSetupIdString), connector1DataString),
                 new StoredConnectorConfig(connector2ID, SetupId.apply(connector2SavedSetupIdString), connector2DataString),
                 mappings);

@@ -1,11 +1,11 @@
 package com.taskadapter.webui;
 
-import com.vaadin.server.ThemeResource;
+import com.vaadin.flow.component.html.Image;
 
 public class ImageLoader {
-    private static final String IMAGES_FOLDER = "img/";
+    private static final String IMAGES_FOLDER = "images/";
 
-    public static ThemeResource getImage(String name) {
-        return new ThemeResource(IMAGES_FOLDER + name);
+    public static Image getImage(String name) {
+        return new Image(IMAGES_FOLDER + name, name);
     }
 }

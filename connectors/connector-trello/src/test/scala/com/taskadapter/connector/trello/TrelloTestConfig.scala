@@ -8,7 +8,9 @@ object TrelloTestConfig {
   private val properties = PropertiesUtf8Loader.load(TEST_PROPERTIES)
 
   def getConfig = {
-    val config = new TrelloConfig(properties.getProperty("boardId"), "")
+    val config = new TrelloConfig()
+      .setBoardId(properties.getProperty("boardId"))
+      .setBoardName("")
     config
   }
 

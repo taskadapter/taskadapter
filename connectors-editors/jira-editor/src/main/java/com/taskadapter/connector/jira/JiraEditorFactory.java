@@ -11,27 +11,25 @@ import com.taskadapter.connector.definition.exceptions.ProjectNotSetException;
 import com.taskadapter.connector.definition.exceptions.ServerURLNotSetException;
 import com.taskadapter.connector.jira.exceptions.BadHostException;
 import com.taskadapter.connector.jira.exceptions.BadURIException;
-import com.taskadapter.vaadin14shim.GridLayout;
 import com.taskadapter.web.ConnectorSetupPanel;
 import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
-import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.PriorityPanel;
 import com.taskadapter.web.configeditor.ProjectPanel;
-import com.taskadapter.web.configeditor.server.ServerPanelFactory;
+import com.taskadapter.web.configeditor.server.ServerPanelWithLoginAndToken;
 import com.taskadapter.web.data.Messages;
-import com.taskadapter.web.magic.Interfaces;
 import com.taskadapter.web.service.Sandbox;
-import com.vaadin.data.util.MethodProperty;
-import com.vaadin.ui.HasComponents;
+import com.taskadapter.web.uiapi.DefaultSavableComponent;
+import com.taskadapter.web.uiapi.SavableComponent;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import scala.Option;
 import scala.collection.JavaConverters;
 import scala.collection.Seq;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.vaadin.server.Sizeable.Unit.PERCENTAGE;
 
 public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebConnectorSetup> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.jira.messages";
@@ -67,32 +65,40 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     }
 
     @Override
-    public HasComponents getMiniPanelContents(Sandbox sandbox, JiraConfig config, WebConnectorSetup setup) {
+    public SavableComponent getMiniPanelContents(Sandbox sandbox, JiraConfig config, WebConnectorSetup setup) {
+        Binder<JiraConfig> binder = new Binder<>(JiraConfig.class);
+
         ProjectPanel projectPanel = new ProjectPanel(
-                new MethodProperty<>(config, "projectKey"),
-                Option.apply(new MethodProperty<>(config, "queryId")),
+                binder,
+                "projectKey",
+                Option.apply("queryId"),
                 Option.empty(),
                 new JiraProjectsListLoader(setup),
                 new JiraProjectLoader(config, setup),
                 new JiraQueryListLoader(config, setup),
                 this);
-        projectPanel.setHeight(100, PERCENTAGE);
 
-        GridLayout gridLayout = new GridLayout(2, 4);
-        gridLayout.setMargin(true);
-        gridLayout.setSpacing(true);
-
-        gridLayout.add(projectPanel);
-
-        OtherJiraFieldsPanel otherJiraFieldsPanel = new OtherJiraFieldsPanel(config, setup, this);
-        otherJiraFieldsPanel.setHeight(100, PERCENTAGE);
-        gridLayout.add(otherJiraFieldsPanel);
+        FormLayout layout = new FormLayout();
+        layout.setResponsiveSteps(
+                new FormLayout.ResponsiveStep("50em", 1),
+                new FormLayout.ResponsiveStep("50em", 2));
 
         PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(),
-                Interfaces.fromMethod(DataProvider.class, new PrioritiesLoader(setup), "loadJiraPriorities"), this);
-        gridLayout.add(priorityPanel);
-        return gridLayout;
-    }
+                new PrioritiesLoader(setup),this);
+
+        layout.add(projectPanel,
+                priorityPanel,
+                new OtherJiraFieldsPanel(binder, config, setup, this));
+        binder.readBean(config);
+
+        return new DefaultSavableComponent(layout, () -> {
+            try {
+                binder.writeBean(config);
+            } catch (ValidationException e) {
+                e.printStackTrace();
+            }
+        });
+   }
 
     @Override
     public boolean isWebConnector() {
@@ -103,8 +109,8 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     public ConnectorSetupPanel getEditSetupPanel(Sandbox sandbox, WebConnectorSetup setup) {
         String description = "Please generate an API token here: <br/>" +
                 "<b>https://id.atlassian.com/manage-profile/security/api-tokens</b>";
-        return ServerPanelFactory.withLoginAndApiToken(JiraConnector.ID(), JiraConnector.ID(),
-                description, setup);
+        return  new ServerPanelWithLoginAndToken(JiraConnector.ID(), JiraConnector.ID(),
+                setup, description);
     }
 
     @Override

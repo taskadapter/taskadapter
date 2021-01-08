@@ -5,24 +5,23 @@ import com.taskadapter.connector.definition.WebConnectorSetup
 import com.taskadapter.web.ConnectorSetupPanel
 import com.taskadapter.web.configeditor.DefaultPanel
 import com.taskadapter.webui.Page
-import com.vaadin.ui.themes.ValoTheme
-import com.vaadin.ui.{Component, Label, Panel, VerticalLayout}
+import com.vaadin.flow.component.{Component, Html}
+import com.vaadin.flow.component.html.Label
+import com.vaadin.flow.component.orderedlayout.VerticalLayout
 
 class ServerPanel(connectorId: String, val caption: String, setup: WebConnectorSetup)
   extends ConnectorSetupPanel {
 
+  val captionLabel = new Html(s"<b>$caption</b>")
+
   var serverContainer = new ServerContainer(setup)
-  var panel = new Panel
-  panel.setWidth(DefaultPanel.NARROW_PANEL_WIDTH)
   val errorMessageLabel = new Label
-  errorMessageLabel.addStyleName(ValoTheme.LABEL_FAILURE)
   errorMessageLabel.setVisible(false)
 
-  val layout = new VerticalLayout(serverContainer, errorMessageLabel)
-  panel.setContent(layout)
-  panel.setCaption(caption)
+  val layout = new VerticalLayout(captionLabel, serverContainer, errorMessageLabel)
+  layout.setWidth(DefaultPanel.NARROW_PANEL_WIDTH)
 
-  override def getUI: Component = panel
+  override def getUI: Component = layout
 
   override def validate(): Option[String] = {
     if (Strings.isNullOrEmpty(setup.label)) {
@@ -40,7 +39,7 @@ class ServerPanel(connectorId: String, val caption: String, setup: WebConnectorS
   }
 
   override def showError(string: String): Unit = {
-    errorMessageLabel.setValue(string)
+    errorMessageLabel.setText(string)
     errorMessageLabel.setVisible(true)
   }
 }

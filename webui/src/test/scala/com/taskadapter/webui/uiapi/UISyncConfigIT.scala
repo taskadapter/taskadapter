@@ -2,9 +2,9 @@ package com.taskadapter.webui.uiapi
 
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.connector.github.GithubField
+//import com.taskadapter.connector.github.GithubField
 import com.taskadapter.connector.jira.JiraField
-import com.taskadapter.connector.mantis.MantisField
+//import com.taskadapter.connector.mantis.MantisField
 import com.taskadapter.model.{Description, Field, GTask, GTaskBuilder, Summary}
 import com.taskadapter.web.uiapi.{ConfigLoader, UISyncConfig}
 import org.fest.assertions.Assertions.assertThat

@@ -1,27 +1,29 @@
 package com.taskadapter.webui.config
 
-import com.taskadapter.vaadin14shim.VerticalLayout
-import com.taskadapter.vaadin14shim.HorizontalLayout
-import com.taskadapter.PluginManager
 import com.taskadapter.connector.definition.{ConnectorConfig, ConnectorSetup}
-import com.taskadapter.web.event.{EventBusImpl, ShowSetupsListPageRequested}
-import com.taskadapter.web.{ConnectorSetupPanel, PluginEditorFactory}
 import com.taskadapter.web.service.Sandbox
-import com.taskadapter.webui.pages.SelectConnectorComponent
-import com.taskadapter.webui.service.EditorManager
-import com.taskadapter.webui.{ConfigOperations, Page}
-import com.vaadin.server.Sizeable.Unit.PIXELS
-import com.vaadin.ui._
+import com.taskadapter.web.{ConnectorSetupPanel, PluginEditorFactory}
+import com.taskadapter.webui.pages.{Navigator, SelectConnectorComponent}
+import com.taskadapter.webui.service.Preservices
+import com.taskadapter.webui.{BasePage, ConfigOperations, EventTracker, Layout, Page, SessionController}
+import com.vaadin.flow.component.button.Button
+import com.vaadin.flow.component.dependency.CssImport
+import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout}
+import com.vaadin.flow.router.Route
 
 import scala.collection.JavaConverters._
 
-class NewSetupPage(configOperations: ConfigOperations, editorManager: EditorManager, pluginManager: PluginManager,
-                   sandbox: Sandbox) {
-  val layout = new VerticalLayout
-  layout.setSpacing(true)
-  layout.setWidth(560, PIXELS)
+@Route(value = Navigator.NEW_SETUP, layout = classOf[Layout])
+@CssImport(value = "./styles/views/mytheme.css")
+class NewSetupPage extends BasePage {
+  EventTracker.trackPage(Navigator.NEW_SETUP)
 
-  val ui = layout
+  private val configOps: ConfigOperations = SessionController.buildConfigOperations()
+  private val services: Preservices = SessionController.getServices
+  private val sandbox: Sandbox = SessionController.createSandbox()
+  private val pluginManager = services.pluginManager
+  private val editorManager = services.editorManager
+
   val plugins = pluginManager.getPluginDescriptors.asScala
 
   val panelForEditor = new VerticalLayout()
@@ -29,21 +31,20 @@ class NewSetupPage(configOperations: ConfigOperations, editorManager: EditorMana
 
   val selectConnectorComponent = new SelectConnectorComponent(pluginManager, showAddPanelForConnector).layout
 
-  layout.add(selectConnectorComponent)
-  layout.add(panelForEditor)
+  add(selectConnectorComponent, panelForEditor)
 
   private def showAddPanelForConnector(connectorId: String): Unit = {
     // if you remove these class declarations, you will get runtime ClassCastExceptions saying cannot convert
     // WebConnectorSetup to Nothing!
-    val editor : PluginEditorFactory[ConnectorConfig, ConnectorSetup] = editorManager.getEditorFactory(connectorId)
-    val setup : ConnectorSetup = editor.createDefaultSetup(sandbox)
+    val editor: PluginEditorFactory[ConnectorConfig, ConnectorSetup] = editorManager.getEditorFactory(connectorId)
+    val setup: ConnectorSetup = editor.createDefaultSetup(sandbox)
     val editSetupPanel = editor.getEditSetupPanel(sandbox, setup)
     panelForEditor.removeAll()
     panelForEditor.add(editSetupPanel.getUI)
     val saveButton = new Button(Page.message("newSetupPage.saveButton"))
     saveButton.addClickListener(_ => saveClicked(editSetupPanel))
     val closeButton = new Button(Page.message("newSetupPage.cancelButton"))
-    closeButton.addClickListener(_ => EventBusImpl.post(ShowSetupsListPageRequested()))
+    closeButton.addClickListener(_ => Navigator.setupsList())
     panelForEditor.add(new HorizontalLayout(saveButton, closeButton))
     panelForEditor.setVisible(true)
   }
@@ -51,8 +52,8 @@ class NewSetupPage(configOperations: ConfigOperations, editorManager: EditorMana
   def saveClicked(panel: ConnectorSetupPanel): Unit = {
     val maybeError = panel.validate
     if (maybeError.isEmpty) {
-      configOperations.saveNewSetup(panel.getResult)
-      EventBusImpl.post(ShowSetupsListPageRequested())
+      configOps.saveNewSetup(panel.getResult)
+      Navigator.setupsList()
     } else {
       panel.showError(maybeError.get)
     }

@@ -14,7 +14,7 @@ object LastVersionLoader {
     val properties = PropertiesUtf8Loader.load("taskadapter.properties")
     val url = properties.getProperty("update_site_url")
     try {
-      val lastVersionString = HttpCaller.get(url, classOf[String])
+      val lastVersionString = HttpCaller.getAsString(url)
       lastVersionString.trim
     } catch {
       case e: Exception => log.error("Cannot load last version info: " + e.toString)

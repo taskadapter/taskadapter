@@ -1,50 +1,48 @@
 package com.taskadapter.webui.user
 
-
-import com.taskadapter.vaadin14shim.VerticalLayout
-import com.taskadapter.vaadin14shim.Label
-import com.taskadapter.vaadin14shim.TextField
-import com.taskadapter.vaadin14shim.GridLayout
 import com.taskadapter.auth.{AuthException, AuthorizedOperations, CredentialsManager}
 import com.taskadapter.data.{MutableState, States}
 import com.taskadapter.license.License
 import com.taskadapter.web.{InputDialog, PopupDialog}
 import com.taskadapter.webui.Page.message
-import com.taskadapter.webui.{EventTracker, UserCategory}
-import com.vaadin.server.Sizeable.Unit.PIXELS
-import com.vaadin.ui._
-import com.vaadin.ui.themes.ValoTheme
+import com.taskadapter.webui.{EventTracker, Page, UserCategory}
+import com.vaadin.flow.component.button.Button
+import com.vaadin.flow.component.formlayout.FormLayout
+import com.vaadin.flow.component.html.{Hr, Label}
+import com.vaadin.flow.component.orderedlayout.VerticalLayout
+import com.vaadin.flow.component.{Html, Text}
 import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
 
-class UsersPanel(credentialsManager: CredentialsManager, authorizedOperations: AuthorizedOperations, license: License) {
+class UsersPanel(credentialsManager: CredentialsManager, authorizedOperations: AuthorizedOperations, license: License)
+  extends VerticalLayout {
+
+  setWidth("500px")
 
   val logger = LoggerFactory.getLogger(classOf[UsersPanel])
-  val COLUMNS_NUMBER = 3
+  val captionLabel = new Html("<b>" + Page.MESSAGES.get("users.title") + "</b>")
 
-  val ui = new Panel(message("users.title"))
-  val view = new VerticalLayout
-  view.setMargin(true)
-  view.setSpacing(true)
-  ui.setContent(view)
+  setMargin(true)
+  setSpacing(true)
   val errorLabel = new Label
-  errorLabel.addClassName(ValoTheme.LABEL_FAILURE)
   errorLabel.setVisible(false)
-  view.addComponent(errorLabel)
-  val statusLabel = new Label
-  view.add(statusLabel)
-  val usersLayout = new GridLayout
-  usersLayout.setColumns(COLUMNS_NUMBER)
-  usersLayout.setSpacing(true)
-  view.add(usersLayout)
+  val statusLabel = new Text("asdasdasdasdsad")
+
+  val usersLayout = new FormLayout()
+  usersLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("40em", 1),
+    new FormLayout.ResponsiveStep("30em", 2),
+    new FormLayout.ResponsiveStep("20em", 3));
+
   val users = credentialsManager.listUsers.asScala
   val numUsers = new MutableState[Int](users.size)
   val addUserButton = new Button(message("users.addUser"))
   addUserButton.addClickListener(_ => startCreateUserProcess())
-  view.add(addUserButton)
   States.onValue(numUsers, (data: Int) => applyLicenseRestriction(data))
   refreshUsers(users)
+
+  add(new Hr(),
+    captionLabel, errorLabel, statusLabel, usersLayout, addUserButton)
 
   private def reloadUsers(): Unit = {
     refreshUsers(credentialsManager.listUsers.asScala)
@@ -93,12 +91,10 @@ class UsersPanel(credentialsManager: CredentialsManager, authorizedOperations: A
 
   private def startDeleteProcess(userLoginName: String) = {
     val deleteText = message("button.delete")
-    val messageDialog = PopupDialog.confirm(message("users.deleteUser", userLoginName),
+    PopupDialog.confirm(message("users.deleteUser", userLoginName),
       () => {
         deleteUser(userLoginName)
       })
-    messageDialog.setWidth(200, PIXELS)
-    ui.getUI.addWindow(messageDialog)
   }
 
   private def deleteUser(userLoginName: String): Unit = {
@@ -123,12 +119,12 @@ class UsersPanel(credentialsManager: CredentialsManager, authorizedOperations: A
       val loginName = dialog.getLogin
       if (!loginName.isEmpty) {
         createUser(loginName, dialog.getPassword)
-        ui.getUI.removeWindow(dialog)
+        dialog.close()
         reloadUsers()
         // TODO would be nice to show "login name is empty" warning otherwise...}
       }
     })
-    ui.getUI.addWindow(dialog)
+    dialog.open()
   }
 
   private def createUser(login: String, password: String) = {
@@ -143,15 +139,17 @@ class UsersPanel(credentialsManager: CredentialsManager, authorizedOperations: A
   }
 
   private def startSetPasswordProcess(userLoginName: String) = {
-    val inputDialog = new InputDialog(message("users.changePassword", userLoginName), message("users.newPassword"),
+    InputDialog.showSecret(message("users.changePassword", userLoginName),
+      message("users.newPassword"),
       (newPassword: String) =>
-        try credentialsManager.savePrimaryAuthToken(userLoginName, newPassword)
+        try {
+          credentialsManager.savePrimaryAuthToken(userLoginName, newPassword)
+          logger.info("Saved password for user " + userLoginName)
+        }
         catch {
           case e: AuthException =>
             logger.error("Change password error", e)
             throw new RuntimeException(e)
         })
-    inputDialog.setPasswordMode()
-    ui.getUI.addWindow(inputDialog)
   }
 }

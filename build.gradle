@@ -1,5 +1,5 @@
 ext {
-    vaadinVersion = '7.7.10'
+    vaadinVersion = '14.4.6'
     httpClientVersion='4.2'
     slf4jVersion = '1.7.12'
     circeVersion = "0.9.3"
@@ -19,7 +19,15 @@ ext.libraries = [
     log4j: "log4j:log4j:1.2.17",
     mockitoCore: 'org.mockito:mockito-core:1.9.5-rc1',
     junit: "junit:junit:4.11",
-    festassert: 'org.easytesting:fest-assert:1.4'
+    festassert: 'org.easytesting:fest-assert:1.4',
+
+    vaadinCore: [dependencies.create("com.vaadin:vaadin-core") {
+//         Webjars are only needed when running in Vaadin 13 compatibility mode
+        ["com.vaadin.webjar", "org.webjars.bowergithub.insites",
+         "org.webjars.bowergithub.polymer", "org.webjars.bowergithub.polymerelements",
+         "org.webjars.bowergithub.vaadin", "org.webjars.bowergithub.webcomponents"]
+                .forEach { group -> exclude(group: group) }
+    }]
 ]
 
 subprojects {
@@ -83,6 +91,8 @@ subprojects {
             extendsFrom = []
         }
     }
+    task allDeps(type: DependencyReportTask) {}
+
 }
 
 

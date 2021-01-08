@@ -1,11 +1,5 @@
 package com.taskadapter.web.configeditor.file;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.server.FileDownloader;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Upload;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -13,21 +7,21 @@ import java.util.Locale;
 public final class ServerModelFilePanelPresenter {
     public static final int MAX_FILE_SIZE_BYTES = 5000000;
 
-    private IndexedContainer fileList;
+//    private IndexedContainer fileList;
     private ServerModeFilePanel view;
     private File selectedFile;
     private final UploadReceiver uploadReceiver;    
     private final File userContentDirectory;
     private final UploadProcessor uploadProcessor;
-    private final FileDownloader downloader;
+//    private final FileDownloader downloader;
 
     public ServerModelFilePanelPresenter(File userContentDirectory, UploadProcessor uploadProcessor) {
         this.userContentDirectory = userContentDirectory;
         this.uploadProcessor = uploadProcessor;
-        fileList = buildFileList();
+//        fileList = buildFileList();
         uploadReceiver = new UploadReceiver(userContentDirectory);
-        FileDownloadResource resource = new FileDownloadResource(new File("dummyfile"));
-        downloader = new FileDownloader(resource);
+//        FileDownloadResource resource = new FileDownloadResource(new File("dummyfile"));
+//        downloader = new FileDownloader(resource);
     }
 
     /**
@@ -37,7 +31,7 @@ public final class ServerModelFilePanelPresenter {
     @Deprecated
     void init(String initialFile) {
         if (initialFile != null) {
-            view.selectFileInCombobox(FileUtils.basename(initialFile));
+//            view.selectFileInCombobox(FileUtils.basename(initialFile));
         } else {
             onNoFileSelected();
         }
@@ -46,7 +40,7 @@ public final class ServerModelFilePanelPresenter {
     /**
      * Create sorted list of uploaded and exported files for current user
      */
-    private IndexedContainer buildFileList() {
+/*    private IndexedContainer buildFileList() {
         IndexedContainer container = new IndexedContainer();
         container.addContainerProperty(ServerModeFilePanel.COMBOBOX_ITEM_PROPERTY, String.class, null);
         
@@ -61,9 +55,9 @@ public final class ServerModelFilePanelPresenter {
                 new boolean[]{true});
 
         return container;
-    }
+    }*/
 
-    private static void addFileToContainer(IndexedContainer container, String fileName) {
+/*    private static void addFileToContainer(IndexedContainer container, String fileName) {
         Item item = container.addItem(fileName);
         item.getItemProperty(ServerModeFilePanel.COMBOBOX_ITEM_PROPERTY).setValue(fileName);
     }
@@ -81,7 +75,7 @@ public final class ServerModelFilePanelPresenter {
         view.setComboBoxItems(fileList);
         onNoFileSelected();
         downloader.extend(view.getDownloadButton());
-    }
+    }*/
 
     public void onFileSelected(String fileName) {
         if (fileName.isEmpty()) {
@@ -92,14 +86,14 @@ public final class ServerModelFilePanelPresenter {
         selectedFile = new File(userContentDirectory,
                 FileUtils.basename(fileName));
         SimpleDateFormat sdf = new SimpleDateFormat(ServerModeFilePanel.DATE_FORMAT, Locale.US);
-        view.setStatusLabelText(sdf.format(selectedFile.lastModified()));
-        downloader.setFileDownloadResource(new FileDownloadResource(selectedFile));
+//        view.setStatusLabelText(sdf.format(selectedFile.lastModified()));
+//        downloader.setFileDownloadResource(new FileDownloadResource(selectedFile));
         view.setDownloadEnabled(true);
     }
 
     public void onNoFileSelected() {
         this.selectedFile = null;
-        view.setStatusLabelText(ServerModeFilePanel.FILE_WILL_GENERATED_HINT);
+//        view.setStatusLabelText(ServerModeFilePanel.FILE_WILL_GENERATED_HINT);
         view.setDownloadEnabled(false);
     }
 
@@ -109,21 +103,18 @@ public final class ServerModelFilePanelPresenter {
 
     /**
      * This method gets called immediately after upload is started
-     *
-     * @param event event
      */
-    @SuppressWarnings("UnusedDeclaration")
+/*
     public void uploadStarted(Upload.StartedEvent event) {
         view.setStatusLabelText(ServerModeFilePanel.UPLOADING);
         view.setUploadEnabled(false);
     }
+*/
 
     /**
      * This method gets called when the upload finished successfully
-     *
-     * @param event event
      */
-    @SuppressWarnings("UnusedDeclaration")
+/*
     public void uploadSucceeded(Upload.SucceededEvent event) {
         final File uploaded = new File(userContentDirectory,
                 FileUtils.basename(event.getFilename()));
@@ -144,13 +135,11 @@ public final class ServerModelFilePanelPresenter {
         view.selectFileInCombobox(fileName);
     }
 
+*/
     /**
      * This method gets called when the upload failed
-     *
-     * @param event event
      */
-    @SuppressWarnings("UnusedDeclaration")
-    public void uploadFailed(Upload.FailedEvent event) {
+/*    public void uploadFailed(Upload.FailedEvent event) {
         view.setUploadEnabled(true);
         view.setStatusLabelText(ServerModeFilePanel.UPLOAD_FAILED);
     }
@@ -164,7 +153,7 @@ public final class ServerModelFilePanelPresenter {
         } else {
             view.setStatusLabelText(ServerModeFilePanel.FILE_DELETED_FAILED);
         }
-    }
+    }*/
 
     public String getSelectedFileNameOrEmpty() {
         return selectedFile != null ? selectedFile.getAbsolutePath() : "";
