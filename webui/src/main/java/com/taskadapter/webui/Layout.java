@@ -37,7 +37,14 @@ import java.util.List;
 @PWA(name = "My Project", shortName = "My Project", enableInstallPrompt = false)
 public class Layout extends AppLayout {
 
+    private static Tab configsListTab = createTab(VaadinIcon.EDIT, "Configs List", ConfigsListPage.class);
+    private static Tab schedulesListTab = createTab(VaadinIcon.CLOCK, "Schedules", SchedulesListPage.class);
+    private static Tab configureTab = createTab(VaadinIcon.TOOLS, "Configure", ConfigureSystemPage.class);
+    private static Tab supportTab = createTab(VaadinIcon.QUESTION, "Support", SupportPage.class);
+    private static Tab profileTab = createTab(VaadinIcon.USER, "Profile", UserProfilePage.class);
+
     private H1 viewTitle;
+    private Tabs menuTabs;
 
     public Layout() {
         addToNavbar(true, createHeaderContent());
@@ -56,30 +63,41 @@ public class Layout extends AppLayout {
         viewTitle = new H1("TaskAdapter");
         layout.expand(viewTitle);
 
-        Tabs menuTabs = createMenuTabs();
+        menuTabs = createMenuTabs();
         layout.setFlexGrow(2, menuTabs);
         layout.add(viewTitle, menuTabs);
 
         return layout;
     }
 
+    @Override
+    protected void afterNavigation() {
+        super.afterNavigation();
+        refreshTabsInMenu();
+    }
+
     private static Tabs createMenuTabs() {
         final Tabs tabs = new Tabs();
         tabs.setOrientation(Tabs.Orientation.HORIZONTAL);
-        tabs.add(getAvailableTabs());
         return tabs;
     }
 
+    private void refreshTabsInMenu() {
+        menuTabs.removeAll();
+        menuTabs.add(getAvailableTabs());
+    }
+
     private static Tab[] getAvailableTabs() {
-        final List<Tab> tabs = new ArrayList<>(4);
+        List<Tab> tabs = new ArrayList<>();
         if (SessionController.userIsLoggedIn()) {
-            tabs.add(createTab(VaadinIcon.EDIT, "Configs List", ConfigsListPage.class));
-            tabs.add(createTab(VaadinIcon.CLOCK, "Schedules", SchedulesListPage.class));
-            tabs.add(createTab(VaadinIcon.TOOLS, "Configure", ConfigureSystemPage.class));
-            tabs.add(createTab(VaadinIcon.QUESTION, "Support", SupportPage.class));
-            tabs.add(createTab(VaadinIcon.USER, "Profile", UserProfilePage.class));
-            final String contextPath = VaadinServlet.getCurrent().getServletContext().getContextPath();
-            final Tab logoutTab = createTab(createLogoutLink(contextPath));
+            tabs.add(configsListTab);
+            tabs.add(schedulesListTab);
+            tabs.add(configureTab);
+            tabs.add(supportTab);
+            tabs.add(profileTab);
+
+            String contextPath = VaadinServlet.getCurrent().getServletContext().getContextPath();
+            Tab logoutTab = createTab(createLogoutLink(contextPath));
             tabs.add(logoutTab);
         }
         return tabs.toArray(new Tab[0]);

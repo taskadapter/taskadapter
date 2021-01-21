@@ -78,8 +78,7 @@ public class ConfigsListPage extends BasePage {
 
     @Override
     protected void beforeEnter() {
-        System.out.println("before enter");
-//        refreshConfigs();
+        refreshConfigs();
     }
 
     public void refreshConfigs() {
