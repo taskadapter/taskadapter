@@ -44,10 +44,13 @@ class GithubEditorFactory extends PluginEditorFactory[GithubConfig, WebConnector
     binder.readBean(config)
 
     new DefaultSavableComponent(projectPanel, () => {
-      try binder.writeBean(config)
-      catch {
+      try {
+        binder.writeBean(config)
+        true
+      } catch {
         case e: ValidationException =>
           e.printStackTrace()
+          false
       }
     })
   }

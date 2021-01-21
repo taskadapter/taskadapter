@@ -56,8 +56,10 @@ public class BasecampClassicEditorFactory implements PluginEditorFactory<Basecam
         return new DefaultSavableComponent(projectPanel, () -> {
             try {
                 binder.writeBean(config);
+                return true;
             } catch (ValidationException e) {
                 e.printStackTrace();
+                return false;
             }
         });
     }

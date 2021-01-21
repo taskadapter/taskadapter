@@ -13,6 +13,7 @@ public class Navigator {
     public static final String SUPPORT = "support";
     public static final String PROFILE = "user-profile";
     public static final String LOGIN = "login";
+    public static final String HOME = "";
 
     public static void newConfig() {
         UI.getCurrent().navigate(NEW_CONFIG);
@@ -48,6 +49,10 @@ public class Navigator {
 
     public static void login() {
         UI.getCurrent().navigate(LOGIN);
+    }
+
+    public static void home() {
+        UI.getCurrent().navigate(HOME);
     }
 
 }

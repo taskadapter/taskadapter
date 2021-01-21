@@ -96,9 +96,10 @@ public class Layout extends AppLayout {
             tabs.add(supportTab);
             tabs.add(profileTab);
 
-            String contextPath = VaadinServlet.getCurrent().getServletContext().getContextPath();
-            Tab logoutTab = createTab(createLogoutLink(contextPath));
-            tabs.add(logoutTab);
+            // is there any need for this link really?
+//            String contextPath = VaadinServlet.getCurrent().getServletContext().getContextPath();
+//            Tab logoutTab = createTab(createLogoutLink(contextPath));
+//            tabs.add(logoutTab);
         }
         return tabs.toArray(new Tab[0]);
     }

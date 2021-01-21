@@ -63,8 +63,10 @@ public class TrelloEditorFactory implements PluginEditorFactory<TrelloConfig, We
         return new DefaultSavableComponent(projectPanel, () -> {
             try {
                 binder.writeBean(config);
+                return true;
             } catch (ValidationException e) {
                 e.printStackTrace();
+                return false;
             }
         });
     }

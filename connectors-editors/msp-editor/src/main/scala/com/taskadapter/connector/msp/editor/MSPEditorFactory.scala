@@ -48,7 +48,7 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     //    layout.add(createFilePanel(sandbox, config))
     layout.add(createInfoReadOnlyPanel)
     // TODO 14 update the save function
-    new DefaultSavableComponent(layout, () => {})
+    new DefaultSavableComponent(layout, () => {true})
   }
 
   override def getEditSetupPanel(sandbox: Sandbox, setup: FileSetup) = new ConnectorSetupPanel() {

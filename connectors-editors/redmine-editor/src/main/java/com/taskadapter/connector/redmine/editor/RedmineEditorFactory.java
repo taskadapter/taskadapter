@@ -82,8 +82,10 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
         return new DefaultSavableComponent(layout, () -> {
             try {
                 binder.writeBean(config);
+                return true;
             } catch (ValidationException e) {
                 e.printStackTrace();
+                return false;
             }
         });
     }

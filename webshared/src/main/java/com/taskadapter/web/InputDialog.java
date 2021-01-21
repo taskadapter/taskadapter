@@ -37,8 +37,9 @@ public class InputDialog extends Dialog {
         setCloseOnOutsideClick(true);
 
         Button okButton = new Button("Ok", event -> {
-            component.save();
-            close();
+            if (component.save()) {
+                close();
+            }
         });
         okButton.addClickShortcut(Key.ENTER);
 
@@ -65,6 +66,7 @@ public class InputDialog extends Dialog {
         new InputDialog(caption,
                 new DefaultSavableComponent(form, () -> {
                     recipient.gotInput(textField.getValue());
+                    return true;
                 })).open();
     }
 
@@ -82,6 +84,7 @@ public class InputDialog extends Dialog {
         new InputDialog(caption,
                 new DefaultSavableComponent(form, () -> {
                     recipient.gotInput(field.getValue());
+                    return true;
                 })).open();
     }
 

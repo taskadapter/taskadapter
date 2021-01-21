@@ -2,11 +2,13 @@ package com.taskadapter.web.uiapi;
 
 import com.vaadin.flow.component.Component;
 
+import java.util.concurrent.Callable;
+
 public class DefaultSavableComponent implements SavableComponent {
     private final Component component;
-    private final Runnable saveRunnable;
+    private final Callable<Boolean> saveRunnable;
 
-    public DefaultSavableComponent(Component component, Runnable saveRunnable) {
+    public DefaultSavableComponent(Component component, Callable<Boolean> saveRunnable) {
         this.component = component;
         this.saveRunnable = saveRunnable;
     }
@@ -17,7 +19,12 @@ public class DefaultSavableComponent implements SavableComponent {
     }
 
     @Override
-    public void save() {
-        saveRunnable.run();
+    public boolean save() {
+        try {
+            return saveRunnable.call();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

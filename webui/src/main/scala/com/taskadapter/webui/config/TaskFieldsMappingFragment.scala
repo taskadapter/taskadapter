@@ -257,9 +257,10 @@ class TaskFieldsMappingFragment(messages: Messages,
 
   override def getComponent: Component = layout
 
-  override def save(): Unit = {
+  override def save(): Boolean = {
     editablePojoMappings.editablePojoMappings.foreach(fieldMapping => {
       fieldMapping.getBinder.writeBean(fieldMapping)
     })
+    true
   }
 }
