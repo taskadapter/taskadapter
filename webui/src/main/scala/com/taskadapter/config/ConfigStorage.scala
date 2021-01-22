@@ -7,8 +7,6 @@ import com.google.common.io.Files
 import com.taskadapter.web.uiapi.{ConfigId, SetupId}
 import org.slf4j.LoggerFactory
 
-import scala.util.Random
-
 object ConfigStorage {
   /**
     * file name extension for legacy configs
@@ -17,13 +15,10 @@ object ConfigStorage {
     * as "id" until November 2020. Yay, 2020 is almost over now! I hope you all survived it.
     */
   private val legacyConfigFileExtension = ".ta_conf"
-  private val configFileExtension = ".conf"
   private val setupFileExtension = "json"
 
-  private val NUMBER_SEPARATOR = "_"
-
   val CONFIG_FILE_FILTER = new FilenameFilter {
-    override def accept(dir: File, name: String): Boolean = name.endsWith(configFileExtension)
+    override def accept(dir: File, name: String): Boolean = name.endsWith(ConfigStorageJava.configFileExtension)
   }
 
   val LEGACY_CONFIG_FILE_FILTER = new FilenameFilter {
@@ -49,15 +44,11 @@ class ConfigStorage(val rootDir: File) {
   }
 
   def getUserFolder(userLoginName: String): File = {
-    new File(rootDir, userLoginName)
-  }
-
-  private def getUserConfigsFolder(userLoginName: String) = {
-    new File(getUserFolder(userLoginName), "configs")
+    ConfigStorageJava.getUserFolder(rootDir, userLoginName)
   }
 
   def getUserConfigs(userLoginName: String): Seq[StoredExportConfig] = {
-    val folder = getUserConfigsFolder(userLoginName)
+    val folder = ConfigStorageJava.getUserConfigsFolder(rootDir, userLoginName)
 
     val configFiles = folder.listFiles(ConfigStorage.CONFIG_FILE_FILTER)
     val configs = getConfigsInFolder(configFiles)
@@ -126,9 +117,9 @@ class ConfigStorage(val rootDir: File) {
     val fileContents = NewConfigParser.toFileContent(configId, configName, connector1Id, connector1SavedSetupId, connector1Data,
       connector2Id, connector2SavedSetupId, connector2Data, mappings)
     try {
-      val folder = getUserConfigsFolder(userLoginName)
+      val folder = ConfigStorageJava.getUserConfigsFolder(rootDir, userLoginName)
       folder.mkdirs
-      val newConfigFile = getConfigFile(userLoginName, configId)
+      val newConfigFile = getConfigFile(ConfigId(userLoginName, configId))
       Files.write(fileContents, newConfigFile, Charsets.UTF_8)
     } catch {
       case e: IOException =>
@@ -145,11 +136,10 @@ class ConfigStorage(val rootDir: File) {
                       connector2Id: String, connector2SavedSetupId: SetupId, connector2Data: String,
                       mappings: String): ConfigId = {
     try {
-      val folder = getUserConfigsFolder(userLoginName)
+      val folder = ConfigStorageJava.getUserConfigsFolder(rootDir, userLoginName)
       folder.mkdirs
-      val numberOfFiles = countNumberOfFilesInDirectory(folder)
-      val newId = numberOfFiles + 1
-      val newConfigFile = getConfigFile(userLoginName, newId)
+      val newId = ConfigStorageJava.findUnusedConfigId(folder);
+      val newConfigFile = getConfigFile(ConfigId(userLoginName, newId))
 
       val fileContents = NewConfigParser.toFileContent(newId, configName,
         connector1Id, connector1SavedSetupId, connector1Data,
@@ -168,7 +158,7 @@ class ConfigStorage(val rootDir: File) {
   def saveConnectorSetup(userLoginName: String, setupId: SetupId, connectorSetup: String): Unit = {
     logger.info(s"Saving connector setup for user $userLoginName. id $setupId")
     try {
-      val folder = getUserFolder(userLoginName)
+      val folder = ConfigStorageJava.getUserFolder(rootDir, userLoginName)
       folder.mkdirs
       val newConfigFile = new File(folder, setupId.id)
       Files.write(connectorSetup, newConfigFile, Charsets.UTF_8)
@@ -180,7 +170,7 @@ class ConfigStorage(val rootDir: File) {
 
   @throws[StorageException]
   def loadConnectorSetupAsString(userName: String, setupId: SetupId): String = try {
-    val folder = getUserFolder(userName)
+    val folder = ConfigStorageJava.getUserFolder(rootDir, userName)
     val file = new File(folder, setupId.id)
     Files.toString(file, Charsets.UTF_8)
   } catch {
@@ -189,7 +179,7 @@ class ConfigStorage(val rootDir: File) {
   }
 
   def getAllConnectorSetupsAsStrings(userLoginName: String): Seq[String] = {
-    val folder = getUserFolder(userLoginName)
+    val folder = ConfigStorageJava.getUserFolder(rootDir, userLoginName)
     val setupFiles = folder.listFiles(ConfigStorage.setupFileFilter)
     if (setupFiles == null) return Seq()
 
@@ -197,23 +187,15 @@ class ConfigStorage(val rootDir: File) {
   }
 
   def deleteConfig(configId: ConfigId): Unit = {
-    getConfigFile(configId.ownerName, configId.id).delete()
+    getConfigFile(configId).delete()
   }
 
   def deleteSetup(userName: String, id: SetupId): Unit = {
-    new File(getUserFolder(userName), id.id).delete
-  }
-
-  @Deprecated
-  def getConfigFile(userName: String, id: Int): File = {
-    new File(getUserConfigsFolder(userName), id + ConfigStorage.configFileExtension)
+    new File(ConfigStorageJava.getUserFolder(rootDir, userName), id.id).delete
   }
 
   def getConfigFile(configId: ConfigId): File = {
-    new File(getUserConfigsFolder(configId.ownerName), configId.id + ConfigStorage.configFileExtension)
-  }
-
-  def countNumberOfFilesInDirectory(file : File) : Int = {
-    file.list().size
+    new File(ConfigStorageJava.getUserConfigsFolder(rootDir, configId.ownerName),
+      ConfigStorageJava.createFileName(configId.id))
   }
 }

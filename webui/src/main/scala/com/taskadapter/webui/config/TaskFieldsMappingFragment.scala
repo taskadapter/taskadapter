@@ -175,28 +175,17 @@ class TaskFieldsMappingFragment(messages: Messages,
   }
 
   private def addRemoveRowButton(field: EditableFieldMapping) = {
-    val button = new Button(Page.message("editConfig.mappings.buttonRemove"))
-    button.addClickListener(_ => removeRow(field))
+    val button = new Button(Page.message("editConfig.mappings.buttonRemove"),
+      _ => removeRow(field))
     gridLayout.add(button)
-//    gridLayout.setComponentAlignment(button, Alignment.MIDDLE_RIGHT)
   }
 
   private def removeRow(field: EditableFieldMapping) = {
-    var row = 0
-/*
-    while (row < gridLayout.getRows) {
-      val component = gridLayout.getComponent(0, row)
-      if (component != null) { // deleted some rows, so this is no longer valid
-        val data = component.asInstanceOf[AbstractComponent].getData
-        if (field.uniqueIdForTemporaryMap == data) {
-          gridLayout.removeRow(row)
-          editablePojoMappings.removeFieldFromList(field) // TODO this is a no-op when called from removeEmptyRows.
-        }
-
-      }
-      row += 1
-    }
-*/
+    // TODO 14 need to save?
+    // save the current fields info into the data model first
+    save()
+    editablePojoMappings.removeFieldFromList(field)
+    rebuildMappingUI()
   }
 
   private def addCheckbox(binder: Binder[EditableFieldMapping]) = {
