@@ -4,6 +4,7 @@ import com.taskadapter.web.uiapi.ConfigId;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.BasePage;
 import com.taskadapter.webui.ConfigOperations;
+import com.taskadapter.webui.EventTracker;
 import com.taskadapter.webui.Layout;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.SessionController;
@@ -52,7 +53,7 @@ public class ConfigsListPage extends BasePage {
 
         HorizontalLayout filterPanel = new HorizontalLayout();
         this.filterField = new TextField();
-        filterField.addValueChangeListener(e -> filterFields(e.getValue()));
+        filterField.addKeyPressListener(e -> filterFields(filterField.getValue()));
         filterPanel.add(new Label(Page.message("configsPage.filter")));
         filterPanel.add(filterField);
         filterPanel.setSpacing(true);
@@ -78,6 +79,7 @@ public class ConfigsListPage extends BasePage {
 
     @Override
     protected void beforeEnter() {
+        EventTracker.trackPage("configs_list");
         refreshConfigs();
     }
 

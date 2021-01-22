@@ -157,7 +157,8 @@ case class UISyncConfig(taskKeeperLocationStorage: TaskKeeperLocationStorage,
     }
     val finish = System.currentTimeMillis()
 
-    val finalResult = ExportResultFormat(configId, label, getConnector1.getSourceLocation, destinationLocation,
+    val resultId = String.valueOf(finish)
+    val finalResult = ExportResultFormat(resultId, configId, label, getConnector1.getSourceLocation, destinationLocation,
       Option(result.targetFileAbsolutePath),
       result.updatedTasksNumber, result.createdTasksNumber,
       result.generalErrors.map(getConnector2.decodeException),

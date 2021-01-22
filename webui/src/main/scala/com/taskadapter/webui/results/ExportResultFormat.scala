@@ -8,9 +8,10 @@ import com.taskadapter.web.uiapi.ConfigId
 import scala.beans.BeanProperty
 
 /**
-  * `BeanProperty` annotation is required for Vaadin to show these elements in [[ExportResultsListPage]]
+  * `BeanProperty` annotation is required for Vaadin to show these elements in [[ExportResultsLayout]]
   */
-case class ExportResultFormat(configId: ConfigId,
+case class ExportResultFormat(resultId: String,
+                              configId: ConfigId,
                               @BeanProperty configLabel: String,
                               @BeanProperty from: String,
                               @BeanProperty to: String,

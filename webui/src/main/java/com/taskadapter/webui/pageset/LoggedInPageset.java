@@ -1,75 +1,35 @@
 package com.taskadapter.webui.pageset;
 
-import com.google.common.io.Files;
-import com.taskadapter.Constants;
-import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.event.ApplicationActionEvent;
 import com.taskadapter.web.event.ApplicationActionEventWithValue;
 import com.taskadapter.web.event.ConfigCreateCompleted;
 import com.taskadapter.web.event.EventBusImpl;
 import com.taskadapter.web.event.PageShown;
-import com.taskadapter.web.event.ShowAllExportResultsRequested;
-import com.taskadapter.web.event.ShowConfigPageRequested;
-import com.taskadapter.web.event.ShowConfigsListPageRequested;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.uiapi.ConfigId;
-import com.taskadapter.web.uiapi.SetupId;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigCategory$;
-import com.taskadapter.webui.ConfigureSystemPage;
 import com.taskadapter.webui.EventTracker;
 import com.taskadapter.webui.Header;
-import com.taskadapter.webui.HeaderMenuBuilder;
-import com.taskadapter.webui.Page;
 import com.taskadapter.webui.SessionController;
-import com.taskadapter.webui.Sizes;
 import com.taskadapter.webui.TAPageLayout;
 import com.taskadapter.webui.Tracker;
 import com.taskadapter.webui.UserContext;
-import com.taskadapter.webui.config.NewSetupPage;
-import com.taskadapter.webui.config.SetupsListPage;
 import com.taskadapter.webui.export.ExportResultsFragment;
 import com.taskadapter.webui.license.LicenseFacade;
 import com.taskadapter.webui.pages.AppUpdateNotificationComponent;
-import com.taskadapter.webui.pages.ConfigPage;
-import com.taskadapter.webui.pages.ConfigsListPage;
-import com.taskadapter.webui.pages.DropInExportPage;
-import com.taskadapter.webui.pages.LicenseAgreementPage;
-import com.taskadapter.webui.pages.NewConfigPage;
-import com.taskadapter.webui.pages.SchedulesListPage;
-import com.taskadapter.webui.pages.SupportPage;
-import com.taskadapter.webui.pages.UserProfilePage;
 import com.taskadapter.webui.results.ExportResultFormat;
-import com.taskadapter.webui.results.ExportResultsListPage;
+import com.taskadapter.webui.results.ExportResultsLayout;
 import com.taskadapter.webui.service.Preservices;
 //import com.vaadin.server.StreamVariable;
 //import com.vaadin.server.VaadinSession;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.router.BeforeEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import rx.lang.scala.Subscriber;
-import scala.Function0;
-import scala.Function1;
 import scala.Option;
-import scala.collection.JavaConverters;
-import scala.collection.Seq;
-import scala.runtime.BoxedUnit;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.function.Function;
-
-import static com.taskadapter.webui.Page.message;
-
-/**
- * Pageset for logged-in user.
- */
 public class LoggedInPageset {
-    private static final Logger log = LoggerFactory.getLogger(LoggedInPageset.class);
 
     /**
      * Global (app-wide) services.
@@ -81,22 +41,12 @@ public class LoggedInPageset {
      */
     private final UserContext context;
 
-    /**
-     * License facade.
-     */
     private final LicenseFacade license;
-
-    /**
-     * Ui component.
-     */
-    private final Component ui;
 
     /**
      * Area for the current page.
      */
     private final HorizontalLayout currentComponentArea = new HorizontalLayout();
-
-    private final ConfigsListPage configsListPage;
 
     // TODO 14 not used
     /**
@@ -108,11 +58,9 @@ public class LoggedInPageset {
         this.context = ctx;
         this.license = new LicenseFacade(services.licenseManager);
 
-        final Component header = Header.render(() -> {}, createMenu(), license.isLicensed());
+        Component header = Header.render(() -> {}, new Label("dummy"), license.isLicensed());
 
-        currentComponentArea.setWidth(Sizes.mainWidth());
-        this.ui = TAPageLayout.layoutPage(header, new AppUpdateNotificationComponent(), currentComponentArea);
-        this.configsListPage = new ConfigsListPage();
+        TAPageLayout.layoutPage(header, currentComponentArea);
         registerEventListeners();
     }
 
@@ -143,22 +91,6 @@ public class LoggedInPageset {
                     }
                 });
 
-        EventBusImpl.observable(ShowConfigsListPageRequested.class)
-                .subscribe(new Subscriber<ShowConfigsListPageRequested>() {
-                    @Override
-                    public void onNext(ShowConfigsListPageRequested value) {
-                        showConfigsList();
-                    }
-                });
-
-        EventBusImpl.observable(ShowAllExportResultsRequested.class)
-                .subscribe(new Subscriber<ShowAllExportResultsRequested>() {
-                    @Override
-                    public void onNext(ShowAllExportResultsRequested value) {
-                        showExportResults(value.configId());
-                    }
-                });
-
         EventBusImpl.observable(ConfigCreateCompleted.class)
                 .subscribe(new Subscriber<ConfigCreateCompleted>() {
                     @Override
@@ -176,107 +108,14 @@ public class LoggedInPageset {
                 });
     }
 
-    /**
-     * Creates a self-management menu.
-     */
-    private Component createSelfManagementMenu() {
-        HorizontalLayout layout = new HorizontalLayout(
-                HeaderMenuBuilder.createButton(
-                        message("headerMenu.userProfile"),
-                        this::showUserProfilePage));
-        layout.setSpacing(true);
-        return layout;
-    }
-
-    private void showUserProfilePage() {
-        applyUI(new UserProfilePage());
-    }
-
-    private Component createMenu() {
-        final HorizontalLayout menu = new HorizontalLayout();
-        menu.setSpacing(true);
-//        menu.add(HeaderMenuBuilder.createButton(message("headerMenu.configs"),
-//                this::showConfigsList));
-
-        menu.add(HeaderMenuBuilder.createButton(message("headerMenu.schedules"),
-                this::showSchedules));
-
-        menu.add(HeaderMenuBuilder.createButton(message("headerMenu.results"),
-                this::showAllResults));
-
-        menu.add(HeaderMenuBuilder.createButton(message("headerMenu.configure"),
-                this::showSystemConfiguration));
-        menu.add(HeaderMenuBuilder.createButton(message("headerMenu.support"),
-                this::showSupport));
-
-        return menu;
-    }
-
-    private void showAllResults() {
-        ExportResultsListPage page = new ExportResultsListPage(showExportResultsJava());
-        Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults();
-        page.showResults(JavaConverters.seqAsJavaList(results));
-        EventTracker.trackPage("all_results");
-        applyUI(page);
-    }
-
-    private void showSchedules() {
-        applyUI(new SchedulesListPage());
-    }
-
-    /**
-     * Shows a support page.
-     */
-    private void showSupport() {
-        applyUI(new SupportPage());
-    }
-
-    /**
-     * Shows a license agreement page.
-     */
     private void showLicensePage() {
         EventTracker.trackPage("license_agreement");
 //        applyUI(LicenseAgreementPage.render(services.settingsManager,
 //                this::showHome));
     }
 
-    private void showConfigsList() {
-        configsListPage.refreshConfigs();
-        EventTracker.trackPage("configs_list");
-        applyUI(configsListPage);
-    }
-
-    private void showResult(ExportResultFormat result) {
-        ExportResultsFragment fragment = new ExportResultsFragment(
-                services.settingsManager.isTAWorkingOnLocalMachine());
-        Component component = fragment.showExportResult(result);
-        applyUI(component);
-    }
-
-    private void showExportResults(ConfigId configId) {
-        ExportResultsListPage exportResultsListPage = new ExportResultsListPage(showExportResultsJava());
-        Seq<ExportResultFormat> results = services.exportResultStorage.getSaveResults(configId);
-        exportResultsListPage.showResults(JavaConverters.seqAsJavaList(results));
-        applyUI(exportResultsListPage);
-    }
-
-    private Function<ExportResultFormat, Void> showExportResultsJava() {
-        return (result) -> {
-            showResult(result);
-            return null;
-        };
-    }
-
-    private void showHome() {
-        showConfigsList();
-    }
-
     private Sandbox createSandbox() {
         return new Sandbox(services.settingsManager.isTAWorkingOnLocalMachine(), context.configOps.syncSandbox());
-    }
-
-    private void showSystemConfiguration() {
-        applyUI(new ConfigureSystemPage());
     }
 
 /*

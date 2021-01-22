@@ -9,7 +9,7 @@ import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{ConfigId, UIConnectorConfig, UISyncConfig}
 import com.taskadapter.webui.`export`.ExportResultsFragment
 import com.taskadapter.webui.config.EditConfigPage
-import com.taskadapter.webui.results.{ExportResultFormat, ExportResultsListPage}
+import com.taskadapter.webui.results.{ExportResultFormat, ExportResultsLayout}
 import com.taskadapter.webui.service.Preservices
 import com.taskadapter.webui.{BasePage, ConfigOperations, EventTracker, Layout, SessionController}
 import com.vaadin.flow.component.dependency.CssImport
@@ -149,14 +149,14 @@ class ConfigPanel(config: UISyncConfig,
     layout.setWidth("920px")
 
     def showResultsList(configId: ConfigId) = {
-      val resultsList = new ExportResultsListPage(new java.util.function.Function[ExportResultFormat, Void] {
+      val resultsList = new ExportResultsLayout(new java.util.function.Function[ExportResultFormat, Void] {
         override def apply(result: ExportResultFormat): Void = {
           showSingleResult(result)
           null
         }
       })
       val results = services.exportResultStorage.getSaveResults(configId);
-      resultsList.showResults(results.asJava);
+      resultsList.showResults(results);
       layout.removeAll()
       layout.add(resultsList)
     }

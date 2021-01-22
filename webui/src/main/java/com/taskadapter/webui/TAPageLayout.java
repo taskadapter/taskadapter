@@ -1,13 +1,12 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.webui.pages.AppUpdateNotificationComponent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 public final class TAPageLayout {
 
-    public static Component layoutPage(Component header, AppUpdateNotificationComponent updateNotificationComponent, Component content) {
+    public static Component layoutPage(Component header, Component content) {
         VerticalLayout layout = new VerticalLayout();
 //        layout.setWidth(100, Unit.PERCENTAGE);
 
@@ -21,8 +20,6 @@ public final class TAPageLayout {
         layout.add(navigationPanel);
 //        layout.setComponentAlignment(navigationPanel, Alignment.MIDDLE_CENTER);
 
-        Component updaterUi = updateNotificationComponent.ui();
-        layout.add(updaterUi);
 //        layout.setComponentAlignment(updaterUi, Alignment.TOP_CENTER);
 
 //        Layout mainArea = new CssLayout();

@@ -4,6 +4,7 @@ import com.taskadapter.webui.pages.ConfigsListPage;
 import com.taskadapter.webui.pages.SchedulesListPage;
 import com.taskadapter.webui.pages.SupportPage;
 import com.taskadapter.webui.pages.UserProfilePage;
+import com.taskadapter.webui.results.ExportResultsListPage;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.HasComponents;
@@ -20,12 +21,13 @@ import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.PWA;
-import com.vaadin.flow.server.VaadinServlet;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.taskadapter.webui.Page.message;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -40,6 +42,7 @@ public class Layout extends AppLayout {
     private static Tab configsListTab = createTab(VaadinIcon.EDIT, "Configs List", ConfigsListPage.class);
     private static Tab schedulesListTab = createTab(VaadinIcon.CLOCK, "Schedules", SchedulesListPage.class);
     private static Tab configureTab = createTab(VaadinIcon.TOOLS, "Configure", ConfigureSystemPage.class);
+    private static Tab resultsTab = createTab(VaadinIcon.LIST, message("headerMenu.results"), ExportResultsListPage.class);
     private static Tab supportTab = createTab(VaadinIcon.QUESTION, "Support", SupportPage.class);
     private static Tab profileTab = createTab(VaadinIcon.USER, "Profile", UserProfilePage.class);
 
@@ -91,6 +94,7 @@ public class Layout extends AppLayout {
         List<Tab> tabs = new ArrayList<>();
         if (SessionController.userIsLoggedIn()) {
             tabs.add(configsListTab);
+            tabs.add(resultsTab);
             tabs.add(schedulesListTab);
             tabs.add(configureTab);
             tabs.add(supportTab);

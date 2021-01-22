@@ -14,6 +14,8 @@ public class Navigator {
     public static final String PROFILE = "user-profile";
     public static final String LOGIN = "login";
     public static final String HOME = "";
+    public static final String RESULTS_LIST = "results-list";
+    public static final String RESULT = "result";
 
     public static void newConfig() {
         UI.getCurrent().navigate(NEW_CONFIG);
@@ -55,4 +57,11 @@ public class Navigator {
         UI.getCurrent().navigate(HOME);
     }
 
+    public static void result(String resultId) {
+        UI.getCurrent().navigate(RESULT + "/" + resultId);
+    }
+
+    public static void resultsList() {
+        UI.getCurrent().navigate(RESULTS_LIST);
+    }
 }

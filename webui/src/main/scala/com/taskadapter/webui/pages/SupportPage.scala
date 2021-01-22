@@ -55,6 +55,9 @@ class SupportPage() extends BasePage {
     view.add(checkButton)
     view.add(lastVersionInfoLayout)
     //    versionPanel.setContent(view)
+
+    view.add(new AppUpdateNotificationComponent())
+
     add(view)
   }
 

@@ -1,7 +1,5 @@
 package com.taskadapter.webui
 
-
-
 import com.taskadapter.data.{State, States}
 import com.taskadapter.webui.Page.message
 import com.vaadin.flow.component.Component

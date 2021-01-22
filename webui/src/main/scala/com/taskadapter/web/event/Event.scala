@@ -20,8 +20,6 @@ case class ShowConfigPageRequested(configId: ConfigId) extends Event
 
 case class ShowConfigsListPageRequested() extends Event
 
-case class ShowAllExportResultsRequested(configId: ConfigId) extends Event
-
 case class ConfigCreateCompleted(configId: ConfigId) extends Event
 
 case class PageShown(pageName: String) extends Event
