@@ -41,6 +41,7 @@ public final class SessionController {
     static {
         services.licenseManager.loadInstalledTaskAdapterLicense();
 
+        // TODO 14 this class is also called from project tests. scheduler should not be a part of this
         ScheduleRunner scheduleRunner = new ScheduleRunner(services.uiConfigStore, services.schedulesStorage,
                 services.exportResultStorage, services.settingsManager);
         EventBusImpl.observable(SchedulerStatusChanged.class)

@@ -28,10 +28,7 @@ class ConfigureSystemPage() extends BasePage {
     configOps.authorizedOps)
 
   private def createAdminPermissionsSection(settingsManager: SettingsManager, modifiable: Boolean) = {
-//    val panel = new VerticalLayout
     val view = new VerticalLayout
-//    view.setMargin(true)
-//    panel.setContent(view)
     addCheckbox(view, Page.message("configurePage.showAllUsersConfigs"), settingsManager.schedulerEnabled, modifiable,
       newValue => settingsManager.setSchedulerEnabled(newValue))
 

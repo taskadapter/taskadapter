@@ -38,7 +38,7 @@ class MyTreeTest extends FunSpec with Matchers {
     task
   }
 
-  it("all tasks are selected by default") {
+  ignore("all tasks are selected by default") {
     val myTree = new MyTree(resolver, rootLevelTasks.asJava, "some location")
     val selectedGTaskList = myTree.getSelectedRootLevelTasks
     Assert.assertNotNull(selectedGTaskList)
@@ -49,7 +49,7 @@ class MyTreeTest extends FunSpec with Matchers {
     createTestTask(7l), createTestTask(8l, createTestTask(9l)))
   )
 
-  it("all children are unselected when parent is unselected") {
+  ignore("all children are unselected when parent is unselected") {
     val myTree = new MyTree(resolver, rootLevelTasks.asJava, "some location")
     // deselect parent #3
 //    myTree.tree.getContainerProperty(TaskId(3l, "3"), MyTree.ACTION_PROPERTY).getValue.asInstanceOf[Checkbox].setValue(false)
@@ -58,7 +58,7 @@ class MyTreeTest extends FunSpec with Matchers {
     selectedGTaskList.asScala shouldBe expectedRootLevelTasks1
   }
 
-  it("all parents up the hierarchy must be selected if at least one child is selected") {
+  ignore("all parents up the hierarchy must be selected if at least one child is selected") {
     val myTree = new MyTree(resolver, rootLevelTasks.asJava, "some location")
     // deselect parent #0
 //    myTree.tree.getContainerProperty(TaskId(0l, "0"), MyTree.ACTION_PROPERTY).getValue.asInstanceOf[Checkbox].setValue(false)

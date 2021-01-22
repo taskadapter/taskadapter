@@ -1,5 +1,6 @@
 package com.taskadapter.webui;
 
+import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.VaadinService;
 
 import javax.servlet.http.Cookie;
@@ -21,7 +22,12 @@ public class CookiesManager {
     }
 
     public static String getCookie(String cookieName) {
-        Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
+        VaadinRequest currentRequest = VaadinService.getCurrentRequest();
+        // it can be null when running some tests
+        if (currentRequest == null) {
+            return null;
+        }
+        Cookie[] cookies = currentRequest.getCookies();
         if (cookies == null) {
             return null;
         }

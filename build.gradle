@@ -62,7 +62,7 @@ subprojects {
     }
 
     dependencies {
-        compile 'org.scala-lang:scala-library:2.12.5'
+        compile 'org.scala-lang:scala-library:2.12.10'
 
         compile 'com.google.guava:guava:19.0'
         testCompile libraries.junit
