@@ -18,7 +18,9 @@ import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.redmineapi.bean.SavedQuery;
 import com.taskadapter.redmineapi.bean.Tracker;
 import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,17 +30,15 @@ import java.util.List;
  */
 public class RedmineLoaders {
 
-    // TODO TA3 reuse the same http client everywhere instead of creating it here
-    private static final HttpClient httpClient = RedmineManagerFactory.createRedmineHttpClient();
-
     static void validate(WebConnectorSetup setup) throws ServerURLNotSetException {
         if (Strings.isNullOrEmpty(setup.host())) {
             throw new ServerURLNotSetException();
         }
     }
 
-    public static List<? extends NamedKeyedObject> loadData(WebConnectorSetup setup, String projectKey) throws BadConfigException, RedmineException {
+    public static List<? extends NamedKeyedObject> loadData(WebConnectorSetup setup, String projectKey) throws BadConfigException, RedmineException, ConnectorException {
         validate(setup);
+        HttpClient httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.host());
         RedmineManager mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient);
         List<NamedKeyedObject> result = new ArrayList<>();
         // get project id to filter saved queries
@@ -62,11 +62,13 @@ public class RedmineLoaders {
                         .getId()), savedQuery.getName()));
             }
         }
+        closeClientIfPossible(httpClient);
         return result;
     }
 
     public static List<? extends NamedKeyedObject> loadTrackers(RedmineConfig config, WebConnectorSetup setup) throws ConnectorException {
         validate(setup);
+        HttpClient httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.host());
         RedmineManager redmineManager = RedmineManagerFactory.createRedmineManager(setup, httpClient);
         Project project;
         String projectKey = config.getProjectKey();
@@ -84,12 +86,14 @@ public class RedmineLoaders {
             result.add(new NamedKeyedObjectImpl(Integer.toString(tracker
                     .getId()), tracker.getName()));
         }
+        closeClientIfPossible(httpClient);
         return result;
     }
     
     public static Priorities loadPriorities(WebConnectorSetup setup) throws ConnectorException {
         validate(setup);
         final Priorities defaultPriorities = RedmineConfig.generateDefaultPriorities();
+        HttpClient httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.host());
         final RedmineManager mgr = RedmineManagerFactory.createRedmineManager(setup,httpClient);
         final Priorities result = new Priorities();
         try {
@@ -99,6 +103,17 @@ public class RedmineLoaders {
         } catch (RedmineException e) {
             throw RedmineExceptions.convertException(e);
         }
+        closeClientIfPossible(httpClient);
         return result;
+    }
+
+    private static void closeClientIfPossible(HttpClient client) throws ConnectorException {
+        if (client instanceof CloseableHttpClient) {
+            try {
+                ((CloseableHttpClient) client).close();
+            } catch (IOException e) {
+                throw new ConnectorException("error while closing httpclient provided by Redmine manager"+ e.toString(), e);
+            }
+        }
     }
 }

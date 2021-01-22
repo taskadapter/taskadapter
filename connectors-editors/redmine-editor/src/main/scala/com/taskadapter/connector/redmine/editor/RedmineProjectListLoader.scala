@@ -11,7 +11,7 @@ import com.taskadapter.redmineapi.RedmineException
 import com.taskadapter.web.callbacks.DataProvider
 
 class RedmineProjectListLoader(setup: WebConnectorSetup) extends DataProvider[java.util.List[_ <: NamedKeyedObject]] {
-  private val httpClient = RedmineManagerFactory.createRedmineHttpClient
+  private val httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.host)
   val mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient)
 
   @throws[ServerURLNotSetException]

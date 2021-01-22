@@ -22,7 +22,7 @@ trait TempRedmineProject {
 
   val junitTestProject = ProjectFactory.create("TA Redmine Integration test project", "test" + Calendar.getInstance.getTimeInMillis)
 
-  val httpClient = RedmineManagerFactory.createRedmineHttpClient()
+  val httpClient = RedmineManagerFactory.createRedmineHttpClient(serverInfo.host)
   var mgr = RedmineManagerFactory.createRedmineManager(serverInfo, httpClient)
   val redmineUser = mgr.getUserManager.getCurrentUser
   val currentUser = RedmineToGUser.convertToGUser(redmineUser)

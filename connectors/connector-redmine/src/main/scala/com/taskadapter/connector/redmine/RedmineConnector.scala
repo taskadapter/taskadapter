@@ -34,7 +34,7 @@ object RedmineConnector {
 
 class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends NewConnector {
   override def loadTaskByKey(id: TaskId, rows: Iterable[FieldRow[_]]): GTask = {
-    val httpClient = RedmineManagerFactory.createRedmineHttpClient()
+    val httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.host)
     try {
       val mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient)
       val intKey = id.id.toInt
@@ -49,7 +49,7 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
   }
 
   override def loadData(): util.List[GTask] = {
-    val httpClient = RedmineManagerFactory.createRedmineHttpClient()
+    val httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.host)
     try {
       val mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient)
       val usersCache = loadUsersIfAllowed(mgr)
@@ -74,7 +74,7 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
   override def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask],
                         monitor: ProgressMonitor,
                         fieldRows: Iterable[FieldRow[_]]): SaveResult = try {
-    val httpClient = RedmineManagerFactory.createRedmineHttpClient()
+    val httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.host)
     val mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient)
     try {
       val rmProject = mgr.getProjectManager.getProjectByKey(config.getProjectKey)

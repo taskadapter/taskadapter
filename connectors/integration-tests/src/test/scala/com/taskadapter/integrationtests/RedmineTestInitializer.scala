@@ -11,7 +11,7 @@ object RedmineTestInitializer {
   private val logger = LoggerFactory.getLogger(RedmineTestInitializer.getClass)
   private val setup = TestConfigs.getRedmineSetup
   // TODO TA3 reuse the same http client everywhere instead of creating it here
-  val httpClient = RedmineManagerFactory.createRedmineHttpClient
+  val httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.host)
 
   var mgr: RedmineManager = RedmineManagerFactory.createRedmineManager(setup, httpClient)
   val redmineUser = mgr.getUserManager.getCurrentUser

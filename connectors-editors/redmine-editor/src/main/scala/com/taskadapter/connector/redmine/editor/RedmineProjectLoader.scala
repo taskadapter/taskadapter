@@ -14,7 +14,7 @@ import org.slf4j.{Logger, LoggerFactory}
 class RedmineProjectLoader(config: RedmineConfig, setup: WebConnectorSetup) extends DataProvider[GProject] {
   private val logger = LoggerFactory.getLogger(classOf[RedmineProjectLoader])
 
-  private val httpClient = RedmineManagerFactory.createRedmineHttpClient
+  private val httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.host)
 
   /**
     * Load project info.

@@ -6,10 +6,10 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ClientConnectionManager;
 
 public class RedmineManagerFactory {
-    public static HttpClient createRedmineHttpClient() {
+    public static HttpClient createRedmineHttpClient(String uri) {
         try {
             ClientConnectionManager insecureConnectionManager = com.taskadapter.redmineapi.RedmineManagerFactory.createInsecureConnectionManager();
-            return com.taskadapter.redmineapi.RedmineManagerFactory.getNewHttpClient(insecureConnectionManager);
+            return com.taskadapter.redmineapi.RedmineManagerFactory.getNewHttpClient(uri, insecureConnectionManager);
         } catch (Exception e) {
             throw new RuntimeException("cannot create a connection manager for insecure SSL connections", e);
         }
