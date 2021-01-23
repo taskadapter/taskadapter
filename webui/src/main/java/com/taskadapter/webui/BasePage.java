@@ -1,5 +1,6 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.web.SettingsManager;
 import com.taskadapter.webui.auth.PermissionViolationException;
 import com.taskadapter.webui.auth.Permissions;
 import com.taskadapter.webui.pages.Navigator;
@@ -45,6 +46,14 @@ public abstract class BasePage extends VerticalLayout implements BeforeEnterObse
             }
         } catch (PermissionViolationException e) {
             event.rerouteTo(Navigator.LOGIN);
+            return;
+        }
+
+        SettingsManager settingsManager = SessionController.getServices().settingsManager;
+        if (!settingsManager.isLicenseAgreementAccepted()
+                && !location.getFirstSegment().equals(Navigator.LICENSE)
+                && !location.getFirstSegment().equals(Navigator.LOGIN)) {
+            event.rerouteTo(Navigator.LICENSE);
             return;
         }
 

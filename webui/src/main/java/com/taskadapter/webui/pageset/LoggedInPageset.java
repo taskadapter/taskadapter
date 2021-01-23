@@ -108,12 +108,6 @@ public class LoggedInPageset {
                 });
     }
 
-    private void showLicensePage() {
-        EventTracker.trackPage("license_agreement");
-//        applyUI(LicenseAgreementPage.render(services.settingsManager,
-//                this::showHome));
-    }
-
     private Sandbox createSandbox() {
         return new Sandbox(services.settingsManager.isTAWorkingOnLocalMachine(), context.configOps.syncSandbox());
     }
@@ -247,21 +241,4 @@ public class LoggedInPageset {
         currentComponentArea.add(ui);
 //        currentComponentArea.setComponentAlignment(ui, Alignment.TOP_CENTER);
     }
-
-    /**
-     * Creates a new pageset for logged-in user.
-     *
-     * @param services       global services.
-     * @param ctx            Context for active user.
-     * @return pageset UI.
-     */
-/*    public static Component createPageset(Preservices services, UserContext ctx) {
-        final LoggedInPageset ps = new LoggedInPageset(services,
-                ctx);
-        if (services.settingsManager.isLicenseAgreementAccepted())
-            ps.showHome();
-        else
-            ps.showLicensePage();
-        return ps.ui;
-    }*/
 }

@@ -16,6 +16,7 @@ public class Navigator {
     public static final String HOME = "";
     public static final String RESULTS_LIST = "results-list";
     public static final String RESULT = "result";
+    public static final String LICENSE = "license";
 
     public static void newConfig() {
         UI.getCurrent().navigate(NEW_CONFIG);
@@ -63,5 +64,9 @@ public class Navigator {
 
     public static void resultsList() {
         UI.getCurrent().navigate(RESULTS_LIST);
+    }
+
+    public static void license() {
+        UI.getCurrent().navigate(LICENSE);
     }
 }
