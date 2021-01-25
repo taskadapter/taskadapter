@@ -40,15 +40,10 @@ Task Adapter’s Redmine Connector uses Redmine Java API. The source code is her
 
 ## How to build from source code
 
-Compile and test:
-
-    ./gradlew clean build
-
-Full build:
-
-    ./gradlew clean build distZip
-This creates a ZIP file in taskadapter\launcher\build\distributions folder. Unpack the ZIP anywhere,
-run bin/launch.bat. It will automatically open TA URL in browser when the web app is ready.
+    ./gradlew clean build -Pvaadin.productionMode
+    
+This creates a ZIP file in taskadapter\webui\build\distributions folder. Unpack the ZIP anywhere,
+run `bin/webui` script. It will automatically open TA URL in browser when the web app is ready.
 
 ## How to run locally
 

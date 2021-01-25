@@ -1,7 +1,10 @@
 plugins {
-    id 'war'
+    id 'java'
+    id 'application'
     id 'com.vaadin' version '0.14.3.7'
 }
+
+def jettyVersion = "9.4.35.v20201120"
 
 repositories {
     jcenter()
@@ -11,11 +14,6 @@ dependencies {
     compile 'javax.mail:mail:1.4.5'
     // this library is uploaded to our own Nexus repo because its Maven Central version is broken.
 //    compile 'com.taskadapter:googleanalyticstracker:2.2.0'
-
-    // this Jar is actually added to the WAR file by the Vaadin Gradle plugin.
-    // It is referenced here as a "runtime" dependency because otherwise IDEA does not copy
-    // it to the dev output folder (classes/artifacts/webui/exploded/webui.war)
-//    runtime "com.vaadin:vaadin-themes:$vaadinVersion"
 
     compile libraries.slf4j
     compile libraries.libjson
@@ -41,23 +39,43 @@ dependencies {
     compile project(":connectors-editors:redmine-editor")
     compile project(":connectors-editors:editor-trello")
 
+    implementation("javax.servlet:javax.servlet-api:3.1.0")
+    implementation("org.eclipse.jetty:jetty-continuation:${jettyVersion}")
+    implementation("org.eclipse.jetty:jetty-server:${jettyVersion}")
+    implementation("org.eclipse.jetty.websocket:websocket-server:${jettyVersion}")
+    implementation("org.eclipse.jetty.websocket:javax-websocket-server-impl:${jettyVersion}") {
+        exclude(module: "javax.websocket-client-api")
+    }
+
     testCompile project(":test-utilities")
     testCompile libraries.festassert
 }
 
-// TODO 14 remove
-//vaadin.mainSourceSet = sourceSets.main.allSource
-//vaadin {
-//    version = "$vaadinVersion"
-//}
+application {
+    mainClassName = "com.taskadapter.app.TALauncher"
+}
+startScripts {
 
-war {
-    // Exclude unnecessary GWT Compiler artifacts
-//    exclude "**/gwt-unitCache/**"
+    // this will be used as the name for generated launch scripts
+    applicationName = "taskadapter"
 
-    // this file name is used by TALauncher script to init webapp context.
-    // need to explicitly set it here, otherwise you get webui-projectversion.war file
-    // while both TALauncher class and launcher/build.gradle expect "webui.war" without project version in the name
-    archiveName "$WAR_FILE_NAME"
+    ext.jvmOpts = "-Xmx512m"
+    // "defaultJvmOpts" is a special variable recognized by "application" plugin.
+    // it is used to set JVM options
+    defaultJvmOpts = [ext.jvmOpts]
+
+    doLast {
+        // add "--openTaskAdapterPageInWebBrowser" at the end of the command line parameters
+        def WIN_REPLACE_ARG2 = "com.taskadapter.app.TALauncher "
+        def WIN_REPLACE_ARG2_WITH = WIN_REPLACE_ARG2 + " --openTaskAdapterPageInWebBrowser "
+        windowsScript.text = windowsScript.text.replace(WIN_REPLACE_ARG2, WIN_REPLACE_ARG2_WITH)
+
+        def LIN_REPLACE_ARG2 = "com.taskadapter.app.TALauncher "
+        def LIN_REPLACE_ARG2_WITH = LIN_REPLACE_ARG2 + " --openTaskAdapterPageInWebBrowser "
+        unixScript.text = unixScript.text.replace(LIN_REPLACE_ARG2, LIN_REPLACE_ARG2_WITH)
+    }
 }
 
+vaadin {
+    pnpmEnable = true
+}

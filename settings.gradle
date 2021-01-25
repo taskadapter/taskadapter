@@ -1,6 +1,5 @@
 include "common",
-        "launcher",
-        "mainapp", "test-utilities", "test-utilities-ui",
+        "test-utilities", "test-utilities-ui",
         "webshared",
         "webui",
         "connectors:connector-msp",

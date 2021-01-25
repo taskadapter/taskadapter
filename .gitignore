@@ -13,10 +13,8 @@ target
 .settings
 .project
 .classpath
-.metadata
-bin
-/webui/src/main/webapp/VAADIN/themes/mytheme/addons.scss
-/webui/src/main/webapp/VAADIN/themes/mytheme/styles.css
-/webui/src/main/webapp/VAADIN/themes/mytheme/styles.css.gz
+/webui/src/main/resources/webapp/VAADIN/themes/mytheme/addons.scss
+/webui/src/main/resources/webapp/VAADIN/themes/mytheme/styles.css
+/webui/src/main/resources/webapp/VAADIN/themes/mytheme/styles.css.gz
 /webui/node_modules
 

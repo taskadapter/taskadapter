@@ -1,5 +1,6 @@
 ext {
     vaadinVersion = '14.4.6'
+    vaadinFlowServerVersion = '5.0.2'
     httpClientVersion='4.2'
     slf4jVersion = '1.7.12'
     circeVersion = "0.9.3"
