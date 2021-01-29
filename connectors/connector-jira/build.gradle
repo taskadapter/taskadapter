@@ -1,5 +1,6 @@
 dependencies {
     compile libraries.slf4j
+    testCompile libraries.assertJ
 
     // you check for new versions here
     // https://maven.atlassian.com/content/groups/public/com/atlassian/jira/jira-rest-java-client-core/

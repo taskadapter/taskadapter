@@ -21,7 +21,7 @@ ext.libraries = [
     mockitoCore: 'org.mockito:mockito-core:1.9.5-rc1',
     junit: "junit:junit:4.11",
     festassert: 'org.easytesting:fest-assert:1.4',
-
+    assertJ   : "org.assertj:assertj-core:3.18.0",
     vaadinCore: [dependencies.create("com.vaadin:vaadin-core") {
 //         Webjars are only needed when running in Vaadin 13 compatibility mode
         ["com.vaadin.webjar", "org.webjars.bowergithub.insites",

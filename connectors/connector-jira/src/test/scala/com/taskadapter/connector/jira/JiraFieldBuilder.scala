@@ -2,6 +2,7 @@ package com.taskadapter.connector.jira
 
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.model.{AssigneeLoginName, Summary, TaskStatus}
+import scala.collection.JavaConverters._
 
 object JiraFieldBuilder {
   def getDefault(): List[FieldRow[_]] = {

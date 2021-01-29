@@ -20,7 +20,7 @@ object RedmineConnector {
 
   @throws[RedmineException]
   private def loadPriorities(rows: java.lang.Iterable[FieldRow[_]], mgr: RedmineManager): util.Map[String, Integer] = {
-    if (FieldRowFinder.containsTargetField(rows.asScala.toSeq, Priority))
+    if (FieldRowFinder.containsTargetField(rows, Priority))
       loadPriorities(mgr)
     else
       new util.HashMap[String, Integer]
@@ -33,7 +33,7 @@ object RedmineConnector {
 }
 
 class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends NewConnector {
-  override def loadTaskByKey(id: TaskId, rows: Iterable[FieldRow[_]]): GTask = {
+  override def loadTaskByKey(id: TaskId, rows: java.lang.Iterable[FieldRow[_]]): GTask = {
     val httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.host)
     try {
       val mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient)
@@ -73,12 +73,12 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
 
   override def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask],
                         monitor: ProgressMonitor,
-                        fieldRows: Iterable[FieldRow[_]]): SaveResult = try {
+                        fieldRows: java.lang.Iterable[FieldRow[_]]): SaveResult = try {
     val httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.host)
     val mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient)
     try {
       val rmProject = mgr.getProjectManager.getProjectByKey(config.getProjectKey)
-      val priorities = RedmineConnector.loadPriorities(fieldRows.asJava, mgr)
+      val priorities = RedmineConnector.loadPriorities(fieldRows, mgr)
       val statusList = mgr.getIssueManager.getStatuses
       val versions = mgr.getProjectManager.getVersions(rmProject.getId)
       val categories = mgr.getIssueManager.getCategories(rmProject.getId)
@@ -87,7 +87,7 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
       val converter = new GTaskToRedmine(config, priorities, rmProject, userCache, customFieldDefinitions, statusList,
         versions, categories)
       val saver = new RedmineTaskSaver(mgr.getIssueManager, config)
-      val tsrb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, fieldRows,
+      val tsrb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, fieldRows.asScala,
         setup.host)
       TaskSavingUtils.saveRemappedRelations(config, tasks, saver, tsrb)
       tsrb.getResult

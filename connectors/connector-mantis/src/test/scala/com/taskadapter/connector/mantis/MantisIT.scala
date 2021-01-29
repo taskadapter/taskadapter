@@ -49,7 +49,7 @@ class MantisIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     fixture.taskCreatedAndUpdatedOK(MantisFieldBuilder.getDefault(), task, Summary, "new value")
   }
 
-  private def getTestSaver(rows: List[FieldRow[_]]) = new TestSaver(getConnector(), rows)
+  private def getTestSaver(rows: java.util.List[FieldRow[_]]) = new TestSaver(getConnector(), rows)
 
   private def getConnector(): MantisConnector = getConnector(config)
 

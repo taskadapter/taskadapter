@@ -3,4 +3,10 @@ dependencies {
 
     compile 'net.sf.mpxj:mpxj:7.2.1'
     compile 'org.apache.poi:poi:3.17'
+
+    // these 3 libs are required for post-Java8 world where jaxb api is not included in the JDK anymore
+    compile 'javax.xml.bind:jaxb-api:2.3.1'
+    compile 'com.sun.xml.bind:jaxb-core:2.3.0.1'
+    compile 'com.sun.xml.bind:jaxb-impl:2.3.1'
+    // end of the post-Java8 collection
 }

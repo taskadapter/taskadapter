@@ -9,6 +9,10 @@ object GTaskBuilder {
     new GTaskBuilder().withRandom(Field(fieldName)).build()
   }
 
+  def withRandomJava(field: Field[_]): GTask = {
+    new GTaskBuilder().withRandom(field).build()
+  }
+
   def withRandom(field: Field[_]): GTask = {
     new GTaskBuilder().withRandom(field).build()
   }

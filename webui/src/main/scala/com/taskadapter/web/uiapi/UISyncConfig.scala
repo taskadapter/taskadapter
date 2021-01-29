@@ -129,9 +129,9 @@ case class UISyncConfig(taskKeeperLocationStorage: TaskKeeperLocationStorage,
     *
     * @return source mappings
     */
-  private def generateFieldRowsToExportLeft = MappingBuilder.build(fieldMappings, ExportDirection.LEFT)
+  private def generateFieldRowsToExportLeft = MappingBuilder.build(fieldMappings, ExportDirection.LEFT).asJava
 
-  private def generateFieldRowsToExportRight = MappingBuilder.build(fieldMappings, ExportDirection.RIGHT)
+  private def generateFieldRowsToExportRight = MappingBuilder.build(fieldMappings, ExportDirection.RIGHT).asJava
 
   def getPreviouslyCreatedTasksResolver(): PreviouslyCreatedTasksResolver = {
     val location1 = getConnector1.getSourceLocation
@@ -148,7 +148,7 @@ case class UISyncConfig(taskKeeperLocationStorage: TaskKeeperLocationStorage,
     val location1 = getConnector1.getSourceLocation
     val location2 = getConnector2.getSourceLocation
     val previouslyCreatedTasksResolver = taskKeeperLocationStorage.loadTasks(location1, location2)
-    val result = TaskSaver.save(previouslyCreatedTasksResolver, connectorTo, destinationLocation, rows, tasks, progressMonitor)
+    val result = TaskSaver.save(previouslyCreatedTasksResolver, connectorTo, destinationLocation, rows.asScala, tasks, progressMonitor)
     if (reversed) {
       taskKeeperLocationStorage.store(location2, location1,
         result.keyToRemoteKeyList.map(pair => (pair._2, pair._1)))
@@ -183,7 +183,7 @@ case class UISyncConfig(taskKeeperLocationStorage: TaskKeeperLocationStorage,
   private def makeUpdater = {
     val sourceConnector = getConnector1.createConnectorInstance
     val destinationConnector = getConnector2.createConnectorInstance
-    val updater = new Updater(destinationConnector, generateFieldRowsToExportRight.asJava, sourceConnector, getConnector1.getDestinationLocation)
+    val updater = new Updater(destinationConnector, generateFieldRowsToExportRight, sourceConnector, getConnector1.getDestinationLocation)
     updater
   }
 

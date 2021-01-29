@@ -4,7 +4,7 @@ import java.util
 
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.ProgressMonitorUtils
-import com.taskadapter.connector.testlib.{CommonTestChecks, FieldRowBuilder, StatefulTestTaskSaver, TestUtils}
+import com.taskadapter.connector.testlib.{CommonTestChecks, FieldRowBuilder, StatefulTestTaskSaver, TestUtilsJava}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model._
 import org.fest.assertions.Assertions.assertThat
@@ -23,8 +23,8 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     val connector = getConnector
     val summary = "load by key"
     val task = new JiraGTaskBuilder(summary).withType("Task").build
-    val id = TestUtils.save(connector, task, JiraFieldBuilder.getDefault)
-    val loadedTask = connector.loadTaskByKey(id, JiraFieldBuilder.getDefault)
+    val id = TestUtilsJava.save(connector, task, JiraFieldBuilder.getDefault.asJava)
+    val loadedTask = connector.loadTaskByKey(id, JiraFieldBuilder.getDefault.asJava)
     assertThat(loadedTask.getValue(Summary)).isEqualTo(summary)
     TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
   }
@@ -46,43 +46,24 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     val connector = getConnector
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, util.Arrays.asList(parentTask),
       ProgressMonitorUtils.DUMMY_MONITOR,
-      JiraFieldBuilder.getDefault)
+      JiraFieldBuilder.getDefault.asJava)
     assertThat(result.createdTasksNumber).isEqualTo(3)
     val parentTaskId = result.keyToRemoteKeyList.head._2
     val subTask1Id = result.keyToRemoteKeyList(1)._2
     val subTask2Id = result.keyToRemoteKeyList(2)._2
 
-    val loadedSubTask1 = connector.loadTaskByKey(subTask1Id, JiraFieldBuilder.getDefault)
-    val loadedSubTask2 = connector.loadTaskByKey(subTask2Id, JiraFieldBuilder.getDefault)
+    val loadedSubTask1 = connector.loadTaskByKey(subTask1Id, JiraFieldBuilder.getDefault.asJava)
+    val loadedSubTask2 = connector.loadTaskByKey(subTask2Id, JiraFieldBuilder.getDefault.asJava)
     assertThat(loadedSubTask1.getParentIdentity).isEqualTo(parentTaskId)
     assertThat(loadedSubTask2.getParentIdentity).isEqualTo(parentTaskId)
 
     TestJiraClientHelper.deleteTasks(client, loadedSubTask1.getIdentity, loadedSubTask2.getIdentity, parentTaskId)
   }
 
-  // TODO move to some generic tests, this is not Jira-specific
-  it("task created with default description field") {
-    // description is empty so that the default value will be set later
-    val task = GTaskBuilder.withSummary()
-    val connector = getConnector
-
-    val rows = List(
-      FieldRow(Summary, Summary, ""),
-      FieldRow(Description, Description, "some default")
-    )
-
-    val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows)
-    assertThat(result.createdTasksNumber).isEqualTo(1)
-    val taskId = result.keyToRemoteKeyList.head._2
-    val loadedTask = connector.loadTaskByKey(taskId, rows)
-    assertThat(loadedTask.getValue(Description)).isEqualTo("some default")
-    TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
-  }
-
   it("assignee is saved and loaded") {
     val task = new JiraGTaskBuilder().build().setValue(AssigneeLoginName, "user")
-    val id = TestUtils.save(getConnector, task, JiraFieldBuilder.getDefault)
-    val loadedTask = getConnector.loadTaskByKey(id, JiraFieldBuilder.getDefault)
+    val id = TestUtilsJava.save(getConnector, task, JiraFieldBuilder.getDefault.asJava)
+    val loadedTask = getConnector.loadTaskByKey(id, JiraFieldBuilder.getDefault.asJava)
     loadedTask.getValue(AssigneeLoginName) shouldBe "user"
     TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
   }
@@ -101,8 +82,8 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     val rows = JiraFieldBuilder.getDefault() ++ List(
       FieldRow(field, field, "")
     )
-    val id = TestUtils.save(getConnector, task, rows)
-    val loadedTask = getConnector.loadTaskByKey(id, rows)
+    val id = TestUtilsJava.save(getConnector, task, rows.asJava)
+    val loadedTask = getConnector.loadTaskByKey(id, rows.asJava)
     loadedTask.getValue(field) should contain only ("option1", "option2")
     TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity)
   }
@@ -111,25 +92,18 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
 
   describe("Create") {
     it("task is created with default task type set in config") {
-      val created = TestUtils.saveAndLoad(getConnector,
+      val created = TestUtilsJava.saveAndLoad(getConnector,
         new GTaskBuilder().withRandom(Summary)/*.withField(TaskType, "Story")*/.build(),
-        rows)
+        rows.asJava)
       created.getValue(TaskType) shouldBe config.getDefaultTaskType
       TestJiraClientHelper.deleteTasks(client, created.getIdentity)
     }
     it("new task gets requested type") {
-      val created = TestUtils.saveAndLoad(getConnector, task("Story"), rows)
+      val created = TestUtilsJava.saveAndLoad(getConnector, task("Story"), rows.asJava)
       created.getValue(TaskType) shouldBe "Story"
       TestJiraClientHelper.deleteTasks(client, created.getIdentity)
     }
 
-    it("Epic with name defined via custom field") {
-      val created = TestUtils.saveAndLoad(getConnector,
-        task("Epic").setValue(CustomString("Epic Name"), "some epic"),
-        rows ++ FieldRowBuilder.rows(Seq(CustomString("Epic Name"))))
-      created.getValue(TaskType) shouldBe "Epic"
-      TestJiraClientHelper.deleteTasks(client, created.getIdentity)
-    }
   }
 
   private def task(taskTypeName: String): GTask = {
@@ -140,9 +114,9 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     it("does not reset task type to config default") {
       val saver = new StatefulTestTaskSaver(getConnector, JiraPropertiesLoader.getTestServerInfo.host)
       // regression test
-      val created = saver.saveAndLoad(task("Story"), rows)
+      val created = saver.saveAndLoad(task("Story"), rows.asJava)
       created.setValue(TaskType, null)
-      val updated = saver.saveAndLoad(created, rows)
+      val updated = saver.saveAndLoad(created, rows.asJava)
       updated.getValue(TaskType) shouldBe "Story"
       TestJiraClientHelper.deleteTasks(client, created.getIdentity)
     }

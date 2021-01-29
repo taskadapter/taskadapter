@@ -25,7 +25,7 @@ class TrelloConnector(config: TrelloConfig, setup: WebConnectorSetup) extends Ne
 
   val trelloApi = TrelloApiFactory.createApi(setup.password, setup.apiKey)
 
-  override def loadTaskByKey(key: TaskId, rows: Iterable[FieldRow[_]]): GTask = {
+  override def loadTaskByKey(key: TaskId, rows: java.lang.Iterable[FieldRow[_]]): GTask = {
     val loader = new TrelloTaskLoader(trelloApi)
     loader.loadTask(config, key.key)
   }
@@ -40,11 +40,11 @@ class TrelloConnector(config: TrelloConfig, setup: WebConnectorSetup) extends Ne
   }
 
   override def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask], monitor: ProgressMonitor,
-                        rows: Iterable[FieldRow[_]]): SaveResult = {
+                        rows: java.lang.Iterable[FieldRow[_]]): SaveResult = {
     val lists = loadLists(config.getBoardId)
     val converter = new GTaskToTrello(config, new ListCache(lists))
     val saver = new TrelloTaskSaver(trelloApi)
-    val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows,
+    val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows.asScala,
       setup.host)
     rb.getResult
 

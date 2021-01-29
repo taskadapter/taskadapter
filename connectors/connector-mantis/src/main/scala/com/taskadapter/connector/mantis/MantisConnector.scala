@@ -10,13 +10,14 @@ import com.taskadapter.connector.definition._
 import com.taskadapter.connector.{FieldRow, NewConnector}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.GTask
+import scala.collection.JavaConverters._
 
 object MantisConnector {
   val ID = "Mantis"
 }
 
 class MantisConnector(config: MantisConfig, setup: WebConnectorSetup) extends NewConnector {
-  override def loadTaskByKey(key: TaskId, rows: Iterable[FieldRow[_]]): GTask = {
+  override def loadTaskByKey(key: TaskId, rows: java.lang.Iterable[FieldRow[_]]): GTask = {
     val mgr = MantisManagerFactory.createMantisManager(setup)
     try {
       val issue = mgr.getIssueById(BigInteger.valueOf(key.id))
@@ -54,7 +55,7 @@ class MantisConnector(config: MantisConfig, setup: WebConnectorSetup) extends Ne
   }
 
   override def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask], monitor: ProgressMonitor,
-                        rows: Iterable[FieldRow[_]]): SaveResult = {
+                        rows: java.lang.Iterable[FieldRow[_]]): SaveResult = {
     val mgr = MantisManagerFactory.createMantisManager(setup)
     try {
       val mntProject = mgr.getProjectById(new BigInteger(config.getProjectKey))
@@ -62,7 +63,7 @@ class MantisConnector(config: MantisConfig, setup: WebConnectorSetup) extends Ne
       else new util.ArrayList[AccountData]
       val converter = new GTaskToMantis(mntProject, users)
       val saver = new MantisTaskSaver(mgr)
-      val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows,
+      val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows.asScala,
         setup.host)
       rb.getResult
     } catch {

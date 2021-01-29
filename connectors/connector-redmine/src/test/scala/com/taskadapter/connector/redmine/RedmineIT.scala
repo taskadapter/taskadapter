@@ -54,7 +54,7 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
     val config = getTestConfig
     config.setFindUserByName(true)
     val connector = getConnector(config)
-    val loadedTask = TestUtils.saveAndLoad(connector, task, FieldRowBuilder.rows(Seq(Summary, AssigneeFullName)))
+    val loadedTask = TestUtilsJava.saveAndLoad(connector, task, FieldRowBuilder.rows(Seq(Summary, AssigneeFullName)).asJava)
     loadedTask.getValue(AssigneeLoginName) shouldBe redmineUser.getLogin
     loadedTask.getValue(AssigneeFullName) shouldBe redmineUser.getFullName
     mgr.getIssueManager.deleteIssue(loadedTask.getId.toInt)
@@ -83,7 +83,7 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
     c2.setValue(Summary, "Child 2 of " + summary)
     t.addChildTask(c2)
 
-    val loadedTasks = TestUtils.saveAndLoadAll(getConnector(), t, RedmineFieldBuilder.getDefault())
+    val loadedTasks = TestUtils.saveAndLoadAll(getConnector(), t, RedmineFieldBuilder.getDefault().asJava)
 
     val tree = TreeUtils.buildTreeFromFlatList(loadedTasks.asJava)
 

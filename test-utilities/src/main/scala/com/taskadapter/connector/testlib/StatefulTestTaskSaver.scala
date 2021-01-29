@@ -15,7 +15,7 @@ class StatefulTestTaskSaver(connector: NewConnector, targetLocation: String) {
 
   private val taskIdsSeq = collection.mutable.ArrayBuffer.empty[(TaskId, TaskId)]
 
-  def saveAndLoad(task: GTask, rows: Seq[FieldRow[_]]): GTask = {
+  def saveAndLoad(task: GTask, rows: util.List[FieldRow[_]]): GTask = {
     val cache = PreviouslyCreatedTasksCache("1", targetLocation, taskIdsSeq)
     val resolver = new PreviouslyCreatedTasksResolver(cache)
     val result = connector.saveData(resolver, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows)

@@ -54,21 +54,21 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
   }
 
   @throws[ConnectorException]
-  override def loadTaskByKey(id: TaskId, rows: Iterable[FieldRow[_]]): GTask = {
+  override def loadTaskByKey(id: TaskId, rows: java.lang.Iterable[FieldRow[_]]): GTask = {
     BasecampValidator.validateConfigWithException(config)
     val obj = api.getObject("projects/" + config.getProjectKey + "/todos/" + id.key + ".json")
     BasecampToGTask.parseTask(obj)
   }
 
   @throws[ConnectorException]
-  def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask],
+  override def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask],
                monitor: ProgressMonitor,
-               fieldRows: Iterable[FieldRow[_]]): SaveResult = try {
+               fieldRows: java.lang.Iterable[FieldRow[_]]): SaveResult = try {
     BasecampValidator.validateConfigWithException(config)
     val users = loadUsers()
     val converter = new GTaskToBasecamp(users)
     val saver = new BasecampSaver(api, config)
-    val resultBuilder = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, fieldRows,
+    val resultBuilder = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, fieldRows.asScala,
       setup.host)
 
     resultBuilder.getResult

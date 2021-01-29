@@ -11,7 +11,7 @@ import com.taskadapter.model.GTask
 import net.sf.mpxj.{ProjectFile, Task}
 import scala.collection.JavaConverters._
 
-class MsXmlFileWriter(rows: Iterable[FieldRow[_]]) {
+class MsXmlFileWriter(rows: java.lang.Iterable[FieldRow[_]]) {
   private val ALIAS_REMOTE_ID = "TA Remote ID"
   private val ALIAS_ISSUE_TYPE = "TA Task Type"
   private val ALIAS_ISSUE_STATUS = "TA Task Status"
@@ -58,7 +58,7 @@ class MsXmlFileWriter(rows: Iterable[FieldRow[_]]) {
         } else {
           parentMSPTask.addTask()
         }
-        val transformedTask = DefaultValueSetter.adapt(rows, gTask)
+        val transformedTask = DefaultValueSetter.adapt(rows.asScala, gTask)
         val gTaskToMSP = new GTaskToMSP(newMspTask, new ResourceManager(project))
         gTaskToMSP.setFields(transformedTask, keepTaskId)
         syncResult.addCreatedTask(TaskId(gTask.getId, gTask.getKey), TaskId(newMspTask.getID.longValue(), newMspTask.getID + ""))

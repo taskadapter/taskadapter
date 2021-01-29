@@ -36,7 +36,7 @@ class TrelloIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   it("task is created and updated") {
     withTempBoard { boardId =>
       CommonTestChecks.taskCreatedAndUpdatedOK("",
-        getConnector(boardId), TrelloFieldBuilder.getDefault(),
+        getConnector(boardId), TrelloFieldBuilder.getDefault().asScala,
         buildTask, Summary, "new value",
         CommonTestChecks.skipCleanup)
     }

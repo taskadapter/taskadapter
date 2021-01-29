@@ -5,7 +5,6 @@ import com.taskadapter.connector.NewConnector;
 import com.taskadapter.connector.definition.DropInConnector;
 import com.taskadapter.connector.definition.FileBasedConnector;
 import com.taskadapter.connector.definition.FileSetup;
-import com.taskadapter.connector.definition.Mappings;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.SaveResult;
 import com.taskadapter.connector.definition.TaskId;
@@ -78,7 +77,7 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
     }
 
     @Override
-    public GTask loadTaskByKey(TaskId key, scala.collection.Iterable<FieldRow<?>> rows) {
+    public GTask loadTaskByKey(TaskId key, Iterable<FieldRow<?>> rows) {
         List<GTask> tasks = loadInternal(setup.sourceFile());
         for (GTask task : tasks) {
             if (task.getIdentity().equals(key)) {
@@ -137,7 +136,7 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
 
     @Override
     public SaveResult saveData(PreviouslyCreatedTasksResolver previouslyCreatedTasksResolver, List<GTask> tasks,
-                               ProgressMonitor monitor, scala.collection.Iterable<FieldRow<?>> rows) {
+                               ProgressMonitor monitor, Iterable<FieldRow<?>> rows) {
         try {
             return new MSPTaskSaver(setup, rows).saveData(tasks);
         } catch (ConnectorException e) {

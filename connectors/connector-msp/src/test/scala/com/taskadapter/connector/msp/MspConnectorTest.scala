@@ -7,12 +7,14 @@ import java.util.Date
 
 import com.taskadapter.connector.common.TreeUtils
 import com.taskadapter.connector.definition.FileSetup
-import com.taskadapter.connector.testlib.{CommonTestChecks, FieldRowBuilder, ITFixture, TempFolder, TestUtils}
+import com.taskadapter.connector.testlib.{CommonTestChecks, FieldRowBuilder, ITFixture, TempFolder, TestUtils, TestUtilsJava}
 import com.taskadapter.model._
 import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
+
+import scala.collection.JavaConverters._
 
 @RunWith(classOf[JUnitRunner])
 class MspConnectorTest extends FunSpec with Matchers with TempFolder {
@@ -58,7 +60,7 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
     withTempFolder { folder =>
       val textWithEndingLineBreak = " text " + System.lineSeparator()
       val task = new GTask().setValue(Summary, textWithEndingLineBreak)
-      val created = TestUtils.saveAndLoad(getConnector(folder), task, FieldRowBuilder.rows(Seq(Summary)))
+      val created = TestUtilsJava.saveAndLoad(getConnector(folder), task, FieldRowBuilder.rows(Seq(Summary)).asJava)
       created.getValue(Summary) shouldBe "text"
     }
   }

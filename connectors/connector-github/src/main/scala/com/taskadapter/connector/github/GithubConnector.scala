@@ -10,7 +10,7 @@ import com.taskadapter.connector.{FieldRow, NewConnector}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.GTask
 import org.eclipse.egit.github.core.service.IssueService
-
+import scala.collection.JavaConverters._
 
 object GithubConnector {
   /**
@@ -22,7 +22,7 @@ object GithubConnector {
 
 class GithubConnector(config: GithubConfig, setup: WebConnectorSetup) extends NewConnector {
   @throws[ConnectorException]
-  override def loadTaskByKey(key: TaskId, rows: Iterable[FieldRow[_]]): GTask = {
+  override def loadTaskByKey(key: TaskId, rows: java.lang.Iterable[FieldRow[_]]): GTask = {
     val issueService = new ConnectionFactory(setup).getIssueService
     try {
       val issue = issueService.getIssue(setup.userName, config.getProjectKey, key.id.toInt)
@@ -54,12 +54,12 @@ class GithubConnector(config: GithubConfig, setup: WebConnectorSetup) extends Ne
   }
 
   override def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask], monitor: ProgressMonitor,
-                        rows: Iterable[FieldRow[_]]): SaveResult = {
+                        rows: java.lang.Iterable[FieldRow[_]]): SaveResult = {
     val ghConnector = new ConnectionFactory(setup)
     val converter = new GTaskToGithub(ghConnector.getUserService)
     val issueService = ghConnector.getIssueService
     val saver = new GithubTaskSaver(issueService, setup.userName, config.getProjectKey)
-    val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows,
+    val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows.asScala,
       setup.host)
     rb.getResult
   }

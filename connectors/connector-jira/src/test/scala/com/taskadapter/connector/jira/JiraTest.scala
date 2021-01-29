@@ -3,7 +3,7 @@ package com.taskadapter.connector.jira
 import com.google.common.collect.Iterables
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.connector.testlib.{CommonTestChecks, ITFixture, TestUtils}
+import com.taskadapter.connector.testlib.{CommonTestChecks, ITFixture, TestUtilsJava}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model._
 import org.fest.assertions.Assertions.assertThat
@@ -18,7 +18,7 @@ import scala.collection.JavaConverters._
 @RunWith(classOf[JUnitRunner])
 class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll {
 
-  private val logger = LoggerFactory.getLogger(classOf[JiraTest])
+  private val logger = LoggerFactory.getLogger(classOf[JiraTestJava])
 
   private var config = JiraPropertiesLoader.createTestConfig
   private val setup = JiraPropertiesLoader.getTestServerInfo
@@ -31,7 +31,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
 
   describe("Create") {
     it("connector does not fail empty tasks list") {
-      connector.saveData(PreviouslyCreatedTasksResolver.empty, List[GTask]().asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault())
+      connector.saveData(PreviouslyCreatedTasksResolver.empty, List[GTask]().asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault().asJava)
     }
 
     it("tasks are created without errors") {
@@ -47,7 +47,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
       task.setValue(AssigneeLoginName, jiraUser.getName)
 
       task.setValue(ReporterLoginName, jiraUser.getName)
-      val loadedTask = TestUtils.saveAndLoad(connector, task, JiraFieldBuilder.getDefault())
+      val loadedTask = TestUtilsJava.saveAndLoad(connector, task, JiraFieldBuilder.getDefault().asJava)
       loadedTask.getValue(AssigneeLoginName) shouldBe jiraUser.getName
       loadedTask.getValue(AssigneeFullName) shouldBe jiraUser.getDisplayName
 
@@ -77,7 +77,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
 
   it("testGetIssuesByProject") {
     val tasks = generateTasks
-    connector.saveData(PreviouslyCreatedTasksResolver.empty, tasks.asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault())
+    connector.saveData(PreviouslyCreatedTasksResolver.empty, tasks.asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault().asJava)
     val jql = JqlBuilder.findIssuesByProject(config.getProjectKey)
     val issues = JiraClientHelper.findIssues(client, jql)
     assertThat(Iterables.size(issues)).isGreaterThan(1)
@@ -90,7 +90,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     val task2 = list(1)
     task1.getRelations.add(GRelation(TaskId(task1.getId, task1.getKey),
       TaskId(task2.getId, task2.getKey), Precedes))
-    TestUtils.saveAndLoadList(connector, list, JiraFieldBuilder.getDefault())
+    TestUtilsJava.saveAndLoadList(connector, list.asJava, JiraFieldBuilder.getDefault().asJava)
     val issues = TestJiraClientHelper.findIssuesBySummary(client, task1.getValue(Summary))
     val createdIssue1 = issues.iterator.next
     val links = createdIssue1.getIssueLinks

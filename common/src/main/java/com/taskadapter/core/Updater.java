@@ -50,7 +50,7 @@ public class Updater {
         }
         for (GTask gTask : existingTasks) {
             if (gTask.getSourceSystemId() != null) {
-                GTask task = remoteConnector.loadTaskByKey(gTask.getSourceSystemId(), JavaConverters.iterableAsScalaIterable(rows));
+                GTask task = remoteConnector.loadTaskByKey(gTask.getSourceSystemId(), rows);
                 task.setSourceSystemId(gTask.getSourceSystemId());
                 tasksInExternalSystem.add(task);
             }
