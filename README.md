@@ -2,7 +2,7 @@
 
 
 ## Tools you need to work on this project.
-* Java 8. 
+* Java 14. 
 * Some IDE like Eclipse 3.7 or IDEA is recommended. See TA_IDE_guide_eclipse and TA_IDE_guide_IDEA documents in GDrive for Eclipse/IDEA-specific instructions.
 * Gradle build tool. Gradle will be downloaded automatically by Gradle Wrapper. See the current Gradle version
   used by this project in `gradle/gradle.properties` file).
