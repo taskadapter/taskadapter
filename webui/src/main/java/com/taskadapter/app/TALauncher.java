@@ -11,15 +11,18 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 
 import java.awt.*;
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
 
 /**
  * Run {@link #main(String[])} to launch your app in Embedded Jetty.
  */
 public final class TALauncher {
     static final String PARAMETER_OPEN_TASK_ADAPTER_PAGE_IN_WEB_BROWSER = "--openTaskAdapterPageInWebBrowser";
+    private static final String PARAMETER_APPLY_HACK_FOR_SCALA_DEV = "--applyHackForScalaDev";
 
     private static final int DEFAULT_HTTP_SERVER_PORT = 10842;
     private static final String WEB_APPLICATION_ROOT_CONTEXT = "/";
@@ -43,13 +46,15 @@ public final class TALauncher {
         }
 
         WebAppContext context = new WebAppContext();
-        context.setBaseResource(findWebRoot());
+        Resource webRoot = findWebRoot();
+        context.setBaseResource(webRoot);
         context.setContextPath(WEB_APPLICATION_ROOT_CONTEXT);
         context.addServlet(VaadinServlet.class, "/*");
         context.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", ".*\\.jar|.*/classes/.*");
         context.setConfigurationDiscovered(true);
         context.getServletContext().setExtendedListenerTypes(true);
         context.addEventListener(new ServletContextListeners());
+        context.setThrowUnavailableOnStartupException(true);
         // fixes IllegalStateException: Unable to configure jsr356 at that stage. ServerContainer is null
         WebSocketServerContainerInitializer.initialize(context);
 
@@ -57,6 +62,10 @@ public final class TALauncher {
         server.setHandler(context);
         Configuration.ClassList classlist = Configuration.ClassList.setServerDefault(server);
         classlist.addBefore(JettyWebXmlConfiguration.class.getName(), AnnotationConfiguration.class.getName());
+
+        if (needToApplyScalaFolderHackForLocalDevRuns(args)) {
+            applyHackForJavaInScalaFolder(webRoot);
+        }
         server.start();
 
         String uri = "http://localhost:" + portNumber + WEB_APPLICATION_ROOT_CONTEXT;
@@ -72,6 +81,22 @@ public final class TALauncher {
             System.out.println("Task Adapter launcher will open the browser automatically if you provide this parameter" +
                     " to the start script: " + PARAMETER_OPEN_TASK_ADAPTER_PAGE_IN_WEB_BROWSER);
         }
+    }
+
+    /**
+     * create a dummy folder to allow local dev runs from IDEA.
+     *
+     * unfortunately, java+scala combination leads to a conflict where the binary class files are stored in
+     * build/classes/scala for both java and scala classes, but one of the Jetty layers demands something to be
+     * present in build/classes/java folder. this method creates a dummy build/classes/java/main folder right
+     * before the server starts, when all compilation and build is already completed
+     * (because those would drop the folder again).
+     * @param webRoot
+     */
+    private static void applyHackForJavaInScalaFolder(Resource webRoot) {
+        String name = webRoot.getName();
+        String requiredFolder = name.replace("resources/main/webapp", "classes/java/main");
+        new File(requiredFolder).mkdir();
     }
 
     public static void stop() throws Exception {
@@ -115,12 +140,11 @@ public final class TALauncher {
         return DEFAULT_HTTP_SERVER_PORT;
     }
 
+    static boolean needToApplyScalaFolderHackForLocalDevRuns(String[] args) {
+        return Arrays.stream(args).anyMatch(a -> a.equals(PARAMETER_APPLY_HACK_FOR_SCALA_DEV));
+    }
+
     static boolean needToOpenBrowser(String[] args) {
-        for (String arg : args) {
-            if (arg.equals(PARAMETER_OPEN_TASK_ADAPTER_PAGE_IN_WEB_BROWSER)) {
-                return true;
-            }
-        }
-        return false;
+        return Arrays.stream(args).anyMatch(a -> a.equals(PARAMETER_OPEN_TASK_ADAPTER_PAGE_IN_WEB_BROWSER));
     }
 }

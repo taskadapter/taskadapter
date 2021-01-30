@@ -34,9 +34,22 @@ https://bitbucket.org/taskadapter/license-generator
 This module checks licenses. Used by both License Generator web app and TaskAdapter app.
 https://bitbucket.org/taskadapter/license
 
-### Redmine Java API source code.
+##  Run in IDE
 
-Task Adapter’s Redmine Connector uses Redmine Java API. The source code is here: https://github.com/taskadapter/redmine-java-api
+1. Import the project into your IDE
+2. Run `./gradlew vaadinPrepareFrontend` in the project, to configure Vaadin for npm mode.
+3. Create a run configuration, add these parameters to the program arguments list:
+```
+    --applyHackForScalaDev --openTaskAdapterPageInWebBrowser
+```
+
+* `--applyHackForScalaDev` is used while there is still a mix of scala+java classes in the project - see TALauncher class
+for details. this is a temporary (hehe) workaround.
+* `--openTaskAdapterPageInWebBrowser` - open a web browser after the server start
+
+3. Run/Debug the `TALauncher` class as an application (run the `main()` method).
+   The app will use `npm` to download all javascript libraries (will take a long time)
+   and will start in development mode.
 
 ## How to build from source code
 
