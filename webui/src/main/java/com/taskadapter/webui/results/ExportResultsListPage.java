@@ -16,7 +16,6 @@ import java.util.function.Function;
 public class ExportResultsListPage extends BasePage {
     @Override
     protected void beforeEnter() {
-        EventTracker.trackPage(Navigator.RESULTS_LIST);
         refreshPage();
     }
 

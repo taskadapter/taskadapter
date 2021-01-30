@@ -29,9 +29,6 @@ case object UserCategory extends EventCategory {
 }
 
 trait Tracker {
-  /** Tracks a page view. */
-  def trackPage(name: String): Unit
-
   def trackEvent(category: EventCategory, action: String, label: String): Unit
 
   def trackEvent(category: EventCategory, action: String, label: String, value: Integer): Unit

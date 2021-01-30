@@ -79,7 +79,6 @@ public class ConfigsListPage extends BasePage {
 
     @Override
     protected void beforeEnter() {
-        EventTracker.trackPage("configs_list");
         refreshConfigs();
     }
 

@@ -34,7 +34,6 @@ class ConfigPage() extends BasePage with HasUrlParameter[String] {
   private val sandbox: Sandbox = SessionController.createSandbox()
 
   def setParameter(event: BeforeEvent, configIdStr: String) = {
-    EventTracker.trackPage("config_panel");
     removeAll()
 
     val configId = ConfigId(SessionController.getCurrentUserName, Integer.parseInt(configIdStr))
@@ -302,7 +301,6 @@ class ConfigPanel(config: UISyncConfig,
 //        }
 //      })
 //      window.setContent(editor)
-      EventTracker.trackPage("edit_config")
     }
 
     override def ui: VerticalLayout = layout
@@ -316,7 +314,6 @@ class ConfigPanel(config: UISyncConfig,
     from ${config.connector1.getConnectorTypeId} (${config.connector1.getSourceLocation})
     to   ${config.connector2.getConnectorTypeId} (${config.connector2.getDestinationLocation}""")
 
-    EventTracker.trackPage("export_confirmation")
     val maxTasks = if (services.licenseManager.isSomeValidLicenseInstalled) {
       Constants.maxTasksToLoad
     } else {

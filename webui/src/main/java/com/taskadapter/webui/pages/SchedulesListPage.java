@@ -54,7 +54,6 @@ public class SchedulesListPage extends BasePage {
     }
 
     private void buildUi() {
-        EventTracker.trackPage("schedules");
         listLayout = createListLayout();
     }
 
@@ -101,13 +100,11 @@ public class SchedulesListPage extends BasePage {
     }
 
     private void showSchedule(String scheduleId) {
-        EventTracker.trackPage("edit_schedule_page");
         Schedule schedule = services.schedulesStorage.get(scheduleId).get();
         showSchedule(schedule);
     }
 
     private void showNewScheduleEditor(ConfigId configId) {
-        EventTracker.trackPage("create_schedule_page");
         Schedule schedule = new Schedule(UUID.randomUUID().toString(), configId, 60, false, false);
         showSchedule(schedule);
     }

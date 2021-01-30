@@ -12,8 +12,7 @@ repositories {
 
 dependencies {
     compile 'javax.mail:mail:1.4.5'
-    // this library is uploaded to our own Nexus repo because its Maven Central version is broken.
-//    compile 'com.taskadapter:googleanalyticstracker:2.2.0'
+    compile 'org.vaadin.addons:googleanalyticstracker:4.0.1'
 
     compile libraries.slf4j
     compile libraries.libjson

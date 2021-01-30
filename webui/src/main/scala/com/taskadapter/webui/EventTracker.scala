@@ -1,12 +1,8 @@
 package com.taskadapter.webui
 
-import com.taskadapter.web.event.{ApplicationActionEvent, ApplicationActionEventWithValue, EventBusImpl, PageShown}
+import com.taskadapter.web.event.{ApplicationActionEvent, ApplicationActionEventWithValue, EventBusImpl}
 
 object EventTracker {
-  def trackPage(name: String): Unit = {
-    EventBusImpl.post(PageShown(name))
-  }
-
   def trackEvent(category: EventCategory, action: String, label: String): Unit = {
     EventBusImpl.post(ApplicationActionEvent(category, action, label))
   }

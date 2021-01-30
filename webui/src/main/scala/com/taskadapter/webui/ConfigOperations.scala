@@ -6,7 +6,6 @@ import java.util
 import com.taskadapter.auth.{AuthorizedOperations, CredentialsManager}
 import com.taskadapter.config.StorageException
 import com.taskadapter.connector.definition.ConnectorSetup
-import com.taskadapter.web.event.{ConfigCreateCompleted, EventBusImpl}
 import com.taskadapter.web.uiapi.{ConfigId, SetupId, UIConfigStore, UISyncConfig}
 
 import scala.collection.JavaConverters._
@@ -71,8 +70,17 @@ final class ConfigOperations(/**
                       connector2Id: String, connector2SetupId: SetupId): ConfigId = {
     val configId = uiConfigStore.createNewConfig(userName, descriptionString, connector1Id, connector1SetupId,
       connector2Id, connector2SetupId)
-    EventBusImpl.post(ConfigCreateCompleted(configId))
+    notifyNewConfig(configId)
     configId
+  }
+
+  def notifyNewConfig(configId: ConfigId) : Unit = {
+    val maybeConfig = getConfig(configId)
+    if (maybeConfig.isEmpty) {
+      throw new RuntimeException("The newly created config with id " + configId + " cannot be found. This is weird.")
+    }
+    val config = maybeConfig.get
+    EventTracker.trackEvent(ConfigCategory, "created", config.connector1.getConnectorTypeId + " - " + config.connector2.getConnectorTypeId)
   }
 
   /**

@@ -13,7 +13,6 @@ import com.vaadin.flow.router.Route
 @Route(value = Navigator.SETUPS_LIST, layout = classOf[Layout])
 @CssImport(value = "./styles/views/mytheme.css")
 class SetupsListPage() extends BasePage {
-  EventTracker.trackPage(Navigator.SETUPS_LIST)
   private val configOps = SessionController.buildConfigOperations()
   private val services = SessionController.getServices
 

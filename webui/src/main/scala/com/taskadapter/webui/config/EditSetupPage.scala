@@ -19,7 +19,6 @@ class EditSetupPage() extends BasePage with HasUrlParameter[String]{
   private val sandbox = SessionController.createSandbox()
 
   override def setParameter(event: BeforeEvent, setupIdStr: String): Unit = {
-    EventTracker.trackPage("edit-setup")
     showSetup(SetupId(setupIdStr))
   }
 

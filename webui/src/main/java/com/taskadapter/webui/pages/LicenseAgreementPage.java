@@ -32,8 +32,6 @@ public class LicenseAgreementPage extends BasePage {
     private static final String AGREEMENT_PANEL_HEIGHT = "500px";
 
     public LicenseAgreementPage() {
-        EventTracker.trackPage("license_agreement");
-
         Label agreementContent = new HtmlLabel(readLicense());
 
         HorizontalLayout actionLayout = new HorizontalLayout();

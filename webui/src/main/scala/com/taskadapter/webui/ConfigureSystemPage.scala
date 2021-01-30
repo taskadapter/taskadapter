@@ -61,8 +61,6 @@ class ConfigureSystemPage() extends BasePage {
   def render(credentialsManager: CredentialsManager, settingsManager: SettingsManager, license: License,
              authorizedOps: AuthorizedOperations): Unit = {
 
-    EventTracker.trackPage("system_configuration")
-
     setSpacing(true)
     val cmt = LocalRemoteOptionsPanel.createLocalRemoteOptions(settingsManager, authorizedOps.canConfigureServer)
     add(cmt)

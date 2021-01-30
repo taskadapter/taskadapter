@@ -16,7 +16,6 @@ import scala.collection.JavaConverters._
 @Route(value = Navigator.NEW_SETUP, layout = classOf[Layout])
 @CssImport(value = "./styles/views/mytheme.css")
 class NewSetupPage extends BasePage {
-  EventTracker.trackPage(Navigator.NEW_SETUP)
 
   private val configOps: ConfigOperations = SessionController.buildConfigOperations()
   private val services: Preservices = SessionController.getServices

@@ -27,7 +27,6 @@ public class UserProfilePage extends BasePage {
 
     private void rebuildUi() {
         removeAll();
-        EventTracker.trackPage("user_profile");
         addLoginInfo();
     }
 

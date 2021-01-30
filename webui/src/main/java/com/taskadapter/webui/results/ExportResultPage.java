@@ -20,7 +20,6 @@ public class ExportResultPage extends BasePage implements HasUrlParameter<String
 
     @Override
     protected void beforeEnter() {
-        EventTracker.trackPage(Navigator.RESULT);
     }
 
     @Override

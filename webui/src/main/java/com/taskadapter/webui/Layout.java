@@ -1,5 +1,6 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.app.GoogleAnalyticsFactory;
 import com.taskadapter.webui.pages.ConfigsListPage;
 import com.taskadapter.webui.pages.SchedulesListPage;
 import com.taskadapter.webui.pages.SupportPage;
@@ -19,10 +20,14 @@ import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.router.RouterLayout;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
+import org.vaadin.googleanalytics.tracking.EnableGoogleAnalytics;
+import org.vaadin.googleanalytics.tracking.TrackerConfiguration;
+import org.vaadin.googleanalytics.tracking.TrackerConfigurator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,13 +36,16 @@ import static com.taskadapter.webui.Page.message;
 
 /**
  * The main view is a top-level placeholder for other views.
+ * <p>
+ * RouterLayout and TrackerConfigurator are required for GoogleAnalytics.
  */
 //@JsModule("./styles/shared-styles.js")
 @Push // "push" is required to get reliable UI updates from background threads (like tasks loading)
 @Theme(Lumo.class)
 @CssImport("./styles/views/taskadapter-main.css")
 @PWA(name = "My Project", shortName = "My Project", enableInstallPrompt = false)
-public class Layout extends AppLayout {
+@EnableGoogleAnalytics(value = GoogleAnalyticsFactory.GOOGLE_ANALYTICS_ID)
+public class Layout extends AppLayout implements RouterLayout, TrackerConfigurator {
 
     private static Tab configsListTab = createTab(VaadinIcon.EDIT, "Configs List", ConfigsListPage.class);
     private static Tab schedulesListTab = createTab(VaadinIcon.CLOCK, "Schedules", SchedulesListPage.class);
@@ -137,6 +145,14 @@ public class Layout extends AppLayout {
         a.add(icon.create());
         a.add(title);
         return a;
+    }
+
+    @Override
+    public void configureTracker(TrackerConfiguration configuration) {
+        // note - this google analytics vaadin library reports "page visited" events automatically,
+        // for all "Page" classes
+        configuration.setCreateField("allowAnchor", Boolean.FALSE);
+        configuration.setInitialValue("transport", "beacon");
     }
 /*
 

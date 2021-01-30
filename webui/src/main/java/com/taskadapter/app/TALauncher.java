@@ -1,5 +1,8 @@
 package com.taskadapter.app;
 
+import com.taskadapter.webui.config.ApplicationSettings;
+import com.taskadapter.webui.service.EditorManager;
+import com.taskadapter.webui.service.Preservices;
 import com.vaadin.flow.server.VaadinServlet;
 import com.vaadin.flow.server.startup.ServletContextListeners;
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
@@ -9,6 +12,8 @@ import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.JettyWebXmlConfiguration;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.File;
@@ -21,8 +26,9 @@ import java.util.Arrays;
  * Run {@link #main(String[])} to launch your app in Embedded Jetty.
  */
 public final class TALauncher {
+    private static final Logger logger = LoggerFactory.getLogger(TALauncher.class);
+
     static final String PARAMETER_OPEN_TASK_ADAPTER_PAGE_IN_WEB_BROWSER = "--openTaskAdapterPageInWebBrowser";
-    private static final String PARAMETER_APPLY_HACK_FOR_SCALA_DEV = "--applyHackForScalaDev";
 
     private static final int DEFAULT_HTTP_SERVER_PORT = 10842;
     private static final String WEB_APPLICATION_ROOT_CONTEXT = "/";
@@ -63,7 +69,7 @@ public final class TALauncher {
         Configuration.ClassList classlist = Configuration.ClassList.setServerDefault(server);
         classlist.addBefore(JettyWebXmlConfiguration.class.getName(), AnnotationConfiguration.class.getName());
 
-        if (needToApplyScalaFolderHackForLocalDevRuns(args)) {
+        if (ProdModeDetector.isLocalDevMode()) {
             applyHackForJavaInScalaFolder(webRoot);
         }
         server.start();
@@ -73,6 +79,8 @@ public final class TALauncher {
         System.out.println("Task Adapter is started as a WEB-server running on port " + portNumber);
         System.out.println("Please OPEN your web browser with this URL: " + uri);
         System.out.println("=======================================================================");
+
+        checkLicense();
 
         if (needToOpenBrowser(args)) {
             Desktop desktop = Desktop.getDesktop();
@@ -85,12 +93,13 @@ public final class TALauncher {
 
     /**
      * create a dummy folder to allow local dev runs from IDEA.
-     *
+     * <p>
      * unfortunately, java+scala combination leads to a conflict where the binary class files are stored in
      * build/classes/scala for both java and scala classes, but one of the Jetty layers demands something to be
      * present in build/classes/java folder. this method creates a dummy build/classes/java/main folder right
      * before the server starts, when all compilation and build is already completed
      * (because those would drop the folder again).
+     *
      * @param webRoot
      */
     private static void applyHackForJavaInScalaFolder(Resource webRoot) {
@@ -129,6 +138,22 @@ public final class TALauncher {
         return Resource.newResource(webRoot);
     }
 
+    private static void checkLicense() {
+        // Application config root folder.
+        var rootFolder = ApplicationSettings.getDefaultRootFolder();
+
+        var services = new Preservices(rootFolder, EditorManager.fromResource("editors.txt"));
+
+        if (services.licenseManager.isSomeValidLicenseInstalled()) {
+            var license = services.licenseManager.getLicense();
+            logger.info("License info: valid until " + license.getExpiresOn() + ". Registered to " + license.getEmail());
+        } else {
+            logger.info("License NOT installed or is NOT valid. Trial mode.");
+        }
+
+        logger.info("Started TaskAdapter " + services.currentTaskAdapterVersion);
+    }
+
     static int findPortNumberInArgs(String[] args) {
         for (String arg : args) {
             String prefix = "--port=";
@@ -138,10 +163,6 @@ public final class TALauncher {
             }
         }
         return DEFAULT_HTTP_SERVER_PORT;
-    }
-
-    static boolean needToApplyScalaFolderHackForLocalDevRuns(String[] args) {
-        return Arrays.stream(args).anyMatch(a -> a.equals(PARAMETER_APPLY_HACK_FOR_SCALA_DEV));
     }
 
     static boolean needToOpenBrowser(String[] args) {

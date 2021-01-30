@@ -64,8 +64,7 @@ public class LoginPage extends BasePage {
                     try {
                         authenticate(username, password,
                                 staySignedIn.getValue());
-                        // TODO 14 restore google analytics tracker
-                        SessionController.initSession(new WebUserSession().setCurrentUserName(username), new NoOpGATracker());
+                        SessionController.initSession(new WebUserSession().setCurrentUserName(username));
                         redirectToNextPage();
                     } catch (WrongPasswordException e) {
                         errorLabel.setText(Page.message("loginPage.wrongUserNameOrPassword"));

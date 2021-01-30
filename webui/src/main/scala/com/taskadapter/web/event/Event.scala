@@ -2,7 +2,7 @@ package com.taskadapter.web.event
 
 import java.util.UUID
 
-import com.taskadapter.web.uiapi.{ConfigId, UISyncConfig}
+import com.taskadapter.web.uiapi.ConfigId
 import com.taskadapter.webui.EventCategory
 
 sealed trait Event {
@@ -20,9 +20,6 @@ case class ShowConfigPageRequested(configId: ConfigId) extends Event
 
 case class ShowConfigsListPageRequested() extends Event
 
-case class ConfigCreateCompleted(configId: ConfigId) extends Event
-
-case class PageShown(pageName: String) extends Event
 case class SchedulerStatusChanged(schedulerEnabled: Boolean) extends Event
 
 case class ApplicationActionEvent(category: EventCategory, action: String, label: String) extends Event

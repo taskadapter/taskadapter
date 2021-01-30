@@ -61,13 +61,12 @@ public final class SessionController {
         }
     }
 
-    private static Tracker tracker;
+    private static Tracker tracker = new NoOpGATracker();
 
     private static WebUserSession session = new WebUserSession();
 
-    public static void initSession(WebUserSession newSession, Tracker providedTracker) {
+    public static void initSession(WebUserSession newSession) {
         session = newSession;
-        tracker = providedTracker;
 
         final String ucookie = CookiesManager
                 .getCookie(PERM_AUTH_USER_COOKIE_NAME);
@@ -84,6 +83,12 @@ public final class SessionController {
 //            showLogin();
 //        else
 //            showUserHome(ucookie);
+
+        registerLoggedInListeners();
+    }
+
+    private static void registerLoggedInListeners() {
+        // TODO maybe use this for some logged-in session listeners?
     }
 
     public static UserContext getUserContext() {
@@ -188,5 +193,9 @@ public final class SessionController {
 
     public static Tracker getTracker() {
         return tracker;
+    }
+
+    public static void setTracker(Tracker newTracker) {
+        tracker = newTracker;
     }
 }

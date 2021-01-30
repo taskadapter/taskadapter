@@ -24,8 +24,6 @@ trait Callback {
 @CssImport(value = "./styles/views/mytheme.css")
 class NewConfigPage extends BasePage {
 
-  EventTracker.trackPage("create_config")
-
   private val configOps: ConfigOperations = SessionController.buildConfigOperations()
   private val services: Preservices = SessionController.getServices
   private val sandbox: Sandbox = SessionController.createSandbox()
