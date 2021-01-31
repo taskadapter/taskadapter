@@ -17,6 +17,10 @@
     background-color: #f8f8f8;
 }
 
+.myBoldLabel {
+    font-weight: bold;
+}
+
 .taskAdapterLogo {
     font-size: 46px;
     font-weight: bold;

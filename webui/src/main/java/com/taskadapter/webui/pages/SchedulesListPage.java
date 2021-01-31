@@ -9,6 +9,7 @@ import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.Layout;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.SessionController;
+import com.taskadapter.webui.Sizes;
 import com.taskadapter.webui.service.Preservices;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -48,12 +49,21 @@ public class SchedulesListPage extends BasePage {
 
     public SchedulesListPage() {
         buildUi();
-        add(listLayout);
-        showSchedules(services.schedulesStorage.getSchedules());
     }
 
     private void buildUi() {
         listLayout = createListLayout();
+        showInPage(listLayout);
+    }
+
+    private void showInPage(Component component) {
+        removeAll();
+        add(LayoutsUtil.centered(Sizes.mainWidth(), component));
+    }
+
+    @Override
+    protected void beforeEnter() {
+        showSchedules(services.schedulesStorage.getSchedules());
     }
 
     private void saveSchedule(Schedule schedule) {
@@ -89,7 +99,7 @@ public class SchedulesListPage extends BasePage {
                     return null;
                 }
         );
-        applyUI(editSchedulePage.ui());
+        showInPage(editSchedulePage.ui());
     }
 
     private Optional<UISyncConfig> getConfigForSchedule(Schedule schedule) {
@@ -112,11 +122,6 @@ public class SchedulesListPage extends BasePage {
         showSchedules(services.schedulesStorage.getSchedules());
     }
 
-    private void applyUI(Component newUi) {
-        removeAll();
-        add(newUi);
-    }
-
     private void showSelectConfig() {
         VerticalLayout layout = new VerticalLayout();
         layout.setSpacing(true);
@@ -126,7 +131,7 @@ public class SchedulesListPage extends BasePage {
         layout.add(configsListLayout);
 
         showConfigsInList();
-        applyUI(layout);
+        showInPage(layout);
     }
 
     private Component createListLayout() {
@@ -193,7 +198,7 @@ public class SchedulesListPage extends BasePage {
         grid.sort(Arrays.asList(new GridSortOrder(configLabelColumn, SortDirection.ASCENDING)));
 
         grid.setItems(items);
-        applyUI(listLayout);
+        showInPage(listLayout);
     }
 
     private static class ScheduleListItem {

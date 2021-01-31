@@ -26,6 +26,7 @@ public class ExportResultsListPage extends BasePage {
         ExportResultsLayout layout = new ExportResultsLayout(showExportResultsJava());
         layout.showResults(results);
 
+        layout.addClassName("grayBackgroundPanel");
         add(layout);
     }
 
