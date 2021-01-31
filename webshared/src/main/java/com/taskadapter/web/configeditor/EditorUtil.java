@@ -6,11 +6,11 @@ import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.callbacks.DataProvider;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -81,7 +81,7 @@ public class EditorUtil {
     }
 
     // TODO review and refactor this. this method is too complex
-	public static Button createLookupButton(
+    public static Button createLookupButton(
             final String buttonLabel,
             String description, final String windowTitle,
             final String listTitle,
@@ -132,7 +132,7 @@ public class EditorUtil {
         button.getElement().setProperty("title", description); // tooltip
         return button;
     }
-	
+
     public interface ValueListener {
         void setValue(String value);
     }
@@ -143,5 +143,12 @@ public class EditorUtil {
             result = result.getCause();
         }
         return result;
+    }
+
+    /**
+     * set tooltip string on a component
+     */
+    public static void setDescriptionTooltip(Component component, String description) {
+        component.getElement().setProperty("title", description); // tooltip
     }
 }

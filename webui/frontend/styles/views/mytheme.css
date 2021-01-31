@@ -13,6 +13,10 @@
     color: #fe902a;
 }
 
+.grayBackgroundPanel {
+    background-color: #f8f8f8;
+}
+
 .taskAdapterLogo {
     font-size: 46px;
     font-weight: bold;

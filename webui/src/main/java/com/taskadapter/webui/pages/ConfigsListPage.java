@@ -7,6 +7,7 @@ import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.Layout;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.SessionController;
+import com.taskadapter.webui.Sizes;
 import com.taskadapter.webui.service.Preservices;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -64,9 +65,8 @@ public class ConfigsListPage extends BasePage {
         configsLayout = new VerticalLayout();
 
         configsListLayout.add(configsLayout);
-        VerticalLayout contentLayout = new VerticalLayout(actionPanel, configsListLayout);
 
-        add(LayoutsUtil.centeredLayout(contentLayout, 600));
+        add(LayoutsUtil.centered(Sizes.mainWidth(), actionPanel, configsListLayout));
     }
 
     @Override

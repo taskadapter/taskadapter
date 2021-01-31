@@ -11,7 +11,7 @@ import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import java.util.Arrays;
 import java.util.List;
 
-class LocalRemoteOptionsPanel extends VerticalLayout {
+public class LocalRemoteOptionsPanel extends VerticalLayout {
     private static final String LOCAL = Page.message("configurePage.local");
     private static final String REMOTE = Page.message("configurePage.remote");
 

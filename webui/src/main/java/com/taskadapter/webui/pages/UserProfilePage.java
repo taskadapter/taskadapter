@@ -1,11 +1,11 @@
 package com.taskadapter.webui.pages;
 
 import com.taskadapter.webui.BasePage;
-import com.taskadapter.webui.EventTracker;
 import com.taskadapter.webui.Layout;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.SelfManagement;
 import com.taskadapter.webui.SessionController;
+import com.taskadapter.webui.Sizes;
 import com.taskadapter.webui.user.ChangePasswordDialog;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -30,9 +30,7 @@ public class UserProfilePage extends BasePage {
         addLoginInfo();
     }
 
-
     private void addLoginInfo() {
-
         String loginString = Page.message("userProfile.login") + ": " + SessionController.getCurrentUserName();
 
         Button configureSetupsButton = new Button(Page.message("userProfile.configureConnectors"),
@@ -42,11 +40,11 @@ public class UserProfilePage extends BasePage {
         Button logoutButton = new Button(Page.message("userProfile.logout"),
                 e -> SessionController.logout());
 
-        add(
+        add(LayoutsUtil.centered(Sizes.mainWidth(),
                 new Label(loginString),
                 configureSetupsButton,
                 button,
-                logoutButton);
+                logoutButton));
     }
 
     /**

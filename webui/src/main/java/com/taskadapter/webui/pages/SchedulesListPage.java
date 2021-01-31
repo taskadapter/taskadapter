@@ -6,7 +6,6 @@ import com.taskadapter.web.uiapi.Schedule;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.BasePage;
 import com.taskadapter.webui.ConfigOperations;
-import com.taskadapter.webui.EventTracker;
 import com.taskadapter.webui.Layout;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.SessionController;

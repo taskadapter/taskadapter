@@ -21,7 +21,7 @@ import com.vaadin.flow.router.Route;
 @Route(value = Navigator.LOGIN, layout = Layout.class)
 @CssImport(value = "./styles/views/mytheme.css")
 public class LoginPage extends BasePage {
-    private static final int FORM_WIDTH = 300;
+    private static final String FORM_WIDTH = "300px";
     private static final String EDIT_WIDTH = "260px";
 
     public LoginPage() {
@@ -31,30 +31,22 @@ public class LoginPage extends BasePage {
     public void buildUi() {
         H1 captionLabel = new H1(Page.message("loginPage.login"));
 
-        VerticalLayout layout = new VerticalLayout();
-        layout.add(captionLabel);
-
-        layout.setSpacing(true);
         Html label = new Html(Page.message("loginPage.hintLabel"));
-        layout.add(label);
 
         TextField loginField = new TextField(Page.message("loginPage.login"));
-        loginField.setWidth(EDIT_WIDTH);
-        layout.add(loginField);
 
         PasswordField passwordField = new PasswordField(Page.message("loginPage.password"));
         passwordField.setWidth(EDIT_WIDTH);
-        layout.add(passwordField);
 
         loginField.setValue("admin");
         passwordField.setValue("admin");
 
         Checkbox staySignedIn = new Checkbox(Page.message("loginPage.staySignedIn"));
-        layout.add(staySignedIn);
 
         Label errorLabel = new Label("");
         errorLabel.addClassName("errorMessage");
-        layout.add(errorLabel);
+
+        loginField.setWidth(EDIT_WIDTH);
 
         Button loginButton = new Button(Page.message("loginPage.loginButton"),
                 event -> {
@@ -72,9 +64,17 @@ public class LoginPage extends BasePage {
                     }
                 });
         loginButton.addClickShortcut(Key.ENTER);
-
-        layout.add(loginButton);
         loginField.focus();
+
+        VerticalLayout layout = new VerticalLayout();
+        layout.setSpacing(true);
+        layout.add(captionLabel,
+                label,
+                loginField,
+                passwordField,
+                staySignedIn,
+                errorLabel,
+                loginButton);
 
         add(LayoutsUtil.centeredLayout(layout, FORM_WIDTH));
     }

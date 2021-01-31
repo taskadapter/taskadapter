@@ -3,6 +3,7 @@ package com.taskadapter.webui
 import java.io.File
 
 import com.taskadapter.auth.{AuthorizedOperations, AuthorizedOperationsImpl}
+import com.taskadapter.webui.pages.ConfigureSystemPage
 import com.taskadapter.webui.service.{EditorManager, Preservices}
 import com.taskadapter.webui.uiapi.ConfigsTempFolder
 import org.junit.runner.RunWith

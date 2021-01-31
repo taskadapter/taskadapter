@@ -2,6 +2,7 @@ package com.taskadapter.webui;
 
 import com.taskadapter.app.GoogleAnalyticsFactory;
 import com.taskadapter.webui.pages.ConfigsListPage;
+import com.taskadapter.webui.pages.ConfigureSystemPage;
 import com.taskadapter.webui.pages.SchedulesListPage;
 import com.taskadapter.webui.pages.SupportPage;
 import com.taskadapter.webui.pages.UserProfilePage;
