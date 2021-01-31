@@ -12,7 +12,7 @@ import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -54,7 +54,7 @@ public class Layout extends AppLayout implements RouterLayout, TrackerConfigurat
     private static Tab supportTab = createTab(VaadinIcon.QUESTION, "Support", SupportPage.class);
     private static Tab profileTab = createTab(VaadinIcon.USER, "Profile", UserProfilePage.class);
 
-    private H1 viewTitle;
+    private Span viewTitle;
     private Tabs menuTabs;
 
     public Layout() {
@@ -71,8 +71,9 @@ public class Layout extends AppLayout implements RouterLayout, TrackerConfigurat
         layout.setSpacing(false);
         layout.setAlignItems(FlexComponent.Alignment.CENTER);
 
-        viewTitle = new H1("TaskAdapter");
-        layout.expand(viewTitle);
+        viewTitle = new Span("TaskAdapter");
+        viewTitle.addClassName("taskAdapterLogo");
+        layout.expand(viewTitle); // get white space after the logo, before the menu items
 
         menuTabs = createMenuTabs();
         layout.setFlexGrow(2, menuTabs);

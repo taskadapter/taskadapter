@@ -2,7 +2,6 @@ package com.taskadapter.webui.pages;
 
 import com.taskadapter.webui.BasePage;
 import com.taskadapter.webui.Layout;
-import com.taskadapter.webui.NoOpGATracker;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.SessionController;
 import com.taskadapter.webui.WebUserSession;
@@ -22,7 +21,7 @@ import com.vaadin.flow.router.Route;
 @Route(value = Navigator.LOGIN, layout = Layout.class)
 @CssImport(value = "./styles/views/mytheme.css")
 public class LoginPage extends BasePage {
-    private static final String FORM_WIDTH = "300px";
+    private static final int FORM_WIDTH = 300;
     private static final String EDIT_WIDTH = "260px";
 
     public LoginPage() {
@@ -33,7 +32,7 @@ public class LoginPage extends BasePage {
         H1 captionLabel = new H1(Page.message("loginPage.login"));
 
         VerticalLayout layout = new VerticalLayout();
-        layout.setWidth(FORM_WIDTH);
+        layout.add(captionLabel);
 
         layout.setSpacing(true);
         Html label = new Html(Page.message("loginPage.hintLabel"));
@@ -77,8 +76,7 @@ public class LoginPage extends BasePage {
         layout.add(loginButton);
         loginField.focus();
 
-        add(captionLabel,
-                layout);
+        add(LayoutsUtil.centeredLayout(layout, FORM_WIDTH));
     }
 
     private void redirectToNextPage() {

@@ -4,7 +4,6 @@ import com.taskadapter.web.uiapi.ConfigId;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.BasePage;
 import com.taskadapter.webui.ConfigOperations;
-import com.taskadapter.webui.EventTracker;
 import com.taskadapter.webui.Layout;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.SessionController;
@@ -12,7 +11,6 @@ import com.taskadapter.webui.service.Preservices;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -44,37 +42,31 @@ public class ConfigsListPage extends BasePage {
     }
 
     public void buildUI() {
-        HorizontalLayout actionPanel = new HorizontalLayout();
-        actionPanel.setWidth("100%");
-        actionPanel.setSpacing(true);
-        Button addButton = new Button(Page.message("configsPage.buttonNewConfig"),
+        Button newConfigButton = new Button(Page.message("configsPage.buttonNewConfig"),
                 event -> Navigator.newConfig());
-        actionPanel.add(addButton);
 
-        HorizontalLayout filterPanel = new HorizontalLayout();
         this.filterField = new TextField();
         filterField.addKeyPressListener(e -> filterFields(filterField.getValue()));
-        filterPanel.add(new Label(Page.message("configsPage.filter")));
-        filterPanel.add(filterField);
-        filterPanel.setSpacing(true);
-        actionPanel.add(filterPanel);
-        //  actionPanel.setComponentAlignment(filterPanel, Alignment.MIDDLE_RIGHT)
+        filterField.setPlaceholder(Page.message("configsPage.filter"));
 
-        //  configsTopLevelLayout.setComponentAlignment(configsLayout, Alignment.TOP_CENTER)
+        HorizontalLayout actionPanel = new HorizontalLayout();
+        actionPanel.setWidth("600px");
+        actionPanel.setPadding(true);
+        // align "filter" element to the right border of this panel
+        filterField.getElement().getStyle().set("margin-left", "auto");
 
-        HorizontalLayout configsTopLevelLayout = new HorizontalLayout();
-        configsTopLevelLayout.setSpacing(true);
-        configsTopLevelLayout.setSizeFull();
+        actionPanel.add(newConfigButton,
+                filterField);
+
+        HorizontalLayout configsListLayout = new HorizontalLayout();
+        configsListLayout.setSpacing(true);
 
         configsLayout = new VerticalLayout();
-        configsLayout.setWidth("100%");
-        configsTopLevelLayout.add(configsLayout);
 
-        setSpacing(true);
+        configsListLayout.add(configsLayout);
+        VerticalLayout contentLayout = new VerticalLayout(actionPanel, configsListLayout);
 
-        add(
-                actionPanel,
-                configsTopLevelLayout);
+        add(LayoutsUtil.centeredLayout(contentLayout, 600));
     }
 
     @Override
