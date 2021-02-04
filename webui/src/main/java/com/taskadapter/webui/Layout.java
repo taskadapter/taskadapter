@@ -8,7 +8,6 @@ import com.taskadapter.webui.pages.SupportPage;
 import com.taskadapter.webui.pages.UserProfilePage;
 import com.taskadapter.webui.results.ExportResultsListPage;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -30,7 +29,6 @@ import org.vaadin.googleanalytics.tracking.EnableGoogleAnalytics;
 import org.vaadin.googleanalytics.tracking.TrackerConfiguration;
 import org.vaadin.googleanalytics.tracking.TrackerConfigurator;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.taskadapter.webui.Page.message;
@@ -86,44 +84,28 @@ public class Layout extends AppLayout implements RouterLayout, TrackerConfigurat
     @Override
     protected void afterNavigation() {
         super.afterNavigation();
-        refreshTabsInMenu();
+        menuTabs.setVisible(SessionController.userIsLoggedIn());
     }
 
     private static Tabs createMenuTabs() {
         final Tabs tabs = new Tabs();
         tabs.setOrientation(Tabs.Orientation.HORIZONTAL);
+        tabs.add(getAvailableTabs());
         return tabs;
     }
 
-    private void refreshTabsInMenu() {
-        menuTabs.removeAll();
-        menuTabs.add(getAvailableTabs());
-    }
-
     private static Tab[] getAvailableTabs() {
-        List<Tab> tabs = new ArrayList<>();
-        if (SessionController.userIsLoggedIn()) {
-            tabs.add(configsListTab);
-            tabs.add(resultsTab);
-            tabs.add(schedulesListTab);
-            tabs.add(configureTab);
-            tabs.add(supportTab);
-            tabs.add(profileTab);
+        return List.of(
+                configsListTab,
+                resultsTab,
+                schedulesListTab,
+                configureTab,
+                supportTab,
+                profileTab).toArray(new Tab[0]);
 
-            // is there any need for this link really?
+        // is there any need for this link really?
 //            String contextPath = VaadinServlet.getCurrent().getServletContext().getContextPath();
 //            Tab logoutTab = createTab(createLogoutLink(contextPath));
-//            tabs.add(logoutTab);
-        }
-        return tabs.toArray(new Tab[0]);
-    }
-
-    // TODO 14 not needed?
-    private static Tab createTab(String text, Class<? extends Component> navigationTarget) {
-        final Tab tab = new Tab();
-        tab.add(new RouterLink(text, navigationTarget));
-        ComponentUtil.setData(tab, Class.class, navigationTarget);
-        return tab;
     }
 
     private static Tab createTab(VaadinIcon icon, String title, Class<? extends Component> viewClass) {
@@ -156,17 +138,4 @@ public class Layout extends AppLayout implements RouterLayout, TrackerConfigurat
         configuration.setCreateField("allowAnchor", Boolean.FALSE);
         configuration.setInitialValue("transport", "beacon");
     }
-/*
-
-    @Override
-    protected void afterNavigation() {
-        super.afterNavigation();
-        getTabForComponent(getContent()).ifPresent(menu::setSelectedTab);
-        viewTitle.setText(getCurrentPageTitle());
-    }
-*/
-
-//    private String getCurrentPageTitle() {
-//        return getContent().getClass().getAnnotation(PageTitle.class).value();
-//    }
 }
