@@ -31,7 +31,6 @@ import static com.taskadapter.webui.Page.message;
 @Route(value = Navigator.SUPPORT, layout = Layout.class)
 @CssImport(value = "./styles/views/mytheme.css")
 public class SupportPage extends BasePage {
-    private final VerticalLayout lastVersionInfoLayout;
     private final Preservices services;
     private final TaskKeeperLocationStorage storage;
     private final String logFileLocation;
@@ -42,7 +41,6 @@ public class SupportPage extends BasePage {
         storage = new TaskKeeperLocationStorage(services.rootDir);
         cacheFileLocation = storage.cacheFolder().getAbsolutePath();
         logFileLocation = LogFinder.getLogFileLocation();
-        lastVersionInfoLayout = new VerticalLayout();
     }
 
     @Override
@@ -73,36 +71,7 @@ public class SupportPage extends BasePage {
     }
 
     private List<Component> addVersionInfo() {
-        //    var versionPanel = new VerticalLayout(message("supportPage.versionInfo"))
-        //    versionPanel.setWidth(700, Sizeable.Unit.PIXELS)
-        var currentVersionLabel = new Label(message("supportPage.taskAdapterVersion", services.currentTaskAdapterVersion));
-        var view = new VerticalLayout();
-        view.add(currentVersionLabel);
-        view.setMargin(true);
-        var checkButton = new Button(message("supportPage.checkForUpdate"),
-                e -> checkForUpdate());
-        view.add(checkButton);
-        view.add(lastVersionInfoLayout);
-        //    versionPanel.setContent(view)
-
-        view.add(new AppUpdateNotificationComponent());
-
-        return List.of(view);
-    }
-
-    private void checkForUpdate() {
-        lastVersionInfoLayout.removeAll();
-        try {
-            var lastAvailableVersion = LastVersionLoader.loadLastVersion();
-            var latestVersionLabel = new Label(message("supportPage.latestAvailableVersion", lastAvailableVersion));
-            lastVersionInfoLayout.add(latestVersionLabel);
-            if (VersionComparator.isCurrentVersionOutdated(services.currentTaskAdapterVersion, lastAvailableVersion)) {
-                lastVersionInfoLayout.add(WebAppUpdater.createDownloadLink());
-            }
-        } catch (RuntimeException e) {
-            lastVersionInfoLayout.add(new Label(message("supportPage.cantFindInfoOnLatestVersion")));
-            lastVersionInfoLayout.add(WebAppUpdater.createDownloadLink());
-        }
+        return List.of(new AppVersionComponent());
     }
 
     private List<Component> createLicenseSection() {
