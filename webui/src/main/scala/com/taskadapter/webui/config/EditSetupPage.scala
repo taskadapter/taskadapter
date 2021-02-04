@@ -3,8 +3,8 @@ package com.taskadapter.webui.config
 import com.taskadapter.connector.definition.ConnectorSetup
 import com.taskadapter.web.PluginEditorFactory
 import com.taskadapter.web.uiapi.SetupId
-import com.taskadapter.webui.pages.Navigator
-import com.taskadapter.webui.{BasePage, EventTracker, Layout, Page, SessionController}
+import com.taskadapter.webui.pages.{LayoutsUtil, Navigator}
+import com.taskadapter.webui.{BasePage, Layout, Page, SessionController, Sizes}
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.dependency.CssImport
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout
@@ -12,7 +12,7 @@ import com.vaadin.flow.router.{BeforeEvent, HasUrlParameter, Route}
 
 @Route(value = "edit-setup", layout = classOf[Layout])
 @CssImport(value = "./styles/views/mytheme.css")
-class EditSetupPage() extends BasePage with HasUrlParameter[String]{
+class EditSetupPage() extends BasePage with HasUrlParameter[String] {
 
   private val configOps = SessionController.buildConfigOperations()
   private val services = SessionController.getServices
@@ -22,13 +22,13 @@ class EditSetupPage() extends BasePage with HasUrlParameter[String]{
     showSetup(SetupId(setupIdStr))
   }
 
-  def showSetup(setupId: SetupId) : Unit = {
+  def showSetup(setupId: SetupId): Unit = {
 
     val setup: ConnectorSetup = configOps.getSetup(setupId)
 
     val editor: PluginEditorFactory[_, ConnectorSetup] = services.editorManager.getEditorFactory(setup.connectorId)
     val editSetupPanel = editor.getEditSetupPanel(sandbox, setup)
-    add(editSetupPanel.getUI)
+
 
     def saveClicked(): Unit = {
       val maybeError = editSetupPanel.validate
@@ -46,8 +46,8 @@ class EditSetupPage() extends BasePage with HasUrlParameter[String]{
     val closeButton = new Button(Page.message("editSetupPage.closeButton"))
     closeButton.addClickListener(_ => Navigator.setupsList())
 
-
-    add(new HorizontalLayout(saveButton, closeButton))
-
+    add(LayoutsUtil.centered(Sizes.mainWidth,
+      editSetupPanel.getUI,
+      new HorizontalLayout(saveButton, closeButton)))
   }
 }

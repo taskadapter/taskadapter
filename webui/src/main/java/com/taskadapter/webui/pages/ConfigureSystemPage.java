@@ -1,8 +1,7 @@
 package com.taskadapter.webui.pages;
 
 import com.taskadapter.auth.AuthorizedOperations;
-import com.taskadapter.auth.CredentialsManager;
-import com.taskadapter.license.License;
+import com.taskadapter.auth.BasicCredentialsManager;
 import com.taskadapter.web.SettingsManager;
 import com.taskadapter.web.configeditor.EditorUtil;
 import com.taskadapter.webui.BasePage;
@@ -17,6 +16,7 @@ import com.taskadapter.webui.user.UsersPanel;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
@@ -29,27 +29,23 @@ public class ConfigureSystemPage extends BasePage {
 
     private final ConfigOperations configOps;
     private final Preservices services;
+    private final SettingsManager settingsManager;
+    private final AuthorizedOperations authorizedOps;
+    private final BasicCredentialsManager credentialsManager;
 
     public ConfigureSystemPage() {
         configOps = SessionController.buildConfigOperations();
         services = SessionController.getServices();
+        settingsManager = services.settingsManager;
+        authorizedOps = configOps.authorizedOps();
+        credentialsManager = services.credentialsManager;
         buildUI();
     }
 
     private void buildUI() {
-        render(services.credentialsManager,
-                services.settingsManager,
-                services.licenseManager.getLicense(),
-                configOps.authorizedOps());
-    }
-
-    private void render(CredentialsManager credentialsManager,
-                        SettingsManager settingsManager,
-                        License license,
-                        AuthorizedOperations authorizedOps) {
-
         setSpacing(true);
         var cmt = LocalRemoteOptionsPanel.createLocalRemoteOptions(settingsManager, authorizedOps.canConfigureServer());
+        var license = services.licenseManager.getLicense();
         var allowedToEdit = authorizedOps.canConfigureServer() && license != null;
         add(LayoutsUtil.centered(Sizes.mainWidth(),
                 cmt,
@@ -59,18 +55,17 @@ public class ConfigureSystemPage extends BasePage {
         ));
     }
 
-    private Component createResultsNumberSection(SettingsManager settingsManager) {
-        var view = new VerticalLayout();
-        var field = new TextField(Page.message("configurePage.maxNumberOfResultsToSave"));
+    private static Component createResultsNumberSection(SettingsManager settingsManager) {
+        var label = new Label(Page.message("configurePage.maxNumberOfResultsToSave"));
+        var field = new TextField();
         EditorUtil.setDescriptionTooltip(field, Page.message("configurePage.maxNumberExplanation"));
         field.setValue(settingsManager.getMaxNumberOfResultsToKeep() + "");
         // TODO 14 add type safe int parsing
         field.addValueChangeListener(e -> settingsManager.setMaxNumberOfResultsToKeep(Integer.parseInt(field.getValue())));
-        view.add(field);
-        return view;
+        return new VerticalLayout(label, field);
     }
 
-    private VerticalLayout createAdminPermissionsSection(SettingsManager settingsManager, boolean modifiable) {
+    private static VerticalLayout createAdminPermissionsSection(SettingsManager settingsManager, boolean modifiable) {
         var showAllUserConfigsCheckbox = checkbox(Page.message("configurePage.showAllUsersConfigs"),
                 settingsManager.adminCanManageAllConfigs(), modifiable,
                 (newValue) -> {
@@ -88,7 +83,7 @@ public class ConfigureSystemPage extends BasePage {
         return new VerticalLayout(showAllUserConfigsCheckbox, anonymousErrorReportingCheckbox);
     }
 
-    private Checkbox checkbox(String label, boolean value,
+    private static Checkbox checkbox(String label, boolean value,
                               boolean modifiable, Function<Boolean, Void> listener) {
         var checkbox = new Checkbox(label);
         checkbox.setValue(value);
