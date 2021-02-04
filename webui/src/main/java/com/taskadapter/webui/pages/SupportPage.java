@@ -71,6 +71,16 @@ public class SupportPage extends BasePage {
     }
 
     private List<Component> addVersionInfo() {
+        boolean trialMode = !services.licenseManager.isSomeValidLicenseInstalled();
+        if (trialMode) {
+            var trialLabel = new Label(message("header.trialMode"));
+            trialLabel.addClassName("trial-mode-label");
+            var trialDescription = new Label(message("header.trialModeWillOnlyTransfer"));
+            trialDescription.addClassName("trial-mode-label");
+            return List.of(trialLabel,
+                    trialDescription,
+                    new AppVersionComponent());
+        }
         return List.of(new AppVersionComponent());
     }
 

@@ -1,27 +1,6 @@
 package com.taskadapter.data;
 
-/**
- * State utilities.
- */
 public final class States {
-    public static <T> State<T> fixed(final T t) {
-        return new State<T>() {
-            @Override
-            public T get() {
-                return t;
-            }
-
-            @Override
-            public void addListener(Runnable listener) {
-                // Not supported.
-            }
-
-            @Override
-            public void removeListener(Runnable listener) {
-                // Not supported.
-            }
-        };
-    }
 
     /**
      * Invokes callback on value and all new values.

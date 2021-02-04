@@ -13,15 +13,15 @@ import static com.taskadapter.webui.Page.message;
 public class AppVersionComponent extends VerticalLayout {
 
     public AppVersionComponent() {
-
         var lastAvailableVersion = LastVersionLoader.loadLastVersion();
         var currentVersion = new CurrentVersionLoader().getCurrentVersion();
 
         var message = Page.message("appVersionComponent.versionInfo", currentVersion, lastAvailableVersion);
         Label label = new Label(message);
-        add(label);
-        Component link = WebAppUpdater.createDownloadLink();
-        add(link);
+        Component downloadLink = WebAppUpdater.createDownloadLink();
+
+        add(label,
+                downloadLink);
 
         try {
             boolean outdated = VersionComparator.isCurrentVersionOutdated(currentVersion, lastAvailableVersion);
