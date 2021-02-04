@@ -72,9 +72,9 @@ public class ConfigureSystemPage extends BasePage {
 
     private VerticalLayout createAdminPermissionsSection(SettingsManager settingsManager, boolean modifiable) {
         var showAllUserConfigsCheckbox = checkbox(Page.message("configurePage.showAllUsersConfigs"),
-                settingsManager.schedulerEnabled(), modifiable,
+                settingsManager.adminCanManageAllConfigs(), modifiable,
                 (newValue) -> {
-                    settingsManager.setSchedulerEnabled(newValue);
+                    settingsManager.setAdminCanManageAllConfigs(newValue);
                     return null;
                 });
 
