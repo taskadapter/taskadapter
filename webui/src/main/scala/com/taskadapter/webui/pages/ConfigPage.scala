@@ -7,24 +7,19 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.license.LicenseManager
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{ConfigId, UIConnectorConfig, UISyncConfig}
-import com.taskadapter.webui.`export`.ExportResultsFragment
-import com.taskadapter.webui.config.EditConfigPage
-import com.taskadapter.webui.results.{ExportResultFormat, ExportResultsLayout}
+import com.taskadapter.webui.pages.config.{FieldMappingPanel, ResultsPanel}
 import com.taskadapter.webui.service.Preservices
-import com.taskadapter.webui.{BasePage, ConfigOperations, EventTracker, Layout, SessionController}
-import com.vaadin.flow.component.dependency.CssImport
-import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout}
-import com.vaadin.flow.router.Route
-import com.vaadin.flow.router.HasUrlParameter
-import com.vaadin.flow.router.BeforeEvent
-import com.taskadapter.webui.{BasePage, ConfigActionsFragment, ConfigOperations, EventTracker, ImageLoader, Page, SessionController}
-import com.vaadin.flow.component.{ClickEvent, Component, ComponentEventListener}
+import com.taskadapter.webui.{BasePage, ConfigActionsFragment, ConfigOperations, ImageLoader, Layout, Page, SessionController, Sizes}
 import com.vaadin.flow.component.button.Button
-import com.vaadin.flow.component.html.Label
-import com.vaadin.flow.component.notification.Notification
+import com.vaadin.flow.component.dependency.CssImport
+import com.vaadin.flow.component.html.{Div, Label}
+import com.vaadin.flow.component.orderedlayout.{FlexComponent, HorizontalLayout, VerticalLayout}
+import com.vaadin.flow.component.tabs.{Tab, Tabs}
+import com.vaadin.flow.component.{ClickEvent, Component, ComponentEventListener}
+import com.vaadin.flow.router.{BeforeEvent, HasUrlParameter, Route}
 import org.slf4j.LoggerFactory
 
-import scala.collection.JavaConverters._
+import scala.collection.mutable
 
 @Route(value = "config", layout = classOf[Layout])
 @CssImport(value = "./styles/views/mytheme.css")
@@ -40,7 +35,11 @@ class ConfigPage() extends BasePage with HasUrlParameter[String] {
     val maybeConfig = configOps.getConfig(configId)
     if (maybeConfig.isDefined) {
       val config = maybeConfig.get
-      add(new ConfigPanel(config, configOps, services, sandbox))
+      val panel = new ConfigPanel(config, configOps, services, sandbox)
+      panel.overviewPanel.showInitialState()
+      add(LayoutsUtil.centered(Sizes.mainWidth,
+        panel)
+      )
     }
   }
 }
@@ -56,31 +55,53 @@ class ConfigPanel(config: UISyncConfig,
 
   private val configId = config.configId
 
-  addClassName("configPanelInConfigsList")
-  setSpacing(true)
-  setSizeFull()
-
   val configTitleLine = new Label(config.label)
   add(configTitleLine)
 
-  val tabSheet = new ConfigPanelTabbedSheet();
-  add(tabSheet)
-
-  val previousResultsPanel = new ResultsPanel()
-  val fieldMappingsPanel = new FieldMappingPanel()
+  val previousResultsPanel = new ResultsPanel(services, configId)
+  val fieldMappingsPanel = new FieldMappingPanel(config, configOps)
   val overviewPanel = new OverviewPanel(config)
 
-  tabSheet.addTab("Overview", overviewPanel)
-  tabSheet.addTab("Field mappings", fieldMappingsPanel)
-  tabSheet.addTab("Results", previousResultsPanel)
+  createTabs()
 
   private val rightButton = createArrow("arrow_right.png", _ => sync(config))
   private val leftButton = createArrow("arrow_left.png", _ => sync(config.reverse))
 
-  overviewPanel.reload()
-  tabSheet.showTab("Overview")
 
-  def updateConfigTitleLine(config: UISyncConfig) : Unit = {
+  private def createTabs(): Unit = {
+
+    val overviewTab = new Tab("Overview")
+    val mappingsTab = new Tab("Field mappings")
+    val resultsTab = new Tab("Results")
+
+    val tabsToPages = mutable.Map[Tab, Component]()
+
+    tabsToPages += (overviewTab -> overviewPanel)
+    tabsToPages += (mappingsTab -> fieldMappingsPanel)
+    tabsToPages += (resultsTab -> previousResultsPanel)
+
+    overviewPanel.setVisible(true)
+    fieldMappingsPanel.setVisible(false)
+    previousResultsPanel.setVisible(false)
+
+    val tabs = new Tabs(
+      overviewTab,
+      mappingsTab,
+      resultsTab
+    )
+    tabs.setOrientation(Tabs.Orientation.HORIZONTAL)
+    tabs.addSelectedChangeListener(event => {
+      tabsToPages.values.foreach(page => page.setVisible(false))
+      val selectedPage = tabsToPages.get(tabs.getSelectedTab()).get
+      selectedPage.setVisible(true);
+    })
+    overviewTab.setSelected(true)
+    add(tabs,
+      new Div(overviewPanel, fieldMappingsPanel, previousResultsPanel))
+
+  }
+
+  def updateConfigTitleLine(config: UISyncConfig): Unit = {
     configTitleLine.setText(config.label)
   }
 
@@ -90,19 +111,7 @@ class ConfigPanel(config: UISyncConfig,
     button.setHeight("40px")
     button.setWidth("100px")
     button.getElement.setProperty("title", Page.message("export.exportButtonTooltip"))
-//    button.addClassName(BUTTON_LARGE)
     button.addClickListener(listener)
-    button
-  }
-
-  private def createConfigureConnectorButton(connectorConfig: UIConnectorConfig,
-                                             buttonListener: Runnable): Component = {
-    val iconResource = ImageLoader.getImage("edit.png")
-    val button = new Button(connectorConfig.getLabel)
-    button.setIcon(iconResource)
-    button.setWidth("300px")
-    button.setHeight("100%")
-    button.addClickListener(_ => buttonListener.run())
     button
   }
 
@@ -114,11 +123,6 @@ class ConfigPanel(config: UISyncConfig,
     maybeConfig.get
   }
 
-  private def getConfigEditor(config: UISyncConfig, error: String): Component = {
-    val editor = new EditConfigPage(configOps, Page.MESSAGES, error, config)
-    editor.getUI
-  }
-
   /**
     * Performs a synchronization operation from first connector to second.
     *
@@ -128,56 +132,12 @@ class ConfigPanel(config: UISyncConfig,
     exportCommon(config)
   }
 
-  class FieldMappingPanel extends ReloadableComponent {
-    val layout = new VerticalLayout()
-    def show() = {
-      val maybeConfig = configOps.getConfig(configId)
-      if (maybeConfig.isEmpty) {
-        Notification.show("The config with ID " + configId.id + " is not found")
-      } else {
-        layout.removeAll()
-        layout.add(getConfigEditor(maybeConfig.get, ""))
-      }
-    }
-    def ui: VerticalLayout = layout
-    override def reload(): Unit = show()
-  }
-
-  class ResultsPanel() extends ReloadableComponent {
-    val layout = new VerticalLayout()
-    layout.setWidth("920px")
-
-    def showResultsList(configId: ConfigId) = {
-      val resultsList = new ExportResultsLayout(new java.util.function.Function[ExportResultFormat, Void] {
-        override def apply(result: ExportResultFormat): Void = {
-          showSingleResult(result)
-          null
-        }
-      })
-      val results = services.exportResultStorage.getSaveResults(configId);
-      resultsList.showResults(results);
-      layout.removeAll()
-      layout.add(resultsList)
-    }
-
-    def showSingleResult(result: ExportResultFormat): Unit = {
-      val fragment = new ExportResultsFragment(
-        services.settingsManager.isTAWorkingOnLocalMachine)
-      val ui = fragment.showExportResult(result)
-      layout.removeAll()
-      layout.add(ui)
-    }
-
-    def ui: VerticalLayout = layout
-
-    override def reload(): Unit = showResultsList(config.configId)
-  }
-
-  class OverviewPanel(config: UISyncConfig) extends ReloadableComponent {
-    val layout = new VerticalLayout()
+  class OverviewPanel(config: UISyncConfig) extends VerticalLayout {
+    val height = "100px"
 
     val horizontalLayout = new HorizontalLayout
-    horizontalLayout.setSpacing(true)
+    horizontalLayout.setHeight(height)
+    horizontalLayout.setPadding(true)
 
     val validationPanelSaveToRight = new ValidationMessagesPanel(
       Page.message("configSummary.validationPanelCaption", config.getConnector2.getLabel))
@@ -209,39 +169,57 @@ class ConfigPanel(config: UISyncConfig,
     }
 
     private def recreateContents(config: UISyncConfig): Unit = {
-      horizontalLayout.removeAll()
 
       val leftConnectorEditListener = new Runnable {
         override def run(): Unit = showEditConnectorDialog(config.getConnector1, configSaver, sandbox)
       }
       val leftSystemButton = createConfigureConnectorButton(config.connector1, leftConnectorEditListener)
-      horizontalLayout.add(leftSystemButton)
 
       val leftRightButtonsPanel = new VerticalLayout()
-      leftRightButtonsPanel.setSpacing(true)
-
       leftRightButtonsPanel.add(rightButton)
       leftRightButtonsPanel.add(leftButton)
-
-      horizontalLayout.add(leftRightButtonsPanel)
+      leftRightButtonsPanel.setWidth("120px")
+      leftRightButtonsPanel.setHeight(height)
+      leftRightButtonsPanel.setPadding(false)
 
       val rightConnectorEditListener = new Runnable {
         override def run(): Unit = showEditConnectorDialog(config.getConnector2, configSaver, sandbox)
       }
       val rightSystemButton = createConfigureConnectorButton(config.connector2, rightConnectorEditListener)
-      horizontalLayout.add(rightSystemButton)
+
+      horizontalLayout.removeAll()
+      horizontalLayout.addAndExpand(
+        leftSystemButton,
+        leftRightButtonsPanel,
+        rightSystemButton)
+
+      horizontalLayout.setVerticalComponentAlignment(FlexComponent.Alignment.CENTER,
+        leftSystemButton,
+        leftRightButtonsPanel,
+        rightSystemButton)
 
       performValidation(config, configSaver)
     }
 
+    private def createConfigureConnectorButton(connectorConfig: UIConnectorConfig,
+                                               buttonListener: Runnable): Component = {
+      val iconResource = ImageLoader.getImage("edit.png")
+      val button = new Button(connectorConfig.getLabel)
+      button.setIcon(iconResource)
+      button.setWidth("400px")
+      button.setHeight(height)
+      button.addClickListener(_ => buttonListener.run())
+      button
+    }
+
     def showInitialState() = {
-      layout.removeAll()
+      removeAll()
       val buttonsLayout = new ConfigActionsFragment(configId)
 
-      layout.add(buttonsLayout)
-      layout.add(horizontalLayout)
-      layout.add(validationPanelSaveToRight.ui)
-      layout.add(validationPanelSaveToLeft.ui)
+      add(buttonsLayout,
+        horizontalLayout,
+        validationPanelSaveToRight.ui,
+        validationPanelSaveToLeft.ui)
 
       recreateContents(config)
     }
@@ -291,6 +269,7 @@ class ConfigPanel(config: UISyncConfig,
       }
 
     private def showConfigEditor(error: String): Unit = {
+      // TODO 14 restore "fix connector config" dialogs
 //      val window = ModalWindow.showWindow(layout.getUI)
 //      val editor = getConfigEditor(loadConfig(), error, () => {
 //        window.close()
@@ -302,10 +281,6 @@ class ConfigPanel(config: UISyncConfig,
 //      })
 //      window.setContent(editor)
     }
-
-    override def ui: VerticalLayout = layout
-
-    override def reload(): Unit = showInitialState()
   }
 
   private def exportCommon(config: UISyncConfig): Unit = {
@@ -322,10 +297,10 @@ class ConfigPanel(config: UISyncConfig,
     log.info(s"License installed? ${services.licenseManager.isSomeValidLicenseInstalled}")
     val panel = new ExportPage(getUI.get(), services.exportResultStorage, config, maxTasks,
       services.settingsManager.isTAWorkingOnLocalMachine,
-      () => overviewPanel.reload(),
+      () => overviewPanel.showInitialState(),
       configOps)
-    overviewPanel.ui.removeAll()
-    overviewPanel.ui.add(panel)
+    overviewPanel.removeAll()
+    overviewPanel.add(panel)
     panel.startLoading()
   }
 

@@ -1,12 +1,3 @@
-.configTabLeftButton:hover {
-    background-color: #999595;
-}
-
-.configTabLeftButtonSelected {
-    font-weight: bold;
-    background-color: #b6b3b3;
-}
-
 .important-notification-label {
     font-size: 16px;
     font-weight: bold;
