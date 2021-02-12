@@ -1,13 +1,12 @@
 package com.taskadapter.web.uiapi
 
 import com.taskadapter.connector.NewConnector
-import com.taskadapter.connector.definition.{ConnectorSetup, FieldMapping}
 import com.taskadapter.connector.definition.exceptions.BadConfigException
+import com.taskadapter.connector.definition.{ConnectorSetup, FieldMapping}
 import com.taskadapter.model.Field
 import com.taskadapter.web.DroppingNotSupportedException
 import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
-import com.vaadin.flow.component.{Component, HasComponents}
 
 import scala.collection.Seq
 

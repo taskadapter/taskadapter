@@ -21,7 +21,6 @@ import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.configeditor.EditorUtil;
-import com.taskadapter.web.configeditor.ProjectPanel;
 import com.taskadapter.web.configeditor.server.ServerPanelWithPasswordAndAPIKey;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Sandbox;
@@ -36,7 +35,6 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import scala.Option;
 import scala.collection.JavaConverters;
-import scala.collection.Seq;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -155,18 +153,18 @@ public class BasecampClassicEditorFactory implements PluginEditorFactory<Basecam
     }
 
     @Override
-    public Seq<BadConfigException> validateForSave(BasecampClassicConfig config, WebConnectorSetup setup, Seq<FieldMapping<?>> fieldMappings) {
+    public List<BadConfigException> validateForSave(BasecampClassicConfig config, WebConnectorSetup setup, List<FieldMapping<?>> fieldMappings) {
         List<BadConfigException> list = new ArrayList<>();
 
         if (Strings.isNullOrEmpty(config.getProjectKey())) {
             list.add(new ProjectNotSetException());
         }
-        return JavaConverters.asScalaBuffer(list);
+        return list;
     }
 
     @Override
-    public Seq<BadConfigException> validateForLoad(BasecampClassicConfig config, WebConnectorSetup setup) {
-        return BasecampConfigValidator.validateTodoListNoException(config);
+    public List<BadConfigException> validateForLoad(BasecampClassicConfig config, WebConnectorSetup setup) {
+        return JavaConverters.seqAsJavaList(BasecampConfigValidator.validateTodoListNoException(config));
     }
 
     @Override

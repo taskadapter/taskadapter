@@ -1,24 +1,24 @@
 package com.taskadapter.connector.msp.editor
 
-import java.io.File
-import java.nio.file.Paths
-
-import com.taskadapter.vaadin14shim.{HorizontalLayout, Label}
 import com.taskadapter.connector.common.FileNameGenerator
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.connector.definition.{ConnectorConfig, FieldMapping, FileSetup}
 import com.taskadapter.connector.msp._
 import com.taskadapter.connector.msp.editor.error.{InputFileNameNotSetException, OutputFileNameNotSetException}
+import com.taskadapter.vaadin14shim.{HorizontalLayout, Label}
 import com.taskadapter.web.configeditor.file.{FileProcessingResult, LocalModeFilePanel, ServerModeFilePanel}
 import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{DefaultSavableComponent, SavableComponent}
 import com.taskadapter.web.{ConnectorSetupPanel, PluginEditorFactory}
-import com.vaadin.flow.component.{Component, HasComponents}
+import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.orderedlayout.VerticalLayout
-import com.vaadin.flow.data.binder.Binder
 
+import java.io.File
+import java.nio.file.Paths
+import java.util.{Collections, Optional}
 import scala.collection.mutable
+import scala.collection.JavaConverters._
 
 class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
   private val BUNDLE_NAME = "com.taskadapter.connector.msp.messages"
@@ -60,8 +60,8 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
         createServerModePanel(sandbox, setup)
     }
 
-    override def validate(): Option[String] = {
-      None
+    override def validate(): Optional[String] = {
+      Optional.empty()
     }
 
     override def getResult: FileSetup = {
@@ -101,17 +101,17 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     )
   }
 
-  override def validateForSave(config: MSPConfig, setup: FileSetup, fieldMappings: Seq[FieldMapping[_]]):
-    Seq[BadConfigException] = {
+  override def validateForSave(config: MSPConfig, setup: FileSetup, fieldMappings: java.util.List[FieldMapping[_]]):
+    java.util.List[BadConfigException] = {
     // empty target file name is valid because it will be generated in [[updateForSave]]
     // right before the export
-    Seq()
+    Collections.emptyList();
   }
 
-  override def validateForLoad(config: MSPConfig, setup: FileSetup): Seq[BadConfigException] = {
+  override def validateForLoad(config: MSPConfig, setup: FileSetup): java.util.List[BadConfigException] = {
     val seq = new mutable.ListBuffer[BadConfigException]()
     if (setup.sourceFile.isEmpty) seq += new InputFileNameNotSetException
-    seq
+    seq.asJava
   }
 
   override def validateForDropInLoad(config: MSPConfig): Unit = {

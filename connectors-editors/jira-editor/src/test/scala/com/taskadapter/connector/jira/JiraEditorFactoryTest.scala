@@ -5,10 +5,11 @@ import com.taskadapter.connector.definition.exceptions.{ProjectNotSetException, 
 import com.taskadapter.connector.testlib.TempFolder
 import com.taskadapter.editor.testlib.VaadinTestHelper
 import com.taskadapter.web.service.Sandbox
-import com.vaadin.flow.data.binder.Binder
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
+
+import java.util.Collections
 
 @RunWith(classOf[JUnitRunner])
 class JiraEditorFactoryTest extends FunSpec with Matchers with TempFolder {
@@ -24,13 +25,13 @@ class JiraEditorFactoryTest extends FunSpec with Matchers with TempFolder {
   }
 
   it("serverURLIsRequiredForSave") {
-    val exceptions = factory.validateForSave(new JiraConfig, WebConnectorSetup(JiraConnector.ID, "label1", "", "", "", false, ""), Seq())
-    exceptions.head shouldBe a[ServerURLNotSetException]
+    val exceptions = factory.validateForSave(new JiraConfig, WebConnectorSetup(JiraConnector.ID, "label1", "", "", "", false, ""), Collections.emptyList())
+    exceptions.get(0) shouldBe a[ServerURLNotSetException]
   }
 
   it("projectKeyIsRequiredForSave") {
-    val exceptions = factory.validateForSave(new JiraConfig, WebConnectorSetup(JiraConnector.ID, "label1", "http://somehost", "", "", false, ""), Seq())
-    exceptions.head shouldBe a[ProjectNotSetException]
+    val exceptions = factory.validateForSave(new JiraConfig, WebConnectorSetup(JiraConnector.ID, "label1", "http://somehost", "", "", false, ""), Collections.emptyList())
+    exceptions.get(0) shouldBe a[ProjectNotSetException]
   }
 
   it("subtasksTypeIsRequiredForSave") {
@@ -38,7 +39,7 @@ class JiraEditorFactoryTest extends FunSpec with Matchers with TempFolder {
     config.setProjectKey("someproject")
     // clear the value
     config.setDefaultIssueTypeForSubtasks("")
-    val exceptions = factory.validateForSave(config, WebConnectorSetup(JiraConnector.ID, "label1", "http://somehost", "", "", false, ""), Seq())
-    exceptions.head shouldBe a[DefaultSubTaskTypeNotSetException]
+    val exceptions = factory.validateForSave(config, WebConnectorSetup(JiraConnector.ID, "label1", "http://somehost", "", "", false, ""), Collections.emptyList())
+    exceptions.get(0) shouldBe a[DefaultSubTaskTypeNotSetException]
   }
 }

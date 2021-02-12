@@ -106,7 +106,6 @@ public class SetupsListPage extends BasePage {
                     configOps.deleteConnectorSetup(setupId);
                     EventTracker.trackEvent(SetupCategory$.MODULE$, "deleted", "");
                     refresh();
-                    return null;
                 });
     }
 }

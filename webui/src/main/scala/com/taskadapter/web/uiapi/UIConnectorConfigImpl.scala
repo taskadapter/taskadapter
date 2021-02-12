@@ -8,10 +8,9 @@ import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.{DroppingNotSupportedException, PluginEditorFactory}
 import com.taskadapter.webui.data.ExceptionFormatter
-import com.vaadin.flow.component.Component
-import com.vaadin.flow.data.binder.Binder
 
 import scala.collection.Seq
+import scala.collection.JavaConverters._
 
 /**
   * Implementation of RichConfig. Hides implementation details inside and keeps a
@@ -39,12 +38,12 @@ class UIConnectorConfigImpl[C <: ConnectorConfig, S <: ConnectorSetup]
   override def getLabel: String = getConnectorSetup.label
 
   override def validateForLoad(): Seq[BadConfigException] = {
-    editorFactory.validateForLoad(config, setup)
+    editorFactory.validateForLoad(config, setup).asScala
   }
 
   @throws[BadConfigException]
   override def validateForSave(mappings: Seq[FieldMapping[_]]): Seq[BadConfigException] = {
-    editorFactory.validateForSave(config, setup, mappings)
+    editorFactory.validateForSave(config, setup, mappings.asJava).asScala
   }
 
   @throws[BadConfigException]

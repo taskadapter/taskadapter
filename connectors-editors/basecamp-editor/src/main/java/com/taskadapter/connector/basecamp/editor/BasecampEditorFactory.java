@@ -37,7 +37,6 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import scala.Option;
 import scala.collection.JavaConverters;
-import scala.collection.Seq;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,18 +86,18 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
     }
 
     @Override
-    public Seq<BadConfigException> validateForSave(BasecampConfig config, WebConnectorSetup setup, Seq<FieldMapping<?>> fieldMappings) {
+    public List<BadConfigException> validateForSave(BasecampConfig config, WebConnectorSetup setup, List<FieldMapping<?>> fieldMappings) {
         List<BadConfigException> list = new ArrayList<>();
 
         if (Strings.isNullOrEmpty(config.getProjectKey())) {
             list.add(new ProjectNotSetException());
         }
-        return JavaConverters.asScalaBuffer(list);
+        return list;
     }
 
     @Override
-    public Seq<BadConfigException> validateForLoad(BasecampConfig config, WebConnectorSetup setup) {
-        return BasecampValidator.validateConfig(config);
+    public List<BadConfigException> validateForLoad(BasecampConfig config, WebConnectorSetup setup) {
+        return JavaConverters.seqAsJavaList(BasecampValidator.validateConfig(config));
     }
 
     @Override

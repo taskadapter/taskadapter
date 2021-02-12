@@ -12,7 +12,8 @@ import com.taskadapter.web.uiapi.{DefaultSavableComponent, SavableComponent}
 import com.taskadapter.web.{ConnectorSetupPanel, DroppingNotSupportedException, PluginEditorFactory}
 import com.vaadin.flow.data.binder.{Binder, ValidationException}
 
-import scala.collection.{Seq, mutable}
+import scala.collection.JavaConverters._
+import scala.collection.mutable
 
 class GithubEditorFactory extends PluginEditorFactory[GithubConfig, WebConnectorSetup] {
   private val BUNDLE_NAME = "com.taskadapter.connector.github.messages"
@@ -65,18 +66,19 @@ class GithubEditorFactory extends PluginEditorFactory[GithubConfig, WebConnector
     GithubConnector.ID, Option.empty, "My GitHub", "https://github.com", "", "", false, "")
 
   @throws[BadConfigException]
-  override def validateForSave(config: GithubConfig, serverInfo: WebConnectorSetup, fieldMappings: Seq[FieldMapping[_]]): Seq[BadConfigException] = {
+  override def validateForSave(config: GithubConfig, serverInfo: WebConnectorSetup,
+                               fieldMappings: java.util.List[FieldMapping[_]]): java.util.List[BadConfigException] = {
     val seq = new mutable.ListBuffer[BadConfigException]
     if (Strings.isNullOrEmpty(serverInfo.host)) seq += new ServerURLNotSetException
     if (Strings.isNullOrEmpty(serverInfo.userName)) seq += new LoginNameNotSpecifiedException
-    seq
+    seq.asJava
   }
 
-  override def validateForLoad(config: GithubConfig, serverInfo: WebConnectorSetup): Seq[BadConfigException] = {
+  override def validateForLoad(config: GithubConfig, serverInfo: WebConnectorSetup): java.util.List[BadConfigException] = {
     val seq = new mutable.ListBuffer[BadConfigException]
     if (Strings.isNullOrEmpty(serverInfo.host)) seq += new ServerURLNotSetException
     if (Strings.isNullOrEmpty(config.getProjectKey)) seq += new ProjectNotSetException
-    seq
+    seq.asJava
   }
 
   override def describeSourceLocation(config: GithubConfig, setup: WebConnectorSetup): String = setup.host

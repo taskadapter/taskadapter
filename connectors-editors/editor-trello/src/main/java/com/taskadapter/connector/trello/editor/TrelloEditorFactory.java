@@ -28,7 +28,6 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import scala.Option;
 import scala.collection.JavaConverters;
-import scala.collection.Seq;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,7 +87,7 @@ public class TrelloEditorFactory implements PluginEditorFactory<TrelloConfig, We
     }
 
     @Override
-    public Seq<BadConfigException> validateForSave(TrelloConfig config, WebConnectorSetup setup, Seq<FieldMapping<?>> fieldMappings) {
+    public List<BadConfigException> validateForSave(TrelloConfig config, WebConnectorSetup setup, List<FieldMapping<?>> fieldMappings) {
         List<BadConfigException> errors = new ArrayList<>();
         if (Strings.isNullOrEmpty(setup.host())) {
             errors.add(new ServerURLNotSetException());
@@ -101,20 +100,20 @@ public class TrelloEditorFactory implements PluginEditorFactory<TrelloConfig, We
         }
 
         errors.addAll(checkTrelloListIsMapped(fieldMappings));
-        return JavaConverters.asScalaBuffer(errors);
+        return errors;
     }
 
-    private List<BadConfigException> checkTrelloListIsMapped(Seq<FieldMapping<?>> fieldMappings) {
+    private List<BadConfigException> checkTrelloListIsMapped(List<FieldMapping<?>> fieldMappings) {
         // "List Name" must be present on the right side and must be selected for export
-        if (!fieldMappings
-                .exists(m -> m.fieldInConnector2().contains(TaskStatus$.MODULE$) && m.selected())) {
+        if (fieldMappings.stream()
+                .noneMatch(m -> m.fieldInConnector2().contains(TaskStatus$.MODULE$) && m.selected())) {
             return Arrays.asList(new FieldNotMappedException("List Name"));
         }
         return new ArrayList<>();
     }
 
     @Override
-    public Seq<BadConfigException> validateForLoad(TrelloConfig config, WebConnectorSetup setup) {
+    public List<BadConfigException> validateForLoad(TrelloConfig config, WebConnectorSetup setup) {
         List<BadConfigException> errors = new ArrayList<>();
         if (Strings.isNullOrEmpty(setup.host())) {
             errors.add(new ServerURLNotSetException());
@@ -122,7 +121,7 @@ public class TrelloEditorFactory implements PluginEditorFactory<TrelloConfig, We
         if (Strings.isNullOrEmpty(config.getBoardId())) {
             errors.add(new ProjectNotSetException());
         }
-        return JavaConverters.asScalaBuffer(errors);
+        return errors;
     }
 
     @Override

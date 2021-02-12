@@ -25,7 +25,7 @@ public class CreateUserDialog extends Dialog {
         setCloseOnEsc(true);
         setCloseOnOutsideClick(true);
 
-        Html captionLabel = new Html("<b>" + Page.MESSAGES().get("createUser.title") + "</b>");
+        Html captionLabel = new Html("<b>" + Page.MESSAGES.get("createUser.title") + "</b>");
 
         FormLayout grid = new FormLayout();
 

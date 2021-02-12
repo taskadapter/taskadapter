@@ -17,13 +17,10 @@ import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.uiapi.DefaultSavableComponent;
 import com.taskadapter.web.uiapi.SavableComponent;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import scala.Option;
-import scala.collection.JavaConverters;
-import scala.collection.Seq;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +77,8 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig, We
     }
 
     @Override
-    public Seq<BadConfigException> validateForSave(MantisConfig config, WebConnectorSetup setup, Seq<FieldMapping<?>> fieldMappings) {
+    public List<BadConfigException> validateForSave(MantisConfig config, WebConnectorSetup setup,
+                                                    List<FieldMapping<?>> fieldMappings) {
         List<BadConfigException> list = new ArrayList<>();
 
         if (Strings.isNullOrEmpty(setup.host())) {
@@ -89,11 +87,11 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig, We
         if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
             list.add(new ProjectNotSetException());
         }
-        return JavaConverters.asScalaBuffer(list);
+        return list;
     }
 
     @Override
-    public Seq<BadConfigException> validateForLoad(MantisConfig config, WebConnectorSetup setup) {
+    public List<BadConfigException> validateForLoad(MantisConfig config, WebConnectorSetup setup) {
         List<BadConfigException> list = new ArrayList<>();
 
         if (Strings.isNullOrEmpty(setup.host())) {
@@ -102,7 +100,7 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig, We
         if (Strings.isNullOrEmpty(config.getProjectKey()) && config.getQueryId() == null) {
             list.add(new BothProjectKeyAndQueryIsAreMissingException());
         }
-        return JavaConverters.asScalaBuffer(list);
+        return list;
     }
 
     @Override

@@ -8,7 +8,6 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 public class ServerContainer extends VerticalLayout {
-    private static final String DEFAULT_HOST_VALUE = "http://";
 
     private TextField hostURLText;
 
@@ -84,7 +83,7 @@ public class ServerContainer extends VerticalLayout {
 
     private void checkProtocol() {
         if (!getHostString().startsWith("http")) {
-            hostURLText.setValue(DEFAULT_HOST_VALUE + hostURLText.getValue());
+            hostURLText.setValue(ServerPanelConstants.DEFAULT_... + hostURLText.getValue());
         }
     }
 

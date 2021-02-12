@@ -14,7 +14,7 @@ public class FieldMappingPanel extends VerticalLayout {
 
     private Component getConfigEditor(UISyncConfig config, ConfigOperations configOps) {
         var error = "";
-        var editor = new EditConfigPage(configOps, Page.MESSAGES(), error, config);
+        var editor = new EditConfigPage(configOps, Page.MESSAGES, error, config);
         return editor.getUI();
     }
 }

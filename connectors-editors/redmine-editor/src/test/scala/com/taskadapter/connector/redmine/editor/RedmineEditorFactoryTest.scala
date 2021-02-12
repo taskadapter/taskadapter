@@ -11,6 +11,8 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
 
+import java.util.Collections
+
 
 @RunWith(classOf[JUnitRunner])
 class RedmineEditorFactoryTest extends FunSpec with Matchers with TempFolder {
@@ -28,13 +30,13 @@ class RedmineEditorFactoryTest extends FunSpec with Matchers with TempFolder {
   }
   describe("config validation for save") {
     it("gives error for empty project key") {
-      val exceptions = factory.validateForSave(new RedmineConfig, setup, Seq())
-      exceptions.head shouldBe a[ProjectNotSetException]
+      val exceptions = factory.validateForSave(new RedmineConfig, setup, Collections.emptyList())
+      exceptions.get(0) shouldBe a[ProjectNotSetException]
     }
     it("passes with some project key") {
       config.setProjectKey("project123")
-      val errors = factory.validateForSave(config, setup, Seq())
-      errors shouldBe empty
+      val errors = factory.validateForSave(config, setup, Collections.emptyList())
+      errors.size() shouldBe 0
     }
   }
 }

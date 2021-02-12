@@ -122,8 +122,8 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     }
 
     @Override
-    public Seq<BadConfigException> validateForSave(JiraConfig config, WebConnectorSetup serverInfo,
-                                                   Seq<FieldMapping<?>> fieldMappings) {
+    public List<BadConfigException> validateForSave(JiraConfig config, WebConnectorSetup serverInfo,
+                                                   List<FieldMapping<?>> fieldMappings) {
         List<BadConfigException> list = new ArrayList<>();
         if (Strings.isNullOrEmpty(serverInfo.host())) {
             list.add(new ServerURLNotSetException());
@@ -137,11 +137,11 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
         if (Strings.isNullOrEmpty(config.getDefaultIssueTypeForSubtasks())) {
             list.add(new DefaultSubTaskTypeNotSetException());
         }
-        return JavaConverters.asScalaBuffer(list);
+        return list;
     }
 
     @Override
-    public Seq<BadConfigException> validateForLoad(JiraConfig config, WebConnectorSetup serverInfo) {
+    public List<BadConfigException> validateForLoad(JiraConfig config, WebConnectorSetup serverInfo) {
         List<BadConfigException> list = new ArrayList<>();
 
         if (Strings.isNullOrEmpty(serverInfo.host())) {
@@ -152,7 +152,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
             list.add(new FilterNotSetException());
         }
 
-        return JavaConverters.asScalaBuffer(list);
+        return list;
     }
 
     @Override

@@ -24,11 +24,10 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import scala.Option;
-import scala.collection.JavaConverters;
-import scala.collection.Seq;
-import scala.collection.Seq$;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, WebConnectorSetup> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.redmine.messages";
@@ -108,17 +107,17 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
     }
 
     @Override
-    public Seq<BadConfigException> validateForSave(RedmineConfig config, WebConnectorSetup setup,
-                                                   Seq<FieldMapping<?>> fieldMappings) {
+    public List<BadConfigException> validateForSave(RedmineConfig config, WebConnectorSetup setup,
+                                                    List<FieldMapping<?>> fieldMappings) {
         if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
-            return JavaConverters.asScalaBuffer(Arrays.asList(new ProjectNotSetException()));
+            return Arrays.asList(new ProjectNotSetException());
         }
-        return Seq$.MODULE$.<BadConfigException>empty();
+        return Collections.emptyList();
     }
 
     @Override
-    public Seq<BadConfigException> validateForLoad(RedmineConfig config, WebConnectorSetup setup) {
-        return Seq$.MODULE$.<BadConfigException>empty();
+    public List<BadConfigException> validateForLoad(RedmineConfig config, WebConnectorSetup setup) {
+        return Collections.emptyList();
     }
 
     @Override

@@ -92,10 +92,7 @@ public class SchedulesListPage extends BasePage {
                 () -> showSchedules(),
                 deleteSchedule -> {
                     PopupDialog.confirm("Do you want to delete this scheduled item?",
-                            () -> {
-                                deleteSchedule(deleteSchedule);
-                                return null;
-                            });
+                            () -> deleteSchedule(deleteSchedule));
                     return null;
                 }
         );
