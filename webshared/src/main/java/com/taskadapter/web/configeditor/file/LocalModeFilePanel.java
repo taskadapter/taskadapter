@@ -1,9 +1,8 @@
 package com.taskadapter.web.configeditor.file;
 
 import com.taskadapter.connector.definition.FileSetup;
-import com.taskadapter.vaadin14shim.Binder;
-import com.taskadapter.vaadin14shim.TextField;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 
 public class LocalModeFilePanel extends VerticalLayout {
     private static final String LABEL_FILE_NAME = "Input file:";

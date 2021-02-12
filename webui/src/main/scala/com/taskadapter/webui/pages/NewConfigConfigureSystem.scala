@@ -67,7 +67,7 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
     val errorMessageLabel = new Label
     errorMessageLabel.addClassName("error-message-label")
 
-    private val connectorSetupPanelUI = connectorSetupPanel.getUI
+    private val connectorSetupPanelUI = connectorSetupPanel.getComponent
     val orCreateNewLabel = new Label(message("createConfigPage.orCreateNew"))
     var inSelectMode = true
 

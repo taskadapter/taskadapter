@@ -83,7 +83,7 @@ public class ServerPanelWithKeyAndToken implements ConnectorSetupPanel {
     }
 
     @Override
-    public Component getUI() {
+    public Component getComponent() {
         return layout;
     }
 

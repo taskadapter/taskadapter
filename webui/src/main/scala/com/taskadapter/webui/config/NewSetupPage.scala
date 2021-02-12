@@ -39,7 +39,7 @@ class NewSetupPage extends BasePage {
     val setup: ConnectorSetup = editor.createDefaultSetup(sandbox)
     val editSetupPanel = editor.getEditSetupPanel(sandbox, setup)
     panelForEditor.removeAll()
-    panelForEditor.add(editSetupPanel.getUI)
+    panelForEditor.add(editSetupPanel.getComponent)
     val saveButton = new Button(Page.message("newSetupPage.saveButton"))
     saveButton.addClickListener(_ => saveClicked(editSetupPanel))
     val closeButton = new Button(Page.message("newSetupPage.cancelButton"))

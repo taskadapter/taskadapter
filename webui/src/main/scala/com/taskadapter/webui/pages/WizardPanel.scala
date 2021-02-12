@@ -1,7 +1,7 @@
 package com.taskadapter.webui.pages
 
-import com.taskadapter.vaadin14shim.Label
 import com.taskadapter.webui.Page
+import com.vaadin.flow.component.html.Label
 import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout}
 import com.vaadin.flow.component.progressbar.ProgressBar
 

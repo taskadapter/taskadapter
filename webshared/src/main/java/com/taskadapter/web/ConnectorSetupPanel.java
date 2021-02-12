@@ -6,7 +6,7 @@ import com.vaadin.flow.component.Component;
 import java.util.Optional;
 
 public interface ConnectorSetupPanel {
-    Component getUI();
+    Component getComponent();
 
     /**
      * @return Empty if no errors. localized error text otherwise

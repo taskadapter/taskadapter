@@ -99,7 +99,7 @@ public class ServerPanelWithLoginAndToken implements ConnectorSetupPanel {
     }
 
     @Override
-    public Component getUI() {
+    public Component getComponent() {
         return layout;
     }
 

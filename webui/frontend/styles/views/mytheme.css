@@ -22,3 +22,7 @@
     font-weight: bold;
     color: red;
 }
+
+.server-panel-textfield {
+    width: 260px;
+}

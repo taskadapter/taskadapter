@@ -109,7 +109,7 @@ public class ServerPanelWithPasswordAndAPIKey implements ConnectorSetupPanel {
     }
 
     @Override
-    public Component getUI() {
+    public Component getComponent() {
         return layout;
     }
 

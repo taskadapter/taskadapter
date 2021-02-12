@@ -16,7 +16,7 @@ import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
 import com.taskadapter.web.configeditor.PriorityPanel;
 import com.taskadapter.web.configeditor.ProjectPanel;
-import com.taskadapter.web.configeditor.server.ServerPanelWithLoginAndToken;
+import com.taskadapter.web.configeditor.server.ServerPanel;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.uiapi.DefaultSavableComponent;
@@ -25,8 +25,6 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import scala.Option;
-import scala.collection.JavaConverters;
-import scala.collection.Seq;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +82,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
                 new FormLayout.ResponsiveStep("50em", 2));
 
         PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(),
-                new PrioritiesLoader(setup),this);
+                new PrioritiesLoader(setup), this);
 
         layout.add(projectPanel,
                 priorityPanel,
@@ -100,7 +98,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
                 return false;
             }
         });
-   }
+    }
 
     @Override
     public boolean isWebConnector() {
@@ -109,10 +107,14 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
 
     @Override
     public ConnectorSetupPanel getEditSetupPanel(Sandbox sandbox, WebConnectorSetup setup) {
-        String description = "Please generate an API token here: <br/>" +
+        String description = "Note that Jira 7 or older requires a regular user password, while Jira 8+ and Jira Cloud only accept API Tokens."
+                + "<br/>Please provide either a password or an API token."
+                + "<br/>You can generate an API token here: <br/>" +
                 "<b>https://id.atlassian.com/manage-profile/security/api-tokens</b>";
-        return  new ServerPanelWithLoginAndToken(JiraConnector.ID(), JiraConnector.ID(),
-                setup, description);
+        return new ServerPanel(JiraConnector.ID(), JiraConnector.ID(),
+                setup)
+                .setPasswordFieldLabel("Password or token")
+                .setPasswordHelp(description);
     }
 
     @Override
@@ -123,7 +125,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
 
     @Override
     public List<BadConfigException> validateForSave(JiraConfig config, WebConnectorSetup serverInfo,
-                                                   List<FieldMapping<?>> fieldMappings) {
+                                                    List<FieldMapping<?>> fieldMappings) {
         List<BadConfigException> list = new ArrayList<>();
         if (Strings.isNullOrEmpty(serverInfo.host())) {
             list.add(new ServerURLNotSetException());

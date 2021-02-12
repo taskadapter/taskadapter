@@ -3,12 +3,12 @@ package com.taskadapter.web.configeditor;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 
-import com.taskadapter.vaadin14shim.Label;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.data.Messages;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;

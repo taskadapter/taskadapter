@@ -47,7 +47,7 @@ class EditSetupPage() extends BasePage with HasUrlParameter[String] {
     closeButton.addClickListener(_ => Navigator.setupsList())
 
     add(LayoutsUtil.centered(Sizes.mainWidth,
-      editSetupPanel.getUI,
+      editSetupPanel.getComponent,
       new HorizontalLayout(saveButton, closeButton)))
   }
 }

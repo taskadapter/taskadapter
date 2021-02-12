@@ -5,14 +5,14 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.connector.definition.{ConnectorConfig, FieldMapping, FileSetup}
 import com.taskadapter.connector.msp._
 import com.taskadapter.connector.msp.editor.error.{InputFileNameNotSetException, OutputFileNameNotSetException}
-import com.taskadapter.vaadin14shim.{HorizontalLayout, Label}
 import com.taskadapter.web.configeditor.file.{FileProcessingResult, LocalModeFilePanel, ServerModeFilePanel}
 import com.taskadapter.web.data.Messages
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{DefaultSavableComponent, SavableComponent}
 import com.taskadapter.web.{ConnectorSetupPanel, PluginEditorFactory}
 import com.vaadin.flow.component.Component
-import com.vaadin.flow.component.orderedlayout.VerticalLayout
+import com.vaadin.flow.component.html.Label
+import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout}
 
 import java.io.File
 import java.nio.file.Paths
@@ -53,7 +53,7 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
 
   override def getEditSetupPanel(sandbox: Sandbox, setup: FileSetup) = new ConnectorSetupPanel() {
 
-    override def getUI: Component = {
+    override def getComponent: Component = {
       if (sandbox.allowLocalFSAccess)
         new LocalModeFilePanel(setup)
       else
