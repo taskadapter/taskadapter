@@ -106,7 +106,7 @@ class JiraConnector(config: JiraConfig, setup: WebConnectorSetup) extends NewCon
   override def loadData: util.List[GTask] = withJiraRestClient((client: JiraRestClient) => {
     def foo(client: JiraRestClient) = {
       val loader = new JiraTaskLoader(client, config.getPriorities)
-      loader.loadTasks(config).asJava
+      loader.loadTasks(config)
     }
 
     foo(client)
