@@ -11,7 +11,7 @@ public class FieldRowFinder {
             Option<? extends Field<?>> target = row.targetField();
             Field<?> field1 = target.get();
             return target.isDefined()
-                    && field1.getClass().getName().equals(field.name());
+                    && field1.getClass().getName().equals(field.getClass().getName());
         });
     }
 }
