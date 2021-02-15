@@ -67,7 +67,7 @@ public final class ExportPage extends VerticalLayout {
 
         new Thread(() -> {
             try {
-                log.info("Loading from " + config.connector1().getConnectorTypeId()
+                log.info("Loading from " + config.getConnector1().getConnectorTypeId()
                         + " " + config.getConnector1().getSourceLocation());
                 final List<GTask> tasks = UISyncConfig.loadTasks(config, taskLimit);
                 log.info("Loaded " + tasks.size() + " tasks");

@@ -47,7 +47,7 @@ final class UniConfigExport {
             rb.append(Page.message("configsPage.errorSource",
                     syncConfig.getConnector1().decodeException(e)));
         }
-        Seq<BadConfigException> saveErrors = syncConfig.getConnector2().validateForSave(syncConfig.fieldMappings());
+        Seq<BadConfigException> saveErrors = syncConfig.getConnector2().validateForSave(syncConfig.getFieldMappings());
         saveErrors.foreach(e -> rb.append(Page.message("configsPage.errorDestination",
                 syncConfig.getConnector2().decodeException(e))));
 
@@ -65,7 +65,7 @@ final class UniConfigExport {
         loadErrors.foreach(e -> rb.append(Page.message("configsPage.errorSource",
                 syncConfig.getConnector1().decodeException(e))));
 
-        Seq<BadConfigException> saveErrors = syncConfig.getConnector2().validateForSave(syncConfig.fieldMappings());
+        Seq<BadConfigException> saveErrors = syncConfig.getConnector2().validateForSave(syncConfig.getFieldMappings());
         saveErrors.foreach(e -> rb.append(Page.message("configsPage.errorDestination",
                     syncConfig.getConnector2().decodeException(e))));
 

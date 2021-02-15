@@ -1,9 +1,7 @@
 package com.taskadapter.webui.results
 
 import java.util.Date
-
-import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.web.uiapi.ConfigId
+import com.taskadapter.web.uiapi.{ConfigId, DecodedTaskError}
 
 import scala.beans.BeanProperty
 
@@ -19,7 +17,7 @@ case class ExportResultFormat(resultId: String,
                               @BeanProperty updatedTasksNumber: Int,
                               @BeanProperty createdTasksNumber: Int,
                               @BeanProperty generalErrors: Seq[String],
-                              @BeanProperty taskErrors: Seq[(TaskId, String, String)],
+                              @BeanProperty taskErrors: Seq[DecodedTaskError],
                               @BeanProperty dateStarted: Date,
                               @BeanProperty timeTookSeconds: Int) {
 

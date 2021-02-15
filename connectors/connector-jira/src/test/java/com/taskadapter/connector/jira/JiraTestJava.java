@@ -68,7 +68,7 @@ public class JiraTestJava {
         );
         SaveResult result = connector.saveData(PreviouslyCreatedTasksResolver.empty(), Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
         assertThat(result.createdTasksNumber()).isEqualTo(1);
-        TaskId taskId = result.keyToRemoteKeyList().head()._2;
+        TaskId taskId = result.keyToRemoteKeyList().head().newId;
         GTask loadedTask = connector.loadTaskByKey(taskId, rows);
         assertThat(loadedTask.getValue(Description$.MODULE$))
                 .isEqualTo("some default");

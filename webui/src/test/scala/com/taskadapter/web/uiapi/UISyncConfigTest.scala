@@ -9,7 +9,7 @@ import org.scalatest.{FunSpec, Matchers}
 @RunWith(classOf[JUnitRunner])
 class UISyncConfigTest extends FunSpec with Matchers {
   it("reverses mappings") {
-    UISyncConfig.reverse(Seq(
+    UISyncConfig.reverse(java.util.List.of(
       FieldMapping(Summary, Description, true, ""),
       FieldMapping(None, Some(AssigneeLoginName), true, "")
     )

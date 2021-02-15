@@ -9,6 +9,7 @@ import org.junit.runner.RunWith
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
+import scala.collection.JavaConverters._
 
 @RunWith(classOf[JUnitRunner])
 class UIConfigStoreTest extends FunSpec with ScalaFutures with Matchers with ConfigsTempFolder {
@@ -31,7 +32,7 @@ class UIConfigStoreTest extends FunSpec with ScalaFutures with Matchers with Con
         JiraConnector.ID, ConfigFolderTestConfigurer.jiraSetupId)
       val config = store.getConfig(configId).get
 
-      val row = findRow(config.fieldMappings, Some(Description), Some(Description))
+      val row = findRow(config.getFieldMappings.asScala, Some(Description), Some(Description))
       row.selected shouldBe true
       org.junit.Assert.assertTrue(row.defaultValue == null)
     }

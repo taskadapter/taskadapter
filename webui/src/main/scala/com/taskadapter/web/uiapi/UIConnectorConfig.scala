@@ -59,7 +59,7 @@ abstract class UIConnectorConfig {
   /**
     * Validates config for save. Does not update it in any way.
     */
-  def validateForSave(fieldMappings: Seq[FieldMapping[_]]): Seq[BadConfigException]
+  def validateForSave(fieldMappings: java.util.List[FieldMapping[_]]): Seq[BadConfigException]
 
   /**
     * Validates config for drop-in operation.

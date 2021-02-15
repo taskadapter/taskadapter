@@ -4,8 +4,8 @@ import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.model.GTask
 
 class PreviouslyCreatedTasksResolver(cache: PreviouslyCreatedTasksCache) {
-  val mapLeftToRight = cache.items.map(i => i._1 -> i._2).toMap
-  val mapRightToLeft = cache.items.map(i => i._2 -> i._1).toMap
+  val mapLeftToRight = cache.items.map(i => i.originalId -> i.newId).toMap
+  val mapRightToLeft = cache.items.map(i => i.newId -> i.originalId).toMap
 
   /**
     * @param task must contain sourceSystemId value

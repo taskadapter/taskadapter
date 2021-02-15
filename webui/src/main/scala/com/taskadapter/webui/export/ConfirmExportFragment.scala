@@ -13,6 +13,7 @@ import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.html.Label
 import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout}
 import org.slf4j.LoggerFactory
+import scala.collection.JavaConverters._
 
 object ConfirmExportFragment {
   private val LOGGER = LoggerFactory.getLogger(ConfirmExportFragment.getClass)
@@ -61,11 +62,17 @@ object ConfirmExportFragment {
     val taskFieldsMappingFragment = new TaskFieldsMappingFragment(Page.MESSAGES,
       config.getConnector1.getAllFields, config.getConnector1.fieldNames, config.getConnector1.getLabel,
       config.getConnector2.getAllFields, config.getConnector2.fieldNames, config.getConnector2.getLabel,
-      config.getNewMappings)
+      config.getNewMappings.asScala)
 
     def getPossiblyUpdatedConfig = {
-      val newFieldMappings = taskFieldsMappingFragment.getElements.toSeq
-      config.copy(fieldMappings = newFieldMappings)
+      val newFieldMappings = taskFieldsMappingFragment.getElements.toSeq.asJava
+      new UISyncConfig(config.getTaskKeeperLocationStorage,
+        config.getConfigId,
+        config.getLabel,
+        config.getConnector1,
+        config.getConnector2,
+        newFieldMappings,
+        config.isReversed)
     }
 
     layout.add(taskFieldsMappingFragment.getComponent)

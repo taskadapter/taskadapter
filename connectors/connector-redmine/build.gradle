@@ -1,3 +1,7 @@
 dependencies {
     compile 'com.taskadapter:redmine-java-api:3.1.3'
+
+    testCompile(
+            libraries.assertJ
+    )
 }

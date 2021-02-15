@@ -53,9 +53,9 @@ class ConfigPanel(config: UISyncConfig,
                   sandbox: Sandbox) extends VerticalLayout {
   private val log = LoggerFactory.getLogger(classOf[ConfigPanel])
 
-  private val configId = config.configId
+  private val configId = config.getConfigId
 
-  val configTitleLine = new Label(config.label)
+  val configTitleLine = new Label(config.getLabel)
   add(configTitleLine)
 
   val previousResultsPanel = new ResultsPanel(services, configId)
@@ -102,7 +102,7 @@ class ConfigPanel(config: UISyncConfig,
   }
 
   def updateConfigTitleLine(config: UISyncConfig): Unit = {
-    configTitleLine.setText(config.label)
+    configTitleLine.setText(config.getLabel)
   }
 
   def createArrow(imageFileName: String, listener: ComponentEventListener[ClickEvent[Button]]): Button = {
@@ -173,7 +173,7 @@ class ConfigPanel(config: UISyncConfig,
       val leftConnectorEditListener = new Runnable {
         override def run(): Unit = showEditConnectorDialog(config.getConnector1, configSaver, sandbox)
       }
-      val leftSystemButton = createConfigureConnectorButton(config.connector1, leftConnectorEditListener)
+      val leftSystemButton = createConfigureConnectorButton(config.getConnector1, leftConnectorEditListener)
 
       val leftRightButtonsPanel = new VerticalLayout()
       leftRightButtonsPanel.add(rightButton)
@@ -185,7 +185,7 @@ class ConfigPanel(config: UISyncConfig,
       val rightConnectorEditListener = new Runnable {
         override def run(): Unit = showEditConnectorDialog(config.getConnector2, configSaver, sandbox)
       }
-      val rightSystemButton = createConfigureConnectorButton(config.connector2, rightConnectorEditListener)
+      val rightSystemButton = createConfigureConnectorButton(config.getConnector2, rightConnectorEditListener)
 
       horizontalLayout.removeAll()
       horizontalLayout.addAndExpand(
@@ -235,23 +235,23 @@ class ConfigPanel(config: UISyncConfig,
     }
 
     def validateSaveToLeft(config: UISyncConfig, configSaver: Runnable): Seq[ValidationErrorTextWithProcessor] = {
-      val loadErrors = validateLoad(config.getConnector2, config.fieldMappings, configSaver)
-      val saveErrors = validateSave(config.getConnector1, config.fieldMappings, configSaver)
+      val loadErrors = validateLoad(config.getConnector2, config.getFieldMappings, configSaver)
+      val saveErrors = validateSave(config.getConnector1, config.getFieldMappings, configSaver)
       loadErrors ++ saveErrors
     }
 
     def validateSaveToRight(config: UISyncConfig, configSaver: Runnable): Seq[ValidationErrorTextWithProcessor] = {
-      val loadErrors = validateLoad(config.getConnector1, config.fieldMappings, configSaver)
-      val saveErrors = validateSave(config.getConnector2, config.fieldMappings, configSaver)
+      val loadErrors = validateLoad(config.getConnector1, config.getFieldMappings, configSaver)
+      val saveErrors = validateSave(config.getConnector2, config.getFieldMappings, configSaver)
       loadErrors ++ saveErrors
     }
 
-    def validateSave(uiConfig: UIConnectorConfig, fieldMappings: Seq[FieldMapping[_]], configSaver: Runnable): Seq[ValidationErrorTextWithProcessor] = {
+    def validateSave(uiConfig: UIConnectorConfig, fieldMappings: java.util.List[FieldMapping[_]], configSaver: Runnable): Seq[ValidationErrorTextWithProcessor] = {
       val errors = uiConfig.validateForSave(fieldMappings)
       errors.map(e => buildItem(uiConfig, e, configSaver))
     }
 
-    def validateLoad(uiConfig: UIConnectorConfig, fieldMappings: Seq[FieldMapping[_]], configSaver: Runnable): Seq[ValidationErrorTextWithProcessor] = {
+    def validateLoad(uiConfig: UIConnectorConfig, fieldMappings: java.util.List[FieldMapping[_]], configSaver: Runnable): Seq[ValidationErrorTextWithProcessor] = {
       val errors = uiConfig.validateForLoad()
       errors.map(e => buildItem(uiConfig, e, configSaver))
     }
@@ -286,8 +286,8 @@ class ConfigPanel(config: UISyncConfig,
   private def exportCommon(config: UISyncConfig): Unit = {
     log.info(
       s"""Starting export
-    from ${config.connector1.getConnectorTypeId} (${config.connector1.getSourceLocation})
-    to   ${config.connector2.getConnectorTypeId} (${config.connector2.getDestinationLocation}""")
+    from ${config.getConnector1.getConnectorTypeId} (${config.getConnector1.getSourceLocation})
+    to   ${config.getConnector2.getConnectorTypeId} (${config.getConnector2.getDestinationLocation}""")
 
     val maxTasks = if (services.licenseManager.isSomeValidLicenseInstalled) {
       Constants.maxTasksToLoad

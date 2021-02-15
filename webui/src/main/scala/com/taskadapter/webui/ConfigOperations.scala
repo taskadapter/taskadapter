@@ -80,7 +80,7 @@ final class ConfigOperations(/**
       throw new RuntimeException("The newly created config with id " + configId + " cannot be found. This is weird.")
     }
     val config = maybeConfig.get
-    EventTracker.trackEvent(ConfigCategory, "created", config.connector1.getConnectorTypeId + " - " + config.connector2.getConnectorTypeId)
+    EventTracker.trackEvent(ConfigCategory, "created", config.getConnector1.getConnectorTypeId + " - " + config.getConnector2.getConnectorTypeId)
   }
 
   /**

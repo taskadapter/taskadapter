@@ -42,8 +42,8 @@ class UIConnectorConfigImpl[C <: ConnectorConfig, S <: ConnectorSetup]
   }
 
   @throws[BadConfigException]
-  override def validateForSave(mappings: Seq[FieldMapping[_]]): Seq[BadConfigException] = {
-    editorFactory.validateForSave(config, setup, mappings.asJava).asScala
+  override def validateForSave(mappings: java.util.List[FieldMapping[_]]): Seq[BadConfigException] = {
+    editorFactory.validateForSave(config, setup, mappings).asScala
   }
 
   @throws[BadConfigException]

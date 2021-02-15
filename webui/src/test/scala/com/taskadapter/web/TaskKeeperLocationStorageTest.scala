@@ -1,6 +1,6 @@
 package com.taskadapter.web
 
-import com.taskadapter.connector.definition.TaskId
+import com.taskadapter.connector.definition.{TaskId, TaskKeyMapping}
 import com.taskadapter.connector.testlib.TempFolder
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
@@ -12,7 +12,7 @@ class TaskKeeperLocationStorageTest extends FunSpec with Matchers with TempFolde
     withTempFolder { folder =>
       val (sourceId, targetId) = createIds(1, 100)
       val storage = new TaskKeeperLocationStorage(folder)
-      storage.store("location1", "location2", Seq((sourceId, targetId)))
+      storage.store("location1", "location2", Seq(new TaskKeyMapping(sourceId, targetId)))
       storage.store("location1", "location2", Seq())
       val loaded = storage.loadTasks("location1", "location2")
       loaded.findSourceSystemIdentity(sourceId, "location2") shouldBe Some(targetId)
@@ -23,7 +23,7 @@ class TaskKeeperLocationStorageTest extends FunSpec with Matchers with TempFolde
     withTempFolder { folder =>
       val (sourceId, targetId) = createIds(1, 100)
       val storage = new TaskKeeperLocationStorage(folder)
-      storage.store("location1", "location2", Seq((sourceId, targetId)))
+      storage.store("location1", "location2", Seq(new TaskKeyMapping(sourceId, targetId)))
 
       val loaded = storage.loadTasks("location1", "location2")
       loaded.findSourceSystemIdentity(sourceId, "location2") shouldBe Some(targetId)
@@ -34,10 +34,10 @@ class TaskKeeperLocationStorageTest extends FunSpec with Matchers with TempFolde
     withTempFolder { folder =>
       val (sourceId, targetId) = createIds(1, 100)
       val storage = new TaskKeeperLocationStorage(folder)
-      storage.store("location1", "location2", Seq((sourceId, targetId)))
+      storage.store("location1", "location2", Seq(new TaskKeyMapping(sourceId, targetId)))
 
       val (anotherSourceId, anotherTargetId) = createIds(2, 200)
-      storage.store("location1", "location2", Seq((anotherSourceId, anotherTargetId)))
+      storage.store("location1", "location2", Seq(new TaskKeyMapping(anotherSourceId, anotherTargetId)))
 
       val loaded = storage.loadTasks("location1", "location2")
       loaded.findSourceSystemIdentity(sourceId, "location2") shouldBe Some(targetId)
@@ -49,9 +49,9 @@ class TaskKeeperLocationStorageTest extends FunSpec with Matchers with TempFolde
     withTempFolder { folder =>
       val (sourceId, targetId) = createIds(1, 100)
       val storage = new TaskKeeperLocationStorage(folder)
-      storage.store("location1", "location2", Seq((sourceId, targetId)))
+      storage.store("location1", "location2", Seq(new TaskKeyMapping(sourceId, targetId)))
       // add the same element again
-      storage.store("location1", "location2", Seq((sourceId, targetId)))
+      storage.store("location1", "location2", Seq(new TaskKeyMapping(sourceId, targetId)))
 
       val loaded = storage.loadTasks("location1", "location2")
       loaded.mapLeftToRight.keySet.size shouldBe 1
@@ -62,7 +62,7 @@ class TaskKeeperLocationStorageTest extends FunSpec with Matchers with TempFolde
     withTempFolder { folder =>
       val (sourceId, targetId) = createIds(1, 100)
       val storage = new TaskKeeperLocationStorage(folder)
-      storage.store("location1", "location2", Seq((sourceId, targetId)))
+      storage.store("location1", "location2", Seq(new TaskKeyMapping(sourceId, targetId)))
 
       val loaded = storage.loadTasks("location1", "location2")
       loaded.findSourceSystemIdentity(targetId, "location1") shouldBe Some(sourceId)

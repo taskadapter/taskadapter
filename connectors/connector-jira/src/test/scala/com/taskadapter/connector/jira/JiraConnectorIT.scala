@@ -48,9 +48,9 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
       ProgressMonitorUtils.DUMMY_MONITOR,
       JiraFieldBuilder.getDefault.asJava)
     assertThat(result.createdTasksNumber).isEqualTo(3)
-    val parentTaskId = result.keyToRemoteKeyList.head._2
-    val subTask1Id = result.keyToRemoteKeyList(1)._2
-    val subTask2Id = result.keyToRemoteKeyList(2)._2
+    val parentTaskId = result.keyToRemoteKeyList.head.newId
+    val subTask1Id = result.keyToRemoteKeyList(1).newId
+    val subTask2Id = result.keyToRemoteKeyList(2).newId
 
     val loadedSubTask1 = connector.loadTaskByKey(subTask1Id, JiraFieldBuilder.getDefault.asJava)
     val loadedSubTask2 = connector.loadTaskByKey(subTask2Id, JiraFieldBuilder.getDefault.asJava)

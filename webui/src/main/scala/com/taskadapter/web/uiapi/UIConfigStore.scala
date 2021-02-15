@@ -77,7 +77,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     config2.setConnectorSetup(connector2Setup)
 
     try {
-      val newMappings = JsonFactory.fromJsonString(jsonString)
+      val newMappings = JsonFactory.fromJsonString(jsonString).asJava
       new UISyncConfig(new TaskKeeperLocationStorage(configStorage.rootDir), ConfigId(ownerName,storedConfig.getId),
         label, config1, config2, newMappings, false)
     } catch {
@@ -103,8 +103,8 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
 
     val newMappings = NewConfigSuggester.suggestedFieldMappingsForNewConfig(
       config1.getDefaultFieldsForNewConfig,
-      config2.getDefaultFieldsForNewConfig)
-    val mappingsString = JsonFactory.toString(newMappings)
+      config2.getDefaultFieldsForNewConfig).asJava
+    val mappingsString = JsonFactory.toString(newMappings.asScala)
     val configId = configStorage.createNewConfig(userName, label,
       config1.getConnectorTypeId, connector1SetupId, config1.getConfigString,
       config2.getConnectorTypeId, connector2SetupId, config2.getConfigString,
@@ -113,7 +113,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     configId
   }
 
-  def getConfig(configId: ConfigId): Option[UISyncConfig] = getUserConfigs(configId.ownerName).find(_.configId == configId)
+  def getConfig(configId: ConfigId): Option[UISyncConfig] = getUserConfigs(configId.ownerName).find(_.getConfigId == configId)
 
   def saveNewSetup(userName: String, setup: ConnectorSetup): SetupId = {
     val newFile = FileNameGenerator.findSafeAvailableFileName(getSavedSetupsFolder(userName), setup.connectorId + "_%d.json")
@@ -206,8 +206,8 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val config1 = normalizedSyncConfig.getConnector1
     val config2 = normalizedSyncConfig.getConnector2
     val mappings = normalizedSyncConfig.getNewMappings
-    val mappingsStr = JsonFactory.toString(mappings)
-    configStorage.saveConfig(normalizedSyncConfig.getOwnerName, normalizedSyncConfig.configId.id, label,
+    val mappingsStr = JsonFactory.toString(mappings.asScala)
+    configStorage.saveConfig(normalizedSyncConfig.getOwnerName, normalizedSyncConfig.getConfigId.id, label,
       config1.getConnectorTypeId, SetupId(config1.getConnectorSetup.id.get), config1.getConfigString,
       config2.getConnectorTypeId, SetupId(config2.getConnectorSetup.id.get), config2.getConfigString,
       mappingsStr)

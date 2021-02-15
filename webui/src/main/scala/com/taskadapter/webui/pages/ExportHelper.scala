@@ -22,7 +22,7 @@ class ExportHelper(exportResultStorage: ExportResultStorage,
                    configOps: ConfigOperations) {
 
   def onTasksLoaded(tasks: util.List[GTask]): Unit = {
-    val dataSourceLabel = config.connector1.getConnectorTypeId
+    val dataSourceLabel = config.getConnector1.getConnectorTypeId
     EventTracker.trackEvent(ExportCategory, "loaded_tasks", dataSourceLabel, tasks.size())
 
     if (tasks.isEmpty) showNoDataLoaded()

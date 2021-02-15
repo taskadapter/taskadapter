@@ -1,12 +1,14 @@
 package com.taskadapter.web
 
 import java.io.File
-
 import com.google.common.base.Charsets
 import com.google.common.io.Files
-import com.taskadapter.connector.definition.TaskId
+import com.taskadapter.connector.definition.{TaskId, TaskKeyMapping}
 import com.taskadapter.core.{PreviouslyCreatedTasksCache, PreviouslyCreatedTasksResolver, TaskKeeperLocation}
+import io.circe.Decoder.Result
+import io.circe.{Decoder, Encoder, HCursor}
 import io.circe.generic.auto._
+import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.parser._
 import io.circe.syntax._
 
@@ -16,11 +18,28 @@ class TaskKeeperLocationStorage(rootFolder: File) {
   val cacheFolder = new File(rootFolder, "cache")
   val fileName = "cache_file_links.json"
 
+  implicit val taskIdEncoder: Encoder[TaskId] = deriveEncoder[TaskId]
+  implicit val taskIdDecoder: Decoder[TaskId] = deriveDecoder[TaskId]
+
+  implicit val keyMappingEncoder: Encoder[TaskKeyMapping] =
+    Encoder.forProduct2("originalId", "newId")(m => (m.originalId, m.newId))
+  implicit val keyMappingDecoder: Decoder[TaskKeyMapping] =
+    new Decoder[TaskKeyMapping] {
+      override final def apply(c: HCursor): Result[TaskKeyMapping] =
+        for {
+          originalId <- c.downField("originalId").as[TaskId]
+          newId <- c.downField("newId").as[TaskId]
+        } yield {
+          new TaskKeyMapping(originalId, newId)
+        }
+    }
+
+
   /**
     * Store elements in the cache on disk. New items are added to existing ones, skipping duplicates.
     * If file does not exist yet, it will be created.
     */
-  def store(location1: String, location2: String, items: Seq[(TaskId, TaskId)]): Unit = {
+  def store(location1: String, location2: String, items: Seq[TaskKeyMapping]): Unit = {
     val file = getOrCreateFileLocation(location1, location2)
     val existingCache = loadCache(location1, location2)
     val allItems = (existingCache.items ++ items).distinct

@@ -1,10 +1,9 @@
 package com.taskadapter.connector.testlib
 
 import java.util
-
 import com.taskadapter.connector._
 import com.taskadapter.connector.common.ProgressMonitorUtils
-import com.taskadapter.connector.definition.{ExportDirection, TaskId}
+import com.taskadapter.connector.definition.{ExportDirection, TaskId, TaskKeyMapping}
 import com.taskadapter.core.{PreviouslyCreatedTasksCache, PreviouslyCreatedTasksResolver, TaskSaver}
 import com.taskadapter.model.{Field, GTask}
 import org.junit.Assert.{assertEquals, assertFalse}
@@ -98,7 +97,7 @@ object CommonTestChecks extends Matchers {
     def pretend(id1: TaskId, id2: TaskId): PreviouslyCreatedTasksResolver = {
       new PreviouslyCreatedTasksResolver(
         PreviouslyCreatedTasksCache("1", targetLocation, Seq(
-          (id1, id2)
+          new TaskKeyMapping(id1, id2)
         ))
       )
     }

@@ -1,6 +1,6 @@
 package com.taskadapter.reporting
 
-import com.taskadapter.connector.definition.TaskId
+import com.taskadapter.web.uiapi.DecodedTaskError
 import com.taskadapter.webui.results.ExportResultFormat
 
 import scala.collection.mutable.ListBuffer
@@ -13,26 +13,26 @@ object ExportResultsFormatter {
       "Task-specific errors: " + System.lineSeparator() + formatTaskErrors(result.taskErrors)
   }
 
-  def formatTaskErrors(errors: Seq[(TaskId, String, String)]): String = {
+  def formatTaskErrors(errors: Seq[DecodedTaskError]): String = {
     if (errors.isEmpty) {
       return ""
     }
 
-    var results = new ListBuffer[(TaskId, String, String)]()
+    var results = new ListBuffer[DecodedTaskError]()
     results += errors.head
 
     for (i <- 1 until errors.size) {
       val prev = errors(i - 1)
       val current = errors(i)
 
-      val newItem = if (current._3 == prev._3) {
-        (current._1, current._2, "same as previous")
+      val newItem = if (current.exceptionStackTrace == prev.exceptionStackTrace) {
+        new DecodedTaskError(current.sourceSystemTaskId, current.connector2ErrorText, "same as previous")
       } else {
-        (current._1, current._2, StacktraceCleaner.stripInternalStacktraceItems(current._3))
+        new DecodedTaskError(current.sourceSystemTaskId, current.connector2ErrorText, StacktraceCleaner.stripInternalStacktraceItems(current.exceptionStackTrace))
       }
       results += newItem
     }
-    results.map(e => e._1 + " - " + e._2 + " - " + e._3)
+    results.map(e => e.sourceSystemTaskId + " - " + e.connector2ErrorText + " - " + e.exceptionStackTrace)
       .mkString(System.lineSeparator())
   }
 }

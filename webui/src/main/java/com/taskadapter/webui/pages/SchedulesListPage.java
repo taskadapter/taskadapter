@@ -81,7 +81,7 @@ public class SchedulesListPage extends BasePage {
                 .orElseThrow(() -> new RuntimeException("cannot open schedule " + schedule
                         + " because its config is not found"));
         EditSchedulePage editSchedulePage = new EditSchedulePage(
-                config.label(),
+                config.getLabel(),
                 config.getConnector1().getLabel(),
                 config.getConnector2().getLabel(),
                 schedule,
@@ -101,7 +101,7 @@ public class SchedulesListPage extends BasePage {
 
     private Optional<UISyncConfig> getConfigForSchedule(Schedule schedule) {
         return configOps.getOwnedConfigs()
-                .stream().filter(c -> c.configId().equals(schedule.getConfigId()))
+                .stream().filter(c -> c.getConfigId().equals(schedule.getConfigId()))
                 .findFirst();
     }
 
@@ -173,7 +173,7 @@ public class SchedulesListPage extends BasePage {
         configsList.stream().forEach(c -> {
             Button button = new Button(c.getLabel());
             button.setWidth("200px");
-            button.addClickListener(e -> showNewScheduleEditor(c.configId()));
+            button.addClickListener(e -> showNewScheduleEditor(c.getConfigId()));
             configsListLayout.add(button);
         });
     }
@@ -188,7 +188,7 @@ public class SchedulesListPage extends BasePage {
         }).map(schedule -> {
             // TODO 14 do not load the configs twice!
             Optional<UISyncConfig> maybeConfig = getConfigForSchedule(schedule);
-            return new ScheduleListItem(schedule.getId(), schedule.getConfigId(), maybeConfig.get().label(),
+            return new ScheduleListItem(schedule.getId(), schedule.getConfigId(), maybeConfig.get().getLabel(),
                     schedule.getIntervalInMinutes(), maybeConfig.get().getConnector2().getLabel());
         }).collect(Collectors.toList());
 

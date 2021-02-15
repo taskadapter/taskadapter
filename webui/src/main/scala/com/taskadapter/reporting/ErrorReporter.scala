@@ -7,6 +7,7 @@ import com.taskadapter.web.SettingsManager
 import com.taskadapter.web.uiapi.UISyncConfig
 import com.taskadapter.webui.results.ExportResultFormat
 import com.taskadapter.webui.service.CurrentVersionLoader
+import scala.collection.JavaConverters._
 
 object ErrorReporter {
   private val appVersion = new CurrentVersionLoader().getCurrentVersion
@@ -41,7 +42,7 @@ object ErrorReporter {
 
   private def getConfigInfo(config: UISyncConfig): String = {
     config.getConnector1.getConnectorTypeId + " - " + config.getConnector2.getConnectorTypeId +
-      div + FieldMappingFormatter.format(config.fieldMappings)
+      div + FieldMappingFormatter.format(config.getFieldMappings().asScala)
   }
 
   def isAllowedToSend: Boolean = new SettingsManager().isErrorReportingEnabled

@@ -13,11 +13,12 @@ import com.taskadapter.webui._
 import com.taskadapter.webui.data.ExceptionFormatter
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.button.Button
-import com.vaadin.flow.component.formlayout.FormLayout
 import com.vaadin.flow.component.notification.Notification
 import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout}
 import com.vaadin.flow.data.binder.Binder
 import org.slf4j.LoggerFactory
+
+import scala.collection.JavaConverters._
 
 /**
   * Fields mapping plus "description" element at the top.
@@ -30,7 +31,7 @@ class EditConfigPage(configOps: ConfigOperations,
 
   val binder = new Binder[UISyncConfig](classOf[UISyncConfig])
   val descriptionField = EditorUtil.textInput(binder, "label")
-  val editDescriptionForm = createEditDescriptionElement()
+  descriptionField.setWidth(Sizes.editConfigDescriptionFieldWidth)
 
   var errorMessageLabel = new HtmlLabel("")
   errorMessageLabel.addClassName("error-message-label")
@@ -42,14 +43,14 @@ class EditConfigPage(configOps: ConfigOperations,
   }
   val buttons = createConfigOperationsButtons
   buttons.setWidth("20%")
-  val topRowLayout = new HorizontalLayout(editDescriptionForm, buttons)
+  val topRowLayout = new HorizontalLayout(descriptionField, buttons)
 
   val layout = new VerticalLayout(topRowLayout, errorMessageLabel)
 
   val taskFieldsMappingFragment = new TaskFieldsMappingFragment(messages,
     config.getConnector1.getAllFields, config.getConnector1.fieldNames, config.getConnector1.getLabel,
     config.getConnector2.getAllFields, config.getConnector2.fieldNames, config.getConnector2.getLabel,
-    config.getNewMappings)
+    config.getNewMappings.asScala)
 
   layout.add(taskFieldsMappingFragment.getComponent)
 
@@ -108,9 +109,15 @@ class EditConfigPage(configOps: ConfigOperations,
   private def save(): Unit = {
     try {
       taskFieldsMappingFragment.save()
-      val newFieldMappings = getElements.toSeq
-      val newConfig = config.copy(fieldMappings = newFieldMappings,
-        label = descriptionField.getValue
+      val newFieldMappings = getElements.toSeq.asJava
+      val newConfig = new UISyncConfig(
+        config.getTaskKeeperLocationStorage,
+        config.getConfigId,
+        descriptionField.getValue,
+        config.getConnector1,
+        config.getConnector2,
+        newFieldMappings,
+        config.isReversed
       )
       configOps.saveConfig(newConfig)
     } catch {
@@ -119,19 +126,6 @@ class EditConfigPage(configOps: ConfigOperations,
         showError(message)
         logger.error(message, e)
     }
-  }
-
-  private def createEditDescriptionElement(): Component = {
-    val form = new FormLayout
-    descriptionField.setTitle(Page.message("editConfig.description"))
-    descriptionField.setWidth(Sizes.editConfigDescriptionFieldWidth)
-
-    // can use this to auto-save field changes. don't want to do this for just one field though.
-    // need to be the same experience for all fields.
-//    descriptionField.addBlurListener(_ => save())
-    form.add(descriptionField)
-    form.setWidth(Sizes.editConfigDescriptionFormWidth)
-    form
   }
 
   def showError(errorMessage: String): Unit = {

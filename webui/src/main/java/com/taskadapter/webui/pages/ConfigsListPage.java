@@ -105,9 +105,9 @@ public class ConfigsListPage extends BasePage {
 
     private Component createConfigComponent(UISyncConfig config) {
         HorizontalLayout layout = new HorizontalLayout();
-        String configLabel = config.label();
+        String configLabel = config.getLabel();
         Button link = new Button(configLabel,
-                e -> showConfigPanel(config.configId()));
+                e -> showConfigPanel(config.getConfigId()));
         layout.add(link);
         return layout;
     }

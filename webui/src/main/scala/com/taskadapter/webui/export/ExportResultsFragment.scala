@@ -3,10 +3,8 @@ package com.taskadapter.webui.export
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
-
-import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.web.configeditor.file.FileDownloadResource
 import com.taskadapter.web.ui.HtmlLabel
+import com.taskadapter.web.uiapi.DecodedTaskError
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.results.ExportResultFormat
 import com.taskadapter.webui.{Page, TALog}
@@ -61,7 +59,7 @@ class ExportResultsFragment(showFilePath: Boolean) {
     * @param generalErrors * list of general errors.
     * @param taskErrors    * errors for each task.
     */
-  def addErrors(container: HasComponents, generalErrors: Seq[String], taskErrors: Seq[(TaskId, String, String)]): Unit = {
+  def addErrors(container: HasComponents, generalErrors: Seq[String], taskErrors: Seq[DecodedTaskError]): Unit = {
     if (generalErrors.isEmpty && taskErrors.isEmpty) return
 
     val label = new H2(Page.message("exportResults.thereWereErrors"))
@@ -82,8 +80,8 @@ class ExportResultsFragment(showFilePath: Boolean) {
       container.add(taskErrorsLabel)
 
       taskErrors.foreach { error =>
-        val taskSourceId = error._1
-        val errorText = s"Task source id $taskSourceId<br/>" + error._2
+        val taskSourceId = error.sourceSystemTaskId
+        val errorText = s"Task source id $taskSourceId<br/>" + error.connector2ErrorText
         val errorTextLabel = new HtmlLabel(errorText)
         errorTextLabel.addClassName("failure")
         container.add(errorTextLabel)
