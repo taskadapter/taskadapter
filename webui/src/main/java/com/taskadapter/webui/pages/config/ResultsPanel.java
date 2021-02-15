@@ -17,7 +17,7 @@ public class ResultsPanel extends VerticalLayout {
     public ResultsPanel(Preservices services, ConfigId configId) {
         this.services = services;
         this.configId = configId;
-        setWidth("1000px");
+        setWidth("1050px");
         showResultsList();
     }
 

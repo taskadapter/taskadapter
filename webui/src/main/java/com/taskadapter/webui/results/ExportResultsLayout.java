@@ -31,14 +31,17 @@ public class ExportResultsLayout extends VerticalLayout {
     public void buildUi() {
         grid.addColumn(ExportResultFormat::getConfigLabel)
                 .setHeader(Page.message("exportResults.column.configName"))
-                .setFlexGrow(1);
+                .setWidth("120px")
+                .setFlexGrow(2);
 
         dateStartedColumn = grid.addColumn(ExportResultFormat::getDateStarted)
                 .setHeader(Page.message("exportResults.column.startedOn"))
-                .setFlexGrow(1);
+                .setWidth("150px")
+                .setFlexGrow(2);
 
         grid.addColumn(ExportResultFormat::getTo)
                 .setHeader(Page.message("exportResults.column.to"))
+                .setWidth("150px")
                 .setFlexGrow(2);
 
         grid.addColumn(new ComponentRenderer<>(r -> {
@@ -48,14 +51,17 @@ public class ExportResultsLayout extends VerticalLayout {
             return new HtmlLabel("<font color= 'red'>" + Page.message("exportResults.column.status.errors") + "</font>");
         }))
                 .setHeader(Page.message("exportResults.column.status"))
+                .setWidth("70px")
                 .setFlexGrow(1);
 
         grid.addColumn(ExportResultFormat::getCreatedTasksNumber)
                 .setHeader(Page.message("exportResults.column.tasksCreated"))
+                .setWidth("50px")
                 .setFlexGrow(1);
 
         grid.addColumn(ExportResultFormat::getUpdatedTasksNumber)
                 .setHeader(Page.message("exportResults.column.tasksUpdated"))
+                .setWidth("50px")
                 .setFlexGrow(1);
 
         grid.addSelectionListener((SelectionListener<Grid<ExportResultFormat>, ExportResultFormat>) event ->

@@ -109,6 +109,7 @@ class ExportResultsFragment(showFilePath: Boolean) {
   private def createDownloadButton(targetFileAbsolutePath: String) = {
     val downloadButton = new Button(message("export.downloadFile"))
     val file = new File(targetFileAbsolutePath)
+    // TODO 14 fix download links
 //    val resource = new FileDownloadResource(file)
 //    val downloader = new FileDownloader(resource)
 //    downloader.extend(downloadButton)
