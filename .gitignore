@@ -6,6 +6,7 @@ com.taskadapter.webui.widgetset.Vaadin1Widgetset
 deploy
 gwt-unitCache
 target
+*.log
 *.tmp
 *.war
 .idea

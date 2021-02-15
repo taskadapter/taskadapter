@@ -1,5 +1,5 @@
 ext {
-    vaadinVersion = '14.4.6'
+    vaadinVersion = '14.4.7'
     vaadinFlowServerVersion = '5.0.2'
     httpClientVersion='4.2'
     slf4jVersion = '1.7.12'

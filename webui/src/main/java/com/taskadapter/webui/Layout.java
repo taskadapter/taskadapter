@@ -46,12 +46,12 @@ import static com.taskadapter.webui.Page.message;
 @EnableGoogleAnalytics(value = GoogleAnalyticsFactory.GOOGLE_ANALYTICS_ID)
 public class Layout extends AppLayout implements RouterLayout, TrackerConfigurator {
 
-    private static Tab configsListTab = createTab(VaadinIcon.EDIT, "Configs List", ConfigsListPage.class);
-    private static Tab schedulesListTab = createTab(VaadinIcon.CLOCK, "Schedules", SchedulesListPage.class);
-    private static Tab configureTab = createTab(VaadinIcon.TOOLS, "Configure", ConfigureSystemPage.class);
-    private static Tab resultsTab = createTab(VaadinIcon.LIST, message("headerMenu.results"), ExportResultsListPage.class);
-    private static Tab supportTab = createTab(VaadinIcon.QUESTION, "Support", SupportPage.class);
-    private static Tab profileTab = createTab(VaadinIcon.USER, "Profile", UserProfilePage.class);
+    private Tab configsListTab = createTab(VaadinIcon.EDIT, "Configs List", ConfigsListPage.class);
+    private Tab schedulesListTab = createTab(VaadinIcon.CLOCK, "Schedules", SchedulesListPage.class);
+    private Tab configureTab = createTab(VaadinIcon.TOOLS, "Configure", ConfigureSystemPage.class);
+    private Tab resultsTab = createTab(VaadinIcon.LIST, message("headerMenu.results"), ExportResultsListPage.class);
+    private Tab supportTab = createTab(VaadinIcon.QUESTION, "Support", SupportPage.class);
+    private Tab profileTab = createTab(VaadinIcon.USER, "Profile", UserProfilePage.class);
 
     private Span viewTitle;
     private Tabs menuTabs;
@@ -87,14 +87,14 @@ public class Layout extends AppLayout implements RouterLayout, TrackerConfigurat
         menuTabs.setVisible(SessionController.userIsLoggedIn());
     }
 
-    private static Tabs createMenuTabs() {
+    private Tabs createMenuTabs() {
         final Tabs tabs = new Tabs();
         tabs.setOrientation(Tabs.Orientation.HORIZONTAL);
         tabs.add(getAvailableTabs());
         return tabs;
     }
 
-    private static Tab[] getAvailableTabs() {
+    private Tab[] getAvailableTabs() {
         return List.of(
                 configsListTab,
                 resultsTab,
