@@ -60,10 +60,10 @@ public final class FSCredentialStore implements CredentialsStore {
             return null;
         } catch (IOException e) {
             LOGGER.info("Broken cred v1 ", e);
-            throw new AuthException("Mailformed credentials found");
+            throw new AuthException("Malformed credentials found");
         }
         if (creds.size() < 2 || !CURRENT_VERSION_PREFIX.equals(creds.get(0))) {
-            throw new AuthException("Mailformed credentials found");
+            throw new AuthException("Malformed credentials found");
         }
         return new CredentialsV1(creds.get(1), creds.subList(2, creds.size()));
     }
