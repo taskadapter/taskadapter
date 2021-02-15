@@ -4,8 +4,6 @@ dependencies {
     compile libraries.log4j
 
     compile 'biz.futureware.mantis:mantis-axis-soap-client:1.2.19'
-    compile 'org.apache.axis:axis-jaxrpc:1.4'
-    compile 'org.apache.axis:axis:1.4'
     compile 'wsdl4j:wsdl4j:1.5.1'
     compile 'commons-logging:commons-logging:1.1.1'
     compile 'commons-discovery:commons-discovery:0.2'
