@@ -51,6 +51,8 @@ dependencies {
 
 application {
     mainClassName = "com.taskadapter.app.TALauncher"
+    // "applicationName" name is used for the final distributive file name prefix, with version attached to it.
+    applicationName = "taskadapter"
 }
 startScripts {
 
