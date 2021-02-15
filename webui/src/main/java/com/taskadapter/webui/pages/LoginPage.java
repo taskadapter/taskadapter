@@ -55,7 +55,7 @@ public class LoginPage extends BasePage {
                     try {
                         authenticate(username, password,
                                 staySignedIn.getValue());
-                        SessionController.initSession(new WebUserSession().setCurrentUserName(username));
+                        SessionController.setCurrentUserName(username);
                         redirectToNextPage();
                     } catch (WrongPasswordException e) {
                         errorLabel.setText(Page.message("loginPage.wrongUserNameOrPassword"));

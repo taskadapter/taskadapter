@@ -9,7 +9,7 @@ import java.util.List;
 public final class Permissions {
 
     public static final String LOGGED_IN = "Logged in";
-    public static final String ADMIN = "Logged in";
+    public static final String ADMIN = "admin";
 
     public static void check(final String permission) {
         if (!has(permission)) {

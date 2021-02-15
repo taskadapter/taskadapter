@@ -27,10 +27,9 @@ import java.util.Optional;
  * Controller for a single user session.
  */
 public final class SessionController {
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(SessionController.class);
-    private static final String PERM_AUTH_KEY_COOKIE_NAME = "sPermAuth";
-    private static final String PERM_AUTH_USER_COOKIE_NAME = "sPermUser";
+    private static final Logger LOGGER = LoggerFactory.getLogger(SessionController.class);
+    private static final String PERM_AUTH_KEY_COOKIE_NAME = "TaskAdapterAuthKey";
+    private static final String PERM_AUTH_USER_COOKIE_NAME = "TaskAdapterUserLogin";
 
     // Application config root folder.
     private static File rootFolder = ApplicationSettings.getDefaultRootFolder();
@@ -68,23 +67,22 @@ public final class SessionController {
     public static void initSession(WebUserSession newSession) {
         session = newSession;
 
-        final String ucookie = CookiesManager
-                .getCookie(PERM_AUTH_USER_COOKIE_NAME);
-        final String kcookie = CookiesManager
-                .getCookie(PERM_AUTH_KEY_COOKIE_NAME);
-
-//        if (ucookie == null || kcookie == null) {
-//            showLogin();
-//            return;
-//        }
-//        final AuthorizedOperations ops = services.credentialsManager
-//                .authenticateSecondary(ucookie, kcookie);
-//        if (ops == null)
-//            showLogin();
-//        else
-//            showUserHome(ucookie);
-
+        attemptToRestoreSessionFromCookies();
         registerLoggedInListeners();
+    }
+
+    private static void attemptToRestoreSessionFromCookies() {
+        String userLoginNameCookie = CookiesManager.getCookie(PERM_AUTH_USER_COOKIE_NAME);
+        String authKeyCookie = CookiesManager.getCookie(PERM_AUTH_KEY_COOKIE_NAME);
+
+        if (userLoginNameCookie == null || authKeyCookie == null) {
+            return;
+        }
+        var ops = services.credentialsManager.authenticateSecondary(userLoginNameCookie, authKeyCookie);
+        if (ops != null) {
+            LOGGER.info("Auto-logged in user " + userLoginNameCookie + " - valid cookies found");
+            SessionController.setCurrentUserName(userLoginNameCookie);
+        }
     }
 
     private static void registerLoggedInListeners() {
@@ -147,7 +145,7 @@ public final class SessionController {
             supResult = services.credentialsManager.generateSecondaryAuth(login,
                     password);
         } catch (AuthException e) {
-            LOGGER.info("Error!", e);
+            LOGGER.error("Error while using stored authentication info for authentication", e);
             supResult = null;
         }
 
@@ -156,12 +154,15 @@ public final class SessionController {
         }
 
         CookiesManager.setCookie(PERM_AUTH_USER_COOKIE_NAME, login);
-        CookiesManager.setCookie(PERM_AUTH_KEY_COOKIE_NAME,
-                supResult.secondaryToken);
+        CookiesManager.setCookie(PERM_AUTH_KEY_COOKIE_NAME, supResult.secondaryToken);
     }
 
     public static String getCurrentUserName() {
         return session.getCurrentUserName().orElse("");
+    }
+
+    public static void setCurrentUserName(String loginName) {
+        session.setCurrentUserName(loginName);
     }
 
     public static boolean userIsLoggedIn() {

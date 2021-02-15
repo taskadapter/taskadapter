@@ -8,6 +8,7 @@ import com.taskadapter.web.event.EventBusImpl;
 import com.taskadapter.webui.NoOpGATracker;
 import com.taskadapter.webui.SessionController;
 import com.taskadapter.webui.Tracker;
+import com.taskadapter.webui.WebUserSession;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
 import org.slf4j.Logger;
@@ -32,6 +33,7 @@ public class TaskAdapterInitListener implements VaadinServiceInitListener {
                     LoggerFactory.getLogger(getClass())
                             .info("A new UI has been initialized!");
                     initAnalyticsTracker(ProdModeDetector.isProdRunMode());
+                    SessionController.initSession(new WebUserSession());
                     registerEventListeners();
                 });
     }

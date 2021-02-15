@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public class WebUserSession {
 
-    Optional<String> currentLoginName = Optional.empty();
+    private Optional<String> currentLoginName = Optional.empty();
 
     public Optional<String> getCurrentUserName() {
         return currentLoginName;

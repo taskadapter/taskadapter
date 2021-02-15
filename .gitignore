@@ -17,5 +17,11 @@ target
 /webui/src/main/resources/webapp/VAADIN/themes/mytheme/addons.scss
 /webui/src/main/resources/webapp/VAADIN/themes/mytheme/styles.css
 /webui/src/main/resources/webapp/VAADIN/themes/mytheme/styles.css.gz
+/webui/webpack.config.js
+/webui/webpack.generated.js
+/webui/pnpmfile.js
+/webui/pnpm-lock.yaml
+/webui/package.json
+/webui/frontend/styles/views/styles.css
 /webui/node_modules
 

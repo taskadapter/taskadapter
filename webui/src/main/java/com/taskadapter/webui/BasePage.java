@@ -28,10 +28,6 @@ public abstract class BasePage extends VerticalLayout implements BeforeEnterObse
 
 //    private HistoryState historyState;
 
-//    public static Supplier<ServiceException> notFound(final Sid sid) {
-//        return () -> new NotFoundException(sid);
-//    }
-
     @Override
     public String getPageTitle() {
         return getPageName(getClass()).map(name -> "TaskAdapter - " + name).orElse("TaskAdapter");
