@@ -93,6 +93,9 @@ class ExportHelper(exportResultStorage: ExportResultStorage,
     layout.getUI.get().access(() => {
       layout.removeAll()
       layout.add(comp)
+      val okButton = new Button(message("button.ok"),
+        _ => onDone.run())
+      layout.add(okButton)
     })
   }
 }

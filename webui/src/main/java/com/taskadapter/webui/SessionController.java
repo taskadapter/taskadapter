@@ -80,8 +80,8 @@ public final class SessionController {
         }
         var ops = services.credentialsManager.authenticateSecondary(userLoginNameCookie, authKeyCookie);
         if (ops != null) {
-            LOGGER.info("Auto-logged in user " + userLoginNameCookie + " - valid cookies found");
             SessionController.setCurrentUserName(userLoginNameCookie);
+            LOGGER.info("Auto-logged as user " + userLoginNameCookie + " - valid cookies found");
         }
     }
 

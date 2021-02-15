@@ -67,13 +67,9 @@ class EditConfigPage(configOps: ConfigOperations,
     val rightLayout = new HorizontalLayout
     rightLayout.setSpacing(true)
     buttonsLayout.add(rightLayout)
-    val saveButton = new Button(Page.message("button.save"))
-    saveButton.addClickListener(_ => saveClicked())
+    val saveButton = new Button(Page.message("button.save"),
+      _ => saveClicked())
     rightLayout.add(saveButton)
-    val backButton = new Button(Page.message("button.close"))
-//    backButton.addClickListener(_ => close.run())
-
-    rightLayout.add(backButton)
     buttonsLayout
   }
 
