@@ -40,8 +40,7 @@ class OtherJiraFieldsPanel extends FormLayout {
         Button showAffectedVersion = EditorUtil.createLookupButton(
                 "...",
                 "Show list of available versions",
-                "Select version",
-                "List of available versions",
+                "Select a version",
                 () -> new JiraConnector(config, webServerInfo).getVersions(),
                 exceptionFormatter,
                 namedKeyedObject -> {
@@ -57,8 +56,7 @@ class OtherJiraFieldsPanel extends FormLayout {
         Button showFixForVersion = EditorUtil.createLookupButton(
                 "...",
                 "Show list of available versions",
-                "Select version",
-                "List of available versions",
+                "Select a version",
                 () -> new JiraConnector(config, webServerInfo).getVersions(),
                 exceptionFormatter,
                 namedKeyedObject -> {
@@ -74,8 +72,7 @@ class OtherJiraFieldsPanel extends FormLayout {
         Button showDefaultTaskType = EditorUtil.createLookupButton(
                 "...",
                 "Show list of available issue types on the JIRA server",
-                "Select issue type",
-                "List of available issue types on the JIRA server",
+                "Select an issue type",
                 () -> new JiraConnector(config, webServerInfo).getAllIssueTypes(),
                 exceptionFormatter,
                 namedKeyedObject -> {
@@ -92,7 +89,6 @@ class OtherJiraFieldsPanel extends FormLayout {
                 "...",
                 "Show list of available subtask types on the JIRA server",
                 "Select a subtask type",
-                "List of available subtask types on the JIRA server",
                 () -> new JiraConnector(config, webServerInfo).getIssueTypesForSubtasks(),
                 exceptionFormatter,
                 namedKeyedObject -> {

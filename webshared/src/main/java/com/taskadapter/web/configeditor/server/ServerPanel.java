@@ -41,7 +41,7 @@ public class ServerPanel extends VerticalLayout implements ConnectorSetupPanel {
         labelField = ServerPanelUtil.label(binder);
         hostField = ServerPanelUtil.host(binder);
         hostField.setPlaceholder("https://myserver:3000/some_location");
-        EditorUtil.setDescriptionTooltip(hostField, Page.message("setupPanel.serverUrlHint"));
+        EditorUtil.setTooltip(hostField, Page.message("setupPanel.serverUrlHint"));
         userLoginInput = ServerPanelUtil.userName(binder);
         password = ServerPanelUtil.password(binder);
 

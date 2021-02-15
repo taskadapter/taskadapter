@@ -87,7 +87,6 @@ public class ProjectPanel extends FormLayout implements Validatable {
                 "...",
                 "Show list of available projects on the server.",
                 "Select project",
-                "List of projects on the server",
                 projectProvider,
                 exceptionFormatter, namedKeyedObject -> {
                     projectKeyField.setValue(namedKeyedObject.getKey());
@@ -123,8 +122,7 @@ public class ProjectPanel extends FormLayout implements Validatable {
         Button showQueriesButton = EditorUtil.createLookupButton(
                 "...",
                 "Show available saved queries on the server.",
-                "Select Query",
-                "List of saved queries on the server",
+                "Select a saved query",
                 queryProvider,
                 exceptionFormatter,namedKeyedObject -> {
                     queryIdValue.setValue(namedKeyedObject.getKey());

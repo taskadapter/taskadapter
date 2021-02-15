@@ -60,8 +60,7 @@ public class OtherRedmineFieldsContainer extends VerticalLayout {
         Button showTaskTypesButton = EditorUtil.createLookupButton(
                 "...",
                 "Show list of available tracker types on the Redmine server",
-                "Select task type",
-                "List of available task types on the Redmine server",
+                "Select a task type",
                 () -> RedmineLoaders.loadTrackers(config, setup),
                 exceptionFormatter,
                 namedKeyedObject -> {

@@ -85,8 +85,7 @@ public class BasecampClassicEditorFactory implements PluginEditorFactory<Basecam
         Button showProjectsButton = EditorUtil.createLookupButton(
                 "...",
                 "Show list of available projects on the server.",
-                "Select project",
-                "List of projects on the server",
+                "Select a project",
                 projectProvider,
                 formatter,
                 namedKeyedObject -> {
@@ -114,7 +113,6 @@ public class BasecampClassicEditorFactory implements PluginEditorFactory<Basecam
                 "...",
                 "Show Todo Lists",
                 "Select a Todo list",
-                "Todo lists on the server",
                 todoListsProvider,
                 formatter,
                 namedKeyedObject -> {

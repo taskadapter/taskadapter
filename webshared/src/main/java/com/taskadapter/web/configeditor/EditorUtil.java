@@ -8,6 +8,7 @@ import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
@@ -27,19 +28,14 @@ import java.util.function.Function;
 public class EditorUtil {
     private final static Logger logger = LoggerFactory.getLogger(EditorUtil.class);
 
-    // TODO 14 - not attached!!
-    private static final String errorStyle = ".notification-error-style { "
-            + "  color: red;"
-            + " }";
+    public static Component createCaption(String text) {
+        return new Html("<b>" + text + "</b>");
+    }
 
-    private static void showList(String windowTitle, String listTitle, Collection<String> items, ValueListener valueListener) {
-        ListSelectionDialog newWindow = new ListSelectionDialog(windowTitle, listTitle, items, valueListener);
-        // TODO 14 show list
-//        newWindow.center();
-//        newWindow.setModal(true);
-//
-//        UI.getCurrent().addWindow(newWindow);
-//        newWindow.focus();
+    private static void showList(String windowTitle, Collection<String> items, ValueListener valueListener) {
+        var dialog = new ListSelectionDialog(windowTitle, items, valueListener);
+        dialog.setModal(true);
+        dialog.open();
     }
 
     public static void show(String caption, Exception e) {
@@ -56,7 +52,7 @@ public class EditorUtil {
     // TODO zzz raw type
     public static Button createButton(String label, String description, ComponentEventListener clickListener) {
         Button button = new Button(label);
-        button.getElement().setProperty("title", description); // tooltip
+        setTooltip(button, description);
         button.addClickListener(clickListener);
         return button;
     }
@@ -82,11 +78,11 @@ public class EditorUtil {
 
     // TODO review and refactor this. this method is too complex
     public static Button createLookupButton(
-            final String buttonLabel,
-            String description, final String windowTitle,
-            final String listTitle,
-            final DataProvider<List<? extends NamedKeyedObject>> operation,
-            final ExceptionFormatter errorFormatter,
+            String buttonLabel,
+            String description,
+            String windowTitle,
+            DataProvider<List<? extends NamedKeyedObject>> operation,
+            ExceptionFormatter errorFormatter,
             Function<NamedKeyedObject, Void> selectionListener) {
 
         final LookupResultListener listener = new LookupResultListener() {
@@ -103,7 +99,7 @@ public class EditorUtil {
                     map.put(o.getName(), o.getKey());
                 }
 
-                showList(windowTitle, listTitle, map.keySet(), value -> {
+                showList(windowTitle, map.keySet(), value -> {
                     String key = map.get(value);
                     selectionListener.apply(new NamedKeyedObjectImpl(key, value));
                 });
@@ -129,7 +125,7 @@ public class EditorUtil {
                 EditorUtil.show("Something went wrong", e);
             }
         });
-        button.getElement().setProperty("title", description); // tooltip
+        setTooltip(button, description);
         return button;
     }
 
@@ -148,7 +144,7 @@ public class EditorUtil {
     /**
      * set tooltip string on a component
      */
-    public static void setDescriptionTooltip(Component component, String description) {
-        component.getElement().setProperty("title", description); // tooltip
+    public static void setTooltip(Component component, String description) {
+        component.getElement().setProperty("title", description);
     }
 }

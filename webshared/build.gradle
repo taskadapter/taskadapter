@@ -9,8 +9,6 @@ dependencies {
     compile libraries.slf4jBindingLibrary
     compile libraries.log4j
 
-//    compile "com.vaadin:vaadin-core:$vaadinVersion"
-
     compile libraries.servletAPI
 
     compile project(":common")

@@ -2,50 +2,32 @@ package com.taskadapter.web.configeditor;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.listbox.ListBox;
 
 import java.util.Collection;
 
-import static com.taskadapter.web.ui.Grids.*;
-
 public class ListSelectionDialog extends Dialog {
-    private String listTitle;
-    private Collection<String> items;
-    private EditorUtil.ValueListener valueListener;
-    private Button closeButton;
 
-    public ListSelectionDialog(String windowTitle, String listTitle, Collection<String> items, EditorUtil.ValueListener valueListener) {
-        this.listTitle = listTitle;
-        this.items = items;
-        this.valueListener = valueListener;
-        buildUI();
-//        setCaption(windowTitle);
+    public ListSelectionDialog(String windowTitle, Collection<String> items, EditorUtil.ValueListener valueListener) {
+
         setCloseOnEsc(true);
-    }
+        setWidth("350px");
 
-    private void buildUI() {
-/*        setWidth("350px");
-        GridLayout layout = new GridLayout();
-        layout.setSpacing(true);
-        final ListSelect listSelect = new ListSelect(listTitle, items);
-        listSelect.setNullSelectionAllowed(false);
-        listSelect.setWidth("300px");
-        listSelect.setImmediate(true);
-        listSelect.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                closeButton.setEnabled(true);
-            }
-        });
-        layout.add(listSelect);
+        add(EditorUtil.createCaption(windowTitle));
 
-        closeButton = new Button("Select", event -> {
+        var listSelect = new ListBox<String>();
+
+        var closeButton = new Button("Select", event -> {
             valueListener.setValue((String) listSelect.getValue());
             close();
         });
-        closeButton.setEnabled(false);
-        addTo(layout, Alignment.MIDDLE_RIGHT, closeButton);
-        setContent(layout);
 
- */
+        listSelect.setItems(items);
+        listSelect.setWidth("300px");
+        listSelect.addValueChangeListener(event -> closeButton.setEnabled(true));
+        add(listSelect);
+
+        closeButton.setEnabled(false);
+        add(closeButton);
     }
 }

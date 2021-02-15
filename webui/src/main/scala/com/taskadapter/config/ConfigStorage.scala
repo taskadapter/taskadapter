@@ -1,34 +1,11 @@
 package com.taskadapter.config
 
-import java.io.{File, FilenameFilter, IOException}
+import java.io.{File, IOException}
 
 import com.google.common.base.Charsets
 import com.google.common.io.Files
 import com.taskadapter.web.uiapi.{ConfigId, SetupId}
 import org.slf4j.LoggerFactory
-
-object ConfigStorage {
-  /**
-    * file name extension for legacy configs
-    *
-    * legacy configs do not have "ta.id" field and thus have no numeric id in them. they used full file name
-    * as "id" until November 2020. Yay, 2020 is almost over now! I hope you all survived it.
-    */
-  private val legacyConfigFileExtension = ".ta_conf"
-  private val setupFileExtension = "json"
-
-  val CONFIG_FILE_FILTER = new FilenameFilter {
-    override def accept(dir: File, name: String): Boolean = name.endsWith(ConfigStorageJava.configFileExtension)
-  }
-
-  val LEGACY_CONFIG_FILE_FILTER = new FilenameFilter {
-    override def accept(dir: File, name: String): Boolean = name.endsWith(legacyConfigFileExtension)
-  }
-
-  val setupFileFilter = new FilenameFilter {
-    override def accept(dir: File, name: String): Boolean = name.endsWith(setupFileExtension)
-  }
-}
 
 class ConfigStorage(val rootDir: File) {
   private val logger = LoggerFactory.getLogger(classOf[ConfigStorage])
@@ -50,7 +27,7 @@ class ConfigStorage(val rootDir: File) {
   def getUserConfigs(userLoginName: String): Seq[StoredExportConfig] = {
     val folder = ConfigStorageJava.getUserConfigsFolder(rootDir, userLoginName)
 
-    val configFiles = folder.listFiles(ConfigStorage.CONFIG_FILE_FILTER)
+    val configFiles = folder.listFiles(ConfigStorageJava.CONFIG_FILE_FILTER)
     val configs = getConfigsInFolder(configFiles)
 
     val configIds = configs.map(c => c.getId)
@@ -60,7 +37,7 @@ class ConfigStorage(val rootDir: File) {
       0
     }
 
-    val legacyConfigFiles = folder.listFiles(ConfigStorage.LEGACY_CONFIG_FILE_FILTER)
+    val legacyConfigFiles = folder.listFiles(ConfigStorageJava.LEGACY_CONFIG_FILE_FILTER)
     val legacyConfigs = getLegacyConfigsInFolder(userLoginName, legacyConfigFiles, largestIdInNonLegacyConfigs)
 
     configs ++ legacyConfigs
@@ -180,7 +157,7 @@ class ConfigStorage(val rootDir: File) {
 
   def getAllConnectorSetupsAsStrings(userLoginName: String): Seq[String] = {
     val folder = ConfigStorageJava.getUserFolder(rootDir, userLoginName)
-    val setupFiles = folder.listFiles(ConfigStorage.setupFileFilter)
+    val setupFiles = folder.listFiles(ConfigStorageJava.setupFileFilter)
     if (setupFiles == null) return Seq()
 
     setupFiles.map(Files.toString(_, Charsets.UTF_8)).toSeq

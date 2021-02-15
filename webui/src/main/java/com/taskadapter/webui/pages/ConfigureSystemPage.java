@@ -58,7 +58,7 @@ public class ConfigureSystemPage extends BasePage {
     private static Component createResultsNumberSection(SettingsManager settingsManager) {
         var label = new Label(Page.message("configurePage.maxNumberOfResultsToSave"));
         var field = new TextField();
-        EditorUtil.setDescriptionTooltip(field, Page.message("configurePage.maxNumberExplanation"));
+        EditorUtil.setTooltip(field, Page.message("configurePage.maxNumberExplanation"));
         field.setValue(settingsManager.getMaxNumberOfResultsToKeep() + "");
         // TODO 14 add type safe int parsing
         field.addValueChangeListener(e -> settingsManager.setMaxNumberOfResultsToKeep(Integer.parseInt(field.getValue())));

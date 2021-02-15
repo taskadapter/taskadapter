@@ -151,8 +151,7 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
         Button showProjectsButton = EditorUtil.createLookupButton(
                 "...",
                 "Show list of available projects on the server.",
-                "Select project",
-                "List of projects on the server",
+                "Select a project",
                 projectProvider,
                 formatter,
                 namedKeyedObject -> {
@@ -180,7 +179,6 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
                 "...",
                 "Show Todo Lists",
                 "Select a Todo list",
-                "Todo lists on the server",
                 todoListsProvider,
                 formatter,
                 namedKeyedObject -> {
