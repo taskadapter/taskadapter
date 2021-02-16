@@ -166,8 +166,8 @@ public class ProjectPanel extends FormLayout implements Validatable {
     private static void showProjectInfo(GProject project) {
         String msg = "Key:  " + project.getKey()
                 + "\nName: " + project.getName()
-                + "\nHomepage: " + nvl(project.homepage())
-                + "\nDescription: " + nvl(project.description());
+                + "\nHomepage: " + nvl(project.getHomepage())
+                + "\nDescription: " + nvl(project.getDescription());
         Notification.show(msg);
     }
 

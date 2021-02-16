@@ -16,7 +16,10 @@ class MantisProjectConverter {
     projects
   }
 
-  def toGProject(mantisProject: ProjectData) = GProject(mantisProject.getId.intValue,
-    mantisProject.getName,
-    String.valueOf(mantisProject.getId), mantisProject.getDescription, "")
+  def toGProject(mantisProject: ProjectData) = new GProject()
+    .setId(mantisProject.getId.longValue())
+    .setName(mantisProject.getName)
+    .setKey(String.valueOf(mantisProject.getId))
+    .setDescription(mantisProject.getDescription)
+    .setHomepage("")
 }

@@ -20,8 +20,12 @@ public class JiraProjectConverter {
     }
 
     public GProject toGProject(BasicProject jiraProject) {
-        return new GProject(jiraProject.getId().intValue(), jiraProject.getName(), jiraProject.getKey(),
-                "", "");
+        return new GProject()
+                .setId(jiraProject.getId())
+                .setName(jiraProject.getName())
+                .setKey(jiraProject.getKey())
+                .setDescription("")
+                .setHomepage("");
     }
 
     public GProject toGProject(Project jiraProject) {
@@ -30,9 +34,11 @@ public class JiraProjectConverter {
         if (projectURI != null) {
             uri = projectURI.toString();
         }
-        return new GProject(jiraProject.getId().intValue(), jiraProject.getName(), jiraProject.getKey(),
-                jiraProject.getDescription(),
-                uri);
+        return new GProject()
+                .setId(jiraProject.getId())
+                .setName(jiraProject.getName())
+                .setKey(jiraProject.getKey())
+                .setDescription(jiraProject.getDescription())
+                .setHomepage(uri);
     }
-
 }

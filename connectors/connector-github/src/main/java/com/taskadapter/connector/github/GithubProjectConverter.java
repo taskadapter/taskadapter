@@ -23,7 +23,10 @@ public class GithubProjectConverter {
     }
 
     private static GProject toGProject(Repository repository) {
-        return new GProject(repository.getId(), repository.getName(), repository.getName(),
-                repository.getDescription(), repository.getHomepage());
+        return new GProject().setId(repository.getId())
+                .setName(repository.getName())
+                .setKey(repository.getName())
+                .setDescription(repository.getDescription())
+                .setHomepage(repository.getHomepage());
     }
 }
