@@ -63,10 +63,10 @@ class GTaskToBasecamp(users: Seq[GUser]) extends ConnectorConverter[GTask, Basec
         writer.key(field).value(null)
         return
       }
-      val resolvedAssignee = users.find(_.displayName == fullName).orNull
-      if (resolvedAssignee == null || resolvedAssignee.id == null) return
+      val resolvedAssignee = users.find(_.getDisplayName == fullName).orNull
+      if (resolvedAssignee == null || resolvedAssignee.getId == null) return
       writer.key(field).`object`.key("type").value("Person")
-      writer.key("id").value(resolvedAssignee.id.intValue)
+      writer.key("id").value(resolvedAssignee.getId.intValue)
       writer.endObject
     }
 

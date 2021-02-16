@@ -12,19 +12,19 @@ public class RedmineToGUserTest {
     public void loginIsConverted() {
         User redmineUser = UserFactory.create();
         redmineUser.setLogin("mylogin");
-        assertEquals("mylogin", RedmineToGUser.convertToGUser(redmineUser).loginName());
+        assertEquals("mylogin", RedmineToGUser.convertToGUser(redmineUser).getLoginName());
     }
 
     @Test
     public void idIsConverted() {
         User redmineUser = UserFactory.create(33);
-        assertTrue(RedmineToGUser.convertToGUser(redmineUser).id() == 33);
+        assertTrue(RedmineToGUser.convertToGUser(redmineUser).getId() == 33);
     }
 
     @Test
     public void fullNameIsConverted() {
         User redmineUser = UserFactory.create();
         redmineUser.setFullName("full name");
-        assertEquals("full name", RedmineToGUser.convertToGUser(redmineUser).displayName());
+        assertEquals("full name", RedmineToGUser.convertToGUser(redmineUser).getDisplayName());
     }
 }

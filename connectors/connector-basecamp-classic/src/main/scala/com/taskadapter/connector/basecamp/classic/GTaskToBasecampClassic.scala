@@ -66,9 +66,9 @@ class GTaskToBasecampClassic(users: Seq[GUser]) extends ConnectorConverter[GTask
     val elt = d.createElement("responsible-party")
     root.appendChild(elt)
 
-    val resolvedAssignee = users.find(_.displayName == fullName).orNull
-    if (resolvedAssignee == null || resolvedAssignee.id == null) elt.setAttribute("nil", "true")
-    else elt.appendChild(d.createTextNode(resolvedAssignee.id.toString))
+    val resolvedAssignee = users.find(_.getDisplayName == fullName).orNull
+    if (resolvedAssignee == null || resolvedAssignee.getId == null) elt.setAttribute("nil", "true")
+    else elt.appendChild(d.createTextNode(resolvedAssignee.getId.toString))
   }
 }
 

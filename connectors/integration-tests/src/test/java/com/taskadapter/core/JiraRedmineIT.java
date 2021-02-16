@@ -98,7 +98,7 @@ public class JiraRedmineIT {
         GTask fromJira = TestUtilsJava.saveAndLoad(jiraConnector,
                 new GTaskBuilder()
                         .withRandom(Summary$.MODULE$)
-                        .withAssigneeLogin(RedmineTestInitializer.currentUser.loginName())
+                        .withAssigneeLogin(RedmineTestInitializer.currentUser.getLoginName())
                         .build(),
                 rows);
 
@@ -120,7 +120,7 @@ public class JiraRedmineIT {
         assertThat(loadedTasks).hasSize(1);
         GTask redmineTask = loadedTasks.get(0);
         assertThat(redmineTask.getValue(AssigneeLoginName$.MODULE$))
-                .isEqualTo(RedmineTestInitializer.currentUser.loginName());
+                .isEqualTo(RedmineTestInitializer.currentUser.getLoginName());
 
         GTask result = TestUtilsJava.saveAndLoad(jiraConnector, redmineTask,
                 Arrays.asList(

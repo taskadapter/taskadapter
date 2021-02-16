@@ -43,7 +43,7 @@ abstract sealed class FieldDefaultTag[T] {
 
 object GUserTypeTag extends FieldDefaultTag[GUser] {
   override def parseDefault(str: String): GUser =
-    if (Strings.isNullOrEmpty(str)) null.asInstanceOf[GUser] else GUser(null, str, null)
+    if (Strings.isNullOrEmpty(str)) null.asInstanceOf[GUser] else new GUser().setLoginName(str)
 }
 
 object DateTypeTag extends FieldDefaultTag[Date] {

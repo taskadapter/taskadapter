@@ -20,11 +20,12 @@ object BasecampToGTask {
     result.setValue(CreatedOn, JsonUtils.getOptLongDate("created_at", obj))
     result.setValue(UpdatedOn, JsonUtils.getOptLongDate("updated_at", obj))
     val assObj = JsonUtils.getOptObject("assignee", obj)
-    if (assObj != null) result.setValue(AssigneeFullName, parseUser(assObj).displayName)
+    if (assObj != null) result.setValue(AssigneeFullName, parseUser(assObj).getDisplayName)
     result
   }
 
   def parseUser(assObj: JSONObject): GUser = {
-    GUser(JsonUtils.getInt("id", assObj), null, JsonUtils.getOptString("name", assObj))
+    new GUser().setId(JsonUtils.getInt("id", assObj))
+      .setDisplayName(JsonUtils.getOptString("name", assObj))
   }
 }

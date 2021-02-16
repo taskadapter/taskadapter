@@ -26,7 +26,7 @@ public class RedmineTestUtil {
     public static Issue createIssueInRedmine(Project redmineProject, String description, GUser assignee) throws RedmineException {
         Issue issue = IssueFactory.create(redmineProject.getId(), "some summary");
         issue.setDescription(description);
-        issue.setAssigneeId(assignee.id());
+        issue.setAssigneeId(assignee.getId());
         return mgr.getIssueManager().createIssue(issue);
     }
 
