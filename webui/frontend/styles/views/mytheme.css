@@ -26,3 +26,9 @@
 .server-panel-textfield {
     width: 260px;
 }
+
+.error-message-label {
+    color: #c3270b;
+    padding-top: 3px;
+    padding-left: 3px;
+}

@@ -62,19 +62,22 @@ class ConfigPanel(config: UISyncConfig,
   val fieldMappingsPanel = new FieldMappingPanel(config, configOps)
   val overviewPanel = new OverviewPanel(config)
 
-  createTabs()
-
   private val rightButton = createArrow("arrow_right.png", _ => sync(config))
   private val leftButton = createArrow("arrow_left.png", _ => sync(config.reverse))
 
+  val overviewTab = new Tab("Overview")
+  val mappingsTab = new Tab("Field mappings")
+  val resultsTab = new Tab("Results")
+
+  val tabsToPages = mutable.Map[Tab, Component]()
+  val tabs = new Tabs(
+    overviewTab,
+    mappingsTab,
+    resultsTab
+  )
+  createTabs()
 
   private def createTabs(): Unit = {
-
-    val overviewTab = new Tab("Overview")
-    val mappingsTab = new Tab("Field mappings")
-    val resultsTab = new Tab("Results")
-
-    val tabsToPages = mutable.Map[Tab, Component]()
 
     tabsToPages += (overviewTab -> overviewPanel)
     tabsToPages += (mappingsTab -> fieldMappingsPanel)
@@ -84,21 +87,20 @@ class ConfigPanel(config: UISyncConfig,
     fieldMappingsPanel.setVisible(false)
     previousResultsPanel.setVisible(false)
 
-    val tabs = new Tabs(
-      overviewTab,
-      mappingsTab,
-      resultsTab
-    )
     tabs.setOrientation(Tabs.Orientation.HORIZONTAL)
     tabs.addSelectedChangeListener(event => {
-      tabsToPages.values.foreach(page => page.setVisible(false))
-      val selectedPage = tabsToPages.get(tabs.getSelectedTab()).get
-      selectedPage.setVisible(true);
+      showSelectedTab(tabs.getSelectedTab())
     })
     overviewTab.setSelected(true)
     add(tabs,
       new Div(overviewPanel, fieldMappingsPanel, previousResultsPanel))
 
+  }
+
+  def showSelectedTab(tab: Tab) : Unit = {
+    tabsToPages.values.foreach(page => page.setVisible(false))
+    val selectedPage = tabsToPages.get(tab).get
+    selectedPage.setVisible(true);
   }
 
   def updateConfigTitleLine(config: UISyncConfig): Unit = {
@@ -263,23 +265,14 @@ class ConfigPanel(config: UISyncConfig,
     private def buildFixProcessor(uiConnectorConfig: UIConnectorConfig, e: BadConfigException, configSaver: Runnable): Runnable =
       () => {
         e match {
-          case _: FieldNotMappedException => showConfigEditor(uiConnectorConfig.decodeException(e))
+          case _: FieldNotMappedException => showMappingPanel(uiConnectorConfig.decodeException(e))
           case _ => showEditConnectorDialog(uiConnectorConfig, configSaver, sandbox)
         }
       }
 
-    private def showConfigEditor(error: String): Unit = {
-      // TODO 14 restore "fix connector config" dialogs
-//      val window = ModalWindow.showWindow(layout.getUI)
-//      val editor = getConfigEditor(loadConfig(), error, () => {
-//        window.close()
-        // the config may have been changed by the editor. reload it
-//        val maybeConfig = configOps.getConfig(configId)
-//        if (maybeConfig.isDefined) {
-//          recreateContents(maybeConfig.get)
-//        }
-//      })
-//      window.setContent(editor)
+    private def showMappingPanel(error: String): Unit = {
+      tabs.setSelectedTab(mappingsTab)
+      fieldMappingsPanel.showError(error)
     }
   }
 
