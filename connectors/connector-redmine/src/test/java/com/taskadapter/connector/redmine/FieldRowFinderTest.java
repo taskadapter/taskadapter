@@ -39,4 +39,15 @@ public class FieldRowFinderTest {
                 .isFalse();
     }
 
+    @Test
+    public void sourcePresentAndTargetMissingDoesNotLeadToException() {
+        List<FieldRow<?>> rows = List.of(new FieldRow<>(
+                Option.apply(Summary$.MODULE$),
+                Option.empty(),
+                ""
+        ));
+        assertThat(FieldRowFinder.containsTargetField(rows, Priority$.MODULE$))
+                .isFalse();
+    }
+
 }

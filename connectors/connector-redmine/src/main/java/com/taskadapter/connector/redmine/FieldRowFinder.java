@@ -9,9 +9,8 @@ public class FieldRowFinder {
     public static boolean containsTargetField(Iterable<FieldRow<?>> fieldRows, Field<?> field) {
         return Lists.newArrayList(fieldRows).stream().anyMatch(row -> {
             Option<? extends Field<?>> target = row.targetField();
-            Field<?> field1 = target.get();
             return target.isDefined()
-                    && field1.getClass().getName().equals(field.getClass().getName());
+                    && target.get().getClass().getName().equals(field.getClass().getName());
         });
     }
 }
