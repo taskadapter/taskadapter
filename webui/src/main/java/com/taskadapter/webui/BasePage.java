@@ -26,8 +26,6 @@ public abstract class BasePage extends VerticalLayout implements BeforeEnterObse
                                                                  AfterNavigationObserver,
                                                                  HasDynamicTitle {
 
-//    private HistoryState historyState;
-
     @Override
     public String getPageTitle() {
         return getPageName(getClass()).map(name -> "TaskAdapter - " + name).orElse("TaskAdapter");
@@ -53,49 +51,15 @@ public abstract class BasePage extends VerticalLayout implements BeforeEnterObse
             return;
         }
 
-//        historyState = new HistoryState(location);
         beforeEnter();
     }
 
     @Override
     public final void afterNavigation(final AfterNavigationEvent event) {
-//        final var location = event.getLocation();
-//        for (final HasElement element : event.getActiveChain()) {
-//            if (element instanceof Layout) {
-//                final var breadCrumb = ((Layout) element).getBreadCrumb();
-//                breadCrumb.update(getBreadCrumbComponents(location));
-//                break;
-//            }
-//        }
     }
-
-/*    protected List<Component> getBreadCrumbComponents(final Location location) {
-        final List<Component> components = new ArrayList<>();
-
-        final var registry = UI.getCurrent().getRouter().getRegistry();
-        final var main = registry.getNavigationTarget(location.getFirstSegment());
-        main.ifPresent(target -> {
-            getPageName(target).ifPresent(pageName -> {
-                components.add(new RouterLink(pageName, target));
-            });
-        });
-
-        if (location.getSegments().size() == 2) {
-            final var lastSegment = location.getSegments().get(location.getSegments().size() - 1);
-            final var href = String.join("/", location.getSegments());
-            components.add(new Anchor(href, lastSegment));
-        }
-
-        return components;
-    }*/
 
     protected void beforeEnter() {
-        // subclasses could override
     }
-
-//    protected final HistoryState historyState() {
-//        return historyState;
-//    }
 
     private static Optional<String> getPageName(final Class<? extends Component> aClass) {
         String className = aClass.getSimpleName();

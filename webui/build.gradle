@@ -64,6 +64,22 @@ startScripts {
     // it is used to set JVM options
     defaultJvmOpts = [ext.jvmOpts]
 
+    /*
+    The gradle application task handily helps in creating a CLI program from a gradle project.
+    However, in the Windows batch file, the classpath is set by manually specifying every jar on the classpath, e.g.:
+
+    set CLASSPATH=%APP_HOME%\lib\some.jar;%APP_HOME%\lib\another.jar;%APP_HOME%\lib\yet-another.jar
+
+    and then using that with the -classpath switch of your java executable. If you have a large classpath,
+    you are in imminent danger of overflowing CMD's puny line length restrictions,
+    resulting in a the input line is too long error.
+    the following classpath setting makes sure that all jars from "lib" folder are added to classpath instead, like this:
+
+        set CLASSPATH=%APP_HOME%\lib\*
+
+     */
+    classpath = files( '$APP_HOME/lib/*' )
+
     doLast {
         // add "--openTaskAdapterPageInWebBrowser" at the end of the command line parameters
         def WIN_REPLACE_ARG2 = "com.taskadapter.app.TALauncher "
