@@ -1,3 +1,3 @@
 package com.taskadapter.connector.definition
 
-case class TaskId(id: Long, key: String)
+case class TaskId(id: java.lang.Long, key: String)

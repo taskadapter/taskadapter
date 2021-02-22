@@ -14,12 +14,12 @@ import java.util.Optional;
 
 public class SimpleTaskSaver<N> {
 
-    private PreviouslyCreatedTasksResolver previouslyCreatedTasksResolver;
-    private ConnectorConverter<GTask, N> converter;
-    private BasicIssueSaveAPI<N> saveAPI;
-    private SaveResultBuilder result;
-    private ProgressMonitor progressMonitor;
-    private String targetLocation;
+    private final PreviouslyCreatedTasksResolver previouslyCreatedTasksResolver;
+    private final ConnectorConverter<GTask, N> converter;
+    private final BasicIssueSaveAPI<N> saveAPI;
+    private final SaveResultBuilder result;
+    private final ProgressMonitor progressMonitor;
+    private final String targetLocation;
 
     public SimpleTaskSaver(PreviouslyCreatedTasksResolver previouslyCreatedTasksResolver,
                            ConnectorConverter<GTask, N> converter,
@@ -40,9 +40,7 @@ public class SimpleTaskSaver<N> {
                           Iterable<FieldRow<?>> fieldRows) {
         tasks.forEach(task -> {
             try {
-                if (parentIssueKey.isPresent()) {
-                    task.setParentIdentity(parentIssueKey.get());
-                }
+                parentIssueKey.ifPresent(task::setParentIdentity);
                 var transformedTask = DefaultValueSetter.adapt(fieldRows, task);
                 var withPossiblyNewId = replaceIdentityIfPreviouslyCreatedByUs(previouslyCreatedTasksResolver, transformedTask,
                         targetLocation);
