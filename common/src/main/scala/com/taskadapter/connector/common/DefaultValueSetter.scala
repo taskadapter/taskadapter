@@ -2,6 +2,7 @@ package com.taskadapter.connector.common
 
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.model.{CustomString, DefaultValueResolver, Field, GTask}
+import scala.collection.JavaConverters._
 
 /**
   * When saving a task, we need to set some of its fields to some default value if there is nothing there yet.
@@ -13,9 +14,9 @@ import com.taskadapter.model.{CustomString, DefaultValueResolver, Field, GTask}
   */
 object DefaultValueSetter {
 
-  def adapt(fieldRows: Iterable[FieldRow[_]], task: GTask): GTask = {
+  def adapt(fieldRows: java.lang.Iterable[FieldRow[_]], task: GTask): GTask = {
     val result = new GTask
-    fieldRows.foreach { row => adaptRow(task, result, row) }
+    fieldRows.asScala.foreach { row => adaptRow(task, result, row) }
     result.setSourceSystemId(task.getSourceSystemId)
     result.setParentIdentity(task.getParentIdentity)
     result.setChildren(task.getChildren)

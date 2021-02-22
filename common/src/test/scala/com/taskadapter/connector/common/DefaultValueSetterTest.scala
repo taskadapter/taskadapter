@@ -1,7 +1,6 @@
 package com.taskadapter.connector.common
 
 import java.util.Date
-
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.model._
@@ -11,9 +10,11 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
 
+import scala.collection.JavaConverters._
+
 @RunWith(classOf[JUnitRunner])
 class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
-  val defaultRows = List(
+  val defaultRows: List[FieldRow[_]] = List(
     FieldRow(Summary, Summary, ""),
     FieldRow(Description, Description, "")
   )
@@ -22,52 +23,52 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
     val originalTask = new GTask
     originalTask.setValue(Description, "original description")
 
-    val newTask = DefaultValueSetter.adapt(defaultRows, originalTask)
+    val newTask = DefaultValueSetter.adapt(defaultRows.asJava, originalTask)
     originalTask.setValue(Description, "new description")
     assertThat(newTask.getValue(Description)).isEqualTo("original description")
 
   }
 
   it("default value is set if source field value is empty") {
-    val rows = List(
+    val rows: List[FieldRow[_]] = List(
       FieldRow(Summary, Summary, ""),
       FieldRow(Description, Description, "default description")
     )
     val originalTask = new GTask
     originalTask.setValue(Description, "")
 
-    val newTask = DefaultValueSetter.adapt(rows, originalTask)
+    val newTask = DefaultValueSetter.adapt(rows.asJava, originalTask)
     newTask.getValue(Description) shouldBe "default description"
   }
 
   // TA supports one-sided mappings where a default value is provided to the target Field and there is
   // no corresponding Field in the source connector
   it("default value is set if source field is not defined but default value exists") {
-    val rows = List(
+    val rows: List[FieldRow[_]] = List(
       new FieldRow(None, Some(Description), "default description")
     )
     val originalTask = new GTask
     originalTask.setValue(Description, "")
 
-    val newTask = DefaultValueSetter.adapt(rows, originalTask)
+    val newTask = DefaultValueSetter.adapt(rows.asJava, originalTask)
     newTask.getValue(Description) shouldBe "default description"
   }
 
   it("field is safely skipped if target field is not defined") {
-    val rows = List(new FieldRow(Some(Description), None, "default"))
-    val newTask = DefaultValueSetter.adapt(rows,
+    val rows: List[FieldRow[_]] = List(new FieldRow(Some(Description), None, "default"))
+    val newTask = DefaultValueSetter.adapt(rows.asJava,
       new GTask().setValue(Description, ""))
     newTask.getValue(Description) shouldBe null
   }
 
   it("existing value is preserved when field has it") {
-    val rows = List(
+    val rows: List[FieldRow[_]] = List(
       FieldRow(Summary, Summary, ""),
       FieldRow(Description, Description, "default description")
     )
     val originalTask = new GTask
     originalTask.setValue(Description, "something")
-    val newTask = DefaultValueSetter.adapt(rows, originalTask)
+    val newTask = DefaultValueSetter.adapt(rows.asJava, originalTask)
     newTask.getValue(Description) shouldBe "something"
   }
 
@@ -76,7 +77,7 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
     val task = new GTask
     val identity = TaskId(1, "parent1")
     task.setParentIdentity(identity)
-    val newTask = DefaultValueSetter.adapt(defaultRows, task)
+    val newTask = DefaultValueSetter.adapt(defaultRows.asJava, task)
     newTask.getParentIdentity shouldBe identity
   }
 
@@ -88,18 +89,18 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
     sub.setId(100l)
     parent.addChildTask(sub)
 
-    val adapted = DefaultValueSetter.adapt(defaultRows, parent)
+    val adapted = DefaultValueSetter.adapt(defaultRows.asJava, parent)
     adapted.getChildren.size() shouldBe 1
   }
 
   it("Date field type is adapted") {
-    val rows = List(
+    val rows: List[FieldRow[_]] = List(
       FieldRow(DueDate, DueDate, null)
     )
     val task = new GTask
     val date = new Date
     task.setValue(DueDate, date)
-    val newTask = DefaultValueSetter.adapt(rows, task)
+    val newTask = DefaultValueSetter.adapt(rows.asJava, task)
     newTask.getValue(DueDate) shouldBe date
   }
 
@@ -138,8 +139,8 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
   }
 
   private def checkField(field: Field[_], defaultString: String, expectedValue: Any): Unit = {
-    val rows = Seq(FieldRow(field.asInstanceOf[Field[Any]], field.asInstanceOf[Field[Any]], defaultString))
-    val newTask = DefaultValueSetter.adapt(rows, new GTask)
+    val rows: List[FieldRow[_]] = List(FieldRow(field.asInstanceOf[Field[Any]], field.asInstanceOf[Field[Any]], defaultString))
+    val newTask = DefaultValueSetter.adapt(rows.asJava, new GTask)
     newTask.getValue(field) shouldBe expectedValue
   }
 

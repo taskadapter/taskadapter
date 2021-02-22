@@ -58,7 +58,7 @@ class MsXmlFileWriter(rows: java.lang.Iterable[FieldRow[_]]) {
         } else {
           parentMSPTask.addTask()
         }
-        val transformedTask = DefaultValueSetter.adapt(rows.asScala, gTask)
+        val transformedTask = DefaultValueSetter.adapt(rows, gTask)
         val gTaskToMSP = new GTaskToMSP(newMspTask, new ResourceManager(project))
         gTaskToMSP.setFields(transformedTask, keepTaskId)
         syncResult.addCreatedTask(TaskId(gTask.getId, gTask.getKey), TaskId(newMspTask.getID.longValue(), newMspTask.getID + ""))
