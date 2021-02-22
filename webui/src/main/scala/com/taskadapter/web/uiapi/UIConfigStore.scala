@@ -103,8 +103,8 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
 
     val newMappings = NewConfigSuggester.suggestedFieldMappingsForNewConfig(
       config1.getDefaultFieldsForNewConfig.asScala,
-      config2.getDefaultFieldsForNewConfig.asScala).asJava
-    val mappingsString = JsonFactory.toString(newMappings.asScala)
+      config2.getDefaultFieldsForNewConfig.asScala)
+    val mappingsString = JsonFactory.toString(newMappings)
     val configId = configStorage.createNewConfig(userName, label,
       config1.getConnectorTypeId, connector1SetupId, config1.getConfigString,
       config2.getConnectorTypeId, connector2SetupId, config2.getConfigString,

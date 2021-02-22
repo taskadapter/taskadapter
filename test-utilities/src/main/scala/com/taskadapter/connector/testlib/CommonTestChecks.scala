@@ -55,7 +55,7 @@ object CommonTestChecks extends Matchers {
                             fieldToSearch: Field[_],
                             cleanup: TaskId => Unit): Unit = {
     val mappings = NewConfigSuggester.suggestedFieldMappingsForNewConfig(suggestedMappings, suggestedMappings)
-    val rows = MappingBuilder.build(mappings, ExportDirection.RIGHT).asJava
+    val rows = MappingBuilder.build(mappings.asJava, ExportDirection.RIGHT)
     val loadedTask = TestUtils.saveAndLoadViaSummary(connector, task, rows, fieldToSearch)
     assertEquals(task.getValue(fieldToSearch), loadedTask.getValue(fieldToSearch))
     cleanup(loadedTask.getIdentity)

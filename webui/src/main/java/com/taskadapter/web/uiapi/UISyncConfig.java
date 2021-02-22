@@ -196,13 +196,11 @@ public class UISyncConfig {
      * @return source mappings
      */
     private List<FieldRow<?>> generateFieldRowsToExportLeft() {
-        return JavaConverters.seqAsJavaList(MappingBuilder.build(
-                JavaConverters.asScalaBuffer(fieldMappings), ExportDirection.LEFT));
+        return MappingBuilder.build(fieldMappings, ExportDirection.LEFT);
     }
 
     private List<FieldRow<?>> generateFieldRowsToExportRight() {
-        return JavaConverters.seqAsJavaList(MappingBuilder.build(
-                JavaConverters.asScalaBuffer(fieldMappings), ExportDirection.RIGHT));
+        return MappingBuilder.build(fieldMappings, ExportDirection.RIGHT);
     }
 
     public ExportResultFormat saveTasks(List<GTask> tasks, ProgressMonitor progressMonitor) {

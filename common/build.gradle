@@ -12,4 +12,5 @@ dependencies {
     compile "io.circe:circe-parser_2.12:$circeVersion"
 
     testCompile libraries.festassert
+    testCompile libraries.assertJ
 }
