@@ -59,7 +59,7 @@ class GithubConnector(config: GithubConfig, setup: WebConnectorSetup) extends Ne
     val converter = new GTaskToGithub(ghConnector.getUserService)
     val issueService = ghConnector.getIssueService
     val saver = new GithubTaskSaver(issueService, setup.userName, config.getProjectKey)
-    val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows.asScala,
+    val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows,
       setup.host)
     rb.getResult
   }

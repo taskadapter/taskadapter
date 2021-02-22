@@ -44,7 +44,7 @@ class TrelloConnector(config: TrelloConfig, setup: WebConnectorSetup) extends Ne
     val lists = loadLists(config.getBoardId)
     val converter = new GTaskToTrello(config, new ListCache(lists))
     val saver = new TrelloTaskSaver(trelloApi)
-    val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows.asScala,
+    val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows,
       setup.host)
     rb.getResult
 

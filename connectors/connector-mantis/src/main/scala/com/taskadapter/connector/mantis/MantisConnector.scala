@@ -63,7 +63,7 @@ class MantisConnector(config: MantisConfig, setup: WebConnectorSetup) extends Ne
       else new util.ArrayList[AccountData]
       val converter = new GTaskToMantis(mntProject, users)
       val saver = new MantisTaskSaver(mgr)
-      val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows.asScala,
+      val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows,
         setup.host)
       rb.getResult
     } catch {

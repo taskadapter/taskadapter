@@ -1,7 +1,6 @@
 package com.taskadapter.connector.common
 
 import java.util
-
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.common.data.ConnectorConverter
 import com.taskadapter.connector.definition.{ProgressMonitor, SaveResultBuilder, TaskId}
@@ -10,6 +9,9 @@ import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.GTask
 import org.slf4j.LoggerFactory
 
+import java.util.Optional
+import scala.collection.JavaConverters._
+
 class SimpleTaskSaver[N](previouslyCreatedTasksResolver: PreviouslyCreatedTasksResolver,
                          converter: ConnectorConverter[GTask, N],
                          saveAPI: BasicIssueSaveAPI[N],
@@ -17,11 +19,13 @@ class SimpleTaskSaver[N](previouslyCreatedTasksResolver: PreviouslyCreatedTasksR
                          targetLocation: String) {
   private val log = LoggerFactory.getLogger(classOf[SimpleTaskSaver[N]])
 
-  def saveTasks(parentIssueKey: Option[TaskId], tasks: util.List[GTask], fieldRows: Iterable[FieldRow[_]]): Unit = {
+  def saveTasks(parentIssueKey: Optional[TaskId], tasks: util.List[GTask], fieldRows: java.lang.Iterable[FieldRow[_]]): Unit = {
     tasks.forEach { task =>
       try {
-        if (parentIssueKey.isDefined) task.setParentIdentity(parentIssueKey.get)
-        val transformedTask = DefaultValueSetter.adapt(fieldRows, task)
+        if (parentIssueKey.isPresent) {
+          task.setParentIdentity(parentIssueKey.get)
+        }
+        val transformedTask = DefaultValueSetter.adapt(fieldRows.asScala, task)
         val withPossiblyNewId = replaceIdentityIfPreviouslyCreatedByUs(previouslyCreatedTasksResolver, transformedTask,
           targetLocation)
 
@@ -39,7 +43,7 @@ class SimpleTaskSaver[N](previouslyCreatedTasksResolver: PreviouslyCreatedTasksR
             identity
         }
         progressMonitor.worked(1)
-        if (task.hasChildren) saveTasks(Some(newTaskIdentity), task.getChildren, fieldRows)
+        if (task.hasChildren) saveTasks(Optional.of(newTaskIdentity), task.getChildren, fieldRows)
       } catch {
         case e: ConnectorException =>
           result.addTaskError(task, e)

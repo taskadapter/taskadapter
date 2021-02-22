@@ -87,7 +87,7 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
       val converter = new GTaskToRedmine(config, priorities, rmProject, userCache, customFieldDefinitions, statusList,
         versions, categories)
       val saver = new RedmineTaskSaver(mgr.getIssueManager, config)
-      val tsrb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, fieldRows.asScala,
+      val tsrb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, fieldRows,
         setup.host)
       TaskSavingUtils.saveRemappedRelations(config, tasks, saver, tsrb)
       tsrb.getResult

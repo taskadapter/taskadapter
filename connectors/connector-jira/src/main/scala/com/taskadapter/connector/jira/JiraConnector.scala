@@ -129,7 +129,7 @@ class JiraConnector(config: JiraConfig, setup: WebConnectorSetup) extends NewCon
       val resolver = JiraClientHelper.loadCustomFields(client)
       val converter = new GTaskToJira(config, resolver, versions, components, priorities)
       val saver = new JiraTaskSaver(client, issueTypeList, config.getDefaultTaskType, config.getDefaultIssueTypeForSubtasks)
-      val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows.asScala,
+      val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows,
         setup.host)
       TaskSavingUtils.saveRemappedRelations(config, tasks, saver, rb)
       rb.getResult

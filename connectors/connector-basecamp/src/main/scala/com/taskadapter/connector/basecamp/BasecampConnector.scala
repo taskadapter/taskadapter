@@ -68,7 +68,7 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
     val users = loadUsers()
     val converter = new GTaskToBasecamp(users)
     val saver = new BasecampSaver(api, config)
-    val resultBuilder = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, fieldRows.asScala,
+    val resultBuilder = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, fieldRows,
       setup.host)
 
     resultBuilder.getResult
