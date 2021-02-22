@@ -1,0 +1,9 @@
+{
+  "connectorId" : "Atlassian JIRA",
+  "label" : "Atlassian Jira cloud for TaskAdapter integration testing",
+  "host" : "https://taskadapter.atlassian.net",
+  "userName" : "support@taskadapter.com",
+  "password" : "QTP3szUxPOrb2Sn1iJnsB3F9",
+  "useApiKey": false,
+  "apiKey": ""
+}

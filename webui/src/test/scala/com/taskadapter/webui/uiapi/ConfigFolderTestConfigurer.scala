@@ -8,6 +8,7 @@ import com.taskadapter.web.uiapi.SetupId
 object ConfigFolderTestConfigurer {
 
   val jiraSetupId = SetupId("Atlassian_JIRA_1.json")
+  val jiraCloudSetupId = SetupId("Atlassian_Jira_cloud.json")
   val redmineSetupId = SetupId("Redmine_1.json")
 
   /**
@@ -16,7 +17,9 @@ object ConfigFolderTestConfigurer {
     * @return folder with user configs
     */
   def configure(rootFolder: File): Unit = {
-    List(jiraSetupId.id, redmineSetupId.id,
+    List(jiraSetupId.id,
+      jiraCloudSetupId.id,
+      redmineSetupId.id,
       SetupId("Microsoft_Project_1.json").id,
       SetupId("GitHub1.json").id,
       SetupId("Mantis1.json").id
