@@ -9,7 +9,7 @@ class TrelloFactory extends PluginFactory[TrelloConfig, WebConnectorSetup] {
 
   override def getDescriptor = Descriptor(TrelloConnector.ID, "Trello")
 
-  override def getAllFields: Seq[Field[_]] = TrelloField.fields
+  override def getAllFields: java.util.List[Field[_]] = TrelloField.fields
 
   override def createConnector(config: TrelloConfig, setup: WebConnectorSetup) = new TrelloConnector(config, setup)
 
@@ -20,5 +20,5 @@ class TrelloFactory extends PluginFactory[TrelloConfig, WebConnectorSetup] {
 
   override def createDefaultConfig = new TrelloConfig()
 
-  override def getDefaultFieldsForNewConfig: Seq[Field[_]] = TrelloField.defaultFieldsForNewConfig
+  override def getDefaultFieldsForNewConfig: java.util.List[Field[_]] = TrelloField.defaultFieldsForNewConfig
 }

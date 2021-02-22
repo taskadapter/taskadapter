@@ -15,7 +15,8 @@ object BasecampClassicToGTask {
     result.setValue(BasecampClassicField.content, XmlUtils.getStringElt(obj, "content"))
 
     val compl = XmlUtils.getOptBool(obj, "completed")
-    result.setValue(DoneRatio, if (compl) 100f else 0f)
+    val floatCompletionValue : java.lang.Float = if (compl) 100f else 0f
+    result.setValue(DoneRatio, floatCompletionValue)
 
     result.setValue(DueDate, XmlUtils.getOptLongDate(obj, "due-at"))
     result.setValue(CreatedOn, XmlUtils.getOptLongDate(obj, "created-at"))

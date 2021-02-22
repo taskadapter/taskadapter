@@ -9,8 +9,8 @@ import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.web.ExceptionFormatter;
+import com.taskadapter.webui.NotificationUtil;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
 
 import static com.taskadapter.web.ui.MessageUtils.nvl;
 
@@ -25,8 +25,7 @@ public final class ShowInfoElement {
             Notification.show(localizedMessage);
         } catch (ConnectorException e) {
             String localizedMessage = exceptionFormatter.formatError(e);
-            Notification.show(localizedMessage)
-                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            NotificationUtil.showError(localizedMessage);
         }
     }
 

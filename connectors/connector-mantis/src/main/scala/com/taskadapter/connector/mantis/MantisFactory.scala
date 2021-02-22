@@ -11,7 +11,7 @@ object MantisFactory {
 
 class MantisFactory extends PluginFactory[MantisConfig, WebConnectorSetup] {
 
-  override def getAllFields: Seq[Field[_]] = MantisField.fields
+  override def getAllFields: java.util.List[Field[_]] = MantisField.fields
 
   def createConnector(config: MantisConfig, setup: WebConnectorSetup) = new MantisConnector(config, setup)
 
@@ -23,5 +23,5 @@ class MantisFactory extends PluginFactory[MantisConfig, WebConnectorSetup] {
 
   override def createDefaultConfig = new MantisConfig
 
-  override def getDefaultFieldsForNewConfig: Seq[Field[_]] = MantisField.fields
+  override def getDefaultFieldsForNewConfig: java.util.List[Field[_]] = MantisField.fields
 }

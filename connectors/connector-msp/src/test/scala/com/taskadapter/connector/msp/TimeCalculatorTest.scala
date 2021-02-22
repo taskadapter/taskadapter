@@ -14,7 +14,7 @@ class TimeCalculatorTest extends FunSpec with Matchers {
     }
 
     it("0 on provided done ratio but empty estimated time") {
-      TimeCalculator.calculateTimeAlreadySpent(new GTask().setValue(DoneRatio, 10f))
+      TimeCalculator.calculateTimeAlreadySpent(new GTask().setValue(DoneRatio, java.lang.Float.valueOf(10f)))
         .getDuration shouldBe 0
     }
 
@@ -26,21 +26,21 @@ class TimeCalculatorTest extends FunSpec with Matchers {
     it("3.5h when estimated time 7h and DoneRatio 50%") {
       TimeCalculator.calculateTimeAlreadySpent(new GTask()
         .setValue(EstimatedTime, 7f)
-        .setValue(DoneRatio, 50f))
+        .setValue(DoneRatio, java.lang.Float.valueOf(50f)))
         .getDuration shouldBe 3.5
     }
 
     it("5h when estimated time 5h and DoneRatio 100%") {
       TimeCalculator.calculateTimeAlreadySpent(new GTask()
         .setValue(EstimatedTime, 5f)
-        .setValue(DoneRatio, 100f))
+        .setValue(DoneRatio, java.lang.Float.valueOf(100f)))
         .getDuration shouldBe 5
     }
 
     it("0 when estimated time 5h and DoneRatio 0%") {
       TimeCalculator.calculateTimeAlreadySpent(new GTask()
         .setValue(EstimatedTime, 5f)
-        .setValue(DoneRatio, 0f))
+        .setValue(DoneRatio, java.lang.Float.valueOf(0f)))
         .getDuration shouldBe 0
     }
   }
@@ -51,7 +51,7 @@ class TimeCalculatorTest extends FunSpec with Matchers {
     }
 
     it("0 on provided done ratio but empty estimated time") {
-      TimeCalculator.calculateRemainingTime(new GTask().setValue(DoneRatio, 10f))
+      TimeCalculator.calculateRemainingTime(new GTask().setValue(DoneRatio, java.lang.Float.valueOf(10f)))
         .getDuration shouldBe 0
     }
 
@@ -62,14 +62,14 @@ class TimeCalculatorTest extends FunSpec with Matchers {
     it("5h when estimated time 5h and DoneRatio 0%") {
       TimeCalculator.calculateRemainingTime(new GTask()
         .setValue(EstimatedTime, 5f)
-        .setValue(DoneRatio, 0f))
+        .setValue(DoneRatio, java.lang.Float.valueOf(0f)))
         .getDuration shouldBe 5
     }
 
     it("2.5h when estimated time 10h and DoneRatio 75%") {
       TimeCalculator.calculateRemainingTime(new GTask()
         .setValue(EstimatedTime, 10f)
-        .setValue(DoneRatio, 75f))
+        .setValue(DoneRatio, java.lang.Float.valueOf(75f)))
         .getDuration shouldBe 2.5
     }
   }

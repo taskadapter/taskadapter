@@ -8,7 +8,7 @@ import com.taskadapter.model.Field
 class MSPFactory extends PluginFactory[MSPConfig, FileSetup] {
   private val DESCRIPTOR = Descriptor(MSPConnector.ID, MSPConfig.DEFAULT_LABEL)
 
-  override def getAllFields: Seq[Field[_]] = MspField.fields
+  override def getAllFields: java.util.List[Field[_]] = MspField.fields
 
   override def createConnector(config: MSPConfig, setup: FileSetup) = new MSPConnector(setup)
 
@@ -21,6 +21,6 @@ class MSPFactory extends PluginFactory[MSPConfig, FileSetup] {
 
   override def createDefaultConfig = new MSPConfig
 
-  override def getDefaultFieldsForNewConfig: Seq[Field[_]] = MspField.fields
+  override def getDefaultFieldsForNewConfig: java.util.List[Field[_]] = MspField.fields
 }
 

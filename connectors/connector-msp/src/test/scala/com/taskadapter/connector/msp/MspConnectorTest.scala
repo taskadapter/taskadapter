@@ -39,7 +39,7 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
         .build()
         .setValue(Description, "desc")
         .setValue(AssigneeFullName, "display name")
-        .setValue(Priority, 888)
+        .setValue(Priority, java.lang.Integer.valueOf(888))
       fixture.taskIsCreatedAndLoaded(task,
         Seq(AssigneeFullName, MspField.taskDuration, MspField.taskWork, MspField.mustStartOn, MspField.finish, MspField.deadline,
           Description, Priority, Summary))
@@ -50,7 +50,7 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
     withTempFolder { folder =>
       CommonTestChecks.fieldIsSavedByDefault(getConnector(folder),
         new GTaskBuilder().withRandom(Summary).withRandom(Description).build(),
-        MspField.fields,
+        MspField.fields.asScala,
         Description,
         CommonTestChecks.skipCleanup)
     }

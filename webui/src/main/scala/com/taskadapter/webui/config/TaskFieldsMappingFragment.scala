@@ -1,7 +1,6 @@
 package com.taskadapter.webui.config
 
 import java.util.UUID
-
 import com.google.common.base.Strings
 import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.connector.definition.exceptions.BadConfigException
@@ -18,6 +17,7 @@ import com.vaadin.flow.component.html.Label
 import com.vaadin.flow.component.orderedlayout.VerticalLayout
 import com.vaadin.flow.data.binder.Binder
 
+import java.util.stream.Collectors
 import scala.collection.JavaConverters._
 import scala.collection.Seq
 import scala.collection.mutable.ListBuffer
@@ -86,10 +86,10 @@ class EditablePojoMappings(mappings: Seq[FieldMapping[_]],
 }
 
 class TaskFieldsMappingFragment(messages: Messages,
-                                connector1SupportedFields: Seq[Field[_]],
+                                connector1SupportedFields: java.util.List[Field[_]],
                                 connector1Messages: Messages,
                                 connector1Label: String,
-                                connector2SupportedFields: Seq[Field[_]],
+                                connector2SupportedFields: java.util.List[Field[_]],
                                 connector2Messages: Messages,
                                 connector2Label: String,
                                 mappings: Seq[FieldMapping[_]]) extends SavableComponent with Validatable {
@@ -212,13 +212,14 @@ class TaskFieldsMappingFragment(messages: Messages,
   }
 
   private def addConnectorField(binder: Binder[EditableFieldMapping],
-                                connectorFields: Seq[Field[_]], connectorMessages: Messages,
+                                connectorFields: java.util.List[Field[_]],
+                                connectorMessages: Messages,
                                 selectedValue: String,
                                 propertyName: String) :Unit = {
     val combobox = new ComboBox[String]()
     combobox.setItemLabelGenerator(fieldName =>
       Option(connectorMessages.getNoDefault(fieldName)).getOrElse(fieldName))
-    combobox.setItems(connectorFields.map(_.name).asJava)
+    combobox.setItems(connectorFields.asScala.map(_.name).asJava)
     combobox.setAllowCustomValue(true)
     gridLayout.add(combobox)
     combobox.setValue(selectedValue)

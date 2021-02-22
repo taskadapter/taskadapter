@@ -8,6 +8,7 @@ import com.taskadapter.model.GProject;
 import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.callbacks.DataProvider;
+import com.taskadapter.webui.NotificationUtil;
 import com.taskadapter.webui.Page;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -155,11 +156,11 @@ public class ProjectPanel extends FormLayout implements Validatable {
         } catch (BadConfigException e) {
             logger.error(e.toString());
             String localizedMessage = exceptionFormatter.formatError(e);
-            Notification.show(localizedMessage);
+            NotificationUtil.showError(localizedMessage);
         } catch (ConnectorException e) {
             String localizedMessage = exceptionFormatter.formatError(e);
-            logger.error(e.toString());
-            Notification.show(localizedMessage);
+            logger.error(e.getMessage());
+            NotificationUtil.showError(localizedMessage);
         }
     }
 

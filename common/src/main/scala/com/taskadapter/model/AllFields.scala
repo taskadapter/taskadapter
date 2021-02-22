@@ -7,4 +7,5 @@ object AllFields {
   var summary = Summary
   var description = Description
   var taskType = TaskType
+  val doneRatio = DoneRatio
 }

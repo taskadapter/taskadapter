@@ -6,11 +6,11 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.callbacks.DataProvider;
 import com.taskadapter.web.data.Messages;
+import com.taskadapter.webui.NotificationUtil;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import org.slf4j.Logger;
@@ -67,8 +67,7 @@ public class PriorityPanel extends VerticalLayout implements Validatable {
                 Notification.show(localizedMessage);
             } catch (Exception e) {
                 logger.error("Error loading priorities: " + e.getMessage(), e);
-                new Notification(e.getMessage())
-                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                NotificationUtil.showError(e.getMessage());
             }
         });
 

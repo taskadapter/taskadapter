@@ -12,7 +12,7 @@ class BasecampFactory extends PluginFactory[BasecampConfig, WebConnectorSetup] {
 
   override def createConnector(config: BasecampConfig, setup: WebConnectorSetup) = new BasecampConnector(config, setup, factory)
 
-  override def getAllFields: Seq[Field[_]] = BasecampField.fields
+  override def getAllFields: java.util.List[Field[_]] = BasecampField.fields
 
   override def getDescriptor = DESCRIPTOR
 
@@ -24,5 +24,5 @@ class BasecampFactory extends PluginFactory[BasecampConfig, WebConnectorSetup] {
 
   override def createDefaultConfig = new BasecampConfig
 
-  override def getDefaultFieldsForNewConfig: Seq[Field[_]] = BasecampField.fields
+  override def getDefaultFieldsForNewConfig: java.util.List[Field[_]] = BasecampField.fields
 }

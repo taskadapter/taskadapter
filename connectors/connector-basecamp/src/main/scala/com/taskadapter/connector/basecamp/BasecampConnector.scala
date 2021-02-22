@@ -35,14 +35,14 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
       if (remaining != null) {
         for (i <- 0 until remaining.length) {
           val task = BasecampToGTask.parseTask(remaining.getJSONObject(i))
-          task.setValue(DoneRatio,0f)
+          task.setValue(DoneRatio, java.lang.Float.valueOf(0))
           res.add(task)
         }
       }
       if (completed != null && config.getLoadCompletedTodos) {
         for (i <- 0 until completed.length) {
           val task = BasecampToGTask.parseTask(completed.getJSONObject(i))
-          task.setValue(DoneRatio, 100f)
+          task.setValue(DoneRatio, java.lang.Float.valueOf(100f))
           res.add(task)
         }
       }

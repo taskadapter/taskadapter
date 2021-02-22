@@ -94,7 +94,7 @@ class JiraToGTask(val priorities: Priorities) {
       null
     }
     val priorityValue = priorities.getPriorityByText(jiraPriorityName)
-    task.setValue(Priority, priorityValue.asInstanceOf[Int])
+    task.setValue(Priority, priorityValue)
     val timeTracking = issue.getTimeTracking
     if (timeTracking != null) {
       val originalEstimateMinutes = timeTracking.getOriginalEstimateMinutes

@@ -9,6 +9,7 @@ import org.junit.runner.RunWith
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
+import  scala.collection.JavaConverters._
 
 @RunWith(classOf[JUnitRunner])
 class NewConfigSuggesterTest extends FunSpec with ScalaFutures with Matchers {
@@ -22,8 +23,8 @@ class NewConfigSuggesterTest extends FunSpec with ScalaFutures with Matchers {
 
   it("suggests all elements from left connector") {
     val list = NewConfigSuggester.suggestedFieldMappingsForNewConfig(
-      defaultRedmineFields,
-      defaultJiraFields)
+      defaultRedmineFields.asScala,
+      defaultJiraFields.asScala)
 
     list.size shouldBe jiraRedmineFieldsNumber
     list.contains(FieldMapping(AssigneeLoginName, AssigneeLoginName, true, null)) shouldBe true
@@ -31,7 +32,8 @@ class NewConfigSuggesterTest extends FunSpec with ScalaFutures with Matchers {
 
   it("suggests all elements from right connector") {
     val list = NewConfigSuggester.suggestedFieldMappingsForNewConfig(
-      defaultJiraFields, defaultRedmineFields)
+      defaultJiraFields.asScala,
+      defaultRedmineFields.asScala)
 
     list.size shouldBe jiraRedmineFieldsNumber
   }

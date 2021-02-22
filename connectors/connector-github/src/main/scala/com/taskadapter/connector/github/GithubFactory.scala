@@ -10,7 +10,7 @@ object GithubFactory {
 }
 
 class GithubFactory extends PluginFactory[GithubConfig, WebConnectorSetup] {
-  override def getAllFields: Seq[Field[_]] = GithubField.fields
+  override def getAllFields: java.util.List[Field[_]] = GithubField.fields
 
   def createConnector(config: GithubConfig, setup: WebConnectorSetup) = new GithubConnector(config, setup)
 
@@ -23,5 +23,5 @@ class GithubFactory extends PluginFactory[GithubConfig, WebConnectorSetup] {
 
   override def createDefaultConfig = new GithubConfig
 
-  override def getDefaultFieldsForNewConfig: Seq[Field[_]] = GithubField.fields
+  override def getDefaultFieldsForNewConfig: java.util.List[Field[_]] = GithubField.fields
 }

@@ -58,9 +58,9 @@ class UIConnectorConfigImpl[C <: ConnectorConfig, S <: ConnectorSetup]
     editorFactory.getMiniPanelContents(sandbox, config, setup)
   }
 
-  override def getAllFields: Seq[Field[_]] = connectorFactory.getAllFields
+  override def getAllFields: java.util.List[Field[_]] = connectorFactory.getAllFields
 
-  override def getDefaultFieldsForNewConfig: Seq[Field[_]] = connectorFactory.getDefaultFieldsForNewConfig
+  override def getDefaultFieldsForNewConfig: java.util.List[Field[_]] = connectorFactory.getDefaultFieldsForNewConfig
 
   override def getSourceLocation: String = editorFactory.describeSourceLocation(config, setup)
 

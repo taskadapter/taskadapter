@@ -9,9 +9,9 @@ object MantisToGTask {
   private val logger = LoggerFactory.getLogger(MantisToGTask.getClass)
   // TODO this can be moved to properties section to be defined by user.
 
-  private val defaultPriority = 500
+  private val defaultPriority : Integer = 500
 
-  private val priorityNumbers = Map[String, Int](
+  private val priorityNumbers = Map[String, Integer](
     "none" -> 100,
     "low" -> 100,
     "normal" -> defaultPriority,
@@ -38,7 +38,7 @@ object MantisToGTask {
     task.setValue(Description, issue.getDescription)
     task.setValue(CreatedOn, issue.getDate_submitted.getTime)
     task.setValue(UpdatedOn, issue.getLast_updated.getTime)
-    val priorityValue: Int = priorityNumbers.getOrElse(issue.getPriority.getName, defaultPriority)
+    val priorityValue: Integer = priorityNumbers.getOrElse(issue.getPriority.getName, defaultPriority)
     task.setValue(Priority, priorityValue)
     if (issue.getDue_date != null) {
       task.setValue(DueDate, issue.getDue_date.getTime)

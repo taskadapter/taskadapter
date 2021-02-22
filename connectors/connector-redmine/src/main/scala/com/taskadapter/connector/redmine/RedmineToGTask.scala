@@ -60,18 +60,21 @@ class RedmineToGTask(val config: RedmineConfig, var userCache: RedmineUserCache)
     }
     val tracker = issue.getTracker
     if (tracker != null) task.setValue(TaskType, tracker.getName)
-    if (issue.getCategory != null) task.setValue(RedmineField.category, JavaConverters.asScalaBuffer(util.Arrays.asList(issue.getCategory.getName)))
+    if (issue.getCategory != null) {
+      task.setValue(RedmineField.category,
+        JavaConverters.asScalaBuffer(util.Arrays.asList(issue.getCategory.getName)))
+    }
     task.setValue(TaskStatus, issue.getStatusName)
     task.setValue(Summary, issue.getSubject)
     task.setValue(EstimatedTime, issue.getEstimatedHours.toFloat)
 //    task.setValue(SpentTime, issue.getSpentHours.toFloat)
-    task.setValue(DoneRatio, issue.getDoneRatio.toFloat)
+    task.setValue(DoneRatio, java.lang.Float.valueOf(issue.getDoneRatio.toFloat))
     task.setValue(StartDate, issue.getStartDate)
     task.setValue(DueDate, issue.getDueDate)
     task.setValue(CreatedOn, issue.getCreatedOn)
     task.setValue(UpdatedOn, issue.getUpdatedOn)
     val priorityValue = config.getPriorities.getPriorityByText(issue.getPriorityText)
-    task.setValue(Priority, priorityValue.toInt)
+    task.setValue(Priority, priorityValue)
     task.setValue(Description, issue.getDescription)
     if (issue.getTargetVersion != null) task.setValue(TargetVersion, issue.getTargetVersion.getName)
     processCustomFields(issue, task)

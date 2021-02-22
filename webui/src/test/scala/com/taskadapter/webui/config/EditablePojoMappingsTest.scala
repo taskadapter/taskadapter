@@ -10,7 +10,7 @@ import org.scalatest.{FunSpec, Matchers}
 @RunWith(classOf[JUnitRunner])
 class EditablePojoMappingsTest extends FunSpec with Matchers {
 
-  val connector1FieldLoader = new ConnectorFieldLoader(List(
+  val connector1FieldLoader = new ConnectorFieldLoader(java.util.List.of(
     CustomString("field 1"),
     CustomString("field 2"),
     CustomString("summary"),

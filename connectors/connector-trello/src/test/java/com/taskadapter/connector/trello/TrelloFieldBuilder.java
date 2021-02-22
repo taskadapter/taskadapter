@@ -10,7 +10,7 @@ import java.util.List;
 public class TrelloFieldBuilder {
     public static List<FieldRow<?>> getDefault() {
         return Arrays.asList(
-                new FieldRow(Option.apply(TrelloField.listName()), Option.apply(TrelloField.listName()), ""),
+                new FieldRow(Option.apply(TrelloField.listName), Option.apply(TrelloField.listName), ""),
                 new FieldRow(Option.apply(AllFields.summary()), Option.apply(AllFields.summary()), "")
         );
     }

@@ -34,7 +34,7 @@ case class CustomString(override val name: String) extends Field[String](name)
 
 object Description extends Field[String]("Description")
 
-object DoneRatio extends Field[Float]("DoneRatio")
+object DoneRatio extends Field[java.lang.Float]("DoneRatio")
 
 object DueDate extends Field[Date]("DueDate")
 
@@ -48,7 +48,7 @@ object Key extends Field[String]("Key")
 
 object ParentKey extends Field[TaskId]("ParentKey")
 
-object Priority extends Field[Int]("Priority")
+object Priority extends Field[Integer]("Priority")
 
 object Relations extends Field[util.List[GRelation]]("Relations")
 

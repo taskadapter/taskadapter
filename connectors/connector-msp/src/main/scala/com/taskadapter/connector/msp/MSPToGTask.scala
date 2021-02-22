@@ -41,12 +41,13 @@ class MSPToGTask private[msp](var projectProperties: ProjectProperties) {
     if (parent != null && (parent.getID != 0) && (parent.getUniqueID != 0)) {
       genericTask.setParentIdentity(TaskId(parent.getUniqueID.longValue(), parent.getUniqueID + ""))
     }
-    genericTask.setValue(MspField.priority, task.getPriority.getValue)
+    genericTask.setValue(MspField.priority, Integer.valueOf(task.getPriority.getValue))
     if (task.getWork != null) genericTask.setValue(MspField.taskWork, convertMspDurationToHours(task.getWork))
     if (task.getActualWork != null) genericTask.setValue(MspField.actualWork, convertMspDurationToHours(task.getActualWork))
     if (task.getDuration != null) genericTask.setValue(MspField.taskDuration, convertMspDurationToHours(task.getDuration))
     if (task.getActualDuration != null) genericTask.setValue(MspField.actualDuration, convertMspDurationToHours(task.getActualDuration))
-    if (task.getPercentageComplete != null) genericTask.setValue(MspField.percentageComplete, task.getPercentageComplete.floatValue())
+    if (task.getPercentageComplete != null) genericTask.setValue(MspField.percentageComplete,
+      java.lang.Float.valueOf(task.getPercentageComplete.floatValue()))
     // DATES
     val `type` = task.getConstraintType
     if (ConstraintType.START_NO_LATER_THAN == `type`) genericTask.setValue(MspField.startNoLaterThan, task.getConstraintDate)

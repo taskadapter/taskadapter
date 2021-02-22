@@ -14,8 +14,8 @@ object BasecampToGTask {
     result.setSourceSystemId(TaskId(id.toLong, id.toString))
 
     result.setValue(BasecampField.content, JsonUtils.getOptString("content", obj))
-    result.setValue(DoneRatio,
-      if (JsonUtils.getOptBool("completed", obj)) 100f else 0f)
+    val completedFloatValue: java.lang.Float = if (JsonUtils.getOptBool("completed", obj)) 100f else 0f
+    result.setValue(DoneRatio, completedFloatValue)
     result.setValue(DueDate, JsonUtils.getOptShortDate("due_at", obj))
     result.setValue(CreatedOn, JsonUtils.getOptLongDate("created_at", obj))
     result.setValue(UpdatedOn, JsonUtils.getOptLongDate("updated_at", obj))
