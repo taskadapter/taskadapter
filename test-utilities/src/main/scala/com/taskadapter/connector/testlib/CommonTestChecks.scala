@@ -73,7 +73,7 @@ object CommonTestChecks extends Matchers {
                                  cleanup: TaskId => Unit): Unit = {
 
     // CREATE
-    val result = TaskSaver.save(PreviouslyCreatedTasksResolver.empty, connector, "some name", rows, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR)
+    val result = TaskSaver.save(PreviouslyCreatedTasksResolver.empty, connector, "some name", rows.asJava, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR)
     assertFalse(s"must not have any errors, but got ${result.taskErrors}", result.hasErrors)
     assertEquals(1, result.createdTasksNumber)
     val newTaskId = result.getRemoteKeys.iterator.next()
@@ -83,7 +83,7 @@ object CommonTestChecks extends Matchers {
     toUpdate.foreach(i => loaded.setValue(i._1, i._2))
 
     val resolver = new TaskResolverBuilder(targetLocation).pretend(newTaskId, newTaskId)
-    val result2 = TaskSaver.save(resolver, connector, "some name", rows, util.Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR)
+    val result2 = TaskSaver.save(resolver, connector, "some name", rows.asJava, util.Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR)
     assertFalse(result2.hasErrors)
     assertEquals(1, result2.updatedTasksNumber)
     val loadedAgain = connector.loadTaskByKey(newTaskId, rows.asJava)

@@ -215,7 +215,7 @@ public class UISyncConfig {
         var location2 = getConnector2().getSourceLocation();
         var previouslyCreatedTasksResolver = taskKeeperLocationStorage.loadTasks(location1, location2);
         var result = TaskSaver.save(previouslyCreatedTasksResolver, connectorTo, destinationLocation,
-                JavaConverters.asScalaBuffer(rows), tasks, progressMonitor);
+                rows, tasks, progressMonitor);
         if (reversed) {
             List<TaskKeyMapping> reversedTuplesList = JavaConverters.seqAsJavaList(result.keyToRemoteKeyList())
                     .stream()
