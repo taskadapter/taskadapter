@@ -76,8 +76,12 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     * - allowed values: "option1", "option2"
     */
   it("task is created with multi-value custom field of type option (checkboxes)") {
+    val customFieldName = "custom_checkbox_1"
+
+    TestJiraClientHelper.checkCustomFieldExists(client, customFieldName);
+
     val task = GTaskBuilder.withSummary()
-    val field = CustomSeqString("custom_checkbox_1")
+    val field = CustomSeqString(customFieldName)
     task.setValue(field, Seq("option1", "option2"))
     val rows = JiraFieldBuilder.getDefault() ++ List(
       FieldRow(field, field, "")
