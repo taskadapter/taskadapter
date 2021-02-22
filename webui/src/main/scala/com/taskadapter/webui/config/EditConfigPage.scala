@@ -82,10 +82,13 @@ class EditConfigPage(configOps: ConfigOperations,
 
   private def validate: Boolean = {
     clearErrorMessage()
-    try
+    try {
+      // need to save the UI elements into the model  first
+      saveUiElementsIntoModel()
+
       // TODO validate left/right editors too. this was lost during the last refactoring.
       taskFieldsMappingFragment.validate()
-    catch {
+    } catch {
       case e: FieldAlreadyMappedException =>
         val s = Page.message("editConfig.error.fieldAlreadyMapped", e.getValue)
         showError(s)
@@ -102,9 +105,13 @@ class EditConfigPage(configOps: ConfigOperations,
     true
   }
 
+  private def saveUiElementsIntoModel(): Unit = {
+    taskFieldsMappingFragment.save()
+  }
+
   private def save(): Unit = {
     try {
-      taskFieldsMappingFragment.save()
+      saveUiElementsIntoModel()
       val newFieldMappings = getElements.toSeq.asJava
       val newConfig = new UISyncConfig(
         config.getTaskKeeperLocationStorage,
