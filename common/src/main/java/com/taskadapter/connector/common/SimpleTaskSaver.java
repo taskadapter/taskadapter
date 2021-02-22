@@ -49,7 +49,8 @@ public class SimpleTaskSaver<N> {
 
                 var readyForNative = withPossiblyNewId;
                 var nativeIssueToCreateOrUpdate = converter.convert(readyForNative);
-                var identity = new TaskId(readyForNative.getId(), readyForNative.getKey());
+                var nullSafeId = readyForNative.getId() == null ? 0 : readyForNative.getId();
+                var identity = new TaskId(nullSafeId, readyForNative.getKey());
 
                 TaskId newTaskIdentity;
                 if (identity.key() == null || identity.key().equals("")) {
