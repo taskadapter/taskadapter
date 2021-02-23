@@ -25,6 +25,7 @@ public final class SyncActionComponents {
             UIConnectorConfig destination) {
         final ProgressBar saveProgress = new ProgressBar();
         saveProgress.setIndeterminate(false);
+        // TODO 14
 //        saveProgress.setEnabled(true);
 //        saveProgress.setCaption(Page.message("action.saving",
 //                destination.getDestinationLocation()));
@@ -43,23 +44,23 @@ public final class SyncActionComponents {
     public static Component renderLoadIndicator(UIConnectorConfig source) {
         return renderLoadIndicator(source.getSourceLocation() + " ("
                 + source.getLabel() + ")");
-
     }
 
     public static Component renderLoadIndicator(final String sourceDescription) {
-        final VerticalLayout res = new VerticalLayout();
-        final String labelText = Page.message("action.loadingData",
+        var layout = new VerticalLayout();
+        var labelText = Page.message("action.loadingData",
                 sourceDescription);
 
-        final Label label = new Label(labelText);
-//        label.setWidth(800, PIXELS);
-        res.add(label);
+        var label = new Label(labelText);
+        label.setWidth("800px");
+        layout.add(label);
 
-        final ProgressBar loadProgress = new ProgressBar();
+        var loadProgress = new ProgressBar();
         loadProgress.setIndeterminate(true);
+        // TODO 14 check this
 //        UI.getCurrent().setPollInterval(200);
 
-        res.add(loadProgress);
-        return res;
+        layout.add(loadProgress);
+        return layout;
     }
 }

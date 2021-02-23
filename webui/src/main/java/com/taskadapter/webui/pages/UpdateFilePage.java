@@ -6,7 +6,6 @@ import static com.taskadapter.webui.Page.message;
 import java.util.List;
 
 import com.taskadapter.connector.common.ProgressMonitorUtils;
-import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Label;
@@ -21,7 +20,6 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigOperations;
-import com.taskadapter.webui.MonitorWrapper;
 import com.taskadapter.webui.export.ConfirmExportFragment;
 
 public final class UpdateFilePage {

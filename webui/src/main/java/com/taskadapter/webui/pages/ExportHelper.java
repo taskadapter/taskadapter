@@ -6,7 +6,7 @@ import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.EventTracker;
 import com.taskadapter.webui.ExportCategory$;
-import com.taskadapter.webui.MonitorWrapper;
+import com.taskadapter.webui.WebProgressMonitorWrapper;
 import com.taskadapter.webui.export.ConfirmExportFragment;
 import com.taskadapter.webui.export.ExportResultsFragment;
 import com.taskadapter.webui.results.ExportResultStorage;
@@ -83,11 +83,11 @@ public class ExportHelper {
             return;
         }
         var saveProgress = SyncActionComponents.renderSaveIndicator(config.getConnector2());
-        saveProgress.setValue(0f);
 
-        setContent(saveProgress);
+        var progressBarCaption = "Saving " + selectedTasks.size() + " tasks to " + config.getConnector2().getDestinationLocation();
+        var wrapper = new WebProgressMonitorWrapper(saveProgress, progressBarCaption, selectedTasks.size());
+        setContent(wrapper);
 
-        var wrapper = new MonitorWrapper(saveProgress);
         new Thread(() -> {
 
             var saveResult = config.saveTasks(selectedTasks, wrapper);
@@ -104,18 +104,18 @@ public class ExportHelper {
             EventTracker.trackEvent(ExportCategory$.MODULE$, "created_tasks", targetLabel, saveResult.createdTasksNumber());
             EventTracker.trackEvent(ExportCategory$.MODULE$, "updated_tasks", targetLabel, saveResult.updatedTasksNumber());
             EventTracker.trackEvent(ExportCategory$.MODULE$, "tasks_with_errors", targetLabel, saveResult.taskErrors().size());
-            setContent(exportResult);
+
+            var okButton = new Button(message("button.ok"),
+                    event -> onDone.run());
+
+            setContent(new VerticalLayout(exportResult, okButton));
         }).start();
     }
-
 
     private void setContent(Component comp) {
         layout.getUI().get().access(() -> {
             layout.removeAll();
             layout.add(comp);
-            var okButton = new Button(message("button.ok"),
-                    event -> onDone.run());
-            layout.add(okButton);
         });
     }
 }

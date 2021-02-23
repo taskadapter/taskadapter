@@ -6,9 +6,9 @@ import com.taskadapter.model.NamedKeyedObject;
 import com.taskadapter.model.NamedKeyedObjectImpl;
 import com.taskadapter.web.ExceptionFormatter;
 import com.taskadapter.web.callbacks.DataProvider;
+import com.taskadapter.web.ui.HtmlLabel;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
@@ -28,8 +28,8 @@ import java.util.function.Function;
 public class EditorUtil {
     private final static Logger logger = LoggerFactory.getLogger(EditorUtil.class);
 
-    public static Component createCaption(String text) {
-        return new Html("<b>" + text + "</b>");
+    public static HtmlLabel createCaption(String text) {
+        return new HtmlLabel("<b>" + text + "</b>");
     }
 
     private static void showList(String windowTitle, Collection<String> items, ValueListener valueListener) {
