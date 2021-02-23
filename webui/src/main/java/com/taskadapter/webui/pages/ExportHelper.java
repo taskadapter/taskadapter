@@ -6,6 +6,7 @@ import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.EventTracker;
 import com.taskadapter.webui.ExportCategory$;
+import com.taskadapter.webui.Page;
 import com.taskadapter.webui.WebProgressMonitorWrapper;
 import com.taskadapter.webui.export.ConfirmExportFragment;
 import com.taskadapter.webui.export.ExportResultsFragment;
@@ -86,7 +87,12 @@ public class ExportHelper {
 
         var progressBarCaption = "Saving " + selectedTasks.size() + " tasks to " + config.getConnector2().getDestinationLocation();
         var wrapper = new WebProgressMonitorWrapper(saveProgress, progressBarCaption, selectedTasks.size());
-        setContent(wrapper);
+        var stopTaskButton = new Button(Page.message("export.stopTaskButton"),
+                e -> wrapper.stopTask());
+
+        setContent(new VerticalLayout(
+                wrapper,
+                stopTaskButton));
 
         new Thread(() -> {
 

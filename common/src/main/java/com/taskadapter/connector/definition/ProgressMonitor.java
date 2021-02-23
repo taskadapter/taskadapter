@@ -12,4 +12,8 @@ public interface ProgressMonitor {
     void worked(int work);
 
     void done();
+
+    void stopTask();
+
+    boolean isStopped();
 }

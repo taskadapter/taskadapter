@@ -38,7 +38,10 @@ public class SimpleTaskSaver<N> {
     public void saveTasks(Optional<TaskId> parentIssueKey,
                           List<GTask> tasks,
                           Iterable<FieldRow<?>> fieldRows) {
-        tasks.forEach(task -> {
+        for (GTask task : tasks) {
+            if (progressMonitor.isStopped()) {
+                return;
+            }
             try {
                 parentIssueKey.ifPresent(task::setParentIdentity);
                 var transformedTask = DefaultValueSetter.adapt(fieldRows, task);
@@ -70,7 +73,7 @@ public class SimpleTaskSaver<N> {
                 result.addTaskError(task, t);
                 t.printStackTrace();
             }
-        });
+        }
     }
 
     private GTask replaceIdentityIfPreviouslyCreatedByUs(PreviouslyCreatedTasksResolver resolver, GTask gTask,

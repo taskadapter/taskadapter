@@ -16,6 +16,16 @@ public final class ProgressMonitorUtils {
 		}
 
 		@Override
+		public void stopTask() {
+			// not used
+		}
+
+		@Override
+		public boolean isStopped() {
+			return false;
+		}
+
+		@Override
 		public void beginTask(String taskName, int total) {
 			// not used.
 		}
