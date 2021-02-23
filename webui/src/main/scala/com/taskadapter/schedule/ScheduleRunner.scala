@@ -110,7 +110,7 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, schedulesStorage: SchedulesSt
 
         val loaded = UISyncConfig.loadTasks(c, 10000)
         val result = c.saveTasks(loaded, ProgressMonitorUtils.DUMMY_MONITOR)
-        ExportResultsLogger.log(result, prefix = "Scheduled export completed.")
+        ExportResultsLogger.log(result, "Scheduled export completed.")
         exportResultStorage.store(result)
       } else {
         logErrors(c, errors)
