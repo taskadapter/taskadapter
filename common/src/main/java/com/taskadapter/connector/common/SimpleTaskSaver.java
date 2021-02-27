@@ -45,7 +45,7 @@ public class SimpleTaskSaver<N> {
             try {
                 parentIssueKey.ifPresent(task::setParentIdentity);
                 var transformedTask = DefaultValueSetter.adapt(fieldRows, task);
-                var withPossiblyNewId = replaceIdentityIfPreviouslyCreatedByUs(previouslyCreatedTasksResolver, transformedTask,
+                var withPossiblyNewId = replaceIdentityIfPreviouslyCreatedByUs(transformedTask,
                         targetLocation);
 
                 var readyForNative = withPossiblyNewId;
@@ -54,7 +54,7 @@ public class SimpleTaskSaver<N> {
                 var identity = new TaskId(nullSafeId, readyForNative.getKey());
 
                 TaskId newTaskIdentity;
-                if (identity.key() == null || identity.key().equals("")) {
+                if (identity.getKey() == null || identity.getKey().equals("")) {
                     var newTaskKey = saveAPI.createTask(nativeIssueToCreateOrUpdate);
                     result.addCreatedTask(new TaskId(task.getId(), task.getKey()), newTaskKey); // save originally requested task Id to enable tests and ...?
                     newTaskIdentity = newTaskKey;
@@ -76,13 +76,13 @@ public class SimpleTaskSaver<N> {
         }
     }
 
-    private GTask replaceIdentityIfPreviouslyCreatedByUs(PreviouslyCreatedTasksResolver resolver, GTask gTask,
+    private GTask replaceIdentityIfPreviouslyCreatedByUs(GTask gTask,
                                                          String targetLocation) {
         var result = new GTask(gTask);
         var maybeId = previouslyCreatedTasksResolver.findSourceSystemIdentity(gTask, targetLocation);
-        if (maybeId.isDefined()) {
-            result.setId(maybeId.get().id());
-            result.setKey(maybeId.get().key());
+        if (maybeId.isPresent()) {
+            result.setId(maybeId.get().getId());
+            result.setKey(maybeId.get().getKey());
         }
         return result;
     }

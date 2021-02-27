@@ -52,7 +52,7 @@ class MyTreeTest extends FunSpec with Matchers {
   ignore("all children are unselected when parent is unselected") {
     val myTree = new MyTree(resolver, rootLevelTasks.asJava, "some location")
     // deselect parent #3
-//    myTree.tree.getContainerProperty(TaskId(3l, "3"), MyTree.ACTION_PROPERTY).getValue.asInstanceOf[Checkbox].setValue(false)
+//    myTree.tree.getContainerProperty(new TaskId(3l, "3"), MyTree.ACTION_PROPERTY).getValue.asInstanceOf[Checkbox].setValue(false)
     val selectedGTaskList = myTree.getSelectedRootLevelTasks
     Assert.assertNotNull(selectedGTaskList)
     selectedGTaskList.asScala shouldBe expectedRootLevelTasks1
@@ -61,9 +61,9 @@ class MyTreeTest extends FunSpec with Matchers {
   ignore("all parents up the hierarchy must be selected if at least one child is selected") {
     val myTree = new MyTree(resolver, rootLevelTasks.asJava, "some location")
     // deselect parent #0
-//    myTree.tree.getContainerProperty(TaskId(0l, "0"), MyTree.ACTION_PROPERTY).getValue.asInstanceOf[Checkbox].setValue(false)
+//    myTree.tree.getContainerProperty(new TaskId(0l, "0"), MyTree.ACTION_PROPERTY).getValue.asInstanceOf[Checkbox].setValue(false)
     // select child #6
-//    myTree.tree.getContainerProperty(TaskId(6l, "6"), MyTree.ACTION_PROPERTY).getValue.asInstanceOf[Checkbox].setValue(true)
+//    myTree.tree.getContainerProperty(new TaskId(6l, "6"), MyTree.ACTION_PROPERTY).getValue.asInstanceOf[Checkbox].setValue(true)
     val selectedGTaskList = myTree.getSelectedRootLevelTasks
     Assert.assertNotNull(selectedGTaskList)
     selectedGTaskList.asScala.toList shouldBe expectedRootLevelTasks2.toList

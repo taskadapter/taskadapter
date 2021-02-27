@@ -10,7 +10,7 @@ class TrelloTaskSaver(api: Trello) extends BasicIssueSaveAPI[Card] {
   override def createTask(nativeTask: Card): TaskId = {
     val newCard = api.createCard(nativeTask.getIdList, nativeTask)
     val longId: Int = 0
-    TaskId(longId, newCard.getId + "")
+    new TaskId(longId, newCard.getId + "")
   }
 
   override def updateTask(nativeTask: Card): Unit = api.updateCard(nativeTask)

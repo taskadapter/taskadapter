@@ -250,12 +250,12 @@ public class RedmineMspIT implements TempFolder {
 
     private FileSetup getMspSetup(String resourceName) {
         File file = new File(ResourceLoader.getAbsolutePathForResource(resourceName));
-        return new FileSetup(MSPConnector.ID, Option.empty(), "label", file.getAbsolutePath(), file.getAbsolutePath());
+        return FileSetup.apply(MSPConnector.ID, "label", file.getAbsolutePath(), file.getAbsolutePath());
     }
 
     private MSPConnector getMspConnector(File folder) {
-        File file = new File(folder, "msp_temp_file.xml");
-        FileSetup setup = new FileSetup(MSPConnector.ID, Option.apply("file"), "label", file.getAbsolutePath(), file.getAbsolutePath());
+        var file = new File(folder, "msp_temp_file.xml");
+        var setup = FileSetup.apply(MSPConnector.ID, "label", file.getAbsolutePath(), file.getAbsolutePath());
         return new MSPConnector(setup);
     }
 }

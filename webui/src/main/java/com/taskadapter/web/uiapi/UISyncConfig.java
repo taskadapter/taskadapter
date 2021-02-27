@@ -10,6 +10,7 @@ import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.TaskKeyMapping;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.core.PreviouslyCreatedTasksCache;
 import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.core.TaskLoader;
 import com.taskadapter.core.TaskSaver;
@@ -21,6 +22,7 @@ import scala.Option;
 import scala.collection.JavaConverters;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -211,30 +213,39 @@ public class UISyncConfig {
 
         var location1 = getConnector1().getSourceLocation();
         var location2 = getConnector2().getSourceLocation();
-        var previouslyCreatedTasksResolver = taskKeeperLocationStorage.loadTasks(location1, location2);
+        PreviouslyCreatedTasksResolver previouslyCreatedTasksResolver = null;
+        try {
+            previouslyCreatedTasksResolver = taskKeeperLocationStorage.loadTasks(location1, location2);
+        } catch (IOException e) {
+            // TODO 14
+            throw new RuntimeException(e);
+        }
         var result = TaskSaver.save(previouslyCreatedTasksResolver, connectorTo, destinationLocation,
                 rows, tasks, progressMonitor);
-        if (reversed) {
-            List<TaskKeyMapping> reversedTuplesList = JavaConverters.seqAsJavaList(result.keyToRemoteKeyList())
-                    .stream()
-                    .map(pair -> new TaskKeyMapping(pair.newId, pair.originalId))
-                    .collect(Collectors.toList());
-            taskKeeperLocationStorage.store(location2, location1,
-                    JavaConverters.asScalaBuffer(reversedTuplesList)
-            );
-        } else {
-            taskKeeperLocationStorage.store(location1, location2, result.keyToRemoteKeyList());
+        try {
+            if (reversed) {
+                List<TaskKeyMapping> reversedTuplesList = result.getKeyToRemoteKeyList()
+                        .stream()
+                        .map(pair -> new TaskKeyMapping(pair.newId, pair.originalId))
+                        .collect(Collectors.toList());
+                taskKeeperLocationStorage.store(location2, location1, reversedTuplesList);
+            } else {
+                taskKeeperLocationStorage.store(location1, location2,
+                        result.getKeyToRemoteKeyList());
+            }
+        } catch (Exception e) {
+            result.getGeneralErrors().add(e);
         }
         var finish = System.currentTimeMillis();
 
         var resultId = String.valueOf(finish);
 
-        var decodedGeneralErrors = JavaConverters.seqAsJavaList(result.generalErrors())
+        var decodedGeneralErrors = result.getGeneralErrors()
                 .stream()
                 .map(e -> getConnector2().decodeException(e))
                 .collect(Collectors.toList());
 
-        var decodedTaskErrors = JavaConverters.seqAsJavaList(result.taskErrors())
+        var decodedTaskErrors = result.getTaskErrors()
                 .stream()
                 .map(e -> new DecodedTaskError(e.getTask().getSourceSystemId(),
                         getConnector2().decodeException(e.getError()),
@@ -244,8 +255,8 @@ public class UISyncConfig {
 
         var finalResult = new ExportResultFormat(resultId, configId, label, getConnector1().getSourceLocation(),
                 destinationLocation,
-                Option.apply(result.targetFileAbsolutePath()),
-                result.updatedTasksNumber(), result.createdTasksNumber(),
+                Option.apply(result.getTargetFileAbsolutePath()),
+                result.getUpdatedTasksNumber(), result.getCreatedTasksNumber(),
                 JavaConverters.asScalaBuffer(decodedGeneralErrors),
                 JavaConverters.asScalaBuffer(decodedTaskErrors),
                 new Date(start),
@@ -257,7 +268,13 @@ public class UISyncConfig {
     public PreviouslyCreatedTasksResolver getPreviouslyCreatedTasksResolver() {
         var location1 = getConnector1().getSourceLocation();
         var location2 = getConnector2().getSourceLocation();
-        return taskKeeperLocationStorage.loadTasks(location1, location2);
+        try {
+            return taskKeeperLocationStorage.loadTasks(location1, location2);
+        } catch (IOException e) {
+            return new PreviouslyCreatedTasksResolver(new PreviouslyCreatedTasksCache()
+                    .setLocation1(location1)
+                    .setLocation2(location2));
+        }
     }
 
     /**

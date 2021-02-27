@@ -13,6 +13,6 @@ object RedmineTestConfig {
     redmineConfig
   }
 
-  def getRedmineServerInfo = WebConnectorSetup(RedmineConnector.ID, "label1", properties.getProperty("uri"), "", "",
+  def getRedmineServerInfo = WebConnectorSetup.apply(RedmineConnector.ID, "label1", properties.getProperty("uri"), "", "",
     true, properties.getProperty("apikey"))
 }

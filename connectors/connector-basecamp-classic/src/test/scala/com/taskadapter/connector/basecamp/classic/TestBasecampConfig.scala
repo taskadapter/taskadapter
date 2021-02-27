@@ -12,6 +12,6 @@ object TestBasecampConfig {
     config
   }
 
-  def setup = new WebConnectorSetup(BasecampClassicConnector.ID, None, "label",
+  def setup = WebConnectorSetup.apply(BasecampClassicConnector.ID, "label",
     "https://altadev.basecamphq.com", "", "", true, "ba1bf0af26c0f1e55f92aac5c2447a1576a398cd")
 }

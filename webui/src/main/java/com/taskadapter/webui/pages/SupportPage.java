@@ -2,17 +2,14 @@ package com.taskadapter.webui.pages;
 
 import com.taskadapter.web.TaskKeeperLocationStorage;
 import com.taskadapter.webui.BasePage;
-import com.taskadapter.webui.LastVersionLoader;
 import com.taskadapter.webui.Layout;
 import com.taskadapter.webui.LogFinder;
 import com.taskadapter.webui.SessionController;
 import com.taskadapter.webui.Sizes;
-import com.taskadapter.webui.VersionComparator;
 import com.taskadapter.webui.license.LicenseFacade;
 import com.taskadapter.webui.license.LicensePanel;
 import com.taskadapter.webui.service.Preservices;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H2;
@@ -39,7 +36,7 @@ public class SupportPage extends BasePage {
     public SupportPage() {
         services = SessionController.getServices();
         storage = new TaskKeeperLocationStorage(services.rootDir);
-        cacheFileLocation = storage.cacheFolder().getAbsolutePath();
+        cacheFileLocation = storage.getCacheFolderAbsoluteName();
         logFileLocation = LogFinder.getLogFileLocation();
     }
 

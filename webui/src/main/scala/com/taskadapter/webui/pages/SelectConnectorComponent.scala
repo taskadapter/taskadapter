@@ -30,9 +30,9 @@ class SelectConnectorComponent(pluginManager: PluginManager, next: String => Uni
   private def createSystemList(): Unit = {
     pluginManager.getPluginDescriptors.asScala.foreach { connector =>
 
-      val systemButton = new Button(connector.label)
+      val systemButton = new Button(connector.getLabel)
       systemButton.setWidth("200px")
-      systemButton.addClickListener(_ => next(connector.id))
+      systemButton.addClickListener(_ => next(connector.getId))
       layout.add(systemButton)
     }
   }

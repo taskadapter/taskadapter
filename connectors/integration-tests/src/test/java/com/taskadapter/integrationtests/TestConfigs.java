@@ -6,7 +6,6 @@ import com.taskadapter.connector.jira.JiraConfig;
 import com.taskadapter.connector.jira.JiraConnector;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
-import scala.Option;
 
 import java.util.Properties;
 
@@ -21,7 +20,7 @@ public class TestConfigs {
     }
 
     public static WebConnectorSetup getRedmineSetup() {
-        return new WebConnectorSetup(RedmineConnector.ID(), Option.empty(),
+        return WebConnectorSetup.apply(RedmineConnector.ID(),
                 "label1", properties.getProperty("uri"), "", "",
                 true, properties.getProperty("apikey"));
     }
@@ -34,8 +33,7 @@ public class TestConfigs {
     }
 
     public static WebConnectorSetup getJiraSetup() {
-        return new WebConnectorSetup(JiraConnector.ID(),
-                Option.empty(),
+        return WebConnectorSetup.apply(JiraConnector.ID(),
                 "label1", jiraProperties.getProperty("host"),
                 jiraProperties.getProperty("login"), jiraProperties.getProperty("password"), false, "");
     }

@@ -34,10 +34,10 @@ object RedmineConnector {
 
 class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends NewConnector {
   override def loadTaskByKey(id: TaskId, rows: java.lang.Iterable[FieldRow[_]]): GTask = {
-    val httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.host)
+    val httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.getHost)
     try {
       val mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient)
-      val intKey = id.id.toInt
+      val intKey = id.getId.toInt
       val issue = mgr.getIssueManager.getIssueById(intKey, Include.relations)
       val userCache = loadUsersIfAllowed(mgr)
       val converter = new RedmineToGTask(config, userCache)
@@ -49,7 +49,7 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
   }
 
   override def loadData(): util.List[GTask] = {
-    val httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.host)
+    val httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.getHost)
     try {
       val mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient)
       val usersCache = loadUsersIfAllowed(mgr)
@@ -74,7 +74,7 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
   override def saveData(previouslyCreatedTasks: PreviouslyCreatedTasksResolver, tasks: util.List[GTask],
                         monitor: ProgressMonitor,
                         fieldRows: java.lang.Iterable[FieldRow[_]]): SaveResult = try {
-    val httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.host)
+    val httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.getHost)
     val mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient)
     try {
       val rmProject = mgr.getProjectManager.getProjectByKey(config.getProjectKey)
@@ -88,7 +88,7 @@ class RedmineConnector(config: RedmineConfig, setup: WebConnectorSetup) extends 
         versions, categories)
       val saver = new RedmineTaskSaver(mgr.getIssueManager, config)
       val tsrb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, fieldRows,
-        setup.host)
+        setup.getHost)
       TaskSavingUtils.saveRemappedRelations(config, tasks, saver, tsrb)
       tsrb.getResult
     } finally httpClient.getConnectionManager.shutdown()

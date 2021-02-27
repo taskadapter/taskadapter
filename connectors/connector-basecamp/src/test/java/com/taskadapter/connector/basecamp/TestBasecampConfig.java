@@ -2,7 +2,6 @@ package com.taskadapter.connector.basecamp;
 
 import com.taskadapter.connector.basecamp.transport.ObjectAPI;
 import com.taskadapter.connector.definition.WebConnectorSetup;
-import scala.Option;
 
 class TestBasecampConfig {
     private static final String accountId = "4039521";
@@ -19,7 +18,7 @@ class TestBasecampConfig {
     }
 
     static WebConnectorSetup setup() {
-        return new WebConnectorSetup(BasecampConnector.ID(), Option.empty(), "label",
+        return WebConnectorSetup.apply(BasecampConnector.ID(), "label",
                 ObjectAPI.BASECAMP_URL,
                 USER_LOGIN, USER_PASSWORD, false, "");
     }

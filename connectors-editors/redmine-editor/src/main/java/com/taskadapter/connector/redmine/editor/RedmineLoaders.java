@@ -31,14 +31,14 @@ import java.util.List;
 public class RedmineLoaders {
 
     static void validate(WebConnectorSetup setup) throws ServerURLNotSetException {
-        if (Strings.isNullOrEmpty(setup.host())) {
+        if (Strings.isNullOrEmpty(setup.getHost())) {
             throw new ServerURLNotSetException();
         }
     }
 
     public static List<? extends NamedKeyedObject> loadData(WebConnectorSetup setup, String projectKey) throws BadConfigException, RedmineException, ConnectorException {
         validate(setup);
-        HttpClient httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.host());
+        HttpClient httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.getHost());
         RedmineManager mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient);
         List<NamedKeyedObject> result = new ArrayList<>();
         // get project id to filter saved queries
@@ -68,7 +68,7 @@ public class RedmineLoaders {
 
     public static List<? extends NamedKeyedObject> loadTrackers(RedmineConfig config, WebConnectorSetup setup) throws ConnectorException {
         validate(setup);
-        HttpClient httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.host());
+        HttpClient httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.getHost());
         RedmineManager redmineManager = RedmineManagerFactory.createRedmineManager(setup, httpClient);
         Project project;
         String projectKey = config.getProjectKey();
@@ -93,7 +93,7 @@ public class RedmineLoaders {
     public static Priorities loadPriorities(WebConnectorSetup setup) throws ConnectorException {
         validate(setup);
         final Priorities defaultPriorities = RedmineConfig.generateDefaultPriorities();
-        HttpClient httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.host());
+        HttpClient httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.getHost());
         final RedmineManager mgr = RedmineManagerFactory.createRedmineManager(setup,httpClient);
         final Priorities result = new Priorities();
         try {

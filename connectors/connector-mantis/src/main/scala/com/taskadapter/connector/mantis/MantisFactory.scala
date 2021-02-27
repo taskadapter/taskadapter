@@ -6,7 +6,7 @@ import com.taskadapter.connector.definition.{Descriptor, PluginFactory, WebConne
 import com.taskadapter.model.Field
 
 object MantisFactory {
-  private val DESCRIPTOR = Descriptor(MantisConnector.ID, MantisConfig.DEFAULT_LABEL)
+  private val DESCRIPTOR = new Descriptor(MantisConnector.ID, MantisConfig.DEFAULT_LABEL)
 }
 
 class MantisFactory extends PluginFactory[MantisConfig, WebConnectorSetup] {

@@ -7,7 +7,7 @@ import com.taskadapter.connector.definition.{Descriptor, PluginFactory, WebConne
 import com.taskadapter.model.Field
 
 class BasecampClassicFactory extends PluginFactory[BasecampClassicConfig, WebConnectorSetup] {
-  val DESCRIPTOR = Descriptor(BasecampClassicConnector.ID, "Basecamp Classic")
+  val DESCRIPTOR = new Descriptor(BasecampClassicConnector.ID, "Basecamp Classic")
   final private val factory = new ObjectAPIFactory(new BaseCommunicator)
 
   override def createConnector(config: BasecampClassicConfig, setup: WebConnectorSetup) = new BasecampClassicConnector(config, setup, factory)

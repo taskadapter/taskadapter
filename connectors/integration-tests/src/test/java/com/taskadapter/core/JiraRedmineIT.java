@@ -128,7 +128,7 @@ public class JiraRedmineIT {
                         new FieldRow(AssigneeLoginNameOpt, AssigneeLoginNameOpt, null)
                 )
         );
-        assertThat(result.getValue(AssigneeLoginName$.MODULE$)).isEqualTo(jiraSetup.userName());
-        assertThat(result.getValue(ReporterFullName$.MODULE$)).isEqualTo(jiraSetup.userName());
+        assertThat(result.getValue(AssigneeLoginName$.MODULE$)).isEqualTo(jiraSetup.getUserName());
+        assertThat(result.getValue(ReporterFullName$.MODULE$)).isEqualTo(jiraSetup.getUserName());
     }
 }

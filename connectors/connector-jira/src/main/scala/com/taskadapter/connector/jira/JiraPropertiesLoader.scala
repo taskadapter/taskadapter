@@ -14,7 +14,7 @@ object JiraPropertiesLoader {
     config
   }
 
-  def getTestServerInfo = WebConnectorSetup(JiraConnector.ID, "label1", properties.getProperty("host"),
+  def getTestServerInfo = WebConnectorSetup.apply(JiraConnector.ID, "label1", properties.getProperty("host"),
     properties.getProperty("login"), properties.getProperty("password"), false, "")
 
   def getProjectKey: String = properties.getProperty("project.key")

@@ -20,7 +20,7 @@ class MantisConnector(config: MantisConfig, setup: WebConnectorSetup) extends Ne
   override def loadTaskByKey(key: TaskId, rows: java.lang.Iterable[FieldRow[_]]): GTask = {
     val mgr = MantisManagerFactory.createMantisManager(setup)
     try {
-      val issue = mgr.getIssueById(BigInteger.valueOf(key.id))
+      val issue = mgr.getIssueById(BigInteger.valueOf(key.getId))
       MantisToGTask.convertToGenericTask(issue)
     } catch {
       case e: RemoteException =>
@@ -64,7 +64,7 @@ class MantisConnector(config: MantisConfig, setup: WebConnectorSetup) extends Ne
       val converter = new GTaskToMantis(mntProject, users)
       val saver = new MantisTaskSaver(mgr)
       val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows,
-        setup.host)
+        setup.getHost)
       rb.getResult
     } catch {
       case e: RemoteException =>

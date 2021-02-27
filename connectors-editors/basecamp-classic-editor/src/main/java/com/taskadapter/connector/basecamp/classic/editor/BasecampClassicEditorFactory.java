@@ -33,7 +33,6 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import scala.Option;
 import scala.collection.JavaConverters;
 
 import java.util.ArrayList;
@@ -145,7 +144,7 @@ public class BasecampClassicEditorFactory implements PluginEditorFactory<Basecam
 
     @Override
     public WebConnectorSetup createDefaultSetup(Sandbox sandbox) {
-        return new WebConnectorSetup(BasecampClassicConnector.ID(), Option.empty(),
+        return WebConnectorSetup.apply(BasecampClassicConnector.ID(),
                 "My Basecamp Classic", "https://-my-project-name-here-.basecamphq.com",
                 "", "", true, "");
     }
@@ -172,7 +171,7 @@ public class BasecampClassicEditorFactory implements PluginEditorFactory<Basecam
 
     @Override
     public String describeSourceLocation(BasecampClassicConfig config, WebConnectorSetup setup) {
-        return setup.host();
+        return setup.getHost();
     }
 
     @Override

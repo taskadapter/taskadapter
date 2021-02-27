@@ -41,14 +41,14 @@ public class TrelloEditorFactory implements PluginEditorFactory<TrelloConfig, We
     public SavableComponent getMiniPanelContents(Sandbox sandbox, TrelloConfig config, WebConnectorSetup setup) {
         VerticalLayout layout = new VerticalLayout();
 //    layout.setWidth(600, PIXELS)
-        TrelloClient client = new TrelloClient(setup.password(), setup.apiKey());
+        TrelloClient client = new TrelloClient(setup.getPassword(), setup.getApiKey());
         Binder<TrelloConfig> binder = new Binder<>(TrelloConfig.class);
         ProjectPanel projectPanel = new ProjectPanel(
                 binder,
                 "boardName",
                 Option.empty(),
                 Option.empty(),
-                () -> JavaConverters.seqAsJavaList(client.getBoards(setup.userName()))
+                () -> JavaConverters.seqAsJavaList(client.getBoards(setup.getUserName()))
                         .stream().map(b -> new NamedKeyedObjectImpl(b.getId(), b.getName()))
                         .collect(Collectors.toList()),
                 null,
@@ -82,17 +82,17 @@ public class TrelloEditorFactory implements PluginEditorFactory<TrelloConfig, We
 
     @Override
     public WebConnectorSetup createDefaultSetup(Sandbox sandbox) {
-        return new WebConnectorSetup(TrelloConnector.ID(), Option.empty(), "My Trello",
+        return WebConnectorSetup.apply(TrelloConnector.ID(), "My Trello",
                 "https://api.trello.com", "", "", false, "");
     }
 
     @Override
     public List<BadConfigException> validateForSave(TrelloConfig config, WebConnectorSetup setup, List<FieldMapping<?>> fieldMappings) {
         List<BadConfigException> errors = new ArrayList<>();
-        if (Strings.isNullOrEmpty(setup.host())) {
+        if (Strings.isNullOrEmpty(setup.getHost())) {
             errors.add(new ServerURLNotSetException());
         }
-        if (Strings.isNullOrEmpty(setup.userName())) {
+        if (Strings.isNullOrEmpty(setup.getUserName())) {
             errors.add(new LoginNameNotSpecifiedException());
         }
         if (Strings.isNullOrEmpty(config.getBoardId())) {
@@ -115,7 +115,7 @@ public class TrelloEditorFactory implements PluginEditorFactory<TrelloConfig, We
     @Override
     public List<BadConfigException> validateForLoad(TrelloConfig config, WebConnectorSetup setup) {
         List<BadConfigException> errors = new ArrayList<>();
-        if (Strings.isNullOrEmpty(setup.host())) {
+        if (Strings.isNullOrEmpty(setup.getHost())) {
             errors.add(new ServerURLNotSetException());
         }
         if (Strings.isNullOrEmpty(config.getBoardId())) {
@@ -131,7 +131,7 @@ public class TrelloEditorFactory implements PluginEditorFactory<TrelloConfig, We
 
     @Override
     public String describeSourceLocation(TrelloConfig config, WebConnectorSetup setup) {
-        return setup.host();
+        return setup.getHost();
     }
 
     @Override

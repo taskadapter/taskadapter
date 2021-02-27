@@ -22,7 +22,7 @@ object GithubToGTask {
     val stringKey = Integer.toString(issue.getNumber)
     task.setId(java.lang.Long.parseLong(stringKey))
     task.setKey(stringKey)
-    task.setSourceSystemId(TaskId(issue.getId, stringKey))
+    task.setSourceSystemId(new TaskId(issue.getId, stringKey))
     task.setValue(Summary, issue.getTitle)
     task.setValue(Description, issue.getBody)
     task.setValue(CreatedOn, issue.getCreatedAt)

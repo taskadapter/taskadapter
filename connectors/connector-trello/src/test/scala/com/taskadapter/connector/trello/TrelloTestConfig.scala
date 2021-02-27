@@ -14,7 +14,7 @@ object TrelloTestConfig {
     config
   }
 
-  def getSetup = WebConnectorSetup(TrelloConnector.ID, "label1",
+  def getSetup = WebConnectorSetup.apply(TrelloConnector.ID, "label1",
     "", "", properties.getProperty("apikey"),
     true, properties.getProperty("token"))
 }

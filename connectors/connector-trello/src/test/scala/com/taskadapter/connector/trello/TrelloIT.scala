@@ -47,8 +47,8 @@ class TrelloIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
       val task = buildTask
       task.setValue(TrelloField.listName, "unknown list")
       val result = getConnector(boardId).saveData(PreviouslyCreatedTasksResolver.empty, List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR, TrelloFieldBuilder.getDefault())
-      result.taskErrors.size shouldBe 1
-      val error = result.taskErrors.head.getError
+      result.getTaskErrors.size shouldBe 1
+      val error = result.getTaskErrors.get(0).getError
       error shouldBe a[ConnectorException]
       error.getMessage should include ("Trello list with name 'unknown list' is not found on the requested Trello Board")
     }

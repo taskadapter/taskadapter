@@ -42,7 +42,7 @@ class GTaskToJira(config: JiraConfig,
     if (task.getParentIdentity != null) {
       // See http://stackoverflow.com/questions/14699893/how-to-create-subtasks-using-jira-rest-java-client
       val parent = new util.HashMap[String, AnyRef]
-      parent.put("key", task.getParentIdentity.key)
+      parent.put("key", task.getParentIdentity.getKey)
       val parentField = new FieldInput("parent", new ComplexIssueInputFieldValue(parent))
       issueInputBuilder.setFieldInput(parentField)
     }

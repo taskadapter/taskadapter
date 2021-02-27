@@ -37,17 +37,17 @@ public final class ObjectAPIFactory {
 
     private ObjectAPIHolder createHolder(String userId, WebConnectorSetup setup)
             throws ConnectorException {
-        if (setup.useApiKey()) {
-            final Communicator authComm = new BasicAuthenticator(baseTransport,setup.apiKey(), AUTH_KEY_PASSWORD);
+        if (setup.isUseApiKey()) {
+            final Communicator authComm = new BasicAuthenticator(baseTransport,setup.getApiKey(), AUTH_KEY_PASSWORD);
             final Communicator throttler = new ThrottlingCommunicator(authComm, new IntervalThrottler(THROTTLING_TIMEOUT_MILLIS));
             final ObjectAPI api = new ObjectAPI(userId, throttler);
 
-            WebConnectorSetup dummy = new WebConnectorSetup(setup.connectorId(), setup.id(), setup.label(), setup.host(),
-                    setup.apiKey(), AUTH_KEY_PASSWORD, false, "");
+            WebConnectorSetup dummy = WebConnectorSetup.apply(setup.getConnectorId(), setup.getLabel(), setup.getHost(),
+                    setup.getApiKey(), AUTH_KEY_PASSWORD, false, "");
 
             return new BasicAuthAPIholder(api, userId, dummy);
         } else {
-            final Communicator authComm = new BasicAuthenticator(baseTransport, setup.userName(), setup.password());
+            final Communicator authComm = new BasicAuthenticator(baseTransport, setup.getUserName(), setup.getPassword());
             final Communicator throttler = new ThrottlingCommunicator(authComm, new IntervalThrottler(THROTTLING_TIMEOUT_MILLIS));
             final ObjectAPI api = new ObjectAPI(userId, throttler);
             return new BasicAuthAPIholder(api, userId, setup);

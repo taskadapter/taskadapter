@@ -35,7 +35,7 @@ class UIConnectorConfigImpl[C <: ConnectorConfig, S <: ConnectorSetup]
 
   override def getConfigString: String = connectorFactory.writeConfig(config).toString
 
-  override def getLabel: String = getConnectorSetup.label
+  override def getLabel: String = getConnectorSetup.getLabel
 
   override def validateForLoad(): Seq[BadConfigException] = {
     editorFactory.validateForLoad(config, setup).asScala

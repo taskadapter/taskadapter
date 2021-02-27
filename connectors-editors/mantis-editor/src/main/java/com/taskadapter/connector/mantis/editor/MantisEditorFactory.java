@@ -72,7 +72,7 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig, We
 
     @Override
     public WebConnectorSetup createDefaultSetup(Sandbox sandbox) {
-        return new WebConnectorSetup(MantisConnector.ID(), Option.empty(),
+        return WebConnectorSetup.apply(MantisConnector.ID(),
                 "My MantisBT", "http://", "", "", false, "");
     }
 
@@ -81,7 +81,7 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig, We
                                                     List<FieldMapping<?>> fieldMappings) {
         List<BadConfigException> list = new ArrayList<>();
 
-        if (Strings.isNullOrEmpty(setup.host())) {
+        if (Strings.isNullOrEmpty(setup.getHost())) {
             list.add(new ServerURLNotSetException());
         }
         if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {
@@ -94,7 +94,7 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig, We
     public List<BadConfigException> validateForLoad(MantisConfig config, WebConnectorSetup setup) {
         List<BadConfigException> list = new ArrayList<>();
 
-        if (Strings.isNullOrEmpty(setup.host())) {
+        if (Strings.isNullOrEmpty(setup.getHost())) {
             list.add(new ServerURLNotSetException());
         }
         if (Strings.isNullOrEmpty(config.getProjectKey()) && config.getQueryId() == null) {
@@ -110,7 +110,7 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig, We
 
     @Override
     public String describeSourceLocation(MantisConfig config, WebConnectorSetup setup) {
-        return setup.host();
+        return setup.getHost();
     }
 
     @Override

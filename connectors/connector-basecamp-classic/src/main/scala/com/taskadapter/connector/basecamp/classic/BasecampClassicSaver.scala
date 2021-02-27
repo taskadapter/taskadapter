@@ -10,7 +10,7 @@ class BasecampClassicSaver(api: ObjectAPI, config: BasecampClassicConfig)
   override def createTask(wrapper: BasecampTaskWrapper): TaskId = {
     val res = api.post("todo_lists/" + config.getTodoKey + "/todo_items.xml", wrapper.nativeTask)
     val newIdentity = BasecampClassicToGTask.parseTask(res).getIdentity
-    if (wrapper.doneRatio >= 100) api.put("todo_items/" + newIdentity.key + "/complete.xml", "")
+    if (wrapper.doneRatio >= 100) api.put("todo_items/" + newIdentity.getKey + "/complete.xml", "")
     newIdentity
   }
 

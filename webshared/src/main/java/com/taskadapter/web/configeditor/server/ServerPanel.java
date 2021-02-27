@@ -14,7 +14,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import scala.Option;
 
 import java.util.Optional;
 
@@ -84,10 +83,10 @@ public class ServerPanel extends VerticalLayout implements ConnectorSetupPanel {
 
     @Override
     public Optional<String> validate() {
-        if (Strings.isNullOrEmpty(setup.label())) {
+        if (Strings.isNullOrEmpty(setup.getLabel())) {
             return Optional.of(Page.message("newConfig.configure.nameRequired"));
         }
-        if (Strings.isNullOrEmpty(setup.host())) {
+        if (Strings.isNullOrEmpty(setup.getHost())) {
             return Optional.of(Page.message("newConfig.configure.serverUrlRequired"));
         }
         return Optional.empty();
@@ -96,7 +95,7 @@ public class ServerPanel extends VerticalLayout implements ConnectorSetupPanel {
     @Override
     public WebConnectorSetup getResult() {
         cleanup();
-        return new WebConnectorSetup(connectorId, Option.empty(),
+        return WebConnectorSetup.apply(connectorId,
                 labelField.getValue(),
                 hostField.getValue(),
                 userLoginInput.getValue(),

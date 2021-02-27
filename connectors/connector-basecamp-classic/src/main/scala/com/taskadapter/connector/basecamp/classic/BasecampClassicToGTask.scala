@@ -11,7 +11,7 @@ object BasecampClassicToGTask {
     result.setId(longId)
     val stringId = XmlUtils.getStringElt(obj, "id")
     result.setKey(stringId)
-    result.setSourceSystemId(TaskId(longId, stringId))
+    result.setSourceSystemId(new TaskId(longId, stringId))
     result.setValue(BasecampClassicField.content, XmlUtils.getStringElt(obj, "content"))
 
     val compl = XmlUtils.getOptBool(obj, "completed")

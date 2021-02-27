@@ -4,7 +4,7 @@ import com.taskadapter.connector.definition.FieldMapping
 import com.taskadapter.connector.jira.JiraConnector
 import com.taskadapter.connector.redmine.RedmineConnector
 import com.taskadapter.model.{Description, Field}
-import com.taskadapter.web.uiapi.ConfigId
+import com.taskadapter.web.uiapi.{ConfigFolderTestConfigurer, ConfigId}
 import org.junit.runner.RunWith
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.junit.JUnitRunner

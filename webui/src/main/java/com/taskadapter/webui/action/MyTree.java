@@ -133,7 +133,7 @@ public class MyTree {
     private void addTaskToTree(TreeTaskItem parentId, GTask task) {
         TaskId taskId = task.getIdentity();
 
-        String actionText = resolver.findSourceSystemIdentity(task, targetLocation).isDefined() ?
+        String actionText = resolver.findSourceSystemIdentity(task, targetLocation).isPresent() ?
                 Page.message("exportConfirmation.action.update")
                 : Page.message("exportConfirmation.action.create");
         Checkbox checkBox = new Checkbox(
@@ -145,7 +145,7 @@ public class MyTree {
 //        checkBox.setImmediate(true);
 
         String sourceSystemId = task.getSourceSystemId() == null ? "" :
-                Strings.nullToEmpty(task.getSourceSystemId().key());
+                Strings.nullToEmpty(task.getSourceSystemId().getKey());
         TreeTaskItem taskItem = new TreeTaskItem(
                 taskId,
                 actionText,

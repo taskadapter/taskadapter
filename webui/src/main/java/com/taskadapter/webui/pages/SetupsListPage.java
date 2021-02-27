@@ -54,14 +54,14 @@ public class SetupsListPage extends BasePage {
         var setups = configOps.getConnectorSetups();
         JavaConverters.seqAsJavaList(setups)
                 .stream()
-                .sorted(Comparator.comparing(ConnectorSetup::connectorId))
+                .sorted(Comparator.comparing(ConnectorSetup::getConnectorId))
                 .forEach(setup -> {
-                    var setupId = new SetupId(setup.id().get());
+                    var setupId = new SetupId(setup.getId());
                     var editButton = new Button(Page.message("setupsListPage.editButton"),
                             e -> {
-                                getUI().get().navigate("edit-setup/" + setup.id().get());
+                                getUI().get().navigate("edit-setup/" + setup.getId());
                             });
-                    var connectorIdLabel = new Label(setup.connectorId());
+                    var connectorIdLabel = new Label(setup.getConnectorId());
                     connectorIdLabel.setWidth(null);
                     connectorIdLabel.addClassName("myBoldLabel");
 
@@ -69,7 +69,7 @@ public class SetupsListPage extends BasePage {
                     connectorIdLayout.setWidth("200px");
                     connectorIdLayout.setHeight("100%");
 
-                    var setupLabel = new Label(setup.label());
+                    var setupLabel = new Label(setup.getLabel());
                     setupLabel.setWidth(null);
                     var usedByConfigs = configOps.getConfigIdsUsingThisSetup(setupId);
                     var usedByLabel = new Label(Page.message("setupsListPage.usedByConfigs", usedByConfigs.size() + ""));

@@ -17,11 +17,11 @@ public class ConnectionFactory {
 
     private void initServices(WebConnectorSetup setup) {
         GitHubClient ghClient = new GitHubClient();
-        if (setup.userName() != null
-                && setup.userName().trim().length() > 0
-                && setup.apiKey() != null
-                && setup.apiKey().trim().length() > 0) {
-            ghClient.setCredentials(setup.userName(), setup.apiKey());
+        if (setup.getUserName() != null
+                && setup.getUserName().trim().length() > 0
+                && setup.getApiKey() != null
+                && setup.getApiKey().trim().length() > 0) {
+            ghClient.setCredentials(setup.getUserName(), setup.getApiKey());
         }
         issueService = new IssueService(ghClient);
         repositoryService = new RepositoryService(ghClient);

@@ -39,7 +39,7 @@ class MSPToGTask private[msp](var projectProperties: ProjectProperties) {
     genericTask.setSourceSystemId(new TaskId(task.getUniqueID.longValue(), task.getUniqueID + ""))
     val parent = task.getParentTask
     if (parent != null && (parent.getID != 0) && (parent.getUniqueID != 0)) {
-      genericTask.setParentIdentity(TaskId(parent.getUniqueID.longValue(), parent.getUniqueID + ""))
+      genericTask.setParentIdentity(new TaskId(parent.getUniqueID.longValue(), parent.getUniqueID + ""))
     }
     genericTask.setValue(MspField.priority, Integer.valueOf(task.getPriority.getValue))
     if (task.getWork != null) genericTask.setValue(MspField.taskWork, convertMspDurationToHours(task.getWork))
@@ -78,8 +78,8 @@ class MSPToGTask private[msp](var projectProperties: ProjectProperties) {
           val sourceTask = relation.getSourceTask
           val targetTask = relation.getTargetTask
           val r = GRelation(
-            TaskId(sourceTask.getUniqueID.longValue(), sourceTask.getUniqueID + ""),
-            TaskId(targetTask.getUniqueID.longValue(), targetTask.getUniqueID + ""),
+            new TaskId(sourceTask.getUniqueID.longValue(), sourceTask.getUniqueID + ""),
+            new TaskId(targetTask.getUniqueID.longValue(), targetTask.getUniqueID + ""),
             Precedes)
           genericTask.getRelations.add(r)
         }

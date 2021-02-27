@@ -1,7 +1,8 @@
 package com.taskadapter.webui.uiapi
 
-import java.io.File
+import com.taskadapter.web.uiapi.ConfigFolderTestConfigurer
 
+import java.io.File
 import org.junit.rules.TemporaryFolder
 import org.scalatest.FunSpec
 

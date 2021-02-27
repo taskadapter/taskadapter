@@ -65,7 +65,7 @@ Pre-requisites
 as deployment.
 * Start the Jetty server from IDEA (run configuration). 
 
-# How to see all Gradle dependencies
+## How to see all Gradle dependencies
 
 The main build file contains definition for a custom "allDeps" command. You can run it to see the dependency tree: 
 
@@ -89,7 +89,13 @@ https://bitbucket.org/taskadapter/site git repo)
 ## Logging
 
 The project uses slf4j API with logback as the implementation mechanism. Set logging levels in `logback.xml` file
-in `webui` module. Note that some older modules or libraries ignore ""slf4j" and can still require log4j implementation.
+in `webui` module. Note that some older modules or libraries ignore "slf4j" and can still require log4j implementation.
+
+## Json processing
+
+The app uses several json libraries to generate and process json. The recommended one to use is Google GSon. See `JsonUtil` class.
+Other libraries were added as experiments over the years. They had various problems, in particular
+around collections, java/scala compatibility, etc.
 
 ## Error reporting
 

@@ -19,8 +19,8 @@ object RedmineToGTask {
       if (relation.getType == IssueRelation.TYPE.precedes.toString) { // if NOT equal to self!
         // See http://www.redmine.org/issues/7366#note-11
         if (!(relation.getIssueToId == rmIssue.getId)) {
-          val r = GRelation(TaskId(rmIssue.getId.longValue(), rmIssue.getId + ""),
-            TaskId(relation.getIssueToId.longValue(), relation.getIssueToId + ""), Precedes)
+          val r = GRelation(new TaskId(rmIssue.getId.longValue(), rmIssue.getId + ""),
+            new TaskId(relation.getIssueToId.longValue(), relation.getIssueToId + ""), Precedes)
           genericTask.getRelations.add(r)
         }
       }
@@ -43,9 +43,9 @@ class RedmineToGTask(val config: RedmineConfig, var userCache: RedmineUserCache)
     if (issue.getId != null) {
       val stringKey = Integer.toString(issue.getId)
       task.setKey(stringKey)
-      task.setSourceSystemId(TaskId(issue.getId.longValue(), stringKey))
+      task.setSourceSystemId(new TaskId(issue.getId.longValue(), stringKey))
     }
-    if (issue.getParentId != null) task.setParentIdentity(TaskId(issue.getParentId.toLong, issue.getParentId + ""))
+    if (issue.getParentId != null) task.setParentIdentity(new TaskId(issue.getParentId.toLong, issue.getParentId + ""))
     if (issue.getAssigneeId != null) { // crappy Redmine REST API does not return login name, only id and "display name",
       // this Redmine Java API library can only provide that info... this is why "loginName" is empty here.
       val userWithPatchedLoginName = userCache.findRedmineUserByFullName(issue.getAssigneeName)

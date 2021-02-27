@@ -1,12 +1,10 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.connector.definition.FileSetup;
-import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.testlib.ResourceLoader;
 import com.taskadapter.model.GTask;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Task;
-import scala.Option;
 
 import java.util.Collections;
 import java.util.List;
@@ -36,9 +34,9 @@ public class MSPTestUtils {
         return null;
     }
 
-    static List<GTask> load(String fileNameInClasspath) throws ConnectorException {
+    static List<GTask> load(String fileNameInClasspath) {
         String fileName = ResourceLoader.getAbsolutePathForResource(fileNameInClasspath);
-        FileSetup setup = new FileSetup(MSPConnector.ID, Option.apply("file"), "label", fileName, fileName);
+        var setup = FileSetup.apply(MSPConnector.ID, "label", fileName, fileName);
         final MSPConnector connector = new MSPConnector(setup);
         List<GTask> gTasks = connector.loadData();
         Collections.sort(gTasks, ID_COMPARATOR);

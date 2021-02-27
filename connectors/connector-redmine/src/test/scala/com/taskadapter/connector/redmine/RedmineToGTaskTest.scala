@@ -57,7 +57,7 @@ class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with 
     val redmineIssue = new Issue
     redmineIssue.setParentId(123)
     val task = get().convertToGenericTask(redmineIssue)
-    task.getParentIdentity shouldBe TaskId(123, "123")
+    task.getParentIdentity shouldBe new TaskId(123, "123")
   }
 
   it("parentIdIsIgnoredIfNotSet") {
@@ -177,8 +177,8 @@ class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with 
     assertEquals(1, task.getRelations.size)
     val gRelation = task.getRelations.get(0)
 
-    gRelation.taskId.id shouldBe 10
-    gRelation.relatedTaskId.id shouldBe 20
+    gRelation.taskId.getId shouldBe 10
+    gRelation.relatedTaskId.getId shouldBe 20
     gRelation.`type` shouldBe Precedes
   }
 

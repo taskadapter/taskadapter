@@ -18,7 +18,7 @@ class GithubProjectsListLoader(setup: WebConnectorSetup) extends DataProvider[ja
     try {
       val connectionFactory: ConnectionFactory = new ConnectionFactory(setup)
       val repositoryService: RepositoryService = connectionFactory.getRepositoryService
-      val repositories: util.List[Repository] = repositoryService.getRepositories(setup.userName)
+      val repositories: util.List[Repository] = repositoryService.getRepositories(setup.getUserName)
       val converter: GithubProjectConverter = new GithubProjectConverter
       converter.toGProjects(repositories)
     } catch {
@@ -29,6 +29,6 @@ class GithubProjectsListLoader(setup: WebConnectorSetup) extends DataProvider[ja
 
   @throws[ServerURLNotSetException]
   private def validateServer(setup: WebConnectorSetup): Unit = {
-    if (Strings.isNullOrEmpty(setup.host)) throw new ServerURLNotSetException
+    if (Strings.isNullOrEmpty(setup.getHost)) throw new ServerURLNotSetException
   }
 }

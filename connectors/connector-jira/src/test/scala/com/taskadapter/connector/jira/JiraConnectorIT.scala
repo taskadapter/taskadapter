@@ -32,7 +32,7 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
   it("description saved by default") {
     CommonTestChecks.fieldIsSavedByDefault(getConnector,
       new JiraGTaskBuilder().withDescription().build(),
-      JiraField.defaultFieldsForNewConfig.asScala,
+      JiraField.defaultFieldsForNewConfig,
       Description,
       taskId => TestJiraClientHelper.deleteTasks(client, taskId))
   }
@@ -47,10 +47,10 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, util.Arrays.asList(parentTask),
       ProgressMonitorUtils.DUMMY_MONITOR,
       JiraFieldBuilder.getDefault.asJava)
-    assertThat(result.createdTasksNumber).isEqualTo(3)
-    val parentTaskId = result.keyToRemoteKeyList.head.newId
-    val subTask1Id = result.keyToRemoteKeyList(1).newId
-    val subTask2Id = result.keyToRemoteKeyList(2).newId
+    assertThat(result.getCreatedTasksNumber).isEqualTo(3)
+    val parentTaskId = result.getKeyToRemoteKeyList.get(0).newId
+    val subTask1Id = result.getKeyToRemoteKeyList.get(1).newId
+    val subTask2Id = result.getKeyToRemoteKeyList.get(2).newId
 
     val loadedSubTask1 = connector.loadTaskByKey(subTask1Id, JiraFieldBuilder.getDefault.asJava)
     val loadedSubTask2 = connector.loadTaskByKey(subTask2Id, JiraFieldBuilder.getDefault.asJava)
@@ -116,7 +116,7 @@ class JiraConnectorIT extends FunSpec with Matchers with BeforeAndAfter with Bef
 
   describe("Update") {
     it("does not reset task type to config default") {
-      val saver = new StatefulTestTaskSaver(getConnector, JiraPropertiesLoader.getTestServerInfo.host)
+      val saver = new StatefulTestTaskSaver(getConnector, JiraPropertiesLoader.getTestServerInfo.getHost)
       // regression test
       val created = saver.saveAndLoad(task("Story"), rows.asJava)
       created.setValue(TaskType, null)

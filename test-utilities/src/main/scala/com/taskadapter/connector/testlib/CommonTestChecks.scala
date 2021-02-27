@@ -23,7 +23,7 @@ object CommonTestChecks extends Matchers {
 
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR,
       rows.asJava)
-    assertEquals(tasksQty, result.createdTasksNumber)
+    assertEquals(tasksQty, result.getCreatedTasksNumber)
 
     val createdTask1Id = result.getRemoteKeys.iterator.next()
 
@@ -45,17 +45,17 @@ object CommonTestChecks extends Matchers {
                    cleanup: TaskId => Unit): Unit = {
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, tasks.asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)
     assertFalse(result.hasErrors)
-    assertEquals(tasks.size, result.createdTasksNumber)
+    assertEquals(tasks.size, result.getCreatedTasksNumber)
     logger.debug(s"created $result")
-    result.getRemoteKeys.foreach(cleanup(_))
+    result.getRemoteKeys.forEach(cleanup(_))
   }
 
   def fieldIsSavedByDefault(connector: NewConnector, task: GTask,
-                            suggestedMappings: Seq[Field[_]],
+                            suggestedMappings: java.util.List[Field[_]],
                             fieldToSearch: Field[_],
                             cleanup: TaskId => Unit): Unit = {
     val mappings = NewConfigSuggester.suggestedFieldMappingsForNewConfig(suggestedMappings, suggestedMappings)
-    val rows = MappingBuilder.build(mappings.asJava, ExportDirection.RIGHT)
+    val rows = MappingBuilder.build(mappings, ExportDirection.RIGHT)
     val loadedTask = TestUtils.saveAndLoadViaSummary(connector, task, rows, fieldToSearch)
     assertEquals(task.getValue(fieldToSearch), loadedTask.getValue(fieldToSearch))
     cleanup(loadedTask.getIdentity)
@@ -74,8 +74,8 @@ object CommonTestChecks extends Matchers {
 
     // CREATE
     val result = TaskSaver.save(PreviouslyCreatedTasksResolver.empty, connector, "some name", rows.asJava, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR)
-    assertFalse(s"must not have any errors, but got ${result.taskErrors}", result.hasErrors)
-    assertEquals(1, result.createdTasksNumber)
+    assertFalse(s"must not have any errors, but got ${result.getTaskErrors}", result.hasErrors)
+    assertEquals(1, result.getCreatedTasksNumber)
     val newTaskId = result.getRemoteKeys.iterator.next()
     val loaded = connector.loadTaskByKey(newTaskId, rows.asJava)
 
@@ -85,7 +85,7 @@ object CommonTestChecks extends Matchers {
     val resolver = new TaskResolverBuilder(targetLocation).pretend(newTaskId, newTaskId)
     val result2 = TaskSaver.save(resolver, connector, "some name", rows.asJava, util.Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR)
     assertFalse(result2.hasErrors)
-    assertEquals(1, result2.updatedTasksNumber)
+    assertEquals(1, result2.getUpdatedTasksNumber)
     val loadedAgain = connector.loadTaskByKey(newTaskId, rows.asJava)
 
     toUpdate.foreach(i => assertEquals(i._2, loadedAgain.getValue(i._1)))
@@ -96,7 +96,7 @@ object CommonTestChecks extends Matchers {
   class TaskResolverBuilder(targetLocation: String) {
     def pretend(id1: TaskId, id2: TaskId): PreviouslyCreatedTasksResolver = {
       new PreviouslyCreatedTasksResolver(
-        PreviouslyCreatedTasksCache("1", targetLocation, Seq(
+        new PreviouslyCreatedTasksCache("1", targetLocation, java.util.Arrays.asList(
           new TaskKeyMapping(id1, id2)
         ))
       )

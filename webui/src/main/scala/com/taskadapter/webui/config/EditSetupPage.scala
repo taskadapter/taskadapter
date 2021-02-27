@@ -26,7 +26,7 @@ class EditSetupPage() extends BasePage with HasUrlParameter[String] {
 
     val setup: ConnectorSetup = configOps.getSetup(setupId)
 
-    val editor: PluginEditorFactory[_, ConnectorSetup] = services.editorManager.getEditorFactory(setup.connectorId)
+    val editor: PluginEditorFactory[_, ConnectorSetup] = services.editorManager.getEditorFactory(setup.getConnectorId)
     val editSetupPanel = editor.getEditSetupPanel(sandbox, setup)
 
 

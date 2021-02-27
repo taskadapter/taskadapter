@@ -18,9 +18,9 @@ class MantisIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   val logger = LoggerFactory.getLogger(classOf[MantisIT])
   val setup = MantisTestConfig.getSetup
 
-  logger.info("Running Mantis BT tests using: " + setup.host)
+  logger.info("Running Mantis BT tests using: " + setup.getHost)
 
-  val mgr = new MantisManager(setup.host, setup.userName, setup.password)
+  val mgr = new MantisManager(setup.getHost, setup.getUserName, setup.getPassword)
   val junitTestProject = new ProjectData
   junitTestProject.setName("test project" + Calendar.getInstance.getTimeInMillis)
   junitTestProject.setDescription("test" + Calendar.getInstance.getTimeInMillis)
@@ -31,7 +31,7 @@ class MantisIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   config.setProjectKey(projectKey)
   val mantisConnector = new MantisConnector(config, setup)
 
-  private val fixture = ITFixture(setup.host, mantisConnector, id => CommonTestChecks.skipCleanup(id))
+  private val fixture = ITFixture(setup.getHost, mantisConnector, id => CommonTestChecks.skipCleanup(id))
 
   override def afterAll() {
     if (mgr != null) mgr.deleteProject(new BigInteger(projectKey))

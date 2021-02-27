@@ -31,7 +31,7 @@ public class JiraLoaders {
     }
 
     static void validate(WebConnectorSetup setup) throws ServerURLNotSetException {
-        if (Strings.isNullOrEmpty(setup.host())) {
+        if (Strings.isNullOrEmpty(setup.getHost())) {
             throw new ServerURLNotSetException();
         }
     }

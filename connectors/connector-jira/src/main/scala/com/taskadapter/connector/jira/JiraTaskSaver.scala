@@ -28,7 +28,7 @@ class JiraTaskSaver(client: JiraRestClient, issueTypeList: Iterable[IssueType],
     val taskId = JiraClientHelper.createTask(client, issueWithTypeIdSet)
 
     // yes, reload the issue we just created. JIRA API is horrific
-    val existingIssue = client.getIssueClient.getIssue(taskId.key).claim()
+    val existingIssue = client.getIssueClient.getIssue(taskId.getKey).claim()
     updateStatusIfNeeded(existingIssue, wrapper.status)
     taskId
   }
@@ -75,8 +75,8 @@ class JiraTaskSaver(client: JiraRestClient, issueTypeList: Iterable[IssueType],
   @throws[ConnectorException]
   override def saveRelations(relations: util.List[GRelation]): Unit = {
     relations.asScala.foreach { relation =>
-      val taskKey = relation.taskId.key
-      val relatedTaskKey = relation.relatedTaskId.key
+      val taskKey = relation.taskId.getKey
+      val relatedTaskKey = relation.relatedTaskId.getKey
 
       if (relation.`type` == Precedes) {
         var linkTypeName = JiraConstants.getJiraLinkNameForPrecedes

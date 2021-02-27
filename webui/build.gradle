@@ -18,10 +18,6 @@ dependencies {
 
     compile project(":webshared")
 
-    compile "io.circe:circe-core_2.12:$circeVersion"
-    compile "io.circe:circe-generic_2.12:$circeVersion"
-    compile "io.circe:circe-parser_2.12:$circeVersion"
-
     compile (
             "org.scala-lang.modules:scala-parser-combinators_2.12:1.0.4",
             "com.rollbar:rollbar-java:1.6.0",
@@ -47,6 +43,7 @@ dependencies {
 
     testCompile project(":test-utilities")
     testCompile libraries.festassert
+    testCompile libraries.assertJ
 }
 
 application {

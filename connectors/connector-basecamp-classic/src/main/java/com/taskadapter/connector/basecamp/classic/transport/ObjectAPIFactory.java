@@ -25,8 +25,8 @@ public final class ObjectAPIFactory {
         BasecampConfigValidator.validateServerAuth(setup);
 
         final ObjectAPIHolder oldApi = oah;
-        final String serverUrl = setup.host();
-        final String authKey = setup.apiKey();
+        final String serverUrl = setup.getHost();
+        final String authKey = setup.getApiKey();
         if (oldApi != null && oldApi.apiUrl.equals(serverUrl)
                 && oldApi.authKey.equals(authKey))
             return oldApi.api;

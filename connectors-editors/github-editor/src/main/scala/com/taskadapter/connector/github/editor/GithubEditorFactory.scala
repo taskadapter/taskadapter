@@ -62,26 +62,26 @@ class GithubEditorFactory extends PluginEditorFactory[GithubConfig, WebConnector
     new ServerPanelWithLoginAndToken(GithubConnector.ID, GithubConnector.ID, setup, description)
   }
 
-  override def createDefaultSetup(sandbox: Sandbox) = new WebConnectorSetup(
-    GithubConnector.ID, Option.empty, "My GitHub", "https://github.com", "", "", false, "")
+  override def createDefaultSetup(sandbox: Sandbox) = WebConnectorSetup.apply(
+    GithubConnector.ID, "My GitHub", "https://github.com", "", "", false, "")
 
   @throws[BadConfigException]
   override def validateForSave(config: GithubConfig, serverInfo: WebConnectorSetup,
                                fieldMappings: java.util.List[FieldMapping[_]]): java.util.List[BadConfigException] = {
     val seq = new mutable.ListBuffer[BadConfigException]
-    if (Strings.isNullOrEmpty(serverInfo.host)) seq += new ServerURLNotSetException
-    if (Strings.isNullOrEmpty(serverInfo.userName)) seq += new LoginNameNotSpecifiedException
+    if (Strings.isNullOrEmpty(serverInfo.getHost)) seq += new ServerURLNotSetException
+    if (Strings.isNullOrEmpty(serverInfo.getUserName)) seq += new LoginNameNotSpecifiedException
     seq.asJava
   }
 
   override def validateForLoad(config: GithubConfig, serverInfo: WebConnectorSetup): java.util.List[BadConfigException] = {
     val seq = new mutable.ListBuffer[BadConfigException]
-    if (Strings.isNullOrEmpty(serverInfo.host)) seq += new ServerURLNotSetException
+    if (Strings.isNullOrEmpty(serverInfo.getHost)) seq += new ServerURLNotSetException
     if (Strings.isNullOrEmpty(config.getProjectKey)) seq += new ProjectNotSetException
     seq.asJava
   }
 
-  override def describeSourceLocation(config: GithubConfig, setup: WebConnectorSetup): String = setup.host
+  override def describeSourceLocation(config: GithubConfig, setup: WebConnectorSetup): String = setup.getHost
 
   override def describeDestinationLocation(config: GithubConfig, setup: WebConnectorSetup): String = describeSourceLocation(config, setup)
 

@@ -1,3 +1,4 @@
 dependencies {
     compile project(":connectors:connector-mantis")
+    testCompile libraries.assertJ
 }

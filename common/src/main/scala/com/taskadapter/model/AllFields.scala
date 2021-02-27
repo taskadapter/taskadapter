@@ -8,4 +8,8 @@ object AllFields {
   var description = Description
   var taskType = TaskType
   val doneRatio = DoneRatio
+  val dueDate = DueDate
+  val priority = Priority
+  val assigneeLoginName = AssigneeLoginName
+  val assigneeFullName = AssigneeFullName
 }

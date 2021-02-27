@@ -31,7 +31,7 @@ final class GTask() {
   def getIdentity: TaskId = {
     var id = getId
     if (id == null) id = 0L
-    TaskId(id, getKey)
+    new TaskId(id, getKey)
   }
 
   /**

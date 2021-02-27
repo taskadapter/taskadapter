@@ -1,19 +1,18 @@
 package com.taskadapter.connector.msp
 
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util
-import java.util.Date
-
 import com.taskadapter.connector.common.TreeUtils
 import com.taskadapter.connector.definition.FileSetup
-import com.taskadapter.connector.testlib.{CommonTestChecks, FieldRowBuilder, ITFixture, TempFolder, TestUtils, TestUtilsJava}
+import com.taskadapter.connector.testlib.{CommonTestChecks, FieldRowBuilder, ITFixture, TempFolder, TestUtilsJava}
 import com.taskadapter.model._
 import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
 
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util
+import java.util.Date
 import scala.collection.JavaConverters._
 
 @RunWith(classOf[JUnitRunner])
@@ -50,7 +49,7 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
     withTempFolder { folder =>
       CommonTestChecks.fieldIsSavedByDefault(getConnector(folder),
         new GTaskBuilder().withRandom(Summary).withRandom(Description).build(),
-        MspField.fields.asScala,
+        MspField.fields,
         Description,
         CommonTestChecks.skipCleanup)
     }
@@ -97,7 +96,7 @@ class MspConnectorTest extends FunSpec with Matchers with TempFolder {
 
   def getConnector(folder: File): MSPConnector = {
     val file = new File(folder, MSP_FILE_NAME)
-    val setup = FileSetup(MSPConnector.ID, Some("file"), "label", file.getAbsolutePath, file.getAbsolutePath)
+    val setup = FileSetup.apply(MSPConnector.ID, "label", file.getAbsolutePath, file.getAbsolutePath)
     new MSPConnector(setup)
   }
 }

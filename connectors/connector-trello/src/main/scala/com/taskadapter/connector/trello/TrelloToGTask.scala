@@ -15,7 +15,7 @@ object TrelloToGTask {
     task.setId(fakeEmptyId)
     task.setKey(key)
     // must set source system id, otherwise "update task" is impossible later
-    task.setSourceSystemId(TaskId(fakeEmptyId, key))
+    task.setSourceSystemId(new TaskId(fakeEmptyId, key))
 
     task.setValue(Summary, card.getName)
     task.setValue(DueDate, card.getDue)

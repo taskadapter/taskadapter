@@ -22,7 +22,7 @@ trait TempRedmineProject {
 
   val junitTestProject = ProjectFactory.create("TA Redmine Integration test project", "test" + Calendar.getInstance.getTimeInMillis)
 
-  val httpClient = RedmineManagerFactory.createRedmineHttpClient(serverInfo.host)
+  val httpClient = RedmineManagerFactory.createRedmineHttpClient(serverInfo.getHost)
   var mgr = RedmineManagerFactory.createRedmineManager(serverInfo, httpClient)
   val redmineUser = mgr.getUserManager.getCurrentUser
   val currentUser = RedmineToGUser.convertToGUser(redmineUser)
@@ -42,7 +42,7 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
     httpClient.getConnectionManager.shutdown()
   }
 
-  private val fixture = ITFixture(RedmineTestConfig.getRedmineServerInfo.host, getConnector(),
+  private val fixture = ITFixture(RedmineTestConfig.getRedmineServerInfo.getHost, getConnector(),
     id => CommonTestChecks.skipCleanup(id))
 
   /**
@@ -72,7 +72,7 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
 
     val c1 = new GTask()
     c1.setId(3l)
-    val parentIdentity = TaskId(1, "1")
+    val parentIdentity = new TaskId(1, "1")
     c1.setParentIdentity(parentIdentity)
     c1.setValue(Summary, "Child 1 of " + summary)
     t.addChildTask(c1)

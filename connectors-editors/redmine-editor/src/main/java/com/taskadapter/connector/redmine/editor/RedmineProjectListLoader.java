@@ -17,7 +17,7 @@ public class RedmineProjectListLoader implements DataProvider<List<? extends Nam
 
     public RedmineProjectListLoader(WebConnectorSetup setup) {
         this.setup = setup;
-        var httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.host());
+        var httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.getHost());
         mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient);
     }
 

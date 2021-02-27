@@ -56,7 +56,7 @@ class GTaskTest extends FunSpec with Matchers {
 
   describe("identity") {
     it("null Id converted to 0 in Identity") {
-      new GTask().getIdentity.id shouldBe 0
+      new GTask().getIdentity.getId shouldBe 0
     }
 
     it("null Id stays null") {

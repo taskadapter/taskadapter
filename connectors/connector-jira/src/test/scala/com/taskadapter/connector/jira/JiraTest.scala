@@ -25,9 +25,9 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   private var client = JiraConnectionFactory.createClient(setup)
   private var connector = new JiraConnector(config, setup)
 
-  logger.info("Running JIRA tests using: " + setup.host)
+  logger.info("Running JIRA tests using: " + setup.getHost)
 
-  private val fixture = ITFixture(setup.host, connector, id => TestJiraClientHelper.deleteTasks(client, id))
+  private val fixture = ITFixture(setup.getHost, connector, id => TestJiraClientHelper.deleteTasks(client, id))
 
   describe("Create") {
     it("connector does not fail empty tasks list") {
@@ -40,7 +40,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     }
 
     it("assignee and reporter are set") {
-      val userPromise = client.getUserClient.getUser(setup.userName)
+      val userPromise = client.getUserClient.getUser(setup.getUserName)
       val jiraUser = userPromise.claim
       val task = new GTask
       task.setValue(Summary, "some")
@@ -88,8 +88,8 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     val list = generateTasks
     val task1 = list(0)
     val task2 = list(1)
-    task1.getRelations.add(GRelation(TaskId(task1.getId, task1.getKey),
-      TaskId(task2.getId, task2.getKey), Precedes))
+    task1.getRelations.add(GRelation(new TaskId(task1.getId, task1.getKey),
+      new TaskId(task2.getId, task2.getKey), Precedes))
     TestUtilsJava.saveAndLoadList(connector, list.asJava, JiraFieldBuilder.getDefault().asJava)
     val issues = TestJiraClientHelper.findIssuesBySummary(client, task1.getValue(Summary))
     val createdIssue1 = issues.iterator.next
@@ -99,8 +99,8 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     val targetIssueKey = link.getTargetIssueKey
     val createdIssue2 = TestJiraClientHelper.findIssuesBySummary(client, task2.getValue(Summary)).iterator.next
     assertEquals(createdIssue2.getKey, targetIssueKey)
-    TestJiraClientHelper.deleteTasks(client, TaskId(createdIssue1.getId, createdIssue1.getKey),
-      TaskId(createdIssue2.getId, createdIssue2.getKey))
+    TestJiraClientHelper.deleteTasks(client, new TaskId(createdIssue1.getId, createdIssue1.getKey),
+      new TaskId(createdIssue2.getId, createdIssue2.getKey))
   }
 
   private def generateTasks: List[GTask] = {

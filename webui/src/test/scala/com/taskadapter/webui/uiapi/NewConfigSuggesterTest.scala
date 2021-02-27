@@ -23,8 +23,8 @@ class NewConfigSuggesterTest extends FunSpec with ScalaFutures with Matchers {
 
   it("suggests all elements from left connector") {
     val list = NewConfigSuggester.suggestedFieldMappingsForNewConfig(
-      defaultRedmineFields.asScala,
-      defaultJiraFields.asScala)
+      defaultRedmineFields,
+      defaultJiraFields)
 
     list.size shouldBe jiraRedmineFieldsNumber
     list.contains(FieldMapping(AssigneeLoginName, AssigneeLoginName, true, null)) shouldBe true
@@ -32,8 +32,8 @@ class NewConfigSuggesterTest extends FunSpec with ScalaFutures with Matchers {
 
   it("suggests all elements from right connector") {
     val list = NewConfigSuggester.suggestedFieldMappingsForNewConfig(
-      defaultJiraFields.asScala,
-      defaultRedmineFields.asScala)
+      defaultJiraFields,
+      defaultRedmineFields)
 
     list.size shouldBe jiraRedmineFieldsNumber
   }

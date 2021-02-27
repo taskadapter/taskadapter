@@ -14,7 +14,7 @@ final class GithubTaskSaver(var issueService: IssueService, val userName: String
     val repositoryName = projectKey
     try {
       val createdIssue = issueService.createIssue(userName, repositoryName, issue)
-      TaskId(createdIssue.getNumber, createdIssue.getNumber + "")
+      new TaskId(createdIssue.getNumber, createdIssue.getNumber + "")
     } catch {
       case e: IOException =>
         throw GithubUtils.convertException(e)

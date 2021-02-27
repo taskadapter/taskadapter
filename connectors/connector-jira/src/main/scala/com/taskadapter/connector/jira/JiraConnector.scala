@@ -97,7 +97,7 @@ class JiraConnector(config: JiraConfig, setup: WebConnectorSetup) extends NewCon
   override def loadTaskByKey(key: TaskId, rows: java.lang.Iterable[FieldRow[_]]): GTask = withJiraRestClient((client: JiraRestClient) => {
     def foo(client: JiraRestClient) = {
       val loader = new JiraTaskLoader(client, config.getPriorities)
-      loader.loadTask(key.key)
+      loader.loadTask(key.getKey)
     }
 
     foo(client)
@@ -130,7 +130,7 @@ class JiraConnector(config: JiraConfig, setup: WebConnectorSetup) extends NewCon
       val converter = new GTaskToJira(config, resolver, versions, components, priorities)
       val saver = new JiraTaskSaver(client, issueTypeList, config.getDefaultTaskType, config.getDefaultIssueTypeForSubtasks)
       val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows,
-        setup.host)
+        setup.getHost)
       TaskSavingUtils.saveRemappedRelations(config, tasks, saver, rb)
       rb.getResult
     }

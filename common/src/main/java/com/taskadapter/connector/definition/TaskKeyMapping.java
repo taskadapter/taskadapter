@@ -39,4 +39,12 @@ public class TaskKeyMapping {
     public int hashCode() {
         return Objects.hash(originalId, newId);
     }
+
+    @Override
+    public String toString() {
+        return "TaskKeyMapping{" +
+                "originalId=" + originalId +
+                ", newId=" + newId +
+                '}';
+    }
 }

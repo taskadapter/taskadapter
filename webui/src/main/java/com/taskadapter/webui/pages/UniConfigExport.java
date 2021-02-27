@@ -4,7 +4,6 @@ import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
 import com.taskadapter.web.uiapi.UISyncConfig;
-import com.taskadapter.webui.ImageLoader;
 import com.taskadapter.webui.Page;
 
 import com.vaadin.flow.component.Component;
@@ -77,7 +76,7 @@ final class UniConfigExport {
     }
 
     private static Label createLabel(UIConnectorConfig connector) {
-        final Label res = new Label(connector.getConnectorSetup().label());
+        final Label res = new Label(connector.getConnectorSetup().getLabel());
 //        res.setWidth(100, PERCENTAGE);
 //        res.addClassName(ValoTheme.LABEL_H3);
         return res;

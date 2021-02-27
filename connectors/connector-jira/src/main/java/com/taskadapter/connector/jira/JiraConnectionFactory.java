@@ -25,9 +25,9 @@ public class JiraConnectionFactory {
     }
 
     private static JiraRestClient createConnection(WebConnectorSetup setup) throws MalformedURLException, RemoteException, URISyntaxException {
-        URI jiraServerUri = new URI(setup.host());
+        URI jiraServerUri = new URI(setup.getHost());
         final AsynchronousJiraRestClientFactory factory = new AsynchronousJiraRestClientFactory();
-        final JiraRestClient restClient = factory.createWithBasicHttpAuthentication(jiraServerUri, setup.userName(), setup.password());
+        final JiraRestClient restClient = factory.createWithBasicHttpAuthentication(jiraServerUri, setup.getUserName(), setup.getPassword());
         return restClient;
     }
 }

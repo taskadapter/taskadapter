@@ -44,8 +44,8 @@ public class JiraTestJava {
     public static void beforeAllTests() throws ConnectorException {
         client = JiraConnectionFactory.createClient(setup);
         connector = new JiraConnector(config, setup);
-        logger.info("Running JIRA tests using: " + setup.host());
-        fixture = new ITFixture(setup.host(), connector, id -> {
+        logger.info("Running JIRA tests using: " + setup.getHost());
+        fixture = new ITFixture(setup.getHost(), connector, id -> {
             TestJiraClientHelper.deleteTasks(client, id);
             return null;
         });
@@ -66,9 +66,9 @@ public class JiraTestJava {
                 new FieldRow(summaryOpt, summaryOpt, ""),
                 new FieldRow(descriptionOpt, descriptionOpt, "some default")
         );
-        SaveResult result = connector.saveData(PreviouslyCreatedTasksResolver.empty(), Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
-        assertThat(result.createdTasksNumber()).isEqualTo(1);
-        TaskId taskId = result.keyToRemoteKeyList().head().newId;
+        SaveResult result = connector.saveData(PreviouslyCreatedTasksResolver.empty, Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
+        assertThat(result.getCreatedTasksNumber()).isEqualTo(1);
+        TaskId taskId = result.getKeyToRemoteKeyList().get(0).newId;
         GTask loadedTask = connector.loadTaskByKey(taskId, rows);
         assertThat(loadedTask.getValue(Description$.MODULE$))
                 .isEqualTo("some default");

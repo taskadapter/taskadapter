@@ -39,7 +39,7 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
     issue.setProjectId(project.getId)
     issue.setProjectName(project.getName)
     if (task.getParentIdentity != null) {
-      issue.setParentId(task.getParentIdentity.id.toInt)
+      issue.setParentId(task.getParentIdentity.getId.toInt)
     }
     task.getFields.asScala.foreach { x =>
       val field = x._1

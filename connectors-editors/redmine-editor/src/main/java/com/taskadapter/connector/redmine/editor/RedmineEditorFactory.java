@@ -71,7 +71,7 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
 
         // TODO 14 priorities panel is read-only for now. its values are not saved
         PriorityPanel priorityPanel = new PriorityPanel(config.getPriorities(),
-                new PrioritiesLoader(setup),this);
+                new PrioritiesLoader(setup), this);
 
         layout.add(projectPanel,
                 priorityPanel,
@@ -102,7 +102,7 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
 
     @Override
     public WebConnectorSetup createDefaultSetup(Sandbox sandbox) {
-        return new WebConnectorSetup(RedmineConnector.ID(), Option.empty(), "My Redmine", "", "",
+        return WebConnectorSetup.apply(RedmineConnector.ID(), "My Redmine", "", "",
                 "", true, "");
     }
 
@@ -122,7 +122,7 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
 
     @Override
     public String describeSourceLocation(RedmineConfig config, WebConnectorSetup setup) {
-        return setup.host();
+        return setup.getHost();
     }
 
     @Override

@@ -14,7 +14,7 @@ class BasecampSaver(api: ObjectAPI, config: BasecampConfig) extends BasicIssueSa
     val newIdentity = BasecampToGTask.parseTask(res).getIdentity
     /* Set "done ratio" if needed */
     if (wrapper.doneRatio >= 100) {
-      api.put("/projects/" + config.getProjectKey + "/todos/" + newIdentity.key + ".json", wrapper.nativeTask)
+      api.put("/projects/" + config.getProjectKey + "/todos/" + newIdentity.getKey + ".json", wrapper.nativeTask)
     }
     newIdentity
   }

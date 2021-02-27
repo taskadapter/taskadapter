@@ -12,7 +12,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import scala.Option;
 
 import java.util.Optional;
 
@@ -101,7 +100,7 @@ public class ServerPanelWithKeyAndToken implements ConnectorSetupPanel {
 
     @Override
     public WebConnectorSetup getResult() {
-        return new WebConnectorSetup(connectorId, Option.empty(), labelField.getValue(),
+        return WebConnectorSetup.apply(connectorId, labelField.getValue(),
                 hostField.getValue(), userLoginInput.getValue(),
                 apiKeyField.getValue(), true, tokenField.getValue());
     }

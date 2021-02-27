@@ -33,9 +33,9 @@ public class TaskSaver {
             monitor.done();
             log.error("Exception in connector " + connectorTo + " while saving data. destination: " + destinationName + ". The exception is: " + e);
             return new SaveResult(null, 0, 0,
-                    JavaConverters.asScalaBuffer(List.of()),
-                    JavaConverters.asScalaBuffer(List.of(e)),
-                    JavaConverters.asScalaBuffer(List.of()));
+                    List.of(),
+                    List.of(e),
+                    List.of());
         }
     }
 

@@ -6,7 +6,7 @@ import com.taskadapter.connector.definition.{Descriptor, PluginFactory, WebConne
 import com.taskadapter.model.Field
 
 object GithubFactory {
-  val DESCRIPTOR = Descriptor(GithubConnector.ID, GithubConfig.DEFAULT_LABEL)
+  val DESCRIPTOR = new Descriptor(GithubConnector.ID, GithubConfig.DEFAULT_LABEL)
 }
 
 class GithubFactory extends PluginFactory[GithubConfig, WebConnectorSetup] {

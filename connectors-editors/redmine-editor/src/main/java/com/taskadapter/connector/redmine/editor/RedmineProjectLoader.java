@@ -30,13 +30,13 @@ public class RedmineProjectLoader implements DataProvider<GProject> {
         this.config = config;
         this.setup = setup;
 
-        httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.host());
+        httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.getHost());
 
     }
 
     @Override
     public GProject loadData() throws ConnectorException {
-        if (Strings.isNullOrEmpty(setup.host())) {
+        if (Strings.isNullOrEmpty(setup.getHost())) {
             throw new ServerURLNotSetException();
         }
         if (config.getProjectKey() == null || config.getProjectKey().isEmpty()) {

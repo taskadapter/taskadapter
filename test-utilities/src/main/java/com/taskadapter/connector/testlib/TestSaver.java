@@ -21,7 +21,7 @@ public class TestSaver {
     }
 
     public GTask saveAndLoad(GTask task) {
-        SaveResult taskSaveResult = connector.saveData(PreviouslyCreatedTasksResolver.empty(),
+        SaveResult taskSaveResult = connector.saveData(PreviouslyCreatedTasksResolver.empty,
                 Arrays.asList(task),
                 ProgressMonitorUtils.DUMMY_MONITOR,
                 rows);

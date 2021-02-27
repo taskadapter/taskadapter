@@ -14,7 +14,7 @@ final class RedmineTaskSaver(val issueManager: IssueManager, val config: Redmine
   @throws[ConnectorException]
   override def createTask(nativeTask: Issue): TaskId = try {
     val newIssue = issueManager.createIssue(nativeTask)
-    TaskId(newIssue.getId.longValue, newIssue.getId.toString)
+    new TaskId(newIssue.getId.longValue, newIssue.getId.toString)
   } catch {
     case e: RedmineException =>
       throw RedmineExceptions.convertException(e)
@@ -34,9 +34,9 @@ final class RedmineTaskSaver(val issueManager: IssueManager, val config: Redmine
   override def saveRelations(relations: util.List[GRelation]): Unit = try {
     for (gRelation <- relations.asScala) {
       val taskId = gRelation.taskId
-      val intTaskId = taskId.id.toInt
+      val intTaskId = taskId.getId.toInt
       val relatedTaskKey = gRelation.relatedTaskId
-      val intRelatedId = relatedTaskKey.id.toInt
+      val intRelatedId = relatedTaskKey.getId.toInt
       issueManager.createRelation(intTaskId, intRelatedId, gRelation.`type`.toString)
     }
   } catch {

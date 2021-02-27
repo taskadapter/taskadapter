@@ -50,7 +50,7 @@ public final class MSPTaskSaver {
     private void saveIssues(List<GTask> tasks) throws ConnectorException {
         try {
             final String resultFile = writer.write(
-                    setup.targetFile(), result, tasks, false);
+                    setup.getTargetFile(), result, tasks, false);
             result.setTargetFileAbsolutePath(resultFile);
         } catch (Exception e) {
             throw MSPExceptions.convertException(e);
@@ -62,11 +62,11 @@ public final class MSPTaskSaver {
     private void saveRelations(List<GRelation> relations) {
         MSPFileReader fileReader = new MSPFileReader();
         try {
-            ProjectFile projectFile = fileReader.readFile(setup.targetFile());
+            ProjectFile projectFile = fileReader.readFile(setup.getTargetFile());
             for (GRelation relation : relations) {
                 if (relation.type().equals(Precedes$.MODULE$)) {
-                    Long intKey = relation.relatedTaskId().id();
-                    Long sourceKey = relation.taskId().id();
+                    Long intKey = relation.relatedTaskId().getId();
+                    Long sourceKey = relation.taskId().getId();
                     Task relatedTask = projectFile.getTaskByID(intKey.intValue());
                     Task sourceTask = projectFile.getTaskByID(sourceKey.intValue());
 
@@ -85,7 +85,7 @@ public final class MSPTaskSaver {
                 }
             }
 
-            RealWriter.writeProject(setup.targetFile(), projectFile);
+            RealWriter.writeProject(setup.getTargetFile(), projectFile);
         } catch (Throwable e) {
             result.addGeneralError(new EntityPersistenseException(
                     "Can't create Tasks Relations (" + e.toString() + ")"));

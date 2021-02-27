@@ -8,7 +8,7 @@ import org.scalatest.{FunSpec, Matchers}
 
 @RunWith(classOf[JUnitRunner])
 class JiraTaskTypeResolverTest extends FunSpec with Matchers {
-  val someId = TaskId(1, "KEY1")
+  val someId = new TaskId(1, "KEY1")
   val topLevel = "default parent"
   val sub = "default sub"
   val converter = GTaskToJiraFactory.getConverter()

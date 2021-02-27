@@ -9,9 +9,9 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class ExportResultsFormatterTest extends FunSpec with Matchers {
 
-  val id1 = TaskId(1, "key1")
-  val id2 = TaskId(2, "key2")
-  val id3 = TaskId(3, "key3")
+  val id1 = new TaskId(1, "key1")
+  val id2 = new TaskId(2, "key2")
+  val id3 = new TaskId(3, "key3")
 
   val item1 = new DecodedTaskError(id1, "error", "exception")
   val item1SameError = new DecodedTaskError(id2, "error", "exception")

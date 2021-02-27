@@ -17,8 +17,8 @@ import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout
 import java.io.File
 import java.nio.file.Paths
 import java.util.{Collections, Optional}
-import scala.collection.mutable
 import scala.collection.JavaConverters._
+import scala.collection.mutable
 
 class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
   private val BUNDLE_NAME = "com.taskadapter.connector.msp.messages"
@@ -48,7 +48,9 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     //    layout.add(createFilePanel(sandbox, config))
     layout.add(createInfoReadOnlyPanel)
     // TODO 14 update the save function
-    new DefaultSavableComponent(layout, () => {true})
+    new DefaultSavableComponent(layout, () => {
+      true
+    })
   }
 
   override def getEditSetupPanel(sandbox: Sandbox, setup: FileSetup) = new ConnectorSetupPanel() {
@@ -81,11 +83,11 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     val descriptionLayout = new HorizontalLayout
     descriptionLayout.setSpacing(true)
     descriptionLayout.add(new Label(LABEL_DESCRIPTION_TEXT))
-//    val labelText = propertyInput(config, "label")
-//    labelText.setDescription(LABEL_TOOLTIP)
-//    labelText.setReadOnly(true)
-//    labelText.addClassName("label-textfield")
-//    descriptionLayout.add(labelText)
+    //    val labelText = propertyInput(config, "label")
+    //    labelText.setDescription(LABEL_TOOLTIP)
+    //    labelText.setReadOnly(true)
+    //    labelText.addClassName("label-textfield")
+    //    descriptionLayout.add(labelText)
     descriptionLayout
   }
 
@@ -102,7 +104,7 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
   }
 
   override def validateForSave(config: MSPConfig, setup: FileSetup, fieldMappings: java.util.List[FieldMapping[_]]):
-    java.util.List[BadConfigException] = {
+  java.util.List[BadConfigException] = {
     // empty target file name is valid because it will be generated in [[updateForSave]]
     // right before the export
     Collections.emptyList();
@@ -110,7 +112,7 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
 
   override def validateForLoad(config: MSPConfig, setup: FileSetup): java.util.List[BadConfigException] = {
     val seq = new mutable.ListBuffer[BadConfigException]()
-    if (setup.sourceFile.isEmpty) seq += new InputFileNameNotSetException
+    if (setup.getSourceFile.isEmpty) seq += new InputFileNameNotSetException
     seq.asJava
   }
 
@@ -119,10 +121,10 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
   }
 
   override def describeSourceLocation(config: MSPConfig, setup: FileSetup): String =
-    new File(setup.sourceFile).getName
+    new File(setup.getSourceFile).getName
 
   override def describeDestinationLocation(config: MSPConfig, setup: FileSetup): String =
-    new File(setup.targetFile).getName
+    new File(setup.getTargetFile).getName
 
   private def processFile(sandbox: Sandbox, uploadedFile: File): FileProcessingResult = {
     val fileName = uploadedFile.getName
@@ -141,7 +143,7 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     val newPath = FileNameGenerator.findSafeAvailableFileName(sandbox.getUserContentDirectory, "MSP_%d.xml").getAbsolutePath
     if (newPath == null) throw new OutputFileNameNotSetException
     val label = getShortLabel(newPath)
-    FileSetup(MSPConnector.ID, None, label, newPath, newPath)
+    FileSetup.apply(MSPConnector.ID, label, newPath, newPath)
   }
 
   override def fieldNames: Messages = messages

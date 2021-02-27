@@ -20,7 +20,7 @@ public class JiraProjectLoader implements DataProvider<GProject> {
 
     @Override
     public GProject loadData() throws ConnectorException {
-        if (Strings.isNullOrEmpty(setup.host())) {
+        if (Strings.isNullOrEmpty(setup.getHost())) {
             throw new ServerURLNotSetException();
         }
         if (jiraConfig.getProjectKey() == null || jiraConfig.getProjectKey().isEmpty()) {

@@ -210,9 +210,9 @@ public class ServerModeFilePanel extends VerticalLayout {
     }
 
     private static String findInitialFile(FileSetup fileSetup) {
-        String path = fileSetup.sourceFile();
+        String path = fileSetup.getSourceFile();
         if (path == null || path.isEmpty()) {
-            path = fileSetup.targetFile();
+            path = fileSetup.getTargetFile();
         }
         return (path != null && !path.isEmpty()) ? path : null; 
     }

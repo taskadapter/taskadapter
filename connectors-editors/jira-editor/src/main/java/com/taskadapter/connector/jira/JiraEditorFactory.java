@@ -119,7 +119,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
 
     @Override
     public WebConnectorSetup createDefaultSetup(Sandbox sandbox) {
-        return new WebConnectorSetup(JiraConnector.ID(), Option.empty(), "My Jira", "https://", "",
+        return WebConnectorSetup.apply(JiraConnector.ID(), "My Jira", "https://", "",
                 "", true, "");
     }
 
@@ -127,7 +127,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     public List<BadConfigException> validateForSave(JiraConfig config, WebConnectorSetup serverInfo,
                                                     List<FieldMapping<?>> fieldMappings) {
         List<BadConfigException> list = new ArrayList<>();
-        if (Strings.isNullOrEmpty(serverInfo.host())) {
+        if (Strings.isNullOrEmpty(serverInfo.getHost())) {
             list.add(new ServerURLNotSetException());
         }
         if (Strings.isNullOrEmpty(config.getProjectKey())) {
@@ -146,7 +146,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
     public List<BadConfigException> validateForLoad(JiraConfig config, WebConnectorSetup serverInfo) {
         List<BadConfigException> list = new ArrayList<>();
 
-        if (Strings.isNullOrEmpty(serverInfo.host())) {
+        if (Strings.isNullOrEmpty(serverInfo.getHost())) {
             list.add(new ServerURLNotSetException());
         }
 
@@ -159,7 +159,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
 
     @Override
     public String describeSourceLocation(JiraConfig config, WebConnectorSetup serverInfo) {
-        return serverInfo.host();
+        return serverInfo.getHost();
     }
 
     @Override

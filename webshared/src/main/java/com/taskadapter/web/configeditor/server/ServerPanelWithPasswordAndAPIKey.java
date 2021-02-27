@@ -15,7 +15,6 @@ import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import scala.Option;
 
 import java.util.Optional;
 
@@ -74,7 +73,7 @@ public class ServerPanelWithPasswordAndAPIKey implements ConnectorSetupPanel {
         authOptionsGroup.setLabel(Page.message("setupPanel.authorization"));
         authOptionsGroup.setItems(Page.message("setupPanel.useApiKey"),
                 Page.message("setupPanel.useLogin"));
-        var booleanValue = setup.useApiKey();
+        var booleanValue = setup.isUseApiKey();
         var valueToSet = booleanValue ? Page.message("setupPanel.useApiKey")
                 : Page.message("setupPanel.useLogin");
 
@@ -127,7 +126,7 @@ public class ServerPanelWithPasswordAndAPIKey implements ConnectorSetupPanel {
 
     @Override
     public WebConnectorSetup getResult() {
-        return new WebConnectorSetup(connectorId, Option.empty(), labelField.getValue(),
+        return WebConnectorSetup.apply(connectorId, labelField.getValue(),
                 serverURL.getValue(), login.getValue(),
                 password.getValue(), shouldUseApiKey(), apiKeyField.getValue());
     }

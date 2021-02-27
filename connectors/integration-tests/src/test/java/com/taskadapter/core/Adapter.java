@@ -19,7 +19,7 @@ class Adapter {
 
     SaveResult adapt(List<FieldRow<?>> rows) {
         List<GTask> tasks = connector1.loadData();
-        return connector2.saveData(PreviouslyCreatedTasksResolver.empty(), tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows);
+        return connector2.saveData(PreviouslyCreatedTasksResolver.empty, tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows);
     }
 }
 

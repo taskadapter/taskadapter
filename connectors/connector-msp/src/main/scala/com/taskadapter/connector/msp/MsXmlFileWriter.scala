@@ -61,7 +61,7 @@ class MsXmlFileWriter(rows: java.lang.Iterable[FieldRow[_]]) {
         val transformedTask = DefaultValueSetter.adapt(rows, gTask)
         val gTaskToMSP = new GTaskToMSP(newMspTask, new ResourceManager(project))
         gTaskToMSP.setFields(transformedTask, keepTaskId)
-        syncResult.addCreatedTask(TaskId(gTask.getId, gTask.getKey), TaskId(newMspTask.getID.longValue(), newMspTask.getID + ""))
+        syncResult.addCreatedTask(new TaskId(gTask.getId, gTask.getKey), new TaskId(newMspTask.getID.longValue(), newMspTask.getID + ""))
         addTasks(syncResult, project, newMspTask, transformedTask.getChildren, keepTaskId)
       } catch {
           case e: ConnectorException =>

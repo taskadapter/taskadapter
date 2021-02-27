@@ -7,7 +7,7 @@ import com.taskadapter.model.Field
 
 class TrelloFactory extends PluginFactory[TrelloConfig, WebConnectorSetup] {
 
-  override def getDescriptor = Descriptor(TrelloConnector.ID, "Trello")
+  override def getDescriptor = new Descriptor(TrelloConnector.ID, "Trello")
 
   override def getAllFields: java.util.List[Field[_]] = TrelloField.fields
 

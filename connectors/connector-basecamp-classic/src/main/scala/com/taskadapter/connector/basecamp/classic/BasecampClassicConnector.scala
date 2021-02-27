@@ -40,7 +40,7 @@ class BasecampClassicConnector(config: BasecampClassicConfig, setup: WebConnecto
 
   override def loadTaskByKey(id: TaskId, rows: java.lang.Iterable[FieldRow[_]]): GTask = {
     BasecampConfigValidator.validateServerAuth(setup)
-    val obj = api.getObject("todo_items/" + id.key + ".xml")
+    val obj = api.getObject("todo_items/" + id.getKey + ".xml")
     BasecampClassicToGTask.parseTask(obj)
   }
 
@@ -54,7 +54,7 @@ class BasecampClassicConnector(config: BasecampClassicConfig, setup: WebConnecto
     val converter = new GTaskToBasecampClassic(users)
     val saver = new BasecampClassicSaver(api, config)
     val resultBuilder = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, fieldRows,
-      setup.host)
+      setup.getHost)
 
     resultBuilder.getResult
   }

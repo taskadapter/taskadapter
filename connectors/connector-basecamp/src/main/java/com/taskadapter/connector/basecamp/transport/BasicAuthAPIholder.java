@@ -10,14 +10,14 @@ public class BasicAuthAPIholder extends ObjectAPIHolder {
     public BasicAuthAPIholder(ObjectAPI api, String userId,
                               WebConnectorSetup setup) {
         super(api, userId);
-        this.login = setup.userName();
-        this.password = setup.password();
+        this.login = setup.getUserName();
+        this.password = setup.getPassword();
     }
 
     @Override
     boolean accepts(WebConnectorSetup setup) {
-        return login.equals(setup.userName())
-                && password.equals(setup.password());
+        return login.equals(setup.getUserName())
+                && password.equals(setup.getPassword());
     }
 
 }

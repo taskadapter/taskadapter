@@ -20,7 +20,7 @@ public class JiraQueryListLoader implements DataProvider<List<? extends NamedKey
 
     @Override
     public List<? extends NamedKeyedObject> loadData() throws ConnectorException {
-        if (Strings.isNullOrEmpty(setup.host())) {
+        if (Strings.isNullOrEmpty(setup.getHost())) {
             throw new ServerURLNotSetException();
         }
         return new JiraConnector(jiraConfig, setup).getFilters();

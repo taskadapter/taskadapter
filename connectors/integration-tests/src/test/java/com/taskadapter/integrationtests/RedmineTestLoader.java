@@ -1,11 +1,9 @@
 package com.taskadapter.integrationtests;
 
 import com.taskadapter.connector.definition.SaveResult;
-import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Issue;
-import scala.collection.Seq;
 
 public class RedmineTestLoader {
     /**
@@ -13,8 +11,8 @@ public class RedmineTestLoader {
      */
     @Deprecated
     public static Issue loadCreatedTask(RedmineManager mgr, SaveResult result) throws RedmineException {
-        Seq<TaskId> remoteKeys = result.getRemoteKeys();
-        long remoteKey = remoteKeys.iterator().next().id();
+        var remoteKeys = result.getRemoteKeys();
+        long remoteKey = remoteKeys.iterator().next().getId();
         return mgr.getIssueManager().getIssueById((int) remoteKey);
     }
 }

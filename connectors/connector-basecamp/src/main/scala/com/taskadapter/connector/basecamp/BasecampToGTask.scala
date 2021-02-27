@@ -11,7 +11,7 @@ object BasecampToGTask {
     result.setId(id.toLong)
     result.setKey(id.toString)
     // must set source system id, otherwise "update task" is impossible later
-    result.setSourceSystemId(TaskId(id.toLong, id.toString))
+    result.setSourceSystemId(new TaskId(id.toLong, id.toString))
 
     result.setValue(BasecampField.content, JsonUtils.getOptString("content", obj))
     val completedFloatValue: java.lang.Float = if (JsonUtils.getOptBool("completed", obj)) 100f else 0f

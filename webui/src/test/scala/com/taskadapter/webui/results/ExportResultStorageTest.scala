@@ -18,7 +18,7 @@ class ExportResultStorageTest extends FunSpec with Matchers with ConfigsTempFold
       val result = ExportResultFormat("1", ConfigId("admin", 1),
         "label1", "from", "to", None, 1, 1, Seq("some general error"),
         Seq(
-          new DecodedTaskError(TaskId(100, "KEY100"),
+          new DecodedTaskError(new TaskId(100, "KEY100"),
             "error summary",
             "detailed error")
         ), DateUtils.getDateRoundedToMinutes, 100)

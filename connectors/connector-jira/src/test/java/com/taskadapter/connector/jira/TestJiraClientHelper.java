@@ -17,7 +17,7 @@ public class TestJiraClientHelper {
 
     public static void deleteTasks(JiraRestClient client, TaskId... ids) {
         Arrays.asList(ids).stream().forEach(taskId -> {
-                    Promise<Void> promise = client.getIssueClient().deleteIssue(taskId.key(), true);
+                    Promise<Void> promise = client.getIssueClient().deleteIssue(taskId.getKey(), true);
                     promise.claim();
                 }
         );

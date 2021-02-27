@@ -25,7 +25,7 @@ class GithubConnector(config: GithubConfig, setup: WebConnectorSetup) extends Ne
   override def loadTaskByKey(key: TaskId, rows: java.lang.Iterable[FieldRow[_]]): GTask = {
     val issueService = new ConnectionFactory(setup).getIssueService
     try {
-      val issue = issueService.getIssue(setup.userName, config.getProjectKey, key.id.toInt)
+      val issue = issueService.getIssue(setup.getUserName, config.getProjectKey, key.getId.toInt)
       GithubToGTask.toGtask(issue)
     } catch {
       case e: IOException =>
@@ -45,7 +45,7 @@ class GithubConnector(config: GithubConfig, setup: WebConnectorSetup) extends Ne
     else config.getIssueState)
     val issueService = getIssueService
     try {
-      val issues = issueService.getIssues(setup.userName, config.getProjectKey, issuesFilter)
+      val issues = issueService.getIssues(setup.getUserName, config.getProjectKey, issuesFilter)
       GithubToGTask.toGTaskList(issues)
     } catch {
       case e: IOException =>
@@ -58,9 +58,9 @@ class GithubConnector(config: GithubConfig, setup: WebConnectorSetup) extends Ne
     val ghConnector = new ConnectionFactory(setup)
     val converter = new GTaskToGithub(ghConnector.getUserService)
     val issueService = ghConnector.getIssueService
-    val saver = new GithubTaskSaver(issueService, setup.userName, config.getProjectKey)
+    val saver = new GithubTaskSaver(issueService, setup.getUserName, config.getProjectKey)
     val rb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, rows,
-      setup.host)
+      setup.getHost)
     rb.getResult
   }
 }

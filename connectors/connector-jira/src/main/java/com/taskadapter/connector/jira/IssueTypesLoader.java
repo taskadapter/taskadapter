@@ -17,7 +17,7 @@ import java.util.List;
 public class IssueTypesLoader {
 
     static List<NamedKeyedObject> getIssueTypes(WebConnectorSetup setup, IssueTypeFilter issueTypesFilter) throws ConnectorException {
-        if (Strings.isNullOrEmpty(setup.host())) {
+        if (Strings.isNullOrEmpty(setup.getHost())) {
             throw new ServerURLNotSetException();
         }
         try(JiraRestClient client = JiraConnectionFactory.createClient(setup)) {

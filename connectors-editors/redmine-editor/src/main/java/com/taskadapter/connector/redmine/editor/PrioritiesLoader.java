@@ -17,7 +17,7 @@ public class PrioritiesLoader implements DataProvider<Priorities> {
 
     @Override
     public Priorities loadData() throws ConnectorException {
-        if (Strings.isNullOrEmpty(setup.host())) {
+        if (Strings.isNullOrEmpty(setup.getHost())) {
             throw new ServerURLNotSetException();
         }
         return RedmineLoaders.loadPriorities(setup);

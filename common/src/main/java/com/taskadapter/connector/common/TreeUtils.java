@@ -48,7 +48,7 @@ public class TreeUtils {
         GTask root = new GTask();
         for (GTask task : tasksFlatList) {
             if (task.getParentIdentity() != null) {
-                GTask parentTask = map.getByKey(task.getParentIdentity().key());
+                GTask parentTask = map.getByKey(task.getParentIdentity().getKey());
                 if (parentTask != null) {
                     parentTask.getChildren().add(task);
                 } else {

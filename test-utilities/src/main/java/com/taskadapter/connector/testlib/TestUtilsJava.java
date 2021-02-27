@@ -25,8 +25,8 @@ public class TestUtilsJava {
      * that require updates.
      */
     public static GTask saveAndLoad(NewConnector connector, GTask task, List<FieldRow<?>> rows) {
-        SaveResult result = connector.saveData(PreviouslyCreatedTasksResolver.empty(), Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
-        Seq<TaskId> remoteKeys = result.getRemoteKeys();
+        SaveResult result = connector.saveData(PreviouslyCreatedTasksResolver.empty, Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
+        var remoteKeys = result.getRemoteKeys();
         TaskId remoteKey = remoteKeys.iterator().next();
         return connector.loadTaskByKey(remoteKey, rows);
     }
@@ -49,7 +49,7 @@ public class TestUtilsJava {
     }
 
     public static List<GTask> saveAndLoadList(NewConnector connector, List<GTask> tasks, List<FieldRow<?>> rows) throws ConnectorException {
-        connector.saveData(PreviouslyCreatedTasksResolver.empty(), tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows);
+        connector.saveData(PreviouslyCreatedTasksResolver.empty, tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows);
         List<GTask> list = connector.loadData();
 
         Collections.sort(list, ID_COMPARATOR);
@@ -61,14 +61,14 @@ public class TestUtilsJava {
      * Load task that was previously created and its result is saved in [[SaveResult]]
      */
     public static GTask loadCreatedTask(NewConnector connector, List<FieldRow<?>> rows, SaveResult result) {
-        TaskId remoteKey = result.getRemoteKeys().head();
+        TaskId remoteKey = result.getRemoteKeys().get(0);
         return connector.loadTaskByKey(remoteKey, rows);
     }
 
 
     public static TaskId save(NewConnector connector, GTask task, List<FieldRow<?>> rows) throws ConnectorException {
-        SaveResult result = connector.saveData(PreviouslyCreatedTasksResolver.empty(), Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
-        Seq<TaskId> remoteKeys = result.getRemoteKeys();
+        SaveResult result = connector.saveData(PreviouslyCreatedTasksResolver.empty, Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
+        List<TaskId> remoteKeys = result.getRemoteKeys();
         return remoteKeys.iterator().next();
     }
 

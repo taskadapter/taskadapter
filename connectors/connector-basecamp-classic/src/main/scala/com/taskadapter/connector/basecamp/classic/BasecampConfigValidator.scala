@@ -13,9 +13,9 @@ object BasecampConfigValidator {
 
   def validateServerAuthNoException(setup: WebConnectorSetup): Seq[BadConfigException] = {
     val seq = new mutable.ListBuffer[BadConfigException]()
-    val apiKey = setup.apiKey
+    val apiKey = setup.getApiKey
     if (apiKey == null || apiKey.isEmpty) seq += FieldNotSetException("auth")
-    val apiUrl = setup.host
+    val apiUrl = setup.getHost
     if (apiUrl == null || apiUrl.isEmpty) seq += FieldNotSetException("api-url")
     seq
   }

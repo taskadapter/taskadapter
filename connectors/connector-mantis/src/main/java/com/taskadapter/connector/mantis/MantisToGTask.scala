@@ -27,7 +27,7 @@ object MantisToGTask {
     val stringId = String.valueOf(issue.getId)
     task.setKey(stringId)
     // must set source system id, otherwise "update task" is impossible later
-    task.setSourceSystemId(TaskId(longId, stringId))
+    task.setSourceSystemId(new TaskId(longId, stringId))
 
     val mantisUser = issue.getHandler
     if (mantisUser != null) {
@@ -53,8 +53,8 @@ object MantisToGTask {
       for (relation <- relations) {
         if (relation.getType.getName == "child of") {
           val r = GRelation(
-            TaskId(relation.getId.longValue, String.valueOf(relation.getId)),
-            TaskId(relation.getTarget_id.longValue, String.valueOf(relation.getTarget_id)),
+            new TaskId(relation.getId.longValue, String.valueOf(relation.getId)),
+            new TaskId(relation.getTarget_id.longValue, String.valueOf(relation.getTarget_id)),
             Precedes)
           genericTask.getRelations.add(r)
         } else {

@@ -75,7 +75,7 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
   // without this creating subtasks won't work, at least in JIRA
   it("parent key is preserved") {
     val task = new GTask
-    val identity = TaskId(1, "parent1")
+    val identity = new TaskId(1, "parent1")
     task.setParentIdentity(identity)
     val newTask = DefaultValueSetter.adapt(defaultRows.asJava, task)
     newTask.getParentIdentity shouldBe identity

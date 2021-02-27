@@ -16,9 +16,9 @@ public class RedmineManagerFactory {
     }
 
     public static RedmineManager createRedmineManager(WebConnectorSetup setup, HttpClient client) {
-        if (setup.useApiKey()) {
-            return com.taskadapter.redmineapi.RedmineManagerFactory.createWithApiKey(setup.host(), setup.apiKey(), client);
+        if (setup.isUseApiKey()) {
+            return com.taskadapter.redmineapi.RedmineManagerFactory.createWithApiKey(setup.getHost(), setup.getApiKey(), client);
         }
-        return com.taskadapter.redmineapi.RedmineManagerFactory.createWithUserAuth(setup.host(), setup.userName(), setup.password(), client);
+        return com.taskadapter.redmineapi.RedmineManagerFactory.createWithUserAuth(setup.getHost(), setup.getUserName(), setup.getPassword(), client);
     }
 }

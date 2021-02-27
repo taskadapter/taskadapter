@@ -20,7 +20,7 @@ public class RedmineTestInitializer {
     private static WebConnectorSetup setup = TestConfigs.getRedmineSetup();
 
     // TODO TA3 reuse the same http client everywhere instead of creating it here
-    private static HttpClient httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.host());
+    private static HttpClient httpClient = RedmineManagerFactory.createRedmineHttpClient(setup.getHost());
 
     public static RedmineManager mgr = RedmineManagerFactory.createRedmineManager(setup, httpClient);
 

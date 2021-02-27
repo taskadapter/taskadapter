@@ -31,7 +31,7 @@ class BasecampClassicIT extends FunSpec with Matchers with BeforeAndAfter with B
   }
   it("task is updated") {
     withTempProject { todoListKey =>
-      CommonTestChecks.taskCreatedAndUpdatedOK(TestBasecampConfig.setup.host,
+      CommonTestChecks.taskCreatedAndUpdatedOK(TestBasecampConfig.setup.getHost,
         getConnector(todoListKey), BasecampClassicFieldBuilder.getDefault(),
         GTaskBuilder.withRandom(BasecampClassicField.content),
         BasecampClassicField.content, "new value",

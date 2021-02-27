@@ -16,7 +16,7 @@ public class PrioritiesLoader implements DataProvider<Priorities> {
 
     @Override
     public Priorities loadData() throws ConnectorException {
-        if (Strings.isNullOrEmpty(webServerInfo.host())) {
+        if (Strings.isNullOrEmpty(webServerInfo.getHost())) {
             throw new ServerURLNotSetException();
         }
         return JiraLoaders.loadPriorities(webServerInfo);
