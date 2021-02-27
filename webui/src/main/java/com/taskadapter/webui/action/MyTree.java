@@ -71,7 +71,7 @@ public class MyTree {
         buildUI();
         List<GTask> clonedToAvoidDamagingTasks = new ArrayList<>();
         for (GTask task : rootLevelTasks) {
-            clonedToAvoidDamagingTasks.add(new GTask(task));
+            clonedToAvoidDamagingTasks.add(GTask.shallowClone(task));
         }
         tree.setTreeData(treeData);
         setTasks(clonedToAvoidDamagingTasks);

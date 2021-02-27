@@ -78,7 +78,7 @@ public class SimpleTaskSaver<N> {
 
     private GTask replaceIdentityIfPreviouslyCreatedByUs(GTask gTask,
                                                          String targetLocation) {
-        var result = new GTask(gTask);
+        var result = GTask.shallowClone(gTask);
         var maybeId = previouslyCreatedTasksResolver.findSourceSystemIdentity(gTask, targetLocation);
         if (maybeId.isPresent()) {
             result.setId(maybeId.get().getId());

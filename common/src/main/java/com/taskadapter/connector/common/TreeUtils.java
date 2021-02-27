@@ -79,7 +79,7 @@ public class TreeUtils {
     }
 
     static GTask createShallowCopyWithoutChildren(GTask task) {
-        GTask newTask = new GTask(task);
+        GTask newTask = GTask.shallowClone(task);
         newTask.setChildren(new ArrayList<>());
         return newTask;
     }
