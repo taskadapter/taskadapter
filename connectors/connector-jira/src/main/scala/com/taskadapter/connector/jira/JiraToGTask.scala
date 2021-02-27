@@ -1,14 +1,13 @@
 package com.taskadapter.connector.jira
 
-import java.util
-
 import com.atlassian.jira.rest.client.api.domain.{BasicComponent, Issue, IssueLinkType}
 import com.taskadapter.connector.Priorities
 import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.model._
+import com.taskadapter.model.{GRelationType, _}
 import org.codehaus.jettison.json.{JSONException, JSONObject}
 import org.slf4j.LoggerFactory
 
+import java.util
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters
 
@@ -37,7 +36,7 @@ object JiraToGTask {
           val name = link.getIssueLinkType.getName
           if (name == JiraConstants.getJiraLinkNameForPrecedes) {
             // targetIssueIdFromURI = JiraUtils.getIdFromURI(link.getTargetIssueUri());
-            val r = new GRelation(new TaskId(issue.getId, issue.getKey), new TaskId(-1, link.getTargetIssueKey), Precedes)
+            val r = new GRelation(new TaskId(issue.getId, issue.getKey), new TaskId(-1, link.getTargetIssueKey), GRelationType.precedes)
             genericTask.getRelations.add(r)
           }
           else logger.info("Relation type is not supported: " + link.getIssueLinkType + " - this link will be skipped for issue " + issue.getKey)

@@ -1,8 +1,8 @@
 package com.taskadapter.connector.mantis
 
-import biz.futureware.mantis.rpc.soap.client.{AccountData, IssueData}
+import biz.futureware.mantis.rpc.soap.client.IssueData
 import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.model._
+import com.taskadapter.model.{GRelationType, _}
 import org.slf4j.LoggerFactory
 
 object MantisToGTask {
@@ -52,10 +52,10 @@ object MantisToGTask {
     if (relations != null) {
       for (relation <- relations) {
         if (relation.getType.getName == "child of") {
-          val r = GRelation(
+          val r = new GRelation(
             new TaskId(relation.getId.longValue, String.valueOf(relation.getId)),
             new TaskId(relation.getTarget_id.longValue, String.valueOf(relation.getTarget_id)),
-            Precedes)
+            GRelationType.precedes)
           genericTask.getRelations.add(r)
         } else {
           logger.info("Relation type is not supported: " + relation.getType + " - skipping it for issue " + mntIssue.getId)

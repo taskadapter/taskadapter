@@ -1,15 +1,15 @@
 package com.taskadapter.connector.redmine
 
-import java.util.{Calendar, Collections}
-
 import com.taskadapter.connector.Priorities
 import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.model._
+import com.taskadapter.model.{GRelationType, _}
 import com.taskadapter.redmineapi.bean._
 import org.junit.Assert.{assertEquals, assertNull}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
+
+import java.util.{Calendar, Collections}
 
 @RunWith(classOf[JUnitRunner])
 class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll {
@@ -177,9 +177,9 @@ class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with 
     assertEquals(1, task.getRelations.size)
     val gRelation = task.getRelations.get(0)
 
-    gRelation.taskId.getId shouldBe 10
-    gRelation.relatedTaskId.getId shouldBe 20
-    gRelation.`type` shouldBe Precedes
+    gRelation.getTaskId.getId shouldBe 10
+    gRelation.getRelatedTaskId.getId shouldBe 20
+    gRelation.getType shouldBe GRelationType.precedes
   }
 
 }

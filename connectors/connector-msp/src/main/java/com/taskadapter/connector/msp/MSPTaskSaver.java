@@ -9,8 +9,8 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.definition.exceptions.EntityPersistenseException;
 import com.taskadapter.connector.msp.write.RealWriter;
 import com.taskadapter.model.GRelation;
+import com.taskadapter.model.GRelationType;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.Precedes$;
 import net.sf.mpxj.Duration;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.RelationType;
@@ -64,9 +64,9 @@ public final class MSPTaskSaver {
         try {
             ProjectFile projectFile = fileReader.readFile(setup.getTargetFile());
             for (GRelation relation : relations) {
-                if (relation.type().equals(Precedes$.MODULE$)) {
-                    Long intKey = relation.relatedTaskId().getId();
-                    Long sourceKey = relation.taskId().getId();
+                if (relation.getType().equals(GRelationType.precedes)) {
+                    Long intKey = relation.getRelatedTaskId().getId();
+                    Long sourceKey = relation.getTaskId().getId();
                     Task relatedTask = projectFile.getTaskByID(intKey.intValue());
                     Task sourceTask = projectFile.getTaskByID(sourceKey.intValue());
 
@@ -80,8 +80,8 @@ public final class MSPTaskSaver {
                     relatedTask.addPredecessor(sourceTask,
                             RelationType.FINISH_START, delay);
                 } else {
-                    logger.error("save relations for MSP: unknown type: " + relation.type());
-                    result.addGeneralError(new UnsupportedRelationType(relation.type()));
+                    logger.error("save relations for MSP: unknown type: " + relation.getType());
+                    result.addGeneralError(new UnsupportedRelationType(relation.getType()));
                 }
             }
 

@@ -1,9 +1,8 @@
 package com.taskadapter.connector.redmine
 
 import java.util
-
 import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.model.{AssigneeFullName, AssigneeLoginName, CreatedOn, CustomString, Description, DoneRatio, DueDate, EstimatedTime, GRelation, GTask, Precedes, Priority, ReporterFullName, ReporterLoginName, StartDate, Summary, TargetVersion, TaskStatus, TaskType, UpdatedOn}
+import com.taskadapter.model.{AssigneeFullName, AssigneeLoginName, CreatedOn, CustomString, Description, DoneRatio, DueDate, EstimatedTime, GRelation, GTask, Priority, GRelationType, ReporterFullName, ReporterLoginName, StartDate, Summary, TargetVersion, TaskStatus, TaskType, UpdatedOn}
 import com.taskadapter.redmineapi.bean.{Issue, IssueRelation}
 import org.slf4j.LoggerFactory
 
@@ -19,8 +18,8 @@ object RedmineToGTask {
       if (relation.getType == IssueRelation.TYPE.precedes.toString) { // if NOT equal to self!
         // See http://www.redmine.org/issues/7366#note-11
         if (!(relation.getIssueToId == rmIssue.getId)) {
-          val r = GRelation(new TaskId(rmIssue.getId.longValue(), rmIssue.getId + ""),
-            new TaskId(relation.getIssueToId.longValue(), relation.getIssueToId + ""), Precedes)
+          val r = new GRelation(new TaskId(rmIssue.getId.longValue(), rmIssue.getId + ""),
+            new TaskId(relation.getIssueToId.longValue(), relation.getIssueToId + ""), GRelationType.precedes)
           genericTask.getRelations.add(r)
         }
       }

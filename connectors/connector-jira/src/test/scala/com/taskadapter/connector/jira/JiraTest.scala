@@ -88,8 +88,8 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     val list = generateTasks
     val task1 = list(0)
     val task2 = list(1)
-    task1.getRelations.add(GRelation(new TaskId(task1.getId, task1.getKey),
-      new TaskId(task2.getId, task2.getKey), Precedes))
+    task1.getRelations.add(new GRelation(new TaskId(task1.getId, task1.getKey),
+      new TaskId(task2.getId, task2.getKey), GRelationType.precedes))
     TestUtilsJava.saveAndLoadList(connector, list.asJava, JiraFieldBuilder.getDefault().asJava)
     val issues = TestJiraClientHelper.findIssuesBySummary(client, task1.getValue(Summary))
     val createdIssue1 = issues.iterator.next

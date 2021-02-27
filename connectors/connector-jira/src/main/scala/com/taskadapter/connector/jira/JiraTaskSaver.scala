@@ -1,16 +1,15 @@
 package com.taskadapter.connector.jira
 
-import java.util
-
 import com.atlassian.jira.rest.client.api.JiraRestClient
 import com.atlassian.jira.rest.client.api.domain.input.{ComplexIssueInputFieldValue, FieldInput, IssueInput, LinkIssuesInput, TransitionInput}
 import com.atlassian.jira.rest.client.api.domain.{Issue, IssueFieldId, IssueType}
 import com.taskadapter.connector.common.{BasicIssueSaveAPI, RelationSaver}
 import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.connector.definition.exceptions.ConnectorException
-import com.taskadapter.model.{GRelation, Precedes}
+import com.taskadapter.model.{GRelation, GRelationType}
 import org.slf4j.LoggerFactory
 
+import java.util
 import scala.collection.JavaConverters._
 
 class JiraTaskSaver(client: JiraRestClient, issueTypeList: Iterable[IssueType],
@@ -75,16 +74,16 @@ class JiraTaskSaver(client: JiraRestClient, issueTypeList: Iterable[IssueType],
   @throws[ConnectorException]
   override def saveRelations(relations: util.List[GRelation]): Unit = {
     relations.asScala.foreach { relation =>
-      val taskKey = relation.taskId.getKey
-      val relatedTaskKey = relation.relatedTaskId.getKey
+      val taskKey = relation.getTaskId.getKey
+      val relatedTaskKey = relation.getRelatedTaskId.getKey
 
-      if (relation.`type` == Precedes) {
+      if (relation.getType == GRelationType.precedes) {
         var linkTypeName = JiraConstants.getJiraLinkNameForPrecedes
         val input = new LinkIssuesInput(taskKey, relatedTaskKey, linkTypeName)
         val promise = client.getIssueClient.linkIssue(input)
         promise.claim
       } else {
-        logger.info("Ignoring not supported issue link type: " + relation.`type` + ". JIRA connector only supports " + Precedes)
+        logger.info("Ignoring not supported issue link type: " + relation.getType + ". JIRA connector only supports " + GRelationType.precedes)
       }
     }
   }

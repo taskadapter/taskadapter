@@ -1,11 +1,10 @@
 package com.taskadapter.connector.msp
 
-import java.util
-
 import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.model.{AssigneeFullName, CustomString, Description, GRelation, GTask, Precedes, Summary}
+import com.taskadapter.model.{AssigneeFullName, CustomString, Description, GRelation, GRelationType, GTask, Summary}
 import net.sf.mpxj.{ConstraintType, Duration, ProjectProperties, Relation, RelationType, Resource, Task, TimeUnit}
 
+import java.util
 import scala.collection.JavaConverters._
 
 object MSPToGTask {
@@ -77,10 +76,10 @@ class MSPToGTask private[msp](var projectProperties: ProjectProperties) {
         def foo(relation: Relation) = {
           val sourceTask = relation.getSourceTask
           val targetTask = relation.getTargetTask
-          val r = GRelation(
+          val r = new GRelation(
             new TaskId(sourceTask.getUniqueID.longValue(), sourceTask.getUniqueID + ""),
             new TaskId(targetTask.getUniqueID.longValue(), targetTask.getUniqueID + ""),
-            Precedes)
+            GRelationType.precedes)
           genericTask.getRelations.add(r)
         }
 
