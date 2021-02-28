@@ -1,6 +1,5 @@
 package com.taskadapter.connector;
 
-import com.taskadapter.connector.common.FieldMappingBuilder;
 import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.model.Field;
 
@@ -19,7 +18,11 @@ public class NewConfigSuggester {
      */
     public static List<FieldMapping<?>> suggestedFieldMappingsForNewConfig(List<Field<?>> list1, List<Field<?>> list2) {
         var listIntersection = list1.stream().filter(list2::contains).collect(Collectors.toList());
-        return listIntersection.stream().map(FieldMappingBuilder::getMapping)
+        return listIntersection.stream().map(NewConfigSuggester::duplicateFieldIntoMapping)
                 .collect(Collectors.toList());
+    }
+
+    public static <T> FieldMapping<T> duplicateFieldIntoMapping(Field<T> field) {
+        return FieldMapping.apply(field, field, true, null);
     }
 }
