@@ -51,10 +51,10 @@ public class TaskKeeperLocationStorage {
 
     private PreviouslyCreatedTasksCache loadCache(String location1, String location2) throws IOException {
         var file = getOrCreateFileLocation(location1, location2);
-        var fileBody = Files.toString(file, StandardCharsets.UTF_8);
-        if (fileBody.isEmpty()) {
+        if (!file.exists() || file.length() == 0) {
             return new PreviouslyCreatedTasksCache("", "", java.util.List.of());
         }
+        var fileBody = Files.toString(file, StandardCharsets.UTF_8);
         return JsonUtil.parseJsonString(fileBody, PreviouslyCreatedTasksCache.class);
     }
 

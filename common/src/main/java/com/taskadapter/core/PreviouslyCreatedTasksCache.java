@@ -2,13 +2,14 @@ package com.taskadapter.core;
 
 import com.taskadapter.connector.definition.TaskKeyMapping;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class PreviouslyCreatedTasksCache {
     private String location1;
     private String location2;
-    private List<TaskKeyMapping> items;
+    private List<TaskKeyMapping> items = new ArrayList<>();
 
     public PreviouslyCreatedTasksCache() {
     }

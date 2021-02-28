@@ -18,6 +18,8 @@ import com.taskadapter.core.Updater;
 import com.taskadapter.model.GTask;
 import com.taskadapter.web.TaskKeeperLocationStorage;
 import com.taskadapter.webui.results.ExportResultFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import scala.Option;
 import scala.collection.JavaConverters;
 
@@ -37,6 +39,8 @@ import java.util.stream.Collectors;
  * this class should be aware of this behavior.
  */
 public class UISyncConfig {
+    private static final Logger logger = LoggerFactory.getLogger(UISyncConfig.class);
+
     private TaskKeeperLocationStorage taskKeeperLocationStorage;
 
     /**
@@ -271,6 +275,7 @@ public class UISyncConfig {
         try {
             return taskKeeperLocationStorage.loadTasks(location1, location2);
         } catch (IOException e) {
+            logger.error("Cannot load information about previously created tasks: " + e.toString());
             return new PreviouslyCreatedTasksResolver(new PreviouslyCreatedTasksCache()
                     .setLocation1(location1)
                     .setLocation2(location2));
