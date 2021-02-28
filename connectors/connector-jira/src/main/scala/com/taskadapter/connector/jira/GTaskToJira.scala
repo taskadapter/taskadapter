@@ -50,7 +50,7 @@ class GTaskToJira(config: JiraConfig,
       try {
         processField(issueInputBuilder, row.getKey, row.getValue)
       } catch {
-        case x: Exception => throw FieldConversionException(JiraConnector.ID, row.getKey, row.getValue, x.getMessage)
+        case x: Exception => throw new FieldConversionException(JiraConnector.ID, row.getKey, row.getValue, x.getMessage)
       }
     }
     val affectedVersion = GTaskToJira.getVersion(versions, config.getAffectedVersion)

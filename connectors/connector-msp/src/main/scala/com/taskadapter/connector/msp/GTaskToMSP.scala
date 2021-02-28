@@ -29,7 +29,7 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
       try {
         processField(field, value)
       } catch {
-        case e: Exception => throw FieldConversionException(MSPConnector.ID, field, value, e.getMessage)
+        case e: Exception => throw new FieldConversionException(MSPConnector.ID, field, value, e.getMessage)
       }
     }
     // assignee is a special case because updating this field requires information from several fields

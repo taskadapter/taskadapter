@@ -47,7 +47,7 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
       try {
         processField(issue, field, value)
       } catch {
-        case x: Exception => throw FieldConversionException(RedmineConnector.ID, field, value, x.getMessage)
+        case x: Exception => throw new FieldConversionException(RedmineConnector.ID, field, value, x.getMessage)
       }
     }
     issue

@@ -150,7 +150,7 @@ public class TrelloEditorFactory implements PluginEditorFactory<TrelloConfig, We
         if (e instanceof LoginNameNotSpecifiedException) return messages.get("errors.loginNameNotSet");
         if (e instanceof ProjectNotSetException) return messages.get("errors.boardNotSet");
         if (e instanceof FieldNotMappedException) return messages.format("trello.error.requiredFieldNotMapped",
-                ((FieldNotMappedException) e).fieldName());
+                ((FieldNotMappedException) e).getFieldName());
         if (!(e instanceof UnsupportedConnectorOperation)) {
             return e.getMessage();
         }

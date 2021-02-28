@@ -94,7 +94,7 @@ class EditConfigPage(configOps: ConfigOperations,
         showError(s)
         return false
       case e: FieldNotMappedException =>
-        val s = Page.message("error.fieldSelectedForExportNotMapped", e.fieldName)
+        val s = Page.message("error.fieldSelectedForExportNotMapped", e.getFieldName())
         showError(s)
         return false
       case e: BadConfigException =>

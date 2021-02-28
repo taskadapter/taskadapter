@@ -25,7 +25,7 @@ object MappingsValidator {
         }
 
         string += Strings.nullToEmpty(row.getFieldInConnector2)
-        throw FieldNotMappedException(string)
+        throw new FieldNotMappedException(string)
       }
     }
   }

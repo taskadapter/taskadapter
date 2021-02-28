@@ -31,7 +31,7 @@ class GTaskToBasecamp(users: Seq[GUser]) extends ConnectorConverter[GTask, Basec
         try {
           processField(writer, field, value)
         } catch {
-          case e: Exception => throw FieldConversionException(BasecampConnector.ID, field, value, e.getMessage)
+          case e: Exception => throw new FieldConversionException(BasecampConnector.ID, field, value, e.getMessage)
         }
       }
       writer.endObject
