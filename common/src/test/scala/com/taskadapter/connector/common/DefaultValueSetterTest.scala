@@ -84,9 +84,9 @@ class DefaultValueSetterTest extends FunSpec with ScalaFutures with Matchers {
   // regression test for https://bitbucket.org/taskadapter/taskadapter/issues/85/subtasks-are-not-saved
   it("children are preserved") {
     val parent = new GTask
-    parent.setId(1l)
+    parent.setId(1L)
     val sub = new GTask
-    sub.setId(100l)
+    sub.setId(100L)
     parent.addChildTask(sub)
 
     val adapted = DefaultValueSetter.adapt(defaultRows.asJava, parent)
