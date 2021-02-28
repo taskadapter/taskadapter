@@ -24,6 +24,7 @@ import scala.collection.mutable
 @Route(value = "config", layout = classOf[Layout])
 @CssImport(value = "./styles/views/mytheme.css")
 class ConfigPage() extends BasePage with HasUrlParameter[String] {
+  private val logger = LoggerFactory.getLogger(classOf[ConfigPage])
   private val configOps: ConfigOperations = SessionController.buildConfigOperations()
   private val services: Preservices = SessionController.getServices
   private val sandbox: Sandbox = SessionController.createSandbox()
@@ -40,6 +41,8 @@ class ConfigPage() extends BasePage with HasUrlParameter[String] {
       add(LayoutsUtil.centered(Sizes.mainWidth,
         panel)
       )
+    } else {
+      logger.error("cannot find config with id " + configId)
     }
   }
 }
@@ -60,10 +63,7 @@ class ConfigPanel(config: UISyncConfig,
 
   val previousResultsPanel = new ResultsPanel(services, configId)
   val fieldMappingsPanel = new FieldMappingPanel(config, configOps)
-  val overviewPanel = new OverviewPanel(config)
-
-  private val rightButton = createArrow("arrow_right.png", _ => sync(config))
-  private val leftButton = createArrow("arrow_left.png", _ => sync(config.reverse))
+  val overviewPanel = new OverviewPanel(config, configOps)
 
   val overviewTab = new Tab("Overview")
   val mappingsTab = new Tab("Field mappings")
@@ -107,34 +107,7 @@ class ConfigPanel(config: UISyncConfig,
     configTitleLine.setText(config.getLabel)
   }
 
-  def createArrow(imageFileName: String, listener: ComponentEventListener[ClickEvent[Button]]): Button = {
-    val leftArrow = ImageLoader.getImage(imageFileName)
-    val button = new Button(leftArrow)
-    button.setHeight("40px")
-    button.setWidth("100px")
-    button.getElement.setProperty("title", Page.message("export.exportButtonTooltip"))
-    button.addClickListener(listener)
-    button
-  }
-
-  def loadConfig(): UISyncConfig = {
-    val maybeConfig = configOps.getConfig(configId)
-    if (maybeConfig.isEmpty) {
-      throw new RuntimeException(s"Config with id $configId is not found")
-    }
-    maybeConfig.get
-  }
-
-  /**
-    * Performs a synchronization operation from first connector to second.
-    *
-    * @param config base config. May be saved!
-    */
-  private def sync(config: UISyncConfig): Unit = {
-    exportCommon(config)
-  }
-
-  class OverviewPanel(config: UISyncConfig) extends VerticalLayout {
+  class OverviewPanel(config: UISyncConfig, configOps: ConfigOperations) extends VerticalLayout {
     val height = "100px"
 
     val horizontalLayout = new HorizontalLayout
@@ -145,6 +118,43 @@ class ConfigPanel(config: UISyncConfig,
       Page.message("configSummary.validationPanelCaption", config.getConnector2.getLabel))
     val validationPanelSaveToLeft = new ValidationMessagesPanel(
       Page.message("configSummary.validationPanelCaption", config.getConnector1.getLabel))
+
+    private val rightButton = createArrow("arrow_right.png", _ => {
+      sync(reloadConfig(config.getConfigId))
+    })
+    private val leftButton = createArrow("arrow_left.png", _ => {
+      sync(reloadConfig(config.getConfigId).reverse)
+    })
+
+    private def createArrow(imageFileName: String, listener: ComponentEventListener[ClickEvent[Button]]): Button = {
+      val leftArrow = ImageLoader.getImage(imageFileName)
+      val button = new Button(leftArrow)
+      button.setHeight("40px")
+      button.setWidth("100px")
+      button.getElement.setProperty("title", Page.message("export.exportButtonTooltip"))
+      button.addClickListener(listener)
+      button
+    }
+
+    /**
+      * reload config from disk in case it was changed in another UI panel, or maybe even externally
+      */
+    private def reloadConfig(configId: ConfigId): UISyncConfig = {
+      val maybeConfig = configOps.getConfig(configId)
+      if (maybeConfig.isEmpty) {
+        throw new RuntimeException(s"Config with id $configId is not found")
+      }
+      maybeConfig.get
+    }
+
+    /**
+      * Performs a synchronization operation from first connector to second.
+      *
+      * @param config base config. May be saved!
+      */
+    private def sync(config: UISyncConfig): Unit = {
+      exportCommon(config)
+    }
 
     private def showEditConnectorDialog(connectorConfig: UIConnectorConfig,
                                         configSaver: Runnable, sandbox: Sandbox): Unit = {
