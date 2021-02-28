@@ -1,7 +1,5 @@
 package com.taskadapter.connector.basecamp.classic
 
-import java.util
-
 import com.taskadapter.connector.basecamp.classic.beans.{BasecampProject, TodoList}
 import com.taskadapter.connector.basecamp.classic.exceptions.ObjectNotFoundException
 import com.taskadapter.connector.basecamp.classic.transport.{BaseCommunicator, ObjectAPI, ObjectAPIFactory}
@@ -9,9 +7,9 @@ import com.taskadapter.connector.testlib.CommonTestChecks
 import com.taskadapter.model.GTaskBuilder
 import org.junit.Assert.{assertEquals, assertNotNull, assertTrue}
 import org.junit.Ignore
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
+
+import java.util
 
 /**
   * Basecamp tests are now ignored - there are no known TaskAdapter users of basecamp.
@@ -24,7 +22,7 @@ class BasecampClassicIT extends FunSpec with Matchers with BeforeAndAfter with B
   it("task is created and loaded") {
     withTempProject { todoListKey =>
       CommonTestChecks.taskIsCreatedAndLoaded(getConnector(todoListKey),
-        GTaskBuilder.withRandom(BasecampClassicField.content),
+        GTaskBuilder.gtaskWithRandom(BasecampClassicField.content),
         BasecampClassicFieldBuilder.getDefault(), Seq(BasecampClassicField.content),
         CommonTestChecks.skipCleanup)
     }
@@ -33,7 +31,7 @@ class BasecampClassicIT extends FunSpec with Matchers with BeforeAndAfter with B
     withTempProject { todoListKey =>
       CommonTestChecks.taskCreatedAndUpdatedOK(TestBasecampConfig.setup.getHost,
         getConnector(todoListKey), BasecampClassicFieldBuilder.getDefault(),
-        GTaskBuilder.withRandom(BasecampClassicField.content),
+        GTaskBuilder.gtaskWithRandom(BasecampClassicField.content),
         BasecampClassicField.content, "new value",
         CommonTestChecks.skipCleanup)
     }

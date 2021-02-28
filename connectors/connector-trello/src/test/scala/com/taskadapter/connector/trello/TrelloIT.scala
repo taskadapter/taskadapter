@@ -3,7 +3,7 @@ package com.taskadapter.connector.trello
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.NewConnector
 import com.taskadapter.connector.definition.exceptions.ConnectorException
-import com.taskadapter.connector.testlib.{CommonTestChecks, ITFixture}
+import com.taskadapter.connector.testlib.{CommonTestChecks, CommonTestChecksJava, ITFixture}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.{Description, GTask, GTaskBuilder, ReporterFullName, ReporterLoginName, Summary}
 import org.junit.runner.RunWith
@@ -27,7 +27,7 @@ class TrelloIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
       val task = buildTask.setValue(ReporterLoginName, "altest6")
         .setValue(ReporterFullName, "Alex Skor")
         .setValue(Description, "desc")
-      val fixture = ITFixture("Trello server", getConnector(boardId), CommonTestChecks.skipCleanup)
+      val fixture = ITFixture("Trello server", getConnector(boardId), CommonTestChecksJava.skipCleanup)
       fixture.taskIsCreatedAndLoaded(task,
         Seq(Description, Summary, TrelloField.listName, ReporterLoginName, ReporterFullName))
     }
@@ -38,7 +38,7 @@ class TrelloIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
       CommonTestChecks.taskCreatedAndUpdatedOK("",
         getConnector(boardId), TrelloFieldBuilder.getDefault().asScala,
         buildTask, Summary, "new value",
-        CommonTestChecks.skipCleanup)
+        CommonTestChecksJava.skipCleanup)
     }
   }
 
@@ -56,7 +56,7 @@ class TrelloIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
 
 
   def buildTask: GTask = {
-    val task = GTaskBuilder.withRandom(Summary)
+    val task = GTaskBuilder.gtaskWithRandom(Summary)
     task.setValue(TrelloField.listName, "To Do")
     task
   }

@@ -1,7 +1,8 @@
 package com.taskadapter.connector.redmine
 
-import java.util.Calendar
+import com.taskadapter.connector.TestFieldBuilder
 
+import java.util.Calendar
 import com.taskadapter.connector.common.TreeUtils
 import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.connector.testlib._
@@ -83,7 +84,7 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
     c2.setValue(Summary, "Child 2 of " + summary)
     t.addChildTask(c2)
 
-    val loadedTasks = TestUtils.saveAndLoadAll(getConnector(), t, RedmineFieldBuilder.getDefault().asJava)
+    val loadedTasks = TestUtils.saveAndLoadAll(getConnector(), t, TestFieldBuilder.getSummaryRow())
 
     val tree = TreeUtils.buildTreeFromFlatList(loadedTasks.asJava)
 
@@ -182,7 +183,7 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
   }
 
   it("tasks are created without errors") {
-    CommonTestChecks.createsTasks(getConnector(), RedmineFieldBuilder.getDefault(), GTaskBuilder.getTwo(),
+    CommonTestChecks.createsTasks(getConnector(), TestFieldBuilder.getSummaryRow(), GTaskBuilder.getTwo(),
       CommonTestChecks.skipCleanup)
   }
 

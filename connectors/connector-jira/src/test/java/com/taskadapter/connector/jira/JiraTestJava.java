@@ -90,7 +90,7 @@ public class JiraTestJava {
     }
 
     private static GTask task(String taskTypeName) {
-        return GTaskBuilder.withRandomJava(JavaFieldAdapter.summary).setValue(TaskType$.MODULE$, taskTypeName);
+        return GTaskBuilder.gtaskWithRandomJava(JavaFieldAdapter.summary).setValue(TaskType$.MODULE$, taskTypeName);
     }
 
     private JiraConnector getConnector() {

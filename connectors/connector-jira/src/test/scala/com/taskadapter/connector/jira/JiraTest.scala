@@ -1,6 +1,7 @@
 package com.taskadapter.connector.jira
 
 import com.google.common.collect.Iterables
+import com.taskadapter.connector.TestFieldBuilder
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.connector.testlib.{CommonTestChecks, ITFixture, TestUtilsJava}
@@ -27,18 +28,12 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
 
   logger.info("Running JIRA tests using: " + setup.getHost)
 
-  private val fixture = ITFixture(setup.getHost, connector, id => TestJiraClientHelper.deleteTasks(client, id))
+  private val fixture = ITFixture(setup.getHost, connector, id => {
+    TestJiraClientHelper.deleteTasks(client, id)
+    null
+  })
 
   describe("Create") {
-    it("connector does not fail empty tasks list") {
-      connector.saveData(PreviouslyCreatedTasksResolver.empty, List[GTask]().asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault().asJava)
-    }
-
-    it("tasks are created without errors") {
-      CommonTestChecks.createsTasks(connector, JiraFieldBuilder.getDefault(), GTaskBuilder.getTwo(),
-        id => TestJiraClientHelper.deleteTasks(client, id))
-    }
-
     it("assignee and reporter are set") {
       val userPromise = client.getUserClient.getUser(setup.getUserName)
       val jiraUser = userPromise.claim
@@ -47,7 +42,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
       task.setValue(AssigneeLoginName, jiraUser.getName)
 
       task.setValue(ReporterLoginName, jiraUser.getName)
-      val loadedTask = TestUtilsJava.saveAndLoad(connector, task, JiraFieldBuilder.getDefault().asJava)
+      val loadedTask = TestUtilsJava.saveAndLoad(connector, task, TestFieldBuilder.getSummaryAndAssigneeLogin())
       loadedTask.getValue(AssigneeLoginName) shouldBe jiraUser.getName
       loadedTask.getValue(AssigneeFullName) shouldBe jiraUser.getDisplayName
 
@@ -66,21 +61,13 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
 
   describe("Update") {
     it("fields are updated") {
-      fixture.taskCreatedAndUpdatedOK(GTaskBuilder.withRandom(Summary),
+      fixture.taskCreatedAndUpdatedOK(GTaskBuilder.gtaskWithRandom(Summary),
         Seq((TaskStatus, "In Progress"),
           (Summary, "new value"),
           (Description, "new description")
         )
       )
     }
-  }
-
-  it("testGetIssuesByProject") {
-    val tasks = generateTasks
-    connector.saveData(PreviouslyCreatedTasksResolver.empty, tasks.asJava, ProgressMonitorUtils.DUMMY_MONITOR, JiraFieldBuilder.getDefault().asJava)
-    val jql = JqlBuilder.findIssuesByProject(config.getProjectKey)
-    val issues = JiraClientHelper.findIssues(client, jql)
-    assertThat(Iterables.size(issues)).isGreaterThan(1)
   }
 
   it("two issues linked") {
@@ -90,7 +77,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     val task2 = list(1)
     task1.getRelations.add(new GRelation(new TaskId(task1.getId, task1.getKey),
       new TaskId(task2.getId, task2.getKey), GRelationType.precedes))
-    TestUtilsJava.saveAndLoadList(connector, list.asJava, JiraFieldBuilder.getDefault().asJava)
+    TestUtilsJava.saveAndLoadList(connector, list.asJava, TestFieldBuilder.getSummaryAndAssigneeLogin())
     val issues = TestJiraClientHelper.findIssuesBySummary(client, task1.getValue(Summary))
     val createdIssue1 = issues.iterator.next
     val links = createdIssue1.getIssueLinks
@@ -104,7 +91,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   }
 
   private def generateTasks: List[GTask] = {
-    List(GTaskBuilder.withSummary().setId(1l).setKey("1"),
-      GTaskBuilder.withSummary().setId(2l).setKey("2"))
+    List(GTaskBuilder.withSummary().setId(1L).setKey("1"),
+      GTaskBuilder.withSummary().setId(2L).setKey("2"))
   }
 }

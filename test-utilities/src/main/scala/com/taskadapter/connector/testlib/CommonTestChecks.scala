@@ -15,10 +15,10 @@ import scala.collection.JavaConverters._
 object CommonTestChecks extends Matchers {
   private val logger = LoggerFactory.getLogger(CommonTestChecks.getClass)
 
-  def skipCleanup(id: TaskId): Unit = {}
+  def skipCleanup : java.util.function.Function[TaskId, Void] = taskId => null
 
   def taskIsCreatedAndLoaded(connector: NewConnector, task: GTask, rows: Seq[FieldRow[_]], fields: Seq[Field[_]],
-                             cleanup: TaskId => Unit): Unit = {
+                             cleanup: java.util.function.Function[TaskId, Void]): Unit = {
     val tasksQty = 1
 
     val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, List(task).asJava, ProgressMonitorUtils.DUMMY_MONITOR,
@@ -35,15 +35,14 @@ object CommonTestChecks extends Matchers {
     foundTask.isPresent shouldBe true
 
     // check all requested fields
-    fields.foreach(f=> foundTask.get.getValue(f) shouldBe task.getValue(f))
+    fields.foreach(f => foundTask.get.getValue(f) shouldBe task.getValue(f))
 
     cleanup(createdTask1Id)
   }
 
-
-  def createsTasks(connector: NewConnector, rows: List[FieldRow[_]], tasks: List[GTask],
-                   cleanup: TaskId => Unit): Unit = {
-    val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, tasks.asJava, ProgressMonitorUtils.DUMMY_MONITOR, rows.asJava)
+  def createsTasks(connector: NewConnector, rows: java.util.List[FieldRow[_]], tasks: java.util.List[GTask],
+                   cleanup: java.util.function.Function[TaskId, Void]): Unit = {
+    val result = connector.saveData(PreviouslyCreatedTasksResolver.empty, tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows)
     assertFalse(result.hasErrors)
     assertEquals(tasks.size, result.getCreatedTasksNumber)
     logger.debug(s"created $result")
@@ -53,7 +52,7 @@ object CommonTestChecks extends Matchers {
   def fieldIsSavedByDefault(connector: NewConnector, task: GTask,
                             suggestedMappings: java.util.List[Field[_]],
                             fieldToSearch: Field[_],
-                            cleanup: TaskId => Unit): Unit = {
+                            cleanup: java.util.function.Function[TaskId, Void]): Unit = {
     val mappings = NewConfigSuggester.suggestedFieldMappingsForNewConfig(suggestedMappings, suggestedMappings)
     val rows = MappingBuilder.build(mappings, ExportDirection.RIGHT)
     val loadedTask = TestUtils.saveAndLoadViaSummary(connector, task, rows, fieldToSearch)
@@ -64,13 +63,13 @@ object CommonTestChecks extends Matchers {
   def taskCreatedAndUpdatedOK[T](targetLocation: String, connector: NewConnector, rows: Seq[FieldRow[_]], task: GTask,
                                  fieldToChangeInTest: Field[T],
                                  newValue: T,
-                                 cleanup: TaskId => Unit): Unit = {
+                                 cleanup: java.util.function.Function[TaskId, Void]): Unit = {
     taskCreatedAndUpdatedOK(targetLocation, connector, rows, task, Seq((fieldToChangeInTest, newValue)), cleanup)
   }
 
   def taskCreatedAndUpdatedOK[T](targetLocation: String, connector: NewConnector, rows: Seq[FieldRow[_]], task: GTask,
                                  toUpdate: Seq[(Field[T], T)],
-                                 cleanup: TaskId => Unit): Unit = {
+                                 cleanup: java.util.function.Function[TaskId, Void]): Unit = {
 
     // CREATE
     val result = TaskSaver.save(PreviouslyCreatedTasksResolver.empty, connector, "some name", rows.asJava, util.Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR)
@@ -105,10 +104,11 @@ object CommonTestChecks extends Matchers {
 
 }
 
-case class ITFixture(targetLocation: String, connector: NewConnector, cleanup: TaskId => Unit) {
+case class ITFixture(targetLocation: String, connector: NewConnector, cleanup: java.util.function.Function[TaskId, Void]) {
   def taskIsCreatedAndLoaded(task: GTask, fieldNameToSearch: Field[_]): Unit = {
     taskIsCreatedAndLoaded(task, Seq(fieldNameToSearch))
   }
+
   def taskIsCreatedAndLoaded(task: GTask, fields: Seq[Field[_]]): Unit = {
     CommonTestChecks.taskIsCreatedAndLoaded(connector, task, FieldRowBuilder.rows(fields), fields, cleanup)
   }
