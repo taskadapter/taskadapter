@@ -10,7 +10,7 @@ public class FieldRowFinder {
     // TODO 14 move to common?
     public static boolean containsTargetField(Iterable<FieldRow<?>> fieldRows, Field<?> field) {
         return Lists.newArrayList(fieldRows).stream().anyMatch(row -> {
-            Optional<? extends Field<?>> target = row.targetField();
+            Optional<? extends Field<?>> target = row.getTargetField();
             return target.isPresent()
                     && target.get().getClass().getName().equals(field.getClass().getName());
         });

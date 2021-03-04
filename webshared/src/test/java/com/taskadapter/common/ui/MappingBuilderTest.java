@@ -28,8 +28,8 @@ public class MappingBuilderTest {
                 ExportDirection.RIGHT
 
         );
-        assertThat(rows.get(0).sourceField().get().name()).isEqualTo("JiraSummary");
-        assertThat(rows.get(0).targetField().get().name()).isEqualTo("RedmineSummary");
+        assertThat(rows.get(0).getSourceField().get().name()).isEqualTo("JiraSummary");
+        assertThat(rows.get(0).getTargetField().get().name()).isEqualTo("RedmineSummary");
     }
 
     @Test
@@ -40,7 +40,7 @@ public class MappingBuilderTest {
                 ExportDirection.LEFT
 
         );
-        assertThat(rows.get(0).sourceField().get().name()).isEqualTo("RedmineSummary");
-        assertThat(rows.get(0).targetField().get().name()).isEqualTo("JiraSummary");
+        assertThat(rows.get(0).getSourceField().get().name()).isEqualTo("RedmineSummary");
+        assertThat(rows.get(0).getTargetField().get().name()).isEqualTo("JiraSummary");
     }
 }

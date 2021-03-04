@@ -26,8 +26,8 @@ public class DefaultValueSetter {
     }
 
     private static <T> void adaptRow(GTask task, GTask result, FieldRow<T> row) {
-        if (row.targetField().isPresent()) {
-            var fieldToLoadValueFrom = row.sourceField();
+        if (row.getTargetField().isPresent()) {
+            var fieldToLoadValueFrom = row.getSourceField();
             var currentFieldValue = fieldToLoadValueFrom.map(task::getValue);
 
             var newValue =
@@ -35,10 +35,10 @@ public class DefaultValueSetter {
                             (T) getValueWithProperType(
                                     // use a fake string field if no field exists for the source side. value will come from "default" then.
                                     fieldToLoadValueFrom.orElse((Field<T>) Field.apply("dummy")),
-                                    row.defaultValueForEmpty())
+                                    row.getDefaultValueForEmpty())
                             : currentFieldValue.get();
 
-            var targetField = row.targetField().get();
+            var targetField = row.getTargetField().get();
             result.setValue(targetField, newValue);
         }
     }

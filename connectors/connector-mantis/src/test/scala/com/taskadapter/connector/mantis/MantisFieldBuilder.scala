@@ -6,8 +6,8 @@ import com.taskadapter.model.{Description, Summary}
 object MantisFieldBuilder {
   def getDefault(): List[FieldRow[_]] = {
     List(
-      FieldRow(Summary, Summary, ""),
-      FieldRow(Description, Description, "-")
+      FieldRow.apply(Summary, Summary, ""),
+      FieldRow.apply(Description, Description, "-")
     )
   }
 }

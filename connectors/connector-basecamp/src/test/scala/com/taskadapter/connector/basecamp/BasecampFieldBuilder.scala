@@ -5,7 +5,7 @@ import com.taskadapter.connector.FieldRow
 object BasecampFieldBuilder {
   def getDefault(): List[FieldRow[_]] = {
     List(
-      FieldRow(BasecampField.content, BasecampField.content, ""),
+      FieldRow.apply(BasecampField.content, BasecampField.content, ""),
     )
   }
 }
