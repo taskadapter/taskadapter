@@ -1,31 +1,26 @@
 package com.taskadapter.config
 
 import com.taskadapter.connector.common.ConfigUtils
-import com.taskadapter.connector.definition.FieldMapping
+import com.taskadapter.common.ui.FieldMapping
 import com.taskadapter.model.{AssigneeFullName, AssigneeLoginName, Children, ClosedOn, Components, CreatedOn, CustomDate, CustomFloat, CustomSeqString, CustomString, Description, DoneRatio, DueDate, EstimatedTime, Field, Id, Key, ParentKey, Priority, Relations, ReporterFullName, ReporterLoginName, SourceSystemId, StartDate, Summary, TargetVersion, TaskStatus, TaskType, UpdatedOn}
 
+import java.util.Optional
 import scala.util.parsing.json.JSON
+import scala.collection.JavaConverters._
 
 object JsonFactory {
   val gson = ConfigUtils.createDefaultGson
 
-  def toString(mappings: Seq[FieldMapping[_]]): String = {
-    val seq = mappings.map { m =>
-      val defaultValueJsonString = if (m.defaultValue == null) null else gson.toJson(m.defaultValue)
-      s"""{ "fieldInConnector1": ${toString(m.fieldInConnector1)}, "fieldInConnector2": ${toString(m.fieldInConnector2)},
-"defaultValue" : $defaultValueJsonString, "selected": "${m.selected}" }"""
+  def toString(mappings: java.util.List[FieldMapping[_]]): String = {
+    val seq = mappings.asScala.map { m =>
+      val defaultValueJsonString = if (m.getDefaultValue == null) null else gson.toJson(m.getDefaultValue)
+      val field1Block = JsonFactoryJava.optionalToString(m.getFieldInConnector1)
+      val field2Block = JsonFactoryJava.optionalToString(m.getFieldInConnector2)
+      s"""{ "fieldInConnector1": $field1Block, "fieldInConnector2": $field2Block,
+"defaultValue" : $defaultValueJsonString, "selected": "${m.isSelected}" }"""
     }
     val asd = seq.mkString(",")
     s"[ $asd ]".filter(_ >= ' ')
-  }
-
-
-  private def toString(f: Option[Field[_]]): String = {
-    if (f.isEmpty) {
-      "null"
-    } else {
-      s"""{ "type" : "${f.get.getClass.getSimpleName}", "name": "${f.get.name}" } """
-    }
   }
 
   def fromJsonString(jsonString: String): Seq[FieldMapping[_]] = {
@@ -35,12 +30,12 @@ object JsonFactory {
           val fieldInConnector1 = i("fieldInConnector1").asInstanceOf[Map[String, Any]]
           val fieldInConnector2 = i("fieldInConnector2").asInstanceOf[Map[String, Any]]
           val selected = java.lang.Boolean.parseBoolean(i("selected").toString)
-          val default = i("defaultValue")
+          val default = i.getOrElse("defaultValue", null)
 
           val field1 = fieldFromJson(fieldInConnector1)
           val field2 = fieldFromJson(fieldInConnector2)
-          FieldMapping(field1.asInstanceOf[Option[Field[Any]]],
-            field2.asInstanceOf[Option[Field[Any]]],
+          new FieldMapping(field1.asInstanceOf[Optional[Field[Any]]],
+            field2.asInstanceOf[Optional[Field[Any]]],
             selected,
             default.asInstanceOf[String])
         })
@@ -48,9 +43,9 @@ object JsonFactory {
     result
   }
 
-  private def fieldFromJson[T](json: Map[String, Any]): Option[Field[T]] = {
+  private def fieldFromJson[T](json: Map[String, Any]): Optional[Field[T]] = {
     if (json == null) {
-      return None
+      return Optional.empty()
     }
     val fieldName = json("name").asInstanceOf[String]
     val gType = json("type")
@@ -86,6 +81,6 @@ object JsonFactory {
       case "UpdatedOn$" => UpdatedOn
       case _ => throw new RuntimeException(s"unknown type: $gType")
     }
-    Some(result.asInstanceOf[Field[T]])
+    Optional.of(result.asInstanceOf[Field[T]])
   }
 }

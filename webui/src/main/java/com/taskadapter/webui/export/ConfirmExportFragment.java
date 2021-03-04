@@ -73,13 +73,13 @@ public class ConfirmExportFragment {
         var taskFieldsMappingFragment = new TaskFieldsMappingFragment(Page.MESSAGES,
                 config.getConnector1().getAllFields(), config.getConnector1().fieldNames(), config.getConnector1().getLabel(),
                 config.getConnector2().getAllFields(), config.getConnector2().fieldNames(), config.getConnector2().getLabel(),
-                JavaConverters.asScalaBuffer(config.getNewMappings()));
+                config.getNewMappings());
 
 
         layout.add(taskFieldsMappingFragment.getComponent());
         goButton.addClickListener(event -> {
             try {
-                var newFieldMappings = JavaConverters.seqAsJavaList(taskFieldsMappingFragment.getElements().toSeq());
+                var newFieldMappings = taskFieldsMappingFragment.getElements();
                 var possiblyUpdatedConfig = new UISyncConfig(config.getTaskKeeperLocationStorage(),
                         config.getConfigId(),
                         config.getLabel(),

@@ -9,7 +9,7 @@ import com.taskadapter.connector.jira.JiraConnector;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
 import com.taskadapter.connector.testlib.TestSaver;
-import com.taskadapter.connector.testlib.TestUtilsJava;
+import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.integrationtests.RedmineTestInitializer;
 import com.taskadapter.integrationtests.TestConfigs;
 import com.taskadapter.model.AssigneeFullName$;
@@ -83,7 +83,7 @@ public class JiraRedmineIT {
 
         SaveResult result = adapter.adapt(rows);
 
-        GTask redmine = TestUtilsJava.loadCreatedTask(redmineConnectorWithResolveAssignees, rows, result);
+        GTask redmine = TestUtils.loadCreatedTask(redmineConnectorWithResolveAssignees, rows, result);
         assertThat(redmine.getValue(Description$.MODULE$)).isEqualTo("description1");
     }
 
@@ -95,14 +95,14 @@ public class JiraRedmineIT {
                 new FieldRow(ReporterLoginNameOpt, ReporterLoginNameOpt, null)
         );
 
-        GTask fromJira = TestUtilsJava.saveAndLoad(jiraConnector,
+        GTask fromJira = TestUtils.saveAndLoad(jiraConnector,
                 new GTaskBuilder()
                         .withRandom(Summary$.MODULE$)
                         .withAssigneeLogin(RedmineTestInitializer.currentUser.getLoginName())
                         .build(),
                 rows);
 
-        GTask redmineResult = TestUtilsJava.saveAndLoad(redmineConnectorWithResolveAssignees, fromJira, rows);
+        GTask redmineResult = TestUtils.saveAndLoad(redmineConnectorWithResolveAssignees, fromJira, rows);
 
         assertThat(redmineResult.getValue(AssigneeFullName$.MODULE$)).isEqualTo("Redmine Admin");
         assertThat(redmineResult.getValue(AssigneeLoginName$.MODULE$)).isEqualTo("user");
@@ -122,7 +122,7 @@ public class JiraRedmineIT {
         assertThat(redmineTask.getValue(AssigneeLoginName$.MODULE$))
                 .isEqualTo(RedmineTestInitializer.currentUser.getLoginName());
 
-        GTask result = TestUtilsJava.saveAndLoad(jiraConnector, redmineTask,
+        GTask result = TestUtils.saveAndLoad(jiraConnector, redmineTask,
                 Arrays.asList(
                         new FieldRow(summaryOpt, summaryOpt, ""),
                         new FieldRow(AssigneeLoginNameOpt, AssigneeLoginNameOpt, null)

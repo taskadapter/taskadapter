@@ -1,6 +1,6 @@
 package com.taskadapter.connector.redmine.editor;
 
-import com.taskadapter.connector.definition.FieldMapping;
+import com.taskadapter.common.ui.FieldMapping;
 import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;

@@ -1,7 +1,7 @@
 package com.taskadapter.webui.pages
 
 import com.taskadapter.Constants
-import com.taskadapter.connector.definition.FieldMapping
+import com.taskadapter.common.ui.FieldMapping
 import com.taskadapter.connector.definition.exception.FieldNotMappedException
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.license.LicenseManager

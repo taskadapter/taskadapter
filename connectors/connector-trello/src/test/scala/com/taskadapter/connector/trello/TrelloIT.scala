@@ -3,7 +3,7 @@ package com.taskadapter.connector.trello
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.NewConnector
 import com.taskadapter.connector.definition.exceptions.ConnectorException
-import com.taskadapter.connector.testlib.{CommonTestChecks, CommonTestChecksJava, ITFixture}
+import com.taskadapter.connector.testlib.{CommonTestChecks, ITFixture}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model.{Description, GTask, GTaskBuilder, ReporterFullName, ReporterLoginName, Summary}
 import org.junit.runner.RunWith
@@ -27,18 +27,18 @@ class TrelloIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
       val task = buildTask.setValue(ReporterLoginName, "altest6")
         .setValue(ReporterFullName, "Alex Skor")
         .setValue(Description, "desc")
-      val fixture = ITFixture("Trello server", getConnector(boardId), CommonTestChecksJava.skipCleanup)
+      val fixture = new ITFixture("Trello server", getConnector(boardId), CommonTestChecks.skipCleanup)
       fixture.taskIsCreatedAndLoaded(task,
-        Seq(Description, Summary, TrelloField.listName, ReporterLoginName, ReporterFullName))
+        java.util.Arrays.asList(Description, Summary, TrelloField.listName, ReporterLoginName, ReporterFullName))
     }
   }
 
   it("task is created and updated") {
     withTempBoard { boardId =>
       CommonTestChecks.taskCreatedAndUpdatedOK("",
-        getConnector(boardId), TrelloFieldBuilder.getDefault().asScala,
+        getConnector(boardId), TrelloFieldBuilder.getDefault(),
         buildTask, Summary, "new value",
-        CommonTestChecksJava.skipCleanup)
+        CommonTestChecks.skipCleanup)
     }
   }
 

@@ -2,7 +2,6 @@ package com.taskadapter.connector.mantis
 
 import java.math.BigInteger
 import java.util.Calendar
-
 import biz.futureware.mantis.rpc.soap.client.ProjectData
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.testlib.{CommonTestChecks, ITFixture, TestSaver}
@@ -11,6 +10,8 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
 import org.slf4j.LoggerFactory
+
+import scala.collection.JavaConverters._
 
 @RunWith(classOf[JUnitRunner])
 class MantisIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll {
@@ -31,7 +32,7 @@ class MantisIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   config.setProjectKey(projectKey)
   val mantisConnector = new MantisConnector(config, setup)
 
-  private val fixture = ITFixture(setup.getHost, mantisConnector, id => CommonTestChecks.skipCleanup(id))
+  private val fixture = new ITFixture(setup.getHost, mantisConnector, id => CommonTestChecks.skipCleanup(id))
 
   override def afterAll() {
     if (mgr != null) mgr.deleteProject(new BigInteger(projectKey))
@@ -41,12 +42,12 @@ class MantisIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     fixture.taskIsCreatedAndLoaded(GTaskBuilder.withSummary()
       .setValue(AssigneeFullName, mantisUser.getReal_name)
       .setValue(Description, "123"),
-      Seq(AssigneeFullName, Summary, Description, DueDate))
+      java.util.List.of(AssigneeFullName, Summary, Description, DueDate))
   }
 
   it("task created and updated") {
     val task = GTaskBuilder.withSummary()
-    fixture.taskCreatedAndUpdatedOK(MantisFieldBuilder.getDefault(), task, Summary, "new value")
+    fixture.taskCreatedAndUpdatedOK(MantisFieldBuilder.getDefault().asJava, task, Summary, "new value")
   }
 
   private def getTestSaver(rows: java.util.List[FieldRow[_]]) = new TestSaver(getConnector(), rows)

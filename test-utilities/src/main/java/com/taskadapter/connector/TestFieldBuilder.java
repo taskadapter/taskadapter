@@ -1,20 +1,20 @@
 package com.taskadapter.connector;
 
 import com.taskadapter.model.AllFields;
-import scala.Option;
 
 import java.util.List;
+import java.util.Optional;
 
 public class TestFieldBuilder {
 
     public static final FieldRow<?> summaryRow = new FieldRow(
-            Option.apply(AllFields.summary()),
-            Option.apply(AllFields.summary()),
+            Optional.of(AllFields.summary()),
+            Optional.of(AllFields.summary()),
             "");
 
     public static final FieldRow<?> assigneeLoginNameRow = new FieldRow(
-            Option.apply(AllFields.assigneeLoginName()),
-            Option.apply(AllFields.assigneeLoginName()),
+            Optional.of(AllFields.assigneeLoginName()),
+            Optional.of(AllFields.assigneeLoginName()),
             null);
 
     public static List<FieldRow<?>> getSummaryRow() {

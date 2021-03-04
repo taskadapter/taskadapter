@@ -1,7 +1,7 @@
 package com.taskadapter.connector.jira;
 
 import com.google.common.base.Strings;
-import com.taskadapter.connector.definition.FieldMapping;
+import com.taskadapter.common.ui.FieldMapping;
 import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exception.FilterNotSetException;
 import com.taskadapter.connector.definition.exception.ForbiddenException;

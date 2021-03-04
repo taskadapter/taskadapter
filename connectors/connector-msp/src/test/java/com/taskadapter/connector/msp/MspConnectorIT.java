@@ -4,10 +4,9 @@ import com.taskadapter.connector.TestFieldBuilder;
 import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.FileSetup;
 import com.taskadapter.connector.testlib.CommonTestChecks;
-import com.taskadapter.connector.testlib.CommonTestChecksJava;
 import com.taskadapter.connector.testlib.FieldRowBuilder;
 import com.taskadapter.connector.testlib.ITFixture;
-import com.taskadapter.connector.testlib.TestUtilsJava;
+import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.model.AllFields;
 import com.taskadapter.model.AssigneeFullName$;
 import com.taskadapter.model.GTask;
@@ -16,7 +15,6 @@ import com.taskadapter.model.Summary$;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import scala.collection.JavaConverters;
 
 import java.io.File;
 import java.text.ParseException;
@@ -42,7 +40,7 @@ public class MspConnectorIT {
     @Test
     public void taskIsCreatedAndLoaded() {
         var fixture = new ITFixture("ta-test.tmp", getConnector(tempFolder.getRoot()),
-                CommonTestChecksJava.skipCleanup);
+                CommonTestChecks.skipCleanup);
         var task = new GTaskBuilder().withRandom(AllFields.summary())
                 .withRandom(MspField.taskDuration)
                 .withRandom(MspField.taskWork)
@@ -54,10 +52,8 @@ public class MspConnectorIT {
                 .setValue(AllFields.assigneeFullName(), "display name")
                 .setValue(AllFields.priority(), 888);
         fixture.taskIsCreatedAndLoaded(task,
-                JavaConverters.asScalaBuffer(
-                        List.of(AllFields.assigneeFullName(), MspField.taskDuration, MspField.taskWork, MspField.mustStartOn, MspField.finish, MspField.deadline,
-                                AllFields.description(), AllFields.priority(), AllFields.summary())
-                )
+                List.of(AllFields.assigneeFullName(), MspField.taskDuration, MspField.taskWork, MspField.mustStartOn, MspField.finish, MspField.deadline,
+                        AllFields.description(), AllFields.priority(), AllFields.summary())
         );
     }
 
@@ -70,20 +66,18 @@ public class MspConnectorIT {
                         .build(),
                 MspField.fields,
                 AllFields.description(),
-                CommonTestChecksJava.skipCleanup);
+                CommonTestChecks.skipCleanup);
     }
 
     @Test
     public void trimsFieldValueAndRemovesLineBreakAtTheEnd() {
         var textWithEndingLineBreak = " text " + System.lineSeparator();
         var task = new GTask().setValue(AllFields.summary(), textWithEndingLineBreak);
-        var created = TestUtilsJava.saveAndLoad(getConnector(tempFolder.getRoot()),
+        var created = TestUtils.saveAndLoad(getConnector(tempFolder.getRoot()),
                 task,
-                JavaConverters.seqAsJavaList(
-                        FieldRowBuilder.rows(
-                                JavaConverters.asScalaBuffer(
-                                        List.of(AllFields.summary())
-                                )))
+                FieldRowBuilder.rows(
+                        List.of(AllFields.summary())
+                )
         );
         assertThat(created.getValue(AllFields.summary())).isEqualTo("text");
     }
@@ -115,7 +109,7 @@ public class MspConnectorIT {
     public void twoTasksAreCreated() {
         CommonTestChecks.createsTasks(getConnector(tempFolder.getRoot()), TestFieldBuilder.getSummaryRow(),
                 java.util.List.of(GTaskBuilder.gtaskWithRandom(Summary$.MODULE$), GTaskBuilder.gtaskWithRandom(Summary$.MODULE$)),
-                CommonTestChecksJava.skipCleanup);
+                CommonTestChecks.skipCleanup);
     }
 
     private static MSPConnector getConnector(File folder) {

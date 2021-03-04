@@ -6,5 +6,6 @@ dependencies {
     // yes, this is "compile", not "testCompile" dependency because "test-utilities" module
     // is itself referenced as "testCompile" dependency
     compile libraries.junit
+    compile libraries.assertJ
     compile 'org.scalatest:scalatest_2.12:3.0.0'
 }

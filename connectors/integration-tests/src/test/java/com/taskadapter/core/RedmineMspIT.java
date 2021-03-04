@@ -11,7 +11,7 @@ import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
 import com.taskadapter.connector.testlib.ResourceLoader;
 import com.taskadapter.connector.testlib.TempFolder;
-import com.taskadapter.connector.testlib.TestUtilsJava;
+import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.integrationtests.RedmineTestInitializer;
 import com.taskadapter.integrationtests.RedmineTestLoader;
 import com.taskadapter.integrationtests.TestConfigs;
@@ -27,11 +27,11 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import scala.Option;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static com.taskadapter.core.JavaFieldAdapter.AssigneeFullNameOpt;
 import static com.taskadapter.core.JavaFieldAdapter.customStringOpt;
@@ -72,7 +72,7 @@ public class RedmineMspIT implements TempFolder {
     @Test
     public void assigneeCanBeLoadedFromMspAndSavedToRedmine() throws ConnectorException {
         MSPConnector mspConnector = new MSPConnector(getMspSetup("2tasks-projectlibre-assignees.xml"));
-        GTask redmineResult = TestUtilsJava.loadAndSave(mspConnector, redmineConnectorWithResolveAssignees,
+        GTask redmineResult = TestUtils.loadAndSave(mspConnector, redmineConnectorWithResolveAssignees,
                 Arrays.asList(new FieldRow(summaryOpt, summaryOpt, ""),
                         new FieldRow(AssigneeFullNameOpt, AssigneeFullNameOpt, null)
                 )
@@ -92,7 +92,7 @@ public class RedmineMspIT implements TempFolder {
         createRedmineHierarchy(targetRedmineConnector);
         MSPConnector mspConnector = getMspConnector(tempFolder.getRoot());
 
-        List<GTask> result = TestUtilsJava.loadAndSaveList(sourceRedmineConnector, mspConnector,
+        List<GTask> result = TestUtils.loadAndSaveList(sourceRedmineConnector, mspConnector,
                 Arrays.asList(new FieldRow(summaryOpt, summaryOpt, "")
                 )
         );
@@ -113,7 +113,7 @@ public class RedmineMspIT implements TempFolder {
 
         RedmineConnector redmineConnector = new RedmineConnector(redmineConfig, TestConfigs.getRedmineSetup());
         // save to Redmine
-        List<GTask> result = TestUtilsJava.saveAndLoadList(redmineConnector, loadedTasks,
+        List<GTask> result = TestUtils.saveAndLoadList(redmineConnector, loadedTasks,
                 JavaFieldAdapter.rows(JavaFieldAdapter.summary)
         );
         assertThat(result).overridingErrorMessage("must have created 2 tasks")
@@ -135,7 +135,7 @@ public class RedmineMspIT implements TempFolder {
         // save to Redmine
         RedmineConnector redmineConnector = new RedmineConnector(redmineConfig, TestConfigs.getRedmineSetup());
 
-        List<GTask> result = TestUtilsJava.saveAndLoadList(redmineConnector, loadedTasks,
+        List<GTask> result = TestUtils.saveAndLoadList(redmineConnector, loadedTasks,
                 JavaFieldAdapter.rows(JavaFieldAdapter.summary)
         );
         assertThat(result).overridingErrorMessage("must have created 13 tasks")
@@ -147,7 +147,7 @@ public class RedmineMspIT implements TempFolder {
     public void customValueSavedToAnotherCustomValueWithDefaultValue() throws RedmineException {
         List<FieldRow<?>> rows = Arrays.asList(
                 new FieldRow(summaryOpt, summaryOpt, ""),
-                new FieldRow(Option.apply(new CustomString("my_custom_1")), Option.apply(new CustomString("my_custom_2")), "default custom alex")
+                new FieldRow(Optional.of(new CustomString("my_custom_1")), Optional.of(new CustomString("my_custom_2")), "default custom alex")
         );
         Issue issue = RedmineTestUtil.createIssueInRedmineWithCustomField(redmineProject.getId(), new CustomString("my_custom_1"), "");
         SaveResult result = adapter.adapt(rows);
@@ -164,7 +164,7 @@ public class RedmineMspIT implements TempFolder {
     public void loadsCustomFieldInTaskAndSavesItToAnotherCustomField() throws RedmineException {
         List<FieldRow<?>> rows = Arrays.asList(
                 new FieldRow(summaryOpt, summaryOpt, ""),
-                new FieldRow(Option.apply(new CustomString("my_custom_1")), Option.apply(new CustomString("my_custom_2")), "")
+                new FieldRow(Optional.of(new CustomString("my_custom_1")), Optional.of(new CustomString("my_custom_2")), "")
         );
         Issue issue = RedmineTestUtil.createIssueInRedmineWithCustomField(redmineProject.getId(), new CustomString("my_custom_1"), "some value");
 
@@ -232,7 +232,7 @@ public class RedmineMspIT implements TempFolder {
         List<FieldRow<?>> redmineFields = Arrays.asList(new FieldRow(summaryOpt, summaryOpt, ""));
         try {
             GTask parent = GTaskBuilder.withSummary("parent task");
-            TaskId parentId = TestUtilsJava.save(redmineConnector, parent, redmineFields);
+            TaskId parentId = TestUtils.save(redmineConnector, parent, redmineFields);
 
             GTask sub1 = GTaskBuilder.withSummary("sub 1");
             sub1.setParentIdentity(parentId);
@@ -241,8 +241,8 @@ public class RedmineMspIT implements TempFolder {
             sub2.setParentIdentity(parentId);
 
 
-            TestUtilsJava.save(redmineConnector, sub1, redmineFields);
-            TestUtilsJava.save(redmineConnector, sub2, redmineFields);
+            TestUtils.save(redmineConnector, sub1, redmineFields);
+            TestUtils.save(redmineConnector, sub2, redmineFields);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -1,6 +1,7 @@
 package com.taskadapter.connector.basecamp.classic.editor;
 
 import com.google.common.base.Strings;
+import com.taskadapter.common.ui.FieldMapping;
 import com.taskadapter.connector.basecamp.classic.BasecampClassicConfig;
 import com.taskadapter.connector.basecamp.classic.BasecampClassicConnector;
 import com.taskadapter.connector.basecamp.classic.BasecampConfigValidator;
@@ -9,7 +10,6 @@ import com.taskadapter.connector.basecamp.classic.beans.BasecampProject;
 import com.taskadapter.connector.basecamp.classic.beans.TodoList;
 import com.taskadapter.connector.basecamp.classic.transport.BaseCommunicator;
 import com.taskadapter.connector.basecamp.classic.transport.ObjectAPIFactory;
-import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;

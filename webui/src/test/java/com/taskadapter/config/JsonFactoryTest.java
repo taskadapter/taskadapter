@@ -1,6 +1,6 @@
 package com.taskadapter.config;
 
-import com.taskadapter.connector.NewConfigSuggester;
+import com.taskadapter.common.ui.NewConfigSuggester;
 import com.taskadapter.model.AllFields;
 import com.taskadapter.model.CustomDate;
 import com.taskadapter.model.CustomFloat;
@@ -22,7 +22,7 @@ public class JsonFactoryTest {
                 NewConfigSuggester.duplicateFieldIntoMapping(CustomFloat.apply("f")),
                 NewConfigSuggester.duplicateFieldIntoMapping(CustomString.apply("f"))
         );
-        var str = JsonFactory.toString(JavaConverters.asScalaBuffer(fieldMappings));
+        var str = JsonFactory.toString(fieldMappings);
         var parsed = JavaConverters.seqAsJavaList(JsonFactory.fromJsonString(str));
         assertThat(parsed).isEqualTo(fieldMappings);
     }

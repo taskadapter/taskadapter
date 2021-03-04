@@ -1,6 +1,5 @@
-package com.taskadapter.connector;
+package com.taskadapter.common.ui;
 
-import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.model.Field;
 
 import java.util.List;
@@ -8,7 +7,7 @@ import java.util.stream.Collectors;
 
 /**
  * Given two maps of available connector-specific fields (for connector 1 and connector 2),
- * build a list of {@link com.taskadapter.connector.definition.FieldMapping} with suggested mappings: what fields in connector 1
+ * build a list of {@link FieldMapping} with suggested mappings: what fields in connector 1
  * are equivalent to fields in connector 2.
  * Equivalent means they refer to the same {@link com.taskadapter.model.Field}.
  */

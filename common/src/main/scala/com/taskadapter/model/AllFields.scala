@@ -12,4 +12,16 @@ object AllFields {
   val priority = Priority
   val assigneeLoginName = AssigneeLoginName
   val assigneeFullName = AssigneeFullName
+  val createdOn = CreatedOn
+  val updatedOn = UpdatedOn
+  val closedOn = ClosedOn
+  val components = Components
+  val estimatedTime = EstimatedTime
+  val id = Id
+  val key = Key
+  val startDate = StartDate
+  val targetVersion = TargetVersion
+  val taskStatus = TaskStatus
+  val reporterLoginName = ReporterLoginName
+  val reporterFullName = ReporterFullName
 }

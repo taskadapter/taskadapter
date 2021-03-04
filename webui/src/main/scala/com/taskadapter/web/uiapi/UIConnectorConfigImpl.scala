@@ -1,5 +1,6 @@
 package com.taskadapter.web.uiapi
 
+import com.taskadapter.common.ui.FieldMapping
 import com.taskadapter.connector.NewConnector
 import com.taskadapter.connector.definition._
 import com.taskadapter.connector.definition.exceptions.BadConfigException

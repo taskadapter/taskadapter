@@ -1,8 +1,9 @@
 package com.taskadapter.connector.msp.editor
 
+import com.taskadapter.common.ui.FieldMapping
 import com.taskadapter.connector.common.FileNameGenerator
 import com.taskadapter.connector.definition.exceptions.BadConfigException
-import com.taskadapter.connector.definition.{ConnectorConfig, FieldMapping, FileSetup}
+import com.taskadapter.connector.definition.{ConnectorConfig, FileSetup}
 import com.taskadapter.connector.msp._
 import com.taskadapter.connector.msp.editor.error.{InputFileNameNotSetException, OutputFileNameNotSetException}
 import com.taskadapter.web.configeditor.file.{FileProcessingResult, LocalModeFilePanel, ServerModeFilePanel}

@@ -8,17 +8,18 @@ import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.core.TaskLoader;
+import com.taskadapter.model.Field;
 import com.taskadapter.model.GTask;
-import scala.collection.Seq;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 import static com.taskadapter.model.GTaskUtils.ID_COMPARATOR;
 
-public class TestUtilsJava {
+public class TestUtils {
 
     /**
      * Uses a NEW instance of PreviouslyCreatedTasksResolver (empty) for each call, so this won't work for some tests
@@ -74,5 +75,30 @@ public class TestUtilsJava {
 
     public static Optional<GTask> findTaskInList(List<GTask> list, TaskId createdTaskId) {
         return list.stream().filter(t -> t.getIdentity().equals(createdTaskId)).findFirst();
+    }
+
+    /**
+     * @return the new task Key
+     */
+    public static GTask saveAndLoadViaSummary(NewConnector connector, GTask task, List<FieldRow<?>> rows, Field<?> fieldToSearch) throws ConnectorException {
+        var loadedTasks = saveAndLoadAll(connector, task, rows);
+        return findTaskByFieldName(loadedTasks, fieldToSearch, task.getValue(fieldToSearch).toString());
+    }
+
+    public static List<GTask> saveAndLoadAll(NewConnector connector, GTask task, List<FieldRow<?>> rows) throws ConnectorException {
+        connector.saveData(PreviouslyCreatedTasksResolver.empty, List.of(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
+        List<GTask> loaded = connector.loadData();
+        loaded.sort(Comparator.comparing(GTask::getId));
+        return loaded;
+    }
+
+    /**
+     * @return the found value or NULL if not found
+     */
+    public static GTask findTaskByFieldName(List<GTask> list, Field<?> field, String value) {
+        return list.stream()
+                .filter(t -> value.equals(t.getValue(field)))
+                .findFirst()
+                .orElse(null);
     }
 }

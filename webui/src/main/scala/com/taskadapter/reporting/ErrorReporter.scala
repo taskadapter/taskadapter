@@ -42,7 +42,7 @@ object ErrorReporter {
 
   private def getConfigInfo(config: UISyncConfig): String = {
     config.getConnector1.getConnectorTypeId + " - " + config.getConnector2.getConnectorTypeId +
-      div + FieldMappingFormatter.format(config.getFieldMappings().asScala)
+      div + FieldMappingFormatter.format(config.getFieldMappings())
   }
 
   def isAllowedToSend: Boolean = new SettingsManager().isErrorReportingEnabled

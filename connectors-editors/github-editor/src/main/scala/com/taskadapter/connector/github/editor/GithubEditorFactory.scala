@@ -1,8 +1,9 @@
 package com.taskadapter.connector.github.editor
 
 import com.google.common.base.Strings
+import com.taskadapter.common.ui.FieldMapping
+import com.taskadapter.connector.definition.WebConnectorSetup
 import com.taskadapter.connector.definition.exceptions.{BadConfigException, LoginNameNotSpecifiedException, ProjectNotSetException, ServerURLNotSetException, UnsupportedConnectorOperation}
-import com.taskadapter.connector.definition.{FieldMapping, WebConnectorSetup}
 import com.taskadapter.connector.github.{GithubConfig, GithubConnector}
 import com.taskadapter.web.configeditor.ProjectPanel
 import com.taskadapter.web.configeditor.server.ServerPanelWithLoginAndToken

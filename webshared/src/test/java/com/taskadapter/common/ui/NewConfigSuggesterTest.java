@@ -1,11 +1,9 @@
-package com.taskadapter.connector;
+package com.taskadapter.common.ui;
 
-import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.model.AllFields;
 import com.taskadapter.model.Description$;
 import com.taskadapter.model.DueDate$;
 import org.junit.Test;
-import scala.Option;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,12 +11,12 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class NewConfigSuggesterTest {
-    private static final FieldMapping summaryM = new FieldMapping(Option.apply(AllFields.summary()),
-            Option.apply(AllFields.summary()), true, null);
-    private static final FieldMapping descriptionM = new FieldMapping(Option.apply(Description$.MODULE$),
-            Option.apply(Description$.MODULE$), true, null);
-    private static final FieldMapping dueDateM = new FieldMapping(Option.apply(DueDate$.MODULE$),
-            Option.apply(DueDate$.MODULE$), true, null);
+    private static final FieldMapping summaryM = new FieldMapping(AllFields.summary(),
+            AllFields.summary(), true, null);
+    private static final FieldMapping descriptionM = new FieldMapping(Description$.MODULE$,
+            Description$.MODULE$, true, null);
+    private static final FieldMapping dueDateM = new FieldMapping(DueDate$.MODULE$,
+            DueDate$.MODULE$, true, null);
 
     @Test
     public void suggestsElementsFromLeftConnector() {

@@ -1,7 +1,5 @@
 package com.taskadapter.connector.msp
 
-import java.util.Calendar
-
 import com.taskadapter.connector.msp.MSPTestUtils.load
 import com.taskadapter.connector.testlib.TestUtils.findTaskByFieldName
 import com.taskadapter.model.Summary
@@ -9,11 +7,11 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
 
-import scala.collection.JavaConverters._
+import java.util.Calendar
 
 @RunWith(classOf[JUnitRunner])
 class DateTest extends FunSpec with Matchers {
-  val gtasks = load("start_date_by_constraint.xml").asScala
+  val gtasks = load("start_date_by_constraint.xml")
 
   it("start date must start on") {
     val gtask = findTaskByFieldName(gtasks, Summary, "must start on")

@@ -1,8 +1,7 @@
-package com.taskadapter.connector.common;
+package com.taskadapter.common.ui;
 
-import com.taskadapter.connector.MappingBuilder;
+import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.definition.ExportDirection;
-import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.model.Field;
 import org.junit.Test;
 
@@ -23,7 +22,7 @@ public class MappingBuilderTest {
 
     @Test
     public void exportRightProcessesSelectedFields() {
-        var rows = MappingBuilder.build(
+        List<FieldRow<?>> rows = MappingBuilder.build(
                 List.of(FieldMapping.apply(
                         Field.apply("JiraSummary"), Field.apply("RedmineSummary"), true, "default")),
                 ExportDirection.RIGHT
@@ -35,7 +34,7 @@ public class MappingBuilderTest {
 
     @Test
     public void exportLeftProcessesSelectedFields() {
-        var rows = MappingBuilder.build(
+        List<FieldRow<?>> rows = MappingBuilder.build(
                 List.of(FieldMapping.apply(
                         Field.apply("JiraSummary"), Field.apply("RedmineSummary"), true, "default")),
                 ExportDirection.LEFT

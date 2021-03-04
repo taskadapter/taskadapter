@@ -1,11 +1,11 @@
 package com.taskadapter.connector.common;
 
 import com.taskadapter.connector.FieldRow;
-import com.taskadapter.model.CustomString;
 import com.taskadapter.model.DefaultValueResolver;
 import com.taskadapter.model.Field;
 import com.taskadapter.model.GTask;
-import scala.Option;
+
+import java.util.Optional;
 
 /**
  * When saving a task, we need to set some of its fields to some default value if there is nothing there yet.
@@ -26,26 +26,24 @@ public class DefaultValueSetter {
     }
 
     private static <T> void adaptRow(GTask task, GTask result, FieldRow<T> row) {
-        if (row.targetField().isDefined()) {
+        if (row.targetField().isPresent()) {
             var fieldToLoadValueFrom = row.sourceField();
-            var currentFieldValue = fieldToLoadValueFrom.map(task::getValue).flatMap(Option::apply);
+            var currentFieldValue = fieldToLoadValueFrom.map(task::getValue);
 
-            T newValue;
-            if (fieldIsConsideredEmpty(currentFieldValue)) {
-                T valueWithProperType = (T) getValueWithProperType(
-                        // use a fake string field if no field exists for the source side. value will come from "default" then.
-                        fieldToLoadValueFrom.getOrElse(() -> CustomString.apply("dummy")),
-                        row.defaultValueForEmpty());
-                newValue = valueWithProperType;
-            } else {
-                newValue = currentFieldValue.get();
-            }
+            var newValue =
+                    fieldIsConsideredEmpty(currentFieldValue) ?
+                            (T) getValueWithProperType(
+                                    // use a fake string field if no field exists for the source side. value will come from "default" then.
+                                    fieldToLoadValueFrom.orElse((Field<T>) Field.apply("dummy")),
+                                    row.defaultValueForEmpty())
+                            : currentFieldValue.get();
+
             var targetField = row.targetField().get();
             result.setValue(targetField, newValue);
         }
     }
 
-    private static boolean fieldIsConsideredEmpty(Option<?> value) {
+    private static boolean fieldIsConsideredEmpty(Optional<?> value) {
         return value.isEmpty()
                 || (value.get() instanceof String && ((String) value.get()).isEmpty());
     }

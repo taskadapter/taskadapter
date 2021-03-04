@@ -2,7 +2,7 @@ package com.taskadapter.webui.config
 
 import com.google.common.base.Strings
 import com.taskadapter.config.StorageException
-import com.taskadapter.connector.definition.FieldMapping
+import com.taskadapter.common.ui.FieldMapping
 import com.taskadapter.connector.definition.exception.FieldNotMappedException
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.web.configeditor.EditorUtil
@@ -50,13 +50,13 @@ class EditConfigPage(configOps: ConfigOperations,
   val taskFieldsMappingFragment = new TaskFieldsMappingFragment(messages,
     config.getConnector1.getAllFields, config.getConnector1.fieldNames, config.getConnector1.getLabel,
     config.getConnector2.getAllFields, config.getConnector2.fieldNames, config.getConnector2.getLabel,
-    config.getNewMappings.asScala)
+    config.getNewMappings)
 
   layout.add(taskFieldsMappingFragment.getComponent)
 
   binder.readBean(config)
 
-  def getElements: Iterable[FieldMapping[_]] = {
+  def getElements: java.util.List[FieldMapping[_]] = {
     taskFieldsMappingFragment.getElements
   }
 
@@ -112,7 +112,7 @@ class EditConfigPage(configOps: ConfigOperations,
   private def save(): Unit = {
     try {
       saveUiElementsIntoModel()
-      val newFieldMappings = getElements.toSeq.asJava
+      val newFieldMappings = getElements
       val newConfig = new UISyncConfig(
         config.getTaskKeeperLocationStorage,
         config.getConfigId,

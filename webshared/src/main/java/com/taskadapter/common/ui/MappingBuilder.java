@@ -1,17 +1,17 @@
-package com.taskadapter.connector;
+package com.taskadapter.common.ui;
 
+import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.definition.ExportDirection;
-import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.model.Field;
-import scala.Option;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class MappingBuilder {
     public static List<FieldRow<?>> build(List<FieldMapping<?>> newMappings, ExportDirection exportDirection) {
         return newMappings.stream()
-                .filter(FieldMapping::selected)
+                .filter(FieldMapping::isSelected)
                 .map(mapping -> buildRow(mapping, exportDirection))
                 .collect(Collectors.toList());
     }
@@ -20,20 +20,20 @@ public class MappingBuilder {
         return new FieldRow<>(
                 getSourceField(mapping, exportDirection),
                 getTargetField(mapping, exportDirection),
-                mapping.defaultValue());
+                mapping.getDefaultValue());
     }
 
-    public static <T> Option<Field<T>> getSourceField(FieldMapping<T> fieldMapping, ExportDirection exportDirection) {
+    public static <T> Optional<Field<T>> getSourceField(FieldMapping<T> fieldMapping, ExportDirection exportDirection) {
         return switch (exportDirection) {
-            case RIGHT -> fieldMapping.fieldInConnector1();
-            case LEFT -> fieldMapping.fieldInConnector2();
+            case RIGHT -> fieldMapping.getFieldInConnector1();
+            case LEFT -> fieldMapping.getFieldInConnector2();
         };
     }
 
-    public static <T> Option<Field<T>> getTargetField(FieldMapping<T> fieldMapping, ExportDirection exportDirection) {
+    public static <T> Optional<Field<T>> getTargetField(FieldMapping<T> fieldMapping, ExportDirection exportDirection) {
         return switch (exportDirection) {
-            case RIGHT -> fieldMapping.fieldInConnector2();
-            case LEFT -> fieldMapping.fieldInConnector1();
+            case RIGHT -> fieldMapping.getFieldInConnector2();
+            case LEFT -> fieldMapping.getFieldInConnector1();
         };
     }
 }

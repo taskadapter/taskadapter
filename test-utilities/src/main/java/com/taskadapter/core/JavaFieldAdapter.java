@@ -8,27 +8,28 @@ import com.taskadapter.model.AssigneeLoginName$;
 import com.taskadapter.model.CustomString;
 import com.taskadapter.model.Description$;
 import com.taskadapter.model.Field;
+import com.taskadapter.model.Priority$;
 import com.taskadapter.model.ReporterLoginName$;
 import com.taskadapter.model.Summary$;
 import com.taskadapter.model.TaskType$;
-import scala.Option;
-import scala.collection.JavaConverters;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class JavaFieldAdapter {
-    public static final Option<Summary$> summaryOpt = Option.apply(AllFields.summary());
-    public static final Option<AssigneeLoginName$> AssigneeLoginNameOpt = Option.apply(AssigneeLoginName$.MODULE$);
-    public static final Option<AssigneeFullName$> AssigneeFullNameOpt = Option.apply(AssigneeFullName$.MODULE$);
-    public static final Option<ReporterLoginName$> ReporterLoginNameOpt = Option.apply(ReporterLoginName$.MODULE$);
-    public static final Option<Description$> descriptionOpt = Option.apply(AllFields.description());
+    public static final Optional<Summary$> summaryOpt = Optional.of(AllFields.summary());
+    public static final Optional<AssigneeLoginName$> AssigneeLoginNameOpt = Optional.of(AssigneeLoginName$.MODULE$);
+    public static final Optional<AssigneeFullName$> AssigneeFullNameOpt = Optional.of(AssigneeFullName$.MODULE$);
+    public static final Optional<ReporterLoginName$> ReporterLoginNameOpt = Optional.of(ReporterLoginName$.MODULE$);
+    public static final Optional<Description$> descriptionOpt = Optional.of(AllFields.description());
+    public static final Optional<Priority$> priorityOpt = Optional.of(AllFields.priority());
 
     public static final Summary$ summary = AllFields.summary();
     public static final TaskType$ taskType = AllFields.taskType();
 
-    public static Option<CustomString> customStringOpt(String value) {
-        return Option.apply(new CustomString(value));
+    public static Optional<CustomString> customStringOpt(String value) {
+        return Optional.of(new CustomString(value));
     }
 
     public static CustomString customString(String value) {
@@ -36,10 +37,8 @@ public class JavaFieldAdapter {
     }
 
     public static List<FieldRow<?>> rows(Field<?>... fields) {
-        return JavaConverters.seqAsJavaList(
-                FieldRowBuilder.rows(
-                        JavaConverters.asScalaBuffer(Arrays.asList(fields))
-                )
+        return FieldRowBuilder.rows(
+                Arrays.asList(fields)
         );
     }
 }

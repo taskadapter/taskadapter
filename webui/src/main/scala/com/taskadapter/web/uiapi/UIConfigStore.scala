@@ -2,8 +2,8 @@ package com.taskadapter.web.uiapi
 
 import com.taskadapter.auth.cred.CredentialsStore
 import com.taskadapter.common.JsonUtil
+import com.taskadapter.common.ui.NewConfigSuggester
 import com.taskadapter.config._
-import com.taskadapter.connector.NewConfigSuggester
 import com.taskadapter.connector.common.{FileNameGenerator, XorEncryptor}
 import com.taskadapter.connector.definition._
 import com.taskadapter.web.TaskKeeperLocationStorage
@@ -99,7 +99,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val newMappings = NewConfigSuggester.suggestedFieldMappingsForNewConfig(
       config1.getDefaultFieldsForNewConfig,
       config2.getDefaultFieldsForNewConfig)
-    val mappingsString = JsonFactory.toString(newMappings.asScala)
+    val mappingsString = JsonFactory.toString(newMappings)
     val configId = configStorage.createNewConfig(userName, label,
       config1.getConnectorTypeId, connector1SetupId, config1.getConfigString,
       config2.getConnectorTypeId, connector2SetupId, config2.getConfigString,
@@ -179,7 +179,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val config1 = normalizedSyncConfig.getConnector1
     val config2 = normalizedSyncConfig.getConnector2
     val mappings = normalizedSyncConfig.getNewMappings
-    val mappingsStr = JsonFactory.toString(mappings.asScala)
+    val mappingsStr = JsonFactory.toString(mappings)
     configStorage.saveConfig(normalizedSyncConfig.getOwnerName, normalizedSyncConfig.getConfigId.id, label,
       config1.getConnectorTypeId, SetupId(config1.getConnectorSetup.getId), config1.getConfigString,
       config2.getConnectorTypeId, SetupId(config2.getConnectorSetup.getId), config2.getConfigString,

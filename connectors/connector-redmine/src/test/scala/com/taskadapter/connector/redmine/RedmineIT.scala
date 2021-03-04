@@ -1,8 +1,6 @@
 package com.taskadapter.connector.redmine
 
 import com.taskadapter.connector.TestFieldBuilder
-
-import java.util.Calendar
 import com.taskadapter.connector.common.TreeUtils
 import com.taskadapter.connector.definition.TaskId
 import com.taskadapter.connector.testlib._
@@ -13,6 +11,7 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
 import org.slf4j.LoggerFactory
 
+import java.util.Calendar
 import scala.collection.JavaConverters._
 import scala.util.Random
 
@@ -43,7 +42,7 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
     httpClient.getConnectionManager.shutdown()
   }
 
-  private val fixture = ITFixture(RedmineTestConfig.getRedmineServerInfo.getHost, getConnector(),
+  private val fixture = new ITFixture(RedmineTestConfig.getRedmineServerInfo.getHost, getConnector(),
     id => CommonTestChecks.skipCleanup(id))
 
   /**
@@ -55,7 +54,7 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
     val config = getTestConfig
     config.setFindUserByName(true)
     val connector = getConnector(config)
-    val loadedTask = TestUtilsJava.saveAndLoad(connector, task, FieldRowBuilder.rows(Seq(Summary, AssigneeFullName)).asJava)
+    val loadedTask = TestUtils.saveAndLoad(connector, task, FieldRowBuilder.rows(java.util.List.of(Summary, AssigneeFullName)))
     loadedTask.getValue(AssigneeLoginName) shouldBe redmineUser.getLogin
     loadedTask.getValue(AssigneeFullName) shouldBe redmineUser.getFullName
     mgr.getIssueManager.deleteIssue(loadedTask.getId.toInt)
@@ -86,7 +85,7 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
 
     val loadedTasks = TestUtils.saveAndLoadAll(getConnector(), t, TestFieldBuilder.getSummaryRow())
 
-    val tree = TreeUtils.buildTreeFromFlatList(loadedTasks.asJava)
+    val tree = TreeUtils.buildTreeFromFlatList(loadedTasks)
 
     tree.size() shouldBe 1
 
@@ -175,11 +174,11 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
     fixture.taskIsCreatedAndLoaded(GTaskBuilder.withSummary()
       .setValue(Description, "123")
       .setValue(EstimatedTime, 120f)
-      .setValue(DueDate, TestUtils.nextYear)
-      .setValue(StartDate, TestUtils.yearAgo)
+      .setValue(DueDate, DateUtils.nextYear)
+      .setValue(StartDate, DateUtils.yearAgo)
       .setValue(TaskStatus, "New")
       ,
-      Seq(StartDate, Summary, Description, DueDate, EstimatedTime, TaskStatus))
+      java.util.List.of(StartDate, Summary, Description, DueDate, EstimatedTime, TaskStatus))
   }
 
   it("tasks are created without errors") {
@@ -190,8 +189,8 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
 
   it("task is updated") {
     fixture.taskCreatedAndUpdatedOK(GTaskBuilder.withSummary(),
-      Seq((Summary, "new value"),
-        (TaskStatus, findAnyNonDefaultTaskStatus())
+      java.util.List.of(new FieldWithValue(Summary, "new value"),
+        new FieldWithValue(TaskStatus, findAnyNonDefaultTaskStatus())
       )
     )
   }

@@ -4,7 +4,7 @@ import com.google.common.collect.Iterables
 import com.taskadapter.connector.TestFieldBuilder
 import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.connector.testlib.{CommonTestChecks, ITFixture, TestUtilsJava}
+import com.taskadapter.connector.testlib.{FieldWithValue, ITFixture, TestUtils}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
 import com.taskadapter.model._
 import org.fest.assertions.Assertions.assertThat
@@ -28,7 +28,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
 
   logger.info("Running JIRA tests using: " + setup.getHost)
 
-  private val fixture = ITFixture(setup.getHost, connector, id => {
+  private val fixture = new ITFixture(setup.getHost, connector, id => {
     TestJiraClientHelper.deleteTasks(client, id)
     null
   })
@@ -42,7 +42,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
       task.setValue(AssigneeLoginName, jiraUser.getName)
 
       task.setValue(ReporterLoginName, jiraUser.getName)
-      val loadedTask = TestUtilsJava.saveAndLoad(connector, task, TestFieldBuilder.getSummaryAndAssigneeLogin())
+      val loadedTask = TestUtils.saveAndLoad(connector, task, TestFieldBuilder.getSummaryAndAssigneeLogin())
       loadedTask.getValue(AssigneeLoginName) shouldBe jiraUser.getName
       loadedTask.getValue(AssigneeFullName) shouldBe jiraUser.getDisplayName
 
@@ -55,16 +55,17 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     it("status is set on create") {
       fixture.taskIsCreatedAndLoaded(
         GTaskBuilder.withSummary().setValue(TaskStatus, "In Progress"),
-        Seq(Summary, TaskStatus))
+        java.util.Arrays.asList(Summary, TaskStatus)
+      )
     }
   }
 
   describe("Update") {
     it("fields are updated") {
       fixture.taskCreatedAndUpdatedOK(GTaskBuilder.gtaskWithRandom(Summary),
-        Seq((TaskStatus, "In Progress"),
-          (Summary, "new value"),
-          (Description, "new description")
+        java.util.List.of(new FieldWithValue(TaskStatus, "In Progress"),
+          new FieldWithValue(Summary, "new value"),
+          new FieldWithValue(Description, "new description")
         )
       )
     }
@@ -77,7 +78,7 @@ class JiraTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     val task2 = list(1)
     task1.getRelations.add(new GRelation(new TaskId(task1.getId, task1.getKey),
       new TaskId(task2.getId, task2.getKey), GRelationType.precedes))
-    TestUtilsJava.saveAndLoadList(connector, list.asJava, TestFieldBuilder.getSummaryAndAssigneeLogin())
+    TestUtils.saveAndLoadList(connector, list.asJava, TestFieldBuilder.getSummaryAndAssigneeLogin())
     val issues = TestJiraClientHelper.findIssuesBySummary(client, task1.getValue(Summary))
     val createdIssue1 = issues.iterator.next
     val links = createdIssue1.getIssueLinks

@@ -18,13 +18,13 @@ class MSTaskLoaderIntegrationTest extends FunSpec with Matchers {
   }
 
   it("testFind1Task") {
-    val tasks = MSPTestUtils.load("created_by_msp_1task.xml").asScala
+    val tasks = MSPTestUtils.load("created_by_msp_1task.xml")
     val myTaskAddedFromMSP = TestUtils.findTaskByFieldName(tasks, Summary, "task1")
     if (myTaskAddedFromMSP == null) Assert.fail("required task not found in the tasks list")
   }
 
   it("testLoadFileCreatedByMSPWithManyTasks") {
-    val tasks = MSPTestUtils.load("created_by_msp_tasks.xml").asScala
+    val tasks = MSPTestUtils.load("created_by_msp_tasks.xml")
     Assert.assertEquals(4, tasks.size)
     val t1 = TestUtils.findTaskByFieldName(tasks, Summary, "task1")
     Assert.assertNotNull("required task not found in the tasks list", t1)
@@ -35,7 +35,7 @@ class MSTaskLoaderIntegrationTest extends FunSpec with Matchers {
   }
 
   it("load file created by TA") {
-    val tasks = MSPTestUtils.load("created_by_ta_27.xml").asScala
+    val tasks = MSPTestUtils.load("created_by_ta_27.xml")
     Assert.assertEquals(27, tasks.size)
     val t1 = TestUtils.findTaskByFieldName(tasks, Summary, "improve components")
     Assert.assertNotNull("required task not found in the tasks list", t1)
@@ -50,7 +50,7 @@ class MSTaskLoaderIntegrationTest extends FunSpec with Matchers {
   }
 
   it("load file created by TA 1 task") {
-    val tasks = MSPTestUtils.load("created_by_ta_1.xml").asScala
+    val tasks = MSPTestUtils.load("created_by_ta_1.xml")
     Assert.assertEquals(1, tasks.size)
     val t1 = TestUtils.findTaskByFieldName(tasks, Summary, "support me!")
     Assert.assertNotNull("required task not found in the tasks list", t1)

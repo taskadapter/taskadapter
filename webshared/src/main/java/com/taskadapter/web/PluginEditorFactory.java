@@ -1,8 +1,8 @@
 package com.taskadapter.web;
 
+import com.taskadapter.common.ui.FieldMapping;
 import com.taskadapter.connector.definition.ConnectorConfig;
 import com.taskadapter.connector.definition.ConnectorSetup;
-import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Sandbox;

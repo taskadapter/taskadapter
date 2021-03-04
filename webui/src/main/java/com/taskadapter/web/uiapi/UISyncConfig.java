@@ -1,12 +1,12 @@
 package com.taskadapter.web.uiapi;
 
 import com.google.common.base.Throwables;
+import com.taskadapter.common.ui.FieldMapping;
 import com.taskadapter.connector.FieldRow;
-import com.taskadapter.connector.MappingBuilder;
+import com.taskadapter.common.ui.MappingBuilder;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.DropInConnector;
 import com.taskadapter.connector.definition.ExportDirection;
-import com.taskadapter.connector.definition.FieldMapping;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.TaskKeyMapping;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
@@ -304,9 +304,9 @@ public class UISyncConfig {
     }
 
     private static FieldMapping<?> reverse(FieldMapping<?> mapping) {
-        return new FieldMapping(mapping.fieldInConnector2(),
-                mapping.fieldInConnector1(),
-                mapping.selected(),
-                mapping.defaultValue());
+        return new FieldMapping(mapping.getFieldInConnector2(),
+                mapping.getFieldInConnector1(),
+                mapping.isSelected(),
+                mapping.getDefaultValue());
     }
 }

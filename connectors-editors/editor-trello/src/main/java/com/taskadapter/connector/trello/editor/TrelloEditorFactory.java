@@ -1,7 +1,7 @@
 package com.taskadapter.connector.trello.editor;
 
 import com.google.common.base.Strings;
-import com.taskadapter.connector.definition.FieldMapping;
+import com.taskadapter.common.ui.FieldMapping;
 import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exception.FieldNotMappedException;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
@@ -106,7 +106,9 @@ public class TrelloEditorFactory implements PluginEditorFactory<TrelloConfig, We
     private List<BadConfigException> checkTrelloListIsMapped(List<FieldMapping<?>> fieldMappings) {
         // "List Name" must be present on the right side and must be selected for export
         if (fieldMappings.stream()
-                .noneMatch(m -> m.fieldInConnector2().contains(TaskStatus$.MODULE$) && m.selected())) {
+                .noneMatch(m ->
+                        m.getFieldInConnector2().isPresent() && m.getFieldInConnector2().get().equals(TaskStatus$.MODULE$)
+                                && m.isSelected())) {
             return Arrays.asList(new FieldNotMappedException("List Name"));
         }
         return new ArrayList<>();

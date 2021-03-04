@@ -10,6 +10,7 @@ import org.junit.Ignore
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
 
 import java.util
+import scala.collection.JavaConverters._
 
 /**
   * Basecamp tests are now ignored - there are no known TaskAdapter users of basecamp.
@@ -23,14 +24,14 @@ class BasecampClassicIT extends FunSpec with Matchers with BeforeAndAfter with B
     withTempProject { todoListKey =>
       CommonTestChecks.taskIsCreatedAndLoaded(getConnector(todoListKey),
         GTaskBuilder.gtaskWithRandom(BasecampClassicField.content),
-        BasecampClassicFieldBuilder.getDefault(), Seq(BasecampClassicField.content),
+        BasecampClassicFieldBuilder.getDefault().asJava, java.util.Arrays.asList(BasecampClassicField.content),
         CommonTestChecks.skipCleanup)
     }
   }
   it("task is updated") {
     withTempProject { todoListKey =>
       CommonTestChecks.taskCreatedAndUpdatedOK(TestBasecampConfig.setup.getHost,
-        getConnector(todoListKey), BasecampClassicFieldBuilder.getDefault(),
+        getConnector(todoListKey), BasecampClassicFieldBuilder.getDefault().asJava,
         GTaskBuilder.gtaskWithRandom(BasecampClassicField.content),
         BasecampClassicField.content, "new value",
         CommonTestChecks.skipCleanup)

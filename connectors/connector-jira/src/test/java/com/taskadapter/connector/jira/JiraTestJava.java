@@ -8,7 +8,7 @@ import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.connector.definition.WebConnectorSetup;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.testlib.ITFixture;
-import com.taskadapter.connector.testlib.TestUtilsJava;
+import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.core.JavaFieldAdapter;
 import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.model.CustomString;
@@ -82,7 +82,7 @@ public class JiraTestJava {
                 JavaFieldAdapter.taskType,
                 epicName);
 
-        GTask created = TestUtilsJava.saveAndLoad(connector,
+        GTask created = TestUtils.saveAndLoad(connector,
                 task("Epic").setValue(epicName, "some epic"),
                 rows);
         assertThat(created.getValue(TaskType$.MODULE$)).isEqualTo("Epic");
