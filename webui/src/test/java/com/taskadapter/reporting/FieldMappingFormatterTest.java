@@ -14,9 +14,9 @@ public class FieldMappingFormatterTest {
     @Test
     public void createsANiceString() {
         var result = FieldMappingFormatter.format(
-                List.of(new FieldMapping(Optional.of(AllFields.summary()), Optional.of(AllFields.description()), true, "abc"),
-                        new FieldMapping(Optional.of(AllFields.doneRatio()), Optional.empty(), false, ""),
-                        new FieldMapping(Optional.of(AllFields.dueDate()), Optional.of(CustomDate.apply("some custom text")), false, "")
+                List.of(new FieldMapping(Optional.of(AllFields.summary), Optional.of(AllFields.description), true, "abc"),
+                        new FieldMapping(Optional.of(AllFields.doneRatio), Optional.empty(), false, ""),
+                        new FieldMapping(Optional.of(AllFields.dueDate), Optional.of(new CustomDate("some custom text")), false, "")
                 ));
         assertThat(result).contains("DueDate                        - CustomDate(some custom text)   selected: false default:");
     }

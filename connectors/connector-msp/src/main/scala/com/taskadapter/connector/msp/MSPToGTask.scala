@@ -1,7 +1,7 @@
 package com.taskadapter.connector.msp
 
 import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.model.{AssigneeFullName, CustomString, Description, GRelation, GRelationType, GTask, Summary}
+import com.taskadapter.model.{AllFields, CustomString, GRelation, GRelationType, GTask}
 import net.sf.mpxj.{ConstraintType, Duration, ProjectProperties, Relation, RelationType, Resource, Task, TimeUnit}
 
 import java.util
@@ -32,7 +32,7 @@ class MSPToGTask private[msp](var projectProperties: ProjectProperties) {
 
   private def convertToGenericTask(task: Task) = {
     val genericTask = new GTask
-    genericTask.setValue(Summary, task.getName)
+    genericTask. setValue(AllFields.summary, task.getName)
     genericTask.setId(task.getUniqueID.longValue)
     genericTask.setKey(task.getUniqueID + "")
     genericTask.setSourceSystemId(new TaskId(task.getUniqueID.longValue(), task.getUniqueID + ""))
@@ -44,7 +44,9 @@ class MSPToGTask private[msp](var projectProperties: ProjectProperties) {
     if (task.getWork != null) genericTask.setValue(MspField.taskWork, convertMspDurationToHours(task.getWork))
     if (task.getActualWork != null) genericTask.setValue(MspField.actualWork, convertMspDurationToHours(task.getActualWork))
     if (task.getDuration != null) genericTask.setValue(MspField.taskDuration, convertMspDurationToHours(task.getDuration))
-    if (task.getActualDuration != null) genericTask.setValue(MspField.actualDuration, convertMspDurationToHours(task.getActualDuration))
+    if (task.getActualDuration != null) {
+      genericTask.setValue(MspField.actualDuration, convertMspDurationToHours(task.getActualDuration))
+    }
     if (task.getPercentageComplete != null) genericTask.setValue(MspField.percentageComplete,
       java.lang.Float.valueOf(task.getPercentageComplete.floatValue()))
     // DATES
@@ -57,11 +59,11 @@ class MSPToGTask private[msp](var projectProperties: ProjectProperties) {
     else if (ConstraintType.MUST_FINISH_ON == `type`) genericTask.setValue(MspField.mustFinishOn, task.getStart)
     genericTask.setValue(MspField.finish, task.getFinish)
     genericTask.setValue(MspField.deadline, task.getDeadline)
-    genericTask.setValue(AssigneeFullName, extractAssignee(task))
-    genericTask.setValue(Description, task.getNotes)
+    genericTask.setValue(AllFields.assigneeFullName, extractAssignee(task))
+    genericTask.setValue(AllFields.description, task.getNotes)
     for (i <- 1 to 30) {
       if (task.getText(i) != null) {
-        genericTask.setValue(CustomString("Text" + i), task.getText(i))
+        genericTask.setValue(new CustomString("Text" + i), task.getText(i))
       }
     }
     processRelations(task, genericTask)
@@ -102,7 +104,7 @@ class MSPToGTask private[msp](var projectProperties: ProjectProperties) {
     null
   }
 
-  private def convertMspDurationToHours(mspDuration: Duration) = {
+  private def convertMspDurationToHours(mspDuration: Duration): java.lang.Float = {
     val convertedToHoursDuration = mspDuration.convertUnits(TimeUnit.HOURS, projectProperties)
     convertedToHoursDuration.getDuration.toFloat
   }

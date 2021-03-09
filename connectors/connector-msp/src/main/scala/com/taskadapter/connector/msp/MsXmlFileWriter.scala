@@ -1,14 +1,13 @@
 package com.taskadapter.connector.msp
 
 import java.util
-
 import com.taskadapter.connector.FieldRow
-import com.taskadapter.connector.common.DefaultValueSetter
 import com.taskadapter.connector.definition.exceptions.{BadConfigException, ConnectorException}
 import com.taskadapter.connector.definition.{SaveResultBuilder, TaskId}
 import com.taskadapter.connector.msp.write.{DateFinder, MSPDefaultFields, RealWriter, ResourceManager}
-import com.taskadapter.model.GTask
+import com.taskadapter.model.{DefaultValueSetter, GTask}
 import net.sf.mpxj.{ProjectFile, Task}
+
 import scala.collection.JavaConverters._
 
 class MsXmlFileWriter(rows: java.lang.Iterable[FieldRow[_]]) {

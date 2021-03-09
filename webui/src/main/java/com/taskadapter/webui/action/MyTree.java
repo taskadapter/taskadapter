@@ -3,8 +3,8 @@ package com.taskadapter.webui.action;
 import com.google.common.base.Strings;
 import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.core.PreviouslyCreatedTasksResolver;
+import com.taskadapter.model.AllFields;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.Summary$;
 import com.taskadapter.webui.Page;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.treegrid.TreeGrid;
@@ -151,7 +151,7 @@ public class MyTree {
                 actionText,
                 checkBox,
                 sourceSystemId, // ID FROM SOURCE SYSTEM
-                task.getValue(Summary$.MODULE$) // TODO TA3 use a proper connector-specific field name here
+                task.getValue(AllFields.summary) // TODO TA3 use a proper connector-specific field name here
         );
         treeData.addItem(
                 parentId,

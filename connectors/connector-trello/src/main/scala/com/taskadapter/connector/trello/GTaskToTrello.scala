@@ -23,12 +23,12 @@ class GTaskToTrello(config:TrelloConfig, listCache: ListCache) extends Connector
       val value = e._2
       try {
         field match {
-          case Children => // processed in another place
-          case Id => // ignore ID field because it does not need to be provided when saving
-          case Key => // processed in [[DefaultValueSetter]]
-          case SourceSystemId => // processed in [[DefaultValueSetter]]
-          case ParentKey => // processed above
-          case Relations => // processed in another place
+          case _: Children => // processed in another place
+          case _: Id => // ignore ID field because it does not need to be provided when saving
+          case _: Key => // processed in [[DefaultValueSetter]]
+          case _: SourceSystemId => // processed in [[DefaultValueSetter]]
+          case _: ParentKey => // processed above
+          case _: Relations => // processed in another place
 
           case TrelloField.listId =>
             card.setIdList(value.asInstanceOf[String])
@@ -41,9 +41,9 @@ class GTaskToTrello(config:TrelloConfig, listCache: ListCache) extends Connector
               throw new ConnectorException(
                 s"Trello list with name '$listName' is not found on the requested Trello Board (board ID ${config.getBoardId} )")
             }
-          case Summary => card.setName(value.asInstanceOf[String])
-          case Description => card.setDesc(value.asInstanceOf[String])
-          case DueDate => card.setDue(value.asInstanceOf[Date])
+          case _: Summary => card.setName(value.asInstanceOf[String])
+          case _: Description => card.setDesc(value.asInstanceOf[String])
+          case _: DueDate => card.setDue(value.asInstanceOf[Date])
           case _ => logger.warn(s"Unknown field in GTask: $field. Skipping it")
         }
       } catch {

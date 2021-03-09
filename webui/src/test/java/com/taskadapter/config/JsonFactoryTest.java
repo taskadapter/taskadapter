@@ -1,5 +1,6 @@
 package com.taskadapter.config;
 
+import com.taskadapter.common.ui.FieldMapping;
 import com.taskadapter.common.ui.NewConfigSuggester;
 import com.taskadapter.model.AllFields;
 import com.taskadapter.model.CustomDate;
@@ -15,12 +16,12 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class JsonFactoryTest {
     @Test
     public void canSaveAndLoadFields() {
-        var fieldMappings = List.of(
-                NewConfigSuggester.duplicateFieldIntoMapping(AllFields.summary()),
-                NewConfigSuggester.duplicateFieldIntoMapping(AllFields.doneRatio()),
-                NewConfigSuggester.duplicateFieldIntoMapping(CustomDate.apply("f")),
-                NewConfigSuggester.duplicateFieldIntoMapping(CustomFloat.apply("f")),
-                NewConfigSuggester.duplicateFieldIntoMapping(CustomString.apply("f"))
+        List<FieldMapping<?>> fieldMappings = List.of(
+                NewConfigSuggester.duplicateFieldIntoMapping(AllFields.summary),
+                NewConfigSuggester.duplicateFieldIntoMapping(AllFields.doneRatio),
+                NewConfigSuggester.duplicateFieldIntoMapping(new CustomDate("f")),
+                NewConfigSuggester.duplicateFieldIntoMapping(new CustomFloat("f")),
+                NewConfigSuggester.duplicateFieldIntoMapping(new CustomString("f"))
         );
         var str = JsonFactory.toString(fieldMappings);
         var parsed = JavaConverters.seqAsJavaList(JsonFactory.fromJsonString(str));

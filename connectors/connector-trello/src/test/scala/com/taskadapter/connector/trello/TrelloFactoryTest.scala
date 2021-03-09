@@ -1,6 +1,6 @@
 package com.taskadapter.connector.trello
 
-import com.taskadapter.model.{Id, Key, ReporterFullName, ReporterLoginName}
+import com.taskadapter.model.AllFields
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
@@ -14,7 +14,8 @@ class TrelloFactoryTest extends FunSpec with Matchers {
       defaultFieldsForNewConfig should contain(TrelloField.listName)
     }
     it("do not have these") {
-      defaultFieldsForNewConfig should contain noneOf(TrelloField.listId, ReporterFullName, ReporterLoginName, Id, Key)
+      defaultFieldsForNewConfig should contain noneOf(TrelloField.listId, AllFields.reporterFullName,
+        AllFields.reporterLoginName, AllFields.id, AllFields.key)
     }
   }
 }

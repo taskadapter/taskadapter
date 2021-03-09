@@ -11,7 +11,7 @@ public class GTaskBuilder {
     private final GTask task = new GTask();
 
     public static GTask gtaskWithRandom(String fieldName) {
-        return new GTaskBuilder().withRandom(Field.apply(fieldName)).build();
+        return new GTaskBuilder().withRandom(new CustomString(fieldName)).build();
     }
 
     public static GTask gtaskWithRandomJava(Field<?> field) {
@@ -23,7 +23,7 @@ public class GTaskBuilder {
     }
 
     public static GTask withSummary(String value) {
-        return new GTaskBuilder().withField(Summary$.MODULE$, value).build();
+        return new GTaskBuilder().withField(AllFields.summary, value).build();
     }
 
     public static GTask withSummary() {
@@ -41,7 +41,7 @@ public class GTaskBuilder {
     }
 
     public GTaskBuilder withAssigneeLogin(String loginName) {
-        task.setValue(AssigneeLoginName$.MODULE$, loginName);
+        task.setValue(AllFields.assigneeLoginName, loginName);
         return this;
     }
 
@@ -61,20 +61,20 @@ public class GTaskBuilder {
         //      case "GUser" -> new GUser(null, Random.nextString(3), Random.nextString(10))
         //      case "String" -> "value " + new Date().getTime
 
-        if (field instanceof Summary$) {
-            task.setValue(Summary$.MODULE$, randomStr());
+        if (field.equals(AllFields.summary)) {
+            task.setValue(AllFields.summary, randomStr());
             return this;
         }
-        if (field instanceof Description$) {
-            task.setValue(Description$.MODULE$, randomStr());
+        if (field.equals(AllFields.description)) {
+            task.setValue(AllFields.description, randomStr());
             return this;
         }
-        if (field instanceof AssigneeLoginName$) {
-            task.setValue(AssigneeLoginName$.MODULE$, RandomStringGenerator.randomAlphaNumeric(10));
+        if (field.equals(AllFields.assigneeLoginName)) {
+            task.setValue(AllFields.assigneeLoginName, RandomStringGenerator.randomAlphaNumeric(10));
             return this;
         }
-        if (field instanceof AssigneeFullName$) {
-            task.setValue(AssigneeFullName$.MODULE$, RandomStringGenerator.randomAlphaNumeric(10));
+        if (field.equals(AllFields.assigneeFullName)) {
+            task.setValue(AllFields.assigneeFullName, RandomStringGenerator.randomAlphaNumeric(10));
             return this;
         }
 

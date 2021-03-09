@@ -1,10 +1,11 @@
 package com.taskadapter.connector.jira
 
 import com.atlassian.jira.rest.client.api.domain.{Field, IssueField}
-import com.taskadapter.model.{CustomSeqString, CustomString}
+import com.taskadapter.model.{CustomListString, CustomString}
+import scala.collection.JavaConverters._
 
 object CustomFieldResolver {
-  def apply(): CustomFieldResolver = new CustomFieldResolver(Seq())
+  def apply(): CustomFieldResolver = new CustomFieldResolver(java.util.List.of())
 }
 
 /**
@@ -24,8 +25,8 @@ case class JiraFieldDefinition(id: Long, fieldName: String, fullIdForSave: Strin
                             custom=com.atlassian.jira.plugin.system.customfieldtypes:labels, customId=10100}}
   * ```
   */
-class CustomFieldResolver(fields: Iterable[Field]) {
-  val mapNameToSchema = fields
+class CustomFieldResolver(fields: java.lang.Iterable[Field]) {
+  val mapNameToSchema = fields.asScala
     .filter(f => f.getSchema != null)
     .map(f => f.getName -> JiraFieldDefinition(f.getSchema.getCustomId, f.getName, f.getId, f.getSchema.getType, Option(f.getSchema.getItems)))
     .toMap
@@ -37,8 +38,8 @@ class CustomFieldResolver(fields: Iterable[Field]) {
   def getField(jiraField: IssueField): Option[com.taskadapter.model.Field[_]] = {
     getId(jiraField.getName) match {
       case Some(definition) => definition.typeName match {
-        case "string" | "any" => Some(CustomString(definition.fieldName))
-        case "array" => Some(CustomSeqString(definition.fieldName))
+        case "string" | "any" => Some(new CustomString(definition.fieldName))
+        case "array" => Some(new CustomListString(definition.fieldName))
         case _ => None
       }
       case None => None

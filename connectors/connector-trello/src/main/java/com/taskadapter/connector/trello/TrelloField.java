@@ -1,40 +1,34 @@
 package com.taskadapter.connector.trello;
 
-import com.taskadapter.model.Description$;
-import com.taskadapter.model.DueDate$;
+import com.taskadapter.model.AllFields;
+import com.taskadapter.model.CustomString;
 import com.taskadapter.model.Field;
-import com.taskadapter.model.Id$;
-import com.taskadapter.model.Key$;
-import com.taskadapter.model.ReporterFullName$;
-import com.taskadapter.model.ReporterLoginName$;
-import com.taskadapter.model.Summary$;
-import com.taskadapter.model.TaskStatus$;
-import com.taskadapter.model.UpdatedOn$;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TrelloField {
-    public static final Field<String> listId = Field.apply("List Id");
-    public static final Field<String> listName = TaskStatus$.MODULE$;
+    public static final Field<String> listId = new CustomString("List Id");
+    public static final Field<String> listName = AllFields.taskStatus;
 
     public static List<Field<?>> fields = List.of(listName, listId,
-            Id$.MODULE$,
-            Key$.MODULE$,
-            Summary$.MODULE$,
-            ReporterFullName$.MODULE$,
-            ReporterLoginName$.MODULE$,
-            Description$.MODULE$,
-            DueDate$.MODULE$,
-            UpdatedOn$.MODULE$
+            AllFields.id,
+            AllFields.key,
+            AllFields.summary,
+            AllFields.reporterFullName,
+            AllFields.reporterLoginName,
+            AllFields.description,
+            AllFields.dueDate,
+            AllFields.updatedOn
     );
 
-    public static List<Field<?>> excludeFromNewConfig = List.of(Id$.MODULE$,
-            Key$.MODULE$,
+    public static List<Field<?>> excludeFromNewConfig = List.of(
+            AllFields.id,
+            AllFields.key,
             listId,
-            ReporterFullName$.MODULE$,
-            ReporterLoginName$.MODULE$,
-            UpdatedOn$.MODULE$);
+            AllFields.reporterFullName,
+            AllFields.reporterLoginName,
+            AllFields.updatedOn);
 
     public static List<Field<?>> defaultFieldsForNewConfig() {
         var fieldsCopy = new ArrayList<>(fields);

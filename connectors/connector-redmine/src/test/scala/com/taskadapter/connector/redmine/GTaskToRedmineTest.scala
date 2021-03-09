@@ -1,12 +1,12 @@
 package com.taskadapter.connector.redmine
 
-import java.util.Collections
-
-import com.taskadapter.model.{GTask, Summary}
+import com.taskadapter.model.{AllFields, GTask}
 import com.taskadapter.redmineapi.bean.{Issue, ProjectFactory}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
+
+import java.util.Collections
 
 @RunWith(classOf[JUnitRunner])
 class GTaskToRedmineTest extends FunSpec with Matchers {
@@ -14,7 +14,7 @@ class GTaskToRedmineTest extends FunSpec with Matchers {
   private val project = ProjectFactory.create()
 
   it("sets Summary") {
-    val task = new GTask().setValue(Summary, "summary")
+    val task = new GTask(). setValue(AllFields.summary, "summary")
     convert(task).getSubject shouldBe "summary"
   }
 

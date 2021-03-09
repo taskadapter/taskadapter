@@ -43,11 +43,11 @@ class GTaskToGithub(userService: UserService) extends ConnectorConverter[GTask, 
 
   private def processField(issue: Issue, field: Field[_], value: Any): Unit = {
     field match {
-      case Summary => issue.setTitle(value.asInstanceOf[String])
-      case Description => issue.setBody(value.asInstanceOf[String])
-      case AssigneeLoginName => processAssigneeLoginName(issue, value.asInstanceOf[String])
-      case CreatedOn => issue.setCreatedAt(value.asInstanceOf[Date])
-      case UpdatedOn => issue.setUpdatedAt(value.asInstanceOf[Date])
+      case _: Summary => issue.setTitle(value.asInstanceOf[String])
+      case _: Description => issue.setBody(value.asInstanceOf[String])
+      case _: AssigneeLoginName => processAssigneeLoginName(issue, value.asInstanceOf[String])
+      case _: CreatedOn => issue.setCreatedAt(value.asInstanceOf[Date])
+      case _: UpdatedOn => issue.setUpdatedAt(value.asInstanceOf[Date])
       case _ => // unknown fields, ignore
     }
   }

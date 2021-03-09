@@ -10,8 +10,8 @@ import java.util.Date;
 public class JiraGTaskBuilder {
     public static GTask taskWithType(String value) {
         var task = new GTask();
-        task.setValue(AllFields.summary(), "task " + new Date().getTime());
-        task.setValue(AllFields.taskType(), value);
+        task.setValue(AllFields.summary, "task " + new Date().getTime());
+        task.setValue(AllFields.taskType, value);
         return task;
     }
 
@@ -23,16 +23,16 @@ public class JiraGTaskBuilder {
 
     public JiraGTaskBuilder(String summary) {
         // summary is pretty much always required
-        task.setValue(AllFields.summary(), summary);
+        task.setValue(AllFields.summary, summary);
     }
 
     public JiraGTaskBuilder withDescription() {
-        task.setValue(AllFields.description(), "description " + new Date().getTime());
+        task.setValue(AllFields.description, "description " + new Date().getTime());
         return this;
     }
 
     public JiraGTaskBuilder withPriority(Integer value) {
-        task.setValue(AllFields.priority(), value);
+        task.setValue(AllFields.priority, value);
         return this;
     }
 
@@ -47,7 +47,7 @@ public class JiraGTaskBuilder {
     }
 
     public JiraGTaskBuilder withType(String value) {
-        task.setValue(AllFields.taskType(), value);
+        task.setValue(AllFields.taskType, value);
         return this;
     }
 

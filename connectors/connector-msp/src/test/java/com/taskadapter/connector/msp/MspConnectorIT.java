@@ -8,10 +8,8 @@ import com.taskadapter.connector.testlib.FieldRowBuilder;
 import com.taskadapter.connector.testlib.ITFixture;
 import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.model.AllFields;
-import com.taskadapter.model.AssigneeFullName$;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskBuilder;
-import com.taskadapter.model.Summary$;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -41,19 +39,19 @@ public class MspConnectorIT {
     public void taskIsCreatedAndLoaded() {
         var fixture = new ITFixture("ta-test.tmp", getConnector(tempFolder.getRoot()),
                 CommonTestChecks.skipCleanup);
-        var task = new GTaskBuilder().withRandom(AllFields.summary())
+        var task = new GTaskBuilder().withRandom(AllFields.summary)
                 .withRandom(MspField.taskDuration)
                 .withRandom(MspField.taskWork)
                 .withRandom(MspField.mustStartOn)
                 .withRandom(MspField.finish)
                 .withRandom(MspField.deadline)
                 .build()
-                .setValue(AllFields.description(), "desc")
-                .setValue(AllFields.assigneeFullName(), "display name")
-                .setValue(AllFields.priority(), 888);
+                .setValue(AllFields.description, "desc")
+                .setValue(AllFields.assigneeFullName, "display name")
+                .setValue(AllFields.priority, 888);
         fixture.taskIsCreatedAndLoaded(task,
-                List.of(AllFields.assigneeFullName(), MspField.taskDuration, MspField.taskWork, MspField.mustStartOn, MspField.finish, MspField.deadline,
-                        AllFields.description(), AllFields.priority(), AllFields.summary())
+                List.of(AllFields.assigneeFullName, MspField.taskDuration, MspField.taskWork, MspField.mustStartOn, MspField.finish, MspField.deadline,
+                        AllFields.description, AllFields.priority, AllFields.summary)
         );
     }
 
@@ -61,25 +59,25 @@ public class MspConnectorIT {
     public void descriptionSavedByDefault() {
         CommonTestChecks.fieldIsSavedByDefault(getConnector(tempFolder.getRoot()),
                 new GTaskBuilder()
-                        .withRandom(AllFields.summary())
-                        .withRandom(AllFields.description())
+                        .withRandom(AllFields.summary)
+                        .withRandom(AllFields.description)
                         .build(),
                 MspField.fields,
-                AllFields.description(),
+                AllFields.description,
                 CommonTestChecks.skipCleanup);
     }
 
     @Test
     public void trimsFieldValueAndRemovesLineBreakAtTheEnd() {
         var textWithEndingLineBreak = " text " + System.lineSeparator();
-        var task = new GTask().setValue(AllFields.summary(), textWithEndingLineBreak);
+        var task = new GTask().setValue(AllFields.summary, textWithEndingLineBreak);
         var created = TestUtils.saveAndLoad(getConnector(tempFolder.getRoot()),
                 task,
                 FieldRowBuilder.rows(
-                        List.of(AllFields.summary())
+                        List.of(AllFields.summary)
                 )
         );
-        assertThat(created.getValue(AllFields.summary())).isEqualTo("text");
+        assertThat(created.getValue(AllFields.summary)).isEqualTo("text");
     }
 
     @Test
@@ -96,8 +94,8 @@ public class MspConnectorIT {
         var tasks = MSPTestUtils.load("msp_2013.xml");
         assertEquals(2, tasks.size());
         var task1 = tasks.get(0);
-        assertEquals("task 1", task1.getValue(AllFields.summary()));
-        assertThat(task1.getValue(AssigneeFullName$.MODULE$)).isEqualTo("alex");
+        assertEquals("task 1", task1.getValue(AllFields.summary));
+        assertThat(task1.getValue(AllFields.assigneeFullName)).isEqualTo("alex");
         assertThat(task1.getValue(MspField.taskDuration)).isEqualTo(12f);
         var expectedStartDate = new SimpleDateFormat("MM/dd/yyyy HH:mm").parse("12/11/2013 08:00");
         assertEquals(expectedStartDate, task1.getValue(MspField.startAsSoonAsPossible));
@@ -108,7 +106,7 @@ public class MspConnectorIT {
     @Test
     public void twoTasksAreCreated() {
         CommonTestChecks.createsTasks(getConnector(tempFolder.getRoot()), TestFieldBuilder.getSummaryRow(),
-                java.util.List.of(GTaskBuilder.gtaskWithRandom(Summary$.MODULE$), GTaskBuilder.gtaskWithRandom(Summary$.MODULE$)),
+                java.util.List.of(GTaskBuilder.gtaskWithRandom(AllFields.summary), GTaskBuilder.gtaskWithRandom(AllFields.summary)),
                 CommonTestChecks.skipCleanup);
     }
 

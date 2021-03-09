@@ -1,12 +1,11 @@
 package com.taskadapter.connector.redmine
 
 import java.util
-
 import com.taskadapter.connector.{FieldRow, NewConnector}
 import com.taskadapter.connector.common.TaskSavingUtils
 import com.taskadapter.connector.definition._
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
-import com.taskadapter.model.{GTask, Priority}
+import com.taskadapter.model.{AllFields, GTask, Priority}
 import com.taskadapter.redmineapi.{Include, RedmineException, RedmineManager}
 import com.taskadapter.redmineapi.bean._
 
@@ -20,7 +19,7 @@ object RedmineConnector {
 
   @throws[RedmineException]
   private def loadPriorities(rows: java.lang.Iterable[FieldRow[_]], mgr: RedmineManager): util.Map[String, Integer] = {
-    if (FieldRowFinder.containsTargetField(rows, Priority))
+    if (FieldRowFinder.containsTargetField(rows, AllFields.priority))
       loadPriorities(mgr)
     else
       new util.HashMap[String, Integer]

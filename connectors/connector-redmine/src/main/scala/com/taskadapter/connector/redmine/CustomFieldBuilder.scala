@@ -10,7 +10,7 @@ object CustomFieldBuilder {
 
   def add(issue: Issue, customFieldDefinitions: util.List[CustomFieldDefinition], field: Field[_], value: String): Unit = {
     val customFieldId = CustomFieldDefinitionFinder.findCustomFieldId(customFieldDefinitions, field)
-    val customField = CustomFieldFactory.create(customFieldId, field.name, value.toString)
+    val customField = CustomFieldFactory.create(customFieldId, field.getFieldName(), value.toString)
     issue.addCustomField(customField)
   }
 }

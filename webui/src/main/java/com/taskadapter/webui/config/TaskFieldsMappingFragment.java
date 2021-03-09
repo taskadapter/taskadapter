@@ -188,7 +188,7 @@ public class TaskFieldsMappingFragment implements SavableComponent, Validatable 
         var combobox = new ComboBox<String>();
         combobox.setItemLabelGenerator(fieldName ->
                 Optional.ofNullable(connectorMessages.getNoDefault(fieldName)).orElse(fieldName));
-        combobox.setItems(connectorFields.stream().map(Field::name));
+        combobox.setItems(connectorFields.stream().map(Field::getFieldName));
         combobox.setAllowCustomValue(true);
         gridLayout.add(combobox);
         combobox.setValue(selectedValue);

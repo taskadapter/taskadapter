@@ -1,17 +1,16 @@
 package com.taskadapter.connector.mantis
 
-import java.math.BigInteger
-import java.util.Calendar
 import biz.futureware.mantis.rpc.soap.client.ProjectData
 import com.taskadapter.connector.FieldRow
 import com.taskadapter.connector.testlib.{CommonTestChecks, ITFixture, TestSaver}
-import com.taskadapter.model.{AssigneeFullName, Description, DueDate, GTaskBuilder, Summary}
+import com.taskadapter.model.{AllFields, AssigneeFullName, Description, DueDate, GTaskBuilder}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
 import org.slf4j.LoggerFactory
 
-import scala.collection.JavaConverters._
+import java.math.BigInteger
+import java.util.Calendar
 
 @RunWith(classOf[JUnitRunner])
 class MantisIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll {
@@ -40,14 +39,14 @@ class MantisIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
 
   it("task is created and loaded") {
     fixture.taskIsCreatedAndLoaded(GTaskBuilder.withSummary()
-      .setValue(AssigneeFullName, mantisUser.getReal_name)
-      .setValue(Description, "123"),
-      java.util.List.of(AssigneeFullName, Summary, Description, DueDate))
+      .setValue(AllFields.assigneeFullName, mantisUser.getReal_name)
+      .setValue(AllFields.description, "123"),
+      java.util.List.of(AllFields.assigneeFullName, AllFields.summary, AllFields.description, AllFields.dueDate))
   }
 
   it("task created and updated") {
     val task = GTaskBuilder.withSummary()
-    fixture.taskCreatedAndUpdatedOK(MantisFieldBuilder.getDefault().asJava, task, Summary, "new value")
+    fixture.taskCreatedAndUpdatedOK(MantisFieldBuilder.getDefault(), task, AllFields.summary, "new value")
   }
 
   private def getTestSaver(rows: java.util.List[FieldRow[_]]) = new TestSaver(getConnector(), rows)

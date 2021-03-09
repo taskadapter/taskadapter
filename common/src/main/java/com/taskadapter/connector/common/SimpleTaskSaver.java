@@ -7,6 +7,7 @@ import com.taskadapter.connector.definition.SaveResultBuilder;
 import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.PreviouslyCreatedTasksResolver;
+import com.taskadapter.model.DefaultValueSetter;
 import com.taskadapter.model.GTask;
 
 import java.util.List;

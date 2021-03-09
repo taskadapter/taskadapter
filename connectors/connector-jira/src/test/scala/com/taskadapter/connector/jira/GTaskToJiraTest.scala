@@ -31,7 +31,7 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
     */
   it("unknown priority name gives user-friendly error") {
     val task = JiraGTaskBuilder.builderWithSummary().withPriority(500).build()
-    val converter = GTaskToJiraFactory.getConverter(priorities = Seq())
+    val converter = GTaskToJiraFactory.getConverter(java.util.List.of())
     val exception = intercept[FieldConversionException] {
       converter.convertToJiraIssue(task).issueInput
     }
@@ -53,12 +53,12 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
   }
 
   it("status"){
-    val task = new GTask().setValue(TaskStatus, "TO DO")
+    val task = new GTask().setValue(AllFields.taskStatus, "TO DO")
     getConverter().convertToJiraIssue(task).status shouldBe "TO DO"
   }
 
   private def checkDescription(converter: GTaskToJira, expectedValue: String): Unit = {
-    val task = new GTask().setValue(Description, expectedValue)
+    val task = new GTask().setValue(AllFields.description, expectedValue)
 
     val issueInput = converter.convertToJiraIssue(task).issueInput
     assertEquals(expectedValue, getValue(issueInput, IssueFieldId.DESCRIPTION_FIELD.id))
@@ -72,13 +72,13 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
     val task = new GTask
     val calendar = Calendar.getInstance
     calendar.set(2014, Calendar.APRIL, 28, 0, 0, 0)
-    task.setValue(DueDate, calendar.getTime)
+    task.setValue(AllFields.dueDate, calendar.getTime)
     val issueInput = converter.convertToJiraIssue(task).issueInput
     assertEquals(expected, getValue(issueInput, IssueFieldId.DUE_DATE_FIELD.id))
   }
 
   it("reporter login name"){
-    val task = new GTask().setValue(ReporterLoginName, "mylogin")
+    val task = new GTask().setValue(AllFields.reporterLoginName, "mylogin")
     val issue = getConverter().convertToJiraIssue(task).issueInput
     assertEquals("mylogin", getComplexValue(issue, IssueFieldId.REPORTER_FIELD.id, "name"))
   }
@@ -88,19 +88,19 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
   }
 
   private def checkAssignee(converter: GTaskToJira, expected: String): Unit = {
-    val task = new GTask().setValue(AssigneeLoginName, expected)
+    val task = new GTask().setValue(AllFields.assigneeLoginName, expected)
     val issue = converter.convertToJiraIssue(task).issueInput
     assertEquals(expected, getComplexValue(issue, IssueFieldId.ASSIGNEE_FIELD.id, "name"))
   }
 
   it ("components use only the first provided value and ignore others") {
-    val task = new GTask().setValue(Components, Seq("client", "server"))
+    val task = new GTask().setValue(AllFields.components, java.util.List.of("client", "server"))
     val issue = getConverter().convertToJiraIssue(task).issueInput
     getIterableValue(issue, IssueFieldId.COMPONENTS_FIELD.id) should contain only("client")
   }
 
   it ("empty component is valid") {
-    val task = new GTask().setValue(Components, Seq())
+    val task = new GTask().setValue(AllFields.components, new java.util.ArrayList[String]())
     val issue = getConverter().convertToJiraIssue(task).issueInput
     getIterableValue(issue, IssueFieldId.COMPONENTS_FIELD.id) shouldBe null
   }
@@ -111,7 +111,7 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
 
   private def checkEstimatedTime(converter: GTaskToJira, expectedTime: String): Unit = {
     val task = new GTask
-    task.setValue(EstimatedTime, 3f)
+    task.setValue(AllFields.estimatedTime, java.lang.Float.valueOf(3F))
     val issue = converter.convertToJiraIssue(task).issueInput
     assertEquals(expectedTime, getComplexValue(issue, "timetracking", "originalEstimate"))
   }
@@ -145,8 +145,8 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
 
   private def getConverter(): GTaskToJira = GTaskToJiraFactory.getConverter()
 
-  private def find(priorities: Iterable[Priority], priorityName: String): Priority = {
-    for (priority <- priorities) {
+  private def find(priorities: java.lang.Iterable[Priority], priorityName: String): Priority = {
+    for (priority <- priorities.asScala) {
       if (priority.getName == priorityName) return priority
     }
     throw new RuntimeException("Priority not found: " + priorityName)

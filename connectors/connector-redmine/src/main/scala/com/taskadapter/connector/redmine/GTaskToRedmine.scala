@@ -55,36 +55,36 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
 
   private def processField(issue: Issue, field: Field[_], value: Any): Unit = {
     field match {
-      case Id => // ignore ID field because it does not need to be provided when saving
-      case ParentKey => // processed above
-      case Relations => // processed in another place (for now?)
-      case Children => // processed in another place (for now?)
-      case Key => // processed in [[DefaultValueSetter]] for now
-      case SourceSystemId => // processed in [[DefaultValueSetter]] for now
+      case _: Id => // ignore ID field because it does not need to be provided when saving
+      case _: ParentKey => // processed above
+      case _: Relations => // processed in another place (for now?)
+      case _: Children => // processed in another place (for now?)
+      case _: Key => // processed in [[DefaultValueSetter]] for now
+      case _: SourceSystemId => // processed in [[DefaultValueSetter]] for now
 
       case RedmineField.category =>
         val categoryName = ValueTypeResolver.getValueAsString(value)
         val maybeCategory = getCategoryByName(categoryName)
         issue.setCategory(maybeCategory.orNull)
-      case Summary => issue.setSubject(value.asInstanceOf[String])
-      case StartDate => issue.setStartDate(value.asInstanceOf[Date])
-      case DueDate => issue.setDueDate(value.asInstanceOf[Date])
-      case EstimatedTime =>
+      case _: Summary => issue.setSubject(value.asInstanceOf[String])
+      case _: StartDate => issue.setStartDate(value.asInstanceOf[Date])
+      case _: DueDate => issue.setDueDate(value.asInstanceOf[Date])
+      case _: EstimatedTime =>
         issue.setEstimatedHours(ValueTypeResolver.getValueAsFloat(value))
-//      case SpentTime =>
+//      case _: SpentTime =>
         // does not work - ignored by Redmine server. need to add a Time Entry via a separate REST call
 //        issue.setSpentHours(ValueTypeResolver.getValueAsFloat(value))
 
-      case DoneRatio => issue.setDoneRatio(ValueTypeResolver.getValueAsInt(value))
-      case TaskType =>
+      case _: DoneRatio => issue.setDoneRatio(ValueTypeResolver.getValueAsInt(value))
+      case _: TaskType =>
         var trackerName = value.asInstanceOf[String]
         if (Strings.isNullOrEmpty(trackerName)) trackerName = config.getDefaultTaskType
         issue.setTracker(project.getTrackerByName(trackerName))
-      case TaskStatus =>
+      case _: TaskStatus =>
         processTaskStatus(issue, value.asInstanceOf[String])
-      case Description =>
+      case _: Description =>
         issue.setDescription(value.asInstanceOf[String])
-      case Priority =>
+      case _: Priority =>
         val priority = value.asInstanceOf[Integer]
         if (priority != null) {
           val priorityName = config.getPriorities.getPriorityByMSP(priority)
@@ -96,27 +96,27 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
             throw new ConnectorException(s"Priority with name $priorityName is not found on the server. Please check your Redmine priorities settings")
           }
         }
-      case TargetVersion =>
+      case _: TargetVersion =>
         val version = getVersionByName(value.asInstanceOf[String])
         issue.setTargetVersion(version)
-      case CreatedOn => issue.setCreatedOn(value.asInstanceOf[Date])
-      case UpdatedOn => issue.setUpdatedOn(value.asInstanceOf[Date])
-      case AssigneeLoginName =>
+      case _: CreatedOn => issue.setCreatedOn(value.asInstanceOf[Date])
+      case _: UpdatedOn => issue.setUpdatedOn(value.asInstanceOf[Date])
+      case _: AssigneeLoginName =>
         val maybeId = getUserIdByLogin(value.asInstanceOf[String])
         if (maybeId.isDefined) {
           issue.setAssigneeId(maybeId.get)
         }
-      case AssigneeFullName =>
+      case _: AssigneeFullName =>
         val maybeId = getUserIdByFullName(value.asInstanceOf[String])
         if (maybeId.isDefined) {
           issue.setAssigneeId(maybeId.get)
         }
-      case ReporterLoginName =>
+      case _: ReporterLoginName =>
         val maybeId = getUserIdByLogin(value.asInstanceOf[String])
         if (maybeId.isDefined) {
           issue.setAuthorId(maybeId.get)
         }
-      case ReporterFullName =>
+      case _: ReporterFullName =>
         val maybeId = getUserIdByFullName(value.asInstanceOf[String])
         if (maybeId.isDefined) {
           issue.setAuthorId(maybeId.get)
@@ -125,7 +125,7 @@ class GTaskToRedmine(config: RedmineConfig, priorities: util.Map[String, Integer
         // all known fields are processed. considering this a custom field
         val customFieldId = CustomFieldDefinitionFinder.findCustomFieldId(customFieldDefinitions, field)
         if (customFieldId == null) throw new RuntimeException("Cannot find Id for custom field " + field + ". Known fields are:" + customFieldDefinitions)
-        val customField = CustomFieldFactory.create(customFieldId, field.name, value.asInstanceOf[String])
+        val customField = CustomFieldFactory.create(customFieldId, field.getFieldName(), value.asInstanceOf[String])
         issue.addCustomField(customField)
     }
   }

@@ -3,7 +3,7 @@ package com.taskadapter.webui.uiapi
 import com.taskadapter.common.ui.FieldMapping
 import com.taskadapter.connector.jira.JiraConnector
 import com.taskadapter.connector.redmine.RedmineConnector
-import com.taskadapter.model.{Description, Field}
+import com.taskadapter.model.{AllFields, Description, Field}
 import com.taskadapter.web.uiapi.{ConfigFolderTestConfigurer, ConfigId}
 import org.junit.runner.RunWith
 import org.scalatest.concurrent.ScalaFutures
@@ -13,6 +13,7 @@ import org.scalatest.{FunSpec, Matchers}
 import java.util.Optional
 import scala.collection.JavaConverters._
 
+// TODO 14 move to integration tests
 @RunWith(classOf[JUnitRunner])
 class UIConfigStoreTest extends FunSpec with ScalaFutures with Matchers with ConfigsTempFolder {
 
@@ -34,7 +35,7 @@ class UIConfigStoreTest extends FunSpec with ScalaFutures with Matchers with Con
         JiraConnector.ID, ConfigFolderTestConfigurer.jiraSetupId)
       val config = store.getConfig(configId).get
 
-      val row = findRow(config.getFieldMappings.asScala, Optional.of(Description), Optional.of(Description))
+      val row = findRow(config.getFieldMappings.asScala, Optional.of(AllFields.description), Optional.of(AllFields.description))
       row.isSelected shouldBe true
       org.junit.Assert.assertTrue(row.getDefaultValue == null)
     }

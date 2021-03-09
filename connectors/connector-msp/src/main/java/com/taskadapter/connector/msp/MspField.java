@@ -1,16 +1,14 @@
 package com.taskadapter.connector.msp;
 
 import com.taskadapter.model.AllFields;
-import com.taskadapter.model.AssigneeFullName$;
 import com.taskadapter.model.CustomDate;
 import com.taskadapter.model.CustomFloat;
-import com.taskadapter.model.Description$;
+import com.taskadapter.model.CustomString;
 import com.taskadapter.model.Field;
-import com.taskadapter.model.Priority$;
-import com.taskadapter.model.Summary$;
 import net.sf.mpxj.ConstraintType;
 import net.sf.mpxj.TaskField;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,8 +16,8 @@ import java.util.stream.IntStream;
 
 public class MspField {
     public static final Field<Date> closedOn = new CustomDate(TaskField.ACTUAL_FINISH.getName());
-    public static final Field<Integer> priority = Priority$.MODULE$;
-    public static final Field<Float> percentageComplete = AllFields.doneRatio();
+    public static final Field<Integer> priority = AllFields.priority;
+    public static final Field<Float> percentageComplete = AllFields.doneRatio;
     public static final CustomFloat taskDuration = new CustomFloat(TaskField.DURATION.getName());
     public static final CustomFloat taskWork = new CustomFloat(TaskField.WORK.getName());
 
@@ -43,12 +41,12 @@ public class MspField {
     public static final List<Field<?>> fields;
 
     static {
-        textFields = IntStream.rangeClosed(1, 30).mapToObj(i -> Field.apply("Text" + i)).collect(Collectors.toList());
+        textFields = IntStream.rangeClosed(1, 30).mapToObj(i -> new CustomString("Text" + i)).collect(Collectors.toList());
 
-        var tmp = new java.util.ArrayList<>(List.of(actualDuration, actualWork, actualFinish,
-                Summary$.MODULE$,
-                Description$.MODULE$,
-                AssigneeFullName$.MODULE$,
+        ArrayList<Field<?>> tmp = new ArrayList<>(List.of(actualDuration, actualWork, actualFinish,
+                AllFields.summary,
+                AllFields.description,
+                AllFields.assigneeFullName,
                 closedOn,
                 finishNoEarlierThan,
                 finishNoLaterThan,

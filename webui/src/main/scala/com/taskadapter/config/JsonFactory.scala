@@ -2,7 +2,7 @@ package com.taskadapter.config
 
 import com.taskadapter.connector.common.ConfigUtils
 import com.taskadapter.common.ui.FieldMapping
-import com.taskadapter.model.{AssigneeFullName, AssigneeLoginName, Children, ClosedOn, Components, CreatedOn, CustomDate, CustomFloat, CustomSeqString, CustomString, Description, DoneRatio, DueDate, EstimatedTime, Field, Id, Key, ParentKey, Priority, Relations, ReporterFullName, ReporterLoginName, SourceSystemId, StartDate, Summary, TargetVersion, TaskStatus, TaskType, UpdatedOn}
+import com.taskadapter.model.{AssigneeFullName, AssigneeLoginName, Children, ClosedOn, Components, CreatedOn, CustomDate, CustomFloat, CustomListString, CustomString, Description, DoneRatio, DueDate, EstimatedTime, Field, Id, Key, ParentKey, Priority, Relations, ReporterFullName, ReporterLoginName, SourceSystemId, StartDate, Summary, TargetVersion, TaskStatus, TaskType, UpdatedOn}
 
 import java.util.Optional
 import scala.util.parsing.json.JSON
@@ -48,37 +48,39 @@ object JsonFactory {
       return Optional.empty()
     }
     val fieldName = json("name").asInstanceOf[String]
-    val gType = json("type")
+    var gType = json("type").toString
+    // temporary adapter to recognize legacy (pre- March-2021) fields ending with "$" (leftover from Scala)
+    gType = gType.replace("$", "")
     val result = gType match {
-      case "AssigneeLoginName$" => AssigneeLoginName
-      case "AssigneeFullName$" => AssigneeFullName
-      case "Children$" => Children
-      case "Components$" => Components
-      case "ClosedOn$" => ClosedOn
-      case "CreatedOn$" => CreatedOn
-      case "CustomString" => CustomString(fieldName)
-      case "CustomFloat" => CustomFloat(fieldName)
-      case "CustomDate" => CustomDate(fieldName)
-      case "CustomSeqString" => CustomSeqString(fieldName)
-      case "Description$" => Description
-      case "DoneRatio$" => DoneRatio
-      case "DueDate$" => DueDate
-      case "EstimatedTime$" => EstimatedTime
-//      case "SpentTime$" => SpentTime
-      case "Id$" => Id
-      case "Key$" => Key
-      case "ParentKey$" => ParentKey
-      case "Priority$" => Priority
-      case "Relations$" => Relations
-      case "ReporterFullName$" => ReporterFullName
-      case "ReporterLoginName$" => ReporterLoginName
-      case "SourceSystemId$" => SourceSystemId
-      case "StartDate$" => StartDate
-      case "Summary$" => Summary
-      case "TaskStatus$" => TaskStatus
-      case "TaskType$" => TaskType
-      case "TargetVersion$" => TargetVersion
-      case "UpdatedOn$" => UpdatedOn
+      case "AssigneeLoginName" => new AssigneeLoginName
+      case "AssigneeFullName" => new AssigneeFullName
+      case "Children" => new Children
+      case "Components" => new Components
+      case "ClosedOn" => new ClosedOn
+      case "CreatedOn" => new CreatedOn
+      case "CustomString" => new CustomString(fieldName)
+      case "CustomFloat" => new CustomFloat(fieldName)
+      case "CustomDate" => new CustomDate(fieldName)
+      case "CustomSeqString" => new CustomListString(fieldName)
+      case "Description" => new Description
+      case "DoneRatio" => new DoneRatio
+      case "DueDate" => new DueDate
+      case "EstimatedTime" => new EstimatedTime
+//      case "SpentTime" => SpentTime
+      case "Id" => new Id
+      case "Key" => new Key
+      case "ParentKey" => new ParentKey
+      case "Priority" => new Priority
+      case "Relations" => new Relations
+      case "ReporterFullName" => new ReporterFullName
+      case "ReporterLoginName" => new ReporterLoginName
+      case "SourceSystemId" => new SourceSystemId
+      case "StartDate" => new StartDate
+      case "Summary" => new Summary
+      case "TaskStatus" => new TaskStatus
+      case "TaskType" => new TaskType
+      case "TargetVersion" => new TargetVersion
+      case "UpdatedOn" => new UpdatedOn
       case _ => throw new RuntimeException(s"unknown type: $gType")
     }
     Optional.of(result.asInstanceOf[Field[T]])

@@ -50,13 +50,13 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
     */
   it("assignee login and full name are loaded") {
     val task = GTaskBuilder.withSummary()
-      .setValue(AssigneeFullName, redmineUser.getFullName)
+      .setValue(AllFields.assigneeFullName, redmineUser.getFullName)
     val config = getTestConfig
     config.setFindUserByName(true)
     val connector = getConnector(config)
-    val loadedTask = TestUtils.saveAndLoad(connector, task, FieldRowBuilder.rows(java.util.List.of(Summary, AssigneeFullName)))
-    loadedTask.getValue(AssigneeLoginName) shouldBe redmineUser.getLogin
-    loadedTask.getValue(AssigneeFullName) shouldBe redmineUser.getFullName
+    val loadedTask = TestUtils.saveAndLoad(connector, task, FieldRowBuilder.rows(java.util.List.of(AllFields.summary, AllFields.assigneeFullName)))
+    loadedTask.getValue(AllFields.assigneeLoginName) shouldBe redmineUser.getLogin
+    loadedTask.getValue(AllFields.assigneeFullName) shouldBe redmineUser.getFullName
     mgr.getIssueManager.deleteIssue(loadedTask.getId.toInt)
   }
 
@@ -64,23 +64,23 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
     val t = new GTask()
     t.setId(1l)
     val summary = "generic task " + Calendar.getInstance().getTimeInMillis
-    t.setValue(Summary, summary)
-    t.setValue(Description, "some descr" + Calendar.getInstance().getTimeInMillis + "1")
+    t.setValue(AllFields.summary, summary)
+    t.setValue(AllFields.description, "some descr" + Calendar.getInstance().getTimeInMillis + "1")
 
     val hours: Integer = Random.nextInt(50) + 1
-    t.setValue(EstimatedTime, hours.toFloat)
+    t.setValue(AllFields.estimatedTime, java.lang.Float.valueOf(hours.toFloat))
 
     val c1 = new GTask()
     c1.setId(3l)
     val parentIdentity = new TaskId(1, "1")
     c1.setParentIdentity(parentIdentity)
-    c1.setValue(Summary, "Child 1 of " + summary)
+    c1.setValue(AllFields.summary, "Child 1 of " + summary)
     t.addChildTask(c1)
 
     val c2 = new GTask()
     c2.setId(4l)
     c2.setParentIdentity(parentIdentity)
-    c2.setValue(Summary, "Child 2 of " + summary)
+    c2.setValue(AllFields.summary, "Child 2 of " + summary)
     t.addChildTask(c2)
 
     val loadedTasks = TestUtils.saveAndLoadAll(getConnector(), t, TestFieldBuilder.getSummaryRow())
@@ -172,13 +172,14 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
 
   it("task is created and loaded") {
     fixture.taskIsCreatedAndLoaded(GTaskBuilder.withSummary()
-      .setValue(Description, "123")
-      .setValue(EstimatedTime, 120f)
-      .setValue(DueDate, DateUtils.nextYear)
-      .setValue(StartDate, DateUtils.yearAgo)
-      .setValue(TaskStatus, "New")
+      .setValue(AllFields.description, "123")
+      .setValue(AllFields.estimatedTime, java.lang.Float.valueOf(120F))
+      .setValue(AllFields.dueDate, DateUtils.nextYear)
+      .setValue(AllFields.startDate, DateUtils.yearAgo)
+      .setValue(AllFields.taskStatus, "New")
       ,
-      java.util.List.of(StartDate, Summary, Description, DueDate, EstimatedTime, TaskStatus))
+      java.util.List.of(AllFields.startDate, AllFields.summary, AllFields.description, AllFields.dueDate,
+        AllFields.estimatedTime, AllFields.taskStatus))
   }
 
   it("tasks are created without errors") {
@@ -189,8 +190,8 @@ class RedmineIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAnd
 
   it("task is updated") {
     fixture.taskCreatedAndUpdatedOK(GTaskBuilder.withSummary(),
-      java.util.List.of(new FieldWithValue(Summary, "new value"),
-        new FieldWithValue(TaskStatus, findAnyNonDefaultTaskStatus())
+      java.util.List.of(new FieldWithValue(AllFields.summary, "new value"),
+        new FieldWithValue(AllFields.taskStatus, findAnyNonDefaultTaskStatus())
       )
     )
   }

@@ -11,7 +11,7 @@ public class TrelloFieldBuilder {
     public static List<FieldRow<?>> getDefault() {
         return Arrays.asList(
                 new FieldRow(Optional.of(TrelloField.listName), Optional.of(TrelloField.listName), ""),
-                new FieldRow(Optional.of(AllFields.summary()), Optional.of(AllFields.summary()), "")
+                new FieldRow(Optional.of(AllFields.summary), Optional.of(AllFields.summary), "")
         );
     }
 }

@@ -1,6 +1,6 @@
 package com.taskadapter.connector.github
 
-import com.taskadapter.model.{AssigneeLoginName, Description, GTask, GTaskBuilder, Summary}
+import com.taskadapter.model.{AllFields, GTask, GTaskBuilder}
 import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
@@ -10,15 +10,15 @@ import org.scalatest.{FunSpec, Matchers}
 class GTaskToGithubTest extends FunSpec with Matchers {
   describe("assignee") {
     it("empty assignee is ignored") {
-      val task = new GTask().setValue(Summary, "my").setValue(AssigneeLoginName, null)
+      val task = new GTask().setValue(AllFields.summary, "my").setValue(AllFields.assigneeLoginName, null)
       val issue = getConverter.toIssue(task)
       assertEquals("my", issue.getTitle)
     }
 
     it("assignee with null Login Name is ignored") {
       val task = new GTask
-      task.setValue(Summary, "my")
-      task.setValue(AssigneeLoginName, null)
+      task.setValue(AllFields.summary, "my")
+      task.setValue(AllFields.assigneeLoginName, null)
       val issue = getConverter.toIssue(task)
       assertEquals("my", issue.getTitle)
     }
@@ -47,6 +47,6 @@ class GTaskToGithubTest extends FunSpec with Matchers {
   private def createTask(summary: String): GTask = createTask(summary, null)
 
   private def createTask(summary: String, description: String): GTask = {
-    new GTask().setValue(Summary, summary).setValue(Description, description)
+    new GTask().setValue(AllFields.summary, summary).setValue(AllFields.description, description)
   }
 }

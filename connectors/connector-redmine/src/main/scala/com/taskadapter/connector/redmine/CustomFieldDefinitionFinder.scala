@@ -9,6 +9,6 @@ import scala.collection.JavaConverters._
 
 object CustomFieldDefinitionFinder {
   def findCustomFieldId(customFieldDefinitions: util.List[CustomFieldDefinition], field: Field[_]) : Integer = {
-    customFieldDefinitions.asScala.find(d => d.getName == field.name).map(_.getId).orNull
+    customFieldDefinitions.asScala.find(d => d.getName == field.getFieldName).map(_.getId).orNull
   }
 }

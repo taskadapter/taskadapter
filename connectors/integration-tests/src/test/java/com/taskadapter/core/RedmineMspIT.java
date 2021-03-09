@@ -10,12 +10,11 @@ import com.taskadapter.connector.msp.MSPConnector;
 import com.taskadapter.connector.redmine.RedmineConfig;
 import com.taskadapter.connector.redmine.RedmineConnector;
 import com.taskadapter.connector.testlib.ResourceLoader;
-import com.taskadapter.connector.testlib.TempFolder;
 import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.integrationtests.RedmineTestInitializer;
 import com.taskadapter.integrationtests.RedmineTestLoader;
 import com.taskadapter.integrationtests.TestConfigs;
-import com.taskadapter.model.AssigneeFullName$;
+import com.taskadapter.model.AllFields;
 import com.taskadapter.model.CustomString;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskBuilder;
@@ -39,7 +38,7 @@ import static com.taskadapter.core.JavaFieldAdapter.descriptionOpt;
 import static com.taskadapter.core.JavaFieldAdapter.summaryOpt;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class RedmineMspIT implements TempFolder {
+public class RedmineMspIT {
     private RedmineConfig sourceConfig = TestConfigs.getRedmineConfig();
     private RedmineConfig targetConfig = TestConfigs.getRedmineConfig();
     private RedmineConnector sourceRedmineConnector = new RedmineConnector(sourceConfig, TestConfigs.getRedmineSetup());
@@ -77,7 +76,7 @@ public class RedmineMspIT implements TempFolder {
                         new FieldRow(AssigneeFullNameOpt, AssigneeFullNameOpt, null)
                 )
         );
-        assertThat(redmineResult.getValue(AssigneeFullName$.MODULE$)).isEqualTo("Redmine Admin");
+        assertThat(redmineResult.getValue(AllFields.assigneeFullName)).isEqualTo("Redmine Admin");
     }
 
     /**
@@ -114,7 +113,7 @@ public class RedmineMspIT implements TempFolder {
         RedmineConnector redmineConnector = new RedmineConnector(redmineConfig, TestConfigs.getRedmineSetup());
         // save to Redmine
         List<GTask> result = TestUtils.saveAndLoadList(redmineConnector, loadedTasks,
-                JavaFieldAdapter.rows(JavaFieldAdapter.summary)
+                JavaFieldAdapter.rows(AllFields.summary)
         );
         assertThat(result).overridingErrorMessage("must have created 2 tasks")
                 .hasSize(2);
@@ -136,7 +135,7 @@ public class RedmineMspIT implements TempFolder {
         RedmineConnector redmineConnector = new RedmineConnector(redmineConfig, TestConfigs.getRedmineSetup());
 
         List<GTask> result = TestUtils.saveAndLoadList(redmineConnector, loadedTasks,
-                JavaFieldAdapter.rows(JavaFieldAdapter.summary)
+                JavaFieldAdapter.rows(AllFields.summary)
         );
         assertThat(result).overridingErrorMessage("must have created 13 tasks")
                 .hasSize(13);

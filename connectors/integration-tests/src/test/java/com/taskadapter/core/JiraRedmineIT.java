@@ -12,14 +12,9 @@ import com.taskadapter.connector.testlib.TestSaver;
 import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.integrationtests.RedmineTestInitializer;
 import com.taskadapter.integrationtests.TestConfigs;
-import com.taskadapter.model.AssigneeFullName$;
-import com.taskadapter.model.AssigneeLoginName$;
-import com.taskadapter.model.Description$;
+import com.taskadapter.model.AllFields;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskBuilder;
-import com.taskadapter.model.ReporterFullName$;
-import com.taskadapter.model.ReporterLoginName$;
-import com.taskadapter.model.Summary$;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.Project;
@@ -77,14 +72,14 @@ public class JiraRedmineIT {
                 new FieldRow(descriptionOpt, descriptionOpt, "")
         );
         GTask task = new GTask();
-        task.setValue(Summary$.MODULE$, "summary1");
-        task.setValue(Description$.MODULE$, "description1");
+        task.setValue(AllFields.summary, "summary1");
+        task.setValue(AllFields.description, "description1");
         new TestSaver(redmineConnectorWithResolveAssignees, rows).saveAndLoad(task);
 
         SaveResult result = adapter.adapt(rows);
 
         GTask redmine = TestUtils.loadCreatedTask(redmineConnectorWithResolveAssignees, rows, result);
-        assertThat(redmine.getValue(Description$.MODULE$)).isEqualTo("description1");
+        assertThat(redmine.getValue(AllFields.description)).isEqualTo("description1");
     }
 
     // assignee and reporter can be loaded from JIRA and saved to Redmine
@@ -97,18 +92,18 @@ public class JiraRedmineIT {
 
         GTask fromJira = TestUtils.saveAndLoad(jiraConnector,
                 new GTaskBuilder()
-                        .withRandom(Summary$.MODULE$)
+                        .withRandom(AllFields.summary)
                         .withAssigneeLogin(RedmineTestInitializer.currentUser.getLoginName())
                         .build(),
                 rows);
 
         GTask redmineResult = TestUtils.saveAndLoad(redmineConnectorWithResolveAssignees, fromJira, rows);
 
-        assertThat(redmineResult.getValue(AssigneeFullName$.MODULE$)).isEqualTo("Redmine Admin");
-        assertThat(redmineResult.getValue(AssigneeLoginName$.MODULE$)).isEqualTo("user");
+        assertThat(redmineResult.getValue(AllFields.assigneeFullName)).isEqualTo("Redmine Admin");
+        assertThat(redmineResult.getValue(AllFields.assigneeLoginName)).isEqualTo("user");
 
-        assertThat(redmineResult.getValue(ReporterFullName$.MODULE$)).isEqualTo("Redmine Admin");
-        assertThat(redmineResult.getValue(ReporterLoginName$.MODULE$)).isEqualTo("user");
+        assertThat(redmineResult.getValue(AllFields.reporterFullName)).isEqualTo("Redmine Admin");
+        assertThat(redmineResult.getValue(AllFields.reporterLoginName)).isEqualTo("user");
     }
 
     // assignee can be loaded from Redmine and saved to JIRA
@@ -119,7 +114,7 @@ public class JiraRedmineIT {
         List<GTask> loadedTasks = TaskLoader.loadTasks(1, redmineConnectorWithResolveAssignees, "sourceName", ProgressMonitorUtils.DUMMY_MONITOR);
         assertThat(loadedTasks).hasSize(1);
         GTask redmineTask = loadedTasks.get(0);
-        assertThat(redmineTask.getValue(AssigneeLoginName$.MODULE$))
+        assertThat(redmineTask.getValue(AllFields.assigneeLoginName))
                 .isEqualTo(RedmineTestInitializer.currentUser.getLoginName());
 
         GTask result = TestUtils.saveAndLoad(jiraConnector, redmineTask,
@@ -128,7 +123,7 @@ public class JiraRedmineIT {
                         new FieldRow(AssigneeLoginNameOpt, AssigneeLoginNameOpt, null)
                 )
         );
-        assertThat(result.getValue(AssigneeLoginName$.MODULE$)).isEqualTo(jiraSetup.getUserName());
-        assertThat(result.getValue(ReporterFullName$.MODULE$)).isEqualTo(jiraSetup.getUserName());
+        assertThat(result.getValue(AllFields.assigneeLoginName)).isEqualTo(jiraSetup.getUserName());
+        assertThat(result.getValue(AllFields.reporterFullName)).isEqualTo(jiraSetup.getUserName());
     }
 }

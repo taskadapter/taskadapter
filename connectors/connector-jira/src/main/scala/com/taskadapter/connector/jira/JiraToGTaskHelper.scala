@@ -21,7 +21,7 @@ object JiraToGTaskHelper {
     })
   }
 
-  def processOneField[T](field: Field[T], task: GTask, nativeValue: Any) : Unit = {
+  private def processOneField[T](field: Field[T], task: GTask, nativeValue: Any) : Unit = {
     try {
       val value = convertToGenericValue(field, nativeValue)
       task.setValue(field, value)
@@ -32,7 +32,7 @@ object JiraToGTaskHelper {
   }
 
   @throws[JSONException]
-  def convertToGenericValue[T](field: Field[T], nativeValue: Any): T = {
+  private def convertToGenericValue[T](field: Field[T], nativeValue: Any): T = {
     if (nativeValue == null) return null.asInstanceOf[T]
 
     val value = nativeValue match {
@@ -43,16 +43,16 @@ object JiraToGTaskHelper {
     value.asInstanceOf[T]
   }
 
-  def parseJsonArray[T](field: Field[T], array: JSONArray): T = {
-    val result = scala.collection.mutable.Buffer[T]()
+  private def parseJsonArray[T](field: Field[T], array: JSONArray): T = {
+    val result = new java.util.ArrayList[T]()
     for (i <- 0 until array.length()) {
       val o = array.get(i)
-      result += convertToGenericValue(field, o)
+      result.add(convertToGenericValue(field, o))
     }
     result.asInstanceOf[T]
   }
 
-  def parseJsonObject(jsonObject: JSONObject): String = {
+  private def parseJsonObject(jsonObject: JSONObject): String = {
     var value = ""
     try {
       value = jsonObject.getString("value")

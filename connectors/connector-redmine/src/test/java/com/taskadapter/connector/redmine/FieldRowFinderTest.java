@@ -2,7 +2,7 @@ package com.taskadapter.connector.redmine;
 
 import com.taskadapter.connector.FieldRow;
 import com.taskadapter.core.JavaFieldAdapter;
-import com.taskadapter.model.Priority$;
+import com.taskadapter.model.AllFields;
 import org.junit.Test;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class FieldRowFinderTest {
                         JavaFieldAdapter.priorityOpt,
                         "default"
                 ));
-        assertThat(FieldRowFinder.containsTargetField(rows, Priority$.MODULE$))
+        assertThat(FieldRowFinder.containsTargetField(rows, AllFields.priority))
                 .isTrue();
     }
 
@@ -36,7 +36,7 @@ public class FieldRowFinderTest {
                 summaryOpt,
                 "default"
         ));
-        assertThat(FieldRowFinder.containsTargetField(rows, Priority$.MODULE$))
+        assertThat(FieldRowFinder.containsTargetField(rows, AllFields.priority))
                 .isFalse();
     }
 
@@ -47,7 +47,7 @@ public class FieldRowFinderTest {
                 Optional.empty(),
                 ""
         ));
-        assertThat(FieldRowFinder.containsTargetField(rows, Priority$.MODULE$))
+        assertThat(FieldRowFinder.containsTargetField(rows, AllFields.priority))
                 .isFalse();
     }
 

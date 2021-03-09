@@ -54,7 +54,7 @@ public class UISyncConfigIT {
         var jiraTask = new GTask();
         jiraTask.setId(66l);
         jiraTask.setKey("TEST-66");
-        jiraTask.setValue(AllFields.summary(), "summary");
+        jiraTask.setValue(AllFields.summary, "summary");
 
         var list = List.of(jiraTask);
         var saveResult = config.saveTasks(list, ProgressMonitorUtils.DUMMY_MONITOR);
@@ -74,21 +74,21 @@ public class UISyncConfigIT {
     public void taskWithRemoteIdIsUpdatedInMantisBT() throws IOException, ConnectorException {
         var config = ConfigLoader.loadConfig(tempFolder.getRoot(), "Mantis_1-Microsoft-Project.conf");
         var reversed = config.reverse();
-        trySaveAndThenUpdate(reversed, AllFields.summary(), AllFields.description());
+        trySaveAndThenUpdate(reversed, AllFields.summary, AllFields.description);
     }
 
     @Test
     public void taskWithRemoteIdIsUpdatedInJIRA() throws IOException, ConnectorException {
         var jiraMspConfig = ConfigLoader.loadConfig(tempFolder.getRoot(), "Atlassian-Jira_Microsoft-Project_3.conf");
         var toJIRAConfig = jiraMspConfig.reverse();
-        trySaveAndThenUpdate(toJIRAConfig, AllFields.summary());
+        trySaveAndThenUpdate(toJIRAConfig, AllFields.summary);
     }
 
     @Test
     public void taskWithRemoteIdIsUpdatedInGitHub() throws IOException, ConnectorException {
         var config = ConfigLoader.loadConfig(tempFolder.getRoot(), "Github_Microsoft-Project_1.conf");
         var reversedConfig = config.reverse();
-        trySaveAndThenUpdate(reversedConfig, AllFields.summary());
+        trySaveAndThenUpdate(reversedConfig, AllFields.summary);
     }
 
     private void trySaveAndThenUpdate(UISyncConfig uiSyncConfig, Field<String> summaryField) throws IOException, ConnectorException {
@@ -105,9 +105,9 @@ public class UISyncConfigIT {
                                       Field<String> secondField) {
         var builder = new GTaskBuilder().withRandom(summaryField);
         var task = builder.build();
-        task.setId(123l);
+        task.setId(123L);
         task.setKey("123");
-        task.setSourceSystemId(new TaskId(123l, "123"));
+        task.setSourceSystemId(new TaskId(123L, "123"));
         task.setValue(secondField, "some value");
         trySaveAndThenUpdate(uiSyncConfig, summaryField, task);
     }
@@ -118,7 +118,7 @@ public class UISyncConfigIT {
         assertThat(firstResult.getCreatedTasksNumber()).isEqualTo(1);
         assertThat(firstResult.getUpdatedTasksNumber()).isEqualTo(0);
 
-        task.setValue(summaryField, "updated summary");
+        task.setValue(AllFields.summary, "updated summary");
         var secondResult = uiSyncConfig.saveTasks(List.of(task), ProgressMonitorUtils.DUMMY_MONITOR);
         assertThat(secondResult.hasErrors()).isFalse();
         assertThat(secondResult.getCreatedTasksNumber()).isEqualTo(0);

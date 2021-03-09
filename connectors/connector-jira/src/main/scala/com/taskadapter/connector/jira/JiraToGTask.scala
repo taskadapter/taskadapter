@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory
 
 import java.util
 import scala.collection.JavaConversions._
-import scala.collection.JavaConverters
 
 object JiraToGTask {
   private val logger = LoggerFactory.getLogger(classOf[JiraToGTask])
@@ -67,24 +66,28 @@ class JiraToGTask(val priorities: Priorities) {
     task.setSourceSystemId(new TaskId(longId, issue.getKey))
     val target = new util.ArrayList[String]
     issue.getComponents.forEach((c: BasicComponent) => target.add(c.getName))
-    task.setValue(Components, JavaConverters.asScalaBuffer(target))
+    task.setValue(AllFields.components, target)
     if (issue.getAssignee != null) {
       val assignee = issue.getAssignee
-      task.setValue(AssigneeLoginName, assignee.getName)
-      task.setValue(AssigneeFullName, assignee.getDisplayName)
+      task.setValue(AllFields.assigneeLoginName, assignee.getName)
+      task.setValue(AllFields.assigneeFullName, assignee.getDisplayName)
     }
     if (issue.getReporter != null) {
-      task.setValue(ReporterFullName, issue.getReporter.getDisplayName)
-      task.setValue(ReporterLoginName, issue.getReporter.getName)
+      task.setValue(AllFields.reporterFullName, issue.getReporter.getDisplayName)
+      task.setValue(AllFields.reporterLoginName, issue.getReporter.getName)
     }
-    task.setValue(TaskType, issue.getIssueType.getName)
-    task.setValue(Summary, issue.getSummary)
-    task.setValue(Description, issue.getDescription)
-    task.setValue(TaskStatus, issue.getStatus.getName)
+    task.setValue(AllFields.taskType, issue.getIssueType.getName)
+    task.setValue(AllFields.summary, issue.getSummary)
+    task.setValue(AllFields.description, issue.getDescription)
+    task.setValue(AllFields.taskStatus, issue.getStatus.getName)
     val dueDate = issue.getDueDate
-    if (dueDate != null) task.setValue(DueDate, dueDate.toDate)
+    if (dueDate != null) {
+      task.setValue(AllFields.dueDate, dueDate.toDate)
+    }
     val createdOn = issue.getCreationDate
-    if (createdOn != null) task.setValue(CreatedOn, createdOn.toDate)
+    if (createdOn != null) {
+      task.setValue(AllFields.createdOn, createdOn.toDate)
+    }
     // TODO set Done Ratio
     // task.setDoneRatio(issue.getDoneRatio());
     val jiraPriorityName = if (issue.getPriority != null) {
@@ -93,11 +96,15 @@ class JiraToGTask(val priorities: Priorities) {
       null
     }
     val priorityValue = priorities.getPriorityByText(jiraPriorityName)
-    task.setValue(Priority, priorityValue)
+    task.setValue(AllFields.priority, priorityValue)
     val timeTracking = issue.getTimeTracking
     if (timeTracking != null) {
       val originalEstimateMinutes = timeTracking.getOriginalEstimateMinutes
-      if (originalEstimateMinutes != null && !(originalEstimateMinutes == 0)) task.setValue(EstimatedTime, (originalEstimateMinutes / 60.0).toFloat)
+      if (originalEstimateMinutes != null && !(originalEstimateMinutes == 0)) {
+        task.setValue(AllFields.estimatedTime, java.lang.Float.valueOf(
+          (originalEstimateMinutes / 60.0 ).toFloat
+        ))
+      }
 
 //      val spentTimeMinutes = timeTracking.getTimeSpentMinutes
 //      task.setValue(SpentTime, (spentTimeMinutes/60.0).toFloat)

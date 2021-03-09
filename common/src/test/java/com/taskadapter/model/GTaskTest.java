@@ -43,7 +43,7 @@ public class GTaskTest {
 
     @Test
     public void constructorFieldsAreDeepCloned() {
-        var field = Field.apply("str");
+        var field = new CustomString("str");
         var task = new GTask();
         task.setValue(field, "123");
         var cloned = GTask.shallowClone(task);

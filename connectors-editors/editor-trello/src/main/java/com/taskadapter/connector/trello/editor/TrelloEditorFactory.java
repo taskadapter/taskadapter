@@ -12,8 +12,8 @@ import com.taskadapter.connector.definition.exceptions.UnsupportedConnectorOpera
 import com.taskadapter.connector.trello.TrelloClient;
 import com.taskadapter.connector.trello.TrelloConfig;
 import com.taskadapter.connector.trello.TrelloConnector;
+import com.taskadapter.model.AllFields;
 import com.taskadapter.model.NamedKeyedObjectImpl;
-import com.taskadapter.model.TaskStatus$;
 import com.taskadapter.web.ConnectorSetupPanel;
 import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.PluginEditorFactory;
@@ -107,7 +107,7 @@ public class TrelloEditorFactory implements PluginEditorFactory<TrelloConfig, We
         // "List Name" must be present on the right side and must be selected for export
         if (fieldMappings.stream()
                 .noneMatch(m ->
-                        m.getFieldInConnector2().isPresent() && m.getFieldInConnector2().get().equals(TaskStatus$.MODULE$)
+                        m.getFieldInConnector2().isPresent() && m.getFieldInConnector2().get().equals(AllFields.taskStatus)
                                 && m.isSelected())) {
             return Arrays.asList(new FieldNotMappedException("List Name"));
         }

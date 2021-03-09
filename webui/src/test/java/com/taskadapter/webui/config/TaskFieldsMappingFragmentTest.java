@@ -14,9 +14,9 @@ public class TaskFieldsMappingFragmentTest {
     @Test
     public void emptyDefaultValueForNonStringBasedFieldIsConvertedToEmptyString() {
         var f = new TaskFieldsMappingFragment(Page.MESSAGES,
-                Arrays.asList(AllFields.createdOn()), Page.MESSAGES, "JIRA",
-                Arrays.asList(AllFields.createdOn(), AllFields.updatedOn()), Page.MESSAGES, "Redmine",
-                List.of(new FieldMapping(AllFields.createdOn(), AllFields.createdOn(), true, null))
+                Arrays.asList(AllFields.createdOn), Page.MESSAGES, "JIRA",
+                Arrays.asList(AllFields.createdOn, AllFields.updatedOn), Page.MESSAGES, "Redmine",
+                List.of(new FieldMapping(AllFields.createdOn, AllFields.createdOn, true, null))
         );
 
         assertThat(f.getElements()).hasSize(1);

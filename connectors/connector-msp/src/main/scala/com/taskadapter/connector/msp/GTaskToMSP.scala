@@ -40,9 +40,9 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
     val stringBasedValue = CustomFieldConverter.getValueAsString(value)
       .trim
     field match {
-      case Summary => mspTask.setName(stringBasedValue)
-      case Description => mspTask.setNotes(stringBasedValue)
-      case AssigneeFullName => // skip - processed separately because it requires access to several fields
+      case _: Summary => mspTask.setName(stringBasedValue)
+      case _: Description => mspTask.setNotes(stringBasedValue)
+      case _: AssigneeFullName => // skip - processed separately because it requires access to several fields
       case MspField.mustStartOn =>
         mspTask.setConstraintType(ConstraintType.MUST_START_ON)
         mspTask.setConstraintDate(value.asInstanceOf[Date])
@@ -76,7 +76,7 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
         if (value != null) {
           mspTask.setDeadline(value.asInstanceOf[Date])
         }
-      case com.taskadapter.model.Priority =>
+      case _: com.taskadapter.model.Priority =>
         val mspPriority = Priority.getInstance(value.asInstanceOf[Int])
         mspTask.setPriority(mspPriority)
 
@@ -87,7 +87,7 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
       case MspField.percentageComplete => mspTask.setPercentageComplete(value.asInstanceOf[Float])
       case MspField.actualFinish => mspTask.setActualFinish(value.asInstanceOf[Date])
 
-      case other if other.name.startsWith("Text") =>
+      case other if other.getFieldName.startsWith("Text") =>
         setFieldByName(field, stringBasedValue)
 
       case unknown => // ignore for now
@@ -95,7 +95,7 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
   }
 
   private def processAssignee(gTask: GTask): Unit = {
-    val assigneeFullName = gTask.getValue(AssigneeFullName)
+    val assigneeFullName = gTask.getValue(AllFields.assigneeFullName)
     val value = CustomFieldConverter.getValueAsString(assigneeFullName).trim
     if (value != null) {
       val resource = resourceManager.getOrCreateResource(value)
@@ -103,9 +103,9 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
       ass.setUnits(100)
       // MUST set the remaining work to avoid this bug:
       //http://www.hostedredmine.com/issues/7780 "Duration" field is ignored when "Assignee" is set
-      if (gTask.getValue(EstimatedTime) != 0) {
+      if (gTask.getValue(AllFields.estimatedTime) != 0) {
         ass.setRemainingWork(TimeCalculator.calculateRemainingTime(gTask))
-        if (gTask.getValue(DoneRatio) != 0) {
+        if (gTask.getValue(AllFields.doneRatio) != 0) {
           val timeAlreadySpent = TimeCalculator.calculateTimeAlreadySpent(gTask)
           ass.setActualWork(timeAlreadySpent)
         }
@@ -114,7 +114,7 @@ class GTaskToMSP(mspTask: Task, resourceManager: ResourceManager) {
   }
 
   private def setFieldByName(field: Field[_], value: Any): Unit = {
-    val f = MSPUtils.getTaskFieldByName(field.name)
+    val f = MSPUtils.getTaskFieldByName(field.getFieldName)
     mspTask.set(f, value)
   }
 }

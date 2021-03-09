@@ -1,11 +1,12 @@
 package com.taskadapter.connector.jira
 
 import java.util
-
 import com.atlassian.jira.rest.client.api.JiraRestClient
 import com.atlassian.jira.rest.client.api.domain.{Issue, SearchResult}
 import com.atlassian.jira.rest.client.api.domain.input.IssueInput
+import com.google.common.collect.Lists
 import com.taskadapter.connector.definition.TaskId
+
 import scala.collection.JavaConverters._
 
 
@@ -53,7 +54,7 @@ object JiraClientHelper {
 
   def loadCustomFields(client: JiraRestClient): CustomFieldResolver = {
     val fields = client.getMetadataClient.getFields
-    val fieldIterable = fields.claim.asScala
-    new CustomFieldResolver(fieldIterable)
+    val fieldIterable = fields.claim
+    new CustomFieldResolver(Lists.newArrayList(fieldIterable))
   }
 }

@@ -1,11 +1,11 @@
 package com.taskadapter.connector.trello
 
-import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.NewConnector
+import com.taskadapter.connector.common.ProgressMonitorUtils
 import com.taskadapter.connector.definition.exceptions.ConnectorException
 import com.taskadapter.connector.testlib.{CommonTestChecks, ITFixture}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
-import com.taskadapter.model.{Description, GTask, GTaskBuilder, ReporterFullName, ReporterLoginName, Summary}
+import com.taskadapter.model.{AllFields, GTask, GTaskBuilder}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
@@ -24,12 +24,14 @@ class TrelloIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
   it("task created and loaded") {
     withTempBoard { boardId =>
       // reporter info is not used when creating a task, but will be used to check value in the created tasks
-      val task = buildTask.setValue(ReporterLoginName, "altest6")
-        .setValue(ReporterFullName, "Alex Skor")
-        .setValue(Description, "desc")
+      val task = buildTask.setValue(AllFields.reporterLoginName, "altest6")
+        .setValue(AllFields.reporterFullName, "Alex Skor")
+        .setValue(AllFields.description, "desc")
       val fixture = new ITFixture("Trello server", getConnector(boardId), CommonTestChecks.skipCleanup)
       fixture.taskIsCreatedAndLoaded(task,
-        java.util.Arrays.asList(Description, Summary, TrelloField.listName, ReporterLoginName, ReporterFullName))
+        java.util.Arrays.asList(AllFields.description, AllFields.summary, TrelloField.listName,
+          AllFields.reporterLoginName,
+          AllFields.reporterFullName))
     }
   }
 
@@ -37,7 +39,7 @@ class TrelloIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     withTempBoard { boardId =>
       CommonTestChecks.taskCreatedAndUpdatedOK("",
         getConnector(boardId), TrelloFieldBuilder.getDefault(),
-        buildTask, Summary, "new value",
+        buildTask, AllFields.summary, "new value",
         CommonTestChecks.skipCleanup)
     }
   }
@@ -54,9 +56,8 @@ class TrelloIT extends FunSpec with Matchers with BeforeAndAfter with BeforeAndA
     }
   }
 
-
   def buildTask: GTask = {
-    val task = GTaskBuilder.gtaskWithRandom(Summary)
+    val task = GTaskBuilder.gtaskWithRandom(AllFields.summary)
     task.setValue(TrelloField.listName, "To Do")
     task
   }

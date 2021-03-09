@@ -119,12 +119,12 @@ class JiraConnector(config: JiraConfig, setup: WebConnectorSetup) extends NewCon
       val issueTypeList = loadIssueTypes(client)
       val projectPromise = client.getProjectClient.getProject(config.getProjectKey)
       val project = projectPromise.claim
-      val versions = project.getVersions.asScala
-      val components = project.getComponents.asScala
+      val versions = project.getVersions
+      val components = project.getComponents
       // Need to load Jira server priorities because what we store in the config files is a
       // priority name (string), while Jira returns the number value of the issue priority
       val prioritiesPromise = client.getMetadataClient.getPriorities
-      val priorities = prioritiesPromise.claim.asScala
+      val priorities = prioritiesPromise.claim
 
       val resolver = JiraClientHelper.loadCustomFields(client)
       val converter = new GTaskToJira(config, resolver, versions, components, priorities)

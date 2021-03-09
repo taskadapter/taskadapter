@@ -1,7 +1,7 @@
 package com.taskadapter.connector.jira
 
 import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.model.{GTask, GTaskBuilder, TaskType}
+import com.taskadapter.model.{AllFields, GTask, GTaskBuilder}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
@@ -22,11 +22,11 @@ class JiraTaskTypeResolverTest extends FunSpec with Matchers {
   }
 
   it("keeps explicit type") {
-    verify(new GTask().setValue(TaskType, "Task"), "Task")
+    verify(new GTask().setValue(AllFields.taskType, "Task"), "Task")
   }
 
   it("keeps explicit type even if parent is set") {
-    verify(new GTask().setValue(TaskType, "Task").setParentIdentity(someId), "Task")
+    verify(new GTask().setValue(AllFields.taskType, "Task").setParentIdentity(someId), "Task")
   }
 
   def verify(task: GTask, expected: String): Unit = {

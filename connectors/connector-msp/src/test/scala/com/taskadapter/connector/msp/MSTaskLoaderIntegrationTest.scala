@@ -1,7 +1,7 @@
 package com.taskadapter.connector.msp
 
 import com.taskadapter.connector.testlib.TestUtils
-import com.taskadapter.model.{CustomString, Summary}
+import com.taskadapter.model.{AllFields, CustomString, Summary}
 import net.sf.mpxj.TaskField
 import org.junit.Assert
 import org.junit.runner.RunWith
@@ -19,40 +19,40 @@ class MSTaskLoaderIntegrationTest extends FunSpec with Matchers {
 
   it("testFind1Task") {
     val tasks = MSPTestUtils.load("created_by_msp_1task.xml")
-    val myTaskAddedFromMSP = TestUtils.findTaskByFieldName(tasks, Summary, "task1")
+    val myTaskAddedFromMSP = TestUtils.findTaskByFieldName(tasks, AllFields.summary, "task1")
     if (myTaskAddedFromMSP == null) Assert.fail("required task not found in the tasks list")
   }
 
   it("testLoadFileCreatedByMSPWithManyTasks") {
     val tasks = MSPTestUtils.load("created_by_msp_tasks.xml")
     Assert.assertEquals(4, tasks.size)
-    val t1 = TestUtils.findTaskByFieldName(tasks, Summary, "task1")
+    val t1 = TestUtils.findTaskByFieldName(tasks, AllFields.summary, "task1")
     Assert.assertNotNull("required task not found in the tasks list", t1)
-    val t1Sub1 = TestUtils.findTaskByFieldName(tasks, Summary, "task1-sub1")
+    val t1Sub1 = TestUtils.findTaskByFieldName(tasks, AllFields.summary, "task1-sub1")
     Assert.assertNotNull("required task not found in the tasks list", t1Sub1)
-    val t2 = TestUtils.findTaskByFieldName(tasks, Summary, "task2")
+    val t2 = TestUtils.findTaskByFieldName(tasks, AllFields.summary, "task2")
     Assert.assertNotNull("required task not found in the tasks list", t2)
   }
 
   it("load file created by TA") {
     val tasks = MSPTestUtils.load("created_by_ta_27.xml")
     Assert.assertEquals(27, tasks.size)
-    val t1 = TestUtils.findTaskByFieldName(tasks, Summary, "improve components")
+    val t1 = TestUtils.findTaskByFieldName(tasks, AllFields.summary, "improve components")
     Assert.assertNotNull("required task not found in the tasks list", t1)
 
     // verify TextXX fields are loaded. this is a regression test for
     // https://bitbucket.org/taskadapter/taskadapter/issues/74/issue-type-is-reset-to-default-setting
-    t1.getValue(CustomString(TaskField.TEXT1.getName)) shouldBe "49"
-    t1.getValue(CustomString(TaskField.TEXT2.getName)) shouldBe "Feature"
+    t1.getValue(new CustomString(TaskField.TEXT1.getName)) shouldBe "49"
+    t1.getValue(new CustomString(TaskField.TEXT2.getName)) shouldBe "Feature"
 
-    val sub1 = TestUtils.findTaskByFieldName(tasks, Summary, "sub1")
+    val sub1 = TestUtils.findTaskByFieldName(tasks, AllFields.summary, "sub1")
     Assert.assertNotNull("required task not found in the tasks list", sub1)
   }
 
   it("load file created by TA 1 task") {
     val tasks = MSPTestUtils.load("created_by_ta_1.xml")
     Assert.assertEquals(1, tasks.size)
-    val t1 = TestUtils.findTaskByFieldName(tasks, Summary, "support me!")
+    val t1 = TestUtils.findTaskByFieldName(tasks, AllFields.summary, "support me!")
     Assert.assertNotNull("required task not found in the tasks list", t1)
   }
 

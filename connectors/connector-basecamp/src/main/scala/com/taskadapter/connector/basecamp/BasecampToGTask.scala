@@ -15,12 +15,14 @@ object BasecampToGTask {
 
     result.setValue(BasecampField.content, JsonUtils.getOptString("content", obj))
     val completedFloatValue: java.lang.Float = if (JsonUtils.getOptBool("completed", obj)) 100f else 0f
-    result.setValue(DoneRatio, completedFloatValue)
-    result.setValue(DueDate, JsonUtils.getOptShortDate("due_at", obj))
-    result.setValue(CreatedOn, JsonUtils.getOptLongDate("created_at", obj))
-    result.setValue(UpdatedOn, JsonUtils.getOptLongDate("updated_at", obj))
+    result.setValue(AllFields.doneRatio, completedFloatValue)
+    result.setValue(AllFields.dueDate, JsonUtils.getOptShortDate("due_at", obj))
+    result.setValue(AllFields.createdOn, JsonUtils.getOptLongDate("created_at", obj))
+    result.setValue(AllFields.updatedOn, JsonUtils.getOptLongDate("updated_at", obj))
     val assObj = JsonUtils.getOptObject("assignee", obj)
-    if (assObj != null) result.setValue(AssigneeFullName, parseUser(assObj).getDisplayName)
+    if (assObj != null) {
+      result.setValue(AllFields.assigneeFullName, parseUser(assObj).getDisplayName)
+    }
     result
   }
 

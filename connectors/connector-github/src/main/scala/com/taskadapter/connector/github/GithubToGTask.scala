@@ -23,13 +23,13 @@ object GithubToGTask {
     task.setId(java.lang.Long.parseLong(stringKey))
     task.setKey(stringKey)
     task.setSourceSystemId(new TaskId(issue.getId, stringKey))
-    task.setValue(Summary, issue.getTitle)
-    task.setValue(Description, issue.getBody)
-    task.setValue(CreatedOn, issue.getCreatedAt)
-    task.setValue(UpdatedOn, issue.getUpdatedAt)
+    task.setValue(AllFields.summary, issue.getTitle)
+    task.setValue(AllFields.description, issue.getBody)
+    task.setValue(AllFields.createdOn, issue.getCreatedAt)
+    task.setValue(AllFields.updatedOn, issue.getUpdatedAt)
     if (issue.getAssignee != null) {
-      task.setValue(AssigneeFullName, issue.getAssignee.getName)
-      task.setValue(AssigneeLoginName, issue.getAssignee.getLogin)
+      task.setValue(AllFields.assigneeFullName, issue.getAssignee.getName)
+      task.setValue(AllFields.assigneeLoginName, issue.getAssignee.getLogin)
     }
     task
   }

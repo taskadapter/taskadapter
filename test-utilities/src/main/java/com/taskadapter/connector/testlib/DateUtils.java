@@ -1,7 +1,7 @@
 package com.taskadapter.connector.testlib;
 
+import com.taskadapter.model.AllFields;
 import com.taskadapter.model.GTask;
-import com.taskadapter.model.StartDate$;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -30,7 +30,7 @@ public class DateUtils {
     public static Calendar setTaskStartYearAgo(GTask task) {
         var yearAgo = DateUtils.getCalendarRoundedToDay();
         yearAgo.add(Calendar.YEAR, -1);
-        task.setValue(StartDate$.MODULE$, yearAgo.getTime());
+        task.setValue(AllFields.startDate, yearAgo.getTime());
         return yearAgo;
     }
 

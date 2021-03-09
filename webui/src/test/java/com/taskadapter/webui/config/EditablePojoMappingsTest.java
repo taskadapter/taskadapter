@@ -15,37 +15,37 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class EditablePojoMappingsTest {
 
     private static final ConnectorFieldLoader connector1FieldLoader = new ConnectorFieldLoader(List.of(
-            CustomString.apply("field 1"),
-            CustomString.apply("field 2"),
-            CustomString.apply("summary"),
-            CustomString.apply("another")
+            new CustomString("field 1"),
+            new CustomString("field 2"),
+            new CustomString("summary"),
+            new CustomString("another")
     ));
 
     private static final ConnectorFieldLoader connector2FieldLoader = connector1FieldLoader;
 
     @Test
     public void returnsEmptyFieldNameOnTheLeftAsOptionalEmpty() {
-        var mappings = new EditablePojoMappings(Arrays.asList(new FieldMapping(Field.apply("field 1"), Field.apply("field 2"), true, "default")), connector1FieldLoader, connector2FieldLoader);
+        var mappings = new EditablePojoMappings(Arrays.asList(new FieldMapping(new CustomString("field 1"), new CustomString("field 2"), true, "default")), connector1FieldLoader, connector2FieldLoader);
         mappings.getEditablePojoMappings().get(0).setFieldInConnector1("");
 
-        assertThat(mappings.getElements()).containsOnly(new FieldMapping(Optional.empty(), Optional.of(Field.apply("field 2")), true, "default"));
+        assertThat(mappings.getElements()).containsOnly(new FieldMapping(Optional.empty(), Optional.of(new CustomString("field 2")), true, "default"));
     }
 
     @Test
     public void returnsEmptyFieldNameOnTheRightAsOptionalEmpty() {
-        var mappings = new EditablePojoMappings(Arrays.asList(new FieldMapping(Optional.of(Field.apply("field 1")), Optional.of(Field.apply("field 2")), true, "default")), connector1FieldLoader, connector2FieldLoader);
+        var mappings = new EditablePojoMappings(Arrays.asList(new FieldMapping(Optional.of(new CustomString("field 1")), Optional.of(new CustomString("field 2")), true, "default")), connector1FieldLoader, connector2FieldLoader);
         mappings.getEditablePojoMappings().get(0).setFieldInConnector2("");
 
-        assertThat(mappings.getElements()).containsOnly(new FieldMapping(Optional.of(Field.apply("field 1")), Optional.empty(), true, "default"));
+        assertThat(mappings.getElements()).containsOnly(new FieldMapping(Optional.of(new CustomString("field 1")), Optional.empty(), true, "default"));
     }
 
     // Vaadin sets NULL as field value when you select an "empty" element in ListSelect
     @Test
     public void fieldClearedWithNullBecomesOptionalEmpty() {
-        var mappings = new EditablePojoMappings(Arrays.asList(new FieldMapping(Optional.of(Field.apply("field 1")), Optional.of(Field.apply("date 1")), true, "default")), connector1FieldLoader, connector2FieldLoader);
+        var mappings = new EditablePojoMappings(Arrays.asList(new FieldMapping(Optional.of(new CustomString("field 1")), Optional.of(new CustomString("date 1")), true, "default")), connector1FieldLoader, connector2FieldLoader);
         mappings.getEditablePojoMappings().get(0).setFieldInConnector2(null);
 
-        assertThat(mappings.getElements()).containsOnly(new FieldMapping(Optional.of(Field.apply("field 1")), Optional.empty(), true, "default"));
+        assertThat(mappings.getElements()).containsOnly(new FieldMapping(Optional.of(new CustomString("field 1")), Optional.empty(), true, "default"));
     }
 
     @Test
@@ -54,7 +54,7 @@ public class EditablePojoMappingsTest {
         mappings.add(new EditableFieldMapping(
                 createBinder(),
                 "123", "", "summary", true, "default"));
-        assertThat(mappings.getElements()).containsOnly(new FieldMapping(Optional.empty(), Optional.of(Field.apply("summary")), true, "default"));
+        assertThat(mappings.getElements()).containsOnly(new FieldMapping(Optional.empty(), Optional.of(new CustomString("summary")), true, "default"));
     }
 
     @Test
@@ -65,9 +65,9 @@ public class EditablePojoMappingsTest {
         mappings.add(new EditableFieldMapping(createBinder(), "300", "", "", true, "default"));
         mappings.add(new EditableFieldMapping(createBinder(), "400", "", "another", true, "default"));
         assertThat(mappings.getElements()).containsOnly(
-                new FieldMapping(Optional.empty(), Optional.of(Field.apply("summary")), true, "default"),
-                new FieldMapping(Optional.of(Field.apply("field 1")), Optional.empty(), true, "default"),
-                new FieldMapping(Optional.empty(), Optional.of(Field.apply("another")), true, "default")
+                new FieldMapping(Optional.empty(), Optional.of(new CustomString("summary")), true, "default"),
+                new FieldMapping(Optional.of(new CustomString("field 1")), Optional.empty(), true, "default"),
+                new FieldMapping(Optional.empty(), Optional.of(new CustomString("another")), true, "default")
         );
     }
 

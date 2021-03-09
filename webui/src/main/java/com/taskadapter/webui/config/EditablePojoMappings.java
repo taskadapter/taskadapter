@@ -31,8 +31,8 @@ public class EditablePojoMappings {
             return new EditableFieldMapping(
                     new Binder<EditableFieldMapping>(EditableFieldMapping.class),
                     UUID.randomUUID().toString(),
-                    ro.getFieldInConnector1().map(Field::name).orElse(""),
-                    ro.getFieldInConnector2().map(Field::name).orElse(""),
+                    ro.getFieldInConnector1().map(Field::getFieldName).orElse(""),
+                    ro.getFieldInConnector2().map(Field::getFieldName).orElse(""),
                     ro.isSelected(),
                     defaultValue
             );

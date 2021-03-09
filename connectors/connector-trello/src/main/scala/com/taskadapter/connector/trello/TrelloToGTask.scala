@@ -17,18 +17,18 @@ object TrelloToGTask {
     // must set source system id, otherwise "update task" is impossible later
     task.setSourceSystemId(new TaskId(fakeEmptyId, key))
 
-    task.setValue(Summary, card.getName)
-    task.setValue(DueDate, card.getDue)
-    task.setValue(UpdatedOn, card.getDateLastActivity)
-    task.setValue(Description, card.getDesc)
+    task.setValue(AllFields.summary, card.getName)
+    task.setValue(AllFields.dueDate, card.getDue)
+    task.setValue(AllFields.updatedOn, card.getDateLastActivity)
+    task.setValue(AllFields.description, card.getDesc)
     task.setValue(TrelloField.listId, card.getIdList)
     task.setValue(TrelloField.listName, listCache.getListNameById(card.getIdList))
     // note - this sends a request to Trello server! Trello REST API limitations.
     val actions = card.getActions(new Argument("filter", "createCard"))
     if (!actions.isEmpty) {
       val creator = actions.asScala.head.getMemberCreator
-      task.setValue(ReporterLoginName, creator.getUsername)
-      task.setValue(ReporterFullName, creator.getFullName)
+      task.setValue(AllFields.reporterLoginName, creator.getUsername)
+      task.setValue(AllFields.reporterFullName, creator.getFullName)
     }
     task
   }

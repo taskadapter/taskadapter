@@ -14,13 +14,13 @@ public class UISyncConfigTest {
     public void reversesMappings() {
         assertThat(
                 UISyncConfig.reverse(List.of(
-                        new FieldMapping(AllFields.summary(), AllFields.description(), true, ""),
-                        new FieldMapping(Optional.empty(), Optional.of(AllFields.assigneeFullName()), true, "")
+                        new FieldMapping(AllFields.summary, AllFields.description, true, ""),
+                        new FieldMapping(Optional.empty(), Optional.of(AllFields.assigneeFullName), true, "")
                         )
                 ))
                 .containsOnly(
-                        new FieldMapping(AllFields.description(), AllFields.summary(), true, ""),
-                        new FieldMapping(Optional.of(AllFields.assigneeFullName()), Optional.empty(), true, ""));
+                        new FieldMapping(AllFields.description, AllFields.summary, true, ""),
+                        new FieldMapping(Optional.of(AllFields.assigneeFullName), Optional.empty(), true, ""));
     }
 
 }

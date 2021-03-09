@@ -16,17 +16,17 @@ object BasecampClassicToGTask {
 
     val compl = XmlUtils.getOptBool(obj, "completed")
     val floatCompletionValue : java.lang.Float = if (compl) 100f else 0f
-    result.setValue(DoneRatio, floatCompletionValue)
+    result.setValue(AllFields.doneRatio, floatCompletionValue)
 
-    result.setValue(DueDate, XmlUtils.getOptLongDate(obj, "due-at"))
-    result.setValue(CreatedOn, XmlUtils.getOptLongDate(obj, "created-at"))
-    result.setValue(UpdatedOn, XmlUtils.getOptLongDate(obj, "updated-at"))
-    result.setValue(ClosedOn, XmlUtils.getOptLongDate(obj, "completed-at"))
+    result.setValue(AllFields.dueDate, XmlUtils.getOptLongDate(obj, "due-at"))
+    result.setValue(AllFields.createdOn, XmlUtils.getOptLongDate(obj, "created-at"))
+    result.setValue(AllFields.updatedOn, XmlUtils.getOptLongDate(obj, "updated-at"))
+    result.setValue(AllFields.closedOn, XmlUtils.getOptLongDate(obj, "completed-at"))
     val rpp = XmlUtils.getOptString(obj, "responsible-party-type")
     if ("Person" == rpp) {
       val displayName = XmlUtils.getStringElt(obj, "responsible-party-name")
       val idUnusedNow = XmlUtils.getIntElt(obj, "responsible-party-id")
-      result.setValue(AssigneeFullName, displayName)
+      result.setValue(AllFields.assigneeFullName, displayName)
     }
     result
   }

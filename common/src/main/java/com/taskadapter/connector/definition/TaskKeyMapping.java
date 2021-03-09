@@ -6,6 +6,12 @@ public class TaskKeyMapping {
     public TaskId originalId;
     public TaskId newId;
 
+    /**
+     * default constructor for Google GSon library
+     */
+    public TaskKeyMapping() {
+    }
+
     public TaskKeyMapping(TaskId originalId, TaskId newId) {
         this.originalId = originalId;
         this.newId = newId;

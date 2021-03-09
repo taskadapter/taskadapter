@@ -49,8 +49,8 @@ class GTaskToMantis(val mntProject: ProjectData, val users: util.List[AccountDat
 
   def processField(issue: IssueData, field: Field[_], value: Any): Unit = {
     field match {
-      case Summary => issue.setSummary(value.asInstanceOf[String])
-      case Description =>
+      case _: Summary => issue.setSummary(value.asInstanceOf[String])
+      case _: Description =>
         // empty description is not allowed by Mantis API.
         // see bug https://www.hostedredmine.com/issues/39248
         if (Strings.isNullOrEmpty(value.asInstanceOf[String])) {
@@ -58,17 +58,17 @@ class GTaskToMantis(val mntProject: ProjectData, val users: util.List[AccountDat
         } else {
           issue.setDescription(value.asInstanceOf[String])
         }
-      case DueDate =>
+      case _: DueDate =>
         if (value != null) {
           val calendar = Calendar.getInstance()
           calendar.setTime(value.asInstanceOf[Date])
           issue.setDue_date(calendar)
         }
 
-      case AssigneeFullName =>
+      case _: AssigneeFullName =>
         val fullName = value.asInstanceOf[String]
         issue.setHandler(users.asScala.find(_.getName == fullName).orNull)
-      case AssigneeLoginName =>
+      case _: AssigneeLoginName =>
         val login = value.asInstanceOf[String]
         issue.setHandler(users.asScala.find(_.getName == login).orNull)
       case _ => // ignore the rest of the fields

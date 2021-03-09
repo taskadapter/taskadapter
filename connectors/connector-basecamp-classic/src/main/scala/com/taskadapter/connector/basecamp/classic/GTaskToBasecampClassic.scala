@@ -35,7 +35,7 @@ class GTaskToBasecampClassic(users: Seq[GUser]) extends ConnectorConverter[GTask
     }
     val str = BasecampUtils.stringify(d)
 
-    BasecampTaskWrapper(source.getKey, str, source.getValue(DoneRatio))
+    return new BasecampTaskWrapper(source.getKey, str, source.getValue(AllFields.doneRatio))
   }
 
   def processField(d: Document, e: Element, field: Field[_], value: Any): Unit = {
@@ -43,7 +43,7 @@ class GTaskToBasecampClassic(users: Seq[GUser]) extends ConnectorConverter[GTask
       case BasecampClassicField.content =>
         val stringValue = value.asInstanceOf[String]
         XmlUtils.setString(d, e, "content", stringValue)
-      case DoneRatio =>
+      case _: DoneRatio =>
         val booleanValue: Boolean = if (value == null) false
         else if (value.asInstanceOf[Float] >= 100) true
         else false
@@ -53,9 +53,9 @@ class GTaskToBasecampClassic(users: Seq[GUser]) extends ConnectorConverter[GTask
         compl.appendChild(d.createTextNode(booleanValue.toString))
         e.appendChild(compl)
 
-      case DueDate =>
+      case _:  DueDate =>
         XmlUtils.setLong(d, e, "due-at", value.asInstanceOf[Date])
-      case AssigneeFullName =>
+      case _:  AssigneeFullName =>
         writeAssignee(d, e, value.asInstanceOf[String])
 
       case _ => // ignore unknown fields

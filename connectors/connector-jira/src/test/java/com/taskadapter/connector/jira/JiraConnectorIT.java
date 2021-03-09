@@ -14,12 +14,11 @@ import com.taskadapter.connector.testlib.StatefulTestTaskSaver;
 import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.model.AllFields;
-import com.taskadapter.model.CustomSeqString;
+import com.taskadapter.model.CustomListString;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import scala.collection.JavaConverters;
 
 import java.util.Arrays;
 import java.util.List;
@@ -60,7 +59,7 @@ public class JiraConnectorIT {
         var task = new JiraGTaskBuilder(summary).withType("Task").build();
         var id = TestUtils.save(connector, task, TestFieldBuilder.getSummaryAndAssigneeLogin());
         var loadedTask = connector.loadTaskByKey(id, TestFieldBuilder.getSummaryAndAssigneeLogin());
-        assertThat(loadedTask.getValue(AllFields.summary())).isEqualTo(summary);
+        assertThat(loadedTask.getValue(AllFields.summary)).isEqualTo(summary);
         TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity());
     }
 
@@ -70,7 +69,7 @@ public class JiraConnectorIT {
                 new JiraGTaskBuilder(RandomStringGenerator.randomAlphaNumeric(30))
                         .withDescription().build(),
                 JiraField.defaultFieldsForNewConfig(),
-                AllFields.description(),
+                AllFields.description,
                 taskId -> {
                     TestJiraClientHelper.deleteTasks(client, taskId);
                     return null;
@@ -106,10 +105,10 @@ public class JiraConnectorIT {
     public void assigneeIsSavedAndLoaded() throws ConnectorException {
         var task = new JiraGTaskBuilder(RandomStringGenerator.randomAlphaNumeric(30))
                 .build()
-                .setValue(AllFields.assigneeLoginName(), "user");
+                .setValue(AllFields.assigneeLoginName, "user");
         var id = TestUtils.save(getConnector(), task, TestFieldBuilder.getSummaryAndAssigneeLogin());
         var loadedTask = getConnector().loadTaskByKey(id, TestFieldBuilder.getSummaryAndAssigneeLogin());
-        assertThat(loadedTask.getValue(AllFields.assigneeLoginName())).isEqualTo("user");
+        assertThat(loadedTask.getValue(AllFields.assigneeLoginName)).isEqualTo("user");
         TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity());
     }
 
@@ -127,40 +126,39 @@ public class JiraConnectorIT {
         TestJiraClientHelper.checkCustomFieldExists(client, customFieldName);
 
         var task = GTaskBuilder.withSummary();
-        var field = CustomSeqString.apply(customFieldName);
-        task.setValue(field, JavaConverters.asScalaBuffer(
-                List.of("option1", "option2")));
+        var field = new CustomListString(customFieldName);
+        task.setValue(field, List.of("option1", "option2"));
         List<FieldRow<?>> rows = List.of(TestFieldBuilder.summaryRow, TestFieldBuilder.assigneeLoginNameRow,
                 new FieldRow(Optional.of(field), Optional.of(field), "")
         );
         var id = TestUtils.save(getConnector(), task, rows);
         var loadedTask = getConnector().loadTaskByKey(id, rows);
-        assertThat(JavaConverters.seqAsJavaList(loadedTask.getValue(field))).containsOnly("option1", "option2");
+        assertThat(loadedTask.getValue(field)).containsOnly("option1", "option2");
         TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity());
     }
 
     private static final List<FieldRow<?>> rows = FieldRowBuilder.rows(
-            List.of(AllFields.summary(), AllFields.taskType()));
+            List.of(AllFields.summary, AllFields.taskType));
 
     @Test
     public void createTaskIsCreatedWithDefaultTaskTypeSetInConfig() {
         var created = TestUtils.saveAndLoad(getConnector(),
-                new GTaskBuilder().withRandom(AllFields.summary())/*.withField(TaskType, "Story")*/.build(),
+                new GTaskBuilder().withRandom(AllFields.summary)/*.withField(TaskType, "Story")*/.build(),
                 rows);
-        assertThat(created.getValue(AllFields.taskType())).isEqualTo(config.getDefaultTaskType());
+        assertThat(created.getValue(AllFields.taskType)).isEqualTo(config.getDefaultTaskType());
         TestJiraClientHelper.deleteTasks(client, created.getIdentity());
     }
 
     @Test
     public void createNewTaskGetsRequestedType() {
         var created = TestUtils.saveAndLoad(getConnector(), task("Story"), rows);
-        assertThat(created.getValue(AllFields.taskType())).isEqualTo("Story");
+        assertThat(created.getValue(AllFields.taskType)).isEqualTo("Story");
         TestJiraClientHelper.deleteTasks(client, created.getIdentity());
     }
 
     private static GTask task(String taskTypeName) {
-        return GTaskBuilder.gtaskWithRandom(AllFields.summary())
-                .setValue(AllFields.taskType(), taskTypeName);
+        return GTaskBuilder.gtaskWithRandom(AllFields.summary)
+                .setValue(AllFields.taskType, taskTypeName);
     }
 
     @Test
@@ -168,9 +166,9 @@ public class JiraConnectorIT {
         var saver = new StatefulTestTaskSaver(getConnector(), JiraPropertiesLoader.getTestServerInfo().getHost());
         // regression test
         var created = saver.saveAndLoad(task("Story"), rows);
-        created.setValue(AllFields.taskType(), null);
+        created.setValue(AllFields.taskType, null);
         var updated = saver.saveAndLoad(created, rows);
-        assertThat(updated.getValue(AllFields.taskType())).isEqualTo("Story");
+        assertThat(updated.getValue(AllFields.taskType)).isEqualTo("Story");
         TestJiraClientHelper.deleteTasks(client, created.getIdentity());
     }
 

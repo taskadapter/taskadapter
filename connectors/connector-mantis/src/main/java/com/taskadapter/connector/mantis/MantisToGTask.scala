@@ -31,17 +31,17 @@ object MantisToGTask {
 
     val mantisUser = issue.getHandler
     if (mantisUser != null) {
-      task.setValue(AssigneeLoginName, mantisUser.getName)
-      task.setValue(AssigneeFullName, mantisUser.getReal_name)
+      task.setValue(AllFields.assigneeLoginName, mantisUser.getName)
+      task.setValue(AllFields.assigneeFullName, mantisUser.getReal_name)
     }
-    task.setValue(Summary, issue.getSummary)
-    task.setValue(Description, issue.getDescription)
-    task.setValue(CreatedOn, issue.getDate_submitted.getTime)
-    task.setValue(UpdatedOn, issue.getLast_updated.getTime)
+    task. setValue(AllFields.summary, issue.getSummary)
+    task.setValue(AllFields.description, issue.getDescription)
+    task.setValue(AllFields.createdOn, issue.getDate_submitted.getTime)
+    task.setValue(AllFields.updatedOn, issue.getLast_updated.getTime)
     val priorityValue: Integer = priorityNumbers.getOrElse(issue.getPriority.getName, defaultPriority)
-    task.setValue(Priority, priorityValue)
+    task.setValue(AllFields.priority, priorityValue)
     if (issue.getDue_date != null) {
-      task.setValue(DueDate, issue.getDue_date.getTime)
+      task.setValue(AllFields.dueDate, issue.getDue_date.getTime)
     }
     processRelations(issue, task)
     task

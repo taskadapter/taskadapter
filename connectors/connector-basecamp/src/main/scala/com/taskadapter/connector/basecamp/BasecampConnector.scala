@@ -1,16 +1,15 @@
 package com.taskadapter.connector.basecamp
 
-import java.util
-
 import com.taskadapter.connector.basecamp.transport.ObjectAPIFactory
 import com.taskadapter.connector.common.TaskSavingUtils
 import com.taskadapter.connector.definition._
 import com.taskadapter.connector.definition.exceptions.{CommunicationException, ConnectorException}
 import com.taskadapter.connector.{FieldRow, NewConnector}
 import com.taskadapter.core.PreviouslyCreatedTasksResolver
-import com.taskadapter.model.{DoneRatio, GTask, GUser}
+import com.taskadapter.model.{AllFields, GTask, GUser}
 import org.json.JSONException
-import scala.collection.JavaConverters._
+
+import java.util
 
 object BasecampConnector {
   /**
@@ -35,14 +34,14 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
       if (remaining != null) {
         for (i <- 0 until remaining.length) {
           val task = BasecampToGTask.parseTask(remaining.getJSONObject(i))
-          task.setValue(DoneRatio, java.lang.Float.valueOf(0))
+          task.setValue(AllFields.doneRatio, java.lang.Float.valueOf(0))
           res.add(task)
         }
       }
       if (completed != null && config.getLoadCompletedTodos) {
         for (i <- 0 until completed.length) {
           val task = BasecampToGTask.parseTask(completed.getJSONObject(i))
-          task.setValue(DoneRatio, java.lang.Float.valueOf(100f))
+          task.setValue(AllFields.doneRatio, java.lang.Float.valueOf(100f))
           res.add(task)
         }
       }
@@ -75,7 +74,7 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
   }
 
   @throws[ConnectorException]
-  private def loadUsers(): Seq[GUser] = {
+  private def loadUsers(): java.util.List[GUser] = {
     if (config.isFindUserByName) {
       val arr = api.getObjects("people.json")
       val users = new util.ArrayList[GUser]
@@ -88,9 +87,9 @@ class BasecampConnector(config: BasecampConfig, setup: WebConnectorSetup, factor
             throw new CommunicationException(e)
         }
       }
-      users.asScala
+      users
     } else {
-      Seq()
+      java.util.List.of()
     }
   }
 }

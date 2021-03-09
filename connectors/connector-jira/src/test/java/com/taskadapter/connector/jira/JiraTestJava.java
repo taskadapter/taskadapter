@@ -11,11 +11,10 @@ import com.taskadapter.connector.testlib.ITFixture;
 import com.taskadapter.connector.testlib.TestUtils;
 import com.taskadapter.core.JavaFieldAdapter;
 import com.taskadapter.core.PreviouslyCreatedTasksResolver;
+import com.taskadapter.model.AllFields;
 import com.taskadapter.model.CustomString;
-import com.taskadapter.model.Description$;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskBuilder;
-import com.taskadapter.model.TaskType$;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -70,7 +69,7 @@ public class JiraTestJava {
         assertThat(result.getCreatedTasksNumber()).isEqualTo(1);
         TaskId taskId = result.getKeyToRemoteKeyList().get(0).newId;
         GTask loadedTask = connector.loadTaskByKey(taskId, rows);
-        assertThat(loadedTask.getValue(Description$.MODULE$))
+        assertThat(loadedTask.getValue(AllFields.description))
                 .isEqualTo("some default");
         TestJiraClientHelper.deleteTasks(client, loadedTask.getIdentity());
     }
@@ -78,19 +77,19 @@ public class JiraTestJava {
     @Test
     public void epicWithNameDefinedViaCustomField() {
         CustomString epicName = JavaFieldAdapter.customString("Epic Name");
-        List<FieldRow<?>> rows = JavaFieldAdapter.rows(JavaFieldAdapter.summary,
-                JavaFieldAdapter.taskType,
+        List<FieldRow<?>> rows = JavaFieldAdapter.rows(AllFields.summary,
+                AllFields.taskType,
                 epicName);
 
         GTask created = TestUtils.saveAndLoad(connector,
                 task("Epic").setValue(epicName, "some epic"),
                 rows);
-        assertThat(created.getValue(TaskType$.MODULE$)).isEqualTo("Epic");
+        assertThat(created.getValue(AllFields.taskType)).isEqualTo("Epic");
         TestJiraClientHelper.deleteTasks(client, created.getIdentity());
     }
 
     private static GTask task(String taskTypeName) {
-        return GTaskBuilder.gtaskWithRandomJava(JavaFieldAdapter.summary).setValue(TaskType$.MODULE$, taskTypeName);
+        return GTaskBuilder.gtaskWithRandomJava(AllFields.summary).setValue(AllFields.taskType, taskTypeName);
     }
 
     private JiraConnector getConnector() {

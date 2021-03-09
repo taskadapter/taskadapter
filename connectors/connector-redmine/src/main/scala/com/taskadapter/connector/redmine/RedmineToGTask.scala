@@ -1,13 +1,13 @@
 package com.taskadapter.connector.redmine
 
-import java.util
 import com.taskadapter.connector.definition.TaskId
-import com.taskadapter.model.{AssigneeFullName, AssigneeLoginName, CreatedOn, CustomString, Description, DoneRatio, DueDate, EstimatedTime, GRelation, GTask, Priority, GRelationType, ReporterFullName, ReporterLoginName, StartDate, Summary, TargetVersion, TaskStatus, TaskType, UpdatedOn}
+import com.taskadapter.model.{AllFields, CustomString, GRelation, GRelationType, GTask}
 import com.taskadapter.redmineapi.bean.{Issue, IssueRelation}
 import org.slf4j.LoggerFactory
 
-import scala.collection.JavaConverters
+import java.util
 import scala.collection.JavaConversions._
+import scala.collection.JavaConverters
 
 object RedmineToGTask {
   private val logger = LoggerFactory.getLogger(classOf[RedmineToGTask])
@@ -48,34 +48,36 @@ class RedmineToGTask(val config: RedmineConfig, var userCache: RedmineUserCache)
     if (issue.getAssigneeId != null) { // crappy Redmine REST API does not return login name, only id and "display name",
       // this Redmine Java API library can only provide that info... this is why "loginName" is empty here.
       val userWithPatchedLoginName = userCache.findRedmineUserByFullName(issue.getAssigneeName)
-      if (userWithPatchedLoginName.isDefined) task.setValue(AssigneeLoginName, userWithPatchedLoginName.get.getLogin)
-      task.setValue(AssigneeFullName, issue.getAssigneeName)
+      if (userWithPatchedLoginName.isDefined) task.setValue(AllFields.assigneeLoginName, userWithPatchedLoginName.get.getLogin)
+      task.setValue(AllFields.assigneeFullName, issue.getAssigneeName)
     }
     if (issue.getAuthorId != null) {
-      task.setValue(ReporterFullName, issue.getAuthorName)
+      task.setValue(AllFields.reporterFullName, issue.getAuthorName)
       // this Redmine Java API library can only provide that info... have to resolve login from full name -
       val userWithPatchedLoginName = userCache.findRedmineUserByFullName(issue.getAuthorName)
-      if (userWithPatchedLoginName.isDefined) task.setValue(ReporterLoginName, userWithPatchedLoginName.get.getLogin)
+      if (userWithPatchedLoginName.isDefined) task.setValue(AllFields.reporterLoginName, userWithPatchedLoginName.get.getLogin)
     }
     val tracker = issue.getTracker
-    if (tracker != null) task.setValue(TaskType, tracker.getName)
+    if (tracker != null) task.setValue(AllFields.taskType, tracker.getName)
     if (issue.getCategory != null) {
       task.setValue(RedmineField.category,
-        JavaConverters.asScalaBuffer(util.Arrays.asList(issue.getCategory.getName)))
+        util.Arrays.asList(issue.getCategory.getName))
     }
-    task.setValue(TaskStatus, issue.getStatusName)
-    task.setValue(Summary, issue.getSubject)
-    task.setValue(EstimatedTime, issue.getEstimatedHours.toFloat)
+    task.setValue(AllFields.taskStatus, issue.getStatusName)
+    task.setValue(AllFields.summary, issue.getSubject)
+    task.setValue(AllFields.estimatedTime, issue.getEstimatedHours)
 //    task.setValue(SpentTime, issue.getSpentHours.toFloat)
-    task.setValue(DoneRatio, java.lang.Float.valueOf(issue.getDoneRatio.toFloat))
-    task.setValue(StartDate, issue.getStartDate)
-    task.setValue(DueDate, issue.getDueDate)
-    task.setValue(CreatedOn, issue.getCreatedOn)
-    task.setValue(UpdatedOn, issue.getUpdatedOn)
+    task.setValue(AllFields.doneRatio, java.lang.Float.valueOf(issue.getDoneRatio.toFloat))
+    task.setValue(AllFields.startDate, issue.getStartDate)
+    task.setValue(AllFields.dueDate, issue.getDueDate)
+    task.setValue(AllFields.createdOn, issue.getCreatedOn)
+    task.setValue(AllFields.updatedOn, issue.getUpdatedOn)
     val priorityValue = config.getPriorities.getPriorityByText(issue.getPriorityText)
-    task.setValue(Priority, priorityValue)
-    task.setValue(Description, issue.getDescription)
-    if (issue.getTargetVersion != null) task.setValue(TargetVersion, issue.getTargetVersion.getName)
+    task.setValue(AllFields.priority, priorityValue)
+    task.setValue(AllFields.description, issue.getDescription)
+    if (issue.getTargetVersion != null) {
+      task.setValue(AllFields.targetVersion, issue.getTargetVersion.getName)
+    }
     processCustomFields(issue, task)
     RedmineToGTask.processRelations(issue, task)
     task

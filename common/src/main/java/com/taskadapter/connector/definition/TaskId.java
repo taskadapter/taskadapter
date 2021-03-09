@@ -6,6 +6,12 @@ public class TaskId {
     private Long id;
     private String key;
 
+    /**
+     * default constructor for Google GSon library
+     */
+    public TaskId() {
+    }
+
     public TaskId(Long id, String key) {
         this.id = id;
         this.key = key;
