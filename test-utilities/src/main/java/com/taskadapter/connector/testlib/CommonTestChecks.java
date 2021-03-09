@@ -77,27 +77,29 @@ public class CommonTestChecks {
                                               List<FieldRow<?>> rows,
                                               List<Field<?>> fields,
                                               Function<TaskId, Void> cleanup) {
-        var tasksQty = 1;
+        var createdTask = createAndLoadTask(connector, task, rows);
+        // check all requested fields
+        fields.forEach(f ->
+                assertThat(createdTask.getValue(f)).isEqualTo(task.getValue(f))
+        );
 
-        var result = connector.saveData(PreviouslyCreatedTasksResolver.empty, List.of(task), ProgressMonitorUtils.DUMMY_MONITOR,
+        cleanup.apply(createdTask.getIdentity());
+    }
+
+    public static GTask createAndLoadTask(NewConnector connector, GTask task,
+                                          List<FieldRow<?>> rows) {
+        var result = connector.saveData(PreviouslyCreatedTasksResolver.empty, List.of(task),
+                ProgressMonitorUtils.DUMMY_MONITOR,
                 rows);
-        assertEquals(tasksQty, result.getCreatedTasksNumber());
-
         var createdTask1Id = result.getRemoteKeys().iterator().next();
 
         var loadedTasks = connector.loadData();
         // there could be some other previously created tasks
-        assertThat(loadedTasks.size()).isGreaterThanOrEqualTo(tasksQty);
+        assertThat(loadedTasks.size()).isGreaterThanOrEqualTo(1);
 
         var foundTask = TestUtils.findTaskInList(loadedTasks, createdTask1Id);
         assertThat(foundTask).isPresent();
-
-        // check all requested fields
-        fields.forEach(f ->
-                assertThat(foundTask.get().getValue(f)).isEqualTo(task.getValue(f))
-        );
-
-        cleanup.apply(createdTask1Id);
+        return foundTask.get();
     }
 
     public static void createsTasks(NewConnector connector,

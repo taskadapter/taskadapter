@@ -1,5 +1,6 @@
 package com.taskadapter.connector.msp;
 
+import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.TestFieldBuilder;
 import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.FileSetup;
@@ -18,6 +19,7 @@ import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -53,6 +55,21 @@ public class MspConnectorIT {
                 List.of(AllFields.assigneeFullName, MspField.taskDuration, MspField.taskWork, MspField.mustStartOn, MspField.finish, MspField.deadline,
                         AllFields.description, AllFields.priority, AllFields.summary)
         );
+    }
+
+    @Test
+    public void estimatedTimeSavedToWork() {
+        MSPConnector connector = getConnector(tempFolder.getRoot());
+        var task = new GTaskBuilder().withRandom(AllFields.summary)
+                .withField(AllFields.estimatedTime, 65F)
+                .build();
+
+        List<FieldRow<?>> rows = List.of(
+                new FieldRow<>(Optional.of(AllFields.estimatedTime), Optional.of(MspField.taskWork), ""),
+                new FieldRow<>(Optional.of(AllFields.summary), Optional.of(AllFields.summary), "")
+        );
+        GTask createdTask = CommonTestChecks.createAndLoadTask(connector, task, rows);
+        assertThat(createdTask.getValue(MspField.taskWork)).isEqualTo(65F);
     }
 
     @Test
