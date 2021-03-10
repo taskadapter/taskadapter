@@ -12,14 +12,14 @@ public class ResourceManagerTest {
     public void secondAssigneeWithSameNameIsNotDuplicatedInProjectFile() {
         ProjectFile projectFile = new ProjectFile();
         ResourceManager manager = new ResourceManager(projectFile);
-        assertThat(projectFile.getAllResources()).isEmpty();
+        assertThat(projectFile.getResources()).isEmpty();
         final String name = "full name1";
         final Resource resource1 = manager.getOrCreateResource(name);
 
-        assertThat(projectFile.getAllResources()).hasSize(1);
+        assertThat(projectFile.getResources()).hasSize(1);
 
         final Resource resource2 = manager.getOrCreateResource(name);
-        assertThat(projectFile.getAllResources()).hasSize(1);
+        assertThat(projectFile.getResources()).hasSize(1);
 
         assertThat(resource1.getUniqueID()).isEqualTo(resource2.getUniqueID());
     }

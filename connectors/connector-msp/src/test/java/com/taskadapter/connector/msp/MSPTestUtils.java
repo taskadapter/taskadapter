@@ -50,7 +50,7 @@ public class MSPTestUtils {
         String fileName = ResourceLoader.getAbsolutePathForResource(fileNameInClasspath);
         try {
             ProjectFile projectFile = new MSPFileReader().readFile(fileName);
-            return projectFile.getAllTasks();
+            return projectFile.getTasks();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

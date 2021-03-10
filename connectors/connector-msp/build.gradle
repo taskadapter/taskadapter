@@ -1,8 +1,8 @@
 dependencies {
     compile libraries.slf4j
 
-    compile 'net.sf.mpxj:mpxj:7.2.1'
-    compile 'org.apache.poi:poi:3.17'
+    compile 'net.sf.mpxj:mpxj:9.0.0'
+    compile 'org.apache.poi:poi:4.1.2'
 
     // these 3 libs are required for post-Java8 world where jaxb api is not included in the JDK anymore
     compile 'javax.xml.bind:jaxb-api:2.3.1'

@@ -37,7 +37,7 @@ class MsXmlFileWriter(rows: java.lang.Iterable[FieldRow[_]]) {
     addTasks(syncResult, project, null, tasks, keepTaskId)
     val properties = project.getProjectProperties
     project.addDefaultBaseCalendar()
-    val earliestTaskDate = DateFinder.findEarliestStartDate(project.getAllTasks)
+    val earliestTaskDate = DateFinder.findEarliestStartDate(project.getTasks)
     if (earliestTaskDate != null) properties.setStartDate(earliestTaskDate)
     val taTag = "Project created by Task Adapter. http://www.taskadapter.com"
     /* setComments() does not work with MPXJ 4.0.0 and MS Project 2010 Prof.

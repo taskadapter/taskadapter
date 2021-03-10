@@ -108,7 +108,7 @@ public class MSPConnector implements NewConnector, FileBasedConnector, DropInCon
             throw new RuntimeException(MSPExceptions.convertException(e));
         }
 
-        List<Task> mspTasks = projectFile.getAllTasks();
+        List<Task> mspTasks = projectFile.getTasks();
         mspTasks = skipRootNodeIfPresent(mspTasks);
         ProjectProperties projectProperties = projectFile.getProjectProperties();
         return loadTasks(projectProperties, mspTasks);
