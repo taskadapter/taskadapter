@@ -162,8 +162,8 @@ class GTaskToJira(config: JiraConfig,
     // TODO 14 this check does not quite work due to type erasure, even though the code still works because this
     // method is only called in the correct context (for the value of list<string> type).
     if (value.isInstanceOf[java.util.List[String]]) {
-      val seq = value.asInstanceOf[java.util.List[String]]
-      seq.asScala.map(ComplexIssueInputFieldValue.`with`("value", _)
+      val list = value.asInstanceOf[java.util.List[String]]
+      list.asScala.map(ComplexIssueInputFieldValue.`with`("value", _)
       ).toList.asJava
     } else {
       throw new RuntimeException(s"unknown value type: $value")

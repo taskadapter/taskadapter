@@ -57,6 +57,14 @@ public class MspConnectorIT {
         );
     }
 
+    /* March 2021: this test may be misleading. I got a bug report from a user that "work" field is empty when he saves
+     * estimated time into it. I tried this on Windows where I could open the MSP XML file produced by TaskAdapter
+     * and indeed the "work" field was shown as zero, even though TaskAdapter could load the saved value from it.
+     * the value of "work" was set in the XML field, but MSP 2013 was still showing zero. this looks like a regression -
+     * probably need to set more fields for "work" field to show up again. this definitely (?) worked before...
+     * I updated the app to use a newer version of MPXJ library (9.0.0) thinking that maybe MSP XML file format
+     * has changed, but that did not solve anything.
+     */
     @Test
     public void estimatedTimeSavedToWork() {
         MSPConnector connector = getConnector(tempFolder.getRoot());
