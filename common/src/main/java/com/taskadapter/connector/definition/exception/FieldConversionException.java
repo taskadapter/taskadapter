@@ -5,12 +5,14 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.Field;
 import scala.collection.Seq;
 
+import java.util.List;
+
 public class FieldConversionException extends ConnectorException {
 
-    private String connectorId;
-    private Field<?> field;
-    private Object value;
-    private String details;
+    private final String connectorId;
+    private final Field<?> field;
+    private final Object value;
+    private final String details;
 
     public FieldConversionException(String connectorId, Field<?> field, Object value, String details) {
         this.connectorId = connectorId;
@@ -28,6 +30,13 @@ public class FieldConversionException extends ConnectorException {
                 valueString = "Empty collection";
             } else {
                 valueString = "Collection of (" + seq.mkString(",") + ")";
+            }
+        } else if (value instanceof List) {
+            var list = (List<?>) value;
+            if (list.isEmpty()) {
+                valueString = "Empty collection";
+            } else {
+                valueString = "Collection of (" + String.join(",", (List<String>) list) + ")";
             }
         } else {
             valueString = "Value '" + value + "'";

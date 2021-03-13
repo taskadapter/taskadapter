@@ -2,6 +2,8 @@ package com.taskadapter.connector.common;
 
 import scala.collection.Seq;
 
+import java.util.List;
+
 public class ValueTypeResolver {
     public static Float getValueAsFloat(Object value) {
         if (value == null) {
@@ -40,6 +42,13 @@ public class ValueTypeResolver {
                 return "";
             }
             return seq.head().toString();
+        }
+        if (value instanceof List) {
+            List seq = (List) value;
+            if (seq.isEmpty()) {
+                return "";
+            }
+            return seq.get(0).toString();
         }
 
         if (value instanceof String) {
