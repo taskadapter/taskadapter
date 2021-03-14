@@ -7,7 +7,6 @@ import com.taskadapter.model.CustomDate;
 import com.taskadapter.model.CustomFloat;
 import com.taskadapter.model.CustomString;
 import org.junit.Test;
-import scala.collection.JavaConverters;
 
 import java.util.List;
 
@@ -24,7 +23,7 @@ public class JsonFactoryTest {
                 NewConfigSuggester.duplicateFieldIntoMapping(new CustomString("f"))
         );
         var str = JsonFactory.toString(fieldMappings);
-        var parsed = JavaConverters.seqAsJavaList(JsonFactory.fromJsonString(str));
+        var parsed = JsonFactory.fromJsonString(str);
         assertThat(parsed).isEqualTo(fieldMappings);
     }
 }

@@ -7,6 +7,8 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
 
+import java.util.Optional
+
 @RunWith(classOf[JUnitRunner])
 class ConfigStorageTest extends FunSpec with Matchers with ConfigsTempFolder {
   private val configName = "some_config_name"
@@ -18,7 +20,7 @@ class ConfigStorageTest extends FunSpec with Matchers with ConfigsTempFolder {
       val configId = storage.createNewConfig(login, configName, "jira", SetupId("web1"), "value1",
         "jira", SetupId("web2"), "value2", "mappings")
       val config = storage.getConfig(configId)
-      config.isDefined shouldBe true
+      config.isPresent shouldBe true
       config.get.getMappingsString shouldBe "mappings"
     }
   }
@@ -29,7 +31,7 @@ class ConfigStorageTest extends FunSpec with Matchers with ConfigsTempFolder {
       val configId = storage.createNewConfig(login, configName, "jira", SetupId("web"), "value1",
         "jira", SetupId("web"), "value2", "mappings")
       storage.deleteConfig(configId)
-      storage.getConfig(configId) shouldBe None
+      storage.getConfig(configId) shouldBe Optional.empty()
     }
   }
 }

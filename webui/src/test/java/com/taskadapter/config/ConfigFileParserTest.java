@@ -15,8 +15,8 @@ public class ConfigFileParserTest {
         StoredExportConfig file = NewConfigParser.parseLegacyConfig(1, contents);
 
         assertEquals("Redmine DEMO", file.getName());
-        assertEquals("Redmine REST", file.getConnector1().connectorTypeId());
-        assertEquals("Microsoft Project", file.getConnector2().connectorTypeId());
+        assertEquals("Redmine REST", file.getConnector1().getConnectorTypeId());
+        assertEquals("Microsoft Project", file.getConnector2().getConnectorTypeId());
     }
 
     /**
@@ -28,7 +28,7 @@ public class ConfigFileParserTest {
         StoredExportConfig file = NewConfigParser.parse(contents);
 
         assertEquals("Redmine DEMO", file.getName());
-        assertEquals("Redmine REST", file.getConnector1().connectorTypeId());
-        assertEquals("Microsoft Project", file.getConnector2().connectorTypeId());
+        assertEquals("Redmine REST", file.getConnector1().getConnectorTypeId());
+        assertEquals("Microsoft Project", file.getConnector2().getConnectorTypeId());
     }
 }

@@ -36,7 +36,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     */
   def getUserConfigs(userLoginName: String): Seq[UISyncConfig] = {
     val storedConfigs = configStorage.getUserConfigs(userLoginName)
-    storedConfigs.flatMap(storedConfig => try {
+    storedConfigs.asScala.flatMap(storedConfig => try {
       Some(uize(userLoginName, storedConfig))
     } catch {
       case e: Exception =>
@@ -61,19 +61,19 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val conn1Config = storedConfig.getConnector1
     val conn2Config = storedConfig.getConnector2
 
-    val config1 = uiConfigService.createRichConfig(conn1Config.connectorTypeId, conn1Config.serializedConfig)
-    val config2 = uiConfigService.createRichConfig(conn2Config.connectorTypeId, conn2Config.serializedConfig)
+    val config1 = uiConfigService.createRichConfig(conn1Config.getConnectorTypeId, conn1Config.getSerializedConfig)
+    val config2 = uiConfigService.createRichConfig(conn2Config.getConnectorTypeId, conn2Config.getSerializedConfig)
     val jsonString = storedConfig.getMappingsString
 
-    val connector1Setup = getSetup(ownerName, conn1Config.connectorSavedSetupId)
-    val connector2Setup = getSetup(ownerName, conn2Config.connectorSavedSetupId)
+    val connector1Setup = getSetup(ownerName, conn1Config.getConnectorSavedSetupId)
+    val connector2Setup = getSetup(ownerName, conn2Config.getConnectorSavedSetupId)
 
     config1.setConnectorSetup(connector1Setup)
     config2.setConnectorSetup(connector2Setup)
 
     try {
-      val newMappings = JsonFactory.fromJsonString(jsonString).asJava
-      new UISyncConfig(new TaskKeeperLocationStorage(configStorage.rootDir), ConfigId(ownerName, storedConfig.getId),
+      val newMappings = JsonFactory.fromJsonString(jsonString)
+      new UISyncConfig(new TaskKeeperLocationStorage(configStorage.getRootDir), ConfigId(ownerName, storedConfig.getId),
         label, config1, config2, newMappings, false)
     } catch {
       case e: Exception =>
@@ -140,9 +140,11 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
   }
 
   def getAllConnectorSetups(userLoginName: String): Seq[ConnectorSetup] = {
-    val setups: Seq[ConnectorSetup] = configStorage.getAllConnectorSetupsAsStrings(userLoginName).map { setupString =>
-      parseSetupStringToDecryptedSetup(setupString)
-    }
+    val setups: Seq[ConnectorSetup] = configStorage.getAllConnectorSetupsAsStrings(userLoginName)
+      .asScala
+      .map { setupString =>
+        parseSetupStringToDecryptedSetup(setupString)
+      }
     setups
   }
 
@@ -201,20 +203,24 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
   @throws[StorageException]
   def cloneConfig(userLoginName: String, configId: ConfigId): Unit = {
     val savedConfig = configStorage.getConfig(configId)
-    savedConfig match {
-      case Some(config) =>
-        val connector1 = config.getConnector1
-        val connector2 = config.getConnector2
-        configStorage.createNewConfig(userLoginName, config.getName,
-          connector1.connectorTypeId, connector1.connectorSavedSetupId, connector1.serializedConfig,
-          connector2.connectorTypeId, connector2.connectorSavedSetupId, connector2.serializedConfig,
-          config.getMappingsString)
-      case None => throw new StorageException(s"Cannot find config with id $configId to clone")
+    if (savedConfig.isPresent) {
+      val config = savedConfig.get();
+      val connector1 = config.getConnector1()
+      val connector2 = config.getConnector2()
+      configStorage.createNewConfig(userLoginName, config.getName,
+        connector1.getConnectorTypeId, connector1.getConnectorSavedSetupId, connector1.getSerializedConfig,
+        connector2.getConnectorTypeId, connector2.getConnectorSavedSetupId, connector2.getSerializedConfig,
+        config.getMappingsString)
+    } else {
+      throw new StorageException(s"Cannot find config with id $configId to clone")
     }
   }
 
   def getConfigIdsUsingThisSetup(userName: String, id: SetupId): Seq[ConfigId] = {
-    configStorage.getUserConfigs(userName).filter(c => c.getConnector1.connectorSavedSetupId == id
-      || c.getConnector2.connectorSavedSetupId == id).map(c => ConfigId(userName, c.getId))
+    configStorage.getUserConfigs(userName)
+      .asScala
+      .filter(c => c.getConnector1.getConnectorSavedSetupId == id
+        || c.getConnector2.getConnectorSavedSetupId == id)
+      .map(c => ConfigId(userName, c.getId))
   }
 }
