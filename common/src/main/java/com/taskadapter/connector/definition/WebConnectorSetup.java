@@ -25,86 +25,79 @@ public class WebConnectorSetup implements ConnectorSetup {
                                           String password,
                                           boolean useApiKey,
                                           String apiKey) {
-        return new WebConnectorSetup()
-                .setConnectorId(connectorId)
-                .setLabel(label)
-                .setHost(host)
-                .setUserName(userName)
-                .setPassword(password)
-                .setUseApiKey(useApiKey)
-                .setApiKey(apiKey);
+        WebConnectorSetup setup = new WebConnectorSetup();
+        setup.setConnectorId(connectorId);
+        setup.setLabel(label);
+        setup.setHost(host);
+        setup.setPassword(password);
+        setup.setUseApiKey(useApiKey);
+        setup.setApiKey(apiKey);
+        setup.setUserName(userName);
+        return setup;
     }
 
     public String getConnectorId() {
         return connectorId;
     }
 
-    public WebConnectorSetup setConnectorId(String connectorId) {
+    public void setConnectorId(String connectorId) {
         this.connectorId = connectorId;
-        return this;
     }
 
     public String getId() {
         return id;
     }
 
-    public WebConnectorSetup setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
     public String getLabel() {
         return label;
     }
 
-    public WebConnectorSetup setLabel(String label) {
+    public void setLabel(String label) {
         this.label = label;
-        return this;
     }
 
     public String getHost() {
         return host;
     }
 
-    public WebConnectorSetup setHost(String host) {
+    public void setHost(String host) {
         this.host = host;
-        return this;
     }
 
     public String getUserName() {
         return userName;
     }
 
-    public WebConnectorSetup setUserName(String userName) {
+    public void setUserName(String userName) {
         this.userName = userName;
-        return this;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public WebConnectorSetup setPassword(String password) {
+    public void setPassword(String password) {
         this.password = password;
-        return this;
     }
 
     public boolean isUseApiKey() {
         return useApiKey;
     }
 
-    public WebConnectorSetup setUseApiKey(boolean useApiKey) {
+    public void setUseApiKey(boolean useApiKey) {
         this.useApiKey = useApiKey;
-        return this;
     }
 
     public String getApiKey() {
         return apiKey;
     }
 
-    public WebConnectorSetup setApiKey(String apiKey) {
+    public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
-        return this;
     }
 
     @Override

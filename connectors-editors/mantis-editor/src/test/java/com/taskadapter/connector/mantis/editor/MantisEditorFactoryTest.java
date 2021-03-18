@@ -36,7 +36,8 @@ public class MantisEditorFactoryTest {
 
     @Test
     public void saveGivesErrorForEmptyHostName() {
-        var errors = factory.validateForSave(new MantisConfig(), setup.setHost(""), Collections.emptyList());
+        setup.setHost("");
+        var errors = factory.validateForSave(new MantisConfig(), setup, Collections.emptyList());
         assertThat(errors.get(0)).isInstanceOf(ServerURLNotSetException.class);
     }
 

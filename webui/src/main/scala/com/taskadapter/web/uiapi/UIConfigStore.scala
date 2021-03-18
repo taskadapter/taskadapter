@@ -121,8 +121,8 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val jsonString: String = if (setup.isInstanceOf[WebConnectorSetup]) {
       var webSetup: WebConnectorSetup = setup.asInstanceOf[WebConnectorSetup]
       webSetup.setId(setupId.id)
-        .setPassword(encryptor.encrypt(webSetup.getPassword))
-        .setApiKey(encryptor.encrypt(webSetup.getApiKey))
+      webSetup.setPassword(encryptor.encrypt(webSetup.getPassword))
+      webSetup.setApiKey(encryptor.encrypt(webSetup.getApiKey))
       JsonUtil.toJsonString(webSetup)
     } else {
       // only file setup is left possible
@@ -160,8 +160,8 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     if (hostElement != null) {
       val encryptedSetup = JsonUtil.parseJsonString(string, classOf[WebConnectorSetup])
       val decryptedSetup = encryptedSetup
-        .setPassword(encryptor.decrypt(encryptedSetup.getPassword))
-        .setApiKey(encryptor.decrypt(encryptedSetup.getApiKey))
+      encryptedSetup.setPassword(encryptor.decrypt(encryptedSetup.getPassword))
+      encryptedSetup.setApiKey(encryptor.decrypt(encryptedSetup.getApiKey))
       decryptedSetup
     } else {
       JsonUtil.parseJsonString(string, classOf[FileSetup])
