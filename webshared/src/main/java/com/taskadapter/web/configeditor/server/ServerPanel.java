@@ -19,6 +19,8 @@ import java.util.Optional;
 
 public class ServerPanel extends VerticalLayout implements ConnectorSetupPanel {
 
+    private final Binder<WebConnectorSetup> binder = new Binder(WebConnectorSetup.class);
+
     private String connectorId;
     private WebConnectorSetup setup;
     private final HtmlLabel introTextLabel;
@@ -34,7 +36,6 @@ public class ServerPanel extends VerticalLayout implements ConnectorSetupPanel {
         this.connectorId = connectorId;
         this.setup = setup;
 
-        var binder = new Binder(WebConnectorSetup.class);
         var captionLabel = new Html("<b>" + caption + "</b>");
 
         labelField = ServerPanelUtil.label(binder);
@@ -131,5 +132,12 @@ public class ServerPanel extends VerticalLayout implements ConnectorSetupPanel {
     public ServerPanel setPasswordFieldLabel(String text) {
         passwordFieldLabel.setText(text);
         return this;
+    }
+
+    /**
+     * visible for testing only
+     */
+    Binder<WebConnectorSetup> getBinder() {
+        return binder;
     }
 }

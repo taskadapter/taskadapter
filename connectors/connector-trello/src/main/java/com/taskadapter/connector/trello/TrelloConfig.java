@@ -32,13 +32,11 @@ public class TrelloConfig extends ConnectorConfig {
         return boardName;
     }
 
-    public TrelloConfig setBoardId(String boardId) {
+    public void setBoardId(String boardId) {
         this.boardId = boardId;
-        return this;
     }
 
-    public TrelloConfig setBoardName(String boardName) {
+    public void setBoardName(String boardName) {
         this.boardName = boardName;
-        return this;
     }
 }
