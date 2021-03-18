@@ -111,7 +111,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
                 + "<br/>Please provide either a password or an API token."
                 + "<br/>You can generate an API token here: <br/>" +
                 "<b>https://id.atlassian.com/manage-profile/security/api-tokens</b>";
-        return new ServerPanel(JiraConnector.ID(), JiraConnector.ID(),
+        return new ServerPanel(JiraConnector.ID, JiraConnector.ID,
                 setup)
                 .setPasswordFieldLabel("Password or token")
                 .setPasswordHelp(description);
@@ -119,7 +119,7 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
 
     @Override
     public WebConnectorSetup createDefaultSetup(Sandbox sandbox) {
-        return WebConnectorSetup.apply(JiraConnector.ID(), "My Jira", "https://", "",
+        return WebConnectorSetup.apply(JiraConnector.ID, "My Jira", "https://", "",
                 "", true, "");
     }
 

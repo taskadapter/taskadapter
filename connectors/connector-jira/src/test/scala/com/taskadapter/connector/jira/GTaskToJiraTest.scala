@@ -19,7 +19,7 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
     val priorityCritical = find(GTaskToJiraFactory.defaultPriorities, "Highest")
     val task = JiraGTaskBuilder.builderWithSummary().withPriority(750).build()
     val converter = getConverter()
-    val newIssue = converter.convertToJiraIssue(task).issueInput
+    val newIssue = converter.convertToJiraIssue(task).getIssueInput()
     val actualPriorityId = getId(newIssue, IssueFieldId.PRIORITY_FIELD.id)
     assertEquals(priorityCritical.getId.toString, actualPriorityId)
   }
@@ -33,7 +33,7 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
     val task = JiraGTaskBuilder.builderWithSummary().withPriority(500).build()
     val converter = GTaskToJiraFactory.getConverter(java.util.List.of())
     val exception = intercept[FieldConversionException] {
-      converter.convertToJiraIssue(task).issueInput
+      converter.convertToJiraIssue(task).getIssueInput()
     }
     exception.getMessage should include ("Reason: Priority with name Medium is not found on the server")
   }
@@ -44,7 +44,7 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
 
   private def checkSummary(converter: GTaskToJira, expectedValue: String): Unit = {
     val task = GTaskBuilder.withSummary(expectedValue)
-    val issueInput = converter.convertToJiraIssue(task).issueInput
+    val issueInput = converter.convertToJiraIssue(task).getIssueInput()
     assertEquals(expectedValue, getValue(issueInput, IssueFieldId.SUMMARY_FIELD.id))
   }
 
@@ -54,13 +54,13 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
 
   it("status"){
     val task = new GTask().setValue(AllFields.taskStatus, "TO DO")
-    getConverter().convertToJiraIssue(task).status shouldBe "TO DO"
+    getConverter().convertToJiraIssue(task).getStatus shouldBe "TO DO"
   }
 
   private def checkDescription(converter: GTaskToJira, expectedValue: String): Unit = {
     val task = new GTask().setValue(AllFields.description, expectedValue)
 
-    val issueInput = converter.convertToJiraIssue(task).issueInput
+    val issueInput = converter.convertToJiraIssue(task).getIssueInput()
     assertEquals(expectedValue, getValue(issueInput, IssueFieldId.DESCRIPTION_FIELD.id))
   }
 
@@ -73,13 +73,13 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
     val calendar = Calendar.getInstance
     calendar.set(2014, Calendar.APRIL, 28, 0, 0, 0)
     task.setValue(AllFields.dueDate, calendar.getTime)
-    val issueInput = converter.convertToJiraIssue(task).issueInput
+    val issueInput = converter.convertToJiraIssue(task).getIssueInput()
     assertEquals(expected, getValue(issueInput, IssueFieldId.DUE_DATE_FIELD.id))
   }
 
   it("reporter login name"){
     val task = new GTask().setValue(AllFields.reporterLoginName, "mylogin")
-    val issue = getConverter().convertToJiraIssue(task).issueInput
+    val issue = getConverter().convertToJiraIssue(task).getIssueInput()
     assertEquals("mylogin", getComplexValue(issue, IssueFieldId.REPORTER_FIELD.id, "name"))
   }
 
@@ -89,19 +89,19 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
 
   private def checkAssignee(converter: GTaskToJira, expected: String): Unit = {
     val task = new GTask().setValue(AllFields.assigneeLoginName, expected)
-    val issue = converter.convertToJiraIssue(task).issueInput
+    val issue = converter.convertToJiraIssue(task).getIssueInput()
     assertEquals(expected, getComplexValue(issue, IssueFieldId.ASSIGNEE_FIELD.id, "name"))
   }
 
   it ("components use only the first provided value and ignore others") {
     val task = new GTask().setValue(AllFields.components, java.util.List.of("client", "server"))
-    val issue = getConverter().convertToJiraIssue(task).issueInput
+    val issue = getConverter().convertToJiraIssue(task).getIssueInput()
     getIterableValue(issue, IssueFieldId.COMPONENTS_FIELD.id) should contain only("client")
   }
 
   it ("empty component is valid") {
     val task = new GTask().setValue(AllFields.components, new java.util.ArrayList[String]())
-    val issue = getConverter().convertToJiraIssue(task).issueInput
+    val issue = getConverter().convertToJiraIssue(task).getIssueInput()
     getIterableValue(issue, IssueFieldId.COMPONENTS_FIELD.id) shouldBe null
   }
 
@@ -112,7 +112,7 @@ class GTaskToJiraTest extends FunSpec with Matchers with BeforeAndAfter with Bef
   private def checkEstimatedTime(converter: GTaskToJira, expectedTime: String): Unit = {
     val task = new GTask
     task.setValue(AllFields.estimatedTime, java.lang.Float.valueOf(3F))
-    val issue = converter.convertToJiraIssue(task).issueInput
+    val issue = converter.convertToJiraIssue(task).getIssueInput()
     assertEquals(expectedTime, getComplexValue(issue, "timetracking", "originalEstimate"))
   }
 

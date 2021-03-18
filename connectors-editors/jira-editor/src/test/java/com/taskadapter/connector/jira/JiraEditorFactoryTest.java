@@ -32,20 +32,20 @@ public class JiraEditorFactoryTest {
     @Test
     public void miniPanelIsCreated() {
         factory.getMiniPanelContents(new Sandbox(false, tempFolder.getRoot()), new JiraConfig(),
-                WebConnectorSetup.apply(JiraConnector.ID(), "label1", "host", "user", "password", false, "api"));
+                WebConnectorSetup.apply(JiraConnector.ID, "label1", "host", "user", "password", false, "api"));
     }
 
     @Test
     public void serverURLIsRequiredForSave() {
         var exceptions = factory.validateForSave(new JiraConfig(),
-                WebConnectorSetup.apply(JiraConnector.ID(), "label1", "", "", "", false, ""), NO_MAPPINGS);
+                WebConnectorSetup.apply(JiraConnector.ID, "label1", "", "", "", false, ""), NO_MAPPINGS);
         assertThat(exceptions.get(0)).isInstanceOf(ServerURLNotSetException.class);
     }
 
     @Test
     public void projectKeyIsRequiredForSave() {
         var exceptions = factory.validateForSave(new JiraConfig(),
-                WebConnectorSetup.apply(JiraConnector.ID(), "label1", "http://somehost", "", "", false, ""), NO_MAPPINGS);
+                WebConnectorSetup.apply(JiraConnector.ID, "label1", "http://somehost", "", "", false, ""), NO_MAPPINGS);
         assertThat(exceptions.get(0)).isInstanceOf(ProjectNotSetException.class);
     }
 
@@ -56,7 +56,7 @@ public class JiraEditorFactoryTest {
         // clear the value
         config.setDefaultIssueTypeForSubtasks("");
         var exceptions = factory.validateForSave(config,
-                WebConnectorSetup.apply(JiraConnector.ID(), "label1", "http://somehost", "", "", false, ""), NO_MAPPINGS);
+                WebConnectorSetup.apply(JiraConnector.ID, "label1", "http://somehost", "", "", false, ""), NO_MAPPINGS);
         assertThat(exceptions.get(0)).isInstanceOf(DefaultSubTaskTypeNotSetException.class);
     }
 }

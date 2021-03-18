@@ -4,6 +4,7 @@ import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.NewConnector;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.TaskId;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.core.TaskSaver;
 import com.taskadapter.model.Field;
@@ -47,21 +48,23 @@ public class CommonTestChecks {
         assertFalse("must not have any errors, but got " + result.getTaskErrors(), result.hasErrors());
         assertEquals(1, result.getCreatedTasksNumber());
         var newTaskId = result.getRemoteKeys().iterator().next();
-        var loaded = connector.loadTaskByKey(newTaskId, rows);
+        try {
+            GTask loaded = connector.loadTaskByKey(newTaskId, rows);
+            // UPDATE all requested fields
+            toUpdate.forEach(i -> loaded.setValue(i.field, i.value));
+            var resolver = new TaskResolverBuilder(targetLocation).pretend(newTaskId, newTaskId);
+            var result2 = TaskSaver.save(resolver, connector, "some name",
+                    rows, Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR);
+            assertFalse(result2.hasErrors());
+            assertEquals(1, result2.getUpdatedTasksNumber());
+            var loadedAgain = connector.loadTaskByKey(newTaskId, rows);
 
-        // UPDATE all requested fields
-        toUpdate.forEach(i -> loaded.setValue(i.field, i.value));
+            toUpdate.forEach(i -> assertEquals(i.value, loadedAgain.getValue(i.field)));
 
-        var resolver = new TaskResolverBuilder(targetLocation).pretend(newTaskId, newTaskId);
-        var result2 = TaskSaver.save(resolver, connector, "some name",
-                rows, Arrays.asList(loaded), ProgressMonitorUtils.DUMMY_MONITOR);
-        assertFalse(result2.hasErrors());
-        assertEquals(1, result2.getUpdatedTasksNumber());
-        var loadedAgain = connector.loadTaskByKey(newTaskId, rows);
-
-        toUpdate.forEach(i -> assertEquals(i.value, loadedAgain.getValue(i.field)));
-
-        cleanup.apply(loaded.getIdentity());
+            cleanup.apply(loaded.getIdentity());
+        } catch (ConnectorException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static <T> void taskCreatedAndUpdatedOK(String targetLocation, NewConnector connector,
@@ -93,13 +96,17 @@ public class CommonTestChecks {
                 rows);
         var createdTask1Id = result.getRemoteKeys().iterator().next();
 
-        var loadedTasks = connector.loadData();
-        // there could be some other previously created tasks
-        assertThat(loadedTasks.size()).isGreaterThanOrEqualTo(1);
+        try {
+            var loadedTasks = connector.loadData();
+            // there could be some other previously created tasks
+            assertThat(loadedTasks.size()).isGreaterThanOrEqualTo(1);
 
-        var foundTask = TestUtils.findTaskInList(loadedTasks, createdTask1Id);
-        assertThat(foundTask).isPresent();
-        return foundTask.get();
+            var foundTask = TestUtils.findTaskInList(loadedTasks, createdTask1Id);
+            assertThat(foundTask).isPresent();
+            return foundTask.get();
+        } catch (ConnectorException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void createsTasks(NewConnector connector,

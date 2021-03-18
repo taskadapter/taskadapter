@@ -4,6 +4,7 @@ import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.TestFieldBuilder;
 import com.taskadapter.connector.common.TreeUtils;
 import com.taskadapter.connector.definition.FileSetup;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.testlib.CommonTestChecks;
 import com.taskadapter.connector.testlib.FieldRowBuilder;
 import com.taskadapter.connector.testlib.ITFixture;
@@ -93,7 +94,7 @@ public class MspConnectorIT {
     }
 
     @Test
-    public void trimsFieldValueAndRemovesLineBreakAtTheEnd() {
+    public void trimsFieldValueAndRemovesLineBreakAtTheEnd() throws ConnectorException {
         var textWithEndingLineBreak = " text " + System.lineSeparator();
         var task = new GTask().setValue(AllFields.summary, textWithEndingLineBreak);
         var created = TestUtils.saveAndLoad(getConnector(tempFolder.getRoot()),

@@ -57,7 +57,7 @@ public class JiraTestJava {
 
     // TODO move to some generic tests, this is not Jira-specific
     @Test
-    public void taskCreatedWithDefaultDescriptionField() {
+    public void taskCreatedWithDefaultDescriptionField() throws Exception {
         // description is empty so that the default value will be set later
         GTask task = GTaskBuilder.withSummary(new Random().nextDouble() + "");
 
@@ -75,7 +75,7 @@ public class JiraTestJava {
     }
 
     @Test
-    public void epicWithNameDefinedViaCustomField() {
+    public void epicWithNameDefinedViaCustomField() throws Exception {
         CustomString epicName = JavaFieldAdapter.customString("Epic Name");
         List<FieldRow<?>> rows = JavaFieldAdapter.rows(AllFields.summary,
                 AllFields.taskType,

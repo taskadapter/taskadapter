@@ -3,6 +3,7 @@ package com.taskadapter.connector;
 import com.taskadapter.connector.definition.ProgressMonitor;
 import com.taskadapter.connector.definition.SaveResult;
 import com.taskadapter.connector.definition.TaskId;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.model.GTask;
 
@@ -22,10 +23,10 @@ public interface NewConnector {
      * Load list of tasks. Order of loaded tasks is not specified and may depend on implementation.
      * To get tasks in a specific order, use [[com.taskadapter.connector.common.ConnectorUtils]] methods.
      */
-    List<GTask> loadData();
+    List<GTask> loadData() throws ConnectorException;
 
     /**
      * Loads one task by its key.
      */
-    GTask loadTaskByKey(TaskId key, Iterable<FieldRow<?>> rows);
+    GTask loadTaskByKey(TaskId key, Iterable<FieldRow<?>> rows) throws ConnectorException;
 }

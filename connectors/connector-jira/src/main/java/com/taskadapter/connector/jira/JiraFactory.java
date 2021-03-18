@@ -12,7 +12,7 @@ import com.taskadapter.model.Field;
 import java.util.List;
 
 public class JiraFactory implements PluginFactory<JiraConfig, WebConnectorSetup> {
-    private static Descriptor DESCRIPTOR = new Descriptor(JiraConnector.ID(), "Atlassian JIRA");
+    private static Descriptor DESCRIPTOR = new Descriptor(JiraConnector.ID, "Atlassian JIRA");
 
     @Override
     public List<Field<?>> getAllFields() {

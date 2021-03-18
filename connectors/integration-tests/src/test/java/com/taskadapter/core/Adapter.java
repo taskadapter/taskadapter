@@ -4,6 +4,7 @@ import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.NewConnector;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.SaveResult;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
 
 import java.util.List;
@@ -17,7 +18,7 @@ class Adapter {
         this.connector2 = connector2;
     }
 
-    SaveResult adapt(List<FieldRow<?>> rows) {
+    SaveResult adapt(List<FieldRow<?>> rows) throws ConnectorException {
         List<GTask> tasks = connector1.loadData();
         return connector2.saveData(PreviouslyCreatedTasksResolver.empty, tasks, ProgressMonitorUtils.DUMMY_MONITOR, rows);
     }

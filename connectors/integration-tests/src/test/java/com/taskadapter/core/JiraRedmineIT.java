@@ -4,6 +4,7 @@ import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.SaveResult;
 import com.taskadapter.connector.definition.WebConnectorSetup;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.jira.JiraConfig;
 import com.taskadapter.connector.jira.JiraConnector;
 import com.taskadapter.connector.redmine.RedmineConfig;
@@ -66,7 +67,7 @@ public class JiraRedmineIT {
 
     // Description from Jira is saved to description in Redmine
     @Test
-    public void descriptionFromJiraIsSavedToRedmine() {
+    public void descriptionFromJiraIsSavedToRedmine() throws ConnectorException {
         List<FieldRow<?>> rows = Arrays.asList(
                 new FieldRow(summaryOpt, summaryOpt, ""),
                 new FieldRow(descriptionOpt, descriptionOpt, "")
@@ -84,7 +85,7 @@ public class JiraRedmineIT {
 
     // assignee and reporter can be loaded from JIRA and saved to Redmine
     @Test
-    public void assigneeAndReporterCanBeLoadedFromJiraAndSavedToRedmine() {
+    public void assigneeAndReporterCanBeLoadedFromJiraAndSavedToRedmine() throws ConnectorException {
         List<FieldRow<?>> rows = Arrays.asList(new FieldRow(summaryOpt, summaryOpt, ""),
                 new FieldRow(AssigneeLoginNameOpt, AssigneeLoginNameOpt, null),
                 new FieldRow(ReporterLoginNameOpt, ReporterLoginNameOpt, null)

@@ -25,7 +25,7 @@ public class TestUtils {
      * Uses a NEW instance of PreviouslyCreatedTasksResolver (empty) for each call, so this won't work for some tests
      * that require updates.
      */
-    public static GTask saveAndLoad(NewConnector connector, GTask task, List<FieldRow<?>> rows) {
+    public static GTask saveAndLoad(NewConnector connector, GTask task, List<FieldRow<?>> rows) throws ConnectorException {
         SaveResult result = connector.saveData(PreviouslyCreatedTasksResolver.empty, Arrays.asList(task), ProgressMonitorUtils.DUMMY_MONITOR, rows);
         var remoteKeys = result.getRemoteKeys();
         TaskId remoteKey = remoteKeys.iterator().next();
@@ -61,7 +61,7 @@ public class TestUtils {
     /**
      * Load task that was previously created and its result is saved in [[SaveResult]]
      */
-    public static GTask loadCreatedTask(NewConnector connector, List<FieldRow<?>> rows, SaveResult result) {
+    public static GTask loadCreatedTask(NewConnector connector, List<FieldRow<?>> rows, SaveResult result) throws ConnectorException {
         TaskId remoteKey = result.getRemoteKeys().get(0);
         return connector.loadTaskByKey(remoteKey, rows);
     }

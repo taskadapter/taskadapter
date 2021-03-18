@@ -4,6 +4,7 @@ import com.taskadapter.connector.FieldRow;
 import com.taskadapter.connector.NewConnector;
 import com.taskadapter.connector.common.ProgressMonitorUtils;
 import com.taskadapter.connector.definition.TaskKeyMapping;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.core.PreviouslyCreatedTasksCache;
 import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.model.GTask;
@@ -36,6 +37,10 @@ public class StatefulTestTaskSaver {
 
         var remoteKeys = result.getRemoteKeys();
         var remoteKey = remoteKeys.iterator().next();
-        return connector.loadTaskByKey(remoteKey, rows);
+        try {
+            return connector.loadTaskByKey(remoteKey, rows);
+        } catch (ConnectorException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

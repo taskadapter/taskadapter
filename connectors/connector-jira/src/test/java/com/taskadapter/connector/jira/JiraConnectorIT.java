@@ -77,7 +77,7 @@ public class JiraConnectorIT {
     }
 
     @Test
-    public void subtasksAreCreated() {
+    public void subtasksAreCreated() throws Exception {
         var parentTask = new JiraGTaskBuilder("parent task").build();
 
         var subTask1 = new JiraGTaskBuilder("child task 1").build();
@@ -141,7 +141,7 @@ public class JiraConnectorIT {
             List.of(AllFields.summary, AllFields.taskType));
 
     @Test
-    public void createTaskIsCreatedWithDefaultTaskTypeSetInConfig() {
+    public void createTaskIsCreatedWithDefaultTaskTypeSetInConfig() throws Exception {
         var created = TestUtils.saveAndLoad(getConnector(),
                 new GTaskBuilder().withRandom(AllFields.summary)/*.withField(TaskType, "Story")*/.build(),
                 rows);
@@ -150,7 +150,7 @@ public class JiraConnectorIT {
     }
 
     @Test
-    public void createNewTaskGetsRequestedType() {
+    public void createNewTaskGetsRequestedType() throws Exception {
         var created = TestUtils.saveAndLoad(getConnector(), task("Story"), rows);
         assertThat(created.getValue(AllFields.taskType)).isEqualTo("Story");
         TestJiraClientHelper.deleteTasks(client, created.getIdentity());

@@ -33,7 +33,7 @@ public class TestConfigs {
     }
 
     public static WebConnectorSetup getJiraSetup() {
-        return WebConnectorSetup.apply(JiraConnector.ID(),
+        return WebConnectorSetup.apply(JiraConnector.ID,
                 "label1", jiraProperties.getProperty("host"),
                 jiraProperties.getProperty("login"), jiraProperties.getProperty("password"), false, "");
     }

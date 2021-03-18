@@ -4,7 +4,6 @@ import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.taskadapter.connector.Priorities;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
-import scala.collection.JavaConverters;
 
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class JiraTaskLoader {
                     : JqlBuilder.findIssuesByProjectAndFilterId(config.getProjectKey(), config.getQueryId());
 
             var issues = JiraClientHelper.findIssues(client, jql);
-            return jiraToGTask.convertToGenericTaskList(resolver, JavaConverters.iterableAsScalaIterable(issues));
+            return jiraToGTask.convertToGenericTaskList(resolver, issues);
         } catch (Exception e) {
             throw JiraUtils.convertException(e);
         }

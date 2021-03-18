@@ -143,7 +143,7 @@ public class RedmineMspIT {
 
     // custom value saved to another custom value with default value
     @Test
-    public void customValueSavedToAnotherCustomValueWithDefaultValue() throws RedmineException {
+    public void customValueSavedToAnotherCustomValueWithDefaultValue() throws Exception {
         List<FieldRow<?>> rows = Arrays.asList(
                 new FieldRow(summaryOpt, summaryOpt, ""),
                 new FieldRow(Optional.of(new CustomString("my_custom_1")), Optional.of(new CustomString("my_custom_2")), "default custom alex")
@@ -160,7 +160,7 @@ public class RedmineMspIT {
 
     // loads custom field in task and saves it to another custom field
     @Test
-    public void loadsCustomFieldInTaskAndSavesItToAnotherCustomField() throws RedmineException {
+    public void loadsCustomFieldInTaskAndSavesItToAnotherCustomField() throws Exception {
         List<FieldRow<?>> rows = Arrays.asList(
                 new FieldRow(summaryOpt, summaryOpt, ""),
                 new FieldRow(Optional.of(new CustomString("my_custom_1")), Optional.of(new CustomString("my_custom_2")), "")
@@ -179,7 +179,7 @@ public class RedmineMspIT {
 
     // description field gets default value on save if needed
     @Test
-    public void descriptionFieldGetsDefaultValueOnSaveIfNeeded() throws RedmineException {
+    public void descriptionFieldGetsDefaultValueOnSaveIfNeeded() throws Exception {
         List<FieldRow<?>> rows = Arrays.asList(
                 new FieldRow(summaryOpt, summaryOpt, ""),
                 new FieldRow(descriptionOpt, descriptionOpt, "default alex description")
@@ -195,7 +195,7 @@ public class RedmineMspIT {
 
     // description field keeps source value when it is present
     @Test
-    public void descriptionFieldKeepsSourceValueWhenItIsPresent() throws RedmineException {
+    public void descriptionFieldKeepsSourceValueWhenItIsPresent() throws Exception {
         List<FieldRow<?>> rows = Arrays.asList(
                 new FieldRow(summaryOpt, summaryOpt, ""),
                 new FieldRow(descriptionOpt, descriptionOpt, "default alex description")
@@ -213,7 +213,7 @@ public class RedmineMspIT {
 
     // description field value is saved to custom field
     @Test
-    public void descriptionFieldValueIsSavedToCustomField() throws RedmineException {
+    public void descriptionFieldValueIsSavedToCustomField() throws Exception {
         List<FieldRow<?>> rows = Arrays.asList(
                 new FieldRow(summaryOpt, summaryOpt, ""),
                 new FieldRow(descriptionOpt, customStringOpt("my_custom_1"), "")
