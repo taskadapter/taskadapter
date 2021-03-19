@@ -11,7 +11,7 @@ public class MantisTestConfig {
 
     public static WebConnectorSetup getSetup() {
         return WebConnectorSetup.apply(
-                MantisConnector.ID(),
+                MantisConnector.ID,
                 "label1",
                 properties.getProperty("uri"),
                 properties.getProperty("user"),

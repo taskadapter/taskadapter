@@ -20,7 +20,7 @@ public class MantisEditorFactoryTest {
 
     private final MantisEditorFactory factory = new MantisEditorFactory();
     private final MantisConfig config = new MantisConfig();
-    private final WebConnectorSetup setup = WebConnectorSetup.apply(MantisConnector.ID(),
+    private final WebConnectorSetup setup = WebConnectorSetup.apply(MantisConnector.ID,
             "label1", "host", "user", "password", false, "");
 
     @Test

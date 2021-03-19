@@ -20,7 +20,7 @@ public class GithubLoadersIT {
     }
 
     private WebConnectorSetup getSetup() {
-        return WebConnectorSetup.apply(GithubConnector.ID(), "my github",
+        return WebConnectorSetup.apply(GithubConnector.ID, "my github",
                 "https://github.com", "tatest", "123qweasd", false, "");
     }
 }

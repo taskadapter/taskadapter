@@ -67,12 +67,12 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig, We
 
     @Override
     public ConnectorSetupPanel getEditSetupPanel(Sandbox sandbox, WebConnectorSetup setup) {
-        return new ServerPanel(MantisConnector.ID(), MantisConnector.ID(), setup);
+        return new ServerPanel(MantisConnector.ID, MantisConnector.ID, setup);
     }
 
     @Override
     public WebConnectorSetup createDefaultSetup(Sandbox sandbox) {
-        return WebConnectorSetup.apply(MantisConnector.ID(),
+        return WebConnectorSetup.apply(MantisConnector.ID,
                 "My MantisBT", "http://", "", "", false, "");
     }
 
