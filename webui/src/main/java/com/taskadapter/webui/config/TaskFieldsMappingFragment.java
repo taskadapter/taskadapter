@@ -67,11 +67,10 @@ public class TaskFieldsMappingFragment implements SavableComponent, Validatable 
     private void buildUi() {
         gridLayout.setResponsiveSteps(
                 new FormLayout.ResponsiveStep("2em", 1),
-                new FormLayout.ResponsiveStep("2em", 2),
+                new FormLayout.ResponsiveStep("10em", 2),
                 new FormLayout.ResponsiveStep("10em", 3),
                 new FormLayout.ResponsiveStep("10em", 4),
-                new FormLayout.ResponsiveStep("10em", 5),
-                new FormLayout.ResponsiveStep("5em", 6));
+                new FormLayout.ResponsiveStep("5em", 5));
 
         editablePojoMappings = new EditablePojoMappings(mappings,
                 new ConnectorFieldLoader(connector1SupportedFields),
@@ -97,9 +96,6 @@ public class TaskFieldsMappingFragment implements SavableComponent, Validatable 
         label2.addClassName("fieldsTitle");
         label2.setWidth("40px");
         gridLayout.add(label2);
-        var label = new Label(" ");
-        label.setWidth("20px");
-        gridLayout.add(label);
 
         var label1 = new Label(connector1Label);
         label1.addClassName("fieldsTitle");
@@ -134,10 +130,6 @@ public class TaskFieldsMappingFragment implements SavableComponent, Validatable 
     private void addRowToVaadinForm(EditableFieldMapping field) {
 
         addCheckbox(field.getBinder());
-/////////////////     TODO TA3 help is per connector field, not for the whole row now.
-        String helpForField = null; //getHelpForField(field);
-        if (helpForField != null) addHelp(helpForField);
-        else addEmptyCell();
         addConnectorField(field.getBinder(), connector1SupportedFields, connector1Messages, field.getFieldInConnector1(), "fieldInConnector1");
         addConnectorField(field.getBinder(), connector2SupportedFields, connector2Messages, field.getFieldInConnector2(), "fieldInConnector2");
         addTextFieldForDefaultValue(field.getBinder());
@@ -166,18 +158,6 @@ public class TaskFieldsMappingFragment implements SavableComponent, Validatable 
     private void addTextFieldForDefaultValue(Binder<EditableFieldMapping> binder) {
         var field = EditorUtil.textInput(binder, "defaultValue");
         gridLayout.add(field);
-    }
-
-    private void addHelp(String helpForField) {
-//    var helpIcon = new Embedded(null, TaskFieldsMappingFragment.HELP_ICON_RESOURCE);
-//    helpIcon.setDescription(helpForField);
-//    gridLayout.add(helpIcon);
-//    gridLayout.setComponentAlignment(helpIcon, Alignment.MIDDLE_CENTER);
-    }
-
-    private void addEmptyCell() {
-        var emptyLabel = new Label(" ");
-        gridLayout.add(emptyLabel);
     }
 
     private void addConnectorField(Binder<EditableFieldMapping> binder,
