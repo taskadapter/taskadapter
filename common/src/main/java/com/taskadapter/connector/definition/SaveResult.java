@@ -21,6 +21,12 @@ public class SaveResult {
         this.taskErrors = taskErrors;
     }
 
+    public static SaveResult withError(Exception e) {
+        return new SaveResult("", 0, 0, List.of(),
+                List.of(e),
+                List.of());
+    }
+
     public List<TaskId> getRemoteKeys() {
         return keyToRemoteKeyList.stream().map(taskKeyMapping -> taskKeyMapping.newId)
                 .collect(Collectors.toList());

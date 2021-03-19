@@ -43,7 +43,7 @@ public class GTaskToBasecamp implements ConnectorConverter<GTask, BasecampTaskWr
                 try {
                     processField(writer, field, value);
                 } catch (Exception e) {
-                    throw new FieldConversionException(BasecampConnector.ID(), field, value, e.getMessage());
+                    throw new FieldConversionException(BasecampConnector.ID, field, value, e.getMessage());
                 }
             }
             writer.endObject();

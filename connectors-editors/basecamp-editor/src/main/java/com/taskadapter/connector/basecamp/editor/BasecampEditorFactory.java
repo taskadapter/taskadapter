@@ -40,10 +40,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig, WebConnectorSetup> {
-    private static String BUNDLE_NAME = "com.taskadapter.connector.basecamp.editor.messages";
-    private static Messages MESSAGES = new Messages(BUNDLE_NAME);
-    private static ObjectAPIFactory factory = new ObjectAPIFactory(new BaseCommunicator());
-    private static BasecampErrorFormatter formatter = new BasecampErrorFormatter();
+    private static final String BUNDLE_NAME = "com.taskadapter.connector.basecamp.editor.messages";
+    private static final Messages MESSAGES = new Messages(BUNDLE_NAME);
+    private static final ObjectAPIFactory factory = new ObjectAPIFactory(new BaseCommunicator());
+    private static final BasecampErrorFormatter formatter = new BasecampErrorFormatter();
 
     @Override
     public SavableComponent getMiniPanelContents(Sandbox sandbox, BasecampConfig config, WebConnectorSetup setup) {
@@ -74,12 +74,12 @@ public class BasecampEditorFactory implements PluginEditorFactory<BasecampConfig
 
     @Override
     public ConnectorSetupPanel getEditSetupPanel(Sandbox sandbox, WebConnectorSetup setup) {
-        return new ServerPanelWithPasswordAndAPIKey(BasecampConnector.ID(), BasecampConnector.ID(), setup);
+        return new ServerPanelWithPasswordAndAPIKey(BasecampConnector.ID, BasecampConnector.ID, setup);
     }
 
     @Override
     public WebConnectorSetup createDefaultSetup(Sandbox sandbox) {
-        return WebConnectorSetup.apply(BasecampConnector.ID(),
+        return WebConnectorSetup.apply(BasecampConnector.ID,
                 "My Basecamp 2", ObjectAPI.BASECAMP_URL, "", "", false, "");
     }
 

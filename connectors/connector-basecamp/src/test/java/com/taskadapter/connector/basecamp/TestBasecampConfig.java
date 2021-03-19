@@ -18,7 +18,7 @@ class TestBasecampConfig {
     }
 
     static WebConnectorSetup setup() {
-        return WebConnectorSetup.apply(BasecampConnector.ID(), "label",
+        return WebConnectorSetup.apply(BasecampConnector.ID, "label",
                 ObjectAPI.BASECAMP_URL,
                 USER_LOGIN, USER_PASSWORD, false, "");
     }
