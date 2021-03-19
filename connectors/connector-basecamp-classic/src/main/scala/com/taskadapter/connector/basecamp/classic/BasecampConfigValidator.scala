@@ -14,9 +14,9 @@ object BasecampConfigValidator {
   def validateServerAuthNoException(setup: WebConnectorSetup): Seq[BadConfigException] = {
     val seq = new mutable.ListBuffer[BadConfigException]()
     val apiKey = setup.getApiKey
-    if (apiKey == null || apiKey.isEmpty) seq += FieldNotSetException("auth")
+    if (apiKey == null || apiKey.isEmpty) seq += new FieldNotSetException("auth")
     val apiUrl = setup.getHost
-    if (apiUrl == null || apiUrl.isEmpty) seq += FieldNotSetException("api-url")
+    if (apiUrl == null || apiUrl.isEmpty) seq += new FieldNotSetException("api-url")
     seq
   }
 
@@ -27,7 +27,7 @@ object BasecampConfigValidator {
   def validateProjectKeyNoException(config: BasecampClassicConfig): Seq[BadConfigException] = {
     val seq = new mutable.ListBuffer[BadConfigException]()
     val pKey = config.getProjectKey
-    if (pKey == null || pKey.isEmpty) seq += FieldNotSetException("project-key")
+    if (pKey == null || pKey.isEmpty) seq += new FieldNotSetException("project-key")
     seq
   }
 
@@ -38,7 +38,7 @@ object BasecampConfigValidator {
   def validateTodoListNoException(config: BasecampClassicConfig): Seq[BadConfigException] = {
     val seq = new mutable.ListBuffer[BadConfigException]()
     val pKey = config.getTodoKey
-    if (pKey == null || pKey.isEmpty) seq += FieldNotSetException("todo-key")
+    if (pKey == null || pKey.isEmpty) seq += new FieldNotSetException("todo-key")
     seq
   }
 

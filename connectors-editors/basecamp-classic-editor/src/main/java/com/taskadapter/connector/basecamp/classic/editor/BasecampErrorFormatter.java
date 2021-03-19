@@ -19,7 +19,7 @@ class BasecampErrorFormatter implements ExceptionFormatter {
         }
 
         if (e instanceof FieldNotSetException) {
-            String field = ((FieldNotSetException) e).field();
+            String field = ((FieldNotSetException) e).getField();
             String message = MESSAGES.format("error." + field);
             if (!Strings.isNullOrEmpty(message)) {
                 return message;

@@ -20,12 +20,12 @@ public class BasecampSaver implements BasicIssueSaveAPI<BasecampTaskWrapper> {
     @Override
     public TaskId createTask(BasecampTaskWrapper wrapper) throws ConnectorException {
         var url = "/projects/" + config.getProjectKey() + "/todolists/" + config.getTodoKey() + "/todos.json";
-        var res = api.post(url, wrapper.nativeTask());
+        var res = api.post(url, wrapper.getNativeTask());
         var newIdentity = BasecampToGTask.parseTask(res).getIdentity();
         /* Set "done ratio" if needed */
-        if (wrapper.doneRatio() >= 100) {
+        if (wrapper.getDoneRatio() >= 100) {
             api.put("/projects/" + config.getProjectKey() + "/todos/" + newIdentity.getKey() + ".json",
-                    wrapper.nativeTask());
+                    wrapper.getNativeTask());
         }
         return newIdentity;
     }
@@ -37,8 +37,8 @@ public class BasecampSaver implements BasicIssueSaveAPI<BasecampTaskWrapper> {
      */
     @Override
     public void updateTask(BasecampTaskWrapper nativeTask) throws ConnectorException {
-        var url = "/projects/" + config.getProjectKey() + "/todos/" + nativeTask.key() + ".json";
-        var res = api.put(url, nativeTask.nativeTask());
+        var url = "/projects/" + config.getProjectKey() + "/todos/" + nativeTask.getKey() + ".json";
+        var res = api.put(url, nativeTask.getNativeTask());
         // BasecampToGTask.parseTask(res).getIdentity();
     }
 }

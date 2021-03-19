@@ -28,7 +28,7 @@ class BasecampErrorFormatter implements ExceptionFormatter {
             }
         }
         if (e instanceof FieldNotSetException) {
-            final String field = ((FieldNotSetException) e).field();
+            final String field = ((FieldNotSetException) e).getField();
             if ("project-key".equals(field)) {
                 return MESSAGES.format("errors.projectKeyNotSet");
             } else if ("todo-key".equals(field)) {
