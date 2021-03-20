@@ -94,6 +94,10 @@ public class CommonTestChecks {
         var result = connector.saveData(PreviouslyCreatedTasksResolver.empty, List.of(task),
                 ProgressMonitorUtils.DUMMY_MONITOR,
                 rows);
+        if (result.hasErrors()) {
+            throw new RuntimeException("Error while saving data to " + connector.toString()
+                    + ". " + result.getGeneralErrors());
+        }
         var createdTask1Id = result.getRemoteKeys().iterator().next();
 
         try {

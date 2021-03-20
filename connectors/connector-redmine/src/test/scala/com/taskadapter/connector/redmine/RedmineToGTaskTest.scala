@@ -14,7 +14,7 @@ import java.util.{Calendar, Collections}
 @RunWith(classOf[JUnitRunner])
 class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll {
 
-  val userCache = new RedmineUserCache(Seq())
+  val userCache = new RedmineUserCache(java.util.List.of())
 
   private def get(): RedmineToGTask = {
     val config = new RedmineConfig

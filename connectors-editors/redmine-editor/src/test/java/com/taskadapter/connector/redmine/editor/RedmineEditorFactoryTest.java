@@ -28,7 +28,7 @@ public class RedmineEditorFactoryTest {
 
     private RedmineEditorFactory factory = new RedmineEditorFactory();
     private RedmineConfig config = new RedmineConfig();
-    private WebConnectorSetup setup = WebConnectorSetup.apply(RedmineConnector.ID(), "label1", "http://somehost", "", "", false, "");
+    private WebConnectorSetup setup = WebConnectorSetup.apply(RedmineConnector.ID, "label1", "http://somehost", "", "", false, "");
     private Binder<RedmineConfig> binder = new Binder<>();
 
     @Test

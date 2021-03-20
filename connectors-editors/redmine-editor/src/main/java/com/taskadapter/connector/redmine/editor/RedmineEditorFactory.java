@@ -96,13 +96,13 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
 
     @Override
     public ConnectorSetupPanel getEditSetupPanel(Sandbox sandboxUnused, WebConnectorSetup setup) {
-        return new ServerPanelWithPasswordAndAPIKey(RedmineConnector.ID(),
-                RedmineConnector.ID(), setup);
+        return new ServerPanelWithPasswordAndAPIKey(RedmineConnector.ID,
+                RedmineConnector.ID, setup);
     }
 
     @Override
     public WebConnectorSetup createDefaultSetup(Sandbox sandbox) {
-        return WebConnectorSetup.apply(RedmineConnector.ID(), "My Redmine", "", "",
+        return WebConnectorSetup.apply(RedmineConnector.ID, "My Redmine", "", "",
                 "", true, "");
     }
 

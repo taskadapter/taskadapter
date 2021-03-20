@@ -20,7 +20,7 @@ public class TestConfigs {
     }
 
     public static WebConnectorSetup getRedmineSetup() {
-        return WebConnectorSetup.apply(RedmineConnector.ID(),
+        return WebConnectorSetup.apply(RedmineConnector.ID,
                 "label1", properties.getProperty("uri"), "", "",
                 true, properties.getProperty("apikey"));
     }

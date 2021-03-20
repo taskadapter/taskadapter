@@ -12,7 +12,7 @@ import com.taskadapter.model.Field;
 import java.util.List;
 
 public class RedmineFactory implements PluginFactory<RedmineConfig, WebConnectorSetup> {
-    private static Descriptor DESCRIPTOR = new Descriptor(RedmineConnector.ID(), "Redmine");
+    private static Descriptor DESCRIPTOR = new Descriptor(RedmineConnector.ID, "Redmine");
 
     @Override
     public List<Field<?>> getAllFields() {
