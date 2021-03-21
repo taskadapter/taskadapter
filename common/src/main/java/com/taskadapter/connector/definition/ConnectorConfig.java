@@ -13,8 +13,6 @@ public class ConnectorConfig implements Serializable {
 
     private Priorities priorities;
 
-    private String label;
-
     private boolean saveIssueRelations = false;
 
     /**
@@ -76,15 +74,14 @@ public class ConnectorConfig implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(defaultTaskType, label);
+        return Objects.hashCode(defaultTaskType);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof ConnectorConfig) {
             ConnectorConfig other = (ConnectorConfig) obj;
-            return Objects.equal(defaultTaskType, other.defaultTaskType) &&
-                    Objects.equal(label, other.label);
+            return Objects.equal(defaultTaskType, other.defaultTaskType);
         } else {
             return false;
         }
@@ -92,14 +89,6 @@ public class ConnectorConfig implements Serializable {
 
     public Priorities getPriorities() {
         return priorities;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
     }
 
 }

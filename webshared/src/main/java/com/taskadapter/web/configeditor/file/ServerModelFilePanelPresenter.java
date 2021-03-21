@@ -88,13 +88,13 @@ public final class ServerModelFilePanelPresenter {
         SimpleDateFormat sdf = new SimpleDateFormat(ServerModeFilePanel.DATE_FORMAT, Locale.US);
 //        view.setStatusLabelText(sdf.format(selectedFile.lastModified()));
 //        downloader.setFileDownloadResource(new FileDownloadResource(selectedFile));
-        view.setDownloadEnabled(true);
+//        view.setDownloadEnabled(true);
     }
 
     public void onNoFileSelected() {
         this.selectedFile = null;
 //        view.setStatusLabelText(ServerModeFilePanel.FILE_WILL_GENERATED_HINT);
-        view.setDownloadEnabled(false);
+//        view.setDownloadEnabled(false);
     }
 
     public UploadReceiver getUploadReceiver() {

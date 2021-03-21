@@ -11,7 +11,7 @@ import com.taskadapter.model.Field;
 import java.util.List;
 
 public class MSPFactory implements PluginFactory<MSPConfig, FileSetup> {
-    private static final Descriptor DESCRIPTOR = new Descriptor(MSPConnector.ID, MSPConfig.DEFAULT_LABEL);
+    private static final Descriptor DESCRIPTOR = new Descriptor(MSPConnector.ID, "Microsoft Project");
 
     @Override
     public List<Field<?>> getAllFields() {

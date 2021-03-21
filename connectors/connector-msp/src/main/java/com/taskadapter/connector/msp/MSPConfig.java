@@ -16,15 +16,11 @@ public class MSPConfig extends ConnectorConfig {
         DEFAULT_PRIORITIES.put("1000", 1000);
     }
 
-    static final String DEFAULT_LABEL = "Microsoft Project";
-
     public MSPConfig() {
         super(DEFAULT_PRIORITIES);
-        setLabel(DEFAULT_LABEL);
     }
 
     public MSPConfig(MSPConfig configToDeepClone) {
         super(configToDeepClone);
-        setLabel(configToDeepClone.getLabel());
     }
 }

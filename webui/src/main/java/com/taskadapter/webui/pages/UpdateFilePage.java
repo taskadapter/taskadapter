@@ -1,11 +1,12 @@
 package com.taskadapter.webui.pages;
 
-import static com.taskadapter.license.LicenseManager.TRIAL_MESSAGE;
-import static com.taskadapter.webui.Page.message;
-
-import java.util.List;
-
 import com.taskadapter.connector.common.ProgressMonitorUtils;
+import com.taskadapter.connector.definition.exceptions.CommunicationException;
+import com.taskadapter.connector.definition.exceptions.ConnectorException;
+import com.taskadapter.model.GTask;
+import com.taskadapter.web.uiapi.UISyncConfig;
+import com.taskadapter.webui.ConfigOperations;
+import com.taskadapter.webui.export.ConfirmExportFragment;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Label;
@@ -15,12 +16,10 @@ import com.vaadin.flow.server.VaadinSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.taskadapter.connector.definition.exceptions.CommunicationException;
-import com.taskadapter.connector.definition.exceptions.ConnectorException;
-import com.taskadapter.model.GTask;
-import com.taskadapter.web.uiapi.UISyncConfig;
-import com.taskadapter.webui.ConfigOperations;
-import com.taskadapter.webui.export.ConfirmExportFragment;
+import java.util.List;
+
+import static com.taskadapter.license.LicenseManager.TRIAL_MESSAGE;
+import static com.taskadapter.webui.Page.message;
 
 public final class UpdateFilePage {
 
@@ -61,7 +60,7 @@ public final class UpdateFilePage {
         errorMessage = new Label("");
         errorMessage.addClassName("errorMessage");
         errorMessage.setVisible(false);
-//        errorMessage.setWidth(500, Unit.PIXELS);
+        errorMessage.setWidth("500px");
         ui.add(errorMessage);
 
         content = new VerticalLayout();
@@ -104,9 +103,8 @@ public final class UpdateFilePage {
 
     /**
      * Shows tasks confirmation dialog.
-     * 
-     * @param tasks
-     *            tasks to confirm.
+     *
+     * @param tasks tasks to confirm.
      */
     private void showConfirmation(List<GTask> tasks) {
         final Component component = ConfirmExportFragment.render(
@@ -126,7 +124,6 @@ public final class UpdateFilePage {
         VaadinSession.getCurrent().lock();
         try {
             setContent(component);
-//            content.setExpandRatio(component, 1f);
         } finally {
             VaadinSession.getCurrent().unlock();
         }
@@ -138,15 +135,10 @@ public final class UpdateFilePage {
             return;
         }
 
-/*
-        final ProgressIndicator saveProgress = SyncActionComponents
+        var saveProgress = SyncActionComponents
                 .renderSaveIndicator(config.getConnector2());
-        saveProgress.setProgress(0f);
+        saveProgress.setValue(0F);
         setContent(saveProgress);
-*/
-
-
-//        final MonitorWrapper wrapper = new MonitorWrapper(ProgressMonitorUtils.DUMMY_MONITOR);
 
         new Thread(new Runnable() {
             @Override
@@ -177,7 +169,7 @@ public final class UpdateFilePage {
         final VerticalLayout ui = new VerticalLayout();
 
         final String text = message("updatePage.result",
-                updatedTasks+"", config.getConnector2().getDestinationLocation(),
+                updatedTasks + "", config.getConnector2().getDestinationLocation(),
                 config.getConnector1().getSourceLocation());
         ui.add(new Label(text));
 
@@ -198,7 +190,7 @@ public final class UpdateFilePage {
     private void showNoDataLoaded() {
         final VerticalLayout res = new VerticalLayout();
         final Label label = new Label(message("updatePage.noDataWasLoaded"));
-//        label.setWidth(800, Unit.PIXELS);
+        label.setWidth("800px");
 
         Button backButton = new Button(message("button.back"), event -> onDone.run());
         res.add(label);
@@ -209,9 +201,8 @@ public final class UpdateFilePage {
 
     /**
      * Shows load error message.
-     * 
-     * @param message
-     *            message to show.
+     *
+     * @param message message to show.
      */
     private void showLoadErrorMessage(String message) {
         VaadinSession.getCurrent().lock();
@@ -225,21 +216,19 @@ public final class UpdateFilePage {
 
     /**
      * Shows or hides an error message.
-     * 
-     * @param message
-     *            error message. If null, errors are hidden.
+     *
+     * @param message error message. If null, errors are hidden.
      */
     private void showErrorMessage(String message) {
         final boolean haveMessage = message != null;
-//        errorMessage.setValue(haveMessage ? message : "");
+        errorMessage.setText(haveMessage ? message : "");
         errorMessage.setVisible(haveMessage);
     }
 
     /**
      * Sets new page content.
-     * 
-     * @param comp
-     *            page content.
+     *
+     * @param comp page content.
      */
     private void setContent(Component comp) {
         content.removeAll();
@@ -248,15 +237,11 @@ public final class UpdateFilePage {
 
     /**
      * Renders an "update file" page.
-     * 
-     * @param configOps
-     *            config operations.
-     * @param config
-     *            current config.
-     * @param maxTasks
-     *            maximal number of tasks.
-     * @param onExit
-     *            exit handler.
+     *
+     * @param configOps config operations.
+     * @param config    current config.
+     * @param maxTasks  maximal number of tasks.
+     * @param onExit    exit handler.
      * @return operation UI.
      */
     public static Component render(ConfigOperations configOps,

@@ -12,7 +12,7 @@ import com.taskadapter.model.Field;
 import java.util.List;
 
 public class GithubFactory implements PluginFactory<GithubConfig, WebConnectorSetup> {
-    private static final Descriptor DESCRIPTOR = new Descriptor(GithubConnector.ID, GithubConfig.DEFAULT_LABEL);
+    private static final Descriptor DESCRIPTOR = new Descriptor(GithubConnector.ID, "Github");
 
     @Override
     public List<Field<?>> getAllFields() {

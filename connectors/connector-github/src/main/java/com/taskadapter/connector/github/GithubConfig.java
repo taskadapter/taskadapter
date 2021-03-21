@@ -10,8 +10,6 @@ public class GithubConfig extends ConnectorConfig {
     private static final Map<String, Integer> DEFAULT_PRIORITIES = Collections
             .emptyMap();
     
-    static final String DEFAULT_LABEL = "GitHub";
-
     private String issueState;
     private String issueKeyword;
     private String queryString;
@@ -19,7 +17,6 @@ public class GithubConfig extends ConnectorConfig {
 
     public GithubConfig() {
         super(DEFAULT_PRIORITIES);
-        setLabel(DEFAULT_LABEL);
     }
 
     public String getIssueState() {

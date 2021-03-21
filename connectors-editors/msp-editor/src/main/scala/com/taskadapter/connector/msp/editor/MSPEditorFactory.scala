@@ -2,8 +2,8 @@ package com.taskadapter.connector.msp.editor
 
 import com.taskadapter.common.ui.FieldMapping
 import com.taskadapter.connector.common.FileNameGenerator
+import com.taskadapter.connector.definition.FileSetup
 import com.taskadapter.connector.definition.exceptions.BadConfigException
-import com.taskadapter.connector.definition.{ConnectorConfig, FileSetup}
 import com.taskadapter.connector.msp._
 import com.taskadapter.connector.msp.editor.error.{InputFileNameNotSetException, OutputFileNameNotSetException}
 import com.taskadapter.web.configeditor.file.{FileProcessingResult, LocalModeFilePanel, ServerModeFilePanel}
@@ -12,8 +12,7 @@ import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{DefaultSavableComponent, SavableComponent}
 import com.taskadapter.web.{ConnectorSetupPanel, PluginEditorFactory}
 import com.vaadin.flow.component.Component
-import com.vaadin.flow.component.html.Label
-import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout}
+import com.vaadin.flow.component.orderedlayout.VerticalLayout
 
 import java.io.File
 import java.nio.file.Paths
@@ -45,8 +44,6 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
   override def getMiniPanelContents(sandbox: Sandbox, config: MSPConfig, setup: FileSetup): SavableComponent = {
     val layout = new VerticalLayout
     layout.setMargin(true)
-    layout.add(createDescriptionElement(config))
-    //    layout.add(createFilePanel(sandbox, config))
     layout.add(createInfoReadOnlyPanel)
     // TODO 14 update the save function
     new DefaultSavableComponent(layout, () => {
@@ -55,12 +52,13 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
   }
 
   override def getEditSetupPanel(sandbox: Sandbox, setup: FileSetup) = new ConnectorSetupPanel() {
+    var savableComponent : SavableComponent = if (sandbox.allowLocalFSAccess)
+      new LocalModeFilePanel(setup)
+    else
+      createServerModePanel(sandbox, setup)
 
     override def getComponent: Component = {
-      if (sandbox.allowLocalFSAccess)
-        new LocalModeFilePanel(setup)
-      else
-        createServerModePanel(sandbox, setup)
+      savableComponent.getComponent
     }
 
     override def validate(): Optional[String] = {
@@ -68,6 +66,7 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     }
 
     override def getResult: FileSetup = {
+      savableComponent.save()
       setup
     }
 
@@ -80,25 +79,13 @@ class MSPEditorFactory extends PluginEditorFactory[MSPConfig, FileSetup] {
     Paths.get(fileName).getFileName.toString
   }
 
-  private def createDescriptionElement(config: ConnectorConfig) = {
-    val descriptionLayout = new HorizontalLayout
-    descriptionLayout.setSpacing(true)
-    descriptionLayout.add(new Label(LABEL_DESCRIPTION_TEXT))
-    //    val labelText = propertyInput(config, "label")
-    //    labelText.setDescription(LABEL_TOOLTIP)
-    //    labelText.setReadOnly(true)
-    //    labelText.addClassName("label-textfield")
-    //    descriptionLayout.add(labelText)
-    descriptionLayout
-  }
-
   private def createInfoReadOnlyPanel = {
     val infoPanel = new MSPInfoPanel
     infoPanel.setHeight("152px")
     infoPanel
   }
 
-  private def createServerModePanel(sandbox: Sandbox, fileSetup: FileSetup): Component = {
+  private def createServerModePanel(sandbox: Sandbox, fileSetup: FileSetup): SavableComponent = {
     new ServerModeFilePanel(sandbox.getUserContentDirectory, fileSetup,
       (uploadedFile: File) => processFile(sandbox, uploadedFile)
     )

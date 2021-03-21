@@ -11,7 +11,7 @@ import com.taskadapter.model.Field;
 import java.util.List;
 
 public class MantisFactory implements PluginFactory<MantisConfig, WebConnectorSetup> {
-    private static final Descriptor DESCRIPTOR = new Descriptor(MantisConnector.ID, MantisConfig.DEFAULT_LABEL);
+    private static final Descriptor DESCRIPTOR = new Descriptor(MantisConnector.ID, "MantisBT");
 
     @Override
     public List<Field<?>> getAllFields() {

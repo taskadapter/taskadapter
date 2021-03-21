@@ -16,8 +16,6 @@ public class MantisConfig extends ConnectorConfig {
         DEFAULT_PRIORITIES.put("immediate", 1000);
     }
     
-    static final String DEFAULT_LABEL = "MantisBT";
-
     private static final long serialVersionUID = 1L;
     private String projectKey;
     private boolean findUserByName;
@@ -25,7 +23,6 @@ public class MantisConfig extends ConnectorConfig {
 
     public MantisConfig() {
         super(DEFAULT_PRIORITIES);
-        setLabel(DEFAULT_LABEL);
     }
 
     public String getProjectKey() {
