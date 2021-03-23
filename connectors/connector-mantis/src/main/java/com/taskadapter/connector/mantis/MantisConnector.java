@@ -22,8 +22,8 @@ public class MantisConnector implements NewConnector {
 
     public static final String ID = "Mantis";
 
-    private MantisConfig config;
-    private WebConnectorSetup setup;
+    private final MantisConfig config;
+    private final WebConnectorSetup setup;
 
     public MantisConnector(MantisConfig config, WebConnectorSetup setup) {
         this.config = config;
