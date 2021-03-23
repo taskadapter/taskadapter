@@ -27,7 +27,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import scala.Option;
-import scala.collection.JavaConverters;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +47,7 @@ public class TrelloEditorFactory implements PluginEditorFactory<TrelloConfig, We
                 "boardName",
                 Option.empty(),
                 Option.empty(),
-                () -> JavaConverters.seqAsJavaList(client.getBoards(setup.getUserName()))
+                () -> client.getBoards(setup.getUserName())
                         .stream().map(b -> new NamedKeyedObjectImpl(b.getId(), b.getName()))
                         .collect(Collectors.toList()),
                 null,
@@ -77,12 +76,12 @@ public class TrelloEditorFactory implements PluginEditorFactory<TrelloConfig, We
 
     @Override
     public ConnectorSetupPanel getEditSetupPanel(Sandbox sandbox, WebConnectorSetup setup) {
-        return new ServerPanelWithKeyAndToken(TrelloConnector.ID(), TrelloConnector.ID(), setup);
+        return new ServerPanelWithKeyAndToken(TrelloConnector.ID, TrelloConnector.ID, setup);
     }
 
     @Override
     public WebConnectorSetup createDefaultSetup(Sandbox sandbox) {
-        return WebConnectorSetup.apply(TrelloConnector.ID(), "My Trello",
+        return WebConnectorSetup.apply(TrelloConnector.ID, "My Trello",
                 "https://api.trello.com", "", "", false, "");
     }
 
