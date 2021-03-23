@@ -42,7 +42,7 @@ public class SetupsListPage extends BasePage {
 
         elementsComponent = new VerticalLayout();
 
-        add(LayoutsUtil.centered(Sizes.mainWidth(), introRow, elementsComponent));
+        add(LayoutsUtil.centered(Sizes.mainWidth, introRow, elementsComponent));
     }
 
     private void refresh() {

@@ -58,7 +58,7 @@ public class SchedulesListPage extends BasePage {
 
     private void showInPage(Component component) {
         removeAll();
-        add(LayoutsUtil.centered(Sizes.mainWidth(), component));
+        add(LayoutsUtil.centered(Sizes.mainWidth, component));
     }
 
     @Override

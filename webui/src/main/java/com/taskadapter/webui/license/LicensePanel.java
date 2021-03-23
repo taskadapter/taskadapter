@@ -31,7 +31,7 @@ public final class LicensePanel {
     // TODO move to "taskadapter.properties" file
     private static final String LICENSE_DATE_FORMAT_DESCRIPTION_FOR_GUI = "(year-month-day)";
 
-    private Logger log = TALog.log();
+    private Logger log = TALog.log;
 
     private final LicenseFacade licenseManager;
     private final VerticalLayout contentPane;

@@ -6,7 +6,7 @@ import com.taskadapter.webui.results.ExportResultFormat;
 import org.slf4j.Logger;
 
 public class ExportResultsLogger {
-    public static final Logger log = TALog.log();
+    public static final Logger log = TALog.log;
 
     public static void log(ExportResultFormat result, String prefix) {
         log.info(prefix + ExportResultsFormatter.toNiceString(result));

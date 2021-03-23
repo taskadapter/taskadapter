@@ -40,7 +40,7 @@ public class UserProfilePage extends BasePage {
         Button logoutButton = new Button(Page.message("userProfile.logout"),
                 e -> SessionController.logout());
 
-        add(LayoutsUtil.centered(Sizes.mainWidth(),
+        add(LayoutsUtil.centered(Sizes.mainWidth,
                 new Label(loginString),
                 configureSetupsButton,
                 button,

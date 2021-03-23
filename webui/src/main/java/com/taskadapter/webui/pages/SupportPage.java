@@ -63,7 +63,7 @@ public class SupportPage extends BasePage {
         ).flatMap(Collection::stream)
                 .collect(Collectors.toList());
 
-        add(LayoutsUtil.centered(Sizes.mainWidth(),
+        add(LayoutsUtil.centered(Sizes.mainWidth,
                 components));
     }
 

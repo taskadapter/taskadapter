@@ -47,7 +47,7 @@ public class ConfigureSystemPage extends BasePage {
         var cmt = LocalRemoteOptionsPanel.createLocalRemoteOptions(settingsManager, authorizedOps.canConfigureServer());
         var license = services.licenseManager.getLicense();
         var allowedToEdit = authorizedOps.canConfigureServer() && license != null;
-        add(LayoutsUtil.centered(Sizes.mainWidth(),
+        add(LayoutsUtil.centered(Sizes.mainWidth,
                 cmt,
                 createAdminPermissionsSection(settingsManager, allowedToEdit),
                 createResultsNumberSection(settingsManager),

@@ -66,7 +66,7 @@ public class ConfigsListPage extends BasePage {
 
         configsListLayout.add(configsLayout);
 
-        add(LayoutsUtil.centered(Sizes.mainWidth(), actionPanel, configsListLayout));
+        add(LayoutsUtil.centered(Sizes.mainWidth, actionPanel, configsListLayout));
     }
 
     @Override
