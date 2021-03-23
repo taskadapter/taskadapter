@@ -24,10 +24,10 @@ import com.taskadapter.web.uiapi.SavableComponent;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import scala.Option;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebConnectorSetup> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.jira.messages";
@@ -69,8 +69,8 @@ public class JiraEditorFactory implements PluginEditorFactory<JiraConfig, WebCon
         ProjectPanel projectPanel = new ProjectPanel(
                 binder,
                 "projectKey",
-                Option.apply("queryId"),
-                Option.empty(),
+                Optional.of("queryId"),
+                Optional.empty(),
                 new JiraProjectsListLoader(setup),
                 new JiraProjectLoader(config, setup),
                 new JiraQueryListLoader(config, setup),

@@ -20,10 +20,10 @@ import com.taskadapter.web.uiapi.SavableComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import scala.Option;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class MantisEditorFactory implements PluginEditorFactory<MantisConfig, WebConnectorSetup> {
 
@@ -36,8 +36,8 @@ public class MantisEditorFactory implements PluginEditorFactory<MantisConfig, We
         ProjectPanel projectPanel = new ProjectPanel(
                 binder,
                 "projectKey",
-                Option.apply("queryId"),
-                Option.empty(),
+                Optional.of("queryId"),
+                Optional.empty(),
                 new MantisProjectsListLoader(setup),
                 null,
                 new MantisQueryListLoader(config, setup),

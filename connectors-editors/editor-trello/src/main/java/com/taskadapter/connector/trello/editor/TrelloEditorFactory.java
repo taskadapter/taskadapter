@@ -26,15 +26,15 @@ import com.taskadapter.web.uiapi.SavableComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import scala.Option;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TrelloEditorFactory implements PluginEditorFactory<TrelloConfig, WebConnectorSetup> {
-    private static Messages messages = new Messages("com.taskadapter.connector.trello.messages");
+    private static final Messages messages = new Messages("com.taskadapter.connector.trello.messages");
 
     @Override
     public SavableComponent getMiniPanelContents(Sandbox sandbox, TrelloConfig config, WebConnectorSetup setup) {
@@ -45,8 +45,8 @@ public class TrelloEditorFactory implements PluginEditorFactory<TrelloConfig, We
         ProjectPanel projectPanel = new ProjectPanel(
                 binder,
                 "boardName",
-                Option.empty(),
-                Option.empty(),
+                Optional.empty(),
+                Optional.empty(),
                 () -> client.getBoards(setup.getUserName())
                         .stream().map(b -> new NamedKeyedObjectImpl(b.getId(), b.getName()))
                         .collect(Collectors.toList()),

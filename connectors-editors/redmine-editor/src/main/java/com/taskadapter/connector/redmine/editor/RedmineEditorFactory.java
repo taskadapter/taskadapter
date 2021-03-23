@@ -23,11 +23,11 @@ import com.taskadapter.web.uiapi.SavableComponent;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import scala.Option;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, WebConnectorSetup> {
     private static final String BUNDLE_NAME = "com.taskadapter.connector.redmine.messages";
@@ -58,8 +58,8 @@ public class RedmineEditorFactory implements PluginEditorFactory<RedmineConfig, 
         ProjectPanel projectPanel = new ProjectPanel(
                 binder,
                 "projectKey",
-                Option.apply("queryId"),
-                Option.empty(),
+                Optional.of("queryId"),
+                Optional.empty(),
                 new RedmineProjectListLoader(setup),
                 new RedmineProjectLoader(config, setup),
                 new RedmineQueryListLoader(config, setup),

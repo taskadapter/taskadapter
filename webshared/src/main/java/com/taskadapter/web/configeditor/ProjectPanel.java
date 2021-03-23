@@ -19,9 +19,9 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.converter.StringToLongConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scala.Option;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.taskadapter.web.configeditor.EditorUtil.textInput;
 import static com.taskadapter.web.ui.MessageUtils.nvl;
@@ -46,14 +46,14 @@ public class ProjectPanel extends FormLayout implements Validatable {
 
     private final Binder<?> binder;
     private final String projectKeyProperty;
-    private final Option<String> queryIdProperty;
-    private final Option<String> queryTextProperty;
+    private final Optional<String> queryIdProperty;
+    private final Optional<String> queryTextProperty;
     private final ExceptionFormatter exceptionFormatter;
 
     public ProjectPanel(Binder<?> binder,
                         String projectKey,
-                        Option<String> queryIdProperty,
-                        Option<String> queryTextProperty,
+                        Optional<String> queryIdProperty,
+                        Optional<String> queryTextProperty,
                         DataProvider<List<? extends NamedKeyedObject>> projectProvider,
                         DataProvider<GProject> projectInfoLoader,
                         DataProvider<List<? extends NamedKeyedObject>> queryProvider,
@@ -98,12 +98,8 @@ public class ProjectPanel extends FormLayout implements Validatable {
 
         add(projectKeyLabel, projectKeyField, infoButton, showProjectsButton);
 
-        if (queryIdProperty.isDefined()) {
-            addQueryIdWithLoader(queryIdProperty.get());
-        }
-        if (queryTextProperty.isDefined()) {
-            addQueryText(queryTextProperty.get());
-        }
+        queryIdProperty.ifPresent(this::addQueryIdWithLoader);
+        queryTextProperty.ifPresent(this::addQueryText);
     }
 
     private void addQueryIdWithLoader(String stringProperty) {
