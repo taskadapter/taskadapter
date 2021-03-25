@@ -5,7 +5,6 @@ import com.google.common.io.Resources;
 import com.taskadapter.web.SettingsManager;
 import com.taskadapter.web.ui.HtmlLabel;
 import com.taskadapter.webui.BasePage;
-import com.taskadapter.webui.EventTracker;
 import com.taskadapter.webui.Layout;
 import com.taskadapter.webui.SessionController;
 import com.vaadin.flow.component.button.Button;

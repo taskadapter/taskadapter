@@ -67,9 +67,9 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, schedulesStorage: SchedulesSt
     if (results.isEmpty) {
       true
     } else {
-      val lastResult = results.maxBy(r => r.dateStarted.getTime + r.timeTookSeconds * 1000)
+      val lastResult = results.maxBy(r => r.getDateStarted.getTime + r.getTimeTookSeconds * 1000)
       val now = System.currentTimeMillis()
-      val lastRanLong = lastResult.dateStarted.getTime + lastResult.timeTookSeconds * 1000
+      val lastRanLong = lastResult.getDateStarted.getTime + lastResult.getTimeTookSeconds * 1000
       val timePassedSeconds = (now - lastRanLong) / 1000
       val needtoRun = timePassedSeconds >= (schedule.getIntervalInMinutes * 60)
       needtoRun

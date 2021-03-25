@@ -5,9 +5,9 @@ import com.taskadapter.app.ProdModeDetector;
 import com.taskadapter.web.event.ApplicationActionEvent;
 import com.taskadapter.web.event.ApplicationActionEventWithValue;
 import com.taskadapter.web.event.EventBusImpl;
-import com.taskadapter.webui.NoOpGATracker;
+import com.taskadapter.web.event.NoOpGATracker;
 import com.taskadapter.webui.SessionController;
-import com.taskadapter.webui.Tracker;
+import com.taskadapter.web.event.Tracker;
 import com.taskadapter.webui.WebUserSession;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
@@ -45,7 +45,7 @@ public class TaskAdapterInitListener implements VaadinServiceInitListener {
                 .subscribe(new Subscriber<>() {
                     @Override
                     public void onNext(ApplicationActionEvent value) {
-                        tracker.trackEvent(value.category(), value.action(), value.label());
+                        tracker.trackEvent(value.getCategory(), value.getAction(), value.getLabel());
                     }
                 });
 
@@ -53,7 +53,7 @@ public class TaskAdapterInitListener implements VaadinServiceInitListener {
                 .subscribe(new Subscriber<>() {
                     @Override
                     public void onNext(ApplicationActionEventWithValue value) {
-                        tracker.trackEvent(value.category(), value.action(), value.label(), value.value());
+                        tracker.trackEvent(value.getCategory(), value.getAction(), value.getLabel(), value.getValue());
                     }
                 });
     }

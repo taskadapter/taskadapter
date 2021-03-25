@@ -4,8 +4,7 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.reporting.ErrorReporter;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigOperations;
-import com.taskadapter.webui.EventTracker;
-import com.taskadapter.webui.ExportCategory$;
+import com.taskadapter.web.event.EventTracker;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.WebProgressMonitorWrapper;
 import com.taskadapter.webui.export.ConfirmExportFragment;
@@ -19,6 +18,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import java.util.List;
 
+import static com.taskadapter.web.event.EventCategory.ExportCategory;
 import static com.taskadapter.webui.Page.message;
 
 public class ExportHelper {
@@ -40,7 +40,7 @@ public class ExportHelper {
 
     public void onTasksLoaded(List<GTask> tasks) {
         var dataSourceLabel = config.getConnector1().getConnectorTypeId();
-        EventTracker.trackEvent(ExportCategory$.MODULE$, "loaded_tasks", dataSourceLabel, tasks.size());
+        EventTracker.trackEvent(ExportCategory, "loaded_tasks", dataSourceLabel, tasks.size());
 
         if (tasks.isEmpty()) {
             showNoDataLoaded();
@@ -105,11 +105,11 @@ public class ExportHelper {
             var targetLabel = config.getConnector2().getConnectorTypeId();
             var sourceAndTarget = config.getConnector1().getConnectorTypeId() + " - " + targetLabel;
             var exportResult = new ExportResultsFragment(showFilePath).showExportResult(saveResult);
-            EventTracker.trackEvent(ExportCategory$.MODULE$, "finished_export", sourceAndTarget);
-            EventTracker.trackEvent(ExportCategory$.MODULE$, "finished_saving_tasks", targetLabel);
-            EventTracker.trackEvent(ExportCategory$.MODULE$, "created_tasks", targetLabel, saveResult.createdTasksNumber());
-            EventTracker.trackEvent(ExportCategory$.MODULE$, "updated_tasks", targetLabel, saveResult.updatedTasksNumber());
-            EventTracker.trackEvent(ExportCategory$.MODULE$, "tasks_with_errors", targetLabel, saveResult.taskErrors().size());
+            EventTracker.trackEvent(ExportCategory, "finished_export", sourceAndTarget);
+            EventTracker.trackEvent(ExportCategory, "finished_saving_tasks", targetLabel);
+            EventTracker.trackEvent(ExportCategory, "created_tasks", targetLabel, saveResult.getCreatedTasksNumber());
+            EventTracker.trackEvent(ExportCategory, "updated_tasks", targetLabel, saveResult.getUpdatedTasksNumber());
+            EventTracker.trackEvent(ExportCategory, "tasks_with_errors", targetLabel, saveResult.getTaskErrors().size());
 
             var okButton = new Button(message("button.ok"),
                     event -> onDone.run());

@@ -18,12 +18,12 @@ class ExportResultsFormatterTest extends FunSpec with Matchers {
   val item3 = new DecodedTaskError(id3, "error", "another exception")
 
   it("replaces duplicate exceptions") {
-    ExportResultsFormatter.formatTaskErrors(Seq(item1, item1SameError)) shouldBe
+    ExportResultsFormatter.formatTaskErrors(java.util.List.of(item1, item1SameError)) shouldBe
       orig(id1) + line + same(id2)
   }
 
   it("replaces two duplicate exceptions") {
-    ExportResultsFormatter.formatTaskErrors(Seq(
+    ExportResultsFormatter.formatTaskErrors(java.util.List.of(
       new DecodedTaskError(id1, "error", "exception"),
       new DecodedTaskError(id2, "error", "exception"),
       new DecodedTaskError(id3, "error", "exception"))) shouldBe
@@ -31,20 +31,20 @@ class ExportResultsFormatterTest extends FunSpec with Matchers {
   }
 
   it("leaves single element as is") {
-    ExportResultsFormatter.formatTaskErrors(Seq(item1)) shouldBe orig(id1)
+    ExportResultsFormatter.formatTaskErrors(java.util.Arrays.asList(item1)) shouldBe orig(id1)
   }
 
   it("leaves different element in place") {
-    ExportResultsFormatter.formatTaskErrors(Seq(item1, item3)) shouldBe
+    ExportResultsFormatter.formatTaskErrors(java.util.List.of(item1, item3)) shouldBe
       orig(id1) + line + other(id3)
   }
 
   it("replaces duplicate and leaves different one in place") {
-    ExportResultsFormatter.formatTaskErrors(Seq(item1, item1SameError, item3)) shouldBe
+    ExportResultsFormatter.formatTaskErrors(java.util.List.of(item1, item1SameError, item3)) shouldBe
       orig(id1) + line + same(id2) + line + other(id3)
   }
   it("empty list gives empty string") {
-    ExportResultsFormatter.formatTaskErrors(Seq()) shouldBe ""
+    ExportResultsFormatter.formatTaskErrors(java.util.List.of()) shouldBe ""
   }
 
   def orig(id: TaskId): String = {

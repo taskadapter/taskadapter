@@ -3,7 +3,7 @@ package com.taskadapter.webui.pages
 import com.taskadapter.config.StorageException
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{ConfigId, SetupId}
-import com.taskadapter.webui.{BasePage, ConfigOperations, EventTracker, Layout, SessionController}
+import com.taskadapter.webui.{BasePage, ConfigOperations, Layout, SessionController}
 import com.taskadapter.webui.Page.message
 import com.taskadapter.webui.service.Preservices
 import com.vaadin.flow.component.Text

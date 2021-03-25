@@ -1,5 +1,7 @@
 package com.taskadapter.webui;
 
+import com.taskadapter.web.event.EventCategory;
+import com.taskadapter.web.event.Tracker;
 import org.vaadin.googleanalytics.tracking.GoogleAnalyticsTracker;
 
 import java.util.Optional;
@@ -15,7 +17,7 @@ public class GATrackerImpl implements Tracker {
     }
 
     @Override
-    public void trackEvent(EventCategory category, String action, String label, Integer value) {
+    public void trackEvent(EventCategory category, String action, String label, int value) {
         getTracker().ifPresent(t -> t.sendEvent(category.name(), action, label, value));
     }
 

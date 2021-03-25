@@ -4,8 +4,7 @@ import com.taskadapter.data.DataCallback;
 import com.taskadapter.license.License;
 import com.taskadapter.license.LicenseException;
 import com.taskadapter.license.LicenseExpiredException;
-import com.taskadapter.webui.EventTracker;
-import com.taskadapter.webui.LicenseCategory$;
+import com.taskadapter.web.event.EventTracker;
 import com.taskadapter.webui.TALog;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
@@ -24,6 +23,7 @@ import org.slf4j.Logger;
 import java.text.SimpleDateFormat;
 
 import static com.taskadapter.license.LicenseFormatDescriptor.LICENSE_DATE_FORMAT;
+import static com.taskadapter.web.event.EventCategory.LicenseCategory;
 
 public final class LicensePanel {
     private static final String HTTP_WWW_TASKADAPTER_COM_BUY = "http://www.taskadapter.com/buy";
@@ -54,17 +54,17 @@ public final class LicensePanel {
             if (newLicense != null) {
                 String text = "Successfully registered to: " + newLicense.getCustomerName();
                 log.info(text);
-                EventTracker.trackEvent(LicenseCategory$.MODULE$, "install", "success_valid");
+                EventTracker.trackEvent(LicenseCategory, "install", "success_valid");
                 Notification.show(text)
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
             }
         } catch (LicenseExpiredException e) {
-            EventTracker.trackEvent(LicenseCategory$.MODULE$, "install", "failed_expired");
+            EventTracker.trackEvent(LicenseCategory, "install", "failed_expired");
             log.error("Cannot install license: it is expired. License text: " + licenseText);
             Notification.show("License not accepted: " + e.getMessage())
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
         } catch (LicenseException e) {
-            EventTracker.trackEvent(LicenseCategory$.MODULE$, "install", "failed_validation");
+            EventTracker.trackEvent(LicenseCategory, "install", "failed_validation");
             log.error("Cannot install license because of exception. "
                     + e.toString() + "\nLicense text:\n" + licenseText);
             Notification.show("License not accepted: the license is invalid")
@@ -79,7 +79,7 @@ public final class LicensePanel {
         licenseManager.uninstall();
         String string = "Removed license info";
         log.info(string);
-        EventTracker.trackEvent(LicenseCategory$.MODULE$, "removed", "");
+        EventTracker.trackEvent(LicenseCategory, "removed", "");
         Notification.show(string);
     }
 

@@ -1,7 +1,6 @@
 package com.taskadapter.webui.results;
 
 import com.taskadapter.webui.BasePage;
-import com.taskadapter.webui.EventTracker;
 import com.taskadapter.webui.Layout;
 import com.taskadapter.webui.SessionController;
 import com.taskadapter.webui.export.ExportResultsFragment;

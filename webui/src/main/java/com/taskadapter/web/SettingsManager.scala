@@ -44,6 +44,6 @@ class SettingsManager {
 
   def setSchedulerEnabled(flag: Boolean): Unit = {
     prefs.putBoolean(SCHEDULER_ENABLED, flag)
-    EventBusImpl.post(SchedulerStatusChanged(flag))
+    EventBusImpl.post(new SchedulerStatusChanged(flag))
   }
 }

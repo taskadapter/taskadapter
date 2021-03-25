@@ -2,10 +2,10 @@ package com.taskadapter.webui
 
 import java.io.File
 import java.util
-
 import com.taskadapter.auth.{AuthorizedOperations, CredentialsManager}
 import com.taskadapter.config.StorageException
 import com.taskadapter.connector.definition.ConnectorSetup
+import com.taskadapter.web.event.{EventCategory, EventTracker}
 import com.taskadapter.web.uiapi.{ConfigId, SetupId, UIConfigStore, UISyncConfig}
 
 import scala.collection.JavaConverters._
@@ -80,7 +80,7 @@ final class ConfigOperations(/**
       throw new RuntimeException("The newly created config with id " + configId + " cannot be found. This is weird.")
     }
     val config = maybeConfig.get
-    EventTracker.trackEvent(ConfigCategory, "created", config.getConnector1.getConnectorTypeId + " - " + config.getConnector2.getConnectorTypeId)
+    EventTracker.trackEvent(EventCategory.ConfigCategory, "created", config.getConnector1.getConnectorTypeId + " - " + config.getConnector2.getConnectorTypeId)
   }
 
   /**

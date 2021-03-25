@@ -35,7 +35,7 @@ public class UISyncConfigIT {
         assertThat(loadedTasks.size()).isGreaterThan(0);
         var saveResult = config.saveTasks(loadedTasks, ProgressMonitorUtils.DUMMY_MONITOR);
         assertThat(saveResult.hasErrors()).isFalse();
-        assertThat(saveResult.createdTasksNumber()).isEqualTo(loadedTasks.size());
+        assertThat(saveResult.getCreatedTasksNumber()).isEqualTo(loadedTasks.size());
     }
 
     @Test
@@ -66,8 +66,8 @@ public class UISyncConfigIT {
         jiraTask.setSourceSystemId(new TaskId(66l, "TEST-66"));
         var updateResult = config.saveTasks(list, ProgressMonitorUtils.DUMMY_MONITOR);
         assertThat(updateResult.hasErrors()).isFalse();
-        assertThat(updateResult.createdTasksNumber()).isEqualTo(0);
-        assertThat(updateResult.updatedTasksNumber()).isEqualTo(1);
+        assertThat(updateResult.getCreatedTasksNumber()).isEqualTo(0);
+        assertThat(updateResult.getUpdatedTasksNumber()).isEqualTo(1);
     }
 
     @Test

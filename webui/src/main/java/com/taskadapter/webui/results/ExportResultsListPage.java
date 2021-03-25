@@ -1,7 +1,6 @@
 package com.taskadapter.webui.results;
 
 import com.taskadapter.webui.BasePage;
-import com.taskadapter.webui.EventTracker;
 import com.taskadapter.webui.Layout;
 import com.taskadapter.webui.SessionController;
 import com.taskadapter.webui.pages.Navigator;
@@ -32,7 +31,7 @@ public class ExportResultsListPage extends BasePage {
 
     private Function<ExportResultFormat, Void> showExportResultsJava() {
         return (result) -> {
-            Navigator.result(result.resultId());
+            Navigator.result(result.getResultId());
             return null;
         };
     }

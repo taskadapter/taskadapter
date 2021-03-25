@@ -7,7 +7,9 @@ import com.taskadapter.auth.AuthorizedOperationsImpl;
 import com.taskadapter.auth.SecondarizationResult;
 import com.taskadapter.schedule.ScheduleRunner;
 import com.taskadapter.web.event.EventBusImpl;
+import com.taskadapter.web.event.NoOpGATracker;
 import com.taskadapter.web.event.SchedulerStatusChanged;
+import com.taskadapter.web.event.Tracker;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.webui.auth.PermissionViolationException;
 import com.taskadapter.webui.config.ApplicationSettings;
@@ -18,7 +20,6 @@ import com.vaadin.flow.component.UI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.lang.scala.Subscriber;
-import scala.Option;
 
 import java.io.File;
 import java.util.Optional;
@@ -43,17 +44,17 @@ public final class SessionController {
         // TODO 14 this class is also called from project tests. scheduler should not be a part of this
         ScheduleRunner scheduleRunner = new ScheduleRunner(services.uiConfigStore, services.schedulesStorage,
                 services.exportResultStorage, services.settingsManager);
-        EventBusImpl.observable(SchedulerStatusChanged.class)
-                .subscribe(new Subscriber<SchedulerStatusChanged>() {
-                    @Override
-                    public void onNext(SchedulerStatusChanged value) {
-                        if (value.schedulerEnabled()) {
-                            scheduleRunner.start();
-                        } else {
-                            scheduleRunner.stop();
-                        }
-                    }
-                });
+
+        EventBusImpl.subscribe(SchedulerStatusChanged.class, new Subscriber<>() {
+            @Override
+            public void onNext(SchedulerStatusChanged value) {
+                if (value.isSchedulerEnabled()) {
+                    scheduleRunner.start();
+                } else {
+                    scheduleRunner.stop();
+                }
+            }
+        });
         boolean schedulerEnabled = services.settingsManager.schedulerEnabled();
         if (schedulerEnabled) {
             EventBusImpl.post(new SchedulerStatusChanged(schedulerEnabled));

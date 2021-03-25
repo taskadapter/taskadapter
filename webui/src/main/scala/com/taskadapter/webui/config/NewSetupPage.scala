@@ -5,7 +5,7 @@ import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.{ConnectorSetupPanel, PluginEditorFactory}
 import com.taskadapter.webui.pages.{Navigator, SelectConnectorComponent}
 import com.taskadapter.webui.service.Preservices
-import com.taskadapter.webui.{BasePage, ConfigOperations, EventTracker, Layout, Page, SessionController}
+import com.taskadapter.webui.{BasePage, ConfigOperations, Layout, Page, SessionController}
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.dependency.CssImport
 import com.vaadin.flow.component.orderedlayout.{HorizontalLayout, VerticalLayout}

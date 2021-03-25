@@ -5,11 +5,10 @@ import com.taskadapter.web.PopupDialog;
 import com.taskadapter.web.uiapi.SetupId;
 import com.taskadapter.webui.BasePage;
 import com.taskadapter.webui.ConfigOperations;
-import com.taskadapter.webui.EventTracker;
+import com.taskadapter.web.event.EventTracker;
 import com.taskadapter.webui.Layout;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.SessionController;
-import com.taskadapter.webui.SetupCategory$;
 import com.taskadapter.webui.Sizes;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -20,6 +19,8 @@ import com.vaadin.flow.router.Route;
 import scala.collection.JavaConverters;
 
 import java.util.Comparator;
+
+import static com.taskadapter.web.event.EventCategory.SetupCategory;
 
 @Route(value = Navigator.SETUPS_LIST, layout = Layout.class)
 @CssImport(value = "./styles/views/mytheme.css")
@@ -104,7 +105,7 @@ public class SetupsListPage extends BasePage {
         PopupDialog.confirm(Page.message("setupsListPage.confirmDelete.question"),
                 () -> {
                     configOps.deleteConnectorSetup(setupId);
-                    EventTracker.trackEvent(SetupCategory$.MODULE$, "deleted", "");
+                    EventTracker.trackEvent(SetupCategory, "deleted", "");
                     refresh();
                 });
     }

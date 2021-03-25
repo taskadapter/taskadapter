@@ -2,7 +2,6 @@ package com.taskadapter.webui
 
 import com.taskadapter.config.StorageException
 import com.taskadapter.web.PopupDialog
-import com.taskadapter.web.event.{EventBusImpl, ShowConfigsListPageRequested}
 import com.taskadapter.web.uiapi.ConfigId
 import com.taskadapter.webui.pages.Navigator
 import com.vaadin.flow.component.button.Button

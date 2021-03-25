@@ -3,9 +3,10 @@ package com.taskadapter.webui.user
 import com.taskadapter.auth.{AuthException, AuthorizedOperations, CredentialsManager}
 import com.taskadapter.data.{MutableState, States}
 import com.taskadapter.license.License
+import com.taskadapter.web.event.{EventCategory, EventTracker}
 import com.taskadapter.web.{InputDialog, PopupDialog}
+import com.taskadapter.webui.Page
 import com.taskadapter.webui.Page.message
-import com.taskadapter.webui.{EventTracker, Page, UserCategory}
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.formlayout.FormLayout
 import com.vaadin.flow.component.html.{Hr, Label}
@@ -100,7 +101,7 @@ class UsersPanel(credentialsManager: CredentialsManager, authorizedOperations: A
   private def deleteUser(userLoginName: String): Unit = {
     try {
       credentialsManager.removeUser(userLoginName)
-      EventTracker.trackEvent(UserCategory, "deleted", "")
+      EventTracker.trackEvent(EventCategory.UserCategory, "deleted", "")
     } catch {
       case e: AuthException =>
         showError(message("users.error.cantDeleteUser", e.toString))
@@ -130,7 +131,7 @@ class UsersPanel(credentialsManager: CredentialsManager, authorizedOperations: A
   private def createUser(login: String, password: String) = {
     try {
       credentialsManager.savePrimaryAuthToken(login, password)
-      EventTracker.trackEvent(UserCategory, "created", "")
+      EventTracker.trackEvent(EventCategory.UserCategory, "created", "")
     } catch {
       case e: AuthException =>
         logger.error("User initiation error", e)

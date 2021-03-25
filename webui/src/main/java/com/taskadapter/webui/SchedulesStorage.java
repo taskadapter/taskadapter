@@ -2,7 +2,6 @@ package com.taskadapter.webui;
 
 import com.taskadapter.web.uiapi.ConfigId;
 import com.taskadapter.web.uiapi.Schedule;
-import scala.collection.JavaConverters;
 import scala.reflect.Manifest;
 import scala.reflect.ManifestFactory$;
 
@@ -30,11 +29,11 @@ public class SchedulesStorage {
     }
 
     public List<Schedule> getSchedules() {
-        return JavaConverters.seqAsJavaList(storage.getItems(manifest));
+        return storage.getItemsJava(Schedule.class);
     }
 
     public Optional<Schedule> get(String id) {
-        return Optional.ofNullable(storage.get(id, manifest).getOrElse(null));
+        return storage.get(id, manifest);
     }
 
     public void delete(String id) {

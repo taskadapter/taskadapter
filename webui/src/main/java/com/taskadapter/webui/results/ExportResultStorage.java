@@ -35,17 +35,17 @@ public class ExportResultStorage {
     }
 
     public Optional<ExportResultFormat> getResult(String resultId) {
-        return getSaveResults().stream().filter(r -> r.resultId().equals(resultId)).findFirst();
+        return getSaveResults().stream().filter(r -> r.getResultId().equals(resultId)).findFirst();
     }
 
     public List<ExportResultFormat> getSaveResults(ConfigId configId) {
         return getSaveResults().stream()
-                .filter(r -> r.configId().equals(configId))
+                .filter(r -> r.getConfigId().equals(configId))
                 .collect(Collectors.toList());
     }
 
     public List<ExportResultFormat> getSaveResults() {
-        return JavaConverters.seqAsJavaList(storage.getItems(manifest));
+        return storage.getItemsJava(ExportResultFormat.class);
     }
 
     private void ensureMaxNumberResults(int maxNumberOfResultsToKeep) {

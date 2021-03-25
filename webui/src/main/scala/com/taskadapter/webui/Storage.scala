@@ -1,15 +1,15 @@
 package com.taskadapter.webui
 
-import java.io.{File, FilenameFilter}
-
 import com.google.common.base.Charsets
 import com.google.common.io.Files
+import com.taskadapter.common.JsonUtil
 import com.taskadapter.connector.common.FileNameGenerator
 import net.liftweb.json.DefaultFormats
-import net.liftweb.json.Serialization.writePretty
 import org.slf4j.LoggerFactory
 
-import scala.collection.mutable.Seq
+import java.io.{File, FilenameFilter}
+import java.util.Optional
+import scala.collection.JavaConverters._
 
 class Storage(storageFolder: File, fileNamePrefix: String, fileNameExtension: String) {
   private val logger = LoggerFactory.getLogger(classOf[Storage])
@@ -19,26 +19,28 @@ class Storage(storageFolder: File, fileNamePrefix: String, fileNameExtension: St
 
   implicit val formats = DefaultFormats
 
-  def get[T](elementId: String)(implicit man: Manifest[T]): Option[T] = {
+  def get[T](elementId: String)(implicit man: Manifest[T]): Optional[T] = {
     val file = getFileById(elementId)
+    val t = man.runtimeClass.asInstanceOf[Class[T]]
     if (file.exists()) {
-      Some(JsonConverter.convertFileToObject(file))
+      Optional.of(convertFileToObject(file, t))
     } else {
-      None
+      Optional.empty()
     }
   }
 
-  def getByFilter[T](filter: (T) => Boolean)(implicit man: Manifest[T]): Option[T] = {
+  def getByFilter[T](filter: (T) => Boolean)(implicit man: Manifest[T]): Optional[T] = {
     val files = storageFolder.listFiles(resultsFileFilter)
+    val t = man.runtimeClass.asInstanceOf[Class[T]]
     if (files != null) {
       files.foreach { file =>
-        val obj = JsonConverter.convertFileToObject(file)
+        val obj = convertFileToObject(file, t)
         if (filter(obj)) {
-          return Some(obj)
+          return Optional.of(obj)
         }
       }
     }
-    None
+    Optional.empty()
   }
 
   def delete(elementId: String): Unit = {
@@ -50,9 +52,10 @@ class Storage(storageFolder: File, fileNamePrefix: String, fileNameExtension: St
 
   def deleteByFilter[T](filter: (T) => Boolean)(implicit man: Manifest[T]): Unit = {
     val files = storageFolder.listFiles(resultsFileFilter)
+    val t = man.runtimeClass.asInstanceOf[Class[T]]
     if (files != null) {
       files.foreach { file =>
-        val obj = JsonConverter.convertFileToObject(file)
+        val obj : T  = convertFileToObject(file, t)
         if (filter(obj)) {
           file.delete()
         }
@@ -71,7 +74,7 @@ class Storage(storageFolder: File, fileNamePrefix: String, fileNameExtension: St
   }
 
   private def store[T](result: T, file: File): Unit = {
-    val jsonString = writePretty(result)
+    val jsonString = JsonUtil.toJsonString(result)
     storageFolder.mkdirs()
     Files.write(jsonString, file, Charsets.UTF_8)
     logger.debug(s"Saved $result to ${file.getAbsolutePath}")
@@ -82,11 +85,24 @@ class Storage(storageFolder: File, fileNamePrefix: String, fileNameExtension: St
     new File(storageFolder, relativeFileName)
   }
 
-  def getItems[T]()(implicit man: Manifest[T]): Seq[T] = {
+  def getItemsJava[T](clazz: Class[T] ): java.util.List[T] = {
     val files = storageFolder
       .listFiles(resultsFileFilter)
-    if (files == null) return Seq()
+    if (files == null) {
+      return java.util.List.of()
+    }
 
-    JsonConverter.convertFilesToObject[T](files)
+    files.map(file => {
+      var json = Files.toString(file, Charsets.UTF_8)
+      JsonUtil.parseJsonString(json, clazz)
+    }).toBuffer.asJava
+  }
+
+  private  def convertFileToObject[T](file: File, clazz: Class[T]): T = {
+    import com.google.common.base.Charsets
+    import com.google.common.io.Files
+
+    val str = Files.toString(file, Charsets.UTF_8)
+    JsonUtil.parseJsonString(str, clazz)
   }
 }

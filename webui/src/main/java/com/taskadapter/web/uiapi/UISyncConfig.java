@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -259,10 +260,10 @@ public class UISyncConfig {
 
         var finalResult = new ExportResultFormat(resultId, configId, label, getConnector1().getSourceLocation(),
                 destinationLocation,
-                Option.apply(result.getTargetFileAbsolutePath()),
+                Optional.ofNullable(result.getTargetFileAbsolutePath()),
                 result.getUpdatedTasksNumber(), result.getCreatedTasksNumber(),
-                JavaConverters.asScalaBuffer(decodedGeneralErrors),
-                JavaConverters.asScalaBuffer(decodedTaskErrors),
+                decodedGeneralErrors,
+                decodedTaskErrors,
                 new Date(start),
                 (int) ((finish - start) / 1000)
         );

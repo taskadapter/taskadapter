@@ -3,6 +3,10 @@ package com.taskadapter.connector.testlib;
 import java.util.Random;
 
 public class RandomStringGenerator {
+    public static String randomAlphaNumeric() {
+        return randomAlphaNumeric(10);
+    }
+
     public static String randomAlphaNumeric(int targetStringLength) {
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'
