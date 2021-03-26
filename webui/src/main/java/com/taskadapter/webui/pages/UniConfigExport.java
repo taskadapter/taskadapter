@@ -46,8 +46,8 @@ final class UniConfigExport {
             rb.append(Page.message("configsPage.errorSource",
                     syncConfig.getConnector1().decodeException(e)));
         }
-        Seq<BadConfigException> saveErrors = syncConfig.getConnector2().validateForSave(syncConfig.getFieldMappings());
-        saveErrors.foreach(e -> rb.append(Page.message("configsPage.errorDestination",
+        var saveErrors = syncConfig.getConnector2().validateForSave(syncConfig.getFieldMappings());
+        saveErrors.forEach(e -> rb.append(Page.message("configsPage.errorDestination",
                 syncConfig.getConnector2().decodeException(e))));
 
         if (rb.length() == 0) {
@@ -60,12 +60,12 @@ final class UniConfigExport {
     private static String getValidationError(UISyncConfig syncConfig) {
         StringBuilder rb = new StringBuilder();
 
-        Seq<BadConfigException> loadErrors = syncConfig.getConnector1().validateForLoad();
-        loadErrors.foreach(e -> rb.append(Page.message("configsPage.errorSource",
+        var loadErrors = syncConfig.getConnector1().validateForLoad();
+        loadErrors.forEach(e -> rb.append(Page.message("configsPage.errorSource",
                 syncConfig.getConnector1().decodeException(e))));
 
-        Seq<BadConfigException> saveErrors = syncConfig.getConnector2().validateForSave(syncConfig.getFieldMappings());
-        saveErrors.foreach(e -> rb.append(Page.message("configsPage.errorDestination",
+        var saveErrors = syncConfig.getConnector2().validateForSave(syncConfig.getFieldMappings());
+        saveErrors.forEach(e -> rb.append(Page.message("configsPage.errorDestination",
                     syncConfig.getConnector2().decodeException(e))));
 
         if (rb.length() == 0) {

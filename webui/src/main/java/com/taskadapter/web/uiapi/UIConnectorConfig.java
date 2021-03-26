@@ -8,7 +8,6 @@ import com.taskadapter.model.Field;
 import com.taskadapter.web.DroppingNotSupportedException;
 import com.taskadapter.web.data.Messages;
 import com.taskadapter.web.service.Sandbox;
-import scala.collection.Seq;
 
 import java.util.List;
 
@@ -56,12 +55,12 @@ public interface UIConnectorConfig {
      *
      * @return list of config errors. empty is no errors found. never null
      */
-    Seq<BadConfigException> validateForLoad();
+    List<BadConfigException> validateForLoad();
 
     /**
      * Validates config for save. Does not update it in any way.
      */
-    Seq<BadConfigException> validateForSave(List<FieldMapping<?>> fieldMappings);
+    List<BadConfigException> validateForSave(List<FieldMapping<?>> fieldMappings);
 
     /**
      * Validates config for drop-in operation.

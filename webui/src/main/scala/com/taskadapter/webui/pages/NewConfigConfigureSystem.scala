@@ -13,7 +13,9 @@ import com.vaadin.flow.component.html.Label
 import com.vaadin.flow.component.orderedlayout.VerticalLayout
 import com.vaadin.flow.component.select.Select
 
+import java.util.stream.Collectors
 import scala.collection.Seq
+import scala.collection.JavaConverters._
 
 private case class ExistingSetup(id: SetupId, description: String)
 
@@ -30,7 +32,7 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
   private def createSetupPanelForConnector(connectorId: String): ChooseOrCreateSetupFragment = {
 
     val setups = configOps.getAllConnectorSetups(connectorId)
-    val setupUiItems = setups.map { s =>
+    val setupUiItems = setups.asScala.map { s =>
       if (s.isInstanceOf[WebConnectorSetup]) {
         val webSetup: WebConnectorSetup = s.asInstanceOf[WebConnectorSetup]
         ExistingSetup(new SetupId(webSetup.getId), s"${webSetup.getConnectorId} (${webSetup.getHost})")

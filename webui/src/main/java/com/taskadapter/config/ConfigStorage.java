@@ -219,14 +219,10 @@ public class ConfigStorage {
         }
     }
 
-    public String loadConnectorSetupAsString(String userName, SetupId setupId) throws StorageException {
-        try {
-            var folder = ConfigStorage.getUserFolder(rootDir, userName);
-            var file = new File(folder, setupId.getId());
-            return Files.toString(file, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new StorageException(e);
-        }
+    public String loadConnectorSetupAsString(String userName, SetupId setupId) throws IOException {
+        var folder = ConfigStorage.getUserFolder(rootDir, userName);
+        var file = new File(folder, setupId.getId());
+        return Files.toString(file, StandardCharsets.UTF_8);
     }
 
     public List<String> getAllConnectorSetupsAsStrings(String userLoginName) {

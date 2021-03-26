@@ -20,6 +20,7 @@ import com.vaadin.flow.router.{BeforeEvent, HasUrlParameter, Route}
 import org.slf4j.LoggerFactory
 
 import scala.collection.mutable
+import scala.collection.JavaConverters._
 
 @Route(value = "config", layout = classOf[Layout])
 @CssImport(value = "./styles/views/mytheme.css")
@@ -34,7 +35,7 @@ class ConfigPage() extends BasePage with HasUrlParameter[String] {
 
     val configId = new ConfigId(SessionController.getCurrentUserName, Integer.parseInt(configIdStr))
     val maybeConfig = configOps.getConfig(configId)
-    if (maybeConfig.isDefined) {
+    if (maybeConfig.isPresent) {
       val config = maybeConfig.get
       val panel = new ConfigPanel(config, configOps, services, sandbox)
       panel.overviewPanel.showInitialState()
@@ -260,12 +261,12 @@ class ConfigPanel(config: UISyncConfig,
 
     def validateSave(uiConfig: UIConnectorConfig, fieldMappings: java.util.List[FieldMapping[_]], configSaver: Runnable): Seq[ValidationErrorTextWithProcessor] = {
       val errors = uiConfig.validateForSave(fieldMappings)
-      errors.map(e => buildItem(uiConfig, e, configSaver))
+      errors.asScala.map(e => buildItem(uiConfig, e, configSaver))
     }
 
     def validateLoad(uiConfig: UIConnectorConfig, fieldMappings: java.util.List[FieldMapping[_]], configSaver: Runnable): Seq[ValidationErrorTextWithProcessor] = {
       val errors = uiConfig.validateForLoad()
-      errors.map(e => buildItem(uiConfig, e, configSaver))
+      errors.asScala.map(e => buildItem(uiConfig, e, configSaver))
     }
 
     def buildItem(uiConfig: UIConnectorConfig, e: BadConfigException, configSaver: Runnable): ValidationErrorTextWithProcessor = {

@@ -53,7 +53,7 @@ public class SetupsListPage extends BasePage {
 
     private void addElements() {
         var setups = configOps.getConnectorSetups();
-        JavaConverters.seqAsJavaList(setups)
+        setups
                 .stream()
                 .sorted(Comparator.comparing(ConnectorSetup::getConnectorId))
                 .forEach(setup -> {

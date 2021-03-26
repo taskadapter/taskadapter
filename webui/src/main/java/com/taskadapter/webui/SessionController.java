@@ -172,7 +172,7 @@ public final class SessionController {
 
     public static Sandbox createSandbox() {
         ConfigOperations configOperations = buildConfigOperations();
-        return new Sandbox(services.settingsManager.isTAWorkingOnLocalMachine(), configOperations.syncSandbox());
+        return new Sandbox(services.settingsManager.isTAWorkingOnLocalMachine(), configOperations.getSyncSandbox());
     }
 
     public static ConfigOperations buildConfigOperations() {

@@ -145,7 +145,7 @@ public class ConfigsListPage extends BasePage {
     private void showConfigPanel(ConfigId configId) {
         ConfigOperations configOps = SessionController.buildConfigOperations();
 
-        Option<UISyncConfig> maybeConfig = configOps.getConfig(configId);
+        var maybeConfig = configOps.getConfig(configId);
         if (maybeConfig.isEmpty()) {
             log.error("Cannot find config with id " + configId + "to show in the UI. It may have been deleted already");
             return;

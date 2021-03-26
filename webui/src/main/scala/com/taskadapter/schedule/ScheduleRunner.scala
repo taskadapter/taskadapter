@@ -83,7 +83,7 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, schedulesStorage: SchedulesSt
       currentlyBusy = true
       try {
         val config = uiConfigStore.getConfig(s.getConfigId)
-        if (config.isDefined) {
+        if (config.isPresent) {
           if (s.isDirectionRight) {
             launchSync(config.get)
           }
@@ -122,7 +122,7 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, schedulesStorage: SchedulesSt
     }
   }
 
-  private def logErrors(c: UISyncConfig, errors: Seq[BadConfigException]) : Unit = {
+  private def logErrors(c: UISyncConfig, errors: java.util.List[BadConfigException]) : Unit = {
     log.error(s"Config ${c.getConfigId.getId} is scheduled for periodic export, " +
       s"but it will be skipped because it failed load or save validation: $errors")
   }

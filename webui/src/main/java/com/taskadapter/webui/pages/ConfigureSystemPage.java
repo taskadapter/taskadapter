@@ -37,7 +37,7 @@ public class ConfigureSystemPage extends BasePage {
         configOps = SessionController.buildConfigOperations();
         services = SessionController.getServices();
         settingsManager = services.settingsManager;
-        authorizedOps = configOps.authorizedOps();
+        authorizedOps = configOps.getAuthorizedOps();
         credentialsManager = services.credentialsManager;
         buildUI();
     }
