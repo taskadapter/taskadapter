@@ -150,7 +150,7 @@ public class ConfigsListPage extends BasePage {
             log.error("Cannot find config with id " + configId + "to show in the UI. It may have been deleted already");
             return;
         }
-        getUI().ifPresent(ui -> ui.navigate("config/" + configId.id()));
+        getUI().ifPresent(ui -> ui.navigate("config/" + configId.getId()));
     }
 
     /**

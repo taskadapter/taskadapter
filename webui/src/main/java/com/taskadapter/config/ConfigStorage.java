@@ -212,7 +212,7 @@ public class ConfigStorage {
         try {
             var folder = ConfigStorage.getUserFolder(rootDir, userLoginName);
             folder.mkdirs();
-            var newConfigFile = new File(folder, setupId.id());
+            var newConfigFile = new File(folder, setupId.getId());
             Files.write(connectorSetup, newConfigFile, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new StorageException(e);
@@ -222,7 +222,7 @@ public class ConfigStorage {
     public String loadConnectorSetupAsString(String userName, SetupId setupId) throws StorageException {
         try {
             var folder = ConfigStorage.getUserFolder(rootDir, userName);
-            var file = new File(folder, setupId.id());
+            var file = new File(folder, setupId.getId());
             return Files.toString(file, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new StorageException(e);
@@ -252,12 +252,12 @@ public class ConfigStorage {
     }
 
     public void deleteSetup(String userName, SetupId id) {
-        new File(ConfigStorage.getUserFolder(rootDir, userName), id.id())
+        new File(ConfigStorage.getUserFolder(rootDir, userName), id.getId())
                 .delete();
     }
 
     private File getConfigFile(ConfigId configId) {
-        return new File(ConfigStorage.getUserConfigsFolder(rootDir, configId.ownerName()),
-                ConfigStorage.createFileName(configId.id()));
+        return new File(ConfigStorage.getUserConfigsFolder(rootDir, configId.getOwnerName()),
+                ConfigStorage.createFileName(configId.getId()));
     }
 }

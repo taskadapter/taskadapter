@@ -17,8 +17,8 @@ class ConfigStorageTest extends FunSpec with Matchers with ConfigsTempFolder {
   it("config can be created in storage") {
     withTempFolder { folder =>
       val storage = new ConfigStorage(folder)
-      val configId = storage.createNewConfig(login, configName, "jira", SetupId("web1"), "value1",
-        "jira", SetupId("web2"), "value2", "mappings")
+      val configId = storage.createNewConfig(login, configName, "jira", new SetupId("web1"), "value1",
+        "jira", new SetupId("web2"), "value2", "mappings")
       val config = storage.getConfig(configId)
       config.isPresent shouldBe true
       config.get.getMappingsString shouldBe "mappings"
@@ -28,8 +28,8 @@ class ConfigStorageTest extends FunSpec with Matchers with ConfigsTempFolder {
   it("config is deleted") {
     withTempFolder { folder =>
       val storage = new ConfigStorage(folder)
-      val configId = storage.createNewConfig(login, configName, "jira", SetupId("web"), "value1",
-        "jira", SetupId("web"), "value2", "mappings")
+      val configId = storage.createNewConfig(login, configName, "jira", new SetupId("web"), "value1",
+        "jira", new SetupId("web"), "value2", "mappings")
       storage.deleteConfig(configId)
       storage.getConfig(configId) shouldBe Optional.empty()
     }

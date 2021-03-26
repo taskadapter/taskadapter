@@ -33,10 +33,10 @@ class NewConfigConfigureSystem(editorManager: EditorManager, configOps: ConfigOp
     val setupUiItems = setups.map { s =>
       if (s.isInstanceOf[WebConnectorSetup]) {
         val webSetup: WebConnectorSetup = s.asInstanceOf[WebConnectorSetup]
-        ExistingSetup(SetupId(webSetup.getId), s"${webSetup.getConnectorId} (${webSetup.getHost})")
+        ExistingSetup(new SetupId(webSetup.getId), s"${webSetup.getConnectorId} (${webSetup.getHost})")
       } else {
         val fileSetup: FileSetup = s.asInstanceOf[FileSetup]
-        ExistingSetup(SetupId(fileSetup.getId), fileSetup.getLabel)
+        ExistingSetup(new SetupId(fileSetup.getId), fileSetup.getLabel)
       }
     }
 

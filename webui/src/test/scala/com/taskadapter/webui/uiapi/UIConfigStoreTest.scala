@@ -46,7 +46,7 @@ class UIConfigStoreTest extends FunSpec with ScalaFutures with Matchers with Con
       val store = TestUIConfigStoreFactory.createStore(folder)
       val config = store.createNewConfig("admin", "label1", RedmineConnector.ID, ConfigFolderTestConfigurer.redmineSetupId,
         JiraConnector.ID, ConfigFolderTestConfigurer.jiraSetupId)
-      store.cloneConfig("admin", ConfigId("admin", config.id))
+      store.cloneConfig("admin", new ConfigId("admin", config.getId))
 
       val configs = store.getUserConfigs("admin")
       configs.size shouldBe 2

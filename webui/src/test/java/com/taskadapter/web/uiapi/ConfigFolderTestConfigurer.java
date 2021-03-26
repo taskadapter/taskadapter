@@ -17,12 +17,12 @@ public class ConfigFolderTestConfigurer {
      * @return folder with user configs
      */
     public static void configure(File rootFolder) {
-        List.of(jiraSetupId.id(),
-                jiraCloudSetupId.id(),
-                redmineSetupId.id(),
-                new SetupId("Microsoft_Project_1.json").id(),
-                new SetupId("GitHub1.json").id(),
-                new SetupId("Mantis1.json").id()
+        List.of(jiraSetupId.getId(),
+                jiraCloudSetupId.getId(),
+                redmineSetupId.getId(),
+                new SetupId("Microsoft_Project_1.json").getId(),
+                new SetupId("GitHub1.json").getId(),
+                new SetupId("Mantis1.json").getId()
         ).forEach(resourceName -> {
             var adminFolder = new File(rootFolder, "admin");
             adminFolder.mkdirs();

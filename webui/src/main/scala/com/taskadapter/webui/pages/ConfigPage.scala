@@ -32,7 +32,7 @@ class ConfigPage() extends BasePage with HasUrlParameter[String] {
   def setParameter(event: BeforeEvent, configIdStr: String) = {
     removeAll()
 
-    val configId = ConfigId(SessionController.getCurrentUserName, Integer.parseInt(configIdStr))
+    val configId = new ConfigId(SessionController.getCurrentUserName, Integer.parseInt(configIdStr))
     val maybeConfig = configOps.getConfig(configId)
     if (maybeConfig.isDefined) {
       val config = maybeConfig.get
@@ -269,7 +269,7 @@ class ConfigPanel(config: UISyncConfig,
     }
 
     def buildItem(uiConfig: UIConnectorConfig, e: BadConfigException, configSaver: Runnable): ValidationErrorTextWithProcessor = {
-      ValidationErrorTextWithProcessor(uiConfig.decodeException(e), buildFixProcessor(uiConfig, e, configSaver))
+      new ValidationErrorTextWithProcessor(uiConfig.decodeException(e), buildFixProcessor(uiConfig, e, configSaver))
     }
 
     private def buildFixProcessor(uiConnectorConfig: UIConnectorConfig, e: BadConfigException, configSaver: Runnable): Runnable =

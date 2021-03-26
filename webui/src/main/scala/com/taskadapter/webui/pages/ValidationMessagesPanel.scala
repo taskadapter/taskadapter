@@ -27,7 +27,7 @@ class ValidationMessagesPanel(caption: String) {
 
   def showMessage(error: ValidationErrorTextWithProcessor): Unit = {
     val row = new HorizontalLayout
-    val decoratedMessage = s"* ${error.text}"
+    val decoratedMessage = s"* ${error.getText}"
     val errorMessageLabel = new Label(decoratedMessage)
     errorMessageLabel.addClassName("error-message-label")
     errorMessageLabel.setWidth("600px")
@@ -35,7 +35,7 @@ class ValidationMessagesPanel(caption: String) {
 //    errorMessageLabel.setContentMode(ContentMode.HTML)
 
     val fixButton = new Button(Page.message("configSummary.fixButtonCaption"))
-    fixButton.addClickListener(_ => error.processor.run())
+    fixButton.addClickListener(_ => error.getProcessor.run())
     row.add(errorMessageLabel)
     row.add(fixButton)
     layout.add(row)

@@ -116,14 +116,14 @@ class ScheduleRunner(uiConfigStore: UIConfigStore, schedulesStorage: SchedulesSt
         logErrors(c, errors)
       }
     } catch {
-      case e: BadConfigException => log.error(s"Config ${c.getConfigId.id} is scheduled for periodic export, " +
+      case e: BadConfigException => log.error(s"Config ${c.getConfigId.getId} is scheduled for periodic export, " +
         s"but it will be skipped because it failed load or save validation: $e")
-      case other => log.error(s"Config ${c.getConfigId.id} scheduled sync: Error $other")
+      case other => log.error(s"Config ${c.getConfigId.getId} scheduled sync: Error $other")
     }
   }
 
   private def logErrors(c: UISyncConfig, errors: Seq[BadConfigException]) : Unit = {
-    log.error(s"Config ${c.getConfigId.id} is scheduled for periodic export, " +
+    log.error(s"Config ${c.getConfigId.getId} is scheduled for periodic export, " +
       s"but it will be skipped because it failed load or save validation: $errors")
   }
 }

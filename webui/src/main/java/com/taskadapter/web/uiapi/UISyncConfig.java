@@ -127,7 +127,7 @@ public class UISyncConfig {
      * Returns name of the user who owns this config.
      */
     public String getOwnerName() {
-        return configId.ownerName();
+        return configId.getOwnerName();
     }
 
     /**

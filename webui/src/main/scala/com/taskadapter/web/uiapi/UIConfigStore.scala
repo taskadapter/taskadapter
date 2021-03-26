@@ -73,7 +73,7 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
 
     try {
       val newMappings = JsonFactory.fromJsonString(jsonString)
-      new UISyncConfig(new TaskKeeperLocationStorage(configStorage.getRootDir), ConfigId(ownerName, storedConfig.getId),
+      new UISyncConfig(new TaskKeeperLocationStorage(configStorage.getRootDir), new ConfigId(ownerName, storedConfig.getId),
         label, config1, config2, newMappings, false)
     } catch {
       case e: Exception =>
@@ -108,11 +108,11 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     configId
   }
 
-  def getConfig(configId: ConfigId): Option[UISyncConfig] = getUserConfigs(configId.ownerName).find(_.getConfigId == configId)
+  def getConfig(configId: ConfigId): Option[UISyncConfig] = getUserConfigs(configId.getOwnerName).find(_.getConfigId == configId)
 
   def saveNewSetup(userName: String, setup: ConnectorSetup): SetupId = {
     val newFile = FileNameGenerator.findSafeAvailableFileName(getSavedSetupsFolder(userName), setup.getConnectorId + "_%d.json")
-    val setupId = SetupId(newFile.getName)
+    val setupId = new SetupId(newFile.getName)
     saveSetup(userName, setup, setupId)
     setupId
   }
@@ -120,14 +120,14 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
   def saveSetup(userName: String, setup: ConnectorSetup, setupId: SetupId): Unit = {
     val jsonString: String = if (setup.isInstanceOf[WebConnectorSetup]) {
       var webSetup: WebConnectorSetup = setup.asInstanceOf[WebConnectorSetup]
-      webSetup.setId(setupId.id)
+      webSetup.setId(setupId.getId)
       webSetup.setPassword(encryptor.encrypt(webSetup.getPassword))
       webSetup.setApiKey(encryptor.encrypt(webSetup.getApiKey))
       JsonUtil.toJsonString(webSetup)
     } else {
       // only file setup is left possible
       var fileSetup: FileSetup = setup.asInstanceOf[FileSetup]
-      fileSetup.setId(setupId.id)
+      fileSetup.setId(setupId.getId)
       JsonUtil.toJsonString(fileSetup)
     }
     configStorage.saveConnectorSetup(userName, setupId, jsonString)
@@ -182,9 +182,9 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
     val config2 = normalizedSyncConfig.getConnector2
     val mappings = normalizedSyncConfig.getNewMappings
     val mappingsStr = JsonFactory.toString(mappings)
-    configStorage.saveConfig(normalizedSyncConfig.getOwnerName, normalizedSyncConfig.getConfigId.id, label,
-      config1.getConnectorTypeId, SetupId(config1.getConnectorSetup.getId), config1.getConfigString,
-      config2.getConnectorTypeId, SetupId(config2.getConnectorSetup.getId), config2.getConfigString,
+    configStorage.saveConfig(normalizedSyncConfig.getOwnerName, normalizedSyncConfig.getConfigId.getId, label,
+      config1.getConnectorTypeId, new SetupId(config1.getConnectorSetup.getId), config1.getConfigString,
+      config2.getConnectorTypeId, new SetupId(config2.getConnectorSetup.getId), config2.getConfigString,
       mappingsStr)
   }
 
@@ -221,6 +221,6 @@ class UIConfigStore(uiConfigService: UIConfigService, configStorage: ConfigStora
       .asScala
       .filter(c => c.getConnector1.getConnectorSavedSetupId == id
         || c.getConnector2.getConnectorSavedSetupId == id)
-      .map(c => ConfigId(userName, c.getId))
+      .map(c => new ConfigId(userName, c.getId))
   }
 }

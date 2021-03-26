@@ -32,8 +32,8 @@ public final class NewConfigParser {
         final String mappings = findString(MAPPINGS_PREFIX, lines);
 
         return new StoredExportConfig(configId, name,
-                new StoredConnectorConfig(connector1ID, SetupId.apply(connector1SavedSetupIdString), connector1DataString),
-                new StoredConnectorConfig(connector2ID, SetupId.apply(connector2SavedSetupIdString), connector2DataString),
+                new StoredConnectorConfig(connector1ID, new SetupId(connector1SavedSetupIdString), connector1DataString),
+                new StoredConnectorConfig(connector2ID, new SetupId(connector2SavedSetupIdString), connector2DataString),
                 mappings);
     }
 
@@ -58,8 +58,8 @@ public final class NewConfigParser {
         final String mappings = findString(MAPPINGS_PREFIX, lines);
 
         return new StoredExportConfig(configId, name,
-                new StoredConnectorConfig(connector1ID, SetupId.apply(connector1SavedSetupIdString), connector1DataString),
-                new StoredConnectorConfig(connector2ID, SetupId.apply(connector2SavedSetupIdString), connector2DataString),
+                new StoredConnectorConfig(connector1ID, new SetupId(connector1SavedSetupIdString), connector1DataString),
+                new StoredConnectorConfig(connector2ID, new SetupId(connector2SavedSetupIdString), connector2DataString),
                 mappings);
     }
 
@@ -80,10 +80,10 @@ public final class NewConfigParser {
         String result = ID_PREFIX + configId + "\n" +
                 NAME_PREFIX + configName + "\n" +
                 CONN1_ID_PREFIX + connector1Id + "\n" +
-                CONN1_SAVED_SETUP_ID + connector1SavedSetupId.id() + "\n" +
+                CONN1_SAVED_SETUP_ID + connector1SavedSetupId.getId() + "\n" +
                 CONN1_DATA_PREFIX + connector1Data + "\n" +
                 CONN2_ID_PREFIX + connector2Id + "\n" +
-                CONN2_SAVED_SETUP_ID + connector2SavedSetupId.id() + "\n" +
+                CONN2_SAVED_SETUP_ID + connector2SavedSetupId.getId() + "\n" +
                 CONN2_DATA_PREFIX + connector2Data + "\n" +
                 MAPPINGS_PREFIX + mappings + "\n";
         return result;
