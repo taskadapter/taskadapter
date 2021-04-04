@@ -3,6 +3,7 @@ package com.taskadapter.webui.pages;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GTask;
+import com.taskadapter.reporting.ErrorReporter;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.results.ExportResultStorage;
@@ -46,7 +47,8 @@ public final class DropInExportPage extends VerticalLayout {
     private final VerticalLayout content;
 
     private DropInExportPage(ExportResultStorage exportResultStorage, ConfigOperations configOps, UISyncConfig config,
-                             int taskLimit, boolean showFilePath, Runnable onDone, File tempFile) {
+                             int taskLimit, boolean showFilePath, Runnable onDone, File tempFile,
+                             ErrorReporter errorReporter) {
         this.config = config;
         this.taskLimit = taskLimit;
         this.tempFile = tempFile;
@@ -59,7 +61,8 @@ public final class DropInExportPage extends VerticalLayout {
 
         content = new VerticalLayout();
         add(content);
-        exportHelper = new ExportHelper(exportResultStorage, onDone, showFilePath, content, config, configOps);
+        exportHelper = new ExportHelper(exportResultStorage, onDone, showFilePath, content, config, configOps,
+                errorReporter);
         startLoading();
     }
 
@@ -126,11 +129,11 @@ public final class DropInExportPage extends VerticalLayout {
 
     public static Component render(UI ui, ExportResultStorage exportResultStorage, ConfigOperations configOps,
                                    UISyncConfig config, int taskLimit, boolean showFilePath,
-                                   final Runnable onDone, final File tempFile) {
+                                   final Runnable onDone, final File tempFile, ErrorReporter errorReporter) {
         return new DropInExportPage(exportResultStorage, configOps, config, taskLimit, showFilePath,
                 () -> {
                     tempFile.delete();
                     onDone.run();
-                }, tempFile);
+                }, tempFile, errorReporter);
     }
 }

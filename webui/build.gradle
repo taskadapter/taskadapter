@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
     id 'java'
     id 'application'
@@ -90,4 +92,20 @@ startScripts {
 
 vaadin {
     pnpmEnable = true
+}
+
+afterEvaluate {
+    configure(allProcessResourcesTasks()) {
+        filter(ReplaceTokens,
+                // this token comes from outside the source code. it can be provided in your build script.
+                tokens: [rollbarApiToken: hasProperty("rollbarApiToken") ? rollbarApiToken : "",
+                         taskAdapterVersion: project.property('version')
+                ]
+        )
+    }
+}
+def allProcessResourcesTasks() {
+    sourceSets*.processResourcesTaskName.collect {
+        tasks[it]
+    }
 }

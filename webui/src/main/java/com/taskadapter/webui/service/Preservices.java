@@ -33,7 +33,7 @@ public class Preservices {
         this.rootDir = rootDir;
         this.editorManager = editorManager;
 
-        this.currentTaskAdapterVersion = new CurrentVersionLoader().getCurrentVersion();
+        this.currentTaskAdapterVersion = TaPropertiesLoader.getCurrentAppVersion();
         this.tempFileManager = new TempFileManager(new File(rootDir, ".temporary-files"));
 
         licenseManager = new LicenseManager(rootDir);

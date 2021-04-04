@@ -5,6 +5,7 @@ import com.taskadapter.common.ui.FieldMapping
 import com.taskadapter.connector.definition.exception.FieldNotMappedException
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.license.LicenseManager
+import com.taskadapter.reporting.ErrorReporter
 import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{ConfigId, UIConnectorConfig, UISyncConfig}
 import com.taskadapter.webui.pages.config.{FieldMappingPanel, ResultsPanel}
@@ -19,8 +20,8 @@ import com.vaadin.flow.component.{ClickEvent, Component, ComponentEventListener}
 import com.vaadin.flow.router.{BeforeEvent, HasUrlParameter, Route}
 import org.slf4j.LoggerFactory
 
-import scala.collection.mutable
 import scala.collection.JavaConverters._
+import scala.collection.mutable
 
 @Route(value = "config", layout = classOf[Layout])
 @CssImport(value = "./styles/views/mytheme.css")
@@ -29,6 +30,7 @@ class ConfigPage() extends BasePage with HasUrlParameter[String] {
   private val configOps: ConfigOperations = SessionController.buildConfigOperations()
   private val services: Preservices = SessionController.getServices
   private val sandbox: Sandbox = SessionController.createSandbox()
+  private val errorReporter = SessionController.getErrorReporter()
 
   def setParameter(event: BeforeEvent, configIdStr: String) = {
     removeAll()
@@ -37,7 +39,7 @@ class ConfigPage() extends BasePage with HasUrlParameter[String] {
     val maybeConfig = configOps.getConfig(configId)
     if (maybeConfig.isPresent) {
       val config = maybeConfig.get
-      val panel = new ConfigPanel(config, configOps, services, sandbox)
+      val panel = new ConfigPanel(config, configOps, services, sandbox, errorReporter)
       panel.overviewPanel.showInitialState()
       add(LayoutsUtil.centered(Sizes.mainWidth,
         panel)
@@ -54,7 +56,8 @@ class ConfigPage() extends BasePage with HasUrlParameter[String] {
 class ConfigPanel(config: UISyncConfig,
                   configOps: ConfigOperations,
                   services: Preservices,
-                  sandbox: Sandbox) extends VerticalLayout {
+                  sandbox: Sandbox,
+                  errorReporter: ErrorReporter) extends VerticalLayout {
   private val log = LoggerFactory.getLogger(classOf[ConfigPanel])
 
   private val configId = config.getConfigId
@@ -302,7 +305,8 @@ class ConfigPanel(config: UISyncConfig,
     val panel = new ExportPage(getUI.get(), services.exportResultStorage, config, maxTasks,
       services.settingsManager.isTAWorkingOnLocalMachine,
       () => overviewPanel.showInitialState(),
-      configOps)
+      configOps,
+      errorReporter)
     overviewPanel.removeAll()
     overviewPanel.add(panel)
     panel.startLoading()

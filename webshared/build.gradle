@@ -1,5 +1,3 @@
-import org.apache.tools.ant.filters.*
-
 dependencies {
     compile enforcedPlatform("com.vaadin:vaadin-bom:$vaadinVersion")
     compile libraries.vaadinCore
@@ -16,17 +14,4 @@ dependencies {
 
     testCompile project(":test-utilities")
 
-}
-
-afterEvaluate {
-    configure(allProcessResourcesTasks()) {
-        filter(ReplaceTokens,
-                tokens: [taskAdapterVersion: project.property('version')])
-    }
-}
-
-def allProcessResourcesTasks() {
-    sourceSets*.processResourcesTaskName.collect {
-        tasks[it]
-    }
 }

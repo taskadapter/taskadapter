@@ -1,13 +1,19 @@
 package com.taskadapter.webui.service;
 
+import com.rollbar.notifier.Rollbar;
+import com.rollbar.notifier.config.ConfigBuilder;
 import com.taskadapter.app.GoogleAnalyticsFactory;
 import com.taskadapter.app.ProdModeDetector;
+import com.taskadapter.reporting.ErrorReporter;
+import com.taskadapter.reporting.NoOpErrorReporter;
+import com.taskadapter.reporting.RollbarErrorReporter;
 import com.taskadapter.web.event.ApplicationActionEvent;
 import com.taskadapter.web.event.ApplicationActionEventWithValue;
 import com.taskadapter.web.event.EventBusImpl;
 import com.taskadapter.web.event.NoOpGATracker;
-import com.taskadapter.webui.SessionController;
 import com.taskadapter.web.event.Tracker;
+import com.taskadapter.webui.MyCustomErrorHandler;
+import com.taskadapter.webui.SessionController;
 import com.taskadapter.webui.WebUserSession;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
@@ -28,6 +34,7 @@ public class TaskAdapterInitListener implements VaadinServiceInitListener {
     public void serviceInit(ServiceInitEvent event) {
         logger.info("Starting TaskAdapter app initializer");
 
+        var errorReporter = createErrorReporter();
         event.getSource().addUIInitListener(
                 initEvent -> {
                     LoggerFactory.getLogger(getClass())
@@ -35,7 +42,25 @@ public class TaskAdapterInitListener implements VaadinServiceInitListener {
                     initAnalyticsTracker(ProdModeDetector.isProdRunMode());
                     SessionController.initSession(new WebUserSession());
                     registerEventListeners();
+                    SessionController.setErrorReporter(errorReporter);
                 });
+
+        event.getSource().addSessionInitListener(
+                sessionInitEvent -> sessionInitEvent.getSession().setErrorHandler(new MyCustomErrorHandler(errorReporter))
+        );
+    }
+
+    private static ErrorReporter createErrorReporter() {
+        var appVersion = TaPropertiesLoader.getCurrentAppVersion();
+        var rollbarApiToken = TaPropertiesLoader.getRollbarApiToken();
+        if (rollbarApiToken.isPresent()) {
+            var rollbar = Rollbar.init(ConfigBuilder
+                    .withAccessToken(rollbarApiToken.get())
+                    .codeVersion(appVersion)
+                    .build());
+            return new RollbarErrorReporter(rollbar);
+        }
+        return new NoOpErrorReporter();
     }
 
     private void registerEventListeners() {

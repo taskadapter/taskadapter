@@ -2,9 +2,9 @@ package com.taskadapter.webui.pages;
 
 import com.taskadapter.model.GTask;
 import com.taskadapter.reporting.ErrorReporter;
+import com.taskadapter.web.event.EventTracker;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigOperations;
-import com.taskadapter.web.event.EventTracker;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.WebProgressMonitorWrapper;
 import com.taskadapter.webui.export.ConfirmExportFragment;
@@ -28,14 +28,18 @@ public class ExportHelper {
     private final VerticalLayout layout;
     private final UISyncConfig config;
     private final ConfigOperations configOps;
+    private final ErrorReporter errorReporter;
 
-    public ExportHelper(ExportResultStorage exportResultStorage, Runnable onDone, boolean showFilePath, VerticalLayout layout, UISyncConfig config, ConfigOperations configOps) {
+    public ExportHelper(ExportResultStorage exportResultStorage, Runnable onDone, boolean showFilePath,
+                        VerticalLayout layout, UISyncConfig config, ConfigOperations configOps,
+                        ErrorReporter errorReporter) {
         this.exportResultStorage = exportResultStorage;
         this.onDone = onDone;
         this.showFilePath = showFilePath;
         this.layout = layout;
         this.config = config;
         this.configOps = configOps;
+        this.errorReporter = errorReporter;
     }
 
     public void onTasksLoaded(List<GTask> tasks) {
@@ -100,7 +104,7 @@ public class ExportHelper {
             ExportResultsLogger.log(saveResult, "Export completed.");
             exportResultStorage.store(saveResult);
             if (saveResult.hasErrors()) {
-                ErrorReporter.reportIfAllowed(config, saveResult);
+                errorReporter.reportIfAllowed(config, saveResult);
             }
             var targetLabel = config.getConnector2().getConnectorTypeId();
             var sourceAndTarget = config.getConnector1().getConnectorTypeId() + " - " + targetLabel;

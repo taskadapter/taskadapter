@@ -5,6 +5,7 @@ import com.taskadapter.auth.AuthException;
 import com.taskadapter.auth.AuthorizedOperations;
 import com.taskadapter.auth.AuthorizedOperationsImpl;
 import com.taskadapter.auth.SecondarizationResult;
+import com.taskadapter.reporting.ErrorReporter;
 import com.taskadapter.schedule.ScheduleRunner;
 import com.taskadapter.web.event.EventBusImpl;
 import com.taskadapter.web.event.NoOpGATracker;
@@ -36,6 +37,7 @@ public final class SessionController {
     private static File rootFolder = ApplicationSettings.getDefaultRootFolder();
 
     private static final Preservices services = new Preservices(rootFolder, EditorManager.fromResource("editors.txt"));
+    private static ErrorReporter errorReporter;
 
     // storing the init code for the Vaadin 14 app here for now
     static {
@@ -199,5 +201,13 @@ public final class SessionController {
 
     public static void setTracker(Tracker newTracker) {
         tracker = newTracker;
+    }
+
+    public static void setErrorReporter(ErrorReporter newErrorReporter) {
+        errorReporter = newErrorReporter;
+    }
+
+    public static ErrorReporter getErrorReporter() {
+        return errorReporter;
     }
 }

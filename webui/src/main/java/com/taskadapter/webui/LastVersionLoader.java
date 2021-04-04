@@ -1,7 +1,7 @@
 package com.taskadapter.webui;
 
-import com.taskadapter.connector.PropertiesUtf8Loader;
 import com.taskadapter.http.HttpCaller;
+import com.taskadapter.webui.service.TaPropertiesLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,8 +12,7 @@ public class LastVersionLoader {
      * check the last TA version available for download on the website.
      */
     public static String loadLastVersion() {
-        var properties = PropertiesUtf8Loader.load("taskadapter.properties");
-        var url = properties.getProperty("update_site_url");
+        var url = TaPropertiesLoader.getUpdateAppUrl();
         try {
             var lastVersionString = HttpCaller.getAsString(url);
             return lastVersionString.trim();

@@ -3,7 +3,7 @@ package com.taskadapter.webui.pages;
 import com.taskadapter.webui.LastVersionLoader;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.VersionComparator;
-import com.taskadapter.webui.service.CurrentVersionLoader;
+import com.taskadapter.webui.service.TaPropertiesLoader;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -14,7 +14,7 @@ public class AppVersionComponent extends VerticalLayout {
 
     public AppVersionComponent() {
         var lastAvailableVersion = LastVersionLoader.loadLastVersion();
-        var currentVersion = new CurrentVersionLoader().getCurrentVersion();
+        var currentVersion = TaPropertiesLoader.getCurrentAppVersion();
 
         var message = Page.message("appVersionComponent.versionInfo", currentVersion, lastAvailableVersion);
         Label label = new Label(message);

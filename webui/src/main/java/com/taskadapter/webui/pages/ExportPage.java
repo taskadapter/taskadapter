@@ -36,16 +36,19 @@ public final class ExportPage extends VerticalLayout {
      * Maximal number of transferred tasks.
      */
     private final int taskLimit;
+    private final ErrorReporter errorReporter;
 
     private final Label errorMessage;
     private final VerticalLayout content;
 
     public ExportPage(UI ui, ExportResultStorage exportResultStorage, UISyncConfig config,
                       int taskLimit, boolean showFilePath, Runnable onDone,
-                      ConfigOperations configOps) {
+                      ConfigOperations configOps,
+                      ErrorReporter errorReporter) {
         this.ui = ui;
         this.config = config;
         this.taskLimit = taskLimit;
+        this.errorReporter = errorReporter;
 
         errorMessage = new Label("");
         errorMessage.addClassName("errorMessage");
@@ -55,7 +58,8 @@ public final class ExportPage extends VerticalLayout {
 
         content = new VerticalLayout();
         add(errorMessage, content);
-        exportHelper = new ExportHelper(exportResultStorage, onDone, showFilePath, content, config, configOps);
+        exportHelper = new ExportHelper(exportResultStorage, onDone, showFilePath, content, config, configOps,
+                errorReporter);
     }
 
     public void startLoading() {
@@ -75,15 +79,15 @@ public final class ExportPage extends VerticalLayout {
             } catch (CommunicationException e) {
                 final String message = config.getConnector1().decodeException(e);
                 showLoadErrorMessage(ui, message);
-                ErrorReporter.reportIfAllowed(config, e);
+                errorReporter.reportIfAllowed(config, e);
                 log.error("transport error: " + message, e);
             } catch (ConnectorException e) {
                 showLoadErrorMessage(ui, config.getConnector1().decodeException(e));
-                ErrorReporter.reportIfAllowed(config, e);
+                errorReporter.reportIfAllowed(config, e);
                 log.error(e.getMessage(), e);
             } catch (RuntimeException e) {
                 showLoadErrorMessage(ui, "Internal error: " + e.getMessage());
-                ErrorReporter.reportIfAllowed(config, e);
+                errorReporter.reportIfAllowed(config, e);
                 log.error(e.getMessage(), e);
             }
         }).start();
