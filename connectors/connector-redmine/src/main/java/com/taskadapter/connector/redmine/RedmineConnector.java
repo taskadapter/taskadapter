@@ -93,7 +93,7 @@ public class RedmineConnector implements NewConnector {
                 var userCache = loadUsersIfAllowed(mgr);
                 var converter = new GTaskToRedmine(config, priorities, rmProject, userCache, customFieldDefinitions, statusList,
                         versions, categories);
-                var saver = new RedmineTaskSaver(mgr.getIssueManager(), config);
+                var saver = new RedmineTaskSaver(mgr.getTransport(), config);
                 var tsrb = TaskSavingUtils.saveTasks(previouslyCreatedTasks, tasks, converter, saver, monitor, fieldRows,
                         setup.getHost());
                 TaskSavingUtils.saveRemappedRelations(config, tasks, saver, tsrb);

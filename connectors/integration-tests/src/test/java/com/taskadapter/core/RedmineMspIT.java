@@ -158,7 +158,9 @@ public class RedmineMspIT {
                 .isEqualTo("default custom alex");
     }
 
-    // loads custom field in task and saves it to another custom field
+    /**
+     * this test requires two custom fields in Redmine "my_custom_1" and "my_custom_2"
+     */
     @Test
     public void loadsCustomFieldInTaskAndSavesItToAnotherCustomField() throws Exception {
         List<FieldRow<?>> rows = Arrays.asList(

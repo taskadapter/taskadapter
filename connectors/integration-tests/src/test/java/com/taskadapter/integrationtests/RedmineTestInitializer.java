@@ -7,8 +7,8 @@ import com.taskadapter.model.GUser;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Project;
-import com.taskadapter.redmineapi.bean.ProjectFactory;
 import com.taskadapter.redmineapi.bean.User;
+import com.taskadapter.redmineapi.internal.Transport;
 import org.apache.http.client.HttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +28,8 @@ public class RedmineTestInitializer {
 
     public static final GUser currentUser;
 
+    private static final Transport transport;
+
     static {
         try {
             redmineUser = mgr.getUserManager().getCurrentUser();
@@ -35,15 +37,16 @@ public class RedmineTestInitializer {
             throw new RuntimeException(e);
         }
         currentUser = RedmineToGUser.convertToGUser(redmineUser);
+        transport = mgr.getTransport();
     }
 
     public static Project createProject() {
         logger.info("Running Redmine tests with: " + setup);
-        Project project = ProjectFactory.create("integration tests", "itest" + Calendar.getInstance().getTimeInMillis());
         try {
-            Project redmineProject = mgr.getProjectManager().createProject(project);
-            logger.info("Created temporary Redmine project with key " + redmineProject.getIdentifier());
-            return redmineProject;
+            Project project = new Project(transport, "integration tests", "itest" + Calendar.getInstance().getTimeInMillis())
+                    .create();
+            logger.info("Created temporary Redmine project with key " + project.getIdentifier());
+            return project;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

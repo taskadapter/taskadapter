@@ -34,7 +34,6 @@ import com.taskadapter.redmineapi.bean.CustomFieldDefinition;
 import com.taskadapter.redmineapi.bean.CustomFieldFactory;
 import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.IssueCategory;
-import com.taskadapter.redmineapi.bean.IssueFactory;
 import com.taskadapter.redmineapi.bean.IssueStatus;
 import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.redmineapi.bean.User;
@@ -84,7 +83,10 @@ public class GTaskToRedmine implements ConnectorConverter<GTask, Issue> {
 
     private Issue convertToRedmineIssue(GTask task) throws FieldConversionException {
         var longId = task.getId();
-        var issue = longId == null ? IssueFactory.create(null) : IssueFactory.create(longId.intValue());
+        var issue = new Issue();
+        if (longId != null) {
+            issue.setId(longId.intValue());
+        }
 
         issue.setProjectId(project.getId());
         issue.setProjectName(project.getName());

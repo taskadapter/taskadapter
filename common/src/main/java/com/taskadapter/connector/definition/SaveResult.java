@@ -1,6 +1,7 @@
 package com.taskadapter.connector.definition;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class SaveResult {
@@ -58,5 +59,30 @@ public class SaveResult {
 
     public List<TaskError> getTaskErrors() {
         return taskErrors;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SaveResult that = (SaveResult) o;
+        return updatedTasksNumber == that.updatedTasksNumber && createdTasksNumber == that.createdTasksNumber && Objects.equals(targetFileAbsolutePath, that.targetFileAbsolutePath) && Objects.equals(keyToRemoteKeyList, that.keyToRemoteKeyList) && Objects.equals(generalErrors, that.generalErrors) && Objects.equals(taskErrors, that.taskErrors);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(targetFileAbsolutePath, updatedTasksNumber, createdTasksNumber, keyToRemoteKeyList, generalErrors, taskErrors);
+    }
+
+    @Override
+    public String toString() {
+        return "SaveResult{" +
+                "targetFileAbsolutePath='" + targetFileAbsolutePath + '\'' +
+                ", updatedTasksNumber=" + updatedTasksNumber +
+                ", createdTasksNumber=" + createdTasksNumber +
+                ", keyToRemoteKeyList=" + keyToRemoteKeyList +
+                ", generalErrors=" + generalErrors +
+                ", taskErrors=" + taskErrors +
+                '}';
     }
 }

@@ -6,27 +6,29 @@ import com.taskadapter.connector.definition.TaskId;
 import com.taskadapter.connector.definition.exceptions.CommunicationException;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.GRelation;
-import com.taskadapter.redmineapi.IssueManager;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineProcessingException;
 import com.taskadapter.redmineapi.bean.Issue;
+import com.taskadapter.redmineapi.bean.IssueRelation;
+import com.taskadapter.redmineapi.internal.Transport;
 
 import java.util.List;
 
 public final class RedmineTaskSaver implements RelationSaver, BasicIssueSaveAPI<Issue> {
 
-    private final IssueManager issueManager;
     private final RedmineConfig config;
+    private final Transport transport;
 
-    public RedmineTaskSaver(IssueManager mgr, RedmineConfig config) {
-        this.issueManager = mgr;
+    public RedmineTaskSaver(Transport transport, RedmineConfig config) {
+        this.transport = transport;
         this.config = config;
     }
 
     @Override
     public TaskId createTask(Issue nativeTask) throws ConnectorException {
         try {
-            Issue newIssue = issueManager.createIssue(nativeTask);
+            nativeTask.setTransport(transport);
+            Issue newIssue = nativeTask.create();
             return new TaskId(newIssue.getId().longValue(), newIssue.getId().toString());
         } catch (RedmineException e) {
             throw RedmineExceptions.convertException(e);
@@ -36,11 +38,14 @@ public final class RedmineTaskSaver implements RelationSaver, BasicIssueSaveAPI<
     @Override
     public void updateTask(Issue rmIssue) throws ConnectorException {
         try {
-            issueManager.update(rmIssue);
+            rmIssue.setTransport(transport);
+            rmIssue.update();
 
             // TODO this is here and not in saveRelations() because it needs issue ID to delete the old relations for
             if (config.getSaveIssueRelations()) {
-                issueManager.deleteIssueRelationsByIssueId(rmIssue.getId());
+                for (IssueRelation relation : rmIssue.getRelations()) {
+                    relation.delete();
+                }
             }
         } catch (RedmineException e) {
             throw RedmineExceptions.convertException(e);
@@ -55,7 +60,8 @@ public final class RedmineTaskSaver implements RelationSaver, BasicIssueSaveAPI<
                 Integer intTaskId = taskId.getId().intValue();
                 TaskId relatedTaskKey = gRelation.getRelatedTaskId();
                 Integer intRelatedId = relatedTaskKey.getId().intValue();
-                issueManager.createRelation(intTaskId, intRelatedId, gRelation.getType().toString());
+                new IssueRelation(transport, intTaskId, intRelatedId, gRelation.getType().toString())
+                        .create();
             }
         } catch (RedmineProcessingException e) {
             throw new RelationCreationException(e);

@@ -12,6 +12,13 @@ public class RedmineTestLoader {
     @Deprecated
     public static Issue loadCreatedTask(RedmineManager mgr, SaveResult result) throws RedmineException {
         var remoteKeys = result.getRemoteKeys();
+        if (remoteKeys.isEmpty()) {
+            throw new IllegalArgumentException("cannot load task: no info about previously created tasks is recorded." +
+                    "\nGeneral errors in provided SaveResult are: \n"
+                    + result.getGeneralErrors()
+                    + "\nand task errors are:\n"
+                    + result.getTaskErrors());
+        }
         long remoteKey = remoteKeys.iterator().next().getId();
         return mgr.getIssueManager().getIssueById((int) remoteKey);
     }

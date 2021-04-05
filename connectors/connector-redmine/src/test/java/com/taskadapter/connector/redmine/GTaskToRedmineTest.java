@@ -5,7 +5,6 @@ import com.taskadapter.model.AllFields;
 import com.taskadapter.model.GTask;
 import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.Project;
-import com.taskadapter.redmineapi.bean.ProjectFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -19,7 +18,7 @@ public class GTaskToRedmineTest {
 
     @BeforeClass
     public static void beforeAll() {
-        project = ProjectFactory.create();
+        project = new Project(null);
     }
 
     @Test

@@ -16,9 +16,11 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskBuilder;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
+import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.IssueStatus;
-import com.taskadapter.redmineapi.bean.ProjectFactory;
+import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.redmineapi.bean.User;
+import com.taskadapter.redmineapi.internal.Transport;
 import org.apache.http.client.HttpClient;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -43,6 +45,7 @@ public class RedmineIT {
     private static String projectKey;
     private static HttpClient httpClient;
     private static User redmineUser;
+    private static Transport transport;
 
     @BeforeClass
     public static void beforeAll() throws RedmineException {
@@ -50,6 +53,7 @@ public class RedmineIT {
 
         httpClient = RedmineManagerFactory.createRedmineHttpClient(serverInfo.getHost());
         mgr = RedmineManagerFactory.createRedmineManager(serverInfo, httpClient);
+        transport = mgr.getTransport();
         redmineUser = mgr.getUserManager().getCurrentUser();
     }
 
@@ -64,12 +68,10 @@ public class RedmineIT {
 
     @Before
     public void beforeEachTest() throws RedmineException {
-        var currentUser = RedmineToGUser.convertToGUser(redmineUser);
-        var junitTestProject = ProjectFactory.create("TA Redmine Integration test project",
-                "test" + Calendar.getInstance().getTimeInMillis());
-        var createdProject = mgr.getProjectManager().createProject(junitTestProject);
+        var junitTestProject = new Project(transport, "TA Redmine Integration test project",
+                "test" + Calendar.getInstance().getTimeInMillis()).create();
         logger.info("Created temporary Redmine project with ID " + junitTestProject.getIdentifier());
-        projectKey = createdProject.getIdentifier();
+        projectKey = junitTestProject.getIdentifier();
 
         var config = RedmineTestConfig.getRedmineTestConfig();
         config.setProjectKey(projectKey);
@@ -94,7 +96,9 @@ public class RedmineIT {
                 .isEqualTo(redmineUser.getLogin());
         assertThat(loadedTask.getValue(AllFields.assigneeFullName))
                 .isEqualTo(redmineUser.getFullName());
-        mgr.getIssueManager().deleteIssue(loadedTask.getId().intValue());
+        var issue = new Issue().setId(loadedTask.getId().intValue());
+        issue.setTransport(transport);
+        issue.delete();
     }
 
     @Test

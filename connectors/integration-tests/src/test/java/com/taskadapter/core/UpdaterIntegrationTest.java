@@ -12,7 +12,6 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.Project;
-import com.taskadapter.redmineapi.bean.ProjectFactory;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -53,12 +52,13 @@ public class UpdaterIntegrationTest {
 //        logger.info("Running Redmine tests with: " + setup);
 //        mgr = RedmineManagerFactory.createRedmineManager(setup);
 
-        Project project = ProjectFactory.create("integration test project",
-                "ittest" + Calendar.getInstance().getTimeInMillis());
         try {
-            Project createdProject = mgr.getProjectManager().createProject(project);
-            projectKey = createdProject.getIdentifier();
-            projectId = createdProject.getId();
+            Project project = new Project(mgr.getTransport(), "integration test project",
+                    "ittest" + Calendar.getInstance().getTimeInMillis())
+                    .create();
+
+            projectKey = project.getIdentifier();
+            projectId = project.getId();
             logger.info("Created temporary Redmine project with key " + projectKey);
 
         } catch (Exception e) {

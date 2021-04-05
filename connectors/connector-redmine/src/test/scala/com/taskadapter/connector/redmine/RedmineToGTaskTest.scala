@@ -36,7 +36,7 @@ class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with 
   }
 
   it("idIsConvertedIfSet") {
-    val redmineIssue = IssueFactory.create(123)
+    val redmineIssue = new Issue().setId(123)
     val task = get().convertToGenericTask(redmineIssue)
     task.getId shouldBe 123
   }
@@ -48,7 +48,7 @@ class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with 
   }
 
   it("idIsSetToKey") {
-    val redmineIssue = IssueFactory.create(123)
+    val redmineIssue = new Issue().setId(123)
     val task = get().convertToGenericTask(redmineIssue)
     assertEquals("123", task.getKey)
   }
@@ -75,7 +75,7 @@ class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with 
 
   it("trackerTypeIsConvertedIfSet") {
     val redmineIssue = new Issue
-    val tracker = TrackerFactory.create(123, "something")
+    val tracker = new Tracker().setId(123).setName("something")
     redmineIssue.setTracker(tracker)
     val task = get().convertToGenericTask(redmineIssue)
     assertEquals("something", task.getValue(AllFields.taskType))
@@ -167,11 +167,11 @@ class RedmineToGTaskTest extends FunSpec with Matchers with BeforeAndAfter with 
   }
 
   it("relations are converted") {
-    val redmineIssue = IssueFactory.create(10)
-    val relation = IssueRelationFactory.create
+    val redmineIssue = new Issue().setId(10)
+    val relation = new IssueRelation(null)
     relation.setType(IssueRelation.TYPE.precedes.toString)
     relation.setIssueId(10)
-    relation.setIssueToId(20)
+    relation.addIssueToId(20)
     redmineIssue.addRelations(Collections.singletonList(relation))
     val task = get().convertToGenericTask(redmineIssue)
     assertEquals(1, task.getRelations.size)
