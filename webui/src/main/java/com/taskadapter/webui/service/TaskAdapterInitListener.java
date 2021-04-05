@@ -53,7 +53,9 @@ public class TaskAdapterInitListener implements VaadinServiceInitListener {
     private static ErrorReporter createErrorReporter() {
         var appVersion = TaPropertiesLoader.getCurrentAppVersion();
         var rollbarApiToken = TaPropertiesLoader.getRollbarApiToken();
-        if (rollbarApiToken.isPresent()) {
+        if (rollbarApiToken.isPresent()
+                // check for default (empty) value in case resource transformation failed
+                && !rollbarApiToken.get().isEmpty()) {
             var rollbar = Rollbar.init(ConfigBuilder
                     .withAccessToken(rollbarApiToken.get())
                     .codeVersion(appVersion)
