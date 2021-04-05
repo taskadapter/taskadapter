@@ -10,10 +10,11 @@ import com.taskadapter.web.service.Sandbox
 import com.taskadapter.web.uiapi.{ConfigId, UIConnectorConfig, UISyncConfig}
 import com.taskadapter.webui.pages.config.{FieldMappingPanel, ResultsPanel}
 import com.taskadapter.webui.service.Preservices
-import com.taskadapter.webui.{BasePage, ConfigActionsFragment, ConfigOperations, ImageLoader, Layout, Page, SessionController, Sizes}
+import com.taskadapter.webui.{BasePage, ConfigActionsFragment, ConfigOperations, Layout, Page, SessionController, Sizes}
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.dependency.CssImport
 import com.vaadin.flow.component.html.{Div, Label}
+import com.vaadin.flow.component.icon.VaadinIcon
 import com.vaadin.flow.component.orderedlayout.{FlexComponent, HorizontalLayout, VerticalLayout}
 import com.vaadin.flow.component.tabs.{Tab, Tabs}
 import com.vaadin.flow.component.{ClickEvent, Component, ComponentEventListener}
@@ -123,18 +124,18 @@ class ConfigPanel(config: UISyncConfig,
     val validationPanelSaveToLeft = new ValidationMessagesPanel(
       Page.message("configSummary.validationPanelCaption", config.getConnector1.getLabel))
 
-    private val rightButton = createArrow("arrow_right.png", _ => {
+    private val rightButton = createArrow(VaadinIcon.ARROW_RIGHT, _ => {
       sync(reloadConfig(config.getConfigId))
     })
-    private val leftButton = createArrow("arrow_left.png", _ => {
+    private val leftButton = createArrow(VaadinIcon.ARROW_LEFT, _ => {
       sync(reloadConfig(config.getConfigId).reverse)
     })
 
-    private def createArrow(imageFileName: String, listener: ComponentEventListener[ClickEvent[Button]]): Button = {
-      val leftArrow = ImageLoader.getImage(imageFileName)
-      val button = new Button(leftArrow)
+    private def createArrow(icon: VaadinIcon, listener: ComponentEventListener[ClickEvent[Button]]): Button = {
+      val arrow = icon.create()
+      val button = new Button(arrow)
       button.setHeight("40px")
-      button.setWidth("100px")
+      button.setWidth("120px")
       button.getElement.setProperty("title", Page.message("export.exportButtonTooltip"))
       button.addClickListener(listener)
       button
@@ -219,9 +220,9 @@ class ConfigPanel(config: UISyncConfig,
 
     private def createConfigureConnectorButton(connectorConfig: UIConnectorConfig,
                                                buttonListener: Runnable): Component = {
-      val iconResource = ImageLoader.getImage("edit.png")
+      val iconResource = VaadinIcon.EDIT;
       val button = new Button(connectorConfig.getLabel)
-      button.setIcon(iconResource)
+      button.setIcon(iconResource.create())
       button.setWidth("400px")
       button.setHeight(height)
       button.addClickListener(_ => buttonListener.run())
