@@ -58,8 +58,10 @@ public class TaskAdapterInitListener implements VaadinServiceInitListener {
                     .withAccessToken(rollbarApiToken.get())
                     .codeVersion(appVersion)
                     .build());
+            logger.info("Configuring Rollbar error reporting.");
             return new RollbarErrorReporter(rollbar);
         }
+        logger.warn("Rollbar API token is not found. Skipping Rollbar error reporting.");
         return new NoOpErrorReporter();
     }
 
