@@ -9,9 +9,13 @@ import java.lang.reflect.Type;
 
 public class TestDataLoader {
     public static Object load(String fileName, Type fooType) {
+        String fileContents = loadAsString(fileName);
+        return new Gson().fromJson(fileContents, fooType);
+    }
+
+    public static String loadAsString(String fileName) {
         try {
-            String fileContents = Resources.toString(Resources.getResource(fileName), Charsets.UTF_8);
-            return new Gson().fromJson(fileContents, fooType);
+            return Resources.toString(Resources.getResource(fileName), Charsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

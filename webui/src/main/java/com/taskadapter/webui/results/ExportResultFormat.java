@@ -6,7 +6,6 @@ import com.taskadapter.web.uiapi.DecodedTaskError;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 public class ExportResultFormat {
     private String resultId;
@@ -14,7 +13,7 @@ public class ExportResultFormat {
     private String configLabel;
     private String from;
     private String to;
-    private Optional<String> targetFileName;
+    private String targetFileName;
     private int updatedTasksNumber;
     private int createdTasksNumber;
     private List<String> generalErrors;
@@ -23,7 +22,7 @@ public class ExportResultFormat {
     private int timeTookSeconds;
 
     public ExportResultFormat(String resultId, ConfigId configId, String configLabel, String from, String to,
-                              Optional<String> targetFileName, int updatedTasksNumber, int createdTasksNumber,
+                              String targetFileName, int updatedTasksNumber, int createdTasksNumber,
                               List<String> generalErrors, List<DecodedTaskError> taskErrors, Date dateStarted,
                               int timeTookSeconds) {
         this.resultId = resultId;
@@ -68,7 +67,7 @@ public class ExportResultFormat {
         return to;
     }
 
-    public Optional<String> getTargetFileName() {
+    public String getTargetFileName() {
         return targetFileName;
     }
 

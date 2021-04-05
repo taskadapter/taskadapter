@@ -260,7 +260,7 @@ public class UISyncConfig {
 
         var finalResult = new ExportResultFormat(resultId, configId, label, getConnector1().getSourceLocation(),
                 destinationLocation,
-                Optional.ofNullable(result.getTargetFileAbsolutePath()),
+                result.getTargetFileAbsolutePath(),
                 result.getUpdatedTasksNumber(), result.getCreatedTasksNumber(),
                 decodedGeneralErrors,
                 decodedTaskErrors,

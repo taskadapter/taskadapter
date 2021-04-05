@@ -1,5 +1,6 @@
 package com.taskadapter.webui.export;
 
+import com.google.common.base.Strings;
 import com.taskadapter.web.ui.HtmlLabel;
 import com.taskadapter.web.uiapi.DecodedTaskError;
 import com.taskadapter.webui.results.ExportResultFormat;
@@ -47,12 +48,12 @@ public class ExportResultsFragment {
         donePanel.add(createdExportResultLabel(message("export.from"), result.getFrom()));
         donePanel.add(createdExportResultLabel(message("export.to"), result.getTo()));
 
-        if (result.getTargetFileName().isPresent() && !(result.getTargetFileName().get().equals(""))) {
+        if (!Strings.isNullOrEmpty(result.getTargetFileName())) {
             if (showFilePath) {
-                var flabel = new HtmlLabel(message("export.pathToExportFile", result.getTargetFileName().get()));
+                var flabel = new HtmlLabel(message("export.pathToExportFile", result.getTargetFileName()));
                 donePanel.add(flabel);
             }
-            donePanel.add(createDownloadButton(result.getTargetFileName().get()));
+            donePanel.add(createDownloadButton(result.getTargetFileName()));
         }
         donePanel.add(createdExportResultLabel(message("export.createdTasks"), String.valueOf(result.getCreatedTasksNumber())));
         donePanel.add(createdExportResultLabel(message("export.updatedTasks"), String.valueOf(result.getUpdatedTasksNumber()) + "<br/><br/>"));

@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,7 +28,7 @@ public class ExportResultStorageTest {
     public void canSaveAndLoadResultsWithErrors() {
         var storage = new ExportResultStorage(folder.getRoot(), 10);
         var result = new ExportResultFormat("1", new ConfigId("admin", 1),
-                "label1", "from", "to", Optional.empty(), 1, 1, Arrays.asList("some general error"),
+                "label1", "from", "to", "", 1, 1, Arrays.asList("some general error"),
                 Arrays.asList(
                         new DecodedTaskError(new TaskId(100L, "KEY100"),
                                 "error summary",

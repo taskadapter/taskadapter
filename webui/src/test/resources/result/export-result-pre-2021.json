@@ -1,0 +1,17 @@
+{
+  "resultId":"1614487824661",
+  "configId":{
+    "ownerName":"admin",
+    "id":36
+  },
+  "configLabel":"cloud jira - redmine",
+  "from":"https://taskadapter.atlassian.net",
+  "to":"http://dev.taskadapter.com:8094",
+  "targetFileName":"",
+  "updatedTasksNumber":15,
+  "createdTasksNumber":0,
+  "generalErrors":[],
+  "taskErrors":[],
+  "dateStarted":"2021-02-28T04:50:23Z",
+  "timeTookSeconds":0
+}
