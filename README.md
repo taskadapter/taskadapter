@@ -30,7 +30,7 @@ this will open a web browser on app start.
 
 Run this in the project root folder:
 ```
-    ./gradlew clean build -Pvaadin.productionMode
+    ./gradlew clean build -Pvaadin.productionMode -ProllbarApiTokenProperty=<token_here>
 ```    
 
 This will create a ZIP file in `webui/build/distributions` folder. Unpack the ZIP anywhere,

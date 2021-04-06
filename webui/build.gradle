@@ -98,7 +98,7 @@ afterEvaluate {
     configure(allProcessResourcesTasks()) {
         filter(ReplaceTokens,
                 // this token comes from outside the source code. it can be provided in your build script.
-                tokens: [rollbarApiToken: hasProperty("rollbarApiToken") ? rollbarApiToken : "",
+                tokens: [rollbarApiToken: project.hasProperty("rollbarApiTokenProperty") ? project.property('rollbarApiTokenProperty') : "",
                          taskAdapterVersion: project.property('version')
                 ]
         )
