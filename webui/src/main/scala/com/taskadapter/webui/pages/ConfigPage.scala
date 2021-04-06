@@ -1,7 +1,7 @@
 package com.taskadapter.webui.pages
 
 import com.taskadapter.Constants
-import com.taskadapter.common.ui.FieldMapping
+import com.taskadapter.common.ui.{FieldMapping, ReloadableComponent}
 import com.taskadapter.connector.definition.exception.FieldNotMappedException
 import com.taskadapter.connector.definition.exceptions.BadConfigException
 import com.taskadapter.license.LicenseManager
@@ -74,7 +74,7 @@ class ConfigPanel(config: UISyncConfig,
   val mappingsTab = new Tab("Field mappings")
   val resultsTab = new Tab("Results")
 
-  val tabsToPages = mutable.Map[Tab, Component]()
+  val tabsToPages = mutable.Map[Tab, ReloadableComponent]()
   val tabs = new Tabs(
     overviewTab,
     mappingsTab,
@@ -103,16 +103,17 @@ class ConfigPanel(config: UISyncConfig,
   }
 
   def showSelectedTab(tab: Tab) : Unit = {
-    tabsToPages.values.foreach(page => page.setVisible(false))
+    tabsToPages.values.foreach(page => page.getComponent().setVisible(false));
     val selectedPage = tabsToPages.get(tab).get
-    selectedPage.setVisible(true);
+    selectedPage.reload();
+    selectedPage.getComponent.setVisible(true);
   }
 
   def updateConfigTitleLine(config: UISyncConfig): Unit = {
     configTitleLine.setText(config.getLabel)
   }
 
-  class OverviewPanel(config: UISyncConfig, configOps: ConfigOperations) extends VerticalLayout {
+  class OverviewPanel(config: UISyncConfig, configOps: ConfigOperations) extends VerticalLayout with ReloadableComponent{
     val height = "100px"
 
     val horizontalLayout = new HorizontalLayout
@@ -289,6 +290,12 @@ class ConfigPanel(config: UISyncConfig,
       tabs.setSelectedTab(mappingsTab)
       fieldMappingsPanel.showError(error)
     }
+
+    override def reload(): Unit = {
+      // nothing yet
+    }
+
+    override def getComponent: Component = this
   }
 
   private def exportCommon(config: UISyncConfig): Unit = {

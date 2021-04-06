@@ -1,15 +1,17 @@
 package com.taskadapter.webui.pages.config;
 
+import com.taskadapter.common.ui.ReloadableComponent;
 import com.taskadapter.web.uiapi.ConfigId;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.export.ExportResultsFragment;
 import com.taskadapter.webui.results.ExportResultFormat;
 import com.taskadapter.webui.results.ExportResultsLayout;
 import com.taskadapter.webui.service.Preservices;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-public class ResultsPanel extends VerticalLayout {
+public class ResultsPanel extends VerticalLayout implements ReloadableComponent {
 
     private final Preservices services;
     private final ConfigId configId;
@@ -41,5 +43,15 @@ public class ResultsPanel extends VerticalLayout {
         var okButton = new Button(Page.message("button.ok"),
                 e -> showResultsList());
         add(okButton);
+    }
+
+    @Override
+    public void reload() {
+        showResultsList();
+    }
+
+    @Override
+    public Component getComponent() {
+        return this;
     }
 }
