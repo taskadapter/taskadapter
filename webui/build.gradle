@@ -26,7 +26,6 @@ dependencies {
     )
 
     compile project(":connectors-editors:basecamp-editor")
-    compile project(":connectors-editors:basecamp-classic-editor")
     compile project(":connectors-editors:github-editor")
     compile project(":connectors-editors:jira-editor")
     compile project(":connectors-editors:mantis-editor")
