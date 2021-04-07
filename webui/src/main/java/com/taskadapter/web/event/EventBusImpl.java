@@ -1,6 +1,6 @@
 package com.taskadapter.web.event;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +25,9 @@ public class EventBusImpl {
     public static synchronized <T extends Event> void subscribe(Class<T> clazz, Subscriber<T> f) {
         final List<Subscriber> list = EventBusImpl.subscribers.get(clazz);
         if (list == null) {
-            subscribers.put(clazz, Arrays.asList(f));
+            var arrayList = new ArrayList<Subscriber>();
+            arrayList.add(f);
+            subscribers.put(clazz, arrayList);
         } else {
             list.add(f);
         }

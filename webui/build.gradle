@@ -16,7 +16,6 @@ dependencies {
     compile 'org.vaadin.addons:googleanalyticstracker:4.0.1'
 
     compile libraries.slf4j
-    compile libraries.libjson
 
     compile project(":webshared")
 
