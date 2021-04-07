@@ -14,9 +14,7 @@ ext.libraries = [
     slf4j: "org.slf4j:slf4j-api:$slf4jVersion",
     slf4jBindingLibrary: "org.slf4j:slf4j-log4j12:$slf4jVersion",
     log4j: "log4j:log4j:1.2.17",
-    mockitoCore: 'org.mockito:mockito-core:1.9.5-rc1',
     junit: "junit:junit:4.13.2",
-    festassert: 'org.easytesting:fest-assert:1.4',
     assertJ   : "org.assertj:assertj-core:3.18.0",
     vaadinCore: [dependencies.create("com.vaadin:vaadin-core") {
 //         Webjars are only needed when running in Vaadin 13 compatibility mode

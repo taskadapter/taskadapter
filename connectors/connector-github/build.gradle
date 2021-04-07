@@ -1,6 +1,4 @@
 dependencies {
     compile 'org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.0.4'
     compile libraries.gson
-
-    testCompile libraries.mockitoCore
 }

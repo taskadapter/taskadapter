@@ -30,7 +30,7 @@ import static com.taskadapter.core.JavaFieldAdapter.AssigneeLoginNameOpt;
 import static com.taskadapter.core.JavaFieldAdapter.ReporterLoginNameOpt;
 import static com.taskadapter.core.JavaFieldAdapter.descriptionOpt;
 import static com.taskadapter.core.JavaFieldAdapter.summaryOpt;
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JiraRedmineIT {
 

@@ -33,7 +33,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RedmineIT {
     private static final Logger logger = LoggerFactory.getLogger(RedmineIT.class);

@@ -7,6 +7,5 @@ dependencies {
     compile libraries.log4j
     compile libraries.httpclient
 
-    testCompile libraries.festassert
     testCompile libraries.assertJ
 }

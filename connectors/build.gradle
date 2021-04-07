@@ -4,6 +4,6 @@ subprojects {
         compile project(":common")
 
         testCompile project(":test-utilities")
-        testCompile libraries.festassert
+        testCompile libraries.assertJ
     }
 }

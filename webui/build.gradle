@@ -40,7 +40,6 @@ dependencies {
     }
 
     testCompile project(":test-utilities")
-    testCompile libraries.festassert
     testCompile libraries.assertJ
 }
 
