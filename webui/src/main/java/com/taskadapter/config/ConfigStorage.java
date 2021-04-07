@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -118,9 +119,9 @@ public class ConfigStorage {
         return configs;
     }
 
-    private List<StoredExportConfig> getConfigsInFolder(File[] configFiles) {
+    List<StoredExportConfig> getConfigsInFolder(File[] configFiles) {
         if (configFiles == null) {
-            return List.of();
+            return new ArrayList<>();
         }
         return Arrays.stream(configFiles)
                 .map(ConfigStorage::parseFile)
@@ -131,12 +132,12 @@ public class ConfigStorage {
     /**
      * @param largestIdInNonLegacyConfigs is used to name newly converted configs, to ensure their names do not conflict
      */
-    private List<StoredExportConfig> getLegacyConfigsInFolder(String userLoginName, File[] configFiles,
-                                                              int largestIdInNonLegacyConfigs) {
-        final AtomicInteger lastUsedId = new AtomicInteger(largestIdInNonLegacyConfigs);
+    List<StoredExportConfig> getLegacyConfigsInFolder(String userLoginName, File[] configFiles,
+                                                      int largestIdInNonLegacyConfigs) {
         if (configFiles == null) {
-            return List.of();
+            return new ArrayList<>();
         }
+        final AtomicInteger lastUsedId = new AtomicInteger(largestIdInNonLegacyConfigs);
         return Arrays.stream(configFiles).map(file -> parseLegacyConfig(userLoginName, lastUsedId, file))
                 .flatMap(Optional::stream)
                 .collect(Collectors.toList());
@@ -229,7 +230,7 @@ public class ConfigStorage {
         var folder = ConfigStorage.getUserFolder(rootDir, userLoginName);
         var setupFiles = folder.listFiles(ConfigStorage.setupFileFilter);
         if (setupFiles == null) {
-            return List.of();
+            return new ArrayList<>();
         }
 
         return Arrays.stream(setupFiles)
