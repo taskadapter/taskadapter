@@ -41,7 +41,7 @@ public class ExportResultStorage {
     }
 
     public List<ExportResultFormat> getSaveResults() {
-        return storage.getItemsJava(ExportResultFormat.class);
+        return storage.getItems(ExportResultFormat.class);
     }
 
     private void ensureMaxNumberResults(int maxNumberOfResultsToKeep) {

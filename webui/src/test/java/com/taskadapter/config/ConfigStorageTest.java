@@ -41,12 +41,12 @@ public class ConfigStorageTest {
      */
     @Test
     public void emptyStorageReturnsEmptyCollectionForGetUserConfigs() throws StorageException {
-        createConfig(login);
         assertThat(storage.getUserConfigs(login)).isNotEmpty();
     }
 
     @Test
     public void configsAreLoadedByGetUserConfigs() throws StorageException {
+        createConfig(login);
         assertThat(storage.getUserConfigs(login)).isEmpty();
     }
 

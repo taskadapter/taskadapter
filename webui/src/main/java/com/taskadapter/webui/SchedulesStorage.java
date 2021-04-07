@@ -25,7 +25,7 @@ public class SchedulesStorage {
     }
 
     public List<Schedule> getSchedules() {
-        return storage.getItemsJava(Schedule.class);
+        return storage.getItems(Schedule.class);
     }
 
     public Optional<Schedule> get(String id) {

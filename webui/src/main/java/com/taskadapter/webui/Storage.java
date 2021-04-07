@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -44,11 +45,11 @@ public class Storage {
         return Optional.empty();
     }
 
-    public <T> List<T> getItemsJava(Class<T> clazz) {
+    public <T> List<T> getItems(Class<T> clazz) {
         var files = storageFolder
                 .listFiles(resultsFileFilter);
         if (files == null) {
-            return List.of();
+            return new ArrayList<>();
         }
 
         return Arrays.stream(files).map(file -> convertFileToObject(file, clazz))
