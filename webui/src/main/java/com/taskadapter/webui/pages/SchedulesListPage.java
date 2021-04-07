@@ -96,7 +96,7 @@ public class SchedulesListPage extends BasePage {
                     return null;
                 }
         );
-        showInPage(editSchedulePage.ui());
+        showInPage(editSchedulePage);
     }
 
     private Optional<UISyncConfig> getConfigForSchedule(Schedule schedule) {

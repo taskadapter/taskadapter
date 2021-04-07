@@ -4,9 +4,6 @@ import com.taskadapter.web.uiapi.ConfigId;
 import com.taskadapter.webui.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scala.collection.JavaConverters;
-import scala.reflect.Manifest;
-import scala.reflect.ManifestFactory$;
 
 import java.io.File;
 import java.util.Arrays;
@@ -16,8 +13,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ExportResultStorage {
-    private static Logger logger = LoggerFactory.getLogger(ExportResultStorage.class);
-    private static Manifest<ExportResultFormat> manifest = ManifestFactory$.MODULE$.classType(ExportResultFormat.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExportResultStorage.class);
 
     private final File dataFolder;
     private final int maxNumberOfResultsToKeep;

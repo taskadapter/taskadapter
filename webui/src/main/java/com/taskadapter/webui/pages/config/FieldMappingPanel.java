@@ -4,17 +4,16 @@ import com.taskadapter.common.ui.ReloadableComponent;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.ConfigOperations;
 import com.taskadapter.webui.Page;
-import com.taskadapter.webui.config.EditConfigPage;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 public class FieldMappingPanel extends VerticalLayout implements ReloadableComponent {
-    private EditConfigPage editConfigPage;
+    private final EditConfigPage editConfigPage;
 
     public FieldMappingPanel(UISyncConfig config, ConfigOperations configOps) {
         var emptyErrorText = "";
         editConfigPage = new EditConfigPage(configOps, Page.MESSAGES, emptyErrorText, config);
-        add(editConfigPage.getUI());
+        add(editConfigPage);
     }
 
     public void showError(String error) {

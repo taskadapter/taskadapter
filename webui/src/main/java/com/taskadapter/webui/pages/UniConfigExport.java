@@ -9,7 +9,6 @@ import com.taskadapter.webui.Page;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import scala.collection.Seq;
 
 /**
  * Controller for a single export.
