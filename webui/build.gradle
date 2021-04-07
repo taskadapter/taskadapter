@@ -20,7 +20,7 @@ dependencies {
     compile project(":webshared")
 
     compile (
-            "com.rollbar:rollbar-java:1.6.0"
+            "com.rollbar:rollbar-java:1.7.6"
     )
 
     compile project(":connectors-editors:basecamp-editor")
