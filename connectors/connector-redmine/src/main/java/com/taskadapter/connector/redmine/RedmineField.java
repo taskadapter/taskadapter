@@ -2,7 +2,6 @@ package com.taskadapter.connector.redmine;
 
 import com.taskadapter.model.AllFields;
 import com.taskadapter.model.Field;
-import scala.collection.Seq;
 
 import java.util.ArrayList;
 import java.util.List;

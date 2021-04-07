@@ -20,7 +20,6 @@ import com.taskadapter.webui.service.WrongPasswordException;
 import com.vaadin.flow.component.UI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rx.lang.scala.Subscriber;
 
 import java.io.File;
 import java.util.Optional;
@@ -47,16 +46,14 @@ public final class SessionController {
         ScheduleRunner scheduleRunner = new ScheduleRunner(services.uiConfigStore, services.schedulesStorage,
                 services.exportResultStorage, services.settingsManager);
 
-        EventBusImpl.subscribe(SchedulerStatusChanged.class, new Subscriber<>() {
-            @Override
-            public void onNext(SchedulerStatusChanged value) {
-                if (value.isSchedulerEnabled()) {
-                    scheduleRunner.start();
-                } else {
-                    scheduleRunner.stop();
-                }
-            }
-        });
+        EventBusImpl.subscribe(SchedulerStatusChanged.class,
+                event -> {
+                    if (event.isSchedulerEnabled()) {
+                        scheduleRunner.start();
+                    } else {
+                        scheduleRunner.stop();
+                    }
+                });
         boolean schedulerEnabled = services.settingsManager.schedulerEnabled();
         if (schedulerEnabled) {
             EventBusImpl.post(new SchedulerStatusChanged(schedulerEnabled));

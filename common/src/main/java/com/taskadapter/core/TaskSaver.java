@@ -8,7 +8,6 @@ import com.taskadapter.connector.definition.SaveResult;
 import com.taskadapter.model.GTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scala.collection.JavaConverters;
 
 import java.util.List;
 

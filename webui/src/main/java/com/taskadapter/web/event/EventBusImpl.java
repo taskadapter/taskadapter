@@ -1,43 +1,33 @@
 package com.taskadapter.web.event;
 
-import rx.lang.scala.Observable;
-import rx.lang.scala.Subscriber;
-import rx.lang.scala.Subscription;
-import rx.lang.scala.subjects.PublishSubject;
-import rx.lang.scala.subjects.PublishSubject$;
-import rx.lang.scala.subjects.SerializedSubject;
-import rx.lang.scala.subjects.SerializedSubject$;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class EventBusImpl {
-    private static final PublishSubject<Event> subject = PublishSubject$.MODULE$.apply();
-    private static final SerializedSubject<Event> bus = SerializedSubject$.MODULE$.apply(subject);
+    private static final Map<Class, List<Subscriber>> subscribers = new HashMap<>();
 
     public static void post(Event event) {
-        if (bus.hasObservers()) {
-            bus.onNext(event);
+        if (!subscribers.containsKey(event.getClass())) {
+            return;
         }
-    }
-
-    public static <T> Observable<T> observable(Class<T> eventClass) {
-        rx.lang.scala.Observable<Event> observable = bus.filter(o -> o != null) // Filter out null objects, better safe than sorry
-                // We're only interested in a specific event class
-                .filter(o -> eventClass.isInstance(o));
-        // Cast it for easier usage
-        return (Observable<T>) observable;
+        subscribers.get(event.getClass())
+                .forEach(subscriber -> subscriber.process(event));
     }
 
     /**
      * Subscribe to the event, run the provided action when the event is received.
      *
      * @param clazz event class to process
-     * @param f the function to apply when an event of [T] class arrived
-     * @return the subscription
+     * @param f     the function to apply when an event of [T] class arrived
      */
-    public static <T extends Event> Subscription subscribe(Class<T> clazz, Subscriber<T> f) {
-        var subscription = observable(clazz).subscribe(e -> {
-            f.onNext(e);
-            return null;
-        });
-        return subscription;
+    public static synchronized <T extends Event> void subscribe(Class<T> clazz, Subscriber<T> f) {
+        final List<Subscriber> list = EventBusImpl.subscribers.get(clazz);
+        if (list == null) {
+            subscribers.put(clazz, Arrays.asList(f));
+        } else {
+            list.add(f);
+        }
     }
 }

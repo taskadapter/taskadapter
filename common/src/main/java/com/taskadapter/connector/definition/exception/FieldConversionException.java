@@ -3,7 +3,6 @@ package com.taskadapter.connector.definition.exception;
 import com.taskadapter.connector.common.FieldPrettyNameBuilder;
 import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.model.Field;
-import scala.collection.Seq;
 
 import java.util.List;
 
@@ -24,14 +23,7 @@ public class FieldConversionException extends ConnectorException {
     @Override
     public String getMessage() {
         String valueString;
-        if (value instanceof Seq) {
-            var seq = (Seq<?>) value;
-            if (seq.isEmpty()) {
-                valueString = "Empty collection";
-            } else {
-                valueString = "Collection of (" + seq.mkString(",") + ")";
-            }
-        } else if (value instanceof List) {
+        if (value instanceof List) {
             var list = (List<?>) value;
             if (list.isEmpty()) {
                 valueString = "Empty collection";

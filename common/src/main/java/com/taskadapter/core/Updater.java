@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.taskadapter.model.GTaskUtils.ID_COMPARATOR;
-import scala.collection.JavaConverters;
 
 public class Updater {
 

@@ -1,7 +1,5 @@
 package com.taskadapter.connector.common;
 
-import scala.collection.Seq;
-
 import java.util.List;
 
 public class ValueTypeResolver {
@@ -36,13 +34,6 @@ public class ValueTypeResolver {
             return "";
         }
 
-        if (value instanceof Seq) {
-            Seq seq = (Seq) value;
-            if (seq.isEmpty()) {
-                return "";
-            }
-            return seq.head().toString();
-        }
         if (value instanceof List) {
             List seq = (List) value;
             if (seq.isEmpty()) {

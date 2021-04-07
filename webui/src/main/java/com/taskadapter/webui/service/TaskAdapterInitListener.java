@@ -19,7 +19,6 @@ import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rx.lang.scala.Subscriber;
 
 /**
  * init class for the app.
@@ -70,21 +69,11 @@ public class TaskAdapterInitListener implements VaadinServiceInitListener {
     private void registerEventListeners() {
         // temporary code to catch and re-throw "tracker" events
         Tracker tracker = SessionController.getTracker();
-        EventBusImpl.observable(ApplicationActionEvent.class)
-                .subscribe(new Subscriber<>() {
-                    @Override
-                    public void onNext(ApplicationActionEvent value) {
-                        tracker.trackEvent(value.getCategory(), value.getAction(), value.getLabel());
-                    }
-                });
+        EventBusImpl.subscribe(ApplicationActionEvent.class,
+                event -> tracker.trackEvent(event.getCategory(), event.getAction(), event.getLabel()));
 
-        EventBusImpl.observable(ApplicationActionEventWithValue.class)
-                .subscribe(new Subscriber<>() {
-                    @Override
-                    public void onNext(ApplicationActionEventWithValue value) {
-                        tracker.trackEvent(value.getCategory(), value.getAction(), value.getLabel(), value.getValue());
-                    }
-                });
+        EventBusImpl.subscribe(ApplicationActionEventWithValue.class,
+                event -> tracker.trackEvent(event.getCategory(), event.getAction(), event.getLabel(), event.getValue()));
     }
 
     private static void initAnalyticsTracker(boolean prodMode) {
