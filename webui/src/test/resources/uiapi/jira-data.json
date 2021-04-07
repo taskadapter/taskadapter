@@ -1,0 +1,1 @@
+{"component":"gui","affectedVersion":"1.0","fixForVersion":"1.1","queryId":10300,"projectKey":"TEST","defaultIssueTypeForSubtasks":"Sub-task","priorities":{"prioritiesMapping":{"High":700,"Low":300,"Highest":1000,"Lowest":100,"Medium":500}},"saveIssueRelations":false,"defaultTaskType":"Bug"}
