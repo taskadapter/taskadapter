@@ -43,8 +43,7 @@ public abstract class BasePage extends VerticalLayout implements BeforeEnterObse
             return;
         }
 
-        SettingsManager settingsManager = SessionController.getServices().settingsManager;
-        if (!settingsManager.isLicenseAgreementAccepted()
+        if (!SettingsManager.isLicenseAgreementAccepted()
                 && !location.getFirstSegment().equals(Navigator.LICENSE)
                 && !location.getFirstSegment().equals(Navigator.LOGIN)) {
             event.rerouteTo(Navigator.LICENSE);

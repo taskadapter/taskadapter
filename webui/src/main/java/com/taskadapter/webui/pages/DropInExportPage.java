@@ -18,8 +18,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.List;
 
-import static com.taskadapter.license.LicenseManager.TRIAL_MESSAGE;
-
 /**
  * Export page and export handler.
  */
@@ -71,9 +69,6 @@ public final class DropInExportPage extends VerticalLayout {
      */
     private void startLoading() {
 //        setContent(SyncActionComponents.renderLoadIndicator(Page.message("export.dropInFile")));
-
-        if (taskLimit < Integer.MAX_VALUE)
-            LOGGER.info(TRIAL_MESSAGE);
 
         new Thread(() -> {
             try {

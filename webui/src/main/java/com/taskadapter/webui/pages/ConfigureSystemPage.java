@@ -29,14 +29,12 @@ public class ConfigureSystemPage extends BasePage {
 
     private final ConfigOperations configOps;
     private final Preservices services;
-    private final SettingsManager settingsManager;
     private final AuthorizedOperations authorizedOps;
     private final BasicCredentialsManager credentialsManager;
 
     public ConfigureSystemPage() {
         configOps = SessionController.buildConfigOperations();
         services = SessionController.getServices();
-        settingsManager = services.settingsManager;
         authorizedOps = configOps.getAuthorizedOps();
         credentialsManager = services.credentialsManager;
         buildUI();
@@ -44,39 +42,38 @@ public class ConfigureSystemPage extends BasePage {
 
     private void buildUI() {
         setSpacing(true);
-        var cmt = LocalRemoteOptionsPanel.createLocalRemoteOptions(settingsManager, authorizedOps.canConfigureServer());
-        var license = services.licenseManager.getLicense();
-        var allowedToEdit = authorizedOps.canConfigureServer() && license != null;
+        var cmt = LocalRemoteOptionsPanel.createLocalRemoteOptions(authorizedOps.canConfigureServer());
+        var allowedToEdit = authorizedOps.canConfigureServer();
         add(LayoutsUtil.centered(Sizes.mainWidth,
                 cmt,
-                createAdminPermissionsSection(settingsManager, allowedToEdit),
-                createResultsNumberSection(settingsManager),
-                new UsersPanel(credentialsManager, authorizedOps, license)
+                createAdminPermissionsSection(allowedToEdit),
+                createResultsNumberSection(),
+                new UsersPanel(credentialsManager, authorizedOps)
         ));
     }
 
-    private static Component createResultsNumberSection(SettingsManager settingsManager) {
+    private static Component createResultsNumberSection() {
         var label = new Label(Page.message("configurePage.maxNumberOfResultsToSave"));
         var field = new TextField();
         EditorUtil.setTooltip(field, Page.message("configurePage.maxNumberExplanation"));
-        field.setValue(settingsManager.getMaxNumberOfResultsToKeep() + "");
+        field.setValue(SettingsManager.getMaxNumberOfResultsToKeep() + "");
         // TODO 14 add type safe int parsing
-        field.addValueChangeListener(e -> settingsManager.setMaxNumberOfResultsToKeep(Integer.parseInt(field.getValue())));
+        field.addValueChangeListener(e -> SettingsManager.setMaxNumberOfResultsToKeep(Integer.parseInt(field.getValue())));
         return new VerticalLayout(label, field);
     }
 
-    private static VerticalLayout createAdminPermissionsSection(SettingsManager settingsManager, boolean modifiable) {
+    private static VerticalLayout createAdminPermissionsSection(boolean modifiable) {
         var showAllUserConfigsCheckbox = checkbox(Page.message("configurePage.showAllUsersConfigs"),
-                settingsManager.adminCanManageAllConfigs(), modifiable,
+                SettingsManager.adminCanManageAllConfigs(), modifiable,
                 (newValue) -> {
-                    settingsManager.setAdminCanManageAllConfigs(newValue);
+                    SettingsManager.setAdminCanManageAllConfigs(newValue);
                     return null;
                 });
 
         var anonymousErrorReportingCheckbox = checkbox(Page.message("configurePage.anonymousErrorReporting"),
-                settingsManager.isErrorReportingEnabled(), modifiable,
+                SettingsManager.isErrorReportingEnabled(), modifiable,
                 (newValue) -> {
-                    settingsManager.setErrorReporting(newValue);
+                    SettingsManager.setErrorReporting(newValue);
                     return null;
                 });
 

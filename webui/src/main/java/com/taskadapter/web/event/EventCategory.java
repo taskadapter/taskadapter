@@ -4,7 +4,6 @@ public enum EventCategory {
     WebAppCategory("webapp"),
     SetupCategory("setup"),
     ConfigCategory("config"),
-    LicenseCategory("license"),
     ExportCategory("export"),
     UserCategory("user");
 

@@ -20,19 +20,17 @@ public class LocalRemoteOptionsPanel extends VerticalLayout {
     /**
      * Creates a new local/remote settings panel.
      *
-     * @param settingsManager used settings manager.
      * @param canModify       if <code>true</code>, user can change the settings. Otherwise
      *                        user can see setting but cannot change it.
      * @return local/remote options panel.
      */
-    public static Component createLocalRemoteOptions(
-            final SettingsManager settingsManager, boolean canModify) {
+    public static Component createLocalRemoteOptions(boolean canModify) {
         final VerticalLayout ui = new VerticalLayout(new Label());
 
         RadioButtonGroup<String> group = new RadioButtonGroup<>();
         group.setLabel(Page.message("configurePage.caption"));
         group.setItems(options);
-        group.setValue(settingsManager.isTAWorkingOnLocalMachine() ? LOCAL
+        group.setValue(SettingsManager.isTAWorkingOnLocalMachine() ? LOCAL
                 : REMOTE);
         group.addThemeVariants(RadioGroupVariant.MATERIAL_VERTICAL);
         group.setEnabled(canModify);
@@ -40,7 +38,7 @@ public class LocalRemoteOptionsPanel extends VerticalLayout {
         if (canModify) {
             group.addValueChangeListener(event -> {
                 boolean localModeRequested = event.getValue().equals(LOCAL);
-                settingsManager.setLocal(localModeRequested);
+                SettingsManager.setLocal(localModeRequested);
                 Notification.show(Page.message("configurePage.saved"));
             });
         }

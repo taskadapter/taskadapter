@@ -1,5 +1,6 @@
 package com.taskadapter.webui.pages;
 
+import com.taskadapter.web.SettingsManager;
 import com.taskadapter.web.uiapi.ConfigId;
 import com.taskadapter.web.uiapi.UISyncConfig;
 import com.taskadapter.webui.BasePage;
@@ -8,7 +9,6 @@ import com.taskadapter.webui.Layout;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.SessionController;
 import com.taskadapter.webui.Sizes;
-import com.taskadapter.webui.service.Preservices;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -89,8 +89,7 @@ public class ConfigsListPage extends BasePage {
     }
 
     private boolean showAllConfigs() {
-        Preservices services = SessionController.getServices();
-        return services.settingsManager.adminCanManageAllConfigs() &&
+        return SettingsManager.adminCanManageAllConfigs() &&
                 SessionController.getUserContext().authorizedOps.canManagerPeerConfigs();
     }
 

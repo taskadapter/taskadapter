@@ -24,8 +24,6 @@ public class ScheduleRunner {
     private final UIConfigStore uiConfigStore;
     private final SchedulesStorage schedulesStorage;
     private final ExportResultStorage exportResultStorage;
-    private final SettingsManager settingsManager;
-
 
     private final static int threadsNumber = 1;
     private final static int initialDelaySec = 30;
@@ -35,12 +33,11 @@ public class ScheduleRunner {
     private volatile boolean currentlyBusy = false;
 
     public ScheduleRunner(UIConfigStore uiConfigStore, SchedulesStorage schedulesStorage,
-                          ExportResultStorage exportResultStorage, SettingsManager settingsManager) {
+                          ExportResultStorage exportResultStorage) {
         this.uiConfigStore = uiConfigStore;
         this.schedulesStorage = schedulesStorage;
         this.exportResultStorage = exportResultStorage;
-        this.settingsManager = settingsManager;
-        allowedToRun = settingsManager.schedulerEnabled();
+        allowedToRun = SettingsManager.schedulerEnabled();
         init();
     }
 

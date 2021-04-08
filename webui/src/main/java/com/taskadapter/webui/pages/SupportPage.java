@@ -6,8 +6,6 @@ import com.taskadapter.webui.Layout;
 import com.taskadapter.webui.LogFinder;
 import com.taskadapter.webui.SessionController;
 import com.taskadapter.webui.Sizes;
-import com.taskadapter.webui.license.LicenseFacade;
-import com.taskadapter.webui.license.LicensePanel;
 import com.taskadapter.webui.service.Preservices;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -56,10 +54,7 @@ public class SupportPage extends BasePage {
                 addVersionInfo(),
 
                 addSection("supportPage.fileLocationsPanel"),
-                addFileLocationsSection(),
-
-                addSection("supportPage.licenseInformation"),
-                createLicenseSection()
+                addFileLocationsSection()
         ).flatMap(Collection::stream)
                 .collect(Collectors.toList());
 
@@ -68,23 +63,7 @@ public class SupportPage extends BasePage {
     }
 
     private List<Component> addVersionInfo() {
-        boolean trialMode = !services.licenseManager.isSomeValidLicenseInstalled();
-        if (trialMode) {
-            var trialLabel = new Label(message("header.trialMode"));
-            trialLabel.addClassName("trial-mode-label");
-            var trialDescription = new Label(message("header.trialModeWillOnlyTransfer"));
-            trialDescription.addClassName("trial-mode-label");
-            return List.of(trialLabel,
-                    trialDescription,
-                    new AppVersionComponent());
-        }
         return List.of(new AppVersionComponent());
-    }
-
-    private List<Component> createLicenseSection() {
-        return List.of(
-                LicensePanel.renderLicensePanel(
-                        new LicenseFacade(services.licenseManager)));
     }
 
     private List<Component> addSection(String captionKey) {

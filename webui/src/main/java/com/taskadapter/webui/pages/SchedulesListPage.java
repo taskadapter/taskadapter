@@ -1,6 +1,7 @@
 package com.taskadapter.webui.pages;
 
 import com.taskadapter.web.PopupDialog;
+import com.taskadapter.web.SettingsManager;
 import com.taskadapter.web.uiapi.ConfigId;
 import com.taskadapter.web.uiapi.Schedule;
 import com.taskadapter.web.uiapi.UISyncConfig;
@@ -137,9 +138,9 @@ public class SchedulesListPage extends BasePage {
                 event -> showSelectConfig());
 
         Checkbox checkbox = new Checkbox(Page.message("schedules.scheduledEnabled"));
-        checkbox.setValue(services.settingsManager.schedulerEnabled());
+        checkbox.setValue(SettingsManager.schedulerEnabled());
         checkbox.addValueChangeListener(value ->
-                services.settingsManager.setSchedulerEnabled(checkbox.getValue()));
+                SettingsManager.setSchedulerEnabled(checkbox.getValue()));
 
         grid.setWidth("980px");
         configLabelColumn = grid.addColumn(ScheduleListItem::getConfigLabel)
