@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.taskadapter.model.GTaskUtils.ID_COMPARATOR;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestUtils {
 
@@ -90,6 +91,13 @@ public class TestUtils {
         List<GTask> loaded = connector.loadData();
         loaded.sort(Comparator.comparing(GTask::getId));
         return loaded;
+    }
+
+    public static GTask findTaskByFieldNameOrFail(List<GTask> list, Field<?> field, String value) {
+        var task = findTaskByFieldName(list, field, value);
+        assertThat(task).withFailMessage("required task not found in the tasks list")
+                .isNotNull();
+        return task;
     }
 
     /**
