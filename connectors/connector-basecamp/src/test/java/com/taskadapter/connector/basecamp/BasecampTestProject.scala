@@ -1,7 +1,6 @@
 package com.taskadapter.connector.basecamp
 
 import com.taskadapter.connector.basecamp.transport.{BaseCommunicator, ObjectAPIFactory}
-import org.scalatest.FunSpec
 
 trait BasecampTestProject extends FunSpec {
   private val factory = new ObjectAPIFactory(new BaseCommunicator)

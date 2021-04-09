@@ -1,4 +1,4 @@
-        at com.taskadapter.connector.common.SimpleTaskSaver.$anonfun$saveTasks$1(SimpleTaskSaver.scala:29)
+        at com.taskadapter.connector.common.SimpleTaskSaver.$anonfun$saveTasks$1(SimpleTaskSaver.java:29)
         at java.util.ArrayList.forEach(Unknown Source)
-        at com.taskadapter.webui.pages.ExportHelper.$anonfun$performExport$1(ExportHelper.scala:88)
+        at com.taskadapter.webui.pages.ExportHelper.$anonfun$performExport$1(ExportHelper.java:88)
 /./

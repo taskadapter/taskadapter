@@ -4,8 +4,6 @@ import com.taskadapter.connector.basecamp.transport.{BaseCommunicator, ObjectAPI
 import com.taskadapter.connector.testlib.CommonTestChecks
 import com.taskadapter.model.GTaskBuilder
 import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
-import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSpec, Matchers}
 
 // Tired of re-creating Basecamp demo accounts. we don't have any Basecamp users, so
 // let's just ignore these tests.

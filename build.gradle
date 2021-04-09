@@ -53,8 +53,6 @@ subprojects {
     dependencies {
         compile 'com.google.guava:guava:19.0'
         testCompile libraries.junit
-        testCompile 'org.scalatest:scalatest_2.12:3.0.0'
-        testCompile 'org.scala-lang:scala-library:2.12.10'
     }
 
     // disabled javadoc generation during Gradle build to avoid build failure.

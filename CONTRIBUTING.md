@@ -24,7 +24,7 @@ in `webui` module. Note that some older modules or libraries ignore "slf4j" and 
 The app uses several json libraries to generate and process json (for historical reasons). 
 The recommended library to use in 2021 is Google GSon. See `JsonUtil` class.
 Other libraries were added as experiments over the years. They had various problems, in particular
-around collections, java/scala compatibility, etc. They should be gradually removed and replaced with Google Gson
+around collections. They should be gradually removed and replaced with Google Gson
 (for consistency).
 
 ## Error reporting

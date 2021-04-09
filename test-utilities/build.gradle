@@ -7,6 +7,4 @@ dependencies {
     // is itself referenced as "testCompile" dependency
     compile libraries.junit
     compile libraries.assertJ
-    compile 'org.scala-lang:scala-library:2.12.10'
-    compile 'org.scalatest:scalatest_2.12:3.0.0'
 }

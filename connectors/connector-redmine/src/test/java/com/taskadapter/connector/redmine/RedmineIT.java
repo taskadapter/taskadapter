@@ -284,7 +284,7 @@ public class RedmineIT {
     private static String findAnyNonDefaultTaskStatus() {
         // somehow they are all marked as "not default"
 //    var statuses = mgr.getIssueManager.getStatuses
-//    statuses.asScala.find(!_.isDefaultStatus).map(_.getName).orNull
+//    statuses.find(!_.isDefaultStatus).map(_.getName).orNull
         return "In Progress";
     }
 }
