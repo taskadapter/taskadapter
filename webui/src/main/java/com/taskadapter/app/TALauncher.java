@@ -69,9 +69,6 @@ public final class TALauncher {
         Configuration.ClassList classlist = Configuration.ClassList.setServerDefault(server);
         classlist.addBefore(JettyWebXmlConfiguration.class.getName(), AnnotationConfiguration.class.getName());
 
-        if (ProdModeDetector.isLocalDevMode()) {
-            applyHackForJavaInScalaFolder(webRoot);
-        }
         server.start();
 
         String uri = "http://localhost:" + portNumber + WEB_APPLICATION_ROOT_CONTEXT;
@@ -89,23 +86,6 @@ public final class TALauncher {
             System.out.println("Task Adapter launcher will open the browser automatically if you provide this parameter" +
                     " to the start script: " + PARAMETER_OPEN_TASK_ADAPTER_PAGE_IN_WEB_BROWSER);
         }
-    }
-
-    /**
-     * create a dummy folder to allow local dev runs from IDEA.
-     * <p>
-     * unfortunately, java+scala combination leads to a conflict where the binary class files are stored in
-     * build/classes/scala for both java and scala classes, but one of the Jetty layers demands something to be
-     * present in build/classes/java folder. this method creates a dummy build/classes/java/main folder right
-     * before the server starts, when all compilation and build is already completed
-     * (because those would drop the folder again).
-     *
-     * @param webRoot
-     */
-    private static void applyHackForJavaInScalaFolder(Resource webRoot) {
-        String name = webRoot.getName();
-        String requiredFolder = name.replace("resources/main/webapp", "classes/java/main");
-        new File(requiredFolder).mkdir();
     }
 
     public static void stop() throws Exception {
