@@ -32,7 +32,8 @@ Run this in the project root folder:
 ```
     ./gradlew clean build -Pvaadin.productionMode -ProllbarApiTokenProperty=<token_here>
 ```    
+Note - the rollbar Api property is optional. If not provided, the app will skip Rollbar error reporting.
 
-This will create a ZIP file in `webui/build/distributions` folder. Unpack the ZIP anywhere,
+This command will create a ZIP file in `webui/build/distributions` folder. Unpack the ZIP anywhere,
 run `bin/taskadapter` script. It will automatically open TA URL in browser when the web app is ready.
 
