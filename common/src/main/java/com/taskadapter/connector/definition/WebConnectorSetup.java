@@ -121,9 +121,9 @@ public class WebConnectorSetup implements ConnectorSetup {
                 ", label='" + label + '\'' +
                 ", host='" + host + '\'' +
                 ", userName='" + userName + '\'' +
-                ", password='" + password + '\'' +
+                ", password=<REDACTED>'" +
                 ", useApiKey=" + useApiKey +
-                ", apiKey='" + apiKey + '\'' +
+                ", apiKey=<REDACTED>" +
                 '}';
     }
 }
