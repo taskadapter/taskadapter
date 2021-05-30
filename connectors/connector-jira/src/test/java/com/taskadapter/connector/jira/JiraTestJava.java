@@ -15,9 +15,11 @@ import com.taskadapter.model.AllFields;
 import com.taskadapter.model.CustomString;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskBuilder;
+import com.taskadapter.test.core.IntegrationTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +32,7 @@ import static com.taskadapter.core.JavaFieldAdapter.descriptionOpt;
 import static com.taskadapter.core.JavaFieldAdapter.summaryOpt;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Category(IntegrationTest.class)
 public class JiraTestJava {
     private static Logger logger = LoggerFactory.getLogger(JiraTestJava.class);
 

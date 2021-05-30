@@ -17,8 +17,10 @@ import com.taskadapter.model.AllFields;
 import com.taskadapter.model.CustomListString;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskBuilder;
+import com.taskadapter.test.core.IntegrationTest;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,6 +28,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Category(IntegrationTest.class)
 public class JiraConnectorIT {
     private static final WebConnectorSetup webServerInfo = JiraPropertiesLoader.getTestServerInfo();
     private static final JiraConfig config = JiraPropertiesLoader.createTestConfig();

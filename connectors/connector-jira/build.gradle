@@ -1,9 +1,13 @@
 dependencies {
     compile libraries.slf4j
-    testCompile libraries.assertJ
 
     // you check for new versions here
     // https://maven.atlassian.com/content/groups/public/com/atlassian/jira/jira-rest-java-client-core/
     compile 'com.atlassian.jira:jira-rest-java-client-core:5.2.2'
     runtime "io.atlassian.fugue:fugue:4.7.2"
+
+    testCompile(
+            libraries.assertJ,
+            project(":test-utilities")
+    )
 }

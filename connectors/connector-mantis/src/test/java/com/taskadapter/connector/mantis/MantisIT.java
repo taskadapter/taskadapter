@@ -9,9 +9,11 @@ import com.taskadapter.connector.testlib.ITFixture;
 import com.taskadapter.connector.testlib.TestSaver;
 import com.taskadapter.model.AllFields;
 import com.taskadapter.model.GTaskBuilder;
+import com.taskadapter.test.core.IntegrationTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +22,7 @@ import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.List;
 
+@Category(IntegrationTest.class)
 public class MantisIT {
 
     private static Logger logger = LoggerFactory.getLogger(MantisIT.class);

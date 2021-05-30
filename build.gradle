@@ -47,7 +47,10 @@ subprojects {
 
     dependencies {
         compile 'com.google.guava:guava:19.0'
-        testCompile libraries.junit
+        testCompile (
+                libraries.junit,
+                project(":test-utilities")
+        )
     }
 
     // disabled javadoc generation during Gradle build to avoid build failure.
@@ -63,6 +66,17 @@ subprojects {
     test {
         testLogging {
             exceptionFormat = 'full'
+        }
+        // exclude integration tests from the regular "test" command.
+        // see the custom "itest" command below if you need to run integration tests
+        useJUnit {
+            excludeCategories 'com.taskadapter.test.core.IntegrationTest'
+        }
+    }
+    // custom "itest" command: integration tests
+    task itest(type: Test) {
+        useJUnit {
+            includeCategories 'com.taskadapter.test.core.IntegrationTest'
         }
     }
     task allDeps(type: DependencyReportTask) {}

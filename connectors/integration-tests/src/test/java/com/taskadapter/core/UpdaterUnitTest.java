@@ -3,11 +3,14 @@ package com.taskadapter.core;
 import com.google.common.io.Resources;
 import com.taskadapter.connector.msp.MSPConfig;
 import com.taskadapter.connector.msp.MSPConnector;
+import com.taskadapter.test.core.IntegrationTest;
 import org.junit.Before;
+import org.junit.experimental.categories.Category;
 
 import java.net.URISyntaxException;
 import java.net.URL;
 
+@Category(IntegrationTest.class)
 public class UpdaterUnitTest {
 
     private MSPConnector projectConnector;

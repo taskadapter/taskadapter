@@ -12,9 +12,11 @@ import com.taskadapter.model.GTask;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.Project;
+import com.taskadapter.test.core.IntegrationTest;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +29,7 @@ import java.util.List;
 
 import static org.junit.Assert.fail;
 
+@Category(IntegrationTest.class)
 public class UpdaterIntegrationTest {
 
     private static final Logger logger = LoggerFactory.getLogger(UpdaterIntegrationTest.class);

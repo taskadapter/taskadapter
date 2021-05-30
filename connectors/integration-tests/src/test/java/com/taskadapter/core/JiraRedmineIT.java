@@ -19,9 +19,11 @@ import com.taskadapter.model.GTaskBuilder;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.Project;
+import com.taskadapter.test.core.IntegrationTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +34,7 @@ import static com.taskadapter.core.JavaFieldAdapter.descriptionOpt;
 import static com.taskadapter.core.JavaFieldAdapter.summaryOpt;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Category(IntegrationTest.class)
 public class JiraRedmineIT {
 
     private RedmineConfig sourceConfig = TestConfigs.getRedmineConfig();

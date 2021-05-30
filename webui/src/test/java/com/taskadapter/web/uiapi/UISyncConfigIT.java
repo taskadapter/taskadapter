@@ -7,9 +7,11 @@ import com.taskadapter.model.AllFields;
 import com.taskadapter.model.Field;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskBuilder;
+import com.taskadapter.test.core.IntegrationTest;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
@@ -17,6 +19,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Category(IntegrationTest.class)
 public class UISyncConfigIT {
 
     @Rule
