@@ -8,12 +8,14 @@ import com.taskadapter.connector.definition.exceptions.ConnectorException;
 import com.taskadapter.connector.testlib.FieldWithValue;
 import com.taskadapter.connector.testlib.ITFixture;
 import com.taskadapter.connector.testlib.TestUtils;
+import com.taskadapter.test.core.IntegrationTest;
 import com.taskadapter.model.AllFields;
 import com.taskadapter.model.GRelation;
 import com.taskadapter.model.GRelationType;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskBuilder;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +23,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Category(IntegrationTest.class)
 public class JiraTest {
     private static final Logger logger = LoggerFactory.getLogger(JiraTestJava.class);
 

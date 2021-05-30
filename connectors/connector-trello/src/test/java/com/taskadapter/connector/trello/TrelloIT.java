@@ -10,7 +10,9 @@ import com.taskadapter.core.PreviouslyCreatedTasksResolver;
 import com.taskadapter.model.AllFields;
 import com.taskadapter.model.GTask;
 import com.taskadapter.model.GTaskBuilder;
+import com.taskadapter.test.core.IntegrationTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Category(IntegrationTest.class)
 public class TrelloIT {
     private static final WebConnectorSetup setup = TrelloTestConfig.getSetup();
     private static final TrelloClient client = new TrelloClient(setup.getPassword(), setup.getApiKey());

@@ -27,6 +27,21 @@ Other libraries were added as experiments over the years. They had various probl
 around collections. They should be gradually removed and replaced with Google Gson
 (for consistency).
 
+## Integration testing
+There is a separate Gradle command defined for integration tests, to simplify local development for people who want
+to exclude some tests. Feel free to extend this mechanism to exclude tests by connector (e.g. Jira, Redmine, etc)
+in addition to separating by type (unit tests, integration tests). there was no need in this until now, so this has 
+not been implemented. in fact, the original app idea required running integration tests for ALL connectors for every
+change. this may not be applicable if you only care about one or two specific connectors.
+
+Here is the custom Gradle command to run:
+
+```
+    ./gradlew itest
+```
+
+`itest` is defined in the top-level "build.gradle" file.
+
 ## Error reporting
 Application errors are submitted to Rollbar (if allowed by the user). See https://rollbar.com/alex2020/TaskAdapter
 

@@ -21,11 +21,13 @@ import com.taskadapter.redmineapi.bean.IssueStatus;
 import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.redmineapi.bean.User;
 import com.taskadapter.redmineapi.internal.Transport;
+import com.taskadapter.test.core.IntegrationTest;
 import org.apache.http.client.HttpClient;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +37,7 @@ import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Category(IntegrationTest.class)
 public class RedmineIT {
     private static final Logger logger = LoggerFactory.getLogger(RedmineIT.class);
 
