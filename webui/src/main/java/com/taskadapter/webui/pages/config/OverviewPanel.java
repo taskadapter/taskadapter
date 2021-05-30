@@ -6,8 +6,8 @@ import com.taskadapter.common.ui.ReloadableComponent;
 import com.taskadapter.config.StorageException;
 import com.taskadapter.connector.definition.exception.FieldNotMappedException;
 import com.taskadapter.connector.definition.exceptions.BadConfigException;
-import com.taskadapter.license.LicenseManager;
 import com.taskadapter.reporting.ErrorReporter;
+import com.taskadapter.web.SettingsManager;
 import com.taskadapter.web.service.Sandbox;
 import com.taskadapter.web.uiapi.ConfigId;
 import com.taskadapter.web.uiapi.UIConnectorConfig;
@@ -86,12 +86,10 @@ public class OverviewPanel extends VerticalLayout implements ReloadableComponent
                 config.getConnector2().getConnectorTypeId(), config.getConnector2().getDestinationLocation())
         );
 
-        var maxTasks = services.licenseManager.isSomeValidLicenseInstalled() ?
-                Constants.maxTasksToLoad : LicenseManager.TRIAL_TASKS_NUMBER_LIMIT;
+        var maxTasks = Constants.maxTasksToLoad;
 
-        log.info("License installed? " + services.licenseManager.isSomeValidLicenseInstalled());
         var panel = new ExportPage(getUI().get(), services.exportResultStorage, config, maxTasks,
-                services.settingsManager.isTAWorkingOnLocalMachine(),
+                SettingsManager.isTAWorkingOnLocalMachine(),
                 () -> showInitialState(),
                 configOps,
                 errorReporter);

@@ -7,6 +7,7 @@ import com.taskadapter.auth.AuthorizedOperationsImpl;
 import com.taskadapter.auth.SecondarizationResult;
 import com.taskadapter.reporting.ErrorReporter;
 import com.taskadapter.schedule.ScheduleRunner;
+import com.taskadapter.web.SettingsManager;
 import com.taskadapter.web.event.EventBusImpl;
 import com.taskadapter.web.event.NoOpGATracker;
 import com.taskadapter.web.event.SchedulerStatusChanged;
@@ -40,11 +41,9 @@ public final class SessionController {
 
     // storing the init code for the Vaadin 14 app here for now
     static {
-        services.licenseManager.loadInstalledTaskAdapterLicense();
-
         // TODO 14 this class is also called from project tests. scheduler should not be a part of this
         ScheduleRunner scheduleRunner = new ScheduleRunner(services.uiConfigStore, services.schedulesStorage,
-                services.exportResultStorage, services.settingsManager);
+                services.exportResultStorage);
 
         EventBusImpl.subscribe(SchedulerStatusChanged.class,
                 event -> {
@@ -54,7 +53,7 @@ public final class SessionController {
                         scheduleRunner.stop();
                     }
                 });
-        boolean schedulerEnabled = services.settingsManager.schedulerEnabled();
+        boolean schedulerEnabled = SettingsManager.schedulerEnabled();
         if (schedulerEnabled) {
             EventBusImpl.post(new SchedulerStatusChanged(schedulerEnabled));
         }
@@ -171,7 +170,7 @@ public final class SessionController {
 
     public static Sandbox createSandbox() {
         ConfigOperations configOperations = buildConfigOperations();
-        return new Sandbox(services.settingsManager.isTAWorkingOnLocalMachine(), configOperations.getSyncSandbox());
+        return new Sandbox(SettingsManager.isTAWorkingOnLocalMachine(), configOperations.getSyncSandbox());
     }
 
     public static ConfigOperations buildConfigOperations() {

@@ -5,7 +5,6 @@ import com.taskadapter.auth.AuthorizedOperations;
 import com.taskadapter.auth.CredentialsManager;
 import com.taskadapter.data.MutableState;
 import com.taskadapter.data.States;
-import com.taskadapter.license.License;
 import com.taskadapter.web.InputDialog;
 import com.taskadapter.web.PopupDialog;
 import com.taskadapter.web.event.EventCategory;
@@ -30,17 +29,15 @@ public class UsersPanel extends VerticalLayout {
 
     private final CredentialsManager credentialsManager;
     private final AuthorizedOperations authorizedOperations;
-    private final License license;
     private final Button addUserButton;
     private final Text statusLabel;
     private final FormLayout usersLayout;
     private final MutableState<Integer> numUsers;
     private final Label errorLabel;
 
-    public UsersPanel(CredentialsManager credentialsManager, AuthorizedOperations authorizedOperations, License license) {
+    public UsersPanel(CredentialsManager credentialsManager, AuthorizedOperations authorizedOperations) {
         this.credentialsManager = credentialsManager;
         this.authorizedOperations = authorizedOperations;
-        this.license = license;
 
         setWidth("500px");
 
@@ -50,7 +47,7 @@ public class UsersPanel extends VerticalLayout {
         setSpacing(true);
         errorLabel = new Label();
         errorLabel.setVisible(false);
-        statusLabel = new Text("asdasdasdasdsad");
+        statusLabel = new Text("");
 
         usersLayout = new FormLayout();
         usersLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("40em", 1),
@@ -61,8 +58,8 @@ public class UsersPanel extends VerticalLayout {
         numUsers = new MutableState<Integer>(users.size());
         addUserButton = new Button(message("users.addUser"),
                 event -> startCreateUserProcess());
+        addUserButton.setEnabled(authorizedOperations.canAddUsers());
 
-        States.onValue(numUsers, this::applyLicenseRestriction);
         refreshUsers(users);
 
         add(new Hr(),
@@ -72,19 +69,6 @@ public class UsersPanel extends VerticalLayout {
 
     private void reloadUsers() {
         refreshUsers(credentialsManager.listUsers());
-    }
-
-    private void applyLicenseRestriction(int currentNumberOfUsersCreatedInSystem) {
-        addUserButton.setEnabled(license != null
-                && currentNumberOfUsersCreatedInSystem < license.getUsersNumber()
-                && authorizedOperations.canAddUsers());
-        if (license == null) {
-            statusLabel.setText(message("users.cantAddUsersUntilLicenseInstalled"));
-        } else if (license.getUsersNumber() <= currentNumberOfUsersCreatedInSystem) {
-            statusLabel.setText(message("users.maximumUsersNumberReached"));
-        } else {
-            statusLabel.setText("");
-        }
     }
 
     private void refreshUsers(List<String> users) {

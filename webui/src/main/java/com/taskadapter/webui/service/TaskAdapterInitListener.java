@@ -79,11 +79,7 @@ public class TaskAdapterInitListener implements VaadinServiceInitListener {
     private static void initAnalyticsTracker(boolean prodMode) {
         var tracker = prodMode ? GoogleAnalyticsFactory.create() : new NoOpGATracker();
         SessionController.setTracker(tracker);
-
-        var services = SessionController.getServices();
-        var action = services.licenseManager.isSomeValidLicenseInstalled() ?
-                "web_app_opened_licensed" : "web_app_opened_trial";
 // TODO 14 fix or delete this initial event reporting.
-//        tracker.trackEvent(WebAppCategory$.MODULE$, action, services.currentTaskAdapterVersion);
+//        tracker.trackEvent(WebAppCategory$.MODULE$, "web_app_opened", services.currentTaskAdapterVersion);
     }
 }

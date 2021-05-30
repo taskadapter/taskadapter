@@ -16,8 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static com.taskadapter.license.LicenseManager.TRIAL_MESSAGE;
-
 /**
  * Export page and export handler.
  */
@@ -65,9 +63,6 @@ public final class ExportPage extends VerticalLayout {
     public void startLoading() {
         Component renderLoadIndicator = SyncActionComponents.renderLoadIndicator(config.getConnector1());
         content.add(renderLoadIndicator);
-
-        if (taskLimit < Integer.MAX_VALUE)
-            log.info(TRIAL_MESSAGE);
 
         new Thread(() -> {
             try {

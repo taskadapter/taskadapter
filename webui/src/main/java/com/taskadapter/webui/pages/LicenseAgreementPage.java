@@ -39,9 +39,8 @@ public class LicenseAgreementPage extends BasePage {
         Checkbox acceptCheckbox = new Checkbox(ACCEPT_CHECKBOX);
         acceptCheckbox.setValue(false);
 
-        SettingsManager settingsManager = SessionController.getServices().settingsManager;
         Button acceptButton = new Button(ACCEPT_BUTTON, event -> {
-            settingsManager.markLicenseAgreementAsAccepted();
+            SettingsManager.markLicenseAgreementAsAccepted();
             Navigator.home();
         });
         acceptButton.setEnabled(false);

@@ -5,7 +5,6 @@ import com.taskadapter.auth.BasicCredentialsManager;
 import com.taskadapter.auth.cred.CredentialsStore;
 import com.taskadapter.auth.cred.FSCredentialStore;
 import com.taskadapter.config.ConfigStorage;
-import com.taskadapter.license.LicenseManager;
 import com.taskadapter.web.SettingsManager;
 import com.taskadapter.web.uiapi.UIConfigService;
 import com.taskadapter.web.uiapi.UIConfigStore;
@@ -18,8 +17,6 @@ public class Preservices {
     public final File rootDir;
     public final EditorManager editorManager;
     public final PluginManager pluginManager = new PluginManager();
-    public final SettingsManager settingsManager = new SettingsManager();
-    public final LicenseManager licenseManager;
 
     public final String currentTaskAdapterVersion;
     public final TempFileManager tempFileManager;
@@ -36,9 +33,8 @@ public class Preservices {
         this.currentTaskAdapterVersion = TaPropertiesLoader.getCurrentAppVersion();
         this.tempFileManager = new TempFileManager(new File(rootDir, ".temporary-files"));
 
-        licenseManager = new LicenseManager(rootDir);
         configStorage = new ConfigStorage(rootDir);
-        exportResultStorage = new ExportResultStorage(rootDir, settingsManager.getMaxNumberOfResultsToKeep());
+        exportResultStorage = new ExportResultStorage(rootDir, SettingsManager.getMaxNumberOfResultsToKeep());
         schedulesStorage = new SchedulesStorage(rootDir);
 
         CredentialsStore credentialsStore = new FSCredentialStore(rootDir);

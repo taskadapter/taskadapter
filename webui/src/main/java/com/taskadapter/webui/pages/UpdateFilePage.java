@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static com.taskadapter.license.LicenseManager.TRIAL_MESSAGE;
 import static com.taskadapter.webui.Page.message;
 
 public final class UpdateFilePage {
@@ -71,9 +70,6 @@ public final class UpdateFilePage {
     private void startLoading() {
         setContent(SyncActionComponents.renderLoadIndicator(config
                 .getConnector1()));
-
-        if (taskLimit < Integer.MAX_VALUE)
-            LOGGER.info(TRIAL_MESSAGE);
 
         new Thread(new Runnable() {
             @Override

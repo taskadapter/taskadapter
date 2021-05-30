@@ -20,11 +20,6 @@ public final class AuthorizedOperationsImpl implements AuthorizedOperations {
     }
 
     @Override
-    public boolean canAcceptLicense() {
-        return isAdmin();
-    }
-
-    @Override
     public boolean canChangePasswordFor(String otherUser) {
         return isAdmin();
     }

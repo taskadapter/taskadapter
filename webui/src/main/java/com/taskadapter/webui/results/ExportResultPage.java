@@ -1,5 +1,6 @@
 package com.taskadapter.webui.results;
 
+import com.taskadapter.web.SettingsManager;
 import com.taskadapter.webui.BasePage;
 import com.taskadapter.webui.Layout;
 import com.taskadapter.webui.SessionController;
@@ -36,7 +37,7 @@ public class ExportResultPage extends BasePage implements HasUrlParameter<String
         removeAll();
 
         ExportResultsFragment fragment = new ExportResultsFragment(
-                SessionController.getServices().settingsManager.isTAWorkingOnLocalMachine());
+                SettingsManager.isTAWorkingOnLocalMachine());
         Component component = fragment.showExportResult(result);
 
         add(component);

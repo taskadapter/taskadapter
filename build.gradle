@@ -35,11 +35,6 @@ subprojects {
     repositories {
         mavenLocal()
         maven {
-            // note - cannot use https://dev.taskadapter.com/nexus/content/groups/public url for now
-            // because Nginx->Nexus requires additional configuration for that.
-            url 'http://dev.taskadapter.com:8081/nexus/repository/public'
-        }
-        maven {
             url 'https://maven.vaadin.com/vaadin-addons'
         }
         // This repository contains Atlassian JIRA REST Java Client library used by JIRA connector.

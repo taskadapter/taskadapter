@@ -77,7 +77,9 @@ public final class TALauncher {
         System.out.println("Please OPEN your web browser with this URL: " + uri);
         System.out.println("=======================================================================");
 
-        checkLicense();
+        var rootFolder = ApplicationSettings.getDefaultRootFolder();
+        var services = new Preservices(rootFolder, EditorManager.fromResource("editors.txt"));
+        logger.info("Started TaskAdapter " + services.currentTaskAdapterVersion);
 
         if (needToOpenBrowser(args)) {
             Desktop desktop = Desktop.getDesktop();
@@ -116,22 +118,6 @@ public final class TALauncher {
         URL webRoot = new URL(url.substring(0, url.length() - 5));
         System.err.println("WebRoot is " + webRoot);
         return Resource.newResource(webRoot);
-    }
-
-    private static void checkLicense() {
-        // Application config root folder.
-        var rootFolder = ApplicationSettings.getDefaultRootFolder();
-
-        var services = new Preservices(rootFolder, EditorManager.fromResource("editors.txt"));
-
-        if (services.licenseManager.isSomeValidLicenseInstalled()) {
-            var license = services.licenseManager.getLicense();
-            logger.info("License info: valid until " + license.getExpiresOn() + ". Registered to " + license.getEmail());
-        } else {
-            logger.info("License NOT installed or is NOT valid. Trial mode.");
-        }
-
-        logger.info("Started TaskAdapter " + services.currentTaskAdapterVersion);
     }
 
     static int findPortNumberInArgs(String[] args) {

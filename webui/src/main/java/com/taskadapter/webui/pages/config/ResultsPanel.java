@@ -1,6 +1,7 @@
 package com.taskadapter.webui.pages.config;
 
 import com.taskadapter.common.ui.ReloadableComponent;
+import com.taskadapter.web.SettingsManager;
 import com.taskadapter.web.uiapi.ConfigId;
 import com.taskadapter.webui.Page;
 import com.taskadapter.webui.export.ExportResultsFragment;
@@ -36,7 +37,7 @@ public class ResultsPanel extends VerticalLayout implements ReloadableComponent 
 
     private void showSingleResult(ExportResultFormat result) {
         var fragment = new ExportResultsFragment(
-                services.settingsManager.isTAWorkingOnLocalMachine());
+                SettingsManager.isTAWorkingOnLocalMachine());
         var ui = fragment.showExportResult(result);
         removeAll();
         add(ui);
