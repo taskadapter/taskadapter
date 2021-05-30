@@ -28,13 +28,20 @@ around collections. They should be gradually removed and replaced with Google Gs
 (for consistency).
 
 ## Integration testing
-There is a separate Gradle command defined for integration tests, to simplify local development for people who want
+
+Integration tests should be marked with `IntegrationTest` JUnit Category:
+
+```
+    @Category(IntegrationTest.class)
+```
+
+There is a separate Gradle command defined for these tests, to simplify local development for people who want
 to exclude some tests. Feel free to extend this mechanism to exclude tests by connector (e.g. Jira, Redmine, etc)
 in addition to separating by type (unit tests, integration tests). there was no need in this until now, so this has 
 not been implemented. in fact, the original app idea required running integration tests for ALL connectors for every
 change. this may not be applicable if you only care about one or two specific connectors.
 
-Here is the custom Gradle command to run:
+Here is the custom Gradle command to run all integration tests:
 
 ```
     ./gradlew itest
