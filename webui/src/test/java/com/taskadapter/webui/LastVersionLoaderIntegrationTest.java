@@ -12,9 +12,9 @@ import static org.junit.Assert.assertTrue;
 public class LastVersionLoaderIntegrationTest {
 
     /**
-     * stopped working after migrating TaskAdapter website from http://www.taskadapter.com to https://taskadapter.com.
-     * disabling for today to be able to release a new version. this check works fine in the app itself.
+     * this test is no longer relevant after open-sourcing the app. there will be no more "official" version from now on.
      */
+    @Ignore
     @Test
     public void lastVersionIsLoadedFromUpdateServer() {
         String availableVersion = LastVersionLoader.loadLastVersion();
