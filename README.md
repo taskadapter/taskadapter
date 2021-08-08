@@ -1,19 +1,27 @@
 # TaskAdapter
-TaskAdapter is an application to transfer tasks between various bug tracking and project management systems.
-E.g. between Atlassian Jira, Redmine, Microsoft Project, etc.
-It is implemented in Java language. It has a web UI module to support editing synchronization configs and start export 
-process.
+TaskAdapter is a stand-alone application to transfer tasks between various bug tracking and project management systems, 
+e.g. between Atlassian Jira, Redmine, Microsoft Project, etc.
+The app is implemented in Java language and requires a JVM (Java Virtual Machine) installed to run. 
+It has a web UI module to support editing synchronization configs and start export process.
 
-## Pre-requisites to run the application locally
+App website: https://taskadapter.com
+Binary releases: https://taskadapter.com/download
 
-* Have Java development Kit (JDK) version 14+ installed.
+# Local development
+
+This chapter explains how to build and run the application from the source code, if you choose to do so. This may be
+useful if you want some customizations or if you want to submit a bugfix.
+
+## Local development - pre-requisites
+
+* Have Java Development Kit (JDK) version 14+ installed.
 * have npm installed (`sudo apt install npm`)
 * run the following command to disable Vaadin Gradle usage reporting (to avoid a failing NPM "integrity" check):
 ```
     npm explore @vaadin/vaadin-usage-statistics -- npm run disable
 ```
 
-##  Run the application in an IDE
+##  Local development - run the application in an IDE
 
 1. Run `./gradlew vaadinPrepareFrontend` command in the project folder, to configure Vaadin for npm mode.
 2. Import the project into your IDE (say, Intellij IDEA). You can open "build.gradle" file in the project root folder.
