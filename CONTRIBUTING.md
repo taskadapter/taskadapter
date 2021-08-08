@@ -49,9 +49,6 @@ Here is the custom Gradle command to run all integration tests:
 
 `itest` is defined in the top-level "build.gradle" file.
 
-## Error reporting
-Application errors are submitted to Rollbar (if allowed by the user). See https://rollbar.com/alex2020/TaskAdapter
-
 ## How to see all Gradle dependencies
 
 The main build file contains definition for a custom "allDeps" command. You can run it to see the dependency tree:
@@ -65,11 +62,9 @@ The main build file contains definition for a custom "allDeps" command. You can 
 Note: this can only be done by someone who has access to our DEV Jenkins.
 
 * Get the latest build from Jenkins https://dev.taskadapter.com/jenkins/view/taskadapter/job/taskadapter
-* With this build - verify and close issues on TaskAdapter board: https://app.asana.com/0/1199872896549300/board
 * Trigger a release build that will upload the distributive to Bitbucket
   https://dev.taskadapter.com/jenkins/view/taskadapter/job/taskadapter-release/
-* Make sure User Guide is up-to-date on http://www.taskadapter.com (website contents is stored in
-  https://bitbucket.org/taskadapter/site git repo)
-* Update and deploy website contents, including new app version tag/file, see this repo: https://bitbucket.org/taskadapter/site/overview
+* Make sure User Guide is up-to-date on http://www.taskadapter.com (website contents is stored in a private Git repo).
+* Update and deploy website contents, including new app version tag/file.
 
 
