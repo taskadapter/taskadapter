@@ -16,6 +16,10 @@ useful if you want some customizations or if you want to submit a bugfix.
 
 * Have Java Development Kit (JDK) version 14+ installed.
 * have npm installed (`sudo apt install npm`)
+* have node.js 16.10.0 installed and defined (`nvm install 16.10.0 nvm use 16.10.0`) . 
+    * If you don't have nvm installed or it's not working properly: (`sudo apt install nvm`) .
+    * If the nvm command is not recognized in the terminal, add in bash: (`echo 'source /usr/share/nvm/init-nvm.sh' >> ~/.zshrc
+source ~/.zshrc`)
 * run the following command to disable Vaadin Gradle usage reporting (to avoid a failing NPM "integrity" check):
 ```
     npm explore @vaadin/vaadin-usage-statistics -- npm run disable
